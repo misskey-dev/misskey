@@ -6,10 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true" data-cy-mkw-timeline class="mkw-timeline">
 	<template #icon>
-		<i v-if="widgetProps.src === 'home'" class="ti ti-home"></i>
-		<i v-else-if="widgetProps.src === 'local'" class="ti ti-planet"></i>
-		<i v-else-if="widgetProps.src === 'social'" class="ti ti-universe"></i>
-		<i v-else-if="widgetProps.src === 'global'" class="ti ti-whirl"></i>
+		<i v-if="isBasicTimeline(widgetProps.src)" :class="basicTimelineIconClass(widgetProps.src)"></i>
 		<i v-else-if="widgetProps.src === 'list'" class="ti ti-list"></i>
 		<i v-else-if="widgetProps.src === 'antenna'" class="ti ti-antenna"></i>
 	</template>
@@ -20,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</template>
 
-	<div v-if="(((widgetProps.src === 'local' || widgetProps.src === 'social') && !isLocalTimelineAvailable) || (widgetProps.src === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
+	<div v-if="isBasicTimeline(widgetProps.src) && !isAvailableBasicTimeline(widgetProps.src)" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-minus"></i>
 			{{ i18n.ts._disabledTimeline.title }}
@@ -42,12 +39,10 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
-import { instance } from '@/instance.js';
+import { availableBasicTimelines, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const name = 'timeline';
-const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
-const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
 
 const widgetPropsDef = {
 	showHeader: {
@@ -115,23 +110,26 @@ const choose = async (ev) => {
 			setSrc('list');
 		},
 	}));
-	os.popupMenu([{
-		text: i18n.ts._timelines.home,
-		icon: 'ti ti-home',
-		action: () => { setSrc('home'); },
-	}, {
-		text: i18n.ts._timelines.local,
-		icon: 'ti ti-planet',
-		action: () => { setSrc('local'); },
-	}, {
-		text: i18n.ts._timelines.social,
-		icon: 'ti ti-universe',
-		action: () => { setSrc('social'); },
-	}, {
-		text: i18n.ts._timelines.global,
-		icon: 'ti ti-whirl',
-		action: () => { setSrc('global'); },
-	}, antennaItems.length > 0 ? { type: 'divider' } : undefined, ...antennaItems, listItems.length > 0 ? { type: 'divider' } : undefined, ...listItems], ev.currentTarget ?? ev.target).then(() => {
+
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push(...availableBasicTimelines().map(tl => ({
+		text: i18n.ts._timelines[tl],
+		icon: basicTimelineIconClass(tl),
+		action: () => { setSrc(tl); },
+	})));
+
+	if (antennaItems.length > 0) {
+		menuItems.push({ type: 'divider' });
+		menuItems.push(...antennaItems);
+	}
+
+	if (listItems.length > 0) {
+		menuItems.push({ type: 'divider' });
+		menuItems.push(...listItems);
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target).then(() => {
 		menuOpened.value = false;
 	});
 };

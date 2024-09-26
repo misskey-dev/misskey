@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, onUnmounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { i18n } from '@/i18n.js';
 import { Autocomplete, SuggestionType } from '@/scripts/autocomplete.js';
 
@@ -79,7 +79,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'change', _ev: KeyboardEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
-	(ev: 'enter'): void;
+	(ev: 'enter', _ev: KeyboardEvent): void;
 	(ev: 'update:modelValue', value: string | number): void;
 }>();
 
@@ -111,7 +111,7 @@ const onKeydown = (ev: KeyboardEvent) => {
 	emit('keydown', ev);
 
 	if (ev.code === 'Enter') {
-		emit('enter');
+		emit('enter', ev);
 	}
 };
 

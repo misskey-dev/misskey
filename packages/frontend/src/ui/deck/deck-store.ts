@@ -6,6 +6,7 @@
 import { throttle } from 'throttle-debounce';
 import { markRaw } from 'vue';
 import { notificationTypes } from 'misskey-js';
+import type { BasicTimelineType } from '@/timelines.js';
 import { Storage } from '@/pizzax.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { deepClone } from '@/scripts/clone.js';
@@ -17,9 +18,24 @@ type ColumnWidget = {
 	data: Record<string, any>;
 };
 
+export const columnTypes = [
+	'main',
+	'widgets',
+	'notifications',
+	'tl',
+	'antenna',
+	'list',
+	'channel',
+	'mentions',
+	'direct',
+	'roleTimeline',
+] as const;
+
+export type ColumnType = typeof columnTypes[number];
+
 export type Column = {
 	id: string;
-	type: 'main' | 'widgets' | 'notifications' | 'tl' | 'antenna' | 'channel' | 'list' | 'mentions' | 'direct' | 'roleTimeline';
+	type: ColumnType;
 	name: string | null;
 	width: number;
 	widgets?: ColumnWidget[];
@@ -30,7 +46,7 @@ export type Column = {
 	channelId?: string;
 	roleId?: string;
 	excludeTypes?: typeof notificationTypes[number][];
-	tl?: 'home' | 'local' | 'social' | 'global';
+	tl?: BasicTimelineType;
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;

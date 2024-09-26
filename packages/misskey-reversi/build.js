@@ -1,32 +1,32 @@
-import * as esbuild from "esbuild";
-import { build } from "esbuild";
-import { globSync } from "glob";
-import { execa } from "execa";
-import fs from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname } from "node:path";
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+import * as esbuild from 'esbuild';
+import { build } from 'esbuild';
+import { globSync } from 'glob';
+import { execa } from 'execa';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 const _package = JSON.parse(fs.readFileSync(_dirname + '/package.json', 'utf-8'));
 
-const entryPoints = globSync("./src/**/**.{ts,tsx}");
+const entryPoints = globSync('./src/**/**.{ts,tsx}');
 
 /** @type {import('esbuild').BuildOptions} */
 const options = {
 	entryPoints,
 	minify: process.env.NODE_ENV === 'production',
-	outdir: "./built",
-	target: "es2022",
-	platform: "browser",
-	format: "esm",
+	outdir: './built',
+	target: 'es2022',
+	platform: 'browser',
+	format: 'esm',
 	sourcemap: 'linked',
 };
 
 // built配下をすべて削除する
 fs.rmSync('./built', { recursive: true, force: true });
 
-if (process.argv.map(arg => arg.toLowerCase()).includes("--watch")) {
+if (process.argv.map(arg => arg.toLowerCase()).includes('--watch')) {
 	await watchSrc();
 } else {
 	await buildSrc();
@@ -36,7 +36,7 @@ async function buildSrc() {
 	console.log(`[${_package.name}] start building...`);
 
 	await build(options)
-		.then(it => {
+		.then(() => {
 			console.log(`[${_package.name}] build succeeded.`);
 		})
 		.catch((err) => {
@@ -65,7 +65,7 @@ function buildDts() {
 		{
 			stdout: process.stdout,
 			stderr: process.stderr,
-		}
+		},
 	);
 }
 
@@ -86,7 +86,7 @@ async function watchSrc() {
 		},
 	}];
 
-	console.log(`[${_package.name}] start watching...`)
+	console.log(`[${_package.name}] start watching...`);
 
 	const context = await esbuild.context({ ...options, plugins });
 	await context.watch();
