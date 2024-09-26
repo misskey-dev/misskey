@@ -337,6 +337,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			enableStatsForFederatedInstances: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			enableServerMachineStats: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -610,6 +614,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				truemailAuthKey: instance.truemailAuthKey,
 				enableChartsForRemoteUser: instance.enableChartsForRemoteUser,
 				enableChartsForFederatedInstances: instance.enableChartsForFederatedInstances,
+				enableStatsForFederatedInstances: instance.enableStatsForFederatedInstances,
 				enableServerMachineStats: instance.enableServerMachineStats,
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
 				bannedEmailDomains: instance.bannedEmailDomains,

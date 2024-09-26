@@ -30,6 +30,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div class="_panel" style="padding: 16px;">
+				<MkSwitch v-model="enableStatsForFederatedInstances" @change="onChange_enableStatsForFederatedInstances">
+					<template #label>{{ i18n.ts.enableStatsForFederatedInstances }}</template>
+					<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+				</MkSwitch>
+			</div>
+
+			<div class="_panel" style="padding: 16px;">
 				<MkSwitch v-model="enableChartsForFederatedInstances" @change="onChange_enableChartsForFederatedInstances">
 					<template #label>{{ i18n.ts.enableChartsForFederatedInstances }}</template>
 					<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
@@ -120,6 +127,7 @@ const meta = await misskeyApi('admin/meta');
 const enableServerMachineStats = ref(meta.enableServerMachineStats);
 const enableIdenticonGeneration = ref(meta.enableIdenticonGeneration);
 const enableChartsForRemoteUser = ref(meta.enableChartsForRemoteUser);
+const enableStatsForFederatedInstances = ref(meta.enableStatsForFederatedInstances);
 const enableChartsForFederatedInstances = ref(meta.enableChartsForFederatedInstances);
 
 function onChange_enableServerMachineStats(value: boolean) {
@@ -141,6 +149,14 @@ function onChange_enableIdenticonGeneration(value: boolean) {
 function onChange_enableChartsForRemoteUser(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
 		enableChartsForRemoteUser: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_enableStatsForFederatedInstances(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		enableStatsForFederatedInstances: value,
 	}).then(() => {
 		fetchInstance(true);
 	});

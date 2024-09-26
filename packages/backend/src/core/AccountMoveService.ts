@@ -274,13 +274,15 @@ export class AccountMoveService {
 		}
 
 		// Update instance stats by decreasing remote followers count by the number of local followers who were following the old account.
-		if (this.userEntityService.isRemoteUser(oldAccount)) {
-			this.federatedInstanceService.fetch(oldAccount.host).then(async i => {
-				this.instancesRepository.decrement({ id: i.id }, 'followersCount', localFollowerIds.length);
-				if (this.meta.enableChartsForFederatedInstances) {
-					this.instanceChart.updateFollowers(i.host, false);
-				}
-			});
+		if (this.meta.enableStatsForFederatedInstances) {
+			if (this.userEntityService.isRemoteUser(oldAccount)) {
+				this.federatedInstanceService.fetchOrRegister(oldAccount.host).then(async i => {
+					this.instancesRepository.decrement({ id: i.id }, 'followersCount', localFollowerIds.length);
+					if (this.meta.enableChartsForFederatedInstances) {
+						this.instanceChart.updateFollowers(i.host, false);
+					}
+				});
+			}
 		}
 
 		// FIXME: expensive?

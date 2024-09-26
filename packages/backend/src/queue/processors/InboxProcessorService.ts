@@ -194,22 +194,24 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			}
 		}
 
+		this.apRequestChart.inbox();
+		this.federationChart.inbox(authUser.user.host);
+
 		// Update stats
-		this.federatedInstanceService.fetch(authUser.user.host).then(i => {
-			this.updateInstanceQueue.enqueue(i.id, {
-				latestRequestReceivedAt: new Date(),
-				shouldUnsuspend: i.suspensionState === 'autoSuspendedForNotResponding',
+		if (this.meta.enableStatsForFederatedInstances) {
+			this.federatedInstanceService.fetchOrRegister(authUser.user.host).then(i => {
+				this.updateInstanceQueue.enqueue(i.id, {
+					latestRequestReceivedAt: new Date(),
+					shouldUnsuspend: i.suspensionState === 'autoSuspendedForNotResponding',
+				});
+
+				if (this.meta.enableChartsForFederatedInstances) {
+					this.instanceChart.requestReceived(i.host);
+				}
+
+				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
 			});
-
-			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-
-			this.apRequestChart.inbox();
-			this.federationChart.inbox(i.host);
-
-			if (this.meta.enableChartsForFederatedInstances) {
-				this.instanceChart.requestReceived(i.host);
-			}
-		});
+		}
 
 		// アクティビティを処理
 		try {
