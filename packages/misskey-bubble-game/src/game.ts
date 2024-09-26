@@ -199,13 +199,12 @@ export class DropAndFusionGame extends EventEmitter<{
 		};
 		if (mono.shape === 'circle') {
 			return Matter.Bodies.circle(x, y, mono.sizeX / 2, options);
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		} else if (mono.shape === 'rectangle') {
 			return Matter.Bodies.rectangle(x, y, mono.sizeX, mono.sizeY, options);
-		} else if (mono.shape === 'custom') {
-			return Matter.Bodies.fromVertices(x, y, mono.vertices!.map(i => i.map(j => ({
-				x: (j.x / mono.verticesSize!) * mono.sizeX,
-				y: (j.y / mono.verticesSize!) * mono.sizeY,
+		} else if (mono.shape === 'custom' && mono.vertices != null && mono.verticesSize != null) { //eslint-disable-line @typescript-eslint/no-unnecessary-condition
+			return Matter.Bodies.fromVertices(x, y, mono.vertices.map(i => i.map(j => ({
+				x: (j.x / mono.verticesSize!) * mono.sizeX, //eslint-disable-line @typescript-eslint/no-non-null-assertion
+				y: (j.y / mono.verticesSize!) * mono.sizeY, //eslint-disable-line @typescript-eslint/no-non-null-assertion
 			}))), options);
 		} else {
 			throw new Error('unrecognized shape');
@@ -227,7 +226,12 @@ export class DropAndFusionGame extends EventEmitter<{
 		this.gameOverReadyBodyIds = this.gameOverReadyBodyIds.filter(x => x !== bodyA.id && x !== bodyB.id);
 		Matter.Composite.remove(this.engine.world, [bodyA, bodyB]);
 
-		const currentMono = this.monoDefinitions.find(y => y.id === bodyA.label)!;
+		const currentMono = this.monoDefinitions.find(y => y.id === bodyA.label);
+
+		if (currentMono == null) {
+			throw new Error('Current Mono Not Found');
+		}
+
 		const nextMono = this.monoDefinitions.find(x => x.level === currentMono.level + 1) ?? null;
 
 		if (nextMono) {
@@ -362,14 +366,18 @@ export class DropAndFusionGame extends EventEmitter<{
 	}
 
 	public getActiveMonos() {
-		return this.engine.world.bodies.map(x => this.monoDefinitions.find((mono) => mono.id === x.label)!).filter(x => x !== undefined);
+		return this.engine.world.bodies
+			.map(x => this.monoDefinitions.find((mono) => mono.id === x.label))
+			.filter(x => x !== undefined);
 	}
 
 	public drop(_x: number) {
 		if (this.isGameOver) return;
 		if (this.frame - this.latestDroppedAt < this.DROP_COOLTIME) return;
 
-		const head = this.stock.shift()!;
+		const head = this.stock.shift();
+		if (!head) return;
+
 		this.stock.push({
 			id: this.rng().toString(),
 			mono: this.monoDefinitions.filter(x => x.dropCandidate)[Math.floor(this.rng() * this.monoDefinitions.filter(x => x.dropCandidate).length)],
@@ -411,13 +419,15 @@ export class DropAndFusionGame extends EventEmitter<{
 		});
 
 		if (this.holding) {
-			const head = this.stock.shift()!;
+			const head = this.stock.shift();
+			if (!head) return;
 			this.stock.unshift(this.holding);
 			this.holding = head;
 			this.emit('changeHolding', this.holding);
 			this.emit('changeStock', this.stock);
 		} else {
-			const head = this.stock.shift()!;
+			const head = this.stock.shift();
+			if (!head) return;
 			this.holding = head;
 			this.stock.push({
 				id: this.rng().toString(),

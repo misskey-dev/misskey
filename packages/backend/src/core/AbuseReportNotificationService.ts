@@ -14,10 +14,10 @@ import type {
 	AbuseReportNotificationRecipientRepository,
 	MiAbuseReportNotificationRecipient,
 	MiAbuseUserReport,
+	MiMeta,
 	MiUser,
 } from '@/models/_.js';
 import { EmailService } from '@/core/EmailService.js';
-import { MetaService } from '@/core/MetaService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
@@ -27,15 +27,19 @@ import { IdService } from './IdService.js';
 @Injectable()
 export class AbuseReportNotificationService implements OnApplicationShutdown {
 	constructor(
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.abuseReportNotificationRecipientRepository)
 		private abuseReportNotificationRecipientRepository: AbuseReportNotificationRecipientRepository,
+
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
+
 		private idService: IdService,
 		private roleService: RoleService,
 		private systemWebhookService: SystemWebhookService,
 		private emailService: EmailService,
-		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -93,10 +97,8 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			.filter(x => x != null),
 		);
 
-		// 送信先の鮮度を保つため、毎回取得する
-		const meta = await this.metaService.fetch(true);
 		recipientEMailAddresses.push(
-			...(meta.email ? [meta.email] : []),
+			...(this.meta.email ? [this.meta.email] : []),
 		);
 
 		if (recipientEMailAddresses.length <= 0) {
