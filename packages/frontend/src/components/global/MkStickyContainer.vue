@@ -12,6 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		ref="bodyEl"
 		:data-sticky-container-header-height="headerHeight"
 		:data-sticky-container-footer-height="footerHeight"
+		style="position: relative; z-index: 0;"
 	>
 		<slot></slot>
 	</div>
@@ -24,14 +25,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef, toRefs } from 'vue';
 
-import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const.js';
+import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@@/js/const.js';
 
 const props = withDefaults(defineProps<{
 	headerZIndex?: number;
 	footerZIndex?: number;
 }>(), {
-	headerZIndex: 1000,
-	footerZIndex: 1000,
+	headerZIndex: 1,
+	footerZIndex: 1,
 });
 
 // non-reactive

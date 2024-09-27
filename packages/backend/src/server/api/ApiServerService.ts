@@ -8,6 +8,7 @@ import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
 import { ModuleRef } from '@nestjs/core';
+import { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { Config } from '@/config.js';
 import type { InstancesRepository, AccessTokensRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -17,6 +18,7 @@ import endpoints from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
+import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
@@ -37,6 +39,7 @@ export class ApiServerService {
 		private apiCallService: ApiCallService,
 		private signupApiService: SignupApiService,
 		private signinApiService: SigninApiService,
+		private signinWithPasskeyApiService: SigninWithPasskeyApiService,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -49,7 +52,7 @@ export class ApiServerService {
 
 		fastify.register(multipart, {
 			limits: {
-				fileSize: this.config.maxFileSize ?? 262144000,
+				fileSize: this.config.maxFileSize,
 				files: 1,
 			},
 		});
@@ -130,6 +133,12 @@ export class ApiServerService {
 				challengeId?: string;
 			};
 		}>('/signin', (request, reply) => this.signinApiService.signin(request, reply));
+
+		fastify.post<{
+			Body: {
+				credential?: AuthenticationResponseJSON;
+			};
+		}>('/signin-with-passkey', (request, reply) => this.signinWithPasskeyApiService.signin(request, reply));
 
 		fastify.post<{ Body: { code: string; } }>('/signup-pending', (request, reply) => this.signupApiService.signupPending(request, reply));
 

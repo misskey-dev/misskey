@@ -7,6 +7,8 @@ import { MiUser } from './User.js';
 import { MiNote } from './Note.js';
 import { MiAccessToken } from './AccessToken.js';
 import { MiRole } from './Role.js';
+import { MiDriveFile } from './DriveFile.js';
+import { userExportableEntities } from '@/types.js';
 
 export type MiNotification = {
 	type: 'note';
@@ -78,6 +80,12 @@ export type MiNotification = {
 	createdAt: string;
 	achievement: string;
 } | {
+	type: 'exportCompleted';
+	id: string;
+	createdAt: string;
+	exportedEntity: typeof userExportableEntities[number];
+	fileId: MiDriveFile['id'];
+} | {
 	type: 'app';
 	id: string;
 	createdAt: string;
@@ -85,7 +93,7 @@ export type MiNotification = {
 	/**
 	 * アプリ通知のbody
 	 */
-	customBody: string | null;
+	customBody: string;
 
 	/**
 	 * アプリ通知のheader

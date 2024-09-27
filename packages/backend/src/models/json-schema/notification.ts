@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { notificationTypes } from '@/types.js';
+import { ACHIEVEMENT_TYPES } from '@/core/AchievementService.js';
+import { notificationTypes, userExportableEntities } from '@/types.js';
 
 const baseSchema = {
 	type: 'object',
@@ -294,6 +295,27 @@ export const packedNotificationSchema = {
 			achievement: {
 				type: 'string',
 				optional: false, nullable: false,
+				enum: ACHIEVEMENT_TYPES,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['exportCompleted'],
+			},
+			exportedEntity: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: userExportableEntities,
+			},
+			fileId: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
 			},
 		},
 	}, {
@@ -311,11 +333,11 @@ export const packedNotificationSchema = {
 			},
 			header: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			icon: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 		},
 	}, {

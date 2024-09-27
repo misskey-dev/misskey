@@ -12,10 +12,9 @@ import {
 } from '@simplewebauthn/server';
 import { AttestationFormat, isoCBOR, isoUint8Array } from '@simplewebauthn/server/helpers';
 import { DI } from '@/di-symbols.js';
-import type { UserSecurityKeysRepository } from '@/models/_.js';
+import type { MiMeta, UserSecurityKeysRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
 import { MiUser } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type {
@@ -23,7 +22,6 @@ import type {
 	AuthenticatorTransportFuture,
 	CredentialDeviceType,
 	PublicKeyCredentialCreationOptionsJSON,
-	PublicKeyCredentialDescriptorFuture,
 	PublicKeyCredentialRequestOptionsJSON,
 	RegistrationResponseJSON,
 } from '@simplewebauthn/types';
@@ -31,33 +29,33 @@ import type {
 @Injectable()
 export class WebAuthnService {
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
-
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.userSecurityKeysRepository)
 		private userSecurityKeysRepository: UserSecurityKeysRepository,
-
-		private metaService: MetaService,
 	) {
 	}
 
 	@bindThis
-	public async getRelyingParty(): Promise<{ origin: string; rpId: string; rpName: string; rpIcon?: string; }> {
-		const instance = await this.metaService.fetch();
+	public getRelyingParty(): { origin: string; rpId: string; rpName: string; rpIcon?: string; } {
 		return {
 			origin: this.config.url,
 			rpId: this.config.hostname,
-			rpName: instance.name ?? this.config.host,
-			rpIcon: instance.iconUrl ?? undefined,
+			rpName: this.meta.name ?? this.config.host,
+			rpIcon: this.meta.iconUrl ?? undefined,
 		};
 	}
 
 	@bindThis
 	public async initiateRegistration(userId: MiUser['id'], userName: string, userDisplayName?: string): Promise<PublicKeyCredentialCreationOptionsJSON> {
-		const relyingParty = await this.getRelyingParty();
+		const relyingParty = this.getRelyingParty();
 		const keys = await this.userSecurityKeysRepository.findBy({
 			userId: userId,
 		});
@@ -104,7 +102,7 @@ export class WebAuthnService {
 
 		await this.redisClient.del(`webauthn:challenge:${userId}`);
 
-		const relyingParty = await this.getRelyingParty();
+		const relyingParty = this.getRelyingParty();
 
 		let verification;
 		try {
@@ -143,7 +141,7 @@ export class WebAuthnService {
 
 	@bindThis
 	public async initiateAuthentication(userId: MiUser['id']): Promise<PublicKeyCredentialRequestOptionsJSON> {
-		const relyingParty = await this.getRelyingParty();
+		const relyingParty = this.getRelyingParty();
 		const keys = await this.userSecurityKeysRepository.findBy({
 			userId: userId,
 		});
@@ -164,6 +162,86 @@ export class WebAuthnService {
 		await this.redisClient.setex(`webauthn:challenge:${userId}`, 90, authenticationOptions.challenge);
 
 		return authenticationOptions;
+	}
+
+	/**
+	 * Initiate Passkey Auth (Without specifying user)
+	 * @returns authenticationOptions
+	 */
+	@bindThis
+	public async initiateSignInWithPasskeyAuthentication(context: string): Promise<PublicKeyCredentialRequestOptionsJSON> {
+		const relyingParty = await this.getRelyingParty();
+
+		const authenticationOptions = await generateAuthenticationOptions({
+			rpID: relyingParty.rpId,
+			userVerification: 'preferred',
+		});
+
+		await this.redisClient.setex(`webauthn:challenge:${context}`, 90, authenticationOptions.challenge);
+
+		return authenticationOptions;
+	}
+
+	/**
+	 * Verify Webauthn AuthenticationCredential
+	 * @throws IdentifiableError
+	 * @returns If the challenge is successful, return the user ID. Otherwise, return null.
+	 */
+	@bindThis
+	public async verifySignInWithPasskeyAuthentication(context: string, response: AuthenticationResponseJSON): Promise<MiUser['id'] | null> {
+		const challenge = await this.redisClient.get(`webauthn:challenge:${context}`);
+
+		if (!challenge) {
+			throw new IdentifiableError('2d16e51c-007b-4edd-afd2-f7dd02c947f6', `challenge '${context}' not found`);
+		}
+
+		await this.redisClient.del(`webauthn:challenge:${context}`);
+
+		const key = await this.userSecurityKeysRepository.findOneBy({
+			id: response.id,
+		});
+
+		if (!key) {
+			throw new IdentifiableError('36b96a7d-b547-412d-aeed-2d611cdc8cdc', 'Unknown Webauthn key');
+		}
+
+		const relyingParty = await this.getRelyingParty();
+
+		let verification;
+		try {
+			verification = await verifyAuthenticationResponse({
+				response: response,
+				expectedChallenge: challenge,
+				expectedOrigin: relyingParty.origin,
+				expectedRPID: relyingParty.rpId,
+				authenticator: {
+					credentialID: key.id,
+					credentialPublicKey: Buffer.from(key.publicKey, 'base64url'),
+					counter: key.counter,
+					transports: key.transports ? key.transports as AuthenticatorTransportFuture[] : undefined,
+				},
+				requireUserVerification: true,
+			});
+		} catch (error) {
+			throw new IdentifiableError('b18c89a7-5b5e-4cec-bb5b-0419f332d430', `verification failed: ${error}`);
+		}
+
+		const { verified, authenticationInfo } = verification;
+
+		if (!verified) {
+			return null;
+		}
+
+		await this.userSecurityKeysRepository.update({
+			id: response.id,
+		}, {
+			lastUsed: new Date(),
+			counter: authenticationInfo.newCounter,
+			credentialDeviceType: authenticationInfo.credentialDeviceType,
+			credentialBackedUp: authenticationInfo.credentialBackedUp,
+		});
+
+		return key.userId;
 	}
 
 	@bindThis
@@ -209,7 +287,7 @@ export class WebAuthnService {
 			}
 		}
 
-		const relyingParty = await this.getRelyingParty();
+		const relyingParty = this.getRelyingParty();
 
 		let verification;
 		try {

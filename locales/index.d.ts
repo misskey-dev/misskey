@@ -37,10 +37,6 @@ export interface Locale extends ILocale {
      */
     "search": string;
     /**
-     * リセット
-     */
-    "reset": string;
-    /**
      * 通知
      */
     "notifications": string;
@@ -1357,6 +1353,10 @@ export interface Locale extends ILocale {
      */
     "addFile": string;
     /**
+     * ファイルを表示
+     */
+    "showFile": string;
+    /**
      * ドライブは空です
      */
     "emptyDrive": string;
@@ -2057,9 +2057,21 @@ export interface Locale extends ILocale {
      */
     "native": string;
     /**
-     * メニューをドロワーで表示しない
+     * メニューのスタイル
      */
-    "disableDrawer": string;
+    "menuStyle": string;
+    /**
+     * スタイル
+     */
+    "style": string;
+    /**
+     * ドロワー
+     */
+    "drawer": string;
+    /**
+     * ポップアップ
+     */
+    "popup": string;
     /**
      * ノートのアクションをホバー時のみ表示する
      */
@@ -2388,6 +2400,14 @@ export interface Locale extends ILocale {
      * スクラッチパッドは、AiScriptの実験環境を提供します。Misskeyと対話するコードの記述、実行、結果の確認ができます。
      */
     "scratchpadDescription": string;
+    /**
+     * UIインスペクター
+     */
+    "uiInspector": string;
+    /**
+     * メモリ上に存在しているUIコンポーネントのインスタンスの一覧を見ることができます。UIコンポーネントはUi:C:系関数により生成されます。
+     */
+    "uiInspectorDescription": string;
     /**
      * 出力
      */
@@ -3125,7 +3145,7 @@ export interface Locale extends ILocale {
      */
     "narrow": string;
     /**
-     * 設定はページリロード後に反映されます。今すぐリロードしますか？
+     * 設定はページリロード後に反映されます。
      */
     "reloadToApplySetting": string;
     /**
@@ -5072,6 +5092,54 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
+    /**
+     * {x}から
+     */
+    "fromX": ParameterizedString<"x">;
+    /**
+     * 埋め込みコードを生成
+     */
+    "genEmbedCode": string;
+    /**
+     * このユーザーのノート一覧
+     */
+    "noteOfThisUser": string;
+    /**
+     * これ以上このクリップにノートを追加できません。
+     */
+    "clipNoteLimitExceeded": string;
+    /**
+     * パフォーマンス
+     */
+    "performance": string;
+    /**
+     * 変更あり
+     */
+    "modified": string;
+    /**
+     * 破棄
+     */
+    "discard": string;
+    /**
+     * {n}件の変更があります
+     */
+    "thereAreNChanges": ParameterizedString<"n">;
+    /**
+     * パスキーでログイン
+     */
+    "signinWithPasskey": string;
+    /**
+     * 登録されていないパスキーです。
+     */
+    "unknownWebAuthnKey": string;
+    /**
+     * パスキーの検証に失敗しました。
+     */
+    "passkeyVerificationFailed": string;
+    /**
+     * パスキーの検証に成功しましたが、パスワードレスログインが無効になっています。
+     */
+    "passkeyVerificationSucceededButPasswordlessLoginDisabled": string;
     "_delivery": {
         /**
          * 配信状態
@@ -5563,6 +5631,10 @@ export interface Locale extends ILocale {
          * 有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。
          */
         "fanoutTimelineDbFallbackDescription": string;
+        /**
+         * 有効にすると、リアクション作成時のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。
+         */
+        "reactionsBufferingDescription": string;
         /**
          * 問い合わせ先URL
          */
@@ -6742,6 +6814,26 @@ export interface Locale extends ILocale {
              * アイコンデコレーションの最大取付個数
              */
             "avatarDecorationLimit": string;
+            /**
+             * アンテナのインポートを許可
+             */
+            "canImportAntennas": string;
+            /**
+             * ブロックのインポートを許可
+             */
+            "canImportBlocking": string;
+            /**
+             * フォローのインポートを許可
+             */
+            "canImportFollowing": string;
+            /**
+             * ミュートのインポートを許可
+             */
+            "canImportMuting": string;
+            /**
+             * リストのインポートを許可
+             */
+            "canImportUserLists": string;
         };
         "_condition": {
             /**
@@ -9165,6 +9257,10 @@ export interface Locale extends ILocale {
          * 通知の履歴をリセットする
          */
         "flushNotification": string;
+        /**
+         * {x}のエクスポートが完了しました
+         */
+        "exportOfXCompleted": ParameterizedString<"x">;
         "_types": {
             /**
              * すべて
@@ -9218,6 +9314,14 @@ export interface Locale extends ILocale {
              * 実績の獲得
              */
             "achievementEarned": string;
+            /**
+             * エクスポートが完了した
+             */
+            "exportCompleted": string;
+            /**
+             * 通知のテスト
+             */
+            "test": string;
             /**
              * 連携アプリからの通知
              */
@@ -9465,6 +9569,10 @@ export interface Locale extends ILocale {
          * Webhookを削除しますか？
          */
         "deleteConfirm": string;
+        /**
+         * スイッチの右にあるボタンをクリックするとダミーのデータを使用したテスト用Webhookを送信できます。
+         */
+        "testRemarks": string;
     };
     "_abuseReport": {
         "_notificationRecipient": {
@@ -10196,225 +10304,59 @@ export interface Locale extends ILocale {
          */
         "native": string;
     };
-    "_gridComponent": {
-        "_error": {
-            /**
-             * この値は必須項目です
-             */
-            "requiredValue": string;
-            /**
-             * 正規表現によるバリデーションはtype:textのカラムのみサポートします。
-             */
-            "columnTypeNotSupport": string;
-            /**
-             * この値は{pattern}のパターンに一致しません
-             */
-            "patternNotMatch": ParameterizedString<"pattern">;
-            /**
-             * この値は一意である必要があります
-             */
-            "notUnique": string;
-        };
-    };
-    "_roleSelectDialog": {
+    "_embedCodeGen": {
         /**
-         * 選択されていません
+         * 埋め込みコードをカスタマイズ
          */
-        "notSelected": string;
-    };
-    "_customEmojisManager": {
-        "_gridCommon": {
-            /**
-             * 選択行をコピー
-             */
-            "copySelectionRows": string;
-            /**
-             * 選択範囲をコピー
-             */
-            "copySelectionRanges": string;
-            /**
-             * 選択行を削除
-             */
-            "deleteSelectionRows": string;
-            /**
-             * 選択範囲の行を削除
-             */
-            "deleteSelectionRanges": string;
-            /**
-             * 検索設定
-             */
-            "searchSettings": string;
-            /**
-             * 検索条件を詳細に設定します。
-             */
-            "searchSettingCaption": string;
-            /**
-             * 並び順
-             */
-            "sortOrder": string;
-            /**
-             * 登録ログ
-             */
-            "registrationLogs": string;
-            /**
-             * 絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページを遷移・リロードすると消えます。
-             */
-            "registrationLogsCaption": string;
-            /**
-             * エラー
-             */
-            "alertEmojisRegisterFailedTitle": string;
-            /**
-             * 絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。
-             */
-            "alertEmojisRegisterFailedDescription": string;
-        };
-        "_logs": {
-            /**
-             * 成功ログを表示
-             */
-            "showSuccessLogSwitch": string;
-            /**
-             * 失敗ログはありません。
-             */
-            "failureLogNothing": string;
-            /**
-             * ログはありません。
-             */
-            "logNothing": string;
-        };
-        "_remote": {
-            /**
-             * 選択行をインポート
-             */
-            "importSelectionRows": string;
-            /**
-             * 選択範囲の行をインポート
-             */
-            "importSelectionRangesRows": string;
-            /**
-             * チェックがついた絵文字をインポート
-             */
-            "importEmojisButton": string;
-            /**
-             * 絵文字のインポート
-             */
-            "confirmImportEmojisTitle": string;
-            /**
-             * リモートから受信した{count}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。実行しますか？
-             */
-            "confirmImportEmojisDescription": ParameterizedString<"count">;
-        };
-        "_local": {
-            /**
-             * 登録済み絵文字一覧
-             */
-            "tabTitleList": string;
-            /**
-             * 絵文字の登録
-             */
-            "tabTitleRegister": string;
-            "_list": {
-                /**
-                 * 登録された絵文字はありません。
-                 */
-                "emojisNothing": string;
-                /**
-                 * 選択行を削除対象にする
-                 */
-                "markAsDeleteTargetRows": string;
-                /**
-                 * 選択範囲の行を削除対象にする
-                 */
-                "markAsDeleteTargetRanges": string;
-                /**
-                 * 変更された絵文字はありません。
-                 */
-                "alertUpdateEmojisNothingDescription": string;
-                /**
-                 * 削除対象の絵文字はありません。
-                 */
-                "alertDeleteEmojisNothingDescription": string;
-                /**
-                 * 確認
-                 */
-                "confirmUpdateEmojisTitle": string;
-                /**
-                 * {count}個の絵文字を更新します。実行しますか？
-                 */
-                "confirmUpdateEmojisDescription": ParameterizedString<"count">;
-                /**
-                 * 確認
-                 */
-                "confirmDeleteEmojisTitle": string;
-                /**
-                 * チェックがつけられた{count}個の絵文字を削除します。実行しますか？
-                 */
-                "confirmDeleteEmojisDescription": ParameterizedString<"count">;
-                /**
-                 * 絵文字に設定されたロールで検索
-                 */
-                "dialogSelectRoleTitle": string;
-            };
-            "_register": {
-                /**
-                 * アップロード設定
-                 */
-                "uploadSettingTitle": string;
-                /**
-                 * この画面で絵文字アップロードを行う際の動作を設定できます。
-                 */
-                "uploadSettingDescription": string;
-                /**
-                 * ディレクトリ名を"category"に入力する
-                 */
-                "directoryToCategoryLabel": string;
-                /**
-                 * ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を"category"に入力します。
-                 */
-                "directoryToCategoryCaption": string;
-                /**
-                 * いずれかの方法で登録する絵文字を選択してください。
-                 */
-                "emojiInputAreaCaption": string;
-                /**
-                 * この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ
-                 */
-                "emojiInputAreaList1": string;
-                /**
-                 * このリンクをクリックしてPCから選択する
-                 */
-                "emojiInputAreaList2": string;
-                /**
-                 * このリンクをクリックしてドライブから選択する
-                 */
-                "emojiInputAreaList3": string;
-                /**
-                 * 確認
-                 */
-                "confirmRegisterEmojisTitle": string;
-                /**
-                 * リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）
-                 */
-                "confirmRegisterEmojisDescription": ParameterizedString<"count">;
-                /**
-                 * 確認
-                 */
-                "confirmClearEmojisTitle": string;
-                /**
-                 * 編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？
-                 */
-                "confirmClearEmojisDescription": string;
-                /**
-                 * 確認
-                 */
-                "confirmUploadEmojisTitle": string;
-                /**
-                 * ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？
-                 */
-                "confirmUploadEmojisDescription": ParameterizedString<"count">;
-            };
-        };
+        "title": string;
+        /**
+         * ヘッダーを表示
+         */
+        "header": string;
+        /**
+         * 自動で続きを読み込む（非推奨）
+         */
+        "autoload": string;
+        /**
+         * 高さの最大値
+         */
+        "maxHeight": string;
+        /**
+         * 0で最大値の設定が無効になります。ウィジェットが縦に伸び続けるのを防ぐために、何らかの値に指定してください。
+         */
+        "maxHeightDescription": string;
+        /**
+         * 高さの最大値制限が無効（0）になっています。これが意図した変更ではない場合は、高さの最大値を何らかの値に設定してください。
+         */
+        "maxHeightWarn": string;
+        /**
+         * プレビュー画面で表示可能な範囲を超えたため、実際に埋め込んだ際とは表示が異なります。
+         */
+        "previewIsNotActual": string;
+        /**
+         * 角丸にする
+         */
+        "rounded": string;
+        /**
+         * 外枠に枠線をつける
+         */
+        "border": string;
+        /**
+         * プレビューに反映
+         */
+        "applyToPreview": string;
+        /**
+         * 埋め込みコードを作成
+         */
+        "generateCode": string;
+        /**
+         * コードが生成されました
+         */
+        "codeGenerated": string;
+        /**
+         * 生成されたコードをウェブサイトに貼り付けてご利用ください。
+         */
+        "codeGeneratedDescription": string;
     };
 }
 declare const locales: {
