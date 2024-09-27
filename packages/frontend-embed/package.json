@@ -33,7 +33,7 @@
 		"misskey-js": "workspace:*",
 		"frontend-shared": "workspace:*",
 		"punycode": "2.3.1",
-		"rollup": "4.22.2",
+		"rollup": "4.22.4",
 		"sanitize-html": "2.13.0",
 		"sass": "1.79.3",
 		"shiki": "1.12.0",
