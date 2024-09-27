@@ -19,6 +19,7 @@
 - Enhance: ScratchpadにUIインスペクターを追加
 - Enhance: Play編集画面の項目の並びを少しリデザイン
 - Enhance: 各種メニューをドロワー表示するかどうか設定可能に
+- Enhance: AiScriptのMk:C:containerのオプションに`borderStyle`と`borderRadius`を追加
 - Fix: サーバーメトリクスが2つ以上あるとリロード直後の表示がおかしくなる問題を修正
 - Fix: コントロールパネル内のAp requests内のチャートの表示がおかしかった問題を修正
 - Fix: 月の違う同じ日はセパレータが表示されないのを修正
