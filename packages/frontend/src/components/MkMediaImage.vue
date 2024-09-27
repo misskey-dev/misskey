@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive]" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
+<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive]" @click="onclick">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -53,6 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import bytes from '@/filters/bytes.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
@@ -74,7 +75,6 @@ const props = withDefaults(defineProps<{
 });
 
 const hide = ref(true);
-const darkMode = ref<boolean>(defaultStore.state.darkMode);
 
 const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
@@ -111,27 +111,39 @@ watch(() => props.image, () => {
 });
 
 function showMenu(ev: MouseEvent) {
-	os.popupMenu([{
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
 		text: i18n.ts.hide,
 		icon: 'ti ti-eye-off',
 		action: () => {
 			hide.value = true;
 		},
-	}, ...(iAmModerator ? [{
-		text: i18n.ts.markAsSensitive,
-		icon: 'ti ti-eye-exclamation',
-		danger: true,
-		action: () => {
-			os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
-		},
-	}] : []), ...($i?.id === props.image.userId ? [{
-		type: 'divider' as const,
-	}, {
-		type: 'link' as const,
-		text: i18n.ts._fileViewer.title,
-		icon: 'ti ti-info-circle',
-		to: `/my/drive/file/${props.image.id}`,
-	}] : [])], ev.currentTarget ?? ev.target);
+	});
+
+	if (iAmModerator) {
+		menuItems.push({
+			text: i18n.ts.markAsSensitive,
+			icon: 'ti ti-eye-exclamation',
+			danger: true,
+			action: () => {
+				os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
+			},
+		});
+	}
+
+	if ($i?.id === props.image.userId) {
+		menuItems.push({
+			type: 'divider',
+		}, {
+			type: 'link',
+			text: i18n.ts._fileViewer.title,
+			icon: 'ti ti-info-circle',
+			to: `/my/drive/file/${props.image.id}`,
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 </script>
@@ -196,8 +208,17 @@ function showMenu(ev: MouseEvent) {
 	position: relative;
 	//box-shadow: 0 0 0 1px var(--divider) inset;
 	background: var(--bg);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--bg) 16.67%, var(--bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--bg) 66.67%, var(--bg) 100%);
 	background-size: 16px 16px;
+}
+
+html[data-color-scheme=dark] .visible {
+	--c: rgb(255 255 255 / 2%);
+	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--bg) 16.67%, var(--bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--bg) 66.67%, var(--bg) 100%);
+}
+
+html[data-color-scheme=light] .visible {
+	--c: rgb(0 0 0 / 2%);
+	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--bg) 16.67%, var(--bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--bg) 66.67%, var(--bg) 100%);
 }
 
 .menu {
