@@ -109,7 +109,7 @@ function save() {
 	misskeyApi('i/update', {
 		isLocked: !!isLocked.value,
 		autoAcceptFollowed: !!autoAcceptFollowed.value,
-		autoRejectFollowRequest: !!autoRejectFollowRequest,
+		autoRejectFollowRequest: !!autoRejectFollowRequest.value,
 		noCrawle: !!noCrawle.value,
 		preventAiLearning: !!preventAiLearning.value,
 		isExplorable: !!isExplorable.value,
