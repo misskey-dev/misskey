@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <header :class="$style.root">
-	<MkCondensedLine :minScale="0" style="min-width: 0; flex: 1;">
+	<MkCondensedLine :minScale="0" style="min-width: 0;">
 		<div style="display: flex; white-space: nowrap; align-items: baseline;">
 			<div v-if="mock" :class="$style.name">
 				<MkUserName :user="note.user"/>
