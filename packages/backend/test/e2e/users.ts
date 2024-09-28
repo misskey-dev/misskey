@@ -105,7 +105,7 @@ describe('ユーザー', () => {
 			isRenoteMuted: user.isRenoteMuted ?? false,
 			notify: user.notify ?? 'none',
 			withReplies: user.withReplies ?? false,
-			followedMessage: user.followedMessage,
+			followedMessage: user.isFollowing ? (user.followedMessage ?? null) : undefined,
 		});
 	};
 
