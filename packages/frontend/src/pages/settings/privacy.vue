@@ -91,7 +91,7 @@ const $i = signinRequired();
 
 const isLocked = ref($i.isLocked);
 const autoAcceptFollowed = ref($i.autoAcceptFollowed);
-let autoRejectFollowRequest = $ref($i.autoRejectFollowRequest);
+const autoRejectFollowRequest = ref($i.autoRejectFollowRequest);
 const noCrawle = ref($i.noCrawle);
 const preventAiLearning = ref($i.preventAiLearning);
 const isExplorable = ref($i.isExplorable);
