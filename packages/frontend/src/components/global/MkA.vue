@@ -17,7 +17,7 @@ export type MkABehavior = 'window' | 'browser' | null;
 import { computed, inject, shallowRef } from 'vue';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router/supplier.js';
 

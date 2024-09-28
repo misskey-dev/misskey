@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2024.8.0",
+	"version": "2024.9.0-alpha.12",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -8,7 +8,9 @@
 	},
 	"packageManager": "pnpm@9.6.0",
 	"workspaces": [
+		"packages/frontend-shared",
 		"packages/frontend",
+		"packages/frontend-embed",
 		"packages/backend",
 		"packages/sw",
 		"packages/misskey-js",
@@ -35,6 +37,7 @@
 		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
 		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
+		"e2e-dev-container": "cp ./.config/cypress-devcontainer.yml ./.config/test.yml && pnpm start-server-and-test start:test http://localhost:61812 cy:run",
 		"jest": "cd packages/backend && pnpm jest",
 		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
 		"test": "pnpm -r test",
@@ -53,11 +56,11 @@
 		"fast-glob": "3.3.2",
 		"ignore-walk": "6.0.5",
 		"js-yaml": "4.1.0",
-		"postcss": "8.4.40",
+		"postcss": "8.4.47",
 		"tar": "6.2.1",
-		"terser": "5.31.3",
-		"typescript": "5.5.4",
-		"esbuild": "0.23.0",
+		"terser": "5.33.0",
+		"typescript": "5.6.2",
+		"esbuild": "0.23.1",
 		"glob": "11.0.0"
 	},
 	"devDependencies": {
@@ -66,11 +69,11 @@
 		"@typescript-eslint/eslint-plugin": "7.17.0",
 		"@typescript-eslint/parser": "7.17.0",
 		"cross-env": "7.0.3",
-		"cypress": "13.13.1",
+		"cypress": "13.14.2",
 		"eslint": "9.8.0",
-		"globals": "15.8.0",
+		"globals": "15.9.0",
 		"ncp": "2.0.0",
-		"start-server-and-test": "2.0.4"
+		"start-server-and-test": "2.0.8"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.4.0"
