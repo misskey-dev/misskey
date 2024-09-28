@@ -1275,6 +1275,9 @@ _delivery:
     manuallySuspended: "Manually suspended"
     goneSuspended: "Server is suspended due to server deletion"
     autoSuspendedForNotResponding: "Server is suspended due to no responding"
+scheduledNoteDelete: "Time Bomb"
+noteDeletationAt: "This note will be deleted at {time}"
+
 _bubbleGame:
   howToPlay: "How to play"
   hold: "Hold"
