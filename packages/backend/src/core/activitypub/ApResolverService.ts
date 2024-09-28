@@ -93,7 +93,7 @@ export class Resolver {
 			return await this.resolveLocal(value);
 		}
 
-		if (this.utilityService.isBlockedHost(this.meta.blockedHosts, host)) {
+		if (!this.utilityService.isFederationAllowedHost(host)) {
 			throw new Error('Instance is blocked');
 		}
 
