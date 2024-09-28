@@ -290,8 +290,8 @@ export class ApInboxService {
 			return;
 		}
 
-		// アナウンス先をブロックしてたら中断
-		if (this.utilityService.isBlockedHost(this.meta.blockedHosts, this.utilityService.extractDbHost(uri))) return;
+		// アナウンス先が許可されているかチェック
+		if (!this.utilityService.isFederationAllowedUri(uri)) return;
 
 		const unlock = await this.appLockService.getApLock(uri);
 

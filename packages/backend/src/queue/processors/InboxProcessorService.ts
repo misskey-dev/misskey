@@ -75,8 +75,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 		const host = this.utilityService.toPuny(new URL(signature.keyId).hostname);
 
-		// ブロックしてたら中断
-		if (this.utilityService.isBlockedHost(this.meta.blockedHosts, host)) {
+		if (!this.utilityService.isFederationAllowedHost(host)) {
 			return `Blocked request: ${host}`;
 		}
 
@@ -175,9 +174,8 @@ export class InboxProcessorService implements OnApplicationShutdown {
 					throw new Bull.UnrecoverableError(`skip: LD-Signature user(${authUser.user.uri}) !== activity.actor(${activity.actor})`);
 				}
 
-				// ブロックしてたら中断
 				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
-				if (this.utilityService.isBlockedHost(this.meta.blockedHosts, ldHost)) {
+				if (!this.utilityService.isFederationAllowedHost(ldHost)) {
 					throw new Bull.UnrecoverableError(`Blocked request: ${ldHost}`);
 				}
 			} else {
