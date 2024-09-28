@@ -97,6 +97,12 @@ export const meta = {
 			id: '04da457d-b083-4055-9082-955525eda5a5',
 		},
 
+		cannotScheduleDeleteEarlierThanNow: {
+			message: 'Scheduled delete time is earlier than now.',
+			code: 'CANNOT_SCHEDULE_DELETE_EARLIER_THAN_NOW',
+			id: '9576c3c8-d8f3-11ee-ac15-00155d19d35d',
+		},
+
 		noSuchChannel: {
 			message: 'No such channel.',
 			code: 'NO_SUCH_CHANNEL',
@@ -190,6 +196,14 @@ export const paramDef = {
 				expiredAfter: { type: 'integer', nullable: true, minimum: 1 },
 			},
 			required: ['choices'],
+		},
+		scheduledDelete: {
+			type: 'object',
+			nullable: true,
+			properties: {
+				deleteAt: { type: 'integer', nullable: true },
+				deleteAfter: { type: 'integer', nullable: true, minimum: 1 },
+			},
 		},
 	},
 	// (re)note with text, files and poll are optional
@@ -353,6 +367,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
+			if (ps.scheduledDelete) {
+				if (typeof ps.scheduledDelete.deleteAt === 'number') {
+					if (ps.scheduledDelete.deleteAt < Date.now()) {
+						throw new ApiError(meta.errors.cannotScheduleDeleteEarlierThanNow);
+					}
+				} else if (typeof ps.scheduledDelete.deleteAfter === 'number') {
+					ps.scheduledDelete.deleteAt = Date.now() + ps.scheduledDelete.deleteAfter;
+				}
+			}
+
 			let channel: MiChannel | null = null;
 			if (ps.channelId != null) {
 				channel = await this.channelsRepository.findOneBy({ id: ps.channelId, isArchived: false });
@@ -384,6 +408,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					apMentions: ps.noExtractMentions ? [] : undefined,
 					apHashtags: ps.noExtractHashtags ? [] : undefined,
 					apEmojis: ps.noExtractEmojis ? [] : undefined,
+					deleteAt: ps.scheduledDelete?.deleteAt ? new Date(ps.scheduledDelete.deleteAt) : null,
 				});
 
 				return {

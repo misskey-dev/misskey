@@ -152,6 +152,11 @@ export const packedNoteSchema = {
 				},
 			},
 		},
+		deleteAt: {
+			type: 'string',
+			optional: true, nullable: true,
+			format: 'date-time',
+		},
 		emojis: {
 			type: 'object',
 			optional: true, nullable: false,

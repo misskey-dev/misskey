@@ -5009,6 +5009,14 @@ export interface Locale extends ILocale {
      */
     "gameRetry": string;
     /**
+     * すぐ消す
+     */
+    "scheduledNoteDelete": string;
+    /**
+     * このノートは{time}に消去されます
+     */
+    "noteDeletationAt": ParameterizedString<"time">;
+		/**
      * 使用しない場合は空欄にしてください
      */
     "notUsePleaseLeaveBlank": string;
@@ -5154,6 +5162,8 @@ export interface Locale extends ILocale {
             "section3": string;
         };
     };
+    "autoRejectFollowRequest": string;
+    "autoRejectFollowRequestDescription": string;
     "_announcement": {
         /**
          * 既存ユーザーのみ

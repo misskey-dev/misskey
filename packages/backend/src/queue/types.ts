@@ -106,6 +106,10 @@ export type EndedPollNotificationJobData = {
 	noteId: MiNote['id'];
 };
 
+export type ScheduledNoteDeleteJobData = {
+	noteId: MiNote['id'];
+}
+
 export type SystemWebhookDeliverJobData = {
 	type: string;
 	content: unknown;
