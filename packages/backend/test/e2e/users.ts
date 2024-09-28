@@ -87,7 +87,6 @@ describe('ユーザー', () => {
 			usePasswordLessLogin: user.usePasswordLessLogin,
 			securityKeys: user.securityKeys,
 			roles: user.roles,
-			followedMessage: user.followedMessage,
 			memo: user.memo,
 		});
 	};

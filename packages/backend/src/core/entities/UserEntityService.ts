@@ -560,7 +560,6 @@ export class UserEntityService implements OnModuleInit {
 					isAdministrator: role.isAdministrator,
 					displayOrder: role.displayOrder,
 				}))),
-				followedMessage: relation?.isFollowing ? profile!.followedMessage : undefined,
 				memo: memo,
 				moderationNote: iAmModerator ? (profile!.moderationNote ?? '') : undefined,
 			} : {}),
@@ -637,6 +636,7 @@ export class UserEntityService implements OnModuleInit {
 				isRenoteMuted: relation.isRenoteMuted,
 				notify: relation.following?.notify ?? 'none',
 				withReplies: relation.following?.withReplies ?? false,
+				followedMessage: relation.isFollowing ? profile!.followedMessage : undefined,
 			} : {}),
 		} as Promiseable<Packed<S>>;
 
