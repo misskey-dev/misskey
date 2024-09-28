@@ -392,10 +392,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'horizontal' as 'vertical' | 'horizontal',
 	},
-	enableCondensedLineForAcct: {
-		where: 'device',
-		default: false,
-	},
 	additionalUnicodeEmojiIndexes: {
 		where: 'device',
 		default: {} as Record<string, Record<string, string[]>>,
