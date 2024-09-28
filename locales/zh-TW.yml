@@ -2245,6 +2245,9 @@ _profile:
   changeBanner: "變更橫幅圖像"
   verifiedLinkDescription: "如果輸入包含您個人資料的網站 URL，欄位旁邊將出現驗證圖示。"
   avatarDecorationMax: "最多可以設置 {max} 個裝飾。"
+  followedMessage: "被追隨時的訊息"
+  followedMessageDescription: "可以設定被追隨時顯示給對方的訊息。"
+  followedMessageDescriptionForLockedAccount: "如果追隨是需要審核的話，在允許追隨請求之後顯示。"
 _exportOrImport:
   allNotes: "所有貼文"
   favoritedNotes: "「我的最愛」貼文"
