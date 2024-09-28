@@ -3936,6 +3936,10 @@ export interface Locale extends ILocale {
      * ベータ
      */
     "beta": string;
+		/**
+     * 独自機能
+     */
+		"originalFeature": string;
     /**
      * 自動センシティブ判定
      */
@@ -5009,7 +5013,7 @@ export interface Locale extends ILocale {
      */
     "gameRetry": string;
     /**
-     * すぐ消す
+     * 時限爆弾
      */
     "scheduledNoteDelete": string;
     /**
