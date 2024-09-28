@@ -4,6 +4,7 @@
 - Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
   - 埋め込みコードやウェブサイトへの実装方法の詳細は https://misskey-hub.net/docs/for-users/features/embed/ をご覧ください
 - Feat: パスキーでログインボタンを実装 (#14574)
+- Feat: フォローされた際のメッセージを設定できるように
 - Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
 - Feat: モデレーターはユーザーにかかわらずファイルが添付されているノートを検索できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/680)

@@ -8725,6 +8725,18 @@ export interface Locale extends ILocale {
          * 最大{max}つまでデコレーションを付けられます。
          */
         "avatarDecorationMax": ParameterizedString<"max">;
+        /**
+         * フォローされた時のメッセージ
+         */
+        "followedMessage": string;
+        /**
+         * フォローされた時に相手に表示するメッセージを設定できます。
+         */
+        "followedMessageDescription": string;
+        /**
+         * フォローを承認制にしている場合、フォローリクエストを許可した時に表示されます。
+         */
+        "followedMessageDescriptionForLockedAccount": string;
     };
     "_exportOrImport": {
         /**
