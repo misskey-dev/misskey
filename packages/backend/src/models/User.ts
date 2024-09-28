@@ -155,6 +155,11 @@ export class MiUser {
 	})
 	public tags: string[];
 
+	@Column('integer', {
+		default: 0,
+	})
+	public score: number;
+
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether the User is suspended.',
