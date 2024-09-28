@@ -1,5 +1,10 @@
 # DIFFRENCE
 
+## 2024.8.0-yami-1.2.0
+### Feat
+* ノートの自動削除(cherry-pick)
+* フォローリクエスト自動拒否(cherry-pick)
+
 ## 2024.8.0-yami-1.1.0
 ### Server
 * Cherry-Pick リバーシの連合に対応(yojo-art/cherrypick)
