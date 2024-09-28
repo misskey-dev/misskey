@@ -51,6 +51,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.experimentalFeatures }}</template>
 
 				<div class="_gaps_m">
+					<MkSwitch v-model="enableCondensedLine">
+						<template #label>Enable condensed line</template>
+					</MkSwitch>
 				</div>
 			</MkFolder>
 
@@ -101,6 +104,7 @@ import FormSection from '@/components/form/section.vue';
 const $i = signinRequired();
 
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
+const enableCondensedLine = computed(defaultStore.makeGetterSetter('enableCondensedLine'));
 const devMode = computed(defaultStore.makeGetterSetter('devMode'));
 const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 
