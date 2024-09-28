@@ -2646,3 +2646,6 @@ _contextMenu:
   app: "Application"
   appWithShift: "Application with shift key"
   native: "Native"
+_reactionChecksMuting:
+  title: "Check mutings when get reactions"
+  caption: "Check mutings when get reactions, but cache does not work and may increase traffic"
