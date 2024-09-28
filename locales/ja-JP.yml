@@ -2298,7 +2298,7 @@ _profile:
   verifiedLinkDescription: "内容にURLを設定すると、リンク先のWebサイトに自分のプロフィールへのリンクが含まれている場合に所有者確認済みアイコンを表示させることができます。"
   avatarDecorationMax: "最大{max}つまでデコレーションを付けられます。"
   followedMessage: "フォローされた時のメッセージ"
-  followedMessageDescription: "フォローされた時に相手に表示するメッセージを設定できます。"
+  followedMessageDescription: "フォローされた時に相手に表示する短いメッセージを設定できます。"
   followedMessageDescriptionForLockedAccount: "フォローを承認制にしている場合、フォローリクエストを許可した時に表示されます。"
 
 _exportOrImport:
