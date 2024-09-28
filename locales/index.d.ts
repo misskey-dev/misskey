@@ -5013,7 +5013,7 @@ export interface Locale extends ILocale {
      */
     "gameRetry": string;
     /**
-     * すぐ消す
+     * 時限爆弾
      */
     "scheduledNoteDelete": string;
     /**

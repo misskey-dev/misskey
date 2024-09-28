@@ -1275,7 +1275,7 @@ _delivery:
     manuallySuspended: "手動停止中"
     goneSuspended: "サーバー削除のため停止中"
     autoSuspendedForNotResponding: "サーバー応答なしのため停止中"
-scheduledNoteDelete: "すぐ消す"
+scheduledNoteDelete: "時限爆弾"
 noteDeletationAt: "このノートは{time}に削除されます"
 
 _bubbleGame:
