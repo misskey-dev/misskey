@@ -2371,6 +2371,7 @@ _notification:
     all: "すべて"
     note: "あんたらの新規投稿"
     follow: "フォロー"
+    unfollow: "フォロー解除"
     mention: "メンション"
     reply: "リプライ"
     renote: "Renote"

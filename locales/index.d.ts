@@ -9326,6 +9326,10 @@ export interface Locale extends ILocale {
              * フォロー
              */
             "follow": string;
+						/**
+						 * フォロー解除
+						 */
+						"unfollow": string;
             /**
              * メンション
              */
