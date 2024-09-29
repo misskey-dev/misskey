@@ -66,6 +66,7 @@ loadMore: "Load more"
 showMore: "Show more"
 showLess: "Close"
 youGotNewFollower: "followed you"
+youGotUnFollower: "unfollowed you"
 receiveFollowRequest: "Follow request received"
 followRequestAccepted: "Follow request accepted"
 mention: "Mention"
@@ -1810,6 +1811,8 @@ _gallery:
 _email:
   _follow:
     title: "You've got a new follower"
+  _unfollow:
+    title: "You have been unfollowed"
   _receiveFollowRequest:
     title: "You've received a follow request"
 _plugin:
@@ -2354,6 +2357,7 @@ _notification:
   youGotQuote: "{name} quoted you"
   youRenoted: "Renote from {name}"
   youWereFollowed: "followed you"
+  youWereUnFollower: "unfollowed you"
   youReceivedFollowRequest: "You've received a follow request"
   yourFollowRequestAccepted: "Your follow request was accepted"
   pollEnded: "Poll results have become available"
@@ -2370,6 +2374,7 @@ _notification:
   likedBySomeUsers: "{n} users liked your note"
   renotedBySomeUsers: "Renote from {n} users"
   followedBySomeUsers: "Followed by {n} users"
+  unfollowerBySomeUsers: "UnFollowed by {n} users"
   flushNotification: "Clear notifications"
   _types:
     all: "All"

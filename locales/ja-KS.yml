@@ -66,6 +66,7 @@ loadMore: "まだまだあるで！"
 showMore: "まだまだあるで！"
 showLess: "さいなら"
 youGotNewFollower: "フォローされたで"
+youGotUnFollower: "フォロー解除されたで"
 receiveFollowRequest: "フォローリクエストされたで"
 followRequestAccepted: "フォローが承認されたで"
 mention: "メンション"
@@ -1802,6 +1803,8 @@ _gallery:
 _email:
   _follow:
     title: "フォローされたで"
+  _unfollow:
+    title: "フォロー解除されたで"
   _receiveFollowRequest:
     title: "フォローリクエストを受け取ったで"
 _plugin:
@@ -2345,6 +2348,7 @@ _notification:
   youGotQuote: "{name}による引用"
   youRenoted: "{name}がリノートしたみたいやで"
   youWereFollowed: "フォローされたで"
+  youWereUnFollower: "フォロー解除されたで"
   youReceivedFollowRequest: "フォロー許可してほしいみたいやな"
   yourFollowRequestAccepted: "フォローさせてもろたで"
   pollEnded: "アンケートの結果が出たみたいや"
@@ -2361,6 +2365,7 @@ _notification:
   likedBySomeUsers: "{n}人がいいねしたで"
   renotedBySomeUsers: "{n}人がリノートしたで"
   followedBySomeUsers: "{n}人にフォローされたで"
+  unfollowerBySomeUser: "{n}人にフォロー解除されたで"
   flushNotification: "通知の履歴をリセットする"
   _types:
     all: "すべて"
