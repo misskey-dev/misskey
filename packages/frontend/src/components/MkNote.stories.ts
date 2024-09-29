@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 /* eslint-disable import/no-default-export */
-/* eslint-disable import/no-duplicates */
-/* eslint-disable import/order */
+
 import { Meta } from '@storybook/vue3';
 const meta = {
 	title: 'components/MkNote',
@@ -13,21 +12,18 @@ export default meta;
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import {
 	note,
-	channel,
 	channelNote,
 	quotedNote,
 	renotedNote,
 	remoteNote,
-	renotedFromChannelnote, renotedToChannel, renotedToChannelFromChannel
+	renotedFromChannelnote, renotedToChannel, renotedToChannelFromChannel,
 } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
-import MkNote from "@/components/MkNote.vue";
-
+import MkNote from '@/components/MkNote.vue';
 
 export const Default = {
 	render(args) {
@@ -88,32 +84,32 @@ export const Default = {
 } satisfies StoryObj<typeof MkNote>;
 
 export const Channel = {
-    ...Default,
-    args: {
-        note: channelNote()
-    }
-}
+	...Default,
+	args: {
+		note: channelNote(),
+	},
+};
 
 export const Quoted = {
-    ...Default,
-    args: {
-        note: quotedNote()
-    }
-}
+	...Default,
+	args: {
+		note: quotedNote(),
+	},
+};
 
 export const Renoted = {
-    ...Default,
-    args: {
-        note: renotedNote()
-    }
-}
+	...Default,
+	args: {
+		note: renotedNote(),
+	},
+};
 
 export const RemoteNote = {
 	...Default,
 	args: {
 		note: remoteNote(),
-	}
-}
+	},
+};
 
 export const Renote_RemoteNote = {
 	...Default,
@@ -121,10 +117,10 @@ export const Renote_RemoteNote = {
 		note: {
 			...note(),
 			renote: remoteNote(),
-			text: null
-		}
-	}
-}
+			text: null,
+		},
+	},
+};
 
 export const RemoteuserRenoteNote = {
 	...Default,
@@ -132,29 +128,29 @@ export const RemoteuserRenoteNote = {
 		note: {
 			...remoteNote(),
 			renote: note(),
-			text: null
-		}
-	}
-}
+			text: null,
+		},
+	},
+};
 
 export const RenotedFromChannel = {
-    ...Default,
-    args: {
-        note: renotedFromChannelnote()
-    }
-}
+	...Default,
+	args: {
+		note: renotedFromChannelnote(),
+	},
+};
 
 export const RenotedToChannel = {
-        ...Default,
-        args: {
-            note: renotedToChannel()
-        }
-}
+	...Default,
+	args: {
+		note: renotedToChannel(),
+	},
+};
 
 export const RenotedToChannelFromChannel = {
-        ...Default,
-        args: {
-            note: renotedToChannelFromChannel()
-        }
-}
+	...Default,
+	args: {
+		note: renotedToChannelFromChannel(),
+	},
+};
 
