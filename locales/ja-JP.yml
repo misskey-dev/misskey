@@ -236,6 +236,8 @@ silencedInstances: "サイレンスしたサーバー"
 silencedInstancesDescription: "サイレンスしたいサーバーのホストを改行で区切って設定します。サイレンスされたサーバーに所属するアカウントはすべて「サイレンス」として扱われ、フォローがすべてリクエストになります。ブロックしたインスタンスには影響しません。"
 mediaSilencedInstances: "メディアサイレンスしたサーバー"
 mediaSilencedInstancesDescription: "メディアサイレンスしたいサーバーのホストを改行で区切って設定します。メディアサイレンスされたサーバーに所属するアカウントによるファイルはすべてセンシティブとして扱われ、カスタム絵文字が使用できないようになります。ブロックしたインスタンスには影響しません。"
+federationAllowedHosts: "連合を許可するサーバー"
+federationAllowedHostsDescription: "連合を許可するサーバーのホストを改行で区切って設定します。"
 muteAndBlock: "ミュートとブロック"
 mutedUsers: "ミュートしたユーザー"
 blockedUsers: "ブロックしたユーザー"
@@ -2297,6 +2299,9 @@ _profile:
   changeBanner: "バナー画像を変更"
   verifiedLinkDescription: "内容にURLを設定すると、リンク先のWebサイトに自分のプロフィールへのリンクが含まれている場合に所有者確認済みアイコンを表示させることができます。"
   avatarDecorationMax: "最大{max}つまでデコレーションを付けられます。"
+  followedMessage: "フォローされた時のメッセージ"
+  followedMessageDescription: "フォローされた時に相手に表示する短いメッセージを設定できます。"
+  followedMessageDescriptionForLockedAccount: "フォローを承認制にしている場合、フォローリクエストを許可した時に表示されます。"
 
 _exportOrImport:
   allNotes: "全てのノート"

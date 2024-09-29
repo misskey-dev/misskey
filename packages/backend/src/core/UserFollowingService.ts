@@ -275,15 +275,18 @@ export class UserFollowingService implements OnModuleInit {
 				followeeId: followee.id,
 				followerId: follower.id,
 			});
-
-			// 通知を作成
-			if (follower.host === null) {
-				this.notificationService.createNotification(follower.id, 'followRequestAccepted', {
-				}, followee.id);
-			}
 		}
 
 		if (alreadyFollowed) return;
+
+		// 通知を作成
+		if (follower.host === null) {
+			const profile = await this.cacheService.userProfileCache.fetch(followee.id);
+
+			this.notificationService.createNotification(follower.id, 'followRequestAccepted', {
+				message: profile.followedMessage,
+			}, followee.id);
+		}
 
 		this.globalEventService.publishInternalEvent('follow', { followerId: follower.id, followeeId: followee.id });
 

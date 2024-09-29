@@ -494,6 +494,7 @@ export class ApRendererService {
 			name: user.name,
 			summary: profile.description ? this.mfmService.toHtml(mfm.parse(profile.description)) : null,
 			_misskey_summary: profile.description,
+			_misskey_followedMessage: profile.followedMessage,
 			icon: avatar ? this.renderImage(avatar) : null,
 			image: banner ? this.renderImage(banner) : null,
 			tag,

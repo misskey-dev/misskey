@@ -4,6 +4,8 @@
 - Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
   - 埋め込みコードやウェブサイトへの実装方法の詳細は https://misskey-hub.net/docs/for-users/features/embed/ をご覧ください
 - Feat: パスキーでログインボタンを実装 (#14574)
+- Feat: フォローされた際のメッセージを設定できるように
+- Feat: 連合をホワイトリスト制にできるように
 - Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
 - Feat: モデレーターはユーザーにかかわらずファイルが添付されているノートを検索できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/680)
@@ -19,6 +21,7 @@
 - Enhance: ScratchpadにUIインスペクターを追加
 - Enhance: Play編集画面の項目の並びを少しリデザイン
 - Enhance: 各種メニューをドロワー表示するかどうか設定可能に
+- Enhance: AiScriptのMk:C:containerのオプションに`borderStyle`と`borderRadius`を追加
 - Fix: サーバーメトリクスが2つ以上あるとリロード直後の表示がおかしくなる問題を修正
 - Fix: コントロールパネル内のAp requests内のチャートの表示がおかしかった問題を修正
 - Fix: 月の違う同じ日はセパレータが表示されないのを修正

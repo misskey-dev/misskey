@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkContainer :foldable="true" :expanded="false">
 				<template #header>{{ i18n.ts.uiInspector }}</template>
 				<div :class="$style.uiInspector">
-					<div v-for="c in components" :key="c.value.id">
+					<div v-for="c in components" :key="c.value.id" :class="{ [$style.uiInspectorUnShown]: !showns.has(c.value.id) }">
 						<div :class="$style.uiInspectorType">{{ c.value.type }}</div>
 						<div :class="$style.uiInspectorId">{{ c.value.id }}</div>
 						<button :class="$style.uiInspectorPropsToggle" @click="() => uiInspectorOpenedComponents.set(c, !uiInspectorOpenedComponents.get(c))">
@@ -180,6 +180,20 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
+const showns = computed(() => {
+	const result = new Set<string>();
+	(function addChildrenToResult(c: AsUiComponent) {
+		result.add(c.id);
+		if (c.children) {
+			const childComponents = components.value.filter(v => c.children.includes(v.value.id));
+			for (const child of childComponents) {
+				addChildrenToResult(child.value);
+			}
+		}
+	})(root.value);
+	return result;
+});
+
 definePageMetadata(() => ({
 	title: i18n.ts.scratchpad,
 	icon: 'ti ti-terminal-2',
@@ -225,6 +239,10 @@ definePageMetadata(() => ({
 	display: grid;
 	gap: 8px;
 	padding: 16px;
+}
+
+.uiInspectorUnShown {
+	color: var(--fgTransparent);
 }
 
 .uiInspectorType {
