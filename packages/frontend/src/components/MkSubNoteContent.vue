@@ -35,7 +35,7 @@ import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n.js';
-import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { shouldCollapsed } from '@@/js/collapsed.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
@@ -62,7 +62,7 @@ const collapsed = ref(isLong);
 			left: 0;
 			width: 100%;
 			height: 64px;
-			background: linear-gradient(0deg, var(--panel), var(--X15));
+			background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
 
 			> .fadeLabel {
 				display: inline-block;

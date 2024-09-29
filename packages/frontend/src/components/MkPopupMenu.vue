@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, shallowRef } from 'vue';
 import MkModal from './MkModal.vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 
 defineProps<{
 	items: MenuItem[];

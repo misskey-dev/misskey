@@ -51,18 +51,18 @@ const props = defineProps<{
 	width: 100%;
 	box-sizing: border-box;
 	padding: 10px 14px;
-	background: var(--buttonBg);
+	background: var(--folderHeaderBg);
 	border-radius: 6px;
 	font-size: 0.9em;
 
 	&:hover {
 		text-decoration: none;
-		background: var(--buttonHoverBg);
+		background: var(--folderHeaderHoverBg);
 	}
 
 	&.active {
 		color: var(--accent);
-		background: var(--buttonHoverBg);
+		background: var(--folderHeaderHoverBg);
 	}
 }
 
