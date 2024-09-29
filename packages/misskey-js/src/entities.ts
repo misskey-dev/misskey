@@ -156,6 +156,9 @@ export type ModerationLog = {
 	type: 'unsetUserAvatar';
 	info: ModerationLogPayloads['unsetUserAvatar'];
 } | {
+	type: 'unsetUserBanner';
+	info: ModerationLogPayloads['unsetUserBanner'];
+} | {
 	type: 'createSystemWebhook';
 	info: ModerationLogPayloads['createSystemWebhook'];
 } | {
@@ -176,6 +179,15 @@ export type ModerationLog = {
 } | {
 	type: 'deleteAccount';
 	info: ModerationLogPayloads['deleteAccount'];
+} | {
+	type: 'deletePage';
+	info: ModerationLogPayloads['deletePage'];
+} | {
+	type: 'deleteFlash';
+	info: ModerationLogPayloads['deleteFlash'];
+} | {
+	type: 'deleteGalleryPost';
+	info: ModerationLogPayloads['deleteGalleryPost'];
 });
 
 export type ServerStats = {
@@ -257,6 +269,17 @@ export type SigninRequest = {
 	username: string;
 	password: string;
 	token?: string;
+};
+
+export type SigninWithPasskeyRequest = {
+	credential?: object;
+	context?: string;
+};
+
+export type SigninWithPasskeyResponse = {
+	option?: object;
+	context?: string;
+	signinResponse?: SigninResponse;
 };
 
 export type SigninResponse = {

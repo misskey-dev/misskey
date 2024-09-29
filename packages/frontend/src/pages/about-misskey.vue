@@ -72,10 +72,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<img src="https://avatars.githubusercontent.com/u/4439005?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@syuilo</span>
 						</a>
-						<a href="https://github.com/tamaina" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/7973572?v=4" :class="$style.contributorAvatar">
-							<span :class="$style.contributorUsername">@tamaina</span>
-						</a>
 						<a href="https://github.com/acid-chicken" target="_blank" :class="$style.contributor">
 							<img src="https://avatars.githubusercontent.com/u/20679825?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@acid-chicken</span>
@@ -136,7 +132,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, shallowRef, computed } from 'vue';
-import { version } from '@/config.js';
+import { version } from '@@/js/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -267,6 +263,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'Macop',
 	icon: 'https://assets.misskey-hub.net/patrons/ee052bf550014d36a643ce3dce595640.jpg',
+}, {
+	name: 'なっかあ',
+	icon: 'https://assets.misskey-hub.net/patrons/c2f5f3e394e74a64912284a2f4ca710e.jpg',
 }];
 
 const patrons = [
@@ -372,6 +371,7 @@ const patrons = [
 	'塩キャベツ',
 	'はとぽぷさん',
 	'100の人 (エスパー・イーシア)',
+	'ケモナーのケシン',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));

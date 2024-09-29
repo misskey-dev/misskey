@@ -118,7 +118,7 @@ import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 import { mainRouter } from '@/router/main.js';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
@@ -450,7 +450,7 @@ body {
 	}
 
 	&:active {
-		background: var(--X2);
+		background: hsl(from var(--panel) h s calc(l - 2));
 	}
 }
 
@@ -460,11 +460,11 @@ body {
 	color: var(--fgOnAccent);
 
 	&:hover {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 
 	&:active {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 }
 
