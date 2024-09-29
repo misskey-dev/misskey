@@ -27,6 +27,8 @@ export type AsUiContainer = AsUiComponentBase & {
 	font?: 'serif' | 'sans-serif' | 'monospace';
 	borderWidth?: number;
 	borderColor?: string;
+	borderStyle?: 'hidden' | 'dotted' | 'dashed' | 'solid' | 'double' | 'groove' | 'ridge' | 'inset' | 'outset';
+	borderRadius?: number;
 	padding?: number;
 	rounded?: boolean;
 	hidden?: boolean;
@@ -173,6 +175,10 @@ function getContainerOptions(def: values.Value | undefined): Omit<AsUiContainer,
 	if (borderWidth) utils.assertNumber(borderWidth);
 	const borderColor = def.value.get('borderColor');
 	if (borderColor) utils.assertString(borderColor);
+	const borderStyle = def.value.get('borderStyle');
+	if (borderStyle) utils.assertString(borderStyle);
+	const borderRadius = def.value.get('borderRadius');
+	if (borderRadius) utils.assertNumber(borderRadius);
 	const padding = def.value.get('padding');
 	if (padding) utils.assertNumber(padding);
 	const rounded = def.value.get('rounded');
@@ -191,6 +197,8 @@ function getContainerOptions(def: values.Value | undefined): Omit<AsUiContainer,
 		font: font?.value,
 		borderWidth: borderWidth?.value,
 		borderColor: borderColor?.value,
+		borderStyle: borderStyle?.value,
+		borderRadius: borderRadius?.value,
 		padding: padding?.value,
 		rounded: rounded?.value,
 		hidden: hidden?.value,
