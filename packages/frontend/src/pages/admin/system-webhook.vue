@@ -11,8 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkSpacer :contentMax="900">
 		<div class="_gaps_m">
-			<MkButton :class="$style.linkButton" full @click="onCreateWebhookClicked">
-				{{ i18n.ts._webhookSettings.createWebhook }}
+			<MkButton primary @click="onCreateWebhookClicked">
+				<i class="ti ti-plus"></i> {{ i18n.ts._webhookSettings.createWebhook }}
 			</MkButton>
 
 			<FormSection>
@@ -89,8 +89,5 @@ definePageMetadata(() => ({
 </script>
 
 <style module lang="scss">
-.linkButton {
-	text-align: left;
-	padding: 10px 18px;
-}
+
 </style>

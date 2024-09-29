@@ -41,7 +41,7 @@ import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { scroll } from '@/scripts/scroll.js';
+import { scroll } from '@@/js/scroll.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
@@ -51,9 +51,10 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass, BasicTimelineType, hasWithLocalOnly } from '@/timelines.js';
+import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass, hasWithLocalOnly } from '@/timelines.js';
+import type { BasicTimelineType } from '@/timelines.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -193,7 +194,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 		}),
 		(channels.length === 0 ? undefined : { type: 'divider' }),
 		{
-			type: 'link' as const,
+			type: 'link',
 			icon: 'ti ti-plus',
 			text: i18n.ts.createNew,
 			to: '/channels',
@@ -262,16 +263,24 @@ const headerActions = computed(() => {
 			icon: 'ti ti-dots',
 			text: i18n.ts.options,
 			handler: (ev) => {
-				os.popupMenu([{
+				const menuItems: MenuItem[] = [];
+
+				menuItems.push({
 					type: 'switch',
 					text: i18n.ts.showRenotes,
 					ref: withRenotes,
-				}, isBasicTimeline(src.value) && hasWithReplies(src.value) ? {
-					type: 'switch',
-					text: i18n.ts.showRepliesToOthersInTimeline,
-					ref: withReplies,
-					disabled: onlyFiles,
-				} : undefined, {
+				});
+
+				if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
+					menuItems.push({
+						type: 'switch',
+						text: i18n.ts.showRepliesToOthersInTimeline,
+						ref: withReplies,
+						disabled: onlyFiles,
+					});
+				}
+
+				menuItems.push({
 					type: 'switch',
 					text: i18n.ts.withSensitive,
 					ref: withSensitive,
@@ -280,11 +289,17 @@ const headerActions = computed(() => {
 					text: i18n.ts.fileAttachedOnly,
 					ref: onlyFiles,
 					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
-				}, isBasicTimeline(src.value) && hasWithLocalOnly(src.value) ? {
-					type: 'switch',
-					text: i18n.ts.showLocalOnlyInTimeline,
-					ref: withLocalOnly,
-				} : undefined], ev.currentTarget ?? ev.target);
+				});
+
+				if (isBasicTimeline(src.value) && hasWithLocalOnly(src.value)) {
+					menuItems.push({
+						type: 'switch',
+						text: i18n.ts.showLocalOnlyInTimeline,
+						ref: withLocalOnly,
+					});
+				}
+
+				os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 			},
 		},
 	];

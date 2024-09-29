@@ -620,7 +620,9 @@ function fetchMoreFiles() {
 }
 
 function getMenu() {
-	const menu: MenuItem[] = [{
+	const menu: MenuItem[] = [];
+
+	menu.push({
 		type: 'switch',
 		text: i18n.ts.keepOriginalUploading,
 		ref: keepOriginal,
@@ -638,19 +640,25 @@ function getMenu() {
 	}, { type: 'divider' }, {
 		text: folder.value ? folder.value.name : i18n.ts.drive,
 		type: 'label',
-	}, folder.value ? {
-		text: i18n.ts.renameFolder,
-		icon: 'ti ti-forms',
-		action: () => { if (folder.value) renameFolder(folder.value); },
-	} : undefined, folder.value ? {
-		text: i18n.ts.deleteFolder,
-		icon: 'ti ti-trash',
-		action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); },
-	} : undefined, {
+	});
+
+	if (folder.value) {
+		menu.push({
+			text: i18n.ts.renameFolder,
+			icon: 'ti ti-forms',
+			action: () => { if (folder.value) renameFolder(folder.value); },
+		}, {
+			text: i18n.ts.deleteFolder,
+			icon: 'ti ti-trash',
+			action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); },
+		});
+	}
+
+	menu.push({
 		text: i18n.ts.createFolder,
 		icon: 'ti ti-folder-plus',
 		action: () => { createFolder(); },
-	}];
+	});
 
 	return menu;
 }

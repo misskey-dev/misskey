@@ -7,9 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
-import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository, FollowRequestsRepository } from '@/models/_.js';
+import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -29,6 +28,7 @@ export class Resolver {
 
 	constructor(
 		private config: Config,
+		private meta: MiMeta,
 		private usersRepository: UsersRepository,
 		private notesRepository: NotesRepository,
 		private pollsRepository: PollsRepository,
@@ -36,7 +36,6 @@ export class Resolver {
 		private followRequestsRepository: FollowRequestsRepository,
 		private utilityService: UtilityService,
 		private instanceActorService: InstanceActorService,
-		private metaService: MetaService,
 		private apRequestService: ApRequestService,
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
@@ -94,8 +93,7 @@ export class Resolver {
 			return await this.resolveLocal(value);
 		}
 
-		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
+		if (!this.utilityService.isFederationAllowedHost(host)) {
 			throw new Error('Instance is blocked');
 		}
 
@@ -178,6 +176,9 @@ export class ApResolverService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -195,7 +196,6 @@ export class ApResolverService {
 
 		private utilityService: UtilityService,
 		private instanceActorService: InstanceActorService,
-		private metaService: MetaService,
 		private apRequestService: ApRequestService,
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
@@ -208,6 +208,7 @@ export class ApResolverService {
 	public createResolver(): Resolver {
 		return new Resolver(
 			this.config,
+			this.meta,
 			this.usersRepository,
 			this.notesRepository,
 			this.pollsRepository,
@@ -215,7 +216,6 @@ export class ApResolverService {
 			this.followRequestsRepository,
 			this.utilityService,
 			this.instanceActorService,
-			this.metaService,
 			this.apRequestService,
 			this.httpRequestService,
 			this.apRendererService,
