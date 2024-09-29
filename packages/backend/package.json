@@ -67,9 +67,9 @@
 	"dependencies": {
 		"@aws-sdk/client-s3": "3.620.0",
 		"@aws-sdk/lib-storage": "3.620.0",
-		"@bull-board/api": "5.23.0",
-		"@bull-board/fastify": "5.23.0",
-		"@bull-board/ui": "5.23.0",
+		"@bull-board/api": "6.0.0",
+		"@bull-board/fastify": "6.0.0",
+		"@bull-board/ui": "6.0.0",
 		"@discordapp/twemoji": "15.1.0",
 		"@fastify/accepts": "5.0.0",
 		"@fastify/cookie": "10.0.0",
