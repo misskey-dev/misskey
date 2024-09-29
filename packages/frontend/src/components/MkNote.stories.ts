@@ -64,9 +64,7 @@ export const Default = {
 					if (
 						url.href.startsWith('https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/')
 					) {
-						const image = await (
-							await fetch(`client-assets/${url.pathname.split('/').pop()}`)
-						).blob();
+						const image = await(await fetch(`client-assets/${url.pathname.split('/').pop()}`)).blob();
 						return new HttpResponse(image, {
 							headers: {
 								'Content-Type': 'image/jpeg',
