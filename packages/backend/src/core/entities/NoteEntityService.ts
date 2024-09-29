@@ -93,6 +93,11 @@ export class NoteEntityService implements OnModuleInit {
 			}
 		}
 
+		// 連合なしで未ログインなら非表示
+		if(packedNote.localOnly && !meId){
+			hide = true;
+		}
+
 		// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
 		if (packedNote.visibility === 'followers') {
 			if (meId == null) {
@@ -222,6 +227,11 @@ export class NoteEntityService implements OnModuleInit {
 				// 指定されているかどうか
 				return note.visibleUserIds.some((id: any) => meId === id);
 			}
+		}
+
+		// 連合なし、かつ visibility が home で未ログインなら非表示
+		if(note.localOnly && note.visibility === 'home' && !meId){
+			return false;
 		}
 
 		// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
