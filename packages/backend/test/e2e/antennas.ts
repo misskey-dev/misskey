@@ -228,6 +228,17 @@ describe('アンテナ', () => {
 		assert.deepStrictEqual(response, expected);
 	});
 
+	test('を作成する時キーワードが指定されていないとエラーになる', async () => {
+		await failedApiCall({
+			endpoint: 'antennas/create',
+			parameters: { ...defaultParam, keywords: [[]], excludeKeywords: [[]] },
+			user: alice
+		}, {
+			status: 400,
+			code: 'EMPTY_KEYWORD',
+			id: '53ee222e-1ddd-4f9a-92e5-9fb82ddb463a'
+		})
+	});
 	//#endregion
 	//#region 更新(antennas/update)
 
@@ -254,6 +265,18 @@ describe('アンテナ', () => {
 			code: 'NO_SUCH_USER_LIST',
 			id: '1c6b35c9-943e-48c2-81e4-2844989407f7',
 		});
+	});
+	test('を変更する時キーワードが指定されていないとエラーになる', async () => {
+		const antenna = await successfulApiCall({ endpoint: 'antennas/create', parameters: defaultParam, user: alice });
+		await failedApiCall({
+			endpoint: 'antennas/update',
+			parameters: { ...defaultParam, antennaId: antenna.id, keywords: [[]], excludeKeywords: [[]] },
+			user: alice
+		}, {
+			status: 400,
+			code: 'EMPTY_KEYWORD',
+			id: '721aaff6-4e1b-4d88-8de6-877fae9f68c4'
+		})
 	});
 
 	//#endregion
