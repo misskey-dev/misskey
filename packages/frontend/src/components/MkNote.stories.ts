@@ -1,4 +1,7 @@
-
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 /* eslint-disable import/no-default-export */
 
 import { Meta } from '@storybook/vue3';
@@ -7,10 +10,7 @@ const meta = {
 	component: MkNote,
 } satisfies Meta<typeof MkNote>;
 export default meta;
-/*
- * SPDX-FileCopyrightText: syuilo and misskey-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
+
 
 import { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
