@@ -10,8 +10,6 @@ const meta = {
 	component: MkNote,
 } satisfies Meta<typeof MkNote>;
 export default meta;
-
-
 import { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import {
