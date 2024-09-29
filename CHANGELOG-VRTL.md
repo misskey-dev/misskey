@@ -4,6 +4,8 @@ VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
 
+--- 2024.9.0-vrtl.1 released at this time ---
+
 --- 2024.8.0-vrtl.1 released at this time ---
 
 - fix(frontend): VRTL VSTLの名前が表示されないところがある問題 (anatawa12#97) - 2024/08/07
