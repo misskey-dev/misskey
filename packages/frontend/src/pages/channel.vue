@@ -82,7 +82,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import MkNotes from '@/components/MkNotes.vue';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import { favoritedChannelsCache } from '@/cache.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -310,7 +310,7 @@ definePageMetadata(() => ({
 	left: 0;
 	width: 100%;
 	height: 64px;
-	background: linear-gradient(0deg, var(--panel), var(--X15));
+	background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
 }
 
 .bannerStatus {

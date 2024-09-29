@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			class="file _button"
 		>
 			<div v-if="file.isSensitive" class="sensitive-label">{{ i18n.ts.sensitive }}</div>
-			<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
+			<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain" :highlightWhenSensitive="true"/>
 			<div v-if="viewMode === 'list'" class="body">
 				<div>
 					<small style="opacity: 0.7;">{{ file.name }}</small>

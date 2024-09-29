@@ -8,9 +8,9 @@ import * as Misskey from 'misskey-js';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { MenuButton } from '@/types/menu.js';
+import type { MenuItem, MenuButton } from '@/types/menu.js';
 import { del, get, set } from '@/scripts/idb-proxy.js';
-import { apiUrl } from '@/config.js';
+import { apiUrl } from '@@/js/config.js';
 import { waiting, popup, popupMenu, success, alert } from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
@@ -288,14 +288,26 @@ export async function openAccountMenu(opts: {
 		});
 	}));
 
+	const menuItems: MenuItem[] = [];
+
 	if (opts.withExtraOperation) {
-		popupMenu([...[{
-			type: 'link' as const,
+		menuItems.push({
+			type: 'link',
 			text: i18n.ts.profile,
-			to: `/@${ $i.username }`,
+			to: `/@${$i.username}`,
 			avatar: $i,
-		}, { type: 'divider' as const }, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
-			type: 'parent' as const,
+		}, {
+			type: 'divider',
+		});
+
+		if (opts.includeCurrentAccount) {
+			menuItems.push(createItem($i));
+		}
+
+		menuItems.push(...accountItemPromises);
+
+		menuItems.push({
+			type: 'parent',
 			icon: 'ti ti-plus',
 			text: i18n.ts.addAccount,
 			children: [{
@@ -306,18 +318,22 @@ export async function openAccountMenu(opts: {
 				action: () => { createAccount(); },
 			}],
 		}, {
-			type: 'link' as const,
+			type: 'link',
 			icon: 'ti ti-users',
 			text: i18n.ts.manageAccounts,
 			to: '/settings/accounts',
-		}]], ev.currentTarget ?? ev.target, {
-			align: 'left',
 		});
 	} else {
-		popupMenu([...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises], ev.currentTarget ?? ev.target, {
-			align: 'left',
-		});
+		if (opts.includeCurrentAccount) {
+			menuItems.push(createItem($i));
+		}
+
+		menuItems.push(...accountItemPromises);
 	}
+
+	popupMenu(menuItems, ev.currentTarget ?? ev.target, {
+		align: 'left',
+	});
 }
 
 if (_DEV_) {

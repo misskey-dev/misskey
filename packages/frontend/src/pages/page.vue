@@ -104,7 +104,7 @@ import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -121,7 +121,7 @@ import { instance } from '@/instance.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
-import { MenuItem } from '@/types/menu';
+import type { MenuItem } from '@/types/menu.js';
 
 const router = useRouter();
 
@@ -165,18 +165,23 @@ function fetchPage() {
 function share(ev: MouseEvent) {
 	if (!page.value) return;
 
-	os.popupMenu([
-		{
-			text: i18n.ts.shareWithNote,
-			icon: 'ti ti-pencil',
-			action: shareWithNote,
-		},
-		...(isSupportShare() ? [{
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
+		text: i18n.ts.shareWithNote,
+		icon: 'ti ti-pencil',
+		action: shareWithNote,
+	});
+
+	if (isSupportShare()) {
+		menuItems.push({
 			text: i18n.ts.share,
 			icon: 'ti ti-share',
 			action: shareWithNavigator,
-		}] : []),
-	], ev.currentTarget ?? ev.target);
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 function copyLink() {
@@ -256,51 +261,59 @@ function reportAbuse() {
 function showMenu(ev: MouseEvent) {
 	if (!page.value) return;
 
-	const menu: MenuItem[] = [
-		...($i && $i.id === page.value.userId ? [
-			{
-				icon: 'ti ti-code',
-				text: i18n.ts._pages.viewSource,
-				action: () => router.push(`/@${props.username}/pages/${props.pageName}/view-source`),
-			},
-			...($i.pinnedPageId === page.value.id ? [{
+	const menuItems: MenuItem[] = [];
+
+	if ($i && $i.id === page.value.userId) {
+		menuItems.push({
+			icon: 'ti ti-pencil',
+			text: i18n.ts.editThisPage,
+			action: () => router.push(`/pages/edit/${page.value.id}`),
+		});
+
+		if ($i.pinnedPageId === page.value.id) {
+			menuItems.push({
 				icon: 'ti ti-pinned-off',
 				text: i18n.ts.unpin,
 				action: () => pin(false),
-			}] : [{
+			});
+		} else {
+			menuItems.push({
 				icon: 'ti ti-pin',
 				text: i18n.ts.pin,
 				action: () => pin(true),
-			}]),
-		] : []),
-		...($i && $i.id !== page.value.userId ? [
-			{
-				icon: 'ti ti-exclamation-circle',
-				text: i18n.ts.reportAbuse,
-				action: reportAbuse,
-			},
-			...($i.isModerator || $i.isAdmin ? [
-				{
-					type: 'divider' as const,
-				},
-				{
-					icon: 'ti ti-trash',
-					text: i18n.ts.delete,
-					danger: true,
-					action: () => os.confirm({
-						type: 'warning',
-						text: i18n.ts.deleteConfirm,
-					}).then(({ canceled }) => {
-						if (canceled || !page.value) return;
+			});
+		}
+	} else if ($i && $i.id !== page.value.userId) {
+		menuItems.push({
+				icon: 'ti ti-code',
+				text: i18n.ts._pages.viewSource,
+				action: () => router.push(`/@${props.username}/pages/${props.pageName}/view-source`),
+		}, {
+			icon: 'ti ti-exclamation-circle',
+			text: i18n.ts.reportAbuse,
+			action: reportAbuse,
+		});
 
-						os.apiWithDialog('pages/delete', { pageId: page.value.id });
-					}),
-				},
-			] : []),
-		] : []),
-	];
+		if ($i.isModerator || $i.isAdmin) {
+			menuItems.push({
+				type: 'divider',
+			}, {
+				icon: 'ti ti-trash',
+				text: i18n.ts.delete,
+				danger: true,
+				action: () => os.confirm({
+					type: 'warning',
+					text: i18n.ts.deleteConfirm,
+				}).then(({ canceled }) => {
+					if (canceled || !page.value) return;
 
-	os.popupMenu(menu, ev.currentTarget ?? ev.target);
+					os.apiWithDialog('pages/delete', { pageId: page.value.id });
+				}),
+			});
+		}
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 watch(() => path.value, fetchPage, { immediate: true });
@@ -433,13 +446,12 @@ definePageMetadata(() => ({
 		.pageBannerTitleUser {
 			--height: 32px;
 			flex-shrink: 0;
+			line-height: var(--height);
 
 			.avatar {
 				height: var(--height);
 				width: var(--height);
 			}
-
-			line-height: var(--height);
 		}
 
 		.pageBannerTitleSubActions {

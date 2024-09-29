@@ -8,7 +8,7 @@ import { defineAsyncComponent, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { host, url } from '@/config.js';
+import { host, url } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore, userActions } from '@/store.js';
@@ -17,7 +17,8 @@ import { notesSearchAvailable, canSearchNonLocalNotes } from '@/scripts/check-pe
 import { IRouter } from '@/nirax.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
 import { mainRouter } from '@/router/main.js';
-import { MenuItem } from '@/types/menu.js';
+import { genEmbedCode } from '@/scripts/get-embed-code.js';
+import type { MenuItem } from '@/types/menu.js';
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -147,123 +148,154 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		});
 	}
 
-	let menu: MenuItem[] = [{
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
-	}, ...( notesSearchAvailable && (user.host == null || canSearchNonLocalNotes) ? [{
-		icon: 'ti ti-search',
-		text: i18n.ts.searchThisUsersNotes,
-		action: () => {
-			router.push(`/search?username=${encodeURIComponent(user.username)}${user.host != null ? '&host=' + encodeURIComponent(user.host) : ''}`);
-		},
-	}] : [])
-	, ...(iAmModerator ? [{
-		icon: 'ti ti-user-exclamation',
-		text: i18n.ts.moderation,
-		action: () => {
-			router.push(`/admin/user/${user.id}`);
-		},
-	}] : []), {
+	});
+
+	if (notesSearchAvailable && (user.host == null || canSearchNonLocalNotes)) {
+		menuItems.push({
+			icon: 'ti ti-search',
+			text: i18n.ts.searchThisUsersNotes,
+			action: () => {
+				router.push(`/search?username=${encodeURIComponent(user.username)}${user.host != null ? '&host=' + encodeURIComponent(user.host) : ''}`);
+			},
+		});
+	}
+
+	if (iAmModerator) {
+		menuItems.push({
+			icon: 'ti ti-user-exclamation',
+			text: i18n.ts.moderation,
+			action: () => {
+				router.push(`/admin/user/${user.id}`);
+			},
+		});
+	}
+
+	menuItems.push({
 		icon: 'ti ti-rss',
 		text: i18n.ts.copyRSS,
 		action: () => {
 			copyToClipboard(`${user.host ?? host}/@${user.username}.atom`);
 		},
-	}, ...(user.host != null && user.url != null ? [{
-		icon: 'ti ti-external-link',
-		text: i18n.ts.showOnRemote,
-		action: () => {
-			if (user.url == null) return;
-			window.open(user.url, '_blank', 'noopener');
-		},
-	}] : []), {
+	});
+
+	if (user.host != null && user.url != null) {
+		menuItems.push({
+			icon: 'ti ti-external-link',
+			text: i18n.ts.showOnRemote,
+			action: () => {
+				if (user.url == null) return;
+				window.open(user.url, '_blank', 'noopener');
+			},
+		});
+	} else {
+		menuItems.push({
+			icon: 'ti ti-code',
+			text: i18n.ts.genEmbedCode,
+			type: 'parent',
+			children: [{
+				text: i18n.ts.noteOfThisUser,
+				action: () => {
+					genEmbedCode('user-timeline', user.id);
+				},
+			}], // TODO: ユーザーカードの埋め込みなど
+		});
+	}
+
+	menuItems.push({
 		icon: 'ti ti-share',
 		text: i18n.ts.copyProfileUrl,
 		action: () => {
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			copyToClipboard(`${url}/${canonical}`);
 		},
-	}, ...($i ? [{
-		icon: 'ti ti-mail',
-		text: i18n.ts.sendMessage,
-		action: () => {
-			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
-			os.post({ specified: user, initialText: `${canonical} ` });
-		},
-	}, { type: 'divider' }, {
-		icon: 'ti ti-pencil',
-		text: i18n.ts.editMemo,
-		action: () => {
-			editMemo();
-		},
-	}, {
-		type: 'parent',
-		icon: 'ti ti-list',
-		text: i18n.ts.addToList,
-		children: async () => {
-			const lists = await userListsCache.fetch();
-			return lists.map(list => {
-				const isListed = ref(list.userIds.includes(user.id));
-				cleanups.push(watch(isListed, () => {
-					if (isListed.value) {
-						os.apiWithDialog('users/lists/push', {
-							listId: list.id,
-							userId: user.id,
-						}).then(() => {
-							list.userIds.push(user.id);
-						});
-					} else {
-						os.apiWithDialog('users/lists/pull', {
-							listId: list.id,
-							userId: user.id,
-						}).then(() => {
-							list.userIds.splice(list.userIds.indexOf(user.id), 1);
-						});
-					}
-				}));
+	});
 
-				return {
-					type: 'switch',
-					text: list.name,
-					ref: isListed,
-				};
-			});
-		},
-	}, {
-		type: 'parent',
-		icon: 'ti ti-antenna',
-		text: i18n.ts.addToAntenna,
-		children: async () => {
-			const antennas = await antennasCache.fetch();
-			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
-			return antennas.filter((a) => a.src === 'users').map(antenna => ({
-				text: antenna.name,
-				action: async () => {
-					await os.apiWithDialog('antennas/update', {
-						antennaId: antenna.id,
-						name: antenna.name,
-						keywords: antenna.keywords,
-						excludeKeywords: antenna.excludeKeywords,
-						src: antenna.src,
-						userListId: antenna.userListId,
-						users: [...antenna.users, canonical],
-						caseSensitive: antenna.caseSensitive,
-						withReplies: antenna.withReplies,
-						withFile: antenna.withFile,
-						notify: antenna.notify,
-					});
-					antennasCache.delete();
-				},
-			}));
-		},
-	}] : [])] as any;
+	if ($i) {
+		menuItems.push({
+			icon: 'ti ti-mail',
+			text: i18n.ts.sendMessage,
+			action: () => {
+				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
+				os.post({ specified: user, initialText: `${canonical} ` });
+			},
+		}, { type: 'divider' }, {
+			icon: 'ti ti-pencil',
+			text: i18n.ts.editMemo,
+			action: editMemo,
+		}, {
+			type: 'parent',
+			icon: 'ti ti-list',
+			text: i18n.ts.addToList,
+			children: async () => {
+				const lists = await userListsCache.fetch();
+				return lists.map(list => {
+					const isListed = ref(list.userIds?.includes(user.id) ?? false);
+					cleanups.push(watch(isListed, () => {
+						if (isListed.value) {
+							os.apiWithDialog('users/lists/push', {
+								listId: list.id,
+								userId: user.id,
+							}).then(() => {
+								list.userIds?.push(user.id);
+							});
+						} else {
+							os.apiWithDialog('users/lists/pull', {
+								listId: list.id,
+								userId: user.id,
+							}).then(() => {
+								list.userIds?.splice(list.userIds?.indexOf(user.id), 1);
+							});
+						}
+					}));
+
+					return {
+						type: 'switch',
+						text: list.name,
+						ref: isListed,
+					};
+				});
+			},
+		}, {
+			type: 'parent',
+			icon: 'ti ti-antenna',
+			text: i18n.ts.addToAntenna,
+			children: async () => {
+				const antennas = await antennasCache.fetch();
+				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
+				return antennas.filter((a) => a.src === 'users').map(antenna => ({
+					text: antenna.name,
+					action: async () => {
+						await os.apiWithDialog('antennas/update', {
+							antennaId: antenna.id,
+							name: antenna.name,
+							keywords: antenna.keywords,
+							excludeKeywords: antenna.excludeKeywords,
+							src: antenna.src,
+							userListId: antenna.userListId,
+							users: [...antenna.users, canonical],
+							caseSensitive: antenna.caseSensitive,
+							withReplies: antenna.withReplies,
+							withFile: antenna.withFile,
+							notify: antenna.notify,
+						});
+						antennasCache.delete();
+					},
+				}));
+			},
+		});
+	}
 
 	if ($i && meId !== user.id) {
 		if (iAmModerator) {
-			menu = menu.concat([{
+			menuItems.push({
 				type: 'parent',
 				icon: 'ti ti-badges',
 				text: i18n.ts.roles,
@@ -301,13 +333,14 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 						},
 					}));
 				},
-			}]);
+			});
 		}
 
 		// フォローしたとしても user.isFollowing はリアルタイム更新されないので不便なため
 		//if (user.isFollowing) {
-		const withRepliesRef = ref(user.withReplies);
-		menu = menu.concat([{
+		const withRepliesRef = ref(user.withReplies ?? false);
+
+		menuItems.push({
 			type: 'switch',
 			icon: 'ti ti-messages',
 			text: i18n.ts.showRepliesToOthersInTimeline,
@@ -316,7 +349,8 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			icon: user.notify === 'none' ? 'ti ti-bell' : 'ti ti-bell-off',
 			text: user.notify === 'none' ? i18n.ts.notifyNotes : i18n.ts.unnotifyNotes,
 			action: toggleNotify,
-		}]);
+		});
+
 		watch(withRepliesRef, (withReplies) => {
 			misskeyApi('following/update', {
 				userId: user.id,
@@ -327,7 +361,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		});
 		//}
 
-		menu = menu.concat([{ type: 'divider' }, {
+		menuItems.push({ type: 'divider' }, {
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute,
@@ -339,70 +373,68 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			icon: 'ti ti-ban',
 			text: user.isBlocking ? i18n.ts.unblock : i18n.ts.block,
 			action: toggleBlock,
-		}]);
+		});
 
 		if (user.isFollowed) {
-			menu = menu.concat([{
+			menuItems.push({
 				icon: 'ti ti-link-off',
 				text: i18n.ts.breakFollow,
 				action: invalidateFollow,
-			}]);
+			});
 		}
 
-		menu = menu.concat([{ type: 'divider' }, {
+		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-exclamation-circle',
 			text: i18n.ts.reportAbuse,
 			action: reportAbuse,
-		}]);
+		});
 	}
 
 	if (user.host !== null) {
-		menu = menu.concat([{ type: 'divider' }, {
+		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-refresh',
 			text: i18n.ts.updateRemoteUser,
 			action: userInfoUpdate,
-		}]);
+		});
 	}
 
 	if (defaultStore.state.devMode) {
-		menu = menu.concat([{ type: 'divider' }, {
+		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyUserId,
 			action: () => {
 				copyToClipboard(user.id);
 			},
-		}]);
+		});
 	}
 
 	if ($i && meId === user.id) {
-		menu = menu.concat([{ type: 'divider' }, {
+		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-pencil',
 			text: i18n.ts.editProfile,
 			action: () => {
 				router.push('/settings/profile');
 			},
-		}]);
+		});
 	}
 
 	if (userActions.length > 0) {
-		menu = menu.concat([{ type: 'divider' }, ...userActions.map(action => ({
+		menuItems.push({ type: 'divider' }, ...userActions.map(action => ({
 			icon: 'ti ti-plug',
 			text: action.title,
 			action: () => {
 				action.handler(user);
 			},
-		}))]);
+		})));
 	}
 
-	const cleanup = () => {
-		if (_DEV_) console.log('user menu cleanup', cleanups);
-		for (const cl of cleanups) {
-			cl();
-		}
-	};
-
 	return {
-		menu,
-		cleanup,
+		menu: menuItems,
+		cleanup: () => {
+			if (_DEV_) console.log('user menu cleanup', cleanups);
+			for (const cl of cleanups) {
+				cl();
+			}
+		},
 	};
 }
