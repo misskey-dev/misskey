@@ -82,6 +82,14 @@ import XPasskey from '@/components/MkSignin.passkey.vue';
 import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
 import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 
+const captchaFailed = computed((): boolean => {
+	return (
+		instance.enableHcaptcha && !hCaptchaResponse.value ||
+		instance.enableMcaptcha && !mCaptchaResponse.value ||
+		instance.enableRecaptcha && !reCaptchaResponse.value ||
+		instance.enableTurnstile && !turnstileResponse.value);
+});
+
 const emit = defineEmits<{
 	(ev: 'login', v: Misskey.entities.SigninResponse): void;
 }>();
