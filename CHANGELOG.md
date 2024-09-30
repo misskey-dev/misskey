@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: セキュリティ向上のため、サインイン時もCAPTCHAを求めるようになりました
 
 ### Client
 -
