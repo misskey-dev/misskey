@@ -48,9 +48,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div v-if="user.followedMessage != null" class="followedMessage">
-						<div style="border: solid 1px var(--love); border-radius: 6px; background: color-mix(in srgb, var(--love), transparent 90%); padding: 6px 8px;">
-							<Mfm :text="user.followedMessage" :author="user"/>
-						</div>
+						<MkFukidashi class="fukidashi" :tail="narrow ? 'none' : 'left'" negativeMargin shadow>
+							<div class="messageHeader">{{ i18n.ts.messageToFollower }}</div>
+							<div><Mfm :text="user.followedMessage" :author="user"/></div>
+						</MkFukidashi>
 					</div>
 					<div v-if="user.roles.length > 0" class="roles">
 						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
@@ -161,6 +162,7 @@ import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
+import MkFukidashi from '@/components/MkFukidashi.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
@@ -467,7 +469,18 @@ onUnmounted(() => {
 
 				> .followedMessage {
 					padding: 24px 24px 0 154px;
-					font-size: 0.9em;
+
+					> .fukidashi {
+						display: block;
+						--fukidashi-bg: color-mix(in srgb, var(--love), var(--panel) 85%);
+						--fukidashi-radius: 16px;
+						font-size: 0.9em;
+
+						.messageHeader {
+							opacity: 0.7;
+							font-size: 0.85em;
+						}
+					}
 				}
 
 				> .roles {
