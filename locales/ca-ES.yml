@@ -1283,6 +1283,7 @@ signinWithPasskey: "Inicia sessió amb Passkey"
 unknownWebAuthnKey: "Passkey desconeguda"
 passkeyVerificationFailed: "La verificació a fallat"
 passkeyVerificationSucceededButPasswordlessLoginDisabled: "La verificació de la passkey a estat correcta, però s'ha deshabilitat l'inici de sessió sense contrasenya."
+messageToFollower: "Missatge als meus seguidors"
 _delivery:
   status: "Estat d'entrega "
   stop: "Suspés"
