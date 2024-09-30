@@ -142,6 +142,8 @@ describe('After user signup', () => {
 
 		cy.visitHome();
 
+		cy.get('[data-cy-signin]').click();
+
 		cy.get('[data-cy-signin-page-input]').should('be.visible', { timeout: 1000 });
 		cy.get('[data-cy-signin-username] input').type('alice{enter}');
 
