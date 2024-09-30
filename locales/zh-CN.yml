@@ -1283,6 +1283,7 @@ signinWithPasskey: "使用通行密钥登录"
 unknownWebAuthnKey: "此通行密钥未注册。"
 passkeyVerificationFailed: "验证通行密钥失败。"
 passkeyVerificationSucceededButPasswordlessLoginDisabled: "通行密钥验证成功，但账户未开启无密码登录。"
+messageToFollower: "给关注者的消息"
 _delivery:
   status: "投递状态"
   stop: "停止投递"
