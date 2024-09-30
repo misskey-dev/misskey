@@ -64,6 +64,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #value><MkUrl :url="url" :showUrlPreview="false"></MkUrl></template>
 			</MkKeyValue>
 			<MkKeyValue v-if="hashVerified">
+				<!-- TODO: ハッシュ検証に失敗した場合の表示も作る -->
+				<!-- その場合、hashVerifiedがfalseなら失敗表示、undefinedなら表示なしで分けたい -->
 				<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
 				<template #value>
 					<i class="ti ti-check" style="color: var(--accent)"></i>
