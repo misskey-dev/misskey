@@ -1,0 +1,99 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+html {
+	background-color: var(--bg);
+	color: var(--fg);
+}
+
+html.embed {
+	box-sizing: border-box;
+	background-color: transparent;
+	color-scheme: light dark;
+	max-width: 500px;
+}
+
+#splash {
+	position: fixed;
+	z-index: 10000;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	cursor: wait;
+	background-color: var(--bg);
+	opacity: 1;
+	transition: opacity 0.5s ease;
+}
+
+html.embed #splash {
+	box-sizing: border-box;
+	min-height: 300px;
+	border-radius: var(--radius, 12px);
+	border: 1px solid var(--divider, #e8e8e8);
+}
+
+html.embed.norounded #splash {
+	border-radius: 0;
+}
+
+html.embed.noborder #splash {
+	border: none;
+}
+
+#splashIcon {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+	width: 64px;
+	height: 64px;
+	pointer-events: none;
+}
+
+#splashSpinner {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	transform: translateY(70px);
+	color: var(--accent);
+}
+
+#splashSpinner > .spinner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 28px;
+	height: 28px;
+	fill-rule: evenodd;
+	clip-rule: evenodd;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-miterlimit: 1.5;
+}
+#splashSpinner > .spinner.bg {
+	opacity: 0.275;
+}
+#splashSpinner > .spinner.fg {
+	animation: splashSpinner 0.5s linear infinite;
+}
+
+@keyframes splashSpinner {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}

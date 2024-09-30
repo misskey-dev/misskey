@@ -5,7 +5,7 @@
 
 import { describe, test, assert, afterEach } from 'vitest';
 import { Window } from 'happy-dom';
-import { onScrollBottom, onScrollTop } from '@/scripts/scroll.js';
+import { onScrollBottom, onScrollTop } from '@@/js/scroll.js';
 
 describe('Scroll', () => {
 	describe('onScrollTop', () => {

@@ -21,19 +21,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<template #label>{{ i18n.ts._webhookSettings.trigger }}</template>
 
-		<div class="_gaps_s">
-			<MkSwitch v-model="event_follow">{{ i18n.ts._webhookSettings._events.follow }}</MkSwitch>
-			<MkSwitch v-model="event_followed">{{ i18n.ts._webhookSettings._events.followed }}</MkSwitch>
-			<MkSwitch v-model="event_note">{{ i18n.ts._webhookSettings._events.note }}</MkSwitch>
-			<MkSwitch v-model="event_reply">{{ i18n.ts._webhookSettings._events.reply }}</MkSwitch>
-			<MkSwitch v-model="event_renote">{{ i18n.ts._webhookSettings._events.renote }}</MkSwitch>
-			<MkSwitch v-model="event_reaction">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
-			<MkSwitch v-model="event_mention">{{ i18n.ts._webhookSettings._events.mention }}</MkSwitch>
+		<div class="_gaps">
+			<div class="_gaps_s">
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_follow">{{ i18n.ts._webhookSettings._events.follow }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_follow)" @click="test('follow')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_followed">{{ i18n.ts._webhookSettings._events.followed }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_followed)" @click="test('followed')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_note">{{ i18n.ts._webhookSettings._events.note }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_note)" @click="test('note')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_reply">{{ i18n.ts._webhookSettings._events.reply }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_reply)" @click="test('reply')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_renote">{{ i18n.ts._webhookSettings._events.renote }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_renote)" @click="test('renote')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_reaction">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_reaction)" @click="test('reaction')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_mention">{{ i18n.ts._webhookSettings._events.mention }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_mention)" @click="test('mention')"><i class="ti ti-send"></i></MkButton>
+				</div>
 
-			<MkTextarea v-if="$i?.isAdmin" v-model="users">
-				<template #label>{{ i18n.ts._webhookSettings._events.usersLabel }}</template>
-				<template #caption>{{ i18n.ts._webhookSettings._events.usersCaption }}</template>
-			</MkTextarea>
+				<MkTextarea v-if="$i?.isAdmin" v-model="users">
+					<template #label>{{ i18n.ts._webhookSettings._events.usersLabel }}</template>
+					<template #caption>{{ i18n.ts._webhookSettings._events.usersCaption }}</template>
+				</MkTextarea>
+			</div>
+
+			<div :class="$style.description">
+				{{ i18n.ts._webhookSettings.testRemarks }}
+			</div>
 		</div>
 	</FormSection>
 
@@ -48,6 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -85,7 +113,7 @@ const event_mention = ref(webhook.on.includes('mention'));
 const users = ref((webhook.on as string[]).filter(x => x.startsWith('note@')).map(x => x.substring('note@'.length)).join('\n'));
 
 async function save(): Promise<void> {
-	const events: string[] = [];
+	const events: Misskey.entities.UserWebhook['on'] = [];
 	if (event_follow.value) events.push('follow');
 	if (event_followed.value) events.push('followed');
 	if (event_note.value) events.push('note');
@@ -119,8 +147,21 @@ async function del(): Promise<void> {
 	router.push('/settings/webhook');
 }
 
+async function test(type: Misskey.entities.UserWebhook['on'][number]): Promise<void> {
+	await os.apiWithDialog('i/webhooks/test', {
+		webhookId: props.webhookId,
+		type,
+		override: {
+			secret: secret.value,
+			url: url.value,
+		},
+	});
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const headerActions = computed(() => []);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
@@ -129,10 +170,29 @@ definePageMetadata(() => ({
 }));
 </script>
 
-<style lang="scss" module>
+<style module lang="scss">
+.switchBox {
+	display: flex;
+	align-items: center;
+	justify-content: start;
 
-.userItem {
-  display: flex;
+	.testButton {
+		$buttonSize: 28px;
+		padding: 0;
+		width: $buttonSize;
+		min-width: $buttonSize;
+		max-width: $buttonSize;
+		height: $buttonSize;
+		margin-left: auto;
+		line-height: inherit;
+		font-size: 90%;
+		border-radius: 9999px;
+	}
 }
 
+.description {
+	font-size: 0.85em;
+	padding: 8px 0 0 0;
+	color: var(--fgTransparentWeak);
+}
 </style>

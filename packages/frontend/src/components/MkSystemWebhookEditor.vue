@@ -35,16 +35,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFolder :defaultOpen="true">
 					<template #label>{{ i18n.ts._webhookSettings.trigger }}</template>
 
-					<div class="_gaps_s">
-						<MkSwitch v-model="events.abuseReport" :disabled="disabledEvents.abuseReport">
-							<template #label>{{ i18n.ts._webhookSettings._systemEvents.abuseReport }}</template>
-						</MkSwitch>
-						<MkSwitch v-model="events.abuseReportResolved" :disabled="disabledEvents.abuseReportResolved">
-							<template #label>{{ i18n.ts._webhookSettings._systemEvents.abuseReportResolved }}</template>
-						</MkSwitch>
-						<MkSwitch v-model="events.userCreated" :disabled="disabledEvents.userCreated">
-							<template #label>{{ i18n.ts._webhookSettings._systemEvents.userCreated }}</template>
-						</MkSwitch>
+					<div class="_gaps">
+						<div class="_gaps_s">
+							<div :class="$style.switchBox">
+								<MkSwitch v-model="events.abuseReport" :disabled="disabledEvents.abuseReport">
+									<template #label>{{ i18n.ts._webhookSettings._systemEvents.abuseReport }}</template>
+								</MkSwitch>
+								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.abuseReport)" @click="test('abuseReport')"><i class="ti ti-send"></i></MkButton>
+							</div>
+							<div :class="$style.switchBox">
+								<MkSwitch v-model="events.abuseReportResolved" :disabled="disabledEvents.abuseReportResolved">
+									<template #label>{{ i18n.ts._webhookSettings._systemEvents.abuseReportResolved }}</template>
+								</MkSwitch>
+								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.abuseReportResolved)" @click="test('abuseReportResolved')"><i class="ti ti-send"></i></MkButton>
+							</div>
+							<div :class="$style.switchBox">
+								<MkSwitch v-model="events.userCreated" :disabled="disabledEvents.userCreated">
+									<template #label>{{ i18n.ts._webhookSettings._systemEvents.userCreated }}</template>
+								</MkSwitch>
+								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.userCreated)" @click="test('userCreated')"><i class="ti ti-send"></i></MkButton>
+							</div>
+						</div>
+
+						<div v-show="mode === 'edit'" :class="$style.description">
+							{{ i18n.ts._webhookSettings.testRemarks }}
+						</div>
 					</div>
 				</MkFolder>
 
@@ -66,6 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowRef, toRefs } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import {
@@ -180,6 +196,21 @@ async function loadingScope<T>(fn: () => Promise<T>): Promise<T> {
 	}
 }
 
+async function test(type: Misskey.entities.SystemWebhook['on'][number]): Promise<void> {
+	if (!id.value) {
+		return Promise.resolve();
+	}
+
+	await os.apiWithDialog('admin/system-webhook/test', {
+		webhookId: id.value,
+		type,
+		override: {
+			secret: secret.value,
+			url: url.value,
+		},
+	});
+}
+
 onMounted(async () => {
 	await loadingScope(async () => {
 		switch (mode.value) {
@@ -234,5 +265,30 @@ onMounted(async () => {
 	background: var(--acrylicBg);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
+}
+
+.switchBox {
+	display: flex;
+	align-items: center;
+	justify-content: start;
+
+	.testButton {
+		$buttonSize: 28px;
+		padding: 0;
+		width: $buttonSize;
+		min-width: $buttonSize;
+		max-width: $buttonSize;
+		height: $buttonSize;
+		margin-left: auto;
+		line-height: normal;
+		font-size: 90%;
+		border-radius: 9999px;
+	}
+}
+
+.description {
+	font-size: 0.85em;
+	padding: 8px 0 0 0;
+	color: var(--fgTransparentWeak);
 }
 </style>

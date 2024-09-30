@@ -8,7 +8,8 @@ import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
 export const webhookEventTypes = ['mention', 'unfollow', 'follow', 'followed', 'note', 'reply', 'renote', 'reaction'] as const;
-export type WebhookEventType = (typeof webhookEventTypes)[number] | `note@${string}`;
+export type WebhookEventType = (typeof webhookEventTypes)[number] | `note@${string}`; // TODO: remove this line later
+export type WebhookEventTypes = typeof webhookEventTypes[number] | `note@${string}`;
 
 @Entity('webhook')
 export class MiWebhook {

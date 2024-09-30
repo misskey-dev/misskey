@@ -277,6 +277,17 @@ export type SigninRequest = {
 	token?: string;
 };
 
+export type SigninWithPasskeyRequest = {
+	credential?: object;
+	context?: string;
+};
+
+export type SigninWithPasskeyResponse = {
+	option?: object;
+	context?: string;
+	signinResponse?: SigninResponse;
+};
+
 export type SigninResponse = {
 	id: User['id'],
 	i: string,
