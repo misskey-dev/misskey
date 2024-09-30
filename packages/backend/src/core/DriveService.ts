@@ -11,11 +11,10 @@ import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { IsNull } from 'typeorm';
 import { DeleteObjectCommandInput, PutObjectCommandInput, NoSuchKey } from '@aws-sdk/client-s3';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/_.js';
+import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import type { MiRemoteUser, MiUser } from '@/models/User.js';
-import { MetaService } from '@/core/MetaService.js';
 import { MiDriveFile } from '@/models/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
@@ -99,6 +98,9 @@ export class DriveService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -115,7 +117,6 @@ export class DriveService {
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private idService: IdService,
-		private metaService: MetaService,
 		private downloadService: DownloadService,
 		private internalStorageService: InternalStorageService,
 		private s3Service: S3Service,
@@ -149,9 +150,7 @@ export class DriveService {
 	// thunbnail, webpublic を必要なら生成
 		const alts = await this.generateAlts(path, type, !file.uri);
 
-		const meta = await this.metaService.fetch();
-
-		if (meta.useObjectStorage) {
+		if (this.meta.useObjectStorage) {
 		//#region ObjectStorage params
 			let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) ?? ['']);
 
@@ -170,11 +169,11 @@ export class DriveService {
 				ext = '';
 			}
 
-			const baseUrl = meta.objectStorageBaseUrl
-				?? `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
+			const baseUrl = this.meta.objectStorageBaseUrl
+				?? `${ this.meta.objectStorageUseSSL ? 'https' : 'http' }://${ this.meta.objectStorageEndpoint }${ this.meta.objectStoragePort ? `:${this.meta.objectStoragePort}` : '' }/${ this.meta.objectStorageBucket }`;
 
 			// for original
-			const key = `${meta.objectStoragePrefix}/${randomUUID()}${ext}`;
+			const key = `${this.meta.objectStoragePrefix}/${randomUUID()}${ext}`;
 			const url = `${ baseUrl }/${ key }`;
 
 			// for alts
@@ -191,7 +190,7 @@ export class DriveService {
 			];
 
 			if (alts.webpublic) {
-				webpublicKey = `${meta.objectStoragePrefix}/webpublic-${randomUUID()}.${alts.webpublic.ext}`;
+				webpublicKey = `${this.meta.objectStoragePrefix}/webpublic-${randomUUID()}.${alts.webpublic.ext}`;
 				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
@@ -199,7 +198,7 @@ export class DriveService {
 			}
 
 			if (alts.thumbnail) {
-				thumbnailKey = `${meta.objectStoragePrefix}/thumbnail-${randomUUID()}.${alts.thumbnail.ext}`;
+				thumbnailKey = `${this.meta.objectStoragePrefix}/thumbnail-${randomUUID()}.${alts.thumbnail.ext}`;
 				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
@@ -376,10 +375,8 @@ export class DriveService {
 		if (type === 'image/apng') type = 'image/png';
 		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
 
-		const meta = await this.metaService.fetch();
-
 		const params = {
-			Bucket: meta.objectStorageBucket,
+			Bucket: this.meta.objectStorageBucket,
 			Key: key,
 			Body: stream,
 			ContentType: type,
@@ -392,9 +389,9 @@ export class DriveService {
 			// 許可されているファイル形式でしか拡張子をつけない
 			ext ? correctFilename(filename, ext) : filename,
 		);
-		if (meta.objectStorageSetPublicRead) params.ACL = 'public-read';
+		if (this.meta.objectStorageSetPublicRead) params.ACL = 'public-read';
 
-		await this.s3Service.upload(meta, params)
+		await this.s3Service.upload(this.meta, params)
 			.then(
 				result => {
 					if ('Bucket' in result) { // CompleteMultipartUploadCommandOutput
@@ -460,32 +457,31 @@ export class DriveService {
 		ext = null,
 	}: AddFileArgs): Promise<MiDriveFile> {
 		let skipNsfwCheck = false;
-		const instance = await this.metaService.fetch();
 		const userRoleNSFW = user && (await this.roleService.getUserPolicies(user.id)).alwaysMarkNsfw;
 		if (user == null) {
 			skipNsfwCheck = true;
 		} else if (userRoleNSFW) {
 			skipNsfwCheck = true;
 		}
-		if (instance.sensitiveMediaDetection === 'none') skipNsfwCheck = true;
-		if (user && instance.sensitiveMediaDetection === 'local' && this.userEntityService.isRemoteUser(user)) skipNsfwCheck = true;
-		if (user && instance.sensitiveMediaDetection === 'remote' && this.userEntityService.isLocalUser(user)) skipNsfwCheck = true;
+		if (this.meta.sensitiveMediaDetection === 'none') skipNsfwCheck = true;
+		if (user && this.meta.sensitiveMediaDetection === 'local' && this.userEntityService.isRemoteUser(user)) skipNsfwCheck = true;
+		if (user && this.meta.sensitiveMediaDetection === 'remote' && this.userEntityService.isLocalUser(user)) skipNsfwCheck = true;
 
 		const info = await this.fileInfoService.getFileInfo(path, {
 			skipSensitiveDetection: skipNsfwCheck,
 			sensitiveThreshold: // 感度が高いほどしきい値は低くすることになる
-			instance.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 0.1 :
-			instance.sensitiveMediaDetectionSensitivity === 'high' ? 0.3 :
-			instance.sensitiveMediaDetectionSensitivity === 'low' ? 0.7 :
-			instance.sensitiveMediaDetectionSensitivity === 'veryLow' ? 0.9 :
+			this.meta.sensitiveMediaDetectionSensitivity === 'veryHigh' ? 0.1 :
+			this.meta.sensitiveMediaDetectionSensitivity === 'high' ? 0.3 :
+			this.meta.sensitiveMediaDetectionSensitivity === 'low' ? 0.7 :
+			this.meta.sensitiveMediaDetectionSensitivity === 'veryLow' ? 0.9 :
 			0.5,
 			sensitiveThresholdForPorn: 0.75,
-			enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
+			enableSensitiveMediaDetectionForVideos: this.meta.enableSensitiveMediaDetectionForVideos,
 		});
 		this.registerLogger.info(`${JSON.stringify(info)}`);
 
 		// 現状 false positive が多すぎて実用に耐えない
-		//if (info.porn && instance.disallowUploadWhenPredictedAsPorn) {
+		//if (info.porn && this.meta.disallowUploadWhenPredictedAsPorn) {
 		//	throw new IdentifiableError('282f77bf-5816-4f72-9264-aa14d8261a21', 'Detected as porn.');
 		//}
 
@@ -589,9 +585,9 @@ export class DriveService {
 			sensitive ?? false
 			: false;
 
-		if (user && this.utilityService.isMediaSilencedHost(instance.mediaSilencedHosts, user.host)) file.isSensitive = true;
+		if (user && this.utilityService.isMediaSilencedHost(this.meta.mediaSilencedHosts, user.host)) file.isSensitive = true;
 		if (info.sensitive && profile!.autoSensitive) file.isSensitive = true;
-		if (info.sensitive && instance.setSensitiveFlagAutomatically) file.isSensitive = true;
+		if (info.sensitive && this.meta.setSensitiveFlagAutomatically) file.isSensitive = true;
 		if (userRoleNSFW) file.isSensitive = true;
 
 		if (url !== null) {
@@ -652,7 +648,7 @@ export class DriveService {
 			// ローカルユーザーのみ
 			this.perUserDriveChart.update(file, true);
 		} else {
-			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+			if (this.meta.enableChartsForFederatedInstances) {
 				this.instanceChart.updateDrive(file, true);
 			}
 		}
@@ -798,7 +794,7 @@ export class DriveService {
 			// ローカルユーザーのみ
 			this.perUserDriveChart.update(file, false);
 		} else {
-			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+			if (this.meta.enableChartsForFederatedInstances) {
 				this.instanceChart.updateDrive(file, false);
 			}
 		}
@@ -820,14 +816,13 @@ export class DriveService {
 
 	@bindThis
 	public async deleteObjectStorageFile(key: string) {
-		const meta = await this.metaService.fetch();
 		try {
 			const param = {
-				Bucket: meta.objectStorageBucket,
+				Bucket: this.meta.objectStorageBucket,
 				Key: key,
 			} as DeleteObjectCommandInput;
 
-			await this.s3Service.delete(meta, param);
+			await this.s3Service.delete(this.meta, param);
 		} catch (err: any) {
 			if (err.name === 'NoSuchKey') {
 				this.deleteLogger.warn(`The object storage had no such key to delete: ${key}. Skipping this.`, err as Error);
