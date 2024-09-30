@@ -57,6 +57,7 @@ https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Containers
 export const notificationTypes = [
 	'note',
 	'follow',
+	'unfollow',
 	'mention',
 	'reply',
 	'renote',

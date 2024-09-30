@@ -6,6 +6,7 @@
 /**
  * note - 通知オンにしているユーザーが投稿した
  * follow - フォローされた
+ * unfollow - フォロー解除された
  * mention - 投稿で自分が言及された
  * reply - 投稿に返信された
  * renote - 投稿がRenoteされた
@@ -23,6 +24,7 @@
 export const notificationTypes = [
 	'note',
 	'follow',
+	'unfollow',
 	'mention',
 	'reply',
 	'renote',

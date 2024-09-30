@@ -432,6 +432,24 @@ export class UserFollowingService implements OnModuleInit {
 			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower as MiPartialRemoteUser, followee as MiPartialLocalUser), followee));
 			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
+
+		// UnFollow
+		if (this.userEntityService.isLocalUser(followee)) {
+			this.userEntityService.pack(follower.id, followee).then(async packed => {
+				this.globalEventService.publishMainStream(followee.id, 'unfollow', packed);
+
+				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('unfollow'));
+				for (const webhook of webhooks) {
+					this.queueService.userWebhookDeliver(webhook, 'unfollow', {
+						user: packed,
+					});
+				}
+			});
+
+			// 通知を作成
+			this.notificationService.createNotification(followee.id, 'unfollow', {
+			}, follower.id);
+		}
 	}
 
 	@bindThis

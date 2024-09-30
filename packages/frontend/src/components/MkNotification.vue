@@ -18,6 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div
 			:class="[$style.subIcon, {
 				[$style.t_follow]: notification.type === 'follow',
+				[$style.t_unfollow]: notification.type === 'unfollow',
 				[$style.t_followRequestAccepted]: notification.type === 'followRequestAccepted',
 				[$style.t_receiveFollowRequest]: notification.type === 'receiveFollowRequest',
 				[$style.t_renote]: notification.type === 'renote',
@@ -31,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			}]"
 		>
 			<i v-if="notification.type === 'follow'" class="ti ti-plus"></i>
+			<i v-else-if="notification.type === 'unfollow'" class="ti ti-minus"></i>
 			<i v-else-if="notification.type === 'receiveFollowRequest'" class="ti ti-clock"></i>
 			<i v-else-if="notification.type === 'followRequestAccepted'" class="ti ti-check"></i>
 			<i v-else-if="notification.type === 'renote'" class="ti ti-repeat"></i>
@@ -61,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
 			<span v-else-if="notification.type === 'test'">{{ i18n.ts._notification.testNotification }}</span>
 			<span v-else-if="notification.type === 'exportCompleted'">{{ i18n.tsx._notification.exportOfXCompleted({ x: exportEntityName[notification.exportedEntity] }) }}</span>
-			<MkA v-else-if="notification.type === 'follow' || notification.type === 'mention' || notification.type === 'reply' || notification.type === 'renote' || notification.type === 'quote' || notification.type === 'reaction' || notification.type === 'receiveFollowRequest' || notification.type === 'followRequestAccepted'" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
+			<MkA v-else-if="notification.type === 'follow' || notification.type === 'unfollow' || notification.type === 'mention' || notification.type === 'reply' || notification.type === 'renote' || notification.type === 'quote' || notification.type === 'reaction' || notification.type === 'receiveFollowRequest' || notification.type === 'followRequestAccepted'" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
 			<span v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'">{{ i18n.tsx._notification.likedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.tsx._notification.reactedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'renote:grouped'">{{ i18n.tsx._notification.renotedBySomeUsers({ n: notification.users.length }) }}</span>
@@ -107,6 +109,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 			<template v-else-if="notification.type === 'follow'">
 				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotNewFollower }}</span>
+			</template>
+			<template v-else-if="notification.type === 'unfollow'">
+				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotUnFollower }}</span>
+				<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div>
 			</template>
 			<template v-else-if="notification.type === 'followRequestAccepted'">
 				<div :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</div>
@@ -220,6 +226,7 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	contain: content;
 
 	--eventFollow: #36aed2;
+	--eventUnFollow: #f08080;
 	--eventRenote: #36d298;
 	--eventReply: #007aff;
 	--eventReactionHeart: var(--love);
@@ -295,6 +302,12 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 .t_follow, .t_followRequestAccepted, .t_receiveFollowRequest {
 	padding: 3px;
 	background: var(--eventFollow);
+	pointer-events: none;
+}
+
+.t_unfollow {
+	padding: 3px;
+	background: var(--eventUnFollow);
 	pointer-events: none;
 }
 

@@ -71,6 +71,25 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					}];
 				}
 
+				case 'unfollow': {
+					// フォローが外されたときの処理
+					const account = await getAccountFromId(data.userId);
+					if (!account) return null;
+					const userDetail = await cli.request('users/show', { userId: data.body.userId }, account.token);
+					return [i18n.ts._notification.youWereUnFollower, {
+						body: getUserName(data.body.user),
+						icon: data.body.user.avatarUrl ?? undefined,
+						badge: iconUrl('user-minus'),
+						data,
+						actions: userDetail.isFollowing ? [] : [
+							{
+								action: 'follow',
+								title: i18n.ts._notification._actions.followBack,
+							},
+						],
+					}];
+				}
+
 				case 'mention':
 					return [i18n.tsx._notification.youGotMention({ name: getUserName(data.body.user) }), {
 						body: data.body.note.text ?? '',

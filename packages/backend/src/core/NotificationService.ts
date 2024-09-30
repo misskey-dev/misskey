@@ -179,6 +179,7 @@ export class NotificationService implements OnApplicationShutdown {
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);
 
 			if (type === 'follow') this.emailNotificationFollow(notifieeId, await this.usersRepository.findOneByOrFail({ id: notifierId! }));
+			if (type === 'unfollow') this.emailNotificationUnFollow(notifieeId, await this.usersRepository.findOneByOrFail({ id: notifierId! }));
 			if (type === 'receiveFollowRequest') this.emailNotificationReceiveFollowRequest(notifieeId, await this.usersRepository.findOneByOrFail({ id: notifierId! }));
 		}, () => { /* aborted, ignore it */ });
 
@@ -199,6 +200,18 @@ export class NotificationService implements OnApplicationShutdown {
 		const i18n = new I18n(locale);
 		// TODO: render user information html
 		sendEmail(userProfile.email, i18n.t('_email._follow.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
+		*/
+	}
+
+	@bindThis
+	private async emailNotificationUnFollow(userId: MiUser['id'], follower: MiUser) {
+		/*
+		const userProfile = await UserProfiles.findOneByOrFail({ userId: userId });
+		if (!userProfile.email || !userProfile.emailNotificationTypes.includes('follow')) return;
+		const locale = locales[userProfile.lang ?? 'ja-JP'];
+		const i18n = new I18n(locale);
+		// TODO: render user information html
+		sendEmail(userProfile.email, i18n.t('_email._unfollow.title'), `${follower.name} (@${Acct.toString(follower)})`, `${follower.name} (@${Acct.toString(follower)})`);
 		*/
 	}
 
