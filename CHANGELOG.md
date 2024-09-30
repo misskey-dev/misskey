@@ -4,6 +4,7 @@
 - Enhance: セキュリティ向上のため、サインイン時もCAPTCHAを求めるようになりました
 
 ### Client
+- Enhance: フォロワーへのメッセージ欄のデザイン改良
 - Enhance: ログイン画面の認証フローを改善
 
 ### Server
