@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 	</FormSection>
-	<FormSection>
+	<FormSection v-if="url || hashVerified">
 		<template #label>{{ i18n.ts._externalResourceInstaller._vendorInfo.title }}</template>
 		<div class="_gaps_s">
 			<MkKeyValue v-if="url">
