@@ -64,8 +64,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #value><MkUrl :url="url" :showUrlPreview="false"></MkUrl></template>
 			</MkKeyValue>
 			<MkKeyValue v-if="hashVerified">
-				<!-- TODO: ハッシュ検証に失敗した場合の表示も作る -->
-				<!-- その場合、hashVerifiedがfalseなら失敗表示、undefinedなら表示なしで分けたい -->
+				<!-- hashVerifiedがfalseでも失敗表示は出ないので、エラー表示は別で作成すること -->
+				<!-- そもそもこのコンポーネントはハッシュ検証が必要であれば事前に済ませていることを前提としている -->
 				<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
 				<template #value>
 					<i class="ti ti-check" style="color: var(--accent)"></i>
@@ -119,7 +119,7 @@ const isTheme = computed(() => props.extension.type === 'theme');
 const props = defineProps<{
 	extension: Extension;
 	url?: string;
-	hashVerified?: boolean;
+	hashVerified?: boolean; // true: 検証成功表示 false/undefined: 検証不要、表示なし
 }>();
 
 const emits = defineEmits<{
