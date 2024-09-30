@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.wrapper">
 	<div class="_gaps" :class="$style.root">
@@ -9,7 +14,7 @@
 		</div>
 
 		<MkButton large primary rounded :disabled="queryingKey" style="margin: 0 auto;" @click="queryKey">{{ i18n.ts.retry }}</MkButton>
-		
+
 		<MkButton v-if="isPerformingPasswordlessLogin !== true" transparent rounded :disabled="queryingKey" style="margin: 0 auto;" @click="emit('useTotp')">{{ i18n.ts.useTotp }}</MkButton>
 	</div>
 </div>
