@@ -104,6 +104,10 @@ const isBackupCode = ref(false);
 const queryingKey = ref(false);
 let credentialRequest: CredentialRequestOptions | null = null;
 const passkey_context = ref('');
+const hcaptcha = ref<Captcha | undefined>();
+const mcaptcha = ref<Captcha | undefined>();
+const recaptcha = ref<Captcha | undefined>();
+const turnstile = ref<Captcha | undefined>();
 const hCaptchaResponse = ref<string | null>(null);
 const mCaptchaResponse = ref<string | null>(null);
 const reCaptchaResponse = ref<string | null>(null);
@@ -258,6 +262,11 @@ function onSubmit(): void {
 }
 
 function loginFailed(err: any): void {
+	hcaptcha.value?.reset?.();
+	mcaptcha.value?.reset?.();
+	recaptcha.value?.reset?.();
+	turnstile.value?.reset?.();
+
 	switch (err.id) {
 		case '6cc579cc-885d-43d8-95c2-b8c7fc963280': {
 			os.alert({
