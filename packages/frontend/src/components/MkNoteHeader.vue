@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <header :class="$style.root">
-	<component :is="defaultStore.state.enableCondensedLine ? 'MkCondensedLine' : 'div'" :minScale="0.5" style="min-width: 0;">
+	<component :is="defaultStore.state.enableCondensedLine ? 'MkCondensedLine' : 'div'" :minScale="0.7" style="min-width: 0;">
 		<div style="display: flex; white-space: nowrap; align-items: baseline;">
 			<div v-if="mock" :class="$style.name">
 				<MkUserName :user="note.user"/>
