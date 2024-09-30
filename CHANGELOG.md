@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Enhance: ログイン画面の認証フローを改善
 
 ### Server
 -
