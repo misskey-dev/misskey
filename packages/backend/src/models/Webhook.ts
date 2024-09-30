@@ -8,7 +8,6 @@ import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
 export const webhookEventTypes = ['mention', 'unfollow', 'follow', 'followed', 'note', 'reply', 'renote', 'reaction'] as const;
-export type WebhookEventType = (typeof webhookEventTypes)[number] | `note@${string}`; // TODO: remove this line later
 export type WebhookEventTypes = typeof webhookEventTypes[number] | `note@${string}`;
 
 @Entity('webhook')
@@ -39,7 +38,7 @@ export class MiWebhook {
 	@Column('varchar', {
 		length: 128, array: true, default: '{}',
 	})
-	public on: WebhookEventType[];
+	public on: WebhookEventTypes[];
 
 	@Column('varchar', {
 		length: 1024,

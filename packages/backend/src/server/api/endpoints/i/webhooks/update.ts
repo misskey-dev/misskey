@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { WebhooksRepository } from '@/models/_.js';
-import { webhookEventTypes, WebhookEventType } from '@/models/Webhook.js';
+import { webhookEventTypes, WebhookEventTypes } from '@/models/Webhook.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				name: ps.name,
 				url: ps.url,
 				secret: ps.secret === null ? '' : ps.secret,
-				on: ps.on as WebhookEventType[],
+				on: ps.on as WebhookEventTypes[],
 				active: ps.active,
 			});
 
