@@ -6,13 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m" :class="$style.extInstallerRoot">
 	<div :class="$style.extInstallerIconWrapper">
-		<i v-if="extension.type === 'plugin'" class="ti ti-plug"></i>
-		<i v-else-if="extension.type === 'theme'" class="ti ti-palette"></i>
+		<i v-if="isPlugin" class="ti ti-plug"></i>
+		<i v-else-if="isTheme" class="ti ti-palette"></i>
+		<!-- 拡張用？ -->
 		<i v-else class="ti ti-download"></i>
 	</div>
 	<h2 :class="$style.extInstallerTitle">{{ i18n.ts._externalResourceInstaller[`_${extension.type}`].title }}</h2>
 	<div :class="$style.extInstallerNormDesc">{{ i18n.ts._externalResourceInstaller.checkVendorBeforeInstall }}</div>
-	<MkInfo v-if="extension.type === 'plugin'" :warn="true">{{ i18n.ts._plugin.installWarn }}</MkInfo>
+	<MkInfo v-if="isPlugin" :warn="true">{{ i18n.ts._plugin.installWarn }}</MkInfo>
 	<FormSection>
 		<template #label>{{ i18n.ts._externalResourceInstaller[`_${extension.type}`].metaTitle }}</template>
 		<div class="_gaps_s">
@@ -26,25 +27,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #value>{{ extension.meta.author }}</template>
 				</MkKeyValue>
 			</FormSplit>
-			<MkKeyValue v-if="extension.type === 'plugin'">
+			<MkKeyValue v-if="isPlugin">
 				<template #key>{{ i18n.ts.description }}</template>
-				<template #value>{{ extension.meta.description }}</template>
+				<template #value>{{ extension.meta.description ?? i18n.ts.none }}</template>
 			</MkKeyValue>
-			<MkKeyValue v-if="extension.type === 'plugin'">
+			<MkKeyValue v-if="isPlugin">
 				<template #key>{{ i18n.ts.version }}</template>
 				<template #value>{{ extension.meta.version }}</template>
 			</MkKeyValue>
-			<MkKeyValue v-if="extension.type === 'plugin'">
+			<MkKeyValue v-if="isPlugin">
 				<template #key>{{ i18n.ts.permission }}</template>
 				<template #value>
-					<ul :class="$style.extInstallerKVList">
+					<ul v-if="extension.meta.permissions && extension.meta.permissions.length > 0" :class="$style.extInstallerKVList">
 						<li v-for="permission in extension.meta.permissions" :key="permission">{{ i18n.ts._permissions[permission] }}</li>
 					</ul>
+					<template v-else>{{ i18n.ts.none }}</template>
 				</template>
 			</MkKeyValue>
-			<MkKeyValue v-if="extension.type === 'theme' && extension.meta.base">
+			<MkKeyValue v-if="isTheme">
 				<template #key>{{ i18n.ts._externalResourceInstaller._meta.base }}</template>
-				<template #value>{{ i18n.ts[extension.meta.base] }}</template>
+				<template #value>{{ i18n.ts[extension.meta.base ?? 'none'] }}</template>
 			</MkKeyValue>
 			<MkFolder>
 				<template #icon><i class="ti ti-code"></i></template>
@@ -81,9 +83,9 @@ export type Extension = {
 	raw: string;
 	meta: {
 		name: string;
+		version: string;
 		author: string;
 		description?: string;
-		version?: string;
 		permissions?: string[];
 		config?: Record<string, any>;
 	};
@@ -98,6 +100,7 @@ export type Extension = {
 };
 </script>
 <script lang="ts" setup>
+import { computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -107,6 +110,9 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import { i18n } from '@/i18n.js';
+
+const isPlugin = computed(() => props.extension.type === 'plugin');
+const isTheme = computed(() => props.extension.type === 'theme');
 
 const props = defineProps<{
 	extension: Extension;
