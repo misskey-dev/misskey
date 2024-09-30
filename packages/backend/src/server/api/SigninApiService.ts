@@ -20,6 +20,9 @@ import { bindThis } from '@/decorators.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { CaptchaService } from '@/core/CaptchaService.js';
+import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
+import { MetaService } from '@/core/MetaService.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
@@ -46,6 +49,8 @@ export class SigninApiService {
 		private signinService: SigninService,
 		private userAuthService: UserAuthService,
 		private webAuthnService: WebAuthnService,
+		private metaService: MetaService,
+		private captchaService: CaptchaService,
 	) {
 	}
 
@@ -57,6 +62,10 @@ export class SigninApiService {
 				password: string;
 				token?: string;
 				credential?: AuthenticationResponseJSON;
+				'hcaptcha-response'?: string;
+				'g-recaptcha-response'?: string;
+				'turnstile-response'?: string;
+				'm-captcha-response'?: string;
 			};
 		}>,
 		reply: FastifyReply,
@@ -157,6 +166,33 @@ export class SigninApiService {
 		};
 
 		if (!profile.twoFactorEnabled) {
+			if (process.env.NODE_ENV !== 'test') {
+				const meta = await this.metaService.fetch();
+				if (meta.enableHcaptcha && meta.hcaptchaSecretKey) {
+					await this.captchaService.verifyHcaptcha(meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+
+				if (meta.enableMcaptcha && meta.mcaptchaSecretKey && meta.mcaptchaSitekey && meta.mcaptchaInstanceUrl) {
+					await this.captchaService.verifyMcaptcha(meta.mcaptchaSecretKey, meta.mcaptchaSitekey, meta.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+
+				if (meta.enableRecaptcha && meta.recaptchaSecretKey) {
+					await this.captchaService.verifyRecaptcha(meta.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+
+				if (meta.enableTurnstile && meta.turnstileSecretKey) {
+					await this.captchaService.verifyTurnstile(meta.turnstileSecretKey, body['turnstile-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+			}
+
 			if (same) {
 				logger.info('Successfully signed in with password.');
 				return this.signinService.signin(request, reply, user);

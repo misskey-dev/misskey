@@ -90,6 +90,7 @@ const emit = defineEmits<{
 const host = toUnicode(config.host);
 
 const hcaptcha = ref<Captcha | undefined>();
+const mcaptcha = ref<Captcha | undefined>();
 const recaptcha = ref<Captcha | undefined>();
 const turnstile = ref<Captcha | undefined>();
 
@@ -217,6 +218,7 @@ async function onSubmit(): Promise<void> {
 	} catch {
 		submitting.value = false;
 		hcaptcha.value?.reset?.();
+		mcaptcha.value?.reset?.();
 		recaptcha.value?.reset?.();
 		turnstile.value?.reset?.();
 	}

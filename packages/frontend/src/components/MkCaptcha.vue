@@ -91,6 +91,7 @@ if (loaded || props.provider === 'mcaptcha') {
 
 function reset() {
 	if (captcha.value.reset) captcha.value.reset();
+	emit('update:modelValue', null);
 }
 
 async function requestRender() {
