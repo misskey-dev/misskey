@@ -131,3 +131,7 @@ jobs:
           mode: delete
           message: "Thank you!"
           create_if_not_exists: false
+
+      - name: Make failure if changes are detected
+        if: steps.check-changes.outputs.changes == 'true'
+        run: exit 1
