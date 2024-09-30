@@ -105,6 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 
 					<MkFolder>
+						<template #label>未知のリモートユーザーによる通知</template>
 						<MkSwitch v-model="nirilaBlockMentionsFromUnfamiliarRemoteUsers">
 							<template #label>未知のリモートユーザーによる通知が発生するノートをブロックする</template>
 						</MkSwitch>
