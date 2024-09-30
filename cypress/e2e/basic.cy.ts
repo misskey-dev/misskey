@@ -144,11 +144,9 @@ describe('After user signup', () => {
 
 		cy.get('[data-cy-signin-page-input]').should('be.visible', { timeout: 1000 });
 		cy.get('[data-cy-signin-username] input').type('alice{enter}');
-		cy.get('[data-cy-signin-page-password]').should('be.visible', { timeout: 10000 });
-		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
 
 		// TODO: cypressにブラウザの言語指定できる機能が実装され次第英語のみテストするようにする
-		cy.contains(/アカウントが凍結されています|This account has been suspended due to/gi);
+		cy.contains(/ユーザーが見つかりません|User not found/gi);
 	});
 });
 

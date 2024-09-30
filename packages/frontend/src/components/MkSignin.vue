@@ -161,7 +161,7 @@ async function onUsernameSubmitted(username: string) {
 
 	userInfo.value = await misskeyApi('users/show', {
 		username,
-	});
+	}).catch(() => null);
 
 	if (userInfo.value == null) {
 		await os.alert({
