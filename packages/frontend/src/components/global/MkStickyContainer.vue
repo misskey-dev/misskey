@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl">
+<div>
 	<div ref="headerEl">
 		<slot name="header"></slot>
 	</div>
@@ -27,7 +27,6 @@ import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } 
 
 import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@@/js/const.js';
 
-const rootEl = shallowRef<HTMLElement>();
 const headerEl = shallowRef<HTMLElement>();
 const footerEl = shallowRef<HTMLElement>();
 const bodyEl = shallowRef<HTMLElement>();
@@ -98,9 +97,5 @@ onMounted(() => {
 
 onUnmounted(() => {
 	observer.disconnect();
-});
-
-defineExpose({
-	rootEl: rootEl,
 });
 </script>
