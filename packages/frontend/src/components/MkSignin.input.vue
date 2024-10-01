@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
 		</div>
 		<div>
-			<MkButton type="submit" style="margin: auto auto;" rounded primary gradate @click="emit('passkeyClick', $event)">
+			<MkButton type="submit" style="margin: auto auto;" large rounded primary gradate @click="emit('passkeyClick', $event)">
 				<i class="ti ti-device-usb" style="font-size: medium;"></i>{{ i18n.ts.signinWithPasskey }}
 			</MkButton>
 		</div>
