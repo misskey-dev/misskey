@@ -66,20 +66,6 @@ onMounted(() => {
 
 	watch([parentStickyTop, parentStickyBottom], calc);
 
-	watch(childStickyTop, () => {
-		if (bodyEl.value == null) return;
-		bodyEl.value.style.setProperty('--stickyTop', `${childStickyTop.value}px`);
-	}, {
-		immediate: true,
-	});
-
-	watch(childStickyBottom, () => {
-		if (bodyEl.value == null) return;
-		bodyEl.value.style.setProperty('--stickyBottom', `${childStickyBottom.value}px`);
-	}, {
-		immediate: true,
-	});
-
 	if (headerEl.value != null) {
 		observer.observe(headerEl.value);
 	}
@@ -98,6 +84,8 @@ onUnmounted(() => {
 .body {
 	position: relative;
 	z-index: 0;
+	--stickyTop: v-bind("childStickyTop + 'px'");
+	--stickyBottom: v-bind("childStickyBottom + 'px'");
 }
 
 .header {
