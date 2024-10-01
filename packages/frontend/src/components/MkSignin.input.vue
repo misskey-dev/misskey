@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.wrapper" data-cy-signin-page-input>
-	<div class="_gaps" :class="$style.root">
+	<div :class="$style.root">
 		<div :class="$style.avatar" :style="{ marginBottom: message ? '1.5em' : undefined }">
 			<i class="ti ti-user"></i>
 		</div>
@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
 		</div>
 		<div>
-			<MkButton type="submit" style="margin: auto auto;" rounded primary @click="emit('passkeyClick', $event)">
+			<MkButton type="submit" style="margin: auto auto;" rounded primary gradate @click="emit('passkeyClick', $event)">
 				<i class="ti ti-device-usb" style="font-size: medium;"></i>{{ i18n.ts.signinWithPasskey }}
 			</MkButton>
 		</div>
@@ -56,17 +56,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import { toUnicode } from 'punycode/';
 
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-
 import { query, extractDomain } from '@@/js/url.js';
 import { host as configHost } from '@@/js/config.js';
+import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
-
-import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 
 const props = withDefaults(defineProps<{
 	message?: string,
@@ -145,11 +143,17 @@ async function specifyHostAndOpenRemote(options: OpenOnRemoteOptions): Promise<v
 </script>
 
 <style lang="scss" module>
+.root {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
 .wrapper {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	min-height: 360px;
+	min-height: 300px;
 
 	> .root {
 		width: 100%;
