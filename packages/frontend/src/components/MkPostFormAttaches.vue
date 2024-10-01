@@ -140,7 +140,7 @@ async function crop(file: Misskey.entities.DriveFile): Promise<void> {
 	emit('replaceFile', file, newFile);
 }
 
-function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent|KeyboardEvent): void {
+function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | KeyboardEvent): void {
 	if (menuShowing) return;
 
 	const isImage = file.type.startsWith('image/');
