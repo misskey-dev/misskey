@@ -1,10 +1,10 @@
 {
-	"name": "misskey",
+	"name": "misskeyforkfeskey",
 	"version": "2024.9.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/FestingSNS/feskey.git"
 	},
 	"packageManager": "pnpm@9.6.0",
 	"workspaces": [
