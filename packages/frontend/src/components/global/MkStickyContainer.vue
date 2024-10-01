@@ -5,18 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<div ref="headerEl">
+	<div ref="headerEl" :class="$style.header">
 		<slot name="header"></slot>
 	</div>
 	<div
 		ref="bodyEl"
+		:class="$style.body"
 		:data-sticky-container-header-height="headerHeight"
 		:data-sticky-container-footer-height="footerHeight"
-		style="position: relative; z-index: 0;"
 	>
 		<slot></slot>
 	</div>
-	<div ref="footerEl">
+	<div ref="footerEl" :class="$style.footer">
 		<slot name="footer"></slot>
 	</div>
 </div>
@@ -81,16 +81,10 @@ onMounted(() => {
 	});
 
 	if (headerEl.value != null) {
-		headerEl.value.style.position = 'sticky';
-		headerEl.value.style.top = 'var(--stickyTop, 0)';
-		headerEl.value.style.zIndex = '1';
 		observer.observe(headerEl.value);
 	}
 
 	if (footerEl.value != null) {
-		footerEl.value.style.position = 'sticky';
-		footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
-		footerEl.value.style.zIndex = '1';
 		observer.observe(footerEl.value);
 	}
 });
@@ -99,3 +93,22 @@ onUnmounted(() => {
 	observer.disconnect();
 });
 </script>
+
+<style lang='scss' module>
+.body {
+	position: relative;
+	z-index: 0;
+}
+
+.header {
+	position: sticky;
+	top: var(--stickyTop, 0);
+	z-index: 1;
+}
+
+.footer {
+	position: sticky;
+	bottom: var(--stickyBottom, 0);
+	z-index: 1;
+}
+</style>
