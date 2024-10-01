@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA v-user-preview="canonical" :class="[$style.root]" :to="url" :style="{ background: bgCss }">
+<MkA :class="[$style.root]" :to="url" :style="{ background: bgCss }">
 	<span>
 		<span>@{{ username }}</span>
 		<span v-if="(host != localHost)" :class="$style.host">@{{ toUnicode(host) }}</span>

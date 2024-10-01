@@ -50,7 +50,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import type { BasicTimelineType } from '@/timelines.js';
@@ -189,7 +189,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 		}),
 		(channels.length === 0 ? undefined : { type: 'divider' }),
 		{
-			type: 'link' as const,
+			type: 'link',
 			icon: 'ti ti-plus',
 			text: i18n.ts.createNew,
 			to: '/channels',
@@ -258,16 +258,24 @@ const headerActions = computed(() => {
 			icon: 'ti ti-dots',
 			text: i18n.ts.options,
 			handler: (ev) => {
-				os.popupMenu([{
+				const menuItems: MenuItem[] = [];
+
+				menuItems.push({
 					type: 'switch',
 					text: i18n.ts.showRenotes,
 					ref: withRenotes,
-				}, isBasicTimeline(src.value) && hasWithReplies(src.value) ? {
-					type: 'switch',
-					text: i18n.ts.showRepliesToOthersInTimeline,
-					ref: withReplies,
-					disabled: onlyFiles,
-				} : undefined, {
+				});
+
+				if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
+					menuItems.push({
+						type: 'switch',
+						text: i18n.ts.showRepliesToOthersInTimeline,
+						ref: withReplies,
+						disabled: onlyFiles,
+					});
+				}
+
+				menuItems.push({
 					type: 'switch',
 					text: i18n.ts.withSensitive,
 					ref: withSensitive,
@@ -276,7 +284,9 @@ const headerActions = computed(() => {
 					text: i18n.ts.fileAttachedOnly,
 					ref: onlyFiles,
 					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
-				}], ev.currentTarget ?? ev.target);
+				});
+
+				os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 			},
 		},
 	];

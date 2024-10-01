@@ -359,6 +359,9 @@ type AdminSystemWebhookShowRequest = operations['admin___system-webhook___show']
 type AdminSystemWebhookShowResponse = operations['admin___system-webhook___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminSystemWebhookTestRequest = operations['admin___system-webhook___test']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminSystemWebhookUpdateRequest = operations['admin___system-webhook___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -668,7 +671,7 @@ export type Channels = {
     };
     hashtag: {
         params: {
-            q?: string;
+            q: string[][];
         };
         events: {
             note: (payload: Note) => void;
@@ -1157,6 +1160,10 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SigninRequest;
         res: SigninResponse;
     };
+    'signin-with-passkey': {
+        req: SigninWithPasskeyRequest;
+        res: SigninWithPasskeyResponse;
+    };
     'admin/roles/create': {
         req: Overwrite<AdminRolesCreateRequest, {
             policies: PartialRolePolicyOverride;
@@ -1188,6 +1195,8 @@ declare namespace entities {
         SignupPendingRequest,
         SignupPendingResponse,
         SigninRequest,
+        SigninWithPasskeyRequest,
+        SigninWithPasskeyResponse,
         SigninResponse,
         PartialRolePolicyOverride,
         EmptyRequest,
@@ -1308,6 +1317,7 @@ declare namespace entities {
         AdminSystemWebhookShowResponse,
         AdminSystemWebhookUpdateRequest,
         AdminSystemWebhookUpdateResponse,
+        AdminSystemWebhookTestRequest,
         AnnouncementsRequest,
         AnnouncementsResponse,
         AnnouncementsShowRequest,
@@ -1567,6 +1577,7 @@ declare namespace entities {
         IWebhooksShowResponse,
         IWebhooksUpdateRequest,
         IWebhooksDeleteRequest,
+        IWebhooksTestRequest,
         InviteCreateResponse,
         InviteDeleteRequest,
         InviteListRequest,
@@ -2370,6 +2381,9 @@ type IWebhooksShowRequest = operations['i___webhooks___show']['requestBody']['co
 type IWebhooksShowResponse = operations['i___webhooks___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IWebhooksTestRequest = operations['i___webhooks___test']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type IWebhooksUpdateRequest = operations['i___webhooks___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3019,6 +3033,19 @@ type SigninRequest = {
 type SigninResponse = {
     id: User['id'];
     i: string;
+};
+
+// @public (undocumented)
+type SigninWithPasskeyRequest = {
+    credential?: object;
+    context?: string;
+};
+
+// @public (undocumented)
+type SigninWithPasskeyResponse = {
+    option?: object;
+    context?: string;
+    signinResponse?: SigninResponse;
 };
 
 // @public (undocumented)

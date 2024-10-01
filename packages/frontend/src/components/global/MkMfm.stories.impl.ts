@@ -2,16 +2,15 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+ 
 import { StoryObj } from '@storybook/vue3';
 import { expect, within } from '@storybook/test';
-import MkMisskeyFlavoredMarkdown from './MkMisskeyFlavoredMarkdown.js';
+import MkMfm from './MkMfm.js';
 export const Default = {
 	render(args) {
 		return {
 			components: {
-				MkMisskeyFlavoredMarkdown,
+				MkMfm,
 			},
 			setup() {
 				return {
@@ -25,7 +24,7 @@ export const Default = {
 					};
 				},
 			},
-			template: '<MkMisskeyFlavoredMarkdown v-bind="props" />',
+			template: '<MkMfm v-bind="props" />',
 		};
 	},
 	async play({ canvasElement, args }) {
@@ -54,25 +53,25 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof MkMisskeyFlavoredMarkdown>;
+} satisfies StoryObj<typeof MkMfm>;
 export const Plain = {
 	...Default,
 	args: {
 		...Default.args,
 		plain: true,
 	},
-} satisfies StoryObj<typeof MkMisskeyFlavoredMarkdown>;
+} satisfies StoryObj<typeof MkMfm>;
 export const Nowrap = {
 	...Default,
 	args: {
 		...Default.args,
 		nowrap: true,
 	},
-} satisfies StoryObj<typeof MkMisskeyFlavoredMarkdown>;
+} satisfies StoryObj<typeof MkMfm>;
 export const IsNotNote = {
 	...Default,
 	args: {
 		...Default.args,
 		isNote: false,
 	},
-} satisfies StoryObj<typeof MkMisskeyFlavoredMarkdown>;
+} satisfies StoryObj<typeof MkMfm>;

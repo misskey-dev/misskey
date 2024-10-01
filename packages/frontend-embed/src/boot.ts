@@ -20,16 +20,19 @@ import { serverMetadata } from '@/server-metadata.js';
 import { url } from '@@/js/config.js';
 import { parseEmbedParams } from '@@/js/embed-page.js';
 import { postMessageToParentWindow, setIframeId } from '@/post-message.js';
+import { serverContext } from '@/server-context.js';
 
 import type { Theme } from '@/theme.js';
 
 console.log('Misskey Embed');
 
+//#region Embedパラメータの取得・パース
 const params = new URLSearchParams(location.search);
 const embedParams = parseEmbedParams(params);
-
 if (_DEV_) console.log(embedParams);
+//#endregion
 
+//#region テーマ
 function parseThemeOrNull(theme: string | null): Theme | null {
 	if (theme == null) return null;
 	try {
@@ -65,6 +68,7 @@ if (embedParams.colorMode === 'dark') {
 		}
 	});
 }
+//#endregion
 
 // サイズの制限
 document.documentElement.style.maxWidth = '500px';
@@ -88,6 +92,10 @@ const app = createApp(
 );
 
 app.provide(DI.mediaProxy, new MediaProxy(serverMetadata, url));
+
+app.provide(DI.serverMetadata, serverMetadata);
+
+app.provide(DI.serverContext, serverContext);
 
 app.provide(DI.embedParams, embedParams);
 

@@ -63,6 +63,7 @@ function getReactionName(reaction: string): string {
 .reactionIcon {
 	display: block;
 	width: 60px;
+	max-height: 60px;
 	font-size: 60px; // unicodeな絵文字についてはwidthが効かないため
 	object-fit: contain;
 	margin: 0 auto;

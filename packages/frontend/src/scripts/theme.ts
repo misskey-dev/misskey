@@ -74,6 +74,8 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	const colorScheme = theme.base === 'dark' ? 'dark' : 'light';
 
+	document.documentElement.dataset.colorScheme = colorScheme;
+
 	// Deep copy
 	const _theme = deepClone(theme);
 

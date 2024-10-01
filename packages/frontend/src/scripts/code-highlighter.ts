@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getHighlighterCore, loadWasm } from 'shiki/core';
+import { createHighlighterCore, loadWasm } from 'shiki/core';
 import darkPlus from 'shiki/themes/dark-plus.mjs';
 import { bundledThemesInfo } from 'shiki/themes';
 import { bundledLanguagesInfo } from 'shiki/langs';
@@ -69,7 +69,7 @@ async function initHighlighter() {
 	]);
 
 	const jsLangInfo = bundledLanguagesInfo.find(t => t.id === 'javascript');
-	const highlighter = await getHighlighterCore({
+	const highlighter = await createHighlighterCore({
 		themes,
 		langs: [
 			...(jsLangInfo ? [async () => await jsLangInfo.import()] : []),

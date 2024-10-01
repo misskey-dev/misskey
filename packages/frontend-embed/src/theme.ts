@@ -39,6 +39,10 @@ export function applyTheme(theme: Theme, persist = true) {
 		document.documentElement.classList.remove('_themeChanging_');
 	}, 1000);
 
+	const colorScheme = theme.base === 'dark' ? 'dark' : 'light';
+
+	document.documentElement.dataset.colorScheme = colorScheme;
+
 	// Deep copy
 	const _theme = JSON.parse(JSON.stringify(theme));
 

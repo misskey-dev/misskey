@@ -125,7 +125,7 @@ export const navbarItemDef = reactive({
 	ui: {
 		title: i18n.ts.switchUi,
 		icon: 'ti ti-devices',
-		action: (ev) => {
+		action: (ev: MouseEvent) => {
 			os.popupMenu([{
 				text: i18n.ts.default,
 				active: ui === 'default' || ui === null,

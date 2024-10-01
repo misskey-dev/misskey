@@ -229,6 +229,7 @@ function onMousedown(evt: MouseEvent): void {
 	}
 
 	&.danger {
+		font-weight: bold;
 		color: #ff2a2a;
 
 		&.primary {
@@ -246,7 +247,7 @@ function onMousedown(evt: MouseEvent): void {
 	}
 
 	&:disabled {
-		opacity: 0.7;
+		opacity: 0.5;
 	}
 
 	&:focus-visible {

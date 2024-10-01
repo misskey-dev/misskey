@@ -36,19 +36,27 @@ export function getScrollPosition(el: HTMLElement | null): number {
 	return container == null ? window.scrollY : container.scrollTop;
 }
 
-export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance = 1, once = false) {
+export function onScrollTop(el: HTMLElement, cb: (topVisible: boolean) => unknown, tolerance = 1, once = false) {
 	// とりあえず評価してみる
-	if (el.isConnected && isTopVisible(el)) {
-		cb();
+	const firstTopVisible = isTopVisible(el);
+	if (el.isConnected && firstTopVisible) {
+		cb(firstTopVisible);
 		if (once) return null;
 	}
 
 	const container = getScrollContainer(el) ?? window;
 
+	// 以下のケースにおいて、cbが何度も呼び出されてしまって具合が悪いので1回呼んだら以降は無視するようにする
+	// - スクロールイベントは1回のスクロールで複数回発生することがある
+	// - toleranceの範囲内に収まる程度の微量なスクロールが発生した
+	let prevTopVisible = firstTopVisible;
 	const onScroll = () => {
 		if (!document.body.contains(el)) return;
-		if (isTopVisible(el, tolerance)) {
-			cb();
+
+		const topVisible = isTopVisible(el, tolerance);
+		if (topVisible !== prevTopVisible) {
+			prevTopVisible = topVisible;
+			cb(topVisible);
 			if (once) removeListener();
 		}
 	};
@@ -126,6 +134,7 @@ export function scrollToBottom(
 
 export function isTopVisible(el: HTMLElement, tolerance = 1): boolean {
 	const scrollTop = getScrollPosition(el);
+	if (_DEV_) console.log(scrollTop, tolerance, scrollTop <= tolerance);
 	return scrollTop <= tolerance;
 }
 

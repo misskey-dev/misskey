@@ -12,6 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		ref="bodyEl"
 		:data-sticky-container-header-height="headerHeight"
 		:data-sticky-container-footer-height="footerHeight"
+		style="position: relative; z-index: 0;"
 	>
 		<slot></slot>
 	</div>
@@ -83,14 +84,14 @@ onMounted(() => {
 	if (headerEl.value != null) {
 		headerEl.value.style.position = 'sticky';
 		headerEl.value.style.top = 'var(--stickyTop, 0)';
-		headerEl.value.style.zIndex = '1000';
+		headerEl.value.style.zIndex = '1';
 		observer.observe(headerEl.value);
 	}
 
 	if (footerEl.value != null) {
 		footerEl.value.style.position = 'sticky';
 		footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
-		footerEl.value.style.zIndex = '1000';
+		footerEl.value.style.zIndex = '1';
 		observer.observe(footerEl.value);
 	}
 });

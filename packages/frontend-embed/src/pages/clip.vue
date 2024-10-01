@@ -5,8 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<EmLoading v-if="loading"/>
-	<EmTimelineContainer v-else-if="clip" :showHeader="embedParams.header">
+	<EmTimelineContainer v-if="clip" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.clipHeader">
 				<div :class="$style.headerClipIconRoot">
@@ -39,20 +38,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, computed, shallowRef, inject } from 'vue';
+import { ref, computed, inject, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { scrollToTop } from '@@/js/scroll.js';
+import { url, instanceName } from '@@/js/config.js';
+import { isLink } from '@@/js/is-link.js';
+import { defaultEmbedParams } from '@@/js/embed-page.js';
 import type { Paging } from '@/components/EmPagination.vue';
-import EmLoading from '@/components/EmLoading.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { serverMetadata } from '@/server-metadata.js';
-import { url, instanceName } from '@@/js/config.js';
-import { isLink } from '@@/js/is-link.js';
-import { defaultEmbedParams } from '@@/js/embed-page.js';
+import { assertServerContext } from '@/server-context.js';
 import { DI } from '@/di.js';
 
 const props = defineProps<{
@@ -61,16 +59,30 @@ const props = defineProps<{
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
-const clip = ref<Misskey.entities.Clip | null>(null);
+const serverMetadata = inject(DI.serverMetadata)!;
+
+const serverContext = inject(DI.serverContext)!;
+
+const clip = ref<Misskey.entities.Clip | null>();
+
+if (assertServerContext(serverContext, 'clip')) {
+	clip.value = serverContext.clip;
+} else {
+	clip.value = await misskeyApi('clips/show', {
+		clipId: props.clipId,
+	}).catch(() => {
+		return null;
+	});
+}
+
 const pagination = computed(() => ({
 	endpoint: 'clips/notes',
 	params: {
 		clipId: props.clipId,
 	},
 } as Paging));
-const loading = ref(true);
 
-const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
+const notesEl = useTemplateRef('notesEl');
 
 function top(ev: MouseEvent) {
 	const target = ev.target as HTMLElement | null;
@@ -80,16 +92,6 @@ function top(ev: MouseEvent) {
 		scrollToTop(notesEl.value.$el as HTMLElement, { behavior: 'smooth' });
 	}
 }
-
-misskeyApi('clips/show', {
-	clipId: props.clipId,
-}).then(res => {
-	clip.value = res;
-	loading.value = false;
-}).catch(err => {
-	console.error(err);
-	loading.value = false;
-});
 </script>
 
 <style lang="scss" module>
