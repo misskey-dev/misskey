@@ -9,11 +9,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #item="{element}">
 			<div
 				:class="$style.file"
+				role="button"
+				tabindex="0"
 				@click="showFileMenu(element, $event)"
 				@keydown.space.enter="showFileMenu(element, $event)"
 				@contextmenu.prevent="showFileMenu(element, $event)"
-				role="button"
-				tabindex="0"
 			>
 				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
 				<div v-if="element.isSensitive" :class="$style.sensitive">
