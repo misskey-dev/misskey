@@ -217,6 +217,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkInput>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeQuoteNotificationSetting, 'canChangeQuoteNotificationSetting'])">
+							<template #label>{{ i18n.ts._role._options.canChangeQuoteNotificationSetting }}</template>
+							<template #suffix>{{ policies.canChangeQuoteNotificationSetting ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canChangeQuoteNotificationSetting">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canImportAntennas, 'canImportAntennas'])">
 							<template #label>{{ i18n.ts._role._options.canImportAntennas }}</template>
 							<template #suffix>{{ policies.canImportAntennas ? i18n.ts.yes : i18n.ts.no }}</template>

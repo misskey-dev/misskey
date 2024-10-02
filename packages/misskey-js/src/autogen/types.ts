@@ -4842,6 +4842,7 @@ export type components = {
       userEachUserListsLimit: number;
       rateLimitFactor: number;
       avatarDecorationLimit: number;
+			canChangeQuoteNotificationSetting: boolean,
       canImportAntennas: boolean;
       canImportBlocking: boolean;
       canImportFollowing: boolean;
