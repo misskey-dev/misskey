@@ -10,7 +10,6 @@
  * mention - 投稿で自分が言及された
  * reply - 投稿に返信された
  * renote - 投稿がRenoteされた
- * quote - 投稿が引用Renoteされた
  * reaction - 投稿にリアクションされた
  * pollEnded - 自分のアンケートもしくは自分が投票したアンケートが終了した
  * receiveFollowRequest - フォローリクエストされた
@@ -28,7 +27,6 @@ export const notificationTypes = [
 	'mention',
 	'reply',
 	'renote',
-	'quote',
 	'reaction',
 	'pollEnded',
 	'receiveFollowRequest',

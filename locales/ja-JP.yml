@@ -2444,7 +2444,6 @@ _notification:
   fileUploaded: "ファイルがアップロードされました"
   youGotMention: "{name}からのメンション"
   youGotReply: "{name}からのリプライ"
-  youGotQuote: "{name}による引用"
   youRenoted: "{name}がRenoteしました"
   youWereFollowed: "フォローされました"
   youWereUnFollower: "フォロー解除されました"

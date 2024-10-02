@@ -137,7 +137,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const noteIds = notifications
-				.filter((notification): notification is FilterUnionByProperty<MiNotification, 'type', 'mention' | 'reply' | 'quote'> => ['mention', 'reply', 'quote'].includes(notification.type))
+				.filter((notification): notification is FilterUnionByProperty<MiNotification, 'type', 'mention' | 'reply'> => ['mention', 'reply'].includes(notification.type))
 				.map(notification => notification.noteId);
 
 			if (noteIds.length > 0) {

@@ -30,9 +30,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="emailNotification_reply">
 				{{ i18n.ts._notification._types.reply }}
 			</MkSwitch>
-			<MkSwitch v-model="emailNotification_quote">
-				{{ i18n.ts._notification._types.quote }}
-			</MkSwitch>
 			<MkSwitch v-model="emailNotification_follow">
 				{{ i18n.ts._notification._types.follow }}
 			</MkSwitch>
@@ -86,7 +83,6 @@ async function saveEmailAddress() {
 
 const emailNotification_mention = ref($i.emailNotificationTypes.includes('mention'));
 const emailNotification_reply = ref($i.emailNotificationTypes.includes('reply'));
-const emailNotification_quote = ref($i.emailNotificationTypes.includes('quote'));
 const emailNotification_follow = ref($i.emailNotificationTypes.includes('follow'));
 const emailNotification_unfollow = ref($i.emailNotificationTypes.includes('unfollow'))
 const emailNotification_receiveFollowRequest = ref($i.emailNotificationTypes.includes('receiveFollowRequest'));
@@ -96,7 +92,6 @@ const saveNotificationSettings = () => {
 		emailNotificationTypes: [
 			...[emailNotification_mention.value ? 'mention' : null],
 			...[emailNotification_reply.value ? 'reply' : null],
-			...[emailNotification_quote.value ? 'quote' : null],
 			...[emailNotification_follow.value ? 'follow' : null],
 			...[emailNotification_unfollow.value ? 'unfollow' : null],
 			...[emailNotification_receiveFollowRequest.value ? 'receiveFollowRequest' : null],
@@ -104,7 +99,7 @@ const saveNotificationSettings = () => {
 	});
 };
 
-watch([emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_unfollow,emailNotification_receiveFollowRequest], () => {
+watch([emailNotification_mention, emailNotification_reply, emailNotification_follow, emailNotification_unfollow,emailNotification_receiveFollowRequest], () => {
 	saveNotificationSettings();
 });
 

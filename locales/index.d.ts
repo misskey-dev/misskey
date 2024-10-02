@@ -9246,10 +9246,6 @@ export interface Locale extends ILocale {
          */
         "youGotReply": ParameterizedString<"name">;
         /**
-         * {name}による引用
-         */
-        "youGotQuote": ParameterizedString<"name">;
-        /**
          * {name}がRenoteしました
          */
         "youRenoted": ParameterizedString<"name">;
@@ -9366,10 +9362,6 @@ export interface Locale extends ILocale {
              * Renote
              */
             "renote": string;
-            /**
-             * 引用
-             */
-            "quote": string;
             /**
              * リアクション
              */

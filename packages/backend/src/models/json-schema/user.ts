@@ -593,7 +593,6 @@ export const packedMeDetailedOnlySchema = {
 				mention: { optional: true, ...notificationRecieveConfig },
 				reply: { optional: true, ...notificationRecieveConfig },
 				renote: { optional: true, ...notificationRecieveConfig },
-				quote: { optional: true, ...notificationRecieveConfig },
 				reaction: { optional: true, ...notificationRecieveConfig },
 				pollEnded: { optional: true, ...notificationRecieveConfig },
 				receiveFollowRequest: { optional: true, ...notificationRecieveConfig },
