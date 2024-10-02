@@ -2,7 +2,7 @@ export class FeatAutoRejectFollowRequest1697683129062 {
     name = 'FeatAutoRejectFollowRequest1697683129062'
 
     async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "user_profile" ADD "autoRejectFollowRequest" boolean NOT NULL DEFAULT false`);
+        await queryRunner.query(`ALTER TABLE "user_profile" ADD "autoRejectFollowRequest" boolean NOT NULL DEFAULT true`);
     }
 
     async down(queryRunner) {

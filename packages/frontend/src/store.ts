@@ -100,7 +100,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultNoteLocalOnly: {
 		where: 'account',
-		default: false,
+		default: true,
 	},
 	uploadFolder: {
 		where: 'account',
@@ -128,7 +128,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactionAcceptance: {
 		where: 'account',
-		default: 'nonSensitiveOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
+		default: 'likeOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
 	},
 	mutedAds: {
 		where: 'account',

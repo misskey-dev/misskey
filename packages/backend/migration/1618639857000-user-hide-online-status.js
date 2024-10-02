@@ -8,7 +8,7 @@ export class userHideOnlineStatus1618639857000 {
         this.name = 'userHideOnlineStatus1618639857000';
     }
     async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "user" ADD "hideOnlineStatus" boolean NOT NULL DEFAULT false`);
+        await queryRunner.query(`ALTER TABLE "user" ADD "hideOnlineStatus" boolean NOT NULL DEFAULT true`);
     }
     async down(queryRunner) {
         await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "hideOnlineStatus"`);

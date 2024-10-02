@@ -51,9 +51,9 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 
-const isLocked = ref(false);
-const hideOnlineStatus = ref(false);
-const noCrawle = ref(false);
+const isLocked = ref(true);
+const hideOnlineStatus = ref(true);
+const noCrawle = ref(true);
 const preventAiLearning = ref(true);
 
 watch([isLocked, hideOnlineStatus, noCrawle, preventAiLearning], () => {

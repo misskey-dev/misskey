@@ -1,4 +1,8 @@
 # DIFFRENCE
+## 2024.9.0-yami-1.2.7
+### enhance
+- プライバシーに考慮して、「noCrawle/isExplorable/hideOnline/ffVisibility/フォロリクの自動承認/鍵垢/リアクションの受け入れ」のデフォルト値を変更
+
 ## 2024.9.0-yami-1.2.6
 ### Client
 - 状態にかかわらず未ログインユーザーからノートを非表示に(1.2.4の強化)
