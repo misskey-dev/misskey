@@ -1543,6 +1543,18 @@ export interface Locale extends ILocale {
      */
     "disablingTimelinesInfo": string;
     /**
+     * ローカルタイムラインを非表示にする
+     */
+    "hideLocalTimeLine": string;
+    /**
+     * ソーシャルタイムラインを非表示にする
+     */
+    "hideSocialTimeLine": string;
+    /**
+     * グローバルタイムラインを非表示にする
+     */
+    "hideGlobalTimeLine": string;
+    /**
      * 登録
      */
     "registration": string;
