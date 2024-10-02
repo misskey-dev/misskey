@@ -22,9 +22,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		   	<div :class="$style.username"><MkAcct :user="note.user"/></div>
 		</component>
 	</div>
-	<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
-		<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
-	</div>
 	<div :class="$style.info">
 		<div v-if="mock">
 			<MkTime :time="note.createdAt" colored/>
