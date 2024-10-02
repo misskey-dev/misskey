@@ -767,12 +767,6 @@ function loadConversation() {
 	}
 }
 
-.noteFooterButtonHistoryMenu {
-	&.active {
-		color: var(--accent);
-	}
-}
-
 .reply:not(:first-child) {
 	border-top: solid 0.5px var(--divider);
 }
