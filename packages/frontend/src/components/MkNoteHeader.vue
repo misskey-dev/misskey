@@ -5,18 +5,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <header :class="$style.root">
-	<component :is="defaultStore.state.enableCondensedLine ? 'MkCondensedLine' : 'div'" :minScale="0.7" style="min-width: 0;">
-		<div style="display: flex; white-space: nowrap; align-items: baseline;">
-			<div v-if="mock" :class="$style.name">
-				<MkUserName :user="note.user"/>
+	<div :class="$style.section">
+		<component :is="defaultStore.state.enableCondensedLine ? 'MkCondensedLine' : 'div'" :minScale="0.7" style="min-width: 0;">
+			<div style="display: flex;">
+				<div v-if="mock" :class="$style.name">
+					<MkUserName :user="note.user"/>
+				</div>
+				<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
+					<MkUserName :user="note.user"/>
+				</MkA>
+				<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
+				<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
+					<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
+				</div>
 			</div>
-			<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
-				<MkUserName :user="note.user"/>
-			</MkA>
-			<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
-			<div :class="$style.username"><MkAcct :user="note.user"/></div>
-		</div>
-	</component>
+		   	<div :class="$style.username"><MkAcct :user="note.user"/></div>
+		</component>
+	</div>
 	<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
 		<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
 	</div>
@@ -60,10 +65,26 @@ const mock = inject<boolean>('mock', false);
 	white-space: nowrap;
 }
 
+.section {
+		align-items: flex-start;
+		white-space: nowrap;
+		flex-direction: column;
+		overflow: hidden;
+
+		&:last-child {
+			display: flex;
+			align-items: flex-end;
+			margin-left: auto;
+			margin-bottom: auto;
+			padding-left: 10px;
+			overflow: clip;
+		}
+}
+
 .name {
 	flex-shrink: 1;
 	display: block;
-	margin: 0 .5em 0 0;
+	margin: .5em .5em 0 0;
 	padding: 0;
 	overflow: hidden;
 	font-size: 1em;
@@ -88,9 +109,15 @@ const mock = inject<boolean>('mock', false);
 
 .username {
 	flex-shrink: 9999999;
-	margin: 0 .5em 0 0;
+	margin: -.3em .5em .3em 0;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	font-size: 95%;
+	opacity: 0.8;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 }
 
 .info {

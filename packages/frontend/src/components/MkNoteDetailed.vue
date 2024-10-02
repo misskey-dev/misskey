@@ -661,6 +661,7 @@ function loadConversation() {
 }
 
 .noteHeaderName {
+	margin: 0 0 -.2em 0;
 	font-weight: bold;
 	line-height: 1.3;
 }
@@ -680,7 +681,7 @@ function loadConversation() {
 }
 
 .noteHeaderUsername {
-	margin-bottom: 2px;
+	margin: 0 0 .5em 0;
 	line-height: 1.3;
 	word-wrap: anywhere;
 }
@@ -744,7 +745,7 @@ function loadConversation() {
 
 .noteFooterButton {
 	margin: 0;
-	padding: 8px;
+	padding: 6px;
 	opacity: 0.7;
 
 	&:not(:last-child) {
@@ -762,6 +763,12 @@ function loadConversation() {
 	opacity: 0.7;
 
 	&.reacted {
+		color: var(--accent);
+	}
+}
+
+.noteFooterButtonHistoryMenu {
+	&.active {
 		color: var(--accent);
 	}
 }
