@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				[$style.t_renote]: notification.type === 'renote',
 				[$style.t_reply]: notification.type === 'reply',
 				[$style.t_mention]: notification.type === 'mention',
+				[$style.t_quote]: notification.type === 'quote',
 				[$style.t_pollEnded]: notification.type === 'pollEnded',
 				[$style.t_achievementEarned]: notification.type === 'achievementEarned',
 				[$style.t_exportCompleted]: notification.type === 'exportCompleted',
@@ -37,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="notification.type === 'renote'" class="ti ti-repeat"></i>
 			<i v-else-if="notification.type === 'reply'" class="ti ti-arrow-back-up"></i>
 			<i v-else-if="notification.type === 'mention'" class="ti ti-at"></i>
+			<i v-else-if="notification.type === 'quote'" class="ti ti-quote"></i>
 			<i v-else-if="notification.type === 'pollEnded'" class="ti ti-chart-arrows"></i>
 			<i v-else-if="notification.type === 'achievementEarned'" class="ti ti-medal"></i>
 			<i v-else-if="notification.type === 'exportCompleted'" class="ti ti-archive"></i>
@@ -61,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
 			<span v-else-if="notification.type === 'test'">{{ i18n.ts._notification.testNotification }}</span>
 			<span v-else-if="notification.type === 'exportCompleted'">{{ i18n.tsx._notification.exportOfXCompleted({ x: exportEntityName[notification.exportedEntity] }) }}</span>
-			<MkA v-else-if="notification.type === 'follow' || notification.type === 'unfollow' || notification.type === 'mention' || notification.type === 'reply' || notification.type === 'renote' || notification.type === 'reaction' || notification.type === 'receiveFollowRequest' || notification.type === 'followRequestAccepted'" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
+			<MkA v-else-if="notification.type === 'follow' || notification.type === 'unfollow' || notification.type === 'mention' || notification.type === 'reply' || notification.type === 'renote' || notification.type === 'quote' || notification.type === 'reaction' || notification.type === 'receiveFollowRequest' || notification.type === 'followRequestAccepted'" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
 			<span v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'">{{ i18n.tsx._notification.likedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.tsx._notification.reactedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'renote:grouped'">{{ i18n.tsx._notification.renotedBySomeUsers({ n: notification.users.length }) }}</span>
@@ -70,10 +72,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</header>
 		<div>
 			<MkA v-if="notification.type === 'reaction' || notification.type === 'reaction:grouped'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
+				<i class="ti ti-quote" :class="$style.quote"></i>
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<MkA v-else-if="notification.type === 'renote' || notification.type === 'renote:grouped'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
+				<i class="ti ti-quote" :class="$style.quote"></i>
 				<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="true" :author="notification.note.renote?.user"/>
+				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<MkA v-else-if="notification.type === 'reply'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
@@ -81,11 +87,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA v-else-if="notification.type === 'mention'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
 			</MkA>
+			<MkA v-else-if="notification.type === 'quote'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
+				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+			</MkA>
 			<MkA v-else-if="notification.type === 'note'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
 			</MkA>
 			<MkA v-else-if="notification.type === 'pollEnded'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
+				<i class="ti ti-quote" :class="$style.quote"></i>
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<div v-else-if="notification.type === 'roleAssigned'" :class="$style.text">
 				{{ notification.role.name }}
@@ -106,7 +117,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="notification.type === 'followRequestAccepted'">
 				<div :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</div>
 				<div v-if="notification.message" :class="$style.text" style="opacity: 0.6; font-style: oblique;">
+					<i class="ti ti-quote" :class="$style.quote"></i>
 					<span>{{ notification.message }}</span>
+					<i class="ti ti-quote" :class="$style.quote"></i>
 				</div>
 			</template>
 			<template v-else-if="notification.type === 'receiveFollowRequest'">
@@ -304,6 +317,12 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	pointer-events: none;
 }
 
+.t_quote {
+	padding: 3px;
+	background: var(--eventRenote);
+	pointer-events: none;
+}
+
 .t_reply {
 	padding: 3px;
 	background: var(--eventReply);
@@ -367,6 +386,26 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	display: flex;
 	width: 100%;
 	overflow: clip;
+}
+
+.quote {
+	vertical-align: super;
+	font-size: 50%;
+	opacity: 0.5;
+}
+
+.quote:first-child {
+	margin-right: 4px;
+	position: relative;
+
+	&::before {
+		position: absolute;
+		transform: rotate(180deg);
+	}
+}
+
+.quote:last-child {
+	margin-left: 4px;
 }
 
 .followRequestCommands {

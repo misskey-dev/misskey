@@ -132,6 +132,26 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						],
 					}];
 
+				case 'quote':
+					return [i18n.tsx._notification.youGotQuote({ name: getUserName(data.body.user) }), {
+						body: data.body.note.text ?? '',
+						icon: data.body.user.avatarUrl ?? undefined,
+						badge: iconUrl('quote'),
+						data,
+						actions: [
+							{
+								action: 'reply',
+								title: i18n.ts._notification._actions.reply,
+							},
+							...((data.body.note.visibility === 'public' || data.body.note.visibility === 'home') ? [
+								{
+									action: 'renote',
+									title: i18n.ts._notification._actions.renote,
+								},
+							] : []),
+						],
+					}];
+
 				case 'note':
 					return [i18n.ts._notification.newNote + ': ' + getUserName(data.body.user), {
 						body: data.body.note.text ?? '',

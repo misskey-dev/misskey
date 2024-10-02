@@ -197,6 +197,7 @@ export const paramDef = {
 				mention: notificationRecieveConfig,
 				reply: notificationRecieveConfig,
 				renote: notificationRecieveConfig,
+				quote: notificationRecieveConfig,
 				reaction: notificationRecieveConfig,
 				pollEnded: notificationRecieveConfig,
 				receiveFollowRequest: notificationRecieveConfig,

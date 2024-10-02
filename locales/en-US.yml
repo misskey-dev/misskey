@@ -2360,6 +2360,7 @@ _notification:
   fileUploaded: "File successfully uploaded"
   youGotMention: "{name} mentioned you"
   youGotReply: "{name} replied to you"
+  youGotQuote: "{name} quoted you"
   youRenoted: "Renote from {name}"
   youWereFollowed: "followed you"
   youWereUnFollower: "unfollowed you"

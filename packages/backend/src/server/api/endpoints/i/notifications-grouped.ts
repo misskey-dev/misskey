@@ -163,7 +163,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			groupedNotifications = groupedNotifications.slice(0, ps.limit);
 			const noteIds = groupedNotifications
-				.filter((notification): notification is FilterUnionByProperty<MiNotification, 'type', 'mention' | 'reply'> => ['mention', 'reply'].includes(notification.type))
+				.filter((notification): notification is FilterUnionByProperty<MiNotification, 'type', 'mention' | 'reply' | 'quote'> => ['mention', 'reply', 'quote'].includes(notification.type))
 				.map(notification => notification.noteId!);
 
 			if (noteIds.length > 0) {
