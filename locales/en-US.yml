@@ -1281,6 +1281,12 @@ _delivery:
     autoSuspendedForNotResponding: "Server is suspended due to no responding"
 scheduledNoteDelete: "Time Bomb"
 noteDeletationAt: "This note will be deleted at {time}"
+hideActivity: "Hide Activity"
+hideActivityDescription: "This option prevents others from viewing your activity on your profile (Summary/Activity tab). Even with this option enabled, you can still view your activity from the Activity tab on your profile."
+hideReactionUsers: "Hide Users Who Reacted"
+hideReactionUsersDescription: "This option hides the list of users who reacted when hovering over the reaction and the list of users who reacted in the reactions tab on the note detail page."
+hideReactionCount: "Hide Reaction Count"
+
 
 _bubbleGame:
   howToPlay: "How to play"
@@ -2672,3 +2678,8 @@ _embedCodeGen:
   generateCode: "Generate embed code"
   codeGenerated: "The code has been generated"
   codeGeneratedDescription: "Paste the generated code into your website to embed the content."
+_hideReactionCount:
+  none: "Do not hide"
+  self: "Only my notes"
+  others: "Only notes of others"
+  all: "All notes"
