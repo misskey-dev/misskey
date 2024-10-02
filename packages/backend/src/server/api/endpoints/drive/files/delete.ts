@@ -65,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			await this.driveService.deleteFile(file, false, me);
+			await this.driveService.deleteFileImmediately(file, false, me);
 		});
 	}
 }
