@@ -1,4 +1,10 @@
 # DIFFRENCE
+## 2024.9.0-yami-1.2.8
+## Feat
+- Cherry-Pick アクティビティの非公開機能(hideki0403/kakurega.app)
+- Cherry-Pick 誰がリアクションをしたのかを非表示にできる機能を実装(hideki0403/kakurega.app)
+- Cherry-Pick リアクション数の非表示機能を実装(hideki0403/kakurega.app)
+
 ## 2024.9.0-yami-1.2.7
 ### enhance
 - プライバシーに考慮して、「noCrawle/isExplorable/hideOnline/ffVisibility/フォロリクの自動承認/鍵垢/リアクションの受け入れ」のデフォルト値を変更
