@@ -7,6 +7,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 <component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
+	<template v-if="showDecoration">
+		<img
+			v-for="decoration in decorations ?? user.avatarDecorations"
+			:class="[$style.decoration]"
+			:src="getDecorationUrl(decoration)"
+			:style="{
+				rotate: getDecorationAngle(decoration),
+				scale: getDecorationScale(decoration),
+				translate: getDecorationOffset(decoration),
+				zIndex: getDecorationZIndex(decoration),
+			}"
+			alt=""
+		>
+	</template>
 	<div v-if="user.isCat" :class="[$style.ears]">
 		<div :class="$style.earLeft">
 			<div v-if="false" :class="$style.layer">
@@ -23,19 +37,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<template v-if="showDecoration">
-		<img
-			v-for="decoration in decorations ?? user.avatarDecorations"
-			:class="[$style.decoration, { [$style.decorationBlink]: decoration.blink }]"
-			:src="getDecorationUrl(decoration)"
-			:style="{
-				rotate: getDecorationAngle(decoration),
-				scale: getDecorationScale(decoration),
-				translate: getDecorationOffset(decoration),
-			}"
-			alt=""
-		>
-	</template>
 </component>
 </template>
 
@@ -111,6 +112,11 @@ function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['ava
 	const offsetX = decoration.offsetX ?? 0;
 	const offsetY = decoration.offsetY ?? 0;
 	return offsetX === 0 && offsetY === 0 ? undefined : `${offsetX * 100}% ${offsetY * 100}%`;
+}
+
+function getDecorationZIndex(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
+	const zIndex = decoration.showBelow ? 0 : 1;
+	return zIndex === 1 ? undefined : `${zIndex}`;
 }
 
 const color = ref<string | undefined>();

@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@click="emit('click')"
 >
 	<div :class="$style.name"><MkCondensedLine :minScale="0.5">{{ decoration.name }}</MkCondensedLine></div>
-	<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decorations="[{ url: decoration.url, angle, flipH, offsetX, offsetY }]" forceShowDecoration/>
+	<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decorations="[{ url: decoration.url, angle, flipH, offsetX, offsetY, showBelow }]" forceShowDecoration/>
 	<i v-if="decoration.roleIdsThatCanBeUsedThisDecoration.length > 0 && !$i.roles.some(r => decoration.roleIdsThatCanBeUsedThisDecoration.includes(r.id))" :class="$style.lock" class="ti ti-lock"></i>
 </div>
 </template>
@@ -32,6 +32,7 @@ const props = defineProps<{
 	flipH?: boolean;
 	offsetX?: number;
 	offsetY?: number;
+	showBelow?: boolean;
 }>();
 
 const emit = defineEmits<{

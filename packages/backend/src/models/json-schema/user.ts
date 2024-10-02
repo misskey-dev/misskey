@@ -104,6 +104,10 @@ export const packedUserLiteSchema = {
 						type: 'number',
 						nullable: false, optional: true,
 					},
+					showBelow: {
+						type: 'boolean',
+						nullable: false, optional: true,
+					},
 				},
 			},
 		},
