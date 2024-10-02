@@ -218,6 +218,7 @@ function toPackedUserDetailedNotMe(user: MiUser, override?: Packed<'UserDetailed
 		pinnedPageId: null,
 		pinnedPage: null,
 		publicReactions: true,
+		notesVisibility: 'public',
 		followersVisibility: 'public',
 		followingVisibility: 'public',
 		twoFactorEnabled: false,

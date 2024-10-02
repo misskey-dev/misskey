@@ -6,6 +6,14 @@
 import * as Misskey from 'misskey-js';
 import { $i } from '@/account.js';
 
+export function isNotesVisibilityForMe(user: Misskey.entities.UserDetailed): boolean {
+	if ($i && ($i.id === user.id || $i.isAdmin || $i.isModerator)) return true;
+
+	if (user.notesVisibility === 'private') return false;
+	if (user.notesVisibility === 'followers' && !user.isFollowing) return false;
+
+	return true;
+}
 export function isFollowingVisibleForMe(user: Misskey.entities.UserDetailed): boolean {
 	if ($i && ($i.id === user.id || $i.isAdmin || $i.isModerator)) return true;
 

@@ -453,6 +453,12 @@ export class UserEntityService implements OnModuleInit {
 			}
 		}
 
+		const notesCount = profile == null ? null :
+    (profile.notesVisibility === 'public') || isMe || iAmModerator ? user.notesCount :
+    (profile.notesVisibility === 'followers') && (relation && relation.isFollowing) ? user.notesCount :
+    	null;
+
+
 		const followingCount = profile == null ? null :
 			(profile.followingVisibility === 'public') || isMe || iAmModerator ? user.followingCount :
 			(profile.followingVisibility === 'followers') && (relation && relation.isFollowing) ? user.followingCount :
@@ -535,7 +541,7 @@ export class UserEntityService implements OnModuleInit {
 				verifiedLinks: profile!.verifiedLinks,
 				followersCount: followersCount ?? 0,
 				followingCount: followingCount ?? 0,
-				notesCount: user.notesCount,
+				notesCount: notesCount ?? 0,
 				pinnedNoteIds: pins.map(pin => pin.noteId),
 				pinnedNotes: this.noteEntityService.packMany(pins.map(pin => pin.note!), me, {
 					detail: true,
@@ -544,6 +550,7 @@ export class UserEntityService implements OnModuleInit {
 				pinnedPage: profile!.pinnedPageId ? this.pageEntityService.pack(profile!.pinnedPageId, me) : null,
 				publicReactions: this.isLocalUser(user) ? profile!.publicReactions : false, // https://github.com/misskey-dev/misskey/issues/12964
 				hideActivity: this.isLocalUser(user) ? profile!.hideActivity : false, //
+				notesVisibility: profile!.notesVisibility,
 				followersVisibility: profile!.followersVisibility,
 				followingVisibility: profile!.followingVisibility,
 				twoFactorEnabled: profile!.twoFactorEnabled,

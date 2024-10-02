@@ -917,6 +917,7 @@ makeReactionsPublicDescription: "あなたがしたリアクション一覧を�
 classic: "クラシック"
 muteThread: "スレッドをミュート"
 unmuteThread: "スレッドのミュートを解除"
+notesVisibility: "ノート数の公開範囲"
 followingVisibility: "フォローの公開範囲"
 followersVisibility: "フォロワーの公開範囲"
 continueThread: "さらにスレッドを見る"

@@ -183,6 +183,7 @@ export interface IActor extends IObject {
 		id: string;
 		publicKeyPem: string;
 	};
+	notes?: string | ICollection | IOrderedCollection;
 	followers?: string | ICollection | IOrderedCollection;
 	following?: string | ICollection | IOrderedCollection;
 	featured?: string | IOrderedCollection;

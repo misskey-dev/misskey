@@ -3779,6 +3779,8 @@ export type components = {
       pinnedPage: components['schemas']['Page'] | null;
       publicReactions: boolean;
       hideActivity: boolean;
+			/** @enum {string} */
+			notesVisibility: 'public' | 'followers' | 'private';
       /** @enum {string} */
       followingVisibility: 'public' | 'followers' | 'private';
       /** @enum {string} */
