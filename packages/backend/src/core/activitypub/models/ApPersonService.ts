@@ -48,6 +48,7 @@ import type { ApLoggerService } from '../ApLoggerService.js';
 
 import type { ApImageService } from './ApImageService.js';
 import type { IActor, ICollection, IObject, IOrderedCollection } from '../type.js';
+import unfavorite from '@/server/api/endpoints/channels/unfavorite.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -296,15 +297,16 @@ export class ApPersonService implements OnModuleInit {
 
 		const isBot = getApType(object) === 'Service' || getApType(object) === 'Application';
 
-		const [followingVisibility, followersVisibility] = await Promise.all(
+		const [notesVisibility, followingVisibility, followersVisibility] = await Promise.all(
 			[
+				this.isPublicCollection(person.notes, resolver),
 				this.isPublicCollection(person.following, resolver),
 				this.isPublicCollection(person.followers, resolver),
 			].map((p): Promise<'public' | 'private'> => p
 				.then(isPublic => isPublic ? 'public' : 'private')
 				.catch(err => {
 					if (!(err instanceof StatusError) || err.isRetryable) {
-						this.logger.error('error occurred while fetching following/followers collection', { stack: err });
+						this.logger.error('error occurred while fetching notes/following/followers collection', { stack: err });
 					}
 					return 'private';
 				}),
@@ -373,6 +375,7 @@ export class ApPersonService implements OnModuleInit {
 					followedMessage: person._misskey_followedMessage != null ? truncate(person._misskey_followedMessage, 256) : null,
 					url,
 					fields,
+					notesVisibility,
 					followingVisibility,
 					followersVisibility,
 					birthday: bday?.[0] ?? null,
@@ -482,15 +485,16 @@ export class ApPersonService implements OnModuleInit {
 
 		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
-		const [followingVisibility, followersVisibility] = await Promise.all(
+		const [notesVisibility, followingVisibility, followersVisibility] = await Promise.all(
 			[
+				this.isPublicCollection(person.notes, resolver),
 				this.isPublicCollection(person.following, resolver),
 				this.isPublicCollection(person.followers, resolver),
 			].map((p): Promise<'public' | 'private' | undefined> => p
 				.then(isPublic => isPublic ? 'public' : 'private')
 				.catch(err => {
 					if (!(err instanceof StatusError) || err.isRetryable) {
-						this.logger.error('error occurred while fetching following/followers collection', { stack: err });
+						this.logger.error('error occurred while fetching notes/following/followers collection', { stack: err });
 						// Do not update the visibiility on transient errors.
 						return undefined;
 					}
@@ -568,6 +572,7 @@ export class ApPersonService implements OnModuleInit {
 			fields,
 			description: _description,
 			followedMessage: person._misskey_followedMessage != null ? truncate(person._misskey_followedMessage, 256) : null,
+			notesVisibility,
 			followingVisibility,
 			followersVisibility,
 			birthday: bday?.[0] ?? null,

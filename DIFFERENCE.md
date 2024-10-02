@@ -1,4 +1,8 @@
 # DIFFRENCE
+## 2024.9.0-yami-1.2.9
+## Feat
+- ノート数を隠せるように(連合しません)
+
 ## 2024.9.0-yami-1.2.8
 ## Feat
 - Cherry-Pick アクティビティの非公開機能(hideki0403/kakurega.app)
