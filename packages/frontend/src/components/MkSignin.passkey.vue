@@ -22,7 +22,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import * as Misskey from 'misskey-js';
 import { get as webAuthnRequest } from '@github/webauthn-json/browser-ponyfill';
 
 import { i18n } from '@/i18n.js';
@@ -32,7 +31,6 @@ import MkButton from '@/components/MkButton.vue';
 import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
 
 const props = defineProps<{
-	user: Misskey.entities.UserDetailed;
 	credentialRequest: CredentialRequestOptions;
 	isPerformingPasswordlessLogin?: boolean;
 }>();

@@ -23,14 +23,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
 
-			<div v-if="!user.twoFactorEnabled">
+			<div v-if="needCaptcha">
 				<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :class="$style.captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
 				<MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
 				<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
 				<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
 			</div>
 
-			<MkButton type="submit" :disabled="!user.twoFactorEnabled && captchaFailed" large primary rounded style="margin: 0 auto;" data-cy-signin-page-password-continue>{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+			<MkButton type="submit" :disabled="needCaptcha && captchaFailed" large primary rounded style="margin: 0 auto;" data-cy-signin-page-password-continue>{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</form>
 	</div>
 </div>
@@ -62,6 +62,7 @@ import MkCaptcha from '@/components/MkCaptcha.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
+	needCaptcha: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -82,10 +83,11 @@ const turnstileResponse = ref<string | null>(null);
 
 const captchaFailed = computed((): boolean => {
 	return (
-		instance.enableHcaptcha && !hCaptchaResponse.value ||
-		instance.enableMcaptcha && !mCaptchaResponse.value ||
-		instance.enableRecaptcha && !reCaptchaResponse.value ||
-		instance.enableTurnstile && !turnstileResponse.value);
+		(instance.enableHcaptcha && !hCaptchaResponse.value) ||
+		(instance.enableMcaptcha && !mCaptchaResponse.value) ||
+		(instance.enableRecaptcha && !reCaptchaResponse.value) ||
+		(instance.enableTurnstile && !turnstileResponse.value)
+	);
 });
 
 function resetPassword(): void {

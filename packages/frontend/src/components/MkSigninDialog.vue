@@ -68,7 +68,6 @@ function onLogin(res) {
 	height: 100%;
 	max-height: 450px;
 	box-sizing: border-box;
-	text-align: center;
 	background: var(--panel);
 	border-radius: var(--radius);
 }
