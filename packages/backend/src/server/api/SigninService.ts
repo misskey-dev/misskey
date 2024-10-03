@@ -12,6 +12,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { EmailService } from '@/core/EmailService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
@@ -25,6 +26,7 @@ export class SigninService {
 
 		private signinEntityService: SigninEntityService,
 		private emailService: EmailService,
+		private notificationService: NotificationService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -33,6 +35,8 @@ export class SigninService {
 	@bindThis
 	public signin(request: FastifyRequest, reply: FastifyReply, user: MiLocalUser) {
 		setImmediate(async () => {
+			this.notificationService.createNotification(user.id, 'login', {});
+
 			const record = await this.signinsRepository.insertOne({
 				id: this.idService.gen(),
 				userId: user.id,
