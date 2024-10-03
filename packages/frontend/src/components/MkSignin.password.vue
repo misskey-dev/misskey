@@ -49,7 +49,7 @@ export type PwResponse = {
 </script>
 
 <script setup lang="ts">
-import { ref, computed, defineAsyncComponent } from 'vue';
+import { ref, computed, useTemplateRef, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 
 import { instance } from '@/instance.js';
@@ -69,6 +69,11 @@ const emit = defineEmits<{
 }>();
 
 const password = ref('');
+
+const hCaptcha = useTemplateRef('hcaptcha');
+const mCaptcha = useTemplateRef('mcaptcha');
+const reCaptcha = useTemplateRef('recaptcha');
+const turnstile = useTemplateRef('turnstile');
 
 const hCaptchaResponse = ref<string | null>(null);
 const mCaptchaResponse = ref<string | null>(null);
@@ -100,6 +105,17 @@ function onSubmit() {
 		},
 	});
 }
+
+function resetCaptcha() {
+	hCaptcha.value?.reset();
+	mCaptcha.value?.reset();
+	reCaptcha.value?.reset();
+	turnstile.value?.reset();
+}
+
+defineExpose({
+	resetCaptcha,
+});
 </script>
 
 <style lang="scss" module>

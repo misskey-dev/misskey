@@ -29,6 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XPassword
 			v-else-if="page === 'password'"
 			key="password"
+			ref="passwordPageEl"
 
 			:user="userInfo!"
 
@@ -63,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef } from 'vue';
+import { ref, shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
 
@@ -97,6 +98,7 @@ const props = withDefaults(defineProps<{
 });
 
 const page = ref<'input' | 'password' | 'totp' | 'passkey'>('input');
+const passwordPageEl = useTemplateRef('passwordPageEl');
 const waiting = ref(false);
 
 const userInfo = ref<null | Misskey.entities.UserDetailed>(null);
@@ -342,7 +344,11 @@ function onLoginFailed(err?: any): void {
 		}
 	}
 
-	doingPasskeyFromInputPage.value = false;
+	if (doingPasskeyFromInputPage.value === true) {
+		doingPasskeyFromInputPage.value = false;
+		page.value = 'input';
+	}
+	passwordPageEl.value?.resetCaptcha();
 	waiting.value = false;
 }
 </script>
