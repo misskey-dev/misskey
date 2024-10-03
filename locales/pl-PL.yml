@@ -1509,6 +1509,7 @@ _notification:
     reaction: "Reakcja"
     receiveFollowRequest: "Otrzymano prośbę o możliwość obserwacji"
     followRequestAccepted: "Przyjęto prośbę o możliwość obserwacji"
+    login: "Zaloguj się"
     app: "Powiadomienia z aplikacji"
   _actions:
     followBack: "zaobserwował cię z powrotem"
