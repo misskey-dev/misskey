@@ -29,6 +29,15 @@ import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
+/**
+ * next を指定すると、次にクライアント側で行うべき処理を指定できる。
+ *
+ * - `captcha`: パスワードと、（有効になっている場合は）CAPTCHAを求める
+ * - `password`: パスワードを求める
+ * - `totp`: ワンタイムパスワードを求める
+ * - `passkey`: WebAuthn認証を求める（WebAuthnに対応していないブラウザの場合はワンタイムパスワード）
+ */
+
 type SigninErrorResponse = {
 	id: string;
 	next?: 'captcha' | 'password' | 'totp';
