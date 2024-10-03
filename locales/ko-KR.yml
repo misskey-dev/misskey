@@ -2408,6 +2408,7 @@ _notification:
     roleAssigned: "역할이 부여 됨"
     achievementEarned: "도전 과제 획득"
     exportCompleted: "추출을 성공함"
+    login: "로그인"
     test: "알림 테스트"
     app: "연동된 앱을 통한 알림"
   _actions:
