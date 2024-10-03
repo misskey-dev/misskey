@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
@@ -7,6 +12,34 @@ export const meta = {
 	description: 'Endpoint for testing input validation.',
 
 	requireCredential: false,
+
+	res: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				format: 'misskey:id',
+				optional: true, nullable: false,
+			},
+			required: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			string: {
+				type: 'string',
+				optional: true, nullable: false,
+			},
+			default: {
+				type: 'string',
+				optional: true, nullable: false,
+			},
+			nullableDefault: {
+				type: 'string',
+				default: 'hello',
+				optional: true, nullable: true,
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -21,9 +54,8 @@ export const paramDef = {
 	required: ['required'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 	) {
 		super(meta, paramDef, async (ps, me) => {

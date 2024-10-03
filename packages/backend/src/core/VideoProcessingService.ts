@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import FFmpeg from 'fluent-ffmpeg';
 import { DI } from '@/di-symbols.js';
@@ -21,7 +26,7 @@ export class VideoProcessingService {
 	@bindThis
 	public async generateVideoThumbnail(source: string): Promise<IImage> {
 		const [dir, cleanup] = await createTempDir();
-	
+
 		try {
 			await new Promise((res, rej) => {
 				FFmpeg({
@@ -37,7 +42,7 @@ export class VideoProcessingService {
 					});
 			});
 
-			return await this.imageProcessingService.convertToWebp(`${dir}/out.png`, 498, 280);
+			return await this.imageProcessingService.convertToWebp(`${dir}/out.png`, 498, 422);
 		} finally {
 			cleanup();
 		}
@@ -52,7 +57,7 @@ export class VideoProcessingService {
 			query({
 				thumbnail: '1',
 				url,
-			})
+			}),
 		);
 	}
 }

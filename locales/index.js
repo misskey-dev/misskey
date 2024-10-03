@@ -2,8 +2,8 @@
  * Languages Loader
  */
 
-const fs = require('fs');
-const yaml = require('js-yaml');
+import * as fs from 'node:fs';
+import * as yaml from 'js-yaml';
 
 const merge = (...args) => args.reduce((a, c) => ({
 	...a,
@@ -51,20 +51,41 @@ const primaries = {
 // 何故か文字列にバックスペース文字が混入することがあり、YAMLが壊れるので取り除く
 const clean = (text) => text.replace(new RegExp(String.fromCodePoint(0x08), 'g'), '');
 
-const locales = languages.reduce((a, c) => (a[c] = yaml.load(clean(fs.readFileSync(`${__dirname}/${c}.yml`, 'utf-8'))) || {}, a), {});
+export function build() {
+	// vitestの挙動を調整するため、一度ローカル変数化する必要がある
+	// https://github.com/vitest-dev/vitest/issues/3988#issuecomment-1686599577
+	// https://github.com/misskey-dev/misskey/pull/14057#issuecomment-2192833785
+	const metaUrl = import.meta.url;
+	const locales = languages.reduce((a, c) => (a[c] = yaml.load(clean(fs.readFileSync(new URL(`${c}.yml`, metaUrl), 'utf-8'))) || {}, a), {});
 
-module.exports = Object.entries(locales)
-	.reduce((a, [k ,v]) => (a[k] = (() => {
-		const [lang] = k.split('-');
-		switch (k) {
-			case 'ja-JP': return v;
-			case 'ja-KS':
-			case 'en-US': return merge(locales['ja-JP'], v);
-			default: return merge(
-				locales['ja-JP'],
-				locales['en-US'],
-				locales[`${lang}-${primaries[lang]}`] || {},
-				v
-			);
+	// 空文字列が入ることがあり、フォールバックが動作しなくなるのでプロパティごと消す
+	const removeEmpty = (obj) => {
+		for (const [k, v] of Object.entries(obj)) {
+			if (v === '') {
+				delete obj[k];
+			} else if (typeof v === 'object') {
+				removeEmpty(v);
+			}
 		}
-	})(), a), {});
+		return obj;
+	};
+	removeEmpty(locales);
+
+	return Object.entries(locales)
+		.reduce((a, [k, v]) => (a[k] = (() => {
+			const [lang] = k.split('-');
+			switch (k) {
+				case 'ja-JP': return v;
+				case 'ja-KS':
+				case 'en-US': return merge(locales['ja-JP'], v);
+				default: return merge(
+					locales['ja-JP'],
+					locales['en-US'],
+					locales[`${lang}-${primaries[lang]}`] ?? {},
+					v
+				);
+			}
+		})(), a), {});
+}
+
+export default build();

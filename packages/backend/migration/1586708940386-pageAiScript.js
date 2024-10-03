@@ -1,4 +1,7 @@
-
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 export class pageAiScript1586708940386 {
     constructor() {

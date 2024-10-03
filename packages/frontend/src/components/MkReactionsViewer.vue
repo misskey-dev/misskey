@@ -1,47 +1,68 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <TransitionGroup
-	:enter-active-class="$store.state.animation ? $style.transition_x_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_x_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_x_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_x_leaveTo : ''"
-	:move-class="$store.state.animation ? $style.transition_x_move : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_x_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_x_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_x_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_x_leaveTo : ''"
+	:moveClass="defaultStore.state.animation ? $style.transition_x_move : ''"
 	tag="div" :class="$style.root"
 >
-	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :is-initial="initialReactions.has(reaction)" :note="note"/>
-	<slot v-if="hasMoreReactions" name="more" />
+	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note" @reactionToggled="onMockToggleReaction"/>
+	<slot v-if="hasMoreReactions" name="more"/>
 </TransitionGroup>
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
+import { inject, watch, ref } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
-import { watch } from 'vue';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
-    note: misskey.entities.Note;
-    maxNumber?: number;
+	note: Misskey.entities.Note;
+	maxNumber?: number;
 }>(), {
-    maxNumber: Infinity,
+	maxNumber: Infinity,
 });
+
+const mock = inject<boolean>('mock', false);
+
+const emit = defineEmits<{
+	(ev: 'mockUpdateMyReaction', emoji: string, delta: number): void;
+}>();
 
 const initialReactions = new Set(Object.keys(props.note.reactions));
 
-let reactions = $ref<[string, number][]>([]);
-let hasMoreReactions = $ref(false);
+const reactions = ref<[string, number][]>([]);
+const hasMoreReactions = ref(false);
 
-if (props.note.myReaction && !Object.keys(reactions).includes(props.note.myReaction)) {
-	reactions[props.note.myReaction] = props.note.reactions[props.note.myReaction];
+if (props.note.myReaction && !Object.keys(reactions.value).includes(props.note.myReaction)) {
+	reactions.value[props.note.myReaction] = props.note.reactions[props.note.myReaction];
+}
+
+function onMockToggleReaction(emoji: string, count: number) {
+	if (!mock) return;
+
+	const i = reactions.value.findIndex((item) => item[0] === emoji);
+	if (i < 0) return;
+
+	emit('mockUpdateMyReaction', emoji, (count - reactions.value[i][1]));
 }
 
 watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
 	let newReactions: [string, number][] = [];
-	hasMoreReactions = Object.keys(newSource).length > maxNumber;
+	hasMoreReactions.value = Object.keys(newSource).length > maxNumber;
 
-	for (let i = 0; i < reactions.length; i++) {
-		const reaction = reactions[i][0];
+	for (let i = 0; i < reactions.value.length; i++) {
+		const reaction = reactions.value[i][0];
 		if (reaction in newSource && newSource[reaction] !== 0) {
-			reactions[i][1] = newSource[reaction];
-			newReactions.push(reactions[i]);
+			reactions.value[i][1] = newSource[reaction];
+			newReactions.push(reactions.value[i]);
 		}
 	}
 
@@ -59,7 +80,7 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 		newReactions.push([props.note.myReaction, newSource[props.note.myReaction]]);
 	}
 
-	reactions = newReactions;
+	reactions.value = newReactions;
 }, { immediate: true, deep: true });
 </script>
 
@@ -79,6 +100,9 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 }
 
 .root {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
 	margin: 4px -2px 0 -2px;
 
 	&:empty {

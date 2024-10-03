@@ -1,16 +1,23 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import cluster from 'node:cluster';
 import * as fs from 'node:fs';
-import { Inject, Injectable } from '@nestjs/common';
-import Fastify from 'fastify';
+import { fileURLToPath } from 'node:url';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import Fastify, { FastifyInstance } from 'fastify';
+import fastifyStatic from '@fastify/static';
+import fastifyRawBody from 'fastify-raw-body';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
-import type { EmojisRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { EmojisRepository, MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
-import { createTemp } from '@/misc/create-temp.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
@@ -20,15 +27,24 @@ import { ApiServerService } from './api/ApiServerService.js';
 import { StreamingApiServerService } from './api/StreamingApiServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
 import { FileServerService } from './FileServerService.js';
+import { HealthServerService } from './HealthServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
+import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
+import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
+
+const _dirname = fileURLToPath(new URL('.', import.meta.url));
 
 @Injectable()
-export class ServerService {
+export class ServerService implements OnApplicationShutdown {
 	private logger: Logger;
+	#fastify: FastifyInstance;
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -41,24 +57,28 @@ export class ServerService {
 
 		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,
+		private openApiServerService: OpenApiServerService,
 		private streamingApiServerService: StreamingApiServerService,
 		private activityPubServerService: ActivityPubServerService,
 		private wellKnownServerService: WellKnownServerService,
 		private nodeinfoServerService: NodeinfoServerService,
 		private fileServerService: FileServerService,
+		private healthServerService: HealthServerService,
 		private clientServerService: ClientServerService,
 		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
+		private oauth2ProviderService: OAuth2ProviderService,
 	) {
-		this.logger = this.loggerService.getLogger('server', 'gray', false);
+		this.logger = this.loggerService.getLogger('server', 'gray');
 	}
 
 	@bindThis
-	public launch() {
+	public async launch(): Promise<void> {
 		const fastify = Fastify({
 			trustProxy: true,
-			logger: !['production', 'test'].includes(process.env.NODE_ENV ?? ''),
+			logger: false,
 		});
+		this.#fastify = fastify;
 
 		// HSTS
 		// 6months (15552000sec)
@@ -69,13 +89,31 @@ export class ServerService {
 			});
 		}
 
+		// Register raw-body parser for ActivityPub HTTP signature validation.
+		await fastify.register(fastifyRawBody, {
+			global: false,
+			encoding: null,
+			runFirst: true,
+		});
+
+		// Register non-serving static server so that the child services can use reply.sendFile.
+		// `root` here is just a placeholder and each call must use its own `rootPath`.
+		fastify.register(fastifyStatic, {
+			root: _dirname,
+			serve: false,
+		});
+
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
+		fastify.register(this.openApiServerService.createServer);
 		fastify.register(this.fileServerService.createServer);
 		fastify.register(this.activityPubServerService.createServer);
 		fastify.register(this.nodeinfoServerService.createServer);
 		fastify.register(this.wellKnownServerService.createServer);
+		fastify.register(this.oauth2ProviderService.createServer, { prefix: '/oauth' });
+		fastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
+		fastify.register(this.healthServerService.createServer, { prefix: '/healthz' });
 
-		fastify.get<{ Params: { path: string }; Querystring: { static?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
+		fastify.get<{ Params: { path: string }; Querystring: { static?: any; badge?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
 			reply.header('Cache-Control', 'public, max-age=86400');
@@ -85,12 +123,20 @@ export class ServerService {
 				return;
 			}
 
-			const name = path.split('@')[0].replace('.webp', '');
-			const host = path.split('@')[1]?.replace('.webp', '');
+			const emojiPath = path.replace(/\.webp$/i, '');
+			const pathChunks = emojiPath.split('@');
+
+			if (pathChunks.length > 2) {
+				reply.code(400);
+				return;
+			}
+
+			const name = pathChunks.shift();
+			const host = pathChunks.pop();
 
 			const emoji = await this.emojisRepository.findOneBy({
 				// `@.` is the spec of ReactionService.decodeReaction
-				host: (host == null || host === '.') ? IsNull() : host,
+				host: (host === undefined || host === '.') ? IsNull() : host,
 				name: name,
 			});
 
@@ -105,15 +151,23 @@ export class ServerService {
 				}
 			}
 
-			const url = new URL(`${this.config.mediaProxy}/emoji.webp`);
-			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-			url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
-			url.searchParams.set('emoji', '1');
-			if ('static' in request.query) url.searchParams.set('static', '1');
+			let url: URL;
+			if ('badge' in request.query) {
+				url = new URL(`${this.config.mediaProxy}/emoji.png`);
+				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+				url.searchParams.set('badge', '1');
+			} else {
+				url = new URL(`${this.config.mediaProxy}/emoji.webp`);
+				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+				url.searchParams.set('emoji', '1');
+				if ('static' in request.query) url.searchParams.set('static', '1');
+			}
 
 			return await reply.redirect(
-				301,
 				url.toString(),
+				301,
 			);
 		});
 
@@ -125,24 +179,26 @@ export class ServerService {
 					host: (host == null) || (host === this.config.host) ? IsNull() : host,
 					isSuspended: false,
 				},
-				relations: ['avatar'],
 			});
 
 			reply.header('Cache-Control', 'public, max-age=86400');
 
 			if (user) {
-				reply.redirect(this.userEntityService.getAvatarUrlSync(user));
+				reply.redirect(user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user));
 			} else {
 				reply.redirect('/static-assets/user-unknown.png');
 			}
 		});
 
 		fastify.get<{ Params: { x: string } }>('/identicon/:x', async (request, reply) => {
-			const [temp, cleanup] = await createTemp();
-			await genIdenticon(request.params.x, fs.createWriteStream(temp));
 			reply.header('Content-Type', 'image/png');
 			reply.header('Cache-Control', 'public, max-age=86400');
-			return fs.createReadStream(temp).on('close', () => cleanup());
+
+			if (this.meta.enableIdenticonGeneration) {
+				return await genIdenticon(request.params.x);
+			} else {
+				return reply.redirect('/static-assets/avatar.png');
+			}
 		});
 
 		fastify.get<{ Params: { code: string } }>('/verify-email/:code', async (request, reply) => {
@@ -157,21 +213,21 @@ export class ServerService {
 				});
 
 				this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
-					detail: true,
+					schema: 'MeDetailed',
 					includeSecrets: true,
 				}));
 
-				reply.code(200);
-				return 'Verify succeeded!';
+				reply.code(200).send('Verification succeeded! メールアドレスの認証に成功しました。');
+				return;
 			} else {
-				reply.code(404);
+				reply.code(404).send('Verification failed. Please try again. メールアドレスの認証に失敗しました。もう一度お試しください');
 				return;
 			}
 		});
 
 		fastify.register(this.clientServerService.createServer);
 
-		this.streamingApiServerService.attachStreamingApi(fastify.server);
+		this.streamingApiServerService.attach(fastify.server);
 
 		fastify.server.on('error', err => {
 			switch ((err as any).code) {
@@ -194,6 +250,30 @@ export class ServerService {
 			}
 		});
 
-		fastify.listen({ port: this.config.port, host: '0.0.0.0' });
+		if (this.config.socket) {
+			if (fs.existsSync(this.config.socket)) {
+				fs.unlinkSync(this.config.socket);
+			}
+			fastify.listen({ path: this.config.socket }, (err, address) => {
+				if (this.config.chmodSocket) {
+					fs.chmodSync(this.config.socket!, this.config.chmodSocket);
+				}
+			});
+		} else {
+			fastify.listen({ port: this.config.port, host: '0.0.0.0' });
+		}
+
+		await fastify.ready();
+	}
+
+	@bindThis
+	public async dispose(): Promise<void> {
+		await this.streamingApiServerService.detach();
+		await this.#fastify.close();
+	}
+
+	@bindThis
+	async onApplicationShutdown(signal: string): Promise<void> {
+		await this.dispose();
 	}
 }

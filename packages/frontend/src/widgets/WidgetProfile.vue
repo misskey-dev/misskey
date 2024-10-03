@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_panel">
 	<div :class="$style.container" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
@@ -17,10 +22,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import { $i } from '@/account';
-import { userPage } from '@/filters/user';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import { $i } from '@/account.js';
+import { userPage } from '@/filters/user.js';
 
 const name = 'profile';
 
@@ -29,11 +34,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -80,16 +82,19 @@ defineExpose<WidgetComponentExpose>({
 .body {
 	text-overflow: ellipsis;
 	overflow: clip;
+	margin-left: -10px;
+	padding: 10px;
 }
 
 .name {
 	color: #fff;
-	filter: drop-shadow(0 0 4px #000);
+	filter: drop-shadow(0 0 4px #000) drop-shadow(0 0 0.1px rgba(0, 0, 0, 0.5));
 	font-weight: bold;
 }
 
 .username {
 	color: #fff;
-	filter: drop-shadow(0 0 4px #000);
+	filter: drop-shadow(0 0 4px #000) drop-shadow(0 0 0.1px rgba(0, 0, 0, 0.5));
+	font-weight: normal;
 }
 </style>

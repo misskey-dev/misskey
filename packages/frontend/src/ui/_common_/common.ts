@@ -1,11 +1,49 @@
-import * as os from '@/os';
-import { instance } from '@/instance';
-import { host } from '@/config';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { defineAsyncComponent } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
+import * as os from '@/os.js';
+import { instance } from '@/instance.js';
+import { host } from '@@/js/config.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+
+function toolsMenuItems(): MenuItem[] {
+	return [{
+		type: 'link',
+		to: '/scratchpad',
+		text: i18n.ts.scratchpad,
+		icon: 'ti ti-terminal-2',
+	}, {
+		type: 'link',
+		to: '/api-console',
+		text: 'API Console',
+		icon: 'ti ti-terminal-2',
+	}, {
+		type: 'link',
+		to: '/clicker',
+		text: '🍪👈',
+		icon: 'ti ti-cookie',
+	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
+		type: 'link',
+		to: '/custom-emojis-manager',
+		text: i18n.ts.manageCustomEmojis,
+		icon: 'ti ti-icons',
+	} : undefined, ($i && ($i.isAdmin || $i.policies.canManageAvatarDecorations)) ? {
+		type: 'link',
+		to: '/avatar-decorations',
+		text: i18n.ts.manageAvatarDecorations,
+		icon: 'ti ti-sparkles',
+	} : undefined];
+}
 
 export function openInstanceMenu(ev: MouseEvent) {
-	os.popupMenu([{
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
 		text: instance.name ?? host,
 		type: 'label',
 	}, {
@@ -28,58 +66,101 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.charts,
 		icon: 'ti ti-chart-line',
 		to: '/about#charts',
-	}, null, {
+	}, { type: 'divider' }, {
+		type: 'link',
+		text: i18n.ts.ads,
+		icon: 'ti ti-ad',
+		to: '/ads',
+	});
+
+	if ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) {
+		menuItems.push({
+			type: 'link',
+			to: '/invite',
+			text: i18n.ts.invite,
+			icon: 'ti ti-user-plus',
+		});
+	}
+
+	menuItems.push({
 		type: 'parent',
 		text: i18n.ts.tools,
 		icon: 'ti ti-tool',
-		children: [{
-			type: 'link',
-			to: '/scratchpad',
-			text: i18n.ts.scratchpad,
-			icon: 'ti ti-terminal-2',
-		}, {
-			type: 'link',
-			to: '/api-console',
-			text: 'API Console',
-			icon: 'ti ti-terminal-2',
-		}, {
-			type: 'link',
-			to: '/clicker',
-			text: '🍪👈',
-			icon: 'ti ti-cookie',
-		}, ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) ? {
-			text: i18n.ts.invite,
-			icon: 'ti ti-user-plus',
+		children: toolsMenuItems(),
+	}, { type: 'divider' }, {
+		type: 'link',
+		text: i18n.ts.inquiry,
+		icon: 'ti ti-help-circle',
+		to: '/contact',
+	});
+
+	if (instance.impressumUrl) {
+		menuItems.push({
+			type: 'a',
+			text: i18n.ts.impressum,
+			icon: 'ti ti-file-invoice',
+			href: instance.impressumUrl,
+			target: '_blank',
+		});
+	}
+
+	if (instance.tosUrl) {
+		menuItems.push({
+			type: 'a',
+			text: i18n.ts.termsOfService,
+			icon: 'ti ti-notebook',
+			href: instance.tosUrl,
+			target: '_blank',
+		});
+	}
+
+	if (instance.privacyPolicyUrl) {
+		menuItems.push({
+			type: 'a',
+			text: i18n.ts.privacyPolicy,
+			icon: 'ti ti-shield-lock',
+			href: instance.privacyPolicyUrl,
+			target: '_blank',
+		});
+	}
+
+	if (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) {
+		menuItems.push({ type: 'divider' });
+	}
+
+	menuItems.push({
+		type: 'a',
+		text: i18n.ts.document,
+		icon: 'ti ti-bulb',
+		href: 'https://misskey-hub.net/docs/for-users/',
+		target: '_blank',
+	});
+
+	if ($i) {
+		menuItems.push({
+			text: i18n.ts._initialTutorial.launchTutorial,
+			icon: 'ti ti-presentation',
 			action: () => {
-				os.api('invite').then(x => {
-					os.alert({
-						type: 'info',
-						text: x.code,
-					});
-				}).catch(err => {
-					os.alert({
-						type: 'error',
-						text: err,
-					});
+				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {}, {
+					closed: () => dispose(),
 				});
 			},
-		} : undefined, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
-			type: 'link',
-			to: '/custom-emojis-manager',
-			text: i18n.ts.manageCustomEmojis,
-			icon: 'ti ti-icons',
-		} : undefined],
-	}, null, {
-		text: i18n.ts.help,
-		icon: 'ti ti-question-circle',
-		action: () => {
-			window.open('https://misskey-hub.net/help.html', '_blank');
-		},
-	}, {
+		});
+	}
+
+	menuItems.push({
 		type: 'link',
 		text: i18n.ts.aboutMisskey,
 		to: '/about-misskey',
-	}], ev.currentTarget ?? ev.target, {
+	});
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target, {
+		align: 'left',
+	});
+}
+
+export function openToolsMenu(ev: MouseEvent) {
+	os.popupMenu(toolsMenuItems(), ev.currentTarget ?? ev.target, {
 		align: 'left',
 	});
 }

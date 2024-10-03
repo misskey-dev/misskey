@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ModerationLogsRepository } from '@/models/index.js';
+import type { ModerationLogsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { ModerationLogEntityService } from '@/core/entities/ModerationLogEntityService.js';
@@ -9,7 +14,8 @@ export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireAdmin: true,
+	kind: 'read:admin:show-moderation-log',
 
 	res: {
 		type: 'array',
@@ -44,7 +50,7 @@ export const meta = {
 				user: {
 					type: 'object',
 					optional: false, nullable: false,
-					ref: 'UserDetailed',
+					ref: 'UserDetailedNotMe',
 				},
 			},
 		},
@@ -57,13 +63,14 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		type: { type: 'string', nullable: true },
+		userId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.moderationLogsRepository)
 		private moderationLogsRepository: ModerationLogsRepository,
@@ -74,7 +81,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.moderationLogsRepository.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
-			const reports = await query.take(ps.limit).getMany();
+			if (ps.type != null) {
+				query.andWhere('report.type = :type', { type: ps.type });
+			}
+
+			if (ps.userId != null) {
+				query.andWhere('report.userId = :userId', { userId: ps.userId });
+			}
+
+			const reports = await query.limit(ps.limit).getMany();
 
 			return await this.moderationLogEntityService.packMany(reports);
 		});

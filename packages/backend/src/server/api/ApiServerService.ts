@@ -1,10 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
 import { ModuleRef } from '@nestjs/core';
+import { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { Config } from '@/config.js';
-import type { UsersRepository, InstancesRepository, AccessTokensRepository } from '@/models/index.js';
+import type { InstancesRepository, AccessTokensRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -12,6 +18,7 @@ import endpoints from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
+import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
@@ -21,9 +28,6 @@ export class ApiServerService {
 
 		@Inject(DI.config)
 		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -35,6 +39,7 @@ export class ApiServerService {
 		private apiCallService: ApiCallService,
 		private signupApiService: SignupApiService,
 		private signinApiService: SigninApiService,
+		private signinWithPasskeyApiService: SigninWithPasskeyApiService,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -47,7 +52,7 @@ export class ApiServerService {
 
 		fastify.register(multipart, {
 			limits: {
-				fileSize: this.config.maxFileSize ?? 262144000,
+				fileSize: this.config.maxFileSize,
 				files: 1,
 			},
 		});
@@ -73,28 +78,32 @@ export class ApiServerService {
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, (request, reply) => {
+				}>('/' + endpoint.name, async (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
 						reply.send();
 						return;
 					}
-		
-					this.apiCallService.handleMultipartRequest(ep, request, reply);
+
+					// Await so that any error can automatically be translated to HTTP 500
+					await this.apiCallService.handleMultipartRequest(ep, request, reply);
+					return reply;
 				});
 			} else {
 				fastify.all<{
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, { bodyLimit: 1024 * 32 }, (request, reply) => {
+				}>('/' + endpoint.name, { bodyLimit: 1024 * 1024 }, async (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
 						reply.send();
 						return;
 					}
-		
-					this.apiCallService.handleRequest(ep, request, reply);
+
+					// Await so that any error can automatically be translated to HTTP 500
+					await this.apiCallService.handleRequest(ep, request, reply);
+					return reply;
 				});
 			}
 		}
@@ -125,13 +134,19 @@ export class ApiServerService {
 			};
 		}>('/signin', (request, reply) => this.signinApiService.signin(request, reply));
 
+		fastify.post<{
+			Body: {
+				credential?: AuthenticationResponseJSON;
+			};
+		}>('/signin-with-passkey', (request, reply) => this.signinWithPasskeyApiService.signin(request, reply));
+
 		fastify.post<{ Body: { code: string; } }>('/signup-pending', (request, reply) => this.signupApiService.signupPending(request, reply));
 
 		fastify.get('/v1/instance/peers', async (request, reply) => {
 			const instances = await this.instancesRepository.find({
 				select: ['host'],
 				where: {
-					isSuspended: false,
+					suspensionState: 'none',
 				},
 			});
 
@@ -151,13 +166,29 @@ export class ApiServerService {
 				return {
 					ok: true,
 					token: token.token,
-					user: await this.userEntityService.pack(token.userId, null, { detail: true }),
+					user: await this.userEntityService.pack(token.userId, null, { schema: 'UserDetailedNotMe' }),
 				};
 			} else {
 				return {
 					ok: false,
 				};
 			}
+		});
+
+		// Make sure any unknown path under /api returns HTTP 404 Not Found,
+		// because otherwise ClientServerService will return the base client HTML
+		// page with HTTP 200.
+		fastify.get('/*', (request, reply) => {
+			reply.code(404);
+			// Mock ApiCallService.send's error handling
+			reply.send({
+				error: {
+					message: 'Unknown API endpoint.',
+					code: 'UNKNOWN_API_ENDPOINT',
+					id: '2ca3b769-540a-4f08-9dd5-b5a825b6d0f1',
+					kind: 'client',
+				},
+			});
 		});
 
 		done();

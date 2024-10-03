@@ -1,13 +1,18 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-aichan data-cy-mkw-aichan">
-	<iframe ref="live2d" class="dedjhjmo" src="https://misskey-dev.github.io/mascot-web/?scale=1.5&y=1.1&eyeY=100" @click="touched"></iframe>
+<MkContainer :naked="widgetProps.transparent" :showHeader="false" data-cy-mkw-aichan class="mkw-aichan">
+	<iframe ref="live2d" :class="$style.root" src="https://misskey-dev.github.io/mascot-web/?scale=1.5&y=1.1&eyeY=100" @click="touched"></iframe>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, shallowRef } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
 
 const name = 'ai';
 
@@ -20,11 +25,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -64,11 +66,12 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
-.dedjhjmo {
+<style lang="scss" module>
+.root {
 	width: 100%;
 	height: 350px;
 	border: none;
 	pointer-events: none;
+	color-scheme: light;
 }
 </style>

@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { CreateNotificationService } from '@/core/CreateNotificationService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 
 export const meta = {
 	tags: ['notifications'],
@@ -8,6 +13,11 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:notifications',
+
+	limit: {
+		duration: 1000 * 60,
+		max: 10,
+	},
 
 	errors: {
 	},
@@ -23,18 +33,17 @@ export const paramDef = {
 	required: ['body'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private createNotificationService: CreateNotificationService,
+		private notificationService: NotificationService,
 	) {
 		super(meta, paramDef, async (ps, user, token) => {
-			this.createNotificationService.createNotification(user.id, 'app', {
+			this.notificationService.createNotification(user.id, 'app', {
 				appAccessTokenId: token ? token.id : null,
 				customBody: ps.body,
-				customHeader: ps.header,
-				customIcon: ps.icon,
+				customHeader: ps.header ?? token?.name ?? null,
+				customIcon: ps.icon ?? token?.iconUrl ?? null,
 			});
 		});
 	}

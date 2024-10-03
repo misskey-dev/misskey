@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
+import type { UserProfilesRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { CreateNotificationService } from '@/core/CreateNotificationService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 
 export const ACHIEVEMENT_TYPES = [
 	'notes1',
@@ -64,6 +69,7 @@ export const ACHIEVEMENT_TYPES = [
 	'iLoveMisskey',
 	'foundTreasure',
 	'client30min',
+	'client60min',
 	'noteDeletedWithin1min',
 	'postedAtLateNight',
 	'postedAt0min0sec',
@@ -79,24 +85,25 @@ export const ACHIEVEMENT_TYPES = [
 	'setNameToSyuilo',
 	'cookieClicked',
 	'brainDiver',
+	'smashTestNotificationButton',
+	'tutorialCompleted',
+	'bubbleGameExplodingHead',
+	'bubbleGameDoubleExplodingHead',
 ] as const;
 
 @Injectable()
 export class AchievementService {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
-		private createNotificationService: CreateNotificationService,
+		private notificationService: NotificationService,
 	) {
 	}
 
 	@bindThis
 	public async create(
-		userId: User['id'],
+		userId: MiUser['id'],
 		type: typeof ACHIEVEMENT_TYPES[number],
 	): Promise<void> {
 		if (!ACHIEVEMENT_TYPES.includes(type)) return;
@@ -114,7 +121,7 @@ export class AchievementService {
 			}],
 		});
 
-		this.createNotificationService.createNotification(userId, 'achievementEarned', {
+		this.notificationService.createNotification(userId, 'achievementEarned', {
 			achievement: type,
 		});
 	}

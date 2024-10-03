@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m rsljpzjq">
 	<div v-adaptive-border class="rfqxtzch _panel">
@@ -73,16 +78,18 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getBuiltinThemesRef } from '@/scripts/theme';
-import { selectFile } from '@/scripts/select-file';
-import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { ColdDeviceStorage, defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import { uniqueBy } from '@/scripts/array';
-import { fetchThemes, getThemes } from '@/theme-store';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { miLocalStorage } from '@/local-storage';
+import { getBuiltinThemesRef } from '@/scripts/theme.js';
+import { selectFile } from '@/scripts/select-file.js';
+import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
+import { ColdDeviceStorage, defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { uniqueBy } from '@/scripts/array.js';
+import { fetchThemes, getThemes } from '@/theme-store.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { reloadAsk } from '@/scripts/reload-ask.js';
+import * as os from '@/os.js';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -119,6 +126,7 @@ const lightThemeId = computed({
 		}
 	},
 });
+
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
 const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
@@ -130,13 +138,13 @@ watch(syncDeviceDarkMode, () => {
 	}
 });
 
-watch(wallpaper, () => {
+watch(wallpaper, async () => {
 	if (wallpaper.value == null) {
 		miLocalStorage.removeItem('wallpaper');
 	} else {
 		miLocalStorage.setItem('wallpaper', wallpaper.value);
 	}
-	location.reload();
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 
 onActivated(() => {
@@ -155,14 +163,14 @@ function setWallpaper(event) {
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.theme,
 	icon: 'ti ti-palette',
-});
+}));
 </script>
 
 <style lang="scss" scoped>
@@ -195,12 +203,18 @@ definePageMetadata({
 			}
 		}
 
+		.dn:focus-visible ~ .toggle {
+			outline: 2px solid var(--focus);
+			outline-offset: 2px;
+		}
+
 		.toggle {
 			cursor: pointer;
 			display: inline-block;
 			position: relative;
 			width: 90px;
 			height: 50px;
+			margin: 4px; // focus用のアウトライン
 			background-color: #83D8FF;
 			border-radius: 90px - 6;
 			transition: background-color 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;

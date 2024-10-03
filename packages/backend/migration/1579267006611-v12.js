@@ -1,4 +1,7 @@
-
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 export class v121579267006611 {
     constructor() {

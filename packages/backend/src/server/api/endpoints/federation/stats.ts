@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { FollowingsRepository, InstancesRepository } from '@/models/index.js';
+import type { FollowingsRepository, InstancesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
@@ -13,6 +18,38 @@ export const meta = {
 
 	allowGet: true,
 	cacheSec: 60 * 60,
+
+	res: {
+		type: 'object',
+		optional: false,
+		nullable: false,
+		properties: {
+			topSubInstances: {
+				type: 'array',
+				optional: false,
+				nullable: false,
+				items: {
+					type: 'object',
+					optional: false,
+					nullable: false,
+					ref: 'FederationInstance',
+				},
+			},
+			otherFollowersCount: { type: 'number' },
+			topPubInstances: {
+				type: 'array',
+				optional: false,
+				nullable: false,
+				items: {
+					type: 'object',
+					optional: false,
+					nullable: false,
+					ref: 'FederationInstance',
+				},
+			},
+			otherFollowingCount: { type: 'number' },
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -23,9 +60,8 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -71,9 +107,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const gotPubCount = topPubInstances.map(x => x.followingCount).reduce((a, b) => a + b, 0);
 
 			return await awaitAll({
-				topSubInstances: this.instanceEntityService.packMany(topSubInstances),
+				topSubInstances: this.instanceEntityService.packMany(topSubInstances, me),
 				otherFollowersCount: Math.max(0, allSubCount - gotSubCount),
-				topPubInstances: this.instanceEntityService.packMany(topPubInstances),
+				topPubInstances: this.instanceEntityService.packMany(topPubInstances, me),
 				otherFollowingCount: Math.max(0, allPubCount - gotPubCount),
 			});
 		});

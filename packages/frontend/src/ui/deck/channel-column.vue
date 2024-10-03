@@ -1,73 +1,96 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
 		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<template v-if="column.channelId">
 		<div style="padding: 8px; text-align: center;">
-			<MkButton primary gradate rounded inline @click="post"><i class="ti ti-pencil"></i></MkButton>
+			<MkButton primary gradate rounded inline small @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
-		<MkTimeline ref="timeline" src="channel" :channel="column.channelId" @after="() => emit('loaded')"/>
+		<MkTimeline ref="timeline" src="channel" :channel="column.channelId" @note="onNote"/>
 	</template>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, shallowRef, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import XColumn from './column.vue';
-import { updateColumn, Column } from './deck-store';
+import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { favoritedChannelsCache } from '@/cache.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import type { MenuItem } from '@/types/menu.js';
+import { SoundStore } from '@/store.js';
+import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import * as sound from '@/scripts/sound.js';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-const emit = defineEmits<{
-	(ev: 'loaded'): void;
-	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
-}>();
-
-let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
+const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const channel = shallowRef<Misskey.entities.Channel>();
+const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 
 if (props.column.channelId == null) {
 	setChannel();
 }
 
+watch(soundSetting, v => {
+	updateColumn(props.column.id, { soundSetting: v });
+});
+
 async function setChannel() {
-	const channels = await os.api('channels/followed', {
-		limit: 100,
-	});
-	const { canceled, result: channel } = await os.select({
+	const channels = await favoritedChannelsCache.fetch();
+	const { canceled, result: chosenChannel } = await os.select({
 		title: i18n.ts.selectChannel,
 		items: channels.map(x => ({
 			value: x, text: x.name,
 		})),
 		default: props.column.channelId,
 	});
-	if (canceled) return;
+	if (canceled || chosenChannel == null) return;
 	updateColumn(props.column.id, {
-		channelId: channel.id,
-		name: channel.name,
+		channelId: chosenChannel.id,
+		name: chosenChannel.name,
 	});
 }
 
-function post() {
+async function post() {
+	if (props.column.channelId == null) return;
+	if (!channel.value || channel.value.id !== props.column.channelId) {
+		channel.value = await misskeyApi('channels/show', {
+			channelId: props.column.channelId,
+		});
+	}
+
 	os.post({
-		channel: {
-			id: props.column.channelId,
-		},
-		instant: true,
+		channel: channel.value,
 	});
 }
 
-const menu = [{
+function onNote() {
+	sound.playMisskeySfxFile(soundSetting.value);
+}
+
+const menu: MenuItem[] = [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.selectChannel,
 	action: setChannel,
+}, {
+	icon: 'ti ti-bell',
+	text: i18n.ts._deck.newNoteNotificationSettings,
+	action: () => soundSettingsButton(soundSetting),
 }];
 </script>

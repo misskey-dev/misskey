@@ -1,4 +1,10 @@
-import { EndoRelation, Predicate } from './relation';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+type EndoRelation<T> = (a: T, b: T) => boolean;
+type Predicate<T> = (x: T) => boolean;
 
 /**
  * Count the number of elements that satisfy the predicate
@@ -69,43 +75,6 @@ export function sum(xs: number[]): number {
 
 export function maximum(xs: number[]): number {
 	return Math.max(...xs);
-}
-
-/**
- * Splits an array based on the equivalence relation.
- * The concatenation of the result is equal to the argument.
- */
-export function groupBy<T>(f: EndoRelation<T>, xs: T[]): T[][] {
-	const groups = [] as T[][];
-	for (const x of xs) {
-		if (groups.length !== 0 && f(groups[groups.length - 1][0], x)) {
-			groups[groups.length - 1].push(x);
-		} else {
-			groups.push([x]);
-		}
-	}
-	return groups;
-}
-
-/**
- * Splits an array based on the equivalence relation induced by the function.
- * The concatenation of the result is equal to the argument.
- */
-export function groupOn<T, S>(f: (x: T) => S, xs: T[]): T[][] {
-	return groupBy((a, b) => f(a) === f(b), xs);
-}
-
-export function groupByX<T>(collections: T[], keySelector: (x: T) => string) {
-	return collections.reduce((obj: Record<string, T[]>, item: T) => {
-		const key = keySelector(item);
-		if (typeof obj[key] === 'undefined') {
-			obj[key] = [];
-		}
-
-		obj[key].push(item);
-
-		return obj;
-	}, {});
 }
 
 /**

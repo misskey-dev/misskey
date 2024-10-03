@@ -1,14 +1,26 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions"/></template>
-	<MkSpacer :content-max="800">
-		<div v-if="clip">
-			<div class="okzinsic _panel">
-				<div v-if="clip.description" class="description">
-					<Mfm :text="clip.description" :is-note="false" :i="$i"/>
+	<MkSpacer :contentMax="800">
+		<div v-if="clip" class="_gaps">
+			<div class="_panel">
+				<div class="_gaps_s" :class="$style.description">
+					<div v-if="clip.description">
+						<Mfm :text="clip.description" :isNote="false"/>
+					</div>
+					<div v-else>({{ i18n.ts.noDescription }})</div>
+					<div>
+						<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike rounded primary @click="unfavorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
+						<MkButton v-else v-tooltip="i18n.ts.favorite" asLike rounded @click="favorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
+					</div>
 				</div>
-				<div class="user">
-					<MkAvatar :user="clip.user" class="avatar" indicator link preview/> <MkUserName :user="clip.user" :nowrap="false"/>
+				<div :class="$style.user">
+					<MkAvatar :user="clip.user" :class="$style.avatar" indicator link preview/> <MkUserName :user="clip.user" :nowrap="false"/>
 				</div>
 			</div>
 
@@ -19,19 +31,28 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide } from 'vue';
-import * as misskey from 'misskey-js';
+import { computed, watch, provide, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { url } from '@@/js/config.js';
+import MkButton from '@/components/MkButton.vue';
+import { clipsCache } from '@/cache.js';
+import { isSupportShare } from '@/scripts/navigator.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { genEmbedCode } from '@/scripts/get-embed-code.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const props = defineProps<{
 	clipId: string,
 }>();
 
-let clip: misskey.entities.Clip = $ref<misskey.entities.Clip>();
+const clip = ref<Misskey.entities.Clip | null>(null);
+const favorited = ref(false);
 const pagination = {
 	endpoint: 'clips/notes' as const,
 	limit: 10,
@@ -40,90 +61,149 @@ const pagination = {
 	})),
 };
 
-const isOwned: boolean | null = $computed<boolean | null>(() => $i && clip && ($i.id === clip.userId));
+const isOwned = computed<boolean | null>(() => $i && clip.value && ($i.id === clip.value.userId));
 
 watch(() => props.clipId, async () => {
-	clip = await os.api('clips/show', {
+	clip.value = await misskeyApi('clips/show', {
 		clipId: props.clipId,
 	});
+	favorited.value = clip.value.isFavorited;
 }, {
 	immediate: true,
-}); 
+});
 
-provide('currentClipPage', $$(clip));
+provide('currentClip', clip);
 
-const headerActions = $computed(() => clip && isOwned ? [{
+function favorite() {
+	os.apiWithDialog('clips/favorite', {
+		clipId: props.clipId,
+	}).then(() => {
+		favorited.value = true;
+	});
+}
+
+async function unfavorite() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.unfavoriteConfirm,
+	});
+	if (confirm.canceled) return;
+	os.apiWithDialog('clips/unfavorite', {
+		clipId: props.clipId,
+	}).then(() => {
+		favorited.value = false;
+	});
+}
+
+const headerActions = computed(() => clip.value && isOwned.value ? [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.edit,
 	handler: async (): Promise<void> => {
-		const { canceled, result } = await os.form(clip.name, {
+		const { canceled, result } = await os.form(clip.value.name, {
 			name: {
 				type: 'string',
 				label: i18n.ts.name,
-				default: clip.name,
+				default: clip.value.name,
 			},
 			description: {
 				type: 'string',
 				required: false,
 				multiline: true,
+				treatAsMfm: true,
 				label: i18n.ts.description,
-				default: clip.description,
+				default: clip.value.description,
 			},
 			isPublic: {
 				type: 'boolean',
 				label: i18n.ts.public,
-				default: clip.isPublic,
+				default: clip.value.isPublic,
 			},
 		});
 		if (canceled) return;
 
 		os.apiWithDialog('clips/update', {
-			clipId: clip.id,
+			clipId: clip.value.id,
 			...result,
 		});
+
+		clipsCache.delete();
 	},
-}, {
+}, ...(clip.value.isPublic ? [{
+	icon: 'ti ti-share',
+	text: i18n.ts.share,
+	handler: (ev: MouseEvent): void => {
+		const menuItems: MenuItem[] = [];
+
+		menuItems.push({
+			icon: 'ti ti-link',
+			text: i18n.ts.copyUrl,
+			action: () => {
+				copyToClipboard(`${url}/clips/${clip.value!.id}`);
+				os.success();
+			},
+		}, {
+			icon: 'ti ti-code',
+			text: i18n.ts.genEmbedCode,
+			action: () => {
+				genEmbedCode('clips', clip.value!.id);
+			},
+		});
+
+		if (isSupportShare()) {
+			menuItems.push({
+				icon: 'ti ti-share',
+				text: i18n.ts.share,
+				action: async () => {
+					navigator.share({
+						title: clip.value!.name,
+						text: clip.value!.description ?? '',
+						url: `${url}/clips/${clip.value!.id}`,
+					});
+				},
+			});
+		}
+
+		os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+	},
+}] : []), {
 	icon: 'ti ti-trash',
 	text: i18n.ts.delete,
 	danger: true,
 	handler: async (): Promise<void> => {
 		const { canceled } = await os.confirm({
 			type: 'warning',
-			text: i18n.t('deleteAreYouSure', { x: clip.name }),
+			text: i18n.tsx.deleteAreYouSure({ x: clip.value.name }),
 		});
 		if (canceled) return;
 
 		await os.apiWithDialog('clips/delete', {
-			clipId: clip.id,
+			clipId: clip.value.id,
 		});
+
+		clipsCache.delete();
 	},
 }] : null);
 
-definePageMetadata(computed(() => clip ? {
-	title: clip.name,
+definePageMetadata(() => ({
+	title: clip.value ? clip.value.name : i18n.ts.clip,
 	icon: 'ti ti-paperclip',
-} : null));
+}));
 </script>
 
-<style lang="scss" scoped>
-.okzinsic {
-	position: relative;
-	margin-bottom: var(--margin);
+<style lang="scss" module>
+.description {
+	padding: 16px;
+}
 
-	> .description {
-		padding: 16px;
-	}
+.user {
+	--height: 32px;
+	padding: 16px;
+	border-top: solid 0.5px var(--divider);
+	line-height: var(--height);
+}
 
-	> .user {
-		$height: 32px;
-		padding: 16px;
-		border-top: solid 0.5px var(--divider);
-		line-height: $height;
-
-		> .avatar {
-			width: $height;
-			height: $height;
-		}
-	}
+.avatar {
+	width: var(--height);
+	height: var(--height);
 }
 </style>

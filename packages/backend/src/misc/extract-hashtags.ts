@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as mfm from 'mfm-js';
 import { unique } from '@/misc/prelude/array.js';
 

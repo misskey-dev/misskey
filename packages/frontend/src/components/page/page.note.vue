@@ -1,47 +1,41 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="voxdxuby">
-	<XNote v-if="note && !block.detailed" :key="note.id + ':normal'" v-model:note="note"/>
-	<XNoteDetailed v-if="note && block.detailed" :key="note.id + ':detail'" v-model:note="note"/>
+<div :class="$style.root">
+	<MkNote v-if="note && !block.detailed" :key="note.id + ':normal'" :note="note"/>
+	<MkNoteDetailed v-if="note && block.detailed" :key="note.id + ':detail'" :note="note"/>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, PropType, Ref, ref } from 'vue';
-import XNote from '@/components/MkNote.vue';
-import XNoteDetailed from '@/components/MkNoteDetailed.vue';
-import * as os from '@/os';
-import { NoteBlock } from '@/scripts/hpml/block';
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import MkNote from '@/components/MkNote.vue';
+import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
-export default defineComponent({
-	components: {
-		XNote,
-		XNoteDetailed,
-	},
-	props: {
-		block: {
-			type: Object as PropType<NoteBlock>,
-			required: true,
-		},
-	},
-	setup(props, ctx) {
-		const note: Ref<Record<string, any> | null> = ref(null);
+const props = defineProps<{
+	block: Misskey.entities.PageBlock,
+	page: Misskey.entities.Page,
+}>();
 
-		onMounted(() => {
-			os.api('notes/show', { noteId: props.block.note })
-			.then(result => {
-				note.value = result;
-			});
+const note = ref<Misskey.entities.Note | null>(null);
+
+onMounted(() => {
+	if (props.block.note == null) return;
+	misskeyApi('notes/show', { noteId: props.block.note })
+		.then(result => {
+			note.value = result;
 		});
-
-		return {
-			note,
-		};
-	},
 });
 </script>
 
-<style lang="scss" scoped>
-.voxdxuby {
-	margin: 1em 0;
+<style lang="scss" module>
+.root {
+	border: 1px solid var(--divider);
+	border-radius: var(--radius);
 }
 </style>

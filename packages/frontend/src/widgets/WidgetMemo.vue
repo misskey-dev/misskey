@@ -1,10 +1,15 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkContainer :show-header="widgetProps.showHeader" class="mkw-memo data-cy-mkw-memo">
+<MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-memo class="mkw-memo">
 	<template #icon><i class="ti ti-note"></i></template>
 	<template #header>{{ i18n.ts._widgets.memo }}</template>
 
 	<div :class="$style.root">
-		<textarea v-model="text" :class="$style.textarea" :placeholder="i18n.ts.placeholder" @input="onChange"></textarea>
+		<textarea v-model="text" :style="`height: ${widgetProps.height}px;`" :class="$style.textarea" :placeholder="i18n.ts.placeholder" @input="onChange"></textarea>
 		<button :class="$style.save" :disabled="!changed" class="_buttonPrimary" @click="saveMemo">{{ i18n.ts.save }}</button>
 	</div>
 </MkContainer>
@@ -12,11 +17,11 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'memo';
 
@@ -25,15 +30,16 @@ const widgetPropsDef = {
 		type: 'boolean' as const,
 		default: true,
 	},
+	height: {
+		type: 'number' as const,
+		default: 100,
+	},
 };
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,

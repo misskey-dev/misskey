@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class instanceDefaultTheme1646143552768 {
     name = 'instanceDefaultTheme1646143552768'
 

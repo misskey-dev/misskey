@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import type Logger from '@/logger.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -9,6 +14,6 @@ export class ChartLoggerService {
 	constructor(
 		private loggerService: LoggerService,
 	) {
-		this.logger = this.loggerService.getLogger('chart', 'white', process.env.NODE_ENV !== 'test');
+		this.logger = this.loggerService.getLogger('chart', 'white');
 	}
 }

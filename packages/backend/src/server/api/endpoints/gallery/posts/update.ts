@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/index.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/_.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -10,6 +15,8 @@ export const meta = {
 	tags: ['gallery'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:gallery',
 
@@ -40,12 +47,11 @@ export const paramDef = {
 		} },
 		isSensitive: { type: 'boolean', default: false },
 	},
-	required: ['postId', 'title', 'fileIds'],
+	required: ['postId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.galleryPostsRepository)
 		private galleryPostsRepository: GalleryPostsRepository,
@@ -56,15 +62,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private galleryPostEntityService: GalleryPostEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const files = (await Promise.all(ps.fileIds.map(fileId =>
-				this.driveFilesRepository.findOneBy({
-					id: fileId,
-					userId: me.id,
-				}),
-			))).filter((file): file is DriveFile => file != null);
+			let files: Array<MiDriveFile> | undefined;
 
-			if (files.length === 0) {
-				throw new Error();
+			if (ps.fileIds) {
+				files = (await Promise.all(ps.fileIds.map(fileId =>
+					this.driveFilesRepository.findOneBy({
+						id: fileId,
+						userId: me.id,
+					}),
+				))).filter(x => x != null);
+
+				if (files.length === 0) {
+					throw new Error();
+				}
 			}
 
 			await this.galleryPostsRepository.update({
@@ -75,7 +85,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				title: ps.title,
 				description: ps.description,
 				isSensitive: ps.isSensitive,
-				fileIds: files.map(file => file.id),
+				fileIds: files ? files.map(file => file.id) : undefined,
 			});
 
 			const post = await this.galleryPostsRepository.findOneByOrFail({ id: ps.postId });

@@ -1,30 +1,37 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }">
-	<span class="text" :class="{ up }">+1</span>
+	<span class="text" :class="{ up }">+{{ value }}</span>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import * as os from '@/os';
+import { onMounted, ref } from 'vue';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	x: number;
 	y: number;
+	value?: number | string;
 }>(), {
+	value: 1,
 });
 
 const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
-let up = $ref(false);
+const up = ref(false);
 const zIndex = os.claimZIndex('middle');
 const angle = (45 - (Math.random() * 90)) + 'deg';
 
 onMounted(() => {
 	window.setTimeout(() => {
-		up = true;
+		up.value = true;
 	}, 10);
 
 	window.setTimeout(() => {
@@ -35,6 +42,7 @@ onMounted(() => {
 
 <style lang="scss" module>
 .root {
+	user-select: none;
 	pointer-events: none;
 	position: fixed;
 	width: 128px;

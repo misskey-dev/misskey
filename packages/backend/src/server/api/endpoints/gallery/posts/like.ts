@@ -1,6 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
+import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/_.js';
+import { FeaturedService, GALLERY_POSTS_RANKING_WINDOW } from '@/core/FeaturedService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -9,6 +15,8 @@ export const meta = {
 	tags: ['gallery'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:gallery-likes',
 
@@ -41,9 +49,8 @@ export const paramDef = {
 	required: ['postId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.galleryPostsRepository)
 		private galleryPostsRepository: GalleryPostsRepository,
@@ -51,6 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.galleryLikesRepository)
 		private galleryLikesRepository: GalleryLikesRepository,
 
+		private featuredService: FeaturedService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -64,22 +72,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// if already liked
-			const exist = await this.galleryLikesRepository.findOneBy({
-				postId: post.id,
-				userId: me.id,
+			const exist = await this.galleryLikesRepository.exists({
+				where: {
+					postId: post.id,
+					userId: me.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist) {
 				throw new ApiError(meta.errors.alreadyLiked);
 			}
 
 			// Create like
 			await this.galleryLikesRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				postId: post.id,
 				userId: me.id,
 			});
+
+			// ランキング更新
+			if (Date.now() - this.idService.parse(post.id).date.getTime() < GALLERY_POSTS_RANKING_WINDOW) {
+				await this.featuredService.updateGalleryPostsRanking(post.id, 1);
+			}
 
 			this.galleryPostsRepository.increment({ id: post.id }, 'likedCount', 1);
 		});

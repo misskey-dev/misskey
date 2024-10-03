@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -8,6 +13,7 @@ export const meta = {
 	tags: ['account', 'notes'],
 
 	requireCredential: true,
+	prohibitMoved: true,
 
 	kind: 'write:account',
 
@@ -46,9 +52,8 @@ export const paramDef = {
 	required: ['noteId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private userEntityService: UserEntityService,
 		private notePiningService: NotePiningService,
@@ -61,8 +66,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw err;
 			});
 
-			return await this.userEntityService.pack<true, true>(me.id, me, {
-				detail: true,
+			return await this.userEntityService.pack(me.id, me, {
+				schema: 'MeDetailed',
 			});
 		});
 	}

@@ -1,37 +1,52 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
-	<MkSwitch v-model="isLocked" @update:model-value="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
-	<MkSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:model-value="save()">{{ i18n.ts.autoAcceptFollowed }}</MkSwitch>
+	<MkSwitch v-model="isLocked" @update:modelValue="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
+	<MkSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:modelValue="save()">{{ i18n.ts.autoAcceptFollowed }}</MkSwitch>
 
-	<MkSwitch v-model="publicReactions" @update:model-value="save()">
+	<MkSwitch v-model="publicReactions" @update:modelValue="save()">
 		{{ i18n.ts.makeReactionsPublic }}
 		<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template>
 	</MkSwitch>
-		
-	<MkSelect v-model="ffVisibility" @update:model-value="save()">
-		<template #label>{{ i18n.ts.ffVisibility }}</template>
+
+	<MkSelect v-model="followingVisibility" @update:modelValue="save()">
+		<template #label>{{ i18n.ts.followingVisibility }}</template>
 		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
-		<template #caption>{{ i18n.ts.ffVisibilityDescription }}</template>
 	</MkSelect>
-		
-	<MkSwitch v-model="hideOnlineStatus" @update:model-value="save()">
+
+	<MkSelect v-model="followersVisibility" @update:modelValue="save()">
+		<template #label>{{ i18n.ts.followersVisibility }}</template>
+		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
+		<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
+		<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
+	</MkSelect>
+
+	<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
 		{{ i18n.ts.hideOnlineStatus }}
 		<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
 	</MkSwitch>
-	<MkSwitch v-model="noCrawle" @update:model-value="save()">
+	<MkSwitch v-model="noCrawle" @update:modelValue="save()">
 		{{ i18n.ts.noCrawle }}
 		<template #caption>{{ i18n.ts.noCrawleDescription }}</template>
 	</MkSwitch>
-	<MkSwitch v-model="isExplorable" @update:model-value="save()">
+	<MkSwitch v-model="preventAiLearning" @update:modelValue="save()">
+		{{ i18n.ts.preventAiLearning }}<span class="_beta">{{ i18n.ts.beta }}</span>
+		<template #caption>{{ i18n.ts.preventAiLearningDescription }}</template>
+	</MkSwitch>
+	<MkSwitch v-model="isExplorable" @update:modelValue="save()">
 		{{ i18n.ts.makeExplorable }}
 		<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
 	</MkSwitch>
 
 	<FormSection>
 		<div class="_gaps_m">
-			<MkSwitch v-model="rememberNoteVisibility" @update:model-value="save()">{{ i18n.ts.rememberNoteVisibility }}</MkSwitch>
+			<MkSwitch v-model="rememberNoteVisibility" @update:modelValue="save()">{{ i18n.ts.rememberNoteVisibility }}</MkSwitch>
 			<MkFolder v-if="!rememberNoteVisibility">
 				<template #label>{{ i18n.ts.defaultNoteVisibility }}</template>
 				<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
@@ -52,53 +67,59 @@
 		</div>
 	</FormSection>
 
-	<MkSwitch v-model="keepCw" @update:model-value="save()">{{ i18n.ts.keepCw }}</MkSwitch>
+	<MkSwitch v-model="keepCw" @update:modelValue="save()">{{ i18n.ts.keepCw }}</MkSwitch>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { signinRequired } from '@/account.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let isLocked = $ref($i.isLocked);
-let autoAcceptFollowed = $ref($i.autoAcceptFollowed);
-let noCrawle = $ref($i.noCrawle);
-let isExplorable = $ref($i.isExplorable);
-let hideOnlineStatus = $ref($i.hideOnlineStatus);
-let publicReactions = $ref($i.publicReactions);
-let ffVisibility = $ref($i.ffVisibility);
+const $i = signinRequired();
 
-let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
-let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
-let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
-let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
+const isLocked = ref($i.isLocked);
+const autoAcceptFollowed = ref($i.autoAcceptFollowed);
+const noCrawle = ref($i.noCrawle);
+const preventAiLearning = ref($i.preventAiLearning);
+const isExplorable = ref($i.isExplorable);
+const hideOnlineStatus = ref($i.hideOnlineStatus);
+const publicReactions = ref($i.publicReactions);
+const followingVisibility = ref($i.followingVisibility);
+const followersVisibility = ref($i.followersVisibility);
+
+const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
+const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
+const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
+const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
 
 function save() {
-	os.api('i/update', {
-		isLocked: !!isLocked,
-		autoAcceptFollowed: !!autoAcceptFollowed,
-		noCrawle: !!noCrawle,
-		isExplorable: !!isExplorable,
-		hideOnlineStatus: !!hideOnlineStatus,
-		publicReactions: !!publicReactions,
-		ffVisibility: ffVisibility,
+	misskeyApi('i/update', {
+		isLocked: !!isLocked.value,
+		autoAcceptFollowed: !!autoAcceptFollowed.value,
+		noCrawle: !!noCrawle.value,
+		preventAiLearning: !!preventAiLearning.value,
+		isExplorable: !!isExplorable.value,
+		hideOnlineStatus: !!hideOnlineStatus.value,
+		publicReactions: !!publicReactions.value,
+		followingVisibility: followingVisibility.value,
+		followersVisibility: followersVisibility.value,
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.privacy,
 	icon: 'ti ti-lock-open',
-});
+}));
 </script>

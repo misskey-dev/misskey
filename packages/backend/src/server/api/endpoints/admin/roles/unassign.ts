@@ -1,10 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
+import type { RolesRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
@@ -12,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:roles',
 
 	errors: {
 		noSuchRole: {
@@ -52,9 +56,8 @@ export const paramDef = {
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -62,12 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
 
-		@Inject(DI.roleAssignmentsRepository)
-		private roleAssignmentsRepository: RoleAssignmentsRepository,
-
-		private globalEventService: GlobalEventService,
 		private roleService: RoleService,
-		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
@@ -84,18 +82,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchUser);
 			}
 
-			const roleAssignment = await this.roleAssignmentsRepository.findOneBy({ userId: user.id, roleId: role.id });
-			if (roleAssignment == null) {
-				throw new ApiError(meta.errors.notAssigned);
-			}
-
-			await this.roleAssignmentsRepository.delete(roleAssignment.id);
-
-			this.rolesRepository.update(ps.roleId, {
-				lastUsedAt: new Date(),
-			});
-	
-			this.globalEventService.publishInternalEvent('userRoleUnassigned', roleAssignment);
+			await this.roleService.unassign(user.id, role.id, me);
 		});
 	}
 }

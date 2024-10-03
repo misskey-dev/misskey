@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, UserProfilesRepository } from '@/models/index.js';
+import type { UsersRepository, UserProfilesRepository } from '@/models/_.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -20,9 +25,8 @@ export const paramDef = {
 	required: ['password'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -34,7 +38,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const freshUser = await this.usersRepository.findOneByOrFail({ id: me.id });
-			const oldToken = freshUser.token;
+			const oldToken = freshUser.token!;
 
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
@@ -54,11 +58,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Publish event
 			this.globalEventService.publishInternalEvent('userTokenRegenerated', { id: me.id, oldToken, newToken });
 			this.globalEventService.publishMainStream(me.id, 'myTokenRegenerated');
-
-			// Terminate streaming
-			setTimeout(() => {
-				this.globalEventService.publishUserEvent(me.id, 'terminate', {});
-			}, 5000);
 		});
 	}
 }

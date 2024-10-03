@@ -1,20 +1,20 @@
-import * as sanitizeHtml from 'sanitize-html';
-import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, AbuseUserReportsRepository } from '@/models/index.js';
-import { IdService } from '@/core/IdService.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { MetaService } from '@/core/MetaService.js';
-import { EmailService } from '@/core/EmailService.js';
-import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users'],
 
 	requireCredential: true,
+	kind: 'write:report-abuse',
 
 	description: 'File a report.',
 
@@ -48,68 +48,35 @@ export const paramDef = {
 	required: ['userId', 'comment'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.abuseUserReportsRepository)
-		private abuseUserReportsRepository: AbuseUserReportsRepository,
-
-		private idService: IdService,
-		private metaService: MetaService,
-		private emailService: EmailService,
 		private getterService: GetterService,
 		private roleService: RoleService,
-		private globalEventService: GlobalEventService,
+		private abuseReportService: AbuseReportService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Lookup user
-			const user = await this.getterService.getUser(ps.userId).catch(err => {
+			const targetUser = await this.getterService.getUser(ps.userId).catch(err => {
 				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 				throw err;
 			});
 
-			if (user.id === me.id) {
+			if (targetUser.id === me.id) {
 				throw new ApiError(meta.errors.cannotReportYourself);
 			}
 
-			if (await this.roleService.isAdministrator(user)) {
+			if (await this.roleService.isAdministrator(targetUser)) {
 				throw new ApiError(meta.errors.cannotReportAdmin);
 			}
 
-			const report = await this.abuseUserReportsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
-				targetUserId: user.id,
-				targetUserHost: user.host,
+			await this.abuseReportService.report([{
+				targetUserId: targetUser.id,
+				targetUserHost: targetUser.host,
 				reporterId: me.id,
 				reporterHost: null,
 				comment: ps.comment,
-			}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
-
-			// Publish event to moderators
-			setImmediate(async () => {
-				const moderators = await this.roleService.getModerators();
-
-				for (const moderator of moderators) {
-					this.globalEventService.publishAdminStream(moderator.id, 'newAbuseUserReport', {
-						id: report.id,
-						targetUserId: report.targetUserId,
-						reporterId: report.reporterId,
-						comment: report.comment,
-					});
-				}
-
-				const meta = await this.metaService.fetch();
-				if (meta.email) {
-					this.emailService.sendEmail(meta.email, 'New abuse report',
-						sanitizeHtml(ps.comment),
-						sanitizeHtml(ps.comment));
-				}
-			});
+			}]);
 		});
 	}
 }

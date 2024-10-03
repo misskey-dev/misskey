@@ -1,9 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AntennaNotesRepository, AntennasRepository } from '@/models/index.js';
-import type { Packed } from '@/misc/schema.js';
-import type { Antenna } from '@/models/entities/Antenna.js';
+import type { AntennasRepository } from '@/models/_.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { MiAntenna } from '@/models/Antenna.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
 
 @Injectable()
 export class AntennaEntityService {
@@ -11,22 +17,19 @@ export class AntennaEntityService {
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
-		@Inject(DI.antennaNotesRepository)
-		private antennaNotesRepository: AntennaNotesRepository,
+		private idService: IdService,
 	) {
 	}
 
 	@bindThis
 	public async pack(
-		src: Antenna['id'] | Antenna,
+		src: MiAntenna['id'] | MiAntenna,
 	): Promise<Packed<'Antenna'>> {
 		const antenna = typeof src === 'object' ? src : await this.antennasRepository.findOneByOrFail({ id: src });
 
-		const hasUnreadNote = (await this.antennaNotesRepository.findOneBy({ antennaId: antenna.id, read: false })) != null;
-
 		return {
 			id: antenna.id,
-			createdAt: antenna.createdAt.toISOString(),
+			createdAt: this.idService.parse(antenna.id).date.toISOString(),
 			name: antenna.name,
 			keywords: antenna.keywords,
 			excludeKeywords: antenna.excludeKeywords,
@@ -34,10 +37,13 @@ export class AntennaEntityService {
 			userListId: antenna.userListId,
 			users: antenna.users,
 			caseSensitive: antenna.caseSensitive,
-			notify: antenna.notify,
+			localOnly: antenna.localOnly,
+			excludeBots: antenna.excludeBots,
 			withReplies: antenna.withReplies,
 			withFile: antenna.withFile,
-			hasUnreadNote,
+			isActive: antenna.isActive,
+			hasUnreadNote: false, // TODO
+			notify: false, // 後方互換性のため
 		};
 	}
 }

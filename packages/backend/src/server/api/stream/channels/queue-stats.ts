@@ -1,14 +1,21 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import Xev from 'xev';
 import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
-import Channel from '../channel.js';
+import { isJsonObject } from '@/misc/json-value.js';
+import type { JsonObject, JsonValue } from '@/misc/json-value.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 const ev = new Xev();
 
 class QueueStatsChannel extends Channel {
 	public readonly chName = 'queueStats';
 	public static shouldShare = true;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 
 	constructor(id: string, connection: Channel['connection']) {
 		super(id, connection);
@@ -17,19 +24,22 @@ class QueueStatsChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: any) {
+	public async init(params: JsonObject) {
 		ev.addListener('queueStats', this.onStats);
 	}
 
 	@bindThis
-	private onStats(stats: any) {
+	private onStats(stats: JsonObject) {
 		this.send('stats', stats);
 	}
 
 	@bindThis
-	public onMessage(type: string, body: any) {
+	public onMessage(type: string, body: JsonValue) {
 		switch (type) {
 			case 'requestLog':
+				if (!isJsonObject(body)) return;
+				if (typeof body.id !== 'string') return;
+				if (typeof body.length !== 'number') return;
 				ev.once(`queueStatsLog:${body.id}`, statsLog => {
 					this.send('statsLog', statsLog);
 				});
@@ -48,9 +58,10 @@ class QueueStatsChannel extends Channel {
 }
 
 @Injectable()
-export class QueueStatsChannelService {
+export class QueueStatsChannelService implements MiChannelService<false> {
 	public readonly shouldShare = QueueStatsChannel.shouldShare;
 	public readonly requireCredential = QueueStatsChannel.requireCredential;
+	public readonly kind = QueueStatsChannel.kind;
 
 	constructor(
 	) {

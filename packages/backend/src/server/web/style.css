@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 html {
 	background-color: var(--bg);
 	color: var(--fg);
@@ -41,6 +47,7 @@ html {
 	transform: translateY(70px);
 	color: var(--accent);
 }
+
 #splashSpinner > .spinner {
 	position: absolute;
 	top: 0;

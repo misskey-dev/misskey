@@ -1,42 +1,51 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <button
-	class="kpoogebi _button"
-	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full, large }"
+	class="_button"
+	:class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing || hasPendingFollowRequestFromYou, [$style.full]: full, [$style.large]: large }]"
 	:disabled="wait"
 	@click="onClick"
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
-			<span v-if="full">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked">
 			<!-- つまりリモートフォローの場合。 -->
-			<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.youFollowing }}</span><i class="ti ti-minus"></i>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
-			<span v-if="full">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
 		</template>
 		<template v-else-if="!isFollowing && !user.isLocked">
-			<span v-if="full">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
+		<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 	</template>
 </button>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os';
-import { stream } from '@/stream';
-import { i18n } from '@/i18n';
-import { claimAchievement } from '@/scripts/achievements';
-import { $i } from '@/account';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { useStream } from '@/stream.js';
+import { i18n } from '@/i18n.js';
+import { claimAchievement } from '@/scripts/achievements.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import { host } from '@@/js/config.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,
@@ -47,13 +56,17 @@ const props = withDefaults(defineProps<{
 	large: false,
 });
 
-let isFollowing = $ref(props.user.isFollowing);
-let hasPendingFollowRequestFromYou = $ref(props.user.hasPendingFollowRequestFromYou);
-let wait = $ref(false);
-const connection = stream.useChannel('main');
+const emit = defineEmits<{
+	(_: 'update:user', value: Misskey.entities.UserDetailed): void
+}>();
 
-if (props.user.isFollowing == null) {
-	os.api('users/show', {
+const isFollowing = ref(props.user.isFollowing);
+const hasPendingFollowRequestFromYou = ref(props.user.hasPendingFollowRequestFromYou);
+const wait = ref(false);
+const connection = useStream().useChannel('main');
+
+if (props.user.isFollowing == null && $i) {
+	misskeyApi('users/show', {
 		userId: props.user.id,
 	})
 		.then(onFollowChange);
@@ -61,37 +74,58 @@ if (props.user.isFollowing == null) {
 
 function onFollowChange(user: Misskey.entities.UserDetailed) {
 	if (user.id === props.user.id) {
-		isFollowing = user.isFollowing;
-		hasPendingFollowRequestFromYou = user.hasPendingFollowRequestFromYou;
+		isFollowing.value = user.isFollowing;
+		hasPendingFollowRequestFromYou.value = user.hasPendingFollowRequestFromYou;
 	}
 }
 
 async function onClick() {
-	wait = true;
+	pleaseLogin(undefined, { type: 'web', path: `/@${props.user.username}@${props.user.host ?? host}` });
+
+	wait.value = true;
 
 	try {
-		if (isFollowing) {
+		if (isFollowing.value) {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.t('unfollowConfirm', { name: props.user.name || props.user.username }),
+				text: i18n.tsx.unfollowConfirm({ name: props.user.name || props.user.username }),
 			});
 
 			if (canceled) return;
 
-			await os.api('following/delete', {
+			await misskeyApi('following/delete', {
 				userId: props.user.id,
 			});
 		} else {
-			if (hasPendingFollowRequestFromYou) {
-				await os.api('following/requests/cancel', {
+			if (defaultStore.state.alwaysConfirmFollow) {
+				const { canceled } = await os.confirm({
+					type: 'question',
+					text: i18n.tsx.followConfirm({ name: props.user.name || props.user.username }),
+				});
+
+				if (canceled) {
+					wait.value = false;
+					return;
+				}
+			}
+
+			if (hasPendingFollowRequestFromYou.value) {
+				await misskeyApi('following/requests/cancel', {
 					userId: props.user.id,
 				});
-				hasPendingFollowRequestFromYou = false;
+				hasPendingFollowRequestFromYou.value = false;
 			} else {
-				await os.api('following/create', {
+				await misskeyApi('following/create', {
 					userId: props.user.id,
+					withReplies: defaultStore.state.defaultWithReplies,
 				});
-				hasPendingFollowRequestFromYou = true;
+				emit('update:user', {
+					...props.user,
+					withReplies: defaultStore.state.defaultWithReplies,
+				});
+				hasPendingFollowRequestFromYou.value = true;
+
+				if ($i == null) return;
 
 				claimAchievement('following1');
 
@@ -112,7 +146,7 @@ async function onClick() {
 	} catch (err) {
 		console.error(err);
 	} finally {
-		wait = false;
+		wait.value = false;
 	}
 }
 
@@ -126,13 +160,12 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.kpoogebi {
+<style lang="scss" module>
+.root {
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
-	color: var(--accent);
-	background: transparent;
+	color: var(--fgOnWhite);
 	border: solid 1px var(--accent);
 	padding: 0;
 	height: 31px;
@@ -156,17 +189,7 @@ onBeforeUnmount(() => {
 	}
 
 	&:focus-visible {
-		&:after {
-			content: "";
-			pointer-events: none;
-			position: absolute;
-			top: -5px;
-			right: -5px;
-			bottom: -5px;
-			left: -5px;
-			border: 2px solid var(--focus);
-			border-radius: 32px;
-		}
+		outline-offset: 2px;
 	}
 
 	&:hover {
@@ -178,7 +201,7 @@ onBeforeUnmount(() => {
 	}
 
 	&.active {
-		color: #fff;
+		color: var(--fgOnAccent);
 		background: var(--accent);
 
 		&:hover {
@@ -196,9 +219,9 @@ onBeforeUnmount(() => {
 		cursor: wait !important;
 		opacity: 0.7;
 	}
+}
 
-	> span {
-		margin-right: 6px;
-	}
+.text {
+	margin-right: 6px;
 }
 </style>

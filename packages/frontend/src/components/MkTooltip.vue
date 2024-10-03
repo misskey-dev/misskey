@@ -1,15 +1,22 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
-	:enter-active-class="$store.state.animation ? $style.transition_tooltip_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_tooltip_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_tooltip_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_tooltip_leaveTo : ''"
-	appear @after-leave="emit('closed')"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_tooltip_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_tooltip_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_tooltip_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_tooltip_leaveTo : ''"
+	appear @afterLeave="emit('closed')"
 >
 	<div v-show="showing" ref="el" :class="$style.root" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>
-			<Mfm v-if="asMfm" :text="text"/>
-			<span v-else>{{ text }}</span>
+			<template v-if="text">
+				<Mfm v-if="asMfm" :text="text"/>
+				<span v-else>{{ text }}</span>
+			</template>
 		</slot>
 	</div>
 </Transition>
@@ -17,8 +24,9 @@
 
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, shallowRef } from 'vue';
-import * as os from '@/os';
-import { calcPopupPosition } from '@/scripts/popup-position';
+import * as os from '@/os.js';
+import { calcPopupPosition } from '@/scripts/popup-position.js';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	showing: boolean;
@@ -40,10 +48,14 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
+// タイミングによっては最初から showing = false な場合があり、その場合に closed 扱いにしないと永久にDOMに残ることになる
+if (!props.showing) emit('closed');
+
 const el = shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex('high');
 
 function setPosition() {
+	if (el.value == null) return;
 	const data = calcPopupPosition(el.value, {
 		anchorElement: props.targetElement,
 		direction: props.direction,
@@ -65,10 +77,8 @@ onMounted(() => {
 		setPosition();
 
 		const loop = () => {
-			loopHandler = window.requestAnimationFrame(() => {
-				setPosition();
-				loop();
-			});
+			setPosition();
+			loopHandler = window.requestAnimationFrame(loop);
 		};
 
 		loop();

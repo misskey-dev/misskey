@@ -1,8 +1,23 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<span :class="$style.root">
+<span :class="[$style.root, { [$style.static]: static }]">
 	<span :class="$style.dot">.</span><span :class="$style.dot">.</span><span :class="$style.dot">.</span>
 </span>
 </template>
+
+<script lang="ts" setup>
+import { } from 'vue';
+
+const props = withDefaults(defineProps<{
+	static?: boolean;
+}>(), {
+	static: false,
+});
+</script>
 
 <style lang="scss" module>
 @keyframes ellipsis {
@@ -15,7 +30,9 @@
 }
 
 .root {
-	
+	&.static > .dot {
+		animation-play-state: paused;
+	}
 }
 
 .dot {

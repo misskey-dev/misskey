@@ -1,14 +1,20 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as os from 'node:os';
 import si from 'systeminformation';
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:server-info',
 
 	tags: ['admin', 'meta'],
 
@@ -95,9 +101,8 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

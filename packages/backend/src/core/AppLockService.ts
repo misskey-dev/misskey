@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import redisLock from 'redis-lock';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
@@ -30,11 +35,6 @@ export class AppLockService {
 	@bindThis
 	public getApLock(uri: string, timeout = 30 * 1000): Promise<() => void> {
 		return this.lock(`ap-object:${uri}`, timeout);
-	}
-
-	@bindThis
-	public getFetchInstanceMetadataLock(host: string, timeout = 30 * 1000): Promise<() => void> {
-		return this.lock(`instance:${host}`, timeout);
 	}
 
 	@bindThis

@@ -1,44 +1,49 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700">
+	<MkSpacer :contentMax="700">
 		<div class="jqqmcavi">
-			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ $ts._pages.viewPage }}</MkButton>
-			<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="ti ti-device-floppy"></i> {{ $ts.save }}</MkButton>
-			<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="ti ti-copy"></i> {{ $ts.duplicate }}</MkButton>
-			<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="ti ti-trash"></i> {{ $ts.delete }}</MkButton>
+			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ i18n.ts._pages.viewPage }}</MkButton>
+			<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+			<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="ti ti-copy"></i> {{ i18n.ts.duplicate }}</MkButton>
+			<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 
 		<div v-if="tab === 'settings'">
 			<div class="_gaps_m">
 				<MkInput v-model="title">
-					<template #label>{{ $ts._pages.title }}</template>
+					<template #label>{{ i18n.ts._pages.title }}</template>
 				</MkInput>
 
 				<MkInput v-model="summary">
-					<template #label>{{ $ts._pages.summary }}</template>
+					<template #label>{{ i18n.ts._pages.summary }}</template>
 				</MkInput>
 
 				<MkInput v-model="name">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
-					<template #label>{{ $ts._pages.url }}</template>
+					<template #label>{{ i18n.ts._pages.url }}</template>
 				</MkInput>
 
-				<MkSwitch v-model="alignCenter">{{ $ts._pages.alignCenter }}</MkSwitch>
+				<MkSwitch v-model="alignCenter">{{ i18n.ts._pages.alignCenter }}</MkSwitch>
 
 				<MkSelect v-model="font">
-					<template #label>{{ $ts._pages.font }}</template>
-					<option value="serif">{{ $ts._pages.fontSerif }}</option>
-					<option value="sans-serif">{{ $ts._pages.fontSansSerif }}</option>
+					<template #label>{{ i18n.ts._pages.font }}</template>
+					<option value="serif">{{ i18n.ts._pages.fontSerif }}</option>
+					<option value="sans-serif">{{ i18n.ts._pages.fontSansSerif }}</option>
 				</MkSelect>
 
-				<MkSwitch v-model="hideTitleWhenPinned">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
+				<MkSwitch v-model="hideTitleWhenPinned">{{ i18n.ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
 				<div class="eyeCatch">
-					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="ti ti-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
+					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="ti ti-plus"></i> {{ i18n.ts._pages.eyeCatchingImageSet }}</MkButton>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
-						<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="ti ti-trash"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
+						<MkButton v-if="!readonly" @click="removeEyeCatchingImage()"><i class="ti ti-trash"></i> {{ i18n.ts._pages.eyeCatchingImageRemove }}</MkButton>
 					</div>
 				</div>
 			</div>
@@ -56,20 +61,23 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, watch } from 'vue';
+import { computed, provide, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import XBlocks from './page-editor.blocks.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
-import { url } from '@/config';
-import * as os from '@/os';
-import { selectFile } from '@/scripts/select-file';
-import { mainRouter } from '@/router';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
+import { url } from '@@/js/config.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { selectFile } from '@/scripts/select-file.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i } from '@/account.js';
+import { mainRouter } from '@/router/main.js';
+import { getPageBlockList } from '@/pages/page-editor/common.js';
 
 const props = defineProps<{
 	initPageId?: string;
@@ -77,47 +85,46 @@ const props = defineProps<{
 	initUser?: string;
 }>();
 
-let tab = $ref('settings');
-let author = $ref($i);
-let readonly = $ref(false);
-let page = $ref(null);
-let pageId = $ref(null);
-let currentName = $ref(null);
-let title = $ref('');
-let summary = $ref(null);
-let name = $ref(Date.now().toString());
-let eyeCatchingImage = $ref(null);
-let eyeCatchingImageId = $ref(null);
-let font = $ref('sans-serif');
-let content = $ref([]);
-let alignCenter = $ref(false);
-let hideTitleWhenPinned = $ref(false);
+const tab = ref('settings');
+const author = ref($i);
+const readonly = ref(false);
+const page = ref<Misskey.entities.Page | null>(null);
+const pageId = ref<string | null>(null);
+const currentName = ref<string | null>(null);
+const title = ref('');
+const summary = ref<string | null>(null);
+const name = ref(Date.now().toString());
+const eyeCatchingImage = ref<Misskey.entities.DriveFile | null>(null);
+const eyeCatchingImageId = ref<string | null>(null);
+const font = ref('sans-serif');
+const content = ref<Misskey.entities.Page['content']>([]);
+const alignCenter = ref(false);
+const hideTitleWhenPinned = ref(false);
 
-provide('readonly', readonly);
-provide('getPageBlockList', getPageBlockList);
+provide('readonly', readonly.value);
 
-watch($$(eyeCatchingImageId), async () => {
-	if (eyeCatchingImageId == null) {
-		eyeCatchingImage = null;
+watch(eyeCatchingImageId, async () => {
+	if (eyeCatchingImageId.value == null) {
+		eyeCatchingImage.value = null;
 	} else {
-		eyeCatchingImage = await os.api('drive/files/show', {
-			fileId: eyeCatchingImageId,
+		eyeCatchingImage.value = await misskeyApi('drive/files/show', {
+			fileId: eyeCatchingImageId.value,
 		});
 	}
 });
 
 function getSaveOptions() {
 	return {
-		title: title.trim(),
-		name: name.trim(),
-		summary: summary,
-		font: font,
+		title: title.value.trim(),
+		name: name.value.trim(),
+		summary: summary.value,
+		font: font.value,
 		script: '',
-		hideTitleWhenPinned: hideTitleWhenPinned,
-		alignCenter: alignCenter,
-		content: content,
+		hideTitleWhenPinned: hideTitleWhenPinned.value,
+		alignCenter: alignCenter.value,
+		content: content.value,
 		variables: [],
-		eyeCatchingImageId: eyeCatchingImageId,
+		eyeCatchingImageId: eyeCatchingImageId.value,
 	};
 }
 
@@ -141,26 +148,26 @@ function save() {
 		}
 	};
 
-	if (pageId) {
-		options.pageId = pageId;
-		os.api('pages/update', options)
+	if (pageId.value) {
+		options.pageId = pageId.value;
+		misskeyApi('pages/update', options)
 			.then(page => {
-				currentName = name.trim();
+				currentName.value = name.value.trim();
 				os.alert({
 					type: 'success',
 					text: i18n.ts._pages.updated,
 				});
 			}).catch(onError);
 	} else {
-		os.api('pages/create', options)
+		misskeyApi('pages/create', options)
 			.then(created => {
-				pageId = created.id;
-				currentName = name.trim();
+				pageId.value = created.id;
+				currentName.value = name.value.trim();
 				os.alert({
 					type: 'success',
 					text: i18n.ts._pages.created,
 				});
-				mainRouter.push(`/pages/edit/${pageId}`);
+				mainRouter.push(`/pages/edit/${pageId.value}`);
 			}).catch(onError);
 	}
 }
@@ -168,11 +175,11 @@ function save() {
 function del() {
 	os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: title.trim() }),
+		text: i18n.tsx.removeAreYouSure({ x: title.value.trim() }),
 	}).then(({ canceled }) => {
 		if (canceled) return;
-		os.api('pages/delete', {
-			pageId: pageId,
+		misskeyApi('pages/delete', {
+			pageId: pageId.value,
 		}).then(() => {
 			os.alert({
 				type: 'success',
@@ -184,16 +191,16 @@ function del() {
 }
 
 function duplicate() {
-	title = title + ' - copy';
-	name = name + '-copy';
-	os.api('pages/create', getSaveOptions()).then(created => {
-		pageId = created.id;
-		currentName = name.trim();
+	title.value = title.value + ' - copy';
+	name.value = name.value + '-copy';
+	misskeyApi('pages/create', getSaveOptions()).then(created => {
+		pageId.value = created.id;
+		currentName.value = name.value.trim();
 		os.alert({
 			type: 'success',
 			text: i18n.ts._pages.created,
 		});
-		mainRouter.push(`/pages/edit/${pageId}`);
+		mainRouter.push(`/pages/edit/${pageId.value}`);
 	});
 }
 
@@ -206,56 +213,47 @@ async function add() {
 	if (canceled) return;
 
 	const id = uuid();
-	content.push({ id, type });
-}
-
-function getPageBlockList() {
-	return [
-		{ value: 'section', text: i18n.ts._pages.blocks.section },
-		{ value: 'text', text: i18n.ts._pages.blocks.text },
-		{ value: 'image', text: i18n.ts._pages.blocks.image },
-		{ value: 'note', text: i18n.ts._pages.blocks.note },
-	];
+	content.value.push({ id, type });
 }
 
 function setEyeCatchingImage(img) {
 	selectFile(img.currentTarget ?? img.target, null).then(file => {
-		eyeCatchingImageId = file.id;
+		eyeCatchingImageId.value = file.id;
 	});
 }
 
 function removeEyeCatchingImage() {
-	eyeCatchingImageId = null;
+	eyeCatchingImageId.value = null;
 }
 
 async function init() {
 	if (props.initPageId) {
-		page = await os.api('pages/show', {
+		page.value = await misskeyApi('pages/show', {
 			pageId: props.initPageId,
 		});
 	} else if (props.initPageName && props.initUser) {
-		page = await os.api('pages/show', {
+		page.value = await misskeyApi('pages/show', {
 			name: props.initPageName,
 			username: props.initUser,
 		});
-		readonly = true;
+		readonly.value = true;
 	}
 
-	if (page) {
-		author = page.user;
-		pageId = page.id;
-		title = page.title;
-		name = page.name;
-		currentName = page.name;
-		summary = page.summary;
-		font = page.font;
-		hideTitleWhenPinned = page.hideTitleWhenPinned;
-		alignCenter = page.alignCenter;
-		content = page.content;
-		eyeCatchingImageId = page.eyeCatchingImageId;
+	if (page.value) {
+		author.value = page.value.user;
+		pageId.value = page.value.id;
+		title.value = page.value.title;
+		name.value = page.value.name;
+		currentName.value = page.value.name;
+		summary.value = page.value.summary;
+		font.value = page.value.font;
+		hideTitleWhenPinned.value = page.value.hideTitleWhenPinned;
+		alignCenter.value = page.value.alignCenter;
+		content.value = page.value.content;
+		eyeCatchingImageId.value = page.value.eyeCatchingImageId;
 	} else {
 		const id = uuid();
-		content = [{
+		content.value = [{
 			id,
 			type: 'text',
 			text: 'Hello World!',
@@ -265,9 +263,9 @@ async function init() {
 
 init();
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'settings',
 	title: i18n.ts._pages.pageSetting,
 	icon: 'ti ti-settings',
@@ -277,18 +275,11 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-note',
 }]);
 
-definePageMetadata(computed(() => {
-	let title = i18n.ts._pages.newPage;
-	if (props.initPageId) {
-		title = i18n.ts._pages.editPage;
-	}
-	else if (props.initPageName && props.initUser) {
-		title = i18n.ts._pages.readPage;
-	}
-	return {
-		title: title,
-		icon: 'ti ti-pencil',
-	};
+definePageMetadata(() => ({
+	title: props.initPageId ? i18n.ts._pages.editPage
+				: props.initPageName && props.initUser ? i18n.ts._pages.readPage
+				: i18n.ts._pages.newPage,
+	icon: 'ti ti-pencil',
 }));
 </script>
 

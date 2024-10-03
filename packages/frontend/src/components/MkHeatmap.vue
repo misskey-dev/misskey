@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="rootEl">
 	<MkLoading v-if="fetching"/>
@@ -8,37 +13,46 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, watch } from 'vue';
+import { onMounted, nextTick, watch, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { alpha } from '@/scripts/color';
-import { initChart } from '@/scripts/init-chart';
+import * as Misskey from 'misskey-js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { defaultStore } from '@/store.js';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { alpha } from '@/scripts/color.js';
+import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 
-const props = defineProps<{
-	src: string;
-}>();
+export type HeatmapSource = 'active-users' | 'notes' | 'ap-requests-inbox-received' | 'ap-requests-deliver-succeeded' | 'ap-requests-deliver-failed';
 
-const rootEl = $shallowRef<HTMLDivElement>(null);
-const chartEl = $shallowRef<HTMLCanvasElement>(null);
+const props = withDefaults(defineProps<{
+	src: HeatmapSource;
+	user?: Misskey.entities.User;
+	label?: string;
+}>(), {
+	user: undefined,
+	label: '',
+});
+
+const rootEl = shallowRef<HTMLDivElement | null>(null);
+const chartEl = shallowRef<HTMLCanvasElement | null>(null);
 const now = new Date();
-let chartInstance: Chart = null;
-let fetching = $ref(true);
+let chartInstance: Chart | null = null;
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip({
 	position: 'middle',
 });
 
 async function renderChart() {
+	if (rootEl.value == null) return;
 	if (chartInstance) {
 		chartInstance.destroy();
 	}
 
-	const wide = rootEl.offsetWidth > 700;
-	const narrow = rootEl.offsetWidth < 400;
+	const wide = rootEl.value.offsetWidth > 700;
+	const narrow = rootEl.value.offsetWidth < 400;
 
 	const weeks = wide ? 50 : narrow ? 10 : 25;
 	const chartLimit = 7 * weeks;
@@ -51,7 +65,7 @@ async function renderChart() {
 		return new Date(y, m, d - ago);
 	};
 
-	const format = (arr) => {
+	const format = (arr: number[]) => {
 		return arr.map((v, i) => {
 			const dt = getDate(i);
 			const iso = `${dt.getFullYear()}-${(dt.getMonth() + 1).toString().padStart(2, '0')}-${dt.getDate().toString().padStart(2, '0')}`;
@@ -64,26 +78,31 @@ async function renderChart() {
 		});
 	};
 
-	let values;
+	let values: number[] = [];
 
 	if (props.src === 'active-users') {
-		const raw = await os.api('charts/active-users', { limit: chartLimit, span: 'day' });
+		const raw = await misskeyApi('charts/active-users', { limit: chartLimit, span: 'day' });
 		values = raw.readWrite;
 	} else if (props.src === 'notes') {
-		const raw = await os.api('charts/notes', { limit: chartLimit, span: 'day' });
-		values = raw.local.inc;
+		if (props.user) {
+			const raw = await misskeyApi('charts/user/notes', { userId: props.user.id, limit: chartLimit, span: 'day' });
+			values = raw.inc;
+		} else {
+			const raw = await misskeyApi('charts/notes', { limit: chartLimit, span: 'day' });
+			values = raw.local.inc;
+		}
 	} else if (props.src === 'ap-requests-inbox-received') {
-		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
+		const raw = await misskeyApi('charts/ap-request', { limit: chartLimit, span: 'day' });
 		values = raw.inboxReceived;
 	} else if (props.src === 'ap-requests-deliver-succeeded') {
-		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
+		const raw = await misskeyApi('charts/ap-request', { limit: chartLimit, span: 'day' });
 		values = raw.deliverSucceeded;
 	} else if (props.src === 'ap-requests-deliver-failed') {
-		const raw = await os.api('charts/ap-request', { limit: chartLimit, span: 'day' });
+		const raw = await misskeyApi('charts/ap-request', { limit: chartLimit, span: 'day' });
 		values = raw.deliverFailed;
 	}
 
-	fetching = false;
+	fetching.value = false;
 
 	await nextTick();
 
@@ -96,25 +115,25 @@ async function renderChart() {
 
 	const marginEachCell = 4;
 
-	chartInstance = new Chart(chartEl, {
+	if (chartEl.value == null) return;
+
+	chartInstance = new Chart(chartEl.value, {
 		type: 'matrix',
 		data: {
 			datasets: [{
-				label: 'Read & Write',
-				data: format(values),
-				pointRadius: 0,
+				label: props.label,
+				data: format(values) as any,
 				borderWidth: 0,
-				borderJoinStyle: 'round',
 				borderRadius: 3,
 				backgroundColor(c) {
-					const value = c.dataset.data[c.dataIndex].v;
+					// @ts-expect-error TS(2339)
+					const value = c.dataset.data[c.dataIndex].v as number;
 					let a = (value - min) / max;
 					if (value !== 0) { // 0でない限りは完全に不可視にはしない
 						a = Math.max(a, 0.05);
 					}
 					return alpha(color, a);
 				},
-				fill: true,
 				width(c) {
 					const a = c.chart.chartArea ?? {};
 					return (a.right - a.left) / weeks - marginEachCell;
@@ -123,6 +142,9 @@ async function renderChart() {
 					const a = c.chart.chartArea ?? {};
 					return (a.bottom - a.top) / 7 - marginEachCell;
 				},
+			/* @see <https://github.com/misskey-dev/misskey/pull/10365#discussion_r1155511107>
+			}] satisfies ChartData[],
+			 */
 			}],
 		},
 		options: {
@@ -185,12 +207,14 @@ async function renderChart() {
 					enabled: false,
 					callbacks: {
 						title(context) {
-							const v = context[0].dataset.data[context[0].dataIndex];
-							return v.d;
+							// @ts-expect-error TS(2339)
+							return context[0].dataset.data[context[0].dataIndex].d;
 						},
 						label(context) {
 							const v = context.dataset.data[context.dataIndex];
-							return ['Active: ' + v.v];
+
+							// @ts-expect-error TS(2339)
+							return [v.v];
 						},
 					},
 					//mode: 'index',
@@ -205,7 +229,7 @@ async function renderChart() {
 }
 
 watch(() => props.src, () => {
-	fetching = true;
+	fetching.value = true;
 	renderChart();
 });
 

@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/index.js';
+import { Brackets } from 'typeorm';
+import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { MetaService } from '@/core/MetaService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -34,11 +39,8 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		withFiles: {
-			type: 'boolean',
-			default: false,
-			description: 'Only show notes that have attached files.',
-		},
+		withFiles: { type: 'boolean', default: false },
+		withRenotes: { type: 'boolean', default: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
@@ -48,16 +50,14 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private metaService: MetaService,
 		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
 	) {
@@ -73,30 +73,33 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('note.visibility = \'public\'')
 				.andWhere('note.channelId IS NULL')
 				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('user.avatar', 'avatar')
-				.leftJoinAndSelect('user.banner', 'banner')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			this.queryService.generateRepliesQuery(query, me);
 			if (me) {
 				this.queryService.generateMutedUserQuery(query, me);
-				this.queryService.generateMutedNoteQuery(query, me);
 				this.queryService.generateBlockedUserQuery(query, me);
+				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 			}
 
 			if (ps.withFiles) {
 				query.andWhere('note.fileIds != \'{}\'');
 			}
+
+			if (ps.withRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.where('note.renoteId IS NULL');
+					qb.orWhere(new Brackets(qb => {
+						qb.where('note.text IS NOT NULL');
+						qb.orWhere('note.fileIds != \'{}\'');
+					}));
+				}));
+			}
 			//#endregion
 
-			const timeline = await query.take(ps.limit).getMany();
+			const timeline = await query.limit(ps.limit).getMany();
 
 			process.nextTick(() => {
 				if (me) {

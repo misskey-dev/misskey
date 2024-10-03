@@ -1,13 +1,26 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1">
-	<div v-if="page.eyeCatchingImage" class="thumbnail" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>
+<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj">
+	<div v-if="page.eyeCatchingImage" class="thumbnail">
+		<MediaImage
+			:image="page.eyeCatchingImage"
+			:disableImageLink="true"
+			:controls="false"
+			:cover="true"
+			:class="$style.eyeCatchingImageRoot"
+		/>
+	</div>
 	<article>
 		<header>
 			<h1 :title="page.title">{{ page.title }}</h1>
 		</header>
 		<p v-if="page.summary" :title="page.summary">{{ page.summary.length > 85 ? page.summary.slice(0, 85) + '…' : page.summary }}</p>
 		<footer>
-			<img class="icon" :src="page.user.avatarUrl"/>
+			<img v-if="page.user.avatarUrl" class="icon" :src="page.user.avatarUrl"/>
 			<p>{{ userName(page.user) }}</p>
 		</footer>
 	</article>
@@ -16,50 +29,60 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
-import { userName } from '@/filters/user';
+import * as Misskey from 'misskey-js';
+import { userName } from '@/filters/user.js';
+import MediaImage from '@/components/MkMediaImage.vue';
 
 const props = defineProps<{
-	page: misskey.entities.Page;
+	page: Misskey.entities.Page;
 }>();
 </script>
+
+<style module>
+.eyeCatchingImageRoot {
+	width: 100%;
+	height: 200px;
+	border-radius: var(--radius) var(--radius) 0 0;
+	overflow: hidden;
+}
+</style>
 
 <style lang="scss" scoped>
 .vhpxefrj {
 	display: block;
+	position: relative;
 
 	&:hover {
 		text-decoration: none;
 		color: var(--accent);
 	}
 
-	> .thumbnail {
-		width: 100%;
-		height: 200px;
-		background-position: center;
-		background-size: cover;
-		display: flex;
-		justify-content: center;
-		align-items: center;
+	&:focus-within {
+		outline: none;
 
-		> button {
-			font-size: 3.5em;
-			opacity: 0.7;
-
-			&:hover {
-				font-size: 4em;
-				opacity: 0.9;
-			}
+		&::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border-radius: var(--radius);
+			pointer-events: none;
+			box-shadow: inset 0 0 0 2px var(--focus);
 		}
+	}
 
+	> .thumbnail {
 		& + article {
-			left: 100px;
-			width: calc(100% - 100px);
+			border-radius: 0 0 var(--radius) var(--radius);
 		}
 	}
 
 	> article {
+		background-color: var(--panel);
 		padding: 16px;
+		border-radius: var(--radius);
 
 		> header {
 			margin-bottom: 8px;
@@ -108,7 +131,6 @@ const props = defineProps<{
 
 			& + article {
 				left: 0;
-				width: 100%;
 			}
 		}
 	}
@@ -118,6 +140,7 @@ const props = defineProps<{
 
 		> .thumbnail {
 			height: 80px;
+			overflow: clip;
 		}
 
 		> article {

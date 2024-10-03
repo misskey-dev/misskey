@@ -1,11 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
-import type { Packed } from '@/misc/schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { UserList } from '@/models/entities/UserList.js';
-import { UserEntityService } from './UserEntityService.js';
+import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUserList } from '@/models/UserList.js';
 import { bindThis } from '@/decorators.js';
+import { IdService } from '@/core/IdService.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class UserListEntityService {
@@ -13,29 +19,47 @@ export class UserListEntityService {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		private userEntityService: UserEntityService,
+		private idService: IdService,
 	) {
 	}
 
 	@bindThis
 	public async pack(
-		src: UserList['id'] | UserList,
+		src: MiUserList['id'] | MiUserList,
 	): Promise<Packed<'UserList'>> {
 		const userList = typeof src === 'object' ? src : await this.userListsRepository.findOneByOrFail({ id: src });
 
-		const users = await this.userListJoiningsRepository.findBy({
+		const users = await this.userListMembershipsRepository.findBy({
 			userListId: userList.id,
 		});
 
 		return {
 			id: userList.id,
-			createdAt: userList.createdAt.toISOString(),
+			createdAt: this.idService.parse(userList.id).date.toISOString(),
 			name: userList.name,
 			userIds: users.map(x => x.userId),
+			isPublic: userList.isPublic,
 		};
+	}
+
+	@bindThis
+	public async packMembershipsMany(
+		memberships: MiUserListMembership[],
+	) {
+		const _users = memberships.map(({ user, userId }) => user ?? userId);
+		const _userMap = await this.userEntityService.packMany(_users)
+			.then(users => new Map(users.map(u => [u.id, u])));
+		return Promise.all(memberships.map(async x => ({
+			id: x.id,
+			createdAt: this.idService.parse(x.id).date.toISOString(),
+			userId: x.userId,
+			user: _userMap.get(x.userId) ?? await this.userEntityService.pack(x.userId),
+			withReplies: x.withReplies,
+		})));
 	}
 }
 

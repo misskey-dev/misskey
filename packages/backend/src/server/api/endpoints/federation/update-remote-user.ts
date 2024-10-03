@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -6,7 +11,7 @@ import { GetterService } from '@/server/api/GetterService.js';
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: true,
+	requireCredential: false,
 } as const;
 
 export const paramDef = {
@@ -17,9 +22,8 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private getterService: GetterService,
 		private apPersonService: ApPersonService,

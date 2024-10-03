@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" class="mkw-photos data-cy-mkw-photos">
+<MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" data-cy-mkw-photos class="mkw-photos">
 	<template #icon><i class="ti ti-camera"></i></template>
 	<template #header>{{ i18n.ts._widgets.photos }}</template>
 
@@ -18,14 +23,15 @@
 
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import { stream } from '@/stream';
-import { getStaticImageUrl } from '@/scripts/media-proxy';
-import * as os from '@/os';
+import * as Misskey from 'misskey-js';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import { useStream } from '@/stream.js';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'photos';
 
@@ -42,11 +48,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -54,8 +57,8 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const connection = stream.useChannel('main');
-const images = ref([]);
+const connection = useStream().useChannel('main');
+const images = ref<Misskey.entities.DriveFile[]>([]);
 const fetching = ref(true);
 
 const onDriveFileCreated = (file) => {
@@ -67,11 +70,11 @@ const onDriveFileCreated = (file) => {
 
 const thumbnail = (image: any): string => {
 	return defaultStore.state.disableShowingAnimatedImages
-		? getStaticImageUrl(image.thumbnailUrl)
+		? getStaticImageUrl(image.url)
 		: image.thumbnailUrl;
 };
 
-os.api('drive/stream', {
+misskeyApi('drive/stream', {
 	type: 'image/*',
 	limit: 9,
 }).then(res => {

@@ -1,8 +1,11 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-<section
-	v-hotkey="keymap"
-	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.isStacked]: isStacked, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
+<div
+	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
@@ -14,26 +17,36 @@
 		@dragstart="onDragstart"
 		@dragend="onDragend"
 		@contextmenu.prevent.stop="onContextmenu"
+		@wheel="emit('headerWheel', $event)"
 	>
+		<svg viewBox="0 0 256 128" :class="$style.tabShape">
+			<g transform="matrix(6.2431,0,0,6.2431,-677.417,-29.3839)">
+				<path d="M149.512,4.707L108.507,4.707C116.252,4.719 118.758,14.958 118.758,14.958C118.758,14.958 121.381,25.283 129.009,25.209L149.512,25.209L149.512,4.707Z" style="fill:var(--deckBg);"/>
+			</g>
+		</svg>
+		<div :class="$style.color"></div>
 		<button v-if="isStacked && !isMainColumn" :class="$style.toggleActive" class="_button" @click="toggleActive">
 			<template v-if="active"><i class="ti ti-chevron-up"></i></template>
 			<template v-else><i class="ti ti-chevron-down"></i></template>
 		</button>
 		<span :class="$style.title"><slot name="header"></slot></span>
+		<svg viewBox="0 0 16 16" version="1.1" :class="$style.grabber">
+			<path fill="currentColor" d="M10 13a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0-4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm-4 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm5-9a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM6 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+		</svg>
 		<button v-tooltip="i18n.ts.settings" :class="$style.menu" class="_button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
-	<div v-show="active" ref="body" :class="$style.body">
+	<div v-if="active" ref="body" :class="$style.body">
 		<slot></slot>
 	</div>
-</section>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { MenuItem } from '@/types/menu';
+import { onBeforeUnmount, onMounted, provide, watch, shallowRef, ref, computed } from 'vue';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import type { MenuItem } from '@/types/menu.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
@@ -44,34 +57,26 @@ const props = withDefaults(defineProps<{
 	isStacked?: boolean;
 	naked?: boolean;
 	menu?: MenuItem[];
+	refresher?: () => Promise<void>;
 }>(), {
 	isStacked: false,
 	naked: false,
 });
 
 const emit = defineEmits<{
-	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
-	(ev: 'change-active-state', v: boolean): void;
+	(ev: 'headerWheel', ctx: WheelEvent): void;
 }>();
 
-let body = $shallowRef<HTMLDivElement>();
+const body = shallowRef<HTMLDivElement | null>();
 
-let dragging = $ref(false);
-watch($$(dragging), v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
+const dragging = ref(false);
+watch(dragging, v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
 
-let draghover = $ref(false);
-let dropready = $ref(false);
+const draghover = ref(false);
+const dropready = ref(false);
 
-const isMainColumn = $computed(() => props.column.type === 'main');
-const active = $computed(() => props.column.active !== false);
-watch($$(active), v => emit('change-active-state', v));
-
-const keymap = $computed(() => ({
-	'shift+up': () => emit('parent-focus', 'up'),
-	'shift+down': () => emit('parent-focus', 'down'),
-	'shift+left': () => emit('parent-focus', 'left'),
-	'shift+right': () => emit('parent-focus', 'right'),
-}));
+const isMainColumn = computed(() => props.column.type === 'main');
+const active = computed(() => props.column.active !== false);
 
 onMounted(() => {
 	os.deckGlobalEvents.on('column.dragStart', onOtherDragStart);
@@ -84,11 +89,11 @@ onBeforeUnmount(() => {
 });
 
 function onOtherDragStart() {
-	dropready = true;
+	dropready.value = true;
 }
 
 function onOtherDragEnd() {
-	dropready = false;
+	dropready.value = false;
 }
 
 function toggleActive() {
@@ -99,7 +104,27 @@ function toggleActive() {
 }
 
 function getMenu() {
-	let items = [{
+	const menuItems: MenuItem[] = [];
+
+	if (props.menu) {
+		menuItems.push(...props.menu, {
+			type: 'divider',
+		});
+	}
+
+	if (props.refresher) {
+		menuItems.push({
+			icon: 'ti ti-refresh',
+			text: i18n.ts.reload,
+			action: () => {
+				if (props.refresher) {
+					props.refresher();
+				}
+			},
+		});
+	}
+
+	menuItems.push({
 		icon: 'ti ti-settings',
 		text: i18n.ts._deck.configureColumn,
 		action: async () => {
@@ -112,73 +137,85 @@ function getMenu() {
 				width: {
 					type: 'number',
 					label: i18n.ts.width,
+					description: i18n.ts._deck.usedAsMinWidthWhenFlexible,
 					default: props.column.width,
 				},
 				flexible: {
 					type: 'boolean',
-					label: i18n.ts.flexible,
+					label: i18n.ts._deck.flexible,
 					default: props.column.flexible,
 				},
 			});
 			if (canceled) return;
 			updateColumn(props.column.id, result);
 		},
+	});
+
+	const moveToMenuItems: MenuItem[] = [];
+
+	moveToMenuItems.push({
+		icon: 'ti ti-arrow-left',
+		text: i18n.ts._deck.swapLeft,
+		action: () => {
+			swapLeftColumn(props.column.id);
+		},
 	}, {
-		type: 'parent',
-		text: i18n.ts.move + '...',
-		icon: 'ti ti-arrows-move',
-		children: [{
-			icon: 'ti ti-arrow-left',
-			text: i18n.ts._deck.swapLeft,
-			action: () => {
-				swapLeftColumn(props.column.id);
-			},
-		}, {
-			icon: 'ti ti-arrow-right',
-			text: i18n.ts._deck.swapRight,
-			action: () => {
-				swapRightColumn(props.column.id);
-			},
-		}, props.isStacked ? {
+		icon: 'ti ti-arrow-right',
+		text: i18n.ts._deck.swapRight,
+		action: () => {
+			swapRightColumn(props.column.id);
+		},
+	});
+
+	if (props.isStacked) {
+		moveToMenuItems.push({
 			icon: 'ti ti-arrow-up',
 			text: i18n.ts._deck.swapUp,
 			action: () => {
 				swapUpColumn(props.column.id);
 			},
-		} : undefined, props.isStacked ? {
+		}, {
 			icon: 'ti ti-arrow-down',
 			text: i18n.ts._deck.swapDown,
 			action: () => {
 				swapDownColumn(props.column.id);
 			},
-		} : undefined],
+		});
+	}
+
+	menuItems.push({
+		type: 'parent',
+		text: i18n.ts.move + '...',
+		icon: 'ti ti-arrows-move',
+		children: moveToMenuItems,
 	}, {
 		icon: 'ti ti-stack-2',
 		text: i18n.ts._deck.stackLeft,
 		action: () => {
 			stackLeftColumn(props.column.id);
 		},
-	}, props.isStacked ? {
-		icon: 'ti ti-window-maximize',
-		text: i18n.ts._deck.popRight,
-		action: () => {
-			popRightColumn(props.column.id);
-		},
-	} : undefined, null, {
+	});
+
+	if (props.isStacked) {
+		menuItems.push({
+			icon: 'ti ti-window-maximize',
+			text: i18n.ts._deck.popRight,
+			action: () => {
+				popRightColumn(props.column.id);
+			},
+		});
+	}
+
+	menuItems.push({ type: 'divider' }, {
 		icon: 'ti ti-trash',
 		text: i18n.ts.remove,
 		danger: true,
 		action: () => {
 			removeColumn(props.column.id);
 		},
-	}];
+	});
 
-	if (props.menu) {
-		items.unshift(null);
-		items = props.menu.concat(items);
-	}
-
-	return items;
+	return menuItems;
 }
 
 function showSettingsMenu(ev: MouseEvent) {
@@ -190,10 +227,12 @@ function onContextmenu(ev: MouseEvent) {
 }
 
 function goTop() {
-	body.scrollTo({
-		top: 0,
-		behavior: 'smooth',
-	});
+	if (body.value) {
+		body.value.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		});
+	}
 }
 
 function onDragstart(ev) {
@@ -203,17 +242,17 @@ function onDragstart(ev) {
 	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
 	window.setTimeout(() => {
-		dragging = true;
+		dragging.value = true;
 	}, 10);
 }
 
 function onDragend(ev) {
-	dragging = false;
+	dragging.value = false;
 }
 
 function onDragover(ev) {
 	// 自分自身がドラッグされている場合
-	if (dragging) {
+	if (dragging.value) {
 		// 自分自身にはドロップさせない
 		ev.dataTransfer.dropEffect = 'none';
 	} else {
@@ -221,16 +260,16 @@ function onDragover(ev) {
 
 		ev.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
 
-		if (isDeckColumn) draghover = true;
+		if (isDeckColumn) draghover.value = true;
 	}
 }
 
 function onDragleave() {
-	draghover = false;
+	draghover.value = false;
 }
 
 function onDrop(ev) {
-	draghover = false;
+	draghover.value = false;
 	os.deckGlobalEvents.emit('column.dragEnd');
 
 	const id = ev.dataTransfer.getData(_DATA_TRANSFER_DECK_COLUMN_);
@@ -243,14 +282,15 @@ function onDrop(ev) {
 <style lang="scss" module>
 .root {
 	--root-margin: 10px;
-	--deckColumnHeaderHeight: 40px;
+	--deckColumnHeaderHeight: 38px;
 
 	height: 100%;
 	overflow: clip;
 	contain: strict;
+	border-radius: 10px;
 
 	&.draghover {
-		&:after {
+		&::after {
 			content: "";
 			display: block;
 			position: absolute;
@@ -264,7 +304,7 @@ function onDrop(ev) {
 	}
 
 	&.dragging {
-		&:after {
+		&::after {
 			content: "";
 			display: block;
 			position: absolute;
@@ -287,6 +327,7 @@ function onDrop(ev) {
 	&:not(.active) {
 		flex-basis: var(--deckColumnHeaderHeight);
 		min-height: var(--deckColumnHeaderHeight);
+		border-bottom-right-radius: 0;
 	}
 
 	&.naked {
@@ -299,10 +340,29 @@ function onDrop(ev) {
 			box-shadow: none;
 			color: var(--fg);
 		}
+
+		> .body {
+			background: transparent !important;
+			scrollbar-color: var(--scrollbarHandle) transparent;
+
+			&::-webkit-scrollbar-track {
+				background: transparent;
+			}
+		}
 	}
 
 	&.paged {
 		background: var(--bg) !important;
+
+		> .body {
+			background: var(--bg) !important;
+			overflow-y: scroll !important;
+			scrollbar-color: var(--scrollbarHandle) transparent;
+
+			&::-webkit-scrollbar-track {
+				background: inherit;
+			}
+		}
 	}
 }
 
@@ -312,16 +372,31 @@ function onDrop(ev) {
 	z-index: 2;
 	line-height: var(--deckColumnHeaderHeight);
 	height: var(--deckColumnHeaderHeight);
-	padding: 0 16px;
+	padding: 0 16px 0 30px;
 	font-size: 0.9em;
 	color: var(--panelHeaderFg);
 	background: var(--panelHeaderBg);
 	box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 	cursor: pointer;
+	user-select: none;
+}
 
-	&, * {
-		user-select: none;
-	}
+.color {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	width: 3px;
+	height: calc(100% - 24px);
+	background: var(--accent);
+	border-radius: 999px;
+}
+
+.tabShape {
+	position: absolute;
+	top: 0;
+	right: -8px;
+	width: auto;
+	height: calc(100% - 6px);
 }
 
 .title {
@@ -338,34 +413,39 @@ function onDrop(ev) {
 	z-index: 1;
 	width: var(--deckColumnHeaderHeight);
 	line-height: var(--deckColumnHeaderHeight);
-	color: var(--faceTextButton);
-
-	&:hover {
-		color: var(--faceTextButtonHover);
-	}
-
-	&:active {
-		color: var(--faceTextButtonActive);
-	}
 }
 
 .toggleActive {
 	margin-left: -16px;
 }
 
-.menu {
+.grabber {
 	margin-left: auto;
+	margin-right: 10px;
+	padding: 8px 8px;
+	box-sizing: border-box;
+	height: var(--deckColumnHeaderHeight);
+	cursor: move;
+	user-select: none;
+	opacity: 0.5;
+}
+
+.menu {
 	margin-right: -16px;
 }
 
 .body {
 	height: calc(100% - var(--deckColumnHeaderHeight));
 	overflow-y: auto;
-	overflow-x: hidden; // Safari does not supports clip
 	overflow-x: clip;
-	-webkit-overflow-scrolling: touch;
+	overscroll-behavior-y: contain;
 	box-sizing: border-box;
-	container-type: inline-size;
+	container-type: size;
 	background-color: var(--bg);
+	scrollbar-color: var(--scrollbarHandle) var(--panel);
+
+	&::-webkit-scrollbar-track {
+		background: var(--panel);
+	}
 }
 </style>

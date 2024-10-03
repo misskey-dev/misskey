@@ -1,6 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { ref } from 'vue';
 import tinycolor from 'tinycolor2';
-import { globalEvents } from '@/events';
+import lightTheme from '@@/themes/_light.json5';
+import darkTheme from '@@/themes/_dark.json5';
+import { deepClone } from './clone.js';
+import type { BundledTheme } from 'shiki/themes';
+import { globalEvents } from '@/events.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 export type Theme = {
 	id: string;
@@ -9,12 +19,14 @@ export type Theme = {
 	desc?: string;
 	base?: 'dark' | 'light';
 	props: Record<string, string>;
+	codeHighlighter?: {
+		base: BundledTheme;
+		overrides?: Record<string, any>;
+	} | {
+		base: '_none_';
+		overrides: Record<string, any>;
+	};
 };
-
-import lightTheme from '@/themes/_light.json5';
-import darkTheme from '@/themes/_dark.json5';
-import { deepClone } from './clone';
-import { miLocalStorage } from '@/local-storage';
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
@@ -40,7 +52,7 @@ export const getBuiltinThemes = () => Promise.all(
 		'd-cherry',
 		'd-ice',
 		'd-u0',
-	].map(name => import(`../themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
+	].map(name => import(`@@/themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
 );
 
 export const getBuiltinThemesRef = () => {
@@ -49,7 +61,7 @@ export const getBuiltinThemesRef = () => {
 	return builtinThemes;
 };
 
-let timeout = null;
+let timeout: number | null = null;
 
 export function applyTheme(theme: Theme, persist = true) {
 	if (timeout) window.clearTimeout(timeout);
@@ -60,7 +72,9 @@ export function applyTheme(theme: Theme, persist = true) {
 		document.documentElement.classList.remove('_themeChanging_');
 	}, 1000);
 
-	const colorSchema = theme.base === 'dark' ? 'dark' : 'light';
+	const colorScheme = theme.base === 'dark' ? 'dark' : 'light';
+
+	document.documentElement.dataset.colorScheme = colorScheme;
 
 	// Deep copy
 	const _theme = deepClone(theme);
@@ -83,11 +97,11 @@ export function applyTheme(theme: Theme, persist = true) {
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	}
 
-	document.documentElement.style.setProperty('color-schema', colorSchema);
+	document.documentElement.style.setProperty('color-scheme', colorScheme);
 
 	if (persist) {
 		miLocalStorage.setItem('theme', JSON.stringify(props));
-		miLocalStorage.setItem('colorSchema', colorSchema);
+		miLocalStorage.setItem('colorScheme', colorScheme);
 	}
 
 	// 色計算など再度行えるようにクライアント全体に通知
@@ -96,20 +110,13 @@ export function applyTheme(theme: Theme, persist = true) {
 
 function compile(theme: Theme): Record<string, string> {
 	function getColor(val: string): tinycolor.Instance {
-		// ref (prop)
-		if (val[0] === '@') {
-			return getColor(theme.props[val.substr(1)]);
-		}
-
-		// ref (const)
-		else if (val[0] === '$') {
+		if (val[0] === '@') { // ref (prop)
+			return getColor(theme.props[val.substring(1)]);
+		} else if (val[0] === '$') { // ref (const)
 			return getColor(theme.props[val]);
-		}
-
-		// func
-		else if (val[0] === ':') {
+		} else if (val[0] === ':') { // func
 			const parts = val.split('<');
-			const func = parts.shift().substr(1);
+			const func = parts.shift().substring(1);
 			const arg = parseFloat(parts.shift());
 			const color = getColor(parts.join('<'));
 

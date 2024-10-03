@@ -1,17 +1,23 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="data-cy-mkw-digitalClock _monospace" :class="[$style.root, { _panel: !widgetProps.transparent }]" :style="{ fontSize: `${widgetProps.fontSize}em` }">
+<div data-cy-mkw-digitalClock class="_monospace" :class="[$style.root, { _panel: !widgetProps.transparent }]" :style="{ fontSize: `${widgetProps.fontSize}em` }">
 	<div v-if="widgetProps.showLabel" :class="$style.label">{{ tzAbbrev }}</div>
 	<div>
-		<MkDigitalClock :show-ms="widgetProps.showMs" :offset="tzOffset"/>
+		<MkDigitalClock :showMs="widgetProps.showMs" :offset="tzOffset"/>
 	</div>
 	<div v-if="widgetProps.showLabel" :class="$style.label">{{ tzOffsetLabel }}</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import { timezones } from '@/scripts/timezones';
+import { computed } from 'vue';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import { timezones } from '@/scripts/timezones.js';
 import MkDigitalClock from '@/components/MkDigitalClock.vue';
 
 const name = 'digitalClock';
@@ -49,11 +55,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -61,15 +64,15 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const tzAbbrev = $computed(() => (widgetProps.timezone === null
+const tzAbbrev = computed(() => (widgetProps.timezone === null
 	? timezones.find((tz) => tz.name.toLowerCase() === Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase())?.abbrev
 	: timezones.find((tz) => tz.name.toLowerCase() === widgetProps.timezone)?.abbrev) ?? '?');
 
-const tzOffset = $computed(() => widgetProps.timezone === null
+const tzOffset = computed(() => widgetProps.timezone === null
 	? 0 - new Date().getTimezoneOffset()
 	: timezones.find((tz) => tz.name.toLowerCase() === widgetProps.timezone)?.offset ?? 0);
 
-const tzOffsetLabel = $computed(() => (tzOffset >= 0 ? '+' : '-') + Math.floor(tzOffset / 60).toString().padStart(2, '0') + ':' + (tzOffset % 60).toString().padStart(2, '0'));
+const tzOffsetLabel = computed(() => (tzOffset.value >= 0 ? '+' : '-') + Math.floor(tzOffset.value / 60).toString().padStart(2, '0') + ':' + (tzOffset.value % 60).toString().padStart(2, '0'));
 
 defineExpose<WidgetComponentExpose>({
 	name,

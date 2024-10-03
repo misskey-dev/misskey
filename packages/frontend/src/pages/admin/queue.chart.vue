@@ -1,35 +1,40 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="pumxzjhg _gaps">
+<div class="_gaps">
 	<div :class="$style.status">
-		<div class="item _panel"><div class="label">Process</div>{{ number(activeSincePrevTick) }}</div>
-		<div class="item _panel"><div class="label">Active</div>{{ number(active) }}</div>
-		<div class="item _panel"><div class="label">Waiting</div>{{ number(waiting) }}</div>
-		<div class="item _panel"><div class="label">Delayed</div>{{ number(delayed) }}</div>
+		<div :class="$style.statusItem" class="_panel"><div :class="$style.statusLabel">Process</div>{{ number(activeSincePrevTick) }}</div>
+		<div :class="$style.statusItem" class="_panel"><div :class="$style.statusLabel">Active</div>{{ number(active) }}</div>
+		<div :class="$style.statusItem" class="_panel"><div :class="$style.statusLabel">Waiting</div>{{ number(waiting) }}</div>
+		<div :class="$style.statusItem" class="_panel"><div :class="$style.statusLabel">Delayed</div>{{ number(delayed) }}</div>
 	</div>
-	<div class="charts">
-		<div class="chart">
-			<div class="title">Process</div>
+	<div :class="$style.charts">
+		<div :class="$style.chart">
+			<div :class="$style.chartTitle">Process</div>
 			<XChart ref="chartProcess" type="process"/>
 		</div>
-		<div class="chart">
-			<div class="title">Active</div>
+		<div :class="$style.chart">
+			<div :class="$style.chartTitle">Active</div>
 			<XChart ref="chartActive" type="active"/>
 		</div>
-		<div class="chart">
-			<div class="title">Delayed</div>
+		<div :class="$style.chart">
+			<div :class="$style.chartTitle">Delayed</div>
 			<XChart ref="chartDelayed" type="delayed"/>
 		</div>
-		<div class="chart">
-			<div class="title">Waiting</div>
+		<div :class="$style.chart">
+			<div :class="$style.chartTitle">Waiting</div>
 			<XChart ref="chartWaiting" type="waiting"/>
 		</div>
 	</div>
-	<MkFolder :default-open="true" :max-height="250">
+	<MkFolder :defaultOpen="true" :max-height="250">
 		<template #icon><i class="ti ti-alert-triangle"></i></template>
 		<template #label>Errored instances</template>
 		<template #suffix>({{ number(jobs.reduce((a, b) => a + b[1], 0)) }} jobs)</template>
-		
-		<div :class="$style.jobs">
+
+		<div>
 			<div v-if="jobs.length > 0">
 				<div v-for="job in jobs" :key="job[0]">
 					<MkA :to="`/instance-info/${job[0]}`" behavior="window">{{ job[0] }}</MkA>
@@ -43,47 +48,49 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, onMounted, onUnmounted, ref } from 'vue';
+import { markRaw, onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import XChart from './queue.chart.chart.vue';
-import number from '@/filters/number';
-import * as os from '@/os';
-import { stream } from '@/stream';
-import { i18n } from '@/i18n';
+import type { ApQueueDomain } from '@/pages/admin/queue.vue';
+import number from '@/filters/number.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { useStream } from '@/stream.js';
+import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 
-const connection = markRaw(stream.useChannel('queueStats'));
+const connection = markRaw(useStream().useChannel('queueStats'));
 
 const activeSincePrevTick = ref(0);
 const active = ref(0);
 const delayed = ref(0);
 const waiting = ref(0);
-const jobs = ref([]);
-let chartProcess = $shallowRef<InstanceType<typeof XChart>>();
-let chartActive = $shallowRef<InstanceType<typeof XChart>>();
-let chartDelayed = $shallowRef<InstanceType<typeof XChart>>();
-let chartWaiting = $shallowRef<InstanceType<typeof XChart>>();
+const jobs = ref<Misskey.Endpoints[`admin/queue/${ApQueueDomain}-delayed`]['res']>([]);
+const chartProcess = shallowRef<InstanceType<typeof XChart>>();
+const chartActive = shallowRef<InstanceType<typeof XChart>>();
+const chartDelayed = shallowRef<InstanceType<typeof XChart>>();
+const chartWaiting = shallowRef<InstanceType<typeof XChart>>();
 
 const props = defineProps<{
-	domain: string;
+	domain: ApQueueDomain;
 }>();
 
-const onStats = (stats) => {
+function onStats(stats: Misskey.entities.QueueStats) {
 	activeSincePrevTick.value = stats[props.domain].activeSincePrevTick;
 	active.value = stats[props.domain].active;
 	delayed.value = stats[props.domain].delayed;
 	waiting.value = stats[props.domain].waiting;
 
-	chartProcess.pushData(stats[props.domain].activeSincePrevTick);
-	chartActive.pushData(stats[props.domain].active);
-	chartDelayed.pushData(stats[props.domain].delayed);
-	chartWaiting.pushData(stats[props.domain].waiting);
-};
+	chartProcess.value.pushData(stats[props.domain].activeSincePrevTick);
+	chartActive.value.pushData(stats[props.domain].active);
+	chartDelayed.value.pushData(stats[props.domain].delayed);
+	chartWaiting.value.pushData(stats[props.domain].waiting);
+}
 
-const onStatsLog = (statsLog) => {
-	const dataProcess = [];
-	const dataActive = [];
-	const dataDelayed = [];
-	const dataWaiting = [];
+function onStatsLog(statsLog: Misskey.entities.QueueStatsLog) {
+	const dataProcess: Misskey.entities.QueueStats[ApQueueDomain]['activeSincePrevTick'][] = [];
+	const dataActive: Misskey.entities.QueueStats[ApQueueDomain]['active'][] = [];
+	const dataDelayed: Misskey.entities.QueueStats[ApQueueDomain]['delayed'][] = [];
+	const dataWaiting: Misskey.entities.QueueStats[ApQueueDomain]['waiting'][] = [];
 
 	for (const stats of [...statsLog].reverse()) {
 		dataProcess.push(stats[props.domain].activeSincePrevTick);
@@ -92,21 +99,21 @@ const onStatsLog = (statsLog) => {
 		dataWaiting.push(stats[props.domain].waiting);
 	}
 
-	chartProcess.setData(dataProcess);
-	chartActive.setData(dataActive);
-	chartDelayed.setData(dataDelayed);
-	chartWaiting.setData(dataWaiting);
-};
+	chartProcess.value.setData(dataProcess);
+	chartActive.value.setData(dataActive);
+	chartDelayed.value.setData(dataDelayed);
+	chartWaiting.value.setData(dataWaiting);
+}
 
 onMounted(() => {
-	os.api(props.domain === 'inbox' ? 'admin/queue/inbox-delayed' : props.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(result => {
+	misskeyApi(`admin/queue/${props.domain}-delayed`).then(result => {
 		jobs.value = result;
 	});
 
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
 	connection.send('requestLog', {
-		id: Math.random().toString().substr(2, 8),
+		id: Math.random().toString().substring(2, 10),
 		length: 200,
 	});
 });
@@ -118,45 +125,36 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.pumxzjhg {
-	> .charts {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 10px;
-
-		> .chart {
-			min-width: 0;
-			padding: 16px;
-			background: var(--panel);
-			border-radius: var(--radius);
-
-			> .title {
-				margin-bottom: 8px;
-			}
-		}
-	}
-}
-</style>
-
 <style lang="scss" module>
+.charts {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+}
+
+.chart {
+	min-width: 0;
+	padding: 16px;
+	background: var(--panel);
+	border-radius: var(--radius);
+}
+
+.chartTitle {
+	margin-bottom: 8px;
+}
+
 .status {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 	grid-gap: 10px;
-
-	&:global {
-		> .item {
-			padding: 12px 16px;
-
-			> .label {
-				font-size: 80%;
-				opacity: 0.6;
-			}
-		}
-	}
 }
 
-.jobs {
+.statusItem {
+	padding: 12px 16px;
+}
+
+.statusLabel {
+	font-size: 80%;
+	opacity: 0.6;
 }
 </style>

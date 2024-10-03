@@ -1,23 +1,29 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
 	appear
-	:enter-active-class="$store.state.animation ? $style.transition_fade_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_fade_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_fade_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_fade_leaveTo : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
 >
 	<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
-		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
+		<MkMenu :items="items" :align="'left'" @close="emit('closed')"/>
 	</div>
 </Transition>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount } from 'vue';
+import { onMounted, onBeforeUnmount, shallowRef, ref } from 'vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from './types/menu.vue';
-import contains from '@/scripts/contains';
-import * as os from '@/os';
+import type { MenuItem } from '@/types/menu.js';
+import contains from '@/scripts/contains.js';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
 
 const props = defineProps<{
 	items: MenuItem[];
@@ -28,23 +34,25 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-let rootEl = $shallowRef<HTMLDivElement>();
+const rootEl = shallowRef<HTMLDivElement>();
 
-let zIndex = $ref<number>(os.claimZIndex('high'));
+const zIndex = ref<number>(os.claimZIndex('high'));
+
+const SCROLLBAR_THICKNESS = 16;
 
 onMounted(() => {
 	let left = props.ev.pageX + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
 	let top = props.ev.pageY + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
 
-	const width = rootEl.offsetWidth;
-	const height = rootEl.offsetHeight;
+	const width = rootEl.value!.offsetWidth;
+	const height = rootEl.value!.offsetHeight;
 
-	if (left + width - window.pageXOffset > window.innerWidth) {
-		left = window.innerWidth - width + window.pageXOffset;
+	if (left + width - window.scrollX >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
+		left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.scrollX;
 	}
 
-	if (top + height - window.pageYOffset > window.innerHeight) {
-		top = window.innerHeight - height + window.pageYOffset;
+	if (top + height - window.scrollY >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
+		top = (window.innerHeight - SCROLLBAR_THICKNESS) - height + window.scrollY;
 	}
 
 	if (top < 0) {
@@ -55,22 +63,20 @@ onMounted(() => {
 		left = 0;
 	}
 
-	rootEl.style.top = `${top}px`;
-	rootEl.style.left = `${left}px`;
-
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.addEventListener('mousedown', onMousedown);
+	if (rootEl.value) {
+		rootEl.value.style.top = `${top}px`;
+		rootEl.value.style.left = `${left}px`;
 	}
+
+	document.body.addEventListener('mousedown', onMousedown);
 });
 
 onBeforeUnmount(() => {
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.removeEventListener('mousedown', onMousedown);
-	}
+	document.body.removeEventListener('mousedown', onMousedown);
 });
 
 function onMousedown(evt: Event) {
-	if (!contains(rootEl, evt.target) && (rootEl !== evt.target)) emit('closed');
+	if (!contains(rootEl.value, evt.target) && (rootEl.value !== evt.target)) emit('closed');
 }
 </script>
 

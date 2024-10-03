@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="zlxnikvl">
 	<XPie class="pie" :value="usage"/>
@@ -11,25 +16,26 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount } from 'vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XPie from './pie.vue';
-import bytes from '@/filters/bytes';
+import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
-	connection: any,
-	meta: any
+	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
+	meta: Misskey.entities.ServerInfoResponse
 }>();
 
-let usage: number = $ref(0);
-let total: number = $ref(0);
-let used: number = $ref(0);
-let free: number = $ref(0);
+const usage = ref<number>(0);
+const total = ref<number>(0);
+const used = ref<number>(0);
+const free = ref<number>(0);
 
-function onStats(stats) {
-	usage = stats.mem.active / props.meta.mem.total;
-	total = props.meta.mem.total;
-	used = stats.mem.active;
-	free = total - used;
+function onStats(stats: Misskey.entities.ServerStats) {
+	usage.value = stats.mem.active / props.meta.mem.total;
+	total.value = props.meta.mem.total;
+	used.value = stats.mem.active;
+	free.value = total.value - used.value;
 }
 
 onMounted(() => {

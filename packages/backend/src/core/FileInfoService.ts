@@ -1,22 +1,26 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as fs from 'node:fs';
 import * as crypto from 'node:crypto';
 import { join } from 'node:path';
-import * as stream from 'node:stream';
-import * as util from 'node:util';
+import * as stream from 'node:stream/promises';
 import { Injectable } from '@nestjs/common';
 import { FSWatcher } from 'chokidar';
-import { fileTypeFromFile } from 'file-type';
+import * as fileType from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
 import { type predictionType } from 'nsfwjs';
-import sharp from 'sharp';
-import { encode } from 'blurhash';
+import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
+import * as blurhash from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-
-const pipeline = util.promisify(stream.pipeline);
 
 export type FileInfo = {
 	size: number;
@@ -46,9 +50,13 @@ const TYPE_SVG = {
 
 @Injectable()
 export class FileInfoService {
+	private logger: Logger;
+
 	constructor(
 		private aiService: AiService,
+		private loggerService: LoggerService,
 	) {
+		this.logger = this.loggerService.getLogger('file-info');
 	}
 
 	/**
@@ -120,7 +128,7 @@ export class FileInfoService {
 			'image/avif',
 			'image/svg+xml',
 		].includes(type.mime)) {
-			blurhash = await this.getBlurhash(path).catch(e => {
+			blurhash = await this.getBlurhash(path, type.mime).catch(e => {
 				warnings.push(`getBlurhash failed: ${e}`);
 				return undefined;
 			});
@@ -161,20 +169,20 @@ export class FileInfoService {
 	private async detectSensitivity(source: string, mime: string, sensitiveThreshold: number, sensitiveThresholdForPorn: number, analyzeVideo: boolean): Promise<[sensitive: boolean, porn: boolean]> {
 		let sensitive = false;
 		let porn = false;
-	
+
 		function judgePrediction(result: readonly predictionType[]): [sensitive: boolean, porn: boolean] {
 			let sensitive = false;
 			let porn = false;
-	
+
 			if ((result.find(x => x.className === 'Sexy')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
 			if ((result.find(x => x.className === 'Hentai')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
 			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
-	
+
 			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThresholdForPorn) porn = true;
-	
+
 			return [sensitive, porn];
 		}
-	
+
 		if ([
 			'image/jpeg',
 			'image/png',
@@ -253,10 +261,10 @@ export class FileInfoService {
 				disposeOutDir();
 			}
 		}
-	
+
 		return [sensitive, porn];
 	}
-	
+
 	private async *asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
 		const watcher = new FSWatcher({
 			cwd,
@@ -295,10 +303,51 @@ export class FileInfoService {
 			}
 		}
 	}
-	
+
 	@bindThis
 	private exists(path: string): Promise<boolean> {
 		return fs.promises.access(path).then(() => true, () => false);
+	}
+
+	@bindThis
+	public fixMime(mime: string | fileType.MimeType): string {
+		// see https://github.com/misskey-dev/misskey/pull/10686
+		if (mime === 'audio/x-flac') {
+			return 'audio/flac';
+		}
+		if (mime === 'audio/vnd.wave') {
+			return 'audio/wav';
+		}
+
+		return mime;
+	}
+
+	/**
+	 * ビデオファイルにビデオトラックがあるかどうかチェック
+	 * （ない場合：m4a, webmなど）
+	 *
+	 * @param path ファイルパス
+	 * @returns ビデオトラックがあるかどうか（エラー発生時は常に`true`を返す）
+	 */
+	@bindThis
+	private hasVideoTrackOnVideoFile(path: string): Promise<boolean> {
+		const sublogger = this.logger.createSubLogger('ffprobe');
+		sublogger.info(`Checking the video file. File path: ${path}`);
+		return new Promise((resolve) => {
+			try {
+				FFmpeg.ffprobe(path, (err, metadata) => {
+					if (err) {
+						sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err);
+						resolve(true);
+						return;
+					}
+					resolve(metadata.streams.some((stream) => stream.codec_type === 'video'));
+				});
+			} catch (err) {
+				sublogger.warn(`Could not check the video file. Returns true. File path: ${path}`, err as Error);
+				resolve(true);
+			}
+		});
 	}
 
 	/**
@@ -306,16 +355,16 @@ export class FileInfoService {
 	 */
 	@bindThis
 	public async detectType(path: string): Promise<{
-	mime: string;
-	ext: string | null;
-}> {
+		mime: string;
+		ext: string | null;
+	}> {
 	// Check 0 byte
 		const fileSize = await this.getFileSize(path);
 		if (fileSize === 0) {
 			return TYPE_OCTET_STREAM;
 		}
 
-		const type = await fileTypeFromFile(path);
+		const type = await fileType.fileTypeFromFile(path);
 
 		if (type) {
 		// XMLはSVGかもしれない
@@ -323,8 +372,22 @@ export class FileInfoService {
 				return TYPE_SVG;
 			}
 
+			if ((type.mime.startsWith('video') || type.mime === 'application/ogg') && !(await this.hasVideoTrackOnVideoFile(path))) {
+				const newMime = `audio/${type.mime.split('/')[1]}`;
+				if (newMime === 'audio/mp4') {
+					return {
+						mime: 'audio/mp4',
+						ext: 'm4a',
+					};
+				}
+				return {
+					mime: newMime,
+					ext: type.ext,
+				};
+			}
+
 			return {
-				mime: type.mime,
+				mime: this.fixMime(type.mime),
 				ext: type.ext,
 			};
 		}
@@ -342,11 +405,12 @@ export class FileInfoService {
 	 * Check the file is SVG or not
 	 */
 	@bindThis
-	public async checkSvg(path: string) {
+	public async checkSvg(path: string): Promise<boolean> {
 		try {
 			const size = await this.getFileSize(path);
 			if (size > 1 * 1024 * 1024) return false;
-			return isSvg(fs.readFileSync(path));
+			const buffer = await fs.promises.readFile(path);
+			return isSvg(buffer.toString());
 		} catch {
 			return false;
 		}
@@ -357,8 +421,7 @@ export class FileInfoService {
 	 */
 	@bindThis
 	public async getFileSize(path: string): Promise<number> {
-		const getStat = util.promisify(fs.stat);
-		return (await getStat(path)).size;
+		return (await fs.promises.stat(path)).size;
 	}
 
 	/**
@@ -367,7 +430,7 @@ export class FileInfoService {
 	@bindThis
 	private async calcHash(path: string): Promise<string> {
 		const hash = crypto.createHash('md5').setEncoding('hex');
-		await pipeline(fs.createReadStream(path), hash);
+		await stream.pipeline(fs.createReadStream(path), hash);
 		return hash.read();
 	}
 
@@ -389,12 +452,12 @@ export class FileInfoService {
 	}
 
 	/**
-	 * Calculate average color of image
+	 * Calculate blurhash string of image
 	 */
 	@bindThis
-	private getBlurhash(path: string): Promise<string> {
-		return new Promise((resolve, reject) => {
-			sharp(path)
+	private getBlurhash(path: string, type: string): Promise<string> {
+		return new Promise(async (resolve, reject) => {
+			(await sharpBmp(path, type))
 				.raw()
 				.ensureAlpha()
 				.resize(64, 64, { fit: 'inside' })
@@ -404,7 +467,7 @@ export class FileInfoService {
 					let hash;
 
 					try {
-						hash = encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
+						hash = blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
 					} catch (e) {
 						return reject(e);
 					}

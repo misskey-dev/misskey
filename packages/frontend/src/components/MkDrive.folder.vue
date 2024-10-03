@@ -1,7 +1,11 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div
-	class="rghtznwe"
-	:class="{ draghover }"
+	:class="[$style.root, { [$style.draghover]: draghover }]"
 	draggable="true"
 	:title="title"
 	@click="onClick"
@@ -15,25 +19,30 @@
 	@dragstart="onDragstart"
 	@dragend="onDragend"
 >
-	<p class="name">
-		<template v-if="hover"><i class="ti ti-folder ti-fw"></i></template>
-		<template v-if="!hover"><i class="ti ti-folder ti-fw"></i></template>
+	<p :class="$style.name">
+		<template v-if="hover"><i :class="$style.icon" class="ti ti-folder ti-fw"></i></template>
+		<template v-if="!hover"><i :class="$style.icon" class="ti ti-folder ti-fw"></i></template>
 		{{ folder.name }}
 	</p>
-	<p v-if="defaultStore.state.uploadFolder == folder.id" class="upload">
+	<p v-if="defaultStore.state.uploadFolder == folder.id" :class="$style.upload">
 		{{ i18n.ts.uploadFolder }}
 	</p>
-	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>
+	<button v-if="selectMode" class="_button" :class="$style.checkboxWrapper" @click.prevent.stop="checkboxClicked">
+		<div :class="[$style.checkbox, { [$style.checked]: isSelected }]"></div>
+	</button>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
-import { claimAchievement } from '@/scripts/achievements';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import { claimAchievement } from '@/scripts/achievements.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -46,6 +55,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'chosen', v: Misskey.entities.DriveFolder): void;
+	(ev: 'unchose', v: Misskey.entities.DriveFolder): void;
 	(ev: 'move', v: Misskey.entities.DriveFolder): void;
 	(ev: 'upload', file: File, folder: Misskey.entities.DriveFolder);
 	(ev: 'removeFile', v: Misskey.entities.DriveFile['id']): void;
@@ -61,7 +71,11 @@ const isDragging = ref(false);
 const title = computed(() => props.folder.name);
 
 function checkboxClicked() {
-	emit('chosen', props.folder);
+	if (props.isSelected) {
+		emit('unchose', props.folder);
+	} else {
+		emit('chosen', props.folder);
+	}
 }
 
 function onClick() {
@@ -94,9 +108,9 @@ function onDragover(ev: DragEvent) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy': 
-			case 'copyLink': 
-			case 'copyMove': 
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -138,7 +152,7 @@ function onDrop(ev: DragEvent) {
 	if (driveFile != null && driveFile !== '') {
 		const file = JSON.parse(driveFile);
 		emit('removeFile', file.id);
-		os.api('drive/files/update', {
+		misskeyApi('drive/files/update', {
 			fileId: file.id,
 			folderId: props.folder.id,
 		});
@@ -154,7 +168,7 @@ function onDrop(ev: DragEvent) {
 		if (folder.id === props.folder.id) return;
 
 		emit('removeFolder', folder.id);
-		os.api('drive/folders/update', {
+		misskeyApi('drive/folders/update', {
 			folderId: folder.id,
 			parentId: props.folder.id,
 		}).then(() => {
@@ -198,7 +212,7 @@ function onDragend() {
 }
 
 function go() {
-	emit('move', props.folder.id);
+	emit('move', props.folder);
 }
 
 function rename() {
@@ -208,15 +222,26 @@ function rename() {
 		default: props.folder.name,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
-		os.api('drive/folders/update', {
+		misskeyApi('drive/folders/update', {
 			folderId: props.folder.id,
 			name: name,
 		});
 	});
 }
 
+function move() {
+	os.selectDriveFolder(false).then(folder => {
+		if (folder[0] && folder[0].id === props.folder.id) return;
+
+		misskeyApi('drive/folders/update', {
+			folderId: props.folder.id,
+			parentId: folder[0] ? folder[0].id : null,
+		});
+	});
+}
+
 function deleteFolder() {
-	os.api('drive/folders/delete', {
+	misskeyApi('drive/folders/delete', {
 		folderId: props.folder.id,
 	}).then(() => {
 		if (defaultStore.state.uploadFolder === props.folder.id) {
@@ -245,60 +270,55 @@ function setAsUploadFolder() {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	os.contextMenu([{
+	let menu: MenuItem[];
+	menu = [{
 		text: i18n.ts.openInWindow,
 		icon: 'ti ti-app-window',
 		action: () => {
-			os.popup(defineAsyncComponent(() => import('@/components/MkDriveWindow.vue')), {
+			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkDriveWindow.vue')), {
 				initialFolder: props.folder,
 			}, {
-			}, 'closed');
+				closed: () => dispose(),
+			});
 		},
-	}, null, {
+	}, { type: 'divider' }, {
 		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
 		action: rename,
-	}, null, {
+	}, {
+		text: i18n.ts.move,
+		icon: 'ti ti ti-folder-symlink',
+		action: move,
+	}, { type: 'divider' }, {
 		text: i18n.ts.delete,
 		icon: 'ti ti-trash',
 		danger: true,
 		action: deleteFolder,
-	}], ev);
+	}];
+	if (defaultStore.state.devMode) {
+		menu = menu.concat([{ type: 'divider' }, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFolderId,
+			action: () => {
+				copyToClipboard(props.folder.id);
+			},
+		}]);
+	}
+	os.contextMenu(menu, ev);
 }
 </script>
 
-<style lang="scss" scoped>
-.rghtznwe {
+<style lang="scss" module>
+.root {
 	position: relative;
 	padding: 8px;
 	height: 64px;
 	background: var(--driveFolderBg);
 	border-radius: 4px;
-
-	&, * {
-		cursor: pointer;
-	}
-
-	*:not(.checkbox) {
-		pointer-events: none;
-	}
-
-	> .checkbox {
-		position: absolute;
-		bottom: 8px;
-		right: 8px;
-		width: 16px;
-		height: 16px;
-		background: #fff;
-		border: solid 1px #000;
-
-		&.checked {
-			background: var(--accent);
-		}
-	}
+	cursor: pointer;
 
 	&.draghover {
-		&:after {
+		&::after {
 			content: "";
 			pointer-events: none;
 			position: absolute;
@@ -310,24 +330,64 @@ function onContextmenu(ev: MouseEvent) {
 			border-radius: 4px;
 		}
 	}
+}
 
-	> .name {
-		margin: 0;
-		font-size: 0.9em;
-		color: var(--desktopDriveFolderFg);
+.checkboxWrapper {
+	position: absolute;
+	border-radius: 50%;
+	bottom: 2px;
+	right: 2px;
+	padding: 8px;
+	box-sizing: border-box;
 
-		> i {
-			margin-right: 4px;
-			margin-left: 2px;
-			text-align: left;
+	> .checkbox {
+		position: relative;
+		width: 18px;
+		height: 18px;
+		background: #fff;
+		border: solid 2px var(--divider);
+		border-radius: 4px;
+		box-sizing: border-box;
+
+		&.checked {
+			border-color: var(--accent);
+			background: var(--accent);
+
+			&::after {
+				content: "\ea5e";
+				font-family: 'tabler-icons';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				color: #fff;
+				font-size: 12px;
+				line-height: 22px;
+			}
 		}
 	}
 
-	> .upload {
-		margin: 4px 4px;
-		font-size: 0.8em;
-		text-align: right;
-		color: var(--desktopDriveFolderFg);
+	&:hover {
+		background: var(--accentedBg);
 	}
+}
+
+.name {
+	margin: 0;
+	font-size: 0.9em;
+	color: var(--desktopDriveFolderFg);
+}
+
+.icon {
+	margin-right: 4px;
+	margin-left: 2px;
+	text-align: left;
+}
+
+.upload {
+	margin: 4px 4px;
+	font-size: 0.8em;
+	text-align: right;
+	color: var(--desktopDriveFolderFg);
 }
 </style>

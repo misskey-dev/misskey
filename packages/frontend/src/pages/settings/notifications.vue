@@ -1,6 +1,31 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
-	<FormLink @click="configure"><template #icon><i class="ti ti-settings"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
+	<FormSection first>
+		<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
+		<div class="_gaps_s">
+			<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
+				<template #label>{{ i18n.ts._notification._types[type] }}</template>
+				<template #suffix>
+					{{
+						$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
+						$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
+						$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
+						$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
+						$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
+						$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
+						i18n.ts.all
+					}}
+				</template>
+
+				<XNotificationConfig :userLists="userLists" :value="$i.notificationRecieveConfig[type] ?? { type: 'all' }" @update="(res) => updateReceiveConfig(type, res)"/>
+			</MkFolder>
+		</div>
+	</FormSection>
 	<FormSection>
 		<div class="_gaps_m">
 			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
@@ -8,11 +33,17 @@
 		</div>
 	</FormSection>
 	<FormSection>
+		<div class="_gaps_m">
+			<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
+			<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
+		</div>
+	</FormSection>
+	<FormSection>
 		<template #label>{{ i18n.ts.pushNotification }}</template>
 
 		<div class="_gaps_m">
 			<MkPushNotificationAllowButton ref="allowButton"/>
-			<MkSwitch :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:model-value="onChangeSendReadMessage">
+			<MkSwitch :disabled="!pushRegistrationInServer" :modelValue="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
 				<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
 				<template #caption>
 					<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
@@ -26,64 +57,81 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { shallowRef, computed } from 'vue';
+import XNotificationConfig from './notifications.notification-config.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { signinRequired } from '@/account.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
-import { notificationTypes } from '@/const';
+import { notificationTypes } from '@@/js/const.js';
 
-let allowButton = $shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
-let pushRegistrationInServer = $computed(() => allowButton?.pushRegistrationInServer);
-let sendReadMessage = $computed(() => pushRegistrationInServer?.sendReadMessage || false);
+const $i = signinRequired();
+
+const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'achievementEarned', 'test', 'exportCompleted'] as const satisfies (typeof notificationTypes[number])[];
+
+const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
+const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
+const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
+const userLists = await misskeyApi('users/lists/list');
 
 async function readAllUnreadNotes() {
-	await os.api('i/read-all-unread-notes');
+	await os.apiWithDialog('i/read-all-unread-notes');
 }
 
 async function readAllNotifications() {
-	await os.api('notifications/mark-all-as-read');
+	await os.apiWithDialog('notifications/mark-all-as-read');
 }
 
-function configure() {
-	const includingTypes = notificationTypes.filter(x => !$i!.mutingNotificationTypes.includes(x));
-	os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSettingWindow.vue')), {
-		includingTypes,
-		showGlobalToggle: false,
-	}, {
-		done: async (res) => {
-			const { includingTypes: value } = res;
-			await os.apiWithDialog('i/update', {
-				mutingNotificationTypes: notificationTypes.filter(x => !value.includes(x)),
-			}).then(i => {
-				$i!.mutingNotificationTypes = i.mutingNotificationTypes;
-			});
+async function updateReceiveConfig(type, value) {
+	await os.apiWithDialog('i/update', {
+		notificationRecieveConfig: {
+			...$i.notificationRecieveConfig,
+			[type]: value,
 		},
-	}, 'closed');
-}
-
-function onChangeSendReadMessage(v: boolean) {
-	if (!pushRegistrationInServer) return;
-
-	os.apiWithDialog('sw/update-registration', {
-		endpoint: pushRegistrationInServer.endpoint,
-		sendReadMessage: v,
-	}).then(res => {
-		if (!allowButton)	return;
-		allowButton.pushRegistrationInServer = res;
+	}).then(i => {
+		$i.notificationRecieveConfig = i.notificationRecieveConfig;
 	});
 }
 
-const headerActions = $computed(() => []);
+function onChangeSendReadMessage(v: boolean) {
+	if (!pushRegistrationInServer.value) return;
 
-const headerTabs = $computed(() => []);
+	os.apiWithDialog('sw/update-registration', {
+		endpoint: pushRegistrationInServer.value.endpoint,
+		sendReadMessage: v,
+	}).then(res => {
+		if (!allowButton.value)	return;
+		allowButton.value.pushRegistrationInServer = res;
+	});
+}
 
-definePageMetadata({
+function testNotification(): void {
+	misskeyApi('notifications/test-notification');
+}
+
+async function flushNotification() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.resetAreYouSure,
+	});
+
+	if (canceled) return;
+
+	os.apiWithDialog('notifications/flush');
+}
+
+const headerActions = computed(() => []);
+
+const headerTabs = computed(() => []);
+
+definePageMetadata(() => ({
 	title: i18n.ts.notifications,
 	icon: 'ti ti-bell',
-});
+}));
 </script>

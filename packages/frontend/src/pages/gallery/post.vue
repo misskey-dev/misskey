@@ -1,9 +1,14 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="1000" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="1000" :marginMin="16" :marginMax="32">
 		<div class="_root">
-			<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
 					<div class="files">
 						<div v-for="file in post.files" :key="file.id" class="file">
@@ -24,7 +29,9 @@
 							<div class="other">
 								<button v-if="$i && $i.id === post.user.id" v-tooltip="i18n.ts.edit" v-click-anime class="_button" @click="edit"><i class="ti ti-pencil ti-fw"></i></button>
 								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
-								<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
+								<button v-tooltip="i18n.ts.copyLink" v-click-anime class="_button" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
+								<button v-if="isSupportShare()" v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
+								<button v-if="$i && $i.id !== post.user.id" v-click-anime class="_button" @mousedown="showMenu"><i class="ti ti-dots ti-fw"></i></button>
 							</div>
 						</div>
 						<div class="user">
@@ -33,7 +40,7 @@
 								<MkUserName :user="post.user" style="display: block;"/>
 								<MkAcct :user="post.user"/>
 							</div>
-							<MkFollowButton v-if="!$i || $i.id != post.user.id" :user="post.user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
+							<MkFollowButton v-if="!$i || $i.id != post.user.id" v-model:user="post.user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 						</div>
 					</div>
 					<MkAd :prefer="['horizontal', 'horizontal-big']"/>
@@ -56,17 +63,24 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref, defineAsyncComponent } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import { url } from '@/config';
-import { useRouter } from '@/router';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { url } from '@@/js/config.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { defaultStore } from '@/store.js';
+import { $i } from '@/account.js';
+import { isSupportShare } from '@/scripts/navigator.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { useRouter } from '@/router/supplier.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const router = useRouter();
 
@@ -74,38 +88,43 @@ const props = defineProps<{
 	postId: string;
 }>();
 
-let post = $ref(null);
-let error = $ref(null);
+const post = ref<Misskey.entities.GalleryPost | null>(null);
+const error = ref<any>(null);
 const otherPostsPagination = {
 	endpoint: 'users/gallery/posts' as const,
 	limit: 6,
 	params: computed(() => ({
-		userId: post.user.id,
+		userId: post.value.user.id,
 	})),
 };
 
 function fetchPost() {
-	post = null;
-	os.api('gallery/posts/show', {
+	post.value = null;
+	misskeyApi('gallery/posts/show', {
 		postId: props.postId,
 	}).then(_post => {
-		post = _post;
+		post.value = _post;
 	}).catch(_error => {
-		error = _error;
+		error.value = _error;
 	});
+}
+
+function copyLink() {
+	copyToClipboard(`${url}/gallery/${post.value.id}`);
+	os.success();
 }
 
 function share() {
 	navigator.share({
-		title: post.title,
-		text: post.description,
-		url: `${url}/gallery/${post.id}`,
+		title: post.value.title,
+		text: post.value.description,
+		url: `${url}/gallery/${post.value.id}`,
 	});
 }
 
 function shareWithNote() {
 	os.post({
-		initialText: `${post.title} ${url}/gallery/${post.id}`,
+		initialText: `${post.value.title} ${url}/gallery/${post.value.id}`,
 	});
 }
 
@@ -113,8 +132,8 @@ function like() {
 	os.apiWithDialog('gallery/posts/like', {
 		postId: props.postId,
 	}).then(() => {
-		post.isLiked = true;
-		post.likedCount++;
+		post.value.isLiked = true;
+		post.value.likedCount++;
 	});
 }
 
@@ -127,29 +146,74 @@ async function unlike() {
 	os.apiWithDialog('gallery/posts/unlike', {
 		postId: props.postId,
 	}).then(() => {
-		post.isLiked = false;
-		post.likedCount--;
+		post.value.isLiked = false;
+		post.value.likedCount--;
 	});
 }
 
 function edit() {
-	router.push(`/gallery/${post.id}/edit`);
+	router.push(`/gallery/${post.value.id}/edit`);
+}
+
+function reportAbuse() {
+	if (!post.value) return;
+
+	const pageUrl = `${url}/gallery/${post.value.id}`;
+
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+		user: post.value.user,
+		initialComment: `Post: ${pageUrl}\n-----\n`,
+	}, {
+		closed: () => dispose(),
+	});
+}
+
+function showMenu(ev: MouseEvent) {
+	if (!post.value) return;
+
+	const menuItems: MenuItem[] = [];
+
+	if ($i && $i.id !== post.value.userId) {
+		menuItems.push({
+			icon: 'ti ti-exclamation-circle',
+			text: i18n.ts.reportAbuse,
+			action: reportAbuse,
+		});
+
+		if ($i.isModerator || $i.isAdmin) {
+			menuItems.push({
+				type: 'divider',
+			}, {
+				icon: 'ti ti-trash',
+				text: i18n.ts.delete,
+				danger: true,
+				action: () => os.confirm({
+					type: 'warning',
+					text: i18n.ts.deleteConfirm,
+				}).then(({ canceled }) => {
+					if (canceled || !post.value) return;
+
+					os.apiWithDialog('gallery/posts/delete', { postId: post.value.id });
+				}),
+			});
+		}
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 watch(() => props.postId, fetchPost, { immediate: true });
 
-const headerActions = $computed(() => [{
-	icon: 'ti ti-pencil',
-	text: i18n.ts.edit,
-	handler: edit,
-}]);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => post ? {
-	title: post.title,
-	avatar: post.user,
-} : null));
+definePageMetadata(() => ({
+	title: post.value ? post.value.title : i18n.ts.gallery,
+	...post.value ? {
+		avatar: post.value.user,
+	} : {},
+}));
 </script>
 
 <style lang="scss" scoped>
@@ -234,6 +298,7 @@ definePageMetadata(computed(() => post ? {
 			border-top: solid 0.5px var(--divider);
 			display: flex;
 			align-items: center;
+			flex-wrap: wrap;
 
 			> .avatar {
 				width: 52px;

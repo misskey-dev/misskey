@@ -1,11 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /**
  * Identicon generator
  * https://en.wikipedia.org/wiki/Identicon
  */
 
-import * as p from 'pureimage';
+import { createCanvas } from '@napi-rs/canvas';
 import gen from 'random-seed';
-import type { WriteStream } from 'node:fs';
 
 const size = 128; // px
 const n = 5; // resolution
@@ -40,9 +44,9 @@ const sideN = Math.floor(n / 2);
 /**
  * Generate buffer of an identicon by seed
  */
-export function genIdenticon(seed: string, stream: WriteStream): Promise<void> {
+export async function genIdenticon(seed: string): Promise<Buffer> {
 	const rand = gen.create(seed);
-	const canvas = p.make(size, size, undefined);
+	const canvas = createCanvas(size, size);
 	const ctx = canvas.getContext('2d');
 
 	const bgColors = colors[rand(colors.length)];
@@ -96,5 +100,5 @@ export function genIdenticon(seed: string, stream: WriteStream): Promise<void> {
 		}
 	}
 
-	return p.encodePNGToStream(canvas, stream);
+	return await canvas.encode('png');
 }

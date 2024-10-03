@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" class="mkw-activity data-cy-mkw-activity">
+<MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent" data-cy-mkw-activity class="mkw-activity">
 	<template #icon><i class="ti ti-chart-line"></i></template>
 	<template #header>{{ i18n.ts._widgets.activity }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
@@ -7,8 +12,8 @@
 	<div>
 		<MkLoading v-if="fetching"/>
 		<template v-else>
-			<XCalendar v-show="widgetProps.view === 0" :activity="[].concat(activity)"/>
-			<XChart v-show="widgetProps.view === 1" :activity="[].concat(activity)"/>
+			<XCalendar v-show="widgetProps.view === 0" :activity="activity ?? []"/>
+			<XChart v-show="widgetProps.view === 1" :activity="activity ?? []"/>
 		</template>
 	</div>
 </MkContainer>
@@ -16,14 +21,14 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import XCalendar from './WidgetActivity.calendar.vue';
 import XChart from './WidgetActivity.chart.vue';
-import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
+import { GetFormResultType } from '@/scripts/form.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'activity';
 
@@ -45,11 +50,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -57,7 +59,12 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
-const activity = ref(null);
+const activity = ref<{
+	total: number;
+	notes: number;
+	replies: number;
+	renotes: number;
+}[] | null>(null);
 const fetching = ref(true);
 
 const toggleView = () => {
@@ -69,7 +76,7 @@ const toggleView = () => {
 	save();
 };
 
-os.apiGet('charts/user/notes', {
+misskeyApiGet('charts/user/notes', {
 	userId: $i.id,
 	span: 'day',
 	limit: 7 * 21,

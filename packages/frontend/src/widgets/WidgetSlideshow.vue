@@ -1,10 +1,15 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="kvausudm _panel mkw-slideshow data-cy-mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
+<div data-cy-mkw-slideshow class="kvausudm _panel mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
 	<div @click="choose">
 		<p v-if="widgetProps.folderId == null">
 			{{ i18n.ts.folder }}
 		</p>
-		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ $t('no-image') }}</p>
+		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ i18n.ts['no-image'] }}</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
@@ -13,11 +18,13 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
-import { i18n } from '@/i18n';
+import * as Misskey from 'misskey-js';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'slideshow';
 
@@ -35,11 +42,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -47,7 +51,7 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 
-const images = ref([]);
+const images = ref<Misskey.entities.DriveFile[]>([]);
 const fetching = ref(true);
 const slideA = shallowRef<HTMLElement>();
 const slideB = shallowRef<HTMLElement>();
@@ -74,7 +78,7 @@ const change = () => {
 const fetch = () => {
 	fetching.value = true;
 
-	os.api('drive/files', {
+	misskeyApi('drive/files', {
 		folderId: widgetProps.folderId,
 		type: 'image/*',
 		limit: 100,
@@ -89,10 +93,10 @@ const fetch = () => {
 
 const choose = () => {
 	os.selectDriveFolder(false).then(folder => {
-		if (folder == null) {
+		if (folder[0] == null) {
 			return;
 		}
-		widgetProps.folderId = folder.id;
+		widgetProps.folderId = folder[0].id;
 		save();
 		fetch();
 	});

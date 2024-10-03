@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
@@ -17,13 +22,14 @@
 
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { defineAsyncComponent, inject, onMounted, watch } from 'vue';
+import { defineAsyncComponent, inject, onMounted, watch, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XContainer from '../page-editor.container.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { deepClone } from '@/scripts/clone';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { deepClone } from '@/scripts/clone.js';
 import MkButton from '@/components/MkButton.vue';
+import { getPageBlockList } from '@/pages/page-editor/common.js';
 
 const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 
@@ -37,22 +43,20 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
 }>();
 
-const children = $ref(deepClone(props.modelValue.children ?? []));
+const children = ref(deepClone(props.modelValue.children ?? []));
 
-watch($$(children), () => {
+watch(children, () => {
 	emit('update:modelValue', {
 		...props.modelValue,
-		children,
+		children: children.value,
 	});
 }, {
 	deep: true,
 });
 
-const getPageBlockList = inject<(any) => any>('getPageBlockList');
-
 async function rename() {
 	const { canceled, result: title } = await os.inputText({
-		title: 'Enter title',
+		title: i18n.ts._pages.enterSectionTitle,
 		default: props.modelValue.title,
 	});
 	if (canceled) return;
@@ -70,7 +74,7 @@ async function add() {
 	if (canceled) return;
 
 	const id = uuid();
-	children.push({ id, type });
+	children.value.push({ id, type });
 }
 
 onMounted(() => {

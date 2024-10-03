@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { InstancesRepository } from '@/models/index.js';
+import type { InstancesRepository } from '@/models/_.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
@@ -31,19 +36,39 @@ export const paramDef = {
 		blocked: { type: 'boolean', nullable: true },
 		notResponding: { type: 'boolean', nullable: true },
 		suspended: { type: 'boolean', nullable: true },
+		silenced: { type: 'boolean', nullable: true },
 		federating: { type: 'boolean', nullable: true },
 		subscribing: { type: 'boolean', nullable: true },
 		publishing: { type: 'boolean', nullable: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
 		offset: { type: 'integer', default: 0 },
-		sort: { type: 'string' },
+		sort: {
+			type: 'string',
+			nullable: true,
+			enum: [
+				'+pubSub',
+				'-pubSub',
+				'+notes',
+				'-notes',
+				'+users',
+				'-users',
+				'+following',
+				'-following',
+				'+followers',
+				'-followers',
+				'+firstRetrievedAt',
+				'-firstRetrievedAt',
+				'+latestRequestReceivedAt',
+				'-latestRequestReceivedAt',
+				null,
+			],
+		},
 	},
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -76,9 +101,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (typeof ps.blocked === 'boolean') {
 				const meta = await this.metaService.fetch(true);
 				if (ps.blocked) {
-					query.andWhere('instance.host IN (:...blocks)', { blocks: meta.blockedHosts });
+					query.andWhere(meta.blockedHosts.length === 0 ? '1=0' : 'instance.host IN (:...blocks)', { blocks: meta.blockedHosts });
 				} else {
-					query.andWhere('instance.host NOT IN (:...blocks)', { blocks: meta.blockedHosts });
+					query.andWhere(meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT IN (:...blocks)', { blocks: meta.blockedHosts });
 				}
 			}
 
@@ -92,9 +117,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (typeof ps.suspended === 'boolean') {
 				if (ps.suspended) {
-					query.andWhere('instance.isSuspended = TRUE');
+					query.andWhere('instance.suspensionState != \'none\'');
 				} else {
-					query.andWhere('instance.isSuspended = FALSE');
+					query.andWhere('instance.suspensionState = \'none\'');
+				}
+			}
+
+			if (typeof ps.silenced === 'boolean') {
+				const meta = await this.metaService.fetch(true);
+
+				if (ps.silenced) {
+					if (meta.silencedHosts.length === 0) {
+						return [];
+					}
+					query.andWhere('instance.host IN (:...silences)', {
+						silences: meta.silencedHosts,
+					});
+				} else if (meta.silencedHosts.length > 0) {
+					query.andWhere('instance.host NOT IN (:...silences)', {
+						silences: meta.silencedHosts,
+					});
 				}
 			}
 
@@ -126,9 +168,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				query.andWhere('instance.host like :host', { host: '%' + sqlLikeEscape(ps.host.toLowerCase()) + '%' });
 			}
 
-			const instances = await query.take(ps.limit).skip(ps.offset).getMany();
+			const instances = await query.limit(ps.limit).offset(ps.offset).getMany();
 
-			return await this.instanceEntityService.packMany(instances);
+			return await this.instanceEntityService.packMany(instances, me);
 		});
 	}
 }

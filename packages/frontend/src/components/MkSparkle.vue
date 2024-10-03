@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <span :class="$style.root">
 	<span ref="el" style="display: inline-block;">
@@ -32,7 +37,8 @@
 		</path>
 	</svg>
 	-->
-	<svg v-for="particle in particles" :key="particle.id" :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: -32px; left: -32px;">
+	<!-- MFMで上位レイヤーに表示されるため、リンクをクリックできるようにstyleにpointer-events: none;を付与。 -->
+	<svg v-for="particle in particles" :key="particle.id" :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: -32px; left: -32px; pointer-events: none;">
 		<path
 			style="transform-origin: center; transform-box: fill-box;"
 			:transform="`translate(${particle.x} ${particle.y})`"
@@ -66,7 +72,14 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 
-const particles = ref([]);
+const particles = ref<{
+	id: string,
+	x: number,
+	y: number,
+	size: number,
+	dur: number,
+	color: string
+}[]>([]);
 const el = shallowRef<HTMLElement>();
 const width = ref(0);
 const height = ref(0);
@@ -76,10 +89,11 @@ let ro: ResizeObserver | undefined;
 
 onMounted(() => {
 	ro = new ResizeObserver((entries, observer) => {
-		width.value = el.value?.offsetWidth + 64;
-		height.value = el.value?.offsetHeight + 64;
+		if (el.value == null) return;
+		width.value = el.value.offsetWidth + 64;
+		height.value = el.value.offsetHeight + 64;
 	});
-	ro.observe(el.value);
+	if (el.value) ro.observe(el.value);
 	const add = () => {
 		if (stop) return;
 		const x = (Math.random() * (width.value - 64));
@@ -115,6 +129,5 @@ onUnmounted(() => {
 .root {
 	position: relative;
 	display: inline-block;
-	pointer-events: none;
 }
 </style>

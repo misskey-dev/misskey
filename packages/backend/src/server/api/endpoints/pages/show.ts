@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, PagesRepository } from '@/models/index.js';
-import type { Page } from '@/models/entities/Page.js';
+import type { UsersRepository, PagesRepository } from '@/models/_.js';
+import type { MiPage } from '@/models/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -29,26 +34,19 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
+	properties: {
+		pageId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string' },
+		username: { type: 'string' },
+	},
 	anyOf: [
-		{
-			properties: {
-				pageId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['pageId'],
-		},
-		{
-			properties: {
-				name: { type: 'string' },
-				username: { type: 'string' },
-			},
-			required: ['name', 'username'],
-		},
+		{ required: ['pageId'] },
+		{ required: ['name', 'username'] },
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -59,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private pageEntityService: PageEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let page: Page | null = null;
+			let page: MiPage | null = null;
 
 			if (ps.pageId) {
 				page = await this.pagesRepository.findOneBy({ id: ps.pageId });

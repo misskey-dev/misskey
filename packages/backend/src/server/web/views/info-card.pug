@@ -47,4 +47,4 @@ html
 			header#banner(style=`background-image: url(${meta.bannerUrl})`)
 				div#title= meta.name || host
 		div#content
-			div#description= meta.description
+			div#description!= meta.description

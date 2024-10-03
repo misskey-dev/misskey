@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { popup } from '@/os';
+import { popup } from '@/os.js';
 
 export default {
 	mounted(el, binding, vn) {
@@ -12,7 +17,9 @@ export default {
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
 
-			popup(MkRippleEffect, { x, y }, {}, 'end');
+			const { dispose } = popup(MkRippleEffect, { x, y }, {
+				end: () => dispose(),
+			});
 		});
 	},
 };

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class whetherPushNotifyToSendReadMessage1669138716634 {
     name = 'whetherPushNotifyToSendReadMessage1669138716634'
 

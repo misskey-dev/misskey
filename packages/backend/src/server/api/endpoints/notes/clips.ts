@@ -1,11 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
+import type { ClipNotesRepository, ClipsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['clips', 'notes'],
@@ -39,9 +44,8 @@ export const paramDef = {
 	required: ['noteId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
@@ -67,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isPublic: true,
 			});
 
-			return await Promise.all(clips.map(x => this.clipEntityService.pack(x)));
+			return await this.clipEntityService.packMany(clips, me);
 		});
 	}
 }

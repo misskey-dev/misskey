@@ -1,30 +1,36 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div v-if="meta">
-	<XSetup v-if="meta.requireSetup"/>
+<div v-if="instance">
+	<XSetup v-if="instance.requireSetup"/>
 	<XEntrance v-else/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
-import { instanceName } from '@/config';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { instanceName } from '@@/js/config.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { fetchInstance } from '@/instance.js';
 
-let meta = $ref(null);
+const instance = ref<Misskey.entities.MetaDetailed | null>(null);
 
-os.api('meta', { detail: true }).then(res => {
-	meta = res;
+fetchInstance(true).then((res) => {
+	instance.value = res;
 });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: instanceName,
 	icon: null,
-})));
+}));
 </script>

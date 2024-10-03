@@ -1,4 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 const CHARS = '0123456789abcdef';
+
+// same as meid
+export const objectIdRegExp = /^[0-9a-f]{24}$/;
 
 function getTime(time: number) {
 	if (time < 0) time = 0;
@@ -21,6 +29,16 @@ function getRandom() {
 	return str;
 }
 
-export function genObjectId(date: Date): string {
-	return getTime(date.getTime()) + getRandom();
+export function genObjectId(t: number): string {
+	return getTime(t) + getRandom();
+}
+
+export function parseObjectId(id: string): { date: Date; } {
+	return {
+		date: new Date(parseInt(id.slice(0, 8), 16) * 1000),
+	};
+}
+
+export function isSafeObjectIdT(t: number): boolean {
+	return t > 0;
 }

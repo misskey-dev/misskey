@@ -1,13 +1,11 @@
-import { IsNull, LessThanOrEqual, MoreThan } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
-import type { AdsRepository, UsersRepository } from '@/models/index.js';
-import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { MetaService } from '@/core/MetaService.js';
-import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -16,219 +14,10 @@ export const meta = {
 
 	res: {
 		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			maintainerName: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			maintainerEmail: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			version: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			name: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			uri: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'url',
-				example: 'https://misskey.example.com',
-			},
-			description: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			langs: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-			},
-			tosUrl: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			repositoryUrl: {
-				type: 'string',
-				optional: false, nullable: false,
-				default: 'https://github.com/misskey-dev/misskey',
-			},
-			feedbackUrl: {
-				type: 'string',
-				optional: false, nullable: false,
-				default: 'https://github.com/misskey-dev/misskey/issues/new',
-			},
-			defaultDarkTheme: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			defaultLightTheme: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			disableRegistration: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			cacheRemoteFiles: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			emailRequiredForSignup: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			enableHcaptcha: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			hcaptchaSiteKey: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			enableRecaptcha: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			recaptchaSiteKey: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			enableTurnstile: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			turnstileSiteKey: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			swPublickey: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			mascotImageUrl: {
-				type: 'string',
-				optional: false, nullable: false,
-				default: '/assets/ai.png',
-			},
-			bannerUrl: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			errorImageUrl: {
-				type: 'string',
-				optional: false, nullable: false,
-				default: 'https://xn--931a.moe/aiart/yubitun.png',
-			},
-			iconUrl: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			maxNoteTextLength: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			ads: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'object',
-					optional: false, nullable: false,
-					properties: {
-						place: {
-							type: 'string',
-							optional: false, nullable: false,
-						},
-						url: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'url',
-						},
-						imageUrl: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'url',
-						},
-					},
-				},
-			},
-			requireSetup: {
-				type: 'boolean',
-				optional: false, nullable: false,
-				example: false,
-			},
-			enableEmail: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			enableServiceWorker: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			translatorAvailable: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			proxyAccountName: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			mediaProxy: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			features: {
-				type: 'object',
-				optional: true, nullable: false,
-				properties: {
-					registration: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					localTimeLine: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					globalTimeLine: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					elasticsearch: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					hcaptcha: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					recaptcha: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					objectStorage: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					serviceWorker: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
-					miauth: {
-						type: 'boolean',
-						optional: true, nullable: false,
-						default: true,
-					},
-				},
-			},
-		},
+		oneOf: [
+			{ type: 'object', ref: 'MetaLite' },
+			{ type: 'object', ref: 'MetaDetailed' },
+		],
 	},
 } as const;
 
@@ -240,108 +29,13 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-	
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.adsRepository)
-		private adsRepository: AdsRepository,
-
-		private userEntityService: UserEntityService,
-		private metaService: MetaService,
+		private metaEntityService: MetaEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const instance = await this.metaService.fetch(true);
-
-			const ads = await this.adsRepository.find({
-				where: {
-					expiresAt: MoreThan(new Date()),
-					startsAt: LessThanOrEqual(new Date()),
-				},
-			});
-
-			const response: any = {
-				maintainerName: instance.maintainerName,
-				maintainerEmail: instance.maintainerEmail,
-
-				version: this.config.version,
-
-				name: instance.name,
-				uri: this.config.url,
-				description: instance.description,
-				langs: instance.langs,
-				tosUrl: instance.ToSUrl,
-				repositoryUrl: instance.repositoryUrl,
-				feedbackUrl: instance.feedbackUrl,
-				disableRegistration: instance.disableRegistration,
-				emailRequiredForSignup: instance.emailRequiredForSignup,
-				enableHcaptcha: instance.enableHcaptcha,
-				hcaptchaSiteKey: instance.hcaptchaSiteKey,
-				enableRecaptcha: instance.enableRecaptcha,
-				recaptchaSiteKey: instance.recaptchaSiteKey,
-				enableTurnstile: instance.enableTurnstile,
-				turnstileSiteKey: instance.turnstileSiteKey,
-				swPublickey: instance.swPublicKey,
-				themeColor: instance.themeColor,
-				mascotImageUrl: instance.mascotImageUrl,
-				bannerUrl: instance.bannerUrl,
-				errorImageUrl: instance.errorImageUrl,
-				iconUrl: instance.iconUrl,
-				backgroundImageUrl: instance.backgroundImageUrl,
-				logoImageUrl: instance.logoImageUrl,
-				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
-				defaultLightTheme: instance.defaultLightTheme,
-				defaultDarkTheme: instance.defaultDarkTheme,
-				ads: ads.map(ad => ({
-					id: ad.id,
-					url: ad.url,
-					place: ad.place,
-					ratio: ad.ratio,
-					imageUrl: ad.imageUrl,
-				})),
-				enableEmail: instance.enableEmail,
-				enableServiceWorker: instance.enableServiceWorker,
-
-				translatorAvailable: instance.deeplAuthKey != null,
-
-				policies: { ...DEFAULT_POLICIES, ...instance.policies },
-
-				mediaProxy: this.config.mediaProxy,
-
-				...(ps.detail ? {
-					pinnedPages: instance.pinnedPages,
-					pinnedClipId: instance.pinnedClipId,
-					cacheRemoteFiles: instance.cacheRemoteFiles,
-					requireSetup: (await this.usersRepository.countBy({
-						host: IsNull(),
-					})) === 0,
-				} : {}),
-			};
-
-			if (ps.detail) {
-				const proxyAccount = instance.proxyAccountId ? await this.userEntityService.pack(instance.proxyAccountId).catch(() => null) : null;
-
-				response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
-				response.features = {
-					registration: !instance.disableRegistration,
-					emailRequiredForSignup: instance.emailRequiredForSignup,
-					elasticsearch: this.config.elasticsearch ? true : false,
-					hcaptcha: instance.enableHcaptcha,
-					recaptcha: instance.enableRecaptcha,
-					turnstile: instance.enableTurnstile,
-					objectStorage: instance.useObjectStorage,
-					serviceWorker: instance.enableServiceWorker,
-					miauth: true,
-				};
-			}
-
-			return response;
+			return ps.detail ? await this.metaEntityService.packDetailed() : await this.metaEntityService.pack();
 		});
 	}
 }

@@ -1,18 +1,22 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { IdService } from '@/core/IdService.js';
-import type { MutingsRepository } from '@/models/index.js';
-import type { Muting } from '@/models/entities/Muting.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { MutingsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { UserMutingService } from '@/core/UserMutingService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
+	prohibitMoved: true,
 
 	kind: 'write:mutes',
 
@@ -55,16 +59,14 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
-		private globalEventService: GlobalEventService,
 		private getterService: GetterService,
-		private idService: IdService,
+		private userMutingService: UserMutingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const muter = me;
@@ -81,12 +83,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Check if already muting
-			const exist = await this.mutingsRepository.findOneBy({
-				muterId: muter.id,
-				muteeId: mutee.id,
+			const exist = await this.mutingsRepository.exists({
+				where: {
+					muterId: muter.id,
+					muteeId: mutee.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist) {
 				throw new ApiError(meta.errors.alreadyMuting);
 			}
 
@@ -94,16 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				return;
 			}
 
-			// Create mute
-			await this.mutingsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
-				expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
-				muterId: muter.id,
-				muteeId: mutee.id,
-			} as Muting);
-
-			this.globalEventService.publishUserEvent(me.id, 'mute', mutee);
+			await this.userMutingService.mute(muter, mutee, ps.expiresAt ? new Date(ps.expiresAt) : null);
 		});
 	}
 }

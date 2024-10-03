@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFoldersRepository } from '@/models/index.js';
+import type { DriveFoldersRepository } from '@/models/_.js';
 import { DriveFolderEntityService } from '@/core/entities/DriveFolderEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -50,9 +55,8 @@ export const paramDef = {
 	required: ['folderId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.driveFoldersRepository)
 		private driveFoldersRepository: DriveFoldersRepository,
@@ -91,15 +95,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 					// Check if the circular reference will occur
 					const checkCircle = async (folderId: string): Promise<boolean> => {
-						// Fetch folder
-						const folder2 = await this.driveFoldersRepository.findOneBy({
+						const folder2 = await this.driveFoldersRepository.findOneByOrFail({
 							id: folderId,
 						});
 
-						if (folder2!.id === folder!.id) {
+						if (folder2.id === folder.id) {
 							return true;
-						} else if (folder2!.parentId) {
-							return await checkCircle(folder2!.parentId);
+						} else if (folder2.parentId) {
+							return await checkCircle(folder2.parentId);
 						} else {
 							return false;
 						}

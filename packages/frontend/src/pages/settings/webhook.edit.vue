@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<MkInput v-model="name">
-		<template #label>Name</template>
+		<template #label>{{ i18n.ts._webhookSettings.name }}</template>
 	</MkInput>
 
 	<MkInput v-model="url" type="url">
@@ -10,24 +15,51 @@
 
 	<MkInput v-model="secret">
 		<template #prefix><i class="ti ti-lock"></i></template>
-		<template #label>Secret</template>
+		<template #label>{{ i18n.ts._webhookSettings.secret }}</template>
 	</MkInput>
 
 	<FormSection>
-		<template #label>Events</template>
+		<template #label>{{ i18n.ts._webhookSettings.trigger }}</template>
 
-		<div class="_gaps_s">
-			<MkSwitch v-model="event_follow">Follow</MkSwitch>
-			<MkSwitch v-model="event_followed">Followed</MkSwitch>
-			<MkSwitch v-model="event_note">Note</MkSwitch>
-			<MkSwitch v-model="event_reply">Reply</MkSwitch>
-			<MkSwitch v-model="event_renote">Renote</MkSwitch>
-			<MkSwitch v-model="event_reaction">Reaction</MkSwitch>
-			<MkSwitch v-model="event_mention">Mention</MkSwitch>
+		<div class="_gaps">
+			<div class="_gaps_s">
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_follow">{{ i18n.ts._webhookSettings._events.follow }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_follow)" @click="test('follow')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_followed">{{ i18n.ts._webhookSettings._events.followed }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_followed)" @click="test('followed')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_note">{{ i18n.ts._webhookSettings._events.note }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_note)" @click="test('note')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_reply">{{ i18n.ts._webhookSettings._events.reply }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_reply)" @click="test('reply')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_renote">{{ i18n.ts._webhookSettings._events.renote }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_renote)" @click="test('renote')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_reaction">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_reaction)" @click="test('reaction')"><i class="ti ti-send"></i></MkButton>
+				</div>
+				<div :class="$style.switchBox">
+					<MkSwitch v-model="event_mention">{{ i18n.ts._webhookSettings._events.mention }}</MkSwitch>
+					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_mention)" @click="test('mention')"><i class="ti ti-send"></i></MkButton>
+				</div>
+			</div>
+
+			<div :class="$style.description">
+				{{ i18n.ts._webhookSettings.testRemarks }}
+			</div>
 		</div>
 	</FormSection>
 
-	<MkSwitch v-model="active">Active</MkSwitch>
+	<MkSwitch v-model="active">{{ i18n.ts._webhookSettings.active }}</MkSwitch>
 
 	<div class="_buttons">
 		<MkButton primary inline @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
@@ -37,15 +69,17 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { useRouter } from '@/router';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
 
@@ -53,47 +87,47 @@ const props = defineProps<{
 	webhookId: string;
 }>();
 
-const webhook = await os.api('i/webhooks/show', {
+const webhook = await misskeyApi('i/webhooks/show', {
 	webhookId: props.webhookId,
 });
 
-let name = $ref(webhook.name);
-let url = $ref(webhook.url);
-let secret = $ref(webhook.secret);
-let active = $ref(webhook.active);
+const name = ref(webhook.name);
+const url = ref(webhook.url);
+const secret = ref(webhook.secret);
+const active = ref(webhook.active);
 
-let event_follow = $ref(webhook.on.includes('follow'));
-let event_followed = $ref(webhook.on.includes('followed'));
-let event_note = $ref(webhook.on.includes('note'));
-let event_reply = $ref(webhook.on.includes('reply'));
-let event_renote = $ref(webhook.on.includes('renote'));
-let event_reaction = $ref(webhook.on.includes('reaction'));
-let event_mention = $ref(webhook.on.includes('mention'));
+const event_follow = ref(webhook.on.includes('follow'));
+const event_followed = ref(webhook.on.includes('followed'));
+const event_note = ref(webhook.on.includes('note'));
+const event_reply = ref(webhook.on.includes('reply'));
+const event_renote = ref(webhook.on.includes('renote'));
+const event_reaction = ref(webhook.on.includes('reaction'));
+const event_mention = ref(webhook.on.includes('mention'));
 
-async function save(): Promise<void> {
-	const events = [];
-	if (event_follow) events.push('follow');
-	if (event_followed) events.push('followed');
-	if (event_note) events.push('note');
-	if (event_reply) events.push('reply');
-	if (event_renote) events.push('renote');
-	if (event_reaction) events.push('reaction');
-	if (event_mention) events.push('mention');
+function save() {
+	const events: Misskey.entities.UserWebhook['on'] = [];
+	if (event_follow.value) events.push('follow');
+	if (event_followed.value) events.push('followed');
+	if (event_note.value) events.push('note');
+	if (event_reply.value) events.push('reply');
+	if (event_renote.value) events.push('renote');
+	if (event_reaction.value) events.push('reaction');
+	if (event_mention.value) events.push('mention');
 
 	os.apiWithDialog('i/webhooks/update', {
-		name,
-		url,
-		secret,
+		name: name.value,
+		url: url.value,
+		secret: secret.value,
 		webhookId: props.webhookId,
 		on: events,
-		active,
+		active: active.value,
 	});
 }
 
 async function del(): Promise<void> {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: webhook.name }),
+		text: i18n.tsx.deleteAreYouSure({ x: webhook.name }),
 	});
 	if (canceled) return;
 
@@ -103,12 +137,53 @@ async function del(): Promise<void> {
 
 	router.push('/settings/webhook');
 }
-const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => []);
+async function test(type: Misskey.entities.UserWebhook['on'][number]): Promise<void> {
+	await os.apiWithDialog('i/webhooks/test', {
+		webhookId: props.webhookId,
+		type,
+		override: {
+			secret: secret.value,
+			url: url.value,
+		},
+	});
+}
 
-definePageMetadata({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const headerActions = computed(() => []);
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const headerTabs = computed(() => []);
+
+definePageMetadata(() => ({
 	title: 'Edit webhook',
 	icon: 'ti ti-webhook',
-});
+}));
 </script>
+
+<style module lang="scss">
+.switchBox {
+	display: flex;
+	align-items: center;
+	justify-content: start;
+
+	.testButton {
+		$buttonSize: 28px;
+		padding: 0;
+		width: $buttonSize;
+		min-width: $buttonSize;
+		max-width: $buttonSize;
+		height: $buttonSize;
+		margin-left: auto;
+		line-height: inherit;
+		font-size: 90%;
+		border-radius: 9999px;
+	}
+}
+
+.description {
+	font-size: 0.85em;
+	padding: 8px 0 0 0;
+	color: var(--fgTransparentWeak);
+}
+</style>

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <script lang="ts">
 import { h, onMounted, onUnmounted, ref, watch } from 'vue';
 
@@ -22,9 +27,10 @@ export default {
 		},
 	},
 	setup(props) {
-		const contentEl = ref();
+		const contentEl = ref<HTMLElement>();
 
 		function calc() {
+			if (contentEl.value == null) return;
 			const eachLength = contentEl.value.offsetWidth / props.repeat;
 			const factor = 3000;
 			const duration = props.duration / ((1 / eachLength) * factor);

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<MkFoldableSection class="item">
@@ -46,14 +51,17 @@
 			<option value="ap-requests-deliver-failed">AP Requests: deliverFailed</option>
 		</MkSelect>
 		<div class="_panel" :class="$style.heatmap">
-			<MkHeatmap :src="heatmapSrc"/>
+			<MkHeatmap :src="heatmapSrc" :label="'Read & Write'"/>
 		</div>
 	</MkFoldableSection>
 
 	<MkFoldableSection class="item">
 		<template #header>Retention rate</template>
-		<div class="_panel" :class="$style.retention">
+		<div class="_panel" :class="$style.retentionHeatmap">
 			<MkRetentionHeatmap/>
+		</div>
+		<div class="_panel" :class="$style.retentionLine">
+			<MkRetentionLineChart/>
 		</div>
 	</MkFoldableSection>
 
@@ -76,26 +84,28 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import MkHeatmap from '@/components/MkHeatmap.vue';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import * as os from '@/os.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import MkHeatmap, { type HeatmapSource } from '@/components/MkHeatmap.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
-import { initChart } from '@/scripts/init-chart';
+import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
+import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 
 const chartLimit = 500;
-let chartSpan = $ref<'hour' | 'day'>('hour');
-let chartSrc = $ref('active-users');
-let heatmapSrc = $ref('active-users');
-let subDoughnutEl = $shallowRef<HTMLCanvasElement>();
-let pubDoughnutEl = $shallowRef<HTMLCanvasElement>();
+const chartSpan = ref<'hour' | 'day'>('hour');
+const chartSrc = ref('active-users');
+const heatmapSrc = ref<HeatmapSource>('active-users');
+const subDoughnutEl = shallowRef<HTMLCanvasElement>();
+const pubDoughnutEl = shallowRef<HTMLCanvasElement>();
 
 const { handler: externalTooltipHandler1 } = useChartTooltip({
 	position: 'middle',
@@ -128,7 +138,8 @@ function createDoughnut(chartEl, tooltip, data) {
 				},
 			},
 			onClick: (ev) => {
-				const hit = chartInstance.getElementsAtEventForMode(ev, 'nearest', { intersect: true }, false)[0];
+				if (ev.native == null) return;
+				const hit = chartInstance.getElementsAtEventForMode(ev.native, 'nearest', { intersect: true }, false)[0];
 				if (hit && data[hit.index].onClick) {
 					data[hit.index].onClick();
 				}
@@ -153,24 +164,47 @@ function createDoughnut(chartEl, tooltip, data) {
 }
 
 onMounted(() => {
-	os.apiGet('federation/stats', { limit: 30 }).then(fedStats => {
-		createDoughnut(subDoughnutEl, externalTooltipHandler1, fedStats.topSubInstances.map(x => ({
+	misskeyApiGet('federation/stats', { limit: 30 }).then(fedStats => {
+		type ChartData = {
+			name: string,
+			color: string | null,
+			value: number,
+			onClick?: () => void,
+		}[];
+
+		const subs: ChartData = fedStats.topSubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,
 			value: x.followersCount,
 			onClick: () => {
 				os.pageWindow(`/instance-info/${x.host}`);
 			},
-		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowersCount }]));
+		}));
 
-		createDoughnut(pubDoughnutEl, externalTooltipHandler2, fedStats.topPubInstances.map(x => ({
+		subs.push({
+			name: '(other)',
+			color: '#80808080',
+			value: fedStats.otherFollowersCount,
+		});
+
+		createDoughnut(subDoughnutEl.value, externalTooltipHandler1, subs);
+
+		const pubs: ChartData = fedStats.topPubInstances.map(x => ({
 			name: x.host,
 			color: x.themeColor,
 			value: x.followingCount,
 			onClick: () => {
 				os.pageWindow(`/instance-info/${x.host}`);
 			},
-		})).concat([{ name: '(other)', color: '#80808080', value: fedStats.otherFollowingCount }]));
+		}));
+
+		pubs.push({
+			name: '(other)',
+			color: '#80808080',
+			value: fedStats.otherFollowingCount,
+		});
+
+		createDoughnut(pubDoughnutEl.value, externalTooltipHandler2, pubs);
 	});
 });
 </script>
@@ -202,7 +236,12 @@ onMounted(() => {
 	margin-bottom: 16px;
 }
 
-.retention {
+.retentionHeatmap {
+	padding: 16px;
+	margin-bottom: 16px;
+}
+
+.retentionLine {
 	padding: 16px;
 	margin-bottom: 16px;
 }

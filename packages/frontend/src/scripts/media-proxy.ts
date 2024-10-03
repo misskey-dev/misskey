@@ -1,45 +1,34 @@
-import { query, appendQuery } from '@/scripts/url';
-import { url } from '@/config';
-import { instance } from '@/instance';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-export function getProxiedImageUrl(imageUrl: string, type?: 'preview'): string {
-	if (imageUrl.startsWith(instance.mediaProxy + '/') || imageUrl.startsWith('/proxy/')) {
-		// もう既にproxyっぽそうだったらsearchParams付けるだけ
-		return appendQuery(imageUrl, query({
-			fallback: '1',
-			...(type ? { [type]: '1' } : {}),
-		}));
+import { MediaProxy } from '@@/js/media-proxy.js';
+import { url } from '@@/js/config.js';
+import { instance } from '@/instance.js';
+
+let _mediaProxy: MediaProxy | null = null;
+
+export function getProxiedImageUrl(...args: Parameters<MediaProxy['getProxiedImageUrl']>): string {
+	if (_mediaProxy == null) {
+		_mediaProxy = new MediaProxy(instance, url);
 	}
 
-	return `${instance.mediaProxy}/image.webp?${query({
-		url: imageUrl,
-		fallback: '1',
-		...(type ? { [type]: '1' } : {}),
-	})}`;
+	return _mediaProxy.getProxiedImageUrl(...args);
 }
 
-export function getProxiedImageUrlNullable(imageUrl: string | null | undefined, type?: 'preview'): string | null {
-	if (imageUrl == null) return null;
-	return getProxiedImageUrl(imageUrl, type);
+export function getProxiedImageUrlNullable(...args: Parameters<MediaProxy['getProxiedImageUrlNullable']>): string | null {
+	if (_mediaProxy == null) {
+		_mediaProxy = new MediaProxy(instance, url);
+	}
+
+	return _mediaProxy.getProxiedImageUrlNullable(...args);
 }
 
-export function getStaticImageUrl(baseUrl: string): string {
-	const u = baseUrl.startsWith('http') ? new URL(baseUrl) : new URL(baseUrl, url);
-
-	if (u.href.startsWith(`${url}/emoji/`)) {
-		// もう既にemojiっぽそうだったらsearchParams付けるだけ
-		u.searchParams.set('static', '1');
-		return u.href;
+export function getStaticImageUrl(...args: Parameters<MediaProxy['getStaticImageUrl']>): string {
+	if (_mediaProxy == null) {
+		_mediaProxy = new MediaProxy(instance, url);
 	}
 
-	if (u.href.startsWith(instance.mediaProxy + '/')) {
-		// もう既にproxyっぽそうだったらsearchParams付けるだけ
-		u.searchParams.set('static', '1');
-		return u.href;
-	}
-
-	return `${instance.mediaProxy}/static.webp?${query({
-		url: u.href,
-		static: '1',
-	})}`;
+	return _mediaProxy.getStaticImageUrl(...args);
 }

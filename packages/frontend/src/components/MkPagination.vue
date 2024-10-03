@@ -1,9 +1,14 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
-	:enter-active-class="$store.state.animation ? $style.transition_fade_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_fade_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_fade_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_fade_leaveTo : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
 	mode="out-in"
 >
 	<MkLoading v-if="fetching"/>
@@ -13,7 +18,7 @@
 	<div v-else-if="empty" key="_empty_" class="empty">
 		<slot name="empty">
 			<div class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+				<img :src="infoImageUrl" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</slot>
@@ -21,14 +26,14 @@
 
 	<div v-else ref="rootEl">
 		<div v-show="pagination.reversed && more" key="_more_" class="_margin">
-			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAhead : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMoreAhead">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMoreAhead : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMoreAhead">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="items" :fetching="fetching || moreFetching"></slot>
+		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
-			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
@@ -38,22 +43,24 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
-import * as misskey from 'misskey-js';
-import * as os from '@/os';
-import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll';
-import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store';
-import { MisskeyEntity } from '@/types/date-separated-list';
-import { i18n } from '@/i18n';
+import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
+import * as Misskey from 'misskey-js';
+import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
+import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@@/js/scroll.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { defaultStore } from '@/store.js';
+import { MisskeyEntity } from '@/types/date-separated-list.js';
+import { i18n } from '@/i18n.js';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 16;
+const APPEAR_MINIMUM_INTERVAL = 600;
 
-export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
+export type Paging<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints> = {
 	endpoint: E;
 	limit: number;
-	params?: misskey.Endpoints[E]['req'] | ComputedRef<misskey.Endpoints[E]['req']>;
+	params?: Misskey.Endpoints[E]['req'] | ComputedRef<Misskey.Endpoints[E]['req']>;
 
 	/**
 	 * 検索APIのような、ページング不可なエンドポイントを利用する場合
@@ -70,8 +77,22 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 
 	pageEl?: HTMLElement;
 };
+
+type MisskeyEntityMap = Map<string, MisskeyEntity>;
+
+function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
+	return entities.map(en => [en.id, en]);
+}
+
+function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
+	return new Map([...map, ...arrayToEntries(entities)]);
+}
+
 </script>
 <script lang="ts" setup>
+import { infoImageUrl } from '@/instance.js';
+import MkButton from '@/components/MkButton.vue';
+
 const props = withDefaults(defineProps<{
 	pagination: Paging;
 	disableAutoLoad?: boolean;
@@ -82,96 +103,126 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'queue', count: number): void;
+	(ev: 'status', error: boolean): void;
 }>();
 
-let rootEl = $shallowRef<HTMLElement>();
+const rootEl = shallowRef<HTMLElement>();
 
 // 遡り中かどうか
-let backed = $ref(false);
+const backed = ref(false);
 
-let scrollRemove = $ref<(() => void) | null>(null);
+const scrollRemove = ref<(() => void) | null>(null);
 
-const items = ref<MisskeyEntity[]>([]);
-const queue = ref<MisskeyEntity[]>([]);
-const offset = ref(0);
+/**
+ * 表示するアイテムのソース
+ * 最新が0番目
+ */
+const items = ref<MisskeyEntityMap>(new Map());
+
+/**
+ * タブが非アクティブなどの場合に更新を貯めておく
+ * 最新が0番目
+ */
+const queue = ref<MisskeyEntityMap>(new Map());
+
+/**
+ * 初期化中かどうか（trueならMkLoadingで全て隠す）
+ */
 const fetching = ref(true);
+
 const moreFetching = ref(false);
 const more = ref(false);
+const preventAppearFetchMore = ref(false);
+const preventAppearFetchMoreTimer = ref<number | null>(null);
 const isBackTop = ref(false);
-const empty = computed(() => items.value.length === 0);
+const empty = computed(() => items.value.size === 0);
 const error = ref(false);
 const {
 	enableInfiniteScroll,
 } = defaultStore.reactiveState;
 
-const contentEl = $computed(() => props.pagination.pageEl ?? rootEl);
-const scrollableElement = $computed(() => getScrollContainer(contentEl));
+const contentEl = computed(() => props.pagination.pageEl ?? rootEl.value);
+const scrollableElement = computed(() => contentEl.value ? getScrollContainer(contentEl.value) : document.body);
+
+const visibility = useDocumentVisibility();
+
+let isPausingUpdate = false;
+let timerForSetPause: number | null = null;
+const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
 // 先頭が表示されているかどうかを検出
 // https://qiita.com/mkataigi/items/0154aefd2223ce23398e
-let scrollObserver = $ref<IntersectionObserver>();
+const scrollObserver = ref<IntersectionObserver>();
 
-watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
-	if (scrollObserver) scrollObserver.disconnect();
+watch([() => props.pagination.reversed, scrollableElement], () => {
+	if (scrollObserver.value) scrollObserver.value.disconnect();
 
-	scrollObserver = new IntersectionObserver(entries => {
-		backed = entries[0].isIntersecting;
+	scrollObserver.value = new IntersectionObserver(entries => {
+		backed.value = entries[0].isIntersecting;
 	}, {
-		root: scrollableElement,
+		root: scrollableElement.value,
 		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
 		threshold: 0.01,
 	});
 }, { immediate: true });
 
-watch($$(rootEl), () => {
-	scrollObserver.disconnect();
+watch(rootEl, () => {
+	scrollObserver.value?.disconnect();
 	nextTick(() => {
-		if (rootEl) scrollObserver.observe(rootEl);
+		if (rootEl.value) scrollObserver.value?.observe(rootEl.value);
 	});
 });
 
-watch([$$(backed), $$(contentEl)], () => {
-	if (!backed) {
-		if (!contentEl) return;
+watch([backed, contentEl], () => {
+	if (!backed.value) {
+		if (!contentEl.value) return;
 
-		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, executeQueue, TOLERANCE);
+		scrollRemove.value = props.pagination.reversed
+			? onScrollBottom(contentEl.value, executeQueue, TOLERANCE)
+			: onScrollTop(contentEl.value, (topVisible) => { if (topVisible) executeQueue(); }, TOLERANCE);
 	} else {
-		if (scrollRemove) scrollRemove();
-		scrollRemove = null;
+		if (scrollRemove.value) scrollRemove.value();
+		scrollRemove.value = null;
 	}
 });
 
-if (props.pagination.params && isRef(props.pagination.params)) {
-	watch(props.pagination.params, init, { deep: true });
-}
+// パラメータに何らかの変更があった際、再読込したい（チャンネル等のIDが変わったなど）
+watch(() => [props.pagination.endpoint, props.pagination.params], init, { deep: true });
 
 watch(queue, (a, b) => {
-	if (a.length === 0 && b.length === 0) return;
-	emit('queue', queue.value.length);
+	if (a.size === 0 && b.size === 0) return;
+	emit('queue', queue.value.size);
 }, { deep: true });
 
+watch(error, (n, o) => {
+	if (n === o) return;
+	emit('status', n);
+});
+
 async function init(): Promise<void> {
-	queue.value = [];
+	items.value = new Map();
+	queue.value = new Map();
 	fetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
-	await os.api(props.pagination.endpoint, {
+	await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
 		...params,
-		limit: props.pagination.noPaging ? (props.pagination.limit || 10) : (props.pagination.limit || 10) + 1,
+		limit: props.pagination.limit ?? 10,
+		allowPartial: true,
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
 		}
-		if (!props.pagination.noPaging && (res.length > (props.pagination.limit || 10))) {
-			res.pop();
-			if (props.pagination.reversed) moreFetching.value = true;
-			items.value = res;
-			more.value = true;
-		} else {
-			items.value = res;
+
+		if (res.length === 0 || props.pagination.noPaging) {
+			concatItems(res);
 			more.value = false;
+		} else {
+			if (props.pagination.reversed) moreFetching.value = true;
+			concatItems(res);
+			more.value = true;
 		}
-		offset.value = res.length;
+
 		error.value = false;
 		fetching.value = false;
 	}, err => {
@@ -181,21 +232,20 @@ async function init(): Promise<void> {
 }
 
 const reload = (): Promise<void> => {
-	items.value = [];
 	return init();
 };
 
 const fetchMore = async (): Promise<void> => {
-	if (!more.value || fetching.value || moreFetching.value || items.value.length === 0) return;
+	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 	moreFetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
-	await os.api(props.pagination.endpoint, {
+	await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
 		...params,
-		limit: SECOND_FETCH_LIMIT + 1,
+		limit: SECOND_FETCH_LIMIT,
 		...(props.pagination.offsetMode ? {
-			offset: offset.value,
+			offset: items.value.size,
 		} : {
-			untilId: items.value[items.value.length - 1].id,
+			untilId: Array.from(items.value.keys()).at(-1),
 		}),
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
@@ -204,14 +254,14 @@ const fetchMore = async (): Promise<void> => {
 		}
 
 		const reverseConcat = _res => {
-			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
-			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
+			const oldHeight = scrollableElement.value ? scrollableElement.value.scrollHeight : getBodyScrollHeight();
+			const oldScroll = scrollableElement.value ? scrollableElement.value.scrollTop : window.scrollY;
 
-			items.value = items.value.concat(_res);
+			items.value = concatMapWithArray(items.value, _res);
 
 			return nextTick(() => {
-				if (scrollableElement) {
-					scroll(scrollableElement, { top: oldScroll + (scrollableElement.scrollHeight - oldHeight), behavior: 'instant' });
+				if (scrollableElement.value) {
+					scroll(scrollableElement.value, { top: oldScroll + (scrollableElement.value.scrollHeight - oldHeight), behavior: 'instant' });
 				} else {
 					window.scroll({ top: oldScroll + (getBodyScrollHeight() - oldHeight), behavior: 'instant' });
 				}
@@ -220,128 +270,188 @@ const fetchMore = async (): Promise<void> => {
 			});
 		};
 
-		if (res.length > SECOND_FETCH_LIMIT) {
-			res.pop();
-
-			if (props.pagination.reversed) {
-				reverseConcat(res).then(() => {
-					more.value = true;
-					moreFetching.value = false;
-				});
-			} else {
-				items.value = items.value.concat(res);
-				more.value = true;
-				moreFetching.value = false;
-			}
-		} else {
+		if (res.length === 0) {
 			if (props.pagination.reversed) {
 				reverseConcat(res).then(() => {
 					more.value = false;
 					moreFetching.value = false;
 				});
 			} else {
-				items.value = items.value.concat(res);
+				items.value = concatMapWithArray(items.value, res);
 				more.value = false;
 				moreFetching.value = false;
 			}
+		} else {
+			if (props.pagination.reversed) {
+				reverseConcat(res).then(() => {
+					more.value = true;
+					moreFetching.value = false;
+				});
+			} else {
+				items.value = concatMapWithArray(items.value, res);
+				more.value = true;
+				moreFetching.value = false;
+			}
 		}
-		offset.value += res.length;
 	}, err => {
 		moreFetching.value = false;
 	});
 };
 
 const fetchMoreAhead = async (): Promise<void> => {
-	if (!more.value || fetching.value || moreFetching.value || items.value.length === 0) return;
+	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 	moreFetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
-	await os.api(props.pagination.endpoint, {
+	await misskeyApi<MisskeyEntity[]>(props.pagination.endpoint, {
 		...params,
-		limit: SECOND_FETCH_LIMIT + 1,
+		limit: SECOND_FETCH_LIMIT,
 		...(props.pagination.offsetMode ? {
-			offset: offset.value,
+			offset: items.value.size,
 		} : {
-			sinceId: items.value[items.value.length - 1].id,
+			sinceId: Array.from(items.value.keys()).at(-1),
 		}),
 	}).then(res => {
-		if (res.length > SECOND_FETCH_LIMIT) {
-			res.pop();
-			items.value = items.value.concat(res);
-			more.value = true;
-		} else {
-			items.value = items.value.concat(res);
+		if (res.length === 0) {
+			items.value = concatMapWithArray(items.value, res);
 			more.value = false;
+		} else {
+			items.value = concatMapWithArray(items.value, res);
+			more.value = true;
 		}
-		offset.value += res.length;
 		moreFetching.value = false;
 	}, err => {
 		moreFetching.value = false;
 	});
 };
 
+/**
+ * Appear（IntersectionObserver）によってfetchMoreが呼ばれる場合、
+ * APPEAR_MINIMUM_INTERVALミリ秒以内に2回fetchMoreが呼ばれるのを防ぐ
+ */
+const fetchMoreApperTimeoutFn = (): void => {
+	preventAppearFetchMore.value = false;
+	preventAppearFetchMoreTimer.value = null;
+};
+const fetchMoreAppearTimeout = (): void => {
+	preventAppearFetchMore.value = true;
+	preventAppearFetchMoreTimer.value = window.setTimeout(fetchMoreApperTimeoutFn, APPEAR_MINIMUM_INTERVAL);
+};
+
+const appearFetchMore = async (): Promise<void> => {
+	if (preventAppearFetchMore.value) return;
+	await fetchMore();
+	fetchMoreAppearTimeout();
+};
+
+const appearFetchMoreAhead = async (): Promise<void> => {
+	if (preventAppearFetchMore.value) return;
+	await fetchMoreAhead();
+	fetchMoreAppearTimeout();
+};
+
+const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl.value!, TOLERANCE);
+
+watch(visibility, () => {
+	if (visibility.value === 'hidden') {
+		timerForSetPause = window.setTimeout(() => {
+			isPausingUpdate = true;
+			timerForSetPause = null;
+		},
+		BACKGROUND_PAUSE_WAIT_SEC * 1000);
+	} else { // 'visible'
+		if (timerForSetPause) {
+			clearTimeout(timerForSetPause);
+			timerForSetPause = null;
+		} else {
+			isPausingUpdate = false;
+			if (isTop()) {
+				executeQueue();
+			}
+		}
+	}
+});
+
+/**
+ * 最新のものとして1つだけアイテムを追加する
+ * ストリーミングから降ってきたアイテムはこれで追加する
+ * @param item アイテム
+ */
 const prepend = (item: MisskeyEntity): void => {
-	// 初回表示時はunshiftだけでOK
-	if (!rootEl) {
-		items.value.unshift(item);
+	if (items.value.size === 0) {
+		items.value.set(item.id, item);
+		fetching.value = false;
 		return;
 	}
 
-	const isTop = isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, TOLERANCE);
-
-	if (isTop) unshiftItems([item]);
+	if (isTop() && !isPausingUpdate) unshiftItems([item]);
 	else prependQueue(item);
 };
 
+/**
+ * 新着アイテムをitemsの先頭に追加し、displayLimitを適用する
+ * @param newItems 新しいアイテムの配列
+ */
 function unshiftItems(newItems: MisskeyEntity[]) {
-	const length = newItems.length + items.value.length;
-	items.value = [...newItems, ...items.value].slice(0, props.displayLimit);
+	const length = newItems.length + items.value.size;
+	items.value = new Map([...arrayToEntries(newItems), ...items.value].slice(0, props.displayLimit));
+
+	if (length >= props.displayLimit) more.value = true;
+}
+
+/**
+ * 古いアイテムをitemsの末尾に追加し、displayLimitを適用する
+ * @param oldItems 古いアイテムの配列
+ */
+function concatItems(oldItems: MisskeyEntity[]) {
+	const length = oldItems.length + items.value.size;
+	items.value = new Map([...items.value, ...arrayToEntries(oldItems)].slice(0, props.displayLimit));
 
 	if (length >= props.displayLimit) more.value = true;
 }
 
 function executeQueue() {
-	if (queue.value.length === 0) return;
-	unshiftItems(queue.value);
-	queue.value = [];
+	unshiftItems(Array.from(queue.value.values()));
+	queue.value = new Map();
 }
 
 function prependQueue(newItem: MisskeyEntity) {
-	queue.value.unshift(newItem);
-	if (queue.value.length >= props.displayLimit) {
-		queue.value.pop();
-	}
+	queue.value = new Map([[newItem.id, newItem], ...queue.value].slice(0, props.displayLimit) as [string, MisskeyEntity][]);
 }
 
+/*
+ * アイテムを末尾に追加する（使うの？）
+ */
 const appendItem = (item: MisskeyEntity): void => {
-	items.value.push(item);
+	items.value.set(item.id, item);
 };
 
-const removeItem = (finder: (item: MisskeyEntity) => boolean) => {
-	const i = items.value.findIndex(finder);
-	items.value.splice(i, 1);
+const removeItem = (id: string) => {
+	items.value.delete(id);
+	queue.value.delete(id);
 };
 
 const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity): void => {
-	const i = items.value.findIndex(item => item.id === id);
-	items.value[i] = replacer(items.value[i]);
-};
+	const item = items.value.get(id);
+	if (item) items.value.set(id, replacer(item));
 
-const inited = init();
+	const queueItem = queue.value.get(id);
+	if (queueItem) queue.value.set(id, replacer(queueItem));
+};
 
 onActivated(() => {
 	isBackTop.value = false;
 });
 
 onDeactivated(() => {
-	isBackTop.value = props.pagination.reversed ? window.scrollY >= (rootEl ? rootEl.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
+	isBackTop.value = props.pagination.reversed ? window.scrollY >= (rootEl.value ? rootEl.value.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
 });
 
 function toBottom() {
-	scrollToBottom(contentEl);
+	scrollToBottom(contentEl.value!);
 }
 
-onMounted(() => {
-	inited.then(() => {
+onBeforeMount(() => {
+	init().then(() => {
 		if (props.pagination.reversed) {
 			nextTick(() => {
 				setTimeout(toBottom, 800);
@@ -357,15 +467,22 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	scrollObserver.disconnect();
+	if (timerForSetPause) {
+		clearTimeout(timerForSetPause);
+		timerForSetPause = null;
+	}
+	if (preventAppearFetchMoreTimer.value) {
+		clearTimeout(preventAppearFetchMoreTimer.value);
+		preventAppearFetchMoreTimer.value = null;
+	}
+	scrollObserver.value?.disconnect();
 });
 
 defineExpose({
 	items,
 	queue,
-	backed,
+	backed: backed.value,
 	more,
-	inited,
 	reload,
 	prepend,
 	append: appendItem,

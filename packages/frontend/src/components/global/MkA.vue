@@ -1,29 +1,44 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<a :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
+<a ref="el" :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
 	<slot></slot>
 </a>
 </template>
 
+<script lang="ts">
+export type MkABehavior = 'window' | 'browser' | null;
+</script>
+
 <script lang="ts" setup>
-import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { url } from '@/config';
-import { popout as popout_ } from '@/scripts/popout';
-import { i18n } from '@/i18n';
-import { useRouter } from '@/router';
+import { computed, inject, shallowRef } from 'vue';
+import * as os from '@/os.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { url } from '@@/js/config.js';
+import { i18n } from '@/i18n.js';
+import { useRouter } from '@/router/supplier.js';
 
 const props = withDefaults(defineProps<{
 	to: string;
 	activeClass?: null | string;
-	behavior?: null | 'window' | 'browser' | 'modalWindow';
+	behavior?: MkABehavior;
 }>(), {
 	activeClass: null,
 	behavior: null,
 });
 
+const behavior = props.behavior ?? inject<MkABehavior>('linkNavigationBehavior', null);
+
+const el = shallowRef<HTMLElement>();
+
+defineExpose({ $el: el });
+
 const router = useRouter();
 
-const active = $computed(() => {
+const active = computed(() => {
 	if (props.activeClass == null) return false;
 	const resolved = router.resolve(props.to);
 	if (resolved == null) return false;
@@ -51,11 +66,11 @@ function onContextmenu(ev) {
 		action: () => {
 			router.push(props.to, 'forcePage');
 		},
-	}, null, {
+	}, { type: 'divider' }, {
 		icon: 'ti ti-external-link',
 		text: i18n.ts.openInNewTab,
 		action: () => {
-			window.open(props.to, '_blank');
+			window.open(props.to, '_blank', 'noopener');
 		},
 	}, {
 		icon: 'ti ti-link',
@@ -70,26 +85,14 @@ function openWindow() {
 	os.pageWindow(props.to);
 }
 
-function modalWindow() {
-	os.modalPageWindow(props.to);
-}
-
-function popout() {
-	popout_(props.to);
-}
-
 function nav(ev: MouseEvent) {
-	if (props.behavior === 'browser') {
+	if (behavior === 'browser') {
 		location.href = props.to;
 		return;
 	}
 
-	if (props.behavior) {
-		if (props.behavior === 'window') {
-			return openWindow();
-		} else if (props.behavior === 'modalWindow') {
-			return modalWindow();
-		}
+	if (behavior === 'window') {
+		return openWindow();
 	}
 
 	if (ev.shiftKey) {

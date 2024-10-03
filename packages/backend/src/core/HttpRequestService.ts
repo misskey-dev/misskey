@@ -1,5 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as http from 'node:http';
 import * as https from 'node:https';
+import * as net from 'node:net';
 import CacheableLookup from 'cacheable-lookup';
 import fetch from 'node-fetch';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
@@ -8,8 +14,15 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { StatusError } from '@/misc/status-error.js';
 import { bindThis } from '@/decorators.js';
+import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
+import type { IObject } from '@/core/activitypub/type.js';
 import type { Response } from 'node-fetch';
 import type { URL } from 'node:url';
+
+export type HttpRequestSendOptions = {
+	throwErrorWhenResponseNotOk: boolean;
+	validators?: ((res: Response) => void)[];
+};
 
 @Injectable()
 export class HttpRequestService {
@@ -42,21 +55,23 @@ export class HttpRequestService {
 			errorTtl: 30,	// 30secs
 			lookup: false,	// nativeのdns.lookupにfallbackしない
 		});
-		
+
 		this.http = new http.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
-			lookup: cache.lookup,
-		} as http.AgentOptions);
-		
+			lookup: cache.lookup as unknown as net.LookupFunction,
+			localAddress: config.outgoingAddress,
+		});
+
 		this.https = new https.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
-			lookup: cache.lookup,
-		} as https.AgentOptions);
-		
+			lookup: cache.lookup as unknown as net.LookupFunction,
+			localAddress: config.outgoingAddress,
+		});
+
 		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
-		
+
 		this.httpAgent = config.proxy
 			? new HttpProxyAgent({
 				keepAlive: true,
@@ -65,6 +80,7 @@ export class HttpRequestService {
 				maxFreeSockets: 256,
 				scheduling: 'lifo',
 				proxy: config.proxy,
+				localAddress: config.outgoingAddress,
 			})
 			: this.http;
 
@@ -76,6 +92,7 @@ export class HttpRequestService {
 				maxFreeSockets: 256,
 				scheduling: 'lifo',
 				proxy: config.proxy,
+				localAddress: config.outgoingAddress,
 			})
 			: this.https;
 	}
@@ -87,11 +104,28 @@ export class HttpRequestService {
 	 */
 	@bindThis
 	public getAgentByUrl(url: URL, bypassProxy = false): http.Agent | https.Agent {
-		if (bypassProxy || (this.config.proxyBypassHosts || []).includes(url.hostname)) {
+		if (bypassProxy || (this.config.proxyBypassHosts ?? []).includes(url.hostname)) {
 			return url.protocol === 'http:' ? this.http : this.https;
 		} else {
 			return url.protocol === 'http:' ? this.httpAgent : this.httpsAgent;
 		}
+	}
+
+	@bindThis
+	public async getActivityJson(url: string): Promise<IObject> {
+		const res = await this.send(url, {
+			method: 'GET',
+			headers: {
+				Accept: 'application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+			},
+			timeout: 5000,
+			size: 1024 * 256,
+		}, {
+			throwErrorWhenResponseNotOk: true,
+			validators: [validateContentTypeSetAsActivityPub],
+		});
+
+		return await res.json() as IObject;
 	}
 
 	@bindThis
@@ -122,17 +156,20 @@ export class HttpRequestService {
 	}
 
 	@bindThis
-	public async send(url: string, args: {
-		method?: string,
-		body?: string,
-		headers?: Record<string, string>,
-		timeout?: number,
-		size?: number,
-	} = {}, extra: {
-		throwErrorWhenResponseNotOk: boolean;
-	} = {
-		throwErrorWhenResponseNotOk: true,
-	}): Promise<Response> {
+	public async send(
+		url: string,
+		args: {
+			method?: string,
+			body?: string,
+			headers?: Record<string, string>,
+			timeout?: number,
+			size?: number,
+		} = {},
+		extra: HttpRequestSendOptions = {
+			throwErrorWhenResponseNotOk: true,
+			validators: [],
+		},
+	): Promise<Response> {
 		const timeout = args.timeout ?? 5000;
 
 		const controller = new AbortController();
@@ -144,7 +181,7 @@ export class HttpRequestService {
 			method: args.method ?? 'GET',
 			headers: {
 				'User-Agent': this.config.userAgent,
-				...(args.headers ?? {})
+				...(args.headers ?? {}),
 			},
 			body: args.body,
 			size: args.size ?? 10 * 1024 * 1024,
@@ -154,6 +191,12 @@ export class HttpRequestService {
 
 		if (!res.ok && extra.throwErrorWhenResponseNotOk) {
 			throw new StatusError(`${res.status} ${res.statusText}`, res.status, res.statusText);
+		}
+
+		if (res.ok) {
+			for (const validator of (extra.validators ?? [])) {
+				validator(res);
+			}
 		}
 
 		return res;

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class activeEmailValidation1657346559800 {
     name = 'activeEmailValidation1657346559800'
 

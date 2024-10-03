@@ -1,17 +1,24 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import vary from 'vary';
+import fastifyAccepts from '@fastify/accepts';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { escapeAttribute, escapeValue } from '@/misc/prelude/xml.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/User.js';
 import * as Acct from '@/misc/acct.js';
-import { NodeinfoServerService } from './NodeinfoServerService.js';
-import type { FindOptionsWhere } from 'typeorm';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { NodeinfoServerService } from './NodeinfoServerService.js';
+import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
+import type { FindOptionsWhere } from 'typeorm';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import fastifyAccepts from '@fastify/accepts';
 
 @Injectable()
 export class WellKnownServerService {
@@ -23,6 +30,8 @@ export class WellKnownServerService {
 		private usersRepository: UsersRepository,
 
 		private nodeinfoServerService: NodeinfoServerService,
+		private userEntityService: UserEntityService,
+		private oauth2ProviderService: OAuth2ProviderService,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -66,7 +75,7 @@ export class WellKnownServerService {
 		});
 
 		fastify.get('/.well-known/host-meta.json', async (request, reply) => {
-			reply.header('Content-Type', jrd);
+			reply.header('Content-Type', 'application/json');
 			return {
 				links: [{
 					rel: 'lrdd',
@@ -80,19 +89,23 @@ export class WellKnownServerService {
 			return { links: this.nodeinfoServerService.getLinks() };
 		});
 
+		fastify.get('/.well-known/oauth-authorization-server', async () => {
+			return this.oauth2ProviderService.generateRFC8414();
+		});
+
 		/* TODO
 fastify.get('/.well-known/change-password', async (request, reply) => {
 });
 */
 
 		fastify.get<{ Querystring: { resource: string } }>(webFingerPath, async (request, reply) => {
-			const fromId = (id: User['id']): FindOptionsWhere<User> => ({
+			const fromId = (id: MiUser['id']): FindOptionsWhere<MiUser> => ({
 				id,
 				host: IsNull(),
 				isSuspended: false,
 			});
 
-			const generateQuery = (resource: string): FindOptionsWhere<User> | number =>
+			const generateQuery = (resource: string): FindOptionsWhere<MiUser> | number =>
 				resource.startsWith(`${this.config.url.toLowerCase()}/users/`) ?
 					fromId(resource.split('/').pop()!) :
 					fromAcct(Acct.parse(
@@ -100,7 +113,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 						resource.startsWith('acct:') ? resource.slice('acct:'.length) :
 						resource));
 
-			const fromAcct = (acct: Acct.Acct): FindOptionsWhere<User> | number =>
+			const fromAcct = (acct: Acct.Acct): FindOptionsWhere<MiUser> | number =>
 				!acct.host || acct.host === this.config.host.toLowerCase() ? {
 					usernameLower: acct.username,
 					host: IsNull(),
@@ -130,7 +143,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 			const self = {
 				rel: 'self',
 				type: 'application/activity+json',
-				href: `${this.config.url}/users/${user.id}`,
+				href: this.userEntityService.genLocalUserUri(user.id),
 			};
 			const profilePage = {
 				rel: 'http://webfinger.net/rel/profile-page',

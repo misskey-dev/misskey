@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Directive } from 'vue';
-import { makeHotkey } from '../scripts/hotkey';
+import { makeHotkey } from '@/scripts/hotkey.js';
 
 export default {
 	mounted(el, binding) {
@@ -8,9 +13,9 @@ export default {
 		el._keyHandler = makeHotkey(binding.value);
 
 		if (el._hotkey_global) {
-			document.addEventListener('keydown', el._keyHandler);
+			document.addEventListener('keydown', el._keyHandler, { passive: false });
 		} else {
-			el.addEventListener('keydown', el._keyHandler);
+			el.addEventListener('keydown', el._keyHandler, { passive: false });
 		}
 	},
 

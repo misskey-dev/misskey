@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { FlashsRepository, DriveFilesRepository } from '@/models/index.js';
+import type { FlashsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -9,6 +14,8 @@ export const meta = {
 	tags: ['flash'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:flash',
 
@@ -42,19 +49,16 @@ export const paramDef = {
 		permissions: { type: 'array', items: {
 			type: 'string',
 		} },
+		visibility: { type: 'string', enum: ['public', 'private'] },
 	},
-	required: ['flashId', 'title', 'summary', 'script', 'permissions'],
+	required: ['flashId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.flashsRepository)
 		private flashsRepository: FlashsRepository,
-
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const flash = await this.flashsRepository.findOneBy({ id: ps.flashId });
@@ -67,10 +71,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			await this.flashsRepository.update(flash.id, {
 				updatedAt: new Date(),
-				title: ps.title,
-				summary: ps.summary,
-				script: ps.script,
-				permissions: ps.permissions,
+				...Object.fromEntries(
+					Object.entries(ps).filter(
+						([key, val]) => (key !== 'flashId') && Object.hasOwn(paramDef.properties, key)
+					)
+				),
 			});
 		});
 	}

@@ -1,12 +1,19 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { readAndCompressImage } from 'browser-image-resizer';
-import { getCompressionConfig } from './upload/compress-config';
-import { defaultStore } from '@/store';
-import { apiUrl } from '@/config';
-import { $i } from '@/account';
-import { alert } from '@/os';
-import { i18n } from '@/i18n';
+import { v4 as uuid } from 'uuid';
+import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
+import { getCompressionConfig } from './upload/compress-config.js';
+import { defaultStore } from '@/store.js';
+import { apiUrl } from '@@/js/config.js';
+import { $i } from '@/account.js';
+import { alert } from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 
 type Uploading = {
 	id: string;
@@ -33,14 +40,26 @@ export function uploadFile(
 
 	if (folder && typeof folder === 'object') folder = folder.id;
 
+	if (file.size > instance.maxFileSize) {
+		alert({
+			type: 'error',
+			title: i18n.ts.failedToUpload,
+			text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
+		});
+		return Promise.reject();
+	}
+
 	return new Promise((resolve, reject) => {
-		const id = Math.random().toString();
+		const id = uuid();
 
 		const reader = new FileReader();
 		reader.onload = async (): Promise<void> => {
+			const filename = name ?? file.name ?? 'untitled';
+			const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+
 			const ctx = reactive<Uploading>({
-				id: id,
-				name: name ?? file.name ?? 'untitled',
+				id,
+				name: defaultStore.state.keepOriginalFilename ? filename : id + extension,
 				progressMax: undefined,
 				progressValue: undefined,
 				img: window.URL.createObjectURL(file),
@@ -83,7 +102,13 @@ export function uploadFile(
 					// TODO: 消すのではなくて(ネットワーク的なエラーなら)再送できるようにしたい
 					uploads.value = uploads.value.filter(x => x.id !== id);
 
-					if (ev.target?.response) {
+					if (xhr.status === 413) {
+						alert({
+							type: 'error',
+							title: i18n.ts.failedToUpload,
+							text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
+						});
+					} else if (ev.target?.response) {
 						const res = JSON.parse(ev.target.response);
 						if (res.error?.id === 'bec5bd69-fba3-43c9-b4fb-2894b66ad5d2') {
 							alert({

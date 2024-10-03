@@ -1,0 +1,43 @@
+name: API report (misskey.js)
+
+on:
+  push:
+    paths:
+      - packages/misskey-js/**
+      - .github/workflows/api-misskey-js.yml
+  pull_request:
+    paths:
+      - packages/misskey-js/**
+      - .github/workflows/api-misskey-js.yml
+jobs:
+  report:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Build
+        run: pnpm --filter misskey-js build
+
+      - name: Check files
+        run: ls packages/misskey-js/built
+
+      - name: API report
+        run: pnpm --filter misskey-js api-prod
+
+      - name: Show report
+        if: always()
+        run: cat packages/misskey-js/temp/misskey-js.api.md

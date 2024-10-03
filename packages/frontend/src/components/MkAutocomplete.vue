@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="rootEl" :class="$style.root" class="_popup _shadow" :style="{ zIndex }" @contextmenu.prevent="() => {}">
 	<ol v-if="type === 'user'" ref="suggests" :class="$style.list">
@@ -10,14 +15,14 @@
 		</li>
 		<li tabindex="-1" :class="$style.item" @click="chooseUser()" @keydown="onKeydown">{{ i18n.ts.selectUser }}</li>
 	</ol>
-	<ol v-else-if="hashtags.length > 0" ref="suggests" :class="[$style.list, $style.hashtags]">
+	<ol v-else-if="hashtags.length > 0" ref="suggests" :class="$style.list">
 		<li v-for="hashtag in hashtags" tabindex="-1" :class="$style.item" @click="complete(type, hashtag)" @keydown="onKeydown">
 			<span class="name">{{ hashtag }}</span>
 		</li>
 	</ol>
 	<ol v-else-if="emojis.length > 0" ref="suggests" :class="$style.list">
 		<li v-for="emoji in emojis" :key="emoji.emoji" :class="$style.item" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
-			<MkCustomEmoji v-if="'isCustomEmoji' in emoji && emoji.isCustomEmoji" :name="emoji.emoji" :class="$style.emoji"/>
+			<MkCustomEmoji v-if="'isCustomEmoji' in emoji && emoji.isCustomEmoji" :name="emoji.emoji" :class="$style.emoji" :fallbackToImage="true"/>
 			<MkEmoji v-else :emoji="emoji.emoji" :class="$style.emoji"/>
 			<!-- eslint-disable-next-line vue/no-v-html -->
 			<span v-if="q" :class="$style.emojiName" v-html="sanitizeHtml(emoji.name.replace(q, `<b>${q}</b>`))"></span>
@@ -30,34 +35,29 @@
 			<span>{{ tag }}</span>
 		</li>
 	</ol>
+	<ol v-else-if="mfmParams.length > 0" ref="suggests" :class="$style.list">
+		<li v-for="param in mfmParams" tabindex="-1" :class="$style.item" @click="complete(type, q.params.toSpliced(-1, 1, param).join(','))" @keydown="onKeydown">
+			<span>{{ param }}</span>
+		</li>
+	</ol>
 </div>
 </template>
 
 <script lang="ts">
 import { markRaw, ref, shallowRef, computed, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import sanitizeHtml from 'sanitize-html';
-import contains from '@/scripts/contains';
-import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base';
-import { acct } from '@/filters/user';
-import * as os from '@/os';
-import { MFM_TAGS } from '@/scripts/mfm-tags';
-import { defaultStore } from '@/store';
-import { emojilist } from '@/scripts/emojilist';
-import { i18n } from '@/i18n';
-import { miLocalStorage } from '@/local-storage';
-import { customEmojis } from '@/custom-emojis';
-
-type EmojiDef = {
-	emoji: string;
-	name: string;
-	url: string;
-	aliasOf?: string;
-} | {
-	emoji: string;
-	name: string;
-	aliasOf?: string;
-	isCustomEmoji?: true;
-};
+import { emojilist, getEmojiName } from '@@/js/emojilist.js';
+import contains from '@/scripts/contains.js';
+import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@@/js/emoji-base.js';
+import { acct } from '@/filters/user.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { customEmojis } from '@/custom-emojis.js';
+import { MFM_TAGS, MFM_PARAMS } from '@@/js/const.js';
+import { searchEmoji, EmojiDef } from '@/scripts/search-emoji.js';
 
 const lib = emojilist.filter(x => x.category !== 'flags');
 
@@ -71,14 +71,14 @@ const emojiDb = computed(() => {
 		url: char2path(x.char),
 	}));
 
-	for (const x of lib) {
-		if (x.keywords) {
-			for (const k of x.keywords) {
+	for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
+		for (const [emoji, keywords] of Object.entries(index)) {
+			for (const k of keywords) {
 				unicodeEmojiDB.push({
-					emoji: x.char,
+					emoji: emoji,
 					name: k,
-					aliasOf: x.name,
-					url: char2path(x.char),
+					aliasOf: getEmojiName(emoji),
+					url: char2path(emoji),
 				});
 			}
 		}
@@ -124,7 +124,7 @@ export default {
 <script lang="ts" setup>
 const props = defineProps<{
 	type: string;
-	q: string | null;
+	q: any;
 	textarea: HTMLTextAreaElement;
 	close: () => void;
 	x: number;
@@ -145,6 +145,7 @@ const hashtags = ref<any[]>([]);
 const emojis = ref<(EmojiDef)[]>([]);
 const items = ref<Element[] | HTMLCollection>([]);
 const mfmTags = ref<string[]>([]);
+const mfmParams = ref<string[]>([]);
 const select = ref(-1);
 const zIndex = os.claimZIndex('high');
 
@@ -196,7 +197,7 @@ function exec() {
 			users.value = JSON.parse(cache);
 			fetching.value = false;
 		} else {
-			os.api('users/search-by-username-and-host', {
+			misskeyApi('users/search-by-username-and-host', {
 				username: props.q,
 				limit: 10,
 				detail: false,
@@ -219,7 +220,7 @@ function exec() {
 				hashtags.value = hashtags;
 				fetching.value = false;
 			} else {
-				os.api('hashtags/search', {
+				misskeyApi('hashtags/search', {
 					query: props.q,
 					limit: 30,
 				}).then(searchedHashtags => {
@@ -237,29 +238,7 @@ function exec() {
 			return;
 		}
 
-		const matched: EmojiDef[] = [];
-		const max = 30;
-
-		emojiDb.value.some(x => {
-			if (x.name.startsWith(props.q ?? '') && !x.aliasOf && !matched.some(y => y.emoji === x.emoji)) matched.push(x);
-			return matched.length === max;
-		});
-
-		if (matched.length < max) {
-			emojiDb.value.some(x => {
-				if (x.name.startsWith(props.q ?? '') && !matched.some(y => y.emoji === x.emoji)) matched.push(x);
-				return matched.length === max;
-			});
-		}
-
-		if (matched.length < max) {
-			emojiDb.value.some(x => {
-				if (x.name.includes(props.q ?? '') && !matched.some(y => y.emoji === x.emoji)) matched.push(x);
-				return matched.length === max;
-			});
-		}
-
-		emojis.value = matched;
+		emojis.value = searchEmoji(props.q, emojiDb.value);
 	} else if (props.type === 'mfmTag') {
 		if (!props.q || props.q === '') {
 			mfmTags.value = MFM_TAGS;
@@ -267,6 +246,13 @@ function exec() {
 		}
 
 		mfmTags.value = MFM_TAGS.filter(tag => tag.startsWith(props.q ?? ''));
+	} else if (props.type === 'mfmParam') {
+		if (props.q.params.at(-1) === '') {
+			mfmParams.value = MFM_PARAMS[props.q.tag] ?? [];
+			return;
+		}
+
+		mfmParams.value = MFM_PARAMS[props.q.tag].filter(param => param.startsWith(props.q.params.at(-1) ?? ''));
 	}
 }
 
@@ -304,10 +290,23 @@ function onKeydown(event: KeyboardEvent) {
 			}
 			break;
 
-		case 'Tab':
 		case 'ArrowDown':
 			cancel();
 			selectNext();
+			break;
+
+		case 'Tab':
+			if (event.shiftKey) {
+				if (select.value !== -1) {
+					cancel();
+					selectPrev();
+				} else {
+					props.close();
+				}
+			} else {
+				cancel();
+				selectNext();
+			}
 			break;
 
 		default:
@@ -340,7 +339,7 @@ function applySelect() {
 
 function chooseUser() {
 	props.close();
-	os.selectUser().then(user => {
+	os.selectUser({ includeSelf: true }).then(user => {
 		complete('user', user);
 		props.textarea.focus();
 	});
@@ -356,9 +355,7 @@ onMounted(() => {
 
 	props.textarea.addEventListener('keydown', onKeydown);
 
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.addEventListener('mousedown', onMousedown);
-	}
+	document.body.addEventListener('mousedown', onMousedown);
 
 	nextTick(() => {
 		exec();
@@ -374,9 +371,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	props.textarea.removeEventListener('keydown', onKeydown);
 
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.removeEventListener('mousedown', onMousedown);
-	}
+	document.body.removeEventListener('mousedown', onMousedown);
 });
 </script>
 

@@ -1,8 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFilesRepository, UsersRepository } from '@/models/index.js';
+import type { DriveFilesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
+import { IdService } from '@/core/IdService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -10,6 +16,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:drive',
 
 	errors: {
 		noSuchFile: {
@@ -54,7 +61,7 @@ export const meta = {
 			name: {
 				type: 'string',
 				optional: false, nullable: false,
-				example: 'lenna.jpg',
+				example: '192.jpg',
 			},
 			type: {
 				type: 'string',
@@ -77,6 +84,24 @@ export const meta = {
 			properties: {
 				type: 'object',
 				optional: false, nullable: false,
+				properties: {
+					width: {
+						type: 'number',
+						optional: true, nullable: false,
+					},
+					height: {
+						type: 'number',
+						optional: true, nullable: false,
+					},
+					orientation: {
+						type: 'number',
+						optional: true, nullable: false,
+					},
+					avgColor: {
+						type: 'string',
+						optional: true, nullable: false,
+					},
+				},
 			},
 			storedInternal: {
 				type: 'boolean',
@@ -138,25 +163,18 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+		url: { type: 'string' },
+	},
 	anyOf: [
-		{
-			properties: {
-				fileId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['fileId'],
-		},
-		{
-			properties: {
-				url: { type: 'string' },
-			},
-			required: ['url'],
-		},
+		{ required: ['fileId'] },
+		{ required: ['url'] },
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -165,6 +183,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private usersRepository: UsersRepository,
 
 		private roleService: RoleService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const file = ps.fileId ? await this.driveFilesRepository.findOneBy({ id: ps.fileId }) : await this.driveFilesRepository.findOne({
@@ -214,7 +233,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				type: file.type,
 				name: file.name,
 				md5: file.md5,
-				createdAt: file.createdAt.toISOString(),
+				createdAt: this.idService.parse(file.id).date.toISOString(),
 				requestIp: iAmModerator ? file.requestIp : null,
 				requestHeaders: iAmModerator && !ownerIsModerator ? file.requestHeaders : null,
 			};

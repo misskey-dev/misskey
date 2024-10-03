@@ -1,4 +1,10 @@
-import { deviceKind } from '@/scripts/device-kind';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { ref } from 'vue';
+import { deviceKind } from '@/scripts/device-kind.js';
 
 const isTouchSupported = 'maxTouchPoints' in navigator && navigator.maxTouchPoints > 0;
 
@@ -11,3 +17,6 @@ if (isTouchSupported && !isTouchUsing) {
 		isTouchUsing = true;
 	}, { passive: true });
 }
+
+/** (MkHorizontalSwipe) 横スワイプ中か？ */
+export const isHorizontalSwipeSwiping = ref(false);

@@ -1,96 +1,61 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div
-	class="ziffeomt"
-	:class="{ disabled, checked }"
->
+<div :class="[$style.root, { [$style.disabled]: disabled }]">
 	<input
 		ref="input"
 		type="checkbox"
 		:disabled="disabled"
-		@keydown.enter="toggle"
+		:class="$style.input"
+		@click="toggle"
 	>
-	<span ref="button" v-tooltip="checked ? i18n.ts.itsOn : i18n.ts.itsOff" class="button" @click.prevent="toggle">
-		<div class="knob"></div>
-	</span>
-	<span class="label">
+	<XButton :class="$style.toggle" :checked="checked" :disabled="disabled" @toggle="toggle"/>
+	<span v-if="!noBody" :class="$style.body">
 		<!-- TODO: 無名slotの方は廃止 -->
-		<span @click="toggle"><slot name="label"></slot><slot></slot></span>
-		<p class="caption"><slot name="caption"></slot></p>
+		<span :class="$style.label">
+			<span @click="toggle">
+				<slot name="label"></slot><slot></slot>
+			</span>
+			<span v-if="helpText" v-tooltip:dialog="helpText" class="_button _help" :class="$style.help"><i class="ti ti-help-circle"></i></span>
+		</span>
+		<p :class="$style.caption"><slot name="caption"></slot></p>
 	</span>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { toRefs, Ref } from 'vue';
-import { i18n } from '@/i18n';
+import XButton from '@/components/MkSwitch.button.vue';
 
 const props = defineProps<{
 	modelValue: boolean | Ref<boolean>;
 	disabled?: boolean;
+	helpText?: string;
+	noBody?: boolean;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: boolean): void;
+	(ev: 'change', v: boolean): void;
 }>();
 
-let button = $shallowRef<HTMLElement>();
 const checked = toRefs(props).modelValue;
 const toggle = () => {
 	if (props.disabled) return;
 	emit('update:modelValue', !checked.value);
-
-	if (!checked.value) {
-
-	}
+	emit('change', !checked.value);
 };
 </script>
 
-<style lang="scss" scoped>
-.ziffeomt {
+<style lang="scss" module>
+.root {
 	position: relative;
 	display: flex;
 	transition: all 0.2s ease;
-
-	> * {
-		user-select: none;
-	}
-
-	> input {
-		position: absolute;
-		width: 0;
-		height: 0;
-		opacity: 0;
-		margin: 0;
-	}
-
-	> .button {
-		position: relative;
-		display: inline-flex;
-		flex-shrink: 0;
-		margin: 0;
-		box-sizing: border-box;
-		width: 32px;
-		height: 23px;
-		outline: none;
-		background: var(--switchOffBg);
-		background-clip: content-box;
-		border: solid 1px var(--switchOffBg);
-		border-radius: 999px;
-		cursor: pointer;
-		transition: inherit;
-		user-select: none;
-
-		> .knob {
-			position: absolute;
-			top: 3px;
-			left: 3px;
-			width: 15px;
-			height: 15px;
-			background: var(--switchOffFg);
-			border-radius: 999px;
-			transition: all 0.2s ease;
-		}
-	}
+	user-select: none;
 
 	&:hover {
 		> .button {
@@ -98,46 +63,53 @@ const toggle = () => {
 		}
 	}
 
-	> .label {
-		margin-left: 12px;
-		margin-top: 2px;
-		display: block;
-		transition: inherit;
-		color: var(--fg);
-
-		> span {
-			display: block;
-			line-height: 20px;
-			cursor: pointer;
-			transition: inherit;
-		}
-
-		> .caption {
-			margin: 8px 0 0 0;
-			color: var(--fgTransparentWeak);
-			font-size: 0.85em;
-
-			&:empty {
-				display: none;
-			}
-		}
-	}
-
 	&.disabled {
 		opacity: 0.6;
 		cursor: not-allowed;
 	}
+}
 
-	&.checked {
-		> .button {
-			background-color: var(--switchOnBg) !important;
-			border-color: var(--switchOnBg) !important;
+.input {
+	position: absolute;
+	width: 0;
+	height: 0;
+	opacity: 0;
+	margin: 0;
 
-			> .knob {
-				left: 12px;
-				background: var(--switchOnFg);
-			}
-		}
+	&:focus-visible ~ .toggle {
+		outline: 2px solid var(--focus);
+		outline-offset: 2px;
 	}
+}
+
+.body {
+	margin-left: 12px;
+	margin-top: 2px;
+	display: block;
+	transition: inherit;
+	color: var(--fg);
+}
+
+.label {
+	display: block;
+	line-height: 20px;
+	cursor: pointer;
+	transition: inherit;
+}
+
+.caption {
+	margin: 8px 0 0 0;
+	color: var(--fgTransparentWeak);
+	font-size: 0.85em;
+
+	&:empty {
+		display: none;
+	}
+}
+
+.help {
+	margin-left: 0.5em;
+	font-size: 85%;
+	vertical-align: top;
 }
 </style>

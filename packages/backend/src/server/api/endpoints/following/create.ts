@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
+import type { FollowingsRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -14,10 +19,12 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 50,
+		max: 100,
 	},
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:following',
 
@@ -64,17 +71,14 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
+		withReplies: { type: 'boolean' },
 	},
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
@@ -96,20 +100,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw err;
 			});
 
-			// Check if already following
-			const exist = await this.followingsRepository.findOneBy({
-				followerId: follower.id,
-				followeeId: followee.id,
-			});
-
-			if (exist != null) {
-				throw new ApiError(meta.errors.alreadyFollowing);
-			}
-
 			try {
-				await this.userFollowingService.follow(follower, followee);
+				await this.userFollowingService.follow(follower, followee, { withReplies: ps.withReplies });
 			} catch (e) {
 				if (e instanceof IdentifiableError) {
+					if (e.id === 'ec3f65c0-a9d1-47d9-8791-b2e7b9dcdced') throw new ApiError(meta.errors.alreadyFollowing);
 					if (e.id === '710e8fb0-b8c3-4922-be49-d5d93d8e6a6e') throw new ApiError(meta.errors.blocking);
 					if (e.id === '3338392a-f764-498d-8855-db939dcf8c48') throw new ApiError(meta.errors.blocked);
 				}

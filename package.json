@@ -1,38 +1,47 @@
 {
 	"name": "misskey",
-	"version": "13.7.5",
+	"version": "2024.9.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@7.27.0",
+	"packageManager": "pnpm@9.6.0",
 	"workspaces": [
+		"packages/frontend-shared",
 		"packages/frontend",
+		"packages/frontend-embed",
 		"packages/backend",
-		"packages/sw"
+		"packages/sw",
+		"packages/misskey-js",
+		"packages/misskey-reversi",
+		"packages/misskey-bubble-game"
 	],
 	"private": true,
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.js",
-		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
-		"start": "cd packages/backend && node ./built/boot/index.js",
-		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
+		"build-assets": "node ./scripts/build-assets.mjs",
+		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
+		"build-storybook": "pnpm --filter frontend build-storybook",
+		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json --no-build && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
+		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
+		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
 		"init": "pnpm migrate",
 		"migrate": "cd packages/backend && pnpm migrate",
+		"revert": "cd packages/backend && pnpm revert",
+		"check:connect": "cd packages/backend && pnpm check:connect",
 		"migrateandstart": "pnpm migrate && pnpm start",
-		"gulp": "pnpm exec gulp build",
 		"watch": "pnpm dev",
-		"dev": "node ./scripts/dev.js",
+		"dev": "node scripts/dev.mjs",
 		"lint": "pnpm -r lint",
 		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
 		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
+		"e2e-dev-container": "cp ./.config/cypress-devcontainer.yml ./.config/test.yml && pnpm start-server-and-test start:test http://localhost:61812 cy:run",
 		"jest": "cd packages/backend && pnpm jest",
 		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
-		"test": "pnpm jest",
-		"test-and-coverage": "pnpm jest-and-coverage",
-		"format": "pnpm exec gulp format",
+		"test": "pnpm -r test",
+		"test-and-coverage": "pnpm -r test-and-coverage",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
 		"cleanall": "pnpm clean-all"
@@ -42,26 +51,31 @@
 		"lodash": "4.17.21"
 	},
 	"dependencies": {
-		"execa": "5.1.1",
-		"gulp": "4.0.2",
-		"gulp-cssnano": "2.1.3",
-		"gulp-rename": "2.0.0",
-		"gulp-replace": "1.1.4",
-		"gulp-terser": "2.1.0",
+		"cssnano": "6.1.2",
+		"execa": "8.0.1",
+		"fast-glob": "3.3.2",
+		"ignore-walk": "6.0.5",
 		"js-yaml": "4.1.0",
-		"typescript": "4.9.5"
+		"postcss": "8.4.47",
+		"tar": "6.2.1",
+		"terser": "5.33.0",
+		"typescript": "5.6.2",
+		"esbuild": "0.23.1",
+		"glob": "11.0.0"
 	},
 	"devDependencies": {
-		"@types/gulp": "4.0.10",
-		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "5.52.0",
-		"@typescript-eslint/parser": "5.52.0",
+		"@misskey-dev/eslint-plugin": "2.0.3",
+		"@types/node": "20.14.12",
+		"@typescript-eslint/eslint-plugin": "7.17.0",
+		"@typescript-eslint/parser": "7.17.0",
 		"cross-env": "7.0.3",
-		"cypress": "12.6.0",
-		"eslint": "8.34.0",
-		"start-server-and-test": "1.15.4"
+		"cypress": "13.14.2",
+		"eslint": "9.8.0",
+		"globals": "15.9.0",
+		"ncp": "2.0.0",
+		"start-server-and-test": "2.0.8"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs-core": "4.2.0"
+		"@tensorflow/tfjs-core": "4.4.0"
 	}
 }

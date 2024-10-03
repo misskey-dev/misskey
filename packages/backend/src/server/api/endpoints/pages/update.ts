@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
 import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { PagesRepository, DriveFilesRepository } from '@/models/index.js';
+import type { PagesRepository, DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -10,6 +15,8 @@ export const meta = {
 	tags: ['pages'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:pages',
 
@@ -63,12 +70,11 @@ export const paramDef = {
 		alignCenter: { type: 'boolean' },
 		hideTitleWhenPinned: { type: 'boolean' },
 	},
-	required: ['pageId', 'title', 'name', 'content', 'variables', 'script'],
+	required: ['pageId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
@@ -85,9 +91,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			let eyeCatchingImage = null;
 			if (ps.eyeCatchingImageId != null) {
-				eyeCatchingImage = await this.driveFilesRepository.findOneBy({
+				const eyeCatchingImage = await this.driveFilesRepository.findOneBy({
 					id: ps.eyeCatchingImageId,
 					userId: me.id,
 				});
@@ -110,19 +115,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.pagesRepository.update(page.id, {
 				updatedAt: new Date(),
 				title: ps.title,
-				name: ps.name === undefined ? page.name : ps.name,
+				name: ps.name,
 				summary: ps.summary === undefined ? page.summary : ps.summary,
 				content: ps.content,
 				variables: ps.variables,
 				script: ps.script,
-				alignCenter: ps.alignCenter === undefined ? page.alignCenter : ps.alignCenter,
-				hideTitleWhenPinned: ps.hideTitleWhenPinned === undefined ? page.hideTitleWhenPinned : ps.hideTitleWhenPinned,
-				font: ps.font === undefined ? page.font : ps.font,
-				eyeCatchingImageId: ps.eyeCatchingImageId === null
-					? null
-					: ps.eyeCatchingImageId === undefined
-						? page.eyeCatchingImageId
-						: eyeCatchingImage!.id,
+				alignCenter: ps.alignCenter,
+				hideTitleWhenPinned: ps.hideTitleWhenPinned,
+				font: ps.font,
+				eyeCatchingImageId: ps.eyeCatchingImageId,
 			});
 		});
 	}

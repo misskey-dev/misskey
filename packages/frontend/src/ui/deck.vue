@@ -1,30 +1,34 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="[$style.root, { [$style.rootIsMobile]: isMobile }]">
 	<XSidebar v-if="!isMobile"/>
 
 	<div :class="$style.main">
+		<XAnnouncements v-if="$i"/>
 		<XStatusBars/>
-		<div ref="columnsEl" :class="[$style.columns, deckStore.reactiveState.columnAlign.value, { [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu">
-			<template v-for="ids in layout">
-				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-				<section
-					v-if="ids.length > 1"
-					:class="$style.folder"
-					:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
-				>
-					<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
-				</section>
-				<DeckColumnCore
-					v-else
-					:ref="ids[0]"
-					:key="ids[0]"
+		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
+			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
+			<section
+				v-for="ids in layout"
+				:class="$style.section"
+				:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
+				@wheel.self="onWheel"
+			>
+				<component
+					:is="columnComponents[columns.find(c => c.id === id)!.type] ?? XTlColumn"
+					v-for="id in ids"
+					:ref="id"
+					:key="id"
 					:class="$style.column"
-					:column="columns.find(c => c.id === ids[0])"
-					:is-stacked="false"
-					:style="columns.find(c => c.id === ids[0])!.flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0])!.width + 'px' }"
-					@parent-focus="moveFocus(ids[0], $event)"
+					:column="columns.find(c => c.id === id)!"
+					:isStacked="ids.length > 1"
+					@headerWheel="onWheel"
 				/>
-			</template>
+			</section>
 			<div v-if="layout.length === 0" class="_panel" :class="$style.onboarding">
 				<div>{{ i18n.ts._deck.introduction }}</div>
 				<MkButton primary style="margin: 1em auto;" @click="addColumn">{{ i18n.ts._deck.addColumn }}</MkButton>
@@ -48,15 +52,20 @@
 	<div v-if="isMobile" :class="$style.nav">
 		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
-		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
+		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
+			<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
+			<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator">
+				<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
+			</span>
+		</button>
 		<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 	</div>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -68,10 +77,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menu">
 			<XDrawerMenu/>
@@ -83,23 +92,48 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, ref, watch, shallowRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
-import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store';
-import DeckColumnCore from '@/ui/deck/column-core.vue';
+import { deckStore, columnTypes, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
+import type { ColumnType } from './deck/deck-store.js';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getScrollContainer } from '@/scripts/scroll';
-import * as os from '@/os';
-import { navbarItemDef } from '@/navbar';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { mainRouter } from '@/router';
-import { unisonReload } from '@/scripts/unison-reload';
-import { deviceKind } from '@/scripts/device-kind';
+import * as os from '@/os.js';
+import { navbarItemDef } from '@/navbar.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import { deviceKind } from '@/scripts/device-kind.js';
+import { defaultStore } from '@/store.js';
+import XMainColumn from '@/ui/deck/main-column.vue';
+import XTlColumn from '@/ui/deck/tl-column.vue';
+import XAntennaColumn from '@/ui/deck/antenna-column.vue';
+import XListColumn from '@/ui/deck/list-column.vue';
+import XChannelColumn from '@/ui/deck/channel-column.vue';
+import XNotificationsColumn from '@/ui/deck/notifications-column.vue';
+import XWidgetsColumn from '@/ui/deck/widgets-column.vue';
+import XMentionsColumn from '@/ui/deck/mentions-column.vue';
+import XDirectColumn from '@/ui/deck/direct-column.vue';
+import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
+import { mainRouter } from '@/router/main.js';
+import type { MenuItem } from '@/types/menu.js';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
+const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
+
+const columnComponents = {
+	main: XMainColumn,
+	widgets: XWidgetsColumn,
+	notifications: XNotificationsColumn,
+	tl: XTlColumn,
+	list: XListColumn,
+	channel: XChannelColumn,
+	antenna: XAntennaColumn,
+	mentions: XMentionsColumn,
+	direct: XDirectColumn,
+	roleTimeline: XRoleTimelineColumn,
+};
 
 mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;
@@ -119,10 +153,12 @@ window.addEventListener('resize', () => {
 const snapScroll = deviceKind === 'smartphone' || deviceKind === 'tablet';
 const drawerMenuShowing = ref(false);
 
+/*
 const route = 'TODO';
 watch(route, () => {
 	drawerMenuShowing.value = false;
 });
+*/
 
 const columns = deckStore.reactiveState.columns;
 const layout = deckStore.reactiveState.layout;
@@ -138,34 +174,23 @@ function showSettings() {
 	os.pageWindow('/settings/deck');
 }
 
-let columnsEl = $shallowRef<HTMLElement>();
+const columnsEl = shallowRef<HTMLElement>();
 
 const addColumn = async (ev) => {
-	const columns = [
-		'main',
-		'widgets',
-		'notifications',
-		'tl',
-		'antenna',
-		'list',
-		'channel',
-		'mentions',
-		'direct',
-	];
-
 	const { canceled, result: column } = await os.select({
 		title: i18n.ts._deck.addColumn,
-		items: columns.map(column => ({
-			value: column, text: i18n.t('_deck._columns.' + column),
+		items: columnTypes.map(column => ({
+			value: column, text: i18n.ts._deck._columns[column],
 		})),
 	});
-	if (canceled) return;
+	if (canceled || column == null) return;
 
 	addColumnToStore({
 		type: column,
 		id: uuid(),
-		name: i18n.t('_deck._columns.' + column),
+		name: i18n.ts._deck._columns[column],
 		width: 330,
+		soundSetting: { type: null, volume: 1 },
 	});
 };
 
@@ -176,58 +201,53 @@ const onContextmenu = (ev) => {
 	}], ev);
 };
 
-document.documentElement.style.overflowY = 'hidden';
-document.documentElement.style.scrollBehavior = 'auto';
-window.addEventListener('wheel', (ev) => {
-	if (ev.target === columnsEl && ev.deltaX === 0) {
-		columnsEl.scrollLeft += ev.deltaY;
-	} else if (getScrollContainer(ev.target as HTMLElement) == null && ev.deltaX === 0) {
-		columnsEl.scrollLeft += ev.deltaY;
+function onWheel(ev: WheelEvent) {
+	if (ev.deltaX === 0 && columnsEl.value != null) {
+		columnsEl.value.scrollLeft += ev.deltaY;
 	}
-});
-loadDeck();
-
-function moveFocus(id: string, direction: 'up' | 'down' | 'left' | 'right') {
-	// TODO??
 }
 
+document.documentElement.style.overflowY = 'hidden';
+document.documentElement.style.scrollBehavior = 'auto';
+
+loadDeck();
+
 function changeProfile(ev: MouseEvent) {
-	const items = ref([{
+	let items: MenuItem[] = [{
 		text: deckStore.state.profile,
-		active: true.valueOf,
-	}]);
+		active: true,
+		action: () => {},
+	}];
 	getProfiles().then(profiles => {
-		items.value = [{
-			text: deckStore.state.profile,
-			active: true.valueOf,
-		}, ...(profiles.filter(k => k !== deckStore.state.profile).map(k => ({
+		items.push(...(profiles.filter(k => k !== deckStore.state.profile).map(k => ({
 			text: k,
 			action: () => {
 				deckStore.set('profile', k);
 				unisonReload();
 			},
-		}))), null, {
+		}))), { type: 'divider' as const }, {
 			text: i18n.ts._deck.newProfile,
 			icon: 'ti ti-plus',
 			action: async () => {
 				const { canceled, result: name } = await os.inputText({
 					title: i18n.ts._deck.profile,
-					allowEmpty: false,
+					minLength: 1,
 				});
-				if (canceled) return;
+				if (canceled || name == null) return;
 
 				deckStore.set('profile', name);
 				unisonReload();
 			},
-		}];
+		});
+	}).then(() => {
+		os.popupMenu(items, ev.currentTarget ?? ev.target);
 	});
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 async function deleteProfile() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: deckStore.state.profile }),
+		text: i18n.tsx.deleteAreYouSure({ x: deckStore.state.profile }),
 	});
 	if (canceled) return;
 
@@ -236,6 +256,28 @@ async function deleteProfile() {
 	unisonReload();
 }
 </script>
+
+<style>
+html,
+body {
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+	position: fixed;
+	top: 0;
+	left: 0;
+	overscroll-behavior: none;
+}
+
+#misskey_app {
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+</style>
 
 <style lang="scss" module>
 .transition_menuDrawerBg_enterActive,
@@ -265,7 +307,7 @@ async function deleteProfile() {
 
 	--margin: var(--marginHalf);
 
-	--deckDividerThickness: 5px;
+	--columnGap: 6px;
 
 	display: flex;
 	height: 100dvh;
@@ -284,19 +326,21 @@ async function deleteProfile() {
 	flex-direction: column;
 }
 
-.columns {
+.sections {
 	flex: 1;
 	display: flex;
 	overflow-x: auto;
 	overflow-y: clip;
+	overscroll-behavior: contain;
+	background: var(--deckBg);
 
 	&.center {
-		> .column:first-of-type {
-			margin-left: auto;
+		> .section:first-of-type {
+			margin-left: auto !important;
 		}
 
-		> .column:last-of-type {
-			margin-right: auto;
+		> .section:last-of-type {
+			margin-right: auto !important;
 		}
 	}
 
@@ -305,23 +349,17 @@ async function deleteProfile() {
 	}
 }
 
-.column {
-	scroll-snap-align: start;
-	flex-shrink: 0;
-	border-right: solid var(--deckDividerThickness) var(--deckDivider);
-
-	&:first-of-type {
-		border-left: solid var(--deckDividerThickness) var(--deckDivider);
-	}
-}
-
-.folder {
-	composes: column;
+.section {
 	display: flex;
 	flex-direction: column;
+	scroll-snap-align: start;
+	flex-shrink: 0;
+	padding-top: var(--columnGap);
+	padding-bottom: var(--columnGap);
+	padding-left: var(--columnGap);
 
-	> *:not(:last-of-type) {
-		border-bottom: solid var(--deckDividerThickness) var(--deckDivider);
+	> .column:not(:last-of-type) {
+		margin-bottom: var(--columnGap);
 	}
 }
 
@@ -412,7 +450,7 @@ async function deleteProfile() {
 	}
 
 	&:active {
-		background: var(--X2);
+		background: hsl(from var(--panel) h s calc(l - 2));
 	}
 }
 
@@ -422,11 +460,11 @@ async function deleteProfile() {
 	color: var(--fgOnAccent);
 
 	&:hover {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 
 	&:active {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 }
 
@@ -441,6 +479,11 @@ async function deleteProfile() {
 	left: 0;
 	color: var(--indicator);
 	font-size: 16px;
-	animation: blink 1s infinite;
+	animation: global-blink 1s infinite;
+
+	&:has(.itemIndicateValueIcon) {
+		animation: none;
+		font-size: 12px;
+	}
 }
 </style>

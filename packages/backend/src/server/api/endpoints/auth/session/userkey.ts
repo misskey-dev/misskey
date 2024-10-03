@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, AppsRepository, AccessTokensRepository, AuthSessionsRepository } from '@/models/index.js';
+import type { AppsRepository, AccessTokensRepository, AuthSessionsRepository } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -57,13 +62,9 @@ export const paramDef = {
 	required: ['appSecret', 'token'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.appsRepository)
 		private appsRepository: AppsRepository,
 
@@ -111,7 +112,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			return {
 				accessToken: accessToken.token,
 				user: await this.userEntityService.pack(session.userId, null, {
-					detail: true,
+					schema: 'UserDetailedNotMe',
 				}),
 			};
 		});

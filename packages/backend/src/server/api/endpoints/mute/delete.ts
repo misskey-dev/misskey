@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MutingsRepository } from '@/models/index.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { MutingsRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { UserMutingService } from '@/core/UserMutingService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account'],
@@ -42,14 +47,13 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
-		private globalEventService: GlobalEventService,
+		private userMutingService: UserMutingService,
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -76,12 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.notMuting);
 			}
 
-			// Delete mute
-			await this.mutingsRepository.delete({
-				id: exist.id,
-			});
-
-			this.globalEventService.publishUserEvent(me.id, 'unmute', mutee);
+			await this.userMutingService.unmute([exist]);
 		});
 	}
 }

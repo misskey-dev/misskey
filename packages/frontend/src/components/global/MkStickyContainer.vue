@@ -1,35 +1,59 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="rootEl">
 	<div ref="headerEl">
 		<slot name="header"></slot>
 	</div>
-	<div ref="bodyEl" :data-sticky-container-header-height="headerHeight">
+	<div
+		ref="bodyEl"
+		:data-sticky-container-header-height="headerHeight"
+		:data-sticky-container-footer-height="footerHeight"
+		style="position: relative; z-index: 0;"
+	>
 		<slot></slot>
+	</div>
+	<div ref="footerEl">
+		<slot name="footer"></slot>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-// なんか動かない
-//const CURRENT_STICKY_TOP = Symbol('CURRENT_STICKY_TOP');
-const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
-</script>
-
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, inject, Ref, ref, watch } from 'vue';
+import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } from 'vue';
 
-const rootEl = $shallowRef<HTMLElement>();
-const headerEl = $shallowRef<HTMLElement>();
-const bodyEl = $shallowRef<HTMLElement>();
+import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@@/js/const.js';
 
-let headerHeight = $ref<string | undefined>();
-let childStickyTop = $ref(0);
+const rootEl = shallowRef<HTMLElement>();
+const headerEl = shallowRef<HTMLElement>();
+const footerEl = shallowRef<HTMLElement>();
+const bodyEl = shallowRef<HTMLElement>();
+
+const headerHeight = ref<string | undefined>();
+const childStickyTop = ref(0);
 const parentStickyTop = inject<Ref<number>>(CURRENT_STICKY_TOP, ref(0));
-provide(CURRENT_STICKY_TOP, $$(childStickyTop));
+provide(CURRENT_STICKY_TOP, childStickyTop);
+
+const footerHeight = ref<string | undefined>();
+const childStickyBottom = ref(0);
+const parentStickyBottom = inject<Ref<number>>(CURRENT_STICKY_BOTTOM, ref(0));
+provide(CURRENT_STICKY_BOTTOM, childStickyBottom);
 
 const calc = () => {
-	childStickyTop = parentStickyTop.value + headerEl.offsetHeight;
-	headerHeight = headerEl.offsetHeight.toString();
+	// コンポーネントが表示されてないけどKeepAliveで残ってる場合などは null になる
+	if (headerEl.value != null) {
+		childStickyTop.value = parentStickyTop.value + headerEl.value.offsetHeight;
+		headerHeight.value = headerEl.value.offsetHeight.toString();
+	}
+
+	// コンポーネントが表示されてないけどKeepAliveで残ってる場合などは null になる
+	if (footerEl.value != null) {
+		childStickyBottom.value = parentStickyBottom.value + footerEl.value.offsetHeight;
+		footerHeight.value = footerEl.value.offsetHeight.toString();
+	}
 };
 
 const observer = new ResizeObserver(() => {
@@ -41,26 +65,42 @@ const observer = new ResizeObserver(() => {
 onMounted(() => {
 	calc();
 
-	watch(parentStickyTop, calc);
+	watch([parentStickyTop, parentStickyBottom], calc);
 
-	watch($$(childStickyTop), () => {
-		bodyEl.style.setProperty('--stickyTop', `${childStickyTop}px`);
+	watch(childStickyTop, () => {
+		if (bodyEl.value == null) return;
+		bodyEl.value.style.setProperty('--stickyTop', `${childStickyTop.value}px`);
 	}, {
 		immediate: true,
 	});
 
-	headerEl.style.position = 'sticky';
-	headerEl.style.top = 'var(--stickyTop, 0)';
-	headerEl.style.zIndex = '1000';
+	watch(childStickyBottom, () => {
+		if (bodyEl.value == null) return;
+		bodyEl.value.style.setProperty('--stickyBottom', `${childStickyBottom.value}px`);
+	}, {
+		immediate: true,
+	});
 
-	observer.observe(headerEl);
+	if (headerEl.value != null) {
+		headerEl.value.style.position = 'sticky';
+		headerEl.value.style.top = 'var(--stickyTop, 0)';
+		headerEl.value.style.zIndex = '1';
+		observer.observe(headerEl.value);
+	}
+
+	if (footerEl.value != null) {
+		footerEl.value.style.position = 'sticky';
+		footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
+		footerEl.value.style.zIndex = '1';
+		observer.observe(footerEl.value);
+	}
 });
 
 onUnmounted(() => {
 	observer.disconnect();
 });
+
+defineExpose({
+	rootEl: rootEl,
+});
 </script>
-
-<style lang="scss" module>
-
-</style>

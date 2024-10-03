@@ -1,37 +1,43 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <button
-	class="hdcaacmi _button"
-	:class="{ wait, active: isFollowing, full }"
+	class="_button"
+	:class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing, [$style.full]: full }]"
 	:disabled="wait"
 	@click="onClick"
 >
 	<template v-if="!wait">
 		<template v-if="isFollowing">
-			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
 		</template>
 		<template v-else>
-			<span v-if="full">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true"/>
+		<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true"/>
 	</template>
 </button>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as Misskey from 'misskey-js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	channel: Record<string, any>;
+	channel: Misskey.entities.Channel;
 	full?: boolean;
 }>(), {
 	full: false,
 });
 
-const isFollowing = ref<boolean>(props.channel.isFollowing);
+const isFollowing = ref(props.channel.isFollowing);
 const wait = ref(false);
 
 async function onClick() {
@@ -39,12 +45,12 @@ async function onClick() {
 
 	try {
 		if (isFollowing.value) {
-			await os.api('channels/unfollow', {
+			await misskeyApi('channels/unfollow', {
 				channelId: props.channel.id,
 			});
 			isFollowing.value = false;
 		} else {
-			await os.api('channels/follow', {
+			await misskeyApi('channels/follow', {
 				channelId: props.channel.id,
 			});
 			isFollowing.value = true;
@@ -57,8 +63,8 @@ async function onClick() {
 }
 </script>
 
-<style lang="scss" scoped>
-.hdcaacmi {
+<style lang="scss" module>
+.root {
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
@@ -81,17 +87,7 @@ async function onClick() {
 	}
 
 	&:focus-visible {
-		&:after {
-			content: "";
-			pointer-events: none;
-			position: absolute;
-			top: -5px;
-			right: -5px;
-			bottom: -5px;
-			left: -5px;
-			border: 2px solid var(--focus);
-			border-radius: 32px;
-		}
+		outline-offset: 2px;
 	}
 
 	&:hover {
@@ -103,7 +99,7 @@ async function onClick() {
 	}
 
 	&.active {
-		color: #fff;
+		color: var(--fgOnAccent);
 		background: var(--accent);
 
 		&:hover {
@@ -121,9 +117,9 @@ async function onClick() {
 		cursor: wait !important;
 		opacity: 0.7;
 	}
+}
 
-	> span {
-		margin-right: 6px;
-	}
+.text {
+	margin-right: 6px;
 }
 </style>

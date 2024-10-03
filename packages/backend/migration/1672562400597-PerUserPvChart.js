@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class PerUserPvChart1672562400597 {
     name = 'PerUserPvChart1672562400597'
 

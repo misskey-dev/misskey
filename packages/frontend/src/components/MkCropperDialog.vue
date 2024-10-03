@@ -1,10 +1,15 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkModalWindow
 	ref="dialogEl"
 	:width="800"
 	:height="500"
 	:scroll="false"
-	:with-ok-button="true"
+	:withOkButton="true"
 	@close="cancel()"
 	@ok="ok()"
 	@closed="$emit('closed')"
@@ -18,7 +23,7 @@
 				</div>
 			</Transition>
 			<div class="container">
-				<img ref="imgEl" :src="imgUrl" style="display: none;" crossorigin="anonymous" @load="onImageLoad">
+				<img ref="imgEl" :src="imgUrl" style="display: none;" @load="onImageLoad">
 			</div>
 		</div>
 	</template>
@@ -26,43 +31,57 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
+import { onMounted, shallowRef, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
-import { apiUrl } from '@/config';
-import { i18n } from '@/i18n';
-import { getProxiedImageUrl } from '@/scripts/media-proxy';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
+import { apiUrl } from '@@/js/config.js';
+import { i18n } from '@/i18n.js';
+import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 
 const emit = defineEmits<{
-	(ev: 'ok', cropped: misskey.entities.DriveFile): void;
+	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
 
 const props = defineProps<{
-	file: misskey.entities.DriveFile;
+	file: Misskey.entities.DriveFile;
 	aspectRatio: number;
+	uploadFolder?: string | null;
 }>();
 
-const imgUrl = getProxiedImageUrl(props.file.url);
-let dialogEl = $shallowRef<InstanceType<typeof MkModalWindow>>();
-let imgEl = $shallowRef<HTMLImageElement>();
+const imgUrl = getProxiedImageUrl(props.file.url, undefined, true);
+const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const imgEl = shallowRef<HTMLImageElement>();
 let cropper: Cropper | null = null;
-let loading = $ref(true);
+const loading = ref(true);
 
 const ok = async () => {
-	const promise = new Promise<misskey.entities.DriveFile>(async (res) => {
-		const croppedCanvas = await cropper?.getCropperSelection()?.$toCanvas();
-		croppedCanvas.toBlob(blob => {
+	const promise = new Promise<Misskey.entities.DriveFile>(async (res) => {
+		const croppedImage = await cropper?.getCropperImage();
+		const croppedSection = await cropper?.getCropperSelection();
+
+		// 拡大率を計算し、(ほぼ)元の大きさに戻す
+		const zoomedRate = croppedImage.getBoundingClientRect().width / croppedImage.clientWidth;
+		const widthToRender = croppedSection.getBoundingClientRect().width / zoomedRate;
+
+		const croppedCanvas = await croppedSection?.$toCanvas({ width: widthToRender });
+		croppedCanvas?.toBlob(blob => {
+			if (!blob) return;
 			const formData = new FormData();
 			formData.append('file', blob);
-			formData.append('i', $i.token);
-			if (defaultStore.state.uploadFolder) {
+			formData.append('name', `cropped_${props.file.name}`);
+			formData.append('isSensitive', props.file.isSensitive ? 'true' : 'false');
+			if (props.file.comment) { formData.append('comment', props.file.comment);}
+			formData.append('i', $i!.token);
+			if (props.uploadFolder) {
+				formData.append('folderId', props.uploadFolder);
+			} else if (props.uploadFolder !== null && defaultStore.state.uploadFolder) {
 				formData.append('folderId', defaultStore.state.uploadFolder);
 			}
 
@@ -82,16 +101,16 @@ const ok = async () => {
 	const f = await promise;
 
 	emit('ok', f);
-	dialogEl.close();
+	dialogEl.value!.close();
 };
 
 const cancel = () => {
 	emit('cancel');
-	dialogEl.close();
+	dialogEl.value!.close();
 };
 
 const onImageLoad = () => {
-	loading = false;
+	loading.value = false;
 
 	if (cropper) {
 		cropper.getCropperImage()!.$center('contain');
@@ -100,7 +119,7 @@ const onImageLoad = () => {
 };
 
 onMounted(() => {
-	cropper = new Cropper(imgEl, {
+	cropper = new Cropper(imgEl.value!, {
 	});
 
 	const computedStyle = getComputedStyle(document.documentElement);
@@ -112,13 +131,13 @@ onMounted(() => {
 	selection.outlined = true;
 
 	window.setTimeout(() => {
-		cropper.getCropperImage()!.$center('contain');
+		cropper!.getCropperImage()!.$center('contain');
 		selection.$center();
 	}, 100);
 
 	// モーダルオープンアニメーションが終わったあとで再度調整
 	window.setTimeout(() => {
-		cropper.getCropperImage()!.$center('contain');
+		cropper!.getCropperImage()!.$center('contain');
 		selection.$center();
 	}, 500);
 });

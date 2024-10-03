@@ -1,9 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
+import type { NotesRepository, DriveFilesRepository } from '@/models/_.js';
+import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['drive', 'notes'],
@@ -36,14 +43,16 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		fileId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['fileId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -52,21 +61,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
+		private queryService: QueryService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Fetch file
 			const file = await this.driveFilesRepository.findOneBy({
 				id: ps.fileId,
-				userId: me.id,
+				userId: await this.roleService.isModerator(me) ? undefined : me.id,
 			});
 
 			if (file == null) {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			const notes = await this.notesRepository.createQueryBuilder('note')
-				.where(':file = ANY(note.fileIds)', { file: file.id })
-				.getMany();
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId);
+			query.andWhere(':file <@ note.fileIds', { file: [file.id] });
+
+			const notes = await query.limit(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(notes, me, {
 				detail: true,

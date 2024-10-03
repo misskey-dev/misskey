@@ -16,11 +16,19 @@ block og
 	meta(property='og:title'       content= title)
 	meta(property='og:description' content= post.description)
 	meta(property='og:url'         content= url)
-	meta(property='og:image'       content= post.files[0].thumbnailUrl)
+	if post.isSensitive
+		meta(property='og:image'     content= avatarUrl)
+		meta(property='twitter:card' content='summary')
+	else
+		meta(property='og:image'       content= post.files[0].thumbnailUrl)
+		meta(property='twitter:card'   content='summary_large_image')
 
 block meta
 	if user.host || profile.noCrawle
 		meta(name='robots' content='noindex')
+	if profile.preventAiLearning
+		meta(name='robots' content='noimageai')
+		meta(name='robots' content='noai')
 
 	meta(name='misskey:user-username' content=user.username)
 	meta(name='misskey:user-id' content=user.id)

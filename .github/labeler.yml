@@ -1,12 +1,34 @@
-'⚙️Server':
-- packages/backend/**/*
+'packages/backend':
+- any:
+  - changed-files:
+    - any-glob-to-any-file: ['packages/backend/**/*']
 
-'🖥️Client':
-- packages/frontend/**/*
+'packages/backend:test':
+- any:
+  - changed-files:
+    - any-glob-to-any-file: ['packages/backend/test/**/*']
 
-'🧪Test':
-- cypress/**/*
-- packages/backend/test/**/*
+'packages/frontend':
+- any:
+  - changed-files:
+    - any-glob-to-any-file: ['packages/frontend/**/*']
 
-'‼️ wrong locales':
-- any: ['locales/*.yml', '!locales/ja-JP.yml']
+'packages/frontend:test':
+- any:
+  - changed-files:
+    - any-glob-to-any-file: ['cypress/**/*']
+
+'packages/sw':
+- any:
+  - changed-files:
+    - any-glob-to-any-file: ['packages/sw/**/*']
+
+'packages/misskey-js':
+- any:
+  - changed-files:
+    - any-glob-to-any-file: ['packages/misskey-js/**/*']
+
+'packages/misskey-js:test':
+- any:
+  - changed-files:
+    - any-glob-to-any-file: ['packages/misskey-js/test/**/*', 'packages/misskey-js/test-d/**/*']

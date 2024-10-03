@@ -1,0 +1,22 @@
+name: ✨ Feature Request
+description: Suggest an idea for this project
+labels: ["✨Feature"]
+
+body:
+  - type: textarea
+    attributes:
+      label: Summary
+      description: Tell us what the suggestion is
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Purpose
+      description: Describe the specific problem or need you think this feature will solve, and who it will help.
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Do you want to implement this feature yourself?
+      options:
+        - label: Yes, I will implement this by myself and send a pull request

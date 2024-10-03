@@ -9,24 +9,40 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 100
+
+# Add only the root, not each workspace item
+# https://github.com/dependabot/dependabot-core/issues/4993#issuecomment-1289133027
 - package-ecosystem: npm
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 0
-- package-ecosystem: npm
-  directory: "/packages/backend"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 0
-- package-ecosystem: npm
-  directory: "/packages/frontend"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 0
-- package-ecosystem: npm
-  directory: "/packages/sw"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 10
+  # List dependencies required to be updated together, sharing the same version numbers.
+  # Those who simply have the common owner (e.g. @fastify) don't need to be listed.
+  groups:
+    aws-sdk:
+      patterns:
+        - "@aws-sdk/*"
+    bull-board:
+      patterns:
+        - "@bull-board/*"
+    nestjs:
+      patterns:
+        - "@nestjs/*"
+    slacc:
+      patterns:
+        - "slacc-*"
+    storybook:
+      patterns:
+        - "storybook*"
+        - "@storybook/*"
+    swc-core:
+      patterns:
+        - "@swc/core*"
+    typescript-eslint:
+      patterns:
+        - "@typescript-eslint/*"
+    tensorflow:
+      patterns:
+        - "@tensorflow/*"

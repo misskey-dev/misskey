@@ -1,4 +1,9 @@
-import type { Packed } from './schema.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import type { Packed } from './json-schema.js';
 
 /**
  * 投稿を表す文字列を取得します。

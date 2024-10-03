@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { LocalUser } from '@/models/entities/User.js';
+import { IsNull, Not } from 'typeorm';
+import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
-import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository } from '@/models/index.js';
+import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -18,18 +23,19 @@ import type { IObject, ICollection, IOrderedCollection } from './type.js';
 
 export class Resolver {
 	private history: Set<string>;
-	private user?: LocalUser;
+	private user?: MiLocalUser;
 	private logger: Logger;
 
 	constructor(
 		private config: Config,
+		private meta: MiMeta,
 		private usersRepository: UsersRepository,
 		private notesRepository: NotesRepository,
 		private pollsRepository: PollsRepository,
 		private noteReactionsRepository: NoteReactionsRepository,
+		private followRequestsRepository: FollowRequestsRepository,
 		private utilityService: UtilityService,
 		private instanceActorService: InstanceActorService,
-		private metaService: MetaService,
 		private apRequestService: ApRequestService,
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
@@ -61,10 +67,6 @@ export class Resolver {
 
 	@bindThis
 	public async resolve(value: string | IObject): Promise<IObject> {
-		if (value == null) {
-			throw new Error('resolvee is null (or undefined)');
-		}
-
 		if (typeof value !== 'string') {
 			return value;
 		}
@@ -91,8 +93,7 @@ export class Resolver {
 			return await this.resolveLocal(value);
 		}
 
-		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
+		if (!this.utilityService.isFederationAllowedHost(host)) {
 			throw new Error('Instance is blocked');
 		}
 
@@ -102,13 +103,13 @@ export class Resolver {
 
 		const object = (this.user
 			? await this.apRequestService.signedGet(value, this.user) as IObject
-			: await this.httpRequestService.getJson(value, 'application/activity+json, application/ld+json')) as IObject;
+			: await this.httpRequestService.getActivityJson(value)) as IObject;
 
-		if (object == null || (
+		if (
 			Array.isArray(object['@context']) ?
 				!(object['@context'] as unknown[]).includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
-		)) {
+		) {
 			throw new Error('invalid response');
 		}
 
@@ -133,7 +134,7 @@ export class Resolver {
 					});
 			case 'users':
 				return this.usersRepository.findOneByOrFail({ id: parsed.id })
-					.then(user => this.apRendererService.renderPerson(user as LocalUser));
+					.then(user => this.apRendererService.renderPerson(user as MiLocalUser));
 			case 'questions':
 				// Polls are indexed by the note they are attached to.
 				return Promise.all([
@@ -145,13 +146,24 @@ export class Resolver {
 				return this.noteReactionsRepository.findOneByOrFail({ id: parsed.id }).then(async reaction =>
 					this.apRendererService.addContext(await this.apRendererService.renderLike(reaction, { uri: null })));
 			case 'follows':
-				// rest should be <followee id>
-				if (parsed.rest == null || !/^\w+$/.test(parsed.rest)) throw new Error('resolveLocal: invalid follow URI');
-
-				return Promise.all(
-					[parsed.id, parsed.rest].map(id => this.usersRepository.findOneByOrFail({ id })),
-				)
-					.then(([follower, followee]) => this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee, url)));
+				return this.followRequestsRepository.findOneBy({ id: parsed.id })
+					.then(async followRequest => {
+						if (followRequest == null) throw new Error('resolveLocal: invalid follow request ID');
+						const [follower, followee] = await Promise.all([
+							this.usersRepository.findOneBy({
+								id: followRequest.followerId,
+								host: IsNull(),
+							}),
+							this.usersRepository.findOneBy({
+								id: followRequest.followeeId,
+								host: Not(IsNull()),
+							}),
+						]);
+						if (follower == null || followee == null) {
+							throw new Error('resolveLocal: follower or followee does not exist');
+						}
+						return this.apRendererService.addContext(this.apRendererService.renderFollow(follower as MiLocalUser | MiRemoteUser, followee as MiLocalUser | MiRemoteUser, url));
+					});
 			default:
 				throw new Error(`resolveLocal: type ${parsed.type} unhandled`);
 		}
@@ -163,6 +175,9 @@ export class ApResolverService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -176,9 +191,11 @@ export class ApResolverService {
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
 
+		@Inject(DI.followRequestsRepository)
+		private followRequestsRepository: FollowRequestsRepository,
+
 		private utilityService: UtilityService,
 		private instanceActorService: InstanceActorService,
-		private metaService: MetaService,
 		private apRequestService: ApRequestService,
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
@@ -191,13 +208,14 @@ export class ApResolverService {
 	public createResolver(): Resolver {
 		return new Resolver(
 			this.config,
+			this.meta,
 			this.usersRepository,
 			this.notesRepository,
 			this.pollsRepository,
 			this.noteReactionsRepository,
+			this.followRequestsRepository,
 			this.utilityService,
 			this.instanceActorService,
-			this.metaService,
 			this.apRequestService,
 			this.httpRequestService,
 			this.apRendererService,

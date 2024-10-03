@@ -6,6 +6,7 @@ Also, the later tasks are more indefinite and are subject to change as developme
 This is the phase we are at now. We need to make a high-maintenance environment that can withstand future development.
 
 - ~~Make the number of type errors zero (backend)~~ → Done ✔️
+- Make the number of type errors zero (frontend)
 - Improve CI
 	- ~~Fix tests~~ → Done ✔️
 	- Fix random test failures - https://github.com/misskey-dev/misskey/issues/7985 and https://github.com/misskey-dev/misskey/issues/7986
@@ -22,7 +23,7 @@ This is the phase we are at now. We need to make a high-maintenance environment 
 Once Phase 1 is complete and an environment conducive to the development of a stable system is in place, the implementation of new functions can begin gradually.
 
 - Improve features for moderation
-- OAuth2 support https://github.com/misskey-dev/misskey/issues/8262
+- ~~OAuth2 support https://github.com/misskey-dev/misskey/issues/8262~~ → Done ✔️
 - GraphQL support?
 
 ## (3) Improve scalability

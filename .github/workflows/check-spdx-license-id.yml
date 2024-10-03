@@ -1,0 +1,79 @@
+name: Check SPDX-License-Identifier
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  check-spdx-license-id:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+      - name: Check
+        run: |
+          counter=0
+
+          search() {
+            local directory="$1"
+            find "$directory" -type f \
+              '(' \
+                -name "*.cjs" -and -not -name '*.config.cjs' -o \
+                -name "*.html" -o \
+                -name "*.js" -and -not -name '*.config.js' -o \
+                -name "*.mjs" -and -not -name '*.config.mjs' -o \
+                -name "*.scss" -o \
+                -name "*.ts" -and -not -name '*.config.ts' -o \
+                -name "*.vue" \
+              ')' -and \
+              -not -name '*eslint*'
+          }
+
+          check() {
+            local file="$1"
+            if ! (
+              grep -q "SPDX-FileCopyrightText: syuilo and misskey-project" "$file" ||
+              grep -q "SPDX-License-Identifier: AGPL-3.0-only" "$file"
+            ); then
+              echo "Missing: $file"
+              ((counter++))
+            fi
+          }
+
+          directories=(
+            "cypress/e2e"
+            "packages/backend/migration"
+            "packages/backend/src"
+            "packages/backend/test"
+            "packages/frontend-shared/@types"
+            "packages/frontend-shared/js"
+            "packages/frontend/.storybook"
+            "packages/frontend/@types"
+            "packages/frontend/lib"
+            "packages/frontend/public"
+            "packages/frontend/src"
+            "packages/frontend/test"
+            "packages/frontend-embed/@types"
+            "packages/frontend-embed/src"
+            "packages/misskey-bubble-game/src"
+            "packages/misskey-reversi/src"
+            "packages/sw/src"
+            "scripts"
+          )
+
+          for directory in "${directories[@]}"; do
+            for file in $(search $directory); do
+              check "$file"
+            done
+          done
+
+          if [ $counter -gt 0 ]; then
+            echo "SPDX-License-Identifier is missing in $counter files."
+            exit 1
+          else
+            echo "SPDX-License-Identifier is certainly described in all target files!"
+            exit 0
+          fi

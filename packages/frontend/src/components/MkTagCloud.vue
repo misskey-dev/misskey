@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div ref="rootEl" class="meijqfqm">
-	<canvas :id="idForCanvas" ref="canvasEl" class="canvas" :width="width" height="300" @contextmenu.prevent="() => {}"></canvas>
-	<div :id="idForTags" ref="tagsEl" class="tags">
+<div ref="rootEl" :class="$style.root">
+	<canvas :id="idForCanvas" ref="canvasEl" style="display: block;" :width="width" height="300" @contextmenu.prevent="() => {}"></canvas>
+	<div :id="idForTags" ref="tagsEl" :class="$style.tags">
 		<ul>
 			<slot></slot>
 		</ul>
@@ -10,21 +15,21 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, onBeforeUnmount } from 'vue';
+import { onMounted, watch, onBeforeUnmount, ref, shallowRef } from 'vue';
 import tinycolor from 'tinycolor2';
 
 const loaded = !!window.TagCanvas;
 const SAFE_FOR_HTML_ID = 'abcdefghijklmnopqrstuvwxyz';
 const computedStyle = getComputedStyle(document.documentElement);
-const idForCanvas = Array.from(Array(16)).map(() => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
-const idForTags = Array.from(Array(16)).map(() => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
-let available = $ref(false);
-let rootEl = $shallowRef<HTMLElement | null>(null);
-let canvasEl = $shallowRef<HTMLCanvasElement | null>(null);
-let tagsEl = $shallowRef<HTMLElement | null>(null);
-let width = $ref(300);
+const idForCanvas = Array.from({ length: 16 }, () => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
+const idForTags = Array.from({ length: 16 }, () => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
+const available = ref(false);
+const rootEl = shallowRef<HTMLElement | null>(null);
+const canvasEl = shallowRef<HTMLCanvasElement | null>(null);
+const tagsEl = shallowRef<HTMLElement | null>(null);
+const width = ref(300);
 
-watch($$(available), () => {
+watch(available, () => {
 	try {
 		window.TagCanvas.Start(idForCanvas, idForTags, {
 			textColour: '#ffffff',
@@ -47,15 +52,15 @@ watch($$(available), () => {
 });
 
 onMounted(() => {
-	width = rootEl.offsetWidth;
+	if (rootEl.value) width.value = rootEl.value.offsetWidth;
 
 	if (loaded) {
-		available = true;
+		available.value = true;
 	} else {
 		document.head.appendChild(Object.assign(document.createElement('script'), {
 			async: true,
 			src: '/client-assets/tagcanvas.min.js',
-		})).addEventListener('load', () => available = true);
+		})).addEventListener('load', () => available.value = true);
 	}
 });
 
@@ -70,21 +75,17 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
-.meijqfqm {
+<style lang="scss" module>
+.root {
 	position: relative;
 	overflow: clip;
 	display: grid;
 	place-items: center;
+}
 
-	> .canvas {
-		display: block;
-	}
-
-	> .tags {
-		position: absolute;
-		top: 999px;
-		left: 999px;
-	}
+.tags {
+	position: absolute;
+	top: 999px;
+	left: 999px;
 }
 </style>

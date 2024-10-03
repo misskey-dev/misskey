@@ -1,31 +1,42 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-clock data-cy-mkw-clock">
-	<div class="vubelbmv" :class="widgetProps.size">
-		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label a abbrev">{{ tzAbbrev }}</div>
+<MkContainer :naked="widgetProps.transparent" :showHeader="false" data-cy-mkw-clock>
+	<div
+		:class="[$style.root, {
+			[$style.small]: widgetProps.size === 'small',
+			[$style.medium]: widgetProps.size === 'medium',
+			[$style.large]: widgetProps.size === 'large',
+		}]"
+	>
+		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace" :class="[$style.label, $style.a]">{{ tzAbbrev }}</div>
 		<MkAnalogClock
-			class="clock"
+			:class="$style.clock"
 			:thickness="widgetProps.thickness"
 			:offset="tzOffset"
 			:graduations="widgetProps.graduations"
-			:fade-graduations="widgetProps.fadeGraduations"
+			:fadeGraduations="widgetProps.fadeGraduations"
 			:twentyfour="widgetProps.twentyFour"
-			:s-animation="widgetProps.sAnimation"
+			:sAnimation="widgetProps.sAnimation"
 		/>
-		<MkDigitalClock v-if="widgetProps.label === 'time' || widgetProps.label === 'timeAndTz'" class="_monospace label c time" :show-s="false" :offset="tzOffset"/>
-		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label d offset">{{ tzOffsetLabel }}</div>
+		<MkDigitalClock v-if="widgetProps.label === 'time' || widgetProps.label === 'timeAndTz'" :class="[$style.label, $style.c]" class="_monospace" :showS="false" :offset="tzOffset"/>
+		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace" :class="[$style.label, $style.d]">{{ tzOffsetLabel }}</div>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
+import { computed } from 'vue';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkAnalogClock from '@/components/MkAnalogClock.vue';
 import MkDigitalClock from '@/components/MkDigitalClock.vue';
-import { timezones } from '@/scripts/timezones';
-import { i18n } from '@/i18n';
+import { timezones } from '@/scripts/timezones.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'clock';
 
@@ -114,11 +125,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -126,15 +134,15 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const tzAbbrev = $computed(() => (widgetProps.timezone === null
+const tzAbbrev = computed(() => (widgetProps.timezone === null
 	? timezones.find((tz) => tz.name.toLowerCase() === Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase())?.abbrev
 	: timezones.find((tz) => tz.name.toLowerCase() === widgetProps.timezone)?.abbrev) ?? '?');
 
-const tzOffset = $computed(() => widgetProps.timezone === null
+const tzOffset = computed(() => widgetProps.timezone === null
 	? 0 - new Date().getTimezoneOffset()
 	: timezones.find((tz) => tz.name.toLowerCase() === widgetProps.timezone)?.offset ?? 0);
 
-const tzOffsetLabel = $computed(() => (tzOffset >= 0 ? '+' : '-') + Math.floor(tzOffset / 60).toString().padStart(2, '0') + ':' + (tzOffset % 60).toString().padStart(2, '0'));
+const tzOffsetLabel = computed(() => (tzOffset.value >= 0 ? '+' : '-') + Math.floor(tzOffset.value / 60).toString().padStart(2, '0') + ':' + (tzOffset.value % 60).toString().padStart(2, '0'));
 
 defineExpose<WidgetComponentExpose>({
 	name,
@@ -143,38 +151,9 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
-.vubelbmv {
+<style lang="scss" module>
+.root {
 	position: relative;
-
-	> .label {
-		position: absolute;
-		opacity: 0.7;
-
-		&.a {
-			top: 14px;
-			left: 14px;
-		}
-
-		&.b {
-			top: 14px;
-			right: 14px;
-		}
-
-		&.c {
-			bottom: 14px;
-			left: 14px;
-		}
-
-		&.d {
-			bottom: 14px;
-			right: 14px;
-		}
-	}
-
-	> .clock {
-		margin: auto;
-	}
 
 	&.small {
 		padding: 12px;
@@ -199,5 +178,34 @@ defineExpose<WidgetComponentExpose>({
 			height: 200px;
 		}
 	}
+}
+
+.label {
+	position: absolute;
+	opacity: 0.7;
+
+	&.a {
+		top: 14px;
+		left: 14px;
+	}
+
+	&.b {
+		top: 14px;
+		right: 14px;
+	}
+
+	&.c {
+		bottom: 14px;
+		left: 14px;
+	}
+
+	&.d {
+		bottom: 14px;
+		right: 14px;
+	}
+}
+
+.clock {
+	margin: auto;
 }
 </style>

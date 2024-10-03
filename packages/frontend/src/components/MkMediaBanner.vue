@@ -1,105 +1,83 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="mk-media-banner">
-	<div v-if="media.isSensitive && hide" class="sensitive" @click="hide = false">
-		<span class="icon"><i class="ti ti-alert-triangle"></i></span>
-		<b>{{ $ts.sensitive }}</b>
-		<span>{{ $ts.clickToShow }}</span>
-	</div>
-	<div v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" class="audio">
-		<VuePlyr :options="{ volume: 0.5 }">
-			<audio controls preload="metadata">
-				<source
-					:src="media.url"
-					:type="media.type"
-				/>
-			</audio>
-		</VuePlyr>
+<div :class="$style.root">
+	<MkMediaAudio v-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" :audio="media"/>
+	<div v-else-if="media.isSensitive && hide" :class="$style.sensitive" @click="show">
+		<span style="font-size: 1.6em;"><i class="ti ti-alert-triangle"></i></span>
+		<b>{{ i18n.ts.sensitive }}</b>
+		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
 	<a
-		v-else class="download"
+		v-else :class="$style.download"
 		:href="media.url"
 		:title="media.name"
 		:download="media.name"
 	>
-		<span class="icon"><i class="ti ti-download"></i></span>
+		<span style="font-size: 1.6em;"><i class="ti ti-download"></i></span>
 		<b>{{ media.name }}</b>
 	</a>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
-import VuePlyr from 'vue-plyr';
-import { ColdDeviceStorage } from '@/store';
-import 'vue-plyr/dist/vue-plyr.css';
+import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
+import MkMediaAudio from '@/components/MkMediaAudio.vue';
 
-const props = withDefaults(defineProps<{
-	media: misskey.entities.DriveFile;
-}>(), {
-});
+const props = defineProps<{
+	media: Misskey.entities.DriveFile;
+}>();
 
-const audioEl = $shallowRef<HTMLAudioElement | null>();
-let hide = $ref(true);
+const hide = ref(true);
 
-function volumechange() {
-	if (audioEl) ColdDeviceStorage.set('mediaVolume', audioEl.volume);
+async function show() {
+	if (props.media.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.ts.sensitiveMediaRevealConfirm,
+		});
+		if (canceled) return;
+	}
+
+	hide.value = false;
 }
-
-onMounted(() => {
-	if (audioEl) audioEl.volume = ColdDeviceStorage.get('mediaVolume');
-});
 </script>
 
-<style lang="scss" scoped>
-.mk-media-banner {
+<style lang="scss" module>
+.root {
 	width: 100%;
 	border-radius: 4px;
 	margin-top: 4px;
-	// overflow: clip;
+	overflow: clip;
+}
 
-	--plyr-color-main: var(--accent);
-	--plyr-audio-controls-background: var(--bg);
-	--plyr-audio-controls-color: var(--accentLighten);
+.download,
+.sensitive {
+	display: flex;
+	align-items: center;
+	font-size: 12px;
+	padding: 8px 12px;
+	white-space: nowrap;
+}
 
-	> .download,
-	> .sensitive {
-		display: flex;
-		align-items: center;
-		font-size: 12px;
-		padding: 8px 12px;
-		white-space: nowrap;
+.download {
+	background: var(--noteAttachedFile);
+}
 
-		> * {
-			display: block;
-		}
+.sensitive {
+	background: #111;
+	color: #fff;
+}
 
-		> b {
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		> *:not(:last-child) {
-			margin-right: .2em;
-		}
-
-		> .icon {
-			font-size: 1.6em;
-		}
-	}
-
-	> .download {
-		background: var(--noteAttachedFile);
-	}
-
-	> .sensitive {
-		background: #111;
-		color: #fff;
-	}
-
-	> .audio {
-		border-radius: 8px;
-		// overflow: clip;
-	}
+.audio {
+	border-radius: 8px;
+	overflow: clip;
 }
 </style>

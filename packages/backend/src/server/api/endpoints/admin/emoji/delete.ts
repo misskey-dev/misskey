@@ -1,18 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { EmojisRepository } from '@/models/index.js';
-import { DI } from '@/di-symbols.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { ApiError } from '../../../error.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'write:admin:emoji',
 
 	errors: {
 		noSuchEmoji: {
@@ -31,38 +31,13 @@ export const paramDef = {
 	required: ['id'],
 } as const;
 
-// TODO: ロジックをサービスに切り出す
-
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.db)
-		private db: DataSource,
-
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
-
-		private moderationLogService: ModerationLogService,
-		private emojiEntityService: EmojiEntityService,
-		private globalEventService: GlobalEventService,
+		private customEmojiService: CustomEmojiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const emoji = await this.emojisRepository.findOneBy({ id: ps.id });
-
-			if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
-
-			await this.emojisRepository.delete(emoji.id);
-
-			await this.db.queryResultCache!.remove(['meta_emojis']);
-
-			this.globalEventService.publishBroadcastStream('emojiDeleted', {
-				emojis: [await this.emojiEntityService.packDetailed(emoji)],
-			});
-
-			this.moderationLogService.insertModerationLog(me, 'deleteEmoji', {
-				emoji: emoji,
-			});
+			await this.customEmojiService.delete(ps.id, me);
 		});
 	}
 }

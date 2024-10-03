@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="mkw-unixClock _monospace" :class="{ _panel: !widgetProps.transparent }" :style="{ fontSize: `${widgetProps.fontSize}em` }">
 	<div v-if="widgetProps.showLabel" class="label">UNIX Epoch</div>
@@ -12,8 +17,8 @@
 
 <script lang="ts" setup>
 import { onUnmounted, ref, watch } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
 
 const name = 'unixClock';
 
@@ -39,11 +44,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -66,9 +68,9 @@ watch(showColon, (v) => {
 });
 
 const tick = () => {
-	const now = new Date();
-	ss.value = Math.floor(now.getTime() / 1000).toString();
-	ms.value = Math.floor(now.getTime() % 1000 / 10).toString().padStart(2, '0');
+	const now = Date.now();
+	ss.value = Math.floor(now / 1000).toString();
+	ms.value = Math.floor(now % 1000 / 10).toString().padStart(2, '0');
 	if (ss.value !== prevSec) showColon.value = true;
 	prevSec = ss.value;
 };

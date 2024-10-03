@@ -1,106 +1,222 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :display-my-avatar="true"/></template>
-	<MkSpacer :content-max="800">
-		<div ref="rootEl" v-hotkey.global="keymap">
-			<XTutorial v-if="$i && $store.reactiveState.tutorial.value != -1" class="_panel" style="margin-bottom: var(--margin);"/>
-			<MkPostForm v-if="$store.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
-
-			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
-			<div :class="$style.tl">
-				<MkTimeline
-					ref="tlComponent"
-					:key="src"
-					:src="src"
-					:sound="true"
-					@queue="queueUpdated"
-				/>
+	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
+	<MkSpacer :contentMax="800">
+		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
+			<div :key="src" ref="rootEl">
+				<MkInfo v-if="isBasicTimeline(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
+					{{ i18n.ts._timelineDescription[src] }}
+				</MkInfo>
+				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
+				<div :class="$style.tl">
+					<MkTimeline
+						ref="tlComponent"
+						:key="src + withRenotes + withReplies + onlyFiles"
+						:src="src.split(':')[0]"
+						:list="src.split(':')[1]"
+						:withRenotes="withRenotes"
+						:withReplies="withReplies"
+						:onlyFiles="onlyFiles"
+						:sound="true"
+						@queue="queueUpdated"
+					/>
+				</div>
 			</div>
-		</div>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch, provide } from 'vue';
+import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
-import { scroll } from '@/scripts/scroll';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import { $i } from '@/account';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import { scroll } from '@@/js/scroll.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
+import { deviceKind } from '@/scripts/device-kind.js';
+import { deepMerge } from '@/scripts/merge.js';
+import type { MenuItem } from '@/types/menu.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
+import type { BasicTimelineType } from '@/timelines.js';
 
 provide('shouldOmitHeaderTitle', true);
 
-const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
+const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
+const rootEl = shallowRef<HTMLElement>();
 
-const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
-const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
-const keymap = {
-	't': focus,
-};
+type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 
-const tlComponent = $shallowRef<InstanceType<typeof MkTimeline>>();
-const rootEl = $shallowRef<HTMLElement>();
+const queue = ref(0);
+const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline('local') ? 'local' : 'global');
+const src = computed<TimelinePageSrc>({
+	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
+	set: (x) => saveSrc(x),
+});
+const withRenotes = computed<boolean>({
+	get: () => defaultStore.reactiveState.tl.value.filter.withRenotes,
+	set: (x) => saveTlFilter('withRenotes', x),
+});
 
-let queue = $ref(0);
-let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
-const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
+// computed内での無限ループを防ぐためのフラグ
+const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>(
+	defaultStore.reactiveState.tl.value.filter.withReplies ? 'withReplies' :
+	defaultStore.reactiveState.tl.value.filter.onlyFiles ? 'onlyFiles' :
+	false,
+);
 
-watch ($$(src), () => queue = 0);
+const withReplies = computed<boolean>({
+	get: () => {
+		if (!$i) return false;
+		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
+			return false;
+		} else {
+			return defaultStore.reactiveState.tl.value.filter.withReplies;
+		}
+	},
+	set: (x) => saveTlFilter('withReplies', x),
+});
+const onlyFiles = computed<boolean>({
+	get: () => {
+		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
+			return false;
+		} else {
+			return defaultStore.reactiveState.tl.value.filter.onlyFiles;
+		}
+	},
+	set: (x) => saveTlFilter('onlyFiles', x),
+});
+
+watch([withReplies, onlyFiles], ([withRepliesTo, onlyFilesTo]) => {
+	if (withRepliesTo) {
+		localSocialTLFilterSwitchStore.value = 'withReplies';
+	} else if (onlyFilesTo) {
+		localSocialTLFilterSwitchStore.value = 'onlyFiles';
+	} else {
+		localSocialTLFilterSwitchStore.value = false;
+	}
+});
+
+const withSensitive = computed<boolean>({
+	get: () => defaultStore.reactiveState.tl.value.filter.withSensitive,
+	set: (x) => saveTlFilter('withSensitive', x),
+});
+
+watch(src, () => {
+	queue.value = 0;
+});
+
+watch(withSensitive, () => {
+	// これだけはクライアント側で完結する処理なので手動でリロード
+	tlComponent.value?.reloadTimeline();
+});
 
 function queueUpdated(q: number): void {
-	queue = q;
+	queue.value = q;
 }
 
 function top(): void {
-	if (rootEl) scroll(rootEl, { top: 0 });
+	if (rootEl.value) scroll(rootEl.value, { top: 0 });
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
-	const lists = await os.api('users/lists/list');
-	const items = lists.map(list => ({
-		type: 'link' as const,
-		text: list.name,
-		to: `/timeline/list/${list.id}`,
-	}));
+	const lists = await userListsCache.fetch();
+	const items: MenuItem[] = [
+		...lists.map(list => ({
+			type: 'link' as const,
+			text: list.name,
+			to: `/timeline/list/${list.id}`,
+		})),
+		(lists.length === 0 ? undefined : { type: 'divider' }),
+		{
+			type: 'link' as const,
+			icon: 'ti ti-plus',
+			text: i18n.ts.createNew,
+			to: '/my/lists',
+		},
+	];
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 async function chooseAntenna(ev: MouseEvent): Promise<void> {
-	const antennas = await os.api('antennas/list');
-	const items = antennas.map(antenna => ({
-		type: 'link' as const,
-		text: antenna.name,
-		indicate: antenna.hasUnreadNote,
-		to: `/timeline/antenna/${antenna.id}`,
-	}));
+	const antennas = await antennasCache.fetch();
+	const items: MenuItem[] = [
+		...antennas.map(antenna => ({
+			type: 'link' as const,
+			text: antenna.name,
+			indicate: antenna.hasUnreadNote,
+			to: `/timeline/antenna/${antenna.id}`,
+		})),
+		(antennas.length === 0 ? undefined : { type: 'divider' }),
+		{
+			type: 'link' as const,
+			icon: 'ti ti-plus',
+			text: i18n.ts.createNew,
+			to: '/my/antennas',
+		},
+	];
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 async function chooseChannel(ev: MouseEvent): Promise<void> {
-	const channels = await os.api('channels/followed', {
-		limit: 100,
-	});
-	const items = channels.map(channel => ({
-		type: 'link' as const,
-		text: channel.name,
-		indicate: channel.hasUnreadNote,
-		to: `/channels/${channel.id}`,
-	}));
+	const channels = await favoritedChannelsCache.fetch();
+	const items: MenuItem[] = [
+		...channels.map(channel => {
+			const lastReadedAt = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.id}`) ?? null;
+			const hasUnreadNote = (lastReadedAt && channel.lastNotedAt) ? Date.parse(channel.lastNotedAt) > lastReadedAt : !!(!lastReadedAt && channel.lastNotedAt);
+
+			return {
+				type: 'link' as const,
+				text: channel.name,
+				indicate: hasUnreadNote,
+				to: `/channels/${channel.id}`,
+			};
+		}),
+		(channels.length === 0 ? undefined : { type: 'divider' }),
+		{
+			type: 'link',
+			icon: 'ti ti-plus',
+			text: i18n.ts.createNew,
+			to: '/channels',
+		},
+	];
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global'): void {
-	defaultStore.set('tl', {
-		...defaultStore.state.tl,
-		src: newSrc,
-	});
-	srcWhenNotSignin = newSrc;
+function saveSrc(newSrc: TimelinePageSrc): void {
+	const out = deepMerge({ src: newSrc }, defaultStore.state.tl);
+
+	if (newSrc.startsWith('userList:')) {
+		const id = newSrc.substring('userList:'.length);
+		out.userList = defaultStore.reactiveState.pinnedUserLists.value.find(l => l.id === id) ?? null;
+	}
+
+	defaultStore.set('tl', out);
+	if (['local', 'global'].includes(newSrc)) {
+		srcWhenNotSignin.value = newSrc as 'local' | 'global';
+	}
+}
+
+function saveTlFilter(key: keyof typeof defaultStore.state.tl.filter, newValue: boolean) {
+	if (key !== 'withReplies' || $i) {
+		const out = deepMerge({ filter: { [key]: newValue } }, defaultStore.state.tl);
+		defaultStore.set('tl', out);
+	}
 }
 
 async function timetravel(): Promise<void> {
@@ -109,36 +225,94 @@ async function timetravel(): Promise<void> {
 	});
 	if (canceled) return;
 
-	tlComponent.timetravel(date);
+	tlComponent.value.timetravel(date);
 }
 
 function focus(): void {
-	tlComponent.focus();
+	tlComponent.value.focus();
 }
 
-const headerActions = $computed(() => []);
+function closeTutorial(): void {
+	if (!isBasicTimeline(src.value)) return;
+	const before = defaultStore.state.timelineTutorials;
+	before[src.value] = true;
+	defaultStore.set('timelineTutorials', before);
+}
 
-const headerTabs = $computed(() => [{
-	key: 'home',
-	title: i18n.ts._timelines.home,
-	icon: 'ti ti-home',
+function switchTlIfNeeded() {
+	if (isBasicTimeline(src.value) && !isAvailableBasicTimeline(src.value)) {
+		src.value = availableBasicTimelines()[0];
+	}
+}
+
+onMounted(() => {
+	switchTlIfNeeded();
+});
+onActivated(() => {
+	switchTlIfNeeded();
+});
+
+const headerActions = computed(() => {
+	const tmp = [
+		{
+			icon: 'ti ti-dots',
+			text: i18n.ts.options,
+			handler: (ev) => {
+				const menuItems: MenuItem[] = [];
+
+				menuItems.push({
+					type: 'switch',
+					text: i18n.ts.showRenotes,
+					ref: withRenotes,
+				});
+
+				if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
+					menuItems.push({
+						type: 'switch',
+						text: i18n.ts.showRepliesToOthersInTimeline,
+						ref: withReplies,
+						disabled: onlyFiles,
+					});
+				}
+
+				menuItems.push({
+					type: 'switch',
+					text: i18n.ts.withSensitive,
+					ref: withSensitive,
+				}, {
+					type: 'switch',
+					text: i18n.ts.fileAttachedOnly,
+					ref: onlyFiles,
+					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
+				});
+
+				os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+			},
+		},
+	];
+	if (deviceKind === 'desktop') {
+		tmp.unshift({
+			icon: 'ti ti-refresh',
+			text: i18n.ts.reload,
+			handler: (ev: Event) => {
+				tlComponent.value?.reloadTimeline();
+			},
+		});
+	}
+	return tmp;
+});
+
+const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
+	key: 'list:' + l.id,
+	title: l.name,
+	icon: 'ti ti-star',
 	iconOnly: true,
-}, ...(isLocalTimelineAvailable ? [{
-	key: 'local',
-	title: i18n.ts._timelines.local,
-	icon: 'ti ti-planet',
+}))), ...availableBasicTimelines().map(tl => ({
+	key: tl,
+	title: i18n.ts._timelines[tl],
+	icon: basicTimelineIconClass(tl),
 	iconOnly: true,
-}, {
-	key: 'social',
-	title: i18n.ts._timelines.social,
-	icon: 'ti ti-rocket',
-	iconOnly: true,
-}] : []), ...(isGlobalTimelineAvailable ? [{
-	key: 'global',
-	title: i18n.ts._timelines.global,
-	icon: 'ti ti-whirl',
-	iconOnly: true,
-}] : []), {
+})), {
 	icon: 'ti ti-list',
 	title: i18n.ts.lists,
 	iconOnly: true,
@@ -155,25 +329,17 @@ const headerTabs = $computed(() => [{
 	onClick: chooseChannel,
 }] as Tab[]);
 
-const headerTabsWhenNotLogin = $computed(() => [
-	...(isLocalTimelineAvailable ? [{
-		key: 'local',
-		title: i18n.ts._timelines.local,
-		icon: 'ti ti-planet',
-		iconOnly: true,
-	}] : []),
-	...(isGlobalTimelineAvailable ? [{
-		key: 'global',
-		title: i18n.ts._timelines.global,
-		icon: 'ti ti-whirl',
-		iconOnly: true,
-	}] : []),
-] as Tab[]);
+const headerTabsWhenNotLogin = computed(() => [...availableBasicTimelines().map(tl => ({
+	key: tl,
+	title: i18n.ts._timelines[tl],
+	icon: basicTimelineIconClass(tl),
+	iconOnly: true,
+}))] as Tab[]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.timeline,
-	icon: src === 'local' ? 'ti ti-planet' : src === 'social' ? 'ti ti-rocket' : src === 'global' ? 'ti ti-whirl' : 'ti ti-home',
-})));
+	icon: isBasicTimeline(src.value) ? basicTimelineIconClass(src.value) : 'ti ti-home',
+}));
 </script>
 
 <style lang="scss" module>
@@ -187,13 +353,13 @@ definePageMetadata(computed(() => ({
 	&:first-child {
 		margin-top: calc(-0.675em - 8px - var(--margin));
 	}
+}
 
-	> button {
-		display: block;
-		margin: var(--margin) auto 0 auto;
-		padding: 8px 16px;
-		border-radius: 32px;
-	}
+.newButton {
+	display: block;
+	margin: var(--margin) auto 0 auto;
+	padding: 8px 16px;
+	border-radius: 32px;
 }
 
 .postForm {

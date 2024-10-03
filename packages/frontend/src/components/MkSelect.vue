@@ -1,37 +1,52 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="vblkjoeq">
-	<div class="label" @click="focus"><slot name="label"></slot></div>
-	<div ref="container" class="input" :class="{ inline, disabled, focused }" @mousedown.prevent="show">
-		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
+<div>
+	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
+	<div
+		ref="container"
+		tabindex="0"
+		:class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused || opening }]"
+		@focus="focused = true"
+		@blur="focused = false"
+		@mousedown.prevent="show"
+		@keydown.space.enter="show"
+	>
+		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
 		<select
 			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
-			class="select"
+			tabindex="-1"
+			:class="$style.inputCore"
 			:disabled="disabled"
 			:required="required"
 			:readonly="readonly"
 			:placeholder="placeholder"
-			@focus="focused = true"
-			@blur="focused = false"
 			@input="onInput"
+			@mousedown.prevent="() => {}"
+			@keydown.prevent="() => {}"
 		>
 			<slot></slot>
 		</select>
-		<div ref="suffixEl" class="suffix"><i class="ti ti-chevron-down" :class="[$style.chevron, { [$style.chevronOpening]: opening }]"></i></div>
+		<div ref="suffixEl" :class="$style.suffix"><i class="ti ti-chevron-down" :class="[$style.chevron, { [$style.chevronOpening]: opening }]"></i></div>
 	</div>
-	<div class="caption"><slot name="caption"></slot></div>
+	<div :class="$style.caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, computed, toRefs, VNode, useSlots } from 'vue';
+import { onMounted, nextTick, ref, watch, computed, toRefs, VNode, useSlots, VNodeChild } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { i18n } from '@/i18n.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -47,7 +62,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'changeByUser', value: string | null): void;
 	(ev: 'update:modelValue', value: string | null): void;
 }>();
 
@@ -60,19 +75,18 @@ const opening = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = ref(null);
-const prefixEl = ref(null);
-const suffixEl = ref(null);
-const container = ref(null);
+const inputEl = ref<HTMLObjectElement | null>(null);
+const prefixEl = ref<HTMLElement | null>(null);
+const suffixEl = ref<HTMLElement | null>(null);
+const container = ref<HTMLElement | null>(null);
 const height =
 	props.small ? 33 :
 	props.large ? 39 :
 	36;
 
-const focus = () => inputEl.value.focus();
+const focus = () => container.value?.focus();
 const onInput = (ev) => {
 	changed.value = true;
-	emit('change', ev);
 };
 
 const updated = () => {
@@ -84,17 +98,19 @@ watch(modelValue, newValue => {
 	v.value = newValue;
 });
 
-watch(v, newValue => {
+watch(v, () => {
 	if (!props.manualSave) {
 		updated();
 	}
 
-	invalid.value = inputEl.value.validity.badInput;
+	invalid.value = inputEl.value?.validity.badInput ?? true;
 });
 
 // このコンポーネントが作成された時、非表示状態である場合がある
 // 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
 useInterval(() => {
+	if (inputEl.value == null) return;
+
 	if (prefixEl.value) {
 		if (prefixEl.value.offsetWidth) {
 			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
@@ -118,35 +134,40 @@ onMounted(() => {
 	});
 });
 
-function show(ev: MouseEvent) {
-	focused.value = true;
+function show() {
+	if (opening.value) return;
+	focus();
+
 	opening.value = true;
 
-	const menu = [];
+	const menu: MenuItem[] = [];
 	let options = slots.default!();
 
 	const pushOption = (option: VNode) => {
 		menu.push({
-			text: option.children,
-			active: computed(() => v.value === option.props.value),
+			text: option.children as string,
+			active: computed(() => v.value === option.props?.value),
 			action: () => {
-				v.value = option.props.value;
+				v.value = option.props?.value;
+				changed.value = true;
+				emit('changeByUser', v.value);
 			},
 		});
 	};
 
-	const scanOptions = (options: VNode[]) => {
+	const scanOptions = (options: VNodeChild[]) => {
 		for (const vnode of options) {
+			if (typeof vnode !== 'object' || vnode === null || Array.isArray(vnode)) continue;
 			if (vnode.type === 'optgroup') {
 				const optgroup = vnode;
 				menu.push({
 					type: 'label',
-					text: optgroup.props.label,
+					text: optgroup.props?.label,
 				});
-				scanOptions(optgroup.children);
+				if (Array.isArray(optgroup.children)) scanOptions(optgroup.children);
 			} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
 				const fragment = vnode;
-				scanOptions(fragment.children);
+				if (Array.isArray(fragment.children)) scanOptions(fragment.children);
 			} else if (vnode.props == null) { // v-if で条件が false のときにこうなる
 				// nop?
 			} else {
@@ -159,131 +180,132 @@ function show(ev: MouseEvent) {
 	scanOptions(options);
 
 	os.popupMenu(menu, container.value, {
-		width: container.value.offsetWidth,
+		width: container.value?.offsetWidth,
 		onClosing: () => {
 			opening.value = false;
 		},
-	}).then(() => {
-		focused.value = false;
 	});
 }
 </script>
 
-<style lang="scss" scoped>
-.vblkjoeq {
-	> .label {
-		font-size: 0.85em;
-		padding: 0 0 8px 0;
-		user-select: none;
+<style lang="scss" module>
+.label {
+	font-size: 0.85em;
+	padding: 0 0 8px 0;
+	user-select: none;
 
-		&:empty {
-			display: none;
+	&:empty {
+		display: none;
+	}
+}
+
+.caption {
+	font-size: 0.85em;
+	padding: 8px 0 0 0;
+	color: var(--fgTransparentWeak);
+
+	&:empty {
+		display: none;
+	}
+}
+
+.input {
+	position: relative;
+	cursor: pointer;
+
+	&.inline {
+		display: inline-block;
+		margin: 0;
+	}
+
+	&.focused {
+		> .inputCore {
+			border-color: var(--accent) !important;
+			//box-shadow: 0 0 0 4px var(--focus);
 		}
 	}
 
-	> .caption {
-		font-size: 0.85em;
-		padding: 8px 0 0 0;
-		color: var(--fgTransparentWeak);
+	&.disabled {
+		opacity: 0.7;
 
-		&:empty {
-			display: none;
+		&,
+		> .inputCore {
+			cursor: not-allowed !important;
 		}
 	}
 
-	> .input {
-		position: relative;
-		cursor: pointer;
+	&:focus {
+		outline: none;
+	}
 
-		&:hover {
-			> .select {
-				border-color: var(--inputBorderHover) !important;
-			}
-		}
-
-		> .select {
-			appearance: none;
-			-webkit-appearance: none;
-			display: block;
-			height: v-bind("height + 'px'");
-			width: 100%;
-			margin: 0;
-			padding: 0 12px;
-			font: inherit;
-			font-weight: normal;
-			font-size: 1em;
-			color: var(--fg);
-			background: var(--panel);
-			border: solid 1px var(--panel);
-			border-radius: 6px;
-			outline: none;
-			box-shadow: none;
-			box-sizing: border-box;
-			cursor: pointer;
-			transition: border-color 0.1s ease-out;
-			pointer-events: none;
-			user-select: none;
-		}
-
-		> .prefix,
-		> .suffix {
-			display: flex;
-			align-items: center;
-			position: absolute;
-			z-index: 1;
-			top: 0;
-			padding: 0 12px;
-			font-size: 1em;
-			height: v-bind("height + 'px'");
-			pointer-events: none;
-
-			&:empty {
-				display: none;
-			}
-
-			> * {
-				display: inline-block;
-				min-width: 16px;
-				max-width: 150px;
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-			}
-		}
-
-		> .prefix {
-			left: 0;
-			padding-right: 6px;
-		}
-
-		> .suffix {
-			right: 0;
-			padding-left: 6px;
-		}
-
-		&.inline {
-			display: inline-block;
-			margin: 0;
-		}
-
-		&.focused {
-			> select {
-				border-color: var(--accent) !important;
-			}
-		}
-
-		&.disabled {
-			opacity: 0.7;
-
-			&, * {
-				cursor: not-allowed !important;
-			}
+	&:hover {
+		> .inputCore {
+			border-color: var(--inputBorderHover) !important;
 		}
 	}
 }
-</style>
 
-<style lang="scss" module>
+.inputCore {
+	appearance: none;
+	-webkit-appearance: none;
+	display: block;
+	height: v-bind("height + 'px'");
+	width: 100%;
+	margin: 0;
+	padding: 0 12px;
+	font: inherit;
+	font-weight: normal;
+	font-size: 1em;
+	color: var(--fg);
+	background: var(--panel);
+	border: solid 1px var(--panel);
+	border-radius: 6px;
+	outline: none;
+	box-shadow: none;
+	box-sizing: border-box;
+	transition: border-color 0.1s ease-out;
+	cursor: pointer;
+	pointer-events: none;
+	user-select: none;
+}
+
+.prefix,
+.suffix {
+	display: flex;
+	align-items: center;
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	padding: 0 12px;
+	font-size: 1em;
+	height: v-bind("height + 'px'");
+	min-width: 16px;
+	max-width: 150px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	box-sizing: border-box;
+	pointer-events: none;
+
+	&:empty {
+		display: none;
+	}
+}
+
+.prefix {
+	left: 0;
+	padding-right: 6px;
+}
+
+.suffix {
+	right: 0;
+	padding-left: 6px;
+}
+
+.save {
+	margin: 8px 0 0 0;
+}
+
 .chevron {
 	transition: transform 0.1s ease-out;
 }

@@ -1,14 +1,21 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
-import Channel from '../channel.js';
+import type { JsonObject } from '@/misc/json-value.js';
+import Channel, { type MiChannelService } from '../channel.js';
 
 class AdminChannel extends Channel {
 	public readonly chName = 'admin';
 	public static shouldShare = true;
-	public static requireCredential = true;
+	public static requireCredential = true as const;
+	public static kind = 'read:admin:stream';
 
 	@bindThis
-	public async init(params: any) {
+	public async init(params: JsonObject) {
 		// Subscribe admin stream
 		this.subscriber.on(`adminStream:${this.user!.id}`, data => {
 			this.send(data);
@@ -17,9 +24,10 @@ class AdminChannel extends Channel {
 }
 
 @Injectable()
-export class AdminChannelService {
+export class AdminChannelService implements MiChannelService<true> {
 	public readonly shouldShare = AdminChannel.shouldShare;
 	public readonly requireCredential = AdminChannel.requireCredential;
+	public readonly kind = AdminChannel.kind;
 
 	constructor(
 	) {

@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="600" :margin-min="16">
+	<MkSpacer :contentMax="600" :marginMin="16">
 		<div class="_gaps_m">
 			<FormInfo warn>{{ i18n.ts.editTheseSettingsMayBreakAccount }}</FormInfo>
 
@@ -9,7 +14,7 @@
 				<FormSplit>
 					<MkKeyValue>
 						<template #key>{{ i18n.ts._registry.domain }}</template>
-						<template #value>{{ i18n.ts.system }}</template>
+						<template #value>{{ props.domain === '@' ? i18n.ts.system : props.domain.toUpperCase() }}</template>
 					</MkKeyValue>
 					<MkKeyValue>
 						<template #key>{{ i18n.ts._registry.scope }}</template>
@@ -20,10 +25,10 @@
 						<template #value>{{ key }}</template>
 					</MkKeyValue>
 				</FormSplit>
-				
-				<MkTextarea v-model="valueForEditor" tall class="_monospace">
+
+				<MkCodeEditor v-model="valueForEditor" lang="json5">
 					<template #label>{{ i18n.ts.value }} (JSON)</template>
-				</MkTextarea>
+				</MkCodeEditor>
 
 				<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 
@@ -40,40 +45,43 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, computed, ref } from 'vue';
 import JSON5 from 'json5';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormInfo from '@/components/MkInfo.vue';
 
 const props = defineProps<{
 	path: string;
+	domain: string;
 }>();
 
-const scope = $computed(() => props.path.split('/').slice(0, -1));
-const key = $computed(() => props.path.split('/').at(-1));
+const scope = computed(() => props.path.split('/').slice(0, -1));
+const key = computed(() => props.path.split('/').at(-1));
 
-let value = $ref(null);
-let valueForEditor = $ref(null);
+const value = ref<any>(null);
+const valueForEditor = ref<string | null>(null);
 
 function fetchValue() {
-	os.api('i/registry/get-detail', {
-		scope,
-		key,
+	misskeyApi('i/registry/get-detail', {
+		scope: scope.value,
+		key: key.value,
+		domain: props.domain === '@' ? null : props.domain,
 	}).then(res => {
-		value = res;
-		valueForEditor = JSON5.stringify(res.value, null, '\t');
+		value.value = res;
+		valueForEditor.value = JSON5.stringify(res.value, null, '\t');
 	});
 }
 
 async function save() {
 	try {
-		JSON5.parse(valueForEditor);
+		JSON5.parse(valueForEditor.value);
 	} catch (err) {
 		os.alert({
 			type: 'error',
@@ -87,9 +95,10 @@ async function save() {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		os.apiWithDialog('i/registry/set', {
-			scope,
-			key,
-			value: JSON5.parse(valueForEditor),
+			scope: scope.value,
+			key: key.value,
+			value: JSON5.parse(valueForEditor.value),
+			domain: props.domain === '@' ? null : props.domain,
 		});
 	});
 }
@@ -101,23 +110,21 @@ function del() {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		os.apiWithDialog('i/registry/remove', {
-			scope,
-			key,
+			scope: scope.value,
+			key: key.value,
+			domain: props.domain === '@' ? null : props.domain,
 		});
 	});
 }
 
 watch(() => props.path, fetchValue, { immediate: true });
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.registry,
 	icon: 'ti ti-adjustments',
-});
+}));
 </script>
-
-<style lang="scss" scoped>
-</style>

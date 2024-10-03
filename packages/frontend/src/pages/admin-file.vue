@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer v-if="file" :content-max="600" :margin-min="16" :margin-max="32">
+	<MkSpacer v-if="file" :contentMax="600" :marginMin="16" :marginMax="32">
 		<div v-if="tab === 'overview'" class="cxqhhsmd _gaps_m">
 			<a class="thumbnail" :href="file.url" target="_blank">
 				<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
@@ -28,16 +33,19 @@
 					<template #value><span class="_monospace"><MkTime :time="file.createdAt" mode="detail" style="display: block;"/></span></template>
 				</MkKeyValue>
 			</div>
-			<MkA v-if="file.user" class="user" :to="`/user-info/${file.user.id}`">
+			<MkA v-if="file.user" class="user" :to="`/admin/user/${file.user.id}`">
 				<MkUserCardMini :user="file.user"/>
 			</MkA>
 			<div>
-				<MkSwitch v-model="isSensitive" @update:model-value="toggleIsSensitive">NSFW</MkSwitch>
+				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
 			</div>
 
 			<div>
 				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
+		</div>
+		<div v-else-if="tab === 'notes' && info" class="_gaps_m">
+			<XNotes :fileId="fileId"/>
 		</div>
 		<div v-else-if="tab === 'ip' && info" class="_gaps_m">
 			<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
@@ -62,7 +70,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
@@ -71,25 +80,27 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSection from '@/components/form/section.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import bytes from '@/filters/bytes';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { iAmAdmin, iAmModerator } from '@/account';
+import bytes from '@/filters/bytes.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { iAmAdmin, iAmModerator } from '@/account.js';
 
-let tab = $ref('overview');
-let file: any = $ref(null);
-let info: any = $ref(null);
-let isSensitive: boolean = $ref(false);
+const tab = ref('overview');
+const file = ref<Misskey.entities.DriveFile | null>(null);
+const info = ref<Misskey.entities.AdminDriveShowFileResponse | null>(null);
+const isSensitive = ref<boolean>(false);
+const XNotes = defineAsyncComponent(() => import('./drive.file.notes.vue'));
 
 const props = defineProps<{
 	fileId: string,
 }>();
 
 async function fetch() {
-	file = await os.api('drive/files/show', { fileId: props.fileId });
-	info = await os.api('admin/drive/show-file', { fileId: props.fileId });
-	isSensitive = file.isSensitive;
+	file.value = await misskeyApi('drive/files/show', { fileId: props.fileId });
+	info.value = await misskeyApi('admin/drive/show-file', { fileId: props.fileId });
+	isSensitive.value = file.value.isSensitive;
 }
 
 fetch();
@@ -97,33 +108,37 @@ fetch();
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('removeAreYouSure', { x: file.name }),
+		text: i18n.tsx.removeAreYouSure({ x: file.value.name }),
 	});
 	if (canceled) return;
 
 	os.apiWithDialog('drive/files/delete', {
-		fileId: file.id,
+		fileId: file.value.id,
 	});
 }
 
 async function toggleIsSensitive(v) {
-	await os.api('drive/files/update', { fileId: props.fileId, isSensitive: v });
-	isSensitive = v;
+	await misskeyApi('drive/files/update', { fileId: props.fileId, isSensitive: v });
+	isSensitive.value = v;
 }
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	text: i18n.ts.openInNewTab,
 	icon: 'ti ti-external-link',
 	handler: () => {
-		window.open(file.url, '_blank');
+		window.open(file.value.url, '_blank', 'noopener');
 	},
 }]);
 
-const headerTabs = $computed(() => [{
+const headerTabs = computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',
 }, iAmModerator ? {
+	key: 'notes',
+	title: i18n.ts._fileViewer.attachedNotes,
+	icon: 'ti ti-pencil',
+} : null, iAmModerator ? {
 	key: 'ip',
 	title: 'IP',
 	icon: 'ti ti-password',
@@ -133,10 +148,10 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-code',
 }]);
 
-definePageMetadata(computed(() => ({
-	title: file ? i18n.ts.file + ': ' + file.name : i18n.ts.file,
+definePageMetadata(() => ({
+	title: file.value ? `${i18n.ts.file}: ${file.value.name}` : i18n.ts.file,
 	icon: 'ti ti-file',
-})));
+}));
 </script>
 
 <style lang="scss" scoped>

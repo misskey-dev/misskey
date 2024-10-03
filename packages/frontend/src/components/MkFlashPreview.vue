@@ -1,10 +1,17 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkA :to="`/play/${flash.id}`" class="vhpxefrk _panel" tabindex="-1">
+<MkA :to="`/play/${flash.id}`" class="vhpxefrk _panel" :class="[{ gray: flash.visibility === 'private' }]">
 	<article>
 		<header>
 			<h1 :title="flash.title">{{ flash.title }}</h1>
 		</header>
-		<p v-if="flash.summary" :title="flash.summary">{{ flash.summary.length > 85 ? flash.summary.slice(0, 85) + '…' : flash.summary }}</p>
+		<p v-if="flash.summary" :title="flash.summary">
+			<Mfm class="summaryMfm" :text="flash.summary" :plain="true" :nowrap="true"/>
+		</p>
 		<footer>
 			<img class="icon" :src="flash.user.avatarUrl"/>
 			<p>{{ userName(flash.user) }}</p>
@@ -15,11 +22,11 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { userName } from '@/filters/user';
+import * as Misskey from 'misskey-js';
+import { userName } from '@/filters/user.js';
 
 const props = defineProps<{
-	//flash: misskey.entities.Flash;
-	flash: any;
+	flash: Misskey.entities.Flash;
 }>();
 </script>
 
@@ -30,6 +37,10 @@ const props = defineProps<{
 	&:hover {
 		text-decoration: none;
 		color: var(--accent);
+	}
+
+	&:focus-visible {
+		outline-offset: -2px;
 	}
 
 	> article {
@@ -49,6 +60,12 @@ const props = defineProps<{
 			margin: 0;
 			color: var(--urlPreviewText);
 			font-size: 0.8em;
+			overflow: clip;
+
+			> .summaryMfm {
+				display: block;
+				width: 100%;
+			}
 		}
 
 		> footer {
@@ -74,6 +91,12 @@ const props = defineProps<{
 		}
 	}
 
+	&:global(.gray) {
+		--c: var(--bg);
+		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
+		background-size: 16px 16px;
+	}
+
 	@media (max-width: 700px) {
 	}
 
@@ -87,7 +110,7 @@ const props = defineProps<{
 
 	@media (max-width: 500px) {
 		font-size: 10px;
-		
+
 		> article {
 			padding: 8px;
 

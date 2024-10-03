@@ -1,12 +1,17 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div :class="[$style.root, { _panel: !widgetProps.transparent }]" class="data-cy-mkw-calendar">
+<div :class="[$style.root, { _panel: !widgetProps.transparent }]" data-cy-mkw-calendar>
 	<div :class="[$style.calendar, { [$style.isHoliday]: isHoliday }]">
 		<p :class="$style.monthAndYear">
-			<span :class="$style.year">{{ $t('yearX', { year }) }}</span>
-			<span :class="$style.month">{{ $t('monthX', { month }) }}</span>
+			<span :class="$style.year">{{ i18n.tsx.yearX({ year }) }}</span>
+			<span :class="$style.month">{{ i18n.tsx.monthX({ month }) }}</span>
 		</p>
-		<p v-if="month === 1 && day === 1" class="day">🎉{{ $t('dayX', { day }) }}<span style="display: inline-block; transform: scaleX(-1);">🎉</span></p>
-		<p v-else :class="$style.day">{{ $t('dayX', { day }) }}</p>
+		<p v-if="month === 1 && day === 1" class="day">🎉{{ i18n.tsx.dayX({ day }) }}<span style="display: inline-block; transform: scaleX(-1);">🎉</span></p>
+		<p v-else :class="$style.day">{{ i18n.tsx.dayX({ day }) }}</p>
 		<p :class="$style.weekDay">{{ weekDay }}</p>
 	</div>
 	<div :class="$style.info">
@@ -34,10 +39,10 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import { i18n } from '@/i18n';
-import { useInterval } from '@/scripts/use-interval';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import { i18n } from '@/i18n.js';
+import { useInterval } from '@@/js/use-interval.js';
 
 const name = 'calendar';
 
@@ -50,11 +55,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -119,7 +121,7 @@ defineExpose<WidgetComponentExpose>({
 .root {
 	padding: 16px 0;
 
-	&:after {
+	&::after {
 		content: "";
 		display: block;
 		clear: both;

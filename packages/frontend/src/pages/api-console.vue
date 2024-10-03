@@ -1,10 +1,15 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700">
+	<MkSpacer :contentMax="700">
 		<div class="_gaps_m">
 			<div class="_gaps_m">
-				<MkInput v-model="endpoint" :datalist="endpoints" @update:model-value="onEndpointChange()">
+				<MkInput v-model="endpoint" :datalist="endpoints" @update:modelValue="onEndpointChange()">
 					<template #label>Endpoint</template>
 				</MkInput>
 				<MkTextarea v-model="body" code>
@@ -29,31 +34,31 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import JSON5 from 'json5';
 import { Endpoints } from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const body = ref('{}');
 const endpoint = ref('');
-const endpoints = ref<any[]>([]);
+const endpoints = ref<string[]>([]);
 const sending = ref(false);
 const res = ref('');
 const withCredential = ref(true);
 
-os.api('endpoints').then(endpointResponse => {
+misskeyApi('endpoints').then(endpointResponse => {
 	endpoints.value = endpointResponse;
 });
 
 function send() {
 	sending.value = true;
 	const requestBody = JSON5.parse(body.value);
-	os.api(endpoint.value as keyof Endpoints, requestBody, requestBody.i || (withCredential.value ? undefined : null)).then(resp => {
+	misskeyApi(endpoint.value as keyof Endpoints, requestBody, requestBody.i || (withCredential.value ? undefined : null)).then(resp => {
 		sending.value = false;
 		res.value = JSON5.stringify(resp, null, 2);
 	}, err => {
@@ -63,7 +68,7 @@ function send() {
 }
 
 function onEndpointChange() {
-	os.api('endpoint', { endpoint: endpoint.value }, withCredential.value ? undefined : null).then(resp => {
+	misskeyApi('endpoint', { endpoint: endpoint.value }, withCredential.value ? undefined : null).then(resp => {
 		const endpointBody = {};
 		for (const p of resp.params) {
 			endpointBody[p.name] =
@@ -78,12 +83,12 @@ function onEndpointChange() {
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: 'API console',
 	icon: 'ti ti-terminal-2',
-});
+}));
 </script>

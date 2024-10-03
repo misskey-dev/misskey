@@ -1,12 +1,6 @@
-/**
- * BOOT LOADER
- * サーバーからレスポンスされるHTMLに埋め込まれるスクリプトで、以下の役割を持ちます。
- * - 翻訳ファイルをフェッチする。
- * - バージョンに基づいて適切なメインスクリプトを読み込む。
- * - キャッシュされたコンパイル済みテーマを適用する。
- * - クライアントの設定値に基づいて対応するHTMLクラス等を設定する。
- * テーマをこの段階で設定するのは、メインスクリプトが読み込まれる間もテーマを適用したいためです。
- * 注: webpackは介さないため、このファイルではrequireやimportは使えません。
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 'use strict';
@@ -24,7 +18,8 @@
 
 	let forceError = localStorage.getItem('forceError');
 	if (forceError != null) {
-		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.')
+		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.');
+		return;
 	}
 
 	//#region Detect language & fetch translations
@@ -61,6 +56,13 @@
 			renderError('META_FETCH_V');
 			return;
 		}
+
+		// for https://github.com/misskey-dev/misskey/issues/10202
+		if (lang == null || lang.toString == null || lang.toString() === 'null') {
+			console.error('invalid lang value detected!!!', typeof lang, lang);
+			lang = 'en-US';
+		}
+
 		const localRes = await window.fetch(`/assets/locales/${lang}.${v}.json`);
 		if (localRes.status === 200) {
 			localStorage.setItem('lang', lang);
@@ -74,8 +76,8 @@
 	//#endregion
 
 	//#region Script
-	function importAppScript() {
-		import(`/vite/${CLIENT_ENTRY}`)
+	async function importAppScript() {
+		await import(`/vite/${CLIENT_ENTRY}`)
 			.catch(async e => {
 				console.error(e);
 				renderError('APP_IMPORT', e);
@@ -109,9 +111,9 @@
 			}
 		}
 	}
-	const colorSchema = localStorage.getItem('colorSchema');
-	if (colorSchema) {
-		document.documentElement.style.setProperty('color-schema', colorSchema);
+	const colorScheme = localStorage.getItem('colorScheme');
+	if (colorScheme) {
+		document.documentElement.style.setProperty('color-scheme', colorScheme);
 	}
 	//#endregion
 
@@ -143,53 +145,63 @@
 		document.head.appendChild(css);
 	}
 
-	function renderError(code, details) {
+	async function renderError(code, details) {
+		// Cannot set property 'innerHTML' of null を回避
+		if (document.readyState === 'loading') {
+			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
+		}
+
 		let errorsElement = document.getElementById('errors');
 
 		if (!errorsElement) {
 			document.body.innerHTML = `
-			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 				<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
 				<path d="M12 9v2m0 4v.01"></path>
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
 			</svg>
-			<h1>An error has occurred!</h1>
-			<button class="button-big" onclick="location.reload();">
-				<span class="button-label-big">Refresh</span>
+			<h1>Failed to load<br>読み込みに失敗しました</h1>
+			<button class="button-big" onclick="location.reload(true);">
+				<span class="button-label-big">Reload / リロード</span>
 			</button>
-			<p class="dont-worry">Don't worry, it's (probably) not your fault.</p>
-			<p>If the problem persists after refreshing, please contact your instance's administrator.<br>You may also try the following options:</p>
-			<p>Update your os and browser.</p>
-			<p>Disable an adblocker.</p>
-			<a href="/flush">
-				<button class="button-small">
-					<span class="button-label-small">Clear preferences and cache</span>
-				</button>
-			</a>
-			<br>
-			<a href="/cli">
-				<button class="button-small">
-					<span class="button-label-small">Start the simple client</span>
-				</button>
-			</a>
-			<br>
-			<a href="/bios">
-				<button class="button-small">
-					<span class="button-label-small">Start the repair tool</span>
-				</button>
-			</a>
+			<p><b>The following actions may solve the problem. / 以下を行うと解決する可能性があります。</b></p>
+			<p>Update your os and browser / ブラウザおよびOSを最新バージョンに更新する</p>
+			<p>Disable an adblocker / アドブロッカーを無効にする</p>
+			<p>Clear the browser cache / ブラウザのキャッシュをクリアする</p>
+			<p>&#40;Tor Browser&#41; Set dom.webaudio.enabled to true / dom.webaudio.enabledをtrueに設定する</p>
+			<details style="color: #86b300;">
+				<summary>Other options / その他のオプション</summary>
+				<a href="/flush">
+					<button class="button-small">
+						<span class="button-label-small">Clear preferences and cache</span>
+					</button>
+				</a>
+				<br>
+				<a href="/cli">
+					<button class="button-small">
+						<span class="button-label-small">Start the simple client</span>
+					</button>
+				</a>
+				<br>
+				<a href="/bios">
+					<button class="button-small">
+						<span class="button-label-small">Start the repair tool</span>
+					</button>
+				</a>
+			</details>
 			<br>
 			<div id="errors"></div>
 			`;
 			errorsElement = document.getElementById('errors');
 		}
 		const detailsElement = document.createElement('details');
+		detailsElement.id = 'errorInfo';
 		detailsElement.innerHTML = `
 		<br>
 		<summary>
 			<code>ERROR CODE: ${code}</code>
 		</summary>
-		<code>${JSON.stringify(details)}</code>`;
+		<code>${details.toString()} ${JSON.stringify(details)}</code>`;
 		errorsElement.appendChild(detailsElement);
 		addStyle(`
 		* {
@@ -240,7 +252,7 @@
 		.button-label-big {
 			color: #222;
 			font-weight: bold;
-			font-size: 20px;
+			font-size: 1.2em;
 			padding: 12px;
 		}
 
@@ -260,11 +272,6 @@
 			font-size: 16px;
 		}
 
-		.dont-worry,
-		#msg {
-			font-size: 18px;
-		}
-
 		.icon-warning {
 			color: #dec340;
 			height: 4rem;
@@ -272,14 +279,15 @@
 		}
 
 		h1 {
-			font-size: 32px;
+			font-size: 1.5em;
+			margin: 1em;
 		}
 
 		code {
 			font-family: Fira, FiraCode, monospace;
 		}
 
-		details {
+		#errorInfo {
 			background: #333;
 			margin-bottom: 2rem;
 			padding: 0.5rem 1rem;
@@ -289,18 +297,18 @@
 			margin: auto;
 		}
 
-		summary {
+		#errorInfo summary {
 			cursor: pointer;
 		}
 
-		summary > * {
+		#errorInfo summary > * {
 			display: inline;
 		}
 
 		@media screen and (max-width: 500px) {
-			details {
+			#errorInfo {
 				width: 50%;
 			}
-		`)
+		}`);
 	}
 })();

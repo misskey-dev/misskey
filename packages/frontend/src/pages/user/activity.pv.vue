@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkLoading v-if="fetching"/>
@@ -9,30 +14,30 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, shallowRef, ref } from 'vue';
 import { Chart, ChartDataset } from 'chart.js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { chartVLine } from '@/scripts/chart-vline';
-import { initChart } from '@/scripts/init-chart';
-import { chartLegend } from '@/scripts/chart-legend';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { defaultStore } from '@/store.js';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { chartVLine } from '@/scripts/chart-vline.js';
+import { initChart } from '@/scripts/init-chart.js';
+import { chartLegend } from '@/scripts/chart-legend.js';
 import MkChartLegend from '@/components/MkChartLegend.vue';
 
 initChart();
 
 const props = defineProps<{
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 }>();
 
-const chartEl = $shallowRef<HTMLCanvasElement>(null);
-let legendEl = $shallowRef<InstanceType<typeof MkChartLegend>>();
+const chartEl = shallowRef<HTMLCanvasElement>(null);
+const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 30;
-let fetching = $ref(true);
+const fetching = ref(true);
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
@@ -56,7 +61,7 @@ async function renderChart() {
 		}));
 	};
 
-	const raw = await os.api('charts/user/pv', { userId: props.user.id, limit: chartLimit, span: 'day' });
+	const raw = await misskeyApi('charts/user/pv', { userId: props.user.id, limit: chartLimit, span: 'day' });
 
 	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
@@ -77,10 +82,13 @@ async function renderChart() {
 			barPercentage: 0.7,
 			categoryPercentage: 0.7,
 			fill: true,
-		} satisfies ChartDataset, extra);
+		/* @see <https://github.com/misskey-dev/misskey/pull/10365#discussion_r1155511107>
+		} satisfies ChartData, extra);
+		 */
+		}, extra);
 	}
 
-	chartInstance = new Chart(chartEl, {
+	chartInstance = new Chart(chartEl.value, {
 		type: 'bar',
 		data: {
 			datasets: [
@@ -164,10 +172,10 @@ async function renderChart() {
 				gradient,
 			},
 		},
-		plugins: [chartVLine(vLineColor), chartLegend(legendEl)],
+		plugins: [chartVLine(vLineColor), chartLegend(legendEl.value)],
 	});
 
-	fetching = false;
+	fetching.value = false;
 }
 
 onMounted(async () => {

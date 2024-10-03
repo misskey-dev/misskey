@@ -1,19 +1,26 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="mkw-onlineUsers data-cy-mkw-onlineUsers" :class="{ _panel: !widgetProps.transparent, pad: !widgetProps.transparent }">
-	<I18n v-if="onlineUsersCount" :src="i18n.ts.onlineUsersCount" text-tag="span" class="text">
-		<template #n><b>{{ number(onlineUsersCount) }}</b></template>
-	</I18n>
+<div data-cy-mkw-onlineUsers :class="[$style.root, { _panel: !widgetProps.transparent, [$style.pad]: !widgetProps.transparent }]">
+	<span :class="$style.text">
+		<I18n v-if="onlineUsersCount" :src="i18n.ts.onlineUsersCount" textTag="span">
+			<template #n><b style="color: #41b781;">{{ number(onlineUsersCount) }}</b></template>
+		</I18n>
+	</span>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
-import { i18n } from '@/i18n';
-import number from '@/filters/number';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { i18n } from '@/i18n.js';
+import number from '@/filters/number.js';
 
 const name = 'onlineUsers';
 
@@ -26,11 +33,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -41,7 +45,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 const onlineUsersCount = ref(0);
 
 const tick = () => {
-	os.api('get-online-users-count').then(res => {
+	misskeyApiGet('get-online-users-count').then(res => {
 		onlineUsersCount.value = res.count;
 	});
 };
@@ -58,22 +62,16 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
-.mkw-onlineUsers {
+<style lang="scss" module>
+.root {
 	text-align: center;
 
 	&.pad {
 		padding: 16px 0;
 	}
+}
 
-	> .text {
-		::v-deep(b) {
-			color: #41b781;
-		}
-
-		::v-deep(span) {
-			opacity: 0.7;
-		}
-	}
+.text {
+	color: var(--fgTransparentWeak);
 }
 </style>

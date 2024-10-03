@@ -1,16 +1,25 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RolesRepository } from '@/models/index.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
-import { IdService } from '@/core/IdService.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['admin', 'role'],
 
 	requireCredential: true,
 	requireAdmin: true,
+	kind: 'write:admin:roles',
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'Role',
+	},
 } as const;
 
 export const paramDef = {
@@ -25,8 +34,10 @@ export const paramDef = {
 		isPublic: { type: 'boolean' },
 		isModerator: { type: 'boolean' },
 		isAdministrator: { type: 'boolean' },
+		isExplorable: { type: 'boolean', default: false }, // optional for backward compatibility
 		asBadge: { type: 'boolean' },
 		canEditMembersByModerator: { type: 'boolean' },
+		displayOrder: { type: 'number' },
 		policies: {
 			type: 'object',
 		},
@@ -43,43 +54,19 @@ export const paramDef = {
 		'isAdministrator',
 		'asBadge',
 		'canEditMembersByModerator',
+		'displayOrder',
 		'policies',
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.rolesRepository)
-		private rolesRepository: RolesRepository,
-
-		private globalEventService: GlobalEventService,
-		private idService: IdService,
 		private roleEntityService: RoleEntityService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const date = new Date();
-			const created = await this.rolesRepository.insert({
-				id: this.idService.genId(),
-				createdAt: date,
-				updatedAt: date,
-				lastUsedAt: date,
-				name: ps.name,
-				description: ps.description,
-				color: ps.color,
-				iconUrl: ps.iconUrl,
-				target: ps.target,
-				condFormula: ps.condFormula,
-				isPublic: ps.isPublic,
-				isAdministrator: ps.isAdministrator,
-				isModerator: ps.isModerator,
-				asBadge: ps.asBadge,
-				canEditMembersByModerator: ps.canEditMembersByModerator,
-				policies: ps.policies,
-			}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
-	
-			this.globalEventService.publishInternalEvent('roleCreated', created);
+			const created = await this.roleService.create(ps, me);
 
 			return await this.roleEntityService.pack(created, me);
 		});

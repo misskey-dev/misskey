@@ -1,0 +1,135 @@
+name: "Release Manager [Dispatch]"
+
+on:
+  workflow_dispatch:
+    inputs:
+      ## Specify the type of the next release.
+      #version_increment_type:
+      #  type: choice
+      #  description: 'VERSION INCREMENT TYPE'
+      #  default: 'patch'
+      #  required: false
+      #  options:
+      #    - 'major'
+      #    - 'minor'
+      #    - 'patch'
+      merge:
+        type: boolean
+        description: 'MERGE RELEASE BRANCH TO MAIN'
+        default: false
+      start-rc:
+        type: boolean
+        description: 'Start Release Candidate'
+        default: false
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  get-pr:
+    runs-on: ubuntu-latest
+    outputs:
+      pr_number: ${{ steps.get_pr.outputs.pr_number }}
+    steps:
+      - uses: actions/checkout@v4
+      # headが$GITHUB_REF_NAME, baseが$STABLE_BRANCHかつopenのPRを1つ取得
+      - name: Get PRs
+        run: |
+          echo "pr_number=$(gh pr list --limit 1 --search "head:$GITHUB_REF_NAME base:$STABLE_BRANCH is:open" --json number  --jq '.[] | .number')" >> $GITHUB_OUTPUT
+        id: get_pr
+        env:
+          STABLE_BRANCH: ${{ vars.STABLE_BRANCH }}
+
+  merge:
+    uses: misskey-dev/release-manager-actions/.github/workflows/merge.yml@v2
+    needs: get-pr
+    if: ${{ needs.get-pr.outputs.pr_number != '' && inputs.merge == true }}
+    with:
+      pr_number: ${{ needs.get-pr.outputs.pr_number }}
+      user: 'github-actions[bot]'
+      package_jsons_to_rewrite: ${{ vars.PACKAGE_JSONS_TO_REWRITE }}
+      # Text to prepend to the changelog
+      # The first line must be `## Unreleased`
+      changes_template: |
+        ## Unreleased
+
+        ### General
+        -
+        
+        ### Client
+        -
+        
+        ### Server
+        -
+        
+      use_external_app_to_release: ${{ vars.USE_RELEASE_APP == 'true' }}
+      indent: ${{ vars.INDENT }}
+    secrets:
+      RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+      RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+  create-prerelease:
+    uses: misskey-dev/release-manager-actions/.github/workflows/create-prerelease.yml@v2
+    needs: get-pr
+    if: ${{ needs.get-pr.outputs.pr_number != '' && inputs.merge != true  }}
+    with:
+      pr_number: ${{ needs.get-pr.outputs.pr_number }}
+      user: 'github-actions[bot]'
+      package_jsons_to_rewrite: ${{ vars.PACKAGE_JSONS_TO_REWRITE }}
+      use_external_app_to_release: ${{ vars.USE_RELEASE_APP == 'true' }}
+      indent: ${{ vars.INDENT }}
+      draft_prerelease_channel: alpha
+      ready_start_prerelease_channel: beta
+      prerelease_channel: ${{ inputs.start-rc && 'rc' || '' }}
+    secrets:
+      RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+      RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+  create-target:
+    uses: misskey-dev/release-manager-actions/.github/workflows/create-target.yml@v2
+    needs: get-pr
+    if: ${{ needs.get-pr.outputs.pr_number == '' }}
+    with:
+      user: 'github-actions[bot]'
+      # The script for version increment.
+      # process.env.CURRENT_VERSION: The current version.
+      #
+      # Misskey calender versioning (yyyy.MM.patch) example
+      version_increment_script: |
+        const now = new Date();
+        const year = now.toLocaleDateString('en-US', { year: 'numeric', timeZone: 'Asia/Tokyo' });
+        const month = now.toLocaleDateString('en-US', { month: 'numeric', timeZone: 'Asia/Tokyo' });
+        const [major, minor, _patch] = process.env.CURRENT_VERSION.split('.');
+        const patch = Number(_patch.split('-')[0]);
+        if (Number.isNaN(patch)) {
+          console.error('Invalid patch version', year, month, process.env.CURRENT_VERSION, major, minor, _patch);
+          throw new Error('Invalid patch version');
+        }
+        if (year !== major || month !== minor) {
+          return `${year}.${month}.0`;
+        } else {
+          return `${major}.${minor}.${patch + 1}`;
+        }
+      ##Semver example
+      #version_increment_script: |
+      #  const [major, minor, patch] = process.env.CURRENT_VERSION.split('.');
+      #  if ("${{ inputs.version_increment_type }}" === "major") {
+      #    return `${Number(major) + 1}.0.0`;
+      #  } else if ("${{ inputs.version_increment_type }}" === "minor") {
+      #    return `${major}.${Number(minor) + 1}.0`;
+      #  } else {
+      #    return `${major}.${minor}.${Number(patch) + 1}`;
+      #  }
+      package_jsons_to_rewrite: ${{ vars.PACKAGE_JSONS_TO_REWRITE }}
+      use_external_app_to_release: ${{ vars.USE_RELEASE_APP == 'true' }}
+      indent: ${{ vars.INDENT }}
+      stable_branch: ${{ vars.STABLE_BRANCH }}
+      draft_prerelease_channel: alpha
+    secrets:
+      RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+      RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}

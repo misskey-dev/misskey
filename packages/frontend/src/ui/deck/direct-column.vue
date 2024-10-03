@@ -1,24 +1,25 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<XColumn :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :column="column" :isStacked="isStacked" :refresher="() => reloadTimeline()">
 	<template #header><i class="ti ti-mail" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
-	<MkNotes :pagination="pagination"/>
+	<MkNotes ref="tlComponent" :pagination="pagination"/>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import XColumn from './column.vue';
-import { Column } from './deck-store';
+import { Column } from './deck-store.js';
 import MkNotes from '@/components/MkNotes.vue';
 
 defineProps<{
 	column: Column;
 	isStacked: boolean;
-}>();
-
-const emit = defineEmits<{
-	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 const pagination = {
@@ -28,4 +29,14 @@ const pagination = {
 		visibility: 'specified',
 	},
 };
+
+const tlComponent = ref<InstanceType<typeof MkNotes>>();
+
+function reloadTimeline() {
+	return new Promise<void>((res) => {
+		tlComponent.value?.pagingComponent?.reload().then(() => {
+			res();
+		});
+	});
+}
 </script>

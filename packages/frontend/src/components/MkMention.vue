@@ -1,23 +1,32 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }">
-	<img :class="$style.icon" :src="`/avatar/@${username}@${host}`" alt="">
+<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }" :behavior="navigationBehavior">
+	<img :class="$style.icon" :src="avatarUrl" alt="">
 	<span>
-		<span :class="$style.username">@{{ username }}</span>
-		<span v-if="(host != localHost) || $store.state.showFullAcct" :class="$style.host">@{{ toUnicode(host) }}</span>
+		<span>@{{ username }}</span>
+		<span v-if="(host != localHost) || defaultStore.state.showFullAcct" :class="$style.host">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
 </template>
 
 <script lang="ts" setup>
 import { toUnicode } from 'punycode';
-import { } from 'vue';
+import { computed } from 'vue';
 import tinycolor from 'tinycolor2';
-import { host as localHost } from '@/config';
-import { $i } from '@/account';
+import { host as localHost } from '@@/js/config.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { MkABehavior } from '@/components/global/MkA.vue';
 
 const props = defineProps<{
 	username: string;
 	host: string;
+	navigationBehavior?: MkABehavior;
 }>();
 
 const canonical = props.host === localHost ? `@${props.username}` : `@${props.username}@${toUnicode(props.host)}`;
@@ -31,6 +40,11 @@ const isMe = $i && (
 const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
 bg.setAlpha(0.1);
 const bgCss = bg.toRgbString();
+
+const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
+	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
+	: `/avatar/@${props.username}@${props.host}`,
+);
 </script>
 
 <style lang="scss" module>

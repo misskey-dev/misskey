@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkContainer :naked="widgetProps.transparent" :show-header="widgetProps.showHeader" class="mkw-rss-ticker">
+<MkContainer :naked="widgetProps.transparent" :showHeader="widgetProps.showHeader" class="mkw-rss-ticker">
 	<template #icon><i class="ti ti-rss"></i></template>
 	<template #header>RSS</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="configure"><i class="ti ti-settings"></i></button></template>
@@ -12,7 +17,7 @@
 			<Transition :name="$style.change" mode="default" appear>
 				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
 					<span v-for="item in items" :key="item.link" :class="$style.item">
-						<a :class="$style.link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
+						<a :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 					</span>
 				</MarqueeText>
 			</Transition>
@@ -23,13 +28,14 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import * as Misskey from 'misskey-js';
+import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import MarqueeText from '@/components/MkMarquee.vue';
-import { GetFormResultType } from '@/scripts/form';
+import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { shuffle } from '@/scripts/shuffle';
-import { url as base } from '@/config';
-import { useInterval } from '@/scripts/use-interval';
+import { shuffle } from '@/scripts/shuffle.js';
+import { url as base } from '@@/js/config.js';
+import { useInterval } from '@@/js/use-interval.js';
 
 const name = 'rssTicker';
 
@@ -73,11 +79,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -85,7 +88,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const rawItems = ref([]);
+const rawItems = ref<Misskey.entities.FetchRssResponse['items']>([]);
 const items = computed(() => {
 	const newItems = rawItems.value.slice(0, widgetProps.maxEntries);
 	if (widgetProps.shuffle) {
@@ -99,28 +102,28 @@ const fetchEndpoint = computed(() => {
 	url.searchParams.set('url', widgetProps.url);
 	return url;
 });
-let intervalClear = $ref<(() => void) | undefined>();
+const intervalClear = ref<(() => void) | undefined>();
 
-let key = $ref(0);
+const key = ref(0);
 
 const tick = () => {
 	if (document.visibilityState === 'hidden' && rawItems.value.length !== 0) return;
 
 	window.fetch(fetchEndpoint.value, {})
 		.then(res => res.json())
-		.then(feed => {
-			rawItems.value = feed.items ?? [];
+		.then((feed: Misskey.entities.FetchRssResponse) => {
+			rawItems.value = feed.items;
 			fetching.value = false;
-			key++;
+			key.value++;
 		});
 };
 
 watch(() => fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
-	if (intervalClear) {
-		intervalClear();
+	if (intervalClear.value) {
+		intervalClear.value();
 	}
-	intervalClear = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
+	intervalClear.value = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
 		immediate: true,
 		afterMounted: true,
 	});

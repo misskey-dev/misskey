@@ -1,13 +1,18 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+	<template #header><XHeader :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
 				<MkSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</MkSwitch>
 
 				<template v-if="useObjectStorage">
-					<MkInput v-model="objectStorageBaseUrl">
+					<MkInput v-model="objectStorageBaseUrl" :placeholder="'https://example.com'" type="url">
 						<template #label>{{ i18n.ts.objectStorageBaseUrl }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBaseUrlDesc }}</template>
 					</MkInput>
@@ -22,8 +27,9 @@
 						<template #caption>{{ i18n.ts.objectStoragePrefixDesc }}</template>
 					</MkInput>
 
-					<MkInput v-model="objectStorageEndpoint">
+					<MkInput v-model="objectStorageEndpoint" :placeholder="'example.com'">
 						<template #label>{{ i18n.ts.objectStorageEndpoint }}</template>
+						<template #prefix>https://</template>
 						<template #caption>{{ i18n.ts.objectStorageEndpointDesc }}</template>
 					</MkInput>
 
@@ -32,7 +38,7 @@
 						<template #caption>{{ i18n.ts.objectStorageRegionDesc }}</template>
 					</MkInput>
 
-					<FormSplit :min-width="280">
+					<FormSplit :minWidth="280">
 						<MkInput v-model="objectStorageAccessKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Access key</template>
@@ -60,88 +66,98 @@
 
 					<MkSwitch v-model="objectStorageS3ForcePathStyle">
 						<template #label>s3ForcePathStyle</template>
+						<template #caption>{{ i18n.ts.s3ForcePathStyleDesc }}</template>
 					</MkSwitch>
 				</template>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
+	<template #footer>
+		<div :class="$style.footer">
+			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
+				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			</MkSpacer>
+		</div>
+	</template>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
-import * as os from '@/os';
-import { fetchInstance } from '@/instance';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { fetchInstance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkButton from '@/components/MkButton.vue';
 
-let useObjectStorage: boolean = $ref(false);
-let objectStorageBaseUrl: string | null = $ref(null);
-let objectStorageBucket: string | null = $ref(null);
-let objectStoragePrefix: string | null = $ref(null);
-let objectStorageEndpoint: string | null = $ref(null);
-let objectStorageRegion: string | null = $ref(null);
-let objectStoragePort: number | null = $ref(null);
-let objectStorageAccessKey: string | null = $ref(null);
-let objectStorageSecretKey: string | null = $ref(null);
-let objectStorageUseSSL: boolean = $ref(false);
-let objectStorageUseProxy: boolean = $ref(false);
-let objectStorageSetPublicRead: boolean = $ref(false);
-let objectStorageS3ForcePathStyle: boolean = $ref(true);
+const useObjectStorage = ref<boolean>(false);
+const objectStorageBaseUrl = ref<string | null>(null);
+const objectStorageBucket = ref<string | null>(null);
+const objectStoragePrefix = ref<string | null>(null);
+const objectStorageEndpoint = ref<string | null>(null);
+const objectStorageRegion = ref<string | null>(null);
+const objectStoragePort = ref<number | null>(null);
+const objectStorageAccessKey = ref<string | null>(null);
+const objectStorageSecretKey = ref<string | null>(null);
+const objectStorageUseSSL = ref<boolean>(false);
+const objectStorageUseProxy = ref<boolean>(false);
+const objectStorageSetPublicRead = ref<boolean>(false);
+const objectStorageS3ForcePathStyle = ref<boolean>(true);
 
 async function init() {
-	const meta = await os.api('admin/meta');
-	useObjectStorage = meta.useObjectStorage;
-	objectStorageBaseUrl = meta.objectStorageBaseUrl;
-	objectStorageBucket = meta.objectStorageBucket;
-	objectStoragePrefix = meta.objectStoragePrefix;
-	objectStorageEndpoint = meta.objectStorageEndpoint;
-	objectStorageRegion = meta.objectStorageRegion;
-	objectStoragePort = meta.objectStoragePort;
-	objectStorageAccessKey = meta.objectStorageAccessKey;
-	objectStorageSecretKey = meta.objectStorageSecretKey;
-	objectStorageUseSSL = meta.objectStorageUseSSL;
-	objectStorageUseProxy = meta.objectStorageUseProxy;
-	objectStorageSetPublicRead = meta.objectStorageSetPublicRead;
-	objectStorageS3ForcePathStyle = meta.objectStorageS3ForcePathStyle;
+	const meta = await misskeyApi('admin/meta');
+	useObjectStorage.value = meta.useObjectStorage;
+	objectStorageBaseUrl.value = meta.objectStorageBaseUrl;
+	objectStorageBucket.value = meta.objectStorageBucket;
+	objectStoragePrefix.value = meta.objectStoragePrefix;
+	objectStorageEndpoint.value = meta.objectStorageEndpoint;
+	objectStorageRegion.value = meta.objectStorageRegion;
+	objectStoragePort.value = meta.objectStoragePort;
+	objectStorageAccessKey.value = meta.objectStorageAccessKey;
+	objectStorageSecretKey.value = meta.objectStorageSecretKey;
+	objectStorageUseSSL.value = meta.objectStorageUseSSL;
+	objectStorageUseProxy.value = meta.objectStorageUseProxy;
+	objectStorageSetPublicRead.value = meta.objectStorageSetPublicRead;
+	objectStorageS3ForcePathStyle.value = meta.objectStorageS3ForcePathStyle;
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
-		useObjectStorage,
-		objectStorageBaseUrl,
-		objectStorageBucket,
-		objectStoragePrefix,
-		objectStorageEndpoint,
-		objectStorageRegion,
-		objectStoragePort,
-		objectStorageAccessKey,
-		objectStorageSecretKey,
-		objectStorageUseSSL,
-		objectStorageUseProxy,
-		objectStorageSetPublicRead,
-		objectStorageS3ForcePathStyle,
+		useObjectStorage: useObjectStorage.value,
+		objectStorageBaseUrl: objectStorageBaseUrl.value,
+		objectStorageBucket: objectStorageBucket.value,
+		objectStoragePrefix: objectStoragePrefix.value,
+		objectStorageEndpoint: objectStorageEndpoint.value,
+		objectStorageRegion: objectStorageRegion.value,
+		objectStoragePort: objectStoragePort.value,
+		objectStorageAccessKey: objectStorageAccessKey.value,
+		objectStorageSecretKey: objectStorageSecretKey.value,
+		objectStorageUseSSL: objectStorageUseSSL.value,
+		objectStorageUseProxy: objectStorageUseProxy.value,
+		objectStorageSetPublicRead: objectStorageSetPublicRead.value,
+		objectStorageS3ForcePathStyle: objectStorageS3ForcePathStyle.value,
 	}).then(() => {
-		fetchInstance();
+		fetchInstance(true);
 	});
 }
 
-const headerActions = $computed(() => [{
-	asFullButton: true,
-	icon: 'ti ti-check',
-	text: i18n.ts.save,
-	handler: save,
-}]);
+const headerTabs = computed(() => []);
 
-const headerTabs = $computed(() => []);
-
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.objectStorage,
 	icon: 'ti ti-cloud',
-});
+}));
 </script>
+
+<style lang="scss" module>
+.footer {
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+}
+</style>

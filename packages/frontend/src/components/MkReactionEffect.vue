@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }">
 	<span :class="[$style.text, { [$style.up]: up }]">
@@ -7,8 +12,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import * as os from '@/os';
+import { onMounted, ref } from 'vue';
+import * as os from '@/os.js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 
 const props = withDefaults(defineProps<{
@@ -22,13 +27,13 @@ const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
-let up = $ref(false);
+const up = ref(false);
 const zIndex = os.claimZIndex('middle');
 const angle = (90 - (Math.random() * 180)) + 'deg';
 
 onMounted(() => {
 	window.setTimeout(() => {
-		up = true;
+		up.value = true;
 	}, 10);
 
 	window.setTimeout(() => {

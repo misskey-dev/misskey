@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 declare module '@peertube/http-signature' {
 	import type { IncomingMessage, ClientRequest } from 'node:http';
 

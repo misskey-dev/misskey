@@ -1,6 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { utils, values } from '@syuilo/aiscript';
 import { v4 as uuid } from 'uuid';
 import { ref, Ref } from 'vue';
+import * as Misskey from 'misskey-js';
 
 export type AsUiComponentBase = {
 	id: string;
@@ -21,6 +27,8 @@ export type AsUiContainer = AsUiComponentBase & {
 	font?: 'serif' | 'sans-serif' | 'monospace';
 	borderWidth?: number;
 	borderColor?: string;
+	borderStyle?: 'hidden' | 'dotted' | 'dashed' | 'solid' | 'double' | 'groove' | 'ridge' | 'inset' | 'outset';
+	borderRadius?: number;
 	padding?: number;
 	rounded?: boolean;
 	hidden?: boolean;
@@ -42,6 +50,7 @@ export type AsUiMfm = AsUiComponentBase & {
 	bold?: boolean;
 	color?: string;
 	font?: 'serif' | 'sans-serif' | 'monospace';
+	onClickEv?: (evId: string) => void
 };
 
 export type AsUiButton = AsUiComponentBase & {
@@ -109,17 +118,27 @@ export type AsUiFolder = AsUiComponentBase & {
 	opened?: boolean;
 };
 
+type PostFormPropsForAsUi = {
+	text: string;
+	cw?: string;
+	visibility?: (typeof Misskey.noteVisibilities)[number];
+	localOnly?: boolean;
+};
+
 export type AsUiPostFormButton = AsUiComponentBase & {
 	type: 'postFormButton';
 	text?: string;
 	primary?: boolean;
 	rounded?: boolean;
-	form?: {
-		text: string;
-	};
+	form?: PostFormPropsForAsUi;
 };
 
-export type AsUiComponent = AsUiRoot | AsUiContainer | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiFolder | AsUiPostFormButton;
+export type AsUiPostForm = AsUiComponentBase & {
+	type: 'postForm';
+	form?: PostFormPropsForAsUi;
+};
+
+export type AsUiComponent = AsUiRoot | AsUiContainer | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiFolder | AsUiPostFormButton | AsUiPostForm;
 
 export function patch(id: string, def: values.Value, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
 	// TODO
@@ -156,6 +175,10 @@ function getContainerOptions(def: values.Value | undefined): Omit<AsUiContainer,
 	if (borderWidth) utils.assertNumber(borderWidth);
 	const borderColor = def.value.get('borderColor');
 	if (borderColor) utils.assertString(borderColor);
+	const borderStyle = def.value.get('borderStyle');
+	if (borderStyle) utils.assertString(borderStyle);
+	const borderRadius = def.value.get('borderRadius');
+	if (borderRadius) utils.assertNumber(borderRadius);
 	const padding = def.value.get('padding');
 	if (padding) utils.assertNumber(padding);
 	const rounded = def.value.get('rounded');
@@ -174,6 +197,8 @@ function getContainerOptions(def: values.Value | undefined): Omit<AsUiContainer,
 		font: font?.value,
 		borderWidth: borderWidth?.value,
 		borderColor: borderColor?.value,
+		borderStyle: borderStyle?.value,
+		borderRadius: borderRadius?.value,
 		padding: padding?.value,
 		rounded: rounded?.value,
 		hidden: hidden?.value,
@@ -203,7 +228,7 @@ function getTextOptions(def: values.Value | undefined): Omit<AsUiText, 'id' | 't
 	};
 }
 
-function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'type'> {
+function getMfmOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiMfm, 'id' | 'type'> {
 	utils.assertObject(def);
 
 	const text = def.value.get('text');
@@ -216,6 +241,8 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 	if (color) utils.assertString(color);
 	const font = def.value.get('font');
 	if (font) utils.assertString(font);
+	const onClickEv = def.value.get('onClickEv');
+	if (onClickEv) utils.assertFunction(onClickEv);
 
 	return {
 		text: text?.value,
@@ -223,6 +250,9 @@ function getMfmOptions(def: values.Value | undefined): Omit<AsUiMfm, 'id' | 'typ
 		bold: bold?.value,
 		color: color?.value,
 		font: font?.value,
+		onClickEv: (evId: string) => {
+			if (onClickEv) call(onClickEv, [values.STR(evId)]);
+		},
 	};
 }
 
@@ -427,6 +457,24 @@ function getFolderOptions(def: values.Value | undefined): Omit<AsUiFolder, 'id' 
 	};
 }
 
+function getPostFormProps(form: values.VObj): PostFormPropsForAsUi {
+	const text = form.value.get('text');
+	utils.assertString(text);
+	const cw = form.value.get('cw');
+	if (cw) utils.assertString(cw);
+	const visibility = form.value.get('visibility');
+	if (visibility) utils.assertString(visibility);
+	const localOnly = form.value.get('localOnly');
+	if (localOnly) utils.assertBoolean(localOnly);
+
+	return {
+		text: text.value,
+		cw: cw?.value,
+		visibility: (visibility?.value && (Misskey.noteVisibilities as readonly string[]).includes(visibility.value)) ? visibility.value as typeof Misskey.noteVisibilities[number] : undefined,
+		localOnly: localOnly?.value,
+	};
+}
+
 function getPostFormButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiPostFormButton, 'id' | 'type'> {
 	utils.assertObject(def);
 
@@ -439,19 +487,24 @@ function getPostFormButtonOptions(def: values.Value | undefined, call: (fn: valu
 	const form = def.value.get('form');
 	if (form) utils.assertObject(form);
 
-	const getForm = () => {
-		const text = form!.value.get('text');
-		utils.assertString(text);
-		return {
-			text: text.value,
-		};
-	};
-
 	return {
 		text: text?.value,
 		primary: primary?.value,
 		rounded: rounded?.value,
-		form: form ? getForm() : {
+		form: form ? getPostFormProps(form) : {
+			text: '',
+		},
+	};
+}
+
+function getPostFormOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiPostForm, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const form = def.value.get('form');
+	if (form) utils.assertObject(form);
+
+	return {
+		form: form ? getPostFormProps(form) : {
 			text: '',
 		},
 	};
@@ -471,7 +524,7 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 		components.push(component);
 		const instance = values.OBJ(new Map([
 			['id', values.STR(_id)],
-			['update', values.FN_NATIVE(async ([def], opts) => {
+			['update', values.FN_NATIVE(([def], opts) => {
 				utils.assertObject(def);
 				const updates = getOptions(def, call);
 				for (const update of def.value.keys()) {
@@ -491,13 +544,13 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 	return {
 		'Ui:root': rootInstance,
 
-		'Ui:patch': values.FN_NATIVE(async ([id, val], opts) => {
+		'Ui:patch': values.FN_NATIVE(([id, val], opts) => {
 			utils.assertString(id);
 			utils.assertArray(val);
 			patch(id.value, val.value, opts.call);
 		}),
 
-		'Ui:get': values.FN_NATIVE(async ([id], opts) => {
+		'Ui:get': values.FN_NATIVE(([id], opts) => {
 			utils.assertString(id);
 			const instance = instances[id.value];
 			if (instance) {
@@ -508,61 +561,65 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 		}),
 
 		// Ui:root.update({ children: [...] }) の糖衣構文
-		'Ui:render': values.FN_NATIVE(async ([children], opts) => {
+		'Ui:render': values.FN_NATIVE(([children], opts) => {
 			utils.assertArray(children);
-		
+
 			rootComponent.value.children = children.value.map(v => {
 				utils.assertObject(v);
 				return v.value.get('id').value;
 			});
 		}),
 
-		'Ui:C:container': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('container', def, id, getContainerOptions, opts.call);
+		'Ui:C:container': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('container', def, id, getContainerOptions, opts.topCall);
 		}),
 
-		'Ui:C:text': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('text', def, id, getTextOptions, opts.call);
+		'Ui:C:text': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('text', def, id, getTextOptions, opts.topCall);
 		}),
 
-		'Ui:C:mfm': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('mfm', def, id, getMfmOptions, opts.call);
+		'Ui:C:mfm': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('mfm', def, id, getMfmOptions, opts.topCall);
 		}),
 
-		'Ui:C:textarea': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('textarea', def, id, getTextareaOptions, opts.call);
+		'Ui:C:textarea': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('textarea', def, id, getTextareaOptions, opts.topCall);
 		}),
 
-		'Ui:C:textInput': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('textInput', def, id, getTextInputOptions, opts.call);
+		'Ui:C:textInput': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('textInput', def, id, getTextInputOptions, opts.topCall);
 		}),
 
-		'Ui:C:numberInput': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('numberInput', def, id, getNumberInputOptions, opts.call);
+		'Ui:C:numberInput': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('numberInput', def, id, getNumberInputOptions, opts.topCall);
 		}),
 
-		'Ui:C:button': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('button', def, id, getButtonOptions, opts.call);
+		'Ui:C:button': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('button', def, id, getButtonOptions, opts.topCall);
 		}),
 
-		'Ui:C:buttons': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('buttons', def, id, getButtonsOptions, opts.call);
+		'Ui:C:buttons': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('buttons', def, id, getButtonsOptions, opts.topCall);
 		}),
 
-		'Ui:C:switch': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('switch', def, id, getSwitchOptions, opts.call);
+		'Ui:C:switch': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('switch', def, id, getSwitchOptions, opts.topCall);
 		}),
 
-		'Ui:C:select': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('select', def, id, getSelectOptions, opts.call);
+		'Ui:C:select': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('select', def, id, getSelectOptions, opts.topCall);
 		}),
 
-		'Ui:C:folder': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('folder', def, id, getFolderOptions, opts.call);
+		'Ui:C:folder': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('folder', def, id, getFolderOptions, opts.topCall);
 		}),
 
-		'Ui:C:postFormButton': values.FN_NATIVE(async ([def, id], opts) => {
-			return createComponentInstance('postFormButton', def, id, getPostFormButtonOptions, opts.call);
+		'Ui:C:postFormButton': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('postFormButton', def, id, getPostFormButtonOptions, opts.topCall);
+		}),
+
+		'Ui:C:postForm': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('postForm', def, id, getPostFormOptions, opts.topCall);
 		}),
 	};
 }

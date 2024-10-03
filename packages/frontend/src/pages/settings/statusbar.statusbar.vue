@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<MkSelect v-model="statusbar.type" placeholder="Please select">
@@ -7,7 +12,7 @@
 		<option value="userList">User list timeline</option>
 	</MkSelect>
 
-	<MkInput v-model="statusbar.name" manual-save>
+	<MkInput v-model="statusbar.name" manualSave>
 		<template #label>{{ i18n.ts.label }}</template>
 	</MkInput>
 
@@ -25,13 +30,13 @@
 	</MkRadios>
 
 	<template v-if="statusbar.type === 'rss'">
-		<MkInput v-model="statusbar.props.url" manual-save type="url">
+		<MkInput v-model="statusbar.props.url" manualSave type="url">
 			<template #label>URL</template>
 		</MkInput>
 		<MkSwitch v-model="statusbar.props.shuffle">
 			<template #label>{{ i18n.ts.shuffle }}</template>
 		</MkSwitch>
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number" min="1">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
@@ -43,7 +48,7 @@
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'federation'">
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number" min="1">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
@@ -62,7 +67,7 @@
 			<template #label>{{ i18n.ts.userList }}</template>
 			<option v-for="list in userLists" :value="list.id">{{ list.name }}</option>
 		</MkSelect>
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
@@ -82,19 +87,20 @@
 
 <script lang="ts" setup>
 import { reactive, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { deepClone } from '@/scripts/clone';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { deepClone } from '@/scripts/clone.js';
 
 const props = defineProps<{
 	_id: string;
-	userLists: any[] | null;
+	userLists: Misskey.entities.UserList[] | null;
 }>();
 
 const statusbar = reactive(deepClone(defaultStore.state.statusbars.find(x => x.id === props._id)));

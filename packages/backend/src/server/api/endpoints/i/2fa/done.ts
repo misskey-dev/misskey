@@ -1,16 +1,33 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as OTPAuth from 'otpauth';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { UserProfilesRepository } from '@/models/index.js';
+import type { UserProfilesRepository } from '@/models/_.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	res: {
+		type: 'object',
+		properties: {
+			backupCodes: {
+				type: 'array',
+				optional: false,
+				items: {
+					type: 'string',
+				},
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -21,13 +38,9 @@ export const paramDef = {
 	required: ['token'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
@@ -47,23 +60,30 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				secret: OTPAuth.Secret.fromBase32(profile.twoFactorTempSecret),
 				digits: 6,
 				token,
-				window: 1,
+				window: 5,
 			});
 
 			if (delta === null) {
 				throw new Error('not verified');
 			}
 
+			const backupCodes = Array.from({ length: 5 }, () => new OTPAuth.Secret().base32);
+
 			await this.userProfilesRepository.update(me.id, {
 				twoFactorSecret: profile.twoFactorTempSecret,
+				twoFactorBackupSecret: backupCodes,
 				twoFactorEnabled: true,
 			});
 
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
-				detail: true,
+				schema: 'MeDetailed',
 				includeSecrets: true,
 			}));
+
+			return {
+				backupCodes: backupCodes,
+			};
 		});
 	}
 }

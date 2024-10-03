@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { UserListsRepository, UserListJoiningsRepository, BlockingsRepository } from '@/models/index.js';
+import type { UserListsRepository, UserListMembershipsRepository, BlockingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { UserListService } from '@/core/UserListService.js';
@@ -11,6 +16,8 @@ export const meta = {
 	tags: ['lists', 'users'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:account',
 
@@ -63,15 +70,14 @@ export const paramDef = {
 	required: ['listId', 'userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
-		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
 
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
@@ -98,18 +104,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Check blocking
 			if (user.id !== me.id) {
-				const block = await this.blockingsRepository.findOneBy({
-					blockerId: user.id,
-					blockeeId: me.id,
+				const blockExist = await this.blockingsRepository.exists({
+					where: {
+						blockerId: user.id,
+						blockeeId: me.id,
+					},
 				});
-				if (block) {
+				if (blockExist) {
 					throw new ApiError(meta.errors.youHaveBeenBlocked);
 				}
 			}
 
-			const exist = await this.userListJoiningsRepository.findOneBy({
-				userListId: userList.id,
-				userId: user.id,
+			const exist = await this.userListMembershipsRepository.exists({
+				where: {
+					userListId: userList.id,
+					userId: user.id,
+				},
 			});
 
 			if (exist) {
@@ -117,7 +127,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			try {
-				await this.userListService.push(user, userList, me);
+				await this.userListService.addMember(user, userList, me);
 			} catch (err) {
 				if (err instanceof UserListService.TooManyUsersError) {
 					throw new ApiError(meta.errors.tooManyUsers);

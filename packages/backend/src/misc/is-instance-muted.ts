@@ -1,9 +1,15 @@
-import type { Packed } from './schema.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-export function isInstanceMuted(note: Packed<'Note'>, mutedInstances: Set<string>): boolean {
-	if (mutedInstances.has(note.user.host ?? '')) return true;
-	if (mutedInstances.has(note.reply?.user.host ?? '')) return true;
-	if (mutedInstances.has(note.renote?.user.host ?? '')) return true;
+import { MiNote } from '@/models/Note.js';
+import type { Packed } from './json-schema.js';
+
+export function isInstanceMuted(note: Packed<'Note'> | MiNote, mutedInstances: Set<string>): boolean {
+	if (mutedInstances.has(note.user?.host ?? '')) return true;
+	if (mutedInstances.has(note.reply?.user?.host ?? '')) return true;
+	if (mutedInstances.has(note.renote?.user?.host ?? '')) return true;
 
 	return false;
 }

@@ -1,7 +1,6 @@
 # Reporting Security Issues
 
-If you discover a security issue in Misskey, please report it by sending an
-email to [syuilotan@yahoo.co.jp](mailto:syuilotan@yahoo.co.jp).
+If you discover a security issue in Misskey, please report it by **[this form](https://github.com/misskey-dev/misskey/security/advisories/new)**.
 
 This will allow us to assess the risk, and make a fix available before we add a
 bug report to the GitHub repository.

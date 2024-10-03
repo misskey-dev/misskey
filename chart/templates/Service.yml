@@ -11,4 +11,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-		{{- include "misskey.selectorLabels" . | nindent 4 }}
+    {{- include "misskey.selectorLabels" . | nindent 4 }}

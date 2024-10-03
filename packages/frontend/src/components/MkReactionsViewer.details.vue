@@ -1,8 +1,13 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :targetElement="targetElement" :maxWidth="340" @closed="emit('closed')">
 	<div :class="$style.root">
 		<div :class="$style.reaction">
-			<MkReactionIcon :reaction="reaction" :class="$style.reactionIcon" :no-style="true"/>
+			<MkReactionIcon :reaction="reaction" :class="$style.reactionIcon" :noStyle="true"/>
 			<div :class="$style.reactionName">{{ getReactionName(reaction) }}</div>
 		</div>
 		<div :class="$style.users">
@@ -10,7 +15,7 @@
 				<MkAvatar :class="$style.avatar" :user="u"/>
 				<MkUserName :user="u" :nowrap="true"/>
 			</div>
-			<div v-if="users.length > 10">+{{ count - 10 }}</div>
+			<div v-if="count > 10" :class="$style.more">+{{ count - 10 }}</div>
 		</div>
 	</div>
 </MkTooltip>
@@ -18,9 +23,9 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
+import { getEmojiName } from '@@/js/emojilist.js';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import { getEmojiName } from '@/scripts/emojilist';
 
 defineProps<{
 	showing: boolean;
@@ -39,7 +44,7 @@ function getReactionName(reaction: string): string {
 	if (trimLocal.startsWith(':')) {
 		return trimLocal;
 	}
-	return getEmojiName(reaction) ?? reaction;
+	return getEmojiName(reaction);
 }
 </script>
 
@@ -50,12 +55,15 @@ function getReactionName(reaction: string): string {
 
 .reaction {
 	max-width: 100px;
+	padding-right: 10px;
 	text-align: center;
+	border-right: solid 0.5px var(--divider);
 }
 
 .reactionIcon {
 	display: block;
 	width: 60px;
+	max-height: 60px;
 	font-size: 60px; // unicodeな絵文字についてはwidthが効かないため
 	object-fit: contain;
 	margin: 0 auto;
@@ -68,28 +76,27 @@ function getReactionName(reaction: string): string {
 .users {
 	flex: 1;
 	min-width: 0;
+	margin: -4px 14px 0 10px;
 	font-size: 0.95em;
-	border-left: solid 0.5px var(--divider);
-	padding-left: 10px;
-	margin-left: 10px;
-	margin-right: 14px;
 	text-align: left;
 }
 
 .user {
+	display: flex;
 	line-height: 24px;
+	padding-top: 4px;
 	white-space: nowrap;
-	overflow: hidden;
+	overflow: visible;
 	text-overflow: ellipsis;
-
-	&:not(:last-child) {
-		margin-bottom: 3px;
-	}
 }
 
 .avatar {
 	width: 24px;
 	height: 24px;
 	margin-right: 3px;
+}
+
+.more {
+	padding-top: 4px;
 }
 </style>

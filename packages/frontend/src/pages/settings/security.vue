@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<FormSection first>
@@ -9,7 +14,7 @@
 
 	<FormSection>
 		<template #label>{{ i18n.ts.signinHistory }}</template>
-		<MkPagination :pagination="pagination" disable-auto-load>
+		<MkPagination :pagination="pagination" disableAutoLoad>
 			<template #default="{items}">
 				<div>
 					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
@@ -35,14 +40,16 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
 import X2fa from './2fa.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const pagination = {
 	endpoint: 'i/signin-history' as const,
@@ -50,13 +57,6 @@ const pagination = {
 };
 
 async function change() {
-	const { canceled: canceled1, result: currentPassword } = await os.inputText({
-		title: i18n.ts.currentPassword,
-		type: 'password',
-		autocomplete: 'current-password',
-	});
-	if (canceled1) return;
-
 	const { canceled: canceled2, result: newPassword } = await os.inputText({
 		title: i18n.ts.newPassword,
 		type: 'password',
@@ -78,33 +78,35 @@ async function change() {
 		});
 		return;
 	}
-	
+
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
 	os.apiWithDialog('i/change-password', {
-		currentPassword,
+		currentPassword: auth.result.password,
+		token: auth.result.token,
 		newPassword,
 	});
 }
 
-function regenerateToken() {
-	os.inputText({
-		title: i18n.ts.password,
-		type: 'password',
-	}).then(({ canceled, result: password }) => {
-		if (canceled) return;
-		os.api('i/regenerate-token', {
-			password: password,
-		});
+async function regenerateToken() {
+	const auth = await os.authenticateDialog();
+	if (auth.canceled) return;
+
+	misskeyApi('i/regenerate-token', {
+		password: auth.result.password,
+		token: auth.result.token,
 	});
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.security,
 	icon: 'ti ti-lock',
-});
+}));
 </script>
 
 <style lang="scss" scoped>

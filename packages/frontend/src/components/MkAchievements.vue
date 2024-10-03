@@ -1,9 +1,21 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<div v-if="achievements" :class="$style.root">
-		<div v-for="achievement in achievements" :key="achievement" :class="$style.achievement" class="_panel">
+		<div v-for="achievement in achievements" :key="achievement.name" :class="$style.achievement" class="_panel">
 			<div :class="$style.icon">
-				<div :class="[$style.iconFrame, $style['iconFrame_' + ACHIEVEMENT_BADGES[achievement.name].frame]]">
+				<div
+					:class="[$style.iconFrame, {
+						[$style.iconFrame_bronze]: ACHIEVEMENT_BADGES[achievement.name].frame === 'bronze',
+						[$style.iconFrame_silver]: ACHIEVEMENT_BADGES[achievement.name].frame === 'silver',
+						[$style.iconFrame_gold]: ACHIEVEMENT_BADGES[achievement.name].frame === 'gold',
+						[$style.iconFrame_platinum]: ACHIEVEMENT_BADGES[achievement.name].frame === 'platinum',
+					}]"
+				>
 					<div :class="[$style.iconInner]" :style="{ background: ACHIEVEMENT_BADGES[achievement.name].bg }">
 						<img :class="$style.iconImg" :src="ACHIEVEMENT_BADGES[achievement.name].img">
 					</div>
@@ -40,14 +52,15 @@
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
-import { onMounted } from 'vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/scripts/achievements';
+import * as Misskey from 'misskey-js';
+import { onMounted, ref, computed } from 'vue';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/scripts/achievements.js';
 
 const props = withDefaults(defineProps<{
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 	withLocked: boolean;
 	withDescription: boolean;
 }>(), {
@@ -55,15 +68,15 @@ const props = withDefaults(defineProps<{
 	withDescription: true,
 });
 
-let achievements = $ref();
-const lockedAchievements = $computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements ?? []).some(a => a.name === x)));
+const achievements = ref<Misskey.entities.UsersAchievementsResponse | null>(null);
+const lockedAchievements = computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements.value ?? []).some(a => a.name === x)));
 
 function fetch() {
-	os.api('users/achievements', { userId: props.user.id }).then(res => {
-		achievements = [];
+	misskeyApi('users/achievements', { userId: props.user.id }).then(res => {
+		achievements.value = [];
 		for (const t of ACHIEVEMENT_TYPES) {
 			const a = res.find(x => x.name === t);
-			if (a) achievements.push(a);
+			if (a) achievements.value.push(a);
 		}
 		//achievements = res.sort((a, b) => b.unlockedAt - a.unlockedAt);
 	});
@@ -140,7 +153,7 @@ onMounted(() => {
 		background: linear-gradient(0deg, #ffee20, #eb7018);
 	}
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		position: absolute;
@@ -160,7 +173,7 @@ onMounted(() => {
 		background: linear-gradient(0deg, #e1e1e1, #7c7c7c);
 	}
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		position: absolute;

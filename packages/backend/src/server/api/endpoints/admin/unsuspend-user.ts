@@ -1,7 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository } from '@/models/index.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { UsersRepository } from '@/models/_.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -10,6 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:unsuspend-user',
 } as const;
 
 export const paramDef = {
@@ -20,15 +25,13 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
 		private userSuspendService: UserSuspendService,
-		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -37,15 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			await this.usersRepository.update(user.id, {
-				isSuspended: false,
-			});
-
-			this.moderationLogService.insertModerationLog(me, 'unsuspend', {
-				targetId: user.id,
-			});
-
-			this.userSuspendService.doPostUnsuspend(user);
+			await this.userSuspendService.unsuspend(user, me);
 		});
 	}
 }

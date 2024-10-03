@@ -1,11 +1,18 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { computed, reactive } from 'vue';
-import { $i } from './account';
-import { miLocalStorage } from './local-storage';
-import { search } from '@/scripts/search';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { ui } from '@/config';
-import { unisonReload } from '@/scripts/unison-reload';
+import { clearCache } from './scripts/clear-cache.js';
+import { $i } from '@/account.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { openInstanceMenu, openToolsMenu } from '@/ui/_common_/common.js';
+import { lookup } from '@/scripts/lookup.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { ui } from '@@/js/config.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -13,6 +20,15 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-bell',
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadNotification),
+		indicateValue: computed(() => {
+			if (!$i || $i.unreadNotificationsCount === 0) return '';
+
+			if ($i.unreadNotificationsCount > 99) {
+				return '99+';
+			} else {
+				return $i.unreadNotificationsCount.toString();
+			}
+		}),
 		to: '/my/notifications',
 	},
 	drive: {
@@ -42,7 +58,14 @@ export const navbarItemDef = reactive({
 	search: {
 		title: i18n.ts.search,
 		icon: 'ti ti-search',
-		action: () => search(),
+		to: '/search',
+	},
+	lookup: {
+		title: i18n.ts.lookup,
+		icon: 'ti ti-world-search',
+		action: (ev) => {
+			lookup();
+		},
 	},
 	lists: {
 		title: i18n.ts.lists,
@@ -94,10 +117,15 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: '/my/achievements',
 	},
+	games: {
+		title: 'Misskey Games',
+		icon: 'ti ti-device-gamepad',
+		to: '/games',
+	},
 	ui: {
 		title: i18n.ts.switchUi,
 		icon: 'ti ti-devices',
-		action: (ev) => {
+		action: (ev: MouseEvent) => {
 			os.popupMenu([{
 				text: i18n.ts.default,
 				active: ui === 'default' || ui === null,
@@ -122,11 +150,38 @@ export const navbarItemDef = reactive({
 			}], ev.currentTarget ?? ev.target);
 		},
 	},
+	about: {
+		title: i18n.ts.about,
+		icon: 'ti ti-info-circle',
+		action: (ev) => {
+			openInstanceMenu(ev);
+		},
+	},
+	tools: {
+		title: i18n.ts.tools,
+		icon: 'ti ti-tool',
+		action: (ev) => {
+			openToolsMenu(ev);
+		},
+	},
 	reload: {
 		title: i18n.ts.reload,
 		icon: 'ti ti-refresh',
 		action: (ev) => {
 			location.reload();
+		},
+	},
+	profile: {
+		title: i18n.ts.profile,
+		icon: 'ti ti-user',
+		show: computed(() => $i != null),
+		to: `/@${$i?.username}`,
+	},
+	cacheClear: {
+		title: i18n.ts.clearCache,
+		icon: 'ti ti-trash',
+		action: (ev) => {
+			clearCache();
 		},
 	},
 });

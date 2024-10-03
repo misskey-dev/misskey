@@ -1,26 +1,28 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<button class="zuvgdzyu _button" @click="menu">
-	<img :src="emoji.url" class="img" loading="lazy"/>
-	<div class="body">
-		<div class="name _monospace">{{ emoji.name }}</div>
-		<div class="info">{{ emoji.aliases.join(' ') }}</div>
+<button class="_button" :class="$style.root" @click="menu">
+	<img :src="emoji.url" :class="$style.img" loading="lazy"/>
+	<div :class="$style.body">
+		<div :class="$style.name" class="_monospace">{{ emoji.name }}</div>
+		<div :class="$style.info">{{ emoji.aliases.join(' ') }}</div>
 	</div>
 </button>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { i18n } from '@/i18n';
+import * as Misskey from 'misskey-js';
+import * as os from '@/os.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { i18n } from '@/i18n.js';
+import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 
 const props = defineProps<{
-	emoji: {
-		name: string;
-		aliases: string[];
-		category: string;
-		url: string;
-	};
+  emoji: Misskey.entities.EmojiSimple;
 }>();
 
 function menu(ev) {
@@ -34,12 +36,24 @@ function menu(ev) {
 			copyToClipboard(`:${props.emoji.name}:`);
 			os.success();
 		},
+	}, {
+		text: i18n.ts.info,
+		icon: 'ti ti-info-circle',
+		action: async () => {
+			const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
+				emoji: await misskeyApiGet('emoji', {
+					name: props.emoji.name,
+				}),
+			}, {
+				closed: () => dispose(),
+			});
+		},
 	}], ev.currentTarget ?? ev.target);
 }
 </script>
 
-<style lang="scss" scoped>
-.zuvgdzyu {
+<style lang="scss" module>
+.root {
 	display: flex;
 	align-items: center;
 	padding: 12px;
@@ -50,29 +64,29 @@ function menu(ev) {
 	&:hover {
 		border-color: var(--accent);
 	}
+}
 
-	> .img {
-		width: 42px;
-		height: 42px;
-		object-fit: contain;
-	}
+.img {
+	width: 42px;
+	height: 42px;
+	object-fit: contain;
+}
 
-	> .body {
-		padding: 0 0 0 8px;
-		white-space: nowrap;
-		overflow: hidden;
+.body {
+	padding: 0 0 0 8px;
+	white-space: nowrap;
+	overflow: hidden;
+}
 
-		> .name {
-			text-overflow: ellipsis;
-			overflow: hidden;
-		}
+.name {
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
 
-		> .info {
-			opacity: 0.5;
-			font-size: 0.9em;
-			text-overflow: ellipsis;
-			overflow: hidden;
-		}
-	}
+.info {
+	opacity: 0.5;
+	font-size: 0.9em;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 </style>

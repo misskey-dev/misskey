@@ -7,13 +7,11 @@ Dockerfile
 build/
 built/
 db/
-docker-compose.yml
-elasticsearch/
+.devcontainer/compose.yml
 node_modules/
 packages/*/node_modules
 redis/
 files/
-misskey-assets/
 fluent-emojis/
 .pnp.*
 
@@ -25,6 +23,8 @@ fluent-emojis/
 !.yarn/sdks
 !.yarn/versions
 
+.pnpm-store
+
 .idea/
 packages/*/.vscode/
-packages/backend/test/docker-compose.yml
+packages/backend/test/compose.yml

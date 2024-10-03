@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class nsfwDetection41655393015659 {
     name = 'nsfwDetection41655393015659'
 

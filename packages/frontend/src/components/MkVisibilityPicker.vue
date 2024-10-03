@@ -1,21 +1,29 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkModal ref="modal" :z-priority="'high'" :src="src" @click="modal.close()" @closed="emit('closed')">
-	<div class="_popup" :class="$style.root">
-		<button key="public" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
+<MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :src="src" @click="modal?.close()" @closed="emit('closed')" @esc="modal?.close()">
+	<div class="_popup" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
+		<div :class="[$style.label, $style.item]">
+			{{ i18n.ts.visibility }}
+		</div>
+		<button key="public" :disabled="isSilenced || isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
 			<div :class="$style.icon"><i class="ti ti-world"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}</span>
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
-		<button key="home" class="_button" :class="[$style.item, { [$style.active]: v === 'home' }]" data-index="2" @click="choose('home')">
+		<button key="home" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'home' }]" data-index="2" @click="choose('home')">
 			<div :class="$style.icon"><i class="ti ti-home"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.home }}</span>
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.homeDescription }}</span>
 			</div>
 		</button>
-		<button key="followers" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' }]" data-index="3" @click="choose('followers')">
+		<button key="followers" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' }]" data-index="3" @click="choose('followers')">
 			<div :class="$style.icon"><i class="ti ti-lock"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.followers }}</span>
@@ -29,65 +37,74 @@
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
-		<div :class="$style.divider"></div>
-		<button key="localOnly" class="_button" :class="[$style.item, $style.localOnly, { [$style.active]: localOnly }]" data-index="5" @click="localOnly = !localOnly">
-			<div :class="$style.icon"><i class="ti ti-world-off"></i></div>
-			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.disableFederation }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.disableFederationDescription }}</span>
-			</div>
-			<div :class="$style.toggle"><i :class="localOnly ? 'ti ti-toggle-right' : 'ti ti-toggle-left'"></i></div>
-		</button>
 	</div>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import { nextTick, shallowRef, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
-const modal = $shallowRef<InstanceType<typeof MkModal>>();
+const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const props = withDefaults(defineProps<{
-	currentVisibility: typeof misskey.noteVisibilities[number];
-	currentLocalOnly: boolean;
+	currentVisibility: typeof Misskey.noteVisibilities[number];
+	isSilenced: boolean;
+	localOnly: boolean;
 	src?: HTMLElement;
+	isReplyVisibilitySpecified?: boolean;
 }>(), {
 });
 
 const emit = defineEmits<{
-	(ev: 'changeVisibility', v: typeof misskey.noteVisibilities[number]): void;
-	(ev: 'changeLocalOnly', v: boolean): void;
+	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
 	(ev: 'closed'): void;
 }>();
 
-let v = $ref(props.currentVisibility);
-let localOnly = $ref(props.currentLocalOnly);
+const v = ref(props.currentVisibility);
 
-watch($$(localOnly), () => {
-	emit('changeLocalOnly', localOnly);
-});
-
-function choose(visibility: typeof misskey.noteVisibilities[number]): void {
-	v = visibility;
+function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
+	v.value = visibility;
 	emit('changeVisibility', visibility);
 	nextTick(() => {
-		modal.close();
+		if (modal.value) modal.value.close();
 	});
 }
 </script>
 
 <style lang="scss" module>
 .root {
-	width: 240px;
+	min-width: 240px;
 	padding: 8px 0;
+
+	&.asDrawer {
+		padding: 12px 0 max(env(safe-area-inset-bottom, 0px), 12px) 0;
+		width: 100%;
+		border-radius: 24px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+
+		.label {
+			pointer-events: none;
+			font-size: 12px;
+			padding-bottom: 4px;
+			opacity: 0.7;
+		}
+
+		.item {
+			font-size: 14px;
+			padding: 10px 24px;
+		}
+	}
 }
 
-.divider {
-	margin: 8px 0;
-	border-top: solid 0.5px var(--divider);
+.label {
+	pointer-events: none;
+	font-size: 10px;
+	padding-bottom: 4px;
+	opacity: 0.7;
 }
 
 .item {
@@ -107,13 +124,7 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 	}
 
 	&.active {
-		color: var(--fgOnAccent);
-		background: var(--accent);
-	}
-
-	&.localOnly.active {
 		color: var(--accent);
-		background: inherit;
 	}
 }
 
@@ -143,17 +154,5 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 
 .itemDescription {
 	opacity: 0.6;
-}
-
-.toggle {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-left: 10px;
-	width: 16px;
-	top: 0;
-	bottom: 0;
-	margin-top: auto;
-	margin-bottom: auto;
 }
 </style>

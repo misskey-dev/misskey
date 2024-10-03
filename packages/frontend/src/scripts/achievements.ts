@@ -1,5 +1,10 @@
-import * as os from '@/os';
-import { $i } from '@/account';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { $i } from '@/account.js';
 
 export const ACHIEVEMENT_TYPES = [
 	'notes1',
@@ -60,6 +65,7 @@ export const ACHIEVEMENT_TYPES = [
 	'iLoveMisskey',
 	'foundTreasure',
 	'client30min',
+	'client60min',
 	'noteDeletedWithin1min',
 	'postedAtLateNight',
 	'postedAt0min0sec',
@@ -75,6 +81,10 @@ export const ACHIEVEMENT_TYPES = [
 	'setNameToSyuilo',
 	'cookieClicked',
 	'brainDiver',
+	'smashTestNotificationButton',
+	'tutorialCompleted',
+	'bubbleGameExplodingHead',
+	'bubbleGameDoubleExplodingHead',
 ] as const;
 
 export const ACHIEVEMENT_BADGES = {
@@ -343,6 +353,11 @@ export const ACHIEVEMENT_BADGES = {
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
+	'client60min': {
+		img: '/fluent-emoji/1f552.png',
+		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
+		frame: 'silver',
+	},
 	'noteDeletedWithin1min': {
 		img: '/fluent-emoji/1f5d1.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
@@ -443,11 +458,34 @@ export const ACHIEVEMENT_BADGES = {
 		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
 		frame: 'bronze',
 	},
+	'smashTestNotificationButton': {
+		img: '/fluent-emoji/1f514.png',
+		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
+		frame: 'bronze',
+	},
+	'tutorialCompleted': {
+		img: '/fluent-emoji/1f393.png',
+		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
+		frame: 'bronze',
+	},
+	'bubbleGameExplodingHead': {
+		img: '/fluent-emoji/1f92f.png',
+		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
+		frame: 'bronze',
+	},
+	'bubbleGameDoubleExplodingHead': {
+		img: '/fluent-emoji/1f92f.png',
+		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
+		frame: 'silver',
+	},
+/* @see <https://github.com/misskey-dev/misskey/pull/10365#discussion_r1155511107>
 } as const satisfies Record<typeof ACHIEVEMENT_TYPES[number], {
 	img: string;
 	bg: string | null;
 	frame: 'bronze' | 'silver' | 'gold' | 'platinum';
 }>;
+ */
+} as const;
 
 export const claimedAchievements: typeof ACHIEVEMENT_TYPES[number][] = ($i && $i.achievements) ? $i.achievements.map(x => x.name) : [];
 
@@ -455,6 +493,7 @@ const claimingQueue = new Set<string>();
 
 export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
 	if ($i == null) return;
+	if ($i.movedTo) return;
 	if (claimedAchievements.includes(type)) return;
 	claimingQueue.add(type);
 	claimedAchievements.push(type);
@@ -462,7 +501,7 @@ export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
 	window.setTimeout(() => {
 		claimingQueue.delete(type);
 	}, 500);
-	os.api('i/claim-achievement', { name: type });
+	misskeyApi('i/claim-achievement', { name: type });
 }
 
 if (_DEV_) {

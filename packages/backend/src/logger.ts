@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import cluster from 'node:cluster';
 import chalk from 'chalk';
 import { default as convertColor } from 'color-convert';
 import { format as dateFormat } from 'date-fns';
 import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
-import type { KEYWORD } from 'color-convert/conversions';
+import type { KEYWORD } from 'color-convert/conversions.js';
 
 type Context = {
 	name: string;
@@ -13,34 +18,31 @@ type Context = {
 
 type Level = 'error' | 'success' | 'warning' | 'debug' | 'info';
 
+// eslint-disable-next-line import/no-default-export
 export default class Logger {
 	private context: Context;
 	private parentLogger: Logger | null = null;
-	private store: boolean;
 
-	constructor(context: string, color?: KEYWORD, store = true) {
+	constructor(context: string, color?: KEYWORD) {
 		this.context = {
 			name: context,
 			color: color,
 		};
-		this.store = store;
 	}
 
 	@bindThis
-	public createSubLogger(context: string, color?: KEYWORD, store = true): Logger {
-		const logger = new Logger(context, color, store);
+	public createSubLogger(context: string, color?: KEYWORD): Logger {
+		const logger = new Logger(context, color);
 		logger.parentLogger = this;
 		return logger;
 	}
 
 	@bindThis
-	private log(level: Level, message: string, data?: Record<string, any> | null, important = false, subContexts: Context[] = [], store = true): void {
+	private log(level: Level, message: string, data?: Record<string, any> | null, important = false, subContexts: Context[] = []): void {
 		if (envOption.quiet) return;
-		if (!this.store) store = false;
-		if (level === 'debug') store = false;
 
 		if (this.parentLogger) {
-			this.parentLogger.log(level, message, data, important, [this.context].concat(subContexts), store);
+			this.parentLogger.log(level, message, data, important, [this.context].concat(subContexts));
 			return;
 		}
 
@@ -65,8 +67,11 @@ export default class Logger {
 		let log = `${l} ${worker}\t[${contexts.join(' ')}]\t${m}`;
 		if (envOption.withLogTime) log = chalk.gray(time) + ' ' + log;
 
-		console.log(important ? chalk.bold(log) : log);
-		if (level === 'error' && data) console.log(data);
+		const args: unknown[] = [important ? chalk.bold(log) : log];
+		if (data != null) {
+			args.push(data);
+		}
+		console.log(...args);
 	}
 
 	@bindThis
