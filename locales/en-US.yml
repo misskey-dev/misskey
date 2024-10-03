@@ -1313,6 +1313,7 @@ _delivery:
     manuallySuspended: "Manually suspended"
     goneSuspended: "Server is suspended due to server deletion"
     autoSuspendedForNotResponding: "Server is suspended due to no responding"
+selectReaction: "Select reactions to use with the Like button"
 scheduledNoteDelete: "Scheduled note deletion"
 noteDeletationAt: "This note will be deleted at {time}."
 addToEmojiPicker: "Add to Emoji Picker"

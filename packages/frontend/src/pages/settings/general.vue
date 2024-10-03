@@ -38,7 +38,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 	</FormSection>
-
 	<FormSection>
 		<template #label>{{ i18n.ts.displayOfNote }}</template>
 
@@ -100,6 +99,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 
 			<MkSwitch v-model="disableNoteNyaize">{{ i18n.ts.disableNoteNyaize }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></MkSwitch>
+
+			<MkRadios v-model="selectReaction">
+				<template #label>{{ i18n.ts.selectReaction }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<option value="❤️">❤️</option>
+				<option value="⭐">⭐</option>
+				<option value="🍮">🍮</option>
+				<option value="💩">💩</option>
+			</MkRadios>
+
+			<!-- <MkSwitch v-model="selectReaction">
+				<template #label>{{ i18n.ts.selectReaction }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<button class="_button" :class="$style.emojisAdd" @click="chooseReaction">
+					<i class="ti ti-plus"></i>
+				</button>
+			</MkSwitch> -->
 		</div>
 	</FormSection>
 
@@ -396,6 +410,7 @@ const reactionChecksMuting = computed(defaultStore.makeGetterSetter('reactionChe
 const hideLocalTimeLine = computed(defaultStore.makeGetterSetter('hideLocalTimeLine'));
 const hideGlobalTimeLine = computed(defaultStore.makeGetterSetter('hideGlobalTimeLine'));
 const hideSocialTimeLine = computed(defaultStore.makeGetterSetter('hideSocialTimeLine'));
+const selectReaction = computed(defaultStore.makeGetterSetter('selectReaction'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -444,9 +459,32 @@ watch([
 	hiddenPinnedNotes,
 	hiddenActivity,
 	hiddenFiles,
+	selectReaction,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
+
+// const chooseReaction = (ev: MouseEvent) => {
+//     pickEmoji(selectReaction, ev); // selectReaction は文字列
+// };
+
+// async function pickEmoji(currentReaction: string, ev: MouseEvent) {
+//     const selectedEmoji = await os.pickEmoji(getHTMLElement(ev), {
+//         showPinned: false,
+//     });
+
+//     // selectedEmoji が定義されているか確認
+//     if (selectedEmoji && selectedEmoji !== currentReaction) {
+//         // selectReaction を更新
+//         defaultStore.state.selectReaction = selectedEmoji;
+//     }
+// }
+
+// function getHTMLElement(ev: MouseEvent): HTMLElement {
+//     const target = ev.currentTarget ?? ev.target;
+//     return target as HTMLElement;
+// }
+
 
 const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;
 
@@ -579,3 +617,10 @@ definePageMetadata(() => ({
 	icon: 'ti ti-adjustments',
 }));
 </script>
+
+<!-- <style lang="scss" module>
+.emojisAdd {
+  display: inline-block;
+  padding: 8px;
+}
+</style> -->

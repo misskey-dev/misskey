@@ -498,13 +498,15 @@ function heartReact(): void {
 
 	sound.playMisskeySfx('reaction');
 
+	const selectreact = defaultStore.state.selectReaction;
+
 	if (props.mock) {
 		return;
 	}
 
 	misskeyApi('notes/reactions/create', {
 		noteId: appearNote.value.id,
-		reaction: '❤️',
+		reaction: selectreact,
 	});
 
 	if (appearNote.value.text && appearNote.value.text.length > 100 && (Date.now() - new Date(appearNote.value.createdAt).getTime() < 1000 * 3)) {
