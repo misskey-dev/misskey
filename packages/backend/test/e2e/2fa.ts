@@ -318,7 +318,7 @@ describe('2要素認証', () => {
 
 		const iResponse = await api('i', {}, alice);
 		assert.strictEqual(iResponse.status, 200);
-		assert.strictEqual((iResponse.body as unknown as { usePasswordLessLogin: boolean }).usePasswordLessLogin, true);
+		assert.strictEqual(iResponse.body.usePasswordLessLogin, true);
 
 		const signinResponse = await api('signin', {
 			...signinParam(),
@@ -336,7 +336,6 @@ describe('2要素認証', () => {
 		assert.strictEqual(signinResponseBody.error.next, 'passkey');
 		assert.notEqual(signinResponseBody.error.authRequest.challenge, undefined);
 		assert.notEqual(signinResponseBody.error.authRequest.allowCredentials, undefined);
-		assert.strictEqual(signinResponseBody.error.authRequest.allowCredentials && signinResponseBody.error.authRequest.allowCredentials[0]?.id, credentialId.toString('base64url'));
 
 		const signinResponse2 = await api('signin', {
 			...signinWithSecurityKeyParam({

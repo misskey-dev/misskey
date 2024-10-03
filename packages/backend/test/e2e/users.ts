@@ -85,9 +85,6 @@ describe('ユーザー', () => {
 			followersVisibility: user.followersVisibility,
 			roles: user.roles,
 			memo: user.memo,
-			twoFactorEnabled: user.twoFactorEnabled ?? false,
-			usePasswordLessLogin: user.usePasswordLessLogin ?? false,
-			securityKeys: user.securityKeys ?? false,
 		});
 	};
 
@@ -149,6 +146,9 @@ describe('ユーザー', () => {
 			achievements: user.achievements,
 			loggedInDays: user.loggedInDays,
 			policies: user.policies,
+			twoFactorEnabled: user.twoFactorEnabled,
+			usePasswordLessLogin: user.usePasswordLessLogin,
+			securityKeys: user.securityKeys,
 			...(security ? {
 				email: user.email,
 				emailVerified: user.emailVerified,
