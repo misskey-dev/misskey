@@ -41,7 +41,7 @@ const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue
 bg.setAlpha(0.1);
 const bgCss = bg.toRgbString();
 
-const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
+const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar
 	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
 	: `/avatar/@${props.username}@${props.host}`,
 );
