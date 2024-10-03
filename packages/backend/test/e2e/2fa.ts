@@ -316,9 +316,9 @@ describe('2要素認証', () => {
 		}, alice);
 		assert.strictEqual(passwordLessResponse.status, 204);
 
-		const usersShowResponse = await api('i', {}, alice);
-		assert.strictEqual(usersShowResponse.status, 200);
-		assert.strictEqual((usersShowResponse.body as unknown as { usePasswordLessLogin: boolean }).usePasswordLessLogin, true);
+		const iResponse = await api('i', {}, alice);
+		assert.strictEqual(iResponse.status, 200);
+		assert.strictEqual((iResponse.body as unknown as { usePasswordLessLogin: boolean }).usePasswordLessLogin, true);
 
 		const signinResponse = await api('signin', {
 			...signinParam(),
