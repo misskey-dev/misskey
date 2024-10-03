@@ -8,16 +8,24 @@ on:
     paths:
       - packages/backend/**
       - packages/frontend/**
+      - packages/frontend-shared/**
+      - packages/frontend-embed/**
       - packages/sw/**
       - packages/misskey-js/**
+      - packages/misskey-bubble-game/**
+      - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - .github/workflows/lint.yml
   pull_request:
     paths:
       - packages/backend/**
       - packages/frontend/**
+      - packages/frontend-shared/**
+      - packages/frontend-embed/**
       - packages/sw/**
       - packages/misskey-js/**
+      - packages/misskey-bubble-game/**
+      - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - .github/workflows/lint.yml
 jobs:
@@ -29,7 +37,7 @@ jobs:
         fetch-depth: 0
         submodules: true
     - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v4.0.3
+    - uses: actions/setup-node@v4.0.4
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -40,22 +48,27 @@ jobs:
     needs: [pnpm_install]
     runs-on: ubuntu-latest
     continue-on-error: true
-    env:
-      eslint-cache-version: v1
     strategy:
       matrix:
         workspace:
         - backend
         - frontend
+        - frontend-shared
+        - frontend-embed
         - sw
         - misskey-js
+        - misskey-bubble-game
+        - misskey-reversi
+    env:
+      eslint-cache-version: v1
+      eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
     - uses: actions/checkout@v4.1.1
       with:
         fetch-depth: 0
         submodules: true
     - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v4.0.3
+    - uses: actions/setup-node@v4.0.4
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -64,11 +77,10 @@ jobs:
     - name: Restore eslint cache
       uses: actions/cache@v4.0.2
       with:
-        path: node_modules/.cache/eslint
-        key: eslint-${{ env.eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
-        restore-keys: |
-          eslint-${{ env.eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-
-    - run: pnpm --filter ${{ matrix.workspace }} run eslint --cache --cache-location node_modules/.cache/eslint --cache-strategy content
+        path: ${{ env.eslint-cache-path }}
+        key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
+        restore-keys: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
+    - run: pnpm --filter ${{ matrix.workspace }} run eslint --cache --cache-location ${{ env.eslint-cache-path }} --cache-strategy content
 
   typecheck:
     needs: [pnpm_install]
@@ -78,6 +90,7 @@ jobs:
       matrix:
         workspace:
         - backend
+        - sw
         - misskey-js
     steps:
     - uses: actions/checkout@v4.1.1
@@ -85,14 +98,14 @@ jobs:
         fetch-depth: 0
         submodules: true
     - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v4.0.3
+    - uses: actions/setup-node@v4.0.4
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - run: pnpm --filter misskey-js run build
-      if: ${{ matrix.workspace == 'backend' }}
+      if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'sw' }}
     - run: pnpm --filter misskey-reversi run build
       if: ${{ matrix.workspace == 'backend' }}
     - run: pnpm --filter ${{ matrix.workspace }} run typecheck

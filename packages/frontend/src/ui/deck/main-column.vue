@@ -26,7 +26,8 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useScrollPositionManager } from '@/nirax.js';
-import { getScrollContainer } from '@/scripts/scroll.js';
+import { getScrollContainer } from '@@/js/scroll.js';
+import { isLink } from '@@/js/is-link.js';
 import { mainRouter } from '@/router/main.js';
 
 defineProps<{
@@ -52,12 +53,6 @@ function back() {
 function onContextmenu(ev: MouseEvent) {
 	if (!ev.target) return;
 
-	const isLink = (el: HTMLElement) => {
-		if (el.tagName === 'A') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
-		}
-	};
 	if (isLink(ev.target as HTMLElement)) return;
 	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes((ev.target as HTMLElement).tagName) || (ev.target as HTMLElement).attributes['contenteditable']) return;
 	if (window.getSelection()?.toString() !== '') return;

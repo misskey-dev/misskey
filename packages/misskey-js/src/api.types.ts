@@ -5,6 +5,8 @@ import {
 	PartialRolePolicyOverride,
 	SigninRequest,
 	SigninResponse,
+	SigninWithPasskeyRequest,
+	SigninWithPasskeyResponse,
 	SignupPendingRequest,
 	SignupPendingResponse,
 	SignupRequest,
@@ -82,6 +84,10 @@ export type Endpoints = Overwrite<
 			req: SigninRequest;
 			res: SigninResponse;
 		},
+		'signin-with-passkey': {
+			req: SigninWithPasskeyRequest;
+			res: SigninWithPasskeyResponse;
+		}
 		'admin/roles/create': {
 			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;
 			res: AdminRolesCreateResponse;

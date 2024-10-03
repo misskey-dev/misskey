@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { WebhooksRepository } from '@/models/_.js';
-import type { MiWebhook } from '@/models/Webhook.js';
+import { type WebhooksRepository } from '@/models/_.js';
+import { MiWebhook } from '@/models/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEvents } from '@/core/GlobalEventService.js';
@@ -36,6 +36,31 @@ export class UserWebhookService implements OnApplicationShutdown {
 		}
 
 		return this.activeWebhooks;
+	}
+
+	/**
+	 * UserWebhook の一覧を取得する.
+	 */
+	@bindThis
+	public fetchWebhooks(params?: {
+		ids?: MiWebhook['id'][];
+		isActive?: MiWebhook['active'];
+		on?: MiWebhook['on'];
+	}): Promise<MiWebhook[]> {
+		const query = this.webhooksRepository.createQueryBuilder('webhook');
+		if (params) {
+			if (params.ids && params.ids.length > 0) {
+				query.andWhere('webhook.id IN (:...ids)', { ids: params.ids });
+			}
+			if (params.isActive !== undefined) {
+				query.andWhere('webhook.active = :isActive', { isActive: params.isActive });
+			}
+			if (params.on && params.on.length > 0) {
+				query.andWhere(':on <@ webhook.on', { on: params.on });
+			}
+		}
+
+		return query.getMany();
 	}
 
 	@bindThis
