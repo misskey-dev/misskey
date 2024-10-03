@@ -56,23 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 	</FormSection>
-	<FormSection v-if="url || hashVerified">
-		<template #label>{{ i18n.ts._externalResourceInstaller._vendorInfo.title }}</template>
-		<div class="_gaps_s">
-			<MkKeyValue v-if="url">
-				<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
-				<template #value><MkUrl :url="url" :showUrlPreview="false"></MkUrl></template>
-			</MkKeyValue>
-			<MkKeyValue v-if="hashVerified">
-				<!-- hashVerifiedがfalseでも失敗表示は出ないので、エラー表示は別で作成すること -->
-				<!-- そもそもこのコンポーネントはハッシュ検証が必要であれば事前に済ませていることを前提としている -->
-				<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
-				<template #value>
-					<i class="ti ti-check" style="color: var(--accent)"></i>
-				</template>
-			</MkKeyValue>
-		</div>
-	</FormSection>
+	<slot name="additionalInfo"/>
 	<div class="_buttonsCenter">
 		<MkButton primary @click="emits('confirm')"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
 	</div>
@@ -107,7 +91,6 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkCode from '@/components/MkCode.vue';
-import MkUrl from '@/components/global/MkUrl.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -118,8 +101,6 @@ const isTheme = computed(() => props.extension.type === 'theme');
 
 const props = defineProps<{
 	extension: Extension;
-	url?: string;
-	hashVerified?: boolean; // true: 検証成功表示 false/undefined: 検証不要、表示なし
 }>();
 
 const emits = defineEmits<{

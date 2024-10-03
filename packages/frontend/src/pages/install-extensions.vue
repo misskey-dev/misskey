@@ -8,8 +8,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="500">
 		<MkLoading v-if="uiPhase === 'fetching'"/>
-		<!-- この画面が表示されている時点でハッシュの検証には成功している -->
-		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" :url="url" hashVerified @confirm="install()"/>
+		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()">
+			<template #additionalInfo>
+				<FormSection>
+					<template #label>{{ i18n.ts._externalResourceInstaller._vendorInfo.title }}</template>
+					<div class="_gaps_s">
+						<MkKeyValue>
+							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
+							<template #value><MkUrl :url="url" :showUrlPreview="false"></MkUrl></template>
+						</MkKeyValue>
+						<MkKeyValue>
+							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
+							<template #value>
+								<!-- この画面が出ている時点でハッシュの検証には成功している -->
+								<i class="ti ti-check" style="color: var(--accent)"></i>
+							</template>
+						</MkKeyValue>
+					</div>
+				</FormSection>
+			</template>
+		</MkExtensionInstaller>
 		<div v-else-if="uiPhase === 'error'" class="_gaps_m" :class="[$style.extInstallerRoot, $style.error]">
 			<div :class="$style.extInstallerIconWrapper">
 				<i class="ti ti-circle-x"></i>
@@ -30,6 +48,9 @@ import { ref, computed, onActivated, onDeactivated, nextTick } from 'vue';
 import MkLoading from '@/components/global/MkLoading.vue';
 import MkExtensionInstaller, { type Extension } from '@/components/MkExtensionInstaller.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkUrl from '@/components/global/MkUrl.vue';
+import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { AiScriptPluginMeta, parsePluginMeta, installPlugin } from '@/scripts/install-plugin.js';
