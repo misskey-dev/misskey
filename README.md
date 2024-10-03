@@ -28,7 +28,7 @@
 - 絵文字を登録したユーザーがアカウントを消去しても継続して絵文字の使用ができるように https://github.com/team-shahu/misskey/pull/11
 - アバターデコレーションを登録したユーザーがアカウントを消去しても継続して使用ができるように
 - アバターデコレーションをmisskeyUI上から登録できるように https://github.com/team-shahu/misskey/pull/12
-- TL上のサーバー情報をアイコン表示に切り替えられるように https://github.com/team-shahu/misskey/pull/13
+- TL上のサーバー情報をアイコン表示に切り替えられるように https://github.com/team-shahu/misskey/pull/13 https://github.com/team-shahu/misskey/pull/24
 - 特定のロールにのみお知らせを発行する機能 https://github.com/team-shahu/misskey/pull/18
 - リアクションした人一覧がブロック・ミュートを考慮するようにする設定 https://github.com/team-shahu/misskey/pull/23
 
