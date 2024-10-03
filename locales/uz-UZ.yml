@@ -1057,6 +1057,7 @@ _notification:
     quote: "Iqtibos keltirish"
     reaction: "Reaktsiyalar"
     receiveFollowRequest: "Qabul qilingan kuzatuv so'rovlari"
+    login: "Kirish"
   _actions:
     reply: "Javob berish"
     renote: "Qayta qayd qilish"

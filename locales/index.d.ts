@@ -9285,6 +9285,10 @@ export interface Locale extends ILocale {
          * {x}のエクスポートが完了しました
          */
         "exportOfXCompleted": ParameterizedString<"x">;
+        /**
+         * ログインがありました
+         */
+        "login": string;
         "_types": {
             /**
              * すべて
@@ -9342,6 +9346,10 @@ export interface Locale extends ILocale {
              * エクスポートが完了した
              */
             "exportCompleted": string;
+            /**
+             * ログイン
+             */
+            "login": string;
             /**
              * 通知のテスト
              */

@@ -1313,6 +1313,7 @@ _notification:
     pollEnded: "পোল শেষ"
     receiveFollowRequest: "প্রাপ্ত অনুসরণের অনুরোধসমূহ"
     followRequestAccepted: "গৃহীত অনুসরণের অনুরোধসমূহ"
+    login: "প্রবেশ করুন"
     app: "লিঙ্ক করা অ্যাপ থেকে বিজ্ঞপ্তি"
   _actions:
     followBack: "ফলো ব্যাক করেছে"

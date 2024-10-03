@@ -2037,6 +2037,7 @@ _notification:
     followRequestAccepted: "Demande d'abonnement acceptée"
     roleAssigned: "Rôle reçu"
     achievementEarned: "Déverrouillage d'accomplissement"
+    login: "Se connecter"
     app: "Notifications provenant des apps"
   _actions:
     followBack: "Suivre"

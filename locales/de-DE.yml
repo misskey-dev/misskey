@@ -2141,6 +2141,7 @@ _notification:
     receiveFollowRequest: "Erhaltene Follow-Anfragen"
     followRequestAccepted: "Akzeptierte Follow-Anfragen"
     achievementEarned: "Errungenschaft freigeschaltet"
+    login: "Anmelden"
     app: "Benachrichtigungen von Apps"
   _actions:
     followBack: "folgt dir nun auch"
