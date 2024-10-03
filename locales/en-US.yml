@@ -2407,6 +2407,7 @@ _notification:
     roleAssigned: "Role given"
     achievementEarned: "Achievement unlocked"
     exportCompleted: "The export has been completed"
+    login: "Sign In"
     test: "Notification test"
     app: "Notifications from linked apps"
   _actions:
