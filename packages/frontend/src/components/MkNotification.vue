@@ -227,6 +227,7 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	--eventReactionHeart: var(--love);
 	--eventReaction: #e99a0b;
 	--eventAchievement: #cb9a11;
+	--eventLogin: #007aff;
 	--eventOther: #88a6b7;
 }
 
@@ -345,6 +346,12 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 .t_roleAssigned {
 	padding: 3px;
 	background: var(--eventOther);
+	pointer-events: none;
+}
+
+.t_login {
+	padding: 3px;
+	background: var(--eventLogin);
 	pointer-events: none;
 }
 
