@@ -370,6 +370,7 @@ export class ApPersonService implements OnModuleInit {
 				await transactionalEntityManager.save(new MiUserProfile({
 					userId: user.id,
 					description: _description,
+					followedMessage: person._misskey_followedMessage != null ? truncate(person._misskey_followedMessage, 256) : null,
 					url,
 					fields,
 					followingVisibility,
@@ -568,6 +569,7 @@ export class ApPersonService implements OnModuleInit {
 			url,
 			fields,
 			description: _description,
+			followedMessage: person._misskey_followedMessage != null ? truncate(person._misskey_followedMessage, 256) : null,
 			followingVisibility,
 			followersVisibility,
 			birthday: bday?.[0] ?? null,

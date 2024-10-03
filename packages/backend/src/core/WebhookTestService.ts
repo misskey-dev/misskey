@@ -68,6 +68,7 @@ function generateDummyUser(override?: Partial<MiUser>): MiUser {
 		isHibernated: false,
 		isDeleted: false,
 		emojis: [],
+		score: 0,
 		host: null,
 		inbox: null,
 		sharedInbox: null,

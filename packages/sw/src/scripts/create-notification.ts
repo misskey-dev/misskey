@@ -210,6 +210,31 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						tag: `achievement:${data.body.achievement}`,
 					}];
 
+				case 'login':
+					return [i18n.ts._notification.login, {
+						badge: iconUrl('login-2'),
+						data,
+					}];
+
+				case 'exportCompleted': {
+					const entityName = {
+						antenna: i18n.ts.antennas,
+						blocking: i18n.ts.blockedUsers,
+						clip: i18n.ts.clips,
+						customEmoji: i18n.ts.customEmojis,
+						favorite: i18n.ts.favorites,
+						following: i18n.ts.following,
+						muting: i18n.ts.mutedUsers,
+						note: i18n.ts.notes,
+						userList: i18n.ts.lists,
+					} as const satisfies Record<typeof data.body.exportedEntity, string>;
+
+					return [i18n.tsx._notification.exportOfXCompleted({ x: entityName[data.body.exportedEntity] }), {
+						badge: iconUrl('circle-check'),
+						data,
+					}];
+				}
+
 				case 'pollEnded':
 					return [i18n.ts._notification.pollEnded, {
 						body: data.body.note.text ?? '',

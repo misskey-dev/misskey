@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.youFollowing }}</span><i class="ti ti-minus"></i>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
 			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
