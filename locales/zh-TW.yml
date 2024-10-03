@@ -2393,6 +2393,7 @@ _notification:
   followedBySomeUsers: "被{n}人追隨了"
   flushNotification: "重置通知歷史紀錄"
   exportOfXCompleted: "{x} 的匯出已完成。"
+  login: "已登入"
   _types:
     all: "全部 "
     note: "使用者的最新貼文"
