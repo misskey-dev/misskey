@@ -2408,6 +2408,7 @@ _notification:
     roleAssigned: "Ruolo concesso"
     achievementEarned: "Risultato raggiunto"
     exportCompleted: "Esportazione completata"
+    login: "Accedi"
     test: "Prova la notifica"
     app: "Notifiche da applicazioni"
   _actions:
