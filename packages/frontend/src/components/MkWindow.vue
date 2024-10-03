@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onBeforeUnmount, onMounted, provide, shallowRef, ref } from 'vue';
 import contains from '@/scripts/contains.js';
 import * as os from '@/os.js';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 
@@ -508,10 +508,6 @@ defineExpose({
 .header {
 	--height: 39px;
 
-	&.mini {
-		--height: 32px;
-	}
-
 	display: flex;
 	position: relative;
 	z-index: 1;
@@ -524,6 +520,10 @@ defineExpose({
 	//border-bottom: solid 1px var(--divider);
 	font-size: 90%;
 	font-weight: bold;
+
+	&.mini {
+		--height: 32px;
+	}
 }
 
 .headerButton {

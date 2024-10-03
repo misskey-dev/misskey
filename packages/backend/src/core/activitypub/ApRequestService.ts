@@ -205,18 +205,47 @@ export class ApRequestService {
 		//#region リクエスト先がhtmlかつactivity+jsonへのalternate linkタグがあるとき
 		const contentType = res.headers.get('content-type');
 
-		if ((contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' && _followAlternate === true) {
+		if (
+			res.ok &&
+			(contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' &&
+			_followAlternate === true
+		) {
 			const html = await res.text();
-			const window = new Window();
+			const { window, happyDOM } = new Window({
+				settings: {
+					disableJavaScriptEvaluation: true,
+					disableJavaScriptFileLoading: true,
+					disableCSSFileLoading: true,
+					disableComputedStyleRendering: true,
+					handleDisabledFileLoadingAsSuccess: true,
+					navigation: {
+						disableMainFrameNavigation: true,
+						disableChildFrameNavigation: true,
+						disableChildPageNavigation: true,
+						disableFallbackToSetURL: true,
+					},
+					timer: {
+						maxTimeout: 0,
+						maxIntervalTime: 0,
+						maxIntervalIterations: 0,
+					},
+				},
+			});
 			const document = window.document;
-			document.documentElement.innerHTML = html;
+			try {
+				document.documentElement.innerHTML = html;
 
-			const alternate = document.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
-			if (alternate) {
-				const href = alternate.getAttribute('href');
-				if (href) {
-					return await this.signedGet(href, user, false);
+				const alternate = document.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
+				if (alternate) {
+					const href = alternate.getAttribute('href');
+					if (href) {
+						return await this.signedGet(href, user, false);
+					}
 				}
+			} catch (e) {
+				// something went wrong parsing the HTML, ignore the whole thing
+			} finally {
+				happyDOM.close().catch(err => {});
 			}
 		}
 		//#endregion
