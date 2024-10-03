@@ -486,6 +486,7 @@ _notification:
     renote: "Herdelen"
     quote: "Quote"
     reaction: "Reacties"
+    login: "Inloggen"
   _actions:
     reply: "Antwoord"
     renote: "Herdelen"

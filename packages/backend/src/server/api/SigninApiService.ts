@@ -9,6 +9,7 @@ import * as OTPAuth from 'otpauth';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type {
+	MiMeta,
 	SigninsRepository,
 	UserProfilesRepository,
 	UsersRepository,
@@ -20,6 +21,8 @@ import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
+import { CaptchaService } from '@/core/CaptchaService.js';
+import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
@@ -30,6 +33,9 @@ export class SigninApiService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -45,6 +51,7 @@ export class SigninApiService {
 		private signinService: SigninService,
 		private userAuthService: UserAuthService,
 		private webAuthnService: WebAuthnService,
+		private captchaService: CaptchaService,
 	) {
 	}
 
@@ -56,6 +63,10 @@ export class SigninApiService {
 				password: string;
 				token?: string;
 				credential?: AuthenticationResponseJSON;
+				'hcaptcha-response'?: string;
+				'g-recaptcha-response'?: string;
+				'turnstile-response'?: string;
+				'm-captcha-response'?: string;
 			};
 		}>,
 		reply: FastifyReply,
@@ -139,6 +150,32 @@ export class SigninApiService {
 		};
 
 		if (!profile.twoFactorEnabled) {
+			if (process.env.NODE_ENV !== 'test') {
+				if (this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey) {
+					await this.captchaService.verifyHcaptcha(this.meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+
+				if (this.meta.enableMcaptcha && this.meta.mcaptchaSecretKey && this.meta.mcaptchaSitekey && this.meta.mcaptchaInstanceUrl) {
+					await this.captchaService.verifyMcaptcha(this.meta.mcaptchaSecretKey, this.meta.mcaptchaSitekey, this.meta.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+
+				if (this.meta.enableRecaptcha && this.meta.recaptchaSecretKey) {
+					await this.captchaService.verifyRecaptcha(this.meta.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+
+				if (this.meta.enableTurnstile && this.meta.turnstileSecretKey) {
+					await this.captchaService.verifyTurnstile(this.meta.turnstileSecretKey, body['turnstile-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+			}
+
 			if (same) {
 				return this.signinService.signin(request, reply, user);
 			} else {

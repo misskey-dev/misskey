@@ -32,7 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
-			<MkButton type="submit" large primary rounded :disabled="signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
+			<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :class="$style.captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
+			<MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
+			<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
+			<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
+			<MkButton type="submit" large primary rounded :disabled="captchaFailed || signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 		</div>
 		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
 			<div v-if="user && user.securityKeys" class="twofa-group tap-group">
@@ -68,11 +72,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
-import { SigninWithPasskeyResponse } from 'misskey-js/entities.js';
 import { query, extractDomain } from '@@/js/url.js';
 import { host as configHost } from '@@/js/config.js';
 import MkDivider from './MkDivider.vue';
@@ -85,6 +88,8 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
 
 const signing = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
@@ -98,6 +103,22 @@ const isBackupCode = ref(false);
 const queryingKey = ref(false);
 let credentialRequest: CredentialRequestOptions | null = null;
 const passkey_context = ref('');
+const hcaptcha = ref<Captcha | undefined>();
+const mcaptcha = ref<Captcha | undefined>();
+const recaptcha = ref<Captcha | undefined>();
+const turnstile = ref<Captcha | undefined>();
+const hCaptchaResponse = ref<string | null>(null);
+const mCaptchaResponse = ref<string | null>(null);
+const reCaptchaResponse = ref<string | null>(null);
+const turnstileResponse = ref<string | null>(null);
+
+const captchaFailed = computed((): boolean => {
+	return (
+		instance.enableHcaptcha && !hCaptchaResponse.value ||
+		instance.enableMcaptcha && !mCaptchaResponse.value ||
+		instance.enableRecaptcha && !reCaptchaResponse.value ||
+		instance.enableTurnstile && !turnstileResponse.value);
+});
 
 const emit = defineEmits<{
 	(ev: 'login', v: any): void;
@@ -166,7 +187,7 @@ function onPasskeyLogin(): void {
 	signing.value = true;
 	if (webAuthnSupported()) {
 		misskeyApi('signin-with-passkey', {})
-			.then((res: SigninWithPasskeyResponse) => {
+			.then(res => {
 				totpLogin.value = false;
 				signing.value = false;
 				queryingKey.value = true;
@@ -197,7 +218,7 @@ async function queryPasskey(): Promise<void> {
 				credential: credential.toJSON(),
 				context: passkey_context.value,
 			});
-		}).then((res: SigninWithPasskeyResponse) => {
+		}).then(res => {
 			emit('login', res.signinResponse);
 			return onLogin(res.signinResponse);
 		});
@@ -227,6 +248,10 @@ function onSubmit(): void {
 		misskeyApi('signin', {
 			username: username.value,
 			password: password.value,
+			'hcaptcha-response': hCaptchaResponse.value,
+			'm-captcha-response': mCaptchaResponse.value,
+			'g-recaptcha-response': reCaptchaResponse.value,
+			'turnstile-response': turnstileResponse.value,
 			token: user.value?.twoFactorEnabled ? token.value : undefined,
 		}).then(res => {
 			emit('login', res);
@@ -236,6 +261,11 @@ function onSubmit(): void {
 }
 
 function loginFailed(err: any): void {
+	hcaptcha.value?.reset?.();
+	mcaptcha.value?.reset?.();
+	recaptcha.value?.reset?.();
+	turnstile.value?.reset?.();
+
 	switch (err.id) {
 		case '6cc579cc-885d-43d8-95c2-b8c7fc963280': {
 			os.alert({

@@ -8,6 +8,9 @@ search: "検索"
 notifications: "通知"
 username: "ユーザー名"
 password: "パスワード"
+initialPasswordForSetup: "初期設定開始用パスワード"
+initialPasswordIsIncorrect: "初期設定開始用のパスワードが違います。"
+initialPasswordForSetupDescription: "Misskeyを自分でインストールした場合は、設定ファイルに入力したパスワードを使用してください。\nMisskeyのホスティングサービスなどを使用している場合は、提供されたパスワードを使用してください。\nパスワードを設定していない場合は、空欄にしたまま続行してください。"
 forgotPassword: "パスワードを忘れた"
 fetchingAsApObject: "連合に照会中"
 ok: "OK"
@@ -1283,6 +1286,7 @@ signinWithPasskey: "パスキーでログイン"
 unknownWebAuthnKey: "登録されていないパスキーです。"
 passkeyVerificationFailed: "パスキーの検証に失敗しました。"
 passkeyVerificationSucceededButPasswordlessLoginDisabled: "パスキーの検証に成功しましたが、パスワードレスログインが無効になっています。"
+messageToFollower: "フォロワーへのメッセージ"
 
 _delivery:
   status: "配信状態"
@@ -2450,6 +2454,7 @@ _notification:
   followedBySomeUsers: "{n}人にフォローされました"
   flushNotification: "通知の履歴をリセットする"
   exportOfXCompleted: "{x}のエクスポートが完了しました"
+  login: "ログインがありました"
 
   _types:
     all: "すべて"
@@ -2466,6 +2471,7 @@ _notification:
     roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
     exportCompleted: "エクスポートが完了した"
+    login: "ログイン"
     test: "通知のテスト"
     app: "連携アプリからの通知"
 
