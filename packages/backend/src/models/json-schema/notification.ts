@@ -267,6 +267,10 @@ export const packedNotificationSchema = {
 				optional: false, nullable: false,
 				format: 'id',
 			},
+			message: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 		},
 	}, {
 		type: 'object',
@@ -316,6 +320,16 @@ export const packedNotificationSchema = {
 				type: 'string',
 				optional: false, nullable: false,
 				format: 'id',
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['login'],
 			},
 		},
 	}, {

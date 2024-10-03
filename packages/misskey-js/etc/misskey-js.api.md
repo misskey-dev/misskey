@@ -4,7 +4,9 @@
 
 ```ts
 
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { EventEmitter } from 'eventemitter3';
+import type { PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
 //
@@ -1162,7 +1164,19 @@ export type Endpoints = Overwrite<Endpoints_2, {
     };
     'signin-with-passkey': {
         req: SigninWithPasskeyRequest;
-        res: SigninWithPasskeyResponse;
+        res: {
+            $switch: {
+                $cases: [
+                [
+                    {
+                    context: string;
+                },
+                SigninWithPasskeyResponse
+                ]
+                ];
+                $default: SigninWithPasskeyInitResponse;
+            };
+        };
     };
     'admin/roles/create': {
         req: Overwrite<AdminRolesCreateRequest, {
@@ -1196,6 +1210,7 @@ declare namespace entities {
         SignupPendingResponse,
         SigninRequest,
         SigninWithPasskeyRequest,
+        SigninWithPasskeyInitResponse,
         SigninWithPasskeyResponse,
         SigninResponse,
         PartialRolePolicyOverride,
@@ -3027,6 +3042,11 @@ type SigninRequest = {
     username: string;
     password: string;
     token?: string;
+    credential?: AuthenticationResponseJSON;
+    'hcaptcha-response'?: string | null;
+    'g-recaptcha-response'?: string | null;
+    'turnstile-response'?: string | null;
+    'm-captcha-response'?: string | null;
 };
 
 // @public (undocumented)
@@ -3036,16 +3056,20 @@ type SigninResponse = {
 };
 
 // @public (undocumented)
+type SigninWithPasskeyInitResponse = {
+    option: PublicKeyCredentialRequestOptionsJSON;
+    context: string;
+};
+
+// @public (undocumented)
 type SigninWithPasskeyRequest = {
-    credential?: object;
+    credential?: AuthenticationResponseJSON;
     context?: string;
 };
 
 // @public (undocumented)
 type SigninWithPasskeyResponse = {
-    option?: object;
-    context?: string;
-    signinResponse?: SigninResponse;
+    signinResponse: SigninResponse;
 };
 
 // @public (undocumented)
@@ -3069,6 +3093,7 @@ type SignupRequest = {
     'hcaptcha-response'?: string | null;
     'g-recaptcha-response'?: string | null;
     'turnstile-response'?: string | null;
+    'm-captcha-response'?: string | null;
 };
 
 // @public (undocumented)
@@ -3346,7 +3371,7 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:49:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 

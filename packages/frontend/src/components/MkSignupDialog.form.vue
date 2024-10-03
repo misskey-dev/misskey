@@ -81,10 +81,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
+import * as config from '@@/js/config.js';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
 import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
-import * as config from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
@@ -105,6 +105,7 @@ const emit = defineEmits<{
 const host = toUnicode(config.host);
 
 const hcaptcha = ref<Captcha | undefined>();
+const mcaptcha = ref<Captcha | undefined>();
 const recaptcha = ref<Captcha | undefined>();
 const turnstile = ref<Captcha | undefined>();
 
@@ -281,6 +282,7 @@ async function onSubmit(): Promise<void> {
 	} catch {
 		submitting.value = false;
 		hcaptcha.value?.reset?.();
+		mcaptcha.value?.reset?.();
 		recaptcha.value?.reset?.();
 		turnstile.value?.reset?.();
 
