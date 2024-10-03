@@ -83,9 +83,6 @@ describe('ユーザー', () => {
 			publicReactions: user.publicReactions,
 			followingVisibility: user.followingVisibility,
 			followersVisibility: user.followersVisibility,
-			twoFactorEnabled: user.twoFactorEnabled,
-			usePasswordLessLogin: user.usePasswordLessLogin,
-			securityKeys: user.securityKeys,
 			roles: user.roles,
 			memo: user.memo,
 		});
@@ -343,11 +340,13 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.publicReactions, true);
 		assert.strictEqual(response.followingVisibility, 'public');
 		assert.strictEqual(response.followersVisibility, 'public');
+		assert.deepStrictEqual(response.roles, []);
+		assert.strictEqual(response.memo, null);
+
+		// UserDetailedNotMeOnlyであるが自分もしくはモデレーターのみが取得可能な値
 		assert.strictEqual(response.twoFactorEnabled, false);
 		assert.strictEqual(response.usePasswordLessLogin, false);
 		assert.strictEqual(response.securityKeys, false);
-		assert.deepStrictEqual(response.roles, []);
-		assert.strictEqual(response.memo, null);
 
 		// MeDetailedOnly
 		assert.strictEqual(response.avatarId, null);
@@ -618,6 +617,9 @@ describe('ユーザー', () => {
 		{ label: 'Moderatorになっている', user: () => userModerator, me: () => userModerator, selector: (user: misskey.entities.MeDetailed) => user.isModerator },
 		// @ts-expect-error UserDetailedNotMe doesn't include isModerator
 		{ label: '自分以外から見たときはModeratorか判定できない', user: () => userModerator, selector: (user: misskey.entities.UserDetailedNotMe) => user.isModerator, expected: () => undefined },
+		{ label: '自分から見た場合に二要素認証関連のプロパティがセットされている', user: () => alice, me: () => alice, selector: (user: misskey.entities.MeDetailed) => user.twoFactorEnabled, expected: () => false },
+		{ label: '自分以外から見た場合に二要素認証関連のプロパティがセットされていない', user: () => alice, selector: (user: misskey.entities.UserDetailedNotMe) => user.twoFactorEnabled, expected: () => undefined },
+		{ label: 'モデレーターから見た場合に二要素認証関連のプロパティがセットされている', user: () => alice, me: () => userModerator, selector: (user: misskey.entities.UserDetailedNotMe) => user.twoFactorEnabled, expected: () => false },
 		{ label: 'サイレンスになっている', user: () => userSilenced, selector: (user: misskey.entities.UserDetailed) => user.isSilenced },
 		// FIXME: 落ちる
 		//{ label: 'サスペンドになっている', user: () => userSuspended, selector: (user: misskey.entities.UserDetailed) => user.isSuspended },
