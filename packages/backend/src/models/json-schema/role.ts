@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { envOption } from "@/env.js";
+
 export const packedRoleCondFormulaLogicsSchema = {
 	type: 'object',
 	properties: {
@@ -270,6 +272,10 @@ export const packedRolePoliciesSchema = {
 		},
 		avatarDecorationLimit: {
 			type: 'integer',
+			optional: false, nullable: false,
+		},
+		canChangeQuoteNotificationSetting: {
+			type: 'boolean',
 			optional: false, nullable: false,
 		},
 		canImportAntennas: {

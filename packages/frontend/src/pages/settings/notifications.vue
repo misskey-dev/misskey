@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection first>
 		<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
 		<div class="_gaps_s">
-			<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
+			<MkFolder v-for="type in filteredNotificationTypes" :key="type">
 				<template #label>{{ i18n.ts._notification._types[type] }}</template>
 				<template #suffix>
 					{{
@@ -79,6 +79,18 @@ const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
 const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
 const userLists = await misskeyApi('users/lists/list');
+
+const canQuote = $i.policies.canChangeQuoteNotificationSetting;
+
+const filteredNotificationTypes = computed(() => {
+	return notificationTypes.filter(type => {
+		if (type === 'quote' && !canQuote) {
+			return false; // canChangeQuoteNotificationSettingがfalseの場合、quoteを除外
+		}
+		return !nonConfigurableNotificationTypes.includes(type); // その他のタイプもフィルタリング
+	});
+});
+
 
 async function readAllUnreadNotes() {
 	await os.apiWithDialog('i/read-all-unread-notes');

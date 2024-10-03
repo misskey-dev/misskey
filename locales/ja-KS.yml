@@ -1732,6 +1732,7 @@ _role:
     canSearchNotes: "ノート探せるかどうか"
     canUseTranslator: "翻訳使えるかどうか"
     avatarDecorationLimit: "アイコンデコのいっちばんつけれる数"
+    canChangeQuoteNotificationSetting: "引用通知の変更してええで"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"

@@ -1746,6 +1746,7 @@ _role:
     canSearchNotes: "Usage of note search"
     canUseTranslator: "Translator usage"
     avatarDecorationLimit: "Maximum number of avatar decorations that can be applied"
+    canChangeQuoteNotificationSetting: "Allow changes to quote notifications"
   _condition:
     roleAssignedTo: "Assigned to manual roles"
     isLocal: "Local user"
