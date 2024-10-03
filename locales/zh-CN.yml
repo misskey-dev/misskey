@@ -2393,6 +2393,7 @@ _notification:
   followedBySomeUsers: "被 {n} 人关注"
   flushNotification: "重置通知历史"
   exportOfXCompleted: "已完成 {x} 个导出"
+  login: "有新的登录"
   _types:
     all: "全部"
     note: "用户的新帖子"
