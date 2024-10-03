@@ -149,7 +149,7 @@ describe('After user signup', () => {
 		cy.get('[data-cy-signin-username] input').type('alice{enter}');
 
 		// TODO: cypressにブラウザの言語指定できる機能が実装され次第英語のみテストするようにする
-		cy.contains(/ユーザーが見つかりません|User not found/gi);
+		cy.contains(/アカウントが凍結されています|This account has been suspended due to/gi);
 	});
 });
 
