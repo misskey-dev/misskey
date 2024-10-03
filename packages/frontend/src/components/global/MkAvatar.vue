@@ -7,20 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<template v-if="showDecoration">
-		<img
-			v-for="decoration in decorations ?? user.avatarDecorations"
-			:class="[$style.decoration]"
-			:src="getDecorationUrl(decoration)"
-			:style="{
-				rotate: getDecorationAngle(decoration),
-				scale: getDecorationScale(decoration),
-				translate: getDecorationOffset(decoration),
-				zIndex: getDecorationZIndex(decoration),
-			}"
-			alt=""
-		>
-	</template>
 	<div v-if="user.isCat" :class="[$style.ears]">
 		<div :class="$style.earLeft">
 			<div v-if="false" :class="$style.layer">
@@ -37,6 +23,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
+	<template v-if="showDecoration">
+		<img
+			v-for="decoration in decorations ?? user.avatarDecorations"
+			:class="[$style.decoration]"
+			:src="getDecorationUrl(decoration)"
+			:style="{
+				rotate: getDecorationAngle(decoration),
+				scale: getDecorationScale(decoration),
+				translate: getDecorationOffset(decoration),
+				zIndex: getDecorationZIndex(decoration),
+			}"
+			alt=""
+		>
+	</template>
 </component>
 </template>
 
@@ -115,7 +115,7 @@ function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['ava
 }
 
 function getDecorationZIndex(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
-	return decoration.showBelow ? '0' : undefined;
+	return decoration.showBelow ? '-1' : undefined;
 }
 
 const color = ref<string | undefined>();
@@ -164,6 +164,7 @@ watch(() => props.user.avatarBlurhash, () => {
 	flex-shrink: 0;
 	border-radius: 100%;
 	line-height: 16px;
+	z-index: 0; // sharkey: starts stacking context to help with showing decorations behind the avatar
 }
 
 .inner {
