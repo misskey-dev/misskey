@@ -3969,6 +3969,12 @@ export type components = {
         }[];
       loggedInDays: number;
       policies: components['schemas']['RolePolicies'];
+      /** @default false */
+      twoFactorEnabled: boolean;
+      /** @default false */
+      usePasswordLessLogin: boolean;
+      /** @default false */
+      securityKeys: boolean;
       email?: string | null;
       emailVerified?: boolean | null;
       securityKeysList?: {

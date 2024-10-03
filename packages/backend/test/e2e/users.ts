@@ -85,10 +85,6 @@ describe('ユーザー', () => {
 			followersVisibility: user.followersVisibility,
 			roles: user.roles,
 			memo: user.memo,
-			// 自分とモデレーターのみが取得可能な値
-			twoFactorEnabled: user.twoFactorEnabled,
-			usePasswordLessLogin: user.usePasswordLessLogin,
-			securityKeys: user.securityKeys,
 		});
 	};
 
@@ -150,6 +146,9 @@ describe('ユーザー', () => {
 			achievements: user.achievements,
 			loggedInDays: user.loggedInDays,
 			policies: user.policies,
+			twoFactorEnabled: user.twoFactorEnabled,
+			usePasswordLessLogin: user.usePasswordLessLogin,
+			securityKeys: user.securityKeys,
 			...(security ? {
 				email: user.email,
 				emailVerified: user.emailVerified,
@@ -347,11 +346,6 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response.roles, []);
 		assert.strictEqual(response.memo, null);
 
-		// UserDetailedNotMeOnlyであるが自分もしくはモデレーターのみが取得可能な値
-		assert.strictEqual(response.twoFactorEnabled, false);
-		assert.strictEqual(response.usePasswordLessLogin, false);
-		assert.strictEqual(response.securityKeys, false);
-
 		// MeDetailedOnly
 		assert.strictEqual(response.avatarId, null);
 		assert.strictEqual(response.bannerId, null);
@@ -388,6 +382,9 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response.achievements, []);
 		assert.deepStrictEqual(response.loggedInDays, 0);
 		assert.deepStrictEqual(response.policies, DEFAULT_POLICIES);
+		assert.strictEqual(response.twoFactorEnabled, false);
+		assert.strictEqual(response.usePasswordLessLogin, false);
+		assert.strictEqual(response.securityKeys, false);
 		assert.notStrictEqual(response.email, undefined);
 		assert.strictEqual(response.emailVerified, false);
 		assert.deepStrictEqual(response.securityKeysList, []);
