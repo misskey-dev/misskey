@@ -59,6 +59,7 @@ function onLogin(res) {
 <style lang="scss" module>
 .root {
 	display: flex;
+	overflow: auto;
 	margin: auto;
 	position: relative;
 	padding: 32px;
