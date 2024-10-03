@@ -2,10 +2,12 @@
 
 ### General
 - Enhance: セキュリティ向上のため、サインイン時もCAPTCHAを求めるようになりました
+- Enhance: 依存関係の更新
+- Enhance: l10nの更新
 - Fix: 連合のホワイトリストが正常に登録されない問題を修正
 
 ### Client
-- Enhance: フォロワーへのメッセージ欄のデザイン改良
+- Enhance: デザインの調整
 
 ### Server
 - Enhance: セキュリティ向上のため、ログイン時にメール通知を行うように
