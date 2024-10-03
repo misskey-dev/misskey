@@ -1289,6 +1289,9 @@ importers:
 
   packages/misskey-js:
     dependencies:
+      '@simplewebauthn/types':
+        specifier: 10.0.0
+        version: 10.0.0
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1

@@ -76,7 +76,6 @@ import { computed, defineAsyncComponent, ref } from 'vue';
 import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
-import { SigninWithPasskeyResponse } from 'misskey-js/entities.js';
 import { query, extractDomain } from '@@/js/url.js';
 import { host as configHost } from '@@/js/config.js';
 import MkDivider from './MkDivider.vue';
@@ -188,7 +187,7 @@ function onPasskeyLogin(): void {
 	signing.value = true;
 	if (webAuthnSupported()) {
 		misskeyApi('signin-with-passkey', {})
-			.then((res: SigninWithPasskeyResponse) => {
+			.then(res => {
 				totpLogin.value = false;
 				signing.value = false;
 				queryingKey.value = true;
@@ -219,7 +218,7 @@ async function queryPasskey(): Promise<void> {
 				credential: credential.toJSON(),
 				context: passkey_context.value,
 			});
-		}).then((res: SigninWithPasskeyResponse) => {
+		}).then(res => {
 			emit('login', res.signinResponse);
 			return onLogin(res.signinResponse);
 		});
