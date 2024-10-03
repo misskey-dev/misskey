@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div class="_gaps_m" style="padding: 32px;">
 				<div>{{ i18n.ts.intro }}</div>
-				<MkInput v-model="initialPassword" type="password" data-cy-admin-initial-password>
+				<MkInput v-model="setupPassword" type="password" data-cy-admin-initial-password>
 					<template #label>{{ i18n.ts.initialPasswordForSetup }} <div v-tooltip:dialog="i18n.ts.initialPasswordForSetupDescription" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 					<template #prefix><i class="ti ti-lock"></i></template>
 				</MkInput>
@@ -40,9 +40,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { host, version } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import { host, version } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
@@ -51,7 +51,7 @@ import MkAnimBg from '@/components/MkAnimBg.vue';
 
 const username = ref('');
 const password = ref('');
-const initialPassword = ref('');
+const setupPassword = ref('');
 const submitting = ref(false);
 
 function submit() {
@@ -61,7 +61,7 @@ function submit() {
 	misskeyApi('admin/accounts/create', {
 		username: username.value,
 		password: password.value,
-		initialPassword: initialPassword.value === '' ? null : initialPassword.value,
+		setupPassword: setupPassword.value === '' ? null : setupPassword.value,
 	}).then(res => {
 		return login(res.token);
 	}).catch((err) => {
