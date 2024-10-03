@@ -2408,6 +2408,7 @@ _notification:
     roleAssigned: "Rol donat"
     achievementEarned: "Assoliment desbloquejat"
     exportCompleted: "Exportació completada"
+    login: "Iniciar sessió"
     test: "Prova la notificació"
     app: "Notificacions d'aplicacions"
   _actions:
