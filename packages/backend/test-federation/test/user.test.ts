@@ -48,6 +48,73 @@ describe('User', () => {
 			});
 		});
 
+		describe('ffVisibility is federated', () => {
+			let alice: LoginUser, bob: LoginUser;
+			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+
+			beforeAll(async () => {
+				[alice, bob] = await Promise.all([
+					createAccount('a.test'),
+					createAccount('b.test'),
+				]);
+
+				[bobInA, aliceInB] = await Promise.all([
+					resolveRemoteUser('b.test', bob.id, alice),
+					resolveRemoteUser('a.test', alice.id, bob),
+				]);
+
+				// NOTE: follow each other
+				await Promise.all([
+					alice.client.request('following/create', { userId: bobInA.id }),
+					bob.client.request('following/create', { userId: aliceInB.id }),
+				]);
+				await sleep();
+			});
+
+			test('Visibility set public by default', async () => {
+				for (const user of await Promise.all([
+					alice.client.request('users/show', { userId: bobInA.id }),
+					bob.client.request('users/show', { userId: aliceInB.id }),
+				])) {
+					strictEqual(user.followersVisibility, 'public');
+					strictEqual(user.followingVisibility, 'public');
+				}
+			});
+
+			/** FIXME: not working */
+			test.skip('Setting private for followersVisibility is federated', async () => {
+				await Promise.all([
+					alice.client.request('i/update', { followersVisibility: 'private' }),
+					bob.client.request('i/update', { followersVisibility: 'private' }),
+				]);
+				await sleep();
+
+				for (const user of await Promise.all([
+					alice.client.request('users/show', { userId: bobInA.id }),
+					bob.client.request('users/show', { userId: aliceInB.id }),
+				])) {
+					strictEqual(user.followersVisibility, 'private');
+					strictEqual(user.followingVisibility, 'public');
+				}
+			});
+
+			test.skip('Setting private for followingVisibility is federated', async () => {
+				await Promise.all([
+					alice.client.request('i/update', { followingVisibility: 'private' }),
+					bob.client.request('i/update', { followingVisibility: 'private' }),
+				]);
+				await sleep();
+
+				for (const user of await Promise.all([
+					alice.client.request('users/show', { userId: bobInA.id }),
+					bob.client.request('users/show', { userId: aliceInB.id }),
+				])) {
+					strictEqual(user.followersVisibility, 'private');
+					strictEqual(user.followingVisibility, 'private');
+				}
+			});
+		});
+
 		describe('isCat is federated', () => {
 			let alice: LoginUser, bob: LoginUser;
 			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
