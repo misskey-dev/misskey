@@ -1,6 +1,12 @@
 ## test-federation
 Test federation between two Misskey servers: `a.test` and `b.test`.
 
+Before testing, you need to build the entire project, and change working directory to here:
+```sh
+pnpm build
+cd packages/backend/test-federation
+```
+
 First, you need to start servers by executing following commands:
 ```sh
 cp ./.config/example.docker.env ./.config/docker.env
