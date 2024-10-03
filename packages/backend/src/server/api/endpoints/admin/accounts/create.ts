@@ -51,7 +51,7 @@ export const paramDef = {
 	properties: {
 		username: localUsernameSchema,
 		password: passwordSchema,
-		initialPassword: { type: 'string', nullable: true },
+		setupPassword: { type: 'string', nullable: true },
 	},
 	required: ['username', 'password'],
 } as const;
@@ -75,13 +75,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (!realUsers && me == null && token == null) {
 				// 初回セットアップの場合
-				if (this.config.initialPassword != null) {
+				if (this.config.setupPassword != null) {
 					// 初期パスワードが設定されている場合
-					if (ps.initialPassword !== this.config.initialPassword) {
+					if (ps.setupPassword !== this.config.setupPassword) {
 						// 初期パスワードが違う場合
 						throw new ApiError(meta.errors.wrongInitialPassword);
 					}
-				} else if (ps.initialPassword != null && ps.initialPassword.trim() !== '') {
+				} else if (ps.setupPassword != null && ps.setupPassword.trim() !== '') {
 					// 初期パスワードが設定されていないのに初期パスワードが入力された場合
 					throw new ApiError(meta.errors.wrongInitialPassword);
 				}
