@@ -10,6 +10,7 @@ import {
 	User,
 	UserDetailedNotMe,
 } from './autogen/models.js';
+import type { AuthenticationResponseJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
 
 export * from './autogen/entities.js';
 export * from './autogen/models.js';
@@ -250,6 +251,7 @@ export type SignupRequest = {
 	'hcaptcha-response'?: string | null;
 	'g-recaptcha-response'?: string | null;
 	'turnstile-response'?: string | null;
+	'm-captcha-response'?: string | null;
 }
 
 export type SignupResponse = MeDetailed & {
@@ -269,17 +271,25 @@ export type SigninRequest = {
 	username: string;
 	password: string;
 	token?: string;
+	credential?: AuthenticationResponseJSON;
+	'hcaptcha-response'?: string | null;
+	'g-recaptcha-response'?: string | null;
+	'turnstile-response'?: string | null;
+	'm-captcha-response'?: string | null;
 };
 
 export type SigninWithPasskeyRequest = {
-	credential?: object;
+	credential?: AuthenticationResponseJSON;
 	context?: string;
 };
 
+export type SigninWithPasskeyInitResponse = {
+	option: PublicKeyCredentialRequestOptionsJSON;
+	context: string;
+};
+
 export type SigninWithPasskeyResponse = {
-	option?: object;
-	context?: string;
-	signinResponse?: SigninResponse;
+	signinResponse: SigninResponse;
 };
 
 export type SigninResponse = {
