@@ -48,6 +48,7 @@ Cypress.Commands.add('registerUser', (username, password, isAdmin = false) => {
 	cy.request('POST', route, {
 		username: username,
 		password: password,
+		...(isAdmin ? { setupPassword: 'example_password_please_change_this_or_you_will_get_hacked' } : {}),
 	}).its('body').as(username);
 });
 
