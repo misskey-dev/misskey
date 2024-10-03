@@ -70,7 +70,8 @@
 # The provider of the service who sets up Misskey on behalf of the customer should
 # set this value to something unique when generating the Misskey config file,
 # and provide it to the customer.
-setupPassword: example_password_please_change_this_or_you_will_get_hacked
+#
+# setupPassword: example_password_please_change_this_or_you_will_get_hacked
 
 #   ┌─────┐
 #───┘ URL └─────────────────────────────────────────────────────
