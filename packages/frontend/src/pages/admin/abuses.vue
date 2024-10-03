@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="900">
 		<div :class="$style.root" class="_gaps">
 			<div :class="$style.subMenus" class="_gaps">
-				<MkButton link to="/admin/abuse-report-notification-recipient" primary>{{ "通知設定" }}</MkButton>
+				<MkButton link to="/admin/abuse-report-notification-recipient" primary>{{ i18n.ts.notificationSetting }}</MkButton>
 			</div>
 
 			<div :class="$style.inputs" class="_gaps">

@@ -172,6 +172,16 @@ redis:
 #  # You can specify more ioredis options...
 #  #username: example-username
 
+#redisForReactions:
+#  host: localhost
+#  port: 6379
+#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+#  #pass: example-pass
+#  #prefix: example-prefix
+#  #db: 1
+#  # You can specify more ioredis options...
+#  #username: example-username
+
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 

@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, onUnmounted, ref, inject, shallowRef, computed } from 'vue';
 import tinycolor from 'tinycolor2';
 import XTabs, { Tab } from './MkPageHeader.tabs.vue';
-import { scrollToTop } from '@/scripts/scroll.js';
+import { scrollToTop } from '@@/js/scroll.js';
 import { globalEvents } from '@/events.js';
 import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
