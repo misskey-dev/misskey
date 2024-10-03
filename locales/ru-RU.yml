@@ -2046,6 +2046,7 @@ _notification:
     receiveFollowRequest: "Получен запрос на подписку"
     followRequestAccepted: "Запрос на подписку одобрен"
     achievementEarned: "Получение достижений"
+    login: "Войти"
     app: "Уведомления из приложений"
   _actions:
     followBack: "отвечает взаимной подпиской"
