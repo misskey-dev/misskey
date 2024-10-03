@@ -1,3 +1,18 @@
+## 2024.10.0
+
+### General
+- Enhance: セキュリティ向上のため、サインイン時もCAPTCHAを求めるようになりました
+- Enhance: 依存関係の更新
+- Enhance: l10nの更新
+- Fix: 連合のホワイトリストが正常に登録されない問題を修正
+
+### Client
+- Enhance: デザインの調整
+
+### Server
+- Enhance: セキュリティ向上のため、ログイン時にメール通知を行うように
+
+
 ## 2024.9.0
 
 ### Note
@@ -8,6 +23,8 @@
 - Feat: ノート単体・ユーザーのノート・クリップのノートの埋め込み機能
   - 埋め込みコードやウェブサイトへの実装方法の詳細は https://misskey-hub.net/docs/for-users/features/embed/ をご覧ください
 - Feat: パスキーでログインボタンを実装 (#14574)
+- Feat: フォローされた際のメッセージを設定できるように
+- Feat: 連合をホワイトリスト制にできるように
 - Feat: UserWebhookとSystemWebhookのテスト送信機能を追加 (#14445)
 - Feat: モデレーターはユーザーにかかわらずファイルが添付されているノートを検索できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/680)
@@ -24,6 +41,8 @@
 - Enhance: ScratchpadにUIインスペクターを追加
 - Enhance: Play編集画面の項目の並びを少しリデザイン
 - Enhance: 各種メニューをドロワー表示するかどうか設定可能に
+- Enhance: AiScriptのMk:C:containerのオプションに`borderStyle`と`borderRadius`を追加
+- Enhance: CWでも絵文字をクリックしてメニューを表示できるように
 - Fix: サーバーメトリクスが2つ以上あるとリロード直後の表示がおかしくなる問題を修正
 - Fix: コントロールパネル内のAp requests内のチャートの表示がおかしかった問題を修正
 - Fix: 月の違う同じ日はセパレータが表示されないのを修正
