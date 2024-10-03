@@ -2408,6 +2408,7 @@ _notification:
     roleAssigned: "授予的角色"
     achievementEarned: "取得的成就"
     exportCompleted: "已完成导出"
+    login: "登录"
     test: "测试通知"
     app: "关联应用的通知"
   _actions:
