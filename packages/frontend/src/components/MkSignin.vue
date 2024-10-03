@@ -28,16 +28,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
-			<MkInput v-if="!user || user && !user.usePasswordLessLogin" v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true" required data-cy-signin-password>
+			<MkInput v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true" required data-cy-signin-password>
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
-			<MkButton type="submit" large primary rounded :disabled="signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
+			<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :class="$style.captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
+			<MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
+			<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
+			<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
+			<MkButton type="submit" large primary rounded :disabled="captchaFailed || signing" style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 		</div>
 		<div v-if="totpLogin" class="2fa-signin" :class="{ securityKeys: user && user.securityKeys }">
 			<div v-if="user && user.securityKeys" class="twofa-group tap-group">
 				<p>{{ i18n.ts.useSecurityKey }}</p>
-				<MkButton v-if="!queryingKey" @click="queryKey">
+				<MkButton v-if="!queryingKey" @click="query2FaKey">
 					{{ i18n.ts.retry }}
 				</MkButton>
 			</div>
@@ -45,10 +49,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
 			</div>
 			<div class="twofa-group totp-group _gaps">
-				<MkInput v-if="user && user.usePasswordLessLogin" v-model="password" type="password" autocomplete="current-password" :withPasswordToggle="true" required>
-					<template #label>{{ i18n.ts.password }}</template>
-					<template #prefix><i class="ti ti-lock"></i></template>
-				</MkInput>
 				<MkInput v-model="token" type="text" :pattern="isBackupCode ? '^[A-Z0-9]{32}$' :'^[0-9]{6}$'" autocomplete="one-time-code" required :spellcheck="false" :inputmode="isBackupCode ? undefined : 'numeric'">
 					<template #label>{{ i18n.ts.token }} ({{ i18n.ts['2fa'] }})</template>
 					<template #prefix><i v-if="isBackupCode" class="ti ti-key"></i><i v-else class="ti ti-123"></i></template>
@@ -57,29 +57,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton type="submit" :disabled="signing" large primary rounded style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 			</div>
 		</div>
+		<div v-if="!totpLogin && usePasswordLessLogin" :class="$style.orHr">
+			<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
+		</div>
+		<div v-if="!totpLogin && usePasswordLessLogin" class="twofa-group tap-group">
+			<MkButton v-if="!queryingKey" type="submit" :disabled="signing" style="margin: auto auto;" rounded large primary @click="onPasskeyLogin">
+				<i class="ti ti-device-usb" style="font-size: medium;"></i>
+				{{ signing ? i18n.ts.loggingIn : i18n.ts.signinWithPasskey }}
+			</MkButton>
+			<p v-if="queryingKey">{{ i18n.ts.useSecurityKey }}</p>
+		</div>
 	</div>
 </form>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import { toUnicode } from 'punycode/';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
+import { query, extractDomain } from '@@/js/url.js';
+import { host as configHost } from '@@/js/config.js';
+import MkDivider from './MkDivider.vue';
 import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { host as configHost } from '@/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { query, extractDomain } from '@/scripts/url.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
 
 const signing = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
+const usePasswordLessLogin = ref<Misskey.entities.UserDetailed['usePasswordLessLogin']>(true);
 const username = ref('');
 const password = ref('');
 const token = ref('');
@@ -88,6 +102,23 @@ const totpLogin = ref(false);
 const isBackupCode = ref(false);
 const queryingKey = ref(false);
 let credentialRequest: CredentialRequestOptions | null = null;
+const passkey_context = ref('');
+const hcaptcha = ref<Captcha | undefined>();
+const mcaptcha = ref<Captcha | undefined>();
+const recaptcha = ref<Captcha | undefined>();
+const turnstile = ref<Captcha | undefined>();
+const hCaptchaResponse = ref<string | null>(null);
+const mCaptchaResponse = ref<string | null>(null);
+const reCaptchaResponse = ref<string | null>(null);
+const turnstileResponse = ref<string | null>(null);
+
+const captchaFailed = computed((): boolean => {
+	return (
+		instance.enableHcaptcha && !hCaptchaResponse.value ||
+		instance.enableMcaptcha && !mCaptchaResponse.value ||
+		instance.enableRecaptcha && !reCaptchaResponse.value ||
+		instance.enableTurnstile && !turnstileResponse.value);
+});
 
 const emit = defineEmits<{
 	(ev: 'login', v: any): void;
@@ -110,8 +141,10 @@ function onUsernameChange(): void {
 		username: username.value,
 	}).then(userResponse => {
 		user.value = userResponse;
+		usePasswordLessLogin.value = userResponse.usePasswordLessLogin;
 	}, () => {
 		user.value = null;
+		usePasswordLessLogin.value = true;
 	});
 }
 
@@ -121,7 +154,7 @@ function onLogin(res: any): Promise<void> | void {
 	}
 }
 
-async function queryKey(): Promise<void> {
+async function query2FaKey(): Promise<void> {
 	if (credentialRequest == null) return;
 	queryingKey.value = true;
 	await webAuthnRequest(credentialRequest)
@@ -150,6 +183,47 @@ async function queryKey(): Promise<void> {
 		});
 }
 
+function onPasskeyLogin(): void {
+	signing.value = true;
+	if (webAuthnSupported()) {
+		misskeyApi('signin-with-passkey', {})
+			.then(res => {
+				totpLogin.value = false;
+				signing.value = false;
+				queryingKey.value = true;
+				passkey_context.value = res.context ?? '';
+				credentialRequest = parseRequestOptionsFromJSON({
+					publicKey: res.option,
+				});
+			})
+			.then(() => queryPasskey())
+			.catch(loginFailed);
+	}
+}
+
+async function queryPasskey(): Promise<void> {
+	if (credentialRequest == null) return;
+	queryingKey.value = true;
+	console.log('Waiting passkey auth...');
+	await webAuthnRequest(credentialRequest)
+		.catch((err) => {
+			console.warn('Passkey Auth fail!: ', err);
+			queryingKey.value = false;
+			return Promise.reject(null);
+		}).then(credential => {
+			credentialRequest = null;
+			queryingKey.value = false;
+			signing.value = true;
+			return misskeyApi('signin-with-passkey', {
+				credential: credential.toJSON(),
+				context: passkey_context.value,
+			});
+		}).then(res => {
+			emit('login', res.signinResponse);
+			return onLogin(res.signinResponse);
+		});
+}
+
 function onSubmit(): void {
 	signing.value = true;
 	if (!totpLogin.value && user.value && user.value.twoFactorEnabled) {
@@ -164,7 +238,7 @@ function onSubmit(): void {
 					publicKey: res,
 				});
 			})
-				.then(() => queryKey())
+				.then(() => query2FaKey())
 				.catch(loginFailed);
 		} else {
 			totpLogin.value = true;
@@ -174,6 +248,10 @@ function onSubmit(): void {
 		misskeyApi('signin', {
 			username: username.value,
 			password: password.value,
+			'hcaptcha-response': hCaptchaResponse.value,
+			'm-captcha-response': mCaptchaResponse.value,
+			'g-recaptcha-response': reCaptchaResponse.value,
+			'turnstile-response': turnstileResponse.value,
 			token: user.value?.twoFactorEnabled ? token.value : undefined,
 		}).then(res => {
 			emit('login', res);
@@ -183,6 +261,11 @@ function onSubmit(): void {
 }
 
 function loginFailed(err: any): void {
+	hcaptcha.value?.reset?.();
+	mcaptcha.value?.reset?.();
+	recaptcha.value?.reset?.();
+	turnstile.value?.reset?.();
+
 	switch (err.id) {
 		case '6cc579cc-885d-43d8-95c2-b8c7fc963280': {
 			os.alert({
@@ -209,6 +292,30 @@ function loginFailed(err: any): void {
 				type: 'error',
 				title: i18n.ts.loginFailed,
 				text: i18n.ts.rateLimitExceeded,
+			});
+			break;
+		}
+		case '36b96a7d-b547-412d-aeed-2d611cdc8cdc': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.unknownWebAuthnKey,
+			});
+			break;
+		}
+		case 'b18c89a7-5b5e-4cec-bb5b-0419f332d430': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.passkeyVerificationFailed,
+			});
+			break;
+		}
+		case '2d84773e-f7b7-4d0b-8f72-bb69b584c912': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.passkeyVerificationSucceededButPasswordlessLoginDisabled,
 			});
 			break;
 		}

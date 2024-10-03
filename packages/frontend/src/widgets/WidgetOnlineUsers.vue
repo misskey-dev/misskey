@@ -18,7 +18,7 @@ import { ref } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { i18n } from '@/i18n.js';
 import number from '@/filters/number.js';
 

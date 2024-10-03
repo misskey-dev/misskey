@@ -124,7 +124,7 @@ export type Channels = {
 	};
 	hashtag: {
 		params: {
-			q?: string;
+			q: string[][];
 		};
 		events: {
 			note: (payload: Note) => void;
@@ -233,7 +233,7 @@ export type Channels = {
 	}
 };
 
-export type NoteUpdatedEvent = {
+export type NoteUpdatedEvent = { id: Note['id'] } & ({
 	type: 'reacted';
 	body: {
 		reaction: string;
@@ -257,7 +257,7 @@ export type NoteUpdatedEvent = {
 		choice: number;
 		userId: User['id'];
 	};
-};
+});
 
 export type BroadcastEvents = {
 	noteUpdated: (payload: NoteUpdatedEvent) => void;

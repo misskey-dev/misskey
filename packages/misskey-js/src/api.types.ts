@@ -5,6 +5,9 @@ import {
 	PartialRolePolicyOverride,
 	SigninRequest,
 	SigninResponse,
+	SigninWithPasskeyInitResponse,
+	SigninWithPasskeyRequest,
+	SigninWithPasskeyResponse,
 	SignupPendingRequest,
 	SignupPendingResponse,
 	SignupRequest,
@@ -81,6 +84,22 @@ export type Endpoints = Overwrite<
 		'signin': {
 			req: SigninRequest;
 			res: SigninResponse;
+		},
+		'signin-with-passkey': {
+			req: SigninWithPasskeyRequest;
+			res: {
+				$switch: {
+					$cases: [
+						[
+							{
+								context: string;
+							},
+							SigninWithPasskeyResponse,
+						],
+					];
+					$default: SigninWithPasskeyInitResponse;
+				},
+			},
 		},
 		'admin/roles/create': {
 			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;

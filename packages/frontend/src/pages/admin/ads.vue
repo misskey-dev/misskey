@@ -65,18 +65,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkTextarea v-model="ad.memo">
 					<template #label>{{ i18n.ts.memo }}</template>
 				</MkTextarea>
-				<div class="buttons">
-					<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)">
+				<div class="_buttons">
+					<MkButton inline primary style="margin-right: 12px;" @click="save(ad)">
 						<i
 							class="ti ti-device-floppy"
 						></i> {{ i18n.ts.save }}
 					</MkButton>
-					<MkButton class="button" inline danger @click="remove(ad)">
+					<MkButton inline danger @click="remove(ad)">
 						<i class="ti ti-trash"></i> {{ i18n.ts.remove }}
 					</MkButton>
 				</div>
 			</div>
-			<MkButton class="button" @click="more()">
+			<MkButton @click="more()">
 				<i class="ti ti-reload"></i>{{ i18n.ts.more }}
 			</MkButton>
 		</div>

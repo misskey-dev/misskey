@@ -4,7 +4,9 @@
 
 ```ts
 
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { EventEmitter } from 'eventemitter3';
+import type { PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
 //
@@ -359,6 +361,9 @@ type AdminSystemWebhookShowRequest = operations['admin___system-webhook___show']
 type AdminSystemWebhookShowResponse = operations['admin___system-webhook___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminSystemWebhookTestRequest = operations['admin___system-webhook___test']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminSystemWebhookUpdateRequest = operations['admin___system-webhook___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -551,7 +556,7 @@ type Channel = components['schemas']['Channel'];
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export abstract class ChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
+export abstract class ChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> implements IChannelConnection<Channel> {
     constructor(stream: Stream, channel: string, name?: string);
     // (undocumented)
     channel: string;
@@ -668,7 +673,7 @@ export type Channels = {
     };
     hashtag: {
         params: {
-            q?: string;
+            q: string[][];
         };
         events: {
             note: (payload: Note) => void;
@@ -1157,6 +1162,22 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SigninRequest;
         res: SigninResponse;
     };
+    'signin-with-passkey': {
+        req: SigninWithPasskeyRequest;
+        res: {
+            $switch: {
+                $cases: [
+                [
+                    {
+                    context: string;
+                },
+                SigninWithPasskeyResponse
+                ]
+                ];
+                $default: SigninWithPasskeyInitResponse;
+            };
+        };
+    };
     'admin/roles/create': {
         req: Overwrite<AdminRolesCreateRequest, {
             policies: PartialRolePolicyOverride;
@@ -1188,6 +1209,9 @@ declare namespace entities {
         SignupPendingRequest,
         SignupPendingResponse,
         SigninRequest,
+        SigninWithPasskeyRequest,
+        SigninWithPasskeyInitResponse,
+        SigninWithPasskeyResponse,
         SigninResponse,
         PartialRolePolicyOverride,
         EmptyRequest,
@@ -1308,6 +1332,7 @@ declare namespace entities {
         AdminSystemWebhookShowResponse,
         AdminSystemWebhookUpdateRequest,
         AdminSystemWebhookUpdateResponse,
+        AdminSystemWebhookTestRequest,
         AnnouncementsRequest,
         AnnouncementsResponse,
         AnnouncementsShowRequest,
@@ -1567,6 +1592,7 @@ declare namespace entities {
         IWebhooksShowResponse,
         IWebhooksUpdateRequest,
         IWebhooksDeleteRequest,
+        IWebhooksTestRequest,
         InviteCreateResponse,
         InviteDeleteRequest,
         InviteListRequest,
@@ -2120,6 +2146,24 @@ type IAuthorizedAppsResponse = operations['i___authorized-apps']['responses']['2
 type IChangePasswordRequest = operations['i___change-password']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+export interface IChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
+    // (undocumented)
+    channel: string;
+    // (undocumented)
+    dispose(): void;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    inCount: number;
+    // (undocumented)
+    name?: string;
+    // (undocumented)
+    outCount: number;
+    // (undocumented)
+    send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]): void;
+}
+
+// @public (undocumented)
 type IClaimAchievementRequest = operations['i___claim-achievement']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2282,6 +2326,40 @@ type ISigninHistoryResponse = operations['i___signin-history']['responses']['200
 function isPureRenote(note: Note): note is PureRenote;
 
 // @public (undocumented)
+export interface IStream extends EventEmitter<StreamEvents> {
+    // (undocumented)
+    close(): void;
+    // Warning: (ae-forgotten-export) The symbol "NonSharedConnection" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    disconnectToChannel(connection: NonSharedConnection): void;
+    // (undocumented)
+    heartbeat(): void;
+    // (undocumented)
+    ping(): void;
+    // Warning: (ae-forgotten-export) The symbol "SharedConnection" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    removeSharedConnection(connection: SharedConnection): void;
+    // Warning: (ae-forgotten-export) The symbol "Pool" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    removeSharedConnectionPool(pool: Pool): void;
+    // (undocumented)
+    send(typeOrPayload: string): void;
+    // (undocumented)
+    send(typeOrPayload: string, payload: unknown): void;
+    // (undocumented)
+    send(typeOrPayload: Record<string, unknown> | unknown[]): void;
+    // (undocumented)
+    send(typeOrPayload: string | Record<string, unknown> | unknown[], payload?: unknown): void;
+    // (undocumented)
+    state: 'initializing' | 'reconnecting' | 'connected';
+    // (undocumented)
+    useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): IChannelConnection<Channels[C]>;
+}
+
+// @public (undocumented)
 type IUnpinRequest = operations['i___unpin']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2316,6 +2394,9 @@ type IWebhooksShowRequest = operations['i___webhooks___show']['requestBody']['co
 
 // @public (undocumented)
 type IWebhooksShowResponse = operations['i___webhooks___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IWebhooksTestRequest = operations['i___webhooks___test']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IWebhooksUpdateRequest = operations['i___webhooks___update']['requestBody']['content']['application/json'];
@@ -2708,6 +2789,9 @@ type NotificationsCreateRequest = operations['notifications___create']['requestB
 export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "achievementEarned"];
 
 // @public (undocumented)
+export function nyaize(text: string): string;
+
+// @public (undocumented)
 type Page = components['schemas']['Page'];
 
 // @public (undocumented)
@@ -2958,12 +3042,34 @@ type SigninRequest = {
     username: string;
     password: string;
     token?: string;
+    credential?: AuthenticationResponseJSON;
+    'hcaptcha-response'?: string | null;
+    'g-recaptcha-response'?: string | null;
+    'turnstile-response'?: string | null;
+    'm-captcha-response'?: string | null;
 };
 
 // @public (undocumented)
 type SigninResponse = {
     id: User['id'];
     i: string;
+};
+
+// @public (undocumented)
+type SigninWithPasskeyInitResponse = {
+    option: PublicKeyCredentialRequestOptionsJSON;
+    context: string;
+};
+
+// @public (undocumented)
+type SigninWithPasskeyRequest = {
+    credential?: AuthenticationResponseJSON;
+    context?: string;
+};
+
+// @public (undocumented)
+type SigninWithPasskeyResponse = {
+    signinResponse: SigninResponse;
 };
 
 // @public (undocumented)
@@ -2987,6 +3093,7 @@ type SignupRequest = {
     'hcaptcha-response'?: string | null;
     'g-recaptcha-response'?: string | null;
     'turnstile-response'?: string | null;
+    'm-captcha-response'?: string | null;
 };
 
 // @public (undocumented)
@@ -2997,10 +3104,8 @@ type SignupResponse = MeDetailed & {
 // @public (undocumented)
 type StatsResponse = operations['stats']['responses']['200']['content']['application/json'];
 
-// Warning: (ae-forgotten-export) The symbol "StreamEvents" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
-export class Stream extends EventEmitter<StreamEvents> {
+export class Stream extends EventEmitter<StreamEvents> implements IStream {
     constructor(origin: string, user: {
         token: string;
     } | null, options?: {
@@ -3008,20 +3113,14 @@ export class Stream extends EventEmitter<StreamEvents> {
     });
     // (undocumented)
     close(): void;
-    // Warning: (ae-forgotten-export) The symbol "NonSharedConnection" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     disconnectToChannel(connection: NonSharedConnection): void;
     // (undocumented)
     heartbeat(): void;
     // (undocumented)
     ping(): void;
-    // Warning: (ae-forgotten-export) The symbol "SharedConnection" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     removeSharedConnection(connection: SharedConnection): void;
-    // Warning: (ae-forgotten-export) The symbol "Pool" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     removeSharedConnectionPool(pool: Pool): void;
     // (undocumented)
@@ -3035,6 +3134,14 @@ export class Stream extends EventEmitter<StreamEvents> {
     // (undocumented)
     useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): ChannelConnection<Channels[C]>;
 }
+
+// Warning: (ae-forgotten-export) The symbol "BroadcastEvents" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type StreamEvents = {
+    _connected_: void;
+    _disconnected_: void;
+} & BroadcastEvents;
 
 // Warning: (ae-forgotten-export) The symbol "SwitchCase" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "IsCaseMatched" needs to be exported by the entry point index.d.ts
@@ -3264,7 +3371,7 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:49:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
