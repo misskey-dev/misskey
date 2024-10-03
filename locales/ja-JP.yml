@@ -2451,6 +2451,7 @@ _notification:
   followedBySomeUsers: "{n}人にフォローされました"
   flushNotification: "通知の履歴をリセットする"
   exportOfXCompleted: "{x}のエクスポートが完了しました"
+  login: "ログインがありました"
 
   _types:
     all: "すべて"
@@ -2467,6 +2468,7 @@ _notification:
     roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
     exportCompleted: "エクスポートが完了した"
+    login: "ログイン"
     test: "通知のテスト"
     app: "連携アプリからの通知"
 
