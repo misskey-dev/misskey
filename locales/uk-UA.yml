@@ -1587,6 +1587,7 @@ _notification:
     reaction: "Реакції"
     receiveFollowRequest: "Запити на підписку"
     followRequestAccepted: "Прийняті підписки"
+    login: "Увійти"
     app: "Сповіщення від додатків"
   _actions:
     reply: "Відповісти"

@@ -2374,6 +2374,7 @@ _notification:
     followRequestAccepted: "フォローが受理されたで"
     roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
+    login: "ログイン"
     app: "連携アプリからの通知や"
   _actions:
     followBack: "フォローバック"

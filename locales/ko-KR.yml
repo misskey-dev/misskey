@@ -1283,6 +1283,7 @@ signinWithPasskey: "패스키로 로그인"
 unknownWebAuthnKey: "등록되지 않은 패스키입니다."
 passkeyVerificationFailed: "패스키 검증을 실패했습니다."
 passkeyVerificationSucceededButPasswordlessLoginDisabled: "패스키를 검증했으나, 비밀번호 없이 로그인하기가 꺼져 있습니다."
+messageToFollower: "팔로워에 보낼 메시지"
 _delivery:
   status: "전송 상태"
   stop: "정지됨"
@@ -2407,6 +2408,7 @@ _notification:
     roleAssigned: "역할이 부여 됨"
     achievementEarned: "도전 과제 획득"
     exportCompleted: "추출을 성공함"
+    login: "로그인"
     test: "알림 테스트"
     app: "연동된 앱을 통한 알림"
   _actions:
