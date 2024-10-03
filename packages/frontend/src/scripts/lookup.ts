@@ -16,7 +16,7 @@ export async function lookup(router?: Router) {
 		title: i18n.ts.lookup,
 	});
 	const query = temp ? temp.trim() : '';
-	if (canceled) return;
+	if (canceled || query.length <= 1) return;
 
 	if (query.startsWith('@') && !query.includes(' ')) {
 		_router.push(`/${query}`);

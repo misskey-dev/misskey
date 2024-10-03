@@ -153,6 +153,23 @@ describe('Webリソース', () => {
 			path: path('nonexisting'),
 			status: 404,
 		}));
+
+		describe(' has entry such ', () => {
+			beforeEach(() => {
+				post(alice, { text: "**a**" })
+			});
+
+			test('MFMを含まない。', async () => {
+				const content = await simpleGet(path(alice.username), "*/*", undefined, res => res.text());
+				const _body: unknown = content.body;
+				// JSONフィードのときは改めて文字列化する
+				const body: string = typeof (_body) === "object" ? JSON.stringify(_body) : _body as string;
+
+				if (body.includes("**a**")) {
+					throw new Error("MFM shouldn't be included");
+				}
+			});
+		})
 	});
 
 	describe.each([{ path: '/api/foo' }])('$path', ({ path }) => {

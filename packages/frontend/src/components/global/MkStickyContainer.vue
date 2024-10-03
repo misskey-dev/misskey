@@ -8,7 +8,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div ref="headerEl">
 		<slot name="header"></slot>
 	</div>
-	<div ref="bodyEl" :data-sticky-container-header-height="headerHeight">
+	<div
+		ref="bodyEl"
+		:data-sticky-container-header-height="headerHeight"
+		:data-sticky-container-footer-height="footerHeight"
+		style="position: relative; z-index: 0;"
+	>
 		<slot></slot>
 	</div>
 	<div ref="footerEl">
@@ -20,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } from 'vue';
 
-import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const.js';
+import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@@/js/const.js';
 
 const rootEl = shallowRef<HTMLElement>();
 const headerEl = shallowRef<HTMLElement>();
@@ -79,14 +84,14 @@ onMounted(() => {
 	if (headerEl.value != null) {
 		headerEl.value.style.position = 'sticky';
 		headerEl.value.style.top = 'var(--stickyTop, 0)';
-		headerEl.value.style.zIndex = '1000';
+		headerEl.value.style.zIndex = '1';
 		observer.observe(headerEl.value);
 	}
 
 	if (footerEl.value != null) {
 		footerEl.value.style.position = 'sticky';
 		footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
-		footerEl.value.style.zIndex = '1000';
+		footerEl.value.style.zIndex = '1';
 		observer.observe(footerEl.value);
 	}
 });

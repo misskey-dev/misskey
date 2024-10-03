@@ -31,6 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
 								<button v-tooltip="i18n.ts.copyLink" v-click-anime class="_button" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
 								<button v-if="isSupportShare()" v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
+								<button v-if="$i && $i.id !== post.user.id" v-click-anime class="_button" @mousedown="showMenu"><i class="ti ti-dots ti-fw"></i></button>
 							</div>
 						</div>
 						<div class="user">
@@ -62,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -71,14 +72,15 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const router = useRouter();
 
@@ -153,13 +155,56 @@ function edit() {
 	router.push(`/gallery/${post.value.id}/edit`);
 }
 
+function reportAbuse() {
+	if (!post.value) return;
+
+	const pageUrl = `${url}/gallery/${post.value.id}`;
+
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+		user: post.value.user,
+		initialComment: `Post: ${pageUrl}\n-----\n`,
+	}, {
+		closed: () => dispose(),
+	});
+}
+
+function showMenu(ev: MouseEvent) {
+	if (!post.value) return;
+
+	const menuItems: MenuItem[] = [];
+
+	if ($i && $i.id !== post.value.userId) {
+		menuItems.push({
+			icon: 'ti ti-exclamation-circle',
+			text: i18n.ts.reportAbuse,
+			action: reportAbuse,
+		});
+
+		if ($i.isModerator || $i.isAdmin) {
+			menuItems.push({
+				type: 'divider',
+			}, {
+				icon: 'ti ti-trash',
+				text: i18n.ts.delete,
+				danger: true,
+				action: () => os.confirm({
+					type: 'warning',
+					text: i18n.ts.deleteConfirm,
+				}).then(({ canceled }) => {
+					if (canceled || !post.value) return;
+
+					os.apiWithDialog('gallery/posts/delete', { postId: post.value.id });
+				}),
+			});
+		}
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+}
+
 watch(() => props.postId, fetchPost, { immediate: true });
 
-const headerActions = computed(() => [{
-	icon: 'ti ti-pencil',
-	text: i18n.ts.edit,
-	handler: edit,
-}]);
+const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 

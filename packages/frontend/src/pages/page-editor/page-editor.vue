@@ -69,7 +69,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { selectFile } from '@/scripts/select-file.js';
@@ -77,6 +77,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { $i } from '@/account.js';
 import { mainRouter } from '@/router/main.js';
+import { getPageBlockList } from '@/pages/page-editor/common.js';
 
 const props = defineProps<{
 	initPageId?: string;
@@ -101,7 +102,6 @@ const alignCenter = ref(false);
 const hideTitleWhenPinned = ref(false);
 
 provide('readonly', readonly.value);
-provide('getPageBlockList', getPageBlockList);
 
 watch(eyeCatchingImageId, async () => {
 	if (eyeCatchingImageId.value == null) {
@@ -214,15 +214,6 @@ async function add() {
 
 	const id = uuid();
 	content.value.push({ id, type });
-}
-
-function getPageBlockList() {
-	return [
-		{ value: 'section', text: i18n.ts._pages.blocks.section },
-		{ value: 'text', text: i18n.ts._pages.blocks.text },
-		{ value: 'image', text: i18n.ts._pages.blocks.image },
-		{ value: 'note', text: i18n.ts._pages.blocks.note },
-	];
 }
 
 function setEyeCatchingImage(img) {

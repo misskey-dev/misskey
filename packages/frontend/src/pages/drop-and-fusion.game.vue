@@ -205,12 +205,12 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { apiUrl } from '@/config.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { apiUrl } from '@@/js/config.js';
 import { $i } from '@/account.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 
 type FrontendMonoDefinition = {
 	id: string;
@@ -1008,8 +1008,18 @@ function attachGameEvents() {
 		const domX = rect.left + (x * viewScale);
 		const domY = rect.top + (y * viewScale);
 		const scoreUnit = getScoreUnit(props.gameMode);
-		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (scoreUnit === 'pt' ? '' : scoreUnit) }, {}, 'end');
+
+		{
+			const { dispose } = os.popup(MkRippleEffect, { x: domX, y: domY }, {
+				end: () => dispose(),
+			});
+		}
+
+		{
+			const { dispose } = os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (scoreUnit === 'pt' ? '' : scoreUnit) }, {
+				end: () => dispose(),
+			});
+		}
 
 		if (nextMono) {
 			const def = monoDefinitions.value.find(x => x.id === nextMono.id)!;

@@ -206,7 +206,7 @@ describe('2要素認証', () => {
 			username,
 		}, alice);
 		assert.strictEqual(usersShowResponse.status, 200);
-		assert.strictEqual(usersShowResponse.body.twoFactorEnabled, true);
+		assert.strictEqual((usersShowResponse.body as unknown as { twoFactorEnabled: boolean }).twoFactorEnabled, true);
 
 		const signinResponse = await api('signin', {
 			...signinParam(),
@@ -248,7 +248,7 @@ describe('2要素認証', () => {
 			keyName,
 			credentialId,
 			creationOptions: registerKeyResponse.body,
-		}) as any, alice);
+		} as any) as any, alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
 		assert.strictEqual(keyDoneResponse.body.id, credentialId.toString('base64url'));
 		assert.strictEqual(keyDoneResponse.body.name, keyName);
@@ -257,22 +257,22 @@ describe('2要素認証', () => {
 			username,
 		});
 		assert.strictEqual(usersShowResponse.status, 200);
-		assert.strictEqual(usersShowResponse.body.securityKeys, true);
+		assert.strictEqual((usersShowResponse.body as unknown as { securityKeys: boolean }).securityKeys, true);
 
 		const signinResponse = await api('signin', {
 			...signinParam(),
 		});
 		assert.strictEqual(signinResponse.status, 200);
 		assert.strictEqual(signinResponse.body.i, undefined);
-		assert.notEqual(signinResponse.body.challenge, undefined);
-		assert.notEqual(signinResponse.body.allowCredentials, undefined);
-		assert.strictEqual(signinResponse.body.allowCredentials[0].id, credentialId.toString('base64url'));
+		assert.notEqual((signinResponse.body as unknown as { challenge: unknown | undefined }).challenge, undefined);
+		assert.notEqual((signinResponse.body as unknown as { allowCredentials: unknown | undefined }).allowCredentials, undefined);
+		assert.strictEqual((signinResponse.body as unknown as { allowCredentials: {id: string}[] }).allowCredentials[0].id, credentialId.toString('base64url'));
 
 		const signinResponse2 = await api('signin', signinWithSecurityKeyParam({
 			keyName,
 			credentialId,
 			requestOptions: signinResponse.body,
-		}));
+		} as any));
 		assert.strictEqual(signinResponse2.status, 200);
 		assert.notEqual(signinResponse2.body.i, undefined);
 
@@ -307,7 +307,7 @@ describe('2要素認証', () => {
 			keyName,
 			credentialId,
 			creationOptions: registerKeyResponse.body,
-		}) as any, alice);
+		} as any) as any, alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
 
 		const passwordLessResponse = await api('i/2fa/password-less', {
@@ -319,7 +319,7 @@ describe('2要素認証', () => {
 			username,
 		});
 		assert.strictEqual(usersShowResponse.status, 200);
-		assert.strictEqual(usersShowResponse.body.usePasswordLessLogin, true);
+		assert.strictEqual((usersShowResponse.body as unknown as { usePasswordLessLogin: boolean }).usePasswordLessLogin, true);
 
 		const signinResponse = await api('signin', {
 			...signinParam(),
@@ -333,7 +333,7 @@ describe('2要素認証', () => {
 				keyName,
 				credentialId,
 				requestOptions: signinResponse.body,
-			}),
+			} as any),
 			password: '',
 		});
 		assert.strictEqual(signinResponse2.status, 200);
@@ -370,7 +370,7 @@ describe('2要素認証', () => {
 			keyName,
 			credentialId,
 			creationOptions: registerKeyResponse.body,
-		}) as any, alice);
+		} as any) as any, alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
 
 		const renamedKey = 'other-key';
@@ -383,6 +383,7 @@ describe('2要素認証', () => {
 		const iResponse = await api('i', {
 		}, alice);
 		assert.strictEqual(iResponse.status, 200);
+		assert.ok(iResponse.body.securityKeysList);
 		const securityKeys = iResponse.body.securityKeysList.filter((s: { id: string; }) => s.id === credentialId.toString('base64url'));
 		assert.strictEqual(securityKeys.length, 1);
 		assert.strictEqual(securityKeys[0].name, renamedKey);
@@ -419,13 +420,14 @@ describe('2要素認証', () => {
 			keyName,
 			credentialId,
 			creationOptions: registerKeyResponse.body,
-		}) as any, alice);
+		} as any) as any, alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
 
 		// テストの実行順によっては複数残ってるので全部消す
 		const iResponse = await api('i', {
 		}, alice);
 		assert.strictEqual(iResponse.status, 200);
+		assert.ok(iResponse.body.securityKeysList);
 		for (const key of iResponse.body.securityKeysList) {
 			const removeKeyResponse = await api('i/2fa/remove-key', {
 				token: otpToken(registerResponse.body.secret),
@@ -439,7 +441,7 @@ describe('2要素認証', () => {
 			username,
 		});
 		assert.strictEqual(usersShowResponse.status, 200);
-		assert.strictEqual(usersShowResponse.body.securityKeys, false);
+		assert.strictEqual((usersShowResponse.body as unknown as { securityKeys: boolean }).securityKeys, false);
 
 		const signinResponse = await api('signin', {
 			...signinParam(),
@@ -470,7 +472,7 @@ describe('2要素認証', () => {
 			username,
 		});
 		assert.strictEqual(usersShowResponse.status, 200);
-		assert.strictEqual(usersShowResponse.body.twoFactorEnabled, true);
+		assert.strictEqual((usersShowResponse.body as unknown as { twoFactorEnabled: boolean }).twoFactorEnabled, true);
 
 		const unregisterResponse = await api('i/2fa/unregister', {
 			token: otpToken(registerResponse.body.secret),

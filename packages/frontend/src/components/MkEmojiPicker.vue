@@ -5,7 +5,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" autocapitalize="off" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
+	<input
+		ref="searchEl"
+		:value="q"
+		class="search"
+		data-prevent-emoji-insert
+		:class="{ filled: q != null && q != '' }"
+		:placeholder="i18n.ts.search"
+		type="search"
+		autocapitalize="off"
+		@input="input()"
+		@paste.stop="paste"
+		@keydown="onKeydown"
+	>
 	<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
 	<div ref="emojisEl" class="emojis" tabindex="-1">
 		<section class="result">
@@ -105,7 +117,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
-import XSection from '@/components/MkEmojiPicker.section.vue';
 import {
 	emojilist,
 	emojiCharByCategory,
@@ -114,7 +125,8 @@ import {
 	getEmojiName,
 	CustomEmojiFolderTree,
 	getUnicodeEmoji,
-} from '@/scripts/emojilist.js';
+} from '@@/js/emojilist.js';
+import XSection from '@/components/MkEmojiPicker.section.vue';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
 import { isTouchUsing } from '@/scripts/touch.js';
@@ -139,6 +151,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'chosen', v: string): void;
+	(ev: 'esc'): void;
 }>();
 
 const searchEl = shallowRef<HTMLInputElement>();
@@ -402,7 +415,9 @@ function chosen(emoji: any, ev?: MouseEvent) {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);
-		os.popup(MkRippleEffect, { x, y }, {}, 'end');
+		const { dispose } = os.popup(MkRippleEffect, { x, y }, {
+			end: () => dispose(),
+		});
 	}
 
 	const key = getKey(emoji);
@@ -431,9 +446,18 @@ function paste(event: ClipboardEvent): void {
 	}
 }
 
-function onEnter(ev: KeyboardEvent) {
+function onKeydown(ev: KeyboardEvent) {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
-	done();
+	if (ev.key === 'Enter') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		done();
+	}
+	if (ev.key === 'Escape') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		emit('esc');
+	}
 }
 
 function done(query?: string): boolean | void {
@@ -587,6 +611,7 @@ defineExpose({
 						width: auto;
 						height: auto;
 						min-width: 0;
+						padding: 0;
 
 						&:disabled {
 							cursor: not-allowed;
@@ -693,17 +718,12 @@ defineExpose({
 
 				> .item {
 					position: relative;
-					padding: 0;
+					padding: 0 3px;
 					width: var(--eachSize);
 					height: var(--eachSize);
 					contain: strict;
 					border-radius: 4px;
 					font-size: 24px;
-
-					&:focus-visible {
-						outline: solid 2px var(--focus);
-						z-index: 1;
-					}
 
 					&:hover {
 						background: rgba(0, 0, 0, 0.05);

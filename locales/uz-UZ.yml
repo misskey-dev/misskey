@@ -471,7 +471,6 @@ uiLanguage: "Interfeys tili"
 aboutX: "{x} haqida"
 emojiStyle: "Emoji ko'rinishi"
 native: "Mahalliy"
-disableDrawer: "Slayd menyusidan foydalanmang"
 showNoteActionsOnlyHover: "Eslatma amallarini faqat sichqonchani olib borganda ko‘rsatish"
 noHistory: "Tarix yo'q"
 signinHistory: "kirish tarixi"
@@ -1089,6 +1088,10 @@ _webhookSettings:
   _events:
     renote: "Qayta qayd qilinganda"
     mention: "Eslanganda"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   suspend: "To'xtatish"
   resetPassword: "Parolni tiklash"

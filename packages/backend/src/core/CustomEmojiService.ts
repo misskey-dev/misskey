@@ -24,7 +24,7 @@ const parseEmojiStrRegexp = /^([-\w]+)(?:@([\w.-]+))?$/;
 
 @Injectable()
 export class CustomEmojiService implements OnApplicationShutdown {
-	private cache: MemoryKVCache<MiEmoji | null>;
+	private emojisCache: MemoryKVCache<MiEmoji | null>;
 	public localEmojisCache: RedisSingleCache<Map<string, MiEmoji>>;
 
 	constructor(
@@ -40,7 +40,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
 	) {
-		this.cache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12);
+		this.emojisCache = new MemoryKVCache<MiEmoji | null>(1000 * 60 * 60 * 12); // 12h
 
 		this.localEmojisCache = new RedisSingleCache<Map<string, MiEmoji>>(this.redisClient, 'localEmojis', {
 			lifetime: 1000 * 60 * 30, // 30m
@@ -334,7 +334,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			host,
 		})) ?? null;
 
-		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);
+		const emoji = await this.emojisCache.fetch(`${name} ${host}`, queryOrNull);
 
 		if (emoji == null) return null;
 		return emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
@@ -361,7 +361,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async prefetchEmojis(emojis: { name: string; host: string | null; }[]): Promise<void> {
-		const notCachedEmojis = emojis.filter(emoji => this.cache.get(`${emoji.name} ${emoji.host}`) == null);
+		const notCachedEmojis = emojis.filter(emoji => this.emojisCache.get(`${emoji.name} ${emoji.host}`) == null);
 		const emojisQuery: any[] = [];
 		const hosts = new Set(notCachedEmojis.map(e => e.host));
 		for (const host of hosts) {
@@ -376,7 +376,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			select: ['name', 'host', 'originalUrl', 'publicUrl'],
 		}) : [];
 		for (const emoji of _emojis) {
-			this.cache.set(`${emoji.name} ${emoji.host}`, emoji);
+			this.emojisCache.set(`${emoji.name} ${emoji.host}`, emoji);
 		}
 	}
 
@@ -401,7 +401,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		this.cache.dispose();
+		this.emojisCache.dispose();
 	}
 
 	@bindThis

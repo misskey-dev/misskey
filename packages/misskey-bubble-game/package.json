@@ -17,18 +17,16 @@
 	"scripts": {
 		"build": "node ./build.js",
 		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
-		"eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@misskey-dev/eslint-plugin": "1.0.0",
 		"@types/matter-js": "0.19.6",
 		"@types/seedrandom": "3.0.8",
 		"@types/node": "20.11.5",
 		"@typescript-eslint/eslint-plugin": "7.1.0",
 		"@typescript-eslint/parser": "7.1.0",
-		"eslint": "8.57.0",
 		"nodemon": "3.0.2",
 		"execa": "8.0.1",
 		"typescript": "5.3.3",

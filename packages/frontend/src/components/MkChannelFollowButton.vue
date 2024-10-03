@@ -26,17 +26,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	channel: Record<string, any>;
+	channel: Misskey.entities.Channel;
 	full?: boolean;
 }>(), {
 	full: false,
 });
 
-const isFollowing = ref<boolean>(props.channel.isFollowing);
+const isFollowing = ref(props.channel.isFollowing);
 const wait = ref(false);
 
 async function onClick() {
@@ -86,17 +87,7 @@ async function onClick() {
 	}
 
 	&:focus-visible {
-		&:after {
-			content: "";
-			pointer-events: none;
-			position: absolute;
-			top: -5px;
-			right: -5px;
-			bottom: -5px;
-			left: -5px;
-			border: 2px solid var(--focus);
-			border-radius: 32px;
-		}
+		outline-offset: 2px;
 	}
 
 	&:hover {

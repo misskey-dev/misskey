@@ -7,9 +7,9 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { inspect } from 'node:util';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { api, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 describe('ユーザー', () => {
 	// エンティティとしてのユーザーを主眼においたテストを記述する
@@ -105,6 +105,7 @@ describe('ユーザー', () => {
 			isRenoteMuted: user.isRenoteMuted ?? false,
 			notify: user.notify ?? 'none',
 			withReplies: user.withReplies ?? false,
+			followedMessage: user.isFollowing ? (user.followedMessage ?? null) : undefined,
 		});
 	};
 
@@ -114,6 +115,7 @@ describe('ユーザー', () => {
 			...userDetailedNotMe(user),
 			avatarId: user.avatarId,
 			bannerId: user.bannerId,
+			followedMessage: user.followedMessage,
 			isModerator: user.isModerator,
 			isAdmin: user.isAdmin,
 			injectFeaturedNote: user.injectFeaturedNote,
@@ -231,7 +233,7 @@ describe('ユーザー', () => {
 		rolePublic = await role(root, { isPublic: true, name: 'Public Role' });
 		await api('admin/roles/assign', { userId: userRolePublic.id, roleId: rolePublic.id }, root);
 		userRoleBadge = await signup({ username: 'userRoleBadge' });
-		roleBadge = await role(root, { asBadge: true, name: 'Badge Role' });
+		roleBadge = await role(root, { asBadge: true, name: 'Badge Role', isPublic: true });
 		await api('admin/roles/assign', { userId: userRoleBadge.id, roleId: roleBadge.id }, root);
 		userSilenced = await signup({ username: 'userSilenced' });
 		await post(userSilenced, { text: 'test' });
@@ -350,6 +352,7 @@ describe('ユーザー', () => {
 		// MeDetailedOnly
 		assert.strictEqual(response.avatarId, null);
 		assert.strictEqual(response.bannerId, null);
+		assert.strictEqual(response.followedMessage, null);
 		assert.strictEqual(response.isModerator, false);
 		assert.strictEqual(response.isAdmin, false);
 		assert.strictEqual(response.injectFeaturedNote, true);
@@ -413,6 +416,8 @@ describe('ユーザー', () => {
 		{ parameters: () => ({ description: 'x'.repeat(1500) }) },
 		{ parameters: () => ({ description: 'x' }) },
 		{ parameters: () => ({ description: 'My description' }) },
+		{ parameters: () => ({ followedMessage: null }) },
+		{ parameters: () => ({ followedMessage: 'Thank you' }) },
 		{ parameters: () => ({ location: null }) },
 		{ parameters: () => ({ location: 'x'.repeat(50) }) },
 		{ parameters: () => ({ location: 'x' }) },
@@ -655,7 +660,16 @@ describe('ユーザー', () => {
 			iconUrl: roleBadge.iconUrl,
 			displayOrder: roleBadge.displayOrder,
 		}]);
-		assert.deepStrictEqual(response.roles, []); // バッヂだからといってrolesが取れるとは限らない
+		assert.deepStrictEqual(response.roles, [{
+			id: roleBadge.id,
+			name: roleBadge.name,
+			color: roleBadge.color,
+			iconUrl: roleBadge.iconUrl,
+			description: roleBadge.description,
+			isModerator: roleBadge.isModerator,
+			isAdministrator: roleBadge.isAdministrator,
+			displayOrder: roleBadge.displayOrder,
+		}]);
 	});
 	test('をID指定のリスト形式で取得することができる（空）', async () => {
 		const parameters = { userIds: [] };

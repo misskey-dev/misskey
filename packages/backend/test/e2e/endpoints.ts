@@ -10,7 +10,7 @@ import * as assert from 'assert';
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
 import { MiUser } from '@/models/_.js';
-import { api, initTestDb, post, signup, simpleGet, uploadFile } from '../utils.js';
+import { api, castAsError, initTestDb, post, signup, simpleGet, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Endpoints', () => {
@@ -117,12 +117,21 @@ describe('Endpoints', () => {
 			assert.strictEqual(res.body.birthday, myBirthday);
 		});
 
-		test('名前を空白にできる', async () => {
+		test('名前を空白のみにした場合nullになる', async () => {
 			const res = await api('i/update', {
 				name: ' ',
 			}, alice);
 			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.body.name, ' ');
+			assert.strictEqual(res.body.name, null);
+		});
+
+		test('名前の前後に空白（ホワイトスペース）を入れてもトリムされる', async () => {
+			const res = await api('i/update', {
+				// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#white_space
+				name: ' あ い う \u0009\u000b\u000c\u0020\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000\ufeff',
+			}, alice);
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(res.body.name, 'あ い う');
 		});
 
 		test('誕生日の設定を削除できる', async () => {
@@ -155,7 +164,7 @@ describe('Endpoints', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.id, alice.id);
+			assert.strictEqual((res.body as unknown as { id: string }).id, alice.id);
 		});
 
 		test('ユーザーが存在しなかったら怒る', async () => {
@@ -264,6 +273,68 @@ describe('Endpoints', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
+		});
+
+		test('リノートにリアクションできない', async () => {
+			const bobNote = await post(bob, { text: 'hi' });
+			const bobRenote = await post(bob, { renoteId: bobNote.id });
+
+			const res = await api('notes/reactions/create', {
+				noteId: bobRenote.id,
+				reaction: '🚀',
+			}, alice);
+
+			assert.strictEqual(res.status, 400);
+			assert.ok(res.body);
+			assert.strictEqual(castAsError(res.body).error.code, 'CANNOT_REACT_TO_RENOTE');
+		});
+
+		test('引用にリアクションできる', async () => {
+			const bobNote = await post(bob, { text: 'hi' });
+			const bobRenote = await post(bob, { text: 'hi again', renoteId: bobNote.id });
+
+			const res = await api('notes/reactions/create', {
+				noteId: bobRenote.id,
+				reaction: '🚀',
+			}, alice);
+
+			assert.strictEqual(res.status, 204);
+		});
+
+		test('空文字列のリアクションは\u2764にフォールバックされる', async () => {
+			const bobNote = await post(bob, { text: 'hi' });
+
+			const res = await api('notes/reactions/create', {
+				noteId: bobNote.id,
+				reaction: '',
+			}, alice);
+
+			assert.strictEqual(res.status, 204);
+
+			const reaction = await api('notes/reactions', {
+				noteId: bobNote.id,
+			});
+
+			assert.strictEqual(reaction.body.length, 1);
+			assert.strictEqual(reaction.body[0].type, '\u2764');
+		});
+
+		test('絵文字ではない文字列のリアクションは\u2764にフォールバックされる', async () => {
+			const bobNote = await post(bob, { text: 'hi' });
+
+			const res = await api('notes/reactions/create', {
+				noteId: bobNote.id,
+				reaction: 'Hello!',
+			}, alice);
+
+			assert.strictEqual(res.status, 204);
+
+			const reaction = await api('notes/reactions', {
+				noteId: bobNote.id,
+			});
+
+			assert.strictEqual(reaction.body.length, 1);
+			assert.strictEqual(reaction.body[0].type, '\u2764');
 		});
 
 		test('空のパラメータで怒られる', async () => {
@@ -523,7 +594,7 @@ describe('Endpoints', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body!.name, 'Lenna.jpg');
+			assert.strictEqual(res.body!.name, '192.jpg');
 		});
 
 		test('ファイルに名前を付けられる', async () => {
@@ -993,7 +1064,7 @@ describe('Endpoints', () => {
 				userId: bob.id,
 			}, alice);
 			assert.strictEqual(res1.status, 204);
-			assert.strictEqual(res2.body?.memo, memo);
+			assert.strictEqual((res2.body as unknown as { memo: string })?.memo, memo);
 		});
 
 		test('自分に関するメモを更新できる', async () => {
@@ -1008,7 +1079,7 @@ describe('Endpoints', () => {
 				userId: alice.id,
 			}, alice);
 			assert.strictEqual(res1.status, 204);
-			assert.strictEqual(res2.body?.memo, memo);
+			assert.strictEqual((res2.body as unknown as { memo: string })?.memo, memo);
 		});
 
 		test('メモを削除できる', async () => {
@@ -1029,7 +1100,7 @@ describe('Endpoints', () => {
 			}, alice);
 
 			// memoには常に文字列かnullが入っている(5cac151)
-			assert.strictEqual(res.body.memo, null);
+			assert.strictEqual((res.body as unknown as { memo: string | null }).memo, null);
 		});
 
 		test('メモは個人ごとに独立して保存される', async () => {
@@ -1056,8 +1127,8 @@ describe('Endpoints', () => {
 				}, carol),
 			]);
 
-			assert.strictEqual(resAlice.body.memo, memoAliceToBob);
-			assert.strictEqual(resCarol.body.memo, memoCarolToBob);
+			assert.strictEqual((resAlice.body as unknown as { memo: string }).memo, memoAliceToBob);
+			assert.strictEqual((resCarol.body as unknown as { memo: string }).memo, memoCarolToBob);
 		});
 	});
 });

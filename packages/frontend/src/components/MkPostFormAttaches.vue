@@ -26,6 +26,7 @@ import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -63,7 +64,7 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('driveFileDeleteConfirm', { name: file.name }),
+		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
 	});
 
 	if (canceled) return;
@@ -108,7 +109,7 @@ async function rename(file) {
 async function describe(file) {
 	if (mock) return;
 
-	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
 		default: file.comment !== null ? file.comment : '',
 		file: file,
 	}, {
@@ -121,7 +122,8 @@ async function describe(file) {
 				file.comment = comment;
 			});
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 
 async function crop(file: Misskey.entities.DriveFile): Promise<void> {
@@ -135,7 +137,10 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 	if (menuShowing) return;
 
 	const isImage = file.type.startsWith('image/');
-	os.popupMenu([{
+
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
 		text: i18n.ts.renameFile,
 		icon: 'ti ti-forms',
 		action: () => { rename(file); },
@@ -147,11 +152,17 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 		text: i18n.ts.describeFile,
 		icon: 'ti ti-text-caption',
 		action: () => { describe(file); },
-	}, ...isImage ? [{
-		text: i18n.ts.cropImage,
-		icon: 'ti ti-crop',
-		action: () : void => { crop(file); },
-	}] : [], {
+	});
+
+	if (isImage) {
+		menuItems.push({
+			text: i18n.ts.cropImage,
+			icon: 'ti ti-crop',
+			action: () : void => { crop(file); },
+		});
+	}
+
+	menuItems.push({
 		type: 'divider',
 	}, {
 		text: i18n.ts.attachCancel,
@@ -162,7 +173,9 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 		icon: 'ti ti-trash',
 		danger: true,
 		action: () => { detachAndDeleteMedia(file); },
-	}], ev.currentTarget ?? ev.target).then(() => menuShowing = false);
+	});
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target).then(() => menuShowing = false);
 	menuShowing = true;
 }
 </script>

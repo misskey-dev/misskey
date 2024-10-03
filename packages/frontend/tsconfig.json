@@ -23,7 +23,8 @@
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@@/*": ["../frontend-shared/*"]
 		},
 		"typeRoots": [
 			"./@types",
@@ -37,13 +38,13 @@
 		],
 		"lib": [
 			"esnext",
-			"dom"
+			"dom",
+			"dom.iterable"
 		],
 		"jsx": "preserve"
 	},
 	"compileOnSave": false,
 	"include": [
-		".eslintrc.js",
 		"./**/*.ts",
 		"./**/*.vue"
 	],

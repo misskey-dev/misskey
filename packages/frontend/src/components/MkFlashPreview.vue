@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA :to="`/play/${flash.id}`" class="vhpxefrk _panel" tabindex="-1">
+<MkA :to="`/play/${flash.id}`" class="vhpxefrk _panel" :class="[{ gray: flash.visibility === 'private' }]">
 	<article>
 		<header>
 			<h1 :title="flash.title">{{ flash.title }}</h1>
@@ -22,11 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
+import * as Misskey from 'misskey-js';
 import { userName } from '@/filters/user.js';
 
 const props = defineProps<{
-	//flash: Misskey.entities.Flash;
-	flash: any;
+	flash: Misskey.entities.Flash;
 }>();
 </script>
 
@@ -37,6 +37,10 @@ const props = defineProps<{
 	&:hover {
 		text-decoration: none;
 		color: var(--accent);
+	}
+
+	&:focus-visible {
+		outline-offset: -2px;
 	}
 
 	> article {
@@ -85,6 +89,12 @@ const props = defineProps<{
 				vertical-align: top;
 			}
 		}
+	}
+
+	&:global(.gray) {
+		--c: var(--bg);
+		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
+		background-size: 16px 16px;
 	}
 
 	@media (max-width: 700px) {

@@ -11,8 +11,10 @@ import { QueueProcessorService } from './QueueProcessorService.js';
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
 import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
-import { WebhookDeliverProcessorService } from './processors/WebhookDeliverProcessorService.js';
+import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
+import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
 import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
+import { BakeBufferedReactionsProcessorService } from './processors/BakeBufferedReactionsProcessorService.js';
 import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
@@ -50,6 +52,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		ResyncChartsProcessorService,
 		CleanChartsProcessorService,
 		CheckExpiredMutingsProcessorService,
+		BakeBufferedReactionsProcessorService,
 		CleanProcessorService,
 		DeleteDriveFilesProcessorService,
 		ExportCustomEmojisProcessorService,
@@ -71,7 +74,8 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		DeleteFileProcessorService,
 		CleanRemoteFilesProcessorService,
 		RelationshipProcessorService,
-		WebhookDeliverProcessorService,
+		UserWebhookDeliverProcessorService,
+		SystemWebhookDeliverProcessorService,
 		EndedPollNotificationProcessorService,
 		DeliverProcessorService,
 		InboxProcessorService,

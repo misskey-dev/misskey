@@ -7,10 +7,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div ref="rootEl" :class="$style.root" role="group" :aria-expanded="opened">
 	<MkStickyContainer>
 		<template #header>
-			<div :class="[$style.header, { [$style.opened]: opened }]" class="_button" role="button" data-cy-folder-header @click="toggle">
+			<button :class="[$style.header, { [$style.opened]: opened }]" class="_button" role="button" data-cy-folder-header @click="toggle">
 				<div :class="$style.headerIcon"><slot name="icon"></slot></div>
 				<div :class="$style.headerText">
-					<div>
+					<div :class="$style.headerTextMain">
 						<MkCondensedLine :minScale="2 / 3"><slot name="label"></slot></MkCondensedLine>
 					</div>
 					<div :class="$style.headerTextSub">
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i v-if="opened" class="ti ti-chevron-up icon"></i>
 					<i v-else class="ti ti-chevron-down icon"></i>
 				</div>
-			</div>
+			</button>
 		</template>
 
 		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: maxHeight ? `auto` : undefined }" :aria-hidden="!opened">
@@ -41,6 +41,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSpacer :marginMin="14" :marginMax="22">
 							<slot></slot>
 						</MkSpacer>
+						<div v-if="$slots.footer" :class="$style.footer">
+							<slot name="footer"></slot>
+						</div>
 					</div>
 				</KeepAlive>
 			</Transition>
@@ -136,7 +139,7 @@ onMounted(() => {
 	width: 100%;
 	box-sizing: border-box;
 	padding: 9px 12px 9px 12px;
-	background: var(--buttonBg);
+	background: var(--folderHeaderBg);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
 	border-radius: 6px;
@@ -144,12 +147,16 @@ onMounted(() => {
 
 	&:hover {
 		text-decoration: none;
-		background: var(--buttonHoverBg);
+		background: var(--folderHeaderHoverBg);
+	}
+
+	&:focus-within {
+		outline-offset: 2px;
 	}
 
 	&.active {
 		color: var(--accent);
-		background: var(--buttonHoverBg);
+		background: var(--folderHeaderHoverBg);
 	}
 
 	&.opened {
@@ -190,6 +197,12 @@ onMounted(() => {
 	padding-right: 12px;
 }
 
+.headerTextMain,
+.headerTextSub {
+	width: fit-content;
+	max-width: 100%;
+}
+
 .headerTextSub {
 	color: var(--fgTransparentWeak);
 	font-size: .85em;
@@ -213,5 +226,19 @@ onMounted(() => {
 	&.bgSame {
 		background: var(--bg);
 	}
+}
+
+.footer {
+	position: sticky !important;
+	z-index: 1;
+	bottom: var(--stickyBottom, 0px);
+	left: 0;
+	padding: 12px;
+	background: var(--acrylicBg);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, var(--panel) 5px, var(--panel) 10px);
+	border-radius: 0 0 6px 6px;
 }
 </style>
