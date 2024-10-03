@@ -2393,6 +2393,7 @@ _notification:
   followedBySomeUsers: "{n}명에게 팔로우됨"
   flushNotification: "알림 이력을 초기화"
   exportOfXCompleted: "{x} 추출에 성공했습니다."
+  login: "로그인 알림이 있습니다"
   _types:
     all: "전부"
     note: "사용자의 새 글"
