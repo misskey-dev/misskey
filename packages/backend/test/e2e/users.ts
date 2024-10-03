@@ -85,6 +85,10 @@ describe('ユーザー', () => {
 			followersVisibility: user.followersVisibility,
 			roles: user.roles,
 			memo: user.memo,
+			// 自分とモデレーターのみが取得可能な値
+			twoFactorEnabled: user.twoFactorEnabled,
+			usePasswordLessLogin: user.usePasswordLessLogin,
+			securityKeys: user.securityKeys,
 		});
 	};
 
