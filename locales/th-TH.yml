@@ -2374,6 +2374,7 @@ _notification:
     followRequestAccepted: "อนุมัติให้ติดตามแล้ว"
     roleAssigned: "ให้บทบาท"
     achievementEarned: "ปลดล็อกความสำเร็จแล้ว"
+    login: "เข้าสู่ระบบ"
     app: "การแจ้งเตือนจากแอปที่มีลิงก์"
   _actions:
     followBack: "ติดตามกลับด้วย"
