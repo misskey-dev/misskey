@@ -1,4 +1,4 @@
-## Unreleased
+## 2024.10.0
 
 ### General
 - Enhance: セキュリティ向上のため、サインイン時もCAPTCHAを求めるようになりました
