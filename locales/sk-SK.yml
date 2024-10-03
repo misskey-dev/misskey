@@ -1409,6 +1409,7 @@ _notification:
     pollEnded: "Hlasovanie skončilo"
     receiveFollowRequest: "Doručené žiadosti o sledovanie"
     followRequestAccepted: "Schválené žiadosti o sledovanie"
+    login: "Prihlásiť sa"
     app: "Oznámenia z prepojených aplikácií"
   _actions:
     followBack: "Sledovať späť\n"

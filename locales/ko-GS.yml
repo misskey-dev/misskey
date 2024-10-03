@@ -813,6 +813,7 @@ _notification:
     mention: "멘션"
     quote: "따오기"
     reaction: "반엉"
+    login: "로그인"
   _actions:
     reply: "답하기"
 _deck:
