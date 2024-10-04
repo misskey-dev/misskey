@@ -66,7 +66,7 @@ onMounted(() => {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	min-height: 360px;
+	min-height: 336px;
 
 	> .root {
 		width: 100%;

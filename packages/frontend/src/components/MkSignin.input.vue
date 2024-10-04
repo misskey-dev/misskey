@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.wrapper" data-cy-signin-page-input>
 	<div :class="$style.root">
-		<div :class="$style.avatar" :style="{ marginBottom: message ? '1.5em' : undefined }">
+		<div :class="$style.avatar">
 			<i class="ti ti-user"></i>
 		</div>
 
@@ -153,7 +153,7 @@ async function specifyHostAndOpenRemote(options: OpenOnRemoteOptions): Promise<v
 	display: flex;
 	align-items: center;
 	width: 100%;
-	min-height: 300px;
+	min-height: 336px;
 
 	> .root {
 		width: 100%;
