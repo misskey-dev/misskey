@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton primary @click="save_deepl">Save</MkButton>
 				</div>
 			</MkFolder>
+			<br />
 			<MkFolder>
 				<template #label>Text-To-Speech</template>
 				<div class="_gaps_m">
