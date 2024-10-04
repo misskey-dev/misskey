@@ -124,7 +124,7 @@ function onPasskeyLogin(): void {
 				page.value = 'passkey';
 				waiting.value = false;
 			})
-			.catch(onLoginFailed);
+			.catch(onSigninApiError);
 	}
 }
 
@@ -137,11 +137,11 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 			context: passkeyContext.value,
 		}).then((res) => {
 			if (res.signinResponse == null) {
-				onLoginFailed();
+				onSigninApiError();
 				return;
 			}
 			emit('login', res.signinResponse);
-		}).catch(onLoginFailed);
+		}).catch(onSigninApiError);
 	} else if (userInfo.value != null) {
 		tryLogin({
 			username: userInfo.value.username,
@@ -231,7 +231,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninRequest>): Promise<M
 		await onLoginSucceeded(res);
 		return res;
 	}).catch((err) => {
-		onLoginFailed(err);
+		onSigninApiError(err);
 		return Promise.reject(err);
 	});
 }
@@ -242,16 +242,18 @@ async function onLoginSucceeded(res: Misskey.entities.SigninResponse) {
 	}
 }
 
-function onLoginFailed(err?: any): void {
+function onSigninApiError(err?: any): void {
 	const id = err?.id ?? null;
 
 	if (typeof err === 'object' && 'next' in err) {
 		switch (err.next) {
 			case 'captcha': {
+				needCaptcha.value = true;
 				page.value = 'password';
 				break;
 			}
 			case 'password': {
+				needCaptcha.value = false;
 				page.value = 'password';
 				break;
 			}
@@ -365,6 +367,7 @@ function onLoginFailed(err?: any): void {
 
 onBeforeUnmount(() => {
 	password.value = '';
+	needCaptcha.value = false;
 	userInfo.value = null;
 });
 </script>
