@@ -263,6 +263,16 @@ async function tryLogin(req: Partial<Misskey.entities.SigninRequest>): Promise<M
 	}).catch((err) => {
 		onSigninApiError(err);
 		return Promise.reject(err);
+	}).finally(() => {
+		if (doingPasskeyFromInputPage.value === true) {
+			doingPasskeyFromInputPage.value = false;
+			page.value = 'input';
+			password.value = '';
+		}
+		passwordPageEl.value?.resetCaptcha();
+		nextTick(() => {
+			waiting.value = false;
+		});
 	});
 }
 
@@ -353,16 +363,6 @@ function onSigninApiError(err?: any): void {
 			});
 		}
 	}
-
-	if (doingPasskeyFromInputPage.value === true) {
-		doingPasskeyFromInputPage.value = false;
-		page.value = 'input';
-		password.value = '';
-	}
-	passwordPageEl.value?.resetCaptcha();
-	nextTick(() => {
-		waiting.value = false;
-	});
 }
 
 onBeforeUnmount(() => {
