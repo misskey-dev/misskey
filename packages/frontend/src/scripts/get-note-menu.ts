@@ -159,17 +159,48 @@ export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): 
 	};
 }
 
-function getNoteEmbedCodeMenu(note: Misskey.entities.Note, text: string): MenuItem | undefined {
-	if (note.url != null || note.uri != null) return undefined;
-	if (['specified', 'followers'].includes(note.visibility)) return undefined;
+function getNoteShareMenu(note: Misskey.entities.Note, inChild: boolean): MenuItem[] {
+	const children: MenuItem[] = [];
+	const appearNote = getAppearNote(note);
 
-	return {
-		icon: 'ti ti-code',
-		text,
-		action: (): void => {
-			genEmbedCode('notes', note.id);
-		},
-	};
+	if (
+		note.url == null && note.uri == null &&
+		!['specified', 'followers'].includes(note.visibility)
+	) {
+		children.push({
+			icon: 'ti ti-code',
+			text: i18n.ts.genEmbedCode,
+			action: (): void => {
+				genEmbedCode('notes', note.id);
+			},
+		});
+	}
+
+	if (isSupportShare()) {
+		children.push({
+			icon: 'ti ti-share',
+			text: i18n.ts.share,
+			action: () => {
+				navigator.share({
+					title: i18n.tsx.noteOf({ user: appearNote.user.name ?? appearNote.user.username }),
+					text: appearNote.text ?? '',
+					url: `${url}/notes/${appearNote.id}`,
+				});
+			},
+		});
+	}
+
+	if (inChild) {
+		return [{
+			type: 'parent',
+			icon: 'ti ti-share',
+			text: i18n.ts.share,
+			children,
+		}];
+	} else {
+		return children;
+	}
+
 }
 
 export function getNoteMenu(props: {
@@ -274,14 +305,6 @@ export function getNoteMenu(props: {
 		});
 	}
 
-	function share(): void {
-		navigator.share({
-			title: i18n.tsx.noteOf({ user: appearNote.user.name ?? appearNote.user.username }),
-			text: appearNote.text ?? '',
-			url: `${url}/notes/${appearNote.id}`,
-		});
-	}
-
 	function openDetail(): void {
 		os.pageWindow(`/notes/${appearNote.id}`);
 	}
@@ -331,17 +354,9 @@ export function getNoteMenu(props: {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
 			});
-		} else {
-			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode));
 		}
 
-		if (isSupportShare()) {
-			menuItems.push({
-				icon: 'ti ti-share',
-				text: i18n.ts.share,
-				action: share,
-			});
-		}
+		menuItems.push(...getNoteShareMenu(appearNote, true));
 
 		if ($i.policies.canUseTranslator && instance.translatorAvailable) {
 			menuItems.push({
@@ -483,9 +498,9 @@ export function getNoteMenu(props: {
 					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
 				},
 			});
-		} else {
-			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode));
 		}
+
+		menuItems.push(...getNoteShareMenu(appearNote, false));
 	}
 
 	if (noteActions.length > 0) {
