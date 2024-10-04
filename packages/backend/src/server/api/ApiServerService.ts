@@ -38,7 +38,7 @@ export class ApiServerService {
 		private userEntityService: UserEntityService,
 		private apiCallService: ApiCallService,
 		private signupApiService: SignupApiService,
-		private signinFlowApiService: SigninApiService,
+		private signinApiService: SigninApiService,
 		private signinWithPasskeyApiService: SigninWithPasskeyApiService,
 	) {
 		//this.createServer = this.createServer.bind(this);
@@ -133,7 +133,7 @@ export class ApiServerService {
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
 			};
-		}>('/signin-flow', (request, reply) => this.signinFlowApiService.signin(request, reply));
+		}>('/signin-flow', (request, reply) => this.signinApiService.signin(request, reply));
 
 		fastify.post<{
 			Body: {
