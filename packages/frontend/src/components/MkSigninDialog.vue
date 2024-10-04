@@ -77,13 +77,14 @@ function onLogin(res) {
 	top: 0;
 	left: 0;
 	width: 100%;
-	min-height: 50px;
+	height: 50px;
+	box-sizing: border-box;
 	display: flex;
 	align-items: center;
 	font-weight: bold;
 	backdrop-filter: var(--blur, blur(15px));
 	background: var(--acrylicBg);
-	border-bottom: solid .5px var(--divider);
+	border-bottom: solid 1px var(--divider);
 	z-index: 1;
 }
 
@@ -96,6 +97,7 @@ function onLogin(res) {
 	margin-left: auto;
 	padding: 16px;
 	font-size: 16px;
+	line-height: 16px;
 }
 
 .content {
