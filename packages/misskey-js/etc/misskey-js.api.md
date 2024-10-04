@@ -3051,8 +3051,16 @@ type SigninRequest = {
 
 // @public (undocumented)
 type SigninResponse = {
+    finished: true;
     id: User['id'];
     i: string;
+} | {
+    finished: false;
+    next: 'captcha' | 'password' | 'totp';
+} | {
+    finished: false;
+    next: 'passkey';
+    authRequest: PublicKeyCredentialRequestOptionsJSON;
 };
 
 // @public (undocumented)
