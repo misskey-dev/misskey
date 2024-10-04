@@ -200,7 +200,6 @@ function getNoteShareMenu(note: Misskey.entities.Note, inChild: boolean): MenuIt
 	} else {
 		return children;
 	}
-
 }
 
 export function getNoteMenu(props: {
