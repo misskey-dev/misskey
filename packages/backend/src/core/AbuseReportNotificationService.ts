@@ -22,6 +22,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { IdService } from './IdService.js';
 
 @Injectable()
@@ -29,19 +30,17 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.meta)
 		private meta: MiMeta,
-
 		@Inject(DI.abuseReportNotificationRecipientRepository)
 		private abuseReportNotificationRecipientRepository: AbuseReportNotificationRecipientRepository,
-
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
-
 		private idService: IdService,
 		private roleService: RoleService,
 		private systemWebhookService: SystemWebhookService,
 		private emailService: EmailService,
 		private moderationLogService: ModerationLogService,
 		private globalEventService: GlobalEventService,
+		private userEntityService: UserEntityService,
 	) {
 		this.redisForSub.on('message', this.onMessage);
 	}
@@ -135,6 +134,26 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			return;
 		}
 
+		const usersMap = await this.userEntityService.packMany(
+			[
+				...new Set([
+					...abuseReports.map(it => it.reporter ?? it.reporterId),
+					...abuseReports.map(it => it.targetUser ?? it.targetUserId),
+					...abuseReports.map(it => it.assignee ?? it.assigneeId),
+				].filter(x => x != null)),
+			],
+			null,
+			{ schema: 'UserLite' },
+		).then(it => new Map(it.map(it => [it.id, it])));
+		const convertedReports = abuseReports.map(it => {
+			return {
+				...it,
+				reporter: usersMap.get(it.reporterId),
+				targetUser: usersMap.get(it.targetUserId),
+				assignee: it.assigneeId ? usersMap.get(it.assigneeId) : null,
+			};
+		});
+
 		const recipientWebhookIds = await this.fetchWebhookRecipients()
 			.then(it => it
 				.filter(it => it.isActive && it.systemWebhookId && it.method === 'webhook')
@@ -142,7 +161,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 				.filter(x => x != null));
 		for (const webhookId of recipientWebhookIds) {
 			await Promise.all(
-				abuseReports.map(it => {
+				convertedReports.map(it => {
 					return this.systemWebhookService.enqueueSystemWebhook(
 						webhookId,
 						type,
