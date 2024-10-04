@@ -269,7 +269,7 @@ async function onSubmit(): Promise<void> {
 			});
 			emit('signupEmailPending');
 		} else {
-			const res = await misskeyApi('signin', {
+			const res = await misskeyApi('signin-flow', {
 				username: username.value,
 				password: password.value,
 			});

@@ -1158,9 +1158,9 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SignupPendingRequest;
         res: SignupPendingResponse;
     };
-    'signin': {
-        req: SigninRequest;
-        res: SigninResponse;
+    'signin-flow': {
+        req: SigninFlowRequest;
+        res: SigninFlowResponse;
     };
     'signin-with-passkey': {
         req: SigninWithPasskeyRequest;
@@ -1208,11 +1208,11 @@ declare namespace entities {
         SignupResponse,
         SignupPendingRequest,
         SignupPendingResponse,
-        SigninRequest,
+        SigninFlowRequest,
+        SigninFlowResponse,
         SigninWithPasskeyRequest,
         SigninWithPasskeyInitResponse,
         SigninWithPasskeyResponse,
-        SigninResponse,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
@@ -3038,7 +3038,7 @@ type ServerStatsLog = ServerStats[];
 type Signin = components['schemas']['Signin'];
 
 // @public (undocumented)
-type SigninRequest = {
+type SigninFlowRequest = {
     username: string;
     password?: string;
     token?: string;
@@ -3050,7 +3050,7 @@ type SigninRequest = {
 };
 
 // @public (undocumented)
-type SigninResponse = {
+type SigninFlowResponse = {
     finished: true;
     id: User['id'];
     i: string;
@@ -3077,7 +3077,7 @@ type SigninWithPasskeyRequest = {
 
 // @public (undocumented)
 type SigninWithPasskeyResponse = {
-    signinResponse: SigninResponse;
+    signinResponse: SigninFlowResponse;
 };
 
 // @public (undocumented)

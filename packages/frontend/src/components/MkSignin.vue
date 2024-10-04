@@ -226,7 +226,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninRequest>): Promise<M
 		throw new Error('Invalid request');
 	}
 
-	return await misskeyApi('signin', _req).then(async (res) => {
+	return await misskeyApi('signin-flow', _req).then(async (res) => {
 		if (res.finished) {
 			emit('login', res);
 			await onLoginSucceeded(res);

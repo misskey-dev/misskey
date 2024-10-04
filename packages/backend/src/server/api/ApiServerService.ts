@@ -17,7 +17,7 @@ import { bindThis } from '@/decorators.js';
 import endpoints from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
-import { SigninApiService } from './SigninApiService.js';
+import { SigninFlowApiService } from './SigninFlowApiService.js';
 import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
@@ -38,7 +38,7 @@ export class ApiServerService {
 		private userEntityService: UserEntityService,
 		private apiCallService: ApiCallService,
 		private signupApiService: SignupApiService,
-		private signinApiService: SigninApiService,
+		private signinFlowApiService: SigninFlowApiService,
 		private signinWithPasskeyApiService: SigninWithPasskeyApiService,
 	) {
 		//this.createServer = this.createServer.bind(this);
@@ -133,7 +133,7 @@ export class ApiServerService {
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
 			};
-		}>('/signin', (request, reply) => this.signinApiService.signin(request, reply));
+		}>('/signin-flow', (request, reply) => this.signinFlowApiService.signin(request, reply));
 
 		fastify.post<{
 			Body: {

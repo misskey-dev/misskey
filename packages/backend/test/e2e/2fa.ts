@@ -196,7 +196,7 @@ describe('2要素認証', () => {
 		}, alice);
 		assert.strictEqual(doneResponse.status, 200);
 
-		const signinWithoutTokenResponse = await api('signin', {
+		const signinWithoutTokenResponse = await api('signin-flow', {
 			...signinParam(),
 		});
 		assert.strictEqual(signinWithoutTokenResponse.status, 200);
@@ -205,7 +205,7 @@ describe('2要素認証', () => {
 			next: 'totp',
 		});
 
-		const signinResponse = await api('signin', {
+		const signinResponse = await api('signin-flow', {
 			...signinParam(),
 			token: otpToken(registerResponse.body.secret),
 		});
@@ -251,7 +251,7 @@ describe('2要素認証', () => {
 		assert.strictEqual(keyDoneResponse.body.id, credentialId.toString('base64url'));
 		assert.strictEqual(keyDoneResponse.body.name, keyName);
 
-		const signinResponse = await api('signin', {
+		const signinResponse = await api('signin-flow', {
 			...signinParam(),
 		});
 		assert.strictEqual(signinResponse.status, 200);
@@ -261,7 +261,7 @@ describe('2要素認証', () => {
 		assert.notEqual(signinResponse.body.authRequest.allowCredentials, undefined);
 		assert.strictEqual(signinResponse.body.authRequest.allowCredentials && signinResponse.body.authRequest.allowCredentials[0]?.id, credentialId.toString('base64url'));
 
-		const signinResponse2 = await api('signin', signinWithSecurityKeyParam({
+		const signinResponse2 = await api('signin-flow', signinWithSecurityKeyParam({
 			keyName,
 			credentialId,
 			requestOptions: signinResponse.body.authRequest,
@@ -313,7 +313,7 @@ describe('2要素認証', () => {
 		assert.strictEqual(iResponse.status, 200);
 		assert.strictEqual(iResponse.body.usePasswordLessLogin, true);
 
-		const signinResponse = await api('signin', {
+		const signinResponse = await api('signin-flow', {
 			...signinParam(),
 			password: '',
 		});
@@ -323,7 +323,7 @@ describe('2要素認証', () => {
 		assert.notEqual(signinResponse.body.authRequest.challenge, undefined);
 		assert.notEqual(signinResponse.body.authRequest.allowCredentials, undefined);
 
-		const signinResponse2 = await api('signin', {
+		const signinResponse2 = await api('signin-flow', {
 			...signinWithSecurityKeyParam({
 				keyName,
 				credentialId,
@@ -437,7 +437,7 @@ describe('2要素認証', () => {
 		assert.strictEqual(afterIResponse.status, 200);
 		assert.strictEqual(afterIResponse.body.securityKeys, false);
 
-		const signinResponse = await api('signin', {
+		const signinResponse = await api('signin-flow', {
 			...signinParam(),
 			token: otpToken(registerResponse.body.secret),
 		});
@@ -473,7 +473,7 @@ describe('2要素認証', () => {
 		}, alice);
 		assert.strictEqual(unregisterResponse.status, 204);
 
-		const signinResponse = await api('signin', {
+		const signinResponse = await api('signin-flow', {
 			...signinParam(),
 		});
 		assert.strictEqual(signinResponse.status, 200);
