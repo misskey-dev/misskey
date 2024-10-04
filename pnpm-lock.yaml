@@ -923,6 +923,9 @@ importers:
       '@testing-library/vue':
         specifier: 8.1.0
         version: 8.1.0(@vue/compiler-sfc@3.5.11)(@vue/server-renderer@3.5.11(vue@3.5.11(typescript@5.6.2)))(vue@3.5.11(typescript@5.6.2))
+      '@types/canvas-confetti':
+        specifier: ^1.6.4
+        version: 1.6.4
       '@types/estree':
         specifier: 1.0.6
         version: 1.0.6
@@ -1160,7 +1163,7 @@ importers:
         version: 7.17.0(eslint@9.11.0)(typescript@5.6.2)
       '@vitest/coverage-v8':
         specifier: 1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1)(sass@1.79.4)(terser@5.33.0))
+        version: 1.6.0(vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4))(sass@1.79.4)(terser@5.33.0))
       '@vue/runtime-core':
         specifier: 3.5.11
         version: 3.5.11
@@ -4587,6 +4590,9 @@ packages:
 
   '@types/cacheable-request@6.0.3':
     resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
+
+  '@types/canvas-confetti@1.6.4':
+    resolution: {integrity: sha512-fNyZ/Fdw/Y92X0vv7B+BD6ysHL4xVU5dJcgzgxLdGbn8O3PezZNIJpml44lKM0nsGur+o/6+NZbZeNTt00U1uA==}
 
   '@types/color-convert@2.0.4':
     resolution: {integrity: sha512-Ub1MmDdyZ7mX//g25uBAoH/mWGd9swVbt8BseymnaE18SU4po/PjmCrHxqIIRjBo3hV/vh1KGr0eMxUhp+t+dQ==}
@@ -15528,6 +15534,8 @@ snapshots:
       '@types/node': 20.14.12
       '@types/responselike': 1.0.0
 
+  '@types/canvas-confetti@1.6.4': {}
+
   '@types/color-convert@2.0.4':
     dependencies:
       '@types/color-name': 1.1.1
@@ -15954,7 +15962,7 @@ snapshots:
       '@typescript-eslint/types': 7.17.0
       '@typescript-eslint/typescript-estree': 7.17.0(typescript@5.5.4)
       '@typescript-eslint/visitor-keys': 7.17.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       eslint: 9.11.0
     optionalDependencies:
       typescript: 5.5.4
@@ -15967,7 +15975,7 @@ snapshots:
       '@typescript-eslint/types': 7.17.0
       '@typescript-eslint/typescript-estree': 7.17.0(typescript@5.6.2)
       '@typescript-eslint/visitor-keys': 7.17.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       eslint: 9.11.0
     optionalDependencies:
       typescript: 5.6.2
@@ -15980,7 +15988,7 @@ snapshots:
       '@typescript-eslint/types': 7.17.0
       '@typescript-eslint/typescript-estree': 7.17.0(typescript@5.6.2)
       '@typescript-eslint/visitor-keys': 7.17.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       eslint: 9.8.0
     optionalDependencies:
       typescript: 5.6.2
@@ -16001,7 +16009,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 7.1.0(typescript@5.3.3)
       '@typescript-eslint/utils': 7.1.0(eslint@9.11.0)(typescript@5.3.3)
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       eslint: 9.11.0
       ts-api-utils: 1.0.1(typescript@5.3.3)
     optionalDependencies:
@@ -16013,7 +16021,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 7.17.0(typescript@5.5.4)
       '@typescript-eslint/utils': 7.17.0(eslint@9.11.0)(typescript@5.5.4)
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       eslint: 9.11.0
       ts-api-utils: 1.3.0(typescript@5.5.4)
     optionalDependencies:
@@ -16025,7 +16033,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 7.17.0(typescript@5.6.2)
       '@typescript-eslint/utils': 7.17.0(eslint@9.11.0)(typescript@5.6.2)
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       eslint: 9.11.0
       ts-api-utils: 1.3.0(typescript@5.6.2)
     optionalDependencies:
@@ -16037,7 +16045,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 7.17.0(typescript@5.6.2)
       '@typescript-eslint/utils': 7.17.0(eslint@9.8.0)(typescript@5.6.2)
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       eslint: 9.8.0
       ts-api-utils: 1.3.0(typescript@5.6.2)
     optionalDependencies:
@@ -16053,7 +16061,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 7.1.0
       '@typescript-eslint/visitor-keys': 7.1.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
@@ -16068,7 +16076,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 7.17.0
       '@typescript-eslint/visitor-keys': 7.17.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.4
@@ -16083,7 +16091,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 7.17.0
       '@typescript-eslint/visitor-keys': 7.17.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.4
@@ -16167,7 +16175,7 @@ snapshots:
     dependencies:
       '@ampproject/remapping': 2.2.1
       '@bcoe/v8-coverage': 0.2.3
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.4
@@ -16182,11 +16190,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1)(sass@1.79.4)(terser@5.33.0))':
+  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4))(sass@1.79.4)(terser@5.33.0))':
     dependencies:
       '@ampproject/remapping': 2.2.1
       '@bcoe/v8-coverage': 0.2.3
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.4
@@ -16197,7 +16205,7 @@ snapshots:
       std-env: 3.7.0
       strip-literal: 2.1.0
       test-exclude: 6.0.0
-      vitest: 1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1)(sass@1.79.4)(terser@5.33.0)
+      vitest: 1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4))(sass@1.79.4)(terser@5.33.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -16507,7 +16515,7 @@ snapshots:
 
   agent-base@7.1.0:
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -19479,7 +19487,7 @@ snapshots:
   http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -19518,7 +19526,7 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -19526,14 +19534,14 @@ snapshots:
   https-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.5:
     dependencies:
       agent-base: 7.1.0
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -19906,7 +19914,7 @@ snapshots:
   istanbul-lib-source-maps@5.0.4:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
       - supports-color
@@ -20306,35 +20314,6 @@ snapshots:
   jschardet@3.0.0: {}
 
   jsdoc-type-pratt-parser@4.1.0: {}
-
-  jsdom@24.1.1:
-    dependencies:
-      cssstyle: 4.0.1
-      data-urls: 5.0.0
-      decimal.js: 10.4.3
-      form-data: 4.0.0
-      html-encoding-sniffer: 4.0.0
-      http-proxy-agent: 7.0.2
-      https-proxy-agent: 7.0.5
-      is-potential-custom-element-name: 1.0.1
-      nwsapi: 2.2.12
-      parse5: 7.1.2
-      rrweb-cssom: 0.7.1
-      saxes: 6.0.0
-      symbol-tree: 3.2.4
-      tough-cookie: 4.1.4
-      w3c-xmlserializer: 5.0.0
-      webidl-conversions: 7.0.0
-      whatwg-encoding: 3.1.1
-      whatwg-mimetype: 4.0.0
-      whatwg-url: 14.0.0
-      ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
-      xml-name-validator: 5.0.0
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-    optional: true
 
   jsdom@24.1.1(bufferutil@4.0.7)(utf-8-validate@6.0.3):
     dependencies:
@@ -22910,7 +22889,7 @@ snapshots:
     dependencies:
       '@hapi/hoek': 11.0.4
       '@hapi/wreck': 18.0.1
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       joi: 17.11.0
     transitivePeerDependencies:
       - supports-color
@@ -23870,7 +23849,7 @@ snapshots:
   vite-node@1.6.0(@types/node@20.14.12)(sass@1.79.3)(terser@5.33.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       pathe: 1.1.2
       picocolors: 1.0.1
       vite: 5.4.8(@types/node@20.14.12)(sass@1.79.3)(terser@5.33.0)
@@ -23888,7 +23867,7 @@ snapshots:
   vite-node@1.6.0(@types/node@20.14.12)(sass@1.79.4)(terser@5.33.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       pathe: 1.1.2
       picocolors: 1.0.1
       vite: 5.4.8(@types/node@20.14.12)(sass@1.79.4)(terser@5.33.0)
@@ -23970,7 +23949,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1)(sass@1.79.4)(terser@5.33.0):
+  vitest@1.6.0(@types/node@20.14.12)(happy-dom@10.0.3)(jsdom@24.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4))(sass@1.79.4)(terser@5.33.0):
     dependencies:
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
@@ -23995,7 +23974,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.14.12
       happy-dom: 10.0.3
-      jsdom: 24.1.1
+      jsdom: 24.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
     transitivePeerDependencies:
       - less
       - lightningcss
@@ -24067,7 +24046,7 @@ snapshots:
 
   vue-eslint-parser@9.4.3(eslint@9.11.0):
     dependencies:
-      debug: 4.3.5(supports-color@8.1.1)
+      debug: 4.3.5(supports-color@5.5.0)
       eslint: 9.11.0
       eslint-scope: 7.2.2
       eslint-visitor-keys: 3.4.3
