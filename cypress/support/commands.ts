@@ -58,7 +58,9 @@ Cypress.Commands.add('login', (username, password) => {
 	cy.intercept('POST', '/api/signin').as('signin');
 
 	cy.get('[data-cy-signin]').click();
-	cy.get('[data-cy-signin-username] input').type(username);
+	cy.get('[data-cy-signin-page-input]').should('be.visible', { timeout: 1000 });
+	cy.get('[data-cy-signin-username] input').type(`${username}{enter}`);
+	cy.get('[data-cy-signin-page-password]').should('be.visible', { timeout: 10000 });
 	cy.get('[data-cy-signin-password] input').type(`${password}{enter}`);
 
 	cy.wait('@signin').as('signedIn');

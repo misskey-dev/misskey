@@ -3782,16 +3782,13 @@ export type components = {
       followingVisibility: 'public' | 'followers' | 'private';
       /** @enum {string} */
       followersVisibility: 'public' | 'followers' | 'private';
-      /** @default false */
-      twoFactorEnabled: boolean;
-      /** @default false */
-      usePasswordLessLogin: boolean;
-      /** @default false */
-      securityKeys: boolean;
       roles: components['schemas']['RoleLite'][];
       followedMessage?: string | null;
       memo: string | null;
       moderationNote?: string;
+      twoFactorEnabled?: boolean;
+      usePasswordLessLogin?: boolean;
+      securityKeys?: boolean;
       isFollowing?: boolean;
       isFollowed?: boolean;
       hasPendingFollowRequestFromYou?: boolean;
@@ -3972,6 +3969,12 @@ export type components = {
         }[];
       loggedInDays: number;
       policies: components['schemas']['RolePolicies'];
+      /** @default false */
+      twoFactorEnabled: boolean;
+      /** @default false */
+      usePasswordLessLogin: boolean;
+      /** @default false */
+      securityKeys: boolean;
       email?: string | null;
       emailVerified?: boolean | null;
       securityKeysList?: {

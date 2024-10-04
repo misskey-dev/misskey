@@ -269,7 +269,7 @@ export type SignupPendingResponse = {
 
 export type SigninRequest = {
 	username: string;
-	password: string;
+	password?: string;
 	token?: string;
 	credential?: AuthenticationResponseJSON;
 	'hcaptcha-response'?: string | null;
