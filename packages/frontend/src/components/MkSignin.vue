@@ -83,7 +83,7 @@ import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/br
 import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 
 const emit = defineEmits<{
-	(ev: 'login', v: Misskey.entities.SigninResponse): void;
+	(ev: 'login', v: Misskey.entities.SigninFlowResponse): void;
 }>();
 
 const props = withDefaults(defineProps<{
@@ -212,7 +212,7 @@ async function onTotpSubmitted(token: string) {
 	}
 }
 
-async function tryLogin(req: Partial<Misskey.entities.SigninRequest>): Promise<Misskey.entities.SigninResponse> {
+async function tryLogin(req: Partial<Misskey.entities.SigninRequest>): Promise<Misskey.entities.SigninFlowResponse> {
 	const _req = {
 		username: req.username ?? userInfo.value?.username,
 		...req,
@@ -276,7 +276,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninRequest>): Promise<M
 	});
 }
 
-async function onLoginSucceeded(res: Misskey.entities.SigninResponse & { finished: true; }) {
+async function onLoginSucceeded(res: Misskey.entities.SigninFlowResponse & { finished: true; }) {
 	if (props.autoSet) {
 		await login(res.i);
 	}

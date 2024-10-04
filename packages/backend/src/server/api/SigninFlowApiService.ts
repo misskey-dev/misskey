@@ -139,12 +139,12 @@ export class SigninFlowApiService {
 				return {
 					finished: false,
 					next: 'password',
-				} satisfies Misskey.entities.SigninResponse;
+				} satisfies Misskey.entities.SigninFlowResponse;
 			} else {
 				return {
 					finished: false,
 					next: 'captcha',
-				} satisfies Misskey.entities.SigninResponse;
+				} satisfies Misskey.entities.SigninFlowResponse;
 			}
 		}
 
@@ -251,7 +251,7 @@ export class SigninFlowApiService {
 				finished: false,
 				next: 'passkey',
 				authRequest,
-			} satisfies Misskey.entities.SigninResponse;
+			} satisfies Misskey.entities.SigninFlowResponse;
 		} else {
 			if (!same || !profile.twoFactorEnabled) {
 				return await fail(403, {
@@ -262,7 +262,7 @@ export class SigninFlowApiService {
 				return {
 					finished: false,
 					next: 'totp',
-				} satisfies Misskey.entities.SigninResponse;
+				} satisfies Misskey.entities.SigninFlowResponse;
 			}
 		}
 		// never get here
