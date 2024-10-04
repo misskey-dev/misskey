@@ -293,8 +293,16 @@ export type SigninWithPasskeyResponse = {
 };
 
 export type SigninResponse = {
-	id: User['id'],
-	i: string,
+	finished: true;
+	id: User['id'];
+	i: string;
+} | {
+	finished: false;
+	next: 'captcha' | 'password' | 'totp';
+} | {
+	finished: false;
+	next: 'passkey';
+	authRequest: PublicKeyCredentialRequestOptionsJSON;
 };
 
 type Values<T extends Record<PropertyKey, unknown>> = T[keyof T];

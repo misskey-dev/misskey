@@ -275,8 +275,13 @@ async function onSubmit(): Promise<void> {
 			});
 			emit('signup', res);
 
-			if (props.autoSet) {
+			if (props.autoSet && res.finished) {
 				return login(res.i);
+			} else {
+				os.alert({
+					type: 'error',
+					text: i18n.ts.somethingHappened,
+				});
 			}
 		}
 	} catch {
