@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i v-else class="ti ti-exclamation-circle" style="color: var(--warn)"></i>
 	</template>
 	<template #label><MkAcct :user="report.targetUser"/> (by <MkAcct :user="report.reporter"/>)</template>
+	<template #caption>{{ report.comment }}</template>
 	<template #suffix><MkTime :time="report.createdAt"/></template>
 	<template v-if="!report.resolved" #footer>
 		<div class="_buttons">
