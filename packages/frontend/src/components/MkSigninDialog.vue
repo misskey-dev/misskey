@@ -84,7 +84,6 @@ function onLogin(res) {
 	font-weight: bold;
 	backdrop-filter: var(--blur, blur(15px));
 	background: var(--acrylicBg);
-	border-bottom: solid 1px var(--divider);
 	z-index: 1;
 }
 
