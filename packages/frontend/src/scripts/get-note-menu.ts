@@ -304,11 +304,11 @@ export function getNoteMenu(props: {
 		props.converting.value = true;
 		const res = await misskeyApi('notes/tts', {
 			noteId: appearNote.id,
-		});
+		}, undefined, undefined, true);
 		if (res.headers.get('Content-Type')?.startsWith('audio/')) {
 			props.convert.value = await res.blob();
 		  } else {
-			console.error('API did not return audio data.');
+			console.error('API did not return audio data.',res.headers.get('Content-Type') , await res.text());
 		  }
 		props.converting.value = false;
 	}

@@ -99,8 +99,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
                 timeout: 60000,
 			});
 
+			let contentType = res.headers.get('content-type') || 'application/octet-stream';
+
 			if (res.headers.get('content-type') === 'audio/flac') {
-                return res.body;
+                return {
+					body: res.body,
+					headers: {
+						'Content-Type': contentType,
+					}
+				};
             } else {
                 throw new ApiError(meta.errors.unavailable);
             }

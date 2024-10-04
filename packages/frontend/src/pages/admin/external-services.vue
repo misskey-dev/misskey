@@ -24,12 +24,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 			<MkFolder>
 				<template #label>Text-To-Speech</template>
-
 				<div class="_gaps_m">
 					<MkInput v-model="hfAuthKey">
 						<template #prefix><i class="ti ti-key"></i></template>
 						<template #label>HuggingFace Auth Key</template>
 					</MkInput>
+					<MkButton primary @click="save_deepl">Save</MkButton>
 				</div>
 			</MkFolder>
 		</FormSuspense>
