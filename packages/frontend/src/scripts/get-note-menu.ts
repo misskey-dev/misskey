@@ -176,7 +176,7 @@ export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
 	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
 	translating: Ref<boolean>;
-	convert: Ref<Blob | null>;
+	convert: Ref<String | null>;
 	converting: Ref<boolean>;
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
@@ -305,10 +305,24 @@ export function getNoteMenu(props: {
 		const res = await misskeyApi('notes/tts', {
 			noteId: appearNote.id,
 		}, undefined, undefined, true);
-		if (res.headers.get('Content-Type')?.startsWith('audio/')) {
-			props.convert.value = await res.blob();
+
+		const convertdata = await res.json();
+		const contentType = convertdata.headers['Content-Type'];
+
+		if (contentType?.startsWith('audio/')) {
+			console.log('Buffer:', convertdata.body._readableState.buffer[0].data);
+
+			const buffers = new Uint8Array(convertdata.body._readableState.buffer[0].data).buffer;
+
+			console.log('UArray:', buffers);
+
+			const blob = new Blob([buffers], { type: contentType });
+
+			console.log('Blob:', blob);
+
+			props.convert.value = URL.createObjectURL(blob);
 		  } else {
-			console.error('API did not return audio data.',res.headers.get('Content-Type') , await res.text());
+			console.error('API did not return audio data.');
 		  }
 		props.converting.value = false;
 	}
