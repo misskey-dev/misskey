@@ -179,7 +179,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="confirmWhenRevealingSensitiveMedia">{{ i18n.ts.confirmWhenRevealingSensitiveMedia }}</MkSwitch>
 
 				<MkSwitch v-model="reactionChecksMuting">
-					{{ i18n.ts._reactionChecksMuting.title }}<span class="_beta">{{ i18n.ts.nadesskey }}</span>
+					{{ i18n.ts._reactionChecksMuting.title }}<span class="_beta">{{ i18n.ts.originalFeature }}</span>
 					<template #caption>{{ i18n.ts._reactionChecksMuting.caption }}</template>
 				</MkSwitch>
 			</div>
