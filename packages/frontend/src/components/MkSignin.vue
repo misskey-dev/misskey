@@ -248,10 +248,12 @@ function onLoginFailed(err?: any): void {
 	if (typeof err === 'object' && 'next' in err) {
 		switch (err.next) {
 			case 'captcha': {
+				needCaptcha.value = true;
 				page.value = 'password';
 				break;
 			}
 			case 'password': {
+				needCaptcha.value = false;
 				page.value = 'password';
 				break;
 			}
@@ -365,6 +367,7 @@ function onLoginFailed(err?: any): void {
 
 onBeforeUnmount(() => {
 	password.value = '';
+	needCaptcha.value = false;
 	userInfo.value = null;
 });
 </script>
