@@ -136,7 +136,7 @@ describe('2要素認証', () => {
 		keyName: string,
 		credentialId: Buffer,
 		requestOptions: PublicKeyCredentialRequestOptionsJSON,
-	}): misskey.entities.SigninRequest => {
+	}): misskey.entities.SigninFlowRequest => {
 		// AuthenticatorAssertionResponse.authenticatorData
 		// https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAssertionResponse/authenticatorData
 		const authenticatorData = Buffer.concat([
