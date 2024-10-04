@@ -30,10 +30,13 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.meta)
 		private meta: MiMeta,
+
 		@Inject(DI.abuseReportNotificationRecipientRepository)
 		private abuseReportNotificationRecipientRepository: AbuseReportNotificationRecipientRepository,
+
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
+
 		private idService: IdService,
 		private roleService: RoleService,
 		private systemWebhookService: SystemWebhookService,
