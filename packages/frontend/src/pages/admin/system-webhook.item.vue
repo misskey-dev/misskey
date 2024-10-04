@@ -6,6 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkFolder>
 	<template #label>{{ entity.name || entity.url }}</template>
+	<template v-if="entity.name != null && entity.name != ''" #caption>{{ entity.url }}</template>
 	<template #icon>
 		<i v-if="!entity.isActive" class="ti ti-player-pause"/>
 		<i v-else-if="entity.latestStatus === null" class="ti ti-circle"/>
