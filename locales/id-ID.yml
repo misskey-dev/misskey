@@ -2354,6 +2354,7 @@ _notification:
     followRequestAccepted: "Permintaan mengikuti disetujui"
     roleAssigned: "Peran Diberikan"
     achievementEarned: "Pencapaian didapatkan"
+    login: "Masuk"
     app: "Notifikasi dari aplikasi tertaut"
   _actions:
     followBack: "Ikuti Kembali"

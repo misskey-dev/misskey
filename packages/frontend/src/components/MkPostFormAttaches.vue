@@ -7,7 +7,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-show="props.modelValue.length != 0" :class="$style.root">
 	<Sortable :modelValue="props.modelValue" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
 		<template #item="{element}">
-			<div :class="$style.file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
+			<div
+				:class="$style.file"
+				role="button"
+				tabindex="0"
+				@click="showFileMenu(element, $event)"
+				@keydown.space.enter="showFileMenu(element, $event)"
+				@contextmenu.prevent="showFileMenu(element, $event)"
+			>
 				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
 				<div v-if="element.isSensitive" :class="$style.sensitive">
 					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
@@ -133,7 +140,7 @@ async function crop(file: Misskey.entities.DriveFile): Promise<void> {
 	emit('replaceFile', file, newFile);
 }
 
-function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
+function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | KeyboardEvent): void {
 	if (menuShowing) return;
 
 	const isImage = file.type.startsWith('image/');
@@ -199,6 +206,10 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 	border-radius: 4px;
 	overflow: hidden;
 	cursor: move;
+
+	&:focus-visible {
+		outline-offset: 4px;
+	}
 }
 
 .thumbnail {

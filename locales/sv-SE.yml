@@ -562,6 +562,7 @@ _notification:
     renote: "Omnotera"
     quote: "Citat"
     reaction: "Reaktioner"
+    login: "Logga in"
   _actions:
     reply: "Svara"
     renote: "Omnotera"

@@ -2376,6 +2376,7 @@ _notification:
     followRequestAccepted: "Aceitou pedidos de seguidor"
     roleAssigned: "Cargo dado"
     achievementEarned: "Conquista desbloqueada"
+    login: "Iniciar sessão"
     app: "Notificações de aplicativos conectados"
   _actions:
     followBack: "te seguiu de volta"
