@@ -163,16 +163,6 @@ async function onUsernameSubmitted(username: string) {
 		username,
 	}).catch(() => null);
 
-	if (userInfo.value == null) {
-		await os.alert({
-			type: 'error',
-			title: i18n.ts.noSuchUser,
-			text: i18n.ts.signinFailed,
-		});
-		waiting.value = false;
-		return;
-	}
-
 	await tryLogin({
 		username,
 	});
@@ -223,14 +213,18 @@ async function onTotpSubmitted(token: string) {
 }
 
 async function tryLogin(req: Partial<Misskey.entities.SigninRequest>): Promise<Misskey.entities.SigninResponse> {
-	if (userInfo.value == null) {
-		throw new Error('No such user');
-	}
-
 	const _req = {
-		username: userInfo.value.username,
+		username: req.username ?? userInfo.value?.username,
 		...req,
 	};
+
+	function assertIsSigninRequest(x: Partial<Misskey.entities.SigninRequest>): x is Misskey.entities.SigninRequest {
+		return x.username != null;
+	}
+
+	if (!assertIsSigninRequest(_req)) {
+		throw new Error('Invalid request');
+	}
 
 	return await misskeyApi('signin', _req).then(async (res) => {
 		emit('login', res);
