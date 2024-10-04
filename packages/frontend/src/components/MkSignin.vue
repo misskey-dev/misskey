@@ -212,17 +212,17 @@ async function onTotpSubmitted(token: string) {
 	}
 }
 
-async function tryLogin(req: Partial<Misskey.entities.SigninRequest>): Promise<Misskey.entities.SigninFlowResponse> {
+async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promise<Misskey.entities.SigninFlowResponse> {
 	const _req = {
 		username: req.username ?? userInfo.value?.username,
 		...req,
 	};
 
-	function assertIsSigninRequest(x: Partial<Misskey.entities.SigninRequest>): x is Misskey.entities.SigninRequest {
+	function assertIsSigninFlowRequest(x: Partial<Misskey.entities.SigninFlowRequest>): x is Misskey.entities.SigninFlowRequest {
 		return x.username != null;
 	}
 
-	if (!assertIsSigninRequest(_req)) {
+	if (!assertIsSigninFlowRequest(_req)) {
 		throw new Error('Invalid request');
 	}
 
