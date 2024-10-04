@@ -30,7 +30,7 @@ import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Injectable()
-export class SigninFlowApiService {
+export class SigninApiService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,

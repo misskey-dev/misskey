@@ -17,7 +17,7 @@ import { bindThis } from '@/decorators.js';
 import endpoints from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
-import { SigninFlowApiService } from './SigninFlowApiService.js';
+import { SigninApiService } from './SigninApiService.js';
 import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
@@ -38,7 +38,7 @@ export class ApiServerService {
 		private userEntityService: UserEntityService,
 		private apiCallService: ApiCallService,
 		private signupApiService: SignupApiService,
-		private signinFlowApiService: SigninFlowApiService,
+		private signinFlowApiService: SigninApiService,
 		private signinWithPasskeyApiService: SigninWithPasskeyApiService,
 	) {
 		//this.createServer = this.createServer.bind(this);
