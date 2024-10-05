@@ -129,6 +129,10 @@ export class AbuseReportService {
 			throw new Error('The target user host is null.');
 		}
 
+		if (report.forwarded) {
+			throw new Error('The report has already been forwarded.');
+		}
+
 		await this.abuseUserReportsRepository.update(report.id, {
 			forwarded: true,
 		});

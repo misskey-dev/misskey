@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="user.followedMessage != null" class="followedMessage">
 						<MkFukidashi class="fukidashi" :tail="narrow ? 'none' : 'left'" negativeMargin shadow>
 							<div class="messageHeader">{{ i18n.ts.messageToFollower }}</div>
-							<div><Mfm :text="user.followedMessage" :author="user"/></div>
+							<div><MkSparkle><Mfm :text="user.followedMessage" :author="user"/></MkSparkle></div>
 						</MkFukidashi>
 					</div>
 					<div v-if="user.roles.length > 0" class="roles">
@@ -183,6 +183,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 import { useRouter } from '@/router/supplier.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import MkSparkle from '@/components/MkSparkle.vue';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -473,7 +474,7 @@ onUnmounted(() => {
 
 					> .fukidashi {
 						display: block;
-						--fukidashi-bg: color-mix(in srgb, var(--love), var(--panel) 85%);
+						--fukidashi-bg: color-mix(in srgb, var(--accent), var(--panel) 85%);
 						--fukidashi-radius: 16px;
 						font-size: 0.9em;
 
