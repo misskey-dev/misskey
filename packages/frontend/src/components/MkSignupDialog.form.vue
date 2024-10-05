@@ -98,7 +98,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'signup', user: Misskey.entities.SigninResponse): void;
+	(ev: 'signup', user: Misskey.entities.SigninFlowResponse): void;
 	(ev: 'signupEmailPending'): void;
 }>();
 
@@ -269,14 +269,19 @@ async function onSubmit(): Promise<void> {
 			});
 			emit('signupEmailPending');
 		} else {
-			const res = await misskeyApi('signin', {
+			const res = await misskeyApi('signin-flow', {
 				username: username.value,
 				password: password.value,
 			});
 			emit('signup', res);
 
-			if (props.autoSet) {
+			if (props.autoSet && res.finished) {
 				return login(res.i);
+			} else {
+				os.alert({
+					type: 'error',
+					text: i18n.ts.somethingHappened,
+				});
 			}
 		}
 	} catch {
