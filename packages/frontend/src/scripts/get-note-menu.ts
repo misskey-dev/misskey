@@ -466,6 +466,11 @@ export function getNoteMenu(props: {
 					text: i18n.ts.deleteAndEdit,
 					action: delEdit,
 				});
+				menuItems.push({
+					icon: 'ti ti-tag',
+					text: i18n.ts.deleteAndTagging,
+					action: delTagging,
+				});
 			}
 			menuItems.push({
 				icon: 'ti ti-trash',
