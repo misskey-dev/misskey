@@ -154,6 +154,12 @@ export type ModerationLog = {
 	type: 'resolveAbuseReport';
 	info: ModerationLogPayloads['resolveAbuseReport'];
 } | {
+	type: 'forwardAbuseReport';
+	info: ModerationLogPayloads['forwardAbuseReport'];
+} | {
+	type: 'updateAbuseReportNote';
+	info: ModerationLogPayloads['updateAbuseReportNote'];
+} | {
 	type: 'unsetUserAvatar';
 	info: ModerationLogPayloads['unsetUserAvatar'];
 } | {
