@@ -1,6 +1,6 @@
 import { strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
-import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type LoginUser, type Request, resolveRemoteUser, sleep } from './utils.js';
+import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type LoginUser, type Request, resolveRemoteUser, sleep, createRole } from './utils.js';
 
 const bAdmin = await fetchAdmin('b.test');
 
@@ -248,24 +248,13 @@ describe('Timeline', () => {
 		let role: Misskey.entities.Role;
 
 		beforeAll(async () => {
-			role = await bAdmin.client.request('admin/roles/create', {
+			role = await createRole('b.test', {
 				name: 'Remote Users',
 				description: 'Remote users are assigned to this role.',
-				color: null,
-				iconUrl: null,
-				target: 'conditional',
 				condFormula: {
 					/** TODO: @see https://github.com/misskey-dev/misskey/issues/14169 */
 					type: 'isRemote' as never,
 				},
-				isPublic: true,
-				isModerator: false,
-				isAdministrator: false,
-				isExplorable: true,
-				asBadge: false,
-				canEditMembersByModerator: false,
-				displayOrder: 0,
-				policies: {},
 			});
 			await sleep();
 		});

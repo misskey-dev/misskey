@@ -124,6 +124,38 @@ export async function createAccount(host: Host): Promise<LoginUser> {
 	};
 }
 
+export async function createModerator(host: Host): Promise<LoginUser> {
+	const user = await createAccount(host);
+	const role = await createRole(host, {
+		name: 'Moderator',
+		isModerator: true,
+	});
+	const admin = await fetchAdmin(host);
+	await admin.client.request('admin/roles/assign', { roleId: role.id, userId: user.id });
+	return user;
+}
+
+export async function createRole(host: Host, params: Partial<Misskey.entities.AdminRolesCreateRequest> = {}): Promise<Misskey.entities.Role> {
+	const admin = await fetchAdmin(host);
+	return await admin.client.request('admin/roles/create', {
+		name: 'Some role',
+		description: 'Role for testing',
+		color: null,
+		iconUrl: null,
+		target: 'conditional',
+		condFormula: {},
+		isPublic: true,
+		isModerator: false,
+		isAdministrator: false,
+		isExplorable: true,
+		asBadge: false,
+		canEditMembersByModerator: false,
+		displayOrder: 0,
+		policies: {},
+		...params,
+	});
+}
+
 export async function resolveRemoteUser(host: Host, id: string, from: LoginUser): Promise<Misskey.entities.UserDetailedNotMe> {
 	return new Promise<Misskey.entities.UserDetailedNotMe>((resolve, reject) => {
 		const uri = `https://${host}/users/${id}`;
