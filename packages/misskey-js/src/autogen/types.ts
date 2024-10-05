@@ -8711,7 +8711,7 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           reportId: string;
-          /** @enum {string} */
+          /** @enum {string|null} */
           resolvedAs?: 'positive' | 'negative' | null;
         };
       };
