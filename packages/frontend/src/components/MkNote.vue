@@ -623,15 +623,15 @@ function emitUpdReaction(emoji: string, delta: number) {
 }
 
 watch(convert, (newBlob) => {
-  if (converturl.value && converturl.value.url) {
-    URL.revokeObjectURL(converturl.value.url);
-  }
+  	if (converturl.value && converturl.value.url) {
+    	URL.revokeObjectURL(converturl.value.url);
+  	}
 
-  if (newBlob) {
-    converturl.value = { url: URL.createObjectURL(newBlob) };
-  } else {
-    converturl.value = null;
-  }
+  	if (newBlob) {
+    	converturl.value = { url: newBlob };
+  	} else {
+    	converturl.value = null;
+  	}
 });
 console.log(converturl)
 

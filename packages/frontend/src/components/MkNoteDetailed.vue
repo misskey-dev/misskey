@@ -558,17 +558,19 @@ function loadConversation() {
 }
 
 watch(convert, (newBlob) => {
+	/*
 	try {
   		if (converturl.value && converturl.value.url) {
     		URL.revokeObjectURL(converturl.value.url);
   		}
 	} catch (error) {
-  	console.error('Failed to revoke URL:', error);
-}
+  		console.error('Failed to revoke URL:', error);
+	}
+	*/
 
 	try {
 	  	if (newBlob) {
-    		converturl.value = { url: URL.createObjectURL(newBlob) };
+    		converturl.value = { url: newBlob };
   		} else {
     		converturl.value = null;
   		}

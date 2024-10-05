@@ -314,16 +314,15 @@ export function getNoteMenu(props: {
 
 			const buffers = new Uint8Array(convertdata.body._readableState.buffer[0].data).buffer;
 
-			console.log('UArray:', buffers);
-
-			const blob = new Blob([buffers], { type: contentType });
-
-			console.log('Blob:', blob);
-
-			props.convert.value = URL.createObjectURL(blob);
-		  } else {
+			try {
+				const blob = new Blob([buffers], { type: contentType });
+				props.convert.value = URL.createObjectURL(blob);
+			} catch (e) {
+				console.error('Failed to create Blob or Object URL:', e);
+			}
+		} else {
 			console.error('API did not return audio data.');
-		  }
+		}
 		props.converting.value = false;
 	}
 
