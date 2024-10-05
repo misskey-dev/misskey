@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkFolder>
 	<template #icon>
-		<i v-if="report.resolved && report.resolvedAs === 'positive'" class="ti ti-check" style="color: var(--success)"></i>
-		<i v-else-if="report.resolved && report.resolvedAs === 'negative'" class="ti ti-x" style="color: var(--error)"></i>
+		<i v-if="report.resolved && report.resolvedAs === 'accept'" class="ti ti-check" style="color: var(--success)"></i>
+		<i v-else-if="report.resolved && report.resolvedAs === 'reject'" class="ti ti-x" style="color: var(--error)"></i>
 		<i v-else-if="report.resolved" class="ti ti-slash"></i>
 		<i v-else class="ti ti-exclamation-circle" style="color: var(--warn)"></i>
 	</template>
@@ -17,8 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #footer>
 		<div class="_buttons">
 			<template v-if="!report.resolved">
-				<MkButton @click="resolve('positive')"><i class="ti ti-check" style="color: var(--success)"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts._abuseUserReport.accept }})</MkButton>
-				<MkButton @click="resolve('negative')"><i class="ti ti-x" style="color: var(--error)"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts._abuseUserReport.reject }})</MkButton>
+				<MkButton @click="resolve('accept')"><i class="ti ti-check" style="color: var(--success)"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts._abuseUserReport.accept }})</MkButton>
+				<MkButton @click="resolve('reject')"><i class="ti ti-x" style="color: var(--error)"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts._abuseUserReport.reject }})</MkButton>
 				<MkButton @click="resolve(null)"><i class="ti ti-slash"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts.other }})</MkButton>
 			</template>
 			<template v-if="report.targetUser.host == null">

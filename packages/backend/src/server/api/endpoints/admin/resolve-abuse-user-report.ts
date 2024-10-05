@@ -32,7 +32,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		reportId: { type: 'string', format: 'misskey:id' },
-		resolvedAs: { type: 'string', enum: ['positive', 'negative', null], nullable: true },
+		resolvedAs: { type: 'string', enum: ['accept', 'reject', null], nullable: true },
 	},
 	required: ['reportId'],
 } as const;

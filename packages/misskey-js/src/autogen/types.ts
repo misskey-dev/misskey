@@ -8712,7 +8712,7 @@ export type operations = {
           /** Format: misskey:id */
           reportId: string;
           /** @enum {string|null} */
-          resolvedAs?: 'positive' | 'negative' | null;
+          resolvedAs?: 'accept' | 'reject' | null;
         };
       };
     };

@@ -69,14 +69,14 @@ export class MiAbuseUserReport {
 	public moderationNote: string;
 
 	/**
-	 * positive 是認 ... 通報内容が正当であり、肯定的に対応された
-	 * negative 否認 ... 通報内容が正当でなく、否定的に対応された
+	 * accept 是認 ... 通報内容が正当であり、肯定的に対応された
+	 * reject 否認 ... 通報内容が正当でなく、否定的に対応された
 	 * null ... その他
 	 */
 	@Column('varchar', {
 		length: 128, nullable: true,
 	})
-	public resolvedAs: 'positive' | 'negative' | null;
+	public resolvedAs: 'accept' | 'reject' | null;
 
 	//#region Denormalized fields
 	@Index()
