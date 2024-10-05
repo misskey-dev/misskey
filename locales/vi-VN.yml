@@ -1878,6 +1878,7 @@ _notification:
     receiveFollowRequest: "Yêu cầu theo dõi"
     followRequestAccepted: "Yêu cầu theo dõi được chấp nhận"
     achievementEarned: "Hoàn thành Achievement"
+    login: "Đăng nhập"
     app: "Từ app liên kết"
   _actions:
     followBack: "đã theo dõi lại bạn"

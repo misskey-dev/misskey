@@ -714,6 +714,7 @@ _notification:
     renote: "Re-notează"
     quote: "Citează"
     reaction: "Reacție"
+    login: "Autentifică-te"
   _actions:
     reply: "Răspunde"
     renote: "Re-notează"
