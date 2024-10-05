@@ -136,7 +136,7 @@ describe('2要素認証', () => {
 		keyName: string,
 		credentialId: Buffer,
 		requestOptions: PublicKeyCredentialRequestOptionsJSON,
-	}): misskey.entities.SigninRequest => {
+	}): misskey.entities.SigninFlowRequest => {
 		// AuthenticatorAssertionResponse.authenticatorData
 		// https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAssertionResponse/authenticatorData
 		const authenticatorData = Buffer.concat([
@@ -196,22 +196,21 @@ describe('2要素認証', () => {
 		}, alice);
 		assert.strictEqual(doneResponse.status, 200);
 
-		const signinWithoutTokenResponse = await api('signin', {
+		const signinWithoutTokenResponse = await api('signin-flow', {
 			...signinParam(),
 		});
-		assert.strictEqual(signinWithoutTokenResponse.status, 403);
+		assert.strictEqual(signinWithoutTokenResponse.status, 200);
 		assert.deepStrictEqual(signinWithoutTokenResponse.body, {
-			error: {
-				id: '144ff4f8-bd6c-41bc-82c3-b672eb09efbf',
-				next: 'totp',
-			},
+			finished: false,
+			next: 'totp',
 		});
 
-		const signinResponse = await api('signin', {
+		const signinResponse = await api('signin-flow', {
 			...signinParam(),
 			token: otpToken(registerResponse.body.secret),
 		});
 		assert.strictEqual(signinResponse.status, 200);
+		assert.strictEqual(signinResponse.body.finished, true);
 		assert.notEqual(signinResponse.body.i, undefined);
 
 		// 後片付け
@@ -252,29 +251,23 @@ describe('2要素認証', () => {
 		assert.strictEqual(keyDoneResponse.body.id, credentialId.toString('base64url'));
 		assert.strictEqual(keyDoneResponse.body.name, keyName);
 
-		const signinResponse = await api('signin', {
+		const signinResponse = await api('signin-flow', {
 			...signinParam(),
 		});
-		const signinResponseBody = signinResponse.body as unknown as {
-			error: {
-				id: string;
-				next: 'passkey';
-				authRequest: PublicKeyCredentialRequestOptionsJSON;
-			};
-		};
-		assert.strictEqual(signinResponse.status, 403);
-		assert.strictEqual(signinResponseBody.error.id, '06e661b9-8146-4ae3-bde5-47138c0ae0c4');
-		assert.strictEqual(signinResponseBody.error.next, 'passkey');
-		assert.notEqual(signinResponseBody.error.authRequest.challenge, undefined);
-		assert.notEqual(signinResponseBody.error.authRequest.allowCredentials, undefined);
-		assert.strictEqual(signinResponseBody.error.authRequest.allowCredentials && signinResponseBody.error.authRequest.allowCredentials[0]?.id, credentialId.toString('base64url'));
+		assert.strictEqual(signinResponse.status, 200);
+		assert.strictEqual(signinResponse.body.finished, false);
+		assert.strictEqual(signinResponse.body.next, 'passkey');
+		assert.notEqual(signinResponse.body.authRequest.challenge, undefined);
+		assert.notEqual(signinResponse.body.authRequest.allowCredentials, undefined);
+		assert.strictEqual(signinResponse.body.authRequest.allowCredentials && signinResponse.body.authRequest.allowCredentials[0]?.id, credentialId.toString('base64url'));
 
-		const signinResponse2 = await api('signin', signinWithSecurityKeyParam({
+		const signinResponse2 = await api('signin-flow', signinWithSecurityKeyParam({
 			keyName,
 			credentialId,
-			requestOptions: signinResponseBody.error.authRequest,
+			requestOptions: signinResponse.body.authRequest,
 		}));
 		assert.strictEqual(signinResponse2.status, 200);
+		assert.strictEqual(signinResponse2.body.finished, true);
 		assert.notEqual(signinResponse2.body.i, undefined);
 
 		// 後片付け
@@ -320,32 +313,26 @@ describe('2要素認証', () => {
 		assert.strictEqual(iResponse.status, 200);
 		assert.strictEqual(iResponse.body.usePasswordLessLogin, true);
 
-		const signinResponse = await api('signin', {
+		const signinResponse = await api('signin-flow', {
 			...signinParam(),
 			password: '',
 		});
-		const signinResponseBody = signinResponse.body as unknown as {
-			error: {
-				id: string;
-				next: 'passkey';
-				authRequest: PublicKeyCredentialRequestOptionsJSON;
-			};
-		};
-		assert.strictEqual(signinResponse.status, 403);
-		assert.strictEqual(signinResponseBody.error.id, '06e661b9-8146-4ae3-bde5-47138c0ae0c4');
-		assert.strictEqual(signinResponseBody.error.next, 'passkey');
-		assert.notEqual(signinResponseBody.error.authRequest.challenge, undefined);
-		assert.notEqual(signinResponseBody.error.authRequest.allowCredentials, undefined);
+		assert.strictEqual(signinResponse.status, 200);
+		assert.strictEqual(signinResponse.body.finished, false);
+		assert.strictEqual(signinResponse.body.next, 'passkey');
+		assert.notEqual(signinResponse.body.authRequest.challenge, undefined);
+		assert.notEqual(signinResponse.body.authRequest.allowCredentials, undefined);
 
-		const signinResponse2 = await api('signin', {
+		const signinResponse2 = await api('signin-flow', {
 			...signinWithSecurityKeyParam({
 				keyName,
 				credentialId,
-				requestOptions: signinResponseBody.error.authRequest,
+				requestOptions: signinResponse.body.authRequest,
 			} as any),
 			password: '',
 		});
 		assert.strictEqual(signinResponse2.status, 200);
+		assert.strictEqual(signinResponse2.body.finished, true);
 		assert.notEqual(signinResponse2.body.i, undefined);
 
 		// 後片付け
@@ -450,11 +437,12 @@ describe('2要素認証', () => {
 		assert.strictEqual(afterIResponse.status, 200);
 		assert.strictEqual(afterIResponse.body.securityKeys, false);
 
-		const signinResponse = await api('signin', {
+		const signinResponse = await api('signin-flow', {
 			...signinParam(),
 			token: otpToken(registerResponse.body.secret),
 		});
 		assert.strictEqual(signinResponse.status, 200);
+		assert.strictEqual(signinResponse.body.finished, true);
 		assert.notEqual(signinResponse.body.i, undefined);
 
 		// 後片付け
@@ -485,10 +473,11 @@ describe('2要素認証', () => {
 		}, alice);
 		assert.strictEqual(unregisterResponse.status, 204);
 
-		const signinResponse = await api('signin', {
+		const signinResponse = await api('signin-flow', {
 			...signinParam(),
 		});
 		assert.strictEqual(signinResponse.status, 200);
+		assert.strictEqual(signinResponse.body.finished, true);
 		assert.notEqual(signinResponse.body.i, undefined);
 
 		// 後片付け

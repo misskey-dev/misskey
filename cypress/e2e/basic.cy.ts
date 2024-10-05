@@ -120,7 +120,7 @@ describe('After user signup', () => {
 	it('signin', () => {
 		cy.visitHome();
 
-		cy.intercept('POST', '/api/signin').as('signin');
+		cy.intercept('POST', '/api/signin-flow').as('signin');
 
 		cy.get('[data-cy-signin]').click();
 

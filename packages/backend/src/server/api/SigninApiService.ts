@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import * as OTPAuth from 'otpauth';
 import { IsNull } from 'typeorm';
+import * as Misskey from 'misskey-js';
 import { DI } from '@/di-symbols.js';
 import type {
 	MiMeta,
@@ -26,26 +26,8 @@ import { CaptchaService } from '@/core/CaptchaService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
-import type { AuthenticationResponseJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-
-/**
- * next を指定すると、次にクライアント側で行うべき処理を指定できる。
- *
- * - `captcha`: パスワードと、（有効になっている場合は）CAPTCHAを求める
- * - `password`: パスワードを求める
- * - `totp`: ワンタイムパスワードを求める
- * - `passkey`: WebAuthn認証を求める（WebAuthnに対応していないブラウザの場合はワンタイムパスワード）
- */
-
-type SigninErrorResponse = {
-	id: string;
-	next?: 'captcha' | 'password' | 'totp';
-} | {
-	id: string;
-	next: 'passkey';
-	authRequest: PublicKeyCredentialRequestOptionsJSON;
-};
 
 @Injectable()
 export class SigninApiService {
@@ -101,7 +83,7 @@ export class SigninApiService {
 		const password = body['password'];
 		const token = body['token'];
 
-		function error(status: number, error: SigninErrorResponse) {
+		function error(status: number, error: { id: string }) {
 			reply.code(status);
 			return { error };
 		}
@@ -152,21 +134,17 @@ export class SigninApiService {
 		const securityKeysAvailable = await this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1);
 
 		if (password == null) {
-			reply.code(403);
+			reply.code(200);
 			if (profile.twoFactorEnabled) {
 				return {
-					error: {
-						id: '144ff4f8-bd6c-41bc-82c3-b672eb09efbf',
-						next: 'password',
-					},
-				} satisfies { error: SigninErrorResponse };
+					finished: false,
+					next: 'password',
+				} satisfies Misskey.entities.SigninFlowResponse;
 			} else {
 				return {
-					error: {
-						id: '144ff4f8-bd6c-41bc-82c3-b672eb09efbf',
-						next: 'captcha',
-					},
-				} satisfies { error: SigninErrorResponse };
+					finished: false,
+					next: 'captcha',
+				} satisfies Misskey.entities.SigninFlowResponse;
 			}
 		}
 
@@ -178,7 +156,7 @@ export class SigninApiService {
 		// Compare password
 		const same = await bcrypt.compare(password, profile.password!);
 
-		const fail = async (status?: number, failure?: SigninErrorResponse) => {
+		const fail = async (status?: number, failure?: { id: string; }) => {
 			// Append signin history
 			await this.signinsRepository.insert({
 				id: this.idService.gen(),
@@ -268,27 +246,23 @@ export class SigninApiService {
 
 			const authRequest = await this.webAuthnService.initiateAuthentication(user.id);
 
-			reply.code(403);
+			reply.code(200);
 			return {
-				error: {
-					id: '06e661b9-8146-4ae3-bde5-47138c0ae0c4',
-					next: 'passkey',
-					authRequest,
-				},
-			} satisfies { error: SigninErrorResponse };
+				finished: false,
+				next: 'passkey',
+				authRequest,
+			} satisfies Misskey.entities.SigninFlowResponse;
 		} else {
 			if (!same || !profile.twoFactorEnabled) {
 				return await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
 				});
 			} else {
-				reply.code(403);
+				reply.code(200);
 				return {
-					error: {
-						id: '144ff4f8-bd6c-41bc-82c3-b672eb09efbf',
-						next: 'totp',
-					},
-				} satisfies { error: SigninErrorResponse };
+					finished: false,
+					next: 'totp',
+				} satisfies Misskey.entities.SigninFlowResponse;
 			}
 		}
 		// never get here
