@@ -125,7 +125,7 @@ export class ApiServerService {
 		fastify.post<{
 			Body: {
 				username: string;
-				password: string;
+				password?: string;
 				token?: string;
 				credential?: AuthenticationResponseJSON;
 				'hcaptcha-response'?: string;
