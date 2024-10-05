@@ -5183,6 +5183,11 @@ export interface Locale extends ILocale {
          * 否認
          */
         "reject": string;
+        /**
+         * 内容が正当である通報に対応した場合は「是認」を選択し、肯定的にケースが解決されたことをマークします。
+         * 内容が正当でない通報の場合は「否認」を選択し、否定的にケースが解決されたことをマークします。
+         */
+        "resolveTutorial": string;
     };
     "_delivery": {
         /**
