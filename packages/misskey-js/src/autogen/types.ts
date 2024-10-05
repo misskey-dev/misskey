@@ -3715,7 +3715,7 @@ export type components = {
           url: string;
           offsetX?: number;
           offsetY?: number;
-          showBelow?: boolean;
+          showBehind?: boolean;
         }[];
       isBot?: boolean;
       isCat?: boolean;
@@ -19698,7 +19698,7 @@ export type operations = {
               flipH?: boolean | null;
               offsetX?: number | null;
               offsetY?: number | null;
-              showBelow?: boolean | null;
+              showBehind?: boolean | null;
             })[];
           /** Format: misskey:id */
           bannerId?: string | null;

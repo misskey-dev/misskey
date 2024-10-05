@@ -115,7 +115,7 @@ function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['ava
 }
 
 function getDecorationZIndex(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
-	return decoration.showBelow ? '-1' : undefined;
+	return decoration.showBehind ? '-1' : undefined;
 }
 
 const color = ref<string | undefined>();

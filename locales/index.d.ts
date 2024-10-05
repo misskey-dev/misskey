@@ -4921,7 +4921,7 @@ export interface Locale extends ILocale {
     /**
      * アイコンの後ろに表示
      */
-    "showBelowAvatar": string;
+    "showBehindAvatar": string;
     /**
      * アイコンのデコレーションを表示
      */
