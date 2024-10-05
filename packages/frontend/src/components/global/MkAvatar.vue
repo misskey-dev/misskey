@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-if="showDecoration">
 		<img
 			v-for="decoration in decorations ?? user.avatarDecorations"
-			:class="[$style.decoration]"
+			:class="[$style.decoration, { [$style.decorationBlink]: decoration.blink }]"
 			:src="getDecorationUrl(decoration)"
 			:style="{
 				rotate: getDecorationAngle(decoration),
@@ -164,7 +164,7 @@ watch(() => props.user.avatarBlurhash, () => {
 	flex-shrink: 0;
 	border-radius: 100%;
 	line-height: 16px;
-	z-index: 0; // sharkey: starts stacking context to help with showing decorations behind the avatar
+	z-index: 0;
 }
 
 .inner {
