@@ -115,7 +115,7 @@ const decorationsForPreview = computed(() => {
 });
 
 function cancel() {
-	dialog.value.close();
+	dialog.value?.close();
 }
 
 async function update() {
@@ -126,7 +126,7 @@ async function update() {
 		offsetY: offsetY.value,
 		showBelow: showBelow.value,
 	});
-	dialog.value.close();
+	dialog.value?.close();
 }
 
 async function attach() {
@@ -137,12 +137,12 @@ async function attach() {
 		offsetY: offsetY.value,
 		showBelow: showBelow.value,
 	});
-	dialog.value.close();
+	dialog.value?.close();
 }
 
 async function detach() {
 	emit('detach');
-	dialog.value.close();
+	dialog.value?.close();
 }
 </script>
 
