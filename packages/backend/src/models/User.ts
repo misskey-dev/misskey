@@ -147,6 +147,7 @@ export class MiUser {
 		flipH?: boolean;
 		offsetX?: number;
 		offsetY?: number;
+		showBehind?: boolean;
 	}[];
 
 	@Index()
