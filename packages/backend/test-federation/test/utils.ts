@@ -55,7 +55,7 @@ async function signin(host: Host, params: Misskey.entities.SigninFlowRequest): P
 				return await signin(host, params);
 			}
 			throw err;
-		}) as Misskey.entities.SigninFlowResponse & { finished: true };
+		}) as SigninResponse;
 }
 
 async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse | undefined> {
