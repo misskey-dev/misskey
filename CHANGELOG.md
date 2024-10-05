@@ -9,6 +9,8 @@
 
 ### General
 - Feat: サーバー初期設定時に初期パスワードを設定できるように
+- Feat: アイコンデコレーションをアイコンの背後に表示できるように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/645)
 - Enhance: セキュリティ向上のため、サインイン時もCAPTCHAを求めるようになりました
 - Enhance: 依存関係の更新
 - Enhance: l10nの更新
