@@ -29,6 +29,8 @@ function generateAbuseReport(override?: Partial<MiAbuseUserReport>): MiAbuseUser
 		comment: 'This is a dummy report for testing purposes.',
 		targetUserHost: null,
 		reporterHost: null,
+		resolvedAs: null,
+		moderationNote: 'foo',
 		...override,
 	};
 }

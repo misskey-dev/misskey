@@ -152,7 +152,7 @@ export class AbuseReportService {
 	public async update(
 		reportId: MiAbuseUserReport['id'],
 		params: {
-			moderationNote: MiAbuseUserReport['moderationNote'];
+			moderationNote?: MiAbuseUserReport['moderationNote'];
 		},
 		moderator: MiUser,
 	) {
