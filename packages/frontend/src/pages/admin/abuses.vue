@@ -12,6 +12,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton link to="/admin/abuse-report-notification-recipient" primary>{{ i18n.ts.notificationSetting }}</MkButton>
 			</div>
 
+			<MkInfo v-if="!defaultStore.reactiveState.abusesTutorial.value" closable @close="closeTutorial()">
+				{{ i18n.ts._abuseUserReport.resolveTutorial }}
+			</MkInfo>
+
 			<div :class="$style.inputs" class="_gaps">
 				<MkSelect v-model="state" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.state }}</template>
@@ -56,7 +60,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, shallowRef, ref } from 'vue';
-
 import XHeader from './_header_.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -64,6 +67,8 @@ import XAbuseReport from '@/components/MkAbuseReport.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import { defaultStore } from '@/store.js';
 
 const reports = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -85,6 +90,10 @@ const pagination = {
 
 function resolved(reportId) {
 	reports.value?.removeItem(reportId);
+}
+
+function closeTutorial() {
+	defaultStore.set('abusesTutorial', false);
 }
 
 const headerActions = computed(() => []);

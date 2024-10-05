@@ -154,6 +154,12 @@ export type ModerationLog = {
 	type: 'resolveAbuseReport';
 	info: ModerationLogPayloads['resolveAbuseReport'];
 } | {
+	type: 'forwardAbuseReport';
+	info: ModerationLogPayloads['forwardAbuseReport'];
+} | {
+	type: 'updateAbuseReportNote';
+	info: ModerationLogPayloads['updateAbuseReportNote'];
+} | {
 	type: 'unsetUserAvatar';
 	info: ModerationLogPayloads['unsetUserAvatar'];
 } | {
@@ -267,7 +273,7 @@ export type SignupPendingResponse = {
 	i: string,
 };
 
-export type SigninRequest = {
+export type SigninFlowRequest = {
 	username: string;
 	password?: string;
 	token?: string;
@@ -276,6 +282,19 @@ export type SigninRequest = {
 	'g-recaptcha-response'?: string | null;
 	'turnstile-response'?: string | null;
 	'm-captcha-response'?: string | null;
+};
+
+export type SigninFlowResponse = {
+	finished: true;
+	id: User['id'];
+	i: string;
+} | {
+	finished: false;
+	next: 'captcha' | 'password' | 'totp';
+} | {
+	finished: false;
+	next: 'passkey';
+	authRequest: PublicKeyCredentialRequestOptionsJSON;
 };
 
 export type SigninWithPasskeyRequest = {
@@ -289,12 +308,7 @@ export type SigninWithPasskeyInitResponse = {
 };
 
 export type SigninWithPasskeyResponse = {
-	signinResponse: SigninResponse;
-};
-
-export type SigninResponse = {
-	id: User['id'],
-	i: string,
+	signinResponse: SigninFlowResponse;
 };
 
 type Values<T extends Record<PropertyKey, unknown>> = T[keyof T];

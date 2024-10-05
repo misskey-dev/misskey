@@ -55,7 +55,7 @@ Cypress.Commands.add('registerUser', (username, password, isAdmin = false) => {
 Cypress.Commands.add('login', (username, password) => {
 	cy.visitHome();
 
-	cy.intercept('POST', '/api/signin').as('signin');
+	cy.intercept('POST', '/api/signin-flow').as('signin');
 
 	cy.get('[data-cy-signin]').click();
 	cy.get('[data-cy-signin-page-input]').should('be.visible', { timeout: 1000 });

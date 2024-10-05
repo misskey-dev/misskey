@@ -125,7 +125,7 @@ export class ApiServerService {
 		fastify.post<{
 			Body: {
 				username: string;
-				password: string;
+				password?: string;
 				token?: string;
 				credential?: AuthenticationResponseJSON;
 				'hcaptcha-response'?: string;
@@ -133,7 +133,7 @@ export class ApiServerService {
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
 			};
-		}>('/signin', (request, reply) => this.signinApiService.signin(request, reply));
+		}>('/signin-flow', (request, reply) => this.signinApiService.signin(request, reply));
 
 		fastify.post<{
 			Body: {
