@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const ADMIN_PARAMS = { username: 'admin', password: 'admin' };
-const adminCache = new Map<Host, Misskey.entities.SigninResponse>();
+const adminCache = new Map<Host, SigninResponse>();
 
 let fetched = false;
 if (!fetched) {
@@ -21,7 +21,9 @@ if (!fetched) {
 	fetched = true;
 }
 
-export type LoginUser = Misskey.entities.SigninResponse & {
+type SigninResponse = Omit<Misskey.entities.SigninFlowResponse & { finished: true }, 'finished'>;
+
+export type LoginUser = SigninResponse & {
 	client: Misskey.api.APIClient;
 	username: string;
 	password: string;
@@ -38,11 +40,11 @@ export async function sleep(ms = 200): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function signin(host: Host, params: Misskey.entities.SigninRequest): Promise<Misskey.entities.SigninResponse> {
+async function signin(host: Host, params: Misskey.entities.SigninFlowRequest): Promise<SigninResponse> {
 	// wait for a second to prevent hit rate limit
 	await sleep(1000);
 	// console.log(`Sign in to @${params.username}@${host} ...`);
-	return await (new Misskey.api.APIClient({ origin: `https://${host}` }).request as Request)('signin', params)
+	return await (new Misskey.api.APIClient({ origin: `https://${host}` }).request as Request)('signin-flow', params)
 		.then(res => {
 			// console.log(`Signed in to @${params.username}@${host}`);
 			return res;
@@ -53,7 +55,7 @@ async function signin(host: Host, params: Misskey.entities.SigninRequest): Promi
 				return await signin(host, params);
 			}
 			throw err;
-		});
+		}) as Misskey.entities.SigninFlowResponse & { finished: true };
 }
 
 async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse | undefined> {
