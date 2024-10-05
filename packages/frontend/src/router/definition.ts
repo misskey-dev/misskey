@@ -25,9 +25,11 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/@:acct/following',
 	component: page(() => import('@/pages/user/following.vue')),
+	loginRequired: true,
 }, {
 	path: '/@:acct/followers',
 	component: page(() => import('@/pages/user/followers.vue')),
+	loginRequired: true,
 }, {
 	name: 'user',
 	path: '/@:acct/:page?',
@@ -192,9 +194,11 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/announcements',
 	component: page(() => import('@/pages/announcements.vue')),
+	loginRequired: true,
 }, {
 	path: '/announcements/:announcementId',
 	component: page(() => import('@/pages/announcement.vue')),
+	loginRequired: true,
 }, {
 	path: '/about',
 	component: page(() => import('@/pages/about.vue')),
@@ -226,6 +230,7 @@ const routes: RouteDef[] = [{
 	path: '/explore',
 	component: page(() => import('@/pages/explore.vue')),
 	hash: 'initialTab',
+	loginRequired: true,
 }, {
 	path: '/search',
 	component: page(() => import('@/pages/search.vue')),
@@ -306,9 +311,11 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/play/:id',
 	component: page(() => import('@/pages/flash/flash.vue')),
+	loginRequired: true,
 }, {
 	path: '/play',
 	component: page(() => import('@/pages/flash/flash-index.vue')),
+	loginRequired: true,
 }, {
 	path: '/gallery/:postId/edit',
 	component: page(() => import('@/pages/gallery/edit.vue')),
@@ -320,9 +327,11 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/gallery/:postId',
 	component: page(() => import('@/pages/gallery/post.vue')),
+	loginRequired: true,
 }, {
 	path: '/gallery',
 	component: page(() => import('@/pages/gallery/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/channels/:channelId/edit',
 	component: page(() => import('@/pages/channel-editor.vue')),
@@ -334,9 +343,11 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/channels/:channelId',
 	component: page(() => import('@/pages/channel.vue')),
+	loginRequired: true,
 }, {
 	path: '/channels',
 	component: page(() => import('@/pages/channels.vue')),
+	loginRequired: true,
 }, {
 	path: '/custom-emojis-manager',
 	component: page(() => import('@/pages/custom-emojis-manager.vue')),
@@ -573,6 +584,7 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),
+	loginRequired: true,
 }, {
 	name: 'index',
 	path: '/',
