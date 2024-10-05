@@ -64,6 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="iAmModerator" class="moderationNote">
 						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
 							<template #label>{{ i18n.ts.moderationNote }}</template>
+							<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 						</MkTextarea>
 						<div v-else>
 							<MkButton small @click="editModerationNote = true">{{ i18n.ts.addModerationNote }}</MkButton>
@@ -159,6 +160,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { getScrollPosition } from '@@/js/scroll.js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
@@ -168,7 +170,6 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getScrollPosition } from '@@/js/scroll.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';

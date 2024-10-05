@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<MkPagination v-slot="{items}" ref="logs" :pagination="pagination" style="margin-top: var(--margin);">
-				<div class="_gaps_s">
-					<XModLog v-for="item in items" :key="item.id" :log="item"/>
-				</div>
+				<MkDateSeparatedList v-slot="{ item }" :items="items" :noGap="false" style="--margin: 8px;">
+					<XModLog :key="item.id" :log="item"/>
+				</MkDateSeparatedList>
 			</MkPagination>
 		</div>
 	</MkSpacer>
@@ -39,6 +39,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 
 const logs = shallowRef<InstanceType<typeof MkPagination>>();
 

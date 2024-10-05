@@ -5,13 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import * as OTPAuth from 'otpauth';
 import { IsNull } from 'typeorm';
+import * as Misskey from 'misskey-js';
 import { DI } from '@/di-symbols.js';
 import type {
 	MiMeta,
 	SigninsRepository,
 	UserProfilesRepository,
+	UserSecurityKeysRepository,
 	UsersRepository,
 } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -43,6 +44,9 @@ export class SigninApiService {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
+		@Inject(DI.userSecurityKeysRepository)
+		private userSecurityKeysRepository: UserSecurityKeysRepository,
+
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
 
@@ -60,7 +64,7 @@ export class SigninApiService {
 		request: FastifyRequest<{
 			Body: {
 				username: string;
-				password: string;
+				password?: string;
 				token?: string;
 				credential?: AuthenticationResponseJSON;
 				'hcaptcha-response'?: string;
@@ -103,11 +107,6 @@ export class SigninApiService {
 			return;
 		}
 
-		if (typeof password !== 'string') {
-			reply.code(400);
-			return;
-		}
-
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
 			return;
@@ -132,11 +131,32 @@ export class SigninApiService {
 		}
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
+		const securityKeysAvailable = await this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1);
+
+		if (password == null) {
+			reply.code(200);
+			if (profile.twoFactorEnabled) {
+				return {
+					finished: false,
+					next: 'password',
+				} satisfies Misskey.entities.SigninFlowResponse;
+			} else {
+				return {
+					finished: false,
+					next: 'captcha',
+				} satisfies Misskey.entities.SigninFlowResponse;
+			}
+		}
+
+		if (typeof password !== 'string') {
+			reply.code(400);
+			return;
+		}
 
 		// Compare password
 		const same = await bcrypt.compare(password, profile.password!);
 
-		const fail = async (status?: number, failure?: { id: string }) => {
+		const fail = async (status?: number, failure?: { id: string; }) => {
 			// Append signin history
 			await this.signinsRepository.insert({
 				id: this.idService.gen(),
@@ -217,7 +237,7 @@ export class SigninApiService {
 					id: '93b86c4b-72f9-40eb-9815-798928603d1e',
 				});
 			}
-		} else {
+		} else if (securityKeysAvailable) {
 			if (!same && !profile.usePasswordLessLogin) {
 				return await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
@@ -227,7 +247,23 @@ export class SigninApiService {
 			const authRequest = await this.webAuthnService.initiateAuthentication(user.id);
 
 			reply.code(200);
-			return authRequest;
+			return {
+				finished: false,
+				next: 'passkey',
+				authRequest,
+			} satisfies Misskey.entities.SigninFlowResponse;
+		} else {
+			if (!same || !profile.twoFactorEnabled) {
+				return await fail(403, {
+					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
+				});
+			} else {
+				reply.code(200);
+				return {
+					finished: false,
+					next: 'totp',
+				} satisfies Misskey.entities.SigninFlowResponse;
+			}
 		}
 		// never get here
 	}

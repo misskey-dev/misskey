@@ -21,7 +21,7 @@ export const meta = {
 		noSuchAbuseReport: {
 			message: 'No such abuse report.',
 			code: 'NO_SUCH_ABUSE_REPORT',
-			id: 'ac3794dd-2ce4-d878-e546-73c60c06b398',
+			id: '15f51cf5-46d1-4b1d-a618-b35bcbed0662',
 			kind: 'server',
 			httpStatusCode: 404,
 		},
@@ -32,7 +32,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		reportId: { type: 'string', format: 'misskey:id' },
-		resolvedAs: { type: 'string', enum: ['accept', 'reject', null], nullable: true },
+		moderationNote: { type: 'string' },
 	},
 	required: ['reportId'],
 } as const;
@@ -50,7 +50,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchAbuseReport);
 			}
 
-			await this.abuseReportService.resolve([{ reportId: report.id, resolvedAs: ps.resolvedAs ?? null }], me);
+			await this.abuseReportService.update(report.id, {
+				moderationNote: ps.moderationNote,
+			}, me);
 		});
 	}
 }
