@@ -90,6 +90,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import RouterView from '@/components/global/RouterView.vue';
 import { useRouterFactory } from '@/router/supplier';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
 	report: Misskey.entities.AdminAbuseUserReportsResponse[number];
@@ -133,7 +134,19 @@ function forward() {
 }
 
 function showMenu(ev: MouseEvent) {
-	os.popupMenu([], ev.currentTarget ?? ev.target);
+	os.popupMenu([{
+		icon: 'ti ti-id',
+		text: 'Copy ID',
+		action: () => {
+			copyToClipboard(props.report.id);
+		},
+	}, {
+		icon: 'ti ti-json',
+		text: 'Copy JSON',
+		action: () => {
+			copyToClipboard(JSON.stringify(props.report, null, '\t'));
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 </script>
 
