@@ -302,27 +302,32 @@ export function getNoteMenu(props: {
 	async function convert(): Promise<void> {
 		if (props.convert.value != null) return;
 		props.converting.value = true;
+
 		const res = await misskeyApi('notes/tts', {
 			noteId: appearNote.id,
 		}, undefined, undefined, true);
 
-		const convertdata = await res.json();
-		const contentType = convertdata.headers['Content-Type'];
-
-		if (contentType?.startsWith('audio/')) {
-			console.log('Buffer:', convertdata.body._readableState.buffer[0].data);
-
-			const buffers = new Uint8Array(convertdata.body._readableState.buffer[0].data).buffer;
-
-			try {
-				const blob = new Blob([buffers], { type: contentType });
-				props.convert.value = URL.createObjectURL(blob);
-			} catch (e) {
-				console.error('Failed to create Blob or Object URL:', e);
+		try {
+			if (res.body instanceof ReadableStream) {
+				const reader = res.body.getReader();
+				const chunks: Uint8Array[] = [];
+	
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) break;
+					chunks.push(value);
+				}
+	
+				const audioBlob = new Blob(chunks, { type: 'audio/flac' });
+	
+				props.convert.value = URL.createObjectURL(audioBlob);
+			} else {
+				console.error('Response body is not a ReadableStream');
 			}
-		} else {
-			console.error('API did not return audio data.');
+		} catch (e) {
+			console.error('Failed to create Blob or Object URL:', e);
 		}
+	
 		props.converting.value = false;
 	}
 
@@ -382,7 +387,7 @@ export function getNoteMenu(props: {
 
 		if ($i.policies.canUseTTS && instance.ttsAvailable) {
 			menuItems.push({
-				icon: 'ti ti-headphone',
+				icon: 'ti ti-headphones',
 				text: 'TTS',
 				action: convert,
 			});

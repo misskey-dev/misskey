@@ -558,16 +558,6 @@ function loadConversation() {
 }
 
 watch(convert, (newBlob) => {
-	/*
-	try {
-  		if (converturl.value && converturl.value.url) {
-    		URL.revokeObjectURL(converturl.value.url);
-  		}
-	} catch (error) {
-  		console.error('Failed to revoke URL:', error);
-	}
-	*/
-
 	try {
 	  	if (newBlob) {
     		converturl.value = { url: newBlob };
@@ -577,7 +567,6 @@ watch(convert, (newBlob) => {
 	} catch (error) {
   		console.error('Failed to create URL:', error);
 	}
-
 });
 
 onUnmounted(() => {

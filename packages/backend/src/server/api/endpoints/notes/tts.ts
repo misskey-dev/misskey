@@ -92,6 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				headers: {
 					'Content-Type': 'application/json',
 					'Authorization': 'Bearer ' + instance.hfAuthKey,
+					Accept: 'audio/flac, */*',
 				},
 				body: JSON.stringify({
                     inputs: note.text,
@@ -99,18 +100,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
                 timeout: 60000,
 			});
 
-			let contentType = res.headers.get('content-type') || 'application/octet-stream';
+			let contentType = res.headers.get('Content-Type') || 'application/octet-stream';
 
-			if (res.headers.get('content-type') === 'audio/flac') {
-                return {
-					body: res.body,
-					headers: {
-						'Content-Type': contentType,
-					}
-				};
-            } else {
-                throw new ApiError(meta.errors.unavailable);
-            }
+			if (contentType === 'audio/flac') {
+				return res.body;
+			} else {
+				throw new ApiError(meta.errors.unavailable);
+			}
+			
 		});
 	}
 }

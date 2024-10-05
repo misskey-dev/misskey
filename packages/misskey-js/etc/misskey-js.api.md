@@ -2773,7 +2773,7 @@ type NotesTranslateResponse = operations['notes___translate']['responses']['200'
 type NotesTTSRequest = operations['notes___tts']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NotesTTSResponse = operations['notes___tts']['responses']['200']['content']['audio/flac'];
+type NotesTTSResponse = unknown;
 
 // @public (undocumented)
 type NotesUnrenoteRequest = operations['notes___unrenote']['requestBody']['content']['application/json'];

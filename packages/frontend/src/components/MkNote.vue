@@ -623,17 +623,16 @@ function emitUpdReaction(emoji: string, delta: number) {
 }
 
 watch(convert, (newBlob) => {
-  	if (converturl.value && converturl.value.url) {
-    	URL.revokeObjectURL(converturl.value.url);
-  	}
-
-  	if (newBlob) {
-    	converturl.value = { url: newBlob };
-  	} else {
-    	converturl.value = null;
-  	}
+	try {
+	  	if (newBlob) {
+    		converturl.value = { url: newBlob };
+  		} else {
+    		converturl.value = null;
+  		}
+	} catch (error) {
+  		console.error('Failed to create URL:', error);
+	}
 });
-console.log(converturl)
 
 onUnmounted(() => {
   if (converturl.value && converturl.value.url) {
