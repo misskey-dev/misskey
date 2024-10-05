@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[
 		$style.root,
 		tail === 'left' ? $style.left : $style.right,
-		negativeMargin === true && $style.negativeMergin,
+		negativeMargin === true && $style.negativeMargin,
 		shadow === true && $style.shadow,
 	]"
 >
@@ -54,7 +54,7 @@ withDefaults(defineProps<{
 	&.left {
 		padding-left: calc(var(--fukidashi-radius) * .13);
 
-		&.negativeMergin {
+		&.negativeMargin {
 			margin-left: calc(calc(var(--fukidashi-radius) * .13) * -1);
 		}
 	}
@@ -62,7 +62,7 @@ withDefaults(defineProps<{
 	&.right {
 		padding-right: calc(var(--fukidashi-radius) * .13);
 
-		&.negativeMergin {
+		&.negativeMargin {
 			margin-right: calc(calc(var(--fukidashi-radius) * .13) * -1);
 		}
 	}
