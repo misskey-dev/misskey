@@ -155,6 +155,11 @@ export class MiUser {
 	})
 	public tags: string[];
 
+	@Column('integer', {
+		default: 0,
+	})
+	public score: number;
+
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether the User is suspended.',
@@ -289,5 +294,6 @@ export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toStr
 export const passwordSchema = { type: 'string', minLength: 1 } as const;
 export const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
 export const descriptionSchema = { type: 'string', minLength: 1, maxLength: 1500 } as const;
+export const followedMessageSchema = { type: 'string', minLength: 1, maxLength: 256 } as const;
 export const locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
 export const birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;

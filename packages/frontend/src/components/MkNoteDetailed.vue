@@ -68,7 +68,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</header>
 		<div :class="$style.noteContent">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
-				<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
+				<Mfm
+					v-if="appearNote.cw != ''"
+					:text="appearNote.cw"
+					:author="appearNote.user"
+					:nyaize="'respect'"
+					:enableEmojiMenu="true"
+					:enableEmojiMenuReaction="true"
+				/>
 				<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll"/>
 			</p>
 			<div v-show="appearNote.cw == null || showContent">
@@ -128,7 +135,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-ban"></i>
 			</button>
 			<button ref="reactButton" :class="$style.noteFooterButton" class="_button" @click="toggleReact()">
-				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
+				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--love);"></i>
 				<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
 				<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 				<i v-else class="ti ti-plus"></i>
@@ -199,6 +206,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, onMounted, provide, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import { isLink } from '@@/js/is-link.js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
@@ -222,7 +230,7 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/scripts/get-note-menu.js';
 import { useNoteCapture } from '@/scripts/use-note-capture.js';
 import { deepClone } from '@/scripts/clone.js';
@@ -468,14 +476,6 @@ function toggleReact() {
 }
 
 function onContextmenu(ev: MouseEvent): void {
-	const isLink = (el: HTMLElement): boolean => {
-		if (el.tagName === 'A') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
-		}
-		return false;
-	};
-
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
