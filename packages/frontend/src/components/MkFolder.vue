@@ -38,9 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<KeepAlive>
 					<div v-show="opened">
-						<MkSpacer :marginMin="spacerMin" :marginMax="spacerMax">
+						<MkSpacer v-if="withSpacer" :marginMin="spacerMin" :marginMax="spacerMax">
 							<slot></slot>
 						</MkSpacer>
+						<div v-else>
+							<slot></slot>
+						</div>
 						<div v-if="$slots.footer" :class="$style.footer">
 							<slot name="footer"></slot>
 						</div>
@@ -59,11 +62,13 @@ import { defaultStore } from '@/store.js';
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
 	maxHeight?: number | null;
+	withSpacer?: boolean;
 	spacerMin?: number;
 	spacerMax?: number;
 }>(), {
 	defaultOpen: false,
 	maxHeight: null,
+	withSpacer: true,
 	spacerMin: 14,
 	spacerMax: 22,
 });
