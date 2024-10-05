@@ -3583,17 +3583,9 @@ export interface Locale extends ILocale {
      */
     "translate": string;
     /**
-     * 変換
-     */
-    "converting": string;
-    /**
      * {x}から翻訳
      */
     "translatedFrom": ParameterizedString<"x">;
-    /**
-     * {x}から変換
-     */
-    "convertedFrom": ParameterizedString<"x">;
     /**
      * アカウントの削除が進行中です
      */
