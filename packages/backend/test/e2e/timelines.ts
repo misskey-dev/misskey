@@ -236,7 +236,7 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.find(note => note.id === carolNote.id)?.text, 'hi');
 		});
 
-		test.concurrent('withReplies: true でフォローしているユーザーの自分の visibility: followers な投稿への返信が含まれる', async () => {
+		test('withReplies: true でフォローしているユーザーの自分の visibility: followers な投稿への返信が含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
@@ -875,7 +875,7 @@ describe('Timelines', () => {
 			});
 		});
 
-		test.concurrent('FTT: ローカルユーザーの HTL にはプッシュされる', async () => {
+		test('FTT: ローカルユーザーの HTL にはプッシュされる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', {
@@ -897,7 +897,7 @@ describe('Timelines', () => {
 			assert.strictEqual(bobHTL.includes(carolNote.id), false);
 		});
 
-		test.concurrent('FTT: リモートユーザーの HTL にはプッシュされない', async () => {
+		test('FTT: リモートユーザーの HTL にはプッシュされない', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup({ host: genHost() })]);
 
 			await api('following/create', {
@@ -1066,7 +1066,7 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 		});
 
-		test.concurrent('withReplies: false でフォローしていないユーザーからの自分への返信が含まれる', async () => {
+		test('withReplies: false でフォローしていないユーザーからの自分への返信が含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await setTimeout(1000);
@@ -1439,7 +1439,7 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 		});
 
-		test.concurrent('withReplies: true でフォローしているユーザーの他人の visibility: followers な投稿への返信が含まれない', async () => {
+		test('withReplies: true でフォローしているユーザーの他人の visibility: followers な投稿への返信が含まれない', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: carol.id }, bob);
@@ -1457,7 +1457,7 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), false);
 		});
 
-		test.concurrent('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信が含まれる', async () => {
+		test('withReplies: true でフォローしているユーザーの行った別のフォローしているユーザーの visibility: followers な投稿への返信が含まれる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
@@ -1477,7 +1477,7 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.find((note: any) => note.id === carolNote.id)?.text, 'hi');
 		});
 
-		test.concurrent('withReplies: true でフォローしているユーザーの自分の visibility: followers な投稿への返信が含まれる', async () => {
+		test('withReplies: true でフォローしているユーザーの自分の visibility: followers な投稿への返信が含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
@@ -1551,7 +1551,7 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
 		});
 
-		test.concurrent('withReplies: false でフォローしていないユーザーからの自分への返信が含まれる', async () => {
+		test('withReplies: false でフォローしていないユーザーからの自分への返信が含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
 
 			await setTimeout(1000);
