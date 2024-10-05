@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #suffix>{{ moderationNote.length > 0 ? '...' : i18n.ts.none }}</template>
 			<div class="_gaps_s">
 				<MkTextarea v-model="moderationNote" manualSave>
-					<template #label>{{ i18n.ts.moderationNote }}</template>
+					<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 				</MkTextarea>
 			</div>
 		</MkFolder>
