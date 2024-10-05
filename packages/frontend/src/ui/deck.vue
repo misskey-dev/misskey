@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:ref="id"
 					:key="id"
 					:class="$style.column"
-					:column="columns.find(c => c.id === id)"
+					:column="columns.find(c => c.id === id)!"
 					:isStacked="ids.length > 1"
 					@headerWheel="onWheel"
 				/>
@@ -95,7 +95,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref, watch, shallowRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
-import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
+import { deckStore, columnTypes, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
+import type { ColumnType } from './deck/deck-store.js';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -117,7 +118,7 @@ import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 import { mainRouter } from '@/router/main.js';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
@@ -152,10 +153,12 @@ window.addEventListener('resize', () => {
 const snapScroll = deviceKind === 'smartphone' || deviceKind === 'tablet';
 const drawerMenuShowing = ref(false);
 
+/*
 const route = 'TODO';
 watch(route, () => {
 	drawerMenuShowing.value = false;
 });
+*/
 
 const columns = deckStore.reactiveState.columns;
 const layout = deckStore.reactiveState.layout;
@@ -174,32 +177,20 @@ function showSettings() {
 const columnsEl = shallowRef<HTMLElement>();
 
 const addColumn = async (ev) => {
-	const columns = [
-		'main',
-		'widgets',
-		'notifications',
-		'tl',
-		'antenna',
-		'list',
-		'channel',
-		'mentions',
-		'direct',
-		'roleTimeline',
-	];
-
 	const { canceled, result: column } = await os.select({
 		title: i18n.ts._deck.addColumn,
-		items: columns.map(column => ({
+		items: columnTypes.map(column => ({
 			value: column, text: i18n.ts._deck._columns[column],
 		})),
 	});
-	if (canceled) return;
+	if (canceled || column == null) return;
 
 	addColumnToStore({
 		type: column,
 		id: uuid(),
 		name: i18n.ts._deck._columns[column],
 		width: 330,
+		soundSetting: { type: null, volume: 1 },
 	});
 };
 
@@ -211,7 +202,7 @@ const onContextmenu = (ev) => {
 };
 
 function onWheel(ev: WheelEvent) {
-	if (ev.deltaX === 0) {
+	if (ev.deltaX === 0 && columnsEl.value != null) {
 		columnsEl.value.scrollLeft += ev.deltaY;
 	}
 }
@@ -242,7 +233,7 @@ function changeProfile(ev: MouseEvent) {
 					title: i18n.ts._deck.profile,
 					minLength: 1,
 				});
-				if (canceled) return;
+				if (canceled || name == null) return;
 
 				deckStore.set('profile', name);
 				unisonReload();
@@ -459,7 +450,7 @@ body {
 	}
 
 	&:active {
-		background: var(--X2);
+		background: hsl(from var(--panel) h s calc(l - 2));
 	}
 }
 
@@ -469,11 +460,11 @@ body {
 	color: var(--fgOnAccent);
 
 	&:hover {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 
 	&:active {
-		background: linear-gradient(90deg, var(--X8), var(--X8));
+		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 	}
 }
 

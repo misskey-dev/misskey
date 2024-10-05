@@ -7,9 +7,10 @@ import { Injectable } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
+import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class ChannelChannel extends Channel {
@@ -28,8 +29,9 @@ class ChannelChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: any) {
-		this.channelId = params.channelId as string;
+	public async init(params: JsonObject) {
+		if (typeof params.channelId !== 'string') return;
+		this.channelId = params.channelId;
 
 		// Subscribe stream
 		this.subscriber.on('notesStream', this.onNote);

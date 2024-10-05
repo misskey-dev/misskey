@@ -6,6 +6,7 @@
 import * as crypto from 'node:crypto';
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
+import { Window } from 'happy-dom';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
@@ -180,7 +181,8 @@ export class ApRequestService {
 	 * @param url URL to fetch
 	 */
 	@bindThis
-	public async signedGet(url: string, user: { id: MiUser['id'] }): Promise<unknown> {
+	public async signedGet(url: string, user: { id: MiUser['id'] }, followAlternate?: boolean): Promise<unknown> {
+		const _followAlternate = followAlternate ?? true;
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const req = ApRequestCreator.createSignedGet({
@@ -198,8 +200,57 @@ export class ApRequestService {
 			headers: req.request.headers,
 		}, {
 			throwErrorWhenResponseNotOk: true,
-			validators: [validateContentTypeSetAsActivityPub],
 		});
+
+		//#region リクエスト先がhtmlかつactivity+jsonへのalternate linkタグがあるとき
+		const contentType = res.headers.get('content-type');
+
+		if (
+			res.ok &&
+			(contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' &&
+			_followAlternate === true
+		) {
+			const html = await res.text();
+			const { window, happyDOM } = new Window({
+				settings: {
+					disableJavaScriptEvaluation: true,
+					disableJavaScriptFileLoading: true,
+					disableCSSFileLoading: true,
+					disableComputedStyleRendering: true,
+					handleDisabledFileLoadingAsSuccess: true,
+					navigation: {
+						disableMainFrameNavigation: true,
+						disableChildFrameNavigation: true,
+						disableChildPageNavigation: true,
+						disableFallbackToSetURL: true,
+					},
+					timer: {
+						maxTimeout: 0,
+						maxIntervalTime: 0,
+						maxIntervalIterations: 0,
+					},
+				},
+			});
+			const document = window.document;
+			try {
+				document.documentElement.innerHTML = html;
+
+				const alternate = document.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
+				if (alternate) {
+					const href = alternate.getAttribute('href');
+					if (href) {
+						return await this.signedGet(href, user, false);
+					}
+				}
+			} catch (e) {
+				// something went wrong parsing the HTML, ignore the whole thing
+			} finally {
+				happyDOM.close().catch(err => {});
+			}
+		}
+		//#endregion
+
+		validateContentTypeSetAsActivityPub(res);
 
 		return await res.json();
 	}

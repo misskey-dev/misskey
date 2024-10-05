@@ -95,7 +95,6 @@ async function watchSrc() {
 		process.on('SIGHUP', resolve);
 		process.on('SIGINT', resolve);
 		process.on('SIGTERM', resolve);
-		process.on('SIGKILL', resolve);
 		process.on('uncaughtException', reject);
 		process.on('exit', resolve);
 	}).finally(async () => {

@@ -8,173 +8,191 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkStickyContainer>
 		<template #header><XHeader :tabs="headerTabs"/></template>
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
-			<FormSuspense :p="init">
-				<div class="_gaps_m">
-					<MkInput v-model="name">
-						<template #label>{{ i18n.ts.instanceName }}</template>
-					</MkInput>
+			<div class="_gaps_m">
+				<MkFolder :defaultOpen="true">
+					<template #icon><i class="ti ti-info-circle"></i></template>
+					<template #label>{{ i18n.ts.info }}</template>
+					<template v-if="infoForm.modified.value" #footer>
+						<MkFormFooter :form="infoForm"/>
+					</template>
 
-					<MkInput v-model="shortName">
-						<template #label>{{ i18n.ts._serverSettings.shortName }} ({{ i18n.ts.optional }})</template>
-						<template #caption>{{ i18n.ts._serverSettings.shortNameDescription }}</template>
-					</MkInput>
-
-					<MkTextarea v-model="description">
-						<template #label>{{ i18n.ts.instanceDescription }}</template>
-					</MkTextarea>
-
-					<FormSplit :minWidth="300">
-						<MkInput v-model="maintainerName">
-							<template #label>{{ i18n.ts.maintainerName }}</template>
+					<div class="_gaps">
+						<MkInput v-model="infoForm.state.name">
+							<template #label>{{ i18n.ts.instanceName }}<span v-if="infoForm.modifiedStates.name" class="_modified">{{ i18n.ts.modified }}</span></template>
 						</MkInput>
 
-						<MkInput v-model="maintainerEmail" type="email">
-							<template #prefix><i class="ti ti-mail"></i></template>
-							<template #label>{{ i18n.ts.maintainerEmail }}</template>
+						<MkInput v-model="infoForm.state.shortName">
+							<template #label>{{ i18n.ts._serverSettings.shortName }} ({{ i18n.ts.optional }})<span v-if="infoForm.modifiedStates.shortName" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts._serverSettings.shortNameDescription }}</template>
 						</MkInput>
-					</FormSplit>
 
-					<MkInput v-model="repositoryUrl" type="url">
-						<template #label>{{ i18n.ts.repositoryUrl }}</template>
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #caption>{{ i18n.ts.repositoryUrlDescription }}</template>
-					</MkInput>
+						<MkTextarea v-model="infoForm.state.description">
+							<template #label>{{ i18n.ts.instanceDescription }}<span v-if="infoForm.modifiedStates.description" class="_modified">{{ i18n.ts.modified }}</span></template>
+						</MkTextarea>
 
-					<MkInfo v-if="!instance.providesTarball && !repositoryUrl" warn>
-						{{ i18n.ts.repositoryUrlOrTarballRequired }}
-					</MkInfo>
+						<FormSplit :minWidth="300">
+							<MkInput v-model="infoForm.state.maintainerName">
+								<template #label>{{ i18n.ts.maintainerName }}<span v-if="infoForm.modifiedStates.maintainerName" class="_modified">{{ i18n.ts.modified }}</span></template>
+							</MkInput>
 
-					<MkInput v-model="impressumUrl" type="url">
-						<template #label>{{ i18n.ts.impressumUrl }}</template>
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #caption>{{ i18n.ts.impressumDescription }}</template>
-					</MkInput>
+							<MkInput v-model="infoForm.state.maintainerEmail" type="email">
+								<template #label>{{ i18n.ts.maintainerEmail }}<span v-if="infoForm.modifiedStates.maintainerEmail" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #prefix><i class="ti ti-mail"></i></template>
+							</MkInput>
+						</FormSplit>
 
-					<MkTextarea v-model="pinnedUsers">
-						<template #label>{{ i18n.ts.pinnedUsers }}</template>
+						<MkInput v-model="infoForm.state.tosUrl" type="url">
+							<template #label>{{ i18n.ts.tosUrl }}<span v-if="infoForm.modifiedStates.tosUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #prefix><i class="ti ti-link"></i></template>
+						</MkInput>
+
+						<MkInput v-model="infoForm.state.privacyPolicyUrl" type="url">
+							<template #label>{{ i18n.ts.privacyPolicyUrl }}<span v-if="infoForm.modifiedStates.privacyPolicyUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #prefix><i class="ti ti-link"></i></template>
+						</MkInput>
+
+						<MkInput v-model="infoForm.state.inquiryUrl" type="url">
+							<template #label>{{ i18n.ts._serverSettings.inquiryUrl }}<span v-if="infoForm.modifiedStates.inquiryUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts._serverSettings.inquiryUrlDescription }}</template>
+							<template #prefix><i class="ti ti-link"></i></template>
+						</MkInput>
+
+						<MkInput v-model="infoForm.state.repositoryUrl" type="url">
+							<template #label>{{ i18n.ts.repositoryUrl }}<span v-if="infoForm.modifiedStates.repositoryUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts.repositoryUrlDescription }}</template>
+							<template #prefix><i class="ti ti-link"></i></template>
+						</MkInput>
+
+						<MkInfo v-if="!instance.providesTarball && !infoForm.state.repositoryUrl" warn>
+							{{ i18n.ts.repositoryUrlOrTarballRequired }}
+						</MkInfo>
+
+						<MkInput v-model="infoForm.state.impressumUrl" type="url">
+							<template #label>{{ i18n.ts.impressumUrl }}<span v-if="infoForm.modifiedStates.impressumUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts.impressumDescription }}</template>
+							<template #prefix><i class="ti ti-link"></i></template>
+						</MkInput>
+					</div>
+				</MkFolder>
+
+				<MkFolder>
+					<template #icon><i class="ti ti-user-star"></i></template>
+					<template #label>{{ i18n.ts.pinnedUsers }}</template>
+					<template v-if="pinnedUsersForm.modified.value" #footer>
+						<MkFormFooter :form="pinnedUsersForm"/>
+					</template>
+
+					<MkTextarea v-model="pinnedUsersForm.state.pinnedUsers">
+						<template #label>{{ i18n.ts.pinnedUsers }}<span v-if="pinnedUsersForm.modifiedStates.pinnedUsers" class="_modified">{{ i18n.ts.modified }}</span></template>
 						<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
 					</MkTextarea>
+				</MkFolder>
 
-					<FormSection>
-						<template #label>{{ i18n.ts.files }}</template>
+				<MkFolder>
+					<template #icon><i class="ti ti-cloud"></i></template>
+					<template #label>{{ i18n.ts.files }}</template>
+					<template v-if="filesForm.modified.value" #footer>
+						<MkFormFooter :form="filesForm"/>
+					</template>
 
-						<div class="_gaps_m">
-							<MkSwitch v-model="cacheRemoteFiles">
-								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
-								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
+					<div class="_gaps">
+						<MkSwitch v-model="filesForm.state.cacheRemoteFiles">
+							<template #label>{{ i18n.ts.cacheRemoteFiles }}<span v-if="filesForm.modifiedStates.cacheRemoteFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
+						</MkSwitch>
+
+						<template v-if="filesForm.state.cacheRemoteFiles">
+							<MkSwitch v-model="filesForm.state.cacheRemoteSensitiveFiles">
+								<template #label>{{ i18n.ts.cacheRemoteSensitiveFiles }}<span v-if="filesForm.modifiedStates.cacheRemoteSensitiveFiles" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #caption>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</template>
 							</MkSwitch>
+						</template>
+					</div>
+				</MkFolder>
 
-							<template v-if="cacheRemoteFiles">
-								<MkSwitch v-model="cacheRemoteSensitiveFiles">
-									<template #label>{{ i18n.ts.cacheRemoteSensitiveFiles }}</template>
-									<template #caption>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</template>
-								</MkSwitch>
-							</template>
-						</div>
-					</FormSection>
+				<MkFolder>
+					<template #icon><i class="ti ti-world-cog"></i></template>
+					<template #label>ServiceWorker</template>
+					<template v-if="serviceWorkerForm.modified.value" #footer>
+						<MkFormFooter :form="serviceWorkerForm"/>
+					</template>
 
-					<FormSection>
-						<template #label>ServiceWorker</template>
+					<div class="_gaps">
+						<MkSwitch v-model="serviceWorkerForm.state.enableServiceWorker">
+							<template #label>{{ i18n.ts.enableServiceworker }}<span v-if="serviceWorkerForm.modifiedStates.enableServiceWorker" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
+						</MkSwitch>
 
-						<div class="_gaps_m">
-							<MkSwitch v-model="enableServiceWorker">
-								<template #label>{{ i18n.ts.enableServiceworker }}</template>
-								<template #caption>{{ i18n.ts.serviceworkerInfo }}</template>
-							</MkSwitch>
-
-							<template v-if="enableServiceWorker">
-								<MkInput v-model="swPublicKey">
-									<template #prefix><i class="ti ti-key"></i></template>
-									<template #label>Public key</template>
-								</MkInput>
-
-								<MkInput v-model="swPrivateKey">
-									<template #prefix><i class="ti ti-key"></i></template>
-									<template #label>Private key</template>
-								</MkInput>
-							</template>
-						</div>
-					</FormSection>
-
-					<FormSection>
-						<template #label>Misskey® Fan-out Timeline Technology™ (FTT)</template>
-
-						<div class="_gaps_m">
-							<MkSwitch v-model="enableFanoutTimeline">
-								<template #label>{{ i18n.ts.enable }}</template>
-								<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDescription }}</template>
-							</MkSwitch>
-
-							<MkSwitch v-model="enableFanoutTimelineDbFallback">
-								<template #label>{{ i18n.ts._serverSettings.fanoutTimelineDbFallback }}</template>
-								<template #caption>{{ i18n.ts._serverSettings.fanoutTimelineDbFallbackDescription }}</template>
-							</MkSwitch>
-
-							<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number">
-								<template #label>perLocalUserUserTimelineCacheMax</template>
+						<template v-if="serviceWorkerForm.state.enableServiceWorker">
+							<MkInput v-model="serviceWorkerForm.state.swPublicKey">
+								<template #label>Public key<span v-if="serviceWorkerForm.modifiedStates.swPublicKey" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #prefix><i class="ti ti-key"></i></template>
 							</MkInput>
 
-							<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number">
-								<template #label>perRemoteUserUserTimelineCacheMax</template>
+							<MkInput v-model="serviceWorkerForm.state.swPrivateKey">
+								<template #label>Private key<span v-if="serviceWorkerForm.modifiedStates.swPrivateKey" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #prefix><i class="ti ti-key"></i></template>
 							</MkInput>
+						</template>
+					</div>
+				</MkFolder>
 
-							<MkInput v-model="perUserHomeTimelineCacheMax" type="number">
-								<template #label>perUserHomeTimelineCacheMax</template>
-							</MkInput>
+				<MkFolder>
+					<template #icon><i class="ti ti-ad"></i></template>
+					<template #label>{{ i18n.ts._ad.adsSettings }}</template>
+					<template v-if="adForm.modified.value" #footer>
+						<MkFormFooter :form="adForm"/>
+					</template>
 
-							<MkInput v-model="perUserListTimelineCacheMax" type="number">
-								<template #label>perUserListTimelineCacheMax</template>
+					<div class="_gaps">
+						<div class="_gaps_s">
+							<MkInput v-model="adForm.state.notesPerOneAd" :min="0" type="number">
+								<template #label>{{ i18n.ts._ad.notesPerOneAd }}<span v-if="adForm.modifiedStates.notesPerOneAd" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
 							</MkInput>
+							<MkInfo v-if="adForm.state.notesPerOneAd > 0 && adForm.state.notesPerOneAd < 20" :warn="true">
+								{{ i18n.ts._ad.adsTooClose }}
+							</MkInfo>
 						</div>
-					</FormSection>
+					</div>
+				</MkFolder>
 
-					<FormSection>
-						<template #label>{{ i18n.ts._ad.adsSettings }}</template>
+				<MkFolder>
+					<template #icon><i class="ti ti-world-search"></i></template>
+					<template #label>{{ i18n.ts._urlPreviewSetting.title }}</template>
+					<template v-if="urlPreviewForm.modified.value" #footer>
+						<MkFormFooter :form="urlPreviewForm"/>
+					</template>
 
-						<div class="_gaps_m">
-							<div class="_gaps_s">
-								<MkInput v-model="notesPerOneAd" :min="0" type="number">
-									<template #label>{{ i18n.ts._ad.notesPerOneAd }}</template>
-									<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
-								</MkInput>
-								<MkInfo v-if="notesPerOneAd > 0 && notesPerOneAd < 20" :warn="true">
-									{{ i18n.ts._ad.adsTooClose }}
-								</MkInfo>
-							</div>
-						</div>
-					</FormSection>
+					<div class="_gaps">
+						<MkSwitch v-model="urlPreviewForm.state.urlPreviewEnabled">
+							<template #label>{{ i18n.ts._urlPreviewSetting.enable }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewEnabled" class="_modified">{{ i18n.ts.modified }}</span></template>
+						</MkSwitch>
 
-					<FormSection>
-						<template #label>{{ i18n.ts._urlPreviewSetting.title }}</template>
-
-						<div class="_gaps_m">
-							<MkSwitch v-model="urlPreviewEnabled">
-								<template #label>{{ i18n.ts._urlPreviewSetting.enable }}</template>
-							</MkSwitch>
-
-							<MkSwitch v-model="urlPreviewRequireContentLength">
-								<template #label>{{ i18n.ts._urlPreviewSetting.requireContentLength }}</template>
+						<template v-if="urlPreviewForm.state.urlPreviewEnabled">
+							<MkSwitch v-model="urlPreviewForm.state.urlPreviewRequireContentLength">
+								<template #label>{{ i18n.ts._urlPreviewSetting.requireContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewRequireContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
 								<template #caption>{{ i18n.ts._urlPreviewSetting.requireContentLengthDescription }}</template>
 							</MkSwitch>
 
-							<MkInput v-model="urlPreviewMaximumContentLength" type="number">
-								<template #label>{{ i18n.ts._urlPreviewSetting.maximumContentLength }}</template>
+							<MkInput v-model="urlPreviewForm.state.urlPreviewMaximumContentLength" type="number">
+								<template #label>{{ i18n.ts._urlPreviewSetting.maximumContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewMaximumContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
 								<template #caption>{{ i18n.ts._urlPreviewSetting.maximumContentLengthDescription }}</template>
 							</MkInput>
 
-							<MkInput v-model="urlPreviewTimeout" type="number">
-								<template #label>{{ i18n.ts._urlPreviewSetting.timeout }}</template>
+							<MkInput v-model="urlPreviewForm.state.urlPreviewTimeout" type="number">
+								<template #label>{{ i18n.ts._urlPreviewSetting.timeout }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewTimeout" class="_modified">{{ i18n.ts.modified }}</span></template>
 								<template #caption>{{ i18n.ts._urlPreviewSetting.timeoutDescription }}</template>
 							</MkInput>
 
-							<MkInput v-model="urlPreviewUserAgent" type="text">
-								<template #label>{{ i18n.ts._urlPreviewSetting.userAgent }}</template>
+							<MkInput v-model="urlPreviewForm.state.urlPreviewUserAgent" type="text">
+								<template #label>{{ i18n.ts._urlPreviewSetting.userAgent }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewUserAgent" class="_modified">{{ i18n.ts.modified }}</span></template>
 								<template #caption>{{ i18n.ts._urlPreviewSetting.userAgentDescription }}</template>
 							</MkInput>
 
 							<div>
-								<MkInput v-model="urlPreviewSummaryProxyUrl" type="text">
-									<template #label>{{ i18n.ts._urlPreviewSetting.summaryProxy }}</template>
+								<MkInput v-model="urlPreviewForm.state.urlPreviewSummaryProxyUrl" type="text">
+									<template #label>{{ i18n.ts._urlPreviewSetting.summaryProxy }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewSummaryProxyUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
 									<template #caption>[{{ i18n.ts.notUsePleaseLeaveBlank }}] {{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
 								</MkInput>
 
@@ -188,18 +206,51 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</ul>
 								</div>
 							</div>
-						</div>
-					</FormSection>
-				</div>
-			</FormSuspense>
-		</MkSpacer>
-		<template #footer>
-			<div :class="$style.footer">
-				<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
-					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-				</MkSpacer>
+						</template>
+					</div>
+				</MkFolder>
+
+				<MkFolder>
+					<template #icon><i class="ti ti-planet"></i></template>
+					<template #label>{{ i18n.ts.federation }}</template>
+					<template v-if="federationForm.savedState.federation === 'all'" #suffix>{{ i18n.ts.all }}</template>
+					<template v-else-if="federationForm.savedState.federation === 'specified'" #suffix>{{ i18n.ts.specifyHost }}</template>
+					<template v-else-if="federationForm.savedState.federation === 'none'" #suffix>{{ i18n.ts.none }}</template>
+					<template v-if="federationForm.modified.value" #footer>
+						<MkFormFooter :form="federationForm"/>
+					</template>
+
+					<div class="_gaps">
+						<MkRadios v-model="federationForm.state.federation">
+							<template #label>{{ i18n.ts.behavior }}<span v-if="federationForm.modifiedStates.federation" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<option value="all">{{ i18n.ts.all }}</option>
+							<option value="specified">{{ i18n.ts.specifyHost }}</option>
+							<option value="none">{{ i18n.ts.none }}</option>
+						</MkRadios>
+
+						<MkTextarea v-if="federationForm.state.federation === 'specified'" v-model="federationForm.state.federationHosts">
+							<template #label>{{ i18n.ts.federationAllowedHosts }}<span v-if="federationForm.modifiedStates.federationHosts" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts.federationAllowedHostsDescription }}</template>
+						</MkTextarea>
+					</div>
+				</MkFolder>
+
+				<MkFolder>
+					<template #icon><i class="ti ti-ghost"></i></template>
+					<template #label>{{ i18n.ts.proxyAccount }}</template>
+
+					<div class="_gaps">
+						<MkInfo>{{ i18n.ts.proxyAccountDescription }}</MkInfo>
+						<MkKeyValue>
+							<template #key>{{ i18n.ts.proxyAccount }}</template>
+							<template #value>{{ proxyAccount ? `@${proxyAccount.username}` : i18n.ts.none }}</template>
+						</MkKeyValue>
+
+						<MkButton primary @click="chooseProxyAccount">{{ i18n.ts.selectAccount }}</MkButton>
+					</div>
+				</MkFolder>
 			</div>
-		</template>
+		</MkSpacer>
 	</MkStickyContainer>
 </div>
 </template>
@@ -211,9 +262,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
-import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fetchInstance, instance } from '@/instance.js';
@@ -221,96 +270,123 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkSelect from '@/components/MkSelect.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import { useForm } from '@/scripts/use-form.js';
+import MkFormFooter from '@/components/MkFormFooter.vue';
+import MkRadios from '@/components/MkRadios.vue';
 
-const name = ref<string | null>(null);
-const shortName = ref<string | null>(null);
-const description = ref<string | null>(null);
-const maintainerName = ref<string | null>(null);
-const maintainerEmail = ref<string | null>(null);
-const repositoryUrl = ref<string | null>(null);
-const impressumUrl = ref<string | null>(null);
-const pinnedUsers = ref<string>('');
-const cacheRemoteFiles = ref<boolean>(false);
-const cacheRemoteSensitiveFiles = ref<boolean>(false);
-const enableServiceWorker = ref<boolean>(false);
-const swPublicKey = ref<string | null>(null);
-const swPrivateKey = ref<string | null>(null);
-const enableFanoutTimeline = ref<boolean>(false);
-const enableFanoutTimelineDbFallback = ref<boolean>(false);
-const perLocalUserUserTimelineCacheMax = ref<number>(0);
-const perRemoteUserUserTimelineCacheMax = ref<number>(0);
-const perUserHomeTimelineCacheMax = ref<number>(0);
-const perUserListTimelineCacheMax = ref<number>(0);
-const notesPerOneAd = ref<number>(0);
-const urlPreviewEnabled = ref<boolean>(true);
-const urlPreviewTimeout = ref<number>(10000);
-const urlPreviewMaximumContentLength = ref<number>(1024 * 1024 * 10);
-const urlPreviewRequireContentLength = ref<boolean>(true);
-const urlPreviewUserAgent = ref<string | null>(null);
-const urlPreviewSummaryProxyUrl = ref<string | null>(null);
+const meta = await misskeyApi('admin/meta');
 
-async function init(): Promise<void> {
-	const meta = await misskeyApi('admin/meta');
-	name.value = meta.name;
-	shortName.value = meta.shortName;
-	description.value = meta.description;
-	maintainerName.value = meta.maintainerName;
-	maintainerEmail.value = meta.maintainerEmail;
-	repositoryUrl.value = meta.repositoryUrl;
-	impressumUrl.value = meta.impressumUrl;
-	pinnedUsers.value = meta.pinnedUsers.join('\n');
-	cacheRemoteFiles.value = meta.cacheRemoteFiles;
-	cacheRemoteSensitiveFiles.value = meta.cacheRemoteSensitiveFiles;
-	enableServiceWorker.value = meta.enableServiceWorker;
-	swPublicKey.value = meta.swPublickey;
-	swPrivateKey.value = meta.swPrivateKey;
-	enableFanoutTimeline.value = meta.enableFanoutTimeline;
-	enableFanoutTimelineDbFallback.value = meta.enableFanoutTimelineDbFallback;
-	perLocalUserUserTimelineCacheMax.value = meta.perLocalUserUserTimelineCacheMax;
-	perRemoteUserUserTimelineCacheMax.value = meta.perRemoteUserUserTimelineCacheMax;
-	perUserHomeTimelineCacheMax.value = meta.perUserHomeTimelineCacheMax;
-	perUserListTimelineCacheMax.value = meta.perUserListTimelineCacheMax;
-	notesPerOneAd.value = meta.notesPerOneAd;
-	urlPreviewEnabled.value = meta.urlPreviewEnabled;
-	urlPreviewTimeout.value = meta.urlPreviewTimeout;
-	urlPreviewMaximumContentLength.value = meta.urlPreviewMaximumContentLength;
-	urlPreviewRequireContentLength.value = meta.urlPreviewRequireContentLength;
-	urlPreviewUserAgent.value = meta.urlPreviewUserAgent;
-	urlPreviewSummaryProxyUrl.value = meta.urlPreviewSummaryProxyUrl;
-}
+const proxyAccount = ref(meta.proxyAccountId ? await misskeyApi('users/show', { userId: meta.proxyAccountId }) : null);
 
-async function save() {
+const infoForm = useForm({
+	name: meta.name ?? '',
+	shortName: meta.shortName ?? '',
+	description: meta.description ?? '',
+	maintainerName: meta.maintainerName ?? '',
+	maintainerEmail: meta.maintainerEmail ?? '',
+	tosUrl: meta.tosUrl ?? '',
+	privacyPolicyUrl: meta.privacyPolicyUrl ?? '',
+	inquiryUrl: meta.inquiryUrl ?? '',
+	repositoryUrl: meta.repositoryUrl ?? '',
+	impressumUrl: meta.impressumUrl ?? '',
+}, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
-		name: name.value,
-		shortName: shortName.value === '' ? null : shortName.value,
-		description: description.value,
-		maintainerName: maintainerName.value,
-		maintainerEmail: maintainerEmail.value,
-		repositoryUrl: repositoryUrl.value,
-		impressumUrl: impressumUrl.value,
-		pinnedUsers: pinnedUsers.value.split('\n'),
-		cacheRemoteFiles: cacheRemoteFiles.value,
-		cacheRemoteSensitiveFiles: cacheRemoteSensitiveFiles.value,
-		enableServiceWorker: enableServiceWorker.value,
-		swPublicKey: swPublicKey.value,
-		swPrivateKey: swPrivateKey.value,
-		enableFanoutTimeline: enableFanoutTimeline.value,
-		enableFanoutTimelineDbFallback: enableFanoutTimelineDbFallback.value,
-		perLocalUserUserTimelineCacheMax: perLocalUserUserTimelineCacheMax.value,
-		perRemoteUserUserTimelineCacheMax: perRemoteUserUserTimelineCacheMax.value,
-		perUserHomeTimelineCacheMax: perUserHomeTimelineCacheMax.value,
-		perUserListTimelineCacheMax: perUserListTimelineCacheMax.value,
-		notesPerOneAd: notesPerOneAd.value,
-		urlPreviewEnabled: urlPreviewEnabled.value,
-		urlPreviewTimeout: urlPreviewTimeout.value,
-		urlPreviewMaximumContentLength: urlPreviewMaximumContentLength.value,
-		urlPreviewRequireContentLength: urlPreviewRequireContentLength.value,
-		urlPreviewUserAgent: urlPreviewUserAgent.value,
-		urlPreviewSummaryProxyUrl: urlPreviewSummaryProxyUrl.value,
+		name: state.name,
+		shortName: state.shortName === '' ? null : state.shortName,
+		description: state.description,
+		maintainerName: state.maintainerName,
+		maintainerEmail: state.maintainerEmail,
+		tosUrl: state.tosUrl,
+		privacyPolicyUrl: state.privacyPolicyUrl,
+		inquiryUrl: state.inquiryUrl,
+		repositoryUrl: state.repositoryUrl,
+		impressumUrl: state.impressumUrl,
 	});
-
 	fetchInstance(true);
+});
+
+const pinnedUsersForm = useForm({
+	pinnedUsers: meta.pinnedUsers.join('\n'),
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		pinnedUsers: state.pinnedUsers.split('\n'),
+	});
+	fetchInstance(true);
+});
+
+const filesForm = useForm({
+	cacheRemoteFiles: meta.cacheRemoteFiles,
+	cacheRemoteSensitiveFiles: meta.cacheRemoteSensitiveFiles,
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		cacheRemoteFiles: state.cacheRemoteFiles,
+		cacheRemoteSensitiveFiles: state.cacheRemoteSensitiveFiles,
+	});
+	fetchInstance(true);
+});
+
+const serviceWorkerForm = useForm({
+	enableServiceWorker: meta.enableServiceWorker,
+	swPublicKey: meta.swPublickey ?? '',
+	swPrivateKey: meta.swPrivateKey ?? '',
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		enableServiceWorker: state.enableServiceWorker,
+		swPublicKey: state.swPublicKey,
+		swPrivateKey: state.swPrivateKey,
+	});
+	fetchInstance(true);
+});
+
+const adForm = useForm({
+	notesPerOneAd: meta.notesPerOneAd,
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		notesPerOneAd: state.notesPerOneAd,
+	});
+	fetchInstance(true);
+});
+
+const urlPreviewForm = useForm({
+	urlPreviewEnabled: meta.urlPreviewEnabled,
+	urlPreviewTimeout: meta.urlPreviewTimeout,
+	urlPreviewMaximumContentLength: meta.urlPreviewMaximumContentLength,
+	urlPreviewRequireContentLength: meta.urlPreviewRequireContentLength,
+	urlPreviewUserAgent: meta.urlPreviewUserAgent ?? '',
+	urlPreviewSummaryProxyUrl: meta.urlPreviewSummaryProxyUrl ?? '',
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		urlPreviewEnabled: state.urlPreviewEnabled,
+		urlPreviewTimeout: state.urlPreviewTimeout,
+		urlPreviewMaximumContentLength: state.urlPreviewMaximumContentLength,
+		urlPreviewRequireContentLength: state.urlPreviewRequireContentLength,
+		urlPreviewUserAgent: state.urlPreviewUserAgent,
+		urlPreviewSummaryProxyUrl: state.urlPreviewSummaryProxyUrl,
+	});
+	fetchInstance(true);
+});
+
+const federationForm = useForm({
+	federation: meta.federation,
+	federationHosts: meta.federationHosts.join('\n'),
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		federation: state.federation,
+		federationHosts: state.federationHosts.split('\n'),
+	});
+	fetchInstance(true);
+});
+
+function chooseProxyAccount() {
+	os.selectUser({ localOnly: true }).then(user => {
+		proxyAccount.value = user;
+		os.apiWithDialog('admin/update-meta', {
+			proxyAccountId: user.id,
+		}).then(() => {
+			fetchInstance(true);
+		});
+	});
 }
 
 const headerTabs = computed(() => []);
@@ -322,11 +398,6 @@ definePageMetadata(() => ({
 </script>
 
 <style lang="scss" module>
-.footer {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-}
-
 .subCaption {
 	font-size: 0.85em;
 	color: var(--fgTransparentWeak);

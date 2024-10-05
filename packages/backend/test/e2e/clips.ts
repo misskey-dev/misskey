@@ -79,14 +79,14 @@ describe('クリップ', () => {
 	};
 
 	const deleteClip = async (parameters: Misskey.entities.ClipsDeleteRequest, request: Partial<ApiRequest<'clips/delete'>> = {}): Promise<void> => {
-		return await successfulApiCall({
+		await successfulApiCall({
 			endpoint: 'clips/delete',
 			parameters,
 			user: alice,
 			...request,
 		}, {
 			status: 204,
-		}) as any as void;
+		});
 	};
 
 	const show = async (parameters: Misskey.entities.ClipsShowRequest, request: Partial<ApiRequest<'clips/show'>> = {}): Promise<Misskey.entities.Clip> => {
@@ -454,25 +454,25 @@ describe('クリップ', () => {
 		let aliceClip: Misskey.entities.Clip;
 
 		const favorite = async (parameters: Misskey.entities.ClipsFavoriteRequest, request: Partial<ApiRequest<'clips/favorite'>> = {}): Promise<void> => {
-			return successfulApiCall({
+			await successfulApiCall({
 				endpoint: 'clips/favorite',
 				parameters,
 				user: alice,
 				...request,
 			}, {
 				status: 204,
-			}) as any as void;
+			});
 		};
 
 		const unfavorite = async (parameters: Misskey.entities.ClipsUnfavoriteRequest, request: Partial<ApiRequest<'clips/unfavorite'>> = {}): Promise<void> => {
-			return successfulApiCall({
+			await successfulApiCall({
 				endpoint: 'clips/unfavorite',
 				parameters,
 				user: alice,
 				...request,
 			}, {
 				status: 204,
-			}) as any as void;
+			});
 		};
 
 		const myFavorites = async (request: Partial<ApiRequest<'clips/my-favorites'>> = {}): Promise<Misskey.entities.Clip[]> => {

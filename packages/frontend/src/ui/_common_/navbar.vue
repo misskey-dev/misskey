@@ -111,6 +111,7 @@ function more(ev: MouseEvent) {
 .root {
 	--nav-width: 250px;
 	--nav-icon-only-width: 80px;
+	--nav-bg-transparent: color(from var(--navBg) srgb r g b / 0.5);
 
 	flex: 0 0 var(--nav-width);
 	width: var(--nav-width);
@@ -144,7 +145,7 @@ function more(ev: MouseEvent) {
 		top: 0;
 		z-index: 1;
 		padding: 20px 0;
-		background: var(--X14);
+		background: var(--nav-bg-transparent);
 		-webkit-backdrop-filter: var(--blur, blur(8px));
 		backdrop-filter: var(--blur, blur(8px));
 	}
@@ -166,6 +167,15 @@ function more(ev: MouseEvent) {
 		display: block;
 		text-align: center;
 		width: 100%;
+
+		&:focus-visible {
+			outline: none;
+
+			> .instanceIcon {
+				outline: 2px solid var(--focus);
+				outline-offset: 2px;
+			}
+		}
 	}
 
 	.instanceIcon {
@@ -178,7 +188,7 @@ function more(ev: MouseEvent) {
 		position: sticky;
 		bottom: 0;
 		padding-top: 20px;
-		background: var(--X14);
+		background: var(--nav-bg-transparent);
 		-webkit-backdrop-filter: var(--blur, blur(8px));
 		backdrop-filter: var(--blur, blur(8px));
 	}
@@ -192,7 +202,7 @@ function more(ev: MouseEvent) {
 		font-weight: bold;
 		text-align: left;
 
-		&:before {
+		&::before {
 			content: "";
 			display: block;
 			width: calc(100% - 38px);
@@ -207,8 +217,17 @@ function more(ev: MouseEvent) {
 			background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 		}
 
+		&:focus-visible {
+			outline: none;
+
+			&::before {
+				outline: 2px solid var(--fgOnAccent);
+				outline-offset: -4px;
+			}
+		}
+
 		&:hover, &.active {
-			&:before {
+			&::before {
 				background: var(--accentLighten);
 			}
 		}
@@ -234,6 +253,14 @@ function more(ev: MouseEvent) {
 		text-align: left;
 		box-sizing: border-box;
 		overflow: clip;
+
+		&:focus-visible {
+			outline: none;
+
+			> .avatar {
+				box-shadow: 0 0 0 4px var(--focus);
+			}
+		}
 	}
 
 	.avatar {
@@ -282,10 +309,19 @@ function more(ev: MouseEvent) {
 			color: var(--navActive);
 		}
 
-		&:hover, &.active {
+		&:focus-visible {
+			outline: none;
+
+			&::before {
+				outline: 2px solid var(--focus);
+				outline-offset: -2px;
+			}
+		}
+
+		&:hover, &.active, &:focus {
 			color: var(--accent);
 
-			&:before {
+			&::before {
 				content: "";
 				display: block;
 				width: calc(100% - 34px);
@@ -343,7 +379,7 @@ function more(ev: MouseEvent) {
 		top: 0;
 		z-index: 1;
 		padding: 20px 0;
-		background: var(--X14);
+		background: var(--nav-bg-transparent);
 		-webkit-backdrop-filter: var(--blur, blur(8px));
 		backdrop-filter: var(--blur, blur(8px));
 	}
@@ -352,6 +388,15 @@ function more(ev: MouseEvent) {
 		display: block;
 		text-align: center;
 		width: 100%;
+
+		&:focus-visible {
+			outline: none;
+
+			> .instanceIcon {
+				outline: 2px solid var(--focus);
+				outline-offset: 2px;
+			}
+		}
 	}
 
 	.instanceIcon {
@@ -364,7 +409,7 @@ function more(ev: MouseEvent) {
 		position: sticky;
 		bottom: 0;
 		padding-top: 20px;
-		background: var(--X14);
+		background: var(--nav-bg-transparent);
 		-webkit-backdrop-filter: var(--blur, blur(8px));
 		backdrop-filter: var(--blur, blur(8px));
 	}
@@ -376,7 +421,7 @@ function more(ev: MouseEvent) {
 		height: 52px;
 		text-align: center;
 
-		&:before {
+		&::before {
 			content: "";
 			display: block;
 			position: absolute;
@@ -391,8 +436,17 @@ function more(ev: MouseEvent) {
 			background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 		}
 
+		&:focus-visible {
+			outline: none;
+
+			&::before {
+				outline: 2px solid var(--fgOnAccent);
+				outline-offset: -4px;
+			}
+		}
+
 		&:hover, &.active {
-			&:before {
+			&::before {
 				background: var(--accentLighten);
 			}
 		}
@@ -413,6 +467,14 @@ function more(ev: MouseEvent) {
 		padding: 20px 0;
 		width: 100%;
 		overflow: clip;
+
+		&:focus-visible {
+			outline: none;
+
+			> .avatar {
+				box-shadow: 0 0 0 4px var(--focus);
+			}
+		}
 	}
 
 	.avatar {
@@ -442,11 +504,20 @@ function more(ev: MouseEvent) {
 		width: 100%;
 		text-align: center;
 
-		&:hover, &.active {
+		&:focus-visible {
+			outline: none;
+
+			&::before {
+				outline: 2px solid var(--focus);
+				outline-offset: -2px;
+			}
+		}
+
+		&:hover, &.active, &:focus {
 			text-decoration: none;
 			color: var(--accent);
 
-			&:before {
+			&::before {
 				content: "";
 				display: block;
 				height: 100%;

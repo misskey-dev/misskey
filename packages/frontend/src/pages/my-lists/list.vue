@@ -133,22 +133,27 @@ async function removeUser(item, ev) {
 }
 
 async function showMembershipMenu(item, ev) {
+	const withRepliesRef = ref(item.withReplies);
+	
 	os.popupMenu([{
-		text: item.withReplies ? i18n.ts.hideRepliesToOthersInTimeline : i18n.ts.showRepliesToOthersInTimeline,
-		icon: item.withReplies ? 'ti ti-messages-off' : 'ti ti-messages',
-		action: async () => {
-			misskeyApi('users/lists/update-membership', {
-				listId: list.value.id,
-				userId: item.userId,
-				withReplies: !item.withReplies,
-			}).then(() => {
-				paginationEl.value.updateItem(item.id, (old) => ({
-					...old,
-					withReplies: !item.withReplies,
-				}));
-			});
-		},
+		type: 'switch',
+		text: i18n.ts.showRepliesToOthersInTimeline,
+		icon: 'ti ti-messages',
+		ref: withRepliesRef,
 	}], ev.currentTarget ?? ev.target);
+
+	watch(withRepliesRef, withReplies => {
+		misskeyApi('users/lists/update-membership', {
+			listId: list.value!.id,
+			userId: item.userId,
+			withReplies,
+		}).then(() => {
+			paginationEl.value!.updateItem(item.id, (old) => ({
+				...old,
+				withReplies,
+			}));
+		});
+	});
 }
 
 async function deleteList() {

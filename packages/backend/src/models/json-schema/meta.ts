@@ -247,6 +247,16 @@ export const packedMetaLiteSchema = {
 			optional: false, nullable: false,
 			ref: 'RolePolicies',
 		},
+		noteSearchableScope: {
+			type: 'string',
+			enum: ['local', 'global'],
+			optional: false, nullable: false,
+			default: 'local',
+		},
+		maxFileSize: {
+			type: 'number',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
 

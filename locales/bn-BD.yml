@@ -451,7 +451,6 @@ or: "অথবা"
 language: "ভাষা"
 uiLanguage: "UI এর ভাষা"
 aboutX: "{x} সম্পর্কে"
-disableDrawer: "ড্রয়ার মেনু প্রদর্শন করবেন না"
 noHistory: "কোনো ইতিহাস নেই"
 signinHistory: "প্রবেশ করার ইতিহাস"
 doing: "প্রক্রিয়া করছে..."
@@ -1033,8 +1032,6 @@ _sfx:
   note: "নোটগুলি"
   noteMy: "নোট (আপনার)"
   notification: "বিজ্ঞপ্তি"
-  antenna: "অ্যান্টেনাগুলি"
-  channel: "চ্যানেলের বিজ্ঞপ্তি"
 _ago:
   future: "ভবিষ্যৎ"
   justNow: "এইমাত্র"
@@ -1316,6 +1313,7 @@ _notification:
     pollEnded: "পোল শেষ"
     receiveFollowRequest: "প্রাপ্ত অনুসরণের অনুরোধসমূহ"
     followRequestAccepted: "গৃহীত অনুসরণের অনুরোধসমূহ"
+    login: "প্রবেশ করুন"
     app: "লিঙ্ক করা অ্যাপ থেকে বিজ্ঞপ্তি"
   _actions:
     followBack: "ফলো ব্যাক করেছে"
@@ -1346,6 +1344,10 @@ _deck:
 _webhookSettings:
   name: "নাম"
   active: "চালু"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "ইমেইল"
 _moderationLogTypes:
   suspend: "স্থগিত করা"
   resetPassword: "পাসওয়ার্ড রিসেট করুন"

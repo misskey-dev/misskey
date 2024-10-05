@@ -42,9 +42,9 @@ describe('Renote Mute', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === carolRenote.id), false);
-		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
+		assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+		assert.strictEqual(res.body.some(note => note.id === carolRenote.id), false);
+		assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
 	});
 
 	test('タイムラインにリノートミュートしているユーザーの引用が含まれる', async () => {
@@ -59,9 +59,9 @@ describe('Renote Mute', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === carolRenote.id), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
+		assert.strictEqual(res.body.some(note => note.id === bobNote.id), true);
+		assert.strictEqual(res.body.some(note => note.id === carolRenote.id), true);
+		assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
 	});
 
 	// #12956
@@ -76,8 +76,8 @@ describe('Renote Mute', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === carolNote.id), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === bobRenote.id), true);
+		assert.strictEqual(res.body.some(note => note.id === carolNote.id), true);
+		assert.strictEqual(res.body.some(note => note.id === bobRenote.id), true);
 	});
 
 	test('ストリームにリノートミュートしているユーザーのリノートが流れない', async () => {
