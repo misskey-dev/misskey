@@ -468,6 +468,7 @@ export type PagesUpdateRequest = operations['pages___update']['requestBody']['co
 export type FlashCreateRequest = operations['flash___create']['requestBody']['content']['application/json'];
 export type FlashCreateResponse = operations['flash___create']['responses']['200']['content']['application/json'];
 export type FlashDeleteRequest = operations['flash___delete']['requestBody']['content']['application/json'];
+export type FlashFeaturedRequest = operations['flash___featured']['requestBody']['content']['application/json'];
 export type FlashFeaturedResponse = operations['flash___featured']['responses']['200']['content']['application/json'];
 export type FlashLikeRequest = operations['flash___like']['requestBody']['content']['application/json'];
 export type FlashShowRequest = operations['flash___show']['requestBody']['content']['application/json'];

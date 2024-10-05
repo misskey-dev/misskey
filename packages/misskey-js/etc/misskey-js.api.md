@@ -1680,6 +1680,7 @@ declare namespace entities {
         FlashCreateRequest,
         FlashCreateResponse,
         FlashDeleteRequest,
+        FlashFeaturedRequest,
         FlashFeaturedResponse,
         FlashLikeRequest,
         FlashShowRequest,
@@ -1928,6 +1929,9 @@ type FlashCreateResponse = operations['flash___create']['responses']['200']['con
 
 // @public (undocumented)
 type FlashDeleteRequest = operations['flash___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FlashFeaturedRequest = operations['flash___featured']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FlashFeaturedResponse = operations['flash___featured']['responses']['200']['content']['application/json'];
