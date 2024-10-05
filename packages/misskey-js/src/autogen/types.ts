@@ -5302,8 +5302,6 @@ export type operations = {
            * @enum {string}
            */
           targetUserOrigin?: 'combined' | 'local' | 'remote';
-          /** @default false */
-          forwarded?: boolean;
         };
       };
     };
@@ -5330,7 +5328,11 @@ export type operations = {
               assigneeId: string | null;
               reporter: components['schemas']['UserDetailedNotMe'];
               targetUser: components['schemas']['UserDetailedNotMe'];
-              assignee?: components['schemas']['UserDetailedNotMe'] | null;
+              assignee: components['schemas']['UserDetailedNotMe'] | null;
+              forwarded: boolean;
+              /** @enum {string|null} */
+              resolvedAs: 'accept' | 'reject' | null;
+              moderationNote: string;
             })[];
         };
       };
