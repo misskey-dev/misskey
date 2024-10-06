@@ -256,6 +256,10 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				case 'isCat': {
 					return user.isCat;
 				}
+				// Auto TTS
+				case 'isVI': {
+					return user.isVI;
+				}
 				// 「ユーザを見つけやすくする」が有効なアカウント
 				case 'isExplorable': {
 					return user.isExplorable;

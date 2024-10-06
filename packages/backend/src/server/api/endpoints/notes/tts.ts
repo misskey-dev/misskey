@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { Client } from "@gradio/client";
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -25,6 +26,11 @@ export const meta = {
 	},
 
 	errors: {
+		incorrectconfig: {
+			message: 'Incorrect configuration.',
+			code: 'INCORRECT_CONFIG',
+			id: '8d171e60-83b8-11ef-b98c-a7506d6c1de4',
+		},
 		unavailable: {
 			message: 'Convert of notes unavailable.',
 			code: 'UNAVAILABLE',
@@ -85,29 +91,85 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.unavailable);
 			}
 
-			const endpoint = 'https://api-inference.huggingface.co/models/suno/bark';
+			if (instance.hfSpace) {
+				const langlist = ['Chinese', 'English', 'Japanese', 'Yue', 'Korean', 'Chinese-English Mixed', 'Japanese-English Mixed', 'Yue-English Mixed', 'Korean-English Mixed', 'Multilingual Mixed', 'Multilingual Mixed(Yue)'];
+				const slicelist = ['No slice', 'Slice once every 4 sentences', 'Slice per 50 characters', 'Slice by Chinese punct', 'Slice by English punct', 'Slice by every punct'];
+				let exampleAudio;
+				let app;
 
-			const res = await this.httpRequestService.send(endpoint, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': 'Bearer ' + instance.hfAuthKey,
-					Accept: 'audio/flac, */*',
-				},
-				body: JSON.stringify({
-                    inputs: note.text,
-                }),
-                timeout: 60000,
-			});
+				try {
+					const example = await fetch(instance.hfexampleAudioURL);
+					exampleAudio = await example.blob();
+				} catch {
+					throw new ApiError(meta.errors.unavailable);
+				}
 
-			let contentType = res.headers.get('Content-Type') || 'application/octet-stream';
+				if (((!instance.hfnrm) && (!instance.hfexampleText)) || (!langlist.includes(instance.hfexampleLang)) || (!slicelist.includes(instance.hfslice)) || (!instance.hfSpaceName) || (!(instance.hfSpeedRate >= 0.6 && instance.hfSpeedRate <= 1.65)) || (!(instance.hfTemperature >= 0 && instance.hfTemperature <= 1)) || (!(instance.hftopK >= 0 && instance.hftopK <= 100)) || (!(instance.hftopP >= 0 && instance.hftopP <= 1))) {
+					throw new ApiError(meta.errors.incorrectconfig);
+				}
 
-			if (contentType === 'audio/flac') {
-				return res.body;
+				try {
+					app = await Client.connect(instance.hfSpaceName, { hf_token: instance.hfAuthKey });
+				} catch {
+					throw new ApiError(meta.errors.unavailable);
+				}
+
+				const result = await app.predict("/get_tts_wav", [
+					exampleAudio,		
+					instance.hfexampleText,	
+					instance.hfexampleLang,		
+					note.text,
+					"Multilingual Mixed",
+					instance.hfslice,	
+					instance.hftopK,	
+					instance.hftopP,	
+					instance.hfTemperature,
+					instance.hfnrm,
+					instance.hfSpeedRate,
+					instance.hfdas,
+				]);
+
+				let resurl = JSON.parse(result)[0].url;
+
+				const res = await this.httpRequestService.send(resurl, {
+					method: 'POST',
+					headers: {
+						'Authorization': 'Bearer ' + instance.hfAuthKey,
+					},
+					timeout: 60000,
+				});
+
+				let contentType = res.headers.get('Content-Type') || 'application/octet-stream';
+
+				if (contentType === 'audio/flac') {
+					return res.body;
+				} else {
+					throw new ApiError(meta.errors.unavailable);
+				}
 			} else {
-				throw new ApiError(meta.errors.unavailable);
+				const endpoint = 'https://api-inference.huggingface.co/models/suno/bark';
+
+				const res = await this.httpRequestService.send(endpoint, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + instance.hfAuthKey,
+						Accept: 'audio/flac, */*',
+					},
+					body: JSON.stringify({
+                    	inputs: note.text,
+                	}),
+            	    timeout: 60000,
+				});
+
+				let contentType = res.headers.get('Content-Type') || 'application/octet-stream';
+
+				if (contentType === 'audio/flac') {
+					return res.body;
+				} else {
+					throw new ApiError(meta.errors.unavailable);
+				}
 			}
-			
 		});
 	}
 }

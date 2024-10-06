@@ -84,6 +84,13 @@ type CondFormulaValueIsCat = {
 };
 
 /**
+ * Auto TTS
+ */
+type CondFormulaValueIsVI = {
+	type: 'isVI';
+};
+
+/**
  * 「ユーザを見つけやすくする」が有効なアカウントの場合のみ成立とする
  */
 type CondFormulaValueIsExplorable = {
@@ -164,6 +171,7 @@ export type RoleCondFormulaValue = { id: string } & (
 	CondFormulaValueIsLocked |
 	CondFormulaValueIsBot |
 	CondFormulaValueIsCat |
+	CondFormulaValueIsVI |
 	CondFormulaValueIsExplorable |
 	CondFormulaValueRoleAssignedTo |
 	CondFormulaValueCreatedLessThan |

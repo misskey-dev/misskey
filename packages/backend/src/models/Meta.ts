@@ -355,6 +355,72 @@ export class MiMeta {
 	})
 	public hfAuthKey: string | null;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public hfSpace: boolean;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public hfSpaceName: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public hfexampleAudioURL: string;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public hfexampleText: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public hfexampleLang: string;
+
+	@Column('varchar', {
+		length: 1024,
+		default: 'Slice once every 4 sentences',
+		nullable: true,
+	})
+	public hfslice: string;
+
+	@Column('varchar', {
+		default: 15,
+	})
+	public hftopK: number;
+
+	@Column('varchar', {
+		default: 1.00,
+	})
+	public hftopP: number;
+
+	@Column('varchar', {
+		default: 1.00,
+	})
+	public hfTemperature: number;
+
+	@Column('varchar', {
+		default: false,
+	})
+	public hfnrm: boolean;
+
+	@Column('varchar', {
+		default: 1.25,
+	})
+	public hfSpeedRate: number;
+
+	@Column('varchar', {
+		default: false,
+	})
+	public hfdas: boolean;
+
 	@Column('varchar', {
 		length: 1024,
 		nullable: true,

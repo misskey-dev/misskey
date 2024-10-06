@@ -186,6 +186,12 @@ export class MiUser {
 
 	@Column('boolean', {
 		default: false,
+		comment: 'Whether the User needs auto TTS.',
+	})
+	public isVI: boolean;
+
+	@Column('boolean', {
+		default: false,
 		comment: 'Whether the User is the root.',
 	})
 	public isRoot: boolean;

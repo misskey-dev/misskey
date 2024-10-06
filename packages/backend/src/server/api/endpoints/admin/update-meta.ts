@@ -93,6 +93,18 @@ export const paramDef = {
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
 		hfAuthKey: { type: 'string', nullable: true },
+		hfSpace: { type: 'boolean', default: false },
+		hfSpaceName: { type: 'string', length: 1024, nullable: true },
+		hfexampleAudioURL: { type: 'string', length: 1024, nullable: true },
+		hfexampleText: { type: 'string', length: 1024, nullable: true },
+		hfexampleLang: { type: 'string', length: 1024, nullable: true },
+		hfslice: { type: 'string', length: 1024, default: 'Slice once every 4 sentences', nullable: true },
+		hftopK: { type: 'integer', default: 15 },
+		hftopP: { type: 'numeric', precision: 4, scale: 2, default: 1.00 },
+		hfTemperature: { type: 'numeric', precision: 4, scale: 2, default: 1.00 },
+		hfnrm: { type: 'boolean', default: false },
+		hfSpeedRate: { type: 'numeric', precision: 4, scale: 2, default: 1.25 },
+		hfdas: { type: 'boolean', default: false },
 		enableEmail: { type: 'boolean' },
 		email: { type: 'string', nullable: true },
 		smtpSecure: { type: 'boolean' },
@@ -525,6 +537,74 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					set.hfAuthKey = ps.hfAuthKey;
 				}
 			}
+			
+			if (ps.hfSpace !== undefined) {
+				set.hfSpace = ps.hfSpace;
+			}
+			
+			if (ps.hfSpaceName !== undefined) {
+				if (ps.hfSpaceName === '') {
+					set.hfSpaceName = null;
+				} else {
+					set.hfSpaceName = ps.hfSpaceName;
+				}
+			}
+			
+			if (ps.hfexampleAudioURL !== undefined) {
+				if (ps.hfexampleAudioURL === '') {
+					set.hfexampleAudioURL = null;
+				} else {
+					set.hfexampleAudioURL = ps.hfexampleAudioURL;
+				}
+			}
+			
+			if (ps.hfexampleText !== undefined) {
+				if (ps.hfexampleText === '') {
+					set.hfexampleText = null;
+				} else {
+					set.hfexampleText = ps.hfexampleText;
+				}
+			}
+			
+			if (ps.hfexampleLang !== undefined) {
+				if (ps.hfexampleLang === '') {
+					set.hfexampleLang = null;
+				} else {
+					set.hfexampleLang = ps.hfexampleLang;
+				}
+			}
+			
+			if (ps.hfslice !== undefined) {
+				if (ps.hfslice === '') {
+					set.hfslice = null;
+				} else {
+					set.hfslice = ps.hfslice;
+				}
+			}
+			
+			if (ps.hftopK !== undefined) {
+				set.hftopK = ps.hftopK;
+			}
+			
+			if (ps.hftopP !== undefined) {
+				set.hftopP = ps.hftopP;
+			}
+			
+			if (ps.hfTemperature !== undefined) {
+				set.hfTemperature = ps.hfTemperature;
+			}
+			
+			if (ps.hfnrm !== undefined) {
+				set.hfnrm = ps.hfnrm;
+			}
+			
+			if (ps.hfSpeedRate !== undefined) {
+				set.hfSpeedRate = ps.hfSpeedRate;
+			}
+			
+			if (ps.hfdas !== undefined) {
+				set.hfdas = ps.hfdas;
+			}			
 
 			if (ps.enableIpLogging !== undefined) {
 				set.enableIpLogging = ps.enableIpLogging;
