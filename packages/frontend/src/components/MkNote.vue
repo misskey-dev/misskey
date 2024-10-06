@@ -132,6 +132,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i v-else class="ti ti-plus"></i>
 					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
 				</button>
+				<button ref="likeButton" :class="$style.footerButton" class="_button" @click="toggleLikeReact()">
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-star" style="color: var(--love);"></i>
+					<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
+					<i v-else class="ti ti-star"></i>
+					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
+				</button>
 				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
 					<i class="ti ti-paperclip"></i>
 				</button>
@@ -441,50 +447,62 @@ function reply(): void {
 	});
 }
 
-function react(): void {
+function reactLike(): void{
 	pleaseLogin(undefined, pleaseLoginContext.value);
 	showMovedDialog();
-	if (appearNote.value.reactionAcceptance === 'likeOnly') {
+	sound.playMisskeySfx('reaction');
+
+	if (props.mock) {
+		return;
+	}
+
+	misskeyApi('notes/reactions/create', {
+		noteId: appearNote.value.id,
+		reaction: '⭐️',
+	});
+	const el = reactButton.value;
+	if (el) {
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + (el.offsetWidth / 2);
+		const y = rect.top + (el.offsetHeight / 2);
+		const { dispose } = os.popup(MkRippleEffect, { x, y }, {
+			end: () => dispose(),
+		});
+	}
+}
+
+function reactEmoji(): void {
+	pleaseLogin(undefined, pleaseLoginContext.value);
+	showMovedDialog();
+	blur();
+	reactionPicker.show(reactButton.value ?? null, note.value, reaction => {
 		sound.playMisskeySfx('reaction');
 
 		if (props.mock) {
+			emit('reaction', reaction);
 			return;
 		}
 
 		misskeyApi('notes/reactions/create', {
 			noteId: appearNote.value.id,
-			reaction: '❤️',
+			reaction: reaction,
 		});
-		const el = reactButton.value;
-		if (el) {
-			const rect = el.getBoundingClientRect();
-			const x = rect.left + (el.offsetWidth / 2);
-			const y = rect.top + (el.offsetHeight / 2);
-			const { dispose } = os.popup(MkRippleEffect, { x, y }, {
-				end: () => dispose(),
-			});
+		if (appearNote.value.text && appearNote.value.text.length > 100 && (Date.now() - new Date(appearNote.value.createdAt).getTime() < 1000 * 3)) {
+			claimAchievement('reactWithoutRead');
 		}
-	} else {
-		blur();
-		reactionPicker.show(reactButton.value ?? null, note.value, reaction => {
-			sound.playMisskeySfx('reaction');
+	}, () => {
+		focus();
+	});
 
-			if (props.mock) {
-				emit('reaction', reaction);
-				return;
-			}
+}
 
-			misskeyApi('notes/reactions/create', {
-				noteId: appearNote.value.id,
-				reaction: reaction,
-			});
-			if (appearNote.value.text && appearNote.value.text.length > 100 && (Date.now() - new Date(appearNote.value.createdAt).getTime() < 1000 * 3)) {
-				claimAchievement('reactWithoutRead');
-			}
-		}, () => {
-			focus();
-		});
+function react(): void {
+	if (appearNote.value.reactionAcceptance === 'likeOnly') {
+		reactLike();
+		return;
 	}
+	reactEmoji();
+	return;
 }
 
 function undoReact(targetNote: Misskey.entities.Note): void {
@@ -501,7 +519,15 @@ function undoReact(targetNote: Misskey.entities.Note): void {
 	});
 }
 
-function toggleReact() {
+function toggleLikeReact(): void{
+	if (appearNote.value.myReaction == null) {
+		reactLike();
+	} else {
+		undoReact(appearNote.value);
+	}
+}
+
+function toggleReact(): void {
 	if (appearNote.value.myReaction == null) {
 		react();
 	} else {
