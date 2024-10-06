@@ -3860,6 +3860,7 @@ export type components = {
       hasUnreadChannel: boolean;
       hasUnreadNotification: boolean;
       hasPendingReceivedFollowRequest: boolean;
+      hasPendingSentFollowRequest: boolean;
       unreadNotificationsCount: number;
       mutedWords: string[][];
       hardMutedWords: string[][];

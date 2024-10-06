@@ -50,6 +50,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { infoImageUrl } from '@/instance.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import { $i } from '@/account';
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -94,7 +95,7 @@ const headerTabs = computed(() => [
 	},
 ]);
 
-const tab = ref('list');
+const tab = ref($i?.hasPendingSentFollowRequest ? 'sent' : 'list');
 
 definePageMetadata(() => ({
 	title: i18n.ts.followRequests,
