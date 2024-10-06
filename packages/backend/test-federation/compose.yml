@@ -10,6 +10,8 @@ services:
         condition: service_healthy
       b.test:
         condition: service_healthy
+      daemon:
+        condition: service_healthy
     environment:
       - NODE_ENV=development
       - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/rootCA.crt
@@ -71,9 +73,7 @@ services:
   daemon:
     image: node:20
     depends_on:
-      misskey.a.test:
-        condition: service_healthy
-      misskey.b.test:
+      redis.test:
         condition: service_healthy
     volumes:
       - type: bind
