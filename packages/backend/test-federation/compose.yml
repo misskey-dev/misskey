@@ -3,6 +3,18 @@ include:
   - ./compose.b.yml
 
 services:
+  setup:
+    extends:
+      file: ./compose.tpl.yml
+      service: misskey
+    command: >
+      bash -c "
+        corepack enable && corepack prepare
+        pnpm -F backend i
+        pnpm -F misskey-js i
+        pnpm -F misskey-reversi i
+      "
+
   tester:
     image: node:20
     depends_on:

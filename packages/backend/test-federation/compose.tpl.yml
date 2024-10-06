@@ -82,9 +82,6 @@ services:
     command: >
       bash -c "
         corepack enable && corepack prepare
-        pnpm -F backend i
-        pnpm -F misskey-js i
-        pnpm -F misskey-reversi i
         pnpm -F backend migrate
         pnpm -F backend start
       "

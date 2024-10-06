@@ -31,6 +31,8 @@ services:
         condition: service_healthy
       redis.test:
         condition: service_healthy
+      setup:
+        condition: service_completed_successfully
     networks:
       - internal_network_a
     volumes:

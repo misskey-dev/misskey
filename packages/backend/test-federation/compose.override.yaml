@@ -1,4 +1,19 @@
 services:
+  setup:
+    volumes:
+      - type: volume
+        source: node_modules
+        target: /misskey/node_modules
+      - type: volume
+        source: node_modules_backend
+        target: /misskey/packages/backend/node_modules
+      - type: volume
+        source: node_modules_misskey-js
+        target: /misskey/packages/misskey-js/node_modules
+      - type: volume
+        source: node_modules_misskey-reversi
+        target: /misskey/packages/misskey-reversi/node_modules
+
   tester:
     networks:
       external_network:

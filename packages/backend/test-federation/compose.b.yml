@@ -31,9 +31,8 @@ services:
         condition: service_healthy
       redis.test:
         condition: service_healthy
-      # avoid conflict for installing dependencies
-      misskey.a.test:
-        condition: service_healthy
+      setup:
+        condition: service_completed_successfully
     networks:
       - internal_network_b
     volumes:
