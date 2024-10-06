@@ -1,6 +1,8 @@
 services:
   b.test:
-    image: nginx:1.27
+    extends:
+      file: ./compose.tpl.yml
+      service: nginx
     depends_on:
       misskey.b.test:
         condition: service_healthy
@@ -19,127 +21,36 @@ services:
         source: ./certificates/b.test.key
         target: /etc/nginx/certificates/b.test.key
         read_only: true
-      - type: bind
-        source: ./certificates/rootCA.crt
-        target: /etc/nginx/certificates/rootCA.crt
-        read_only: true
-    healthcheck:
-      test: service nginx status
-      interval: 5s
-      retries: 20
 
   misskey.b.test:
-    image: node:20
+    extends:
+      file: ./compose.tpl.yml
+      service: misskey
     depends_on:
       db.b.test:
         condition: service_healthy
       redis.test:
         condition: service_healthy
-      # avoid conflict for installing dependencies
-      misskey.a.test:
-        condition: service_healthy
     networks:
       - internal_network_b
-    env_file:
-      - ./.config/docker.env
-    environment:
-      - NODE_ENV=production
     volumes:
       - type: bind
         source: ./.config/default.b.yml
         target: /misskey/.config/default.yml
         read_only: true
-      - type: bind
-        source: ../../../built
-        target: /misskey/built
-        read_only: true
-      - type: bind
-        source: ../assets
-        target: /misskey/packages/backend/assets
-        read_only: true
-      - type: bind
-        source: ../built
-        target: /misskey/packages/backend/built
-        read_only: true
-      - type: bind
-        source: ../migration
-        target: /misskey/packages/backend/migration
-        read_only: true
-      - type: bind
-        source: ../ormconfig.js
-        target: /misskey/packages/backend/ormconfig.js
-        read_only: true
-      - type: bind
-        source: ../package.json
-        target: /misskey/packages/backend/package.json
-        read_only: true
-      - type: bind
-        source: ../../misskey-js/built
-        target: /misskey/packages/misskey-js/built
-        read_only: true
-      - type: bind
-        source: ../../misskey-js/package.json
-        target: /misskey/packages/misskey-js/package.json
-        read_only: true
-      - type: bind
-        source: ../../misskey-reversi/built
-        target: /misskey/packages/misskey-reversi/built
-        read_only: true
-      - type: bind
-        source: ../../misskey-reversi/package.json
-        target: /misskey/packages/misskey-reversi/package.json
-        read_only: true
-      - type: bind
-        source: ../../../healthcheck.sh
-        target: /misskey/healthcheck.sh
-        read_only: true
-      - type: bind
-        source: ../../../package.json
-        target: /misskey/package.json
-        read_only: true
-      - type: bind
-        source: ../../../pnpm-lock.yaml
-        target: /misskey/pnpm-lock.yaml
-        read_only: true
-      - type: bind
-        source: ../../../pnpm-workspace.yaml
-        target: /misskey/pnpm-workspace.yaml
-        read_only: true
-      - type: bind
-        source: ./certificates/rootCA.crt
-        target: /usr/local/share/ca-certificates/rootCA.crt
-        read_only: true
-    working_dir: /misskey
-    command: >
-      bash -c "
-        corepack enable && corepack prepare
-        pnpm -F backend i
-        pnpm -F misskey-js i
-        pnpm -F misskey-reversi i
-        pnpm -F backend migrate
-        pnpm -F backend start
-      "
-    healthcheck:
-      test: bash /misskey/healthcheck.sh
-      interval: 5s
-      retries: 20
 
   db.b.test:
-    image: postgres:15-alpine
+    extends:
+      file: ./compose.tpl.yml
+      service: db
     networks:
       - internal_network_b
-    env_file:
-      - ./.config/docker.env
     volumes:
       - type: bind
         source: ./volumes/db.b
         target: /var/lib/postgresql/data
         bind:
           create_host_path: true
-    healthcheck:
-      test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
-      interval: 5s
-      retries: 20
 
 networks:
   internal_network_b:
