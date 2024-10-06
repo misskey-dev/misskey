@@ -159,8 +159,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 					let contentType = res.headers.get('Content-Type') || 'application/octet-stream';
 
-					console.log(contentType);
-
 					if (contentType === 'audio/x-wav') {
 						return res.body;
 					} else {
