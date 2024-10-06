@@ -18,10 +18,10 @@ export class TTSIntegration1724683962000 {
         await queryRunner.query(`ALTER TABLE "meta" ADD "hfexampleLang" character varying(128)`);
         await queryRunner.query(`ALTER TABLE "meta" ADD "hfslice" character varying(128) DEFAULT 'Slice once every 4 sentences'`);
         await queryRunner.query(`ALTER TABLE "meta" ADD "hftopK" INTEGER DEFAULT 15`);
-        await queryRunner.query(`ALTER TABLE "meta" ADD "hftopP" NUMERIC(4, 2) DEFAULT 1.00`);
-        await queryRunner.query(`ALTER TABLE "meta" ADD "hfTemperature" NUMERIC(4, 2) DEFAULT 1.00`);
+        await queryRunner.query(`ALTER TABLE "meta" ADD "hftopP" INTEGER DEFAULT 100`);
+        await queryRunner.query(`ALTER TABLE "meta" ADD "hfTemperature" INTEGER DEFAULT 100`);
         await queryRunner.query(`ALTER TABLE "meta" ADD "hfnrm" boolean NOT NULL DEFAULT false`);
-        await queryRunner.query(`ALTER TABLE "meta" ADD "hfSpeedRate" NUMERIC(4, 2) DEFAULT 1.25`);
+        await queryRunner.query(`ALTER TABLE "meta" ADD "hfSpeedRate" INTEGER DEFAULT 125`);
         await queryRunner.query(`ALTER TABLE "meta" ADD "hfdas" boolean NOT NULL DEFAULT false`);
     }
     

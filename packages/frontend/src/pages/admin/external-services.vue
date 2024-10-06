@@ -40,16 +40,18 @@ SPDX-License-Identifier: AGPL-3.0-only
                         <MkInput v-model="hfexampleAudioURL">
                             <template #label>Example Audio URL</template>
                         </MkInput>
+						<br />
                         <MkSwitch v-model="hfnrm">
                             <template #label>Enable no reference mode</template>
                         </MkSwitch>
+						<br />
                         <div v-if="!hfnrm">
                             <MkInput v-model="hfexampleText">
                                 <template #label>Example Text</template>
                             </MkInput>
                         </div>
-                        <label for="exampleLanguage">Example Language</label>
-                        <select v-model="hfexampleLang" id="exampleLanguage">
+                        <MkSelect v-model="hfexampleLang">
+							<template #label>Example Language</template>
                             <option value="" disabled> </option>
                             <option value="Chinese">中文</option>
                             <option value="English">English</option>
@@ -62,12 +64,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<option value="Korean-English Mixed">한국어 - English</option>
 							<option value="Multilingual Mixed">Multilingual Mixed</option>
 							<option value="Multilingual Mixed(Yue)">Multilingual Mixed (Yue)</option>
-                        </select>
+                        </MkSelect>
+						<br />
                         <MkSwitch v-model="hfdas">
                             <template #label>Whether to directly adjust the speech rate and timebre of the last synthesis result to prevent randomness</template>
                         </MkSwitch>
-						<label for="ttsslice">Slice</label>
-						<select v-model="hfslice" id="ttsslice">
+						<br />
+						<MkSelect v-model="hfslice">
+							<template #label>Slice</template>
                             <option value="" disabled> </option>
                             <option value="No slice">No slice</option>
                             <option value="Slice once every 4 sentences">Slice once every 4 sentences</option>
@@ -75,47 +79,19 @@ SPDX-License-Identifier: AGPL-3.0-only
                             <option value="Slice by Chinese punct">Slice by Chinese punct</option>
 							<option value="Slice by English punct">Slice by English punct</option>
 							<option value="Slice by every punct">Slice by every punct</option>
-                        </select>
-                        <label>Set top_k Value: {{ value }}</label>
-                        <input
-                            type="range"
-                            v-model="hftopK"
-                            :value="value = 15"
-                            :min="0"
-                            :max="100"
-                            :step="1"
-                            @input="value"
-                        />
-                        <label>Set top_p Value: {{ value.toFixed(2) }}</label>
-                        <input
-                            type="range"
-                            v-model="hftopP"
-                            :value="value = 1"
-                            :min="0"
-                            :max="1"
-                            :step="0.05"
-                            @input="value = (Math.round(event.target.value / step) * step).toFixed(2)"
-                        />
-                        <label>Set Temperature Value: {{ value.toFixed(2) }}</label>
-                        <input
-                            type="range"
-                            v-model="hfTemperature"
-                            :value="value = 1"
-                            :min="0"
-                            :max="1"
-                            :step="0.05"
-                            @input="value = (Math.round(event.target.value / step) * step).toFixed(2)"
-                        />
-                        <label>Set Speed Rate Value: {{ value.toFixed(2) }}</label>
-                        <input
-                            type="range"
-                            v-model="hfSpeedRate"
-                            :value="value = 1.2"
-                            :min="0.6"
-                            :max="1.65"
-                            :step="0.05"
-                            @input="value = (Math.round(event.target.value / step) * step).toFixed(2)"
-                        />
+                        </MkSelect>
+                        <MkInput type="range" v-model.number="hftopK" :min="0" :max="100" :step="1">
+							<template #label>Set top_k Value: {{ hftopK }}</template>
+						</MkInput>
+                        <MkInput type="range" v-model.number="hftopP" :min="0" :max="100" :step="5">
+							<template #label>Set top_p Value: {{ hftopP }}</template>
+						</MkInput>
+                        <MkInput type="range" v-model.number="hfTemperature" :min="0" :max="100" :step="5">
+							<template #label>Set Temperature Value: {{ hfTemperature }}</template>
+						</MkInput>
+                        <MkInput type="range" v-model.number="hfSpeedRate" :min="60" :max="165" :step="5">
+							<template #label>Set Speed Rate Value: {{ hfSpeedRate }}</template>
+						</MkInput>
                     </div>
                     <MkButton primary @click="save_tts">Save</MkButton>
                 </div>
@@ -130,6 +106,7 @@ import { ref, computed } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
@@ -149,10 +126,10 @@ const hfexampleText = ref<string | null>(null);
 const hfexampleLang = ref<string | null>(null);
 const hfslice = ref<string | null>('Slice once every 4 sentences');
 const hftopK = ref<number>(15);
-const hftopP = ref<number>(1.00);
-const hfTemperature = ref<number>(1.00);
+const hftopP = ref<number>(100);
+const hfTemperature = ref<number>(100);
 const hfnrm = ref<boolean>(false);
-const hfSpeedRate = ref<number>(1.25);
+const hfSpeedRate = ref<number>(125);
 const hfdas = ref<boolean>(false);
 
 
@@ -172,7 +149,7 @@ async function init() {
     hfTemperature.value = meta.hfTemperature,
     hfnrm.value = meta.hfnrm,
     hfSpeedRate.value = meta.hfSpeedRate,
-    hfdas.value = meta.hfdas,
+    hfdas.value = meta.hfdas
 }
 
 function save_deepl() {

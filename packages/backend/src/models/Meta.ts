@@ -370,7 +370,7 @@ export class MiMeta {
 		length: 1024,
 		nullable: true,
 	})
-	public hfexampleAudioURL: string;
+	public hfexampleAudioURL: string | null;
 
 	@Column('varchar', {
 		length: 1024,
@@ -382,41 +382,41 @@ export class MiMeta {
 		length: 1024,
 		nullable: true,
 	})
-	public hfexampleLang: string;
+	public hfexampleLang: string | null;
 
 	@Column('varchar', {
 		length: 1024,
 		default: 'Slice once every 4 sentences',
 		nullable: true,
 	})
-	public hfslice: string;
+	public hfslice: string | null;
 
-	@Column('varchar', {
+	@Column('integer', {
 		default: 15,
 	})
 	public hftopK: number;
 
-	@Column('varchar', {
-		default: 1.00,
+	@Column('integer', {
+		default: 100,
 	})
 	public hftopP: number;
 
-	@Column('varchar', {
-		default: 1.00,
+	@Column('integer', {
+		default: 100,
 	})
 	public hfTemperature: number;
 
-	@Column('varchar', {
+	@Column('boolean', {
 		default: false,
 	})
 	public hfnrm: boolean;
 
-	@Column('varchar', {
-		default: 1.25,
+	@Column('integer', {
+		default: 125,
 	})
 	public hfSpeedRate: number;
 
-	@Column('varchar', {
+	@Column('boolean', {
 		default: false,
 	})
 	public hfdas: boolean;

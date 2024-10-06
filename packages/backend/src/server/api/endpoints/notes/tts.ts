@@ -91,6 +91,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.unavailable);
 			}
 
+			let outofQuota;
+
 			if (instance.hfSpace) {
 				const langlist = ['Chinese', 'English', 'Japanese', 'Yue', 'Korean', 'Chinese-English Mixed', 'Japanese-English Mixed', 'Yue-English Mixed', 'Korean-English Mixed', 'Multilingual Mixed', 'Multilingual Mixed(Yue)'];
 				const slicelist = ['No slice', 'Slice once every 4 sentences', 'Slice per 50 characters', 'Slice by Chinese punct', 'Slice by English punct', 'Slice by every punct'];
@@ -98,13 +100,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				let app;
 
 				try {
-					const example = await fetch(instance.hfexampleAudioURL);
+					const example = await fetch(instance.hfexampleAudioURL || '');
 					exampleAudio = await example.blob();
 				} catch {
 					throw new ApiError(meta.errors.unavailable);
 				}
 
-				if (((!instance.hfnrm) && (!instance.hfexampleText)) || (!langlist.includes(instance.hfexampleLang)) || (!slicelist.includes(instance.hfslice)) || (!instance.hfSpaceName) || (!(instance.hfSpeedRate >= 0.6 && instance.hfSpeedRate <= 1.65)) || (!(instance.hfTemperature >= 0 && instance.hfTemperature <= 1)) || (!(instance.hftopK >= 0 && instance.hftopK <= 100)) || (!(instance.hftopP >= 0 && instance.hftopP <= 1))) {
+				if (((!instance.hfnrm) && (!instance.hfexampleText)) || (!langlist.includes(instance.hfexampleLang || '')) || (!slicelist.includes(instance.hfslice || '')) || (!instance.hfSpaceName) || (!(instance.hfSpeedRate >= 60 && instance.hfSpeedRate <= 165)) || (!(instance.hfTemperature >= 0 && instance.hfTemperature <= 100)) || (!(instance.hftopK >= 0 && instance.hftopK <= 100)) || (!(instance.hftopP >= 0 && instance.hftopP <= 100))) {
 					throw new ApiError(meta.errors.incorrectconfig);
 				}
 
@@ -114,39 +116,60 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.unavailable);
 				}
 
-				const result = await app.predict("/get_tts_wav", [
-					exampleAudio,		
-					instance.hfexampleText,	
-					instance.hfexampleLang,		
-					note.text,
-					"Multilingual Mixed",
-					instance.hfslice,	
-					instance.hftopK,	
-					instance.hftopP,	
-					instance.hfTemperature,
-					instance.hfnrm,
-					instance.hfSpeedRate,
-					instance.hfdas,
-				]);
+				let result;
+				let notcontinue;
 
-				let resurl = JSON.parse(result)[0].url;
+				try {
+					result = await app.predict("/get_tts_wav", [
+						exampleAudio,		
+						instance.hfexampleText,	
+						instance.hfexampleLang,		
+						note.text,
+						"Multilingual Mixed",
+						instance.hfslice,	
+						instance.hftopK,
+						instance.hftopP / 100,	
+						instance.hfTemperature / 100,
+						instance.hfnrm,
+						instance.hfSpeedRate / 100,
+						instance.hfdas,
+					]);
+				} catch (e) {
+					console.error("An error occurred during prediction:", e);
 
-				const res = await this.httpRequestService.send(resurl, {
-					method: 'POST',
-					headers: {
-						'Authorization': 'Bearer ' + instance.hfAuthKey,
-					},
-					timeout: 60000,
-				});
+					const responseMessage = (e as any).message || ((e as any).original_msg && (e as any).original_msg.message);
 
-				let contentType = res.headers.get('Content-Type') || 'application/octet-stream';
-
-				if (contentType === 'audio/flac') {
-					return res.body;
-				} else {
-					throw new ApiError(meta.errors.unavailable);
+					if (responseMessage && responseMessage.includes('You have exceeded your GPU quota')) {
+						outofQuota = true;
+						console.log("Fallback to Inference API");
+					}
+					notcontinue = true;
 				}
-			} else {
+
+				if (!notcontinue) {
+					let resurl = result.data[0].url;
+
+					const res = await this.httpRequestService.send(resurl, {
+						method: 'GET',
+						headers: {
+							'Authorization': 'Bearer ' + instance.hfAuthKey,
+						},
+						timeout: 60000,
+					});
+
+					let contentType = res.headers.get('Content-Type') || 'application/octet-stream';
+
+					console.log(contentType);
+
+					if (contentType === 'audio/x-wav') {
+						return res.body;
+					} else {
+						throw new ApiError(meta.errors.unavailable);
+					}
+				}
+			}
+
+			if ((!instance.hfSpace) || ((instance.hfSpace) && (outofQuota))) {
 				const endpoint = 'https://api-inference.huggingface.co/models/suno/bark';
 
 				const res = await this.httpRequestService.send(endpoint, {
