@@ -181,7 +181,7 @@ MK_DEV_PREFER=backend pnpm dev
 - HMR may not work in some environments such as Windows.
 
 ## Testing
-You can run non-backend tests by executing following commands
+You can run non-backend tests by executing following commands:
 ```sh
 pnpm --filter frontend test
 pnpm --filter misskey-js test
