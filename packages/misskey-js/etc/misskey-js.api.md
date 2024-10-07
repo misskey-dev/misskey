@@ -1671,8 +1671,8 @@ declare namespace entities {
         NotesTimelineResponse,
         NotesTranslateRequest,
         NotesTranslateResponse,
-        NotesTTSRequest,
-        NotesTTSResponse,
+        NotesTtsRequest,
+        NotesTtsResponse,
         NotesUnrenoteRequest,
         NotesUserListTimelineRequest,
         NotesUserListTimelineResponse,
@@ -2788,10 +2788,10 @@ type NotesTranslateRequest = operations['notes___translate']['requestBody']['con
 type NotesTranslateResponse = operations['notes___translate']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type NotesTTSRequest = operations['notes___tts']['requestBody']['content']['application/json'];
+type NotesTtsRequest = operations['notes___tts']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NotesTTSResponse = unknown;
+type NotesTtsResponse = operations['notes___tts']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesUnrenoteRequest = operations['notes___unrenote']['requestBody']['content']['application/json'];

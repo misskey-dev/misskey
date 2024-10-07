@@ -176,7 +176,7 @@ export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
 	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
 	translating: Ref<boolean>;
-	convert: Ref<String | null>;
+	convert: Ref<string | null>;
 	converting: Ref<boolean>;
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;

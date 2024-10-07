@@ -3745,6 +3745,7 @@ export type components = {
         }[];
       isBot?: boolean;
       isCat?: boolean;
+      isVI?: boolean;
       instance?: {
         name: string | null;
         softwareName: string | null;
@@ -4777,7 +4778,7 @@ export type components = {
     RoleCondFormulaValueUserSettingBooleanSchema: {
       id: string;
       /** @enum {string} */
-      type: 'isSuspended' | 'isLocked' | 'isBot' | 'isCat' | 'isExplorable';
+      type: 'isSuspended' | 'isLocked' | 'isBot' | 'isCat' | 'isVI' | 'isExplorable';
     };
     RoleCondFormulaValueAssignedRole: {
       id: string;
@@ -5010,7 +5011,7 @@ export type components = {
       enableEmail: boolean;
       enableServiceWorker: boolean;
       translatorAvailable: boolean;
-      TTSAvailable: boolean;
+      ttsAvailable: boolean;
       mediaProxy: string;
       enableUrlPreview: boolean;
       backgroundImageUrl: string | null;
@@ -5126,7 +5127,7 @@ export type operations = {
             enableEmail: boolean;
             enableServiceWorker: boolean;
             translatorAvailable: boolean;
-            TTSAvailable: boolean;
+            ttsAvailable: boolean;
             silencedHosts?: string[];
             mediaSilencedHosts: string[];
             pinnedUsers: string[];
@@ -9516,6 +9517,27 @@ export type operations = {
           langs?: string[];
           deeplAuthKey?: string | null;
           deeplIsPro?: boolean;
+          hfAuthKey?: string | null;
+          /** @default false */
+          hfSpace?: boolean;
+          hfSpaceName?: string | null;
+          hfexampleAudioURL?: string | null;
+          hfexampleText?: string | null;
+          hfexampleLang?: string | null;
+          /** @default Slice once every 4 sentences */
+          hfslice?: string | null;
+          /** @default 15 */
+          hftopK?: number;
+          /** @default 100 */
+          hftopP?: number;
+          /** @default 100 */
+          hfTemperature?: number;
+          /** @default false */
+          hfnrm?: boolean;
+          /** @default 125 */
+          hfSpeedRate?: number;
+          /** @default false */
+          hfdas?: boolean;
           enableEmail?: boolean;
           email?: string | null;
           smtpSecure?: boolean;
@@ -19851,6 +19873,7 @@ export type operations = {
           preventAiLearning?: boolean;
           isBot?: boolean;
           isCat?: boolean;
+          isVI?: boolean;
           injectFeaturedNote?: boolean;
           receiveAnnouncementEmail?: boolean;
           alwaysMarkNsfw?: boolean;
@@ -23031,9 +23054,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'audio/flac': {
-            blob: Blob;
-          };
+          'application/json': string;
         };
       };
       /** @description OK (without any results) */
