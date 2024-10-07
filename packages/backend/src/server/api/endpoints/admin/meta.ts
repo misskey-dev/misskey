@@ -495,6 +495,18 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			federation: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			federationHosts: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
 		},
 	},
 } as const;
@@ -630,6 +642,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				urlPreviewRequireContentLength: instance.urlPreviewRequireContentLength,
 				urlPreviewUserAgent: instance.urlPreviewUserAgent,
 				urlPreviewSummaryProxyUrl: instance.urlPreviewSummaryProxyUrl,
+				federation: instance.federation,
+				federationHosts: instance.federationHosts,
 			};
 		});
 	}

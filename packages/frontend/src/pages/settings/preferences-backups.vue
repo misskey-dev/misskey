@@ -105,7 +105,6 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'collapsingNoteCondition',
 	'notificationPosition',
 	'notificationStackAxis',
-	'enableCondensedLineForAcct',
 	'keepScreenOn',
 	'defaultWithReplies',
 	'disableStreamingTimeline',
