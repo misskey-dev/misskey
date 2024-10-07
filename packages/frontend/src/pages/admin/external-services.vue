@@ -132,24 +132,23 @@ const hfnrm = ref<boolean>(false);
 const hfSpeedRate = ref<number>(125);
 const hfdas = ref<boolean>(false);
 
-
 async function init() {
     const meta = await misskeyApi('admin/meta');
     deeplAuthKey.value = meta.deeplAuthKey;
     deeplIsPro.value = meta.deeplIsPro;
     hfAuthKey.value = meta.hfAuthkey;
-    hfSpace.value = meta.hfSpace,
-    hfSpaceName.value = meta.hfSpaceName,
-    hfexampleAudioURL.value = meta.hfexampleAudioURL,
-    hfexampleText.value = meta.hfexampleText,
-    hfexampleLang.value = meta.hfexampleLang,
-    hfslice.value = meta.hfslice,
-    hftopK.value = meta.hftopK,
-    hftopP.value = meta.hftopP,
-    hfTemperature.value = meta.hfTemperature,
-    hfnrm.value = meta.hfnrm,
-    hfSpeedRate.value = meta.hfSpeedRate,
-    hfdas.value = meta.hfdas
+    hfSpace.value = meta.hfSpace;
+    hfSpaceName.value = meta.hfSpaceName;
+    hfexampleAudioURL.value = meta.hfexampleAudioURL;
+    hfexampleText.value = meta.hfexampleText;
+    hfexampleLang.value = meta.hfexampleLang;
+    hfslice.value = meta.hfslice;
+    hftopK.value = meta.hftopK;
+    hftopP.value = meta.hftopP;
+    hfTemperature.value = meta.hfTemperature;
+    hfnrm.value = meta.hfnrm;
+    hfSpeedRate.value = meta.hfSpeedRate;
+    hfdas.value = meta.hfdas;
 }
 
 function save_deepl() {

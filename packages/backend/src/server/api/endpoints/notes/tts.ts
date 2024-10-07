@@ -66,6 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private httpRequestService: HttpRequestService,
 		private roleService: RoleService,
 	) {
+		// @ts-ignore
 		super(meta, paramDef, async (ps, me) => {
 			const policies = await this.roleService.getUserPolicies(me.id);
 			if (!policies.canUseTTS) {
@@ -82,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (note.text == null) {
-				return;
+				throw new ApiError(meta.errors.cannotConvertInvisibleNote);
 			}
 
 			const instance = await this.metaService.fetch();
@@ -160,6 +161,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					const contentType = res.headers.get('Content-Type') || 'application/octet-stream';
 
 					if (contentType === 'audio/x-wav') {
+						// @ts-ignore
 						return res.body;
 					} else {
 						throw new ApiError(meta.errors.unavailable);
@@ -186,6 +188,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const contentType = res.headers.get('Content-Type') || 'application/octet-stream';
 
 				if (contentType === 'audio/flac') {
+					// @ts-ignore
 					return res.body;
 				} else {
 					throw new ApiError(meta.errors.unavailable);
