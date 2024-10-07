@@ -38,9 +38,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<KeepAlive>
 					<div v-show="opened">
-						<MkSpacer :marginMin="14" :marginMax="22">
+						<MkSpacer v-if="withSpacer" :marginMin="14" :marginMax="22">
 							<slot></slot>
 						</MkSpacer>
+						<div v-else>
+							<slot></slot>
+						</div>
+						<div v-if="$slots.footer" :class="$style.footer">
+							<slot name="footer"></slot>
+						</div>
 					</div>
 				</KeepAlive>
 			</Transition>
@@ -56,9 +62,11 @@ import { defaultStore } from '@/store.js';
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
 	maxHeight?: number | null;
+	withSpacer?: boolean;
 }>(), {
 	defaultOpen: false,
 	maxHeight: null,
+	withSpacer: true,
 });
 
 const getBgColor = (el: HTMLElement) => {
@@ -136,7 +144,7 @@ onMounted(() => {
 	width: 100%;
 	box-sizing: border-box;
 	padding: 9px 12px 9px 12px;
-	background: var(--buttonBg);
+	background: var(--folderHeaderBg);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
 	border-radius: 6px;
@@ -144,7 +152,7 @@ onMounted(() => {
 
 	&:hover {
 		text-decoration: none;
-		background: var(--buttonHoverBg);
+		background: var(--folderHeaderHoverBg);
 	}
 
 	&:focus-within {
@@ -153,7 +161,7 @@ onMounted(() => {
 
 	&.active {
 		color: var(--accent);
-		background: var(--buttonHoverBg);
+		background: var(--folderHeaderHoverBg);
 	}
 
 	&.opened {
@@ -223,5 +231,19 @@ onMounted(() => {
 	&.bgSame {
 		background: var(--bg);
 	}
+}
+
+.footer {
+	position: sticky !important;
+	z-index: 1;
+	bottom: var(--stickyBottom, 0px);
+	left: 0;
+	padding: 12px;
+	background: var(--acrylicBg);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, var(--panel) 5px, var(--panel) 10px);
+	border-radius: 0 0 6px 6px;
 }
 </style>

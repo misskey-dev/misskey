@@ -29,8 +29,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
 					</template>
 					<template #caption>{{ announcement.text }}</template>
+					<template #footer>
+						<div class="_buttons">
+							<MkButton rounded primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+							<MkButton v-if="announcement.id != null && announcement.isActive" rounded @click="archive(announcement)"><i class="ti ti-check"></i> {{ i18n.ts._announcement.end }} ({{ i18n.ts.archive }})</MkButton>
+							<MkButton v-if="announcement.id != null && !announcement.isActive" rounded @click="unarchive(announcement)"><i class="ti ti-restore"></i> {{ i18n.ts.unarchive }}</MkButton>
+							<MkButton v-if="announcement.id != null" rounded danger @click="del(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+						</div>
+					</template>
 
-					<div class="_gaps_m">
+					<div class="_gaps">
 						<MkInput v-model="announcement.title">
 							<template #label>{{ i18n.ts.title }}</template>
 						</MkInput>
@@ -64,16 +72,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							{{ i18n.ts._announcement.needConfirmationToRead }}
 						</MkSwitch>
 						<p v-if="announcement.reads">{{ i18n.tsx.nUsersRead({ n: announcement.reads }) }}</p>
-						<div class="buttons _buttons">
-							<MkButton class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-							<MkButton v-if="announcement.id != null && announcement.isActive" class="button" inline @click="archive(announcement)"><i class="ti ti-check"></i> {{ i18n.ts._announcement.end }} ({{ i18n.ts.archive }})</MkButton>
-							<MkButton v-if="announcement.id != null && !announcement.isActive" class="button" inline @click="unarchive(announcement)"><i class="ti ti-restore"></i> {{ i18n.ts.unarchive }}</MkButton>
-							<MkButton v-if="announcement.id != null" class="button" inline danger @click="del(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-						</div>
 					</div>
 				</MkFolder>
 				<MkLoading v-if="loadingMore"/>
-				<MkButton class="button" @click="more()">
+				<MkButton @click="more()">
 					<i class="ti ti-reload"></i>{{ i18n.ts.more }}
 				</MkButton>
 			</template>
@@ -170,7 +172,7 @@ function more() {
 	loadingMore.value = true;
 	misskeyApi('admin/announcements/list', {
 		status: announcementsStatus.value,
-		untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id
+		untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id,
 	}).then(announcementResponse => {
 		announcements.value = announcements.value.concat(announcementResponse);
 		loadingMore.value = false;

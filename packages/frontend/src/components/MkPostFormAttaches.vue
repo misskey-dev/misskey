@@ -13,7 +13,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@drop.stop
 >
 	<div ref="dndParentEl" :class="$style.files">
-		<div v-for="file in files" :key="file.id" :class="$style.file" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
+		<div
+			v-for="file in files"
+			:key="file.id"
+			:class="$style.file"
+			role="button"
+			tabindex="0"
+			@click="showFileMenu(file, $event)"
+			@keydown.space.enter="showFileMenu(element, $event)"
+			@contextmenu.prevent="showFileMenu(file, $event)"
+		>
 			<MkDriveFileThumbnail :data-id="file.id" :class="$style.thumbnail" :file="file" fit="cover"/>
 			<div v-if="file.isSensitive" :class="$style.sensitive">
 				<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
@@ -33,6 +42,7 @@ import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const props = defineProps<{
 	modelValue: Misskey.entities.DriveFile[];
@@ -150,11 +160,14 @@ async function crop(file: Misskey.entities.DriveFile): Promise<void> {
 	emit('replaceFile', file, newFile);
 }
 
-function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
+function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | KeyboardEvent): void {
 	if (menuShowing) return;
 
 	const isImage = file.type.startsWith('image/');
-	os.popupMenu([{
+
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
 		text: i18n.ts.renameFile,
 		icon: 'ti ti-forms',
 		action: () => { rename(file); },
@@ -166,11 +179,17 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 		text: i18n.ts.describeFile,
 		icon: 'ti ti-text-caption',
 		action: () => { describe(file); },
-	}, ...isImage ? [{
-		text: i18n.ts.cropImage,
-		icon: 'ti ti-crop',
-		action: () : void => { crop(file); },
-	}] : [], {
+	});
+
+	if (isImage) {
+		menuItems.push({
+			text: i18n.ts.cropImage,
+			icon: 'ti ti-crop',
+			action: () : void => { crop(file); },
+		});
+	}
+
+	menuItems.push({
 		type: 'divider',
 	}, {
 		text: i18n.ts.attachCancel,
@@ -181,7 +200,9 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 		icon: 'ti ti-trash',
 		danger: true,
 		action: () => { detachAndDeleteMedia(file); },
-	}], ev.currentTarget ?? ev.target).then(() => menuShowing = false);
+	});
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target).then(() => menuShowing = false);
 	menuShowing = true;
 }
 </script>
@@ -205,6 +226,10 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 	border-radius: 4px;
 	overflow: hidden;
 	cursor: move;
+
+	&:focus-visible {
+		outline-offset: 4px;
+	}
 }
 
 .thumbnail {

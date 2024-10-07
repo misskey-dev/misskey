@@ -397,7 +397,18 @@ function toStories(component: string): Promise<string> {
 	const globs = await Promise.all([
 		glob('src/components/global/Mk*.vue'),
 		glob('src/components/global/RouterView.vue'),
-		glob('src/components/Mk[A-E]*.vue'),
+		glob('src/components/MkAbuseReportWindow.vue'),
+		glob('src/components/MkAccountMoved.vue'),
+		glob('src/components/MkAchievements.vue'),
+		glob('src/components/MkAnalogClock.vue'),
+		glob('src/components/MkAnimBg.vue'),
+		glob('src/components/MkAnnouncementDialog.vue'),
+		glob('src/components/MkAntennaEditor.vue'),
+		glob('src/components/MkAntennaEditorDialog.vue'),
+		glob('src/components/MkAsUi.vue'),
+		glob('src/components/MkAutocomplete.vue'),
+		glob('src/components/MkAvatars.vue'),
+		glob('src/components/Mk[B-E]*.vue'),
 		glob('src/components/MkFlashPreview.vue'),
 		glob('src/components/MkGalleryPostPreview.vue'),
 		glob('src/components/MkSignupServerRules.vue'),
@@ -405,8 +416,9 @@ function toStories(component: string): Promise<string> {
 		glob('src/components/MkUserSetupDialog.*.vue'),
 		glob('src/components/MkInstanceCardMini.vue'),
 		glob('src/components/MkInviteCode.vue'),
-		glob('src/pages/search.vue'),
+		glob('src/pages/admin/overview.ap-requests.vue'),
 		glob('src/pages/user/home.vue'),
+		glob('src/pages/search.vue'),
 	]);
 	const components = globs.flat();
 	await Promise.all(components.map(async (component) => {
