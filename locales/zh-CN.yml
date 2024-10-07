@@ -1630,7 +1630,7 @@ _achievements:
     _postedAt0min0sec:
       title: "报时"
       description: "在 0 点发布一篇帖子"
-      flavor: "报时信号最后一响，零点整"
+      flavor: "嘟 · 嘟 · 嘟 · 哔——"
     _selfQuote:
       title: "自我引用"
       description: "引用了自己的帖子"
