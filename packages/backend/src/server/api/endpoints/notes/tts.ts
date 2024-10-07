@@ -66,7 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private httpRequestService: HttpRequestService,
 		private roleService: RoleService,
 	) {
-		// @ts-ignore
+		// @ts-expect-error
 		super(meta, paramDef, async (ps, me) => {
 			const policies = await this.roleService.getUserPolicies(me.id);
 			if (!policies.canUseTTS) {
@@ -161,7 +161,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					const contentType = res.headers.get('Content-Type') || 'application/octet-stream';
 
 					if (contentType === 'audio/x-wav') {
-						// @ts-ignore
 						return res.body;
 					} else {
 						throw new ApiError(meta.errors.unavailable);
@@ -188,7 +187,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const contentType = res.headers.get('Content-Type') || 'application/octet-stream';
 
 				if (contentType === 'audio/flac') {
-					// @ts-ignore
 					return res.body;
 				} else {
 					throw new ApiError(meta.errors.unavailable);
