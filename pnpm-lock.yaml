@@ -695,8 +695,8 @@ importers:
         specifier: 15.1.0
         version: 15.1.0
       '@formkit/drag-and-drop':
-        specifier: ^0.1.6
-        version: 0.1.6
+        specifier: 0.2.0
+        version: 0.2.0
       '@github/webauthn-json':
         specifier: 2.1.1
         version: 2.1.1
@@ -2698,8 +2698,8 @@ packages:
   '@fastify/view@10.0.1':
     resolution: {integrity: sha512-rXtBN0oVDmoRZAS7lelrCIahf+qFtlMOOas8VPdA7JvrJ9ChcF7e36pIUPU0Vbs3KmHxESUb7XatavUZEe/k5Q==}
 
-  '@formkit/drag-and-drop@0.1.6':
-    resolution: {integrity: sha512-wZyxvk7WTbQ12q8ZGvLoYner1ktBOUf+lCblJT3P0LyqpjGCKTfQMKJtwToKQzJgTbhvow4LBu+yP92Mux321w==}
+  '@formkit/drag-and-drop@0.2.0':
+    resolution: {integrity: sha512-+xKO9YXGF5nk6QStYBzScIGuPY71IJEJ8EFxfxMySE8PyUTKITndj5E7mRLemE8y/SgxOAk/BUSxlIhVTCqRiQ==}
 
   '@github/webauthn-json@2.1.1':
     resolution: {integrity: sha512-XrftRn4z75SnaJOmZQbt7Mk+IIjqVHw+glDGOxuHwXkZBZh/MBoRS7MHjSZMDaLhT4RjN2VqiEU7EOYleuJWSQ==}
@@ -13028,7 +13028,7 @@ snapshots:
       fastify-plugin: 5.0.0
       toad-cache: 3.7.0
 
-  '@formkit/drag-and-drop@0.1.6': {}
+  '@formkit/drag-and-drop@0.2.0': {}
 
   '@github/webauthn-json@2.1.1': {}
 
