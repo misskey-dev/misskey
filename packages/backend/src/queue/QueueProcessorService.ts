@@ -129,10 +129,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			if (!e) return '?';
 
 			if (e instanceof Bull.UnrecoverableError) {
-				return {
-					message: e.message,
-					name: 'Bull.UnrecoverableError',
-				};
+				return `${e.name}: ${e.message}`;
 			}
 
 			return {
