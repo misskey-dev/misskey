@@ -128,7 +128,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			// 何故かeがundefinedで来ることがある
 			if (!e) return '?';
 
-			if (e instanceof Bull.UnrecoverableError) {
+			if (e instanceof Bull.UnrecoverableError || e.name === 'AbortError') {
 				return `${e.name}: ${e.message}`;
 			}
 
