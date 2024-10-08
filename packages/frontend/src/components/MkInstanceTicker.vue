@@ -30,8 +30,8 @@ const tickerColorsRef = computed(() => getTickerColors(tickerInfoRef.value));
 	overflow: clip;
 	display: block;
 	box-sizing: border-box;
-	background-color: var(--ticker-bg, #777777);
-	color: var(--ticker-fg, #ffffff);
+	background-color: var(--ticker-bg, #777);
+	color: var(--ticker-fg, #fff);
 
 	--ticker-size: 2ex;
 	display: grid;
