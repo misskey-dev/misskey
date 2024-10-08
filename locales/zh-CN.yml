@@ -1290,6 +1290,10 @@ target: "对象"
 _abuseUserReport:
   forward: "转发"
   forwardDescription: "目标是匿名系统账户，将把举报转发给远程服务器。"
+  resolve: "解决"
+  accept: "确认"
+  reject: "拒绝"
+  resolveTutorial: "如果举报内容有理且已解决，选择「确认」将案件以肯定的态度标记为已解决。\n如果举报内容站不住脚，选择「拒绝」将案件以否定的态度标记为已解决。"
 _delivery:
   status: "投递状态"
   stop: "停止投递"
@@ -1626,7 +1630,7 @@ _achievements:
     _postedAt0min0sec:
       title: "报时"
       description: "在 0 点发布一篇帖子"
-      flavor: "报时信号最后一响，零点整"
+      flavor: "嘟 · 嘟 · 嘟 · 哔——"
     _selfQuote:
       title: "自我引用"
       description: "引用了自己的帖子"
