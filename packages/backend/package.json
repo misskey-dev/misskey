@@ -19,7 +19,7 @@
 		"watch": "node ./scripts/watch.mjs",
 		"restart": "pnpm build && pnpm start",
 		"dev": "node ./scripts/dev.mjs",
-		"typecheck": "tsc --noEmit && tsc -p test --noEmit",
+		"typecheck": "tsc --noEmit && tsc -p test --noEmit && tsc -p test-federation --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.ts\"",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"jest": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --config jest.config.unit.cjs",
