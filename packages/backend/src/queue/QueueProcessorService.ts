@@ -125,29 +125,26 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		this.logger = this.queueLoggerService.logger;
 
 		function renderError(e?: Error) {
+			// 何故かeがundefinedで来ることがある
+			if (!e) return '?';
+
 			if (e instanceof Bull.UnrecoverableError) {
 				return {
-					stack: undefined,
 					message: e.message,
 					name: 'Bull.UnrecoverableError',
 				};
-			} else if (e) { // 何故かeがundefinedで来ることがある
-				return {
-					stack: e.stack,
-					message: e.message,
-					name: e.name,
-				};
-			} else {
-				return {
-					stack: '?',
-					message: '?',
-					name: '?',
-				};
 			}
+
+			return {
+				stack: e.stack,
+				message: e.message,
+				name: e.name,
+			};
 		}
 
 		function renderJob(job?: Bull.Job) {
-			if (!job) return 'N/A';
+			if (!job) return '?';
+
 			return {
 				name: job.name,
 				info: getJobInfo(job),
