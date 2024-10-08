@@ -409,7 +409,7 @@ onBeforeUnmount(() => {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: color-mix(in srgb, var(--panel), transparent 50%);
+	background-color: color-mix(in srgb, var(--MI_THEME-panel), transparent 50%);
 	display: flex;
 	justify-content: center;
 	align-items: center;

@@ -205,14 +205,14 @@ const props = defineProps<{
 }
 
 .logYellow {
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 }
 
 .logRed {
-	color: var(--error);
+	color: var(--MI_THEME-error);
 }
 
 .logGreen {
-	color: var(--success);
+	color: var(--MI_THEME-success);
 }
 </style>
