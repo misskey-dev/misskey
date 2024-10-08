@@ -21,6 +21,8 @@
 ### Client
 - Enhance: デザインの調整
 - Enhance: ログイン画面の認証フローを改善
+- Fix: クライアント上での時間ベースの実績獲得動作が実績獲得後も発動していた問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/657)
 
 ### Server
 - Enhance: セキュリティ向上のため、ログイン時にメール通知を行うように
