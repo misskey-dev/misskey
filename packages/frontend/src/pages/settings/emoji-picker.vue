@@ -123,7 +123,10 @@ import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
 
 const pinnedEmojisForReaction = ref<string[]>(deepClone(defaultStore.state.reactions));
+const isPinnedEmojisForReactionDragging = ref(false);
+
 const pinnedEmojis = ref<string[]>(deepClone(defaultStore.state.pinnedEmojis));
+const isPinnedEmojisDragging = ref(false);
 
 const emojiPickerScale = computed(defaultStore.makeGetterSetter('emojiPickerScale'));
 const emojiPickerWidth = computed(defaultStore.makeGetterSetter('emojiPickerWidth'));
@@ -140,6 +143,13 @@ dragAndDrop({
 	draggable: (el: HTMLElement) => {
 		return !el.classList.contains('no-drag');
 	},
+	onDragstart: () => {
+		isPinnedEmojisForReactionDragging.value = true;
+	},
+	onDragend: () => {
+		isPinnedEmojisForReactionDragging.value = false;
+		defaultStore.set('reactions', pinnedEmojisForReaction.value);
+	},
 });
 
 dragAndDrop({
@@ -148,6 +158,13 @@ dragAndDrop({
 	plugins: [animations()],
 	draggable: (el: HTMLElement) => {
 		return !el.classList.contains('no-drag');
+	},
+	onDragstart: () => {
+		isPinnedEmojisDragging.value = true;
+	},
+	onDragend: () => {
+		isPinnedEmojisDragging.value = false;
+		defaultStore.set('pinnedEmojis', pinnedEmojis.value);
 	},
 });
 
@@ -229,12 +246,14 @@ function getHTMLElement(ev: MouseEvent): HTMLElement {
 }
 
 watch(pinnedEmojisForReaction, () => {
+	if (isPinnedEmojisForReactionDragging.value) return;
 	defaultStore.set('reactions', pinnedEmojisForReaction.value);
 }, {
 	deep: true,
 });
 
 watch(pinnedEmojis, () => {
+	if (isPinnedEmojisDragging.value) return;
 	defaultStore.set('pinnedEmojis', pinnedEmojis.value);
 }, {
 	deep: true,
