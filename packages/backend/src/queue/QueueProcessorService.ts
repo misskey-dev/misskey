@@ -66,7 +66,7 @@ function getJobInfo(job: Bull.Job | undefined, increment = false): string {
 
 	// onActiveとかonCompletedのattemptsMadeがなぜか0始まりなのでインクリメントする
 	const currentAttempts = job.attemptsMade + (increment ? 1 : 0);
-	const maxAttempts = job.opts ? job.opts.attempts : 0;
+	const maxAttempts = job.opts.attempts ?? 0;
 
 	return `id=${job.id} attempts=${currentAttempts}/${maxAttempts} age=${formated}`;
 }
