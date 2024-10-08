@@ -103,17 +103,30 @@ const valueKv = computed(() => {
 	}
 });
 
-const valueIds = computed({
-	get: () => {
+function updateValueIds(to: Misskey.entities.RoleCondFormulaValue) {
+	if (assertLogicFormula(to)) {
+		return to.values.map(v => v.id);
+	} else {
+		return [];
+	}
+}
+
+const valueIds = ref(updateValueIds(v.value));
+
+watch(v, () => {
+	valueIds.value = updateValueIds(v.value);
+}, { deep: true });
+
+dragAndDrop({
+	parent: dndParentEl,
+	values: valueIds,
+	// TODO: v0.2.0時点では親子階層のドラッグアンドドロップは不安定
+	//group: 'roleFormula',
+	dragHandle: '.drag-handle',
+	plugins: [animations()],
+	onDragend: () => {
 		if (assertLogicFormula(v.value)) {
-			return v.value.values.map(v => v.id);
-		} else {
-			return [];
-		}
-	},
-	set: (newVal) => {
-		if (assertLogicFormula(v.value)) {
-			v.value.values = newVal.map(id => {
+			v.value.values = valueIds.value.map(id => {
 				if (assertLogicFormula(v.value)) {
 					return v.value.values.find(v => v.id === id) ?? null;
 				} else {
@@ -121,15 +134,7 @@ const valueIds = computed({
 				}
 			}).filter(v => v !== null);
 		}
-	}
-});
-
-dragAndDrop({
-	parent: dndParentEl,
-	values: valueIds,
-	group: 'roleFormula',
-	dragHandle: '.drag-handle',
-	plugins: [animations()],
+	},
 });
 
 const roles = await rolesCache.fetch();

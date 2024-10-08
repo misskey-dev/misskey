@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<div class="_panel">
-		<div :class="$style.banner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+		<div :class="$style.banner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : undefined }">
 			<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 		</div>
 		<div :class="$style.avatarContainer">
@@ -132,6 +132,10 @@ import MkTextarea from '@/components/MkTextarea.vue';
 
 const $i = signinRequired();
 
+function assertValidLang(value: string | null): value is keyof typeof langmap {
+	return value !== null && Object.keys(langmap).includes(value);
+}
+
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 
 const profile = reactive({
@@ -140,7 +144,7 @@ const profile = reactive({
 	followedMessage: $i.followedMessage,
 	location: $i.location,
 	birthday: $i.birthday,
-	lang: $i.lang,
+	lang: assertValidLang($i.lang) ? $i.lang : null,
 	isBot: $i.isBot ?? false,
 	isCat: $i.isCat ?? false,
 });

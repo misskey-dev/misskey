@@ -10,6 +10,7 @@ import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
 import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
+import type { DefaultStoredWidget } from '@/widgets/widget.js';
 import { Storage } from '@/pizzax.js';
 
 interface PostFormAction {
@@ -179,12 +180,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	widgets: {
 		where: 'account',
-		default: [] as {
-			name: string;
-			id: string;
-			place: string | null;
-			data: Record<string, any>;
-		}[],
+		default: [] as DefaultStoredWidget[],
 	},
 	tl: {
 		where: 'deviceAccount',

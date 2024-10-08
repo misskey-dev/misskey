@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			role="button"
 			tabindex="0"
 			@click="showFileMenu(file, $event)"
-			@keydown.space.enter="showFileMenu(element, $event)"
+			@keydown.space.enter="showFileMenu(file, $event)"
 			@contextmenu.prevent="showFileMenu(file, $event)"
 		>
 			<MkDriveFileThumbnail :data-id="file.id" :class="$style.thumbnail" :file="file" fit="cover"/>

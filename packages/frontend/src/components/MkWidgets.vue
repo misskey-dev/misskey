@@ -15,11 +15,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton inline @click="$emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
 		<div ref="dndParentEl" :class="$style.editEditing">
-			<div v-for="widget in widgets" :key="widget.id" :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
-				<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(widget.id)"><i class="ti ti-settings"></i></button>
-				<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(widget)"><i class="ti ti-x"></i></button>
+			<div v-for="widgetId in widgetIds" :key="widgetId" :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
+				<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(widgetId)"><i class="ti ti-settings"></i></button>
+				<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(getWidgetById(widgetId)!)"><i class="ti ti-x"></i></button>
 				<div class="handle">
-					<component :is="`widget-${widget.name}`" :ref="el => widgetRefs[widget.id] = el" class="widget" :class="$style.customizeContainerHandleWidget" :widget="widget" @updateProps="updateWidget(widget.id, $event)"/>
+					<component :is="`widget-${getWidgetById(widgetId)!.name}`" :ref="el => widgetRefs[widgetId] = el" class="widget" :class="$style.customizeContainerHandleWidget" :widget="getWidgetById(widgetId)!" @updateProps="updateWidget(widgetId, $event)"/>
 				</div>
 			</div>
 		</div>
@@ -28,22 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts">
-export type Widget = {
-	name: string;
-	id: string;
-	data: Record<string, any>;
-};
-export type DefaultStoredWidget = {
-	place: string | null;
-} & Widget;
-</script>
-
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref, shallowRef, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { animations } from '@formkit/drag-and-drop';
-import { useDragAndDrop } from '@formkit/drag-and-drop/vue';
+import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { widgets as widgetDefs } from '@/widgets/index.js';
@@ -51,20 +40,12 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { isLink } from '@@/js/is-link.js';
 
+import type { Widget, WidgetProps } from '@/widgets/widget.js';
+
 const props = defineProps<{
 	widgets: Widget[];
 	edit: boolean;
 }>();
-
-const [dndParentEl, widgets] = useDragAndDrop(props.widgets, {
-	group: 'SortableMkWidgets',
-	dragHandle: '.handle',
-	plugins: [animations()],
-});
-
-watch(widgets, () => {
-	emit('updateWidgets', widgets.value);
-});
 
 const emit = defineEmits<{
 	(ev: 'updateWidgets', widgets: Widget[]): void;
@@ -74,10 +55,40 @@ const emit = defineEmits<{
 	(ev: 'exit'): void;
 }>();
 
+function updateWidgetIds(to: Widget[]) {
+	return to.map(w => w.id);
+}
+
+function getWidgetById(id: string) {
+	return props.widgets.find(w => w.id === id) ?? null;
+}
+
+const widgetIds = ref(updateWidgetIds(props.widgets));
+
+watch(() => props.widgets, (to) => {
+	const updated = updateWidgetIds(to);
+	widgetIds.value = updated;
+});
+
+const dndParentEl = shallowRef<HTMLElement>();
+
+dragAndDrop({
+	parent: dndParentEl,
+	values: widgetIds,
+	plugins: [animations()],
+	dragHandle: '.handle',
+	onDragend: () => {
+		// Widget ids to widget object array
+		const widgets = widgetIds.value.map(id => props.widgets.find(w => w.id === id) ?? null).filter(w => w !== null);
+		emit('updateWidgets', widgets);
+	},
+});
+
 const widgetRefs = {};
 const configWidget = (id: string) => {
 	widgetRefs[id].configure();
 };
+
 const widgetAdderSelected = ref<string | null>(null);
 const addWidget = () => {
 	if (widgetAdderSelected.value == null) return;
@@ -90,10 +101,12 @@ const addWidget = () => {
 
 	widgetAdderSelected.value = null;
 };
-const removeWidget = (widget) => {
+
+const removeWidget = (widget: Widget) => {
 	emit('removeWidget', widget);
 };
-const updateWidget = (id, data) => {
+
+const updateWidget = (id: string, data: Partial<WidgetProps>) => {
 	emit('updateWidget', { id, data });
 };
 

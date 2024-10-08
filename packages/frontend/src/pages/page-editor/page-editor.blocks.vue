@@ -12,10 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, computed, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { animations } from '@formkit/drag-and-drop';
-import { dragAndDrop } from '@formkit/drag-and-drop/vue';
+import { useDragAndDrop } from '@formkit/drag-and-drop/vue';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XImage from './els/page-editor.el.image.vue';
@@ -39,16 +38,7 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.PageBlock[]): void;
 }>();
 
-const items = computed({
-	get: () => props.modelValue,
-	set: (v) => emit('update:modelValue', v),
-});
-
-const dndParentEl = shallowRef<HTMLElement>();
-
-dragAndDrop({
-	parent: dndParentEl,
-	values: items,
+const [dndParentEl, items] = useDragAndDrop(props.modelValue, {
 	dragHandle: '.drag-handle',
 	group: 'blocks',
 	plugins: [animations()],
@@ -56,11 +46,10 @@ dragAndDrop({
 		horizontal: 0.5,
 		vertical: 0.5,
 	},
+	onDragend: () => {
+		emit('update:modelValue', items.value);
+	},
 });
-
-watch(items, (v) => {
-	emit('update:modelValue', v);
-}, { deep: true });
 
 function updateItem(v: Misskey.entities.PageBlock) {
 	const i = props.modelValue.findIndex(x => x.id === v.id);
