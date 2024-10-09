@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton @click="resolve('reject')"><i class="ti ti-x" style="color: var(--error)"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts._abuseUserReport.reject }})</MkButton>
 				<MkButton @click="resolve(null)"><i class="ti ti-slash"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts.other }})</MkButton>
 			</template>
-			<template v-if="report.targetUser.host == null">
+			<template v-if="report.targetUser.host != null">
 				<MkButton :disabled="report.forwarded" primary @click="forward"><i class="ti ti-corner-up-right"></i> {{ i18n.ts._abuseUserReport.forward }}</MkButton>
 				<div v-tooltip:dialog="i18n.ts._abuseUserReport.forwardDescription" class="_button _help"><i class="ti ti-help-circle"></i></div>
 			</template>
