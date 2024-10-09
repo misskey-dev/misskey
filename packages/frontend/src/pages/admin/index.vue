@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSpacer>
 	</div>
 	<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
-		<RouterView/>
+		<RouterView nested/>
 	</div>
 </div>
 </template>

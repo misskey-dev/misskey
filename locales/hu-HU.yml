@@ -96,6 +96,7 @@ _notification:
     renote: "Renote"
     quote: "Idézet"
     reaction: "Reakciók"
+    login: "Bejelentkezés"
   _actions:
     renote: "Renote"
 _deck:

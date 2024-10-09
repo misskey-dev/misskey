@@ -38,9 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<KeepAlive>
 					<div v-show="opened">
-						<MkSpacer :marginMin="14" :marginMax="22">
+						<MkSpacer v-if="withSpacer" :marginMin="14" :marginMax="22">
 							<slot></slot>
 						</MkSpacer>
+						<div v-else>
+							<slot></slot>
+						</div>
 						<div v-if="$slots.footer" :class="$style.footer">
 							<slot name="footer"></slot>
 						</div>
@@ -59,9 +62,11 @@ import { defaultStore } from '@/store.js';
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
 	maxHeight?: number | null;
+	withSpacer?: boolean;
 }>(), {
 	defaultOpen: false,
 	maxHeight: null,
+	withSpacer: true,
 });
 
 const getBgColor = (el: HTMLElement) => {
