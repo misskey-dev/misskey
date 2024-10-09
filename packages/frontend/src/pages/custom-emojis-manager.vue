@@ -331,14 +331,14 @@ definePageMetadata(() => ({
 				align-items: center;
 				padding: 11px;
 				text-align: left;
-				border: solid 1px var(--panel);
+				border: solid 1px var(--MI_THEME-panel);
 
 				&:hover {
-					border-color: var(--inputBorderHover);
+					border-color: var(--MI_THEME-inputBorderHover);
 				}
 
 				&.selected {
-					border-color: var(--accent);
+					border-color: var(--MI_THEME-accent);
 				}
 
 				> .img {
@@ -385,7 +385,7 @@ definePageMetadata(() => ({
 				text-align: left;
 
 				&:hover {
-					color: var(--accent);
+					color: var(--MI_THEME-accent);
 				}
 
 				> .img {

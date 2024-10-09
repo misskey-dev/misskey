@@ -68,7 +68,7 @@ function onLogin(res) {
 	height: 100%;
 	max-height: 450px;
 	box-sizing: border-box;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: var(--radius);
 }
 
@@ -83,7 +83,7 @@ function onLogin(res) {
 	align-items: center;
 	font-weight: bold;
 	backdrop-filter: var(--blur, blur(15px));
-	background: var(--acrylicBg);
+	background: var(--MI_THEME-acrylicBg);
 	z-index: 1;
 }
 

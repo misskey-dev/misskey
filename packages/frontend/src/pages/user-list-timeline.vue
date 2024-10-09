@@ -97,7 +97,7 @@ definePageMetadata(() => ({
 }
 
 .tl {
-	background: var(--bg);
+	background: var(--MI_THEME-bg);
 	border-radius: var(--radius);
 	overflow: clip;
 }

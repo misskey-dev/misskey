@@ -226,7 +226,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animatedMfm: {
 		where: 'device',
-		default: true,
+		default: !window.matchMedia('(prefers-reduced-motion)').matches,
 	},
 	advancedMfm: {
 		where: 'device',

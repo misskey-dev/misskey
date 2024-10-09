@@ -51,18 +51,18 @@ const props = defineProps<{
 	width: 100%;
 	box-sizing: border-box;
 	padding: 10px 14px;
-	background: var(--folderHeaderBg);
+	background: var(--MI_THEME-folderHeaderBg);
 	border-radius: 6px;
 	font-size: 0.9em;
 
 	&:hover {
 		text-decoration: none;
-		background: var(--folderHeaderHoverBg);
+		background: var(--MI_THEME-folderHeaderHoverBg);
 	}
 
 	&.active {
-		color: var(--accent);
-		background: var(--folderHeaderHoverBg);
+		color: var(--MI_THEME-accent);
+		background: var(--MI_THEME-folderHeaderHoverBg);
 	}
 }
 
@@ -70,7 +70,7 @@ const props = defineProps<{
 	margin-right: 0.75em;
 	flex-shrink: 0;
 	text-align: center;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 
 	&:empty {
 		display: none;

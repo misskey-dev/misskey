@@ -110,8 +110,8 @@ function submit() {
 	font-size: 1.5em;
 	text-align: center;
 	padding: 32px;
-	background: var(--accentedBg);
-	color: var(--accent);
+	background: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
 	font-weight: bold;
 }
 

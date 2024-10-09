@@ -234,8 +234,8 @@ if ($i) {
 		height: 18px;
 		box-sizing: border-box;
 		border: solid 2px transparent;
-		border-top-color: var(--accent);
-		border-left-color: var(--accent);
+		border-top-color: var(--MI_THEME-accent);
+		border-left-color: var(--MI_THEME-accent);
 		border-radius: 50%;
 		animation: progress-spinner 400ms linear infinite;
 	}

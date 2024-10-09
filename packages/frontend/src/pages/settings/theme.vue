@@ -204,7 +204,7 @@ definePageMetadata(() => ({
 		}
 
 		.dn:focus-visible ~ .toggle {
-			outline: 2px solid var(--focus);
+			outline: 2px solid var(--MI_THEME-focus);
 			outline-offset: 2px;
 		}
 
@@ -227,12 +227,12 @@ definePageMetadata(() => ({
 
 			> .before {
 				left: -70px;
-				color: var(--accent);
+				color: var(--MI_THEME-accent);
 			}
 
 			> .after {
 				right: -68px;
-				color: var(--fg);
+				color: var(--MI_THEME-fg);
 			}
 		}
 
@@ -350,11 +350,11 @@ definePageMetadata(() => ({
 				background-color: #749DD6;
 
 				> .before {
-					color: var(--fg);
+					color: var(--MI_THEME-fg);
 				}
 
 				> .after {
-					color: var(--accent);
+					color: var(--MI_THEME-accent);
 				}
 
 				.toggle__handler {
@@ -405,7 +405,7 @@ definePageMetadata(() => ({
 
 	> .sync {
 		padding: 14px 16px;
-		border-top: solid 0.5px var(--divider);
+		border-top: solid 0.5px var(--MI_THEME-divider);
 	}
 }
 
