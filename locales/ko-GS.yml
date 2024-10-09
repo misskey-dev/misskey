@@ -601,8 +601,6 @@ reportAbuseOf: "{name}님얼 신고하기"
 reporter: "신고한 사람"
 reporteeOrigin: "신고덴 사람"
 reporterOrigin: "신고한 곳"
-forwardReport: "웬겍 서버에 신고 보내기"
-forwardReportIsAnonymous: "웬겍 서버서는 나으 정보럴 몬 보고 익멩으 시스템 게정어로 보입니다."
 waitingFor: "{x}(얼)럴 지달리고 잇십니다"
 random: "무작이"
 system: "시스템"
@@ -813,6 +811,7 @@ _notification:
     mention: "멘션"
     quote: "따오기"
     reaction: "반엉"
+    login: "로그인"
   _actions:
     reply: "답하기"
 _deck:

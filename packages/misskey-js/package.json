@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2024.9.0",
+	"version": "2024.10.0",
 	"description": "Misskey SDK for JavaScript",
 	"license": "MIT",
 	"main": "./built/index.js",
@@ -57,6 +57,7 @@
 		"built"
 	],
 	"dependencies": {
+		"@simplewebauthn/types": "10.0.0",
 		"eventemitter3": "5.0.1",
 		"reconnecting-websocket": "4.4.0"
 	}
