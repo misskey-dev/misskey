@@ -1974,7 +1974,6 @@ _theme:
     buttonBg: "Fons botó "
     buttonHoverBg: "Fons botó (en passar-hi per sobre)"
     inputBorder: "Contorn del cap d'introducció "
-    listItemHoverBg: "Fons dels elements d'una llista"
     driveFolderBg: "Fons de la carpeta Disc"
     wallpaperOverlay: "Superposició del fons de pantalla "
     badge: "Insígnia "
