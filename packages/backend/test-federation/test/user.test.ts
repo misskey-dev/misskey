@@ -420,6 +420,13 @@ describe('User', () => {
 				await bAdmin.client.request('admin/delete-account', { userId: aliceInB.id });
 				await sleep();
 
+				/**
+				 * FIXME: remote account is not deleted!
+				 *        @see https://github.com/misskey-dev/misskey/issues/14728
+				 */
+				const deletedAlice = await bob.client.request('users/show', { userId: aliceInB.id });
+				assert(deletedAlice.id, aliceInB.id);
+
 				// TODO: why still following relation?
 				const following = await bob.client.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 1);
