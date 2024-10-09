@@ -5208,6 +5208,14 @@ export interface Locale extends ILocale {
      * 自分のプロフィールのアクティビティ (概要/アクティビティタブ) を他人が見れないようにします。このオプションを有効にしても、自分であればプロフィールのアクティビティタブから引き続き閲覧できます。
      */
     "hideActivityDescription": string;
+		/**
+		 * プロフィールのファイルを非公開にする
+		 */
+		"hideProfileFiles": string;
+		/**
+		 * 自分のプロフィールのファイルを他人が見れないようにします。
+		 */
+		"hideProfileFilesDescription": string;
     /**
      * 誰がリアクションをしたのかを非表示にする
      */

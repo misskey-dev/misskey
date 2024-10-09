@@ -148,7 +148,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
-			<XFiles :key="user.id" :user="user"/>
+			<XFiles v-if="!user.hideProfileFiles" :key="user.id" :user="user"/>
 			<XActivity v-if="!user.hideActivity" :key="user.id" :user="user"/>
 		</div>
 	</div>

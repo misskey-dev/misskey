@@ -22,6 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts.hideActivityDescription }}</template>
 	</MkSwitch>
 
+	<MkSwitch v-model="hideProfileFiles" @update:modelValue="save()">
+		{{ i18n.ts.hideProfileFiles }}<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+		<template #caption>{{ i18n.ts.hideProfileFilesDescription }}</template>
+	</MkSwitch>
+
 	<MkSelect v-model="notesVisibility" @update:modelValue="save()">
 		<template #label>{{ i18n.ts.notesVisibility }}</template>
 		<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
@@ -110,6 +115,7 @@ const isExplorable = ref($i.isExplorable);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
 const hideActivity = ref($i.hideActivity);
+const hideProfileFiles = ref($i.hideProfileFiles);
 const notesVisibility = ref($i.notesVisibility);
 const followingVisibility = ref($i.followingVisibility);
 const followersVisibility = ref($i.followersVisibility);
@@ -130,6 +136,7 @@ function save() {
 		hideOnlineStatus: !!hideOnlineStatus.value,
 		publicReactions: !!publicReactions.value,
 		hideActivity: !!hideActivity.value,
+		hideProfileFiles: !!hideProfileFiles.value,
 		notesVisibility: notesVisibility.value,
 		followingVisibility: followingVisibility.value,
 		followersVisibility: followersVisibility.value,
