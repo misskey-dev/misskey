@@ -707,10 +707,7 @@ abuseReported: "無事内容が送信されたみたいやで。おおきに〜�
 reporter: "通報者"
 reporteeOrigin: "通報先"
 reporterOrigin: "通報元"
-forwardReport: "リモートサーバーに通報を転送するで"
-forwardReportIsAnonymous: "リモートサーバーからはあんたの情報は見えんなって、匿名のシステムアカウントとして表示されるで。"
 send: "送信"
-abuseMarkAsResolved: "対応したで"
 openInNewTab: "新しいタブで開く"
 openInSideView: "サイドビューで開く"
 defaultNavigationBehaviour: "デフォルトのナビゲーション"
@@ -2374,6 +2371,7 @@ _notification:
     followRequestAccepted: "フォローが受理されたで"
     roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
+    login: "ログイン"
     app: "連携アプリからの通知や"
   _actions:
     followBack: "フォローバック"
