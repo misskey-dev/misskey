@@ -124,6 +124,11 @@ export class MiUserProfile {
 	})
 	public hideActivity: boolean;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public hideProfileFiles: boolean;
+
 	@Column('varchar', {
 		length: 128, nullable: true,
 	})

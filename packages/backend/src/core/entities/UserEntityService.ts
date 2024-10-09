@@ -550,6 +550,7 @@ export class UserEntityService implements OnModuleInit {
 				pinnedPage: profile!.pinnedPageId ? this.pageEntityService.pack(profile!.pinnedPageId, me) : null,
 				publicReactions: this.isLocalUser(user) ? profile!.publicReactions : false, // https://github.com/misskey-dev/misskey/issues/12964
 				hideActivity: this.isLocalUser(user) ? profile!.hideActivity : false, //
+				hideProfileFiles: this.isLocalUser(user) ? profile!.hideProfileFiles : false,
 				notesVisibility: profile!.notesVisibility,
 				followersVisibility: profile!.followersVisibility,
 				followingVisibility: profile!.followingVisibility,
