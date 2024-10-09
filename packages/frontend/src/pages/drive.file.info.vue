@@ -231,7 +231,7 @@ onMounted(async () => {
 <style lang="scss" module>
 
 .filePreviewRoot {
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: var(--radius);
 	// MkMediaList 内の上部マージン 4px
 	padding: calc(1rem - 4px) 1rem 1rem;
@@ -262,8 +262,8 @@ onMounted(async () => {
 
 		&:hover,
 		&:focus-visible {
-			background-color: var(--accentedBg);
-			color: var(--accent);
+			background-color: var(--MI_THEME-accentedBg);
+			color: var(--MI_THEME-accent);
 			text-decoration: none;
 			outline: none;
 		}
@@ -299,12 +299,12 @@ onMounted(async () => {
 	}
 
 	&:hover {
-		background-color: var(--accentedBg);
+		background-color: var(--MI_THEME-accentedBg);
 
 		>.fileName,
 		>.fileNameEditIcon {
 			visibility: visible;
-			color: var(--accent);
+			color: var(--MI_THEME-accent);
 		}
 	}
 }
@@ -332,11 +332,11 @@ onMounted(async () => {
 	}
 
 	&:hover {
-		color: var(--accent);
-		background-color: var(--accentedBg);
+		color: var(--MI_THEME-accent);
+		background-color: var(--MI_THEME-accentedBg);
 
 		.kvEditIcon {
-			color: var(--accent);
+			color: var(--MI_THEME-accent);
 			visibility: visible;
 		}
 	}
