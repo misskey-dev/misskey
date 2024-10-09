@@ -437,9 +437,11 @@ onBeforeUnmount(() => {
 
 	&.big:not(.asDrawer) {
 		> .menu {
+			min-width: 230px;
+
 			> .item {
 				padding: 6px 20px;
-				font-size: 1em;
+				font-size: 0.95em;
 				line-height: 24px;
 			}
 		}

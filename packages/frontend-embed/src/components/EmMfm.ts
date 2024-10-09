@@ -6,6 +6,7 @@
 import { VNode, h, SetupContext, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import { host } from '@@/js/config.js';
 import EmUrl from '@/components/EmUrl.vue';
 import EmTime from '@/components/EmTime.vue';
 import EmLink from '@/components/EmLink.vue';
@@ -13,7 +14,6 @@ import EmMention from '@/components/EmMention.vue';
 import EmEmoji from '@/components/EmEmoji.vue';
 import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
 import EmA from '@/components/EmA.vue';
-import { host } from '@@/js/config.js';
 
 function safeParseFloat(str: unknown): number | null {
 	if (typeof str !== 'string' || str === '') return null;
@@ -41,9 +41,6 @@ type MfmProps = {
 	rootScale?: number;
 	nyaize?: boolean | 'respect';
 	parsedNodes?: mfm.MfmNode[] | null;
-	enableEmojiMenu?: boolean;
-	enableEmojiMenuReaction?: boolean;
-	linkNavigationBehavior?: string;
 };
 
 type MfmEvents = {
@@ -52,8 +49,6 @@ type MfmEvents = {
 
 // eslint-disable-next-line import/no-default-export
 export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEvents>['emit'] }) {
-	provide('linkNavigationBehavior', props.linkNavigationBehavior);
-
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
@@ -397,8 +392,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						normal: props.plain,
 						host: null,
 						useOriginalSize: scale >= 2.5,
-						menu: props.enableEmojiMenu,
-						menuReaction: props.enableEmojiMenuReaction,
 						fallbackToImage: false,
 					})];
 				} else {
