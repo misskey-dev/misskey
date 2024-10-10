@@ -40,7 +40,7 @@ export class FlashEntityService {
 		// { schema: 'UserDetailed' } すると無限ループするので注意
 		const user = hint?.packedUser ?? await this.userEntityService.pack(flash.user ?? flash.userId, me);
 
-		let isLiked = false;
+		let isLiked = undefined;
 		if (meId) {
 			isLiked = hint?.likedFlashIds
 				? hint.likedFlashIds.includes(flash.id)

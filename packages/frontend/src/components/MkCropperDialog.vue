@@ -125,7 +125,7 @@ onMounted(() => {
 	const computedStyle = getComputedStyle(document.documentElement);
 
 	const selection = cropper.getCropperSelection()!;
-	selection.themeColor = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
+	selection.themeColor = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();
 	selection.aspectRatio = props.aspectRatio;
 	selection.initialAspectRatio = props.aspectRatio;
 	selection.outlined = true;

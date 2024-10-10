@@ -1,5 +1,5 @@
 ---
-_lang_: "日本語"
+_lang_: "Português"
 headlineMisskey: "Uma rede ligada por notas"
 introMisskey: "Bem-vindo! O Misskey é um serviço de microblog descentralizado de código aberto.\nCrie \"notas\" para compartilhar o que está acontecendo agora ou para se expressar com todos à sua volta 📡\nVocê também pode adicionar rapidamente reações às notas de outras pessoas usando a função \"Reações\" 👍\nVamos explorar um novo mundo 🚀"
 poweredByMisskeyDescription: "{name} é uma instância da plataforma de código aberto <b>Misskey</b>."
@@ -1058,7 +1058,7 @@ resetPasswordConfirm: "Deseja realmente mudar a sua senha?"
 sensitiveWords: "Palavras sensíveis"
 sensitiveWordsDescription: "A visibilidade de todas as notas contendo as palavras configuradas será colocadas como \"Início\" automaticamente. Você pode listar várias delas separando-as por linha."
 sensitiveWordsDescription2: "Utilizar espaços irá criar expressões aditivas (AND) e cercar palavras-chave com barras irá transformá-las em expressões regulares (RegEx)"
-prohibitedWords: "Palavras proibídas"
+prohibitedWords: "Palavras proibidas"
 prohibitedWordsDescription: "Habilita um erro ao tentar publicar uma nota contendo as palavras escolhidas. Várias palavras podem ser escolhidas, separando-as por linha."
 prohibitedWordsDescription2: "Utilizar espaços irá criar expressões aditivas (AND) e cercar palavras-chave com barras irá transformá-las em expressões regulares (RegEx)"
 hiddenTags: "Hashtags escondidas"
@@ -1416,7 +1416,7 @@ _achievements:
   _types:
     _notes1:
       title: "Configurando o meu misskey"
-      description: "Post uma nota pela primeira vez"
+      description: "Poste uma nota pela primeira vez"
       flavor: "Divirta-se com o Misskey!"
     _notes10:
       title: "Algumas notas"

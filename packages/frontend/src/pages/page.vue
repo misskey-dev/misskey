@@ -357,8 +357,8 @@ definePageMetadata(() => ({
 
 	&:hover,
 	&:focus-visible {
-		background-color: var(--accentedBg);
-		color: var(--accent);
+		background-color: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
 		text-decoration: none;
 		outline: none;
 	}
@@ -367,7 +367,7 @@ definePageMetadata(() => ({
 .pageMain {
 	border-radius: var(--radius);
 	padding: 2rem;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	box-sizing: border-box;
 }
 
@@ -399,7 +399,7 @@ definePageMetadata(() => ({
 		}
 
 		.pageBannerBgFallback2 {
-			background-color: var(--accentedBg);
+			background-color: var(--MI_THEME-accentedBg);
 		}
 
 		&::after {
@@ -409,7 +409,7 @@ definePageMetadata(() => ({
 			bottom: 0;
 			width: 100%;
 			height: 100px;
-			background: linear-gradient(0deg, var(--panel), transparent);
+			background: linear-gradient(0deg, var(--MI_THEME-panel), transparent);
 		}
 	}
 
@@ -433,7 +433,7 @@ definePageMetadata(() => ({
 		h1 {
 			font-size: 2rem;
 			font-weight: 700;
-			color: var(--fg);
+			color: var(--MI_THEME-fg);
 			margin: 0;
 		}
 
@@ -472,7 +472,7 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 
-	border-top: 1px solid var(--divider);
+	border-top: 1px solid var(--MI_THEME-divider);
 	padding-top: 1.5rem;
 	margin-bottom: 1.5rem;
 
@@ -487,7 +487,7 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 
-	border-top: 1px solid var(--divider);
+	border-top: 1px solid var(--MI_THEME-divider);
 	padding-top: 1.5rem;
 	margin-bottom: 1.5rem;
 
@@ -534,6 +534,6 @@ definePageMetadata(() => ({
 }
 
 .relatedPagesItem > article {
-	background-color: var(--panelHighlight) !important;
+	background-color: var(--MI_THEME-panelHighlight) !important;
 }
 </style>

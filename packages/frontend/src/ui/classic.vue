@@ -216,7 +216,7 @@ onMounted(() => {
 	box-sizing: border-box;
 
 	&.wallpaper {
-		background: var(--wallpaperOverlay);
+		background: var(--MI_THEME-wallpaperOverlay);
 		//backdrop-filter: var(--blur, blur(4px));
 	}
 
@@ -249,15 +249,15 @@ onMounted(() => {
 			min-width: 0;
 			width: 750px;
 			margin: 0 16px 0 0;
-			border-left: solid 1px var(--divider);
-			border-right: solid 1px var(--divider);
+			border-left: solid 1px var(--MI_THEME-divider);
+			border-right: solid 1px var(--MI_THEME-divider);
 			border-radius: 0;
 			overflow: clip;
 			--margin: 12px;
 		}
 
 		> .widgets {
-			//--panelBorder: none;
+			//--MI_THEME-panelBorder: none;
 			width: 300px;
 			padding-bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 
@@ -277,7 +277,7 @@ onMounted(() => {
 		&.withGlobalHeader {
 			> .main {
 				margin-top: 0;
-				border: solid 1px var(--divider);
+				border: solid 1px var(--MI_THEME-divider);
 				border-radius: var(--radius);
 				--stickyTop: var(--globalHeaderHeight);
 			}
@@ -292,7 +292,7 @@ onMounted(() => {
 			margin: 0;
 
 			> .sidebar {
-				border-right: solid 0.5px var(--divider);
+				border-right: solid 0.5px var(--MI_THEME-divider);
 			}
 
 			> .main {
@@ -317,7 +317,7 @@ onMounted(() => {
 		padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 		box-sizing: border-box;
 		overflow: auto;
-		background: var(--bg);
+		background: var(--MI_THEME-bg);
 	}
 
 	> .ivnzpscs {
