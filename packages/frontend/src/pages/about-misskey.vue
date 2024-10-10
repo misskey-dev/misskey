@@ -441,7 +441,7 @@ definePageMetadata(() => ({
 .znqjceqz {
 	> .about {
 		position: relative;
-		border-radius: var(--radius);
+		border-radius: var(--MI_UI-radius);
 
 		> .treasure {
 			position: absolute;

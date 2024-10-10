@@ -103,20 +103,20 @@ definePageMetadata(() => ({
 	margin: calc(-0.675em - 8px) 0;
 
 	&:first-child {
-		margin-top: calc(-0.675em - 8px - var(--margin));
+		margin-top: calc(-0.675em - 8px - var(--MI_UI-margin));
 	}
 }
 
 .newButton {
 	display: block;
-	margin: var(--margin) auto 0 auto;
+	margin: var(--MI_UI-margin) auto 0 auto;
 	padding: 8px 16px;
 	border-radius: 32px;
 }
 
 .tl {
 	background: var(--MI_THEME-bg);
-	border-radius: var(--radius);
+	border-radius: var(--MI_UI-radius);
 	overflow: clip;
 }
 </style>

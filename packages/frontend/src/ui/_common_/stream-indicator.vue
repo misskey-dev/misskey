@@ -48,8 +48,8 @@ onUnmounted(() => {
 .root {
 	position: fixed;
 	z-index: v-bind(zIndex);
-	bottom: calc(var(--minBottomSpacing) + var(--margin));
-	right: var(--margin);
+	bottom: calc(var(--MI_UI-minBottomSpacing) + var(--MI_UI-margin));
+	right: var(--MI_UI-margin);
 	margin: 0;
 	padding: 12px;
 	font-size: 0.9em;

@@ -119,8 +119,8 @@ onMounted(() => {
 	z-index: 10;
 	position: sticky;
 	top: var(--stickyTop, 0px);
-	-webkit-backdrop-filter: var(--blur, blur(8px));
-	backdrop-filter: var(--blur, blur(20px));
+	-webkit-backdrop-filter: var(--MI_UI-blur, blur(8px));
+	backdrop-filter: var(--MI_UI-blur, blur(20px));
 }
 
 .title {

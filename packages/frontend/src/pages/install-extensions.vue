@@ -250,7 +250,7 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .extInstallerRoot {
-	border-radius: var(--radius);
+	border-radius: var(--MI_UI-radius);
 	background: var(--MI_THEME-panel);
 	padding: 1.5rem;
 }

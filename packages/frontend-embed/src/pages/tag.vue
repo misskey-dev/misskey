@@ -83,7 +83,7 @@ function top(ev: MouseEvent) {
 	display: flex;
 	min-width: 0;
 	align-items: center;
-	gap: var(--margin);
+	gap: var(--MI_UI-margin);
 	overflow: hidden;
 
 	.headerClipIconRoot {

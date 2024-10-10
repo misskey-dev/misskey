@@ -181,6 +181,6 @@ defineExpose({
 	min-height: 100%;
 	background: var(--MI_THEME-bg);
 
-	--margin: var(--marginHalf);
+	--MI_UI-margin: var(--MI_UI-marginHalf);
 }
 </style>
