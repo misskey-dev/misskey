@@ -86,14 +86,14 @@ defineExpose<TutorialPageCommonExpose>({
 <style lang="scss" module>
 .exampleRoot {
 	max-width: none!important;
-	border-radius: var(--radius);
-	border: var(--panelBorder);
-	background: var(--panel);
+	border-radius: var(--MI-radius);
+	border: var(--MI_THEME-panelBorder);
+	background: var(--MI_THEME-panel);
 }
 
 .divider {
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .image {
@@ -106,7 +106,7 @@ defineExpose<TutorialPageCommonExpose>({
 	display: block;
 	width: 100%;
 	height: 40px;
-	color: var(--fgOnAccent);
+	color: var(--MI_THEME-fgOnAccent);
 	font-weight: bold;
 	text-align: left;
 
@@ -122,7 +122,7 @@ defineExpose<TutorialPageCommonExpose>({
 		right: 0;
 		bottom: 0;
 		border-radius: 999px;
-		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+		background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 	}
 
 }

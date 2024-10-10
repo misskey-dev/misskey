@@ -87,7 +87,7 @@ function onDeleteButtonClicked() {
 }
 
 .rightDivider {
-	border-right: 0.5px solid var(--divider);
+	border-right: 0.5px solid var(--MI_THEME-divider);
 }
 
 .recipientButtons {
@@ -108,7 +108,7 @@ function onDeleteButtonClicked() {
 	padding: 8px;
 
 	&:hover {
-		background-color: var(--buttonBg);
+		background-color: var(--MI_THEME-buttonBg);
 	}
 }
 </style>

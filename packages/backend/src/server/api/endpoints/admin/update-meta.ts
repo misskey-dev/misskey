@@ -657,7 +657,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (Array.isArray(ps.federationHosts)) {
-				set.blockedHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
+				set.federationHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
 			}
 
 			const before = await this.metaService.fetch(true);
