@@ -103,6 +103,6 @@ defineExpose<TutorialPageCommonExpose>({
 .avatar {
 	width: 100px;
 	height: 100px;
-	background: var(--bg);
+	background: var(--MI_THEME-bg);
 }
 </style>
