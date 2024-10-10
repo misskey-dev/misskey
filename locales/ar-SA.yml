@@ -1252,7 +1252,6 @@ _theme:
     buttonBg: "خلفية الأزرار"
     buttonHoverBg: "خلفية الأزرار (عند التمرير فوقها)"
     inputBorder: "حواف حقل الإدخال"
-    listItemHoverBg: "خلفية عناصر القائمة (عند التمرير فوقها)"
     driveFolderBg: "خلفية مجلد قرص التخزين"
     messageBg: "خلفية المحادثة"
 _sfx:
