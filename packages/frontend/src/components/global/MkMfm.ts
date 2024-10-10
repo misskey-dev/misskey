@@ -408,7 +408,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						h(MkUrlPreview, {
 							url: token.children[0].props.url,
 							compact: true,
-							detail: true,
 						}),
 					])];
 				} else {
