@@ -46,9 +46,14 @@ export class CheckModeratorsActivityProcessorService {
 		if (isModeratorsInactive) {
 			this.logger.warn(`The moderator has been inactive for ${MODERATOR_INACTIVITY_LIMIT_DAYS} days. We will move to invitation only.`);
 			await this.changeToInvitationOnly();
+
+			// TODO: モデレータに通知メール＋Misskey通知
+			// TODO: SystemWebhook通知
 		} else {
 			if (inactivityLimitCountdown <= 2) {
 				this.logger.warn(`A moderator has been inactive for a period of time. If you are inactive for an additional ${inactivityLimitCountdown} days, it will switch to invitation only.`);
+
+				// TODO: 警告メール
 			}
 		}
 	}
@@ -67,7 +72,7 @@ export class CheckModeratorsActivityProcessorService {
 	 *
 	 * #### パターン①
 	 * - モデレータA: lastActiveDate = 2022-01-20 00:00:00 ※アウト
-	 * - モデレータB: lastActiveDate = 2022-01-23 12:00:00 ※セーフ（ギリギリ残り0日）
+	 * - モデレータB: lastActiveDate = 2022-01-23 12:00:00 ※セーフ（判定基準と同値なのでギリギリ残り0日）
 	 * - モデレータC: lastActiveDate = 2022-01-23 11:59:59 ※アウト（残り-1日）
 	 * - モデレータD: lastActiveDate = null
 	 *
@@ -77,7 +82,7 @@ export class CheckModeratorsActivityProcessorService {
 	 * - モデレータA: lastActiveDate = 2022-01-20 00:00:00 ※アウト
 	 * - モデレータB: lastActiveDate = 2022-01-22 12:00:00 ※アウト（残り-1日）
 	 * - モデレータC: lastActiveDate = 2022-01-23 11:59:59 ※アウト（残り-1日）
-	 * - モデレータC: lastActiveDate = null
+	 * - モデレータD: lastActiveDate = null
 	 *
 	 * この場合、モデレータA, B, Cのアクティビティは判定基準日よりも古いため、モデレーターが不在と判断される。
 	 */
@@ -87,26 +92,29 @@ export class CheckModeratorsActivityProcessorService {
 		const inactivePeriod = new Date(today);
 		inactivePeriod.setDate(today.getDate() - MODERATOR_INACTIVITY_LIMIT_DAYS);
 
-		// TODO: モデレーター以外にも特別な権限を持つユーザーがいる場合は考慮する
-		const moderators = await this.roleService.getModerators({
-			includeAdmins: true,
-			includeRoot: true,
-			excludeExpire: true,
-		});
-		const inactiveModeratorCount = moderators
-			.map(it => it.lastActiveDate)
-			.filter(it => it != null)
-			.filter(it => it.getTime() < inactivePeriod.getTime())
-			.length;
+		const moderators = await this.fetchModerators();
+		const inactiveModerators = moderators
+			.filter(it => it.lastActiveDate != null && it.lastActiveDate.getTime() < inactivePeriod.getTime());
 
 		return {
-			isModeratorsInactive: inactiveModeratorCount !== moderators.length,
+			isModeratorsInactive: inactiveModerators.length !== moderators.length,
+			inactiveModerators,
 			inactivityLimitCountdown: MODERATOR_INACTIVITY_LIMIT_DAYS - Math.floor((today.getTime() - inactivePeriod.getTime()) / ONE_DAY_MILLI_SEC),
 		};
 	}
 
 	@bindThis
-	public async changeToInvitationOnly() {
+	private async changeToInvitationOnly() {
 		await this.metaService.update({ disableRegistration: true });
+	}
+
+	@bindThis
+	private async fetchModerators() {
+		// TODO: モデレーター以外にも特別な権限を持つユーザーがいる場合は考慮する
+		return this.roleService.getModerators({
+			includeAdmins: true,
+			includeRoot: true,
+			excludeExpire: true,
+		});
 	}
 }
