@@ -269,7 +269,7 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .main {
-	min-height: calc(100cqh - (var(--stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
+	min-height: calc(100cqh - (var(--MI-stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
 }
 
 .footer {

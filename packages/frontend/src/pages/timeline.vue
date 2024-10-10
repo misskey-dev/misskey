@@ -345,7 +345,7 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .new {
 	position: sticky;
-	top: calc(var(--stickyTop, 0px) + 16px);
+	top: calc(var(--MI-stickyTop, 0px) + 16px);
 	z-index: 1000;
 	width: 100%;
 	margin: calc(-0.675em - 8px) 0;

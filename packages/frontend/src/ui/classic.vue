@@ -279,11 +279,11 @@ onMounted(() => {
 				margin-top: 0;
 				border: solid 1px var(--MI_THEME-divider);
 				border-radius: var(--MI-radius);
-				--stickyTop: var(--globalHeaderHeight);
+				--MI-stickyTop: var(--globalHeaderHeight);
 			}
 
 			> .widgets {
-				--stickyTop: var(--globalHeaderHeight);
+				--MI-stickyTop: var(--globalHeaderHeight);
 				margin-top: 0;
 			}
 		}
