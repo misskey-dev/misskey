@@ -392,7 +392,7 @@ onDeactivated(() => {
 	container-type: inline-size;
 	position: relative;
 	border: .5px solid var(--MI_THEME-divider);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 
 	&:focus-visible {
@@ -454,7 +454,7 @@ onDeactivated(() => {
 
 	.controlButton {
 		padding: 6px;
-		border-radius: calc(var(--radius) / 2);
+		border-radius: calc(var(--MI-radius) / 2);
 		font-size: 1.05rem;
 
 		&:hover {

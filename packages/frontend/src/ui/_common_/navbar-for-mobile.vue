@@ -94,8 +94,8 @@ function more() {
 	z-index: 1;
 	padding: 20px 0;
 	background: var(--nav-bg-transparent);
-	-webkit-backdrop-filter: var(--blur, blur(8px));
-	backdrop-filter: var(--blur, blur(8px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+	backdrop-filter: var(--MI-blur, blur(8px));
 }
 
 .banner {
@@ -128,8 +128,8 @@ function more() {
 	bottom: 0;
 	padding: 20px 0;
 	background: var(--nav-bg-transparent);
-	-webkit-backdrop-filter: var(--blur, blur(8px));
-	backdrop-filter: var(--blur, blur(8px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+	backdrop-filter: var(--MI-blur, blur(8px));
 }
 
 .post {

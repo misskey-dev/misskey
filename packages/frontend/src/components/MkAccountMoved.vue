@@ -34,7 +34,7 @@ misskeyApi('users/show', { userId: props.movedTo }).then(u => user.value = u);
 	font-size: 90%;
 	background: var(--MI_THEME-infoWarnBg);
 	color: var(--MI_THEME-error);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .link {

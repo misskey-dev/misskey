@@ -47,7 +47,7 @@ onUnmounted(() => {
 
 <style lang="scss" module>
 .content {
-	--stickyTop: 0px;
+	--MI-stickyTop: 0px;
 
 	&.omitted {
 		position: relative;

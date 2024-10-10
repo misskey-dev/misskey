@@ -644,7 +644,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 			width: calc(100% - 8px);
 			height: calc(100% - 8px);
 			border: dashed 2px var(--MI_THEME-focus);
-			border-radius: var(--radius);
+			border-radius: var(--MI-radius);
 			box-sizing: border-box;
 		}
 	}
@@ -810,7 +810,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 	width: 58px;
 	height: 58px;
 	position: sticky !important;
-	top: calc(22px + var(--stickyTop, 0px));
+	top: calc(22px + var(--MI-stickyTop, 0px));
 	left: 0;
 }
 
@@ -831,7 +831,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 	width: 100%;
 	margin-top: 14px;
 	position: sticky;
-	bottom: calc(var(--stickyBottom, 0px) + 14px);
+	bottom: calc(var(--MI-stickyBottom, 0px) + 14px);
 }
 
 .showLessLabel {
@@ -884,7 +884,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .translation {
 	border: solid 0.5px var(--MI_THEME-divider);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	padding: 12px;
 	margin-top: 8px;
 }
@@ -998,7 +998,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 		margin: 0 10px 0 0;
 		width: 46px;
 		height: 46px;
-		top: calc(14px + var(--stickyTop, 0px));
+		top: calc(14px + var(--MI-stickyTop, 0px));
 	}
 }
 

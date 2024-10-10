@@ -248,8 +248,8 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .tab {
-	margin: calc(var(--margin) / 2) 0;
-	padding: calc(var(--margin) / 2) 0;
+	margin: calc(var(--MI-margin) / 2) 0;
+	padding: calc(var(--MI-margin) / 2) 0;
 	background: var(--MI_THEME-bg);
 }
 

@@ -7,11 +7,11 @@
  */
 
 :root {
-	--radius: 12px;
-	--marginFull: 14px;
-	--marginHalf: 10px;
+	--MI-radius: 12px;
+	--MI-marginFull: 14px;
+	--MI-marginHalf: 10px;
 
-	--margin: var(--marginFull);
+	--MI-margin: var(--MI-marginFull);
 }
 
 html {
@@ -218,12 +218,12 @@ rt {
 
 ._panel {
 	background: var(--MI_THEME-panel);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 }
 
 ._margin {
-	margin: var(--margin) 0;
+	margin: var(--MI-margin) 0;
 }
 
 ._gaps_m {
@@ -241,7 +241,7 @@ rt {
 ._gaps {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 
 ._buttons {
@@ -264,7 +264,7 @@ rt {
 	box-sizing: border-box;
 	text-align: center;
 	border: solid 0.5px var(--MI_THEME-divider);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 
 	&:active {
 		border-color: var(--MI_THEME-accent);
@@ -273,14 +273,14 @@ rt {
 
 ._popup {
 	background: var(--MI_THEME-popup);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	contain: content;
 }
 
 ._acrylic {
 	background: var(--MI_THEME-acrylicPanel);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 }
 
 ._fullinfo {

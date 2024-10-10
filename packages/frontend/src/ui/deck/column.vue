@@ -332,8 +332,8 @@ function onDrop(ev) {
 
 	&.naked {
 		background: var(--MI_THEME-acrylicBg) !important;
-		-webkit-backdrop-filter: var(--blur, blur(10px));
-		backdrop-filter: var(--blur, blur(10px));
+		-webkit-backdrop-filter: var(--MI-blur, blur(10px));
+		backdrop-filter: var(--MI-blur, blur(10px));
 
 		> .header {
 			background: transparent;

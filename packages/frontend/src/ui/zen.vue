@@ -63,12 +63,12 @@ document.documentElement.style.overflowY = 'scroll';
 }
 
 .rootWithBottom {
-	min-height: calc(100dvh - (60px + (var(--margin) * 2) + env(safe-area-inset-bottom, 0px)));
+	min-height: calc(100dvh - (60px + (var(--MI-margin) * 2) + env(safe-area-inset-bottom, 0px)));
 	box-sizing: border-box;
 }
 
 .bottom {
-	height: calc(60px + (var(--margin) * 2) + env(safe-area-inset-bottom, 0px));
+	height: calc(60px + (var(--MI-margin) * 2) + env(safe-area-inset-bottom, 0px));
 	width: 100%;
 	margin-top: auto;
 }
@@ -83,7 +83,7 @@ document.documentElement.style.overflowY = 'scroll';
 	border-radius: 100%;
 	background: var(--MI_THEME-panel);
 	color: var(--MI_THEME-fg);
-	right: var(--margin);
-	bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
+	right: var(--MI-margin);
+	bottom: calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px));
 }
 </style>
