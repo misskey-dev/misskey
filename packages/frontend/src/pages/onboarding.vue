@@ -247,8 +247,8 @@ definePageMetadata(() => ({
 
 .onboardingContainer {
 	position: relative;
-	border-radius: var(--radius);
-	background-color: var(--acrylicPanel);
+	border-radius: var(--MI-radius);
+	background-color: var(--MI_THEME-acrylicPanel);
 	overflow: clip;
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 	max-width: 650px;
@@ -268,8 +268,8 @@ definePageMetadata(() => ({
 	font-size: 14px;
 	line-height: 40px;
 	height: 40px;
-	padding: 0 var(--margin);
-	background: var(--panelHighlight);
+	padding: 0 var(--MI-margin);
+	background: var(--MI_THEME-panelHighlight);
 	display: flex;
 	transition: transform 0.5s ease;
 	transform: translateY(-100%);
@@ -342,7 +342,7 @@ definePageMetadata(() => ({
 	width: 5em;
 	margin: 0 auto;
 	object-fit: contain;
-	border-radius: calc(var(--radius) / 2);
+	border-radius: calc(var(--MI-radius) / 2);
 }
 
 .welcomePageConfetti,
