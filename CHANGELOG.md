@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Enhance: ノートを畳む条件を「高精度の算出方法（MFMの引数なども考慮する）」、「旧式の算出方法（従来通り）」、「実際の表示の大きさ」から選べるように
 
 ### Server
 -
@@ -33,7 +33,6 @@
 ### Client
 - Enhance: デザインの調整
 - Enhance: ログイン画面の認証フローを改善
-- Enhance: ノートを畳む条件を「高精度の算出方法（MFMの引数なども考慮する）」、「旧式の算出方法（従来通り）」、「実際の表示の大きさ」から選べるように
 - Fix: クライアント上での時間ベースの実績獲得動作が実績獲得後も発動していた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/657)
 
