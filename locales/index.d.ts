@@ -731,6 +731,14 @@ export interface Locale extends ILocale {
      */
     "flagAsCatDescription": string;
     /**
+     * 自動TTS機能が欲しい。
+     */
+    "flagAsVI": string;
+    /**
+     * 自動TTS機能が必要な場合は有効にしてください。 権限のあるユーザーグループに所属している場合、特定の範囲で自動TTS機能を有効にします。
+     */
+    "flagAsVIDescription": string;
+    /**
      * タイムラインにノートへの返信を表示する
      */
     "flagShowTimelineReplies": string;
@@ -6864,6 +6872,10 @@ export interface Locale extends ILocale {
              */
             "canUseTranslator": string;
             /**
+             * TTS機能の利用
+             */
+            "canUseTTS": string;
+            /**
              * アイコンデコレーションの最大取付個数
              */
             "avatarDecorationLimit": string;
@@ -6909,6 +6921,10 @@ export interface Locale extends ILocale {
              * botユーザー
              */
             "isBot": string;
+            /**
+             * TTSユーザー
+             */
+            "isVI": string;
             /**
              * サスペンド済みユーザー
              */
@@ -7300,6 +7316,10 @@ export interface Locale extends ILocale {
          * Misskeyを翻訳
          */
         "translation": string;
+        /**
+         * Misskeyを変換
+         */
+        "convert": string;
         /**
          * Misskeyに寄付
          */

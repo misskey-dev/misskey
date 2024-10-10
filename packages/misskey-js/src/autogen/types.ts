@@ -2890,6 +2890,15 @@ export type paths = {
      */
     post: operations['notes___translate'];
   };
+  '/notes/tts': {
+    /**
+     * notes/tts
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:account*
+     */
+    post: operations['notes___tts'];
+  };
   '/notes/unrenote': {
     /**
      * notes/unrenote
@@ -3736,6 +3745,7 @@ export type components = {
         }[];
       isBot?: boolean;
       isCat?: boolean;
+      isVI?: boolean;
       instance?: {
         name: string | null;
         softwareName: string | null;
@@ -4768,7 +4778,7 @@ export type components = {
     RoleCondFormulaValueUserSettingBooleanSchema: {
       id: string;
       /** @enum {string} */
-      type: 'isSuspended' | 'isLocked' | 'isBot' | 'isCat' | 'isExplorable';
+      type: 'isSuspended' | 'isLocked' | 'isBot' | 'isCat' | 'isVI' | 'isExplorable';
     };
     RoleCondFormulaValueAssignedRole: {
       id: string;
@@ -4850,6 +4860,7 @@ export type components = {
       canManageAvatarDecorations: boolean;
       canSearchNotes: boolean;
       canUseTranslator: boolean;
+      canUseTTS: boolean;
       canHideAds: boolean;
       driveCapacityMb: number;
       alwaysMarkNsfw: boolean;
@@ -5000,6 +5011,7 @@ export type components = {
       enableEmail: boolean;
       enableServiceWorker: boolean;
       translatorAvailable: boolean;
+      ttsAvailable: boolean;
       mediaProxy: string;
       enableUrlPreview: boolean;
       backgroundImageUrl: string | null;
@@ -5115,6 +5127,7 @@ export type operations = {
             enableEmail: boolean;
             enableServiceWorker: boolean;
             translatorAvailable: boolean;
+            ttsAvailable: boolean;
             silencedHosts?: string[];
             mediaSilencedHosts: string[];
             pinnedUsers: string[];
@@ -9504,6 +9517,27 @@ export type operations = {
           langs?: string[];
           deeplAuthKey?: string | null;
           deeplIsPro?: boolean;
+          hfAuthKey?: string | null;
+          /** @default false */
+          hfSpace?: boolean;
+          hfSpaceName?: string | null;
+          hfexampleAudioURL?: string | null;
+          hfexampleText?: string | null;
+          hfexampleLang?: string | null;
+          /** @default Slice once every 4 sentences */
+          hfslice?: string | null;
+          /** @default 15 */
+          hftopK?: number;
+          /** @default 100 */
+          hftopP?: number;
+          /** @default 100 */
+          hfTemperature?: number;
+          /** @default false */
+          hfnrm?: boolean;
+          /** @default 125 */
+          hfSpeedRate?: number;
+          /** @default false */
+          hfdas?: boolean;
           enableEmail?: boolean;
           email?: string | null;
           smtpSecure?: boolean;
@@ -19839,6 +19873,7 @@ export type operations = {
           preventAiLearning?: boolean;
           isBot?: boolean;
           isCat?: boolean;
+          isVI?: boolean;
           injectFeaturedNote?: boolean;
           receiveAnnouncementEmail?: boolean;
           alwaysMarkNsfw?: boolean;
@@ -22962,6 +22997,64 @@ export type operations = {
             sourceLang: string;
             text: string;
           };
+        };
+      };
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * notes/tts
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:account*
+   */
+  notes___tts: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          noteId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': string;
         };
       };
       /** @description OK (without any results) */

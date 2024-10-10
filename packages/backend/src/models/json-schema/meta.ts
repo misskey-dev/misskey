@@ -203,6 +203,10 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		ttsAvailable: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		mediaProxy: {
 			type: 'string',
 			optional: false, nullable: false,
