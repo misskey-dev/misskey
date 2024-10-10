@@ -39,7 +39,7 @@ withDefaults(defineProps<{
 
 <style module lang="scss">
 .root {
-	--fukidashi-radius: var(--MI_UI-radius);
+	--fukidashi-radius: var(--MI-radius);
 	--fukidashi-bg: var(--MI_THEME-panel);
 
 	position: relative;

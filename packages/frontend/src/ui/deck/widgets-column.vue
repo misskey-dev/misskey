@@ -57,10 +57,10 @@ const menu = [{
 
 <style lang="scss" module>
 .root {
-	--MI_UI-margin: 8px;
+	--MI-margin: 8px;
 	--MI_THEME-panelBorder: none;
 
-	padding: 0 var(--MI_UI-margin);
+	padding: 0 var(--MI-margin);
 }
 
 .intro {

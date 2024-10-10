@@ -204,7 +204,7 @@ definePageMetadata(() => ({
 .root {
 	display: flex;
 	flex-direction: column;
-	gap: var(--MI_UI-margin);
+	gap: var(--MI-margin);
 }
 
 .editor {

@@ -7,20 +7,20 @@
  */
 
 :root {
-	--MI_UI-radius: 12px;
-	--MI_UI-marginFull: 16px;
-	--MI_UI-marginHalf: 10px;
+	--MI-radius: 12px;
+	--MI-marginFull: 16px;
+	--MI-marginHalf: 10px;
 
-	--MI_UI-margin: var(--MI_UI-marginFull);
+	--MI-margin: var(--MI-marginFull);
 
 	// switch dynamically
-	--MI_UI-minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
-	--MI_UI-minBottomSpacing: var(--MI_UI-minBottomSpacingMobile);
+	--MI-minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
+	--MI-minBottomSpacing: var(--MI-minBottomSpacingMobile);
 
 	//--ad: rgb(255 169 0 / 10%);
 
 	@media (max-width: 500px) {
-		--MI_UI-margin: var(--MI_UI-marginHalf);
+		--MI-margin: var(--MI-marginHalf);
 	}
 }
 
@@ -130,7 +130,7 @@ optgroup, option {
 }
 
 hr {
-	margin: var(--MI_UI-margin) 0 var(--MI_UI-margin) 0;
+	margin: var(--MI-margin) 0 var(--MI-margin) 0;
 	border: none;
 	height: 1px;
 	background: var(--MI_THEME-divider);
@@ -210,8 +210,8 @@ rt {
 	width: 100%;
 	height: 100%;
 	background: var(--MI_THEME-modalBg);
-	-webkit-backdrop-filter: var(--MI_UI-modalBgFilter);
-	backdrop-filter: var(--MI_UI-modalBgFilter);
+	-webkit-backdrop-filter: var(--MI-modalBgFilter);
+	backdrop-filter: var(--MI-modalBgFilter);
 }
 
 ._shadow {
@@ -290,12 +290,12 @@ rt {
 
 ._panel {
 	background: var(--MI_THEME-panel);
-	border-radius: var(--MI_UI-radius);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 }
 
 ._margin {
-	margin: var(--MI_UI-margin) 0;
+	margin: var(--MI-margin) 0;
 }
 
 ._gaps_m {
@@ -313,7 +313,7 @@ rt {
 ._gaps {
 	display: flex;
 	flex-direction: column;
-	gap: var(--MI_UI-margin);
+	gap: var(--MI-margin);
 }
 
 ._buttons {
@@ -336,7 +336,7 @@ rt {
 	box-sizing: border-box;
 	text-align: center;
 	border: solid 0.5px var(--MI_THEME-divider);
-	border-radius: var(--MI_UI-radius);
+	border-radius: var(--MI-radius);
 
 	&:active {
 		border-color: var(--MI_THEME-accent);
@@ -345,14 +345,14 @@ rt {
 
 ._popup {
 	background: var(--MI_THEME-popup);
-	border-radius: var(--MI_UI-radius);
+	border-radius: var(--MI-radius);
 	contain: content;
 }
 
 ._acrylic {
 	background: var(--MI_THEME-acrylicPanel);
-	-webkit-backdrop-filter: var(--MI_UI-blur, blur(15px));
-	backdrop-filter: var(--MI_UI-blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 }
 
 ._formLinksGrid {

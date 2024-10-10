@@ -317,7 +317,7 @@ defineExpose({
 <style lang="scss">
 .pswp__bg {
 	background: var(--MI_THEME-modalBg);
-	backdrop-filter: var(--MI_UI-modalBgFilter);
+	backdrop-filter: var(--MI-modalBgFilter);
 }
 
 .pswp__alt-text-container {
@@ -338,8 +338,8 @@ defineExpose({
 	color: var(--MI_THEME-fg);
 	margin: 0 auto;
 	text-align: center;
-	padding: var(--MI_UI-margin);
-	border-radius: var(--MI_UI-radius);
+	padding: var(--MI-margin);
+	border-radius: var(--MI-radius);
 	max-height: 8em;
 	overflow-y: auto;
 	text-shadow: var(--MI_THEME-bg) 0 0 10px, var(--MI_THEME-bg) 0 0 3px, var(--MI_THEME-bg) 0 0 3px;

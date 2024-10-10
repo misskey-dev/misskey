@@ -29,9 +29,9 @@ defineProps<{
 	width: 100%;
 	height: auto;
 	aspect-ratio: 16 / 9;
-	padding: var(--MI_UI-margin);
+	padding: var(--MI-margin);
 	border: 1px solid var(--MI_THEME-divider);
-	border-radius: var(--MI_UI-radius);
+	border-radius: var(--MI-radius);
 	background-color: #000;
 
 	&:hover {

@@ -65,12 +65,12 @@ function neverShow() {
 .root {
 	position: fixed;
 	z-index: v-bind(zIndex);
-	bottom: var(--MI_UI-margin);
+	bottom: var(--MI-margin);
 	left: 0;
 	right: 0;
 	margin: auto;
 	box-sizing: border-box;
-	width: calc(100% - (var(--MI_UI-margin) * 2));
+	width: calc(100% - (var(--MI-margin) * 2));
 	max-width: 500px;
 	display: flex;
 }

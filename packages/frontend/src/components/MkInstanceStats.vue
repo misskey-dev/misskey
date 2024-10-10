@@ -257,7 +257,7 @@ onMounted(() => {
 				min-width: 0;
 				position: relative;
 				background: var(--MI_THEME-panel);
-				border-radius: var(--MI_UI-radius);
+				border-radius: var(--MI-radius);
 				padding: 24px;
 				max-height: 300px;
 

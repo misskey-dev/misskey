@@ -156,15 +156,15 @@ onUnmounted(() => {
 	--height: 60px;
 	display: flex;
 	width: 100%;
-	-webkit-backdrop-filter: var(--MI_UI-blur, blur(15px));
-	backdrop-filter: var(--MI_UI-blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 
 	> .buttons {
-		--MI_UI-margin: 8px;
+		--MI-margin: 8px;
 		display: flex;
     align-items: center;
 		height: var(--height);
-		margin: 0 var(--MI_UI-margin);
+		margin: 0 var(--MI-margin);
 
 		&.right {
 			margin-left: auto;
@@ -178,8 +178,8 @@ onUnmounted(() => {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			height: calc(var(--height) - (var(--MI_UI-margin) * 2));
-			width: calc(var(--height) - (var(--MI_UI-margin) * 2));
+			height: calc(var(--height) - (var(--MI-margin) * 2));
+			width: calc(var(--height) - (var(--MI-margin) * 2));
 			box-sizing: border-box;
 			position: relative;
 			border-radius: 5px;

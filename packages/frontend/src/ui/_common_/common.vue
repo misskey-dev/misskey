@@ -116,27 +116,27 @@ if ($i) {
 .notifications {
 	position: fixed;
 	z-index: 3900000;
-	padding: 0 var(--MI_UI-margin);
+	padding: 0 var(--MI-margin);
 	pointer-events: none;
 	display: flex;
 
 	&.notificationsPosition_leftTop {
-		top: var(--MI_UI-margin);
+		top: var(--MI-margin);
 		left: 0;
 	}
 
 	&.notificationsPosition_rightTop {
-		top: var(--MI_UI-margin);
+		top: var(--MI-margin);
 		right: 0;
 	}
 
 	&.notificationsPosition_leftBottom {
-		bottom: calc(var(--MI_UI-minBottomSpacing) + var(--MI_UI-margin));
+		bottom: calc(var(--MI-minBottomSpacing) + var(--MI-margin));
 		left: 0;
 	}
 
 	&.notificationsPosition_rightBottom {
-		bottom: calc(var(--MI_UI-minBottomSpacing) + var(--MI_UI-margin));
+		bottom: calc(var(--MI-minBottomSpacing) + var(--MI-margin));
 		right: 0;
 	}
 

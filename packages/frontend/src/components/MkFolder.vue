@@ -145,8 +145,8 @@ onMounted(() => {
 	box-sizing: border-box;
 	padding: 9px 12px 9px 12px;
 	background: var(--MI_THEME-folderHeaderBg);
-	-webkit-backdrop-filter: var(--MI_UI-blur, blur(15px));
-	backdrop-filter: var(--MI_UI-blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 	border-radius: 6px;
 	transition: border-radius 0.3s;
 
@@ -240,8 +240,8 @@ onMounted(() => {
 	left: 0;
 	padding: 12px;
 	background: var(--MI_THEME-acrylicBg);
-	-webkit-backdrop-filter: var(--MI_UI-blur, blur(15px));
-	backdrop-filter: var(--MI_UI-blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 	background-size: auto auto;
 	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, var(--MI_THEME-panel) 5px, var(--MI_THEME-panel) 10px);
 	border-radius: 0 0 6px 6px;

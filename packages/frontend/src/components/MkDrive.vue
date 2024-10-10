@@ -768,7 +768,7 @@ onBeforeUnmount(() => {
 .main {
 	flex: 1;
 	overflow: auto;
-	padding: var(--MI_UI-margin);
+	padding: var(--MI-margin);
 	user-select: none;
 
 	&.fetching {

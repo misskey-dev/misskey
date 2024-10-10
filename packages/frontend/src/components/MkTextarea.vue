@@ -226,7 +226,7 @@ onUnmounted(() => {
 
 .mfmPreview {
   padding: 12px;
-  border-radius: var(--MI_UI-radius);
+  border-radius: var(--MI-radius);
   box-sizing: border-box;
   min-height: 130px;
 	pointer-events: none;

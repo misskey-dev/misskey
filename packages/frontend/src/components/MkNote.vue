@@ -644,7 +644,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 			width: calc(100% - 8px);
 			height: calc(100% - 8px);
 			border: dashed 2px var(--MI_THEME-focus);
-			border-radius: var(--MI_UI-radius);
+			border-radius: var(--MI-radius);
 			box-sizing: border-box;
 		}
 	}
@@ -884,7 +884,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .translation {
 	border: solid 0.5px var(--MI_THEME-divider);
-	border-radius: var(--MI_UI-radius);
+	border-radius: var(--MI-radius);
 	padding: 12px;
 	margin-top: 8px;
 }

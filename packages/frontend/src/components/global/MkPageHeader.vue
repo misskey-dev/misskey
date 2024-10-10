@@ -130,8 +130,8 @@ onUnmounted(() => {
 
 <style lang="scss" module>
 .root {
-	-webkit-backdrop-filter: var(--MI_UI-blur, blur(15px));
-	backdrop-filter: var(--MI_UI-blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
 	width: 100%;
 }
@@ -145,7 +145,7 @@ onUnmounted(() => {
 .upper {
 	--height: 50px;
 	display: flex;
-	gap: var(--MI_UI-margin);
+	gap: var(--MI-margin);
 	height: var(--height);
 
 	.tabs:first-child {
@@ -186,7 +186,7 @@ onUnmounted(() => {
 }
 
 .buttons {
-	--MI_UI-margin: 8px;
+	--MI-margin: 8px;
 	display: flex;
 	align-items: center;
 	min-width: var(--height);
@@ -198,12 +198,12 @@ onUnmounted(() => {
 
 .buttonsLeft {
 	composes: buttons;
-	margin: 0 var(--MI_UI-margin) 0 0;
+	margin: 0 var(--MI-margin) 0 0;
 }
 
 .buttonsRight {
 	composes: buttons;
-	margin: 0 0 0 var(--MI_UI-margin);
+	margin: 0 0 0 var(--MI-margin);
 }
 
 .avatar {
@@ -220,7 +220,7 @@ onUnmounted(() => {
 	align-items: center;
 	justify-content: center;
 	height: var(--height);
-	width: calc(var(--height) - (var(--MI_UI-margin)));
+	width: calc(var(--height) - (var(--MI-margin)));
 	box-sizing: border-box;
 	position: relative;
 	border-radius: 5px;
