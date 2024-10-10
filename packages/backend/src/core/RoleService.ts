@@ -101,6 +101,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 
 @Injectable()
 export class RoleService implements OnApplicationShutdown, OnModuleInit {
+	private rootUserIdCache: MemorySingleCache<MiUser['id']>;
 	private rolesCache: MemorySingleCache<MiRole[]>;
 	private roleAssignmentByUserIdCache: MemoryKVCache<MiRoleAssignment[]>;
 	private notificationService: NotificationService;
@@ -136,6 +137,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		private moderationLogService: ModerationLogService,
 		private fanoutTimelineService: FanoutTimelineService,
 	) {
+		this.rootUserIdCache = new MemorySingleCache<MiUser['id']>(1000 * 60 * 60 * 24 * 7); // 1week. rootユーザのIDは不変なので長めに
 		this.rolesCache = new MemorySingleCache<MiRole[]>(1000 * 60 * 60); // 1h
 		this.roleAssignmentByUserIdCache = new MemoryKVCache<MiRoleAssignment[]>(1000 * 60 * 5); // 5m
 
@@ -416,7 +418,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async isExplorable(role: { id: MiRole['id']} | null): Promise<boolean> {
+	public async isExplorable(role: { id: MiRole['id'] } | null): Promise<boolean> {
 		if (role == null) return false;
 		const check = await this.rolesRepository.findOneBy({ id: role.id });
 		if (check == null) return false;
@@ -430,22 +432,32 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			? roles.filter(r => r.isModerator || r.isAdministrator)
 			: roles.filter(r => r.isModerator);
 
-		// TODO: isRootなアカウントも含める
 		const assigns = moderatorRoles.length > 0
 			? await this.roleAssignmentsRepository.findBy({ roleId: In(moderatorRoles.map(r => r.id)) })
 			: [];
+
+		const rootUserId = await this.rootUserIdCache.fetch(async () => {
+			const it = await this.usersRepository.createQueryBuilder('users')
+				.select('id')
+				.where({ isRoot: true })
+				.getOneOrFail();
+			return it.id;
+		});
 
 		const now = Date.now();
 		const result = [
 			// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
 			...new Set(
-				assigns
-					.filter(it =>
-						(excludeExpire)
-							? (it.expiresAt == null || it.expiresAt.getTime() > now)
-							: true,
-					)
-					.map(a => a.userId),
+				[
+					...assigns
+						.filter(it =>
+							(excludeExpire)
+								? (it.expiresAt == null || it.expiresAt.getTime() > now)
+								: true,
+						)
+						.map(a => a.userId),
+					rootUserId,
+				],
 			),
 		];
 
@@ -453,12 +465,13 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async getModerators(includeAdmins = true): Promise<MiUser[]> {
-		const ids = await this.getModeratorIds(includeAdmins);
-		const users = ids.length > 0 ? await this.usersRepository.findBy({
-			id: In(ids),
-		}) : [];
-		return users;
+	public async getModerators(includeAdmins = true, excludeExpire = false): Promise<MiUser[]> {
+		const ids = await this.getModeratorIds(includeAdmins, excludeExpire);
+		return ids.length > 0
+			? await this.usersRepository.findBy({
+				id: In(ids),
+			})
+			: [];
 	}
 
 	@bindThis
