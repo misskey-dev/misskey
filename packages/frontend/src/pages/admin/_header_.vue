@@ -160,11 +160,11 @@ onUnmounted(() => {
 	backdrop-filter: var(--MI-blur, blur(15px));
 
 	> .buttons {
-		--MI-margin: 8px;
+		--margin: 8px;
 		display: flex;
     align-items: center;
 		height: var(--height);
-		margin: 0 var(--MI-margin);
+		margin: 0 var(--margin);
 
 		&.right {
 			margin-left: auto;
@@ -178,8 +178,8 @@ onUnmounted(() => {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			height: calc(var(--height) - (var(--MI-margin) * 2));
-			width: calc(var(--height) - (var(--MI-margin) * 2));
+			height: calc(var(--height) - (var(--margin) * 2));
+			width: calc(var(--height) - (var(--margin) * 2));
 			box-sizing: border-box;
 			position: relative;
 			border-radius: 5px;

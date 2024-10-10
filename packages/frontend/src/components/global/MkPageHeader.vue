@@ -186,7 +186,7 @@ onUnmounted(() => {
 }
 
 .buttons {
-	--MI-margin: 8px;
+	--margin: 8px;
 	display: flex;
 	align-items: center;
 	min-width: var(--height);
@@ -198,12 +198,12 @@ onUnmounted(() => {
 
 .buttonsLeft {
 	composes: buttons;
-	margin: 0 var(--MI-margin) 0 0;
+	margin: 0 var(--margin) 0 0;
 }
 
 .buttonsRight {
 	composes: buttons;
-	margin: 0 0 0 var(--MI-margin);
+	margin: 0 0 0 var(--margin);
 }
 
 .avatar {
@@ -220,7 +220,7 @@ onUnmounted(() => {
 	align-items: center;
 	justify-content: center;
 	height: var(--height);
-	width: calc(var(--height) - (var(--MI-margin)));
+	width: calc(var(--height) - (var(--margin)));
 	box-sizing: border-box;
 	position: relative;
 	border-radius: 5px;
