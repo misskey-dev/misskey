@@ -326,6 +326,8 @@ function createFolder() {
 	os.inputText({
 		title: i18n.ts.createFolder,
 		placeholder: i18n.ts.folderName,
+		default: 'Untitled',
+		minLength: 1,
 	}).then(({ canceled, result: name }) => {
 		if (canceled) return;
 		misskeyApi('drive/folders/create', {
