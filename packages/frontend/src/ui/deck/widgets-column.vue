@@ -58,7 +58,7 @@ const menu = [{
 <style lang="scss" module>
 .root {
 	--margin: 8px;
-	--panelBorder: none;
+	--MI_THEME-panelBorder: none;
 
 	padding: 0 var(--margin);
 }

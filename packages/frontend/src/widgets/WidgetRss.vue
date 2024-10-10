@@ -113,7 +113,7 @@ defineExpose<WidgetComponentExpose>({
 .item {
 	display: block;
 	padding: 8px 16px;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;

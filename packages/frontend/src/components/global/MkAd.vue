@@ -191,7 +191,7 @@ function reduceFrequency(): void {
 	right: 1px;
 	display: grid;
 	place-content: center;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 100%;
 	padding: 2px;
 }
@@ -210,7 +210,7 @@ function reduceFrequency(): void {
 	padding: 8px;
 	margin: 0 auto;
 	max-width: 400px;
-	border: solid 1px var(--divider);
+	border: solid 1px var(--MI_THEME-divider);
 }
 
 .menuButton {

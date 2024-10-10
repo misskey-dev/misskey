@@ -54,7 +54,7 @@ const props = defineProps<{
 
 	&:hover {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 
 	&:focus-within {
@@ -69,7 +69,7 @@ const props = defineProps<{
 			height: 100%;
 			border-radius: var(--radius);
 			pointer-events: none;
-			box-shadow: inset 0 0 0 2px var(--focus);
+			box-shadow: inset 0 0 0 2px var(--MI_THEME-focus);
 		}
 	}
 
@@ -80,7 +80,7 @@ const props = defineProps<{
 	}
 
 	> article {
-		background-color: var(--panel);
+		background-color: var(--MI_THEME-panel);
 		padding: 16px;
 		border-radius: var(--radius);
 

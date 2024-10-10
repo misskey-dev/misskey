@@ -92,11 +92,11 @@ const collapsed = ref(isLong.value);
 			left: 0;
 			width: 100%;
 			height: 64px;
-			background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
+			background: linear-gradient(0deg, var(--MI_THEME-panel), color(from var(--MI_THEME-panel) srgb r g b / 0));
 
 			> .fadeLabel {
 				display: inline-block;
-				background: var(--panel);
+				background: var(--MI_THEME-panel);
 				padding: 6px 10px;
 				font-size: 0.8em;
 				border-radius: 999px;
@@ -105,7 +105,7 @@ const collapsed = ref(isLong.value);
 
 			&:hover {
 				> .fadeLabel {
-					background: var(--panelHighlight);
+					background: var(--MI_THEME-panelHighlight);
 				}
 			}
 		}
@@ -114,13 +114,13 @@ const collapsed = ref(isLong.value);
 
 .reply {
 	margin-right: 6px;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 }
 
 .rp {
 	margin-left: 4px;
 	font-style: oblique;
-	color: var(--renote);
+	color: var(--MI_THEME-renote);
 }
 
 .showLess {
@@ -132,7 +132,7 @@ const collapsed = ref(isLong.value);
 
 .showLessLabel {
 	display: inline-block;
-	background: var(--popup);
+	background: var(--MI_THEME-popup);
 	padding: 6px 10px;
 	font-size: 0.8em;
 	border-radius: 999px;

@@ -141,7 +141,7 @@ definePageMetadata(() => ({
 		top: 8px;
 		left: 9px;
 		padding: 8px;
-		background: var(--panel);
+		background: var(--MI_THEME-panel);
 	}
 
 	> .remove {
@@ -149,7 +149,7 @@ definePageMetadata(() => ({
 		top: 8px;
 		right: 9px;
 		padding: 8px;
-		background: var(--panel);
+		background: var(--MI_THEME-panel);
 	}
 }
 </style>
