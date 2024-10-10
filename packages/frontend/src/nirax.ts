@@ -107,7 +107,13 @@ export interface IRouter extends EventEmitter<RouterEvent> {
 	current: Resolved;
 	currentRef: ShallowRef<Resolved>;
 	currentRoute: ShallowRef<RouteDef>;
-	navHook: ((path: string, flag?: any) => boolean) | null;
+
+	/**
+	 * ナビゲーションフック
+	 *
+	 * `true`でナビゲーションをキャンセル、`false`またはResolvedオブジェクトでナビゲーションを続行
+	 */
+	navHook: ((path: string, flag?: any) => boolean | Resolved) | null;
 
 	/**
 	 * ルートの初期化（eventListenerの定義後に必ず呼び出すこと）
@@ -197,7 +203,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 	private currentKey = Date.now().toString();
 	private redirectCount = 0;
 
-	public navHook: ((path: string, flag?: any) => boolean) | null = null;
+	public navHook: ((path: string, flag?: any) => boolean | Resolved) | null = null;
 
 	constructor(routes: Router['routes'], currentPath: Router['currentPath'], isLoggedIn: boolean, notFoundPageComponent: Component) {
 		super();
@@ -410,11 +416,20 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			this.emit('same');
 			return;
 		}
+
+		let res: Resolved | null = null;
 		if (this.navHook) {
-			const cancel = this.navHook(path, flag);
-			if (cancel) return;
+			const hookRes = this.navHook(path, flag);
+			if (hookRes === true) return;
+			if (hookRes !== false) {
+				res = hookRes;
+			}
 		}
-		const res = this.navigate(path, null);
+
+		if (res == null) {
+			res = this.navigate(path, null);
+		}
+
 		if (res.route.path === '/:(*)') {
 			location.href = path;
 		} else {
