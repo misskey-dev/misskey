@@ -17,8 +17,6 @@
 	--MI-minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
 	--MI-minBottomSpacing: var(--MI-minBottomSpacingMobile);
 
-	//--ad: rgb(255 169 0 / 10%);
-
 	@media (max-width: 500px) {
 		--MI-margin: var(--MI-marginHalf);
 	}
