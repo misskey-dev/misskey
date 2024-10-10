@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Enhance: 新しいMFM「URL引用」を追加。`> https://hogehoge.com`のように、`> `に続けてURLを置くことで文中にURLプレビューを展開することができます
 
 ### Server
 -
