@@ -282,7 +282,7 @@ definePageMetadata(() => ({
 	height: 130px;
 	background-size: cover;
 	background-position: center;
-	border-bottom: solid 1px var(--divider);
+	border-bottom: solid 1px var(--MI_THEME-divider);
 	overflow: clip;
 }
 

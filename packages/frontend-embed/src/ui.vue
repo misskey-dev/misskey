@@ -88,14 +88,14 @@ onUnmounted(() => {
 <style lang="scss" module>
 .rootForEmbedPage {
 	box-sizing: border-box;
-	border: 1px solid var(--divider);
-	background-color: var(--bg);
+	border: 1px solid var(--MI_THEME-divider);
+	background-color: var(--MI_THEME-bg);
 	overflow: hidden;
 	position: relative;
 	height: auto;
 
 	&.rounded {
-		border-radius: var(--radius);
+		border-radius: var(--MI-radius);
 	}
 
 	&.noBorder {

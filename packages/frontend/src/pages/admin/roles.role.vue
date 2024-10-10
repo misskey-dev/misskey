@@ -184,7 +184,7 @@ definePageMetadata(() => ({
 .userItemSub {
 	padding: 6px 12px;
 	font-size: 85%;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 
 .userItemMainBody {

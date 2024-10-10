@@ -85,8 +85,8 @@ function cancel() {
 .emojiImgWrapper {
   max-width: 100%;
   height: 40cqh;
-  background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--X5) 8px, var(--X5) 14px);
-  border-radius: var(--radius);
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-X5) 8px, var(--MI_THEME-X5) 14px);
+  border-radius: var(--MI-radius);
   margin: auto;
   overflow-y: hidden;
 }
@@ -101,8 +101,8 @@ function cancel() {
   display: inline-block;
   word-break: break-all;
   padding: 3px 10px;
-  background-color: var(--X5);
-  border: solid 1px var(--divider);
-  border-radius: var(--radius);
+  background-color: var(--MI_THEME-X5);
+  border: solid 1px var(--MI_THEME-divider);
+  border-radius: var(--MI-radius);
 }
 </style>

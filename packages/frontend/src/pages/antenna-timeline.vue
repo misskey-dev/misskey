@@ -97,26 +97,26 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .new {
 	position: sticky;
-	top: calc(var(--stickyTop, 0px) + 16px);
+	top: calc(var(--MI-stickyTop, 0px) + 16px);
 	z-index: 1000;
 	width: 100%;
 	margin: calc(-0.675em - 8px) 0;
 
 	&:first-child {
-		margin-top: calc(-0.675em - 8px - var(--margin));
+		margin-top: calc(-0.675em - 8px - var(--MI-margin));
 	}
 }
 
 .newButton {
 	display: block;
-	margin: var(--margin) auto 0 auto;
+	margin: var(--MI-margin) auto 0 auto;
 	padding: 8px 16px;
 	border-radius: 32px;
 }
 
 .tl {
-	background: var(--bg);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-bg);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 }
 </style>

@@ -33,7 +33,7 @@ watch(available, () => {
 	try {
 		window.TagCanvas.Start(idForCanvas, idForTags, {
 			textColour: '#ffffff',
-			outlineColour: tinycolor(computedStyle.getPropertyValue('--accent')).toHexString(),
+			outlineColour: tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString(),
 			outlineRadius: 10,
 			initial: [-0.030, -0.010],
 			frontSelect: true,

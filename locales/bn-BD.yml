@@ -1017,7 +1017,6 @@ _theme:
     buttonBg: "বাটনের পটভূমি"
     buttonHoverBg: "বাটনের পটভূমি (হভার)"
     inputBorder: "ইনপুট ফিল্ডের বর্ডার"
-    listItemHoverBg: "লিস্ট আইটেমের পটভূমি (হোভার)"
     driveFolderBg: "ড্রাইভ ফোল্ডারের পটভূমি"
     wallpaperOverlay: "ওয়ালপেপার ওভারলে"
     badge: "ব্যাজ"

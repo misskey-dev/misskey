@@ -72,6 +72,6 @@ defineExpose<WidgetComponentExpose>({
 }
 
 .text {
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 </style>

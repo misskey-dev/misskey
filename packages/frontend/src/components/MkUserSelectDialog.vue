@@ -195,11 +195,11 @@ onMounted(() => {
 	font-size: 14px;
 
 	&:hover {
-		background: var(--X7);
+		background: var(--MI_THEME-X7);
 	}
 
 	&.selected {
-		background: var(--accent);
+		background: var(--MI_THEME-accent);
 		color: #fff;
 	}
 }

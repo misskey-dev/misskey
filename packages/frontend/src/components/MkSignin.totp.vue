@@ -57,8 +57,8 @@ const isBackupCode = ref(false);
 
 .totpIcon {
 	margin: 0 auto;
-	background-color: var(--accentedBg);
-	color: var(--accent);
+	background-color: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
 	text-align: center;
 	height: 64px;
 	width: 64px;

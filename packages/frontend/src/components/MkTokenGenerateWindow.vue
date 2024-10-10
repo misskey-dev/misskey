@@ -136,15 +136,15 @@ function enableAll(): void {
 .adminPermissions {
 	margin: 8px -6px 0;
 	padding: 24px 6px 6px;
-	border: 2px solid var(--error);
-	border-radius: calc(var(--radius) / 2);
+	border: 2px solid var(--MI_THEME-error);
+	border-radius: calc(var(--MI-radius) / 2);
 }
 
 .adminPermissionsHeader {
 	margin: -34px 0 6px 12px;
 	padding: 0 4px;
 	width: fit-content;
-	color: var(--error);
-	background: var(--panel);
+	color: var(--MI_THEME-error);
+	background: var(--MI_THEME-panel);
 }
 </style>

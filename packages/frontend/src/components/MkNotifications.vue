@@ -106,6 +106,6 @@ defineExpose({
 
 <style lang="scss" module>
 .list {
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 }
 </style>

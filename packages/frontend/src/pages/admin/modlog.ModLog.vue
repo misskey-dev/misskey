@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div>
-		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+		<div style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
 			<div style="flex: 1;">{{ i18n.ts.moderator }}: <MkA :to="`/admin/user/${log.userId}`" class="_link">@{{ log.user?.username }}</MkA></div>
 			<div style="flex: 1;">{{ i18n.ts.dateAndTime }}: <MkTime :time="log.createdAt" mode="detail"/></div>
 		</div>
@@ -205,14 +205,14 @@ const props = defineProps<{
 }
 
 .logYellow {
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 }
 
 .logRed {
-	color: var(--error);
+	color: var(--MI_THEME-error);
 }
 
 .logGreen {
-	color: var(--success);
+	color: var(--MI_THEME-success);
 }
 </style>

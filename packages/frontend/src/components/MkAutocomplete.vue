@@ -407,16 +407,16 @@ onBeforeUnmount(() => {
 	text-overflow: ellipsis;
 
 	&:hover {
-		background: var(--X3);
+		background: var(--MI_THEME-X3);
 	}
 
 	&[data-selected='true'] {
-		background: var(--accent);
+		background: var(--MI_THEME-accent);
 		color: #fff !important;
 	}
 
 	&:active {
-		background: var(--accentDarken);
+		background: var(--MI_THEME-accentDarken);
 		color: #fff !important;
 	}
 }

@@ -25,9 +25,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRadios v-model="icon">
 					<template #label>{{ i18n.ts.icon }}</template>
 					<option value="info"><i class="ti ti-info-circle"></i></option>
-					<option value="warning"><i class="ti ti-alert-triangle" style="color: var(--warn);"></i></option>
-					<option value="error"><i class="ti ti-circle-x" style="color: var(--error);"></i></option>
-					<option value="success"><i class="ti ti-check" style="color: var(--success);"></i></option>
+					<option value="warning"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i></option>
+					<option value="error"><i class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i></option>
+					<option value="success"><i class="ti ti-check" style="color: var(--MI_THEME-success);"></i></option>
 				</MkRadios>
 				<MkRadios v-model="display">
 					<template #label>{{ i18n.ts.display }}</template>
@@ -141,8 +141,8 @@ async function del() {
 	bottom: 0;
 	left: 0;
 	padding: 12px;
-	border-top: solid 0.5px var(--divider);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	border-top: solid 0.5px var(--MI_THEME-divider);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 }
 </style>

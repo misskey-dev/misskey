@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="replaying" class="_woodenFrame">
 				<div class="_woodenFrameInner">
 					<div style="background: #0004;">
-						<div style="height: 10px; background: var(--accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
+						<div style="height: 10px; background: var(--MI_THEME-accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
 					</div>
 				</div>
 				<div class="_woodenFrameInner">

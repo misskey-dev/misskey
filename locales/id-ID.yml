@@ -1924,7 +1924,6 @@ _theme:
     buttonBg: "Latar belakang tombol"
     buttonHoverBg: "Latar belakang tombol (Mengambang)"
     inputBorder: "Batas bidang masukan"
-    listItemHoverBg: "Latar belakang daftar item (Mengambang)"
     driveFolderBg: "Latar belakang folder drive"
     wallpaperOverlay: "Lapisan wallpaper"
     badge: "Lencana"

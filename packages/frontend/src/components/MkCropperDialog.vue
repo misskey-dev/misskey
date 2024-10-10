@@ -125,7 +125,7 @@ onMounted(() => {
 	const computedStyle = getComputedStyle(document.documentElement);
 
 	const selection = cropper.getCropperSelection()!;
-	selection.themeColor = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
+	selection.themeColor = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();
 	selection.aspectRatio = props.aspectRatio;
 	selection.initialAspectRatio = props.aspectRatio;
 	selection.outlined = true;
@@ -170,8 +170,8 @@ onMounted(() => {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		-webkit-backdrop-filter: var(--blur, blur(10px));
-		backdrop-filter: var(--blur, blur(10px));
+		-webkit-backdrop-filter: var(--MI-blur, blur(10px));
+		backdrop-filter: var(--MI-blur, blur(10px));
 		background: rgba(0, 0, 0, 0.5);
 	}
 

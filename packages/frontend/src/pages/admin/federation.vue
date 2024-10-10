@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
-					<FormSplit style="margin-top: var(--margin);">
+					<FormSplit style="margin-top: var(--MI-margin);">
 						<MkSelect v-model="state">
 							<template #label>{{ i18n.ts.state }}</template>
 							<option value="all">{{ i18n.ts.all }}</option>

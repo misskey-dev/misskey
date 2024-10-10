@@ -8,8 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ invite.code }}</template>
 	<template #suffix>
 		<span v-if="invite.used">{{ i18n.ts.used }}</span>
-		<span v-else-if="isExpired" style="color: var(--error)">{{ i18n.ts.expired }}</span>
-		<span v-else style="color: var(--success)">{{ i18n.ts.unused }}</span>
+		<span v-else-if="isExpired" style="color: var(--MI_THEME-error)">{{ i18n.ts.expired }}</span>
+		<span v-else style="color: var(--MI_THEME-success)">{{ i18n.ts.unused }}</span>
 	</template>
 	<template #footer>
 		<div class="_buttons">

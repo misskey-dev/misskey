@@ -1302,7 +1302,6 @@ _theme:
     buttonBg: "Фон кнопки"
     buttonHoverBg: "Фон кнопки (при наведенні)"
     inputBorder: "Край поля вводу"
-    listItemHoverBg: "Фон елементу в списку (при наведенні)"
     driveFolderBg: "Фон папки на диску"
     wallpaperOverlay: "Накладання шпалер"
     badge: "Значок"

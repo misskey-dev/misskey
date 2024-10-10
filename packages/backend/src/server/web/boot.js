@@ -98,7 +98,7 @@
 	const theme = localStorage.getItem('theme');
 	if (theme) {
 		for (const [k, v] of Object.entries(JSON.parse(theme))) {
-			document.documentElement.style.setProperty(`--${k}`, v.toString());
+			document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
 
 			// HTMLの theme-color 適用
 			if (k === 'htmlThemeColor') {

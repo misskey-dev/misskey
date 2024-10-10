@@ -145,7 +145,7 @@ definePageMetadata(() => ({
 
 .current {
 	padding: 16px;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .decorations {

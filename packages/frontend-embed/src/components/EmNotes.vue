@@ -43,10 +43,10 @@ defineExpose({
 
 <style lang="scss" module>
 .root {
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 }
 
 .note {
-	border-bottom: 0.5px solid var(--divider);
+	border-bottom: 0.5px solid var(--MI_THEME-divider);
 }
 </style>

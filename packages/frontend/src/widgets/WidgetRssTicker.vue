@@ -171,7 +171,7 @@ defineExpose<WidgetComponentExpose>({
 	display: inline-flex;
 	align-items: center;
 	vertical-align: bottom;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 
 .divider {
@@ -179,6 +179,6 @@ defineExpose<WidgetComponentExpose>({
 	width: 0.5px;
 	height: 16px;
 	margin: 0 1em;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 </style>

@@ -115,7 +115,7 @@ defineExpose<WidgetComponentExpose>({
 <style lang="scss" module>
 .bdayFRoot {
 	overflow: hidden;
-	min-height: calc(calc(calc(50px * 3) - 8px) + calc(var(--margin) * 2));
+	min-height: calc(calc(calc(50px * 3) - 8px) + calc(var(--MI-margin) * 2));
 }
 .bdayFGrid {
 	display: grid;
@@ -123,7 +123,7 @@ defineExpose<WidgetComponentExpose>({
 	grid-template-rows: repeat(3, 42px);
 	place-content: center;
 	gap: 8px;
-	margin: var(--margin) auto;
+	margin: var(--MI-margin) auto;
 }
 
 .bdayFFallback {
@@ -139,6 +139,6 @@ defineExpose<WidgetComponentExpose>({
 	width: auto;
 	max-width: 90%;
 	margin-bottom: 8px;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 </style>

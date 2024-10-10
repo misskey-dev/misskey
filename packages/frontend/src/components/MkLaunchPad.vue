@@ -105,8 +105,8 @@ function close() {
 			box-sizing: border-box;
 
 			&:hover {
-				color: var(--accent);
-				background: var(--accentedBg);
+				color: var(--MI_THEME-accent);
+				background: var(--MI_THEME-accentedBg);
 				text-decoration: none;
 			}
 
@@ -137,7 +137,7 @@ function close() {
 				position: absolute;
 				top: 32px;
 				left: 32px;
-				color: var(--indicator);
+				color: var(--MI_THEME-indicator);
 				font-size: 8px;
 				animation: global-blink 1s infinite;
 

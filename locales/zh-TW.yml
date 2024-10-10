@@ -1975,7 +1975,6 @@ _theme:
     buttonBg: "按鈕背景"
     buttonHoverBg: "按鈕背景 (漂浮)"
     inputBorder: "輸入框邊框"
-    listItemHoverBg: "列表物品背景 (漂浮)"
     driveFolderBg: "雲端硬碟文件夾背景"
     wallpaperOverlay: "壁紙覆蓋層"
     badge: "徽章"

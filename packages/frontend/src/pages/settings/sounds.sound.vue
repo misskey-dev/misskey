@@ -194,7 +194,7 @@ function save() {
 	flex-grow: 1;
 	min-width: 0;
 	font-weight: 700;
-	color: var(--error);
+	color: var(--MI_THEME-error);
 }
 
 .fileSelectorButton {
@@ -203,6 +203,6 @@ function save() {
 
 .fileNotSelected {
 	font-weight: 700;
-	color: var(--infoWarnFg);
+	color: var(--MI_THEME-infoWarnFg);
 }
 </style>

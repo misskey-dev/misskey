@@ -1701,7 +1701,6 @@ _theme:
     buttonBg: "Arrière-plan du bouton"
     buttonHoverBg: "Arrière-plan du bouton (survolé)"
     inputBorder: "Cadre de la zone de texte"
-    listItemHoverBg: "Arrière-plan d'item de liste (survolé)"
     driveFolderBg: "Arrière-plan du dossier de disque"
     wallpaperOverlay: "Superposition de fond d'écran"
     badge: "Badge"

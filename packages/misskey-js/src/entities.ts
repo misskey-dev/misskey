@@ -308,7 +308,7 @@ export type SigninWithPasskeyInitResponse = {
 };
 
 export type SigninWithPasskeyResponse = {
-	signinResponse: SigninFlowResponse;
+	signinResponse: SigninFlowResponse & { finished: true };
 };
 
 type Values<T extends Record<PropertyKey, unknown>> = T[keyof T];

@@ -43,9 +43,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import { url as local, host } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { url as local, host } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
@@ -124,7 +124,7 @@ function reduceFrequency(): void {
 <style lang="scss" module>
 .root {
 	background-size: auto auto;
-	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--ad) 8px, var(--ad) 14px );
+	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--bg) 8px, var(--bg) 14px );
 }
 
 .main {
@@ -191,7 +191,7 @@ function reduceFrequency(): void {
 	right: 1px;
 	display: grid;
 	place-content: center;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 100%;
 	padding: 2px;
 }
@@ -210,7 +210,7 @@ function reduceFrequency(): void {
 	padding: 8px;
 	margin: 0 auto;
 	max-width: 400px;
-	border: solid 1px var(--divider);
+	border: solid 1px var(--MI_THEME-divider);
 }
 
 .menuButton {

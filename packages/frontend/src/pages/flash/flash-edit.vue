@@ -467,8 +467,8 @@ definePageMetadata(() => ({
 </script>
 <style lang="scss" module>
 .footer {
-	backdrop-filter: var(--blur, blur(15px));
-	background: var(--acrylicBg);
-	border-top: solid .5px var(--divider);
+	backdrop-filter: var(--MI-blur, blur(15px));
+	background: var(--MI_THEME-acrylicBg);
+	border-top: solid .5px var(--MI_THEME-divider);
 }
 </style>

@@ -1943,7 +1943,6 @@ _theme:
     buttonBg: "ボタンの背景"
     buttonHoverBg: "ボタンの背景 (ホバー)"
     inputBorder: "入力ボックスの縁取り"
-    listItemHoverBg: "リスト項目の背景 (ホバー)"
     driveFolderBg: "ドライブフォルダーの背景"
     wallpaperOverlay: "壁紙のオーバーレイ"
     badge: "バッジ"

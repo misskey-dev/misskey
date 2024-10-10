@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<svg viewBox="0 0 256 128" :class="$style.tabShape">
 			<g transform="matrix(6.2431,0,0,6.2431,-677.417,-29.3839)">
-				<path d="M149.512,4.707L108.507,4.707C116.252,4.719 118.758,14.958 118.758,14.958C118.758,14.958 121.381,25.283 129.009,25.209L149.512,25.209L149.512,4.707Z" style="fill:var(--deckBg);"/>
+				<path d="M149.512,4.707L108.507,4.707C116.252,4.719 118.758,14.958 118.758,14.958C118.758,14.958 121.381,25.283 129.009,25.209L149.512,25.209L149.512,4.707Z" style="fill:var(--MI_THEME-deckBg);"/>
 			</g>
 		</svg>
 		<div :class="$style.color"></div>
@@ -299,7 +299,7 @@ function onDrop(ev) {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: var(--focus);
+			background: var(--MI_THEME-focus);
 		}
 	}
 
@@ -313,7 +313,7 @@ function onDrop(ev) {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: var(--focus);
+			background: var(--MI_THEME-focus);
 			opacity: 0.5;
 		}
 	}
@@ -331,19 +331,19 @@ function onDrop(ev) {
 	}
 
 	&.naked {
-		background: var(--acrylicBg) !important;
-		-webkit-backdrop-filter: var(--blur, blur(10px));
-		backdrop-filter: var(--blur, blur(10px));
+		background: var(--MI_THEME-acrylicBg) !important;
+		-webkit-backdrop-filter: var(--MI-blur, blur(10px));
+		backdrop-filter: var(--MI-blur, blur(10px));
 
 		> .header {
 			background: transparent;
 			box-shadow: none;
-			color: var(--fg);
+			color: var(--MI_THEME-fg);
 		}
 
 		> .body {
 			background: transparent !important;
-			scrollbar-color: var(--scrollbarHandle) transparent;
+			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
 
 			&::-webkit-scrollbar-track {
 				background: transparent;
@@ -352,12 +352,12 @@ function onDrop(ev) {
 	}
 
 	&.paged {
-		background: var(--bg) !important;
+		background: var(--MI_THEME-bg) !important;
 
 		> .body {
-			background: var(--bg) !important;
+			background: var(--MI_THEME-bg) !important;
 			overflow-y: scroll !important;
-			scrollbar-color: var(--scrollbarHandle) transparent;
+			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
 
 			&::-webkit-scrollbar-track {
 				background: inherit;
@@ -374,9 +374,9 @@ function onDrop(ev) {
 	height: var(--deckColumnHeaderHeight);
 	padding: 0 16px 0 30px;
 	font-size: 0.9em;
-	color: var(--panelHeaderFg);
-	background: var(--panelHeaderBg);
-	box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
+	color: var(--MI_THEME-panelHeaderFg);
+	background: var(--MI_THEME-panelHeaderBg);
+	box-shadow: 0 1px 0 0 var(--MI_THEME-panelHeaderDivider);
 	cursor: pointer;
 	user-select: none;
 }
@@ -387,7 +387,7 @@ function onDrop(ev) {
 	left: 12px;
 	width: 3px;
 	height: calc(100% - 24px);
-	background: var(--accent);
+	background: var(--MI_THEME-accent);
 	border-radius: 999px;
 }
 
@@ -441,11 +441,11 @@ function onDrop(ev) {
 	overscroll-behavior-y: contain;
 	box-sizing: border-box;
 	container-type: size;
-	background-color: var(--bg);
-	scrollbar-color: var(--scrollbarHandle) var(--panel);
+	background-color: var(--MI_THEME-bg);
+	scrollbar-color: var(--MI_THEME-scrollbarHandle) var(--MI_THEME-panel);
 
 	&::-webkit-scrollbar-track {
-		background: var(--panel);
+		background: var(--MI_THEME-panel);
 	}
 }
 </style>

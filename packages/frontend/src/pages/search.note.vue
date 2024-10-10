@@ -211,12 +211,12 @@ async function search() {
 	justify-content: center;
 }
 .addMeButton {
-  border: 2px dashed var(--fgTransparent);
+  border: 2px dashed var(--MI_THEME-fgTransparent);
 	padding: 12px;
 	margin-right: 16px;
 }
 .addUserButton {
-  border: 2px dashed var(--fgTransparent);
+  border: 2px dashed var(--MI_THEME-fgTransparent);
 	padding: 12px;
 	flex-grow: 1;
 }

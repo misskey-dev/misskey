@@ -17,9 +17,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span v-if="$i && !announcement.silence && !announcement.isRead" style="margin-right: 0.5em;">🆕</span>
 							<span style="margin-right: 0.5em;">
 								<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
-								<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
-								<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
-								<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+								<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i>
+								<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
+								<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 							</span>
 							<MkA :to="`/announcements/${announcement.id}`"><span>{{ announcement.title }}</span></MkA>
 						</div>

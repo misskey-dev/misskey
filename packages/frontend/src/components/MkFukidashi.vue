@@ -39,8 +39,8 @@ withDefaults(defineProps<{
 
 <style module lang="scss">
 .root {
-	--fukidashi-radius: var(--radius);
-	--fukidashi-bg: var(--panel);
+	--fukidashi-radius: var(--MI-radius);
+	--fukidashi-bg: var(--MI_THEME-panel);
 
 	position: relative;
 	display: inline-block;
@@ -48,7 +48,7 @@ withDefaults(defineProps<{
 	padding-top: calc(var(--fukidashi-radius) * .13);
 
 	&.shadow {
-		filter: drop-shadow(0 4px 32px var(--shadow));
+		filter: drop-shadow(0 4px 32px var(--MI_THEME-shadow));
 	}
 
 	&.left {

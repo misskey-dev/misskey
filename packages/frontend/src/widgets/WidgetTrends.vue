@@ -91,13 +91,13 @@ defineExpose<WidgetComponentExpose>({
 			display: flex;
 			align-items: center;
 			padding: 14px 16px;
-			border-bottom: solid 0.5px var(--divider);
+			border-bottom: solid 0.5px var(--MI_THEME-divider);
 
 			> .tag {
 				flex: 1;
 				overflow: hidden;
 				font-size: 0.9em;
-				color: var(--fg);
+				color: var(--MI_THEME-fg);
 
 				> .a {
 					display: block;

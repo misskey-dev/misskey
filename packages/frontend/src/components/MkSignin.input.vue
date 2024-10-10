@@ -162,8 +162,8 @@ async function specifyHostAndOpenRemote(options: OpenOnRemoteOptions): Promise<v
 
 .avatar {
 	margin: 0 auto;
-	background-color: color-mix(in srgb, var(--fg), transparent 85%);
-	color: color-mix(in srgb, var(--fg), transparent 25%);
+	background-color: color-mix(in srgb, var(--MI_THEME-fg), transparent 85%);
+	color: color-mix(in srgb, var(--MI_THEME-fg), transparent 25%);
 	text-align: center;
 	height: 64px;
 	width: 64px;
@@ -188,7 +188,7 @@ async function specifyHostAndOpenRemote(options: OpenOnRemoteOptions): Promise<v
 	margin: .4em auto;
 	width: 100%;
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .orMsg {
@@ -196,9 +196,9 @@ async function specifyHostAndOpenRemote(options: OpenOnRemoteOptions): Promise<v
 	top: -.6em;
 	display: inline-block;
 	padding: 0 1em;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	font-size: 0.8em;
-	color: var(--fgOnPanel);
+	color: var(--MI_THEME-fgOnPanel);
 	margin: 0;
 	left: 50%;
 	transform: translateX(-50%);

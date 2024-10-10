@@ -248,9 +248,9 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .tab {
-	margin: calc(var(--margin) / 2) 0;
-	padding: calc(var(--margin) / 2) 0;
-	background: var(--bg);
+	margin: calc(var(--MI-margin) / 2) 0;
+	padding: calc(var(--MI-margin) / 2) 0;
+	background: var(--MI_THEME-bg);
 }
 
 .emojis {
@@ -272,6 +272,6 @@ definePageMetadata(() => ({
 .editorCaption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 </style>

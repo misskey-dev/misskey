@@ -110,8 +110,8 @@ const emits = defineEmits<{
 
 <style lang="scss" module>
 .extInstallerRoot {
-	border-radius: var(--radius);
-	background: var(--panel);
+	border-radius: var(--MI-radius);
+	background: var(--MI_THEME-panel);
 	padding: 1.5rem;
 }
 
@@ -125,8 +125,8 @@ const emits = defineEmits<{
 	margin-left: auto;
 	margin-right: auto;
 
-	background-color: var(--accentedBg);
-	color: var(--accent);
+	background-color: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
 }
 
 .extInstallerTitle {

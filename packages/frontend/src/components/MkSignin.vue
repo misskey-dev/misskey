@@ -83,7 +83,7 @@ import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/br
 import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 
 const emit = defineEmits<{
-	(ev: 'login', v: Misskey.entities.SigninFlowResponse): void;
+	(ev: 'login', v: Misskey.entities.SigninFlowResponse & { finished: true }): void;
 }>();
 
 const props = withDefaults(defineProps<{
@@ -276,7 +276,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 	});
 }
 
-async function onLoginSucceeded(res: Misskey.entities.SigninFlowResponse & { finished: true; }) {
+async function onLoginSucceeded(res: Misskey.entities.SigninFlowResponse & { finished: true }) {
 	if (props.autoSet) {
 		await login(res.i);
 	}
@@ -409,7 +409,7 @@ onBeforeUnmount(() => {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: color-mix(in srgb, var(--panel), transparent 50%);
+	background-color: color-mix(in srgb, var(--MI_THEME-panel), transparent 50%);
 	display: flex;
 	justify-content: center;
 	align-items: center;

@@ -207,7 +207,7 @@ defineExpose<WidgetComponentExpose>({
 .meter {
 	width: 100%;
 	overflow: hidden;
-	background: var(--X11);
+	background: var(--MI_THEME-X11);
 	border-radius: 8px;
 }
 

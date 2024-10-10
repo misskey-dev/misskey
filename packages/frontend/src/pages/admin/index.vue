@@ -331,7 +331,7 @@ defineExpose({
 			width: 32%;
 			max-width: 280px;
 			box-sizing: border-box;
-			border-right: solid 0.5px var(--divider);
+			border-right: solid 0.5px var(--MI_THEME-divider);
 			overflow: auto;
 			height: 100%;
 		}

@@ -46,7 +46,7 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .note {
-	background: var(--panel);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-panel);
+	border-radius: var(--MI-radius);
 }
 </style>

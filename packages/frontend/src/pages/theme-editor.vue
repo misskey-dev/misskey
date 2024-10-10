@@ -268,7 +268,7 @@ definePageMetadata(() => ({
 				}
 
 				&.active {
-					box-shadow: 0 0 0 2px var(--divider) inset;
+					box-shadow: 0 0 0 2px var(--MI_THEME-divider) inset;
 				}
 
 				&.rounded {

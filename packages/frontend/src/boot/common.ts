@@ -182,24 +182,18 @@ export async function common(createVue: () => App<Element>) {
 			if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(instance.defaultLightTheme));
 			if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
 			defaultStore.set('themeInitial', false);
-		} else {
-			if (defaultStore.state.darkMode) {
-				applyTheme(darkTheme.value);
-			} else {
-				applyTheme(lightTheme.value);
-			}
 		}
 	});
 
 	watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
-		document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
+		document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');
 	}, { immediate: true });
 
 	watch(defaultStore.reactiveState.useBlurEffect, v => {
 		if (v) {
-			document.documentElement.style.removeProperty('--blur');
+			document.documentElement.style.removeProperty('--MI-blur');
 		} else {
-			document.documentElement.style.setProperty('--blur', 'none');
+			document.documentElement.style.setProperty('--MI-blur', 'none');
 		}
 	}, { immediate: true });
 

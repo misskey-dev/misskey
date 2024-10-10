@@ -157,7 +157,7 @@ watch(defaultStore.reactiveState.menuDisplay, () => {
 
 	> .divider {
 		margin: 10px 0;
-		border-top: solid 0.5px var(--divider);
+		border-top: solid 0.5px var(--MI_THEME-divider);
 	}
 
 	> .post {
@@ -165,7 +165,7 @@ watch(defaultStore.reactiveState.menuDisplay, () => {
 		top: 0;
 		z-index: 1;
 		padding: 16px 0;
-		background: var(--bg);
+		background: var(--MI_THEME-bg);
 
 		> .button {
 			min-width: 0;
@@ -220,7 +220,7 @@ watch(defaultStore.reactiveState.menuDisplay, () => {
 			position: absolute;
 			top: 0;
 			left: 0;
-			color: var(--navIndicator);
+			color: var(--MI_THEME-navIndicator);
 			font-size: 8px;
 			animation: global-blink 1s infinite;
 
@@ -233,11 +233,11 @@ watch(defaultStore.reactiveState.menuDisplay, () => {
 
 		&:hover {
 			text-decoration: none;
-			color: var(--navHoverFg);
+			color: var(--MI_THEME-navHoverFg);
 		}
 
 		&.active {
-			color: var(--navActive);
+			color: var(--MI_THEME-navActive);
 		}
 	}
 }

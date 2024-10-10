@@ -445,7 +445,7 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .buttons {
 	display: flex;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 	flex-wrap: wrap;
 }
 

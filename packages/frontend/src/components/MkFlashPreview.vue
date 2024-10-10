@@ -36,7 +36,7 @@ const props = defineProps<{
 
 	&:hover {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 
 	&:focus-visible {
@@ -83,7 +83,6 @@ const props = defineProps<{
 			> p {
 				display: inline-block;
 				margin: 0;
-				color: var(--urlPreviewInfo);
 				font-size: 0.8em;
 				line-height: 16px;
 				vertical-align: top;
@@ -92,7 +91,7 @@ const props = defineProps<{
 	}
 
 	&:global(.gray) {
-		--c: var(--bg);
+		--c: var(--MI_THEME-bg);
 		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
 		background-size: 16px 16px;
 	}

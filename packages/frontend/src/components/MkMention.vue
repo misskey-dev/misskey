@@ -47,12 +47,12 @@ const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
 	display: inline-block;
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
-	color: var(--mention);
-	background: color(from var(--mention) srgb r g b / 0.1);
+	color: var(--MI_THEME-mention);
+	background: color(from var(--MI_THEME-mention) srgb r g b / 0.1);
 
 	&.isMe {
-		color: var(--mentionMe);
-		background: color(from var(--mentionMe) srgb r g b / 0.1);
+		color: var(--MI_THEME-mentionMe);
+		background: color(from var(--MI_THEME-mentionMe) srgb r g b / 0.1);
 	}
 }
 

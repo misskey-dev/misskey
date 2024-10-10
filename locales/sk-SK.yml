@@ -1108,7 +1108,6 @@ _theme:
     buttonBg: "Pozadie tlačidla"
     buttonHoverBg: "Pozadie tlačidla (pod kurzorom)"
     inputBorder: "Okraj vstupného poľa"
-    listItemHoverBg: "Pozadie položky zoznamu (pod kurzorom)"
     driveFolderBg: "Pozadie priečinu disku"
     wallpaperOverlay: "Vrstvenie pozadia"
     badge: "Odznak"

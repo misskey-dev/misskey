@@ -1915,7 +1915,6 @@ _theme:
     buttonBg: "Fondo de botón"
     buttonHoverBg: "Fondo de botón (hover)"
     inputBorder: "Borde de los campos de entrada"
-    listItemHoverBg: "Fondo de elemento de listas (hover)"
     driveFolderBg: "Fondo de capeta del drive"
     wallpaperOverlay: "Transparencia del fondo de pantalla"
     badge: "Medalla"

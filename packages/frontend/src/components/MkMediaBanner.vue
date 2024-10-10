@@ -68,7 +68,6 @@ async function show() {
 }
 
 .download {
-	background: var(--noteAttachedFile);
 }
 
 .sensitive {

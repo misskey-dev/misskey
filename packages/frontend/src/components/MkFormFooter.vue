@@ -36,7 +36,7 @@ const props = defineProps<{
 }
 
 .text {
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 	font-size: 90%;
 	animation: modified-blink 2s infinite;
 }

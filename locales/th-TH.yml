@@ -1943,7 +1943,6 @@ _theme:
     buttonBg: "ปุ่มพื้นหลัง"
     buttonHoverBg: "ปุ่มพื้นหลัง (โฮเวอร์)"
     inputBorder: "เส้นขอบของช่องป้อนข้อมูล"
-    listItemHoverBg: "รายการไอเทมพื้นหลัง (โฮเวอร์)"
     driveFolderBg: "พื้นหลังโฟลเดอร์ไดรฟ์"
     wallpaperOverlay: "วอลล์เปเปอร์ซ้อนทับ"
     badge: "ตรา"

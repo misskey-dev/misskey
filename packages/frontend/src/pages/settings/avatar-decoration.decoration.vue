@@ -43,7 +43,7 @@ const emit = defineEmits<{
 .root {
 	cursor: pointer;
 	padding: 16px 16px 28px 16px;
-	border: solid 2px var(--divider);
+	border: solid 2px var(--MI_THEME-divider);
 	border-radius: 8px;
 	text-align: center;
 	font-size: 90%;
@@ -52,8 +52,8 @@ const emit = defineEmits<{
 }
 
 .active {
-	background-color: var(--accentedBg);
-	border-color: var(--accent);
+	background-color: var(--MI_THEME-accentedBg);
+	border-color: var(--MI_THEME-accent);
 }
 
 .name {

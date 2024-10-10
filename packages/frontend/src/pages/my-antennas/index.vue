@@ -73,11 +73,11 @@ onActivated(() => {
 .antenna {
 	display: block;
 	padding: 16px;
-	border: solid 1px var(--divider);
+	border: solid 1px var(--MI_THEME-divider);
 	border-radius: 6px;
 
 	&:hover {
-		border: solid 1px var(--accent);
+		border: solid 1px var(--MI_THEME-accent);
 		text-decoration: none;
 	}
 }

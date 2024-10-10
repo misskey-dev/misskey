@@ -1984,7 +1984,6 @@ _theme:
     buttonBg: "버튼 배경"
     buttonHoverBg: "버튼 배경 (호버)"
     inputBorder: "입력 필드 테두리"
-    listItemHoverBg: "리스트 항목 배경 (호버)"
     driveFolderBg: "드라이브 폴더 배경"
     wallpaperOverlay: "배경화면 오버레이"
     badge: "배지"

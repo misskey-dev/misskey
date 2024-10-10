@@ -204,7 +204,7 @@ definePageMetadata(() => ({
 .root {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 
 .editor {
@@ -242,14 +242,14 @@ definePageMetadata(() => ({
 }
 
 .uiInspectorUnShown {
-	color: var(--fgTransparent);
+	color: var(--MI_THEME-fgTransparent);
 }
 
 .uiInspectorType {
 	display: inline-block;
 	border: hidden;
 	border-radius: 10px;
-	background-color: var(--panelHighlight);
+	background-color: var(--MI_THEME-panelHighlight);
 	padding: 2px 8px;
 	font-size: 12px;
 }

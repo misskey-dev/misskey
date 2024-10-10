@@ -100,7 +100,7 @@ function top(ev: MouseEvent) {
 	display: flex;
 	min-width: 0;
 	align-items: center;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 	overflow: hidden;
 
 	.headerClipIconRoot {
@@ -110,8 +110,8 @@ function top(ev: MouseEvent) {
 		line-height: 32px;
 		font-size: 14px;
 		text-align: center;
-		background-color: var(--accentedBg);
-		color: var(--accent);
+		background-color: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
 		border-radius: 50%;
 	}
 

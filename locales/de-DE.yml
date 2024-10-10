@@ -1784,7 +1784,6 @@ _theme:
     buttonBg: "Hintergrund von Schaltflächen"
     buttonHoverBg: "Hintergrund von Schaltflächen (Mouseover)"
     inputBorder: "Rahmen von Eingabefeldern"
-    listItemHoverBg: "Hintergrund von Listeneinträgen (Mouseover)"
     driveFolderBg: "Hintergrund von Drive-Ordnern"
     wallpaperOverlay: "Hintergrundbild-Overlay"
     badge: "Wappen"

@@ -18,12 +18,12 @@ export default {
 
 		const parentBg = getBgColor(src.parentElement);
 
-		const myBg = getComputedStyle(document.documentElement).getPropertyValue('--panel');
+		const myBg = getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-panel');
 
 		if (parentBg === myBg) {
-			src.style.backgroundColor = 'var(--bg)';
+			src.style.backgroundColor = 'var(--MI_THEME-bg)';
 		} else {
-			src.style.backgroundColor = 'var(--panel)';
+			src.style.backgroundColor = 'var(--MI_THEME-panel)';
 		}
 	},
 } as Directive;

@@ -60,7 +60,7 @@ onUpdated(() => {
 		transform: translate3d(0, 0, 0);
 	}
 	100% {
-		transform: translate3d(0, calc(calc(-100% - 128px) - var(--margin)), 0);
+		transform: translate3d(0, calc(calc(-100% - 128px) - var(--MI-margin)), 0);
 	}
 }
 
@@ -69,7 +69,7 @@ onUpdated(() => {
 		transform: translate3d(0, -128px, 0);
 	}
 	100% {
-		transform: translate3d(0, calc(calc(-100% - 128px) - var(--margin)), 0);
+		transform: translate3d(0, calc(calc(-100% - 128px) - var(--MI-margin)), 0);
 	}
 }
 
