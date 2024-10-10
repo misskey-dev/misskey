@@ -451,9 +451,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			? await this.roleAssignmentsRepository.findBy({ roleId: In(moderatorRoles.map(r => r.id)) })
 			: [];
 
-		const now = Date.now();
 		// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
-		const result = new Set(
+		const now = Date.now();
+		const resultSet = new Set(
 			assigns
 				.filter(it =>
 					(excludeExpire)
@@ -471,10 +471,10 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 					.getOneOrFail();
 				return it.id;
 			});
-			result.add(rootUserId);
+			resultSet.add(rootUserId);
 		}
 
-		return [...result].sort((x, y) => x.localeCompare(y));
+		return [...resultSet].sort((x, y) => x.localeCompare(y));
 	}
 
 	@bindThis
