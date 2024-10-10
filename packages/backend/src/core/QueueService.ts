@@ -93,6 +93,13 @@ export class QueueService {
 			repeat: { pattern: '0 0 * * *' },
 			removeOnComplete: true,
 		});
+
+		this.systemQueue.add('checkModeratorsActivity', {
+		}, {
+			// 毎時30分に起動
+			repeat: { pattern: '30 * * * *' },
+			removeOnComplete: true,
+		});
 	}
 
 	@bindThis

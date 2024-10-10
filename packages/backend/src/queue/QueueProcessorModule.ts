@@ -80,6 +80,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		DeliverProcessorService,
 		InboxProcessorService,
 		AggregateRetentionProcessorService,
+		CheckExpiredMutingsProcessorService,
 		QueueProcessorService,
 	],
 	exports: [

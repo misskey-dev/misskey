@@ -71,13 +71,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					break;
 				}
 				case 'moderator': {
-					const moderatorIds = await this.roleService.getModeratorIds(false);
+					const moderatorIds = await this.roleService.getModeratorIds({ includeAdmins: false });
 					if (moderatorIds.length === 0) return [];
 					query.where('user.id IN (:...moderatorIds)', { moderatorIds: moderatorIds });
 					break;
 				}
 				case 'adminOrModerator': {
-					const adminOrModeratorIds = await this.roleService.getModeratorIds();
+					const adminOrModeratorIds = await this.roleService.getModeratorIds({ includeAdmins: true });
 					if (adminOrModeratorIds.length === 0) return [];
 					query.where('user.id IN (:...adminOrModeratorIds)', { adminOrModeratorIds: adminOrModeratorIds });
 					break;
