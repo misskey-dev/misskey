@@ -48,7 +48,7 @@ export class CheckModeratorsActivityProcessorService {
 			await this.changeToInvitationOnly();
 		} else {
 			if (inactivityLimitCountdown <= 2) {
-				this.logger.info(`A moderator has been inactive for a period of time. If you are inactive for an additional ${inactivityLimitCountdown} days, it will switch to invitation only.`);
+				this.logger.warn(`A moderator has been inactive for a period of time. If you are inactive for an additional ${inactivityLimitCountdown} days, it will switch to invitation only.`);
 			}
 		}
 	}
@@ -88,7 +88,11 @@ export class CheckModeratorsActivityProcessorService {
 		inactivePeriod.setDate(today.getDate() - MODERATOR_INACTIVITY_LIMIT_DAYS);
 
 		// TODO: モデレーター以外にも特別な権限を持つユーザーがいる場合は考慮する
-		const moderators = await this.roleService.getModerators(true, true);
+		const moderators = await this.roleService.getModerators({
+			includeAdmins: true,
+			includeRoot: true,
+			excludeExpire: true,
+		});
 		const inactiveModeratorCount = moderators
 			.map(it => it.lastActiveDate)
 			.filter(it => it != null)
@@ -103,8 +107,6 @@ export class CheckModeratorsActivityProcessorService {
 
 	@bindThis
 	public async changeToInvitationOnly() {
-		const meta = await this.metaService.fetch(true);
-		meta.disableRegistration = true;
-		await this.metaService.update(meta);
+		await this.metaService.update({ disableRegistration: true });
 	}
 }
