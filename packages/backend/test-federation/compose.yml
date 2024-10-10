@@ -1,0 +1,133 @@
+include:
+  - ./compose.a.yml
+  - ./compose.b.yml
+
+services:
+  setup:
+    extends:
+      file: ./compose.tpl.yml
+      service: misskey
+    command: >
+      bash -c "
+        corepack enable && corepack prepare
+        pnpm -F backend i
+        pnpm -F misskey-js i
+        pnpm -F misskey-reversi i
+      "
+
+  tester:
+    image: node:20
+    depends_on:
+      a.test:
+        condition: service_healthy
+      b.test:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=development
+      - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/rootCA.crt
+    volumes:
+      - type: bind
+        source: ../package.json
+        target: /misskey/packages/backend/package.json
+        read_only: true
+      - type: bind
+        source: ../test/resources
+        target: /misskey/packages/backend/test/resources
+        read_only: true
+      - type: bind
+        source: ./test
+        target: /misskey/packages/backend/test-federation/test
+        read_only: true
+      - type: bind
+        source: ../jest.config.cjs
+        target: /misskey/packages/backend/jest.config.cjs
+        read_only: true
+      - type: bind
+        source: ../jest.config.fed.cjs
+        target: /misskey/packages/backend/jest.config.fed.cjs
+        read_only: true
+      - type: bind
+        source: ../../misskey-js/built
+        target: /misskey/packages/misskey-js/built
+        read_only: true
+      - type: bind
+        source: ../../misskey-js/package.json
+        target: /misskey/packages/misskey-js/package.json
+        read_only: true
+      - type: bind
+        source: ../../../package.json
+        target: /misskey/package.json
+        read_only: true
+      - type: bind
+        source: ../../../pnpm-lock.yaml
+        target: /misskey/pnpm-lock.yaml
+        read_only: true
+      - type: bind
+        source: ../../../pnpm-workspace.yaml
+        target: /misskey/pnpm-workspace.yaml
+        read_only: true
+      - type: bind
+        source: ./certificates/rootCA.crt
+        target: /usr/local/share/ca-certificates/rootCA.crt
+        read_only: true
+    working_dir: /misskey
+    entrypoint: >
+      bash -c '
+        corepack enable && corepack prepare
+        pnpm -F misskey-js i --frozen-lockfile
+        pnpm -F backend i --frozen-lockfile
+        exec "$0" "$@"
+      '
+    command: pnpm -F backend test:fed
+
+  daemon:
+    image: node:20
+    depends_on:
+      redis.test:
+        condition: service_healthy
+    volumes:
+      - type: bind
+        source: ../package.json
+        target: /misskey/packages/backend/package.json
+        read_only: true
+      - type: bind
+        source: ./daemon.ts
+        target: /misskey/packages/backend/test-federation/daemon.ts
+        read_only: true
+      - type: bind
+        source: ./tsconfig.json
+        target: /misskey/packages/backend/test-federation/tsconfig.json
+        read_only: true
+      - type: bind
+        source: ../../../package.json
+        target: /misskey/package.json
+        read_only: true
+      - type: bind
+        source: ../../../pnpm-lock.yaml
+        target: /misskey/pnpm-lock.yaml
+        read_only: true
+      - type: bind
+        source: ../../../pnpm-workspace.yaml
+        target: /misskey/pnpm-workspace.yaml
+        read_only: true
+    working_dir: /misskey
+    command: >
+      bash -c "
+        corepack enable && corepack prepare
+        pnpm -F backend i --frozen-lockfile
+        pnpm exec tsc -p ./packages/backend/test-federation
+        node ./packages/backend/test-federation/built/daemon.js
+      "
+
+  redis.test:
+    image: redis:7-alpine
+    volumes:
+      - type: bind
+        source: ./volumes/redis
+        target: /data
+        bind:
+          create_host_path: true
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      retries: 20

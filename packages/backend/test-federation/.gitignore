@@ -1,0 +1,4 @@
+certificates
+volumes
+.env
+docker.env

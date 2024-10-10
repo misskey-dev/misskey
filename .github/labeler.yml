@@ -6,7 +6,7 @@
 'packages/backend:test':
 - any:
   - changed-files:
-    - any-glob-to-any-file: ['packages/backend/test/**/*']
+    - any-glob-to-any-file: ['packages/backend/test/**/*', 'packages/backend/test-federation/**/*']
 
 'packages/frontend':
 - any:
