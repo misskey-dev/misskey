@@ -225,11 +225,11 @@ provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 watch(navFooter, () => {
 	if (navFooter.value) {
 		navFooterHeight.value = navFooter.value.offsetHeight;
-		document.body.style.setProperty('--stickyBottom', `${navFooterHeight.value}px`);
+		document.body.style.setProperty('--MI-stickyBottom', `${navFooterHeight.value}px`);
 		document.body.style.setProperty('--MI-minBottomSpacing', 'var(--MI-minBottomSpacingMobile)');
 	} else {
 		navFooterHeight.value = 0;
-		document.body.style.setProperty('--stickyBottom', '0px');
+		document.body.style.setProperty('--MI-stickyBottom', '0px');
 		document.body.style.setProperty('--MI-minBottomSpacing', '0px');
 	}
 }, {

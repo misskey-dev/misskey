@@ -76,7 +76,7 @@ onMounted(() => {
 
 	watch(childStickyBottom, () => {
 		if (bodyEl.value == null) return;
-		bodyEl.value.style.setProperty('--stickyBottom', `${childStickyBottom.value}px`);
+		bodyEl.value.style.setProperty('--MI-stickyBottom', `${childStickyBottom.value}px`);
 	}, {
 		immediate: true,
 	});
@@ -90,7 +90,7 @@ onMounted(() => {
 
 	if (footerEl.value != null) {
 		footerEl.value.style.position = 'sticky';
-		footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
+		footerEl.value.style.bottom = 'var(--MI-stickyBottom, 0)';
 		footerEl.value.style.zIndex = '1';
 		observer.observe(footerEl.value);
 	}

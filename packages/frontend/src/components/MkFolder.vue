@@ -236,7 +236,7 @@ onMounted(() => {
 .footer {
 	position: sticky !important;
 	z-index: 1;
-	bottom: var(--stickyBottom, 0px);
+	bottom: var(--MI-stickyBottom, 0px);
 	left: 0;
 	padding: 12px;
 	background: var(--MI_THEME-acrylicBg);
