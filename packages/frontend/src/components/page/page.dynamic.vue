@@ -27,7 +27,7 @@ const props = defineProps<{
 
 <style lang="scss" module>
 .root {
-	border: 1px solid var(--divider);
+	border: 1px solid var(--MI_THEME-divider);
 	border-radius: var(--radius);
 	padding: var(--margin);
 	text-align: center;

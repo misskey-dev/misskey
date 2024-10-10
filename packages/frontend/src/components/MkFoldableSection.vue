@@ -83,7 +83,7 @@ function afterLeave(element: Element) {
 
 onMounted(() => {
 	function getParentBg(el?: HTMLElement | null): string {
-		if (el == null || el.tagName === 'BODY') return 'var(--bg)';
+		if (el == null || el.tagName === 'BODY') return 'var(--MI_THEME-bg)';
 		const background = el.style.background || el.style.backgroundColor;
 		if (background) {
 			return background;
@@ -134,7 +134,7 @@ onMounted(() => {
 	flex: 1;
 	margin: auto;
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .button {

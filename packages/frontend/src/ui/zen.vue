@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, provide, ref } from 'vue';
 import XCommon from './_common_/common.vue';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
-import { instanceName, ui } from '@/config.js';
+import { instanceName, ui } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router/main.js';
 
@@ -81,8 +81,8 @@ document.documentElement.style.overflowY = 'scroll';
 	max-width: 60px;
 	margin: auto;
 	border-radius: 100%;
-	background: var(--panel);
-	color: var(--fg);
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
 	right: var(--margin);
 	bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 }

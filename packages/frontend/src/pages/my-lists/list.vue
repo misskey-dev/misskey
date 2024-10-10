@@ -134,12 +134,14 @@ async function removeUser(item, ev) {
 
 async function showMembershipMenu(item, ev) {
 	const withRepliesRef = ref(item.withReplies);
+
 	os.popupMenu([{
 		type: 'switch',
 		text: i18n.ts.showRepliesToOthersInTimeline,
 		icon: 'ti ti-messages',
 		ref: withRepliesRef,
 	}], ev.currentTarget ?? ev.target);
+
 	watch(withRepliesRef, withReplies => {
 		misskeyApi('users/lists/update-membership', {
 			listId: list.value!.id,
@@ -234,6 +236,6 @@ definePageMetadata(() => ({
 .footer {
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 </style>

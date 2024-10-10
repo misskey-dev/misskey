@@ -39,9 +39,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <div v-if="pendingApiRequestsCount > 0" id="wait"></div>
 
-<div v-if="dev" id="devTicker"><span>DEV BUILD</span></div>
+<div v-if="dev" id="devTicker"><span style="animation: dev-ticker-blink 2s infinite;">DEV BUILD</span></div>
 
-<div v-if="$i && $i.isBot" id="botWarn"><span>{{ i18n.ts.loggedInAsBot }}</span></div>
+<div v-if="$i && $i.isBot" id="botWarn"><span style="animation: dev-ticker-blink 2s infinite;">{{ i18n.ts.loggedInAsBot }}</span></div>
 </template>
 
 <script lang="ts" setup>
@@ -234,8 +234,8 @@ if ($i) {
 		height: 18px;
 		box-sizing: border-box;
 		border: solid 2px transparent;
-		border-top-color: var(--accent);
-		border-left-color: var(--accent);
+		border-top-color: var(--MI_THEME-accent);
+		border-left-color: var(--MI_THEME-accent);
 		border-radius: 50%;
 		animation: progress-spinner 400ms linear infinite;
 	}
@@ -258,10 +258,6 @@ if ($i) {
 	font-size: 14px;
 	pointer-events: none;
 	user-select: none;
-
-	> span {
-		animation: dev-ticker-blink 2s infinite;
-	}
 }
 
 #devTicker {
@@ -275,9 +271,5 @@ if ($i) {
 	font-size: 14px;
 	pointer-events: none;
 	user-select: none;
-
-	> span {
-		animation: dev-ticker-blink 2s infinite;
-	}
 }
 </style>

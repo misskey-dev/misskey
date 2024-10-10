@@ -58,11 +58,11 @@ function menu(ev) {
 	align-items: center;
 	padding: 12px;
 	text-align: left;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 8px;
 
 	&:hover {
-		border-color: var(--accent);
+		border-color: var(--MI_THEME-accent);
 	}
 }
 

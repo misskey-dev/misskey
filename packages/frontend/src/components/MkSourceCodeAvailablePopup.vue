@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import MkButton from '@/components/MkButton.vue';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -77,7 +77,7 @@ function close() {
 	text-align: center;
 	padding-top: 25px;
 	width: 100px;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 }
 @media (max-width: 500px) {
 	.icon {

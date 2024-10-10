@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getScrollPosition, getScrollContainer, getStickyBottom, getStickyTop } from '@/scripts/scroll.js';
+import { getScrollPosition, getScrollContainer, getStickyBottom, getStickyTop } from '@@/js/scroll.js';
 import { getElementOrNull, getNodeOrNull } from '@/scripts/get-dom-node-or-null.js';
 
 type MaybeHTMLElement = EventTarget | Node | Element | HTMLElement;
