@@ -119,5 +119,18 @@ export class CaptchaService {
 			throw new Error(`turnstile-failed: ${errorCodes}`);
 		}
 	}
+
+	@bindThis
+	public async verifyTestcaptcha(response: string | null | undefined): Promise<void> {
+		if (response == null) {
+			throw new Error('testcaptcha-failed: no response provided');
+		}
+
+		const success = response === 'testcaptcha-passed';
+
+		if (!success) {
+			throw new Error('testcaptcha-failed');
+		}
+	}
 }
 

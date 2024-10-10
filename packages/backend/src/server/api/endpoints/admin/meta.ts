@@ -69,6 +69,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			enableTestcaptcha: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			swPublickey: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -555,6 +559,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				recaptchaSiteKey: instance.recaptchaSiteKey,
 				enableTurnstile: instance.enableTurnstile,
 				turnstileSiteKey: instance.turnstileSiteKey,
+				enableTestcaptcha: instance.enableTestcaptcha,
 				swPublickey: instance.swPublicKey,
 				themeColor: instance.themeColor,
 				mascotImageUrl: instance.mascotImageUrl,

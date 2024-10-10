@@ -67,6 +67,7 @@ export class SignupApiService {
 				'g-recaptcha-response'?: string;
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
+				'testcaptcha-response'?: string;
 			}
 		}>,
 		reply: FastifyReply,
@@ -96,6 +97,12 @@ export class SignupApiService {
 
 			if (this.meta.enableTurnstile && this.meta.turnstileSecretKey) {
 				await this.captchaService.verifyTurnstile(this.meta.turnstileSecretKey, body['turnstile-response']).catch(err => {
+					throw new FastifyReplyError(400, err);
+				});
+			}
+
+			if (this.meta.enableTestcaptcha) {
+				await this.captchaService.verifyTestcaptcha(body['testcaptcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}

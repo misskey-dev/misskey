@@ -5166,6 +5166,10 @@ export interface Locale extends ILocale {
      * 対象
      */
     "target": string;
+    /**
+     * CAPTCHAのテストを目的とした機能です。<strong>本番環境で使用しないでください。</strong>
+     */
+    "testCaptchaWarning": string;
     "_abuseUserReport": {
         /**
          * 転送
