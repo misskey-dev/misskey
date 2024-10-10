@@ -185,6 +185,11 @@ export class MiMeta {
 	public emailRequiredForSignup: boolean;
 
 	@Column('boolean', {
+		default: true,
+	})
+	public canSkipInitialTutorial: boolean;
+
+	@Column('boolean', {
 		default: false,
 	})
 	public enableHcaptcha: boolean;

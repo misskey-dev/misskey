@@ -287,7 +287,7 @@ async function onSubmit(): Promise<void> {
 			emit('signup', resJson);
 
 			if (props.autoSet) {
-				await login(resJson.token);
+				await login(resJson.token, '/onboarding');
 			}
 		}
 	}

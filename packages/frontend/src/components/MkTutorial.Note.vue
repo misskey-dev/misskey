@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-if="phase === 'aboutNote'" class="_gaps">
-	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._note.description }}</div>
-	<MkNote :class="$style.exampleNoteRoot" style="pointer-events: none;" :note="exampleNote" :mock="true"/>
+	<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._note.description }}</div>
+	<MkNote tabindex="-1" :class="$style.exampleNoteRoot" style="pointer-events: none;" :note="exampleNote" :mock="true"/>
 	<div class="_gaps_s">
 		<div><i class="ti ti-arrow-back-up"></i> <b>{{ i18n.ts.reply }}</b> … {{ i18n.ts._initialTutorial._note.reply }}</div>
 		<div><i class="ti ti-repeat"></i> <b>{{ i18n.ts.renote }}</b> … {{ i18n.ts._initialTutorial._note.renote }}</div>
@@ -15,27 +15,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </div>
 <div v-else-if="phase === 'howToReact'" class="_gaps">
-	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._reaction.description }}</div>
+	<div class="_gaps_s">
+		<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._reaction.description }}</div>
+		<img :class="$style.image" src="/client-assets/tutorial/reaction.png"/>
+	</div>
 	<div>{{ i18n.ts._initialTutorial._reaction.letsTryReacting }}</div>
 	<MkNote :class="$style.exampleNoteRoot" :note="exampleNote" :mock="true" @reaction="addReaction" @removeReaction="removeReaction"/>
 	<div v-if="onceReacted"><b style="color: var(--MI_THEME-accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._reaction.reactNotification }}<br>{{ i18n.ts._initialTutorial._reaction.reactDone }}</div>
+	<div v-else><b :class="$style.actionWaitText">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</b></div>
 </div>
 </template>
 
 <script setup lang="ts">
 import * as Misskey from 'misskey-js';
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
 import { $i } from '@/account.js';
 import MkNote from '@/components/MkNote.vue';
+import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const props = defineProps<{
 	phase: 'aboutNote' | 'howToReact';
-}>();
-
-const emit = defineEmits<{
-	(ev: 'reacted'): void;
 }>();
 
 const exampleNote = reactive<Misskey.entities.Note>({
@@ -71,14 +72,27 @@ const exampleNote = reactive<Misskey.entities.Note>({
 	replyId: null,
 	renoteId: null,
 });
+
 const onceReacted = ref<boolean>(false);
+
+const canContinue = computed(() => {
+	if (props.phase === 'aboutNote') {
+		return true;
+	} else if (props.phase === 'howToReact') {
+		return onceReacted.value;
+	}
+	return true;
+});
 
 function addReaction(emoji) {
 	onceReacted.value = true;
-	emit('reacted');
 	exampleNote.reactions[emoji] = 1;
 	exampleNote.myReaction = emoji;
-	doNotification(emoji);
+
+	// 通知音も鳴らしたいのでちょっと遅らせる
+	setTimeout(() => {
+		doNotification(emoji);
+	}, 200);
 }
 
 function doNotification(emoji: string): void {
@@ -101,6 +115,10 @@ function removeReaction(emoji) {
 	delete exampleNote.reactions[emoji];
 	exampleNote.myReaction = undefined;
 }
+
+defineExpose<TutorialPageCommonExpose>({
+	canContinue,
+});
 </script>
 
 <style lang="scss" module>
@@ -113,5 +131,15 @@ function removeReaction(emoji) {
 .divider {
 	height: 1px;
 	background: var(--MI_THEME-divider);
+}
+
+.image {
+	max-width: 300px;
+	margin: 0 auto;
+	border-radius: var(--MI-radius);
+}
+
+.actionWaitText {
+	color: var(--MI_THEME-error);
 }
 </style>
