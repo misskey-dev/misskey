@@ -1,6 +1,6 @@
 # DIFFRENCE
 ## 2024.10.0-yami-1.3.3
-## enchance
+## Enhance
 - user/note/channelの一部metaを削除
 
 ## 2024.9.0-yami-1.3.2
@@ -27,7 +27,7 @@
 - Cherry-Pick リアクション数の非表示機能を実装(hideki0403/kakurega.app)
 
 ## 2024.9.0-yami-1.2.7
-### enhance
+### Enhance
 - プライバシーに考慮して、「noCrawle/isExplorable/hideOnline/ffVisibility/フォロリクの自動承認/鍵垢/リアクションの受け入れ」のデフォルト値を変更
 
 ## 2024.9.0-yami-1.2.6
