@@ -404,33 +404,7 @@ describe('RoleService', () => {
 				includeRoot: true,
 				excludeExpire: false,
 			});
-			expect(result).toEqual([rootUser.id]);
-		});
-
-		test('includeAdmins = false, includeRoot = true, excludeExpire = false', async () => {
-			const [adminUser1, adminUser2, modeUser1, modeUser2, normalUser1, normalUser2, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createUser({ isRoot: true }),
-			]);
-
-			const role1 = await createRole({ name: 'admin', isAdministrator: true });
-			const role2 = await createRole({ name: 'moderator', isModerator: true });
-			const role3 = await createRole({ name: 'normal' });
-
-			await Promise.all([
-				assignRole({ userId: adminUser1.id, roleId: role1.id }),
-				assignRole({ userId: adminUser2.id, roleId: role1.id, expiresAt: new Date(Date.now() - 1000) }),
-				assignRole({ userId: modeUser1.id, roleId: role2.id }),
-				assignRole({ userId: modeUser2.id, roleId: role2.id, expiresAt: new Date(Date.now() - 1000) }),
-				assignRole({ userId: normalUser1.id, roleId: role3.id }),
-				assignRole({ userId: normalUser2.id, roleId: role3.id, expiresAt: new Date(Date.now() - 1000) }),
-			]);
-
-			const result = await roleService.getModeratorIds({
-				includeAdmins: false,
-				includeRoot: true,
-				excludeExpire: false,
-			});
-			expect(result).toEqual([rootUser.id]);
+			expect(result).toEqual([modeUser1.id, modeUser2.id, rootUser.id]);
 		});
 
 		test('root has moderator role', async () => {
