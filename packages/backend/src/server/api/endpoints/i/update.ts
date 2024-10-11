@@ -458,7 +458,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const newName = updates.name === undefined ? user.name : updates.name;
 			if (newName != null) {
-				const hasProhibitedWords = this.checkScreennameProhibitedWordsContain(newName, this.instanceMeta.prohibitedPartialScreenNames);
+				let hasProhibitedWords = false;
+				if (!await this.roleService.isModerator(user)) {
+					hasProhibitedWords = this.checkScreennameProhibitedWordsContain(newName, this.instanceMeta.prohibitedPartialScreenNames);
+				}
 				if (hasProhibitedWords) {
 					throw new ApiError(meta.errors.screenNameContainsProhibitedWords);
 				}
