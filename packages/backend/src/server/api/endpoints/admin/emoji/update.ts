@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveFilesRepository } from '@/models/_.js';
+import type { DriveFilesRepository, MiEmoji } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
@@ -78,9 +78,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
 
+			// JSON schemeのanyOfの型変換がうまくいっていないらしい
+			const required = { id: ps.id, name: ps.name } as 
+				| { id: MiEmoji['id']; name?: string }
+				| { id?: MiEmoji['id']; name: string };
+
 			const error = await this.customEmojiService.update({
-				id: ps.id,
-				name: ps.name,
+				...required,
 				driveFile,
 				category: ps.category,
 				aliases: ps.aliases,

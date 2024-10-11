@@ -114,20 +114,20 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		localOnly?: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 	}, moderator?: MiUser): Promise<
-		undefined
+		void
 		| "NO_SUCH_EMOJI"
 		| "SAME_NAME_EMOJI_EXISTS"
 	> {
 		const emoji = data.id
 			? await this.getEmojiById(data.id)
-			: await this.getEmojiByName(data.name);
+			: await this.getEmojiByName(data.name!);
 		if (emoji === null) return "NO_SUCH_EMOJI";
 		const id = emoji.id;
 
 		// IDと絵文字名が両方指定されている場合は絵文字名の変更を行うため重複チェックが必要
 		const doNameUpdate = data.id && data.name && (data.name !== emoji.name);
 		if (doNameUpdate) {
-			const isDuplicate = await this.checkDuplicate(data.name);
+			const isDuplicate = await this.checkDuplicate(data.name!);
 			if (isDuplicate) return "SAME_NAME_EMOJI_EXISTS";
 		}
 
