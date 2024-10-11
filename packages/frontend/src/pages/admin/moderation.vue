@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 
 					<MkFolder>
-						<template #icon><i class="ti ti-message-x"></i></template>
+						<template #icon><i class="ti ti-user-x"></i></template>
 						<template #label>{{ i18n.ts.prohibitedPartialScreenNames }}</template>
 
 						<div class="_gaps">
