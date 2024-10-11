@@ -9,7 +9,7 @@ block vars
 	- const videos = (note.files || []).filter(file => file.type.startsWith('video/') && !file.isSensitive) || []
 
 block title
-	= `${title} | ${instanceName}`
+	= `${instanceName}`
 
 //- block desc
 //- 	meta(name='description' content= summary)
