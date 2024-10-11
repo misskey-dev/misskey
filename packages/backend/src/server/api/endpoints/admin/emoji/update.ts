@@ -78,25 +78,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			let emojiId;
-			if (ps.id) {
-				emojiId = ps.id;
-				const emoji = await this.customEmojiService.getEmojiById(ps.id);
-				if (!emoji) throw new ApiError(meta.errors.noSuchEmoji);
-				if (ps.name && (ps.name !== emoji.name)) {
-					const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
-					if (isDuplicate) throw new ApiError(meta.errors.sameNameEmojiExists);
-				}
-			} else {
-				if (!ps.name) throw new Error('Invalid Params unexpectedly passed. This is a BUG. Please report it to the development team.');
-				const emoji = await this.customEmojiService.getEmojiByName(ps.name);
-				if (!emoji) throw new ApiError(meta.errors.noSuchEmoji);
-				emojiId = emoji.id;
-			}
-
-			await this.customEmojiService.update(emojiId, {
-				driveFile,
+			const error = await this.customEmojiService.update({
+				id: ps.id,
 				name: ps.name,
+				driveFile,
 				category: ps.category,
 				aliases: ps.aliases,
 				license: ps.license,
@@ -104,6 +89,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				localOnly: ps.localOnly,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
 			}, me);
+
+			switch (error) {
+				case undefined: return;
+				case "NO_SUCH_EMOJI": throw new ApiError(meta.errors.noSuchEmoji);
+				case "SAME_NAME_EMOJI_EXISTS": throw new ApiError(meta.errors.sameNameEmojiExists);
+			}
 		});
 	}
 }
