@@ -177,6 +177,13 @@ export const meta = {
 					type: 'string',
 				},
 			},
+			prohibitedPartialScreenNames: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+				},
+			},
 			bannedEmailDomains: {
 				type: 'array',
 				optional: true, nullable: false,
@@ -586,6 +593,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				mediaSilencedHosts: instance.mediaSilencedHosts,
 				sensitiveWords: instance.sensitiveWords,
 				prohibitedWords: instance.prohibitedWords,
+				prohibitedPartialScreenNames: instance.prohibitedPartialScreenNames,
 				preservedUsernames: instance.preservedUsernames,
 				hcaptchaSecretKey: instance.hcaptchaSecretKey,
 				mcaptchaSecretKey: instance.mcaptchaSecretKey,

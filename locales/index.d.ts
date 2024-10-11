@@ -5170,6 +5170,22 @@ export interface Locale extends ILocale {
      * CAPTCHAのテストを目的とした機能です。<strong>本番環境で使用しないでください。</strong>
      */
     "testCaptchaWarning": string;
+    /**
+     * 禁止するユーザー名に含まれる文字列
+     */
+    "prohibitedPartialScreenNames": string;
+    /**
+     * ユーザー名に含まれる文字列がこのリストに含まれる場合、そのユーザー名は使用できません。
+     */
+    "prohibitedPartialScreenNamesDescription": string;
+    /**
+     * 変更しようとした名前に禁止された文字列が含まれています
+     */
+    "screenNameContainsProhibitedWords": string;
+    /**
+     * 名前に禁止されている文字列が含まれています。本名である等の理由でこの名前を使用したい場合は、サーバー管理者にお問い合わせください。
+     */
+    "screenNameContainsProhibitedWordsDescription": string;
     "_abuseUserReport": {
         /**
          * 転送
