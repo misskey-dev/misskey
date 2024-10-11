@@ -34,7 +34,7 @@ export class CheckModeratorsActivityProcessorService {
 		if (!meta.disableRegistration) {
 			await this.processImpl();
 		} else {
-			this.logger.warn('is already invitation only.');
+			this.logger.info('is already invitation only.');
 		}
 
 		this.logger.succ('finish.');

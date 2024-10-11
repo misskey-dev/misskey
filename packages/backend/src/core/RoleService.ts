@@ -468,8 +468,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				const it = await this.usersRepository.createQueryBuilder('users')
 					.select('id')
 					.where({ isRoot: true })
-					.getOneOrFail();
-				return it.id;
+					.getRawOne<{ id: string }>();
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				return it!.id;
 			});
 			resultSet.add(rootUserId);
 		}
