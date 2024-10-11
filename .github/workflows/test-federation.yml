@@ -53,7 +53,7 @@ jobs:
       - name: Test
         run: |
           cd packages/backend/test-federation
-          docker compose run tester
+          docker compose run --no-deps tester
       - name: Stop servers
         run: |
           cd packages/backend/test-federation
