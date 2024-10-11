@@ -1285,6 +1285,7 @@ unknownWebAuthnKey: "未註冊的金鑰。"
 passkeyVerificationFailed: "驗證金鑰失敗。"
 passkeyVerificationSucceededButPasswordlessLoginDisabled: "雖然驗證金鑰成功，但是無密碼登入的方式是停用的。"
 messageToFollower: "給追隨者的訊息"
+testCaptchaWarning: "此功能用於 CAPTCHA 的測試。<strong>請勿在正式環境中使用。</strong>"
 _delivery:
   status: "傳送狀態"
   stop: "停止發送"
@@ -1422,6 +1423,7 @@ _serverSettings:
   reactionsBufferingDescription: "啟用時，可以顯著提高建立反應時的效能並減少資料庫的負載。 但是，Redis 記憶體使用量會增加。"
   inquiryUrl: "聯絡表單網址"
   inquiryUrlDescription: "指定伺服器運營者的聯絡表單網址，或包含運營者聯絡資訊網頁的網址。"
+  thisSettingWillAutomaticallyOffWhenModeratorsInactive: "為了防止 spam，如果一段期間內沒有偵測到審查員的活動，此設定將自動關閉。"
 _accountMigration:
   moveFrom: "從其他帳戶遷移到這個帳戶"
   moveFromSub: "為另一個帳戶建立別名"
