@@ -1285,6 +1285,7 @@ signinWithPasskey: "パスキーでログイン"
 unknownWebAuthnKey: "登録されていないパスキーです。"
 passkeyVerificationFailed: "パスキーの検証に失敗しました。"
 passkeyVerificationSucceededButPasswordlessLoginDisabled: "パスキーの検証に成功しましたが、パスワードレスログインが無効になっています。"
+yourBrowserDoesNotSupportPasskey: "お使いのブラウザはパスキーをサポートしていません。"
 messageToFollower: "フォロワーへのメッセージ"
 target: "対象"
 
