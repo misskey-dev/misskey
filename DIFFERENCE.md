@@ -1,5 +1,8 @@
 # DIFFRENCE
 ## 2024.10.0-yami-1.3.3
+## Feat
+- KateXを戻す
+
 ## Enhance
 - user/note/channelの一部metaを削除
 
