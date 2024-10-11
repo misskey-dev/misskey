@@ -5,7 +5,8 @@
 - Enhance: l10nの更新
 
 ### Server
-- Fix: キューのエラーログを簡略化するように
+- Fix: キューのエラーログを簡略化するように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/649)
 
 ## 2024.10.0
 
