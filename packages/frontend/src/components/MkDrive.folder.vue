@@ -36,13 +36,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import type { MenuItem } from '@/types/menu.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -375,7 +375,6 @@ function onContextmenu(ev: MouseEvent) {
 .name {
 	margin: 0;
 	font-size: 0.9em;
-	color: var(--desktopDriveFolderFg);
 }
 
 .icon {
@@ -388,6 +387,5 @@ function onContextmenu(ev: MouseEvent) {
 	margin: 4px 4px;
 	font-size: 0.8em;
 	text-align: right;
-	color: var(--desktopDriveFolderFg);
 }
 </style>

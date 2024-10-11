@@ -365,7 +365,7 @@ definePageMetadata(() => ({
 }
 
 .pageMain {
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	padding: 2rem;
 	background: var(--MI_THEME-panel);
 	box-sizing: border-box;
@@ -374,7 +374,7 @@ definePageMetadata(() => ({
 .pageBanner {
 	width: calc(100% + 4rem);
 	margin: -2rem -2rem 1.5rem;
-	border-radius: var(--radius) var(--radius) 0 0;
+	border-radius: var(--MI-radius) var(--MI-radius) 0 0;
 	overflow: hidden;
 	position: relative;
 
@@ -458,7 +458,7 @@ definePageMetadata(() => ({
 			flex-shrink: 0;
 			display: flex;
 			align-items: center;
-			gap: var(--marginHalf);
+			gap: var(--MI-marginHalf);
 			margin-left: auto;
 		}
 	}
@@ -479,7 +479,7 @@ definePageMetadata(() => ({
 	> .other {
 		margin-left: auto;
 		display: flex;
-		gap: var(--marginHalf);
+		gap: var(--MI-marginHalf);
 	}
 }
 
@@ -526,11 +526,11 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	gap: var(--marginHalf);
+	gap: var(--MI-marginHalf);
 }
 
 .relatedPagesRoot {
-	padding: var(--margin);
+	padding: var(--MI-margin);
 }
 
 .relatedPagesItem > article {

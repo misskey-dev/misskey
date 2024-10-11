@@ -502,7 +502,7 @@ defineExpose({
 	contain: content;
 	width: 100%;
 	height: 100%;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .header {
@@ -515,8 +515,8 @@ defineExpose({
 	user-select: none;
 	height: var(--height);
 	background: var(--MI_THEME-windowHeader);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 	//border-bottom: solid 1px var(--MI_THEME-divider);
 	font-size: 90%;
 	font-weight: bold;

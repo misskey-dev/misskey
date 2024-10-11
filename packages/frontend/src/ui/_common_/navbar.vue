@@ -146,8 +146,8 @@ function more(ev: MouseEvent) {
 		z-index: 1;
 		padding: 20px 0;
 		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--blur, blur(8px));
-		backdrop-filter: var(--blur, blur(8px));
+		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
 	.banner {
@@ -189,8 +189,8 @@ function more(ev: MouseEvent) {
 		bottom: 0;
 		padding-top: 20px;
 		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--blur, blur(8px));
-		backdrop-filter: var(--blur, blur(8px));
+		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
 	.post {
@@ -380,8 +380,8 @@ function more(ev: MouseEvent) {
 		z-index: 1;
 		padding: 20px 0;
 		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--blur, blur(8px));
-		backdrop-filter: var(--blur, blur(8px));
+		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
 	.instance {
@@ -410,8 +410,8 @@ function more(ev: MouseEvent) {
 		bottom: 0;
 		padding-top: 20px;
 		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--blur, blur(8px));
-		backdrop-filter: var(--blur, blur(8px));
+		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
 	.post {

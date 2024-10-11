@@ -31,10 +31,10 @@ defineProps<{
 	display: flex;
 	align-items: center;
 	width: 100%;
-	padding: var(--margin);
+	padding: var(--MI-margin);
 	margin-top: 4px;
 	border: 1px solid var(--MI_THEME-inputBorder);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	background-color: var(--MI_THEME-panel);
 	transition: background-color .1s, border-color .1s;
 

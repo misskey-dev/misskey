@@ -1984,7 +1984,6 @@ _theme:
     buttonBg: "按钮背景"
     buttonHoverBg: "按钮背景（悬停）"
     inputBorder: "输入框边框"
-    listItemHoverBg: "下拉列表项目背景（悬停）"
     driveFolderBg: "网盘的文件夹背景"
     wallpaperOverlay: "壁纸叠加层"
     badge: "徽章"

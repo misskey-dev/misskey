@@ -1,14 +1,11 @@
-## Unreleased
-
-### General
--
+## 2024.10.1
 
 ### Client
--
+- Enhance: l10nの更新
+- Fix: メールアドレス不要でCaptchaが有効な場合にアカウント登録完了後自動でのログインに失敗する問題を修正
 
 ### Server
--
-
+- Fix: `admin/emoji/update`エンドポイントのidのみ指定した時不正なエラーが発生するバグを修正
 
 ## 2024.10.0
 

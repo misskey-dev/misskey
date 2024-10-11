@@ -658,7 +658,7 @@ onDeactivated(() => {
 
 	.controlButton {
 		padding: 6px;
-		border-radius: calc(var(--radius) / 2);
+		border-radius: calc(var(--MI-radius) / 2);
 		transition: background-color .2s ease-in-out;
 		font-size: 1.05rem;
 

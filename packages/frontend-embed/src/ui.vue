@@ -95,7 +95,7 @@ onUnmounted(() => {
 	height: auto;
 
 	&.rounded {
-		border-radius: var(--radius);
+		border-radius: var(--MI-radius);
 	}
 
 	&.noBorder {

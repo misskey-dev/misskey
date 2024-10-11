@@ -165,8 +165,8 @@ misskeyApiGet('federation/instances', {
 		right: 0;
 		margin: auto;
 		background: var(--MI_THEME-acrylicPanel);
-		-webkit-backdrop-filter: var(--blur, blur(15px));
-		backdrop-filter: var(--blur, blur(15px));
+		-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+		backdrop-filter: var(--MI-blur, blur(15px));
 		border-radius: 999px;
 		overflow: clip;
 		width: 800px;

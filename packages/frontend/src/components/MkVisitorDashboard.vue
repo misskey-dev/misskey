@@ -107,7 +107,7 @@ function showMenu(ev: MouseEvent) {
 .panel {
 	position: relative;
 	background: var(--MI_THEME-panel);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
 }
 

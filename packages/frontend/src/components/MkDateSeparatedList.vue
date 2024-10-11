@@ -182,7 +182,7 @@ export default defineComponent({
 	}
 
 	&:not(.date-separated-list-nogap) > *:not(:last-child) {
-		margin-bottom: var(--margin);
+		margin-bottom: var(--MI-margin);
 	}
 }
 

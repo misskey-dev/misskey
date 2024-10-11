@@ -226,8 +226,8 @@ html[data-color-scheme=light] .visible {
 	position: absolute;
 	border-radius: 999px;
 	background-color: rgba(0, 0, 0, 0.3);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 	color: #fff;
 	font-size: 0.8em;
 	width: 28px;

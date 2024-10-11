@@ -91,7 +91,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 
 <style lang="scss" module>
 .exampleRoot {
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	border: var(--MI_THEME-panelBorder);
 	background: var(--MI_THEME-panel);
 }
