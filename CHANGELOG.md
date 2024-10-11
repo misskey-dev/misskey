@@ -12,6 +12,10 @@
 - Feat: モデレータ権限を持つユーザが全員7日間活動しなかった場合は自動的に招待制へと移行するように ( #13437 )
 - Fix: `admin/emoji/update`エンドポイントのidのみ指定した時不正なエラーが発生するバグを修正
 
+### Server
+- Fix: キューのエラーログを簡略化するように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/649)
+
 ## 2024.10.0
 
 ### Note
