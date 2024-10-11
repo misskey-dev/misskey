@@ -136,7 +136,7 @@ onUnmounted(() => {
 	min-width: 0;
 	padding: 16px;
 	background: var(--MI_THEME-panel);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .chartTitle {

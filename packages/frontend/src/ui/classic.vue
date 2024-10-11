@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XSidebar/>
 		</div>
 		<div v-else-if="!pageMetadata?.needWideArea" ref="widgetsLeft" class="widgets left">
-			<XWidgets place="left" :marginTop="'var(--margin)'" @mounted="attachSticky(widgetsLeft)"/>
+			<XWidgets place="left" :marginTop="'var(--MI-margin)'" @mounted="attachSticky(widgetsLeft)"/>
 		</div>
 
 		<main class="main" @contextmenu.stop="onContextmenu">
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</main>
 
 		<div v-if="isDesktop && !pageMetadata?.needWideArea" ref="widgetsRight" class="widgets right">
-			<XWidgets :place="showMenuOnTop ? 'right' : null" :marginTop="showMenuOnTop ? '0' : 'var(--margin)'" @mounted="attachSticky(widgetsRight)"/>
+			<XWidgets :place="showMenuOnTop ? 'right' : null" :marginTop="showMenuOnTop ? '0' : 'var(--MI-margin)'" @mounted="attachSticky(widgetsRight)"/>
 		</div>
 	</div>
 
@@ -217,7 +217,7 @@ onMounted(() => {
 
 	&.wallpaper {
 		background: var(--MI_THEME-wallpaperOverlay);
-		//backdrop-filter: var(--blur, blur(4px));
+		//backdrop-filter: var(--MI-blur, blur(4px));
 	}
 
 	> .columns {
@@ -253,13 +253,13 @@ onMounted(() => {
 			border-right: solid 1px var(--MI_THEME-divider);
 			border-radius: 0;
 			overflow: clip;
-			--margin: 12px;
+			--MI-margin: 12px;
 		}
 
 		> .widgets {
 			//--MI_THEME-panelBorder: none;
 			width: 300px;
-			padding-bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
+			padding-bottom: calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px));
 
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;
@@ -278,12 +278,12 @@ onMounted(() => {
 			> .main {
 				margin-top: 0;
 				border: solid 1px var(--MI_THEME-divider);
-				border-radius: var(--radius);
-				--stickyTop: var(--globalHeaderHeight);
+				border-radius: var(--MI-radius);
+				--MI-stickyTop: var(--globalHeaderHeight);
 			}
 
 			> .widgets {
-				--stickyTop: var(--globalHeaderHeight);
+				--MI-stickyTop: var(--globalHeaderHeight);
 				margin-top: 0;
 			}
 		}
@@ -314,7 +314,7 @@ onMounted(() => {
 		right: 0;
 		z-index: 1001;
 		height: 100dvh;
-		padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
+		padding: var(--MI-margin) var(--MI-margin) calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px));
 		box-sizing: border-box;
 		overflow: auto;
 		background: var(--MI_THEME-bg);

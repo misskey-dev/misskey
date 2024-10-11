@@ -1,14 +1,9 @@
-## Unreleased
-
-### General
--
+## 2024.10.1
 
 ### Client
+- Enhance: l10nの更新
+- Fix: メールアドレス不要でCaptchaが有効な場合にアカウント登録完了後自動でのログインに失敗する問題を修正
 - Enhance: 新しいMFM「URL引用」を追加。`> https://hogehoge.com`のように、`> `に続けてURLを置くことで文中にURLプレビューを展開することができます
-
-### Server
--
-
 
 ## 2024.10.0
 

@@ -305,7 +305,7 @@ body {
 .root {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
-	--margin: var(--marginHalf);
+	--MI-margin: var(--MI-marginHalf);
 
 	--columnGap: 6px;
 
@@ -428,8 +428,8 @@ body {
 	grid-gap: 8px;
 	width: 100%;
 	box-sizing: border-box;
-	-webkit-backdrop-filter: var(--blur, blur(32px));
-	backdrop-filter: var(--blur, blur(32px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(32px));
+	backdrop-filter: var(--MI-blur, blur(32px));
 	background-color: var(--MI_THEME-header);
 	border-top: solid 0.5px var(--MI_THEME-divider);
 }

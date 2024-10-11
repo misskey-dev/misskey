@@ -156,8 +156,8 @@ onUnmounted(() => {
 	--height: 60px;
 	display: flex;
 	width: 100%;
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 
 	> .buttons {
 		--margin: 8px;

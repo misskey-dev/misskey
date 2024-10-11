@@ -165,7 +165,7 @@ onUnmounted(() => {
 
 .header {
 	position: sticky;
-	top: var(--stickyTop, 0px);
+	top: var(--MI-stickyTop, 0px);
 	left: 0;
 	color: var(--MI_THEME-panelHeaderFg);
 	background: var(--MI_THEME-panelHeaderBg);
@@ -201,7 +201,7 @@ onUnmounted(() => {
 }
 
 .content {
-	--stickyTop: 0px;
+	--MI-stickyTop: 0px;
 
 	&.omitted {
 		position: relative;

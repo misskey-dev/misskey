@@ -225,12 +225,12 @@ provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 watch(navFooter, () => {
 	if (navFooter.value) {
 		navFooterHeight.value = navFooter.value.offsetHeight;
-		document.body.style.setProperty('--stickyBottom', `${navFooterHeight.value}px`);
-		document.body.style.setProperty('--minBottomSpacing', 'var(--minBottomSpacingMobile)');
+		document.body.style.setProperty('--MI-stickyBottom', `${navFooterHeight.value}px`);
+		document.body.style.setProperty('--MI-minBottomSpacing', 'var(--MI-minBottomSpacingMobile)');
 	} else {
 		navFooterHeight.value = 0;
-		document.body.style.setProperty('--stickyBottom', '0px');
-		document.body.style.setProperty('--minBottomSpacing', '0px');
+		document.body.style.setProperty('--MI-stickyBottom', '0px');
+		document.body.style.setProperty('--MI-minBottomSpacing', '0px');
 	}
 }, {
 	immediate: true,
@@ -336,7 +336,7 @@ $widgets-hide-threshold: 1090px;
 	height: 100%;
 	box-sizing: border-box;
 	overflow: auto;
-	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
+	padding: var(--MI-margin) var(--MI-margin) calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px));
 	border-left: solid 0.5px var(--MI_THEME-divider);
 	background: var(--MI_THEME-bg);
 
@@ -370,7 +370,7 @@ $widgets-hide-threshold: 1090px;
 	z-index: 1001;
 	width: 310px;
 	height: 100dvh;
-	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px)) !important;
+	padding: var(--MI-margin) var(--MI-margin) calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px)) !important;
 	box-sizing: border-box;
 	overflow: auto;
 	overscroll-behavior: contain;
@@ -400,8 +400,8 @@ $widgets-hide-threshold: 1090px;
 	grid-gap: 8px;
 	width: 100%;
 	box-sizing: border-box;
-	-webkit-backdrop-filter: var(--blur, blur(24px));
-	backdrop-filter: var(--blur, blur(24px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(24px));
+	backdrop-filter: var(--MI-blur, blur(24px));
 	background-color: var(--MI_THEME-header);
 	border-top: solid 0.5px var(--MI_THEME-divider);
 }
@@ -484,6 +484,6 @@ $widgets-hide-threshold: 1090px;
 }
 
 .spacer {
-	height: calc(var(--minBottomSpacing));
+	height: calc(var(--MI-minBottomSpacing));
 }
 </style>

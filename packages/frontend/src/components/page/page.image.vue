@@ -29,7 +29,7 @@ onMounted(() => {
 <style lang="scss" module>
 .root {
 	border: 1px solid var(--MI_THEME-divider);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	overflow: hidden;
 }
 .mediaList {
