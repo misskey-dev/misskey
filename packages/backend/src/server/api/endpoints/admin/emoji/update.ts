@@ -95,7 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}, me);
 
 			switch (error) {
-				case undefined: return;
+				case null: return;
 				case 'NO_SUCH_EMOJI': throw new ApiError(meta.errors.noSuchEmoji);
 				case 'SAME_NAME_EMOJI_EXISTS': throw new ApiError(meta.errors.sameNameEmojiExists);
 			}

@@ -114,7 +114,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		localOnly?: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 	}, moderator?: MiUser): Promise<
-		undefined
+		null
 		| 'NO_SUCH_EMOJI'
 		| 'SAME_NAME_EMOJI_EXISTS'
 	> {
@@ -171,7 +171,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 				after: updated,
 			});
 		}
-		return undefined;
+		return null;
 	}
 
 	@bindThis
