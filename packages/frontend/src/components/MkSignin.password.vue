@@ -163,7 +163,7 @@ defineExpose({
 	margin: .4em auto;
 	width: 100%;
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .orMsg {
@@ -171,9 +171,9 @@ defineExpose({
 	top: -.6em;
 	display: inline-block;
 	padding: 0 1em;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	font-size: 0.8em;
-	color: var(--fgOnPanel);
+	color: var(--MI_THEME-fgOnPanel);
 	margin: 0;
 	left: 50%;
 	transform: translateX(-50%);
