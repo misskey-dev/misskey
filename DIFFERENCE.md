@@ -1,4 +1,8 @@
 # DIFFRENCE
+## 2024.10.0-yami-1.3.3
+## enchance
+- user/note/channelの一部metaを削除
+
 ## 2024.9.0-yami-1.3.2
 ## Feat
 - ドライブの写真をプロフィールから見れなくする
