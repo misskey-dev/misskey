@@ -37,7 +37,7 @@ services:
       - internal_network_a
     volumes:
       - type: bind
-        source: ./.config/default.a.yml
+        source: ./.config/a.test.default.yml
         target: /misskey/.config/default.yml
         read_only: true
 

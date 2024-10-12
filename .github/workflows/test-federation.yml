@@ -43,7 +43,7 @@ jobs:
         run: |
           cd packages/backend/test-federation
           cp ./.config/example.docker.env ./.config/docker.env
-          bash ./generate_certificates.sh
+          bash ./generate.sh
           sudo chmod 644 ./certificates/*.test.key
       - name: Start servers
         # https://github.com/docker/compose/issues/1294#issuecomment-374847206
