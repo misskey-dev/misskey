@@ -19,6 +19,8 @@
  * exportCompleted - エクスポートが完了
  * login - ログイン
  * app - アプリ通知
+ * adminInactiveModeratorsWarning - [モデレータ以上向け] モデレータの不活性に対する警告
+ * adminInactiveModeratorsInvitationOnlyChanged - [モデレータ以上向け] モデレータが不活性のため招待制に変更された
  * test - テスト通知（サーバー側）
  */
 export const notificationTypes = [
@@ -37,6 +39,8 @@ export const notificationTypes = [
 	'exportCompleted',
 	'login',
 	'app',
+	'adminInactiveModeratorsWarning',
+	'adminInactiveModeratorsInvitationOnlyChanged',
 	'test',
 ] as const;
 

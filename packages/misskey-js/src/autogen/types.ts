@@ -4353,6 +4353,25 @@ export type components = {
       /** Format: date-time */
       createdAt: string;
       /** @enum {string} */
+      type: 'adminInactiveModeratorsWarning';
+      remainingTime: {
+        time: number;
+        asDays: number;
+        asHours: number;
+      };
+    } | {
+      /** Format: id */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** @enum {string} */
+      type: 'adminInactiveModeratorsInvitationOnlyChanged';
+    } | {
+      /** Format: id */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** @enum {string} */
       type: 'test';
     };
     DriveFile: {
@@ -5047,7 +5066,7 @@ export type components = {
       latestSentAt: string | null;
       latestStatus: number | null;
       name: string;
-      on: ('abuseReport' | 'abuseReportResolved' | 'userCreated')[];
+      on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
       url: string;
       secret: string;
     };
@@ -10242,7 +10261,7 @@ export type operations = {
         'application/json': {
           isActive: boolean;
           name: string;
-          on: ('abuseReport' | 'abuseReportResolved' | 'userCreated')[];
+          on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
           url: string;
           secret: string;
         };
@@ -10352,7 +10371,7 @@ export type operations = {
       content: {
         'application/json': {
           isActive?: boolean;
-          on?: ('abuseReport' | 'abuseReportResolved' | 'userCreated')[];
+          on?: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
         };
       };
     };
@@ -10465,7 +10484,7 @@ export type operations = {
           id: string;
           isActive: boolean;
           name: string;
-          on: ('abuseReport' | 'abuseReportResolved' | 'userCreated')[];
+          on: ('abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged')[];
           url: string;
           secret: string;
         };
@@ -10524,7 +10543,7 @@ export type operations = {
           /** Format: misskey:id */
           webhookId: string;
           /** @enum {string} */
-          type: 'abuseReport' | 'abuseReportResolved' | 'userCreated';
+          type: 'abuseReport' | 'abuseReportResolved' | 'userCreated' | 'inactiveModeratorsWarning' | 'inactiveModeratorsInvitationOnlyChanged';
           override?: {
             url?: string;
             secret?: string;
@@ -18686,8 +18705,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'adminInactiveModeratorsWarning' | 'adminInactiveModeratorsInvitationOnlyChanged' | 'test' | 'pollVote' | 'groupInvited')[];
+          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'adminInactiveModeratorsWarning' | 'adminInactiveModeratorsInvitationOnlyChanged' | 'test' | 'pollVote' | 'groupInvited')[];
         };
       };
     };
@@ -18754,8 +18773,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
+          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'adminInactiveModeratorsWarning' | 'adminInactiveModeratorsInvitationOnlyChanged' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
+          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'adminInactiveModeratorsWarning' | 'adminInactiveModeratorsInvitationOnlyChanged' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
         };
       };
     };
