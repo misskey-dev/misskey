@@ -77,9 +77,6 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 		} else if (err.message.startsWith('Unexpected token')) {
 			title = i18n.ts.gotInvalidResponseError;
 			text = i18n.ts.gotInvalidResponseErrorDescription;
-		} else if (err.code === 'SCREEN_NAME_CONTAINS_PROHIBITED_WORDS') {
-			title = i18n.ts.screenNameContainsProhibitedWords;
-			text = i18n.ts.screenNameContainsProhibitedWordsDescription;
 		}
 		alert({
 			type: 'error',
@@ -89,7 +86,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 	});
 
 	return promise;
-}) as typeof misskeyApi;
+});
 
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,

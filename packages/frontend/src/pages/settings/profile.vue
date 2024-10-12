@@ -206,6 +206,14 @@ function save() {
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
+	}, undefined, null, err => {
+		if (err.code === 'SCREEN_NAME_CONTAINS_PROHIBITED_WORDS') {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.screenNameContainsProhibitedWords,
+				text: i18n.ts.screenNameContainsProhibitedWordsDescription,
+			});
+		}
 	});
 	globalEvents.emit('requestClearPageCache');
 	claimAchievement('profileFilled');
