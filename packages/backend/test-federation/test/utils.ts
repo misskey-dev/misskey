@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const ADMIN_PARAMS = { username: 'admin', password: 'admin' };
-const adminCache = new Map<Host, SigninResponse>();
+const ADMIN_CACHE = new Map<Host, SigninResponse>();
 
 await Promise.all([
 	fetchAdmin('a.test'),
@@ -58,7 +58,7 @@ async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse 
 	const client = new Misskey.api.APIClient({ origin: `https://${host}` });
 	return await client.request('admin/accounts/create', ADMIN_PARAMS).then(res => {
 		console.log(`Successfully created admin account: @${ADMIN_PARAMS.username}@${host}`);
-		adminCache.set(host, {
+		ADMIN_CACHE.set(host, {
 			id: res.id,
 			// @ts-expect-error FIXME: openapi-typescript generates incorrect response type for this endpoint, so ignore this
 			i: res.token,
@@ -82,9 +82,9 @@ async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse 
 }
 
 export async function fetchAdmin(host: Host): Promise<LoginUser> {
-	const admin = adminCache.get(host) ?? await signin(host, ADMIN_PARAMS)
+	const admin = ADMIN_CACHE.get(host) ?? await signin(host, ADMIN_PARAMS)
 		.then(res => {
-			adminCache.set(host, res);
+			ADMIN_CACHE.set(host, res);
 			return res;
 		})
 		.catch(async err => {
