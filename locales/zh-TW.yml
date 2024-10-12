@@ -2533,6 +2533,7 @@ _moderationLogTypes:
   unmarkSensitiveDriveFile: "撤銷標記為敏感檔案"
   resolveAbuseReport: "解決檢舉"
   forwardAbuseReport: "轉發檢舉"
+  updateAbuseReportNote: "更新檢舉的審查備註"
   createInvitation: "建立邀請碼"
   createAd: "建立廣告"
   deleteAd: "刪除廣告"
