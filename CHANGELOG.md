@@ -5,7 +5,7 @@
 詳細な経緯は https://github.com/misskey-dev/misskey/issues/13437 をご確認ください。
 
 ### General
-- Feat: ユーザー名に禁止ワードを設定できるように
+- Feat: ユーザーの名前に禁止ワードを設定できるように
 
 ### Client
 - Enhance: l10nの更新
