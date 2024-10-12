@@ -1,5 +1,4 @@
 import assert, { strictEqual } from 'node:assert';
-import * as Misskey from 'misskey-js';
 import { createAccount, type LoginUser, sleep } from './utils.js';
 
 describe('Move', () => {
