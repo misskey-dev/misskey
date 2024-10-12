@@ -100,10 +100,12 @@ export default defineComponent({
 				return [el, separator];
 			} else {
 				if (props.ad && item._shouldInsertAd_) {
-					return [h(MkAd, {
+					return [h('div', {
 						key: item.id + ':ad',
+						style: 'padding: 8px; background-size: auto auto; background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px );',
+					}, [h(MkAd, {
 						prefer: ['horizontal', 'horizontal-big'],
-					}), el];
+					})]), el];
 				} else {
 					return el;
 				}
