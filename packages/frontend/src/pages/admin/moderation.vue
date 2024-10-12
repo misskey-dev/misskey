@@ -160,7 +160,7 @@ async function init() {
 	hiddenTags.value = meta.hiddenTags.join('\n');
 	preservedUsernames.value = meta.preservedUsernames.join('\n');
 	blockedHosts.value = meta.blockedHosts.join('\n');
-	silencedHosts.value = meta.silencedHosts.join('\n');
+	silencedHosts.value = meta.silencedHosts?.join('\n') ?? '';
 	mediaSilencedHosts.value = meta.mediaSilencedHosts.join('\n');
 }
 
