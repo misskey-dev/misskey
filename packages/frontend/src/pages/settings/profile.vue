@@ -142,13 +142,17 @@ const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.d
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 
+function assertVaildLang(lang: string | null): lang is keyof typeof langmap {
+	return lang != null && lang in langmap;
+}
+
 const profile = reactive({
 	name: $i.name,
 	description: $i.description,
 	followedMessage: $i.followedMessage,
 	location: $i.location,
 	birthday: $i.birthday,
-	lang: $i.lang,
+	lang: assertVaildLang($i.lang) ? $i.lang : null,
 	isBot: $i.isBot ?? false,
 	isCat: $i.isCat ?? false,
 });
