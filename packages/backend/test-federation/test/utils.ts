@@ -55,7 +55,7 @@ async function signin(
 		})
 		.then(({ id, i }) => ({ id, i }))
 		.catch(async err => {
-			if (err.id === '22d05606-fbcf-421a-a2db-b32610dcfd1b') {
+			if (err.code === 'TOO_MANY_AUTHENTICATION_FAILURES') {
 				await sleep(Math.random() * 2000);
 				return await signin(host, params);
 			}
@@ -95,8 +95,6 @@ export async function fetchAdmin(host: Host): Promise<LoginUser> {
 		.catch(async err => {
 			if (err.id === '6cc579cc-885d-43d8-95c2-b8c7fc963280') {
 				await createAdmin(host);
-				return await signin(host, ADMIN_PARAMS);
-			} else if (err.id === '22d05606-fbcf-421a-a2db-b32610dcfd1b') {
 				return await signin(host, ADMIN_PARAMS);
 			}
 			throw err;
