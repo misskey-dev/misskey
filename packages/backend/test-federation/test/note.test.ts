@@ -1,6 +1,6 @@
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { addCustomEmoji, createAccount, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
+import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
 describe('Note', () => {
 	let alice: LoginUser, bob: LoginUser;
@@ -143,28 +143,63 @@ describe('Note', () => {
 	});
 
 	describe('Deletion', () => {
-		let carol: LoginUser;
+		describe('Check Delete consistency', () => {
+			let carol: LoginUser;
 
-		beforeAll(async () => {
-			carol = await createAccount('a.test');
+			beforeAll(async () => {
+				carol = await createAccount('a.test');
 
-			await carol.client.request('following/create', { userId: bobInA.id });
-			await sleep();
+				await carol.client.request('following/create', { userId: bobInA.id });
+				await sleep();
+			});
+
+			test('Delete is derivered to followers', async () => {
+				const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
+				const noteInA = await resolveRemoteNote('b.test', note.id, carol);
+				await bob.client.request('notes/delete', { noteId: note.id });
+				await sleep();
+
+				await rejects(
+					async () => await carol.client.request('notes/show', { noteId: noteInA.id }),
+					(err: any) => {
+						strictEqual(err.code, 'NO_SUCH_NOTE');
+						return true;
+					},
+				);
+			});
 		});
 
-		test('Delete is derivered to followers', async () => {
-			const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
-			const noteInA = await resolveRemoteNote('b.test', note.id, carol);
-			await bob.client.request('notes/delete', { noteId: note.id });
-			await sleep();
+		describe('Deletion of remote user\'s note for moderation', () => {
+			let note: Misskey.entities.Note;
 
-			await rejects(
-				async () => await carol.client.request('notes/show', { noteId: noteInA.id }),
-				(err: any) => {
-					strictEqual(err.code, 'NO_SUCH_NOTE');
-					return true;
-				},
-			);
+			test('Alice post is deleted in B', async () => {
+				note = (await alice.client.request('notes/create', { text: 'Hello' })).createdNote;
+				const noteInB = await resolveRemoteNote('a.test', note.id, bob);
+				const bMod = await createModerator('b.test');
+				await bMod.client.request('notes/delete', { noteId: noteInB.id });
+				await rejects(
+					async () => await bob.client.request('notes/show', { noteId: noteInB.id }),
+					(err: any) => {
+						strictEqual(err.code, 'NO_SUCH_NOTE');
+						return true;
+					},
+				);
+			});
+
+			/**
+			 * FIXME: implement soft deletion as well as user?
+			 *        @see https://github.com/misskey-dev/misskey/issues/11437
+			 */
+			test.failing('Not found even if resolve again', async () => {
+				const noteInB = await resolveRemoteNote('a.test', note.id, bob);
+				await rejects(
+					async () => await bob.client.request('notes/show', { noteId: noteInB.id }),
+					(err: any) => {
+						strictEqual(err.code, 'NO_SUCH_NOTE');
+						return true;
+					},
+				);
+			});
 		});
 	});
 
