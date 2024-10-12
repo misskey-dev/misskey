@@ -51,6 +51,7 @@ async function signin(
 	return await (new Misskey.api.APIClient({ origin: `https://${host}` }).request as Request)('signin-flow', params)
 		.then(res => {
 			strictEqual(res.finished, true);
+			if (params.username === ADMIN_PARAMS.username) ADMIN_CACHE.set(host, res);
 			return res;
 		})
 		.then(({ id, i }) => ({ id, i }))
@@ -88,10 +89,6 @@ async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse 
 
 export async function fetchAdmin(host: Host): Promise<LoginUser> {
 	const admin = ADMIN_CACHE.get(host) ?? await signin(host, ADMIN_PARAMS)
-		.then(res => {
-			ADMIN_CACHE.set(host, res);
-			return res;
-		})
 		.catch(async err => {
 			if (err.id === '6cc579cc-885d-43d8-95c2-b8c7fc963280') {
 				await createAdmin(host);
