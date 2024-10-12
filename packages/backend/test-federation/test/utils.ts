@@ -26,8 +26,13 @@ export type LoginUser = SigninResponse & {
 }
 
 /** used for avoiding overload and some endpoints */
-export type Request = <E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(
-	endpoint: E, params: P, credential?: string | null
+export type Request = <
+	E extends keyof Misskey.Endpoints,
+	P extends Misskey.Endpoints[E]['req'],
+>(
+	endpoint: E,
+	params: P,
+	credential?: string | null,
 ) => Promise<SwitchCaseResponseType<E, P>>;
 
 type Host = 'a.test' | 'b.test';
@@ -36,7 +41,10 @@ export async function sleep(ms = 200): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function signin(host: Host, params: Misskey.entities.SigninFlowRequest): Promise<SigninResponse> {
+async function signin(
+	host: Host,
+	params: Misskey.entities.SigninFlowRequest,
+): Promise<SigninResponse> {
 	// wait for a second to prevent hit rate limit
 	await sleep(1000);
 
@@ -127,7 +135,10 @@ export async function createModerator(host: Host): Promise<LoginUser> {
 	return user;
 }
 
-export async function createRole(host: Host, params: Partial<Misskey.entities.AdminRolesCreateRequest> = {}): Promise<Misskey.entities.Role> {
+export async function createRole(
+	host: Host,
+	params: Partial<Misskey.entities.AdminRolesCreateRequest> = {},
+): Promise<Misskey.entities.Role> {
 	const admin = await fetchAdmin(host);
 	return await admin.client.request('admin/roles/create', {
 		name: 'Some role',
@@ -148,7 +159,11 @@ export async function createRole(host: Host, params: Partial<Misskey.entities.Ad
 	});
 }
 
-export async function resolveRemoteUser(host: Host, id: string, from: LoginUser): Promise<Misskey.entities.UserDetailedNotMe> {
+export async function resolveRemoteUser(
+	host: Host,
+	id: string,
+	from: LoginUser,
+): Promise<Misskey.entities.UserDetailedNotMe> {
 	return new Promise<Misskey.entities.UserDetailedNotMe>((resolve, reject) => {
 		const uri = `https://${host}/users/${id}`;
 		from.client.request('ap/show', { uri })
@@ -161,7 +176,11 @@ export async function resolveRemoteUser(host: Host, id: string, from: LoginUser)
 	});
 }
 
-export async function resolveRemoteNote(host: Host, id: string, from: LoginUser): Promise<Misskey.entities.Note> {
+export async function resolveRemoteNote(
+	host: Host,
+	id: string,
+	from: LoginUser,
+): Promise<Misskey.entities.Note> {
 	return new Promise<Misskey.entities.Note>((resolve, reject) => {
 		const uri = `https://${host}/notes/${id}`;
 		from.client.request('ap/show', { uri })
@@ -174,7 +193,11 @@ export async function resolveRemoteNote(host: Host, id: string, from: LoginUser)
 	});
 }
 
-export async function uploadFile(host: Host, user: { i: string }, path = '../../test/resources/192.jpg'): Promise<Misskey.entities.DriveFile> {
+export async function uploadFile(
+	host: Host,
+	user: { i: string },
+	path = '../../test/resources/192.jpg',
+): Promise<Misskey.entities.DriveFile> {
 	const filename = path.split('/').pop() ?? 'untitled';
 	const blob = new Blob([await readFile(join(__dirname, path))]);
 
@@ -185,18 +208,17 @@ export async function uploadFile(host: Host, user: { i: string }, path = '../../
 	body.append('name', filename);
 
 	return new Promise<Misskey.entities.DriveFile>((resolve, reject) => {
-		fetch(`https://${host}/api/drive/files/create`, {
-			method: 'POST',
-			body,
-		}).then(async res => {
-			resolve(await res.json());
-		}).catch(err => {
-			reject(err);
-		});
+		fetch(`https://${host}/api/drive/files/create`, { method: 'POST', body })
+			.then(async res => resolve(await res.json()))
+			.catch(err => reject(err));
 	});
 }
 
-export async function addCustomEmoji(host: Host, param?: Partial<Misskey.entities.AdminEmojiAddRequest>, path?: string): Promise<Misskey.entities.EmojiDetailed> {
+export async function addCustomEmoji(
+	host: Host,
+	param?: Partial<Misskey.entities.AdminEmojiAddRequest>,
+	path?: string,
+): Promise<Misskey.entities.EmojiDetailed> {
 	const admin = await fetchAdmin(host);
 	const name = crypto.randomUUID().replaceAll('-', '');
 	const file = await uploadFile(host, admin, path);
