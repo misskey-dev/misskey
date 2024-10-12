@@ -120,7 +120,7 @@ export const meta = {
 			message: 'Screen name contains prohibited words.',
 			code: 'SCREEN_NAME_CONTAINS_PROHIBITED_WORDS',
 			id: '0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191',
-			httpStatusCode: 403,
+			httpStatusCode: 422,
 		},
 	},
 
