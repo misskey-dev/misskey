@@ -9633,6 +9633,14 @@ export interface Locale extends ILocale {
              * ユーザーが作成されたとき
              */
             "userCreated": string;
+            /**
+             * モデレーターが一定期間非アクティブになったとき
+             */
+            "inactiveModeratorsWarning": string;
+            /**
+             * モデレーターが一定期間非アクティブだったため、システムにより招待制へと変更されたとき
+             */
+            "inactiveModeratorsInvitationOnlyChanged": string;
         };
         /**
          * Webhookを削除しますか？

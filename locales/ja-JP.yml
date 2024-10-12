@@ -2552,6 +2552,8 @@ _webhookSettings:
     abuseReport: "ユーザーから通報があったとき"
     abuseReportResolved: "ユーザーからの通報を処理したとき"
     userCreated: "ユーザーが作成されたとき"
+    inactiveModeratorsWarning: "モデレーターが一定期間非アクティブになったとき"
+    inactiveModeratorsInvitationOnlyChanged: "モデレーターが一定期間非アクティブだったため、システムにより招待制へと変更されたとき"
   deleteConfirm: "Webhookを削除しますか？"
   testRemarks: "スイッチの右にあるボタンをクリックするとダミーのデータを使用したテスト用Webhookを送信できます。"
 

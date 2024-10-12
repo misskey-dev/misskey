@@ -55,6 +55,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.userCreated)" @click="test('userCreated')"><i class="ti ti-send"></i></MkButton>
 							</div>
+							<div :class="$style.switchBox">
+								<MkSwitch v-model="events.inactiveModeratorsWarning" :disabled="disabledEvents.inactiveModeratorsWarning">
+									<template #label>{{ i18n.ts._webhookSettings._systemEvents.inactiveModeratorsWarning }}</template>
+								</MkSwitch>
+								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.inactiveModeratorsWarning)" @click="test('inactiveModeratorsWarning')"><i class="ti ti-send"></i></MkButton>
+							</div>
+							<div :class="$style.switchBox">
+								<MkSwitch v-model="events.inactiveModeratorsInvitationOnlyChanged" :disabled="disabledEvents.inactiveModeratorsInvitationOnlyChanged">
+									<template #label>{{ i18n.ts._webhookSettings._systemEvents.inactiveModeratorsInvitationOnlyChanged }}</template>
+								</MkSwitch>
+								<MkButton v-show="mode === 'edit'" transparent :class="$style.testButton" :disabled="!(isActive && events.inactiveModeratorsInvitationOnlyChanged)" @click="test('inactiveModeratorsInvitationOnlyChanged')"><i class="ti ti-send"></i></MkButton>
+							</div>
 						</div>
 
 						<div v-show="mode === 'edit'" :class="$style.description">
@@ -100,6 +112,8 @@ type EventType = {
 	abuseReport: boolean;
 	abuseReportResolved: boolean;
 	userCreated: boolean;
+	inactiveModeratorsWarning: boolean;
+	inactiveModeratorsInvitationOnlyChanged: boolean;
 }
 
 const emit = defineEmits<{
@@ -123,6 +137,8 @@ const events = ref<EventType>({
 	abuseReport: true,
 	abuseReportResolved: true,
 	userCreated: true,
+	inactiveModeratorsWarning: true,
+	inactiveModeratorsInvitationOnlyChanged: true,
 });
 const isActive = ref<boolean>(true);
 
@@ -130,6 +146,8 @@ const disabledEvents = ref<EventType>({
 	abuseReport: false,
 	abuseReportResolved: false,
 	userCreated: false,
+	inactiveModeratorsWarning: false,
+	inactiveModeratorsInvitationOnlyChanged: false,
 });
 
 const disableSubmitButton = computed(() => {
