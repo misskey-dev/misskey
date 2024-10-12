@@ -457,20 +457,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let tags = [] as string[];
 
 			const newName = updates.name === undefined ? user.name : updates.name;
-			if (newName != null) {
-				let hasProhibitedWords = false;
-				if (!await this.roleService.isModerator(user)) {
-					hasProhibitedWords = this.checkScreennameProhibitedWordsContain(newName, this.instanceMeta.prohibitedPartialScreenNames);
-				}
-				if (hasProhibitedWords) {
-					throw new ApiError(meta.errors.screenNameContainsProhibitedWords);
-				}
-			}
-
 			const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
 			const newFields = profileUpdates.fields === undefined ? profile.fields : profileUpdates.fields;
 
 			if (newName != null) {
+				let hasProhibitedWords = false;
+				if (!await this.roleService.isModerator(user)) {
+					hasProhibitedWords = this.utilityService.isKeyWordIncluded(newName, this.instanceMeta.prohibitedPartialScreenNames);
+				}
+				if (hasProhibitedWords) {
+					throw new ApiError(meta.errors.screenNameContainsProhibitedWords);
+				}
+
 				const tokens = mfm.parseSimple(newName);
 				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
 			}
@@ -566,12 +564,5 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		} catch (err) {
 			// なにもしない
 		}
-	}
-
-	private checkScreennameProhibitedWordsContain(name: string, prohibitedPartialScreenNames: string[]) {
-		if (this.utilityService.isKeyWordIncluded(name, prohibitedPartialScreenNames)) {
-			return true;
-		}
-		return false;
 	}
 }
