@@ -42,16 +42,17 @@ async function signin(host: Host, params: Misskey.entities.SigninFlowRequest): P
 	// console.log(`Sign in to @${params.username}@${host} ...`);
 	return await (new Misskey.api.APIClient({ origin: `https://${host}` }).request as Request)('signin-flow', params)
 		.then(res => {
-			// console.log(`Signed in to @${params.username}@${host}`);
+			strictEqual(res.finished, true);
 			return res;
 		})
+		.then(({ id, i }) => ({ id, i }))
 		.catch(async err => {
 			if (err.id === '22d05606-fbcf-421a-a2db-b32610dcfd1b') {
 				await sleep(Math.random() * 2000);
 				return await signin(host, params);
 			}
 			throw err;
-		}) as SigninResponse;
+		});
 }
 
 async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse | undefined> {
