@@ -51,14 +51,11 @@ watch(name, () => {
 		// 空文字列をnullにしたいので??は使うな
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		name: name.value || null,
-	}, undefined, null, err => {
-		if (err.code === 'SCREEN_NAME_CONTAINS_PROHIBITED_WORDS') {
-			os.alert({
-				type: 'error',
-				title: i18n.ts.screenNameContainsProhibitedWords,
-				text: i18n.ts.screenNameContainsProhibitedWordsDescription,
-			});
-		}
+	}, undefined, {
+		'0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191': {
+			title: i18n.ts.screenNameContainsProhibitedWords,
+			text: i18n.ts.screenNameContainsProhibitedWordsDescription,
+		},
 	});
 });
 

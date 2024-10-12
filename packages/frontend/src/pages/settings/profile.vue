@@ -206,14 +206,11 @@ function save() {
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
-	}, undefined, null, err => {
-		if (err.code === 'SCREEN_NAME_CONTAINS_PROHIBITED_WORDS') {
-			os.alert({
-				type: 'error',
-				title: i18n.ts.screenNameContainsProhibitedWords,
-				text: i18n.ts.screenNameContainsProhibitedWordsDescription,
-			});
-		}
+	}, undefined, {
+		'0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191': {
+			title: i18n.ts.screenNameContainsProhibitedWords,
+			text: i18n.ts.screenNameContainsProhibitedWordsDescription,
+		},
 	});
 	globalEvents.emit('requestClearPageCache');
 	claimAchievement('profileFilled');

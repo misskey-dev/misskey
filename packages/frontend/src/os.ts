@@ -35,6 +35,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 	endpoint: E,
 	data: P = {} as any,
 	token?: string | null | undefined,
+	customErrors?: Record<string, { title?: string; text: string; }>,
 ) => {
 	const promise = misskeyApi(endpoint, data, token);
 	promiseDialog(promise, null, async (err) => {
@@ -77,6 +78,9 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 		} else if (err.message.startsWith('Unexpected token')) {
 			title = i18n.ts.gotInvalidResponseError;
 			text = i18n.ts.gotInvalidResponseErrorDescription;
+		} else if (customErrors && customErrors[err.id]) {
+			title = customErrors[err.id].title;
+			text = customErrors[err.id].text;
 		}
 		alert({
 			type: 'error',
