@@ -78,7 +78,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 		} else if (err.message.startsWith('Unexpected token')) {
 			title = i18n.ts.gotInvalidResponseError;
 			text = i18n.ts.gotInvalidResponseErrorDescription;
-		} else if (customErrors && customErrors[err.id]) {
+		} else if (customErrors && customErrors[err.id] != null) {
 			title = customErrors[err.id].title;
 			text = customErrors[err.id].text;
 		}
