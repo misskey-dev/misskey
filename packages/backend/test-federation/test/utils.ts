@@ -39,7 +39,7 @@ export async function sleep(ms = 200): Promise<void> {
 async function signin(host: Host, params: Misskey.entities.SigninFlowRequest): Promise<SigninResponse> {
 	// wait for a second to prevent hit rate limit
 	await sleep(1000);
-	// console.log(`Sign in to @${params.username}@${host} ...`);
+
 	return await (new Misskey.api.APIClient({ origin: `https://${host}` }).request as Request)('signin-flow', params)
 		.then(res => {
 			strictEqual(res.finished, true);
@@ -58,7 +58,6 @@ async function signin(host: Host, params: Misskey.entities.SigninFlowRequest): P
 async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse | undefined> {
 	const client = new Misskey.api.APIClient({ origin: `https://${host}` });
 	return await client.request('admin/accounts/create', ADMIN_PARAMS).then(res => {
-		console.log(`Successfully created admin account: @${ADMIN_PARAMS.username}@${host}`);
 		ADMIN_CACHE.set(host, {
 			id: res.id,
 			// @ts-expect-error FIXME: openapi-typescript generates incorrect response type for this endpoint, so ignore this
@@ -74,10 +73,7 @@ async function createAdmin(host: Host): Promise<Misskey.entities.SignupResponse 
 		}, res.token);
 		return res;
 	}).catch(err => {
-		if (err.info.e.message === 'access denied') {
-			console.log(`Admin account already exists: @${ADMIN_PARAMS.username}@${host}`);
-			return undefined;
-		}
+		if (err.info.e.message === 'access denied') return undefined;
 		throw err;
 	});
 }
@@ -110,7 +106,6 @@ export async function createAccount(host: Host): Promise<LoginUser> {
 	const password = crypto.randomUUID().replaceAll('-', '');
 	const admin = await fetchAdmin(host);
 	await admin.client.request('admin/accounts/create', { username, password });
-	// console.log(`Created an account: @${username}@${host}`);
 	const signinRes = await signin(host, { username, password });
 
 	return {
