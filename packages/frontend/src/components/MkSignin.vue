@@ -256,7 +256,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 							});
 							page.value = 'passkey';
 						} else {
-							const err =  {
+							const err = {
 								id: '8b12bdf5-d5ed-4429-b5da-e3370cfcb869',
 							};
 
