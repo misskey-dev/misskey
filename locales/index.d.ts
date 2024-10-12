@@ -5171,11 +5171,11 @@ export interface Locale extends ILocale {
      */
     "testCaptchaWarning": string;
     /**
-     * 禁止ワード（ユーザー名）
+     * 禁止ワード（ユーザーの名前）
      */
     "prohibitedPartialScreenNames": string;
     /**
-     * ユーザー名に含まれる文字列がこのリストに含まれる場合、そのユーザー名は使用できません。モデレーター権限を持つユーザーはこの制限の影響を受けません。
+     * このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。
      */
     "prohibitedPartialScreenNamesDescription": string;
     /**

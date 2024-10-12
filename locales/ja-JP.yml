@@ -1288,8 +1288,8 @@ passkeyVerificationSucceededButPasswordlessLoginDisabled: "パスキーの検証
 messageToFollower: "フォロワーへのメッセージ"
 target: "対象"
 testCaptchaWarning: "CAPTCHAのテストを目的とした機能です。<strong>本番環境で使用しないでください。</strong>"
-prohibitedPartialScreenNames: "禁止ワード（ユーザー名）"
-prohibitedPartialScreenNamesDescription: "ユーザー名に含まれる文字列がこのリストに含まれる場合、そのユーザー名は使用できません。モデレーター権限を持つユーザーはこの制限の影響を受けません。"
+prohibitedPartialScreenNames: "禁止ワード（ユーザーの名前）"
+prohibitedPartialScreenNamesDescription: "このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。"
 screenNameContainsProhibitedWords: "変更しようとした名前に禁止された文字列が含まれています"
 screenNameContainsProhibitedWordsDescription: "名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。"
 
