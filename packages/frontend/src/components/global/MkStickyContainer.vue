@@ -84,19 +84,19 @@ onUnmounted(() => {
 .body {
 	position: relative;
 	z-index: 0;
-	--stickyTop: v-bind("childStickyTop + 'px'");
-	--stickyBottom: v-bind("childStickyBottom + 'px'");
+	--MI-stickyTop: v-bind("childStickyTop + 'px'");
+	--MI-stickyBottom: v-bind("childStickyBottom + 'px'");
 }
 
 .header {
 	position: sticky;
-	top: var(--stickyTop, 0);
+	top: var(--MI-stickyTop, 0);
 	z-index: 1;
 }
 
 .footer {
 	position: sticky;
-	bottom: var(--stickyBottom, 0);
+	bottom: var(--MI-stickyBottom, 0);
 	z-index: 1;
 }
 </style>
