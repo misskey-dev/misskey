@@ -52,7 +52,7 @@ describe('FetchInstanceMetadataService', () => {
 				if (token === HttpRequestService) {
 					return { getJson: jest.fn(), getHtml: jest.fn(), send: jest.fn() };
 				} else if (token === FederatedInstanceService) {
-					return { fetch: jest.fn() };
+					return { fetchOrRegister: jest.fn() };
 				} else if (token === DI.redis) {
 					return mockRedis;
 				}
