@@ -9,16 +9,14 @@ export type {
 
 const MK_API_ERROR = Symbol();
 
-export class APIError extends Error {
-
-	public payload;
-	public readonly [MK_API_ERROR] = true;
-
-	constructor(response: any) {
-		super('message' in response ? response.message : 'API Error');
-		this.payload = response;
-	}
-}
+export type APIError = {
+	id: string;
+	code: string;
+	message: string;
+	kind: 'client' | 'server';
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	info: Record<string, any>;
+};
 
 export function isAPIError(reason: any) {
 	return reason instanceof Error && MK_API_ERROR in reason;
@@ -119,7 +117,7 @@ export class APIClient {
 				if (res.status === 200 || res.status === 204) {
 					resolve(body);
 				} else {
-					reject(new APIError(body.error));
+					reject(new Error(body.error));
 				}
 			}).catch((reason) => {
 				reject(new Error(reason));

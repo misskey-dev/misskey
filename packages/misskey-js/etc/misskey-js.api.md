@@ -772,13 +772,13 @@ class APIClient {
 }
 
 // @public (undocumented)
-class APIError extends Error {
-    // (undocumented)
-    readonly [MK_API_ERROR] = true;
-    constructor(response: any);
-    // (undocumented)
-    payload: any;
-}
+type APIError = {
+    id: string;
+    code: string;
+    message: string;
+    kind: 'client' | 'server';
+    info: Record<string, any>;
+};
 
 // @public (undocumented)
 type App = components['schemas']['App'];
