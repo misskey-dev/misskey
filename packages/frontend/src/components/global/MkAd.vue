@@ -124,7 +124,7 @@ function reduceFrequency(): void {
 <style lang="scss" module>
 .root {
 	background-size: auto auto;
-	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--bg) 8px, var(--bg) 14px );
+	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px );
 }
 
 .main {
