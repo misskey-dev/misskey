@@ -5175,7 +5175,7 @@ export interface Locale extends ILocale {
      */
     "prohibitedPartialScreenNames": string;
     /**
-     * ユーザー名に含まれる文字列がこのリストに含まれる場合、そのユーザー名は使用できません。
+     * ユーザー名に含まれる文字列がこのリストに含まれる場合、そのユーザー名は使用できません。モデレーター権限を持つユーザーはこの制限の影響を受けません。
      */
     "prohibitedPartialScreenNamesDescription": string;
     /**
