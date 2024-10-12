@@ -164,16 +164,13 @@ export async function resolveRemoteUser(
 	id: string,
 	from: LoginUser,
 ): Promise<Misskey.entities.UserDetailedNotMe> {
-	return new Promise<Misskey.entities.UserDetailedNotMe>((resolve, reject) => {
-		const uri = `https://${host}/users/${id}`;
-		from.client.request('ap/show', { uri })
-			.then(res => {
-				strictEqual(res.type, 'User');
-				strictEqual(res.object.uri, uri);
-				resolve(res.object);
-			})
-			.catch(err => reject(err));
-	});
+	const uri = `https://${host}/users/${id}`;
+	return await from.client.request('ap/show', { uri })
+		.then(res => {
+			strictEqual(res.type, 'User');
+			strictEqual(res.object.uri, uri);
+			return res.object;
+		});
 }
 
 export async function resolveRemoteNote(
@@ -181,16 +178,13 @@ export async function resolveRemoteNote(
 	id: string,
 	from: LoginUser,
 ): Promise<Misskey.entities.Note> {
-	return new Promise<Misskey.entities.Note>((resolve, reject) => {
-		const uri = `https://${host}/notes/${id}`;
-		from.client.request('ap/show', { uri })
-			.then(res => {
-				strictEqual(res.type, 'Note');
-				strictEqual(res.object.uri, uri);
-				resolve(res.object);
-			})
-			.catch(err => reject(err));
-	});
+	const uri = `https://${host}/notes/${id}`;
+	return await from.client.request('ap/show', { uri })
+		.then(res => {
+			strictEqual(res.type, 'Note');
+			strictEqual(res.object.uri, uri);
+			return res.object;
+		});
 }
 
 export async function uploadFile(
@@ -207,11 +201,8 @@ export async function uploadFile(
 	body.append('file', blob);
 	body.append('name', filename);
 
-	return new Promise<Misskey.entities.DriveFile>((resolve, reject) => {
-		fetch(`https://${host}/api/drive/files/create`, { method: 'POST', body })
-			.then(async res => resolve(await res.json()))
-			.catch(err => reject(err));
-	});
+	return await fetch(`https://${host}/api/drive/files/create`, { method: 'POST', body })
+		.then(async res => await res.json());
 }
 
 export async function addCustomEmoji(
