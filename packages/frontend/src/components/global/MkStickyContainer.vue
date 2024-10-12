@@ -9,7 +9,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<slot name="header"></slot>
 	</div>
 	<div
-		ref="bodyEl"
 		:class="$style.body"
 		:data-sticky-container-header-height="headerHeight"
 		:data-sticky-container-footer-height="footerHeight"
@@ -29,7 +28,6 @@ import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@@/js/const.js';
 
 const headerEl = shallowRef<HTMLElement>();
 const footerEl = shallowRef<HTMLElement>();
-const bodyEl = shallowRef<HTMLElement>();
 
 const headerHeight = ref<string | undefined>();
 const childStickyTop = ref(0);
