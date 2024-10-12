@@ -78,6 +78,7 @@ export const paramDef = {
 		enableTurnstile: { type: 'boolean' },
 		turnstileSiteKey: { type: 'string', nullable: true },
 		turnstileSecretKey: { type: 'string', nullable: true },
+		enableTestcaptcha: { type: 'boolean' },
 		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
 		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
 		setSensitiveFlagAutomatically: { type: 'boolean' },
@@ -355,6 +356,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.turnstileSecretKey !== undefined) {
 				set.turnstileSecretKey = ps.turnstileSecretKey;
+			}
+
+			if (ps.enableTestcaptcha !== undefined) {
+				set.enableTestcaptcha = ps.enableTestcaptcha;
 			}
 
 			if (ps.sensitiveMediaDetection !== undefined) {
@@ -652,7 +657,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (Array.isArray(ps.federationHosts)) {
-				set.blockedHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
+				set.federationHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
 			}
 
 			const before = await this.metaService.fetch(true);

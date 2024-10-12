@@ -14,6 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div class="_gaps_m" style="padding: 32px;">
 				<div>{{ i18n.ts.intro }}</div>
+				<MkInput v-model="setupPassword" type="password" data-cy-admin-initial-password>
+					<template #label>{{ i18n.ts.initialPasswordForSetup }} <div v-tooltip:dialog="i18n.ts.initialPasswordForSetupDescription" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
+					<template #prefix><i class="ti ti-lock"></i></template>
+				</MkInput>
 				<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
@@ -36,9 +40,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { host, version } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import { host, version } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { login } from '@/account.js';
@@ -47,6 +51,7 @@ import MkAnimBg from '@/components/MkAnimBg.vue';
 
 const username = ref('');
 const password = ref('');
+const setupPassword = ref('');
 const submitting = ref(false);
 
 function submit() {
@@ -56,14 +61,27 @@ function submit() {
 	misskeyApi('admin/accounts/create', {
 		username: username.value,
 		password: password.value,
+		setupPassword: setupPassword.value === '' ? null : setupPassword.value,
 	}).then(res => {
 		return login(res.token);
-	}).catch(() => {
+	}).catch((err) => {
 		submitting.value = false;
+
+		let title = i18n.ts.somethingHappened;
+		let text = err.message + '\n' + err.id;
+
+		if (err.code === 'ACCESS_DENIED') {
+			title = i18n.ts.permissionDeniedError;
+			text = i18n.ts.operationForbidden;
+		} else if (err.code === 'INCORRECT_INITIAL_PASSWORD') {
+			title = i18n.ts.permissionDeniedError;
+			text = i18n.ts.incorrectPassword;
+		}
 
 		os.alert({
 			type: 'error',
-			text: i18n.ts.somethingHappened,
+			title,
+			text,
 		});
 	});
 }
@@ -74,14 +92,14 @@ function submit() {
 	min-height: 100svh;
 	padding: 32px 32px 64px 32px;
 	box-sizing: border-box;
-display: grid;
-place-content: center;
+	display: grid;
+	place-content: center;
 }
 
 .form {
 	position: relative;
 	z-index: 10;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 	overflow: clip;
 	max-width: 500px;
@@ -92,8 +110,8 @@ place-content: center;
 	font-size: 1.5em;
 	text-align: center;
 	padding: 32px;
-	background: var(--accentedBg);
-	color: var(--accent);
+	background: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
 	font-weight: bold;
 }
 

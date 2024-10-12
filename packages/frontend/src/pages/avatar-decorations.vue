@@ -124,7 +124,7 @@ definePageMetadata(() => ({
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: auto auto;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 
 .preview {
@@ -132,7 +132,7 @@ definePageMetadata(() => ({
 	place-items: center;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: 1fr;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 
 .previewItem {
@@ -142,7 +142,7 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 
 	&.light {
 		background: #eee;
@@ -157,7 +157,7 @@ definePageMetadata(() => ({
 	.editorWrapper {
 		grid-template-columns: 200px 1fr;
 		grid-template-rows: 1fr;
-		gap: calc(var(--margin) * 2);
+		gap: calc(var(--MI-margin) * 2);
 	}
 
 	.preview {
