@@ -77,8 +77,14 @@ export class DeliverProcessorService {
 			this.apRequestChart.deliverSucc();
 			this.federationChart.deliverd(host, true);
 
-			// Update stats
-			this.federatedInstanceService.fetchOrRegister(host).then(i => {
+			// Update instance stats
+			process.nextTick(async () => {
+				const i = await (this.meta.enableStatsForFederatedInstances
+					? this.federatedInstanceService.fetchOrRegister(host)
+					: this.federatedInstanceService.fetch(host));
+
+				if (i == null) return;
+
 				if (i.isNotResponding) {
 					this.federatedInstanceService.update(i.id, {
 						isNotResponding: false,
@@ -86,7 +92,9 @@ export class DeliverProcessorService {
 					});
 				}
 
-				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
+				if (this.meta.enableStatsForFederatedInstances) {
+					this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
+				}
 
 				if (this.meta.enableChartsForFederatedInstances) {
 					this.instanceChart.requestSent(i.host, true);
@@ -98,7 +106,7 @@ export class DeliverProcessorService {
 			this.apRequestChart.deliverFail();
 			this.federationChart.deliverd(host, false);
 
-			// Update stats
+			// Update instance stats
 			this.federatedInstanceService.fetchOrRegister(host).then(i => {
 				if (!i.isNotResponding) {
 					this.federatedInstanceService.update(i.id, {
