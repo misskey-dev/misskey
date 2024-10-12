@@ -12,14 +12,10 @@ const __dirname = dirname(__filename);
 export const ADMIN_PARAMS = { username: 'admin', password: 'admin' };
 const adminCache = new Map<Host, SigninResponse>();
 
-let fetched = false;
-if (!fetched) {
-	await Promise.all([
-		fetchAdmin('a.test'),
-		fetchAdmin('b.test'),
-	]);
-	fetched = true;
-}
+await Promise.all([
+	fetchAdmin('a.test'),
+	fetchAdmin('b.test'),
+]);
 
 type SigninResponse = Omit<Misskey.entities.SigninFlowResponse & { finished: true }, 'finished'>;
 
