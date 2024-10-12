@@ -5171,7 +5171,7 @@ export interface Locale extends ILocale {
      */
     "testCaptchaWarning": string;
     /**
-     * 禁止するユーザー名に含まれる文字列
+     * 禁止ワード（ユーザー名）
      */
     "prohibitedPartialScreenNames": string;
     /**
@@ -5183,7 +5183,7 @@ export interface Locale extends ILocale {
      */
     "screenNameContainsProhibitedWords": string;
     /**
-     * 名前に禁止されている文字列が含まれています。本名である等の理由でこの名前を使用したい場合は、サーバー管理者にお問い合わせください。
+     * 名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。
      */
     "screenNameContainsProhibitedWordsDescription": string;
     "_abuseUserReport": {
