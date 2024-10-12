@@ -55,17 +55,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 		type: 'link',
 		text: i18n.ts.customEmojis,
 		icon: 'ti ti-icons',
-		to: '/about#emojis',
-	}, {
-		type: 'link',
-		text: i18n.ts.federation,
-		icon: 'ti ti-whirl',
-		to: '/about#federation',
-	}, {
-		type: 'link',
-		text: i18n.ts.charts,
-		icon: 'ti ti-chart-line',
-		to: '/about#charts',
+		to: '/custom-emojis-manager',
 	}, { type: 'divider' }, {
 		type: 'link',
 		text: i18n.ts.ads,
