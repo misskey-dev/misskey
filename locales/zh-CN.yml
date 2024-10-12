@@ -2264,7 +2264,7 @@ _profile:
   avatarDecorationMax: "最多可添加 {max} 个挂件"
   followedMessage: "被关注时显示的消息"
   followedMessageDescription: "可以设置被关注时向对方显示的短消息。"
-  followedMessageDescriptionForLockedAccount: "需要批准才能关注的情况下，消息是在被请求被批准后显示。"
+  followedMessageDescriptionForLockedAccount: "需要批准才能关注的情况下，消息是在请求被批准后显示。"
 _exportOrImport:
   allNotes: "所有帖子"
   favoritedNotes: "收藏的帖子"
