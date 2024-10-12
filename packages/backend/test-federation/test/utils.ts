@@ -4,7 +4,6 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import * as Misskey from 'misskey-js';
 import { WebSocket } from 'ws';
-import { SwitchCaseResponseType } from 'misskey-js/api.types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,7 +32,7 @@ export type Request = <
 	endpoint: E,
 	params: P,
 	credential?: string | null,
-) => Promise<SwitchCaseResponseType<E, P>>;
+) => Promise<Misskey.api.SwitchCaseResponseType<E, P>>;
 
 type Host = 'a.test' | 'b.test';
 
