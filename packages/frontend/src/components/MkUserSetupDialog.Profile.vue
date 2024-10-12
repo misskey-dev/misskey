@@ -51,6 +51,11 @@ watch(name, () => {
 		// 空文字列をnullにしたいので??は使うな
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		name: name.value || null,
+	}, undefined, {
+		'SCREEN_NAME_CONTAINS_PROHIBITED_WORDS': {
+			title: i18n.ts.screenNameContainsProhibitedWords,
+			text: i18n.ts.screenNameContainsProhibitedWordsDescription,
+		},
 	});
 });
 
