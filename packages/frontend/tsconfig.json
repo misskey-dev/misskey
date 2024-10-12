@@ -23,7 +23,8 @@
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@@/*": ["../frontend-shared/*"]
 		},
 		"typeRoots": [
 			"./@types",
@@ -44,7 +45,6 @@
 	},
 	"compileOnSave": false,
 	"include": [
-		".eslintrc.js",
 		"./**/*.ts",
 		"./**/*.vue"
 	],

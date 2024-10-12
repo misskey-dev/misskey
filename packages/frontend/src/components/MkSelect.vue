@@ -6,20 +6,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
-	<div ref="container" :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]" @mousedown.prevent="show">
+	<div
+		ref="container"
+		tabindex="0"
+		:class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused || opening }]"
+		@focus="focused = true"
+		@blur="focused = false"
+		@mousedown.prevent="show"
+		@keydown.space.enter="show"
+	>
 		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
 		<select
 			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
+			tabindex="-1"
 			:class="$style.inputCore"
 			:disabled="disabled"
 			:required="required"
 			:readonly="readonly"
 			:placeholder="placeholder"
-			@focus="focused = true"
-			@blur="focused = false"
 			@input="onInput"
+			@mousedown.prevent="() => {}"
+			@keydown.prevent="() => {}"
 		>
 			<slot></slot>
 		</select>
@@ -35,9 +44,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, nextTick, ref, watch, computed, toRefs, VNode, useSlots, VNodeChild } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { i18n } from '@/i18n.js';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -75,7 +84,7 @@ const height =
 	props.large ? 39 :
 	36;
 
-const focus = () => inputEl.value?.focus();
+const focus = () => container.value?.focus();
 const onInput = (ev) => {
 	changed.value = true;
 };
@@ -126,7 +135,9 @@ onMounted(() => {
 });
 
 function show() {
-	focused.value = true;
+	if (opening.value) return;
+	focus();
+
 	opening.value = true;
 
 	const menu: MenuItem[] = [];
@@ -173,8 +184,6 @@ function show() {
 		onClosing: () => {
 			opening.value = false;
 		},
-	}).then(() => {
-		focused.value = false;
 	});
 }
 </script>
@@ -193,7 +202,7 @@ function show() {
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 
 	&:empty {
 		display: none;
@@ -211,8 +220,8 @@ function show() {
 
 	&.focused {
 		> .inputCore {
-			border-color: var(--accent) !important;
-			//box-shadow: 0 0 0 4px var(--focus);
+			border-color: var(--MI_THEME-accent) !important;
+			//box-shadow: 0 0 0 4px var(--MI_THEME-focus);
 		}
 	}
 
@@ -225,9 +234,13 @@ function show() {
 		}
 	}
 
+	&:focus {
+		outline: none;
+	}
+
 	&:hover {
 		> .inputCore {
-			border-color: var(--inputBorderHover) !important;
+			border-color: var(--MI_THEME-inputBorderHover) !important;
 		}
 	}
 }
@@ -243,9 +256,9 @@ function show() {
 	font: inherit;
 	font-weight: normal;
 	font-size: 1em;
-	color: var(--fg);
-	background: var(--panel);
-	border: solid 1px var(--panel);
+	color: var(--MI_THEME-fg);
+	background: var(--MI_THEME-panel);
+	border: solid 1px var(--MI_THEME-panel);
 	border-radius: 6px;
 	outline: none;
 	box-shadow: none;

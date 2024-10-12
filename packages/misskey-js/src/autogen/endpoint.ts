@@ -148,6 +148,10 @@ import type {
 	AdminResetPasswordErrors,
 	AdminResolveAbuseUserReportRequest,
 	AdminResolveAbuseUserReportErrors,
+	AdminForwardAbuseUserReportRequest,
+	AdminForwardAbuseUserReportErrors,
+	AdminUpdateAbuseUserReportRequest,
+	AdminUpdateAbuseUserReportErrors,
 	AdminSendEmailRequest,
 	AdminSendEmailErrors,
 	AdminServerInfoResponse,
@@ -206,6 +210,8 @@ import type {
 	AdminSystemWebhookUpdateRequest,
 	AdminSystemWebhookUpdateResponse,
 	AdminSystemWebhookUpdateErrors,
+	AdminSystemWebhookTestRequest,
+	AdminSystemWebhookTestErrors,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
 	AnnouncementsErrors,
@@ -631,6 +637,8 @@ import type {
 	IWebhooksUpdateErrors,
 	IWebhooksDeleteRequest,
 	IWebhooksDeleteErrors,
+	IWebhooksTestRequest,
+	IWebhooksTestErrors,
 	InviteCreateResponse,
 	InviteCreateErrors,
 	InviteDeleteRequest,
@@ -777,6 +785,7 @@ import type {
 	FlashCreateErrors,
 	FlashDeleteRequest,
 	FlashDeleteErrors,
+	FlashFeaturedRequest,
 	FlashFeaturedResponse,
 	FlashFeaturedErrors,
 	FlashLikeRequest,
@@ -1018,6 +1027,8 @@ export type Endpoints = {
 	'admin/relays/remove': { req: AdminRelaysRemoveRequest; res: EmptyResponse; errors: AdminRelaysRemoveErrors };
 	'admin/reset-password': { req: AdminResetPasswordRequest; res: AdminResetPasswordResponse; errors: AdminResetPasswordErrors };
 	'admin/resolve-abuse-user-report': { req: AdminResolveAbuseUserReportRequest; res: EmptyResponse; errors: AdminResolveAbuseUserReportErrors };
+	'admin/forward-abuse-user-report': { req: AdminForwardAbuseUserReportRequest; res: EmptyResponse; errors: AdminForwardAbuseUserReportErrors };
+	'admin/update-abuse-user-report': { req: AdminUpdateAbuseUserReportRequest; res: EmptyResponse; errors: AdminUpdateAbuseUserReportErrors };
 	'admin/send-email': { req: AdminSendEmailRequest; res: EmptyResponse; errors: AdminSendEmailErrors };
 	'admin/server-info': { req: EmptyRequest; res: AdminServerInfoResponse; errors: AdminServerInfoErrors };
 	'admin/show-moderation-logs': { req: AdminShowModerationLogsRequest; res: AdminShowModerationLogsResponse; errors: AdminShowModerationLogsErrors };
@@ -1042,6 +1053,7 @@ export type Endpoints = {
 	'admin/system-webhook/list': { req: AdminSystemWebhookListRequest; res: AdminSystemWebhookListResponse; errors: AdminSystemWebhookListErrors };
 	'admin/system-webhook/show': { req: AdminSystemWebhookShowRequest; res: AdminSystemWebhookShowResponse; errors: AdminSystemWebhookShowErrors };
 	'admin/system-webhook/update': { req: AdminSystemWebhookUpdateRequest; res: AdminSystemWebhookUpdateResponse; errors: AdminSystemWebhookUpdateErrors };
+	'admin/system-webhook/test': { req: AdminSystemWebhookTestRequest; res: EmptyResponse; errors: AdminSystemWebhookTestErrors };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse; errors: AnnouncementsErrors };
 	'announcements/show': { req: AnnouncementsShowRequest; res: AnnouncementsShowResponse; errors: AnnouncementsShowErrors };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse; errors: AntennasCreateErrors };
@@ -1208,6 +1220,7 @@ export type Endpoints = {
 	'i/webhooks/show': { req: IWebhooksShowRequest; res: IWebhooksShowResponse; errors: IWebhooksShowErrors };
 	'i/webhooks/update': { req: IWebhooksUpdateRequest; res: EmptyResponse; errors: IWebhooksUpdateErrors };
 	'i/webhooks/delete': { req: IWebhooksDeleteRequest; res: EmptyResponse; errors: IWebhooksDeleteErrors };
+	'i/webhooks/test': { req: IWebhooksTestRequest; res: EmptyResponse; errors: IWebhooksTestErrors };
 	'invite/create': { req: EmptyRequest; res: InviteCreateResponse; errors: InviteCreateErrors };
 	'invite/delete': { req: InviteDeleteRequest; res: EmptyResponse; errors: InviteDeleteErrors };
 	'invite/list': { req: InviteListRequest; res: InviteListResponse; errors: InviteListErrors };
@@ -1267,7 +1280,7 @@ export type Endpoints = {
 	'pages/update': { req: PagesUpdateRequest; res: EmptyResponse; errors: PagesUpdateErrors };
 	'flash/create': { req: FlashCreateRequest; res: FlashCreateResponse; errors: FlashCreateErrors };
 	'flash/delete': { req: FlashDeleteRequest; res: EmptyResponse; errors: FlashDeleteErrors };
-	'flash/featured': { req: EmptyRequest; res: FlashFeaturedResponse; errors: FlashFeaturedErrors };
+	'flash/featured': { req: FlashFeaturedRequest; res: FlashFeaturedResponse; errors: FlashFeaturedErrors };
 	'flash/like': { req: FlashLikeRequest; res: EmptyResponse; errors: FlashLikeErrors };
 	'flash/show': { req: FlashShowRequest; res: FlashShowResponse; errors: FlashShowErrors };
 	'flash/unlike': { req: FlashUnlikeRequest; res: EmptyResponse; errors: FlashUnlikeErrors };
@@ -1336,3 +1349,10 @@ export type Endpoints = {
 	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse; errors: ReversiSurrenderErrors };
 	'reversi/verify': { req: ReversiVerifyRequest; res: ReversiVerifyResponse; errors: ReversiVerifyErrors };
 }
+
+/**
+ * NOTE: The content-type for all endpoints not listed here is application/json.
+ */
+export const endpointReqTypes = {
+	'drive/files/create': 'multipart/form-data',
+} as const satisfies { [K in keyof Endpoints]?: 'multipart/form-data'; };

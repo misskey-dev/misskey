@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FORCE_REMOUNT } from '@storybook/core-events';
+import { FORCE_RE_RENDER, FORCE_REMOUNT } from '@storybook/core-events';
 import { addons } from '@storybook/preview-api';
 import { type Preview, setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
@@ -16,7 +16,7 @@ import '../src/style.scss';
 
 const appInitialized = Symbol();
 
-let lastStory = null;
+let lastStory: string | null = null;
 let moduleInitialized = false;
 let unobserve = () => {};
 let misskeyOS = null;
@@ -110,7 +110,7 @@ const preview = {
 				}).catch(() => {});
 				Promise.all([resetIndexedDBPromise, resetDefaultStorePromise]).then(() => {
 					initLocalStorage();
-					channel.emit(FORCE_REMOUNT, { storyId: context.id });
+					channel.emit(FORCE_RE_RENDER, { storyId: context.id });
 				});
 			}
 			const story = Story();

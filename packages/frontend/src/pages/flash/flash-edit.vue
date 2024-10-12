@@ -11,6 +11,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts._play.title }}</template>
 			</MkInput>
+			<MkSelect v-model="visibility">
+				<template #label>{{ i18n.ts.visibility }}</template>
+				<template #caption>{{ i18n.ts._play.visibilityDescription }}</template>
+				<option :key="'public'" :value="'public'">{{ i18n.ts.public }}</option>
+				<option :key="'private'" :value="'private'">{{ i18n.ts.private }}</option>
+			</MkSelect>
 			<MkTextarea v-model="summary" :mfmAutocomplete="true" :mfmPreview="true">
 				<template #label>{{ i18n.ts._play.summary }}</template>
 			</MkTextarea>
@@ -18,25 +24,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkCodeEditor v-model="script" lang="is">
 				<template #label>{{ i18n.ts._play.script }}</template>
 			</MkCodeEditor>
-			<MkSelect v-model="visibility">
-				<template #label>{{ i18n.ts.visibility }}</template>
-				<template #caption>{{ i18n.ts._play.visibilityDescription }}</template>
-				<option :key="'public'" :value="'public'">{{ i18n.ts.public }}</option>
-				<option :key="'private'" :value="'private'">{{ i18n.ts.private }}</option>
-			</MkSelect>
-			<div class="_buttons">
-				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
-				<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-			</div>
 		</div>
 	</MkSpacer>
+	<template #footer>
+		<div :class="$style.footer">
+			<MkSpacer>
+				<div class="_buttons">
+					<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+					<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
+					<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				</div>
+			</MkSpacer>
+		</div>
+	</template>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { AISCRIPT_VERSION } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -48,7 +55,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { useRouter } from '@/router/supplier.js';
 
-const PRESET_DEFAULT = `/// @ 0.18.0
+const PRESET_DEFAULT = `/// @ ${AISCRIPT_VERSION}
 
 var name = ""
 
@@ -66,7 +73,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_OMIKUJI = `/// @ 0.18.0
+const PRESET_OMIKUJI = `/// @ ${AISCRIPT_VERSION}
 // ユーザーごとに日替わりのおみくじのプリセット
 
 // 選択肢
@@ -109,7 +116,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_SHUFFLE = `/// @ 0.18.0
+const PRESET_SHUFFLE = `/// @ ${AISCRIPT_VERSION}
 // 巻き戻し可能な文字シャッフルのプリセット
 
 let string = "ペペロンチーノ"
@@ -188,7 +195,7 @@ var cursor = 0
 do()
 `;
 
-const PRESET_QUIZ = `/// @ 0.18.0
+const PRESET_QUIZ = `/// @ ${AISCRIPT_VERSION}
 let title = '地理クイズ'
 
 let qas = [{
@@ -301,7 +308,7 @@ qaEls.push(Ui:C:container({
 Ui:render(qaEls)
 `;
 
-const PRESET_TIMELINE = `/// @ 0.18.0
+const PRESET_TIMELINE = `/// @ ${AISCRIPT_VERSION}
 // APIリクエストを行いローカルタイムラインを表示するプリセット
 
 @fetch() {
@@ -368,7 +375,6 @@ const props = defineProps<{
 }>();
 
 const flash = ref<Misskey.entities.Flash | null>(null);
-const visibility = ref<'private' | 'public'>('public');
 
 if (props.id) {
 	flash.value = await misskeyApi('flash/show', {
@@ -379,6 +385,7 @@ if (props.id) {
 const title = ref(flash.value?.title ?? 'New Play');
 const summary = ref(flash.value?.summary ?? '');
 const permissions = ref(flash.value?.permissions ?? []);
+const visibility = ref<'private' | 'public'>(flash.value?.visibility ?? 'public');
 const script = ref(flash.value?.script ?? PRESET_DEFAULT);
 
 function selectPreset(ev: MouseEvent) {
@@ -458,3 +465,10 @@ definePageMetadata(() => ({
 	title: flash.value ? `${i18n.ts._play.edit}: ${flash.value.title}` : i18n.ts._play.new,
 }));
 </script>
+<style lang="scss" module>
+.footer {
+	backdrop-filter: var(--MI-blur, blur(15px));
+	background: var(--MI_THEME-acrylicBg);
+	border-top: solid .5px var(--MI_THEME-divider);
+}
+</style>

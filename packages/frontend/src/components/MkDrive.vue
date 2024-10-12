@@ -52,6 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:selectMode="select === 'folder'"
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
 					@chosen="chooseFolder"
+					@unchose="unchoseFolder"
 					@move="move"
 					@upload="upload"
 					@removeFile="removeFile"
@@ -428,6 +429,11 @@ function chooseFolder(folderToChoose: Misskey.entities.DriveFolder) {
 	}
 }
 
+function unchoseFolder(folderToUnchose: Misskey.entities.DriveFolder) {
+	selectedFolders.value = selectedFolders.value.filter(f => f.id !== folderToUnchose.id);
+	emit('change-selection', selectedFolders.value);
+}
+
 function move(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id' | 'parentId']) {
 	if (!target) {
 		goRoot();
@@ -614,7 +620,9 @@ function fetchMoreFiles() {
 }
 
 function getMenu() {
-	const menu: MenuItem[] = [{
+	const menu: MenuItem[] = [];
+
+	menu.push({
 		type: 'switch',
 		text: i18n.ts.keepOriginalUploading,
 		ref: keepOriginal,
@@ -632,19 +640,25 @@ function getMenu() {
 	}, { type: 'divider' }, {
 		text: folder.value ? folder.value.name : i18n.ts.drive,
 		type: 'label',
-	}, folder.value ? {
-		text: i18n.ts.renameFolder,
-		icon: 'ti ti-forms',
-		action: () => { if (folder.value) renameFolder(folder.value); },
-	} : undefined, folder.value ? {
-		text: i18n.ts.deleteFolder,
-		icon: 'ti ti-trash',
-		action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); },
-	} : undefined, {
+	});
+
+	if (folder.value) {
+		menu.push({
+			text: i18n.ts.renameFolder,
+			icon: 'ti ti-forms',
+			action: () => { if (folder.value) renameFolder(folder.value); },
+		}, {
+			text: i18n.ts.deleteFolder,
+			icon: 'ti ti-trash',
+			action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); },
+		});
+	}
+
+	menu.push({
 		text: i18n.ts.createFolder,
 		icon: 'ti ti-folder-plus',
 		action: () => { createFolder(); },
-	}];
+	});
 
 	return menu;
 }
@@ -707,7 +721,7 @@ onBeforeUnmount(() => {
 	box-sizing: border-box;
 	overflow: auto;
 	font-size: 0.9em;
-	box-shadow: 0 1px 0 var(--divider);
+	box-shadow: 0 1px 0 var(--MI_THEME-divider);
 	user-select: none;
 }
 
@@ -754,7 +768,7 @@ onBeforeUnmount(() => {
 .main {
 	flex: 1;
 	overflow: auto;
-	padding: var(--margin);
+	padding: var(--MI-margin);
 	user-select: none;
 
 	&.fetching {
@@ -801,7 +815,7 @@ onBeforeUnmount(() => {
 	top: 38px;
 	width: 100%;
 	height: calc(100% - 38px);
-	border: dashed 2px var(--focus);
+	border: dashed 2px var(--MI_THEME-focus);
 	pointer-events: none;
 }
 </style>

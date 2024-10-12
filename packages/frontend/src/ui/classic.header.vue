@@ -71,11 +71,12 @@ const otherNavItemIndicated = computed<boolean>(() => {
 });
 
 function more(ev: MouseEvent) {
-	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
 		src: ev.currentTarget ?? ev.target,
 		anchor: { x: 'center', y: 'bottom' },
 	}, {
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 
 function openAccountMenu(ev: MouseEvent) {
@@ -103,7 +104,7 @@ onMounted(() => {
 	z-index: 1000;
 	width: 100%;
 	height: $height;
-	background-color: var(--bg);
+	background-color: var(--MI_THEME-bg);
 
 	> .body {
 		max-width: 1380px;
@@ -139,18 +140,18 @@ onMounted(() => {
 					position: absolute;
 					top: 0;
 					left: 0;
-					color: var(--navIndicator);
+					color: var(--MI_THEME-navIndicator);
 					font-size: 8px;
 					animation: global-blink 1s infinite;
 				}
 
 				&:hover {
 					text-decoration: none;
-					color: var(--navHoverFg);
+					color: var(--MI_THEME-navHoverFg);
 				}
 
 				&.active {
-					color: var(--navActive);
+					color: var(--MI_THEME-navActive);
 				}
 			}
 
@@ -158,7 +159,7 @@ onMounted(() => {
 				display: inline-block;
 				height: 16px;
 				margin: 0 10px;
-				border-right: solid 0.5px var(--divider);
+				border-right: solid 0.5px var(--MI_THEME-divider);
 			}
 
 			> .instance {

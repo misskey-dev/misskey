@@ -20,7 +20,14 @@ async function generateBaseTypes(
 	}
 	lines.push('');
 
-	const generatedTypes = await openapiTS(openApiJsonPath, { exportType: true });
+	const generatedTypes = await openapiTS(openApiJsonPath, {
+		exportType: true,
+		transform(schemaObject) {
+			if ('format' in schemaObject && schemaObject.format === 'binary') {
+				return schemaObject.nullable ? 'Blob | null' : 'Blob';
+			}
+		},
+	});
 	lines.push(generatedTypes);
 	lines.push('');
 
@@ -153,6 +160,8 @@ async function generateEndpoints(
 	endpointOutputPath: string,
 ) {
 	const endpoints: Endpoint[] = [];
+	const endpointReqMediaTypes: EndpointReqMediaType[] = [];
+	const endpointReqMediaTypesSet = new Set<string>();
 
 	const postPathItems = getEndpoints(openApiDocs);
 
@@ -168,12 +177,19 @@ async function generateEndpoints(
 			const supportMediaTypes = Object.keys(reqContent);
 			if (supportMediaTypes.length > 0) {
 				// いまのところ複数のメディアタイプをとるエンドポイントは無いので決め打ちする
-				endpoint.request = new OperationTypeAlias(
+				const req = new OperationTypeAlias(
 					operationId,
 					path,
 					supportMediaTypes[0],
 					OperationsAliasType.REQUEST,
 				);
+				endpoint.request = req;
+
+				const reqType = new EndpointReqMediaType(path, req);
+				if (reqType.getMediaType() !== 'application/json') {
+					endpointReqMediaTypesSet.add(reqType.getMediaType());
+					endpointReqMediaTypes.push(reqType);
+				}
 			}
 		}
 
@@ -242,6 +258,22 @@ async function generateEndpoints(
 		...endpoints.map(it => '\t' + it.toLine()),
 	);
 	endpointOutputLine.push('}');
+	endpointOutputLine.push('');
+
+	function generateEndpointReqMediaTypesType() {
+		return `{ [K in keyof Endpoints]?: ${[...endpointReqMediaTypesSet].map((t) => `'${t}'`).join(' | ')}; }`;
+	}
+
+	endpointOutputLine.push(`/**
+ * NOTE: The content-type for all endpoints not listed here is application/json.
+ */`);
+	endpointOutputLine.push('export const endpointReqTypes = {');
+
+	endpointOutputLine.push(
+		...endpointReqMediaTypes.map(it => '\t' + it.toLine()),
+	);
+
+	endpointOutputLine.push(`} as const satisfies ${generateEndpointReqMediaTypesType()};`);
 	endpointOutputLine.push('');
 
 	await writeFile(endpointOutputPath, endpointOutputLine.join('\n'));
@@ -428,6 +460,26 @@ class Endpoint {
 		const errorsName = this.errors?.generateName() ?? emptyErrors.generateName();
 
 		return `'${this.path}': { req: ${reqName}; res: ${resName}; errors: ${errorsName} };`;
+	}
+}
+
+class EndpointReqMediaType {
+	public readonly path: string;
+	public readonly mediaType: string;
+
+	constructor(path: string, request: OperationTypeAlias, mediaType?: undefined);
+	constructor(path: string, request: undefined, mediaType: string);
+	constructor(path: string, request: OperationTypeAlias | undefined, mediaType?: string) {
+		this.path = path;
+		this.mediaType = mediaType ?? request?.mediaType ?? 'application/json';
+	}
+
+	getMediaType(): string {
+		return this.mediaType;
+	}
+
+	toLine(): string {
+		return `'${this.path}': '${this.mediaType}',`;
 	}
 }
 
