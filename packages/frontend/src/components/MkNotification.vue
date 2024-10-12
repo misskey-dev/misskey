@@ -11,8 +11,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'" :class="[$style.icon, $style.icon_reactionGroupHeart]"><i class="ti ti-heart" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'reaction:grouped'" :class="[$style.icon, $style.icon_reactionGroup]"><i class="ti ti-plus" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'renote:grouped'" :class="[$style.icon, $style.icon_renoteGroup]"><i class="ti ti-repeat" style="line-height: 1;"></i></div>
-		<img v-else-if="notification.type === 'adminInactiveModeratorsWarning'" :class="$style.icon" alt="" :src="'/client-assets/mi.png'"/>
-		<img v-else-if="notification.type === 'adminInactiveModeratorsInvitationOnlyChanged'" :class="$style.icon" alt="" :src="'/client-assets/mi.png'"/>
 		<img v-else-if="notification.type === 'test'" :class="$style.icon" :src="infoImageUrl"/>
 		<MkAvatar v-else-if="'user' in notification" :class="$style.icon" :user="notification.user" link preview/>
 		<img v-else-if="'icon' in notification && notification.icon != null" :class="[$style.icon, $style.icon_app]" :src="notification.icon" alt=""/>
@@ -69,8 +67,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'">{{ i18n.tsx._notification.likedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.tsx._notification.reactedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'renote:grouped'">{{ i18n.tsx._notification.renotedBySomeUsers({ n: notification.users.length }) }}</span>
-			<span v-else-if="notification.type === 'adminInactiveModeratorsWarning'">{{ i18n.ts._notification.fromSystem }}</span>
-			<span v-else-if="notification.type === 'adminInactiveModeratorsInvitationOnlyChanged'">{{ i18n.ts._notification.fromSystem }}</span>
 			<span v-else-if="notification.type === 'app'">{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
 		</header>
@@ -132,19 +128,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'test'" :class="$style.text">{{ i18n.ts._notification.notificationWillBeDisplayedLikeThis }}</span>
 			<span v-else-if="notification.type === 'app'" :class="$style.text">
 				<Mfm :text="notification.body" :nowrap="false"/>
-			</span>
-
-			<span v-else-if="notification.type === 'adminInactiveModeratorsWarning'" :class="$style.text">
-				{{
-					i18n.tsx._notification.adminInactiveModeratorsWarning({
-						timeVariant: notification.remainingTime.asDays === 0
-							? i18n.tsx._timeIn.hours({ n: notification.remainingTime.asHours })
-							: i18n.tsx._timeIn.days({ n: notification.remainingTime.asDays })
-					})
-				}}
-			</span>
-			<span v-else-if="notification.type === 'adminInactiveModeratorsInvitationOnlyChanged'" :class="$style.text">
-				{{ i18n.ts._notification.adminInactiveModeratorsInvitationOnlyChanged }}
 			</span>
 
 			<div v-if="notification.type === 'reaction:grouped'">

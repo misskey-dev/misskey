@@ -59,7 +59,7 @@ export class NotificationEntityService implements OnModuleInit {
 	async #packInternal <T extends MiNotification | MiGroupedNotification> (
 		src: T,
 		meId: MiUser['id'],
-
+		 
 		options: {
 			checkValidNotifier?: boolean;
 		},
@@ -174,9 +174,6 @@ export class NotificationEntityService implements OnModuleInit {
 				header: notification.customHeader,
 				icon: notification.customIcon,
 			} : {}),
-			...(notification.type === 'adminInactiveModeratorsWarning' ? {
-				remainingTime: notification.remainingTime,
-			} : {}),
 		});
 	}
 
@@ -239,7 +236,7 @@ export class NotificationEntityService implements OnModuleInit {
 	public async pack(
 		src: MiNotification | MiGroupedNotification,
 		meId: MiUser['id'],
-
+		 
 		options: {
 			checkValidNotifier?: boolean;
 		},

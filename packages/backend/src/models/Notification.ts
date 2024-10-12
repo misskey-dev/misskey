@@ -4,7 +4,6 @@
  */
 
 import { userExportableEntities } from '@/types.js';
-import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 import { MiUser } from './User.js';
 import { MiNote } from './Note.js';
 import { MiAccessToken } from './AccessToken.js';
@@ -117,15 +116,6 @@ export type MiNotification = {
 	 * アプリ通知のアプリ(のトークン)
 	 */
 	appAccessTokenId: MiAccessToken['id'] | null;
-} | {
-	type: 'adminInactiveModeratorsWarning';
-	id: string;
-	createdAt: string;
-	remainingTime: ModeratorInactivityRemainingTime;
-} | {
-	type: 'adminInactiveModeratorsInvitationOnlyChanged';
-	id: string;
-	createdAt: string;
 } | {
 	type: 'test';
 	id: string;

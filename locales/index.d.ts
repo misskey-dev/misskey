@@ -9326,18 +9326,6 @@ export interface Locale extends ILocale {
          * ログインがありました
          */
         "login": string;
-        /**
-         * システムからの通知
-         */
-        "fromSystem": string;
-        /**
-         * モデレーターが一定期間非アクティブになっています。{timeVariant}まで非アクティブな状態が続くと招待制に切り替わります。
-         */
-        "adminInactiveModeratorsWarning": ParameterizedString<"timeVariant">;
-        /**
-         * モデレーターが一定期間非アクティブだったため、システムにより招待制へと変更されました。
-         */
-        "adminInactiveModeratorsInvitationOnlyChanged": string;
         "_types": {
             /**
              * すべて
@@ -9645,14 +9633,6 @@ export interface Locale extends ILocale {
              * ユーザーが作成されたとき
              */
             "userCreated": string;
-            /**
-             * モデレーターが一定期間非アクティブになったとき
-             */
-            "inactiveModeratorsWarning": string;
-            /**
-             * モデレーターが一定期間非アクティブだったため、システムにより招待制へと変更されたとき
-             */
-            "inactiveModeratorsInvitationOnlyChanged": string;
         };
         /**
          * Webhookを削除しますか？

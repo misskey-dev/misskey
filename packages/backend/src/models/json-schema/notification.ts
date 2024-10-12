@@ -419,43 +419,6 @@ export const packedNotificationSchema = {
 			type: {
 				type: 'string',
 				optional: false, nullable: false,
-				enum: ['adminInactiveModeratorsWarning'],
-			},
-			remainingTime: {
-				type: 'object',
-				properties: {
-					time: {
-						type: 'number',
-						optional: false, nullable: false,
-					},
-					asDays: {
-						type: 'number',
-						optional: false, nullable: false,
-					},
-					asHours: {
-						type: 'number',
-						optional: false, nullable: false,
-					},
-				},
-			},
-		},
-	}, {
-		type: 'object',
-		properties: {
-			...baseSchema.properties,
-			type: {
-				type: 'string',
-				optional: false, nullable: false,
-				enum: ['adminInactiveModeratorsInvitationOnlyChanged'],
-			},
-		},
-	}, {
-		type: 'object',
-		properties: {
-			...baseSchema.properties,
-			type: {
-				type: 'string',
-				optional: false, nullable: false,
 				enum: ['test'],
 			},
 		},
