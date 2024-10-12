@@ -9,8 +9,7 @@ cd packages/backend/test-federation
 
 First, you need to start servers by executing following commands:
 ```sh
-cp ./.config/example.docker.env ./.config/docker.env
-bash ./generate.sh
+bash ./setup.sh
 docker compose up --scale tester=0
 ```
 

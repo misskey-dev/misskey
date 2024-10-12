@@ -26,6 +26,7 @@ function generate {
     -passin pass:rootCA \
     -out certificates/$1.crt \
     -days 500
+  if [ ! -f .config/docker.env ]; then cp .config/example.docker.env .config/docker.env; fi
   if [ ! -f .config/$1.conf ]; then sed "s/\${HOST}/$1/g" .config/example.conf > .config/$1.conf; fi
   if [ ! -f .config/$1.default.yml ]; then sed "s/\${HOST}/$1/g" .config/example.default.yml > .config/$1.default.yml; fi
 }
