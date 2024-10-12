@@ -230,19 +230,25 @@ export async function mainBoot() {
 			claimAchievement('collectAchievements30');
 		}
 
-		window.setInterval(() => {
-			if (Math.floor(Math.random() * 20000) === 0) {
-				claimAchievement('justPlainLucky');
-			}
-		}, 1000 * 10);
+		if (!claimedAchievements.includes('justPlainLucky')) {
+			window.setInterval(() => {
+				if (Math.floor(Math.random() * 20000) === 0) {
+					claimAchievement('justPlainLucky');
+				}
+			}, 1000 * 10);
+		}
 
-		window.setTimeout(() => {
-			claimAchievement('client30min');
-		}, 1000 * 60 * 30);
+		if (!claimedAchievements.includes('client30min')) {
+			window.setTimeout(() => {
+				claimAchievement('client30min');
+			}, 1000 * 60 * 30);
+		}
 
-		window.setTimeout(() => {
-			claimAchievement('client60min');
-		}, 1000 * 60 * 60);
+		if (!claimedAchievements.includes('client60min')) {
+			window.setTimeout(() => {
+				claimAchievement('client60min');
+			}, 1000 * 60 * 60);
+		}
 
 		// 邪魔
 		//const lastUsed = miLocalStorage.getItem('lastUsed');

@@ -202,7 +202,7 @@ function show() {
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 
 	&:empty {
 		display: none;
@@ -220,8 +220,8 @@ function show() {
 
 	&.focused {
 		> .inputCore {
-			border-color: var(--accent) !important;
-			//box-shadow: 0 0 0 4px var(--focus);
+			border-color: var(--MI_THEME-accent) !important;
+			//box-shadow: 0 0 0 4px var(--MI_THEME-focus);
 		}
 	}
 
@@ -240,7 +240,7 @@ function show() {
 
 	&:hover {
 		> .inputCore {
-			border-color: var(--inputBorderHover) !important;
+			border-color: var(--MI_THEME-inputBorderHover) !important;
 		}
 	}
 }
@@ -256,9 +256,9 @@ function show() {
 	font: inherit;
 	font-weight: normal;
 	font-size: 1em;
-	color: var(--fg);
-	background: var(--panel);
-	border: solid 1px var(--panel);
+	color: var(--MI_THEME-fg);
+	background: var(--MI_THEME-panel);
+	border: solid 1px var(--MI_THEME-panel);
 	border-radius: 6px;
 	outline: none;
 	box-shadow: none;

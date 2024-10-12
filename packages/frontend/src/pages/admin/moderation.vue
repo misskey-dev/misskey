@@ -12,6 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_m">
 					<MkSwitch v-model="enableRegistration" @change="onChange_enableRegistration">
 						<template #label>{{ i18n.ts.enableRegistration }}</template>
+						<template #caption>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</template>
 					</MkSwitch>
 
 					<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">
