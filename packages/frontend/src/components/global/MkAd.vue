@@ -30,12 +30,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</component>
 	</div>
 	<div v-else :class="$style.menu">
-		<div :class="$style.menuContainer">
-			<div>Ads by {{ host }}</div>
-			<!--<MkButton class="button" primary>{{ i18n.ts._ad.like }}</MkButton>-->
-			<MkButton v-if="chosen.ratio !== 0" :class="$style.menuButton" @click="reduceFrequency">{{ i18n.ts._ad.reduceFrequencyOfThisAd }}</MkButton>
-			<button class="_textButton" @click="toggleMenu">{{ i18n.ts._ad.back }}</button>
-		</div>
+		<div>Ads by {{ host }}</div>
+		<!--<MkButton class="button" primary>{{ i18n.ts._ad.like }}</MkButton>-->
+		<MkButton v-if="chosen.ratio !== 0" :class="$style.menuButton" @click="reduceFrequency">{{ i18n.ts._ad.reduceFrequencyOfThisAd }}</MkButton>
+		<button class="_textButton" @click="toggleMenu">{{ i18n.ts._ad.back }}</button>
 	</div>
 </div>
 <div v-else></div>
@@ -123,8 +121,7 @@ function reduceFrequency(): void {
 
 <style lang="scss" module>
 .root {
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--bg) 8px, var(--bg) 14px );
+
 }
 
 .main {
@@ -202,14 +199,11 @@ function reduceFrequency(): void {
 }
 
 .menu {
-	padding: 8px;
 	text-align: center;
-}
-
-.menuContainer {
 	padding: 8px;
 	margin: 0 auto;
 	max-width: 400px;
+	background: var(--MI_THEME-panel);
 	border: solid 1px var(--MI_THEME-divider);
 }
 
