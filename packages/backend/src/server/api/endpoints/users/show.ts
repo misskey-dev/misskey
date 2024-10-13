@@ -106,6 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: In(ps.userIds),
 				} : {
 					id: In(ps.userIds),
+					isDeleted: false,
 					isSuspended: false,
 				});
 
@@ -135,7 +136,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					user = await this.usersRepository.findOneBy(q);
 				}
 
-				if (user == null || (!isModerator && user.isSuspended)) {
+				if (user == null || (!isModerator && (user.isDeleted || user.isSuspended))) {
 					throw new ApiError(meta.errors.noSuchUser);
 				}
 
