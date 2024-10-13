@@ -1205,7 +1205,6 @@ _theme:
     buttonBg: "Tło przycisku"
     buttonHoverBg: "Tło przycisku (po najechaniu)"
     inputBorder: "Obramowanie pola wejścia"
-    listItemHoverBg: "Tło elementu listy (po najechaniu)"
     driveFolderBg: "Tło folderu na dysku"
     wallpaperOverlay: "Nakładka tapety"
     badge: "Odznaka"

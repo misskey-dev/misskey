@@ -226,7 +226,7 @@ export async function openAccountMenu(opts: {
 
 	function showSigninDialog() {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
-			done: res => {
+			done: (res: Misskey.entities.SigninFlowResponse & { finished: true }) => {
 				addAccount(res.id, res.i);
 				success();
 			},
@@ -236,9 +236,9 @@ export async function openAccountMenu(opts: {
 
 	function createAccount() {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSignupDialog.vue')), {}, {
-			done: res => {
-				addAccount(res.id, res.i);
-				switchAccountWithToken(res.i);
+			done: (res: Misskey.entities.SignupResponse) => {
+				addAccount(res.id, res.token);
+				switchAccountWithToken(res.token);
 			},
 			closed: () => dispose(),
 		});

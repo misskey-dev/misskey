@@ -305,7 +305,7 @@ body {
 .root {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
-	--margin: var(--marginHalf);
+	--MI-margin: var(--MI-marginHalf);
 
 	--columnGap: 6px;
 
@@ -332,7 +332,7 @@ body {
 	overflow-x: auto;
 	overflow-y: clip;
 	overscroll-behavior: contain;
-	background: var(--deckBg);
+	background: var(--MI_THEME-deckBg);
 
 	&.center {
 		> .section:first-of-type {
@@ -414,7 +414,7 @@ body {
 	contain: strict;
 	overflow: auto;
 	overscroll-behavior: contain;
-	background: var(--navBg);
+	background: var(--MI_THEME-navBg);
 }
 
 .nav {
@@ -428,10 +428,10 @@ body {
 	grid-gap: 8px;
 	width: 100%;
 	box-sizing: border-box;
-	-webkit-backdrop-filter: var(--blur, blur(32px));
-	backdrop-filter: var(--blur, blur(32px));
-	background-color: var(--header);
-	border-top: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--MI-blur, blur(32px));
+	backdrop-filter: var(--MI-blur, blur(32px));
+	background-color: var(--MI_THEME-header);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 .navButton {
@@ -442,29 +442,29 @@ body {
 	max-width: 60px;
 	margin: auto;
 	border-radius: 100%;
-	background: var(--panel);
-	color: var(--fg);
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
 
 	&:hover {
-		background: var(--panelHighlight);
+		background: var(--MI_THEME-panelHighlight);
 	}
 
 	&:active {
-		background: hsl(from var(--panel) h s calc(l - 2));
+		background: hsl(from var(--MI_THEME-panel) h s calc(l - 2));
 	}
 }
 
 .postButton {
 	composes: navButton;
-	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-	color: var(--fgOnAccent);
+	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
+	color: var(--MI_THEME-fgOnAccent);
 
 	&:hover {
-		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 	}
 
 	&:active {
-		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 	}
 }
 
@@ -477,7 +477,7 @@ body {
 	position: absolute;
 	top: 0;
 	left: 0;
-	color: var(--indicator);
+	color: var(--MI_THEME-indicator);
 	font-size: 16px;
 	animation: global-blink 1s infinite;
 

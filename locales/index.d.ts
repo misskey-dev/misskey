@@ -5174,6 +5174,10 @@ export interface Locale extends ILocale {
      * 対象
      */
     "target": string;
+    /**
+     * CAPTCHAのテストを目的とした機能です。<strong>本番環境で使用しないでください。</strong>
+     */
+    "testCaptchaWarning": string;
     "_abuseUserReport": {
         /**
          * 転送
@@ -5704,6 +5708,10 @@ export interface Locale extends ILocale {
          * サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。
          */
         "inquiryUrlDescription": string;
+        /**
+         * 一定期間モデレーターのアクティビティが検出されなかった場合、スパム防止のためこの設定は自動でオフになります。
+         */
+        "thisSettingWillAutomaticallyOffWhenModeratorsInactive": string;
     };
     "_accountMigration": {
         /**
@@ -7725,10 +7733,6 @@ export interface Locale extends ILocale {
              * 入力ボックスの縁取り
              */
             "inputBorder": string;
-            /**
-             * リスト項目の背景 (ホバー)
-             */
-            "listItemHoverBg": string;
             /**
              * ドライブフォルダーの背景
              */
