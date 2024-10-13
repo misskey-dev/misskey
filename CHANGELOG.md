@@ -5,8 +5,8 @@
 詳細な経緯は https://github.com/misskey-dev/misskey/issues/13437 をご確認ください。
 
 ### Client
-- Enhance: アーカイブした個人宛のお知らせを表示・編集できるように
 - Enhance: l10nの更新
+- Enhance: アーカイブした個人宛のお知らせを表示・編集できるように
 - Fix: メールアドレス不要でCaptchaが有効な場合にアカウント登録完了後自動でのログインに失敗する問題を修正
 
 ### Server
