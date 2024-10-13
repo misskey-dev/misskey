@@ -210,7 +210,7 @@ export class AnnouncementService {
 		}
 
 		const announcement = await this.announcementsRepository.findOneBy({ id: announcementId });
-		if (announcement && announcement.userId === user.id) {
+		if (announcement != null && announcement.userId === user.id) {
 			await this.announcementsRepository.update(announcementId, {
 				isActive: false,
 			});
