@@ -214,7 +214,7 @@ export class CheckModeratorsActivityProcessorService {
 
 	@bindThis
 	public async notifyInactiveModeratorsWarning(remainingTime: ModeratorInactivityRemainingTime) {
-		// -- モデレータへのメールとお知らせ（個人向け）送信
+		// -- モデレータへのメール送信
 
 		const moderators = await this.fetchModerators();
 		const moderatorProfiles = await this.userProfilesRepository
