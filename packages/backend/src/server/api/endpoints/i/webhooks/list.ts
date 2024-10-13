@@ -9,6 +9,7 @@ import { webhookEventTypes } from '@/models/Webhook.js';
 import type { WebhooksRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 
+// TODO: UserWebhook schemaの適用
 export const meta = {
 	tags: ['webhooks', 'account'],
 

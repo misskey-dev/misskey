@@ -7,12 +7,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import type { WebhooksRepository } from '@/models/_.js';
-import { webhookEventTypes, WebhookEventType } from '@/models/Webhook.js';
+import { webhookEventTypes, WebhookEventTypes } from '@/models/Webhook.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '@/server/api/error.js';
 
+// TODO: UserWebhook schemaの適用
 export const meta = {
 	tags: ['webhooks'],
 
@@ -111,7 +112,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				name: ps.name,
 				url: ps.url,
 				secret: ps.secret,
-				on: ps.on as WebhookEventType[],
+				on: ps.on as WebhookEventTypes[],
 			});
 
 			this.globalEventService.publishInternalEvent('webhookCreated', webhook);
