@@ -116,9 +116,9 @@ export const meta = {
 			id: '8feff0ba-5ab5-585b-31f4-4df816663fad',
 		},
 
-		screenNameContainsProhibitedWords: {
-			message: 'Screen name contains prohibited words.',
-			code: 'SCREEN_NAME_CONTAINS_PROHIBITED_WORDS',
+		nameContainsProhibitedWords: {
+			message: 'Your new name contains prohibited words.',
+			code: 'YOUR_NAME_CONTAINS_PROHIBITED_WORDS',
 			id: '0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191',
 			httpStatusCode: 422,
 		},
@@ -463,10 +463,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (newName != null) {
 				let hasProhibitedWords = false;
 				if (!await this.roleService.isModerator(user)) {
-					hasProhibitedWords = this.utilityService.isKeyWordIncluded(newName, this.instanceMeta.prohibitedPartialScreenNames);
+					hasProhibitedWords = this.utilityService.isKeyWordIncluded(newName, this.instanceMeta.prohibitedWordsForNameOfUser);
 				}
 				if (hasProhibitedWords) {
-					throw new ApiError(meta.errors.screenNameContainsProhibitedWords);
+					throw new ApiError(meta.errors.nameContainsProhibitedWords);
 				}
 
 				const tokens = mfm.parseSimple(newName);

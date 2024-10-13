@@ -59,13 +59,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<MkFolder>
 						<template #icon><i class="ti ti-user-x"></i></template>
-						<template #label>{{ i18n.ts.prohibitedPartialScreenNames }}</template>
+						<template #label>{{ i18n.ts.prohibitedWordsForNameOfUser }}</template>
 
 						<div class="_gaps">
-							<MkTextarea v-model="prohibitedPartialScreenNames">
-								<template #caption>{{ i18n.ts.prohibitedPartialScreenNamesDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
+							<MkTextarea v-model="prohibitedWordsForNameOfUser">
+								<template #caption>{{ i18n.ts.prohibitedWordsForNameOfUserDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
 							</MkTextarea>
-							<MkButton primary @click="save_prohibitedPartialScreenNames">{{ i18n.ts.save }}</MkButton>
+							<MkButton primary @click="save_prohibitedWordsForNameOfUser">{{ i18n.ts.save }}</MkButton>
 						</div>
 					</MkFolder>
 
@@ -143,7 +143,7 @@ const enableRegistration = ref<boolean>(false);
 const emailRequiredForSignup = ref<boolean>(false);
 const sensitiveWords = ref<string>('');
 const prohibitedWords = ref<string>('');
-const prohibitedPartialScreenNames = ref<string>('');
+const prohibitedWordsForNameOfUser = ref<string>('');
 const hiddenTags = ref<string>('');
 const preservedUsernames = ref<string>('');
 const blockedHosts = ref<string>('');
@@ -156,7 +156,7 @@ async function init() {
 	emailRequiredForSignup.value = meta.emailRequiredForSignup;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');
 	prohibitedWords.value = meta.prohibitedWords.join('\n');
-	prohibitedPartialScreenNames.value = meta.prohibitedPartialScreenNames.join('\n');
+	prohibitedWordsForNameOfUser.value = meta.prohibitedWordsForNameOfUser.join('\n');
 	hiddenTags.value = meta.hiddenTags.join('\n');
 	preservedUsernames.value = meta.preservedUsernames.join('\n');
 	blockedHosts.value = meta.blockedHosts.join('\n');
@@ -204,9 +204,9 @@ function save_prohibitedWords() {
 	});
 }
 
-function save_prohibitedPartialScreenNames() {
+function save_prohibitedWordsForNameOfUser() {
 	os.apiWithDialog('admin/update-meta', {
-		prohibitedPartialScreenNames: prohibitedPartialScreenNames.value.split('\n'),
+		prohibitedWordsForNameOfUser: prohibitedWordsForNameOfUser.value.split('\n'),
 	}).then(() => {
 		fetchInstance(true);
 	});

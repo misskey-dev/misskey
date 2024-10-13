@@ -5173,19 +5173,19 @@ export interface Locale extends ILocale {
     /**
      * 禁止ワード（ユーザーの名前）
      */
-    "prohibitedPartialScreenNames": string;
+    "prohibitedWordsForNameOfUser": string;
     /**
      * このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。
      */
-    "prohibitedPartialScreenNamesDescription": string;
+    "prohibitedWordsForNameOfUserDescription": string;
     /**
      * 変更しようとした名前に禁止された文字列が含まれています
      */
-    "screenNameContainsProhibitedWords": string;
+    "yourNameContainsProhibitedWords": string;
     /**
      * 名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。
      */
-    "screenNameContainsProhibitedWordsDescription": string;
+    "yourNameContainsProhibitedWordsDescription": string;
     "_abuseUserReport": {
         /**
          * 転送

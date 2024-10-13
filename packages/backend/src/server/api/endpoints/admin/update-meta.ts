@@ -46,7 +46,7 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
-		prohibitedPartialScreenNames: {
+		prohibitedWordsForNameOfUser: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
 			},
@@ -219,8 +219,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (Array.isArray(ps.prohibitedWords)) {
 				set.prohibitedWords = ps.prohibitedWords.filter(Boolean);
 			}
-			if (Array.isArray(ps.prohibitedPartialScreenNames)) {
-				set.prohibitedPartialScreenNames = ps.prohibitedPartialScreenNames.filter(Boolean);
+			if (Array.isArray(ps.prohibitedWordsForNameOfUser)) {
+				set.prohibitedWordsForNameOfUser = ps.prohibitedWordsForNameOfUser.filter(Boolean);
 			}
 			if (Array.isArray(ps.silencedHosts)) {
 				let lastValue = '';

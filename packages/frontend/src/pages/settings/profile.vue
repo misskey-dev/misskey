@@ -208,8 +208,8 @@ function save() {
 		isCat: !!profile.isCat,
 	}, undefined, {
 		'0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191': {
-			title: i18n.ts.screenNameContainsProhibitedWords,
-			text: i18n.ts.screenNameContainsProhibitedWordsDescription,
+			title: i18n.ts.yourNameContainsProhibitedWords,
+			text: i18n.ts.yourNameContainsProhibitedWordsDescription,
 		},
 	});
 	globalEvents.emit('requestClearPageCache');

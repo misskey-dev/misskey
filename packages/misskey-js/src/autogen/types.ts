@@ -5124,7 +5124,7 @@ export type operations = {
             blockedHosts: string[];
             sensitiveWords: string[];
             prohibitedWords: string[];
-            prohibitedPartialScreenNames: string[];
+            prohibitedWordsForNameOfUser: string[];
             bannedEmailDomains?: string[];
             preservedUsernames: string[];
             hcaptchaSecretKey: string | null;
@@ -9462,7 +9462,7 @@ export type operations = {
           blockedHosts?: string[] | null;
           sensitiveWords?: string[] | null;
           prohibitedWords?: string[] | null;
-          prohibitedPartialScreenNames?: string[] | null;
+          prohibitedWordsForNameOfUser?: string[] | null;
           themeColor?: string | null;
           mascotImageUrl?: string | null;
           bannerUrl?: string | null;
