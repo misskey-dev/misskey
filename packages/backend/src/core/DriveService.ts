@@ -771,6 +771,35 @@ export class DriveService {
 	}
 
 	@bindThis
+	public async deleteFileImmediately(file: MiDriveFile, isExpired = false, deleter?: MiUser) {
+    if (file.storedInternal) {
+        // 内部ストレージのファイルを即時削除
+        this.internalStorageService.del(file.accessKey!);
+
+        if (file.thumbnailUrl) {
+            this.internalStorageService.del(file.thumbnailAccessKey!);
+        }
+
+        if (file.webpublicUrl) {
+            this.internalStorageService.del(file.webpublicAccessKey!);
+        }
+    } else if (!file.isLink) {
+        // オブジェクトストレージのファイルを即時削除
+        await this.deleteObjectStorageFile(file.accessKey!);
+
+        if (file.thumbnailUrl) {
+            await this.deleteObjectStorageFile(file.thumbnailAccessKey!);
+        }
+
+        if (file.webpublicUrl) {
+            await this.deleteObjectStorageFile(file.webpublicAccessKey!);
+        }
+    }
+    // 削除後の処理
+    this.deletePostProcess(file, isExpired, deleter);
+	}
+
+	@bindThis
 	private async deletePostProcess(file: MiDriveFile, isExpired = false, deleter?: MiUser) {
 		// リモートファイル期限切れ削除後は直リンクにする
 		if (isExpired && file.userHost !== null && file.uri != null) {
