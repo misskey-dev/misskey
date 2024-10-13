@@ -4,6 +4,7 @@ VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
 
+-- 2024.10.0-kinel.1 --
 -- 2024.7.0-kinel.2 --
 
 - fix(frontend): VRTL VSTLの名前が表示されないところがある問題 (anatawa12#97) - 2024/08/07
