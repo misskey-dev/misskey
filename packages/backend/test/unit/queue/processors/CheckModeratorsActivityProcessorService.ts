@@ -8,13 +8,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
 import { addHours, addSeconds, subDays, subHours, subSeconds } from 'date-fns';
 import { CheckModeratorsActivityProcessorService } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
-import { MiUser, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import { MiSystemWebhook, MiUser, MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
+import { EmailService } from '@/core/EmailService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
 
 const baseDate = new Date(Date.UTC(2000, 11, 15, 12, 0, 0));
 
@@ -29,10 +32,17 @@ describe('CheckModeratorsActivityProcessorService', () => {
 	let userProfilesRepository: UserProfilesRepository;
 	let idService: IdService;
 	let roleService: jest.Mocked<RoleService>;
+	let announcementService: jest.Mocked<AnnouncementService>;
+	let emailService: jest.Mocked<EmailService>;
+	let systemWebhookService: jest.Mocked<SystemWebhookService>;
+
+	let systemWebhook1: MiSystemWebhook;
+	let systemWebhook2: MiSystemWebhook;
+	let systemWebhook3: MiSystemWebhook;
 
 	// --------------------------------------------------------------------------------------
 
-	async function createUser(data: Partial<MiUser> = {}) {
+	async function createUser(data: Partial<MiUser> = {}, profile: Partial<MiUserProfile> = {}): Promise<MiUser> {
 		const id = idService.gen();
 		const user = await usersRepository
 			.insert({
@@ -45,9 +55,25 @@ describe('CheckModeratorsActivityProcessorService', () => {
 
 		await userProfilesRepository.insert({
 			userId: user.id,
+			...profile,
 		});
 
 		return user;
+	}
+
+	function crateSystemWebhook(data: Partial<MiSystemWebhook> = {}): MiSystemWebhook {
+		return {
+			id: idService.gen(),
+			isActive: true,
+			updatedAt: new Date(),
+			latestSentAt: null,
+			latestStatus: null,
+			name: 'test',
+			url: 'https://example.com',
+			secret: 'test',
+			on: [],
+			...data,
+		};
 	}
 
 	function mockModeratorRole(users: MiUser[]) {
@@ -73,6 +99,18 @@ describe('CheckModeratorsActivityProcessorService', () => {
 						provide: MetaService, useFactory: () => ({ fetch: jest.fn() }),
 					},
 					{
+						provide: AnnouncementService, useFactory: () => ({ create: jest.fn() }),
+					},
+					{
+						provide: EmailService, useFactory: () => ({ sendEmail: jest.fn() }),
+					},
+					{
+						provide: SystemWebhookService, useFactory: () => ({
+							fetchActiveSystemWebhooks: jest.fn(),
+							enqueueSystemWebhook: jest.fn(),
+						}),
+					},
+					{
 						provide: QueueLoggerService, useFactory: () => ({
 							logger: ({
 								createSubLogger: () => ({
@@ -93,6 +131,9 @@ describe('CheckModeratorsActivityProcessorService', () => {
 		service = app.get(CheckModeratorsActivityProcessorService);
 		idService = app.get(IdService);
 		roleService = app.get(RoleService) as jest.Mocked<RoleService>;
+		announcementService = app.get(AnnouncementService) as jest.Mocked<AnnouncementService>;
+		emailService = app.get(EmailService) as jest.Mocked<EmailService>;
+		systemWebhookService = app.get(SystemWebhookService) as jest.Mocked<SystemWebhookService>;
 
 		app.enableShutdownHooks();
 	});
@@ -102,6 +143,15 @@ describe('CheckModeratorsActivityProcessorService', () => {
 			now: new Date(baseDate),
 			shouldClearNativeTimers: true,
 		});
+
+		systemWebhook1 = crateSystemWebhook({ on: ['inactiveModeratorsWarning'] });
+		systemWebhook2 = crateSystemWebhook({ on: ['inactiveModeratorsWarning', 'inactiveModeratorsInvitationOnlyChanged'] });
+		systemWebhook3 = crateSystemWebhook({ on: ['abuseReport'] });
+
+		emailService.sendEmail.mockReturnValue(Promise.resolve());
+		announcementService.create.mockReturnValue(Promise.resolve({} as never));
+		systemWebhookService.fetchActiveSystemWebhooks.mockResolvedValue([systemWebhook1, systemWebhook2, systemWebhook3]);
+		systemWebhookService.enqueueSystemWebhook.mockReturnValue(Promise.resolve({} as never));
 	});
 
 	afterEach(async () => {
@@ -109,6 +159,9 @@ describe('CheckModeratorsActivityProcessorService', () => {
 		await usersRepository.delete({});
 		await userProfilesRepository.delete({});
 		roleService.getModerators.mockReset();
+		announcementService.create.mockReset();
+		emailService.sendEmail.mockReset();
+		systemWebhookService.enqueueSystemWebhook.mockReset();
 	});
 
 	afterAll(async () => {
@@ -152,7 +205,7 @@ describe('CheckModeratorsActivityProcessorService', () => {
 			expect(result.inactiveModerators).toEqual([user1]);
 		});
 
-		test('[countdown] 猶予まで24時間ある場合、猶予1日として計算される', async () => {
+		test('[remainingTime] 猶予まで24時間ある場合、猶予1日として計算される', async () => {
 			const [user1, user2] = await Promise.all([
 				createUser({ lastActiveDate: subDays(baseDate, 8) }),
 				// 猶予はこのユーザ基準で計算される想定。
@@ -165,10 +218,11 @@ describe('CheckModeratorsActivityProcessorService', () => {
 			const result = await service.evaluateModeratorsInactiveDays();
 			expect(result.isModeratorsInactive).toBe(false);
 			expect(result.inactiveModerators).toEqual([user1]);
-			expect(result.inactivityLimitCountdown).toBe(1);
+			expect(result.remainingTime.asDays).toBe(1);
+			expect(result.remainingTime.asHours).toBe(24);
 		});
 
-		test('[countdown] 猶予まで25時間ある場合、猶予1日として計算される', async () => {
+		test('[remainingTime] 猶予まで25時間ある場合、猶予1日として計算される', async () => {
 			const [user1, user2] = await Promise.all([
 				createUser({ lastActiveDate: subDays(baseDate, 8) }),
 				// 猶予はこのユーザ基準で計算される想定。
@@ -181,10 +235,11 @@ describe('CheckModeratorsActivityProcessorService', () => {
 			const result = await service.evaluateModeratorsInactiveDays();
 			expect(result.isModeratorsInactive).toBe(false);
 			expect(result.inactiveModerators).toEqual([user1]);
-			expect(result.inactivityLimitCountdown).toBe(1);
+			expect(result.remainingTime.asDays).toBe(1);
+			expect(result.remainingTime.asHours).toBe(25);
 		});
 
-		test('[countdown] 猶予まで23時間ある場合、猶予0日として計算される', async () => {
+		test('[remainingTime] 猶予まで23時間ある場合、猶予0日として計算される', async () => {
 			const [user1, user2] = await Promise.all([
 				createUser({ lastActiveDate: subDays(baseDate, 8) }),
 				// 猶予はこのユーザ基準で計算される想定。
@@ -197,10 +252,11 @@ describe('CheckModeratorsActivityProcessorService', () => {
 			const result = await service.evaluateModeratorsInactiveDays();
 			expect(result.isModeratorsInactive).toBe(false);
 			expect(result.inactiveModerators).toEqual([user1]);
-			expect(result.inactivityLimitCountdown).toBe(0);
+			expect(result.remainingTime.asDays).toBe(0);
+			expect(result.remainingTime.asHours).toBe(23);
 		});
 
-		test('[countdown] 期限ちょうどの場合、猶予0日として計算される', async () => {
+		test('[remainingTime] 期限ちょうどの場合、猶予0日として計算される', async () => {
 			const [user1, user2] = await Promise.all([
 				createUser({ lastActiveDate: subDays(baseDate, 8) }),
 				// 猶予はこのユーザ基準で計算される想定。
@@ -213,10 +269,11 @@ describe('CheckModeratorsActivityProcessorService', () => {
 			const result = await service.evaluateModeratorsInactiveDays();
 			expect(result.isModeratorsInactive).toBe(false);
 			expect(result.inactiveModerators).toEqual([user1]);
-			expect(result.inactivityLimitCountdown).toBe(0);
+			expect(result.remainingTime.asDays).toBe(0);
+			expect(result.remainingTime.asHours).toBe(0);
 		});
 
-		test('[countdown] 期限より1時間超過している場合、猶予-1日として計算される', async () => {
+		test('[remainingTime] 期限より1時間超過している場合、猶予-1日として計算される', async () => {
 			const [user1, user2] = await Promise.all([
 				createUser({ lastActiveDate: subDays(baseDate, 8) }),
 				// 猶予はこのユーザ基準で計算される想定。
@@ -229,7 +286,94 @@ describe('CheckModeratorsActivityProcessorService', () => {
 			const result = await service.evaluateModeratorsInactiveDays();
 			expect(result.isModeratorsInactive).toBe(true);
 			expect(result.inactiveModerators).toEqual([user1, user2]);
-			expect(result.inactivityLimitCountdown).toBe(-1);
+			expect(result.remainingTime.asDays).toBe(-1);
+			expect(result.remainingTime.asHours).toBe(-1);
+		});
+
+		test('[remainingTime] 期限より25時間超過している場合、猶予-2日として計算される', async () => {
+			const [user1, user2] = await Promise.all([
+				createUser({ lastActiveDate: subDays(baseDate, 10) }),
+				// 猶予はこのユーザ基準で計算される想定。
+				// 期限より1時間超過->猶予-1日として計算されるはずである
+				createUser({ lastActiveDate: subDays(subHours(baseDate, 25), 7) }),
+			]);
+
+			mockModeratorRole([user1, user2]);
+
+			const result = await service.evaluateModeratorsInactiveDays();
+			expect(result.isModeratorsInactive).toBe(true);
+			expect(result.inactiveModerators).toEqual([user1, user2]);
+			expect(result.remainingTime.asDays).toBe(-2);
+			expect(result.remainingTime.asHours).toBe(-25);
+		});
+	});
+
+	describe('notifyInactiveModeratorsWarning', () => {
+		test('[notification + mail] 通知はモデレータ全員に発信され、メールはメールアドレスが存在＋認証済みの場合のみ', async () => {
+			const [user1, user2, user3, user4, root] = await Promise.all([
+				createUser({}, { email: 'user1@example.com', emailVerified: true }),
+				createUser({}, { email: 'user2@example.com', emailVerified: false }),
+				createUser({}, { email: null, emailVerified: false }),
+				createUser({}, { email: 'user4@example.com', emailVerified: true }),
+				createUser({ isRoot: true }, { email: 'root@example.com', emailVerified: true }),
+			]);
+
+			mockModeratorRole([user1, user2, user3, root]);
+			await service.notifyInactiveModeratorsWarning({ time: 1, asDays: 0, asHours: 0 });
+
+			expect(emailService.sendEmail).toHaveBeenCalledTimes(2);
+			expect(emailService.sendEmail.mock.calls[0][0]).toBe('user1@example.com');
+			expect(emailService.sendEmail.mock.calls[1][0]).toBe('root@example.com');
+		});
+
+		test('[systemWebhook] "inactiveModeratorsWarning"が有効なSystemWebhookに対して送信される', async () => {
+			const [user1] = await Promise.all([
+				createUser({}, { email: 'user1@example.com', emailVerified: true }),
+			]);
+
+			mockModeratorRole([user1]);
+			await service.notifyInactiveModeratorsWarning({ time: 1, asDays: 0, asHours: 0 });
+
+			expect(systemWebhookService.enqueueSystemWebhook).toHaveBeenCalledTimes(2);
+			expect(systemWebhookService.enqueueSystemWebhook.mock.calls[0][0]).toEqual(systemWebhook1);
+			expect(systemWebhookService.enqueueSystemWebhook.mock.calls[1][0]).toEqual(systemWebhook2);
+		});
+	});
+
+	describe('notifyChangeToInvitationOnly', () => {
+		test('[notification + mail] 通知はモデレータ全員に発信され、メールはメールアドレスが存在＋認証済みの場合のみ', async () => {
+			const [user1, user2, user3, user4, root] = await Promise.all([
+				createUser({}, { email: 'user1@example.com', emailVerified: true }),
+				createUser({}, { email: 'user2@example.com', emailVerified: false }),
+				createUser({}, { email: null, emailVerified: false }),
+				createUser({}, { email: 'user4@example.com', emailVerified: true }),
+				createUser({ isRoot: true }, { email: 'root@example.com', emailVerified: true }),
+			]);
+
+			mockModeratorRole([user1, user2, user3, root]);
+			await service.notifyChangeToInvitationOnly();
+
+			expect(announcementService.create).toHaveBeenCalledTimes(4);
+			expect(announcementService.create.mock.calls[0][0].userId).toBe(user1.id);
+			expect(announcementService.create.mock.calls[1][0].userId).toBe(user2.id);
+			expect(announcementService.create.mock.calls[2][0].userId).toBe(user3.id);
+			expect(announcementService.create.mock.calls[3][0].userId).toBe(root.id);
+
+			expect(emailService.sendEmail).toHaveBeenCalledTimes(2);
+			expect(emailService.sendEmail.mock.calls[0][0]).toBe('user1@example.com');
+			expect(emailService.sendEmail.mock.calls[1][0]).toBe('root@example.com');
+		});
+
+		test('[systemWebhook] "inactiveModeratorsInvitationOnlyChanged"が有効なSystemWebhookに対して送信される', async () => {
+			const [user1] = await Promise.all([
+				createUser({}, { email: 'user1@example.com', emailVerified: true }),
+			]);
+
+			mockModeratorRole([user1]);
+			await service.notifyChangeToInvitationOnly();
+
+			expect(systemWebhookService.enqueueSystemWebhook).toHaveBeenCalledTimes(1);
+			expect(systemWebhookService.enqueueSystemWebhook.mock.calls[0][0]).toEqual(systemWebhook2);
 		});
 	});
 });
