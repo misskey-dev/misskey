@@ -12,6 +12,7 @@ import { Packed } from '@/misc/json-schema.js';
 import { type WebhookEventTypes } from '@/models/Webhook.js';
 import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { QueueService } from '@/core/QueueService.js';
+import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 
 const oneDayMillis = 24 * 60 * 60 * 1000;
 
@@ -444,6 +445,22 @@ export class WebhookTestService {
 			}
 			case 'userCreated': {
 				send(toPackedUserLite(dummyUser1));
+				break;
+			}
+			case 'inactiveModeratorsWarning': {
+				const dummyTime: ModeratorInactivityRemainingTime = {
+					time: 100000,
+					asDays: 1,
+					asHours: 24,
+				};
+
+				send({
+					remainingTime: dummyTime,
+				});
+				break;
+			}
+			case 'inactiveModeratorsInvitationOnlyChanged': {
+				send({});
 				break;
 			}
 		}

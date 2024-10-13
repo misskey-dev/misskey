@@ -11,7 +11,7 @@ import { JSDOM } from 'jsdom';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import * as Acct from '@/misc/acct.js';
-import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/_.js';
+import type { UsersRepository, DriveFilesRepository, MiMeta, UserProfilesRepository, PagesRepository } from '@/models/_.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { birthdaySchema, descriptionSchema, followedMessageSchema, locationSchema, nameSchema } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
@@ -22,6 +22,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
 import { RolePolicies, RoleService } from '@/core/RoleService.js';
@@ -113,6 +114,13 @@ export const meta = {
 			message: 'This feature is restricted by your role.',
 			code: 'RESTRICTED_BY_ROLE',
 			id: '8feff0ba-5ab5-585b-31f4-4df816663fad',
+		},
+
+		nameContainsProhibitedWords: {
+			message: 'Your new name contains prohibited words.',
+			code: 'YOUR_NAME_CONTAINS_PROHIBITED_WORDS',
+			id: '0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191',
+			httpStatusCode: 422,
 		},
 	},
 
@@ -223,6 +231,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private instanceMeta: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -247,6 +258,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private cacheService: CacheService,
 		private httpRequestService: HttpRequestService,
 		private avatarDecorationService: AvatarDecorationService,
+		private utilityService: UtilityService,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id }) as MiLocalUser;
@@ -449,6 +461,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const newFields = profileUpdates.fields === undefined ? profile.fields : profileUpdates.fields;
 
 			if (newName != null) {
+				let hasProhibitedWords = false;
+				if (!await this.roleService.isModerator(user)) {
+					hasProhibitedWords = this.utilityService.isKeyWordIncluded(newName, this.instanceMeta.prohibitedWordsForNameOfUser);
+				}
+				if (hasProhibitedWords) {
+					throw new ApiError(meta.errors.nameContainsProhibitedWords);
+				}
+
 				const tokens = mfm.parseSimple(newName);
 				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
 			}
