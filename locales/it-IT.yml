@@ -1292,6 +1292,14 @@ testCaptchaWarning: "Questa funzione è destinata al test CAPTCHA. <strong>Da no
 prohibitedWordsForNameOfUser: "Parole proibite (nome utente)"
 prohibitedWordsForNameOfUserDescription: "Il sistema rifiuta di rinominare un utente, se il nome contiene qualsiasi parola nell'elenco. Sono esenti i profili con privilegi di moderazione."
 yourNameContainsProhibitedWords: "Il nome che hai scelto contiene una o più parole vietate"
+yourNameContainsProhibitedWordsDescription: "Se desideri comunque utilizzare questo nome, contatta l''amministrazione."
+_abuseUserReport:
+  forward: "Inoltra"
+  forwardDescription: "Inoltra il report al server remoto, per mezzo di account di sistema, anonimo."
+  resolve: "Risolvi"
+  accept: "Approva"
+  reject: "Rifiuta"
+  resolveTutorial: "Se moderi una segnalazione legittima, scegli \"Approva\" per risolvere positivamente.\nSe la segnalazione non è legittima, seleziona \"Rifiuta\" per risolvere negativamente."
 _delivery:
   status: "Stato della consegna"
   stop: "Sospensione"
@@ -1429,6 +1437,7 @@ _serverSettings:
   reactionsBufferingDescription: "Attivando questa opzione, puoi migliorare significativamente le prestazioni durante la creazione delle reazioni e ridurre il carico sul database. Tuttavia, aumenterà l'impiego di memoria Redis."
   inquiryUrl: "URL di contatto"
   inquiryUrlDescription: "Specificare l'URL al modulo di contatto, oppure le informazioni con i dati di contatto dell'amministrazione."
+  thisSettingWillAutomaticallyOffWhenModeratorsInactive: "Per prevenire SPAM, questa impostazione verrà disattivata automaticamente, se non si rileva alcuna attività di moderazione durante un certo periodo di tempo."
 _accountMigration:
   moveFrom: "Migra un altro profilo dentro a questo"
   moveFromSub: "Crea un alias verso un altro profilo remoto"
@@ -2483,6 +2492,8 @@ _webhookSettings:
     abuseReport: "Quando arriva una segnalazione"
     abuseReportResolved: "Quando una segnalazione è risolta"
     userCreated: "Quando viene creato un profilo"
+    inactiveModeratorsWarning: "Quando un profilo moderatore rimane inattivo per un determinato periodo"
+    inactiveModeratorsInvitationOnlyChanged: "Quando la moderazione è rimasta inattiva per un determinato periodo e il sistema è cambiato in modalità \"solo inviti\""
   deleteConfirm: "Vuoi davvero eliminare il Webhook?"
   testRemarks: "Clicca il bottone a destra dell'interruttore, per provare l'invio di un webhook con dati fittizi."
 _abuseReport:
@@ -2528,6 +2539,8 @@ _moderationLogTypes:
   markSensitiveDriveFile: "File nel Drive segnato come esplicito"
   unmarkSensitiveDriveFile: "File nel Drive segnato come non esplicito"
   resolveAbuseReport: "Segnalazione risolta"
+  forwardAbuseReport: "Segnalazione inoltrata"
+  updateAbuseReportNote: "Ha aggiornato la segnalazione"
   createInvitation: "Genera codice di invito"
   createAd: "Banner creato"
   deleteAd: "Banner eliminato"
