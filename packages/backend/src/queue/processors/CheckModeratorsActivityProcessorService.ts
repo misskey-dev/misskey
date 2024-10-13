@@ -225,7 +225,7 @@ export class CheckModeratorsActivityProcessorService {
 		for (const moderator of moderators) {
 			const profile = moderatorProfiles.get(moderator.id);
 			if (profile && profile.email && profile.emailVerified) {
-				this.emailService.sendEmail(profile.email, mail.subject, mail.html, mail.text).then();
+				this.emailService.sendEmail(profile.email, mail.subject, mail.html, mail.text);
 			}
 		}
 
@@ -238,7 +238,7 @@ export class CheckModeratorsActivityProcessorService {
 				systemWebhook,
 				'inactiveModeratorsWarning',
 				{ remainingTime: remainingTime },
-			).then();
+			);
 		}
 	}
 
@@ -259,11 +259,11 @@ export class CheckModeratorsActivityProcessorService {
 				forExistingUsers: true,
 				needConfirmationToRead: true,
 				userId: moderator.id,
-			}).then();
+			});
 
 			const profile = moderatorProfiles.get(moderator.id);
 			if (profile && profile.email && profile.emailVerified) {
-				this.emailService.sendEmail(profile.email, mail.subject, mail.html, mail.text).then();
+				this.emailService.sendEmail(profile.email, mail.subject, mail.html, mail.text);
 			}
 		}
 
@@ -276,7 +276,7 @@ export class CheckModeratorsActivityProcessorService {
 				systemWebhook,
 				'inactiveModeratorsInvitationOnlyChanged',
 				{},
-			).then();
+			);
 		}
 	}
 
