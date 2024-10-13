@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div ref="rootEl">
 	<div ref="headerEl" :class="$style.header">
 		<slot name="header"></slot>
 	</div>
@@ -22,12 +22,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } from 'vue';
+import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, useTemplateRef } from 'vue';
 
 import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@@/js/const.js';
 
-const headerEl = shallowRef<HTMLElement>();
-const footerEl = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
+const headerEl = useTemplateRef('headerEl');
+const footerEl = useTemplateRef('footerEl');
 
 const headerHeight = ref<string | undefined>();
 const childStickyTop = ref(0);
@@ -75,6 +76,10 @@ onMounted(() => {
 
 onUnmounted(() => {
 	observer.disconnect();
+});
+
+defineExpose({
+	rootEl,
 });
 </script>
 
