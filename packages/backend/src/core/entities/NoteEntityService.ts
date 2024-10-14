@@ -16,12 +16,22 @@ import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
-import { isPureRenote } from '@/misc/is-renote.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
+
+function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
+	return (
+		note.renote != null &&
+		note.reply == null &&
+		note.text == null &&
+		note.cw == null &&
+		(note.fileIds == null || note.fileIds.length === 0) &&
+		!note.hasPoll
+	);
+}
 
 function getAppearNoteIds(notes: MiNote[]): Set<string> {
 	const appearNoteIds = new Set<string>();
