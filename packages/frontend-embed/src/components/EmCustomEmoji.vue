@@ -38,8 +38,6 @@ const props = defineProps<{
 	host?: string | null;
 	url?: string;
 	useOriginalSize?: boolean;
-	menu?: boolean;
-	menuReaction?: boolean;
 	fallbackToImage?: boolean;
 }>();
 
