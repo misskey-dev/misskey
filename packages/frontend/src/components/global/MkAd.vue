@@ -136,8 +136,6 @@ function reduceFrequency(): void {
 	}
 
 	&.form_horizontal {
-		padding: 8px;
-
 		> .link,
 		> .link > .img {
 			max-width: min(600px, 100%);
@@ -146,8 +144,6 @@ function reduceFrequency(): void {
 	}
 
 	&.form_horizontalBig {
-		padding: 8px;
-
 		> .link,
 		> .link > .img {
 			max-width: min(600px, 100%);
