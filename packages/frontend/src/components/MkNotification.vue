@@ -220,6 +220,8 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	overflow-wrap: break-word;
 	display: flex;
 	contain: content;
+	content-visibility: auto;
+	contain-intrinsic-size: 0 100px;
 
 	--eventFollow: #36aed2;
 	--eventRenote: #36d298;
