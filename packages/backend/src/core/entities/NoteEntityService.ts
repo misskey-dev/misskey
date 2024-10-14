@@ -113,7 +113,7 @@ export class NoteEntityService implements OnModuleInit {
 				hide = false;
 			} else {
 				// 指定されているかどうか
-				const specified = packedNote.visibleUserIds!.some((id: any) => meId === id);
+				const specified = packedNote.visibleUserIds!.some(id => meId === id);
 
 				if (specified) {
 					hide = false;
@@ -250,7 +250,7 @@ export class NoteEntityService implements OnModuleInit {
 				return true;
 			} else {
 				// 指定されているかどうか
-				return note.visibleUserIds.some((id: any) => meId === id);
+				return note.visibleUserIds.some(id => meId === id);
 			}
 		}
 
