@@ -46,6 +46,11 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		prohibitedWordsForNameOfUser: {
+			type: 'array', nullable: true, items: {
+				type: 'string',
+			},
+		},
 		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
@@ -144,6 +149,7 @@ export const paramDef = {
 		truemailAuthKey: { type: 'string', nullable: true },
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
+		enableStatsForFederatedInstances: { type: 'boolean' },
 		enableServerMachineStats: { type: 'boolean' },
 		enableIdenticonGeneration: { type: 'boolean' },
 		serverRules: { type: 'array', items: { type: 'string' } },
@@ -226,6 +232,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 			if (Array.isArray(ps.prohibitedWords)) {
 				set.prohibitedWords = ps.prohibitedWords.filter(Boolean);
+			}
+			if (Array.isArray(ps.prohibitedWordsForNameOfUser)) {
+				set.prohibitedWordsForNameOfUser = ps.prohibitedWordsForNameOfUser.filter(Boolean);
 			}
 			if (Array.isArray(ps.silencedHosts)) {
 				let lastValue = '';
@@ -657,6 +666,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.enableChartsForFederatedInstances !== undefined) {
 				set.enableChartsForFederatedInstances = ps.enableChartsForFederatedInstances;
+			}
+
+			if (ps.enableStatsForFederatedInstances !== undefined) {
+				set.enableStatsForFederatedInstances = ps.enableStatsForFederatedInstances;
 			}
 
 			if (ps.enableServerMachineStats !== undefined) {

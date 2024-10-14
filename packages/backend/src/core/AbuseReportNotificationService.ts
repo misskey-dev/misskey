@@ -288,8 +288,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			.log(updater, 'createAbuseReportNotificationRecipient', {
 				recipientId: id,
 				recipient: created,
-			})
-			.then();
+			});
 
 		return created;
 	}
@@ -327,8 +326,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 				recipientId: params.id,
 				before: beforeEntity,
 				after: afterEntity,
-			})
-			.then();
+			});
 
 		return afterEntity;
 	}
@@ -349,8 +347,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			.log(updater, 'deleteAbuseReportNotificationRecipient', {
 				recipientId: id,
 				recipient: entity,
-			})
-			.then();
+			});
 	}
 
 	/**
