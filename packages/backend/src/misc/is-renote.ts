@@ -36,6 +36,17 @@ export function isQuote(note: Renote): note is Quote {
 		note.fileIds.length > 0;
 }
 
+export function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
+	return (
+		note.renote != null &&
+		note.reply == null &&
+		note.text == null &&
+		note.cw == null &&
+		(note.fileIds == null || note.fileIds.length === 0) &&
+		!note.hasPoll
+	);
+}
+
 type PackedRenote =
 	Packed<'Note'> & {
 		renoteId: NonNullable<Packed<'Note'>['renoteId']>
