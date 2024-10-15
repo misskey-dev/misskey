@@ -472,6 +472,13 @@ export class ApRendererService {
 
 		const hashtagTags = user.tags.map(tag => this.renderHashtag(tag));
 
+		const likedId = `${id}/liked`;
+		const liked = this.renderOrderedCollection(
+			likedId,
+			undefined,
+			profile.publicReactions ? `${likedId}?page=true` : undefined,
+		);
+
 		const tag = [
 			...apemojis,
 			...hashtagTags,
@@ -486,6 +493,7 @@ export class ApRendererService {
 			outbox: `${id}/outbox`,
 			followers: `${id}/followers`,
 			following: `${id}/following`,
+			liked,
 			featured: `${id}/collections/featured`,
 			sharedInbox: `${this.config.url}/inbox`,
 			endpoints: { sharedInbox: `${this.config.url}/inbox` },
@@ -667,7 +675,7 @@ export class ApRendererService {
 	 * @param orderedItems attached objects (optional)
 	 */
 	@bindThis
-	public renderOrderedCollection(id: string, totalItems: number, first?: string, last?: string, orderedItems?: IObject[]) {
+	public renderOrderedCollection(id: string, totalItems?: number, first?: string, last?: string, orderedItems?: IObject[]) {
 		const page: any = {
 			id,
 			type: 'OrderedCollection',
