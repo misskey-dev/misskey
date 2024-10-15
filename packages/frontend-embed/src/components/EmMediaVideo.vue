@@ -29,9 +29,9 @@ defineProps<{
 	width: 100%;
 	height: auto;
 	aspect-ratio: 16 / 9;
-	padding: var(--margin);
-	border: 1px solid var(--divider);
-	border-radius: var(--radius);
+	padding: var(--MI-margin);
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: var(--MI-radius);
 	background-color: #000;
 
 	&:hover {
@@ -49,7 +49,7 @@ defineProps<{
 }
 
 .videoOverlayPlayButton {
-	background: var(--accent);
+	background: var(--MI_THEME-accent);
 	color: #fff;
 	padding: 1rem;
 	border-radius: 99rem;

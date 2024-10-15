@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:initialNote="exampleNote"
 		@fileChangeSensitive="doSucceeded"
 	></MkPostForm>
-	<div v-if="onceSucceeded"><b style="color: var(--accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.sensitiveSucceeded }}</div>
+	<div v-if="onceSucceeded"><b style="color: var(--MI_THEME-accent);"><i class="ti ti-check"></i> {{ i18n.ts._initialTutorial.wellDone }}</b> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.sensitiveSucceeded }}</div>
 	<MkFolder>
 		<template #label>{{ i18n.ts.previewNoteText }}</template>
 		<MkNote :mock="true" :note="exampleNote" :class="$style.exampleRoot"></MkNote>
@@ -91,14 +91,14 @@ const exampleNote = reactive<Misskey.entities.Note>({
 
 <style lang="scss" module>
 .exampleRoot {
-	border-radius: var(--radius);
-	border: var(--panelBorder);
-	background: var(--panel);
+	border-radius: var(--MI-radius);
+	border: var(--MI_THEME-panelBorder);
+	background: var(--MI_THEME-panel);
 }
 
 .divider {
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .image {
@@ -111,7 +111,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 	display: block;
 	width: 100%;
 	height: 40px;
-	color: var(--fgOnAccent);
+	color: var(--MI_THEME-fgOnAccent);
 	font-weight: bold;
 	text-align: left;
 
@@ -127,7 +127,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 		right: 0;
 		bottom: 0;
 		border-radius: 999px;
-		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+		background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 	}
 
 }
