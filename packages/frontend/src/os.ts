@@ -176,12 +176,32 @@ type EmitsExtractor<T> = {
 	[K in keyof T as K extends `onVnode${string}` ? never : K extends `on${infer E}` ? Uncapitalize<E> : K extends string ? never : K]: T[K];
 };
 
+type PopupOptions = {
+	/** @default false */
+	allowMultiple?: boolean;
+};
+
 export function popup<T extends Component>(
 	component: T,
 	props: ComponentProps<T>,
 	events: ComponentEmit<T> = {} as ComponentEmit<T>,
+	options: PopupOptions = {},
 ): { dispose: () => void } {
 	markRaw(component);
+
+	const _options: Required<PopupOptions> = Object.assign({
+		allowMultiple: false,
+	}, options);
+
+	if (
+		_options.allowMultiple === false &&
+		popups.value.some(popup => popup.component === component)
+	) {
+		if (_DEV_) console.warn('Popup already exists');
+		return {
+			dispose: () => { },
+		};
+	}
 
 	const id = ++popupIdCount;
 	const dispose = () => {
@@ -209,6 +229,8 @@ export function pageWindow(path: string) {
 		initialPath: path,
 	}, {
 		closed: () => dispose(),
+	}, {
+		allowMultiple: true,
 	});
 }
 
@@ -217,6 +239,8 @@ export function toast(message: string) {
 		message,
 	}, {
 		closed: () => dispose(),
+	}, {
+		allowMultiple: true,
 	});
 }
 

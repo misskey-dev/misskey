@@ -554,6 +554,8 @@ export function getRenoteMenu(props: {
 					const y = rect.top + (el.offsetHeight / 2);
 					const { dispose } = os.popup(MkRippleEffect, { x, y }, {
 						end: () => dispose(),
+					}, {
+						allowMultiple: true,
 					});
 				}
 
@@ -592,6 +594,8 @@ export function getRenoteMenu(props: {
 					const y = rect.top + (el.offsetHeight / 2);
 					const { dispose } = os.popup(MkRippleEffect, { x, y }, {
 						end: () => dispose(),
+					}, {
+						allowMultiple: true,
 					});
 				}
 
@@ -643,6 +647,8 @@ export function getRenoteMenu(props: {
 							const y = rect.top + (el.offsetHeight / 2);
 							const { dispose } = os.popup(MkRippleEffect, { x, y }, {
 								end: () => dispose(),
+							}, {
+								allowMultiple: true,
 							});
 						}
 
