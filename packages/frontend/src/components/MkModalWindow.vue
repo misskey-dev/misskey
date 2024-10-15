@@ -90,12 +90,12 @@ defineExpose({
 	display: flex;
 	flex-direction: column;
 	contain: content;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 
 	--root-margin: 24px;
 
-	--headerHeight: 46px;
-	--headerHeightNarrow: 42px;
+	--MI_THEME-headerHeight: 46px;
+	--MI_THEME-headerHeightNarrow: 42px;
 
 	@media (max-width: 500px) {
 		--root-margin: 16px;
@@ -105,24 +105,24 @@ defineExpose({
 .header {
 	display: flex;
 	flex-shrink: 0;
-	background: var(--windowHeader);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	background: var(--MI_THEME-windowHeader);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 }
 
 .headerButton {
-	height: var(--headerHeight);
-	width: var(--headerHeight);
+	height: var(--MI_THEME-headerHeight);
+	width: var(--MI_THEME-headerHeight);
 
 	@media (max-width: 500px) {
-		height: var(--headerHeightNarrow);
-		width: var(--headerHeightNarrow);
+		height: var(--MI_THEME-headerHeightNarrow);
+		width: var(--MI_THEME-headerHeightNarrow);
 	}
 }
 
 .title {
 	flex: 1;
-	line-height: var(--headerHeight);
+	line-height: var(--MI_THEME-headerHeight);
 	padding-left: 32px;
 	font-weight: bold;
 	white-space: nowrap;
@@ -131,7 +131,7 @@ defineExpose({
 	pointer-events: none;
 
 	@media (max-width: 500px) {
-		line-height: var(--headerHeightNarrow);
+		line-height: var(--MI_THEME-headerHeightNarrow);
 		padding-left: 16px;
 	}
 }
@@ -143,7 +143,7 @@ defineExpose({
 .body {
 	flex: 1;
 	overflow: auto;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	container-type: size;
 }
 </style>

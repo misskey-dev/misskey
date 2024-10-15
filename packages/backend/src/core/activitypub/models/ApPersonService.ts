@@ -408,13 +408,15 @@ export class ApPersonService implements OnModuleInit {
 		this.cacheService.uriPersonCache.set(user.uri, user);
 
 		// Register host
-		this.federatedInstanceService.fetch(host).then(i => {
-			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
-			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-			if (this.meta.enableChartsForFederatedInstances) {
-				this.instanceChart.newUser(i.host);
-			}
-		});
+		if (this.meta.enableStatsForFederatedInstances) {
+			this.federatedInstanceService.fetchOrRegister(host).then(i => {
+				this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
+				if (this.meta.enableChartsForFederatedInstances) {
+					this.instanceChart.newUser(i.host);
+				}
+				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
+			});
+		}
 
 		this.usersChart.update(user, true);
 
