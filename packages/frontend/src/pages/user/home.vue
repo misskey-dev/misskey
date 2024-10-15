@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkUserName class="name" :user="user" :nowrap="true"/>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
-								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
+								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--MI_THEME-badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 								<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkUserName :user="user" :nowrap="false" class="name"/>
 						<div class="bottom">
 							<span class="username"><MkAcct :user="user" :detail="true"/></span>
-							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
+							<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--MI_THEME-badge);"><i class="ti ti-shield"></i></span>
 							<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
@@ -377,8 +377,8 @@ onUnmounted(() => {
 						position: absolute;
 						top: 12px;
 						right: 12px;
-						-webkit-backdrop-filter: var(--blur, blur(8px));
-						backdrop-filter: var(--blur, blur(8px));
+						-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+						backdrop-filter: var(--MI-blur, blur(8px));
 						background: rgba(0, 0, 0, 0.2);
 						padding: 8px;
 						border-radius: 24px;
@@ -432,8 +432,8 @@ onUnmounted(() => {
 							> .add-note-button {
 								background: rgba(0, 0, 0, 0.2);
 								color: #fff;
-								-webkit-backdrop-filter: var(--blur, blur(8px));
-								backdrop-filter: var(--blur, blur(8px));
+								-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+								backdrop-filter: var(--MI-blur, blur(8px));
 								border-radius: 24px;
 								padding: 4px 8px;
 								font-size: 80%;
@@ -447,7 +447,7 @@ onUnmounted(() => {
 					text-align: center;
 					padding: 50px 8px 16px 8px;
 					font-weight: bold;
-					border-bottom: solid 0.5px var(--divider);
+					border-bottom: solid 0.5px var(--MI_THEME-divider);
 
 					> .bottom {
 						> * {
@@ -474,7 +474,7 @@ onUnmounted(() => {
 
 					> .fukidashi {
 						display: block;
-						--fukidashi-bg: color-mix(in srgb, var(--accent), var(--panel) 85%);
+						--fukidashi-bg: color-mix(in srgb, var(--MI_THEME-accent), var(--MI_THEME-panel) 85%);
 						--fukidashi-radius: 16px;
 						font-size: 0.9em;
 
@@ -493,7 +493,7 @@ onUnmounted(() => {
 					gap: 8px;
 
 					> .role {
-						border: solid 1px var(--color, var(--divider));
+						border: solid 1px var(--color, var(--MI_THEME-divider));
 						border-radius: 999px;
 						margin-right: 4px;
 						padding: 3px 8px;
@@ -507,15 +507,15 @@ onUnmounted(() => {
 				> .memo {
 					margin: 12px 24px 0 154px;
 					background: transparent;
-					color: var(--fg);
-					border: 1px solid var(--divider);
+					color: var(--MI_THEME-fg);
+					border: 1px solid var(--MI_THEME-divider);
 					border-radius: 8px;
 					padding: 8px;
 					line-height: 0;
 
 					> .heading {
 						text-align: left;
-						color: var(--fgTransparent);
+						color: var(--MI_THEME-fgTransparent);
 						line-height: 1.5;
 						font-size: 85%;
 					}
@@ -530,7 +530,7 @@ onUnmounted(() => {
 						height: auto;
 						min-height: 0;
 						line-height: 1.5;
-						color: var(--fg);
+						color: var(--MI_THEME-fg);
 						overflow: hidden;
 						background: transparent;
 						font-family: inherit;
@@ -550,7 +550,7 @@ onUnmounted(() => {
 				> .fields {
 					padding: 24px;
 					font-size: 0.9em;
-					border-top: solid 0.5px var(--divider);
+					border-top: solid 0.5px var(--MI_THEME-divider);
 
 					> .field {
 						display: flex;
@@ -587,14 +587,14 @@ onUnmounted(() => {
 				> .status {
 					display: flex;
 					padding: 24px;
-					border-top: solid 0.5px var(--divider);
+					border-top: solid 0.5px var(--MI_THEME-divider);
 
 					> a {
 						flex: 1;
 						text-align: center;
 
 						&.active {
-							color: var(--accent);
+							color: var(--MI_THEME-accent);
 						}
 
 						&:hover {
@@ -616,7 +616,7 @@ onUnmounted(() => {
 
 		> .contents {
 			> .content {
-				margin-bottom: var(--margin);
+				margin-bottom: var(--MI-margin);
 			}
 		}
 	}
@@ -633,7 +633,7 @@ onUnmounted(() => {
 		> .sub {
 			max-width: 350px;
 			min-width: 350px;
-			margin-left: var(--margin);
+			margin-left: var(--MI-margin);
 		}
 	}
 }
@@ -710,13 +710,13 @@ onUnmounted(() => {
 
 <style lang="scss" module>
 .tl {
-	background: var(--bg);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-bg);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 }
 
 .verifiedLink {
 	margin-left: 4px;
-	color: var(--success);
+	color: var(--MI_THEME-success);
 }
 </style>

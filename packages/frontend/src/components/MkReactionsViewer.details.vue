@@ -58,6 +58,7 @@ function getReactionName(reaction: string): string {
 .reaction {
 	max-width: 100px;
 	text-align: center;
+	border-right: solid 0.5px var(--MI_THEME-divider);
 }
 
 .reactionIcon {

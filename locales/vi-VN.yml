@@ -1546,7 +1546,6 @@ _theme:
     buttonBg: "Nền nút"
     buttonHoverBg: "Nền nút (Chạm)"
     inputBorder: "Đường viền khung soạn thảo"
-    listItemHoverBg: "Nền mục liệt kê (Chạm)"
     driveFolderBg: "Nền thư mục Ổ đĩa"
     wallpaperOverlay: "Lớp phủ hình nền"
     badge: "Huy hiệu"

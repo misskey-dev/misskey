@@ -32,7 +32,7 @@ const XUserList = defineAsyncComponent(() => import('./statusbar-user-list.vue')
 <style lang="scss" module>
 .root {
 	font-size: 15px;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 }
 
 .item {
@@ -81,7 +81,7 @@ const XUserList = defineAsyncComponent(() => import('./statusbar-user-list.vue')
 .name {
 	padding: 0 var(--nameMargin);
 	font-weight: bold;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 
 	&:empty {
 		display: none;

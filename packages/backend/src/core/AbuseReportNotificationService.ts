@@ -61,7 +61,10 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			return;
 		}
 
-		const moderatorIds = await this.roleService.getModeratorIds(true, true);
+		const moderatorIds = await this.roleService.getModeratorIds({
+			includeAdmins: true,
+			excludeExpire: true,
+		});
 
 		for (const moderatorId of moderatorIds) {
 			for (const abuseReport of abuseReports) {
@@ -285,8 +288,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			.log(updater, 'createAbuseReportNotificationRecipient', {
 				recipientId: id,
 				recipient: created,
-			})
-			.then();
+			});
 
 		return created;
 	}
@@ -324,8 +326,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 				recipientId: params.id,
 				before: beforeEntity,
 				after: afterEntity,
-			})
-			.then();
+			});
 
 		return afterEntity;
 	}
@@ -346,8 +347,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			.log(updater, 'deleteAbuseReportNotificationRecipient', {
 				recipientId: id,
 				recipient: entity,
-			})
-			.then();
+			});
 	}
 
 	/**
@@ -370,7 +370,10 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		}
 
 		// モデレータ権限の有無で通知先設定を振り分ける
-		const authorizedUserIds = await this.roleService.getModeratorIds(true, true);
+		const authorizedUserIds = await this.roleService.getModeratorIds({
+			includeAdmins: true,
+			excludeExpire: true,
+		});
 		const authorizedUserRecipients = Array.of<MiAbuseReportNotificationRecipient>();
 		const unauthorizedUserRecipients = Array.of<MiAbuseReportNotificationRecipient>();
 		for (const recipient of userRecipients) {
