@@ -22,6 +22,30 @@ import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 
+// is-renote.tsとよしなにリンク
+function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
+	return (
+		note.renote != null &&
+		note.reply == null &&
+		note.text == null &&
+		note.cw == null &&
+		(note.fileIds == null || note.fileIds.length === 0) &&
+		!note.hasPoll
+	);
+}
+
+function getAppearNoteIds(notes: MiNote[]): Set<string> {
+	const appearNoteIds = new Set<string>();
+	for (const note of notes) {
+		if (isPureRenote(note)) {
+			appearNoteIds.add(note.renoteId);
+		} else {
+			appearNoteIds.add(note.id);
+		}
+	}
+	return appearNoteIds;
+}
+
 @Injectable()
 export class NoteEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
@@ -90,7 +114,7 @@ export class NoteEntityService implements OnModuleInit {
 				hide = false;
 			} else {
 				// 指定されているかどうか
-				const specified = packedNote.visibleUserIds!.some((id: any) => meId === id);
+				const specified = packedNote.visibleUserIds!.some(id => meId === id);
 
 				if (specified) {
 					hide = false;
@@ -227,7 +251,7 @@ export class NoteEntityService implements OnModuleInit {
 				return true;
 			} else {
 				// 指定されているかどうか
-				return note.visibleUserIds.some((id: any) => meId === id);
+				return note.visibleUserIds.some(id => meId === id);
 			}
 		}
 
@@ -421,7 +445,7 @@ export class NoteEntityService implements OnModuleInit {
 	) {
 		if (notes.length === 0) return [];
 
-		const bufferedReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(notes.map(x => x.id)) : null;
+		const bufferedReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany([...getAppearNoteIds(notes)]) : null;
 
 		const meId = me ? me.id : null;
 		const myReactionsMap = new Map<MiNote['id'], string | null>();
@@ -432,7 +456,7 @@ export class NoteEntityService implements OnModuleInit {
 			const oldId = this.idService.gen(Date.now() - 2000);
 
 			for (const note of notes) {
-				if (note.renote && (note.text == null && note.fileIds.length === 0)) { // pure renote
+				if (isPureRenote(note)) {
 					const reactionsCount = Object.values(this.reactionsBufferingService.mergeReactions(note.renote.reactions, bufferedReactions?.get(note.renote.id)?.deltas ?? {})).reduce((a, b) => a + b, 0);
 					if (reactionsCount === 0) {
 						myReactionsMap.set(note.renote.id, null);

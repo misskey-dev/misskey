@@ -578,18 +578,18 @@ ESMではディレクトリインポートは廃止されているのと、デ�
 ### Lighten CSS vars
 
 ``` css
-color: hsl(from var(--accent) h s calc(l + 10));
+color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 ```
 
 ### Darken CSS vars
 
 ``` css
-color: hsl(from var(--accent) h s calc(l - 10));
+color: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 ```
 
 ### Add alpha to CSS vars
 
 ``` css
-color: color(from var(--accent) srgb r g b / 0.5);
+color: color(from var(--MI_THEME-accent) srgb r g b / 0.5);
 ```
 

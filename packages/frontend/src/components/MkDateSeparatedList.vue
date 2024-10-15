@@ -9,6 +9,7 @@ import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
 import { MisskeyEntity } from '@/types/date-separated-list.js';
 
@@ -99,11 +100,13 @@ export default defineComponent({
 
 				return [el, separator];
 			} else {
-				if (props.ad && item._shouldInsertAd_) {
-					return [h(MkAd, {
+				if (props.ad && instance.ads.length > 0 && item._shouldInsertAd_) {
+					return [h('div', {
 						key: item.id + ':ad',
+						class: $style['ad-wrapper'],
+					}, [h(MkAd, {
 						prefer: ['horizontal', 'horizontal-big'],
-					}), el];
+					})]), el];
 				} else {
 					return el;
 				}
@@ -182,7 +185,7 @@ export default defineComponent({
 	}
 
 	&:not(.date-separated-list-nogap) > *:not(:last-child) {
-		margin-bottom: var(--margin);
+		margin-bottom: var(--MI-margin);
 	}
 }
 
@@ -194,7 +197,7 @@ export default defineComponent({
 		box-shadow: none;
 
 		&:not(:last-child) {
-			border-bottom: solid 0.5px var(--divider);
+			border-bottom: solid 0.5px var(--MI_THEME-divider);
 		}
 	}
 }
@@ -235,7 +238,7 @@ export default defineComponent({
 	line-height: 32px;
 	text-align: center;
 	font-size: 12px;
-	color: var(--dateLabelFg);
+	color: var(--MI_THEME-dateLabelFg);
 }
 
 .date-1 {
@@ -252,6 +255,12 @@ export default defineComponent({
 
 .date-2-icon {
 	margin-left: 8px;
+}
+
+.ad-wrapper {
+	padding: 8px;
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px);
 }
 </style>
 

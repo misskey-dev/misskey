@@ -134,8 +134,8 @@ export class SignupService {
 			}));
 		});
 
-		this.usersChart.update(account, true).then();
-		this.userService.notifySystemWebhook(account, 'userCreated').then();
+		this.usersChart.update(account, true);
+		this.userService.notifySystemWebhook(account, 'userCreated');
 
 		return { account, secret };
 	}

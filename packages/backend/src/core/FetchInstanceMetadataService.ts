@@ -79,7 +79,7 @@ export class FetchInstanceMetadataService {
 
 		if (!force) {
 			// キャッシュ有効チェックはロック取得前に行う
-			const _instance = await this.federatedInstanceService.fetch(host);
+			const _instance = await this.federatedInstanceService.fetchOrRegister(host);
 			const now = Date.now();
 			if (_instance && _instance.infoUpdatedAt != null && (now - _instance.infoUpdatedAt.getTime() < REMOTE_SERVER_CACHE_TTL)) {
 				this.logger.debug(`Skip because updated recently ${_instance.infoUpdatedAt.toJSON()}`);
