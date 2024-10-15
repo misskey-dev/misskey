@@ -4367,6 +4367,10 @@ export interface Locale extends ILocale {
      */
     "enableChartsForFederatedInstances": string;
     /**
+     * リモートサーバーの情報を取得
+     */
+    "enableStatsForFederatedInstances": string;
+    /**
      * ノートのアクションにクリップを追加
      */
     "showClipButtonInNoteFooter": string;
@@ -5167,6 +5171,26 @@ export interface Locale extends ILocale {
      */
     "target": string;
     /**
+     * CAPTCHAのテストを目的とした機能です。<strong>本番環境で使用しないでください。</strong>
+     */
+    "testCaptchaWarning": string;
+    /**
+     * 禁止ワード（ユーザーの名前）
+     */
+    "prohibitedWordsForNameOfUser": string;
+    /**
+     * このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。
+     */
+    "prohibitedWordsForNameOfUserDescription": string;
+    /**
+     * 変更しようとした名前に禁止された文字列が含まれています
+     */
+    "yourNameContainsProhibitedWords": string;
+    /**
+     * 名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。
+     */
+    "yourNameContainsProhibitedWordsDescription": string;
+    /**
      * チュートリアルをスキップできないようにする
      */
     "prohibitSkippingInitialTutorial": string;
@@ -5757,6 +5781,10 @@ export interface Locale extends ILocale {
          * サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。
          */
         "inquiryUrlDescription": string;
+        /**
+         * 一定期間モデレーターのアクティビティが検出されなかった場合、スパム防止のためこの設定は自動でオフになります。
+         */
+        "thisSettingWillAutomaticallyOffWhenModeratorsInactive": string;
     };
     "_accountMigration": {
         /**
@@ -9694,6 +9722,14 @@ export interface Locale extends ILocale {
              * ユーザーが作成されたとき
              */
             "userCreated": string;
+            /**
+             * モデレーターが一定期間非アクティブになったとき
+             */
+            "inactiveModeratorsWarning": string;
+            /**
+             * モデレーターが一定期間非アクティブだったため、システムにより招待制へと変更されたとき
+             */
+            "inactiveModeratorsInvitationOnlyChanged": string;
         };
         /**
          * Webhookを削除しますか？
