@@ -5190,6 +5190,38 @@ export interface Locale extends ILocale {
      * 名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。
      */
     "yourNameContainsProhibitedWordsDescription": string;
+    /**
+     * デフォルトでフォローするユーザー
+     */
+    "defaultFollowedUsers": string;
+    /**
+     * 今後アカウントが作成された際に自動でフォローされるユーザー（解除可能）を改行区切りで指定します。
+     */
+    "defaultFollowedUsersDescription": string;
+    /**
+     * 交流を断てないユーザー
+     */
+    "permanentFollowedUsers": string;
+    /**
+     * 今後アカウントが作成された際には自動でフォローされ、フォローの解除やミュート・ブロックができないユーザーを改行区切りで指定します。
+     */
+    "permanentFollowedUsersDescription": string;
+    /**
+     * 「デフォルトでフォローするユーザー」と「交流を絶てないユーザー」が重複しています。
+     */
+    "defaultFollowedUsersDuplicated": string;
+    /**
+     * サーバー管理者はこのユーザーをフォロー解除することを禁止しています。
+     */
+    "unfollowThisUserIsProhibited": string;
+    /**
+     * サーバー管理者はこのユーザーをブロックすることを禁止しています。
+     */
+    "blockThisUserIsProhibited": string;
+    /**
+     * サーバー管理者はこのユーザーをミュートすることを禁止しています。
+     */
+    "muteThisUserIsProhibited": string;
     "_abuseUserReport": {
         /**
          * 転送

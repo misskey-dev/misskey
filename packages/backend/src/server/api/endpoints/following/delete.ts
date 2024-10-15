@@ -7,8 +7,10 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { FollowingsRepository } from '@/models/_.js';
+import type { MiMeta } from '@/models/Meta.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
@@ -43,6 +45,13 @@ export const meta = {
 			code: 'NOT_FOLLOWING',
 			id: '5dbf82f5-c92b-40b1-87d1-6c8c0741fd09',
 		},
+
+		cannotUnfollowDueToServerPolicy: {
+			message: 'You cannot unfollow that user due to server policy.',
+			code: 'CANNOT_UNFOLLOW_DUE_TO_SERVER_POLICY',
+			id: '19f25f61-0141-4683-99dc-217a88d633cb',
+			httpStatusCode: 403,
+		},
 	},
 
 	res: {
@@ -63,9 +72,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
+		private roleService: RoleService,
 		private userEntityService: UserEntityService,
 		private getterService: GetterService,
 		private userFollowingService: UserFollowingService,
@@ -94,6 +107,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (!exist) {
 				throw new ApiError(meta.errors.notFollowing);
+			}
+
+			if (
+				this.serverSettings.permanentFollowedUsers.includes(followee.id) &&
+				!await this.roleService.isModerator(follower)
+			) {
+				throw new ApiError(meta.errors.cannotUnfollowDueToServerPolicy);
 			}
 
 			await this.userFollowingService.unfollow(follower, followee);

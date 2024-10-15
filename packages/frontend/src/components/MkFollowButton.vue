@@ -95,6 +95,14 @@ async function onClick() {
 
 			await misskeyApi('following/delete', {
 				userId: props.user.id,
+			}).catch((err) => {
+				if (err.id === '19f25f61-0141-4683-99dc-217a88d633cb') {
+					os.alert({
+						type: 'error',
+						title: i18n.ts.permissionDeniedError,
+						text: i18n.ts.unfollowThisUserProhibited,
+					});
+				}
 			});
 		} else {
 			if (defaultStore.state.alwaysConfirmFollow) {
