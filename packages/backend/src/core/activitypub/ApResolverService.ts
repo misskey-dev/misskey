@@ -106,7 +106,7 @@ export class Resolver {
 		const server = await this.federatedInstanceService.fetch(host);
 
 		const object = (this.user
-			? await this.apRequestService.signedGet(value, this.user, server.httpMessageSignaturesImplementationLevel) as IObject
+			? await this.apRequestService.signedGet(value, this.user, server?.httpMessageSignaturesImplementationLevel ?? '00') as IObject
 			: await this.httpRequestService.getActivityJson(value)) as IObject;
 
 		if (
