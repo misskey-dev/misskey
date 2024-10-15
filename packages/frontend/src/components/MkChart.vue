@@ -863,8 +863,8 @@ onMounted(() => {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	-webkit-backdrop-filter: var(--blur, blur(12px));
-	backdrop-filter: var(--blur, blur(12px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(12px));
+	backdrop-filter: var(--MI-blur, blur(12px));
 	display: flex;
 	justify-content: center;
 	align-items: center;

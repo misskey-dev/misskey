@@ -35,7 +35,7 @@ onMounted(() => {
 
 <style lang="scss" module>
 .root {
-	border: 1px solid var(--divider);
-	border-radius: var(--radius);
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: var(--MI-radius);
 }
 </style>

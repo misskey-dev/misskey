@@ -47,6 +47,6 @@ if (note.value?.url != null || note.value?.uri != null) {
 
 <style lang="scss" module>
 .noteEmbedRoot {
-	background-color: var(--panel);
+	background-color: var(--MI_THEME-panel);
 }
 </style>
