@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
 				<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
 				<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
+				<MkCaptcha v-if="instance.enableTestcaptcha" ref="testcaptcha" v-model="testcaptchaResponse" :class="$style.captcha" provider="testcaptcha"/>
 			</div>
 
 			<MkButton type="submit" :disabled="needCaptcha && captchaFailed" large primary rounded style="margin: 0 auto;" data-cy-signin-page-password-continue>{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
@@ -44,6 +45,7 @@ export type PwResponse = {
 		mCaptchaResponse: string | null;
 		reCaptchaResponse: string | null;
 		turnstileResponse: string | null;
+		testcaptchaResponse: string | null;
 	};
 };
 </script>
@@ -75,18 +77,21 @@ const hCaptcha = useTemplateRef('hcaptcha');
 const mCaptcha = useTemplateRef('mcaptcha');
 const reCaptcha = useTemplateRef('recaptcha');
 const turnstile = useTemplateRef('turnstile');
+const testcaptcha = useTemplateRef('testcaptcha');
 
 const hCaptchaResponse = ref<string | null>(null);
 const mCaptchaResponse = ref<string | null>(null);
 const reCaptchaResponse = ref<string | null>(null);
 const turnstileResponse = ref<string | null>(null);
+const testcaptchaResponse = ref<string | null>(null);
 
 const captchaFailed = computed((): boolean => {
 	return (
 		(instance.enableHcaptcha && !hCaptchaResponse.value) ||
 		(instance.enableMcaptcha && !mCaptchaResponse.value) ||
 		(instance.enableRecaptcha && !reCaptchaResponse.value) ||
-		(instance.enableTurnstile && !turnstileResponse.value)
+		(instance.enableTurnstile && !turnstileResponse.value) ||
+		(instance.enableTestcaptcha && !testcaptchaResponse.value)
 	);
 });
 
@@ -104,6 +109,7 @@ function onSubmit() {
 			mCaptchaResponse: mCaptchaResponse.value,
 			reCaptchaResponse: reCaptchaResponse.value,
 			turnstileResponse: turnstileResponse.value,
+			testcaptchaResponse: testcaptchaResponse.value,
 		},
 	});
 }
@@ -113,6 +119,7 @@ function resetCaptcha() {
 	mCaptcha.value?.reset();
 	reCaptcha.value?.reset();
 	turnstile.value?.reset();
+	testcaptcha.value?.reset();
 }
 
 defineExpose({
@@ -163,7 +170,7 @@ defineExpose({
 	margin: .4em auto;
 	width: 100%;
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .orMsg {
@@ -171,9 +178,9 @@ defineExpose({
 	top: -.6em;
 	display: inline-block;
 	padding: 0 1em;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	font-size: 0.8em;
-	color: var(--fgOnPanel);
+	color: var(--MI_THEME-fgOnPanel);
 	margin: 0;
 	left: 50%;
 	transform: translateX(-50%);

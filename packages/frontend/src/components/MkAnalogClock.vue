@@ -193,12 +193,12 @@ tick();
 
 function calcColors() {
 	const computedStyle = getComputedStyle(document.documentElement);
-	const dark = tinycolor(computedStyle.getPropertyValue('--bg')).isDark();
-	const accent = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
+	const dark = tinycolor(computedStyle.getPropertyValue('--MI_THEME-bg')).isDark();
+	const accent = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();
 	majorGraduationColor.value = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
 	//minorGraduationColor = dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 	sHandColor.value = dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
-	mHandColor.value = tinycolor(computedStyle.getPropertyValue('--fg')).toHexString();
+	mHandColor.value = tinycolor(computedStyle.getPropertyValue('--MI_THEME-fg')).toHexString();
 	hHandColor.value = accent;
 	nowColor.value = accent;
 }

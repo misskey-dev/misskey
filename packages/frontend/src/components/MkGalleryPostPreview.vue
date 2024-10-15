@@ -75,7 +75,7 @@ function leaveHover(): void {
 
 	&:hover {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 
 		> .thumbnail {
 			transform: scale(1.1);

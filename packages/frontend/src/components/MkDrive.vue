@@ -721,7 +721,7 @@ onBeforeUnmount(() => {
 	box-sizing: border-box;
 	overflow: auto;
 	font-size: 0.9em;
-	box-shadow: 0 1px 0 var(--divider);
+	box-shadow: 0 1px 0 var(--MI_THEME-divider);
 	user-select: none;
 }
 
@@ -768,7 +768,7 @@ onBeforeUnmount(() => {
 .main {
 	flex: 1;
 	overflow: auto;
-	padding: var(--margin);
+	padding: var(--MI-margin);
 	user-select: none;
 
 	&.fetching {
@@ -815,7 +815,7 @@ onBeforeUnmount(() => {
 	top: 38px;
 	width: 100%;
 	height: calc(100% - 38px);
-	border: dashed 2px var(--focus);
+	border: dashed 2px var(--MI_THEME-focus);
 	pointer-events: none;
 }
 </style>
