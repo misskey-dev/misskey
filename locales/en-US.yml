@@ -1984,7 +1984,6 @@ _theme:
     buttonBg: "Button background"
     buttonHoverBg: "Button background (Hover)"
     inputBorder: "Input field border"
-    listItemHoverBg: "List item background (Hover)"
     driveFolderBg: "Drive folder background"
     wallpaperOverlay: "Wallpaper overlay"
     badge: "Badge"
