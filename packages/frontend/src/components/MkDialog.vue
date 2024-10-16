@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed } from 'vue';
+import { ref, shallowRef, computed, onMounted, watch } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -200,6 +200,23 @@ function onInputKeydown(evt: KeyboardEvent) {
 		ok();
 	}
 }
+
+watch(okWaitInitiated, () => {
+	sec.value = props.okWaitDuration;
+});
+
+onMounted(() => {
+	sec.value = props.okWaitDuration;
+	if (sec.value > 0) {
+		const waitTimer = setInterval(() => {
+			if (!okWaitInitiated.value) return;
+			if (sec.value < 0) {
+				clearInterval(waitTimer);
+			}
+			sec.value = sec.value - 1;
+		}, 1000);
+	}
+});
 </script>
 
 <style lang="scss" module>
