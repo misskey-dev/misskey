@@ -68,6 +68,8 @@ import { nextTick, onBeforeUnmount, ref, shallowRef, useTemplateRef } from 'vue'
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
 
+import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
+import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import { login } from '@/account.js';
@@ -79,11 +81,8 @@ import XPassword, { type PwResponse } from '@/components/MkSignin.password.vue';
 import XTotp from '@/components/MkSignin.totp.vue';
 import XPasskey from '@/components/MkSignin.passkey.vue';
 
-import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
-import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
-
 const emit = defineEmits<{
-	(ev: 'login', v: Misskey.entities.SigninFlowResponse): void;
+	(ev: 'login', v: Misskey.entities.SigninFlowResponse & { finished: true }): void;
 }>();
 
 const props = withDefaults(defineProps<{
@@ -188,6 +187,7 @@ async function onPasswordSubmitted(pw: PwResponse) {
 			'm-captcha-response': pw.captcha.mCaptchaResponse,
 			'g-recaptcha-response': pw.captcha.reCaptchaResponse,
 			'turnstile-response': pw.captcha.turnstileResponse,
+			'testcaptcha-response': pw.captcha.testcaptchaResponse,
 		});
 	}
 }
@@ -276,7 +276,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 	});
 }
 
-async function onLoginSucceeded(res: Misskey.entities.SigninFlowResponse & { finished: true; }) {
+async function onLoginSucceeded(res: Misskey.entities.SigninFlowResponse & { finished: true }) {
 	if (props.autoSet) {
 		await login(res.i);
 	}
@@ -409,7 +409,7 @@ onBeforeUnmount(() => {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: color-mix(in srgb, var(--panel), transparent 50%);
+	background-color: color-mix(in srgb, var(--MI_THEME-panel), transparent 50%);
 	display: flex;
 	justify-content: center;
 	align-items: center;

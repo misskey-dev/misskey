@@ -9,10 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
 			<div :key="src" ref="rootEl">
-				<MkInfo v-if="isBasicTimeline(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
+				<MkInfo v-if="isBasicTimeline(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--MI-margin);" closable @close="closeTutorial()">
 					{{ i18n.ts._timelineDescription[src] }}
 				</MkInfo>
-				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
+				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--MI-margin);"/>
 				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 				<div :class="$style.tl">
 					<MkTimeline
@@ -345,30 +345,30 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .new {
 	position: sticky;
-	top: calc(var(--stickyTop, 0px) + 16px);
+	top: calc(var(--MI-stickyTop, 0px) + 16px);
 	z-index: 1000;
 	width: 100%;
 	margin: calc(-0.675em - 8px) 0;
 
 	&:first-child {
-		margin-top: calc(-0.675em - 8px - var(--margin));
+		margin-top: calc(-0.675em - 8px - var(--MI-margin));
 	}
 }
 
 .newButton {
 	display: block;
-	margin: var(--margin) auto 0 auto;
+	margin: var(--MI-margin) auto 0 auto;
 	padding: 8px 16px;
 	border-radius: 32px;
 }
 
 .postForm {
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .tl {
-	background: var(--bg);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-bg);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 }
 </style>

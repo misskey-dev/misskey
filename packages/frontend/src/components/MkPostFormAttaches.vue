@@ -216,7 +216,7 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 	width: 100%;
 	height: 100%;
 	z-index: 1;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 
 .sensitive {
