@@ -18,8 +18,8 @@ export type APIError = {
 	info: Record<string, any>;
 };
 
-export function isAPIError(reason: any) {
-	return reason instanceof Error && MK_API_ERROR in reason;
+export function isAPIError(reason: Record<PropertyKey, unknown>): reason is APIError {
+	return reason[MK_API_ERROR] === true;
 }
 
 export type FetchLike = (input: string, init?: {
@@ -117,11 +117,12 @@ export class APIClient {
 				if (res.status === 200 || res.status === 204) {
 					resolve(body);
 				} else {
-					reject(new Error(body.error));
+					reject({
+						[MK_API_ERROR]: true,
+						...body.error,
+					});
 				}
-			}).catch((reason) => {
-				reject(new Error(reason));
-			});
+			}).catch(reject);
 		});
 	}
 }
