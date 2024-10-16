@@ -22,24 +22,24 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-	<style>
-		#g8 {
-    	animation-name: floating;
-    	animation-duration: 3s;
-    	animation-iteration-count: infinite;
-   	 	animation-timing-function: ease-in-out;
-		}
+  <style>
+    #g8 {
+      animation-name: floating;
+      animation-duration: 3s;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+    }
 
-		@keyframes floating {
-    	0% { transform: translate(0,  0px); }
-    	50% { transform: translate(0, -5px); }
-    	100% { transform: translate(0, 0px); }
-		}
-	</style>
-	<linearGradient id="myGradient" gradientTransform="rotate(90)">
-      <stop offset="5%"  stop-color="#A1CA03" />
-      <stop offset="95%" stop-color="#91BA03" />
-    </linearGradient>
+    @keyframes floating {
+      0% { transform: translate(0,  0px); }
+      50% { transform: translate(0, -5px); }
+      100% { transform: translate(0, 0px); }
+    }
+  </style>
+  <linearGradient id="myGradient" gradientTransform="rotate(90)">
+      <stop offset="5%"  stop-color="#A0458F" />
+      <stop offset="95%" stop-color="#6A5DD8" />
+  </linearGradient>
   <defs
      id="defs14" />
   <g
