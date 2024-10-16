@@ -32,7 +32,7 @@ import { focusParent } from '@/scripts/focus.js';
 export const openingWindowsCount = ref(0);
 
 type CustomErrorDef<T> = {
-	[key in T extends { code: infer C; } ? C extends string ? C : string : string]?: { title?: string; text: string; };
+	[key in T extends { id: infer C; } ? C extends string ? C : string : string]?: { title?: string; text: string; };
 };
 
 export function apiWithDialog<
@@ -46,76 +46,49 @@ export function apiWithDialog<
 	customErrors?: CustomErrorDef<ER>,
 ) {
 	const promise = misskeyApi(endpoint, data, token);
-	promiseDialog(promise, null, async (err: Error) => {
+	promiseDialog(promise, null, async (err) => {
 		let title: string | undefined;
-		let text: string;
-
-		const initialText: string[] = [];
-		if ('message' in err && err.message != null) {
-			initialText.push(err.message);
-		}
-		if (Misskey.api.isAPIError<ER>(err) && 'id' in err.payload && err.payload.id != null) {
-			initialText.push(err.payload.id);
-		}
-		text = initialText.join('\n');
-
-		if (Misskey.api.isAPIError<ER>(err)) {
-			const { payload } = err;
-			if ('code' in payload && payload.code != null) {
-				if (customErrors && customErrors[payload.code] != null) {
-					title = customErrors[payload.code].title;
-					text = customErrors[payload.code].text;
-				} else if (payload.code === 'INTERNAL_ERROR') {
-					title = i18n.ts.internalServerError;
-					text = i18n.ts.internalServerErrorDescription;
-					const date = new Date().toISOString();
-					const { result } = await actions({
-						type: 'error',
-						title,
-						text,
-						actions: [{
-							value: 'ok',
-							text: i18n.ts.gotIt,
-							primary: true,
-						}, {
-							value: 'copy',
-							text: i18n.ts.copyErrorInfo,
-						}],
-					});
-					if (result === 'copy') {
-						const text = [
-							`Endpoint: ${endpoint}`,
-							('info' in err) ? `Info: ${JSON.stringify(err.info)}` : undefined,
-							`Date: ${date}`,
-						].filter(x => x != null);
-						copyToClipboard(text.join('\n'));
-						success();
-					}
-					return;
-				} else if (payload.code === 'RATE_LIMIT_EXCEEDED') {
-					title = i18n.ts.cannotPerformTemporary;
-					text = i18n.ts.cannotPerformTemporaryDescription;
-				} else if (payload.code === 'INVALID_PARAM') {
-					title = i18n.ts.invalidParamError;
-					text = i18n.ts.invalidParamErrorDescription;
-				} else if (payload.code === 'ROLE_PERMISSION_DENIED') {
-					title = i18n.ts.permissionDeniedError;
-					text = i18n.ts.permissionDeniedErrorDescription;
-				} else if (payload.code.startsWith('TOO_MANY')) {
-					title = i18n.ts.youCannotCreateAnymore;
-					if ('id' in err && err.id != null) {
-						text = `${i18n.ts.error}: ${err.id}`;
-					} else {
-						text = `${i18n.ts.error}`;
-					}
-				} else if (err.message.startsWith('Unexpected token')) {
-					title = i18n.ts.gotInvalidResponseError;
-					text = i18n.ts.gotInvalidResponseErrorDescription;
-				}
-			} else if (err.message.startsWith('Unexpected token')) {
-				title = i18n.ts.gotInvalidResponseError;
-				text = i18n.ts.gotInvalidResponseErrorDescription;
+		let text = err.message + '\n' + err.id;
+		if (err.code === 'INTERNAL_ERROR') {
+			title = i18n.ts.internalServerError;
+			text = i18n.ts.internalServerErrorDescription;
+			const date = new Date().toISOString();
+			const { result } = await actions({
+				type: 'error',
+				title,
+				text,
+				actions: [{
+					value: 'ok',
+					text: i18n.ts.gotIt,
+					primary: true,
+				}, {
+					value: 'copy',
+					text: i18n.ts.copyErrorInfo,
+				}],
+			});
+			if (result === 'copy') {
+				copyToClipboard(`Endpoint: ${endpoint}\nInfo: ${JSON.stringify(err.info)}\nDate: ${date}`);
+				success();
 			}
+			return;
+		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
+			title = i18n.ts.cannotPerformTemporary;
+			text = i18n.ts.cannotPerformTemporaryDescription;
+		} else if (err.code === 'INVALID_PARAM') {
+			title = i18n.ts.invalidParamError;
+			text = i18n.ts.invalidParamErrorDescription;
+		} else if (err.code === 'ROLE_PERMISSION_DENIED') {
+			title = i18n.ts.permissionDeniedError;
+			text = i18n.ts.permissionDeniedErrorDescription;
+		} else if (err.code.startsWith('TOO_MANY')) {
+			title = i18n.ts.youCannotCreateAnymore;
+			text = `${i18n.ts.error}: ${err.id}`;
+		} else if (err.message.startsWith('Unexpected token')) {
+			title = i18n.ts.gotInvalidResponseError;
+			text = i18n.ts.gotInvalidResponseErrorDescription;
+		} else if (customErrors && customErrors[err.id] != null) {
+			title = customErrors[err.id].title;
+			text = customErrors[err.id].text;
 		}
 		alert({
 			type: 'error',
