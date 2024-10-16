@@ -32,7 +32,7 @@ import { focusParent } from '@/scripts/focus.js';
 export const openingWindowsCount = ref(0);
 
 type CustomErrorDef<T> = {
-	[key in T extends { id: infer C; } ? C extends string ? C : string : string]?: { title?: string; text: string; };
+	[key in T extends { code: infer C; } ? C extends string ? Exclude<C, keyof Misskey.entities.CommonErrorTypes> : string : string]?: { title?: string; text: string; };
 };
 
 export function apiWithDialog<

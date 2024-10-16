@@ -1423,6 +1423,15 @@ type ClipsUpdateRequest = operations['clips___update']['requestBody']['content']
 type ClipsUpdateResponse = operations['clips___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type CommonErrorTypes = {
+    'INVALID_PARAM': IdentifiableError['3d81ceae-475f-4600-b2a8-2bc116157532'];
+    'CREDENTIAL_REQUIRED': IdentifiableError['1384574d-a912-4b81-8601-c7b1c4085df1'];
+    'AUTHENTICATION_FAILED': IdentifiableError['b0a7f5f8-dc2f-4171-b91f-de88ad238e14'];
+    'I_AM_AI': IdentifiableError['60c46cd1-f23a-46b1-bebe-5d2b73951a84'];
+    'INTERNAL_ERROR': IdentifiableError['5d37dbcb-891e-41ca-a3d6-e690c97775ac'];
+};
+
+// @public (undocumented)
 type DateString = string;
 
 // @public (undocumented)
@@ -1715,6 +1724,7 @@ type EndpointsResponse = operations['endpoints']['responses']['200']['content'][
 
 declare namespace entities {
     export {
+        CommonErrorTypes,
         ID,
         DateString,
         PureRenote,
@@ -4998,7 +5008,8 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/autogen/endpointErrors.ts:994:2 - (ae-forgotten-export) The symbol "IdentifiableError" needs to be exported by the entry point index.d.ts
+// src/entities.ts:51:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 

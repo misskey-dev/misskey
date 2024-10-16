@@ -13,6 +13,7 @@ import {
 import type { AuthenticationResponseJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
 
 export * from './autogen/entities.js';
+export { CommonErrorTypes } from './autogen/endpointErrors.js';
 export * from './autogen/models.js';
 
 export type ID = string;

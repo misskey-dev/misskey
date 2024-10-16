@@ -9,6 +9,16 @@ const disabledLints = [
 	'@typescript-eslint/no-explicit-any',
 ];
 
+const commonErrorNames = [
+	'INVALID_PARAM',
+	'CREDENTIAL_REQUIRED',
+	'AUTHENTICATION_FAILED',
+	'I_AM_AI',
+	'INTERNAL_ERROR',
+];
+
+const commonErrorTypesName = 'CommonErrorTypes';
+
 async function generateBaseTypes(
 	openApiDocs: OpenAPIV3_1.Document,
 	openApiJsonPath: string,
@@ -84,6 +94,8 @@ async function generateEndpointErrors(
 
 	const errorWithIdTypes = new Map<string, string>();
 
+	const foundCommonErrorNamesAndErrorId = new Map<string, string>();
+
 	endpointsErrorsOutputLine.push('export type EndpointsErrors = {');
 
 	for (const operation of postPathItems) {
@@ -122,24 +134,44 @@ async function generateEndpointErrors(
 			});
 
 			if (errorTypes.size > 0) {
-				endpointsErrorsOutputLine.push(`\t'${operationId}': {`);
+				const endpointErrorsLine: string[] = [];
+				let hasCommonError = false;
 				for (const [key, value] of errorTypes) {
 					if ('error' in value && value.error != null) {
 						let typeString = JSON.stringify(value.error);
 						typeString = typeString.substring(0, typeString.length - 1) + ', [x: string]: any ' + typeString.substring(typeString.length - 1);
 						if ('id' in value.error && value.error.id != null) {
 							errorWithIdTypes.set(value.error.id, typeString);
-							endpointsErrorsOutputLine.push(`\t\t'${key}': IdentifiableError['${value.error.id}'],`);
+							if (commonErrorNames.includes(key)) {
+								foundCommonErrorNamesAndErrorId.set(key, value.error.id);
+								hasCommonError = true;
+							} else {
+								endpointErrorsLine.push(`\t\t'${key}': IdentifiableError['${value.error.id}'],`);
+							}
 						} else {
-							endpointsErrorsOutputLine.push(`\t\t'${key}': ${typeString},`);
+							endpointErrorsLine.push(`\t\t'${key}': ${typeString},`);
 						}
 					}
 				}
-				endpointsErrorsOutputLine.push('\t},');
+
+				if (endpointErrorsLine.length > 0) {
+					endpointsErrorsOutputLine.push(`\t'${operationId}': {`);
+					endpointsErrorsOutputLine.push(...endpointErrorsLine);
+					endpointsErrorsOutputLine.push(hasCommonError ? `\t} & ${commonErrorTypesName},` : '\t},');
+				} else if (hasCommonError) {
+					endpointsErrorsOutputLine.push(`\t'${operationId}': ${commonErrorTypesName},`);
+				}
 			}
 		}
 	}
 
+	endpointsErrorsOutputLine.push('};');
+	endpointsErrorsOutputLine.push('');
+
+	endpointsErrorsOutputLine.push(`export type ${commonErrorTypesName} = {`);
+	for (const [key, value] of foundCommonErrorNamesAndErrorId) {
+		endpointsErrorsOutputLine.push(`\t'${key}': IdentifiableError['${value}'],`);
+	}
 	endpointsErrorsOutputLine.push('};');
 	endpointsErrorsOutputLine.push('');
 
@@ -148,7 +180,6 @@ async function generateEndpointErrors(
 		endpointsErrorsOutputLine.push(`\t'${key}': ${value},`);
 	}
 	endpointsErrorsOutputLine.push('};');
-
 	await writeFile(endpointErrorsOutputPath, endpointsErrorsOutputLine.join('\n'));
 }
 
