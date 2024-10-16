@@ -14,7 +14,6 @@ export function misskeyApi<
 	ResT = void,
 	E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints,
 	P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req'],
-	ER extends Misskey.Endpoints[E]['errors'] = Misskey.Endpoints[E]['errors'],
 	_ResT = ResT extends void ? Misskey.api.SwitchCaseResponseType<E, P> : ResT,
 >(
 	endpoint: E,
@@ -48,15 +47,13 @@ export function misskeyApi<
 			const body = res.status === 204 ? null : await res.json();
 
 			if (res.status === 200) {
-				resolve(body as _ResT);
+				resolve(body);
 			} else if (res.status === 204) {
 				resolve(undefined as _ResT); // void -> undefined
 			} else {
-				reject(new Misskey.api.APIError<ER>(body.error));
+				reject(body.error);
 			}
-		}).catch((reason) => {
-			reject(new Error(reason));
-		});
+		}).catch(reject);
 	});
 
 	promise.then(onFinally, onFinally);
@@ -69,7 +66,6 @@ export function misskeyApiGet<
 	ResT = void,
 	E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints,
 	P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req'],
-	ER extends Misskey.Endpoints[E]['errors'] = Misskey.Endpoints[E]['errors'],
 	_ResT = ResT extends void ? Misskey.api.SwitchCaseResponseType<E, P> : ResT,
 >(
 	endpoint: E,
@@ -97,11 +93,9 @@ export function misskeyApiGet<
 			} else if (res.status === 204) {
 				resolve(undefined as _ResT); // void -> undefined
 			} else {
-				reject(new Misskey.api.APIError<ER>(body.error));
+				reject(body.error);
 			}
-		}).catch((reason) => {
-			reject(new Error(reason));
-		});
+		}).catch(reject);
 	});
 
 	promise.then(onFinally, onFinally);
