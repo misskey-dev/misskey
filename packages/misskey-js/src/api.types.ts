@@ -1,13 +1,15 @@
 import { Endpoints as Gen } from './autogen/endpoint.js';
 import { UserDetailed } from './autogen/models.js';
-import { AdminRolesCreateRequest, AdminRolesCreateResponse, UsersShowRequest, UsersShowErrors } from './autogen/entities.js';
+import { AdminRolesCreateRequest, AdminRolesCreateResponse, UsersShowRequest, UsersShowErrors, AdminRolesCreateErrors } from './autogen/entities.js';
 import {
 	PartialRolePolicyOverride,
 	SigninFlowRequest,
 	SigninFlowResponse,
+	SigninFlowErrors,
 	SigninWithPasskeyInitResponse,
 	SigninWithPasskeyRequest,
 	SigninWithPasskeyResponse,
+	SigninWithPasskeyErrors,
 	SignupPendingRequest,
 	SignupPendingResponse,
 	SignupRequest,
@@ -88,6 +90,7 @@ export type Endpoints = Overwrite<
 		'signin-flow': {
 			req: SigninFlowRequest;
 			res: SigninFlowResponse;
+			errors: SigninFlowErrors;
 		},
 		'signin-with-passkey': {
 			req: SigninWithPasskeyRequest;
@@ -104,10 +107,12 @@ export type Endpoints = Overwrite<
 					$default: SigninWithPasskeyInitResponse;
 				},
 			},
+			errors: SigninWithPasskeyErrors;
 		},
 		'admin/roles/create': {
 			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;
 			res: AdminRolesCreateResponse;
+			errors: AdminRolesCreateErrors;
 		}
 	}
 >
