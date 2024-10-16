@@ -1679,6 +1679,7 @@ export type Endpoints = Overwrite<Endpoints_2, {
     'signin-flow': {
         req: SigninFlowRequest;
         res: SigninFlowResponse;
+        errors: SigninFlowErrors;
     };
     'signin-with-passkey': {
         req: SigninWithPasskeyRequest;
@@ -1695,12 +1696,14 @@ export type Endpoints = Overwrite<Endpoints_2, {
                 $default: SigninWithPasskeyInitResponse;
             };
         };
+        errors: SigninWithPasskeyErrors;
     };
     'admin/roles/create': {
         req: Overwrite<AdminRolesCreateRequest, {
             policies: PartialRolePolicyOverride;
         }>;
         res: AdminRolesCreateResponse;
+        errors: AdminRolesCreateErrors;
     };
 }>;
 
@@ -1732,10 +1735,11 @@ declare namespace entities {
         SignupErrors,
         SigninFlowRequest,
         SigninFlowResponse,
-        SigninErrors,
+        SigninFlowErrors,
         SigninWithPasskeyRequest,
         SigninWithPasskeyInitResponse,
         SigninWithPasskeyResponse,
+        SigninWithPasskeyErrors,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
@@ -3515,7 +3519,7 @@ type IRevokeTokenErrors = EndpointsErrors['i___revoke-token'][keyof EndpointsErr
 type IRevokeTokenRequest = operations['i___revoke-token']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-function isAPIError(reason: any): reason is Error & Record<typeof MK_API_ERROR, unknown>;
+function isAPIError(reason: Record<PropertyKey, unknown>): reason is APIError;
 
 // @public (undocumented)
 type ISigninHistoryErrors = EndpointsErrors['i___signin-history'][keyof EndpointsErrors['i___signin-history']];
@@ -4484,8 +4488,10 @@ type ServerStatsLog = ServerStats[];
 // @public (undocumented)
 type Signin = components['schemas']['Signin'];
 
+// Warning: (ae-forgotten-export) The symbol "WebAuthnServiceErrors" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-type SigninErrors = {
+type SigninFlowErrors = {
     message: 'Too many failed attempts to sign in. Try again later.';
     code: 'TOO_MANY_AUTHENTICATION_FAILURES';
     id: '22d05606-fbcf-421a-a2db-b32610dcfd1b';
@@ -4501,7 +4507,7 @@ type SigninErrors = {
     id: 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f';
 } | {
     id: '93b86c4b-72f9-40eb-9815-798928603d1e';
-};
+} | WebAuthnServiceErrors;
 
 // @public (undocumented)
 type SigninFlowRequest = {
@@ -4528,6 +4534,25 @@ type SigninFlowResponse = {
     next: 'passkey';
     authRequest: PublicKeyCredentialRequestOptionsJSON;
 };
+
+// @public (undocumented)
+type SigninWithPasskeyErrors = {
+    message: 'Too many failed attempts to sign in. Try again later.';
+    code: 'TOO_MANY_AUTHENTICATION_FAILURES';
+    id: '22d05606-fbcf-421a-a2db-b32610dcfd1b';
+} | {
+    id: '4e30e80c-e338-45a0-8c8f-44455efa3b76';
+} | {
+    id: '1658cc2e-4495-461f-aee4-d403cdf073c1';
+} | {
+    id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c';
+} | {
+    id: '652f899f-66d4-490e-993e-6606c8ec04c3';
+} | {
+    id: 'e03a5f46-d309-4865-9b69-56282d94e1eb';
+} | {
+    id: '2d84773e-f7b7-4d0b-8f72-bb69b584c912';
+} | WebAuthnServiceErrors;
 
 // @public (undocumented)
 type SigninWithPasskeyInitResponse = {
