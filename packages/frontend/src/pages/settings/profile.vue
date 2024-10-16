@@ -142,13 +142,17 @@ const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.d
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 
+function assertVaildLang(lang: string | null): lang is keyof typeof langmap {
+	return lang != null && lang in langmap;
+}
+
 const profile = reactive({
 	name: $i.name,
 	description: $i.description,
 	followedMessage: $i.followedMessage,
 	location: $i.location,
 	birthday: $i.birthday,
-	lang: $i.lang,
+	lang: assertVaildLang($i.lang) ? $i.lang : null,
 	isBot: $i.isBot ?? false,
 	isCat: $i.isCat ?? false,
 });
@@ -202,6 +206,11 @@ function save() {
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
+	}, undefined, {
+		'0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191': {
+			title: i18n.ts.yourNameContainsProhibitedWords,
+			text: i18n.ts.yourNameContainsProhibitedWordsDescription,
+		},
 	});
 	globalEvents.emit('requestClearPageCache');
 	claimAchievement('profileFilled');
@@ -282,7 +291,7 @@ definePageMetadata(() => ({
 	height: 130px;
 	background-size: cover;
 	background-position: center;
-	border-bottom: solid 1px var(--divider);
+	border-bottom: solid 1px var(--MI_THEME-divider);
 	overflow: clip;
 }
 

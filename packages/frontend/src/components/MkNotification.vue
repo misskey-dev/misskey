@@ -222,11 +222,13 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	overflow-wrap: break-word;
 	display: flex;
 	contain: content;
+	content-visibility: auto;
+	contain-intrinsic-size: 0 100px;
 
 	--eventFollow: #36aed2;
 	--eventRenote: #36d298;
 	--eventReply: #007aff;
-	--eventReactionHeart: var(--love);
+	--eventReactionHeart: var(--MI_THEME-love);
 	--eventReaction: #e99a0b;
 	--eventAchievement: #cb9a11;
 	--eventLogin: #007aff;
@@ -286,8 +288,8 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	height: 20px;
 	box-sizing: border-box;
 	border-radius: 100%;
-	background: var(--panel);
-	box-shadow: 0 0 0 3px var(--panel);
+	background: var(--MI_THEME-panel);
+	box-shadow: 0 0 0 3px var(--MI_THEME-panel);
 	font-size: 11px;
 	text-align: center;
 	color: #fff;
@@ -439,8 +441,8 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	height: 20px;
 	box-sizing: border-box;
 	border-radius: 100%;
-	background: var(--panel);
-	box-shadow: 0 0 0 3px var(--panel);
+	background: var(--MI_THEME-panel);
+	box-shadow: 0 0 0 3px var(--MI_THEME-panel);
 	font-size: 11px;
 	text-align: center;
 	color: #fff;

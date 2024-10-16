@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed } from 'vue';
+import { ref, shallowRef, computed, onMounted, watch } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -200,6 +200,23 @@ function onInputKeydown(evt: KeyboardEvent) {
 		ok();
 	}
 }
+
+watch(okWaitInitiated, () => {
+	sec.value = props.okWaitDuration;
+});
+
+onMounted(() => {
+	sec.value = props.okWaitDuration;
+	if (sec.value > 0) {
+		const waitTimer = setInterval(() => {
+			if (!okWaitInitiated.value) return;
+			if (sec.value < 0) {
+				clearInterval(waitTimer);
+			}
+			sec.value = sec.value - 1;
+		}, 1000);
+	}
+});
 </script>
 
 <style lang="scss" module>
@@ -211,7 +228,7 @@ function onInputKeydown(evt: KeyboardEvent) {
 	max-width: 480px;
 	box-sizing: border-box;
 	text-align: center;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 16px;
 }
 
@@ -233,15 +250,15 @@ function onInputKeydown(evt: KeyboardEvent) {
 }
 
 .type_success {
-	color: var(--success);
+	color: var(--MI_THEME-success);
 }
 
 .type_error {
-	color: var(--error);
+	color: var(--MI_THEME-error);
 }
 
 .type_warning {
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 }
 
 .title {
