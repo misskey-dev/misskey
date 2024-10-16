@@ -34,6 +34,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 
 					<MkFolder>
+						<template #icon><i class="ti ti-user-star"></i></template>
+						<template #label>{{ i18n.ts.defaultFollowedUsers }}</template>
+
+						<div class="_gaps">
+							<MkTextarea v-model="defaultFollowedUsers">
+								<template #label>{{ i18n.ts.defaultFollowedUsers }}</template>
+								<template #caption>{{ i18n.ts.defaultFollowedUsersDescription }}</template>
+							</MkTextarea>
+							<MkTextarea v-model="permanentFollowedUsers">
+								<template #label>{{ i18n.ts.permanentFollowedUsers }}</template>
+								<template #caption>{{ i18n.ts.permanentFollowedUsersDescription }}</template>
+							</MkTextarea>
+							<MkButton primary @click="save_defaultUsers">{{ i18n.ts.save }}</MkButton>
+						</div>
+					</MkFolder>
+
+					<MkFolder>
 						<template #icon><i class="ti ti-message-exclamation"></i></template>
 						<template #label>{{ i18n.ts.sensitiveWords }}</template>
 
@@ -146,6 +163,8 @@ const prohibitedWords = ref<string>('');
 const prohibitedWordsForNameOfUser = ref<string>('');
 const hiddenTags = ref<string>('');
 const preservedUsernames = ref<string>('');
+const defaultFollowedUsers = ref<string>('');
+const permanentFollowedUsers = ref<string>('');
 const blockedHosts = ref<string>('');
 const silencedHosts = ref<string>('');
 const mediaSilencedHosts = ref<string>('');
@@ -159,6 +178,8 @@ async function init() {
 	prohibitedWordsForNameOfUser.value = meta.prohibitedWordsForNameOfUser.join('\n');
 	hiddenTags.value = meta.hiddenTags.join('\n');
 	preservedUsernames.value = meta.preservedUsernames.join('\n');
+	defaultFollowedUsers.value = meta.defaultFollowedUsers.join('\n');
+	permanentFollowedUsers.value = meta.permanentFollowedUsers.join('\n');
 	blockedHosts.value = meta.blockedHosts.join('\n');
 	silencedHosts.value = meta.silencedHosts?.join('\n') ?? '';
 	mediaSilencedHosts.value = meta.mediaSilencedHosts.join('\n');
@@ -183,6 +204,19 @@ function onChange_emailRequiredForSignup(value: boolean) {
 function save_preservedUsernames() {
 	os.apiWithDialog('admin/update-meta', {
 		preservedUsernames: preservedUsernames.value.split('\n'),
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_defaultUsers() {
+	os.apiWithDialog('admin/update-meta', {
+		defaultFollowedUsers: defaultFollowedUsers.value.split('\n'),
+		permanentFollowedUsers: permanentFollowedUsers.value.split('\n'),
+	}, undefined, {
+		'bcf088ec-fec5-42d0-8b9e-16d3b4797a4d': {
+			text: i18n.ts.defaultFollowedUsersDuplicated,
+		}
 	}).then(() => {
 		fetchInstance(true);
 	});

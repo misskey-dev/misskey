@@ -7,8 +7,10 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, BlockingsRepository } from '@/models/_.js';
+import type { MiMeta } from '@/models/Meta.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
@@ -43,6 +45,13 @@ export const meta = {
 			code: 'ALREADY_BLOCKING',
 			id: '787fed64-acb9-464a-82eb-afbd745b9614',
 		},
+
+		cannotBlockDueToServerPolicy: {
+			message: 'You cannot block that user due to server policy.',
+			code: 'CANNOT_BLOCK_DUE_TO_SERVER_POLICY',
+			id: 'e2f04d25-0d94-4ac3-a4d8-ba401062741b',
+			httpStatusCode: 403,
+		},
 	},
 
 	res: {
@@ -63,12 +72,16 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
 
+		private roleService: RoleService,
 		private userEntityService: UserEntityService,
 		private getterService: GetterService,
 		private userBlockingService: UserBlockingService,
@@ -97,6 +110,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (exist) {
 				throw new ApiError(meta.errors.alreadyBlocking);
+			}
+
+			if (
+				this.serverSettings.permanentFollowedUsers.includes(blockee.id) &&
+				!await this.roleService.isModerator(blocker)
+			) {
+				throw new ApiError(meta.errors.cannotBlockDueToServerPolicy);
 			}
 
 			await this.userBlockingService.block(blocker, blockee);

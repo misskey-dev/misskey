@@ -61,6 +61,22 @@ export class MiMeta {
 	})
 	public pinnedUsers: string[];
 
+	/**
+	 * アカウント作成の段階でデフォルトでフォローしているユーザー（あとから解除可能）
+	 */
+	@Column('varchar', {
+		length: 1024, array: true, default: '{}',
+	})
+	public defaultFollowedUsers: string[];
+
+	/**
+	 * デフォルトでフォローしていて、フォロー解除・ブロック・ミュートができないユーザー
+	 */
+	@Column('varchar', {
+		length: 1024, array: true, default: '{}',
+	})
+	public permanentFollowedUsers: string[];
+
 	@Column('varchar', {
 		length: 1024, array: true, default: '{}',
 	})

@@ -7,9 +7,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MutingsRepository } from '@/models/_.js';
+import type { MiMeta } from '@/models/Meta.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -43,6 +45,13 @@ export const meta = {
 			code: 'ALREADY_MUTING',
 			id: '7e7359cb-160c-4956-b08f-4d1c653cd007',
 		},
+
+		cannotMuteDueToServerPolicy: {
+			message: 'You cannot mute that user due to server policy.',
+			code: 'CANNOT_MUTE_DUE_TO_SERVER_POLICY',
+			id: '15273a89-374d-49fa-8df6-8bb3feeea455',
+			httpStatusCode: 403,
+		},
 	},
 } as const;
 
@@ -62,9 +71,13 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
+		private roleService: RoleService,
 		private getterService: GetterService,
 		private userMutingService: UserMutingService,
 	) {
@@ -92,6 +105,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (exist) {
 				throw new ApiError(meta.errors.alreadyMuting);
+			}
+
+			if (
+				this.serverSettings.permanentFollowedUsers.includes(mutee.id) &&
+				!await this.roleService.isModerator(muter)
+			) {
+				throw new ApiError(meta.errors.cannotMuteDueToServerPolicy);
 			}
 
 			if (ps.expiresAt && ps.expiresAt <= Date.now()) {
