@@ -1,17 +1,20 @@
 import { Endpoints as Gen } from './autogen/endpoint.js';
 import { UserDetailed } from './autogen/models.js';
-import { AdminRolesCreateRequest, AdminRolesCreateResponse, UsersShowRequest } from './autogen/entities.js';
+import { AdminRolesCreateRequest, AdminRolesCreateResponse, UsersShowRequest, UsersShowErrors, AdminRolesCreateErrors } from './autogen/entities.js';
 import {
 	PartialRolePolicyOverride,
 	SigninFlowRequest,
 	SigninFlowResponse,
+	SigninFlowErrors,
 	SigninWithPasskeyInitResponse,
 	SigninWithPasskeyRequest,
 	SigninWithPasskeyResponse,
+	SigninWithPasskeyErrors,
 	SignupPendingRequest,
 	SignupPendingResponse,
 	SignupRequest,
 	SignupResponse,
+	SignupErrors,
 } from './entities.js';
 
 type Overwrite<T, U extends { [Key in keyof T]?: unknown }> = Omit<
@@ -69,21 +72,25 @@ export type Endpoints = Overwrite<
 					$default: UserDetailed;
 				};
 			};
+			errors: UsersShowErrors;
 		},
 		// api.jsonには載せないものなのでここで定義
 		'signup': {
 			req: SignupRequest;
 			res: SignupResponse;
+			errors: SignupErrors;
 		},
 		// api.jsonには載せないものなのでここで定義
 		'signup-pending': {
 			req: SignupPendingRequest;
 			res: SignupPendingResponse;
+			errors: SignupErrors;
 		},
 		// api.jsonには載せないものなのでここで定義
 		'signin-flow': {
 			req: SigninFlowRequest;
 			res: SigninFlowResponse;
+			errors: SigninFlowErrors;
 		},
 		'signin-with-passkey': {
 			req: SigninWithPasskeyRequest;
@@ -100,10 +107,12 @@ export type Endpoints = Overwrite<
 					$default: SigninWithPasskeyInitResponse;
 				},
 			},
+			errors: SigninWithPasskeyErrors;
 		},
 		'admin/roles/create': {
 			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;
 			res: AdminRolesCreateResponse;
+			errors: AdminRolesCreateErrors;
 		}
 	}
 >

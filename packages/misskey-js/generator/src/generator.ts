@@ -4,16 +4,26 @@ import { toPascal } from 'ts-case-convert';
 import OpenAPIParser from '@readme/openapi-parser';
 import openapiTS from 'openapi-typescript';
 
+const disabledLints = [
+	'@typescript-eslint/naming-convention',
+	'@typescript-eslint/no-explicit-any',
+];
+
+const commonErrorNames = [
+	'INVALID_PARAM',
+	'CREDENTIAL_REQUIRED',
+	'AUTHENTICATION_FAILED',
+	'I_AM_AI',
+	'INTERNAL_ERROR',
+];
+
+const commonErrorTypesName = 'CommonErrorTypes';
+
 async function generateBaseTypes(
 	openApiDocs: OpenAPIV3_1.Document,
 	openApiJsonPath: string,
 	typeFileName: string,
 ) {
-	const disabledLints = [
-		'@typescript-eslint/naming-convention',
-		'@typescript-eslint/no-explicit-any',
-	];
-
 	const lines: string[] = [];
 	for (const lint of disabledLints) {
 		lines.push(`/* eslint ${lint}: 0 */`);
@@ -56,24 +66,135 @@ async function generateSchemaEntities(
 	await writeFile(outputPath, typeAliasLines.join('\n'));
 }
 
+function getEndpoints(openApiDocs: OpenAPIV3_1.Document) {
+	// misskey-jsはPOST固定で送っているので、こちらも決め打ちする。別メソッドに対応することがあればこちらも直す必要あり
+	const paths = openApiDocs.paths ?? {};
+	return Object.keys(paths)
+		.map(it => ({
+			_path_: it.replace(/^\//, ''),
+			...paths[it]?.post,
+		}))
+		.filter(filterUndefined);
+}
+
+async function generateEndpointErrors(
+	openApiDocs: OpenAPIV3_1.Document,
+	endpointErrorsOutputPath: string,
+) {
+	const endpoints: Endpoint[] = [];
+
+	const postPathItems = getEndpoints(openApiDocs);
+
+	const endpointsErrorsOutputLine: string[] = [];
+
+	for (const lint of disabledLints) {
+		endpointsErrorsOutputLine.push(`/* eslint ${lint}: 0 */`);
+	}
+	endpointsErrorsOutputLine.push('');
+
+	const errorWithIdTypes = new Map<string, string>();
+
+	const foundCommonErrorNamesAndErrorId = new Map<string, string>();
+
+	endpointsErrorsOutputLine.push('export type EndpointsErrors = {');
+
+	for (const operation of postPathItems) {
+		const path = operation._path_;
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const operationId = operation.operationId!;
+		const endpoint = new Endpoint(path);
+		endpoints.push(endpoint);
+
+		if (operation.responses) {
+			const okResponses = [
+				'200',
+				'201',
+				'202',
+				'204',
+			];
+
+			const errorResponseCodes = Object.keys(operation.responses).filter((key) => !okResponses.includes(key));
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const errorTypes = new Map<string, Record<string, any>>();
+			errorResponseCodes.forEach((code) => {
+				if (operation.responses == null) return;
+				const response = operation.responses[code];
+				if ('content' in response && response.content != null && 'application/json' in response.content) {
+					const errors = response.content['application/json'].examples;
+					if (errors != null) {
+						Object.keys(errors).forEach((key) => {
+							const error = errors[key];
+							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+							if (error != null && 'value' in error && error.value != null) {
+								errorTypes.set(key, error.value);
+							}
+						});
+					}
+				}
+			});
+
+			if (errorTypes.size > 0) {
+				const endpointErrorsLine: string[] = [];
+				let hasCommonError = false;
+				for (const [key, value] of errorTypes) {
+					if ('error' in value && value.error != null) {
+						let typeString = JSON.stringify(value.error);
+						typeString = typeString.substring(0, typeString.length - 1) + ', [x: string]: any ' + typeString.substring(typeString.length - 1);
+						if ('id' in value.error && value.error.id != null) {
+							errorWithIdTypes.set(value.error.id, typeString);
+							if (commonErrorNames.includes(key)) {
+								foundCommonErrorNamesAndErrorId.set(key, value.error.id);
+								hasCommonError = true;
+							} else {
+								endpointErrorsLine.push(`\t\t'${key}': IdentifiableError['${value.error.id}'],`);
+							}
+						} else {
+							endpointErrorsLine.push(`\t\t'${key}': ${typeString},`);
+						}
+					}
+				}
+
+				if (endpointErrorsLine.length > 0) {
+					endpointsErrorsOutputLine.push(`\t'${operationId}': {`);
+					endpointsErrorsOutputLine.push(...endpointErrorsLine);
+					endpointsErrorsOutputLine.push(hasCommonError ? `\t} & ${commonErrorTypesName},` : '\t},');
+				} else if (hasCommonError) {
+					endpointsErrorsOutputLine.push(`\t'${operationId}': ${commonErrorTypesName},`);
+				}
+			}
+		}
+	}
+
+	endpointsErrorsOutputLine.push('};');
+	endpointsErrorsOutputLine.push('');
+
+	endpointsErrorsOutputLine.push(`export type ${commonErrorTypesName} = {`);
+	for (const [key, value] of foundCommonErrorNamesAndErrorId) {
+		endpointsErrorsOutputLine.push(`\t'${key}': IdentifiableError['${value}'],`);
+	}
+	endpointsErrorsOutputLine.push('};');
+	endpointsErrorsOutputLine.push('');
+
+	endpointsErrorsOutputLine.push('export type IdentifiableError = {');
+	for (const [key, value] of errorWithIdTypes) {
+		endpointsErrorsOutputLine.push(`\t'${key}': ${value},`);
+	}
+	endpointsErrorsOutputLine.push('};');
+	await writeFile(endpointErrorsOutputPath, endpointsErrorsOutputLine.join('\n'));
+}
+
 async function generateEndpoints(
 	openApiDocs: OpenAPIV3_1.Document,
 	typeFileName: string,
 	entitiesOutputPath: string,
+	endpointErrorsOutputPath: string,
 	endpointOutputPath: string,
 ) {
 	const endpoints: Endpoint[] = [];
 	const endpointReqMediaTypes: EndpointReqMediaType[] = [];
 	const endpointReqMediaTypesSet = new Set<string>();
 
-	// misskey-jsはPOST固定で送っているので、こちらも決め打ちする。別メソッドに対応することがあればこちらも直す必要あり
-	const paths = openApiDocs.paths ?? {};
-	const postPathItems = Object.keys(paths)
-		.map(it => ({
-			_path_: it.replace(/^\//, ''),
-			...paths[it]?.post,
-		}))
-		.filter(filterUndefined);
+	const postPathItems = getEndpoints(openApiDocs);
 
 	for (const operation of postPathItems) {
 		const path = operation._path_;
@@ -116,6 +237,18 @@ async function generateEndpoints(
 				);
 			}
 		}
+
+		if (operation.responses) {
+			const errorResponseCodes = Object.keys(operation.responses).filter((key) => key !== '200');
+			if (errorResponseCodes.length > 0) {
+				endpoint.errors = new OperationTypeAlias(
+					operationId,
+					path,
+					'application/json',
+					OperationsAliasType.ERRORS,
+				);
+			}
+		}
 	}
 
 	const entitiesOutputLine: string[] = [];
@@ -123,14 +256,16 @@ async function generateEndpoints(
 	entitiesOutputLine.push('/* eslint @typescript-eslint/naming-convention: 0 */');
 
 	entitiesOutputLine.push(`import { operations } from '${toImportPath(typeFileName)}';`);
+	entitiesOutputLine.push(`import { EndpointsErrors as _Operations_EndpointsErrors } from '${toImportPath(endpointErrorsOutputPath)}';`);
 	entitiesOutputLine.push('');
 
 	entitiesOutputLine.push(new EmptyTypeAlias(OperationsAliasType.REQUEST).toLine());
 	entitiesOutputLine.push(new EmptyTypeAlias(OperationsAliasType.RESPONSE).toLine());
+	entitiesOutputLine.push(new EmptyTypeAlias(OperationsAliasType.ERRORS).toLine());
 	entitiesOutputLine.push('');
 
 	const entities = endpoints
-		.flatMap(it => [it.request, it.response].filter(i => i))
+		.flatMap(it => [it.request, it.response, it.errors].filter(i => i))
 		.filter(filterUndefined);
 	entitiesOutputLine.push(...entities.map(it => it.toLine()));
 	entitiesOutputLine.push('');
@@ -139,9 +274,12 @@ async function generateEndpoints(
 
 	const endpointOutputLine: string[] = [];
 
+	endpointOutputLine.push('/* eslint @typescript-eslint/no-unused-vars: 0 */');
+	endpointOutputLine.push('');
+
 	endpointOutputLine.push('import type {');
 	endpointOutputLine.push(
-		...[emptyRequest, emptyResponse, ...entities].map(it => '\t' + it.generateName() + ','),
+		...[emptyRequest, emptyResponse, emptyErrors, ...entities].map(it => '\t' + it.generateName() + ','),
 	);
 	endpointOutputLine.push(`} from '${toImportPath(entitiesOutputPath)}';`);
 	endpointOutputLine.push('');
@@ -267,7 +405,8 @@ function toImportPath(fileName: string, fromPath = '/built/autogen', toPath = ''
 
 enum OperationsAliasType {
 	REQUEST = 'Request',
-	RESPONSE = 'Response'
+	RESPONSE = 'Response',
+	ERRORS = 'Errors',
 }
 
 interface IOperationTypeAlias {
@@ -303,9 +442,15 @@ class OperationTypeAlias implements IOperationTypeAlias {
 
 	toLine(): string {
 		const name = this.generateName();
-		return (this.type === OperationsAliasType.REQUEST)
-			? `export type ${name} = operations['${this.operationId}']['requestBody']['content']['${this.mediaType}'];`
-			: `export type ${name} = operations['${this.operationId}']['responses']['200']['content']['${this.mediaType}'];`;
+
+		switch (this.type) {
+			case OperationsAliasType.REQUEST:
+				return `export type ${name} = operations['${this.operationId}']['requestBody']['content']['${this.mediaType}'];`;
+			case OperationsAliasType.RESPONSE:
+				return `export type ${name} = operations['${this.operationId}']['responses']['200']['content']['${this.mediaType}'];`;
+			case OperationsAliasType.ERRORS:
+				return `export type ${name} = _Operations_EndpointsErrors['${this.operationId}'][keyof _Operations_EndpointsErrors['${this.operationId}']];`;
+		}
 	}
 }
 
@@ -328,11 +473,13 @@ class EmptyTypeAlias implements IOperationTypeAlias {
 
 const emptyRequest = new EmptyTypeAlias(OperationsAliasType.REQUEST);
 const emptyResponse = new EmptyTypeAlias(OperationsAliasType.RESPONSE);
+const emptyErrors = new EmptyTypeAlias(OperationsAliasType.ERRORS);
 
 class Endpoint {
 	public readonly path: string;
 	public request?: IOperationTypeAlias;
 	public response?: IOperationTypeAlias;
+	public errors?: IOperationTypeAlias;
 
 	constructor(path: string) {
 		this.path = path;
@@ -341,8 +488,9 @@ class Endpoint {
 	toLine(): string {
 		const reqName = this.request?.generateName() ?? emptyRequest.generateName();
 		const resName = this.response?.generateName() ?? emptyResponse.generateName();
+		const errorsName = this.errors?.generateName() ?? emptyErrors.generateName();
 
-		return `'${this.path}': { req: ${reqName}; res: ${resName} };`;
+		return `'${this.path}': { req: ${reqName}; res: ${resName}; errors: ${errorsName} };`;
 	}
 }
 
@@ -376,12 +524,15 @@ async function main() {
 	const typeFileName = './built/autogen/types.ts';
 	await generateBaseTypes(openApiDocs, openApiJsonPath, typeFileName);
 
+	const endpointErrorsFileName = `${generatePath}/endpointErrors.ts`;
+	await generateEndpointErrors(openApiDocs, endpointErrorsFileName);
+
 	const modelFileName = `${generatePath}/models.ts`;
 	await generateSchemaEntities(openApiDocs, typeFileName, modelFileName);
 
 	const entitiesFileName = `${generatePath}/entities.ts`;
 	const endpointFileName = `${generatePath}/endpoint.ts`;
-	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointFileName);
+	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointErrorsFileName, endpointFileName);
 
 	const apiClientWarningFileName = `${generatePath}/apiClientJSDoc.ts`;
 	await generateApiClientJSDoc(openApiDocs, '../api.ts', endpointFileName, apiClientWarningFileName);

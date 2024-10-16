@@ -246,7 +246,7 @@ export function getNoteMenu(props: {
 		os.apiWithDialog(pin ? 'i/pin' : 'i/unpin', {
 			noteId: appearNote.id,
 		}, undefined, {
-			'72dab508-c64d-498f-8740-a8eec1ba385a': {
+			'PIN_LIMIT_EXCEEDED': {
 				text: i18n.ts.pinLimitExceeded,
 			},
 		});
