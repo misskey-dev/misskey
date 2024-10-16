@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="item === '-'" class="divider"></div>
 				<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime v-tooltip="navbarItemDef[item].title" class="item _button" :class="item" activeClass="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 					<i class="ti-fw" :class="navbarItemDef[item].icon"></i>
-					<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="_indicatorCircle"></i></span>
+					<span v-if="navbarItemDef[item].indicated" class="indicator _blink"><i class="_indicatorCircle"></i></span>
 				</component>
 			</template>
 			<div class="divider"></div>
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 			<button v-click-anime class="item _button" @click="more">
 				<i class="ti ti-dots ti-fw"></i>
-				<span v-if="otherNavItemIndicated" class="indicator"><i class="_indicatorCircle"></i></span>
+				<span v-if="otherNavItemIndicated" class="indicator _blink"><i class="_indicatorCircle"></i></span>
 			</button>
 		</div>
 		<div class="right">
@@ -142,7 +142,6 @@ onMounted(() => {
 					left: 0;
 					color: var(--MI_THEME-navIndicator);
 					font-size: 8px;
-					animation: global-blink 1s infinite;
 				}
 
 				&:hover {

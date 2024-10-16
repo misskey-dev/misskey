@@ -468,6 +468,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'app' as 'app' | 'appWithShift' | 'native',
 	},
+	skipNoteRender: {
+		where: 'device',
+		default: true,
+	},
 
 	sound_masterVolume: {
 		where: 'device',

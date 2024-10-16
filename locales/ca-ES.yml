@@ -1286,6 +1286,7 @@ passkeyVerificationFailed: "La verificació a fallat"
 passkeyVerificationSucceededButPasswordlessLoginDisabled: "La verificació de la passkey a estat correcta, però s'ha deshabilitat l'inici de sessió sense contrasenya."
 messageToFollower: "Missatge als meus seguidors"
 target: "Assumpte "
+testCaptchaWarning: "És una característica dissenyada per a la prova de CAPTCHA. <strong>No l'utilitzes en l'entorn real.</strong>"
 _abuseUserReport:
   forward: "Reenviar "
   forwardDescription: "Reenvia l'informe a una altra instància com un compte del sistema anònima."
@@ -1430,6 +1431,7 @@ _serverSettings:
   reactionsBufferingDescription: "Quan s'activa aquesta opció millora bastant el rendiment en recuperar les línies de temps reduint la càrrega de la base. Com a contrapunt, augmentarà  l'ús de memòria de Redís. Desactiva aquesta opció en cas de tenir un servidor amb poca memòria o si tens problemes d'inestabilitat."
   inquiryUrl: "URL de consulta "
   inquiryUrlDescription: "Escriu adreça URL per al formulari de consulta per al mantenidor del servidor o una pàgina web amb el contacte d'informació."
+  thisSettingWillAutomaticallyOffWhenModeratorsInactive: "Si no es detecta activitat per part del moderador durant un període de temps, aquesta opció es desactiva automàticament per evitar el correu brossa."
 _accountMigration:
   moveFrom: "Migrar un altre compte a aquest"
   moveFromSub: "Crear un àlies per un altre compte"

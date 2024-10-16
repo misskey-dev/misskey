@@ -1087,6 +1087,7 @@ retryAllQueuesConfirmTitle: "今すぐ再試行しますか？"
 retryAllQueuesConfirmText: "一時的にサーバーの負荷が増大することがあります。"
 enableChartsForRemoteUser: "リモートユーザーのチャートを生成"
 enableChartsForFederatedInstances: "リモートサーバーのチャートを生成"
+enableStatsForFederatedInstances: "リモートサーバーの情報を取得"
 showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
 reactionsDisplaySize: "リアクションの表示サイズ"
 limitWidthOfReaction: "リアクションの最大横幅を制限し、縮小して表示する"
@@ -1288,6 +1289,10 @@ passkeyVerificationSucceededButPasswordlessLoginDisabled: "パスキーの検証
 messageToFollower: "フォロワーへのメッセージ"
 target: "対象"
 testCaptchaWarning: "CAPTCHAのテストを目的とした機能です。<strong>本番環境で使用しないでください。</strong>"
+prohibitedWordsForNameOfUser: "禁止ワード（ユーザーの名前）"
+prohibitedWordsForNameOfUserDescription: "このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。"
+yourNameContainsProhibitedWords: "変更しようとした名前に禁止された文字列が含まれています"
+yourNameContainsProhibitedWordsDescription: "名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。"
 
 _abuseUserReport:
   forward: "転送"
@@ -2554,6 +2559,8 @@ _webhookSettings:
     abuseReport: "ユーザーから通報があったとき"
     abuseReportResolved: "ユーザーからの通報を処理したとき"
     userCreated: "ユーザーが作成されたとき"
+    inactiveModeratorsWarning: "モデレーターが一定期間非アクティブになったとき"
+    inactiveModeratorsInvitationOnlyChanged: "モデレーターが一定期間非アクティブだったため、システムにより招待制へと変更されたとき"
   deleteConfirm: "Webhookを削除しますか？"
   testRemarks: "スイッチの右にあるボタンをクリックするとダミーのデータを使用したテスト用Webhookを送信できます。"
 

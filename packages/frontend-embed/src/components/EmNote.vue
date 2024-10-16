@@ -108,6 +108,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import { shouldCollapsed } from '@@/js/collapsed.js';
+import { url } from '@@/js/config.js';
 import I18n from '@/components/I18n.vue';
 import EmNoteSub from '@/components/EmNoteSub.vue';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';
@@ -123,8 +125,6 @@ import EmUserName from '@/components/EmUserName.vue';
 import EmTime from '@/components/EmTime.vue';
 import { userPage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
-import { shouldCollapsed } from '@@/js/collapsed.js';
-import { url } from '@@/js/config.js';
 
 function getAppearNote(note: Misskey.entities.Note) {
 	return Misskey.note.isPureRenote(note) ? note.renote : note;
@@ -164,14 +164,8 @@ const isDeleted = ref(false);
 	font-size: 1.05em;
 	overflow: clip;
 	contain: content;
-
-	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
-	// 下の方までスクロールすると上のノートの高さがここで決め打ちされたものに変化し、表示しているノートの位置が変わってしまう
-	// ノートがマウントされたときに自身の高さを取得し contain-intrinsic-size を設定しなおせばほぼ解決できそうだが、
-	// 今度はその処理自体がパフォーマンス低下の原因にならないか懸念される。また、被リアクションでも高さは変化するため、やはり多少のズレは生じる
-	// 一度レンダリングされた要素はブラウザがよしなにサイズを覚えておいてくれるような実装になるまで待った方が良さそう(なるのか？)
-	//content-visibility: auto;
-  //contain-intrinsic-size: 0 128px;
+	content-visibility: auto;
+  contain-intrinsic-size: 0 150px;
 
 	&:focus-visible {
 		outline: none;

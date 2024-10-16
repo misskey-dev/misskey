@@ -84,6 +84,11 @@ export class MiMeta {
 	@Column('varchar', {
 		length: 1024, array: true, default: '{}',
 	})
+	public prohibitedWordsForNameOfUser: string[];
+
+	@Column('varchar', {
+		length: 1024, array: true, default: '{}',
+	})
 	public silencedHosts: string[];
 
 	@Column('varchar', {
@@ -523,6 +528,11 @@ export class MiMeta {
 		default: true,
 	})
 	public enableChartsForFederatedInstances: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public enableStatsForFederatedInstances: boolean;
 
 	@Column('boolean', {
 		default: false,
