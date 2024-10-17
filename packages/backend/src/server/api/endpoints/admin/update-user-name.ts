@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and misskey-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -14,13 +9,14 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
-	kind: 'write:admin:user-banner',
+	kind: 'write:admin:user-name',
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string' },
 	},
 	required: ['userId'],
 } as const;
@@ -41,20 +37,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			if (user.bannerId == null) return;
-
 			await this.usersRepository.update(user.id, {
-				banner: null,
-				bannerId: null,
-				bannerUrl: null,
-				bannerBlurhash: null,
+				name: ps.name ?? null,
 			});
 
-			this.moderationLogService.log(me, 'unsetUserBanner', {
+			this.moderationLogService.log(me, 'updateUserName', {
 				userId: user.id,
 				userUsername: user.username,
 				userHost: user.host,
-				fileId: user.bannerId,
+				before: user.name,
+				after: ps.name ?? null,
 			});
 		});
 	}

@@ -53,6 +53,7 @@ export const permissions = [
 	'read:admin:user-ips',
 	'read:admin:meta',
 	'write:admin:reset-password',
+	'write:admin:regenerate-user-token',
 	'write:admin:resolve-abuse-user-report',
 	'write:admin:send-email',
 	'read:admin:server-info',
@@ -61,12 +62,13 @@ export const permissions = [
 	'read:admin:show-user',
 	'read:admin:show-users',
 	'write:admin:suspend-user',
-	'write:admin:unset-user-avatar',
-	'write:admin:unset-user-banner',
-	'write:admin:unset-user-mutual-link',
 	'write:admin:unsuspend-user',
 	'write:admin:meta',
+	'write:admin:user-name',
 	'write:admin:user-note',
+	'write:admin:user-avatar',
+	'write:admin:user-banner',
+	'write:admin:user-mutual-link',
 	'write:admin:roles',
 	'read:admin:roles',
 	'write:admin:relays',
@@ -105,6 +107,7 @@ export const moderationLogTypes = [
 	'updateServerSettings',
 	'suspend',
 	'unsuspend',
+	'updateUserName',
 	'updateUserNote',
 	'addCustomEmoji',
 	'updateCustomEmoji',
@@ -125,6 +128,7 @@ export const moderationLogTypes = [
 	'deleteGlobalAnnouncement',
 	'deleteUserAnnouncement',
 	'resetPassword',
+	'regenerateUserToken',
 	'suspendRemoteInstance',
 	'unsuspendRemoteInstance',
 	'updateRemoteInstanceNote',
@@ -164,6 +168,13 @@ export type ModerationLogPayloads = {
 		userUsername: string;
 		userHost: string | null;
 	};
+	updateUserName: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+		before: string | null;
+		after: string | null;
+	}
 	updateUserNote: {
 		userId: string;
 		userUsername: string;
@@ -263,6 +274,11 @@ export type ModerationLogPayloads = {
 		userHost: string | null;
 	};
 	resetPassword: {
+		userId: string;
+		userUsername: string;
+		userHost: string | null;
+	};
+	regenerateUserToken: {
 		userId: string;
 		userUsername: string;
 		userHost: string | null;

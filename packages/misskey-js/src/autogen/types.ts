@@ -224,7 +224,7 @@ export type paths = {
      * admin/unset-user-avatar
      * @description No description provided.
      *
-     * **Credential required**: *Yes* / **Permission**: *write:admin:unset-user-avatar*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:user-avatar*
      */
     post: operations['admin___unset-user-avatar'];
   };
@@ -233,7 +233,7 @@ export type paths = {
      * admin/unset-user-banner
      * @description No description provided.
      *
-     * **Credential required**: *Yes* / **Permission**: *write:admin:unset-user-banner*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:user-banner*
      */
     post: operations['admin___unset-user-banner'];
   };
@@ -242,7 +242,7 @@ export type paths = {
      * admin/unset-user-mutual-link
      * @description No description provided.
      *
-     * **Credential required**: *Yes* / **Permission**: *write:admin:unset-user-mutual-link*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:user-mutual-link*
      */
     post: operations['admin___unset-user-mutual-link'];
   };
@@ -616,6 +616,15 @@ export type paths = {
      */
     post: operations['admin___reset-password'];
   };
+  '/admin/regenerate-user-token': {
+    /**
+     * admin/regenerate-user-token
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:regenerate-user-token*
+     */
+    post: operations['admin___regenerate-user-token'];
+  };
   '/admin/resolve-abuse-user-report': {
     /**
      * admin/resolve-abuse-user-report
@@ -705,6 +714,15 @@ export type paths = {
      * **Credential required**: *Yes* / **Permission**: *write:admin:meta*
      */
     post: operations['admin___update-meta'];
+  };
+  '/admin/update-user-name': {
+    /**
+     * admin/update-user-name
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:user-name*
+     */
+    post: operations['admin___update-user-name'];
   };
   '/admin/update-user-note': {
     /**
@@ -6769,7 +6787,7 @@ export type operations = {
    * admin/unset-user-avatar
    * @description No description provided.
    *
-   * **Credential required**: *Yes* / **Permission**: *write:admin:unset-user-avatar*
+   * **Credential required**: *Yes* / **Permission**: *write:admin:user-avatar*
    */
   'admin___unset-user-avatar': {
     requestBody: {
@@ -6821,7 +6839,7 @@ export type operations = {
    * admin/unset-user-banner
    * @description No description provided.
    *
-   * **Credential required**: *Yes* / **Permission**: *write:admin:unset-user-banner*
+   * **Credential required**: *Yes* / **Permission**: *write:admin:user-banner*
    */
   'admin___unset-user-banner': {
     requestBody: {
@@ -6873,7 +6891,7 @@ export type operations = {
    * admin/unset-user-mutual-link
    * @description No description provided.
    *
-   * **Credential required**: *Yes* / **Permission**: *write:admin:unset-user-mutual-link*
+   * **Credential required**: *Yes* / **Permission**: *write:admin:user-mutual-link*
    */
   'admin___unset-user-mutual-link': {
     requestBody: {
@@ -9219,6 +9237,58 @@ export type operations = {
     };
   };
   /**
+   * admin/regenerate-user-token
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:regenerate-user-token*
+   */
+  'admin___regenerate-user-token': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          userId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * admin/resolve-abuse-user-report
    * @description No description provided.
    *
@@ -10053,6 +10123,59 @@ export type operations = {
           urlPreviewRequireContentLength?: boolean;
           urlPreviewUserAgent?: string | null;
           urlPreviewSummaryProxyUrl?: string | null;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/update-user-name
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:user-name*
+   */
+  'admin___update-user-name': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          userId: string;
+          name?: string;
         };
       };
     };

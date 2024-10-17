@@ -73,6 +73,7 @@ import * as ep___admin_relays_add from './endpoints/admin/relays/add.js';
 import * as ep___admin_relays_list from './endpoints/admin/relays/list.js';
 import * as ep___admin_relays_remove from './endpoints/admin/relays/remove.js';
 import * as ep___admin_resetPassword from './endpoints/admin/reset-password.js';
+import * as ep___admin_regenerateUserToken from './endpoints/admin/regenerate-user-token.js';
 import * as ep___admin_resolveAbuseUserReport from './endpoints/admin/resolve-abuse-user-report.js';
 import * as ep___admin_sendEmail from './endpoints/admin/send-email.js';
 import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
@@ -83,6 +84,7 @@ import * as ep___admin_showUsers from './endpoints/admin/show-users.js';
 import * as ep___admin_suspendUser from './endpoints/admin/suspend-user.js';
 import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
+import * as ep___admin_updateUserName from './endpoints/admin/update-user-name.js';
 import * as ep___admin_updateUserNote from './endpoints/admin/update-user-note.js';
 import * as ep___admin_roles_create from './endpoints/admin/roles/create.js';
 import * as ep___admin_roles_delete from './endpoints/admin/roles/delete.js';
@@ -463,6 +465,7 @@ const eps = [
 	['admin/relays/list', ep___admin_relays_list],
 	['admin/relays/remove', ep___admin_relays_remove],
 	['admin/reset-password', ep___admin_resetPassword],
+	['admin/regenerate-user-token', ep___admin_regenerateUserToken],
 	['admin/resolve-abuse-user-report', ep___admin_resolveAbuseUserReport],
 	['admin/send-email', ep___admin_sendEmail],
 	['admin/server-info', ep___admin_serverInfo],
@@ -473,6 +476,7 @@ const eps = [
 	['admin/suspend-user', ep___admin_suspendUser],
 	['admin/unsuspend-user', ep___admin_unsuspendUser],
 	['admin/update-meta', ep___admin_updateMeta],
+	['admin/update-user-name', ep___admin_updateUserName],
 	['admin/update-user-note', ep___admin_updateUserNote],
 	['admin/roles/create', ep___admin_roles_create],
 	['admin/roles/delete', ep___admin_roles_delete],

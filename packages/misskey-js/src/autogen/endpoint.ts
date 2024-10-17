@@ -89,6 +89,7 @@ import type {
 	AdminRelaysRemoveRequest,
 	AdminResetPasswordRequest,
 	AdminResetPasswordResponse,
+	AdminRegenerateUserTokenRequest,
 	AdminResolveAbuseUserReportRequest,
 	AdminSendEmailRequest,
 	AdminServerInfoResponse,
@@ -103,6 +104,7 @@ import type {
 	AdminSuspendUserRequest,
 	AdminUnsuspendUserRequest,
 	AdminUpdateMetaRequest,
+	AdminUpdateUserNameRequest,
 	AdminUpdateUserNoteRequest,
 	AdminRolesCreateRequest,
 	AdminRolesCreateResponse,
@@ -653,6 +655,7 @@ export type Endpoints = {
 	'admin/relays/list': { req: EmptyRequest; res: AdminRelaysListResponse };
 	'admin/relays/remove': { req: AdminRelaysRemoveRequest; res: EmptyResponse };
 	'admin/reset-password': { req: AdminResetPasswordRequest; res: AdminResetPasswordResponse };
+	'admin/regenerate-user-token': { req: AdminRegenerateUserTokenRequest; res: EmptyResponse };
 	'admin/resolve-abuse-user-report': { req: AdminResolveAbuseUserReportRequest; res: EmptyResponse };
 	'admin/send-email': { req: AdminSendEmailRequest; res: EmptyResponse };
 	'admin/server-info': { req: EmptyRequest; res: AdminServerInfoResponse };
@@ -663,6 +666,7 @@ export type Endpoints = {
 	'admin/suspend-user': { req: AdminSuspendUserRequest; res: EmptyResponse };
 	'admin/unsuspend-user': { req: AdminUnsuspendUserRequest; res: EmptyResponse };
 	'admin/update-meta': { req: AdminUpdateMetaRequest; res: EmptyResponse };
+	'admin/update-user-name': { req: AdminUpdateUserNameRequest; res: EmptyResponse };
 	'admin/update-user-note': { req: AdminUpdateUserNoteRequest; res: EmptyResponse };
 	'admin/roles/create': { req: AdminRolesCreateRequest; res: AdminRolesCreateResponse };
 	'admin/roles/delete': { req: AdminRolesDeleteRequest; res: EmptyResponse };

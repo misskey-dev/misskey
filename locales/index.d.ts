@@ -2797,6 +2797,10 @@ export interface Locale extends ILocale {
      */
     "regenerateLoginToken": string;
     /**
+     * ログイントークンを再生成しますか？
+     */
+    "regenerateLoginTokenConfirm": string;
+    /**
      * ログインに使用される内部トークンを再生成します。通常この操作を行う必要はありません。再生成すると、全てのデバイスでログアウトされます。
      */
     "regenerateLoginTokenDescription": string;
@@ -4268,7 +4272,7 @@ export interface Locale extends ILocale {
      */
     "rolesAssignedToMe": string;
     /**
-     * パスワードリセットしますか？
+     * パスワードをリセットしますか？
      */
     "resetPasswordConfirm": string;
     /**
@@ -5130,6 +5134,10 @@ export interface Locale extends ILocale {
      * このファイルをドライブに保存する
      */
     "saveThisFile": string;
+    /**
+     * 名前を変更
+     */
+    "changeUserName": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -8236,6 +8244,10 @@ export interface Locale extends ILocale {
          */
         "write:admin:reset-password": string;
         /**
+         * ユーザーのログイントークンを再生成する
+         */
+        "write:admin:regenerate-user-token": string;
+        /**
          * ユーザーからの通報を解決する
          */
         "write:admin:resolve-abuse-user-report": string;
@@ -8266,15 +8278,15 @@ export interface Locale extends ILocale {
         /**
          * ユーザーのアバターを削除する
          */
-        "write:admin:unset-user-avatar": string;
+        "write:admin:user-avatar": string;
         /**
          * ユーザーのバーナーを削除する
          */
-        "write:admin:unset-user-banner": string;
+        "write:admin:user-banner": string;
         /**
          * ユーザーの相互リンクを削除する
          */
-        "write:admin:unset-user-mutual-link": string;
+        "write:admin:user-mutual-link": string;
         /**
          * ユーザーの凍結を解除する
          */
@@ -8283,6 +8295,10 @@ export interface Locale extends ILocale {
          * インスタンスのメタデータを操作する
          */
         "write:admin:meta": string;
+        /**
+         * ユーザーの名前を変更する
+         */
+        "write:admin:user-name": string;
         /**
          * モデレーションノートを操作する
          */

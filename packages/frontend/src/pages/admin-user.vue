@@ -63,7 +63,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>{{ i18n.ts.moderation }}</template>
 							<div class="_gaps">
 								<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
-								<MkButton v-if="user.host == null" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
+								<div v-if="user.host == null" class="_buttons">
+									<MkButton @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
+									<MkButton danger @click="regenerateLoginToken"><i class="ti ti-refresh"></i> {{ i18n.ts.regenerateLoginToken }}</MkButton>
+								</div>
+								<MkButton inline danger @click="updateUserName"><i class="ti ti-user-edit"></i> {{ i18n.ts.changeUserName }}</MkButton>
 								<MkButton inline danger @click="unsetUserAvatar"><i class="ti ti-user-circle"></i> {{ i18n.ts.unsetUserAvatar }}</MkButton>
 								<MkButton inline danger @click="unsetUserBanner"><i class="ti ti-photo"></i> {{ i18n.ts.unsetUserBanner }}</MkButton>
 								<MkFolder v-if="user?.mutualLinkSections && user?.mutualLinkSections.reduce((acc, section) => acc + section.mutualLinks.length, 0) > 0">
@@ -339,6 +343,18 @@ async function resetPassword() {
 	}
 }
 
+async function regenerateLoginToken() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.regenerateLoginTokenConfirm,
+	});
+	if (confirm.canceled) return;
+
+	await os.apiWithDialog('admin/regenerate-user-token', {
+		userId: user.value.id,
+	}).then(refreshUser);
+}
+
 async function toggleSuspend(v) {
 	const confirm = await os.confirm({
 		type: 'warning',
@@ -351,6 +367,20 @@ async function toggleSuspend(v) {
 			userId: user.value.id,
 		}).then(refreshUser);
 	}
+}
+
+async function updateUserName() {
+	const { canceled, result: name } = await os.inputText({
+		type: 'text',
+		title: i18n.ts.enterUsername,
+		default: '',
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('admin/update-user-name', {
+		userId: user.value.id,
+		name: name || undefined,
+	}).then(refreshUser);
 }
 
 async function unsetUserAvatar() {

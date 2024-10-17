@@ -73,6 +73,7 @@ import * as ep___admin_relays_add from './endpoints/admin/relays/add.js';
 import * as ep___admin_relays_list from './endpoints/admin/relays/list.js';
 import * as ep___admin_relays_remove from './endpoints/admin/relays/remove.js';
 import * as ep___admin_resetPassword from './endpoints/admin/reset-password.js';
+import * as ep___admin_regenerateUserToken from './endpoints/admin/regenerate-user-token.js';
 import * as ep___admin_resolveAbuseUserReport from './endpoints/admin/resolve-abuse-user-report.js';
 import * as ep___admin_sendEmail from './endpoints/admin/send-email.js';
 import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
@@ -83,6 +84,7 @@ import * as ep___admin_showUsers from './endpoints/admin/show-users.js';
 import * as ep___admin_suspendUser from './endpoints/admin/suspend-user.js';
 import * as ep___admin_unsuspendUser from './endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from './endpoints/admin/update-meta.js';
+import * as ep___admin_updateUserName from './endpoints/admin/update-user-name.js';
 import * as ep___admin_updateUserNote from './endpoints/admin/update-user-note.js';
 import * as ep___admin_roles_create from './endpoints/admin/roles/create.js';
 import * as ep___admin_roles_delete from './endpoints/admin/roles/delete.js';
@@ -465,6 +467,7 @@ const $admin_relays_add: Provider = { provide: 'ep:admin/relays/add', useClass: 
 const $admin_relays_list: Provider = { provide: 'ep:admin/relays/list', useClass: ep___admin_relays_list.default };
 const $admin_relays_remove: Provider = { provide: 'ep:admin/relays/remove', useClass: ep___admin_relays_remove.default };
 const $admin_resetPassword: Provider = { provide: 'ep:admin/reset-password', useClass: ep___admin_resetPassword.default };
+const $admin_regenerateUserToken: Provider = { provide: 'ep:admin/regenerate-user-token', useClass: ep___admin_regenerateUserToken.default };
 const $admin_resolveAbuseUserReport: Provider = { provide: 'ep:admin/resolve-abuse-user-report', useClass: ep___admin_resolveAbuseUserReport.default };
 const $admin_sendEmail: Provider = { provide: 'ep:admin/send-email', useClass: ep___admin_sendEmail.default };
 const $admin_serverInfo: Provider = { provide: 'ep:admin/server-info', useClass: ep___admin_serverInfo.default };
@@ -475,6 +478,7 @@ const $admin_showUsers: Provider = { provide: 'ep:admin/show-users', useClass: e
 const $admin_suspendUser: Provider = { provide: 'ep:admin/suspend-user', useClass: ep___admin_suspendUser.default };
 const $admin_unsuspendUser: Provider = { provide: 'ep:admin/unsuspend-user', useClass: ep___admin_unsuspendUser.default };
 const $admin_updateMeta: Provider = { provide: 'ep:admin/update-meta', useClass: ep___admin_updateMeta.default };
+const $admin_updateUserName: Provider = { provide: 'ep:admin/update-user-name', useClass: ep___admin_updateUserName.default };
 const $admin_updateUserNote: Provider = { provide: 'ep:admin/update-user-note', useClass: ep___admin_updateUserNote.default };
 const $admin_roles_create: Provider = { provide: 'ep:admin/roles/create', useClass: ep___admin_roles_create.default };
 const $admin_roles_delete: Provider = { provide: 'ep:admin/roles/delete', useClass: ep___admin_roles_delete.default };
@@ -861,6 +865,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_relays_list,
 		$admin_relays_remove,
 		$admin_resetPassword,
+		$admin_regenerateUserToken,
 		$admin_resolveAbuseUserReport,
 		$admin_sendEmail,
 		$admin_serverInfo,
@@ -871,6 +876,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_suspendUser,
 		$admin_unsuspendUser,
 		$admin_updateMeta,
+		$admin_updateUserName,
 		$admin_updateUserNote,
 		$admin_roles_create,
 		$admin_roles_delete,
@@ -1251,6 +1257,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_relays_list,
 		$admin_relays_remove,
 		$admin_resetPassword,
+		$admin_regenerateUserToken,
 		$admin_resolveAbuseUserReport,
 		$admin_sendEmail,
 		$admin_serverInfo,
@@ -1261,6 +1268,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_suspendUser,
 		$admin_unsuspendUser,
 		$admin_updateMeta,
+		$admin_updateUserName,
 		$admin_updateUserNote,
 		$admin_roles_create,
 		$admin_roles_delete,

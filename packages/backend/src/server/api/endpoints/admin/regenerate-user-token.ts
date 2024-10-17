@@ -1,11 +1,8 @@
-/*
- * SPDX-FileCopyrightText: syuilo and misskey-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UsersRepository } from '@/models/_.js';
+import generateUserToken from '@/misc/generate-native-user-token.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
@@ -14,7 +11,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
-	kind: 'write:admin:user-banner',
+	kind: 'write:admin:regenerate-user-token',
 } as const;
 
 export const paramDef = {
@@ -32,6 +29,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		private globalEventService: GlobalEventService,
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -41,20 +39,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
-			if (user.bannerId == null) return;
+			const oldToken = user.token;
+			if (oldToken == null) return;
 
+			const newToken = generateUserToken();
 			await this.usersRepository.update(user.id, {
-				banner: null,
-				bannerId: null,
-				bannerUrl: null,
-				bannerBlurhash: null,
+				token: newToken,
 			});
 
-			this.moderationLogService.log(me, 'unsetUserBanner', {
+			// Publish event
+			this.globalEventService.publishInternalEvent('userTokenRegenerated', { id: user.id, oldToken, newToken });
+			this.globalEventService.publishMainStream(user.id, 'myTokenRegenerated');
+
+			this.moderationLogService.log(me, 'regenerateUserToken', {
 				userId: user.id,
 				userUsername: user.username,
 				userHost: user.host,
-				fileId: user.bannerId,
 			});
 		});
 	}

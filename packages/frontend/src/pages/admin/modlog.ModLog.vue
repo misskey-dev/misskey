@@ -9,14 +9,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<b
 			:class="{
 				[$style.logGreen]: ['createRole', 'addCustomEmoji', 'createGlobalAnnouncement', 'createUserAnnouncement', 'createAd', 'createInvitation', 'createAvatarDecoration'].includes(log.type),
-				[$style.logYellow]: ['markSensitiveDriveFile', 'resetPassword'].includes(log.type),
+				[$style.logYellow]: ['markSensitiveDriveFile', 'resetPassword', 'regenerateUserToken', 'updateUserName', 'unsetUserAvatar', 'unsetUserBanner', 'unsetUserMutualLink'].includes(log.type),
 				[$style.logRed]: ['suspend', 'deleteRole', 'suspendRemoteInstance', 'deleteGlobalAnnouncement', 'deleteUserAnnouncement', 'deleteCustomEmoji', 'deleteNote', 'deleteDriveFile', 'deleteAd', 'deleteAvatarDecoration'].includes(log.type)
 			}"
 		>{{ i18n.ts._moderationLogTypes[log.type] }}</b>
 		<span v-if="log.type === 'updateUserNote'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
+		<span v-else-if="log.type === 'updateUserName'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
+		<span v-else-if="log.type === 'unsetUserAvatar'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
+		<span v-else-if="log.type === 'unsetUserBanner'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
+		<span v-else-if="log.type === 'unsetUserMutualLink'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
 		<span v-else-if="log.type === 'suspend'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
 		<span v-else-if="log.type === 'unsuspend'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
 		<span v-else-if="log.type === 'resetPassword'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
+		<span v-else-if="log.type === 'regenerateUserToken'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
 		<span v-else-if="log.type === 'assignRole'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }} <i class="ti ti-arrow-right"></i> {{ log.info.roleName }}</span>
 		<span v-else-if="log.type === 'unassignRole'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }} <i class="ti ti-equal-not"></i> {{ log.info.roleName }}</span>
 		<span v-else-if="log.type === 'createRole'">: {{ log.info.role.name }}</span>
@@ -57,6 +62,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-if="log.type === 'updateServerSettings'">
 			<div :class="$style.diff">
 				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+			</div>
+		</template>
+		<template v-else-if="log.type === 'updateUserName'">
+			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
+			<div :class="$style.diff">
+				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateUserNote'">
