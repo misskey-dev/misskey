@@ -176,6 +176,8 @@ export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
 	translation: Ref<Misskey.entities.NotesTranslateResponse | null>;
 	translating: Ref<boolean>;
+	convert: Ref<string | null>;
+	converting: Ref<boolean>;
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
@@ -294,6 +296,38 @@ export function getNoteMenu(props: {
 		props.translation.value = res;
 	}
 
+	async function convert(): Promise<void> {
+		if (props.convert.value != null) return;
+		props.converting.value = true;
+
+		const res = await misskeyApi('notes/tts', {
+			noteId: appearNote.id,
+		}, undefined, undefined, true);
+
+		try {
+			if (res.body instanceof ReadableStream) {
+				const reader = res.body.getReader();
+				const chunks: Uint8Array[] = [];
+	
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) break;
+					chunks.push(value);
+				}
+	
+				const audioBlob = new Blob(chunks, { type: 'audio/flac' });
+	
+				props.convert.value = URL.createObjectURL(audioBlob);
+			} else {
+				console.error('Response body is not a ReadableStream');
+			}
+		} catch (errors) {
+			console.error('Failed to create Blob or Object URL:', e);
+		}
+	
+		props.converting.value = false;
+	}
+
 	const menuItems: MenuItem[] = [];
 
 	if ($i) {
@@ -345,6 +379,14 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
 				action: translate,
+			});
+		}
+
+		if ($i.policies.canUseTTS && instance.ttsAvailable) {
+			menuItems.push({
+				icon: 'ti ti-headphones',
+				text: 'TTS',
+				action: convert,
 			});
 		}
 

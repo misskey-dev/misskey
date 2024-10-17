@@ -20,7 +20,8 @@ export function misskeyApi<
 	data: P = {} as any,
 	token?: string | null | undefined,
 	signal?: AbortSignal,
-): Promise<_ResT> {
+	returnResponse: boolean = false
+): Promise<_ResT | Response> {
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
 	pendingApiRequestsCount.value++;
 
@@ -28,7 +29,7 @@ export function misskeyApi<
 		pendingApiRequestsCount.value--;
 	};
 
-	const promise = new Promise<_ResT>((resolve, reject) => {
+	const promise = new Promise<_ResT | Response>((resolve, reject) => {
 		// Append a credential
 		if ($i) (data as any).i = $i.token;
 		if (token !== undefined) (data as any).i = token;
@@ -44,14 +45,17 @@ export function misskeyApi<
 			},
 			signal,
 		}).then(async (res) => {
-			const body = res.status === 204 ? null : await res.json();
-
-			if (res.status === 200) {
-				resolve(body);
-			} else if (res.status === 204) {
-				resolve(undefined as _ResT); // void -> undefined
+			if (returnResponse) {
+				resolve(res);
 			} else {
-				reject(body.error);
+				const body = res.status === 204 ? null : await res.json();
+				if (res.status === 200) {
+					resolve(body);
+				} else if (res.status === 204) {
+					resolve(undefined as _ResT); // void -> undefined
+				} else {
+					reject(body.error);
+				}
 			}
 		}).catch(reject);
 	});
@@ -70,7 +74,8 @@ export function misskeyApiGet<
 >(
 	endpoint: E,
 	data: P = {} as any,
-): Promise<_ResT> {
+	returnResponse: boolean = false
+): Promise<_ResT | Response> {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
@@ -79,21 +84,24 @@ export function misskeyApiGet<
 
 	const query = new URLSearchParams(data as any);
 
-	const promise = new Promise<_ResT>((resolve, reject) => {
+	const promise = new Promise<_ResT | Response>((resolve, reject) => {
 		// Send request
 		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',
 			credentials: 'omit',
 			cache: 'default',
 		}).then(async (res) => {
-			const body = res.status === 204 ? null : await res.json();
-
-			if (res.status === 200) {
-				resolve(body);
-			} else if (res.status === 204) {
-				resolve(undefined as _ResT); // void -> undefined
+			if (returnResponse) {
+				resolve(res);
 			} else {
-				reject(body.error);
+				const body = res.status === 204 ? null : await res.json();
+				if (res.status === 200) {
+					resolve(body);
+				} else if (res.status === 204) {
+					resolve(undefined as _ResT); // void -> undefined
+				} else {
+					reject(body.error);
+				}
 			}
 		}).catch(reject);
 	});
@@ -102,3 +110,4 @@ export function misskeyApiGet<
 
 	return promise;
 }
+

@@ -99,6 +99,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
 					</div>
 				</div>
+				<div v-if="converting || convert" :class="$style.translation">
+					<MkLoading v-if="converting" mini/>
+					<div v-else-if="converturl">
+						<!--<b>{{ i18n.tsx.convertedFrom({ x: appearNote.id }) }}: </b>-->
+						<b>{{ 'From ' + appearNote.id }} </b>
+						<MkMediaAudio :audio="converturl"/>
+					</div>
+				</div>
 				<div v-if="appearNote.files && appearNote.files.length > 0">
 					<MkMediaList ref="galleryEl" :mediaList="appearNote.files"/>
 				</div>
@@ -203,7 +211,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, provide, ref, shallowRef } from 'vue';
+import { computed, inject, onMounted, provide, ref, shallowRef, watch, onUnmounted } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -211,6 +219,7 @@ import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
+import MkMediaAudio from '@/components/MkMediaAudio.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
@@ -292,6 +301,9 @@ const isDeleted = ref(false);
 const muted = ref($i ? checkWordMute(appearNote.value, $i, $i.mutedWords) : false);
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
+const convert = ref<Blob | null>(null);
+const converting = ref(false);
+const converturl = ref<Misskey.entities.NotesTTSResponse | null>(null);
 const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
@@ -483,13 +495,13 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, isDeleted });
+		const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, converting, convert, isDeleted });
 		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
 
 function showMenu(): void {
-	const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, isDeleted });
+	const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, converting, convert, isDeleted });
 	os.popupMenu(menu, menuButton.value).then(focus).finally(cleanup);
 }
 
@@ -544,6 +556,24 @@ function loadConversation() {
 		conversation.value = res.reverse();
 	});
 }
+
+watch(convert, (newBlob) => {
+	try {
+	  	if (newBlob) {
+    		converturl.value = { url: newBlob };
+  		} else {
+    		converturl.value = null;
+  		}
+	} catch (error) {
+  		console.error('Failed to create URL:', error);
+	}
+});
+
+onUnmounted(() => {
+  if (converturl.value && converturl.value.url) {
+    URL.revokeObjectURL(converturl.value.url);
+  }
+});
 </script>
 
 <style lang="scss" module>
