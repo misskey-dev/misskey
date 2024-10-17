@@ -416,6 +416,58 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			hfAuthKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			hfSpace: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			hfSpaceName: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			hfexampleAudioURL: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			hfexampleText: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			hfexampleLang: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			hfslice: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			hftopK: {
+				type: 'number',
+				optional: false, nullable: true,
+			},
+			hftopP: {
+				type: 'number',
+				optional: false, nullable: true,
+			},
+			hfTemperature: {
+				type: 'number',
+				optional: false, nullable: true,
+			},
+			hfSpeedRate: {
+				type: 'number',
+				optional: false, nullable: true,
+			},
+			hfnrm: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			hfdas: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			defaultDarkTheme: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -635,6 +687,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				objectStorageS3ForcePathStyle: instance.objectStorageS3ForcePathStyle,
 				deeplAuthKey: instance.deeplAuthKey,
 				deeplIsPro: instance.deeplIsPro,
+				hfAuthKey: instance.hfAuthKey,
+				hfSpace: instance.hfSpace,
+				hfSpaceName: instance.hfSpaceName,
+				hfexampleAudioURL: instance.hfexampleAudioURL,
+				hfexampleText: instance.hfexampleText,
+				hfexampleLang: instance.hfexampleLang,
+				hfslice: instance.hfslice,
+				hftopK: instance.hftopK,
+				hftopP: instance.hftopP,
+				hfTemperature: instance.hfTemperature,
+				hfSpeedRate: instance.hfSpeedRate,
+				hfnrm: instance.hfnrm,
+				hfdas: instance.hfdas,
 				enableIpLogging: instance.enableIpLogging,
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
 				enableVerifymailApi: instance.enableVerifymailApi,

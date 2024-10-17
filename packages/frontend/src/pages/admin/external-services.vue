@@ -136,7 +136,7 @@ async function init() {
     const meta = await misskeyApi('admin/meta');
     deeplAuthKey.value = meta.deeplAuthKey;
     deeplIsPro.value = meta.deeplIsPro;
-    hfAuthKey.value = meta.hfAuthkey;
+    hfAuthKey.value = meta.hfAuthKey;
     hfSpace.value = meta.hfSpace;
     hfSpaceName.value = meta.hfSpaceName;
     hfexampleAudioURL.value = meta.hfexampleAudioURL;
