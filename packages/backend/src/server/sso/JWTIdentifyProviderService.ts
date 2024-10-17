@@ -203,7 +203,7 @@ export class JWTIdentifyProviderService {
 						.setIssuer(ssoServiceProvider.issuer)
 						.setAudience(ssoServiceProvider.audience)
 						.setIssuedAt()
-						.setExpirationTime('10m')
+						.setExpirationTime('2w')
 						.setJti(randomUUID())
 						.setSubject(user.id)
 						.encrypt(key);
@@ -220,7 +220,7 @@ export class JWTIdentifyProviderService {
 						.setIssuer(ssoServiceProvider.issuer)
 						.setAudience(ssoServiceProvider.audience)
 						.setIssuedAt()
-						.setExpirationTime('10m')
+						.setExpirationTime('2w')
 						.setJti(randomUUID())
 						.setSubject(user.id)
 						.sign(key);
