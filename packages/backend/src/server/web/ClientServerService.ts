@@ -235,12 +235,12 @@ export class ClientServerService {
 			queues: [
 				this.systemQueue,
 				this.endedPollNotificationQueue,
-				this.deliverQueue,
 				this.inboxQueue,
 				this.dbQueue,
 				this.objectStorageQueue,
 				this.webhookDeliverQueue,
-			].map(q => new BullMQAdapter(q)),
+			].map(q => new BullMQAdapter(q))
+				.concat(this.deliverQueue.queues.map((q, index) => new BullMQAdapter(q, { prefix: `${index}-` }))),
 			serverAdapter,
 		});
 

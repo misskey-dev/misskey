@@ -9,12 +9,13 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { QUEUE, baseQueueOptions } from '@/queue/const.js';
 import { allSettled } from '@/misc/promise-tracker.js';
+import { Queues } from '@/misc/queues.js';
 import type { Provider } from '@nestjs/common';
 import type { DeliverJobData, InboxJobData, EndedPollNotificationJobData, WebhookDeliverJobData, RelationshipJobData } from '../queue/types.js';
 
 export type SystemQueue = Bull.Queue<Record<string, unknown>>;
 export type EndedPollNotificationQueue = Bull.Queue<EndedPollNotificationJobData>;
-export type DeliverQueue = Bull.Queue<DeliverJobData>;
+export type DeliverQueue = Queues<DeliverJobData>;
 export type InboxQueue = Bull.Queue<InboxJobData>;
 export type DbQueue = Bull.Queue;
 export type RelationshipQueue = Bull.Queue<RelationshipJobData>;
@@ -35,7 +36,7 @@ const $endedPollNotification: Provider = {
 
 const $deliver: Provider = {
 	provide: 'queue:deliver',
-	useFactory: (config: Config) => new Bull.Queue(QUEUE.DELIVER, baseQueueOptions(config.redisForDeliverQueue, config.bullmqQueueOptions, QUEUE.DELIVER)),
+	useFactory: (config: Config) => new Queues(config.redisForDeliverQueues.map(queueConfig => new Bull.Queue(QUEUE.DELIVER, baseQueueOptions(queueConfig, config.bullmqQueueOptions, QUEUE.DELIVER)))),
 	inject: [DI.config],
 };
 

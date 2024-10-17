@@ -50,7 +50,7 @@ type Source = {
 	redisForJobQueue?: RedisOptionsSource;
 	redisForSystemQueue?: RedisOptionsSource;
 	redisForEndedPollNotificationQueue?: RedisOptionsSource;
-	redisForDeliverQueue?: RedisOptionsSource;
+	redisForDeliverQueues?: Array<RedisOptionsSource>;
 	redisForInboxQueue?: RedisOptionsSource;
 	redisForDbQueue?: RedisOptionsSource;
 	redisForRelationshipQueue?: RedisOptionsSource;
@@ -220,7 +220,7 @@ export type Config = {
 	redisForPubsub: RedisOptions & RedisOptionsSource;
 	redisForSystemQueue: RedisOptions & RedisOptionsSource;
 	redisForEndedPollNotificationQueue: RedisOptions & RedisOptionsSource;
-	redisForDeliverQueue: RedisOptions & RedisOptionsSource;
+	redisForDeliverQueues: Array<RedisOptions & RedisOptionsSource>;
 	redisForInboxQueue: RedisOptions & RedisOptionsSource;
 	redisForDbQueue: RedisOptions & RedisOptionsSource;
 	redisForRelationshipQueue: RedisOptions & RedisOptionsSource;
@@ -296,7 +296,7 @@ export function loadConfig(): Config {
 		redisForPubsub: config.redisForPubsub ? convertRedisOptions(config.redisForPubsub, host) : redis,
 		redisForSystemQueue: config.redisForSystemQueue ? convertRedisOptions(config.redisForSystemQueue, host) : redisForJobQueue,
 		redisForEndedPollNotificationQueue: config.redisForEndedPollNotificationQueue ? convertRedisOptions(config.redisForEndedPollNotificationQueue, host) : redisForJobQueue,
-		redisForDeliverQueue: config.redisForDeliverQueue ? convertRedisOptions(config.redisForDeliverQueue, host) : redisForJobQueue,
+		redisForDeliverQueues: config.redisForDeliverQueues ? config.redisForDeliverQueues.map(config => convertRedisOptions(config, host)) : [redisForJobQueue],
 		redisForInboxQueue: config.redisForInboxQueue ? convertRedisOptions(config.redisForInboxQueue, host) : redisForJobQueue,
 		redisForDbQueue: config.redisForDbQueue ? convertRedisOptions(config.redisForDbQueue, host) : redisForJobQueue,
 		redisForRelationshipQueue: config.redisForRelationshipQueue ? convertRedisOptions(config.redisForRelationshipQueue, host) : redisForJobQueue,
