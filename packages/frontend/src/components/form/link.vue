@@ -109,7 +109,7 @@ const props = defineProps<{
 }
 
 .headerTextSub {
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 	font-size: .85em;
 }
 
