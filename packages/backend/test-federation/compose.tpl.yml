@@ -1,0 +1,101 @@
+services:
+  nginx:
+    image: nginx:1.27
+    volumes:
+      - type: bind
+        source: ./certificates/rootCA.crt
+        target: /etc/nginx/certificates/rootCA.crt
+        read_only: true
+    healthcheck:
+      test: service nginx status
+      interval: 5s
+      retries: 20
+
+  misskey:
+    image: node:20
+    env_file:
+      - ./.config/docker.env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - type: bind
+        source: ../../../built
+        target: /misskey/built
+        read_only: true
+      - type: bind
+        source: ../assets
+        target: /misskey/packages/backend/assets
+        read_only: true
+      - type: bind
+        source: ../built
+        target: /misskey/packages/backend/built
+        read_only: true
+      - type: bind
+        source: ../migration
+        target: /misskey/packages/backend/migration
+        read_only: true
+      - type: bind
+        source: ../ormconfig.js
+        target: /misskey/packages/backend/ormconfig.js
+        read_only: true
+      - type: bind
+        source: ../package.json
+        target: /misskey/packages/backend/package.json
+        read_only: true
+      - type: bind
+        source: ../../misskey-js/built
+        target: /misskey/packages/misskey-js/built
+        read_only: true
+      - type: bind
+        source: ../../misskey-js/package.json
+        target: /misskey/packages/misskey-js/package.json
+        read_only: true
+      - type: bind
+        source: ../../misskey-reversi/built
+        target: /misskey/packages/misskey-reversi/built
+        read_only: true
+      - type: bind
+        source: ../../misskey-reversi/package.json
+        target: /misskey/packages/misskey-reversi/package.json
+        read_only: true
+      - type: bind
+        source: ../../../healthcheck.sh
+        target: /misskey/healthcheck.sh
+        read_only: true
+      - type: bind
+        source: ../../../package.json
+        target: /misskey/package.json
+        read_only: true
+      - type: bind
+        source: ../../../pnpm-lock.yaml
+        target: /misskey/pnpm-lock.yaml
+        read_only: true
+      - type: bind
+        source: ../../../pnpm-workspace.yaml
+        target: /misskey/pnpm-workspace.yaml
+        read_only: true
+      - type: bind
+        source: ./certificates/rootCA.crt
+        target: /usr/local/share/ca-certificates/rootCA.crt
+        read_only: true
+    working_dir: /misskey
+    command: >
+      bash -c "
+        corepack enable && corepack prepare
+        pnpm -F backend migrate
+        pnpm -F backend start
+      "
+    healthcheck:
+      test: bash /misskey/healthcheck.sh
+      interval: 5s
+      retries: 20
+
+  db:
+    image: postgres:15-alpine
+    env_file:
+      - ./.config/docker.env
+    volumes:
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 5s
+      retries: 20

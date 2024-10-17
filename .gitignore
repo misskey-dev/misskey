@@ -37,7 +37,7 @@ coverage
 !/.config/docker_example.env
 !/.config/cypress-devcontainer.yml
 docker-compose.yml
-compose.yml
+./compose.yml
 .devcontainer/compose.yml
 !/.devcontainer/compose.yml
 

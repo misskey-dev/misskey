@@ -1,3 +1,15 @@
+## Unreleased
+
+### General
+-
+
+### Client
+-
+
+### Server
+-
+
+
 ## 2024.10.1
 
 ### Note
@@ -20,8 +32,6 @@
 - Enhance: 個人宛のお知らせは「わかった」を押すと自動的にアーカイブされるように
 - Fix: `admin/emoji/update`エンドポイントのidのみ指定した時不正なエラーが発生するバグを修正
 - Fix: RBT有効時、リノートのリアクションが反映されない問題を修正
-
-### Server
 - Fix: キューのエラーログを簡略化するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/649)
 
