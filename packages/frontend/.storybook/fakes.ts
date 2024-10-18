@@ -207,7 +207,7 @@ export function note(id = 'somenoteid'): entities.Note {
 	};
 }
 
-export function remoteNote(id = 'somenoteId'){
+export function remoteNote(id = 'somenoteId') {
 	return {
 		...note(),
 		user: {
