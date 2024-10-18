@@ -76,9 +76,9 @@ export class QueueProcessorService implements OnApplicationShutdown {
 	private systemQueueWorker: Bull.Worker;
 	private dbQueueWorker: Bull.Worker;
 	private deliverQueueWorkers: Bull.Worker[];
-	private inboxQueueWorker: Bull.Worker;
+	private inboxQueueWorkers: Bull.Worker[];
 	private webhookDeliverQueueWorker: Bull.Worker;
-	private relationshipQueueWorker: Bull.Worker;
+	private relationshipQueueWorkers: Bull.Worker[];
 	private objectStorageQueueWorker: Bull.Worker;
 	private endedPollNotificationQueueWorker: Bull.Worker;
 
@@ -234,27 +234,31 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#endregion
 
 		//#region inbox
-		this.inboxQueueWorker = new Bull.Worker(QUEUE.INBOX, (job) => this.inboxProcessorService.process(job), {
-			...baseWorkerOptions(this.config.redisForInboxQueue, this.config.bullmqWorkerOptions, QUEUE.INBOX),
-			autorun: false,
-			concurrency: this.config.inboxJobConcurrency ?? 16,
-			limiter: {
-				max: this.config.inboxJobPerSec ?? 32,
-				duration: 1000,
-			},
-			settings: {
-				backoffStrategy: httpRelatedBackoff,
-			},
+		this.inboxQueueWorkers = this.config.redisForInboxQueues
+			.filter((_, index) => process.env.QUEUE_WORKER_INDEX == null || index === Number.parseInt(process.env.QUEUE_WORKER_INDEX, 10))
+			.map(config => new Bull.Worker(QUEUE.INBOX, (job) => this.inboxProcessorService.process(job), {
+				...baseWorkerOptions(config, this.config.bullmqWorkerOptions, QUEUE.INBOX),
+				autorun: false,
+				concurrency: this.config.inboxJobConcurrency ?? 16,
+				limiter: {
+					max: this.config.inboxJobPerSec ?? 32,
+					duration: 1000,
+				},
+				settings: {
+					backoffStrategy: httpRelatedBackoff,
+				},
+			}));
+
+		this.inboxQueueWorkers.forEach((worker, index) => {
+			const inboxLogger = this.logger.createSubLogger(`inbox-${index}`);
+
+			worker
+				.on('active', (job) => inboxLogger.debug(`active ${getJobInfo(job, true)}`))
+				.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
+				.on('failed', (job, err) => inboxLogger.warn(`failed(${err.stack}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job, error: renderError(err) }))
+				.on('error', (err: Error) => inboxLogger.error(`error ${err.stack}`, { error: renderError(err) }))
+				.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
 		});
-
-		const inboxLogger = this.logger.createSubLogger('inbox');
-
-		this.inboxQueueWorker
-			.on('active', (job) => inboxLogger.debug(`active ${getJobInfo(job, true)}`))
-			.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
-			.on('failed', (job, err) => inboxLogger.warn(`failed(${err.stack}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job, error: renderError(err) }))
-			.on('error', (err: Error) => inboxLogger.error(`error ${err.stack}`, { error: renderError(err) }))
-			.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
 		//#region webhook deliver
@@ -282,32 +286,36 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#endregion
 
 		//#region relationship
-		this.relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
-			switch (job.name) {
-				case 'follow': return this.relationshipProcessorService.processFollow(job);
-				case 'unfollow': return this.relationshipProcessorService.processUnfollow(job);
-				case 'block': return this.relationshipProcessorService.processBlock(job);
-				case 'unblock': return this.relationshipProcessorService.processUnblock(job);
-				default: throw new Error(`unrecognized job type ${job.name} for relationship`);
-			}
-		}, {
-			...baseWorkerOptions(this.config.redisForRelationshipQueue, this.config.bullmqWorkerOptions, QUEUE.RELATIONSHIP),
-			autorun: false,
-			concurrency: this.config.relationshipJobConcurrency ?? 16,
-			limiter: {
-				max: this.config.relationshipJobPerSec ?? 64,
-				duration: 1000,
-			},
+		this.relationshipQueueWorkers = this.config.redisForRelationshipQueues
+			.filter((_, index) => process.env.QUEUE_WORKER_INDEX == null || index === Number.parseInt(process.env.QUEUE_WORKER_INDEX, 10))
+			.map(config => new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
+				switch (job.name) {
+					case 'follow': return this.relationshipProcessorService.processFollow(job);
+					case 'unfollow': return this.relationshipProcessorService.processUnfollow(job);
+					case 'block': return this.relationshipProcessorService.processBlock(job);
+					case 'unblock': return this.relationshipProcessorService.processUnblock(job);
+					default: throw new Error(`unrecognized job type ${job.name} for relationship`);
+				}
+			}, {
+				...baseWorkerOptions(config, this.config.bullmqWorkerOptions, QUEUE.RELATIONSHIP),
+				autorun: false,
+				concurrency: this.config.relationshipJobConcurrency ?? 16,
+				limiter: {
+					max: this.config.relationshipJobPerSec ?? 64,
+					duration: 1000,
+				},
+			}));
+
+		this.relationshipQueueWorkers.forEach((worker, index) => {
+			const relationshipLogger = this.logger.createSubLogger(`relationship-${index}`);
+
+			worker
+				.on('active', (job) => relationshipLogger.debug(`active id=${job.id}`))
+				.on('completed', (job, result) => relationshipLogger.debug(`completed(${result}) id=${job.id}`))
+				.on('failed', (job, err) => relationshipLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, error: renderError(err) }))
+				.on('error', (err: Error) => relationshipLogger.error(`error ${err.stack}`, { error: renderError(err) }))
+				.on('stalled', (jobId) => relationshipLogger.warn(`stalled id=${jobId}`));
 		});
-
-		const relationshipLogger = this.logger.createSubLogger('relationship');
-
-		this.relationshipQueueWorker
-			.on('active', (job) => relationshipLogger.debug(`active id=${job.id}`))
-			.on('completed', (job, result) => relationshipLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => relationshipLogger.warn(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, error: renderError(err) }))
-			.on('error', (err: Error) => relationshipLogger.error(`error ${err.stack}`, { error: renderError(err) }))
-			.on('stalled', (jobId) => relationshipLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
 		//#region object storage
@@ -347,9 +355,9 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.systemQueueWorker.run(),
 			this.dbQueueWorker.run(),
 			...this.deliverQueueWorkers.map(worker => worker.run()),
-			this.inboxQueueWorker.run(),
+			this.inboxQueueWorkers.map(worker => worker.run()),
 			this.webhookDeliverQueueWorker.run(),
-			this.relationshipQueueWorker.run(),
+			this.relationshipQueueWorkers.map(worker => worker.run()),
 			this.objectStorageQueueWorker.run(),
 			this.endedPollNotificationQueueWorker.run(),
 		]);
@@ -361,9 +369,9 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.systemQueueWorker.close(),
 			this.dbQueueWorker.close(),
 			...this.deliverQueueWorkers.map(worker => worker.close()),
-			this.inboxQueueWorker.close(),
+			this.inboxQueueWorkers.map(worker => worker.close()),
 			this.webhookDeliverQueueWorker.close(),
-			this.relationshipQueueWorker.close(),
+			this.relationshipQueueWorkers.map(worker => worker.close()),
 			this.objectStorageQueueWorker.close(),
 			this.endedPollNotificationQueueWorker.close(),
 		]);

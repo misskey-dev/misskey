@@ -16,9 +16,9 @@ import type { DeliverJobData, InboxJobData, EndedPollNotificationJobData, Webhoo
 export type SystemQueue = Bull.Queue<Record<string, unknown>>;
 export type EndedPollNotificationQueue = Bull.Queue<EndedPollNotificationJobData>;
 export type DeliverQueue = Queues<DeliverJobData>;
-export type InboxQueue = Bull.Queue<InboxJobData>;
+export type InboxQueue = Queues<InboxJobData>;
 export type DbQueue = Bull.Queue;
-export type RelationshipQueue = Bull.Queue<RelationshipJobData>;
+export type RelationshipQueue = Queues<RelationshipJobData>;
 export type ObjectStorageQueue = Bull.Queue;
 export type WebhookDeliverQueue = Bull.Queue<WebhookDeliverJobData>;
 
@@ -42,7 +42,7 @@ const $deliver: Provider = {
 
 const $inbox: Provider = {
 	provide: 'queue:inbox',
-	useFactory: (config: Config) => new Bull.Queue(QUEUE.INBOX, baseQueueOptions(config.redisForInboxQueue, config.bullmqQueueOptions, QUEUE.INBOX)),
+	useFactory: (config: Config) => new Queues(config.redisForInboxQueues.map(queueConfig => new Bull.Queue(QUEUE.INBOX, baseQueueOptions(queueConfig, config.bullmqQueueOptions, QUEUE.INBOX)))),
 	inject: [DI.config],
 };
 
@@ -54,7 +54,7 @@ const $db: Provider = {
 
 const $relationship: Provider = {
 	provide: 'queue:relationship',
-	useFactory: (config: Config) => new Bull.Queue(QUEUE.RELATIONSHIP, baseQueueOptions(config.redisForRelationshipQueue, config.bullmqQueueOptions, QUEUE.RELATIONSHIP)),
+	useFactory: (config: Config) => new Queues(config.redisForRelationshipQueues.map(queueConfig => new Bull.Queue(QUEUE.RELATIONSHIP, baseQueueOptions(queueConfig, config.bullmqQueueOptions, QUEUE.RELATIONSHIP)))),
 	inject: [DI.config],
 };
 

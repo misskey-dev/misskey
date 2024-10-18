@@ -51,9 +51,9 @@ type Source = {
 	redisForSystemQueue?: RedisOptionsSource;
 	redisForEndedPollNotificationQueue?: RedisOptionsSource;
 	redisForDeliverQueues?: Array<RedisOptionsSource>;
-	redisForInboxQueue?: RedisOptionsSource;
+	redisForInboxQueues?: Array<RedisOptionsSource>;
 	redisForDbQueue?: RedisOptionsSource;
-	redisForRelationshipQueue?: RedisOptionsSource;
+	redisForRelationshipQueues?: Array<RedisOptionsSource>;
 	redisForObjectStorageQueue?: RedisOptionsSource;
 	redisForWebhookDeliverQueue?: RedisOptionsSource;
 	redisForTimelines?: RedisOptionsSource;
@@ -221,9 +221,9 @@ export type Config = {
 	redisForSystemQueue: RedisOptions & RedisOptionsSource;
 	redisForEndedPollNotificationQueue: RedisOptions & RedisOptionsSource;
 	redisForDeliverQueues: Array<RedisOptions & RedisOptionsSource>;
-	redisForInboxQueue: RedisOptions & RedisOptionsSource;
+	redisForInboxQueues: Array<RedisOptions & RedisOptionsSource>;
 	redisForDbQueue: RedisOptions & RedisOptionsSource;
-	redisForRelationshipQueue: RedisOptions & RedisOptionsSource;
+	redisForRelationshipQueues: Array<RedisOptions & RedisOptionsSource>;
 	redisForObjectStorageQueue: RedisOptions & RedisOptionsSource;
 	redisForWebhookDeliverQueue: RedisOptions & RedisOptionsSource;
 	redisForTimelines: RedisOptions & RedisOptionsSource;
@@ -297,9 +297,9 @@ export function loadConfig(): Config {
 		redisForSystemQueue: config.redisForSystemQueue ? convertRedisOptions(config.redisForSystemQueue, host) : redisForJobQueue,
 		redisForEndedPollNotificationQueue: config.redisForEndedPollNotificationQueue ? convertRedisOptions(config.redisForEndedPollNotificationQueue, host) : redisForJobQueue,
 		redisForDeliverQueues: config.redisForDeliverQueues ? config.redisForDeliverQueues.map(config => convertRedisOptions(config, host)) : [redisForJobQueue],
-		redisForInboxQueue: config.redisForInboxQueue ? convertRedisOptions(config.redisForInboxQueue, host) : redisForJobQueue,
+		redisForInboxQueues: config.redisForInboxQueues ? config.redisForInboxQueues.map(config => convertRedisOptions(config, host)) : [redisForJobQueue],
 		redisForDbQueue: config.redisForDbQueue ? convertRedisOptions(config.redisForDbQueue, host) : redisForJobQueue,
-		redisForRelationshipQueue: config.redisForRelationshipQueue ? convertRedisOptions(config.redisForRelationshipQueue, host) : redisForJobQueue,
+		redisForRelationshipQueues: config.redisForRelationshipQueues ? config.redisForRelationshipQueues.map(config => convertRedisOptions(config, host)) : [redisForJobQueue],
 		redisForObjectStorageQueue: config.redisForObjectStorageQueue ? convertRedisOptions(config.redisForObjectStorageQueue, host) : redisForJobQueue,
 		redisForWebhookDeliverQueue: config.redisForWebhookDeliverQueue ? convertRedisOptions(config.redisForWebhookDeliverQueue, host) : redisForJobQueue,
 		redisForTimelines: config.redisForTimelines ? convertRedisOptions(config.redisForTimelines, host) : redis,
