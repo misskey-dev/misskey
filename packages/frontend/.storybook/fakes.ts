@@ -213,7 +213,7 @@ export function remoteNote(id = 'somenoteId') {
 		user: {
 			...userLite(id, "remoteUser", "Remote Server"),
 		},
-		text: "this is remote note text"
+		text: "this is remote note text",
 	}
 }
 
