@@ -129,7 +129,7 @@ function onMousedown(evt: MouseEvent): void {
 	font-size: 95%;
 	box-shadow: none;
 	text-decoration: none;
-	background: var(--buttonBg);
+	background: var(--MI_THEME-buttonBg);
 	border-radius: 5px;
 	overflow: clip;
 	box-sizing: border-box;
@@ -140,11 +140,11 @@ function onMousedown(evt: MouseEvent): void {
 	}
 
 	&:not(:disabled):hover {
-		background: var(--buttonHoverBg);
+		background: var(--MI_THEME-buttonHoverBg);
 	}
 
 	&:not(:disabled):active {
-		background: var(--buttonHoverBg);
+		background: var(--MI_THEME-buttonHoverBg);
 	}
 
 	&.small {
@@ -167,15 +167,15 @@ function onMousedown(evt: MouseEvent): void {
 
 	&.primary {
 		font-weight: bold;
-		color: var(--fgOnAccent) !important;
-		background: var(--accent);
+		color: var(--MI_THEME-fgOnAccent) !important;
+		background: var(--MI_THEME-accent);
 
 		&:not(:disabled):hover {
-			background: var(--X8);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l + 5));
 		}
 
 		&:not(:disabled):active {
-			background: var(--X8);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l + 5));
 		}
 	}
 
@@ -216,19 +216,20 @@ function onMousedown(evt: MouseEvent): void {
 
 	&.gradate {
 		font-weight: bold;
-		color: var(--fgOnAccent) !important;
-		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+		color: var(--MI_THEME-fgOnAccent) !important;
+		background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 
 		&:not(:disabled):hover {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 		}
 
 		&:not(:disabled):active {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 		}
 	}
 
 	&.danger {
+		font-weight: bold;
 		color: #ff2a2a;
 
 		&.primary {
@@ -246,7 +247,7 @@ function onMousedown(evt: MouseEvent): void {
 	}
 
 	&:disabled {
-		opacity: 0.7;
+		opacity: 0.5;
 	}
 
 	&:focus-visible {

@@ -15,6 +15,7 @@ const { port } = yaml.load(await readFile('../../.config/default.yml', 'utf-8'))
 
 const httpUrl = `http://localhost:${port}/`;
 const websocketUrl = `ws://localhost:${port}/`;
+const embedUrl = `http://localhost:5174/`;
 
 // activitypubリクエストはProxyを通し、それ以外はViteの開発サーバーを返す
 function varyHandler(req: IncomingMessage) {
@@ -50,6 +51,12 @@ const devConfig: UserConfig = {
 				ws: true,
 			},
 			'/favicon.ico': httpUrl,
+			'/robots.txt': httpUrl,
+			'/embed.js': httpUrl,
+			'/embed': {
+				target: embedUrl,
+				ws: true,
+			},
 			'/identicon': {
 				target: httpUrl,
 				rewrite(path) {

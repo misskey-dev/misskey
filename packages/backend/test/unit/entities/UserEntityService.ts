@@ -4,10 +4,10 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
+import type { MiUser } from '@/models/User.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
-import type { MiUser } from '@/models/User.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { genAidx } from '@/misc/id/aidx.js';
 import {
@@ -49,6 +49,7 @@ import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { ReactionService } from '@/core/ReactionService.js';
 import { NotificationService } from '@/core/NotificationService.js';
+import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 
 process.env.NODE_ENV = 'test';
 
@@ -169,6 +170,7 @@ describe('UserEntityService', () => {
 				ApLoggerService,
 				AccountMoveService,
 				ReactionService,
+				ReactionsBufferingService,
 				NotificationService,
 			];
 

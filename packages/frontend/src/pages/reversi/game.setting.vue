@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 				<template v-else>
 					<div class="_panel">
-						<div style="display: flex; align-items: center; padding: 16px; border-bottom: solid 1px var(--divider);">
+						<div style="display: flex; align-items: center; padding: 16px; border-bottom: solid 1px var(--MI_THEME-divider);">
 							<div>{{ mapName }}</div>
 							<MkButton style="margin-left: auto;" @click="chooseMap">{{ i18n.ts._reversi.chooseBoard }}</MkButton>
 						</div>
@@ -87,7 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footer">
 			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
 				<div style="text-align: center;" class="_gaps_s">
-					<div v-if="opponentHasSettingsChanged" style="color: var(--warn);">{{ i18n.ts._reversi.opponentHasSettingsChanged }}</div>
+					<div v-if="opponentHasSettingsChanged" style="color: var(--MI_THEME-warn);">{{ i18n.ts._reversi.opponentHasSettingsChanged }}</div>
 					<div>
 						<template v-if="isReady && isOpReady">{{ i18n.ts._reversi.thisGameIsStartedSoon }}<MkEllipsis/></template>
 						<template v-if="isReady && !isOpReady">{{ i18n.ts._reversi.waitingForOther }}<MkEllipsis/></template>
@@ -121,7 +121,7 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 import { useRouter } from '@/router/supplier.js';
 
 const $i = signinRequired();
@@ -273,14 +273,14 @@ onUnmounted(() => {
 	width: 300px;
 	height: 300px;
 	margin: 0 auto;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 
 .boardCell {
 	display: grid;
 	place-items: center;
 	background: transparent;
-	border: solid 2px var(--divider);
+	border: solid 2px var(--MI_THEME-divider);
 	border-radius: 6px;
 	overflow: clip;
 	cursor: pointer;
@@ -290,9 +290,9 @@ onUnmounted(() => {
 }
 
 .footer {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	background: var(--acrylicBg);
-	border-top: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	background: var(--MI_THEME-acrylicBg);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 </style>

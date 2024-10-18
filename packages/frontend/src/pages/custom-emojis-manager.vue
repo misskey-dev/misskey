@@ -317,33 +317,34 @@ definePageMetadata(() => ({
 .ogwlenmc {
 	> .local {
 		.empty {
-			margin: var(--margin);
+			margin: var(--MI-margin);
 		}
 
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 			grid-gap: 12px;
-			margin: var(--margin) 0;
+			margin: var(--MI-margin) 0;
 
 			> .emoji {
 				display: flex;
 				align-items: center;
 				padding: 11px;
 				text-align: left;
-				border: solid 1px var(--panel);
+				border: solid 1px var(--MI_THEME-panel);
 
 				&:hover {
-					border-color: var(--inputBorderHover);
+					border-color: var(--MI_THEME-inputBorderHover);
 				}
 
 				&.selected {
-					border-color: var(--accent);
+					border-color: var(--MI_THEME-accent);
 				}
 
 				> .img {
 					width: 42px;
 					height: 42px;
+					object-fit: contain;
 				}
 
 				> .body {
@@ -368,14 +369,14 @@ definePageMetadata(() => ({
 
 	> .remote {
 		.empty {
-			margin: var(--margin);
+			margin: var(--MI-margin);
 		}
 
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 			grid-gap: 12px;
-			margin: var(--margin) 0;
+			margin: var(--MI-margin) 0;
 
 			> .emoji {
 				display: flex;
@@ -384,12 +385,13 @@ definePageMetadata(() => ({
 				text-align: left;
 
 				&:hover {
-					color: var(--accent);
+					color: var(--MI_THEME-accent);
 				}
 
 				> .img {
 					width: 32px;
 					height: 32px;
+					object-fit: contain;
 				}
 
 				> .body {

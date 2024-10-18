@@ -44,6 +44,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
+		<div v-else-if="tab === 'notes' && info" class="_gaps_m">
+			<XNotes :fileId="fileId"/>
+		</div>
 		<div v-else-if="tab === 'ip' && info" class="_gaps_m">
 			<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
 			<MkKeyValue v-if="info.requestIp" class="_monospace" :copy="info.requestIp" oneline>
@@ -67,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -88,6 +91,7 @@ const tab = ref('overview');
 const file = ref<Misskey.entities.DriveFile | null>(null);
 const info = ref<Misskey.entities.AdminDriveShowFileResponse | null>(null);
 const isSensitive = ref<boolean>(false);
+const XNotes = defineAsyncComponent(() => import('./drive.file.notes.vue'));
 
 const props = defineProps<{
 	fileId: string,
@@ -131,6 +135,10 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',
 }, iAmModerator ? {
+	key: 'notes',
+	title: i18n.ts._fileViewer.attachedNotes,
+	icon: 'ti ti-pencil',
+} : null, iAmModerator ? {
 	key: 'ip',
 	title: 'IP',
 	icon: 'ti ti-password',
