@@ -245,7 +245,7 @@ export function renotedFromChannelnote(id = "somenoteId") {
 	return {
 		...note(id),
 		renote: channelNote(),
-		text: null
+		text: null,
 	}
 }
 
