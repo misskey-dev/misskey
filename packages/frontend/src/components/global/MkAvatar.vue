@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			}"
 			alt=""
 		>
+		<MkInstanceIcon v-if="showInstance" :class="$style.instanceicon" :instance="user.instance"/>
 	</template>
 </component>
 </template>
@@ -49,6 +50,7 @@ import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { acct, userPage } from '@/filters/user.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import { defaultStore } from '@/store.js';
+import MkInstanceIcon from '@/components/MkInstanceIcon.vue';
 
 const animation = ref(defaultStore.state.animation);
 const squareAvatars = ref(defaultStore.state.squareAvatars);
@@ -62,6 +64,7 @@ const props = withDefaults(defineProps<{
 	indicator?: boolean;
 	decorations?: (Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'> & { blink?: boolean; })[];
 	forceShowDecoration?: boolean;
+	showInstance?: boolean;
 }>(), {
 	target: null,
 	link: false,
@@ -69,6 +72,7 @@ const props = withDefaults(defineProps<{
 	indicator: false,
 	decorations: undefined,
 	forceShowDecoration: false,
+	showInstance: false,
 });
 
 const emit = defineEmits<{
@@ -341,6 +345,32 @@ watch(() => props.user.avatarBlurhash, () => {
 	}
 	50% {
 		filter: brightness(1);
+	}
+}
+
+.instanceicon {
+	height: 25px;
+	z-index: 2;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+}
+
+@container (max-width: 580px) {
+	.instanceicon {
+		height: 21px;
+	}
+}
+
+@container (max-width: 450px) {
+	.instanceicon {
+		height: 19px;
+	}
+}
+
+@container (max-width: 300px) {
+	.instanceicon {
+		height: 17px;
 	}
 }
 </style>
