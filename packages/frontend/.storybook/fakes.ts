@@ -257,7 +257,7 @@ export function renotedToChannel(id = "somenoteId") {
 		text: null,
 	}
 }
-export function renotedToChannelFromChannel(id = "somenoteId"){
+export function renotedToChannelFromChannel(id = "somenoteId") {
 	return {
 		...channelNote(),
 		renote: channelNote(),
