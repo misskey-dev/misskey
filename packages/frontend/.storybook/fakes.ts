@@ -250,7 +250,7 @@ export function renotedFromChannelnote(id = "somenoteId") {
 }
 
 // チャンネルへRenoteされたTLのNoteは renoteにnoteを入れる ベースはchannelNoteである
-export function renotedToChannel(id = "somenoteId"){
+export function renotedToChannel(id = "somenoteId") {
 	return {
 		...channelNote(),
 		renote: note(),
