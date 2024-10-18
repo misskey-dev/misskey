@@ -39,11 +39,13 @@ export const paramDef = {
 		defaultFollowedUsers: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
+				format: 'misskey:id',
 			},
 		},
 		forciblyFollowedUsers: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
+				format: 'misskey:id',
 			},
 		},
 		hiddenTags: {
