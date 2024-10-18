@@ -241,7 +241,7 @@ export function channelNote(id = 'somenoteId'): entities.Note {
 }
 
 // チャンネルからのRenoteは renote に channnelNoteを入れる
-export function renotedFromChannelnote(id = "somenoteId"){
+export function renotedFromChannelnote(id = "somenoteId") {
 	return {
 		...note(id),
 		renote: channelNote(),
