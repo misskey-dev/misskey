@@ -9,10 +9,9 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
-import { RoleService } from '@/core/RoleService.js';
 import { UserRenoteMutingService } from '@/core/UserRenoteMutingService.js';
 import type { RenoteMutingsRepository } from '@/models/_.js';
-import type { MiMeta } from '@/models/Meta.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export const meta = {
 	tags: ['account'],
@@ -66,13 +65,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.meta)
-		private serverSettings: MiMeta,
-
 		@Inject(DI.renoteMutingsRepository)
 		private renoteMutingsRepository: RenoteMutingsRepository,
 
-		private roleService: RoleService,
 		private getterService: GetterService,
 		private userRenoteMutingService: UserRenoteMutingService,
 	) {
@@ -102,15 +97,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.alreadyMuting);
 			}
 
-			if (
-				this.serverSettings.forciblyFollowedUsers.includes(mutee.id) &&
-				!await this.roleService.isModerator(muter)
-			) {
-				throw new ApiError(meta.errors.cannotMuteDueToServerPolicy);
-			}
-
 			// Create mute
-			await this.userRenoteMutingService.mute(muter, mutee);
+			await this.userRenoteMutingService.mute(muter, mutee).catch((err) => {
+				if (err instanceof IdentifiableError && err.id === meta.errors.cannotMuteDueToServerPolicy.id) {
+					throw new ApiError(meta.errors.cannotMuteDueToServerPolicy);
+				}
+			});
 		});
 	}
 }

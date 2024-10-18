@@ -7,13 +7,12 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, BlockingsRepository } from '@/models/_.js';
-import type { MiMeta } from '@/models/Meta.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
-import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export const meta = {
 	tags: ['account'],
@@ -72,16 +71,12 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.meta)
-		private serverSettings: MiMeta,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
 
-		private roleService: RoleService,
 		private userEntityService: UserEntityService,
 		private getterService: GetterService,
 		private userBlockingService: UserBlockingService,
@@ -96,7 +91,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Get blockee
 			const blockee = await this.getterService.getUser(ps.userId).catch(err => {
-				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				if (err instanceof IdentifiableError && err.id === '15348ddd-432d-49c2-8a5a-8069753becff') {
+					throw new ApiError(meta.errors.noSuchUser);
+				}
 				throw err;
 			});
 
@@ -112,14 +109,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.alreadyBlocking);
 			}
 
-			if (
-				this.serverSettings.forciblyFollowedUsers.includes(blockee.id) &&
-				!await this.roleService.isModerator(blocker)
-			) {
-				throw new ApiError(meta.errors.cannotBlockDueToServerPolicy);
-			}
-
-			await this.userBlockingService.block(blocker, blockee);
+			await this.userBlockingService.block(blocker, blockee).catch((err) => {
+				if (err instanceof IdentifiableError && err.id === meta.errors.cannotBlockDueToServerPolicy.id) {
+					throw new ApiError(meta.errors.cannotBlockDueToServerPolicy);
+				}
+			});
 
 			return await this.userEntityService.pack(blockee.id, blocker, {
 				schema: 'UserDetailedNotMe',

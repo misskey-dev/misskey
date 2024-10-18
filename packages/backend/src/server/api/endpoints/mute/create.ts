@@ -7,12 +7,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MutingsRepository } from '@/models/_.js';
-import type { MiMeta } from '@/models/Meta.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
-import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export const meta = {
 	tags: ['account'],
@@ -71,13 +70,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.meta)
-		private serverSettings: MiMeta,
-
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
-		private roleService: RoleService,
 		private getterService: GetterService,
 		private userMutingService: UserMutingService,
 	) {
@@ -107,18 +102,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.alreadyMuting);
 			}
 
-			if (
-				this.serverSettings.forciblyFollowedUsers.includes(mutee.id) &&
-				!await this.roleService.isModerator(muter)
-			) {
-				throw new ApiError(meta.errors.cannotMuteDueToServerPolicy);
-			}
-
 			if (ps.expiresAt && ps.expiresAt <= Date.now()) {
 				return;
 			}
 
-			await this.userMutingService.mute(muter, mutee, ps.expiresAt ? new Date(ps.expiresAt) : null);
+			await this.userMutingService.mute(muter, mutee, ps.expiresAt ? new Date(ps.expiresAt) : null).catch((err) => {
+				if (err instanceof IdentifiableError && err.id === meta.errors.cannotMuteDueToServerPolicy.id) {
+					throw new ApiError(meta.errors.cannotMuteDueToServerPolicy);
+				}
+			});
 		});
 	}
 }

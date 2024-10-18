@@ -27,6 +27,7 @@ import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import type { ThinUser } from '@/queue/types.js';
 import Logger from '../logger.js';
 
@@ -73,6 +74,7 @@ export class UserFollowingService implements OnModuleInit {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		private roleService: RoleService,
 		private cacheService: CacheService,
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
@@ -365,13 +367,22 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async unfollow(
 		follower: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; isRoot: MiUser['isRoot']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		followee: {
 			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		silent = false,
 	): Promise<void> {
+
+		// フォロー解除できないユーザーの場合
+		if (
+			this.meta.forciblyFollowedUsers.includes(followee.id) &&
+			!await this.roleService.isModerator(follower)
+		) {
+			throw new IdentifiableError('19f25f61-0141-4683-99dc-217a88d633cb', 'You cannot unfollow that user due to server policy.');
+		}
+
 		const following = await this.followingsRepository.findOne({
 			relations: {
 				follower: true,
