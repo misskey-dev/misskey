@@ -75,7 +75,7 @@ export class MiMeta {
 	@Column('varchar', {
 		length: 1024, array: true, default: '{}',
 	})
-	public permanentFollowedUsers: string[];
+	public forciblyFollowedUsers: string[];
 
 	@Column('varchar', {
 		length: 1024, array: true, default: '{}',

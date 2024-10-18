@@ -113,7 +113,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (
-				this.serverSettings.permanentFollowedUsers.includes(blockee.id) &&
+				this.serverSettings.forciblyFollowedUsers.includes(blockee.id) &&
 				!await this.roleService.isModerator(blocker)
 			) {
 				throw new ApiError(meta.errors.cannotBlockDueToServerPolicy);

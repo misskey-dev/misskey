@@ -110,7 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (
-				this.serverSettings.permanentFollowedUsers.includes(followee.id) &&
+				this.serverSettings.forciblyFollowedUsers.includes(followee.id) &&
 				!await this.roleService.isModerator(follower)
 			) {
 				throw new ApiError(meta.errors.cannotUnfollowDueToServerPolicy);

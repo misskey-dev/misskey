@@ -103,7 +103,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (
-				this.serverSettings.permanentFollowedUsers.includes(mutee.id) &&
+				this.serverSettings.forciblyFollowedUsers.includes(mutee.id) &&
 				!await this.roleService.isModerator(muter)
 			) {
 				throw new ApiError(meta.errors.cannotMuteDueToServerPolicy);

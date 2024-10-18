@@ -20,7 +20,7 @@ export const meta = {
 
 	errors: {
 		followedUserDuplicated: {
-			message: 'Some items in "defaultFollowedUsers" and "permanentFollowedUsers" are duplicated.',
+			message: 'Some items in "defaultFollowedUsers" and "forciblyFollowedUsers" are duplicated.',
 			code: 'FOLLOWED_USER_DUPLICATED',
 			id: 'bcf088ec-fec5-42d0-8b9e-16d3b4797a4d',
 		},
@@ -41,7 +41,7 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
-		permanentFollowedUsers: {
+		forciblyFollowedUsers: {
 			type: 'array', nullable: true, items: {
 				type: 'string',
 			},
@@ -230,19 +230,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (Array.isArray(ps.defaultFollowedUsers)) {
-				if (ps.defaultFollowedUsers.some(x => this.serverSettings.permanentFollowedUsers.includes(x) || ps.permanentFollowedUsers?.includes(x))) {
+				if (ps.defaultFollowedUsers.some(x => this.serverSettings.forciblyFollowedUsers.includes(x) || ps.forciblyFollowedUsers?.includes(x))) {
 					throw new ApiError(meta.errors.followedUserDuplicated);
 				}
 
 				set.defaultFollowedUsers = ps.defaultFollowedUsers.filter(Boolean);
 			}
 
-			if (Array.isArray(ps.permanentFollowedUsers)) {
-				if (ps.permanentFollowedUsers.some(x => this.serverSettings.defaultFollowedUsers.includes(x) || ps.defaultFollowedUsers?.includes(x))) {
+			if (Array.isArray(ps.forciblyFollowedUsers)) {
+				if (ps.forciblyFollowedUsers.some(x => this.serverSettings.defaultFollowedUsers.includes(x) || ps.defaultFollowedUsers?.includes(x))) {
 					throw new ApiError(meta.errors.followedUserDuplicated);
 				}
 
-				set.permanentFollowedUsers = ps.permanentFollowedUsers.filter(Boolean);
+				set.forciblyFollowedUsers = ps.forciblyFollowedUsers.filter(Boolean);
 			}
 
 			if (Array.isArray(ps.hiddenTags)) {

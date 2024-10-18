@@ -157,11 +157,11 @@ export class SignupService {
 		//#region Default following
 		if (
 			!isTheFirstUser &&
-			(this.meta.defaultFollowedUsers.length > 0 || this.meta.permanentFollowedUsers.length > 0)
+			(this.meta.defaultFollowedUsers.length > 0 || this.meta.forciblyFollowedUsers.length > 0)
 		) {
 			const userIdsToFollow = [
 				...this.meta.defaultFollowedUsers,
-				...this.meta.permanentFollowedUsers,
+				...this.meta.forciblyFollowedUsers,
 			];
 
 			await Promise.allSettled(userIdsToFollow.map(async userId => {

@@ -5201,11 +5201,11 @@ export interface Locale extends ILocale {
     /**
      * 交流を断てないユーザー
      */
-    "permanentFollowedUsers": string;
+    "forciblyFollowedUsers": string;
     /**
      * 今後アカウントが作成された際には自動でフォローされ、フォローの解除やミュート・ブロックができないユーザーを改行区切りで指定します。
      */
-    "permanentFollowedUsersDescription": string;
+    "forciblyFollowedUsersDescription": string;
     /**
      * 「デフォルトでフォローするユーザー」と「交流を絶てないユーザー」が重複しています。
      */
