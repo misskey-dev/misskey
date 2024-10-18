@@ -68,6 +68,7 @@ export class UserBlockingService implements OnModuleInit {
 	public async block(blocker: MiUser, blockee: MiUser, silent = false) {
 		// フォロー解除できない（＝ブロックもできない）ユーザーの場合
 		if (
+			blocker.host == null &&
 			this.serverSettings.forciblyFollowedUsers.includes(blockee.id) &&
 			!await this.roleService.isModerator(blocker)
 		) {

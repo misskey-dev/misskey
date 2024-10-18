@@ -36,6 +36,7 @@ export class UserRenoteMutingService {
 	public async mute(user: MiUser, target: MiUser, expiresAt: Date | null = null): Promise<void> {
 		// フォロー解除できない（＝リノートミュートもできない）ユーザーの場合
 		if (
+			user.host == null &&
 			this.serverSettings.forciblyFollowedUsers.includes(target.id) &&
 			!await this.roleService.isModerator(user)
 		) {
