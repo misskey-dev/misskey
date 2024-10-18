@@ -26,8 +26,8 @@ const faviconUrl = computed(() => getProxiedImageUrlNullable(props.instance?.fav
 	height: 25px;
 	border-radius: 50%;
 	opacity: 0.7;
-	background: var(--panel);
-	box-shadow: 0 0 0 2px var(--panel);
+	background: var(--MI_THEME-panel);
+	box-shadow: 0 0 0 2px var(--MI_THEME-panel);
 }
 
 @container (max-width: 580px) {
