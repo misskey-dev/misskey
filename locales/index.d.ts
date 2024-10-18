@@ -5203,7 +5203,7 @@ export interface Locale extends ILocale {
      */
     "forciblyFollowedUsers": string;
     /**
-     * 今後アカウントが作成された際には自動でフォローされ、フォローの解除やミュート・ブロックができないユーザーのユーザーID改行区切りで指定します。
+     * 今後アカウントが作成された際には自動でフォローされ、フォローの解除やミュート・ブロックができないユーザーのユーザーIDを改行区切りで指定します。
      */
     "forciblyFollowedUsersDescription": string;
     /**
