@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
+import type { MiMeta } from '@/models/Meta.js';
 import type { UsersRepository, DriveFilesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
@@ -13,6 +14,7 @@ import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
@@ -23,12 +25,16 @@ export class ImportMutingProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		private roleService: RoleService,
 		private utilityService: UtilityService,
 		private userMutingService: UserMutingService,
 		private remoteUserResolveService: RemoteUserResolveService,
@@ -87,6 +93,15 @@ export class ImportMutingProcessorService {
 
 				// skip myself
 				if (target.id === job.data.user.id) continue;
+
+				// skip if server prohibits muting
+				if (
+					this.serverSettings.forciblyFollowedUsers.includes(target.id) &&
+					!await this.roleService.isModerator({ id: user.id, isRoot: false })
+				) {
+					this.logger.info(`Skip[${linenum}] ${target.id} because of server policy ...`);
+					continue;
+				}
 
 				this.logger.info(`Mute[${linenum}] ${target.id} ...`);
 
