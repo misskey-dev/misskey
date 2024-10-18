@@ -34,7 +34,6 @@ export class UserRenoteMutingService {
 
 	@bindThis
 	public async mute(user: MiUser, target: MiUser, expiresAt: Date | null = null): Promise<void> {
-
 		// フォロー解除できない（＝リノートミュートもできない）ユーザーの場合
 		if (
 			this.serverSettings.forciblyFollowedUsers.includes(target.id) &&

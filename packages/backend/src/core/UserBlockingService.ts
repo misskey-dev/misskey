@@ -66,7 +66,6 @@ export class UserBlockingService implements OnModuleInit {
 
 	@bindThis
 	public async block(blocker: MiUser, blockee: MiUser, silent = false) {
-
 		// フォロー解除できない（＝ブロックもできない）ユーザーの場合
 		if (
 			this.serverSettings.forciblyFollowedUsers.includes(blockee.id) &&

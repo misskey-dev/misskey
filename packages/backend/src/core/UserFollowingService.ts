@@ -374,7 +374,6 @@ export class UserFollowingService implements OnModuleInit {
 		},
 		silent = false,
 	): Promise<void> {
-
 		// フォロー解除できないユーザーの場合
 		if (
 			this.meta.forciblyFollowedUsers.includes(followee.id) &&

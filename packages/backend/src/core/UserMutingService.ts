@@ -32,7 +32,6 @@ export class UserMutingService {
 
 	@bindThis
 	public async mute(user: MiUser, target: MiUser, expiresAt: Date | null = null): Promise<void> {
-
 		// フォロー解除できない（＝ミュートもできない）ユーザーの場合
 		if (
 			this.serverSettings.forciblyFollowedUsers.includes(target.id) &&
