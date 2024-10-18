@@ -34,7 +34,10 @@
 					</MkA>
 				</div>
 				<div v-if="$i && !announcement.silence && !announcement.isRead" :class="$style.footer">
-					<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
+					<MkButton primary gradate @click="read(announcement)">
+						<i :class="!announcement.needEnrollmentTutorialToRead ? 'ti ti-check' : 'ti ti-presentation'"/>
+						{{ !announcement.needEnrollmentTutorialToRead ? i18n.ts.gotIt : i18n.ts._initialAccountSetting.startTutorial }}
+					</MkButton>
 				</div>
 			</div>
 			<MkError v-else-if="error" @retry="fetch()"/>
@@ -45,7 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -75,6 +78,17 @@ function fetch() {
 }
 
 async function read(announcement): Promise<void> {
+	if (announcement.needEnrollmentTutorialToRead) {
+		const tutorialCompleted = await (new Promise<boolean>(resolve => {
+			os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {}, {
+				done: () => {
+					resolve(true);
+				},
+			}, 'closed');
+		}));
+		if (!tutorialCompleted) return;
+	}
+
 	if (announcement.needConfirmationToRead) {
 		const confirm = await os.confirm({
 			type: 'question',

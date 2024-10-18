@@ -1237,7 +1237,7 @@ _bubbleGame:
 _announcement:
   forExistingUsers: "Pour les utilisateurs existants seulement"
   needConfirmationToRead: "Exiger la confirmation de la lecture"
-  needConfirmationToReadDescription: "Si activé, afficher un dialogue de confirmation quand l'annonce est marquée comme lue. Aussi, elle sera exclue de « marquer tout comme lu » ."
+  needConfirmationToReadDescription: "Si activé, afficher un dialogue de confirmation quand l'annonce est marquée comme lue."
   end: "Archiver l'annonce"
   tooManyActiveAnnouncementDescription: "Un grand nombre d'annonces actives peut baisser l'expérience utilisateur. Considérez d'archiver les annonces obsolètes."
   readConfirmTitle: "Marquer comme lu ?"

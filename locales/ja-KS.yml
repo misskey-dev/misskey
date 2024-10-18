@@ -1254,7 +1254,7 @@ _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "オンにしたらこのお知らせができた時点でおる人らにだけお知らせが行くで。切ったらこの知らせが行ったあとにアカウント作った人にもちゃんとお知らせが行くで。"
   needConfirmationToRead: "既読にするんやったら確認してや"
-  needConfirmationToReadDescription: "オンにしたら、このお知らせを既読にする時に確認するで。ついでに、一括既読しても既読扱いにならへんで。"
+  needConfirmationToReadDescription: "オンにしたら、このお知らせを既読にする時に確認するで。"
   end: "お知らせやめる"
   tooManyActiveAnnouncementDescription: "お知らせが多すぎてUXが落ちそうや。終わったお知らせはアーカイブに突っ込んだほうがええかも。"
   readConfirmTitle: "既読にしてええんやな?"

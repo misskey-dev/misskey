@@ -5305,9 +5305,17 @@ export interface Locale extends ILocale {
          */
         "needConfirmationToRead": string;
         /**
-         * 有効にすると、このお知らせを既読にする際に確認ダイアログが表示されます。また、一括既読操作の対象になりません。
+         * 有効にすると、このお知らせを既読にする際に確認ダイアログが表示されます。
          */
         "needConfirmationToReadDescription": string;
+        /**
+         * チュートリアルの受講が必要
+         */
+        "needEnrollmentTutorialToRead": string;
+        /**
+         * 有効にすると、このお知らせを既読にするためにはチュートリアルの受講が必要です。
+         */
+        "needEnrollmentTutorialToReadDescription": string;
         /**
          * お知らせを終了
          */

@@ -167,6 +167,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
+	(ev: 'done'): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -179,6 +180,7 @@ watch(page, (to) => {
 	// チュートリアルの枚数を増やしたら必ず変更すること！！
 	if (to === 6) {
 		claimAchievement('tutorialCompleted');
+		emit('done');
 	}
 });
 

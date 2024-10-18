@@ -46,6 +46,7 @@ export const Default = {
 			imageUrl: null,
 			display: 'dialog',
 			needConfirmationToRead: false,
+			needEnrollmentTutorialToRead: false,
 			silence: false,
 			forYou: true,
 		},

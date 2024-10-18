@@ -4156,6 +4156,7 @@ export type components = {
       /** @enum {string} */
       display: 'dialog' | 'normal' | 'banner';
       needConfirmationToRead: boolean;
+      needEnrollmentTutorialToRead: boolean;
       forYou: boolean;
       closeDuration: number;
       displayOrder: number;
@@ -6028,6 +6029,8 @@ export type operations = {
           forExistingUsers?: boolean;
           /** @default false */
           needConfirmationToRead?: boolean;
+          /** @default false */
+          needEnrollmentTutorialToRead?: boolean;
           /** @default 0 */
           closeDuration?: number;
           /** @default 0 */
@@ -6063,6 +6066,7 @@ export type operations = {
             display: string;
             forYou: boolean;
             needConfirmationToRead: boolean;
+            needEnrollmentTutorialToRead: boolean;
             closeDuration: number;
             displayOrder: number;
             silence: boolean;
@@ -6195,6 +6199,7 @@ export type operations = {
               display: string;
               forExistingUsers: boolean;
               needConfirmationToRead: boolean;
+              needEnrollmentTutorialToRead: boolean;
               closeDuration: number;
               displayOrder: number;
               silence: boolean;
@@ -6259,6 +6264,7 @@ export type operations = {
           display?: 'normal' | 'banner' | 'dialog';
           forExistingUsers?: boolean;
           needConfirmationToRead?: boolean;
+          needEnrollmentTutorialToRead?: boolean;
           /** @default 0 */
           closeDuration?: number;
           /** @default 0 */

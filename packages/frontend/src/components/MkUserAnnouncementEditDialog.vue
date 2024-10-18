@@ -42,6 +42,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ i18n.ts._announcement.needConfirmationToRead }}
 					<template #caption>{{ i18n.ts._announcement.needConfirmationToReadDescription }}</template>
 				</MkSwitch>
+				<MkSwitch v-model="needEnrollmentTutorialToRead">
+					{{ i18n.ts._announcement.needEnrollmentTutorialToRead }}
+					<template #caption>{{ i18n.ts._announcement.needEnrollmentTutorialToReadDescription }}</template>
+				</MkSwitch>
 				<MkInput v-model="closeDuration" type="number">
 					<template #label>{{ i18n.ts.dialogCloseDuration }}</template>
 					<template #suffix>{{ i18n.ts._time.second }}</template>
@@ -90,6 +94,7 @@ const text = ref<string>(props.announcement ? props.announcement.text : '');
 const icon = ref<string>(props.announcement ? props.announcement.icon : 'info');
 const display = ref<string>(props.announcement ? props.announcement.display : 'dialog');
 const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
+const needEnrollmentTutorialToRead = ref(props.announcement ? props.announcement.needEnrollmentTutorialToRead : false);
 const closeDuration = ref<number>(props.announcement ? props.announcement.closeDuration : 0);
 const displayOrder = ref<number>(props.announcement ? props.announcement.displayOrder : 0);
 const silence = ref<boolean>(props.announcement ? props.announcement.silence : false);

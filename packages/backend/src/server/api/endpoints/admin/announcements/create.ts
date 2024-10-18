@@ -62,6 +62,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			needEnrollmentTutorialToRead: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			closeDuration: {
 				type: 'number',
 				optional: false, nullable: false,
@@ -92,6 +96,7 @@ export const paramDef = {
 		display: { type: 'string', enum: ['normal', 'banner', 'dialog'], default: 'normal' },
 		forExistingUsers: { type: 'boolean', default: false },
 		needConfirmationToRead: { type: 'boolean', default: false },
+		needEnrollmentTutorialToRead: { type: 'boolean', default: false },
 		closeDuration: { type: 'number', default: 0 },
 		displayOrder: { type: 'number', default: 0 },
 		silence: { type: 'boolean', default: false },
@@ -115,6 +120,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				display: ps.display,
 				forExistingUsers: ps.forExistingUsers,
 				needConfirmationToRead: ps.needConfirmationToRead,
+				needEnrollmentTutorialToRead: ps.needEnrollmentTutorialToRead,
 				closeDuration: ps.closeDuration,
 				displayOrder: ps.displayOrder,
 				silence: ps.silence,

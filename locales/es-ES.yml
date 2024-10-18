@@ -1252,7 +1252,7 @@ _announcement:
   forExistingUsers: "Solo para usuarios registrados"
   forExistingUsersDescription: "Este anuncio solo se mostrará a aquellos usuarios registrados en el momento de su publicación. Si se deshabilita esta opción, aquellos usuarios que se registren tras su publicación también lo verán."
   needConfirmationToRead: "Requerir confirmación de lectura aparte"
-  needConfirmationToReadDescription: "Si se habilita esta opción, se pedirá una confirmación de lectura aparte. Además, este anuncio será excluido de cualquier funcionalidad de \"Marcar todos como leídos\"."
+  needConfirmationToReadDescription: "Si se habilita esta opción, se pedirá una confirmación de lectura aparte."
   end: "Anuncios archivados"
   tooManyActiveAnnouncementDescription: "Tener demasiados anuncios activos empeora la experiencia de usuario. Por favor, considera archivar aquellos anuncios que hayan quedado obsoletos."
   readConfirmTitle: "¿Marcar como leído?"

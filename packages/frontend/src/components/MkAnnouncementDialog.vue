@@ -19,13 +19,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<Mfm :text="announcement.text"/>
 			<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 		</div>
-		<MkButton :class="$style.gotIt" primary full :disabled="gotItDisabled" @click="gotIt">{{ i18n.ts.gotIt }}<span v-if="secVisible"> ({{ sec }})</span></MkButton>
+		<MkButton :class="$style.gotIt" primary gradate full :disabled="gotItDisabled" @click="gotIt">
+			{{ !announcement.needEnrollmentTutorialToRead ? i18n.ts.gotIt : i18n.ts._initialAccountSetting.startTutorial }}
+			<span v-if="secVisible"> ({{ sec }})</span>
+		</MkButton>
 	</div>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef } from 'vue';
+import { defineAsyncComponent, onMounted, ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -46,6 +49,18 @@ const secVisible = ref(true);
 const sec = ref(props.announcement.closeDuration);
 
 async function gotIt(): Promise<void> {
+	if (props.announcement.needEnrollmentTutorialToRead) {
+		modal.value?.close();
+		const tutorialCompleted = await (new Promise<boolean>(resolve => {
+			os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {}, {
+				done: () => {
+					resolve(true);
+				},
+			}, 'closed');
+		}));
+		if (!tutorialCompleted) return;
+	}
+
 	if (props.announcement.needConfirmationToRead) {
 		const confirm = await os.confirm({
 			type: 'question',

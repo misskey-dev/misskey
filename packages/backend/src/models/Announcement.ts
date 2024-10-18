@@ -61,6 +61,11 @@ export class MiAnnouncement {
 	})
 	public needConfirmationToRead: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public needEnrollmentTutorialToRead: boolean;
+
 	@Column('integer', {
 		nullable: false,
 		default: 0,

@@ -1234,7 +1234,7 @@ _announcement:
   forExistingUsers: "Anunci per usuaris registrats"
   forExistingUsersDescription: "Aquest avís només es mostrarà als usuaris existents fins al moment de la publicació. Si no també es mostrarà als usuaris que es registrin després de la publicació."
   needConfirmationToRead: "Es necessita confirmació de lectura de la notificació "
-  needConfirmationToReadDescription: "Si s'activa es mostrarà un diàleg per confirmar la lectura d'aquesta notificació. A més aquesta notificació serà exclosa de qualsevol funcionalitat com \"Marcar tot com a llegit\"."
+  needConfirmationToReadDescription: "Si s'activa es mostrarà un diàleg per confirmar la lectura d'aquesta notificació."
   end: "Final de la notificació "
   tooManyActiveAnnouncementDescription: "Tenir massa notificacions actives pot empitjorar l'experiència de l'usuari. Considera finalitzar els anuncis que siguin antics."
   readConfirmTitle: "Marcar com llegida?"

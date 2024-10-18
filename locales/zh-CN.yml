@@ -1275,7 +1275,7 @@ _announcement:
   forExistingUsers: "仅限现有用户"
   forExistingUsersDescription: "若启用，该公告将仅对创建此公告时存在的用户可见。 如果禁用，则在创建此公告后注册的用户也可以看到该公告。"
   needConfirmationToRead: "需要确认才能标记为已读"
-  needConfirmationToReadDescription: "若启用，则会在标记已读时会显示确认对话框。此外，它也会不受批量已读操作的影响。"
+  needConfirmationToReadDescription: "若启用，则会在标记已读时会显示确认对话框。"
   end: "结束公告"
   tooManyActiveAnnouncementDescription: "若有大量活动公告，可能会造成用户体验下降。请考虑归档已完成的公告。"
   readConfirmTitle: "标记为已读？"

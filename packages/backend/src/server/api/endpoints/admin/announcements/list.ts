@@ -72,6 +72,10 @@ export const meta = {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},
+				needEnrollmentTutorialToRead: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
 				closeDuration: {
 					type: 'number',
 					optional: false, nullable: false,
@@ -139,6 +143,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isActive: announcement.isActive,
 				forExistingUsers: announcement.forExistingUsers,
 				needConfirmationToRead: announcement.needConfirmationToRead,
+				needEnrollmentTutorialToRead: announcement.needEnrollmentTutorialToRead,
 				closeDuration: announcement.closeDuration,
 				displayOrder: announcement.displayOrder,
 				silence: announcement.silence,

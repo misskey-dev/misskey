@@ -54,6 +54,7 @@ export class AnnouncementEntityService {
 			display: announcement.display,
 			forYou: announcement.userId === me?.id,
 			needConfirmationToRead: announcement.needConfirmationToRead,
+			needEnrollmentTutorialToRead: announcement.needEnrollmentTutorialToRead,
 			closeDuration: announcement.closeDuration,
 			displayOrder: announcement.displayOrder,
 			silence: announcement.silence,

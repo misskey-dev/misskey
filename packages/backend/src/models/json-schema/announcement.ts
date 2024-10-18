@@ -48,6 +48,10 @@ export const packedAnnouncementSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		needEnrollmentTutorialToRead: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		forYou: {
 			type: 'boolean',
 			optional: false, nullable: false,

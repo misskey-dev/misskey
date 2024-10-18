@@ -1189,7 +1189,7 @@ _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."
   needConfirmationToRead: "Separate Lesebestätigung erfordern"
-  needConfirmationToReadDescription: "Ist dies aktiviert, so wird beim Markieren dieser Ankündigung als gelesen ein separates Bestätigungsfenster angezeigt. Auch wird sie von der \"Alle als gelesen markieren\"-Funktion ausgenommen."
+  needConfirmationToReadDescription: "Ist dies aktiviert, so wird beim Markieren dieser Ankündigung als gelesen ein separates Bestätigungsfenster angezeigt."
   end: "Ankündigung archivieren"
   tooManyActiveAnnouncementDescription: "Zu viele aktive Ankündigungen können die Benutzerfreundlichkeit verschlechtern. Es wird empfohlen, veraltete Ankündigungen zu archivieren."
   readConfirmTitle: "Als gelesen markieren?"

@@ -1252,7 +1252,7 @@ _announcement:
   forExistingUsers: "Solo ai profili attuali"
   forExistingUsersDescription: "L'annuncio sarà visibile solo ai profili esistenti in questo momento. Se disabilitato, sarà visibile anche ai profili che verranno creati dopo la pubblicazione di questo annuncio."
   needConfirmationToRead: "Richiede la conferma di lettura"
-  needConfirmationToReadDescription: "Sarà visualizzata una finestra di dialogo che richiede la conferma di lettura. Inoltre, non è soggetto a conferme di lettura massicce."
+  needConfirmationToReadDescription: "Sarà visualizzata una finestra di dialogo che richiede la conferma di lettura."
   end: "Archivia l'annuncio"
   tooManyActiveAnnouncementDescription: "L'esperienza delle persone può peggiorare se ci sono troppi annunci attivi. Considera anche l'archiviazione degli annunci conclusi."
   readConfirmTitle: "Segnare come già letto?"

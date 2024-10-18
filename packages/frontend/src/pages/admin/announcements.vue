@@ -66,6 +66,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="announcement.needConfirmationToRead" :helpText="i18n.ts._announcement.needConfirmationToReadDescription">
 						{{ i18n.ts._announcement.needConfirmationToRead }}
 					</MkSwitch>
+					<MkSwitch v-model="announcement.needEnrollmentTutorialToRead" :helpText="i18n.ts._announcement.needEnrollmentTutorialToReadDescription">
+						{{ i18n.ts._announcement.needEnrollmentTutorialToRead }}
+					</MkSwitch>
 					<MkInput v-model="announcement.closeDuration" type="number">
 						<template #label>{{ i18n.ts.dialogCloseDuration }}</template>
 						<template #suffix>{{ i18n.ts._time.second }}</template>

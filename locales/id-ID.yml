@@ -1254,7 +1254,7 @@ _announcement:
   forExistingUsers: "Hanya pengguna yang telah ada"
   forExistingUsersDescription: "Pengumuman ini akan dimunculkan ke pengguna yang sudah ada dari titik waktu publikasi jika dinyalakan. Apabila dimatikan, mereka yang baru mendaftar setelah publikasi ini akan juga melihatnya."
   needConfirmationToRead: "Membutuhkan konfirmasi terpisah bahwa telah dibaca"
-  needConfirmationToReadDescription: "Permintaan terpisah untuk mengonfirmasi menandai pengumuman ini telah dibaca akan ditampilkan apabila fitur ini dinyalakan. Pengumuman ini juga akan dikecualikan dari fungsi \"Tandai semua telah dibaca\"."
+  needConfirmationToReadDescription: "Permintaan terpisah untuk mengonfirmasi menandai pengumuman ini telah dibaca akan ditampilkan apabila fitur ini dinyalakan."
   end: "Arsipkan pengumuman"
   tooManyActiveAnnouncementDescription: "Terlalu banyak pengumuman dapat memperburuk pengalaman pengguna. Mohon pertimbangkan untuk mengarsipkan pengumuman yang sudah usang/tidak relevan."
   readConfirmTitle: "Tandai telah dibaca?"

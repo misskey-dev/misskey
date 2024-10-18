@@ -1254,7 +1254,7 @@ _announcement:
   forExistingUsers: "僅限既有的使用者"
   forExistingUsersDescription: "啟用代表僅向現存使用者顯示；停用代表張貼後註冊的新使用者也會看到。"
   needConfirmationToRead: "必須確認才能標記為已讀"
-  needConfirmationToReadDescription: "啟用代表此公告將顯示對話方塊以確認是否標記為已讀，同時不會受「標記所有公告為已讀」功能影響。"
+  needConfirmationToReadDescription: "啟用代表此公告將顯示對話方塊以確認是否標記為已讀。"
   end: "結束公告"
   tooManyActiveAnnouncementDescription: "有過多公告可能會影響使用者體驗。請考慮歸檔已結束的公告。"
   readConfirmTitle: "標記為已讀嗎？"
