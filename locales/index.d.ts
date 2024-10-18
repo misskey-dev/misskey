@@ -5191,19 +5191,19 @@ export interface Locale extends ILocale {
      */
     "yourNameContainsProhibitedWordsDescription": string;
     /**
-     * デフォルトでフォローするユーザー
+     * デフォルトでフォローするユーザー (ID)
      */
     "defaultFollowedUsers": string;
     /**
-     * 今後アカウントが作成された際に自動でフォローされるユーザー（解除可能）を改行区切りで指定します。
+     * 今後アカウントが作成された際に自動でフォローされるユーザー（解除可能）のユーザーIDを改行区切りで指定します。
      */
     "defaultFollowedUsersDescription": string;
     /**
-     * 交流を断てないユーザー
+     * 交流を断てないユーザー (ID)
      */
     "forciblyFollowedUsers": string;
     /**
-     * 今後アカウントが作成された際には自動でフォローされ、フォローの解除やミュート・ブロックができないユーザーを改行区切りで指定します。
+     * 今後アカウントが作成された際には自動でフォローされ、フォローの解除やミュート・ブロックができないユーザーのユーザーID改行区切りで指定します。
      */
     "forciblyFollowedUsersDescription": string;
     /**
