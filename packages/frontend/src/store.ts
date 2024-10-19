@@ -507,6 +507,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
+	mutedReactions: {
+		where: 'account',
+		default: [] as string[],
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
