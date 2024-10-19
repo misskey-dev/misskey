@@ -8,7 +8,7 @@
 
 ### Server
 - キューの delayed の件数が増えた際に一部の管理者用APIが値を返さなくなる問題を修正  
-  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/750)
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/164, https://github.com/MisskeyIO/misskey/pull/750)
 
 
 ## 2024.10.1
