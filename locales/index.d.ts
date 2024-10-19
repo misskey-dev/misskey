@@ -2926,6 +2926,10 @@ export interface Locale extends ILocale {
      * ノートのサーバー情報
      */
     "instanceTicker": string;
+		/**
+     * サーバー情報をアイコンのみにする
+     */
+    "instanceIcon": string;
     /**
      * {x}を待っています
      */
