@@ -4,6 +4,8 @@
 -
 
 ### Client
+- Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
 - Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
 
 ### Server
