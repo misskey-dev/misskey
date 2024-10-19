@@ -201,13 +201,14 @@ export class SAMLIdentifyProviderService {
 
 		fastify.all<{
 			Params: { serviceId: string };
-			Querystring?: { SAMLRequest?: string; RelayState?: string };
-			Body?: { SAMLRequest?: string; RelayState?: string };
+			Querystring?: { SAMLRequest?: string; RelayState?: string, prompt?: string };
+			Body?: { SAMLRequest?: string; RelayState?: string, prompt?: string };
 		}>('/:serviceId', async (request, reply) => {
 			const serviceId = request.params.serviceId;
 			const binding = request.query?.SAMLRequest ? 'redirect' : 'post';
 			const samlRequest = request.query?.SAMLRequest ?? request.body?.SAMLRequest;
 			const relayState = request.query?.RelayState ?? request.body?.RelayState;
+			const prompt = request.query?.prompt ?? request.body?.prompt ?? 'consent';
 
 			const ssoServiceProvider = await this.singleSignOnServiceProviderRepository.findOneBy({ id: serviceId, type: 'saml', privateKey: Not(IsNull()) });
 			if (!ssoServiceProvider) {
@@ -268,6 +269,7 @@ export class SAMLIdentifyProviderService {
 					transactionId: transactionId,
 					serviceName: ssoServiceProvider.name ?? ssoServiceProvider.issuer,
 					kind: 'saml',
+					prompt: prompt,
 				});
 			} catch (err) {
 				this.#logger.error('Failed to parse SAML request', { error: err });

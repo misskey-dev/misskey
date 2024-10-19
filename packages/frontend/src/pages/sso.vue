@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, onMounted } from 'vue';
 import MkSignin from '@/components/MkSignin.vue';
 import MkButton from '@/components/MkButton.vue';
 import { $i, login } from '@/account.js';
@@ -47,6 +47,7 @@ if (transactionIdMeta) {
 }
 const name = document.querySelector<HTMLMetaElement>('meta[name="misskey:sso:service-name"]')?.content;
 const kind = document.querySelector<HTMLMetaElement>('meta[name="misskey:sso:kind"]')?.content;
+const prompt = document.querySelector<HTMLMetaElement>('meta[name="misskey:sso:prompt"]')?.content;
 
 const loading = ref(false);
 const postBindingForm = ref<HTMLFormElement | null>(null);
@@ -89,6 +90,12 @@ async function authorize(): Promise<void> {
 		location.href = json.action;
 	}
 }
+
+onMounted(() => {
+	if ($i && prompt === 'none') {
+		onAccept();
+	}
+});
 
 definePageMetadata(() => ({
 	title: 'Single Sign-On',

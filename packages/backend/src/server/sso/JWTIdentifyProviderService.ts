@@ -64,11 +64,12 @@ export class JWTIdentifyProviderService {
 
 		fastify.all<{
 			Params: { serviceId: string };
-			Querystring?: { serviceurl?: string, return_to?: string };
-			Body?: { serviceurl?: string, return_to?: string };
+			Querystring?: { serviceurl?: string, return_to?: string, prompt?: string };
+			Body?: { serviceurl?: string, return_to?: string, prompt?: string };
 		}>('/:serviceId', async (request, reply) => {
 			const serviceId = request.params.serviceId;
 			const returnTo = request.query?.return_to ?? request.query?.serviceurl ?? request.body?.return_to ?? request.body?.serviceurl;
+			const prompt = request.query?.prompt ?? request.body?.prompt ?? 'consent';
 
 			const ssoServiceProvider = await this.singleSignOnServiceProviderRepository.findOneBy({ id: serviceId, type: 'jwt' });
 			if (!ssoServiceProvider) {
@@ -101,6 +102,7 @@ export class JWTIdentifyProviderService {
 				transactionId: transactionId,
 				serviceName: ssoServiceProvider.name ?? ssoServiceProvider.issuer,
 				kind: 'jwt',
+				prompt: prompt,
 			});
 		});
 
