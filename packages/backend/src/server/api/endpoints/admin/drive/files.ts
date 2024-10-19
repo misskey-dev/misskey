@@ -43,6 +43,8 @@ export const paramDef = {
 			default: null,
 			description: 'The local host is represented with `null`.',
 		},
+		name: { type: 'string', nullable: true },
+		comment: { type: 'string', nullable: true },
 	},
 	required: [],
 } as const;
@@ -79,6 +81,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} else {
 					query.andWhere('file.type = :type', { type: ps.type });
 				}
+			}
+
+			if (ps.name) {
+				// 前方一致検索(%と_は無害化)
+				query.andWhere('file.name ilike :name', { name: ps.name.replaceAll('%', '\\%').replaceAll('_', '\\_') + '%' });
+			}
+
+			if (ps.comment) {
+				// 前方一致検索(%と_は無害化)
+				query.andWhere('file.comment ilike :comment', { comment: ps.comment.replaceAll('%', '\\%').replaceAll('_', '\\_') + '%' });
 			}
 
 			const files = await query.limit(ps.limit).getMany();
