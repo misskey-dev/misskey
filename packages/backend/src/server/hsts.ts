@@ -20,11 +20,11 @@ export function makeHstsHook(host: string, preload: boolean = false): onRequestH
                 reply.header('strict-transport-security', 'max-age=31536000; includeSubDomains; preload');
             }
             done();
-        }
+        };
     } else {
         return (request, reply, done) => {
             reply.header('strict-transport-security', 'max-age=15552000');
             done();
-        }
+        };
     }
 }
