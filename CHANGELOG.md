@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Enhance: デザインの調整
 
 ### Server
 -
