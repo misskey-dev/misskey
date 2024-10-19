@@ -11,13 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { instance as Instance } from '@/instance.js';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 const props = defineProps<{
 	instance?: {
 		faviconUrl?: string | null
 	}
 }>();
-const faviconUrl = computed(() => getProxiedImageUrlNullable(props.instance?.faviconUrl, 'preview') ?? '/favicon.ico');
+const faviconUrl = computed(() => props.instance ? getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : getProxiedImageUrlNullable(Instance.iconUrl, 'preview') ?? '/favicon.ico');
 </script>
 
 <style lang="scss" module>
