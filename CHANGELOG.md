@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Enhance: Bull DashboardでRelationship Queueの状態も確認できるように
 
 ### Server
 -
