@@ -43,6 +43,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		{{ i18n.ts.makeExplorable }}
 		<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
 	</MkSwitch>
+	<MkSwitch v-model="signinRequiredForShowContents" @update:modelValue="save()">
+		{{ i18n.ts._accountSettings.signinRequiredForShowContents }}
+		<template #caption>{{ i18n.ts._accountSettings.signinRequiredForShowContentsDescription }}</template>
+	</MkSwitch>
 
 	<FormSection>
 		<div class="_gaps_m">
@@ -90,6 +94,7 @@ const autoAcceptFollowed = ref($i.autoAcceptFollowed);
 const noCrawle = ref($i.noCrawle);
 const preventAiLearning = ref($i.preventAiLearning);
 const isExplorable = ref($i.isExplorable);
+const signinRequiredForShowContents = ref($i.signinRequiredForShowContents ?? false);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
 const followingVisibility = ref($i.followingVisibility);
@@ -107,6 +112,7 @@ function save() {
 		noCrawle: !!noCrawle.value,
 		preventAiLearning: !!preventAiLearning.value,
 		isExplorable: !!isExplorable.value,
+		signinRequiredForShowContents: !!signinRequiredForShowContents.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
 		publicReactions: !!publicReactions.value,
 		followingVisibility: followingVisibility.value,

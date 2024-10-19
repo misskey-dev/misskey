@@ -490,6 +490,7 @@ export class UserEntityService implements OnModuleInit {
 			}))) : [],
 			isBot: user.isBot,
 			isCat: user.isCat,
+			signinRequiredForShowContents: user.signinRequiredForShowContents === false ? undefined : true,
 			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,

@@ -3736,6 +3736,7 @@ export type components = {
         }[];
       isBot?: boolean;
       isCat?: boolean;
+      signinRequiredForShowContents?: boolean;
       instance?: {
         name: string | null;
         softwareName: string | null;
@@ -19844,6 +19845,7 @@ export type operations = {
           autoAcceptFollowed?: boolean;
           noCrawle?: boolean;
           preventAiLearning?: boolean;
+          signinRequiredForShowContents?: boolean;
           isBot?: boolean;
           isCat?: boolean;
           injectFeaturedNote?: boolean;

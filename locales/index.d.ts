@@ -5190,6 +5190,18 @@ export interface Locale extends ILocale {
      * 名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。
      */
     "yourNameContainsProhibitedWordsDescription": string;
+    "_accountSettings": {
+        /**
+         * コンテンツの閲覧にログインを必須にする
+         */
+        "signinRequiredForShowContents": string;
+        /**
+         * あなたのプロフィールやノートなどの作成したコンテンツの閲覧にログイン必須にします。
+         * クローラーから情報を収集されるのを防ぐ効果が期待できます。
+         * URLのプレビューや、コンテンツの埋め込みも使用不可になります。
+         */
+        "signinRequiredForShowContentsDescription": string;
+    };
     "_abuseUserReport": {
         /**
          * 転送

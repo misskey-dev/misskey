@@ -149,6 +149,10 @@ export class NoteEntityService implements OnModuleInit {
 			}
 		}
 
+		if (packedNote.user.signinRequiredForShowContents && meId == null) {
+			hide = true;
+		}
+
 		if (hide) {
 			packedNote.visibleUserIds = undefined;
 			packedNote.fileIds = [];

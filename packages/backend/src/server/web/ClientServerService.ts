@@ -601,12 +601,15 @@ export class ClientServerService {
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
-			const note = await this.notesRepository.findOneBy({
-				id: request.params.note,
-				visibility: In(['public', 'home']),
+			const note = await this.notesRepository.findOne({
+				where: {
+					id: request.params.note,
+					visibility: In(['public', 'home']),
+				},
+				relations: ['user'],
 			});
 
-			if (note) {
+			if (note && !note.user!.signinRequiredForShowContents) {
 				const _note = await this.noteEntityService.pack(note);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
 				reply.header('Cache-Control', 'public, max-age=15');
