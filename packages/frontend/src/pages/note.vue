@@ -61,7 +61,7 @@ import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { defaultStore } from '@/store.js';
-import { pleaseLogin } from '@/scripts/please-login';
+import { pleaseLogin } from '@/scripts/please-login.js';
 
 const props = defineProps<{
 	noteId: string;
