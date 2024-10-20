@@ -20,14 +20,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
 				</div>
-				<div class="inputs" style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
-					<MkInput v-model="userId" :debounce="true" type="search" style="margin: 0; flex: 1;">
-						<template #label>User ID</template>
-					</MkInput>
-					<MkInput v-model="type" :debounce="true" type="search" style="margin: 0; flex: 1;">
-						<template #label>MIME type</template>
-					</MkInput>
-				</div>
+				<MkFolder :defaultOpen="false">
+					<template #label>{{ i18n.ts.options }}</template>
+					<div class="inputs" style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
+						<MkInput v-model="userId" :debounce="true" type="search" style="margin: 0; flex: 1;">
+							<template #label>User ID</template>
+						</MkInput>
+						<MkInput v-model="type" :debounce="true" type="search" style="margin: 0; flex: 1;">
+							<template #label>MIME type</template>
+						</MkInput>
+					</div>
+					<div class="inputs" style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
+						<MkInput v-model="name" :debounce="true" type="search" style="margin: 0; flex: 1;">
+							<template #label>File Name</template>
+						</MkInput>
+						<MkInput v-model="comment" :debounce="true" type="search" style="margin: 0; flex: 1;">
+							<template #label>Comment</template>
+						</MkInput>
+					</div>
+				</MkFolder>
 				<MkFileListForAdmin :pagination="pagination" :viewMode="viewMode"/>
 			</div>
 		</MkSpacer>
@@ -41,6 +52,7 @@ import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import { lookupFile } from '@/scripts/admin-lookup.js';
 import { i18n } from '@/i18n.js';
@@ -51,6 +63,8 @@ const type = ref<string | null>(null);
 const searchHost = ref('');
 const userId = ref('');
 const viewMode = ref('grid');
+const name = ref('');
+const comment = ref('');
 const pagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
@@ -59,6 +73,8 @@ const pagination = {
 		userId: (userId.value && userId.value !== '') ? userId.value : null,
 		origin: origin.value,
 		hostname: (searchHost.value && searchHost.value !== '') ? searchHost.value : null,
+		name: (name.value && name.value !== '') ? name.value : null,
+		comment: (comment.value && comment.value !== '') ? comment.value : null,
 	})),
 };
 
