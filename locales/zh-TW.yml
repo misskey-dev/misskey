@@ -2416,7 +2416,7 @@ _notification:
     follow: "追隨中"
     mention: "提及"
     reply: "回覆"
-    renote: "轉發貼文"
+    renote: "轉發"
     quote: "引用"
     reaction: "反應"
     pollEnded: "問卷調查結束"
