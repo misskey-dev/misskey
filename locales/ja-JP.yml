@@ -2789,3 +2789,12 @@ _embedCodeGen:
   generateCode: "埋め込みコードを作成"
   codeGenerated: "コードが生成されました"
   codeGeneratedDescription: "生成されたコードをウェブサイトに貼り付けてご利用ください。"
+
+_search:
+  searchScopeAll: "全て"
+  searchScopeLocal: "ローカル"
+  searchScopeServer: "サーバー指定"
+  searchScopeUser: "ユーザー指定"
+  pleaseEnterServerHost: "サーバーのホストを入力してください"
+  pleaseSelectUser: "ユーザーを選択してください"
+  serverHostPlaceholder: "例: misskey.example.com"
