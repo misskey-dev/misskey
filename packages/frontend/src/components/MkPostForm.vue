@@ -534,22 +534,10 @@ function showOtherSettings() {
 			reactionAcceptance.value = value;
 		},
 		reset: () => {
-			reset();
+			clear();
 		},
 		closed: () => dispose(),
 	});
-}
-
-function reset() {
-	text.value = '';
-	cw.value = null;
-	useCw.value = false;
-	visibility.value = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-	localOnly.value = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
-	files.value = [];
-	poll.value = null;
-	quoteId.value = null;
-	reactionAcceptance.value = defaultStore.state.reactionAcceptance;
 }
 
 function pushVisibleUser(user: Misskey.entities.UserDetailed) {

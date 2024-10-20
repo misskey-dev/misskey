@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch, ref, shallowRef, computed } from 'vue';
+import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch, ref, shallowRef, computed, readonly } from 'vue';
 import * as os from '@/os.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { defaultStore } from '@/store.js';
@@ -349,6 +349,7 @@ onUnmounted(() => {
 });
 
 defineExpose({
+	type: readonly(type),
 	close,
 });
 </script>
