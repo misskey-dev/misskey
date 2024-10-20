@@ -7,6 +7,7 @@
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
 - Enhance: ドライブでソートができるように 
+- Enhance: 時刻表示を常に絶対時刻（年/月/日 時:分:秒）にできるように
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 
 ### Server
