@@ -5194,6 +5194,10 @@ export interface Locale extends ILocale {
      * 公開範囲に応じて色分けする
      */
     "enableNoteVisibilityColor": string;
+    /**
+     * ノートの詳細表示ページなど、一部の箇所には適用されません。
+     */
+    "enableNoteVisibilityColorDescription": string;
     "_abuseUserReport": {
         /**
          * 転送
