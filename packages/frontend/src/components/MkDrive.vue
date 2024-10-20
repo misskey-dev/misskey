@@ -30,16 +30,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navCurrent]">{{ folder.name }}</span>
 		</div>
-		<div :class="$style.navSort">
-			<MkSelect v-model="sortModeSelect">
-				<option value="+createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+size">{{ i18n.ts.size }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-size">{{ i18n.ts.size }} ({{ i18n.ts.ascendingOrder }})</option>
-				<option value="+name">{{ i18n.ts.name }} ({{ i18n.ts.descendingOrder }})</option>
-				<option value="-name">{{ i18n.ts.name }} ({{ i18n.ts.ascendingOrder }})</option>
-			</MkSelect>
-		</div>
 		<button class="_button" :class="$style.navMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
 	</nav>
 	<div
@@ -110,7 +100,6 @@ import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, shallowRef, wat
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import type { MenuItem } from '@/types/menu.js';
-import MkSelect from '@/components/MkSelect.vue';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
 import XFile from '@/components/MkDrive.file.vue';
@@ -660,6 +649,43 @@ function getMenu() {
 		type: 'label',
 	});
 
+	menu.push({
+		type: 'parent',
+		text: i18n.ts.sort,
+		icon: 'ti ti-arrows-sort',
+		children: [{
+			text: `${i18n.ts.registeredDate} (${i18n.ts.descendingOrder})`,
+			icon: 'ti ti-sort-descending-letters',
+			action: () => { sortModeSelect.value = '+createdAt'; },
+			active: sortModeSelect.value === '+createdAt',
+		}, {
+			text: `${i18n.ts.registeredDate} (${i18n.ts.ascendingOrder})`,
+			icon: 'ti ti-sort-ascending-letters',
+			action: () => { sortModeSelect.value = '-createdAt'; },
+			active: sortModeSelect.value === '-createdAt',
+		}, {
+			text: `${i18n.ts.size} (${i18n.ts.descendingOrder})`,
+			icon: 'ti ti-sort-descending-letters',
+			action: () => { sortModeSelect.value = '+size'; },
+			active: sortModeSelect.value === '+size',
+		}, {
+			text: `${i18n.ts.size} (${i18n.ts.ascendingOrder})`,
+			icon: 'ti ti-sort-ascending-letters',
+			action: () => { sortModeSelect.value = '-size'; },
+			active: sortModeSelect.value === '-size',
+		}, {
+			text: `${i18n.ts.name} (${i18n.ts.descendingOrder})`,
+			icon: 'ti ti-sort-descending-letters',
+			action: () => { sortModeSelect.value = '+name'; },
+			active: sortModeSelect.value === '+name',
+		}, {
+			text: `${i18n.ts.name} (${i18n.ts.ascendingOrder})`,
+			icon: 'ti ti-sort-ascending-letters',
+			action: () => { sortModeSelect.value = '-name'; },
+			active: sortModeSelect.value === '-name',
+		}],
+	});
+
 	if (folder.value) {
 		menu.push({
 			text: i18n.ts.renameFolder,
@@ -778,13 +804,8 @@ onBeforeUnmount(() => {
 	}
 }
 
-.navSort {
-	display: inline-block;
-	margin-left: auto;
-	padding: 0 12px;
-}
-
 .navMenu {
+	margin-left: auto;
 	padding: 0 12px;
 }
 
