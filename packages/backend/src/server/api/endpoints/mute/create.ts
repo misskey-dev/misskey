@@ -11,6 +11,7 @@ import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
 import { ApiError } from '../../error.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export const meta = {
 	tags: ['account'],
@@ -42,6 +43,13 @@ export const meta = {
 			message: 'You are already muting that user.',
 			code: 'ALREADY_MUTING',
 			id: '7e7359cb-160c-4956-b08f-4d1c653cd007',
+		},
+
+		cannotMuteDueToServerPolicy: {
+			message: 'You cannot mute that user due to server policy.',
+			code: 'CANNOT_MUTE_DUE_TO_SERVER_POLICY',
+			id: '15273a89-374d-49fa-8df6-8bb3feeea455',
+			httpStatusCode: 403,
 		},
 	},
 } as const;
@@ -98,7 +106,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return;
 			}
 
-			await this.userMutingService.mute(muter, mutee, ps.expiresAt ? new Date(ps.expiresAt) : null);
+			await this.userMutingService.mute(muter, mutee, ps.expiresAt ? new Date(ps.expiresAt) : null).catch((err) => {
+				if (err instanceof IdentifiableError && err.id === meta.errors.cannotMuteDueToServerPolicy.id) {
+					throw new ApiError(meta.errors.cannotMuteDueToServerPolicy);
+				}
+			});
 		});
 	}
 }
