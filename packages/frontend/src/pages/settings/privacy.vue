@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts.noCrawleDescription }}</template>
 	</MkSwitch>
 	<MkSwitch v-model="preventAiLearning" @update:modelValue="save()">
-		{{ i18n.ts.preventAiLearning }}<span class="_beta">{{ i18n.ts.beta }}</span>
+		{{ i18n.ts.preventAiLearning }}
 		<template #caption>{{ i18n.ts.preventAiLearningDescription }}</template>
 	</MkSwitch>
 	<MkSwitch v-model="isExplorable" @update:modelValue="save()">
@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
 	</MkSwitch>
 	<MkSwitch v-model="signinRequiredForShowContents" @update:modelValue="save()">
-		{{ i18n.ts._accountSettings.signinRequiredForShowContents }}
+		{{ i18n.ts._accountSettings.signinRequiredForShowContents }}<span class="_beta">{{ i18n.ts.beta }}</span>
 		<template #caption>
 			<div>{{ i18n.ts._accountSettings.signinRequiredForShowContentsDescription1 }}</div>
 			<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.signinRequiredForShowContentsDescription2 }}</div>
