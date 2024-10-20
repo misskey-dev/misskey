@@ -5200,11 +5200,11 @@ export interface Locale extends ILocale {
          */
         "signinRequiredForShowContents": string;
         /**
-         * あなたが作成したノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。
+         * あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。
          */
         "signinRequiredForShowContentsDescription1": string;
         /**
-         * URLのプレビューや、コンテンツの埋め込みも使用不可になります。
+         * URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。
          */
         "signinRequiredForShowContentsDescription2": string;
         /**

@@ -1297,8 +1297,8 @@ thisContentsAreMarkedAsSigninRequiredByAuthor: "このコンテンツの閲覧�
 
 _accountSettings:
   signinRequiredForShowContents: "コンテンツの表示にログインを必須にする"
-  signinRequiredForShowContentsDescription1: "あなたが作成したノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。"
-  signinRequiredForShowContentsDescription2: "URLのプレビューや、コンテンツの埋め込みも使用不可になります。"
+  signinRequiredForShowContentsDescription1: "あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。"
+  signinRequiredForShowContentsDescription2: "URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。"
   signinRequiredForShowContentsDescription3: "リモートサーバーに連合されたコンテンツにはこれらの制限は適用されません。"
 
 _abuseUserReport:
