@@ -30,6 +30,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navCurrent]">{{ folder.name }}</span>
 		</div>
+		<div :class="$style.navSort">
+			<MkSelect v-model="sortModeSelect">
+				<option value="+createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.ascendingOrder }})</option>
+				<option value="+size">{{ i18n.ts.size }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-size">{{ i18n.ts.size }} ({{ i18n.ts.ascendingOrder }})</option>
+				<option value="+name">{{ i18n.ts.name }} ({{ i18n.ts.descendingOrder }})</option>
+				<option value="-name">{{ i18n.ts.name }} ({{ i18n.ts.ascendingOrder }})</option>
+			</MkSelect>
+		</div>
 		<button class="_button" :class="$style.navMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
 	</nav>
 	<div
@@ -100,6 +110,7 @@ import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, shallowRef, wat
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import type { MenuItem } from '@/types/menu.js';
+import MkSelect from '@/components/MkSelect.vue';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
 import XFile from '@/components/MkDrive.file.vue';
@@ -157,7 +168,12 @@ const ilFilesObserver = new IntersectionObserver(
 	(entries) => entries.some((entry) => entry.isIntersecting) && !fetching.value && moreFiles.value && fetchMoreFiles(),
 );
 
+const sortModeSelect = ref('+createdAt');
+
 watch(folder, () => emit('cd', folder.value));
+watch(sortModeSelect, () => {
+	fetch();
+});
 
 function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
 	addFile(file, true);
@@ -558,6 +574,7 @@ async function fetch() {
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
 		limit: filesMax + 1,
+		sort: sortModeSelect.value,
 	}).then(fetchedFiles => {
 		if (fetchedFiles.length === filesMax + 1) {
 			moreFiles.value = true;
@@ -607,6 +624,7 @@ function fetchMoreFiles() {
 		type: props.type,
 		untilId: files.value.at(-1)?.id,
 		limit: max + 1,
+		sort: sortModeSelect.value,
 	}).then(files => {
 		if (files.length === max + 1) {
 			moreFiles.value = true;
@@ -760,8 +778,13 @@ onBeforeUnmount(() => {
 	}
 }
 
-.navMenu {
+.navSort {
+	display: inline-block;
 	margin-left: auto;
+	padding: 0 12px;
+}
+
+.navMenu {
 	padding: 0 12px;
 }
 
