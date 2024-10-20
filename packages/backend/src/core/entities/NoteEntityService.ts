@@ -149,7 +149,7 @@ export class NoteEntityService implements OnModuleInit {
 			}
 		}
 
-		if (packedNote.user.signinRequiredForShowContents && meId == null) {
+		if (packedNote.user.requireSigninToViewContents && meId == null) {
 			hide = true;
 		}
 

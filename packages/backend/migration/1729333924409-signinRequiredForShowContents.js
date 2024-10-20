@@ -7,10 +7,10 @@ export class SigninRequiredForShowContents1729333924409 {
     name = 'SigninRequiredForShowContents1729333924409'
 
     async up(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "user" ADD "signinRequiredForShowContents" boolean NOT NULL DEFAULT false`);
+        await queryRunner.query(`ALTER TABLE "user" ADD "requireSigninToViewContents" boolean NOT NULL DEFAULT false`);
     }
 
     async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "signinRequiredForShowContents"`);
+        await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "requireSigninToViewContents"`);
     }
 }

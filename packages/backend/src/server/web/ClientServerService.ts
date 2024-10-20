@@ -609,7 +609,7 @@ export class ClientServerService {
 				relations: ['user'],
 			});
 
-			if (note && !note.user!.signinRequiredForShowContents) {
+			if (note && !note.user!.requireSigninToViewContents) {
 				const _note = await this.noteEntityService.pack(note);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
 				reply.header('Cache-Control', 'public, max-age=15');

@@ -5198,19 +5198,19 @@ export interface Locale extends ILocale {
         /**
          * コンテンツの表示にログインを必須にする
          */
-        "signinRequiredForShowContents": string;
+        "requireSigninToViewContents": string;
         /**
          * あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。
          */
-        "signinRequiredForShowContentsDescription1": string;
+        "requireSigninToViewContentsDescription1": string;
         /**
          * URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。
          */
-        "signinRequiredForShowContentsDescription2": string;
+        "requireSigninToViewContentsDescription2": string;
         /**
          * リモートサーバーに連合されたコンテンツにはこれらの制限は適用されません。
          */
-        "signinRequiredForShowContentsDescription3": string;
+        "requireSigninToViewContentsDescription3": string;
     };
     "_abuseUserReport": {
         /**

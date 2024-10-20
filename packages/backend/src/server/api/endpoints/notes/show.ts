@@ -55,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
-			if (note.user!.signinRequiredForShowContents && me == null) {
+			if (note.user!.requireSigninToViewContents && me == null) {
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
