@@ -1289,6 +1289,8 @@ passkeyVerificationSucceededButPasswordlessLoginDisabled: "การยืนย
 messageToFollower: "ข้อความถึงผู้ติดตาม"
 target: "เป้า"
 testCaptchaWarning: "ฟังก์ชันนี้มีไว้สำหรับทดสอบ CAPTCHA เท่านั้น\n<strong>ห้ามนำไปใช้ในระบบจริงโดยเด็ดขาด</strong>"
+prohibitedWordsForNameOfUser: "คำนี้ไม่สามารถใช้เป็นชื่อผู้ใช้ได้"
+prohibitedWordsForNameOfUserDescription: "หากมีสตริงใดๆ ในรายการนี้ปรากฏอยู่ในชื่อของผู้ใช้ ชื่อนั้นจะถูกปฏิเสธ ผู้ใช้ที่มีสิทธิ์แต่ผู้ดูแลระบบนั้นจะไม่ได้รับผลกระทบใดๆจากข้อจำกัดนี้ค่ะ"
 _abuseUserReport:
   forward: "ส่ง​ต่อ"
   resolve: "แก้ไข"
