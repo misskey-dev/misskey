@@ -6812,6 +6812,8 @@ export type operations = {
            * @default null
            */
           hostname?: string | null;
+          name?: string | null;
+          comment?: string | null;
         };
       };
     };
