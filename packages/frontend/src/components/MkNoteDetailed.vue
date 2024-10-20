@@ -171,6 +171,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span style="margin-left: 4px;">{{ appearNote.reactions[reaction] }}</span>
 				</button>
 			</div>
+			<MkButton v-if="reactionTabType" :class="$style.reactionMuteButton" @click="reactionMuteToggle(reactionTabType)"> <i :class="!mutedReactions.includes(reactionTabType) ? 'ti ti-mood-happy' : 'ti ti-mood-off'"></i> {{ !mutedReactions.includes(reactionTabType) ? i18n.ts.muteThisReaction : i18n.ts.unmuteThisReaction }} </MkButton>
 			<MkPagination v-if="reactionTabType" :key="reactionTabType" :pagination="reactionsPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); grid-gap: 12px;">
@@ -293,6 +294,7 @@ const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultS
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);
+const mutedReactions = ref<string[]>(defaultStore.state.mutedReactions);
 
 const keymap = {
 	'r': () => reply(true),
@@ -480,6 +482,16 @@ function showMenu(viaKeyboard = false): void {
 
 async function clip() {
 	os.popupMenu(await getNoteClipMenu({ note: note.value, isDeleted }), clipButton.value).then(focus);
+}
+
+async function reactionMuteToggle(emojiName: string) {
+	if (!mutedReactions.value.includes(emojiName)) {
+		mutedReactions.value.push(emojiName);
+		defaultStore.set('mutedReactions', mutedReactions.value);
+	} else {
+		mutedReactions.value = mutedReactions.value.filter(x => x !== emojiName);
+		defaultStore.set('mutedReactions', mutedReactions.value);
+	}
 }
 
 function showRenoteMenu(viaKeyboard = false): void {
@@ -764,6 +776,10 @@ function loadConversation() {
 	display: flex;
 	gap: 8px;
 	flex-wrap: wrap;
+	margin-bottom: 8px;
+}
+
+.reactionMuteButton {
 	margin-bottom: 8px;
 }
 

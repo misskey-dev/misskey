@@ -585,9 +585,13 @@ export interface Locale extends ILocale {
      */
     "mutedReactions": string;
     /**
-     * リモートの絵文字をミュート
+     * このリアクションをミュートする
      */
-    "remoteCustomEmojiMuted": string;
+    "muteThisReaction": string;
+    /**
+     * このリアクションのミュートを解除する
+     */
+    "unmuteThisReaction": string;
     /**
      * ブロック
      */
