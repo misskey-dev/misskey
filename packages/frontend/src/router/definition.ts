@@ -217,7 +217,7 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/theme-editor.vue')),
 	loginRequired: true,
 }, {
-	path: '/roles/:role',
+	path: '/roles/:roleId',
 	component: page(() => import('@/pages/role.vue')),
 }, {
 	path: '/user-tags/:tag',
