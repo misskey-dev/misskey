@@ -6,6 +6,7 @@
 ### Client
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
+- Enhance: ドライブでソートができるように 
 
 ### Server
 -
