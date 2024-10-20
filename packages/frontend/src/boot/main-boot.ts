@@ -231,11 +231,38 @@ export async function mainBoot() {
 		}
 
 		if (!claimedAchievements.includes('justPlainLucky')) {
-			window.setInterval(() => {
-				if (document.visibilityState === 'visible' && Math.floor(Math.random() * 20000) === 0) {
-					claimAchievement('justPlainLucky');
+			let justPlainLuckyTimer: number | null = null;
+			let lastVisibilityChangedAt = Date.now();
+
+			function claimPlainLucky() {
+				if (document.visibilityState !== 'visible') {
+					if (justPlainLuckyTimer != null) window.clearTimeout(justPlainLuckyTimer);
+					return;
 				}
-			}, 1000 * 10);
+
+				if (Math.floor(Math.random() * 20000) === 0) {
+					claimAchievement('justPlainLucky');
+				} else {
+					justPlainLuckyTimer = window.setTimeout(claimPlainLucky, 1000 * 10);
+				}
+			}
+
+			window.addEventListener('visibilitychange', () => {
+				if (document.visibilityState === 'visible') {
+					if ((Date.now() - lastVisibilityChangedAt) < 1000 * 10) {
+						justPlainLuckyTimer = window.setTimeout(claimPlainLucky, 1000 * 10);
+					} else {
+						claimPlainLucky();
+					}
+				} else if (justPlainLuckyTimer != null) {
+					window.clearTimeout(justPlainLuckyTimer);
+					justPlainLuckyTimer = null;
+				}
+
+				lastVisibilityChangedAt = Date.now();
+			}, { passive: true });
+
+			claimPlainLucky();
 		}
 
 		if (!claimedAchievements.includes('client30min')) {
