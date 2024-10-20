@@ -5190,6 +5190,10 @@ export interface Locale extends ILocale {
      * 名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。
      */
     "yourNameContainsProhibitedWordsDescription": string;
+    /**
+     * 公開範囲に応じて色分けする
+     */
+    "enableNoteVisibilityColor": string;
     "_abuseUserReport": {
         /**
          * 転送
