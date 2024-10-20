@@ -9279,7 +9279,7 @@ export interface Locale extends ILocale {
          */
         "youGotQuote": ParameterizedString<"name">;
         /**
-         * {name}がRenoteしました
+         * {name}がリノートしました
          */
         "youRenoted": ParameterizedString<"name">;
         /**
@@ -9384,7 +9384,7 @@ export interface Locale extends ILocale {
              */
             "reply": string;
             /**
-             * Renote
+             * リノート
              */
             "renote": string;
             /**
@@ -9442,7 +9442,7 @@ export interface Locale extends ILocale {
              */
             "reply": string;
             /**
-             * Renote
+             * リノート
              */
             "renote": string;
         };
