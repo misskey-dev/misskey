@@ -1299,7 +1299,7 @@ _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
   requireSigninToViewContentsDescription1: "あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。"
   requireSigninToViewContentsDescription2: "URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。"
-  requireSigninToViewContentsDescription3: "リモートサーバーに連合されたコンテンツにはこれらの制限は適用されません。"
+  requireSigninToViewContentsDescription3: "リモートサーバーに連合されたコンテンツでは、これらの制限が適用されない場合もあります。"
 
 _abuseUserReport:
   forward: "転送"
