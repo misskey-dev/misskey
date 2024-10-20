@@ -6,6 +6,7 @@
 ### Client
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
+- Enhance: ドライブでソートができるように 
 - Enhance: 投稿フォームの設定メニューを改良
   - 投稿フォームをリセットできるように
 	- 文字数カウントを復活
