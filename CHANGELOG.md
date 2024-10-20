@@ -8,7 +8,7 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
 - Enhance: 投稿フォームの設定メニューを改良
   - 投稿フォームをリセットできるように
-	- 文字数カウントを復活
+  - 文字数カウントを復活
 
 ### Server
 -
