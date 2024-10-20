@@ -83,6 +83,7 @@ function generateDummyUser(override?: Partial<MiUser>): MiUser {
 		isExplorable: true,
 		isHibernated: false,
 		isDeleted: false,
+		signinRequiredForShowContents: false,
 		emojis: [],
 		score: 0,
 		host: null,
