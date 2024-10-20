@@ -66,7 +66,7 @@ export const packedRoleCondFormulaValueUserSettingBooleanSchema = {
 		type: {
 			type: 'string',
 			nullable: false, optional: false,
-			enum: ['isSuspended', 'isLocked', 'isBot', 'isCat', 'isExplorable'],
+			enum: ['isSuspended', 'isLocked', 'isBot', 'isCat', 'isVI', 'isExplorable'],
 		},
 	},
 } as const;
@@ -213,6 +213,10 @@ export const packedRolePoliciesSchema = {
 			optional: false, nullable: false,
 		},
 		canUseTranslator: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canUseTTS: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},

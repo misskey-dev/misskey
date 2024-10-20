@@ -98,6 +98,19 @@ export const paramDef = {
 		},
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },
+		hfAuthKey: { type: 'string', nullable: true },
+		hfSpace: { type: 'boolean', default: false },
+		hfSpaceName: { type: 'string', nullable: true },
+		hfexampleAudioURL: { type: 'string', nullable: true },
+		hfexampleText: { type: 'string', nullable: true },
+		hfexampleLang: { type: 'string', nullable: true },
+		hfslice: { type: 'string', default: 'Slice once every 4 sentences', nullable: true },
+		hftopK: { type: 'integer', default: 15 },
+		hftopP: { type: 'integer', default: 100 },
+		hfTemperature: { type: 'integer', default: 100 },
+		hfnrm: { type: 'boolean', default: false },
+		hfSpeedRate: { type: 'integer', default: 125 },
+		hfdas: { type: 'boolean', default: false },
 		enableEmail: { type: 'boolean' },
 		email: { type: 'string', nullable: true },
 		smtpSecure: { type: 'boolean' },
@@ -530,6 +543,82 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.deeplIsPro !== undefined) {
 				set.deeplIsPro = ps.deeplIsPro;
 			}
+
+			if (ps.hfAuthKey !== undefined) {
+				if (ps.hfAuthKey === '') {
+					set.hfAuthKey = null;
+				} else {
+					set.hfAuthKey = ps.hfAuthKey;
+				}
+			}
+			
+			if (ps.hfSpace !== undefined) {
+				set.hfSpace = ps.hfSpace;
+			}
+			
+			if (ps.hfSpaceName !== undefined) {
+				if (ps.hfSpaceName === '') {
+					set.hfSpaceName = null;
+				} else {
+					set.hfSpaceName = ps.hfSpaceName;
+				}
+			}
+			
+			if (ps.hfexampleAudioURL !== undefined) {
+				if (ps.hfexampleAudioURL === '') {
+					set.hfexampleAudioURL = null;
+				} else {
+					set.hfexampleAudioURL = ps.hfexampleAudioURL;
+				}
+			}
+			
+			if (ps.hfexampleText !== undefined) {
+				if (ps.hfexampleText === '') {
+					set.hfexampleText = null;
+				} else {
+					set.hfexampleText = ps.hfexampleText;
+				}
+			}
+			
+			if (ps.hfexampleLang !== undefined) {
+				if (ps.hfexampleLang === '') {
+					set.hfexampleLang = null;
+				} else {
+					set.hfexampleLang = ps.hfexampleLang;
+				}
+			}
+			
+			if (ps.hfslice !== undefined) {
+				if (ps.hfslice === '') {
+					set.hfslice = null;
+				} else {
+					set.hfslice = ps.hfslice;
+				}
+			}
+			
+			if (ps.hftopK !== undefined) {
+				set.hftopK = ps.hftopK;
+			}
+			
+			if (ps.hftopP !== undefined) {
+				set.hftopP = ps.hftopP;
+			}
+			
+			if (ps.hfTemperature !== undefined) {
+				set.hfTemperature = ps.hfTemperature;
+			}
+			
+			if (ps.hfnrm !== undefined) {
+				set.hfnrm = ps.hfnrm;
+			}
+			
+			if (ps.hfSpeedRate !== undefined) {
+				set.hfSpeedRate = ps.hfSpeedRate;
+			}
+			
+			if (ps.hfdas !== undefined) {
+				set.hfdas = ps.hfdas;
+			}			
 
 			if (ps.enableIpLogging !== undefined) {
 				set.enableIpLogging = ps.enableIpLogging;
