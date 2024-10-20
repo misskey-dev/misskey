@@ -2416,7 +2416,7 @@ _notification:
     follow: "フォロー"
     mention: "メンション"
     reply: "リプライ"
-    renote: "Renote"
+    renote: "リノート"
     quote: "引用"
     reaction: "ツッコミ"
     pollEnded: "アンケートが終了したで"
@@ -2431,7 +2431,7 @@ _notification:
   _actions:
     followBack: "フォローバック"
     reply: "返事"
-    renote: "Renote"
+    renote: "リノート"
 _deck:
   alwaysShowMainColumn: "いつもメインカラムを表示"
   columnAlign: "カラムの寄せ"
