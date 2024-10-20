@@ -197,7 +197,6 @@ function remove(itemsRef: Ref<string[]>, reaction: string, ev: MouseEvent) {
 async function pickEmoji(itemsRef: Ref<string[]>, ev: MouseEvent) {
 	os.pickEmoji(ev.currentTarget ?? ev.target, {
 		showPinned: false,
-		manualReactionInput: true,
 	}).then(it => {
 		const emoji = it;
 		if (!itemsRef.value.includes(emoji)) {

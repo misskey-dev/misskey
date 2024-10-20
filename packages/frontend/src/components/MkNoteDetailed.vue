@@ -171,7 +171,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span style="margin-left: 4px;">{{ appearNote.reactions[reaction] }}</span>
 				</button>
 			</div>
-			<MkButton v-if="reactionTabType" :class="$style.reactionMuteButton" @click="reactionMuteToggle(reactionTabType)"> <i :class="!mutedReactions.includes(reactionTabType) ? 'ti ti-mood-happy' : 'ti ti-mood-off'"></i> {{ !mutedReactions.includes(reactionTabType) ? i18n.ts.muteThisReaction : i18n.ts.unmuteThisReaction }} </MkButton>
+			<MkButton v-if="reactionTabType" :class="$style.reactionMuteButton" @click="reactionMuteToggle(reactionTabTypeTrimLocal)">
+				<i :class="!mutedReactions.includes(reactionTabTypeTrimLocal) ? 'ti ti-mood-happy' : 'ti ti-mood-off'"/>
+				{{ !mutedReactions.includes(reactionTabTypeTrimLocal) ? i18n.ts.muteThisReaction : i18n.ts.unmuteThisReaction }}
+			</MkButton>
 			<MkPagination v-if="reactionTabType" :key="reactionTabType" :pagination="reactionsPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
 					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); grid-gap: 12px;">
@@ -314,6 +317,7 @@ provide('react', (reaction: string) => {
 
 const tab = ref(props.initialTab);
 const reactionTabType = ref<string | null>(null);
+const reactionTabTypeTrimLocal = computed(() => reactionTabType.value?.replace('@.', '') ?? null);
 
 const renotesPagination = computed<Paging>(() => ({
 	endpoint: 'notes/renotes',
@@ -484,12 +488,14 @@ async function clip() {
 	os.popupMenu(await getNoteClipMenu({ note: note.value, isDeleted }), clipButton.value).then(focus);
 }
 
-async function reactionMuteToggle(emojiName: string) {
-	if (!mutedReactions.value.includes(emojiName)) {
-		mutedReactions.value.push(emojiName);
+async function reactionMuteToggle(reactionName: string | null) {
+	if (reactionName == null) return;
+
+	if (!mutedReactions.value.includes(reactionName)) {
+		mutedReactions.value.push(reactionName);
 		defaultStore.set('mutedReactions', mutedReactions.value);
 	} else {
-		mutedReactions.value = mutedReactions.value.filter(x => x !== emojiName);
+		mutedReactions.value = mutedReactions.value.filter(x => x !== reactionName);
 		defaultStore.set('mutedReactions', mutedReactions.value);
 	}
 }
