@@ -5200,7 +5200,7 @@ export interface Locale extends ILocale {
          */
         "signinRequiredForShowContents": string;
         /**
-         * あなたのプロフィールやノートなどの作成したコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。
+         * あなたが作成したノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。
          */
         "signinRequiredForShowContentsDescription1": string;
         /**
