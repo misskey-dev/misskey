@@ -232,7 +232,7 @@ export async function mainBoot() {
 
 		if (!claimedAchievements.includes('justPlainLucky')) {
 			window.setInterval(() => {
-				if (Math.floor(Math.random() * 20000) === 0) {
+				if (document.visibilityState === 'visible' && Math.floor(Math.random() * 20000) === 0) {
 					claimAchievement('justPlainLucky');
 				}
 			}, 1000 * 10);
