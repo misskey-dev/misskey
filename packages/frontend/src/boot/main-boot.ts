@@ -248,8 +248,11 @@ export async function mainBoot() {
 			}
 
 			window.addEventListener('visibilitychange', () => {
+				const now = Date.now();
+
 				if (document.visibilityState === 'visible') {
-					if ((Date.now() - lastVisibilityChangedAt) < 1000 * 10) {
+					// タブを高速で切り替えたら取得処理が何度も走るのを防ぐ
+					if ((now - lastVisibilityChangedAt) < 1000 * 10) {
 						justPlainLuckyTimer = window.setTimeout(claimPlainLucky, 1000 * 10);
 					} else {
 						claimPlainLucky();
@@ -259,7 +262,7 @@ export async function mainBoot() {
 					justPlainLuckyTimer = null;
 				}
 
-				lastVisibilityChangedAt = Date.now();
+				lastVisibilityChangedAt = now;
 			}, { passive: true });
 
 			claimPlainLucky();
