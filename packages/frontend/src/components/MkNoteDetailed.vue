@@ -172,7 +172,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</button>
 			</div>
 			<MkButton v-if="reactionTabType" :class="$style.reactionMuteButton" @click="reactionMuteToggle(reactionTabTypeTrimLocal)">
-				<i :class="!mutedReactions.includes(reactionTabTypeTrimLocal) ? 'ti ti-mood-happy' : 'ti ti-mood-off'"/>
+				<i :class="!mutedReactions.includes(reactionTabTypeTrimLocal) ? 'ti ti-mood-off' : 'ti ti-mood-happy'"/>
 				{{ !mutedReactions.includes(reactionTabTypeTrimLocal) ? i18n.ts.muteThisReaction : i18n.ts.unmuteThisReaction }}
 			</MkButton>
 			<MkPagination v-if="reactionTabType" :key="reactionTabType" :pagination="reactionsPagination" :disableAutoLoad="true">
