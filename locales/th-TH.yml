@@ -2409,6 +2409,7 @@ _notification:
   followedBySomeUsers: "มีผู้ติดตาม {n} ราย"
   flushNotification: "ล้างประวัติการแจ้งเตือน"
   exportOfXCompleted: "การดำเนินการส่งออก {x} ได้เสร็จสิ้นลงแล้ว"
+  login: "มีคนล็อกอิน"
   _types:
     all: "ทั้งหมด"
     note: "โน้ตใหม่"
@@ -2423,7 +2424,9 @@ _notification:
     followRequestAccepted: "อนุมัติให้ติดตามแล้ว"
     roleAssigned: "ให้บทบาท"
     achievementEarned: "ปลดล็อกความสำเร็จแล้ว"
+    exportCompleted: "กระบวนการส่งออกข้อมูลได้เสร็จสิ้นสมบูรณ์แล้ว"
     login: "เข้าสู่ระบบ"
+    test: "ทดสอบระบบแจ้งเตือน"
     app: "การแจ้งเตือนจากแอปที่มีลิงก์"
   _actions:
     followBack: "ติดตามกลับด้วย"
@@ -2489,7 +2492,10 @@ _webhookSettings:
     abuseReport: "เมื่อมีการรายงานจากผู้ใช้"
     abuseReportResolved: "เมื่อมีการจัดการกับการรายงานจากผู้ใช้"
     userCreated: "เมื่อผู้ใช้ถูกสร้างขึ้น"
+    inactiveModeratorsWarning: "เมื่อผู้ดูแลระบบไม่ได้ใช้งานมานานระยะหนึ่ง"
+    inactiveModeratorsInvitationOnlyChanged: "เมื่อผู้ดูแลระบบที่ไม่ได้ใช้งานมานาน และเซิร์ฟเวอร์เปลี่ยนเป็นแบบเชิญเข้าร่วมเท่านั้น"
   deleteConfirm: "ต้องการลบ Webhook ใช่ไหม?"
+  testRemarks: "คลิกปุ่มทางด้านขวาของสวิตช์เพื่อส่ง Webhook ทดสอบที่มีข้อมูลจำลอง"
 _abuseReport:
   _notificationRecipient:
     createRecipient: "เพิ่มปลายทางการแจ้งเตือนการรายงาน"
@@ -2533,6 +2539,8 @@ _moderationLogTypes:
   markSensitiveDriveFile: "ทำเครื่องหมายไฟล์ว่ามีเนื้อหาละเอียดอ่อน"
   unmarkSensitiveDriveFile: "ยกเลิกทำเครื่องหมายไฟล์ว่ามีเนื้อหาละเอียดอ่อน"
   resolveAbuseReport: "รายงานได้รับการแก้ไขแล้ว"
+  forwardAbuseReport: "ได้ส่งรายงานไปแล้ว"
+  updateAbuseReportNote: "โน้ตการกลั่นกรองที่รายงานไปนั้น ได้รับการอัปเดตแล้ว"
   createInvitation: "สร้างรหัสเชิญ"
   createAd: "สร้างโฆษณาแล้ว"
   deleteAd: "ลบโฆษณาออกแล้ว"
@@ -2548,6 +2556,10 @@ _moderationLogTypes:
   createAbuseReportNotificationRecipient: "สร้างปลายทางการแจ้งเตือนการรายงาน"
   updateAbuseReportNotificationRecipient: "อัปเดตปลายทางการแจ้งเตือนการรายงาน"
   deleteAbuseReportNotificationRecipient: "ลบปลายทางการแจ้งเตือนการรายงาน"
+  deleteAccount: "บัญชีถูกลบไปแล้ว"
+  deletePage: "เพจถูกลบออกไปแล้ว"
+  deleteFlash: "Play ถูกลบออกไปแล้ว"
+  deleteGalleryPost: "โพสต์แกลเลอรี่ถูกลบออกแล้ว"
 _fileViewer:
   title: "รายละเอียดไฟล์"
   type: "ประเภทไฟล์"
@@ -2685,7 +2697,12 @@ _contextMenu:
   appWithShift: "แอปฟลิเคชันด้วยปุ่มยกแคร่ (Shift)"
   native: "UI ของเบราว์เซอร์"
 _embedCodeGen:
+  title: "ปรับแต่งโค้ดฝัง"
+  header: "แสดงส่วนหัว"
+  autoload: "โหลดเพิ่มโดยอัตโนมัติ (เลิกใช้แล้ว)"
   maxHeight: "ความสูงสุด"
+  maxHeightDescription: "หากถ้าตั้งค่าเป็น 0 จะทำให้ไม่มีการจำกัดความสูงของวิดเจ็ต แต่ควรตั้งค่าเป็นตัวเลขอื่นๆ เพื่อไม่ให้วิดเจ็ตยืดตัวลงไปเรื่อยๆ"
+  maxHeightWarn: "การจำกัดความสูงสูงสุดถูกปิดใช้งาน (0) หากไม่ได้ตั้งใจให้เป็นเช่นนี้ โปรดตั้งค่าความสูงสูงสุดให้เป็นค่าอื่นๆแทน"
   previewIsNotActual: "การแสดงผลนั้นต่างจากการฝังจริงเพราะเกินขอบเขตที่แสดงบนหน้าจอตัวอย่างนะ"
   rounded: "ทำให้มันกลม"
   border: "เพิ่มขอบให้กับกรอบด้านนอก"
