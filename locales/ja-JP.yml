@@ -2448,7 +2448,7 @@ _notification:
   youGotMention: "{name}からのメンション"
   youGotReply: "{name}からのリプライ"
   youGotQuote: "{name}による引用"
-  youRenoted: "{name}がRenoteしました"
+  youRenoted: "{name}がリノートしました"
   youWereFollowed: "フォローされました"
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
@@ -2476,7 +2476,7 @@ _notification:
     follow: "フォロー"
     mention: "メンション"
     reply: "リプライ"
-    renote: "Renote"
+    renote: "リノート"
     quote: "引用"
     reaction: "リアクション"
     pollEnded: "アンケートが終了"
@@ -2492,7 +2492,7 @@ _notification:
   _actions:
     followBack: "フォローバック"
     reply: "返信"
-    renote: "Renote"
+    renote: "リノート"
 
 _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
