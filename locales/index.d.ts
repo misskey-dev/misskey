@@ -5196,15 +5196,21 @@ export interface Locale extends ILocale {
     "thisContentsAreMarkedAsSigninRequiredByAuthor": string;
     "_accountSettings": {
         /**
-         * コンテンツの閲覧にログインを必須にする
+         * コンテンツの表示にログインを必須にする
          */
         "signinRequiredForShowContents": string;
         /**
-         * あなたのプロフィールやノートなどの作成したコンテンツの閲覧にログイン必須にします。
-         * クローラーから情報を収集されるのを防ぐ効果が期待できます。
+         * あなたのプロフィールやノートなどの作成したコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。
+         */
+        "signinRequiredForShowContentsDescription1": string;
+        /**
          * URLのプレビューや、コンテンツの埋め込みも使用不可になります。
          */
-        "signinRequiredForShowContentsDescription": string;
+        "signinRequiredForShowContentsDescription2": string;
+        /**
+         * リモートサーバーに連合されたコンテンツにはこれらの制限は適用されません。
+         */
+        "signinRequiredForShowContentsDescription3": string;
     };
     "_abuseUserReport": {
         /**

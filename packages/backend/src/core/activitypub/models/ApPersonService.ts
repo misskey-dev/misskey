@@ -356,6 +356,7 @@ export class ApPersonService implements OnModuleInit {
 					tags,
 					isBot,
 					isCat: (person as any).isCat === true,
+					signinRequiredForShowContents: (person as any).signinRequiredForShowContents === true,
 					emojis,
 				})) as MiRemoteUser;
 

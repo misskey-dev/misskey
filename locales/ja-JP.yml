@@ -1296,8 +1296,10 @@ yourNameContainsProhibitedWordsDescription: "名前に禁止されている文�
 thisContentsAreMarkedAsSigninRequiredByAuthor: "このコンテンツの閲覧にはログインが必要と作者によって設定されています"
 
 _accountSettings:
-  signinRequiredForShowContents: "コンテンツの閲覧にログインを必須にする"
-  signinRequiredForShowContentsDescription: "あなたのプロフィールやノートなどの作成したコンテンツの閲覧にログイン必須にします。\nクローラーから情報を収集されるのを防ぐ効果が期待できます。\nURLのプレビューや、コンテンツの埋め込みも使用不可になります。"
+  signinRequiredForShowContents: "コンテンツの表示にログインを必須にする"
+  signinRequiredForShowContentsDescription1: "あなたのプロフィールやノートなどの作成したコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。"
+  signinRequiredForShowContentsDescription2: "URLのプレビューや、コンテンツの埋め込みも使用不可になります。"
+  signinRequiredForShowContentsDescription3: "リモートサーバーに連合されたコンテンツにはこれらの制限は適用されません。"
 
 _abuseUserReport:
   forward: "転送"
