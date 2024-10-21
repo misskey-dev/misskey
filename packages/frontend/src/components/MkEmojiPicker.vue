@@ -417,6 +417,8 @@ function chosen(emoji: any, ev?: MouseEvent) {
 		const y = rect.top + (el.offsetHeight / 2);
 		const { dispose } = os.popup(MkRippleEffect, { x, y }, {
 			end: () => dispose(),
+		}, {
+			allowMultiple: true,
 		});
 	}
 

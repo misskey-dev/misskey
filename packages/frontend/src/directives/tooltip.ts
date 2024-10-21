@@ -59,6 +59,8 @@ export default {
 				targetElement: el,
 			}, {
 				closed: () => dispose(),
+			}, {
+				allowMultiple: true,
 			});
 
 			self._close = () => {

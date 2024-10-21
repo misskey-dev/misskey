@@ -124,6 +124,8 @@ export async function mainBoot() {
 				announcement,
 			}, {
 				closed: () => dispose(),
+			}, {
+				allowMultiple: true,
 			});
 		}
 
@@ -134,6 +136,8 @@ export async function mainBoot() {
 					announcement,
 				}, {
 					closed: () => dispose(),
+				}, {
+					allowMultiple: true,
 				});
 			}
 		}
