@@ -5204,7 +5204,7 @@ export interface Locale extends ILocale {
          */
         "requireSigninToViewContents": string;
         /**
-         * あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。
+         * あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーに情報が収集されるのを防ぐ効果が期待できます。
          */
         "requireSigninToViewContentsDescription1": string;
         /**
@@ -5220,9 +5220,17 @@ export interface Locale extends ILocale {
          */
         "makeNotesFollowersOnlyBefore": string;
         /**
+         * この機能が有効になっている間、設定された日時より過去、または設定された時間を経過したノートがフォロワーのみ表示可能になります。無効に戻すと、ノートの公開状態も元に戻ります。
+         */
+        "makeNotesFollowersOnlyBeforeDescription": string;
+        /**
          * 過去のノートを非公開化する
          */
         "makeNotesHiddenBefore": string;
+        /**
+         * この機能が有効になっている間、設定された日時より過去、または設定された時間を経過したノートが自分のみ表示可能(非公開化)になります。無効に戻すと、ノートの公開状態も元に戻ります。
+         */
+        "makeNotesHiddenBeforeDescription": string;
         /**
          * リモートサーバーに連合されたノートには効果が及ばない場合があります。
          */

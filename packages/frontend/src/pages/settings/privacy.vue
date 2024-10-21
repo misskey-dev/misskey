@@ -67,6 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option :value="-2592000">{{ '1m ago' }}</option>
 				<option :value="-31104000">{{ '1y ago' }}</option>
 				<template #caption>
+					<div>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</div>
 					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 				</template>
 			</MkSelect>
@@ -81,6 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option :value="-2592000">{{ '1m ago' }}</option>
 				<option :value="-31104000">{{ '1y ago' }}</option>
 				<template #caption>
+					<div>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</div>
 					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 				</template>
 			</MkSelect>

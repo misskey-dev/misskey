@@ -1298,11 +1298,13 @@ lockdown: "ロックダウン"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
-  requireSigninToViewContentsDescription1: "あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。"
+  requireSigninToViewContentsDescription1: "あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーに情報が収集されるのを防ぐ効果が期待できます。"
   requireSigninToViewContentsDescription2: "URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。"
   requireSigninToViewContentsDescription3: "リモートサーバーに連合されたコンテンツでは、これらの制限が適用されない場合があります。"
   makeNotesFollowersOnlyBefore: "過去のノートをフォロワーのみ表示可能にする"
+  makeNotesFollowersOnlyBeforeDescription: "この機能が有効になっている間、設定された日時より過去、または設定された時間を経過したノートがフォロワーのみ表示可能になります。無効に戻すと、ノートの公開状態も元に戻ります。"
   makeNotesHiddenBefore: "過去のノートを非公開化する"
+  makeNotesHiddenBeforeDescription: "この機能が有効になっている間、設定された日時より過去、または設定された時間を経過したノートが自分のみ表示可能(非公開化)になります。無効に戻すと、ノートの公開状態も元に戻ります。"
   mayNotEffectForFederatedNotes: "リモートサーバーに連合されたノートには効果が及ばない場合があります。"
 
 _abuseUserReport:
