@@ -3807,6 +3807,18 @@ export interface Locale extends ILocale {
      */
     "oneMonth": string;
     /**
+     * 3ヶ月
+     */
+    "threeMonths": string;
+    /**
+     * 1年
+     */
+    "oneYear": string;
+    /**
+     * 3日
+     */
+    "threeDays": string;
+    /**
      * 反映されるまで時間がかかる場合があります。
      */
     "reflectMayTakeTime": string;

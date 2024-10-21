@@ -68,12 +68,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSelect>
 
 					<MkSelect v-if="makeNotesFollowersOnlyBefore_type === 'relative'" v-model="makeNotesFollowersOnlyBefore">
-						<option :value="-3600">{{ '1h ago' }}</option>
-						<option :value="-86400">{{ '1d ago' }}</option>
-						<option :value="-259200">{{ '3d ago' }}</option>
-						<option :value="-604800">{{ '1w ago' }}</option>
-						<option :value="-2592000">{{ '1m ago' }}</option>
-						<option :value="-31104000">{{ '1y ago' }}</option>
+						<option :value="-3600">{{ i18n.ts.oneHour }}</option>
+						<option :value="-86400">{{ i18n.ts.oneDay }}</option>
+						<option :value="-259200">{{ i18n.ts.threeDays }}</option>
+						<option :value="-604800">{{ i18n.ts.oneWeek }}</option>
+						<option :value="-2592000">{{ i18n.ts.oneMonth }}</option>
+						<option :value="-7776000">{{ i18n.ts.threeMonths }}</option>
+						<option :value="-31104000">{{ i18n.ts.oneYear }}</option>
 					</MkSelect>
 
 					<MkInput
@@ -103,12 +104,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSelect>
 
 					<MkSelect v-if="makeNotesHiddenBefore_type === 'relative'" v-model="makeNotesHiddenBefore">
-						<option :value="-3600">{{ '1h ago' }}</option>
-						<option :value="-86400">{{ '1d ago' }}</option>
-						<option :value="-259200">{{ '3d ago' }}</option>
-						<option :value="-604800">{{ '1w ago' }}</option>
-						<option :value="-2592000">{{ '1m ago' }}</option>
-						<option :value="-31104000">{{ '1y ago' }}</option>
+						<option :value="-3600">{{ i18n.ts.oneHour }}</option>
+						<option :value="-86400">{{ i18n.ts.oneDay }}</option>
+						<option :value="-259200">{{ i18n.ts.threeDays }}</option>
+						<option :value="-604800">{{ i18n.ts.oneWeek }}</option>
+						<option :value="-2592000">{{ i18n.ts.oneMonth }}</option>
+						<option :value="-7776000">{{ i18n.ts.threeMonths }}</option>
+						<option :value="-31104000">{{ i18n.ts.oneYear }}</option>
 					</MkSelect>
 
 					<MkInput
