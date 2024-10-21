@@ -115,6 +115,10 @@ export const packedUserLiteSchema = {
 			type: 'boolean',
 			nullable: false, optional: true,
 		},
+		requireSigninToViewContents: {
+			type: 'boolean',
+			nullable: false, optional: true,
+		},
 		instance: {
 			type: 'object',
 			nullable: false, optional: true,

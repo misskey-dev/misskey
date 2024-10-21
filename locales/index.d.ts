@@ -5191,9 +5191,35 @@ export interface Locale extends ILocale {
      */
     "yourNameContainsProhibitedWordsDescription": string;
     /**
+     * 投稿者により、表示にはログインが必要と設定されています
+     */
+    "thisContentsAreMarkedAsSigninRequiredByAuthor": string;
+    /**
+     * ロックダウン
+     */
+    "lockdown": string;
+    /**
      * 常に絶対時刻で表示する
      */
     "alwaysUseAbsoluteTime": string;
+    "_accountSettings": {
+        /**
+         * コンテンツの表示にログインを必須にする
+         */
+        "requireSigninToViewContents": string;
+        /**
+         * あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。
+         */
+        "requireSigninToViewContentsDescription1": string;
+        /**
+         * URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。
+         */
+        "requireSigninToViewContentsDescription2": string;
+        /**
+         * リモートサーバーに連合されたコンテンツでは、これらの制限が適用されない場合があります。
+         */
+        "requireSigninToViewContentsDescription3": string;
+    };
     "_abuseUserReport": {
         /**
          * 転送
