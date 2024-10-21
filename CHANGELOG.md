@@ -2,6 +2,7 @@
 
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
+- Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
 
 ### Client
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  

@@ -556,6 +556,8 @@ const extension_context_definition = {
 	'_misskey_summary': 'misskey:_misskey_summary',
 	'_misskey_followedMessage': 'misskey:_misskey_followedMessage',
 	'_misskey_requireSigninToViewContents': 'misskey:_misskey_requireSigninToViewContents',
+	'_misskey_makeNotesFollowersOnlyBefore': 'misskey:_misskey_makeNotesFollowersOnlyBefore',
+	'_misskey_makeNotesHiddenBefore': 'misskey:_misskey_makeNotesHiddenBefore',
 	'isCat': 'misskey:isCat',
 	// vcard
 	vcard: 'http://www.w3.org/2006/vcard/ns#',

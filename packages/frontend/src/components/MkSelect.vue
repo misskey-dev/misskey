@@ -46,7 +46,7 @@ import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 
 const props = defineProps<{
-	modelValue: string | null;
+	modelValue: string | number | null;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
