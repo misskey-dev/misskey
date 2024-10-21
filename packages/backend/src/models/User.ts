@@ -259,6 +259,17 @@ export class MiUser {
 	})
 	public token: string | null;
 
+	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public approved: boolean;
+
+	@Column('varchar', {
+		length: 1000, nullable: true,
+	})
+	public signupReason: string | null;
+
 	constructor(data: Partial<MiUser>) {
 		if (data == null) return;
 

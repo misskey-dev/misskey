@@ -53,6 +53,7 @@ export class SignupService {
 		passwordHash?: MiUserProfile['password'] | null;
 		host?: string | null;
 		ignorePreservedUsernames?: boolean;
+		reason?: string | null;
 	}) {
 		const { username, password, passwordHash, host } = opts;
 		let hash = passwordHash;
@@ -130,6 +131,7 @@ export class SignupService {
 				host: this.utilityService.toPunyNullable(host),
 				token: secret,
 				isRoot: isTheFirstUser,
+				signupReason: opts.reason,
 			}));
 
 			await transactionalEntityManager.save(new MiUserKeypair({

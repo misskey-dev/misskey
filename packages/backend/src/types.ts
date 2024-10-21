@@ -75,6 +75,7 @@ export const userImportableEntities = ['antenna', 'blocking', 'customEmoji', 'fo
 export const moderationLogTypes = [
 	'updateServerSettings',
 	'suspend',
+	'approve',
 	'unsuspend',
 	'updateUserNote',
 	'addCustomEmoji',
@@ -134,6 +135,11 @@ export type ModerationLogPayloads = {
 		userId: string;
 		userUsername: string;
 		userHost: string | null;
+	};
+	approve: {
+		userId: string;
+		userUsername: string;
+		//userHost: string | null; // User approval is local action
 	};
 	unsuspend: {
 		userId: string;

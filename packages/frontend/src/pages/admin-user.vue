@@ -15,6 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span class="name"><MkUserName class="name" :user="user"/></span>
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 						<span class="state">
+							<span v-if="!approved" class="silenced">{{ i18n.ts.notApproved }}</span>
+							<span v-if="approved && !user.host" class="moderator">{{ i18n.ts.approved }}</span>
 							<span v-if="suspended" class="suspended">Suspended</span>
 							<span v-if="silenced" class="silenced">Silenced</span>
 							<span v-if="moderator" class="moderator">Moderator</span>
@@ -251,6 +253,7 @@ const ips = ref<Misskey.entities.AdminGetUserIpsResponse | null>(null);
 const ap = ref<any>(null);
 const moderator = ref(false);
 const silenced = ref(false);
+const approved = ref(false);
 const suspended = ref(false);
 const moderationNote = ref('');
 const filesPagination = {
@@ -286,11 +289,12 @@ function createFetcher() {
 		ips.value = _ips;
 		moderator.value = info.value.isModerator;
 		silenced.value = info.value.isSilenced;
+		approved.value = info.value.approved;
 		suspended.value = info.value.isSuspended;
 		moderationNote.value = info.value.moderationNote;
 
 		watch(moderationNote, async () => {
-			await misskeyApi('admin/update-user-note', { userId: user.value.id, text: moderationNote.value });
+			await misskeyApi('admin/update-user-note', { userId: user.value!.id, text: moderationNote.value });
 			await refreshUser();
 		});
 	});
@@ -301,7 +305,7 @@ function refreshUser() {
 }
 
 async function updateRemoteUser() {
-	await os.apiWithDialog('federation/update-remote-user', { userId: user.value.id });
+	await os.apiWithDialog('federation/update-remote-user', { userId: user.value!.id });
 	refreshUser();
 }
 
@@ -314,7 +318,7 @@ async function resetPassword() {
 		return;
 	} else {
 		const { password } = await misskeyApi('admin/reset-password', {
-			userId: user.value.id,
+			userId: user.value!.id,
 		});
 		os.alert({
 			type: 'success',
@@ -331,7 +335,7 @@ async function toggleSuspend(v) {
 	if (confirm.canceled) {
 		suspended.value = !v;
 	} else {
-		await misskeyApi(v ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: user.value.id });
+		await misskeyApi(v ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: user.value!.id });
 		await refreshUser();
 	}
 }
@@ -343,7 +347,7 @@ async function unsetUserAvatar() {
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
-		await misskeyApi('admin/unset-user-avatar', { userId: user.value.id });
+		await misskeyApi('admin/unset-user-avatar', { userId: user.value!.id });
 		os.success();
 	};
 	await process().catch(err => {
@@ -362,7 +366,7 @@ async function unsetUserBanner() {
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
-		await misskeyApi('admin/unset-user-banner', { userId: user.value.id });
+		await misskeyApi('admin/unset-user-banner', { userId: user.value!.id });
 		os.success();
 	};
 	await process().catch(err => {
@@ -381,7 +385,7 @@ async function deleteAllFiles() {
 	});
 	if (confirm.canceled) return;
 	const process = async () => {
-		await misskeyApi('admin/delete-all-files-of-a-user', { userId: user.value.id });
+		await misskeyApi('admin/delete-all-files-of-a-user', { userId: user.value!.id });
 		os.success();
 	};
 	await process().catch(err => {
@@ -450,7 +454,7 @@ async function assignRole() {
 		: period === 'oneMonth' ? Date.now() + (1000 * 60 * 60 * 24 * 30)
 		: null;
 
-	await os.apiWithDialog('admin/roles/assign', { roleId, userId: user.value.id, expiresAt });
+	await os.apiWithDialog('admin/roles/assign', { roleId, userId: user.value!.id, expiresAt });
 	refreshUser();
 }
 
@@ -460,7 +464,7 @@ async function unassignRole(role, ev) {
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
-			await os.apiWithDialog('admin/roles/unassign', { roleId: role.id, userId: user.value.id });
+			await os.apiWithDialog('admin/roles/unassign', { roleId: role.id, userId: user.value!.id });
 			refreshUser();
 		},
 	}], ev.currentTarget ?? ev.target);
@@ -499,7 +503,7 @@ watch(() => props.userId, () => {
 
 watch(user, () => {
 	misskeyApi('ap/get', {
-		uri: user.value.uri ?? `${url}/users/${user.value.id}`,
+		uri: user.value?.uri ?? `${url}/users/${user.value!.id}`,
 	}).then(res => {
 		ap.value = res;
 	});
@@ -620,6 +624,18 @@ definePageMetadata(() => ({
 			margin-bottom: 12px;
 			font-weight: bold;
 		}
+	}
+}
+
+.casdwq {
+	.silenced {
+		color: var(--warn);
+		border-color: var(--warn);
+	}
+
+	.moderator {
+		color: var(--success);
+		border-color: var(--success);
 	}
 }
 </style>
