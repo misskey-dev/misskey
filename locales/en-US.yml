@@ -1293,6 +1293,13 @@ prohibitedWordsForNameOfUser: "Prohibited words for user names"
 prohibitedWordsForNameOfUserDescription: "If any of the strings in this list are included in the user's name, the name will be denied. Users with moderator privileges are not affected by this restriction."
 yourNameContainsProhibitedWords: "Your name contains prohibited words"
 yourNameContainsProhibitedWordsDescription: "If you wish to use this name, please contact your server administrator."
+thisContentsAreMarkedAsSigninRequiredByAuthor: "The author has restricted this post to logged-in users only"
+lockdown: "Lockdown"
+_accountSettings:
+  requireSigninToViewContents: "You must log in to view this content "
+  requireSigninToViewContentsDescription1: "Logging in is required to view all content, this is to prevent web crawlers from collecting information"
+  requireSigninToViewContentsDescription2: "Content will not be displayed for servers that don't support URL previews (Open Graph), embedded web pages, or quoting"
+  requireSigninToViewContentsDescription3: "These restrictions may not apply to federated content from other remote servers"
 _abuseUserReport:
   forward: "Forward"
   forwardDescription: "Forward the report to a remote server as an anonymous system account."
