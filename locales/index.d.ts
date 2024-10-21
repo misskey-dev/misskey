@@ -5198,6 +5198,14 @@ export interface Locale extends ILocale {
      * ロックダウン
      */
     "lockdown": string;
+    /**
+     * 文字数
+     */
+    "textCount": string;
+    /**
+     * リセット
+     */
+    "reset": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

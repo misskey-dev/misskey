@@ -28,3 +28,5 @@ type OuterMenuItem = MenuDivider | MenuNull | MenuLabel | MenuLink | MenuA | Men
 type OuterPromiseMenuItem = Promise<MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton | MenuParent>;
 export type MenuItem = OuterMenuItem | OuterPromiseMenuItem;
 export type InnerMenuItem = MenuDivider | MenuPending | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton | MenuRadio | MenuRadioOption | MenuParent;
+
+export type NonModalCompatibleInnerMenuItem = Exclude<InnerMenuItem, MenuParent | MenuRadio>;

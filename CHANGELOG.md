@@ -8,6 +8,9 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
 - Enhance: ドライブでソートができるように 
 - Enhance: 投稿フォームでEscキーを押したときIME入力中ならフォームを閉じないように（ #10866 ）  
+- Enhance: 投稿フォームの設定メニューを改良
+  - 投稿フォームをリセットできるように
+  - 文字数カウントを復活
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
