@@ -1293,6 +1293,13 @@ prohibitedWordsForNameOfUser: "用户名中禁止的词"
 prohibitedWordsForNameOfUserDescription: "更改用户名时，如果用户名中包含此列表里的词汇，用户的改名请求将被拒绝。持有管理员权限的用户不受此限制。"
 yourNameContainsProhibitedWords: "目标用户名包含违禁词"
 yourNameContainsProhibitedWordsDescription: "用户名内含有违禁词。若想使用此用户名，请联系服务器管理员。"
+thisContentsAreMarkedAsSigninRequiredByAuthor: "根据发帖者的设定，需要登录才能显示"
+lockdown: "锁定"
+_accountSettings:
+  requireSigninToViewContents: "需要登录才能显示内容"
+  requireSigninToViewContentsDescription1: "您发布的所有帖子将变成需要登入后才会显示。有望防止爬虫收集各种信息。"
+  requireSigninToViewContentsDescription2: "没有 URL 预览（OGP）、内嵌网页、引用帖子的功能的服务器也将无法显示。"
+  requireSigninToViewContentsDescription3: "这些限制可能不适用于联合到远程服务器的内容。"
 _abuseUserReport:
   forward: "转发"
   forwardDescription: "目标是匿名系统账户，将把举报转发给远程服务器。"
