@@ -1302,10 +1302,12 @@ _accountSettings:
   requireSigninToViewContentsDescription2: "URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。"
   requireSigninToViewContentsDescription3: "リモートサーバーに連合されたコンテンツでは、これらの制限が適用されない場合があります。"
   makeNotesFollowersOnlyBefore: "過去のノートをフォロワーのみ表示可能にする"
-  makeNotesFollowersOnlyBeforeDescription: "この機能が有効になっている間、設定された日時より過去、または設定された時間を経過したノートがフォロワーのみ表示可能になります。無効に戻すと、ノートの公開状態も元に戻ります。"
+  makeNotesFollowersOnlyBeforeDescription: "この機能が有効になっている間、設定された日時より過去、または設定された時間を経過しているノートがフォロワーのみ表示可能になります。無効に戻すと、ノートの公開状態も元に戻ります。"
   makeNotesHiddenBefore: "過去のノートを非公開化する"
-  makeNotesHiddenBeforeDescription: "この機能が有効になっている間、設定された日時より過去、または設定された時間を経過したノートが自分のみ表示可能(非公開化)になります。無効に戻すと、ノートの公開状態も元に戻ります。"
+  makeNotesHiddenBeforeDescription: "この機能が有効になっている間、設定された日時より過去、または設定された時間を経過しているノートが自分のみ表示可能(非公開化)になります。無効に戻すと、ノートの公開状態も元に戻ります。"
   mayNotEffectForFederatedNotes: "リモートサーバーに連合されたノートには効果が及ばない場合があります。"
+  notesHavePassedSpecifiedPeriod: "指定した時間を経過しているノート"
+  notesOlderThanSpecifiedDateAndTime: "指定した日時より前のノート"
 
 _abuseUserReport:
   forward: "転送"

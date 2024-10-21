@@ -57,20 +57,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkSwitch>
 
-			<MkSelect v-model="makeNotesFollowersOnlyBefore" @update:modelValue="save()">
+			<FormSlot>
 				<template #label>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBefore }}</template>
-				<option :value="null">{{ i18n.ts.none }}</option>
-				<option :value="-3600">{{ '1h ago' }}</option>
-				<option :value="-86400">{{ '1d ago' }}</option>
-				<option :value="-259200">{{ '3d ago' }}</option>
-				<option :value="-604800">{{ '1w ago' }}</option>
-				<option :value="-2592000">{{ '1m ago' }}</option>
-				<option :value="-31104000">{{ '1y ago' }}</option>
+
+				<div class="_gaps_s">
+					<MkSelect :modelValue="makeNotesFollowersOnlyBefore_type" @update:modelValue="makeNotesFollowersOnlyBefore = $event === 'relative' ? -604800 : null">
+						<option :value="null">{{ i18n.ts.none }}</option>
+						<option value="relative">{{ i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod }}</option>
+						<option value="absolute">{{ i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime }}</option>
+					</MkSelect>
+
+					<MkSelect v-if="makeNotesFollowersOnlyBefore_type === 'relative'" v-model="makeNotesFollowersOnlyBefore" @update:modelValue="save()">
+						<option :value="-3600">{{ '1h ago' }}</option>
+						<option :value="-86400">{{ '1d ago' }}</option>
+						<option :value="-259200">{{ '3d ago' }}</option>
+						<option :value="-604800">{{ '1w ago' }}</option>
+						<option :value="-2592000">{{ '1m ago' }}</option>
+						<option :value="-31104000">{{ '1y ago' }}</option>
+					</MkSelect>
+				</div>
+
 				<template #caption>
 					<div>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</div>
 					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 				</template>
-			</MkSelect>
+			</FormSlot>
 
 			<MkSelect v-model="makeNotesHiddenBefore" @update:modelValue="save()">
 				<template #label>{{ i18n.ts._accountSettings.makeNotesHiddenBefore }}</template>
@@ -127,6 +138,7 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { signinRequired } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import FormSlot from '@/components/form/slot.vue';
 
 const $i = signinRequired();
 
@@ -147,6 +159,26 @@ const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNot
 const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
+
+const makeNotesFollowersOnlyBefore_type = computed(() => {
+	if (makeNotesFollowersOnlyBefore.value === null) {
+		return null;
+	} else if (makeNotesFollowersOnlyBefore.value >= 0) {
+		return 'absolute';
+	} else {
+		return 'relative';
+	}
+});
+
+const makeNotesHiddenBefore_type = computed(() => {
+	if (makeNotesHiddenBefore.value === null) {
+		return null;
+	} else if (makeNotesHiddenBefore.value >= 0) {
+		return 'absolute';
+	} else {
+		return 'relative';
+	}
+});
 
 function save() {
 	misskeyApi('i/update', {
