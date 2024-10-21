@@ -4,14 +4,14 @@
  */
 
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
+import { ui } from '@@/js/config.js';
 import { common } from './common.js';
 import type * as Misskey from 'misskey-js';
-import { ui } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
-import { $i, signout, updateAccount } from '@/account.js';
+import { $i, signout, updateAccountPartial } from '@/account.js';
 import { instance } from '@/instance.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
@@ -291,11 +291,11 @@ export async function mainBoot() {
 
 		// 自分の情報が更新されたとき
 		main.on('meUpdated', i => {
-			updateAccount(i);
+			updateAccountPartial(i);
 		});
 
 		main.on('readAllNotifications', () => {
-			updateAccount({
+			updateAccountPartial({
 				hasUnreadNotification: false,
 				unreadNotificationsCount: 0,
 			});
@@ -303,39 +303,39 @@ export async function mainBoot() {
 
 		main.on('unreadNotification', () => {
 			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
-			updateAccount({
+			updateAccountPartial({
 				hasUnreadNotification: true,
 				unreadNotificationsCount,
 			});
 		});
 
 		main.on('unreadMention', () => {
-			updateAccount({ hasUnreadMentions: true });
+			updateAccountPartial({ hasUnreadMentions: true });
 		});
 
 		main.on('readAllUnreadMentions', () => {
-			updateAccount({ hasUnreadMentions: false });
+			updateAccountPartial({ hasUnreadMentions: false });
 		});
 
 		main.on('unreadSpecifiedNote', () => {
-			updateAccount({ hasUnreadSpecifiedNotes: true });
+			updateAccountPartial({ hasUnreadSpecifiedNotes: true });
 		});
 
 		main.on('readAllUnreadSpecifiedNotes', () => {
-			updateAccount({ hasUnreadSpecifiedNotes: false });
+			updateAccountPartial({ hasUnreadSpecifiedNotes: false });
 		});
 
 		main.on('readAllAntennas', () => {
-			updateAccount({ hasUnreadAntenna: false });
+			updateAccountPartial({ hasUnreadAntenna: false });
 		});
 
 		main.on('unreadAntenna', () => {
-			updateAccount({ hasUnreadAntenna: true });
+			updateAccountPartial({ hasUnreadAntenna: true });
 			sound.playMisskeySfx('antenna');
 		});
 
 		main.on('readAllAnnouncements', () => {
-			updateAccount({ hasUnreadAnnouncement: false });
+			updateAccountPartial({ hasUnreadAnnouncement: false });
 		});
 
 		// 個人宛てお知らせが発行されたとき
