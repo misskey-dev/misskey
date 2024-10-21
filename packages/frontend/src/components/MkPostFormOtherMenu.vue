@@ -104,8 +104,11 @@ async function toggleReactionAcceptance() {
 		],
 		default: props.currentReactionAcceptance,
 	});
-	if (select.canceled) return;
-	emit('changeReactionAcceptance', select.result);
+
+	if (!select.canceled) {
+		emit('changeReactionAcceptance', select.result);
+	}
+
 	modal.value?.close();
 }
 
@@ -114,9 +117,11 @@ async function reset() {
 		type: 'question',
 		text: i18n.ts.resetAreYouSure,
 	});
-	if (canceled) return;
 
-	emit('reset');
+	if (!canceled) {
+		emit('reset');
+	}
+
 	modal.value?.close();
 }
 </script>
