@@ -61,13 +61,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBefore }}</template>
 
 				<div class="_gaps_s">
-					<MkSelect :modelValue="makeNotesFollowersOnlyBefore_type" @update:modelValue="makeNotesFollowersOnlyBefore = $event === 'relative' ? -604800 : null">
+					<MkSelect :modelValue="makeNotesFollowersOnlyBefore_type" @update:modelValue="makeNotesFollowersOnlyBefore = $event === 'relative' ? -604800 : $event === 'absolute' ? Math.floor(Date.now() / 1000) : null">
 						<option :value="null">{{ i18n.ts.none }}</option>
 						<option value="relative">{{ i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod }}</option>
 						<option value="absolute">{{ i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime }}</option>
 					</MkSelect>
 
-					<MkSelect v-if="makeNotesFollowersOnlyBefore_type === 'relative'" v-model="makeNotesFollowersOnlyBefore" @update:modelValue="save()">
+					<MkSelect v-if="makeNotesFollowersOnlyBefore_type === 'relative'" v-model="makeNotesFollowersOnlyBefore">
 						<option :value="-3600">{{ '1h ago' }}</option>
 						<option :value="-86400">{{ '1d ago' }}</option>
 						<option :value="-259200">{{ '3d ago' }}</option>
@@ -75,6 +75,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option :value="-2592000">{{ '1m ago' }}</option>
 						<option :value="-31104000">{{ '1y ago' }}</option>
 					</MkSelect>
+
+					<MkInput
+						v-if="makeNotesFollowersOnlyBefore_type === 'absolute'"
+						:modelValue="formatDateTimeString(new Date(makeNotesFollowersOnlyBefore * 1000), 'yyyy-MM-dd')"
+						type="date"
+						:manualSave="true"
+						@update:modelValue="makeNotesFollowersOnlyBefore = Math.floor(new Date($event).getTime() / 1000)"
+					>
+					</MkInput>
 				</div>
 
 				<template #caption>
@@ -128,7 +137,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
@@ -139,6 +148,8 @@ import { i18n } from '@/i18n.js';
 import { signinRequired } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import FormSlot from '@/components/form/slot.vue';
+import { formatDateTimeString } from '@/scripts/format-time-string.js';
+import MkInput from '@/components/MkInput.vue';
 
 const $i = signinRequired();
 
@@ -161,7 +172,7 @@ const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberN
 const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
 
 const makeNotesFollowersOnlyBefore_type = computed(() => {
-	if (makeNotesFollowersOnlyBefore.value === null) {
+	if (makeNotesFollowersOnlyBefore.value == null) {
 		return null;
 	} else if (makeNotesFollowersOnlyBefore.value >= 0) {
 		return 'absolute';
@@ -171,13 +182,17 @@ const makeNotesFollowersOnlyBefore_type = computed(() => {
 });
 
 const makeNotesHiddenBefore_type = computed(() => {
-	if (makeNotesHiddenBefore.value === null) {
+	if (makeNotesHiddenBefore.value == null) {
 		return null;
 	} else if (makeNotesHiddenBefore.value >= 0) {
 		return 'absolute';
 	} else {
 		return 'relative';
 	}
+});
+
+watch(makeNotesFollowersOnlyBefore, () => {
+	save();
 });
 
 function save() {
