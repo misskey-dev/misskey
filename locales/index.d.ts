@@ -5194,6 +5194,10 @@ export interface Locale extends ILocale {
      * このコンテンツの閲覧にはログインが必要と作者によって設定されています
      */
     "thisContentsAreMarkedAsSigninRequiredByAuthor": string;
+    /**
+     * ロックダウン
+     */
+    "lockdown": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -5208,7 +5212,7 @@ export interface Locale extends ILocale {
          */
         "requireSigninToViewContentsDescription2": string;
         /**
-         * リモートサーバーに連合されたコンテンツにはこれらの制限は適用されません。
+         * リモートサーバーに連合されたコンテンツでは、これらの制限が適用されない場合があります。
          */
         "requireSigninToViewContentsDescription3": string;
     };

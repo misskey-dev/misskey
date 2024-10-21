@@ -43,14 +43,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		{{ i18n.ts.makeExplorable }}
 		<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
 	</MkSwitch>
-	<MkSwitch v-model="requireSigninToViewContents" @update:modelValue="save()">
-		{{ i18n.ts._accountSettings.requireSigninToViewContents }}<span class="_beta">{{ i18n.ts.beta }}</span>
-		<template #caption>
-			<div>{{ i18n.ts._accountSettings.requireSigninToViewContentsDescription1 }}</div>
-			<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription2 }}</div>
-			<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription3 }}</div>
-		</template>
-	</MkSwitch>
+
+	<FormSection>
+		<template #label>{{ i18n.ts.lockdown }}</template>
+
+		<div class="_gaps_m">
+			<MkSwitch v-model="requireSigninToViewContents" @update:modelValue="save()">
+				{{ i18n.ts._accountSettings.requireSigninToViewContents }}<span class="_beta">{{ i18n.ts.beta }}</span>
+				<template #caption>
+					<div>{{ i18n.ts._accountSettings.requireSigninToViewContentsDescription1 }}</div>
+					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription2 }}</div>
+					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription3 }}</div>
+				</template>
+			</MkSwitch>
+		</div>
+	</FormSection>
 
 	<FormSection>
 		<div class="_gaps_m">
