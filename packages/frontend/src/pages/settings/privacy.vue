@@ -92,20 +92,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</FormSlot>
 
-			<MkSelect v-model="makeNotesHiddenBefore" @update:modelValue="save()">
+			<FormSlot>
 				<template #label>{{ i18n.ts._accountSettings.makeNotesHiddenBefore }}</template>
-				<option :value="null">{{ i18n.ts.none }}</option>
-				<option :value="-3600">{{ '1h ago' }}</option>
-				<option :value="-86400">{{ '1d ago' }}</option>
-				<option :value="-259200">{{ '3d ago' }}</option>
-				<option :value="-604800">{{ '1w ago' }}</option>
-				<option :value="-2592000">{{ '1m ago' }}</option>
-				<option :value="-31104000">{{ '1y ago' }}</option>
+
+				<div class="_gaps_s">
+					<MkSelect :modelValue="makeNotesHiddenBefore_type" @update:modelValue="makeNotesHiddenBefore = $event === 'relative' ? -604800 : $event === 'absolute' ? Math.floor(Date.now() / 1000) : null">
+						<option :value="null">{{ i18n.ts.none }}</option>
+						<option value="relative">{{ i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod }}</option>
+						<option value="absolute">{{ i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime }}</option>
+					</MkSelect>
+
+					<MkSelect v-if="makeNotesHiddenBefore_type === 'relative'" v-model="makeNotesHiddenBefore">
+						<option :value="-3600">{{ '1h ago' }}</option>
+						<option :value="-86400">{{ '1d ago' }}</option>
+						<option :value="-259200">{{ '3d ago' }}</option>
+						<option :value="-604800">{{ '1w ago' }}</option>
+						<option :value="-2592000">{{ '1m ago' }}</option>
+						<option :value="-31104000">{{ '1y ago' }}</option>
+					</MkSelect>
+
+					<MkInput
+						v-if="makeNotesHiddenBefore_type === 'absolute'"
+						:modelValue="formatDateTimeString(new Date(makeNotesHiddenBefore * 1000), 'yyyy-MM-dd')"
+						type="date"
+						:manualSave="true"
+						@update:modelValue="makeNotesHiddenBefore = Math.floor(new Date($event).getTime() / 1000)"
+					>
+					</MkInput>
+				</div>
+
 				<template #caption>
 					<div>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</div>
 					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 				</template>
-			</MkSelect>
+			</FormSlot>
 		</div>
 	</FormSection>
 
@@ -191,7 +211,7 @@ const makeNotesHiddenBefore_type = computed(() => {
 	}
 });
 
-watch(makeNotesFollowersOnlyBefore, () => {
+watch([makeNotesFollowersOnlyBefore, makeNotesHiddenBefore], () => {
 	save();
 });
 
