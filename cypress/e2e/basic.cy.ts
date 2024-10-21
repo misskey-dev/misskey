@@ -52,7 +52,7 @@ describe('After setup instance', () => {
     cy.visitHome();
   });
 
-	it('signup', () => {
+	it('signup / onboarding', () => {
 		cy.visitHome();
 
 		cy.intercept('POST', '/api/signup').as('signup');
@@ -74,6 +74,60 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup-submit]').click();
 
 		cy.wait('@signup');
+
+		// /onboarding にリダイレクトされる
+		cy.wait(5000);
+		cy.url().should('equal', Cypress.config().baseUrl + '/onboarding');
+
+		// 「始める」
+		// 最初にアニメーションがあるので待つ
+		cy.get('[data-cy-user-setup-start]', { timeout: 15000 }).click();
+
+		cy.wait(1000);  // ← トランジション待ち（以下全てのページ遷移で待たせる）
+
+		// 【設定】プロフィール
+		cy.get('[data-cy-user-setup-user-name] input').type('ありす');
+		cy.get('[data-cy-user-setup-user-description] textarea').type('ほげ');
+
+		cy.get('[data-cy-user-setup-next]').click();
+		cy.wait(1000);
+
+		// 【チュートリアル】ノートって何？
+		cy.get('[data-cy-user-setup-next]').click();
+		cy.wait(1000);
+
+		// 【チュートリアル】リアクションって何？
+		// インタラクティブ要素があるが、テスト時は無視できるようになっている
+		cy.get('[data-cy-user-setup-next]').click();
+		cy.wait(1000);
+
+		// 【チュートリアル】タイムラインのしくみ
+		cy.get('[data-cy-user-setup-next]').click();
+		cy.wait(1000);
+
+		// 【設定】フォロー
+		cy.get('[data-cy-user-setup-next]').click();
+		cy.wait(1000);
+
+		// 【チュートリアル】ノートの投稿設定
+		cy.get('[data-cy-user-setup-next]').click();
+		cy.wait(1000);
+
+		// 【チュートリアル】添付ファイルをセンシティブにするには？
+		// インタラクティブ要素があるが、テスト時は無視できるようになっている
+		cy.get('[data-cy-user-setup-next]').click();
+		cy.wait(1000);
+
+		// 【設定】プライバシー設定
+		cy.get('[data-cy-user-setup-next]').click();
+		cy.wait(1000);
+
+		// 完了（「ホーム画面に進む」ボタン）
+		cy.get('[data-cy-user-setup-complete] a').click();
+
+		// ホームにリダイレクトされる
+		cy.wait(5000);
+		cy.url().should('equal', Cypress.config().baseUrl + '/');
   });
 
   it('signup with duplicated username', () => {
@@ -133,9 +187,9 @@ describe('After user signup', () => {
 		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
 
 		cy.wait('@signin');
-  });
+	});
 
-	it('suspend', function() {
+	it('suspend', function () {
 		cy.request('POST', '/api/admin/suspend-user', {
 			i: this.admin.token,
 			userId: this.alice.id,
@@ -153,56 +207,6 @@ describe('After user signup', () => {
 	});
 });
 
-describe('After user signed in', () => {
-	beforeEach(() => {
-		cy.resetState();
-
-		// インスタンス初期セットアップ
-		cy.registerUser('admin', 'pass', true);
-
-		// ユーザー作成
-		cy.registerUser('alice', 'alice1234');
-
-		cy.login('alice', 'alice1234');
-	});
-
-	afterEach(() => {
-		// テスト終了直前にページ遷移するようなテストケース(例えばアカウント作成)だと、たぶんCypressのバグでブラウザの内容が次のテストケースに引き継がれてしまう(例えばアカウントが作成し終わった段階からテストが始まる)。
-		// waitを入れることでそれを防止できる
-		cy.wait(1000);
-	});
-
-  it('successfully loads', () => {
-		// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
-		cy.get('[data-cy-user-setup-continue]', { timeout: 30000 }).should('be.visible');
-  });
-
-	it('account setup wizard', () => {
-		// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
-		cy.get('[data-cy-user-setup-continue]', { timeout: 30000 }).click();
-
-		cy.get('[data-cy-user-setup-user-name] input').type('ありす');
-		cy.get('[data-cy-user-setup-user-description] textarea').type('ほげ');
-		// TODO: アイコン設定テスト
-
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// プライバシー設定
-
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// フォローはスキップ
-
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		// プッシュ通知設定はスキップ
-
-		cy.get('[data-cy-user-setup-continue]').click();
-
-		cy.get('[data-cy-user-setup-continue]').click();
-  });
-});
-
 describe('After user setup', () => {
 	beforeEach(() => {
 		cy.resetState();
@@ -214,11 +218,6 @@ describe('After user setup', () => {
 		cy.registerUser('alice', 'alice1234');
 
 		cy.login('alice', 'alice1234');
-
-		// アカウント初期設定ウィザード
-		// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
-		cy.get('[data-cy-user-setup] [data-cy-modal-window-close]', { timeout: 30000 }).click();
-		cy.get('[data-cy-modal-dialog-ok]').click();
 	});
 
 	afterEach(() => {
