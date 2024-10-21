@@ -420,7 +420,7 @@ if (!props.mock) {
 }
 
 function renote(viaKeyboard = false) {
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
 
 	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock });
@@ -430,7 +430,7 @@ function renote(viaKeyboard = false) {
 }
 
 function reply(): void {
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	if (props.mock) {
 		return;
 	}
@@ -443,7 +443,7 @@ function reply(): void {
 }
 
 function react(): void {
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
@@ -564,7 +564,7 @@ function showRenoteMenu(): void {
 	}
 
 	if (isMyRenote) {
-		pleaseLogin(undefined, pleaseLoginContext.value);
+		pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 		os.popupMenu([
 			getCopyNoteLinkMenu(note.value, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
