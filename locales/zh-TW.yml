@@ -1293,6 +1293,13 @@ prohibitedWordsForNameOfUser: "禁止使用的字詞（使用者名稱）"
 prohibitedWordsForNameOfUserDescription: "如果使用者名稱包含此清單中的任何字串，則拒絕重新命名使用者。 具有審查員權限的使用者不受此限制的影響。"
 yourNameContainsProhibitedWords: "您嘗試更改的名稱包含禁止的字串"
 yourNameContainsProhibitedWordsDescription: "名稱中包含禁止使用的字串。 如果您想使用此名稱，請聯絡您的伺服器管理員。"
+thisContentsAreMarkedAsSigninRequiredByAuthor: "作者將其設定為需要登入才能顯示。"
+lockdown: "鎖定"
+_accountSettings:
+  requireSigninToViewContents: "須登入以顯示內容"
+  requireSigninToViewContentsDescription1: "必須登入才會顯示您建立的貼文等內容。可望有效防止資訊被爬蟲蒐集。"
+  requireSigninToViewContentsDescription2: "來自不支援 URL 預覽 (OGP)、 網頁嵌入和引用貼文的伺服器，也將停止顯示。"
+  requireSigninToViewContentsDescription3: "這些限制可能不適用於被聯邦發送至遠端伺服器的內容。"
 _abuseUserReport:
   forward: "轉發"
   forwardDescription: "以匿名系統帳戶將檢舉轉發至遠端伺服器。"
