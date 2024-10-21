@@ -5191,7 +5191,7 @@ export interface Locale extends ILocale {
      */
     "yourNameContainsProhibitedWordsDescription": string;
     /**
-     * このコンテンツの閲覧にはログインが必要と作者によって設定されています
+     * 投稿者により、表示にはログインが必要と設定されています
      */
     "thisContentsAreMarkedAsSigninRequiredByAuthor": string;
     /**
