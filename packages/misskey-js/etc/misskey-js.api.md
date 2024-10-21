@@ -31,6 +31,11 @@ export { acct }
 // @public (undocumented)
 type Ad = components['schemas']['Ad'];
 
+// Warning: (ae-forgotten-export) The symbol "EndpointsErrors" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientCreateErrors = EndpointsErrors['admin___abuse-report___notification-recipient___create'][keyof EndpointsErrors['admin___abuse-report___notification-recipient___create']];
+
 // Warning: (ae-forgotten-export) The symbol "operations" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -40,7 +45,13 @@ type AdminAbuseReportNotificationRecipientCreateRequest = operations['admin___ab
 type AdminAbuseReportNotificationRecipientCreateResponse = operations['admin___abuse-report___notification-recipient___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAbuseReportNotificationRecipientDeleteErrors = EndpointsErrors['admin___abuse-report___notification-recipient___delete'][keyof EndpointsErrors['admin___abuse-report___notification-recipient___delete']];
+
+// @public (undocumented)
 type AdminAbuseReportNotificationRecipientDeleteRequest = operations['admin___abuse-report___notification-recipient___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientListErrors = EndpointsErrors['admin___abuse-report___notification-recipient___list'][keyof EndpointsErrors['admin___abuse-report___notification-recipient___list']];
 
 // @public (undocumented)
 type AdminAbuseReportNotificationRecipientListRequest = operations['admin___abuse-report___notification-recipient___list']['requestBody']['content']['application/json'];
@@ -49,10 +60,16 @@ type AdminAbuseReportNotificationRecipientListRequest = operations['admin___abus
 type AdminAbuseReportNotificationRecipientListResponse = operations['admin___abuse-report___notification-recipient___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAbuseReportNotificationRecipientShowErrors = EndpointsErrors['admin___abuse-report___notification-recipient___show'][keyof EndpointsErrors['admin___abuse-report___notification-recipient___show']];
+
+// @public (undocumented)
 type AdminAbuseReportNotificationRecipientShowRequest = operations['admin___abuse-report___notification-recipient___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminAbuseReportNotificationRecipientShowResponse = operations['admin___abuse-report___notification-recipient___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAbuseReportNotificationRecipientUpdateErrors = EndpointsErrors['admin___abuse-report___notification-recipient___update'][keyof EndpointsErrors['admin___abuse-report___notification-recipient___update']];
 
 // @public (undocumented)
 type AdminAbuseReportNotificationRecipientUpdateRequest = operations['admin___abuse-report___notification-recipient___update']['requestBody']['content']['application/json'];
@@ -61,10 +78,16 @@ type AdminAbuseReportNotificationRecipientUpdateRequest = operations['admin___ab
 type AdminAbuseReportNotificationRecipientUpdateResponse = operations['admin___abuse-report___notification-recipient___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAbuseUserReportsErrors = EndpointsErrors['admin___abuse-user-reports'][keyof EndpointsErrors['admin___abuse-user-reports']];
+
+// @public (undocumented)
 type AdminAbuseUserReportsRequest = operations['admin___abuse-user-reports']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminAbuseUserReportsResponse = operations['admin___abuse-user-reports']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAccountsCreateErrors = EndpointsErrors['admin___accounts___create'][keyof EndpointsErrors['admin___accounts___create']];
 
 // @public (undocumented)
 type AdminAccountsCreateRequest = operations['admin___accounts___create']['requestBody']['content']['application/json'];
@@ -73,7 +96,13 @@ type AdminAccountsCreateRequest = operations['admin___accounts___create']['reque
 type AdminAccountsCreateResponse = operations['admin___accounts___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAccountsDeleteErrors = EndpointsErrors['admin___accounts___delete'][keyof EndpointsErrors['admin___accounts___delete']];
+
+// @public (undocumented)
 type AdminAccountsDeleteRequest = operations['admin___accounts___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAccountsFindByEmailErrors = EndpointsErrors['admin___accounts___find-by-email'][keyof EndpointsErrors['admin___accounts___find-by-email']];
 
 // @public (undocumented)
 type AdminAccountsFindByEmailRequest = operations['admin___accounts___find-by-email']['requestBody']['content']['application/json'];
@@ -82,13 +111,22 @@ type AdminAccountsFindByEmailRequest = operations['admin___accounts___find-by-em
 type AdminAccountsFindByEmailResponse = operations['admin___accounts___find-by-email']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAdCreateErrors = EndpointsErrors['admin___ad___create'][keyof EndpointsErrors['admin___ad___create']];
+
+// @public (undocumented)
 type AdminAdCreateRequest = operations['admin___ad___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminAdCreateResponse = operations['admin___ad___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAdDeleteErrors = EndpointsErrors['admin___ad___delete'][keyof EndpointsErrors['admin___ad___delete']];
+
+// @public (undocumented)
 type AdminAdDeleteRequest = operations['admin___ad___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAdListErrors = EndpointsErrors['admin___ad___list'][keyof EndpointsErrors['admin___ad___list']];
 
 // @public (undocumented)
 type AdminAdListRequest = operations['admin___ad___list']['requestBody']['content']['application/json'];
@@ -97,7 +135,13 @@ type AdminAdListRequest = operations['admin___ad___list']['requestBody']['conten
 type AdminAdListResponse = operations['admin___ad___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAdUpdateErrors = EndpointsErrors['admin___ad___update'][keyof EndpointsErrors['admin___ad___update']];
+
+// @public (undocumented)
 type AdminAdUpdateRequest = operations['admin___ad___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAnnouncementsCreateErrors = EndpointsErrors['admin___announcements___create'][keyof EndpointsErrors['admin___announcements___create']];
 
 // @public (undocumented)
 type AdminAnnouncementsCreateRequest = operations['admin___announcements___create']['requestBody']['content']['application/json'];
@@ -106,7 +150,13 @@ type AdminAnnouncementsCreateRequest = operations['admin___announcements___creat
 type AdminAnnouncementsCreateResponse = operations['admin___announcements___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAnnouncementsDeleteErrors = EndpointsErrors['admin___announcements___delete'][keyof EndpointsErrors['admin___announcements___delete']];
+
+// @public (undocumented)
 type AdminAnnouncementsDeleteRequest = operations['admin___announcements___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAnnouncementsListErrors = EndpointsErrors['admin___announcements___list'][keyof EndpointsErrors['admin___announcements___list']];
 
 // @public (undocumented)
 type AdminAnnouncementsListRequest = operations['admin___announcements___list']['requestBody']['content']['application/json'];
@@ -115,13 +165,25 @@ type AdminAnnouncementsListRequest = operations['admin___announcements___list'][
 type AdminAnnouncementsListResponse = operations['admin___announcements___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAnnouncementsUpdateErrors = EndpointsErrors['admin___announcements___update'][keyof EndpointsErrors['admin___announcements___update']];
+
+// @public (undocumented)
 type AdminAnnouncementsUpdateRequest = operations['admin___announcements___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAvatarDecorationsCreateErrors = EndpointsErrors['admin___avatar-decorations___create'][keyof EndpointsErrors['admin___avatar-decorations___create']];
 
 // @public (undocumented)
 type AdminAvatarDecorationsCreateRequest = operations['admin___avatar-decorations___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAvatarDecorationsDeleteErrors = EndpointsErrors['admin___avatar-decorations___delete'][keyof EndpointsErrors['admin___avatar-decorations___delete']];
+
+// @public (undocumented)
 type AdminAvatarDecorationsDeleteRequest = operations['admin___avatar-decorations___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminAvatarDecorationsListErrors = EndpointsErrors['admin___avatar-decorations___list'][keyof EndpointsErrors['admin___avatar-decorations___list']];
 
 // @public (undocumented)
 type AdminAvatarDecorationsListRequest = operations['admin___avatar-decorations___list']['requestBody']['content']['application/json'];
@@ -130,13 +192,31 @@ type AdminAvatarDecorationsListRequest = operations['admin___avatar-decorations_
 type AdminAvatarDecorationsListResponse = operations['admin___avatar-decorations___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAvatarDecorationsUpdateErrors = EndpointsErrors['admin___avatar-decorations___update'][keyof EndpointsErrors['admin___avatar-decorations___update']];
+
+// @public (undocumented)
 type AdminAvatarDecorationsUpdateRequest = operations['admin___avatar-decorations___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminDeleteAccountErrors = EndpointsErrors['admin___delete-account'][keyof EndpointsErrors['admin___delete-account']];
 
 // @public (undocumented)
 type AdminDeleteAccountRequest = operations['admin___delete-account']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminDeleteAllFilesOfAUserErrors = EndpointsErrors['admin___delete-all-files-of-a-user'][keyof EndpointsErrors['admin___delete-all-files-of-a-user']];
+
+// @public (undocumented)
 type AdminDeleteAllFilesOfAUserRequest = operations['admin___delete-all-files-of-a-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminDriveCleanRemoteFilesErrors = EndpointsErrors['admin___drive___clean-remote-files'][keyof EndpointsErrors['admin___drive___clean-remote-files']];
+
+// @public (undocumented)
+type AdminDriveCleanupErrors = EndpointsErrors['admin___drive___cleanup'][keyof EndpointsErrors['admin___drive___cleanup']];
+
+// @public (undocumented)
+type AdminDriveFilesErrors = EndpointsErrors['admin___drive___files'][keyof EndpointsErrors['admin___drive___files']];
 
 // @public (undocumented)
 type AdminDriveFilesRequest = operations['admin___drive___files']['requestBody']['content']['application/json'];
@@ -145,13 +225,22 @@ type AdminDriveFilesRequest = operations['admin___drive___files']['requestBody']
 type AdminDriveFilesResponse = operations['admin___drive___files']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminDriveShowFileErrors = EndpointsErrors['admin___drive___show-file'][keyof EndpointsErrors['admin___drive___show-file']];
+
+// @public (undocumented)
 type AdminDriveShowFileRequest = operations['admin___drive___show-file']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminDriveShowFileResponse = operations['admin___drive___show-file']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiAddAliasesBulkErrors = EndpointsErrors['admin___emoji___add-aliases-bulk'][keyof EndpointsErrors['admin___emoji___add-aliases-bulk']];
+
+// @public (undocumented)
 type AdminEmojiAddAliasesBulkRequest = operations['admin___emoji___add-aliases-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiAddErrors = EndpointsErrors['admin___emoji___add'][keyof EndpointsErrors['admin___emoji___add']];
 
 // @public (undocumented)
 type AdminEmojiAddRequest = operations['admin___emoji___add']['requestBody']['content']['application/json'];
@@ -160,19 +249,37 @@ type AdminEmojiAddRequest = operations['admin___emoji___add']['requestBody']['co
 type AdminEmojiAddResponse = operations['admin___emoji___add']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiCopyErrors = EndpointsErrors['admin___emoji___copy'][keyof EndpointsErrors['admin___emoji___copy']];
+
+// @public (undocumented)
 type AdminEmojiCopyRequest = operations['admin___emoji___copy']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminEmojiCopyResponse = operations['admin___emoji___copy']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiDeleteBulkErrors = EndpointsErrors['admin___emoji___delete-bulk'][keyof EndpointsErrors['admin___emoji___delete-bulk']];
+
+// @public (undocumented)
 type AdminEmojiDeleteBulkRequest = operations['admin___emoji___delete-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiDeleteErrors = EndpointsErrors['admin___emoji___delete'][keyof EndpointsErrors['admin___emoji___delete']];
 
 // @public (undocumented)
 type AdminEmojiDeleteRequest = operations['admin___emoji___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiImportZipErrors = EndpointsErrors['admin___emoji___import-zip'][keyof EndpointsErrors['admin___emoji___import-zip']];
+
+// @public (undocumented)
 type AdminEmojiImportZipRequest = operations['admin___emoji___import-zip']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiListErrors = EndpointsErrors['admin___emoji___list'][keyof EndpointsErrors['admin___emoji___list']];
+
+// @public (undocumented)
+type AdminEmojiListRemoteErrors = EndpointsErrors['admin___emoji___list-remote'][keyof EndpointsErrors['admin___emoji___list-remote']];
 
 // @public (undocumented)
 type AdminEmojiListRemoteRequest = operations['admin___emoji___list-remote']['requestBody']['content']['application/json'];
@@ -187,40 +294,79 @@ type AdminEmojiListRequest = operations['admin___emoji___list']['requestBody']['
 type AdminEmojiListResponse = operations['admin___emoji___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiRemoveAliasesBulkErrors = EndpointsErrors['admin___emoji___remove-aliases-bulk'][keyof EndpointsErrors['admin___emoji___remove-aliases-bulk']];
+
+// @public (undocumented)
 type AdminEmojiRemoveAliasesBulkRequest = operations['admin___emoji___remove-aliases-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiSetAliasesBulkErrors = EndpointsErrors['admin___emoji___set-aliases-bulk'][keyof EndpointsErrors['admin___emoji___set-aliases-bulk']];
 
 // @public (undocumented)
 type AdminEmojiSetAliasesBulkRequest = operations['admin___emoji___set-aliases-bulk']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiSetCategoryBulkErrors = EndpointsErrors['admin___emoji___set-category-bulk'][keyof EndpointsErrors['admin___emoji___set-category-bulk']];
+
+// @public (undocumented)
 type AdminEmojiSetCategoryBulkRequest = operations['admin___emoji___set-category-bulk']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiSetLicenseBulkErrors = EndpointsErrors['admin___emoji___set-license-bulk'][keyof EndpointsErrors['admin___emoji___set-license-bulk']];
 
 // @public (undocumented)
 type AdminEmojiSetLicenseBulkRequest = operations['admin___emoji___set-license-bulk']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminEmojiUpdateErrors = EndpointsErrors['admin___emoji___update'][keyof EndpointsErrors['admin___emoji___update']];
+
+// @public (undocumented)
 type AdminEmojiUpdateRequest = operations['admin___emoji___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminFederationDeleteAllFilesErrors = EndpointsErrors['admin___federation___delete-all-files'][keyof EndpointsErrors['admin___federation___delete-all-files']];
 
 // @public (undocumented)
 type AdminFederationDeleteAllFilesRequest = operations['admin___federation___delete-all-files']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminFederationRefreshRemoteInstanceMetadataErrors = EndpointsErrors['admin___federation___refresh-remote-instance-metadata'][keyof EndpointsErrors['admin___federation___refresh-remote-instance-metadata']];
+
+// @public (undocumented)
 type AdminFederationRefreshRemoteInstanceMetadataRequest = operations['admin___federation___refresh-remote-instance-metadata']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminFederationRemoveAllFollowingErrors = EndpointsErrors['admin___federation___remove-all-following'][keyof EndpointsErrors['admin___federation___remove-all-following']];
 
 // @public (undocumented)
 type AdminFederationRemoveAllFollowingRequest = operations['admin___federation___remove-all-following']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminFederationUpdateInstanceErrors = EndpointsErrors['admin___federation___update-instance'][keyof EndpointsErrors['admin___federation___update-instance']];
+
+// @public (undocumented)
 type AdminFederationUpdateInstanceRequest = operations['admin___federation___update-instance']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminForwardAbuseUserReportErrors = EndpointsErrors['admin___forward-abuse-user-report'][keyof EndpointsErrors['admin___forward-abuse-user-report']];
 
 // @public (undocumented)
 type AdminForwardAbuseUserReportRequest = operations['admin___forward-abuse-user-report']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminGetIndexStatsErrors = EndpointsErrors['admin___get-index-stats'][keyof EndpointsErrors['admin___get-index-stats']];
+
+// @public (undocumented)
 type AdminGetIndexStatsResponse = operations['admin___get-index-stats']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminGetTableStatsErrors = EndpointsErrors['admin___get-table-stats'][keyof EndpointsErrors['admin___get-table-stats']];
+
+// @public (undocumented)
 type AdminGetTableStatsResponse = operations['admin___get-table-stats']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminGetUserIpsErrors = EndpointsErrors['admin___get-user-ips'][keyof EndpointsErrors['admin___get-user-ips']];
 
 // @public (undocumented)
 type AdminGetUserIpsRequest = operations['admin___get-user-ips']['requestBody']['content']['application/json'];
@@ -229,10 +375,16 @@ type AdminGetUserIpsRequest = operations['admin___get-user-ips']['requestBody'][
 type AdminGetUserIpsResponse = operations['admin___get-user-ips']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminInviteCreateErrors = EndpointsErrors['admin___invite___create'][keyof EndpointsErrors['admin___invite___create']];
+
+// @public (undocumented)
 type AdminInviteCreateRequest = operations['admin___invite___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminInviteCreateResponse = operations['admin___invite___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminInviteListErrors = EndpointsErrors['admin___invite___list'][keyof EndpointsErrors['admin___invite___list']];
 
 // @public (undocumented)
 type AdminInviteListRequest = operations['admin___invite___list']['requestBody']['content']['application/json'];
@@ -241,22 +393,46 @@ type AdminInviteListRequest = operations['admin___invite___list']['requestBody']
 type AdminInviteListResponse = operations['admin___invite___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminMetaErrors = EndpointsErrors['admin___meta'][keyof EndpointsErrors['admin___meta']];
+
+// @public (undocumented)
 type AdminMetaResponse = operations['admin___meta']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminPromoCreateErrors = EndpointsErrors['admin___promo___create'][keyof EndpointsErrors['admin___promo___create']];
 
 // @public (undocumented)
 type AdminPromoCreateRequest = operations['admin___promo___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminQueueClearErrors = EndpointsErrors['admin___queue___clear'][keyof EndpointsErrors['admin___queue___clear']];
+
+// @public (undocumented)
+type AdminQueueDeliverDelayedErrors = EndpointsErrors['admin___queue___deliver-delayed'][keyof EndpointsErrors['admin___queue___deliver-delayed']];
+
+// @public (undocumented)
 type AdminQueueDeliverDelayedResponse = operations['admin___queue___deliver-delayed']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueInboxDelayedErrors = EndpointsErrors['admin___queue___inbox-delayed'][keyof EndpointsErrors['admin___queue___inbox-delayed']];
 
 // @public (undocumented)
 type AdminQueueInboxDelayedResponse = operations['admin___queue___inbox-delayed']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminQueuePromoteErrors = EndpointsErrors['admin___queue___promote'][keyof EndpointsErrors['admin___queue___promote']];
+
+// @public (undocumented)
 type AdminQueuePromoteRequest = operations['admin___queue___promote']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminQueueStatsErrors = EndpointsErrors['admin___queue___stats'][keyof EndpointsErrors['admin___queue___stats']];
+
+// @public (undocumented)
 type AdminQueueStatsResponse = operations['admin___queue___stats']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRelaysAddErrors = EndpointsErrors['admin___relays___add'][keyof EndpointsErrors['admin___relays___add']];
 
 // @public (undocumented)
 type AdminRelaysAddRequest = operations['admin___relays___add']['requestBody']['content']['application/json'];
@@ -265,10 +441,19 @@ type AdminRelaysAddRequest = operations['admin___relays___add']['requestBody']['
 type AdminRelaysAddResponse = operations['admin___relays___add']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRelaysListErrors = EndpointsErrors['admin___relays___list'][keyof EndpointsErrors['admin___relays___list']];
+
+// @public (undocumented)
 type AdminRelaysListResponse = operations['admin___relays___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRelaysRemoveErrors = EndpointsErrors['admin___relays___remove'][keyof EndpointsErrors['admin___relays___remove']];
+
+// @public (undocumented)
 type AdminRelaysRemoveRequest = operations['admin___relays___remove']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminResetPasswordErrors = EndpointsErrors['admin___reset-password'][keyof EndpointsErrors['admin___reset-password']];
 
 // @public (undocumented)
 type AdminResetPasswordRequest = operations['admin___reset-password']['requestBody']['content']['application/json'];
@@ -277,10 +462,19 @@ type AdminResetPasswordRequest = operations['admin___reset-password']['requestBo
 type AdminResetPasswordResponse = operations['admin___reset-password']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminResolveAbuseUserReportErrors = EndpointsErrors['admin___resolve-abuse-user-report'][keyof EndpointsErrors['admin___resolve-abuse-user-report']];
+
+// @public (undocumented)
 type AdminResolveAbuseUserReportRequest = operations['admin___resolve-abuse-user-report']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRolesAssignErrors = EndpointsErrors['admin___roles___assign'][keyof EndpointsErrors['admin___roles___assign']];
+
+// @public (undocumented)
 type AdminRolesAssignRequest = operations['admin___roles___assign']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesCreateErrors = EndpointsErrors['admin___roles___create'][keyof EndpointsErrors['admin___roles___create']];
 
 // @public (undocumented)
 type AdminRolesCreateRequest = operations['admin___roles___create']['requestBody']['content']['application/json'];
@@ -289,10 +483,19 @@ type AdminRolesCreateRequest = operations['admin___roles___create']['requestBody
 type AdminRolesCreateResponse = operations['admin___roles___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRolesDeleteErrors = EndpointsErrors['admin___roles___delete'][keyof EndpointsErrors['admin___roles___delete']];
+
+// @public (undocumented)
 type AdminRolesDeleteRequest = operations['admin___roles___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRolesListErrors = EndpointsErrors['admin___roles___list'][keyof EndpointsErrors['admin___roles___list']];
+
+// @public (undocumented)
 type AdminRolesListResponse = operations['admin___roles___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesShowErrors = EndpointsErrors['admin___roles___show'][keyof EndpointsErrors['admin___roles___show']];
 
 // @public (undocumented)
 type AdminRolesShowRequest = operations['admin___roles___show']['requestBody']['content']['application/json'];
@@ -301,13 +504,25 @@ type AdminRolesShowRequest = operations['admin___roles___show']['requestBody']['
 type AdminRolesShowResponse = operations['admin___roles___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRolesUnassignErrors = EndpointsErrors['admin___roles___unassign'][keyof EndpointsErrors['admin___roles___unassign']];
+
+// @public (undocumented)
 type AdminRolesUnassignRequest = operations['admin___roles___unassign']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesUpdateDefaultPoliciesErrors = EndpointsErrors['admin___roles___update-default-policies'][keyof EndpointsErrors['admin___roles___update-default-policies']];
 
 // @public (undocumented)
 type AdminRolesUpdateDefaultPoliciesRequest = operations['admin___roles___update-default-policies']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminRolesUpdateErrors = EndpointsErrors['admin___roles___update'][keyof EndpointsErrors['admin___roles___update']];
+
+// @public (undocumented)
 type AdminRolesUpdateRequest = operations['admin___roles___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminRolesUsersErrors = EndpointsErrors['admin___roles___users'][keyof EndpointsErrors['admin___roles___users']];
 
 // @public (undocumented)
 type AdminRolesUsersRequest = operations['admin___roles___users']['requestBody']['content']['application/json'];
@@ -316,10 +531,19 @@ type AdminRolesUsersRequest = operations['admin___roles___users']['requestBody']
 type AdminRolesUsersResponse = operations['admin___roles___users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminSendEmailErrors = EndpointsErrors['admin___send-email'][keyof EndpointsErrors['admin___send-email']];
+
+// @public (undocumented)
 type AdminSendEmailRequest = operations['admin___send-email']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminServerInfoErrors = EndpointsErrors['admin___server-info'][keyof EndpointsErrors['admin___server-info']];
+
+// @public (undocumented)
 type AdminServerInfoResponse = operations['admin___server-info']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminShowModerationLogsErrors = EndpointsErrors['admin___show-moderation-logs'][keyof EndpointsErrors['admin___show-moderation-logs']];
 
 // @public (undocumented)
 type AdminShowModerationLogsRequest = operations['admin___show-moderation-logs']['requestBody']['content']['application/json'];
@@ -328,10 +552,16 @@ type AdminShowModerationLogsRequest = operations['admin___show-moderation-logs']
 type AdminShowModerationLogsResponse = operations['admin___show-moderation-logs']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminShowUserErrors = EndpointsErrors['admin___show-user'][keyof EndpointsErrors['admin___show-user']];
+
+// @public (undocumented)
 type AdminShowUserRequest = operations['admin___show-user']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminShowUserResponse = operations['admin___show-user']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminShowUsersErrors = EndpointsErrors['admin___show-users'][keyof EndpointsErrors['admin___show-users']];
 
 // @public (undocumented)
 type AdminShowUsersRequest = operations['admin___show-users']['requestBody']['content']['application/json'];
@@ -340,7 +570,13 @@ type AdminShowUsersRequest = operations['admin___show-users']['requestBody']['co
 type AdminShowUsersResponse = operations['admin___show-users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminSuspendUserErrors = EndpointsErrors['admin___suspend-user'][keyof EndpointsErrors['admin___suspend-user']];
+
+// @public (undocumented)
 type AdminSuspendUserRequest = operations['admin___suspend-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookCreateErrors = EndpointsErrors['admin___system-webhook___create'][keyof EndpointsErrors['admin___system-webhook___create']];
 
 // @public (undocumented)
 type AdminSystemWebhookCreateRequest = operations['admin___system-webhook___create']['requestBody']['content']['application/json'];
@@ -349,7 +585,13 @@ type AdminSystemWebhookCreateRequest = operations['admin___system-webhook___crea
 type AdminSystemWebhookCreateResponse = operations['admin___system-webhook___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminSystemWebhookDeleteErrors = EndpointsErrors['admin___system-webhook___delete'][keyof EndpointsErrors['admin___system-webhook___delete']];
+
+// @public (undocumented)
 type AdminSystemWebhookDeleteRequest = operations['admin___system-webhook___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookListErrors = EndpointsErrors['admin___system-webhook___list'][keyof EndpointsErrors['admin___system-webhook___list']];
 
 // @public (undocumented)
 type AdminSystemWebhookListRequest = operations['admin___system-webhook___list']['requestBody']['content']['application/json'];
@@ -358,13 +600,22 @@ type AdminSystemWebhookListRequest = operations['admin___system-webhook___list']
 type AdminSystemWebhookListResponse = operations['admin___system-webhook___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminSystemWebhookShowErrors = EndpointsErrors['admin___system-webhook___show'][keyof EndpointsErrors['admin___system-webhook___show']];
+
+// @public (undocumented)
 type AdminSystemWebhookShowRequest = operations['admin___system-webhook___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminSystemWebhookShowResponse = operations['admin___system-webhook___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminSystemWebhookTestErrors = EndpointsErrors['admin___system-webhook___test'][keyof EndpointsErrors['admin___system-webhook___test']];
+
+// @public (undocumented)
 type AdminSystemWebhookTestRequest = operations['admin___system-webhook___test']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminSystemWebhookUpdateErrors = EndpointsErrors['admin___system-webhook___update'][keyof EndpointsErrors['admin___system-webhook___update']];
 
 // @public (undocumented)
 type AdminSystemWebhookUpdateRequest = operations['admin___system-webhook___update']['requestBody']['content']['application/json'];
@@ -373,19 +624,37 @@ type AdminSystemWebhookUpdateRequest = operations['admin___system-webhook___upda
 type AdminSystemWebhookUpdateResponse = operations['admin___system-webhook___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminUnsetUserAvatarErrors = EndpointsErrors['admin___unset-user-avatar'][keyof EndpointsErrors['admin___unset-user-avatar']];
+
+// @public (undocumented)
 type AdminUnsetUserAvatarRequest = operations['admin___unset-user-avatar']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUnsetUserBannerErrors = EndpointsErrors['admin___unset-user-banner'][keyof EndpointsErrors['admin___unset-user-banner']];
 
 // @public (undocumented)
 type AdminUnsetUserBannerRequest = operations['admin___unset-user-banner']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminUnsuspendUserErrors = EndpointsErrors['admin___unsuspend-user'][keyof EndpointsErrors['admin___unsuspend-user']];
+
+// @public (undocumented)
 type AdminUnsuspendUserRequest = operations['admin___unsuspend-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateAbuseUserReportErrors = EndpointsErrors['admin___update-abuse-user-report'][keyof EndpointsErrors['admin___update-abuse-user-report']];
 
 // @public (undocumented)
 type AdminUpdateAbuseUserReportRequest = operations['admin___update-abuse-user-report']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminUpdateMetaErrors = EndpointsErrors['admin___update-meta'][keyof EndpointsErrors['admin___update-meta']];
+
+// @public (undocumented)
 type AdminUpdateMetaRequest = operations['admin___update-meta']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateUserNoteErrors = EndpointsErrors['admin___update-user-note'][keyof EndpointsErrors['admin___update-user-note']];
 
 // @public (undocumented)
 type AdminUpdateUserNoteRequest = operations['admin___update-user-note']['requestBody']['content']['application/json'];
@@ -399,10 +668,16 @@ type AnnouncementCreated = {
 };
 
 // @public (undocumented)
+type AnnouncementsErrors = EndpointsErrors['announcements'][keyof EndpointsErrors['announcements']];
+
+// @public (undocumented)
 type AnnouncementsRequest = operations['announcements']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AnnouncementsResponse = operations['announcements']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AnnouncementsShowErrors = EndpointsErrors['announcements___show'][keyof EndpointsErrors['announcements___show']];
 
 // @public (undocumented)
 type AnnouncementsShowRequest = operations['announcements___show']['requestBody']['content']['application/json'];
@@ -414,16 +689,28 @@ type AnnouncementsShowResponse = operations['announcements___show']['responses']
 type Antenna = components['schemas']['Antenna'];
 
 // @public (undocumented)
+type AntennasCreateErrors = EndpointsErrors['antennas___create'][keyof EndpointsErrors['antennas___create']];
+
+// @public (undocumented)
 type AntennasCreateRequest = operations['antennas___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AntennasCreateResponse = operations['antennas___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AntennasDeleteErrors = EndpointsErrors['antennas___delete'][keyof EndpointsErrors['antennas___delete']];
+
+// @public (undocumented)
 type AntennasDeleteRequest = operations['antennas___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AntennasListErrors = EndpointsErrors['antennas___list'][keyof EndpointsErrors['antennas___list']];
+
+// @public (undocumented)
 type AntennasListResponse = operations['antennas___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasNotesErrors = EndpointsErrors['antennas___notes'][keyof EndpointsErrors['antennas___notes']];
 
 // @public (undocumented)
 type AntennasNotesRequest = operations['antennas___notes']['requestBody']['content']['application/json'];
@@ -432,16 +719,25 @@ type AntennasNotesRequest = operations['antennas___notes']['requestBody']['conte
 type AntennasNotesResponse = operations['antennas___notes']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AntennasShowErrors = EndpointsErrors['antennas___show'][keyof EndpointsErrors['antennas___show']];
+
+// @public (undocumented)
 type AntennasShowRequest = operations['antennas___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AntennasShowResponse = operations['antennas___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AntennasUpdateErrors = EndpointsErrors['antennas___update'][keyof EndpointsErrors['antennas___update']];
+
+// @public (undocumented)
 type AntennasUpdateRequest = operations['antennas___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AntennasUpdateResponse = operations['antennas___update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ApGetErrors = EndpointsErrors['ap___get'][keyof EndpointsErrors['ap___get']];
 
 // @public (undocumented)
 type ApGetRequest = operations['ap___get']['requestBody']['content']['application/json'];
@@ -488,10 +784,16 @@ type APIError = {
 type App = components['schemas']['App'];
 
 // @public (undocumented)
+type AppCreateErrors = EndpointsErrors['app___create'][keyof EndpointsErrors['app___create']];
+
+// @public (undocumented)
 type AppCreateRequest = operations['app___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AppCreateResponse = operations['app___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AppShowErrors = EndpointsErrors['app___show'][keyof EndpointsErrors['app___show']];
 
 // @public (undocumented)
 type AppShowRequest = operations['app___show']['requestBody']['content']['application/json'];
@@ -500,13 +802,22 @@ type AppShowRequest = operations['app___show']['requestBody']['content']['applic
 type AppShowResponse = operations['app___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ApShowErrors = EndpointsErrors['ap___show'][keyof EndpointsErrors['ap___show']];
+
+// @public (undocumented)
 type ApShowRequest = operations['ap___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ApShowResponse = operations['ap___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AuthAcceptErrors = EndpointsErrors['auth___accept'][keyof EndpointsErrors['auth___accept']];
+
+// @public (undocumented)
 type AuthAcceptRequest = operations['auth___accept']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AuthSessionGenerateErrors = EndpointsErrors['auth___session___generate'][keyof EndpointsErrors['auth___session___generate']];
 
 // @public (undocumented)
 type AuthSessionGenerateRequest = operations['auth___session___generate']['requestBody']['content']['application/json'];
@@ -515,10 +826,16 @@ type AuthSessionGenerateRequest = operations['auth___session___generate']['reque
 type AuthSessionGenerateResponse = operations['auth___session___generate']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AuthSessionShowErrors = EndpointsErrors['auth___session___show'][keyof EndpointsErrors['auth___session___show']];
+
+// @public (undocumented)
 type AuthSessionShowRequest = operations['auth___session___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AuthSessionShowResponse = operations['auth___session___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AuthSessionUserkeyErrors = EndpointsErrors['auth___session___userkey'][keyof EndpointsErrors['auth___session___userkey']];
 
 // @public (undocumented)
 type AuthSessionUserkeyRequest = operations['auth___session___userkey']['requestBody']['content']['application/json'];
@@ -530,10 +847,16 @@ type AuthSessionUserkeyResponse = operations['auth___session___userkey']['respon
 type Blocking = components['schemas']['Blocking'];
 
 // @public (undocumented)
+type BlockingCreateErrors = EndpointsErrors['blocking___create'][keyof EndpointsErrors['blocking___create']];
+
+// @public (undocumented)
 type BlockingCreateRequest = operations['blocking___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type BlockingCreateResponse = operations['blocking___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingDeleteErrors = EndpointsErrors['blocking___delete'][keyof EndpointsErrors['blocking___delete']];
 
 // @public (undocumented)
 type BlockingDeleteRequest = operations['blocking___delete']['requestBody']['content']['application/json'];
@@ -542,16 +865,25 @@ type BlockingDeleteRequest = operations['blocking___delete']['requestBody']['con
 type BlockingDeleteResponse = operations['blocking___delete']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type BlockingListErrors = EndpointsErrors['blocking___list'][keyof EndpointsErrors['blocking___list']];
+
+// @public (undocumented)
 type BlockingListRequest = operations['blocking___list']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type BlockingListResponse = operations['blocking___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type BubbleGameRankingErrors = EndpointsErrors['bubble-game___ranking'][keyof EndpointsErrors['bubble-game___ranking']];
+
+// @public (undocumented)
 type BubbleGameRankingRequest = operations['bubble-game___ranking']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type BubbleGameRankingResponse = operations['bubble-game___ranking']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type BubbleGameRegisterErrors = EndpointsErrors['bubble-game___register'][keyof EndpointsErrors['bubble-game___register']];
 
 // @public (undocumented)
 type BubbleGameRegisterRequest = operations['bubble-game___register']['requestBody']['content']['application/json'];
@@ -803,16 +1135,28 @@ export type Channels = {
 };
 
 // @public (undocumented)
+type ChannelsCreateErrors = EndpointsErrors['channels___create'][keyof EndpointsErrors['channels___create']];
+
+// @public (undocumented)
 type ChannelsCreateRequest = operations['channels___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ChannelsCreateResponse = operations['channels___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChannelsFavoriteErrors = EndpointsErrors['channels___favorite'][keyof EndpointsErrors['channels___favorite']];
+
+// @public (undocumented)
 type ChannelsFavoriteRequest = operations['channels___favorite']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type ChannelsFeaturedErrors = EndpointsErrors['channels___featured'][keyof EndpointsErrors['channels___featured']];
+
+// @public (undocumented)
 type ChannelsFeaturedResponse = operations['channels___featured']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsFollowedErrors = EndpointsErrors['channels___followed'][keyof EndpointsErrors['channels___followed']];
 
 // @public (undocumented)
 type ChannelsFollowedRequest = operations['channels___followed']['requestBody']['content']['application/json'];
@@ -821,10 +1165,19 @@ type ChannelsFollowedRequest = operations['channels___followed']['requestBody'][
 type ChannelsFollowedResponse = operations['channels___followed']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChannelsFollowErrors = EndpointsErrors['channels___follow'][keyof EndpointsErrors['channels___follow']];
+
+// @public (undocumented)
 type ChannelsFollowRequest = operations['channels___follow']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type ChannelsMyFavoritesErrors = EndpointsErrors['channels___my-favorites'][keyof EndpointsErrors['channels___my-favorites']];
+
+// @public (undocumented)
 type ChannelsMyFavoritesResponse = operations['channels___my-favorites']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsOwnedErrors = EndpointsErrors['channels___owned'][keyof EndpointsErrors['channels___owned']];
 
 // @public (undocumented)
 type ChannelsOwnedRequest = operations['channels___owned']['requestBody']['content']['application/json'];
@@ -833,10 +1186,16 @@ type ChannelsOwnedRequest = operations['channels___owned']['requestBody']['conte
 type ChannelsOwnedResponse = operations['channels___owned']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChannelsSearchErrors = EndpointsErrors['channels___search'][keyof EndpointsErrors['channels___search']];
+
+// @public (undocumented)
 type ChannelsSearchRequest = operations['channels___search']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ChannelsSearchResponse = operations['channels___search']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsShowErrors = EndpointsErrors['channels___show'][keyof EndpointsErrors['channels___show']];
 
 // @public (undocumented)
 type ChannelsShowRequest = operations['channels___show']['requestBody']['content']['application/json'];
@@ -845,16 +1204,28 @@ type ChannelsShowRequest = operations['channels___show']['requestBody']['content
 type ChannelsShowResponse = operations['channels___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChannelsTimelineErrors = EndpointsErrors['channels___timeline'][keyof EndpointsErrors['channels___timeline']];
+
+// @public (undocumented)
 type ChannelsTimelineRequest = operations['channels___timeline']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ChannelsTimelineResponse = operations['channels___timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChannelsUnfavoriteErrors = EndpointsErrors['channels___unfavorite'][keyof EndpointsErrors['channels___unfavorite']];
+
+// @public (undocumented)
 type ChannelsUnfavoriteRequest = operations['channels___unfavorite']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type ChannelsUnfollowErrors = EndpointsErrors['channels___unfollow'][keyof EndpointsErrors['channels___unfollow']];
+
+// @public (undocumented)
 type ChannelsUnfollowRequest = operations['channels___unfollow']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsUpdateErrors = EndpointsErrors['channels___update'][keyof EndpointsErrors['channels___update']];
 
 // @public (undocumented)
 type ChannelsUpdateRequest = operations['channels___update']['requestBody']['content']['application/json'];
@@ -863,10 +1234,16 @@ type ChannelsUpdateRequest = operations['channels___update']['requestBody']['con
 type ChannelsUpdateResponse = operations['channels___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChartsActiveUsersErrors = EndpointsErrors['charts___active-users'][keyof EndpointsErrors['charts___active-users']];
+
+// @public (undocumented)
 type ChartsActiveUsersRequest = operations['charts___active-users']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ChartsActiveUsersResponse = operations['charts___active-users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsApRequestErrors = EndpointsErrors['charts___ap-request'][keyof EndpointsErrors['charts___ap-request']];
 
 // @public (undocumented)
 type ChartsApRequestRequest = operations['charts___ap-request']['requestBody']['content']['application/json'];
@@ -875,10 +1252,16 @@ type ChartsApRequestRequest = operations['charts___ap-request']['requestBody']['
 type ChartsApRequestResponse = operations['charts___ap-request']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChartsDriveErrors = EndpointsErrors['charts___drive'][keyof EndpointsErrors['charts___drive']];
+
+// @public (undocumented)
 type ChartsDriveRequest = operations['charts___drive']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ChartsDriveResponse = operations['charts___drive']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsFederationErrors = EndpointsErrors['charts___federation'][keyof EndpointsErrors['charts___federation']];
 
 // @public (undocumented)
 type ChartsFederationRequest = operations['charts___federation']['requestBody']['content']['application/json'];
@@ -887,10 +1270,16 @@ type ChartsFederationRequest = operations['charts___federation']['requestBody'][
 type ChartsFederationResponse = operations['charts___federation']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChartsInstanceErrors = EndpointsErrors['charts___instance'][keyof EndpointsErrors['charts___instance']];
+
+// @public (undocumented)
 type ChartsInstanceRequest = operations['charts___instance']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ChartsInstanceResponse = operations['charts___instance']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsNotesErrors = EndpointsErrors['charts___notes'][keyof EndpointsErrors['charts___notes']];
 
 // @public (undocumented)
 type ChartsNotesRequest = operations['charts___notes']['requestBody']['content']['application/json'];
@@ -899,10 +1288,16 @@ type ChartsNotesRequest = operations['charts___notes']['requestBody']['content']
 type ChartsNotesResponse = operations['charts___notes']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChartsUserDriveErrors = EndpointsErrors['charts___user___drive'][keyof EndpointsErrors['charts___user___drive']];
+
+// @public (undocumented)
 type ChartsUserDriveRequest = operations['charts___user___drive']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ChartsUserDriveResponse = operations['charts___user___drive']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserFollowingErrors = EndpointsErrors['charts___user___following'][keyof EndpointsErrors['charts___user___following']];
 
 // @public (undocumented)
 type ChartsUserFollowingRequest = operations['charts___user___following']['requestBody']['content']['application/json'];
@@ -911,10 +1306,16 @@ type ChartsUserFollowingRequest = operations['charts___user___following']['reque
 type ChartsUserFollowingResponse = operations['charts___user___following']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChartsUserNotesErrors = EndpointsErrors['charts___user___notes'][keyof EndpointsErrors['charts___user___notes']];
+
+// @public (undocumented)
 type ChartsUserNotesRequest = operations['charts___user___notes']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ChartsUserNotesResponse = operations['charts___user___notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUserPvErrors = EndpointsErrors['charts___user___pv'][keyof EndpointsErrors['charts___user___pv']];
 
 // @public (undocumented)
 type ChartsUserPvRequest = operations['charts___user___pv']['requestBody']['content']['application/json'];
@@ -923,10 +1324,16 @@ type ChartsUserPvRequest = operations['charts___user___pv']['requestBody']['cont
 type ChartsUserPvResponse = operations['charts___user___pv']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChartsUserReactionsErrors = EndpointsErrors['charts___user___reactions'][keyof EndpointsErrors['charts___user___reactions']];
+
+// @public (undocumented)
 type ChartsUserReactionsRequest = operations['charts___user___reactions']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ChartsUserReactionsResponse = operations['charts___user___reactions']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChartsUsersErrors = EndpointsErrors['charts___users'][keyof EndpointsErrors['charts___users']];
 
 // @public (undocumented)
 type ChartsUsersRequest = operations['charts___users']['requestBody']['content']['application/json'];
@@ -938,7 +1345,13 @@ type ChartsUsersResponse = operations['charts___users']['responses']['200']['con
 type Clip = components['schemas']['Clip'];
 
 // @public (undocumented)
+type ClipsAddNoteErrors = EndpointsErrors['clips___add-note'][keyof EndpointsErrors['clips___add-note']];
+
+// @public (undocumented)
 type ClipsAddNoteRequest = operations['clips___add-note']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsCreateErrors = EndpointsErrors['clips___create'][keyof EndpointsErrors['clips___create']];
 
 // @public (undocumented)
 type ClipsCreateRequest = operations['clips___create']['requestBody']['content']['application/json'];
@@ -947,16 +1360,31 @@ type ClipsCreateRequest = operations['clips___create']['requestBody']['content']
 type ClipsCreateResponse = operations['clips___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ClipsDeleteErrors = EndpointsErrors['clips___delete'][keyof EndpointsErrors['clips___delete']];
+
+// @public (undocumented)
 type ClipsDeleteRequest = operations['clips___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsFavoriteErrors = EndpointsErrors['clips___favorite'][keyof EndpointsErrors['clips___favorite']];
 
 // @public (undocumented)
 type ClipsFavoriteRequest = operations['clips___favorite']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type ClipsListErrors = EndpointsErrors['clips___list'][keyof EndpointsErrors['clips___list']];
+
+// @public (undocumented)
 type ClipsListResponse = operations['clips___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ClipsMyFavoritesErrors = EndpointsErrors['clips___my-favorites'][keyof EndpointsErrors['clips___my-favorites']];
+
+// @public (undocumented)
 type ClipsMyFavoritesResponse = operations['clips___my-favorites']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsNotesErrors = EndpointsErrors['clips___notes'][keyof EndpointsErrors['clips___notes']];
 
 // @public (undocumented)
 type ClipsNotesRequest = operations['clips___notes']['requestBody']['content']['application/json'];
@@ -965,7 +1393,13 @@ type ClipsNotesRequest = operations['clips___notes']['requestBody']['content']['
 type ClipsNotesResponse = operations['clips___notes']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ClipsRemoveNoteErrors = EndpointsErrors['clips___remove-note'][keyof EndpointsErrors['clips___remove-note']];
+
+// @public (undocumented)
 type ClipsRemoveNoteRequest = operations['clips___remove-note']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsShowErrors = EndpointsErrors['clips___show'][keyof EndpointsErrors['clips___show']];
 
 // @public (undocumented)
 type ClipsShowRequest = operations['clips___show']['requestBody']['content']['application/json'];
@@ -974,7 +1408,13 @@ type ClipsShowRequest = operations['clips___show']['requestBody']['content']['ap
 type ClipsShowResponse = operations['clips___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ClipsUnfavoriteErrors = EndpointsErrors['clips___unfavorite'][keyof EndpointsErrors['clips___unfavorite']];
+
+// @public (undocumented)
 type ClipsUnfavoriteRequest = operations['clips___unfavorite']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ClipsUpdateErrors = EndpointsErrors['clips___update'][keyof EndpointsErrors['clips___update']];
 
 // @public (undocumented)
 type ClipsUpdateRequest = operations['clips___update']['requestBody']['content']['application/json'];
@@ -983,10 +1423,25 @@ type ClipsUpdateRequest = operations['clips___update']['requestBody']['content']
 type ClipsUpdateResponse = operations['clips___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type CommonErrorTypes = {
+    'INVALID_PARAM': IdentifiableError['3d81ceae-475f-4600-b2a8-2bc116157532'];
+    'CREDENTIAL_REQUIRED': IdentifiableError['1384574d-a912-4b81-8601-c7b1c4085df1'];
+    'AUTHENTICATION_FAILED': IdentifiableError['b0a7f5f8-dc2f-4171-b91f-de88ad238e14'];
+    'I_AM_AI': IdentifiableError['60c46cd1-f23a-46b1-bebe-5d2b73951a84'];
+    'INTERNAL_ERROR': IdentifiableError['5d37dbcb-891e-41ca-a3d6-e690c97775ac'];
+};
+
+// @public (undocumented)
 type DateString = string;
 
 // @public (undocumented)
+type DriveErrors = EndpointsErrors['drive'][keyof EndpointsErrors['drive']];
+
+// @public (undocumented)
 type DriveFile = components['schemas']['DriveFile'];
+
+// @public (undocumented)
+type DriveFilesAttachedNotesErrors = EndpointsErrors['drive___files___attached-notes'][keyof EndpointsErrors['drive___files___attached-notes']];
 
 // @public (undocumented)
 type DriveFilesAttachedNotesRequest = operations['drive___files___attached-notes']['requestBody']['content']['application/json'];
@@ -995,10 +1450,16 @@ type DriveFilesAttachedNotesRequest = operations['drive___files___attached-notes
 type DriveFilesAttachedNotesResponse = operations['drive___files___attached-notes']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type DriveFilesCheckExistenceErrors = EndpointsErrors['drive___files___check-existence'][keyof EndpointsErrors['drive___files___check-existence']];
+
+// @public (undocumented)
 type DriveFilesCheckExistenceRequest = operations['drive___files___check-existence']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type DriveFilesCheckExistenceResponse = operations['drive___files___check-existence']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesCreateErrors = EndpointsErrors['drive___files___create'][keyof EndpointsErrors['drive___files___create']];
 
 // @public (undocumented)
 type DriveFilesCreateRequest = operations['drive___files___create']['requestBody']['content']['multipart/form-data'];
@@ -1007,13 +1468,25 @@ type DriveFilesCreateRequest = operations['drive___files___create']['requestBody
 type DriveFilesCreateResponse = operations['drive___files___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type DriveFilesDeleteErrors = EndpointsErrors['drive___files___delete'][keyof EndpointsErrors['drive___files___delete']];
+
+// @public (undocumented)
 type DriveFilesDeleteRequest = operations['drive___files___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesErrors = EndpointsErrors['drive___files'][keyof EndpointsErrors['drive___files']];
+
+// @public (undocumented)
+type DriveFilesFindByHashErrors = EndpointsErrors['drive___files___find-by-hash'][keyof EndpointsErrors['drive___files___find-by-hash']];
 
 // @public (undocumented)
 type DriveFilesFindByHashRequest = operations['drive___files___find-by-hash']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type DriveFilesFindByHashResponse = operations['drive___files___find-by-hash']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesFindErrors = EndpointsErrors['drive___files___find'][keyof EndpointsErrors['drive___files___find']];
 
 // @public (undocumented)
 type DriveFilesFindRequest = operations['drive___files___find']['requestBody']['content']['application/json'];
@@ -1028,10 +1501,16 @@ type DriveFilesRequest = operations['drive___files']['requestBody']['content']['
 type DriveFilesResponse = operations['drive___files']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type DriveFilesShowErrors = EndpointsErrors['drive___files___show'][keyof EndpointsErrors['drive___files___show']];
+
+// @public (undocumented)
 type DriveFilesShowRequest = operations['drive___files___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type DriveFilesShowResponse = operations['drive___files___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFilesUpdateErrors = EndpointsErrors['drive___files___update'][keyof EndpointsErrors['drive___files___update']];
 
 // @public (undocumented)
 type DriveFilesUpdateRequest = operations['drive___files___update']['requestBody']['content']['application/json'];
@@ -1040,10 +1519,16 @@ type DriveFilesUpdateRequest = operations['drive___files___update']['requestBody
 type DriveFilesUpdateResponse = operations['drive___files___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type DriveFilesUploadFromUrlErrors = EndpointsErrors['drive___files___upload-from-url'][keyof EndpointsErrors['drive___files___upload-from-url']];
+
+// @public (undocumented)
 type DriveFilesUploadFromUrlRequest = operations['drive___files___upload-from-url']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type DriveFolder = components['schemas']['DriveFolder'];
+
+// @public (undocumented)
+type DriveFoldersCreateErrors = EndpointsErrors['drive___folders___create'][keyof EndpointsErrors['drive___folders___create']];
 
 // @public (undocumented)
 type DriveFoldersCreateRequest = operations['drive___folders___create']['requestBody']['content']['application/json'];
@@ -1052,7 +1537,16 @@ type DriveFoldersCreateRequest = operations['drive___folders___create']['request
 type DriveFoldersCreateResponse = operations['drive___folders___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type DriveFoldersDeleteErrors = EndpointsErrors['drive___folders___delete'][keyof EndpointsErrors['drive___folders___delete']];
+
+// @public (undocumented)
 type DriveFoldersDeleteRequest = operations['drive___folders___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersErrors = EndpointsErrors['drive___folders'][keyof EndpointsErrors['drive___folders']];
+
+// @public (undocumented)
+type DriveFoldersFindErrors = EndpointsErrors['drive___folders___find'][keyof EndpointsErrors['drive___folders___find']];
 
 // @public (undocumented)
 type DriveFoldersFindRequest = operations['drive___folders___find']['requestBody']['content']['application/json'];
@@ -1067,10 +1561,16 @@ type DriveFoldersRequest = operations['drive___folders']['requestBody']['content
 type DriveFoldersResponse = operations['drive___folders']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type DriveFoldersShowErrors = EndpointsErrors['drive___folders___show'][keyof EndpointsErrors['drive___folders___show']];
+
+// @public (undocumented)
 type DriveFoldersShowRequest = operations['drive___folders___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type DriveFoldersShowResponse = operations['drive___folders___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type DriveFoldersUpdateErrors = EndpointsErrors['drive___folders___update'][keyof EndpointsErrors['drive___folders___update']];
 
 // @public (undocumented)
 type DriveFoldersUpdateRequest = operations['drive___folders___update']['requestBody']['content']['application/json'];
@@ -1082,10 +1582,16 @@ type DriveFoldersUpdateResponse = operations['drive___folders___update']['respon
 type DriveResponse = operations['drive']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type DriveStreamErrors = EndpointsErrors['drive___stream'][keyof EndpointsErrors['drive___stream']];
+
+// @public (undocumented)
 type DriveStreamRequest = operations['drive___stream']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type DriveStreamResponse = operations['drive___stream']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type EmailAddressAvailableErrors = EndpointsErrors['email-address___available'][keyof EndpointsErrors['email-address___available']];
 
 // @public (undocumented)
 type EmailAddressAvailableRequest = operations['email-address___available']['requestBody']['content']['application/json'];
@@ -1107,10 +1613,16 @@ type EmojiDeleted = {
 type EmojiDetailed = components['schemas']['EmojiDetailed'];
 
 // @public (undocumented)
+type EmojiErrors = EndpointsErrors['emoji'][keyof EndpointsErrors['emoji']];
+
+// @public (undocumented)
 type EmojiRequest = operations['emoji']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type EmojiResponse = operations['emoji']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type EmojisErrors = EndpointsErrors['emojis'][keyof EndpointsErrors['emojis']];
 
 // @public (undocumented)
 type EmojiSimple = components['schemas']['EmojiSimple'];
@@ -1124,10 +1636,16 @@ type EmojiUpdated = {
 };
 
 // @public (undocumented)
+type EmptyErrors = Record<string, unknown> | undefined;
+
+// @public (undocumented)
 type EmptyRequest = Record<string, unknown> | undefined;
 
 // @public (undocumented)
 type EmptyResponse = Record<string, unknown> | undefined;
+
+// @public (undocumented)
+type EndpointErrors = EndpointsErrors['endpoint'][keyof EndpointsErrors['endpoint']];
 
 // @public (undocumented)
 type EndpointRequest = operations['endpoint']['requestBody']['content']['application/json'];
@@ -1155,18 +1673,22 @@ export type Endpoints = Overwrite<Endpoints_2, {
                 $default: UserDetailed;
             };
         };
+        errors: UsersShowErrors;
     };
     'signup': {
         req: SignupRequest;
         res: SignupResponse;
+        errors: SignupErrors;
     };
     'signup-pending': {
         req: SignupPendingRequest;
         res: SignupPendingResponse;
+        errors: SignupErrors;
     };
     'signin-flow': {
         req: SigninFlowRequest;
         res: SigninFlowResponse;
+        errors: SigninFlowErrors;
     };
     'signin-with-passkey': {
         req: SigninWithPasskeyRequest;
@@ -1183,20 +1705,26 @@ export type Endpoints = Overwrite<Endpoints_2, {
                 $default: SigninWithPasskeyInitResponse;
             };
         };
+        errors: SigninWithPasskeyErrors;
     };
     'admin/roles/create': {
         req: Overwrite<AdminRolesCreateRequest, {
             policies: PartialRolePolicyOverride;
         }>;
         res: AdminRolesCreateResponse;
+        errors: AdminRolesCreateErrors;
     };
 }>;
+
+// @public (undocumented)
+type EndpointsErrors_2 = EndpointsErrors['endpoints'][keyof EndpointsErrors['endpoints']];
 
 // @public (undocumented)
 type EndpointsResponse = operations['endpoints']['responses']['200']['content']['application/json'];
 
 declare namespace entities {
     export {
+        CommonErrorTypes,
         ID,
         DateString,
         PureRenote,
@@ -1214,589 +1742,976 @@ declare namespace entities {
         SignupResponse,
         SignupPendingRequest,
         SignupPendingResponse,
+        SignupErrors,
         SigninFlowRequest,
         SigninFlowResponse,
+        SigninFlowErrors,
         SigninWithPasskeyRequest,
         SigninWithPasskeyInitResponse,
         SigninWithPasskeyResponse,
+        SigninWithPasskeyErrors,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
+        EmptyErrors,
         AdminMetaResponse,
+        AdminMetaErrors,
         AdminAbuseUserReportsRequest,
         AdminAbuseUserReportsResponse,
+        AdminAbuseUserReportsErrors,
         AdminAbuseReportNotificationRecipientListRequest,
         AdminAbuseReportNotificationRecipientListResponse,
+        AdminAbuseReportNotificationRecipientListErrors,
         AdminAbuseReportNotificationRecipientShowRequest,
         AdminAbuseReportNotificationRecipientShowResponse,
+        AdminAbuseReportNotificationRecipientShowErrors,
         AdminAbuseReportNotificationRecipientCreateRequest,
         AdminAbuseReportNotificationRecipientCreateResponse,
+        AdminAbuseReportNotificationRecipientCreateErrors,
         AdminAbuseReportNotificationRecipientUpdateRequest,
         AdminAbuseReportNotificationRecipientUpdateResponse,
+        AdminAbuseReportNotificationRecipientUpdateErrors,
         AdminAbuseReportNotificationRecipientDeleteRequest,
+        AdminAbuseReportNotificationRecipientDeleteErrors,
         AdminAccountsCreateRequest,
         AdminAccountsCreateResponse,
+        AdminAccountsCreateErrors,
         AdminAccountsDeleteRequest,
+        AdminAccountsDeleteErrors,
         AdminAccountsFindByEmailRequest,
         AdminAccountsFindByEmailResponse,
+        AdminAccountsFindByEmailErrors,
         AdminAdCreateRequest,
         AdminAdCreateResponse,
+        AdminAdCreateErrors,
         AdminAdDeleteRequest,
+        AdminAdDeleteErrors,
         AdminAdListRequest,
         AdminAdListResponse,
+        AdminAdListErrors,
         AdminAdUpdateRequest,
+        AdminAdUpdateErrors,
         AdminAnnouncementsCreateRequest,
         AdminAnnouncementsCreateResponse,
+        AdminAnnouncementsCreateErrors,
         AdminAnnouncementsDeleteRequest,
+        AdminAnnouncementsDeleteErrors,
         AdminAnnouncementsListRequest,
         AdminAnnouncementsListResponse,
+        AdminAnnouncementsListErrors,
         AdminAnnouncementsUpdateRequest,
+        AdminAnnouncementsUpdateErrors,
         AdminAvatarDecorationsCreateRequest,
+        AdminAvatarDecorationsCreateErrors,
         AdminAvatarDecorationsDeleteRequest,
+        AdminAvatarDecorationsDeleteErrors,
         AdminAvatarDecorationsListRequest,
         AdminAvatarDecorationsListResponse,
+        AdminAvatarDecorationsListErrors,
         AdminAvatarDecorationsUpdateRequest,
+        AdminAvatarDecorationsUpdateErrors,
         AdminDeleteAllFilesOfAUserRequest,
+        AdminDeleteAllFilesOfAUserErrors,
         AdminUnsetUserAvatarRequest,
+        AdminUnsetUserAvatarErrors,
         AdminUnsetUserBannerRequest,
+        AdminUnsetUserBannerErrors,
+        AdminDriveCleanRemoteFilesErrors,
+        AdminDriveCleanupErrors,
         AdminDriveFilesRequest,
         AdminDriveFilesResponse,
+        AdminDriveFilesErrors,
         AdminDriveShowFileRequest,
         AdminDriveShowFileResponse,
+        AdminDriveShowFileErrors,
         AdminEmojiAddAliasesBulkRequest,
+        AdminEmojiAddAliasesBulkErrors,
         AdminEmojiAddRequest,
         AdminEmojiAddResponse,
+        AdminEmojiAddErrors,
         AdminEmojiCopyRequest,
         AdminEmojiCopyResponse,
+        AdminEmojiCopyErrors,
         AdminEmojiDeleteBulkRequest,
+        AdminEmojiDeleteBulkErrors,
         AdminEmojiDeleteRequest,
+        AdminEmojiDeleteErrors,
         AdminEmojiImportZipRequest,
+        AdminEmojiImportZipErrors,
         AdminEmojiListRemoteRequest,
         AdminEmojiListRemoteResponse,
+        AdminEmojiListRemoteErrors,
         AdminEmojiListRequest,
         AdminEmojiListResponse,
+        AdminEmojiListErrors,
         AdminEmojiRemoveAliasesBulkRequest,
+        AdminEmojiRemoveAliasesBulkErrors,
         AdminEmojiSetAliasesBulkRequest,
+        AdminEmojiSetAliasesBulkErrors,
         AdminEmojiSetCategoryBulkRequest,
+        AdminEmojiSetCategoryBulkErrors,
         AdminEmojiSetLicenseBulkRequest,
+        AdminEmojiSetLicenseBulkErrors,
         AdminEmojiUpdateRequest,
+        AdminEmojiUpdateErrors,
         AdminFederationDeleteAllFilesRequest,
+        AdminFederationDeleteAllFilesErrors,
         AdminFederationRefreshRemoteInstanceMetadataRequest,
+        AdminFederationRefreshRemoteInstanceMetadataErrors,
         AdminFederationRemoveAllFollowingRequest,
+        AdminFederationRemoveAllFollowingErrors,
         AdminFederationUpdateInstanceRequest,
+        AdminFederationUpdateInstanceErrors,
         AdminGetIndexStatsResponse,
+        AdminGetIndexStatsErrors,
         AdminGetTableStatsResponse,
+        AdminGetTableStatsErrors,
         AdminGetUserIpsRequest,
         AdminGetUserIpsResponse,
+        AdminGetUserIpsErrors,
         AdminInviteCreateRequest,
         AdminInviteCreateResponse,
+        AdminInviteCreateErrors,
         AdminInviteListRequest,
         AdminInviteListResponse,
+        AdminInviteListErrors,
         AdminPromoCreateRequest,
+        AdminPromoCreateErrors,
+        AdminQueueClearErrors,
         AdminQueueDeliverDelayedResponse,
+        AdminQueueDeliverDelayedErrors,
         AdminQueueInboxDelayedResponse,
+        AdminQueueInboxDelayedErrors,
         AdminQueuePromoteRequest,
+        AdminQueuePromoteErrors,
         AdminQueueStatsResponse,
+        AdminQueueStatsErrors,
         AdminRelaysAddRequest,
         AdminRelaysAddResponse,
+        AdminRelaysAddErrors,
         AdminRelaysListResponse,
+        AdminRelaysListErrors,
         AdminRelaysRemoveRequest,
+        AdminRelaysRemoveErrors,
         AdminResetPasswordRequest,
         AdminResetPasswordResponse,
+        AdminResetPasswordErrors,
         AdminResolveAbuseUserReportRequest,
+        AdminResolveAbuseUserReportErrors,
         AdminForwardAbuseUserReportRequest,
+        AdminForwardAbuseUserReportErrors,
         AdminUpdateAbuseUserReportRequest,
+        AdminUpdateAbuseUserReportErrors,
         AdminSendEmailRequest,
+        AdminSendEmailErrors,
         AdminServerInfoResponse,
+        AdminServerInfoErrors,
         AdminShowModerationLogsRequest,
         AdminShowModerationLogsResponse,
+        AdminShowModerationLogsErrors,
         AdminShowUserRequest,
         AdminShowUserResponse,
+        AdminShowUserErrors,
         AdminShowUsersRequest,
         AdminShowUsersResponse,
+        AdminShowUsersErrors,
         AdminSuspendUserRequest,
+        AdminSuspendUserErrors,
         AdminUnsuspendUserRequest,
+        AdminUnsuspendUserErrors,
         AdminUpdateMetaRequest,
+        AdminUpdateMetaErrors,
         AdminDeleteAccountRequest,
+        AdminDeleteAccountErrors,
         AdminUpdateUserNoteRequest,
+        AdminUpdateUserNoteErrors,
         AdminRolesCreateRequest,
         AdminRolesCreateResponse,
+        AdminRolesCreateErrors,
         AdminRolesDeleteRequest,
+        AdminRolesDeleteErrors,
         AdminRolesListResponse,
+        AdminRolesListErrors,
         AdminRolesShowRequest,
         AdminRolesShowResponse,
+        AdminRolesShowErrors,
         AdminRolesUpdateRequest,
+        AdminRolesUpdateErrors,
         AdminRolesAssignRequest,
+        AdminRolesAssignErrors,
         AdminRolesUnassignRequest,
+        AdminRolesUnassignErrors,
         AdminRolesUpdateDefaultPoliciesRequest,
+        AdminRolesUpdateDefaultPoliciesErrors,
         AdminRolesUsersRequest,
         AdminRolesUsersResponse,
+        AdminRolesUsersErrors,
         AdminSystemWebhookCreateRequest,
         AdminSystemWebhookCreateResponse,
+        AdminSystemWebhookCreateErrors,
         AdminSystemWebhookDeleteRequest,
+        AdminSystemWebhookDeleteErrors,
         AdminSystemWebhookListRequest,
         AdminSystemWebhookListResponse,
+        AdminSystemWebhookListErrors,
         AdminSystemWebhookShowRequest,
         AdminSystemWebhookShowResponse,
+        AdminSystemWebhookShowErrors,
         AdminSystemWebhookUpdateRequest,
         AdminSystemWebhookUpdateResponse,
+        AdminSystemWebhookUpdateErrors,
         AdminSystemWebhookTestRequest,
+        AdminSystemWebhookTestErrors,
         AnnouncementsRequest,
         AnnouncementsResponse,
+        AnnouncementsErrors,
         AnnouncementsShowRequest,
         AnnouncementsShowResponse,
+        AnnouncementsShowErrors,
         AntennasCreateRequest,
         AntennasCreateResponse,
+        AntennasCreateErrors,
         AntennasDeleteRequest,
+        AntennasDeleteErrors,
         AntennasListResponse,
+        AntennasListErrors,
         AntennasNotesRequest,
         AntennasNotesResponse,
+        AntennasNotesErrors,
         AntennasShowRequest,
         AntennasShowResponse,
+        AntennasShowErrors,
         AntennasUpdateRequest,
         AntennasUpdateResponse,
+        AntennasUpdateErrors,
         ApGetRequest,
         ApGetResponse,
+        ApGetErrors,
         ApShowRequest,
         ApShowResponse,
+        ApShowErrors,
         AppCreateRequest,
         AppCreateResponse,
+        AppCreateErrors,
         AppShowRequest,
         AppShowResponse,
+        AppShowErrors,
         AuthAcceptRequest,
+        AuthAcceptErrors,
         AuthSessionGenerateRequest,
         AuthSessionGenerateResponse,
+        AuthSessionGenerateErrors,
         AuthSessionShowRequest,
         AuthSessionShowResponse,
+        AuthSessionShowErrors,
         AuthSessionUserkeyRequest,
         AuthSessionUserkeyResponse,
+        AuthSessionUserkeyErrors,
         BlockingCreateRequest,
         BlockingCreateResponse,
+        BlockingCreateErrors,
         BlockingDeleteRequest,
         BlockingDeleteResponse,
+        BlockingDeleteErrors,
         BlockingListRequest,
         BlockingListResponse,
+        BlockingListErrors,
         ChannelsCreateRequest,
         ChannelsCreateResponse,
+        ChannelsCreateErrors,
         ChannelsFeaturedResponse,
+        ChannelsFeaturedErrors,
         ChannelsFollowRequest,
+        ChannelsFollowErrors,
         ChannelsFollowedRequest,
         ChannelsFollowedResponse,
+        ChannelsFollowedErrors,
         ChannelsOwnedRequest,
         ChannelsOwnedResponse,
+        ChannelsOwnedErrors,
         ChannelsShowRequest,
         ChannelsShowResponse,
+        ChannelsShowErrors,
         ChannelsTimelineRequest,
         ChannelsTimelineResponse,
+        ChannelsTimelineErrors,
         ChannelsUnfollowRequest,
+        ChannelsUnfollowErrors,
         ChannelsUpdateRequest,
         ChannelsUpdateResponse,
+        ChannelsUpdateErrors,
         ChannelsFavoriteRequest,
+        ChannelsFavoriteErrors,
         ChannelsUnfavoriteRequest,
+        ChannelsUnfavoriteErrors,
         ChannelsMyFavoritesResponse,
+        ChannelsMyFavoritesErrors,
         ChannelsSearchRequest,
         ChannelsSearchResponse,
+        ChannelsSearchErrors,
         ChartsActiveUsersRequest,
         ChartsActiveUsersResponse,
+        ChartsActiveUsersErrors,
         ChartsApRequestRequest,
         ChartsApRequestResponse,
+        ChartsApRequestErrors,
         ChartsDriveRequest,
         ChartsDriveResponse,
+        ChartsDriveErrors,
         ChartsFederationRequest,
         ChartsFederationResponse,
+        ChartsFederationErrors,
         ChartsInstanceRequest,
         ChartsInstanceResponse,
+        ChartsInstanceErrors,
         ChartsNotesRequest,
         ChartsNotesResponse,
+        ChartsNotesErrors,
         ChartsUserDriveRequest,
         ChartsUserDriveResponse,
+        ChartsUserDriveErrors,
         ChartsUserFollowingRequest,
         ChartsUserFollowingResponse,
+        ChartsUserFollowingErrors,
         ChartsUserNotesRequest,
         ChartsUserNotesResponse,
+        ChartsUserNotesErrors,
         ChartsUserPvRequest,
         ChartsUserPvResponse,
+        ChartsUserPvErrors,
         ChartsUserReactionsRequest,
         ChartsUserReactionsResponse,
+        ChartsUserReactionsErrors,
         ChartsUsersRequest,
         ChartsUsersResponse,
+        ChartsUsersErrors,
         ClipsAddNoteRequest,
+        ClipsAddNoteErrors,
         ClipsRemoveNoteRequest,
+        ClipsRemoveNoteErrors,
         ClipsCreateRequest,
         ClipsCreateResponse,
+        ClipsCreateErrors,
         ClipsDeleteRequest,
+        ClipsDeleteErrors,
         ClipsListResponse,
+        ClipsListErrors,
         ClipsNotesRequest,
         ClipsNotesResponse,
+        ClipsNotesErrors,
         ClipsShowRequest,
         ClipsShowResponse,
+        ClipsShowErrors,
         ClipsUpdateRequest,
         ClipsUpdateResponse,
+        ClipsUpdateErrors,
         ClipsFavoriteRequest,
+        ClipsFavoriteErrors,
         ClipsUnfavoriteRequest,
+        ClipsUnfavoriteErrors,
         ClipsMyFavoritesResponse,
+        ClipsMyFavoritesErrors,
         DriveResponse,
+        DriveErrors,
         DriveFilesRequest,
         DriveFilesResponse,
+        DriveFilesErrors,
         DriveFilesAttachedNotesRequest,
         DriveFilesAttachedNotesResponse,
+        DriveFilesAttachedNotesErrors,
         DriveFilesCheckExistenceRequest,
         DriveFilesCheckExistenceResponse,
+        DriveFilesCheckExistenceErrors,
         DriveFilesCreateRequest,
         DriveFilesCreateResponse,
+        DriveFilesCreateErrors,
         DriveFilesDeleteRequest,
+        DriveFilesDeleteErrors,
         DriveFilesFindByHashRequest,
         DriveFilesFindByHashResponse,
+        DriveFilesFindByHashErrors,
         DriveFilesFindRequest,
         DriveFilesFindResponse,
+        DriveFilesFindErrors,
         DriveFilesShowRequest,
         DriveFilesShowResponse,
+        DriveFilesShowErrors,
         DriveFilesUpdateRequest,
         DriveFilesUpdateResponse,
+        DriveFilesUpdateErrors,
         DriveFilesUploadFromUrlRequest,
+        DriveFilesUploadFromUrlErrors,
         DriveFoldersRequest,
         DriveFoldersResponse,
+        DriveFoldersErrors,
         DriveFoldersCreateRequest,
         DriveFoldersCreateResponse,
+        DriveFoldersCreateErrors,
         DriveFoldersDeleteRequest,
+        DriveFoldersDeleteErrors,
         DriveFoldersFindRequest,
         DriveFoldersFindResponse,
+        DriveFoldersFindErrors,
         DriveFoldersShowRequest,
         DriveFoldersShowResponse,
+        DriveFoldersShowErrors,
         DriveFoldersUpdateRequest,
         DriveFoldersUpdateResponse,
+        DriveFoldersUpdateErrors,
         DriveStreamRequest,
         DriveStreamResponse,
+        DriveStreamErrors,
         EmailAddressAvailableRequest,
         EmailAddressAvailableResponse,
+        EmailAddressAvailableErrors,
         EndpointRequest,
         EndpointResponse,
+        EndpointErrors,
         EndpointsResponse,
+        EndpointsErrors_2 as EndpointsErrors,
+        ExportCustomEmojisErrors,
         FederationFollowersRequest,
         FederationFollowersResponse,
+        FederationFollowersErrors,
         FederationFollowingRequest,
         FederationFollowingResponse,
+        FederationFollowingErrors,
         FederationInstancesRequest,
         FederationInstancesResponse,
+        FederationInstancesErrors,
         FederationShowInstanceRequest,
         FederationShowInstanceResponse,
+        FederationShowInstanceErrors,
         FederationUpdateRemoteUserRequest,
+        FederationUpdateRemoteUserErrors,
         FederationUsersRequest,
         FederationUsersResponse,
+        FederationUsersErrors,
         FederationStatsRequest,
         FederationStatsResponse,
+        FederationStatsErrors,
         FollowingCreateRequest,
         FollowingCreateResponse,
+        FollowingCreateErrors,
         FollowingDeleteRequest,
         FollowingDeleteResponse,
+        FollowingDeleteErrors,
         FollowingUpdateRequest,
         FollowingUpdateResponse,
+        FollowingUpdateErrors,
         FollowingUpdateAllRequest,
+        FollowingUpdateAllErrors,
         FollowingInvalidateRequest,
         FollowingInvalidateResponse,
+        FollowingInvalidateErrors,
         FollowingRequestsAcceptRequest,
+        FollowingRequestsAcceptErrors,
         FollowingRequestsCancelRequest,
         FollowingRequestsCancelResponse,
+        FollowingRequestsCancelErrors,
         FollowingRequestsListRequest,
         FollowingRequestsListResponse,
+        FollowingRequestsListErrors,
         FollowingRequestsRejectRequest,
+        FollowingRequestsRejectErrors,
         GalleryFeaturedRequest,
         GalleryFeaturedResponse,
+        GalleryFeaturedErrors,
         GalleryPopularResponse,
+        GalleryPopularErrors,
         GalleryPostsRequest,
         GalleryPostsResponse,
+        GalleryPostsErrors,
         GalleryPostsCreateRequest,
         GalleryPostsCreateResponse,
+        GalleryPostsCreateErrors,
         GalleryPostsDeleteRequest,
+        GalleryPostsDeleteErrors,
         GalleryPostsLikeRequest,
+        GalleryPostsLikeErrors,
         GalleryPostsShowRequest,
         GalleryPostsShowResponse,
+        GalleryPostsShowErrors,
         GalleryPostsUnlikeRequest,
+        GalleryPostsUnlikeErrors,
         GalleryPostsUpdateRequest,
         GalleryPostsUpdateResponse,
+        GalleryPostsUpdateErrors,
         GetOnlineUsersCountResponse,
+        GetOnlineUsersCountErrors,
         GetAvatarDecorationsResponse,
+        GetAvatarDecorationsErrors,
         HashtagsListRequest,
         HashtagsListResponse,
+        HashtagsListErrors,
         HashtagsSearchRequest,
         HashtagsSearchResponse,
+        HashtagsSearchErrors,
         HashtagsShowRequest,
         HashtagsShowResponse,
+        HashtagsShowErrors,
         HashtagsTrendResponse,
+        HashtagsTrendErrors,
         HashtagsUsersRequest,
         HashtagsUsersResponse,
+        HashtagsUsersErrors,
         IResponse,
+        IErrors,
         I2faDoneRequest,
         I2faDoneResponse,
+        I2faDoneErrors,
         I2faKeyDoneRequest,
         I2faKeyDoneResponse,
+        I2faKeyDoneErrors,
         I2faPasswordLessRequest,
+        I2faPasswordLessErrors,
         I2faRegisterKeyRequest,
         I2faRegisterKeyResponse,
+        I2faRegisterKeyErrors,
         I2faRegisterRequest,
         I2faRegisterResponse,
+        I2faRegisterErrors,
         I2faUpdateKeyRequest,
+        I2faUpdateKeyErrors,
         I2faRemoveKeyRequest,
+        I2faRemoveKeyErrors,
         I2faUnregisterRequest,
+        I2faUnregisterErrors,
         IAppsRequest,
         IAppsResponse,
+        IAppsErrors,
         IAuthorizedAppsRequest,
         IAuthorizedAppsResponse,
+        IAuthorizedAppsErrors,
         IClaimAchievementRequest,
+        IClaimAchievementErrors,
         IChangePasswordRequest,
+        IChangePasswordErrors,
         IDeleteAccountRequest,
+        IDeleteAccountErrors,
+        IExportBlockingErrors,
         IExportFollowingRequest,
+        IExportFollowingErrors,
+        IExportMuteErrors,
+        IExportNotesErrors,
+        IExportClipsErrors,
+        IExportFavoritesErrors,
+        IExportUserListsErrors,
+        IExportAntennasErrors,
         IFavoritesRequest,
         IFavoritesResponse,
+        IFavoritesErrors,
         IGalleryLikesRequest,
         IGalleryLikesResponse,
+        IGalleryLikesErrors,
         IGalleryPostsRequest,
         IGalleryPostsResponse,
+        IGalleryPostsErrors,
         IImportBlockingRequest,
+        IImportBlockingErrors,
         IImportFollowingRequest,
+        IImportFollowingErrors,
         IImportMutingRequest,
+        IImportMutingErrors,
         IImportUserListsRequest,
+        IImportUserListsErrors,
         IImportAntennasRequest,
+        IImportAntennasErrors,
         INotificationsRequest,
         INotificationsResponse,
+        INotificationsErrors,
         INotificationsGroupedRequest,
         INotificationsGroupedResponse,
+        INotificationsGroupedErrors,
         IPageLikesRequest,
         IPageLikesResponse,
+        IPageLikesErrors,
         IPagesRequest,
         IPagesResponse,
+        IPagesErrors,
         IPinRequest,
         IPinResponse,
+        IPinErrors,
+        IReadAllUnreadNotesErrors,
         IReadAnnouncementRequest,
+        IReadAnnouncementErrors,
         IRegenerateTokenRequest,
+        IRegenerateTokenErrors,
         IRegistryGetAllRequest,
         IRegistryGetAllResponse,
+        IRegistryGetAllErrors,
         IRegistryGetDetailRequest,
         IRegistryGetDetailResponse,
+        IRegistryGetDetailErrors,
         IRegistryGetRequest,
         IRegistryGetResponse,
+        IRegistryGetErrors,
         IRegistryKeysWithTypeRequest,
         IRegistryKeysWithTypeResponse,
+        IRegistryKeysWithTypeErrors,
         IRegistryKeysRequest,
         IRegistryKeysResponse,
+        IRegistryKeysErrors,
         IRegistryRemoveRequest,
+        IRegistryRemoveErrors,
         IRegistryScopesWithDomainResponse,
+        IRegistryScopesWithDomainErrors,
         IRegistrySetRequest,
+        IRegistrySetErrors,
         IRevokeTokenRequest,
+        IRevokeTokenErrors,
         ISigninHistoryRequest,
         ISigninHistoryResponse,
+        ISigninHistoryErrors,
         IUnpinRequest,
         IUnpinResponse,
+        IUnpinErrors,
         IUpdateEmailRequest,
         IUpdateEmailResponse,
+        IUpdateEmailErrors,
         IUpdateRequest,
         IUpdateResponse,
+        IUpdateErrors,
         IMoveRequest,
         IMoveResponse,
+        IMoveErrors,
         IWebhooksCreateRequest,
         IWebhooksCreateResponse,
+        IWebhooksCreateErrors,
         IWebhooksListResponse,
+        IWebhooksListErrors,
         IWebhooksShowRequest,
         IWebhooksShowResponse,
+        IWebhooksShowErrors,
         IWebhooksUpdateRequest,
+        IWebhooksUpdateErrors,
         IWebhooksDeleteRequest,
+        IWebhooksDeleteErrors,
         IWebhooksTestRequest,
+        IWebhooksTestErrors,
         InviteCreateResponse,
+        InviteCreateErrors,
         InviteDeleteRequest,
+        InviteDeleteErrors,
         InviteListRequest,
         InviteListResponse,
+        InviteListErrors,
         InviteLimitResponse,
+        InviteLimitErrors,
         MetaRequest,
         MetaResponse,
+        MetaErrors,
         EmojisResponse,
+        EmojisErrors,
         EmojiRequest,
         EmojiResponse,
+        EmojiErrors,
         MiauthGenTokenRequest,
         MiauthGenTokenResponse,
+        MiauthGenTokenErrors,
         MuteCreateRequest,
+        MuteCreateErrors,
         MuteDeleteRequest,
+        MuteDeleteErrors,
         MuteListRequest,
         MuteListResponse,
+        MuteListErrors,
         RenoteMuteCreateRequest,
+        RenoteMuteCreateErrors,
         RenoteMuteDeleteRequest,
+        RenoteMuteDeleteErrors,
         RenoteMuteListRequest,
         RenoteMuteListResponse,
+        RenoteMuteListErrors,
         MyAppsRequest,
         MyAppsResponse,
+        MyAppsErrors,
         NotesRequest,
         NotesResponse,
+        NotesErrors,
         NotesChildrenRequest,
         NotesChildrenResponse,
+        NotesChildrenErrors,
         NotesClipsRequest,
         NotesClipsResponse,
+        NotesClipsErrors,
         NotesConversationRequest,
         NotesConversationResponse,
+        NotesConversationErrors,
         NotesCreateRequest,
         NotesCreateResponse,
+        NotesCreateErrors,
         NotesDeleteRequest,
+        NotesDeleteErrors,
         NotesFavoritesCreateRequest,
+        NotesFavoritesCreateErrors,
         NotesFavoritesDeleteRequest,
+        NotesFavoritesDeleteErrors,
         NotesFeaturedRequest,
         NotesFeaturedResponse,
+        NotesFeaturedErrors,
         NotesGlobalTimelineRequest,
         NotesGlobalTimelineResponse,
+        NotesGlobalTimelineErrors,
         NotesHybridTimelineRequest,
         NotesHybridTimelineResponse,
+        NotesHybridTimelineErrors,
         NotesLocalTimelineRequest,
         NotesLocalTimelineResponse,
+        NotesLocalTimelineErrors,
         NotesMentionsRequest,
         NotesMentionsResponse,
+        NotesMentionsErrors,
         NotesPollsRecommendationRequest,
         NotesPollsRecommendationResponse,
+        NotesPollsRecommendationErrors,
         NotesPollsVoteRequest,
+        NotesPollsVoteErrors,
         NotesReactionsRequest,
         NotesReactionsResponse,
+        NotesReactionsErrors,
         NotesReactionsCreateRequest,
+        NotesReactionsCreateErrors,
         NotesReactionsDeleteRequest,
+        NotesReactionsDeleteErrors,
         NotesRenotesRequest,
         NotesRenotesResponse,
+        NotesRenotesErrors,
         NotesRepliesRequest,
         NotesRepliesResponse,
+        NotesRepliesErrors,
         NotesSearchByTagRequest,
         NotesSearchByTagResponse,
+        NotesSearchByTagErrors,
         NotesSearchRequest,
         NotesSearchResponse,
+        NotesSearchErrors,
         NotesShowRequest,
         NotesShowResponse,
+        NotesShowErrors,
         NotesStateRequest,
         NotesStateResponse,
+        NotesStateErrors,
         NotesThreadMutingCreateRequest,
+        NotesThreadMutingCreateErrors,
         NotesThreadMutingDeleteRequest,
+        NotesThreadMutingDeleteErrors,
         NotesTimelineRequest,
         NotesTimelineResponse,
+        NotesTimelineErrors,
         NotesTranslateRequest,
         NotesTranslateResponse,
+        NotesTranslateErrors,
         NotesUnrenoteRequest,
+        NotesUnrenoteErrors,
         NotesUserListTimelineRequest,
         NotesUserListTimelineResponse,
+        NotesUserListTimelineErrors,
         NotificationsCreateRequest,
+        NotificationsCreateErrors,
+        NotificationsFlushErrors,
+        NotificationsMarkAllAsReadErrors,
+        NotificationsTestNotificationErrors,
         PagePushRequest,
+        PagePushErrors,
         PagesCreateRequest,
         PagesCreateResponse,
+        PagesCreateErrors,
         PagesDeleteRequest,
+        PagesDeleteErrors,
         PagesFeaturedResponse,
+        PagesFeaturedErrors,
         PagesLikeRequest,
+        PagesLikeErrors,
         PagesShowRequest,
         PagesShowResponse,
+        PagesShowErrors,
         PagesUnlikeRequest,
+        PagesUnlikeErrors,
         PagesUpdateRequest,
+        PagesUpdateErrors,
         FlashCreateRequest,
         FlashCreateResponse,
+        FlashCreateErrors,
         FlashDeleteRequest,
+        FlashDeleteErrors,
         FlashFeaturedRequest,
         FlashFeaturedResponse,
+        FlashFeaturedErrors,
         FlashLikeRequest,
+        FlashLikeErrors,
         FlashShowRequest,
         FlashShowResponse,
+        FlashShowErrors,
         FlashUnlikeRequest,
+        FlashUnlikeErrors,
         FlashUpdateRequest,
+        FlashUpdateErrors,
         FlashMyRequest,
         FlashMyResponse,
+        FlashMyErrors,
         FlashMyLikesRequest,
         FlashMyLikesResponse,
+        FlashMyLikesErrors,
         PingResponse,
+        PingErrors,
         PinnedUsersResponse,
+        PinnedUsersErrors,
         PromoReadRequest,
+        PromoReadErrors,
         RolesListResponse,
+        RolesListErrors,
         RolesShowRequest,
         RolesShowResponse,
+        RolesShowErrors,
         RolesUsersRequest,
         RolesUsersResponse,
+        RolesUsersErrors,
         RolesNotesRequest,
         RolesNotesResponse,
+        RolesNotesErrors,
         RequestResetPasswordRequest,
+        RequestResetPasswordErrors,
+        ResetDbErrors,
         ResetPasswordRequest,
+        ResetPasswordErrors,
         ServerInfoResponse,
+        ServerInfoErrors,
         StatsResponse,
+        StatsErrors,
         SwShowRegistrationRequest,
         SwShowRegistrationResponse,
+        SwShowRegistrationErrors,
         SwUpdateRegistrationRequest,
         SwUpdateRegistrationResponse,
+        SwUpdateRegistrationErrors,
         SwRegisterRequest,
         SwRegisterResponse,
+        SwRegisterErrors,
         SwUnregisterRequest,
+        SwUnregisterErrors,
         TestRequest,
         TestResponse,
+        TestErrors,
         UsernameAvailableRequest,
         UsernameAvailableResponse,
+        UsernameAvailableErrors,
         UsersRequest,
         UsersResponse,
+        UsersErrors,
         UsersClipsRequest,
         UsersClipsResponse,
+        UsersClipsErrors,
         UsersFollowersRequest,
         UsersFollowersResponse,
+        UsersFollowersErrors,
         UsersFollowingRequest,
         UsersFollowingResponse,
+        UsersFollowingErrors,
         UsersGalleryPostsRequest,
         UsersGalleryPostsResponse,
+        UsersGalleryPostsErrors,
         UsersGetFrequentlyRepliedUsersRequest,
         UsersGetFrequentlyRepliedUsersResponse,
+        UsersGetFrequentlyRepliedUsersErrors,
         UsersFeaturedNotesRequest,
         UsersFeaturedNotesResponse,
+        UsersFeaturedNotesErrors,
         UsersListsCreateRequest,
         UsersListsCreateResponse,
+        UsersListsCreateErrors,
         UsersListsDeleteRequest,
+        UsersListsDeleteErrors,
         UsersListsListRequest,
         UsersListsListResponse,
+        UsersListsListErrors,
         UsersListsPullRequest,
+        UsersListsPullErrors,
         UsersListsPushRequest,
+        UsersListsPushErrors,
         UsersListsShowRequest,
         UsersListsShowResponse,
+        UsersListsShowErrors,
         UsersListsFavoriteRequest,
+        UsersListsFavoriteErrors,
         UsersListsUnfavoriteRequest,
+        UsersListsUnfavoriteErrors,
         UsersListsUpdateRequest,
         UsersListsUpdateResponse,
+        UsersListsUpdateErrors,
         UsersListsCreateFromPublicRequest,
         UsersListsCreateFromPublicResponse,
+        UsersListsCreateFromPublicErrors,
         UsersListsUpdateMembershipRequest,
+        UsersListsUpdateMembershipErrors,
         UsersListsGetMembershipsRequest,
         UsersListsGetMembershipsResponse,
+        UsersListsGetMembershipsErrors,
         UsersNotesRequest,
         UsersNotesResponse,
+        UsersNotesErrors,
         UsersPagesRequest,
         UsersPagesResponse,
+        UsersPagesErrors,
         UsersFlashsRequest,
         UsersFlashsResponse,
+        UsersFlashsErrors,
         UsersReactionsRequest,
         UsersReactionsResponse,
+        UsersReactionsErrors,
         UsersRecommendationRequest,
         UsersRecommendationResponse,
+        UsersRecommendationErrors,
         UsersRelationRequest,
         UsersRelationResponse,
+        UsersRelationErrors,
         UsersReportAbuseRequest,
+        UsersReportAbuseErrors,
         UsersSearchByUsernameAndHostRequest,
         UsersSearchByUsernameAndHostResponse,
+        UsersSearchByUsernameAndHostErrors,
         UsersSearchRequest,
         UsersSearchResponse,
+        UsersSearchErrors,
         UsersShowRequest,
         UsersShowResponse,
+        UsersShowErrors,
         UsersAchievementsRequest,
         UsersAchievementsResponse,
+        UsersAchievementsErrors,
         UsersUpdateMemoRequest,
+        UsersUpdateMemoErrors,
         FetchRssRequest,
         FetchRssResponse,
+        FetchRssErrors,
         FetchExternalResourcesRequest,
         FetchExternalResourcesResponse,
+        FetchExternalResourcesErrors,
         RetentionResponse,
+        RetentionErrors,
         BubbleGameRegisterRequest,
+        BubbleGameRegisterErrors,
         BubbleGameRankingRequest,
         BubbleGameRankingResponse,
+        BubbleGameRankingErrors,
         ReversiCancelMatchRequest,
+        ReversiCancelMatchErrors,
         ReversiGamesRequest,
         ReversiGamesResponse,
+        ReversiGamesErrors,
         ReversiMatchRequest,
         ReversiMatchResponse,
+        ReversiMatchErrors,
         ReversiInvitationsResponse,
+        ReversiInvitationsErrors,
         ReversiShowGameRequest,
         ReversiShowGameResponse,
+        ReversiShowGameErrors,
         ReversiSurrenderRequest,
+        ReversiSurrenderErrors,
         ReversiVerifyRequest,
         ReversiVerifyResponse,
+        ReversiVerifyErrors,
         Error_2 as Error,
         UserLite,
         UserDetailedNotMeOnly,
@@ -1859,10 +2774,19 @@ export { entities }
 type Error_2 = components['schemas']['Error'];
 
 // @public (undocumented)
+type ExportCustomEmojisErrors = EndpointsErrors['export-custom-emojis'][keyof EndpointsErrors['export-custom-emojis']];
+
+// @public (undocumented)
+type FederationFollowersErrors = EndpointsErrors['federation___followers'][keyof EndpointsErrors['federation___followers']];
+
+// @public (undocumented)
 type FederationFollowersRequest = operations['federation___followers']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FederationFollowersResponse = operations['federation___followers']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FederationFollowingErrors = EndpointsErrors['federation___following'][keyof EndpointsErrors['federation___following']];
 
 // @public (undocumented)
 type FederationFollowingRequest = operations['federation___following']['requestBody']['content']['application/json'];
@@ -1874,10 +2798,16 @@ type FederationFollowingResponse = operations['federation___following']['respons
 type FederationInstance = components['schemas']['FederationInstance'];
 
 // @public (undocumented)
+type FederationInstancesErrors = EndpointsErrors['federation___instances'][keyof EndpointsErrors['federation___instances']];
+
+// @public (undocumented)
 type FederationInstancesRequest = operations['federation___instances']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FederationInstancesResponse = operations['federation___instances']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FederationShowInstanceErrors = EndpointsErrors['federation___show-instance'][keyof EndpointsErrors['federation___show-instance']];
 
 // @public (undocumented)
 type FederationShowInstanceRequest = operations['federation___show-instance']['requestBody']['content']['application/json'];
@@ -1886,19 +2816,31 @@ type FederationShowInstanceRequest = operations['federation___show-instance']['r
 type FederationShowInstanceResponse = operations['federation___show-instance']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type FederationStatsErrors = EndpointsErrors['federation___stats'][keyof EndpointsErrors['federation___stats']];
+
+// @public (undocumented)
 type FederationStatsRequest = operations['federation___stats']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FederationStatsResponse = operations['federation___stats']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type FederationUpdateRemoteUserErrors = EndpointsErrors['federation___update-remote-user'][keyof EndpointsErrors['federation___update-remote-user']];
+
+// @public (undocumented)
 type FederationUpdateRemoteUserRequest = operations['federation___update-remote-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FederationUsersErrors = EndpointsErrors['federation___users'][keyof EndpointsErrors['federation___users']];
 
 // @public (undocumented)
 type FederationUsersRequest = operations['federation___users']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FederationUsersResponse = operations['federation___users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FetchExternalResourcesErrors = EndpointsErrors['fetch-external-resources'][keyof EndpointsErrors['fetch-external-resources']];
 
 // @public (undocumented)
 type FetchExternalResourcesRequest = operations['fetch-external-resources']['requestBody']['content']['application/json'];
@@ -1921,6 +2863,9 @@ type FetchLike = (input: string, init?: {
 }>;
 
 // @public (undocumented)
+type FetchRssErrors = EndpointsErrors['fetch-rss'][keyof EndpointsErrors['fetch-rss']];
+
+// @public (undocumented)
 type FetchRssRequest = operations['fetch-rss']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1930,13 +2875,22 @@ type FetchRssResponse = operations['fetch-rss']['responses']['200']['content']['
 type Flash = components['schemas']['Flash'];
 
 // @public (undocumented)
+type FlashCreateErrors = EndpointsErrors['flash___create'][keyof EndpointsErrors['flash___create']];
+
+// @public (undocumented)
 type FlashCreateRequest = operations['flash___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FlashCreateResponse = operations['flash___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type FlashDeleteErrors = EndpointsErrors['flash___delete'][keyof EndpointsErrors['flash___delete']];
+
+// @public (undocumented)
 type FlashDeleteRequest = operations['flash___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FlashFeaturedErrors = EndpointsErrors['flash___featured'][keyof EndpointsErrors['flash___featured']];
 
 // @public (undocumented)
 type FlashFeaturedRequest = operations['flash___featured']['requestBody']['content']['application/json'];
@@ -1945,7 +2899,16 @@ type FlashFeaturedRequest = operations['flash___featured']['requestBody']['conte
 type FlashFeaturedResponse = operations['flash___featured']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type FlashLikeErrors = EndpointsErrors['flash___like'][keyof EndpointsErrors['flash___like']];
+
+// @public (undocumented)
 type FlashLikeRequest = operations['flash___like']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FlashMyErrors = EndpointsErrors['flash___my'][keyof EndpointsErrors['flash___my']];
+
+// @public (undocumented)
+type FlashMyLikesErrors = EndpointsErrors['flash___my-likes'][keyof EndpointsErrors['flash___my-likes']];
 
 // @public (undocumented)
 type FlashMyLikesRequest = operations['flash___my-likes']['requestBody']['content']['application/json'];
@@ -1960,13 +2923,22 @@ type FlashMyRequest = operations['flash___my']['requestBody']['content']['applic
 type FlashMyResponse = operations['flash___my']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type FlashShowErrors = EndpointsErrors['flash___show'][keyof EndpointsErrors['flash___show']];
+
+// @public (undocumented)
 type FlashShowRequest = operations['flash___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FlashShowResponse = operations['flash___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type FlashUnlikeErrors = EndpointsErrors['flash___unlike'][keyof EndpointsErrors['flash___unlike']];
+
+// @public (undocumented)
 type FlashUnlikeRequest = operations['flash___unlike']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FlashUpdateErrors = EndpointsErrors['flash___update'][keyof EndpointsErrors['flash___update']];
 
 // @public (undocumented)
 type FlashUpdateRequest = operations['flash___update']['requestBody']['content']['application/json'];
@@ -1978,10 +2950,16 @@ export const followersVisibilities: readonly ["public", "followers", "private"];
 type Following = components['schemas']['Following'];
 
 // @public (undocumented)
+type FollowingCreateErrors = EndpointsErrors['following___create'][keyof EndpointsErrors['following___create']];
+
+// @public (undocumented)
 type FollowingCreateRequest = operations['following___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FollowingCreateResponse = operations['following___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingDeleteErrors = EndpointsErrors['following___delete'][keyof EndpointsErrors['following___delete']];
 
 // @public (undocumented)
 type FollowingDeleteRequest = operations['following___delete']['requestBody']['content']['application/json'];
@@ -1990,13 +2968,22 @@ type FollowingDeleteRequest = operations['following___delete']['requestBody']['c
 type FollowingDeleteResponse = operations['following___delete']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type FollowingInvalidateErrors = EndpointsErrors['following___invalidate'][keyof EndpointsErrors['following___invalidate']];
+
+// @public (undocumented)
 type FollowingInvalidateRequest = operations['following___invalidate']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FollowingInvalidateResponse = operations['following___invalidate']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type FollowingRequestsAcceptErrors = EndpointsErrors['following___requests___accept'][keyof EndpointsErrors['following___requests___accept']];
+
+// @public (undocumented)
 type FollowingRequestsAcceptRequest = operations['following___requests___accept']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsCancelErrors = EndpointsErrors['following___requests___cancel'][keyof EndpointsErrors['following___requests___cancel']];
 
 // @public (undocumented)
 type FollowingRequestsCancelRequest = operations['following___requests___cancel']['requestBody']['content']['application/json'];
@@ -2005,16 +2992,28 @@ type FollowingRequestsCancelRequest = operations['following___requests___cancel'
 type FollowingRequestsCancelResponse = operations['following___requests___cancel']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type FollowingRequestsListErrors = EndpointsErrors['following___requests___list'][keyof EndpointsErrors['following___requests___list']];
+
+// @public (undocumented)
 type FollowingRequestsListRequest = operations['following___requests___list']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type FollowingRequestsListResponse = operations['following___requests___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type FollowingRequestsRejectErrors = EndpointsErrors['following___requests___reject'][keyof EndpointsErrors['following___requests___reject']];
+
+// @public (undocumented)
 type FollowingRequestsRejectRequest = operations['following___requests___reject']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type FollowingUpdateAllErrors = EndpointsErrors['following___update-all'][keyof EndpointsErrors['following___update-all']];
+
+// @public (undocumented)
 type FollowingUpdateAllRequest = operations['following___update-all']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingUpdateErrors = EndpointsErrors['following___update'][keyof EndpointsErrors['following___update']];
 
 // @public (undocumented)
 type FollowingUpdateRequest = operations['following___update']['requestBody']['content']['application/json'];
@@ -2026,10 +3025,16 @@ type FollowingUpdateResponse = operations['following___update']['responses']['20
 export const followingVisibilities: readonly ["public", "followers", "private"];
 
 // @public (undocumented)
+type GalleryFeaturedErrors = EndpointsErrors['gallery___featured'][keyof EndpointsErrors['gallery___featured']];
+
+// @public (undocumented)
 type GalleryFeaturedRequest = operations['gallery___featured']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type GalleryFeaturedResponse = operations['gallery___featured']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPopularErrors = EndpointsErrors['gallery___popular'][keyof EndpointsErrors['gallery___popular']];
 
 // @public (undocumented)
 type GalleryPopularResponse = operations['gallery___popular']['responses']['200']['content']['application/json'];
@@ -2038,13 +3043,25 @@ type GalleryPopularResponse = operations['gallery___popular']['responses']['200'
 type GalleryPost = components['schemas']['GalleryPost'];
 
 // @public (undocumented)
+type GalleryPostsCreateErrors = EndpointsErrors['gallery___posts___create'][keyof EndpointsErrors['gallery___posts___create']];
+
+// @public (undocumented)
 type GalleryPostsCreateRequest = operations['gallery___posts___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type GalleryPostsCreateResponse = operations['gallery___posts___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type GalleryPostsDeleteErrors = EndpointsErrors['gallery___posts___delete'][keyof EndpointsErrors['gallery___posts___delete']];
+
+// @public (undocumented)
 type GalleryPostsDeleteRequest = operations['gallery___posts___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsErrors = EndpointsErrors['gallery___posts'][keyof EndpointsErrors['gallery___posts']];
+
+// @public (undocumented)
+type GalleryPostsLikeErrors = EndpointsErrors['gallery___posts___like'][keyof EndpointsErrors['gallery___posts___like']];
 
 // @public (undocumented)
 type GalleryPostsLikeRequest = operations['gallery___posts___like']['requestBody']['content']['application/json'];
@@ -2056,13 +3073,22 @@ type GalleryPostsRequest = operations['gallery___posts']['requestBody']['content
 type GalleryPostsResponse = operations['gallery___posts']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type GalleryPostsShowErrors = EndpointsErrors['gallery___posts___show'][keyof EndpointsErrors['gallery___posts___show']];
+
+// @public (undocumented)
 type GalleryPostsShowRequest = operations['gallery___posts___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type GalleryPostsShowResponse = operations['gallery___posts___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type GalleryPostsUnlikeErrors = EndpointsErrors['gallery___posts___unlike'][keyof EndpointsErrors['gallery___posts___unlike']];
+
+// @public (undocumented)
 type GalleryPostsUnlikeRequest = operations['gallery___posts___unlike']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type GalleryPostsUpdateErrors = EndpointsErrors['gallery___posts___update'][keyof EndpointsErrors['gallery___posts___update']];
 
 // @public (undocumented)
 type GalleryPostsUpdateRequest = operations['gallery___posts___update']['requestBody']['content']['application/json'];
@@ -2071,7 +3097,13 @@ type GalleryPostsUpdateRequest = operations['gallery___posts___update']['request
 type GalleryPostsUpdateResponse = operations['gallery___posts___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type GetAvatarDecorationsErrors = EndpointsErrors['get-avatar-decorations'][keyof EndpointsErrors['get-avatar-decorations']];
+
+// @public (undocumented)
 type GetAvatarDecorationsResponse = operations['get-avatar-decorations']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type GetOnlineUsersCountErrors = EndpointsErrors['get-online-users-count'][keyof EndpointsErrors['get-online-users-count']];
 
 // @public (undocumented)
 type GetOnlineUsersCountResponse = operations['get-online-users-count']['responses']['200']['content']['application/json'];
@@ -2080,10 +3112,16 @@ type GetOnlineUsersCountResponse = operations['get-online-users-count']['respons
 type Hashtag = components['schemas']['Hashtag'];
 
 // @public (undocumented)
+type HashtagsListErrors = EndpointsErrors['hashtags___list'][keyof EndpointsErrors['hashtags___list']];
+
+// @public (undocumented)
 type HashtagsListRequest = operations['hashtags___list']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type HashtagsListResponse = operations['hashtags___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsSearchErrors = EndpointsErrors['hashtags___search'][keyof EndpointsErrors['hashtags___search']];
 
 // @public (undocumented)
 type HashtagsSearchRequest = operations['hashtags___search']['requestBody']['content']['application/json'];
@@ -2092,13 +3130,22 @@ type HashtagsSearchRequest = operations['hashtags___search']['requestBody']['con
 type HashtagsSearchResponse = operations['hashtags___search']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type HashtagsShowErrors = EndpointsErrors['hashtags___show'][keyof EndpointsErrors['hashtags___show']];
+
+// @public (undocumented)
 type HashtagsShowRequest = operations['hashtags___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type HashtagsShowResponse = operations['hashtags___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type HashtagsTrendErrors = EndpointsErrors['hashtags___trend'][keyof EndpointsErrors['hashtags___trend']];
+
+// @public (undocumented)
 type HashtagsTrendResponse = operations['hashtags___trend']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type HashtagsUsersErrors = EndpointsErrors['hashtags___users'][keyof EndpointsErrors['hashtags___users']];
 
 // @public (undocumented)
 type HashtagsUsersRequest = operations['hashtags___users']['requestBody']['content']['application/json'];
@@ -2107,10 +3154,16 @@ type HashtagsUsersRequest = operations['hashtags___users']['requestBody']['conte
 type HashtagsUsersResponse = operations['hashtags___users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type I2faDoneErrors = EndpointsErrors['i___2fa___done'][keyof EndpointsErrors['i___2fa___done']];
+
+// @public (undocumented)
 type I2faDoneRequest = operations['i___2fa___done']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type I2faDoneResponse = operations['i___2fa___done']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type I2faKeyDoneErrors = EndpointsErrors['i___2fa___key-done'][keyof EndpointsErrors['i___2fa___key-done']];
 
 // @public (undocumented)
 type I2faKeyDoneRequest = operations['i___2fa___key-done']['requestBody']['content']['application/json'];
@@ -2119,7 +3172,16 @@ type I2faKeyDoneRequest = operations['i___2fa___key-done']['requestBody']['conte
 type I2faKeyDoneResponse = operations['i___2fa___key-done']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type I2faPasswordLessErrors = EndpointsErrors['i___2fa___password-less'][keyof EndpointsErrors['i___2fa___password-less']];
+
+// @public (undocumented)
 type I2faPasswordLessRequest = operations['i___2fa___password-less']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faRegisterErrors = EndpointsErrors['i___2fa___register'][keyof EndpointsErrors['i___2fa___register']];
+
+// @public (undocumented)
+type I2faRegisterKeyErrors = EndpointsErrors['i___2fa___register-key'][keyof EndpointsErrors['i___2fa___register-key']];
 
 // @public (undocumented)
 type I2faRegisterKeyRequest = operations['i___2fa___register-key']['requestBody']['content']['application/json'];
@@ -2134,13 +3196,25 @@ type I2faRegisterRequest = operations['i___2fa___register']['requestBody']['cont
 type I2faRegisterResponse = operations['i___2fa___register']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type I2faRemoveKeyErrors = EndpointsErrors['i___2fa___remove-key'][keyof EndpointsErrors['i___2fa___remove-key']];
+
+// @public (undocumented)
 type I2faRemoveKeyRequest = operations['i___2fa___remove-key']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type I2faUnregisterErrors = EndpointsErrors['i___2fa___unregister'][keyof EndpointsErrors['i___2fa___unregister']];
 
 // @public (undocumented)
 type I2faUnregisterRequest = operations['i___2fa___unregister']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type I2faUpdateKeyErrors = EndpointsErrors['i___2fa___update-key'][keyof EndpointsErrors['i___2fa___update-key']];
+
+// @public (undocumented)
 type I2faUpdateKeyRequest = operations['i___2fa___update-key']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IAppsErrors = EndpointsErrors['i___apps'][keyof EndpointsErrors['i___apps']];
 
 // @public (undocumented)
 type IAppsRequest = operations['i___apps']['requestBody']['content']['application/json'];
@@ -2149,10 +3223,16 @@ type IAppsRequest = operations['i___apps']['requestBody']['content']['applicatio
 type IAppsResponse = operations['i___apps']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IAuthorizedAppsErrors = EndpointsErrors['i___authorized-apps'][keyof EndpointsErrors['i___authorized-apps']];
+
+// @public (undocumented)
 type IAuthorizedAppsRequest = operations['i___authorized-apps']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IAuthorizedAppsResponse = operations['i___authorized-apps']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IChangePasswordErrors = EndpointsErrors['i___change-password'][keyof EndpointsErrors['i___change-password']];
 
 // @public (undocumented)
 type IChangePasswordRequest = operations['i___change-password']['requestBody']['content']['application/json'];
@@ -2176,16 +3256,52 @@ export interface IChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Chan
 }
 
 // @public (undocumented)
+type IClaimAchievementErrors = EndpointsErrors['i___claim-achievement'][keyof EndpointsErrors['i___claim-achievement']];
+
+// @public (undocumented)
 type IClaimAchievementRequest = operations['i___claim-achievement']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ID = string;
 
 // @public (undocumented)
+type IDeleteAccountErrors = EndpointsErrors['i___delete-account'][keyof EndpointsErrors['i___delete-account']];
+
+// @public (undocumented)
 type IDeleteAccountRequest = operations['i___delete-account']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type IErrors = EndpointsErrors['i'][keyof EndpointsErrors['i']];
+
+// @public (undocumented)
+type IExportAntennasErrors = EndpointsErrors['i___export-antennas'][keyof EndpointsErrors['i___export-antennas']];
+
+// @public (undocumented)
+type IExportBlockingErrors = EndpointsErrors['i___export-blocking'][keyof EndpointsErrors['i___export-blocking']];
+
+// @public (undocumented)
+type IExportClipsErrors = EndpointsErrors['i___export-clips'][keyof EndpointsErrors['i___export-clips']];
+
+// @public (undocumented)
+type IExportFavoritesErrors = EndpointsErrors['i___export-favorites'][keyof EndpointsErrors['i___export-favorites']];
+
+// @public (undocumented)
+type IExportFollowingErrors = EndpointsErrors['i___export-following'][keyof EndpointsErrors['i___export-following']];
+
+// @public (undocumented)
 type IExportFollowingRequest = operations['i___export-following']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IExportMuteErrors = EndpointsErrors['i___export-mute'][keyof EndpointsErrors['i___export-mute']];
+
+// @public (undocumented)
+type IExportNotesErrors = EndpointsErrors['i___export-notes'][keyof EndpointsErrors['i___export-notes']];
+
+// @public (undocumented)
+type IExportUserListsErrors = EndpointsErrors['i___export-user-lists'][keyof EndpointsErrors['i___export-user-lists']];
+
+// @public (undocumented)
+type IFavoritesErrors = EndpointsErrors['i___favorites'][keyof EndpointsErrors['i___favorites']];
 
 // @public (undocumented)
 type IFavoritesRequest = operations['i___favorites']['requestBody']['content']['application/json'];
@@ -2194,10 +3310,16 @@ type IFavoritesRequest = operations['i___favorites']['requestBody']['content']['
 type IFavoritesResponse = operations['i___favorites']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IGalleryLikesErrors = EndpointsErrors['i___gallery___likes'][keyof EndpointsErrors['i___gallery___likes']];
+
+// @public (undocumented)
 type IGalleryLikesRequest = operations['i___gallery___likes']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IGalleryLikesResponse = operations['i___gallery___likes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IGalleryPostsErrors = EndpointsErrors['i___gallery___posts'][keyof EndpointsErrors['i___gallery___posts']];
 
 // @public (undocumented)
 type IGalleryPostsRequest = operations['i___gallery___posts']['requestBody']['content']['application/json'];
@@ -2206,25 +3328,49 @@ type IGalleryPostsRequest = operations['i___gallery___posts']['requestBody']['co
 type IGalleryPostsResponse = operations['i___gallery___posts']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IImportAntennasErrors = EndpointsErrors['i___import-antennas'][keyof EndpointsErrors['i___import-antennas']];
+
+// @public (undocumented)
 type IImportAntennasRequest = operations['i___import-antennas']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IImportBlockingErrors = EndpointsErrors['i___import-blocking'][keyof EndpointsErrors['i___import-blocking']];
 
 // @public (undocumented)
 type IImportBlockingRequest = operations['i___import-blocking']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type IImportFollowingErrors = EndpointsErrors['i___import-following'][keyof EndpointsErrors['i___import-following']];
+
+// @public (undocumented)
 type IImportFollowingRequest = operations['i___import-following']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IImportMutingErrors = EndpointsErrors['i___import-muting'][keyof EndpointsErrors['i___import-muting']];
 
 // @public (undocumented)
 type IImportMutingRequest = operations['i___import-muting']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type IImportUserListsErrors = EndpointsErrors['i___import-user-lists'][keyof EndpointsErrors['i___import-user-lists']];
+
+// @public (undocumented)
 type IImportUserListsRequest = operations['i___import-user-lists']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IMoveErrors = EndpointsErrors['i___move'][keyof EndpointsErrors['i___move']];
 
 // @public (undocumented)
 type IMoveRequest = operations['i___move']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IMoveResponse = operations['i___move']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type INotificationsErrors = EndpointsErrors['i___notifications'][keyof EndpointsErrors['i___notifications']];
+
+// @public (undocumented)
+type INotificationsGroupedErrors = EndpointsErrors['i___notifications-grouped'][keyof EndpointsErrors['i___notifications-grouped']];
 
 // @public (undocumented)
 type INotificationsGroupedRequest = operations['i___notifications-grouped']['requestBody']['content']['application/json'];
@@ -2242,13 +3388,25 @@ type INotificationsResponse = operations['i___notifications']['responses']['200'
 type InviteCode = components['schemas']['InviteCode'];
 
 // @public (undocumented)
+type InviteCreateErrors = EndpointsErrors['invite___create'][keyof EndpointsErrors['invite___create']];
+
+// @public (undocumented)
 type InviteCreateResponse = operations['invite___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type InviteDeleteErrors = EndpointsErrors['invite___delete'][keyof EndpointsErrors['invite___delete']];
 
 // @public (undocumented)
 type InviteDeleteRequest = operations['invite___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type InviteLimitErrors = EndpointsErrors['invite___limit'][keyof EndpointsErrors['invite___limit']];
+
+// @public (undocumented)
 type InviteLimitResponse = operations['invite___limit']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type InviteListErrors = EndpointsErrors['invite___list'][keyof EndpointsErrors['invite___list']];
 
 // @public (undocumented)
 type InviteListRequest = operations['invite___list']['requestBody']['content']['application/json'];
@@ -2257,10 +3415,16 @@ type InviteListRequest = operations['invite___list']['requestBody']['content']['
 type InviteListResponse = operations['invite___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IPageLikesErrors = EndpointsErrors['i___page-likes'][keyof EndpointsErrors['i___page-likes']];
+
+// @public (undocumented)
 type IPageLikesRequest = operations['i___page-likes']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IPageLikesResponse = operations['i___page-likes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IPagesErrors = EndpointsErrors['i___pages'][keyof EndpointsErrors['i___pages']];
 
 // @public (undocumented)
 type IPagesRequest = operations['i___pages']['requestBody']['content']['application/json'];
@@ -2269,16 +3433,31 @@ type IPagesRequest = operations['i___pages']['requestBody']['content']['applicat
 type IPagesResponse = operations['i___pages']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IPinErrors = EndpointsErrors['i___pin'][keyof EndpointsErrors['i___pin']];
+
+// @public (undocumented)
 type IPinRequest = operations['i___pin']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IPinResponse = operations['i___pin']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IReadAllUnreadNotesErrors = EndpointsErrors['i___read-all-unread-notes'][keyof EndpointsErrors['i___read-all-unread-notes']];
+
+// @public (undocumented)
+type IReadAnnouncementErrors = EndpointsErrors['i___read-announcement'][keyof EndpointsErrors['i___read-announcement']];
+
+// @public (undocumented)
 type IReadAnnouncementRequest = operations['i___read-announcement']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type IRegenerateTokenErrors = EndpointsErrors['i___regenerate-token'][keyof EndpointsErrors['i___regenerate-token']];
+
+// @public (undocumented)
 type IRegenerateTokenRequest = operations['i___regenerate-token']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistryGetAllErrors = EndpointsErrors['i___registry___get-all'][keyof EndpointsErrors['i___registry___get-all']];
 
 // @public (undocumented)
 type IRegistryGetAllRequest = operations['i___registry___get-all']['requestBody']['content']['application/json'];
@@ -2287,10 +3466,16 @@ type IRegistryGetAllRequest = operations['i___registry___get-all']['requestBody'
 type IRegistryGetAllResponse = operations['i___registry___get-all']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IRegistryGetDetailErrors = EndpointsErrors['i___registry___get-detail'][keyof EndpointsErrors['i___registry___get-detail']];
+
+// @public (undocumented)
 type IRegistryGetDetailRequest = operations['i___registry___get-detail']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IRegistryGetDetailResponse = operations['i___registry___get-detail']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistryGetErrors = EndpointsErrors['i___registry___get'][keyof EndpointsErrors['i___registry___get']];
 
 // @public (undocumented)
 type IRegistryGetRequest = operations['i___registry___get']['requestBody']['content']['application/json'];
@@ -2299,10 +3484,16 @@ type IRegistryGetRequest = operations['i___registry___get']['requestBody']['cont
 type IRegistryGetResponse = operations['i___registry___get']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IRegistryKeysErrors = EndpointsErrors['i___registry___keys'][keyof EndpointsErrors['i___registry___keys']];
+
+// @public (undocumented)
 type IRegistryKeysRequest = operations['i___registry___keys']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IRegistryKeysResponse = operations['i___registry___keys']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistryKeysWithTypeErrors = EndpointsErrors['i___registry___keys-with-type'][keyof EndpointsErrors['i___registry___keys-with-type']];
 
 // @public (undocumented)
 type IRegistryKeysWithTypeRequest = operations['i___registry___keys-with-type']['requestBody']['content']['application/json'];
@@ -2311,10 +3502,19 @@ type IRegistryKeysWithTypeRequest = operations['i___registry___keys-with-type'][
 type IRegistryKeysWithTypeResponse = operations['i___registry___keys-with-type']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IRegistryRemoveErrors = EndpointsErrors['i___registry___remove'][keyof EndpointsErrors['i___registry___remove']];
+
+// @public (undocumented)
 type IRegistryRemoveRequest = operations['i___registry___remove']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type IRegistryScopesWithDomainErrors = EndpointsErrors['i___registry___scopes-with-domain'][keyof EndpointsErrors['i___registry___scopes-with-domain']];
+
+// @public (undocumented)
 type IRegistryScopesWithDomainResponse = operations['i___registry___scopes-with-domain']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IRegistrySetErrors = EndpointsErrors['i___registry___set'][keyof EndpointsErrors['i___registry___set']];
 
 // @public (undocumented)
 type IRegistrySetRequest = operations['i___registry___set']['requestBody']['content']['application/json'];
@@ -2323,10 +3523,16 @@ type IRegistrySetRequest = operations['i___registry___set']['requestBody']['cont
 type IResponse = operations['i']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IRevokeTokenErrors = EndpointsErrors['i___revoke-token'][keyof EndpointsErrors['i___revoke-token']];
+
+// @public (undocumented)
 type IRevokeTokenRequest = operations['i___revoke-token']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 function isAPIError(reason: Record<PropertyKey, unknown>): reason is APIError;
+
+// @public (undocumented)
+type ISigninHistoryErrors = EndpointsErrors['i___signin-history'][keyof EndpointsErrors['i___signin-history']];
 
 // @public (undocumented)
 type ISigninHistoryRequest = operations['i___signin-history']['requestBody']['content']['application/json'];
@@ -2372,10 +3578,16 @@ export interface IStream extends EventEmitter<StreamEvents> {
 }
 
 // @public (undocumented)
+type IUnpinErrors = EndpointsErrors['i___unpin'][keyof EndpointsErrors['i___unpin']];
+
+// @public (undocumented)
 type IUnpinRequest = operations['i___unpin']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IUnpinResponse = operations['i___unpin']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IUpdateEmailErrors = EndpointsErrors['i___update-email'][keyof EndpointsErrors['i___update-email']];
 
 // @public (undocumented)
 type IUpdateEmailRequest = operations['i___update-email']['requestBody']['content']['application/json'];
@@ -2384,10 +3596,16 @@ type IUpdateEmailRequest = operations['i___update-email']['requestBody']['conten
 type IUpdateEmailResponse = operations['i___update-email']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IUpdateErrors = EndpointsErrors['i___update'][keyof EndpointsErrors['i___update']];
+
+// @public (undocumented)
 type IUpdateRequest = operations['i___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IUpdateResponse = operations['i___update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IWebhooksCreateErrors = EndpointsErrors['i___webhooks___create'][keyof EndpointsErrors['i___webhooks___create']];
 
 // @public (undocumented)
 type IWebhooksCreateRequest = operations['i___webhooks___create']['requestBody']['content']['application/json'];
@@ -2396,10 +3614,19 @@ type IWebhooksCreateRequest = operations['i___webhooks___create']['requestBody']
 type IWebhooksCreateResponse = operations['i___webhooks___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IWebhooksDeleteErrors = EndpointsErrors['i___webhooks___delete'][keyof EndpointsErrors['i___webhooks___delete']];
+
+// @public (undocumented)
 type IWebhooksDeleteRequest = operations['i___webhooks___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type IWebhooksListErrors = EndpointsErrors['i___webhooks___list'][keyof EndpointsErrors['i___webhooks___list']];
+
+// @public (undocumented)
 type IWebhooksListResponse = operations['i___webhooks___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IWebhooksShowErrors = EndpointsErrors['i___webhooks___show'][keyof EndpointsErrors['i___webhooks___show']];
 
 // @public (undocumented)
 type IWebhooksShowRequest = operations['i___webhooks___show']['requestBody']['content']['application/json'];
@@ -2408,7 +3635,13 @@ type IWebhooksShowRequest = operations['i___webhooks___show']['requestBody']['co
 type IWebhooksShowResponse = operations['i___webhooks___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IWebhooksTestErrors = EndpointsErrors['i___webhooks___test'][keyof EndpointsErrors['i___webhooks___test']];
+
+// @public (undocumented)
 type IWebhooksTestRequest = operations['i___webhooks___test']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type IWebhooksUpdateErrors = EndpointsErrors['i___webhooks___update'][keyof EndpointsErrors['i___webhooks___update']];
 
 // @public (undocumented)
 type IWebhooksUpdateRequest = operations['i___webhooks___update']['requestBody']['content']['application/json'];
@@ -2426,6 +3659,9 @@ type MetaDetailed = components['schemas']['MetaDetailed'];
 type MetaDetailedOnly = components['schemas']['MetaDetailedOnly'];
 
 // @public (undocumented)
+type MetaErrors = EndpointsErrors['meta'][keyof EndpointsErrors['meta']];
+
+// @public (undocumented)
 type MetaLite = components['schemas']['MetaLite'];
 
 // @public (undocumented)
@@ -2433,6 +3669,9 @@ type MetaRequest = operations['meta']['requestBody']['content']['application/jso
 
 // @public (undocumented)
 type MetaResponse = operations['meta']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type MiauthGenTokenErrors = EndpointsErrors['miauth___gen-token'][keyof EndpointsErrors['miauth___gen-token']];
 
 // @public (undocumented)
 type MiauthGenTokenRequest = operations['miauth___gen-token']['requestBody']['content']['application/json'];
@@ -2602,13 +3841,22 @@ type ModerationLog = {
 export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "updateRemoteInstanceNote", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "forwardAbuseReport", "updateAbuseReportNote", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner", "createSystemWebhook", "updateSystemWebhook", "deleteSystemWebhook", "createAbuseReportNotificationRecipient", "updateAbuseReportNotificationRecipient", "deleteAbuseReportNotificationRecipient", "deleteAccount", "deletePage", "deleteFlash", "deleteGalleryPost"];
 
 // @public (undocumented)
+type MuteCreateErrors = EndpointsErrors['mute___create'][keyof EndpointsErrors['mute___create']];
+
+// @public (undocumented)
 type MuteCreateRequest = operations['mute___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MuteDeleteErrors = EndpointsErrors['mute___delete'][keyof EndpointsErrors['mute___delete']];
 
 // @public (undocumented)
 type MuteDeleteRequest = operations['mute___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];
+
+// @public (undocumented)
+type MuteListErrors = EndpointsErrors['mute___list'][keyof EndpointsErrors['mute___list']];
 
 // @public (undocumented)
 type MuteListRequest = operations['mute___list']['requestBody']['content']['application/json'];
@@ -2618,6 +3866,9 @@ type MuteListResponse = operations['mute___list']['responses']['200']['content']
 
 // @public (undocumented)
 type Muting = components['schemas']['Muting'];
+
+// @public (undocumented)
+type MyAppsErrors = EndpointsErrors['my___apps'][keyof EndpointsErrors['my___apps']];
 
 // @public (undocumented)
 type MyAppsRequest = operations['my___apps']['requestBody']['content']['application/json'];
@@ -2642,10 +3893,16 @@ type NoteFavorite = components['schemas']['NoteFavorite'];
 type NoteReaction = components['schemas']['NoteReaction'];
 
 // @public (undocumented)
+type NotesChildrenErrors = EndpointsErrors['notes___children'][keyof EndpointsErrors['notes___children']];
+
+// @public (undocumented)
 type NotesChildrenRequest = operations['notes___children']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesChildrenResponse = operations['notes___children']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesClipsErrors = EndpointsErrors['notes___clips'][keyof EndpointsErrors['notes___clips']];
 
 // @public (undocumented)
 type NotesClipsRequest = operations['notes___clips']['requestBody']['content']['application/json'];
@@ -2654,10 +3911,16 @@ type NotesClipsRequest = operations['notes___clips']['requestBody']['content']['
 type NotesClipsResponse = operations['notes___clips']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesConversationErrors = EndpointsErrors['notes___conversation'][keyof EndpointsErrors['notes___conversation']];
+
+// @public (undocumented)
 type NotesConversationRequest = operations['notes___conversation']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesConversationResponse = operations['notes___conversation']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesCreateErrors = EndpointsErrors['notes___create'][keyof EndpointsErrors['notes___create']];
 
 // @public (undocumented)
 type NotesCreateRequest = operations['notes___create']['requestBody']['content']['application/json'];
@@ -2666,13 +3929,28 @@ type NotesCreateRequest = operations['notes___create']['requestBody']['content']
 type NotesCreateResponse = operations['notes___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesDeleteErrors = EndpointsErrors['notes___delete'][keyof EndpointsErrors['notes___delete']];
+
+// @public (undocumented)
 type NotesDeleteRequest = operations['notes___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesErrors = EndpointsErrors['notes'][keyof EndpointsErrors['notes']];
+
+// @public (undocumented)
+type NotesFavoritesCreateErrors = EndpointsErrors['notes___favorites___create'][keyof EndpointsErrors['notes___favorites___create']];
 
 // @public (undocumented)
 type NotesFavoritesCreateRequest = operations['notes___favorites___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type NotesFavoritesDeleteErrors = EndpointsErrors['notes___favorites___delete'][keyof EndpointsErrors['notes___favorites___delete']];
+
+// @public (undocumented)
 type NotesFavoritesDeleteRequest = operations['notes___favorites___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesFeaturedErrors = EndpointsErrors['notes___featured'][keyof EndpointsErrors['notes___featured']];
 
 // @public (undocumented)
 type NotesFeaturedRequest = operations['notes___featured']['requestBody']['content']['application/json'];
@@ -2681,10 +3959,16 @@ type NotesFeaturedRequest = operations['notes___featured']['requestBody']['conte
 type NotesFeaturedResponse = operations['notes___featured']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesGlobalTimelineErrors = EndpointsErrors['notes___global-timeline'][keyof EndpointsErrors['notes___global-timeline']];
+
+// @public (undocumented)
 type NotesGlobalTimelineRequest = operations['notes___global-timeline']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesGlobalTimelineResponse = operations['notes___global-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesHybridTimelineErrors = EndpointsErrors['notes___hybrid-timeline'][keyof EndpointsErrors['notes___hybrid-timeline']];
 
 // @public (undocumented)
 type NotesHybridTimelineRequest = operations['notes___hybrid-timeline']['requestBody']['content']['application/json'];
@@ -2693,10 +3977,16 @@ type NotesHybridTimelineRequest = operations['notes___hybrid-timeline']['request
 type NotesHybridTimelineResponse = operations['notes___hybrid-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesLocalTimelineErrors = EndpointsErrors['notes___local-timeline'][keyof EndpointsErrors['notes___local-timeline']];
+
+// @public (undocumented)
 type NotesLocalTimelineRequest = operations['notes___local-timeline']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesLocalTimelineResponse = operations['notes___local-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesMentionsErrors = EndpointsErrors['notes___mentions'][keyof EndpointsErrors['notes___mentions']];
 
 // @public (undocumented)
 type NotesMentionsRequest = operations['notes___mentions']['requestBody']['content']['application/json'];
@@ -2705,19 +3995,34 @@ type NotesMentionsRequest = operations['notes___mentions']['requestBody']['conte
 type NotesMentionsResponse = operations['notes___mentions']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesPollsRecommendationErrors = EndpointsErrors['notes___polls___recommendation'][keyof EndpointsErrors['notes___polls___recommendation']];
+
+// @public (undocumented)
 type NotesPollsRecommendationRequest = operations['notes___polls___recommendation']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesPollsRecommendationResponse = operations['notes___polls___recommendation']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesPollsVoteErrors = EndpointsErrors['notes___polls___vote'][keyof EndpointsErrors['notes___polls___vote']];
+
+// @public (undocumented)
 type NotesPollsVoteRequest = operations['notes___polls___vote']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesReactionsCreateErrors = EndpointsErrors['notes___reactions___create'][keyof EndpointsErrors['notes___reactions___create']];
 
 // @public (undocumented)
 type NotesReactionsCreateRequest = operations['notes___reactions___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type NotesReactionsDeleteErrors = EndpointsErrors['notes___reactions___delete'][keyof EndpointsErrors['notes___reactions___delete']];
+
+// @public (undocumented)
 type NotesReactionsDeleteRequest = operations['notes___reactions___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesReactionsErrors = EndpointsErrors['notes___reactions'][keyof EndpointsErrors['notes___reactions']];
 
 // @public (undocumented)
 type NotesReactionsRequest = operations['notes___reactions']['requestBody']['content']['application/json'];
@@ -2726,10 +4031,16 @@ type NotesReactionsRequest = operations['notes___reactions']['requestBody']['con
 type NotesReactionsResponse = operations['notes___reactions']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesRenotesErrors = EndpointsErrors['notes___renotes'][keyof EndpointsErrors['notes___renotes']];
+
+// @public (undocumented)
 type NotesRenotesRequest = operations['notes___renotes']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesRenotesResponse = operations['notes___renotes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesRepliesErrors = EndpointsErrors['notes___replies'][keyof EndpointsErrors['notes___replies']];
 
 // @public (undocumented)
 type NotesRepliesRequest = operations['notes___replies']['requestBody']['content']['application/json'];
@@ -2744,10 +4055,16 @@ type NotesRequest = operations['notes']['requestBody']['content']['application/j
 type NotesResponse = operations['notes']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesSearchByTagErrors = EndpointsErrors['notes___search-by-tag'][keyof EndpointsErrors['notes___search-by-tag']];
+
+// @public (undocumented)
 type NotesSearchByTagRequest = operations['notes___search-by-tag']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesSearchByTagResponse = operations['notes___search-by-tag']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesSearchErrors = EndpointsErrors['notes___search'][keyof EndpointsErrors['notes___search']];
 
 // @public (undocumented)
 type NotesSearchRequest = operations['notes___search']['requestBody']['content']['application/json'];
@@ -2756,10 +4073,16 @@ type NotesSearchRequest = operations['notes___search']['requestBody']['content']
 type NotesSearchResponse = operations['notes___search']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesShowErrors = EndpointsErrors['notes___show'][keyof EndpointsErrors['notes___show']];
+
+// @public (undocumented)
 type NotesShowRequest = operations['notes___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesShowResponse = operations['notes___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesStateErrors = EndpointsErrors['notes___state'][keyof EndpointsErrors['notes___state']];
 
 // @public (undocumented)
 type NotesStateRequest = operations['notes___state']['requestBody']['content']['application/json'];
@@ -2768,10 +4091,19 @@ type NotesStateRequest = operations['notes___state']['requestBody']['content']['
 type NotesStateResponse = operations['notes___state']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesThreadMutingCreateErrors = EndpointsErrors['notes___thread-muting___create'][keyof EndpointsErrors['notes___thread-muting___create']];
+
+// @public (undocumented)
 type NotesThreadMutingCreateRequest = operations['notes___thread-muting___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type NotesThreadMutingDeleteErrors = EndpointsErrors['notes___thread-muting___delete'][keyof EndpointsErrors['notes___thread-muting___delete']];
+
+// @public (undocumented)
 type NotesThreadMutingDeleteRequest = operations['notes___thread-muting___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesTimelineErrors = EndpointsErrors['notes___timeline'][keyof EndpointsErrors['notes___timeline']];
 
 // @public (undocumented)
 type NotesTimelineRequest = operations['notes___timeline']['requestBody']['content']['application/json'];
@@ -2780,13 +4112,22 @@ type NotesTimelineRequest = operations['notes___timeline']['requestBody']['conte
 type NotesTimelineResponse = operations['notes___timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesTranslateErrors = EndpointsErrors['notes___translate'][keyof EndpointsErrors['notes___translate']];
+
+// @public (undocumented)
 type NotesTranslateRequest = operations['notes___translate']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesTranslateResponse = operations['notes___translate']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesUnrenoteErrors = EndpointsErrors['notes___unrenote'][keyof EndpointsErrors['notes___unrenote']];
+
+// @public (undocumented)
 type NotesUnrenoteRequest = operations['notes___unrenote']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesUserListTimelineErrors = EndpointsErrors['notes___user-list-timeline'][keyof EndpointsErrors['notes___user-list-timeline']];
 
 // @public (undocumented)
 type NotesUserListTimelineRequest = operations['notes___user-list-timeline']['requestBody']['content']['application/json'];
@@ -2801,7 +4142,19 @@ export const noteVisibilities: readonly ["public", "home", "followers", "specifi
 type Notification_2 = components['schemas']['Notification'];
 
 // @public (undocumented)
+type NotificationsCreateErrors = EndpointsErrors['notifications___create'][keyof EndpointsErrors['notifications___create']];
+
+// @public (undocumented)
 type NotificationsCreateRequest = operations['notifications___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotificationsFlushErrors = EndpointsErrors['notifications___flush'][keyof EndpointsErrors['notifications___flush']];
+
+// @public (undocumented)
+type NotificationsMarkAllAsReadErrors = EndpointsErrors['notifications___mark-all-as-read'][keyof EndpointsErrors['notifications___mark-all-as-read']];
+
+// @public (undocumented)
+type NotificationsTestNotificationErrors = EndpointsErrors['notifications___test-notification'][keyof EndpointsErrors['notifications___test-notification']];
 
 // @public (undocumented)
 export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "achievementEarned"];
@@ -2825,7 +4178,13 @@ type PageEvent = {
 };
 
 // @public (undocumented)
+type PagePushErrors = EndpointsErrors['page-push'][keyof EndpointsErrors['page-push']];
+
+// @public (undocumented)
 type PagePushRequest = operations['page-push']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesCreateErrors = EndpointsErrors['pages___create'][keyof EndpointsErrors['pages___create']];
 
 // @public (undocumented)
 type PagesCreateRequest = operations['pages___create']['requestBody']['content']['application/json'];
@@ -2834,13 +4193,25 @@ type PagesCreateRequest = operations['pages___create']['requestBody']['content']
 type PagesCreateResponse = operations['pages___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type PagesDeleteErrors = EndpointsErrors['pages___delete'][keyof EndpointsErrors['pages___delete']];
+
+// @public (undocumented)
 type PagesDeleteRequest = operations['pages___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesFeaturedErrors = EndpointsErrors['pages___featured'][keyof EndpointsErrors['pages___featured']];
 
 // @public (undocumented)
 type PagesFeaturedResponse = operations['pages___featured']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type PagesLikeErrors = EndpointsErrors['pages___like'][keyof EndpointsErrors['pages___like']];
+
+// @public (undocumented)
 type PagesLikeRequest = operations['pages___like']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesShowErrors = EndpointsErrors['pages___show'][keyof EndpointsErrors['pages___show']];
 
 // @public (undocumented)
 type PagesShowRequest = operations['pages___show']['requestBody']['content']['application/json'];
@@ -2849,7 +4220,13 @@ type PagesShowRequest = operations['pages___show']['requestBody']['content']['ap
 type PagesShowResponse = operations['pages___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type PagesUnlikeErrors = EndpointsErrors['pages___unlike'][keyof EndpointsErrors['pages___unlike']];
+
+// @public (undocumented)
 type PagesUnlikeRequest = operations['pages___unlike']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesUpdateErrors = EndpointsErrors['pages___update'][keyof EndpointsErrors['pages___update']];
 
 // @public (undocumented)
 type PagesUpdateRequest = operations['pages___update']['requestBody']['content']['application/json'];
@@ -2870,10 +4247,19 @@ type PartialRolePolicyOverride = Partial<{
 export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "read:federation", "write:report-abuse"];
 
 // @public (undocumented)
+type PingErrors = EndpointsErrors['ping'][keyof EndpointsErrors['ping']];
+
+// @public (undocumented)
 type PingResponse = operations['ping']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type PinnedUsersErrors = EndpointsErrors['pinned-users'][keyof EndpointsErrors['pinned-users']];
+
+// @public (undocumented)
 type PinnedUsersResponse = operations['pinned-users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type PromoReadErrors = EndpointsErrors['promo___read'][keyof EndpointsErrors['promo___read']];
 
 // @public (undocumented)
 type PromoReadRequest = operations['promo___read']['requestBody']['content']['application/json'];
@@ -2910,10 +4296,19 @@ type QueueStats = {
 type QueueStatsLog = QueueStats[];
 
 // @public (undocumented)
+type RenoteMuteCreateErrors = EndpointsErrors['renote-mute___create'][keyof EndpointsErrors['renote-mute___create']];
+
+// @public (undocumented)
 type RenoteMuteCreateRequest = operations['renote-mute___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type RenoteMuteDeleteErrors = EndpointsErrors['renote-mute___delete'][keyof EndpointsErrors['renote-mute___delete']];
+
+// @public (undocumented)
 type RenoteMuteDeleteRequest = operations['renote-mute___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RenoteMuteListErrors = EndpointsErrors['renote-mute___list'][keyof EndpointsErrors['renote-mute___list']];
 
 // @public (undocumented)
 type RenoteMuteListRequest = operations['renote-mute___list']['requestBody']['content']['application/json'];
@@ -2925,13 +4320,28 @@ type RenoteMuteListResponse = operations['renote-mute___list']['responses']['200
 type RenoteMuting = components['schemas']['RenoteMuting'];
 
 // @public (undocumented)
+type RequestResetPasswordErrors = EndpointsErrors['request-reset-password'][keyof EndpointsErrors['request-reset-password']];
+
+// @public (undocumented)
 type RequestResetPasswordRequest = operations['request-reset-password']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ResetDbErrors = EndpointsErrors['reset-db'][keyof EndpointsErrors['reset-db']];
+
+// @public (undocumented)
+type ResetPasswordErrors = EndpointsErrors['reset-password'][keyof EndpointsErrors['reset-password']];
 
 // @public (undocumented)
 type ResetPasswordRequest = operations['reset-password']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type RetentionErrors = EndpointsErrors['retention'][keyof EndpointsErrors['retention']];
+
+// @public (undocumented)
 type RetentionResponse = operations['retention']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiCancelMatchErrors = EndpointsErrors['reversi___cancel-match'][keyof EndpointsErrors['reversi___cancel-match']];
 
 // @public (undocumented)
 type ReversiCancelMatchRequest = operations['reversi___cancel-match']['requestBody']['content']['application/json'];
@@ -2943,13 +4353,22 @@ type ReversiGameDetailed = components['schemas']['ReversiGameDetailed'];
 type ReversiGameLite = components['schemas']['ReversiGameLite'];
 
 // @public (undocumented)
+type ReversiGamesErrors = EndpointsErrors['reversi___games'][keyof EndpointsErrors['reversi___games']];
+
+// @public (undocumented)
 type ReversiGamesRequest = operations['reversi___games']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ReversiGamesResponse = operations['reversi___games']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ReversiInvitationsErrors = EndpointsErrors['reversi___invitations'][keyof EndpointsErrors['reversi___invitations']];
+
+// @public (undocumented)
 type ReversiInvitationsResponse = operations['reversi___invitations']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ReversiMatchErrors = EndpointsErrors['reversi___match'][keyof EndpointsErrors['reversi___match']];
 
 // @public (undocumented)
 type ReversiMatchRequest = operations['reversi___match']['requestBody']['content']['application/json'];
@@ -2958,16 +4377,25 @@ type ReversiMatchRequest = operations['reversi___match']['requestBody']['content
 type ReversiMatchResponse = operations['reversi___match']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ReversiShowGameErrors = EndpointsErrors['reversi___show-game'][keyof EndpointsErrors['reversi___show-game']];
+
+// @public (undocumented)
 type ReversiShowGameRequest = operations['reversi___show-game']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ReversiShowGameResponse = operations['reversi___show-game']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ReversiSurrenderErrors = EndpointsErrors['reversi___surrender'][keyof EndpointsErrors['reversi___surrender']];
+
+// @public (undocumented)
 type ReversiSurrenderRequest = operations['reversi___surrender']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 export const reversiUpdateKeys: ["map", "bw", "isLlotheo", "canPutEverywhere", "loopedBoard", "timeLimitForEachTurn"];
+
+// @public (undocumented)
+type ReversiVerifyErrors = EndpointsErrors['reversi___verify'][keyof EndpointsErrors['reversi___verify']];
 
 // @public (undocumented)
 type ReversiVerifyRequest = operations['reversi___verify']['requestBody']['content']['application/json'];
@@ -3009,7 +4437,13 @@ type RoleLite = components['schemas']['RoleLite'];
 type RolePolicies = components['schemas']['RolePolicies'];
 
 // @public (undocumented)
+type RolesListErrors = EndpointsErrors['roles___list'][keyof EndpointsErrors['roles___list']];
+
+// @public (undocumented)
 type RolesListResponse = operations['roles___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type RolesNotesErrors = EndpointsErrors['roles___notes'][keyof EndpointsErrors['roles___notes']];
 
 // @public (undocumented)
 type RolesNotesRequest = operations['roles___notes']['requestBody']['content']['application/json'];
@@ -3018,16 +4452,25 @@ type RolesNotesRequest = operations['roles___notes']['requestBody']['content']['
 type RolesNotesResponse = operations['roles___notes']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type RolesShowErrors = EndpointsErrors['roles___show'][keyof EndpointsErrors['roles___show']];
+
+// @public (undocumented)
 type RolesShowRequest = operations['roles___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type RolesShowResponse = operations['roles___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type RolesUsersErrors = EndpointsErrors['roles___users'][keyof EndpointsErrors['roles___users']];
+
+// @public (undocumented)
 type RolesUsersRequest = operations['roles___users']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type RolesUsersResponse = operations['roles___users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ServerInfoErrors = EndpointsErrors['server-info'][keyof EndpointsErrors['server-info']];
 
 // @public (undocumented)
 type ServerInfoResponse = operations['server-info']['responses']['200']['content']['application/json'];
@@ -3054,6 +4497,27 @@ type ServerStatsLog = ServerStats[];
 
 // @public (undocumented)
 type Signin = components['schemas']['Signin'];
+
+// Warning: (ae-forgotten-export) The symbol "WebAuthnServiceErrors" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+type SigninFlowErrors = {
+    message: 'Too many failed attempts to sign in. Try again later.';
+    code: 'TOO_MANY_AUTHENTICATION_FAILURES';
+    id: '22d05606-fbcf-421a-a2db-b32610dcfd1b';
+} | {
+    id: '6cc579cc-885d-43d8-95c2-b8c7fc963280';
+} | {
+    id: 'e03a5f46-d309-4865-9b69-56282d94e1eb';
+} | {
+    id: '4e30e80c-e338-45a0-8c8f-44455efa3b76';
+} | {
+    id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c';
+} | {
+    id: 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f';
+} | {
+    id: '93b86c4b-72f9-40eb-9815-798928603d1e';
+} | WebAuthnServiceErrors;
 
 // @public (undocumented)
 type SigninFlowRequest = {
@@ -3082,6 +4546,25 @@ type SigninFlowResponse = {
 };
 
 // @public (undocumented)
+type SigninWithPasskeyErrors = {
+    message: 'Too many failed attempts to sign in. Try again later.';
+    code: 'TOO_MANY_AUTHENTICATION_FAILURES';
+    id: '22d05606-fbcf-421a-a2db-b32610dcfd1b';
+} | {
+    id: '4e30e80c-e338-45a0-8c8f-44455efa3b76';
+} | {
+    id: '1658cc2e-4495-461f-aee4-d403cdf073c1';
+} | {
+    id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c';
+} | {
+    id: '652f899f-66d4-490e-993e-6606c8ec04c3';
+} | {
+    id: 'e03a5f46-d309-4865-9b69-56282d94e1eb';
+} | {
+    id: '2d84773e-f7b7-4d0b-8f72-bb69b584c912';
+} | WebAuthnServiceErrors;
+
+// @public (undocumented)
 type SigninWithPasskeyInitResponse = {
     option: PublicKeyCredentialRequestOptionsJSON;
     context: string;
@@ -3099,6 +4582,18 @@ type SigninWithPasskeyResponse = {
         finished: true;
     };
 };
+
+// @public (undocumented)
+type SignupErrors = {
+    message: 'DUPLICATED_USERNAME';
+    code: 400;
+} | {
+    message: 'USED_USERNAME';
+    code: 400;
+} | {
+    message: 'DENIED_USERNAME';
+    code: 400;
+} | Record<string, any>;
 
 // @public (undocumented)
 type SignupPendingRequest = {
@@ -3128,6 +4623,9 @@ type SignupRequest = {
 type SignupResponse = MeDetailed & {
     token: string;
 };
+
+// @public (undocumented)
+type StatsErrors = EndpointsErrors['stats'][keyof EndpointsErrors['stats']];
 
 // @public (undocumented)
 type StatsResponse = operations['stats']['responses']['200']['content']['application/json'];
@@ -3179,10 +4677,16 @@ export type StreamEvents = {
 type SwitchCaseResponseType<E extends keyof Endpoints, P extends Endpoints[E]['req']> = Endpoints[E]['res'] extends SwitchCase ? IsCaseMatched<E, P, 0> extends true ? GetCaseResult<E, P, 0> : IsCaseMatched<E, P, 1> extends true ? GetCaseResult<E, P, 1> : IsCaseMatched<E, P, 2> extends true ? GetCaseResult<E, P, 2> : IsCaseMatched<E, P, 3> extends true ? GetCaseResult<E, P, 3> : IsCaseMatched<E, P, 4> extends true ? GetCaseResult<E, P, 4> : IsCaseMatched<E, P, 5> extends true ? GetCaseResult<E, P, 5> : IsCaseMatched<E, P, 6> extends true ? GetCaseResult<E, P, 6> : IsCaseMatched<E, P, 7> extends true ? GetCaseResult<E, P, 7> : IsCaseMatched<E, P, 8> extends true ? GetCaseResult<E, P, 8> : IsCaseMatched<E, P, 9> extends true ? GetCaseResult<E, P, 9> : Endpoints[E]['res']['$switch']['$default'] : Endpoints[E]['res'];
 
 // @public (undocumented)
+type SwRegisterErrors = EndpointsErrors['sw___register'][keyof EndpointsErrors['sw___register']];
+
+// @public (undocumented)
 type SwRegisterRequest = operations['sw___register']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type SwRegisterResponse = operations['sw___register']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type SwShowRegistrationErrors = EndpointsErrors['sw___show-registration'][keyof EndpointsErrors['sw___show-registration']];
 
 // @public (undocumented)
 type SwShowRegistrationRequest = operations['sw___show-registration']['requestBody']['content']['application/json'];
@@ -3191,7 +4695,13 @@ type SwShowRegistrationRequest = operations['sw___show-registration']['requestBo
 type SwShowRegistrationResponse = operations['sw___show-registration']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type SwUnregisterErrors = EndpointsErrors['sw___unregister'][keyof EndpointsErrors['sw___unregister']];
+
+// @public (undocumented)
 type SwUnregisterRequest = operations['sw___unregister']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type SwUpdateRegistrationErrors = EndpointsErrors['sw___update-registration'][keyof EndpointsErrors['sw___update-registration']];
 
 // @public (undocumented)
 type SwUpdateRegistrationRequest = operations['sw___update-registration']['requestBody']['content']['application/json'];
@@ -3201,6 +4711,9 @@ type SwUpdateRegistrationResponse = operations['sw___update-registration']['resp
 
 // @public (undocumented)
 type SystemWebhook = components['schemas']['SystemWebhook'];
+
+// @public (undocumented)
+type TestErrors = EndpointsErrors['test'][keyof EndpointsErrors['test']];
 
 // @public (undocumented)
 type TestRequest = operations['test']['requestBody']['content']['application/json'];
@@ -3230,10 +4743,16 @@ type UserList = components['schemas']['UserList'];
 type UserLite = components['schemas']['UserLite'];
 
 // @public (undocumented)
+type UsernameAvailableErrors = EndpointsErrors['username___available'][keyof EndpointsErrors['username___available']];
+
+// @public (undocumented)
 type UsernameAvailableRequest = operations['username___available']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsernameAvailableResponse = operations['username___available']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersAchievementsErrors = EndpointsErrors['users___achievements'][keyof EndpointsErrors['users___achievements']];
 
 // @public (undocumented)
 type UsersAchievementsRequest = operations['users___achievements']['requestBody']['content']['application/json'];
@@ -3242,10 +4761,19 @@ type UsersAchievementsRequest = operations['users___achievements']['requestBody'
 type UsersAchievementsResponse = operations['users___achievements']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersClipsErrors = EndpointsErrors['users___clips'][keyof EndpointsErrors['users___clips']];
+
+// @public (undocumented)
 type UsersClipsRequest = operations['users___clips']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersClipsResponse = operations['users___clips']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersErrors = EndpointsErrors['users'][keyof EndpointsErrors['users']];
+
+// @public (undocumented)
+type UsersFeaturedNotesErrors = EndpointsErrors['users___featured-notes'][keyof EndpointsErrors['users___featured-notes']];
 
 // @public (undocumented)
 type UsersFeaturedNotesRequest = operations['users___featured-notes']['requestBody']['content']['application/json'];
@@ -3254,10 +4782,16 @@ type UsersFeaturedNotesRequest = operations['users___featured-notes']['requestBo
 type UsersFeaturedNotesResponse = operations['users___featured-notes']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersFlashsErrors = EndpointsErrors['users___flashs'][keyof EndpointsErrors['users___flashs']];
+
+// @public (undocumented)
 type UsersFlashsRequest = operations['users___flashs']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersFlashsResponse = operations['users___flashs']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersFollowersErrors = EndpointsErrors['users___followers'][keyof EndpointsErrors['users___followers']];
 
 // @public (undocumented)
 type UsersFollowersRequest = operations['users___followers']['requestBody']['content']['application/json'];
@@ -3266,10 +4800,16 @@ type UsersFollowersRequest = operations['users___followers']['requestBody']['con
 type UsersFollowersResponse = operations['users___followers']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersFollowingErrors = EndpointsErrors['users___following'][keyof EndpointsErrors['users___following']];
+
+// @public (undocumented)
 type UsersFollowingRequest = operations['users___following']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersFollowingResponse = operations['users___following']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGalleryPostsErrors = EndpointsErrors['users___gallery___posts'][keyof EndpointsErrors['users___gallery___posts']];
 
 // @public (undocumented)
 type UsersGalleryPostsRequest = operations['users___gallery___posts']['requestBody']['content']['application/json'];
@@ -3278,10 +4818,19 @@ type UsersGalleryPostsRequest = operations['users___gallery___posts']['requestBo
 type UsersGalleryPostsResponse = operations['users___gallery___posts']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersGetFrequentlyRepliedUsersErrors = EndpointsErrors['users___get-frequently-replied-users'][keyof EndpointsErrors['users___get-frequently-replied-users']];
+
+// @public (undocumented)
 type UsersGetFrequentlyRepliedUsersRequest = operations['users___get-frequently-replied-users']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersGetFrequentlyRepliedUsersResponse = operations['users___get-frequently-replied-users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsCreateErrors = EndpointsErrors['users___lists___create'][keyof EndpointsErrors['users___lists___create']];
+
+// @public (undocumented)
+type UsersListsCreateFromPublicErrors = EndpointsErrors['users___lists___create-from-public'][keyof EndpointsErrors['users___lists___create-from-public']];
 
 // @public (undocumented)
 type UsersListsCreateFromPublicRequest = operations['users___lists___create-from-public']['requestBody']['content']['application/json'];
@@ -3296,10 +4845,19 @@ type UsersListsCreateRequest = operations['users___lists___create']['requestBody
 type UsersListsCreateResponse = operations['users___lists___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersListsDeleteErrors = EndpointsErrors['users___lists___delete'][keyof EndpointsErrors['users___lists___delete']];
+
+// @public (undocumented)
 type UsersListsDeleteRequest = operations['users___lists___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type UsersListsFavoriteErrors = EndpointsErrors['users___lists___favorite'][keyof EndpointsErrors['users___lists___favorite']];
+
+// @public (undocumented)
 type UsersListsFavoriteRequest = operations['users___lists___favorite']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsGetMembershipsErrors = EndpointsErrors['users___lists___get-memberships'][keyof EndpointsErrors['users___lists___get-memberships']];
 
 // @public (undocumented)
 type UsersListsGetMembershipsRequest = operations['users___lists___get-memberships']['requestBody']['content']['application/json'];
@@ -3308,16 +4866,28 @@ type UsersListsGetMembershipsRequest = operations['users___lists___get-membershi
 type UsersListsGetMembershipsResponse = operations['users___lists___get-memberships']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersListsListErrors = EndpointsErrors['users___lists___list'][keyof EndpointsErrors['users___lists___list']];
+
+// @public (undocumented)
 type UsersListsListRequest = operations['users___lists___list']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersListsListResponse = operations['users___lists___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersListsPullErrors = EndpointsErrors['users___lists___pull'][keyof EndpointsErrors['users___lists___pull']];
+
+// @public (undocumented)
 type UsersListsPullRequest = operations['users___lists___pull']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type UsersListsPushErrors = EndpointsErrors['users___lists___push'][keyof EndpointsErrors['users___lists___push']];
+
+// @public (undocumented)
 type UsersListsPushRequest = operations['users___lists___push']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsShowErrors = EndpointsErrors['users___lists___show'][keyof EndpointsErrors['users___lists___show']];
 
 // @public (undocumented)
 type UsersListsShowRequest = operations['users___lists___show']['requestBody']['content']['application/json'];
@@ -3326,7 +4896,16 @@ type UsersListsShowRequest = operations['users___lists___show']['requestBody']['
 type UsersListsShowResponse = operations['users___lists___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersListsUnfavoriteErrors = EndpointsErrors['users___lists___unfavorite'][keyof EndpointsErrors['users___lists___unfavorite']];
+
+// @public (undocumented)
 type UsersListsUnfavoriteRequest = operations['users___lists___unfavorite']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersListsUpdateErrors = EndpointsErrors['users___lists___update'][keyof EndpointsErrors['users___lists___update']];
+
+// @public (undocumented)
+type UsersListsUpdateMembershipErrors = EndpointsErrors['users___lists___update-membership'][keyof EndpointsErrors['users___lists___update-membership']];
 
 // @public (undocumented)
 type UsersListsUpdateMembershipRequest = operations['users___lists___update-membership']['requestBody']['content']['application/json'];
@@ -3338,10 +4917,16 @@ type UsersListsUpdateRequest = operations['users___lists___update']['requestBody
 type UsersListsUpdateResponse = operations['users___lists___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersNotesErrors = EndpointsErrors['users___notes'][keyof EndpointsErrors['users___notes']];
+
+// @public (undocumented)
 type UsersNotesRequest = operations['users___notes']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersNotesResponse = operations['users___notes']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersPagesErrors = EndpointsErrors['users___pages'][keyof EndpointsErrors['users___pages']];
 
 // @public (undocumented)
 type UsersPagesRequest = operations['users___pages']['requestBody']['content']['application/json'];
@@ -3350,10 +4935,16 @@ type UsersPagesRequest = operations['users___pages']['requestBody']['content']['
 type UsersPagesResponse = operations['users___pages']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersReactionsErrors = EndpointsErrors['users___reactions'][keyof EndpointsErrors['users___reactions']];
+
+// @public (undocumented)
 type UsersReactionsRequest = operations['users___reactions']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersReactionsResponse = operations['users___reactions']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersRecommendationErrors = EndpointsErrors['users___recommendation'][keyof EndpointsErrors['users___recommendation']];
 
 // @public (undocumented)
 type UsersRecommendationRequest = operations['users___recommendation']['requestBody']['content']['application/json'];
@@ -3362,10 +4953,16 @@ type UsersRecommendationRequest = operations['users___recommendation']['requestB
 type UsersRecommendationResponse = operations['users___recommendation']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersRelationErrors = EndpointsErrors['users___relation'][keyof EndpointsErrors['users___relation']];
+
+// @public (undocumented)
 type UsersRelationRequest = operations['users___relation']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersRelationResponse = operations['users___relation']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersReportAbuseErrors = EndpointsErrors['users___report-abuse'][keyof EndpointsErrors['users___report-abuse']];
 
 // @public (undocumented)
 type UsersReportAbuseRequest = operations['users___report-abuse']['requestBody']['content']['application/json'];
@@ -3377,10 +4974,16 @@ type UsersRequest = operations['users']['requestBody']['content']['application/j
 type UsersResponse = operations['users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersSearchByUsernameAndHostErrors = EndpointsErrors['users___search-by-username-and-host'][keyof EndpointsErrors['users___search-by-username-and-host']];
+
+// @public (undocumented)
 type UsersSearchByUsernameAndHostRequest = operations['users___search-by-username-and-host']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersSearchByUsernameAndHostResponse = operations['users___search-by-username-and-host']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersSearchErrors = EndpointsErrors['users___search'][keyof EndpointsErrors['users___search']];
 
 // @public (undocumented)
 type UsersSearchRequest = operations['users___search']['requestBody']['content']['application/json'];
@@ -3389,17 +4992,24 @@ type UsersSearchRequest = operations['users___search']['requestBody']['content']
 type UsersSearchResponse = operations['users___search']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersShowErrors = EndpointsErrors['users___show'][keyof EndpointsErrors['users___show']];
+
+// @public (undocumented)
 type UsersShowRequest = operations['users___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersShowResponse = operations['users___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersUpdateMemoErrors = EndpointsErrors['users___update-memo'][keyof EndpointsErrors['users___update-memo']];
+
+// @public (undocumented)
 type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['content']['application/json'];
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/autogen/endpointErrors.ts:994:2 - (ae-forgotten-export) The symbol "IdentifiableError" needs to be exported by the entry point index.d.ts
+// src/entities.ts:51:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
