@@ -51,6 +51,7 @@ import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
 import { popups } from '@/os.js';
 import { pendingApiRequestsCount } from '@/scripts/misskey-api.js';
+import { filterMutedNotification } from '@/scripts/filter-muted-notification.js';
 import { uploads } from '@/scripts/upload.js';
 import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
@@ -72,6 +73,8 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 			// サーバーサイドのテスト通知の際は自動で既読をつけない（テストできないので）
 			useStream().send('readNotification');
 		}
+
+		if (!filterMutedNotification(notification)) return;
 
 		notifications.value.unshift(notification);
 		window.setTimeout(() => {

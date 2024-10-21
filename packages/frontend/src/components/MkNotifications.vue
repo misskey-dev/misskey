@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkPullToRefresh :refresher="() => reload()">
-	<MkPagination ref="pagingComponent" :pagination="pagination">
+	<MkPagination ref="pagingComponent" :pagination="pagination" :filter="filterMutedNotification">
 		<template #empty>
 			<div class="_fullinfo">
 				<img :src="infoImageUrl" class="_ghost"/>
@@ -34,6 +34,7 @@ import { i18n } from '@/i18n.js';
 import { notificationTypes } from '@/const.js';
 import { infoImageUrl } from '@/instance.js';
 import { defaultStore } from '@/store.js';
+import { filterMutedNotification } from '@/scripts/filter-muted-notification.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import * as Misskey from 'misskey-js';
 
@@ -63,7 +64,7 @@ function onNotification(notification) {
 		useStream().send('readNotification');
 	}
 
-	if (!isMuted) {
+	if (!isMuted && filterMutedNotification(notification)) {
 		pagingComponent.value?.prepend(notification);
 	}
 }

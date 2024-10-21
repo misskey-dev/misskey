@@ -84,6 +84,7 @@ const props = withDefaults(defineProps<{
 	pagination: Paging;
 	disableAutoLoad?: boolean;
 	displayLimit?: number;
+	filter?: (item: MisskeyEntity) => boolean;
 }>(), {
 	displayLimit: 20,
 });
@@ -178,6 +179,8 @@ async function init(): Promise<void> {
 		limit: props.pagination.limit ?? 10,
 		allowPartial: true,
 	}).then(res => {
+		res = res.filter(item => !props.filter || props.filter(item));
+
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
@@ -219,6 +222,8 @@ const fetchMore = async (): Promise<void> => {
 			untilId: items.value[items.value.length - 1].id,
 		}),
 	}).then(res => {
+		res = res.filter(item => !props.filter || props.filter(item));
+
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 10) item._shouldInsertAd_ = true;
@@ -283,6 +288,8 @@ const fetchMoreAhead = async (): Promise<void> => {
 			sinceId: items.value[0].id,
 		}),
 	}).then(res => {
+		res = res.filter(item => !props.filter || props.filter(item));
+
 		if (res.length === 0) {
 			items.value = res.concat(items.value);
 			more.value = false;
