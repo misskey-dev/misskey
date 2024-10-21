@@ -1301,6 +1301,9 @@ _accountSettings:
   requireSigninToViewContentsDescription1: "あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。"
   requireSigninToViewContentsDescription2: "URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。"
   requireSigninToViewContentsDescription3: "リモートサーバーに連合されたコンテンツでは、これらの制限が適用されない場合があります。"
+  makeNotesFollowersOnlyBefore: "過去のノートをフォロワーのみ表示可能にする"
+  makeNotesHiddenBefore: "過去のノートを非公開化する"
+  mayNotEffectForFederatedNotes: "リモートサーバーに連合されたノートには効果が及ばない場合があります。"
 
 _abuseUserReport:
   forward: "転送"

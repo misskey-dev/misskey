@@ -5215,6 +5215,18 @@ export interface Locale extends ILocale {
          * リモートサーバーに連合されたコンテンツでは、これらの制限が適用されない場合があります。
          */
         "requireSigninToViewContentsDescription3": string;
+        /**
+         * 過去のノートをフォロワーのみ表示可能にする
+         */
+        "makeNotesFollowersOnlyBefore": string;
+        /**
+         * 過去のノートを非公開化する
+         */
+        "makeNotesHiddenBefore": string;
+        /**
+         * リモートサーバーに連合されたノートには効果が及ばない場合があります。
+         */
+        "mayNotEffectForFederatedNotes": string;
     };
     "_abuseUserReport": {
         /**

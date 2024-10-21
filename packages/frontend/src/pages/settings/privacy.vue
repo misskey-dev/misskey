@@ -45,17 +45,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkSwitch>
 
 	<FormSection>
-		<template #label>{{ i18n.ts.lockdown }}</template>
+		<template #label>{{ i18n.ts.lockdown }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 
 		<div class="_gaps_m">
 			<MkSwitch v-model="requireSigninToViewContents" @update:modelValue="save()">
-				{{ i18n.ts._accountSettings.requireSigninToViewContents }}<span class="_beta">{{ i18n.ts.beta }}</span>
+				{{ i18n.ts._accountSettings.requireSigninToViewContents }}
 				<template #caption>
 					<div>{{ i18n.ts._accountSettings.requireSigninToViewContentsDescription1 }}</div>
 					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription2 }}</div>
 					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription3 }}</div>
 				</template>
 			</MkSwitch>
+
+			<MkSelect v-model="makeNotesFollowersOnlyBefore" @update:modelValue="save()">
+				<template #label>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBefore }}</template>
+				<option :value="null">{{ i18n.ts.none }}</option>
+				<option :value="-3600">{{ '1h ago' }}</option>
+				<option :value="-86400">{{ '1d ago' }}</option>
+				<option :value="-259200">{{ '3d ago' }}</option>
+				<option :value="-604800">{{ '1w ago' }}</option>
+				<option :value="-2592000">{{ '1m ago' }}</option>
+				<option :value="-31104000">{{ '1y ago' }}</option>
+				<template #caption>
+					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
+				</template>
+			</MkSelect>
+
+			<MkSelect v-model="makeNotesHiddenBefore" @update:modelValue="save()">
+				<template #label>{{ i18n.ts._accountSettings.makeNotesHiddenBefore }}</template>
+				<option :value="null">{{ i18n.ts.none }}</option>
+				<option :value="-3600">{{ '1h ago' }}</option>
+				<option :value="-86400">{{ '1d ago' }}</option>
+				<option :value="-259200">{{ '3d ago' }}</option>
+				<option :value="-604800">{{ '1w ago' }}</option>
+				<option :value="-2592000">{{ '1m ago' }}</option>
+				<option :value="-31104000">{{ '1y ago' }}</option>
+				<template #caption>
+					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
+				</template>
+			</MkSelect>
 		</div>
 	</FormSection>
 
@@ -106,6 +134,8 @@ const noCrawle = ref($i.noCrawle);
 const preventAiLearning = ref($i.preventAiLearning);
 const isExplorable = ref($i.isExplorable);
 const requireSigninToViewContents = ref($i.requireSigninToViewContents ?? false);
+const makeNotesFollowersOnlyBefore = ref($i.makeNotesFollowersOnlyBefore ?? null);
+const makeNotesHiddenBefore = ref($i.makeNotesHiddenBefore ?? null);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
 const followingVisibility = ref($i.followingVisibility);
@@ -124,6 +154,8 @@ function save() {
 		preventAiLearning: !!preventAiLearning.value,
 		isExplorable: !!isExplorable.value,
 		requireSigninToViewContents: !!requireSigninToViewContents.value,
+		makeNotesFollowersOnlyBefore: makeNotesFollowersOnlyBefore.value,
+		makeNotesHiddenBefore: makeNotesHiddenBefore.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
 		publicReactions: !!publicReactions.value,
 		followingVisibility: followingVisibility.value,
