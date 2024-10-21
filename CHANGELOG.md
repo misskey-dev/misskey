@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: コンテンツの表示にログインを必須にできるように
 
 ### Client
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
