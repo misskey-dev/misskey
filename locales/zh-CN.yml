@@ -706,7 +706,7 @@ useGlobalSettingDesc: "启用时，将使用账户通知设置。关闭时，则
 other: "其他"
 regenerateLoginToken: "重新生成登录令牌"
 regenerateLoginTokenDescription: "重新生成用于登录的内部令牌。通常您不需要这样做。重新生成后，您将在所有设备上登出。"
-theKeywordWhenSearchingForCustomEmoji: "这将是搜素自定义表情符号时的关键词。"
+theKeywordWhenSearchingForCustomEmoji: "这将是搜索自定义表情符号时的关键词。"
 setMultipleBySeparatingWithSpace: "您可以使用空格分隔多个项目。"
 fileIdOrUrl: "文件 ID 或者 URL"
 behavior: "行为"
