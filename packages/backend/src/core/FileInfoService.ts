@@ -266,10 +266,7 @@ export class FileInfoService {
 	}
 
 	private async *asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
-		const watcher = new FSWatcher({
-			cwd,
-			disableGlobbing: true,
-		});
+		const watcher = new FSWatcher({ cwd });
 		let finished = false;
 		command.once('end', () => {
 			finished = true;
