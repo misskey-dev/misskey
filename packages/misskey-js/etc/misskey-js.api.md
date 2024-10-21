@@ -3078,6 +3078,7 @@ type SigninFlowResponse = {
 } | {
     finished: false;
     next: 'passkey';
+    force?: boolean;
     authRequest: PublicKeyCredentialRequestOptionsJSON;
 };
 
