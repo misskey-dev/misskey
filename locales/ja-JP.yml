@@ -1293,8 +1293,16 @@ prohibitedWordsForNameOfUser: "禁止ワード（ユーザーの名前）"
 prohibitedWordsForNameOfUserDescription: "このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。"
 yourNameContainsProhibitedWords: "変更しようとした名前に禁止された文字列が含まれています"
 yourNameContainsProhibitedWordsDescription: "名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。"
+thisContentsAreMarkedAsSigninRequiredByAuthor: "投稿者により、表示にはログインが必要と設定されています"
+lockdown: "ロックダウン"
 prohibitSkippingInitialTutorial: "チュートリアルをスキップできないようにする"
 prohibitSkippingInitialTutorialDescription: "新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了しなかったりチュートリアルページを回避したりした場合でも、強制的にリダイレクトされます。"
+
+_accountSettings:
+  requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
+  requireSigninToViewContentsDescription1: "あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーから情報を収集されるのを防ぐ効果が期待できます。"
+  requireSigninToViewContentsDescription2: "URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。"
+  requireSigninToViewContentsDescription3: "リモートサーバーに連合されたコンテンツでは、これらの制限が適用されない場合があります。"
 
 _abuseUserReport:
   forward: "転送"
@@ -2464,7 +2472,7 @@ _notification:
   youGotMention: "{name}からのメンション"
   youGotReply: "{name}からのリプライ"
   youGotQuote: "{name}による引用"
-  youRenoted: "{name}がRenoteしました"
+  youRenoted: "{name}がリノートしました"
   youWereFollowed: "フォローされました"
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
@@ -2492,7 +2500,7 @@ _notification:
     follow: "フォロー"
     mention: "メンション"
     reply: "リプライ"
-    renote: "Renote"
+    renote: "リノート"
     quote: "引用"
     reaction: "リアクション"
     pollEnded: "アンケートが終了"
@@ -2508,7 +2516,7 @@ _notification:
   _actions:
     followBack: "フォローバック"
     reply: "返信"
-    renote: "Renote"
+    renote: "リノート"
 
 _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
