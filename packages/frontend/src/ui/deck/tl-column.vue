@@ -55,7 +55,7 @@ const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 const withRenotes = ref(props.column.withRenotes ?? true);
 const withReplies = ref(props.column.withReplies ?? false);
-const withSensitive = ref(props.column.withSensitive ?? false);
+const withSensitive = ref(props.column.withSensitive ?? true);
 const onlyFiles = ref(props.column.onlyFiles ?? false);
 
 watch(withRenotes, v => {
