@@ -6,7 +6,8 @@
 ### Client
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
-- Enhance: ドライブでソートができるように 
+- Enhance: ドライブでソートができるように
+- Enhance: 「単なるラッキー」の取得条件を変更
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
