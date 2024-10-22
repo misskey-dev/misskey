@@ -96,8 +96,8 @@ export class WebAuthnService {
 
 	@bindThis
 	public async verifyRegistration(userId: MiUser['id'], response: RegistrationResponseJSON): Promise<{
-		credentialID: string;
-		credentialPublicKey: Uint8Array;
+		id: string;
+		publicKey: Uint8Array;
 		attestationObject: Uint8Array;
 		fmt: AttestationFormat;
 		counter: number;
@@ -139,15 +139,15 @@ export class WebAuthnService {
 		const { registrationInfo } = verification;
 
 		return {
-			credentialID: registrationInfo.credentialID,
-			credentialPublicKey: registrationInfo.credentialPublicKey,
+			id: registrationInfo.credential.id,
+			publicKey: registrationInfo.credential.publicKey,
 			attestationObject: registrationInfo.attestationObject,
 			fmt: registrationInfo.fmt,
-			counter: registrationInfo.counter,
+			counter: registrationInfo.credential.counter,
 			userVerified: registrationInfo.userVerified,
 			credentialDeviceType: registrationInfo.credentialDeviceType,
 			credentialBackedUp: registrationInfo.credentialBackedUp,
-			transports: response.response.transports,
+			transports: registrationInfo.credential.transports,
 		};
 	}
 
@@ -228,9 +228,9 @@ export class WebAuthnService {
 				expectedChallenge: challenge,
 				expectedOrigin: relyingParty.origin,
 				expectedRPID: relyingParty.rpId,
-				authenticator: {
-					credentialID: key.id,
-					credentialPublicKey: Buffer.from(key.publicKey, 'base64url'),
+				credential: {
+					id: key.id,
+					publicKey: Buffer.from(key.publicKey, 'base64url'),
 					counter: key.counter,
 					transports: key.transports ? key.transports as AuthenticatorTransportFuture[] : undefined,
 				},

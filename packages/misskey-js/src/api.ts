@@ -58,7 +58,7 @@ export class APIClient {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
 				method: 'POST',
 				body: JSON.stringify({
-					...params,
+					...(params ?? {}),
 					i: credential !== undefined ? credential : this.credential,
 				}),
 				headers: {

@@ -52,7 +52,8 @@ const primaries = {
 const clean = (text) => text.replace(new RegExp(String.fromCodePoint(0x08), 'g'), '');
 
 export function build() {
-	const locales = languages.reduce((a, c) => (a[c] = yaml.load(clean(fs.readFileSync(new URL(`${c}.yml`, import.meta.url), 'utf-8'))) || {}, a), {});
+	const metaUrl = import.meta.url;
+	const locales = languages.reduce((a, c) => (a[c] = yaml.load(clean(fs.readFileSync(new URL(`${c}.yml`, metaUrl), 'utf-8'))) || {}, a), {});
 
 	// 空文字列が入ることがあり、フォールバックが動作しなくなるのでプロパティごと消す
 	const removeEmpty = (obj) => {

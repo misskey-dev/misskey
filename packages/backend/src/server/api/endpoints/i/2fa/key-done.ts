@@ -96,13 +96,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const keyInfo = await this.webAuthnService.verifyRegistration(me.id, ps.credential);
-			const keyId = keyInfo.credentialID;
+			const keyId = keyInfo.id;
 
 			await this.userSecurityKeysRepository.insert({
 				id: keyId,
 				userId: me.id,
 				name: ps.name,
-				publicKey: Buffer.from(keyInfo.credentialPublicKey).toString('base64url'),
+				publicKey: Buffer.from(keyInfo.publicKey).toString('base64url'),
 				counter: keyInfo.counter,
 				credentialDeviceType: keyInfo.credentialDeviceType,
 				credentialBackedUp: keyInfo.credentialBackedUp,
