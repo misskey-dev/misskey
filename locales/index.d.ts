@@ -5175,6 +5175,10 @@ export interface Locale extends ILocale {
      */
     "passkeyVerificationSucceededButPasswordlessLoginDisabled": string;
     /**
+     * お使いのブラウザはパスキーをサポートしていません。
+     */
+    "yourBrowserDoesNotSupportPasskey": string;
+    /**
      * フォロワーへのメッセージ
      */
     "messageToFollower": string;
