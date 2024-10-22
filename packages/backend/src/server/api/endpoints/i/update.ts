@@ -180,6 +180,8 @@ export const paramDef = {
 		noCrawle: { type: 'boolean' },
 		preventAiLearning: { type: 'boolean' },
 		requireSigninToViewContents: { type: 'boolean' },
+		makeNotesFollowersOnlyBefore: { type: 'integer', nullable: true },
+		makeNotesHiddenBefore: { type: 'integer', nullable: true },
 		isBot: { type: 'boolean' },
 		isCat: { type: 'boolean' },
 		injectFeaturedNote: { type: 'boolean' },
@@ -336,6 +338,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 			if (typeof ps.preventAiLearning === 'boolean') profileUpdates.preventAiLearning = ps.preventAiLearning;
 			if (typeof ps.requireSigninToViewContents === 'boolean') updates.requireSigninToViewContents = ps.requireSigninToViewContents;
+			if ((typeof ps.makeNotesFollowersOnlyBefore === 'number') || (ps.makeNotesFollowersOnlyBefore === null)) updates.makeNotesFollowersOnlyBefore = ps.makeNotesFollowersOnlyBefore;
+			if ((typeof ps.makeNotesHiddenBefore === 'number') || (ps.makeNotesHiddenBefore === null)) updates.makeNotesHiddenBefore = ps.makeNotesHiddenBefore;
 			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;

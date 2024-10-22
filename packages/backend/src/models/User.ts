@@ -207,6 +207,18 @@ export class MiUser {
 	})
 	public requireSigninToViewContents: boolean;
 
+	// in sec, マイナスで相対時間
+	@Column('integer', {
+		nullable: true,
+	})
+	public makeNotesFollowersOnlyBefore: number | null;
+
+	// in sec, マイナスで相対時間
+	@Column('integer', {
+		nullable: true,
+	})
+	public makeNotesHiddenBefore: number | null;
+
 	// アカウントが削除されたかどうかのフラグだが、完全に削除される際は物理削除なので実質削除されるまでの「削除が進行しているかどうか」のフラグ
 	@Column('boolean', {
 		default: false,
