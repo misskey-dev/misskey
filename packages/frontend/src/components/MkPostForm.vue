@@ -80,15 +80,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<footer :class="$style.footer">
 		<div :class="$style.footerLeft">
-			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
-			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
-			<button v-tooltip="i18n.ts.scheduledNoteDelete" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: scheduledNoteDelete }]" @click="toggleScheduledNoteDelete"><i class="ti ti-bomb"></i></button>
-			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
-			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
-			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
-			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
-			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
-			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
+			<template v-for="item in defaultStore.state.postFormActions">
+				<button v-if="!bottomItemActionDef[item].hide" :key="item" v-tooltip="bottomItemDef[item].title" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: bottomItemActionDef[item].active }]" v-on="bottomItemActionDef[item].action ? { click: bottomItemActionDef[item].action } : {}"><i class="ti" :class="bottomItemDef[item].icon"></i></button>
+			</template>
 		</div>
 		<div :class="$style.footerRight">
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
@@ -102,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, reactive } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -132,6 +126,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
+import { bottomItemDef } from '@/scripts/post-form.js';
 
 const $i = signinRequired();
 
@@ -183,7 +178,7 @@ const posted = ref(false);
 const text = ref(props.initialText ?? '');
 const files = ref(props.initialFiles ?? []);
 const poll = ref<PollEditorModelValue | null>(null);
-const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(null);
+const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(defaultStore.state.defaultScheduledNoteDelete ? { deleteAt: null, deleteAfter: defaultStore.state.defaultScheduledNoteDeleteTime, isValid: true } : null);
 const useCw = ref<boolean>(!!props.initialCw);
 const showPreview = ref(defaultStore.state.showPreview);
 watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
@@ -258,6 +253,7 @@ const maxTextLength = computed((): number => {
 
 const canPost = computed((): boolean => {
 	return !props.mock && !posting.value && !posted.value &&
+		(scheduledNoteDelete.value ? scheduledNoteDelete.value.isValid : true) &&
 		(
 			1 <= textLength.value ||
 			1 <= files.value.length ||
@@ -271,6 +267,49 @@ const canPost = computed((): boolean => {
 
 const withHashtags = computed(defaultStore.makeGetterSetter('postFormWithHashtags'));
 const hashtags = computed(defaultStore.makeGetterSetter('postFormHashtags'));
+
+const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
+	hide?: boolean;
+	active?: any;
+	action?: any;
+}> = reactive({
+	attachFile: {
+		action: chooseFileFrom,
+	},
+	poll: {
+		active: poll,
+		action: togglePoll,
+	},
+	scheduledNoteDelete: {
+		active: scheduledNoteDelete,
+		action: toggleScheduledNoteDelete,
+	},
+	useCw: {
+		active: useCw,
+		action: () => useCw.value = !useCw.value,
+	},
+	mention: {
+		action: insertMention,
+	},
+	hashtags: {
+		active: withHashtags,
+		action: () => withHashtags.value = !withHashtags.value,
+	},
+	plugins: {
+		hide: postFormActions.length === 0,
+		action: showActions,
+	},
+	emoji: {
+		action: insertEmoji,
+	},
+	addMfmFunction: {
+		hide: computed(() => !showAddMfmFunction.value),
+		action: insertMfmFunction,
+	},
+	clearPost: {
+		action: clear,
+	},
+});
 
 watch(text, () => {
 	checkMissingMention();
@@ -422,6 +461,7 @@ function toggleScheduledNoteDelete() {
 		scheduledNoteDelete.value = {
 			deleteAt: null,
 			deleteAfter: null,
+			isValid: true,
 		};
 	}
 }
@@ -1055,6 +1095,7 @@ onMounted(() => {
 				scheduledNoteDelete.value = {
 					deleteAt: init.deleteAt ? (new Date(init.deleteAt)).getTime() : null,
 					deleteAfter: null,
+					isValid: true,
 				};
 			}
 			if (init.visibleUserIds) {

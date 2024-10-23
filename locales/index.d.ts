@@ -5143,6 +5143,14 @@ export interface Locale extends ILocale {
      */
     "fromX": ParameterizedString<"x">;
     /**
+     * ノートの自己消滅の初期値
+     */
+    "defaultScheduledNoteDeleteTime": string;
+    /**
+     * ノートの自己消滅が有効になっています
+     */
+    "scheduledNoteDeleteEnabled": string;
+    /**
      * 埋め込みコードを生成
      */
     "genEmbedCode": string;
@@ -5274,6 +5282,10 @@ export interface Locale extends ILocale {
         };
     };
     /**
+     * 1年以上先の日時を指定することはできません
+     */
+    "cannotScheduleLaterThanOneYear": string;
+    /**
      * アクティビティを非公開にする
      */
     "hideActivity": string;
@@ -5301,6 +5313,22 @@ export interface Locale extends ILocale {
      * リアクション数の非表示
      */
     "hideReactionCount": string;
+    /**
+     * 投稿フォーム
+     */
+    "postForm": string;
+    /**
+     * 投稿フォームの下部に表示される項目の並び替えが出来ます。項目をクリックすると削除できます。
+     */
+    "postFormBottomSettingsDescription": string;
+    /**
+     * 投稿フォームをリセット
+     */
+    "clearPost": string;
+    /**
+     * デフォルトでノートが自己消滅するように
+     */
+    "defaultScheduledNoteDelete": string;
     "_bubbleGame": {
         /**
          * 遊び方
