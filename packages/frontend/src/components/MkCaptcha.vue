@@ -117,8 +117,8 @@ async function requestRender() {
 			sitekey: props.sitekey,
 			theme: defaultStore.state.darkMode ? 'dark' : 'light',
 			callback: callback,
-			'expired-callback': callback,
-			'error-callback': callback,
+			'expired-callback': () => callback(undefined),
+			'error-callback': () => callback(undefined),
 		});
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
 		const { default: Widget } = await import('@mcaptcha/vanilla-glue');

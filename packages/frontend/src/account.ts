@@ -5,12 +5,12 @@
 
 import { defineAsyncComponent, reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { apiUrl } from '@@/js/config.js';
+import type { MenuItem, MenuButton } from '@/types/menu.js';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import type { MenuItem, MenuButton } from '@/types/menu.js';
 import { del, get, set } from '@/scripts/idb-proxy.js';
-import { apiUrl } from '@@/js/config.js';
 import { waiting, popup, popupMenu, success, alert } from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
@@ -165,7 +165,18 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 	});
 }
 
-export function updateAccount(accountData: Partial<Account>) {
+export function updateAccount(accountData: Account) {
+	if (!$i) return;
+	for (const key of Object.keys($i)) {
+		delete $i[key];
+	}
+	for (const [key, value] of Object.entries(accountData)) {
+		$i[key] = value;
+	}
+	miLocalStorage.setItem('account', JSON.stringify($i));
+}
+
+export function updateAccountPartial(accountData: Partial<Account>) {
 	if (!$i) return;
 	for (const [key, value] of Object.entries(accountData)) {
 		$i[key] = value;

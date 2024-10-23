@@ -39,6 +39,17 @@ export class GetterService {
 		return note;
 	}
 
+	@bindThis
+	public async getNoteWithUser(noteId: MiNote['id']) {
+		const note = await this.notesRepository.findOne({ where: { id: noteId }, relations: ['user'] });
+
+		if (note == null) {
+			throw new IdentifiableError('9725d0ce-ba28-4dde-95a7-2cbb2c15de24', 'No such note.');
+		}
+
+		return note;
+	}
+
 	/**
 	 * Get user for API processing
 	 */

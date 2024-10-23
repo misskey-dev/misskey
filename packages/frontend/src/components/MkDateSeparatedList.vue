@@ -128,14 +128,14 @@ export default defineComponent({
 			return children;
 		};
 
-		function onBeforeLeave(element: Element) {
-			const el = element as HTMLElement;
+		function onBeforeLeave(el: Element) {
+			if (!(el instanceof HTMLElement)) return;
 			el.style.top = `${el.offsetTop}px`;
 			el.style.left = `${el.offsetLeft}px`;
 		}
 
-		function onLeaveCancelled(element: Element) {
-			const el = element as HTMLElement;
+		function onLeaveCancelled(el: Element) {
+			if (!(el instanceof HTMLElement)) return;
 			el.style.top = '';
 			el.style.left = '';
 		}

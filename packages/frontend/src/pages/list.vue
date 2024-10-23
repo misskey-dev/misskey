@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MKSpacer v-if="!(typeof error === 'undefined')" :contentMax="1200">
+	<MkSpacer v-if="error != null" :contentMax="1200">
 		<div :class="$style.root">
 			<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
 			<p :class="$style.text">
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.nothing }}
 			</p>
 		</div>
-	</MKSpacer>
+	</MkSpacer>
 	<MkSpacer v-else-if="list" :contentMax="700" :class="$style.main">
 		<div v-if="list" class="members _margin">
 			<div :class="$style.member_text">{{ i18n.ts.members }}</div>
@@ -50,7 +50,7 @@ const props = defineProps<{
 }>();
 
 const list = ref<Misskey.entities.UserList | null>(null);
-const error = ref();
+const error = ref<unknown | null>(null);
 const users = ref<Misskey.entities.UserDetailed[]>([]);
 
 function fetchList(): void {

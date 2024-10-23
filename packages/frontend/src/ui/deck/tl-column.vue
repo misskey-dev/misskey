@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:src="column.tl"
 		:withRenotes="withRenotes"
 		:withReplies="withReplies"
+		:withSensitive="withSensitive"
 		:onlyFiles="onlyFiles"
 		@note="onNote"
 	/>
@@ -54,6 +55,7 @@ const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 const withRenotes = ref(props.column.withRenotes ?? true);
 const withReplies = ref(props.column.withReplies ?? false);
+const withSensitive = ref(props.column.withSensitive ?? true);
 const onlyFiles = ref(props.column.onlyFiles ?? false);
 
 watch(withRenotes, v => {
@@ -65,6 +67,12 @@ watch(withRenotes, v => {
 watch(withReplies, v => {
 	updateColumn(props.column.id, {
 		withReplies: v,
+	});
+});
+
+watch(withSensitive, v => {
+	updateColumn(props.column.id, {
+		withSensitive: v,
 	});
 });
 
@@ -144,6 +152,10 @@ const menu = computed<MenuItem[]>(() => {
 		text: i18n.ts.fileAttachedOnly,
 		ref: onlyFiles,
 		disabled: hasWithReplies(props.column.tl) ? withReplies : false,
+	}, {
+		type: 'switch',
+		text: i18n.ts.withSensitive,
+		ref: withSensitive,
 	});
 
 	return menuItems;
