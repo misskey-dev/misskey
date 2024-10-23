@@ -231,11 +231,41 @@ export async function mainBoot() {
 		}
 
 		if (!claimedAchievements.includes('justPlainLucky')) {
-			window.setInterval(() => {
+			let justPlainLuckyTimer: number | null = null;
+			let lastVisibilityChangedAt = Date.now();
+
+			function claimPlainLucky() {
+				if (document.visibilityState !== 'visible') {
+					if (justPlainLuckyTimer != null) window.clearTimeout(justPlainLuckyTimer);
+					return;
+				}
+
 				if (Math.floor(Math.random() * 20000) === 0) {
 					claimAchievement('justPlainLucky');
+				} else {
+					justPlainLuckyTimer = window.setTimeout(claimPlainLucky, 1000 * 10);
 				}
-			}, 1000 * 10);
+			}
+
+			window.addEventListener('visibilitychange', () => {
+				const now = Date.now();
+
+				if (document.visibilityState === 'visible') {
+					// タブを高速で切り替えたら取得処理が何度も走るのを防ぐ
+					if ((now - lastVisibilityChangedAt) < 1000 * 10) {
+						justPlainLuckyTimer = window.setTimeout(claimPlainLucky, 1000 * 10);
+					} else {
+						claimPlainLucky();
+					}
+				} else if (justPlainLuckyTimer != null) {
+					window.clearTimeout(justPlainLuckyTimer);
+					justPlainLuckyTimer = null;
+				}
+
+				lastVisibilityChangedAt = now;
+			}, { passive: true });
+
+			claimPlainLucky();
 		}
 
 		if (!claimedAchievements.includes('client30min')) {
