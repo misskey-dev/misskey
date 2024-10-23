@@ -31,12 +31,20 @@ import { focusParent } from '@/scripts/focus.js';
 
 export const openingWindowsCount = ref(0);
 
-export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req']>(
+type CustomErrorDef<T> = {
+	[key in T extends { code: infer C; } ? C extends string ? Exclude<C, keyof Misskey.entities.CommonErrorTypes> : string : string]?: { title?: string; text: string; };
+};
+
+export function apiWithDialog<
+	E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints,
+	P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req'],
+	ER extends Misskey.Endpoints[E]['errors'] = Misskey.Endpoints[E]['errors'],
+>(
 	endpoint: E,
 	data: P = {} as any,
 	token?: string | null | undefined,
-	customErrors?: Record<string, { title?: string; text: string; }>,
-) => {
+	customErrors?: CustomErrorDef<ER>,
+) {
 	const promise = misskeyApi(endpoint, data, token);
 	promiseDialog(promise, null, async (err) => {
 		let title: string | undefined;
@@ -90,12 +98,15 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 	});
 
 	return promise;
-});
+}
 
-export function promiseDialog<T extends Promise<any>>(
+export function promiseDialog<
+	T extends Promise<any>,
+	R = T extends Promise<infer R> ? R : never,
+>(
 	promise: T,
-	onSuccess?: ((res: any) => void) | null,
-	onFailure?: ((err: Misskey.api.APIError) => void) | null,
+	onSuccess?: ((res: R) => void) | null,
+	onFailure?: ((err: any) => void) | null,
 	text?: string,
 ): T {
 	const showing = ref(true);
