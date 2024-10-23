@@ -5210,6 +5210,10 @@ export interface Locale extends ILocale {
      * ロックダウン
      */
     "lockdown": string;
+    /**
+     * 常に絶対時刻で表示する
+     */
+    "alwaysUseAbsoluteTime": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
