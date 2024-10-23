@@ -1,4 +1,17 @@
 # DIFFRENCE
+## 2024.10.0-yami-1.3.6
+### Feat
+- ユーザーのサーバー情報をアイコンのみにする (MattyaDaihuku)
+- 投稿フォーム下部の項目をカスタマイズできるように (cherry-pick: kakurega.app)
+- 投稿フォームをリセットできるボタンを追加 (cherry-pick: kakurega.app)
+- ノートの自己消滅のデフォルト値を設定できるように (cherry-pick: kakurega.app)
+### Enhance
+- ノートの自己消滅の設定欄を折りたたんだ状態の表示を改善 (cherry-pick: kakurega.app)
+- ノートの自己消滅機能を改善 (cherry-pick: kakurega.app)
+- ノート消滅の経過指定の挙動を改善 (cherry-pick: kakurega.app)
+### Refactor
+- 時限ノートで1年以上後の日時を指定できないように (cherry-pick: kakurega.app)
+
 ## 2024.10.0-yami-1.3.5
 ### Enhance
 - ドライブの削除をすぐ消すように変更
