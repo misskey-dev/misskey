@@ -1303,6 +1303,13 @@ _accountSettings:
   requireSigninToViewContentsDescription1: "Require login to view all notes and other content you have created. This will have the effect of preventing crawlers from collecting your information."
   requireSigninToViewContentsDescription2: "Content will not be displayed in URL previews (OGP), embedded in web pages, or on servers that don't support note quotes."
   requireSigninToViewContentsDescription3: "These restrictions may not apply to federated content from other remote servers."
+  makeNotesFollowersOnlyBefore: "Make past notes to be displayed only to followers"
+  makeNotesFollowersOnlyBeforeDescription: "While this feature is enabled, only followers can see notes past the set date and time or have been visible for a set time. When it is deactivated, the note publication status will also be restored."
+  makeNotesHiddenBefore: "Make past notes private"
+  makeNotesHiddenBeforeDescription: "While this feature is enabled, notes that are past the set date and time or have been visible only to you. When it is deactivated, the note publication status will also be restored."
+  mayNotEffectForFederatedNotes: "Notes federated to a remote server may not be effective."
+  notesHavePassedSpecifiedPeriod: "Note that the specified time has passed"
+  notesOlderThanSpecifiedDateAndTime: "Notes before the specified date and time"
 _abuseUserReport:
   forward: "Forward"
   forwardDescription: "Forward the report to a remote server as an anonymous system account."
