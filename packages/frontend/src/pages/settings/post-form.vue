@@ -25,11 +25,11 @@
 		<MkButton primary class="save" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 	<div :class="$style.label">{{ i18n.ts.postFormBottomSettingsDescription }}</div>
-	<MkSwitch v-model="disableNoteDrafting">
+	<!-- <MkSwitch v-model="disableNoteDrafting">
 		<template #caption>{{ i18n.ts.disableNoteDraftingDescription }}</template>
 		{{ i18n.ts.disableNoteDrafting }}
 		<span class="_beta">{{ i18n.ts.originalFeature }}</span>
-	</MkSwitch>
+	</MkSwitch> -->
 	<div>
 		<div :class="$style.label">
 			{{ i18n.ts.defaultScheduledNoteDeleteTime }}
@@ -57,7 +57,7 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const disableNoteDrafting = computed(defaultStore.makeGetterSetter('disableNoteDrafting'));
+// const disableNoteDrafting = computed(defaultStore.makeGetterSetter('disableNoteDrafting'));
 const defaultScheduledNoteDelete = computed(defaultStore.makeGetterSetter('defaultScheduledNoteDelete'));
 
 const scheduledNoteDelete = ref({ deleteAt: null, deleteAfter: defaultStore.state.defaultScheduledNoteDeleteTime, isValid: true });
@@ -125,9 +125,9 @@ async function reset() {
 	}));
 }
 
-const headerActions = computed(() => []);
+// const headerActions = computed(() => []);
 
-const headerTabs = computed(() => []);
+// const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
 	title: i18n.ts.postForm,
