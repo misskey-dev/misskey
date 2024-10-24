@@ -3,19 +3,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { DI } from '@/di-symbols.js';
+import type { UserProfilesRepository } from '@/models/_.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { getJsonSchema } from '@/core/chart/core.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { schema } from '@/core/chart/charts/entities/per-user-following.js';
+import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	tags: ['charts', 'users', 'following'],
 
 	res: getJsonSchema(schema),
 
-	allowGet: true,
-	cacheSec: 60 * 60,
+	errors: {
+		ffIsMarkedAsPrivate: {
+			message: 'This user\'s followings and/or followers is marked as private.',
+			code: 'FF_IS_MARKED_AS_PRIVATE',
+			id: 'f9c54d7f-d4c2-4d3c-9a8g-a70daac86512',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -32,10 +42,51 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
+
+		private roleService: RoleService,
+		private userEntityService: UserEntityService,
 		private perUserFollowingChart: PerUserFollowingChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			return await this.perUserFollowingChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
+			const done = async () => {
+				return await this.perUserFollowingChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
+			};
+
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
+
+			if (profile.followingVisibility === 'public' && profile.followersVisibility === 'public') {
+				done();
+			}
+
+			const iAmModerator = await this.roleService.isModerator(me);
+
+			if (iAmModerator) {
+				done();
+			}
+
+			if (
+				(profile.followingVisibility === 'private' || profile.followersVisibility === 'private') &&
+				(me != null && profile.userId === me.id)
+			) {
+				done();
+			}
+
+			if (
+				me != null && (
+					(profile.followingVisibility === 'followers' && profile.followersVisibility === 'followers') ||
+					(profile.followingVisibility === 'followers' && profile.followersVisibility === 'public') ||
+					(profile.followingVisibility === 'public' && profile.followersVisibility === 'followers')
+				)
+			) {
+				const relations = await this.userEntityService.getRelation(me.id, ps.userId);
+				if (relations.following) {
+					done();
+				}
+			}
+
+			throw new ApiError(meta.errors.ffIsMarkedAsPrivate);
 		});
 	}
 }
