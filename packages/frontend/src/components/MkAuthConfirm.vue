@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.accountSelectorLabel">{{ i18n.ts.selectAccount }}</div>
 				<div :class="$style.accountSelectorList">
 					<template v-for="[id, user] in users">
-						<input :id="'account-' + id" type="radio" name="accountSelector" v-model="selectedUser" :value="id" :class="$style.accountSelectorRadio"/>
+						<input :id="'account-' + id" v-model="selectedUser" type="radio" name="accountSelector" :value="id" :class="$style.accountSelectorRadio"/>
 						<label :for="'account-' + id" :class="$style.accountSelectorItem">
 							<MkAvatar :user="user" :class="$style.accountSelectorAvatar"/>
 							<div :class="$style.accountSelectorBody">
