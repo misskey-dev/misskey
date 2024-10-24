@@ -27,14 +27,14 @@ const hasDisconnected = ref(false);
 let timeoutId: number | null = null;
 
 function onDisconnected() {
-	window.clearTimeout(timeoutId);
+	if (timeoutId != null) window.clearTimeout(timeoutId);
 	timeoutId = window.setTimeout(() => {
 		hasDisconnected.value = true;
 	}, 1000 * 10);
 }
 
 function resetDisconnected() {
-	window.clearTimeout(timeoutId);
+	if (timeoutId != null) window.clearTimeout(timeoutId);
 	hasDisconnected.value = false;
 }
 
@@ -46,7 +46,7 @@ useStream().on('_connected_', resetDisconnected);
 useStream().on('_disconnected_', onDisconnected);
 
 onUnmounted(() => {
-	window.clearTimeout(timeoutId);
+	if (timeoutId != null) window.clearTimeout(timeoutId);
 	useStream().off('_connected_', resetDisconnected);
 	useStream().off('_disconnected_', onDisconnected);
 });
