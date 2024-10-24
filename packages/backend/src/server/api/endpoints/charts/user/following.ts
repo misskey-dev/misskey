@@ -23,7 +23,7 @@ export const meta = {
 		ffIsMarkedAsPrivate: {
 			message: 'This user\'s followings and/or followers is marked as private.',
 			code: 'FF_IS_MARKED_AS_PRIVATE',
-			id: 'f9c54d7f-d4c2-4d3c-9a8g-a70daac86512',
+			id: '52e90f27-3dfd-441e-a1f2-ca6ac7068040',
 		},
 	},
 } as const;
