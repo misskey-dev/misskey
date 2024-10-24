@@ -809,11 +809,13 @@ _notification:
   _types:
     follow: "팔로잉"
     mention: "멘션"
+    renote: "리노트"
     quote: "따오기"
     reaction: "반엉"
     login: "로그인"
   _actions:
     reply: "답하기"
+    renote: "리노트"
 _deck:
   _columns:
     notifications: "알림"
