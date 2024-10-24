@@ -30,7 +30,7 @@ function onDisconnected() {
 	if (timeoutId != null) window.clearTimeout(timeoutId);
 	timeoutId = window.setTimeout(() => {
 		hasDisconnected.value = true;
-	}, 1000 * 10);
+	}, 5000);
 }
 
 function resetDisconnected() {
