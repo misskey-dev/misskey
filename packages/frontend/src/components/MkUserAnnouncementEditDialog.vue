@@ -120,6 +120,7 @@ async function done(): Promise<void> {
 		imageUrl: null,
 		display: display.value,
 		needConfirmationToRead: needConfirmationToRead.value,
+		needEnrollmentTutorialToRead: needEnrollmentTutorialToRead.value,
 		closeDuration: closeDuration.value,
 		displayOrder: displayOrder.value,
 		silence: silence.value,
