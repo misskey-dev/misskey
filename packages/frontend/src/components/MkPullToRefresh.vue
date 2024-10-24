@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { onMounted, onUnmounted, onActivated, onDeactivated, ref, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@@/js/scroll.js';
 import { isHorizontalSwipeSwiping } from '@/scripts/touch.js';
@@ -198,8 +198,8 @@ function unregisterEventListenersForReadyToPull() {
 }
 
 onMounted(() => {
+	isRefreshing.value = false;
 	if (rootEl.value == null) return;
-
 	scrollEl = getScrollContainer(rootEl.value);
 	if (scrollEl == null) return;
 
@@ -210,7 +210,18 @@ onMounted(() => {
 	registerEventListenersForReadyToPull();
 });
 
+onActivated(() => {
+	isRefreshing.value = false;
+});
+
+onDeactivated(() => {
+	scrollEl!.style.touchAction = 'auto';
+	isRefreshing.value = true;
+});
+
 onUnmounted(() => {
+	scrollEl!.style.touchAction = 'auto';
+	isRefreshing.value = true;
 	if (scrollEl) scrollEl.removeEventListener('scroll', onScrollContainerScroll);
 
 	unregisterEventListenersForReadyToPull();
