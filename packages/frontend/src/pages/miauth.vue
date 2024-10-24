@@ -15,7 +15,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:permissions="_permissions"
 				@accept="onAccept"
 				@deny="onDeny"
-			/>
+			>
+				<template #consentAdditionalInfo>
+					<div v-if="callback != null" :class="$style.redirectRoot">
+						<div>{{ i18n.ts._auth.byClickingYouWillBeRedirectedToThisUrl }}</div>
+						<div class="_monospace" :class="$style.redirectUrl">{{ callback }}</div>
+					</div>
+				</template>
+			</MkAuthConfirm>
 		</div>
 	</div>
 </div>
@@ -24,10 +31,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+
 import MkAnimBg from '@/components/MkAnimBg.vue';
+import MkAuthConfirm from '@/components/MkAuthConfirm.vue';
+
+import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import MkAuthConfirm from '@/components/MkAuthConfirm.vue';
 
 const props = defineProps<{
 	session: string;
@@ -93,5 +103,19 @@ definePageMetadata(() => ({
 	width: calc(100vw - 64px);
 	height: min(60svh, calc(100svh - calc(env(safe-area-inset-bottom, 0px) + 64px)));
 	overflow-y: scroll;
+}
+
+.redirectRoot {
+	padding: 16px;
+	border-radius: var(--MI-radius);
+	background-color: var(--MI_THEME-bg);
+}
+
+.redirectUrl {
+	font-size: 90%;
+	padding: 12px;
+	border-radius: var(--MI-radius);
+	background-color: var(--MI_THEME-panel);
+	overflow-x: scroll;
 }
 </style>

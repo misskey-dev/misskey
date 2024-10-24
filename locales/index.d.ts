@@ -8468,6 +8468,10 @@ export interface Locale extends ILocale {
          * アプリケーションにアクセス許可を与えるには、ログインが必要です。
          */
         "pleaseLogin": string;
+        /**
+         * アクセスを許可すると、自動で以下のURLに遷移します
+         */
+        "byClickingYouWillBeRedirectedToThisUrl": string;
     };
     "_antennaSources": {
         /**

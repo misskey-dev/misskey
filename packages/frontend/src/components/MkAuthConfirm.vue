@@ -57,10 +57,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div v-if="permissions && permissions.length > 0" class="_gaps_s" :class="$style.permissionRoot">
 				<div>{{ name ? i18n.tsx._auth.permission({ name }) : i18n.ts._auth.permissionAsk }}</div>
-				<ul :class="$style.permissionList">
-					<li v-for="p in permissions" :key="p">{{ i18n.ts._permissions[p] }}</li>
-				</ul>
+				<div :class="$style.permissionListWrapper">
+					<ul :class="$style.permissionList">
+						<li v-for="p in permissions" :key="p">{{ i18n.ts._permissions[p] }}</li>
+					</ul>
+				</div>
 			</div>
+			<slot name="consentAdditionalInfo"></slot>
 			<div :class="$style.accountSelectorRoot">
 				<div :class="$style.accountSelectorLabel">
 					{{ i18n.ts._auth.scopeUser }} <button class="_textButton" @click="clickBackToAccountSelect">{{ i18n.ts.switchAccount }}</button>
@@ -346,9 +349,18 @@ defineExpose({
 	background-color: var(--MI_THEME-bg);
 }
 
+.permissionListWrapper {
+	max-height: 350px;
+	overflow-y: auto;
+	padding: 12px;
+	border-radius: var(--MI-radius);
+	background-color: var(--MI_THEME-panel);
+}
+
 .permissionList {
 	margin: 0 0 0 1.5em;
 	padding: 0;
+	font-size: 90%;
 }
 
 .accountSelectorLabel {
