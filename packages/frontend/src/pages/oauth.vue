@@ -96,7 +96,7 @@ definePageMetadata(() => ({
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 	overflow: clip;
 	max-width: 500px;
-	width: 100vw;
+	width: calc(100vw - 64px);
 	height: min(80svh, calc(100svh - calc(env(safe-area-inset-bottom, 0px) + 64px)));
 	overflow-y: scroll;
 }
