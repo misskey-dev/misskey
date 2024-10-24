@@ -38,9 +38,7 @@ COPY --link . ./
 
 RUN git submodule update --init
 RUN pnpm build
-
-# Remove .git directory after submodule initialization and build are complete
-RUN rm -rf .git/
+RUN rm -rf .git .gitmodules
 
 # build native dependencies for target platform
 
@@ -102,6 +100,9 @@ COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bub
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built ./packages/backend/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY --chown=misskey:misskey . ./
+
+# Ensure .git directory is removed
+RUN rm -rf .git .gitmodules
 
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV NODE_ENV=production
