@@ -38,6 +38,8 @@ COPY --link . ./
 
 RUN git submodule update --init
 RUN pnpm build
+
+# Remove .git directory after submodule initialization and build are complete
 RUN rm -rf .git/
 
 # build native dependencies for target platform
