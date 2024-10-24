@@ -349,6 +349,8 @@ export class SignupApiService {
 				}
 
 				return { pendingApproval: true };
+			} else {
+				await this.usersRepository.update({ username: pendingUser.username }, { approved: true });
 			}
 
 			return this.signinService.signin(request, reply, account as MiLocalUser);
