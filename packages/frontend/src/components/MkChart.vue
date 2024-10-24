@@ -761,7 +761,8 @@ const fetchPerUserFollowingChart = async (): Promise<typeof chartData> => {
 	const raw = await misskeyApi('charts/user/following', { userId: props.args?.user?.id!, limit: props.limit, span: props.span }).catch(() => {
 		return null;
 	});
-	return raw != null ? {
+	if (raw == null) return null;
+	return {
 		series: [{
 			name: 'Local',
 			type: 'area',
@@ -771,14 +772,15 @@ const fetchPerUserFollowingChart = async (): Promise<typeof chartData> => {
 			type: 'area',
 			data: format(raw.remote.followings.total),
 		}],
-	} : raw;
+	};
 };
 
 const fetchPerUserFollowersChart = async (): Promise<typeof chartData> => {
 	const raw = await misskeyApi('charts/user/following', { userId: props.args?.user?.id!, limit: props.limit, span: props.span }).catch(() => {
 		return null;
 	});
-	return raw != null ? {
+	if (raw == null) return null;
+	return {
 		series: [{
 			name: 'Local',
 			type: 'area',
@@ -788,7 +790,7 @@ const fetchPerUserFollowersChart = async (): Promise<typeof chartData> => {
 			type: 'area',
 			data: format(raw.remote.followers.total),
 		}],
-	} : raw;
+	};
 };
 
 const fetchPerUserDriveChart = async (): Promise<typeof chartData> => {
