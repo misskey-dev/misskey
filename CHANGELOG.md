@@ -18,6 +18,8 @@
 ### Server
 - Fix: Nested proxy requestsを検出した際にブロックするように
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
+- Fix: キューの delayed の件数が増えた際に一部の管理者用APIが値を返さなくなる問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/164, https://github.com/MisskeyIO/misskey/pull/750)
 
 ## 2024.10.1
 
