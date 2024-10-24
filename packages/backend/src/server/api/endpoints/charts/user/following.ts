@@ -54,20 +54,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return await this.perUserFollowingChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
 			};
 
+			if (me != null && me.id === ps.userId) {
+				return await done();
+			}
+
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
 
 			if (profile.followingVisibility === 'public' && profile.followersVisibility === 'public') {
-				done();
-			}
-
-			if (me != null && me.id === ps.userId) {
-				done();
+				return await done();
 			}
 
 			const iAmModerator = await this.roleService.isModerator(me);
 
 			if (iAmModerator) {
-				done();
+				return await done();
 			}
 
 			if (
@@ -79,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			) {
 				const relations = await this.userEntityService.getRelation(me.id, ps.userId);
 				if (relations.following) {
-					done();
+					return await done();
 				}
 			}
 
