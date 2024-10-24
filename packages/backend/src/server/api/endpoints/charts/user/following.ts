@@ -60,16 +60,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				done();
 			}
 
-			const iAmModerator = await this.roleService.isModerator(me);
-
-			if (iAmModerator) {
+			if (me != null && me.id === ps.userId) {
 				done();
 			}
 
-			if (
-				(profile.followingVisibility === 'private' || profile.followersVisibility === 'private') &&
-				(me != null && profile.userId === me.id)
-			) {
+			const iAmModerator = await this.roleService.isModerator(me);
+
+			if (iAmModerator) {
 				done();
 			}
 
