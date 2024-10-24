@@ -18,6 +18,8 @@
 ### Server
 - Fix: Nested proxy requestsを検出した際にブロックするように
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
+- Fix: 招待コード発行サイクルの制限が正しく動作していなかった問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/706)
 
 ## 2024.10.1
 
