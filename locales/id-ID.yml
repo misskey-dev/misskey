@@ -1258,6 +1258,13 @@ createdAntennas: "Antena yang dibuat"
 fromX: "Dari {x}"
 noteOfThisUser: "Catatan oleh pengguna ini"
 clipNoteLimitExceeded: "Klip ini tak bisa ditambahi lagi catatan."
+performance: "Kinerja"
+modified: "Diubah"
+thereAreNChanges: "Ada {n} perubahan"
+prohibitedWordsForNameOfUser: "Kata yang dilarang untuk nama pengguna"
+_abuseUserReport:
+  accept: "Setuju"
+  reject: "Tolak"
 _delivery:
   status: "Status pengiriman"
   stop: "Ditangguhkan"
@@ -1722,6 +1729,8 @@ _role:
     canSearchNotes: "Penggunaan pencarian catatan"
     canUseTranslator: "Penggunaan penerjemah"
     avatarDecorationLimit: "Jumlah maksimum dekorasi avatar yang dapat diterapkan"
+    canImportAntennas: "Izinkan mengimpor antena"
+    canImportUserLists: "Izinkan mengimpor senarai"
   _condition:
     roleAssignedTo: "Ditugaskan ke peran manual"
     isLocal: "Pengguna lokal"
@@ -1958,6 +1967,7 @@ _soundSettings:
   driveFileTypeWarnDescription: "Pilih berkas audio"
   driveFileDurationWarn: "Audio ini terlalu panjang"
   driveFileDurationWarnDescription: "Audio panjang dapat mengganggu penggunaan Misskey. Masih ingin melanjutkan?"
+  driveFileError: "Tak bisa memuat audio. Mohon ubah pengaturan"
 _ago:
   future: "Masa depan"
   justNow: "Baru saja"
@@ -2430,6 +2440,8 @@ _abuseReport:
   _notificationRecipient:
     _recipientType:
       mail: "Surel"
+      webhook: "Webhook"
+    keywords: "Kata kunci"
 _moderationLogTypes:
   createRole: "Peran telah dibuat"
   deleteRole: "Peran telah dihapus"
@@ -2467,6 +2479,7 @@ _moderationLogTypes:
   deleteAvatarDecoration: "Hapus dekorasi avatar"
   unsetUserAvatar: "Hapus avatar pengguna"
   unsetUserBanner: "Hapus banner pengguna"
+  deleteAccount: "Akun dihapus"
 _fileViewer:
   title: "Rincian berkas"
   type: "Jenis berkas"
