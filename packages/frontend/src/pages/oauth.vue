@@ -97,7 +97,7 @@ definePageMetadata(() => ({
 	overflow: clip;
 	max-width: 500px;
 	width: calc(100vw - 64px);
-	height: min(80svh, calc(100svh - calc(env(safe-area-inset-bottom, 0px) + 64px)));
+	height: min(65svh, calc(100svh - calc(env(safe-area-inset-bottom, 0px) + 64px)));
 	overflow-y: scroll;
 }
 </style>
