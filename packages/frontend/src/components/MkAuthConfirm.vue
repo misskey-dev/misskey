@@ -16,8 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<div v-if="phase === 'accountSelect'" key="accountSelect" :class="$style.root" class="_gaps">
 			<div :class="$style.header" class="_gaps_s">
-				<img v-if="icon" :class="$style.icon" :src="getProxiedImageUrl(icon)"/>
-				<div v-else :class="$style.iconFallback">
+				<div :class="$style.iconFallback">
 					<i class="ti ti-user"></i>
 				</div>
 				<div :class="$style.headerText">{{ i18n.ts.pleaseSelectAccount }}</div>
