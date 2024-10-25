@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, computed } from 'vue';
+import { shallowRef, computed, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 
 import MkModal from '@/components/MkModal.vue';
@@ -43,6 +43,8 @@ import * as os from '@/os.js';
 import number from '@/filters/number.js';
 
 import type { NonModalCompatibleInnerMenuItem } from '@/types/menu.js';
+
+const mock = inject<boolean>('mock', false);
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
@@ -87,6 +89,7 @@ const menuDef = computed<NonModalCompatibleInnerMenuItem[]>(() => {
 		text: i18n.ts.reset,
 		danger: true,
 		action: () => {
+			if (mock) return;
 			reset();
 		},
 	}];
