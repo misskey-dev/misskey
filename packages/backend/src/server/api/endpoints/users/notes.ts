@@ -42,6 +42,12 @@ export const meta = {
 			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
 			id: '91c8cb9f-36ed-46e7-9ca2-7df96ed6e222',
 		},
+
+		signinRequired: {
+			message: 'Signin required.',
+			code: 'SIGNIN_REQUIRED',
+			id: 'd1588a9e-4b4d-4c07-807f-16f1486577a2',
+		},
 	},
 } as const;
 

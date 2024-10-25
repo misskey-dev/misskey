@@ -688,14 +688,16 @@ export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 }
 
 export function post(props: Record<string, any> = {}): Promise<void> {
-	pleaseLogin(undefined, (props.initialText || props.initialNote ? {
-		type: 'share',
-		params: {
-			text: props.initialText ?? props.initialNote.text,
-			visibility: props.initialVisibility ?? props.initialNote?.visibility,
-			localOnly: (props.initialLocalOnly || props.initialNote?.localOnly) ? '1' : '0',
-		},
-	} : undefined));
+	pleaseLogin({
+		openOnRemote: (props.initialText || props.initialNote ? {
+			type: 'share',
+			params: {
+				text: props.initialText ?? props.initialNote.text,
+				visibility: props.initialVisibility ?? props.initialNote?.visibility,
+				localOnly: (props.initialLocalOnly || props.initialNote?.localOnly) ? '1' : '0',
+			},
+		} : undefined),
+	});
 
 	showMovedDialog();
 	return new Promise(resolve => {
