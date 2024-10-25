@@ -1298,6 +1298,7 @@ yourNameContainsProhibitedWords: "変更しようとした名前に禁止され�
 yourNameContainsProhibitedWordsDescription: "名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。"
 thisContentsAreMarkedAsSigninRequiredByAuthor: "投稿者により、表示にはログインが必要と設定されています"
 lockdown: "ロックダウン"
+pleaseSelectAccount: "アカウントを選択してください"
 textCount: "文字数"
 reset: "リセット"
 
@@ -2219,8 +2220,11 @@ _auth:
   permissionAsk: "このアプリは次の権限を要求しています"
   pleaseGoBack: "アプリケーションに戻ってやっていってください"
   callback: "アプリケーションに戻っています"
+  accepted: "アクセスを許可しました"
   denied: "アクセスを拒否しました"
+  scopeUser: "以下のユーザーとして操作しています"
   pleaseLogin: "アプリケーションにアクセス許可を与えるには、ログインが必要です。"
+  byClickingYouWillBeRedirectedToThisUrl: "アクセスを許可すると、自動で以下のURLに遷移します"
 
 _antennaSources:
   all: "全てのノート"
