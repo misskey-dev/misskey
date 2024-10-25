@@ -17,6 +17,7 @@
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
 - Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
+- Fix: リンク切れを修正
 
 ### Server
 - Fix: Nested proxy requestsを検出した際にブロックするように
