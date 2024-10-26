@@ -2715,3 +2715,6 @@ _embedCodeGen:
   generateCode: "Crea el codi per incrustar"
   codeGenerated: "Codi generat"
   codeGeneratedDescription: "Si us plau, enganxeu el codi generat al lloc web."
+_selfXssPrevention:
+  warning: "Advertència "
+  description1: "Si posa alguna cosa al seu compte, un usuari malintencionat podria segrestar-la o robar-li les dades."
