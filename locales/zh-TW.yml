@@ -2731,3 +2731,5 @@ _embedCodeGen:
   generateCode: "建立嵌入程式碼"
   codeGenerated: "已產生程式碼"
   codeGeneratedDescription: "請將產生的程式碼貼到您的網站上。"
+_selfXssPrevention:
+  warning: "警告"
