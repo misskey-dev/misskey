@@ -2717,4 +2717,7 @@ _embedCodeGen:
   codeGeneratedDescription: "Si us plau, enganxeu el codi generat al lloc web."
 _selfXssPrevention:
   warning: "Advertència "
+  title: "\"Enganxa qualsevol cosa en aquesta finestra\"  És tot un engany."
   description1: "Si posa alguna cosa al seu compte, un usuari malintencionat podria segrestar-la o robar-li les dades."
+  description2: "Si no entens que estàs fent %cpara ara mateix i tanca la finestra."
+  description3: "Per obtenir més informació. {link}"
