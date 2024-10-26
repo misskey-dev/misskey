@@ -333,5 +333,12 @@ function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOp
 		family: options.family ?? 0,
 		keyPrefix: `${options.prefix ?? host}:`,
 		db: options.db ?? 0,
+		reconnectOnError(err: any) {
+			const targetError = 'READONLY';
+			if (err.message.includes(targetError)) {
+				return 2; // 再接続を行った後にクエリを実行する、そこでエラーがなければアプリケーション側にはエラーを伝えない。
+			}
+			return false;
+		},
 	};
 }
