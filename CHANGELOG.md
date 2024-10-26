@@ -13,20 +13,7 @@
 - Enhance: MiAuth, OAuthの認可画面の改善
   - どのアカウントで認証しようとしているのかがわかるように
   - 認証するアカウントを切り替えられるように
-- Enhance: 以下の言語に対応  
-  (Translation may be incomplete or barely advancing in some languages. Please help us localized at [Crowdin](https://crowdin.com/project/misskey). No coding knowledge required.)
-  - (bn-BD)  ベンガル語（バングラデシュ）
-  - (ca-ES)  カタラン語（スペイン）
-  - (hr-HR)  クロアチア語（クロアチア）
-  - (ht-HT)  ハイチ・クレオール語（ハイチ）
-  - (hu-HU)  ハンガリー語（ハンガリー）
-  - (jbo-EN) ロジバン語
-  - (ko-GS)  韓国語（東南方言）
-  - (lo-LA)  ラオス語（ラオス）
-  - (ro-RO)  ルーマニア語（ルーマニア）
-  - (sv-SE)  スウェーデン語（スウェーデン）
-  - (tr-TR)  トルコ語（トルコ）
-  - (uz-UZ)  ウズベク語（ウズベキスタン）
+- Enhance: カタラン語 (ca-ES) に対応  
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
