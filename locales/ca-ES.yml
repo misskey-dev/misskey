@@ -2177,6 +2177,7 @@ _auth:
   denied: "Accés denegat"
   scopeUser: "Opera com si fossis aquest usuari"
   pleaseLogin: "Si us plau, identificat per autoritzar l'aplicació."
+  byClickingYouWillBeRedirectedToThisUrl: "Si es garanteix l'accés, seràs redirigit automàticament a la següent adreça URL"
 _antennaSources:
   all: "Totes les publicacions"
   homeTimeline: "Publicacions dels usuaris seguits"
