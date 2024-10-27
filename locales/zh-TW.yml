@@ -2733,3 +2733,7 @@ _embedCodeGen:
   codeGeneratedDescription: "請將產生的程式碼貼到您的網站上。"
 _selfXssPrevention:
   warning: "警告"
+  title: "「在此畫面貼上一些內容」完全是個騙局。"
+  description1: "如果您在此處貼上任何內容，惡意使用者可能會接管您的帳戶或竊取您的個人資訊。"
+  description2: "如果您不確切知道要貼上的內容，%c 請立即停止工作並關閉此視窗。"
+  description3: "細節請看這裡。{link}"
