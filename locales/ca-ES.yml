@@ -2706,6 +2706,17 @@ _urlPreviewSetting:
   userAgent: "User-Agent"
   userAgentDescription: "Estableix l'User-Agent que és farà servir per a la recuperació de la vista prèvia. Si és deixa en blanc es farà servir l'User-Agent per defecte."
   summaryProxy: "Proxy endpoints per generar vistes prèvies"
+  summaryProxyDescription: "La vista prèvia es genera fent servir Summaly proxy, no la genera el mateix Misskey."
+  summaryProxyDescription2: "Els següents paràmetres són passats al proxy com cadenes de consulta. Si el proxy no els admet, s'ignoren els valors configurats."
+_mediaControls:
+  pip: "Imatge sobre impressionada "
+  playbackRate: "Velocitat de reproducció "
+  loop: "Reproducció en bucle"
+_contextMenu:
+  title: "Menú contextual"
+  app: "Aplicació "
+  appWithShift: "Aplicació amb la tecla shift"
+  native: "Interfície del navegador"
 _embedCodeGen:
   title: "Personalitza el codi per incrustar"
   header: "Mostrar la capçalera"
