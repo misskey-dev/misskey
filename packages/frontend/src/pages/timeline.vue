@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:list="src.split(':')[1]"
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
+						:withSensitive="withSensitive"
 						:onlyFiles="onlyFiles"
 						:sound="true"
 						@queue="queueUpdated"
@@ -119,11 +120,6 @@ const withSensitive = computed<boolean>({
 
 watch(src, () => {
 	queue.value = 0;
-});
-
-watch(withSensitive, () => {
-	// これだけはクライアント側で完結する処理なので手動でリロード
-	tlComponent.value?.reloadTimeline();
 });
 
 function queueUpdated(q: number): void {

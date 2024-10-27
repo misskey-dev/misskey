@@ -30,6 +30,7 @@ import type {
 	EndedPollNotificationQueue,
 	InboxQueue,
 	ObjectStorageQueue,
+	RelationshipQueue,
 	SystemQueue,
 	UserWebhookDeliverQueue,
 	SystemWebhookDeliverQueue,
@@ -122,6 +123,7 @@ export class ClientServerService {
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
+		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
 		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
@@ -256,6 +258,7 @@ export class ClientServerService {
 				this.deliverQueue,
 				this.inboxQueue,
 				this.dbQueue,
+				this.relationshipQueue,
 				this.objectStorageQueue,
 				this.userWebhookDeliverQueue,
 				this.systemWebhookDeliverQueue,
@@ -606,12 +609,15 @@ export class ClientServerService {
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
-			const note = await this.notesRepository.findOneBy({
-				id: request.params.note,
-				visibility: In(['public', 'home']),
+			const note = await this.notesRepository.findOne({
+				where: {
+					id: request.params.note,
+					visibility: In(['public', 'home']),
+				},
+				relations: ['user'],
 			});
 
-			if (note) {
+			if (note && !note.user!.requireSigninToViewContents) {
 				const _note = await this.noteEntityService.pack(note);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
 				reply.header('Cache-Control', 'public, max-age=15');
