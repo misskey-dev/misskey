@@ -2731,3 +2731,9 @@ _embedCodeGen:
   generateCode: "生成嵌入代码"
   codeGenerated: "已生成代码"
   codeGeneratedDescription: "将生成的代码贴到网站上来使用。"
+_selfXssPrevention:
+  warning: "警告"
+  title: "「在此处粘贴什么东西」是欺诈行为。"
+  description1: "如果在此处粘贴了什么，恶意用户可能会接管账户或者盗取个人资料。"
+  description2: "如果不能完全理解将要粘贴的内容，%c 请立即停止操作并关闭这个窗口。"
+  description3: "详情请看这里。{link}"
