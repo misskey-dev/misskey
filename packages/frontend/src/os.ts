@@ -93,12 +93,9 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints, P extends Miss
 	return promise;
 });
 
-export function promiseDialog<
-	P extends unknown,
-	T extends Promise<P>,
->(
+export function promiseDialog<T extends Promise<unknown>>(
 	promise: T,
-	onSuccess?: ((res: P) => void) | null,
+	onSuccess?: ((res: Awaited<T>) => void) | null,
 	onFailure?: ((err: Misskey.api.APIError) => void) | null,
 	text?: string,
 ): T {
