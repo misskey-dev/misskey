@@ -13,15 +13,19 @@
 - Enhance: MiAuth, OAuthの認可画面の改善
   - どのアカウントで認証しようとしているのかがわかるように
   - 認証するアカウントを切り替えられるように
+- Enhance: Self-XSS防止用の警告を追加
 - Enhance: 時刻表示を常に絶対時刻（年/月/日 時:分:秒）にできるように
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
 - Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
+- Fix: リンク切れを修正
 
 ### Server
 - Fix: Nested proxy requestsを検出した際にブロックするように
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
+- Fix: 招待コードの発行可能な残り数算出に使用すべきロールポリシーの値が違う問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/706)
 
 ## 2024.10.1
 
