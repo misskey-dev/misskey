@@ -1302,6 +1302,8 @@ pleaseSelectAccount: "Seleccionar un compte"
 _accountSettings:
   requireSigninToViewContents: "És obligatori l'inici de sessió per poder veure el contingut"
   requireSigninToViewContentsDescription1: "Es requereix l'inici de sessió per poder veure totes les notes i el contingut que has creat. Amb això esperem evitar que els rastrejadors recopilin informació."
+  requireSigninToViewContentsDescription2: "També es desactivaran les vistes prèvies d'URLS (OGP), la incrustació a pàgines web i la visualització des de servidors que no admetin la citació de notes."
+  requireSigninToViewContentsDescription3: "Aquestes restriccions pot ser que no s'apliquin als continguts federats en servidors remots."
   makeNotesFollowersOnlyBefore: "Permetre que les notes antigues només es mostrin als seguidors."
   makeNotesFollowersOnlyBeforeDescription: "Mentre aquesta funció estigui activada, les notes que hagin passat la data i hora fixada o hagi passat els temps establert seran visibles només per als teus seguidors. Quan es desactivi, també es restableix l'estat públic de la nota."
   makeNotesHiddenBefore: "Fes que les notes antigues siguin privades"
@@ -2701,6 +2703,9 @@ _urlPreviewSetting:
   maximumContentLengthDescription: "Si la màxima longitud és més gran que aquest valor, la previsualització no es generarà."
   requireContentLength: "Generar la previsualització només si es pot obtenir la longitud màxima "
   requireContentLengthDescription: "Si l'altre servidor no proporciona la longitud màxima, la previsualització no es generarà."
+  userAgent: "User-Agent"
+  userAgentDescription: "Estableix l'User-Agent que és farà servir per a la recuperació de la vista prèvia. Si és deixa en blanc es farà servir l'User-Agent per defecte."
+  summaryProxy: "Proxy endpoints per generar vistes prèvies"
 _embedCodeGen:
   title: "Personalitza el codi per incrustar"
   header: "Mostrar la capçalera"
