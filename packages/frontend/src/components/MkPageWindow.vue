@@ -58,7 +58,7 @@ const windowRouter = routerFactory(props.initialPath);
 const contents = shallowRef<HTMLElement | null>(null);
 const pageMetadata = ref<null | PageMetadata>(null);
 const windowEl = shallowRef<InstanceType<typeof MkWindow>>();
-const history = ref<{ path: string; key: any; }[]>([{
+const history = ref<{ path: string; key: string; }[]>([{
 	path: windowRouter.getCurrentPath(),
 	key: windowRouter.getCurrentKey(),
 }]);

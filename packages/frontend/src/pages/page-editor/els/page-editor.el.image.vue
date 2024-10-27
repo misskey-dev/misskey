@@ -30,11 +30,12 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	modelValue: any
+	modelValue: Misskey.entities.PageBlock & { type: 'image' };
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any): void;
+	(ev: 'update:modelValue', value: Misskey.entities.PageBlock & { type: 'image' }): void;
+	(ev: 'remove'): void;
 }>();
 
 const file = ref<Misskey.entities.DriveFile | null>(null);

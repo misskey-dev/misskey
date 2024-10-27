@@ -62,9 +62,11 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 
+type AdminAnnouncementType = Misskey.entities.AdminAnnouncementsCreateRequest & { id: string; }
+
 const props = defineProps<{
 	user: Misskey.entities.User,
-	announcement?: Misskey.entities.Announcement,
+	announcement?: Required<AdminAnnouncementType>,
 }>();
 
 const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
@@ -75,7 +77,7 @@ const display = ref(props.announcement ? props.announcement.display : 'dialog');
 const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
 
 const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
+	(ev: 'done', v: { deleted?: boolean; updated?: AdminAnnouncementType; created?: AdminAnnouncementType; }): void,
 	(ev: 'closed'): void
 }>();
 
@@ -88,7 +90,7 @@ async function done() {
 		display: display.value,
 		needConfirmationToRead: needConfirmationToRead.value,
 		userId: props.user.id,
-	};
+	} satisfies Misskey.entities.AdminAnnouncementsCreateRequest;
 
 	if (props.announcement) {
 		await os.apiWithDialog('admin/announcements/update', {

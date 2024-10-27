@@ -60,6 +60,13 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 
+type WindowButton = {
+	title: string;
+	icon: string;
+	onClick: () => void;
+	highlighted?: boolean;
+};
+
 const minHeight = 50;
 const minWidth = 250;
 
@@ -87,8 +94,8 @@ const props = withDefaults(defineProps<{
 	mini?: boolean;
 	front?: boolean;
 	contextmenu?: MenuItem[] | null;
-	buttonsLeft?: any[];
-	buttonsRight?: any[];
+	buttonsLeft?: WindowButton[];
+	buttonsRight?: WindowButton[];
 }>(), {
 	initialWidth: 400,
 	initialHeight: null,
