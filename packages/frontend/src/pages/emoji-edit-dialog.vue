@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="windowEl"
 	:initialWidth="400"
 	:initialHeight="500"
-	:canResize="false"
+	:canResize="true"
 	@close="windowEl.close()"
 	@closed="$emit('closed')"
 >
