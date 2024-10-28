@@ -5,19 +5,16 @@
 
 import Redis from 'ioredis';
 import { loadConfig } from '../built/config.js';
+import { createPostgresDataSource } from '../built/postgres.js';
 
 const config = loadConfig();
 
-// createPostgresDataSource handels primaries and replicas automatically.
-// usually, it only opens connections first use, so we force it using
-// .initialize()
-async function connectToPostgres(){
+async function connectToPostgres() {
 	const source = createPostgresDataSource(config);
 	await source.initialize();
 	await source.destroy();
 }
 
-// Connect to all redis servers
 async function connectToRedis(redisOptions) {
 	return await new Promise(async (resolve, reject) => {
 		const redis = new Redis({
