@@ -14,6 +14,7 @@
   - どのアカウントで認証しようとしているのかがわかるように
   - 認証するアカウントを切り替えられるように
 - Enhance: Self-XSS防止用の警告を追加
+- Enhance: カタルーニャ語 (ca-ES) に対応
 - Enhance: 投稿フォームの設定メニューを改良
   - 投稿フォームをリセットできるように
   - 文字数カウントを復活
@@ -28,6 +29,9 @@
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
 - Fix: 招待コードの発行可能な残り数算出に使用すべきロールポリシーの値が違う問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/706)
+
+### Misskey.js
+- Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
 
 ## 2024.10.1
 
