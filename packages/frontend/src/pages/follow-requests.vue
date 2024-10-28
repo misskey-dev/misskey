@@ -49,8 +49,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { infoImageUrl } from '@/instance.js';
+import { $i } from '@/account.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { $i } from '@/account';
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
