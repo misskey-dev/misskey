@@ -51,6 +51,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #key>{{ i18n.ts.email }}</template>
 						<template #value><span class="_monospace">{{ info.email }}</span></template>
 					</MkKeyValue>
+					<MkKeyValue v-if="info" oneline>
+						<template #key>{{ i18n.ts.registerReason }}</template>
+						<!-- <template #value><span class="_monospace">{{ info.signupReason }}</span></template> -->
+						<template v-slot:value><div :class="$style.reason_box">{{ info.signupReason }}</div></template>
+					</MkKeyValue>
 				</div>
 
 				<MkTextarea v-model="moderationNote" manualSave>
@@ -681,5 +686,12 @@ definePageMetadata(() => ({
 	padding: 8px 12px;
 	border-radius: 6px;
 	cursor: pointer;
+}
+
+.reason_box {
+	white-space: pre-line;
+	padding: 5px;
+	border: solid 1px var(--MI_THEME-accentDarken);
+	border-radius: 5px;
 }
 </style>

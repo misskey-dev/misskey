@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 
 					<MkSwitch v-model="approvalRequiredForSignup" @change="onChange_approvalRequiredForSignup">
-						<template #label>{{ i18n.ts.approvalRequiredForSignup }}</template>
+						<template #label>{{ i18n.ts.approvalRequiredForSignup }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
 						<template #caption>{{ i18n.ts.registerApprovalEmailRecommended }}</template>
 					</MkSwitch>
 
