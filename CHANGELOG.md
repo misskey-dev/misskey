@@ -22,6 +22,9 @@
 - Fix: リンク切れを修正
 
 ### Server
+- Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
+  (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
 - Fix: Nested proxy requestsを検出した際にブロックするように
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
 - Fix: 招待コードの発行可能な残り数算出に使用すべきロールポリシーの値が違う問題を修正  
