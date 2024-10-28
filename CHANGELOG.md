@@ -59,6 +59,7 @@
 	(Cherry-picked from https://github.com/MisskeyIO/misskey/pull/815)
 - Fix: TypeScriptの型チェック対象ファイルを限定してビルドを高速化するように  
 	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/725)
+- Fix: Ensure physics run the same across different framerates
 
 ### Server
 - Enhance: DockerのNode.jsを22.11.0に更新
