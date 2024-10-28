@@ -227,7 +227,7 @@ export class SearchService {
 			if (opts.host) {
 				if (opts.host === '.') {
 					const config = loadConfig();
-					const defaultTag: string | null = config.defaultTag?.tag;
+					const defaultTag: string | null = config.defaultTag?.tag || 'delmulin';
 					if (defaultTag) {
 						query.andWhere(':t = any(note.tags)', { t: normalizeForSearch(defaultTag) });
 					} else {
