@@ -287,7 +287,14 @@ async function onSubmit(): Promise<void> {
 	});
 
 	if (res) {
-		if (res.status === 204 || instance.emailRequiredForSignup) {
+		if (instance.emailRequiredForSignup && instance.approvalRequiredForSignup) {
+			os.alert({
+				type: 'success',
+				title: i18n.ts._signup.almostThere,
+				text: i18n.tsx._signup.approvalAndEmailPending({ email: email.value }),
+			});
+			emit('approvalAndEmailPending');
+		} else if (instance.emailRequiredForSignup && res.status === 204) {
 			os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,
@@ -312,6 +319,7 @@ async function onSubmit(): Promise<void> {
 			}
 		}
 	}
+
 
 	submitting.value = false;
 }

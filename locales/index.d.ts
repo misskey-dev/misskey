@@ -7224,6 +7224,10 @@ export interface Locale extends ILocale {
          * 入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。メールに記載されているリンクの有効期限は30分です。
          */
         "emailSent": ParameterizedString<"email">;
+				/**
+				 * アカウントの登録が承認された際、({email}) 宛にメールが届きます。
+				 */
+				"approvalAndEmailPending": ParameterizedString<"email">;
         /**
          * アカウントが作成され、承認待ちの状態です。
          */
