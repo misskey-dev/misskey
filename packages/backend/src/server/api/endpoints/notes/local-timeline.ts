@@ -149,7 +149,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		withReplies: boolean,
 	}, me: MiLocalUser | null) {
 		const config = loadConfig();
-		const defaultTag: string | null = config.defaultTag?.tag || 'delmulin';
+		const defaultTag: string | null = config.defaultTag?.tag;
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId)
 			.andWhere(new Brackets(qb => {

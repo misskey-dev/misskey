@@ -214,7 +214,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				const config = loadConfig();
-				const defaultTag: string | null = config.defaultTag?.tag || 'delmulin';
+				const defaultTag: string | null = config.defaultTag?.tag;
 				if (defaultTag == null) {
 					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
 				} else {
