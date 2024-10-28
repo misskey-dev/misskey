@@ -1299,6 +1299,7 @@ yourNameContainsProhibitedWordsDescription: "用户名内含有违禁词。若�
 thisContentsAreMarkedAsSigninRequiredByAuthor: "根据发帖者的设定，需要登录才能显示"
 lockdown: "锁定"
 pleaseSelectAccount: "请选择帐户"
+availableRoles: "可用角色"
 _accountSettings:
   requireSigninToViewContents: "需要登录才能显示内容"
   requireSigninToViewContentsDescription1: "您发布的所有帖子将变成需要登入后才会显示。有望防止爬虫收集各种信息。"
