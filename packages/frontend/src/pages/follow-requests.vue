@@ -87,11 +87,11 @@ const headerTabs = computed(() => [
 	{
 		key: 'list',
 		title: i18n.ts.followRequests,
-		icon: 'ph-envelope ph-bold ph-lg',
+		icon: 'ti ti-mail',
 	}, {
 		key: 'sent',
 		title: i18n.ts.followRequestPending,
-		icon: 'ph-paper-plane-tilt ph-bold ph-lg',
+		icon: 'ti ti-send',
 	},
 ]);
 
