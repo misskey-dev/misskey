@@ -5,9 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<MkPagination v-slot="{items}" ref="list" :pagination="followingPagination" :class="$style.root">
-		<div class="_gaps_s" :class="$style.notes">
-			<div v-for="item in items" :key="item.id">
-				<MkNote :note="item" :class="$style.note"/>
+		<div class="_gaps_s" :class="$style.updates">
+			<div v-for="item in items" :key="item.id" :class="$style.notes">
+				<div v-for="note in item.notes" :key="note.id">
+					<MkNote :note="note" :class="$style.note"/>
+				</div>
 			</div>
 		</div>
 	</MkPagination>
@@ -35,12 +37,12 @@ const followingPagination = computed((previous) => ({
 
 <style lang="scss" module>
 .root {
-        .notes {
+        .updates {
                 background: var(--MI_THEME-bg);
- 
-                .note {
-                        background: var(--MI_THEME-panel);
-                        border-radius: var(--MI-radius);
+                .notes {
+			background: var(--MI_THEME-panel);
+			border-radius: var(--MI-radius);
+			margin: 3px 0 3px;
                 }
         }
 }

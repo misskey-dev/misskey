@@ -72,9 +72,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.activeUsersChart.read(me);
 			});
 
-			const notes = updates.map((update => update.notes)).flat();
-
-			return await this.noteEntityService.packMany(notes, me);
+			for (const update of updates) {
+				update.notes = await this.noteEntityService.packMany(update.notes, me);
+			}
+			return updates;
 		});
 	}
 
@@ -97,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			query.orderBy('note.id', 'DESC');
 			query.limit(3);
 
-			return { userId, notes: await query.getMany(), last: row.last };
+			return { id: userId, notes: await query.getMany(), last: row.last };
 		}));
 	}
 }
