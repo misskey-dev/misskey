@@ -1,8 +1,45 @@
+## 2024.10.2
+
+### General
+- Feat: コンテンツの表示にログインを必須にできるように
+- Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
+
+### Client
+- Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
+- Enhance: ドライブでソートができるように
+- Enhance: アイコンデコレーション管理画面の改善
+- Enhance: 「単なるラッキー」の取得条件を変更
+- Enhance: 投稿フォームでEscキーを押したときIME入力中ならフォームを閉じないように（ #10866 ）  
+- Enhance: MiAuth, OAuthの認可画面の改善
+  - どのアカウントで認証しようとしているのかがわかるように
+  - 認証するアカウントを切り替えられるように
+- Enhance: Self-XSS防止用の警告を追加
+- Enhance: カタルーニャ語 (ca-ES) に対応  
+- Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
+- Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
+- Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
+- Fix: Encode RSS urls with escape sequences before fetching allowing query parameters to be used
+- Fix: リンク切れを修正
+
+### Server
+- Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
+  (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
+- Fix: Nested proxy requestsを検出した際にブロックするように
+  [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
+- Fix: 招待コードの発行可能な残り数算出に使用すべきロールポリシーの値が違う問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/706)
+
+### Misskey.js
+- Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
+
 ## 2024.10.1
+
 ### Note
-- 悪質なユーザからサーバを守る措置の一環として、モデレータ権限を持つユーザの最終アクティブ日時を確認し、 
-7日間活動していない場合は自動的に招待制へと移行（コントロールパネル -> モデレーション -> "誰でも新規登録できるようにする"をオフに変更）するようになりました。  
-詳細な経緯は https://github.com/misskey-dev/misskey/issues/13437 をご確認ください。
+- スパム対策として、モデレータ権限を持つユーザのアクティビティが7日以上確認できない場合は自動的に招待制へと切り替え（コントロールパネル -> モデレーション -> "誰でも新規登録できるようにする"をオフに変更）るようになりました。 ( #13437 )
+	- 切り替わった際はモデレーターへお知らせとして通知されます。登録をオープンな状態で継続したい場合は、コントロールパネルから再度設定を行ってください。
 
 ### General
 - Feat: ユーザーの名前に禁止ワードを設定できるように
@@ -14,12 +51,10 @@
 - Fix: メールアドレス不要でCaptchaが有効な場合にアカウント登録完了後自動でのログインに失敗する問題を修正
 
 ### Server
-- Feat: モデレータ権限を持つユーザが全員7日間活動しなかった場合は自動的に招待制へと移行するように ( #13437 )
+- Feat: モデレータ権限を持つユーザが全員7日間活動しなかった場合は自動的に招待制へと切り替えるように ( #13437 )
 - Enhance: 個人宛のお知らせは「わかった」を押すと自動的にアーカイブされるように
 - Fix: `admin/emoji/update`エンドポイントのidのみ指定した時不正なエラーが発生するバグを修正
 - Fix: RBT有効時、リノートのリアクションが反映されない問題を修正
-
-### Server
 - Fix: キューのエラーログを簡略化するように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/649)
 
