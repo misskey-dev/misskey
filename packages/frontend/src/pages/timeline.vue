@@ -57,11 +57,14 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
+import { useRouter } from '@/router/supplier.js';
 
 provide('shouldOmitHeaderTitle', true);
 
 const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = shallowRef<HTMLElement>();
+
+const router = useRouter();
 
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 
@@ -343,6 +346,11 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	icon: basicTimelineIconClass(tl),
 	iconOnly: true,
 })), {
+	title: i18n.ts.followingsUpdates,
+	icon: 'ti ti-users',
+	iconOnly: true,
+	onClick: () => { router.push('/my/followings-updates'); },
+}, {
 	icon: 'ti ti-list',
 	title: i18n.ts.lists,
 	iconOnly: true,

@@ -308,6 +308,7 @@ export * as 'notes/global-timeline' from './endpoints/notes/global-timeline.js';
 export * as 'notes/hybrid-timeline' from './endpoints/notes/hybrid-timeline.js';
 export * as 'notes/local-timeline' from './endpoints/notes/local-timeline.js';
 export * as 'notes/yami-timeline' from './endpoints/notes/yami-timeline.js';
+export * as 'notes/followings-updates' from './endpoints/notes/followings-updates.js';
 export * as 'notes/mentions' from './endpoints/notes/mentions.js';
 export * as 'notes/polls/recommendation' from './endpoints/notes/polls/recommendation.js';
 export * as 'notes/polls/vote' from './endpoints/notes/polls/vote.js';
