@@ -3,15 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defaultStore } from '@/store.js';
-
-await defaultStore.ready;
+export type DeviceKind = 'smartphone' | 'tablet' | 'desktop';
 
 const ua = navigator.userAgent.toLowerCase();
 const isTablet = /ipad/.test(ua) || (/mobile|iphone|android/.test(ua) && window.innerWidth > 700);
 const isSmartphone = !isTablet && /mobile|iphone|android/.test(ua);
 
-export const deviceKind: 'smartphone' | 'tablet' | 'desktop' = defaultStore.state.overridedDeviceKind ? defaultStore.state.overridedDeviceKind
-	: isSmartphone ? 'smartphone'
-	: isTablet ? 'tablet'
-	: 'desktop';
+export const DEFAULT_DEVICE_KIND: DeviceKind = (
+	isSmartphone
+		? 'smartphone'
+		: isTablet
+			? 'tablet'
+			: 'desktop'
+);
+
+export let deviceKind: DeviceKind = DEFAULT_DEVICE_KIND;
+
+export function updateDeviceKind(kind: DeviceKind | null) {
+	deviceKind = kind ?? DEFAULT_DEVICE_KIND;
+}
