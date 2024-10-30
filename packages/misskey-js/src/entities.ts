@@ -49,6 +49,9 @@ export type ModerationLog = {
 	type: 'updateServerSettings';
 	info: ModerationLogPayloads['updateServerSettings'];
 } | {
+	type: 'approve';
+	info: ModerationLogPayloads['approve'];
+} | {
 	type: 'suspend';
 	info: ModerationLogPayloads['suspend'];
 } | {
@@ -254,6 +257,7 @@ export type SignupRequest = {
 	host?: string;
 	invitationCode?: string;
 	emailAddress?: string;
+	reason?: string;
 	'hcaptcha-response'?: string | null;
 	'g-recaptcha-response'?: string | null;
 	'turnstile-response'?: string | null;
