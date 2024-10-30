@@ -100,20 +100,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkSwitch v-model="disableNoteNyaize">{{ i18n.ts.disableNoteNyaize }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></MkSwitch>
 
-			<MkRadios v-model="selectReaction">
+			<FromSlot v-model="selectReaction">
 				<template #label>{{ i18n.ts.selectReaction }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-				<option value="❤️">❤️</option>
-				<option value="⭐">⭐</option>
-				<option value="🍮">🍮</option>
-				<option value="💩">💩</option>
-			</MkRadios>
+				<MkCustomEmoji v-if="selectReaction && selectReaction.startsWith(':')" style="max-height: 3em; font-size: 1.1em;" :useOriginalSize="false" :name="selectReaction" :normal="true" :noStyle="true"/>
+				<MkEmoji v-else-if="selectReaction && !selectReaction.startsWith(':')" :emoji="selectReaction" style="max-height: 3em; font-size: 1.1em;" :normal="true" :noStyle="true"/>
+				<span v-else-if="!selectReaction">{{ i18n.ts.notSet }}</span>
+				<div class="_buttons" style="padding-top: 8px;">
+					<MkButton rounded :small="true" inline @click="chooseNewReaction"><i class="ph-smiley ph-bold ph-lg"></i> Change</MkButton>
+					<MkButton rounded :small="true" inline @click="resetReaction"><i class="ph-arrow-clockwise ph-bold ph-lg"></i> Reset</MkButton>
+				</div>
+			</FromSlot>
 
-			<!-- <MkSwitch v-model="selectReaction">
-				<template #label>{{ i18n.ts.selectReaction }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-				<button class="_button" :class="$style.emojisAdd" @click="chooseReaction">
-					<i class="ti ti-plus"></i>
-				</button>
-			</MkSwitch> -->
 		</div>
 	</FormSection>
 
@@ -336,6 +333,9 @@ import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import FromSlot from '@/components/form/slot.vue';
+import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
+import MkEmoji from '@/components/global/MkEmoji.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -464,27 +464,24 @@ watch([
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 
-// const chooseReaction = (ev: MouseEvent) => {
-//     pickEmoji(selectReaction, ev); // selectReaction は文字列
-// };
+function chooseNewReaction(ev: MouseEvent) {
+	os.pickEmoji(getHTMLElement(ev), {
+		showPinned: false,
+	}).then(async (emoji) => {
+		selectReaction.value = emoji as string; // 選択された絵文字を格納
+		await reloadAsk(); // 必要ならリロードや更新処理
+	});
+}
 
-// async function pickEmoji(currentReaction: string, ev: MouseEvent) {
-//     const selectedEmoji = await os.pickEmoji(getHTMLElement(ev), {
-//         showPinned: false,
-//     });
+function resetReaction() {
+	selectReaction.value = ''; // `selectReaction` をリセット
+	reloadAsk(); // 必要ならリロードや更新処理
+}
 
-//     // selectedEmoji が定義されているか確認
-//     if (selectedEmoji && selectedEmoji !== currentReaction) {
-//         // selectReaction を更新
-//         defaultStore.state.selectReaction = selectedEmoji;
-//     }
-// }
-
-// function getHTMLElement(ev: MouseEvent): HTMLElement {
-//     const target = ev.currentTarget ?? ev.target;
-//     return target as HTMLElement;
-// }
-
+function getHTMLElement(ev: MouseEvent): HTMLElement {
+	const target = ev.currentTarget ?? ev.target;
+	return target as HTMLElement; // イベント発生元の HTML 要素を取得
+}
 
 const emojiIndexLangs = ['en-US', 'ja-JP', 'ja-JP_hira'] as const;
 
