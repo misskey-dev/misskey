@@ -1,7 +1,7 @@
 # DIFFRENCE
 ## 2024.10.0-yami-1.3.7
 ### Feat
-- アカウント登録を承認制に出来るように
+- アカウント登録を承認制に出来るように (cherry-pick: serafuku) + chore(lqvp-fork)
 
 ## 2024.10.0-yami-1.3.6
 ### Feat
