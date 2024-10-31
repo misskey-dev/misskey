@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="dialog"
 	:width="400"
 	@close="dialog?.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template v-if="announcement" #header>:{{ announcement.title }}:</template>
 	<template v-else #header>New announcement</template>
@@ -69,17 +69,17 @@ const props = defineProps<{
 	announcement?: Required<AdminAnnouncementType>,
 }>();
 
+const emit = defineEmits<{
+	(ev: 'done', v: { deleted?: boolean; updated?: AdminAnnouncementType; created?: AdminAnnouncementType; }): void,
+	(ev: 'closed'): void
+}>();
+
 const dialog = ref<InstanceType<typeof MkModalWindow> | null>(null);
 const title = ref(props.announcement ? props.announcement.title : '');
 const text = ref(props.announcement ? props.announcement.text : '');
 const icon = ref(props.announcement ? props.announcement.icon : 'info');
 const display = ref(props.announcement ? props.announcement.display : 'dialog');
 const needConfirmationToRead = ref(props.announcement ? props.announcement.needConfirmationToRead : false);
-
-const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: AdminAnnouncementType; created?: AdminAnnouncementType; }): void,
-	(ev: 'closed'): void
-}>();
 
 async function done() {
 	const params = {

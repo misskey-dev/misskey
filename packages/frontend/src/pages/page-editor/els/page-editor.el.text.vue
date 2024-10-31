@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-align-left"></i> {{ i18n.ts._pages.blocks.text }}</template>
 
 	<section>
@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-/* eslint-disable vue/no-mutating-props */
+ 
 import { watch, ref, shallowRef, onMounted, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';

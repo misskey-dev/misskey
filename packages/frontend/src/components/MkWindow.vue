@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:enterFromClass="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
 	:leaveToClass="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
 	appear
-	@afterLeave="$emit('closed')"
+	@afterLeave="emit('closed')"
 >
 	<div v-if="showing" ref="rootEl" :class="[$style.root, { [$style.maximized]: maximized }]">
 		<div :class="$style.body" class="_shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
