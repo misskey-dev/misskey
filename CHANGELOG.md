@@ -24,6 +24,7 @@
 - Fix: リンク切れを修正
 
 ### Server
+- Enhance: DockerのNode.jsを22.11.0に更新
 - Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
