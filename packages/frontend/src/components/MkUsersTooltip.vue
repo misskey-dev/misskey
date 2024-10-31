@@ -21,7 +21,7 @@ import MkTooltip from './MkTooltip.vue';
 
 defineProps<{
 	showing: boolean;
-	users: Misskey.entities.UserLite[]; // TODO
+	users: Misskey.entities.UserLite[];
 	count: number;
 	targetElement: HTMLElement;
 }>();
