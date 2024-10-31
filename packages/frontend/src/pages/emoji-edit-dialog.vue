@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:initialWidth="400"
 	:initialHeight="500"
 	:canResize="true"
-	@close="windowEl.close()"
+	@close="windowEl?.close()"
 	@closed="emit('closed')"
 >
 	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
