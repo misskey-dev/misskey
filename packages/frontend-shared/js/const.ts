@@ -75,6 +75,8 @@ export const notificationTypes = [
 	'createToken',
 	'test',
 	'app',
+	'scheduledNoteFailed',
+	'scheduledNotePosted',
 ] as const;
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 
@@ -83,6 +85,7 @@ export const ROLE_POLICIES = [
 	'ltlAvailable',
 	'yamiTlAvailable',
 	'canPublicNote',
+	'scheduleNoteMax',
 	'mentionLimit',
 	'canImportNotes',
 	'canInvite',

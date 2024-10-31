@@ -16,7 +16,7 @@ export const cli = new Misskey.api.APIClient({ origin, fetch: (...args): Promise
 
 export async function api<
 	E extends keyof Misskey.Endpoints,
-	P extends Misskey.Endpoints[E]['req']
+	P extends Misskey.Endpoints[E]['req'],
 >(endpoint: E, userId?: string, params?: P): Promise<Misskey.api.SwitchCaseResponseType<E, P> | undefined> {
 	let account: Pick<Misskey.entities.SignupResponse, 'id' | 'token'> | undefined;
 

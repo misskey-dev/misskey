@@ -22,6 +22,8 @@
  * exportCompleted - エクスポートが完了
  * login - ログイン
  * createToken - トークン作成
+ * scheduledNoteFailed - 予約投稿に失敗
+ * scheduledNotePosted - 予約投稿をノート
  * app - アプリ通知
  * test - テスト通知（サーバー側）
  */
@@ -44,6 +46,8 @@ export const notificationTypes = [
 	'exportCompleted',
 	'login',
 	'createToken',
+	'scheduledNoteFailed',
+	'scheduledNotePosted',
 	'app',
 	'test',
 ] as const;

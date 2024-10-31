@@ -7311,6 +7311,10 @@ export interface Locale extends ILocale {
              * リストのインポートを許可
              */
             "canImportUserLists": string;
+            /**
+             * 予約投稿の最大数
+             */
+            "scheduleNoteMax": string;
         };
         "_condition": {
             /**
@@ -8792,6 +8796,14 @@ export interface Locale extends ILocale {
          * 違反を報告する
          */
         "write:report-abuse": string;
+        /**
+         * 予約投稿を見る
+         */
+        "read:notes-schedule": string;
+        /**
+         * 予約投稿を作成・削除する
+         */
+        "write:notes-schedule": string;
     };
     "_auth": {
         /**
@@ -9766,6 +9778,14 @@ export interface Locale extends ILocale {
          * ロールが付与されました
          */
         "roleAssigned": string;
+        /**
+         * 予約投稿に失敗しました
+         */
+        "scheduledNoteFailed": string;
+        /**
+         * 予約投稿をノートしました
+         */
+        "scheduledNotePosted": string;
         /**
          * プッシュ通知の更新をしました
          */
@@ -11214,6 +11234,14 @@ export interface Locale extends ILocale {
          */
         "codeGeneratedDescription": string;
     };
+    /**
+     * 予約投稿
+     */
+    "schedulePost": string;
+    /**
+     * 予約投稿一覧
+     */
+    "schedulePostList": string;
     "_selfXssPrevention": {
         /**
          * 警告

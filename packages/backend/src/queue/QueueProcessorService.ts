@@ -43,6 +43,7 @@ import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMu
 import { BakeBufferedReactionsProcessorService } from './processors/BakeBufferedReactionsProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
+import { ScheduleNotePostProcessorService } from './processors/ScheduleNotePostProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
 import { QUEUE, baseQueueOptions } from './const.js';
 import { ScheduledNoteDeleteProcessorService } from './processors/ScheduledNoteDeleteProcessorService.js';
@@ -67,7 +68,7 @@ function getJobInfo(job: Bull.Job | undefined, increment = false): string {
 		: age > 10000 ? `${Math.floor(age / 1000)}s`
 			: `${age}ms`;
 
-	// onActiveとかonCompletedのattemptsMadeがなぜか0始まりなのでインクリメントする
+	// onActive??onCompleted?attemptsMade????0???????????????
 	const currentAttempts = job.attemptsMade + (increment ? 1 : 0);
 	const maxAttempts = job.opts.attempts ?? 0;
 
@@ -87,6 +88,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 	private objectStorageQueueWorker: Bull.Worker;
 	private endedPollNotificationQueueWorker: Bull.Worker;
 	private scheduledNoteDeleteQueueWorker: Bull.Worker;
+	private schedulerNotePostQueueWorker: Bull.Worker;
 
 	constructor(
 		@Inject(DI.config)
@@ -128,11 +130,12 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private bakeBufferedReactionsProcessorService: BakeBufferedReactionsProcessorService,
 		private checkModeratorsActivityProcessorService: CheckModeratorsActivityProcessorService,
 		private cleanProcessorService: CleanProcessorService,
+		private scheduleNotePostProcessorService: ScheduleNotePostProcessorService,
 	) {
 		this.logger = this.queueLoggerService.logger;
 
 		function renderError(e?: Error) {
-			// 何故かeがundefinedで来ることがある
+			// ???e?undefined????????
 			if (!e) return '?';
 
 			if (e instanceof Bull.UnrecoverableError || e.name === 'AbortError') {
@@ -534,6 +537,15 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			...baseQueueOptions(this.config, QUEUE.SCHEDULED_NOTE_DELETE),
 			autorun: false,
 		});
+
+		//#region schedule note post
+		{
+			this.schedulerNotePostQueueWorker = new Bull.Worker(QUEUE.SCHEDULE_NOTE_POST, (job) => this.scheduleNotePostProcessorService.process(job), {
+				...baseQueueOptions(this.config, QUEUE.SCHEDULE_NOTE_POST),
+				autorun: false,
+			});
+		}
+		//#endregion
 	}
 
 	@bindThis
@@ -549,6 +561,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.objectStorageQueueWorker.run(),
 			this.endedPollNotificationQueueWorker.run(),
 			this.scheduledNoteDeleteQueueWorker.run(),
+			this.schedulerNotePostQueueWorker.run(),
 		]);
 	}
 
@@ -565,6 +578,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.objectStorageQueueWorker.close(),
 			this.endedPollNotificationQueueWorker.close(),
 			this.scheduledNoteDeleteQueueWorker.close(),
+			this.schedulerNotePostQueueWorker.close(),
 		]);
 	}
 

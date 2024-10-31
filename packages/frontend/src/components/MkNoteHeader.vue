@@ -46,7 +46,10 @@ import { dateTimeFormat } from '@/scripts/intl-const.js';
 import { defaultStore } from '@/store.js';
 
 defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note & {
+		isSchedule?: boolean
+	};
+	scheduled?: boolean;
 }>();
 
 const mock = inject<boolean>('mock', false);

@@ -197,6 +197,8 @@ export const defaultStore = markRaw(new Storage('base', {
 			'emoji',
 			'addMfmFunction',
 			'scheduledNoteDelete',
+			'scheduleNote',
+			'schedulePostList',
 			'useCw',
 			'poll',
 			'hashtags',

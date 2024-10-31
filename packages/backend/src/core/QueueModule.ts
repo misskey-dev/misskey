@@ -16,6 +16,7 @@ import {
 	RelationshipJobData,
 	UserWebhookDeliverJobData,
 	SystemWebhookDeliverJobData,
+	ScheduleNotePostJobData,
 } from '../queue/types.js';
 import type { Provider } from '@nestjs/common';
 
@@ -29,6 +30,7 @@ export type RelationshipQueue = Bull.Queue<RelationshipJobData>;
 export type ObjectStorageQueue = Bull.Queue;
 export type UserWebhookDeliverQueue = Bull.Queue<UserWebhookDeliverJobData>;
 export type SystemWebhookDeliverQueue = Bull.Queue<SystemWebhookDeliverJobData>;
+export type ScheduleNotePostQueue = Bull.Queue<ScheduleNotePostJobData>;
 
 const $system: Provider = {
 	provide: 'queue:system',
@@ -90,6 +92,12 @@ const $systemWebhookDeliver: Provider = {
 	inject: [DI.config],
 };
 
+const $scheduleNotePost: Provider = {
+	provide: 'queue:scheduleNotePost',
+	useFactory: (config: Config) => new Bull.Queue(QUEUE.SCHEDULE_NOTE_POST, baseQueueOptions(config, QUEUE.SCHEDULE_NOTE_POST)),
+	inject: [DI.config],
+};
+
 @Module({
 	imports: [
 	],
@@ -104,6 +112,7 @@ const $systemWebhookDeliver: Provider = {
 		$objectStorage,
 		$userWebhookDeliver,
 		$systemWebhookDeliver,
+		$scheduleNotePost,
 	],
 	exports: [
 		$system,
@@ -116,6 +125,7 @@ const $systemWebhookDeliver: Provider = {
 		$objectStorage,
 		$userWebhookDeliver,
 		$systemWebhookDeliver,
+		$scheduleNotePost,
 	],
 })
 export class QueueModule implements OnApplicationShutdown {
@@ -130,6 +140,7 @@ export class QueueModule implements OnApplicationShutdown {
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
 		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
+		@Inject('queue:scheduleNotePost') public scheduleNotePostQueue: ScheduleNotePostQueue,
 	) {}
 
 	public async dispose(): Promise<void> {
@@ -147,6 +158,7 @@ export class QueueModule implements OnApplicationShutdown {
 			this.objectStorageQueue.close(),
 			this.userWebhookDeliverQueue.close(),
 			this.systemWebhookDeliverQueue.close(),
+			this.scheduleNotePostQueue.close(),
 		]);
 	}
 
