@@ -31,7 +31,7 @@ import MkReactionIcon from '@/components/MkReactionIcon.vue';
 defineProps<{
 	showing: boolean;
 	reaction: string;
-	users: Misskey.entities.UserLite[]; // TODO
+	users: Misskey.entities.UserLite[];
 	count: number;
 	targetElement: HTMLElement;
 }>();
