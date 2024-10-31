@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:initialHeight="500"
 	:canResize="true"
 	@close="windowEl.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
 	<template v-else #header>New emoji</template>
@@ -98,6 +98,11 @@ const props = defineProps<{
 	emoji?: Misskey.entities.EmojiDetailed,
 }>();
 
+const emit = defineEmits<{
+	(ev: 'done', v: { deleted?: boolean; updated?: Misskey.entities.AdminEmojiUpdateRequest; created?: Misskey.entities.AdminEmojiUpdateRequest }): void,
+	(ev: 'closed'): void
+}>();
+
 const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
 const name = ref<string>(props.emoji ? props.emoji.name : '');
 const category = ref<string>(props.emoji?.category ? props.emoji.category : '');
@@ -114,11 +119,6 @@ watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
 }, { immediate: true });
 
 const imgUrl = computed(() => file.value ? file.value.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
-
-const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: Misskey.entities.AdminEmojiUpdateRequest; created?: Misskey.entities.AdminEmojiUpdateRequest }): void,
-	(ev: 'closed'): void
-}>();
 
 async function changeImage(ev: Event) {
 	file.value = await selectFile(ev.currentTarget ?? ev.target, null);
