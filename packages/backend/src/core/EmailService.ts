@@ -215,14 +215,27 @@ export class EmailService {
 		}
 
 		const emailDomain: string = emailAddress.split('@')[1];
-		const isBanned = this.utilityService.isBlockedHost(this.meta.bannedEmailDomains, emailDomain);
+		// emailWhitelistがtrueの場合、bannedEmailDomainsをホワイトリストとして扱う
+		if (this.meta.emailWhitelist) {
+			const isWhitelisted = this.utilityService.isBlockedHost(this.meta.bannedEmailDomains, emailDomain);
 
-		if (isBanned) {
-			return {
-				available: false,
-				reason: 'banned',
-			};
-		}
+			if (!isWhitelisted) {
+					return {
+							available: false,
+							reason: 'banned',
+					};
+			}
+	} else {
+			// 従来のブラックリストとしての動作
+			const isBanned = this.utilityService.isBlockedHost(this.meta.bannedEmailDomains, emailDomain);
+
+			if (isBanned) {
+					return {
+							available: false,
+							reason: 'banned',
+					};
+			}
+	}
 
 		return {
 			available: true,

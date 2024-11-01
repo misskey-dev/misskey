@@ -89,14 +89,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<MkFolder>
-				<template #label>Banned Email Domains</template>
+				<template #label>Email WhiteList</template>
+				<template v-if="emailWhitelistForm.savedState.emailWhitelist" #suffix>Enabled</template>
+				<template v-else #suffix>Disabled</template>
+				<template v-if="emailWhitelistForm.modified.value" #footer>
+					<MkFormFooter :form="emailWhitelistForm"/>
+				</template>
+
+				<div class="_gaps_m">
+					<MkSwitch v-model="emailWhitelistForm.state.emailWhitelist">
+						<template #label>Enable</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
+				<template #label>
+					<span v-if="emailWhitelistForm.state.emailWhitelist">Whitelist Email Domains</span>
+					<span v-else>Banned Email Domains</span>
+				</template>
 				<template v-if="bannedEmailDomainsForm.modified.value" #footer>
 					<MkFormFooter :form="bannedEmailDomainsForm"/>
 				</template>
 
 				<div class="_gaps_m">
 					<MkTextarea v-model="bannedEmailDomainsForm.state.bannedEmailDomains">
-						<template #label>Banned Email Domains List</template>
+						<template #label>
+							<span v-if="emailWhitelistForm.state.emailWhitelist">Whitelist Email Domains List</span>
+							<span v-else>Banned Email Domains List</span>
+						</template>
 					</MkTextarea>
 				</div>
 			</MkFolder>
@@ -170,6 +191,15 @@ const ipLoggingForm = useForm({
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		enableIpLogging: state.enableIpLogging,
+	});
+	fetchInstance(true);
+});
+
+const emailWhitelistForm = useForm({
+	emailWhitelist: meta.emailWhitelist,
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		emailWhitelist: state.emailWhitelist,
 	});
 	fetchInstance(true);
 });
