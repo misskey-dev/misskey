@@ -90,7 +90,7 @@ function createAccount() {
 	});
 }
 
-async function switchAccount(account: any) {
+async function switchAccount(account: Misskey.entities.UserDetailed) {
 	const fetchedAccounts = await getAccounts();
 	const token = fetchedAccounts.find(x => x.id === account.id)!.token;
 	switchAccountWithToken(token);

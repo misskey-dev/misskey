@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.headerText">{{ i18n.ts.pleaseSelectAccount }}</div>
 			</div>
-			<div :class="$style.accountSelectorRoot">
+			<div>
 				<div :class="$style.accountSelectorLabel">{{ i18n.ts.selectAccount }}</div>
 				<div :class="$style.accountSelectorList">
 					<template v-for="[id, user] in users">
@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<slot name="consentAdditionalInfo"></slot>
-			<div :class="$style.accountSelectorRoot">
+			<div>
 				<div :class="$style.accountSelectorLabel">
 					{{ i18n.ts._auth.scopeUser }} <button class="_textButton" @click="clickBackToAccountSelect">{{ i18n.ts.switchAccount }}</button>
 				</div>
