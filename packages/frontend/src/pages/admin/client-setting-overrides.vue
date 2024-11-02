@@ -102,6 +102,11 @@ const notConfigurableDefaultStoreSettings = [
 	'forceShowAds',
 	'additionalUnicodeEmojiIndexes',
 	'themeInitial',
+
+	// 光過敏性対策のためあえて鯖管に設定させない
+	'animation',
+	'animatedMfm',
+	'disableShowingAnimatedImages'
 ] satisfies (keyof typeof defaultStore.def)[];
 
 const notConfigurableColdDeviceStorageSettings = [
