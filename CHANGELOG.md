@@ -31,6 +31,8 @@
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
 - Fix: 招待コードの発行可能な残り数算出に使用すべきロールポリシーの値が違う問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/706)
+- Fix: ローカルユーザーへのメンションを含むノートが連合される際に正しいURLに変換されないことがある問題を修正  
+	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/712)
 
 ### Misskey.js
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
