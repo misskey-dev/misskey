@@ -105,7 +105,7 @@ const headerTabs = computed(() => [
 	},
 ]);
 
-const tab = ref(($i?.isLocked || !$i?.hasPendingSentFollowRequest) ? 'list' : 'sent');
+const tab = ref($i?.isLocked ? 'list' : 'sent');
 
 definePageMetadata(() => ({
 	title: i18n.ts.followRequests,
