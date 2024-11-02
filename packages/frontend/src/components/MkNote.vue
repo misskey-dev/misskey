@@ -287,8 +287,10 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	url: `https://${host}/notes/${appearNote.value.id}`,
 }));
 
+/* Overload FunctionにLintが対応していないのでコメントアウト
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): boolean | 'sensitiveMute';
+*/
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): boolean | 'sensitiveMute' {
 	if (mutedWords != null) {
 		if (checkWordMute(noteToCheck, $i, mutedWords)) return true;
