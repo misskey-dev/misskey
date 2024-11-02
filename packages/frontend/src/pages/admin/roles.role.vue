@@ -49,6 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 											<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
 										</div>
 									</div>
+								</div>
 							</template>
 						</MkPagination>
 					</div>
