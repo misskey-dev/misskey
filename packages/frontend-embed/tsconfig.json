@@ -45,7 +45,8 @@
 	"compileOnSave": false,
 	"include": [
 		"./src/**/*.ts",
-		"./src/**/*.vue"
+		"./src/**/*.vue",
+		"./@types/**/*.ts"
 	],
 	"exclude": [
 		".storybook/**/*"
