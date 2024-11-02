@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label>{{ i18n.ts.overrideValue }}</template>
 								<template #caption>{{ i18n.ts.onToTrue }}</template>
 							</MkSwitch>
-							<MkTextarea v-else-if="def.formType === 'codeEditor'" v-model="def.overrideValue" :disabled="!def.enableOverride" pre>
+							<MkTextarea v-else-if="def.formType === 'codeEditor'" v-model="def.overrideValue" :disabled="!def.enableOverride" pre code>
 								<template #label>{{ i18n.ts.overrideValue }}</template>
 							</MkTextarea>
 						</div>
@@ -85,6 +85,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import JSON5 from 'json5';
 
 const query = ref('');
 
@@ -145,6 +146,7 @@ function typeSafeObjectEntries<T extends Record<string, any>>(obj: T) {
 }
 
 function getClientSettingOverridesUIDefObj(def: unknown): ClientSettingOverridesUIDefObj {
+	const _def = typeof def === 'object' ? JSON.stringify(def, null, '\t') : def;
 	return {
 		formType: (() => {
 			if (typeof def === 'boolean') {
@@ -159,7 +161,7 @@ function getClientSettingOverridesUIDefObj(def: unknown): ClientSettingOverrides
 		})() satisfies ClientSettingOverridesUIDefObj['formType'] as ClientSettingOverridesUIDefObj['formType'],
 		enableOverride: false,
 		defaultValue: def,
-		overrideValue: def,
+		overrideValue: _def,
 	};
 }
 
@@ -205,7 +207,7 @@ async function save() {
 					(typeof def.defaultValue !== 'string' && typeof def.overrideValue === 'string' && def.overrideValue !== JSON.stringify(def.defaultValue))
 				)
 			))
-			.map(([key, def]) => [key, typeof def.overrideValue === 'string' && typeof def.defaultValue !== 'string' ? JSON.parse(def.overrideValue) : def.overrideValue])
+			.map(([key, def]) => [key, typeof def.overrideValue === 'string' && typeof def.defaultValue !== 'string' ? JSON5.parse(def.overrideValue) : def.overrideValue])
 	);
 
 	let defaultClientSettingOverrides: string | null = JSON.stringify(overrides);
