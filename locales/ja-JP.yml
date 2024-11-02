@@ -1299,6 +1299,7 @@ yourNameContainsProhibitedWordsDescription: "名前に禁止されている文�
 thisContentsAreMarkedAsSigninRequiredByAuthor: "投稿者により、表示にはログインが必要と設定されています"
 lockdown: "ロックダウン"
 pleaseSelectAccount: "アカウントを選択してください"
+availableRoles: "利用可能なロール"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
