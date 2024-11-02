@@ -32,7 +32,7 @@
 - Fix: 招待コードの発行可能な残り数算出に使用すべきロールポリシーの値が違う問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/706)
 - Fix: 連合への配信時に、acctの大小文字が区別されてしまい正しくメンションが処理されないことがある問題を修正  
-	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/711)
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/711)
 
 ### Misskey.js
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
