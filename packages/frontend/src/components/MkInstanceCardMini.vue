@@ -4,114 +4,158 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { yellow: instance.isNotResponding, red: instance.isBlocked, gray: instance.isSuspended, blue: instance.isSilenced }]">
-	<img class="icon" :src="getInstanceIcon(instance)" alt="" loading="lazy"/>
-	<div class="body">
-		<span class="host">{{ instance.name ?? instance.host }}</span>
-		<span class="sub _monospace"><b>{{ instance.host }}</b> / {{ instance.softwareName || '?' }} {{ instance.softwareVersion }}</span>
+<div
+	:class="[$style.root, {
+		[$style.isNotResponding]: instance.isNotResponding,
+		[$style.isSilenced]: instance.isSilenced,
+		[$style.isSuspended]: instance.isSuspended,
+		[$style.isBlocked]: instance.isBlocked,
+	}]"
+>
+	<img :class="$style.icon" :src="getInstanceIcon(instance)" alt="" loading="lazy"/>
+	<div :class="$style.body">
+		<span :class="$style.host">{{ instance.name || instance.host }}</span>
+		<span :class="$style.sub">
+			<span class="_monospace">
+				<span style="font-weight: 700;">{{ instance.host }}</span> / {{ instance.softwareName || '?' }} {{ instance.softwareVersion }}
+			</span>
+		</span>
 	</div>
-	<MkMiniChart v-if="chartValues" class="chart" :src="chartValues"/>
+	<MkMiniChart v-if="chartValues" :class="$style.chart" :src="chartValues"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
+import MkMiniChart from '@/components/MkMiniChart.vue';
 
 const props = defineProps<{
 	instance: Misskey.entities.FederationInstance;
 }>();
 
-const chartValues = ref<number[] | null>(null);
+const chartValues = shallowRef<number[] | null>(null);
 
-misskeyApiGet('charts/instance', { host: props.instance.host, limit: 16 + 1, span: 'day' }).then(res => {
-	// 今日のぶんの値はまだ途中の値であり、それも含めると大抵の場合前日よりも下降しているようなグラフになってしまうため今日は弾く
-	res.requests.received.splice(0, 1);
-	chartValues.value = res.requests.received;
+watch(() => props.instance.host, (host) => {
+	misskeyApiGet('charts/instance', {
+		host,
+		limit: 16 + 1,
+		span: 'day',
+	}).then(res => {
+		// 今日のぶんの値はまだ途中の値であり、それも含めると大抵の場合前日よりも下降しているようなグラフになってしまうため今日は弾く
+		res.requests.received.shift();
+		chartValues.value = res.requests.received;
+	}).catch(() => {
+		chartValues.value = null;
+	});
+}, {
+	immediate: true,
 });
 
-function getInstanceIcon(instance): string {
-	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
-}
+const getInstanceIcon = (instance: Misskey.entities.FederationInstance) => (
+	getProxiedImageUrlNullable(instance.iconUrl, 'preview')
+		?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview')
+		?? '/client-assets/dummy.png'
+);
 </script>
 
 <style lang="scss" module>
-.root {
-	$bodyTitleHieght: 18px;
-	$bodyInfoHieght: 16px;
+$bodyTitleHieght: 18px;
+$bodyInfoHieght: 16px;
 
+.root {
 	display: flex;
 	align-items: center;
 	padding: 16px;
-	background: var(--MI_THEME-panel);
 	border-radius: 8px;
+	background-color: var(--MI_THEME-panel);
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--c) 6px,
+		var(--c) 16px
+	);
+	--c: transparent;
 
-	> :global(.icon) {
-		display: block;
-		width: ($bodyTitleHieght + $bodyInfoHieght);
-		height: ($bodyTitleHieght + $bodyInfoHieght);
-		object-fit: cover;
-		border-radius: 4px;
-		margin-right: 10px;
-	}
-
-	> :global(.body) {
-		flex: 1;
-		overflow: hidden;
-		font-size: 0.9em;
-		color: var(--MI_THEME-fg);
-		padding-right: 8px;
-
-		> :global(.host) {
-			display: block;
-			width: 100%;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			line-height: $bodyTitleHieght;
+	&,
+	html[data-color-scheme=light] & {
+		&.isNotResponding {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), orange 50%) srgb r g b / 0.25);
 		}
 
-		> :global(.sub) {
-			display: block;
-			width: 100%;
-			font-size: 80%;
-			opacity: 0.7;
-			line-height: $bodyInfoHieght;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
+		&.isSilenced {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), blue 50%) srgb r g b / 0.25);
+		}
+
+		&.isSuspended {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), black 15%) srgb r g b / 0.25);
+		}
+
+		&.isBlocked {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), red 50%) srgb r g b / 0.25);
 		}
 	}
 
-	> :global(.chart) {
-		height: 30px;
-	}
+	html[data-color-scheme=dark] & {
+		&.isNotResponding {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), orange 50%) srgb r g b / 0.5);
+		}
 
-  &:global(.blue) {
-    --c: rgba(0, 42, 255, 0.15);
-    background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
-    background-size: 16px 16px;
-  }
+		&.isSilenced {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), blue 50%) srgb r g b / 0.5);
+		}
 
-	&:global(.yellow) {
-		--c: rgb(255 196 0 / 15%);
-		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
-		background-size: 16px 16px;
-	}
+		&.isSuspended {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), white 15%) srgb r g b / 0.5);
+		}
 
-	&:global(.red) {
-		--c: rgb(255 0 0 / 15%);
-		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
-		background-size: 16px 16px;
+		&.isBlocked {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), red 50%) srgb r g b / 0.5);
+		}
 	}
+}
 
-	&:global(.gray) {
-		--c: var(--MI_THEME-bg);
-		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
-		background-size: 16px 16px;
-	}
+.icon {
+	display: block;
+	width: ($bodyTitleHieght + $bodyInfoHieght);
+	height: ($bodyTitleHieght + $bodyInfoHieght);
+	object-fit: cover;
+	border-radius: 4px;
+	margin-right: 12px;
+}
+
+.body {
+	flex: 1;
+	overflow: hidden;
+	font-size: 0.9em;
+	color: var(--fg);
+	padding-right: 8px;
+}
+
+.host {
+	display: block;
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: $bodyTitleHieght;
+}
+
+.sub {
+	display: block;
+	width: 100%;
+	font-size: 80%;
+	opacity: 0.7;
+	line-height: $bodyInfoHieght;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.chart {
+	height: 30px;
 }
 </style>
