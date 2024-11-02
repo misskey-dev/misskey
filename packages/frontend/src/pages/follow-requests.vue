@@ -29,6 +29,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 										<MkButton class="command" rounded primary @click="accept(displayUser(req))"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
 										<MkButton class="command" rounded danger @click="reject(displayUser(req))"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
 									</div>
+									<div v-else class="commands">
+										<MkButton class="command" rounded danger @click="cancel(displayUser(req))"><i class="ti ti-x"/> {{ i18n.ts.cancel }}</MkButton>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -41,11 +44,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import * as Misskey from 'misskey-js';
 import { shallowRef, computed, ref } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { userPage, acct } from '@/filters/user.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { infoImageUrl } from '@/instance.js';
@@ -65,14 +69,20 @@ const pagination = computed(() => tab.value === 'list'
 	},
 );
 
-function accept(user) {
-	misskeyApi('following/requests/accept', { userId: user.id }).then(() => {
+function accept(user: Misskey.entities.UserLite) {
+	os.apiWithDialog('following/requests/accept', { userId: user.id }).then(() => {
 		paginationComponent.value?.reload();
 	});
 }
 
-function reject(user) {
-	misskeyApi('following/requests/reject', { userId: user.id }).then(() => {
+function reject(user: Misskey.entities.UserLite) {
+	os.apiWithDialog('following/requests/reject', { userId: user.id }).then(() => {
+		paginationComponent.value?.reload();
+	});
+}
+
+function cancel(user: Misskey.entities.UserLite) {
+	os.apiWithDialog('following/requests/cancel', { userId: user.id }).then(() => {
 		paginationComponent.value?.reload();
 	});
 }
@@ -95,7 +105,7 @@ const headerTabs = computed(() => [
 	},
 ]);
 
-const tab = ref($i?.isLocked || !$i.hasPendingSentFollowRequest ? 'list' : 'sent');
+const tab = ref(($i?.isLocked || !$i?.hasPendingSentFollowRequest) ? 'list' : 'sent');
 
 definePageMetadata(() => ({
 	title: i18n.ts.followRequests,
