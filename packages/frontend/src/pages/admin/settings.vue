@@ -249,6 +249,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton primary @click="chooseProxyAccount">{{ i18n.ts.selectAccount }}</MkButton>
 					</div>
 				</MkFolder>
+
+				<FormLink to="/admin/client-setting-overrides">{{ i18n.ts.clientSettingOverrides }} <span class="_beta">{{ i18n.ts.beta }}</span></FormLink>
 			</div>
 		</MkSpacer>
 	</MkStickyContainer>
@@ -274,6 +276,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import { useForm } from '@/scripts/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 import MkRadios from '@/components/MkRadios.vue';
+import FormLink from '@/components/form/link.vue';
 
 const meta = await misskeyApi('admin/meta');
 

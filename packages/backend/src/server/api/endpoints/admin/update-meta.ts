@@ -67,6 +67,7 @@ export const paramDef = {
 		description: { type: 'string', nullable: true },
 		defaultLightTheme: { type: 'string', nullable: true },
 		defaultDarkTheme: { type: 'string', nullable: true },
+		defaultClientSettingOverrides: { type: 'string', nullable: true },
 		cacheRemoteFiles: { type: 'boolean' },
 		cacheRemoteSensitiveFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
@@ -301,6 +302,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.defaultDarkTheme !== undefined) {
 				set.defaultDarkTheme = ps.defaultDarkTheme;
+			}
+
+			if (ps.defaultClientSettingOverrides !== undefined) {
+				set.defaultClientSettingOverrides = ps.defaultClientSettingOverrides;
 			}
 
 			if (ps.cacheRemoteFiles !== undefined) {

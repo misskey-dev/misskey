@@ -1300,6 +1300,12 @@ thisContentsAreMarkedAsSigninRequiredByAuthor: "投稿者により、表示に�
 lockdown: "ロックダウン"
 pleaseSelectAccount: "アカウントを選択してください"
 availableRoles: "利用可能なロール"
+clientSettingOverrides: "クライアント設定の初期値"
+clientSettingOverridesWarn: "全ユーザーに対するクライアント設定の初期値を変更できます。\n知識のない方が変更すると全ユーザーがクライアントにアクセスできなくなる可能性があります。"
+enableOverride: "オーバーライドする"
+overrideValue: "オーバーライドする値"
+onToTrue: "スイッチをオンにするとtrueとなります。"
+reset: "リセット"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"

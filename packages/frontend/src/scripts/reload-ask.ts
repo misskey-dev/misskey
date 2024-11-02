@@ -12,7 +12,7 @@ let isReloadConfirming = false;
 export async function reloadAsk(opts: {
 	unison?: boolean;
 	reason?: string;
-}) {
+} = {}) {
 	if (isReloadConfirming) {
 		return;
 	}
