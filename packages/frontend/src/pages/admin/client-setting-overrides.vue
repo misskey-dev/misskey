@@ -194,10 +194,13 @@ async function save() {
 		typeSafeObjectEntries(clientSettingOverrides.value)
 			.filter(([key, def]) => (
 				def.enableOverride &&
-				def.overrideValue !== def.defaultValue &&
-				JSON.stringify(def.overrideValue) !== JSON.stringify(def.defaultValue)
+				def.overrideValue !== def.defaultValue && (
+					(typeof def.defaultValue === 'string' && typeof def.overrideValue === 'string' && def.overrideValue !== def.defaultValue) ||
+					(typeof def.defaultValue === 'object' && typeof def.overrideValue === 'string' && JSON.stringify(def.overrideValue) !== JSON.stringify(def.defaultValue)) ||
+					(typeof def.defaultValue !== 'string' && typeof def.overrideValue === 'string' && def.overrideValue !== JSON.stringify(def.defaultValue))
+				)
 			))
-			.map(([key, def]) => [key, def.overrideValue])
+			.map(([key, def]) => [key, typeof def.overrideValue === 'string' && typeof def.defaultValue !== 'string' ? JSON.parse(def.overrideValue) : def.overrideValue])
 	);
 
 	let defaultClientSettingOverrides: string | null = JSON.stringify(overrides);
