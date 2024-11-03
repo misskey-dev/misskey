@@ -35,8 +35,8 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/711)
 
 ### Misskey.js
+- Enhance: `/miauth/{sessionId}/check` の型を追加
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
-- Fix: `/miauth/{sessionId}/check` の型を追加
 
 ## 2024.10.1
 
