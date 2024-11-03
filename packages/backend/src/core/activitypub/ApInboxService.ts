@@ -653,7 +653,7 @@ export class ApInboxService {
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);
-			return e;
+			throw e;
 		});
 
 		// don't queue because the sender may attempt again when timeout
