@@ -35,8 +35,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			}"
 			alt=""
 		>
-		<MkInstanceIcon v-if="showInstance" :class="$style.instanceicon" :instance="user.instance"/>
 	</template>
+	<MkInstanceIcon v-if="showInstance" :class="$style.instanceicon" :instance="user.instance"/>
 </component>
 </template>
 

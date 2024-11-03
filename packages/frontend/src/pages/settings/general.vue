@@ -69,8 +69,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
 				<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
 				<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
+				<option value="remoteIcon">{{ i18n.ts._instanceTicker.remoteIcon }}</option>
+				<option value="alwaysIcon">{{ i18n.ts._instanceTicker.alwaysIcon }}</option>
 			</MkSelect>
-			<MkSwitch v-if="instanceTicker !== 'none'" v-model="instanceIcon">{{ i18n.ts.instanceIcon }}</MkSwitch>
+
 			<MkSelect v-model="nsfw">
 				<template #label>{{ i18n.ts.displayOfSensitiveMedia }}</template>
 				<option value="respect">{{ i18n.ts._displayOfSensitiveMedia.respect }}</option>
@@ -304,7 +306,6 @@ const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostF
 const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
 const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
-const instanceIcon = computed(defaultStore.makeGetterSetter('instanceIcon'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
@@ -354,7 +355,6 @@ watch([
 	showNoteActionsOnlyHover,
 	showGapBetweenNotesInTimeline,
 	instanceTicker,
-	instanceIcon,
 	overridedDeviceKind,
 	mediaListWithOneImageAppearance,
 	reactionsDisplaySize,
