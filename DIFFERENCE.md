@@ -1,4 +1,8 @@
 # DIFFRENCE
+## 2024.10.1-yami-1.3.8
+### Feat
+- 最終アクティブでコンディショナルなロールを制御可能に (cherry-pick: pwpspace)
+
 ## 2024.10.0-yami-1.3.7
 ### Feat
 - アカウント登録を承認制に出来るように (cherry-pick: serafuku) + chore(lqvp-fork)
