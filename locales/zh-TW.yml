@@ -1792,6 +1792,8 @@ _role:
     followingMoreThanOrEq: "追隨人數在～以上"
     notesLessThanOrEq: "貼文數在～以下"
     notesMoreThanOrEq: "貼文數在～以上"
+    activedMoreThan: "最終活躍時間在～以上"
+    activedLessThan: "最終活躍時間在～未滿"
     and: "～及～"
     or: "～或～"
     not: "～否"

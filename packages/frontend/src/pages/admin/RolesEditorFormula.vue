@@ -23,6 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<option value="followingMoreThanOrEq">{{ i18n.ts._role._condition.followingMoreThanOrEq }}</option>
 			<option value="notesLessThanOrEq">{{ i18n.ts._role._condition.notesLessThanOrEq }}</option>
 			<option value="notesMoreThanOrEq">{{ i18n.ts._role._condition.notesMoreThanOrEq }}</option>
+			<option value="activedMoreThan">{{ i18n.ts._role._condition.activedMoreThan }}</option>
+			<option value="activedLessThan">{{ i18n.ts._role._condition.activedLessThan }}</option>
 			<option value="and">{{ i18n.ts._role._condition.and }}</option>
 			<option value="or">{{ i18n.ts._role._condition.or }}</option>
 			<option value="not">{{ i18n.ts._role._condition.not }}</option>
@@ -51,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<RolesEditorFormula v-model="v.value"/>
 	</div>
 
-	<MkInput v-else-if="type === 'createdLessThan' || type === 'createdMoreThan'" v-model="v.sec" type="number">
+	<MkInput v-else-if="type === 'createdLessThan' || type === 'createdMoreThan' || type === 'activedMoreThan' || type === 'activedLessThan'" v-model="v.sec" type="number">
 		<template #suffix>sec</template>
 	</MkInput>
 

@@ -1792,6 +1792,8 @@ _role:
     followingMoreThanOrEq: "关注中不少于"
     notesLessThanOrEq: "帖子数在～以下"
     notesMoreThanOrEq: "帖子数在～以上"
+    activedMoreThan: "活跃时间超过"
+    activedLessThan: "活跃时间少于"
     and: "符合以下全部条件"
     or: "符合以下任一条件"
     not: "不符合以下任何条件"
