@@ -1801,6 +1801,8 @@ _role:
     followingMoreThanOrEq: "Follows X or more accounts"
     notesLessThanOrEq: "Post count is less than/equal to"
     notesMoreThanOrEq: "Post count is greater than/equal to"
+    activedMoreThan: "Last active time is more than"
+    activedLessThan: "Last active time is less than"
     and: "AND-Condition"
     or: "OR-Condition"
     not: "NOT-Condition"

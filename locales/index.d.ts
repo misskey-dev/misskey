@@ -7128,6 +7128,14 @@ export interface Locale extends ILocale {
              */
             "notesMoreThanOrEq": string;
             /**
+             * 最終アクティブ日時が～以上
+             */
+            "activedMoreThan": string;
+            /**
+             * 最終アクティブ日時が～未満
+             */
+            "activedLessThan": string;
+            /**
              * ～かつ～
              */
             "and": string;

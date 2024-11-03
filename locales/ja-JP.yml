@@ -1842,6 +1842,8 @@ _role:
     followingMoreThanOrEq: "フォロー数が～以上"
     notesLessThanOrEq: "投稿数が～以下"
     notesMoreThanOrEq: "投稿数が～以上"
+    activedMoreThan: "最終アクティブ日時が～以上"
+    activedLessThan: "最終アクティブ日時が～未満"
     and: "～かつ～"
     or: "～または～"
     not: "～ではない"

@@ -154,6 +154,22 @@ type CondFormulaValueNotesMoreThanOrEq = {
 	value: number;
 };
 
+/**
+ * 最終アクティブ日時が指定期間経過した場合のみ成立とする
+ */
+type CondFormulaValueActivedMoreThan = {
+	type: 'activedMoreThan';
+	sec: number;
+};
+
+/**
+ * 最終アクティブ日時が指定期間経っていない場合のみ成立とする
+ */
+type CondFormulaValueActivedLessThan = {
+	type: 'activedLessThan';
+	sec: number;
+};
+
 export type RoleCondFormulaValue = { id: string } & (
 	CondFormulaValueAnd |
 	CondFormulaValueOr |
@@ -173,7 +189,9 @@ export type RoleCondFormulaValue = { id: string } & (
 	CondFormulaValueFollowingLessThanOrEq |
 	CondFormulaValueFollowingMoreThanOrEq |
 	CondFormulaValueNotesLessThanOrEq |
-	CondFormulaValueNotesMoreThanOrEq
+	CondFormulaValueNotesMoreThanOrEq |
+	CondFormulaValueActivedMoreThan |
+	CondFormulaValueActivedLessThan
 );
 
 @Entity('role')
