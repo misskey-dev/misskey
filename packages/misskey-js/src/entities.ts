@@ -311,6 +311,14 @@ export type SigninWithPasskeyResponse = {
 	signinResponse: SigninFlowResponse & { finished: true };
 };
 
+export type MiAuthCheckResponse = {
+	ok: true;
+	token: string;
+	user: User;
+} | {
+	ok: false;
+};
+
 type Values<T extends Record<PropertyKey, unknown>> = T[keyof T];
 
 export type PartialRolePolicyOverride = Partial<{[k in keyof RolePolicies]: Omit<Values<Role['policies']>, 'value'> & { value: RolePolicies[k] }}>;

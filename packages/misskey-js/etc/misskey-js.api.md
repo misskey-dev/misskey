@@ -1194,6 +1194,10 @@ export type Endpoints = Overwrite<Endpoints_2, {
         }>;
         res: AdminRolesCreateResponse;
     };
+    [ep: `miauth/${string}/check`]: {
+        req: EmptyRequest;
+        res: MiAuthCheckResponse;
+    };
 }>;
 
 // @public (undocumented)
@@ -1223,6 +1227,7 @@ declare namespace entities {
         SigninWithPasskeyRequest,
         SigninWithPasskeyInitResponse,
         SigninWithPasskeyResponse,
+        MiAuthCheckResponse,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
@@ -2438,6 +2443,15 @@ type MetaRequest = operations['meta']['requestBody']['content']['application/jso
 
 // @public (undocumented)
 type MetaResponse = operations['meta']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type MiAuthCheckResponse = {
+    ok: true;
+    token: string;
+    user: User;
+} | {
+    ok: false;
+};
 
 // @public (undocumented)
 type MiauthGenTokenRequest = operations['miauth___gen-token']['requestBody']['content']['application/json'];

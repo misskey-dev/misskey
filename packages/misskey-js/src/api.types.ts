@@ -1,6 +1,6 @@
 import { Endpoints as Gen } from './autogen/endpoint.js';
 import { UserDetailed } from './autogen/models.js';
-import { AdminRolesCreateRequest, AdminRolesCreateResponse, UsersShowRequest } from './autogen/entities.js';
+import { AdminRolesCreateRequest, AdminRolesCreateResponse, UsersShowRequest, EmptyRequest } from './autogen/entities.js';
 import {
 	PartialRolePolicyOverride,
 	SigninFlowRequest,
@@ -12,6 +12,7 @@ import {
 	SignupPendingResponse,
 	SignupRequest,
 	SignupResponse,
+	MiAuthCheckResponse,
 } from './entities.js';
 
 type Overwrite<T, U extends { [Key in keyof T]?: unknown }> = Omit<
@@ -104,6 +105,10 @@ export type Endpoints = Overwrite<
 		'admin/roles/create': {
 			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;
 			res: AdminRolesCreateResponse;
+		},
+		[ep: `miauth/${string}/check`]: {
+			req: EmptyRequest;
+			res: MiAuthCheckResponse;
 		}
 	}
 >
