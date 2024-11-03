@@ -314,7 +314,7 @@ export type SigninWithPasskeyResponse = {
 export type MiAuthCheckResponse = {
 	ok: true;
 	token: string;
-	user: User;
+	user: UserDetailedNotMe;
 } | {
 	ok: false;
 };

@@ -2448,7 +2448,7 @@ type MetaResponse = operations['meta']['responses']['200']['content']['applicati
 type MiAuthCheckResponse = {
     ok: true;
     token: string;
-    user: User;
+    user: UserDetailedNotMe;
 } | {
     ok: false;
 };
