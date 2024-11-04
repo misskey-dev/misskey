@@ -56,13 +56,6 @@ export class SpamFilterService {
 		// do not check for local user
 		if (user != null && user.host === null) return false;
 
-		const willCauseNotification = mentionedUsers.some(u => u.host === null)
-			|| (visibility === 'specified' && visibleUsers.some(u => u.host === null))
-			|| reply?.userHost === null || (quote != null && quote.userHost === null) || false;
-
-		// if no notification is created, it's not a harmful spam
-		if (!willCauseNotification) return false;
-
 		// get list of users that will create notification
 		const targetUserIds: string[] = [
 			...mentionedUsers.filter(x => x.host == null).map(x => x.id),
@@ -72,6 +65,7 @@ export class SpamFilterService {
 		];
 
 		// if notification is created only for allowed users, it's not a spam or harmful
+		// if no notification is created, it's not a spam or harmful
 		const allowedIds = new Set(this.meta.nirilaAllowedUnfamiliarRemoteUserIds);
 		if (targetUserIds.every(id => allowedIds.has(id))) return false;
 
