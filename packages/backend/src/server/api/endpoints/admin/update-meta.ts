@@ -141,6 +141,7 @@ export const paramDef = {
 		enableIdenticonGeneration: { type: 'boolean' },
 		serverRules: { type: 'array', items: { type: 'string' } },
 		bannedEmailDomains: { type: 'array', items: { type: 'string' } },
+		emailWhitelist: { type: 'boolean'},
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 		manifestJsonOverride: { type: 'string' },
 		enableFanoutTimeline: { type: 'boolean' },
@@ -637,6 +638,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.bannedEmailDomains !== undefined) {
 				set.bannedEmailDomains = ps.bannedEmailDomains;
+			}
+
+			if (ps.emailWhitelist !== undefined) {
+				set.emailWhitelist = ps.emailWhitelist;
 			}
 
 			if (ps.urlPreviewEnabled !== undefined) {
