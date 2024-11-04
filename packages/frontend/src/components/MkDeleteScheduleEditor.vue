@@ -45,6 +45,7 @@ import { i18n } from '@/i18n.js';
 export type DeleteScheduleEditorModelValue = {
 		deleteAt: number | null;
 		deleteAfter: number | null;
+		isValid: boolean;
 	};
 
 const props = defineProps<{
@@ -99,29 +100,40 @@ if (props.modelValue.deleteAt) {
 const calcAt = () => {
 	return new Date(`${atDate.value} ${atTime.value}`).getTime();
 };
+const calcAfter = () => {
+	let base = parseInt(after.value.toString());
+	switch (unit.value) {
+		// @ts-expect-error fallthrough
+		case 'day': base *= 24;
+		// @ts-expect-error fallthrough
+		case 'hour': base *= 60;
+		// @ts-expect-error fallthrough
+		case 'minute': base *= 60;
+		// eslint-disable-next-line no-fallthrough
+		case 'second': return base *= 1000;
+		default: return null;
+	}
+};
 
-	const calcAfter = () => {
-		let base = parseInt(after.value.toString());
-		switch (unit.value) {
-			// @ts-expect-error fallthrough
-			case 'day': base *= 24;
-				// @ts-expect-error fallthrough
-			case 'hour': base *= 60;
-				// @ts-expect-error fallthrough
-			case 'minute': base *= 60;
-				// eslint-disable-next-line no-fallthrough
-			case 'second': return base *= 1000;
-			default: return null;
-		}
-	};
-
-	return {
+const isValidTime = () => {
+	if (expiration.value === 'at') {
+		return calcAt() < Date.now() + (1000 * 60 * 60 * 24 * 365);
+	} else {
+		const afterMs = calcAfter();
+		if (afterMs === null) return false;
+		return afterMs < 1000 * 60 * 60 * 24 * 365;
+	}
+};
+isValid.value = isValidTime();
+watch([expiration, atDate, atTime, after, unit, isValid], () => {
+	const isValidTimeValue = isValidTime();
+	isValid.value = isValidTimeValue;
+	emit('update:modelValue', {
 		deleteAt: expiration.value === 'at' ? calcAt() : null,
 		deleteAfter: expiration.value === 'after' ? calcAfter() : null,
-	};
-}
-
-watch([expiration, atDate, atTime, after, unit], () => emit('update:modelValue', get()), {
+		isValid: isValidTimeValue,
+	});
+}, {
 	deep: true,
 });
 </script>
