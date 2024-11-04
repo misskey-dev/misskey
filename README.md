@@ -31,6 +31,7 @@
 - TL上のサーバー情報をアイコン表示に切り替えられるように https://github.com/team-shahu/misskey/pull/13 https://github.com/team-shahu/misskey/pull/24
 - 特定のロールにのみお知らせを発行する機能 https://github.com/team-shahu/misskey/pull/18
 - リアクションした人一覧がブロック・ミュートを考慮するようにする設定 https://github.com/team-shahu/misskey/pull/23 https://github.com/team-shahu/misskey/pull/27
+- 誰がリアクションをしたのかを非表示にできる機能 https://github.com/hideki0403/kakurega.app/commit/65d85bb4fe724dc0737f1ac7958bc13c96cc926d
 
 ## Special Thanks
 - [Misskey](https://github.com/misskey-dev/misskey)  
