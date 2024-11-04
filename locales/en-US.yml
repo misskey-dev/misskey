@@ -1319,6 +1319,7 @@ drafts: "Drafts"
 draftSavingBehavior: "Behavior related to saving drafts."
 saveAsDraft: "Save as Drafts"
 draftOverwriteConfirm: "Applying a draft will reset what is currently entered. Are you sure?"
+defaultScheduledNoteDelete: "Make notes disappear by default."
 
 _bubbleGame:
   howToPlay: "How to play"

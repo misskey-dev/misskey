@@ -5163,7 +5163,7 @@ export interface Locale extends ILocale {
      */
     "draftOverwriteConfirm": string;
     /**
-     * デフォルトでノートが自己消滅するように
+     * デフォルトでノートが消えるように
      */
     "defaultScheduledNoteDelete": string;
     /**
