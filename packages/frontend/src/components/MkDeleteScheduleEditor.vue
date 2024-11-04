@@ -1,6 +1,6 @@
 <template>
-<div class="$style.root">
-	<span v-if="!afterOnly">{{ i18n.ts.scheduledNoteDelete }}</span><span class="_beta">{{ i18n.ts.originalFeature }}</span>
+<div class="zmdxowus">
+	<span v-if="!afterOnly">{{ i18n.ts.scheduledNoteDelete }}</span><span v-if="!afterOnly" class="_beta">{{ i18n.ts.originalFeature }}</span>
 	<section>
 		<div>
 			<MkSelect v-if="!afterOnly" v-model="expiration" small>
