@@ -113,6 +113,10 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'sound_notification',
 	'defaultScheduledNoteDelete',
 	'defaultScheduledNoteDeleteTime',
+	'postFormActions',
+	'customFont',
+	'instanceIcon',
+	'reactionChecksMuting',
 ];
 const coldDeviceStorageSaveKeys: (keyof typeof ColdDeviceStorage.default)[] = [
 	'lightTheme',
