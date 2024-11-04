@@ -1320,6 +1320,8 @@ draftSavingBehavior: "Behavior related to saving drafts."
 saveAsDraft: "Save as Drafts"
 draftOverwriteConfirm: "Applying a draft will reset what is currently entered. Are you sure?"
 defaultScheduledNoteDelete: "Make notes disappear by default."
+defaultScheduledNoteDeleteTime: "Default value for “Scheduled note deletion”"
+scheduledNoteDeleteEnabled: "“Scheduled note deletion” is enabled."
 
 _bubbleGame:
   howToPlay: "How to play"
