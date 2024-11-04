@@ -5,6 +5,7 @@
 
 ### Server
 - Fix: public to homeモデレーションが withReplies に適用されてない問題を修正
+- Fix: スパムフィルターに引っかかったノートのユーザや添付ファイルが生成される問題を修正
 
 ## 2024.10.0-kinel.1
 ## 2024.10.0 (merged to 2024.10.0-kinel.1)

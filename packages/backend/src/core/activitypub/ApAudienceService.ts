@@ -31,7 +31,7 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	public async parseAudience(actor: MiRemoteUser, to?: ApObject, cc?: ApObject, resolver?: Resolver): Promise<AudienceInfo> {
+	public async parseAudience(actor: MiRemoteUser | null, to?: ApObject, cc?: ApObject, resolver?: Resolver): Promise<AudienceInfo> {
 		const toGroups = this.groupingAudience(getApIds(to), actor);
 		const ccGroups = this.groupingAudience(getApIds(cc), actor);
 
@@ -74,7 +74,7 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	private groupingAudience(ids: string[], actor: MiRemoteUser): GroupedAudience {
+	private groupingAudience(ids: string[], actor: MiRemoteUser | null): GroupedAudience {
 		const groups: GroupedAudience = {
 			public: [],
 			followers: [],
@@ -106,7 +106,8 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	private isFollowers(id: string, actor: MiRemoteUser): boolean {
+	private isFollowers(id: string, actor: MiRemoteUser | null): boolean {
+		if (actor == null) return false;
 		return id === (actor.followersUri ?? `${actor.uri}/followers`);
 	}
 }

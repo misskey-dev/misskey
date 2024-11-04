@@ -59,6 +59,7 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
+import { SpamFilterService } from '@/core/SpamFilterService.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -223,6 +224,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,
 		private loggerService: LoggerService,
+		private spamFilterService: SpamFilterService,
 	) {
 		this.updateNotesCountQueue = new CollapsedQueue(process.env.NODE_ENV !== 'test' ? 60 * 1000 * 5 : 0, this.collapseNotesCount, this.performUpdateNotesCount);
 		this.logger = this.loggerService.getLogger('note:create');
@@ -373,32 +375,16 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// if the host is media-silenced, custom emojis are not allowed
 		if (this.utilityService.isMediaSilencedHost(this.meta.mediaSilencedHosts, user.host)) emojis = [];
 
-		const willCauseNotification = mentionedUsers.some(u => u.host === null)
-			|| (data.visibility === 'specified' && data.visibleUsers?.some(u => u.host === null))
-			|| data.reply?.userHost === null || (this.isRenote(data) && this.isQuote(data) && data.renote?.userHost === null) || false;
-
-		const isAllowedToCreateNotification = () => {
-			const targetUserIds: string[] = [
-				...mentionedUsers.filter(x => x.host == null).map(x => x.id),
-				...(data.visibility === 'specified' && data.visibleUsers != null ? data.visibleUsers.filter(x => x.host == null).map(x => x.id) : []),
-				...(data.reply != null && data.reply.userHost == null ? [data.reply.userId] : []),
-				...(this.isRenote(data) && this.isQuote(data) && data.renote.userHost === null ? [data.renote.userId] : []),
-			];
-			const allowedIds = new Set(this.meta.nirilaAllowedUnfamiliarRemoteUserIds);
-			for (const targetUserId of targetUserIds) {
-				if (!allowedIds.has(targetUserId)) {
-					return false;
-				}
-			}
-			return true;
-		};
-
-		if (this.meta.nirilaBlockMentionsFromUnfamiliarRemoteUsers && user.host !== null && willCauseNotification && !isAllowedToCreateNotification()) {
-			const userEntity = await this.usersRepository.findOneBy({ id: user.id });
-			if ((userEntity?.followersCount ?? 0) === 0) {
-				this.logger.error('Request rejected because user has no local followers', { user: user.id, note: data });
-				throw new IdentifiableError('e11b3a16-f543-4885-8eb1-66cad131dbfd', 'Notes including mentions, replies, or renotes from remote users are not allowed until user has at least one local follower.');
-			}
+		if (await this.spamFilterService.isSpam({
+			mentionedUsers,
+			visibility: data.visibility,
+			visibleUsers: data.visibleUsers ?? [],
+			reply: data.reply ?? null,
+			quote: this.isRenote(data) && this.isQuote(data) ? data.renote : null,
+			user: user,
+		})) {
+			this.logger.error('Request rejected because user has no local followers', { user: user.id, note: data });
+			throw new IdentifiableError('e11b3a16-f543-4885-8eb1-66cad131dbfd', 'Notes including mentions, replies, or renotes from remote users are not allowed until user has at least one local follower.');
 		}
 
 		tags = tags.filter(tag => Array.from(tag).length <= 128).splice(0, 32);

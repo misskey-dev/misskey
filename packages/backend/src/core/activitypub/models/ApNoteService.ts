@@ -23,6 +23,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { checkHttps } from '@/misc/check-https.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { SpamFilterService } from '@/core/SpamFilterService.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApMfmService } from '../ApMfmService.js';
@@ -72,6 +73,7 @@ export class ApNoteService {
 		private noteCreateService: NoteCreateService,
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
+		private spamFilterService: SpamFilterService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -156,7 +158,7 @@ export class ApNoteService {
 		const uri = getOneApId(note.attributedTo);
 
 		// ローカルで投稿者を検索し、もし凍結されていたらスキップ
-		const cachedActor = await this.apPersonService.fetchPerson(uri) as MiRemoteUser;
+		const cachedActor = await this.apPersonService.fetchPerson(uri) as MiRemoteUser | null;
 		if (cachedActor && cachedActor.isSuspended) {
 			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
 		}
@@ -188,6 +190,45 @@ export class ApNoteService {
 			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Note contains prohibited words');
 		}
 		//#endregion
+
+		// spam check
+		{
+			// fetch audience information.
+			// this logic may treat followers as direct audience, but it's not a problem for spam check.
+			const noteAudience = await this.apAudienceService.parseAudience(cachedActor, note.to, note.cc, resolver);
+			let visibility = noteAudience.visibility;
+			const visibleUsers = noteAudience.visibleUsers;
+
+			// Audience (to, cc) が指定されてなかった場合
+			if (visibility === 'specified' && visibleUsers.length === 0) {
+				if (typeof value === 'string') {	// 入力がstringならばresolverでGETが発生している
+					// こちらから匿名GET出来たものならばpublic
+					visibility = 'public';
+				}
+			}
+
+			// for spam check, we only want to know if the reply / quote target is local user or not.
+			// so we don't have to resolve the note, we just fetch from DB.
+			// reply
+			const reply: MiNote | null = note.inReplyTo ? await this.fetchNote(getApId(note.inReplyTo)) : null;
+
+			// 引用
+			const quoteUris = unique([note._misskey_quote, note.quoteUrl].filter(x => x != null));
+			const quoteFetchResults = await Promise.all(quoteUris.map(uri => this.fetchNote(getApId(uri))));
+			const quote = quoteFetchResults.filter((x) => x != null).at(0) ?? null;
+
+			if (await this.spamFilterService.isSpam({
+				mentionedUsers: apMentions,
+				visibility,
+				visibleUsers,
+				reply: reply,
+				quote: quote,
+				user: cachedActor,
+			})) {
+				this.logger.error('Request rejected because user has no local followers', { user: uri });
+				throw new IdentifiableError('e11b3a16-f543-4885-8eb1-66cad131dbfd', 'Notes including mentions, replies, or renotes from remote users are not allowed until user has at least one local follower.');
+			}
+		}
 
 		const actor = cachedActor ?? await this.apPersonService.resolvePerson(uri, resolver) as MiRemoteUser;
 
