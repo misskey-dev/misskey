@@ -207,6 +207,8 @@ export class ApNoteService {
 				}
 			}
 
+			// for spam check, we only want to know if the reply / quote target is local user or not.
+			// so we don't have to resolve the note, we just fetch from DB.
 			// reply
 			const reply: MiNote | null = note.inReplyTo ? await this.fetchNote(getApId(note.inReplyTo)) : null;
 
