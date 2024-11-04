@@ -30,14 +30,26 @@
 		<option value="auto">{{ i18n.ts._draftSavingBehavior.auto }}</option>
 		<option value="manual">{{ i18n.ts._draftSavingBehavior.manual }}</option>
 	</MkSelect>
+	<div>
+		<div :class="$style.label">
+			{{ i18n.ts.defaultScheduledNoteDeleteTime }}
+			<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+		</div>
+		<MkDeleteScheduleEditor v-model="scheduledNoteDelete" :afterOnly="true"/>
+	</div>
+	<MkSwitch v-model="defaultScheduledNoteDelete">
+		{{ i18n.ts.defaultScheduledNoteDelete }}
+		<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+	</MkSwitch>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import MkDeleteScheduleEditor from '@/components/MkDeleteScheduleEditor.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import { bottomItemDef } from '@/scripts/post-form.js';
@@ -47,6 +59,14 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const draftSavingBehavior = computed(defaultStore.makeGetterSetter('draftSavingBehavior'));
+const defaultScheduledNoteDelete = computed(defaultStore.makeGetterSetter('defaultScheduledNoteDelete'));
+
+const scheduledNoteDelete = ref({ deleteAt: null, deleteAfter: defaultStore.state.defaultScheduledNoteDeleteTime, isValid: true });
+
+watch(scheduledNoteDelete, () => {
+	if (!scheduledNoteDelete.value.isValid) return;
+	defaultStore.set('defaultScheduledNoteDeleteTime', scheduledNoteDelete.value.deleteAfter);
+});
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 

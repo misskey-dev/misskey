@@ -5083,6 +5083,50 @@ export interface Locale extends ILocale {
      */
     "gameRetry": string;
     /**
+     * アクティビティを非公開にする
+     */
+    "hideActivity": string;
+    /**
+     * 自分のプロフィールのアクティビティ (概要/アクティビティタブ) を他人が見れないようにします。このオプションを有効にしても、自分であればプロフィールのアクティビティタブから引き続き閲覧できます。
+     */
+    "hideActivityDescription": string;
+    /**
+     * 投稿フォームをリセット
+     */
+    "clearPost": string;
+    /**
+     * 絵文字ピッカーに追加
+     */
+    "addToEmojiPicker": string;
+    /**
+     * リアクション数の非表示
+     */
+    "hideReactionCount": string;
+    /**
+     * 誰がリアクションをしたのかを非表示にする
+     */
+    "hideReactionUsers": string;
+    /**
+     * リアクションをホバーした際のユーザー一覧と、ノート詳細ページのリアクションタブにあるリアクションをしたユーザー一覧を非表示にします
+     */
+    "hideReactionUsersDescription": string;
+    /**
+     * デフォルトでノートが消えるように
+     */
+    "defaultScheduledNoteDelete": string;
+    /**
+     * 1年以上先の日時を指定することはできません
+     */
+    "cannotScheduleLaterThanOneYear": string;
+    /**
+     * 「すぐ消す」の初期値
+     */
+    "defaultScheduledNoteDeleteTime": string;
+    /**
+     * 「すぐ消す」が有効になっています
+     */
+    "scheduledNoteDeleteEnabled": string;
+    /**
      * 使用しない場合は空欄にしてください
      */
     "notUsePleaseLeaveBlank": string;
@@ -5130,10 +5174,6 @@ export interface Locale extends ILocale {
      * このノートは{time}に削除されます
      */
     "noteDeletationAt": ParameterizedString<"time">;
-    /**
-     * 絵文字ピッカーに追加
-     */
-    "addToEmojiPicker": string;
     /**
      * このお知らせはチャンネルのタイムライン上部に表示されます。最初の1行がタイトルとして表示され、2行目以降はお知らせをタップすることで表示されるようになります。
      */
