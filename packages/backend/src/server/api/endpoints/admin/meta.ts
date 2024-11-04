@@ -192,6 +192,10 @@ export const meta = {
 					optional: false, nullable: false,
 				},
 			},
+			emailWhitelist: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			preservedUsernames: {
 				type: 'array',
 				optional: false, nullable: false,
@@ -643,6 +647,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				enableServerMachineStats: instance.enableServerMachineStats,
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
 				bannedEmailDomains: instance.bannedEmailDomains,
+				emailWhitelist: instance.emailWhitelist,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 				manifestJsonOverride: instance.manifestJsonOverride,
 				enableFanoutTimeline: instance.enableFanoutTimeline,
