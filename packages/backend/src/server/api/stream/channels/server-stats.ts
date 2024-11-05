@@ -6,6 +6,8 @@
 import Xev from 'xev';
 import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
+import { isJsonObject } from '@/misc/json-value.js';
+import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 const ev = new Xev();
@@ -22,19 +24,20 @@ class ServerStatsChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: any) {
+	public async init(params: JsonObject) {
 		ev.addListener('serverStats', this.onStats);
 	}
 
 	@bindThis
-	private onStats(stats: any) {
+	private onStats(stats: JsonObject) {
 		this.send('stats', stats);
 	}
 
 	@bindThis
-	public onMessage(type: string, body: any) {
+	public onMessage(type: string, body: JsonValue) {
 		switch (type) {
 			case 'requestLog':
+				if (!isJsonObject(body)) return;
 				ev.once(`serverStatsLog:${body.id}`, statsLog => {
 					this.send('statsLog', statsLog);
 				});

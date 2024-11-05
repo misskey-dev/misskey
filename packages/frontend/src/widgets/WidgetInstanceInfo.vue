@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 
 const name = 'instanceInfo';
@@ -81,16 +81,19 @@ defineExpose<WidgetComponentExpose>({
 .body {
 	text-overflow: ellipsis;
 	overflow: clip;
+	margin-left: -10px;
+	padding: 10px;
 }
 
 .name {
 	color: #fff;
-	filter: drop-shadow(0 0 4px #000);
+	filter: drop-shadow(0 0 4px #000) drop-shadow(0 0 0.1px rgba(0, 0, 0, 0.5));
 	font-weight: bold;
 }
 
 .host {
 	color: #fff;
-	filter: drop-shadow(0 0 4px #000);
+	filter: drop-shadow(0 0 4px #000) drop-shadow(0 0 0.1px rgba(0, 0, 0, 0.5));
+
 }
 </style>

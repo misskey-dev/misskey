@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
 	<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 		<MkSpacer :contentMax="700" :marginMin="16">
-			<div class="lxpfedzu">
+			<div class="lxpfedzu _gaps">
 				<div class="banner">
 					<img :src="instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
 				</div>
@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_s">
 					<MkInfo v-if="thereIsUnresolvedAbuseReport" warn>{{ i18n.ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>
 					<MkInfo v-if="noMaintainerInformation" warn>{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-					<MkInfo v-if="noInquiryUrl" warn>{{ i18n.ts.noInquiryUrlWarning }} <MkA to="/admin/moderation" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+					<MkInfo v-if="noInquiryUrl" warn>{{ i18n.ts.noInquiryUrlWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 					<MkInfo v-if="noBotProtection" warn>{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 					<MkInfo v-if="noEmailServer" warn>{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 				</div>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSpacer>
 	</div>
 	<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
-		<RouterView/>
+		<RouterView nested/>
 	</div>
 </div>
 </template>
@@ -61,10 +61,10 @@ const narrow = ref(false);
 const view = ref(null);
 const el = ref<HTMLDivElement | null>(null);
 const pageProps = ref({});
-let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail);
-let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile;
-let noEmailServer = !instance.enableEmail;
-let noInquiryUrl = isEmpty(instance.inquiryUrl);
+const noMaintainerInformation = computed(() => isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail));
+const noBotProtection = computed(() => !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile && !instance.enableMcaptcha);
+const noEmailServer = computed(() => !instance.enableEmail);
+const noInquiryUrl = computed(() => isEmpty(instance.inquiryUrl));
 const thereIsUnresolvedAbuseReport = ref(false);
 const currentPage = computed(() => router.currentRef.value.child);
 
@@ -200,25 +200,20 @@ const menuDef = computed(() => [{
 		to: '/admin/relays',
 		active: currentPage.value?.route.name === 'relays',
 	}, {
-		icon: 'ti ti-ban',
-		text: i18n.ts.instanceBlocking,
-		to: '/admin/instance-block',
-		active: currentPage.value?.route.name === 'instance-block',
-	}, {
-		icon: 'ti ti-ghost',
-		text: i18n.ts.proxyAccount,
-		to: '/admin/proxy-account',
-		active: currentPage.value?.route.name === 'proxy-account',
-	}, {
 		icon: 'ti ti-link',
 		text: i18n.ts.externalServices,
 		to: '/admin/external-services',
 		active: currentPage.value?.route.name === 'external-services',
 	}, {
-		icon: 'ti ti-adjustments',
-		text: i18n.ts.other,
-		to: '/admin/other-settings',
-		active: currentPage.value?.route.name === 'other-settings',
+		icon: 'ti ti-webhook',
+		text: 'Webhook',
+		to: '/admin/system-webhook',
+		active: currentPage.value?.route.name === 'system-webhook',
+	}, {
+		icon: 'ti ti-bolt',
+		text: i18n.ts.performance,
+		to: '/admin/performance',
+		active: currentPage.value?.route.name === 'performance',
 	}],
 }, {
 	title: i18n.ts.info,
@@ -230,25 +225,22 @@ const menuDef = computed(() => [{
 	}],
 }]);
 
-watch(narrow.value, () => {
-	if (currentPage.value?.route.name == null && !narrow.value) {
-		router.push('/admin/overview');
-	}
-});
-
 onMounted(() => {
-	ro.observe(el.value);
-
-	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
+	if (el.value != null) {
+		ro.observe(el.value);
+		narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
+	}
 	if (currentPage.value?.route.name == null && !narrow.value) {
-		router.push('/admin/overview');
+		router.replace('/admin/overview');
 	}
 });
 
 onActivated(() => {
-	narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
+	if (el.value != null) {
+		narrow.value = el.value.offsetWidth < NARROW_THRESHOLD;
+	}
 	if (currentPage.value?.route.name == null && !narrow.value) {
-		router.push('/admin/overview');
+		router.replace('/admin/overview');
 	}
 });
 
@@ -339,7 +331,7 @@ defineExpose({
 			width: 32%;
 			max-width: 280px;
 			box-sizing: border-box;
-			border-right: solid 0.5px var(--divider);
+			border-right: solid 0.5px var(--MI_THEME-divider);
 			overflow: auto;
 			height: 100%;
 		}

@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSwitch v-model="statusbar.props.shuffle">
 			<template #label>{{ i18n.ts.shuffle }}</template>
 		</MkSwitch>
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number" min="1">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'federation'">
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number" min="1">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">

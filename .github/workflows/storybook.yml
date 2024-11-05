@@ -7,6 +7,11 @@ on:
       - develop
       - dev/storybook8 # for testing
   pull_request_target:
+    branches-ignore:
+      # Since pull requests targets master mostly is the "develop" branch.
+      # Storybook CI is checked on the "push" event of "develop" branch so it would cause a duplicate build.
+      # This is a waste of chromatic build quota, so we don't run storybook CI on pull requests targets master.
+      - master
 
 jobs:
   build:
@@ -36,7 +41,7 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v4
     - name: Use Node.js 20.x
-      uses: actions/setup-node@v4.0.2
+      uses: actions/setup-node@v4.0.4
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -88,7 +93,7 @@ jobs:
         if [ "$BRANCH" = "misskey-dev:$HEAD_REF" ]; then
           BRANCH="$HEAD_REF"
         fi
-        pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static --branch-name $BRANCH $(echo "$CHROMATIC_PARAMETER")
+        pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static --branch-name "$BRANCH" $(echo "$CHROMATIC_PARAMETER")
       env:
         HEAD_REF: ${{ github.event.pull_request.head.ref }}
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}

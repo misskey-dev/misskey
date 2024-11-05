@@ -6,7 +6,7 @@
 import { deepClone } from './clone.js';
 import type { Cloneable } from './clone.js';
 
-type DeepPartial<T> = {
+export type DeepPartial<T> = {
 	[P in keyof T]?: T[P] extends Record<string | number | symbol, unknown> ? DeepPartial<T[P]> : T[P];
 };
 

@@ -492,7 +492,6 @@ uiLanguage: "Język wyświetlania UI"
 aboutX: "O {x}"
 emojiStyle: "Styl emoji"
 native: "Natywny"
-disableDrawer: "Nie używaj menu w stylu szuflady"
 showNoteActionsOnlyHover: "Pokazuj akcje notatek tylko po najechaniu myszką"
 showReactionsCount: "Wyświetl liczbę reakcji na notatkę"
 noHistory: "Brak historii"
@@ -690,10 +689,7 @@ abuseReported: "Twoje zgłoszenie zostało wysłane. Dziękujemy."
 reporter: "Zgłaszający"
 reporteeOrigin: "Pochodzenie zgłoszonego"
 reporterOrigin: "Pochodzenie zgłaszającego"
-forwardReport: "Przekaż zgłoszenie do innej instancji"
-forwardReportIsAnonymous: "Zamiast twojego konta, anonimowe konto systemowe będzie wyświetlone jako zgłaszający na instancji zdalnej."
 send: "Wyślij"
-abuseMarkAsResolved: "Oznacz zgłoszenie jako rozwiązane"
 openInNewTab: "Otwórz w nowej karcie"
 openInSideView: "Otwórz w bocznym widoku"
 defaultNavigationBehaviour: "Domyślne zachowanie nawigacji"
@@ -1209,7 +1205,6 @@ _theme:
     buttonBg: "Tło przycisku"
     buttonHoverBg: "Tło przycisku (po najechaniu)"
     inputBorder: "Obramowanie pola wejścia"
-    listItemHoverBg: "Tło elementu listy (po najechaniu)"
     driveFolderBg: "Tło folderu na dysku"
     wallpaperOverlay: "Nakładka tapety"
     badge: "Odznaka"
@@ -1221,8 +1216,6 @@ _sfx:
   note: "Wpisy"
   noteMy: "Mój wpis"
   notification: "Powiadomienia"
-  antenna: "Anteny"
-  channel: "Powiadomienia kanału"
 _ago:
   future: "W przyszłości"
   justNow: "Przed chwilą"
@@ -1512,6 +1505,7 @@ _notification:
     reaction: "Reakcja"
     receiveFollowRequest: "Otrzymano prośbę o możliwość obserwacji"
     followRequestAccepted: "Przyjęto prośbę o możliwość obserwacji"
+    login: "Zaloguj się"
     app: "Powiadomienia z aplikacji"
   _actions:
     followBack: "zaobserwował cię z powrotem"
@@ -1546,7 +1540,6 @@ _webhookSettings:
   createWebhook: "Stwórz Webhook"
   name: "Nazwa"
   secret: "Sekret"
-  events: "Uruchomienie Webhooka"
   active: "Właczono"
   _events:
     follow: "Po zaobserwowaniu użytkownika"
@@ -1556,6 +1549,10 @@ _webhookSettings:
     renote: "Po udostępnieniu wpisu"
     reaction: "Po otrzymaniu reakcji"
     mention: "Po zostaniu wspomnianym"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Adres e-mail"
 _moderationLogTypes:
   suspend: "Zawieś"
   resetPassword: "Zresetuj hasło"

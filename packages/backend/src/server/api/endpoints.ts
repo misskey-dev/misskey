@@ -6,8 +6,18 @@
 import { permissions } from 'misskey-js';
 import type { KeyOf, Schema } from '@/misc/json-schema.js';
 
-import * as ep___admin_meta from './endpoints/admin/meta.js';
+import * as ep___admin_abuseReport_notificationRecipient_list
+	from '@/server/api/endpoints/admin/abuse-report/notification-recipient/list.js';
+import * as ep___admin_abuseReport_notificationRecipient_show
+	from '@/server/api/endpoints/admin/abuse-report/notification-recipient/show.js';
+import * as ep___admin_abuseReport_notificationRecipient_create
+	from '@/server/api/endpoints/admin/abuse-report/notification-recipient/create.js';
+import * as ep___admin_abuseReport_notificationRecipient_update
+	from '@/server/api/endpoints/admin/abuse-report/notification-recipient/update.js';
+import * as ep___admin_abuseReport_notificationRecipient_delete
+	from '@/server/api/endpoints/admin/abuse-report/notification-recipient/delete.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
+import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_accounts_create from './endpoints/admin/accounts/create.js';
 import * as ep___admin_accounts_delete from './endpoints/admin/accounts/delete.js';
 import * as ep___admin_accounts_findByEmail from './endpoints/admin/accounts/find-by-email.js';
@@ -44,7 +54,8 @@ import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-c
 import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
-import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
+import * as ep___admin_federation_refreshRemoteInstanceMetadata
+	from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/federation/remove-all-following.js';
 import * as ep___admin_federation_updateInstance from './endpoints/admin/federation/update-instance.js';
 import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js';
@@ -63,6 +74,8 @@ import * as ep___admin_relays_list from './endpoints/admin/relays/list.js';
 import * as ep___admin_relays_remove from './endpoints/admin/relays/remove.js';
 import * as ep___admin_resetPassword from './endpoints/admin/reset-password.js';
 import * as ep___admin_resolveAbuseUserReport from './endpoints/admin/resolve-abuse-user-report.js';
+import * as ep___admin_forwardAbuseUserReport from './endpoints/admin/forward-abuse-user-report.js';
+import * as ep___admin_updateAbuseUserReport from './endpoints/admin/update-abuse-user-report.js';
 import * as ep___admin_sendEmail from './endpoints/admin/send-email.js';
 import * as ep___admin_serverInfo from './endpoints/admin/server-info.js';
 import * as ep___admin_showModerationLogs from './endpoints/admin/show-moderation-logs.js';
@@ -82,6 +95,12 @@ import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
 import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
 import * as ep___admin_roles_users from './endpoints/admin/roles/users.js';
+import * as ep___admin_systemWebhook_create from './endpoints/admin/system-webhook/create.js';
+import * as ep___admin_systemWebhook_delete from './endpoints/admin/system-webhook/delete.js';
+import * as ep___admin_systemWebhook_list from './endpoints/admin/system-webhook/list.js';
+import * as ep___admin_systemWebhook_show from './endpoints/admin/system-webhook/show.js';
+import * as ep___admin_systemWebhook_update from './endpoints/admin/system-webhook/update.js';
+import * as ep___admin_systemWebhook_test from './endpoints/admin/system-webhook/test.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___announcements_show from './endpoints/announcements/show.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
@@ -248,6 +267,7 @@ import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
+import * as ep___i_webhooks_test from './endpoints/i/webhooks/test.js';
 import * as ep___invite_create from './endpoints/invite/create.js';
 import * as ep___invite_delete from './endpoints/invite/delete.js';
 import * as ep___invite_list from './endpoints/invite/list.js';
@@ -379,6 +399,11 @@ import * as ep___reversi_verify from './endpoints/reversi/verify.js';
 const eps = [
 	['admin/meta', ep___admin_meta],
 	['admin/abuse-user-reports', ep___admin_abuseUserReports],
+	['admin/abuse-report/notification-recipient/list', ep___admin_abuseReport_notificationRecipient_list],
+	['admin/abuse-report/notification-recipient/show', ep___admin_abuseReport_notificationRecipient_show],
+	['admin/abuse-report/notification-recipient/create', ep___admin_abuseReport_notificationRecipient_create],
+	['admin/abuse-report/notification-recipient/update', ep___admin_abuseReport_notificationRecipient_update],
+	['admin/abuse-report/notification-recipient/delete', ep___admin_abuseReport_notificationRecipient_delete],
 	['admin/accounts/create', ep___admin_accounts_create],
 	['admin/accounts/delete', ep___admin_accounts_delete],
 	['admin/accounts/find-by-email', ep___admin_accounts_findByEmail],
@@ -434,6 +459,8 @@ const eps = [
 	['admin/relays/remove', ep___admin_relays_remove],
 	['admin/reset-password', ep___admin_resetPassword],
 	['admin/resolve-abuse-user-report', ep___admin_resolveAbuseUserReport],
+	['admin/forward-abuse-user-report', ep___admin_forwardAbuseUserReport],
+	['admin/update-abuse-user-report', ep___admin_updateAbuseUserReport],
 	['admin/send-email', ep___admin_sendEmail],
 	['admin/server-info', ep___admin_serverInfo],
 	['admin/show-moderation-logs', ep___admin_showModerationLogs],
@@ -453,6 +480,12 @@ const eps = [
 	['admin/roles/unassign', ep___admin_roles_unassign],
 	['admin/roles/update-default-policies', ep___admin_roles_updateDefaultPolicies],
 	['admin/roles/users', ep___admin_roles_users],
+	['admin/system-webhook/create', ep___admin_systemWebhook_create],
+	['admin/system-webhook/delete', ep___admin_systemWebhook_delete],
+	['admin/system-webhook/list', ep___admin_systemWebhook_list],
+	['admin/system-webhook/show', ep___admin_systemWebhook_show],
+	['admin/system-webhook/update', ep___admin_systemWebhook_update],
+	['admin/system-webhook/test', ep___admin_systemWebhook_test],
 	['announcements', ep___announcements],
 	['announcements/show', ep___announcements_show],
 	['antennas/create', ep___antennas_create],
@@ -619,6 +652,7 @@ const eps = [
 	['i/webhooks/show', ep___i_webhooks_show],
 	['i/webhooks/update', ep___i_webhooks_update],
 	['i/webhooks/delete', ep___i_webhooks_delete],
+	['i/webhooks/test', ep___i_webhooks_test],
 	['invite/create', ep___invite_create],
 	['invite/delete', ep___invite_delete],
 	['invite/list', ep___invite_list],
@@ -873,8 +907,12 @@ export interface IEndpoint {
 const endpoints: IEndpoint[] = (eps as [string, any]).map(([name, ep]) => {
 	return {
 		name: name,
-		get meta() { return ep.meta ?? {}; },
-		get params() { return ep.paramDef; },
+		get meta() {
+			return ep.meta ?? {};
+		},
+		get params() {
+			return ep.paramDef;
+		},
 	};
 });
 

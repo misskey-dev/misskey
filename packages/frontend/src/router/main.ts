@@ -3,9 +3,36 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ShallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import { IRouter, Resolved, RouteDef, RouterEvent } from '@/nirax.js';
+import { IRouter, Resolved, RouteDef, RouterEvent, RouterFlag } from '@/nirax.js';
+
+import type { App, ShallowRef } from 'vue';
+
+/**
+ * {@link Router}による画面遷移を可能とするために{@link mainRouter}をセットアップする。
+ * また、{@link Router}のインスタンスを作成するためのファクトリも{@link provide}経由で公開する（`routerFactory`というキーで取得可能）
+ */
+export function setupRouter(app: App, routerFactory: ((path: string) => IRouter)): void {
+	app.provide('routerFactory', routerFactory);
+
+	const mainRouter = routerFactory(location.pathname + location.search + location.hash);
+
+	window.addEventListener('popstate', (event) => {
+		mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key);
+	});
+
+	mainRouter.addListener('push', ctx => {
+		window.history.pushState({ key: ctx.key }, '', ctx.path);
+	});
+
+	mainRouter.addListener('replace', ctx => {
+		window.history.replaceState({ key: ctx.key }, '', ctx.path);
+	});
+
+	mainRouter.init();
+
+	setMainRouter(mainRouter);
+}
 
 function getMainRouter(): IRouter {
 	const router = mainRouterHolder;
@@ -52,7 +79,7 @@ class MainRouterProxy implements IRouter {
 		return this.supplier().currentRoute;
 	}
 
-	get navHook(): ((path: string, flag?: any) => boolean) | null {
+	get navHook(): ((path: string, flag?: RouterFlag) => boolean) | null {
 		return this.supplier().navHook;
 	}
 
@@ -64,11 +91,11 @@ class MainRouterProxy implements IRouter {
 		return this.supplier().getCurrentKey();
 	}
 
-	getCurrentPath(): any {
+	getCurrentPath(): string {
 		return this.supplier().getCurrentPath();
 	}
 
-	push(path: string, flag?: any): void {
+	push(path: string, flag?: RouterFlag): void {
 		this.supplier().push(path, flag);
 	}
 

@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@contextmenu.stop
 	@keydown.stop
 >
-	<button v-if="hide" :class="$style.hidden" @click="hide = false">
+	<button v-if="hide" :class="$style.hidden" @click="show">
 		<div :class="$style.hiddenTextWrapper">
 			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
 			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ defaultStore.state.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
 		<div :class="$style.indicators">
 			<div v-if="video.comment" :class="$style.indicator">ALT</div>
-			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
+			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
 	</div>
 
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
 		<div :class="$style.indicators">
 			<div v-if="video.comment" :class="$style.indicator">ALT</div>
-			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
+			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
 		<div :class="$style.videoControls" @click.self="togglePlayPause">
 			<div :class="[$style.controlsChild, $style.controlsLeft]">
@@ -112,6 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, shallowRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
+import { type Keymap } from '@/scripts/hotkey.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import { defaultStore } from '@/store.js';
@@ -127,32 +128,44 @@ const props = defineProps<{
 }>();
 
 const keymap = {
-	'up': () => {
-		if (hasFocus() && videoEl.value) {
-			volume.value = Math.min(volume.value + 0.1, 1);
-		}
+	'up': {
+		allowRepeat: true,
+		callback: () => {
+			if (hasFocus() && videoEl.value) {
+				volume.value = Math.min(volume.value + 0.1, 1);
+			}
+		},
 	},
-	'down': () => {
-		if (hasFocus() && videoEl.value) {
-			volume.value = Math.max(volume.value - 0.1, 0);
-		}
+	'down': {
+		allowRepeat: true,
+		callback: () => {
+			if (hasFocus() && videoEl.value) {
+				volume.value = Math.max(volume.value - 0.1, 0);
+			}
+		},
 	},
-	'left': () => {
-		if (hasFocus() && videoEl.value) {
-			videoEl.value.currentTime = Math.max(videoEl.value.currentTime - 5, 0);
-		}
+	'left': {
+		allowRepeat: true,
+		callback: () => {
+			if (hasFocus() && videoEl.value) {
+				videoEl.value.currentTime = Math.max(videoEl.value.currentTime - 5, 0);
+			}
+		},
 	},
-	'right': () => {
-		if (hasFocus() && videoEl.value) {
-			videoEl.value.currentTime = Math.min(videoEl.value.currentTime + 5, videoEl.value.duration);
-		}
+	'right': {
+		allowRepeat: true,
+		callback: () => {
+			if (hasFocus() && videoEl.value) {
+				videoEl.value.currentTime = Math.min(videoEl.value.currentTime + 5, videoEl.value.duration);
+			}
+		},
 	},
 	'space': () => {
 		if (hasFocus()) {
 			togglePlayPause();
 		}
 	},
-};
+} as const satisfies Keymap;
 
 // PlayerElもしくはその子要素にフォーカスがあるかどうか
 function hasFocus() {
@@ -160,16 +173,26 @@ function hasFocus() {
 	return playerEl.value === document.activeElement || playerEl.value.contains(document.activeElement);
 }
 
-// eslint-disable-next-line vue/no-setup-props-destructure
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
+
+async function show() {
+	if (props.video.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.ts.sensitiveMediaRevealConfirm,
+		});
+		if (canceled) return;
+	}
+
+	hide.value = false;
+}
 
 // Menu
 const menuShowing = ref(false);
 
 function showMenu(ev: MouseEvent) {
-	let menu: MenuItem[] = [];
-
-	menu = [
+	const menu: MenuItem[] = [
 		// TODO: 再生キューに追加
 		{
 			type: 'switch',
@@ -222,7 +245,7 @@ function showMenu(ev: MouseEvent) {
 		menu.push({
 			type: 'divider',
 		}, {
-			type: 'link' as const,
+			type: 'link',
 			text: i18n.ts._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.video.id}`,
@@ -468,7 +491,7 @@ onDeactivated(() => {
 	position: relative;
 	overflow: clip;
 
-	&:focus {
+	&:focus-visible {
 		outline: none;
 	}
 }
@@ -485,7 +508,7 @@ onDeactivated(() => {
 		height: 100%;
 		pointer-events: none;
 		border-radius: inherit;
-		box-shadow: inset 0 0 0 4px var(--warn);
+		box-shadow: inset 0 0 0 4px var(--MI_THEME-warn);
 	}
 }
 
@@ -500,10 +523,10 @@ onDeactivated(() => {
 }
 
 .indicator {
-	/* Hardcode to black because either --bg or --fg makes it hard to read in dark/light mode */
+	/* Hardcode to black because either --MI_THEME-bg or --MI_THEME-fg makes it hard to read in dark/light mode */
 	background-color: black;
 	border-radius: 6px;
-	color: var(--accentLighten);
+	color: var(--MI_THEME-accentLighten);
 	display: inline-block;
 	font-weight: bold;
 	font-size: 0.8em;
@@ -514,8 +537,8 @@ onDeactivated(() => {
 	display: block;
 	position: absolute;
 	border-radius: 6px;
-	background-color: var(--fg);
-	color: var(--accentLighten);
+	background-color: var(--MI_THEME-fg);
+	color: var(--MI_THEME-accentLighten);
 	font-size: 12px;
 	opacity: .5;
 	padding: 5px 8px;
@@ -569,12 +592,16 @@ onDeactivated(() => {
 	opacity: 0;
 	transition: opacity .4s ease-in-out;
 
-	background: var(--accent);
+	background: var(--MI_THEME-accent);
 	color: #fff;
 	padding: 1rem;
 	border-radius: 99rem;
 
 	font-size: 1.1rem;
+
+	&:focus-visible {
+		outline: none;
+	}
 }
 
 .videoLoading {
@@ -631,12 +658,16 @@ onDeactivated(() => {
 
 	.controlButton {
 		padding: 6px;
-		border-radius: calc(var(--radius) / 2);
+		border-radius: calc(var(--MI-radius) / 2);
 		transition: background-color .2s ease-in-out;
 		font-size: 1.05rem;
 
 		&:hover {
-			background-color: var(--accent);
+			background-color: var(--MI_THEME-accent);
+		}
+
+		&:focus-visible {
+			outline: none;
 		}
 	}
 }

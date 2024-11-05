@@ -36,13 +36,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.gamePreviews">
 						<MkA v-for="g in items" :key="g.id" v-panel :class="[$style.gamePreview, !g.isStarted && !g.isEnded && $style.gamePreviewWaiting, g.isStarted && !g.isEnded && $style.gamePreviewActive]" tabindex="-1" :to="`/reversi/g/${g.id}`">
 							<div :class="$style.gamePreviewPlayers">
-								<span v-if="g.winnerId === g.user1Id" style="margin-right: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
+								<span v-if="g.winnerId === g.user1Id" style="margin-right: 0.75em; color: var(--MI_THEME-accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 								<span v-if="g.winnerId === g.user2Id" style="margin-right: 0.75em; visibility: hidden;"><i class="ti ti-x"></i></span>
 								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/>
 								<span style="margin: 0 1em;">vs</span>
 								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
 								<span v-if="g.winnerId === g.user1Id" style="margin-left: 0.75em; visibility: hidden;"><i class="ti ti-x"></i></span>
-								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
+								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--MI_THEME-accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 							</div>
 							<div :class="$style.gamePreviewFooter">
 								<span v-if="g.isStarted && !g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
@@ -63,13 +63,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.gamePreviews">
 						<MkA v-for="g in items" :key="g.id" v-panel :class="[$style.gamePreview, !g.isStarted && !g.isEnded && $style.gamePreviewWaiting, g.isStarted && !g.isEnded && $style.gamePreviewActive]" tabindex="-1" :to="`/reversi/g/${g.id}`">
 							<div :class="$style.gamePreviewPlayers">
-								<span v-if="g.winnerId === g.user1Id" style="margin-right: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
+								<span v-if="g.winnerId === g.user1Id" style="margin-right: 0.75em; color: var(--MI_THEME-accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 								<span v-if="g.winnerId === g.user2Id" style="margin-right: 0.75em; visibility: hidden;"><i class="ti ti-x"></i></span>
 								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user1"/>
 								<span style="margin: 0 1em;">vs</span>
 								<MkAvatar :class="$style.gamePreviewPlayersAvatar" :user="g.user2"/>
 								<span v-if="g.winnerId === g.user1Id" style="margin-left: 0.75em; visibility: hidden;"><i class="ti ti-x"></i></span>
-								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
+								<span v-if="g.winnerId === g.user2Id" style="margin-left: 0.75em; color: var(--MI_THEME-accent); font-weight: bold;"><i class="ti ti-trophy"></i></span>
 							</div>
 							<div :class="$style.gamePreviewFooter">
 								<span v-if="g.isStarted && !g.isEnded" :class="$style.gamePreviewStatusActive">{{ i18n.ts._reversi.playing }}</span>
@@ -117,7 +117,7 @@ import { $i } from '@/account.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import * as sound from '@/scripts/sound.js';
 
@@ -285,7 +285,7 @@ definePageMetadata(() => ({
 .gamePreviews {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-	grid-gap: var(--margin);
+	grid-gap: var(--MI-margin);
 }
 
 .gamePreview {
@@ -295,11 +295,11 @@ definePageMetadata(() => ({
 }
 
 .gamePreviewActive {
-	box-shadow: inset 0 0 8px 0px var(--accent);
+	box-shadow: inset 0 0 8px 0px var(--MI_THEME-accent);
 }
 
 .gamePreviewWaiting {
-	box-shadow: inset 0 0 8px 0px var(--warn);
+	box-shadow: inset 0 0 8px 0px var(--MI_THEME-warn);
 }
 
 .gamePreviewPlayers {
@@ -324,19 +324,19 @@ definePageMetadata(() => ({
 .gamePreviewFooter {
 	display: flex;
 	align-items: baseline;
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 	padding: 6px 10px;
 	font-size: 0.9em;
 }
 
 .gamePreviewStatusActive {
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 	font-weight: bold;
 	animation: blink 2s infinite;
 }
 
 .gamePreviewStatusWaiting {
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 	font-weight: bold;
 	animation: blink 2s infinite;
 }

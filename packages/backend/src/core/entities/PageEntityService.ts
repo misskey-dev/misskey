@@ -14,7 +14,6 @@ import type { MiPage } from '@/models/Page.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
 
@@ -106,7 +105,7 @@ export class PageEntityService {
 			script: page.script,
 			eyeCatchingImageId: page.eyeCatchingImageId,
 			eyeCatchingImage: page.eyeCatchingImageId ? await this.driveFileEntityService.pack(page.eyeCatchingImageId) : null,
-			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter(isNotNull)),
+			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter(x => x != null)),
 			likedCount: page.likedCount,
 			isLiked: meId ? await this.pageLikesRepository.exists({ where: { pageId: page.id, userId: meId } }) : undefined,
 		});

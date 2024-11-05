@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:enterFromClass="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
 	:leaveToClass="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
 	appear
-	@afterLeave="$emit('closed')"
+	@afterLeave="emit('closed')"
 >
 	<div v-if="showing" ref="rootEl" :class="[$style.root, { [$style.maximized]: maximized }]">
 		<div :class="$style.body" class="_shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
@@ -54,11 +54,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, shallowRef, ref } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
 import contains from '@/scripts/contains.js';
 import * as os from '@/os.js';
-import { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
+
+type WindowButton = {
+	title: string;
+	icon: string;
+	onClick: () => void;
+	highlighted?: boolean;
+};
 
 const minHeight = 50;
 const minWidth = 250;
@@ -87,8 +94,8 @@ const props = withDefaults(defineProps<{
 	mini?: boolean;
 	front?: boolean;
 	contextmenu?: MenuItem[] | null;
-	buttonsLeft?: any[];
-	buttonsRight?: any[];
+	buttonsLeft?: WindowButton[];
+	buttonsRight?: WindowButton[];
 }>(), {
 	initialWidth: 400,
 	initialHeight: null,
@@ -484,6 +491,10 @@ defineExpose({
 }
 
 .root {
+	// universal.vueとかで直接--MI-stickyBottomが定義されていたりするのでリセット
+	--MI-stickyTop: 0;
+	--MI-stickyBottom: 0;
+
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -502,15 +513,11 @@ defineExpose({
 	contain: content;
 	width: 100%;
 	height: 100%;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .header {
 	--height: 39px;
-
-	&.mini {
-		--height: 32px;
-	}
 
 	display: flex;
 	position: relative;
@@ -518,12 +525,16 @@ defineExpose({
 	flex-shrink: 0;
 	user-select: none;
 	height: var(--height);
-	background: var(--windowHeader);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	//border-bottom: solid 1px var(--divider);
+	background: var(--MI_THEME-windowHeader);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	//border-bottom: solid 1px var(--MI_THEME-divider);
 	font-size: 90%;
 	font-weight: bold;
+
+	&.mini {
+		--height: 32px;
+	}
 }
 
 .headerButton {
@@ -531,11 +542,11 @@ defineExpose({
 	width: var(--height);
 
 	&:hover {
-		color: var(--fgHighlighted);
+		color: var(--MI_THEME-fgHighlighted);
 	}
 
 	&.highlighted {
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 
@@ -560,7 +571,7 @@ defineExpose({
 .content {
 	flex: 1;
 	overflow: auto;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	container-type: size;
 }
 

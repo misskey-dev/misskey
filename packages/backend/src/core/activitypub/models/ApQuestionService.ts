@@ -10,7 +10,6 @@ import type { Config } from '@/config.js';
 import type { IPoll } from '@/models/Poll.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { isQuestion } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApResolverService } from '../ApResolverService.js';
@@ -52,7 +51,7 @@ export class ApQuestionService {
 
 		const choices = question[multiple ? 'anyOf' : 'oneOf']
 			?.map((x) => x.name)
-			.filter(isNotNull)
+			.filter(x => x != null)
 			?? [];
 
 		const votes = question[multiple ? 'anyOf' : 'oneOf']?.map((x) => x.replies?.totalItems ?? x._misskey_votes ?? 0);
@@ -75,10 +74,10 @@ export class ApQuestionService {
 
 		//#region このサーバーに既に登録されているか
 		const note = await this.notesRepository.findOneBy({ uri });
-		if (note == null) throw new Error('Question is not registed');
+		if (note == null) throw new Error('Question is not registered');
 
 		const poll = await this.pollsRepository.findOneBy({ noteId: note.id });
-		if (poll == null) throw new Error('Question is not registed');
+		if (poll == null) throw new Error('Question is not registered');
 		//#endregion
 
 		// resolve new Question object

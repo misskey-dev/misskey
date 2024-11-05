@@ -17,18 +17,17 @@ import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import type Logger from '@/logger.js';
-import { MetaService } from '@/core/MetaService.js';
 import { IdService } from '@/core/IdService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/_.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/User.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -48,6 +47,9 @@ export class ApInboxService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -57,9 +59,6 @@ export class ApInboxService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		@Inject(DI.abuseUserReportsRepository)
-		private abuseUserReportsRepository: AbuseUserReportsRepository,
-
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
@@ -67,7 +66,7 @@ export class ApInboxService {
 		private noteEntityService: NoteEntityService,
 		private utilityService: UtilityService,
 		private idService: IdService,
-		private metaService: MetaService,
+		private abuseReportService: AbuseReportService,
 		private userFollowingService: UserFollowingService,
 		private apAudienceService: ApAudienceService,
 		private reactionService: ReactionService,
@@ -291,9 +290,8 @@ export class ApInboxService {
 			return;
 		}
 
-		// アナウンス先をブロックしてたら中断
-		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) return;
+		// アナウンス先が許可されているかチェック
+		if (!this.utilityService.isFederationAllowedUri(uri)) return;
 
 		const unlock = await this.appLockService.getApLock(uri);
 
@@ -539,20 +537,19 @@ export class ApInboxService {
 		const userIds = uris
 			.filter(uri => uri.startsWith(this.config.url + '/users/'))
 			.map(uri => uri.split('/').at(-1))
-			.filter(isNotNull);
+			.filter(x => x != null);
 		const users = await this.usersRepository.findBy({
 			id: In(userIds),
 		});
 		if (users.length < 1) return 'skip';
 
-		await this.abuseUserReportsRepository.insert({
-			id: this.idService.gen(),
+		await this.abuseReportService.report([{
 			targetUserId: users[0].id,
 			targetUserHost: users[0].host,
 			reporterId: actor.id,
 			reporterHost: actor.host,
 			comment: `${activity.content}\n${JSON.stringify(uris, null, 2)}`,
-		});
+		}]);
 
 		return 'ok';
 	}
