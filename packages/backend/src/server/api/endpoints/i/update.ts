@@ -33,9 +33,9 @@ import type { Config } from '@/config.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { notificationRecieveConfig } from '@/models/json-schema/user.js';
-import { ApiLoggerService } from '../../ApiLoggerService.js';
-import { ApiError } from '../../error.js';
-import { IdService } from "@/core/IdService.js";
+import { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
+import { ApiError } from '@/server/api/error.js';
+import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['account'],

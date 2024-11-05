@@ -4,10 +4,9 @@
  */
 
 import { LoggerService } from '@nestjs/common';
-import Logger from '@/logger.js';
+import { coreLogger } from '@/logger.js';
 
-const logger = new Logger('core', 'cyan');
-const nestLogger = logger.createSubLogger('nest', 'green', false);
+const nestLogger = coreLogger.createSubLogger('nest', 'green', false);
 
 export class NestLogger implements LoggerService {
 	/**

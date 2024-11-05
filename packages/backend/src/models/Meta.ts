@@ -260,6 +260,12 @@ export class MiMeta {
 
 	// chaptcha系を追加した際にはnodeinfoのレスポンスに追加するのを忘れないようにすること
 
+	@Column('varchar', {
+		length: 32,
+		nullable: true,
+	})
+	public googleAnalyticsId: string | null;
+
 	@Column('enum', {
 		enum: ['none', 'all', 'local', 'remote'],
 		default: 'none',

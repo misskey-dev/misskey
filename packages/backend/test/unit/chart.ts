@@ -19,7 +19,7 @@ import { entity as TestUniqueChartEntity } from '@/core/chart/charts/entities/te
 import { entity as TestIntersectionChartEntity } from '@/core/chart/charts/entities/test-intersection.js';
 import { loadConfig } from '@/config.js';
 import type { AppLockService } from '@/core/AppLockService.js';
-import Logger from '@/logger.js';
+import { coreLogger } from '@/logger.js';
 
 describe('Chart', () => {
 	const config = loadConfig();
@@ -63,7 +63,7 @@ describe('Chart', () => {
 
 		await db.initialize();
 
-		const logger = new Logger('chart'); // TODO: モックにする
+		const logger = coreLogger.createSubLogger('chart'); // TODO: モックにする
 		testChart = new TestChart(db, appLockService, logger);
 		testGroupedChart = new TestGroupedChart(db, appLockService, logger);
 		testUniqueChart = new TestUniqueChart(db, appLockService, logger);

@@ -8,7 +8,9 @@ import type { UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../error.js';
+import { ApiError } from '@/server/api/error.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { randomUUID } from 'node:crypto';
 
 export const meta = {
 	tags: ['account'],
@@ -44,10 +46,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
+		private loggerService: LoggerService,
 		private userEntityService: UserEntityService,
 	) {
-		super(meta, paramDef, async (ps, user, token) => {
+		super(meta, paramDef, async (ps, user, token, _file, _cleanup, ip, headers) => {
 			const isSecure = token == null;
+
+			const logger = this.loggerService.getLogger('api:account:i');
+			logger.setContext({ userId: user?.id, username: user?.username, client: isSecure ? 'misskey' : 'app', ip, headers, span: (headers ? headers['x-client-transaction-id'] : undefined) ?? randomUUID() });
+			logger.info('Fetching account information');
 
 			const now = new Date();
 			const today = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
@@ -71,11 +78,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userProfile.loggedInDates = [...userProfile.loggedInDates, today];
 			}
 
-			return await this.userEntityService.pack(userProfile.user!, userProfile.user!, {
-				schema: 'MeDetailed',
-				includeSecrets: isSecure,
-				userProfile,
-			});
+			try {
+				const result = await this.userEntityService.pack(userProfile.user!, userProfile.user!, {
+					schema: 'MeDetailed',
+					includeSecrets: isSecure,
+					userProfile,
+				});
+				logger.info('Returning account information');
+				return result;
+			} catch (error) {
+				logger.error('Failed to pack user entity', { error });
+				throw error;
+			}
 		});
 	}
 }

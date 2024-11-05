@@ -27,6 +27,7 @@ import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class SigninApiService {
@@ -71,7 +72,7 @@ export class SigninApiService {
 		reply: FastifyReply,
 	) {
 		const logger = this.loggerService.getLogger('api:signin');
-		logger.setContext({ username: request.body.username, ip: request.ip, headers: request.headers });
+		logger.setContext({ username: request.body.username, ip: request.ip, headers: request.headers, span: request.headers['x-client-transaction-id'] ?? randomUUID() });
 		logger.info('Requested to sign in.');
 
 		reply.header('Access-Control-Allow-Origin', this.config.url);

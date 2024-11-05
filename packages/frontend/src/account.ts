@@ -12,8 +12,10 @@ import { MenuButton } from '@/types/menu.js';
 import { del, get, set } from '@/scripts/idb-proxy.js';
 import { apiUrl } from '@/config.js';
 import { waiting, popup, popupMenu, success, alert } from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { generateClientTransactionId, misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
+import { set as gtagSet } from 'vue-gtag';
+import { instance } from '@/instance.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -59,6 +61,7 @@ export async function signout() {
 					}),
 					headers: {
 						'Content-Type': 'application/json',
+						'X-Client-Transaction-Id': generateClientTransactionId('misskey'),
 					},
 				});
 			}
@@ -109,6 +112,7 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 			}),
 			headers: {
 				'Content-Type': 'application/json',
+				'X-Client-Transaction-Id': generateClientTransactionId('misskey'),
 			},
 		})
 			.then(res => new Promise<Account | { error: Record<string, any> }>((done2, fail2) => {
@@ -171,6 +175,12 @@ export function updateAccount(accountData: Partial<Account>) {
 		$i[key] = value;
 	}
 	miLocalStorage.setItem('account', JSON.stringify($i));
+	if (instance.googleAnalyticsId) {
+		gtagSet({
+			'client_id': miLocalStorage.getItem('id'),
+			'user_id': $i.id,
+		});
+	}
 }
 
 export async function refreshAccount() {

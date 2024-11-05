@@ -21,6 +21,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 				</div>
 			</FormSection>
+			<FormSection>
+				<template #label>Google Analytics</template>
+
+				<div class="_gaps_m">
+					<MkInput v-model="googleAnalyticsId">
+						<template #prefix><i class="ti ti-report-analytics"></i></template>
+						<template #label>Google Analytics ID</template>
+					</MkInput>
+				</div>
+			</FormSection>
 		</FormSuspense>
 	</MkSpacer>
 	<template #footer>
@@ -49,17 +59,20 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const deeplAuthKey = ref<string>('');
 const deeplIsPro = ref<boolean>(false);
+const googleAnalyticsId = ref<string>('');
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
 	deeplAuthKey.value = meta.deeplAuthKey;
 	deeplIsPro.value = meta.deeplIsPro;
+	googleAnalyticsId.value = meta.googleAnalyticsId;
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
 		deeplAuthKey: deeplAuthKey.value,
 		deeplIsPro: deeplIsPro.value,
+		googleAnalyticsId: googleAnalyticsId.value,
 	}).then(() => {
 		fetchInstance(true);
 	});

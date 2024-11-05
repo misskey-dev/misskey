@@ -30,9 +30,8 @@ import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import type { ThinUser } from '@/queue/types.js';
-import Logger from '../logger.js';
-
-const logger = new Logger('following/create');
+import { LoggerService } from '@/core/LoggerService.js';
+import Logger from '@/logger.js';
 
 type Local = MiLocalUser | {
 	id: MiLocalUser['id'];
@@ -50,6 +49,7 @@ type Both = Local | Remote;
 @Injectable()
 export class UserFollowingService implements OnModuleInit {
 	private userBlockingService: UserBlockingService;
+	private readonly logger: Logger;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -73,6 +73,7 @@ export class UserFollowingService implements OnModuleInit {
 		private instancesRepository: InstancesRepository,
 
 		private cacheService: CacheService,
+		private loggerService: LoggerService,
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
@@ -88,6 +89,7 @@ export class UserFollowingService implements OnModuleInit {
 		private perUserFollowingChart: PerUserFollowingChart,
 		private instanceChart: InstanceChart,
 	) {
+		this.logger = this.loggerService.getLogger('user:following');
 	}
 
 	onModuleInit() {
@@ -255,7 +257,7 @@ export class UserFollowingService implements OnModuleInit {
 			followeeSharedInbox: this.userEntityService.isRemoteUser(followee) ? followee.sharedInbox : null,
 		}).catch(err => {
 			if (isDuplicateKeyValueError(err) && this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-				logger.info(`Insert duplicated ignore. ${follower.id} => ${followee.id}`);
+				this.logger.info(`Insert duplicated ignore. ${follower.id} => ${followee.id}`);
 				alreadyFollowed = true;
 			} else {
 				throw err;
@@ -378,7 +380,7 @@ export class UserFollowingService implements OnModuleInit {
 		});
 
 		if (following === null || !following.follower || !following.followee) {
-			logger.warn('フォロー解除がリクエストされましたがフォローしていませんでした');
+			this.logger.warn('フォロー解除がリクエストされましたがフォローしていませんでした');
 			return;
 		}
 

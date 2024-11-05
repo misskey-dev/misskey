@@ -5150,6 +5150,62 @@ export interface Locale extends ILocale {
      * 名前を変更
      */
     "changeUserName": string;
+    /**
+     * データ収集とプライバシー設定
+     */
+    "gtagConsentCustomize": string;
+    /**
+     * {host}が収集するデータの範囲をカスタマイズできます。
+     * ただし、認証機能、不正行為防止、その他のユーザー保護など、セキュリティに関連する情報の収集は無効化できません。
+     */
+    "gtagConsentCustomizeDescription": ParameterizedString<"host">;
+    /**
+     * 統計情報の収集
+     */
+    "gtagConsentAnalytics": string;
+    /**
+     * サイトの滞在時間など、分析に関連する情報の保存（Cookie など）を有効にします。
+     */
+    "gtagConsentAnalyticsDescription": string;
+    /**
+     * 機能・設定の利用状況の収集
+     */
+    "gtagConsentFunctionality": string;
+    /**
+     * 言語設定など、ウェブサイトやアプリの機能をサポートする情報の保存を有効にします。
+     */
+    "gtagConsentFunctionalityDescription": string;
+    /**
+     * パーソナライズされた情報の収集
+     */
+    "gtagConsentPersonalization": string;
+    /**
+     * おすすめの投稿など、パーソナライズに関連する情報の保存を有効にします。
+     */
+    "gtagConsentPersonalizationDescription": string;
+    /**
+     * Misskeyの明日を作るために、
+     * データ収集にご協力ください！
+     */
+    "helpUsImproveUserExperience": string;
+    /**
+     * {host}は[プライバシーポリシー]({privacyPolicyUrl})に基づき、サービスの提供・運営・ユーザー体験の向上のためにご利用中のIPアドレス、利用状況、デバイス情報等、個人情報を含む可能性のある情報を収集することがあります。
+     *
+     * 収集されたデータは今後の機能の開発、運営の方針の決定、サービスの改善点の特定に利用されます。
+     */
+    "pleaseConsentToTracking": ParameterizedString<"host" | "privacyPolicyUrl">;
+    /**
+     * 必須項目のみ許可
+     */
+    "consentEssential": string;
+    /**
+     * 全て許可
+     */
+    "consentAll": string;
+    /**
+     * 選択した項目のみ許可
+     */
+    "consentSelected": string;
     "_bubbleGame": {
         /**
          * 遊び方

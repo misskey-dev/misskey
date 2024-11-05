@@ -13,7 +13,7 @@ import type {
 } from '@/models/_.js';
 import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
 import type * as Bull from "bullmq";
-import type { DbUserSuspendJobData } from "@/queue/types.js";
+import type { DbUserSuspendJobData } from '@/queue/types.js';
 
 @Injectable()
 export class UserSuspendProcessorService {

@@ -22,13 +22,14 @@ const pinoPrettyStream = pinoPretty({
 
 // eslint-disable-next-line import/no-default-export
 export default class Logger {
-	private readonly domain: string;
-	private logger: pino.Logger;
+	private readonly domain: string | undefined;
+	private readonly logger: pino.Logger;
 	private context: Record<string, any> = {};
 
-	constructor(domain: string, _color?: KEYWORD, _store = true, parentLogger?: Logger) {
+	constructor(domain: string | undefined, _color?: KEYWORD, _store = true, parentLogger?: Logger) {
 		if (parentLogger) {
-			this.domain = parentLogger.domain + '.' + domain;
+			this.domain = [parentLogger.domain, domain].filter(x => x).join('.') || undefined;
+			this.context = { ...JSON.parse(JSON.stringify(parentLogger.context)) };
 		} else {
 			this.domain = domain;
 		}
@@ -50,18 +51,20 @@ export default class Logger {
 			formatters: {
 				level: (label, number) => ({ severity: label, level: number }),
 			},
-			mixin: () => ({ cluster: cluster.isPrimary ? 'primary' : `worker#${cluster.worker!.id}`, ...this.context }),
+			mixin: () => this.mixin(),
 		}, !envOption.logJson ? pinoPrettyStream : undefined);
 	}
 
-	@bindThis
-	public createSubLogger(domain: string, _color?: KEYWORD, _store = true): Logger {
-		return new Logger(domain, undefined, false, this);
+	private mixin(): Record<string, any> {
+		return { cluster: cluster.isPrimary ? 'primary' : `worker#${cluster.worker!.id}`, ...this.context };
 	}
 
-	@bindThis
+	public createSubLogger(domain?: string, _color?: KEYWORD, _store = true): Logger {
+		return new Logger(domain, _color, _store, this);
+	}
+
 	public setContext(context: Record<string, any>): void {
-		this.context = context;
+		this.context = { ...this.context, ...JSON.parse(JSON.stringify(context)) };
 	}
 
 	@bindThis
@@ -130,3 +133,6 @@ export default class Logger {
 		this.logger.info({ context, important }, message);
 	}
 }
+
+export const rootLogger = new Logger(undefined, undefined, false, undefined);
+export const coreLogger = rootLogger.createSubLogger('core', 'cyan');

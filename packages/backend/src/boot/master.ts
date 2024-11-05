@@ -10,7 +10,7 @@ import * as os from 'node:os';
 import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
-import Logger from '@/logger.js';
+import { coreLogger } from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
@@ -22,8 +22,7 @@ const _dirname = dirname(_filename);
 
 const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json`, 'utf-8'));
 
-const logger = new Logger('core', 'cyan');
-const bootLogger = logger.createSubLogger('boot', 'magenta', false);
+const bootLogger = coreLogger.createSubLogger('boot', 'magenta', false);
 
 const themeColor = chalk.hex('#86b300');
 

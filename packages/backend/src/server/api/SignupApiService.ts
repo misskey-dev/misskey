@@ -22,6 +22,7 @@ import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
+import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class SignupApiService {
@@ -73,7 +74,7 @@ export class SignupApiService {
 		reply: FastifyReply,
 	) {
 		const logger = this.loggerService.getLogger('api:signup');
-		logger.setContext({ username: request.body.username, email: request.body.emailAddress, ip: request.ip, headers: request.headers });
+		logger.setContext({ username: request.body.username, email: request.body.emailAddress, ip: request.ip, headers: request.headers, span: request.headers['x-client-transaction-id'] ?? randomUUID() });
 		logger.info('Requested to create user account.');
 
 		const body = request.body;

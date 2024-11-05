@@ -159,7 +159,7 @@ export class FetchInstanceMetadataService {
 					throw err.statusCode ?? err.message;
 				});
 
-			this.logger.succ(`Successfuly fetched nodeinfo of ${instance.host}`);
+			this.logger.succ(`Successfully fetched nodeinfo of ${instance.host}`);
 
 			return info as NodeInfo;
 		} catch (err) {

@@ -4,6 +4,7 @@
  */
 
 type Keys =
+	'id' |
 	'v' |
 	'lastVersion' |
 	'instance' |
@@ -39,7 +40,10 @@ type Keys =
 	'lastEmojisFetchedAt' | // DEPRECATED, stored in indexeddb (13.9.0~)
 	'emojis' | // DEPRECATED, stored in indexeddb (13.9.0~);
 	`channelLastReadedAt:${string}` |
-	'kawaii'
+	'kawaii' |
+	'gaConsent' |
+	'gtagConsent'
+	;
 
 export const miLocalStorage = {
 	getItem: (key: Keys): string | null => window.localStorage.getItem(key),

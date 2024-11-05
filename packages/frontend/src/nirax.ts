@@ -71,6 +71,8 @@ export type Resolved = {
 	};
 };
 
+export type AfterNavigationHook = (to: RouteDef, from: RouteDef) => any;
+
 function parsePath(path: string): ParsedPath {
 	const res = [] as ParsedPath;
 
@@ -101,6 +103,7 @@ export interface IRouter extends EventEmitter<RouterEvent> {
 	currentRef: ShallowRef<Resolved>;
 	currentRoute: ShallowRef<RouteDef>;
 	navHook: ((path: string, flag?: any) => boolean) | null;
+	afterHooks: Array<AfterNavigationHook | null>;
 
 	/**
 	 * ルートの初期化（eventListenerの定義後に必ず呼び出すこと）
@@ -109,9 +112,13 @@ export interface IRouter extends EventEmitter<RouterEvent> {
 
 	resolve(path: string): Resolved | null;
 
+	isReady(): Promise<boolean>;
+
 	getCurrentPath(): any;
 
 	getCurrentKey(): string;
+
+	afterEach(hook: AfterNavigationHook): AfterNavigationHook | undefined;
 
 	push(path: string, flag?: any): void;
 
@@ -191,6 +198,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 	private redirectCount = 0;
 
 	public navHook: ((path: string, flag?: any) => boolean) | null = null;
+	public afterHooks: Array<AfterNavigationHook | null> = [];
 
 	constructor(routes: Router['routes'], currentPath: Router['currentPath'], isLoggedIn: boolean, notFoundPageComponent: Component) {
 		super();
@@ -339,6 +347,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 
 	private navigate(path: string, key: string | null | undefined, emitChange = true, _redirected = false): Resolved {
 		const beforePath = this.currentPath;
+		const beforeRoute = this.currentRoute.value;
 		this.currentPath = path;
 
 		const res = this.resolve(this.currentPath);
@@ -382,11 +391,21 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			});
 		}
 
+		if (this.afterHooks.length > 0) {
+			for (const hook of this.afterHooks) {
+				if (hook) hook(res.route, beforeRoute);
+			}
+		}
+
 		this.redirectCount = 0;
 		return {
 			...res,
 			redirected: _redirected,
 		};
+	}
+
+	public isReady() {
+		return Promise.resolve(true);
 	}
 
 	public getCurrentPath() {
@@ -395,6 +414,18 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 
 	public getCurrentKey() {
 		return this.currentKey;
+	}
+
+	public afterEach(hook: AfterNavigationHook): AfterNavigationHook | undefined {
+		this.afterHooks.push(hook);
+		return () => {
+			const index = this.afterHooks.indexOf(hook);
+			if (index !== -1) {
+				return this.afterHooks.splice(index, 1);
+			} else {
+				return undefined;
+			}
+		};
 	}
 
 	public push(path: string, flag?: any) {

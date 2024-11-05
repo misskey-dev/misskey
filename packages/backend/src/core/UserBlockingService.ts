@@ -50,7 +50,7 @@ export class UserBlockingService implements OnModuleInit {
 		private apRendererService: ApRendererService,
 		private loggerService: LoggerService,
 	) {
-		this.logger = this.loggerService.getLogger('user-block');
+		this.logger = this.loggerService.getLogger('user:block');
 	}
 
 	onModuleInit() {

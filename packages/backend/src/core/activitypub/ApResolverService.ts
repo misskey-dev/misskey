@@ -45,7 +45,7 @@ export class Resolver {
 		private recursionLimit = 100,
 	) {
 		this.history = new Set();
-		this.logger = this.loggerService.getLogger('ap-resolve');
+		this.logger = this.loggerService.getLogger('ap:resolve');
 	}
 
 	@bindThis

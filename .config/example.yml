@@ -118,7 +118,7 @@ redis:
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
-# You can set scope to local (default value) or global 
+# You can set scope to local (default value) or global
 # (include notes from remote).
 
 #meilisearch:
@@ -214,7 +214,7 @@ proxyRemoteFiles: true
 signToActivityPubGet: true
 
 # For security reasons, uploading attachments from the intranet is prohibited,
-# but exceptions can be made from the following settings. Default value is "undefined". 
+# but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'
@@ -227,4 +227,4 @@ signToActivityPubGet: true
 #pidFile: /tmp/misskey.pid
 
 # Value of Content-Security-Policy header
-#contentSecurityPolicy: "script-src 'self' 'unsafe-eval' https://challenges.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://www.recaptcha.net/recaptcha/; base-uri 'self'; object-src 'self';"
+#contentSecurityPolicy: "script-src 'self' 'unsafe-eval' https://challenges.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://www.recaptcha.net/recaptcha/ https://www.googletagmanager.com/; base-uri 'self'; object-src 'self';"

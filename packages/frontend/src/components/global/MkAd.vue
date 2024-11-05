@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				rel: 'nofollow noopener',
 				target: '_blank',
 			}"
+			@click="onAdClicked"
 		>
 			<img :src="chosen.imageUrl" :class="$style.img">
 			<button class="_button" :class="$style.i" @click.prevent.stop="toggleMenu"><i :class="$style.iIcon" class="ti ti-info-circle"></i></button>
@@ -42,7 +43,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+/* eslint-disable id-denylist */
+import { ref, computed, onActivated, onMounted } from 'vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { url as local, host } from '@/config.js';
@@ -50,6 +52,7 @@ import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
+import { usageReport } from '@/scripts/usage-report.js';
 
 type Ad = (typeof instance)['ads'][number];
 
@@ -123,6 +126,36 @@ function reduceFrequency(): void {
 	chosen.value = choseAd();
 	showMenu.value = false;
 }
+
+function onAdClicked(): void {
+	if (chosen.value == null) return;
+	usageReport({
+		t: Math.floor(Date.now() / 1000),
+		e: 'a',
+		i: chosen.value.id,
+		a: 'c',
+	});
+}
+
+onMounted(() => {
+	if (chosen.value == null) return;
+	usageReport({
+		t: Math.floor(Date.now() / 1000),
+		e: 'a',
+		i: chosen.value.id,
+		a: 'v',
+	});
+});
+
+onActivated(() => {
+	if (chosen.value == null) return;
+	usageReport({
+		t: Math.floor(Date.now() / 1000),
+		e: 'a',
+		i: chosen.value.id,
+		a: 'v',
+	});
+});
 </script>
 
 <style lang="scss" module>

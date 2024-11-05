@@ -5,7 +5,7 @@
 
 import { ShallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import { IRouter, Resolved, RouteDef, RouterEvent } from '@/nirax.js';
+import { AfterNavigationHook, IRouter, Resolved, RouteDef, RouterEvent } from '@/nirax.js';
 
 function getMainRouter(): IRouter {
 	const router = mainRouterHolder;
@@ -40,6 +40,10 @@ class MainRouterProxy implements IRouter {
 		this.supplier = supplier;
 	}
 
+	get options(): { [key: string]: any } {
+		return {};
+	}
+
 	get current(): Resolved {
 		return this.supplier().current;
 	}
@@ -60,12 +64,20 @@ class MainRouterProxy implements IRouter {
 		this.supplier().navHook = value;
 	}
 
+	isReady(): Promise<boolean> {
+		return this.supplier().isReady();
+	}
+
 	getCurrentKey(): string {
 		return this.supplier().getCurrentKey();
 	}
 
 	getCurrentPath(): any {
 		return this.supplier().getCurrentPath();
+	}
+
+	afterEach(hook: AfterNavigationHook): AfterNavigationHook | undefined {
+		return this.supplier().afterEach(hook);
 	}
 
 	push(path: string, flag?: any): void {

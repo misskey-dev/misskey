@@ -43,6 +43,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -123,12 +124,13 @@ export class DriveService {
 		private globalEventService: GlobalEventService,
 		private queueService: QueueService,
 		private roleService: RoleService,
+		private loggerService: LoggerService,
 		private moderationLogService: ModerationLogService,
 		private driveChart: DriveChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private instanceChart: InstanceChart,
 	) {
-		const logger = new Logger('drive', 'blue');
+		const logger = this.loggerService.getLogger('drive', 'blue');
 		this.registerLogger = logger.createSubLogger('register', 'yellow');
 		this.downloaderLogger = logger.createSubLogger('downloader');
 		this.deleteLogger = logger.createSubLogger('delete');

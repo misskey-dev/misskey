@@ -23,6 +23,8 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/definition.js';
+import { mainRouter } from '@/router/main.js';
+import VueGtag, { bootstrap as gtagBootstrap, GtagConsent, GtagConsentParams } from 'vue-gtag';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -58,6 +60,10 @@ export async function common(createVue: () => App<Element>) {
 			});
 			*/
 		});
+	}
+
+	if (miLocalStorage.getItem('id') === null) {
+		miLocalStorage.setItem('id', crypto.randomUUID());
 	}
 
 	let isClientUpdated = false;
@@ -259,6 +265,38 @@ export async function common(createVue: () => App<Element>) {
 	widgets(app);
 	directives(app);
 	components(app);
+
+	if (instance.googleAnalyticsId) {
+		app.use(VueGtag, {
+			bootstrap: false,
+			appName: `Misskey v${version}`,
+			config: {
+				id: instance.googleAnalyticsId,
+				params: {
+					anonymize_ip: false,
+					send_page_view: true,
+				},
+			},
+		}, mainRouter);
+
+		const gtagConsent = miLocalStorage.getItemAsJson('gtagConsent') as GtagConsentParams ?? {
+			ad_storage: 'denied',
+			ad_user_data: 'denied',
+			ad_personalization: 'denied',
+			analytics_storage: 'denied',
+			functionality_storage: 'denied',
+			personalization_storage: 'denied',
+			security_storage: 'granted',
+		};
+		miLocalStorage.setItemAsJson('gtagConsent', gtagConsent);
+
+		if (typeof window['gtag'] === 'function') (window['gtag'] as GtagConsent)('consent', 'default', gtagConsent);
+
+		if (miLocalStorage.getItem('gaConsent') === 'true') {
+			// noinspection ES6MissingAwait
+			gtagBootstrap();
+		}
+	}
 
 	// https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
 	// なぜか2回実行されることがあるため、mountするdivを1つに制限する

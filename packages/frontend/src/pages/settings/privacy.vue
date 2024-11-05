@@ -68,20 +68,49 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</FormSection>
 
 	<MkSwitch v-model="keepCw" @update:modelValue="save()">{{ i18n.ts.keepCw }}</MkSwitch>
+
+	<FormSection v-if="instance.googleAnalyticsId">
+		<MkFolder :defaultOpen="true">
+			<template #icon><i class="ti ti-lock-square"></i></template>
+			<template #label>{{ i18n.ts.gtagConsentCustomize }}</template>
+			<div class="_gaps_s">
+				<MkInfo>{{ i18n.tsx.gtagConsentCustomizeDescription({ host: instance.name ?? host }) }}</MkInfo>
+				<MkSwitch v-model="gtagConsentAnalytics">
+					{{ i18n.ts.gtagConsentAnalytics }}
+					<template #caption>{{ i18n.ts.gtagConsentAnalyticsDescription }}</template>
+				</MkSwitch>
+				<MkSwitch v-model="gtagConsentFunctionality">
+					{{ i18n.ts.gtagConsentFunctionality }}
+					<template #caption>{{ i18n.ts.gtagConsentFunctionalityDescription }}</template>
+				</MkSwitch>
+				<MkSwitch v-model="gtagConsentPersonalization">
+					{{ i18n.ts.gtagConsentPersonalization }}
+					<template #caption>{{ i18n.ts.gtagConsentPersonalizationDescription }}</template>
+				</MkSwitch>
+			</div>
+		</MkFolder>
+	</FormSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
+import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { signinRequired } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import * as os from '@/os.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { instance } from '@/instance.js';
+import { host } from '@/config.js';
+import { GtagConsent, GtagConsentParams } from 'vue-gtag';
 
 const $i = signinRequired();
 
@@ -99,6 +128,81 @@ const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNot
 const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
+
+const gaConsentInternal = ref(miLocalStorage.getItem('gaConsent') === 'true');
+const gaConsent = computed({
+	get: () => gaConsentInternal.value,
+	set: (value: boolean) => {
+		miLocalStorage.setItem('gaConsent', value ? 'true' : 'false');
+		gaConsentInternal.value = value;
+	},
+});
+const gtagConsentInternal = ref(
+	(miLocalStorage.getItemAsJson('gtagConsent') as GtagConsentParams) ?? {
+		ad_storage: 'denied',
+		ad_user_data: 'denied',
+		ad_personalization: 'denied',
+		analytics_storage: 'denied',
+		functionality_storage: 'denied',
+		personalization_storage: 'denied',
+		security_storage: 'granted',
+	},
+);
+const gtagConsent = computed({
+	get: () => gtagConsentInternal.value,
+	set: (value: GtagConsentParams) => {
+		miLocalStorage.setItemAsJson('gtagConsent', value);
+		gtagConsentInternal.value = value;
+	},
+});
+const gtagConsentAnalytics = computed({
+	get: () => gtagConsent.value.analytics_storage === 'granted',
+	set: (value: boolean) => {
+		gtagConsent.value = {
+			...gtagConsent.value,
+			ad_storage: value ? 'granted' : 'denied',
+			ad_user_data: value ? 'granted' : 'denied',
+			analytics_storage: value ? 'granted' : 'denied',
+		};
+	},
+});
+const gtagConsentFunctionality = computed({
+	get: () => gtagConsent.value.functionality_storage === 'granted',
+	set: (value: boolean) => {
+		gtagConsent.value = {
+			...gtagConsent.value,
+			functionality_storage: value ? 'granted' : 'denied',
+		};
+	},
+});
+const gtagConsentPersonalization = computed({
+	get: () => gtagConsent.value.personalization_storage === 'granted',
+	set: (value: boolean) => {
+		gtagConsent.value = {
+			...gtagConsent.value,
+			ad_personalization: value ? 'granted' : 'denied',
+			personalization_storage: value ? 'granted' : 'denied',
+		};
+	},
+});
+
+async function reloadAsk() {
+	const { canceled } = await os.confirm({
+		type: 'info',
+		text: i18n.ts.reloadToApplySetting,
+	});
+	if (canceled) return;
+
+	unisonReload();
+}
+
+watch(gaConsent, async () => {
+	await reloadAsk();
+});
+
+watch(gtagConsent, async () => {
+	if (typeof window['gtag'] === 'function') (window['gtag'] as GtagConsent)('consent', 'update', gtagConsent.value);
+});
 
 function save() {
 	misskeyApi('i/update', {

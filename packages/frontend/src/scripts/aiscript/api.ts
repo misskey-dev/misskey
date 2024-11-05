@@ -59,7 +59,7 @@ export function createAiScriptEnv(opts) {
 			}
 			const actualToken: string|null = token?.value ?? opts.token ?? null;
 			if (!rateLimiter.hit(ep.value)) return values.ERROR('rate_limited', values.NULL);
-			return misskeyApi(ep.value, utils.valToJs(param), actualToken).then(res => {
+			return misskeyApi(ep.value, utils.valToJs(param), actualToken, undefined, 'aiscript').then(res => {
 				return utils.jsToVal(res);
 			}, err => {
 				return values.ERROR('request_failed', utils.jsToVal(err));

@@ -12,7 +12,7 @@ import { EventEmitter } from 'node:events';
 import process from 'node:process';
 import chalk from 'chalk';
 import Xev from 'xev';
-import Logger from '@/logger.js';
+import { coreLogger } from '@/logger.js';
 import { envOption } from '../env.js';
 import { masterMain } from './master.js';
 import { workerMain } from './worker.js';
@@ -24,8 +24,7 @@ process.title = `Misskey (${cluster.isPrimary ? 'master' : 'worker'})`;
 Error.stackTraceLimit = Infinity;
 EventEmitter.defaultMaxListeners = 128;
 
-const logger = new Logger('core', 'cyan');
-const clusterLogger = logger.createSubLogger('cluster', 'orange', false);
+const clusterLogger = coreLogger.createSubLogger('cluster', 'orange', false);
 const ev = new Xev();
 
 //#region Events
@@ -53,12 +52,12 @@ if (cluster.isPrimary && !envOption.disableClustering) {
 	});
 
 	process.on('SIGINT', () => {
-		logger.warn(chalk.yellow('Process received SIGINT'));
+		coreLogger.warn(chalk.yellow('Process received SIGINT'));
 		isShuttingDown = true;
 	});
 
 	process.on('SIGTERM', () => {
-		logger.warn(chalk.yellow('Process received SIGTERM'));
+		coreLogger.warn(chalk.yellow('Process received SIGTERM'));
 		isShuttingDown = true;
 	});
 }
@@ -71,18 +70,18 @@ if (!envOption.quiet) {
 // Display detail of uncaught exception
 process.on('uncaughtException', err => {
 	try {
-		logger.error(`Uncaught exception: ${err.message}`, { error: err });
+		coreLogger.error(`Uncaught exception: ${err.message}`, { error: err });
 	} catch { }
 });
 
 // Dying away...
 process.on('exit', code => {
-	logger.warn(chalk.yellow(`The process is going to exit with code ${code}`));
+	coreLogger.warn(chalk.yellow(`The process is going to exit with code ${code}`));
 });
 
 process.on('warning', warning => {
 	if ((warning as never)['code'] !== 'MISSKEY_SHUTDOWN') return;
-	logger.warn(chalk.yellow(`${warning.message}: ${(warning as never)['detail']}`));
+	coreLogger.warn(chalk.yellow(`${warning.message}: ${(warning as never)['detail']}`));
 	for (const id in cluster.workers) cluster.workers[id]?.process.kill('SIGTERM');
 	process.exit();
 });

@@ -257,7 +257,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const policies = await this.roleService.getUserPolicies(user.id);
 
 		if (!policies.canCreateContent) {
-			this.logger.error('Request rejected because user has no permission to create content', { user: user.id, note: data });
+			this.logger.error('Request rejected because user has no permission to create content', { userId: user.id, note: data });
 			throw new IdentifiableError('5b1c2b67-50a6-4a8a-a59c-0ede40890de3', 'User has no permission to create content.');
 		}
 
@@ -265,7 +265,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			const sensitiveWords = meta.sensitiveWords;
 			if (this.utilityService.isKeyWordIncluded(data.cw ?? this.utilityService.concatNoteContentsForKeyWordCheck({ text: data.text, pollChoices: data.poll?.choices }), sensitiveWords)) {
 				data.visibility = 'home';
-				this.logger.warn('Visibility changed to home because sensitive words are included', { user: user.id, note: data });
+				this.logger.warn('Visibility changed to home because sensitive words are included', { userId: user.id, note: data });
 			} else if (!policies.canPublicNote) {
 				data.visibility = 'home';
 			}
@@ -281,7 +281,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		);
 
 		if (hasProhibitedWords) {
-			this.logger.error('Request rejected because prohibited words are included', { user: user.id, note: data });
+			this.logger.error('Request rejected because prohibited words are included', { userId: user.id, note: data });
 			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Notes including prohibited words are not allowed.');
 		}
 
@@ -384,7 +384,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (process.env.MISSKEY_BLOCK_MENTIONS_FROM_UNFAMILIAR_REMOTE_USERS === 'true' && user.host !== null && willCauseNotification) {
 			const userEntity = await this.usersRepository.findOneBy({ id: user.id });
 			if ((userEntity?.followersCount ?? 0) === 0) {
-				this.logger.error('Request rejected because user has no local followers', { user: user.id, note: data });
+				this.logger.error('Request rejected because user has no local followers', { userId: user.id, note: data });
 				throw new IdentifiableError('e11b3a16-f543-4885-8eb1-66cad131dbfd', 'Notes including mentions, replies, or renotes from remote users are not allowed until user has at least one local follower.');
 			}
 		}
@@ -396,7 +396,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				|| (data.visibility === 'specified' && data.visibleUsers?.some(u => u.id !== user.id))
 				|| (this.isQuote(data) && data.renote.userId !== user.id)
 			) {
-				this.logger.error('Request rejected because user has no permission to initiate conversation', { user: user.id, note: data });
+				this.logger.error('Request rejected because user has no permission to initiate conversation', { userId: user.id, note: data });
 				throw new IdentifiableError('332dd91b-6a00-430a-ac39-620cf60ad34b', 'Notes including mentions, replies, or renotes are not allowed.');
 			}
 		}

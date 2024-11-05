@@ -75,6 +75,7 @@
 		"v-code-diff": "1.13.1",
 		"vite": "5.4.9",
 		"vue": "3.5.12",
+		"vue-gtag": "2.0.1",
 		"vuedraggable": "next"
 	},
 	"devDependencies": {
