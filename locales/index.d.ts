@@ -5223,6 +5223,10 @@ export interface Locale extends ILocale {
      */
     "pleaseSelectAccount": string;
     /**
+     * 利用可能なロール
+     */
+    "availableRoles": string;
+    /**
      * 通報の種類
      */
     "abuseReportCategory": string;
