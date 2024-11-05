@@ -37,9 +37,9 @@
 	"devDependencies": {
 		"@microsoft/api-extractor": "7.47.11",
 		"@misskey-dev/eslint-plugin": "1.0.0",
-		"@swc/jest": "0.2.36",
-		"@types/jest": "29.5.13",
-		"@types/node": "22.7.8",
+		"@swc/jest": "0.2.37",
+		"@types/jest": "29.5.14",
+		"@types/node": "22.9.0",
 		"@typescript-eslint/eslint-plugin": "7.10.0",
 		"@typescript-eslint/parser": "7.10.0",
 		"eslint": "8.57.1",
@@ -58,8 +58,8 @@
 		"built/dts"
 	],
 	"dependencies": {
-		"@swc/cli": "0.4.0",
-		"@swc/core": "1.7.39",
+		"@swc/cli": "0.5.0",
+		"@swc/core": "1.8.0",
 		"eventemitter3": "5.0.1",
 		"reconnecting-websocket": "4.4.0"
 	}
