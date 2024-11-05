@@ -6,8 +6,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div v-show="props.modelValue.length != 0" :class="$style.root">
 	<Sortable :modelValue="props.modelValue" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
-		<template #item="{element}">
-			<div :class="$style.file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
+		<template #item="{ element }">
+			<div
+				:class="$style.file"
+				role="button"
+				tabindex="0"
+				@click="showFileMenu(element, $event)"
+				@keydown.space.enter="showFileMenu(element, $event)"
+				@contextmenu.prevent="showFileMenu(element, $event)"
+			>
 				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
 				<div v-if="element.isSensitive" :class="$style.sensitive">
 					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
@@ -26,18 +33,19 @@ import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
-	modelValue: any[];
+	modelValue: Misskey.entities.DriveFile[];
 	detachMediaFn?: (id: string) => void;
 }>();
 
 const mock = inject<boolean>('mock', false);
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any[]): void;
+	(ev: 'update:modelValue', value: Misskey.entities.DriveFile[]): void;
 	(ev: 'detach', id: string): void;
 	(ev: 'changeSensitive', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
 	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
@@ -63,7 +71,7 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('driveFileDeleteConfirm', { name: file.name }),
+		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
 	});
 
 	if (canceled) return;
@@ -105,7 +113,7 @@ async function rename(file) {
 	});
 }
 
-async function describe(file) {
+async function describe(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
@@ -132,11 +140,14 @@ async function crop(file: Misskey.entities.DriveFile): Promise<void> {
 	emit('replaceFile', file, newFile);
 }
 
-function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
+function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | KeyboardEvent): void {
 	if (menuShowing) return;
 
 	const isImage = file.type.startsWith('image/');
-	os.popupMenu([{
+
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
 		text: i18n.ts.renameFile,
 		icon: 'ti ti-forms',
 		action: () => { rename(file); },
@@ -148,11 +159,17 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 		text: i18n.ts.describeFile,
 		icon: 'ti ti-text-caption',
 		action: () => { describe(file); },
-	}, ...isImage ? [{
-		text: i18n.ts.cropImage,
-		icon: 'ti ti-crop',
-		action: () : void => { crop(file); },
-	}] : [], {
+	});
+
+	if (isImage) {
+		menuItems.push({
+			text: i18n.ts.cropImage,
+			icon: 'ti ti-crop',
+			action: () : void => { crop(file); },
+		});
+	}
+
+	menuItems.push({
 		type: 'divider',
 	}, {
 		text: i18n.ts.attachCancel,
@@ -163,7 +180,9 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 		icon: 'ti ti-trash',
 		danger: true,
 		action: () => { detachAndDeleteMedia(file); },
-	}], ev.currentTarget ?? ev.target).then(() => menuShowing = false);
+	});
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target).then(() => menuShowing = false);
 	menuShowing = true;
 }
 </script>
@@ -187,13 +206,17 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 	border-radius: 4px;
 	overflow: hidden;
 	cursor: move;
+
+	&:focus-visible {
+		outline-offset: 4px;
+	}
 }
 
 .thumbnail {
 	width: 100%;
 	height: 100%;
 	z-index: 1;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 
 .sensitive {

@@ -8,6 +8,7 @@ import * as Redis from 'ioredis';
 import { In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import type {
+	MiMeta,
 	MiRole,
 	MiRoleAssignment,
 	RoleAssignmentsRepository,
@@ -18,7 +19,6 @@ import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
 import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -58,6 +58,11 @@ export type RolePolicies = {
 	userEachUserListsLimit: number;
 	rateLimitFactor: number;
 	avatarDecorationLimit: number;
+	canImportAntennas: boolean;
+	canImportBlocking: boolean;
+	canImportFollowing: boolean;
+	canImportMuting: boolean;
+	canImportUserLists: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -87,10 +92,16 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	userEachUserListsLimit: 50,
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
+	canImportAntennas: true,
+	canImportBlocking: true,
+	canImportFollowing: true,
+	canImportMuting: true,
+	canImportUserLists: true,
 };
 
 @Injectable()
 export class RoleService implements OnApplicationShutdown, OnModuleInit {
+	private rootUserIdCache: MemorySingleCache<MiUser['id']>;
 	private rolesCache: MemorySingleCache<MiRole[]>;
 	private roleAssignmentByUserIdCache: MemoryKVCache<MiRoleAssignment[]>;
 	private notificationService: NotificationService;
@@ -101,8 +112,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	constructor(
 		private moduleRef: ModuleRef,
 
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
@@ -119,7 +130,6 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
-		private metaService: MetaService,
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
@@ -127,6 +137,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		private moderationLogService: ModerationLogService,
 		private fanoutTimelineService: FanoutTimelineService,
 	) {
+		this.rootUserIdCache = new MemorySingleCache<MiUser['id']>(1000 * 60 * 60 * 24 * 7); // 1week. rootユーザのIDは不変なので長めに
 		this.rolesCache = new MemorySingleCache<MiRole[]>(1000 * 60 * 60); // 1h
 		this.roleAssignmentByUserIdCache = new MemoryKVCache<MiRoleAssignment[]>(1000 * 60 * 5); // 5m
 
@@ -339,8 +350,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async getUserPolicies(userId: MiUser['id'] | null): Promise<RolePolicies> {
-		const meta = await this.metaService.fetch();
-		const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
+		const basePolicies = { ...DEFAULT_POLICIES, ...this.meta.policies };
 
 		if (userId == null) return basePolicies;
 
@@ -387,6 +397,11 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
+			canImportAntennas: calc('canImportAntennas', vs => vs.some(v => v === true)),
+			canImportBlocking: calc('canImportBlocking', vs => vs.some(v => v === true)),
+			canImportFollowing: calc('canImportFollowing', vs => vs.some(v => v === true)),
+			canImportMuting: calc('canImportMuting', vs => vs.some(v => v === true)),
+			canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
 		};
 	}
 
@@ -403,49 +418,78 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async isExplorable(role: { id: MiRole['id']} | null): Promise<boolean> {
+	public async isExplorable(role: { id: MiRole['id'] } | null): Promise<boolean> {
 		if (role == null) return false;
 		const check = await this.rolesRepository.findOneBy({ id: role.id });
 		if (check == null) return false;
 		return check.isExplorable;
 	}
 
+	/**
+	 * モデレーター権限のロールが割り当てられているユーザID一覧を取得する.
+	 *
+	 * @param opts.includeAdmins 管理者権限も含めるか(デフォルト: true)
+	 * @param opts.includeRoot rootユーザも含めるか(デフォルト: false)
+	 * @param opts.excludeExpire 期限切れのロールを除外するか(デフォルト: false)
+	 */
 	@bindThis
-	public async getModeratorIds(includeAdmins = true, excludeExpire = false): Promise<MiUser['id'][]> {
+	public async getModeratorIds(opts?: {
+		includeAdmins?: boolean,
+		includeRoot?: boolean,
+		excludeExpire?: boolean,
+	}): Promise<MiUser['id'][]> {
+		const includeAdmins = opts?.includeAdmins ?? true;
+		const includeRoot = opts?.includeRoot ?? false;
+		const excludeExpire = opts?.excludeExpire ?? false;
+
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
 		const moderatorRoles = includeAdmins
 			? roles.filter(r => r.isModerator || r.isAdministrator)
 			: roles.filter(r => r.isModerator);
 
-		// TODO: isRootなアカウントも含める
 		const assigns = moderatorRoles.length > 0
 			? await this.roleAssignmentsRepository.findBy({ roleId: In(moderatorRoles.map(r => r.id)) })
 			: [];
 
+		// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
 		const now = Date.now();
-		const result = [
-			// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
-			...new Set(
-				assigns
-					.filter(it =>
-						(excludeExpire)
-							? (it.expiresAt == null || it.expiresAt.getTime() > now)
-							: true,
-					)
-					.map(a => a.userId),
-			),
-		];
+		const resultSet = new Set(
+			assigns
+				.filter(it =>
+					(excludeExpire)
+						? (it.expiresAt == null || it.expiresAt.getTime() > now)
+						: true,
+				)
+				.map(a => a.userId),
+		);
 
-		return result.sort((x, y) => x.localeCompare(y));
+		if (includeRoot) {
+			const rootUserId = await this.rootUserIdCache.fetch(async () => {
+				const it = await this.usersRepository.createQueryBuilder('users')
+					.select('id')
+					.where({ isRoot: true })
+					.getRawOne<{ id: string }>();
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				return it!.id;
+			});
+			resultSet.add(rootUserId);
+		}
+
+		return [...resultSet].sort((x, y) => x.localeCompare(y));
 	}
 
 	@bindThis
-	public async getModerators(includeAdmins = true): Promise<MiUser[]> {
-		const ids = await this.getModeratorIds(includeAdmins);
-		const users = ids.length > 0 ? await this.usersRepository.findBy({
-			id: In(ids),
-		}) : [];
-		return users;
+	public async getModerators(opts?: {
+		includeAdmins?: boolean,
+		includeRoot?: boolean,
+		excludeExpire?: boolean,
+	}): Promise<MiUser[]> {
+		const ids = await this.getModeratorIds(opts);
+		return ids.length > 0
+			? await this.usersRepository.findBy({
+				id: In(ids),
+			})
+			: [];
 	}
 
 	@bindThis

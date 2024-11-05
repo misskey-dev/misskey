@@ -88,7 +88,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 	});
 }
 
-function select(src: any, label: string | null, options?: SelectFileOptions): Promise<Misskey.entities.DriveFile[]> {
+function select(src: HTMLElement | EventTarget | null, label: string | null, options?: SelectFileOptions): Promise<Misskey.entities.DriveFile[]> {
 	const _options = deepMerge(options ?? {}, {
 		multiple: false,
 
@@ -124,10 +124,10 @@ function select(src: any, label: string | null, options?: SelectFileOptions): Pr
 	});
 }
 
-export function selectFile(src: any, label: string | null = null, options?: { excludeSensitive?: boolean; additionalMenu?: MenuItem[]; }): Promise<Misskey.entities.DriveFile> {
+export function selectFile(src: HTMLElement | EventTarget | null, label: string | null = null, options?: { excludeSensitive?: boolean; additionalMenu?: MenuItem[]; }): Promise<Misskey.entities.DriveFile> {
 	return select(src, label, { ...(options ? options : {}), multiple: false }).then(files => files[0]);
 }
 
-export function selectFiles(src: any, label: string | null = null, options?: { excludeSensitive?: boolean; additionalMenu?: MenuItem[]; }): Promise<Misskey.entities.DriveFile[]> {
+export function selectFiles(src: HTMLElement | EventTarget | null, label: string | null = null, options?: { excludeSensitive?: boolean; additionalMenu?: MenuItem[]; }): Promise<Misskey.entities.DriveFile[]> {
 	return select(src, label, { ...(options ? options : {}), multiple: true });
 }

@@ -110,7 +110,7 @@ function addUser() {
 			listId: list.value.id,
 			userId: user.id,
 		}).then(() => {
-			paginationEl.value.reload();
+			paginationEl.value?.reload();
 		});
 	});
 }
@@ -126,7 +126,7 @@ async function removeUser(item, ev) {
 				listId: list.value.id,
 				userId: item.userId,
 			}).then(() => {
-				paginationEl.value.removeItem(item.id);
+				paginationEl.value?.removeItem(item.id);
 			});
 		},
 	}], ev.currentTarget ?? ev.target);
@@ -134,12 +134,14 @@ async function removeUser(item, ev) {
 
 async function showMembershipMenu(item, ev) {
 	const withRepliesRef = ref(item.withReplies);
+
 	os.popupMenu([{
 		type: 'switch',
 		text: i18n.ts.showRepliesToOthersInTimeline,
 		icon: 'ti ti-messages',
 		ref: withRepliesRef,
 	}], ev.currentTarget ?? ev.target);
+
 	watch(withRepliesRef, withReplies => {
 		misskeyApi('users/lists/update-membership', {
 			listId: list.value!.id,
@@ -197,7 +199,7 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .main {
-	min-height: calc(100cqh - (var(--stickyTop, 0px) + var(--stickyBottom, 0px)));
+	min-height: calc(100cqh - (var(--MI-stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
 }
 
 .userItem {
@@ -232,8 +234,8 @@ definePageMetadata(() => ({
 }
 
 .footer {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	border-top: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 </style>

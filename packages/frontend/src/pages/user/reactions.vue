@@ -44,7 +44,7 @@ const pagination = {
 	align-items: center;
 	padding: 8px 16px;
 	margin-bottom: 8px;
-	border-bottom: solid 2px var(--divider);
+	border-bottom: solid 2px var(--MI_THEME-divider);
 }
 
 .avatar {

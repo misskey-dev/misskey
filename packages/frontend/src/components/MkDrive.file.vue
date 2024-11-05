@@ -154,14 +154,14 @@ function onDragend() {
 	}
 
 	&.isSelected {
-		background: var(--accent);
+		background: var(--MI_THEME-accent);
 
 		&:hover {
-			background: var(--accentLighten);
+			background: var(--MI_THEME-accentLighten);
 		}
 
 		&:active {
-			background: var(--accentDarken);
+			background: var(--MI_THEME-accentDarken);
 		}
 
 		> .label {
@@ -267,7 +267,7 @@ function onDragend() {
 	font-size: 0.8em;
 	text-align: center;
 	word-break: break-all;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	overflow: hidden;
 }
 </style>
