@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="500"
-	:height="550"
+	:height="600"
 	data-cy-user-setup
 	:withCloseButton="false"
 	:escKeyDisabled="true"
