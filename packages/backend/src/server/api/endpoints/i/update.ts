@@ -74,6 +74,18 @@ export const meta = {
 			id: '75aedb19-2afd-4e6d-87fc-67941256fa60',
 		},
 
+		avatarIsSensitive: {
+			message: 'The file specified as an avatar is marked as sensitive.',
+			code: 'AVATAR_IS_SENSITIVE',
+			id: '71bb5e53-4742-4609-b465-36081e131208',
+		},
+
+		bannerIsSensitive: {
+			message: 'The file specified as a banner is marked as sensitive.',
+			code: 'BANNER_IS_SENSITIVE',
+			id: 'e148b34c-9f33-4300-93e0-7817008fb366',
+		},
+
 		noSuchPage: {
 			message: 'No such page.',
 			code: 'NO_SUCH_PAGE',
@@ -359,6 +371,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
 				if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
+				if (avatar.isSensitive) throw new ApiError(meta.errors.avatarIsSensitive);
 
 				updates.avatarId = avatar.id;
 				updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
@@ -377,6 +390,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
 				if (!banner.type.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
+				if (banner.isSensitive) throw new ApiError(meta.errors.bannerIsSensitive);
 
 				updates.bannerId = banner.id;
 				updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);

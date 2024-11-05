@@ -5,12 +5,20 @@
 
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { uploadFile } from '@/scripts/upload.js';
+import { deepMerge } from '@/scripts/merge.js';
+
+type SelectFileOptions = {
+	multiple?: boolean;
+	excludeSensitive?: boolean;
+	additionalMenu?: MenuItem[];
+};
 
 export function chooseFileFromPc(multiple: boolean, keepOriginal = false): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
@@ -39,9 +47,9 @@ export function chooseFileFromPc(multiple: boolean, keepOriginal = false): Promi
 	});
 }
 
-export function chooseFileFromDrive(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+export function chooseFileFromDrive(multiple: boolean, excludeSensitive: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
-		os.selectDriveFile(multiple).then(files => {
+		os.selectDriveFile(multiple, excludeSensitive).then(files => {
 			res(files);
 		});
 	});
@@ -80,7 +88,16 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 	});
 }
 
-function select(src: HTMLElement | EventTarget | null, label: string | null, multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+function select(src: HTMLElement | EventTarget | null, label: string | null, options?: SelectFileOptions): Promise<Misskey.entities.DriveFile[]> {
+	const _options = deepMerge(options ?? {}, {
+		multiple: false,
+
+		/** ドライブファイル選択時のみに適用 */
+		excludeSensitive: false,
+
+		additionalMenu: [] as MenuItem[],
+	});
+
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
 
@@ -94,23 +111,23 @@ function select(src: HTMLElement | EventTarget | null, label: string | null, mul
 		}, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
-			action: () => chooseFileFromPc(multiple, keepOriginal.value).then(files => res(files)),
+			action: () => chooseFileFromPc(_options.multiple, keepOriginal.value).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',
-			action: () => chooseFileFromDrive(multiple).then(files => res(files)),
+			action: () => chooseFileFromDrive(_options.multiple, _options.excludeSensitive).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromUrl,
 			icon: 'ti ti-link',
 			action: () => chooseFileFromUrl().then(file => res([file])),
-		}], src);
+		}, ...(_options.additionalMenu)], src);
 	});
 }
 
-export function selectFile(src: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile> {
-	return select(src, label, false).then(files => files[0]);
+export function selectFile(src: HTMLElement | EventTarget | null, label: string | null = null, options?: { excludeSensitive?: boolean; additionalMenu?: MenuItem[]; }): Promise<Misskey.entities.DriveFile> {
+	return select(src, label, { ...(options ? options : {}), multiple: false }).then(files => files[0]);
 }
 
-export function selectFiles(src: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile[]> {
-	return select(src, label, true);
+export function selectFiles(src: HTMLElement | EventTarget | null, label: string | null = null, options?: { excludeSensitive?: boolean; additionalMenu?: MenuItem[]; }): Promise<Misskey.entities.DriveFile[]> {
+	return select(src, label, { ...(options ? options : {}), multiple: true });
 }

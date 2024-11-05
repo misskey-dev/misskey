@@ -74,6 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:folder="folder"
 					:selectMode="select === 'file'"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"
+					:isDisabled="excludeSensitive && file.isSensitive"
 					@chosen="chooseFile"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
@@ -115,9 +116,11 @@ const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
 	type?: string;
 	multiple?: boolean;
+	excludeSensitive?: boolean;
 	select?: 'file' | 'folder' | null;
 }>(), {
 	multiple: false,
+	excludeSensitive: false,
 	select: null,
 });
 

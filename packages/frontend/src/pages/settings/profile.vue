@@ -135,6 +135,7 @@ import { defaultStore } from '@/store.js';
 import { globalEvents } from '@/events.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const $i = signinRequired();
 
@@ -223,7 +224,26 @@ function save() {
 }
 
 function changeAvatar(ev) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar).then(async (file) => {
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar, {
+		excludeSensitive: true,
+		additionalMenu: $i.avatarId ? [
+			{ type: 'divider' },
+			{
+				type: 'button',
+				text: i18n.ts.detach,
+				icon: 'ti ti-circle-x',
+				action: () => {
+					os.apiWithDialog('i/update', {
+						avatarId: null,
+					}).then(() => {
+						$i.avatarId = null;
+						$i.avatarUrl = null;
+						globalEvents.emit('requestClearPageCache');
+					});
+				},
+			},
+		] : undefined,
+	}).then(async (file) => {
 		let originalOrCropped = file;
 
 		const { canceled } = await os.confirm({
@@ -239,18 +259,43 @@ function changeAvatar(ev) {
 			});
 		}
 
-		const i = await os.apiWithDialog('i/update', {
+		await os.apiWithDialog('i/update', {
 			avatarId: originalOrCropped.id,
+		}, undefined, {
+			'71bb5e53-4742-4609-b465-36081e131208': {
+				title: i18n.ts.cannotSelectSensitiveMedia,
+				text: i18n.ts.cannotSelectSensitiveMediaDescription,
+			},
+		}).then(() => {
+			$i.avatarId = originalOrCropped.id;
+			$i.avatarUrl = originalOrCropped.url;
+			globalEvents.emit('requestClearPageCache');
+			claimAchievement('profileFilled');
 		});
-		$i.avatarId = i.avatarId;
-		$i.avatarUrl = i.avatarUrl;
-		globalEvents.emit('requestClearPageCache');
-		claimAchievement('profileFilled');
 	});
 }
 
 function changeBanner(ev) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner).then(async (file) => {
+	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner, {
+		excludeSensitive: true,
+		additionalMenu: $i.bannerId ? [
+			{ type: 'divider' },
+			{
+				type: 'button',
+				text: i18n.ts.detach,
+				icon: 'ti ti-circle-x',
+				action: () => {
+					os.apiWithDialog('i/update', {
+						bannerId: null,
+					}).then(() => {
+						$i.bannerId = null;
+						$i.bannerUrl = null;
+						globalEvents.emit('requestClearPageCache');
+					});
+				},
+			},
+		] : undefined,
+	}).then(async (file) => {
 		let originalOrCropped = file;
 
 		const { canceled } = await os.confirm({
@@ -266,12 +311,18 @@ function changeBanner(ev) {
 			});
 		}
 
-		const i = await os.apiWithDialog('i/update', {
+		await os.apiWithDialog('i/update', {
 			bannerId: originalOrCropped.id,
+		}, undefined, {
+			'e148b34c-9f33-4300-93e0-7817008fb366': {
+				title: i18n.ts.cannotSelectSensitiveMedia,
+				text: i18n.ts.cannotSelectSensitiveMediaDescription,
+			},
+		}).then(() => {
+			$i.bannerId = originalOrCropped.id;
+			$i.bannerUrl = originalOrCropped.url;
+			globalEvents.emit('requestClearPageCache');
 		});
-		$i.bannerId = i.bannerId;
-		$i.bannerUrl = i.bannerUrl;
-		globalEvents.emit('requestClearPageCache');
 	});
 }
 
