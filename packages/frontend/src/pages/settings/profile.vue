@@ -262,7 +262,7 @@ function changeAvatar(ev) {
 		await os.apiWithDialog('i/update', {
 			avatarId: originalOrCropped.id,
 		}, undefined, {
-			'AVATAR_IS_SENSITIVE': {
+			'71bb5e53-4742-4609-b465-36081e131208': {
 				title: i18n.ts.cannotSelectSensitiveMedia,
 				text: i18n.ts.cannotSelectSensitiveMediaDescription,
 			},
@@ -314,7 +314,7 @@ function changeBanner(ev) {
 		await os.apiWithDialog('i/update', {
 			bannerId: originalOrCropped.id,
 		}, undefined, {
-			'BANNER_IS_SENSITIVE': {
+			'e148b34c-9f33-4300-93e0-7817008fb366': {
 				title: i18n.ts.cannotSelectSensitiveMedia,
 				text: i18n.ts.cannotSelectSensitiveMediaDescription,
 			},
