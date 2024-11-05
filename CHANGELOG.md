@@ -22,6 +22,8 @@
 - Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
 - Fix: Encode RSS urls with escape sequences before fetching allowing query parameters to be used
 - Fix: リンク切れを修正
+= Fix: ノート投稿ボタンにホバー時のスタイルが適用されていないのを修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/305)
 
 ### Server
 - Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
