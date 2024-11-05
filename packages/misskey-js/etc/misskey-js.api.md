@@ -5,6 +5,7 @@
 ```ts
 
 import { EventEmitter } from 'eventemitter3';
+import _ReconnectingWebsocket from 'reconnecting-websocket';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
 //
@@ -3008,7 +3009,7 @@ export class Stream extends EventEmitter<StreamEvents> {
     constructor(origin: string, user: {
         token: string;
     } | null, options?: {
-        WebSocket?: any;
+        WebSocket?: _ReconnectingWebsocket.Options['WebSocket'];
     });
     // (undocumented)
     close(): void;

@@ -34,7 +34,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	private idCounter = 0;
 
 	constructor(origin: string, user: { token: string; } | null, options?: {
-		WebSocket?: any;
+		WebSocket?: _ReconnectingWebsocket.Options['WebSocket'];
 	}) {
 		super();
 
