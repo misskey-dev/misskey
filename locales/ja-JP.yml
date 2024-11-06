@@ -2808,6 +2808,15 @@ _hideReactionCount:
   others: "自分以外のノートのみ"
   all: "全てのノート"
 
+_profileHiddenSettings:
+  hiddenProfile: "プロフィールを非表示にする機能"
+  hiddenPinnedNotes: "プロフィール上からピン留めしたノートを非表示にします"
+  hiddenPinnedNotesDescription: "ピン留めしたノートを非表示にすることで、プロフィールページをスッキリさせることができます。"
+  hiddenActivity: "プロフィール上からアクティビティを非表示にします"
+  hiddenActivityDescription: "プロフィール上からアクティビティを非表示にすることで、プロフィールページをスッキリさせることができます。"
+  hiddenFiles: "プロフィール上からファイルを非表示にします。"
+  hiddenFilesDescription: "ファイルを非表示にすることで、プロフィールページをスッキリさせることができます。"
+
 _draftSavingBehavior:
   auto: "自動的に保存する"
   manual: "都度確認する"
