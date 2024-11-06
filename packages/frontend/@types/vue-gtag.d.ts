@@ -1,5 +1,5 @@
 declare module 'vue-gtag' {
-	export type GtagConsent = (command: 'consent', arg: 'default' | 'update', params: GtagConsentParams): void;
+	export type GtagConsent = (command: 'consent', arg: 'default' | 'update', params: GtagConsentParams) => void;
 
 	export interface GtagConsentParams {
 		ad_storage?: 'granted' | 'denied',
