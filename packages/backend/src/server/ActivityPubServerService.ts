@@ -29,6 +29,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
+import * as Acct from '@/misc/acct.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
 
@@ -673,18 +674,11 @@ export class ActivityPubServerService {
 		fastify.get<{ Params: { acct: string; } }>('/@:acct', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
-			const spritedAcct = request.params.acct.toLowerCase().split('@');
-
-			//@foo@bar@baz なんてないはず
-			if (spritedAcct.length > 2) {
-				reply.code(400);
-			}
-
-			console.log(spritedAcct);
+			const acct = Acct.parse(request.params.acct)
 
 			const user = await this.usersRepository.findOneBy({
-				usernameLower: spritedAcct[0],
-				host: spritedAcct[1] ?? IsNull(),
+				usernameLower: acct.username,
+				host: acct.host ?? IsNull(),
 				isSuspended: false,
 			});
 
