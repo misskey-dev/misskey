@@ -120,6 +120,10 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'hideLocalTimeLine',
 	'hideSocialTimeLine',
 	'hideGlobalTimeLine',
+	'hiddenActivityAndFiles',
+	'hiddenPinnedNotes',
+	'hiddenActivity',
+	'hiddenFiles',
 ];
 const coldDeviceStorageSaveKeys: (keyof typeof ColdDeviceStorage.default)[] = [
 	'lightTheme',
