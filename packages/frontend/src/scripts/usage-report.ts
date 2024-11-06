@@ -27,7 +27,7 @@ export function usageReport(data: UsageReport) {
 
 	if (usageReportBuffer.length > 0) {
 		const last = usageReportBuffer[usageReportBuffer.length - 1];
-		if (last.t === data.t && last.e === data.e && last.a === data.a) return;
+		if (last.t === data.t && last.e === data.e && last.i === data.i && last.a === data.a) return;
 	}
 
 	usageReportBuffer.push(data);
