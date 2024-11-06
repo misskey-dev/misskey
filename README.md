@@ -34,6 +34,7 @@
 - 誰がリアクションをしたのかを非表示にできる機能 https://github.com/hideki0403/kakurega.app/commit/65d85bb4fe724dc0737f1ac7958bc13c96cc926d
 - 誰がリアクションをしたのかを非表示にできる機能 https://github.com/team-shahu/misskey/pull/35 (https://github.com/team-shahu/misskey/commit/5b2923c8127336d7fd2ee39c76d16f8a30d1b9e1)
 - 任意のTLを非表示にできるように https://github.com/team-shahu/misskey/pull/36
+- プロフィールからアクティビティとファイルを隠せるようにする https://github.com/team-shahu/misskey/pull/37
 
 ## Special Thanks
 - [Misskey](https://github.com/misskey-dev/misskey)  
