@@ -26,12 +26,12 @@ import { onMounted, onUnmounted, shallowRef, ref } from 'vue';
 import MkModal from './MkModal.vue';
 
 const props = withDefaults(defineProps<{
-	withOkButton: boolean;
-	withCloseButton: boolean;
-	okButtonDisabled: boolean;
-	escKeyDisabled: boolean;
-	width: number;
-	height: number;
+	withOkButton?: boolean;
+	withCloseButton?: boolean;
+	okButtonDisabled?: boolean;
+	escKeyDisabled?: boolean;
+	width?: number;
+	height?: number;
 }>(), {
 	withOkButton: false,
 	withCloseButton: true,
