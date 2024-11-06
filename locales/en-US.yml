@@ -2706,6 +2706,11 @@ _mediaControls:
   pip: "Picture in Picture"
   playbackRate: "Playback Speed"
   loop: "Loop playback"
+_hideReactionCount:
+  none: "Do not hide"
+  self: "Own notes only"
+  others: "Only notes other than your own"
+  all: "All"
 _draftSavingBehavior:
   auto: "Automatically save"
   manual: "confirm each time"

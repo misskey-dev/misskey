@@ -10522,6 +10522,24 @@ export interface Locale extends ILocale {
          */
         "loop": string;
     };
+    "_hideReactionCount": {
+        /**
+         * 非表示にしない
+         */
+        "none": string;
+        /**
+         * 自分のノートのみ
+         */
+        "self": string;
+        /**
+         * 自分以外のノートのみ
+         */
+        "others": string;
+        /**
+         * 全てのノート
+         */
+        "all": string;
+    };
     "_draftSavingBehavior": {
         /**
          * 自動的に保存する
