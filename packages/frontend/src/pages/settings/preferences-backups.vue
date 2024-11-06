@@ -117,6 +117,9 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'customFont',
 	'instanceIcon',
 	'reactionChecksMuting',
+	'hideLocalTimeLine',
+	'hideSocialTimeLine',
+	'hideGlobalTimeLine',
 ];
 const coldDeviceStorageSaveKeys: (keyof typeof ColdDeviceStorage.default)[] = [
 	'lightTheme',

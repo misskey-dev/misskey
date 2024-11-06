@@ -510,6 +510,19 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'app' as 'app' | 'appWithShift' | 'native',
 	},
+	hideLocalTimeLine: {
+		where: 'device',
+		default: false,
+	},
+	hideSocialTimeLine: {
+		where: 'device',
+		default: false,
+	},
+	hideGlobalTimeLine: {
+		where: 'device',
+		default: false,
+	},
+
 	skipNoteRender: {
 		where: 'device',
 		default: true,
