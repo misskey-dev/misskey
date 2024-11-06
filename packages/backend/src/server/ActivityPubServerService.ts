@@ -486,6 +486,16 @@ export class ActivityPubServerService {
 			return;
 		}
 
+		// リモートだったらリダイレクト
+		if (user.host != null) {
+			if (user.uri == null || this.utilityService.isSelfHost(user.host)) {
+				reply.code(500);
+				return;
+			}
+			reply.redirect(user.uri, 301);
+			return;
+		}
+
 		reply.header('Cache-Control', 'public, max-age=180');
 		this.setResponseType(request, reply);
 		return (this.apRendererService.addContext(await this.apRendererService.renderPerson(user as MiLocalUser)));
@@ -654,19 +664,27 @@ export class ActivityPubServerService {
 
 			const user = await this.usersRepository.findOneBy({
 				id: userId,
-				host: IsNull(),
 				isSuspended: false,
 			});
 
 			return await this.userInfo(request, reply, user);
 		});
 
-		fastify.get<{ Params: { user: string; } }>('/@:user', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
+		fastify.get<{ Params: { acct: string; } }>('/@:acct', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
+			const spritedAcct = request.params.acct.toLowerCase().split('@');
+
+			//@foo@bar@baz なんてないはず
+			if (spritedAcct.length > 2) {
+				reply.code(400);
+			}
+
+			console.log(spritedAcct);
+
 			const user = await this.usersRepository.findOneBy({
-				usernameLower: request.params.user.toLowerCase(),
-				host: IsNull(),
+				usernameLower: spritedAcct[0],
+				host: spritedAcct[1] ?? IsNull(),
 				isSuspended: false,
 			});
 
