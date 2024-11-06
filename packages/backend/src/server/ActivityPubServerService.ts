@@ -674,7 +674,7 @@ export class ActivityPubServerService {
 		fastify.get<{ Params: { acct: string; } }>('/@:acct', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
-			const acct = Acct.parse(request.params.acct)
+			const acct = Acct.parse(request.params.acct);
 
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: acct.username,
