@@ -12,7 +12,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UserListMembershipsRepository } from '@/models/_.js';
+import type { AntennasRepository, UserListMembershipsRepository, FollowingsRepository } from '@/models/_.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
@@ -36,6 +36,9 @@ export class AntennaService implements OnApplicationShutdown {
 
 		@Inject(DI.userListMembershipsRepository)
 		private userListMembershipsRepository: UserListMembershipsRepository,
+
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
 
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
@@ -111,8 +114,22 @@ export class AntennaService implements OnApplicationShutdown {
 
 	@bindThis
 	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<boolean> {
-		if (note.visibility === 'specified') return false;
-		if (note.visibility === 'followers') return false;
+		if (note.visibility === 'specified') {
+			if (note.userId !== antenna.userId) {
+				if (note.visibleUserIds == null) return false;
+				if (!note.visibleUserIds.includes(antenna.userId)) return false;
+			}
+		}
+		if (note.visibility === 'followers') {
+			const isFollowing = await this.followingsRepository.count({
+				where: {
+					followerId: antenna.userId,
+					followeeId: note.userId,
+				},
+				take: 1,
+			}).then(n => n > 0);
+			if (!isFollowing && antenna.userId !== note.userId) return false;
+		}
 
 		if (antenna.excludeBots && noteUser.isBot) return false;
 
