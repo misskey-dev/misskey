@@ -10552,6 +10552,36 @@ export interface Locale extends ILocale {
          */
         "all": string;
     };
+    "_profileHiddenSettings": {
+        /**
+         * プロフィールを非表示にする機能
+         */
+        "hiddenProfile": string;
+        /**
+         * プロフィール上からピン留めしたノートを非表示にします
+         */
+        "hiddenPinnedNotes": string;
+        /**
+         * ピン留めしたノートを非表示にすることで、プロフィールページをスッキリさせることができます。
+         */
+        "hiddenPinnedNotesDescription": string;
+        /**
+         * プロフィール上からアクティビティを非表示にします
+         */
+        "hiddenActivity": string;
+        /**
+         * プロフィール上からアクティビティを非表示にすることで、プロフィールページをスッキリさせることができます。
+         */
+        "hiddenActivityDescription": string;
+        /**
+         * プロフィール上からファイルを非表示にします。
+         */
+        "hiddenFiles": string;
+        /**
+         * ファイルを非表示にすることで、プロフィールページをスッキリさせることができます。
+         */
+        "hiddenFilesDescription": string;
+    };
     "_draftSavingBehavior": {
         /**
          * 自動的に保存する

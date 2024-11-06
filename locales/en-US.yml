@@ -2714,6 +2714,14 @@ _hideReactionCount:
   self: "Own notes only"
   others: "Only notes other than your own"
   all: "All"
+_profileHiddenSettings:
+  hiddenProfile: "Ability to hide profile"
+  hiddenPinnedNotes: "Hide pinned notes from your profile"
+  hiddenPinnedNotesDescription: "You can hide pinned notes to keep your profile page clear."
+  hiddenActivity: "Hide pinned notes to keep your profile page clear."
+  hiddenActivityDescription: "Hiding activities from your profile will keep your profile page clean and uncluttered."
+  hiddenFiles: "Hide the file from your profile."
+  hiddenFilesDescription: "Hiding the file will make your profile page look cleaner."
 _draftSavingBehavior:
   auto: "Automatically save"
   manual: "confirm each time"

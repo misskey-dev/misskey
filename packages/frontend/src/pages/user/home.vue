@@ -130,18 +130,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div class="contents _gaps">
-				<div v-if="user.pinnedNotes.length > 0" class="_gaps">
-					<MkNote v-for="note in user.pinnedNotes" :key="note.id" class="note _panel" :note="note" :pinned="true"/>
+				<div v-if="!hiddenPinnedNotes">
+					<div v-if="user.pinnedNotes.length > 0" class="_gaps">
+						<MkNote v-for="note in user.pinnedNotes" :key="note.id" class="note _panel" :note="note" :pinned="true"/>
+					</div>
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
-				<template v-if="narrow">
-					<MkLazy>
-						<XFiles :key="user.id" :user="user"/>
-					</MkLazy>
-					<MkLazy>
-						<XActivity :key="user.id" :user="user"/>
-					</MkLazy>
-				</template>
+				<div v-if="!hiddenActivity">
+					<template v-if="narrow">
+						<MkLazy>
+							<XFiles :key="user.id" :user="user"/>
+						</MkLazy>
+					</template>
+				</div>
+				<div v-if="!hiddenFiles">
+					<template v-if="narrow">
+						<MkLazy>
+							<XActivity :key="user.id" :user="user"/>
+						</MkLazy>
+					</template>
+				</div>
 				<div v-if="!disableNotes">
 					<MkLazy>
 						<XTimeline :user="user"/>
@@ -184,6 +192,7 @@ import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFf
 import { useRouter } from '@/router/supplier.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import MkSparkle from '@/components/MkSparkle.vue';
+import { defaultStore } from '@/store';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -224,6 +233,9 @@ const memoDraft = ref(props.user.memo);
 const isEditingMemo = ref(false);
 const moderationNote = ref(props.user.moderationNote);
 const editModerationNote = ref(false);
+const hiddenPinnedNotes = defaultStore.state.hiddenPinnedNotes;
+const hiddenActivity = defaultStore.state.hiddenActivity;
+const hiddenFiles = defaultStore.state.hiddenFiles;
 
 watch(moderationNote, async () => {
 	await misskeyApi('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });

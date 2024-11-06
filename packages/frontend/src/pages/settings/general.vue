@@ -246,14 +246,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</FormSection>
 
 	<FormSection>
-		<template #label>{{ i18n.ts.timeline }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+		<div class="_gaps_m">
+			<MkFolder>
+				<template #label>{{ i18n.ts._profileHiddenSettings.hiddenProfile }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<div class="_gaps_m">
+					<div class="_buttons">
+						<MkButton inline @click="enableAllHidden">{{ i18n.ts.enableAll }}</MkButton>
+						<MkButton inline @click="disableAllHidden">{{ i18n.ts.disableAll }}</MkButton>
+					</div>
+					<MkSwitch v-model="hiddenPinnedNotes">
+						<template #caption>{{ i18n.ts._profileHiddenSettings.hiddenPinnedNotesDescription }}</template>
+						{{ i18n.ts._profileHiddenSettings.hiddenPinnedNotes }}
+					</MkSwitch>
+					<MkSwitch v-model="hiddenActivity">
+						<template #caption>{{ i18n.ts._profileHiddenSettings.hiddenActivityDescription }}</template>
+						{{ i18n.ts._profileHiddenSettings.hiddenActivity }}
+					</MkSwitch>
+					<MkSwitch v-model="hiddenFiles">
+						<template #caption>{{ i18n.ts._profileHiddenSettings.hiddenFilesDescription }}</template>
+						{{ i18n.ts._profileHiddenSettings.hiddenFiles }}
+					</MkSwitch>
+				</div>
+			</MkFolder>
 
-
-		<div class="_gaps">
-			<MkSwitch v-model="hideLocalTimeLine">{{ i18n.ts.hideLocalTimeLine }}</MkSwitch>
-			<MkSwitch v-model="hideSocialTimeLine">{{ i18n.ts.hideSocialTimeLine }}</MkSwitch>
-			<MkSwitch v-model="hideGlobalTimeLine">{{ i18n.ts.hideGlobalTimeLine }}</MkSwitch>
-		</div>
+		<MkFolder>
+			<template #label>{{ i18n.ts.timeline }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+			<div class="_gaps_m">
+				<MkSwitch v-model="hideLocalTimeLine">{{ i18n.ts.hideLocalTimeLine }}</MkSwitch>
+				<MkSwitch v-model="hideSocialTimeLine">{{ i18n.ts.hideSocialTimeLine }}</MkSwitch>
+				<MkSwitch v-model="hideGlobalTimeLine">{{ i18n.ts.hideGlobalTimeLine }}</MkSwitch>
+			</div>
+		</MkFolder>
+	</div>
 	</FormSection>
 
 	<FormSection>
@@ -336,6 +360,9 @@ const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
 const menuStyle = computed(defaultStore.makeGetterSetter('menuStyle'));
 const customFont = computed(defaultStore.makeGetterSetter('customFont'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
+const hiddenPinnedNotes = computed(defaultStore.makeGetterSetter('hiddenPinnedNotes'));
+const hiddenActivity = computed(defaultStore.makeGetterSetter('hiddenActivity'));
+const hiddenFiles = computed(defaultStore.makeGetterSetter('hiddenFiles'));
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
@@ -411,6 +438,9 @@ watch([
 	alwaysConfirmFollow,
 	confirmWhenRevealingSensitiveMedia,
 	contextMenu,
+	hiddenPinnedNotes,
+	hiddenActivity,
+	hiddenFiles,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
@@ -509,6 +539,18 @@ function enableAllDataSaver() {
 	Object.keys(g).forEach((key) => { g[key] = true; });
 
 	dataSaver.value = g;
+}
+
+function enableAllHidden() {
+	defaultStore.set('hiddenPinnedNotes', true);
+	defaultStore.set('hiddenActivity', true);
+	defaultStore.set('hiddenFiles', true);
+}
+
+function disableAllHidden() {
+	defaultStore.set('hiddenPinnedNotes', false);
+	defaultStore.set('hiddenActivity', false);
+	defaultStore.set('hiddenFiles', false);
 }
 
 function disableAllDataSaver() {
