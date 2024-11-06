@@ -103,7 +103,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		);
 
 		recipientEMailAddresses.push(
-			...(this.meta.email ? [this.meta.email] : []),
+			...(this.meta.maintainerEmail ? [this.meta.maintainerEmail] : []),
 		);
 
 		if (recipientEMailAddresses.length <= 0) {
