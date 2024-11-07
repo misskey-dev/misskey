@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const blockBaseSchema = {
+const packedBlockBaseSchema = {
 	type: 'object',
 	properties: {
 		id: {
@@ -17,10 +17,10 @@ const blockBaseSchema = {
 	},
 } as const;
 
-const textBlockSchema = {
+const packedTextBlockSchema = {
 	type: 'object',
 	properties: {
-		...blockBaseSchema.properties,
+		...packedBlockBaseSchema.properties,
 		type: {
 			type: 'string',
 			optional: false, nullable: false,
@@ -33,10 +33,10 @@ const textBlockSchema = {
 	},
 } as const;
 
-const headingBlockSchema = {
+const packedHeadingBlockSchema = {
 	type: 'object',
 	properties: {
-		...blockBaseSchema.properties,
+		...packedBlockBaseSchema.properties,
 		type: {
 			type: 'string',
 			optional: false, nullable: false,
@@ -54,10 +54,10 @@ const headingBlockSchema = {
 } as const;
 
 /** @deprecated 要素を入れ子にする必要が（一旦）なくなったので非推奨。headingBlockを使用すること */
-const sectionBlockSchema = {
+const packedSectionBlockSchema = {
 	type: 'object',
 	properties: {
-		...blockBaseSchema.properties,
+		...packedBlockBaseSchema.properties,
 		type: {
 			type: 'string',
 			optional: false, nullable: false,
@@ -80,10 +80,10 @@ const sectionBlockSchema = {
 	},
 } as const;
 
-const imageBlockSchema = {
+const packedImageBlockSchema = {
 	type: 'object',
 	properties: {
-		...blockBaseSchema.properties,
+		...packedBlockBaseSchema.properties,
 		type: {
 			type: 'string',
 			optional: false, nullable: false,
@@ -96,10 +96,10 @@ const imageBlockSchema = {
 	},
 } as const;
 
-const noteBlockSchema = {
+const packedNoteBlockSchema = {
 	type: 'object',
 	properties: {
-		...blockBaseSchema.properties,
+		...packedBlockBaseSchema.properties,
 		type: {
 			type: 'string',
 			optional: false, nullable: false,
@@ -119,11 +119,11 @@ const noteBlockSchema = {
 export const packedPageBlockSchema = {
 	type: 'object',
 	oneOf: [
-		textBlockSchema,
-		sectionBlockSchema,
-		headingBlockSchema,
-		imageBlockSchema,
-		noteBlockSchema,
+		packedTextBlockSchema,
+		packedSectionBlockSchema,
+		packedHeadingBlockSchema,
+		packedImageBlockSchema,
+		packedNoteBlockSchema,
 	],
 } as const;
 

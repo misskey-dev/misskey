@@ -5,7 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
+import _Ajv from 'ajv';
 import { type PagesRepository } from '@/models/_.js';
+import { pageBlockSchema } from '@/models/Page.js';
 
 /**
  * ページ関係のService
@@ -16,6 +18,35 @@ export class PageService {
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 	) {
+	}
+
+	/**
+	 * ページのコンテンツを検証する.
+	 * @param content コンテンツ
+	 */
+	public validatePageContent(content: unknown[]) {
+		const Ajv = _Ajv.default;
+		const ajv = new Ajv({
+			useDefaults: true,
+		});
+		ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
+		const validator = ajv.compile({
+			type: 'array',
+			items: pageBlockSchema,
+		});
+		const valid = validator(content);
+
+		if (valid) {
+			return {
+				valid: true,
+				errors: [],
+			};
+		} else {
+			return {
+				valid: false,
+				errors: validator.errors,
+			};
+		}
 	}
 
 	/**

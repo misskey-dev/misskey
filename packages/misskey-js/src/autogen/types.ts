@@ -23432,35 +23432,9 @@ export type operations = {
           title: string;
           name: string;
           summary?: string | null;
-          content: (OneOf<[{
-              id?: string;
-              /** @enum {string} */
-              type?: 'text';
-              text?: string;
-            }, {
-              id?: string;
-              /** @enum {string} */
-              type?: 'section';
-              title?: string;
-              children?: components['schemas']['PageBlock'][];
-            }, {
-              id?: string;
-              /** @enum {string} */
-              type?: 'heading';
-              level?: number;
-              text?: string;
-            }, {
-              id?: string;
-              /** @enum {string} */
-              type?: 'image';
-              fileId?: string | null;
-            }, {
-              id?: string;
-              /** @enum {string} */
-              type?: 'note';
-              detailed?: boolean;
-              note?: string | null;
-            }]>)[];
+          content: {
+              [key: string]: unknown;
+            }[];
           variables?: {
               [key: string]: unknown;
             }[];
@@ -23807,35 +23781,9 @@ export type operations = {
           title?: string;
           name?: string;
           summary?: string | null;
-          content?: (OneOf<[{
-              id?: string;
-              /** @enum {string} */
-              type?: 'text';
-              text?: string;
-            }, {
-              id?: string;
-              /** @enum {string} */
-              type?: 'section';
-              title?: string;
-              children?: components['schemas']['PageBlock'][];
-            }, {
-              id?: string;
-              /** @enum {string} */
-              type?: 'heading';
-              level?: number;
-              text?: string;
-            }, {
-              id?: string;
-              /** @enum {string} */
-              type?: 'image';
-              fileId?: string | null;
-            }, {
-              id?: string;
-              /** @enum {string} */
-              type?: 'note';
-              detailed?: boolean;
-              note?: string | null;
-            }]>)[];
+          content?: {
+              [key: string]: unknown;
+            }[];
           variables?: {
               [key: string]: unknown;
             }[];

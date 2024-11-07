@@ -11,8 +11,8 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { MAX_PAGE_CONTENT_BYTES } from '@/const.js';
-import { packedPageBlockSchema } from '@/models/json-schema/page.js';
 import { pageNameSchema } from '@/models/Page.js';
+import { PageService } from '@/core/PageService.js';
 
 export const meta = {
 	tags: ['pages'],
@@ -56,6 +56,11 @@ export const meta = {
 			code: 'CONTENT_TOO_LARGE',
 			id: '2a93fcc9-4cd7-4885-9e5b-be56ed8f4d4f',
 		},
+		invalidParam: {
+			message: 'Invalid param.',
+			code: 'INVALID_PARAM',
+			id: '3d81ceae-475f-4600-b2a8-2bc116157532',
+		},
 	},
 } as const;
 
@@ -67,7 +72,8 @@ export const paramDef = {
 		name: { ...pageNameSchema, minLength: 1 },
 		summary: { type: 'string', nullable: true },
 		content: { type: 'array', items: {
-			...packedPageBlockSchema,
+			// misskey-jsの型生成に対応していないスキーマを使用しているため別途バリデーションする
+			type: 'object', additionalProperties: true,
 		} },
 		variables: { type: 'array', items: {
 			type: 'object', additionalProperties: true,
@@ -89,6 +95,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
+		private pageService: PageService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const page = await this.pagesRepository.findOneBy({ id: ps.pageId });
@@ -99,8 +107,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			if (new Blob([JSON.stringify(ps.content)]).size > MAX_PAGE_CONTENT_BYTES) {
-				throw new ApiError(meta.errors.contentTooLarge);
+			if (ps.content != null) {
+				if (new Blob([JSON.stringify(ps.content)]).size > MAX_PAGE_CONTENT_BYTES) {
+					throw new ApiError(meta.errors.contentTooLarge);
+				}
+
+				const validateResult = this.pageService.validatePageContent(ps.content);
+				if (!validateResult.valid) {
+					const errors = validateResult.errors!;
+					throw new ApiError(meta.errors.invalidParam, {
+						param: errors[0].schemaPath,
+						reason: errors[0].message,
+					});
+				}
 			}
 
 			if (ps.eyeCatchingImageId != null) {
