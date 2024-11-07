@@ -121,6 +121,15 @@ export class MiPage {
 
 export const pageNameSchema = { type: 'string', pattern: /^[a-zA-Z0-9_-]{1,256}$/.source } as const;
 
+//#region ページブロックのスキーマ（バリデーション用）
+
+/**
+ * 併せてpackedPageBlockSchemaも更新すること
+ * （そっちはAPIの戻り型の定義なので以下の定義とは若干異なる）
+ *
+ * packages/backend/src/models/json-schema/page.ts
+ */
+
 const blockBaseSchema = {
 	type: 'object',
 	properties: {
@@ -222,3 +231,5 @@ export const pageBlockSchema = {
 		noteBlockSchema,
 	],
 } as const;
+
+//#endregion

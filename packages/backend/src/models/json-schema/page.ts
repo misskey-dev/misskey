@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/**
+ * ページブロックのスキーマを変更したら、併せてpageBlockSchemaも更新すること
+ * （そっちは入力バリデーション用の定義なので以下の定義とは若干異なる）
+ *
+ * packages/backend/src/models/Page.ts
+ */
+
 const packedBlockBaseSchema = {
 	type: 'object',
 	properties: {
