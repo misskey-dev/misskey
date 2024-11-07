@@ -176,12 +176,12 @@ const noteBlockSchema = {
 	properties: {
 		...blockBaseSchema.properties,
 		type: { type: 'string', nullable: false, enum: ['note']},
-		detailed: { type: 'boolean', nullable: false },
-		note: { type: 'string', format: 'misskey:id', nullable: true },
+		detailed: { type: 'boolean', nullable: true },
+		note: { type: 'string', format: 'misskey:id', nullable: false },
 	},
 	required: [
 		...blockBaseSchema.required,
-		'detailed',
+		'note',
 	],
 } as const;
 
