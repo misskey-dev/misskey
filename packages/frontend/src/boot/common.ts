@@ -270,6 +270,8 @@ export async function common(createVue: () => App<Element>) {
 		app.use(VueGtag, {
 			bootstrap: false,
 			appName: `Misskey v${version}`,
+			pageTrackerEnabled: true,
+			pageTrackerScreenviewEnabled: true,
 			config: {
 				id: instance.googleAnalyticsId,
 				params: {

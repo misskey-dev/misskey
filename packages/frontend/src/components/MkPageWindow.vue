@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, provide, ref, shallowRef } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, provide, ref, shallowRef } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout.js';
@@ -43,6 +43,8 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 import { useRouterFactory } from '@/router/supplier.js';
 import { mainRouter } from '@/router/main.js';
+import { instance } from '@/instance.js';
+import { pageview } from 'vue-gtag';
 
 const props = defineProps<{
 	initialPath: string;
@@ -109,6 +111,21 @@ provideReactiveMetadata(pageMetadata);
 provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
 provide('forceSpacerMin', true);
+
+if (instance.googleAnalyticsId) {
+	pageview({
+		page_title: pageMetadata.value?.title,
+		page_path: windowRouter.getCurrentPath(),
+	});
+	windowRouter.afterEach(() =>
+		nextTick(() =>
+			pageview({
+				page_title: pageMetadata.value?.title,
+				page_path: windowRouter.getCurrentPath(),
+			}),
+		),
+	);
+}
 
 const contextmenu = computed(() => ([{
 	icon: 'ti ti-player-eject',
