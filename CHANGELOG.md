@@ -15,7 +15,8 @@
   - どのアカウントで認証しようとしているのかがわかるように
   - 認証するアカウントを切り替えられるように
 - Enhance: Self-XSS防止用の警告を追加
-- Enhance: カタルーニャ語 (ca-ES) に対応  
+- Enhance: カタルーニャ語 (ca-ES) に対応
+- Enhance: 個別お知らせページではMetaタグを出力するように
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
