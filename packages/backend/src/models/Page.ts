@@ -118,3 +118,5 @@ export class MiPage {
 		}
 	}
 }
+
+export const pageNameSchema = { type: 'string', pattern: /^[a-zA-Z0-9_-]{1,256}$/.source } as const;

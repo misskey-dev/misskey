@@ -33,6 +33,27 @@ const textBlockSchema = {
 	},
 } as const;
 
+const headingBlockSchema = {
+	type: 'object',
+	properties: {
+		...blockBaseSchema.properties,
+		type: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['heading'],
+		},
+		level: {
+			type: 'number',
+			optional: false, nullable: false,
+		},
+		text: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+	},
+} as const;
+
+/** @deprecated 要素を入れ子にする必要が（一旦）なくなったので非推奨。headingBlockを使用すること */
 const sectionBlockSchema = {
 	type: 'object',
 	properties: {
@@ -100,6 +121,7 @@ export const packedPageBlockSchema = {
 	oneOf: [
 		textBlockSchema,
 		sectionBlockSchema,
+		headingBlockSchema,
 		imageBlockSchema,
 		noteBlockSchema,
 	],
