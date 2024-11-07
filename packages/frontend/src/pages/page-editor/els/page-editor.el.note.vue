@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => emit('remove')">
+<XContainer :draggable="true" :blockId="modelValue.id" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ i18n.ts._pages.blocks.note }}</template>
 
 	<section style="padding: 16px;" class="_gaps_s">

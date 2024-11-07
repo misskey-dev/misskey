@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => emit('remove')">
+<XContainer :draggable="true" :blockId="modelValue.id" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ props.modelValue.title }}</template>
 	<template #func>
 		<button class="_button" @click="rename()">
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
- 
+
 import { defineAsyncComponent, inject, onMounted, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';

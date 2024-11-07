@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="fetchStatus === 'loading'">
 			<MkLoading/>
 		</div>
-		<div v-else-if="fetchStatus === 'done' && page != null" :class="$style.pageMain">
+		<div v-else-if="fetchStatus === 'done' && page != null" class="_gaps" :class="$style.pageMain">
 			<div :class="$style.pageBanner">
 				<div v-if="page?.eyeCatchingImageId" :class="$style.pageBannerImage">
 					<MkMediaImage
@@ -22,22 +22,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div :class="$style.pageBannerTitle" class="_gaps_s">
-				<h1></h1>
+				<input v-model="title" :class="$style.titleForm" :placeholder="i18n.ts._pages.inputTitleHere"/>
 				<div :class="$style.pageBannerTitleSub">
 					<div v-if="page?.user" :class="$style.pageBannerTitleUser">
-						<MkAvatar :user="page.user" :class="$style.avatar" indicator link preview/> <MkA :to="`/@${username}`"><MkUserName :user="page.user" :nowrap="false"/></MkA>
+						<MkAvatar :user="page.user" :class="$style.avatar" indicator/> <MkUserName :user="page.user" :nowrap="false"/>
 					</div>
 					<div :class="$style.pageBannerTitleSubActions">
-						<MkA v-if="page?.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
-						<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
 					</div>
 				</div>
+			</div>
+			<div :class="$style.pageContent">
+				<XBlocks v-model="content"/>
 			</div>
 		</div>
 		<div v-else-if="fetchStatus === 'notMe'" class="_fullInfo">
 			This page is not yours
 		</div>
 	</MkSpacer>
+	<template #footer>
+		<div :class="$style.footer">
+			<div class="_buttons" :class="$style.footerInner">
+				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
+				<MkButton v-if="initPageId != null" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			</div>
+		</div>
+	</template>
 </MkStickyContainer>
 </template>
 
@@ -69,6 +79,18 @@ const $i = signinRequired();
 
 const fetchStatus = ref<'loading' | 'done' | 'notMe'>('loading');
 const page = ref<Partial<Misskey.entities.Page> | null>(null);
+const title = computed({
+	get: () => page.value?.title ?? '',
+	set: (value) => {
+		if (page.value) {
+			page.value.title = value;
+		} else {
+			page.value = {
+				title: value,
+			};
+		}
+	},
+});
 const content = computed<Misskey.entities.Page['content']>({
 	get: () => page.value?.content ?? [],
 	set: (value) => {
@@ -82,6 +104,22 @@ const content = computed<Misskey.entities.Page['content']>({
 	},
 });
 
+function onTitleUpdated(ev: Event) {
+	title.value = (ev.target as HTMLDivElement).innerText;
+}
+
+async function save() {
+
+}
+
+async function show() {
+
+}
+
+async function del() {
+
+}
+
 async function init() {
 	if (props.initPageId) {
 		const _page = await misskeyApi('pages/show', {
@@ -91,6 +129,7 @@ async function init() {
 			fetchStatus.value = 'notMe';
 			return;
 		}
+		page.value = _page;
 	}
 
 	if (page.value === null) {
@@ -127,7 +166,7 @@ definePageMetadata(() => ({
 
 .pageBanner {
 	width: calc(100% + 4rem);
-	margin: -2rem -2rem 1.5rem;
+	margin: -2rem -2rem 0.5rem;
 	border-radius: var(--MI-radius) var(--MI-radius) 0 0;
 	overflow: hidden;
 	position: relative;
@@ -149,11 +188,36 @@ definePageMetadata(() => ({
 .pageBannerTitle {
 	position: relative;
 
-	h1 {
+	.titleForm {
+		appearance: none;
+		-webkit-appearance: none;
+		box-sizing: border-box;
+		display: block;
+		padding: 6px 12px;
+		font: inherit;
 		font-size: 2rem;
 		font-weight: 700;
 		color: var(--MI_THEME-fg);
 		margin: 0;
+		border: none;
+		border-bottom: 2px solid var(--MI_THEME-divider);
+		transition: border-color 0.1s ease-out;
+		background-color: var(--MI_THEME-bg);
+		border-radius: var(--MI-radius) var(--MI-radius) 0 0;
+
+		&:hover {
+			border-color: var(--MI_THEME-inputBorderHover);
+		}
+
+		&:focus {
+			outline: none;
+			border-color: var(--MI_THEME-accent);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--MI_THEME-focus);
+			outline-offset: -2px;
+		}
 	}
 
 	.pageBannerTitleSub {
@@ -180,5 +244,17 @@ definePageMetadata(() => ({
 		gap: var(--MI-marginHalf);
 		margin-left: auto;
 	}
+}
+
+.footer {
+	backdrop-filter: var(--MI-blur, blur(15px));
+	background: var(--MI_THEME-acrylicBg);
+	border-top: solid .5px var(--MI_THEME-divider);
+}
+
+.footerInner {
+	padding: 16px;
+	margin: 0 auto;
+	max-width: 800px;
 }
 </style>

@@ -246,9 +246,11 @@ import { isEnabledUrlPreview } from '@/instance.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 
+type Tab = 'replies' | 'renotes' | 'reactions';
+
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
-	initialTab: string;
+	initialTab?: Tab;
 }>(), {
 	initialTab: 'replies',
 });
@@ -332,7 +334,7 @@ provide('react', (reaction: string) => {
 	});
 });
 
-const tab = ref(props.initialTab);
+const tab = ref<Tab>(props.initialTab);
 const reactionTabType = ref<string | null>(null);
 
 const renotesPagination = computed<Paging>(() => ({

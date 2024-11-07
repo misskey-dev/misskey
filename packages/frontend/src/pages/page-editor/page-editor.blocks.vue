@@ -2,21 +2,53 @@
 SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
-
 <template>
-<Sortable :modelValue="modelValue" tag="div" itemKey="id" handle=".drag-handle" :group="{ name: 'blocks' }" :animation="150" :swapThreshold="0.5" @update:modelValue="v => emit('update:modelValue', v)">
-	<template #item="{element}">
-		<div :class="$style.item">
-			<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-			<component :is="getComponent(element.type)" :modelValue="element" @update:modelValue="updateItem" @remove="() => removeItem(element)"/>
+<div
+	@dragstart.capture="dragStart"
+	@dragend.capture="dragEnd"
+	@drop.capture="dragEnd"
+>
+	<div
+		data-after-id="__FIRST__"
+		:class="[$style.insertBetweenRoot, {
+			[$style.insertBetweenDraggingOver]: draggingOverAfterId === '__FIRST__' && draggingBlockId !== modelValue[0]?.id,
+		}]"
+		@dragover="insertBetweenDragOver($event, '__FIRST__')"
+		@dragleave="insertBetweenDragLeave"
+		@drop="insertBetweenDrop($event, '__FIRST__')"
+	>
+		<div :class="$style.insertBetweenBorder"></div>
+		<span :class="$style.insertBetweenText">{{ i18n.ts._pages.moveToHere }}</span>
+	</div>
+
+	<div v-for="block, index in modelValue" :key="block.id" :class="$style.item">
+		<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
+		<component
+			:is="getComponent(block.type)"
+			:modelValue="block"
+			@update:modelValue="updateItem"
+			@remove="() => removeItem(block)"
+		/>
+		<div
+			:data-after-id="block.id"
+			:class="[$style.insertBetweenRoot, {
+				[$style.insertBetweenDraggingOver]: draggingOverAfterId === block.id && draggingBlockId !== block.id && draggingBlockId !== modelValue[index + 1]?.id,
+			}]"
+			@dragover="insertBetweenDragOver($event, block.id, modelValue[index + 1]?.id)"
+			@dragleave="insertBetweenDragLeave"
+			@drop="insertBetweenDrop($event, block.id, modelValue[index + 1]?.id)"
+		>
+			<div :class="$style.insertBetweenBorder"></div>
+			<span :class="$style.insertBetweenText">{{ i18n.ts._pages.moveToHere }}</span>
 		</div>
-	</template>
-</Sortable>
+	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XImage from './els/page-editor.el.image.vue';
@@ -32,8 +64,6 @@ function getComponent(type: string) {
 	}
 }
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
-
 const props = defineProps<{
 	modelValue: Misskey.entities.Page['content'];
 }>();
@@ -42,7 +72,75 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.Page['content']): void;
 }>();
 
-function updateItem(v) {
+const isDragging = ref(false);
+const draggingOverAfterId = ref<string | null>(null);
+const draggingBlockId = ref<string | null>(null);
+
+function dragStart(ev: DragEvent) {
+	if (ev.target instanceof HTMLElement) {
+		const blockId = ev.target.dataset.blockId;
+		if (blockId != null) {
+			console.log('dragStart', blockId);
+			ev.dataTransfer!.setData('text/plain', blockId);
+			isDragging.value = true;
+			draggingBlockId.value = blockId;
+		}
+	}
+}
+
+function dragEnd() {
+	isDragging.value = false;
+	draggingBlockId.value = null;
+}
+
+function insertBetweenDragOver(ev: DragEvent, id: string, nextId?: string) {
+	if (draggingBlockId.value === id || draggingBlockId.value === nextId) return;
+
+	ev.preventDefault();
+	if (ev.target instanceof HTMLElement) {
+		const afterId = ev.target.dataset.afterId;
+		if (afterId != null) {
+			draggingOverAfterId.value = afterId;
+		}
+	}
+}
+
+function insertBetweenDragLeave() {
+	draggingOverAfterId.value = null;
+}
+
+function insertBetweenDrop(ev: DragEvent, id: string, nextId?: string) {
+	if (draggingBlockId.value === id || draggingBlockId.value === nextId) return;
+
+	ev.preventDefault();
+	if (ev.target instanceof HTMLElement) {
+		const afterId = ev.target.dataset.afterId; // insert after this
+		const moveId = ev.dataTransfer?.getData('text/plain');
+		if (afterId != null && moveId != null) {
+			const oldValue = props.modelValue.filter((x) => x.id !== moveId);
+			const afterIdAt = afterId === '__FIRST__' ? 0 : oldValue.findIndex((x) => x.id === afterId);
+			const movingBlock = props.modelValue.find((x) => x.id === moveId);
+			if (afterId === '__FIRST__' && movingBlock != null) {
+				const newValue = [
+					movingBlock,
+					...oldValue,
+				];
+				emit('update:modelValue', newValue);
+			} else if (afterIdAt >= 0 && movingBlock != null) {
+				const newValue = [
+					...oldValue.slice(0, afterIdAt + 1),
+					movingBlock,
+					...oldValue.slice(afterIdAt + 1),
+				];
+				emit('update:modelValue', newValue);
+			}
+		}
+	}
+	isDragging.value = false;
+	draggingOverAfterId.value = null;
+}
+
+function updateItem(v: Misskey.entities.PageBlock) {
 	const i = props.modelValue.findIndex(x => x.id === v.id);
 	const newValue = [
 		...props.modelValue.slice(0, i),
@@ -52,8 +150,8 @@ function updateItem(v) {
 	emit('update:modelValue', newValue);
 }
 
-function removeItem(el) {
-	const i = props.modelValue.findIndex(x => x.id === el.id);
+function removeItem(v: Misskey.entities.PageBlock) {
+	const i = props.modelValue.findIndex(x => x.id === v.id);
 	const newValue = [
 		...props.modelValue.slice(0, i),
 		...props.modelValue.slice(i + 1),
@@ -63,9 +161,51 @@ function removeItem(el) {
 </script>
 
 <style lang="scss" module>
-.item {
-	& + .item {
-		margin-top: 16px;
+.insertBetweenRoot {
+	height: calc(var(--MI-margin) * 2);
+	width: 100%;
+	border-radius: 2px;
+	position: relative;
+}
+
+.insertBetweenBorder {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	transform: translateY(-50%);
+	height: 4px;
+	width: 100%;
+	border-radius: 2px;
+	background-color: var(--MI_THEME-accent);
+	display: none;
+}
+
+.insertBetweenText {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: var(--MI_THEME-fgOnAccent);
+	padding: 0 14px;
+	line-height: 24px;
+	border-radius: 999px;
+	display: none;
+	background-color: var(--MI_THEME-accent);
+}
+
+.insertBetweenBorder,
+.insertBetweenText {
+	pointer-events: none;
+}
+
+.insertBetweenDraggingOver {
+	padding: 10px 0;
+
+	.insertBetweenBorder {
+		display: block;
+	}
+	.insertBetweenText {
+		display: inline-block;
 	}
 }
 </style>
