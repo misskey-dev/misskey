@@ -151,6 +151,7 @@ export class MetaEntityService {
 
 		const packDetailed: Packed<'MetaDetailed'> = {
 			...packed,
+			defaultClientSettingOverrides: instance.defaultClientSettingOverrides,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
 			requireSetup: !await this.instanceActorService.realLocalUsersPresent(),

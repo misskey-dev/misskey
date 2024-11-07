@@ -315,6 +315,10 @@ export const packedMetaDetailedOnlySchema = {
 				},
 			},
 		},
+		defaultClientSettingOverrides: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 		proxyAccountName: {
 			type: 'string',
 			optional: false, nullable: true,

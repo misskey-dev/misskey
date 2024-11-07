@@ -5035,6 +5035,7 @@ export type components = {
         /** @default true */
         miauth?: boolean;
       };
+      defaultClientSettingOverrides: string | null;
       proxyAccountName: string | null;
       /** @example false */
       requireSetup: boolean;
@@ -5186,6 +5187,7 @@ export type operations = {
             deeplIsPro: boolean;
             defaultDarkTheme: string | null;
             defaultLightTheme: string | null;
+            defaultClientSettingOverrides: string | null;
             description: string | null;
             disableRegistration: boolean;
             impressumUrl: string | null;
@@ -9496,6 +9498,7 @@ export type operations = {
           description?: string | null;
           defaultLightTheme?: string | null;
           defaultDarkTheme?: string | null;
+          defaultClientSettingOverrides?: string | null;
           cacheRemoteFiles?: boolean;
           cacheRemoteSensitiveFiles?: boolean;
           emailRequiredForSignup?: boolean;

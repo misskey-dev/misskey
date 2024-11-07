@@ -5218,6 +5218,31 @@ export interface Locale extends ILocale {
      * 利用可能なロール
      */
     "availableRoles": string;
+    /**
+     * クライアント設定の初期値
+     */
+    "clientSettingOverrides": string;
+    /**
+     * 全ユーザーに対するクライアント設定の初期値を変更できます。
+     * 知識のない方が変更すると全ユーザーがクライアントにアクセスできなくなる可能性があります。
+     */
+    "clientSettingOverridesWarn": string;
+    /**
+     * オーバーライドする
+     */
+    "enableOverride": string;
+    /**
+     * オーバーライドする値
+     */
+    "overrideValue": string;
+    /**
+     * スイッチをオンにするとtrueとなります。
+     */
+    "onToTrue": string;
+    /**
+     * リセット
+     */
+    "reset": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

@@ -487,6 +487,10 @@ const routes: RouteDef[] = [{
 		name: 'system-webhook',
 		component: page(() => import('@/pages/admin/system-webhook.vue')),
 	}, {
+		path: '/client-setting-overrides',
+		name: 'client-setting-overrides',
+		component: page(() => import('@/pages/admin/client-setting-overrides.vue')),
+	}, {
 		path: '/',
 		component: page(() => import('@/pages/_empty_.vue')),
 	}],

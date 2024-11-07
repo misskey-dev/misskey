@@ -16,7 +16,7 @@ const providedMetaEl = document.getElementById('misskey_meta');
 
 let cachedMeta = miLocalStorage.getItem('instance') ? JSON.parse(miLocalStorage.getItem('instance')!) : null;
 let cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
-const providedMeta = providedMetaEl && providedMetaEl.textContent ? JSON.parse(providedMetaEl.textContent) : null;
+const providedMeta: Misskey.entities.MetaDetailed | null = providedMetaEl && providedMetaEl.textContent ? JSON.parse(providedMetaEl.textContent) : null;
 const providedAt = providedMetaEl && providedMetaEl.dataset.generatedAt ? parseInt(providedMetaEl.dataset.generatedAt) : 0;
 if (providedAt > cachedAt) {
 	miLocalStorage.setItem('instance', JSON.stringify(providedMeta));
@@ -37,6 +37,19 @@ export const infoImageUrl = computed(() => instance.infoImageUrl ?? DEFAULT_INFO
 export const notFoundImageUrl = computed(() => instance.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
 
 export const isEnabledUrlPreview = computed(() => instance.enableUrlPreview ?? true);
+
+/** instanceの中身が入っていることを保証する */
+export async function initInstance() {
+	if (instance == null || Object.keys(instance).length === 0) {
+		if (providedMeta != null) {
+			for (const [k, v] of Object.entries(providedMeta)) {
+				instance[k] = v;
+			}
+		} else {
+			await fetchInstance(true);
+		}
+	}
+}
 
 export async function fetchInstance(force = false): Promise<Misskey.entities.MetaDetailed> {
 	if (!force) {
@@ -59,4 +72,10 @@ export async function fetchInstance(force = false): Promise<Misskey.entities.Met
 	miLocalStorage.setItem('instanceCachedAt', Date.now().toString());
 
 	return instance;
+}
+
+/** キャッシュだけ飛ばす（リロード後からは新しい設定を読み込む） */
+export function pruneInstanceCache() {
+	miLocalStorage.removeItem('instance');
+	miLocalStorage.removeItem('instanceCachedAt');
 }

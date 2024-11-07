@@ -14,7 +14,7 @@ import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { updateI18n, i18n } from '@/i18n.js';
 import { $i, refreshAccount, login } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
-import { fetchInstance, instance } from '@/instance.js';
+import { initInstance, instance } from '@/instance.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
 import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
@@ -115,15 +115,12 @@ export async function common(createVue: () => App<Element>) {
 	const html = document.documentElement;
 	html.setAttribute('lang', lang);
 	//#endregion
-
+	
+	await initInstance();
 	await defaultStore.ready;
 	await deckStore.ready;
 
-	const fetchInstanceMetaPromise = fetchInstance();
-
-	fetchInstanceMetaPromise.then(() => {
-		miLocalStorage.setItem('v', instance.version);
-	});
+	miLocalStorage.setItem('v', instance.version);
 
 	//#region loginId
 	const params = new URLSearchParams(location.search);
@@ -177,13 +174,11 @@ export async function common(createVue: () => App<Element>) {
 	});
 	//#endregion
 
-	fetchInstanceMetaPromise.then(() => {
-		if (defaultStore.state.themeInitial) {
-			if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(instance.defaultLightTheme));
-			if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
-			defaultStore.set('themeInitial', false);
-		}
-	});
+	if (defaultStore.state.themeInitial) {
+		if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(instance.defaultLightTheme));
+		if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
+		defaultStore.set('themeInitial', false);
+	}
 
 	watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
 		document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');

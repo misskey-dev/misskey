@@ -13,7 +13,7 @@ import { get, set } from '@/scripts/idb-proxy.js';
 import { defaultStore } from '@/store.js';
 import { useStream } from '@/stream.js';
 import { deepClone } from '@/scripts/clone.js';
-import { deepMerge } from '@/scripts/merge.js';
+import { deepMerge, type DeepPartial } from '@/scripts/merge.js';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -44,6 +44,7 @@ export class Storage<T extends StateDef> {
 	public readonly def: T;
 
 	// TODO: これが実装されたらreadonlyにしたい: https://github.com/microsoft/TypeScript/issues/37487
+	private readonly defaultState: State<T>;
 	public readonly state: State<T>;
 	public readonly reactiveState: ReactiveState<T>;
 
@@ -60,7 +61,7 @@ export class Storage<T extends StateDef> {
 		return promise;
 	}
 
-	constructor(key: string, def: T) {
+	constructor(key: string, def: T, defaultOverrides?: DeepPartial<State<T>>) {
 		this.key = key;
 		this.deviceStateKeyName = `pizzax::${key}`;
 		this.deviceAccountStateKeyName = $i ? `pizzax::${key}::${$i.id}` : '';
@@ -69,25 +70,43 @@ export class Storage<T extends StateDef> {
 
 		this.pizzaxChannel = new BroadcastChannel(`pizzax::${key}`);
 
+		this.defaultState = {} as State<T>;
 		this.state = {} as State<T>;
 		this.reactiveState = {} as ReactiveState<T>;
 
 		for (const [k, v] of Object.entries(def) as [keyof T, T[keyof T]['default']][]) {
-			this.state[k] = v.default;
-			this.reactiveState[k] = ref(v.default);
+			let _defaultState = v.default;
+			if (
+				defaultOverrides != null &&
+				this.isPureObject(defaultOverrides) &&
+				defaultOverrides[k] !== undefined // ←意図的にnullになっている可能性があるためundefined判定
+			) {
+				if (this.isPureObject(defaultOverrides[k]) && this.isPureObject(v.default)) {
+					_defaultState = deepMerge(defaultOverrides[k], v.default);
+				} else if (Array.isArray(defaultOverrides[k]) && Array.isArray(v.default)) {
+					_defaultState = Array.from(new Set([...defaultOverrides[k], ...v.default]));
+				} else {
+					_defaultState = defaultOverrides[k];
+				}
+				if (_DEV_) console.log('defaultState', k, _defaultState);
+			}
+
+			this.defaultState[k] = _defaultState;
+			this.state[k] = _defaultState;
+			this.reactiveState[k] = ref(_defaultState);
 		}
 
 		this.ready = this.init();
 		this.loaded = this.ready.then(() => this.load());
 	}
 
-	private isPureObject(value: unknown): value is Record<string | number | symbol, unknown> {
+	private isPureObject(value: unknown): value is Record<PropertyKey, unknown> {
 		return typeof value === 'object' && value !== null && !Array.isArray(value);
 	}
 
 	private mergeState<X>(value: X, def: X): X {
 		if (this.isPureObject(value) && this.isPureObject(def)) {
-			const merged = deepMerge(value, def);
+			const merged = deepMerge(value as DeepPartial<X>, def);
 
 			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', merged);
 
@@ -105,14 +124,14 @@ export class Storage<T extends StateDef> {
 
 		for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
-				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceState[k], v.default);
+				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceState[k], this.defaultState[k]);
 			} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call(registryCache, k)) {
-				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(registryCache[k], v.default);
+				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(registryCache[k], this.defaultState[k]);
 			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
-				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceAccountState[k], v.default);
+				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceAccountState[k], this.defaultState[k]);
 			} else {
-				this.reactiveState[k].value = this.state[k] = v.default;
-				if (_DEV_) console.log('Use default value', k, v.default);
+				this.reactiveState[k].value = this.state[k] = this.defaultState[k];
+				if (_DEV_) console.log('Use default value', k, this.defaultState[k]);
 			}
 		}
 

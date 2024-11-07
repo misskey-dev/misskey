@@ -12,6 +12,7 @@ import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
 import type { Ast } from '@syuilo/aiscript';
+import { getColdDeviceStorageOverrides, getDefaultStoreOverrides } from '@/scripts/store-overrides.js';
 
 interface PostFormAction {
 	title: string,
@@ -502,7 +503,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
-}));
+}, await getDefaultStoreOverrides() ?? undefined));
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -548,7 +549,8 @@ export class ColdDeviceStorage {
 		//       (indexedDBはnullを保存できるため、ユーザーが意図してnullを格納した可能性がある)
 		const value = miLocalStorage.getItem(`${PREFIX}${key}`);
 		if (value == null) {
-			return ColdDeviceStorage.default[key];
+			const override = getColdDeviceStorageOverrides();
+			return override != null ? override[key] ?? ColdDeviceStorage.default[key] : ColdDeviceStorage.default[key];
 		} else {
 			return JSON.parse(value);
 		}
