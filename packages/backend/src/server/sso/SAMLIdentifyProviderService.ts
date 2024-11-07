@@ -495,17 +495,38 @@ export class SAMLIdentifyProviderService {
 													'#text': user.id,
 												},
 											},
-											...(user.name ? [{
+											{
+												'@Name': 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn',
+												'saml:AttributeValue': {
+													'@xsi:type': 'xs:string',
+													'#text': user.id,
+												},
+											},
+											{
 												'@Name': 'firstName',
 												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
-													'#text': user.name,
+													'#text': user.name ? user.name : 'Misskey User',
 												},
-											}] : []),
+											},
+											{
+												'@Name': 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
+												'saml:AttributeValue': {
+													'@xsi:type': 'xs:string',
+													'#text': user.name ? user.name : 'Misskey User',
+												},
+											},
 											{
 												'@Name': 'lastName',
 												'@NameFormat': 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+												'saml:AttributeValue': {
+													'@xsi:type': 'xs:string',
+													'#text': `@${user.username}`,
+												},
+											},
+											{
+												'@Name': 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
 												'saml:AttributeValue': {
 													'@xsi:type': 'xs:string',
 													'#text': `@${user.username}`,
