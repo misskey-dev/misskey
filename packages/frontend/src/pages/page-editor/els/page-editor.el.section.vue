@@ -5,7 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" :blockId="modelValue.id" @remove="() => emit('remove')">
+<XContainer
+	:draggable="true"
+	:blockId="modelValue.id"
+	@remove="() => emit('remove')"
+	@move="(direction) => emit('move', direction)"
+>
 	<template #header><i class="ti ti-note"></i> {{ props.modelValue.title }}</template>
 	<template #func>
 		<button class="_button" @click="rename()">
@@ -41,6 +46,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.PageBlock & { type: 'section' }): void;
 	(ev: 'remove'): void;
+	(ev: 'move', direction: 'up' | 'down'): void;
 }>();
 
 const children = ref(deepClone(props.modelValue.children ?? []));

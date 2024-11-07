@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
+<MkStickyContainer ref="containerEl">
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div v-if="fetchStatus === 'loading'">
@@ -31,8 +31,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
-			<div :class="$style.pageContent">
-				<XBlocks v-model="content"/>
+			<div>
+				<XPage v-if="enableGlobalPreview" key="preview" :page="page" />
+				<XBlocks v-else key="editor" v-model="content" :scrollContainer="containerEl?.rootEl"/>
 			</div>
 		</div>
 		<div v-else-if="fetchStatus === 'notMe'" class="_fullInfo">
@@ -41,10 +42,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkSpacer>
 	<template #footer>
 		<div :class="$style.footer">
-			<div class="_buttons" :class="$style.footerInner">
-				<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
-				<MkButton v-if="initPageId != null" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			<div :class="$style.footerInner">
+				<div :class="$style.footerActionSwitchWrapper">
+					<MkSwitch v-model="enableGlobalPreview">{{ i18n.ts.preview }}</MkSwitch>
+				</div>
+				<div :class="$style.footerActionButtons" class="_buttons">
+					<MkButton primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				</div>
 			</div>
 		</div>
 	</template>
@@ -52,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, watch, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import XBlocks from './page-editor.blocks.vue';
@@ -61,6 +65,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkMediaImage from '@/components/MkMediaImage.vue';
+import XPage from '@/components/page/page.vue';
 import { url } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -70,6 +75,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { signinRequired } from '@/account.js';
 import { mainRouter } from '@/router/main.js';
 import { getPageBlockList } from '@/pages/page-editor/common.js';
+import type { SlimPage } from '@/types/page.js';
 
 const props = defineProps<{
 	initPageId?: string;
@@ -78,7 +84,7 @@ const props = defineProps<{
 const $i = signinRequired();
 
 const fetchStatus = ref<'loading' | 'done' | 'notMe'>('loading');
-const page = ref<Partial<Misskey.entities.Page> | null>(null);
+const page = ref<Partial<SlimPage> | null>(null);
 const title = computed({
 	get: () => page.value?.title ?? '',
 	set: (value) => {
@@ -103,6 +109,10 @@ const content = computed<Misskey.entities.Page['content']>({
 		}
 	},
 });
+
+const enableGlobalPreview = ref(false);
+
+const containerEl = useTemplateRef('containerEl');
 
 function onTitleUpdated(ev: Event) {
 	title.value = (ev.target as HTMLDivElement).innerText;
@@ -246,6 +256,24 @@ definePageMetadata(() => ({
 	}
 }
 
+.editorMenu {
+	position: sticky;
+	top: var(--MI-stickyTop, 0px);
+	left: 0;
+	width: calc(100% + 4rem);
+	margin: 0 -2rem 0;
+	backdrop-filter: var(--MI-blur, blur(15px));
+	background: var(--MI_THEME-acrylicBg);
+	border-bottom: solid .5px var(--MI_THEME-divider);
+	z-index: 2;
+}
+
+.editorMenuInner {
+	padding: 16px;
+	margin: 0 auto;
+	padding: 2rem;
+}
+
 .footer {
 	backdrop-filter: var(--MI-blur, blur(15px));
 	background: var(--MI_THEME-acrylicBg);
@@ -256,5 +284,18 @@ definePageMetadata(() => ({
 	padding: 16px;
 	margin: 0 auto;
 	max-width: 800px;
+
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.footerActionSwitchWrapper {
+	flex-shrink: 0;
+}
+
+.footerActionButtons {
+	margin-left: auto;
+	flex-shrink: 0;
 }
 </style>

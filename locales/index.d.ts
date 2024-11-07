@@ -9284,6 +9284,10 @@ export interface Locale extends ILocale {
          * ここに移動
          */
         "moveToHere": string;
+        /**
+         * このブロックを削除しますか？
+         */
+        "blockDeleteAreYouSure": string;
         "blocks": {
             /**
              * テキスト

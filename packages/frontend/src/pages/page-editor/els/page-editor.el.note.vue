@@ -5,7 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" :blockId="modelValue.id" @remove="() => emit('remove')">
+<XContainer
+	:draggable="true"
+	:blockId="modelValue.id"
+	@remove="() => emit('remove')"
+	@move="(direction) => emit('move', direction)"
+>
 	<template #header><i class="ti ti-note"></i> {{ i18n.ts._pages.blocks.note }}</template>
 
 	<section style="padding: 16px;" class="_gaps_s">
@@ -39,6 +44,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.PageBlock & { type: 'note' }): void;
+	(ev: 'remove'): void;
+	(ev: 'move', direction: 'up' | 'down'): void;
 }>();
 
 const id = ref(props.modelValue.note);

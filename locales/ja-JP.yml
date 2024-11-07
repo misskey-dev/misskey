@@ -2448,6 +2448,7 @@ _pages:
   specialBlocks: "特殊"
   inputTitleHere: "タイトルを入力"
   moveToHere: "ここに移動"
+  blockDeleteAreYouSure: "このブロックを削除しますか？"
   blocks:
     text: "テキスト"
     textarea: "テキストエリア"
