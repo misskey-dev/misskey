@@ -23,7 +23,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-for="block, index in modelValue" :key="block.id" :class="$style.item">
-		<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
 		<component
 			:is="getComponent(block.type)"
 			:modelValue="block"
@@ -249,7 +248,7 @@ function removeItem(v: Misskey.entities.PageBlock) {
 .insertBetweenRoot {
 	height: calc(var(--MI-margin) * 2);
 	width: 100%;
-	padding: 5px 0;
+	padding: 8px 0;
 	border-radius: 2px;
 	position: relative;
 
@@ -297,8 +296,6 @@ function removeItem(v: Misskey.entities.PageBlock) {
 }
 
 .insertBetweenDraggingOver {
-	padding: 10px 0;
-
 	.insertBetweenBorder {
 		display: block;
 	}
