@@ -1160,6 +1160,13 @@ export type Endpoints = Overwrite<Endpoints_2, {
             };
         };
     };
+    'admin/roles/create': {
+        req: Overwrite<AdminRolesCreateRequest, {
+            policies: PartialRolePolicyOverride;
+        }>;
+        res: AdminRolesCreateResponse;
+    };
+}> & {
     'signup': {
         req: SignupRequest;
         res: SignupResponse;
@@ -1188,17 +1195,11 @@ export type Endpoints = Overwrite<Endpoints_2, {
             };
         };
     };
-    'admin/roles/create': {
-        req: Overwrite<AdminRolesCreateRequest, {
-            policies: PartialRolePolicyOverride;
-        }>;
-        res: AdminRolesCreateResponse;
-    };
     [ep: `miauth/${string}/check`]: {
         req: EmptyRequest;
         res: MiAuthCheckResponse;
     };
-}>;
+};
 
 // @public (undocumented)
 type EndpointsResponse = operations['endpoints']['responses']['200']['content']['application/json'];
