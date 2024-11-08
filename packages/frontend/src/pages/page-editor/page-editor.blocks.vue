@@ -88,7 +88,6 @@ function dragStart(ev: DragEvent) {
 		const blockId = ev.target.dataset.blockId;
 		if (blockId != null) {
 			console.log('dragStart', blockId);
-			ev.dataTransfer!.setData('application/x-misskey-pageblock-id', blockId);
 			isDragging.value = true;
 			draggingBlockId.value = blockId;
 			document.addEventListener('dragover', watchForMouseMove);
