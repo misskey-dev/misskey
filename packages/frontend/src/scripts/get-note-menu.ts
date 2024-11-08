@@ -36,8 +36,10 @@ export async function getNoteClipMenu(props: {
 
 	const isRenote = (
 		props.note.renote != null &&
+		props.note.reply == null &&
 		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
+		props.note.cw == null &&
+		props.note.fileIds && props.note.fileIds.length === 0 &&
 		props.note.poll == null
 	);
 
@@ -164,8 +166,10 @@ export function getNoteMenu(props: {
 }) {
 	const isRenote = (
 		props.note.renote != null &&
+		props.note.reply == null &&
 		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
+		props.note.cw == null &&
+		props.note.fileIds && props.note.fileIds.length === 0 &&
 		props.note.poll == null
 	);
 
@@ -509,8 +513,10 @@ export function getRenoteMenu(props: {
 }) {
 	const isRenote = (
 		props.note.renote != null &&
+		props.note.reply == null &&
 		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
+		props.note.cw == null &&
+		props.note.fileIds && props.note.fileIds.length === 0 &&
 		props.note.poll == null
 	);
 
