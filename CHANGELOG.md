@@ -29,6 +29,7 @@
 - Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
+- Enhance: 連合する必要のないプロフィール項目しか更新されなかった場合には連合先にUpdateアクティビティを発行しないように
 - fix(backend): フォロワーへのメッセージの絵文字をemojisに含めるように
 - Fix: Nested proxy requestsを検出した際にブロックするように
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
@@ -136,7 +137,6 @@
 
 ### Server
 - Feat: Misskey® Reactions Boost Technology™ (RBT)により、リアクションの作成負荷を低減することが可能に
-- Enhance: 連合する必要のないプロフィール項目しか更新されなかった場合には連合先にUpdateアクティビティを発行しないように
 - Fix: アンテナの書き込み時にキーワードが与えられなかった場合のエラーをApiErrorとして投げるように
   - この変更により、公式フロントエンドでは入力の不備が内部エラーとして報告される代わりに一般的なエラーダイアログで報告されます
 - Fix: ファイルがサイズの制限を超えてアップロードされた際にエラーを返さなかった問題を修正
