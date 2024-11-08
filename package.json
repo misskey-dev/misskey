@@ -47,13 +47,16 @@
 	},
 	"resolutions": {
 		"@tensorflow/tfjs-core": "4.22.0",
+		"axios": "1.7.7",
 		"chokidar": "4.0.1",
 		"cookie": "1.0.1",
 		"cookie-signature": "1.2.2",
 		"debug": "4.3.7",
 		"esbuild": "0.24.0",
+		"jpeg-js": "0.4.4",
 		"lodash": "4.17.21",
 		"sharp": "0.33.5",
+		"tough-cookie": "5.0.0",
 		"web-streams-polyfill": "4.0.0"
 	},
 	"dependencies": {
