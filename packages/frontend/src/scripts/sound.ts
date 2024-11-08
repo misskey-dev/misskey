@@ -11,6 +11,15 @@ import { RateLimiter } from '@/scripts/rate-limiter.js';
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
 
+function isValidUrl(url: string): boolean {
+	try {
+		new URL(url);
+		return true;
+	} catch (_) {
+		return false;
+	}
+}
+
 export const soundsTypes = [
 	// 音声なし
 	null,
@@ -260,8 +269,12 @@ export function createSourceNode(buffer: AudioBuffer, opts: {
  */
 export async function getSoundDuration(file: string): Promise<number> {
 	const audioEl = document.createElement('audio');
-	audioEl.src = file;
-	return new Promise((resolve) => {
+	audioEl.src = isValidUrl(file) ? file : '';
+	return new Promise((resolve, reject) => {
+		if (!audioEl.src) {
+			reject(new Error('Invalid URL'));
+			return;
+		}
 		const si = setInterval(() => {
 			if (audioEl.readyState > 0) {
 				resolve(audioEl.duration * 1000);
