@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkContainer :foldable="true" :expanded="false">
 				<template #header>{{ i18n.ts.uiInspector }}</template>
 				<div :class="$style.uiInspector">
-					<div v-for="c in components" :key="c.value.id">
+					<div v-for="c in components" :key="c.value.id" :class="{ [$style.uiInspectorUnShown]: !showns.has(c.value.id) }">
 						<div :class="$style.uiInspectorType">{{ c.value.type }}</div>
 						<div :class="$style.uiInspectorId">{{ c.value.id }}</div>
 						<button :class="$style.uiInspectorPropsToggle" @click="() => uiInspectorOpenedComponents.set(c, !uiInspectorOpenedComponents.get(c))">
@@ -76,7 +76,11 @@ import { claimAchievement } from '@/scripts/achievements.js';
 const parser = new Parser();
 let aiscript: Interpreter;
 const code = ref('');
-const logs = ref<any[]>([]);
+const logs = ref<{
+	id: number;
+	text: string;
+	print: boolean;
+}[]>([]);
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
@@ -180,6 +184,20 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
+const showns = computed(() => {
+	const result = new Set<string>();
+	(function addChildrenToResult(c: AsUiComponent) {
+		result.add(c.id);
+		if (c.children) {
+			const childComponents = components.value.filter(v => c.children.includes(v.value.id));
+			for (const child of childComponents) {
+				addChildrenToResult(child.value);
+			}
+		}
+	})(root.value);
+	return result;
+});
+
 definePageMetadata(() => ({
 	title: i18n.ts.scratchpad,
 	icon: 'ti ti-terminal-2',
@@ -190,7 +208,7 @@ definePageMetadata(() => ({
 .root {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 
 .editor {
@@ -227,11 +245,15 @@ definePageMetadata(() => ({
 	padding: 16px;
 }
 
+.uiInspectorUnShown {
+	color: var(--MI_THEME-fgTransparent);
+}
+
 .uiInspectorType {
 	display: inline-block;
 	border: hidden;
 	border-radius: 10px;
-	background-color: var(--panelHighlight);
+	background-color: var(--MI_THEME-panelHighlight);
 	padding: 2px 8px;
 	font-size: 12px;
 }

@@ -103,7 +103,6 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'mediaListWithOneImageAppearance',
 	'notificationPosition',
 	'notificationStackAxis',
-	'enableCondensedLineForAcct',
 	'keepScreenOn',
 	'defaultWithReplies',
 	'disableStreamingTimeline',
@@ -446,7 +445,7 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .buttons {
 	display: flex;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 	flex-wrap: wrap;
 }
 
