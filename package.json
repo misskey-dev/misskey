@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/MisskeyIO/misskey.git"
 	},
-	"packageManager": "pnpm@9.12.2",
+	"packageManager": "pnpm@9.12.3",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
@@ -69,7 +69,7 @@
 		"@typescript-eslint/eslint-plugin": "7.10.0",
 		"@typescript-eslint/parser": "7.10.0",
 		"cross-env": "7.0.3",
-		"cypress": "13.15.1",
+		"cypress": "13.15.2",
 		"eslint": "8.57.1",
 		"ncp": "2.0.0",
 		"start-server-and-test": "2.0.8"
