@@ -5218,6 +5218,10 @@ export interface Locale extends ILocale {
      * 利用可能なロール
      */
     "availableRoles": string;
+    /**
+     * 常に絶対時刻で表示する
+     */
+    "alwaysUseAbsoluteTime": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
