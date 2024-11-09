@@ -3,6 +3,7 @@
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
 - Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
+- Enhance: リアクションの一覧の公開設定が連合されるように
 
 ### Client
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
@@ -88,7 +89,6 @@
 - Enhance: l10nの更新
 - Enhance: Playの「人気」タブで10件以上表示可能に #14399
 - Fix: 連合のホワイトリストが正常に登録されない問題を修正
-- Enhance: リアクションの一覧の公開設定が連合されるように
 
 ### Client
 - Enhance: デザインの調整
