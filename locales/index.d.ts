@@ -5215,6 +5215,10 @@ export interface Locale extends ILocale {
      */
     "pleaseSelectAccount": string;
     /**
+     * 利用可能なロール
+     */
+    "availableRoles": string;
+    /**
      * 常に絶対時刻で表示する
      */
     "alwaysUseAbsoluteTime": string;
