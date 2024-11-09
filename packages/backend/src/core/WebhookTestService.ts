@@ -12,11 +12,18 @@ import { Packed } from '@/misc/json-schema.js';
 import { type WebhookEventTypes } from '@/models/Webhook.js';
 import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { QueueService } from '@/core/QueueService.js';
+import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 
 const oneDayMillis = 24 * 60 * 60 * 1000;
 
-function generateAbuseReport(override?: Partial<MiAbuseUserReport>): MiAbuseUserReport {
-	return {
+type AbuseUserReportDto = Omit<MiAbuseUserReport, 'targetUser' | 'reporter' | 'assignee'> & {
+	targetUser: Packed<'UserLite'> | null,
+	reporter: Packed<'UserLite'> | null,
+	assignee: Packed<'UserLite'> | null,
+};
+
+function generateAbuseReport(override?: Partial<MiAbuseUserReport>): AbuseUserReportDto {
+	const result: MiAbuseUserReport = {
 		id: 'dummy-abuse-report1',
 		targetUserId: 'dummy-target-user',
 		targetUser: null,
@@ -29,7 +36,16 @@ function generateAbuseReport(override?: Partial<MiAbuseUserReport>): MiAbuseUser
 		comment: 'This is a dummy report for testing purposes.',
 		targetUserHost: null,
 		reporterHost: null,
+		resolvedAs: null,
+		moderationNote: 'foo',
 		...override,
+	};
+
+	return {
+		...result,
+		targetUser: result.targetUser ? toPackedUserLite(result.targetUser) : null,
+		reporter: result.reporter ? toPackedUserLite(result.reporter) : null,
+		assignee: result.assignee ? toPackedUserLite(result.assignee) : null,
 	};
 }
 
@@ -67,6 +83,9 @@ function generateDummyUser(override?: Partial<MiUser>): MiUser {
 		isExplorable: true,
 		isHibernated: false,
 		isDeleted: false,
+		requireSigninToViewContents: false,
+		makeNotesFollowersOnlyBefore: null,
+		makeNotesHiddenBefore: null,
 		emojis: [],
 		score: 0,
 		host: null,
@@ -268,7 +287,8 @@ const dummyUser3 = generateDummyUser({
 
 @Injectable()
 export class WebhookTestService {
-	public static NoSuchWebhookError = class extends Error {};
+	public static NoSuchWebhookError = class extends Error {
+	};
 
 	constructor(
 		private userWebhookService: UserWebhookService,
@@ -428,6 +448,22 @@ export class WebhookTestService {
 			}
 			case 'userCreated': {
 				send(toPackedUserLite(dummyUser1));
+				break;
+			}
+			case 'inactiveModeratorsWarning': {
+				const dummyTime: ModeratorInactivityRemainingTime = {
+					time: 100000,
+					asDays: 1,
+					asHours: 24,
+				};
+
+				send({
+					remainingTime: dummyTime,
+				});
+				break;
+			}
+			case 'inactiveModeratorsInvitationOnlyChanged': {
+				send({});
 				break;
 			}
 		}

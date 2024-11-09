@@ -101,8 +101,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 			.log(updater, 'createSystemWebhook', {
 				systemWebhookId: webhook.id,
 				webhook: webhook,
-			})
-			.then();
+			});
 
 		return webhook;
 	}
@@ -139,8 +138,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 				systemWebhookId: beforeEntity.id,
 				before: beforeEntity,
 				after: afterEntity,
-			})
-			.then();
+			});
 
 		return afterEntity;
 	}
@@ -158,8 +156,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 			.log(updater, 'deleteSystemWebhook', {
 				systemWebhookId: webhook.id,
 				webhook,
-			})
-			.then();
+			});
 	}
 
 	/**
