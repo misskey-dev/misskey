@@ -78,7 +78,7 @@ function collapsable(v): boolean {
 
 	> .boolean {
 		display: inline;
-		color: var(--codeBoolean);
+		color: var(--MI_THEME-codeBoolean);
 
 		&.true {
 			font-weight: bold;
@@ -91,12 +91,12 @@ function collapsable(v): boolean {
 
 	> .string {
 		display: inline;
-		color: var(--codeString);
+		color: var(--MI_THEME-codeString);
 	}
 
 	> .number {
 		display: inline;
-		color: var(--codeNumber);
+		color: var(--MI_THEME-codeNumber);
 	}
 
 	> .array.empty {
@@ -127,7 +127,7 @@ function collapsable(v): boolean {
 
 			> .toggle {
 				width: 16px;
-				color: var(--accent);
+				color: var(--MI_THEME-accent);
 				visibility: hidden;
 
 				&.visible {

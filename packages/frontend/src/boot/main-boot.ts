@@ -6,7 +6,7 @@
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { common } from './common.js';
 import type * as Misskey from 'misskey-js';
-import { ui } from '@/config.js';
+import { ui } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
@@ -22,6 +22,7 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
 import { type Keymap, makeHotkey } from '@/scripts/hotkey.js';
+import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -60,6 +61,18 @@ export async function mainBoot() {
 				location.reload();
 			}
 		}
+	});
+
+	stream.on('emojiAdded', emojiData => {
+		addCustomEmoji(emojiData.emoji);
+	});
+
+	stream.on('emojiUpdated', emojiData => {
+		updateCustomEmojis(emojiData.emojis);
+	});
+
+	stream.on('emojiDeleted', emojiData => {
+		removeCustomEmojis(emojiData.emojis);
 	});
 
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
@@ -217,31 +230,38 @@ export async function mainBoot() {
 			claimAchievement('collectAchievements30');
 		}
 
-		window.setInterval(() => {
-			if (Math.floor(Math.random() * 20000) === 0) {
-				claimAchievement('justPlainLucky');
-			}
-		}, 1000 * 10);
-
-		window.setTimeout(() => {
-			claimAchievement('client30min');
-		}, 1000 * 60 * 30);
-
-		window.setTimeout(() => {
-			claimAchievement('client60min');
-		}, 1000 * 60 * 60);
-
-		const lastUsed = miLocalStorage.getItem('lastUsed');
-		if (lastUsed) {
-			const lastUsedDate = parseInt(lastUsed, 10);
-			// 二時間以上前なら
-			if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-				toast(i18n.tsx.welcomeBackWithName({
-					name: $i.name || $i.username,
-				}));
-			}
+		if (!claimedAchievements.includes('justPlainLucky')) {
+			window.setInterval(() => {
+				if (Math.floor(Math.random() * 20000) === 0) {
+					claimAchievement('justPlainLucky');
+				}
+			}, 1000 * 10);
 		}
-		miLocalStorage.setItem('lastUsed', Date.now().toString());
+
+		if (!claimedAchievements.includes('client30min')) {
+			window.setTimeout(() => {
+				claimAchievement('client30min');
+			}, 1000 * 60 * 30);
+		}
+
+		if (!claimedAchievements.includes('client60min')) {
+			window.setTimeout(() => {
+				claimAchievement('client60min');
+			}, 1000 * 60 * 60);
+		}
+
+		// 邪魔
+		//const lastUsed = miLocalStorage.getItem('lastUsed');
+		//if (lastUsed) {
+		//	const lastUsedDate = parseInt(lastUsed, 10);
+		//	// 二時間以上前なら
+		//	if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
+		//		toast(i18n.tsx.welcomeBackWithName({
+		//			name: $i.name || $i.username,
+		//		}));
+		//	}
+		//}
+		//miLocalStorage.setItem('lastUsed', Date.now().toString());
 
 		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
 		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');

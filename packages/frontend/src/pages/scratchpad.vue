@@ -30,6 +30,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkContainer>
 
+			<MkContainer :foldable="true" :expanded="false">
+				<template #header>{{ i18n.ts.uiInspector }}</template>
+				<div :class="$style.uiInspector">
+					<div v-for="c in components" :key="c.value.id" :class="{ [$style.uiInspectorUnShown]: !showns.has(c.value.id) }">
+						<div :class="$style.uiInspectorType">{{ c.value.type }}</div>
+						<div :class="$style.uiInspectorId">{{ c.value.id }}</div>
+						<button :class="$style.uiInspectorPropsToggle" @click="() => uiInspectorOpenedComponents.set(c, !uiInspectorOpenedComponents.get(c))">
+							<i v-if="uiInspectorOpenedComponents.get(c)" class="ti ti-chevron-up icon"></i>
+							<i v-else class="ti ti-chevron-down icon"></i>
+						</button>
+						<div v-if="uiInspectorOpenedComponents.get(c)">
+							<MkTextarea :modelValue="stringifyUiProps(c.value)" code readonly></MkTextarea>
+						</div>
+					</div>
+					<div :class="$style.uiInspectorDescription">{{ i18n.ts.uiInspectorDescription }}</div>
+				</div>
+			</MkContainer>
+
 			<div class="">
 				{{ i18n.ts.scratchpadDescription }}
 			</div>
@@ -43,6 +61,7 @@ import { onDeactivated, onUnmounted, Ref, ref, watch, computed } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import * as os from '@/os.js';
@@ -61,6 +80,7 @@ const logs = ref<any[]>([]);
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
+const uiInspectorOpenedComponents = ref(new Map<string, boolean>);
 
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
@@ -70,6 +90,14 @@ if (saved) {
 watch(code, () => {
 	miLocalStorage.setItem('scratchpad', code.value);
 });
+
+function stringifyUiProps(uiProps) {
+	return JSON.stringify(
+		{ ...uiProps, type: undefined, id: undefined },
+		(k, v) => typeof v === 'function' ? '<function>' : v,
+		2
+	);
+}
 
 async function run() {
 	if (aiscript) aiscript.abort();
@@ -152,6 +180,20 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
+const showns = computed(() => {
+	const result = new Set<string>();
+	(function addChildrenToResult(c: AsUiComponent) {
+		result.add(c.id);
+		if (c.children) {
+			const childComponents = components.value.filter(v => c.children.includes(v.value.id));
+			for (const child of childComponents) {
+				addChildrenToResult(child.value);
+			}
+		}
+	})(root.value);
+	return result;
+});
+
 definePageMetadata(() => ({
 	title: i18n.ts.scratchpad,
 	icon: 'ti ti-terminal-2',
@@ -162,7 +204,7 @@ definePageMetadata(() => ({
 .root {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 
 .editor {
@@ -191,5 +233,40 @@ definePageMetadata(() => ({
 			}
 		}
 	}
+}
+
+.uiInspector {
+	display: grid;
+	gap: 8px;
+	padding: 16px;
+}
+
+.uiInspectorUnShown {
+	color: var(--MI_THEME-fgTransparent);
+}
+
+.uiInspectorType {
+	display: inline-block;
+	border: hidden;
+	border-radius: 10px;
+	background-color: var(--MI_THEME-panelHighlight);
+	padding: 2px 8px;
+	font-size: 12px;
+}
+
+.uiInspectorId {
+	display: inline-block;
+	padding-left: 8px;
+}
+
+.uiInspectorDescription {
+	display: block;
+	font-size: 12px;
+	padding-top: 16px;
+}
+
+.uiInspectorPropsToggle {
+	background: none;
+	border: none;
 }
 </style>

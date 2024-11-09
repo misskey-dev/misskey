@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkKeyValue>
 			</button>
 			<button class="_button" :class="$style.kvEditBtn" @click="describe()">
-				<MkKeyValue>
+				<MkKeyValue :class="$style.multiline">
 					<template #key>{{ i18n.ts.description }}</template>
 					<template #value>{{ file.comment ? file.comment : `(${i18n.ts.none})` }}<i class="ti ti-pencil" :class="$style.kvEditIcon"></i></template>
 				</MkKeyValue>
@@ -99,12 +99,12 @@ const file = ref<Misskey.entities.DriveFile>();
 const folderHierarchy = computed(() => {
 	if (!file.value) return [i18n.ts.drive];
 	const folderNames = [i18n.ts.drive];
-	
+
 	function get(folder: Misskey.entities.DriveFolder) {
 		if (folder.parent) get(folder.parent);
 		folderNames.push(folder.name);
 	}
-	
+
 	if (file.value.folder) get(file.value.folder);
 	return folderNames;
 });
@@ -231,8 +231,8 @@ onMounted(async () => {
 <style lang="scss" module>
 
 .filePreviewRoot {
-	background: var(--panel);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-panel);
+	border-radius: var(--MI-radius);
 	// MkMediaList 内の上部マージン 4px
 	padding: calc(1rem - 4px) 1rem 1rem;
 }
@@ -262,8 +262,8 @@ onMounted(async () => {
 
 		&:hover,
 		&:focus-visible {
-			background-color: var(--accentedBg);
-			color: var(--accent);
+			background-color: var(--MI_THEME-accentedBg);
+			color: var(--MI_THEME-accent);
 			text-decoration: none;
 			outline: none;
 		}
@@ -285,7 +285,7 @@ onMounted(async () => {
 	align-items: center;
 	min-width: 0;
 	font-weight: 700;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	font-size: .8rem;
 
 	>.fileNameEditIcon {
@@ -299,12 +299,12 @@ onMounted(async () => {
 	}
 
 	&:hover {
-		background-color: var(--accentedBg);
+		background-color: var(--MI_THEME-accentedBg);
 
 		>.fileName,
 		>.fileNameEditIcon {
 			visibility: visible;
-			color: var(--accent);
+			color: var(--MI_THEME-accent);
 		}
 	}
 }
@@ -313,12 +313,16 @@ onMounted(async () => {
 	padding: .5rem 1rem;
 }
 
+.multiline {
+	white-space: pre-wrap;
+}
+
 .kvEditBtn {
 	text-align: start;
 	display: block;
 	width: 100%;
 	padding: .5rem 1rem;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 
 	.kvEditIcon {
 		display: inline-block;
@@ -328,11 +332,11 @@ onMounted(async () => {
 	}
 
 	&:hover {
-		color: var(--accent);
-		background-color: var(--accentedBg);
+		color: var(--MI_THEME-accent);
+		background-color: var(--MI_THEME-accentedBg);
 
 		.kvEditIcon {
-			color: var(--accent);
+			color: var(--MI_THEME-accent);
 			visibility: visible;
 		}
 	}

@@ -14,10 +14,13 @@ import { CacheService } from '@/core/CacheService.js';
 import { MiFollowing, MiUserProfile } from '@/models/_.js';
 import type { StreamEventEmitter, GlobalEvents } from '@/core/GlobalEventService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
-import type { JsonObject } from '@/misc/json-value.js';
+import { isJsonObject } from '@/misc/json-value.js';
+import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import type { ChannelsService } from './ChannelsService.js';
 import type { EventEmitter } from 'events';
 import type Channel from './channel.js';
+
+const MAX_CHANNELS_PER_CONNECTION = 32;
 
 /**
  * Main stream connection
@@ -112,8 +115,6 @@ export default class Connection {
 
 		const { type, body } = obj;
 
-		if (typeof body !== 'object' || body === null || Array.isArray(body)) return;
-
 		switch (type) {
 			case 'readNotification': this.onReadNotification(body); break;
 			case 'subNote': this.onSubscribeNote(body); break;
@@ -154,7 +155,8 @@ export default class Connection {
 	}
 
 	@bindThis
-	private readNote(body: JsonObject) {
+	private readNote(body: JsonValue | undefined) {
+		if (!isJsonObject(body)) return;
 		const id = body.id;
 
 		const note = this.cachedNotes.find(n => n.id === id);
@@ -166,7 +168,7 @@ export default class Connection {
 	}
 
 	@bindThis
-	private onReadNotification(payload: JsonObject) {
+	private onReadNotification(payload: JsonValue | undefined) {
 		this.notificationService.readAllNotification(this.user!.id);
 	}
 
@@ -174,7 +176,8 @@ export default class Connection {
 	 * 投稿購読要求時
 	 */
 	@bindThis
-	private onSubscribeNote(payload: JsonObject) {
+	private onSubscribeNote(payload: JsonValue | undefined) {
+		if (!isJsonObject(payload)) return;
 		if (!payload.id || typeof payload.id !== 'string') return;
 
 		const current = this.subscribingNotes[payload.id] ?? 0;
@@ -190,7 +193,8 @@ export default class Connection {
 	 * 投稿購読解除要求時
 	 */
 	@bindThis
-	private onUnsubscribeNote(payload: JsonObject) {
+	private onUnsubscribeNote(payload: JsonValue | undefined) {
+		if (!isJsonObject(payload)) return;
 		if (!payload.id || typeof payload.id !== 'string') return;
 
 		const current = this.subscribingNotes[payload.id];
@@ -216,12 +220,13 @@ export default class Connection {
 	 * チャンネル接続要求時
 	 */
 	@bindThis
-	private onChannelConnectRequested(payload: JsonObject) {
+	private onChannelConnectRequested(payload: JsonValue | undefined) {
+		if (!isJsonObject(payload)) return;
 		const { channel, id, params, pong } = payload;
 		if (typeof id !== 'string') return;
 		if (typeof channel !== 'string') return;
 		if (typeof pong !== 'boolean' && typeof pong !== 'undefined' && pong !== null) return;
-		if (typeof params !== 'undefined' && (typeof params !== 'object' || params === null || Array.isArray(params))) return;
+		if (typeof params !== 'undefined' && !isJsonObject(params)) return;
 		this.connectChannel(id, params, channel, pong ?? undefined);
 	}
 
@@ -229,7 +234,8 @@ export default class Connection {
 	 * チャンネル切断要求時
 	 */
 	@bindThis
-	private onChannelDisconnectRequested(payload: JsonObject) {
+	private onChannelDisconnectRequested(payload: JsonValue | undefined) {
+		if (!isJsonObject(payload)) return;
 		const { id } = payload;
 		if (typeof id !== 'string') return;
 		this.disconnectChannel(id);
@@ -251,6 +257,10 @@ export default class Connection {
 	 */
 	@bindThis
 	public connectChannel(id: string, params: JsonObject | undefined, channel: string, pong = false) {
+		if (this.channels.length >= MAX_CHANNELS_PER_CONNECTION) {
+			return;
+		}
+
 		const channelService = this.channelsService.getChannelService(channel);
 
 		if (channelService.requireCredential && this.user == null) {
@@ -297,7 +307,8 @@ export default class Connection {
 	 * @param data メッセージ
 	 */
 	@bindThis
-	private onChannelMessageRequested(data: JsonObject) {
+	private onChannelMessageRequested(data: JsonValue | undefined) {
+		if (!isJsonObject(data)) return;
 		if (typeof data.id !== 'string') return;
 		if (typeof data.type !== 'string') return;
 		if (typeof data.body === 'undefined') return;
