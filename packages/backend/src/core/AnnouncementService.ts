@@ -209,6 +209,13 @@ export class AnnouncementService {
 			return;
 		}
 
+		const announcement = await this.announcementsRepository.findOneBy({ id: announcementId });
+		if (announcement != null && announcement.userId === user.id) {
+			await this.announcementsRepository.update(announcementId, {
+				isActive: false,
+			});
+		}
+
 		if ((await this.getUnreadAnnouncements(user)).length === 0) {
 			this.globalEventService.publishMainStream(user.id, 'readAllAnnouncements');
 		}

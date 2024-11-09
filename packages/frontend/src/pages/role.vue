@@ -43,7 +43,7 @@ import MkUserList from '@/components/MkUserList.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkTimeline from '@/components/MkTimeline.vue';
-import { instanceName } from '@/config.js';
+import { instanceName } from '@@/js/config.js';
 import { serverErrorImageUrl, infoImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{

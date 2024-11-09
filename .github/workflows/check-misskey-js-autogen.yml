@@ -21,6 +21,7 @@ jobs:
         uses: actions/checkout@v4.1.1
         with:
           submodules: true
+          persist-credentials: false
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
       - name: setup pnpm
@@ -28,7 +29,7 @@ jobs:
 
       - name: setup node
         id: setup-node
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.0.4
         with:
           node-version-file: '.node-version'
           cache: pnpm
@@ -57,7 +58,7 @@ jobs:
           name: generated-misskey-js
           path: packages/misskey-js/generator/built/autogen
 
-  # pull_request_target safety: permissions: read-all, and there are no secrets used in this job
+  # pull_request_target safety: permissions: read-all, and no user codes are executed
   get-actual-misskey-js:
     runs-on: ubuntu-latest
     permissions:
@@ -68,6 +69,7 @@ jobs:
         uses: actions/checkout@v4.1.1
         with:
           submodules: true
+          persist-credentials: false
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
       - name: Upload From Merged
@@ -131,3 +133,7 @@ jobs:
           mode: delete
           message: "Thank you!"
           create_if_not_exists: false
+
+      - name: Make failure if changes are detected
+        if: steps.check-changes.outputs.changes == 'true'
+        run: exit 1

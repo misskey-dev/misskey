@@ -47,7 +47,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', res: Misskey.entities.SigninResponse): void;
+	(ev: 'done', res: Misskey.entities.SignupResponse): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -55,7 +55,7 @@ const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 const isAcceptedServerRule = ref(false);
 
-function onSignup(res: Misskey.entities.SigninResponse) {
+function onSignup(res: Misskey.entities.SignupResponse) {
 	emit('done', res);
 	dialog.value?.close();
 }

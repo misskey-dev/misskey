@@ -170,6 +170,6 @@ function addUser() {
 .actions {
 	margin-top: 16px;
 	padding: 24px 0;
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 </style>
