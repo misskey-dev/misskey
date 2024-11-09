@@ -28,6 +28,7 @@ import type {
 	FollowingsRepository,
 	FollowRequestsRepository,
 	MiFollowing,
+	MiMeta,
 	MiUserNotePining,
 	MiUserProfile,
 	MutingsRepository,
@@ -97,6 +98,9 @@ export class UserEntityService implements OnModuleInit {
 
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
@@ -490,6 +494,7 @@ export class UserEntityService implements OnModuleInit {
 			}))) : [],
 			isBot: user.isBot,
 			isCat: user.isCat,
+			isProxy: this.meta.proxyAccountId === user.id,
 			requireSigninToViewContents: user.requireSigninToViewContents === false ? undefined : true,
 			makeNotesFollowersOnlyBefore: user.makeNotesFollowersOnlyBefore ?? undefined,
 			makeNotesHiddenBefore: user.makeNotesHiddenBefore ?? undefined,
