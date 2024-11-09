@@ -1,4 +1,4 @@
-## 2024.10.2
+## 2024.11.0
 
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
@@ -30,7 +30,8 @@
 - Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
-- fix(backend): フォロワーへのメッセージの絵文字をemojisに含めるように
+- Enhance: リモートユーザーの照会をオリジナルにリダイレクトするように
+- Fix: フォロワーへのメッセージの絵文字をemojisに含めるように
 - Fix: Nested proxy requestsを検出した際にブロックするように
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
 - Fix: 招待コードの発行可能な残り数算出に使用すべきロールポリシーの値が違う問題を修正  
@@ -41,7 +42,6 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/712)
 - Fix: FTT無効時にユーザーリストタイムラインが使用できない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/709)
-- Enhance: リモートユーザーの照会をオリジナルにリダイレクトするように
 
 ### Misskey.js
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正

@@ -85,6 +85,7 @@ Be willing to comment on the good points and not just the things you want fixed 
 
 読んでおくといいやつ
 - https://blog.lacolaco.net/posts/1e2cf439b3c2/
+- https://konifar-zatsu.hatenadiary.jp/entry/2024/11/05/192421
 
 ### Review perspective
 - Scope
