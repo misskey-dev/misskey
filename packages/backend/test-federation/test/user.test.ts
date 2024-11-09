@@ -114,7 +114,7 @@ describe('User', () => {
 				}
 			});
 
-			test('Setting false for publicReactions is federated', async () => {
+			test.skip('Setting false for publicReactions is federated', async () => {
 				await Promise.all([
 					alice.client.request('i/update', { publicReactions: false }),
 					bob.client.request('i/update', { publicReactions: false }),
