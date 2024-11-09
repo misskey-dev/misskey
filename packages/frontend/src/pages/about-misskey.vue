@@ -77,10 +77,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<img src="https://avatars.githubusercontent.com/u/4439005?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@syuilo</span>
 						</a>
-						<a href="https://github.com/tamaina" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/7973572?v=4" :class="$style.contributorAvatar">
-							<span :class="$style.contributorUsername">@tamaina</span>
-						</a>
 						<a href="https://github.com/acid-chicken" target="_blank" :class="$style.contributor">
 							<img src="https://avatars.githubusercontent.com/u/20679825?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@acid-chicken</span>
@@ -141,7 +137,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, shallowRef, computed } from 'vue';
-import { version } from '@/config.js';
+import { version } from '@@/js/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -269,6 +265,15 @@ const patronsWithIcon = [{
 }, {
 	name: 'ささくれりょう',
 	icon: 'https://assets.misskey-hub.net/patrons/cf55022cee6c41da8e70a43587aaad9a.jpg',
+}, {
+	name: 'Macop',
+	icon: 'https://assets.misskey-hub.net/patrons/ee052bf550014d36a643ce3dce595640.jpg',
+}, {
+	name: 'なっかあ',
+	icon: 'https://assets.misskey-hub.net/patrons/c2f5f3e394e74a64912284a2f4ca710e.jpg',
+}, {
+	name: '如月ユカ',
+	icon: 'https://assets.misskey-hub.net/patrons/f24a042076a041b6811a2f124eb620ca.jpg',
 }];
 
 const patrons = [
@@ -374,6 +379,7 @@ const patrons = [
 	'塩キャベツ',
 	'はとぽぷさん',
 	'100の人 (エスパー・イーシア)',
+	'ケモナーのケシン',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
@@ -443,7 +449,7 @@ definePageMetadata(() => ({
 .znqjceqz {
 	> .about {
 		position: relative;
-		border-radius: var(--radius);
+		border-radius: var(--MI-radius);
 
 		> .treasure {
 			position: absolute;
@@ -531,17 +537,17 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 	padding: 12px;
-	background: var(--buttonBg);
+	background: var(--MI_THEME-buttonBg);
 	border-radius: 6px;
 
 	&:hover {
 		text-decoration: none;
-		background: var(--buttonHoverBg);
+		background: var(--MI_THEME-buttonHoverBg);
 	}
 
 	&.active {
-		color: var(--accent);
-		background: var(--buttonHoverBg);
+		color: var(--MI_THEME-accent);
+		background: var(--MI_THEME-buttonHoverBg);
 	}
 }
 
@@ -564,7 +570,7 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 	padding: 12px;
-	background: var(--buttonBg);
+	background: var(--MI_THEME-buttonBg);
 	border-radius: 6px;
 }
 

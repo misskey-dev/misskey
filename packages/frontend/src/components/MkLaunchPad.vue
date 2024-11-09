@@ -12,13 +12,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate && item.indicateValue" class="_indicateCounter indicatorWithValue">{{ item.indicateValue }}</span>
-					<span v-else-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
+					<span v-else-if="item.indicate" class="indicator _blink"><i class="_indicatorCircle"></i></span>
 				</button>
 				<MkA v-else v-click-anime :to="item.to" class="item" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate && item.indicateValue" class="_indicateCounter indicatorWithValue">{{ item.indicateValue }}</span>
-					<span v-else-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
+					<span v-else-if="item.indicate" class="indicator _blink"><i class="_indicatorCircle"></i></span>
 				</MkA>
 			</template>
 		</div>
@@ -105,8 +105,8 @@ function close() {
 			box-sizing: border-box;
 
 			&:hover {
-				color: var(--accent);
-				background: var(--accentedBg);
+				color: var(--MI_THEME-accent);
+				background: var(--MI_THEME-accentedBg);
 				text-decoration: none;
 			}
 
@@ -137,9 +137,8 @@ function close() {
 				position: absolute;
 				top: 32px;
 				left: 32px;
-				color: var(--indicator);
+				color: var(--MI_THEME-indicator);
 				font-size: 8px;
-				animation: global-blink 1s infinite;
 
 				@media (max-width: 500px) {
 					top: 16px;

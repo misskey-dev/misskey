@@ -6,7 +6,6 @@
 import { shallowRef, computed, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
-import { useStream } from '@/stream.js';
 import { get, set } from '@/scripts/idb-proxy.js';
 
 const storageCache = await get('emojis');
@@ -29,23 +28,20 @@ watch(customEmojis, emojis => {
 	}
 }, { immediate: true });
 
-// TODO: ここら辺副作用なのでいい感じにする
-const stream = useStream();
-
-stream.on('emojiAdded', emojiData => {
-	customEmojis.value = [emojiData.emoji, ...customEmojis.value];
+export function addCustomEmoji(emoji: Misskey.entities.EmojiSimple) {
+	customEmojis.value = [emoji, ...customEmojis.value];
 	set('emojis', customEmojis.value);
-});
+}
 
-stream.on('emojiUpdated', emojiData => {
-	customEmojis.value = customEmojis.value.map(item => emojiData.emojis.find(search => search.name === item.name) as Misskey.entities.EmojiSimple ?? item);
+export function updateCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
+	customEmojis.value = customEmojis.value.map(item => emojis.find(search => search.name === item.name) ?? item);
 	set('emojis', customEmojis.value);
-});
+}
 
-stream.on('emojiDeleted', emojiData => {
-	customEmojis.value = customEmojis.value.filter(item => !emojiData.emojis.some(search => search.name === item.name));
+export function removeCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
+	customEmojis.value = customEmojis.value.filter(item => !emojis.some(search => search.name === item.name));
 	set('emojis', customEmojis.value);
-});
+}
 
 export async function fetchCustomEmojis(force = false) {
 	const now = Date.now();

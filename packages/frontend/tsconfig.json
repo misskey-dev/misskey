@@ -23,7 +23,8 @@
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@@/*": ["../frontend-shared/*"]
 		},
 		"typeRoots": [
 			"./@types",

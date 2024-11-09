@@ -40,6 +40,7 @@ import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
+import { defaultStore } from '@/store.js';
 
 defineProps<{
 	note: Misskey.entities.Note;
@@ -77,7 +78,7 @@ const mock = inject<boolean>('mock', false);
 	margin: 0 .5em 0 0;
 	padding: 1px 6px;
 	font-size: 80%;
-	border: solid 0.5px var(--divider);
+	border: solid 0.5px var(--MI_THEME-divider);
 	border-radius: 3px;
 }
 

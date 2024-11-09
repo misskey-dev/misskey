@@ -6,7 +6,7 @@ on:
       - develop
     paths:
       - 'CHANGELOG.md'
-      # - .github/workflows/release-edit-with-push.yml
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

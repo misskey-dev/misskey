@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { AISCRIPT_VERSION } from '@syuilo/aiscript';
 import type { entities } from 'misskey-js'
 
 export function abuseUserReport() {
@@ -111,6 +112,40 @@ export function file(isSensitive = false) {
 		folder: null,
 		userId: null,
 		user: null,
+	};
+}
+
+const script = `/// @ ${AISCRIPT_VERSION}
+
+var name = ""
+
+Ui:render([
+	Ui:C:textInput({
+		label: "Your name"
+		onInput: @(v) { name = v }
+	})
+	Ui:C:button({
+		text: "Hello"
+		onClick: @() {
+			Mk:dialog(null, \`Hello, {name}!\`)
+		}
+	})
+])
+`;
+
+export function flash(): entities.Flash {
+	return {
+		id: 'someflashid',
+		createdAt: '2016-12-28T22:49:51.000Z',
+		updatedAt: '2016-12-28T22:49:51.000Z',
+		userId: 'someuserid',
+		user: userLite(),
+		title: 'Some Play title',
+		summary: 'Some Play summary',
+		script,
+		visibility: 'public',
+		likedCount: 0,
+		isLiked: false,
 	};
 }
 
