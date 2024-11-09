@@ -307,6 +307,24 @@ export type MiPartialRemoteUser = Partial<MiUser> & {
 	uri: string;
 }
 
+export const miLocalUserKeysUsedForApPersonRender = [
+	'id',
+	'username',
+	'avatarId',
+	'bannerId',
+	'emojis',
+	'tags',
+	'isBot',
+	'isCat',
+	'name',
+	'isLocked',
+	'isExplorable',
+	'movedToUri',
+	'alsoKnownAs',
+] as const satisfies (keyof MiLocalUser)[];
+
+export type MiLocalUserForApPersonRender = Pick<MiLocalUser, typeof miLocalUserKeysUsedForApPersonRender[number]>;
+
 export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
 export const passwordSchema = { type: 'string', minLength: 1 } as const;
 export const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;

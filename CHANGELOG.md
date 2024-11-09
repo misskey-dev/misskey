@@ -30,6 +30,7 @@
 - Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
+- Enhance: 連合する必要のないプロフィール項目しか更新されなかった場合には連合先にUpdateアクティビティを発行しないように
 - fix(backend): フォロワーへのメッセージの絵文字をemojisに含めるように
 - Fix: Nested proxy requestsを検出した際にブロックするように
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)

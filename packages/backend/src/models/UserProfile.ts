@@ -295,3 +295,12 @@ export class MiUserProfile {
 		}
 	}
 }
+
+export const miUserProfileKeysUsedForApPersonRender = [
+	'fields',
+	'description',
+	'birthday',
+	'location',
+] as const satisfies (keyof MiUserProfile)[];
+
+export type MiUserProfileForApPersonRender = Pick<MiUserProfile, typeof miUserProfileKeysUsedForApPersonRender[number]>;

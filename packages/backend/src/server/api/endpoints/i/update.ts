@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isDeepStrictEqual } from 'node:util';
 import RE2 from 're2';
 import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { JSDOM } from 'jsdom';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import * as Acct from '@/misc/acct.js';
+import { getObjKeys } from '@/misc/prelude/object.js';
 import type { UsersRepository, DriveFilesRepository, MiMeta, UserProfilesRepository, PagesRepository } from '@/models/_.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { birthdaySchema, descriptionSchema, followedMessageSchema, locationSchema, nameSchema } from '@/models/User.js';
@@ -34,6 +36,8 @@ import type { Config } from '@/config.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { notificationRecieveConfig } from '@/models/json-schema/user.js';
+import { miLocalUserKeysUsedForApPersonRender } from '@/models/User.js';
+import { miUserProfileKeysUsedForApPersonRender } from '@/models/UserProfile.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
 
@@ -507,15 +511,37 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.hashtagService.updateUsertags(user, tags);
 			//#endregion
 
-			if (Object.keys(updates).length > 0) {
-				await this.usersRepository.update(user.id, updates);
+			//#region 変更されていないプロパティを削除
+			const _updates = getObjKeys(updates).reduce<Partial<MiUser>>((acc, key) => {
+				if (updates[key] !== undefined && !isDeepStrictEqual(updates[key], user[key])) {
+					(acc[key] as MiUser[typeof key]) = updates[key];
+				}
+				return acc;
+			}, {});
+
+			const _profileUpdates = getObjKeys(profileUpdates).reduce<Partial<MiUserProfile>>((acc, key) => {
+				if (profileUpdates[key] !== undefined && !isDeepStrictEqual(profileUpdates[key], profile[key])) {
+					(acc[key] as MiUserProfile[typeof key]) = profileUpdates[key];
+				}
+				return acc;
+			}, {});
+			//#endregion
+
+			if (Object.keys(_updates).length > 0) {
+				await this.usersRepository.update(user.id, _updates);
 				this.globalEventService.publishInternalEvent('localUserUpdated', { id: user.id });
 			}
 
-			await this.userProfilesRepository.update(user.id, {
-				...profileUpdates,
-				verifiedLinks: [],
-			});
+			if (
+				Object.keys(_profileUpdates).length > 0 ||
+				profile.fields.filter(x => x.value.startsWith('https://')).length > 0 ||
+				profile.verifiedLinks.length > 0
+			) {
+				await this.userProfilesRepository.update(user.id, {
+					..._profileUpdates,
+					verifiedLinks: [],
+				});
+			}
 
 			const iObj = await this.userEntityService.pack(user.id, user, {
 				schema: 'MeDetailed',
@@ -534,8 +560,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				this.userFollowingService.acceptAllFollowRequests(user);
 			}
 
-			// フォロワーにUpdateを配信
-			this.accountUpdateService.publishToFollowers(user.id);
+			// 連合する必要があるプロパティが変更されている場合はフォロワーにUpdateを配信
+			if (
+				miLocalUserKeysUsedForApPersonRender.some(k => getObjKeys(_updates).includes(k)) ||
+				miUserProfileKeysUsedForApPersonRender.some(k => getObjKeys(_profileUpdates).includes(k))
+			) {
+				this.accountUpdateService.publishToFollowers(user.id);
+			}
 
 			const urls = updatedProfile.fields.filter(x => x.value.startsWith('https://'));
 			for (const url of urls) {
