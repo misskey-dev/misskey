@@ -268,6 +268,7 @@ async function onSubmit(): Promise<void> {
 
 	const res = await fetch(`${config.apiUrl}/signup`, {
 		method: 'POST',
+		redirect: 'error',
 		headers: {
 			'Content-Type': 'application/json',
 		},
@@ -278,14 +279,14 @@ async function onSubmit(): Promise<void> {
 	});
 
 	if (res) {
-		if (res.status === 204 || instance.emailRequiredForSignup) {
+		if (res.status === 204 && instance.emailRequiredForSignup) {
 			os.alert({
 				type: 'success',
 				title: i18n.ts._signup.almostThere,
 				text: i18n.tsx._signup.emailSent({ email: email.value }),
 			});
 			emit('signupEmailPending');
-		} else {
+		} else if (res.status === 200) {
 			const resJson = (await res.json()) as Misskey.entities.SignupResponse;
 			if (_DEV_) console.log(resJson);
 
@@ -294,23 +295,67 @@ async function onSubmit(): Promise<void> {
 			if (props.autoSet) {
 				await login(resJson.token);
 			}
+		} else {
+			const resJson = (await res.json()) as {
+				error?: {
+					id: string;
+					code?: string;
+					message?: string;
+				};
+			};
+
+			let message: string | null = null;
+
+			if (resJson.error != null) {
+				if (resJson.error.message != null) {
+					message = resJson.error.message;
+				} else if (resJson.error.id != null) {
+					message = i18n.ts.somethingHappened + '\n' + resJson.error.id;
+				}
+
+				switch (resJson.error.id) {
+					case '33b104c9-2f22-4640-b27a-40979bde4a77':
+						message = i18n.ts._signup._errors.emailInvalid;
+						break;
+					case '75ece55a-7869-49b1-b796-c0634224fcae':
+						message = i18n.ts._signup._errors.emailNotAllowed;
+						break;
+					case 'c8324ccf-7153-47a0-90a3-682eb06ba10d':
+						message = i18n.ts._signup._errors.invitationCodeInvalid;
+						break;
+					case '3277822c-29dd-4bc9-ad57-47af702f78b8':
+						message = i18n.ts._signup._errors.invitationCodeExpired;
+						break;
+					case 'f08118af-8358-441c-b992-b5b0bbd337d2':
+						message = i18n.ts._signup._errors.invitationCodeNotFoundOrUsed;
+						break;
+					case '9c20a0c3-c9e7-418f-8058-767f4e345bd4':
+					case '90e84f35-599a-468c-b420-98139fe9f988':
+						message = i18n.ts._signup._errors.usernameAlreadyUsed;
+						break;
+					case 'e26cbcc3-7a0c-4cf4-988f-533f56ca72bf':
+						message = i18n.ts._signup._errors.usernameNotAllowed;
+						break;
+				}
+			}
+
+			onSignupApiError(message ? { title: i18n.ts.somethingHappened, text: message } : undefined);
 		}
 	}
 
 	submitting.value = false;
 }
 
-function onSignupApiError() {
+function onSignupApiError(message?: { title?: string; text: string }): void {
 	submitting.value = false;
 	hcaptcha.value?.reset?.();
 	mcaptcha.value?.reset?.();
 	recaptcha.value?.reset?.();
 	turnstile.value?.reset?.();
 	testcaptcha.value?.reset?.();
-
 	os.alert({
 		type: 'error',
-		text: i18n.ts.somethingHappened,
+		...(message ?? { text: i18n.ts.somethingHappened }),
 	});
 }
 </script>

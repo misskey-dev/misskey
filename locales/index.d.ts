@@ -7152,6 +7152,36 @@ export interface Locale extends ILocale {
          * 入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。メールに記載されているリンクの有効期限は30分です。
          */
         "emailSent": ParameterizedString<"email">;
+        "_errors": {
+            /**
+             * メールアドレスが入力されていないか、不正な値です。
+             */
+            "emailInvalid": string;
+            /**
+             * このメールアドレスを使用して登録することはできません。
+             */
+            "emailNotAllowed": string;
+            /**
+             * 招待コードが入力されていないか、不正な値です。
+             */
+            "invitationCodeInvalid": string;
+            /**
+             * 招待コードが見つからなかったか、既に使用されています。
+             */
+            "invitationCodeNotFoundOrUsed": string;
+            /**
+             * 招待コードの有効期限が切れています。
+             */
+            "invitationCodeExpired": string;
+            /**
+             * このユーザー名は既に使用されています。
+             */
+            "usernameAlreadyUsed": string;
+            /**
+             * このユーザー名で登録することはできません。
+             */
+            "usernameNotAllowed": string;
+        };
     };
     "_accountDelete": {
         /**
