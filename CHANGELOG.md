@@ -1,4 +1,4 @@
-## 2024.10.2
+## 2024.11.0
 
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
@@ -15,22 +15,33 @@
   - どのアカウントで認証しようとしているのかがわかるように
   - 認証するアカウントを切り替えられるように
 - Enhance: Self-XSS防止用の警告を追加
-- Enhance: カタルーニャ語 (ca-ES) に対応  
+- Enhance: カタルーニャ語 (ca-ES) に対応
+- Enhance: 個別お知らせページではMetaタグを出力するように
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
 - Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
 - Fix: Encode RSS urls with escape sequences before fetching allowing query parameters to be used
 - Fix: リンク切れを修正
+= Fix: ノート投稿ボタンにホバー時のスタイルが適用されていないのを修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/305)
 
 ### Server
 - Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
+- Enhance: リモートユーザーの照会をオリジナルにリダイレクトするように
+- Fix: フォロワーへのメッセージの絵文字をemojisに含めるように
 - Fix: Nested proxy requestsを検出した際にブロックするように
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
 - Fix: 招待コードの発行可能な残り数算出に使用すべきロールポリシーの値が違う問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/706)
+- Fix: 連合への配信時に、acctの大小文字が区別されてしまい正しくメンションが処理されないことがある問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/711)
+- Fix: ローカルユーザーへのメンションを含むノートが連合される際に正しいURLに変換されないことがある問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/712)
+- Fix: FTT無効時にユーザーリストタイムラインが使用できない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/709)
 
 ### Misskey.js
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
