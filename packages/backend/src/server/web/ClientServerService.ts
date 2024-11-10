@@ -42,13 +42,26 @@ import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, MiMeta, NotesRepository, PagesRepository, ReversiGamesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type {
+	AnnouncementsRepository,
+	ChannelsRepository,
+	ClipsRepository,
+	FlashsRepository,
+	GalleryPostsRepository,
+	MiMeta,
+	NotesRepository,
+	PagesRepository,
+	ReversiGamesRepository,
+	UserProfilesRepository,
+	UsersRepository,
+} from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
@@ -103,6 +116,9 @@ export class ClientServerService {
 		@Inject(DI.reversiGamesRepository)
 		private reversiGamesRepository: ReversiGamesRepository,
 
+		@Inject(DI.announcementsRepository)
+		private announcementsRepository: AnnouncementsRepository,
+
 		private flashEntityService: FlashEntityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -112,6 +128,7 @@ export class ClientServerService {
 		private clipEntityService: ClipEntityService,
 		private channelEntityService: ChannelEntityService,
 		private reversiGameEntityService: ReversiGameEntityService,
+		private announcementEntityService: AnnouncementEntityService,
 		private urlPreviewService: UrlPreviewService,
 		private feedService: FeedService,
 		private roleService: RoleService,
@@ -770,6 +787,24 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=3600');
 				return await reply.view('reversi-game', {
 					game: _game,
+					...await this.generateCommonPugData(this.meta),
+				});
+			} else {
+				return await renderBase(reply);
+			}
+		});
+
+		// 個別お知らせページ
+		fastify.get<{ Params: { announcementId: string; } }>('/announcements/:announcementId', async (request, reply) => {
+			const announcement = await this.announcementsRepository.findOneBy({
+				id: request.params.announcementId,
+			});
+
+			if (announcement) {
+				const _announcement = await this.announcementEntityService.pack(announcement);
+				reply.header('Cache-Control', 'public, max-age=3600');
+				return await reply.view('announcement', {
+					announcement: _announcement,
 					...await this.generateCommonPugData(this.meta),
 				});
 			} else {

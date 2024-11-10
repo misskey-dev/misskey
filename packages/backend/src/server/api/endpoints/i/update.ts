@@ -467,6 +467,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const newName = updates.name === undefined ? user.name : updates.name;
 			const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
 			const newFields = profileUpdates.fields === undefined ? profile.fields : profileUpdates.fields;
+			const newFollowedMessage = profileUpdates.followedMessage === undefined ? profile.followedMessage : profileUpdates.followedMessage;
 
 			if (newName != null) {
 				let hasProhibitedWords = false;
@@ -494,6 +495,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					...extractCustomEmojisFromMfm(nameTokens),
 					...extractCustomEmojisFromMfm(valueTokens),
 				]);
+			}
+
+			if (newFollowedMessage != null) {
+				const tokens = mfm.parse(newFollowedMessage);
+				emojis = emojis.concat(extractCustomEmojisFromMfm(tokens));
 			}
 
 			updates.emojis = emojis;

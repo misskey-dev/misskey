@@ -103,7 +103,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
-	title: announcement.value ? `${i18n.ts.announcements}: ${announcement.value.title}` : i18n.ts.announcements,
+	title: announcement.value ? announcement.value.title : i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
 }));
 </script>
