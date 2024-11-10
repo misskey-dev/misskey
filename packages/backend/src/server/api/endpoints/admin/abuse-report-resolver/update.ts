@@ -99,7 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			} else if (ps.reportContentPattern === null) {
 				properties.reportContentPattern = null;
 			}
-			if (ps.forward) properties.forward = ps.forward;
+			if (ps.forward !== undefined) properties.forward = ps.forward;
 			if (ps.expiresAt) {
 				let expirationDate: Date | null = new Date();
 				const previousMonth = expirationDate.getUTCMonth();
