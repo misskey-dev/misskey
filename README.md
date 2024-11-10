@@ -36,6 +36,7 @@
 - 任意のTLを非表示にできるように https://github.com/team-shahu/misskey/pull/36
 - プロフィールからアクティビティとファイルを隠せるようにする https://github.com/team-shahu/misskey/pull/37
 - フォローしているユーザーなら鍵ノートでもアンテナにひっかかるように https://github.com/team-shahu/misskey/pull/38
+- nyaizeを無効化できるように https://github.com/team-shahu/misskey/pull/39
 
 ## Special Thanks
 - [Misskey](https://github.com/misskey-dev/misskey)  
