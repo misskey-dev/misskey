@@ -27,7 +27,11 @@ const props = defineProps<{
 	movedFrom?: string; // user id
 }>();
 
-misskeyApi('users/show', { userId: props.movedTo ?? props.movedFrom }).then(u => user.value = u);
+if (props.movedTo || props.movedFrom) {
+	misskeyApi('users/show', {
+		userId: props.movedTo ?? props.movedFrom
+	}).then(u => user.value = u);
+}
 </script>
 
 <style lang="scss" module>
