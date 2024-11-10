@@ -418,6 +418,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'medium' as 'small' | 'medium' | 'large',
 	},
+	selectReaction: {
+		where: 'device',
+		default: '🤍' as string,
+	},
 	hideReactionCount: {
 		where: 'account',
 		default: 'none' as 'none' | 'self' | 'others' | 'all',

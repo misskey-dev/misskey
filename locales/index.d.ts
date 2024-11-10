@@ -5373,6 +5373,10 @@ export interface Locale extends ILocale {
             "autoSuspendedForNotResponding": string;
         };
     };
+    /**
+     * いいねボタンで使うリアクションを選択
+     */
+    "selectReaction": string;
     "_bubbleGame": {
         /**
          * 遊び方

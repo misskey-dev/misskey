@@ -141,7 +141,7 @@ export const paramDef = {
 		enableIdenticonGeneration: { type: 'boolean' },
 		serverRules: { type: 'array', items: { type: 'string' } },
 		bannedEmailDomains: { type: 'array', items: { type: 'string' } },
-		emailWhitelist: { type: 'boolean'},
+		emailWhitelist: { type: 'boolean' },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 		manifestJsonOverride: { type: 'string' },
 		enableFanoutTimeline: { type: 'boolean' },
@@ -449,6 +449,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.repositoryUrl !== undefined) {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				set.repositoryUrl = URL.canParse(ps.repositoryUrl!) ? ps.repositoryUrl : null;
 			}
 

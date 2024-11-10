@@ -125,11 +125,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-else :class="$style.footerButton" class="_button" disabled>
 					<i class="ti ti-ban"></i>
 				</button>
+				<button v-if="appearNote.myReaction == null" ref="heartReactButton" v-tooltip="i18n.ts.like" :class="$style.footerButton" class="_button" @mousedown="heartReact()">
+					<i class="ti ti-heart"></i>
+				</button>
 				<button ref="reactButton" :class="$style.footerButton" class="_button" @click="toggleReact()">
 					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--MI_THEME-love);"></i>
 					<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
 					<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
-					<i v-else class="ti ti-plus"></i>
+					<i v-else class="ti ti-mood-plus"></i>
 					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
 				</button>
 				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
@@ -258,6 +261,7 @@ const menuButton = shallowRef<HTMLElement>();
 const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
+const heartReactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
 const appearNote = computed(() => getAppearNote(note.value));
 const galleryEl = shallowRef<InstanceType<typeof MkMediaList>>();
@@ -485,6 +489,36 @@ function react(): void {
 		}, () => {
 			focus();
 		});
+	}
+}
+
+function heartReact(): void {
+	pleaseLogin(undefined, pleaseLoginContext.value);
+	showMovedDialog();
+
+	sound.playMisskeySfx('reaction');
+
+	const selectreact = defaultStore.state.selectReaction;
+
+	if (props.mock) {
+		return;
+	}
+
+	misskeyApi('notes/reactions/create', {
+		noteId: appearNote.value.id,
+		reaction: selectreact,
+	});
+
+	if (appearNote.value.text && appearNote.value.text.length > 100 && (Date.now() - new Date(appearNote.value.createdAt).getTime() < 1000 * 3)) {
+		claimAchievement('reactWithoutRead');
+	}
+
+	const el = heartReactButton.value;
+	if (el) {
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + (el.offsetWidth / 2);
+		const y = rect.top + (el.offsetHeight / 2);
+		os.popup(MkRippleEffect, { x, y }, {}, 'end');
 	}
 }
 

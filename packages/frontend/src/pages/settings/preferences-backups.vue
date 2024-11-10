@@ -125,6 +125,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'hiddenActivity',
 	'hiddenFiles',
 	'disableNoteNyaize',
+	'selectReaction',
 ];
 const coldDeviceStorageSaveKeys: (keyof typeof ColdDeviceStorage.default)[] = [
 	'lightTheme',

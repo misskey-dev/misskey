@@ -1343,6 +1343,8 @@ _delivery:
     goneSuspended: "サーバー削除のため停止中"
     autoSuspendedForNotResponding: "サーバー応答なしのため停止中"
 
+selectReaction: "いいねボタンで使うリアクションを選択"
+
 _bubbleGame:
   howToPlay: "遊び方"
   hold: "ホールド"

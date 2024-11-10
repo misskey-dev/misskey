@@ -38,6 +38,7 @@
 - フォローしているユーザーなら鍵ノートでもアンテナにひっかかるように https://github.com/team-shahu/misskey/pull/38
 - nyaizeを無効化できるように https://github.com/team-shahu/misskey/pull/39
 - 新着ノート通知があった時まとめるように https://github.com/team-shahu/misskey/pull/40
+- いいねボタンの実装 https://github.com/team-shahu/misskey/pull/41
 
 ## Special Thanks
 - [Misskey](https://github.com/misskey-dev/misskey)  

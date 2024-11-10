@@ -5130,7 +5130,7 @@ export type operations = {
             prohibitedWords: string[];
             prohibitedWordsForNameOfUser: string[];
             bannedEmailDomains?: string[];
-						emailWhitelist?: boolean;
+            emailWhitelist: string | null;
             preservedUsernames: string[];
             hcaptchaSecretKey: string | null;
             mcaptchaSecretKey: string | null;
@@ -9570,7 +9570,7 @@ export type operations = {
           enableIdenticonGeneration?: boolean;
           serverRules?: string[];
           bannedEmailDomains?: string[];
-					emailWhitelist?: boolean;
+          emailWhitelist?: boolean;
           preservedUsernames?: string[];
           manifestJsonOverride?: string;
           enableFanoutTimeline?: boolean;
@@ -18781,8 +18781,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'followRequestRejected' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'note:grouped' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'followRequestRejected' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'note:grouped' | 'pollVote' | 'groupInvited')[];
+          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'note:grouped' | 'pollVote' | 'groupInvited')[];
+          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'note:grouped' | 'pollVote' | 'groupInvited')[];
         };
       };
     };

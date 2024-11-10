@@ -192,7 +192,6 @@ import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFf
 import { useRouter } from '@/router/supplier.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import MkSparkle from '@/components/MkSparkle.vue';
-import { defaultStore } from '@/store';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
