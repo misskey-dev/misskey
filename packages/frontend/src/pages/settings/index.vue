@@ -164,6 +164,11 @@ const menuDef = computed(() => [{
 		to: '/settings/migration',
 		active: currentPage.value?.route.name === 'migration',
 	}, {
+		icon: 'ti ti-git-fork',
+		text: i18n.ts.originalFeature,
+		to: '/settings/shahu-settings',
+		active: currentPage.value?.route.name === 'shahu-settings',
+	}, {
 		icon: 'ti ti-dots',
 		text: i18n.ts.other,
 		to: '/settings/other',

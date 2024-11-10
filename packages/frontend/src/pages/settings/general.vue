@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
-			<FormLink to="/settings/post-form">{{ i18n.ts.postForm }}</FormLink>
+			<FormLink to="/settings/post-form">{{ i18n.ts.postForm }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></FormLink>
 			<MkFolder>
 				<template #label>{{ i18n.ts.pinnedList }}</template>
 				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
@@ -362,8 +362,6 @@ const limitWidthOfReaction = computed(defaultStore.makeGetterSetter('limitWidthO
 const hideReactionCount = computed(defaultStore.makeGetterSetter('hideReactionCount'));
 const hideReactionUsers = computed(defaultStore.makeGetterSetter('hideReactionUsers'));
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
-const collapseRenotesTrigger = computed(defaultStore.makeGetterSetter('collapseRenotesTrigger'));
-const collapseSelfRenotes = computed(defaultStore.makeGetterSetter('collapseSelfRenotes'));
 const reduceAnimation = computed(defaultStore.makeGetterSetter('animation', v => !v, v => !v));
 const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
 const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
