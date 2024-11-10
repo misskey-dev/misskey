@@ -39,11 +39,18 @@ import * as Misskey from 'misskey-js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
+	notUseGrouped?: boolean;
 }>();
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-const pagination = computed(() => defaultStore.reactiveState.useGroupedNotifications.value ? {
+const pagination = computed(() => props.notUseGrouped ? {
+	endpoint: 'i/notifications' as const,
+	limit: 20,
+	params: computed(() => ({
+		excludeTypes: props.excludeTypes ?? undefined,
+	})),
+} : defaultStore.reactiveState.useGroupedNotifications.value ? {
 	endpoint: 'i/notifications-grouped' as const,
 	limit: 20,
 	params: computed(() => ({

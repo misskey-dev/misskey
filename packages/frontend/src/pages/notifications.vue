@@ -11,6 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="tab === 'all'" key="all">
 				<XNotifications :class="$style.notifications" :excludeTypes="excludeTypes"/>
 			</div>
+			<div v-else-if="tab === 'newNote'" key="newNote">
+				<XNotifications :class="$style.notifications" :excludeTypes="newNoteExcludeTypes" :notUseGrouped="true"/>
+			</div>
 			<div v-else-if="tab === 'mentions'" key="mention">
 				<MkNotes :pagination="mentionsPagination"/>
 			</div>
@@ -35,6 +38,7 @@ import { notificationTypes } from '@@/js/const.js';
 const tab = ref('all');
 const includeTypes = ref<string[] | null>(null);
 const excludeTypes = computed(() => includeTypes.value ? notificationTypes.filter(t => !includeTypes.value.includes(t)) : null);
+const newNoteExcludeTypes = computed(() => notificationTypes.filter(t => !['note'].includes(t)));
 
 const mentionsPagination = {
 	endpoint: 'notes/mentions' as const,
@@ -84,6 +88,10 @@ const headerTabs = computed(() => [{
 	key: 'all',
 	title: i18n.ts.all,
 	icon: 'ti ti-point',
+}, {
+	key: 'newNote',
+	title: i18n.ts.newNotes,
+	icon: 'ti ti-pencil',
 }, {
 	key: 'mentions',
 	title: i18n.ts.mentions,
