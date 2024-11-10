@@ -279,21 +279,23 @@ async function onSubmit(): Promise<void> {
 	});
 
 	if (res) {
-		if (res.status === 204 && instance.emailRequiredForSignup) {
-			os.alert({
-				type: 'success',
-				title: i18n.ts._signup.almostThere,
-				text: i18n.tsx._signup.emailSent({ email: email.value }),
-			});
-			emit('signupEmailPending');
-		} else if (res.status === 200) {
-			const resJson = (await res.json()) as Misskey.entities.SignupResponse;
-			if (_DEV_) console.log(resJson);
+		if (res.ok) {
+			if (res.status === 204 || instance.emailRequiredForSignup) {
+				os.alert({
+					type: 'success',
+					title: i18n.ts._signup.almostThere,
+					text: i18n.tsx._signup.emailSent({ email: email.value }),
+				});
+				emit('signupEmailPending');
+			} else {
+				const resJson = (await res.json()) as Misskey.entities.SignupResponse;
+				if (_DEV_) console.log(resJson);
 
-			emit('signup', resJson);
+				emit('signup', resJson);
 
-			if (props.autoSet) {
-				await login(resJson.token);
+				if (props.autoSet) {
+					await login(resJson.token);
+				}
 			}
 		} else {
 			const resJson = (await res.json()) as {
