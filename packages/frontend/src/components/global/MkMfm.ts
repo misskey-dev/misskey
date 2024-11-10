@@ -17,6 +17,7 @@ import MkCode from '@/components/MkCode.vue';
 import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
+import HanaSaizeMenuBadge from '@/components/HanaSaizeMenuBadge.vue';
 import MkA, { MkABehavior } from '@/components/global/MkA.vue';
 import { defaultStore } from '@/store.js';
 
@@ -323,6 +324,15 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							const clickEv = typeof token.props.args.ev === 'string' ? token.props.args.ev : '';
 							emit('clickEv', clickEv);
 						} }, genEl(token.children, scale));
+					}
+					case 'saize': {
+						if (token.children.length === 1 && token.children[0].type === 'text') {
+							return h(HanaSaizeMenuBadge, {
+								menuCode: token.children[0].props.text,
+							});
+						} else {
+							return genEl(token.children, scale);
+						}
 					}
 				}
 				if (style === undefined) {

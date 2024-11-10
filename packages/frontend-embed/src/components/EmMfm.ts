@@ -13,6 +13,7 @@ import EmLink from '@/components/EmLink.vue';
 import EmMention from '@/components/EmMention.vue';
 import EmEmoji from '@/components/EmEmoji.vue';
 import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
+import HanaSaizeMenuBadge from '@/components/HanaSaizeMenuBadge.vue';
 import EmA from '@/components/EmA.vue';
 
 function safeParseFloat(str: unknown): number | null {
@@ -304,6 +305,15 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							const clickEv = typeof token.props.args.ev === 'string' ? token.props.args.ev : '';
 							emit('clickEv', clickEv);
 						} }, genEl(token.children, scale));
+					}
+					case 'saize': {
+						if (token.children.length === 1 && token.children[0].type === 'text') {
+							return h(HanaSaizeMenuBadge, {
+								menuCode: token.children[0].props.text,
+							});
+						} else {
+							return genEl(token.children, scale);
+						}
 					}
 				}
 				if (style === undefined) {
