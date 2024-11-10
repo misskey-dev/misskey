@@ -3,6 +3,8 @@
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
 - Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
+- Enhance: 依存関係の更新
+- Enhance: l10nの更新
 - Enhance: 登録時の処理のエラーの内容を詳細に表示するように
 
 ### Client
@@ -26,6 +28,7 @@
 - Fix: リンク切れを修正
 = Fix: ノート投稿ボタンにホバー時のスタイルが適用されていないのを修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/305)
+- Fix: メールアドレス登録有効化時の「完了」ダイアログボックスの表示条件を修正
 
 ### Server
 - Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  

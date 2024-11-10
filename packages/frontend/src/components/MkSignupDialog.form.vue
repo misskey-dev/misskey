@@ -343,6 +343,8 @@ async function onSubmit(): Promise<void> {
 
 			onSignupApiError(message ? { title: i18n.ts.somethingHappened, text: message } : undefined);
 		}
+	} else {
+		onSignupApiError();
 	}
 
 	submitting.value = false;
