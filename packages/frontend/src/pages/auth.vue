@@ -62,7 +62,7 @@ function accepted() {
 	state.value = 'accepted';
 	if (session.value && session.value.app.callbackUrl) {
 		const url = new URL(session.value.app.callbackUrl);
-		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:'].includes(url.protocol)) throw new Error('invalid url');
+		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:', 'vbscript:'].includes(url.protocol)) throw new Error('invalid url');
 		location.href = `${session.value.app.callbackUrl}?token=${session.value.token}`;
 	}
 }

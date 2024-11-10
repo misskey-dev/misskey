@@ -43,6 +43,7 @@ const props = withDefaults(defineProps<{
 }>(), {
 	withRenotes: true,
 	withReplies: false,
+	withSensitive: true,
 	onlyFiles: false,
 });
 

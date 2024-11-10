@@ -55,7 +55,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i, updateAccount } from '@/account.js';
+import { $i, updateAccountPartial } from '@/account.js';
 import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
@@ -90,7 +90,7 @@ async function read(target: Misskey.entities.Announcement): Promise<void> {
 	target.isRead = true;
 	await misskeyApi('i/read-announcement', { announcementId: target.id });
 	if ($i) {
-		updateAccount({
+		updateAccountPartial({
 			unreadAnnouncements: $i.unreadAnnouncements.filter((a: { id: string; }) => a.id !== target.id),
 		});
 	}
@@ -103,7 +103,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
-	title: announcement.value ? `${i18n.ts.announcements}: ${announcement.value.title}` : i18n.ts.announcements,
+	title: announcement.value ? announcement.value.title : i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
 }));
 </script>
