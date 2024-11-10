@@ -47,19 +47,17 @@ watch(() => props.menuCode, (to) => {
 	font-weight: 700;
 	font-size: .8em;
 	line-height: calc(1.75em - 4px);
-	height: 1.75em;
 	box-decoration-break: clone;
 }
 
 .menuCode {
-	display: inline-block;
+	display: inline;
 	box-sizing: border-box;
 	text-align: center;
 	padding: 0 0.4em;
 	border-radius: 4px;
 	margin-right: 0.2em;
 	line-height: calc(1.75em - 4px);
-	height: 100%;
 	background-color: var(--MI_THEME-panel);
 	color: #0aa546;
 }
