@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import { shallowRef, computed, ref } from 'vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { userPage, acct } from '@/filters/user.js';
 import * as os from '@/os.js';
@@ -58,16 +58,13 @@ import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-const pagination = computed(() => tab.value === 'list'
-	? {
-		endpoint: 'following/requests/list' as const,
-		limit: 10,
-	}
-	: {
-		endpoint: 'following/requests/sent' as const,
-		limit: 10,
-	},
-);
+const pagination = computed<Paging>(() => tab.value === 'list' ? {
+	endpoint: 'following/requests/list',
+	limit: 10,
+} : {
+	endpoint: 'following/requests/sent',
+	limit: 10,
+});
 
 function accept(user: Misskey.entities.UserLite) {
 	os.apiWithDialog('following/requests/accept', { userId: user.id }).then(() => {
@@ -96,11 +93,11 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => [
 	{
 		key: 'list',
-		title: i18n.ts.followRequests,
+		title: i18n.ts._followRequest.recieved,
 		icon: 'ti ti-mail',
 	}, {
 		key: 'sent',
-		title: i18n.ts.followRequestPending,
+		title: i18n.ts._followRequest.sent,
 		icon: 'ti ti-send',
 	},
 ]);
