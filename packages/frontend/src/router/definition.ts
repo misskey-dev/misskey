@@ -184,6 +184,10 @@ const routes: RouteDef[] = [{
 		name: 'other',
 		component: page(() => import('@/pages/settings/other.vue')),
 	}, {
+		path: '/shahu-settings',
+		name: 'shahu-settings',
+		component: page(() => import('@/pages/settings/shahu-settings.vue')),
+	}, {
 		path: '/',
 		component: page(() => import('@/pages/_empty_.vue')),
 	}],
