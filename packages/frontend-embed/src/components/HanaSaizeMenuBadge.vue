@@ -37,7 +37,7 @@ watch(() => props.menuCode, (to) => {
 
 <style module>
 .menuRoot {
-	display: inline-block;
+	display: inline;
 	box-sizing: border-box;
 	border: 2px solid #0aa546;
 	padding-right: 0.2em;
@@ -48,6 +48,7 @@ watch(() => props.menuCode, (to) => {
 	font-size: .8em;
 	line-height: calc(1.75em - 4px);
 	height: 1.75em;
+	box-decoration-break: clone;
 }
 
 .menuCode {
