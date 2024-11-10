@@ -5423,6 +5423,10 @@ export interface Locale extends ILocale {
             "section3": string;
         };
     };
+    /**
+     * nayizeを無効化する
+     */
+    "disableNoteNyaize": string;
     "_announcement": {
         /**
          * 既存ユーザーのみ

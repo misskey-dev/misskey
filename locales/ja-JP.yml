@@ -1357,6 +1357,7 @@ _bubbleGame:
     section1: "位置を調整してハコにモノを落とします。"
     section2: "同じ種類のモノがくっつくと別のモノに変化して、スコアが得られます。"
     section3: "モノがハコからあふれるとゲームオーバーです。ハコからあふれないようにしつつモノを融合させてハイスコアを目指そう！"
+disableNoteNyaize: "nayizeを無効化する"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
