@@ -422,6 +422,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: '🤍' as string,
 	},
+	showLikeButton: {
+		where: 'device',
+		default: true,
+	},
 	hideReactionCount: {
 		where: 'account',
 		default: 'none' as 'none' | 'self' | 'others' | 'all',

@@ -111,6 +111,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</FromSlot>
 
+			<MkSwitch v-model="showLikeButton"><i class="ti ti-dots"></i> {{ i18n.ts.showLikeButton }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></MkSwitch>
+
 		</div>
 	</FormSection>
 
@@ -409,6 +411,7 @@ const hideLocalTimeLine = computed(defaultStore.makeGetterSetter('hideLocalTimeL
 const hideGlobalTimeLine = computed(defaultStore.makeGetterSetter('hideGlobalTimeLine'));
 const hideSocialTimeLine = computed(defaultStore.makeGetterSetter('hideSocialTimeLine'));
 const selectReaction = computed(defaultStore.makeGetterSetter('selectReaction'));
+const showLikeButton = computed(defaultStore.makeGetterSetter('showLikeButton'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -458,6 +461,7 @@ watch([
 	hiddenActivity,
 	hiddenFiles,
 	selectReaction,
+	showLikeButton,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
