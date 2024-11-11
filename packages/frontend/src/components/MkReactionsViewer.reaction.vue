@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@contextmenu.prevent.stop="menu"
 >
 	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
-	<span :class="$style.count">{{ count }}</span>
+	<span v-if="!hideReactionCount" :class="$style.count">{{ count }}</span>
 </button>
 </template>
 
@@ -148,9 +148,7 @@ onMounted(() => {
 
 if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
-		const useGet = !reactionChecksMuting.value;
-		const apiCall = useGet ? misskeyApiGet : misskeyApi;
-		const reactions = !defaultStore.state.hideReactionUsers ? await apiCall('notes/reactions', {
+		const reactions = !defaultStore.state.hideReactionUsers ? await misskeyApiGet('notes/reactions', {
 			noteId: props.note.id,
 			type: props.reaction,
 			limit: 10,
@@ -158,13 +156,12 @@ if (!mock) {
 		}) : [];
 
 		const users = reactions.map(x => x.user);
-		const count = users.length;
 
 		const { dispose } = os.popup(XDetails, {
 			showing,
 			reaction: props.reaction,
 			users,
-			count,
+			count: props.count,
 			targetElement: buttonEl.value,
 		}, {
 			closed: () => dispose(),
