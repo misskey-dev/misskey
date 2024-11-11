@@ -10,7 +10,7 @@ import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWeb
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { Packed } from '@/misc/json-schema.js';
 import { type WebhookEventTypes } from '@/models/Webhook.js';
-import { UserWebhookService } from '@/core/UserWebhookService.js';
+import { type UserWebhookPayload, UserWebhookService } from '@/core/UserWebhookService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 
@@ -306,10 +306,10 @@ export class WebhookTestService {
 	 * - 送信対象イベント（on）に関する設定
 	 */
 	@bindThis
-	public async testUserWebhook(
+	public async testUserWebhook<T extends WebhookEventTypes>(
 		params: {
 			webhookId: MiWebhook['id'],
-			type: WebhookEventTypes,
+			type: T,
 			override?: Partial<Omit<MiWebhook, 'id'>>,
 		},
 		sender: MiUser | null,
@@ -321,7 +321,7 @@ export class WebhookTestService {
 		}
 
 		const webhook = webhooks[0];
-		const send = (contents: unknown) => {
+		const send = <U extends WebhookEventTypes>(contents: UserWebhookPayload<U>) => {
 			const merged = {
 				...webhook,
 				...params.override,
@@ -361,32 +361,39 @@ export class WebhookTestService {
 
 		switch (params.type) {
 			case 'note': {
-				send(toPackedNote(dummyNote1));
+				send({ note: toPackedNote(dummyNote1) });
 				break;
 			}
 			case 'reply': {
-				send(toPackedNote(dummyReply1));
+				send({ note: toPackedNote(dummyReply1) });
 				break;
 			}
 			case 'renote': {
-				send(toPackedNote(dummyRenote1));
+				send({ note: toPackedNote(dummyRenote1) });
 				break;
 			}
 			case 'mention': {
-				send(toPackedNote(dummyMention1));
+				send({ note: toPackedNote(dummyMention1) });
 				break;
 			}
 			case 'follow': {
-				send(toPackedUserDetailedNotMe(dummyUser1));
+				send({ user: toPackedUserDetailedNotMe(dummyUser1) });
 				break;
 			}
 			case 'followed': {
-				send(toPackedUserLite(dummyUser2));
+				send({ user: toPackedUserDetailedNotMe(dummyUser2) });
 				break;
 			}
 			case 'unfollow': {
-				send(toPackedUserDetailedNotMe(dummyUser3));
+				send({ user: toPackedUserDetailedNotMe(dummyUser3) });
 				break;
+			}
+			// まだ実装されていない (#9485)
+			case 'reaction': return;
+			default: {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const _exhaustiveAssertion: never = params.type;
+				return;
 			}
 		}
 	}
