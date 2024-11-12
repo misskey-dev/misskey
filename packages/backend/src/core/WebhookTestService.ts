@@ -321,7 +321,7 @@ export class WebhookTestService {
 		}
 
 		const webhook = webhooks[0];
-		const send = <U extends WebhookEventTypes>(contents: UserWebhookPayload<U>) => {
+		const send = <U extends WebhookEventTypes>(type: U, contents: UserWebhookPayload<U>) => {
 			const merged = {
 				...webhook,
 				...params.override,
@@ -329,7 +329,7 @@ export class WebhookTestService {
 
 			// テスト目的なのでUserWebhookServiceの機能を経由せず直接キューに追加する（チェック処理などをスキップする意図）.
 			// また、Jobの試行回数も1回だけ.
-			this.queueService.userWebhookDeliver(merged, params.type, contents, { attempts: 1 });
+			this.queueService.userWebhookDeliver(merged, type, contents, { attempts: 1 });
 		};
 
 		const dummyNote1 = generateDummyNote({
@@ -361,31 +361,31 @@ export class WebhookTestService {
 
 		switch (params.type) {
 			case 'note': {
-				send({ note: toPackedNote(dummyNote1) });
+				send('note', { note: toPackedNote(dummyNote1) });
 				break;
 			}
 			case 'reply': {
-				send({ note: toPackedNote(dummyReply1) });
+				send('reply', { note: toPackedNote(dummyReply1) });
 				break;
 			}
 			case 'renote': {
-				send({ note: toPackedNote(dummyRenote1) });
+				send('renote', { note: toPackedNote(dummyRenote1) });
 				break;
 			}
 			case 'mention': {
-				send({ note: toPackedNote(dummyMention1) });
+				send('mention', { note: toPackedNote(dummyMention1) });
 				break;
 			}
 			case 'follow': {
-				send({ user: toPackedUserDetailedNotMe(dummyUser1) });
+				send('follow', { user: toPackedUserDetailedNotMe(dummyUser1) });
 				break;
 			}
 			case 'followed': {
-				send({ user: toPackedUserDetailedNotMe(dummyUser2) });
+				send('followed', { user: toPackedUserLite(dummyUser2) });
 				break;
 			}
 			case 'unfollow': {
-				send({ user: toPackedUserDetailedNotMe(dummyUser3) });
+				send('unfollow', { user: toPackedUserDetailedNotMe(dummyUser3) });
 				break;
 			}
 			// まだ実装されていない (#9485)

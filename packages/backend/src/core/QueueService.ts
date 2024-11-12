@@ -469,10 +469,10 @@ export class QueueService {
 	 * @see UserWebhookDeliverProcessorService
 	 */
 	@bindThis
-	public userWebhookDeliver(
+	public userWebhookDeliver<T extends WebhookEventTypes>(
 		webhook: MiWebhook,
-		type: typeof webhookEventTypes[number],
-		content: UserWebhookPayload<WebhookEventTypes>,
+		type: T,
+		content: UserWebhookPayload<T>,
 		opts?: { attempts?: number },
 	) {
 		const data: UserWebhookDeliverJobData = {

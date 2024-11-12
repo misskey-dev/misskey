@@ -17,8 +17,11 @@ export type UserWebhookPayload<T extends WebhookEventTypes> =
 	T extends 'note' | 'reply' | 'renote' |'mention' ? {
 		note: Packed<'Note'>,
 	} :
-	T extends 'follow' | 'followed' | 'unfollow' ? {
-		user: Packed<'User'>,
+	T extends 'follow' | 'unfollow' ? {
+		user: Packed<'UserDetailedNotMe'>,
+	} :
+	T extends 'followed' ? {
+		user: Packed<'UserLite'>,
 	} : never;
 
 @Injectable()
