@@ -5377,6 +5377,10 @@ export interface Locale extends ILocale {
      * いいねボタンで使うリアクションを選択
      */
     "selectReaction": string;
+    /**
+     * いいねボタンを表示する
+     */
+    "showLikeButton": string;
     "_bubbleGame": {
         /**
          * 遊び方

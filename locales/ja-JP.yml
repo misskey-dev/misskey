@@ -1344,6 +1344,7 @@ _delivery:
     autoSuspendedForNotResponding: "サーバー応答なしのため停止中"
 
 selectReaction: "いいねボタンで使うリアクションを選択"
+showLikeButton: "いいねボタンを表示する"
 
 _bubbleGame:
   howToPlay: "遊び方"

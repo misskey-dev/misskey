@@ -124,6 +124,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'hiddenPinnedNotes',
 	'hiddenActivity',
 	'hiddenFiles',
+	'showLikeButton',
 	'disableNoteNyaize',
 	'selectReaction',
 ];
