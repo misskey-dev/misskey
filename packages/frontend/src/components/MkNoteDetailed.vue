@@ -470,7 +470,7 @@ function heartReact(): void {
 
 	sound.playMisskeySfx('reaction');
 
-	const selectreact = defaultStore.selectReaction.default;
+	const selectreact = defaultStore.state.selectReaction;
 
 	misskeyApi('notes/reactions/create', {
 		noteId: appearNote.value.id,
