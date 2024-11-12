@@ -100,19 +100,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkSwitch v-model="disableNoteNyaize">{{ i18n.ts.disableNoteNyaize }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></MkSwitch>
 
-			<FromSlot v-model="selectReaction">
-				<template #label>{{ i18n.ts.selectReaction }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-				<MkCustomEmoji v-if="selectReaction && selectReaction.startsWith(':')" style="max-height: 3em; font-size: 1.1em;" :useOriginalSize="false" :name="selectReaction" :normal="true" :noStyle="true"/>
-				<MkEmoji v-else-if="selectReaction && !selectReaction.startsWith(':')" :emoji="selectReaction" style="max-height: 3em; font-size: 1.1em;" :normal="true" :noStyle="true"/>
-				<span v-else-if="!selectReaction">{{ i18n.ts.notSet }}</span>
-				<div class="_buttons" style="padding-top: 8px;">
-					<MkButton rounded :small="true" inline @click="chooseNewReaction"><i class="ph-smiley ph-bold ph-lg"></i> Change</MkButton>
-					<MkButton rounded :small="true" inline @click="resetReaction"><i class="ph-arrow-clockwise ph-bold ph-lg"></i> Reset</MkButton>
+			<MkFolder>
+				<template #label>{{ i18n.ts.like }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<div class="_gaps_m">
+					<MkSwitch v-model="showLikeButton">{{ i18n.ts.showLikeButton }}</MkSwitch>
+
+					<FromSlot v-model="selectReaction">
+						<template #label>{{ i18n.ts.selectReaction }}</template>
+						<MkCustomEmoji v-if="selectReaction && selectReaction.startsWith(':')" style="max-height: 3em; font-size: 1.1em;" :useOriginalSize="false" :name="selectReaction" :normal="true" :noStyle="true"/>
+						<MkEmoji v-else-if="selectReaction && !selectReaction.startsWith(':')" :emoji="selectReaction" style="max-height: 3em; font-size: 1.1em;" :normal="true" :noStyle="true"/>
+						<span v-else-if="!selectReaction">{{ i18n.ts.notSet }}</span>
+						<div class="_buttons" style="padding-top: 8px;">
+							<MkButton rounded :small="true" inline @click="chooseNewReaction"><i class="ph-smiley ph-bold ph-lg"></i> Change</MkButton>
+							<MkButton rounded :small="true" inline @click="resetReaction"><i class="ph-arrow-clockwise ph-bold ph-lg"></i> Reset</MkButton>
+						</div>
+					</FromSlot>
 				</div>
-			</FromSlot>
-
-			<MkSwitch v-model="showLikeButton"><i class="ti ti-dots"></i> {{ i18n.ts.showLikeButton }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></MkSwitch>
-
+			</MkFolder>
 		</div>
 	</FormSection>
 
@@ -284,15 +288,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 
-		<MkFolder>
-			<template #label>{{ i18n.ts.timeline }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-			<div class="_gaps_m">
-				<MkSwitch v-model="hideLocalTimeLine">{{ i18n.ts.hideLocalTimeLine }}</MkSwitch>
-				<MkSwitch v-model="hideSocialTimeLine">{{ i18n.ts.hideSocialTimeLine }}</MkSwitch>
-				<MkSwitch v-model="hideGlobalTimeLine">{{ i18n.ts.hideGlobalTimeLine }}</MkSwitch>
-			</div>
-		</MkFolder>
-	</div>
+			<MkFolder>
+				<template #label>{{ i18n.ts.timeline }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<div class="_gaps_m">
+					<MkSwitch v-model="hideLocalTimeLine">{{ i18n.ts.hideLocalTimeLine }}</MkSwitch>
+					<MkSwitch v-model="hideSocialTimeLine">{{ i18n.ts.hideSocialTimeLine }}</MkSwitch>
+					<MkSwitch v-model="hideGlobalTimeLine">{{ i18n.ts.hideGlobalTimeLine }}</MkSwitch>
+				</div>
+			</MkFolder>
+		</div>
 	</FormSection>
 
 	<FormSection>
