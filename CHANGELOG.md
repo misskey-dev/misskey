@@ -45,6 +45,7 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/712)
 - Fix: FTT無効時にユーザーリストタイムラインが使用できない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/709)
+- Fix: User Webhookテスト機能のMock Payloadを修正  
 
 ### Misskey.js
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
