@@ -1,5 +1,8 @@
 ## 2024.11.0
 
+### Note
+- DockerのNode.jsが22.11.0に更新されました
+
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
 - Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
@@ -31,6 +34,7 @@
 - Fix: メールアドレス登録有効化時の「完了」ダイアログボックスの表示条件を修正
 
 ### Server
+- Enhance: DockerのNode.jsを22.11.0に更新
 - Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
