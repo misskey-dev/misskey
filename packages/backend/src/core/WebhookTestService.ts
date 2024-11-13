@@ -10,7 +10,7 @@ import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWeb
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { Packed } from '@/misc/json-schema.js';
 import { type WebhookEventTypes } from '@/models/Webhook.js';
-import { UserWebhookService } from '@/core/UserWebhookService.js';
+import { type UserWebhookPayload, UserWebhookService } from '@/core/UserWebhookService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 
@@ -306,10 +306,10 @@ export class WebhookTestService {
 	 * - 送信対象イベント（on）に関する設定
 	 */
 	@bindThis
-	public async testUserWebhook(
+	public async testUserWebhook<T extends WebhookEventTypes>(
 		params: {
 			webhookId: MiWebhook['id'],
-			type: WebhookEventTypes,
+			type: T,
 			override?: Partial<Omit<MiWebhook, 'id'>>,
 		},
 		sender: MiUser | null,
@@ -321,7 +321,7 @@ export class WebhookTestService {
 		}
 
 		const webhook = webhooks[0];
-		const send = (contents: unknown) => {
+		const send = <U extends WebhookEventTypes>(type: U, contents: UserWebhookPayload<U>) => {
 			const merged = {
 				...webhook,
 				...params.override,
@@ -329,7 +329,7 @@ export class WebhookTestService {
 
 			// テスト目的なのでUserWebhookServiceの機能を経由せず直接キューに追加する（チェック処理などをスキップする意図）.
 			// また、Jobの試行回数も1回だけ.
-			this.queueService.userWebhookDeliver(merged, params.type, contents, { attempts: 1 });
+			this.queueService.userWebhookDeliver(merged, type, contents, { attempts: 1 });
 		};
 
 		const dummyNote1 = generateDummyNote({
@@ -361,32 +361,39 @@ export class WebhookTestService {
 
 		switch (params.type) {
 			case 'note': {
-				send(toPackedNote(dummyNote1));
+				send('note', { note: toPackedNote(dummyNote1) });
 				break;
 			}
 			case 'reply': {
-				send(toPackedNote(dummyReply1));
+				send('reply', { note: toPackedNote(dummyReply1) });
 				break;
 			}
 			case 'renote': {
-				send(toPackedNote(dummyRenote1));
+				send('renote', { note: toPackedNote(dummyRenote1) });
 				break;
 			}
 			case 'mention': {
-				send(toPackedNote(dummyMention1));
+				send('mention', { note: toPackedNote(dummyMention1) });
 				break;
 			}
 			case 'follow': {
-				send(toPackedUserDetailedNotMe(dummyUser1));
+				send('follow', { user: toPackedUserDetailedNotMe(dummyUser1) });
 				break;
 			}
 			case 'followed': {
-				send(toPackedUserLite(dummyUser2));
+				send('followed', { user: toPackedUserLite(dummyUser2) });
 				break;
 			}
 			case 'unfollow': {
-				send(toPackedUserDetailedNotMe(dummyUser3));
+				send('unfollow', { user: toPackedUserDetailedNotMe(dummyUser3) });
 				break;
+			}
+			// まだ実装されていない (#9485)
+			case 'reaction': return;
+			default: {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const _exhaustiveAssertion: never = params.type;
+				return;
 			}
 		}
 	}
