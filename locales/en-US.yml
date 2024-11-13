@@ -2225,7 +2225,7 @@ _widgets:
   _userList:
     chooseList: "Select a list"
   clicker: "Clicker"
-  birthdayFollowings: "Users who celebrate their birthday today"
+  birthdayFollowings: "Today's Birthdays"
 _cw:
   hide: "Hide"
   show: "Show content"
