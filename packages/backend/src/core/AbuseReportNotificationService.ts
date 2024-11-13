@@ -102,9 +102,16 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			.filter(x => x != null),
 		);
 
-		recipientEMailAddresses.push(
-			...(this.meta.maintainerEmail ? [this.meta.maintainerEmail] : []),
-		);
+		const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+		if (
+    	this.meta.maintainerEmail &&
+    	emailRe.test(this.meta.maintainerEmail) &&
+    	!recipientEMailAddresses.includes(this.meta.maintainerEmail)
+		) {
+    	recipientEMailAddresses.push(this.meta.maintainerEmail);
+		}
+
 
 		if (recipientEMailAddresses.length <= 0) {
 			return;
