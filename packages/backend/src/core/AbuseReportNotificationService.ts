@@ -108,11 +108,10 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		if (
     	this.meta.maintainerEmail &&
     	emailRe.test(this.meta.maintainerEmail) &&
-    	!recipientEMailAddresses.includes(this.meta.maintainerEmail);
+    	!recipientEMailAddresses.includes(this.meta.maintainerEmail)
 		) {
     	recipientEMailAddresses.push(this.meta.maintainerEmail);
 		}
-
 
 		if (recipientEMailAddresses.length <= 0) {
 			return;
