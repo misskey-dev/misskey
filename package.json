@@ -52,14 +52,14 @@
 	},
 	"dependencies": {
 		"cssnano": "6.1.2",
-		"execa": "8.0.1",
+		"execa": "9.5.1",
 		"fast-glob": "3.3.2",
 		"ignore-walk": "6.0.5",
 		"js-yaml": "4.1.0",
-		"postcss": "8.4.47",
+		"postcss": "8.4.49",
 		"tar": "6.2.1",
 		"terser": "5.33.0",
-		"typescript": "5.6.2",
+		"typescript": "5.6.3",
 		"esbuild": "0.23.1",
 		"glob": "11.0.0"
 	},

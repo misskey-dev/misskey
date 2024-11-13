@@ -25,9 +25,9 @@
 		"@types/node": "20.11.5",
 		"@typescript-eslint/eslint-plugin": "7.1.0",
 		"@typescript-eslint/parser": "7.1.0",
-		"execa": "8.0.1",
+		"execa": "9.5.1",
 		"nodemon": "3.0.2",
-		"typescript": "5.3.3",
+		"typescript": "5.6.3",
 		"esbuild": "0.19.11",
 		"glob": "10.3.10"
 	},
