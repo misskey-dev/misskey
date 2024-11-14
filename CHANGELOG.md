@@ -10,6 +10,8 @@
 - Enhance: l10nの更新
 
 ### Client
+- Feat: チュートリアルと初期設定ダイアログを統合
+  - 管理者は新規登録したユーザーにチュートリアルを強制することができるように
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
 - Enhance: ドライブでソートができるように
