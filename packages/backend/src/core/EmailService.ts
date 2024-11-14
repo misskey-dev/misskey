@@ -304,6 +304,12 @@ export class EmailService {
 				reason: 'mx',
 			};
 		}
+		if (json.mx_host?.some(host => this.utilityService.isBlockedHost(meta.bannedEmailDomains, host))) {
+			return {
+				valid: false,
+				reason: 'mx',
+			};
+		}
 
 		return {
 			valid: true,
