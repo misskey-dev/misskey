@@ -185,13 +185,16 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		if (x.publicKey) {
-			if (typeof x.publicKey.id !== 'string') {
-				throw new Error('invalid Actor: publicKey.id is not a string');
-			}
+			const publicKeys = Array.isArray(x.publicKey) ? x.publicKey : [x.publicKey];
+			for (const publicKey of publicKeys) {
+				if (typeof publicKey.id !== 'string') {
+					throw new Error('invalid Actor: publicKey.id is not a string');
+				}
 
-			const publicKeyIdHost = this.punyHost(x.publicKey.id);
-			if (publicKeyIdHost !== expectHost) {
-				throw new Error('invalid Actor: publicKey.id has different host');
+				const publicKeyIdHost = this.punyHost(publicKey.id);
+				if (publicKeyIdHost !== expectHost) {
+					throw new Error('invalid Actor: publicKey.id has different host');
+				}
 			}
 		}
 
@@ -390,10 +393,13 @@ export class ApPersonService implements OnModuleInit {
 				}));
 
 				if (person.publicKey) {
+					// TODO: 一人のユーザが複数の公開鍵を持っている場合があるので、MiUserPublicKeyの主キーもuserIdから(userId, keyId)に変更する必要があるかも…？
+					// As a user can have multiple public keys, it might be better to change MiUserPublicKey's primary key from userId to (userId, keyId).
+					const publicKey = Array.isArray(person.publicKey) ? person.publicKey[0] : person.publicKey;
 					await transactionalEntityManager.save(new MiUserPublickey({
 						userId: user.id,
-						keyId: person.publicKey.id,
-						keyPem: person.publicKey.publicKeyPem,
+						keyId: publicKey.id,
+						keyPem: publicKey.publicKeyPem,
 					}));
 				}
 			});
