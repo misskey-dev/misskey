@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
 							<MkInfo v-if="$i && !$i.policies.canPlayGames" warn>{{ i18n.ts.youCannotPlayGames }}</MkInfo>
-							<MkSelect :disabled="$i == null || !$i.policies.canPlayGames" v-model="gameMode">
+							<MkSelect v-model="gameMode" :disabled="$i == null || !$i.policies.canPlayGames">
 								<option value="normal">NORMAL</option>
 								<option value="square">SQUARE</option>
 								<option value="yen">YEN</option>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
 							<div style="font-size: 90%;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
-							<MkSwitch :disabled="$i == null || !$i.policies.canPlayGames" v-model="mute">
+							<MkSwitch v-model="mute" :disabled="$i == null || !$i.policies.canPlayGames">
 								<template #label>{{ i18n.ts.mute }}</template>
 							</MkSwitch>
 						</div>
