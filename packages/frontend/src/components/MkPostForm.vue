@@ -78,20 +78,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkDeleteScheduleEditor v-if="scheduledNoteDelete" v-model="scheduledNoteDelete" @destroyed="scheduledNoteDelete = null"/>
 	<MkScheduleEditor v-if="scheduleNote" v-model="scheduleNote" @destroyed="scheduleNote = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
-	<div v-if="showingOptions" style="padding: 8px 16px;">
-	</div>
+	<!-- <div v-if="showingOptions" style="padding: 8px 16px;">
+	</div> -->
 	<footer :class="$style.footer">
-		<div :class="$style.footerLeft">
-			<template v-for="item in defaultStore.state.postFormActions">
-				<button v-if="!bottomItemActionDef[item].hide" :key="item" v-tooltip="bottomItemDef[item].title" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: bottomItemActionDef[item].active }]" v-on="bottomItemActionDef[item].action ? { click: bottomItemActionDef[item].action } : {}"><i class="ti" :class="bottomItemDef[item].icon"></i></button>
-			</template>
-			<button v-tooltip="i18n.ts.otherSettings" :class="['_button', $style.footerButton]" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
-		</div>
-		<div :class="$style.footerRight">
-			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
-			<!--<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>-->
-		</div>
-	</footer>
+    <div :class="$style.footerLeft">
+      <template v-for="item in defaultStore.state.postFormActions">
+        <button v-if="!bottomItemActionDef[item].hide" :key="item" v-tooltip="bottomItemDef[item].title" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: bottomItemActionDef[item].active }]" v-on="bottomItemActionDef[item].action ? { click: bottomItemActionDef[item].action } : {}">
+          <i class="ti" :class="bottomItemDef[item].icon"></i>
+        </button>
+      </template>
+    </div>
+    <div :class="$style.footerRight">
+      <button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview">
+        <i class="ti ti-eye"></i>
+      </button>
+    </div>
+  </footer>
 	<datalist id="hashtags">
 		<option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"/>
 	</datalist>
@@ -317,6 +319,21 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 	saveAsDraft: {
 		action: () => saveDraft(false),
 	},
+	scheduleNote: {
+		hide: computed(() => $i.policies.scheduleNoteMax === 0),
+		active: scheduleNote,
+		action: toggleScheduleNote,
+	},
+	schedulePostList: {
+    hide: computed(() => $i.policies.scheduleNoteMax === 0),
+    action: () => {
+      const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkSchedulePostListDialog.vue')), {}, {
+        closed: () => {
+          dispose();
+        },
+      });
+    },
+  },
 });
 
 watch(text, () => {
@@ -1129,31 +1146,31 @@ function toggleScheduleNote() {
 	}
 }
 
-function showOtherMenu(ev: MouseEvent) {
-	const menuItems: MenuItem[] = [];
+// function showOtherMenu(ev: MouseEvent) {
+// 	const menuItems: MenuItem[] = [];
 
-	if ($i.policies.scheduleNoteMax > 0) {
-		menuItems.push({
-			type: 'button',
-			text: i18n.ts.schedulePost,
-			icon: 'ti ti-calendar-time',
-			action: toggleScheduleNote,
-		}, {
-			type: 'button',
-			text: i18n.ts.schedulePostList,
-			icon: 'ti ti-calendar-event',
-			action: () => {
-				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkSchedulePostListDialog.vue')), {}, {
-					closed: () => {
-						dispose();
-					},
-				});
-			},
-		});
-	}
+// 	if ($i.policies.scheduleNoteMax > 0) {
+// 		menuItems.push({
+// 			type: 'button',
+// 			text: i18n.ts.schedulePost,
+// 			icon: 'ti ti-calendar-time',
+// 			action: toggleScheduleNote,
+// 		}, {
+// 			type: 'button',
+// 			text: i18n.ts.schedulePostList,
+// 			icon: 'ti ti-calendar-event',
+// 			action: () => {
+// 				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkSchedulePostListDialog.vue')), {}, {
+// 					closed: () => {
+// 						dispose();
+// 					},
+// 				});
+// 			},
+// 		});
+// 	}
 
-	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
-}
+// 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+// }
 
 onMounted(() => {
 	if (props.autofocus) {
