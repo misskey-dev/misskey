@@ -83,8 +83,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkDeleteScheduleEditor v-if="scheduledNoteDelete" v-model="scheduledNoteDelete" @destroyed="scheduledNoteDelete = null"/>
 	<MkScheduleEditor v-if="scheduleNote" v-model="scheduleNote" @destroyed="scheduleNote = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
-	<div v-if="showingOptions" style="padding: 8px 16px;">
-	</div>
+	<!-- <div v-if="showingOptions" style="padding: 8px 16px;">
+	</div> -->
 	<footer :class="$style.footer">
 		<div :class="$style.footerLeft">
 			<template v-for="item in defaultStore.state.postFormActions">
@@ -99,11 +99,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i class="ti" :class="bottomItemDef[item].icon"></i>
 				</button>
 			</template>
-			<button v-tooltip="i18n.ts.otherSettings" :class="['_button', $style.footerButton]" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
 		</div>
 		<div :class="$style.footerRight">
-			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
-			<!--<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>-->
+			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview">
+				<i class="ti ti-eye"></i>
+			</button>
 		</div>
 	</footer>
 	<datalist id="hashtags">
@@ -1113,31 +1113,31 @@ function toggleScheduleNote() {
 	}
 }
 
-function showOtherMenu(ev: MouseEvent) {
-	const menuItems: MenuItem[] = [];
+// function showOtherMenu(ev: MouseEvent) {
+// 	const menuItems: MenuItem[] = [];
 
-	if ($i.policies.scheduleNoteMax > 0) {
-		menuItems.push({
-			type: 'button',
-			text: i18n.ts.schedulePost,
-			icon: 'ti ti-calendar-time',
-			action: toggleScheduleNote,
-		}, {
-			type: 'button',
-			text: i18n.ts.schedulePostList,
-			icon: 'ti ti-calendar-event',
-			action: () => {
-				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkSchedulePostListDialog.vue')), {}, {
-					closed: () => {
-						dispose();
-					},
-				});
-			},
-		});
-	}
+// 	if ($i.policies.scheduleNoteMax > 0) {
+// 		menuItems.push({
+// 			type: 'button',
+// 			text: i18n.ts.schedulePost,
+// 			icon: 'ti ti-calendar-time',
+// 			action: toggleScheduleNote,
+// 		}, {
+// 			type: 'button',
+// 			text: i18n.ts.schedulePostList,
+// 			icon: 'ti ti-calendar-event',
+// 			action: () => {
+// 				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkSchedulePostListDialog.vue')), {}, {
+// 					closed: () => {
+// 						dispose();
+// 					},
+// 				});
+// 			},
+// 		});
+// 	}
 
-	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
-}
+// 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+// }
 
 onMounted(() => {
 	if (props.autofocus) {
