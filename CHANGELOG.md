@@ -6,6 +6,7 @@
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
 - Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
+- Feat: Misskey Gamesのプレイ可否をロールで設定可能に
 - Enhance: 依存関係の更新
 - Enhance: l10nの更新
 
