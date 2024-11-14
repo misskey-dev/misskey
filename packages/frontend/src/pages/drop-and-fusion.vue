@@ -23,20 +23,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_woodenFrame" style="text-align: center;">
 					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
-							<MkSelect v-model="gameMode">
+							<MkInfo v-if="$i && !$i.policies.canPlayGames" warn>{{ i18n.ts.youCannotPlayGames }}</MkInfo>
+							<MkSelect :disabled="$i == null || !$i.policies.canPlayGames" v-model="gameMode">
 								<option value="normal">NORMAL</option>
 								<option value="square">SQUARE</option>
 								<option value="yen">YEN</option>
 								<option value="sweets">SWEETS</option>
 								<!--<option value="space">SPACE</option>-->
 							</MkSelect>
-							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+							<MkButton primary gradate large rounded inline :disabled="$i == null || !$i.policies.canPlayGames" @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
 					</div>
 					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
 							<div style="font-size: 90%;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
-							<MkSwitch v-model="mute">
+							<MkSwitch :disabled="$i == null || !$i.policies.canPlayGames" v-model="mute">
 								<template #label>{{ i18n.ts.mute }}</template>
 							</MkSwitch>
 						</div>
@@ -90,7 +91,9 @@ import { computed, ref, watch } from 'vue';
 import XGame from './drop-and-fusion.game.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
+import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
+import MkInfo from '@/components/MkInfo.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';

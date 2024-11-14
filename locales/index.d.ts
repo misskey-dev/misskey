@@ -5218,6 +5218,10 @@ export interface Locale extends ILocale {
      * 利用可能なロール
      */
     "availableRoles": string;
+    /**
+     * このアカウントにはMisskey Gamesをプレイする権限がありません。
+     */
+    "youCannotPlayGames": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -6989,6 +6993,10 @@ export interface Locale extends ILocale {
              * リストのインポートを許可
              */
             "canImportUserLists": string;
+            /**
+             * Misskey Gamesの利用
+             */
+            "canPlayGames": string;
         };
         "_condition": {
             /**

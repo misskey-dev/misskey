@@ -4872,6 +4872,7 @@ export type components = {
       canImportFollowing: boolean;
       canImportMuting: boolean;
       canImportUserLists: boolean;
+      canPlayGames: boolean;
     };
     ReversiGameLite: {
       /** Format: id */

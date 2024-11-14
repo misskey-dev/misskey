@@ -1300,6 +1300,7 @@ thisContentsAreMarkedAsSigninRequiredByAuthor: "投稿者により、表示に�
 lockdown: "ロックダウン"
 pleaseSelectAccount: "アカウントを選択してください"
 availableRoles: "利用可能なロール"
+youCannotPlayGames: "このアカウントにはMisskey Gamesをプレイする権限がありません。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -1806,6 +1807,7 @@ _role:
     canImportFollowing: "フォローのインポートを許可"
     canImportMuting: "ミュートのインポートを許可"
     canImportUserLists: "リストのインポートを許可"
+    canPlayGames: "Misskey Gamesの利用"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
