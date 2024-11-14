@@ -709,6 +709,7 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .ip {
 	display: flex;
+	word-break: break-all;
 
 	> :global(.date) {
 		opacity: 0.7;
