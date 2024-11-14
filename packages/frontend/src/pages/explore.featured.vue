@@ -9,8 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="notes">{{ i18n.ts.notes }}</option>
 		<option value="polls">{{ i18n.ts.poll }}</option>
 	</MkTab>
-	<MkNotes v-if="tab === 'notes'" :pagination="paginationForNotes"/>
-	<MkNotes v-else-if="tab === 'polls'" :pagination="paginationForPolls"/>
+	<MkNotes v-if="tab === 'notes'" :featured="true" :pagination="paginationForNotes"/>
+	<MkNotes v-else-if="tab === 'polls'" :featured="true" :pagination="paginationForPolls"/>
 </MkSpacer>
 </template>
 

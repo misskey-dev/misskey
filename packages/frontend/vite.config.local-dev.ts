@@ -13,9 +13,14 @@ const defaultConfig = getConfig();
 
 const { port } = yaml.load(await readFile('../../.config/default.yml', 'utf-8'));
 
-const httpUrl = `http://localhost:${port}/`;
-const websocketUrl = `ws://localhost:${port}/`;
-const embedUrl = `http://localhost:5174/`;
+
+const mistemsDebug = false
+
+const hostingPort = mistemsDebug ? 5180 : 5173 ;
+const httpUrl = mistemsDebug ?  `https://misskey.systems/` : `http://localhost:${port}/`;
+const websocketUrl = mistemsDebug ? `wss://misskey.systems` : `ws://localhost:${port}/`;
+const embedUrl = mistemsDebug ? `https://misskey.systems/`:  `http://localhost:5174/` ;
+
 
 // activitypubリクエストはProxyを通し、それ以外はViteの開発サーバーを返す
 function varyHandler(req: IncomingMessage) {
@@ -33,7 +38,7 @@ const devConfig: UserConfig = {
 	base: './',
 	server: {
 		host: 'localhost',
-		port: 5173,
+		port: hostingPort,
 		proxy: {
 			'/api': {
 				changeOrigin: true,

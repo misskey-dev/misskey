@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:ad="true"
 				:class="$style.notes"
 			>
-				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :withHardMute="true"/>
+				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :featured="featured" :withHardMute="true"/>
 			</MkDateSeparatedList>
 		</div>
 	</template>
@@ -39,11 +39,14 @@ import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
 	disableAutoLoad?: boolean;
-}>();
+	featured: boolean;
+}>(), {
+	featured: false,
+});
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -63,7 +66,6 @@ defineExpose({
 	&:not(.noGap) {
 		> .notes {
 			background: var(--MI_THEME-bg);
-
 			.note {
 				background: var(--MI_THEME-panel);
 				border-radius: var(--MI-radius);
