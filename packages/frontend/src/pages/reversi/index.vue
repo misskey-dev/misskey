@@ -196,15 +196,33 @@ async function matchHeatbeat() {
 }
 
 function onApiError(err) {
-	if (err.id === '7f86f06f-7e15-4057-8561-f4b6d4ac755a') {
+	if (err.id != null) {
+		let title: string | null = null;
+		let text = i18n.ts.somethingHappened;
+
+		switch (err.id) {
+			case '7f86f06f-7e15-4057-8561-f4b6d4ac755a':
+				title = i18n.ts.permissionDeniedError;
+				text = i18n.ts.permissionDeniedErrorDescription;
+				break;
+			case '3a8a677f-98e5-4c4d-b059-e5874b44bd4f':
+				title = i18n.ts.somethingHappened;
+				text = i18n.ts._reversi.targetUserIsNotAvailable;
+				break;
+			case '96fd7bd6-d2bc-426c-a865-d055dcd2828e':
+				title = i18n.ts.somethingHappened;
+				text = i18n.ts._reversi.targetIsYourself;
+				break;
+		}
+
 		// Role permission error
 		matchingUser.value = null;
 		matchingAny.value = false;
 
 		os.alert({
 			type: 'error',
-			title: i18n.ts.permissionDeniedError,
-			text: i18n.ts.permissionDeniedErrorDescription,
+			title: title ?? undefined,
+			text,
 		});
 	}
 	return null;

@@ -2769,6 +2769,8 @@ _reversi:
   disallowIrregularRules: "変則なし"
   showBoardLabels: "盤面に行・列番号を表示"
   useAvatarAsStone: "石をアイコンにする"
+  targetUserIsNotAvailable: "相手のユーザーにはMisskey Gamesをプレイする権限がありません。"
+  targetIsYourself: "相手に自分自身を指定することはできません。"
 
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"

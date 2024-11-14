@@ -10414,6 +10414,14 @@ export interface Locale extends ILocale {
          * 石をアイコンにする
          */
         "useAvatarAsStone": string;
+        /**
+         * 相手のユーザーにはMisskey Gamesをプレイする権限がありません。
+         */
+        "targetUserIsNotAvailable": string;
+        /**
+         * 相手に自分自身を指定することはできません。
+         */
+        "targetIsYourself": string;
     };
     "_offlineScreen": {
         /**
