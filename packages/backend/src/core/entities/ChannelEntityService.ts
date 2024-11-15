@@ -66,7 +66,7 @@ export class ChannelEntityService {
 		}
 
 		let isFollowing = false;
-		let isFavorite = false;
+		let isFavorited = false;
 		let isMuting = false;
 		if (me) {
 			isFollowing = opts?.followings?.has(channel.id) ?? await this.channelFollowingsRepository.exists({
@@ -76,7 +76,7 @@ export class ChannelEntityService {
 				},
 			});
 
-			isFavorite = opts?.favorites?.has(channel.id) ?? await this.channelFavoritesRepository.exists({
+			isFavorited = opts?.favorites?.has(channel.id) ?? await this.channelFavoritesRepository.exists({
 				where: {
 					userId: me.id,
 					channelId: channel.id,
@@ -121,7 +121,7 @@ export class ChannelEntityService {
 
 			...(me ? {
 				isFollowing,
-				isFavorite,
+				isFavorited,
 				isMuting,
 				hasUnreadNote: false, // 後方互換性のため
 			} : {}),
