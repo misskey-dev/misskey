@@ -178,6 +178,8 @@ export const defaultStore = markRaw(new Storage('base', {
 			'plugins',
 			'emoji',
 			'addMfmFunction',
+			'scheduleNote',
+			'schedulePostList',
 		],
 	},
 	visibility: {
