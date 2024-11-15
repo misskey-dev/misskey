@@ -123,7 +123,7 @@
 		"micromatch": "4.0.8",
 		"msw": "2.6.4",
 		"msw-storybook-addon": "2.0.4",
-		"nodemon": "3.0.2",
+		"nodemon": "3.1.7",
 		"prettier": "3.3.3",
 		"react": "18.3.1",
 		"react-dom": "18.3.1",
