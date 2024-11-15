@@ -24,6 +24,8 @@
 - Enhance: カタルーニャ語 (ca-ES) に対応
 - Enhance: 個別お知らせページではMetaタグを出力するように
 - Enhance: ノート詳細画面にロールのバッジを表示
+- Enhance: 過去に送信したフォローリクエストを確認できるように  
+  (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
 - Enhance: 投稿フォームの設定メニューを改良
   - 投稿フォームをリセットできるように
   - 文字数カウントを復活
