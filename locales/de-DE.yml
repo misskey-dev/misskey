@@ -475,6 +475,7 @@ retype: "Erneut eingeben"
 noteOf: "Notiz von {user}"
 quoteAttached: "Zitat"
 quoteQuestion: "Als Zitat anhängen?"
+attachAsFileQuestion: "Der Text in der Zwischenablage ist lang. Möchtest du ihn als Textdatei anhängen?"
 noMessagesYet: "Noch keine Nachrichten vorhanden"
 newMessageExists: "Du hast eine neue Nachricht"
 onlyOneFileCanBeAttached: "Es kann pro Nachricht nur eine Datei angehängt werden"
@@ -1240,12 +1241,15 @@ _accountSettings:
   requireSigninToViewContentsDescription1: "Erfordere eine Anmeldung, um alle Notizen und andere Inhalte anzuzeigen, die du erstellt hast. Dadurch wird verhindert, dass Crawler deine Informationen sammeln."
 _abuseUserReport:
   forward: "Weiterleiten"
+  accept: "Akzeptieren"
+  reject: "Ablehnen"
 _delivery:
   stop: "Gesperrt"
   _type:
     none: "Wird veröffentlicht"
 _bubbleGame:
   howToPlay: "Wie man spielt"
+  hold: "Halten"
 _announcement:
   forExistingUsers: "Nur für existierende Nutzer"
   forExistingUsersDescription: "Ist diese Option aktiviert, wird diese Ankündigung nur Nutzern angezeigt, die zum Zeitpunkt der Ankündigung bereits registriert sind. Ist sie deaktiviert, wird sie auch Nutzern, die sich nach dessen Veröffentlichung registrieren, angezeigt."
