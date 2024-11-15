@@ -2738,3 +2738,6 @@ _selfXssPrevention:
   description1: "Si posa alguna cosa al seu compte, un usuari malintencionat podria segrestar-la o robar-li les dades."
   description2: "Si no entens que estàs fent %cpara ara mateix i tanca la finestra."
   description3: "Per obtenir més informació. {link}"
+_followRequest:
+  recieved: "Sol·licituds rebudes"
+  sent: "Sol·licituds enviades"
