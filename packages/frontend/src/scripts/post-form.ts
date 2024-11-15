@@ -41,4 +41,12 @@ export const bottomItemDef = {
 		title: i18n.ts.saveAsDraft,
 		icon: 'ti-note',
 	},
+	scheduleNote: {
+		title: i18n.ts.schedulePost,
+		icon: 'ti ti-calendar-time',
+	},
+	schedulePostList: {
+		title: i18n.ts.schedulePostList,
+		icon: 'ti ti-calendar-event',
+	},
 };

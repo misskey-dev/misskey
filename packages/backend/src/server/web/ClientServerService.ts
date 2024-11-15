@@ -33,6 +33,7 @@ import type {
 	SystemQueue,
 	UserWebhookDeliverQueue,
 	SystemWebhookDeliverQueue,
+	ScheduleNotePostQueue,
 } from '@/core/QueueModule.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -125,6 +126,7 @@ export class ClientServerService {
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
 		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
+		@Inject('queue:scheduleNotePost') public scheduleNotePostQueue: ScheduleNotePostQueue,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -253,6 +255,7 @@ export class ClientServerService {
 				this.objectStorageQueue,
 				this.userWebhookDeliverQueue,
 				this.systemWebhookDeliverQueue,
+				this.scheduleNotePostQueue,
 			].map(q => new BullMQAdapter(q)),
 			serverAdapter: bullBoardServerAdapter,
 		});

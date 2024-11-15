@@ -2103,6 +2103,8 @@ _permissions:
   "read:mutes": "View your list of muted users"
   "write:mutes": "Edit your list of muted users"
   "write:notes": "Compose or delete notes"
+  "read:notes-schedule": "View your list of scheduled notes"
+  "write:notes-schedule": "Compose or delete scheduled notes"
   "read:notifications": "View your notifications"
   "write:notifications": "Manage your notifications"
   "read:reactions": "View your reactions"

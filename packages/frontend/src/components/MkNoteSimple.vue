@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div v-show="!isDeleted" :class="$style.root" :tabindex="!isDeleted ? '-1' : undefined">
 	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
@@ -15,6 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</p>
 			<div v-show="note.cw == null || showContent">
 				<MkSubNoteContent :class="$style.text" :note="note"/>
+				<div v-if="note.isSchedule" class="_buttons" style="margin-top: 10px;">
+					<MkButton rounded :small="true" inline :class="$style.button" @click.stop.prevent="editScheduleNote()"><i class="ti ti-eraser"></i> {{ i18n.ts.deleteAndEdit }}</MkButton>
+					<MkButton rounded :small="true" inline danger :class="$style.button" @click.stop.prevent="deleteScheduleNote()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -24,15 +28,55 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n';
+import MkButton from '@/components/MkButton.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 
 const props = defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note & {
+		isSchedule? : boolean,
+		scheduledNoteId?: string
+	};
 }>();
 
 const showContent = ref(false);
+const isDeleted = ref(false);
+
+const emit = defineEmits<{
+	(ev: 'editScheduleNote'): void;
+}>();
+
+async function deleteScheduleNote() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.deleteConfirm,
+		okText: i18n.ts.delete,
+		cancelText: i18n.ts.cancel,
+	});
+	if (canceled) return;
+	await os.apiWithDialog('notes/schedule/delete', { noteId: props.note.id })
+		.then(() => {
+			isDeleted.value = true;
+		});
+}
+
+async function editScheduleNote() {
+	await os.apiWithDialog('notes/schedule/delete', { noteId: props.note.id })
+		.then(() => {
+			isDeleted.value = true;
+		});
+
+	await os.post({
+		initialNote: props.note,
+		renote: props.note.renote,
+		reply: props.note.reply,
+		channel: props.note.channel,
+	});
+	emit('editScheduleNote');
+}
 </script>
 
 <style lang="scss" module>
@@ -41,6 +85,11 @@ const showContent = ref(false);
 	margin: 0;
 	padding: 0;
 	font-size: 0.95em;
+}
+
+.button{
+	margin-right: var(--margin);
+	margin-bottom: var(--margin);
 }
 
 .avatar {

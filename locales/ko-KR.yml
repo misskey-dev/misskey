@@ -2084,6 +2084,8 @@ _permissions:
   "read:mutes": "뮤트 여부를 확인합니다"
   "write:mutes": "뮤트를 하거나 해제합니다"
   "write:notes": "노트를 작성하거나 삭제합니다"
+  "read:notes-schedule": "게시를 예약한 노트를 봅니다"
+  "write:notes-schedule": "노트 게시를 예약하거나 삭제합니다"
   "read:notifications": "알림을 확인합니다"
   "write:notifications": "알림을 모두 읽음 처리합니다"
   "read:reactions": "리액션을 확인합니다"

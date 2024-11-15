@@ -51,6 +51,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.scheduleNoteMax, 'scheduleNoteMax'])">
+							<template #label>{{ i18n.ts._role._options.scheduleNoteMax }}</template>
+							<template #suffix>{{ policies.scheduleNoteMax }}</template>
+							<MkInput v-model="policies.scheduleNoteMax" type="number">
+							</MkInput>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionLimit'])">
 							<template #label>{{ i18n.ts._role._options.mentionMax }}</template>
 							<template #suffix>{{ policies.mentionLimit }}</template>

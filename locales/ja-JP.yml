@@ -1821,6 +1821,7 @@ _role:
     canImportFollowing: "フォローのインポートを許可"
     canImportMuting: "ミュートのインポートを許可"
     canImportUserLists: "リストのインポートを許可"
+    scheduleNoteMax: "予約投稿の最大数"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
@@ -2228,6 +2229,8 @@ _permissions:
   "read:clip-favorite": "クリップのいいねを見る"
   "read:federation": "連合に関する情報を取得する"
   "write:report-abuse": "違反を報告する"
+  "read:notes-schedule": "予約投稿を見る"
+  "write:notes-schedule": "予約投稿を作成・削除する"
 
 _auth:
   shareAccessTitle: "アプリへのアクセス許可"
@@ -2494,6 +2497,8 @@ _notification:
   newNote: "新しい投稿"
   unreadAntennaNote: "アンテナ {name}"
   roleAssigned: "ロールが付与されました"
+  scheduledNoteFailed: "予約投稿に失敗しました"
+  scheduledNotePosted: "予約投稿をノートしました"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
   testNotification: "通知テスト"
@@ -2851,3 +2856,6 @@ _embedCodeGen:
   generateCode: "埋め込みコードを作成"
   codeGenerated: "コードが生成されました"
   codeGeneratedDescription: "生成されたコードをウェブサイトに貼り付けてご利用ください。"
+schedulePost: "予約投稿"
+schedulePostList: "予約投稿一覧"
+
