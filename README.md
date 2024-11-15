@@ -40,6 +40,7 @@
 - 新着ノート通知があった時まとめるように https://github.com/team-shahu/misskey/pull/40
 - いいねボタンの実装 https://github.com/team-shahu/misskey/pull/41 https://github.com/team-shahu/misskey/pull/44 https://github.com/team-shahu/misskey/pull/45
 - 独自機能ページの追加 https://github.com/team-shahu/misskey/pull/42
+- 予約投稿機能 https://github.com/team-shahu/misskey/pull/46
 
 ## Special Thanks
 - [Misskey](https://github.com/misskey-dev/misskey)  
