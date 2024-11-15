@@ -2738,3 +2738,6 @@ _selfXssPrevention:
   description1: "如果在此处粘贴了什么，恶意用户可能会接管账户或者盗取个人资料。"
   description2: "如果不能完全理解将要粘贴的内容，%c 请立即停止操作并关闭这个窗口。"
   description3: "详情请看这里。{link}"
+_followRequest:
+  recieved: "已收到申请"
+  sent: "已发送申请"
