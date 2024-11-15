@@ -6,11 +6,23 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { type WebhooksRepository } from '@/models/_.js';
-import { MiWebhook } from '@/models/Webhook.js';
+import { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+import type { Packed } from '@/misc/json-schema.js';
+
+export type UserWebhookPayload<T extends WebhookEventTypes> =
+	T extends 'note' | 'reply' | 'renote' |'mention' ? {
+		note: Packed<'Note'>,
+	} :
+	T extends 'follow' | 'unfollow' ? {
+		user: Packed<'UserDetailedNotMe'>,
+	} :
+	T extends 'followed' ? {
+		user: Packed<'UserLite'>,
+	} : never;
 
 @Injectable()
 export class UserWebhookService implements OnApplicationShutdown {
