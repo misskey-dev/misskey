@@ -1300,7 +1300,7 @@ thisContentsAreMarkedAsSigninRequiredByAuthor: "投稿者により、表示に�
 lockdown: "ロックダウン"
 pleaseSelectAccount: "アカウントを選択してください"
 availableRoles: "利用可能なロール"
-youCannotPlayGames: "このアカウントにはMisskey Gamesをプレイする権限がありません。"
+youCannotPlayGames: "このアカウントではMisskey Gamesをプレイできません。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
