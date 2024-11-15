@@ -2738,3 +2738,6 @@ _selfXssPrevention:
   description1: "如果您在此處貼上任何內容，惡意使用者可能會接管您的帳戶或竊取您的個人資訊。"
   description2: "如果您不確切知道要貼上的內容，%c 請立即停止工作並關閉此視窗。"
   description3: "細節請看這裡。{link}"
+_followRequest:
+  recieved: "收到的請求"
+  sent: "送出的請求"
