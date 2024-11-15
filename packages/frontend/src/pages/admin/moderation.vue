@@ -11,8 +11,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
 					<MkSwitch v-model="enableRegistration" @change="onChange_enableRegistration">
-						<template #label>{{ i18n.ts.enableRegistration }}</template>
-						<template #caption>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</template>
+						<template #label>{{ i18n.ts._serverSettings.openRegistration }}</template>
+						<template #caption>
+							<div>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</div>
+							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.openRegistrationWarning }}</div>
+						</template>
 					</MkSwitch>
 
 					<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">

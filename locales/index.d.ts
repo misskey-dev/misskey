@@ -1547,10 +1547,6 @@ export interface Locale extends ILocale {
      */
     "registration": string;
     /**
-     * 誰でも新規登録できるようにする
-     */
-    "enableRegistration": string;
-    /**
      * 招待
      */
     "invite": string;
@@ -5794,6 +5790,14 @@ export interface Locale extends ILocale {
          * サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。
          */
         "inquiryUrlDescription": string;
+        /**
+         * アカウントの作成をオープンにする
+         */
+        "openRegistration": string;
+        /**
+         * サーバーを常に監視し、トラブルが発生した際にすぐに対応できる体制がある場合のみオンにすることを推奨します。
+         */
+        "openRegistrationWarning": string;
         /**
          * 一定期間モデレーターのアクティビティが検出されなかった場合、スパム防止のためこの設定は自動でオフになります。
          */
