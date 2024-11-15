@@ -141,6 +141,11 @@ function compile(theme: Theme): Record<string, string> {
 		props[k] = v.startsWith('"') ? v.replace(/^"\s*/, '') : genValue(getColor(v));
 	}
 
+	// MkReactionViewerのfallback reaction用
+	if ('buttonBg' in props) {
+		props['buttonBgSub'] = getColor(props['buttonBg'] as string).setAlpha(0.3).toString();
+	}
+
 	return props;
 }
 

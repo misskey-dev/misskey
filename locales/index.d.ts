@@ -10574,24 +10574,6 @@ export interface Locale extends ILocale {
          */
         "loop": string;
     };
-    "_hideReactionCount": {
-        /**
-         * 非表示にしない
-         */
-        "none": string;
-        /**
-         * 自分のノートのみ
-         */
-        "self": string;
-        /**
-         * 自分以外のノートのみ
-         */
-        "others": string;
-        /**
-         * 全てのノート
-         */
-        "all": string;
-    };
     "_profileHiddenSettings": {
         /**
          * プロフィールを非表示にする機能
@@ -10713,6 +10695,24 @@ export interface Locale extends ILocale {
          * 生成されたコードをウェブサイトに貼り付けてご利用ください。
          */
         "codeGeneratedDescription": string;
+    };
+    "_hideReactionCount": {
+        /**
+         * 非表示にしない
+         */
+        "none": string;
+        /**
+         * 自分のノートのみ
+         */
+        "self": string;
+        /**
+         * 自分以外のノートのみ
+         */
+        "others": string;
+        /**
+         * 全てのノート
+         */
+        "all": string;
     };
     /**
      * 予約投稿
