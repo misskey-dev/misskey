@@ -83,6 +83,10 @@ One should not add property that has defined before by other implementation, or 
 ## Reviewers guide
 Be willing to comment on the good points and not just the things you want fixed 💯
 
+読んでおくといいやつ
+- https://blog.lacolaco.net/posts/1e2cf439b3c2/
+- https://konifar-zatsu.hatenadiary.jp/entry/2024/11/05/192421
+
 ### Review perspective
 - Scope
 	- Are the goals of the PR clear?
@@ -132,7 +136,8 @@ You can improve our translations with your Crowdin account.
 Your changes in Crowdin are automatically submitted as a PR (with the title "New Crowdin translations") to the repository.
 The owner [@syuilo](https://github.com/syuilo) merges the PR into the develop branch before the next release.
 
-If your language is not listed in Crowdin, please open an issue.
+If your language is not listed in Crowdin, please open an issue. We will add it to Crowdin.
+For newly added languages, once the translation progress per language exceeds 70%, it will be officially introduced into Misskey and made available to users.
 
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
