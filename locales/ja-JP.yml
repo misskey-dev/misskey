@@ -1299,6 +1299,7 @@ thisContentsAreMarkedAsSigninRequiredByAuthor: "投稿者により、表示に�
 lockdown: "ロックダウン"
 pleaseSelectAccount: "アカウントを選択してください"
 availableRoles: "利用可能なロール"
+acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"

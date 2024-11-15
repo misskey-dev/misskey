@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<MkSwitch v-model="enableRegistration" @change="onChange_enableRegistration">
+					<MkSwitch :modelValue="enableRegistration" @update:modelValue="onChange_enableRegistration">
 						<template #label>{{ i18n.ts._serverSettings.openRegistration }}</template>
 						<template #caption>
 							<div>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</div>
@@ -167,7 +167,17 @@ async function init() {
 	mediaSilencedHosts.value = meta.mediaSilencedHosts.join('\n');
 }
 
-function onChange_enableRegistration(value: boolean) {
+async function onChange_enableRegistration(value: boolean) {
+	if (value) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.acknowledgeNotesAndEnable,
+		});
+		if (canceled) return;
+	}
+
+	enableRegistration.value = value;
+
 	os.apiWithDialog('admin/update-meta', {
 		disableRegistration: !value,
 	}).then(() => {

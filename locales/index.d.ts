@@ -5214,6 +5214,10 @@ export interface Locale extends ILocale {
      * 利用可能なロール
      */
     "availableRoles": string;
+    /**
+     * 注意事項を理解した上でオンにします。
+     */
+    "acknowledgeNotesAndEnable": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
