@@ -8,8 +8,9 @@ import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
-import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
+import { DEFAULT_DEVICE_KIND, type DeviceKind } from '@/scripts/device-kind.js';
+import { miLocalStorage } from '@/local-storage.js';
 import { Storage } from '@/pizzax.js';
 import type { Ast } from '@syuilo/aiscript';
 
@@ -207,7 +208,7 @@ export const defaultStore = markRaw(new Storage('base', {
 
 	overridedDeviceKind: {
 		where: 'device',
-		default: null as null | 'smartphone' | 'tablet' | 'desktop',
+		default: null as DeviceKind | null,
 	},
 	serverDisconnectedBehavior: {
 		where: 'device',
@@ -263,11 +264,11 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	useBlurEffectForModal: {
 		where: 'device',
-		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
+		default: DEFAULT_DEVICE_KIND === 'desktop',
 	},
 	useBlurEffect: {
 		where: 'device',
-		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
+		default: DEFAULT_DEVICE_KIND === 'desktop',
 	},
 	showFixedPostForm: {
 		where: 'device',

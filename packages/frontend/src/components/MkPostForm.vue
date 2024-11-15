@@ -1105,7 +1105,7 @@ defineExpose({
 	&:focus-visible {
 		outline: none;
 
-		.submitInner {
+		> .submitInner {
 			outline: 2px solid var(--MI_THEME-fgOnAccent);
 			outline-offset: -4px;
 		}
@@ -1120,13 +1120,13 @@ defineExpose({
 	}
 
 	&:not(:disabled):hover {
-		> .inner {
+		> .submitInner {
 			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 		}
 	}
 
 	&:not(:disabled):active {
-		> .inner {
+		> .submitInner {
 			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 		}
 	}
