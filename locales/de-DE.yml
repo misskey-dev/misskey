@@ -1237,6 +1237,7 @@ pleaseSelectAccount: "Bitte Konto auswählen"
 availableRoles: "Verfügbare Rollen"
 _accountSettings:
   requireSigninToViewContents: "Anmeldung erfordern, um Inhalte anzuzeigen"
+  requireSigninToViewContentsDescription1: "Erfordere eine Anmeldung, um alle Notizen und andere Inhalte anzuzeigen, die du erstellt hast. Dadurch wird verhindert, dass Crawler deine Informationen sammeln."
 _abuseUserReport:
   forward: "Weiterleiten"
 _delivery:
