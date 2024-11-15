@@ -18760,13 +18760,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-<<<<<<< HEAD
-          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
-=======
           includeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'followRequestRejected' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'scheduledNoteFailed' | 'scheduledNotePosted' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
           excludeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'followRequestRejected' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'scheduledNoteFailed' | 'scheduledNotePosted' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
->>>>>>> ec10a9c6e8 (予約投稿+alpha)
         };
       };
     };
@@ -18833,13 +18828,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-<<<<<<< HEAD
-          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'note:grouped' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'note:grouped' | 'pollVote' | 'groupInvited')[];
-=======
           includeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'followRequestRejected' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'scheduledNoteFailed' | 'scheduledNotePosted' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'note:grouped' | 'pollVote' | 'groupInvited')[];
           excludeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'followRequestRejected' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'scheduledNoteFailed' | 'scheduledNotePosted' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'note:grouped' | 'pollVote' | 'groupInvited')[];
->>>>>>> ec10a9c6e8 (予約投稿+alpha)
         };
       };
     };
