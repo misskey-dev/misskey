@@ -60,7 +60,7 @@ const toggle = () => {
 
 	&:hover {
 		> .button {
-			border-color: var(--inputBorderHover) !important;
+			border-color: var(--MI_THEME-inputBorderHover) !important;
 		}
 	}
 
@@ -78,7 +78,7 @@ const toggle = () => {
 	margin: 0;
 
 	&:focus-visible ~ .toggle {
-		outline: 2px solid var(--focus);
+		outline: 2px solid var(--MI_THEME-focus);
 		outline-offset: 2px;
 	}
 }
@@ -88,7 +88,7 @@ const toggle = () => {
 	margin-top: 2px;
 	display: block;
 	transition: inherit;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 
 .label {
@@ -100,7 +100,7 @@ const toggle = () => {
 
 .caption {
 	margin: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 	font-size: 0.85em;
 
 	&:empty {

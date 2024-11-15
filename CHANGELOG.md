@@ -1,7 +1,92 @@
+## 2024.11.0
+
+### Note
+- Node.js 20.xは非推奨になりました。Node.js 22.x (LTS)の利用を推奨します。
+- DockerのNode.jsが22.11.0に更新されました
+
+### General
+- Feat: コンテンツの表示にログインを必須にできるように
+- Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
+- Enhance: 依存関係の更新
+- Enhance: l10nの更新
+
+### Client
+- Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
+- Enhance: ドライブでソートができるように
+- Enhance: アイコンデコレーション管理画面の改善
+- Enhance: 「単なるラッキー」の取得条件を変更
+- Enhance: 投稿フォームでEscキーを押したときIME入力中ならフォームを閉じないように（ #10866 ）  
+- Enhance: MiAuth, OAuthの認可画面の改善
+  - どのアカウントで認証しようとしているのかがわかるように
+  - 認証するアカウントを切り替えられるように
+- Enhance: Self-XSS防止用の警告を追加
+- Enhance: カタルーニャ語 (ca-ES) に対応
+- Enhance: 個別お知らせページではMetaタグを出力するように
+- Enhance: ノート詳細画面にロールのバッジを表示
+- Enhance: 過去に送信したフォローリクエストを確認できるように  
+  (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
+- Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
+- Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
+- Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
+- Fix: Encode RSS urls with escape sequences before fetching allowing query parameters to be used
+- Fix: リンク切れを修正
+= Fix: ノート投稿ボタンにホバー時のスタイルが適用されていないのを修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/305)
+- Fix: メールアドレス登録有効化時の「完了」ダイアログボックスの表示条件を修正
+- Fix: 画面幅が狭い環境でデザインが崩れる問題を修正  
+	(Cherry-picked from https://github.com/MisskeyIO/misskey/pull/815)
+
+### Server
+- Enhance: DockerのNode.jsを22.11.0に更新
+- Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
+  (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
+- Enhance: リモートユーザーの照会をオリジナルにリダイレクトするように
+- Fix: フォロワーへのメッセージの絵文字をemojisに含めるように
+- Fix: Nested proxy requestsを検出した際にブロックするように
+  [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
+- Fix: 招待コードの発行可能な残り数算出に使用すべきロールポリシーの値が違う問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/706)
+- Fix: 連合への配信時に、acctの大小文字が区別されてしまい正しくメンションが処理されないことがある問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/711)
+- Fix: ローカルユーザーへのメンションを含むノートが連合される際に正しいURLに変換されないことがある問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/712)
+- Fix: FTT無効時にユーザーリストタイムラインが使用できない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/709)
+- Fix: User Webhookテスト機能のMock Payloadを修正  
+
+### Misskey.js
+- Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
+
+## 2024.10.1
+
+### Note
+- スパム対策として、モデレータ権限を持つユーザのアクティビティが7日以上確認できない場合は自動的に招待制へと切り替え（コントロールパネル -> モデレーション -> "誰でも新規登録できるようにする"をオフに変更）るようになりました。 ( #13437 )
+	- 切り替わった際はモデレーターへお知らせとして通知されます。登録をオープンな状態で継続したい場合は、コントロールパネルから再度設定を行ってください。
+
+### General
+- Feat: ユーザーの名前に禁止ワードを設定できるように
+
+### Client
+- Enhance: タイムライン表示時のパフォーマンスを向上
+- Enhance: アーカイブした個人宛のお知らせを表示・編集できるように
+- Enhance: l10nの更新
+- Fix: メールアドレス不要でCaptchaが有効な場合にアカウント登録完了後自動でのログインに失敗する問題を修正
+
+### Server
+- Feat: モデレータ権限を持つユーザが全員7日間活動しなかった場合は自動的に招待制へと切り替えるように ( #13437 )
+- Enhance: 個人宛のお知らせは「わかった」を押すと自動的にアーカイブされるように
+- Fix: `admin/emoji/update`エンドポイントのidのみ指定した時不正なエラーが発生するバグを修正
+- Fix: RBT有効時、リノートのリアクションが反映されない問題を修正
+- Fix: キューのエラーログを簡略化するように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/649)
+
 ## 2024.10.0
 
 ### Note
-- サーバー初期設定時に使用する初期パスワードを設定できるようになりました。今後Misskeyサーバーを新たに設置する際には、初回の起動前にコンフィグファイルの`setupPassword`をコメントアウトし、初期パスワードを設定することをおすすめします。（すでに初期設定を完了しているサーバーについては、この変更に伴い対応する必要はありません）  
+- セキュリティ向上のため、サーバー初期設定時に使用する初期パスワードを設定できるようになりました。今後Misskeyサーバーを新たに設置する際には、初回の起動前にコンフィグファイルの`setupPassword`をコメントアウトし、初期パスワードを設定することをおすすめします。（すでに初期設定を完了しているサーバーについては、この変更に伴い対応する必要はありません）  
   - ホスティングサービスを運営している場合は、コンフィグファイルを構築する際に`setupPassword`をランダムな値に設定し、ユーザーに通知するようにシステムを更新することをおすすめします。
   - なお、初期パスワードが設定されていない場合でも初期設定を行うことが可能です（UI上で初期パスワードの入力欄を空欄にすると続行できます）。
 - ユーザーデータを読み込む際の型が一部変更されました。
@@ -23,6 +108,8 @@
 ### Client
 - Enhance: デザインの調整
 - Enhance: ログイン画面の認証フローを改善
+- Fix: クライアント上での時間ベースの実績獲得動作が実績獲得後も発動していた問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/657)
 
 ### Server
 - Enhance: セキュリティ向上のため、ログイン時にメール通知を行うように
