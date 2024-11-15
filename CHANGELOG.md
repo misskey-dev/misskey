@@ -24,6 +24,8 @@
 - Enhance: カタルーニャ語 (ca-ES) に対応
 - Enhance: 個別お知らせページではMetaタグを出力するように
 - Enhance: ノート詳細画面にロールのバッジを表示
+- Enhance: 過去に送信したフォローリクエストを確認できるように  
+  (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
 - Enhance: ノート検索ページのデザイン調整  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/273)
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正

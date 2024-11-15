@@ -91,7 +91,10 @@ async function onClick() {
 				text: i18n.tsx.unfollowConfirm({ name: props.user.name || props.user.username }),
 			});
 
-			if (canceled) return;
+			if (canceled) {
+				wait.value = false;
+				return;
+			}
 
 			await misskeyApi('following/delete', {
 				userId: props.user.id,
@@ -125,7 +128,10 @@ async function onClick() {
 				});
 				hasPendingFollowRequestFromYou.value = true;
 
-				if ($i == null) return;
+				if ($i == null) {
+					wait.value = false;
+					return;
+				}
 
 				claimAchievement('following1');
 

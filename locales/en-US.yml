@@ -331,6 +331,7 @@ selectFile: "Select a file"
 selectFiles: "Select files"
 selectFolder: "Select a folder"
 selectFolders: "Select folders"
+fileNotSelected: "No file selected"
 renameFile: "Rename file"
 folderName: "Folder name"
 createFolder: "Create a folder"
@@ -1298,6 +1299,7 @@ yourNameContainsProhibitedWordsDescription: "If you wish to use this name, pleas
 thisContentsAreMarkedAsSigninRequiredByAuthor: "Set by the author to require login to view"
 lockdown: "Lockdown"
 pleaseSelectAccount: "Select an account"
+availableRoles: "Available roles"
 _accountSettings:
   requireSigninToViewContents: "Require sign-in to view contents"
   requireSigninToViewContentsDescription1: "Require login to view all notes and other content you have created. This will have the effect of preventing crawlers from collecting your information."
@@ -2223,7 +2225,7 @@ _widgets:
   _userList:
     chooseList: "Select a list"
   clicker: "Clicker"
-  birthdayFollowings: "Users who celebrate their birthday today"
+  birthdayFollowings: "Today's Birthdays"
 _cw:
   hide: "Hide"
   show: "Show content"
@@ -2730,3 +2732,9 @@ _embedCodeGen:
   generateCode: "Generate embed code"
   codeGenerated: "The code has been generated"
   codeGeneratedDescription: "Paste the generated code into your website to embed the content."
+_selfXssPrevention:
+  warning: "WARNING"
+  title: "\"Paste something on this screen\" is all a scam."
+  description1: "If you paste something here, a malicious user could hijack your account or steal your personal information."
+  description2: "If you do not understand exactly what you are trying to paste, %cstop working right now and close this window."
+  description3: "For more information, please refer to this. {link}"

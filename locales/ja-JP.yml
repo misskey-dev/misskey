@@ -2820,6 +2820,10 @@ _selfXssPrevention:
   description2: "貼り付けようとしているものが何なのかを正確に理解していない場合は、%c今すぐ作業を中止してこのウィンドウを閉じてください。"
   description3: "詳しくはこちらをご確認ください。 {link}"
 
+_followRequest:
+  recieved: "受け取った申請"
+  sent: "送った申請"
+
 _search:
   searchScopeAll: "全て"
   searchScopeLocal: "ローカル"

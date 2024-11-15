@@ -10579,6 +10579,16 @@ export interface Locale extends ILocale {
          */
         "description3": ParameterizedString<"link">;
     };
+    "_followRequest": {
+        /**
+         * 受け取った申請
+         */
+        "recieved": string;
+        /**
+         * 送った申請
+         */
+        "sent": string;
+    };
     "_search": {
         /**
          * 全て
@@ -10608,7 +10618,7 @@ export interface Locale extends ILocale {
          * 例: misskey.example.com
          */
         "serverHostPlaceholder": string;
-    };
+    
 }
 declare const locales: {
     [lang: string]: Locale;
