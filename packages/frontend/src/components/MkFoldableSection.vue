@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="rootEl" :class="$style.root">
-	<header :class="$style.header" class="_button" :style="{ background: bg }" @click="showBody = !showBody">
+	<header :class="$style.header" class="_button" @click="showBody = !showBody">
 		<div :class="$style.title"><div><slot name="header"></slot></div></div>
 		<div :class="$style.divider"></div>
 		<button class="_button" :class="$style.button">
@@ -32,21 +32,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef, watch } from 'vue';
-import tinycolor from 'tinycolor2';
 import { miLocalStorage } from '@/local-storage.js';
 import { defaultStore } from '@/store.js';
+import { getBgColor } from '@/scripts/get-bg-color.js';
 
 const miLocalStoragePrefix = 'ui:folder:' as const;
 
 const props = withDefaults(defineProps<{
 	expanded?: boolean;
-	persistKey?: string;
+	persistKey?: string | null;
 }>(), {
 	expanded: true,
+	persistKey: null,
 });
 
-const rootEl = shallowRef<HTMLDivElement>();
-const bg = ref<string>();
+const rootEl = shallowRef<HTMLElement>();
+const parentBg = ref<string | null>(null);
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const showBody = ref((props.persistKey && miLocalStorage.getItem(`${miLocalStoragePrefix}${props.persistKey}`)) ? (miLocalStorage.getItem(`${miLocalStoragePrefix}${props.persistKey}`) === 't') : props.expanded);
 
 watch(showBody, () => {
@@ -55,47 +57,34 @@ watch(showBody, () => {
 	}
 });
 
-function enter(element: Element) {
-	const el = element as HTMLElement;
+function enter(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
 	const elementHeight = el.getBoundingClientRect().height;
 	el.style.height = '0';
 	el.offsetHeight; // reflow
-	el.style.height = elementHeight + 'px';
+	el.style.height = `${elementHeight}px`;
 }
 
-function afterEnter(element: Element) {
-	const el = element as HTMLElement;
-	el.style.height = 'unset';
+function afterEnter(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
+	el.style.height = '';
 }
 
-function leave(element: Element) {
-	const el = element as HTMLElement;
+function leave(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
 	const elementHeight = el.getBoundingClientRect().height;
-	el.style.height = elementHeight + 'px';
+	el.style.height = `${elementHeight}px`;
 	el.offsetHeight; // reflow
 	el.style.height = '0';
 }
 
-function afterLeave(element: Element) {
-	const el = element as HTMLElement;
-	el.style.height = 'unset';
+function afterLeave(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
+	el.style.height = '';
 }
 
 onMounted(() => {
-	function getParentBg(el?: HTMLElement | null): string {
-		if (el == null || el.tagName === 'BODY') return 'var(--bg)';
-		const background = el.style.background || el.style.backgroundColor;
-		if (background) {
-			return background;
-		} else {
-			return getParentBg(el.parentElement);
-		}
-	}
-
-	const rawBg = getParentBg(rootEl.value);
-	const _bg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
-	_bg.setAlpha(0.85);
-	bg.value = _bg.toRgbString();
+	parentBg.value = getBgColor(rootEl.value?.parentElement);
 });
 </script>
 
@@ -118,9 +107,10 @@ onMounted(() => {
 	position: relative;
 	z-index: 10;
 	position: sticky;
-	top: var(--stickyTop, 0px);
-	-webkit-backdrop-filter: var(--blur, blur(8px));
-	backdrop-filter: var(--blur, blur(20px));
+	top: var(--MI-stickyTop, 0px);
+	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+	backdrop-filter: var(--MI-blur, blur(20px));
+	background-color: color(from v-bind("parentBg ?? 'var(--bg)'") srgb r g b / 0.85);
 }
 
 .title {
@@ -134,7 +124,7 @@ onMounted(() => {
 	flex: 1;
 	margin: auto;
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .button {

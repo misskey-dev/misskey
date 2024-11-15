@@ -7,7 +7,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { beforeAll, describe, jest } from '@jest/globals';
 import { WebhookTestService } from '@/core/WebhookTestService.js';
-import { UserWebhookService } from '@/core/UserWebhookService.js';
+import { UserWebhookPayload, UserWebhookService } from '@/core/UserWebhookService.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { MiSystemWebhook, MiUser, MiWebhook, UserProfilesRepository, UsersRepository } from '@/models/_.js';
@@ -122,7 +122,7 @@ describe('WebhookTestService', () => {
 			const calls = queueService.userWebhookDeliver.mock.calls[0];
 			expect((calls[0] as any).id).toBe('dummy-webhook');
 			expect(calls[1]).toBe('note');
-			expect((calls[2] as any).id).toBe('dummy-note-1');
+			expect((calls[2] as UserWebhookPayload<'note'>).note.id).toBe('dummy-note-1');
 		});
 
 		test('reply', async () => {
@@ -131,7 +131,7 @@ describe('WebhookTestService', () => {
 			const calls = queueService.userWebhookDeliver.mock.calls[0];
 			expect((calls[0] as any).id).toBe('dummy-webhook');
 			expect(calls[1]).toBe('reply');
-			expect((calls[2] as any).id).toBe('dummy-reply-1');
+			expect((calls[2] as UserWebhookPayload<'reply'>).note.id).toBe('dummy-reply-1');
 		});
 
 		test('renote', async () => {
@@ -140,7 +140,7 @@ describe('WebhookTestService', () => {
 			const calls = queueService.userWebhookDeliver.mock.calls[0];
 			expect((calls[0] as any).id).toBe('dummy-webhook');
 			expect(calls[1]).toBe('renote');
-			expect((calls[2] as any).id).toBe('dummy-renote-1');
+			expect((calls[2] as UserWebhookPayload<'renote'>).note.id).toBe('dummy-renote-1');
 		});
 
 		test('mention', async () => {
@@ -149,7 +149,7 @@ describe('WebhookTestService', () => {
 			const calls = queueService.userWebhookDeliver.mock.calls[0];
 			expect((calls[0] as any).id).toBe('dummy-webhook');
 			expect(calls[1]).toBe('mention');
-			expect((calls[2] as any).id).toBe('dummy-mention-1');
+			expect((calls[2] as UserWebhookPayload<'mention'>).note.id).toBe('dummy-mention-1');
 		});
 
 		test('follow', async () => {
@@ -158,7 +158,7 @@ describe('WebhookTestService', () => {
 			const calls = queueService.userWebhookDeliver.mock.calls[0];
 			expect((calls[0] as any).id).toBe('dummy-webhook');
 			expect(calls[1]).toBe('follow');
-			expect((calls[2] as any).id).toBe('dummy-user-1');
+			expect((calls[2] as UserWebhookPayload<'follow'>).user.id).toBe('dummy-user-1');
 		});
 
 		test('followed', async () => {
@@ -167,7 +167,7 @@ describe('WebhookTestService', () => {
 			const calls = queueService.userWebhookDeliver.mock.calls[0];
 			expect((calls[0] as any).id).toBe('dummy-webhook');
 			expect(calls[1]).toBe('followed');
-			expect((calls[2] as any).id).toBe('dummy-user-2');
+			expect((calls[2] as UserWebhookPayload<'followed'>).user.id).toBe('dummy-user-2');
 		});
 
 		test('unfollow', async () => {
@@ -176,7 +176,7 @@ describe('WebhookTestService', () => {
 			const calls = queueService.userWebhookDeliver.mock.calls[0];
 			expect((calls[0] as any).id).toBe('dummy-webhook');
 			expect(calls[1]).toBe('unfollow');
-			expect((calls[2] as any).id).toBe('dummy-user-3');
+			expect((calls[2] as UserWebhookPayload<'unfollow'>).user.id).toBe('dummy-user-3');
 		});
 
 		describe('NoSuchWebhookError', () => {

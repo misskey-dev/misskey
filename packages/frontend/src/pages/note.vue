@@ -61,6 +61,7 @@ import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { defaultStore } from '@/store.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
 
 const props = defineProps<{
 	noteId: string;
@@ -128,6 +129,11 @@ function fetchNote() {
 			});
 		}
 	}).catch(err => {
+		if (err.id === '8e75455b-738c-471d-9f80-62693f33372e') {
+			pleaseLogin({
+				message: i18n.ts.thisContentsAreMarkedAsSigninRequiredByAuthor,
+			});
+		}
 		error.value = err;
 	});
 }
@@ -170,11 +176,11 @@ definePageMetadata(() => ({
 }
 
 .loadNext {
-	margin-bottom: var(--margin);
+	margin-bottom: var(--MI-margin);
 }
 
 .loadPrev {
-	margin-top: var(--margin);
+	margin-top: var(--MI-margin);
 }
 
 .loadButton {
@@ -182,7 +188,7 @@ definePageMetadata(() => ({
 }
 
 .note {
-	border-radius: var(--radius);
-	background: var(--panel);
+	border-radius: var(--MI-radius);
+	background: var(--MI_THEME-panel);
 }
 </style>
