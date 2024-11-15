@@ -66,7 +66,7 @@ defineProps<{
 	width: fit-content;
 
 	&.ranged {
-		background-color: var(--accentedBg);
+		background-color: var(--MI_THEME-accentedBg);
 	}
 }
 </style>

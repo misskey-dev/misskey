@@ -1280,8 +1280,8 @@ onMounted(() => {
 </style>
 
 <style lang="scss">
-$borderSetting: solid 0.5px var(--divider);
-$borderRadius: var(--radius);
+$borderSetting: solid 0.5px var(--MI_THEME-divider);
+$borderRadius: var(--MI-radius);
 
 // 配下コンポーネントを含めて一括してコントロールするため、scopedもmoduleも使用できない
 .mk_grid_border {

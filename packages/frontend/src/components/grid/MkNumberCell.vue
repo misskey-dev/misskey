@@ -55,7 +55,7 @@ $cellWidth: 34px;
 	border: solid 0.5px transparent;
 
 	&.selected {
-		background-color: var(--accentedBg);
+		background-color: var(--MI_THEME-accentedBg);
 	}
 }
 </style>

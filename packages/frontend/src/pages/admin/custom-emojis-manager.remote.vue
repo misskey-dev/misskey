@@ -378,7 +378,7 @@ onMounted(async () => {
 	align-items: center;
 
 	button {
-		background-color: var(--buttonBg);
+		background-color: var(--MI_THEME-buttonBg);
 		border-radius: 9999px;
 		border: none;
 		margin: 0 4px;

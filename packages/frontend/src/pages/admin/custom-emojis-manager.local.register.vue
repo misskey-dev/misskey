@@ -431,7 +431,7 @@ onMounted(async () => {
 
 <style module lang="scss">
 .violationRow {
-	background-color: var(--infoWarnBg);
+	background-color: var(--MI_THEME-infoWarnBg);
 }
 
 .uploadBox {
@@ -441,9 +441,9 @@ onMounted(async () => {
 	align-items: center;
 	width: 100%;
 	height: auto;
-	border: 0.5px dotted var(--accentedBg);
-	border-radius: var(--border-radius);
-	background-color: var(--accentedBg);
+	border: 0.5px dotted var(--MI_THEME-accentedBg);
+	border-radius: var(--MI-radius);
+	background-color: var(--MI_THEME-accentedBg);
 	box-sizing: border-box;
 
 	&.dragOver {

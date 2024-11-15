@@ -340,11 +340,11 @@ $cellHeight: 28px;
 	border: solid 0.5px transparent;
 
 	&.selected {
-		border: solid 0.5px var(--accentLighten);
+		border: solid 0.5px var(--MI_THEME-accentLighten);
 	}
 
 	&.ranged {
-		background-color: var(--accentedBg);
+		background-color: var(--MI_THEME-accentedBg);
 	}
 
 	&.center {
@@ -352,7 +352,7 @@ $cellHeight: 28px;
 	}
 
 	&.error {
-		border: solid 0.5px var(--error);
+		border: solid 0.5px var(--MI_THEME-error);
 	}
 }
 

@@ -39,10 +39,10 @@ $buttonSize : 1.8em;
 	padding: 4px 6px;
 	gap: 3px;
 
-	background-color: var(--buttonBg);
+	background-color: var(--MI_THEME-buttonBg);
 
 	&:hover {
-		background-color: var(--buttonBgHover);
+		background-color: var(--MI_THEME-buttonHoverBg);
 	}
 }
 

@@ -107,6 +107,6 @@ function emitOrder(sortOrders: SortOrder<T>[]) {
 	padding: 8px;
 	margin-left: auto;
 	border-radius: 9999px;
-	background-color: var(--buttonBg);
+	background-color: var(--MI_THEME-buttonBg);
 }
 </style>

@@ -628,15 +628,15 @@ onMounted(async () => {
 
 <style module lang="scss">
 .violationRow {
-	background-color: var(--infoWarnBg);
+	background-color: var(--MI_THEME-infoWarnBg);
 }
 
 .changedRow {
-	background-color: var(--infoBg);
+	background-color: var(--MI_THEME-infoBg);
 }
 
 .editedRow {
-	background-color: var(--infoBg);
+	background-color: var(--MI_THEME-infoBg);
 }
 
 .row1 {
@@ -708,7 +708,7 @@ onMounted(async () => {
 
 .divider {
 	margin: 8px 0;
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 </style>
