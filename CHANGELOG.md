@@ -1,5 +1,9 @@
 ## 2024.11.0
 
+### Note
+- Node.js 20.xは非推奨になりました。Node.js 22.x (LTS)の利用を推奨します。
+- DockerのNode.jsが22.11.0に更新されました
+
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
 - Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
@@ -20,6 +24,8 @@
 - Enhance: カタルーニャ語 (ca-ES) に対応
 - Enhance: 個別お知らせページではMetaタグを出力するように
 - Enhance: ノート詳細画面にロールのバッジを表示
+- Enhance: 過去に送信したフォローリクエストを確認できるように  
+  (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
 - Enhance: Blueskyの投稿埋め込みプレビューに対応
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
@@ -30,8 +36,11 @@
 = Fix: ノート投稿ボタンにホバー時のスタイルが適用されていないのを修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/305)
 - Fix: メールアドレス登録有効化時の「完了」ダイアログボックスの表示条件を修正
+- Fix: 画面幅が狭い環境でデザインが崩れる問題を修正  
+	(Cherry-picked from https://github.com/MisskeyIO/misskey/pull/815)
 
 ### Server
+- Enhance: DockerのNode.jsを22.11.0に更新
 - Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
