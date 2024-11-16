@@ -9,6 +9,7 @@
 - Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
 - Enhance: 依存関係の更新
 - Enhance: l10nの更新
+- Enhance: 特定ロールポリシーによる運営アクティビティの検知範囲拡大に対応( #13437 )
 
 ### Client
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
