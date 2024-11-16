@@ -1,6 +1,9 @@
 ## 2024.11.0
 
 ### Note
+- [重要] ノート検索プロバイダの追加に伴い、configファイル（default.ymlなど）の構成が少し変わります.
+  - 新しい設定項目"fulltextSearch.provider"が追加されました. sqlLike, sqlPgroonga, meilisearchのいずれかを設定出来ます.
+  - すでにMeilisearchをお使いの場合、 **"fulltextSearch.provider"を"meilisearch"に設定する必要** があります.
 - Node.js 20.xは非推奨になりました。Node.js 22.x (LTS)の利用を推奨します。
 - DockerのNode.jsが22.11.0に更新されました
 
@@ -44,6 +47,7 @@
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
 - Enhance: リモートユーザーの照会をオリジナルにリダイレクトするように
+- Enhance: ノート検索の選択肢としてpgroongaに対応 ( #14730 )
 - Fix: フォロワーへのメッセージの絵文字をemojisに含めるように
 - Fix: Nested proxy requestsを検出した際にブロックするように
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
