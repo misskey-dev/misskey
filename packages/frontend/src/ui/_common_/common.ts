@@ -51,12 +51,14 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.instanceInfo,
 		icon: 'ti ti-info-circle',
 		to: '/about',
-	}, {
-		type: 'link',
-		text: i18n.ts.customEmojis,
-		icon: 'ti ti-icons',
-		to: '/about#emojis',
-	}, {
+	}, 
+	// {
+	// 	type: 'link',
+	// 	text: i18n.ts.customEmojis,
+	// 	icon: 'ti ti-icons',
+	// 	to: '/about#emojis',
+	// }, 
+	{
 		type: 'link',
 		text: i18n.ts.federation,
 		icon: 'ti ti-whirl',
@@ -66,12 +68,14 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.charts,
 		icon: 'ti ti-chart-line',
 		to: '/about#charts',
-	}, { type: 'divider' }, {
-		type: 'link',
-		text: i18n.ts.ads,
-		icon: 'ti ti-ad',
-		to: '/ads',
-	});
+	}, { type: 'divider' }, 
+	// {
+	// 	type: 'link',
+	// 	text: i18n.ts.ads,
+	// 	icon: 'ti ti-ad',
+	// 	to: '/ads',
+	// }
+);
 
 	if ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) {
 		menuItems.push({
