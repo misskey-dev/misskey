@@ -591,10 +591,12 @@ export class ApPersonService implements OnModuleInit {
 		this.hashtagService.updateUsertags(exist, tags);
 
 		// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
-		await this.followingsRepository.update(
-			{ followerId: exist.id },
-			{ followerSharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox },
-		);
+		if (person.sharedInbox != null || person.endpoints?.sharedInbox != null) {
+			await this.followingsRepository.update(
+				{ followerId: exist.id },
+				{ followerSharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox },
+			);
+		}
 
 		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
 
