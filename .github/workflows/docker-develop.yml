@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY_IMAGE: misskey/misskey
+  REGISTRY_IMAGE: pernucia/pern-custom-misskey
 
 jobs:
   # see https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
@@ -20,7 +20,7 @@ jobs:
         platform:
           - linux/amd64
           - linux/arm64
-    if: github.repository == 'misskey-dev/misskey'
+    if: github.repository == 'pernucia/pern-custom-misskey'
     steps:
       - name: Prepare
         run: |
