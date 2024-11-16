@@ -5799,7 +5799,7 @@ export interface Locale extends ILocale {
          */
         "openRegistration": string;
         /**
-         * 誰にでも登録を開放することはリスクが伴います。サーバーを常に監視し、トラブルが発生した際にすぐに対応できる体制がある場合のみオンにすることを推奨します。
+         * 登録を開放することはリスクが伴います。サーバーを常に監視し、トラブルが発生した際にすぐに対応できる体制がある場合のみオンにすることを推奨します。
          */
         "openRegistrationWarning": string;
         /**
