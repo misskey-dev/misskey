@@ -16,12 +16,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div class="main">
 		<div v-if="!isRoot" class="header">
-			<!-- <div v-if="narrow === false" class="wide">
-				<MkA to="/" class="link" activeClass="active"><i class="ti ti-home icon"></i> {{ i18n.ts.home }}</MkA>
+			<div v-if="narrow === false" class="wide">
+				<!-- <MkA to="/" class="link" activeClass="active"><i class="ti ti-home icon"></i> {{ i18n.ts.home }}</MkA>
 				<MkA v-if="isTimelineAvailable" to="/timeline" class="link" activeClass="active"><i class="ti ti-message icon"></i> {{ i18n.ts.timeline }}</MkA>
 				<MkA to="/explore" class="link" activeClass="active"><i class="ti ti-hash icon"></i> {{ i18n.ts.explore }}</MkA>
-				<MkA to="/channels" class="link" activeClass="active"><i class="ti ti-device-tv icon"></i> {{ i18n.ts.channel }}</MkA>
-			</div> -->
+				<MkA to="/channels" class="link" activeClass="active"><i class="ti ti-device-tv icon"></i> {{ i18n.ts.channel }}</MkA> -->
+			</div>
 			<div v-else-if="narrow === true" class="narrow">
 				<button class="menu _button" @click="showMenu = true">
 					<i class="ti ti-menu-2 icon"></i>
