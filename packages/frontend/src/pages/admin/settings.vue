@@ -274,7 +274,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkKeyValue>
 							<template #key>ハイライトのから除外する絵文字</template>
 							<template #value>
-								<MkTextarea v-modal="infoForm.state.highlightExcludeEmojis" :mfmAutocomplete="['emoji']" :mfmPreview="true"/>
+								<MkTextarea v-model="infoForm.state.highlightExcludeEmojis" :mfmAutocomplete="['emoji']" :mfmPreview="true"/>
 							</template>
 						</MkKeyValue>
 					
