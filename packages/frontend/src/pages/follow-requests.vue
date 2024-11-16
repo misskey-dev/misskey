@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</template>
 					<template #default="{items}">
-						<div class="mk-follow-requests">
+						<div class="mk-follow-requests _gaps">
 							<div v-for="req in items" :key="req.id" class="user _panel">
 								<MkAvatar class="avatar" :user="displayUser(req)" indicator link preview/>
 								<div class="body">
@@ -94,11 +94,11 @@ const headerTabs = computed(() => [
 	{
 		key: 'list',
 		title: i18n.ts._followRequest.recieved,
-		icon: 'ti ti-mail',
+		icon: 'ti ti-download',
 	}, {
 		key: 'sent',
 		title: i18n.ts._followRequest.sent,
-		icon: 'ti ti-send',
+		icon: 'ti ti-upload',
 	},
 ]);
 
