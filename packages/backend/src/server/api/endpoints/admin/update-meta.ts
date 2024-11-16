@@ -185,6 +185,19 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		highlightRateFactor: {
+			type: 'number',
+		},
+
+		highlightMidPopularityThreshold: {
+			type: 'number',
+		},
+		highlightHighPopularityThreashold: {
+			type: 'number',
+		},
+		highlightExcludeEmojis: {
+			type: 'string',
+		},
 	},
 	required: [],
 } as const;
@@ -671,6 +684,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Array.isArray(ps.federationHosts)) {
 				set.federationHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
+			}
+
+			if (ps.highlightRateFactor) {
+				set.highlightRateFactor = ps.highlightRateFactor;
+				set.highlightMidPopularityThreshold = ps.highlightMidPopularityThreshold;
+				set.highlightHighPopularityThreashold = ps.highlightHighPopularityThreashold;
+				set.highlightExcludeEmojis = ps.highlightExcludeEmojis;
 			}
 
 			const before = await this.metaService.fetch(true);

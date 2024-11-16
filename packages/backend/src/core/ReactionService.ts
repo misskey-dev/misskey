@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository, MiMeta } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -123,7 +123,7 @@ export class ReactionService {
 		}
 
 		let reaction = _reaction ?? FALLBACK;
-
+		
 		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && (user.host != null))) {
 			reaction = '\u2764';
 		} else if (_reaction != null) {
@@ -171,6 +171,8 @@ export class ReactionService {
 			reaction,
 		};
 
+		Logger.error('I\'m ' + reaction);
+
 		try {
 			await this.noteReactionsRepository.insert(record);
 		} catch (e) {
@@ -209,9 +211,14 @@ export class ReactionService {
 				.execute();
 		}
 
+		const excludeEmojis = this.meta.highlightExcludeEmojis.split(/:\n/).filter(v => v);
+		Logger.error('I\'m ' + reaction);
+
+		Logger.error(excludeEmojis, 	!excludeEmojis.includes(reaction));
 		// 30%の確率、セルフではない、3日以内に投稿されたノートの場合ハイライト用ランキング更新
 		if (
-			Math.random() < 0.3 &&
+			!excludeEmojis.includes(reaction) &&
+			Math.random() <= (this.meta.highlightRateFactor / 100) &&
 			note.userId !== user.id &&
 			(Date.now() - this.idService.parse(note.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3
 		) {

@@ -753,7 +753,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			.execute();
 
 		// 30%の確率、3日以内に投稿されたノートの場合ハイライト用ランキング更新
-		if (Math.random() < 0.3 && (Date.now() - this.idService.parse(renote.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3) {
+		if (Math.random() <= (this.meta.highlightRateFactor / 100) && (Date.now() - this.idService.parse(renote.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3) {
 			if (renote.channelId != null) {
 				if (renote.replyId == null) {
 					this.featuredService.updateInChannelNotesRanking(renote.channelId, renote.id, 5);

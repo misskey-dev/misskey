@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
-					<div :class="[$style.text, {[$style.akafav]:(featured && note.reactionCount >= 5), [$style.aofav]: featured && note.reactionCount >= 3 && note.reactionCount < 5}]">
+					<div :class="[$style.text, {[$style.akafav]:(featured && note.reactionCount >= highlightPopularityThreshold.highPopularity ), [$style.aofav]: featured && note.reactionCount >= highlightPopularityThreshold.midPopularity && note.reactionCount < highlightPopularityThreshold.highPopularity }]">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 						<Mfm
@@ -205,7 +205,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { getNoteSummary } from '@/scripts/get-note-summary.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import { isEnabledUrlPreview } from '@/instance.js';
+import { instance, isEnabledUrlPreview } from '@/instance.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
@@ -235,6 +235,13 @@ const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', nul
 
 const note = ref(deepClone(props.note));
 
+
+const highlightPopularityThreshold = computed(() => {
+	return {
+		highPopularity: instance.highlightHighPopularityThreashold,
+		midPopularity: instance.highlightMidPopularityThreshold,
+	}
+})
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {

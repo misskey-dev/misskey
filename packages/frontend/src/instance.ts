@@ -28,7 +28,13 @@ if (providedAt > cachedAt) {
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.MetaDetailed = reactive(cachedMeta ?? {});
+
+type HighlightPopularityThreshold = {
+	highlightMidPopularityThreshold: number;
+	highlightHighPopularityThreashold: number;
+}
+
+export const instance: Misskey.entities.MetaDetailed & HighlightPopularityThreshold = reactive(cachedMeta ?? {});
 
 export const serverErrorImageUrl = computed(() => instance.serverErrorImageUrl ?? DEFAULT_SERVER_ERROR_IMAGE_URL);
 

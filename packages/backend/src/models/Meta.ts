@@ -658,4 +658,13 @@ export class MiMeta {
 		default: '{}',
 	})
 	public federationHosts: string[];
+
+	@Column('integer', { default: 30 })
+	public highlightRateFactor: number;
+	@Column('integer', { default: 3 })
+	public highlightMidPopularityThreshold: number;
+	@Column('integer', { default: 5 })
+	public highlightHighPopularityThreashold: number;
+	@Column('text', { default: '' })
+	public highlightExcludeEmojis: string;
 }
