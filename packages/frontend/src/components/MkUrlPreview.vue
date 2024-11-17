@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkButton>
 	</div>
 </template>
-<template v-else-if="tweetId && tweetExpanded">
+<template v-else-if="tweetId && postExpanded">
 	<div>
 		<iframe
 			allow="fullscreen;web-share"
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkButton>
 	</div>
 </template>
-<template v-else-if="bskyDid && bskyPostRecordKey && bskyPostExpanded">
+<template v-else-if="bskyDid && bskyPostRecordKey && postExpanded">
 	<div>
 		<iframe
 			allow="fullscreen;web-share"
@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</component>
 	<template v-if="showActions">
 		<div v-if="tweetId" :class="$style.action">
-			<MkButton :small="true" inline @click="tweetExpanded = true">
+			<MkButton :small="true" inline @click="postExpanded = true">
 				<i class="ti ti-brand-x"></i> {{ i18n.ts.expandPost }}
 			</MkButton>
 		</div>
@@ -148,15 +148,14 @@ const player = ref({
 const playerEnabled = ref(false);
 
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
+const postExpanded = ref(props.detail);
 
 const tweetId = ref<string | null>(null);
-const tweetExpanded = ref(props.detail);
 const tweetHeight = ref(150);
 
 const bskyHandleOrDid = ref<string | null>(null);
 const bskyDid = ref<string | null>(null);
 const bskyPostRecordKey = ref<string | null>(null);
-const bskyPostExpanded = ref(props.detail);
 const bskyPostHeight = ref(150);
 
 const unknownUrl = ref(false);
@@ -238,7 +237,7 @@ async function openBskyEmbed() {
 		}
 	}
 
-	bskyPostExpanded.value = true;
+	postExpanded.value = true;
 }
 
 function openPlayer(): void {
