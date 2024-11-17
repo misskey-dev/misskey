@@ -108,11 +108,13 @@ Thank you for your reporting!
 If you can also create a patch to fix the vulnerability, please create a PR on the private fork.
 
 > [!note]
-> There is a GitHub bug that prevents merging if a PR not following the develop branch of upstream, so please follow the develop branch.
+> There is a GitHub bug that prevents merging if a PR not following the develop branch of upstream, so please keep follow the develop branch.
 
 ### For misskey-dev member
 修正PRがdevelopに追従されていないとマージできないので、マージできなかったら
+
 > Could you merge or rebase onto upstream develop branch?
+
 などと伝える。
 
 ## Deploy
