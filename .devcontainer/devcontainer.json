@@ -5,7 +5,7 @@
 	"workspaceFolder": "/workspace",
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
-			"version": "20.16.0"
+			"version": "22.11.0"
 		},
 		"ghcr.io/devcontainers-contrib/features/corepack:1": {}
 	},
