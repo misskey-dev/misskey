@@ -180,7 +180,6 @@ describe('Webリソース', () => {
 		}));
 	});
 
-	/* queueは一時的に無効化されている
 	describe.each([{ path: '/queue' }])('$path', ({ path }) => {
 		test('はログインしないとGETできない。', async () => await notOk({
 			path,
@@ -198,7 +197,6 @@ describe('Webリソース', () => {
 			cookie: cookie(alice),
 		}));
 	});
-	*/
 
 	describe.each([{ path: '/streaming' }])('$path', ({ path }) => {
 		test('はGETできない。', async () => await notOk({
@@ -232,6 +230,7 @@ describe('Webリソース', () => {
 				path: path('xxxxxxxxxx'),
 				type: HTML,
 			}));
+			test.todo('HTMLとしてGETできる。(リモートユーザーでもリダイレクトせず)');
 		});
 
 		describe.each([
@@ -251,6 +250,7 @@ describe('Webリソース', () => {
 				path: path('xxxxxxxxxx'),
 				accept,
 			}));
+			test.todo('はオリジナルにリダイレクトされる。(リモートユーザー)');
 		});
 	});
 

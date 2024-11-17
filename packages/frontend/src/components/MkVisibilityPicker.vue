@@ -198,7 +198,7 @@ fetchChannels();
 	}
 
 	&.active {
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 

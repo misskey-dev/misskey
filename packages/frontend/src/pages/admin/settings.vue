@@ -169,42 +169,69 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>{{ i18n.ts._urlPreviewSetting.enable }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewEnabled" class="_modified">{{ i18n.ts.modified }}</span></template>
 						</MkSwitch>
 
-						<MkSwitch v-model="urlPreviewForm.state.urlPreviewRequireContentLength">
-							<template #label>{{ i18n.ts._urlPreviewSetting.requireContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewRequireContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._urlPreviewSetting.requireContentLengthDescription }}</template>
-						</MkSwitch>
+						<template v-if="urlPreviewForm.state.urlPreviewEnabled">
+							<MkSwitch v-model="urlPreviewForm.state.urlPreviewRequireContentLength">
+								<template #label>{{ i18n.ts._urlPreviewSetting.requireContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewRequireContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #caption>{{ i18n.ts._urlPreviewSetting.requireContentLengthDescription }}</template>
+							</MkSwitch>
 
-						<MkInput v-model="urlPreviewForm.state.urlPreviewMaximumContentLength" type="number">
-							<template #label>{{ i18n.ts._urlPreviewSetting.maximumContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewMaximumContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._urlPreviewSetting.maximumContentLengthDescription }}</template>
-						</MkInput>
-
-						<MkInput v-model="urlPreviewForm.state.urlPreviewTimeout" type="number">
-							<template #label>{{ i18n.ts._urlPreviewSetting.timeout }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewTimeout" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._urlPreviewSetting.timeoutDescription }}</template>
-						</MkInput>
-
-						<MkInput v-model="urlPreviewForm.state.urlPreviewUserAgent" type="text">
-							<template #label>{{ i18n.ts._urlPreviewSetting.userAgent }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewUserAgent" class="_modified">{{ i18n.ts.modified }}</span></template>
-							<template #caption>{{ i18n.ts._urlPreviewSetting.userAgentDescription }}</template>
-						</MkInput>
-
-						<div>
-							<MkInput v-model="urlPreviewForm.state.urlPreviewSummaryProxyUrl" type="text">
-								<template #label>{{ i18n.ts._urlPreviewSetting.summaryProxy }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewSummaryProxyUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-								<template #caption>[{{ i18n.ts.notUsePleaseLeaveBlank }}] {{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
+							<MkInput v-model="urlPreviewForm.state.urlPreviewMaximumContentLength" type="number">
+								<template #label>{{ i18n.ts._urlPreviewSetting.maximumContentLength }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewMaximumContentLength" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #caption>{{ i18n.ts._urlPreviewSetting.maximumContentLengthDescription }}</template>
 							</MkInput>
 
-							<div :class="$style.subCaption">
-								{{ i18n.ts._urlPreviewSetting.summaryProxyDescription2 }}
-								<ul style="padding-left: 20px; margin: 4px 0">
-									<li>{{ i18n.ts._urlPreviewSetting.timeout }} / key:timeout</li>
-									<li>{{ i18n.ts._urlPreviewSetting.maximumContentLength }} / key:contentLengthLimit</li>
-									<li>{{ i18n.ts._urlPreviewSetting.requireContentLength }} / key:contentLengthRequired</li>
-									<li>{{ i18n.ts._urlPreviewSetting.userAgent }} / key:userAgent</li>
-								</ul>
+							<MkInput v-model="urlPreviewForm.state.urlPreviewTimeout" type="number">
+								<template #label>{{ i18n.ts._urlPreviewSetting.timeout }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewTimeout" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #caption>{{ i18n.ts._urlPreviewSetting.timeoutDescription }}</template>
+							</MkInput>
+
+							<MkInput v-model="urlPreviewForm.state.urlPreviewUserAgent" type="text">
+								<template #label>{{ i18n.ts._urlPreviewSetting.userAgent }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewUserAgent" class="_modified">{{ i18n.ts.modified }}</span></template>
+								<template #caption>{{ i18n.ts._urlPreviewSetting.userAgentDescription }}</template>
+							</MkInput>
+
+							<div>
+								<MkInput v-model="urlPreviewForm.state.urlPreviewSummaryProxyUrl" type="text">
+									<template #label>{{ i18n.ts._urlPreviewSetting.summaryProxy }}<span v-if="urlPreviewForm.modifiedStates.urlPreviewSummaryProxyUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
+									<template #caption>[{{ i18n.ts.notUsePleaseLeaveBlank }}] {{ i18n.ts._urlPreviewSetting.summaryProxyDescription }}</template>
+								</MkInput>
+
+								<div :class="$style.subCaption">
+									{{ i18n.ts._urlPreviewSetting.summaryProxyDescription2 }}
+									<ul style="padding-left: 20px; margin: 4px 0">
+										<li>{{ i18n.ts._urlPreviewSetting.timeout }} / key:timeout</li>
+										<li>{{ i18n.ts._urlPreviewSetting.maximumContentLength }} / key:contentLengthLimit</li>
+										<li>{{ i18n.ts._urlPreviewSetting.requireContentLength }} / key:contentLengthRequired</li>
+										<li>{{ i18n.ts._urlPreviewSetting.userAgent }} / key:userAgent</li>
+									</ul>
+								</div>
 							</div>
-						</div>
+						</template>
+					</div>
+				</MkFolder>
+
+				<MkFolder>
+					<template #icon><i class="ti ti-planet"></i></template>
+					<template #label>{{ i18n.ts.federation }}</template>
+					<template v-if="federationForm.savedState.federation === 'all'" #suffix>{{ i18n.ts.all }}</template>
+					<template v-else-if="federationForm.savedState.federation === 'specified'" #suffix>{{ i18n.ts.specifyHost }}</template>
+					<template v-else-if="federationForm.savedState.federation === 'none'" #suffix>{{ i18n.ts.none }}</template>
+					<template v-if="federationForm.modified.value" #footer>
+						<MkFormFooter :form="federationForm"/>
+					</template>
+
+					<div class="_gaps">
+						<MkRadios v-model="federationForm.state.federation">
+							<template #label>{{ i18n.ts.behavior }}<span v-if="federationForm.modifiedStates.federation" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<option value="all">{{ i18n.ts.all }}</option>
+							<option value="specified">{{ i18n.ts.specifyHost }}</option>
+							<option value="none">{{ i18n.ts.none }}</option>
+						</MkRadios>
+
+						<MkTextarea v-if="federationForm.state.federation === 'specified'" v-model="federationForm.state.federationHosts">
+							<template #label>{{ i18n.ts.federationAllowedHosts }}<span v-if="federationForm.modifiedStates.federationHosts" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts.federationAllowedHostsDescription }}</template>
+						</MkTextarea>
 					</div>
 				</MkFolder>
 
@@ -230,7 +257,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import * as Misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -244,10 +270,10 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import { useForm } from '@/scripts/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
+import MkRadios from '@/components/MkRadios.vue';
 
 const meta = await misskeyApi('admin/meta');
 
@@ -341,6 +367,17 @@ const urlPreviewForm = useForm({
 	fetchInstance(true);
 });
 
+const federationForm = useForm({
+	federation: meta.federation,
+	federationHosts: meta.federationHosts.join('\n'),
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		federation: state.federation,
+		federationHosts: state.federationHosts.split('\n'),
+	});
+	fetchInstance(true);
+});
+
 function chooseProxyAccount() {
 	os.selectUser({ localOnly: true }).then(user => {
 		proxyAccount.value = user;
@@ -363,6 +400,6 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .subCaption {
 	font-size: 0.85em;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 </style>

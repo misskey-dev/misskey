@@ -126,8 +126,8 @@ const $meta: Provider = {
 				const { type, body } = obj.message as GlobalEvents['internal']['payload'];
 				switch (type) {
 					case 'metaUpdated': {
-						for (const key in body) {
-							(meta as any)[key] = (body as any)[key];
+						for (const key in body.after) {
+							(meta as any)[key] = (body.after as any)[key];
 						}
 						meta.proxyAccount = null; // joinなカラムは通常取ってこないので
 						break;

@@ -29,12 +29,12 @@ const props = defineProps<{
 // if no instance data is given, this is for the local instance
 const instance = props.instance ?? {
 	name: serverMetadata.name,
-	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement).content,
+	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement)?.content,
 };
 
 const faviconUrl = computed(() => props.instance ? mediaProxy.getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : mediaProxy.getProxiedImageUrlNullable(serverMetadata.iconUrl, 'preview') ?? '/favicon.ico');
 
-const themeColor = serverMetadata.themeColor ?? '#777777';
+const themeColor = props.instance?.themeColor ?? serverMetadata.themeColor ?? '#777777';
 
 const bg = {
 	background: `linear-gradient(90deg, ${themeColor}, ${themeColor}00)`,

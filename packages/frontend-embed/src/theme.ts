@@ -39,6 +39,10 @@ export function applyTheme(theme: Theme, persist = true) {
 		document.documentElement.classList.remove('_themeChanging_');
 	}, 1000);
 
+	const colorScheme = theme.base === 'dark' ? 'dark' : 'light';
+
+	document.documentElement.dataset.colorScheme = colorScheme;
+
 	// Deep copy
 	const _theme = JSON.parse(JSON.stringify(theme));
 
@@ -57,7 +61,7 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 
 	for (const [k, v] of Object.entries(props)) {
-		document.documentElement.style.setProperty(`--${k}`, v.toString());
+		document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
 	}
 
 	// iframeを正常に透過させるために、cssのcolor-schemeは `light dark;` 固定にしてある。style.scss参照

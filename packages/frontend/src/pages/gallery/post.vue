@@ -262,14 +262,14 @@ definePageMetadata(() => ({
 			align-items: center;
 			margin-top: 16px;
 			padding: 16px 0 0 0;
-			border-top: solid 0.5px var(--divider);
+			border-top: solid 0.5px var(--MI_THEME-divider);
 
 			> .like {
 				> .button {
-					--accent: rgb(241 97 132);
-					--X8: rgb(241 92 128);
-					--buttonBg: rgb(216 71 106 / 5%);
-					--buttonHoverBg: rgb(216 71 106 / 10%);
+					--MI_THEME-accent: rgb(241 97 132);
+					--MI_THEME-X8: rgb(241 92 128);
+					--MI_THEME-buttonBg: rgb(216 71 106 / 5%);
+					--MI_THEME-buttonHoverBg: rgb(216 71 106 / 10%);
 					color: #ff002f;
 
 					::v-deep(.count) {
@@ -286,7 +286,7 @@ definePageMetadata(() => ({
 					margin: 0 8px;
 
 					&:hover {
-						color: var(--fgHighlighted);
+						color: var(--MI_THEME-fgHighlighted);
 					}
 				}
 			}
@@ -295,7 +295,7 @@ definePageMetadata(() => ({
 		> .user {
 			margin-top: 16px;
 			padding: 16px 0 0 0;
-			border-top: solid 0.5px var(--divider);
+			border-top: solid 0.5px var(--MI_THEME-divider);
 			display: flex;
 			align-items: center;
 			flex-wrap: wrap;
@@ -321,7 +321,7 @@ definePageMetadata(() => ({
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 	grid-gap: 12px;
-	margin: var(--margin);
+	margin: var(--MI-margin);
 
 	> .post {
 
