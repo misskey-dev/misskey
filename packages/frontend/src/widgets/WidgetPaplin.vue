@@ -22,9 +22,13 @@ import { i18n } from '@/i18n.js';
 const name = i18n.ts._widgets.paplin;
 
 const widgetPropsDef = {
-	transparent: {
+	showHeader: {
 		type: 'boolean' as const,
-		default: false,
+		default: true,
+	},
+	height: {
+		type: 'number' as const,
+		default: 100,
 	},
 };
 
@@ -40,9 +44,11 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 );
 
 const style = reactive({});
+const deg = ref(0);
 
 const rotation = () => {
-	style.transform = `rotate(360deg)`
+	deg.deg += 360;
+	style.transform = `rotate(${deg.deg}deg)`
 };
 
 defineExpose<WidgetComponentExpose>({
