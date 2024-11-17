@@ -680,6 +680,7 @@ _notification:
     reply: "Svara"
     renote: "Omnotera"
 _deck:
+  addColumn: "Lägg till kolumn"
   deleteProfile: "Radera profil"
   _columns:
     notifications: "Notifikationer"
