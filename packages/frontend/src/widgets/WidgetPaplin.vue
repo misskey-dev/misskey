@@ -4,13 +4,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :class="[$style.root, { _panel: !widgetProps.transparent, [$style.pad]: !widgetProps.transparent }]">
-	<div ref="paplin" class="paplin" @click="rotation" v-bind:style="{transform: `rotate(${deg}deg)`}"></div>
+<MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-paplin class="mkw-paplin">
+	<template #header>{{ i18n.ts._widgets.paplin }}</template>
+
+	<div ref="paplin" class="paplin" @click="rotation" :style="style">
+		<img src="https://pub-61d9927ea6b24ad7b33e1db00f6950bf.r2.dev/misskey/files/thumbnail-516fe5e1-88e2-4cc7-9b43-e1a3cbd7ced9.webp" />
+	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef } from 'vue';
+import { ref, reactive } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import { i18n } from '@/i18n.js';
@@ -34,16 +38,18 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	props,
 	emit,
 );
-		
-const paplin = shallowRef<HTMLElement>();
-const img = `url(https://pub-61d9927ea6b24ad7b33e1db00f6950bf.r2.dev/misskey/files/thumbnail-fa9d86ac-a94b-4226-9712-f2c687c49f74.webp)`;
-const deg = ref(0)
 
-paplin.style.backgroundImage = img;
+const style = reactive({});
 
 const rotation = () => {
-	deg += 360;
+	style.transform = `rotate(360deg)`
 };
+
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
+});
 </script>
 
 <style lang="scss" module>
