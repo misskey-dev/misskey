@@ -107,7 +107,7 @@ Thank you for your reporting!
 
 If you can also create a patch to fix the vulnerability, please create a PR on the private fork.
 
-> ![note]
+> [!note]
 > There is a GitHub bug that prevents merging if a PR not following the develop branch of upstream, so please follow the develop branch.
 
 ### For misskey-dev member
