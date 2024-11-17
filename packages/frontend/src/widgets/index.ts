@@ -66,5 +66,5 @@ export const widgets = [
 	'userList',
 	'clicker',
 	'birthdayFollowings',
-	'WidgetPaplin',
+	'paplin',
 ];
