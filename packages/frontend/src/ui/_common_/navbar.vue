@@ -55,6 +55,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar :user="$i" :class="$style.avatar"/><MkAcct class="_nowrap" :class="$style.acct" :user="$i"/>
 			</button>
 		</div>
+		<div :class="$style.right">
+			<button :class="$style.toggleButton" @click="iconOnly = !iconOnly">
+				<i :class="'ti ' + `ti-chevron-${ iconOnly ? 'right' : 'left' }`"></i>
+			</button>
+		</div>
 	</div>
 </div>
 </template>
@@ -116,6 +121,19 @@ function more(ev: MouseEvent) {
 	flex: 0 0 var(--nav-width);
 	width: var(--nav-width);
 	box-sizing: border-box;
+
+	.right {
+		position: fixed;
+		top: 0;
+		right: 0;
+		width: fit-content;
+		height: 100dvh;
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
 }
 
 .body {
@@ -563,5 +581,17 @@ function more(ev: MouseEvent) {
 			font-size: 10px;
 		}
 	}
+}
+
+.toggleButton {
+	width: fit-content;
+	height: 80px;
+	margin: 0;
+	padding: 0;
+	background-color: transparent;
+	border: none;
+	border-radius: 9999px;
+	box-sizing: border-box;
+	font-size: 0.75em;
 }
 </style>

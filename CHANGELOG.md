@@ -26,6 +26,7 @@
 - Enhance: ノート詳細画面にロールのバッジを表示
 - Enhance: 過去に送信したフォローリクエストを確認できるように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
+- Enhance: デッキ表示時にサイドバーを展開・折りたたみできるように ( #14981 )
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
