@@ -2222,11 +2222,11 @@ _widgets:
   aiscriptApp: "AiScript 앱"
   aichan: "아이"
   userList: "유저 리스트"
-  paplin: "페이프린"
   _userList:
     chooseList: "리스트 선택"
   clicker: "클리커"
   birthdayFollowings: "오늘이 생일인 사용자"
+  paplin: "페이프린"
 _cw:
   hide: "숨기기"
   show: "더 보기"
