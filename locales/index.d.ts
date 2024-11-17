@@ -8247,6 +8247,10 @@ export interface Locale extends ILocale {
          */
         "read:admin:abuse-user-reports": string;
         /**
+         * ユーザーアカウントを作成する
+         */
+        "write:admin:create-account": string;
+        /**
          * ユーザーアカウントを削除する
          */
         "write:admin:delete-account": string;
