@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :naked="widgetProps.transparent" :showHeader="false" class="mkw-paplin">
-	<img :class="transition" src="https://pub-61d9927ea6b24ad7b33e1db00f6950bf.r2.dev/misskey/files/thumbnail-fa9d86ac-a94b-4226-9712-f2c687c49f74.webp" @click="OnClick" v-bind:style="{transform: `rotate(${deg}deg)`}" alt="refresh-icon-btn" />
+<MkContainer :naked="widgetProps.transparent" :showHeader="false" class="root">
+	<div ref="paplin" class="paplin" @click="rotation" v-bind:style="{transform: `rotate(${deg}deg)`}"></div>
 </MkContainer>
 </template>
 
@@ -13,10 +13,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, onUnmounted, shallowRef } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
+import { i18n } from '@/i18n.js';
 
-const name = 'paplin';
-
-const deg = 0;
+const name = i18n.ts._widgets.paplin;
 
 const widgetPropsDef = {
 	transparent: {
@@ -26,28 +25,27 @@ const widgetPropsDef = {
 };
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
-
+	
 const props = defineProps<WidgetComponentProps<WidgetProps>>();
 const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-
+	
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
 	props,
 	emit,
 );
+		
+const paplin = shallowRef<HTMLElement>();
+const img = `url(https://pub-61d9927ea6b24ad7b33e1db00f6950bf.r2.dev/misskey/files/thumbnail-fa9d86ac-a94b-4226-9712-f2c687c49f74.webp)`;
+let deg = 0;
 
-const OnClick = () => {
-	this.deg += 360;
-	//if (this.live2d) this.live2d.changeExpression('gurugurume');
+const onMounted = () => {
+	paplin.style.backgroundImage = img;
 };
 
-onMounted(() => {
-	window.addEventListener('mousemove', onMousemove, { passive: true });
-});
-
-onUnmounted(() => {
-	window.removeEventListener('mousemove', onMousemove);
-});
+const rotation = () => {
+	deg += 360;
+};
 </script>
 
 <style lang="scss" module>
@@ -57,6 +55,16 @@ onUnmounted(() => {
 	border: none;
 	pointer-events: none;
 	color-scheme: light;
+
+	> paplin {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-size: cover;
+		background-position: center;
+	};
 }
 .transition {
 	transition: transform 1s ease-in-out;
