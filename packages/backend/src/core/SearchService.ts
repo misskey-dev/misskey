@@ -16,6 +16,7 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import type { Index, MeiliSearch } from 'meilisearch';
 
 type K = string;
@@ -92,6 +93,7 @@ export class SearchService {
 		private cacheService: CacheService,
 		private queryService: QueryService,
 		private idService: IdService,
+		private loggerService: LoggerService,
 	) {
 		if (meilisearch) {
 			this.meilisearchNoteIndex = meilisearch.index(`${config.meilisearch!.index}---notes`);
@@ -124,6 +126,7 @@ export class SearchService {
 		}
 
 		this.provider = config.fulltextSearch?.provider ?? 'sqlLike';
+		this.loggerService.getLogger('SearchService').info(`-- Provider: ${this.provider}`);
 	}
 
 	@bindThis
