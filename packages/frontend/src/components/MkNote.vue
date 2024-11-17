@@ -566,12 +566,13 @@ function showRenoteMenu(): void {
 			},
 		};
 	}
+
 	const renoteDetailsMenu: MenuItem = {
 		type: 'link',
 		text: i18n.ts.renoteDetails,
 		icon: 'ti ti-info-circle',
 		to: notePage(note.value),
-	}
+	};
 
 	if (isMyRenote) {
 		pleaseLogin({ openOnRemote: pleaseLoginContext.value });
