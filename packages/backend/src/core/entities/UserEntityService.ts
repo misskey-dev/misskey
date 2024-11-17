@@ -25,6 +25,7 @@ import {
 } from '@/models/User.js';
 import type {
 	BlockingsRepository,
+	BlockingReactionUsersRepository,
 	FollowingsRepository,
 	FollowRequestsRepository,
 	MiFollowing,
@@ -76,6 +77,8 @@ export type UserRelation = {
 	hasPendingFollowRequestToYou: boolean
 	isBlocking: boolean
 	isBlocked: boolean
+	isReactionBlocking: boolean
+	isReactionBlocked: boolean
 	isMuted: boolean
 	isRenoteMuted: boolean
 }
@@ -115,6 +118,9 @@ export class UserEntityService implements OnModuleInit {
 
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
+
+		@Inject(DI.blockingReactionUsersRepository)
+		private blockingReactionUsersRepository: BlockingReactionUsersRepository,
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
@@ -169,6 +175,8 @@ export class UserEntityService implements OnModuleInit {
 			hasPendingFollowRequestToYou,
 			isBlocking,
 			isBlocked,
+			isReactionBlocking,
+			isReactionBlocked,
 			isMuted,
 			isRenoteMuted,
 		] = await Promise.all([
@@ -206,6 +214,18 @@ export class UserEntityService implements OnModuleInit {
 					blockeeId: me,
 				},
 			}),
+			this.blockingReactionUsersRepository.exists({
+				where: {
+					blockerId: me,
+					blockeeId: target,
+				},
+			}),
+			this.blockingReactionUsersRepository.exists({
+				where: {
+					blockerId: target,
+					blockeeId: me,
+				},
+			}),
 			this.mutingsRepository.exists({
 				where: {
 					muterId: me,
@@ -229,6 +249,8 @@ export class UserEntityService implements OnModuleInit {
 			hasPendingFollowRequestToYou,
 			isBlocking,
 			isBlocked,
+			isReactionBlocking,
+			isReactionBlocked,
 			isMuted,
 			isRenoteMuted,
 		};
@@ -243,6 +265,8 @@ export class UserEntityService implements OnModuleInit {
 			followeesRequests,
 			blockers,
 			blockees,
+			reactionBlockers,
+			reactionBlockees,
 			muters,
 			renoteMuters,
 		] = await Promise.all([
@@ -273,6 +297,16 @@ export class UserEntityService implements OnModuleInit {
 				.where('b.blockeeId = :me', { me })
 				.getRawMany<{ b_blockerId: string }>()
 				.then(it => it.map(it => it.b_blockerId)),
+			this.blockingReactionUsersRepository.createQueryBuilder('bru')
+				.select('bru.blockeeId')
+				.where('bru.blockerId = :me', { me })
+				.getRawMany<{ bru_blockeeId: string }>()
+				.then(it => it.map(it => it.bru_blockeeId)),
+			this.blockingReactionUsersRepository.createQueryBuilder('bru')
+				.select('bru.blockerId')
+				.where('bru.blockeeId = :me', { me })
+				.getRawMany<{ bru_blockerId: string }>()
+				.then(it => it.map(it => it.bru_blockerId)),
 			this.mutingsRepository.createQueryBuilder('m')
 				.select('m.muteeId')
 				.where('m.muterId = :me', { me })
@@ -300,6 +334,8 @@ export class UserEntityService implements OnModuleInit {
 						hasPendingFollowRequestToYou: followeesRequests.includes(target),
 						isBlocking: blockers.includes(target),
 						isBlocked: blockees.includes(target),
+						isReactionBlocking: reactionBlockers.includes(target),
+						isReactionBlocked: reactionBlockees.includes(target),
 						isMuted: muters.includes(target),
 						isRenoteMuted: renoteMuters.includes(target),
 					},
@@ -638,6 +674,8 @@ export class UserEntityService implements OnModuleInit {
 				hasPendingFollowRequestToYou: relation.hasPendingFollowRequestToYou,
 				isBlocking: relation.isBlocking,
 				isBlocked: relation.isBlocked,
+				isReactionBlocking: relation.isReactionBlocking,
+				isReactionBlocked: relation.isReactionBlocked,
 				isMuted: relation.isMuted,
 				isRenoteMuted: relation.isRenoteMuted,
 				notify: relation.following?.notify ?? 'none',

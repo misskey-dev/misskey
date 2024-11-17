@@ -223,6 +223,8 @@ export interface InternalEventTypes {
 	unfollow: { followerId: MiUser['id']; followeeId: MiUser['id']; };
 	blockingCreated: { blockerId: MiUser['id']; blockeeId: MiUser['id']; };
 	blockingDeleted: { blockerId: MiUser['id']; blockeeId: MiUser['id']; };
+	blockingReactionUserCreated: { blockerId: MiUser['id']; blockeeId: MiUser['id']; };
+	blockingReactionUserDeleted: { blockerId: MiUser['id']; blockeeId: MiUser['id']; };
 	policiesUpdated: MiRole['policies'];
 	roleCreated: MiRole;
 	roleDeleted: MiRole;

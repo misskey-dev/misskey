@@ -21,6 +21,7 @@ import { MiApp } from '@/models/App.js';
 import { MiAvatarDecoration } from '@/models/AvatarDecoration.js';
 import { MiAuthSession } from '@/models/AuthSession.js';
 import { MiBlocking } from '@/models/Blocking.js';
+import { MiBlockingReactionUser } from '@/models/BlockingReactionUser.js';
 import { MiChannelFollowing } from '@/models/ChannelFollowing.js';
 import { MiChannelFavorite } from '@/models/ChannelFavorite.js';
 import { MiClip } from '@/models/Clip.js';
@@ -136,6 +137,7 @@ export {
 	MiAvatarDecoration,
 	MiAuthSession,
 	MiBlocking,
+	MiBlockingReactionUser,
 	MiChannelFollowing,
 	MiChannelFavorite,
 	MiClip,
@@ -207,6 +209,7 @@ export type AppsRepository = Repository<MiApp> & MiRepository<MiApp>;
 export type AvatarDecorationsRepository = Repository<MiAvatarDecoration> & MiRepository<MiAvatarDecoration>;
 export type AuthSessionsRepository = Repository<MiAuthSession> & MiRepository<MiAuthSession>;
 export type BlockingsRepository = Repository<MiBlocking> & MiRepository<MiBlocking>;
+export type BlockingReactionUsersRepository = Repository<MiBlockingReactionUser> & MiRepository<MiBlockingReactionUser>;
 export type ChannelFollowingsRepository = Repository<MiChannelFollowing> & MiRepository<MiChannelFollowing>;
 export type ChannelFavoritesRepository = Repository<MiChannelFavorite> & MiRepository<MiChannelFavorite>;
 export type ClipsRepository = Repository<MiClip> & MiRepository<MiClip>;

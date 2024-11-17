@@ -30,6 +30,7 @@ import { trackPromise } from '@/misc/promise-tracker.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 import { PER_NOTE_REACTION_USER_PAIR_CACHE_MAX } from '@/const.js';
+import { BlockingReactionUserService } from '@/core/BlockingReactionUserService.js';
 
 const FALLBACK = '\u2764';
 
@@ -91,6 +92,7 @@ export class ReactionService {
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private userBlockingService: UserBlockingService,
+		private blockingReactionUserService: BlockingReactionUserService,
 		private reactionsBufferingService: ReactionsBufferingService,
 		private idService: IdService,
 		private featuredService: FeaturedService,
@@ -107,7 +109,8 @@ export class ReactionService {
 		// Check blocking
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
-			if (blocked) {
+			const reactionBlocked = await this.blockingReactionUserService.checkBlocked(note.userId, user.id);
+			if (blocked || reactionBlocked) {
 				throw new IdentifiableError('e70412a4-7197-4726-8e74-f3e0deb92aa7');
 			}
 		}

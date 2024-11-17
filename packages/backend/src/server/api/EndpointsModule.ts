@@ -114,6 +114,9 @@ import * as ep___auth_session_userkey from './endpoints/auth/session/userkey.js'
 import * as ep___blocking_create from './endpoints/blocking/create.js';
 import * as ep___blocking_delete from './endpoints/blocking/delete.js';
 import * as ep___blocking_list from './endpoints/blocking/list.js';
+import * as ep___blocking_reaction_user_create from './endpoints/blocking-reaction-user/create.js';
+import * as ep___blocking_reaction_user_delete from './endpoints/blocking-reaction-user/delete.js';
+import * as ep___blocking_reaction_user_list from './endpoints/blocking-reaction-user/list.js';
 import * as ep___channels_create from './endpoints/channels/create.js';
 import * as ep___channels_featured from './endpoints/channels/featured.js';
 import * as ep___channels_follow from './endpoints/channels/follow.js';
@@ -502,6 +505,9 @@ const $auth_session_userkey: Provider = { provide: 'ep:auth/session/userkey', us
 const $blocking_create: Provider = { provide: 'ep:blocking/create', useClass: ep___blocking_create.default };
 const $blocking_delete: Provider = { provide: 'ep:blocking/delete', useClass: ep___blocking_delete.default };
 const $blocking_list: Provider = { provide: 'ep:blocking/list', useClass: ep___blocking_list.default };
+const $blocking_reaction_user_create: Provider = { provide: 'ep:blocking-reaction-user/create', useClass: ep___blocking_reaction_user_create.default };
+const $blocking_reaction_user_delete: Provider = { provide: 'ep:blocking-reaction-user/delete', useClass: ep___blocking_reaction_user_delete.default };
+const $blocking_reaction_user_list: Provider = { provide: 'ep:blocking-reaction-user/list', useClass: ep___blocking_reaction_user_list.default };
 const $channels_create: Provider = { provide: 'ep:channels/create', useClass: ep___channels_create.default };
 const $channels_featured: Provider = { provide: 'ep:channels/featured', useClass: ep___channels_featured.default };
 const $channels_follow: Provider = { provide: 'ep:channels/follow', useClass: ep___channels_follow.default };
@@ -894,6 +900,9 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$blocking_create,
 		$blocking_delete,
 		$blocking_list,
+		$blocking_reaction_user_create,
+		$blocking_reaction_user_delete,
+		$blocking_reaction_user_list,
 		$channels_create,
 		$channels_featured,
 		$channels_follow,
@@ -1280,6 +1289,9 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$blocking_create,
 		$blocking_delete,
 		$blocking_list,
+		$blocking_reaction_user_create,
+		$blocking_reaction_user_delete,
+		$blocking_reaction_user_list,
 		$channels_create,
 		$channels_featured,
 		$channels_follow,

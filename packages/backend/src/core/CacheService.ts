@@ -5,7 +5,17 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { BlockingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, MiUserProfile, UserProfilesRepository, UsersRepository, MiFollowing } from '@/models/_.js';
+import type {
+	BlockingsRepository,
+	FollowingsRepository,
+	MutingsRepository,
+	RenoteMutingsRepository,
+	MiUserProfile,
+	UserProfilesRepository,
+	UsersRepository,
+	MiFollowing,
+	BlockingReactionUsersRepository
+} from '@/models/_.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
@@ -24,6 +34,8 @@ export class CacheService implements OnApplicationShutdown {
 	public userMutingsCache: RedisKVCache<Set<string>>;
 	public userBlockingCache: RedisKVCache<Set<string>>;
 	public userBlockedCache: RedisKVCache<Set<string>>; // NOTE: 「被」Blockキャッシュ
+	public blockingReactionUserCache: RedisKVCache<Set<string>>; // NOTE: リアクションブロックするユーザーのキャッシュ
+	public blockedReactionUserCache: RedisKVCache<Set<string>>; // NOTE: リアクションブロックされるユーザーのキャッシュ
 	public renoteMutingsCache: RedisKVCache<Set<string>>;
 	public userFollowingsCache: RedisKVCache<Record<string, Pick<MiFollowing, 'withReplies'> | undefined>>;
 
@@ -45,6 +57,9 @@ export class CacheService implements OnApplicationShutdown {
 
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
+
+		@Inject(DI.blockingReactionUsersRepository)
+		private blockingReactionUsersRepository: BlockingReactionUsersRepository,
 
 		@Inject(DI.renoteMutingsRepository)
 		private renoteMutingsRepository: RenoteMutingsRepository,
@@ -89,6 +104,22 @@ export class CacheService implements OnApplicationShutdown {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60, // 1m
 			fetcher: (key) => this.blockingsRepository.find({ where: { blockeeId: key }, select: ['blockerId'] }).then(xs => new Set(xs.map(x => x.blockerId))),
+			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
+			fromRedisConverter: (value) => new Set(JSON.parse(value)),
+		});
+
+		this.blockingReactionUserCache = new RedisKVCache<Set<string>>(this.redisClient, 'blockingReactionUser', {
+			lifetime: 1000 * 60 * 30, // 30m
+			memoryCacheLifetime: 1000 * 60, // 1m
+			fetcher: (key) => this.blockingReactionUsersRepository.find({ where: { blockerId: key }, select: ['blockeeId'] }).then(xs => new Set(xs.map(x => x.blockeeId))),
+			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
+			fromRedisConverter: (value) => new Set(JSON.parse(value)),
+		});
+
+		this.blockedReactionUserCache = new RedisKVCache<Set<string>>(this.redisClient, 'blockedReactionUser', {
+			lifetime: 1000 * 60 * 30, // 30m
+			memoryCacheLifetime: 1000 * 60, // 1m
+			fetcher: (key) => this.blockingReactionUsersRepository.find({ where: { blockeeId: key }, select: ['blockerId'] }).then(xs => new Set(xs.map(x => x.blockerId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
