@@ -26,6 +26,8 @@
 - Enhance: ノート詳細画面にロールのバッジを表示
 - Enhance: 過去に送信したフォローリクエストを確認できるように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
+- Enhance: どこで投稿フォームを開いてもお気に入りに登録したチャンネルにノートできるように
+- Enhance: チャンネルのページを開いている間はデフォルトの公開範囲がそのチャンネルになるように
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
@@ -140,8 +142,6 @@
 - Enhance: 各種メニューをドロワー表示するかどうか設定可能に
 - Enhance: AiScriptのMk:C:containerのオプションに`borderStyle`と`borderRadius`を追加
 - Enhance: CWでも絵文字をクリックしてメニューを表示できるように
-- Enhance: どこで投稿フォームを開いてもお気に入りに登録したチャンネルにノートできるように
-- Enhance: チャンネルのページを開いている間はデフォルトの公開範囲がそのチャンネルになるように
 - Fix: サーバーメトリクスが2つ以上あるとリロード直後の表示がおかしくなる問題を修正
 - Fix: コントロールパネル内のAp requests内のチャートの表示がおかしかった問題を修正
 - Fix: 月の違う同じ日はセパレータが表示されないのを修正
