@@ -2,6 +2,7 @@
 
 ### Note
 - Node.js 20.xは非推奨になりました。Node.js 22.x (LTS)の利用を推奨します。
+  - なお、Node.js 23.xは対応していません。
 - DockerのNode.jsが22.11.0に更新されました
 
 ### General
