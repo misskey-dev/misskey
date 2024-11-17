@@ -48,7 +48,8 @@ const deg = ref(0);
 
 const rotation = () => {
 	if (isNaN(deg.deg)) {
-		deg.deg = 0
+		deg.deg = 0;
+		style.transition = 'transform 0.8s ease-in-out';
 	}
 	deg.deg += 360;
 	style.transform = `rotate(${deg.deg}deg)`
@@ -77,10 +78,6 @@ defineExpose<WidgetComponentExpose>({
 		height: 100%;
 		background-size: cover;
 		background-position: center;
-	};
-
-	> .transition {
-		transition: transform 1s ease-in-out;
 	};
 }
 </style>
