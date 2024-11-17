@@ -369,7 +369,7 @@ onDeactivated(() => {
 	background-color: var(--MI_THEME-panel);
 	border-right: 1px solid var(--MI_THEME-divider);
 	border-bottom: 1px solid var(--MI_THEME-divider);
-	border-bottom-right-radius: var(--MI_THEME-radius);
+	border-bottom-right-radius: var(--MI-radius);
 	height: 28px;
 	line-height: 28px;
 	box-sizing: border-box;
