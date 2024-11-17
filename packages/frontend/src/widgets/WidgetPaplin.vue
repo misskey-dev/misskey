@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-paplin class="mkw-paplin">
 	<template #header>{{ i18n.ts._widgets.paplin }}</template>
 
-	<div ref="paplin" class="paplin" @click="rotation" :style="style">
+	<div ref="paplin" class="paplin transition" @click="rotation" :style="style">
 		<img src="https://pub-61d9927ea6b24ad7b33e1db00f6950bf.r2.dev/misskey/files/thumbnail-516fe5e1-88e2-4cc7-9b43-e1a3cbd7ced9.webp" />
 	</div>
 </MkContainer>
@@ -78,8 +78,9 @@ defineExpose<WidgetComponentExpose>({
 		background-size: cover;
 		background-position: center;
 	};
-}
-.transition {
-	transition: transform 1s ease-in-out;
+	
+	> transition {
+		transition: transform 1s ease-in-out;
+	};
 }
 </style>
