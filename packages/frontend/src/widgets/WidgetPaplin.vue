@@ -69,7 +69,7 @@ defineExpose<WidgetComponentExpose>({
 	pointer-events: none;
 	color-scheme: light;
 
-	> paplin {
+	> .paplin {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -78,8 +78,8 @@ defineExpose<WidgetComponentExpose>({
 		background-size: cover;
 		background-position: center;
 	};
-	
-	> transition {
+
+	> .transition {
 		transition: transform 1s ease-in-out;
 	};
 }
