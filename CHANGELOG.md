@@ -4,7 +4,7 @@
 - [重要] ノート検索プロバイダの追加に伴い、configファイル（default.ymlなど）の構成が少し変わります.
   - 新しい設定項目"fulltextSearch.provider"が追加されました. sqlLike, sqlPgroonga, meilisearchのいずれかを設定出来ます.
   - すでにMeilisearchをお使いの場合、 **"fulltextSearch.provider"を"meilisearch"に設定する必要** があります.
-  - 詳細は.config/example.ymlまたは.config/docker_example.ymlの'Fulltext search configuration'をご参照願います.
+  - 詳細は #14730 および `.config/example.yml` または `.config/docker_example.yml`の'Fulltext search configuration'をご参照願います.
 - Node.js 20.xは非推奨になりました。Node.js 22.x (LTS)の利用を推奨します。
 - DockerのNode.jsが22.11.0に更新されました
 
