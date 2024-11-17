@@ -4,13 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :naked="widgetProps.transparent" :showHeader="false" class="root">
+<MkContainer :class="[$style.root, { _panel: !widgetProps.transparent, [$style.pad]: !widgetProps.transparent }]">
 	<div ref="paplin" class="paplin" @click="rotation" v-bind:style="{transform: `rotate(${deg}deg)`}"></div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, shallowRef } from 'vue';
+import { ref, shallowRef } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import { i18n } from '@/i18n.js';
@@ -37,11 +37,9 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 		
 const paplin = shallowRef<HTMLElement>();
 const img = `url(https://pub-61d9927ea6b24ad7b33e1db00f6950bf.r2.dev/misskey/files/thumbnail-fa9d86ac-a94b-4226-9712-f2c687c49f74.webp)`;
-let deg = 0;
+const deg = ref(0)
 
-const onMounted = () => {
-	paplin.style.backgroundImage = img;
-};
+paplin.style.backgroundImage = img;
 
 const rotation = () => {
 	deg += 360;
