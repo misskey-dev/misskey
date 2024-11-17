@@ -47,6 +47,9 @@ const style = reactive({});
 const deg = ref(0);
 
 const rotation = () => {
+	if (isNaN(deg.deg)) {
+		deg.deg = 0
+	}
 	deg.deg += 360;
 	style.transform = `rotate(${deg.deg}deg)`
 };
