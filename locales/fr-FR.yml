@@ -1946,6 +1946,9 @@ _permissions:
   "write:admin:suspend-user": "Suspendre l'utilisateur"
   "write:admin:unset-user-avatar": "Retirer l'avatar de l'utilisateur"
   "write:admin:unset-user-banner": "Retirer la bannière de l'utilisateur"
+  "write:admin:unsuspend-user": "Lever la suspension d'un utilisateur"
+  "write:admin:meta": "Gérer les métadonnées de l'instance"
+  "write:admin:roles": "Gérer les rôles"
 _auth:
   shareAccess: "Autoriser \"{name}\" à accéder à votre compte ?"
   shareAccessAsk: "Voulez-vous vraiment autoriser cette application à accéder à votre compte?"
@@ -2180,10 +2183,13 @@ _notification:
   achievementEarned: "Accomplissement déverrouillé"
   testNotification: "Tester la notification"
   reactedBySomeUsers: "{n} utilisateur·rice·s ont réagi"
+  likedBySomeUsers: "{n} utilisateurs ont aimé votre note"
   renotedBySomeUsers: "{n} utilisateur·rice·s ont renoté"
   followedBySomeUsers: "{n} utilisateur·rice·s se sont abonné·e·s à vous"
+  login: "Quelqu'un s'est connecté"
   _types:
     all: "Toutes"
+    note: "Nouvelles notes"
     follow: "Nouvel·le abonné·e"
     mention: "Mentions"
     reply: "Réponses"
@@ -2233,11 +2239,14 @@ _drivecleaner:
   orderByCreatedAtAsc: "Date d'ajout ascendante"
 _webhookSettings:
   name: "Nom"
+  secret: "Secret"
+  trigger: "Activateur"
   active: "Activé"
 _abuseReport:
   _notificationRecipient:
     _recipientType:
       mail: "E-mail "
+    keywords: "Mots clés "
 _moderationLogTypes:
   createRole: "Rôle créé"
   deleteRole: "Rôle supprimé"
@@ -2338,7 +2347,15 @@ _dataSaver:
     title: "Mise en évidence du code"
     description: "Si la notation de mise en évidence du code est utilisée, par exemple dans la MFM, elle ne sera pas chargée tant qu'elle n'aura pas été tapée. La mise en évidence du code nécessite le chargement du fichier de définition de chaque langue à mettre en évidence, mais comme ces fichiers ne sont plus chargés automatiquement, on peut s'attendre à une réduction du trafic de données."
 _reversi:
+  reversi: "Reversi"
+  blackIs: "{name} joue les noirs"
+  rules: "Règles"
   waitingBoth: "Préparez-vous"
+  myTurn: "C’est votre tour"
+  turnOf: "C'est le tour de {name}"
+  pastTurnOf: "Tour de {name}"
+  surrender: "Se rendre"
+  surrendered: "Par abandon"
   total: "Total"
   playing: "En cours"
   lookingForPlayer: "Recherche d'adversaire"
