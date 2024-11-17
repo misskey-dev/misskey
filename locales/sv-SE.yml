@@ -592,6 +592,7 @@ _email:
     title: "följde dig"
 _aboutMisskey:
   source: "Källkod"
+  projectMembers: "Projektmedlemmar"
 _channel:
   setBanner: "Välj banner"
   removeBanner: "Ta bort banner"
