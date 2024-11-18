@@ -171,9 +171,7 @@ function more(ev: MouseEvent) {
 
 .toggleButton {
 	position: fixed;
-	top: 0;
-	bottom: 0;
-	margin: auto;
+	bottom: 20px;
 	left: var(--nav-width);
 	z-index: 1001;
 	width: 16px;
