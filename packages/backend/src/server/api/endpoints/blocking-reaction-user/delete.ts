@@ -8,9 +8,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, BlockingsRepository, MiBlockingType } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { UserReactionBlockingService } from '@/core/UserReactionBlockingService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private userEntityService: UserEntityService,
 		private getterService: GetterService,
-		private userReactionBlockingService: UserReactionBlockingService,
+		private userBlockingService: UserBlockingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const blocker = await this.usersRepository.findOneByOrFail({ id: me.id });
@@ -101,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// Delete blocking
-			await this.userReactionBlockingService.unblock(blocker, blockee);
+			await this.userBlockingService.reactionUnblock(blocker, blockee);
 
 			return await this.userEntityService.pack(blockee.id, blocker, {
 				schema: 'UserDetailedNotMe',

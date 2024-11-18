@@ -4515,7 +4515,8 @@ export type components = {
       /** Format: id */
       blockeeId: string;
       blockee: components['schemas']['UserDetailedNotMe'];
-      isReactionBlock: boolean;
+      /** @enum {string} */
+      blockType: 'user' | 'reaction';
     };
     Hashtag: {
       /** @example misskey */
