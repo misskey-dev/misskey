@@ -51,7 +51,7 @@ const rotation = () => {
 		style.transition = 'transform 0.8s ease-in-out';
 	}
 	deg.value += 360;
-	style.transform = `rotate(${deg.value}deg)`
+	style.transform = `rotate(${deg.value}deg)`;
 };
 
 defineExpose<WidgetComponentExpose>({
