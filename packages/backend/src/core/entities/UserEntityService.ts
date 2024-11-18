@@ -27,7 +27,6 @@ import type {
 	BlockingsRepository,
 	FollowingsRepository,
 	FollowRequestsRepository,
-	MiBlockingType,
 	MiFollowing,
 	MiUserNotePining,
 	MiUserProfile,
@@ -40,6 +39,7 @@ import type {
 	UserSecurityKeysRepository,
 	UsersRepository,
 } from '@/models/_.js';
+import { MiBlockingType } from '@/models/Blocking.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';

@@ -7,7 +7,7 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { BlockingsRepository, UsersRepository } from '@/models/_.js';
-import { MiBlockingType } from '@/models/_.js';
+import { MiBlockingType } from '@/models/Blocking.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
