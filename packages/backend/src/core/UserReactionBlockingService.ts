@@ -56,7 +56,7 @@ export class UserReactionBlockingService {
 			blockee,
 			blockeeId: blockee.id,
 			isReactionBlock: true,
-		} as MiBlocking;
+		} satisfies MiBlocking;
 
 		await this.blockingsRepository.insert(blocking);
 
