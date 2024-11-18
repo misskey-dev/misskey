@@ -2,6 +2,7 @@
 
 ### Note
 - Node.js 20.xは非推奨になりました。Node.js 22.x (LTS)の利用を推奨します。
+  - なお、Node.js 23.xは対応していません。
 - DockerのNode.jsが22.11.0に更新されました
 
 ### General
@@ -26,6 +27,7 @@
 - Enhance: ノート詳細画面にロールのバッジを表示
 - Enhance: 過去に送信したフォローリクエストを確認できるように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
+- Enhance: サイドバーを簡単に展開・折りたたみできるように ( #14981 )
 - Enhance: 投稿フォームの設定メニューを改良
   - 投稿フォームをリセットできるように
   - 文字数カウントを復活
@@ -47,6 +49,8 @@
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
 - Enhance: リモートユーザーの照会をオリジナルにリダイレクトするように
+- Fix: sharedInboxが無いActorに紐づくリモートユーザーを照会できない
+- Fix: Aproving request from GtS appears with some delay
 - Fix: フォロワーへのメッセージの絵文字をemojisに含めるように
 - Fix: Nested proxy requestsを検出した際にブロックするように
   [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
