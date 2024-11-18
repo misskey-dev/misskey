@@ -9,6 +9,7 @@ import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
 import { MisskeyEntity } from '@/types/date-separated-list.js';
 
@@ -43,9 +44,9 @@ export default defineComponent({
 	setup(props, { slots, expose }) {
 		const $style = useCssModule(); // カスタムレンダラなので使っても大丈夫
 
-		function getDateText(time: string) {
-			const date = new Date(time).getDate();
-			const month = new Date(time).getMonth() + 1;
+		function getDateText(dateInstance: Date) {
+			const date = dateInstance.getDate();
+			const month = dateInstance.getMonth() + 1;
 			return i18n.tsx.monthAndDay({
 				month: month.toString(),
 				day: date.toString(),
@@ -62,9 +63,16 @@ export default defineComponent({
 			})[0];
 			if (el.key == null && item.id) el.key = item.id;
 
+			const date = new Date(item.createdAt);
+			const nextDate = props.items[i + 1] ? new Date(props.items[i + 1].createdAt) : null;
+
 			if (
 				i !== props.items.length - 1 &&
-				new Date(item.createdAt).getDate() !== new Date(props.items[i + 1].createdAt).getDate()
+				nextDate != null && (
+					date.getFullYear() !== nextDate.getFullYear() ||
+					date.getMonth() !== nextDate.getMonth() ||
+					date.getDate() !== nextDate.getDate()
+				)
 			) {
 				const separator = h('div', {
 					class: $style['separator'],
@@ -78,12 +86,12 @@ export default defineComponent({
 						h('i', {
 							class: `ti ti-chevron-up ${$style['date-1-icon']}`,
 						}),
-						getDateText(item.createdAt),
+						getDateText(date),
 					]),
 					h('span', {
 						class: $style['date-2'],
 					}, [
-						getDateText(props.items[i + 1].createdAt),
+						getDateText(nextDate),
 						h('i', {
 							class: `ti ti-chevron-down ${$style['date-2-icon']}`,
 						}),
@@ -92,11 +100,13 @@ export default defineComponent({
 
 				return [el, separator];
 			} else {
-				if (props.ad && item._shouldInsertAd_) {
-					return [h(MkAd, {
+				if (props.ad && instance.ads.length > 0 && item._shouldInsertAd_) {
+					return [h('div', {
 						key: item.id + ':ad',
+						class: $style['ad-wrapper'],
+					}, [h(MkAd, {
 						prefer: ['horizontal', 'horizontal-big'],
-					}), el];
+					})]), el];
 				} else {
 					return el;
 				}
@@ -118,14 +128,14 @@ export default defineComponent({
 			return children;
 		};
 
-		function onBeforeLeave(element: Element) {
-			const el = element as HTMLElement;
+		function onBeforeLeave(el: Element) {
+			if (!(el instanceof HTMLElement)) return;
 			el.style.top = `${el.offsetTop}px`;
 			el.style.left = `${el.offsetLeft}px`;
 		}
 
-		function onLeaveCancelled(element: Element) {
-			const el = element as HTMLElement;
+		function onLeaveCancelled(el: Element) {
+			if (!(el instanceof HTMLElement)) return;
 			el.style.top = '';
 			el.style.left = '';
 		}
@@ -175,7 +185,7 @@ export default defineComponent({
 	}
 
 	&:not(.date-separated-list-nogap) > *:not(:last-child) {
-		margin-bottom: var(--margin);
+		margin-bottom: var(--MI-margin);
 	}
 }
 
@@ -187,7 +197,7 @@ export default defineComponent({
 		box-shadow: none;
 
 		&:not(:last-child) {
-			border-bottom: solid 0.5px var(--divider);
+			border-bottom: solid 0.5px var(--MI_THEME-divider);
 		}
 	}
 }
@@ -228,7 +238,7 @@ export default defineComponent({
 	line-height: 32px;
 	text-align: center;
 	font-size: 12px;
-	color: var(--dateLabelFg);
+	color: var(--MI_THEME-dateLabelFg);
 }
 
 .date-1 {
@@ -245,6 +255,12 @@ export default defineComponent({
 
 .date-2-icon {
 	margin-left: 8px;
+}
+
+.ad-wrapper {
+	padding: 8px;
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px);
 }
 </style>
 

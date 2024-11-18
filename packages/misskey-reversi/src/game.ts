@@ -53,9 +53,13 @@ export class Game {
 
 		//#region Options
 		this.opts = opts;
+
+		/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 		if (this.opts.isLlotheo == null) this.opts.isLlotheo = false;
 		if (this.opts.canPutEverywhere == null) this.opts.canPutEverywhere = false;
 		if (this.opts.loopedBoard == null) this.opts.loopedBoard = false;
+		/* eslint-enable */
+
 		//#endregion
 
 		//#region Parse map data
@@ -123,12 +127,13 @@ export class Game {
 		// ターン計算
 		this.turn =
 			this.canPutSomewhere(!this.prevColor) ? !this.prevColor :
-			this.canPutSomewhere(this.prevColor!) ? this.prevColor :
+			this.canPutSomewhere(this.prevColor!) ? this.prevColor : //eslint-disable-line @typescript-eslint/no-non-null-assertion
 			null;
 	}
 
 	public undo() {
-		const undo = this.logs.pop()!;
+		const undo = this.logs.pop();
+		if (undo == null) return;
 		this.prevColor = undo.color;
 		this.prevPos = undo.pos;
 		this.board[undo.pos] = null;
@@ -183,7 +188,7 @@ export class Game {
 
 			const found: number[] = []; // 挟めるかもしれない相手の石を入れておく配列
 			let [x, y] = this.posToXy(initPos);
-			while (true) {
+			while (true) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 				[x, y] = nextPos(x, y);
 
 				// 座標が指し示す位置がボード外に出たとき

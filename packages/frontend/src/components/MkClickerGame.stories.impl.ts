@@ -8,7 +8,7 @@
 import { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import { action } from '@storybook/addon-actions';
-import { expect, within } from '@storybook/test';
+import { expect, userEvent, within } from '@storybook/test';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkClickerGame from './MkClickerGame.vue';
 
@@ -41,12 +41,10 @@ export const Default = {
 		await sleep(1000);
 		const canvas = within(canvasElement);
 		const count = canvas.getByTestId('count');
-		// NOTE: flaky なので N/A も通しておく
-		await expect(count).toHaveTextContent(/^(0|N\/A)$/);
-		// FIXME: flaky
-		// const buttonElement = canvas.getByRole<HTMLButtonElement>('button');
-		// await userEvent.click(buttonElement);
-		// await expect(count).toHaveTextContent('1');
+		await expect(count).toHaveTextContent('0');
+		const buttonElement = canvas.getByRole<HTMLButtonElement>('button');
+		await userEvent.click(buttonElement);
+		await expect(count).toHaveTextContent('1');
 	},
 	parameters: {
 		layout: 'centered',

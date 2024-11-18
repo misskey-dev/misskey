@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton primary rounded class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
 				<MkPagination v-slot="{ items }" ref="pagingComponent" :pagination="pagination" class="_gaps">
-					<MkClipPreview v-for="item in items" :key="item.id" :clip="item"/>
+					<MkClipPreview v-for="item in items" :key="item.id" :clip="item" :noUserInfo="true"/>
 				</MkPagination>
 			</div>
 			<div v-else-if="tab === 'favorites'" key="favorites" class="_gaps">
@@ -77,15 +77,15 @@ async function create() {
 
 	clipsCache.delete();
 
-	pagingComponent.value.reload();
+	pagingComponent.value?.reload();
 }
 
 function onClipCreated() {
-	pagingComponent.value.reload();
+	pagingComponent.value?.reload();
 }
 
 function onClipDeleted() {
-	pagingComponent.value.reload();
+	pagingComponent.value?.reload();
 }
 
 const headerActions = computed(() => []);

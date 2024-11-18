@@ -10,6 +10,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class HybridTimelineChannel extends Channel {
@@ -34,13 +35,13 @@ class HybridTimelineChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: any): Promise<void> {
+	public async init(params: JsonObject): Promise<void> {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
 		if (!policies.ltlAvailable) return;
 
-		this.withRenotes = params.withRenotes ?? true;
-		this.withReplies = params.withReplies ?? false;
-		this.withFiles = params.withFiles ?? false;
+		this.withRenotes = !!(params.withRenotes ?? true);
+		this.withReplies = !!(params.withReplies ?? false);
+		this.withFiles = !!(params.withFiles ?? false);
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -75,14 +76,22 @@ class HybridTimelineChannel extends Channel {
 			const reply = note.reply;
 			if ((this.following[note.userId]?.withReplies ?? false) || this.withReplies) {
 				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信は弾く
-				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return;
+				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId) && reply.userId !== this.user!.id) return;
 			} else {
 				// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
 				if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;
 			}
 		}
 
-		if (isRenotePacked(note) && !isQuotePacked(note) && !this.withRenotes) return;
+		// 純粋なリノート（引用リノートでないリノート）の場合
+		if (isRenotePacked(note) && !isQuotePacked(note) && note.renote) {
+			if (!this.withRenotes) return;
+			if (note.renote.reply) {
+				const reply = note.renote.reply;
+				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信のリノートは弾く
+				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId) && reply.userId !== this.user!.id) return;
+			}
+		}
 
 		if (this.user && note.renoteId && !note.text) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {

@@ -5,24 +5,25 @@
 
 import { computed, watch, version as vueVersion, App } from 'vue';
 import { compareVersions } from 'compare-versions';
+import { version, lang, updateLocale, locale } from '@@/js/config.js';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, lang, updateLocale, locale } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
-import { updateI18n } from '@/i18n.js';
+import { updateI18n, i18n } from '@/i18n.js';
 import { $i, refreshAccount, login } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { deviceKind, updateDeviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
 import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { setupRouter } from '@/router/definition.js';
+import { setupRouter } from '@/router/main.js';
+import { createMainRouter } from '@/router/definition.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -145,10 +146,9 @@ export async function common(createVue: () => App<Element>) {
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
 	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 		applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
-		document.documentElement.dataset.colorMode = darkMode ? 'dark' : 'light';
 	}, { immediate: miLocalStorage.getItem('theme') == null });
 
-	document.documentElement.dataset.colorMode = defaultStore.state.darkMode ? 'dark' : 'light';
+	document.documentElement.dataset.colorScheme = defaultStore.state.darkMode ? 'dark' : 'light';
 
 	const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
 	const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
@@ -182,24 +182,22 @@ export async function common(createVue: () => App<Element>) {
 			if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(instance.defaultLightTheme));
 			if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
 			defaultStore.set('themeInitial', false);
-		} else {
-			if (defaultStore.state.darkMode) {
-				applyTheme(darkTheme.value);
-			} else {
-				applyTheme(lightTheme.value);
-			}
 		}
 	});
 
+	watch(defaultStore.reactiveState.overridedDeviceKind, (kind) => {
+		updateDeviceKind(kind);
+	}, { immediate: true });
+
 	watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
-		document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
+		document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');
 	}, { immediate: true });
 
 	watch(defaultStore.reactiveState.useBlurEffect, v => {
 		if (v) {
-			document.documentElement.style.removeProperty('--blur');
+			document.documentElement.style.removeProperty('--MI-blur');
 		} else {
-			document.documentElement.style.setProperty('--blur', 'none');
+			document.documentElement.style.setProperty('--MI-blur', 'none');
 		}
 	}, { immediate: true });
 
@@ -239,7 +237,7 @@ export async function common(createVue: () => App<Element>) {
 
 	const app = createVue();
 
-	setupRouter(app);
+	setupRouter(app, createMainRouter);
 
 	if (_DEV_) {
 		app.config.performance = true;
@@ -274,6 +272,27 @@ export async function common(createVue: () => App<Element>) {
 	window.onunhandledrejection = null;
 
 	removeSplash();
+
+	//#region Self-XSS 対策メッセージ
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.warning}`,
+		'color: #f00; background-color: #ff0; font-size: 36px; padding: 4px;',
+	);
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.title}`,
+		'color: #f00; font-weight: 900; font-family: "Hiragino Sans W9", "Hiragino Kaku Gothic ProN", sans-serif; font-size: 24px;',
+	);
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.description1}`,
+		'font-size: 16px; font-weight: 700;',
+	);
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.description2}`,
+		'font-size: 16px;',
+		'font-size: 20px; font-weight: 700; color: #f00;',
+	);
+	console.log(i18n.tsx._selfXssPrevention.description3({ link: 'https://misskey-hub.net/docs/for-users/resources/self-xss/' }));
+	//#endregion
 
 	return {
 		isClientUpdated,

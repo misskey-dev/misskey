@@ -22,7 +22,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					}}
 				</template>
 
-				<XNotificationConfig :userLists="userLists" :value="$i.notificationRecieveConfig[type] ?? { type: 'all' }" @update="(res) => updateReceiveConfig(type, res)"/>
+				<XNotificationConfig
+					:userLists="userLists"
+					:value="$i.notificationRecieveConfig[type] ?? { type: 'all' }"
+					:configurableTypes="onlyOnOrOffNotificationTypes.includes(type) ? ['all', 'never'] : undefined"
+					@update="(res) => updateReceiveConfig(type, res)"
+				/>
 			</MkFolder>
 		</div>
 	</FormSection>
@@ -58,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { shallowRef, computed } from 'vue';
-import XNotificationConfig from './notifications.notification-config.vue';
+import XNotificationConfig, { type NotificationConfig } from './notifications.notification-config.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -69,11 +74,13 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
-import { notificationTypes } from '@/const.js';
+import { notificationTypes } from '@@/js/const.js';
 
 const $i = signinRequired();
 
-const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'achievementEarned'];
+const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'test', 'exportCompleted'] satisfies (typeof notificationTypes[number])[] as string[];
+
+const onlyOnOrOffNotificationTypes = ['app', 'achievementEarned', 'login'] satisfies (typeof notificationTypes[number])[] as string[];
 
 const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
@@ -88,7 +95,7 @@ async function readAllNotifications() {
 	await os.apiWithDialog('notifications/mark-all-as-read');
 }
 
-async function updateReceiveConfig(type, value) {
+async function updateReceiveConfig(type: typeof notificationTypes[number], value: NotificationConfig) {
 	await os.apiWithDialog('i/update', {
 		notificationRecieveConfig: {
 			...$i.notificationRecieveConfig,

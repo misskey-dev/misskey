@@ -11,13 +11,6 @@ import { expect, userEvent, within } from '@storybook/test';
 import { file } from '../../.storybook/fakes.js';
 import MkCwButton from './MkCwButton.vue';
 import { i18n } from '@/i18n.js';
-import { semaphore } from '@/scripts/test-utils.js';
-
-function sleep(ms: number) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-const s = semaphore();
 
 export const Default = {
 	render(args) {
@@ -54,8 +47,6 @@ export const Default = {
 		text: 'Some CW content',
 	},
 	async play({ canvasElement }) {
-		await s.acquire();
-		await sleep(1000);
 		const canvas = within(canvasElement);
 		const buttonElement = canvas.getByRole<HTMLButtonElement>('button');
 		await expect(buttonElement).toHaveTextContent(i18n.ts._cw.show);
@@ -63,7 +54,6 @@ export const Default = {
 		await userEvent.click(buttonElement);
 		await expect(buttonElement).toHaveTextContent(i18n.ts._cw.hide);
 		await userEvent.click(buttonElement);
-		s.release();
 	},
 	parameters: {
 		chromatic: {
