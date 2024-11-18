@@ -127,7 +127,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateMutedUserQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }, exclude?: { id: MiUser['id'] }): void {
+	public generateMutedUserQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }, exclude?: { id: MiUser['id'] }, checkMentions: boolean = true): void {
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 			.select('muting.muteeId')
 			.where('muting.muterId = :muterId', { muterId: me.id });
@@ -171,6 +171,15 @@ export class QueryService {
 					.where('note.renoteUserHost IS NULL')
 					.orWhere(`NOT ((${ mutingInstanceQuery.getQuery() })::jsonb ? note.renoteUserHost)`);
 			}));
+
+		// 投稿に含まれるメンションの相手をミュートしていない
+		if (checkMentions) {
+			q.andWhere(new Brackets(qb => {
+				qb
+					.where('note.mentions IS NULL')
+					.orWhere(`NOT (note.mentions && (${ mutingQuery.getQuery() }))`);
+			}));
+		}
 
 		q.setParameters(mutingQuery.getParameters());
 		q.setParameters(mutingInstanceQuery.getParameters());
