@@ -244,6 +244,7 @@ federationAllowedHostsDescription: "連合を許可するサーバーのホス�
 muteAndBlock: "ミュートとブロック"
 mutedUsers: "ミュートしたユーザー"
 blockedUsers: "ブロックしたユーザー"
+reactionBlockedUsers: "リアクションをブロックしたユーザー"
 noUsers: "ユーザーはいません"
 editProfile: "プロフィールを編集"
 noteDeleteConfirm: "このノートを削除しますか？"
