@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class AddBlockingReactionUser1731932268436 {
     name = 'AddBlockingReactionUser1731932268436'
 
