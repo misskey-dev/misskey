@@ -131,19 +131,6 @@ function more(ev: MouseEvent) {
 	flex: 0 0 var(--nav-width);
 	width: var(--nav-width);
 	box-sizing: border-box;
-
-	.right {
-		position: fixed;
-		top: 0;
-		right: 0;
-		width: fit-content;
-		height: 100dvh;
-
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
 }
 
 .body {
@@ -173,10 +160,6 @@ function more(ev: MouseEvent) {
 }
 
 .bottom {
-	direction: ltr;
-}
-
-.right {
 	direction: ltr;
 }
 
