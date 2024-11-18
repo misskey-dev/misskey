@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-paplin class="mkw-paplin">
 	<template #header>paplin</template>
 
-	<div ref="paplin" class="paplin transition" @click="rotation" :style="style">
+	<div ref="paplin" class="paplin transition" :style="style" @click="rotation">
 		<img src="https://pub-61d9927ea6b24ad7b33e1db00f6950bf.r2.dev/misskey/files/thumbnail-60fd8592-2cad-4306-8ad9-c36243278e5f.webp" />
 	</div>
 </MkContainer>
@@ -46,12 +46,12 @@ const style = reactive({});
 const deg = ref(0);
 
 const rotation = () => {
-	if (isNaN(deg.deg)) {
-		deg.deg = 0;
+	if (isNaN(deg.value)) {
+		deg.value = 0;
 		style.transition = 'transform 0.8s ease-in-out';
 	}
-	deg.deg += 360;
-	style.transform = `rotate(${deg.deg}deg)`
+	deg.value += 360;
+	style.transform = `rotate(${deg.value}deg)`
 };
 
 defineExpose<WidgetComponentExpose>({
