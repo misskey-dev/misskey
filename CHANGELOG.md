@@ -8,6 +8,7 @@
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
 - Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
+- Fix: アナウンスメントを作成ときにWebUIフォームの画像URLを後悔できないのを修正 (/admin/announcement/create)
 - Enhance: 依存関係の更新
 - Enhance: l10nの更新
 
