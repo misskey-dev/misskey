@@ -78,7 +78,7 @@ export class UserReactionBlockingService {
 		});
 
 		if (blocking == null) {
-			this.logger.warn('ブロック解除がリクエストされましたがブロックしていませんでした');
+			this.logger.warn('Unblock requested, but the target was not blocked.');
 			return;
 		}
 
