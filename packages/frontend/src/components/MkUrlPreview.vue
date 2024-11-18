@@ -179,7 +179,7 @@ if (requestUrl.hostname === 'bsky.app') {
 		bskyHandleOrDid.value = bskyPostPageUrl[1];
 		bskyPostRecordKey.value = bskyPostPageUrl[3];
 
-		if (bskyPostExpanded.value) {
+		if (postExpanded.value) {
 			openBskyEmbed();
 		}
 	}
