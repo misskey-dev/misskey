@@ -22,7 +22,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 
 @Injectable()
-export class UserReactionBlockingService implements OnModuleInit {
+export class UserReactionBlockingService {
 	private logger: Logger;
 	private userFollowingService: UserFollowingService;
 
