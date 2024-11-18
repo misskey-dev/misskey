@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 	</div>
-	<button class="_button" :class="$style.toggleButton" @click="iconOnly = !iconOnly">
+	<button v-if="!forceIconOnly" class="_button" :class="$style.toggleButton" @click="toggleIconOnly">
 		<!--
 		<svg viewBox="0 0 16 48" :class="$style.toggleButtonShape">
 			<g transform="matrix(0.333333,0,0,0.222222,0.000895785,13.3333)">
@@ -95,9 +95,11 @@ const otherMenuItemIndicated = computed(() => {
 	return false;
 });
 
-const calcViewState = () => {
-	iconOnly.value = (window.innerWidth <= 1279) || (defaultStore.state.menuDisplay === 'sideIcon');
-};
+const forceIconOnly = window.innerWidth <= 1279;
+
+function calcViewState() {
+	iconOnly.value = forceIconOnly || (defaultStore.state.menuDisplay === 'sideIcon');
+}
 
 calcViewState();
 
@@ -106,6 +108,10 @@ window.addEventListener('resize', calcViewState);
 watch(defaultStore.reactiveState.menuDisplay, () => {
 	calcViewState();
 });
+
+function toggleIconOnly() {
+	defaultStore.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
+}
 
 function openAccountMenu(ev: MouseEvent) {
 	openAccountMenu_({
