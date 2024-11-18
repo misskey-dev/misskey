@@ -91,7 +91,6 @@ export class ReactionService {
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private userBlockingService: UserBlockingService,
-		private userReactionBlockingService: UserBlockingService,
 		private reactionsBufferingService: ReactionsBufferingService,
 		private idService: IdService,
 		private featuredService: FeaturedService,
@@ -108,7 +107,7 @@ export class ReactionService {
 		// Check blocking
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
-			const reactionBlocked = await this.userReactionBlockingService.checkBlocked(note.userId, user.id);
+			const reactionBlocked = await this.userBlockingService.checkReactionBlocked(note.userId, user.id);
 			if (blocked || reactionBlocked) {
 				throw new IdentifiableError('e70412a4-7197-4726-8e74-f3e0deb92aa7');
 			}
