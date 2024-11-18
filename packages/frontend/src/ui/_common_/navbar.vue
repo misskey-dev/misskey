@@ -55,12 +55,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar :user="$i" :class="$style.avatar"/><MkAcct class="_nowrap" :class="$style.acct" :user="$i"/>
 			</button>
 		</div>
-		<div :class="$style.right">
-			<button :class="$style.toggleButton" @click="iconOnly = !iconOnly">
-				<i :class="'ti ' + `ti-chevron-${ iconOnly ? 'right' : 'left' }`"></i>
-			</button>
-		</div>
 	</div>
+	<button class="_button" :class="$style.toggleButton" @click="iconOnly = !iconOnly">
+		<svg viewBox="0 0 16 48" :class="$style.toggleButtonShape">
+			<g transform="matrix(0.333333,0,0,0.222222,0.000895785,13.3333)">
+				<path d="M23.935,-24C37.223,-24 47.995,-7.842 47.995,12.09C47.995,34.077 47.995,62.07 47.995,84.034C47.995,93.573 45.469,102.721 40.972,109.466C36.475,116.211 30.377,120 24.018,120L23.997,120C10.743,120 -0.003,136.118 -0.003,156C-0.003,156 -0.003,156 -0.003,156L-0.003,-60L-0.003,-59.901C-0.003,-50.379 2.519,-41.248 7.007,-34.515C11.496,-27.782 17.584,-24 23.931,-24C23.932,-24 23.934,-24 23.935,-24Z" style="fill:var(--MI_THEME-navBg);"/>
+			</g>
+		</svg>
+		<i :class="'ti ' + `ti-chevron-${ iconOnly ? 'right' : 'left' }`" style="font-size: 12px; margin-left: -8px;"></i>
+	</button>
 </div>
 </template>
 
@@ -151,6 +154,44 @@ function more(ev: MouseEvent) {
 	contain: strict;
 	display: flex;
 	flex-direction: column;
+	direction: rtl; // スクロールバーを左に表示したいため
+}
+
+.top {
+	direction: ltr;
+}
+
+.middle {
+	direction: ltr;
+}
+
+.bottom {
+	direction: ltr;
+}
+
+.right {
+	direction: ltr;
+}
+
+.toggleButton {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	left: var(--nav-width);
+	z-index: 1001;
+	width: 16px;
+	height: 48px;
+	box-sizing: border-box;
+}
+
+.toggleButtonShape {
+	position: absolute;
+	z-index: -1;
+	top: 0;
+	left: 0;
+	width: 16px;
+	height: 48px;
 }
 
 .root:not(.iconOnly) {
@@ -381,6 +422,10 @@ function more(ev: MouseEvent) {
 		position: relative;
 		font-size: 0.9em;
 	}
+
+	.toggleButton {
+		left: var(--nav-width);
+	}
 }
 
 .root.iconOnly {
@@ -581,17 +626,9 @@ function more(ev: MouseEvent) {
 			font-size: 10px;
 		}
 	}
-}
 
-.toggleButton {
-	width: fit-content;
-	height: 80px;
-	margin: 0;
-	padding: 0;
-	background-color: transparent;
-	border: none;
-	border-radius: 9999px;
-	box-sizing: border-box;
-	font-size: 0.75em;
+	.toggleButton {
+		left: var(--nav-icon-only-width);
+	}
 }
 </style>
