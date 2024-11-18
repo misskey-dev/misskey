@@ -20,7 +20,7 @@ import { MiAntenna } from '@/models/Antenna.js';
 import { MiApp } from '@/models/App.js';
 import { MiAvatarDecoration } from '@/models/AvatarDecoration.js';
 import { MiAuthSession } from '@/models/AuthSession.js';
-import { MiBlocking } from '@/models/Blocking.js';
+import { MiBlocking, MiBlockingType } from '@/models/Blocking.js';
 import { MiChannelFollowing } from '@/models/ChannelFollowing.js';
 import { MiChannelFavorite } from '@/models/ChannelFavorite.js';
 import { MiClip } from '@/models/Clip.js';
@@ -136,6 +136,7 @@ export {
 	MiAvatarDecoration,
 	MiAuthSession,
 	MiBlocking,
+	MiBlockingType,
 	MiChannelFollowing,
 	MiChannelFavorite,
 	MiClip,

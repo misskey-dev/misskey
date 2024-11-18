@@ -12,6 +12,7 @@ import { UserReactionBlockingService } from '@/core/UserReactionBlockingService.
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
+import {MiBlockingType} from "@/models/_.js";
 
 export const meta = {
 	tags: ['account'],
@@ -92,7 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				where: {
 					blockerId: blocker.id,
 					blockeeId: blockee.id,
-					isReactionBlock: true,
+					blockType: MiBlockingType.Reaction,
 				},
 			});
 

@@ -3,15 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
-import { IdService } from '@/core/IdService.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiBlocking } from '@/models/Blocking.js';
-import { QueueService } from '@/core/QueueService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
+import {Inject, Injectable, OnModuleInit} from '@nestjs/common';
+import {ModuleRef} from '@nestjs/core';
+import {IdService} from '@/core/IdService.js';
+import type {MiUser} from '@/models/User.js';
+import type {MiBlocking} from '@/models/Blocking.js';
+import {MiBlockingType} from '@/models/Blocking.js';
+import {QueueService} from '@/core/QueueService.js';
+import {GlobalEventService} from '@/core/GlobalEventService.js';
+import {DI} from '@/di-symbols.js';
+import type {
+	BlockingsRepository,
+	FollowRequestsRepository,
+	UserListMembershipsRepository,
+	UserListsRepository,
+} from '@/models/_.js';
 import Logger from '@/logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -20,6 +26,7 @@ import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { UserReactionBlockingService } from '@/core/UserReactionBlockingService.js';
 
 @Injectable()
 export class UserBlockingService implements OnModuleInit {
@@ -43,6 +50,7 @@ export class UserBlockingService implements OnModuleInit {
 
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
+		private userReactionBlockingService: UserReactionBlockingService,
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
@@ -67,15 +75,27 @@ export class UserBlockingService implements OnModuleInit {
 			this.removeFromList(blockee, blocker),
 		]);
 
-		const blocking = {
-			id: this.idService.gen(),
-			blocker,
+		const blocking = await this.blockingsRepository.findOneBy({
 			blockerId: blocker.id,
-			blockee,
 			blockeeId: blockee.id,
-			isReactionBlock: false,
-		} as MiBlocking;
+		}).then(blocking => {
+			if (blocking) {
+				return blocking;
+			}
+			return {
+				id: this.idService.gen(),
+				blocker,
+				blockerId: blocker.id,
+				blockee,
+				blockeeId: blockee.id,
+				blockType: MiBlockingType.User,
+			} as MiBlocking;
+		});
 
+		if (blocking.blockType === MiBlockingType.Reaction) {
+			await this.userReactionBlockingService.unblock(blocker, blockee);
+		}
+		blocking.blockType = MiBlockingType.User;
 		await this.blockingsRepository.insert(blocking);
 
 		this.cacheService.userBlockingCache.refresh(blocker.id);
@@ -161,7 +181,7 @@ export class UserBlockingService implements OnModuleInit {
 		const blocking = await this.blockingsRepository.findOneBy({
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
-			isReactionBlock: false,
+			blockType: MiBlockingType.User,
 		});
 
 		if (blocking == null) {
@@ -177,17 +197,23 @@ export class UserBlockingService implements OnModuleInit {
 
 		await this.blockingsRepository.delete(blocking.id);
 
-		this.cacheService.userReactionBlockedCache.refresh(blocker.id);
-		this.cacheService.userReactionBlockedCache.refresh(blockee.id);
+		this.cacheService.userBlockingCache.refresh(blocker.id);
+		this.cacheService.userBlockedCache.refresh(blockee.id);
 
-		this.globalEventService.publishInternalEvent('blockingReactionDeleted', {
+		this.globalEventService.publishInternalEvent('blockingDeleted', {
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
 		});
+
+		// deliver if remote bloking
+		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderBlock(blocking), blocker));
+			this.queueService.deliver(blocker, content, blockee.inbox, false);
+		}
 	}
 
 	@bindThis
 	public async checkBlocked(blockerId: MiUser['id'], blockeeId: MiUser['id']): Promise<boolean> {
-		return (await this.cacheService.userReactionBlockingCache.fetch(blockerId)).has(blockeeId);
+		return (await this.cacheService.userBlockingCache.fetch(blockerId)).has(blockeeId);
 	}
 }

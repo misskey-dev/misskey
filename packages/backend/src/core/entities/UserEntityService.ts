@@ -27,6 +27,7 @@ import type {
 	BlockingsRepository,
 	FollowingsRepository,
 	FollowRequestsRepository,
+	MiBlockingType,
 	MiFollowing,
 	MiUserNotePining,
 	MiUserProfile,
@@ -202,28 +203,28 @@ export class UserEntityService implements OnModuleInit {
 				where: {
 					blockerId: me,
 					blockeeId: target,
-					isReactionBlock: false,
+					blockType: MiBlockingType.User,
 				},
 			}),
 			this.blockingsRepository.exists({
 				where: {
 					blockerId: target,
 					blockeeId: me,
-					isReactionBlock: false,
+					blockType: MiBlockingType.User,
 				},
 			}),
 			this.blockingsRepository.exists({
 				where: {
 					blockerId: me,
 					blockeeId: target,
-					isReactionBlock: true,
+					blockType: MiBlockingType.Reaction,
 				},
 			}),
 			this.blockingsRepository.exists({
 				where: {
 					blockerId: target,
 					blockeeId: me,
-					isReactionBlock: true,
+					blockType: MiBlockingType.Reaction,
 				},
 			}),
 			this.mutingsRepository.exists({
@@ -290,25 +291,25 @@ export class UserEntityService implements OnModuleInit {
 			this.blockingsRepository.createQueryBuilder('b')
 				.select('b.blockeeId')
 				.where('b.blockerId = :me', { me })
-				.andWhere('b.isReactionBlock = false')
+				.andWhere('b.blockType = "user"')
 				.getRawMany<{ b_blockeeId: string }>()
 				.then(it => it.map(it => it.b_blockeeId)),
 			this.blockingsRepository.createQueryBuilder('b')
 				.select('b.blockerId')
 				.where('b.blockeeId = :me', { me })
-				.andWhere('b.isReactionBlock = false')
+				.andWhere('b.blockType = "user"')
 				.getRawMany<{ b_blockerId: string }>()
 				.then(it => it.map(it => it.b_blockerId)),
 			this.blockingsRepository.createQueryBuilder('b')
 				.select('b.blockeeId')
 				.where('b.blockerId = :me', { me })
-				.andWhere('b.isReactionBlock = true')
+				.andWhere('b.blockType = "reaction"')
 				.getRawMany<{ b_blockeeId: string }>()
 				.then(it => it.map(it => it.b_blockeeId)),
 			this.blockingsRepository.createQueryBuilder('b')
 				.select('b.blockerId')
 				.where('b.blockeeId = :me', { me })
-				.andWhere('b.isReactionBlock = true')
+				.andWhere('b.blockType = "reaction"')
 				.getRawMany<{ b_blockerId: string }>()
 				.then(it => it.map(it => it.b_blockerId)),
 			this.mutingsRepository.createQueryBuilder('m')

@@ -7,6 +7,11 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
+export enum MiBlockingType {
+	User = 'user',
+	Reaction = 'reaction',
+}
+
 @Entity('blocking')
 @Index(['blockerId', 'blockeeId'], { unique: true })
 export class MiBlocking {
@@ -41,8 +46,8 @@ export class MiBlocking {
 
 	@Index()
 	@Column({
-		comment: 'Whether the blockee is a reaction block.',
-		default: false,
+		comment: 'Block type.',
+		default: MiBlockingType.User,
 	})
-	public isReactionBlock: boolean;
+	public blockType: MiBlockingType;
 }

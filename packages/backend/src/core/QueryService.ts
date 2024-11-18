@@ -72,7 +72,8 @@ export class QueryService {
 	public generateBlockedUserQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const blockingQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockerId')
-			.where('blocking.blockeeId = :blockeeId', { blockeeId: me.id });
+			.where('blocking.blockeeId = :blockeeId', { blockeeId: me.id })
+			.andWhere('blocking.blockType = "user"');
 
 		// 投稿の作者にブロックされていない かつ
 		// 投稿の返信先の作者にブロックされていない かつ
@@ -97,7 +98,8 @@ export class QueryService {
 	public generateBlockQueryForUsers(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const blockingQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockeeId')
-			.where('blocking.blockerId = :blockerId', { blockerId: me.id });
+			.where('blocking.blockerId = :blockerId', { blockerId: me.id })
+			.andWhere('blocking.blockType = "user"');
 
 		const blockedQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockerId')
