@@ -5,10 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-paplin class="mkw-paplin">
-	<template #header>{{ i18n.ts._widgets.paplin }}</template>
+	<template #header>paplin</template>
 
 	<div ref="paplin" class="paplin transition" @click="rotation" :style="style">
-		<img src="https://pub-61d9927ea6b24ad7b33e1db00f6950bf.r2.dev/misskey/files/thumbnail-516fe5e1-88e2-4cc7-9b43-e1a3cbd7ced9.webp" />
+		<img src="https://pub-61d9927ea6b24ad7b33e1db00f6950bf.r2.dev/misskey/files/thumbnail-60fd8592-2cad-4306-8ad9-c36243278e5f.webp" />
 	</div>
 </MkContainer>
 </template>
@@ -17,9 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, reactive } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
-import { i18n } from '@/i18n.js';
 
-const name = i18n.ts._widgets.paplin;
+const name = 'paplin';
 
 const widgetPropsDef = {
 	showHeader: {
@@ -28,7 +27,7 @@ const widgetPropsDef = {
 	},
 	height: {
 		type: 'number' as const,
-		default: 100,
+		default: 350,
 	},
 };
 

@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="instances && instances.length > 0" class="federation">
 		<MarqueeText :duration="40">
 			<MkA v-for="instance in instances" :key="instance.id" :class="$style.federationInstance" :to="`/instance-info/${instance.host}`" behavior="window">
-				<!-- <MkInstanceCardMini :instance="instance"/> -->
+				<MkInstanceCardMini :instance="instance"/>
 				<img v-if="instance.iconUrl" class="icon" :src="getInstanceIcon(instance)" alt=""/>
 				<span class="name _monospace">{{ instance.host }}</span>
 			</MkA>
