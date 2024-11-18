@@ -8656,7 +8656,6 @@ export interface Locale extends ILocale {
          * 今日誕生日のユーザー
          */
         "birthdayFollowings": string;
-        "paplin": string;
     };
     "_cw": {
         /**
