@@ -42,13 +42,14 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const style = reactive({});
+const style = reactive({
+	transition = 'transform 0.8s ease-in-out';
+});
 const deg = ref(0);
 
 const rotation = () => {
 	if (isNaN(deg.value)) {
 		deg.value = 0;
-		style.transition = 'transform 0.8s ease-in-out';
 	}
 	deg.value += 360;
 	style.transform = `rotate(${deg.value}deg)`;
