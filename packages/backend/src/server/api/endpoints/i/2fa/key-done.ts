@@ -6,7 +6,6 @@
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/_.js';
@@ -67,7 +66,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private webAuthnService: WebAuthnService,
 		private userAuthService: UserAuthService,
-		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -110,10 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Publish meUpdated event
-			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
-				schema: 'MeDetailed',
-				includeSecrets: true,
-			}));
+			this.globalEventService.publishMainStream(me.id, 'meUpdated');
 
 			return {
 				id: keyId,
