@@ -416,6 +416,14 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: true,
 		},
+		isReactionBlocking: {
+			type: 'boolean',
+			nullable: false, optional: true,
+		},
+		isReactionBlocked: {
+			type: 'boolean',
+			nullable: false, optional: true,
+		},
 		isMuted: {
 			type: 'boolean',
 			nullable: false, optional: true,

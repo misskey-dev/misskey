@@ -156,6 +156,12 @@ import type {
 	BlockingDeleteResponse,
 	BlockingListRequest,
 	BlockingListResponse,
+	BlockingReactionUserCreateRequest,
+	BlockingReactionUserCreateResponse,
+	BlockingReactionUserDeleteRequest,
+	BlockingReactionUserDeleteResponse,
+	BlockingReactionUserListRequest,
+	BlockingReactionUserListResponse,
 	ChannelsCreateRequest,
 	ChannelsCreateResponse,
 	ChannelsFeaturedResponse,
@@ -690,6 +696,9 @@ export type Endpoints = {
 	'blocking/create': { req: BlockingCreateRequest; res: BlockingCreateResponse };
 	'blocking/delete': { req: BlockingDeleteRequest; res: BlockingDeleteResponse };
 	'blocking/list': { req: BlockingListRequest; res: BlockingListResponse };
+	'blocking-reaction-user/create': { req: BlockingReactionUserCreateRequest; res: BlockingReactionUserCreateResponse };
+	'blocking-reaction-user/delete': { req: BlockingReactionUserDeleteRequest; res: BlockingReactionUserDeleteResponse };
+	'blocking-reaction-user/list': { req: BlockingReactionUserListRequest; res: BlockingReactionUserListResponse };
 	'channels/create': { req: ChannelsCreateRequest; res: ChannelsCreateResponse };
 	'channels/featured': { req: EmptyRequest; res: ChannelsFeaturedResponse };
 	'channels/follow': { req: ChannelsFollowRequest; res: EmptyResponse };

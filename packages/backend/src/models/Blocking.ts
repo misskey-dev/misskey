@@ -38,4 +38,11 @@ export class MiBlocking {
 	})
 	@JoinColumn()
 	public blocker: MiUser | null;
+
+	@Index()
+	@Column({
+		comment: 'Whether the blockee is a reaction block.',
+		default: false,
+	})
+	public isReactionBlock: boolean;
 }

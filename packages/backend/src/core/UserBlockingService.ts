@@ -73,6 +73,7 @@ export class UserBlockingService implements OnModuleInit {
 			blockerId: blocker.id,
 			blockee,
 			blockeeId: blockee.id,
+			isReactionBlock: false,
 		} as MiBlocking;
 
 		await this.blockingsRepository.insert(blocking);
@@ -160,6 +161,7 @@ export class UserBlockingService implements OnModuleInit {
 		const blocking = await this.blockingsRepository.findOneBy({
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
+			isReactionBlock: false,
 		});
 
 		if (blocking == null) {
@@ -169,28 +171,23 @@ export class UserBlockingService implements OnModuleInit {
 
 		// Since we already have the blocker and blockee, we do not need to fetch
 		// them in the query above and can just manually insert them here.
-		blocking.blocker = blocker;
-		blocking.blockee = blockee;
+		// But we don't need to do this because we are not using them in this function.
+		// blocking.blocker = blocker;
+		// blocking.blockee = blockee;
 
 		await this.blockingsRepository.delete(blocking.id);
 
-		this.cacheService.userBlockingCache.refresh(blocker.id);
-		this.cacheService.userBlockedCache.refresh(blockee.id);
+		this.cacheService.userReactionBlockedCache.refresh(blocker.id);
+		this.cacheService.userReactionBlockedCache.refresh(blockee.id);
 
-		this.globalEventService.publishInternalEvent('blockingDeleted', {
+		this.globalEventService.publishInternalEvent('blockingReactionDeleted', {
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
 		});
-
-		// deliver if remote bloking
-		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderBlock(blocking), blocker));
-			this.queueService.deliver(blocker, content, blockee.inbox, false);
-		}
 	}
 
 	@bindThis
 	public async checkBlocked(blockerId: MiUser['id'], blockeeId: MiUser['id']): Promise<boolean> {
-		return (await this.cacheService.userBlockingCache.fetch(blockerId)).has(blockeeId);
+		return (await this.cacheService.userReactionBlockingCache.fetch(blockerId)).has(blockeeId);
 	}
 }

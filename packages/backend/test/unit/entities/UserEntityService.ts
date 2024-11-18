@@ -115,6 +115,16 @@ describe('UserEntityService', () => {
 				id: genAidx(Date.now()),
 				blockerId: blocker.id,
 				blockeeId: blockee.id,
+				isReactionBlock: false,
+			});
+		}
+
+		async function blockReaction(blocker: MiUser, blockee: MiUser) {
+			await blockingRepository.insert({
+				id: genAidx(Date.now()),
+				blockerId: blocker.id,
+				blockeeId: blockee.id,
+				isReactionBlock: true,
 			});
 		}
 
@@ -260,6 +270,8 @@ describe('UserEntityService', () => {
 					expect(actual.hasPendingFollowRequestToYou).toBe(false);
 					expect(actual.isBlocking).toBe(false);
 					expect(actual.isBlocked).toBe(false);
+					expect(actual.isReactionBlocking).toBe(false);
+					expect(actual.isReactionBlocked).toBe(false);
 					expect(actual.isMuted).toBe(false);
 					expect(actual.isRenoteMuted).toBe(false);
 				}
@@ -275,6 +287,8 @@ describe('UserEntityService', () => {
 					expect(actual.hasPendingFollowRequestToYou).toBe(false);
 					expect(actual.isBlocking).toBe(false);
 					expect(actual.isBlocked).toBe(false);
+					expect(actual.isReactionBlocking).toBe(false);
+					expect(actual.isReactionBlocked).toBe(false);
 					expect(actual.isMuted).toBe(false);
 					expect(actual.isRenoteMuted).toBe(false);
 				}
@@ -290,6 +304,8 @@ describe('UserEntityService', () => {
 					expect(actual.hasPendingFollowRequestToYou).toBe(false);
 					expect(actual.isBlocking).toBe(false);
 					expect(actual.isBlocked).toBe(false);
+					expect(actual.isReactionBlocking).toBe(false);
+					expect(actual.isReactionBlocked).toBe(false);
 					expect(actual.isMuted).toBe(false);
 					expect(actual.isRenoteMuted).toBe(false);
 				}
@@ -305,6 +321,8 @@ describe('UserEntityService', () => {
 					expect(actual.hasPendingFollowRequestToYou).toBe(true);
 					expect(actual.isBlocking).toBe(false);
 					expect(actual.isBlocked).toBe(false);
+					expect(actual.isReactionBlocking).toBe(false);
+					expect(actual.isReactionBlocked).toBe(false);
 					expect(actual.isMuted).toBe(false);
 					expect(actual.isRenoteMuted).toBe(false);
 				}
@@ -320,6 +338,8 @@ describe('UserEntityService', () => {
 					expect(actual.hasPendingFollowRequestToYou).toBe(false);
 					expect(actual.isBlocking).toBe(true);
 					expect(actual.isBlocked).toBe(false);
+					expect(actual.isReactionBlocking).toBe(false);
+					expect(actual.isReactionBlocked).toBe(false);
 					expect(actual.isMuted).toBe(false);
 					expect(actual.isRenoteMuted).toBe(false);
 				}
@@ -339,6 +359,41 @@ describe('UserEntityService', () => {
 					expect(actual.isRenoteMuted).toBe(false);
 				}
 
+
+				// meがリアクションをブロックしてる人たち
+				const reactionBlockingYou = await Promise.all(randomIntRange().map(() => createUser()));
+				for (const who of reactionBlockingYou) {
+					await blockReaction(me, who);
+					const actual = await service.pack(who, me, { schema: 'UserDetailed' }) as any;
+					expect(actual.isFollowing).toBe(false);
+					expect(actual.isFollowed).toBe(false);
+					expect(actual.hasPendingFollowRequestFromYou).toBe(false);
+					expect(actual.hasPendingFollowRequestToYou).toBe(false);
+					expect(actual.isBlocking).toBe(false);
+					expect(actual.isBlocked).toBe(false);
+					expect(actual.isReactionBlocking).toBe(true);
+					expect(actual.isReactionBlocked).toBe(false);
+					expect(actual.isMuted).toBe(false);
+					expect(actual.isRenoteMuted).toBe(false);
+				}
+
+				// meのリアクションをブロックしてる人たち
+				const reactionBlockingMe = await Promise.all(randomIntRange().map(() => createUser()));
+				for (const who of reactionBlockingMe) {
+					await blockReaction(who, me);
+					const actual = await service.pack(who, me, { schema: 'UserDetailed' }) as any;
+					expect(actual.isFollowing).toBe(false);
+					expect(actual.isFollowed).toBe(false);
+					expect(actual.hasPendingFollowRequestFromYou).toBe(false);
+					expect(actual.hasPendingFollowRequestToYou).toBe(false);
+					expect(actual.isBlocking).toBe(false);
+					expect(actual.isBlocked).toBe(false);
+					expect(actual.isReactionBlocking).toBe(false);
+					expect(actual.isReactionBlocked).toBe(true);
+					expect(actual.isMuted).toBe(false);
+					expect(actual.isRenoteMuted).toBe(false);
+				}
+
 				// meがミュートしてる人たち
 				const muters = await Promise.all(randomIntRange().map(() => createUser()));
 				for (const who of muters) {
@@ -350,6 +405,8 @@ describe('UserEntityService', () => {
 					expect(actual.hasPendingFollowRequestToYou).toBe(false);
 					expect(actual.isBlocking).toBe(false);
 					expect(actual.isBlocked).toBe(false);
+					expect(actual.isReactionBlocking).toBe(false);
+					expect(actual.isReactionBlocked).toBe(false);
 					expect(actual.isMuted).toBe(true);
 					expect(actual.isRenoteMuted).toBe(false);
 				}
@@ -365,6 +422,8 @@ describe('UserEntityService', () => {
 					expect(actual.hasPendingFollowRequestToYou).toBe(false);
 					expect(actual.isBlocking).toBe(false);
 					expect(actual.isBlocked).toBe(false);
+					expect(actual.isReactionBlocking).toBe(false);
+					expect(actual.isReactionBlocked).toBe(false);
 					expect(actual.isMuted).toBe(false);
 					expect(actual.isRenoteMuted).toBe(true);
 				}

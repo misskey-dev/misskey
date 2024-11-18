@@ -27,5 +27,9 @@ export const packedBlockingSchema = {
 			optional: false, nullable: false,
 			ref: 'UserDetailedNotMe',
 		},
+		isReactionBlock: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
