@@ -43,7 +43,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 );
 
 const style = reactive({
-	transition = 'transform 0.8s ease-in-out';
+	transition = 'transform 0.8s ease-in-out',
 });
 const deg = ref(0);
 
