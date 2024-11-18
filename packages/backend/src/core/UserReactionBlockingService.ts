@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
@@ -20,8 +20,8 @@ import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
-import {MiBlockingType} from "@/models/Blocking.js";
-import {UserBlockingService} from "@/core/UserBlockingService.js";
+import { MiBlockingType } from '@/models/Blocking.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 
 @Injectable()
 export class UserReactionBlockingService {
