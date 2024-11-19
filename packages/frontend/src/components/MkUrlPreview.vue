@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			allow="fullscreen;web-share"
 			sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
 			scrolling="no"
-			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0 }"
+			:style="{ position: 'relative', width: '100%', height: `${postHeight}px`, border: 0 }"
 			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
 		></iframe>
 	</div>
@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			allow="fullscreen;web-share"
 			sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
 			scrolling="no"
-			:style="{ position: 'relative', width: '100%', height: `${bskyPostHeight}px`, border: 0 }"
+			:style="{ position: 'relative', width: '100%', height: `${postHeight}px`, border: 0 }"
 			:src="`https://embed.bsky.app/embed/${bskyDid}/app.bsky.feed.post/${bskyPostRecordKey}?id=${embedId}`"
 		></iframe>
 	</div>
@@ -149,14 +149,13 @@ const playerEnabled = ref(false);
 
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 const postExpanded = ref(props.detail);
+const postHeight = ref(150);
 
 const tweetId = ref<string | null>(null);
-const tweetHeight = ref(150);
 
 const bskyHandleOrDid = ref<string | null>(null);
 const bskyDid = ref<string | null>(null);
 const bskyPostRecordKey = ref<string | null>(null);
-const bskyPostHeight = ref(150);
 
 const unknownUrl = ref(false);
 
@@ -255,12 +254,12 @@ function adjustSocialsEmbedHeight(message: MessageEvent) {
 		const embed = message.data?.['twttr.embed'];
 		if (embed?.method === 'twttr.private.resize' && embed?.id === embedId) {
 			const height = embed?.params[0]?.height;
-			if (height) tweetHeight.value = height;
+			if (height) postHeight.value = height;
 		}
 	} else if (message.origin === 'https://embed.bsky.app') {
 		if (message.data?.id === embedId) {
 			const height = message.data?.height;
-			if (height) bskyPostHeight.value = height;
+			if (height) postHeight.value = height;
 		}
 	}
 }
