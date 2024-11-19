@@ -64,6 +64,7 @@
 - Fix: FTT無効時にユーザーリストタイムラインが使用できない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/709)
 - Fix: User Webhookテスト機能のMock Payloadを修正  
+- Fix: アカウント削除のモデレーションログが動作していないのを修正 (#14996)  
 - Fix: ユーザーミュートにおいて、ノート内のメンションが考慮されていなかった問題を修正
   - これにより、第三者から自分に対するノートを意図せず取り逃してしまう可能性があったため、通知欄ではメンションを考慮しないままになっています
 
