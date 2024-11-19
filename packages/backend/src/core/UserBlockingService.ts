@@ -214,8 +214,7 @@ export class UserBlockingService implements OnModuleInit {
 	public async checkBlocked(blockerId: MiUser['id'], blockeeId: MiUser['id']): Promise<boolean> {
 		return (await this.cacheService.userBlockingCache.fetch(blockerId)).has(blockeeId);
 	}
-
-
+	
 	@bindThis
 	public async reactionBlock(blocker: MiUser, blockee: MiUser, silent = false) {
 		const blocking = await this.blockingsRepository.findOneBy({

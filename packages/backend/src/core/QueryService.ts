@@ -10,8 +10,8 @@ import type { MiUser } from '@/models/User.js';
 import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { MiBlockingType } from '@/models/Blocking.js';
 import type { SelectQueryBuilder } from 'typeorm';
-import {MiBlockingType} from "@/models/_.js";
 
 @Injectable()
 export class QueryService {
