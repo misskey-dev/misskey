@@ -46,12 +46,13 @@ import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { genEmbedCode } from '@/scripts/get-embed-code.js';
 import type { MenuItem } from '@/types/menu.js';
+import { getServerContext } from '@/server-context.js';
 
 const props = defineProps<{
 	clipId: string,
 }>();
 
-const clip = ref<Misskey.entities.Clip | null>(null);
+const clip = ref<Misskey.entities.Clip | null>(getServerContext('clip'));
 const favorited = ref(false);
 const pagination = {
 	endpoint: 'clips/notes' as const,
@@ -64,6 +65,11 @@ const pagination = {
 const isOwned = computed<boolean | null>(() => $i && clip.value && ($i.id === clip.value.userId));
 
 watch(() => props.clipId, async () => {
+	if (getServerContext('clip') && getServerContext('clip').id === props.clipId) {
+		clip.value = getServerContext('clip');
+		return;
+	}
+
 	clip.value = await misskeyApi('clips/show', {
 		clipId: props.clipId,
 	});
