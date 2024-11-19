@@ -8,6 +8,7 @@
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
 - Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
+- Fix: お知らせ作成時に画像URL入力欄を空欄に変更できないのを修正 ( #14976 )
 - Enhance: 依存関係の更新
 - Enhance: l10nの更新
 
@@ -28,6 +29,7 @@
 - Enhance: 過去に送信したフォローリクエストを確認できるように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
 - Enhance: サイドバーを簡単に展開・折りたたみできるように ( #14981 )
+- Enhance: リノートメニューに「リノートの詳細」を追加
 - Enhance: 投稿フォームの設定メニューを改良
   - 投稿フォームをリセットできるように
   - 文字数カウントを復活
@@ -42,6 +44,8 @@
 - Fix: メールアドレス登録有効化時の「完了」ダイアログボックスの表示条件を修正
 - Fix: 画面幅が狭い環境でデザインが崩れる問題を修正  
 	(Cherry-picked from https://github.com/MisskeyIO/misskey/pull/815)
+- Fix: TypeScriptの型チェック対象ファイルを限定してビルドを高速化するように  
+	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/725)
 
 ### Server
 - Enhance: DockerのNode.jsを22.11.0に更新
