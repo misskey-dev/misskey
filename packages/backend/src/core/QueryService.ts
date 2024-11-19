@@ -132,8 +132,13 @@ export class QueryService {
 			.select('muting.muteeId')
 			.where('muting.muterId = :muterId', { muterId: me.id });
 
+		const mutingArrayQuery = this.mutingsRepository.createQueryBuilder('muting')
+			.select('array_agg(muting.muteeId)', 'muting.muteeIdArray')
+			.where('muting.muterId = :muterId', { muterId: me.id });
+
 		if (exclude) {
 			mutingQuery.andWhere('muting.muteeId != :excludeId', { excludeId: exclude.id });
+			mutingArrayQuery.andWhere('muting.muteeId != :excludeId', { excludeId: exclude.id });
 		}
 
 		const mutingInstanceQuery = this.userProfilesRepository.createQueryBuilder('user_profile')
@@ -177,11 +182,12 @@ export class QueryService {
 			q.andWhere(new Brackets(qb => {
 				qb
 					.where('note.mentions IS NULL')
-					.orWhere(`NOT (note.mentions && (${ mutingQuery.getQuery() }))`);
+					.orWhere(`NOT (note.mentions && (${ mutingArrayQuery.getQuery() }))`);
 			}));
 		}
 
 		q.setParameters(mutingQuery.getParameters());
+		q.setParameters(mutingArrayQuery.getParameters());
 		q.setParameters(mutingInstanceQuery.getParameters());
 	}
 
