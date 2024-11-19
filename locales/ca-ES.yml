@@ -382,7 +382,6 @@ enableLocalTimeline: "Activa la línia de temps local"
 enableGlobalTimeline: "Activa la línia de temps global"
 disablingTimelinesInfo: "Fins i tot si aquestes línies de temps són desactivades, els administradors i els moderadors poden continuar visualitzant per conveniència."
 registration: "Registre"
-enableRegistration: "Permet el registre de nous usuaris"
 invite: "Convida"
 driveCapacityPerLocalAccount: "Capacitat del disc per usuaris locals"
 driveCapacityPerRemoteAccount: "Capacitat del disc per usuaris remots"
@@ -1300,6 +1299,7 @@ thisContentsAreMarkedAsSigninRequiredByAuthor: "L'autor requereix l'inici de ses
 lockdown: "Bloquejat"
 pleaseSelectAccount: "Seleccionar un compte"
 availableRoles: "Roles disponibles "
+acknowledgeNotesAndEnable: "Activa'l després de comprendre els possibles perills."
 _accountSettings:
   requireSigninToViewContents: "És obligatori l'inici de sessió per poder veure el contingut"
   requireSigninToViewContentsDescription1: "Es requereix l'inici de sessió per poder veure totes les notes i el contingut que has creat. Amb això esperem evitar que els rastrejadors recopilin informació."
@@ -1456,6 +1456,8 @@ _serverSettings:
   reactionsBufferingDescription: "Quan s'activa aquesta opció millora bastant el rendiment en recuperar les línies de temps reduint la càrrega de la base. Com a contrapunt, augmentarà  l'ús de memòria de Redís. Desactiva aquesta opció en cas de tenir un servidor amb poca memòria o si tens problemes d'inestabilitat."
   inquiryUrl: "URL de consulta "
   inquiryUrlDescription: "Escriu adreça URL per al formulari de consulta per al mantenidor del servidor o una pàgina web amb el contacte d'informació."
+  openRegistration: "Registres oberts"
+  openRegistrationWarning: "Obrir els registres és arriscat. Es recomana obrir-los només si el servidor és monitorat constantment i per respondre immediatament davant qualsevol problema."
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "Si no es detecta activitat per part del moderador durant un període de temps, aquesta opció es desactiva automàticament per evitar el correu brossa."
 _accountMigration:
   moveFrom: "Migrar un altre compte a aquest"
@@ -2738,3 +2740,6 @@ _selfXssPrevention:
   description1: "Si posa alguna cosa al seu compte, un usuari malintencionat podria segrestar-la o robar-li les dades."
   description2: "Si no entens que estàs fent %cpara ara mateix i tanca la finestra."
   description3: "Per obtenir més informació. {link}"
+_followRequest:
+  recieved: "Sol·licituds rebudes"
+  sent: "Sol·licituds enviades"
