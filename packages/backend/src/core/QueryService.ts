@@ -11,6 +11,7 @@ import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRep
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import type { SelectQueryBuilder } from 'typeorm';
+import {MiBlockingType} from "@/models/_.js";
 
 @Injectable()
 export class QueryService {
@@ -73,7 +74,7 @@ export class QueryService {
 		const blockingQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockerId')
 			.where('blocking.blockeeId = :blockeeId', { blockeeId: me.id })
-			.andWhere('blocking.blockType = "user"');
+			.andWhere('blocking.blockType = :blockType', { blockType: MiBlockingType.User });
 
 		// 投稿の作者にブロックされていない かつ
 		// 投稿の返信先の作者にブロックされていない かつ
@@ -99,7 +100,7 @@ export class QueryService {
 		const blockingQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockeeId')
 			.where('blocking.blockerId = :blockerId', { blockerId: me.id })
-			.andWhere('blocking.blockType = "user"');
+			.andWhere('blocking.blockType = :blockType', { blockType: MiBlockingType.User });
 
 		const blockedQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockerId')

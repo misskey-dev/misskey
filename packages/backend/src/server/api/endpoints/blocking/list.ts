@@ -9,6 +9,7 @@ import type { BlockingsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { BlockingEntityService } from '@/core/entities/BlockingEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { MiBlockingType } from '@/models/Blocking.js';
 
 export const meta = {
 	tags: ['account'],
@@ -50,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.blockingsRepository.createQueryBuilder('blocking'), ps.sinceId, ps.untilId)
 				.andWhere('blocking.blockerId = :meId', { meId: me.id })
-				.andWhere('blocking.blockType = "user"');
+				.andWhere('blocking.blockType = :blockType', { blockType: MiBlockingType.User });
 
 			const blockings = await query
 				.limit(ps.limit)

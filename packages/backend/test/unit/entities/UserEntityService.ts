@@ -12,7 +12,7 @@ import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { genAidx } from '@/misc/id/aidx.js';
 import {
 	BlockingsRepository,
-	FollowingsRepository, FollowRequestsRepository,
+	FollowingsRepository, FollowRequestsRepository, MiBlockingType,
 	MiUserProfile, MutingsRepository, RenoteMutingsRepository,
 	UserMemoRepository,
 	UserProfilesRepository,
@@ -115,7 +115,7 @@ describe('UserEntityService', () => {
 				id: genAidx(Date.now()),
 				blockerId: blocker.id,
 				blockeeId: blockee.id,
-				isReactionBlock: false,
+				blockType: MiBlockingType.User,
 			});
 		}
 
@@ -124,7 +124,7 @@ describe('UserEntityService', () => {
 				id: genAidx(Date.now()),
 				blockerId: blocker.id,
 				blockeeId: blockee.id,
-				isReactionBlock: true,
+				blockType: MiBlockingType.Reaction,
 			});
 		}
 
