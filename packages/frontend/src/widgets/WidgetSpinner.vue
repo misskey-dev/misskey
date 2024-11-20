@@ -4,9 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer data-cy-mkw-spinner class="mkw-spinner" :style="{ height: widgetProps.height + 'px' }">
-	<div ref="spinner" class="spinner transition" :style="style" @click="rotation">
-		<img :src="widgetProps.imgURL" />
+<MkContainer data-cy-mkw-spinner class="mkw-spinner" >
+	<div ref="spinner" class="spinner-box transition" style="transform: 0.8s ease-in-out" :style="{ height: widgetProps.height + 'px' }" @click="rotation">
+		<img class="spinner" :src="widgetProps.imgURL" />
 	</div>
 </MkContainer>
 </template>
@@ -44,9 +44,6 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const style = reactive({
-	transition: 'transform 0.8s ease-in-out',
-});
 const deg = ref(0);
 
 const rotation = () => {
@@ -72,14 +69,16 @@ defineExpose<WidgetComponentExpose>({
 	pointer-events: none;
 	color-scheme: light;
 
-	> .spinner {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-size: cover;
-		background-position: center;
+	> .spinner-box {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		> .spinner {
+			position: absolute;
+			width: 90%;
+			height: 90%;
+		};
 	};
 }
 </style>
