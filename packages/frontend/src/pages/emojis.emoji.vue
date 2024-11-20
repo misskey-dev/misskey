@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
+import { defineAsyncComponent } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
@@ -22,7 +23,6 @@ import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 import { $i } from '@/account.js';
-import {defineAsyncComponent} from "vue";
 
 const props = defineProps<{
   emoji: Misskey.entities.EmojiSimple;
@@ -66,6 +66,7 @@ function menu(ev) {
 
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
+
 const edit = async (emoji) => {
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/pages/emoji-edit-dialog.vue')), {
 		emoji: emoji,
