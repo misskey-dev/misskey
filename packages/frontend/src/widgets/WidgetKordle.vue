@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div data-cy-mkw-kordle class="mkw-kordle" :style="{ height: widgetProps.height + 'px' }">
-	<iframe :class="kordle" src="https://kordle.kr/" frameborder="0" scrolling="no"></iframe>
+	<iframe class="kordle" src="https://kordle.kr/" frameborder="0" scrolling="no"></iframe>
 </div>
 </template>
 
@@ -51,6 +51,5 @@ defineExpose<WidgetComponentExpose>({
 }
 .kordle {
 	height: 100%;
-
 }
 </style>
