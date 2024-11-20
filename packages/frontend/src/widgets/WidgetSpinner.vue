@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkContainer data-cy-mkw-spinner class="mkw-spinner" >
-	<div ref="spinner" class="spinner-box transition" style="transform: 0.8s ease-in-out" :style="{ height: widgetProps.height + 'px' }" @click="rotation">
+	<div ref="spinner" class="spinner-box transition" :style="{ height: widgetProps.height + 'px', transform: `rotate(${widgetProps.degree}deg)`}" @click="rotation">
 		<img class="spinner" :src="widgetProps.imgURL" />
 	</div>
 </MkContainer>
@@ -31,6 +31,11 @@ const widgetPropsDef = {
 		type: 'boolean' as const,
 		default: false,
 	},
+	degree: {
+		type: 'number' as const,
+		default: 0,
+		hidden: true,
+	},
 };
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
@@ -53,7 +58,7 @@ const rotation = () => {
 	let index = Math.round(Math.random());
 	let value = widgetProps.fullThrottle ? 360 : (Math.floor(Math.random()*12)+1)*30
 	deg.value = index == 0 ? deg.value + value : deg.value - value
-	style.transform = `rotate(${deg.value}deg)`;
+	widgetProps.degree = deg.value;
 };
 
 defineExpose<WidgetComponentExpose>({
@@ -73,6 +78,7 @@ defineExpose<WidgetComponentExpose>({
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		transition: transform 0.8s ease-in-out;
 
 		> .spinner {
 			position: absolute;
