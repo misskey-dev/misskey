@@ -69,22 +69,16 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" module>
-.root {
-	border: none;
-	pointer-events: none;
-	color-scheme: light;
+.spinner-box {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: transform 0.8s ease-in-out;
 
-	> .spinner-box {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		transition: transform 0.8s ease-in-out;
-
-		> .spinner {
-			position: absolute;
-			width: 90%;
-			height: 90%;
-		};
+	> .spinner {
+		position: absolute;
+		width: 90%;
+		height: 90%;
 	};
-}
+};
 </style>
