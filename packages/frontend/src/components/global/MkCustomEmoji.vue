@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed, defineAsyncComponent, inject, ref} from 'vue';
+import { computed, defineAsyncComponent, inject, ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { defaultStore } from '@/store.js';
