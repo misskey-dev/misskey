@@ -804,7 +804,7 @@ export class ApInboxService {
 			await this.apPersonService.updatePerson(actor.uri, resolver, object);
 			return 'ok: Person updated';
 		} else if (getApType(object) === 'Question') {
-			await this.apQuestionService.updateQuestion(object, resolver).catch(err => this.logger.error(`err: failed to update question: ${err}`, { error: err }));
+			await this.apQuestionService.updateQuestion(object, actor, resolver).catch(err => this.logger.error(`err: failed to update question: ${err}`, { error: err }));
 			return 'ok: Question updated';
 		} else if (additionalCc && isPost(object)) {
 			const uri = getApId(object);
