@@ -22,7 +22,7 @@ const name = '스피너';
 const widgetPropsDef = {
 	imgURL: {
 		type: 'string' as const,
-		default: '',
+		default: 'https://i.imgur.com/PnzFrT3.png',
 	},
 	height: {
 		type: 'number' as const,

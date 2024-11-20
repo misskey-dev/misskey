@@ -4,9 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer data-cy-mkw-kordle class="mkw-kordle" :style="{ height: widgetProps.height + 'px' }">\
+<div data-cy-mkw-kordle class="mkw-kordle" :style="{ height: widgetProps.height + 'px' }">
 	<iframe :class="$style.root" src="https://kordle.kr/" ></iframe>
-</MkContainer>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -19,7 +19,7 @@ const name = '꼬들';
 const widgetPropsDef = {
 	height: {
 		type: 'number' as const,
-		default: 350,
+		default: 600,
 	},
 };
 
