@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkContainer data-cy-mkw-spinner class="mkw-spinner" >
-	<div ref="spinner" class="spinner-box transition" :style="{ height: widgetProps.height + 'px', transform: `rotate(${widgetProps.degree}deg)`}" @click="rotation">
-		<img class="spinner" :src="widgetProps.imgURL" />
+	<div ref="spinner" class="spinner-box transition" style="display: flex; justify-content: center; align-items: center; transition: transform 0.8s ease-in-out;" :style="{ height: widgetProps.height + 'px', transform: `rotate(${widgetProps.degree}deg)`}" @click="rotation">
+		<img class="spinner" :src="widgetProps.imgURL" style="position: absolute; width: 90%; height: 90%;"/>
 	</div>
 </MkContainer>
 </template>
