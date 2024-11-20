@@ -64,12 +64,14 @@ import { defaultStore } from '@/store.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import { getServerContext } from '@/server-context.js';
 
+const CTX_NOTE = getServerContext('note');
+
 const props = defineProps<{
 	noteId: string;
 	initialTab?: string;
 }>();
 
-const note = ref<null | Misskey.entities.Note>(getServerContext('note'));
+const note = ref<null | Misskey.entities.Note>(CTX_NOTE);
 const clips = ref<Misskey.entities.Clip[]>();
 const showPrev = ref<'user' | 'channel' | false>(false);
 const showNext = ref<'user' | 'channel' | false>(false);
@@ -118,8 +120,8 @@ function fetchNote() {
 	showNext.value = false;
 	note.value = null;
 
-	if (getServerContext('note') && getServerContext('note').id === props.noteId) {
-		note.value = getServerContext('note');
+	if (CTX_NOTE && CTX_NOTE.id === props.noteId) {
+		note.value = CTX_NOTE;
 		return;
 	}
 
