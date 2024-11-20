@@ -18,6 +18,7 @@ import generateUserToken from '@/misc/generate-native-user-token.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { bindThis } from '@/decorators.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserService } from '@/core/UserService.js';
@@ -59,13 +60,13 @@ export class SignupService {
 
 		// Validate username
 		if (!this.userEntityService.validateLocalUsername(username)) {
-			throw new Error('INVALID_USERNAME');
+			throw new IdentifiableError('be85f7f4-1dd3-4107-bce4-07cdb0cbb0c3', 'INVALID_USERNAME');
 		}
 
 		if (password != null && passwordHash == null) {
 			// Validate password
 			if (!this.userEntityService.validatePassword(password)) {
-				throw new Error('INVALID_PASSWORD');
+				throw new IdentifiableError('d5f4959c-a881-41e8-b755-718fbf161258', 'INVALID_PASSWORD');
 			}
 
 			// Generate hash of password
@@ -78,12 +79,12 @@ export class SignupService {
 
 		// Check username duplication
 		if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
-			throw new Error('DUPLICATED_USERNAME');
+			throw new IdentifiableError('d412327a-1bd7-4b70-a982-7eec000db8fc', 'DUPLICATED_USERNAME');
 		}
 
 		// Check deleted username duplication
 		if (await this.usedUsernamesRepository.exists({ where: { username: username.toLowerCase() } })) {
-			throw new Error('USED_USERNAME');
+			throw new IdentifiableError('dd5f52be-2c95-4c39-ba45-dc2d74b3dd81', 'USED_USERNAME');
 		}
 
 		const isTheFirstUser = !await this.instanceActorService.realLocalUsersPresent();
@@ -91,7 +92,7 @@ export class SignupService {
 		if (!opts.ignorePreservedUsernames && !isTheFirstUser) {
 			const isPreserved = this.meta.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
-				throw new Error('USED_USERNAME');
+				throw new IdentifiableError('adad138b-9c63-41bf-931e-6b050fd3bb8d', 'DENIED_USERNAME');
 			}
 		}
 
@@ -121,7 +122,9 @@ export class SignupService {
 				host: IsNull(),
 			});
 
-			if (exist) throw new Error(' the username is already used');
+			if (exist) {
+				throw new IdentifiableError('d412327a-1bd7-4b70-a982-7eec000db8fc', 'DUPLICATED_USERNAME');
+			}
 
 			account = await transactionalEntityManager.save(new MiUser({
 				id: this.idService.gen(),

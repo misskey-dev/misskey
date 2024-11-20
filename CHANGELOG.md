@@ -11,6 +11,7 @@
 - Fix: お知らせ作成時に画像URL入力欄を空欄に変更できないのを修正 ( #14976 )
 - Enhance: 依存関係の更新
 - Enhance: l10nの更新
+- Enhance: 登録時の処理のエラーの内容を詳細に表示するように
 
 ### Client
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
