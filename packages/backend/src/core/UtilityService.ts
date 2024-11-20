@@ -31,6 +31,11 @@ export class UtilityService {
 	}
 
 	@bindThis
+	public isUriLocal(uri: string): boolean {
+		return this.punyHost(uri) === this.toPuny(this.config.host);
+	}
+
+	@bindThis
 	public isBlockedHost(blockedHosts: string[], host: string | null): boolean {
 		if (host == null) return false;
 		return blockedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
@@ -90,7 +95,7 @@ export class UtilityService {
 	@bindThis
 	public extractDbHost(uri: string): string {
 		const url = new URL(uri);
-		return this.toPuny(url.hostname);
+		return this.toPuny(url.host);
 	}
 
 	@bindThis
@@ -102,5 +107,12 @@ export class UtilityService {
 	public toPunyNullable(host: string | null | undefined): string | null {
 		if (host == null) return null;
 		return punycode.toASCII(host.toLowerCase());
+	}
+
+	@bindThis
+	public punyHost(url: string): string {
+		const urlObj = new URL(url);
+		const host = `${this.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
+		return host;
 	}
 }
