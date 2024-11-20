@@ -165,6 +165,7 @@ defineExpose<WidgetComponentExpose>({
 		> .full-image {
 			background-size: contain;
 			background-repeat: no-repeat;
+			background-color: transparent;
 		}
 	}
 }

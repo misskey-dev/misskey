@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer data-cy-mkw-spinner class="mkw-spinner" :style="{ height: widgetProps.height + 'px' }">
 	<div ref="spinner" class="spinner transition" :style="style" @click="rotation">
-		<img :src="url(widgetProps.imgURL)" />
+		<img :src="widgetProps.imgURL" />
 	</div>
 </MkContainer>
 </template>
@@ -15,7 +15,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, reactive } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
-import { url } from '@@/js/config.js';
 
 const name = '스피너';
 
