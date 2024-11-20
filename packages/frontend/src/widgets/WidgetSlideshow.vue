@@ -10,8 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			{{ i18n.ts.folder }}
 		</p>
 		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ i18n.ts['no-image'] }}</p>
-		<div ref="slideA" class="slide a"></div>
-		<div ref="slideB" class="slide b"></div>
+		<div ref="slideA" class="slide a" :class="{'full-image': widgetProps.fullImageMode}"></div>
+		<div ref="slideB" class="slide b" :class="{'full-image': widgetProps.fullImageMode}"></div>
 	</div>
 </div>
 </template>
@@ -32,6 +32,10 @@ const widgetPropsDef = {
 	height: {
 		type: 'number' as const,
 		default: 300,
+	},
+	fullImageMode: {
+		type: 'boolean' as const,
+		default: false,
 	},
 	folderId: {
 		type: 'string' as const,
@@ -157,6 +161,11 @@ defineExpose<WidgetComponentExpose>({
 				transition: opacity 1s;
 				opacity: 1;
 			}
+		}
+		> .full-image {
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-color: transparent;
 		}
 	}
 }
