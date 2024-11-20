@@ -44,12 +44,9 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" module>
-.root {
-	border: none;
-	pointer-events: none;
-	color-scheme: light;
-}
-.kordle {
-	height: 100%;
-}
+.mkw-kordle {
+	.kordle {
+		height: 100%;
+	};
+};
 </style>
