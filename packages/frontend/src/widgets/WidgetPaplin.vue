@@ -21,10 +21,6 @@ import { GetFormResultType } from '@/scripts/form.js';
 const name = 'paplin';
 
 const widgetPropsDef = {
-	showHeader: {
-		type: 'boolean' as const,
-		default: true,
-	},
 	height: {
 		type: 'number' as const,
 		default: 350,

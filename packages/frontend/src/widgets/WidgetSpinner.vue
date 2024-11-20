@@ -27,6 +27,10 @@ const widgetPropsDef = {
 		type: 'number' as const,
 		default: 350,
 	},
+	fullThrottle: {
+		type: 'boolean' as const,
+		default: false,
+	},
 };
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
@@ -50,11 +54,8 @@ const rotation = () => {
 		deg.value = 0;
 	}
 	let index = Math.round(Math.random());
-	if (index == 0) {
-		deg.value += (Math.floor(Math.random()*12)+1)*30;
-	} else {
-		deg.value -= (Math.floor(Math.random()*12)+1)*30;
-	}
+	let value = widgetProps.fullThrottle ? 360 : (Math.floor(Math.random()*12)+1)*30
+	deg.value = index == 0 ? deg.value + value : deg.value - value
 	style.transform = `rotate(${deg.value}deg)`;
 };
 
@@ -71,7 +72,7 @@ defineExpose<WidgetComponentExpose>({
 	pointer-events: none;
 	color-scheme: light;
 
-	> .paplin {
+	> .spinner {
 		position: absolute;
 		top: 0;
 		left: 0;
