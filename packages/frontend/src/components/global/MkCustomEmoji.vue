@@ -31,7 +31,7 @@ import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js'
 import { defaultStore } from '@/store.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import * as sound from '@/scripts/sound.js';
 import { i18n } from '@/i18n.js';
@@ -130,8 +130,8 @@ function onClick(ev: MouseEvent) {
 			menuItems.push({
 				text: i18n.ts.edit,
 				icon: 'ti ti-pencil',
-				action: () => {
-					edit(props.name);
+				action: async () => {
+					await edit(props.name);
 				},
 			});
 		}
@@ -140,8 +140,8 @@ function onClick(ev: MouseEvent) {
 	}
 }
 
-const edit = async (name: string) => {
-	const emoji = await misskeyApiGet('emoji', {
+async function edit(name: string) {
+	const emoji = await misskeyApi('emoji', {
 		name: name,
 	});
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/pages/emoji-edit-dialog.vue')), {
@@ -149,7 +149,8 @@ const edit = async (name: string) => {
 	}, {
 		closed: () => dispose(),
 	});
-};
+}
+
 </script>
 
 <style lang="scss" module>
