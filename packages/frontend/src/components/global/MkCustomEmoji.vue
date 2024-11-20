@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref } from 'vue';
+import {computed, defineAsyncComponent, inject, ref} from 'vue';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { defaultStore } from '@/store.js';
 import { customEmojisMap } from '@/custom-emojis.js';
@@ -36,6 +36,7 @@ import * as sound from '@/scripts/sound.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 import type { MenuItem } from '@/types/menu.js';
+import { $i } from '@/account.js';
 
 const props = defineProps<{
 	name: string;
@@ -125,9 +126,30 @@ function onClick(ev: MouseEvent) {
 			},
 		});
 
+		if ($i?.isModerator ?? $i?.isAdmin) {
+			menuItems.push({
+				text: i18n.ts.edit,
+				icon: 'ti ti-pencil',
+				action: () => {
+					edit(props.name);
+				},
+			});
+		}
+
 		os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 	}
 }
+
+const edit = async (name: string) => {
+	const emoji = await misskeyApiGet('emoji', {
+		name: name,
+	});
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/pages/emoji-edit-dialog.vue')), {
+		emoji: emoji,
+	}, {
+		closed: () => dispose(),
+	});
+};
 </script>
 
 <style lang="scss" module>
