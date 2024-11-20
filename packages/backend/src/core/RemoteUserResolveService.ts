@@ -54,9 +54,9 @@ export class RemoteUserResolveService {
 			}) as MiLocalUser;
 		}
 
-		host = this.utilityService.toPuny(host);
+		host = this.utilityService.punyHost(host);
 
-		if (this.config.host === host) {
+		if (host === this.utilityService.toPuny(this.config.host)) {
 			this.logger.info(`return local user: ${usernameLower}`);
 			return await this.usersRepository.findOneBy({ usernameLower, host: IsNull() }).then(u => {
 				if (u == null) {

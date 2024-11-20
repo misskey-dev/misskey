@@ -118,6 +118,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		]));
 		if (local != null) return local;
 
+		const host = this.utilityService.extractDbHost(uri);
+
+		// local object, not found in db? fail
+		if (this.utilityService.isSelfHost(host)) return null;
+
 		// リモートから一旦オブジェクトフェッチ
 		const resolver = this.apResolverService.createResolver();
 		const object = await resolver.resolve(uri) as any;

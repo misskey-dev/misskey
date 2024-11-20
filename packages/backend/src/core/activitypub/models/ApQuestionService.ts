@@ -10,6 +10,7 @@ import type { Config } from '@/config.js';
 import type { IPoll } from '@/models/Poll.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { isQuestion } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApResolverService } from '../ApResolverService.js';
@@ -32,6 +33,7 @@ export class ApQuestionService {
 
 		private apResolverService: ApResolverService,
 		private apLoggerService: ApLoggerService,
+		private utilityService: UtilityService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -70,7 +72,7 @@ export class ApQuestionService {
 		if (uri == null) throw new Error('uri is null');
 
 		// URIがこのサーバーを指しているならスキップ
-		if (uri.startsWith(this.config.url + '/')) throw new Error('uri points local');
+		if (this.utilityService.isUriLocal(uri)) throw new Error('uri points local');
 
 		//#region このサーバーに既に登録されているか
 		const note = await this.notesRepository.findOneBy({ uri });
