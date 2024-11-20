@@ -16,7 +16,6 @@ import { ref, reactive } from 'vue';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import { url } from '@@/js/config.js';
-import { random } from 'lodash';
 
 const name = '스피너';
 
@@ -51,11 +50,11 @@ const rotation = () => {
 	if (isNaN(deg.value)) {
 		deg.value = 0;
 	}
-	let index = random(0,1);
+	let index = Math.round(Math.random());
 	if (index == 0) {
-		deg.value += random(1,12)*30;
+		deg.value += (Math.floor(Math.random()*12)+1)*30;
 	} else {
-		deg.value -= random(1,12)*30;
+		deg.value -= (Math.floor(Math.random()*12)+1)*30;
 	}
 	style.transform = `rotate(${deg.value}deg)`;
 };
