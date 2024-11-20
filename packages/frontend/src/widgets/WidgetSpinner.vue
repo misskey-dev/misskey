@@ -56,8 +56,8 @@ const rotation = () => {
 		deg.value = 0;
 	}
 	let index = Math.round(Math.random());
-	let value = widgetProps.fullThrottle ? 360 : (Math.floor(Math.random()*12)+1)*30
-	deg.value = index == 0 ? deg.value + value : deg.value - value
+	let value = widgetProps.fullThrottle ? 360 : (Math.floor(Math.random() * 12) + 1) * 30;
+	deg.value = index === 0 ? deg.value + value : deg.value - value;
 	widgetProps.degree = deg.value;
 };
 
