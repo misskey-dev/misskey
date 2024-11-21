@@ -130,7 +130,8 @@ export class ApInboxService {
 		if (actor.uri) {
 			if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 				setImmediate(() => {
-					this.apPersonService.updatePerson(actor.uri, resolver);
+					// 同一ユーザーの情報を再度処理するので、使用済みのresolverを再利用してはいけない
+					this.apPersonService.updatePerson(actor.uri);
 				});
 			}
 		}

@@ -137,10 +137,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (local != null) return local;
 		}
 
+		// 同一ユーザーの情報を再度処理するので、使用済みのresolverを再利用してはいけない
 		return await this.mergePack(
 			me,
-			isActor(object) ? await this.apPersonService.createPerson(getApId(object), resolver) : null,
-			isPost(object) ? await this.apNoteService.createNote(getApId(object), undefined, resolver, true) : null,
+			isActor(object) ? await this.apPersonService.createPerson(getApId(object)) : null,
+			isPost(object) ? await this.apNoteService.createNote(getApId(object), undefined, undefined, true) : null,
 		);
 	}
 
