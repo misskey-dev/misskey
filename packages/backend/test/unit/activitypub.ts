@@ -173,7 +173,7 @@ describe('ActivityPub', () => {
 			resolver.register(actor.id, actor);
 			resolver.register(post.id, post);
 
-			const note = await noteService.createNote(post.id, resolver, true);
+			const note = await noteService.createNote(post.id, undefined, resolver, true);
 
 			assert.deepStrictEqual(note?.uri, post.id);
 			assert.deepStrictEqual(note.visibility, 'public');
@@ -333,7 +333,7 @@ describe('ActivityPub', () => {
 			resolver.register(actor.featured, featured);
 			resolver.register(firstNote.id, firstNote);
 
-			const note = await noteService.createNote(firstNote.id as string, resolver);
+			const note = await noteService.createNote(firstNote.id as string, undefined, resolver);
 			assert.strictEqual(note?.uri, firstNote.id);
 		});
 	});
