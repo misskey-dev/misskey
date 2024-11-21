@@ -11,7 +11,7 @@ jobs:
   update-misskey-hub:
     name: Update Misskey Hub (Repository Dispatch)
     runs-on: ubuntu-latest
-    if: github.event.name == 'release' && github.release.prerelease == false
+    if: github.event.name == 'workflow_dispatch' || github.release.prerelease == false
 
     steps:
       - name: Get current date
