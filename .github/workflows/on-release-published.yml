@@ -1,0 +1,68 @@
+name: On Release Published (Publish misskey-js)
+
+on:
+  release:
+    types:
+      - published
+
+  workflow_dispatch:
+
+jobs:
+  update-misskey-hub:
+    name: Update Misskey Hub
+    runs-on: ubuntu-latest
+    if: github.release.prerelease == false
+
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Generate token 
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: misskey-dev/misskey-hub-next
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          repository: misskey-dev/misskey-hub-next
+          event-type: misskey_release
+          client-payload: '{"version": "${{ github.release.name }}", "date": "${{ steps.date.outputs.date }}"}'            
+    
+  publish-misskey-js:
+    name: Publish misskey-js
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    strategy:
+      matrix:
+        node-version: [22.11.0]
+
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          submodules: true
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Publish package
+        run: |
+          corepack enable
+          pnpm i --frozen-lockfile
+          pnpm build
+          pnpm --filter misskey-js publish --access public --no-git-checks --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
