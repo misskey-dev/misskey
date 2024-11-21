@@ -292,7 +292,7 @@ export class HttpRequestService {
 
 		const isLocalAddressAllowed = args.isLocalAddressAllowed ?? false;
 
-		const res = await fetch(url, {
+		const res = await fetch(decodedUrl, {
 			method: args.method ?? 'GET',
 			headers: {
 				'User-Agent': this.config.userAgent,
