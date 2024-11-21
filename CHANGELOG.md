@@ -30,6 +30,7 @@
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
 - Enhance: サイドバーを簡単に展開・折りたたみできるように ( #14981 )
 - Enhance: リノートメニューに「リノートの詳細」を追加
+- Enhance: 非ログイン状態でMisskeyを開いた際のパフォーマンスを向上
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
@@ -64,6 +65,8 @@
 - Fix: FTT無効時にユーザーリストタイムラインが使用できない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/709)
 - Fix: User Webhookテスト機能のMock Payloadを修正  
+- Fix: アカウント削除のモデレーションログが動作していないのを修正 (#14996)  
+- Fix: リノートミュートが新規投稿通知に対して作用していなかった問題を修正
 
 ### Misskey.js
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正

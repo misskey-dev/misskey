@@ -62,13 +62,16 @@ import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { defaultStore } from '@/store.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
+import { getServerContext } from '@/server-context.js';
+
+const CTX_NOTE = getServerContext('note');
 
 const props = defineProps<{
 	noteId: string;
 	initialTab?: string;
 }>();
 
-const note = ref<null | Misskey.entities.Note>();
+const note = ref<null | Misskey.entities.Note>(CTX_NOTE);
 const clips = ref<Misskey.entities.Clip[]>();
 const showPrev = ref<'user' | 'channel' | false>(false);
 const showNext = ref<'user' | 'channel' | false>(false);
@@ -116,6 +119,12 @@ function fetchNote() {
 	showPrev.value = false;
 	showNext.value = false;
 	note.value = null;
+
+	if (CTX_NOTE && CTX_NOTE.id === props.noteId) {
+		note.value = CTX_NOTE;
+		return;
+	}
+
 	misskeyApi('notes/show', {
 		noteId: props.noteId,
 	}).then(res => {

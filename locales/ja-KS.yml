@@ -382,7 +382,6 @@ enableLocalTimeline: "ローカルタイムラインを使えるようにする�
 enableGlobalTimeline: "グローバルタイムラインを使えるようにするわ"
 disablingTimelinesInfo: "ここらへんのタイムラインを使えんようにしてしもても、管理者とモデレーターは使えるままになってるで、そうやなかったら不便やからな。"
 registration: "登録"
-enableRegistration: "一見さんでも誰でもいらっしゃ～い"
 invite: "来てや"
 driveCapacityPerLocalAccount: "ローカルユーザーはんひとりあたりのドライブ容量"
 driveCapacityPerRemoteAccount: "リモートユーザーはんひとりあたりのドライブ容量"
