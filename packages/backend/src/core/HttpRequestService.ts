@@ -54,19 +54,19 @@ class HttpRequestServiceAgent extends http.Agent {
 				}
 			});
 		return socket;
-	};
+	}
 
 	@bindThis
 	private isPrivateIp(ip: string): boolean {
 		const parsedIp = ipaddr.parse(ip);
-	
+
 		for (const net of this.config.allowedPrivateNetworks ?? []) {
 			const cidr = ipaddr.parseCIDR(net);
 			if (cidr[0].kind() === parsedIp.kind() && parsedIp.match(ipaddr.parseCIDR(net))) {
 				return false;
 			}
 		}
-	
+
 		return parsedIp.range() !== 'unicast';
 	}
 }
@@ -93,19 +93,19 @@ class HttpsRequestServiceAgent extends https.Agent {
 				}
 			});
 		return socket;
-	};
+	}
 
 	@bindThis
 	private isPrivateIp(ip: string): boolean {
 		const parsedIp = ipaddr.parse(ip);
-	
+
 		for (const net of this.config.allowedPrivateNetworks ?? []) {
 			const cidr = ipaddr.parseCIDR(net);
 			if (cidr[0].kind() === parsedIp.kind() && parsedIp.match(ipaddr.parseCIDR(net))) {
 				return false;
 			}
 		}
-	
+
 		return parsedIp.range() !== 'unicast';
 	}
 }
