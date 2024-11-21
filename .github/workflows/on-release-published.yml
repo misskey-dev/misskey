@@ -6,12 +6,21 @@ on:
       - published
 
   workflow_dispatch:
+    inputs:
+      misskey-hub:
+        type: boolean
+        description: 'Update Misskey Hub'
+        default: false
+      misskey-js:
+        type: boolean
+        description: 'Start Release Candidate'
+        default: false
 
 jobs:
   update-misskey-hub:
     name: Update Misskey Hub (Repository Dispatch)
     runs-on: ubuntu-latest
-    if: github.event.name == 'workflow_dispatch' || github.release.prerelease == false
+    if: ${{ (github.event.name == 'workflow_dispatch' && inputs.misskey-hub == true) || github.release.prerelease == false }}
 
     steps:
       - name: Get current date
@@ -36,6 +45,7 @@ jobs:
   publish-misskey-js:
     name: Publish misskey-js
     runs-on: ubuntu-latest
+    if: ${{ (github.event.name == 'workflow_dispatch' && inputs.misskey-js == true) || github.event.name == 'release' }}
 
     permissions:
       contents: read
