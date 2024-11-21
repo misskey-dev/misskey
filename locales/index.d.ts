@@ -9288,6 +9288,18 @@ export interface Locale extends ILocale {
          * 特殊
          */
         "specialBlocks": string;
+        /**
+         * タイトルを入力
+         */
+        "inputTitleHere": string;
+        /**
+         * ここに移動
+         */
+        "moveToHere": string;
+        /**
+         * このブロックを削除しますか？
+         */
+        "blockDeleteAreYouSure": string;
         "blocks": {
             /**
              * テキスト
