@@ -220,7 +220,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private httpRequestService: HttpRequestService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const res = await this.httpRequestService.send(decodeURIComponent(ps.url), {
+			const res = await this.httpRequestService.send(ps.url, {
 				method: 'GET',
 				headers: {
 					Accept: 'application/rss+xml, */*',
