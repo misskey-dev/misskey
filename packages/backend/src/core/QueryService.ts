@@ -127,7 +127,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateMutedUserQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }, exclude?: { id: MiUser['id'] }, checkMentions: boolean = true): void {
+	public generateMutedUserQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }, exclude?: { id: MiUser['id'] }, checkMentions = true): void {
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 			.select('muting.muteeId')
 			.where('muting.muterId = :muterId', { muterId: me.id });
@@ -182,6 +182,7 @@ export class QueryService {
 			q.andWhere(new Brackets(qb => {
 				qb
 					.where('note.mentions IS NULL')
+					.orWhere(`NOT EXISTS (${ mutingQuery.getQuery() })`)
 					.orWhere(`NOT (note.mentions && (${ mutingArrayQuery.getQuery() }))`);
 			}));
 		}
