@@ -67,6 +67,8 @@
 - Fix: User Webhookテスト機能のMock Payloadを修正  
 - Fix: アカウント削除のモデレーションログが動作していないのを修正 (#14996)  
 - Fix: リノートミュートが新規投稿通知に対して作用していなかった問題を修正
+- Fix: Inboxの処理で生じるエラーを誤ってActivityとして処理することがある問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/730)
 - Fix: セキュリティに関する修正
 
 ### Misskey.js
