@@ -29,6 +29,7 @@ import { bindThis } from '@/decorators.js';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
@@ -203,13 +204,16 @@ export class ApInboxService {
 
 		await this.apNoteService.extractEmojis(activity.tag ?? [], actor.host).catch(() => null);
 
-		return await this.reactionService.create(actor, note, activity._misskey_reaction ?? activity.content ?? activity.name).catch(err => {
-			if (err.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') {
+		try {
+			await this.reactionService.create(actor, note, activity._misskey_reaction ?? activity.content ?? activity.name);
+			return 'ok';
+		} catch (err) {
+			if (err instanceof IdentifiableError && err.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') {
 				return 'skip: already reacted';
 			} else {
 				throw err;
 			}
-		}).then(() => 'ok');
+		}
 	}
 
 	@bindThis
