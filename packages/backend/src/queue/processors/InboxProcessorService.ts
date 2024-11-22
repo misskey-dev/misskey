@@ -190,6 +190,8 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			if (signerHost !== activityIdHost) {
 				throw new Bull.UnrecoverableError(`skip: signerHost(${signerHost}) !== activity.id host(${activityIdHost}`);
 			}
+		} else {
+			throw new Bull.UnrecoverableError('skip: activity id is not a string');
 		}
 
 		this.apRequestChart.inbox();

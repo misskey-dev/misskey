@@ -15,7 +15,38 @@ import { QueueService } from '@/core/QueueService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
+import { Packed } from '@/misc/json-schema.js';
+import { AbuseReportResolveType } from '@/models/AbuseUserReport.js';
+import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+
+export type AbuseReportPayload = {
+	id: string;
+	targetUserId: string;
+	targetUser: Packed<'UserLite'> | null;
+	targetUserHost: string | null;
+	reporterId: string;
+	reporter: Packed<'UserLite'> | null;
+	reporterHost: string | null;
+	assigneeId: string | null;
+	assignee: Packed<'UserLite'> | null;
+	resolved: boolean;
+	forwarded: boolean;
+	comment: string;
+	moderationNote: string;
+	resolvedAs: AbuseReportResolveType | null;
+};
+
+export type InactiveModeratorsWarningPayload = {
+	remainingTime: ModeratorInactivityRemainingTime;
+};
+
+export type SystemWebhookPayload<T extends SystemWebhookEventType> =
+	T extends 'abuseReport' | 'abuseReportResolved' ? AbuseReportPayload :
+	T extends 'userCreated' ? Packed<'UserLite'> :
+	T extends 'inactiveModeratorsWarning' ? InactiveModeratorsWarningPayload :
+	T extends 'inactiveModeratorsInvitationOnlyChanged' ? Record<string, never> :
+		never;
 
 @Injectable()
 export class SystemWebhookService implements OnApplicationShutdown {
@@ -168,7 +199,7 @@ export class SystemWebhookService implements OnApplicationShutdown {
 	public async enqueueSystemWebhook<T extends SystemWebhookEventType>(
 		webhook: MiSystemWebhook | MiSystemWebhook['id'],
 		type: T,
-		content: unknown,
+		content: SystemWebhookPayload<T>,
 	) {
 		const webhookEntity = typeof webhook === 'string'
 			? (await this.fetchActiveSystemWebhooks()).find(a => a.id === webhook)

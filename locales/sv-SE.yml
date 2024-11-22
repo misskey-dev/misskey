@@ -333,7 +333,6 @@ disconnectService: "Koppla från"
 enableLocalTimeline: "Aktivera lokal tidslinje"
 enableGlobalTimeline: "Aktivera global tidslinje"
 registration: "Registrera"
-enableRegistration: "Aktivera registrering av nya användare"
 invite: "Inbjudan"
 inMb: "I megabyte"
 bannerUrl: "URL till banner-bilden"
@@ -481,6 +480,7 @@ nNotes: "{n} Noter"
 backgroundColor: "Bakgrundsbild"
 textColor: "Text"
 saveAs: "Spara som..."
+saveConfirm: "Spara ändringar?"
 youAreRunningUpToDateClient: "Klienten du använder är uppdaterat."
 newVersionOfClientAvailable: "Ny version av klienten är tillgänglig."
 editCode: "Redigera kod"
@@ -523,6 +523,7 @@ threeMonths: "3 månader"
 oneYear: "1 år"
 threeDays: "3 dagar"
 file: "Filer"
+deleteAccount: "Radera konto"
 label: "Etikett"
 cannotUploadBecauseNoFreeSpace: "Kan inte ladda upp filen för att det finns inget lagringsutrymme kvar."
 cannotUploadBecauseExceedsFileSizeLimit: "Kan inte ladda upp filen för att den är större än filstorleksgränsen."
@@ -575,9 +576,13 @@ _achievements:
     _open3windows:
       title: "Flera Fönster"
       description: "Ha minst 3 fönster öppna samtidigt"
+_role:
+  edit: "Redigera roll"
 _ffVisibility:
   public: "Publicera"
   private: "Privat"
+_accountDelete:
+  accountDelete: "Radera konto"
 _ad:
   back: "Tillbaka"
 _gallery:
@@ -587,6 +592,7 @@ _email:
     title: "följde dig"
 _aboutMisskey:
   source: "Källkod"
+  projectMembers: "Projektmedlemmar"
 _channel:
   setBanner: "Välj banner"
   removeBanner: "Ta bort banner"
@@ -602,8 +608,17 @@ _theme:
 _sfx:
   note: "Noter"
   notification: "Notifikationer"
+_ago:
+  justNow: "Just nu"
 _2fa:
+  step3Title: "Ange en autentiseringskod"
   renewTOTPCancel: "Nej tack"
+_permissions:
+  "read:reactions": "Visa dina reaktioner"
+  "write:reactions": "Redigera dina reaktioner"
+  "write:admin:delete-account": "Radera användarkonto"
+  "write:admin:roles": "Hantera roller"
+  "read:admin:roles": "Visa roller"
 _antennaSources:
   all: "Alla noter"
   homeTimeline: "Noter från följda användare"
@@ -666,6 +681,8 @@ _notification:
     reply: "Svara"
     renote: "Omnotera"
 _deck:
+  addColumn: "Lägg till kolumn"
+  deleteProfile: "Radera profil"
   _columns:
     notifications: "Notifikationer"
     tl: "Tidslinje"
