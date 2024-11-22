@@ -1300,6 +1300,7 @@ thisContentsAreMarkedAsSigninRequiredByAuthor: "Set by the author to require log
 lockdown: "Lockdown"
 pleaseSelectAccount: "Select an account"
 availableRoles: "Available roles"
+acknowledgeNotesAndEnable: "Turn on after understanding the precautions."
 _accountSettings:
   requireSigninToViewContents: "Require sign-in to view contents"
   requireSigninToViewContentsDescription1: "Require login to view all notes and other content you have created. This will have the effect of preventing crawlers from collecting your information."
@@ -1456,6 +1457,8 @@ _serverSettings:
   reactionsBufferingDescription: "When enabled, performance during reaction creation will be greatly improved, reducing the load on the database. However, Redis memory usage will increase."
   inquiryUrl: "Inquiry URL"
   inquiryUrlDescription: "Specify a URL for the inquiry form to the server maintainer or a web page for the contact information."
+  openRegistration: "Make the account creation open"
+  openRegistrationWarning: "Opening registration carries risks. It is recommended to only enable it if you have a system in place to continuously monitor the server and respond immediately in case of any issues."
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "If no moderator activity is detected for a while, this setting will be automatically turned off to prevent spam."
 _accountMigration:
   moveFrom: "Migrate another account to this one"
@@ -2738,3 +2741,6 @@ _selfXssPrevention:
   description1: "If you paste something here, a malicious user could hijack your account or steal your personal information."
   description2: "If you do not understand exactly what you are trying to paste, %cstop working right now and close this window."
   description3: "For more information, please refer to this. {link}"
+_followRequest:
+  recieved: "Received application"
+  sent: "Sent application"
