@@ -34,6 +34,7 @@ import * as ep___admin_avatarDecorations_delete from './endpoints/admin/avatar-d
 import * as ep___admin_avatarDecorations_list from './endpoints/admin/avatar-decorations/list.js';
 import * as ep___admin_avatarDecorations_update from './endpoints/admin/avatar-decorations/update.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
+import * as ep___admin_updateProxyAccount from './endpoints/admin/update-proxy-account.js';
 import * as ep___admin_unsetUserAvatar from './endpoints/admin/unset-user-avatar.js';
 import * as ep___admin_unsetUserBanner from './endpoints/admin/unset-user-banner.js';
 import * as ep___admin_drive_cleanRemoteFiles from './endpoints/admin/drive/clean-remote-files.js';
@@ -421,6 +422,7 @@ const eps = [
 	['admin/avatar-decorations/list', ep___admin_avatarDecorations_list],
 	['admin/avatar-decorations/update', ep___admin_avatarDecorations_update],
 	['admin/delete-all-files-of-a-user', ep___admin_deleteAllFilesOfAUser],
+	['admin/update-proxy-account', ep___admin_updateProxyAccount],
 	['admin/unset-user-avatar', ep___admin_unsetUserAvatar],
 	['admin/unset-user-banner', ep___admin_unsetUserBanner],
 	['admin/drive/clean-remote-files', ep___admin_drive_cleanRemoteFiles],

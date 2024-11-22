@@ -392,6 +392,12 @@ type AdminUpdateAbuseUserReportRequest = operations['admin___update-abuse-user-r
 type AdminUpdateMetaRequest = operations['admin___update-meta']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminUpdateProxyAccountRequest = operations['admin___update-proxy-account']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateProxyAccountResponse = operations['admin___update-proxy-account']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminUpdateUserNoteRequest = operations['admin___update-user-note']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1262,6 +1268,8 @@ declare namespace entities {
         AdminAvatarDecorationsListResponse,
         AdminAvatarDecorationsUpdateRequest,
         AdminDeleteAllFilesOfAUserRequest,
+        AdminUpdateProxyAccountRequest,
+        AdminUpdateProxyAccountResponse,
         AdminUnsetUserAvatarRequest,
         AdminUnsetUserBannerRequest,
         AdminDriveFilesRequest,
