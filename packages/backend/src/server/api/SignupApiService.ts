@@ -202,8 +202,8 @@ export class SignupApiService {
 			this.emailService.sendEmail(emailAddress!, 'Signup',
 //				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
 //				`To complete signup, please click this link: ${link}`);
-                               `入会を完了させるために次のリンクをクリックして>ください/To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
-                               `入会を完了させるために次のリンクをクリックして>ください/To complete signup, please click this link: ${link}`);
+                               `入会を完了させるために次のリンクをクリックしてください <br>To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
+                               `入会を完了させるために次のリンクをクリックしてください / To complete signup, please click this link: ${link}`);
 
 
 			if (ticket) {

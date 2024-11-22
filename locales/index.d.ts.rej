@@ -1,0 +1,27 @@
+--- locales/index.d.ts	2024-11-22 16:32:39.209251229 +0900
++++ misskey_open/locales/index.d.ts	2024-11-22 16:47:32.114750217 +0900
+@@ -6896,7 +6896,6 @@
+              */
+             "avatarDecorationLimit": string;
+             /**
+-<<<<<<< HEAD
+              * パブリック投稿の最低時間間隔
+              */
+             "publicMinimumInterval": string;
+@@ -6908,7 +6907,7 @@
+              * カスタム絵文字の作成権限（作成のみ）
+              */
+             "canCreateEmoji": string;
+-=======
++            /**
+              * アンテナのインポートを許可
+              */
+             "canImportAntennas": string;
+@@ -6928,7 +6927,6 @@
+              * リストのインポートを許可
+              */
+             "canImportUserLists": string;
+->>>>>>> d2e8dc4fe3c6e90e68001ed1f092d4e3d2454283
+         };
+         "_condition": {
+             /**
