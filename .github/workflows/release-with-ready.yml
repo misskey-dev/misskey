@@ -41,6 +41,7 @@ jobs:
       indent: ${{ vars.INDENT }}
       draft_prerelease_channel: alpha
       ready_start_prerelease_channel: beta
+      reset_number_on_channel_change: true
     secrets:
       RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
       RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
