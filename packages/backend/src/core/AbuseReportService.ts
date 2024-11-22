@@ -113,8 +113,7 @@ export class AbuseReportService {
 					reportId: report.id,
 					report: report,
 					resolvedAs: ps.resolvedAs,
-				})
-				.then();
+				});
 		}
 
 		return this.abuseUserReportsRepository.findBy({ id: In(reports.map(it => it.id)) })
@@ -151,8 +150,7 @@ export class AbuseReportService {
 			.log(moderator, 'forwardAbuseReport', {
 				reportId: report.id,
 				report: report,
-			})
-			.then();
+			});
 	}
 
 	@bindThis

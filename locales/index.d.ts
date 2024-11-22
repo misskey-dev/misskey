@@ -1559,10 +1559,6 @@ export interface Locale extends ILocale {
      */
     "registration": string;
     /**
-     * 誰でも新規登録できるようにする
-     */
-    "enableRegistration": string;
-    /**
      * 招待
      */
     "invite": string;
@@ -2378,6 +2374,10 @@ export interface Locale extends ILocale {
      * 詳細
      */
     "details": string;
+    /**
+     * リノートの詳細
+     */
+    "renoteDetails": string;
     /**
      * 絵文字を選択
      */
@@ -3823,6 +3823,18 @@ export interface Locale extends ILocale {
      */
     "oneMonth": string;
     /**
+     * 3ヶ月
+     */
+    "threeMonths": string;
+    /**
+     * 1年
+     */
+    "oneYear": string;
+    /**
+     * 3日
+     */
+    "threeDays": string;
+    /**
      * 反映されるまで時間がかかる場合があります。
      */
     "reflectMayTakeTime": string;
@@ -4382,6 +4394,10 @@ export interface Locale extends ILocale {
      * リモートサーバーのチャートを生成
      */
     "enableChartsForFederatedInstances": string;
+    /**
+     * リモートサーバーの情報を取得
+     */
+    "enableStatsForFederatedInstances": string;
     /**
      * ノートのアクションにクリップを追加
      */
@@ -5190,6 +5206,92 @@ export interface Locale extends ILocale {
      * 対象
      */
     "target": string;
+    /**
+     * CAPTCHAのテストを目的とした機能です。<strong>本番環境で使用しないでください。</strong>
+     */
+    "testCaptchaWarning": string;
+    /**
+     * 禁止ワード（ユーザーの名前）
+     */
+    "prohibitedWordsForNameOfUser": string;
+    /**
+     * このリストに含まれる文字列がユーザーの名前に含まれる場合、ユーザーの名前の変更を拒否します。モデレーター権限を持つユーザーはこの制限の影響を受けません。
+     */
+    "prohibitedWordsForNameOfUserDescription": string;
+    /**
+     * 変更しようとした名前に禁止された文字列が含まれています
+     */
+    "yourNameContainsProhibitedWords": string;
+    /**
+     * 名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。
+     */
+    "yourNameContainsProhibitedWordsDescription": string;
+    /**
+     * 投稿者により、表示にはログインが必要と設定されています
+     */
+    "thisContentsAreMarkedAsSigninRequiredByAuthor": string;
+    /**
+     * ロックダウン
+     */
+    "lockdown": string;
+    /**
+     * アカウントを選択してください
+     */
+    "pleaseSelectAccount": string;
+    /**
+     * 利用可能なロール
+     */
+    "availableRoles": string;
+    /**
+     * 注意事項を理解した上でオンにします。
+     */
+    "acknowledgeNotesAndEnable": string;
+    "_accountSettings": {
+        /**
+         * コンテンツの表示にログインを必須にする
+         */
+        "requireSigninToViewContents": string;
+        /**
+         * あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーに情報が収集されるのを防ぐ効果が期待できます。
+         */
+        "requireSigninToViewContentsDescription1": string;
+        /**
+         * URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。
+         */
+        "requireSigninToViewContentsDescription2": string;
+        /**
+         * リモートサーバーに連合されたコンテンツでは、これらの制限が適用されない場合があります。
+         */
+        "requireSigninToViewContentsDescription3": string;
+        /**
+         * 過去のノートをフォロワーのみ表示可能にする
+         */
+        "makeNotesFollowersOnlyBefore": string;
+        /**
+         * この機能が有効になっている間、設定された日時より過去、または設定された時間を経過しているノートがフォロワーのみ表示可能になります。無効に戻すと、ノートの公開状態も元に戻ります。
+         */
+        "makeNotesFollowersOnlyBeforeDescription": string;
+        /**
+         * 過去のノートを非公開化する
+         */
+        "makeNotesHiddenBefore": string;
+        /**
+         * この機能が有効になっている間、設定された日時より過去、または設定された時間を経過しているノートが自分のみ表示可能(非公開化)になります。無効に戻すと、ノートの公開状態も元に戻ります。
+         */
+        "makeNotesHiddenBeforeDescription": string;
+        /**
+         * リモートサーバーに連合されたノートには効果が及ばない場合があります。
+         */
+        "mayNotEffectForFederatedNotes": string;
+        /**
+         * 指定した時間を経過しているノート
+         */
+        "notesHavePassedSpecifiedPeriod": string;
+        /**
+         * 指定した日時より前のノート
+         */
+        "notesOlderThanSpecifiedDateAndTime": string;
+    };
     "_abuseUserReport": {
         /**
          * 転送
@@ -5728,6 +5830,18 @@ export interface Locale extends ILocale {
          * サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。
          */
         "inquiryUrlDescription": string;
+        /**
+         * アカウントの作成をオープンにする
+         */
+        "openRegistration": string;
+        /**
+         * 登録を開放することはリスクが伴います。サーバーを常に監視し、トラブルが発生した際にすぐに対応できる体制がある場合のみオンにすることを推奨します。
+         */
+        "openRegistrationWarning": string;
+        /**
+         * 一定期間モデレーターのアクティビティが検出されなかった場合、スパム防止のためこの設定は自動でオフになります。
+         */
+        "thisSettingWillAutomaticallyOffWhenModeratorsInactive": string;
     };
     "_accountMigration": {
         /**
@@ -7750,10 +7864,6 @@ export interface Locale extends ILocale {
              */
             "inputBorder": string;
             /**
-             * リスト項目の背景 (ホバー)
-             */
-            "listItemHoverBg": string;
-            /**
              * ドライブフォルダーの背景
              */
             "driveFolderBg": string;
@@ -8403,13 +8513,25 @@ export interface Locale extends ILocale {
          */
         "callback": string;
         /**
+         * アクセスを許可しました
+         */
+        "accepted": string;
+        /**
          * アクセスを拒否しました
          */
         "denied": string;
         /**
+         * 以下のユーザーとして操作しています
+         */
+        "scopeUser": string;
+        /**
          * アプリケーションにアクセス許可を与えるには、ログインが必要です。
          */
         "pleaseLogin": string;
+        /**
+         * アクセスを許可すると、自動で以下のURLに遷移します
+         */
+        "byClickingYouWillBeRedirectedToThisUrl": string;
     };
     "_antennaSources": {
         /**
@@ -9299,7 +9421,7 @@ export interface Locale extends ILocale {
          */
         "youGotQuote": ParameterizedString<"name">;
         /**
-         * {name}がRenoteしました
+         * {name}がリノートしました
          */
         "youRenoted": ParameterizedString<"name">;
         /**
@@ -9404,7 +9526,7 @@ export interface Locale extends ILocale {
              */
             "reply": string;
             /**
-             * Renote
+             * リノート
              */
             "renote": string;
             /**
@@ -9462,7 +9584,7 @@ export interface Locale extends ILocale {
              */
             "reply": string;
             /**
-             * Renote
+             * リノート
              */
             "renote": string;
         };
@@ -9689,6 +9811,14 @@ export interface Locale extends ILocale {
              * ユーザーが作成されたとき
              */
             "userCreated": string;
+            /**
+             * モデレーターが一定期間非アクティブになったとき
+             */
+            "inactiveModeratorsWarning": string;
+            /**
+             * モデレーターが一定期間非アクティブだったため、システムにより招待制へと変更されたとき
+             */
+            "inactiveModeratorsInvitationOnlyChanged": string;
         };
         /**
          * Webhookを削除しますか？
@@ -10542,6 +10672,38 @@ export interface Locale extends ILocale {
          * 生成されたコードをウェブサイトに貼り付けてご利用ください。
          */
         "codeGeneratedDescription": string;
+    };
+    "_selfXssPrevention": {
+        /**
+         * 警告
+         */
+        "warning": string;
+        /**
+         * 「この画面に何か貼り付けろ」はすべて詐欺です。
+         */
+        "title": string;
+        /**
+         * ここに何かを貼り付けると、悪意のあるユーザーにアカウントを乗っ取られたり、個人情報を盗まれたりする可能性があります。
+         */
+        "description1": string;
+        /**
+         * 貼り付けようとしているものが何なのかを正確に理解していない場合は、%c今すぐ作業を中止してこのウィンドウを閉じてください。
+         */
+        "description2": string;
+        /**
+         * 詳しくはこちらをご確認ください。 {link}
+         */
+        "description3": ParameterizedString<"link">;
+    };
+    "_followRequest": {
+        /**
+         * 受け取った申請
+         */
+        "recieved": string;
+        /**
+         * 送った申請
+         */
+        "sent": string;
     };
 }
 declare const locales: {

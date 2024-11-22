@@ -31,8 +31,8 @@ const QUOTE_STYLE = `
 display: block;
 margin: 8px;
 padding: 6px 0 6px 12px;
-color: var(--fg);
-border-left: solid 3px var(--fg);
+color: var(--MI_THEME-fg);
+border-left: solid 3px var(--MI_THEME-fg);
 opacity: 0.7;
 `.split('\n').join(' ');
 
@@ -270,7 +270,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					}
 					case 'border': {
 						let color = validColor(token.props.args.color);
-						color = color ? `#${color}` : 'var(--accent)';
+						color = color ? `#${color}` : 'var(--MI_THEME-accent)';
 						let b_style = token.props.args.style;
 						if (
 							typeof b_style !== 'string' ||
@@ -303,7 +303,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						const child = token.children[0];
 						const unixtime = parseInt(child.type === 'text' ? child.props.text : '');
 						return h('span', {
-							style: 'display: inline-block; font-size: 90%; border: solid 1px var(--divider); border-radius: 999px; padding: 4px 10px 4px 6px;',
+							style: 'display: inline-block; font-size: 90%; border: solid 1px var(--MI_THEME-divider); border-radius: 999px; padding: 4px 10px 4px 6px;',
 						}, [
 							h('i', {
 								class: 'ti ti-clock',
@@ -377,7 +377,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 				return [h(MkA, {
 					key: Math.random(),
 					to: isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/user-tags/${encodeURIComponent(token.props.hashtag)}`,
-					style: 'color:var(--hashtag);',
+					style: 'color:var(--MI_THEME-hashtag);',
 					behavior: props.linkNavigationBehavior,
 				}, `#${token.props.hashtag}`)];
 			}
@@ -467,8 +467,8 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			default: {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				console.error('unrecognized ast type:', (token as any).type);
+				// @ts-expect-error 存在しないASTタイプ
+				console.error('unrecognized ast type:', token.type);
 
 				return [];
 			}

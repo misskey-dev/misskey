@@ -34,7 +34,7 @@ defineProps<{
 	width: 100%;
 	height: 100%;
 	cursor: not-allowed;
-	--color: color(from var(--error) srgb r g b / 0.25);
+	--color: color(from var(--MI_THEME-error) srgb r g b / 0.25);
 	background-size: auto auto;
 	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
 }

@@ -305,20 +305,22 @@ export class UserFollowingService implements OnModuleInit {
 			//#endregion
 
 			//#region Update instance stats
-			if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-				this.federatedInstanceService.fetch(follower.host).then(async i => {
-					this.instancesRepository.increment({ id: i.id }, 'followingCount', 1);
-					if (this.meta.enableChartsForFederatedInstances) {
-						this.instanceChart.updateFollowing(i.host, true);
-					}
-				});
-			} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-				this.federatedInstanceService.fetch(followee.host).then(async i => {
-					this.instancesRepository.increment({ id: i.id }, 'followersCount', 1);
-					if (this.meta.enableChartsForFederatedInstances) {
-						this.instanceChart.updateFollowers(i.host, true);
-					}
-				});
+			if (this.meta.enableStatsForFederatedInstances) {
+				if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
+					this.federatedInstanceService.fetchOrRegister(follower.host).then(async i => {
+						this.instancesRepository.increment({ id: i.id }, 'followingCount', 1);
+						if (this.meta.enableChartsForFederatedInstances) {
+							this.instanceChart.updateFollowing(i.host, true);
+						}
+					});
+				} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
+					this.federatedInstanceService.fetchOrRegister(followee.host).then(async i => {
+						this.instancesRepository.increment({ id: i.id }, 'followersCount', 1);
+						if (this.meta.enableChartsForFederatedInstances) {
+							this.instanceChart.updateFollowers(i.host, true);
+						}
+					});
+				}
 			}
 			//#endregion
 
@@ -437,20 +439,22 @@ export class UserFollowingService implements OnModuleInit {
 			//#endregion
 
 			//#region Update instance stats
-			if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-				this.federatedInstanceService.fetch(follower.host).then(async i => {
-					this.instancesRepository.decrement({ id: i.id }, 'followingCount', 1);
-					if (this.meta.enableChartsForFederatedInstances) {
-						this.instanceChart.updateFollowing(i.host, false);
-					}
-				});
-			} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-				this.federatedInstanceService.fetch(followee.host).then(async i => {
-					this.instancesRepository.decrement({ id: i.id }, 'followersCount', 1);
-					if (this.meta.enableChartsForFederatedInstances) {
-						this.instanceChart.updateFollowers(i.host, false);
-					}
-				});
+			if (this.meta.enableStatsForFederatedInstances) {
+				if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
+					this.federatedInstanceService.fetchOrRegister(follower.host).then(async i => {
+						this.instancesRepository.decrement({ id: i.id }, 'followingCount', 1);
+						if (this.meta.enableChartsForFederatedInstances) {
+							this.instanceChart.updateFollowing(i.host, false);
+						}
+					});
+				} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
+					this.federatedInstanceService.fetchOrRegister(followee.host).then(async i => {
+						this.instancesRepository.decrement({ id: i.id }, 'followersCount', 1);
+						if (this.meta.enableChartsForFederatedInstances) {
+							this.instanceChart.updateFollowers(i.host, false);
+						}
+					});
+				}
 			}
 			//#endregion
 
