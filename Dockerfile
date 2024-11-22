@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.4
 
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 # build assets & compile TypeScript
 
@@ -75,7 +75,7 @@ ARG GID="991"
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
-	ffmpeg tini curl libjemalloc-dev libjemalloc2 \
+	  curl ffmpeg libjemalloc-dev libjemalloc2 tini \
 	&& ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so \
 	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
@@ -101,7 +101,8 @@ COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/bui
 COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY --chown=misskey:misskey . ./
 
-RUN corepack pack
+RUN corepack install \
+	&& corepack pack
 
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV MALLOC_CONF=background_thread:true,metadata_thp:auto,dirty_decay_ms:30000,muzzy_decay_ms:30000

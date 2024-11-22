@@ -95,15 +95,14 @@ describe('Webリソース', () => {
 	describe.each([
 		{ path: '/', type: HTML },
 		{ path: '/docs/ja-JP/about', type: HTML }, // "指定されたURLに該当するページはありませんでした。"
-		// fastify-static gives charset=UTF-8 instead of utf-8 and that's okay
-		{ path: '/api-doc', type: 'text/html; charset=UTF-8' },
+		{ path: '/api-doc', type: 'text/html; charset=utf-8' },
 		{ path: '/api.json', type: JSON_UTF8 },
 		{ path: '/api-console', type: HTML },
 		{ path: '/_info_card_', type: HTML },
 		{ path: '/bios', type: HTML },
 		{ path: '/cli', type: HTML },
 		{ path: '/flush', type: HTML },
-		{ path: '/robots.txt', type: 'text/plain; charset=UTF-8' },
+		{ path: '/robots.txt', type: 'text/plain; charset=utf-8' },
 		{ path: '/favicon.ico', type: 'image/vnd.microsoft.icon' },
 		{ path: '/opensearch.xml', type: 'application/opensearchdescription+xml' },
 		{ path: '/apple-touch-icon.png', type: 'image/png' },

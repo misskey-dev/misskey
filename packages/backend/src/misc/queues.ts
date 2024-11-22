@@ -2,21 +2,21 @@ import { EventEmitter } from 'node:events';
 import * as Bull from 'bullmq';
 
 export class Queues<DataType = any, ResultType = any, NameType extends string = string> {
-	public readonly queues: ReadonlyArray<Bull.Queue<DataType, ResultType, NameType>>;
+	public readonly queues: ReadonlyArray<Bull.Queue<void, void, string, DataType, ResultType, NameType>>;
 
-	constructor(queues: Bull.Queue<DataType, ResultType, NameType>[]) {
+	constructor(queues: Bull.Queue<void, void, string, DataType, ResultType, NameType>[]) {
 		if (queues.length === 0) {
 			throw new Error('queues cannot be empty.');
 		}
 		this.queues = queues;
 	}
 
-	getRandomQueue(): Bull.Queue<DataType, ResultType, NameType> {
+	get randomQueue(): Bull.Queue<void, void, string, DataType, ResultType, NameType> {
 		return this.queues[Math.floor(Math.random() * this.queues.length)];
 	}
 
 	add(name: NameType, data: DataType, opts?: Bull.JobsOptions): Promise<Bull.Job<DataType, ResultType, NameType>> {
-		return this.getRandomQueue().add(name, data, opts);
+		return this.randomQueue.add(name, data, opts);
 	}
 
 	async addBulk(jobs: { name: NameType; data: DataType; opts?: Bull.BulkJobOptions }[]): Promise<Bull.Job<DataType, ResultType, NameType>[]> {
@@ -30,7 +30,7 @@ export class Queues<DataType = any, ResultType = any, NameType extends string = 
 	}
 
 	async getDelayed(start?: number, end?: number): Promise<Bull.Job<DataType, ResultType, NameType>[]> {
-		return (await Promise.allSettled(this.queues.map(queue => queue.getDelayed(start, end))))
+		return (await Promise.allSettled(this.queues.map(queue => queue.getDelayed(start, end) as Promise<Bull.Job<DataType, ResultType, NameType>[]>)))
 			.filter((value): value is PromiseFulfilledResult<Bull.Job<DataType, ResultType, NameType>[]> => value.status === 'fulfilled')
 			.flatMap(value => value.value);
 	}
@@ -46,7 +46,7 @@ export class Queues<DataType = any, ResultType = any, NameType extends string = 
 			}, {} as Record<string, number>);
 	}
 
-	once<U extends keyof Bull.QueueListener<DataType, ResultType, NameType>>(event: U, listener: Bull.QueueListener<DataType, ResultType, NameType>[U]): void {
+	once<U extends keyof Bull.QueueListener<Bull.Job<DataType, ResultType, NameType>>>(event: U, listener: Bull.QueueListener<Bull.Job<DataType, ResultType, NameType>>[U]): void {
 		const e = new EventEmitter();
 		e.once(event, listener);
 
@@ -62,7 +62,7 @@ export class Queues<DataType = any, ResultType = any, NameType extends string = 
 	}
 
 	async getJobs(types?: Bull.JobType[] | Bull.JobType, start?: number, end?: number, asc?: boolean): Promise<Bull.Job<DataType, ResultType, NameType>[]> {
-		return (await Promise.allSettled(this.queues.map(queue => queue.getJobs(types, start, end, asc))))
+		return (await Promise.allSettled(this.queues.map(queue => queue.getJobs(types, start, end, asc) as Promise<Bull.Job<DataType, ResultType, NameType>[]>)))
 			.filter((value): value is PromiseFulfilledResult<Bull.Job<DataType, ResultType, NameType>[]> => value.status === 'fulfilled')
 			.flatMap(value => value.value);
 	}

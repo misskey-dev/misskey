@@ -11,7 +11,7 @@ import * as terser from 'terser';
 
 import { build as buildLocales } from '../locales/index.js';
 import generateDTS from '../locales/generateDTS.js';
-import meta from '../package.json' assert { type: "json" };
+import meta from '../package.json' with { type: "json" };
 
 let locales = buildLocales();
 
