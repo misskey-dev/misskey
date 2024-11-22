@@ -49,6 +49,7 @@ export type Column = {
 	tl?: 'home' | 'local' | 'social' | 'global' | 'vmimi-relay' | 'vmimi-relay-social';
 	withRenotes?: boolean;
 	withReplies?: boolean;
+	withSensitive?: boolean;
 	onlyFiles?: boolean;
 	withLocalOnly?: boolean;
 	soundSetting: SoundStore;
