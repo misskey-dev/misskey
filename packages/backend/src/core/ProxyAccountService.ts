@@ -34,6 +34,7 @@ export class ProxyAccountService {
 
 	@bindThis
 	public async fetch(): Promise<MiLocalUser | null> {
+		if (this.meta.proxyAccountId == null) return null;
 		const cached = this.cache.get();
 		if (cached) return cached;
 
