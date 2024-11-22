@@ -7,7 +7,7 @@
 -
 
 ### Server
--
+- Fix: 連合OFFで投稿されたノートに対する冗長な処理を抑止 ( #15018 )
 
 
 ## 2024.11.0
@@ -82,7 +82,6 @@
 - Fix: Inboxの処理で生じるエラーを誤ってActivityとして処理することがある問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/730)
 - Fix: セキュリティに関する修正
-- Fix: 連合OFFで投稿されたノートに対する冗長な処理を抑止 ( #15018 )
 
 ### Misskey.js
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
