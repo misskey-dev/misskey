@@ -17,16 +17,32 @@ export function urlQuery(obj: Record<string, string | number | boolean | undefin
 
 type AnyOf<T extends Record<PropertyKey, unknown>> = T[keyof T];
 
-type StreamEvents = {
+export type StreamEvents = {
 	_connected_: void;
 	_disconnected_: void;
 } & BroadcastEvents;
+
+export interface IStream extends EventEmitter<StreamEvents> {
+	state: 'initializing' | 'reconnecting' | 'connected';
+
+	useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): IChannelConnection<Channels[C]>;
+	removeSharedConnection(connection: SharedConnection): void;
+	removeSharedConnectionPool(pool: Pool): void;
+	disconnectToChannel(connection: NonSharedConnection): void;
+	send(typeOrPayload: string): void;
+	send(typeOrPayload: string, payload: unknown): void;
+	send(typeOrPayload: Record<string, unknown> | unknown[]): void;
+	send(typeOrPayload: string | Record<string, unknown> | unknown[], payload?: unknown): void;
+	ping(): void;
+	heartbeat(): void;
+	close(): void;
+}
 
 /**
  * Misskey stream connection
  */
 // eslint-disable-next-line import/no-default-export
-export default class Stream extends EventEmitter<StreamEvents> {
+export default class Stream extends EventEmitter<StreamEvents> implements IStream {
 	private stream: _ReconnectingWebsocket.default;
 	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
 	private sharedConnectionPools: Pool[] = [];
@@ -35,7 +51,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	private idCounter = 0;
 
 	constructor(origin: string, user: { token: string; } | null, options?: {
-		WebSocket?: WebSocket;
+		WebSocket?: _ReconnectingWebsocket.Options['WebSocket'];
 	}) {
 		super();
 
@@ -277,7 +293,18 @@ class Pool {
 	}
 }
 
-export abstract class Connection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
+export interface IChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
+	id: string;
+	name?: string;
+	inCount: number;
+	outCount: number;
+	channel: string;
+
+	send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]): void;
+	dispose(): void;
+}
+
+export abstract class Connection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> implements IChannelConnection<Channel> {
 	public channel: string;
 	protected stream: Stream;
 	public abstract id: string;

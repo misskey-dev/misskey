@@ -62,13 +62,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 					</div>
 				</div>
-				<div :class="$style.noteHeaderUsername"><MkAcct :user="appearNote.user"/></div>
+				<div :class="$style.noteHeaderUsernameAndBadgeRoles">
+					<div :class="$style.noteHeaderUsername">
+						<MkAcct :user="appearNote.user"/>
+					</div>
+					<div v-if="appearNote.user.badgeRoles" :class="$style.noteHeaderBadgeRoles">
+						<img v-for="(role, i) in appearNote.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.noteHeaderBadgeRole" :src="role.iconUrl!"/>
+					</div>
+				</div>
 				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
 		<div :class="$style.noteContent">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
-				<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
+				<Mfm
+					v-if="appearNote.cw != ''"
+					:text="appearNote.cw"
+					:author="appearNote.user"
+					:nyaize="'respect'"
+					:enableEmojiMenu="true"
+					:enableEmojiMenuReaction="true"
+				/>
 				<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll"/>
 			</p>
 			<div v-show="appearNote.cw == null || showContent">
@@ -128,8 +142,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-ban"></i>
 			</button>
 			<button ref="reactButton" :class="$style.noteFooterButton" class="_button" @click="toggleReact()">
-				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
-				<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
+				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--MI_THEME-love);"></i>
+				<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
 				<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 				<i v-else class="ti ti-plus"></i>
 				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
@@ -199,6 +213,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, onMounted, provide, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import { isLink } from '@@/js/is-link.js';
+import { host } from '@@/js/config.js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
@@ -222,7 +238,6 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { host } from '@/config.js';
 import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/scripts/get-note-menu.js';
 import { useNoteCapture } from '@/scripts/use-note-capture.js';
 import { deepClone } from '@/scripts/clone.js';
@@ -396,7 +411,7 @@ if (appearNote.value.reactionAcceptance === 'likeOnly') {
 }
 
 function renote() {
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
 
 	const { menu } = getRenoteMenu({ note: note.value, renoteButton });
@@ -404,7 +419,7 @@ function renote() {
 }
 
 function reply(): void {
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
 	os.post({
 		reply: appearNote.value,
@@ -415,7 +430,7 @@ function reply(): void {
 }
 
 function react(): void {
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
@@ -468,14 +483,6 @@ function toggleReact() {
 }
 
 function onContextmenu(ev: MouseEvent): void {
-	const isLink = (el: HTMLElement): boolean => {
-		if (el.tagName === 'A') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
-		}
-		return false;
-	};
-
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
@@ -499,7 +506,7 @@ async function clip(): Promise<void> {
 
 function showRenoteMenu(): void {
 	if (!isMyRenote) return;
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	os.popupMenu([{
 		text: i18n.ts.unrenote,
 		icon: 'ti ti-trash',
@@ -569,8 +576,8 @@ function loadConversation() {
 			margin: auto;
 			width: calc(100% - 8px);
 			height: calc(100% - 8px);
-			border: dashed 2px var(--focus);
-			border-radius: var(--radius);
+			border: dashed 2px var(--MI_THEME-focus);
+			border-radius: var(--MI-radius);
 			box-sizing: border-box;
 		}
 	}
@@ -591,7 +598,7 @@ function loadConversation() {
 	padding: 16px 32px 8px 32px;
 	line-height: 28px;
 	white-space: pre;
-	color: var(--renote);
+	color: var(--MI_THEME-renote);
 }
 
 .renoteAvatar {
@@ -671,7 +678,7 @@ function loadConversation() {
 	padding: 4px 6px;
 	font-size: 80%;
 	line-height: 1;
-	border: solid 0.5px var(--divider);
+	border: solid 0.5px var(--MI_THEME-divider);
 	border-radius: 4px;
 }
 
@@ -679,10 +686,28 @@ function loadConversation() {
 	float: right;
 }
 
+.noteHeaderUsernameAndBadgeRoles {
+	display: flex;
+}
+
 .noteHeaderUsername {
 	margin-bottom: 2px;
+	margin-right: 0.5em;
 	line-height: 1.3;
 	word-wrap: anywhere;
+}
+
+.noteHeaderBadgeRoles {
+	margin: 0 .5em 0 0;
+}
+
+.noteHeaderBadgeRole {
+	height: 1.3em;
+	vertical-align: -20%;
+
+	& + .noteHeaderBadgeRole {
+		margin-left: 0.2em;
+	}
 }
 
 .noteContent {
@@ -699,19 +724,19 @@ function loadConversation() {
 }
 
 .noteReplyTarget {
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 	margin-right: 0.5em;
 }
 
 .rn {
 	margin-left: 4px;
 	font-style: oblique;
-	color: var(--renote);
+	color: var(--MI_THEME-renote);
 }
 
 .translation {
-	border: solid 0.5px var(--divider);
-	border-radius: var(--radius);
+	border: solid 0.5px var(--MI_THEME-divider);
+	border-radius: var(--MI-radius);
 	padding: 12px;
 	margin-top: 8px;
 }
@@ -726,7 +751,7 @@ function loadConversation() {
 
 .quoteNote {
 	padding: 16px;
-	border: dashed 1px var(--renote);
+	border: dashed 1px var(--MI_THEME-renote);
 	border-radius: 8px;
 	overflow: clip;
 }
@@ -752,7 +777,7 @@ function loadConversation() {
 	}
 
 	&:hover {
-		color: var(--fgHighlighted);
+		color: var(--MI_THEME-fgHighlighted);
 	}
 }
 
@@ -762,17 +787,17 @@ function loadConversation() {
 	opacity: 0.7;
 
 	&.reacted {
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 
 .reply:not(:first-child) {
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 .tabs {
-	border-top: solid 0.5px var(--divider);
-	border-bottom: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 	display: flex;
 }
 
@@ -784,7 +809,7 @@ function loadConversation() {
 }
 
 .tabActive {
-	border-bottom: solid 2px var(--accent);
+	border-bottom: solid 2px var(--MI_THEME-accent);
 }
 
 .tab_renotes {
@@ -804,12 +829,12 @@ function loadConversation() {
 
 .reactionTab {
 	padding: 4px 6px;
-	border: solid 1px var(--divider);
+	border: solid 1px var(--MI_THEME-divider);
 	border-radius: 6px;
 }
 
 .reactionTabActive {
-	border-color: var(--accent);
+	border-color: var(--MI_THEME-accent);
 }
 
 @container (max-width: 500px) {

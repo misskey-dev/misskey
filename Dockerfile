@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.4
 
-ARG NODE_VERSION=20.16.0-bullseye
+ARG NODE_VERSION=22.11.0-bullseye
 
 # build assets & compile TypeScript
 
@@ -21,7 +21,9 @@ WORKDIR /misskey
 COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
+COPY --link ["packages/frontend-shared/package.json", "./packages/frontend-shared/"]
 COPY --link ["packages/frontend/package.json", "./packages/frontend/"]
+COPY --link ["packages/frontend-embed/package.json", "./packages/frontend-embed/"]
 COPY --link ["packages/sw/package.json", "./packages/sw/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]

@@ -20,7 +20,7 @@ import { ref, computed, type Ref } from 'vue';
 import XQueue from './queue.chart.vue';
 import XHeader from './_header_.vue';
 import * as os from '@/os.js';
-import * as config from '@/config.js';
+import * as config from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
