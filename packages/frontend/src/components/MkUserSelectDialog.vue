@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@click="cancel()"
 	@close="cancel()"
 	@ok="ok()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div>
@@ -195,11 +195,11 @@ onMounted(() => {
 	font-size: 14px;
 
 	&:hover {
-		background: var(--X7);
+		background: var(--MI_THEME-X7);
 	}
 
 	&.selected {
-		background: var(--accent);
+		background: var(--MI_THEME-accent);
 		color: #fff;
 	}
 }

@@ -100,10 +100,6 @@ function reset() {
 	}));
 }
 
-watch(menuDisplay, async () => {
-	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
-});
-
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
@@ -122,7 +118,7 @@ definePageMetadata(() => ({
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	color: var(--navFg);
+	color: var(--MI_THEME-navFg);
 }
 
 .itemIcon {

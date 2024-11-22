@@ -56,8 +56,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, shallowRef, ref } from 'vue';
+import { nextTick, onMounted, ref, shallowRef } from 'vue';
 import { defaultStore } from '@/store.js';
+import { getBgColor } from '@/scripts/get-bg-color.js';
 
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
@@ -69,40 +70,35 @@ const props = withDefaults(defineProps<{
 	withSpacer: true,
 });
 
-const getBgColor = (el: HTMLElement) => {
-	const style = window.getComputedStyle(el);
-	if (style.backgroundColor && !['rgba(0, 0, 0, 0)', 'rgba(0,0,0,0)', 'transparent'].includes(style.backgroundColor)) {
-		return style.backgroundColor;
-	} else {
-		return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
-	}
-};
-
 const rootEl = shallowRef<HTMLElement>();
 const bgSame = ref(false);
 const opened = ref(props.defaultOpen);
 const openedAtLeastOnce = ref(props.defaultOpen);
 
-function enter(el) {
+function enter(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
 	const elementHeight = el.getBoundingClientRect().height;
-	el.style.height = 0;
+	el.style.height = '0';
 	el.offsetHeight; // reflow
-	el.style.height = Math.min(elementHeight, props.maxHeight ?? Infinity) + 'px';
+	el.style.height = `${Math.min(elementHeight, props.maxHeight ?? Infinity)}px`;
 }
 
-function afterEnter(el) {
-	el.style.height = null;
+function afterEnter(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
+	el.style.height = '';
 }
 
-function leave(el) {
+function leave(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
 	const elementHeight = el.getBoundingClientRect().height;
-	el.style.height = elementHeight + 'px';
+	el.style.height = `${elementHeight}px`;
 	el.offsetHeight; // reflow
-	el.style.height = 0;
+	el.style.height = '0';
 }
 
-function afterLeave(el) {
-	el.style.height = null;
+function afterLeave(el: Element) {
+	if (!(el instanceof HTMLElement)) return;
+	el.style.height = '';
 }
 
 function toggle() {
@@ -117,8 +113,8 @@ function toggle() {
 
 onMounted(() => {
 	const computedStyle = getComputedStyle(document.documentElement);
-	const parentBg = getBgColor(rootEl.value!.parentElement!);
-	const myBg = computedStyle.getPropertyValue('--panel');
+	const parentBg = getBgColor(rootEl.value?.parentElement) ?? 'transparent';
+	const myBg = computedStyle.getPropertyValue('--MI_THEME-panel');
 	bgSame.value = parentBg === myBg;
 });
 </script>
@@ -144,15 +140,15 @@ onMounted(() => {
 	width: 100%;
 	box-sizing: border-box;
 	padding: 9px 12px 9px 12px;
-	background: var(--folderHeaderBg);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	background: var(--MI_THEME-folderHeaderBg);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 	border-radius: 6px;
 	transition: border-radius 0.3s;
 
 	&:hover {
 		text-decoration: none;
-		background: var(--folderHeaderHoverBg);
+		background: var(--MI_THEME-folderHeaderHoverBg);
 	}
 
 	&:focus-within {
@@ -160,8 +156,8 @@ onMounted(() => {
 	}
 
 	&.active {
-		color: var(--accent);
-		background: var(--folderHeaderHoverBg);
+		color: var(--MI_THEME-accent);
+		background: var(--MI_THEME-folderHeaderHoverBg);
 	}
 
 	&.opened {
@@ -175,7 +171,7 @@ onMounted(() => {
 }
 
 .headerLower {
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 	font-size: .85em;
 	padding-left: 4px;
 }
@@ -209,13 +205,13 @@ onMounted(() => {
 }
 
 .headerTextSub {
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 	font-size: .85em;
 }
 
 .headerRight {
 	margin-left: auto;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 	white-space: nowrap;
 }
 
@@ -224,26 +220,26 @@ onMounted(() => {
 }
 
 .body {
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 0 0 6px 6px;
 	container-type: inline-size;
 
 	&.bgSame {
-		background: var(--bg);
+		background: var(--MI_THEME-bg);
 	}
 }
 
 .footer {
 	position: sticky !important;
 	z-index: 1;
-	bottom: var(--stickyBottom, 0px);
+	bottom: var(--MI-stickyBottom, 0px);
 	left: 0;
 	padding: 12px;
-	background: var(--acrylicBg);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	background: var(--MI_THEME-acrylicBg);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, var(--panel) 5px, var(--panel) 10px);
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, var(--MI_THEME-panel) 5px, var(--MI_THEME-panel) 10px);
 	border-radius: 0 0 6px 6px;
 }
 </style>
