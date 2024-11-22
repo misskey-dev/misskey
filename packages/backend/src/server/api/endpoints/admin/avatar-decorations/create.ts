@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { DriveService } from '@/core/DriveService.js';
+import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -14,6 +15,49 @@ export const meta = {
 	requireCredential: true,
 	requireRolePolicy: 'canManageAvatarDecorations',
 	kind: 'write:admin:avatar-decorations',
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		properties: {
+			id: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+			createdAt: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'date-time',
+			},
+			updatedAt: {
+				type: 'string',
+				optional: false, nullable: true,
+				format: 'date-time',
+			},
+			name: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			description: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			url: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			roleIdsThatCanBeUsedThisDecoration: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+					format: 'id',
+				},
+			},
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -34,6 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private avatarDecorationService: AvatarDecorationService,
 		private driveService: DriveService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps: any, me) => {
 			// システムユーザーとして再アップロード
@@ -46,12 +91,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// 元ファイルの削除
 			this.driveService.deleteFile(ps);
 
-			await this.avatarDecorationService.create({
+			const created = await this.avatarDecorationService.create({
 				name: ps.name,
 				description: ps.description,
 				url: sysFileData.url,
 				roleIdsThatCanBeUsedThisDecoration: ps.roleIdsThatCanBeUsedThisDecoration,
 			}, me);
+
+			return {
+				id: created.id,
+				createdAt: this.idService.parse(created.id).date.toISOString(),
+				updatedAt: null,
+				name: created.name,
+				description: created.description,
+				url: created.url,
+				roleIdsThatCanBeUsedThisDecoration: created.roleIdsThatCanBeUsedThisDecoration,
+			};
 		});
 	}
 }

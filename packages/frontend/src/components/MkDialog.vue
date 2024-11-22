@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSelect>
 		<MkSwitch v-if="switchLabel" v-model="switchValue" style="display: flex; margin: 1em 0; justify-content: center;">{{ switchLabel }}</MkSwitch>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
-			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okDisabled || okButtonDisabledReason" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}<span v-if="okDisabled && okWaitInitiated"> ({{ sec }})</span></MkButton>
+			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okDisabled || okButtonDisabledReason != null" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}<span v-if="okDisabled && okWaitInitiated"> ({{ sec }})</span></MkButton>
 			<MkButton v-if="showCancelButton || input || select" data-cy-modal-dialog-cancel inline rounded @click="cancel">{{ cancelText ?? i18n.ts.cancel }}</MkButton>
 		</div>
 		<div v-if="actions" :class="$style.buttons">
@@ -101,7 +101,7 @@ const props = withDefaults(defineProps<{
 		text: string;
 		primary?: boolean,
 		danger?: boolean,
-		callback: (...args: any[]) => void;
+		callback: (...args: unknown[]) => void;
 	}[];
 	showOkButton?: boolean;
 	showCancelButton?: boolean;

@@ -325,6 +325,7 @@ export class EmailService {
 					Accept: 'application/json',
 					Authorization: truemailAuthKey,
 				},
+				isLocalAddressAllowed: true,
 			});
 
 			const json = (await res.json()) as {

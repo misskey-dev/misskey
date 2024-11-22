@@ -139,8 +139,9 @@ function cancel() {
 }
 
 async function tokenDone() {
+	if (token.value == null) return;
 	const res = await os.apiWithDialog('i/2fa/done', {
-		token: token.value.toString(),
+		token: typeof token.value === 'string' ? token.value : token.value.toString(),
 	});
 
 	backupCodes.value = res.backupCodes;
@@ -175,7 +176,7 @@ async function allDone() {
 
 	if (canceled) return;
 
-	dialog.value.close();
+	dialog.value?.close();
 }
 </script>
 
