@@ -269,6 +269,7 @@ function onKeyDown(ev: KeyboardEvent) {
 	switch (state.value) {
 		case 'normal': {
 			ev.preventDefault();
+			ev.stopPropagation();
 
 			const selectedCellAddress = selectedCell.value?.address ?? CELL_ADDRESS_NONE;
 			const max = availableBounds.value;
