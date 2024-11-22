@@ -382,7 +382,6 @@ enableLocalTimeline: "ローカルタイムラインを有効にする"
 enableGlobalTimeline: "グローバルタイムラインを有効にする"
 disablingTimelinesInfo: "これらのタイムラインを無効化しても、利便性のため管理者およびモデレーターは引き続き利用することができます。"
 registration: "登録"
-enableRegistration: "誰でも新規登録できるようにする"
 invite: "招待"
 driveCapacityPerLocalAccount: "ローカルユーザーひとりあたりのドライブ容量"
 driveCapacityPerRemoteAccount: "リモートユーザーひとりあたりのドライブ容量"
@@ -587,6 +586,7 @@ masterVolume: "マスター音量"
 notUseSound: "サウンドを出力しない"
 useSoundOnlyWhenActive: "Misskeyがアクティブな時のみサウンドを出力する"
 details: "詳細"
+renoteDetails: "リノートの詳細"
 chooseEmoji: "絵文字を選択"
 unableToProcess: "操作を完了できません"
 recentUsed: "最近使用"
@@ -1298,6 +1298,9 @@ yourNameContainsProhibitedWords: "変更しようとした名前に禁止され�
 yourNameContainsProhibitedWordsDescription: "名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。"
 thisContentsAreMarkedAsSigninRequiredByAuthor: "投稿者により、表示にはログインが必要と設定されています"
 lockdown: "ロックダウン"
+pleaseSelectAccount: "アカウントを選択してください"
+availableRoles: "利用可能なロール"
+acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -1464,6 +1467,8 @@ _serverSettings:
   reactionsBufferingDescription: "有効にすると、リアクション作成時のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。"
   inquiryUrl: "問い合わせ先URL"
   inquiryUrlDescription: "サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。"
+  openRegistration: "アカウントの作成をオープンにする"
+  openRegistrationWarning: "登録を開放することはリスクが伴います。サーバーを常に監視し、トラブルが発生した際にすぐに対応できる体制がある場合のみオンにすることを推奨します。"
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "一定期間モデレーターのアクティビティが検出されなかった場合、スパム防止のためこの設定は自動でオフになります。"
 
 _accountMigration:
@@ -2217,8 +2222,11 @@ _auth:
   permissionAsk: "このアプリは次の権限を要求しています"
   pleaseGoBack: "アプリケーションに戻ってやっていってください"
   callback: "アプリケーションに戻っています"
+  accepted: "アクセスを許可しました"
   denied: "アクセスを拒否しました"
+  scopeUser: "以下のユーザーとして操作しています"
   pleaseLogin: "アプリケーションにアクセス許可を与えるには、ログインが必要です。"
+  byClickingYouWillBeRedirectedToThisUrl: "アクセスを許可すると、自動で以下のURLに遷移します"
 
 _antennaSources:
   all: "全てのノート"
@@ -2807,3 +2815,14 @@ _embedCodeGen:
   generateCode: "埋め込みコードを作成"
   codeGenerated: "コードが生成されました"
   codeGeneratedDescription: "生成されたコードをウェブサイトに貼り付けてご利用ください。"
+
+_selfXssPrevention:
+  warning: "警告"
+  title: "「この画面に何か貼り付けろ」はすべて詐欺です。"
+  description1: "ここに何かを貼り付けると、悪意のあるユーザーにアカウントを乗っ取られたり、個人情報を盗まれたりする可能性があります。"
+  description2: "貼り付けようとしているものが何なのかを正確に理解していない場合は、%c今すぐ作業を中止してこのウィンドウを閉じてください。"
+  description3: "詳しくはこちらをご確認ください。 {link}"
+
+_followRequest:
+  recieved: "受け取った申請"
+  sent: "送った申請"
