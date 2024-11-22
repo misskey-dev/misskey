@@ -11,6 +11,7 @@ import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
 export const meta = {
 	tags: ['federation'],
 
+	requireAdmin: true,
 	requireCredential: true,
 	kind: 'read:federation',
 
