@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			[needsContentCentering ? $style.center : {}],
 		]"
 	>
-		<div v-if="!editing" :class="$style.contentArea">
+		<div v-if="!editing" :class="[$style.contentArea]" :style="cellType === 'boolean' ? 'justify-content: center' : ''">
 			<div ref="contentAreaEl" :class="$style.content">
 				<div v-if="cellType === 'text'">
 					{{ cell.value }}
