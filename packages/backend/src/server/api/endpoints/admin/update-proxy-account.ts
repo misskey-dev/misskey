@@ -49,6 +49,7 @@ export const meta = {
 	requireCredential: true,
 	requireModerator: true,
 	kind: 'write:admin:update-proxy-account',
+	secure: true,
 
 	errors: {
 		noSuchAvatar: {
@@ -136,6 +137,8 @@ export const meta = {
 		nullable: false, optional: false,
 		ref: 'UserDetailed',
 	},
+
+	required: [],
 } as const;
 
 export const paramDef = {
