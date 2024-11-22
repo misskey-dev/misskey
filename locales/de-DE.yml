@@ -1242,6 +1242,7 @@ keepOriginalFilenameDescription: "Wenn diese Einstellung deaktiviert ist, wird d
 noDescription: "Keine Beschreibung vorhanden"
 tryAgain: "Bitte später erneut versuchen"
 confirmWhenRevealingSensitiveMedia: "Das Anzeigen von sensiblen Medien bestätigen"
+sensitiveMediaRevealConfirm: "Es könnte sich um sensible Medien handeln. Möchtest du sie anzeigen?"
 createdLists: "Erstellte Listen"
 createdAntennas: "Erstellte Antennen"
 fromX: "Von {x}"
@@ -1253,6 +1254,8 @@ thereAreNChanges: "Es gibt {n} Änderung(en)"
 signinWithPasskey: "Mit Passkey anmelden"
 passkeyVerificationFailed: "Die Passkey-Verifizierung ist fehlgeschlagen."
 passkeyVerificationSucceededButPasswordlessLoginDisabled: "Die Verifizierung des Passkeys war erfolgreich, aber die passwortlose Anmeldung ist deaktiviert."
+messageToFollower: "Nachricht an die Follower"
+testCaptchaWarning: "Diese Funktion ist für CAPTCHA-Testzwecke gedacht.\n<strong>Nicht in einer Produktivumgebung verwenden.</strong>"
 prohibitedWordsForNameOfUser: "Verbotene Begriffe für Benutzernamen"
 prohibitedWordsForNameOfUserDescription: "Wenn eine Zeichenfolge aus dieser Liste im Namen eines Benutzers enthalten ist, wird der Benutzername abgelehnt. Benutzer mit Moderatorenrechten sind von dieser Einschränkung nicht betroffen."
 yourNameContainsProhibitedWords: "Dein Name enthält einen verbotenen Begriff"
@@ -1264,6 +1267,7 @@ _accountSettings:
   requireSigninToViewContentsDescription1: "Erfordere eine Anmeldung, um alle Notizen und andere Inhalte anzuzeigen, die du erstellt hast. Dadurch wird verhindert, dass Crawler deine Informationen sammeln."
   requireSigninToViewContentsDescription3: "Diese Einschränkungen gelten möglicherweise nicht für föderierte Inhalte von anderen Servern."
   makeNotesFollowersOnlyBefore: "Macht frühere Notizen nur für Follower sichtbar"
+  makeNotesHiddenBefore: "Frühere Notizen privat machen"
   mayNotEffectForFederatedNotes: "Dies hat möglicherweise keine Auswirkungen auf Notizen, die an andere Server föderiert werden."
 _abuseUserReport:
   forward: "Weiterleiten"
@@ -1274,6 +1278,7 @@ _delivery:
   stop: "Gesperrt"
   _type:
     none: "Wird veröffentlicht"
+    manuallySuspended: "Manuell gesperrt"
 _bubbleGame:
   howToPlay: "Wie man spielt"
   hold: "Halten"

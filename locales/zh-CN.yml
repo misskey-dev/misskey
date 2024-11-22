@@ -1707,9 +1707,9 @@ _achievements:
       description: "在元旦登入"
       flavor: "今年也请对本服务器多多指教！"
     _cookieClicked:
-      title: "点击饼干小游戏"
+      title: "饼干点点乐"
       description: "点击了饼干"
-      flavor: "用错软件了？"
+      flavor: "穿越了？"
     _brainDiver:
       title: "Brain Diver"
       description: "发布了包含 Brain Diver 链接的帖子"

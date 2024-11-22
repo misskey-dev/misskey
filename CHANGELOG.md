@@ -8,9 +8,9 @@
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
 - Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
-- Fix: お知らせ作成時に画像URL入力欄を空欄に変更できないのを修正 ( #14976 )
 - Enhance: 依存関係の更新
 - Enhance: l10nの更新
+- Fix: お知らせ作成時に画像URL入力欄を空欄に変更できないのを修正 ( #14976 )
 
 ### Client
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
@@ -30,6 +30,7 @@
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
 - Enhance: サイドバーを簡単に展開・折りたたみできるように ( #14981 )
 - Enhance: リノートメニューに「リノートの詳細」を追加
+- Enhance: 非ログイン状態でMisskeyを開いた際のパフォーマンスを向上
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
@@ -65,6 +66,8 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/709)
 - Fix: User Webhookテスト機能のMock Payloadを修正  
 - Fix: アカウント削除のモデレーションログが動作していないのを修正 (#14996)  
+- Fix: リノートミュートが新規投稿通知に対して作用していなかった問題を修正
+- Fix: セキュリティに関する修正
 
 ### Misskey.js
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
