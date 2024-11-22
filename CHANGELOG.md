@@ -12,6 +12,7 @@
   - フォローさせるユーザーのフォロー解除・ミュート・ブロックができないように指定することもできます
 - Enhance: 依存関係の更新
 - Enhance: l10nの更新
+- Fix: お知らせ作成時に画像URL入力欄を空欄に変更できないのを修正 ( #14976 )
 
 ### Client
 - Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
@@ -29,6 +30,9 @@
 - Enhance: ノート詳細画面にロールのバッジを表示
 - Enhance: 過去に送信したフォローリクエストを確認できるように  
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
+- Enhance: サイドバーを簡単に展開・折りたたみできるように ( #14981 )
+- Enhance: リノートメニューに「リノートの詳細」を追加
+- Enhance: 非ログイン状態でMisskeyを開いた際のパフォーマンスを向上
 - Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
 - Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
@@ -40,6 +44,8 @@
 - Fix: メールアドレス登録有効化時の「完了」ダイアログボックスの表示条件を修正
 - Fix: 画面幅が狭い環境でデザインが崩れる問題を修正  
 	(Cherry-picked from https://github.com/MisskeyIO/misskey/pull/815)
+- Fix: TypeScriptの型チェック対象ファイルを限定してビルドを高速化するように  
+	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/725)
 
 ### Server
 - Enhance: DockerのNode.jsを22.11.0に更新
@@ -61,6 +67,9 @@
 - Fix: FTT無効時にユーザーリストタイムラインが使用できない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/709)
 - Fix: User Webhookテスト機能のMock Payloadを修正  
+- Fix: アカウント削除のモデレーションログが動作していないのを修正 (#14996)  
+- Fix: リノートミュートが新規投稿通知に対して作用していなかった問題を修正
+- Fix: セキュリティに関する修正
 
 ### Misskey.js
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
