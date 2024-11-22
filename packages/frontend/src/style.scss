@@ -497,20 +497,17 @@ html[data-color-scheme=dark] ._woodenFrame {
 
 	10%,
 	20% {
-		transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+		transform: scale3d(0.91, 0.91, 0.91) rotate3d(0, 0, 1, -2deg);
 	}
 
 	30%,
-	50%,
-	70%,
-	90% {
-		transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+	70% {
+		transform: scale3d(1.09, 1.09, 1.09) rotate3d(0, 0, 1, 2deg);
 	}
 
-	40%,
-	60%,
-	80% {
-		transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+	50%,
+	90% {
+		transform: scale3d(1.09, 1.09, 1.09) rotate3d(0, 0, 1, -2deg);
 	}
 
 	to {

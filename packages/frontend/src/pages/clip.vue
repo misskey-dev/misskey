@@ -33,25 +33,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, provide, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
+import type { MenuItem } from '@/types/menu.js';
 import MkNotes from '@/components/MkNotes.vue';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { url } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { genEmbedCode } from '@/scripts/get-embed-code.js';
-import type { MenuItem } from '@/types/menu.js';
+import { getServerContext } from '@/server-context.js';
+
+const CTX_CLIP = getServerContext('clip');
 
 const props = defineProps<{
 	clipId: string,
 }>();
 
-const clip = ref<Misskey.entities.Clip | null>(null);
+const clip = ref<Misskey.entities.Clip | null>(CTX_CLIP);
 const favorited = ref(false);
 const pagination = {
 	endpoint: 'clips/notes' as const,
@@ -64,6 +67,11 @@ const pagination = {
 const isOwned = computed<boolean | null>(() => $i && clip.value && ($i.id === clip.value.userId));
 
 watch(() => props.clipId, async () => {
+	if (CTX_CLIP && CTX_CLIP.id === props.clipId) {
+		clip.value = CTX_CLIP;
+		return;
+	}
+
 	clip.value = await misskeyApi('clips/show', {
 		clipId: props.clipId,
 	});
