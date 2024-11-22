@@ -24,8 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="selectedRoles.length > 0" class="_gaps" :class="$style.roleItemArea">
 				<div v-for="role in selectedRoles" :key="role.id" :class="$style.roleItem">
 					<MkRolePreview :class="$style.role" :role="role" :forModeration="true" :detailed="false" style="pointer-events: none;"/>
-					<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnAssign" @click="removeRole(role.id)"><i class="ti ti-x"></i></button>
-					<button v-else class="_button" :class="$style.roleUnAssign" disabled><i class="ti ti-ban"></i></button>
+					<button class="_button" :class="$style.roleUnAssign" @click="removeRole(role.id)"><i class="ti ti-x"></i></button>
 				</div>
 			</div>
 			<div v-else :class="$style.roleItemArea" style="text-align: center">
