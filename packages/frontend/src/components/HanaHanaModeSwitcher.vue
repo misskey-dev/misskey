@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { signinRequired, updateAccount } from '@/account.js';
+import { signinRequired, updateAccountPartial } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
 import { claimAchievement } from '@/scripts/achievements.js';
@@ -92,7 +92,7 @@ async function setMode() {
 		os.apiWithDialog('i/update', {
 			isInHanaMode,
 		});
-		updateAccount({ isInHanaMode });
+		updateAccountPartial({ isInHanaMode });
 	}
 	emit('set');
 	onceSet.value = true;
