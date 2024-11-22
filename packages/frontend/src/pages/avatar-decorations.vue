@@ -17,7 +17,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@click="edit(avatarDecoration)"
 				>
 					<div :class="$style.decorationName"><MkCondensedLine :minScale="0.5">{{ avatarDecoration.name }}</MkCondensedLine></div>
-					<MkButton rounded style="margin: 0 auto;" @click="selectImage(avatarDecoration, $event)">{{ i18n.ts.selectFile }}</MkButton>
 					<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decorations="[{ url: avatarDecoration.url }]" forceShowDecoration/>
 				</div>
 			</div>
@@ -34,18 +33,10 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { selectFile } from '@/scripts/select-file.js';
 
 const $i = signinRequired();
 
 const avatarDecorations = ref<Misskey.entities.AdminAvatarDecorationsListResponse>([]);
-
-// ファイル選択
-async function selectImage(decoration, ev) {
-	let file = await selectFile(ev.currentTarget ?? ev.target, null);
-	decoration.name = file.name.replace(/\.(.+)$/, '');
-	decoration.url = file.url;
-}
 
 function load() {
 	misskeyApi('admin/avatar-decorations/list').then(_avatarDecorations => {
