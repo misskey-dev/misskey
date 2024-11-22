@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { MiAbuseUserReport, MiNote, MiUser, MiWebhook } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWebhook.js';
-import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { AbuseReportPayload, SystemWebhookPayload, SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { Packed } from '@/misc/json-schema.js';
 import { type WebhookEventTypes } from '@/models/Webhook.js';
 import { type UserWebhookPayload, UserWebhookService } from '@/core/UserWebhookService.js';
@@ -16,13 +16,7 @@ import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModera
 
 const oneDayMillis = 24 * 60 * 60 * 1000;
 
-type AbuseUserReportDto = Omit<MiAbuseUserReport, 'targetUser' | 'reporter' | 'assignee'> & {
-	targetUser: Packed<'UserLite'> | null,
-	reporter: Packed<'UserLite'> | null,
-	assignee: Packed<'UserLite'> | null,
-};
-
-function generateAbuseReport(override?: Partial<MiAbuseUserReport>): AbuseUserReportDto {
+function generateAbuseReport(override?: Partial<MiAbuseUserReport>): AbuseReportPayload {
 	const result: MiAbuseUserReport = {
 		id: 'dummy-abuse-report1',
 		targetUserId: 'dummy-target-user',
@@ -389,7 +383,8 @@ export class WebhookTestService {
 				break;
 			}
 			// まだ実装されていない (#9485)
-			case 'reaction': return;
+			case 'reaction':
+				return;
 			default: {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				const _exhaustiveAssertion: never = params.type;
@@ -407,10 +402,10 @@ export class WebhookTestService {
 	 * - 送信対象イベント（on）に関する設定
 	 */
 	@bindThis
-	public async testSystemWebhook(
+	public async testSystemWebhook<T extends SystemWebhookEventType>(
 		params: {
 			webhookId: MiSystemWebhook['id'],
-			type: SystemWebhookEventType,
+			type: T,
 			override?: Partial<Omit<MiSystemWebhook, 'id'>>,
 		},
 	) {
@@ -420,7 +415,7 @@ export class WebhookTestService {
 		}
 
 		const webhook = webhooks[0];
-		const send = (contents: unknown) => {
+		const send = <U extends SystemWebhookEventType>(type: U, contents: SystemWebhookPayload<U>) => {
 			const merged = {
 				...webhook,
 				...params.override,
@@ -428,12 +423,12 @@ export class WebhookTestService {
 
 			// テスト目的なのでSystemWebhookServiceの機能を経由せず直接キューに追加する（チェック処理などをスキップする意図）.
 			// また、Jobの試行回数も1回だけ.
-			this.queueService.systemWebhookDeliver(merged, params.type, contents, { attempts: 1 });
+			this.queueService.systemWebhookDeliver(merged, type, contents, { attempts: 1 });
 		};
 
 		switch (params.type) {
 			case 'abuseReport': {
-				send(generateAbuseReport({
+				send('abuseReport', generateAbuseReport({
 					targetUserId: dummyUser1.id,
 					targetUser: dummyUser1,
 					reporterId: dummyUser2.id,
@@ -442,7 +437,7 @@ export class WebhookTestService {
 				break;
 			}
 			case 'abuseReportResolved': {
-				send(generateAbuseReport({
+				send('abuseReportResolved', generateAbuseReport({
 					targetUserId: dummyUser1.id,
 					targetUser: dummyUser1,
 					reporterId: dummyUser2.id,
@@ -454,7 +449,7 @@ export class WebhookTestService {
 				break;
 			}
 			case 'userCreated': {
-				send(toPackedUserLite(dummyUser1));
+				send('userCreated', toPackedUserLite(dummyUser1));
 				break;
 			}
 			case 'inactiveModeratorsWarning': {
@@ -464,14 +459,19 @@ export class WebhookTestService {
 					asHours: 24,
 				};
 
-				send({
+				send('inactiveModeratorsWarning', {
 					remainingTime: dummyTime,
 				});
 				break;
 			}
 			case 'inactiveModeratorsInvitationOnlyChanged': {
-				send({});
+				send('inactiveModeratorsInvitationOnlyChanged', {});
 				break;
+			}
+			default: {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const _exhaustiveAssertion: never = params.type;
+				return;
 			}
 		}
 	}
