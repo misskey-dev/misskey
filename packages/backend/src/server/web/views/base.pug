@@ -74,6 +74,9 @@ html
 		script(type='application/json' id='misskey_meta' data-generated-at=now)
 			!= metaJson
 
+		script(type='application/json' id='misskey_clientCtx' data-generated-at=now)
+			!= clientCtx
+
 		script
 			include ../boot.js
 

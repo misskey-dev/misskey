@@ -5,16 +5,18 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, PollsRepository } from '@/models/_.js';
+import type { UsersRepository, NotesRepository, PollsRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { IPoll } from '@/models/Poll.js';
+import type { MiRemoteUser } from '@/models/User.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import { isQuestion } from '../type.js';
+import { getOneApId, isQuestion } from '../type.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApResolverService } from '../ApResolverService.js';
 import type { Resolver } from '../ApResolverService.js';
-import type { IObject, IQuestion } from '../type.js';
+import type { IObject } from '../type.js';
 
 @Injectable()
 export class ApQuestionService {
@@ -24,6 +26,9 @@ export class ApQuestionService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -32,6 +37,7 @@ export class ApQuestionService {
 
 		private apResolverService: ApResolverService,
 		private apLoggerService: ApLoggerService,
+		private utilityService: UtilityService,
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
@@ -65,12 +71,12 @@ export class ApQuestionService {
 	 * @returns true if updated
 	 */
 	@bindThis
-	public async updateQuestion(value: string | IObject, resolver?: Resolver): Promise<boolean> {
+	public async updateQuestion(value: string | IObject, actor?: MiRemoteUser, resolver?: Resolver): Promise<boolean> {
 		const uri = typeof value === 'string' ? value : value.id;
 		if (uri == null) throw new Error('uri is null');
 
 		// URIがこのサーバーを指しているならスキップ
-		if (uri.startsWith(this.config.url + '/')) throw new Error('uri points local');
+		if (this.utilityService.isUriLocal(uri)) throw new Error('uri points local');
 
 		//#region このサーバーに既に登録されているか
 		const note = await this.notesRepository.findOneBy({ uri });
@@ -78,15 +84,26 @@ export class ApQuestionService {
 
 		const poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 		if (poll == null) throw new Error('Question is not registered');
+
+		const user = await this.usersRepository.findOneBy({ id: poll.userId });
+		if (user == null) throw new Error('Question is not registered');
 		//#endregion
 
 		// resolve new Question object
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
-		const question = await resolver.resolve(value) as IQuestion;
+		const question = await resolver.resolve(value);
 		this.logger.debug(`fetched question: ${JSON.stringify(question, null, 2)}`);
 
-		if (question.type !== 'Question') throw new Error('object is not a Question');
+		if (!isQuestion(question)) throw new Error('object is not a Question');
+
+		const attribution = (question.attributedTo) ? getOneApId(question.attributedTo) : user.uri;
+		const attributionMatchesExisting = attribution === user.uri;
+		const actorMatchesAttribution = (actor) ? attribution === actor.uri : true;
+
+		if (!attributionMatchesExisting || !actorMatchesAttribution) {
+			throw new Error('Refusing to ingest update for poll by different user');
+		}
 
 		const apChoices = question.oneOf ?? question.anyOf;
 		if (apChoices == null) throw new Error('invalid apChoices: ' + apChoices);
@@ -96,7 +113,7 @@ export class ApQuestionService {
 		for (const choice of poll.choices) {
 			const oldCount = poll.votes[poll.choices.indexOf(choice)];
 			const newCount = apChoices.filter(ap => ap.name === choice).at(0)?.replies?.totalItems;
-			if (newCount == null) throw new Error('invalid newCount: ' + newCount);
+			if (newCount == null || !(Number.isInteger(newCount) && newCount >= 0)) throw new Error('invalid newCount: ' + newCount);
 
 			if (oldCount !== newCount) {
 				changed = true;
