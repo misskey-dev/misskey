@@ -24,7 +24,7 @@ import * as Misskey from 'misskey-js';
 import { onUpdated, ref, shallowRef } from 'vue';
 import XNote from '@/pages/welcome.timeline.note.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import { getScrollContainer } from '@/scripts/scroll.js';
+import { getScrollContainer } from '@@/js/scroll.js';
 
 const notes = ref<Misskey.entities.Note[]>([]);
 const isScrolling = ref(false);
@@ -60,7 +60,7 @@ onUpdated(() => {
 		transform: translate3d(0, 0, 0);
 	}
 	100% {
-		transform: translate3d(0, calc(calc(-100% - 128px) - var(--margin)), 0);
+		transform: translate3d(0, calc(calc(-100% - 128px) - var(--MI-margin)), 0);
 	}
 }
 
@@ -69,7 +69,7 @@ onUpdated(() => {
 		transform: translate3d(0, -128px, 0);
 	}
 	100% {
-		transform: translate3d(0, calc(calc(-100% - 128px) - var(--margin)), 0);
+		transform: translate3d(0, calc(calc(-100% - 128px) - var(--MI-margin)), 0);
 	}
 }
 

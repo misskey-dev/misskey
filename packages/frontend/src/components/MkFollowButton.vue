@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full" :class="$style.text">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.youFollowing }}</span><i class="ti ti-minus"></i>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
 			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
@@ -43,7 +43,7 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 
@@ -165,8 +165,8 @@ onBeforeUnmount(() => {
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
-	color: var(--fgOnWhite);
-	border: solid 1px var(--accent);
+	color: var(--MI_THEME-fgOnWhite);
+	border: solid 1px var(--MI_THEME-accent);
 	padding: 0;
 	height: 31px;
 	font-size: 16px;
@@ -201,17 +201,17 @@ onBeforeUnmount(() => {
 	}
 
 	&.active {
-		color: var(--fgOnAccent);
-		background: var(--accent);
+		color: var(--MI_THEME-fgOnAccent);
+		background: var(--MI_THEME-accent);
 
 		&:hover {
-			background: var(--accentLighten);
-			border-color: var(--accentLighten);
+			background: var(--MI_THEME-accentLighten);
+			border-color: var(--MI_THEME-accentLighten);
 		}
 
 		&:active {
-			background: var(--accentDarken);
-			border-color: var(--accentDarken);
+			background: var(--MI_THEME-accentDarken);
+			border-color: var(--MI_THEME-accentDarken);
 		}
 	}
 

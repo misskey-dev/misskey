@@ -7,9 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket } from '@/models/_.js';
+import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import { MetaService } from '@/core/MetaService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
 import { IdService } from '@/core/IdService.js';
 import { SignupService } from '@/core/SignupService.js';
@@ -28,6 +27,9 @@ export class SignupApiService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -45,7 +47,6 @@ export class SignupApiService {
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
-		private metaService: MetaService,
 		private captchaService: CaptchaService,
 		private signupService: SignupService,
 		private signinService: SigninService,
@@ -66,37 +67,42 @@ export class SignupApiService {
 				'g-recaptcha-response'?: string;
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
+				'testcaptcha-response'?: string;
 			}
 		}>,
 		reply: FastifyReply,
 	) {
 		const body = request.body;
 
-		const instance = await this.metaService.fetch(true);
-
 		// Verify *Captcha
 		// ただしテスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test') {
-			if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {
-				await this.captchaService.verifyHcaptcha(instance.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
+			if (this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey) {
+				await this.captchaService.verifyHcaptcha(this.meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
-			if (instance.enableMcaptcha && instance.mcaptchaSecretKey && instance.mcaptchaSitekey && instance.mcaptchaInstanceUrl) {
-				await this.captchaService.verifyMcaptcha(instance.mcaptchaSecretKey, instance.mcaptchaSitekey, instance.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
+			if (this.meta.enableMcaptcha && this.meta.mcaptchaSecretKey && this.meta.mcaptchaSitekey && this.meta.mcaptchaInstanceUrl) {
+				await this.captchaService.verifyMcaptcha(this.meta.mcaptchaSecretKey, this.meta.mcaptchaSitekey, this.meta.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
-			if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
-				await this.captchaService.verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
+			if (this.meta.enableRecaptcha && this.meta.recaptchaSecretKey) {
+				await this.captchaService.verifyRecaptcha(this.meta.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}
 
-			if (instance.enableTurnstile && instance.turnstileSecretKey) {
-				await this.captchaService.verifyTurnstile(instance.turnstileSecretKey, body['turnstile-response']).catch(err => {
+			if (this.meta.enableTurnstile && this.meta.turnstileSecretKey) {
+				await this.captchaService.verifyTurnstile(this.meta.turnstileSecretKey, body['turnstile-response']).catch(err => {
+					throw new FastifyReplyError(400, err);
+				});
+			}
+
+			if (this.meta.enableTestcaptcha) {
+				await this.captchaService.verifyTestcaptcha(body['testcaptcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}
@@ -108,7 +114,7 @@ export class SignupApiService {
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
 
-		if (instance.emailRequiredForSignup) {
+		if (this.meta.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
 				reply.code(400);
 				return;
@@ -123,7 +129,7 @@ export class SignupApiService {
 
 		let ticket: MiRegistrationTicket | null = null;
 
-		if (instance.disableRegistration) {
+		if (this.meta.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
 				reply.code(400);
 				return;
@@ -144,7 +150,7 @@ export class SignupApiService {
 			}
 
 			// メアド認証が有効の場合
-			if (instance.emailRequiredForSignup) {
+			if (this.meta.emailRequiredForSignup) {
 				// メアド認証済みならエラー
 				if (ticket.usedBy) {
 					reply.code(400);
@@ -162,7 +168,7 @@ export class SignupApiService {
 			}
 		}
 
-		if (instance.emailRequiredForSignup) {
+		if (this.meta.emailRequiredForSignup) {
 			if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
 			}
@@ -172,7 +178,7 @@ export class SignupApiService {
 				throw new FastifyReplyError(400, 'USED_USERNAME');
 			}
 
-			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
+			const isPreserved = this.meta.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
 				throw new FastifyReplyError(400, 'DENIED_USERNAME');
 			}

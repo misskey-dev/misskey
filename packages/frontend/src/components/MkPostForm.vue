@@ -105,11 +105,11 @@ import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode/';
+import { host, url } from '@@/js/config.js';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
 import MkPollEditor, { type PollEditorModelValue } from '@/components/MkPollEditor.vue';
-import { host, url } from '@/config.js';
 import { erase, unique } from '@/scripts/array.js';
 import { extractMentions } from '@/scripts/extract-mentions.js';
 import { formatTimeString } from '@/scripts/format-time-string.js';
@@ -245,7 +245,7 @@ const submitText = computed((): string => {
 });
 
 const textLength = computed((): number => {
-	return (text.value + imeText.value).trim().length;
+	return (text.value + imeText.value).length;
 });
 
 const maxTextLength = computed((): number => {
@@ -1120,7 +1120,7 @@ defineExpose({
 		outline: none;
 
 		.submitInner {
-			outline: 2px solid var(--fgOnAccent);
+			outline: 2px solid var(--MI_THEME-fgOnAccent);
 			outline-offset: -4px;
 		}
 	}
@@ -1135,13 +1135,13 @@ defineExpose({
 
 	&:not(:disabled):hover {
 		> .inner {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 		}
 	}
 
 	&:not(:disabled):active {
 		> .inner {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 		}
 	}
 }
@@ -1163,8 +1163,8 @@ defineExpose({
 	border-radius: 6px;
 	min-width: 90px;
 	box-sizing: border-box;
-	color: var(--fgOnAccent);
-	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+	color: var(--MI_THEME-fgOnAccent);
+	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 }
 
 .headerRightItem {
@@ -1173,7 +1173,7 @@ defineExpose({
 	border-radius: 6px;
 
 	&:hover {
-		background: var(--X5);
+		background: var(--MI_THEME-X5);
 	}
 
 	&:disabled {
@@ -1208,6 +1208,15 @@ defineExpose({
 	min-height: 75px;
 	max-height: 150px;
 	overflow: auto;
+	background-size: auto auto;
+}
+
+html[data-color-scheme=dark] .preview {
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #0004 5px, #0004 10px);
+}
+
+html[data-color-scheme=light] .preview {
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #00000005 5px, #00000005 10px);
 }
 
 .targetNote {
@@ -1216,7 +1225,7 @@ defineExpose({
 
 .withQuote {
 	margin: 0 0 8px 0;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 }
 
 .toSpecified {
@@ -1236,7 +1245,7 @@ defineExpose({
 	margin-right: 14px;
 	padding: 8px 0 8px 8px;
 	border-radius: 8px;
-	background: var(--X4);
+	background: var(--MI_THEME-X4);
 }
 
 .hasNotSpecifiedMentions {
@@ -1255,7 +1264,7 @@ defineExpose({
 	border: none;
 	border-radius: 0;
 	background: transparent;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	font-family: inherit;
 
 	&:focus {
@@ -1270,14 +1279,14 @@ defineExpose({
 .cw {
 	z-index: 1;
 	padding-bottom: 8px;
-	border-bottom: solid 0.5px var(--divider);
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 
 .hashtags {
 	z-index: 1;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 .textOuter {
@@ -1303,7 +1312,7 @@ defineExpose({
 	right: 2px;
 	padding: 4px 6px;
 	font-size: .9em;
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 	border-radius: 6px;
 	min-width: 1.6em;
 	text-align: center;
@@ -1347,16 +1356,16 @@ defineExpose({
 	border-radius: 6px;
 
 	&:hover {
-		background: var(--X5);
+		background: var(--MI_THEME-X5);
 	}
 
 	&.footerButtonActive {
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 
 .previewButtonActive {
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 }
 
 @container (max-width: 500px) {
