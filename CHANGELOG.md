@@ -7,7 +7,7 @@
 -
 
 ### Server
--
+- Enhance: ノート検索の選択肢としてpgroongaに対応 ( #14730 )
 
 
 ## 2024.11.0
@@ -67,7 +67,6 @@
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
 - Enhance: リモートユーザーの照会をオリジナルにリダイレクトするように
-- Enhance: ノート検索の選択肢としてpgroongaに対応 ( #14730 )
 - Fix: sharedInboxが無いActorに紐づくリモートユーザーを照会できない
 - Fix: Aproving request from GtS appears with some delay
 - Fix: フォロワーへのメッセージの絵文字をemojisに含めるように
