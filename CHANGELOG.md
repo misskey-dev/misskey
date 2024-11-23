@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: お知らせの既読をリセットできるように
 
 ### Client
 -
