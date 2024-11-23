@@ -11,11 +11,14 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['following', 'users'],
+
+	requireRolePolicy: 'canFollow',
 
 	limit: {
 		duration: ms('1hour'),
@@ -58,6 +61,12 @@ export const meta = {
 			code: 'BLOCKED',
 			id: 'c4ab57cc-4e41-45e9-bfd9-584f61e35ce0',
 		},
+
+		notAvailable: {
+			message: 'Following is not available.',
+			code: 'NOT_AVAILABLE',
+			id: 'b75563bb-56e4-4148-b301-cf7a21aca65d',
+		},
 	},
 
 	res: {
@@ -82,11 +91,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
+		private roleService: RoleService,
 		private userEntityService: UserEntityService,
 		private getterService: GetterService,
 		private userFollowingService: UserFollowingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			// Check if user has canFollow permission
+			const policies = await this.roleService.getUserPolicies(me.id);
+			if (!policies.canFollow) {
+				throw new ApiError(meta.errors.notAvailable);
+			}
+
 			const follower = me;
 
 			// 自分自身

@@ -103,6 +103,8 @@ export const ROLE_POLICIES = [
 	'rateLimitFactor',
 	'avatarDecorationLimit',
 	'canChangeQuoteNotificationSetting',
+	'canFollow',
+	'canFollowed',
 	'canImportAntennas',
 	'canImportBlocking',
 	'canImportFollowing',

@@ -7052,6 +7052,14 @@ export interface Locale extends ILocale {
              */
             "canChangeQuoteNotificationSetting": string;
             /**
+             * フォローを許可
+             */
+            "canFollow": string;
+            /**
+             * フォローされるのを許可
+             */
+            "canFollowed": string;
+            /**
              * アンテナのインポートを許可
              */
             "canImportAntennas": string;

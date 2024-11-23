@@ -278,6 +278,14 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canFollow: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canFollowed: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canImportAntennas: {
 			type: 'boolean',
 			optional: false, nullable: false,

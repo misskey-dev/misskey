@@ -611,6 +611,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canFollow, 'canFollow'])">
+				<template #label>{{ i18n.ts._role._options.canFollow }}</template>
+				<template #suffix>
+						<span v-if="role.policies.canFollow.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+						<span v-else>{{ role.policies.canFollow.value ? i18n.ts.yes : i18n.ts.no }}</span>
+						<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canFollow)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.canFollow.useDefault" :readonly="readonly">
+							<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="role.policies.canFollow.value" :disabled="role.policies.canFollow.useDefault" :readonly="readonly">
+							<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+					<MkRange v-model="role.policies.canFollow.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+							<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canFollowed, 'canFollowed'])">
+					<template #label>{{ i18n.ts._role._options.canFollowed }}</template>
+					<template #suffix>
+							<span v-if="role.policies.canFollowed.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+							<span v-else>{{ role.policies.canFollowed.value ? i18n.ts.yes : i18n.ts.no }}</span>
+							<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canFollowed)"></i></span>
+					</template>
+					<div class="_gaps">
+							<MkSwitch v-model="role.policies.canFollowed.useDefault" :readonly="readonly">
+									<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+							</MkSwitch>
+							<MkSwitch v-model="role.policies.canFollowed.value" :disabled="role.policies.canFollowed.useDefault" :readonly="readonly">
+									<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+							<MkRange v-model="role.policies.canFollowed.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+									<template #label>{{ i18n.ts._role.priority }}</template>
+							</MkRange>
+					</div>
+			</MkFolder>
+
 			<MkFolder v-if="matchQuery([i18n.ts._role._options.canImportAntennas, 'canImportAntennas'])">
 				<template #label>{{ i18n.ts._role._options.canImportAntennas }}</template>
 				<template #suffix>
