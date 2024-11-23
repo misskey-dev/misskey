@@ -6282,7 +6282,7 @@ export type operations = {
       content: {
         'application/json': {
           /** Format: misskey:id */
-          announcementId?: string;
+          announcementId: string;
         };
       };
     };
