@@ -159,8 +159,8 @@ export class ApNoteService {
 				throw new Error('unexpected schema of note url: ' + url);
 			}
 
-			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(note.id)) {
-				throw new Error(`note url & uri host mismatch: note url: ${url}, note uri: ${note.id}`);
+			if (this.utilityService.punyHostPSLDomain(url) !== this.utilityService.punyHostPSLDomain(note.id)) {
+				throw new Error(`note url <> uri host mismatch: ${url} <> ${note.id} in ${entryUri}`);
 			}
 		}
 
@@ -340,7 +340,7 @@ export class ApNoteService {
 			this.logger.info('The note is already inserted while creating itself, reading again');
 			const duplicate = await this.fetchNote(value);
 			if (!duplicate) {
-				throw new Error('The note creation failed with duplication error even when there is no duplication');
+				throw new Error(`The note creation failed with duplication error even when there is no duplication: ${entryUri}`);
 			}
 			return duplicate;
 		}
