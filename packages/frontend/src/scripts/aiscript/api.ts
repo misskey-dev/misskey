@@ -12,8 +12,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
+import { deepClone } from '@/scripts/clone.js';
 import { url, lang } from '@@/js/config.js';
-import { deepClone } from '../clone.js';
 
 export function aiScriptReadline(q: string): Promise<string> {
 	return new Promise(ok => {
