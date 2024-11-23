@@ -452,7 +452,7 @@ function reply(): void {
 	});
 }
 
-function reactLike(): void{
+function reactLike(): void {
 	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
 	sound.playMisskeySfx('reaction');
@@ -498,7 +498,6 @@ function reactEmoji(): void {
 	}, () => {
 		focus();
 	});
-
 }
 
 function react(): void {
@@ -524,7 +523,7 @@ function undoReact(targetNote: Misskey.entities.Note): void {
 	});
 }
 
-function toggleLikeReact(): void{
+function toggleLikeReact(): void {
 	if (appearNote.value.myReaction == null) {
 		reactLike();
 	} else {
