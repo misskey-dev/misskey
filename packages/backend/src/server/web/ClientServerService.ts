@@ -30,6 +30,7 @@ import type {
 	EndedPollNotificationQueue,
 	InboxQueue,
 	ObjectStorageQueue,
+	RelationshipQueue,
 	SystemQueue,
 	UserWebhookDeliverQueue,
 	SystemWebhookDeliverQueue,
@@ -41,13 +42,26 @@ import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, MiMeta, NotesRepository, PagesRepository, ReversiGamesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type {
+	AnnouncementsRepository,
+	ChannelsRepository,
+	ClipsRepository,
+	FlashsRepository,
+	GalleryPostsRepository,
+	MiMeta,
+	NotesRepository,
+	PagesRepository,
+	ReversiGamesRepository,
+	UserProfilesRepository,
+	UsersRepository,
+} from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
@@ -102,6 +116,9 @@ export class ClientServerService {
 		@Inject(DI.reversiGamesRepository)
 		private reversiGamesRepository: ReversiGamesRepository,
 
+		@Inject(DI.announcementsRepository)
+		private announcementsRepository: AnnouncementsRepository,
+
 		private flashEntityService: FlashEntityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -111,6 +128,7 @@ export class ClientServerService {
 		private clipEntityService: ClipEntityService,
 		private channelEntityService: ChannelEntityService,
 		private reversiGameEntityService: ReversiGameEntityService,
+		private announcementEntityService: AnnouncementEntityService,
 		private urlPreviewService: UrlPreviewService,
 		private feedService: FeedService,
 		private roleService: RoleService,
@@ -121,6 +139,7 @@ export class ClientServerService {
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
+		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:userWebhookDeliver') public userWebhookDeliverQueue: UserWebhookDeliverQueue,
 		@Inject('queue:systemWebhookDeliver') public systemWebhookDeliverQueue: SystemWebhookDeliverQueue,
@@ -248,6 +267,7 @@ export class ClientServerService {
 				this.deliverQueue,
 				this.inboxQueue,
 				this.dbQueue,
+				this.relationshipQueue,
 				this.objectStorageQueue,
 				this.userWebhookDeliverQueue,
 				this.systemWebhookDeliverQueue,
@@ -539,7 +559,7 @@ export class ClientServerService {
 			}
 		});
 
-		//#region SSR (for crawlers)
+		//#region SSR
 		// User
 		fastify.get<{ Params: { user: string; sub?: string; } }>('/@:user/:sub?', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.user);
@@ -564,11 +584,17 @@ export class ClientServerService {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
+
+				const _user = await this.userEntityService.pack(user);
+
 				return await reply.view('user', {
 					user, profile, me,
 					avatarUrl: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
 					sub: request.params.sub,
 					...await this.generateCommonPugData(this.meta),
+					clientCtx: htmlSafeJsonStringify({
+						user: _user,
+					}),
 				});
 			} else {
 				// リモートユーザーなので
@@ -598,12 +624,15 @@ export class ClientServerService {
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
-			const note = await this.notesRepository.findOneBy({
-				id: request.params.note,
-				visibility: In(['public', 'home']),
+			const note = await this.notesRepository.findOne({
+				where: {
+					id: request.params.note,
+					visibility: In(['public', 'home']),
+				},
+				relations: ['user'],
 			});
 
-			if (note) {
+			if (note && !note.user!.requireSigninToViewContents) {
 				const _note = await this.noteEntityService.pack(note);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
 				reply.header('Cache-Control', 'public, max-age=15');
@@ -618,6 +647,9 @@ export class ClientServerService {
 					// TODO: Let locale changeable by instance setting
 					summary: getNoteSummary(_note),
 					...await this.generateCommonPugData(this.meta),
+					clientCtx: htmlSafeJsonStringify({
+						note: _note,
+					}),
 				});
 			} else {
 				return await renderBase(reply);
@@ -706,6 +738,9 @@ export class ClientServerService {
 					profile,
 					avatarUrl: _clip.user.avatarUrl,
 					...await this.generateCommonPugData(this.meta),
+					clientCtx: htmlSafeJsonStringify({
+						clip: _clip,
+					}),
 				});
 			} else {
 				return await renderBase(reply);
@@ -764,6 +799,24 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=3600');
 				return await reply.view('reversi-game', {
 					game: _game,
+					...await this.generateCommonPugData(this.meta),
+				});
+			} else {
+				return await renderBase(reply);
+			}
+		});
+
+		// 個別お知らせページ
+		fastify.get<{ Params: { announcementId: string; } }>('/announcements/:announcementId', async (request, reply) => {
+			const announcement = await this.announcementsRepository.findOneBy({
+				id: request.params.announcementId,
+			});
+
+			if (announcement) {
+				const _announcement = await this.announcementEntityService.pack(announcement);
+				reply.header('Cache-Control', 'public, max-age=3600');
+				return await reply.view('announcement', {
+					announcement: _announcement,
 					...await this.generateCommonPugData(this.meta),
 				});
 			} else {

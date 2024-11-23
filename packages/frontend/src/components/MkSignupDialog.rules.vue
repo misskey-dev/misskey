@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder v-if="availableServerRules" :defaultOpen="true">
 				<template #label>{{ i18n.ts.serverRules }}</template>
-				<template #suffix><i v-if="agreeServerRules" class="ti ti-check" style="color: var(--success)"></i></template>
+				<template #suffix><i v-if="agreeServerRules" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 
 				<ol class="_gaps_s" :class="$style.rules">
 					<li v-for="item in instance.serverRules" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder v-if="availableTos || availablePrivacyPolicy" :defaultOpen="true">
 				<template #label>{{ tosPrivacyPolicyLabel }}</template>
-				<template #suffix><i v-if="agreeTosAndPrivacyPolicy" class="ti ti-check" style="color: var(--success)"></i></template>
+				<template #suffix><i v-if="agreeTosAndPrivacyPolicy" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 				<div class="_gaps_s">
 					<div v-if="availableTos"><a :href="instance.tosUrl ?? undefined" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a></div>
 					<div v-if="availablePrivacyPolicy"><a :href="instance.privacyPolicyUrl ?? undefined" class="_link" target="_blank">{{ i18n.ts.privacyPolicy }} <i class="ti ti-external-link"></i></a></div>
@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.basicNotesBeforeCreateAccount }}</template>
-				<template #suffix><i v-if="agreeNote" class="ti ti-check" style="color: var(--success)"></i></template>
+				<template #suffix><i v-if="agreeNote" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 
 				<a href="https://misskey-hub.net/docs/for-users/onboarding/warning/" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }} <i class="ti ti-external-link"></i></a>
 
@@ -150,8 +150,8 @@ async function updateAgreeNote(v: boolean) {
 	padding: 16px;
 	text-align: center;
 	font-size: 26px;
-	background-color: var(--accentedBg);
-	color: var(--accent);
+	background-color: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
 }
 
 .rules {
@@ -170,14 +170,14 @@ async function updateAgreeNote(v: boolean) {
 		flex-shrink: 0;
 		display: flex;
 		position: sticky;
-		top: calc(var(--stickyTop, 0px) + 8px);
+		top: calc(var(--MI-stickyTop, 0px) + 8px);
 		counter-increment: item;
 		content: counter(item);
 		width: 32px;
 		height: 32px;
 		line-height: 32px;
-		background-color: var(--accentedBg);
-		color: var(--accent);
+		background-color: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
 		font-size: 13px;
 		font-weight: bold;
 		align-items: center;

@@ -6,15 +6,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkFolder>
 	<template #label>{{ entity.name || entity.url }}</template>
+	<template v-if="entity.name != null && entity.name != ''" #caption>{{ entity.url }}</template>
 	<template #icon>
 		<i v-if="!entity.isActive" class="ti ti-player-pause"/>
 		<i v-else-if="entity.latestStatus === null" class="ti ti-circle"/>
 		<i
 			v-else-if="[200, 201, 204].includes(entity.latestStatus)"
 			class="ti ti-check"
-			:style="{ color: 'var(--success)' }"
+			:style="{ color: 'var(--MI_THEME-success)' }"
 		/>
-		<i v-else class="ti ti-alert-triangle" :style="{ color: 'var(--error)' }"/>
+		<i v-else class="ti ti-alert-triangle" :style="{ color: 'var(--MI_THEME-error)' }"/>
 	</template>
 	<template #suffix>
 		<MkTime v-if="entity.latestSentAt" :time="entity.latestSentAt" style="margin-right: 8px"/>
@@ -74,6 +75,6 @@ function onDeleteClick() {
 	margin-right: 0.75em;
 	flex-shrink: 0;
 	text-align: center;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 </style>

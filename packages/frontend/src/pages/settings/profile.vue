@@ -46,14 +46,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkFolder>
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
-
-			<div :class="$style.metadataRoot">
-				<div :class="$style.metadataMargin">
-					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-					<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" inline danger style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-					<MkButton v-else inline style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-arrows-sort"></i> {{ i18n.ts.rearrange }}</MkButton>
-					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			<template #footer>
+				<div class="_buttons">
+					<MkButton primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+					<MkButton :disabled="fields.length >= 16" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+					<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" danger @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+					<MkButton v-else @click="fieldEditMode = !fieldEditMode"><i class="ti ti-arrows-sort"></i> {{ i18n.ts.rearrange }}</MkButton>
 				</div>
+			</template>
+
+			<div :class="$style.metadataRoot" class="_gaps_s">
+				<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
 
 				<Sortable
 					v-model="fields"
@@ -65,24 +68,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@end="e => e.item.classList.remove('active')"
 				>
 					<template #item="{element, index}">
-						<div :class="$style.fieldDragItem">
+						<div v-panel :class="$style.fieldDragItem">
 							<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
 							<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
 							<div :class="$style.dragItemForm">
 								<FormSplit :minWidth="200">
-									<MkInput v-model="element.name" small>
-										<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
+									<MkInput v-model="element.name" small :placeholder="i18n.ts._profile.metadataLabel">
 									</MkInput>
-									<MkInput v-model="element.value" small>
-										<template #label>{{ i18n.ts._profile.metadataContent }}</template>
+									<MkInput v-model="element.value" small :placeholder="i18n.ts._profile.metadataContent">
 									</MkInput>
 								</FormSplit>
 							</div>
 						</div>
 					</template>
 				</Sortable>
-
-				<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
 			</div>
 		</MkFolder>
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
@@ -143,13 +142,17 @@ const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.d
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 
+function assertVaildLang(lang: string | null): lang is keyof typeof langmap {
+	return lang != null && lang in langmap;
+}
+
 const profile = reactive({
 	name: $i.name,
 	description: $i.description,
 	followedMessage: $i.followedMessage,
 	location: $i.location,
 	birthday: $i.birthday,
-	lang: $i.lang,
+	lang: assertVaildLang($i.lang) ? $i.lang : null,
 	isBot: $i.isBot ?? false,
 	isCat: $i.isCat ?? false,
 });
@@ -203,6 +206,11 @@ function save() {
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
+	}, undefined, {
+		'0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191': {
+			title: i18n.ts.yourNameContainsProhibitedWords,
+			text: i18n.ts.yourNameContainsProhibitedWordsDescription,
+		},
 	});
 	globalEvents.emit('requestClearPageCache');
 	claimAchievement('profileFilled');
@@ -283,7 +291,7 @@ definePageMetadata(() => ({
 	height: 130px;
 	background-size: cover;
 	background-position: center;
-	border-bottom: solid 1px var(--divider);
+	border-bottom: solid 1px var(--MI_THEME-divider);
 	overflow: clip;
 }
 
@@ -310,19 +318,11 @@ definePageMetadata(() => ({
 	container-type: inline-size;
 }
 
-.metadataMargin {
-	margin-bottom: 1.5em;
-}
-
 .fieldDragItem {
 	display: flex;
-	padding-bottom: .75em;
+	padding: 10px;
 	align-items: flex-end;
-	border-bottom: solid 0.5px var(--divider);
-
-	&:last-child {
-		border-bottom: 0;
-	}
+	border-radius: 6px;
 
 	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
 	@container (max-width: 452px) {

@@ -118,25 +118,29 @@ export class ApiServerService {
 				'hcaptcha-response'?: string;
 				'g-recaptcha-response'?: string;
 				'turnstile-response'?: string;
+				'm-captcha-response'?: string;
+				'testcaptcha-response'?: string;
 			}
 		}>('/signup', (request, reply) => this.signupApiService.signup(request, reply));
 
 		fastify.post<{
 			Body: {
 				username: string;
-				password: string;
+				password?: string;
 				token?: string;
-				signature?: string;
-				authenticatorData?: string;
-				clientDataJSON?: string;
-				credentialId?: string;
-				challengeId?: string;
+				credential?: AuthenticationResponseJSON;
+				'hcaptcha-response'?: string;
+				'g-recaptcha-response'?: string;
+				'turnstile-response'?: string;
+				'm-captcha-response'?: string;
+				'testcaptcha-response'?: string;
 			};
-		}>('/signin', (request, reply) => this.signinApiService.signin(request, reply));
+		}>('/signin-flow', (request, reply) => this.signinApiService.signin(request, reply));
 
 		fastify.post<{
 			Body: {
 				credential?: AuthenticationResponseJSON;
+				context?: string;
 			};
 		}>('/signin-with-passkey', (request, reply) => this.signinWithPasskeyApiService.signin(request, reply));
 
