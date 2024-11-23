@@ -195,9 +195,14 @@ export class SystemWebhookService implements OnApplicationShutdown {
 	public async enqueueSystemWebhook<T extends SystemWebhookEventType>(
 		type: T,
 		content: SystemWebhookPayload<T>,
+		opts?: {
+			excludes?: MiSystemWebhook['id'][];
+		},
 	) {
 		const webhooks = await this.fetchActiveSystemWebhooks()
-			.then(webhooks => webhooks.filter(webhook => webhook.on.includes(type)));
+			.then(webhooks => {
+				return webhooks.filter(webhook => !opts?.excludes?.includes(webhook.id) && webhook.on.includes(type));
+			});
 		return Promise.all(
 			webhooks.map(webhook => {
 				return this.queueService.systemWebhookDeliver(webhook, type, content);

@@ -160,11 +160,19 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 			};
 		});
 
+		const inactiveRecipients = await this.fetchWebhookRecipients()
+			.then(it => it.filter(it => !it.isActive));
+		const withoutWebhookIds = inactiveRecipients
+			.map(it => it.systemWebhookId)
+			.filter(x => x != null);
 		return Promise.all(
 			convertedReports.map(it => {
 				return this.systemWebhookService.enqueueSystemWebhook(
 					type,
 					it,
+					{
+						excludes: withoutWebhookIds,
+					},
 				);
 			}),
 		);
