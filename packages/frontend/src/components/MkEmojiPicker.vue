@@ -409,7 +409,7 @@ function computeButtonTitle(ev: MouseEvent): void {
 	elm.title = getEmojiName(emoji);
 }
 
-function chosen(emoji: any, ev?: MouseEvent) {
+function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, ev?: MouseEvent) {
 	const el = ev && (ev.currentTarget ?? ev.target) as HTMLElement | null | undefined;
 	if (el) {
 		const rect = el.getBoundingClientRect();
@@ -426,7 +426,7 @@ function chosen(emoji: any, ev?: MouseEvent) {
 	// 最近使った絵文字更新
 	if (!pinned.value?.includes(key)) {
 		let recents = defaultStore.state.recentlyUsedEmojis;
-		recents = recents.filter((emoji: any) => emoji !== key);
+		recents = recents.filter((emoji) => emoji !== key);
 		recents.unshift(key);
 		defaultStore.set('recentlyUsedEmojis', recents.splice(0, 32));
 	}
@@ -580,7 +580,7 @@ defineExpose({
 
 						&:disabled {
 							cursor: not-allowed;
-							background: linear-gradient(-45deg, transparent 0% 48%, var(--X6) 48% 52%, transparent 52% 100%);
+							background: linear-gradient(-45deg, transparent 0% 48%, var(--MI_THEME-X6) 48% 52%, transparent 52% 100%);
 							opacity: 1;
 
 							> .emoji {
@@ -615,7 +615,7 @@ defineExpose({
 
 						&:disabled {
 							cursor: not-allowed;
-							background: linear-gradient(-45deg, transparent 0% 48%, var(--X6) 48% 52%, transparent 52% 100%);
+							background: linear-gradient(-45deg, transparent 0% 48%, var(--MI_THEME-X6) 48% 52%, transparent 52% 100%);
 							opacity: 1;
 
 							> .emoji {
@@ -638,7 +638,7 @@ defineExpose({
 		outline: none;
 		border: none;
 		background: transparent;
-		color: var(--fg);
+		color: var(--MI_THEME-fg);
 
 		&:not(:focus):not(.filled) {
 			margin-bottom: env(safe-area-inset-bottom, 0px);
@@ -647,7 +647,7 @@ defineExpose({
 		&:not(.filled) {
 			order: 1;
 			z-index: 2;
-			box-shadow: 0px -1px 0 0px var(--divider);
+			box-shadow: 0px -1px 0 0px var(--MI_THEME-divider);
 		}
 	}
 
@@ -658,11 +658,11 @@ defineExpose({
 		> .tab {
 			flex: 1;
 			height: 38px;
-			border-top: solid 0.5px var(--divider);
+			border-top: solid 0.5px var(--MI_THEME-divider);
 
 			&.active {
-				border-top: solid 1px var(--accent);
-				color: var(--accent);
+				border-top: solid 1px var(--MI_THEME-accent);
+				color: var(--MI_THEME-accent);
 			}
 		}
 	}
@@ -681,7 +681,7 @@ defineExpose({
 		> .group {
 			&:not(.index) {
 				padding: 4px 0 8px 0;
-				border-top: solid 0.5px var(--divider);
+				border-top: solid 0.5px var(--MI_THEME-divider);
 			}
 
 			> header {
@@ -708,7 +708,7 @@ defineExpose({
 				cursor: pointer;
 
 				&:hover {
-					color: var(--accent);
+					color: var(--MI_THEME-accent);
 				}
 			}
 
@@ -730,13 +730,13 @@ defineExpose({
 					}
 
 					&:active {
-						background: var(--accent);
+						background: var(--MI_THEME-accent);
 						box-shadow: inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15);
 					}
 
 					&:disabled {
 						cursor: not-allowed;
-						background: linear-gradient(-45deg, transparent 0% 48%, var(--X6) 48% 52%, transparent 52% 100%);
+						background: linear-gradient(-45deg, transparent 0% 48%, var(--MI_THEME-X6) 48% 52%, transparent 52% 100%);
 						opacity: 1;
 
 						> .emoji {
@@ -757,7 +757,7 @@ defineExpose({
 			}
 
 			&.result {
-				border-bottom: solid 0.5px var(--divider);
+				border-bottom: solid 0.5px var(--MI_THEME-divider);
 
 				&:empty {
 					display: none;

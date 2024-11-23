@@ -108,6 +108,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import { shouldCollapsed } from '@@/js/collapsed.js';
+import { url } from '@@/js/config.js';
 import I18n from '@/components/I18n.vue';
 import EmNoteSub from '@/components/EmNoteSub.vue';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';
@@ -123,8 +125,6 @@ import EmUserName from '@/components/EmUserName.vue';
 import EmTime from '@/components/EmTime.vue';
 import { userPage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
-import { shouldCollapsed } from '@@/js/collapsed.js';
-import { url } from '@@/js/config.js';
 
 function getAppearNote(note: Misskey.entities.Note) {
 	return Misskey.note.isPureRenote(note) ? note.renote : note;
@@ -164,14 +164,8 @@ const isDeleted = ref(false);
 	font-size: 1.05em;
 	overflow: clip;
 	contain: content;
-
-	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
-	// 下の方までスクロールすると上のノートの高さがここで決め打ちされたものに変化し、表示しているノートの位置が変わってしまう
-	// ノートがマウントされたときに自身の高さを取得し contain-intrinsic-size を設定しなおせばほぼ解決できそうだが、
-	// 今度はその処理自体がパフォーマンス低下の原因にならないか懸念される。また、被リアクションでも高さは変化するため、やはり多少のズレは生じる
-	// 一度レンダリングされた要素はブラウザがよしなにサイズを覚えておいてくれるような実装になるまで待った方が良さそう(なるのか？)
-	//content-visibility: auto;
-  //contain-intrinsic-size: 0 128px;
+	content-visibility: auto;
+  contain-intrinsic-size: 0 150px;
 
 	&:focus-visible {
 		outline: none;
@@ -189,8 +183,8 @@ const isDeleted = ref(false);
 			margin: auto;
 			width: calc(100% - 8px);
 			height: calc(100% - 8px);
-			border: dashed 2px var(--focus);
-			border-radius: var(--radius);
+			border: dashed 2px var(--MI_THEME-focus);
+			border-radius: var(--MI-radius);
 			box-sizing: border-box;
 		}
 	}
@@ -212,9 +206,9 @@ const isDeleted = ref(false);
 			right: 12px;
 			padding: 0 4px;
 			margin-bottom: 0 !important;
-			background: var(--popup);
+			background: var(--MI_THEME-popup);
 			border-radius: 8px;
-			box-shadow: 0px 4px 32px var(--shadow);
+			box-shadow: 0px 4px 32px var(--MI_THEME-shadow);
 		}
 
 		.footerButton {
@@ -259,7 +253,7 @@ const isDeleted = ref(false);
 	padding: 16px 32px 8px 32px;
 	line-height: 28px;
 	white-space: pre;
-	color: var(--renote);
+	color: var(--MI_THEME-renote);
 
 	& + .article {
 		padding-top: 8px;
@@ -356,7 +350,7 @@ const isDeleted = ref(false);
 	width: 58px;
 	height: 58px;
 	position: sticky !important;
-	top: calc(22px + var(--stickyTop, 0px));
+	top: calc(22px + var(--MI-stickyTop, 0px));
 	left: 0;
 }
 
@@ -377,12 +371,12 @@ const isDeleted = ref(false);
 	width: 100%;
 	margin-top: 14px;
 	position: sticky;
-	bottom: calc(var(--stickyBottom, 0px) + 14px);
+	bottom: calc(var(--MI-stickyBottom, 0px) + 14px);
 }
 
 .showLessLabel {
 	display: inline-block;
-	background: var(--popup);
+	background: var(--MI_THEME-popup);
 	padding: 6px 10px;
 	font-size: 0.8em;
 	border-radius: 999px;
@@ -403,16 +397,16 @@ const isDeleted = ref(false);
 	z-index: 2;
 	width: 100%;
 	height: 64px;
-	background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
+	background: linear-gradient(0deg, var(--MI_THEME-panel), color(from var(--MI_THEME-panel) srgb r g b / 0));
 
 	&:hover > .collapsedLabel {
-		background: var(--panelHighlight);
+		background: var(--MI_THEME-panelHighlight);
 	}
 }
 
 .collapsedLabel {
 	display: inline-block;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	padding: 6px 10px;
 	font-size: 0.8em;
 	border-radius: 999px;
@@ -424,13 +418,13 @@ const isDeleted = ref(false);
 }
 
 .replyIcon {
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 	margin-right: 0.5em;
 }
 
 .translation {
-	border: solid 0.5px var(--divider);
-	border-radius: var(--radius);
+	border: solid 0.5px var(--MI_THEME-divider);
+	border-radius: var(--MI-radius);
 	padding: 12px;
 	margin-top: 8px;
 }
@@ -449,7 +443,7 @@ const isDeleted = ref(false);
 
 .quoteNote {
 	padding: 16px;
-	border: dashed 1px var(--renote);
+	border: dashed 1px var(--MI_THEME-renote);
 	border-radius: 8px;
 	overflow: clip;
 }
@@ -473,7 +467,7 @@ const isDeleted = ref(false);
 	}
 
 	&:hover {
-		color: var(--fgHighlighted);
+		color: var(--MI_THEME-fgHighlighted);
 	}
 }
 
@@ -550,7 +544,7 @@ const isDeleted = ref(false);
 		margin: 0 10px 0 0;
 		width: 46px;
 		height: 46px;
-		top: calc(14px + var(--stickyTop, 0px));
+		top: calc(14px + var(--MI-stickyTop, 0px));
 	}
 }
 

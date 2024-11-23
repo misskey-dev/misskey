@@ -4,7 +4,10 @@
 
 ```ts
 
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { EventEmitter } from 'eventemitter3';
+import type { PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
+import _ReconnectingWebsocket from 'reconnecting-websocket';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
 //
@@ -119,6 +122,9 @@ type AdminAnnouncementsUpdateRequest = operations['admin___announcements___updat
 type AdminAvatarDecorationsCreateRequest = operations['admin___avatar-decorations___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAvatarDecorationsCreateResponse = operations['admin___avatar-decorations___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminAvatarDecorationsDeleteRequest = operations['admin___avatar-decorations___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -210,6 +216,9 @@ type AdminFederationRemoveAllFollowingRequest = operations['admin___federation__
 
 // @public (undocumented)
 type AdminFederationUpdateInstanceRequest = operations['admin___federation___update-instance']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminForwardAbuseUserReportRequest = operations['admin___forward-abuse-user-report']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminGetIndexStatsResponse = operations['admin___get-index-stats']['responses']['200']['content']['application/json'];
@@ -375,6 +384,9 @@ type AdminUnsetUserBannerRequest = operations['admin___unset-user-banner']['requ
 
 // @public (undocumented)
 type AdminUnsuspendUserRequest = operations['admin___unsuspend-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateAbuseUserReportRequest = operations['admin___update-abuse-user-report']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminUpdateMetaRequest = operations['admin___update-meta']['requestBody']['content']['application/json'];
@@ -1156,13 +1168,25 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SignupPendingRequest;
         res: SignupPendingResponse;
     };
-    'signin': {
-        req: SigninRequest;
-        res: SigninResponse;
+    'signin-flow': {
+        req: SigninFlowRequest;
+        res: SigninFlowResponse;
     };
     'signin-with-passkey': {
         req: SigninWithPasskeyRequest;
-        res: SigninWithPasskeyResponse;
+        res: {
+            $switch: {
+                $cases: [
+                [
+                    {
+                    context: string;
+                },
+                SigninWithPasskeyResponse
+                ]
+                ];
+                $default: SigninWithPasskeyInitResponse;
+            };
+        };
     };
     'admin/roles/create': {
         req: Overwrite<AdminRolesCreateRequest, {
@@ -1194,10 +1218,11 @@ declare namespace entities {
         SignupResponse,
         SignupPendingRequest,
         SignupPendingResponse,
-        SigninRequest,
+        SigninFlowRequest,
+        SigninFlowResponse,
         SigninWithPasskeyRequest,
+        SigninWithPasskeyInitResponse,
         SigninWithPasskeyResponse,
-        SigninResponse,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
@@ -1231,6 +1256,7 @@ declare namespace entities {
         AdminAnnouncementsListResponse,
         AdminAnnouncementsUpdateRequest,
         AdminAvatarDecorationsCreateRequest,
+        AdminAvatarDecorationsCreateResponse,
         AdminAvatarDecorationsDeleteRequest,
         AdminAvatarDecorationsListRequest,
         AdminAvatarDecorationsListResponse,
@@ -1283,6 +1309,8 @@ declare namespace entities {
         AdminResetPasswordRequest,
         AdminResetPasswordResponse,
         AdminResolveAbuseUserReportRequest,
+        AdminForwardAbuseUserReportRequest,
+        AdminUpdateAbuseUserReportRequest,
         AdminSendEmailRequest,
         AdminServerInfoResponse,
         AdminShowModerationLogsRequest,
@@ -1476,6 +1504,8 @@ declare namespace entities {
         FollowingRequestsCancelResponse,
         FollowingRequestsListRequest,
         FollowingRequestsListResponse,
+        FollowingRequestsSentRequest,
+        FollowingRequestsSentResponse,
         FollowingRequestsRejectRequest,
         GalleryFeaturedRequest,
         GalleryFeaturedResponse,
@@ -1665,6 +1695,7 @@ declare namespace entities {
         FlashCreateRequest,
         FlashCreateResponse,
         FlashDeleteRequest,
+        FlashFeaturedRequest,
         FlashFeaturedResponse,
         FlashLikeRequest,
         FlashShowRequest,
@@ -1915,6 +1946,9 @@ type FlashCreateResponse = operations['flash___create']['responses']['200']['con
 type FlashDeleteRequest = operations['flash___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type FlashFeaturedRequest = operations['flash___featured']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type FlashFeaturedResponse = operations['flash___featured']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
@@ -1985,6 +2019,12 @@ type FollowingRequestsListResponse = operations['following___requests___list']['
 
 // @public (undocumented)
 type FollowingRequestsRejectRequest = operations['following___requests___reject']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsSentRequest = operations['following___requests___sent']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsSentResponse = operations['following___requests___sent']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type FollowingUpdateAllRequest = operations['following___update-all']['requestBody']['content']['application/json'];
@@ -2528,6 +2568,12 @@ type ModerationLog = {
     type: 'resolveAbuseReport';
     info: ModerationLogPayloads['resolveAbuseReport'];
 } | {
+    type: 'forwardAbuseReport';
+    info: ModerationLogPayloads['forwardAbuseReport'];
+} | {
+    type: 'updateAbuseReportNote';
+    info: ModerationLogPayloads['updateAbuseReportNote'];
+} | {
     type: 'unsetUserAvatar';
     info: ModerationLogPayloads['unsetUserAvatar'];
 } | {
@@ -2566,7 +2612,7 @@ type ModerationLog = {
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "updateRemoteInstanceNote", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner", "createSystemWebhook", "updateSystemWebhook", "deleteSystemWebhook", "createAbuseReportNotificationRecipient", "updateAbuseReportNotificationRecipient", "deleteAbuseReportNotificationRecipient", "deleteAccount", "deletePage", "deleteFlash", "deleteGalleryPost"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "updateRemoteInstanceNote", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "forwardAbuseReport", "updateAbuseReportNote", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner", "createSystemWebhook", "updateSystemWebhook", "deleteSystemWebhook", "createAbuseReportNotificationRecipient", "updateAbuseReportNotificationRecipient", "deleteAbuseReportNotificationRecipient", "deleteAccount", "deletePage", "deleteFlash", "deleteGalleryPost"];
 
 // @public (undocumented)
 type MuteCreateRequest = operations['mute___create']['requestBody']['content']['application/json'];
@@ -3023,29 +3069,48 @@ type ServerStatsLog = ServerStats[];
 type Signin = components['schemas']['Signin'];
 
 // @public (undocumented)
-type SigninRequest = {
+type SigninFlowRequest = {
     username: string;
-    password: string;
+    password?: string;
     token?: string;
+    credential?: AuthenticationResponseJSON;
+    'hcaptcha-response'?: string | null;
+    'g-recaptcha-response'?: string | null;
+    'turnstile-response'?: string | null;
+    'm-captcha-response'?: string | null;
 };
 
 // @public (undocumented)
-type SigninResponse = {
+type SigninFlowResponse = {
+    finished: true;
     id: User['id'];
     i: string;
+} | {
+    finished: false;
+    next: 'captcha' | 'password' | 'totp';
+} | {
+    finished: false;
+    next: 'passkey';
+    authRequest: PublicKeyCredentialRequestOptionsJSON;
+};
+
+// @public (undocumented)
+type SigninWithPasskeyInitResponse = {
+    option: PublicKeyCredentialRequestOptionsJSON;
+    context: string;
 };
 
 // @public (undocumented)
 type SigninWithPasskeyRequest = {
-    credential?: object;
+    credential?: AuthenticationResponseJSON;
     context?: string;
 };
 
 // @public (undocumented)
 type SigninWithPasskeyResponse = {
-    option?: object;
-    context?: string;
-    signinResponse?: SigninResponse;
+    signinResponse: SigninFlowResponse & {
+        finished: true;
+    };
 };
 
 // @public (undocumented)
@@ -3069,6 +3134,7 @@ type SignupRequest = {
     'hcaptcha-response'?: string | null;
     'g-recaptcha-response'?: string | null;
     'turnstile-response'?: string | null;
+    'm-captcha-response'?: string | null;
 };
 
 // @public (undocumented)
@@ -3084,7 +3150,7 @@ export class Stream extends EventEmitter<StreamEvents> implements IStream {
     constructor(origin: string, user: {
         token: string;
     } | null, options?: {
-        WebSocket?: WebSocket;
+        WebSocket?: _ReconnectingWebsocket.Options['WebSocket'];
     });
     // (undocumented)
     close(): void;
@@ -3346,7 +3412,7 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:49:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 

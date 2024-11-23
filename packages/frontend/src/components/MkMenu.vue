@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text">{{ item.text }}</span>
-					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</MkA>
 			<a
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text">{{ item.text }}</span>
-					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</a>
 			<button
@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<MkAvatar :user="item.user" :class="$style.avatar"/><MkUserName :user="item.user"/>
 				<div v-if="item.indicate" :class="$style.item_content">
-					<span :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+					<span :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</button>
 			<button
@@ -161,7 +161,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text">{{ item.text }}</span>
-					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
+					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</button>
 		</template>
@@ -437,9 +437,11 @@ onBeforeUnmount(() => {
 
 	&.big:not(.asDrawer) {
 		> .menu {
+			min-width: 230px;
+
 			> .item {
 				padding: 6px 20px;
-				font-size: 1em;
+				font-size: 0.95em;
 				line-height: 24px;
 			}
 		}
@@ -505,7 +507,7 @@ onBeforeUnmount(() => {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	text-decoration: none !important;
-	color: var(--menuFg, var(--fg));
+	color: var(--menuFg, var(--MI_THEME-fg));
 
 	&::before {
 		content: "";
@@ -525,7 +527,7 @@ onBeforeUnmount(() => {
 		outline: none;
 
 		&:not(:hover):not(:active)::before {
-			outline: var(--focus) solid 2px;
+			outline: var(--MI_THEME-focus) solid 2px;
 			outline-offset: -2px;
 		}
 	}
@@ -534,19 +536,19 @@ onBeforeUnmount(() => {
 		&:hover,
 		&:focus-visible:active,
 		&:focus-visible.active {
-			color: var(--menuHoverFg, var(--accent));
+			color: var(--menuHoverFg, var(--MI_THEME-accent));
 
 			&::before {
-				background-color: var(--menuHoverBg, var(--accentedBg));
+				background-color: var(--menuHoverBg, var(--MI_THEME-accentedBg));
 			}
 		}
 
 		&:not(:focus-visible):active,
 		&:not(:focus-visible).active {
-			color: var(--menuActiveFg, var(--fgOnAccent));
+			color: var(--menuActiveFg, var(--MI_THEME-fgOnAccent));
 
 			&::before {
-				background-color: var(--menuActiveBg, var(--accent));
+				background-color: var(--menuActiveBg, var(--MI_THEME-accent));
 			}
 		}
 	}
@@ -564,13 +566,13 @@ onBeforeUnmount(() => {
 	}
 
 	&.radio {
-		--menuActiveFg: var(--accent);
-		--menuActiveBg: var(--accentedBg);
+		--menuActiveFg: var(--MI_THEME-accent);
+		--menuActiveBg: var(--MI_THEME-accentedBg);
 	}
 
 	&.parent {
-		--menuActiveFg: var(--accent);
-		--menuActiveBg: var(--accentedBg);
+		--menuActiveFg: var(--MI_THEME-accent);
+		--menuActiveBg: var(--MI_THEME-accentedBg);
 	}
 
 	&.label {
@@ -635,14 +637,13 @@ onBeforeUnmount(() => {
 .indicator {
 	display: flex;
 	align-items: center;
-	color: var(--indicator);
+	color: var(--MI_THEME-indicator);
 	font-size: 12px;
-	animation: global-blink 1s infinite;
 }
 
 .divider {
 	margin: 8px 0;
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 .radioIcon {
@@ -652,11 +653,11 @@ onBeforeUnmount(() => {
 	height: 1em;
 	vertical-align: -0.125em;
 	border-radius: 50%;
-	border: solid 2px var(--divider);
-	background-color: var(--panel);
+	border: solid 2px var(--MI_THEME-divider);
+	background-color: var(--MI_THEME-panel);
 
 	&.radioChecked {
-		border-color: var(--accent);
+		border-color: var(--MI_THEME-accent);
 
 		&::after {
 			content: "";
@@ -668,7 +669,7 @@ onBeforeUnmount(() => {
 			width: 50%;
 			height: 50%;
 			border-radius: 50%;
-			background-color: var(--accent);
+			background-color: var(--MI_THEME-accent);
 		}
 	}
 }

@@ -76,7 +76,11 @@ import { claimAchievement } from '@/scripts/achievements.js';
 const parser = new Parser();
 let aiscript: Interpreter;
 const code = ref('');
-const logs = ref<any[]>([]);
+const logs = ref<{
+	id: number;
+	text: string;
+	print: boolean;
+}[]>([]);
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
@@ -204,7 +208,7 @@ definePageMetadata(() => ({
 .root {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 
 .editor {
@@ -242,14 +246,14 @@ definePageMetadata(() => ({
 }
 
 .uiInspectorUnShown {
-	color: var(--fgTransparent);
+	color: var(--MI_THEME-fgTransparent);
 }
 
 .uiInspectorType {
 	display: inline-block;
 	border: hidden;
 	border-radius: 10px;
-	background-color: var(--panelHighlight);
+	background-color: var(--MI_THEME-panelHighlight);
 	padding: 2px 8px;
 	font-size: 12px;
 }

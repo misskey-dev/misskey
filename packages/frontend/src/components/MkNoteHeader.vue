@@ -5,18 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <header :class="$style.root">
-	<component :is="defaultStore.state.enableCondensedLine ? 'MkCondensedLine' : 'div'" :minScale="0.5" style="min-width: 0;">
-		<div style="display: flex; white-space: nowrap; align-items: baseline;">
-			<div v-if="mock" :class="$style.name">
-				<MkUserName :user="note.user"/>
-			</div>
-			<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
-				<MkUserName :user="note.user"/>
-			</MkA>
-			<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
-			<div :class="$style.username"><MkAcct :user="note.user"/></div>
-		</div>
-	</component>
+	<div v-if="mock" :class="$style.name">
+		<MkUserName :user="note.user"/>
+	</div>
+	<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
+		<MkUserName :user="note.user"/>
+	</MkA>
+	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
+	<div :class="$style.username"><MkAcct :user="note.user"/></div>
 	<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
 		<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
 	</div>
@@ -82,7 +78,7 @@ const mock = inject<boolean>('mock', false);
 	margin: 0 .5em 0 0;
 	padding: 1px 6px;
 	font-size: 80%;
-	border: solid 0.5px var(--divider);
+	border: solid 0.5px var(--MI_THEME-divider);
 	border-radius: 3px;
 }
 

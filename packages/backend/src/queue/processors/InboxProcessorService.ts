@@ -59,7 +59,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('inbox');
-		this.updateInstanceQueue = new CollapsedQueue(60 * 1000 * 5, this.collapseUpdateInstanceJobs, this.performUpdateInstance);
+		this.updateInstanceQueue = new CollapsedQueue(process.env.NODE_ENV !== 'test' ? 60 * 1000 * 5 : 0, this.collapseUpdateInstanceJobs, this.performUpdateInstance);
 	}
 
 	@bindThis
@@ -190,23 +190,31 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			if (signerHost !== activityIdHost) {
 				throw new Bull.UnrecoverableError(`skip: signerHost(${signerHost}) !== activity.id host(${activityIdHost}`);
 			}
+		} else {
+			throw new Bull.UnrecoverableError('skip: activity id is not a string');
 		}
 
-		// Update stats
-		this.federatedInstanceService.fetch(authUser.user.host).then(i => {
+		this.apRequestChart.inbox();
+		this.federationChart.inbox(authUser.user.host);
+
+		// Update instance stats
+		process.nextTick(async () => {
+			const i = await (this.meta.enableStatsForFederatedInstances
+				? this.federatedInstanceService.fetchOrRegister(authUser.user.host)
+				: this.federatedInstanceService.fetch(authUser.user.host));
+
+			if (i == null) return;
+
 			this.updateInstanceQueue.enqueue(i.id, {
 				latestRequestReceivedAt: new Date(),
 				shouldUnsuspend: i.suspensionState === 'autoSuspendedForNotResponding',
 			});
 
-			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-
-			this.apRequestChart.inbox();
-			this.federationChart.inbox(i.host);
-
 			if (this.meta.enableChartsForFederatedInstances) {
 				this.instanceChart.requestReceived(i.host);
 			}
+
+			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
 		});
 
 		// アクティビティを処理
