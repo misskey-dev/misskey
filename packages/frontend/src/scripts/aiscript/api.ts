@@ -104,7 +104,7 @@ export function createAiScriptEnv(opts) {
 				return await Promise.all(ast.map(async (node) => {
 					const out = deepClone(node);
 					if (out.type === 'text') {
-						const res = (await opts.topCall(fn, [values.STR(out.props.text)]));
+						const res = await opts.topCall(fn, [values.STR(out.props.text)]);
 						utils.assertString(res);
 						out.props.text = res.value;
 					} else if (out.type !== 'plain' && 'children' in out && out.children != null && out.children.length > 0) {
