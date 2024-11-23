@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</div>
 		<div :class="$style.bottom">
-			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="os.post">
+			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="() => { os.post(); }">
 				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
 			</button>
 			<button v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="_button" :class="[$style.account]" @click="openAccountMenu">
@@ -79,12 +79,18 @@ import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
+import { signinRequired, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
+import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
 
-const iconOnly = ref(false);
+const $i = signinRequired();
+
+const forceIconOnly = ref(window.innerWidth <= 1279);
+const iconOnly = computed(() => {
+	return forceIconOnly.value || (defaultStore.reactiveState.menuDisplay.value === 'sideIcon');
+});
 
 const menu = computed(() => defaultStore.state.menu);
 const otherMenuItemIndicated = computed(() => {
@@ -95,13 +101,9 @@ const otherMenuItemIndicated = computed(() => {
 	return false;
 });
 
-const forceIconOnly = window.innerWidth <= 1279;
-
 function calcViewState() {
-	iconOnly.value = forceIconOnly || (defaultStore.state.menuDisplay === 'sideIcon');
+	forceIconOnly.value = window.innerWidth <= 1279;
 }
-
-calcViewState();
 
 window.addEventListener('resize', calcViewState);
 
@@ -120,8 +122,10 @@ function openAccountMenu(ev: MouseEvent) {
 }
 
 function more(ev: MouseEvent) {
+	const target = getHTMLElementOrNull(ev.currentTarget ?? ev.target);
+	if (!target) return;
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
-		src: ev.currentTarget ?? ev.target,
+		src: target,
 	}, {
 		closed: () => dispose(),
 	});
