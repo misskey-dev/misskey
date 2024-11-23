@@ -17,11 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.tl">
 					<MkTimeline
 						ref="tlComponent"
-						:key="src + withRenotes + withReplies + onlyFiles"
+						:key="src + withRenotes + withReplies + onlyFiles + localOnly"
 						:src="src.split(':')[0]"
 						:list="src.split(':')[1]"
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
+						:localOnly="localOnly"
 						:onlyFiles="onlyFiles"
 						:sound="true"
 						@queue="queueUpdated"
@@ -71,6 +72,10 @@ const src = computed<TimelinePageSrc>({
 const withRenotes = computed<boolean>({
 	get: () => defaultStore.reactiveState.tl.value.filter.withRenotes,
 	set: (x) => saveTlFilter('withRenotes', x),
+});
+const localOnly = computed<boolean>({
+    get: () => defaultStore.reactiveState.tl.value.filter.localOnly,
+    set: (x) => saveTlFilter('localOnly', x),
 });
 
 // computed内での無限ループを防ぐためのフラグ
@@ -259,6 +264,12 @@ const headerActions = computed(() => {
 			text: i18n.ts.options,
 			handler: (ev) => {
 				const menuItems: MenuItem[] = [];
+
+				menuItems.push({
+					type: 'switch',
+					text: i18n.ts.localOnly,
+					ref: localOnly,
+				});
 
 				menuItems.push({
 					type: 'switch',

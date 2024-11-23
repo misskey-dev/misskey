@@ -225,6 +225,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canFollow, 'canFollow'])">
+							<template #label>{{ i18n.ts._role._options.canFollow }}</template>
+							<template #suffix>{{ policies.canFollow ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canFollow">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canFollowed, 'canFollowed'])">
+							<template #label>{{ i18n.ts._role._options.canFollowed }}</template>
+							<template #suffix>{{ policies.canFollowed ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canFollowed">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canImportAntennas, 'canImportAntennas'])">
 							<template #label>{{ i18n.ts._role._options.canImportAntennas }}</template>
 							<template #suffix>{{ policies.canImportAntennas ? i18n.ts.yes : i18n.ts.no }}</template>

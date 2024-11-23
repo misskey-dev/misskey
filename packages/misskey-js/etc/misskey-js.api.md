@@ -2027,9 +2027,6 @@ type FollowingUpdateRequest = operations['following___update']['requestBody']['c
 type FollowingUpdateResponse = operations['following___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-export const notesVisibilities: readonly ["public", "followers", "private"];
-
-// @public (undocumented)
 export const followingVisibilities: readonly ["public", "followers", "private"];
 
 // @public (undocumented)
@@ -2803,6 +2800,9 @@ type NotesUserListTimelineRequest = operations['notes___user-list-timeline']['re
 
 // @public (undocumented)
 type NotesUserListTimelineResponse = operations['notes___user-list-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+export const notesVisibilities: readonly ["public", "followers", "private"];
 
 // @public (undocumented)
 export const noteVisibilities: readonly ["public", "home", "followers", "specified"];

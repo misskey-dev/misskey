@@ -298,10 +298,10 @@ export interface Locale extends ILocale {
      * フォローされました
      */
     "youGotNewFollower": string;
-		/**
-		 * フォロー解除されました
-		 */
-		"youGotUnFollower": string;
+    /**
+     * フォロー解除されました
+     */
+    "youGotUnFollower": string;
     /**
      * フォローリクエストされました
      */
@@ -2938,7 +2938,7 @@ export interface Locale extends ILocale {
      * ノートのサーバー情報
      */
     "instanceTicker": string;
-		/**
+    /**
      * サーバー情報をアイコンのみにする
      */
     "instanceIcon": string;
@@ -3714,10 +3714,10 @@ export interface Locale extends ILocale {
      * スレッドのミュートを解除
      */
     "unmuteThread": string;
-		/**
-		 * ノート数の公開範囲
-		 */
-		"notesVisibility": string;
+    /**
+     * ノート数の公開範囲
+     */
+    "notesVisibility": string;
     /**
      * フォローの公開範囲
      */
@@ -4034,10 +4034,10 @@ export interface Locale extends ILocale {
      * ベータ
      */
     "beta": string;
-		/**
+    /**
      * 独自機能
      */
-		"originalFeature": string;
+    "originalFeature": string;
     /**
      * 自動センシティブ判定
      */
@@ -5131,14 +5131,14 @@ export interface Locale extends ILocale {
      */
     "gameRetry": string;
     /**
-     * 時限爆弾
+     * ノートの自己消滅の初期値
      */
-    "scheduledNoteDelete": string;
+    "defaultScheduledNoteDeleteTime": string;
     /**
-     * このノートは{time}に消去されます
+     * ノートの自己消滅が有効になっています
      */
-    "noteDeletationAt": ParameterizedString<"time">;
-		/**
+    "scheduledNoteDeleteEnabled": string;
+    /**
      * 使用しない場合は空欄にしてください
      */
     "notUsePleaseLeaveBlank": string;
@@ -5199,17 +5199,13 @@ export interface Locale extends ILocale {
      */
     "createdAntennas": string;
     /**
+     * MFMの検索で利用する検索エンジン
+     */
+    "searchEngine": string;
+    /**
      * {x}から
      */
     "fromX": ParameterizedString<"x">;
-    /**
-     * ノートの自己消滅の初期値
-     */
-    "defaultScheduledNoteDeleteTime": string;
-    /**
-     * ノートの自己消滅が有効になっています
-     */
-    "scheduledNoteDeleteEnabled": string;
     /**
      * 埋め込みコードを生成
      */
@@ -5342,6 +5338,14 @@ export interface Locale extends ILocale {
         };
     };
     /**
+     * 時限爆弾
+     */
+    "scheduledNoteDelete": string;
+    /**
+     * このノートは{time}に削除されます
+     */
+    "noteDeletationAt": ParameterizedString<"time">;
+    /**
      * 1年以上先の日時を指定することはできません
      */
     "cannotScheduleLaterThanOneYear": string;
@@ -5353,14 +5357,14 @@ export interface Locale extends ILocale {
      * 自分のプロフィールのアクティビティ (概要/アクティビティタブ) を他人が見れないようにします。このオプションを有効にしても、自分であればプロフィールのアクティビティタブから引き続き閲覧できます。
      */
     "hideActivityDescription": string;
-		/**
-		 * プロフィールのファイルを非公開にする
-		 */
-		"hideProfileFiles": string;
-		/**
-		 * 自分のプロフィールのファイルを他人が見れないようにします。
-		 */
-		"hideProfileFilesDescription": string;
+    /**
+     * プロフィールのファイルを非公開にする
+     */
+    "hideProfileFiles": string;
+    /**
+     * 自分のプロフィールのファイルを見れないようにします。
+     */
+    "hideProfileFilesDescription": string;
     /**
      * 誰がリアクションをしたのかを非表示にする
      */
@@ -5443,7 +5447,13 @@ export interface Locale extends ILocale {
             "section3": string;
         };
     };
+    /**
+     * フォローリクエストを自動で拒否する
+     */
     "autoRejectFollowRequest": string;
+    /**
+     * フォローリクエストを自動で拒否するようにします。「フォロー中ユーザーからのフォロリクを自動承認」がONになっている場合は、フォロー中ユーザーからのフォローリクエストは自動的に承認され、それ以外のユーザーからのフォローリクエストは自動的に拒否されるようになります。
+     */
     "autoRejectFollowRequestDescription": string;
     "_announcement": {
         /**
@@ -7037,10 +7047,18 @@ export interface Locale extends ILocale {
              * アイコンデコレーションの最大取付個数
              */
             "avatarDecorationLimit": string;
-						/**
-						 * 引用通知の変更を許可
-						 */
-						"canChangeQuoteNotificationSetting": string;
+            /**
+             * 引用通知の変更を許可
+             */
+            "canChangeQuoteNotificationSetting": string;
+            /**
+             * フォローを許可
+             */
+            "canFollow": string;
+            /**
+             * フォローされるのを許可
+             */
+            "canFollowed": string;
             /**
              * アンテナのインポートを許可
              */
@@ -7232,10 +7250,10 @@ export interface Locale extends ILocale {
          * 入力されたメールアドレス({email})宛に確認のメールが送信されました。メールに記載されたリンクにアクセスすると、アカウントの作成が完了します。メールに記載されているリンクの有効期限は30分です。
          */
         "emailSent": ParameterizedString<"email">;
-				/**
-				 * アカウントの登録が承認された際、({email}) 宛にメールが届きます。
-				 */
-				"approvalAndEmailPending": ParameterizedString<"email">;
+        /**
+         * アカウントが作成され、承認待ちの状態です。アカウントの登録が承認された際、({email})宛にメールが届きます。
+         */
+        "approvalAndEmailPending": ParameterizedString<"email">;
         /**
          * アカウントが作成され、承認待ちの状態です。
          */
@@ -7344,12 +7362,12 @@ export interface Locale extends ILocale {
              */
             "title": string;
         };
-				"_unfollow" : {
-					/**
-					 * フォロー解除されました
-					 */
-					"title": string;
-				}
+        "_unfollow": {
+            /**
+             * フォロー解除されました
+             */
+            "title": string;
+        };
         "_receiveFollowRequest": {
             /**
              * フォローリクエストを受け取りました
@@ -9450,10 +9468,10 @@ export interface Locale extends ILocale {
          * フォローされました
          */
         "youWereFollowed": string;
-				/**
-				 * フォロー解除されました
- 				 */
-				"youWereUnFollower": string;
+        /**
+         * フォロー解除されました
+         */
+        "youWereUnFollower": string;
         /**
          * フォローリクエストが来ました
          */
@@ -9518,10 +9536,10 @@ export interface Locale extends ILocale {
          * {n}人にフォローされました
          */
         "followedBySomeUsers": ParameterizedString<"n">;
-				/**
-				 * {n}人にフォロー解除されました
-				 */
-				"unfollowerBySomeUser": ParameterizedString<"n">;
+        /**
+         * {n}人にフォロー解除されました
+         */
+        "unfollowerBySomeUsers": ParameterizedString<"n">;
         /**
          * 通知の履歴をリセットする
          */
@@ -9547,10 +9565,10 @@ export interface Locale extends ILocale {
              * フォロー
              */
             "follow": string;
-						/**
-						 * フォロー解除
-						 */
-						"unfollow": string;
+            /**
+             * フォロー解除
+             */
+            "unfollow": string;
             /**
              * メンション
              */

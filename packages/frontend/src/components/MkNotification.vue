@@ -70,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.tsx._notification.reactedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'renote:grouped'">{{ i18n.tsx._notification.renotedBySomeUsers({ n: notification.users.length }) }}</span>
 			<span v-else-if="notification.type === 'app'">{{ notification.header }}</span>
-			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
+			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime" mode="absolute"/>
 		</header>
 		<div>
 			<MkA v-if="notification.type === 'reaction' || notification.type === 'reaction:grouped'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">

@@ -59,6 +59,8 @@ export type RolePolicies = {
 	rateLimitFactor: number;
 	avatarDecorationLimit: number;
 	canChangeQuoteNotificationSetting: boolean;
+	canFollow: boolean;
+	canFollowed: boolean;
 	canImportAntennas: boolean;
 	canImportBlocking: boolean;
 	canImportFollowing: boolean;
@@ -94,6 +96,8 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
 	canChangeQuoteNotificationSetting: false,
+	canFollow: true,
+	canFollowed: true,
 	canImportAntennas: true,
 	canImportBlocking: true,
 	canImportFollowing: true,
@@ -408,6 +412,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
 			canChangeQuoteNotificationSetting: calc('canChangeQuoteNotificationSetting', vs => vs.some(v => v === true)),
+			canFollow: calc('canFollow', vs => vs.some(v => v === true)),
+    	canFollowed: calc('canFollowed', vs => vs.some(v => v === true)),
 			canImportAntennas: calc('canImportAntennas', vs => vs.some(v => v === true)),
 			canImportBlocking: calc('canImportBlocking', vs => vs.some(v => v === true)),
 			canImportFollowing: calc('canImportFollowing', vs => vs.some(v => v === true)),

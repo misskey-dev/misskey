@@ -1066,7 +1066,7 @@ export type paths = {
      * channels/timeline
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['channels___timeline'];
   };
@@ -1619,7 +1619,7 @@ export type paths = {
      * federation/followers
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___followers'];
   };
@@ -1628,7 +1628,7 @@ export type paths = {
      * federation/following
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___following'];
   };
@@ -1637,14 +1637,14 @@ export type paths = {
      * federation/instances
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     get: operations['federation___instances'];
     /**
      * federation/instances
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___instances'];
   };
@@ -1653,7 +1653,7 @@ export type paths = {
      * federation/show-instance
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___show-instance'];
   };
@@ -1662,7 +1662,7 @@ export type paths = {
      * federation/update-remote-user
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___update-remote-user'];
   };
@@ -1671,7 +1671,7 @@ export type paths = {
      * federation/users
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___users'];
   };
@@ -1680,14 +1680,14 @@ export type paths = {
      * federation/stats
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     get: operations['federation___stats'];
     /**
      * federation/stats
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___stats'];
   };
@@ -2711,14 +2711,14 @@ export type paths = {
      * notes/featured
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     get: operations['notes___featured'];
     /**
      * notes/featured
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['notes___featured'];
   };
@@ -3050,7 +3050,7 @@ export type paths = {
      * flash/featured
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['flash___featured'];
   };
@@ -3285,7 +3285,7 @@ export type paths = {
      * users
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['users'];
   };
@@ -3339,14 +3339,14 @@ export type paths = {
      * users/featured-notes
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     get: operations['users___featured-notes'];
     /**
      * users/featured-notes
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['users___featured-notes'];
   };
@@ -3812,9 +3812,9 @@ export type components = {
       pinnedPage: components['schemas']['Page'] | null;
       publicReactions: boolean;
       hideActivity: boolean;
-			hideProfileFiles: boolean;
-			/** @enum {string} */
-			notesVisibility: 'public' | 'followers' | 'private';
+      hideProfileFiles: boolean;
+      /** @enum {string} */
+      notesVisibility: 'public' | 'followers' | 'private';
       /** @enum {string} */
       followingVisibility: 'public' | 'followers' | 'private';
       /** @enum {string} */
@@ -4076,7 +4076,7 @@ export type components = {
       /** @enum {string} */
       icon: 'info' | 'warning' | 'error' | 'success';
       /** @enum {string} */
-      display: 'dialog' | 'normal' | 'banner' | 'emergency';
+      display: 'dialog' | 'normal' | 'banner';
       needConfirmationToRead: boolean;
       silence: boolean;
       forYou: boolean;
@@ -4887,7 +4887,9 @@ export type components = {
       userEachUserListsLimit: number;
       rateLimitFactor: number;
       avatarDecorationLimit: number;
-			canChangeQuoteNotificationSetting: boolean,
+      canChangeQuoteNotificationSetting: boolean;
+      canFollow: boolean;
+      canFollowed: boolean;
       canImportAntennas: boolean;
       canImportBlocking: boolean;
       canImportFollowing: boolean;
@@ -12100,7 +12102,7 @@ export type operations = {
    * channels/timeline
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   channels___timeline: {
     requestBody: {
@@ -15227,7 +15229,7 @@ export type operations = {
    * federation/followers
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   federation___followers: {
     requestBody: {
@@ -15286,7 +15288,7 @@ export type operations = {
    * federation/following
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   federation___following: {
     requestBody: {
@@ -15345,7 +15347,7 @@ export type operations = {
    * federation/instances
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   federation___instances: {
     requestBody: {
@@ -15412,7 +15414,7 @@ export type operations = {
    * federation/show-instance
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   'federation___show-instance': {
     requestBody: {
@@ -15469,7 +15471,7 @@ export type operations = {
    * federation/update-remote-user
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   'federation___update-remote-user': {
     requestBody: {
@@ -15521,7 +15523,7 @@ export type operations = {
    * federation/users
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   federation___users: {
     requestBody: {
@@ -15580,7 +15582,7 @@ export type operations = {
    * federation/stats
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   federation___stats: {
     requestBody: {
@@ -18776,8 +18778,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+          includeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+          excludeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
         };
       };
     };
@@ -18844,8 +18846,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
+          includeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
+          excludeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
         };
       };
     };
@@ -19924,9 +19926,10 @@ export type operations = {
           hideOnlineStatus?: boolean;
           publicReactions?: boolean;
           hideActivity?: boolean;
-					hideProfileFiles?: boolean;
+          hideProfileFiles?: boolean;
           carefulBot?: boolean;
           autoAcceptFollowed?: boolean;
+          autoRejectFollowRequest?: boolean;
           noCrawle?: boolean;
           preventAiLearning?: boolean;
           isBot?: boolean;
@@ -19935,6 +19938,8 @@ export type operations = {
           receiveAnnouncementEmail?: boolean;
           alwaysMarkNsfw?: boolean;
           autoSensitive?: boolean;
+          /** @enum {string} */
+          notesVisibility?: 'public' | 'followers' | 'private';
           /** @enum {string} */
           followingVisibility?: 'public' | 'followers' | 'private';
           /** @enum {string} */
@@ -21872,7 +21877,7 @@ export type operations = {
    * notes/featured
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   notes___featured: {
     requestBody: {
@@ -24017,7 +24022,7 @@ export type operations = {
    * flash/featured
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   flash___featured: {
     requestBody: {
@@ -25414,7 +25419,7 @@ export type operations = {
    * users
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   users: {
     requestBody: {
@@ -25793,7 +25798,7 @@ export type operations = {
    * users/featured-notes
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   'users___featured-notes': {
     requestBody: {

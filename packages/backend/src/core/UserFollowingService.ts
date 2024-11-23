@@ -23,6 +23,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
@@ -73,6 +74,7 @@ export class UserFollowingService implements OnModuleInit {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		private roleService: RoleService,
 		private cacheService: CacheService,
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
@@ -116,6 +118,33 @@ export class UserFollowingService implements OnModuleInit {
 			this.usersRepository.findOneByOrFail({ id: _follower.id }),
 			this.usersRepository.findOneByOrFail({ id: _followee.id }),
 		]) as [MiLocalUser | MiRemoteUser, MiLocalUser | MiRemoteUser];
+
+		// フォロイー(フォローされる側)のロールポリシーを取得
+		const followeePolicies = await this.roleService.getUserPolicies(followee.id);
+		// console.log('Followee policies:', followeePolicies);
+
+		// canFollowedポリシーを確認
+		if (!followeePolicies.canFollowed) {
+			if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
+				const content = this.apRendererService.addContext(this.apRendererService.renderReject(
+					this.apRendererService.renderFollow(follower, followee, requestId),
+					followee,
+				));
+				this.queueService.deliver(followee, content, follower.inbox, false);
+				return;
+			}
+
+			throw new IdentifiableError('e4a75dba-846f-4e36-a1cd-7d512e32c832', 'Following not allowed');
+		}
+
+		// フォロワー(フォローする側)のロールポリシーを取得
+		const followerPolicies = await this.roleService.getUserPolicies(follower.id);
+		// console.log('Follower policies:', followerPolicies);
+
+		// canFollowポリシーを確認
+		if (!followerPolicies.canFollow) {
+			throw new IdentifiableError('bd65dd2e-7c99-4e38-b085-870d8f12c7b2', 'Following not allowed');
+		}
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isRemoteUser(followee)) {
 			// What?
