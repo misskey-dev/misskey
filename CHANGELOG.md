@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Feat: MFMを考慮してテキストを操作するAiScript関数を追加
 
 ### Server
 -
