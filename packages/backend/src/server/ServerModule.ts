@@ -12,7 +12,6 @@ import { HealthServerService } from './HealthServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ServerService } from './ServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
-import { BskWebhookServerService } from './BskWebhookServerService.js';
 import { GetterService } from './api/GetterService.js';
 import { ChannelsService } from './api/stream/ChannelsService.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
@@ -66,7 +65,6 @@ import { SigninWithPasskeyApiService } from './api/SigninWithPasskeyApiService.j
 		NodeinfoServerService,
 		ServerService,
 		WellKnownServerService,
-		BskWebhookServerService,
 		GetterService,
 		ChannelsService,
 		ApiCallService,

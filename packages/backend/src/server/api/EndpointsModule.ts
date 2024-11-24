@@ -216,10 +216,6 @@ import * as ep___i_2fa_removeKey from './endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from './endpoints/i/2fa/unregister.js';
 import * as ep___i_apps from './endpoints/i/apps.js';
 import * as ep___i_authorizedApps from './endpoints/i/authorized-apps.js';
-import * as ep___i_bskMigrate_getMiauthId from './endpoints/i/bsk-migrate/get-miauth-id.js';
-import * as ep___i_bskMigrate_remove from './endpoints/i/bsk-migrate/remove.js';
-import * as ep___i_bskMigrate_status from './endpoints/i/bsk-migrate/status.js';
-import * as ep___i_bskMigrate_verify from './endpoints/i/bsk-migrate/verify.js';
 import * as ep___i_claimAchievement from './endpoints/i/claim-achievement.js';
 import * as ep___i_changePassword from './endpoints/i/change-password.js';
 import * as ep___i_deleteAccount from './endpoints/i/delete-account.js';
@@ -610,10 +606,6 @@ const $i_2fa_removeKey: Provider = { provide: 'ep:i/2fa/remove-key', useClass: e
 const $i_2fa_unregister: Provider = { provide: 'ep:i/2fa/unregister', useClass: ep___i_2fa_unregister.default };
 const $i_apps: Provider = { provide: 'ep:i/apps', useClass: ep___i_apps.default };
 const $i_authorizedApps: Provider = { provide: 'ep:i/authorized-apps', useClass: ep___i_authorizedApps.default };
-const $i_bskMigrate_getMiauthId: Provider = { provide: 'ep:i/bsk-migrate/get-miauth-id', useClass: ep___i_bskMigrate_getMiauthId.default };
-const $i_bskMigrate_remove: Provider = { provide: 'ep:i/bsk-migrate/remove', useClass: ep___i_bskMigrate_remove.default };
-const $i_bskMigrate_status: Provider = { provide: 'ep:i/bsk-migrate/status', useClass: ep___i_bskMigrate_status.default };
-const $i_bskMigrate_verify: Provider = { provide: 'ep:i/bsk-migrate/verify', useClass: ep___i_bskMigrate_verify.default };
 const $i_claimAchievement: Provider = { provide: 'ep:i/claim-achievement', useClass: ep___i_claimAchievement.default };
 const $i_changePassword: Provider = { provide: 'ep:i/change-password', useClass: ep___i_changePassword.default };
 const $i_deleteAccount: Provider = { provide: 'ep:i/delete-account', useClass: ep___i_deleteAccount.default };
@@ -1008,10 +1000,6 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$i_2fa_unregister,
 		$i_apps,
 		$i_authorizedApps,
-		$i_bskMigrate_getMiauthId,
-		$i_bskMigrate_remove,
-		$i_bskMigrate_status,
-		$i_bskMigrate_verify,
 		$i_claimAchievement,
 		$i_changePassword,
 		$i_deleteAccount,
@@ -1399,10 +1387,6 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$i_2fa_unregister,
 		$i_apps,
 		$i_authorizedApps,
-		$i_bskMigrate_getMiauthId,
-		$i_bskMigrate_remove,
-		$i_bskMigrate_status,
-		$i_bskMigrate_verify,
 		$i_claimAchievement,
 		$i_changePassword,
 		$i_deleteAccount,

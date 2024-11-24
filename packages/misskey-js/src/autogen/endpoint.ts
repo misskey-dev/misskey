@@ -324,8 +324,6 @@ import type {
 	IAppsResponse,
 	IAuthorizedAppsRequest,
 	IAuthorizedAppsResponse,
-	IBskMigrateGetMiauthIdResponse,
-	IBskMigrateStatusResponse,
 	IClaimAchievementRequest,
 	IChangePasswordRequest,
 	IDeleteAccountRequest,
@@ -797,10 +795,6 @@ export type Endpoints = {
 	'i/2fa/unregister': { req: I2faUnregisterRequest; res: EmptyResponse };
 	'i/apps': { req: IAppsRequest; res: IAppsResponse };
 	'i/authorized-apps': { req: IAuthorizedAppsRequest; res: IAuthorizedAppsResponse };
-	'i/bsk-migrate/get-miauth-id': { req: EmptyRequest; res: IBskMigrateGetMiauthIdResponse };
-	'i/bsk-migrate/remove': { req: EmptyRequest; res: EmptyResponse };
-	'i/bsk-migrate/status': { req: EmptyRequest; res: IBskMigrateStatusResponse };
-	'i/bsk-migrate/verify': { req: EmptyRequest; res: EmptyResponse };
 	'i/claim-achievement': { req: IClaimAchievementRequest; res: EmptyResponse };
 	'i/change-password': { req: IChangePasswordRequest; res: EmptyResponse };
 	'i/delete-account': { req: IDeleteAccountRequest; res: EmptyResponse };

@@ -2875,7 +2875,6 @@ _hana:
   hanaModeShort: "はな"
   hanaModeTutorialDescription: "はなみすきーの主要な独自機能として「はなモード」があります。はなモードを有効にするかどうかで、はなみすきーでのSNS体験は大きく変わってきます。以下に主な違いとおすすめのユースケースを挙げますので、どちらか選択して進んでください。"
   flowerEffect: "いつでも花びらを降らせる"
-  migrateFromBackspaceKey: "BackspaceKeyからの移行"
   searchIsInBeta: "独自検索エンジンは現在開発中です。今ご利用いただけるのは通常のMisskeyと同じ検索エンジン（Meilisearch）です。今後の進化にご期待ください！"
   showOnX: "{x}で見る"
   _inDevelopment:
@@ -2916,18 +2915,6 @@ _hana:
     hana3: "フォロー中ユーザーの最新のノートとFediverseの人気の投稿をザッピングできる「はなみタイムライン」が使用できます"
     hanaRecommend: "おひとりさまサーバーのような分散SNS体験をしたい方（内々での交流だけでなく、外部サーバーとの交流もしっかり重視したい方）"
     saveConfirmDescription: "一定期間にモードを変更できる回数には制限があります。"
-  _migrateFromBackspaceKey:
-    about: "BackspaceKey上のコンテンツを簡単に移行できます。"
-    step1: "BackspaceKeyとこのアカウントを連携する"
-    step1Description: "以下のボタンを押して、移行元のBackspaceKeyアカウントを連携してください。"
-    step2: "移行したいコンテンツをエクスポートする"
-    step2Description: "BackspaceKey側で移行したいコンテンツの「エクスポート」ボタンを押してください。"
-    step2Description2: "連携中は、BackspaceKeyでエクスポートしたものすべてがはなみすきーにインポートされます。エクスポートだけしたい場合は、はなみすきー連携前に行ってください。"
-    step3: "通知を待つ"
-    step3Description: "コンテンツの移行が完了すると、それぞれに対して通知が送信されます。すべての移行が完了するまでしばらくお待ちください。"
-    step4: "アカウントの移行を行う"
-    step4Description: "{hana}で移行元のアカウントを指定したあと、{bsk}で移行先のアカウントを指定します。これにより、フォロワーが自動で引き継がれます。"
-    step4Description2: "この時点でBackspaceKeyのアカウントは利用できなくなります。必ずすべての移行が完了するまで待ってください。"
   _welcomeCardGen:
     title: "はなみすきーはじめました！カード"
     nameDescription: "名前にMFMを使用していたり、文字数が多すぎたりした場合は、ここで上書きできます。"

@@ -2762,7 +2762,6 @@ _hana:
   hanaModeShort: "Hana"
   hanaModeTutorialDescription: "One of HanaMisskey's key unique features is Hana Mode, and your social networking experience with HanaMisskey will vary greatly depending on whether you enable Hana Mode or not. Below are the main differences and recommended use cases, so please select either one and proceed."
   flowerEffect: "Show flurries all year round"
-  migrateFromBackspaceKey: "Migrate from BackspaceKey"
   searchIsInBeta: "Our own search engine is currently under development. Currently you are using the same search engine (Meilisearch) as regular Misskey. Stay tuned to see how the search is optimized in the future!"
   _inDevelopment:
     title: "This feature is under development"
@@ -2802,18 +2801,6 @@ _hana:
     hana3: "You can use the 'Hana Timeline,' which allows you to browse the latest notes from users you follow and popular posts from the Fediverse"
     hanaRecommend: "For those who want a decentralized SNS experience similar to a private server, while still emphasizing interaction with external servers as well"
     saveConfirmDescription: "There is a limit on how many times you can switch modes within a certain period."
-  _migrateFromBackspaceKey:
-    about: "Easily migrate your content from BackspaceKey."
-    step1: "Link your BackspaceKey account to this account"
-    step1Description: "Press the button below to link the BackspaceKey account you want to migrate from."
-    step2: "Export the content you want to migrate"
-    step2Description: "On the BackspaceKey side, press the 'Export' button for the content you want to migrate."
-    step2Description2: "While linked, everything you export from BackspaceKey will be imported into HanaMisskey. If you only want to export, do it before linking with HanaMisskey."
-    step3: "Wait for notifications"
-    step3Description: "You will receive a notification for each completed migration. Please wait until all migrations are finished."
-    step4: "Migrate the account"
-    step4Description: "After specifying the source account in {hana}, specify the destination account in {bsk}. This will automatically transfer your followers."
-    step4Description2: "At this point, the BackspaceKey account will no longer be available. Be sure to wait until all migrations are complete."
   _welcomeCardGen:
     title: "\"Just Joined HanaMisskey!\" Card"
     nameDescription: "If your name uses MFM or is too long, you can overwrite it here."

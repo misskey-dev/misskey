@@ -6,7 +6,13 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { id } from './util/id.js';
 import { MiDriveFile } from './DriveFile.js';
-import { supportedTypes } from '@/server/BskWebhookServerService.js';
+
+const bskMigrateSupportedTypes = [
+	'notes',
+	'following',
+	'muting',
+	'blocking',
+] as const;
 
 @Entity('user')
 @Index(['usernameLower', 'host'], { unique: true })
@@ -298,7 +304,7 @@ export class MiUser {
 	@Column('varchar', {
 		length: 16, array: true, default: '{}',
 	})
-	public bskMigratedEntities: (typeof supportedTypes[number])[];
+	public bskMigratedEntities: (typeof bskMigrateSupportedTypes[number])[];
 
 	constructor(data: Partial<MiUser>) {
 		if (data == null) return;
