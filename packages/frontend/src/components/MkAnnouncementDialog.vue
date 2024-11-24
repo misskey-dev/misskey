@@ -29,7 +29,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { $i, updateAccount } from '@/account.js';
+import { $i, updateAccountPartial } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	announcement: Misskey.entities.Announcement;
@@ -51,7 +51,7 @@ async function ok() {
 
 	modal.value?.close();
 	misskeyApi('i/read-announcement', { announcementId: props.announcement.id });
-	updateAccount({
+	updateAccountPartial({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
 	});
 }
