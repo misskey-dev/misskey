@@ -42,6 +42,7 @@ export class BlockingEntityService {
 			blockee: hint?.blockee ?? this.userEntityService.pack(blocking.blockeeId, me, {
 				schema: 'UserDetailedNotMe',
 			}),
+			blockType: blocking.blockType,
 		});
 	}
 
