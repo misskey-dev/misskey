@@ -189,13 +189,11 @@ export class WebAuthnService {
 	 */
 	@bindThis
 	public async verifySignInWithPasskeyAuthentication(context: string, response: AuthenticationResponseJSON): Promise<MiUser['id'] | null> {
-		const challenge = await this.redisClient.get(`webauthn:challenge:${context}`);
+		const challenge = await this.redisClient.getdel(`webauthn:challenge:${context}`);
 
 		if (!challenge) {
 			throw new IdentifiableError('2d16e51c-007b-4edd-afd2-f7dd02c947f6', `challenge '${context}' not found`);
 		}
-
-		await this.redisClient.del(`webauthn:challenge:${context}`);
 
 		const key = await this.userSecurityKeysRepository.findOneBy({
 			id: response.id,
