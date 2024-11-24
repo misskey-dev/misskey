@@ -209,6 +209,13 @@ export default class Connection {
 
 	@bindThis
 	private async onNoteStreamMessage(data: GlobalEvents['note']['payload']) {
+		if ((data.type === 'reacted' || data.type === 'unreacted') && this.user) {
+			const userIdReactedFrom = data.body.body.userId;
+			const mutings = await this.cacheService.userMutingsCache.fetch(this.user.id);
+			if (mutings.has(userIdReactedFrom)) {
+				return;
+			}
+		}
 		this.sendMessageToWs('noteUpdated', {
 			id: data.body.id,
 			type: data.type,
