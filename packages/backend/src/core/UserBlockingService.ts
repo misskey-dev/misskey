@@ -190,8 +190,8 @@ export class UserBlockingService implements OnModuleInit {
 		// Since we already have the blocker and blockee, we do not need to fetch
 		// them in the query above and can just manually insert them here.
 		// But we don't need to do this because we are not using them in this function.
-		// blocking.blocker = blocker;
-		// blocking.blockee = blockee;
+		blocking.blocker = blocker;
+		blocking.blockee = blockee;
 
 		await this.blockingsRepository.delete(blocking.id);
 
@@ -214,7 +214,7 @@ export class UserBlockingService implements OnModuleInit {
 	public async checkBlocked(blockerId: MiUser['id'], blockeeId: MiUser['id']): Promise<boolean> {
 		return (await this.cacheService.userBlockingCache.fetch(blockerId)).has(blockeeId);
 	}
-	
+
 	@bindThis
 	public async reactionBlock(blocker: MiUser, blockee: MiUser, silent = false) {
 		const blocking = await this.blockingsRepository.findOneBy({
