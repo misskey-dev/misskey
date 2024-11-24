@@ -4,7 +4,7 @@
  */
 
 import { URL } from 'node:url';
-import { toASCII } from 'punycode';
+import punycode from 'punycode/';
 import { Inject, Injectable } from '@nestjs/common';
 import RE2 from 're2';
 import psl from 'psl';
@@ -107,13 +107,13 @@ export class UtilityService {
 
 	@bindThis
 	public toPuny(host: string): string {
-		return toASCII(host.toLowerCase());
+		return punycode.toASCII(host.toLowerCase());
 	}
 
 	@bindThis
 	public toPunyNullable(host: string | null | undefined): string | null {
 		if (host == null) return null;
-		return toASCII(host.toLowerCase());
+		return punycode.toASCII(host.toLowerCase());
 	}
 
 	@bindThis
