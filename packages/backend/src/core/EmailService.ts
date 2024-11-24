@@ -176,6 +176,16 @@ export class EmailService {
 			};
 		}
 
+		const emailDomain: string = emailAddress.split('@')[1];
+		const isBanned = this.utilityService.isBlockedHost(this.meta.bannedEmailDomains, emailDomain);
+
+		if (isBanned) {
+			return {
+				available: false,
+				reason: 'banned',
+			};
+		}
+
 		let validated: {
 			valid: boolean,
 			reason?: string | null,
@@ -211,16 +221,6 @@ export class EmailService {
 			return {
 				available: false,
 				reason: validated.reason ? formatReason[validated.reason] ?? null : null,
-			};
-		}
-
-		const emailDomain: string = emailAddress.split('@')[1];
-		const isBanned = this.utilityService.isBlockedHost(this.meta.bannedEmailDomains, emailDomain);
-
-		if (isBanned) {
-			return {
-				available: false,
-				reason: 'banned',
 			};
 		}
 
