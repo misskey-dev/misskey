@@ -4,10 +4,10 @@
 -
 
 ### Client
--
+- Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 
 ### Server
--
+- Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 
 
 ## 2024.11.0
@@ -49,7 +49,7 @@
 - Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
 - Fix: Encode RSS urls with escape sequences before fetching allowing query parameters to be used
 - Fix: リンク切れを修正
-= Fix: ノート投稿ボタンにホバー時のスタイルが適用されていないのを修正  
+- Fix: ノート投稿ボタンにホバー時のスタイルが適用されていないのを修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/305)
 - Fix: メールアドレス登録有効化時の「完了」ダイアログボックスの表示条件を修正
 - Fix: 画面幅が狭い環境でデザインが崩れる問題を修正  
