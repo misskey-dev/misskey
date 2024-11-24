@@ -1,0 +1,54 @@
+{
+	"compilerOptions": {
+		"allowJs": true,
+		"noEmitOnError": false,
+		"noImplicitAny": false,
+		"noImplicitReturns": true,
+		"noUnusedParameters": false,
+		"noUnusedLocals": false,
+		"noFallthroughCasesInSwitch": true,
+		"declaration": false,
+		"sourceMap": false,
+		"target": "ES2022",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+		"removeComments": false,
+		"noLib": false,
+		"strict": true,
+		"strictNullChecks": true,
+		"experimentalDecorators": true,
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
+		"useDefineForClassFields": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+			"@@/*": ["../frontend-shared/*"]
+		},
+		"typeRoots": [
+			"./@types",
+			"./node_modules/@types",
+			"./node_modules/@vue-macros",
+			"./node_modules"
+		],
+		"types": [
+			"vite/client"
+		],
+		"lib": [
+			"esnext",
+			"dom",
+			"dom.iterable"
+		],
+		"jsx": "preserve"
+	},
+	"compileOnSave": false,
+	"include": [
+		"./src/**/*.ts",
+		"./src/**/*.vue",
+		"./@types/**/*.ts"
+	],
+	"exclude": [
+		".storybook/**/*"
+	]
+}

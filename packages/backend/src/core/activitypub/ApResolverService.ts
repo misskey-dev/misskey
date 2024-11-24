@@ -7,9 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
-import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository, FollowRequestsRepository } from '@/models/_.js';
+import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -29,6 +28,7 @@ export class Resolver {
 
 	constructor(
 		private config: Config,
+		private meta: MiMeta,
 		private usersRepository: UsersRepository,
 		private notesRepository: NotesRepository,
 		private pollsRepository: PollsRepository,
@@ -36,13 +36,12 @@ export class Resolver {
 		private followRequestsRepository: FollowRequestsRepository,
 		private utilityService: UtilityService,
 		private instanceActorService: InstanceActorService,
-		private metaService: MetaService,
 		private apRequestService: ApRequestService,
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
 		private loggerService: LoggerService,
-		private recursionLimit = 100,
+		private recursionLimit = 256,
 	) {
 		this.history = new Set();
 		this.logger = this.loggerService.getLogger('ap-resolve');
@@ -51,6 +50,11 @@ export class Resolver {
 	@bindThis
 	public getHistory(): string[] {
 		return Array.from(this.history);
+	}
+
+	@bindThis
+	public getRecursionLimit(): number {
+		return this.recursionLimit;
 	}
 
 	@bindThis
@@ -94,8 +98,7 @@ export class Resolver {
 			return await this.resolveLocal(value);
 		}
 
-		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
+		if (!this.utilityService.isFederationAllowedHost(host)) {
 			throw new Error('Instance is blocked');
 		}
 
@@ -113,6 +116,18 @@ export class Resolver {
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		) {
 			throw new Error('invalid response');
+		}
+
+		// HttpRequestService / ApRequestService have already checked that
+		// `object.id` or `object.url` matches the URL used to fetch the
+		// object after redirects; here we double-check that no redirects
+		// bounced between hosts
+		if (object.id == null) {
+			throw new Error('invalid AP object: missing id');
+		}
+
+		if (this.utilityService.punyHost(object.id) !== this.utilityService.punyHost(value)) {
+			throw new Error(`invalid AP object ${value}: id ${object.id} has different host`);
 		}
 
 		return object;
@@ -178,6 +193,9 @@ export class ApResolverService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -195,7 +213,6 @@ export class ApResolverService {
 
 		private utilityService: UtilityService,
 		private instanceActorService: InstanceActorService,
-		private metaService: MetaService,
 		private apRequestService: ApRequestService,
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
@@ -208,6 +225,7 @@ export class ApResolverService {
 	public createResolver(): Resolver {
 		return new Resolver(
 			this.config,
+			this.meta,
 			this.usersRepository,
 			this.notesRepository,
 			this.pollsRepository,
@@ -215,7 +233,6 @@ export class ApResolverService {
 			this.followRequestsRepository,
 			this.utilityService,
 			this.instanceActorService,
-			this.metaService,
 			this.apRequestService,
 			this.httpRequestService,
 			this.apRendererService,

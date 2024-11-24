@@ -16,7 +16,6 @@ import { appendQuery, query } from '@/misc/prelude/url.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { IdService } from '@/core/IdService.js';
 import { UtilityService } from '../UtilityService.js';
 import { VideoProcessingService } from '../VideoProcessingService.js';
@@ -261,11 +260,11 @@ export class DriveFileEntityService {
 		files: MiDriveFile[],
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
-		const _user = files.map(({ user, userId }) => user ?? userId).filter(isNotNull);
+		const _user = files.map(({ user, userId }) => user ?? userId).filter(x => x != null);
 		const _userMap = await this.userEntityService.packMany(_user)
 			.then(users => new Map(users.map(user => [user.id, user])));
 		const items = await Promise.all(files.map(f => this.packNullable(f, options, f.userId ? { packedUser: _userMap.get(f.userId) } : {})));
-		return items.filter(isNotNull);
+		return items.filter(x => x != null);
 	}
 
 	@bindThis
@@ -290,6 +289,6 @@ export class DriveFileEntityService {
 	): Promise<Packed<'DriveFile'>[]> {
 		if (fileIds.length === 0) return [];
 		const filesMap = await this.packManyByIdsMap(fileIds, options);
-		return fileIds.map(id => filesMap.get(id)).filter(isNotNull);
+		return fileIds.map(id => filesMap.get(id)).filter(x => x != null);
 	}
 }

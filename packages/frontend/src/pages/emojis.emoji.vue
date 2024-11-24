@@ -14,19 +14,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as os from '@/os.js';
 import * as Misskey from 'misskey-js';
+import { defineAsyncComponent } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
+import * as os from '@/os.js';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
+import { $i } from '@/account.js';
 
 const props = defineProps<{
   emoji: Misskey.entities.EmojiSimple;
 }>();
 
 function menu(ev) {
-	os.popupMenu([{
+	const menuItems: MenuItem[] = [];
+	menuItems.push({
 		type: 'label',
 		text: ':' + props.emoji.name + ':',
 	}, {
@@ -40,16 +44,36 @@ function menu(ev) {
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',
 		action: async () => {
-			os.popup(MkCustomEmojiDetailedDialog, {
+			const { dispose } = os.popup(MkCustomEmojiDetailedDialog, {
 				emoji: await misskeyApiGet('emoji', {
 					name: props.emoji.name,
-				})
+				}),
 			}, {
-				anchor: ev.target,
+				closed: () => dispose(),
 			});
 		},
-	}], ev.currentTarget ?? ev.target);
+	});
+
+	if ($i?.isModerator ?? $i?.isAdmin) {
+		menuItems.push({
+			text: i18n.ts.edit,
+			icon: 'ti ti-pencil',
+			action: () => {
+				edit(props.emoji);
+			},
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
+
+const edit = async (emoji) => {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/pages/emoji-edit-dialog.vue')), {
+		emoji: emoji,
+	}, {
+		closed: () => dispose(),
+	});
+};
 </script>
 
 <style lang="scss" module>
@@ -58,11 +82,11 @@ function menu(ev) {
 	align-items: center;
 	padding: 12px;
 	text-align: left;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 8px;
 
 	&:hover {
-		border-color: var(--accent);
+		border-color: var(--MI_THEME-accent);
 	}
 }
 

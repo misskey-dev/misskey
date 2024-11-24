@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XSidebar/>
 		</div>
 		<div v-else-if="!pageMetadata?.needWideArea" ref="widgetsLeft" class="widgets left">
-			<XWidgets place="left" :marginTop="'var(--margin)'" @mounted="attachSticky(widgetsLeft)"/>
+			<XWidgets place="left" :marginTop="'var(--MI-margin)'" @mounted="attachSticky(widgetsLeft)"/>
 		</div>
 
 		<main class="main" @contextmenu.stop="onContextmenu">
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</main>
 
 		<div v-if="isDesktop && !pageMetadata?.needWideArea" ref="widgetsRight" class="widgets right">
-			<XWidgets :place="showMenuOnTop ? 'right' : null" :marginTop="showMenuOnTop ? '0' : 'var(--margin)'" @mounted="attachSticky(widgetsRight)"/>
+			<XWidgets :place="showMenuOnTop ? 'right' : null" :marginTop="showMenuOnTop ? '0' : 'var(--MI-margin)'" @mounted="attachSticky(widgetsRight)"/>
 		</div>
 	</div>
 
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, onMounted, provide, ref, computed, shallowRef } from 'vue';
 import XSidebar from './classic.sidebar.vue';
 import XCommon from './_common_/common.vue';
-import { instanceName } from '@/config.js';
+import { instanceName } from '@@/js/config.js';
 import { StickySidebar } from '@/scripts/sticky-sidebar.js';
 import * as os from '@/os.js';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
@@ -57,6 +57,8 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { mainRouter } from '@/router/main.js';
+import { isLink } from '@@/js/is-link.js';
+
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
@@ -104,12 +106,6 @@ function top() {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	const isLink = (el: HTMLElement) => {
-		if (el.tagName === 'A') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
-		}
-	};
 	if (isLink(ev.target)) return;
 	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
 	if (window.getSelection().toString() !== '') return;
@@ -220,8 +216,8 @@ onMounted(() => {
 	box-sizing: border-box;
 
 	&.wallpaper {
-		background: var(--wallpaperOverlay);
-		//backdrop-filter: var(--blur, blur(4px));
+		background: var(--MI_THEME-wallpaperOverlay);
+		//backdrop-filter: var(--MI-blur, blur(4px));
 	}
 
 	> .columns {
@@ -253,17 +249,17 @@ onMounted(() => {
 			min-width: 0;
 			width: 750px;
 			margin: 0 16px 0 0;
-			border-left: solid 1px var(--divider);
-			border-right: solid 1px var(--divider);
+			border-left: solid 1px var(--MI_THEME-divider);
+			border-right: solid 1px var(--MI_THEME-divider);
 			border-radius: 0;
 			overflow: clip;
-			--margin: 12px;
+			--MI-margin: 12px;
 		}
 
 		> .widgets {
-			//--panelBorder: none;
+			//--MI_THEME-panelBorder: none;
 			width: 300px;
-			padding-bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
+			padding-bottom: calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px));
 
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;
@@ -281,13 +277,13 @@ onMounted(() => {
 		&.withGlobalHeader {
 			> .main {
 				margin-top: 0;
-				border: solid 1px var(--divider);
-				border-radius: var(--radius);
-				--stickyTop: var(--globalHeaderHeight);
+				border: solid 1px var(--MI_THEME-divider);
+				border-radius: var(--MI-radius);
+				--MI-stickyTop: var(--globalHeaderHeight);
 			}
 
 			> .widgets {
-				--stickyTop: var(--globalHeaderHeight);
+				--MI-stickyTop: var(--globalHeaderHeight);
 				margin-top: 0;
 			}
 		}
@@ -296,7 +292,7 @@ onMounted(() => {
 			margin: 0;
 
 			> .sidebar {
-				border-right: solid 0.5px var(--divider);
+				border-right: solid 0.5px var(--MI_THEME-divider);
 			}
 
 			> .main {
@@ -318,10 +314,10 @@ onMounted(() => {
 		right: 0;
 		z-index: 1001;
 		height: 100dvh;
-		padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
+		padding: var(--MI-margin) var(--MI-margin) calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px));
 		box-sizing: border-box;
 		overflow: auto;
-		background: var(--bg);
+		background: var(--MI_THEME-bg);
 	}
 
 	> .ivnzpscs {

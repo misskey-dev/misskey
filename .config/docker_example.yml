@@ -6,6 +6,7 @@
 #───┘ URL └─────────────────────────────────────────────────────
 
 # Final accessible URL seen by a user.
+# You can set url from an environment variable instead.
 url: https://example.tld/
 
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
@@ -38,9 +39,11 @@ db:
   port: 5432
 
   # Database name
+  # You can set db from an environment variable instead.
   db: misskey
 
   # Auth
+  # You can set user and pass from environment variables instead.
   user: example-misskey-user
   pass: example-misskey-pass
 
@@ -96,6 +99,14 @@ redis:
 #  #db: 1
 
 #redisForTimelines:
+#  host: redis
+#  port: 6379
+#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+#  #pass: example-pass
+#  #prefix: example-prefix
+#  #db: 1
+
+#redisForReactions:
 #  host: redis
 #  port: 6379
 #  #family: 0  # 0=Both, 4=IPv4, 6=IPv6

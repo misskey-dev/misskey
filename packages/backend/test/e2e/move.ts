@@ -7,19 +7,20 @@ import { INestApplicationContext } from '@nestjs/common';
 
 process.env.NODE_ENV = 'test';
 
+import { setTimeout } from 'node:timers/promises';
 import * as assert from 'assert';
 import { loadConfig } from '@/config.js';
 import { MiRepository, MiUser, UsersRepository, miRepository } from '@/models/_.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { jobQueue } from '@/boot/common.js';
-import { api, initTestDb, signup, sleep, successfulApiCall, uploadFile } from '../utils.js';
+import { api, castAsError, initTestDb, signup, successfulApiCall, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
 describe('Account Move', () => {
 	let jq: INestApplicationContext;
 	let url: URL;
 
-	let root: any;
+	let root: misskey.entities.SignupResponse;
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
 	let carol: misskey.entities.SignupResponse;
@@ -92,8 +93,8 @@ describe('Account Move', () => {
 			}, bob);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'NO_SUCH_USER');
-			assert.strictEqual(res.body.error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
+			assert.strictEqual(castAsError(res.body).error.code, 'NO_SUCH_USER');
+			assert.strictEqual(castAsError(res.body).error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
 		});
 
 		test('Unable to add duplicated aliases to alsoKnownAs', async () => {
@@ -102,8 +103,8 @@ describe('Account Move', () => {
 			}, bob);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'INVALID_PARAM');
-			assert.strictEqual(res.body.error.id, '3d81ceae-475f-4600-b2a8-2bc116157532');
+			assert.strictEqual(castAsError(res.body).error.code, 'INVALID_PARAM');
+			assert.strictEqual(castAsError(res.body).error.id, '3d81ceae-475f-4600-b2a8-2bc116157532');
 		});
 
 		test('Unable to add itself', async () => {
@@ -112,8 +113,8 @@ describe('Account Move', () => {
 			}, bob);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'FORBIDDEN_TO_SET_YOURSELF');
-			assert.strictEqual(res.body.error.id, '25c90186-4ab0-49c8-9bba-a1fa6c202ba4');
+			assert.strictEqual(castAsError(res.body).error.code, 'FORBIDDEN_TO_SET_YOURSELF');
+			assert.strictEqual(castAsError(res.body).error.id, '25c90186-4ab0-49c8-9bba-a1fa6c202ba4');
 		});
 
 		test('Unable to add a nonexisting local account to alsoKnownAs', async () => {
@@ -122,16 +123,16 @@ describe('Account Move', () => {
 			}, bob);
 
 			assert.strictEqual(res1.status, 400);
-			assert.strictEqual(res1.body.error.code, 'NO_SUCH_USER');
-			assert.strictEqual(res1.body.error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
+			assert.strictEqual(castAsError(res1.body).error.code, 'NO_SUCH_USER');
+			assert.strictEqual(castAsError(res1.body).error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
 
 			const res2 = await api('i/update', {
 				alsoKnownAs: ['@alice', 'nonexist'],
 			}, bob);
 
 			assert.strictEqual(res2.status, 400);
-			assert.strictEqual(res2.body.error.code, 'NO_SUCH_USER');
-			assert.strictEqual(res2.body.error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
+			assert.strictEqual(castAsError(res2.body).error.code, 'NO_SUCH_USER');
+			assert.strictEqual(castAsError(res2.body).error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
 		});
 
 		test('Able to add two existing local account to alsoKnownAs', async () => {
@@ -240,8 +241,8 @@ describe('Account Move', () => {
 			}, root);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'NOT_ROOT_FORBIDDEN');
-			assert.strictEqual(res.body.error.id, '4362e8dc-731f-4ad8-a694-be2a88922a24');
+			assert.strictEqual(castAsError(res.body).error.code, 'NOT_ROOT_FORBIDDEN');
+			assert.strictEqual(castAsError(res.body).error.id, '4362e8dc-731f-4ad8-a694-be2a88922a24');
 		});
 
 		test('Unable to move to a nonexisting local account', async () => {
@@ -250,8 +251,8 @@ describe('Account Move', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'NO_SUCH_USER');
-			assert.strictEqual(res.body.error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
+			assert.strictEqual(castAsError(res.body).error.code, 'NO_SUCH_USER');
+			assert.strictEqual(castAsError(res.body).error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
 		});
 
 		test('Unable to move if alsoKnownAs is invalid', async () => {
@@ -260,8 +261,8 @@ describe('Account Move', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'DESTINATION_ACCOUNT_FORBIDS');
-			assert.strictEqual(res.body.error.id, 'b5c90186-4ab0-49c8-9bba-a1f766282ba4');
+			assert.strictEqual(castAsError(res.body).error.code, 'DESTINATION_ACCOUNT_FORBIDS');
+			assert.strictEqual(castAsError(res.body).error.id, 'b5c90186-4ab0-49c8-9bba-a1f766282ba4');
 		});
 
 		test('Relationships have been properly migrated', async () => {
@@ -271,43 +272,51 @@ describe('Account Move', () => {
 
 			assert.strictEqual(move.status, 200);
 
-			await sleep(1000 * 3); // wait for jobs to finish
+			await setTimeout(1000 * 3); // wait for jobs to finish
 
 			// Unfollow delayed?
 			const aliceFollowings = await api('users/following', {
 				userId: alice.id,
 			}, alice);
 			assert.strictEqual(aliceFollowings.status, 200);
+			assert.ok(aliceFollowings);
 			assert.strictEqual(aliceFollowings.body.length, 3);
 
 			const carolFollowings = await api('users/following', {
 				userId: carol.id,
 			}, carol);
 			assert.strictEqual(carolFollowings.status, 200);
+			assert.ok(carolFollowings);
 			assert.strictEqual(carolFollowings.body.length, 2);
 			assert.strictEqual(carolFollowings.body[0].followeeId, bob.id);
 			assert.strictEqual(carolFollowings.body[1].followeeId, alice.id);
 
 			const blockings = await api('blocking/list', {}, dave);
 			assert.strictEqual(blockings.status, 200);
+			assert.ok(blockings);
 			assert.strictEqual(blockings.body.length, 2);
 			assert.strictEqual(blockings.body[0].blockeeId, bob.id);
 			assert.strictEqual(blockings.body[1].blockeeId, alice.id);
 
 			const mutings = await api('mute/list', {}, dave);
 			assert.strictEqual(mutings.status, 200);
+			assert.ok(mutings);
 			assert.strictEqual(mutings.body.length, 2);
 			assert.strictEqual(mutings.body[0].muteeId, bob.id);
 			assert.strictEqual(mutings.body[1].muteeId, alice.id);
 
 			const rootLists = await api('users/lists/list', {}, root);
 			assert.strictEqual(rootLists.status, 200);
+			assert.ok(rootLists);
+			assert.ok(rootLists.body[0].userIds);
 			assert.strictEqual(rootLists.body[0].userIds.length, 2);
 			assert.ok(rootLists.body[0].userIds.find((id: string) => id === bob.id));
 			assert.ok(rootLists.body[0].userIds.find((id: string) => id === alice.id));
 
 			const eveLists = await api('users/lists/list', {}, eve);
 			assert.strictEqual(eveLists.status, 200);
+			assert.ok(eveLists);
+			assert.ok(eveLists.body[0].userIds);
 			assert.strictEqual(eveLists.body[0].userIds.length, 1);
 			assert.ok(eveLists.body[0].userIds.find((id: string) => id === bob.id));
 		});
@@ -330,7 +339,7 @@ describe('Account Move', () => {
 		});
 
 		test('Unfollowed after 10 sec (24 hours in production).', async () => {
-			await sleep(1000 * 8);
+			await setTimeout(1000 * 8);
 
 			const following = await api('users/following', {
 				userId: alice.id,
@@ -346,8 +355,8 @@ describe('Account Move', () => {
 			}, bob);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'DESTINATION_ACCOUNT_FORBIDS');
-			assert.strictEqual(res.body.error.id, 'b5c90186-4ab0-49c8-9bba-a1f766282ba4');
+			assert.strictEqual(castAsError(res.body).error.code, 'DESTINATION_ACCOUNT_FORBIDS');
+			assert.strictEqual(castAsError(res.body).error.id, 'b5c90186-4ab0-49c8-9bba-a1f766282ba4');
 		});
 
 		test('Follow and follower counts are properly adjusted', async () => {
@@ -418,8 +427,9 @@ describe('Account Move', () => {
 		] as const)('Prohibit access after moving: %s', async (endpoint) => {
 			const res = await api(endpoint, {}, alice);
 			assert.strictEqual(res.status, 403);
-			assert.strictEqual(res.body.error.code, 'YOUR_ACCOUNT_MOVED');
-			assert.strictEqual(res.body.error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
+			assert.ok(res.body);
+			assert.strictEqual(castAsError(res.body).error.code, 'YOUR_ACCOUNT_MOVED');
+			assert.strictEqual(castAsError(res.body).error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
 		});
 
 		test('Prohibit access after moving: /antennas/update', async () => {
@@ -437,16 +447,19 @@ describe('Account Move', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 403);
-			assert.strictEqual(res.body.error.code, 'YOUR_ACCOUNT_MOVED');
-			assert.strictEqual(res.body.error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
+			assert.ok(res.body);
+			assert.strictEqual(castAsError(res.body).error.code, 'YOUR_ACCOUNT_MOVED');
+			assert.strictEqual(castAsError(res.body).error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
 		});
 
 		test('Prohibit access after moving: /drive/files/create', async () => {
+			// FIXME: 一旦逃げておく
 			const res = await uploadFile(alice);
 
 			assert.strictEqual(res.status, 403);
-			assert.strictEqual((res.body! as any as { error: misskey.api.APIError }).error.code, 'YOUR_ACCOUNT_MOVED');
-			assert.strictEqual((res.body! as any as { error: misskey.api.APIError }).error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
+			assert.ok(res.body);
+			assert.strictEqual(castAsError(res.body).error.code, 'YOUR_ACCOUNT_MOVED');
+			assert.strictEqual(castAsError(res.body).error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
 		});
 
 		test('Prohibit updating alsoKnownAs after moving', async () => {
@@ -455,8 +468,8 @@ describe('Account Move', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 403);
-			assert.strictEqual(res.body.error.code, 'YOUR_ACCOUNT_MOVED');
-			assert.strictEqual(res.body.error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
+			assert.strictEqual(castAsError(res.body).error.code, 'YOUR_ACCOUNT_MOVED');
+			assert.strictEqual(castAsError(res.body).error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
 		});
 	});
 });

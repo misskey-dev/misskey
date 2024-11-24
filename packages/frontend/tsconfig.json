@@ -23,7 +23,8 @@
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@@/*": ["../frontend-shared/*"]
 		},
 		"typeRoots": [
 			"./@types",
@@ -37,15 +38,18 @@
 		],
 		"lib": [
 			"esnext",
-			"dom"
+			"dom",
+			"dom.iterable"
 		],
 		"jsx": "preserve"
 	},
 	"compileOnSave": false,
 	"include": [
-		".eslintrc.js",
-		"./**/*.ts",
-		"./**/*.vue"
+		"./src/**/*.ts",
+		"./src/**/*.vue",
+		"./test/**/*.ts",
+		"./test/**/*.vue",
+		"./@types/**/*.ts"
 	],
 	"exclude": [
 		".storybook/**/*"

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkSpacer :contentMax="1200">
-	<MkTab v-model="origin" style="margin-bottom: var(--margin);">
+	<MkTab v-model="origin" style="margin-bottom: var(--MI-margin);">
 		<option value="local">{{ i18n.ts.local }}</option>
 		<option value="remote">{{ i18n.ts.remote }}</option>
 	</MkTab>
