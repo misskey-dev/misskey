@@ -41,7 +41,7 @@ export class Resolver {
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
 		private loggerService: LoggerService,
-		private recursionLimit = 100,
+		private recursionLimit = 256,
 	) {
 		this.history = new Set();
 		this.logger = this.loggerService.getLogger('ap-resolve');
@@ -50,6 +50,11 @@ export class Resolver {
 	@bindThis
 	public getHistory(): string[] {
 		return Array.from(this.history);
+	}
+
+	@bindThis
+	public getRecursionLimit(): number {
+		return this.recursionLimit;
 	}
 
 	@bindThis
@@ -111,6 +116,18 @@ export class Resolver {
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		) {
 			throw new Error('invalid response');
+		}
+
+		// HttpRequestService / ApRequestService have already checked that
+		// `object.id` or `object.url` matches the URL used to fetch the
+		// object after redirects; here we double-check that no redirects
+		// bounced between hosts
+		if (object.id == null) {
+			throw new Error('invalid AP object: missing id');
+		}
+
+		if (this.utilityService.punyHost(object.id) !== this.utilityService.punyHost(value)) {
+			throw new Error(`invalid AP object ${value}: id ${object.id} has different host`);
 		}
 
 		return object;

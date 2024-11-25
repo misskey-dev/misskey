@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.16.0]
+        node-version: [22.11.0]
         api-json-name: [api-base.json, api-head.json]
         include:
           - api-json-name: api-base.json

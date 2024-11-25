@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2024.10.1",
+	"version": "2024.11.0",
 	"description": "Misskey SDK for JavaScript",
 	"license": "MIT",
 	"main": "./built/index.js",
@@ -35,10 +35,10 @@
 		"directory": "packages/misskey-js"
 	},
 	"devDependencies": {
-		"@microsoft/api-extractor": "7.47.9",
-		"@swc/jest": "0.2.36",
-		"@types/jest": "29.5.13",
-		"@types/node": "20.14.12",
+		"@microsoft/api-extractor": "7.47.11",
+		"@swc/jest": "0.2.37",
+		"@types/jest": "29.5.14",
+		"@types/node": "22.9.0",
 		"@typescript-eslint/eslint-plugin": "7.17.0",
 		"@typescript-eslint/parser": "7.17.0",
 		"jest": "29.7.0",
@@ -47,17 +47,17 @@
 		"mock-socket": "9.3.1",
 		"ncp": "2.0.0",
 		"nodemon": "3.1.7",
-		"execa": "9.4.0",
+		"execa": "8.0.1",
 		"tsd": "0.31.2",
-		"typescript": "5.6.2",
-		"esbuild": "0.23.1",
+		"typescript": "5.6.3",
+		"esbuild": "0.24.0",
 		"glob": "11.0.0"
 	},
 	"files": [
 		"built"
 	],
 	"dependencies": {
-		"@simplewebauthn/types": "10.0.0",
+		"@simplewebauthn/types": "11.0.0",
 		"eventemitter3": "5.0.1",
 		"reconnecting-websocket": "4.4.0"
 	}
