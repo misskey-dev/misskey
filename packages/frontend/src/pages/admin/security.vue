@@ -101,6 +101,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkTextarea v-model="allowedEmailDomainsForm.state.allowedEmailDomains">
 						<template #label>Allowed Email Domains List</template>
 					</MkTextarea>
+
+					<MkSwitch v-model="allowedEmailDomainsForm.state.enableAllowedEmailDomainsOnly">
+						<template #label>Enable Allowed Email Domains Only</template>
+					</MkSwitch>
 				</div>
 			</MkFolder>
 
@@ -213,9 +217,11 @@ const emailValidationForm = useForm({
 
 const allowedEmailDomainsForm = useForm({
 	allowedEmailDomains: meta.allowedEmailDomains?.join('\n') || '',
+	enableAllowedEmailDomainsOnly: meta.enableAllowedEmailDomainsOnly,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		allowedEmailDomains: state.allowedEmailDomains.split('\n'),
+		enableAllowedEmailDomainsOnly: state.enableAllowedEmailDomainsOnly,
 	});
 	fetchInstance(true);
 });

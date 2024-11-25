@@ -164,7 +164,7 @@ export class EmailService {
 	@bindThis
 	public async validateEmailForAccount(emailAddress: string): Promise<{
 		available: boolean;
-		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned' | 'network' | 'blacklist';
+		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned' | 'network' | 'blacklist' | 'allowedOnly';
 	}> {
 		const exist = await this.userProfilesRepository.countBy({
 			emailVerified: true,
@@ -185,6 +185,14 @@ export class EmailService {
 			return {
 				available: true,
 				reason: null,
+			};
+		}
+
+		// ホワイトリストのみ許可の場合は即座にfalseを返す
+		if (this.meta.enableAllowedEmailDomainsOnly) {
+			return {
+				available: false,
+				reason: 'allowedOnly',
 			};
 		}
 
