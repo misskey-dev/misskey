@@ -85,6 +85,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-key"></i></template>
 						<template #label>TrueMail API Auth Key</template>
 					</MkInput>
+					<MkSwitch v-model="emailValidationForm.state.enableAutoAddBannedEmailDomain">
+						<template #label>Enable Auto Add Banned Email Domain</template>
+					</MkSwitch>
 				</div>
 			</MkFolder>
 
@@ -194,6 +197,7 @@ const emailValidationForm = useForm({
 	enableTruemailApi: meta.enableTruemailApi,
 	truemailInstance: meta.truemailInstance,
 	truemailAuthKey: meta.truemailAuthKey,
+	enableAutoAddBannedEmailDomain: meta.enableAutoAddBannedEmailDomain,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		enableActiveEmailValidation: state.enableActiveEmailValidation,
@@ -202,6 +206,7 @@ const emailValidationForm = useForm({
 		enableTruemailApi: state.enableTruemailApi,
 		truemailInstance: state.truemailInstance,
 		truemailAuthKey: state.truemailAuthKey,
+		enableAutoAddBannedEmailDomain: state.enableAutoAddBannedEmailDomain,
 	});
 	fetchInstance(true);
 });

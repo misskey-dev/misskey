@@ -142,6 +142,7 @@ export const paramDef = {
 		serverRules: { type: 'array', items: { type: 'string' } },
 		bannedEmailDomains: { type: 'array', items: { type: 'string' } },
 		allowedEmailDomains: { type: 'array', items: { type: 'string' } },
+		enableAutoAddBannedEmailDomain: { type: 'boolean' },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 		manifestJsonOverride: { type: 'string' },
 		enableFanoutTimeline: { type: 'boolean' },
@@ -642,6 +643,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.allowedEmailDomains !== undefined) {
 				set.allowedEmailDomains = ps.allowedEmailDomains;
+			}
+
+			if (ps.enableAutoAddBannedEmailDomain !== undefined) {
+				set.enableAutoAddBannedEmailDomain = ps.enableAutoAddBannedEmailDomain;
 			}
 
 			if (ps.urlPreviewEnabled !== undefined) {

@@ -16,6 +16,7 @@ import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { MetaService } from '@/core/MetaService.js';
 
 @Injectable()
 export class EmailService {
@@ -34,6 +35,7 @@ export class EmailService {
 		private loggerService: LoggerService,
 		private utilityService: UtilityService,
 		private httpRequestService: HttpRequestService,
+		private metaService: MetaService,
 	) {
 		this.logger = this.loggerService.getLogger('email');
 	}
@@ -227,6 +229,11 @@ export class EmailService {
 				blacklist: 'blacklist',
 			};
 
+			// 自動追加が有効な場合はブラックリストに追加する
+			if (this.meta.enableAutoAddBannedEmailDomain) {
+				await this.addBlockedHost(emailDomain);
+			}
+
 			return {
 				available: false,
 				reason: validated.reason ? formatReason[validated.reason] ?? null : null,
@@ -371,5 +378,12 @@ export class EmailService {
 				reason: 'network',
 			};
 		}
+	}
+
+	private async addBlockedHost(domain: string) {
+		const set = {} as Partial<MiMeta>;
+		set.bannedEmailDomains = this.meta.bannedEmailDomains;
+		set.bannedEmailDomains.push(domain);
+		await this.metaService.update(set);
 	}
 }

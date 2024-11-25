@@ -5176,6 +5176,7 @@ export type operations = {
             enableTruemailApi: boolean;
             truemailInstance: string | null;
             truemailAuthKey: string | null;
+            enableAutoAddBannedEmailDomain: boolean;
             enableChartsForRemoteUser: boolean;
             enableChartsForFederatedInstances: boolean;
             enableStatsForFederatedInstances: boolean;
@@ -9580,6 +9581,7 @@ export type operations = {
           serverRules?: string[];
           bannedEmailDomains?: string[];
           allowedEmailDomains?: string[];
+          enableAutoAddBannedEmailDomain?: boolean;
           preservedUsernames?: string[];
           manifestJsonOverride?: string;
           enableFanoutTimeline?: boolean;
