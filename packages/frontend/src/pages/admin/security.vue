@@ -89,6 +89,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<MkFolder>
+				<template #label>Allowed Email Domains</template>
+				<template v-if="allowedEmailDomainsForm.modified.value" #footer>
+					<MkFormFooter :form="allowedEmailDomainsForm"/>
+				</template>
+
+				<div class="_gaps_m">
+					<MkTextarea v-model="allowedEmailDomainsForm.state.allowedEmailDomains">
+						<template #label>Allowed Email Domains List</template>
+					</MkTextarea>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
 				<template #label>Banned Email Domains</template>
 				<template v-if="bannedEmailDomainsForm.modified.value" #footer>
 					<MkFormFooter :form="bannedEmailDomainsForm"/>
@@ -189,6 +202,15 @@ const emailValidationForm = useForm({
 		enableTruemailApi: state.enableTruemailApi,
 		truemailInstance: state.truemailInstance,
 		truemailAuthKey: state.truemailAuthKey,
+	});
+	fetchInstance(true);
+});
+
+const allowedEmailDomainsForm = useForm({
+	allowedEmailDomains: meta.allowedEmailDomains?.join('\n') || '',
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		allowedEmailDomains: state.allowedEmailDomains.split('\n'),
 	});
 	fetchInstance(true);
 });
