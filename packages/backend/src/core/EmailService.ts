@@ -177,6 +177,15 @@ export class EmailService {
 		}
 
 		const emailDomain: string = emailAddress.split('@')[1];
+
+		// ホワイトリストに含まれている場合は即座にtrueを返す
+		if (this.utilityService.isAllowedHost(this.meta.allowedEmailDomains, emailDomain)) {
+			return {
+				available: true,
+				reason: null,
+			};
+		}
+
 		const isBanned = this.utilityService.isBlockedHost(this.meta.bannedEmailDomains, emailDomain);
 
 		if (isBanned) {

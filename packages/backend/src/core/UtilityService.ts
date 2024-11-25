@@ -46,6 +46,12 @@ export class UtilityService {
 	}
 
 	@bindThis
+	public isAllowedHost(allowedHosts: string[], host: string | null): boolean {
+		if (host == null) return false;
+		return allowedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+	}
+
+	@bindThis
 	public isSilencedHost(silencedHosts: string[] | undefined, host: string | null): boolean {
 		if (!silencedHosts || host == null) return false;
 		return silencedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
