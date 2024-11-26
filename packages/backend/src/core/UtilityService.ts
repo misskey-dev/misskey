@@ -4,7 +4,7 @@
  */
 
 import { URL } from 'node:url';
-import punycode from 'punycode/';
+import punycode from 'punycode/punycode.js';
 import { Inject, Injectable } from '@nestjs/common';
 import RE2 from 're2';
 import psl from 'psl';
