@@ -10789,6 +10789,10 @@ export interface Locale extends ILocale {
          * {x}で見る
          */
         "showOnX": ParameterizedString<"x">;
+        /**
+         * 読み込みに時間がかかっています。
+         */
+        "takingTooLongToLoad": string;
         "_inDevelopment": {
             /**
              * この機能は開発中です

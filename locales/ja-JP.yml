@@ -2877,6 +2877,7 @@ _hana:
   flowerEffect: "いつでも花びらを降らせる"
   searchIsInBeta: "独自検索エンジンは現在開発中です。今ご利用いただけるのは通常のMisskeyと同じ検索エンジン（Meilisearch）です。今後の進化にご期待ください！"
   showOnX: "{x}で見る"
+  takingTooLongToLoad: "読み込みに時間がかかっています。"
   _inDevelopment:
     title: "この機能は開発中です"
     description: "はなみすきーは新規機能盛りだくさんで鋭意開発中です！\nどんな機能が実装されるかはお楽しみ。"
