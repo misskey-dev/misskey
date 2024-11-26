@@ -33,7 +33,7 @@
 	}
 
 	//#region Detect language & fetch translations
-	if (!localStorage.hasOwnProperty('locale')) {
+	if (!Object.hasOwn(localStorage, 'locale')) {
 		let lang = localStorage.getItem('lang');
 		if (lang == null || lang.toString == null || lang.toString() === 'null') {
 			lang = 'ja-JP';

@@ -273,7 +273,9 @@ export class FileInfoService {
 			watcher.close();
 		});
 		command.run();
-		for (let i = 1; true; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+		let i = 0;
+		while (true) {
+			i++;
 			const current = `${i}.png`;
 			const next = `${i + 1}.png`;
 			const framePath = join(cwd, current);

@@ -39,7 +39,7 @@ message('Start flushing.');
 
         console.error(e);
         setTimeout(() => {
-            location = '/';
+            window.location = '/';
         }, 10000)
     }
 })();

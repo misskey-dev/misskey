@@ -305,7 +305,7 @@ const keymap = {
 	'q': () => renote(true),
 	'esc': blur,
 	'm|o': () => showMenu(true),
-	's': () => showContent.value !== showContent.value,
+	's': () => { showContent.value = !showContent.value; focus(); },
 };
 
 provide('react', (reaction: string) => {

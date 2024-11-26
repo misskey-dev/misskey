@@ -195,7 +195,7 @@ function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
 				parsed.searchParams.append(key, value as string);
 			}
 
-			return (res as OAuthHttpResponse).redirect(parsed.toString());
+			(res as OAuthHttpResponse).redirect(parsed.toString());
 		},
 	};
 }

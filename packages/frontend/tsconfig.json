@@ -9,7 +9,7 @@
 		"noFallthroughCasesInSwitch": true,
 		"declaration": false,
 		"sourceMap": false,
-		"target": "ES2022",
+		"target": "es2022",
 		"module": "nodenext",
 		"moduleResolution": "nodenext",
 		"removeComments": false,

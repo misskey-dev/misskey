@@ -204,10 +204,10 @@ export class DropAndFusionGame extends EventEmitter<{
 		} else if (mono.shape === 'rectangle') {
 			return Matter.Bodies.rectangle(x, y, mono.sizeX, mono.sizeY, options);
 		} else if (mono.shape === 'custom') {
-			return Matter.Bodies.fromVertices(x, y, mono.vertices!.map(i => i.map(j => ({
+			return Matter.Bodies.fromVertices(x, y, mono.vertices?.map(i => i.map(j => ({
 				x: (j.x / mono.verticesSize!) * mono.sizeX,
 				y: (j.y / mono.verticesSize!) * mono.sizeY,
-			}))), options);
+			}))) ?? [], options);
 		} else {
 			throw new Error('unrecognized shape');
 		}

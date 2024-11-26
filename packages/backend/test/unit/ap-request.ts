@@ -9,7 +9,7 @@ import httpSignature from '@peertube/http-signature';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 
-export const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {
+const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {
 	return {
 		scheme: 'Signature',
 		params: {
