@@ -92,7 +92,7 @@ export function createAiScriptEnv(opts) {
 			utils.assertString(text);
 			return values.STR(Misskey.nyaize(text.value));
 		}),
-		'Mk:replaceMfm': values.FN_NATIVE(async ([text, fn], opts) => {
+		'Mfm:replaceTextNode': values.FN_NATIVE(async ([text, fn], opts) => {
 			utils.assertString(text);
 			utils.assertFunction(fn);
 
