@@ -5179,6 +5179,7 @@ export type operations = {
             enableChartsForFederatedInstances: boolean;
             enableStatsForFederatedInstances: boolean;
             enableServerMachineStats: boolean;
+            enableEnhancedServerStats: boolean;
             enableIdenticonGeneration: boolean;
             manifestJsonOverride: string;
             policies: Record<string, never>;
@@ -9575,6 +9576,7 @@ export type operations = {
           enableChartsForFederatedInstances?: boolean;
           enableStatsForFederatedInstances?: boolean;
           enableServerMachineStats?: boolean;
+          enableEnhancedServerStats?: boolean;
           enableIdenticonGeneration?: boolean;
           serverRules?: string[];
           bannedEmailDomains?: string[];
