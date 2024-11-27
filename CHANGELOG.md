@@ -4,6 +4,8 @@
 -
 
 ### Client
+- Enhance: ノート検索ページのデザイン調整  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/273)
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
 

@@ -2826,3 +2826,12 @@ _selfXssPrevention:
 _followRequest:
   recieved: "受け取った申請"
   sent: "送った申請"
+
+_search:
+  searchScopeAll: "全て"
+  searchScopeLocal: "ローカル"
+  searchScopeServer: "サーバー指定"
+  searchScopeUser: "ユーザー指定"
+  pleaseEnterServerHost: "サーバーのホストを入力してください"
+  pleaseSelectUser: "ユーザーを選択してください"
+  serverHostPlaceholder: "例: misskey.example.com"
