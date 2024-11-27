@@ -598,7 +598,7 @@ export type Channels = {
             follow: (payload: UserDetailedNotMe) => void;
             followed: (payload: UserDetailed | UserLite) => void;
             unfollow: (payload: UserDetailed) => void;
-            meUpdated: (payload: UserDetailed) => void;
+            meUpdated: () => void;
             pageEvent: (payload: PageEvent) => void;
             urlUploadFinished: (payload: {
                 marker: string;
