@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
+import * as Misskey from 'misskey-js';
 import { getEmojiName } from '@@/js/emojilist.js';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
@@ -32,7 +33,7 @@ import { i18n } from '@/i18n';
 defineProps<{
 	showing: boolean;
 	reaction: string;
-	users: any[]; // TODO
+	users: Misskey.entities.UserLite[];
 	count: number;
 	targetElement: HTMLElement;
 }>();
