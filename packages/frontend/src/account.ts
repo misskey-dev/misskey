@@ -22,7 +22,7 @@ type Account = Misskey.entities.MeDetailed & { token: string };
 const accountData = miLocalStorage.getItem('account');
 
 // TODO: 外部からはreadonlyに
-export let $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
+export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
 export const iAmModerator = $i != null && ($i.isAdmin === true || $i.isModerator === true);
 export const iAmAdmin = $i != null && $i.isAdmin;
@@ -178,18 +178,10 @@ export function updateAccount(accountData: Account) {
 
 export function updateAccountPartial(accountData: Partial<Account>) {
 	if (!$i) return;
-
-	if (accountData === null) {
-		void fetchAccount($i.token).then((accountData) => {
-			$i = accountData;
-			miLocalStorage.setItem('account', JSON.stringify($i));
-		});
-	} else {
-		for (const [key, value] of Object.entries(accountData)) {
-			$i[key] = value;
-		}
-		miLocalStorage.setItem('account', JSON.stringify($i));
+	for (const [key, value] of Object.entries(accountData)) {
+		$i[key] = value;
 	}
+	miLocalStorage.setItem('account', JSON.stringify($i));
 }
 
 export async function refreshAccount() {
