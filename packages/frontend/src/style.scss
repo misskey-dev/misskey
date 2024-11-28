@@ -560,6 +560,11 @@ html[data-color-scheme=dark] ._woodenFrame {
 	90% { opacity: 0; transform: scale(0.5); }
 }
 
+@keyframes marquee {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-100%); }
+}
+
 @keyframes global-tada {
 	from {
 		transform: scale3d(1, 1, 1);
