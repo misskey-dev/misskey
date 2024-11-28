@@ -84,25 +84,25 @@ async function setMode() {
 	pointer-events: none;
 
 	&:focus-visible + .radioRoot {
-		outline: 2px solid var(--focus);
+		outline: 2px solid var(--MI_THEME-focus);
 		outline-offset: 2px;
 	}
 
 	&:checked + .radioRoot {
-		border-color: var(--accent);
+		border-color: var(--MI_THEME-accent);
 	}
 
 	&:checked + .radioRoot .tick {
 		border-style: solid;
-		border-color: var(--accent);
-		color: var(--accent);
+		border-color: var(--MI_THEME-accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 
 .radioRoot {
-	padding: var(--margin);
-	background-color: var(--panel);
-	border-radius: var(--radius);
+	padding: var(--MI-margin);
+	background-color: var(--MI_THEME-panel);
+	border-radius: var(--MI-radius);
 	cursor: pointer;
 
 	border-width: 2px;
@@ -112,7 +112,7 @@ async function setMode() {
 	transition: border-color 0.2s;
 
 	&:hover {
-		border-color: var(--focus);
+		border-color: var(--MI_THEME-focus);
 	}
 
 	ul {
@@ -124,7 +124,7 @@ async function setMode() {
 .radioTitle {
 	display: flex;
 	align-items: center;
-	gap: var(--marginHalf);
+	gap: var(--MI-marginHalf);
 
 	.tick {
 		flex-shrink: 0;
@@ -134,9 +134,9 @@ async function setMode() {
 		text-align: center;
 		font-size: 1rem;
 		line-height: 2rem;
-		color: var(--fgTransparent);
+		color: var(--MI_THEME-fgTransparent);
 		border-radius: 50%;
-		border: 1px dashed var(--fgTransparent);
+		border: 1px dashed var(--MI_THEME-fgTransparent);
 
 		> i {
 			display: inline-block;
@@ -154,14 +154,14 @@ async function setMode() {
 .radioRecommendedFor {
 	margin: 8px 0 0;
 	padding: 24px 12px 12px;
-	border: 1px dashed var(--fgTransparent);
-	border-radius: var(--radius);
+	border: 1px dashed var(--MI_THEME-fgTransparent);
+	border-radius: var(--MI-radius);
 
 	.title {
 		margin: -34px 0 6px 12px;
     padding: 0 4px;
     width: fit-content;
-		background-color: var(--panel);
+		background-color: var(--MI_THEME-panel);
 	}
 }
 </style>

@@ -10779,7 +10779,6 @@ export interface Locale extends ILocale {
          */
         "native": string;
     };
-
     "_reactionChecksMuting": {
         /**
          * リアクションでミュートを考慮する
@@ -10893,7 +10892,7 @@ export interface Locale extends ILocale {
          * 全てのノート
          */
         "all": string;
-
+    };
     "_hana": {
         /**
          * はなみすきー設定
@@ -10907,88 +10906,6 @@ export interface Locale extends ILocale {
          * はな
          */
         "hanaModeShort": string;
-        "_inDevelopment": {
-            /**
-             * この機能は開発中です
-             */
-            "title": string;
-            /**
-             * はなみすきーは新規機能盛りだくさんで鋭意開発中です！
-             * どんな機能が実装されるかはお楽しみ。
-             */
-            "description": string;
-        };
-        "_welcome": {
-            /**
-             * 「{x}」とは？
-             */
-            "whatAboutX": ParameterizedString<"x">;
-            "_aboutHana": {
-                /**
-                 * はなみすきー
-                 */
-                "title": string;
-                /**
-                 * はなみすきーは、Misskeyベースの分散型SNSサービスです。
-                 * あなたのSNS体験に「はな」を添える、数々の独自機能を備えています。
-                 */
-                "description": string;
-            };
-            "_aboutDecentralized": {
-                /**
-                 * 分散型SNS
-                 */
-                "title": string;
-                /**
-                 * 一般的なSNSサービス（X, Instagram, YouTubeなど）はそのサービス内で投稿データなどが完結するようになっています。しかし、分散型SNSは、サービス同士が共通の仕組みを通して連携しており、他のサービスのユーザーの投稿を見たり、フォローしたりできるのです。
-                 * はなみすきーは標準で分散型テクノロジーのActivityPubに対応しており、他のMisskey/Mastodon等を利用したサービスやThreadsなどと通信することができます。
-                 */
-                "description": string;
-            };
-            "_features": {
-                /**
-                 * 近日提供予定
-                 */
-                "inDevelopment": string;
-                "_hanaMode": {
-                    /**
-                     * はなモードで、あなただけのSNS体験を
-                     */
-                    "title": string;
-                    /**
-                     * はなみすきー独自機能「はなモード」をオンにすると、投稿内容がローカルタイムライン（LTL）に流れないようになります。ただし、「ホーム」投稿とは違い、LTLへのリノートが可能なほか、外部サーバーには通常のパブリックの投稿として配信されます。
-                     * これにより、おひとりさまサーバーに近い分散SNS体験をワンクリックで構築することができます。
-                     */
-                    "description": string;
-                };
-                "_easyMigration": {
-                    /**
-                     * 他サービスから簡単移行
-                     */
-                    "title": string;
-                    /**
-                     * 他のMisskeyサーバーなどからの移行が簡単になる機能を提供！過去の投稿もはなみすきー上に引き継ぐことができます。
-                     */
-                    "description": string;
-                };
-                "_preciseSearching": {
-                    /**
-                     * 最新技術を活用した高精度な検索
-                     */
-                    "title": string;
-                    /**
-                     * 機械学習や最新の学術研究をもとに、はなみすきーのためにチューニングされた高精度で高速な検索機能を利用できます。また、はなみすきーの検索機能そのものが学術研究プロジェクトとなっているため、検索精度は日進月歩となることが期待できます。
-                     */
-                    "description": string;
-                };
-            };
-            "_cta": {
-                /**
-                 * 「はな」のあるSNS体験を楽しもう
-                 */
-                "title": string;
-            };
-        };
         "_hanaModeSwitcher": {
             /**
              * こんな方におすすめ

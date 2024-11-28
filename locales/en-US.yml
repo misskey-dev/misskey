@@ -2784,30 +2784,6 @@ _hideReactionCount:
 _hana:
   hanaSettings: "HanaMisskey Settings"
   hanaMode: "Hana Mode"
-  _inDevelopment:
-    title: "This feature is under development"
-    description: "HanaMisskey is packed with new features currently in development! Stay tuned to see what exciting features will be implemented."
-  _welcome:
-    whatAboutX: "What is '{x}'?"
-    _aboutHana:
-      title: "HanaMisskey"
-      description: "HanaMisskey is a decentralized social networking service (SNS) based on Misskey. It offers a variety of unique features to enhance your social experience."
-    _aboutDecentralized:
-      title: "Decentralized SNS"
-      description: "Traditional SNS services (such as X, Instagram, YouTube) are self-contained within their own networks. However, decentralized SNS services connect with each other through a common protocol, allowing you to view and follow posts from users on other services. HanaMisskey supports the decentralized technology ActivityPub by default, enabling communication with other services using Misskey, Mastodon or Threads."
-    _features:
-      inDevelopment: "Coming Soon"
-      _hanaMode:
-        title: "Enjoy a personalized SNS experience with Hana Mode"
-        description: "When you enable HanaMisskey's unique 'Hana Mode,' your posts won't appear in the Local Timeline (LTL). However, unlike 'Home' posts, they can still be re-noted to LTL and will be delivered as standard public posts to external servers. This feature allows you to create a decentralized SNS experience similar to a private server with just one click."
-      _easyMigration:
-        title: "Easy Migration from Other Services"
-        description: "We offer a feature that makes it easy to migrate from other Misskey servers! You can even carry over your past posts to HanaMisskey."
-      _preciseSearching:
-        title: "High-Precision Search Powered by the Latest Technology"
-        description: "You can take advantage of high-precision, fast search capabilities, fine-tuned for HanaMisskey based on machine learning and the latest academic research. As HanaMisskey's search function is itself a part of a research project, its accuracy is expected to continuously improve."
-    _cta:
-      title: "Let Your SNS Experience Blossom with HanaMisskey!"
   _hanaModeSwitcher:
     recommendedFor: "Recommended for"
     normal: "Normal"
