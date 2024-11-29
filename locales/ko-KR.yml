@@ -1302,7 +1302,7 @@ pleaseSelectAccount: "계정을 선택해주세요."
 availableRoles: "사용 가능한 역할"
 acknowledgeNotesAndEnable: "활성화 하기 전에 주의 사항을 확인했습니다."
 _accountSettings:
-  requireSigninToViewContents: "콘텐츠 열람을 위해 로그인으 필수로 설정하기"
+  requireSigninToViewContents: "콘텐츠 열람을 위해 로그인을 필수로 설정하기"
   requireSigninToViewContentsDescription1: "자신이 작성한 모든 노트 등의 콘텐츠를 보기 위해 로그인을 필수로 설정합니다. 크롤러가 정보 수집하는 것을 방지하는 효과를 기대할 수 있습니다."
   requireSigninToViewContentsDescription2: "URL 미리보기(OGP), 웹페이지에 삽입, 노트 인용을 지원하지 않는 서버에서 볼 수 없게 됩니다."
   requireSigninToViewContentsDescription3: "원격 서버에 연합된 콘텐츠에는 이러한 제한이 적용되지 않을 수 있습니다."
