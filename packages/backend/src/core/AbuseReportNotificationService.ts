@@ -154,9 +154,9 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		const convertedReports = abuseReports.map(it => {
 			return {
 				...it,
-				reporter: usersMap.get(it.reporterId),
-				targetUser: usersMap.get(it.targetUserId),
-				assignee: it.assigneeId ? usersMap.get(it.assigneeId) : null,
+				reporter: usersMap.get(it.reporterId) ?? null,
+				targetUser: usersMap.get(it.targetUserId) ?? null,
+				assignee: it.assigneeId ? (usersMap.get(it.assigneeId) ?? null) : null,
 			};
 		});
 
