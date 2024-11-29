@@ -77,6 +77,10 @@ mentions: "Mentions"
 directNotes: "Direct notes"
 importAndExport: "Import / Export"
 import: "Import"
+importOrigin: "Import Source"
+importNoteInfo: "You can import notes exported from other services."
+importNoteDisclaimer: "Not all notes can be imported. In cases where Misskey has been modified, or the export is from a completely different platform, import may not be possible at all."
+importNoteWarm: "Imported notes may only be visible on your user page."
 export: "Export"
 files: "Files"
 download: "Download"
@@ -1607,6 +1611,9 @@ _achievements:
       title: "I Am a Cat"
       description: "Mark your account as a cat"
       flavor: "I'll give you a name later."
+    _markedAsHanaModeUser:
+      title: "Wish I were born a small person like a violet"
+      description: "Unlocked Hana Mode to take the first step of your tiny, comfy fedi experience"
     _following1:
       title: "Following your first user"
       description: "Follow a user"
@@ -1781,6 +1788,7 @@ _role:
     ltlAvailable: "Can view the local timeline"
     canPublicNote: "Can send public notes"
     mentionMax: "Maximum number of mentions in a note"
+    canImportNotes: "Can import notes"
     canInvite: "Can create instance invite codes"
     inviteLimit: "Invite limit"
     inviteLimitCycle: "Invite limit cooldown"
@@ -2352,6 +2360,7 @@ _instanceCharts:
   filesTotal: "Cumulative number of files"
 _timelines:
   home: "Home"
+  hanami: "Hanami"
   local: "Local"
   social: "Social"
   global: "Global"
@@ -2742,6 +2751,7 @@ _contextMenu:
   app: "Application"
   appWithShift: "Application with shift key"
   native: "Native"
+
 _reactionChecksMuting:
   title: "Check mutings when get reactions"
   caption: "Check mutings when get reactions, but cache does not work and may increase traffic"
@@ -2770,3 +2780,19 @@ _hideReactionCount:
   self: "Only my notes"
   others: "Only notes of others"
   all: "All notes"
+
+_hana:
+  hanaSettings: "HanaMisskey Settings"
+  hanaMode: "Hana Mode"
+  _hanaModeSwitcher:
+    recommendedFor: "Recommended for"
+    normal: "Normal"
+    normal1: "You can use the LTL (Local Timeline)"
+    normal2: "Posts set to 'Public' will appear on the LTL"
+    normalRecommend: "For those who want to prioritize interaction with users on the same server"
+    hana1: "LTL is not available"
+    hana2: "Posts set to 'Public' will not appear on the LTL"
+    hana3: "You can use the 'Hana Timeline,' which allows you to browse the latest notes from users you follow and popular posts from the Fediverse"
+    hanaRecommend: "For those who want a decentralized SNS experience similar to a private server, while still emphasizing interaction with external servers as well"
+    saveConfirmDescription: "There is a limit on how many times you can switch modes within a certain period."
+

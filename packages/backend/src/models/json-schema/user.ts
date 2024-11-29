@@ -132,6 +132,10 @@ export const packedUserLiteSchema = {
 			type: 'number',
 			nullable: true, optional: true,
 		},
+		isInHanaMode: {
+			type: 'boolean',
+			nullable: false, optional: true,
+		},
 		instance: {
 			type: 'object',
 			nullable: false, optional: true,

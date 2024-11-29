@@ -16,17 +16,18 @@
 	<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
 	<meta
 		http-equiv="Content-Security-Policy"
-		content="default-src 'self' https://newassets.hcaptcha.com/ https://challenges.cloudflare.com/ http://localhost:7493/;
+		content="default-src 'self' https://newassets.hcaptcha.com/ https://challenges.cloudflare.com/ http://localhost:7493/ static-assets.misskey.flowers;
 			worker-src 'self';
 			script-src 'self' 'unsafe-eval' https://*.hcaptcha.com https://challenges.cloudflare.com https://esm.sh;
-			style-src 'self' 'unsafe-inline';
-			img-src 'self' data: blob: www.google.com xn--931a.moe localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000;
+			style-src 'self' 'unsafe-inline' static-assets.misskey.flowers;
+			img-src 'self' data: blob: www.google.com xn--931a.moe static-assets.misskey.flowers localhost:3000 localhost:5174 127.0.0.1:5174 127.0.0.1:3000;
 			media-src 'self' localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000;
 			connect-src 'self' localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000 https://newassets.hcaptcha.com;
 			frame-src *;"
 	/>
 	<meta property="og:site_name" content="[DEV BUILD] Misskey" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://static-assets.misskey.flowers/fonts/hana-icons/font.css">
 </head>
 
 <body>

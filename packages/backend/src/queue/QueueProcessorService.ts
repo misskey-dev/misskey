@@ -46,6 +46,7 @@ import { AggregateRetentionProcessorService } from './processors/AggregateRetent
 import { QueueLoggerService } from './QueueLoggerService.js';
 import { QUEUE, baseQueueOptions } from './const.js';
 import { ScheduledNoteDeleteProcessorService } from './processors/ScheduledNoteDeleteProcessorService.js';
+import { ImportNotesProcessorService } from './processors/ImportNotesProcessorService.js';
 
 // ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
 function httpRelatedBackoff(attemptsMade: number) {
@@ -109,6 +110,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private exportUserListsProcessorService: ExportUserListsProcessorService,
 		private exportAntennasProcessorService: ExportAntennasProcessorService,
 		private importFollowingProcessorService: ImportFollowingProcessorService,
+		private importNotesProcessorService: ImportNotesProcessorService,
 		private importMutingProcessorService: ImportMutingProcessorService,
 		private importBlockingProcessorService: ImportBlockingProcessorService,
 		private importUserListsProcessorService: ImportUserListsProcessorService,
@@ -217,6 +219,12 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					case 'exportAntennas': return this.exportAntennasProcessorService.process(job);
 					case 'importFollowing': return this.importFollowingProcessorService.process(job);
 					case 'importFollowingToDb': return this.importFollowingProcessorService.processDb(job);
+					case 'importNotes': return this.importNotesProcessorService.process(job);
+				  case 'importTweetsToDb': return this.importNotesProcessorService.processTwitterDb(job);
+				  case 'importIGToDb': return this.importNotesProcessorService.processIGDb(job);
+				  case 'importMastoToDb': return this.importNotesProcessorService.processMastoToDb(job);
+				  case 'importPleroToDb': return this.importNotesProcessorService.processPleroToDb(job);
+				  case 'importKeyNotesToDb': return this.importNotesProcessorService.processKeyNotesToDb(job);
 					case 'importMuting': return this.importMutingProcessorService.process(job);
 					case 'importBlocking': return this.importBlockingProcessorService.process(job);
 					case 'importBlockingToDb': return this.importBlockingProcessorService.processDb(job);
