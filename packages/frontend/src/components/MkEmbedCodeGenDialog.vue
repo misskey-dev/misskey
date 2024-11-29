@@ -306,9 +306,14 @@ onUnmounted(() => {
 
 .embedCodeGenPreviewRoot {
 	position: relative;
-	background-color: var(--MI_THEME-bg);
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 6px, var(--MI_THEME-panel) 6px, var(--MI_THEME-panel) 12px);
+	background-color: var(--bg);
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--panel) 6px,
+		var(--panel) 16px
+	);
 	cursor: not-allowed;
 }
 

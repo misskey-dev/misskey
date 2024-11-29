@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton @click="init"><i class="ti ti-refresh"></i> {{ i18n.ts.reloadAccountsList }}</MkButton>
 			</div>
 
-			<MkUserCardMini v-for="user in accounts" :key="user.id" :user="user" :class="$style.user" @click.prevent="menu(user, $event)"/>
+			<MkUserCardMini v-for="user in accounts" :key="user.id" :user="user" withChart :class="$style.user" @click.prevent="menu(user, $event)"/>
 		</div>
 	</FormSuspense>
 </div>

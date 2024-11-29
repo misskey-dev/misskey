@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_s">
 				<div v-for="user in users" :key="user.id" :class="$style.userItem">
 					<MkA :class="$style.userItemBody" :to="`${userPage(user)}`">
-						<MkUserCardMini :user="user"/>
+						<MkUserCardMini :user="user" withChart/>
 					</MkA>
 				</div>
 			</div>
