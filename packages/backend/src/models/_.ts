@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, Repository, SelectQueryBuilder, TypeORMError } from 'typeorm';
-import { DriverUtils } from 'typeorm/driver/DriverUtils.js';
+import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
 import { RelationCountLoader } from 'typeorm/query-builder/relation-count/RelationCountLoader.js';
 import { RelationIdLoader } from 'typeorm/query-builder/relation-id/RelationIdLoader.js';
-import { RawSqlResultsToEntityTransformer } from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
-import { ObjectUtils } from 'typeorm/util/ObjectUtils.js';
-import { OrmUtils } from 'typeorm/util/OrmUtils.js';
+import {
+	RawSqlResultsToEntityTransformer,
+} from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAbuseReportNotificationRecipient } from '@/models/AbuseReportNotificationRecipient.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
@@ -99,19 +98,25 @@ export const miRepository = {
 		mainAlias.name = 't';
 		const columnNames = this.createTableColumnNames();
 		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
-		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		builder.expressionMap.mainAlias!.tablePath = 'cte';
-		this.selectAliasColumnNames(queryBuilder, builder);
-		if (findOptions) {
-			builder.setFindOptions(findOptions);
+
+		const queryRunner = this.manager.connection.createQueryRunner('master');
+		try {
+			const builder = this.createQueryBuilder(undefined, queryRunner).addCommonTableExpression(queryBuilder, 'cte', { columnNames });
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			builder.expressionMap.mainAlias!.tablePath = 'cte';
+			this.selectAliasColumnNames(queryBuilder, builder);
+			if (findOptions) {
+				builder.setFindOptions(findOptions);
+			}
+			const raw = await builder.execute();
+			mainAlias.name = name;
+			const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
+			const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
+			const result = new RawSqlResultsToEntityTransformer(builder.expressionMap, builder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, mainAlias);
+			return result[0];
+		} finally {
+			await queryRunner.release();
 		}
-		const raw = await builder.execute();
-		mainAlias.name = name;
-		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
-		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
-		const result = new RawSqlResultsToEntityTransformer(builder.expressionMap, builder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, mainAlias);
-		return result[0];
 	},
 	selectAliasColumnNames(queryBuilder, builder) {
 		let selectOrAddSelect = (selection: string, selectionAliasName?: string) => {

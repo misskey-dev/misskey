@@ -7,6 +7,7 @@
 import pg from 'pg';
 import { DataSource, Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
+import { type QueryRunner } from 'typeorm';
 import { entities as charts } from '@/core/chart/entities.js';
 
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
@@ -98,18 +99,24 @@ class MyCustomLogger implements Logger {
 	}
 
 	@bindThis
-	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query).substring(0, 100));
+	private replicationMode(runner?: QueryRunner) {
+		const mode = runner?.getReplicationMode();
+		return mode ? `[${mode}]` : '[default]';
 	}
 
 	@bindThis
-	public logQueryError(error: string, query: string, parameters?: any[]) {
-		sqlLogger.error(this.highlight(query));
+	public logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		sqlLogger.info(this.replicationMode(queryRunner) + ' ' + this.highlight(query).substring(0, 100));
 	}
 
 	@bindThis
-	public logQuerySlow(time: number, query: string, parameters?: any[]) {
-		sqlLogger.warn(this.highlight(query));
+	public logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		sqlLogger.error(this.replicationMode(queryRunner) + ' ' + this.highlight(query));
+	}
+
+	@bindThis
+	public logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		sqlLogger.warn(this.replicationMode(queryRunner) + ' ' + this.highlight(query));
 	}
 
 	@bindThis
