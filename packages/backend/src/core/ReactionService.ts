@@ -107,7 +107,8 @@ export class ReactionService {
 		// Check blocking
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
-			if (blocked) {
+			const reactionBlocked = await this.userBlockingService.checkReactionBlocked(note.userId, user.id);
+			if (blocked || reactionBlocked) {
 				throw new IdentifiableError('e70412a4-7197-4726-8e74-f3e0deb92aa7');
 			}
 		}

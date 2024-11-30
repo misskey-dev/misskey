@@ -122,6 +122,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</MkPagination>
 	</MkFolder>
+
+	<MkFolder>
+		<template #icon><i class="ti ti-ban"></i></template>
+		<template #label>{{ i18n.ts.reactionBlockedUsers }}</template>
+
+		<MkPagination :pagination="blockingReactionUserPagination">
+			<template #empty>
+				<div class="_fullinfo">
+					<img :src="infoImageUrl" class="_ghost"/>
+					<div>{{ i18n.ts.noUsers }}</div>
+				</div>
+			</template>
+
+			<template #default="{ items }">
+				<div class="_gaps_s">
+					<div v-for="item in items" :key="item.blockee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedBlockItems.includes(item.id) }]">
+						<div :class="$style.userItemMain">
+							<MkA :class="$style.userItemMainBody" :to="userPage(item.blockee)">
+								<MkUserCardMini :user="item.blockee"/>
+							</MkA>
+							<button class="_button" :class="$style.userToggle" @click="toggleBlockItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
+							<button class="_button" :class="$style.remove" @click="unblockReactionUser(item.blockee, $event)"><i class="ti ti-x"></i></button>
+						</div>
+						<div v-if="expandedBlockItems.includes(item.id)" :class="$style.userItemSub">
+							<div>Blocked at: <MkTime :time="item.createdAt" mode="detail"/></div>
+							<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
+							<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
+						</div>
+					</div>
+				</div>
+			</template>
+		</MkPagination>
+	</MkFolder>
 </div>
 </template>
 
@@ -154,6 +187,11 @@ const mutingPagination = {
 
 const blockingPagination = {
 	endpoint: 'blocking/list' as const,
+	limit: 10,
+};
+
+const blockingReactionUserPagination = {
+	endpoint: 'blocking-reaction-user/list' as const,
 	limit: 10,
 };
 
@@ -190,6 +228,16 @@ async function unblock(user, ev) {
 		action: async () => {
 			await os.apiWithDialog('blocking/delete', { userId: user.id });
 			//role.users = role.users.filter(u => u.id !== user.id);
+		},
+	}], ev.currentTarget ?? ev.target);
+}
+
+async function unblockReactionUser(user, ev) {
+	os.popupMenu([{
+		text: i18n.ts.unblock,
+		icon: 'ti ti-x',
+		action: async () => {
+			await os.apiWithDialog('blocking-reaction-user/delete', { userId: user.id });
 		},
 	}], ev.currentTarget ?? ev.target);
 }

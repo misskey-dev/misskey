@@ -607,6 +607,14 @@ export interface Locale extends ILocale {
      */
     "unblock": string;
     /**
+     * リアクションをブロック
+     */
+    "blockReactionUser": string;
+    /**
+     * リアクションのブロックを解除
+     */
+    "unblockReactionUser": string;
+    /**
      * 凍結
      */
     "suspend": string;
@@ -622,6 +630,14 @@ export interface Locale extends ILocale {
      * ブロック解除しますか？
      */
     "unblockConfirm": string;
+    /**
+     * リアクションをブロックしますか？
+     */
+    "blockReactionUserConfirm": string;
+    /**
+     * リアクションのブロックを解除しますか？
+     */
+    "unblockReactionUserConfirm": string;
     /**
      * 凍結しますか？
      */
@@ -994,6 +1010,10 @@ export interface Locale extends ILocale {
      * ブロックしたユーザー
      */
     "blockedUsers": string;
+    /**
+     * リアクションをブロックしたユーザー
+     */
+    "reactionBlockedUsers": string;
     /**
      * ユーザーはいません
      */

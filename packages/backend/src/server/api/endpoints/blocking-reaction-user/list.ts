@@ -51,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.blockingsRepository.createQueryBuilder('blocking'), ps.sinceId, ps.untilId)
 				.andWhere('blocking.blockerId = :meId', { meId: me.id })
-				.andWhere('blocking.blockType = :blockType', { blockType: MiBlockingType.User });
+				.andWhere('blocking.blockType = :blockType', { blockType: MiBlockingType.Reaction });
 
 			const blockings = await query
 				.limit(ps.limit)

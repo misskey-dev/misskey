@@ -120,6 +120,9 @@ import * as ep___auth_session_userkey from './endpoints/auth/session/userkey.js'
 import * as ep___blocking_create from './endpoints/blocking/create.js';
 import * as ep___blocking_delete from './endpoints/blocking/delete.js';
 import * as ep___blocking_list from './endpoints/blocking/list.js';
+import * as ep___blocking_reaction_user_create from './endpoints/blocking-reaction-user/create.js';
+import * as ep___blocking_reaction_user_delete from './endpoints/blocking-reaction-user/delete.js';
+import * as ep___blocking_reaction_user_list from './endpoints/blocking-reaction-user/list.js';
 import * as ep___channels_create from './endpoints/channels/create.js';
 import * as ep___channels_featured from './endpoints/channels/featured.js';
 import * as ep___channels_follow from './endpoints/channels/follow.js';
@@ -506,6 +509,9 @@ const eps = [
 	['blocking/create', ep___blocking_create],
 	['blocking/delete', ep___blocking_delete],
 	['blocking/list', ep___blocking_list],
+	['blocking-reaction-user/create', ep___blocking_reaction_user_create],
+	['blocking-reaction-user/delete', ep___blocking_reaction_user_delete],
+	['blocking-reaction-user/list', ep___blocking_reaction_user_list],
 	['channels/create', ep___channels_create],
 	['channels/featured', ep___channels_featured],
 	['channels/follow', ep___channels_follow],

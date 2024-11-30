@@ -6,7 +6,8 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, BlockingsRepository } from '@/models/_.js';
+import type { BlockingsRepository, UsersRepository } from '@/models/_.js';
+import { MiBlockingType } from '@/models/Blocking.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DI } from '@/di-symbols.js';
@@ -92,6 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				where: {
 					blockerId: blocker.id,
 					blockeeId: blockee.id,
+					blockType: MiBlockingType.User,
 				},
 			});
 

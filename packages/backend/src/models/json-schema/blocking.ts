@@ -27,5 +27,10 @@ export const packedBlockingSchema = {
 			optional: false, nullable: false,
 			ref: 'UserDetailedNotMe',
 		},
+		blockType: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['user', 'reaction'],
+		},
 	},
 } as const;

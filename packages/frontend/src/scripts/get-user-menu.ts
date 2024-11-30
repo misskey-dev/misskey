@@ -84,6 +84,16 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 		});
 	}
 
+	async function toggleReactionBlock() {
+		if (!await getConfirmed(user.isReactionBlocking ? i18n.ts.unblockReactionUserConfirm : i18n.ts.blockReactionUserConfirm)) return;
+
+		os.apiWithDialog(user.isReactionBlocking ? 'blocking-reaction-user/delete' : 'blocking-reaction-user/create', {
+			userId: user.id,
+		}).then(() => {
+			user.isReactionBlocking = !user.isReactionBlocking;
+		});
+	}
+
 	async function toggleNotify() {
 		os.apiWithDialog('following/update', {
 			userId: user.id,
@@ -373,6 +383,10 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			icon: 'ti ti-ban',
 			text: user.isBlocking ? i18n.ts.unblock : i18n.ts.block,
 			action: toggleBlock,
+		}, {
+			icon: 'ti ti-ban',
+			text: user.isReactionBlocking ? i18n.ts.unblockReactionUser : i18n.ts.blockReactionUser,
+			action: toggleReactionBlock,
 		});
 
 		if (user.isFollowed) {

@@ -10,6 +10,7 @@ import type { MiUser } from '@/models/User.js';
 import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { MiBlockingType } from '@/models/Blocking.js';
 import type { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
@@ -72,7 +73,8 @@ export class QueryService {
 	public generateBlockedUserQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const blockingQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockerId')
-			.where('blocking.blockeeId = :blockeeId', { blockeeId: me.id });
+			.where('blocking.blockeeId = :blockeeId', { blockeeId: me.id })
+			.andWhere('blocking.blockType = :blockType', { blockType: MiBlockingType.User });
 
 		// 投稿の作者にブロックされていない かつ
 		// 投稿の返信先の作者にブロックされていない かつ
@@ -97,7 +99,8 @@ export class QueryService {
 	public generateBlockQueryForUsers(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const blockingQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockeeId')
-			.where('blocking.blockerId = :blockerId', { blockerId: me.id });
+			.where('blocking.blockerId = :blockerId', { blockerId: me.id })
+			.andWhere('blocking.blockType = :blockType', { blockType: MiBlockingType.User });
 
 		const blockedQuery = this.blockingsRepository.createQueryBuilder('blocking')
 			.select('blocking.blockerId')

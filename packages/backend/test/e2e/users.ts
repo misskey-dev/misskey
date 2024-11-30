@@ -98,6 +98,8 @@ describe('ユーザー', () => {
 			hasPendingFollowRequestToYou: user.hasPendingFollowRequestToYou ?? false,
 			isBlocking: user.isBlocking ?? false,
 			isBlocked: user.isBlocked ?? false,
+			isReactionBlocking: user.isReactionBlocking ?? false,
+			isReactionBlocked: user.isReactionBlocked ?? false,
 			isMuted: user.isMuted ?? false,
 			isRenoteMuted: user.isRenoteMuted ?? false,
 			notify: user.notify ?? 'none',
