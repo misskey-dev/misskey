@@ -1,13 +1,16 @@
-## Unreleased
+## 2024.11.1
 
 ### General
 -
 
 ### Client
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
+- Fix: サーバー情報メニューに区切り線が不足していたのを修正
 
 ### Server
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
+- Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
 
 
 ## 2024.11.0
