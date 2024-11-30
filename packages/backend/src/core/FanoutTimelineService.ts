@@ -14,9 +14,9 @@ export type FanoutTimelineName =
 	| `homeTimeline:${string}`
 	| `homeTimelineWithFiles:${string}` // only notes with files are included
 	// local timeline
-	| `localTimeline` // replies are not included
-	| `localTimelineWithFiles` // only non-reply notes with files are included
-	| `localTimelineWithReplies` // only replies are included
+	| 'localTimeline' // replies are not included
+	| 'localTimelineWithFiles' // only non-reply notes with files are included
+	| 'localTimelineWithReplies' // only replies are included
 	| `localTimelineWithReplyTo:${string}` // Only replies to specific local user are included. Parameter is reply user id.
 
 	// antenna
@@ -110,5 +110,35 @@ export class FanoutTimelineService {
 	@bindThis
 	public purge(name: FanoutTimelineName) {
 		return this.redisForTimelines.del('list:' + name);
+	}
+
+	@bindThis
+	public async purgeAllcache() {
+		const timeLinePatterns = [
+			'*list:homeTimeline*',
+			'*list:localTimeline*',
+			'*list:antennaTimeline*',
+			'*list:userTimeline*',
+			'*list:userListTimeline*',
+			'*list:channelTimeline*',
+			'*list:roleTimeline*',
+		];
+		let timeLines = [] as string[];
+
+		for (const timeline of timeLinePatterns) {
+			let cursor = '0';
+			do {
+				const scanResult = await this.redisForTimelines.scan(cursor, 'MATCH', timeline, 'COUNT', 300);
+				cursor = scanResult[0];
+				timeLines = timeLines.concat(scanResult[1]);
+				scanResult[1].forEach(x => console.log(x));
+			} while (cursor !== '0');
+		}
+
+		const pipeline = this.redisForTimelines.pipeline();
+		for (const timeLine of timeLines) {
+			pipeline.del(`list:${timeLine.split('list:')[1]}`);
+		}
+		await pipeline.exec();
 	}
 }
