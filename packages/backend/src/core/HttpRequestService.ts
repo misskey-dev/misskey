@@ -283,6 +283,7 @@ export class HttpRequestService {
 		},
 	): Promise<Response> {
 		const timeout = args.timeout ?? 5000;
+		const decodedUrl = decodeURIComponent(url);
 
 		const controller = new AbortController();
 		setTimeout(() => {
@@ -291,7 +292,7 @@ export class HttpRequestService {
 
 		const isLocalAddressAllowed = args.isLocalAddressAllowed ?? false;
 
-		const res = await fetch(url, {
+		const res = await fetch(decodedUrl, {
 			method: args.method ?? 'GET',
 			headers: {
 				'User-Agent': this.config.userAgent,
@@ -299,7 +300,7 @@ export class HttpRequestService {
 			},
 			body: args.body,
 			size: args.size ?? 10 * 1024 * 1024,
-			agent: (url) => this.getAgentByUrl(url, false, isLocalAddressAllowed),
+			agent: (decodedUrl) => this.getAgentByUrl(decodedUrl, false, isLocalAddressAllowed),
 			signal: controller.signal,
 		});
 
