@@ -50,13 +50,19 @@ export class UtilityService {
 	@bindThis
 	public isBlockedHost(blockedHosts: string[], host: string | null): boolean {
 		if (host == null) return false;
-		return blockedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+		return blockedHosts.some(x => {
+			if (x.startsWith('.')) return `.${host.toLowerCase()}`.endsWith(x);
+			return host.toLowerCase() === x;
+		});
 	}
 
 	@bindThis
 	public isAllowedHost(allowedHosts: string[], host: string | null): boolean {
 		if (host == null) return false;
-		return allowedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+		return allowedHosts.some(x => {
+			if (x.startsWith('.')) return `.${host.toLowerCase()}`.endsWith(x);
+			return host.toLowerCase() === x;
+		});
 	}
 
 	@bindThis
