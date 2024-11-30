@@ -557,7 +557,7 @@ let bgmNodes: ReturnType<typeof sound.createSourceNode> | null = null;
 let renderer: Matter.Render | null = null;
 let monoTextures: Record<string, Blob> = {};
 let monoTextureUrls: Record<string, string> = {};
-let tickRaf: number | null = null;
+let tickInterval: number | null = null;
 let game = new DropAndFusionGame({
 	seed: seed,
 	gameMode: props.gameMode,
@@ -663,13 +663,20 @@ function getTextureImageUrl(mono: Mono) {
 	}
 }
 
+function startTicking(tickFunction: () => void) {
+	tickInterval = window.setInterval(tickFunction, game.TICK_DELTA);
+}
+
+function stopTicking() {
+	if (tickInterval !== null) {
+		window.clearInterval(tickInterval);
+		tickInterval = null;
+	}
+}
+
 function tick() {
 	const hasNextTick = game.tick();
-	if (hasNextTick) {
-		tickRaf = window.requestAnimationFrame(tick);
-	} else {
-		tickRaf = null;
-	}
+	if (!hasNextTick) stopTicking();
 }
 
 function tickReplay() {
@@ -700,11 +707,7 @@ function tickReplay() {
 		if (!hasNextTick) break;
 	}
 
-	if (hasNextTick) {
-		tickRaf = window.requestAnimationFrame(tickReplay);
-	} else {
-		tickRaf = null;
-	}
+	if (!hasNextTick) stopTicking();
 }
 
 async function start() {
@@ -716,7 +719,7 @@ async function start() {
 	});
 	Matter.Render.run(renderer);
 	game.start();
-	window.requestAnimationFrame(tick);
+	startTicking(tick);
 
 	gameLoaded.value = true;
 
@@ -803,9 +806,7 @@ function reset() {
 function dispose() {
 	game.dispose();
 	if (renderer) Matter.Render.stop(renderer);
-	if (tickRaf) {
-		window.cancelAnimationFrame(tickRaf);
-	}
+	stopTicking();
 }
 
 function backToTitle() {
@@ -829,7 +830,7 @@ function replay() {
 		});
 		Matter.Render.run(renderer);
 		game.start();
-		window.requestAnimationFrame(tickReplay);
+		startTicking(tickReplay);
 	});
 }
 

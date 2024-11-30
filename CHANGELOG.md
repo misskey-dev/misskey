@@ -6,6 +6,7 @@
 ### Client
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
+- Fix: Ensure physics run the same across different framerates
 
 ### Server
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )

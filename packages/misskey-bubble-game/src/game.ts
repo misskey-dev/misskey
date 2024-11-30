@@ -51,7 +51,7 @@ export class DropAndFusionGame extends EventEmitter<{
 	public readonly DROP_COOLTIME = 30; // frame
 	public readonly PLAYAREA_MARGIN = 25;
 	private STOCK_MAX = 4;
-	private TICK_DELTA = 1000 / 60; // 60fps
+	public readonly TICK_DELTA = 1000 / 60; // 60fps
 
 	public frame = 0;
 	public engine: Matter.Engine;
