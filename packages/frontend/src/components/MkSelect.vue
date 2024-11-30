@@ -263,6 +263,9 @@ function show() {
 	cursor: pointer;
 	pointer-events: none;
 	user-select: none;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .prefix,
