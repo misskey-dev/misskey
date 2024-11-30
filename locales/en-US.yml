@@ -2758,38 +2758,17 @@ _selfXssPrevention:
 _hana:
   emojiRemakrs: "remarks"
   hanaSettings: "HanaMisskey Settings"
+  hanaMisskey: "HanaMisskey"
   hanaMode: "Hana Mode"
   hanaModeShort: "Hana"
   hanaModeTutorialDescription: "One of HanaMisskey's key unique features is Hana Mode, and your social networking experience with HanaMisskey will vary greatly depending on whether you enable Hana Mode or not. Below are the main differences and recommended use cases, so please select either one and proceed."
   flowerEffect: "Show flurries all year round"
   searchIsInBeta: "Our own search engine is currently under development. Currently you are using the same search engine (Meilisearch) as regular Misskey. Stay tuned to see how the search is optimized in the future!"
+  showOnX: "View on {x}"
+  takingTooLongToLoad: "It seems to be taking a long time to load. Are you looking for these?"
   _inDevelopment:
     title: "This feature is under development"
     description: "HanaMisskey is packed with new features currently in development! Stay tuned to see what exciting features will be implemented."
-  _welcome:
-    whatAboutX: "What is '{x}'?"
-    _aboutHana:
-      title: "HanaMisskey"
-      description: "HanaMisskey is a decentralized social networking service (SNS) based on Misskey. It offers a variety of unique features to enhance your social experience."
-    _aboutDecentralized:
-      title: "Decentralized SNS"
-      description: "Traditional SNS services (such as X, Instagram, YouTube) are self-contained within their own networks. However, decentralized SNS services connect with each other through a common protocol, allowing you to view and follow posts from users on other services. HanaMisskey supports the decentralized technology ActivityPub by default, enabling communication with other services using Misskey, Mastodon or Threads."
-    _features:
-      inDevelopment: "Coming Soon"
-      _hanaMode:
-        title: "Enjoy a personalized SNS experience with Hana Mode"
-        description: "When you enable HanaMisskey's unique 'Hana Mode,' your posts won't appear in the Local Timeline (LTL). However, unlike 'Home' posts, they can still be re-noted to LTL and will be delivered as standard public posts to external servers. This feature allows you to create a decentralized SNS experience similar to a private server with just one click."
-      _reactionAbundance:
-        title: "Express Yourself with Boundless Reactions"
-        description: "Hearts and likes are just the beginning. With HanaMisskey, dive into a world of diverse reactions—from charming characters to expressive text. Turn simple replies into something special, or stick to your favorites by setting it to receive only hearts. The choice is yours!"
-      _easyMigration:
-        title: "Easy Migration from Other Services"
-        description: "We offer a feature that makes it easy to migrate from other Misskey servers! You can even carry over your past posts to HanaMisskey."
-      _preciseSearching:
-        title: "High-Precision Search Powered by the Latest Technology"
-        description: "You can take advantage of high-precision, fast search capabilities, fine-tuned for HanaMisskey based on machine learning and the latest academic research. As HanaMisskey's search function is itself a part of a research project, its accuracy is expected to continuously improve."
-    _cta:
-      title: "Let Your SNS Experience Blossom with HanaMisskey!"
   _hanaModeSwitcher:
     recommendedFor: "Recommended for"
     normal: "Normal"
@@ -2826,3 +2805,13 @@ _hana:
     bskPatrons: "BackspaceKey Era Patrons"
     bskDescription: "The predecessor of HanaMisskey was a Misskey server called BackspaceKey. We appreciate the longstanding support 😊"
     morePatrons: "We have received support from many others as well. Thank you 😊"
+  _visitorLoginPopup:
+    title: "Let Your SNS Experience Blossom with HanaMisskey"
+    description: "Have fun with reactions. Be yourself with HanaMode. Dive into a whole new social networking experience on HanaMisskey."
+  _tutorialMinorSettings:
+    title: "Settings for Sensitive Content"
+    description: "You can configure how sensitive content is displayed."
+    muteSensitive: "Mute notes containing sensitive media"
+    muteSensitiveDescription: "Notes containing sensitive images, videos, or audio will be displayed in a minimized state. You can click to open and view the content, but the files themselves will remain blurred."
+    confirmWhenRevealingSensitiveMediaDescription: "Sensitive content is displayed in a blurred state by default, but you can enable an additional confirmation dialog to prevent accidental actions when clicking to reveal the content."
+    forMinor: "If you are underage, please review this with your parents or guardians. You can change this setting at any time."
