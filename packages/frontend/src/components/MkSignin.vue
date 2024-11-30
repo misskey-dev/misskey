@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			key="passkey"
 
 			:credentialRequest="credentialRequest!"
-			:isPerformingPasswordlessLogin="doingPasskeyFromInputPage"
+			:isPerformingPasswordlessLogin="doingPasskeyFromInputPage || needForcedPasskey"
 
 			@done="onPasskeyDone"
 			@useTotp="onUseTotp"
@@ -100,6 +100,7 @@ const waiting = ref(false);
 
 const passwordPageEl = useTemplateRef('passwordPageEl');
 const needCaptcha = ref(false);
+const needForcedPasskey = ref(false);
 
 const userInfo = ref<null | Misskey.entities.UserDetailed>(null);
 const password = ref('');
@@ -247,7 +248,22 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 					break;
 				}
 				case 'passkey': {
-					if (webAuthnSupported()) {
+					if (res.force === true) {
+						if (webAuthnSupported()) {
+							needForcedPasskey.value = true;
+							credentialRequest.value = parseRequestOptionsFromJSON({
+								publicKey: res.authRequest,
+							});
+							page.value = 'passkey';
+						} else {
+							const err = {
+								id: '8b12bdf5-d5ed-4429-b5da-e3370cfcb869',
+							};
+
+							onSigninApiError(err);
+							return Promise.reject(err);
+						}
+					} else if (webAuthnSupported()) {
 						credentialRequest.value = parseRequestOptionsFromJSON({
 							publicKey: res.authRequest,
 						});
@@ -263,6 +279,9 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 				doingPasskeyFromInputPage.value = false;
 				page.value = 'input';
 				password.value = '';
+			}
+			if (!('force' in res)) {
+				needForcedPasskey.value = false;
 			}
 			passwordPageEl.value?.resetCaptcha();
 			nextTick(() => {
@@ -286,6 +305,7 @@ function onSigninApiError(err?: any): void {
 	const id = err?.id ?? null;
 
 	switch (id) {
+		// signin-flow api
 		case '6cc579cc-885d-43d8-95c2-b8c7fc963280': {
 			os.alert({
 				type: 'error',
@@ -338,6 +358,8 @@ function onSigninApiError(err?: any): void {
 			});
 			break;
 		}
+
+		// signin-with-passkey api
 		case 'b18c89a7-5b5e-4cec-bb5b-0419f332d430': {
 			os.alert({
 				type: 'error',
@@ -354,6 +376,18 @@ function onSigninApiError(err?: any): void {
 			});
 			break;
 		}
+
+		// client-produced error
+		case '8b12bdf5-d5ed-4429-b5da-e3370cfcb869': {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.loginFailed,
+				text: i18n.ts.yourBrowserDoesNotSupportPasskey,
+			});
+			break;
+		}
+
+		// default
 		default: {
 			console.error(err);
 			os.alert({
@@ -369,6 +403,7 @@ function onSigninApiError(err?: any): void {
 		page.value = 'input';
 		password.value = '';
 	}
+	needForcedPasskey.value = false;
 	passwordPageEl.value?.resetCaptcha();
 	nextTick(() => {
 		waiting.value = false;
