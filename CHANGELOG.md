@@ -1,5 +1,10 @@
 ## 2024.11.1
 
+### Note
+- 登録時メールアドレスドメインのブラックリストの判定方式が後方一致から完全一致に変更されました。サブドメインごとブロックする場合は先頭に`.`を付けることで後方一致になります。
+	- 例: `example.com` は `example.com` をブロックしますが、`sub.example.com` をブロックしません。
+  - 例: `.example.com` は `example.com` および `sub.example.com` をブロックします。
+
 ### General
 -
 
@@ -11,7 +16,9 @@
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
-
+- Enhance: 登録時メールアドレスドメインのブラックリストの判定方式を改善
+- Enhance: 登録時メールアドレスドメインのホワイトリストを追加
+- Enhance: Active Email Validationでブロックされたドメインを自動でブラックリストに追加するオプションを追加
 
 ## 2024.11.0
 

@@ -192,6 +192,14 @@ export const meta = {
 					optional: false, nullable: false,
 				},
 			},
+			allowedEmailDomains: {
+				type: 'array',
+				optional: true, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
 			preservedUsernames: {
 				type: 'array',
 				optional: false, nullable: false,
@@ -339,6 +347,14 @@ export const meta = {
 			truemailAuthKey: {
 				type: 'string',
 				optional: false, nullable: true,
+			},
+			enableAutoAddBannedEmailDomain: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			enableAllowedEmailDomainsOnly: {
+				type: 'boolean',
+				optional: false, nullable: false,
 			},
 			enableChartsForRemoteUser: {
 				type: 'boolean',
@@ -637,12 +653,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				enableTruemailApi: instance.enableTruemailApi,
 				truemailInstance: instance.truemailInstance,
 				truemailAuthKey: instance.truemailAuthKey,
+				enableAutoAddBannedEmailDomain: instance.enableAutoAddBannedEmailDomain,
+				enableAllowedEmailDomainsOnly: instance.enableAllowedEmailDomainsOnly,
 				enableChartsForRemoteUser: instance.enableChartsForRemoteUser,
 				enableChartsForFederatedInstances: instance.enableChartsForFederatedInstances,
 				enableStatsForFederatedInstances: instance.enableStatsForFederatedInstances,
 				enableServerMachineStats: instance.enableServerMachineStats,
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
 				bannedEmailDomains: instance.bannedEmailDomains,
+				allowedEmailDomains: instance.allowedEmailDomains,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 				manifestJsonOverride: instance.manifestJsonOverride,
 				enableFanoutTimeline: instance.enableFanoutTimeline,
