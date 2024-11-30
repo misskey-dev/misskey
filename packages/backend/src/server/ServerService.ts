@@ -212,10 +212,7 @@ export class ServerService implements OnApplicationShutdown {
 					emailVerifyCode: null,
 				});
 
-				this.globalEventService.publishMainStream(profile.userId, 'meUpdated', await this.userEntityService.pack(profile.userId, { id: profile.userId }, {
-					schema: 'MeDetailed',
-					includeSecrets: true,
-				}));
+				this.globalEventService.publishMainStream(profile.userId, 'meUpdated');
 
 				reply.code(200).send('Verification succeeded! メールアドレスの認証に成功しました。');
 				return;

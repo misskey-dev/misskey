@@ -122,7 +122,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			// Publish meUpdated event
-			this.globalEventService.publishMainStream(me.id, 'meUpdated', iObj);
+			this.globalEventService.publishMainStream(me.id, 'meUpdated');
 
 			if (ps.email != null) {
 				const code = secureRndstr(16, { chars: L_CHARS });

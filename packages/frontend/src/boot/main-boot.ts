@@ -11,7 +11,7 @@ import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
-import { $i, signout, updateAccountPartial } from '@/account.js';
+import { $i, refreshAccount, signout, updateAccountPartial } from '@/account.js';
 import { instance } from '@/instance.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
@@ -320,8 +320,8 @@ export async function mainBoot() {
 		const main = markRaw(stream.useChannel('main', null, 'System'));
 
 		// 自分の情報が更新されたとき
-		main.on('meUpdated', i => {
-			updateAccountPartial(i);
+		main.on('meUpdated', () => {
+			refreshAccount();
 		});
 
 		main.on('readAllNotifications', () => {
