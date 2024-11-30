@@ -131,7 +131,6 @@ export class FanoutTimelineService {
 				const scanResult = await this.redisForTimelines.scan(cursor, 'MATCH', timeline, 'COUNT', 300);
 				cursor = scanResult[0];
 				timeLines = timeLines.concat(scanResult[1]);
-				scanResult[1].forEach(x => console.log(x));
 			} while (cursor !== '0');
 		}
 
