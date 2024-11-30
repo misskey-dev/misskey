@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { jest } from '@jest/globals';
+import { describe, jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomString } from '../utils.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import {
 	AbuseReportNotificationRecipientRepository,
 	MiAbuseReportNotificationRecipient,
+	MiAbuseUserReport,
 	MiSystemWebhook,
 	MiUser,
 	SystemWebhooksRepository,
@@ -112,7 +113,10 @@ describe('AbuseReportNotificationService', () => {
 						provide: SystemWebhookService, useFactory: () => ({ enqueueSystemWebhook: jest.fn() }),
 					},
 					{
-						provide: UserEntityService, useFactory: () => ({ pack: (v: any) => v }),
+						provide: UserEntityService, useFactory: () => ({
+							pack: (v: any) => Promise.resolve(v),
+							packMany: (v: any) => Promise.resolve(v),
+						}),
 					},
 					{
 						provide: EmailService, useFactory: () => ({ sendEmail: jest.fn() }),
@@ -342,6 +346,48 @@ describe('AbuseReportNotificationService', () => {
 
 			const recipients = await service.fetchRecipients({ ids: [recipient1.id, recipient3.id], method: ['webhook'] });
 			expect(recipients).toEqual([recipient3]);
+		});
+	});
+
+	describe('notifySystemWebhook', () => {
+		test('非アクティブな通報通知はWebhook送信から除外される', async () => {
+			const recipient1 = await createRecipient({
+				method: 'webhook',
+				systemWebhookId: systemWebhook1.id,
+				isActive: true,
+			});
+			const recipient2 = await createRecipient({
+				method: 'webhook',
+				systemWebhookId: systemWebhook2.id,
+				isActive: false,
+			});
+
+			const reports: MiAbuseUserReport[] = [
+				{
+					id: idService.gen(),
+					targetUserId: alice.id,
+					targetUser: alice,
+					reporterId: bob.id,
+					reporter: bob,
+					assigneeId: null,
+					assignee: null,
+					resolved: false,
+					forwarded: false,
+					comment: 'test',
+					moderationNote: '',
+					resolvedAs: null,
+					targetUserHost: null,
+					reporterHost: null,
+				},
+			];
+
+			await service.notifySystemWebhook(reports, 'abuseReport');
+
+			// 実際に除外されるかはSystemWebhookService側で確認する.
+			// ここでは非アクティブな通報通知を除外設定できているかを確認する
+			expect(webhookService.enqueueSystemWebhook).toHaveBeenCalledTimes(1);
+			expect(webhookService.enqueueSystemWebhook.mock.calls[0][0]).toBe('abuseReport');
+			expect(webhookService.enqueueSystemWebhook.mock.calls[0][2]).toEqual({ excludes: [systemWebhook2.id] });
 		});
 	});
 });
