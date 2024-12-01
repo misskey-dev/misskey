@@ -7117,6 +7117,10 @@ export interface Locale extends ILocale {
              */
             "canSearchNotes": string;
             /**
+             * HanamiSearchV1の利用
+             */
+            "canSearchWithHanamiSearchV1": string;
+            /**
              * 翻訳機能の利用
              */
             "canUseTranslator": string;

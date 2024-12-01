@@ -44,6 +44,7 @@ export type RolePolicies = {
 	canManageCustomEmojis: boolean;
 	canManageAvatarDecorations: boolean;
 	canSearchNotes: boolean;
+	canSearchWithHanamiSearchV1: boolean;
 	canUseTranslator: boolean;
 	canHideAds: boolean;
 	driveCapacityMb: number;
@@ -80,6 +81,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canManageCustomEmojis: false,
 	canManageAvatarDecorations: false,
 	canSearchNotes: false,
+	canSearchWithHanamiSearchV1: false,
 	canUseTranslator: true,
 	canHideAds: false,
 	driveCapacityMb: 100,
@@ -391,6 +393,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
 			canManageAvatarDecorations: calc('canManageAvatarDecorations', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
+			canSearchWithHanamiSearchV1: calc('canSearchWithHanamiSearchV1', vs => vs.some(v => v === true)),
 			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),

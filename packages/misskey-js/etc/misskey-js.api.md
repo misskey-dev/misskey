@@ -1671,6 +1671,8 @@ declare namespace entities {
         NotesSearchByTagResponse,
         NotesSearchRequest,
         NotesSearchResponse,
+        NotesHanamisearchV1Request,
+        NotesHanamisearchV1Response,
         NotesShowRequest,
         NotesShowResponse,
         NotesStateRequest,
@@ -2704,6 +2706,12 @@ type NotesGlobalTimelineRequest = operations['notes___global-timeline']['request
 
 // @public (undocumented)
 type NotesGlobalTimelineResponse = operations['notes___global-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesHanamisearchV1Request = operations['notes___hanamisearch-v1']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesHanamisearchV1Response = operations['notes___hanamisearch-v1']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesHanamiTimelineRequest = operations['notes___hanami-timeline']['requestBody']['content']['application/json'];

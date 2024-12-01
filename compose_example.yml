@@ -7,6 +7,7 @@ services:
       - redis
 #     - mcaptcha
 #     - meilisearch
+#     - hanamisearch
     depends_on:
       db:
         condition: service_healthy
@@ -94,6 +95,19 @@ services:
 #      - internal_network
 #    volumes:
 #      - ./meili_data:/meili_data
+
+#  hanamisearch:
+#    restart: always
+#    image: getmeili/meilisearch:v1.3.4
+#    environment:
+#      - MEILI_NO_ANALYTICS=true
+#      - MEILI_ENV=production
+#    env_file:
+#      - .config/hanamisearch.env
+#    networks:
+#      - internal_network
+#    volumes:
+#      - ./hanami_data:/meili_data
 
 networks:
   internal_network:

@@ -114,12 +114,22 @@ redis:
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
-#meilisearch:
-#  host: meilisearch
-#  port: 7700
-#  apiKey: ''
-#  ssl: true
-#  index: ''
+meilisearch:
+  host: meilisearch
+  port: 7700
+  apiKey: ''
+  ssl: false
+  index: ''
+
+#   ┌────────────────────────────┐
+#───┘ HanamiSearch configuration └─────────────────────────────
+
+hanamisearch:
+  host: hanamisearch
+  port: 7700
+  apiKey: ''
+  ssl: false
+  index: ''
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────

@@ -446,6 +446,8 @@ import type {
 	NotesSearchByTagResponse,
 	NotesSearchRequest,
 	NotesSearchResponse,
+	NotesHanamisearchV1Request,
+	NotesHanamisearchV1Response,
 	NotesShowRequest,
 	NotesShowResponse,
 	NotesStateRequest,
@@ -881,6 +883,7 @@ export type Endpoints = {
 	'notes/replies': { req: NotesRepliesRequest; res: NotesRepliesResponse };
 	'notes/search-by-tag': { req: NotesSearchByTagRequest; res: NotesSearchByTagResponse };
 	'notes/search': { req: NotesSearchRequest; res: NotesSearchResponse };
+	'notes/hanamisearch-v1': { req: NotesHanamisearchV1Request; res: NotesHanamisearchV1Response };
 	'notes/show': { req: NotesShowRequest; res: NotesShowResponse };
 	'notes/state': { req: NotesStateRequest; res: NotesStateResponse };
 	'notes/thread-muting/create': { req: NotesThreadMutingCreateRequest; res: EmptyResponse };

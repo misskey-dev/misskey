@@ -210,6 +210,16 @@ redis:
 #  index: ''
 #  scope: local
 
+#   ┌────────────────────────────┐
+#───┘ HanamiSearch configuration └─────────────────────────────
+
+#hanamisearch:
+#  host: hanamisearch
+#  port: 7700
+#  apiKey: ''
+#  ssl: true
+#  index: ''
+
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
 

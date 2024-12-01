@@ -7,14 +7,14 @@ import { Global, Inject, Module } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { MeiliSearch } from 'meilisearch';
+import { MiMeta } from '@/models/Meta.js';
 import { DI } from './di-symbols.js';
 import { Config, loadConfig } from './config.js';
 import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
 import { allSettled } from './misc/promise-tracker.js';
-import type { Provider, OnApplicationShutdown } from '@nestjs/common';
-import { MiMeta } from '@/models/Meta.js';
 import { GlobalEvents } from './core/GlobalEventService.js';
+import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 
 const $config: Provider = {
 	provide: DI.config,
@@ -37,6 +37,21 @@ const $meilisearch: Provider = {
 			return new MeiliSearch({
 				host: `${config.meilisearch.ssl ? 'https' : 'http'}://${config.meilisearch.host}:${config.meilisearch.port}`,
 				apiKey: config.meilisearch.apiKey,
+			});
+		} else {
+			return null;
+		}
+	},
+	inject: [DI.config],
+};
+
+const $hanamisearch: Provider = {
+	provide: DI.hanamisearch,
+	useFactory: (config: Config) => {
+		if (config.hanamisearch) {
+			return new MeiliSearch({
+				host: `${config.hanamisearch.ssl ? 'https' : 'http'}://${config.hanamisearch.host}:${config.hanamisearch.port}`,
+				apiKey: config.hanamisearch.apiKey,
 			});
 		} else {
 			return null;
@@ -148,8 +163,8 @@ const $meta: Provider = {
 @Global()
 @Module({
 	imports: [RepositoryModule],
-	providers: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions],
-	exports: [$config, $db, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, RepositoryModule],
+	providers: [$config, $db, $hanamisearch, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions],
+	exports: [$config, $db, $hanamisearch, $meta, $meilisearch, $redis, $redisForPub, $redisForSub, $redisForTimelines, $redisForReactions, RepositoryModule],
 })
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(

@@ -45,10 +45,38 @@ services:
       interval: 5s
       retries: 20
 
+  meilisearch:
+    restart: always
+    image: getmeili/meilisearch:latest
+    environment:
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_ENV=production
+    env_file:
+      - .config/meilisearch.env
+    networks:
+      - internal_network
+    volumes:
+      - ./meili_data:/meili_data
+
+  hanamisearch:
+    restart: always
+    image: getmeili/meilisearch:latest
+    environment:
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_ENV=production
+    env_file:
+      - .config/hanamisearch.env
+    networks:
+      - internal_network
+    volumes:
+      - ./hanami_data:/meili_data
+
 volumes:
   postgres-data:
   redis-data:
   node_modules:
+  meili_data:
+  hanami_data:
 
 networks:
   internal_network:

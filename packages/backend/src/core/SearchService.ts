@@ -64,7 +64,9 @@ function compileQuery(q: Q): string {
 @Injectable()
 export class SearchService {
 	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
+	private readonly hanamisearchIndexScope: 'local' | 'global' | string[] = 'global';
 	private meilisearchNoteIndex: Index | null = null;
+	private hanamisearchNoteIndex: Index | null = null;
 
 	constructor(
 		@Inject(DI.config)
@@ -73,6 +75,9 @@ export class SearchService {
 		@Inject(DI.meilisearch)
 		private meilisearch: MeiliSearch | null,
 
+		@Inject(DI.hanamisearch)
+		private hanamisearch: MeiliSearch | null,
+
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -80,35 +85,44 @@ export class SearchService {
 		private queryService: QueryService,
 		private idService: IdService,
 	) {
-		if (meilisearch) {
-			this.meilisearchNoteIndex = meilisearch.index(`${config.meilisearch!.index}---notes`);
-			this.meilisearchNoteIndex.updateSettings({
-				searchableAttributes: [
-					'text',
-					'cw',
-				],
-				sortableAttributes: [
-					'createdAt',
-				],
-				filterableAttributes: [
-					'createdAt',
-					'userId',
-					'userHost',
-					'channelId',
-					'tags',
-				],
-				typoTolerance: {
-					enabled: false,
-				},
-				pagination: {
-					maxTotalHits: 10000,
-				},
-			});
+		this.meilisearchIndexScope = config.meilisearch?.scope || 'local';
+		this.hanamisearchIndexScope = config.hanamisearch?.scope || 'global';
+
+		if (this.meilisearch) {
+			this.meilisearchNoteIndex = this.initializeIndex(
+				this.meilisearch,
+				`${config.meilisearch!.index}---notes`,
+			);
 		}
 
-		if (config.meilisearch?.scope) {
-			this.meilisearchIndexScope = config.meilisearch.scope;
+		if (this.hanamisearch) {
+			this.hanamisearchNoteIndex = this.initializeIndex(
+				this.hanamisearch,
+				`${config.hanamisearch!.index}---notes`,
+			);
 		}
+	}
+
+	private initializeIndex(searchClient: MeiliSearch, indexName: string): Index {
+		const index = searchClient.index(indexName);
+		index.updateSettings({
+			searchableAttributes: ['text', 'cw'],
+			sortableAttributes: ['createdAt'],
+			filterableAttributes: [
+				'createdAt',
+				'userId',
+				'userHost',
+				'channelId',
+				'tags',
+			],
+			typoTolerance: {
+				enabled: false,
+			},
+			pagination: {
+				maxTotalHits: 10000,
+			},
+		});
+		return index;
 	}
 
 	@bindThis
@@ -116,35 +130,46 @@ export class SearchService {
 		if (note.text == null && note.cw == null) return;
 		if (!['home', 'public'].includes(note.visibility)) return;
 
-		if (this.meilisearch) {
-			switch (this.meilisearchIndexScope) {
-				case 'global':
-					break;
+		const createdAt = this.idService.parse(note.id).date.getTime();
+		const noteData = {
+			id: note.id,
+			createdAt,
+			userId: note.userId,
+			userHost: note.userHost,
+			channelId: note.channelId,
+			cw: note.cw,
+			text: note.text,
+			tags: note.tags,
+		};
 
-				case 'local':
-					if (note.userHost == null) break;
-					return;
-
-				default: {
-					if (note.userHost == null) break;
-					if (this.meilisearchIndexScope.includes(note.userHost)) break;
-					return;
-				}
+		const shouldIndex = (scope: string | string[], userHost: string | null): boolean => {
+			if (scope === 'global') return true;
+			if (scope === 'local') return userHost != null;
+			if (Array.isArray(scope)) {
+				return userHost != null && scope.includes(userHost);
 			}
 
-			await this.meilisearchNoteIndex?.addDocuments([{
-				id: note.id,
-				createdAt: this.idService.parse(note.id).date.getTime(),
-				userId: note.userId,
-				userHost: note.userHost,
-				channelId: note.channelId,
-				cw: note.cw,
-				text: note.text,
-				tags: note.tags,
-			}], {
-				primaryKey: 'id',
-			});
-		}
+			return false;
+		};
+
+		const indexMeilisearch = async () => {
+			if (!this.meilisearch || !this.meilisearchNoteIndex) return;
+			if (!shouldIndex(this.meilisearchIndexScope, note.userHost)) return;
+
+			await this.meilisearchNoteIndex.addDocuments([noteData], { primaryKey: 'id' });
+		};
+
+		const indexHanamisearch = async () => {
+			if (!this.hanamisearch || !this.hanamisearchNoteIndex) return;
+			if (!shouldIndex(this.hanamisearchIndexScope, note.userHost)) return;
+
+			await this.hanamisearchNoteIndex.addDocuments([noteData], { primaryKey: 'id' });
+		};
+
+		await Promise.all([
+			indexMeilisearch(),
+			indexHanamisearch(),
+		]);
 	}
 
 	@bindThis
@@ -154,87 +179,137 @@ export class SearchService {
 		if (this.meilisearch) {
 			this.meilisearchNoteIndex!.deleteDocument(note.id);
 		}
+
+		if (this.hanamisearch) {
+			this.hanamisearchNoteIndex!.deleteDocument(note.id);
+		}
 	}
 
 	@bindThis
-	public async searchNote(q: string, me: MiUser | null, opts: {
-		userId?: MiNote['userId'] | null;
-		channelId?: MiNote['channelId'] | null;
-		host?: string | null;
-	}, pagination: {
-		untilId?: MiNote['id'];
-		sinceId?: MiNote['id'];
-		limit?: number;
-	}): Promise<MiNote[]> {
-		if (this.meilisearch) {
-			const filter: Q = {
-				op: 'and',
-				qs: [],
-			};
-			if (pagination.untilId) filter.qs.push({ op: '<', k: 'createdAt', v: this.idService.parse(pagination.untilId).date.getTime() });
-			if (pagination.sinceId) filter.qs.push({ op: '>', k: 'createdAt', v: this.idService.parse(pagination.sinceId).date.getTime() });
-			if (opts.userId) filter.qs.push({ op: '=', k: 'userId', v: opts.userId });
-			if (opts.channelId) filter.qs.push({ op: '=', k: 'channelId', v: opts.channelId });
-			if (opts.host) {
-				if (opts.host === '.') {
-					filter.qs.push({ op: 'is null', k: 'userHost' });
-				} else {
-					filter.qs.push({ op: '=', k: 'userHost', v: opts.host });
-				}
-			}
-			const res = await this.meilisearchNoteIndex!.search(q, {
-				sort: ['createdAt:desc'],
-				matchingStrategy: 'all',
-				attributesToRetrieve: ['id', 'createdAt'],
-				filter: compileQuery(filter),
-				limit: pagination.limit,
-			});
-			if (res.hits.length === 0) return [];
-			const [
-				userIdsWhoMeMuting,
-				userIdsWhoBlockingMe,
-			] = me ? await Promise.all([
+	public async searchNote(
+		q: string,
+		me: MiUser | null,
+		opts: {
+			userId?: MiNote['userId'] | null;
+			channelId?: MiNote['channelId'] | null;
+			host?: string | null;
+			preferredMethod?: 'meilisearch' | 'hanamisearch' | null;
+		},
+		pagination: {
+			untilId?: MiNote['id'];
+			sinceId?: MiNote['id'];
+			limit?: number;
+		},
+	): Promise<MiNote[]> {
+		const preferredMethod = opts.preferredMethod ?? 'meilisearch';
+
+		if ((preferredMethod === 'meilisearch' && this.meilisearch) || (preferredMethod === 'hanamisearch' && this.hanamisearch)) {
+			const searchClient = preferredMethod === 'meilisearch' ? this.meilisearchNoteIndex! : this.hanamisearchNoteIndex!;
+			const shouldSort = preferredMethod === 'meilisearch';
+			return this.searchWithExternalEngine(searchClient, q, me, opts, pagination, shouldSort);
+		}
+
+		if (!this.meilisearch && !this.hanamisearch && preferredMethod === 'meilisearch') {
+			return this.searchWithInternalDB(q, me, opts, pagination);
+		}
+
+		throw new Error('no search engine available');
+	}
+
+	private async searchWithExternalEngine(
+		searchClient: Index,
+		q: string,
+		me: MiUser | null,
+		opts: {
+			userId?: MiNote['userId'] | null;
+			channelId?: MiNote['channelId'] | null;
+			host?: string | null;
+		},
+		pagination: {
+			untilId?: MiNote['id'];
+			sinceId?: MiNote['id'];
+			limit?: number;
+		},
+		shouldSort: boolean,
+	): Promise<MiNote[]> {
+		const filter: Q = { op: 'and', qs: [] };
+
+		if (pagination.untilId) filter.qs.push({ op: '<', k: 'createdAt', v: this.idService.parse(pagination.untilId).date.getTime() });
+		if (pagination.sinceId) filter.qs.push({ op: '>', k: 'createdAt', v: this.idService.parse(pagination.sinceId).date.getTime() });
+		if (opts.userId) filter.qs.push({ op: '=', k: 'userId', v: opts.userId });
+		if (opts.channelId) filter.qs.push({ op: '=', k: 'channelId', v: opts.channelId });
+		if (opts.host) {
+			filter.qs.push(opts.host === '.' ? { op: 'is null', k: 'userHost' } : { op: '=', k: 'userHost', v: opts.host });
+		}
+
+		const res = await searchClient.search(q, {
+			sort: shouldSort ? ['createdAt:desc'] : undefined,
+			matchingStrategy: 'all',
+			attributesToRetrieve: ['id', 'createdAt'],
+			filter: compileQuery(filter),
+			limit: pagination.limit,
+		});
+
+		if (res.hits.length === 0) return [];
+
+		const [userIdsWhoMeMuting, userIdsWhoBlockingMe] = me
+			? await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
 				this.cacheService.userBlockedCache.fetch(me.id),
-			]) : [new Set<string>(), new Set<string>()];
-			const notes = (await this.notesRepository.findBy({
-				id: In(res.hits.map(x => x.id)),
-			})).filter(note => {
-				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
-				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
-				return true;
-			});
-			return notes.sort((a, b) => a.id > b.id ? -1 : 1);
-		} else {
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), pagination.sinceId, pagination.untilId);
+			])
+			: [new Set<string>(), new Set<string>()];
 
-			if (opts.userId) {
-				query.andWhere('note.userId = :userId', { userId: opts.userId });
-			} else if (opts.channelId) {
-				query.andWhere('note.channelId = :channelId', { channelId: opts.channelId });
-			}
+		const notes = (await this.notesRepository.findBy({
+			id: In(res.hits.map((x) => x.id)),
+		})).filter((note) => {
+			if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+			if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+			return true;
+		});
 
-			query
-				.andWhere('note.text ILIKE :q', { q: `%${ sqlLikeEscape(q) }%` })
-				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('note.reply', 'reply')
-				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser');
+		// ソートは MeiliSearch の場合のみ適用
+		return shouldSort ? notes.sort((a, b) => (a.id > b.id ? -1 : 1)) : notes;
+	}
 
-			if (opts.host) {
-				if (opts.host === '.') {
-					query.andWhere('user.host IS NULL');
-				} else {
-					query.andWhere('user.host = :host', { host: opts.host });
-				}
-			}
+	private async searchWithInternalDB(
+		q: string,
+		me: MiUser | null,
+		opts: {
+			userId?: MiNote['userId'] | null;
+			channelId?: MiNote['channelId'] | null;
+			host?: string | null;
+		},
+		pagination: {
+			untilId?: MiNote['id'];
+			sinceId?: MiNote['id'];
+			limit?: number;
+		},
+	): Promise<MiNote[]> {
+		const query = this.queryService.makePaginationQuery(
+			this.notesRepository.createQueryBuilder('note'),
+			pagination.sinceId,
+			pagination.untilId,
+		);
 
-			this.queryService.generateVisibilityQuery(query, me);
-			if (me) this.queryService.generateMutedUserQuery(query, me);
-			if (me) this.queryService.generateBlockedUserQuery(query, me);
+		if (opts.userId) query.andWhere('note.userId = :userId', { userId: opts.userId });
+		if (opts.channelId) query.andWhere('note.channelId = :channelId', { channelId: opts.channelId });
+		query.andWhere('note.text ILIKE :q', { q: `%${sqlLikeEscape(q)}%` });
 
-			return await query.limit(pagination.limit).getMany();
+		query
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
+
+		if (opts.host) {
+			query.andWhere(opts.host === '.' ? 'user.host IS NULL' : 'user.host = :host', { host: opts.host });
 		}
+
+		this.queryService.generateVisibilityQuery(query, me);
+		if (me) this.queryService.generateMutedUserQuery(query, me);
+		if (me) this.queryService.generateBlockedUserQuery(query, me);
+
+		return await query.limit(pagination.limit).getMany();
 	}
 }

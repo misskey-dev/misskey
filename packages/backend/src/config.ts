@@ -58,6 +58,14 @@ type Source = {
 		index: string;
 		scope?: 'local' | 'global' | string[];
 	};
+	hanamisearch?: {
+		host: string;
+		port: string;
+		apiKey: string;
+		ssl?: boolean;
+		index: string;
+		scope?: 'local' | 'global' | string[];
+	};
 	sentryForBackend?: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; };
 	sentryForFrontend?: { options: Partial<Sentry.NodeOptions> };
 
@@ -131,6 +139,14 @@ export type Config = {
 		pass: string;
 	}[] | undefined;
 	meilisearch: {
+		host: string;
+		port: string;
+		apiKey: string;
+		ssl?: boolean;
+		index: string;
+		scope?: 'local' | 'global' | string[];
+	} | undefined;
+	hanamisearch: {
 		host: string;
 		port: string;
 		apiKey: string;
@@ -265,6 +281,7 @@ export function loadConfig(): Config {
 		dbReplications: config.dbReplications,
 		dbSlaves: config.dbSlaves,
 		meilisearch: config.meilisearch,
+		hanamisearch: config.hanamisearch,
 		redis,
 		redisForPubsub: config.redisForPubsub ? convertRedisOptions(config.redisForPubsub, host) : redis,
 		redisForJobQueue: config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, host) : redis,

@@ -129,7 +129,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
-						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseTranslator, 'canSearchNotes'])">
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canSearchWithHanamiSearchV1, 'canSearchWithHanamiSearchV1'])">
+							<template #label>{{ i18n.ts._role._options.canSearchWithHanamiSearchV1 }}</template>
+							<template #suffix>{{ policies.canSearchWithHanamiSearchV1 ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canSearchWithHanamiSearchV1">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseTranslator, 'canUseTranslator'])">
 							<template #label>{{ i18n.ts._role._options.canUseTranslator }}</template>
 							<template #suffix>{{ policies.canUseTranslator ? i18n.ts.yes : i18n.ts.no }}</template>
 							<MkSwitch v-model="policies.canUseTranslator">
