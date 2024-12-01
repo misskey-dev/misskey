@@ -114,22 +114,26 @@ redis:
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
+# This API key is dummy. Please replace it with your own.
 meilisearch:
   host: meilisearch
   port: 7700
-  apiKey: ''
+  apiKey: 'hanamisskeyhanamisskeyhanamisskeyhanamisskeyhanamisskeyhanamisskeyhanamisskeyhanamisskeyhanamisskey'
   ssl: false
-  index: ''
+  index: 'meili'
+  scope: global
 
 #   ┌────────────────────────────┐
 #───┘ HanamiSearch configuration └─────────────────────────────
 
+# This API key is dummy. Please replace it with your own.
 hanamisearch:
   host: hanamisearch
   port: 7700
-  apiKey: ''
+  apiKey: 'hanamisskeyhanamisskeyhanamisskeyhanamisskeyhanamisskeyhanamisskeyhanamisskeyhanamisskeyhanamisskey'
   ssl: false
-  index: ''
+  index: 'hanami'
+  scope: global
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────

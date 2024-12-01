@@ -50,9 +50,9 @@ services:
     image: getmeili/meilisearch:latest
     environment:
       - MEILI_NO_ANALYTICS=true
-      - MEILI_ENV=production
+      - MEILI_ENV=development
     env_file:
-      - .config/meilisearch.env
+      - ./meilisearch.env
     networks:
       - internal_network
     volumes:
@@ -63,9 +63,9 @@ services:
     image: getmeili/meilisearch:latest
     environment:
       - MEILI_NO_ANALYTICS=true
-      - MEILI_ENV=production
+      - MEILI_ENV=development
     env_file:
-      - .config/hanamisearch.env
+      - ./hanamisearch.env
     networks:
       - internal_network
     volumes:

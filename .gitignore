@@ -80,3 +80,5 @@ vite.config.local-dev.ts.timestamp-*
 
 # VSCode addon
 .favorites.json
+/.devcontainer/hanami_data
+/.devcontainer/meili_data

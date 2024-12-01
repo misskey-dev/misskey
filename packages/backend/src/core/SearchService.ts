@@ -144,10 +144,7 @@ export class SearchService {
 
 		const shouldIndex = (scope: string | string[], userHost: string | null): boolean => {
 			if (scope === 'global') return true;
-			if (scope === 'local') return userHost != null;
-			if (Array.isArray(scope)) {
-				return userHost != null && scope.includes(userHost);
-			}
+			if (scope === 'local') return userHost === null;
 
 			return false;
 		};
