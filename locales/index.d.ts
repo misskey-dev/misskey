@@ -10983,6 +10983,24 @@ export interface Locale extends ILocale {
              */
             "forMinor": string;
         };
+        "_searchMode": {
+            /**
+             * 検索モード
+             */
+            "title": string;
+            /**
+             * 新登場
+             */
+            "new": string;
+            /**
+             * 通常のMisskeyと同じ検索システム
+             */
+            "v0Description": string;
+            /**
+             * 精度が大幅改善 / 演算子などで高度な検索が可能
+             */
+            "v1Description": string;
+        };
     };
 }
 declare const locales: {

@@ -47,9 +47,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="tab === 'search'" key="search">
 				<div class="_gaps">
 					<div>
-						<MkInput v-model="searchQuery" @enter="search()">
+						<HanaSearchInput v-model="searchQuery" v-model:mode="searchMode" @enter.prevent="search()">
 							<template #prefix><i class="ti ti-search"></i></template>
-						</MkInput>
+						</HanaSearchInput>
 						<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
 					</div>
 					<MkNotes v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
@@ -85,7 +85,8 @@ import MkNotes from '@/components/MkNotes.vue';
 import { url } from '@@/js/config.js';
 import { favoritedChannelsCache } from '@/cache.js';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
+//import MkInput from '@/components/MkInput.vue';
+import HanaSearchInput from '@/components/HanaSearchInput.vue';
 import { defaultStore } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -96,6 +97,7 @@ import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router/supplier.js';
+import type { SearchMode } from '@/hana/types/search.js';
 
 const router = useRouter();
 
@@ -108,6 +110,7 @@ const tab = ref('overview');
 const channel = ref<Misskey.entities.Channel | null>(null);
 const favorited = ref(false);
 const searchQuery = ref('');
+const searchMode = ref<SearchMode>($i?.policies.canSearchWithHanamiSearchV1 ? 'v1' : 'v0');
 const searchPagination = ref();
 const searchKey = ref('');
 const featuredPagination = computed(() => ({
@@ -181,14 +184,25 @@ async function search() {
 
 	if (query == null) return;
 
-	searchPagination.value = {
-		endpoint: 'notes/search',
-		limit: 10,
-		params: {
-			query: query,
-			channelId: channel.value.id,
-		},
-	};
+	if ($i?.policies.canSearchWithHanamiSearchV1 === true && searchMode.value === 'v1') {
+		searchPagination.value = {
+			endpoint: 'notes/hanamisearch-v1',
+			limit: 10,
+			params: {
+				query: query,
+				channelId: channel.value.id,
+			},
+		};
+	} else {
+		searchPagination.value = {
+			endpoint: 'notes/search',
+			limit: 10,
+			params: {
+				query: query,
+				channelId: channel.value.id,
+			},
+		};
+	}
 
 	searchKey.value = query;
 }

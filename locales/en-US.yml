@@ -2815,3 +2815,8 @@ _hana:
     muteSensitiveDescription: "Notes containing sensitive images, videos, or audio will be displayed in a minimized state. You can click to open and view the content, but the files themselves will remain blurred."
     confirmWhenRevealingSensitiveMediaDescription: "Sensitive content is displayed in a blurred state by default, but you can enable an additional confirmation dialog to prevent accidental actions when clicking to reveal the content."
     forMinor: "If you are underage, please review this with your parents or guardians. You can change this setting at any time."
+  _searchMode:
+    title: "Choose Search Engine"
+    new: "NEW"
+    v0Description: "Same search engine as normal Misskey"
+    v1Description: "Improved accuracy / OR, NOT operator support"
