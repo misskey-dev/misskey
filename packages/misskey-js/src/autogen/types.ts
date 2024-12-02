@@ -5132,6 +5132,8 @@ export type operations = {
             silencedHosts?: string[];
             mediaSilencedHosts: string[];
             pinnedUsers: string[];
+            defaultFollowedUsers: string[];
+            forciblyFollowedUsers: string[];
             hiddenTags: string[];
             blockedHosts: string[];
             sensitiveWords: string[];
@@ -9484,6 +9486,8 @@ export type operations = {
         'application/json': {
           disableRegistration?: boolean | null;
           pinnedUsers?: string[] | null;
+          defaultFollowedUsers?: string[] | null;
+          forciblyFollowedUsers?: string[] | null;
           hiddenTags?: string[] | null;
           blockedHosts?: string[] | null;
           sensitiveWords?: string[] | null;

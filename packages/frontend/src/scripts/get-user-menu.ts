@@ -60,6 +60,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 			os.apiWithDialog('mute/create', {
 				userId: user.id,
 				expiresAt,
+			}, undefined, {
+				'15273a89-374d-49fa-8df6-8bb3feeea455': {
+					title: i18n.ts.permissionDeniedError,
+					text: i18n.ts.muteThisUserIsProhibited,
+				},
 			}).then(() => {
 				user.isMuted = true;
 			});
@@ -69,6 +74,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 	async function toggleRenoteMute() {
 		os.apiWithDialog(user.isRenoteMuted ? 'renote-mute/delete' : 'renote-mute/create', {
 			userId: user.id,
+		}, undefined, {
+			'15273a89-374d-49fa-8df6-8bb3feeea455': {
+				title: i18n.ts.permissionDeniedError,
+				text: i18n.ts.muteThisUserIsProhibited,
+			},
 		}).then(() => {
 			user.isRenoteMuted = !user.isRenoteMuted;
 		});
@@ -79,6 +89,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 
 		os.apiWithDialog(user.isBlocking ? 'blocking/delete' : 'blocking/create', {
 			userId: user.id,
+		}, undefined, {
+			'e2f04d25-0d94-4ac3-a4d8-ba401062741b': {
+				title: i18n.ts.permissionDeniedError,
+				text: i18n.ts.blockThisUserIsProhibited,
+			},
 		}).then(() => {
 			user.isBlocking = !user.isBlocking;
 		});

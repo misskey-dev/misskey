@@ -12,6 +12,7 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export const meta = {
 	tags: ['account'],
@@ -42,6 +43,13 @@ export const meta = {
 			message: 'You are already blocking that user.',
 			code: 'ALREADY_BLOCKING',
 			id: '787fed64-acb9-464a-82eb-afbd745b9614',
+		},
+
+		cannotBlockDueToServerPolicy: {
+			message: 'You cannot block that user due to server policy.',
+			code: 'CANNOT_BLOCK_DUE_TO_SERVER_POLICY',
+			id: 'e2f04d25-0d94-4ac3-a4d8-ba401062741b',
+			httpStatusCode: 403,
 		},
 	},
 
@@ -83,7 +91,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Get blockee
 			const blockee = await this.getterService.getUser(ps.userId).catch(err => {
-				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				if (err instanceof IdentifiableError && err.id === '15348ddd-432d-49c2-8a5a-8069753becff') {
+					throw new ApiError(meta.errors.noSuchUser);
+				}
 				throw err;
 			});
 
@@ -99,7 +109,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.alreadyBlocking);
 			}
 
-			await this.userBlockingService.block(blocker, blockee);
+			await this.userBlockingService.block(blocker, blockee).catch((err) => {
+				if (err instanceof IdentifiableError && err.id === meta.errors.cannotBlockDueToServerPolicy.id) {
+					throw new ApiError(meta.errors.cannotBlockDueToServerPolicy);
+				}
+			});
 
 			return await this.userEntityService.pack(blockee.id, blocker, {
 				schema: 'UserDetailedNotMe',
