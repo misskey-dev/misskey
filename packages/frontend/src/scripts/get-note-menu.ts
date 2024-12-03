@@ -316,9 +316,9 @@ export function getNoteMenu(props: {
 		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink));
 
 		if (appearNote.url || appearNote.uri) {
-			menuItems.push({ // リモートのリンクをコピー
-				icon: 'ti ti-external-link',
-				text: i18n.ts.showOnRemote,
+			menuItems.push({
+				icon: 'ti ti-link',
+				text: i18n.ts.copyRemoteLink,
 				action: () => {
 					copyToClipboard(appearNote.url ?? appearNote.uri);
 					os.success();
@@ -476,6 +476,13 @@ export function getNoteMenu(props: {
 
 		if (appearNote.url || appearNote.uri) {
 			menuItems.push({
+				icon: 'ti ti-link',
+				text: i18n.ts.copyRemoteLink,
+				action: () => {
+					copyToClipboard(appearNote.url ?? appearNote.uri);
+					os.success();
+				},
+			}, {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
