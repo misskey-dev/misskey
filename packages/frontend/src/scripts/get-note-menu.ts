@@ -302,7 +302,7 @@ export function getNoteMenu(props: {
 				text: i18n.ts.unclip,
 				danger: true,
 				action: unclip,
-			}, { type: 'divider' as const });
+			}, { type: 'divider' });
 		}
 
 		menuItems.push({
@@ -350,7 +350,7 @@ export function getNoteMenu(props: {
 			});
 		}
 
-		menuItems.push({ type: 'divider' as const });
+		menuItems.push({ type: 'divider' });
 
 		menuItems.push(statePromise.then(state => state.isFavorited ? {
 			icon: 'ti ti-star-off',
@@ -408,12 +408,12 @@ export function getNoteMenu(props: {
 		});
 
 		if (appearNote.userId !== $i.id) {
-			menuItems.push({ type: 'divider' as const });
+			menuItems.push({ type: 'divider' });
 			menuItems.push(getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse));
 		}
 
 		if (appearNote.channel && (appearNote.channel.userId === $i.id || $i.isModerator || $i.isAdmin)) {
-			menuItems.push({ type: 'divider' as const });
+			menuItems.push({ type: 'divider' });
 			menuItems.push({
 				type: 'parent',
 				icon: 'ti ti-device-tv',
@@ -448,7 +448,7 @@ export function getNoteMenu(props: {
 		}
 
 		if (appearNote.userId === $i.id || $i.isModerator || $i.isAdmin) {
-			menuItems.push({ type: 'divider' as const });
+			menuItems.push({ type: 'divider' });
 			if (appearNote.userId === $i.id) {
 				menuItems.push({
 					icon: 'ti ti-edit',
