@@ -1301,6 +1301,8 @@ lockdown: "ロックダウン"
 pleaseSelectAccount: "アカウントを選択してください"
 availableRoles: "利用可能なロール"
 acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
+textCount: "文字数"
+reset: "リセット"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"

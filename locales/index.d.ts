@@ -5222,6 +5222,14 @@ export interface Locale extends ILocale {
      * 注意事項を理解した上でオンにします。
      */
     "acknowledgeNotesAndEnable": string;
+    /**
+     * 文字数
+     */
+    "textCount": string;
+    /**
+     * リセット
+     */
+    "reset": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
