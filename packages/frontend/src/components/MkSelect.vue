@@ -132,7 +132,7 @@ watch(modelValue, () => {
 }, { immediate: true });
 
 function show() {
-	if (opening.value) return;
+	if (opening.value || props.disabled || props.readonly) return;
 	focus();
 
 	opening.value = true;
@@ -233,7 +233,7 @@ function show() {
 		outline: none;
 	}
 
-	&:hover {
+	&:hover:not(.disabled) {
 		> .inputCore {
 			border-color: var(--MI_THEME-inputBorderHover) !important;
 		}

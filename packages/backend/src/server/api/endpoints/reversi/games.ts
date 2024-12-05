@@ -8,8 +8,9 @@ import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
 import { DI } from '@/di-symbols.js';
-import type { ReversiGamesRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
+import { RoleService } from '@/core/RoleService.js';
+import type { ReversiGamesRepository } from '@/models/_.js';
 
 export const meta = {
 	requireCredential: false,
@@ -39,6 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private reversiGamesRepository: ReversiGamesRepository,
 
 		private reversiGameEntityService: ReversiGameEntityService,
+		private roleService: RoleService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -52,6 +54,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						.where('game.user1Id = :userId', { userId: me.id })
 						.orWhere('game.user2Id = :userId', { userId: me.id });
 				}));
+				const policies = await this.roleService.getUserPolicies(me.id);
+				if (!policies.canPlayGames) {
+					// 今ゲームをプレイできない場合は終了済みのゲームのみ表示
+					query.andWhere('game.isEnded = TRUE');
+				}
 			} else {
 				query.andWhere('game.isStarted = TRUE');
 			}

@@ -11,14 +11,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div class="_panel _gaps" style="padding: 16px;">
+			<MkInfo v-if="$i && !$i.policies.canPlayGames" warn>{{ i18n.ts.youCannotPlayGames }}</MkInfo>
 			<div class="_buttonsCenter">
-				<MkButton primary gradate rounded @click="matchAny">{{ i18n.ts._reversi.freeMatch }}</MkButton>
-				<MkButton primary gradate rounded @click="matchUser">{{ i18n.ts.invite }}</MkButton>
+				<MkButton primary gradate rounded :disabled="$i == null || !$i.policies.canPlayGames" @click="matchAny">{{ i18n.ts._reversi.freeMatch }}</MkButton>
+				<MkButton primary gradate rounded :disabled="$i == null || !$i.policies.canPlayGames" @click="matchUser">{{ i18n.ts.invite }}</MkButton>
 			</div>
 			<div style="font-size: 90%; opacity: 0.7; text-align: center;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
 		</div>
 
-		<MkFolder v-if="invitations.length > 0" :defaultOpen="true">
+		<MkFolder v-if="$i && $i.policies.canPlayGames && invitations.length > 0" :defaultOpen="true">
 			<template #label>{{ i18n.ts.invitations }}</template>
 			<div class="_gaps_s">
 				<button v-for="user in invitations" :key="user.id" v-panel :class="$style.invitation" class="_button" tabindex="-1" @click="accept(user)">
@@ -112,6 +113,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { useStream } from '@/stream.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import MkPagination from '@/components/MkPagination.vue';
@@ -176,7 +178,7 @@ async function matchHeatbeat() {
 	if (matchingUser.value) {
 		const res = await misskeyApi('reversi/match', {
 			userId: matchingUser.value.id,
-		});
+		}).catch(onApiError);
 
 		if (res != null) {
 			startGame(res);
@@ -185,12 +187,45 @@ async function matchHeatbeat() {
 		const res = await misskeyApi('reversi/match', {
 			userId: null,
 			noIrregularRules: noIrregularRules.value,
-		});
+		}).catch(onApiError);
 
 		if (res != null) {
 			startGame(res);
 		}
 	}
+}
+
+function onApiError(err) {
+	if (err.id != null) {
+		let title: string | null = null;
+		let text = i18n.ts.somethingHappened;
+
+		switch (err.id) {
+			case '7f86f06f-7e15-4057-8561-f4b6d4ac755a':
+				title = i18n.ts.permissionDeniedError;
+				text = i18n.ts.permissionDeniedErrorDescription;
+				break;
+			case '3a8a677f-98e5-4c4d-b059-e5874b44bd4f':
+				title = i18n.ts.somethingHappened;
+				text = i18n.ts._reversi.targetUserIsNotAvailable;
+				break;
+			case '96fd7bd6-d2bc-426c-a865-d055dcd2828e':
+				title = i18n.ts.somethingHappened;
+				text = i18n.ts._reversi.targetIsYourself;
+				break;
+		}
+
+		// Role permission error
+		matchingUser.value = null;
+		matchingAny.value = false;
+
+		os.alert({
+			type: 'error',
+			title: title ?? undefined,
+			text,
+		});
+	}
+	return null;
 }
 
 async function matchUser() {
@@ -248,6 +283,8 @@ useInterval(matchHeatbeat, 1000 * 5, { immediate: false, afterMounted: true });
 onMounted(() => {
 	misskeyApi('reversi/invitations').then(_invitations => {
 		invitations.value = _invitations;
+	}).catch(() => {
+		invitations.value = [];
 	});
 
 	window.addEventListener('beforeunload', cancelMatching);

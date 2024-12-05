@@ -181,7 +181,7 @@ const engine = shallowRef<Reversi.Game>(Reversi.Serializer.restoreGame({
 }));
 
 const iAmPlayer = computed(() => {
-	return game.value.user1Id === $i.id || game.value.user2Id === $i.id;
+	return $i.policies.canPlayGames && (game.value.user1Id === $i.id || game.value.user2Id === $i.id);
 });
 
 const myColor = computed(() => {

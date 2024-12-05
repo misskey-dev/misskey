@@ -9,6 +9,7 @@ import { ReversiService } from '@/core/ReversiService.js';
 
 export const meta = {
 	requireCredential: true,
+	requireRolePolicy: 'canPlayGames',
 
 	kind: 'write:account',
 

@@ -5222,6 +5222,10 @@ export interface Locale extends ILocale {
      * 注意事項を理解した上でオンにします。
      */
     "acknowledgeNotesAndEnable": string;
+    /**
+     * このアカウントにはMisskey Gamesをプレイする権限がありません。
+     */
+    "youCannotPlayGames": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -7001,6 +7005,10 @@ export interface Locale extends ILocale {
              * リストのインポートを許可
              */
             "canImportUserLists": string;
+            /**
+             * Misskey Gamesの利用
+             */
+            "canPlayGames": string;
         };
         "_condition": {
             /**
@@ -10418,6 +10426,14 @@ export interface Locale extends ILocale {
          * 石をアイコンにする
          */
         "useAvatarAsStone": string;
+        /**
+         * 相手のユーザーにはMisskey Gamesをプレイする権限がありません。
+         */
+        "targetUserIsNotAvailable": string;
+        /**
+         * 相手に自分自身を指定することはできません。
+         */
+        "targetIsYourself": string;
     };
     "_offlineScreen": {
         /**
