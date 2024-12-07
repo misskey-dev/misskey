@@ -11,7 +11,7 @@ import { openInstanceMenu, openToolsMenu } from '@/ui/_common_/common.js';
 import { lookup } from '@/scripts/lookup.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { ui } from '@/config.js';
+import { ui, host } from '@/config.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 
 export const navbarItemDef = reactive({
@@ -176,6 +176,11 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-user',
 		show: computed(() => $i != null),
 		to: `/@${$i?.username}`,
+	},
+	support: {
+		title: i18n.tsx.supportThisInstance({ name: instance.name ?? host }),
+		icon: 'ti ti-pig-money',
+		to: 'https://go.misskey.io/donate',
 	},
 	cacheClear: {
 		title: i18n.ts.clearCache,
