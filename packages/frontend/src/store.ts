@@ -162,6 +162,9 @@ export const defaultStore = markRaw(new Storage('base', {
 			'search',
 			'-',
 			'ui',
+			'-',
+			'play',
+			'games',
 		],
 	},
 	postFormActions: {
