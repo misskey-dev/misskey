@@ -147,7 +147,7 @@ mainRouter.navHook = (path, flag): boolean => {
 		os.pageWindow(path);
 		routerNavTimer = setTimeout(() => {
 			routerNavTimer = null;
-		}, 500);
+		}, 300);
 		return true;
 	}
 	return false;
