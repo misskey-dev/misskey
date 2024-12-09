@@ -267,7 +267,7 @@ defineExpose({
 	font-size: 1em;
 	height: v-bind("height + 'px'");
 	min-width: 16px;
-	max-width: 150px;
+	max-width: 250px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -281,7 +281,7 @@ defineExpose({
 
 .prefix {
 	left: 0;
-	padding-right: 6px;
+	padding-right: 3px;
 }
 
 .suffix {
