@@ -13,7 +13,7 @@ on:
         default: false
       misskey-js:
         type: boolean
-        description: 'Start Release Candidate'
+        description: 'Release Misskey.js'
         default: false
 
 jobs:
