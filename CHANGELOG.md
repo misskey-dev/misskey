@@ -12,7 +12,7 @@
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
 - Fix: URLとURIが異なるエンティティの照会に失敗する問題を修正  
-	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/773)
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/773)
 
 
 ## 2024.11.0
