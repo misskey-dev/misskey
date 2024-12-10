@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XWordMute :muted="$i.hardMutedWords" @save="saveHardMutedWords"/>
 	</MkFolder>
 
-	<MkFolder>
+	<MkFolder v-if="instance.federation !== 'none'">
 		<template #icon><i class="ti ti-planet-off"></i></template>
 		<template #label>{{ i18n.ts.instanceMute }}</template>
 
@@ -136,7 +136,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { infoImageUrl } from '@/instance.js';
+import { instance, infoImageUrl } from '@/instance.js';
 import { signinRequired } from '@/account.js';
 import MkFolder from '@/components/MkFolder.vue';
 
