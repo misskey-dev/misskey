@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div>
 		<div :class="$style.form">
-			<MkInput v-if="localOnly" v-model="username" :autofocus="true" @update:modelValue="search">
+			<MkInput v-if="computedLocalOnly" v-model="username" :autofocus="true" @update:modelValue="search">
 				<template #label>{{ i18n.ts.username }}</template>
 				<template #prefix>@</template>
 			</MkInput>
@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef } from 'vue';
+import { onMounted, ref, computed, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -70,6 +70,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 import { host as currentHost, hostname } from '@@/js/config.js';
 
 const emit = defineEmits<{
@@ -86,6 +87,8 @@ const props = withDefaults(defineProps<{
 	localOnly: false,
 });
 
+const computedLocalOnly = computed(() => props.localOnly || instance.federation === 'none');
+
 const username = ref('');
 const host = ref('');
 const users = ref<Misskey.entities.UserLite[]>([]);
@@ -100,7 +103,7 @@ function search() {
 	}
 	misskeyApi('users/search-by-username-and-host', {
 		username: username.value,
-		host: props.localOnly ? '.' : host.value,
+		host: computedLocalOnly.value ? '.' : host.value,
 		limit: 10,
 		detail: false,
 	}).then(_users => {
@@ -142,7 +145,7 @@ onMounted(() => {
 	}).then(foundUsers => {
 		let _users = foundUsers;
 		_users = _users.filter((u) => {
-			if (props.localOnly) {
+			if (computedLocalOnly.value) {
 				return u.host == null;
 			} else {
 				return true;

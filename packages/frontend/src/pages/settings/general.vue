@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
 			</div>
 
-			<MkSelect v-model="instanceTicker">
+			<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
 				<template #label>{{ i18n.ts.instanceTicker }}</template>
 				<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
 				<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
@@ -263,6 +263,7 @@ import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
+import { instance } from '@/instance.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';

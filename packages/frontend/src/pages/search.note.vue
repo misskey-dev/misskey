@@ -13,15 +13,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #header>{{ i18n.ts.options }}</template>
 
 			<div class="_gaps_m">
-				<MkRadios v-model="hostSelect">
-					<template #label>{{ i18n.ts.host }}</template>
-					<option value="all" default>{{ i18n.ts.all }}</option>
-					<option value="local">{{ i18n.ts.local }}</option>
-					<option v-if="noteSearchableScope === 'global'" value="specified">{{ i18n.ts.specifyHost }}</option>
-				</MkRadios>
-				<MkInput v-if="noteSearchableScope === 'global'" v-model="hostInput" :disabled="hostSelect !== 'specified'" :large="true" type="search">
-					<template #prefix><i class="ti ti-server"></i></template>
-				</MkInput>
+				<template v-if="instance.federation !== 'none'">
+					<MkRadios v-model="hostSelect">
+						<template #label>{{ i18n.ts.host }}</template>
+						<option value="all" default>{{ i18n.ts.all }}</option>
+						<option value="local">{{ i18n.ts.local }}</option>
+						<option v-if="noteSearchableScope === 'global'" value="specified">{{ i18n.ts.specifyHost }}</option>
+					</MkRadios>
+					<MkInput v-if="noteSearchableScope === 'global'" v-model="hostInput" :disabled="hostSelect !== 'specified'" :large="true" type="search">
+						<template #prefix><i class="ti ti-server"></i></template>
+					</MkInput>
+				</template>
 
 				<MkFolder :defaultOpen="true">
 					<template #label>{{ i18n.ts.specifyUser }}</template>
@@ -102,7 +104,7 @@ setHostSelectWithInput(hostInput.value, undefined);
 watch(hostInput, setHostSelectWithInput);
 
 const searchHost = computed(() => {
-	if (hostSelect.value === 'local') return '.';
+	if (hostSelect.value === 'local' || instance.federation === 'none') return '.';
 	if (hostSelect.value === 'specified') return hostInput.value;
 	return null;
 });
