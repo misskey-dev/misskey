@@ -91,32 +91,38 @@ export const dbLogger = new MisskeyLogger('db');
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
 
 class MyCustomLogger implements Logger {
-	@bindThis
-	private highlight(sql: string) {
-		return highlight.highlight(sql, {
-			language: 'sql', ignoreIllegals: true,
-		});
+	constructor(
+		private printReplicationMode?: boolean,
+	) {
 	}
 
 	@bindThis
-	private replicationMode(runner?: QueryRunner) {
-		const mode = runner?.getReplicationMode();
-		return mode ? `[${mode}]` : '[default]';
+	private highlight(sql: string, queryRunner?: QueryRunner) {
+		const result = highlight.highlight(sql, {
+			language: 'sql', ignoreIllegals: true,
+		});
+
+		if (this.printReplicationMode && queryRunner) {
+			const mode = queryRunner.getReplicationMode();
+			return `[${mode}] ${result}`;
+		} else {
+			return result;
+		}
 	}
 
 	@bindThis
 	public logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		sqlLogger.info(this.replicationMode(queryRunner) + ' ' + this.highlight(query).substring(0, 100));
+		sqlLogger.info(this.highlight(query, queryRunner).substring(0, 100));
 	}
 
 	@bindThis
 	public logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		sqlLogger.error(this.replicationMode(queryRunner) + ' ' + this.highlight(query));
+		sqlLogger.error(this.highlight(query, queryRunner));
 	}
 
 	@bindThis
 	public logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		sqlLogger.warn(this.replicationMode(queryRunner) + ' ' + this.highlight(query));
+		sqlLogger.warn(this.highlight(query, queryRunner));
 	}
 
 	@bindThis
@@ -254,7 +260,7 @@ export function createPostgresDataSource(config: Config) {
 			},
 		} : false,
 		logging: log,
-		logger: log ? new MyCustomLogger() : undefined,
+		logger: log ? new MyCustomLogger(config.dbReplications) : undefined,
 		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],

@@ -9,6 +9,7 @@ import { RelationIdLoader } from 'typeorm/query-builder/relation-id/RelationIdLo
 import {
 	RawSqlResultsToEntityTransformer,
 } from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAbuseReportNotificationRecipient } from '@/models/AbuseReportNotificationRecipient.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
@@ -91,6 +92,9 @@ export const miRepository = {
 		return this.metadata.columns.filter(column => column.isSelect && !column.isVirtual).map(column => column.databaseName);
 	},
 	async insertOne(entity, findOptions?) {
+		const opt = this.manager.connection.options as PostgresConnectionOptions;
+		console.log(opt.replication);
+
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const mainAlias = queryBuilder.expressionMap.mainAlias!;
