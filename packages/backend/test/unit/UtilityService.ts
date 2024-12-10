@@ -35,9 +35,5 @@ describe('UtilityService', () => {
 			assert.equal(utilityService.punyHostPSLDomain('http://foo.github.io'), 'foo.github.io');
 			assert.equal(utilityService.punyHostPSLDomain('http://foo.bar.github.io'), 'bar.github.io');
 		});
-		test('special', () => {
-			assert.equal(utilityService.punyHostPSLDomain('http://foo.masto.host'), 'foo.masto.host');
-			assert.equal(utilityService.punyHostPSLDomain('http://foo.bar.masto.host'), 'bar.masto.host');
-		});
 	});
 });

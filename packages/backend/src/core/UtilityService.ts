@@ -123,22 +123,10 @@ export class UtilityService {
 		return host;
 	}
 
-	private specialSuffix(hostname: string): string | null {
-		// masto.host provides domain names for its clients, we have to
-		// treat it as if it were a public suffix
-		const mastoHost = hostname.match(/\.?([a-zA-Z0-9-]+\.masto\.host)$/i);
-		if (mastoHost) {
-			return mastoHost[1];
-		}
-
-		return null;
-	}
-
 	@bindThis
 	public punyHostPSLDomain(url: string): string {
 		const urlObj = new URL(url);
-		const hostname = urlObj.hostname;
-		const domain = this.specialSuffix(hostname) ?? psl.get(hostname) ?? hostname;
+		const domain = psl.get(urlObj.hostname) ?? urlObj.hostname;
 		const host = `${this.toPuny(domain)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
 		return host;
 	}
