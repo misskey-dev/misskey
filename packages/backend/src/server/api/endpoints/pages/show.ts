@@ -78,6 +78,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchPage);
 			}
 
+			if (page.visibility === 'private' && (me == null || (page.userId !== me.id))) {
+				throw new ApiError(meta.errors.noSuchPage);
+			}
+
 			return await this.pageEntityService.pack(page, me);
 		});
 	}

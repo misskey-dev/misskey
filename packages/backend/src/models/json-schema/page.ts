@@ -205,6 +205,11 @@ export const packedPageSchema = {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
+		visibility: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['public', 'private'],
+		},
 	},
 } as const;
 

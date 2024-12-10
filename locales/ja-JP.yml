@@ -2495,6 +2495,9 @@ _pages:
   contentBlocks: "コンテンツ"
   inputBlocks: "入力"
   specialBlocks: "特殊"
+  visibility: "公開範囲"
+  public: "公開"
+  private: "非公開"
   blocks:
     text: "テキスト"
     textarea: "テキストエリア"

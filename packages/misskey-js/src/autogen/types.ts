@@ -4619,6 +4619,8 @@ export type components = {
       attachedFiles: components['schemas']['DriveFile'][];
       likedCount: number;
       isLiked?: boolean;
+      /** @enum {string} */
+      visibility: 'public' | 'private';
     };
     PageBlock: OneOf<[{
       id: string;
@@ -25230,6 +25232,8 @@ export type operations = {
           alignCenter?: boolean;
           /** @default false */
           hideTitleWhenPinned?: boolean;
+          /** @enum {string} */
+          visibility?: 'public' | 'private';
         };
       };
     };
@@ -25564,6 +25568,8 @@ export type operations = {
           font?: 'serif' | 'sans-serif';
           alignCenter?: boolean;
           hideTitleWhenPinned?: boolean;
+          /** @enum {string} */
+          visibility?: 'public' | 'private';
         };
       };
     };

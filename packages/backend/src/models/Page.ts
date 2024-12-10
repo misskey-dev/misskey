@@ -99,18 +99,13 @@ export class MiPage {
 
 	/**
 	 * public ... 公開
-	 * followers ... フォロワーのみ
-	 * specified ... visibleUserIds で指定したユーザーのみ
+	 * private ... 非公開
 	 */
-	@Column('enum', { enum: ['public', 'followers', 'specified'] })
-	public visibility: 'public' | 'followers' | 'specified';
-
-	@Index()
-	@Column({
-		...id(),
-		array: true, default: '{}',
+	@Column('enum', {
+		enum: ['public', 'private'],
+		default: 'public',
 	})
-	public visibleUserIds: MiUser['id'][];
+	public visibility: 'public' | 'private';
 
 	@Column('integer', {
 		default: 0,

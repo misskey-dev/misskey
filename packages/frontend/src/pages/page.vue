@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							/>
 						</div>
 						<div :class="$style.pageBannerTitle" class="_gaps_s">
-							<h1>{{ page.title || page.name }}</h1>
+							<h1>{{ page.title || page.name }} <i v-if="page.visibility === 'private'" class="ti ti-lock"></i></h1>
 							<div :class="$style.pageBannerTitleSub">
 								<div v-if="page.user" :class="$style.pageBannerTitleUser">
 									<MkAvatar :user="page.user" :class="$style.avatar" indicator link preview/> <MkA :to="`/@${username}`"><MkUserName :user="page.user" :nowrap="false"/></MkA>
@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div :class="$style.pageLinks">
 						<MkA v-if="!$i || $i.id !== page.userId" :to="`/@${username}/pages/${pageName}/view-source`" class="link">{{ i18n.ts._pages.viewSource }}</MkA>
-						<template v-if="$i && $i.id === page.userId">
+						<template v-if="($i && $i.id === page.userId) && page.visibility === 'public'">
 							<MkA :to="`/pages/edit/${page.id}`" class="link">{{ i18n.ts._pages.editThisPage }}</MkA>
 							<button v-if="$i.pinnedPageId === page.id" class="link _textButton" @click="pin(false)">{{ i18n.ts.unpin }}</button>
 							<button v-else class="link _textButton" @click="pin(true)">{{ i18n.ts.pin }}</button>

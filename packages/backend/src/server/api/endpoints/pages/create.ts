@@ -65,6 +65,7 @@ export const paramDef = {
 		font: { type: 'string', enum: ['serif', 'sans-serif'], default: 'sans-serif' },
 		alignCenter: { type: 'boolean', default: false },
 		hideTitleWhenPinned: { type: 'boolean', default: false },
+		visibility: { type: 'string', enum: ['public', 'private'] },
 	},
 	required: ['title', 'name', 'content', 'variables', 'script'],
 } as const;
@@ -114,7 +115,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				script: ps.script,
 				eyeCatchingImageId: eyeCatchingImage ? eyeCatchingImage.id : null,
 				userId: me.id,
-				visibility: 'public',
+				visibility: ps.visibility,
 				alignCenter: ps.alignCenter,
 				hideTitleWhenPinned: ps.hideTitleWhenPinned,
 				font: ps.font,

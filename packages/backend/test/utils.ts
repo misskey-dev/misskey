@@ -196,6 +196,7 @@ export const page = async (user: UserToken, page: Partial<misskey.entities.Page>
 		eyeCatchingImageId: null,
 		font: 'sans-serif' as FIXME,
 		hideTitleWhenPinned: false,
+		visibility: 'public',
 		name: '1678594845072',
 		script: '',
 		summary: null,

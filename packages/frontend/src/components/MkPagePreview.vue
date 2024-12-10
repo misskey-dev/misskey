@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article>
 		<header>
-			<h1 :title="page.title">{{ page.title }}</h1>
+			<h1 :title="page.title">{{ page.title || page.name }} <i v-if="page.visibility === 'private'" class="ti ti-lock"></i></h1>
 		</header>
 		<p v-if="page.summary" :title="page.summary">{{ page.summary.length > 85 ? page.summary.slice(0, 85) + '…' : page.summary }}</p>
 		<footer>
