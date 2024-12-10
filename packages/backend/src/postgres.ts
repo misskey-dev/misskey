@@ -5,9 +5,8 @@
 
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
-import { DataSource, Logger } from 'typeorm';
+import { DataSource, Logger, type QueryRunner } from 'typeorm';
 import * as highlight from 'cli-highlight';
-import { type QueryRunner } from 'typeorm';
 import { entities as charts } from '@/core/chart/entities.js';
 
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
@@ -97,32 +96,36 @@ class MyCustomLogger implements Logger {
 	}
 
 	@bindThis
-	private highlight(sql: string, queryRunner?: QueryRunner) {
-		const result = highlight.highlight(sql, {
+	private highlight(sql: string) {
+		return highlight.highlight(sql, {
 			language: 'sql', ignoreIllegals: true,
 		});
+	}
 
-		if (this.printReplicationMode && queryRunner) {
-			const mode = queryRunner.getReplicationMode();
-			return `[${mode}] ${result}`;
+	@bindThis
+	private appendPrefixIfNeeded(message: string, opts?: {
+		queryRunner?: QueryRunner;
+	}): string {
+		if (this.printReplicationMode && opts?.queryRunner) {
+			return `[${opts.queryRunner.getReplicationMode()}] ${message}`;
 		} else {
-			return result;
+			return message;
 		}
 	}
 
 	@bindThis
 	public logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		sqlLogger.info(this.highlight(query, queryRunner).substring(0, 100));
+		sqlLogger.info(this.appendPrefixIfNeeded(this.highlight(query).substring(0, 100), { queryRunner }));
 	}
 
 	@bindThis
 	public logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		sqlLogger.error(this.highlight(query, queryRunner));
+		sqlLogger.error(this.appendPrefixIfNeeded(this.highlight(query), { queryRunner }));
 	}
 
 	@bindThis
 	public logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		sqlLogger.warn(this.highlight(query, queryRunner));
+		sqlLogger.warn(this.appendPrefixIfNeeded(this.highlight(query), { queryRunner }));
 	}
 
 	@bindThis
