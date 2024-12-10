@@ -5223,7 +5223,7 @@ export interface Locale extends ILocale {
      */
     "acknowledgeNotesAndEnable": string;
     /**
-     * このサーバーはホワイトリスト連合モードで運用されています。管理者が指定したサーバー以外とは連合できません。
+     * このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。
      */
     "federationSpecified": string;
     /**
