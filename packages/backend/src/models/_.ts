@@ -3,7 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+	FindOneOptions,
+	InsertQueryBuilder,
+	ObjectLiteral,
+	QueryRunner,
+	Repository,
+	SelectQueryBuilder,
+} from 'typeorm';
 import { RelationCountLoader } from 'typeorm/query-builder/relation-count/RelationCountLoader.js';
 import { RelationIdLoader } from 'typeorm/query-builder/relation-id/RelationIdLoader.js';
 import {
@@ -83,7 +90,11 @@ import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialE
 
 export interface MiRepository<T extends ObjectLiteral> {
 	createTableColumnNames(this: Repository<T> & MiRepository<T>): string[];
+
 	insertOne(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>): Promise<T>;
+
+	insertOneImpl(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>, queryRunner?: QueryRunner): Promise<T>;
+
 	selectAliasColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>, builder: SelectQueryBuilder<T>): void;
 }
 
@@ -93,7 +104,19 @@ export const miRepository = {
 	},
 	async insertOne(entity, findOptions?) {
 		const opt = this.manager.connection.options as PostgresConnectionOptions;
-		console.log(opt.replication);
+		if (opt.replication) {
+			const queryRunner = this.manager.connection.createQueryRunner('master');
+			try {
+				return this.insertOneImpl(entity, findOptions, queryRunner);
+			} finally {
+				await queryRunner.release();
+			}
+		} else {
+			return this.insertOneImpl(entity, findOptions);
+		}
+	},
+	async insertOneImpl(entity, findOptions?, queryRunner?) {
+		// ---- insert + returningの結果を共通テーブル式(CTE)に保持するクエリを生成 ----
 
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -103,24 +126,20 @@ export const miRepository = {
 		const columnNames = this.createTableColumnNames();
 		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
 
-		const queryRunner = this.manager.connection.createQueryRunner('master');
-		try {
-			const builder = this.createQueryBuilder(undefined, queryRunner).addCommonTableExpression(queryBuilder, 'cte', { columnNames });
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			builder.expressionMap.mainAlias!.tablePath = 'cte';
-			this.selectAliasColumnNames(queryBuilder, builder);
-			if (findOptions) {
-				builder.setFindOptions(findOptions);
-			}
-			const raw = await builder.execute();
-			mainAlias.name = name;
-			const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
-			const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
-			const result = new RawSqlResultsToEntityTransformer(builder.expressionMap, builder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, mainAlias);
-			return result[0];
-		} finally {
-			await queryRunner.release();
+		// ---- 共通テーブル式(CTE)から結果を取得 ----
+		const builder = this.createQueryBuilder(undefined, queryRunner).addCommonTableExpression(queryBuilder, 'cte', { columnNames });
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		builder.expressionMap.mainAlias!.tablePath = 'cte';
+		this.selectAliasColumnNames(queryBuilder, builder);
+		if (findOptions) {
+			builder.setFindOptions(findOptions);
 		}
+		const raw = await builder.execute();
+		mainAlias.name = name;
+		const relationId = await new RelationIdLoader(builder.connection, this.queryRunner, builder.expressionMap.relationIdAttributes).load(raw);
+		const relationCount = await new RelationCountLoader(builder.connection, this.queryRunner, builder.expressionMap.relationCountAttributes).load(raw);
+		const result = new RawSqlResultsToEntityTransformer(builder.expressionMap, builder.connection.driver, relationId, relationCount, this.queryRunner).transform(raw, mainAlias);
+		return result[0];
 	},
 	selectAliasColumnNames(queryBuilder, builder) {
 		let selectOrAddSelect = (selection: string, selectionAliasName?: string) => {
@@ -206,7 +225,9 @@ export {
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
-export type AbuseReportNotificationRecipientRepository = Repository<MiAbuseReportNotificationRecipient> & MiRepository<MiAbuseReportNotificationRecipient>;
+export type AbuseReportNotificationRecipientRepository =
+	Repository<MiAbuseReportNotificationRecipient>
+	& MiRepository<MiAbuseReportNotificationRecipient>;
 export type AccessTokensRepository = Repository<MiAccessToken> & MiRepository<MiAccessToken>;
 export type AdsRepository = Repository<MiAd> & MiRepository<MiAd>;
 export type AnnouncementsRepository = Repository<MiAnnouncement> & MiRepository<MiAnnouncement>;
