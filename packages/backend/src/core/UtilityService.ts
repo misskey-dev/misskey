@@ -131,12 +131,6 @@ export class UtilityService {
 			return mastoHost[1];
 		}
 
-		// XServer SNS
-		const xserverSns = hostname.match(/\.?([a-zA-Z0-9-]+\.xsns\.jp)$/i);
-		if (xserverSns) {
-			return xserverSns[1];
-		}
-
 		return null;
 	}
 

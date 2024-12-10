@@ -38,8 +38,6 @@ describe('UtilityService', () => {
 		test('special', () => {
 			assert.equal(utilityService.punyHostPSLDomain('http://foo.masto.host'), 'foo.masto.host');
 			assert.equal(utilityService.punyHostPSLDomain('http://foo.bar.masto.host'), 'bar.masto.host');
-			assert.equal(utilityService.punyHostPSLDomain('http://foo.xsns.jp'), 'foo.xsns.jp');
-			assert.equal(utilityService.punyHostPSLDomain('http://foo.bar.xsns.jp'), 'bar.xsns.jp');
 		});
 	});
 });
