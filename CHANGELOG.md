@@ -6,6 +6,8 @@
 ### Client
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
+- Fix: 公開範囲がホームのノートの埋め込みウィジェットが読み込まれない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/803)
 - Fix: デッキでリンクをダブルクリックすると、ウィンドウが2枚開いてしまう問題を修正
 
 ### Server
