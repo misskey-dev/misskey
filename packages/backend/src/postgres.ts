@@ -7,6 +7,7 @@
 import pg from 'pg';
 import { DataSource, Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
+import { type QueryRunner } from 'typeorm';
 import { entities as charts } from '@/core/chart/entities.js';
 
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
@@ -90,26 +91,38 @@ export const dbLogger = new MisskeyLogger('db');
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
 
 class MyCustomLogger implements Logger {
+	constructor(
+		private printReplicationMode?: boolean,
+	) {
+	}
+
 	@bindThis
-	private highlight(sql: string) {
-		return highlight.highlight(sql, {
+	private highlight(sql: string, queryRunner?: QueryRunner) {
+		const result = highlight.highlight(sql, {
 			language: 'sql', ignoreIllegals: true,
 		});
+
+		if (this.printReplicationMode && queryRunner) {
+			const mode = queryRunner.getReplicationMode();
+			return `[${mode}] ${result}`;
+		} else {
+			return result;
+		}
 	}
 
 	@bindThis
-	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query).substring(0, 100));
+	public logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		sqlLogger.info(this.highlight(query, queryRunner).substring(0, 100));
 	}
 
 	@bindThis
-	public logQueryError(error: string, query: string, parameters?: any[]) {
-		sqlLogger.error(this.highlight(query));
+	public logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		sqlLogger.error(this.highlight(query, queryRunner));
 	}
 
 	@bindThis
-	public logQuerySlow(time: number, query: string, parameters?: any[]) {
-		sqlLogger.warn(this.highlight(query));
+	public logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		sqlLogger.warn(this.highlight(query, queryRunner));
 	}
 
 	@bindThis
@@ -247,7 +260,7 @@ export function createPostgresDataSource(config: Config) {
 			},
 		} : false,
 		logging: log,
-		logger: log ? new MyCustomLogger() : undefined,
+		logger: log ? new MyCustomLogger(config.dbReplications) : undefined,
 		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],
