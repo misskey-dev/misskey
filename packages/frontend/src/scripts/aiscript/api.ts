@@ -5,11 +5,14 @@
 
 import { utils, values } from '@syuilo/aiscript';
 import * as Misskey from 'misskey-js';
+import { parse as parseMfm, toString as mfmAstToString } from 'mfm-js';
+import type { MfmNode } from 'mfm-js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
+import { deepClone } from '@/scripts/clone.js';
 import { url, lang } from '@@/js/config.js';
 
 export function aiScriptReadline(q: string): Promise<string> {
@@ -88,6 +91,32 @@ export function createAiScriptEnv(opts) {
 		'Mk:nyaize': values.FN_NATIVE(([text]) => {
 			utils.assertString(text);
 			return values.STR(Misskey.nyaize(text.value));
+		}),
+		'Mfm:replaceTextNode': values.FN_NATIVE(async ([text, fn], opts) => {
+			utils.assertString(text);
+			utils.assertFunction(fn);
+
+			const ast = parseMfm(text.value);
+
+			async function replaceText(ast: MfmNode[]) {
+				utils.assertFunction(fn);
+
+				return await Promise.all(ast.map(async (node) => {
+					const out = deepClone(node);
+					if (out.type === 'text') {
+						const res = await opts.topCall(fn, [values.STR(out.props.text)]);
+						utils.assertString(res);
+						out.props.text = res.value;
+					} else if (out.type !== 'plain' && 'children' in out && out.children != null && out.children.length > 0) {
+						out.children = await replaceText(out.children);
+					}
+					return out;
+				}));
+			}
+
+			const afterAst = await replaceText(ast);
+
+			return values.STR(mfmAstToString(afterAst));
 		}),
 	};
 }
