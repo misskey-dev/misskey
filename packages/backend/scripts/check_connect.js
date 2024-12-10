@@ -53,4 +53,4 @@ const promises = Array
 		connectToPostgres()
 	]);
 
-await Promise.allSettled(promises);
+await Promise.all(promises);
