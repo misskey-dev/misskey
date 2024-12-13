@@ -119,6 +119,7 @@ export class ScheduleNotePostProcessorService {
 					reply,
 					renote,
 					channel,
+					deleteAt: note.deleteAt ? new Date(note.deleteAt) : null,
 				});
 				await this.noteScheduleRepository.remove(data);
 				this.notificationService.createNotification(me.id, 'scheduledNotePosted', {

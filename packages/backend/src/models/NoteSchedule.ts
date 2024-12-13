@@ -37,6 +37,7 @@ export type MiScheduleNoteType={
 	apMentions?: MinimumUser[] | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
+	deleteAt?: string | null;
 }
 
 @Entity('note_schedule')
