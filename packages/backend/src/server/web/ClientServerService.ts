@@ -871,7 +871,7 @@ export class ClientServerService {
 			});
 
 			if (note == null) return;
-			if (note.visibility !== 'public') return;
+			if (['specified', 'followers'].includes(note.visibility)) return;
 			if (note.userHost != null) return;
 
 			const _note = await this.noteEntityService.pack(note, null, { detail: true });
