@@ -5,7 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<template v-for="file in note.files">
-		<div v-if="file.isSensitive && !showingFiles.includes(file.id)" :class="[$style.img, { [$style.square]: square }]" @click="showingFiles.push(file.id)">
+		<div
+			v-if="(defaultStore.state.nsfw === 'force' || file.isSensitive) && defaultStore.state.nsfw !== 'ignore' && !showingFiles.includes(file.id)"
+			:class="[$style.img, { [$style.square]: square }]"
+			@click="showingFiles.push(file.id)"
+		>
 			<!-- TODO: 画像以外のファイルに対応 -->
 			<ImgWithBlurhash
 				v-if="FILE_TYPE_BROWSERSAFE.includes(file.type) && (file.type.startsWith('image/') || (file.type.startsWith('video/') && file.thumbnailUrl != null))"
