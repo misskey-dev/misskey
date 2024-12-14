@@ -10,7 +10,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="[$style.img, { [$style.square]: square }]"
 			@click="showingFiles.add(file.id)"
 		>
-			<!-- TODO: 画像以外のファイルに対応 -->
 			<ImgWithBlurhash
 				v-if="FILE_TYPE_BROWSERSAFE.includes(file.type) && (file.type.startsWith('image/') || (file.type.startsWith('video/') && file.thumbnailUrl != null))"
 				:class="$style.sensitiveImg"
@@ -28,7 +27,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<MkA v-else :class="[$style.img, { [$style.square]: square }]" :to="notePage(note)">
-			<!-- TODO: 画像以外のファイルに対応 -->
 			<ImgWithBlurhash
 				v-if="FILE_TYPE_BROWSERSAFE.includes(file.type) && (file.type.startsWith('image/') || (file.type.startsWith('video/') && file.thumbnailUrl != null))"
 				:hash="file.blurhash"
