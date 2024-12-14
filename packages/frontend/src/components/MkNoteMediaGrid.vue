@@ -7,7 +7,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-for="file in note.files">
 		<div v-if="file.isSensitive && !showingFiles.includes(file.id)" :class="[$style.img, { [$style.square]: square }]" @click="showingFiles.push(file.id)">
 			<!-- TODO: 画像以外のファイルに対応 -->
-			<ImgWithBlurhash :class="$style.sensitiveImg" :hash="file.blurhash" :src="thumbnail(file)" :title="file.name" :forceBlurhash="true"/>
+			<ImgWithBlurhash
+				v-if="FILE_TYPE_BROWSERSAFE.includes(file.type) && (file.type.startsWith('image/') || (file.type.startsWith('video/') && file.thumbnailUrl != null))"
+				:class="$style.sensitiveImg"
+				:hash="file.blurhash"
+				:src="thumbnail(file)"
+				:title="file.name"
+				:forceBlurhash="true"
+			/>
+			<XFilePreview v-else :class="$style.sensitiveFile" :file="file" :bgIsPanel="bgIsPanel"/>
 			<div :class="$style.sensitive">
 				<div>
 					<div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
@@ -17,7 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<MkA v-else :class="[$style.img, { [$style.square]: square }]" :to="notePage(note)">
 			<!-- TODO: 画像以外のファイルに対応 -->
-			<ImgWithBlurhash :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"/>
+			<ImgWithBlurhash
+				v-if="FILE_TYPE_BROWSERSAFE.includes(file.type) && (file.type.startsWith('image/') || (file.type.startsWith('video/') && file.thumbnailUrl != null))"
+				:hash="file.blurhash"
+				:src="thumbnail(file)"
+				:title="file.name"
+			/>
+			<XFilePreview v-else :file="file" :bgIsPanel="bgIsPanel"/>
 		</MkA>
 	</template>
 </template>
@@ -25,6 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 
 import { ref } from 'vue';
+import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import { notePage } from '@/filters/note.js';
 import { i18n } from '@/i18n.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
@@ -32,9 +47,12 @@ import * as Misskey from 'misskey-js';
 import { defaultStore } from '@/store.js';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
 
+import XFilePreview from '@/components/MkNoteMediaGrid.file.vue';
+
 defineProps<{
 	note: Misskey.entities.Note;
 	square?: boolean;
+	bgIsPanel?: boolean;
 }>();
 
 const showingFiles = ref<string[]>([]);
@@ -59,15 +77,13 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 	border-radius: 6px;
 	overflow: clip;
 
+	&:hover {
+		text-decoration: none;
+	}
+
 	&.square {
 		height: 100%;
 	}
-}
-
-.empty {
-	margin: 0;
-	padding: 16px;
-	text-align: center;
 }
 
 .sensitiveImg {
@@ -77,6 +93,10 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 	width: 100%;
 	height: 100%;
 	filter: brightness(0.7);
+}
+
+.sensitiveFile {
+	filter: brightness(0.5) blur(2px);
 }
 
 .sensitive {
