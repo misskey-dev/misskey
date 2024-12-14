@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSpacer v-else-if="tab === 'notes'" key="notes" :contentMax="800" style="padding-top: 0">
 					<XTimeline :user="user"/>
 				</MkSpacer>
+				<XFiles v-else-if="tab === 'files'" :user="user"/>
 				<XActivity v-else-if="tab === 'activity'" key="activity" :user="user"/>
 				<XAchievements v-else-if="tab === 'achievements'" key="achievements" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" key="reactions" :user="user"/>
@@ -21,7 +22,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XPages v-else-if="tab === 'pages'" key="pages" :user="user"/>
 				<XFlashs v-else-if="tab === 'flashs'" key="flashs" :user="user"/>
 				<XGallery v-else-if="tab === 'gallery'" key="gallery" :user="user"/>
-				<XGalleryFromPosts v-else-if="tab === 'galleryFromPosts'" :user="user"/>
 				<XRaw v-else-if="tab === 'raw'" key="raw" :user="user"/>
 			</MkHorizontalSwipe>
 		</div>
@@ -44,6 +44,7 @@ import { getServerContext } from '@/server-context.js';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
+const XFiles = defineAsyncComponent(() => import('./files.vue'));
 const XActivity = defineAsyncComponent(() => import('./activity.vue'));
 const XAchievements = defineAsyncComponent(() => import('./achievements.vue'));
 const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
@@ -52,7 +53,6 @@ const XLists = defineAsyncComponent(() => import('./lists.vue'));
 const XPages = defineAsyncComponent(() => import('./pages.vue'));
 const XFlashs = defineAsyncComponent(() => import('./flashs.vue'));
 const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
-const XGalleryFromPosts = defineAsyncComponent(() => import('./post-gallery.vue'));
 const XRaw = defineAsyncComponent(() => import('./raw.vue'));
 
 const CTX_USER = getServerContext('user');
@@ -105,6 +105,10 @@ const headerTabs = computed(() => user.value ? [{
 	title: i18n.ts.notes,
 	icon: 'ti ti-pencil',
 }, {
+	key: 'file',
+	title: i18n.ts.files,
+	icon: 'ti ti-photo',
+}, {
 	key: 'activity',
 	title: i18n.ts.activity,
 	icon: 'ti ti-chart-line',
@@ -135,10 +139,6 @@ const headerTabs = computed(() => user.value ? [{
 }, {
 	key: 'gallery',
 	title: i18n.ts.gallery,
-	icon: 'ti ti-icons',
-}, {
-	key: 'galleryFromPosts',
-	title: i18n.ts.galleryFromPosts,
 	icon: 'ti ti-icons',
 }, {
 	key: 'raw',
