@@ -5,13 +5,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<template v-for="file in note.files">
-		<div v-if="file.isSensitive && !showingFiles.includes(file.id)" :class="$style.sensitive" @click="showingFiles.push(file.id)">
+		<div v-if="file.isSensitive && !showingFiles.includes(file.id)" :class="[$style.sensitive, { [$style.square]: square }]" @click="showingFiles.push(file.id)">
 			<div>
 				<div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
 				<div>{{ i18n.ts.clickToShow }}</div>
 			</div>
 		</div>
-		<MkA v-else :class="$style.img" :to="notePage(note)">
+		<MkA v-else :class="[$style.img, { [$style.square]: square }]" :to="notePage(note)">
 			<!-- TODO: 画像以外のファイルに対応 -->
 			<ImgWithBlurhash :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"/>
 		</MkA>
@@ -28,8 +28,9 @@ import * as Misskey from 'misskey-js';
 import { defaultStore } from '@/store.js';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
 
-const props = defineProps<{
+defineProps<{
 	note: Misskey.entities.Note;
+	square?: boolean;
 }>();
 
 const showingFiles = ref<string[]>([]);
@@ -42,10 +43,20 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 </script>
 
 <style lang="scss" module>
+.square {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1;
+}
+
 .img {
 	height: 220px;
 	border-radius: 6px;
 	overflow: clip;
+
+	&.square {
+		height: 100%;
+	}
 }
 
 .empty {

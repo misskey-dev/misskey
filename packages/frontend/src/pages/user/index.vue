@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<div v-if="user">
 			<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-				<XHome v-if="tab === 'home'" key="home" :user="user"/>
+				<XHome v-if="tab === 'home'" key="home" :user="user" @unfoldFiles="() => { tab = 'files'; }"/>
 				<MkSpacer v-else-if="tab === 'notes'" key="notes" :contentMax="800" style="padding-top: 0">
 					<XTimeline :user="user"/>
 				</MkSpacer>
@@ -105,7 +105,7 @@ const headerTabs = computed(() => user.value ? [{
 	title: i18n.ts.notes,
 	icon: 'ti ti-pencil',
 }, {
-	key: 'file',
+	key: 'files',
 	title: i18n.ts.files,
 	icon: 'ti ti-photo',
 }, {

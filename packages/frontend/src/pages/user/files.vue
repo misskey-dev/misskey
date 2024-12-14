@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.root">
 			<MkPagination v-slot="{items}" :pagination="pagination">
 				<div :class="$style.stream">
-					<MkMedias v-for="note in items" :note="note"/>
+					<MkMedias v-for="note in items" :note="note" square/>
 				</div>
 			</MkPagination>
 		</div>
@@ -45,11 +45,5 @@ const pagination = {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 	grid-gap: 6px;
-}
-
-@media (min-width: 720px) {
-	.stream {
-		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-	}
 }
 </style>
