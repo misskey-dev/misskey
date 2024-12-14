@@ -20,25 +20,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 
-import {ref} from "vue";
-import {notePage} from "@/filters/note.js";
-import {i18n} from "@/i18n.js";
-import ImgWithBlurhash from "@/components/MkImgWithBlurhash.vue";
-import * as Misskey from "misskey-js";
-import {defaultStore} from "@/store.js";
-import {getStaticImageUrl} from "@/scripts/media-proxy.js";
-
-let showingFiles = ref<string[]>([]);
-
-function thumbnail(image: Misskey.entities.DriveFile): string {
-	return defaultStore.state.disableShowingAnimatedImages
-		? getStaticImageUrl(image.url)
-		: image.thumbnailUrl;
-}
+import { ref } from 'vue';
+import { notePage } from '@/filters/note.js';
+import { i18n } from '@/i18n.js';
+import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import * as Misskey from 'misskey-js';
+import { defaultStore } from '@/store.js';
+import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
+
+const showingFiles = ref<string[]>([]);
+
+function thumbnail(image: Misskey.entities.DriveFile): string {
+	return defaultStore.state.disableShowingAnimatedImages
+		? getStaticImageUrl(image.url)
+		: image.thumbnailUrl ?? getProxiedImageUrl(image.url, 'preview');
+}
 </script>
 
 <style lang="scss" module>
