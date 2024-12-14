@@ -6,9 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 	<template v-for="file in note.files">
 		<div
-			v-if="(defaultStore.state.nsfw === 'force' || file.isSensitive) && defaultStore.state.nsfw !== 'ignore' && !showingFiles.includes(file.id)"
+			v-if="(defaultStore.state.nsfw === 'force' || file.isSensitive) && defaultStore.state.nsfw !== 'ignore' && !showingFiles.has(file.id)"
 			:class="[$style.img, { [$style.square]: square }]"
-			@click="showingFiles.push(file.id)"
+			@click="showingFiles.add(file.id)"
 		>
 			<!-- TODO: 画像以外のファイルに対応 -->
 			<ImgWithBlurhash
@@ -59,7 +59,7 @@ defineProps<{
 	bgIsPanel?: boolean;
 }>();
 
-const showingFiles = ref<string[]>([]);
+const showingFiles = ref<Set<string>>(new Set());
 
 function thumbnail(image: Misskey.entities.DriveFile): string {
 	return defaultStore.state.disableShowingAnimatedImages
