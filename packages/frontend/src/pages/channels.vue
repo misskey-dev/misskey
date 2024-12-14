@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="1200">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'search'" key="search">
+			<div v-if="tab === 'search'" key="search" :class="$style.searchRoot">
 				<div class="_gaps">
 					<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
 						<template #prefix><i class="ti ti-search"></i></template>
@@ -168,9 +168,15 @@ definePageMetadata(() => ({
 </script>
 
 <style lang="scss" module>
+.searchRoot {
+	width: 100%;
+	max-width: 700px;
+	margin: 0 auto;
+}
+
 .root {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-	grid-gap: var(--margin);
+	gap: var(--margin);
 }
 </style>
