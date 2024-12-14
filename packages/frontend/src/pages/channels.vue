@@ -93,6 +93,7 @@ onMounted(() => {
 
 const featuredPagination = {
 	endpoint: 'channels/featured' as const,
+	limit: 10,
 	noPaging: true,
 };
 const favoritesPagination = {
