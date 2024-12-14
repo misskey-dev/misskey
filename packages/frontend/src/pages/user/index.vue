@@ -53,6 +53,7 @@ const XFlashs = defineAsyncComponent(() => import('./flashs.vue'));
 const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
 const XRaw = defineAsyncComponent(() => import('./raw.vue'));
 
+// contextは非ログイン状態の情報しかないためログイン時は利用できない
 const CTX_USER = $i && assertServerContext(serverContext, 'user') ? serverContext.user : null;
 
 const props = withDefaults(defineProps<{
