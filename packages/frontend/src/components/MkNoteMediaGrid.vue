@@ -5,10 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<template v-for="file in note.files">
-		<div v-if="file.isSensitive && !showingFiles.includes(file.id)" :class="[$style.sensitive, { [$style.square]: square }]" @click="showingFiles.push(file.id)">
-			<div>
-				<div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
-				<div>{{ i18n.ts.clickToShow }}</div>
+		<div v-if="file.isSensitive && !showingFiles.includes(file.id)" :class="[$style.img, { [$style.square]: square }]" @click="showingFiles.push(file.id)">
+			<!-- TODO: 画像以外のファイルに対応 -->
+			<ImgWithBlurhash :class="$style.sensitiveImg" :hash="file.blurhash" :src="thumbnail(file)" :title="file.name" :forceBlurhash="true"/>
+			<div :class="$style.sensitive">
+				<div>
+					<div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
+					<div>{{ i18n.ts.clickToShow }}</div>
+				</div>
 			</div>
 		</div>
 		<MkA v-else :class="[$style.img, { [$style.square]: square }]" :to="notePage(note)">
@@ -50,7 +54,8 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 }
 
 .img {
-	height: 220px;
+	position: relative;
+	height: 128px;
 	border-radius: 6px;
 	overflow: clip;
 
@@ -65,8 +70,25 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 	text-align: center;
 }
 
+.sensitiveImg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	filter: brightness(0.7);
+}
+
 .sensitive {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 	display: grid;
-	place-items: center;
+  place-items: center;
+	font-size: 0.8em;
+	color: #fff;
+	cursor: pointer;
 }
 </style>

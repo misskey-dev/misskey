@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 
-import MkMedias from '@/components/MkMedias.vue';
+import MkMedias from '@/components/MkNoteMediaGrid.vue';
 import MkPagination from '@/components/MkPagination.vue';
 
 const props = defineProps<{
