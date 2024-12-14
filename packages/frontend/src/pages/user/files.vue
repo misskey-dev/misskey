@@ -46,4 +46,11 @@ const pagination = {
 	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
 	grid-gap: 6px;
 }
+
+@media screen and (min-width: 600px) {
+	.stream {
+		grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	}
+
+}
 </style>
