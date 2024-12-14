@@ -25,28 +25,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkChannelList :key="key" :pagination="channelPagination"/>
 				</MkFoldableSection>
 			</div>
-			<div v-if="tab === 'featured'">
+			<div v-if="tab === 'featured'" key="featured">
 				<MkPagination v-slot="{items}" :pagination="featuredPagination">
 					<div :class="$style.root">
 						<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 					</div>
 				</MkPagination>
 			</div>
-			<div v-else-if="tab === 'favorites'">
+			<div v-else-if="tab === 'favorites'" key="favorites">
 				<MkPagination v-slot="{items}" :pagination="favoritesPagination">
 					<div :class="$style.root">
 						<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 					</div>
 				</MkPagination>
 			</div>
-			<div v-else-if="tab === 'following'">
+			<div v-else-if="tab === 'following'" key="following">
 				<MkPagination v-slot="{items}" :pagination="followingPagination">
 					<div :class="$style.root">
 						<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 					</div>
 				</MkPagination>
 			</div>
-			<div v-else-if="tab === 'owned'">
+			<div v-else-if="tab === 'owned'" key="owned">
 				<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 				<MkPagination v-slot="{items}" :pagination="ownedPagination">
 					<div :class="$style.root">
