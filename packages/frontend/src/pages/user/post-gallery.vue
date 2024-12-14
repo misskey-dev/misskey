@@ -16,11 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
+import * as Misskey from 'misskey-js';
 
-import MkMedias from "@/components/MkMedias.vue";
-import MkPagination from "@/components/MkPagination.vue";
-import {computed} from "vue";
-import * as Misskey from "misskey-js";
+import MkMedias from '@/components/MkMedias.vue';
+import MkPagination from '@/components/MkPagination.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
