@@ -4,7 +4,8 @@
 -
 
 ### Client
-- Enhance: PC画面でチャンネルが複数列で表示されるように
+- Enhance: PC画面でチャンネルが複数列で表示されるように  
+  (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
 
