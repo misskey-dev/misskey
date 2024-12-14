@@ -4,6 +4,8 @@
 -
 
 ### Client
+- Enhance: ノートの添付ファイルを一覧で遡れる「ファイル」タブを追加  
+  (Based on https://github.com/Otaku-Social/maniakey/pull/14)
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
 
