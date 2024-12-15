@@ -2069,7 +2069,7 @@ _2fa:
   step4: "从现在开始，任何登录操作都将要求您提供动态口令。"
   securityKeyNotSupported: "您的浏览器不支持安全密钥。"
   registerTOTPBeforeKey: "要注册安全密钥或 Passkey，请先设置验证器。"
-  securityKeyInfo: "注册兼容 WebAuthn 的密钥，例如支持 FIDO2 的硬件安全密钥、设备上的生物识别功能、PIN 码以及 Passkey 等。"
+  securityKeyInfo: "注册兼容 WebAuthn 的密钥，例如支持 FIDO2 的硬件安全密钥、设备上的生物识别功能、PIN 以及 Passkey 等。"
   registerSecurityKey: "注册安全密钥或 Passkey"
   securityKeyName: "输入密钥名称"
   tapSecurityKey: "请按照浏览器说明操作来注册安全密钥或 Passkey。"
