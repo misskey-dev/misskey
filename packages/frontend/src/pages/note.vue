@@ -50,6 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { host } from '@@/js/config.js';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import MkNotes from '@/components/MkNotes.vue';
@@ -140,7 +141,12 @@ function fetchNote() {
 	}).catch(err => {
 		if (err.id === '8e75455b-738c-471d-9f80-62693f33372e') {
 			pleaseLogin({
+				path: '/',
 				message: i18n.ts.thisContentsAreMarkedAsSigninRequiredByAuthor,
+				openOnRemote: {
+					type: 'lookup',
+					url: `https://${host}/notes/${props.noteId}`,
+				},
 			});
 		}
 		error.value = err;

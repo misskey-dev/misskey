@@ -117,5 +117,6 @@ definePageMetadata(() => ({
 	border-radius: var(--MI-radius);
 	background-color: var(--MI_THEME-panel);
 	overflow-x: scroll;
+	white-space: nowrap;
 }
 </style>
