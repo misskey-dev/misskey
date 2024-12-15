@@ -14,6 +14,8 @@
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
+- Fix: ユーザーミュートにおいて、ノート内のメンションが考慮されていなかった問題を修正
+  - これにより、第三者から自分に対するノートを意図せず取り逃してしまう可能性があったため、通知欄ではメンションを考慮しないままになっています
 
 
 ## 2024.11.0
@@ -88,8 +90,6 @@
 - Fix: Inboxの処理で生じるエラーを誤ってActivityとして処理することがある問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/730)
 - Fix: セキュリティに関する修正
-- Fix: ユーザーミュートにおいて、ノート内のメンションが考慮されていなかった問題を修正
-  - これにより、第三者から自分に対するノートを意図せず取り逃してしまう可能性があったため、通知欄ではメンションを考慮しないままになっています
 
 ### Misskey.js
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
