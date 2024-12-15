@@ -9,9 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-message-off"></i></template>
 		<template #label>{{ i18n.ts.wordMute }}</template>
 
-		<XWordMute :muted="$i.mutedWords" @save="saveMutedWords"/>
-	</MkFolder>
+		<div class="_gaps_s">
+			<MkSwitch v-model="showSoftWordMutedWord">{{ i18n.ts.showMutedWord }}</MkSwitch>
 
+			<XWordMute :muted="$i.mutedWords" @save="saveMutedWords"/>
+		</div>
+	</MkFolder>
 	<MkFolder>
 		<template #icon><i class="ti ti-message-off"></i></template>
 		<template #label>{{ i18n.ts.hardWordMute }}</template>
@@ -126,7 +129,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -139,6 +142,9 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { infoImageUrl } from '@/instance.js';
 import { signinRequired } from '@/account.js';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import { defaultStore } from '@/store';
+import { unisonReload } from '@/scripts/unison-reload.js';
 
 const $i = signinRequired();
 
@@ -160,6 +166,24 @@ const blockingPagination = {
 const expandedRenoteMuteItems = ref([]);
 const expandedMuteItems = ref([]);
 const expandedBlockItems = ref([]);
+
+const showSoftWordMutedWord = computed(defaultStore.makeGetterSetter('showSoftWordMutedWord'));
+
+async function reloadAsk() {
+	const { canceled } = await os.confirm({
+		type: 'info',
+		text: i18n.ts.reloadToApplySetting,
+	});
+	if (canceled) return;
+
+	unisonReload();
+}
+
+watch([
+	showSoftWordMutedWord,
+], async () => {
+	await reloadAsk();
+});
 
 async function unrenoteMute(user, ev) {
 	os.popupMenu([{
