@@ -1,3 +1,21 @@
+## 2024.11.1
+
+### General
+-
+
+### Client
+- Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
+- Fix: サーバー情報メニューに区切り線が不足していたのを修正
+- Fix: ノートがログインしているユーザーしか見れない場合にログインダイアログを閉じるとその後の動線がなくなる問題を修正
+- Fix: 公開範囲がホームのノートの埋め込みウィジェットが読み込まれない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/803)
+
+### Server
+- Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
+- Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
+
+
 ## 2024.11.0
 
 ### Note
@@ -37,7 +55,7 @@
 - Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
 - Fix: Encode RSS urls with escape sequences before fetching allowing query parameters to be used
 - Fix: リンク切れを修正
-= Fix: ノート投稿ボタンにホバー時のスタイルが適用されていないのを修正  
+- Fix: ノート投稿ボタンにホバー時のスタイルが適用されていないのを修正  
   (Cherry-picked from https://github.com/taiyme/misskey/pull/305)
 - Fix: メールアドレス登録有効化時の「完了」ダイアログボックスの表示条件を修正
 - Fix: 画面幅が狭い環境でデザインが崩れる問題を修正  
@@ -67,6 +85,8 @@
 - Fix: User Webhookテスト機能のMock Payloadを修正  
 - Fix: アカウント削除のモデレーションログが動作していないのを修正 (#14996)  
 - Fix: リノートミュートが新規投稿通知に対して作用していなかった問題を修正
+- Fix: Inboxの処理で生じるエラーを誤ってActivityとして処理することがある問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/730)
 - Fix: セキュリティに関する修正
 - Fix: ユーザーミュートにおいて、ノート内のメンションが考慮されていなかった問題を修正
   - これにより、第三者から自分に対するノートを意図せず取り逃してしまう可能性があったため、通知欄ではメンションを考慮しないままになっています
