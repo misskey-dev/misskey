@@ -105,7 +105,7 @@ makeFollowManuallyApprove: "Les sol·licituds de seguiment requereixen aprovaci�
 defaultNoteVisibility: "Visibilitat per defecte"
 follow: "Seguint"
 followRequest: "Enviar sol·licitud de seguiment"
-followRequests: "Sol·licituds de seguiment"
+followRequests: "Peticions de seguiment"
 unfollow: "Deixar de seguir"
 followRequestPending: "Sol·licituds de seguiment pendents"
 enterEmoji: "Introduir un emoji"
