@@ -149,6 +149,7 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 									return canvas.width - width - (config.padding ? config.padding.right ?? 0 : 0);
 							}
 						})();
+
 						const y = (() => {
 							let rotateY = 0; // 回転によるY座標の補正
 
@@ -172,7 +173,6 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 									return canvas.height - height - (config.padding ? config.padding.bottom ?? 0 : 0) - rotateY;
 							}
 						})();
-
 						if (config.rotate) {
 							const rotateRad = config.rotate * Math.PI / 180;
 							ctx.translate(x + width / 2, y + height / 2);
@@ -194,7 +194,6 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 				watermark.src = config.__bypassMediaProxy ? config.fileUrl : getProxiedImageUrl(watermarkUrl, undefined, true);
 			}
 		}
-
 	};
 	if (typeof img === 'string') {
 		imgEl.src = img;
