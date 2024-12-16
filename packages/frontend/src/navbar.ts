@@ -13,6 +13,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ui, host } from '@/config.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
+import { instance } from '@/instance.js';
 
 export const navbarItemDef = reactive({
 	notifications: {
