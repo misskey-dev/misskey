@@ -94,12 +94,11 @@ function select(src: HTMLElement | EventTarget | null, label: string | null, mul
 			type: 'switch',
 			text: i18n.ts.keepOriginalUploading,
 			ref: keepOriginal,
-		}, ...($i?.policies.canUseWatermark ? [{
-				type: 'switch',
-				text: i18n.ts.useWatermark,
-				ref: useWatermark,
-			}] as MenuItem[] : []
-		), {
+		}, {
+			type: 'switch',
+			text: i18n.ts.useWatermark,
+			ref: useWatermark,
+		}, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
 			action: () => chooseFileFromPc(multiple, keepOriginal.value, useWatermark.value).then(files => res(files)),

@@ -635,12 +635,11 @@ function getMenu() {
 		type: 'switch',
 		text: i18n.ts.keepOriginalUploading,
 		ref: keepOriginal,
-	}, ...($i?.policies.canUseWatermark ? [{
+	}, {
 			type: 'switch',
 			text: i18n.ts.useWatermark,
 			ref: useWatermark,
-		}] as MenuItem[] : []
-	), { type: 'divider' }, {
+	}, { type: 'divider' }, {
 		text: i18n.ts.addFile,
 		type: 'label',
 	}, {
