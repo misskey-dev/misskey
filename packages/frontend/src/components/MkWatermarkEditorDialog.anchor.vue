@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.anchorGridRoot">
 	<div v-for="anchor in watermarkAnchor" :class="$style.anchorGridItem">
-		<input type="radio" :id="`${id}-${anchor}`" :name="id" :value="anchor" v-model="value" :class="$style.anchorGridItemRadio"/>
+		<input :id="`${id}-${anchor}`" v-model="value" type="radio" :name="id" :value="anchor" :class="$style.anchorGridItemRadio"/>
 		<label :for="`${id}-${anchor}`" :class="$style.anchorGridItemLabel">
 			<div :class="$style.anchorGridItemInner">{{ langMap[anchor] }}</div>
 		</label>
