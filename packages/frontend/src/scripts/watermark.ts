@@ -3,37 +3,41 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { getProxiedImageUrl } from "@/scripts/media-proxy.js";
+import { misskeyApi } from "@/scripts/misskey-api.js";
 
 export type WatermarkConfig = {
-	fileId: string | null;
-	fileUrl: string | null;
-	width: number | null;
-	height: number | null;
+	fileId?: string;
+	fileUrl?: string;
+	width?: number;
+	height?: number;
 	enlargement: 'scale-down' | 'contain' | 'cover' | 'crop' | 'pad';
 	gravity: 'auto' | 'left' | 'right' | 'top' | 'bottom';
-	opacity: number;
+	opacity?: number;
 	repeat: true | false | 'x' | 'y';
 	anchor: 'center' | 'top' | 'left' | 'bottom' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-	offsetTop: number | null;
-	offsetLeft: number | null;
-	offsetBottom: number | null;
-	offsetRight: number | null;
-	backgroundColor: string | null;
-	rotate: number | null;
+	offsetTop?: number;
+	offsetLeft?: number;
+	offsetBottom?: number;
+	offsetRight?: number;
+	backgroundColor?: string;
+	rotate?: number;
+
+	/** @internal */
+	__bypassMediaProxy?: boolean;
 };
 
 /**
  * ウォーターマークを適用してキャンバスに描画する
  *
- * @param img ウォーターマークを適用する画像（stringは画像URL。**プレビュー用途専用**）
+ * @param img ウォーターマークを適用する画像（stringは画像URL）
  * @param el ウォーターマークを適用するキャンバス
  * @param config ウォーターマークの設定
  */
-export function applyWatermark(img: string | Blob, el: HTMLCanvasElement, config: WatermarkConfig) {
+export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, config: WatermarkConfig) {
 	const canvas = el;
 	const ctx = canvas.getContext('2d')!;
 	const imgEl = new Image();
-	imgEl.onload = () => {
+	imgEl.onload = async () => {
 		canvas.width = imgEl.width;
 		canvas.height = imgEl.height;
 		ctx.drawImage(imgEl, 0, 0);
@@ -42,7 +46,7 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement, config
 			watermark.onload = () => {
 				const width = config.width || watermark.width;
 				const height = config.height || watermark.height;
-				ctx.globalAlpha = config.opacity;
+				ctx.globalAlpha = config.opacity ?? 1;
 				if (config.repeat !== false) {
 					const resizedWatermark = document.createElement('canvas');
 					resizedWatermark.width = width;
@@ -90,11 +94,20 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement, config
 					ctx.drawImage(watermark, x, y, width, height);
 				}
 			};
-			watermark.src = config.fileUrl;
+
+			let watermarkUrl: string;
+			if (config.fileUrl == null && config.fileId != null) {
+				const res = await misskeyApi('drive/files/show', { fileId: config.fileId });
+				watermarkUrl = res.url;
+			} else {
+				watermarkUrl = config.fileUrl!;
+			}
+
+			watermark.src = config.__bypassMediaProxy ? config.fileUrl : getProxiedImageUrl(watermarkUrl, undefined, true);
 		}
 	};
 	if (typeof img === 'string') {
-		imgEl.src = getProxiedImageUrl(img, undefined, true);
+		imgEl.src = img;
 	} else {
 		const reader = new FileReader();
 		reader.onload = () => {

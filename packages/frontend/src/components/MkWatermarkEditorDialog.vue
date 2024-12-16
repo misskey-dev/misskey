@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.watermarkEditorInputRoot">
 			<div :class="$style.watermarkEditorPreviewRoot">
 				<MkLoading v-if="canvasLoading" :class="$style.watermarkEditorPreviewSpinner"/>
-				<canvas ref="canvas" :class="$style.watermarkEditorPreviewCanvas"></canvas>
+				<canvas ref="canvasEl" :class="$style.watermarkEditorPreviewCanvas"></canvas>
 				<div :class="$style.watermarkEditorPreviewWrapper">
 					<div class="_acrylic" :class="$style.watermarkEditorPreviewTitle">{{ i18n.ts.preview }}</div>
 				</div>
@@ -37,12 +37,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { shallowRef, ref, computed } from 'vue';
+import { shallowRef, ref, useTemplateRef, computed, onMounted } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import { applyWatermark, WatermarkConfig } from '@/scripts/watermark.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;
@@ -66,11 +67,25 @@ function save() {
 
 //#region 設定
 const useWatermark = computed(defaultStore.makeGetterSetter('useWatermark'));
-const watermarkConfig = ref(defaultStore.state.watermarkConfig);
+const watermarkConfig = ref<WatermarkConfig>(defaultStore.state.watermarkConfig ?? {
+	fileUrl: '/client-assets/default-watermark.png',
+	enlargement: 'contain',
+	opacity: 0.5,
+	anchor: 'bottom-right',
+	gravity: 'auto',
+	repeat: false,
+	__bypassMediaProxy: true,
+});
 //#endregion
 
 //#region Canvasの制御
 const canvasLoading = ref(true);
+const canvasEl = useTemplateRef('canvasEl');
+onMounted(() => {
+	if (canvasEl.value) {
+		applyWatermark('/client-assets/hill.webp', canvasEl.value, watermarkConfig.value);
+	}
+});
 //#endregion
 </script>
 
