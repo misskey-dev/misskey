@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.watermarkEditorRoot">
 		<div :class="$style.watermarkEditorInputRoot">
 			<div :class="$style.watermarkEditorPreviewRoot">
-				<MkLoading v-if="canvasLoading" :class="$style.watermarkEditorPreviewSpinner"/>
 				<canvas ref="canvasEl" :class="$style.watermarkEditorPreviewCanvas"></canvas>
+				<MkLoading v-if="canvasLoading" :class="$style.watermarkEditorPreviewSpinner"/>
 				<div :class="$style.watermarkEditorPreviewWrapper">
 					<div class="_acrylic" :class="$style.watermarkEditorPreviewTitle">{{ i18n.ts.preview }}</div>
 				</div>
@@ -30,6 +30,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.useWatermark }}</template>
 					<template #caption>{{ i18n.ts.useWatermarkDescription }}</template>
 				</MkSwitch>
+
+				<div>
+					<div :class="$style.formLabel">{{ i18n.ts.watermark }}</div>
+					<div :class="$style.fileSelectorRoot">
+						<MkButton :class="$style.fileSelectorButton" inline rounded primary @click="chooseFile">{{ i18n.ts.selectFile }}</MkButton>
+						<div :class="['_nowrap', !fileUrl && $style.fileNotSelected]">{{ friendlyFileName }}</div>
+					</div>
+				</div>
+
+				<template v-if="fileId != null || fileUrl != null">
+					<MkRange v-model="sizeRatio" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`">
+						<template #label>{{ i18n.ts.size }}</template>
+					</MkRange>
+
+					<MkRange v-model="opacity" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`">
+						<template #label>{{ i18n.ts.opacity }}</template>
+					</MkRange>
+
+					<MkRange v-model="rotate" :min="-45" :max="45" :textConverter="(v) => `${Math.floor(v)}°`">
+						<template #label>{{ i18n.ts.rotate }}</template>
+					</MkRange>
+
+					<MkRadios v-model="repeat">
+						<template #label>{{ i18n.ts._watermarkEditor.repeatSetting }}</template>
+						<option :value="true">{{ i18n.ts._watermarkEditor.repeat }}</option>
+						<option :value="false">{{ i18n.ts.normal }}</option>
+					</MkRadios>
+
+					<div v-if="watermarkConfig?.repeat !== true">
+						<div :class="$style.formLabel">{{ i18n.ts.position }}</div>
+						<XAnchorSelector v-model="anchor"/>
+					</div>
+				</template>
 			</div>
 		</div>
 	</div>
@@ -37,13 +70,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { shallowRef, ref, useTemplateRef, computed, onMounted } from 'vue';
+import { shallowRef, ref, useTemplateRef, computed, watch, onMounted } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkRange from '@/components/MkRange.vue';
+import XAnchorSelector from '@/components/MkWatermarkEditorDialog.anchor.vue';
 
+import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { applyWatermark, WatermarkConfig } from '@/scripts/watermark.js';
+import { selectFile } from '@/scripts/select-file.js';
+import { applyWatermark, canPreview, WatermarkConfig } from '@/scripts/watermark.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;
@@ -67,26 +108,109 @@ function save() {
 
 //#region 設定
 const useWatermark = computed(defaultStore.makeGetterSetter('useWatermark'));
-const watermarkConfig = ref<WatermarkConfig>(defaultStore.state.watermarkConfig ?? {
-	fileUrl: '/client-assets/default-watermark.png',
-	enlargement: 'contain',
-	opacity: 0.5,
-	anchor: 'bottom-right',
-	gravity: 'auto',
+const watermarkConfig = ref<Partial<WatermarkConfig> | null>(defaultStore.state.watermarkConfig ?? {
+	opacity: 0.2,
 	repeat: true,
 	rotate: 15,
-	__bypassMediaProxy: true,
+	sizeRatio: 0.2,
 });
+const anchor = computed({
+	get: () => watermarkConfig.value != null && 'anchor' in watermarkConfig.value ? watermarkConfig.value.anchor : null,
+	set: (v) => {
+		if (v == null || watermarkConfig.value?.repeat === true) {
+			watermarkConfig.value = { ...watermarkConfig.value, anchor: undefined };
+		} else if (watermarkConfig.value?.repeat === false) {
+			watermarkConfig.value = { ...watermarkConfig.value, anchor: v };
+		}
+	},
+});
+const sizeRatio = computed({
+	get: () => watermarkConfig.value?.sizeRatio ?? 0.2,
+	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, sizeRatio: v },
+});
+const repeat = computed({
+	get: () => watermarkConfig.value?.repeat ?? true,
+	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, repeat: v },
+});
+const opacity = computed({
+	get: () => watermarkConfig.value?.opacity ?? 0.2,
+	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, opacity: v },
+});
+const rotate = computed({
+	get: () => watermarkConfig.value?.rotate ?? 15,
+	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, rotate: v },
+});
+//#endregion
+
+//#region ファイル選択
+const fileId = computed({
+	get: () => watermarkConfig.value?.fileId,
+	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, fileId: v },
+});
+const fileUrl = computed({
+	get: () => watermarkConfig.value?.fileUrl,
+	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, fileUrl: v },
+});
+const fileName = ref<string>('');
+const driveFileError = ref(false);
+onMounted(async () => {
+	if (watermarkConfig.value?.fileId != null) {
+		await misskeyApi('drive/files/show', {
+			fileId: watermarkConfig.value.fileId,
+		}).then((res) => {
+			fileName.value = res.name;
+		}).catch((err) => {
+			driveFileError.value = true;
+		});
+	}
+});
+const friendlyFileName = computed<string>(() => {
+	if (fileName.value) {
+		return fileName.value;
+	}
+	if (fileUrl.value) {
+		return fileUrl.value;
+	}
+
+	return i18n.ts._soundSettings.driveFileWarn;
+});
+
+function chooseFile(ev: MouseEvent) {
+	selectFile(ev.currentTarget ?? ev.target, {
+		label: i18n.ts.selectFile,
+		dontUseWatermark: true,
+	}).then((file) => {
+		if (!file.type.startsWith('image')) {
+			os.alert({
+				type: 'warning',
+				title: i18n.ts._watermarkEditor.driveFileTypeWarn,
+				text: i18n.ts._watermarkEditor.driveFileTypeWarnDescription,
+			});
+			return;
+		}
+
+		fileId.value = file.id;
+		fileUrl.value = file.url;
+		fileName.value = file.name;
+		driveFileError.value = false;
+	});
+}
 //#endregion
 
 //#region Canvasの制御
 const canvasLoading = ref(true);
 const canvasEl = useTemplateRef('canvasEl');
 onMounted(() => {
-	if (canvasEl.value) {
-		applyWatermark('/client-assets/hill.webp', canvasEl.value, watermarkConfig.value);
-	}
+	watch([useWatermark, watermarkConfig], ([useWatermarkTo, watermarkConfigTo]) => {
+		canvasLoading.value = true;
+		if (canvasEl.value) {
+			applyWatermark('/client-assets/hill.webp', canvasEl.value, useWatermarkTo && canPreview(watermarkConfigTo) ? watermarkConfigTo : null).then(() => {
+				canvasLoading.value = false;
+			});
+		}
+	}, { immediate: true, deep: true });
 });
+
 //#endregion
 </script>
 
@@ -168,45 +292,31 @@ onMounted(() => {
 	overflow-y: scroll;
 }
 
-.watermarkEditorResultRoot {
-	box-sizing: border-box;
-	padding: 24px;
-	height: 100%;
-	max-width: 700px;
-	margin: 0 auto;
+.formLabel {
+	font-size: 0.85em;
+	padding: 0 0 8px 0;
+}
+
+.fileSelectorRoot {
 	display: flex;
 	align-items: center;
+	gap: 8px;
 }
 
-.watermarkEditorResultHeading {
-	text-align: center;
-	font-size: 1.2em;
+.fileErrorRoot {
+	flex-grow: 1;
+	min-width: 0;
+	font-weight: 700;
+	color: var(--MI_THEME-error);
 }
 
-.watermarkEditorResultHeadingIcon {
-	margin: 0 auto;
-	background-color: var(--MI_THEME-accentedBg);
-	color: var(--MI_THEME-accent);
-	text-align: center;
-	height: 64px;
-	width: 64px;
-	font-size: 24px;
-	line-height: 64px;
-	border-radius: 50%;
+.fileSelectorButton {
+	flex-shrink: 0;
 }
 
-.watermarkEditorResultDescription {
-	text-align: center;
-	white-space: pre-wrap;
-}
-
-.watermarkEditorResultWrapper,
-.watermarkEditorResultCode {
-	width: 100%;
-}
-
-.watermarkEditorResultButtons {
-	margin: 0 auto;
+.fileNotSelected {
+	font-weight: 700;
+	color: var(--MI_THEME-infoWarnFg);
 }
 
 @container (max-width: 800px) {

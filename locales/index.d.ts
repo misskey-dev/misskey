@@ -10661,6 +10661,24 @@ export interface Locale extends ILocale {
          */
         "sent": string;
     };
+    "_watermarkEditor": {
+        /**
+         * このファイルは対応していません
+         */
+        "driveFileTypeWarn": string;
+        /**
+         * 画像ファイルを選択してください
+         */
+        "driveFileTypeWarnDescription": string;
+        /**
+         * 描画モード
+         */
+        "repeatSetting": string;
+        /**
+         * 全体を埋め尽くす
+         */
+        "repeat": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

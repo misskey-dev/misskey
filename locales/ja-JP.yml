@@ -2841,3 +2841,9 @@ _selfXssPrevention:
 _followRequest:
   recieved: "受け取った申請"
   sent: "送った申請"
+
+_watermarkEditor:
+  driveFileTypeWarn: "このファイルは対応していません"
+  driveFileTypeWarnDescription: "画像ファイルを選択してください"
+  repeatSetting: "描画モード"
+  repeat: "全体を埋め尽くす"
