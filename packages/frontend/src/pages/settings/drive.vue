@@ -33,37 +33,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<div class="_gaps_m">
 			<FormLink @click="chooseUploadFolder()">
-				<template #icon><i class="ti ti-folder"/></template>
+				<template #icon><i class="ti ti-folder"></i></template>
 				{{ i18n.ts.uploadFolder }}
 				<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
 			</FormLink>
-			<MkFolder v-if="$i?.policies.canUseWatermark">
-				<template #icon><i class="ti ti-ripple"></i></template>
-				<template #label>{{ i18n.ts.watermark }}</template>
-				<div class="_gaps_s">
-					<MkSwitch v-model="useWatermark">
-						<template #label>{{ i18n.ts.useWatermark }}</template>
-						<template #caption>{{ i18n.ts.useWatermarkDescription }}</template>
-					</MkSwitch>
-					<FormSection>
-						<template #label>{{ i18n.ts.preview }}</template>
-						<div style="display: flex; justify-content: center; align-items: center;">
-							<div style="width: 80%; height: 400px; border: 1px solid #ccc; background-image: url('/client-assets/tutorial/natto_failed.webp'); background-size: cover;">
-								<img src="/client-assets/default-watermark.png" style="width: 100%; height: 100%; object-fit: contain; opacity: 0.5;"/>
-							</div>
-						</div>
-						<FormSplit>
-							<div class="_buttons">
-								<MkButton primary rounded><i class="ti ti-photo"/>{{ i18n.ts.selectFile }}</MkButton>
-								<MkButton danger rounded><i class="ti ti-trash"></i> {{ i18n.ts.defa }}</MkButton>
-							</div>
-						</FormSplit>
-					</FormSection>
-				</div>
-			</MkFolder>
 			<FormLink to="/settings/drive/cleaner">
-				<template #icon><i class="ti ti-file-shredder"/></template>
+				<template #icon><i class="ti ti-file-shredder"></i></template>
 				{{ i18n.ts.drivecleaner }}
+			</FormLink>
+			<FormLink @click="openWatermarkEditor">
+				<template #icon><i class="ti ti-ripple"></i></template>
+				{{ i18n.ts.watermark }}
+				<template #suffix>{{ defaultStore.reactiveState.useWatermark.value ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 			</FormLink>
 			<MkSwitch v-model="keepOriginalUploading">
 				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
@@ -86,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
@@ -102,9 +83,6 @@ import MkChart from '@/components/MkChart.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { signinRequired } from '@/account.js';
-import MkInfo from "@/components/MkInfo.vue";
-import MkButton from "@/components/MkButton.vue";
-import MkFolder from "@/components/MkFolder.vue";
 
 const $i = signinRequired();
 
@@ -129,9 +107,6 @@ const meterStyle = computed(() => {
 
 const keepOriginalUploading = computed(defaultStore.makeGetterSetter('keepOriginalUploading'));
 const keepOriginalFilename = computed(defaultStore.makeGetterSetter('keepOriginalFilename'));
-
-const useWatermark = computed(defaultStore.makeGetterSetter('useWatermark'));
-const watermarkConfig = computed(defaultStore.makeGetterSetter('watermarkConfig'));
 
 misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;
@@ -158,6 +133,12 @@ function chooseUploadFolder() {
 		} else {
 			uploadFolder.value = null;
 		}
+	});
+}
+
+function openWatermarkEditor() {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWatermarkEditorDialog.vue')), {}, {
+		closed: () => dispose(),
 	});
 }
 
