@@ -35,6 +35,7 @@ export function uploadFile(
 	folder?: string | Misskey.entities.DriveFolder,
 	name?: string,
 	keepOriginal: boolean = defaultStore.state.keepOriginalUploading,
+	watermark: boolean = defaultStore.state.useWatermark,
 ): Promise<Misskey.entities.DriveFile> {
 	if ($i == null) throw new Error('Not logged in');
 

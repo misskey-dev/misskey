@@ -1903,6 +1903,18 @@ export interface Locale extends ILocale {
      */
     "uploadFolder": string;
     /**
+     * ウォーターマーク
+     */
+    "watermark": string;
+    /**
+     * ウォーターマークをつける
+     */
+    "useWatermark": string;
+    /**
+     * 画像にウォーターマークを追加します
+     */
+    "useWatermarkDescription": string;
+    /**
      * すべての通知を既読にする
      */
     "markAsReadAllNotifications": string;
@@ -3143,13 +3155,25 @@ export interface Locale extends ILocale {
      */
     "duplicate": string;
     /**
-     * 左
+     * 上
      */
-    "left": string;
+    "top": string;
+    /**
+     * 下
+     */
+    "bottom": string;
     /**
      * 中央
      */
     "center": string;
+    /**
+     * 左
+     */
+    "left": string;
+    /**
+     * 右
+     */
+    "right": string;
     /**
      * 広い
      */
@@ -4459,17 +4483,37 @@ export interface Locale extends ILocale {
      */
     "notificationDisplay": string;
     /**
+     * 配置
+     */
+    "placement": string;
+    /**
      * 左上
      */
     "leftTop": string;
+    /**
+     * 中上
+     */
+    "centerTop": string;
     /**
      * 右上
      */
     "rightTop": string;
     /**
+     * 左中
+     */
+    "leftCenter": string;
+    /**
+     * 右中
+     */
+    "rightCenter": string;
+    /**
      * 左下
      */
     "leftBottom": string;
+    /**
+     * 中下
+     */
+    "centerBottom": string;
     /**
      * 右下
      */
@@ -4490,6 +4534,22 @@ export interface Locale extends ILocale {
      * 位置
      */
     "position": string;
+    /**
+     * 繰り返し
+     */
+    "repeat": string;
+    /**
+     * 引き伸ばし
+     */
+    "enlargement": string;
+    /**
+     * 回転
+     */
+    "rotate": string;
+    /**
+     * 透明度
+     */
+    "opacity": string;
     /**
      * サーバールール
      */

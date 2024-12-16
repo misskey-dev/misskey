@@ -474,6 +474,30 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	useWatermark: {
+		where: 'device',
+		default: false,
+	},
+	watermarkConfig: {
+		where: 'account',
+		default: null as {
+			fileId: string | null;
+			fileUrl: string | null;
+			width: number | null;
+			height: number | null;
+			enlargement: 'scale-down' | 'contain' | 'cover' | 'crop' | 'pad';
+			gravity: 'auto' | 'left' | 'right' | 'top' | 'bottom';
+			opacity: number;
+			repeat: true | false | 'x' | 'y';
+			anchor: 'center' | 'top' | 'left' | 'bottom' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+			offsetTop: number | null;
+			offsetLeft: number | null;
+			offsetBottom: number | null;
+			offsetRight: number | null;
+			backgroundColor: string | null;
+			rotate: number | null;
+		} | null,
+	},
 
 	sound_masterVolume: {
 		where: 'device',
