@@ -9,19 +9,22 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { uploadFile } from '@/scripts/upload.js';
 import type { MenuItem } from '@/types/menu.js';
 
-export function chooseFileFromPc(multiple: boolean, keepOriginal = false, useWatermark = false): Promise<Misskey.entities.DriveFile[]> {
+export function chooseFileFromPc(opts?: {
+	multiple?: boolean;
+	keepOriginal?: boolean;
+	useWatermark?: boolean;
+}): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
 		const input = document.createElement('input');
 		input.type = 'file';
-		input.multiple = multiple;
+		input.multiple = opts?.multiple ?? false;
 		input.onchange = () => {
 			if (!input.files) return res([]);
-			const promises = Array.from(input.files, file => uploadFile(file, defaultStore.state.uploadFolder, undefined, keepOriginal, useWatermark));
+			const promises = Array.from(input.files, file => uploadFile(file, defaultStore.state.uploadFolder, undefined, opts?.keepOriginal, opts?.useWatermark));
 
 			Promise.all(promises).then(driveFiles => {
 				res(driveFiles);
@@ -41,9 +44,11 @@ export function chooseFileFromPc(multiple: boolean, keepOriginal = false, useWat
 	});
 }
 
-export function chooseFileFromDrive(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+export function chooseFileFromDrive(opts?: {
+	multiple?: boolean;
+}): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
-		os.selectDriveFile(multiple).then(files => {
+		os.selectDriveFile(opts?.multiple ?? false).then(files => {
 			res(files);
 		});
 	});
@@ -82,42 +87,76 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 	});
 }
 
-function select(src: HTMLElement | EventTarget | null, label: string | null, multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+function select(src: HTMLElement | EventTarget | null, opts?: {
+	label?: string;
+	multiple?: boolean;
+	dontUseWatermark?: boolean;
+}): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
-		const useWatermark = ref(defaultStore.state.useWatermark);
+		const useWatermark = ref(opts?.dontUseWatermark ? false : defaultStore.state.useWatermark);
 
-		os.popupMenu([label ? {
-			text: label,
-			type: 'label',
-		} : undefined, {
+		const menu: MenuItem[] = [];
+
+		if (opts?.label) {
+			menu.push({
+				text: opts.label,
+				type: 'label',
+			});
+		}
+
+		menu.push({
 			type: 'switch',
 			text: i18n.ts.keepOriginalUploading,
 			ref: keepOriginal,
-		}, {
-			type: 'switch',
-			text: i18n.ts.useWatermark,
-			ref: useWatermark,
-		}, {
+		});
+
+		if (!opts?.dontUseWatermark) {
+			menu.push({
+				type: 'switch',
+				text: i18n.ts.useWatermark,
+				ref: useWatermark,
+			});
+		}
+
+		menu.push({
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
-			action: () => chooseFileFromPc(multiple, keepOriginal.value, useWatermark.value).then(files => res(files)),
+			action: () => chooseFileFromPc({
+				multiple: opts?.multiple,
+				keepOriginal: keepOriginal.value,
+				useWatermark: useWatermark.value,
+			}).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',
-			action: () => chooseFileFromDrive(multiple).then(files => res(files)),
+			action: () => chooseFileFromDrive({ multiple: opts?.multiple }).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromUrl,
 			icon: 'ti ti-link',
 			action: () => chooseFileFromUrl().then(file => res([file])),
-		}], src);
+		});
+
+		os.popupMenu(menu, src);
 	});
 }
 
-export function selectFile(src: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile> {
-	return select(src, label, false).then(files => files[0]);
-}
-
-export function selectFiles(src: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile[]> {
-	return select(src, label, true);
+export function selectFile(src: HTMLElement | EventTarget | null, opts: {
+	label?: string;
+	multiple: true;
+	dontUseWatermark?: boolean;
+}): Promise<Misskey.entities.DriveFile[]>;
+export function selectFile(src: HTMLElement | EventTarget | null, opts?: {
+	label?: string;
+	multiple?: false;
+	dontUseWatermark?: boolean;
+}): Promise<Misskey.entities.DriveFile>;
+export function selectFile(src: HTMLElement | EventTarget | null, opts?: {
+	label?: string;
+	multiple?: boolean;
+	dontUseWatermark?: boolean;
+}): Promise<Misskey.entities.DriveFile | Misskey.entities.DriveFile[]> {
+	return select(src, opts).then(files => {
+		return opts?.multiple ? files : files[0];
+	});
 }
