@@ -12,6 +12,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
+import { FanoutTimelineService } from './FanoutTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -28,6 +29,7 @@ export class MetaService implements OnApplicationShutdown {
 
 		private featuredService: FeaturedService,
 		private globalEventService: GlobalEventService,
+		private fanoutTimelineService: FanoutTimelineService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -112,6 +114,7 @@ export class MetaService implements OnApplicationShutdown {
 			before = metas[0];
 
 			if (before) {
+				if (before.enableFanoutTimeline === true && data.enableFanoutTimeline === false) this.fanoutTimelineService.purgeAllcache();
 				await transactionalEntityManager.update(MiMeta, before.id, data);
 
 				const metas = await transactionalEntityManager.find(MiMeta, {
