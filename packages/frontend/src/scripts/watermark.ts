@@ -42,40 +42,53 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement, config
 			watermark.onload = () => {
 				const width = config.width || watermark.width;
 				const height = config.height || watermark.height;
-				const x = (() => {
-					switch (config.anchor) {
-						case 'center':
-						case 'top':
-						case 'bottom':
-							return (canvas.width - width) / 2;
-						case 'left':
-						case 'top-left':
-						case 'bottom-left':
-							return 0;
-						case 'right':
-						case 'top-right':
-						case 'bottom-right':
-							return canvas.width - width;
-					}
-				})();
-				const y = (() => {
-					switch (config.anchor) {
-						case 'center':
-						case 'left':
-						case 'right':
-							return (canvas.height - height) / 2;
-						case 'top':
-						case 'top-left':
-						case 'top-right':
-							return 0;
-						case 'bottom':
-						case 'bottom-left':
-						case 'bottom-right':
-							return canvas.height - height;
-					}
-				})();
 				ctx.globalAlpha = config.opacity;
-				ctx.drawImage(watermark, x, y, width, height);
+				if (config.repeat !== false) {
+					const resizedWatermark = document.createElement('canvas');
+					resizedWatermark.width = width;
+					resizedWatermark.height = height;
+					const resizedCtx = resizedWatermark.getContext('2d')!;
+					resizedCtx.drawImage(watermark, 0, 0, width, height);
+					const pattern = ctx.createPattern(resizedWatermark, config.repeat === true ? 'repeat' : `repeat-${config.repeat}`);
+					if (pattern) {
+						ctx.fillStyle = pattern;
+						ctx.fillRect(0, 0, canvas.width, canvas.height);
+					}
+				} else {
+					const x = (() => {
+						switch (config.anchor) {
+							case 'center':
+							case 'top':
+							case 'bottom':
+								return (canvas.width - width) / 2;
+							case 'left':
+							case 'top-left':
+							case 'bottom-left':
+								return 0;
+							case 'right':
+							case 'top-right':
+							case 'bottom-right':
+								return canvas.width - width;
+						}
+					})();
+					const y = (() => {
+						switch (config.anchor) {
+							case 'center':
+							case 'left':
+							case 'right':
+								return (canvas.height - height) / 2;
+							case 'top':
+							case 'top-left':
+							case 'top-right':
+								return 0;
+							case 'bottom':
+							case 'bottom-left':
+							case 'bottom-right':
+								return canvas.height - height;
+						}
+					})();
+					ctx.drawImage(watermark, x, y, width, height);
+				}
 			};
 			watermark.src = config.fileUrl;
 		}
