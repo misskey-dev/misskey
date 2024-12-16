@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:is="external ? 'a' : to ? MkA : 'button'"
 		:class="[$style.main, { [$style.active]: active }]"
 		class="_button"
-		:v-bind="external ? { href: to, target: '_blank', rel: 'noopener' } : to ? { to, behavior } : {}"
+		v-bind="external ? { href: to, target: '_blank', rel: 'noopener' } : to ? { to, behavior } : {}"
 	>
 		<span :class="$style.icon"><slot name="icon"></slot></span>
 		<span :class="$style.text"><slot></slot></span>
@@ -24,13 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkA from '@/components/global/MkA.vue';
+import MkA, { type MkABehavior } from '@/components/global/MkA.vue';
 
 const props = defineProps<{
 	to?: string;
 	active?: boolean;
 	external?: boolean;
-	behavior?: null | 'window' | 'browser';
+	behavior?: MkABehavior;
 	inline?: boolean;
 }>();
 </script>
