@@ -5,7 +5,7 @@
 
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
-import { DataSource, Logger } from 'typeorm';
+import { DataSource, Logger, type QueryRunner } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 
@@ -90,6 +90,11 @@ export const dbLogger = new MisskeyLogger('db');
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
 
 class MyCustomLogger implements Logger {
+	constructor(
+		private printReplicationMode?: boolean,
+	) {
+	}
+
 	@bindThis
 	private highlight(sql: string) {
 		return highlight.highlight(sql, {
@@ -98,18 +103,29 @@ class MyCustomLogger implements Logger {
 	}
 
 	@bindThis
-	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query).substring(0, 100));
+	private appendPrefixIfNeeded(message: string, opts?: {
+		queryRunner?: QueryRunner;
+	}): string {
+		if (this.printReplicationMode && opts?.queryRunner) {
+			return `[${opts.queryRunner.getReplicationMode()}] ${message}`;
+		} else {
+			return message;
+		}
 	}
 
 	@bindThis
-	public logQueryError(error: string, query: string, parameters?: any[]) {
-		sqlLogger.error(this.highlight(query));
+	public logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		sqlLogger.info(this.appendPrefixIfNeeded(this.highlight(query).substring(0, 100), { queryRunner }));
 	}
 
 	@bindThis
-	public logQuerySlow(time: number, query: string, parameters?: any[]) {
-		sqlLogger.warn(this.highlight(query));
+	public logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		sqlLogger.error(this.appendPrefixIfNeeded(this.highlight(query), { queryRunner }));
+	}
+
+	@bindThis
+	public logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+		sqlLogger.warn(this.appendPrefixIfNeeded(this.highlight(query), { queryRunner }));
 	}
 
 	@bindThis
@@ -247,7 +263,7 @@ export function createPostgresDataSource(config: Config) {
 			},
 		} : false,
 		logging: log,
-		logger: log ? new MyCustomLogger() : undefined,
+		logger: log ? new MyCustomLogger(config.dbReplications) : undefined,
 		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],
