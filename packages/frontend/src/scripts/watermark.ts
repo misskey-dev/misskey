@@ -57,11 +57,12 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 					if (pattern) {
 						ctx.fillStyle = pattern;
 						if (config.rotate) {
+							const rotateRad = config.rotate * Math.PI / 180;
 							ctx.translate(canvas.width / 2, canvas.height / 2);
-							ctx.rotate(config.rotate * Math.PI / 180);
+							ctx.rotate(rotateRad);
 							ctx.translate(-canvas.width / 2, -canvas.height / 2);
-							const rotatedWidth = Math.abs(canvas.width * Math.cos(config.rotate * Math.PI / 180)) + Math.abs(canvas.height * Math.sin(config.rotate * Math.PI / 180));
-							const rotatedHeight = Math.abs(canvas.width * Math.sin(config.rotate * Math.PI / 180)) + Math.abs(canvas.height * Math.cos(config.rotate * Math.PI / 180));
+							const rotatedWidth = Math.abs(canvas.width * Math.cos(rotateRad)) + Math.abs(canvas.height * Math.sin(rotateRad));
+							const rotatedHeight = Math.abs(canvas.width * Math.sin(rotateRad)) + Math.abs(canvas.height * Math.cos(rotateRad));
 							const x = Math.abs(rotatedWidth - canvas.width) / -2;
 							const y = Math.abs(rotatedHeight - canvas.height) / -2;
 							ctx.fillRect(x, y, rotatedWidth, rotatedHeight);
