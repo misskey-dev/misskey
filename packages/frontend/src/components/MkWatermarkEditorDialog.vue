@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.watermarkEditorInputRoot">
 			<div :class="$style.watermarkEditorPreviewRoot">
 				<MkLoading v-if="canvasLoading" :class="$style.watermarkEditorPreviewSpinner"/>
+				<canvas ref="canvas" :class="$style.watermarkEditorPreviewCanvas"></canvas>
 				<div :class="$style.watermarkEditorPreviewWrapper">
 					<div class="_acrylic" :class="$style.watermarkEditorPreviewTitle">{{ i18n.ts.preview }}</div>
 				</div>
@@ -135,22 +136,14 @@ const canvasLoading = ref(true);
 	-webkit-user-drag: none;
 }
 
-.watermarkEditorPreviewResizerRoot {
-	position: relative;
-	flex: 1 0;
-}
-
-.watermarkEditorPreviewResizer {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-}
-
-.watermarkEditorPreviewIframe {
-	display: block;
-	border: none;
-	width: 500px;
-	color-scheme: light dark;
+.watermarkEditorPreviewCanvas {
+	width: 100%;
+	height: 100%;
+	padding: 20px;
+	box-sizing: border-box;
+	object-fit: contain;
+	pointer-events: none;
+	user-select: none;
 }
 
 .watermarkEditorSettings {
