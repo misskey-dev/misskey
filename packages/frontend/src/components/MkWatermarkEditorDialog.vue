@@ -137,13 +137,14 @@ const canvasLoading = ref(true);
 }
 
 .watermarkEditorPreviewCanvas {
+	position: absolute;
+	top: 0;
+	left: 0;
 	width: 100%;
 	height: 100%;
 	padding: 20px;
 	box-sizing: border-box;
 	object-fit: contain;
-	pointer-events: none;
-	user-select: none;
 }
 
 .watermarkEditorSettings {
