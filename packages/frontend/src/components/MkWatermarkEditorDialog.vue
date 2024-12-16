@@ -73,7 +73,8 @@ const watermarkConfig = ref<WatermarkConfig>(defaultStore.state.watermarkConfig 
 	opacity: 0.5,
 	anchor: 'bottom-right',
 	gravity: 'auto',
-	repeat: false,
+	repeat: true,
+	rotate: 15,
 	__bypassMediaProxy: true,
 });
 //#endregion
