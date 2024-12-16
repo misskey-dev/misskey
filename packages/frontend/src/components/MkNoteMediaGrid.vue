@@ -16,7 +16,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:highlightWhenSensitive="defaultStore.state.highlightSensitiveMedia"
 				:forceBlurhash="true"
 				:large="true"
-				:bgIsPanel="bgIsPanel"
 				:class="$style.file"
 			/>
 			<div :class="$style.sensitive">
@@ -32,7 +31,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				fit="cover"
 				:highlightWhenSensitive="defaultStore.state.highlightSensitiveMedia"
 				:large="true"
-				:bgIsPanel="bgIsPanel"
 				:class="$style.file"
 			/>
 		</MkA>
@@ -51,7 +49,6 @@ import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 defineProps<{
 	note: Misskey.entities.Note;
 	square?: boolean;
-	bgIsPanel?: boolean;
 }>();
 
 const showingFiles = ref<Set<string>>(new Set());

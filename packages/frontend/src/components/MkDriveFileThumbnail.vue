@@ -5,9 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
+	v-panel
 	:class="[$style.root, {
 		[$style.sensitiveHighlight]: highlightWhenSensitive && file.isSensitive,
-		[$style.bgIsPanel]: bgIsPanel,
 		[$style.large]: large,
 	}]"
 >
@@ -42,7 +42,6 @@ const props = defineProps<{
 	file: Misskey.entities.DriveFile;
 	fit: 'cover' | 'contain';
 	highlightWhenSensitive?: boolean;
-	bgIsPanel?: boolean;
 	forceBlurhash?: boolean;
 	large?: boolean;
 }>();
@@ -83,10 +82,6 @@ const isThumbnailAvailable = computed(() => {
 	background: var(--MI_THEME-panel);
 	border-radius: 8px;
 	overflow: clip;
-
-	&.bgIsPanel {
-		background: var(--MI_THEME-bg);
-	}
 }
 
 .sensitiveHighlight::after {
