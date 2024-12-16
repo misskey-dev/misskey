@@ -63,9 +63,11 @@ import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { defaultStore } from '@/store.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
-import { getServerContext } from '@/server-context.js';
+import { serverContext, assertServerContext } from '@/server-context.js';
+import { $i } from '@/account.js';
 
-const CTX_NOTE = getServerContext('note');
+// contextは非ログイン状態の情報しかないためログイン時は利用できない
+const CTX_NOTE = $i && assertServerContext(serverContext, 'note') ? serverContext.note : null;
 
 const props = defineProps<{
 	noteId: string;
