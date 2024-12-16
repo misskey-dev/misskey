@@ -9,8 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="1000"
 	:height="600"
 	:scroll="false"
-	:withOkButton="false"
+	:withOkButton="true"
 	@close="cancel()"
+	@ok="save()"
 	@closed="emit('closed')"
 >
 	<template #header><i class="ti ti-ripple"></i> {{ i18n.ts.watermark }}</template>
@@ -56,13 +57,15 @@ function cancel() {
 	dialogEl.value?.close();
 }
 
-function close() {
+function save() {
+	emit('ok');
 	dialogEl.value?.close();
 }
 //#endregion
 
 //#region 設定
 const useWatermark = computed(defaultStore.makeGetterSetter('useWatermark'));
+const watermarkConfig = ref(defaultStore.state.watermarkConfig);
 //#endregion
 
 //#region Canvasの制御

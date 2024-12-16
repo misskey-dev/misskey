@@ -9,6 +9,7 @@ import { hemisphere } from '@@/js/intl-const.js';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
 import type { SoundType } from '@/scripts/sound.js';
+import type { WatermarkConfig } from './scripts/watermark.js';
 import { DEFAULT_DEVICE_KIND, type DeviceKind } from '@/scripts/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { Storage } from '@/pizzax.js';
@@ -480,23 +481,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	watermarkConfig: {
 		where: 'account',
-		default: null as {
-			fileId: string | null;
-			fileUrl: string | null;
-			width: number | null;
-			height: number | null;
-			enlargement: 'scale-down' | 'contain' | 'cover' | 'crop' | 'pad';
-			gravity: 'auto' | 'left' | 'right' | 'top' | 'bottom';
-			opacity: number;
-			repeat: true | false | 'x' | 'y';
-			anchor: 'center' | 'top' | 'left' | 'bottom' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-			offsetTop: number | null;
-			offsetLeft: number | null;
-			offsetBottom: number | null;
-			offsetRight: number | null;
-			backgroundColor: string | null;
-			rotate: number | null;
-		} | null,
+		default: null as WatermarkConfig | null,
 	},
 
 	sound_masterVolume: {
