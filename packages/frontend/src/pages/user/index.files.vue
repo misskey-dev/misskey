@@ -20,10 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import MkNoteMediaGrid from '@/components/MkNoteMediaGrid.vue';
 
@@ -43,17 +41,11 @@ function unfoldContainer(): boolean {
 	return false;
 }
 
-function thumbnail(image: Misskey.entities.DriveFile): string {
-	return defaultStore.state.disableShowingAnimatedImages
-		? getStaticImageUrl(image.url)
-		: image.thumbnailUrl ?? getProxiedImageUrl(image.url, 'preview');
-}
-
 onMounted(() => {
 	misskeyApi('users/notes', {
 		userId: props.user.id,
 		withFiles: true,
-		limit: 15,
+		limit: 10,
 	}).then(_notes => {
 		notes.value = _notes;
 		fetching.value = false;

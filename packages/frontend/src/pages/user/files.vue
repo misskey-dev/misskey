@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.root">
 			<MkPagination v-slot="{items}" :pagination="pagination">
 				<div :class="$style.stream">
-					<MkMedias v-for="note in items" :note="note" square/>
+					<MkNoteMediaGrid v-for="note in items" :note="note" square/>
 				</div>
 			</MkPagination>
 		</div>
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 
-import MkMedias from '@/components/MkNoteMediaGrid.vue';
+import MkNoteMediaGrid from '@/components/MkNoteMediaGrid.vue';
 import MkPagination from '@/components/MkPagination.vue';
 
 const props = defineProps<{
@@ -28,7 +28,7 @@ const props = defineProps<{
 
 const pagination = {
 	endpoint: 'users/notes' as const,
-	limit: 10,
+	limit: 15,
 	params: computed(() => ({
 		userId: props.user.id,
 		withFiles: true,
@@ -44,7 +44,7 @@ const pagination = {
 .stream {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-	grid-gap: 6px;
+	gap: var(--MI-marginHalf);
 }
 
 @media screen and (min-width: 600px) {
