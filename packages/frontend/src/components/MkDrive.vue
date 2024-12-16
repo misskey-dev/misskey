@@ -636,9 +636,9 @@ function getMenu() {
 		text: i18n.ts.keepOriginalUploading,
 		ref: keepOriginal,
 	}, {
-			type: 'switch',
-			text: i18n.ts.useWatermark,
-			ref: useWatermark,
+		type: 'switch',
+		text: i18n.ts.useWatermark,
+		ref: useWatermark,
 	}, { type: 'divider' }, {
 		text: i18n.ts.addFile,
 		type: 'label',
