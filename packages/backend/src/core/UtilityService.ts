@@ -4,9 +4,10 @@
  */
 
 import { URL } from 'node:url';
-import { toASCII } from 'punycode';
+import punycode from 'punycode/punycode.js';
 import { Inject, Injectable } from '@nestjs/common';
 import RE2 from 're2';
+import psl from 'psl';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
@@ -106,19 +107,27 @@ export class UtilityService {
 
 	@bindThis
 	public toPuny(host: string): string {
-		return toASCII(host.toLowerCase());
+		return punycode.toASCII(host.toLowerCase());
 	}
 
 	@bindThis
 	public toPunyNullable(host: string | null | undefined): string | null {
 		if (host == null) return null;
-		return toASCII(host.toLowerCase());
+		return punycode.toASCII(host.toLowerCase());
 	}
 
 	@bindThis
 	public punyHost(url: string): string {
 		const urlObj = new URL(url);
 		const host = `${this.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
+		return host;
+	}
+
+	@bindThis
+	public punyHostPSLDomain(url: string): string {
+		const urlObj = new URL(url);
+		const domain = psl.get(urlObj.hostname) ?? urlObj.hostname;
+		const host = `${this.toPuny(domain)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
 		return host;
 	}
 
