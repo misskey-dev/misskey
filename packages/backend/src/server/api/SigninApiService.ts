@@ -137,6 +137,17 @@ export class SigninApiService {
 		if (password == null) {
 			reply.code(200);
 			if (profile.twoFactorEnabled) {
+				if (profile.usePasswordLessLogin && securityKeysAvailable) {
+					const authRequest = await this.webAuthnService.initiateAuthentication(user.id);
+
+					return {
+						finished: false,
+						next: 'passkey',
+						force: true,
+						authRequest,
+					} satisfies Misskey.entities.SigninFlowResponse;
+				}
+
 				return {
 					finished: false,
 					next: 'password',

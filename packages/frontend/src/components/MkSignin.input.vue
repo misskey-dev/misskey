@@ -40,14 +40,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</form>
 
 		<!-- パスワードレスログイン -->
-		<div :class="$style.orHr">
-			<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
-		</div>
-		<div>
-			<MkButton type="submit" style="margin: auto auto;" large rounded primary gradate @click="emit('passkeyClick', $event)">
-				<i class="ti ti-device-usb" style="font-size: medium;"></i>{{ i18n.ts.signinWithPasskey }}
-			</MkButton>
-		</div>
+		<template v-if="webAuthnSupported()">
+			<div :class="$style.orHr">
+				<p :class="$style.orMsg">{{ i18n.ts.or }}</p>
+			</div>
+			<div>
+				<MkButton type="submit" style="margin: auto auto;" large rounded primary gradate @click="emit('passkeyClick', $event)">
+					<i class="ti ti-device-usb" style="font-size: medium;"></i>{{ i18n.ts.signinWithPasskey }}
+				</MkButton>
+			</div>
+		</template>
 	</div>
 </div>
 </template>
@@ -55,6 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref } from 'vue';
 import { toUnicode } from 'punycode/';
+import { supported as webAuthnSupported } from '@github/webauthn-json/browser-ponyfill';
 
 import { query, extractDomain } from '@@/js/url.js';
 import { host as configHost } from '@@/js/config.js';
