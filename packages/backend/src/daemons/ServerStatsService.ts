@@ -68,7 +68,7 @@ export class ServerStatsService implements OnApplicationShutdown {
 			if (log.length > 200) log.pop();
 		};
 
-		tick();
+		await tick();
 
 		this.intervalId = setInterval(tick, interval);
 	}
