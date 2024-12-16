@@ -5,11 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
+	v-panel
 	:class="[$style.root, {
 		[$style.sensitiveHighlight]: highlightWhenSensitive && file.isSensitive,
 		[$style.large]: large,
 	}]"
-	v-panel
 >
 	<ImgWithBlurhash
 		v-if="isThumbnailAvailable"
