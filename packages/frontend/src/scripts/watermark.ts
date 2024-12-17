@@ -115,7 +115,7 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 							height
 						);
 
-						const pattern = ctx.createPattern(resizedWatermark, config.repeat === true ? 'repeat' : `repeat-${config.repeat}`);
+						const pattern = ctx.createPattern(resizedWatermark, 'repeat');
 						if (pattern) {
 							ctx.fillStyle = pattern;
 							if (config.rotate != null && config.rotate !== 0) {
