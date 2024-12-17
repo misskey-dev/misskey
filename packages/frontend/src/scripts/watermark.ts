@@ -124,7 +124,7 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 			ctx.drawImage(imgEl, 0, 0);
 
 			if (config != null) {
-				if (config.fileUrl) {
+				if (config.fileUrl != null || config.fileId != null) {
 					const watermark = new Image();
 					watermark.onload = () => {
 						const canvasAspectRatio = canvas.width / canvas.height; // 横長は1より大きい
@@ -247,8 +247,12 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 						watermarkUrl = config.fileUrl!;
 					}
 
-					watermark.src = config.__bypassMediaProxy ? config.fileUrl : getProxiedImageUrl(watermarkUrl, undefined, true);
+					watermark.src = config.__bypassMediaProxy ? watermarkUrl : getProxiedImageUrl(watermarkUrl, undefined, true);
+				} else {
+					resolve();
 				}
+			} else {
+				resolve();
 			}
 		};
 
