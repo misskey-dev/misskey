@@ -10678,6 +10678,10 @@ export interface Locale extends ILocale {
          * 全体を埋め尽くす
          */
         "repeat": string;
+        /**
+         * 余白
+         */
+        "padding": string;
     };
 }
 declare const locales: {

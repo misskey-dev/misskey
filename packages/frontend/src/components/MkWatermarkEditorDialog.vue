@@ -62,6 +62,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="$style.formLabel">{{ i18n.ts.position }}</div>
 						<XAnchorSelector v-model="anchor"/>
 					</div>
+
+					<div>
+						<div :class="$style.formLabel">{{ i18n.ts._watermarkEditor.padding }}</div>
+						<div class="_gaps">
+							<XPaddingView :arrow="focusedForm"/>
+							<div class="_gaps_s">
+								<MkInput v-model="paddingTop" debounce @focus="focusedForm = 'top'" @blur="focusedForm = null">
+									<template #prefix><i class="ti ti-border-top"></i></template>
+									<template #suffix>px</template>
+								</MkInput>
+								<MkInput v-model="paddingLeft" debounce @focus="focusedForm = 'left'" @blur="focusedForm = null">
+									<template #prefix><i class="ti ti-border-left"></i></template>
+									<template #suffix>px</template>
+								</MkInput>
+								<MkInput v-model="paddingRight" debounce @focus="focusedForm = 'right'" @blur="focusedForm = null">
+									<template #prefix><i class="ti ti-border-right"></i></template>
+									<template #suffix>px</template>
+								</MkInput>
+								<MkInput v-model="paddingBottom" debounce @focus="focusedForm = 'bottom'" @blur="focusedForm = null">
+									<template #prefix><i class="ti ti-border-bottom"></i></template>
+									<template #suffix>px</template>
+								</MkInput>
+							</div>
+						</div>
+					</div>
 				</template>
 			</div>
 		</div>
@@ -78,6 +103,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRange from '@/components/MkRange.vue';
 import XAnchorSelector from '@/components/MkWatermarkEditorDialog.anchor.vue';
+import XPaddingView from '@/components/MkWatermarkEditorDialog.padding.vue';
 
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
@@ -139,6 +165,33 @@ const opacity = computed({
 const rotate = computed({
 	get: () => watermarkConfig.value?.rotate ?? 15,
 	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, rotate: v },
+});
+function setPadding(pos: 'top' | 'left' | 'right' | 'bottom', val: number) {
+	const padding = {
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		...watermarkConfig.value?.padding,
+		[pos]: val,
+	};
+	watermarkConfig.value = { ...watermarkConfig.value, padding };
+}
+const paddingTop = computed({
+	get: () => watermarkConfig.value?.padding?.top ?? 0,
+	set: (v) => setPadding('top', v),
+});
+const paddingLeft = computed({
+	get: () => watermarkConfig.value?.padding?.left ?? 0,
+	set: (v) => setPadding('left', v),
+});
+const paddingRight = computed({
+	get: () => watermarkConfig.value?.padding?.right ?? 0,
+	set: (v) => setPadding('right', v),
+});
+const paddingBottom = computed({
+	get: () => watermarkConfig.value?.padding?.bottom ?? 0,
+	set: (v) => setPadding('bottom', v),
 });
 //#endregion
 
@@ -210,6 +263,10 @@ onMounted(() => {
 		}
 	}, { immediate: true, deep: true });
 });
+//#endregion
+
+//#region paddingViewの制御
+const focusedForm = ref<'top' | 'left' | 'right' | 'bottom' | null>(null);
 
 //#endregion
 </script>

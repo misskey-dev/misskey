@@ -2847,3 +2847,4 @@ _watermarkEditor:
   driveFileTypeWarnDescription: "画像ファイルを選択してください"
   repeatSetting: "描画モード"
   repeat: "全体を埋め尽くす"
+  padding: "余白"
