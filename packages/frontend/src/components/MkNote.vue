@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div v-if="appearNote.files && appearNote.files.length > 0">
-						<MkMediaList :mediaList="appearNote.files"/>
+						<MkMediaList :mediaList="appearNote.files" :user="appearNote.user"/>
 					</div>
 					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :class="$style.poll"/>
 					<div v-if="isEnabledUrlPreview">

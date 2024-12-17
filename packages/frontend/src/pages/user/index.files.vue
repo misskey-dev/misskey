@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkA :to="notePage(media.note)">
 					<XVideo v-if="media.file.type.startsWith('video')" :key="`video:${media.file.id}`" :class="$style.media" :video="media.file" :videoControls="false"/>
 					<XImage v-else-if="media.file.type.startsWith('image')" :key="`image:${media.file.id}`" :class="$style.media" class="image" :data-id="media.file.id" :image="media.file" :disableImageLink="true"/>
-					<XBanner v-else :media="media.file"/>
+					<XBanner v-else :media="media.file" :user="user"/>
 				</MkA>
 			</template>
 		</div>

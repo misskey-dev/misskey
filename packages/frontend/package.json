@@ -76,7 +76,8 @@
 		"vite": "5.4.11",
 		"vue": "3.5.13",
 		"vue-gtag": "2.0.1",
-		"vuedraggable": "next"
+		"vuedraggable": "next",
+		"webgl-audiovisualizer": "github:tar-bin/webgl-audiovisualizer"
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
@@ -107,6 +108,7 @@
 		"@types/node": "22.10.0",
 		"@types/punycode": "2.1.4",
 		"@types/sanitize-html": "2.13.0",
+		"@types/three": "0.170.0",
 		"@types/throttle-debounce": "5.0.2",
 		"@types/tinycolor2": "1.4.6",
 		"@types/ws": "8.5.13",

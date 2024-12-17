@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 				</div>
 				<div v-if="note.files.length > 0" :class="$style.richcontent">
-					<MkMediaList :mediaList="note.files"/>
+					<MkMediaList :mediaList="note.files" :user="note.user"/>
 				</div>
 				<div v-if="note.poll">
 					<MkPoll :noteId="note.id" :poll="note.poll" :readOnly="true"/>

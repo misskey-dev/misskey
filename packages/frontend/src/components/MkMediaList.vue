@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
+	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media" :user="user"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div
 			ref="gallery"
@@ -42,6 +42,7 @@ import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
+	user?: Misskey.entities.UserLite;
 	raw?: boolean;
 }>();
 
