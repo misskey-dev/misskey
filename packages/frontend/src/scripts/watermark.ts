@@ -85,7 +85,7 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 
 						if (
 							(watermarkAspectRatio > 1 && canvasAspectRatio > 1) || // 両方横長
-							(watermarkAspectRatio < 1 && canvasAspectRatio < 1)    // 両方縦長
+							(watermarkAspectRatio < 1 && canvasAspectRatio < 1) // 両方縦長
 						) {
 							// 横幅を基準にウォーターマークのサイズを決定
 							return {
