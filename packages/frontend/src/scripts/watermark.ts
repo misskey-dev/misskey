@@ -84,17 +84,19 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 						const desiredHeight = canvas.height * (config.sizeRatio ?? 1);
 
 						if (
-							(watermarkAspectRatio > 1 && canvasAspectRatio > 1) ||
-							(watermarkAspectRatio < 1 && canvasAspectRatio < 1)
+							(watermarkAspectRatio > 1 && canvasAspectRatio > 1) || // 両方横長
+							(watermarkAspectRatio < 1 && canvasAspectRatio < 1)    // 両方縦長
 						) {
+							// 横幅を基準にウォーターマークのサイズを決定
 							return {
 								width: desiredWidth,
-								height: desiredWidth / watermarkAspectRatio
+								height: desiredWidth / watermarkAspectRatio,
 							};
 						} else {
+							// 縦幅を基準にウォーターマークのサイズを決定
 							return {
 								width: desiredHeight * watermarkAspectRatio,
-								height: desiredHeight
+								height: desiredHeight,
 							};
 						}
 					})();
@@ -102,7 +104,7 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 					ctx.globalAlpha = config.opacity ?? 1;
 
 					if (config.repeat) {
-						// 余白をもたせた状態のウォーターマークを作成しておく
+						// 余白をもたせた状態のウォーターマークを作成しておく（それをパターン繰り返しする）
 						const resizedWatermark = document.createElement('canvas');
 						resizedWatermark.width = width + (config.padding ? (config.padding.left ?? 0) + (config.padding.right ?? 0) : 0);
 						resizedWatermark.height = height + (config.padding ? (config.padding.top ?? 0) + (config.padding.bottom ?? 0) : 0);

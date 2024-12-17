@@ -2845,6 +2845,8 @@ _followRequest:
 _watermarkEditor:
   driveFileTypeWarn: "このファイルは対応していません"
   driveFileTypeWarnDescription: "画像ファイルを選択してください"
+  settingInvalidWarn: "設定が不十分です"
+  settingInvalidWarnDescription: "プレビューが正常に表示されることを確認してから保存してください"
   repeatSetting: "描画モード"
   repeat: "全体を埋め尽くす"
   padding: "余白"

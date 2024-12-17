@@ -125,16 +125,11 @@ function cancel() {
 	emit('cancel');
 	dialogEl.value?.close();
 }
-
-function save() {
-	emit('ok');
-	dialogEl.value?.close();
-}
 //#endregion
 
 //#region 設定
 const useWatermark = computed(defaultStore.makeGetterSetter('useWatermark'));
-const watermarkConfig = ref<Partial<WatermarkConfig> | null>(defaultStore.state.watermarkConfig ?? {
+const watermarkConfig = ref<WatermarkConfig>(defaultStore.state.watermarkConfig ?? {
 	opacity: 0.2,
 	repeat: true,
 	rotate: 15,
@@ -195,6 +190,22 @@ const paddingBottom = computed({
 	get: () => watermarkConfig.value?.padding?.bottom ?? 0,
 	set: (v) => setPadding('bottom', v),
 });
+
+function save() {
+	if (canPreview(watermarkConfig.value)) {
+		defaultStore.set('watermarkConfig', watermarkConfig.value);
+	} else {
+		os.alert({
+			type: 'warning',
+			title: i18n.ts._watermarkEditor.settingInvalidWarn,
+			text: i18n.ts._watermarkEditor.settingInvalidWarnDescription,
+		});
+		return;
+	}
+
+	emit('ok');
+	dialogEl.value?.close();
+}
 //#endregion
 
 //#region ファイル選択
@@ -269,7 +280,6 @@ onMounted(() => {
 
 //#region paddingViewの制御
 const focusedForm = ref<'top' | 'left' | 'right' | 'bottom' | null>(null);
-
 //#endregion
 </script>
 

@@ -10671,6 +10671,14 @@ export interface Locale extends ILocale {
          */
         "driveFileTypeWarnDescription": string;
         /**
+         * 設定が不十分です
+         */
+        "settingInvalidWarn": string;
+        /**
+         * プレビューが正常に表示されることを確認してから保存してください
+         */
+        "settingInvalidWarnDescription": string;
+        /**
          * 描画モード
          */
         "repeatSetting": string;
