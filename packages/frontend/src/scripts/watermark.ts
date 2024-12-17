@@ -237,6 +237,10 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 						resolve();
 					};
 
+					watermark.onerror = () => {
+						resolve();
+					};
+
 					let watermarkUrl: string;
 					if (config.fileUrl == null && config.fileId != null) {
 						const res = await misskeyApi('drive/files/show', { fileId: config.fileId });
@@ -254,6 +258,10 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 			} else {
 				resolve();
 			}
+		};
+
+		imgEl.onerror = () => {
+			resolve();
 		};
 
 		if (typeof img === 'string') {
