@@ -2850,3 +2850,5 @@ _watermarkEditor:
   repeatSetting: "描画モード"
   repeat: "全体を埋め尽くす"
   padding: "余白"
+  preserveBoundingRect: "回転した分の面積を確保する"
+  preserveBoundingRectDescription: "通常はオンで問題ありません。ウォーターマークを回転させた際に余白が不自然になった場合はオフにしてみてください。"

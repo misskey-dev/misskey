@@ -10690,6 +10690,14 @@ export interface Locale extends ILocale {
          * 余白
          */
         "padding": string;
+        /**
+         * 回転した分の面積を確保する
+         */
+        "preserveBoundingRect": string;
+        /**
+         * 通常はオンで問題ありません。ウォーターマークを回転させた際に余白が不自然になった場合はオフにしてみてください。
+         */
+        "preserveBoundingRectDescription": string;
     };
 }
 declare const locales: {

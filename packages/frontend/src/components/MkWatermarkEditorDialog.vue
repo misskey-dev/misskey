@@ -87,6 +87,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 					</div>
+
+					<MkSwitch v-if="watermarkConfig?.repeat !== true" v-model="preserveBoundingRect">
+						<template #label>{{ i18n.ts._watermarkEditor.preserveBoundingRect }}</template>
+						<template #caption>{{ i18n.ts._watermarkEditor.preserveBoundingRectDescription }}</template>
+					</MkSwitch>
 				</template>
 			</div>
 		</div>
@@ -160,6 +165,10 @@ const opacity = computed({
 const rotate = computed({
 	get: () => watermarkConfig.value?.rotate ?? 15,
 	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, rotate: v },
+});
+const preserveBoundingRect = computed({
+	get: () => !('noBoundingBoxExpansion' in watermarkConfig.value ? watermarkConfig.value?.noBoundingBoxExpansion ?? false : false),
+	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, noBoundingBoxExpansion: !v },
 });
 
 function setPadding(pos: 'top' | 'left' | 'right' | 'bottom', val: number) {

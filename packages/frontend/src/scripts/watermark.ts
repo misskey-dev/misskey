@@ -4,6 +4,7 @@
  */
 import { getProxiedImageUrl } from "@/scripts/media-proxy.js";
 import { misskeyApi } from "@/scripts/misskey-api.js";
+import { defaultStore } from "@/store.js";
 
 export const watermarkAnchor = [
 	'top-left',
@@ -45,6 +46,8 @@ export type WatermarkConfig = {
 	repeat?: false;
 	/** 画像の始祖点 */
 	anchor: WatermarkAnchor;
+	/** 回転の際に領域を自動で拡張するかどうか */
+	noBoundingBoxExpansion?: boolean;
 } | {
 	/** 繰り返し */
 	repeat: true;
@@ -54,7 +57,11 @@ export type WatermarkConfig = {
  * プレビューに必要な値が全部揃っているかどうかを判定する
  */
 export function canPreview(config: Partial<WatermarkConfig> | null): config is WatermarkConfig {
-	return config != null && (config.fileUrl != null || config.fileId != null);
+	return (
+		config != null &&
+		(config.fileUrl != null || config.fileId != null) &&
+		((config.repeat !== true && 'anchor' in config && config.anchor != null) || (config.repeat === true))
+	);
 }
 
 /**
@@ -155,7 +162,7 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 						const y = (() => {
 							let rotateY = 0; // 回転によるY座標の補正
 
-							if (config.rotate) {
+							if (config.rotate != null && config.rotate !== 0 && !config.noBoundingBoxExpansion) {
 								const rotateRad = config.rotate * Math.PI / 180;
 								rotateY = Math.abs(Math.abs(width * Math.sin(rotateRad)) + Math.abs(height * Math.cos(rotateRad)) - height) / 2;
 							}
@@ -189,6 +196,8 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 				if (config.fileUrl == null && config.fileId != null) {
 					const res = await misskeyApi('drive/files/show', { fileId: config.fileId });
 					watermarkUrl = res.url;
+					// 抜けてたら保存
+					defaultStore.set('watermarkConfig', { ...config, fileUrl: watermarkUrl });
 				} else {
 					watermarkUrl = config.fileUrl!;
 				}
