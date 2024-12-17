@@ -58,9 +58,9 @@ export class ChartManagementService implements OnApplicationShutdown {
 	@bindThis
 	public async start() {
 		// 20分おきにメモリ情報をDBに書き込み
-		this.saveIntervalId = setInterval(() => {
+		this.saveIntervalId = setInterval(async () => {
 			for (const chart of this.charts) {
-				chart.save();
+				await chart.save();
 			}
 		}, 1000 * 60 * 20);
 	}
@@ -72,6 +72,7 @@ export class ChartManagementService implements OnApplicationShutdown {
 			await Promise.all(
 				this.charts.map(chart => chart.save()),
 			);
+			this.logger.info('All charts saved');
 		}
 	}
 
