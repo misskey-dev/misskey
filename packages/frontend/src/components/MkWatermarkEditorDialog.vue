@@ -166,6 +166,7 @@ const rotate = computed({
 	get: () => watermarkConfig.value?.rotate ?? 15,
 	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, rotate: v },
 });
+
 function setPadding(pos: 'top' | 'left' | 'right' | 'bottom', val: number) {
 	const padding = {
 		top: 0,
@@ -177,6 +178,7 @@ function setPadding(pos: 'top' | 'left' | 'right' | 'bottom', val: number) {
 	};
 	watermarkConfig.value = { ...watermarkConfig.value, padding };
 }
+
 const paddingTop = computed({
 	get: () => watermarkConfig.value?.padding?.top ?? 0,
 	set: (v) => setPadding('top', v),
