@@ -20,6 +20,48 @@ export const watermarkAnchor = [
 
 export type WatermarkAnchor = typeof watermarkAnchor[number];
 
+/**
+ * Storeへの保存やエディタで使用するための、条件別のプロパティを排除したバージョンの型。
+ * `canPreview`で`WatermarkConfig`に変換可能かどうかを判定できる。
+ *
+ * どちらかの型を変更したら、もう一方も変更すること。
+ */
+export type WatermarkUserConfig = {
+	/** ドライブファイルのID */
+	fileId?: string;
+	/** 画像URL */
+	fileUrl?: string;
+	/** 親画像に対するウォーターマークの幅比率。ない場合は1。親画像が縦長の場合は幅の比率として、横長の場合は高さ比率として使用される */
+	sizeRatio?: number;
+	/** 透明度 */
+	opacity?: number;
+	/** 回転角度（度数） */
+	rotate?: number;
+	/** パディング */
+	padding?: {
+		top: number;
+		right: number;
+		bottom: number;
+		left: number;
+	};
+
+	/** 繰り返し */
+	repeat?: boolean;
+	/** 画像の始祖点。repeatがtrueの場合は使用されないが、それ以外の場合は必須 */
+	anchor?: WatermarkAnchor;
+	/** 回転の際に領域を自動で拡張するかどうか。repeatがtrueの場合は使用されない */
+	noBoundingBoxExpansion?: boolean;
+
+	/** @internal */
+	__bypassMediaProxy?: boolean;
+};
+
+/**
+ * Canvasへの描画などで使用できる、動作に必要な値を網羅した型。
+ * `WatermarkUserConfig`を`canPreview`でアサートすることで型を変換できる。
+ *
+ * どちらかの型を変更したら、もう一方も変更すること。
+ */
 export type WatermarkConfig = {
 	/** ドライブファイルのID */
 	fileId?: string;
@@ -56,7 +98,7 @@ export type WatermarkConfig = {
 /**
  * プレビューに必要な値が全部揃っているかどうかを判定する
  */
-export function canPreview(config: Partial<WatermarkConfig> | null): config is WatermarkConfig {
+export function canPreview(config: Partial<WatermarkConfig | WatermarkUserConfig> | null): config is WatermarkConfig {
 	return (
 		config != null &&
 		(config.fileUrl != null || config.fileId != null) &&

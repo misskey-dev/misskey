@@ -114,8 +114,10 @@ import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { selectFile } from '@/scripts/select-file.js';
-import { applyWatermark, canPreview, WatermarkConfig } from '@/scripts/watermark.js';
+import { applyWatermark, canPreview } from '@/scripts/watermark.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+
+import type { WatermarkUserConfig } from '@/scripts/watermark.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;
@@ -134,7 +136,7 @@ function cancel() {
 
 //#region 設定
 const useWatermark = computed(defaultStore.makeGetterSetter('useWatermark'));
-const watermarkConfig = ref<WatermarkConfig>(defaultStore.state.watermarkConfig ?? {
+const watermarkConfig = ref<WatermarkUserConfig>(defaultStore.state.watermarkConfig ?? {
 	opacity: 0.2,
 	repeat: true,
 	rotate: 15,
@@ -144,7 +146,8 @@ const anchor = computed({
 	get: () => watermarkConfig.value != null && 'anchor' in watermarkConfig.value ? watermarkConfig.value.anchor : null,
 	set: (v) => {
 		if (v == null || watermarkConfig.value?.repeat === true) {
-			watermarkConfig.value = { ...watermarkConfig.value, anchor: undefined };
+			const { anchor, ...newValue } = watermarkConfig.value;
+			watermarkConfig.value = newValue;
 		} else if (watermarkConfig.value?.repeat === false) {
 			watermarkConfig.value = { ...watermarkConfig.value, anchor: v };
 		}
@@ -167,7 +170,7 @@ const rotate = computed({
 	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, rotate: v },
 });
 const preserveBoundingRect = computed({
-	get: () => !('noBoundingBoxExpansion' in watermarkConfig.value ? watermarkConfig.value?.noBoundingBoxExpansion ?? false : false),
+	get: () => watermarkConfig.value?.noBoundingBoxExpansion ?? false,
 	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, noBoundingBoxExpansion: !v },
 });
 
