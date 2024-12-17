@@ -162,11 +162,11 @@ export async function applyWatermark(img: string | Blob, el: HTMLCanvasElement, 
 								case 'center':
 								case 'left':
 								case 'right':
-									return (canvas.height - height) / 2 + (config.padding ? config.padding.top ?? 0 : 0);
+									return (canvas.height - height) / 2;
 								case 'top':
 								case 'top-left':
 								case 'top-right':
-									return rotateY;
+									return rotateY + (config.padding ? config.padding.top ?? 0 : 0);
 								case 'bottom':
 								case 'bottom-left':
 								case 'bottom-right':
