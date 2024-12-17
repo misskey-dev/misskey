@@ -68,19 +68,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps">
 							<XPaddingView :arrow="focusedForm"/>
 							<div class="_gaps_s">
-								<MkInput v-model="paddingTop" debounce @focus="focusedForm = 'top'" @blur="focusedForm = null">
+								<MkInput v-model="paddingTop" type="number" debounce @focus="focusedForm = 'top'" @blur="focusedForm = null">
 									<template #prefix><i class="ti ti-border-top"></i></template>
 									<template #suffix>px</template>
 								</MkInput>
-								<MkInput v-model="paddingLeft" debounce @focus="focusedForm = 'left'" @blur="focusedForm = null">
+								<MkInput v-model="paddingLeft" type="number" debounce @focus="focusedForm = 'left'" @blur="focusedForm = null">
 									<template #prefix><i class="ti ti-border-left"></i></template>
 									<template #suffix>px</template>
 								</MkInput>
-								<MkInput v-model="paddingRight" debounce @focus="focusedForm = 'right'" @blur="focusedForm = null">
+								<MkInput v-model="paddingRight" type="number" debounce @focus="focusedForm = 'right'" @blur="focusedForm = null">
 									<template #prefix><i class="ti ti-border-right"></i></template>
 									<template #suffix>px</template>
 								</MkInput>
-								<MkInput v-model="paddingBottom" debounce @focus="focusedForm = 'bottom'" @blur="focusedForm = null">
+								<MkInput v-model="paddingBottom" type="number" debounce @focus="focusedForm = 'bottom'" @blur="focusedForm = null">
 									<template #prefix><i class="ti ti-border-bottom"></i></template>
 									<template #suffix>px</template>
 								</MkInput>
