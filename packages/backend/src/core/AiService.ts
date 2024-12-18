@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Injectable } from '@nestjs/common';
 import * as nsfw from 'nsfwjs';
 import si from 'systeminformation';
 import { Mutex } from 'async-mutex';
+import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -33,7 +33,7 @@ export class AiService {
 	}
 
 	@bindThis
-	public async detectSensitive(path: string): Promise<nsfw.predictionType[] | null> {
+	public async detectSensitive(path: string, mime: string): Promise<nsfw.PredictionType[] | null> {
 		try {
 			if (isSupportedCpu === undefined) {
 				const cpuFlags = await this.getCpuFlags();
@@ -55,11 +55,16 @@ export class AiService {
 				});
 			}
 
-			const buffer = await fs.promises.readFile(path);
-			const image = await tf.node.decodeImage(buffer, 3) as any;
+			const sharp = await sharpBmp(path, mime);
+			const { data, info } = await sharp
+				.resize(299, 299, { fit: 'inside' })
+				.ensureAlpha()
+				.raw({ depth: 'int' })
+				.toBuffer({ resolveWithObject: true });
+
+			const image = tf.tensor3d(data, [info.height, info.width, info.channels], 'int32');
 			try {
-				const predictions = await this.model.classify(image);
-				return predictions;
+				return await this.model.classify(image);
 			} finally {
 				image.dispose();
 			}

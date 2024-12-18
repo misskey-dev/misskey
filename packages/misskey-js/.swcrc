@@ -1,5 +1,5 @@
 {
-	"$schema": "https://json.schemastore.org/swcrc",
+	"$schema": "https://swc.rs/schema.json",
 	"jsc": {
 		"parser": {
 			"syntax": "typescript",
@@ -17,7 +17,8 @@
 		"paths": {
 			"@/*": ["*"]
 		},
-		"target": "es2022"
+		"target": "es2022",
+		"keepClassNames": true
 	},
 	"minify": false
 }

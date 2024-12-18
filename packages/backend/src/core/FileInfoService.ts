@@ -13,7 +13,7 @@ import * as fileType from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
-import { type predictionType } from 'nsfwjs';
+import { type PredictionType } from 'nsfwjs';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
@@ -170,7 +170,7 @@ export class FileInfoService {
 		let sensitive = false;
 		let porn = false;
 
-		function judgePrediction(result: readonly predictionType[]): [sensitive: boolean, porn: boolean] {
+		function judgePrediction(result: readonly PredictionType[]): [sensitive: boolean, porn: boolean] {
 			let sensitive = false;
 			let porn = false;
 
@@ -188,7 +188,7 @@ export class FileInfoService {
 			'image/png',
 			'image/webp',
 		].includes(mime)) {
-			const result = await this.aiService.detectSensitive(source);
+			const result = await this.aiService.detectSensitive(source, mime);
 			if (result) {
 				[sensitive, porn] = judgePrediction(result);
 			}
@@ -247,7 +247,7 @@ export class FileInfoService {
 						}
 						targetIndex = nextIndex;
 						nextIndex += index; // fibonacci sequence によってフレーム数制限を掛ける
-						const result = await this.aiService.detectSensitive(path);
+						const result = await this.aiService.detectSensitive(path, 'image/png');
 						if (result) {
 							results.push(judgePrediction(result));
 						}

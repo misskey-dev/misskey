@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, shallowRef } from 'vue';
-import { toUnicode } from 'punycode/';
+import { toUnicode } from 'punycode.js';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';

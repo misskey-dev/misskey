@@ -9,7 +9,7 @@
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "^1.0.0",
 		"@readme/openapi-parser": "2.6.0",
-		"@types/node": "22.10.0",
+		"@types/node": "22.10.2",
 		"@typescript-eslint/eslint-plugin": "7.10.0",
 		"@typescript-eslint/parser": "7.10.0",
 		"eslint": "8.57.1",

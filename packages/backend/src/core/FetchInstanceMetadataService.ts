@@ -15,7 +15,6 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
 	openRegistrations?: unknown;
@@ -170,7 +169,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchDom(instance: MiInstance): Promise<DOMWindow['document']> {
+	private async fetchDom(instance: MiInstance): Promise<Document> {
 		this.logger.info(`Fetching HTML of ${instance.host} ...`);
 
 		const url = 'https://' + instance.host;
@@ -178,9 +177,8 @@ export class FetchInstanceMetadataService {
 		const html = await this.httpRequestService.getHtml(url);
 
 		const { window } = new JSDOM(html);
-		const doc = window.document;
 
-		return doc;
+		return window.document as Document;
 	}
 
 	@bindThis
@@ -195,7 +193,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchFaviconUrl(instance: MiInstance, doc: DOMWindow['document'] | null): Promise<string | null> {
+	private async fetchFaviconUrl(instance: MiInstance, doc: Document | null): Promise<string | null> {
 		const url = 'https://' + instance.host;
 
 		if (doc) {
@@ -221,7 +219,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async fetchIconUrl(instance: MiInstance, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async fetchIconUrl(instance: MiInstance, doc: Document | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
 			const url = 'https://' + instance.host;
 			return (new URL(manifest.icons[0].src, url)).href;
@@ -250,7 +248,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async getThemeColor(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async getThemeColor(info: NodeInfo | null, doc: Document | null, manifest: Record<string, any> | null): Promise<string | null> {
 		const themeColor = info?.metadata?.themeColor ?? doc?.querySelector('meta[name="theme-color"]')?.getAttribute('content') ?? manifest?.theme_color;
 
 		if (themeColor) {
@@ -262,7 +260,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async getSiteName(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async getSiteName(info: NodeInfo | null, doc: Document | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
 			if (typeof info.metadata.nodeName === 'string') {
 				return info.metadata.nodeName;
@@ -287,7 +285,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	private async getDescription(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	private async getDescription(info: NodeInfo | null, doc: Document | null, manifest: Record<string, any> | null): Promise<string | null> {
 		if (info && info.metadata) {
 			if (typeof info.metadata.nodeDescription === 'string') {
 				return info.metadata.nodeDescription;

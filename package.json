@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/MisskeyIO/misskey.git"
 	},
-	"packageManager": "pnpm@9.14.2",
+	"packageManager": "pnpm@9.15.0",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
@@ -47,35 +47,36 @@
 	},
 	"resolutions": {
 		"@tensorflow/tfjs-core": "4.22.0",
-		"axios": "1.7.7",
-		"chokidar": "4.0.1",
-		"cookie": "1.0.1",
+		"axios": "1.7.9",
+		"chokidar": "4.0.2",
+		"cookie": "1.0.2",
 		"cookie-signature": "1.2.2",
-		"debug": "4.3.7",
+		"debug": "4.4.0",
 		"esbuild": "0.24.0",
 		"jpeg-js": "0.4.4",
 		"lodash": "4.17.21",
+		"punycode": "npm:punycode.js@2.3.1",
 		"sharp": "0.33.5",
 		"tough-cookie": "5.0.0",
 		"web-streams-polyfill": "4.0.0"
 	},
 	"dependencies": {
 		"cssnano": "7.0.6",
-		"execa": "9.5.1",
+		"execa": "9.5.2",
 		"js-yaml": "4.1.0",
 		"postcss": "8.4.49",
-		"terser": "5.36.0",
+		"terser": "5.37.0",
 		"typescript": "5.7.2"
 	},
 	"devDependencies": {
-		"@types/node": "22.10.0",
+		"@types/node": "22.10.2",
 		"@typescript-eslint/eslint-plugin": "7.10.0",
 		"@typescript-eslint/parser": "7.10.0",
 		"cross-env": "7.0.3",
-		"cypress": "13.16.0",
+		"cypress": "13.17.0",
 		"eslint": "8.57.1",
 		"ncp": "2.0.0",
-		"start-server-and-test": "2.0.8"
+		"start-server-and-test": "2.0.9"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.22.0"
