@@ -89,7 +89,7 @@ export class Resolver {
 		}
 
 		if (this.history.size > this.recursionLimit) {
-			throw new IdentifiableError('09d79f9e-64f1-4316-9cfa-e75c4d091574', `hit recursion limit: ${this.utilityService.extractDbHost(value)}`);
+			throw new IdentifiableError('d592da9f-822f-4d91-83d7-4ceefabcf3d2', `hit recursion limit: ${this.utilityService.extractDbHost(value)}`);
 		}
 
 		this.history.add(value);

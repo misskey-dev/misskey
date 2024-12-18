@@ -160,7 +160,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					case 'b94fd5b1-0e3b-4678-9df2-dad4cd515ab2':
 						throw new ApiError(meta.errors.uriInvalid);
 					case '0dc86cf6-7cd6-4e56-b1e6-5903d62d7ea5':
-					case '09d79f9e-64f1-4316-9cfa-e75c4d091574':
+					case 'd592da9f-822f-4d91-83d7-4ceefabcf3d2':
 						throw new ApiError(meta.errors.requestFailed);
 					case '09d79f9e-64f1-4316-9cfa-e75c4d091574':
 						throw new ApiError(meta.errors.federationNotAllowed);
