@@ -457,9 +457,9 @@ export class FileInfoService {
 	private async getBlurhash(path: string, type: string): Promise<string> {
 		const sharp = await sharpBmp(path, type);
 		const { data, info } = await sharp
-			.raw()
-			.ensureAlpha()
 			.resize(64, 64, { fit: 'inside' })
+			.ensureAlpha()
+			.raw()
 			.toBuffer({ resolveWithObject: true });
 
 		return encode(new Uint8ClampedArray(data), info.width, info.height, 5, 5);
