@@ -2827,7 +2827,7 @@ _followRequest:
   recieved: "受け取った申請"
   sent: "送った申請"
 
-_lookupErrors:
+_remoteLookupErrors:
   _federationNotAllowed:
     title: "このサーバーとは通信できません"
     description: "このサーバーとの通信が無効化されているか、このサーバーをブロックしている・ブロックされている可能性があります。\nサーバー管理者にお問い合わせください。"

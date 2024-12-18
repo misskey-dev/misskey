@@ -10601,7 +10601,7 @@ export interface Locale extends ILocale {
          */
         "sent": string;
     };
-    "_lookupErrors": {
+    "_remoteLookupErrors": {
         "_federationNotAllowed": {
             /**
              * このサーバーとは通信できません
