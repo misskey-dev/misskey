@@ -2476,3 +2476,6 @@ _selfXssPrevention:
   title: "„Füge in diesen Bereich etwas ein“ ist eine Betrugsmasche."
   description1: "Wenn du hier etwas einfügst, könnte ein böswilliger Benutzer dein Konto übernehmen oder deine persönlichen Daten stehlen."
   description3: "Weitere Informationen findest du hier. {link}"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Nicht gefunden"
