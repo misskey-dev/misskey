@@ -2143,3 +2143,6 @@ _hemisphere:
   caption: "Используется для некоторых настроек клиента для определения сезона."
 _reversi:
   total: "Всего"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Не найдено"
