@@ -60,13 +60,13 @@ jobs:
 
         ### General
         -
-        
+
         ### Client
         -
-        
+
         ### Server
         -
-        
+
       use_external_app_to_release: ${{ vars.USE_RELEASE_APP == 'true' }}
       indent: ${{ vars.INDENT }}
     secrets:
@@ -86,6 +86,7 @@ jobs:
       draft_prerelease_channel: alpha
       ready_start_prerelease_channel: beta
       prerelease_channel: ${{ inputs.start-rc && 'rc' || '' }}
+      reset_number_on_channel_change: true
     secrets:
       RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
       RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
