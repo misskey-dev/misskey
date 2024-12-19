@@ -131,11 +131,7 @@ describe('Note', () => {
 			rejects(
 				async () => await bob.client.request('ap/show', { uri: `https://a.test/notes/${note.id}` }),
 				(err: any) => {
-					/**
-					 * FIXME: this error is not handled
-					 * @see https://github.com/misskey-dev/misskey/issues/12736
-					 */
-					strictEqual(err.code, 'INTERNAL_ERROR');
+					strictEqual(err.code, 'REQUEST_FAILED');
 					return true;
 				},
 			);

@@ -118,7 +118,7 @@ watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction.value = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.value.map((id) => misskeyApi('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
-const imgUrl = computed(() => file.value ? file.value.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
+const imgUrl = computed(() => file.value ? file.value.url : props.emoji ? props.emoji.url : null);
 
 async function changeImage(ev: Event) {
 	file.value = await selectFile(ev.currentTarget ?? ev.target, null);
