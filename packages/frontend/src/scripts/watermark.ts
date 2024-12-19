@@ -95,6 +95,9 @@ export type WatermarkConfig = {
 	repeat: true;
 });
 
+/** 基準とするアスペクト比（変えたら今後付加されるウォーターマークの大きさが全部変わるので変えるべきではない。プレビュー画像を変えたいなら画像の縦横比をこれに合わせること） */
+const DEFAULT_ASPECT_RATIO = 4 / 3;
+
 /**
  * プレビューに必要な値が全部揃っているかどうかを判定する
  */
@@ -127,28 +130,34 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 				if (config.fileUrl != null || config.fileId != null) {
 					const watermark = new Image();
 					watermark.onload = () => {
-						const canvasAspectRatio = canvas.width / canvas.height; // 横長は1より大きい
 						const watermarkAspectRatio = watermark.width / watermark.height; // 横長は1より大きい
 						const { width, height } = (() => {
-							const desiredWidth = canvas.width * (config.sizeRatio ?? 1);
-							const desiredHeight = canvas.height * (config.sizeRatio ?? 1);
-
-							if (
-								(watermarkAspectRatio > 1 && canvasAspectRatio > 1) || // 両方横長
-								(watermarkAspectRatio < 1 && canvasAspectRatio < 1) // 両方縦長
-							) {
-								// 横幅を基準にウォーターマークのサイズを決定
-								return {
-									width: desiredWidth,
-									height: desiredWidth / watermarkAspectRatio,
-								};
+							// 1. 画像を覆うサイズのプレビュー画像相当の領域を計算
+							let canvasPreviewWidth: number;
+							let canvasPreviewHeight: number;
+							if (canvas.width > canvas.height) {
+								canvasPreviewWidth = canvas.width;
+								canvasPreviewHeight = canvas.width / DEFAULT_ASPECT_RATIO;
 							} else {
-								// 縦幅を基準にウォーターマークのサイズを決定
-								return {
-									width: desiredHeight * watermarkAspectRatio,
-									height: desiredHeight,
-								};
+								canvasPreviewWidth = canvas.height * DEFAULT_ASPECT_RATIO;
+								canvasPreviewHeight = canvas.height;
 							}
+
+							// 2. プレビュー画像相当の領域から、幅・高さそれぞれをベースにリサイズした場合の
+							// ウォーターマークのサイズを計算
+							let width = canvasPreviewWidth * (config.sizeRatio ?? 1);
+							let height = canvasPreviewHeight * (config.sizeRatio ?? 1);
+
+							// 3. ウォーターマークのアスペクト比に合わせてリサイズ
+							if (watermarkAspectRatio > 1) {
+								// ウォーターマークが横長（横幅を基準に縮小）
+								height = width / watermarkAspectRatio;
+							} else {
+								// ウォーターマークが縦長（縦幅を基準に縮小）
+								width = height * watermarkAspectRatio;
+							}
+
+							return { width, height };
 						})();
 
 						ctx.globalAlpha = config.opacity ?? 1;

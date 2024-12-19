@@ -282,6 +282,7 @@ onMounted(() => {
 	watch([useWatermark, watermarkConfig], ([useWatermarkTo, watermarkConfigTo]) => {
 		canvasLoading.value = true;
 		if (canvasEl.value) {
+			// @/scripts/watermark.ts の DEFAULT_ASPECT_RATIO と同じ縦横比の画像を使用すること
 			applyWatermark('/client-assets/hill.webp', canvasEl.value, useWatermarkTo && canPreview(watermarkConfigTo) ? watermarkConfigTo : null).then(() => {
 				canvasLoading.value = false;
 			});
