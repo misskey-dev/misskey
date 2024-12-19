@@ -96,7 +96,7 @@ function select(src: HTMLElement | EventTarget | null, opts?: {
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
 
-		const watermarkCanApply = canApplyWatermark(defaultStore.reactiveState.watermarkConfig.value);
+		const watermarkCanApply = canApplyWatermark(defaultStore.state.watermarkConfig);
 		const useWatermark = ref(opts?.dontUseWatermark || !watermarkCanApply ? false : defaultStore.state.useWatermark);
 
 		const menu: MenuItem[] = [];
