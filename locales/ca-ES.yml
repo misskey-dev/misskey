@@ -779,7 +779,7 @@ thisIsExperimentalFeature: "Aquesta és una característica experimental. La sev
 developer: "Programador"
 makeExplorable: "Fes que el compte sigui visible a la secció \"Explorar\""
 makeExplorableDescription: "Si desactives aquesta opció, el teu compte no sortirà a la secció \"Explorar\""
-showGapBetweenNotesInTimeline: "Mostra una separació entre els articles a la línia de temps"
+showGapBetweenNotesInTimeline: "Notes separades a la línia de temps"
 duplicate: "Duplicat"
 left: "Esquerra"
 center: "Centre"
@@ -2757,5 +2757,8 @@ _remoteLookupErrors:
   _responseInvalid:
     title: "La resposta no és correcta "
     description: "Hem pogut comunicar-nos amb aquest servidor, però les dades rebudes no són correctes."
+  _responseInvalidIdHostNotMatch:
+    description: "El domini de l'adreça introduïda no és el mateix que el domini de l'adreça final obtinguda. Si estàs consultant continguts remots mitjançant servidors tercers, torna a fer la consulta fent servir l'adreça que es pot obtenir en el servidor origen."
   _noSuchObject:
     title: "No s'ha trobat"
+    description: "No es pot trobar el recurs sol·licitat, si us plau comprova l'adreça una altra vegada."
