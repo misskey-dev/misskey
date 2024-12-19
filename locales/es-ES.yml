@@ -2535,3 +2535,6 @@ _mediaControls:
   pip: "Picture in Picture"
   playbackRate: "Velocidad de reproducción"
   loop: "Reproducción en bucle"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "No se encuentra"
