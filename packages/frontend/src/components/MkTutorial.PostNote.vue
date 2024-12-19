@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<div style="text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._postNote.description1 }}</div>
+	<div style="word-break: auto-phrase; text-align: center; padding: 0 16px;">{{ i18n.ts._initialTutorial._postNote.description1 }}</div>
 	<MkPostForm :class="$style.exampleRoot" :mock="true" :autofocus="false"/>
 	<MkFormSection>
 		<template #label>{{ i18n.ts.visibility }}</template>
@@ -42,6 +42,7 @@ import MkNote from '@/components/MkNote.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkFormSection from '@/components/form/section.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const exampleCWNote = reactive<Misskey.entities.Note>({
 	id: '0000000000',
@@ -75,6 +76,10 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 	files: [],
 	replyId: null,
 	renoteId: null,
+});
+
+defineExpose<TutorialPageCommonExpose>({
+	canContinue: true,
 });
 </script>
 

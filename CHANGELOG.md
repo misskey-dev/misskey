@@ -4,6 +4,8 @@
 -
 
 ### Client
+- Feat: チュートリアルと初期設定ダイアログを統合
+  - 管理者は新規登録したユーザーにチュートリアルを強制することができるように
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
 - Enhance: 照会に失敗した場合、その理由を表示するように
