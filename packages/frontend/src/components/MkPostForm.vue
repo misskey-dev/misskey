@@ -129,8 +129,8 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
+import { canApplyWatermark } from '@/scripts/watermark.js';
 import type { PostFormProps } from '@/types/post-form.js';
-import { canApplyWatermark } from '@/scripts/watermark';
 
 const $i = signinRequired();
 
