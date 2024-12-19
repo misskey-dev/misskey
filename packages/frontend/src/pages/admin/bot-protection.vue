@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else-if="botProtectionForm.savedState.provider === 'testcaptcha'" #suffix>testCaptcha</template>
 	<template v-else #suffix>{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</template>
 	<template v-if="botProtectionForm.modified.value" #footer>
-		<MkFormFooter :form="botProtectionForm"/>
+		<MkFormFooter :canSaving="canSaving" :form="botProtectionForm"/>
 	</template>
 
 	<div class="_gaps_m">
@@ -36,11 +36,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.hcaptchaSecretKey }}</template>
 			</MkInput>
-			<FormSlot>
+			<FormSlot v-if="botProtectionForm.state.hcaptchaSiteKey">
 				<template #label>{{ i18n.ts.preview }}</template>
-				<MkCaptcha provider="hcaptcha" :sitekey="botProtectionForm.state.hcaptchaSiteKey || '10000000-ffff-ffff-ffff-000000000001'"/>
+				<MkCaptcha v-model="hCaptchaResponse" provider="hcaptcha" :sitekey="botProtectionForm.state.hcaptchaSiteKey"/>
 			</FormSlot>
+			<MkInfo>
+				<div :class="$style.captchaInfoMsg">
+					<div>サイトキーに"10000000-ffff-ffff-ffff-000000000001"と入力することで動作をテスト出来ます。<br/>本番運用時には必ず正規のサイトキーを設定してください。</div>
+					<div>ref: <a href="https://docs.hcaptcha.com/#integration-testing-test-keys" target="_blank">hCaptcha Developer Guide</a></div>
+				</div>
+			</MkInfo>
 		</template>
+
 		<template v-else-if="botProtectionForm.state.provider === 'mcaptcha'">
 			<MkInput v-model="botProtectionForm.state.mcaptchaSiteKey">
 				<template #prefix><i class="ti ti-key"></i></template>
@@ -56,9 +63,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkInput>
 			<FormSlot v-if="botProtectionForm.state.mcaptchaSiteKey && botProtectionForm.state.mcaptchaInstanceUrl">
 				<template #label>{{ i18n.ts.preview }}</template>
-				<MkCaptcha provider="mcaptcha" :sitekey="botProtectionForm.state.mcaptchaSiteKey" :instanceUrl="botProtectionForm.state.mcaptchaInstanceUrl"/>
+				<MkCaptcha v-model="mCaptchaResponse" provider="mcaptcha" :sitekey="botProtectionForm.state.mcaptchaSiteKey" :instanceUrl="botProtectionForm.state.mcaptchaInstanceUrl"/>
 			</FormSlot>
 		</template>
+
 		<template v-else-if="botProtectionForm.state.provider === 'recaptcha'">
 			<MkInput v-model="botProtectionForm.state.recaptchaSiteKey">
 				<template #prefix><i class="ti ti-key"></i></template>
@@ -70,9 +78,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkInput>
 			<FormSlot v-if="botProtectionForm.state.recaptchaSiteKey">
 				<template #label>{{ i18n.ts.preview }}</template>
-				<MkCaptcha provider="recaptcha" :sitekey="botProtectionForm.state.recaptchaSiteKey"/>
+				<MkCaptcha v-model="reCaptchaResponse" provider="recaptcha" :sitekey="botProtectionForm.state.recaptchaSiteKey"/>
 			</FormSlot>
+			<MkInfo>
+				<div :class="$style.captchaInfoMsg">
+					<div>サイトキーに"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"と入力することで動作をテスト出来ます。<br/>本番運用時には必ず正規のサイトキーを設定してください。</div>
+					<div>ref: <a href="https://developers.google.com/recaptcha/docs/faq?hl=ja#id-like-to-run-automated-tests-with-recaptcha.-what-should-i-do" target="_blank">reCAPTCHA FAQ</a></div>
+				</div>
+			</MkInfo>
 		</template>
+
 		<template v-else-if="botProtectionForm.state.provider === 'turnstile'">
 			<MkInput v-model="botProtectionForm.state.turnstileSiteKey">
 				<template #prefix><i class="ti ti-key"></i></template>
@@ -82,16 +97,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.turnstileSecretKey }}</template>
 			</MkInput>
-			<FormSlot>
+			<FormSlot v-if="botProtectionForm.state.turnstileSiteKey">
 				<template #label>{{ i18n.ts.preview }}</template>
-				<MkCaptcha provider="turnstile" :sitekey="botProtectionForm.state.turnstileSiteKey || '1x00000000000000000000AA'"/>
+				<MkCaptcha v-model="turnstileResponse" provider="turnstile" :sitekey="botProtectionForm.state.turnstileSiteKey"/>
 			</FormSlot>
+			<MkInfo>
+				<div :class="$style.captchaInfoMsg">
+					<div>サイトキーに"1x00000000000000000000AA"と入力することで動作をテスト出来ます。<br/>本番運用時には必ず正規のサイトキーを設定してください。</div>
+					<div>ref: <a href="https://developers.cloudflare.com/turnstile/troubleshooting/testing/" target="_blank">Cloudflare Docs</a></div>
+				</div>
+			</MkInfo>
 		</template>
+
 		<template v-else-if="botProtectionForm.state.provider === 'testcaptcha'">
 			<MkInfo warn><span v-html="i18n.ts.testCaptchaWarning"></span></MkInfo>
 			<FormSlot>
 				<template #label>{{ i18n.ts.preview }}</template>
-				<MkCaptcha provider="testcaptcha"/>
+				<MkCaptcha v-model="testCaptchaResponse" provider="testcaptcha" :sitekey="null"/>
 			</FormSlot>
 		</template>
 	</div>
@@ -99,7 +121,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkInput from '@/components/MkInput.vue';
 import FormSlot from '@/components/form/slot.vue';
@@ -115,6 +137,20 @@ import MkInfo from '@/components/MkInfo.vue';
 const MkCaptcha = defineAsyncComponent(() => import('@/components/MkCaptcha.vue'));
 
 const meta = await misskeyApi('admin/meta');
+
+const hCaptchaResponse = ref<string | null>(null);
+const mCaptchaResponse = ref<string | null>(null);
+const reCaptchaResponse = ref<string | null>(null);
+const turnstileResponse = ref<string | null>(null);
+const testCaptchaResponse = ref<string | null>(null);
+
+const canSaving = computed((): boolean => {
+	return (botProtectionForm.state.provider === 'hcaptcha' && !!hCaptchaResponse.value) ||
+		(botProtectionForm.state.provider === 'mcaptcha' && !!mCaptchaResponse.value) ||
+			(botProtectionForm.state.provider === 'recaptcha' && !!reCaptchaResponse.value) ||
+				(botProtectionForm.state.provider === 'turnstile' && !!turnstileResponse.value) ||
+					(botProtectionForm.state.provider === 'testcaptcha' && !!testCaptchaResponse.value);
+});
 
 const botProtectionForm = useForm({
 	provider: meta.enableHcaptcha
@@ -157,3 +193,11 @@ const botProtectionForm = useForm({
 	fetchInstance(true);
 });
 </script>
+
+<style lang="scss" module>
+.captchaInfoMsg {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+</style>

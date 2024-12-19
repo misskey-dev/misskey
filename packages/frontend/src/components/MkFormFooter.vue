@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.text">{{ i18n.tsx.thereAreNChanges({ n: form.modifiedCount.value }) }}</div>
 	<div style="margin-left: auto;" class="_buttons">
 		<MkButton danger rounded @click="form.discard"><i class="ti ti-x"></i> {{ i18n.ts.discard }}</MkButton>
-		<MkButton primary rounded @click="form.save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+		<MkButton primary rounded :disabled="!canSaving" @click="form.save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 </div>
 </template>
@@ -26,6 +26,7 @@ const props = defineProps<{
 		discard: () => void;
 		save: () => void;
 	};
+	canSaving: boolean;
 }>();
 </script>
 

@@ -94,6 +94,14 @@ const scriptId = computed(() => `script-${props.provider}`);
 
 const captcha = computed<Captcha>(() => window[variable.value] || {} as unknown as Captcha);
 
+watch(() => [props.instanceUrl, props.sitekey], async () => {
+	// 変更があったときはリフレッシュと再レンダリングをしておかないと、変更後の値で再検証が出来ない
+	if (available.value) {
+		callback(undefined);
+		await requestRender();
+	}
+});
+
 if (loaded || props.provider === 'mcaptcha' || props.provider === 'testcaptcha') {
 	available.value = true;
 } else if (src.value !== null) {
@@ -106,20 +114,34 @@ if (loaded || props.provider === 'mcaptcha' || props.provider === 'testcaptcha')
 }
 
 function reset() {
-	if (captcha.value.reset) captcha.value.reset();
+	if (captcha.value.reset) {
+		try {
+			captcha.value.reset();
+		} catch (error: unknown) {
+			// ignore
+			if (_DEV_) console.warn(error);
+		}
+	}
 	testcaptchaPassed.value = false;
 	testcaptchaInput.value = '';
 }
 
 async function requestRender() {
 	if (captcha.value.render && captchaEl.value instanceof Element) {
-		captcha.value.render(captchaEl.value, {
-			sitekey: props.sitekey,
-			theme: defaultStore.state.darkMode ? 'dark' : 'light',
-			callback: callback,
-			'expired-callback': () => callback(undefined),
-			'error-callback': () => callback(undefined),
-		});
+		// 設定値の変更時などのタイミングで再レンダリングを行う際はリセットしておく必要がある
+		reset();
+
+		if (props.sitekey && props.sitekey.length > 0) {
+			captcha.value.render(captchaEl.value, {
+				sitekey: props.sitekey,
+				theme: defaultStore.state.darkMode ? 'dark' : 'light',
+				callback: callback,
+				'expired-callback': () => callback(undefined),
+				'error-callback': () => callback(undefined),
+			});
+		} else {
+			captchaEl.value.innerHTML = '';
+		}
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
 		const { default: Widget } = await import('@mcaptcha/vanilla-glue');
 		new Widget({
