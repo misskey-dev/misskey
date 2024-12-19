@@ -2654,3 +2654,6 @@ _contextMenu:
   app: "Aplicativo"
   appWithShift: "Aplicativo com a tecla shift"
   native: "Nativo"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Não encontrado"
