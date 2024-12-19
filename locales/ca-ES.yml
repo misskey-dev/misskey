@@ -2744,3 +2744,6 @@ _selfXssPrevention:
 _followRequest:
   recieved: "Sol·licituds rebudes"
   sent: "Sol·licituds enviades"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "No s'ha trobat"
