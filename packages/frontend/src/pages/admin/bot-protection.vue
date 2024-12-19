@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else-if="botProtectionForm.savedState.provider === 'turnstile'" #suffix>Turnstile</template>
 	<template v-else-if="botProtectionForm.savedState.provider === 'testcaptcha'" #suffix>testCaptcha</template>
 	<template v-else #suffix>{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</template>
-	<template v-if="botProtectionForm.modified.value" #footer>
+	<template #footer>
 		<MkFormFooter :canSaving="canSaving" :form="botProtectionForm"/>
 	</template>
 
@@ -145,7 +145,8 @@ const turnstileResponse = ref<string | null>(null);
 const testCaptchaResponse = ref<string | null>(null);
 
 const canSaving = computed((): boolean => {
-	return (botProtectionForm.state.provider === 'hcaptcha' && !!hCaptchaResponse.value) ||
+	return (botProtectionForm.state.provider === null) ||
+		(botProtectionForm.state.provider === 'hcaptcha' && !!hCaptchaResponse.value) ||
 		(botProtectionForm.state.provider === 'mcaptcha' && !!mCaptchaResponse.value) ||
 			(botProtectionForm.state.provider === 'recaptcha' && !!reCaptchaResponse.value) ||
 				(botProtectionForm.state.provider === 'turnstile' && !!turnstileResponse.value) ||
