@@ -9,7 +9,7 @@
 - Fix: ノートがログインしているユーザーしか見れない場合にログインダイアログを閉じるとその後の動線がなくなる問題を修正
 - Fix: 公開範囲がホームのノートの埋め込みウィジェットが読み込まれない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/803)
-- Fix: MiAuth認可画面で、承認の可否によらずコールバックURLに遷移してしまう問題を修正  
+- Fix: MiAuth認可画面で、認可処理に失敗した場合でもコールバックURLに遷移してしまう問題を修正  
   (Cherry-picked from https://github.com/TeamNijimiss/misskey/commit/800359623e41a662551d774de15b0437b6849bb4)
 
 ### Server
