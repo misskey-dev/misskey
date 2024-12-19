@@ -458,9 +458,9 @@ export class FileInfoService {
 	private getBlurhash(path: string, type: string): Promise<string> {
 		return new Promise(async (resolve, reject) => {
 			(await sharpBmp(path, type))
-				.raw()
-				.ensureAlpha()
 				.resize(64, 64, { fit: 'inside' })
+				.ensureAlpha()
+				.raw()
 				.toBuffer((err, buffer, info) => {
 					if (err) return reject(err);
 
