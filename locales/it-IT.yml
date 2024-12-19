@@ -2744,3 +2744,6 @@ _selfXssPrevention:
 _followRequest:
   recieved: "Ricezione richiesta di Follow"
   sent: "Richiesta di Follow, inviata"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Non trovato"
