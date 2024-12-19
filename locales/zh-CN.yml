@@ -2744,3 +2744,6 @@ _selfXssPrevention:
 _followRequest:
   recieved: "已收到申请"
   sent: "已发送申请"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "未找到"
