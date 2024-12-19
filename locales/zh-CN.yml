@@ -2753,5 +2753,12 @@ _remoteLookupErrors:
     description: "输入的 URI 有问题。请确认是否输入了 URI 中无法使用的字符。"
   _requestFailed:
     title: "请求失败"
+    description: "与该服务器的通信失败。对面服务器可能不可用。另外，请确认是否输入了无效或不存在的 URI。"
+  _responseInvalid:
+    title: "响应无效"
+    description: "成功与此服务器通信，但返回的数据无效。"
+  _responseInvalidIdHostNotMatch:
+    description: "输入 URI 的域名和最终取得的 URI 的域名不同。如果是通过第三方服务器获取远程内容，请使用可以从原始服务器获取内容的 URI 再试一次。"
   _noSuchObject:
     title: "未找到"
+    description: "未找到请求的资源。请再次检查 URI。"
