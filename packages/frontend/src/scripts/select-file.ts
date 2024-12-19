@@ -12,7 +12,7 @@ import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { uploadFile } from '@/scripts/upload.js';
 import type { MenuItem } from '@/types/menu.js';
-import { canPreview } from './watermark.js';
+import { canApplyWatermark } from './watermark.js';
 
 export function chooseFileFromPc(opts?: {
 	multiple?: boolean;
@@ -96,8 +96,8 @@ function select(src: HTMLElement | EventTarget | null, opts?: {
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
 
-		const watermarkCanPreview = canPreview(defaultStore.reactiveState.watermarkConfig.value);
-		const useWatermark = ref(opts?.dontUseWatermark || !watermarkCanPreview ? false : defaultStore.state.useWatermark);
+		const watermarkcanApplyWatermark = canApplyWatermark(defaultStore.reactiveState.watermarkConfig.value);
+		const useWatermark = ref(opts?.dontUseWatermark || !watermarkcanApplyWatermark ? false : defaultStore.state.useWatermark);
 
 		const menu: MenuItem[] = [];
 
@@ -118,7 +118,7 @@ function select(src: HTMLElement | EventTarget | null, opts?: {
 			menu.push({
 				type: 'switch',
 				text: i18n.ts.useWatermark,
-				disabled: !watermarkCanPreview,
+				disabled: !watermarkcanApplyWatermark,
 				ref: useWatermark,
 			});
 		}

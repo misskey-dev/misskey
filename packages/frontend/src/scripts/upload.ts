@@ -14,7 +14,7 @@ import { $i } from '@/account.js';
 import { alert } from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { canPreview, getWatermarkAppliedImage } from './watermark.js';
+import { canApplyWatermark, getWatermarkAppliedImage } from './watermark.js';
 
 type Uploading = {
 	id: string;
@@ -71,7 +71,7 @@ export function uploadFile(
 
 			let _file: Blob = file;
 
-			if (_file.type.startsWith('image/') && watermark && canPreview(defaultStore.state.watermarkConfig)) {
+			if (_file.type.startsWith('image/') && watermark && canApplyWatermark(defaultStore.state.watermarkConfig)) {
 				_file = await getWatermarkAppliedImage(_file, defaultStore.state.watermarkConfig);
 			}
 

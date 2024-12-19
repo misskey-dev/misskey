@@ -130,7 +130,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
 import type { PostFormProps } from '@/types/post-form.js';
-import { canPreview } from '@/scripts/watermark';
+import { canApplyWatermark } from '@/scripts/watermark';
 
 const $i = signinRequired();
 
@@ -602,7 +602,7 @@ async function onPaste(ev: ClipboardEvent) {
 				if (
 					shouldApplyWatermark == null &&
 					defaultStore.state.clipboardWatermarkBehavior === 'confirm' &&
-					canPreview(defaultStore.reactiveState.watermarkConfig.value)
+					canApplyWatermark(defaultStore.reactiveState.watermarkConfig.value)
 				) {
 					const { canceled } = await os.confirm({
 						type: 'info',

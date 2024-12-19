@@ -22,7 +22,7 @@ export type WatermarkAnchor = typeof watermarkAnchor[number];
 
 /**
  * Storeへの保存やエディタで使用するための、条件別のプロパティを排除したバージョンの型。
- * `canPreview`で`WatermarkConfig`に変換可能かどうかを判定できる。
+ * `canApplyWatermark`で`WatermarkConfig`に変換可能かどうかを判定できる。
  *
  * どちらかの型を変更したら、もう一方も変更すること。
  */
@@ -58,7 +58,7 @@ export type WatermarkUserConfig = {
 
 /**
  * Canvasへの描画などで使用できる、動作に必要な値を網羅した型。
- * `WatermarkUserConfig`を`canPreview`でアサートすることで型を変換できる。
+ * `WatermarkUserConfig`を`canApplyWatermark`でアサートすることで型を変換できる。
  *
  * どちらかの型を変更したら、もう一方も変更すること。
  */
@@ -101,7 +101,7 @@ const DEFAULT_ASPECT_RATIO = 4 / 3;
 /**
  * プレビューに必要な値が全部揃っているかどうかを判定する
  */
-export function canPreview(config: Partial<WatermarkConfig | WatermarkUserConfig> | null): config is WatermarkConfig {
+export function canApplyWatermark(config: Partial<WatermarkConfig | WatermarkUserConfig> | null): config is WatermarkConfig {
 	return (
 		config != null &&
 		(config.fileUrl != null || config.fileId != null) &&
