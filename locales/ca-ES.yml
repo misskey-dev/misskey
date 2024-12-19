@@ -2745,5 +2745,17 @@ _followRequest:
   recieved: "Sol·licituds rebudes"
   sent: "Sol·licituds enviades"
 _remoteLookupErrors:
+  _federationNotAllowed:
+    title: "No es pot establir connexió amb aquest servidor"
+    description: "És possible que s'hagi desactivat la comunicació amb aquest servidor o que hagi estat bloquejat.\nPosa't en contacte amb l'administrador del servidor."
+  _uriInvalid:
+    title: "L'adreça és incorrecte"
+    description: "Hi ha un problema amb l'adreça introduïda; comprova que no hagis escrit caràcters que no es puguin fer servir."
+  _requestFailed:
+    title: "La sol·licitud a fallat"
+    description: "La comunicació amb aquest servidor a fallat. És possible que l'altre servidor no funcioni. Comprova també que no has posat una adreça no vàlida o inexistent."
+  _responseInvalid:
+    title: "La resposta no és correcta "
+    description: "Hem pogut comunicar-nos amb aquest servidor, però les dades rebudes no són correctes."
   _noSuchObject:
     title: "No s'ha trobat"
