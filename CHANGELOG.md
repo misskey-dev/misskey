@@ -4,7 +4,7 @@
 -
 
 ### Client
-- Feat: 画像のアップロード時にウォーターマークをかけられるように  
+- Feat: 画像のアップロード時にウォーターマークを適用できるように  
   (Based on https://github.com/MisskeyIO/misskey/pull/785)
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
