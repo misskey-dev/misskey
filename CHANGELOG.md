@@ -13,6 +13,7 @@
 - Fix: 公開範囲がホームのノートの埋め込みウィジェットが読み込まれない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/803)
 - Fix: 絵文字管理画面で一部の絵文字が表示されない問題を修正
+- Fix: Botプロテクションの設定変更時は実際に検証を通過しないと保存できないように( #15137 )
 
 ### Server
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
