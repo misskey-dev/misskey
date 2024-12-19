@@ -2744,3 +2744,6 @@ _selfXssPrevention:
 _followRequest:
   recieved: "收到的請求"
   sent: "送出的請求"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "查無項目"
