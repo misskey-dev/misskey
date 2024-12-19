@@ -2744,3 +2744,6 @@ _selfXssPrevention:
 _followRequest:
   recieved: "받은 신청"
   sent: "보낸 신청"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "찾을 수 없습니다"
