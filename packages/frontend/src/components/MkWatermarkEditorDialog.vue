@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-ripple"></i> {{ i18n.ts.watermark }}</template>
+	<template #header><i class="ti ti-ripple"></i> {{ i18n.ts._watermarkEditor.title }}</template>
 
 	<div :class="$style.watermarkEditorRoot">
 		<div :class="$style.watermarkEditorInputRoot">
@@ -26,10 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div :class="$style.watermarkEditorSettings" class="_gaps">
-				<MkSwitch v-model="useWatermark">
-					<template #label>{{ i18n.ts.useWatermark }}</template>
-					<template #caption>{{ i18n.ts.useWatermarkDescription }}</template>
-				</MkSwitch>
+				<MkInfo warn>{{ i18n.ts._watermarkEditor.useSmallFile }}</MkInfo>
 
 				<div>
 					<div :class="$style.formLabel">{{ i18n.ts.watermark }}</div>
@@ -107,6 +104,7 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRange from '@/components/MkRange.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import XAnchorSelector from '@/components/MkWatermarkEditorDialog.anchor.vue';
 import XPaddingView from '@/components/MkWatermarkEditorDialog.padding.vue';
 
@@ -135,7 +133,6 @@ function cancel() {
 //#endregion
 
 //#region 設定
-const useWatermark = computed(defaultStore.makeGetterSetter('useWatermark'));
 const watermarkConfig = ref<WatermarkUserConfig>(defaultStore.state.watermarkConfig ?? {
 	opacity: 0.2,
 	repeat: true,
@@ -279,11 +276,11 @@ function chooseFile(ev: MouseEvent) {
 const canvasLoading = ref(true);
 const canvasEl = useTemplateRef('canvasEl');
 onMounted(() => {
-	watch([useWatermark, watermarkConfig], ([useWatermarkTo, watermarkConfigTo]) => {
+	watch(watermarkConfig, (watermarkConfigTo) => {
 		canvasLoading.value = true;
 		if (canvasEl.value) {
 			// @/scripts/watermark.ts の DEFAULT_ASPECT_RATIO と同じ縦横比の画像を使用すること
-			applyWatermark('/client-assets/hill.webp', canvasEl.value, useWatermarkTo && canPreview(watermarkConfigTo) ? watermarkConfigTo : null).then(() => {
+			applyWatermark('/client-assets/hill.webp', canvasEl.value, canPreview(watermarkConfigTo) ? watermarkConfigTo : null).then(() => {
 				canvasLoading.value = false;
 			});
 		}

@@ -1907,13 +1907,21 @@ export interface Locale extends ILocale {
      */
     "watermark": string;
     /**
+     * ウォーターマークをつけますか？
+     */
+    "watermarkConfirm": string;
+    /**
      * ウォーターマークをつける
      */
     "useWatermark": string;
     /**
-     * 画像にウォーターマークを追加します
+     * 画像のアップロード時にデフォルトでウォーターマークをつけるようにします。
      */
     "useWatermarkDescription": string;
+    /**
+     * デフォルトの値にかかわらず、アップロードメニューの「ウォーターマークをつける」スイッチを操作して、一回限りの設定を適用することができます。
+     */
+    "useWatermarkInfo": string;
     /**
      * すべての通知を既読にする
      */
@@ -5282,6 +5290,14 @@ export interface Locale extends ILocale {
      * 注意事項を理解した上でオンにします。
      */
     "acknowledgeNotesAndEnable": string;
+    /**
+     * 常に確認する
+     */
+    "alwaysConfirm": string;
+    /**
+     * デフォルトの設定を適用する
+     */
+    "useDefaultSettings": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -10663,6 +10679,10 @@ export interface Locale extends ILocale {
     };
     "_watermarkEditor": {
         /**
+         * ウォーターマークをカスタマイズ
+         */
+        "title": string;
+        /**
          * このファイルは対応していません
          */
         "driveFileTypeWarn": string;
@@ -10678,6 +10698,10 @@ export interface Locale extends ILocale {
          * プレビューが正常に表示されることを確認してから保存してください
          */
         "settingInvalidWarnDescription": string;
+        /**
+         * ウォーターマーク用画像のファイルサイズが大きいと、処理の際にウォーターマークを読み込む時間が長くなり、アップロードに時間がかかるようになります。あらかじめ解像度を低くしたり、ファイルを圧縮したりしておくことを推奨します。
+         */
+        "useSmallFile": string;
         /**
          * 描画モード
          */
@@ -10698,6 +10722,10 @@ export interface Locale extends ILocale {
          * 通常はオンで問題ありません。ウォーターマークを回転させた際に余白が不自然になった場合はオフにしてみてください。
          */
         "preserveBoundingRectDescription": string;
+        /**
+         * クリップボード経由でのアップロード時の動作
+         */
+        "clipboardUploadBehavior": string;
     };
 }
 declare const locales: {

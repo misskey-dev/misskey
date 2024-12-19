@@ -41,11 +41,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #icon><i class="ti ti-file-shredder"></i></template>
 				{{ i18n.ts.drivecleaner }}
 			</FormLink>
-			<FormLink @click="openWatermarkEditor">
+			<MkFolder>
 				<template #icon><i class="ti ti-ripple"></i></template>
-				{{ i18n.ts.watermark }}
-				<template #suffix>{{ defaultStore.reactiveState.useWatermark.value ? i18n.ts.enabled : i18n.ts.disabled }}</template>
-			</FormLink>
+				<template #label>{{ i18n.ts.watermark }}</template>
+
+				<div>
+					<div class="_gaps">
+						<MkInfo>{{ i18n.ts.useWatermarkInfo }}</MkInfo>
+
+						<MkSwitch v-model="useWatermark">
+							<template #label>{{ i18n.ts.useWatermark }}</template>
+							<template #caption>{{ i18n.ts.useWatermarkDescription }}</template>
+						</MkSwitch>
+
+						<MkSelect v-model="clipboardWatermarkBehavior">
+							<template #label>{{ i18n.ts._watermarkEditor.clipboardUploadBehavior }}</template>
+							<option value="confirm">{{ i18n.ts.alwaysConfirm }}</option>
+							<option value="default">{{ i18n.ts.useDefaultSettings }}</option>
+						</MkSelect>
+					</div>
+
+					<hr/>
+
+					<FormLink @click="openWatermarkEditor">
+						<template #icon><i class="ti ti-pencil"></i></template>
+						{{ i18n.ts._watermarkEditor.title }}
+					</FormLink>
+				</div>
+			</MkFolder>
 			<MkSwitch v-model="keepOriginalUploading">
 				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
 				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
@@ -67,10 +90,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -83,6 +109,7 @@ import MkChart from '@/components/MkChart.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { signinRequired } from '@/account.js';
+import { reloadAsk } from '@/scripts/reload-ask';
 
 const $i = signinRequired();
 
@@ -105,8 +132,18 @@ const meterStyle = computed(() => {
 	};
 });
 
+const useWatermark = computed(defaultStore.makeGetterSetter('useWatermark'));
+const clipboardWatermarkBehavior = computed(defaultStore.makeGetterSetter('clipboardWatermarkBehavior'));
+
 const keepOriginalUploading = computed(defaultStore.makeGetterSetter('keepOriginalUploading'));
 const keepOriginalFilename = computed(defaultStore.makeGetterSetter('keepOriginalFilename'));
+
+watch([
+	useWatermark,
+	clipboardWatermarkBehavior,
+], () => {
+	reloadAsk({ unison: true, reason: i18n.ts.reloadRequiredToApplySettings });
+});
 
 misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;

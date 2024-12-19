@@ -33,7 +33,7 @@ const mimeTypeMap = {
 
 export function uploadFile(
 	file: File,
-	folder?: string | Misskey.entities.DriveFolder,
+	folder?: string | null | Misskey.entities.DriveFolder,
 	name?: string,
 	keepOriginal: boolean = defaultStore.state.keepOriginalUploading,
 	watermark: boolean = defaultStore.state.useWatermark,
@@ -70,7 +70,7 @@ export function uploadFile(
 			uploads.value.push(ctx);
 
 			let _file: Blob = file;
-			
+
 			if (_file.type.startsWith('image/') && watermark && canPreview(defaultStore.state.watermarkConfig)) {
 				_file = await getWatermarkAppliedImage(_file, defaultStore.state.watermarkConfig);
 			}

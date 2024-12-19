@@ -479,6 +479,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	clipboardWatermarkBehavior: {
+		where: 'device',
+		default: 'default' as 'default' | 'confirm',
+	},
 	watermarkConfig: {
 		where: 'account',
 		default: null as WatermarkUserConfig | null,

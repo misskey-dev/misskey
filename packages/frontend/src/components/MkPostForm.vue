@@ -442,10 +442,10 @@ function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities
 	files.value[files.value.findIndex(x => x.id === file.id)] = newFile;
 }
 
-function upload(file: File, name?: string): void {
+function upload(file: File, name?: string, watermark?: boolean): void {
 	if (props.mock) return;
 
-	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
+	uploadFile(file, defaultStore.state.uploadFolder, name, undefined, watermark).then(res => {
 		files.value.push(res);
 	});
 }
@@ -587,6 +587,8 @@ async function onPaste(ev: ClipboardEvent) {
 	if (props.mock) return;
 	if (!ev.clipboardData) return;
 
+	let shouldApplyWatermark: boolean | undefined = undefined;
+
 	for (const { item, i } of Array.from(ev.clipboardData.items, (data, x) => ({ item: data, i: x }))) {
 		if (item.kind === 'file') {
 			const file = item.getAsFile();
@@ -594,7 +596,20 @@ async function onPaste(ev: ClipboardEvent) {
 			const lio = file.name.lastIndexOf('.');
 			const ext = lio >= 0 ? file.name.slice(lio) : '';
 			const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
-			upload(file, formatted);
+
+			if (file.type.startsWith('image/')) {
+				if (shouldApplyWatermark == null && defaultStore.state.clipboardWatermarkBehavior === 'confirm') {
+					const { canceled } = await os.confirm({
+						type: 'info',
+						text: i18n.ts.watermarkConfirm,
+						okText: i18n.ts.yes,
+						cancelText: i18n.ts.no,
+					});
+					shouldApplyWatermark = !canceled;
+				}
+			}
+
+			upload(file, formatted, shouldApplyWatermark);
 		}
 	}
 
