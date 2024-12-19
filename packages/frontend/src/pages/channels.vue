@@ -6,9 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700">
+	<MkSpacer :contentMax="1200">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'search'" key="search">
+			<div v-if="tab === 'search'" key="search" :class="$style.searchRoot">
 				<div class="_gaps">
 					<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
 						<template #prefix><i class="ti ti-search"></i></template>
@@ -27,23 +27,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div v-if="tab === 'featured'" key="featured">
 				<MkPagination v-slot="{items}" :pagination="featuredPagination">
-					<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+					<div :class="$style.root">
+						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+					</div>
 				</MkPagination>
 			</div>
 			<div v-else-if="tab === 'favorites'" key="favorites">
 				<MkPagination v-slot="{items}" :pagination="favoritesPagination">
-					<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+					<div :class="$style.root">
+						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+					</div>
 				</MkPagination>
 			</div>
 			<div v-else-if="tab === 'following'" key="following">
 				<MkPagination v-slot="{items}" :pagination="followingPagination">
-					<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+					<div :class="$style.root">
+						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+					</div>
 				</MkPagination>
 			</div>
 			<div v-else-if="tab === 'owned'" key="owned">
 				<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 				<MkPagination v-slot="{items}" :pagination="ownedPagination">
-					<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+					<div :class="$style.root">
+						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
+					</div>
 				</MkPagination>
 			</div>
 		</MkHorizontalSwipe>
@@ -85,6 +93,7 @@ onMounted(() => {
 
 const featuredPagination = {
 	endpoint: 'channels/featured' as const,
+	limit: 10,
 	noPaging: true,
 };
 const favoritesPagination = {
@@ -157,3 +166,17 @@ definePageMetadata(() => ({
 	icon: 'ti ti-device-tv',
 }));
 </script>
+
+<style lang="scss" module>
+.searchRoot {
+	width: 100%;
+	max-width: 700px;
+	margin: 0 auto;
+}
+
+.root {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+	gap: var(--MI-margin);
+}
+</style>
