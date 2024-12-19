@@ -537,3 +537,6 @@ _moderationLogTypes:
   resetPassword: "Wachtwoord terugzetten"
 _reversi:
   total: "Totaal"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Niet gevonden"
