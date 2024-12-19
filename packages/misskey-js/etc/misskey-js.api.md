@@ -1686,6 +1686,7 @@ declare namespace entities {
         PagesCreateRequest,
         PagesCreateResponse,
         PagesDeleteRequest,
+        PagesFeaturedRequest,
         PagesFeaturedResponse,
         PagesLikeRequest,
         PagesShowRequest,
@@ -2848,6 +2849,9 @@ type PagesCreateResponse = operations['pages___create']['responses']['200']['con
 
 // @public (undocumented)
 type PagesDeleteRequest = operations['pages___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type PagesFeaturedRequest = operations['pages___featured']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type PagesFeaturedResponse = operations['pages___featured']['responses']['200']['content']['application/json'];
