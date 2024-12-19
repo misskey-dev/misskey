@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkKeyValue>
 			</div>
 			<MkA v-if="file.user" class="user" :to="`/admin/user/${file.user.id}`">
-				<MkUserCardMini :user="file.user"/>
+				<MkUserCardMini :user="file.user" withChart/>
 			</MkA>
 			<div>
 				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
