@@ -20,12 +20,12 @@ import { watermarkAnchor } from '@/scripts/watermark.js';
 import type { WatermarkAnchor } from '@/scripts/watermark.js';
 
 const langMap = {
-	'top': i18n.ts.top,
+	'top': i18n.ts.centerTop,
 	'top-left': i18n.ts.leftTop,
 	'top-right': i18n.ts.rightTop,
-	'left': i18n.ts.left,
-	'right': i18n.ts.right,
-	'bottom': i18n.ts.bottom,
+	'left': i18n.ts.leftCenter,
+	'right': i18n.ts.rightCenter,
+	'bottom': i18n.ts.centerBottom,
 	'bottom-left': i18n.ts.leftBottom,
 	'bottom-right': i18n.ts.rightBottom,
 	'center': i18n.ts.center,

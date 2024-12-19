@@ -4543,14 +4543,6 @@ export interface Locale extends ILocale {
      */
     "position": string;
     /**
-     * 繰り返し
-     */
-    "repeat": string;
-    /**
-     * 引き伸ばし
-     */
-    "enlargement": string;
-    /**
      * 回転
      */
     "rotate": string;
