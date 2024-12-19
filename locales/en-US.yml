@@ -2744,3 +2744,6 @@ _selfXssPrevention:
 _followRequest:
   recieved: "Received application"
   sent: "Sent application"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Not found"
