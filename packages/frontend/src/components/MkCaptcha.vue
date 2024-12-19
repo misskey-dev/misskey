@@ -130,6 +130,7 @@ async function requestRender() {
 	if (captcha.value.render && captchaEl.value instanceof Element) {
 		// 設定値の変更時などのタイミングで再レンダリングを行う際はリセットしておく必要がある
 		reset();
+		captchaEl.value.innerHTML = '';
 
 		if (props.sitekey && props.sitekey.length > 0) {
 			captcha.value.render(captchaEl.value, {
@@ -139,10 +140,13 @@ async function requestRender() {
 				'expired-callback': () => callback(undefined),
 				'error-callback': () => callback(undefined),
 			});
-		} else {
-			captchaEl.value.innerHTML = '';
 		}
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
+		const container = document.getElementById('mcaptcha__widget-container');
+		if (container) {
+			container.innerHTML = '';
+		}
+
 		const { default: Widget } = await import('@mcaptcha/vanilla-glue');
 		new Widget({
 			siteKey: {
