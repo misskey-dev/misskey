@@ -10785,7 +10785,7 @@ export interface Locale extends ILocale {
          * クリップボード経由でのアップロード時の動作
          */
         "clipboardUploadBehavior": string;
-    
+    };
 }
 declare const locales: {
     [lang: string]: Locale;
