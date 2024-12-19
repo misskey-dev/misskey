@@ -96,8 +96,8 @@ function select(src: HTMLElement | EventTarget | null, opts?: {
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
 
-		const watermarkcanApplyWatermark = canApplyWatermark(defaultStore.reactiveState.watermarkConfig.value);
-		const useWatermark = ref(opts?.dontUseWatermark || !watermarkcanApplyWatermark ? false : defaultStore.state.useWatermark);
+		const watermarkCanApply = canApplyWatermark(defaultStore.reactiveState.watermarkConfig.value);
+		const useWatermark = ref(opts?.dontUseWatermark || !watermarkCanApply ? false : defaultStore.state.useWatermark);
 
 		const menu: MenuItem[] = [];
 
@@ -118,7 +118,7 @@ function select(src: HTMLElement | EventTarget | null, opts?: {
 			menu.push({
 				type: 'switch',
 				text: i18n.ts.useWatermark,
-				disabled: !watermarkcanApplyWatermark,
+				disabled: !watermarkCanApply,
 				ref: useWatermark,
 			});
 		}
