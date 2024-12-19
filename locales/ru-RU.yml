@@ -18,7 +18,7 @@ gotIt: "Ясно!"
 cancel: "Отмена"
 noThankYou: "Нет, спасибо"
 enterUsername: "Введите имя пользователя"
-renotedBy: "{user} репостнул(а)"
+renotedBy: "{user} делает репост"
 noNotes: "Нет ни одной заметки"
 noNotifications: "Нет уведомлений"
 instance: "Экземпляр"
@@ -2143,3 +2143,6 @@ _hemisphere:
   caption: "Используется для некоторых настроек клиента для определения сезона."
 _reversi:
   total: "Всего"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Не найдено"

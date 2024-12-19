@@ -727,3 +727,6 @@ _abuseReport:
       mail: "E-post"
 _moderationLogTypes:
   suspend: "Suspender"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Ikke funnet"

@@ -2709,3 +2709,6 @@ _embedCodeGen:
   generateCode: "埋め込みコード作る"
   codeGenerated: "コード作ったで"
   codeGeneratedDescription: "作ったコードはウェブサイトに貼っつけて使ってや。"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "見つからへんね"
