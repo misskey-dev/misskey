@@ -142,6 +142,7 @@ async function requestRender() {
 			});
 		}
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
+		// 設定値の変更時などのタイミングで再レンダリングを行う際はコンテナ内をクリアしておかないと更新されるたびに増えていく
 		const container = document.getElementById('mcaptcha__widget-container');
 		if (container) {
 			container.innerHTML = '';
