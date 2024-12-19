@@ -130,6 +130,7 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
 import type { PostFormProps } from '@/types/post-form.js';
+import { canPreview } from '@/scripts/watermark';
 
 const $i = signinRequired();
 
@@ -598,7 +599,11 @@ async function onPaste(ev: ClipboardEvent) {
 			const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
 
 			if (file.type.startsWith('image/')) {
-				if (shouldApplyWatermark == null && defaultStore.state.clipboardWatermarkBehavior === 'confirm') {
+				if (
+					shouldApplyWatermark == null &&
+					defaultStore.state.clipboardWatermarkBehavior === 'confirm' &&
+					canPreview(defaultStore.reactiveState.watermarkConfig.value)
+				) {
 					const { canceled } = await os.confirm({
 						type: 'info',
 						text: i18n.ts.watermarkConfirm,

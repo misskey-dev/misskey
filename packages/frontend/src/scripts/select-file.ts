@@ -12,6 +12,7 @@ import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { uploadFile } from '@/scripts/upload.js';
 import type { MenuItem } from '@/types/menu.js';
+import { canPreview } from './watermark.js';
 
 export function chooseFileFromPc(opts?: {
 	multiple?: boolean;
@@ -94,7 +95,9 @@ function select(src: HTMLElement | EventTarget | null, opts?: {
 }): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
-		const useWatermark = ref(opts?.dontUseWatermark ? false : defaultStore.state.useWatermark);
+
+		const watermarkCanPreview = canPreview(defaultStore.reactiveState.watermarkConfig.value);
+		const useWatermark = ref(opts?.dontUseWatermark || !watermarkCanPreview ? false : defaultStore.state.useWatermark);
 
 		const menu: MenuItem[] = [];
 
@@ -115,6 +118,7 @@ function select(src: HTMLElement | EventTarget | null, opts?: {
 			menu.push({
 				type: 'switch',
 				text: i18n.ts.useWatermark,
+				disabled: !watermarkCanPreview,
 				ref: useWatermark,
 			});
 		}
