@@ -82,6 +82,11 @@ export function createAiScriptEnv(opts) {
 			utils.assertString(key);
 			return utils.jsToVal(JSON.parse(miLocalStorage.getItem(`aiscript:${opts.storageKey}:${key.value}`)));
 		}),
+		'Mk:remove': values.FN_NATIVE(([key]) => {
+			utils.assertString(key);
+			miLocalStorage.removeItem(`aiscript:${opts.storageKey}:${key.value}`);
+			return values.NULL;
+		}),
 		'Mk:url': values.FN_NATIVE(() => {
 			return values.STR(window.location.href);
 		}),
