@@ -215,15 +215,15 @@ export type paths = {
      */
     post: operations['admin___avatar-decorations___update'];
   };
-  '/admin/captcha/test': {
+  '/admin/captcha/save': {
     /**
-     * admin/captcha/test
+     * admin/captcha/save
      * @description No description provided.
      *
      * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
      * **Credential required**: *Yes* / **Permission**: *read:admin:captcha*
      */
-    post: operations['admin___captcha___test'];
+    post: operations['admin___captcha___save'];
   };
   '/admin/delete-all-files-of-a-user': {
     /**
@@ -6575,13 +6575,13 @@ export type operations = {
     };
   };
   /**
-   * admin/captcha/test
+   * admin/captcha/save
    * @description No description provided.
    *
    * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
    * **Credential required**: *Yes* / **Permission**: *read:admin:captcha*
    */
-  admin___captcha___test: {
+  admin___captcha___save: {
     requestBody: {
       content: {
         'application/json': {
@@ -6595,17 +6595,9 @@ export type operations = {
       };
     };
     responses: {
-      /** @description OK (with results) */
-      200: {
-        content: {
-          'application/json': {
-            success: boolean;
-            error: {
-              code: string;
-              message: string;
-            } | null;
-          };
-        };
+      /** @description OK (without any results) */
+      204: {
+        content: never;
       };
       /** @description Client error */
       400: {

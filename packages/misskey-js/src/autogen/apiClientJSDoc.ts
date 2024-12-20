@@ -256,7 +256,7 @@ declare module '../api.js' {
      * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
      * **Credential required**: *Yes* / **Permission**: *read:admin:captcha*
      */
-    request<E extends 'admin/captcha/test', P extends Endpoints[E]['req']>(
+    request<E extends 'admin/captcha/save', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
