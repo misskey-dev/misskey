@@ -17,7 +17,7 @@ export function useForm<T extends Record<string, any>>(initialState: T, save: (n
 	const currentState = reactive<T>(copy(initialState));
 	const previousState = reactive<T>(copy(initialState));
 
-	const modifiedStates = reactive<Record<keyof T, boolean>>({} as any);
+	const modifiedStates = reactive<Record<keyof T, boolean> | {}>({});
 	for (const key in currentState) {
 		modifiedStates[key] = false;
 	}

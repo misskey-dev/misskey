@@ -11,6 +11,7 @@ import * as nsfw from 'nsfwjs';
 import si from 'systeminformation';
 import { Mutex } from 'async-mutex';
 import { bindThis } from '@/decorators.js';
+import { Tensor3D } from '@tensorflow/tfjs-core';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -51,7 +52,7 @@ export class AiService {
 			}
 
 			const buffer = await fs.promises.readFile(path);
-			const image = await tf.node.decodeImage(buffer, 3) as any;
+			const image = await tf.node.decodeImage(buffer, 3) as Tensor3D;
 			try {
 				const predictions = await this.model.classify(image);
 				return predictions;
