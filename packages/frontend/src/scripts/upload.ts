@@ -14,7 +14,7 @@ import { $i } from '@/account.js';
 import { alert } from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { canApplyWatermark, getWatermarkAppliedImage } from './watermark.js';
+import { canApplyWatermark, getWatermarkAppliedImage } from '@/scripts/watermark.js';
 
 type Uploading = {
 	id: string;

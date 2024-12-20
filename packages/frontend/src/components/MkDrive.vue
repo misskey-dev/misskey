@@ -106,7 +106,6 @@ import XFile from '@/components/MkDrive.file.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
-import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { uploadFile, uploads } from '@/scripts/upload.js';

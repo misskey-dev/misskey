@@ -11,8 +11,8 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { uploadFile } from '@/scripts/upload.js';
+import { canApplyWatermark } from '@/scripts/watermark.js';
 import type { MenuItem } from '@/types/menu.js';
-import { canApplyWatermark } from './watermark.js';
 
 export function chooseFileFromPc(opts?: {
 	multiple?: boolean;
