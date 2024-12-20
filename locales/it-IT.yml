@@ -2745,5 +2745,20 @@ _followRequest:
   recieved: "Ricezione richiesta di Follow"
   sent: "Richiesta di Follow, inviata"
 _remoteLookupErrors:
+  _federationNotAllowed:
+    title: "Server irraggiungibile"
+    description: "La comunicazione con questo server potrebbe essere disattivata. Hai bloccato il server? Oppure potrebbero averlo bloccato gli amministratori. Contattali per ulteriori informazioni."
+  _uriInvalid:
+    title: "URL non valido"
+    description: "Controlla che l'indirizzo sia valido e sia privo di caratteri non validi."
+  _requestFailed:
+    title: "Richiesta fallita"
+    description: "La comunicazione col server non è riuscita. Potrebbe essere inattivo. Assicurati anche che la URL sia valida."
+  _responseInvalid:
+    title: "Risposta non valida"
+    description: "La comunicazione col server è andata a buon fine, ma abbiamo ricevuto dati non validi."
+  _responseInvalidIdHostNotMatch:
+    description: "L'indirizzo immesso non coincide con la URL finale. Interrogando i server per un contenuto remoto, assicurarsi di utilizzare la URL finale e non quella di un server intermedio."
   _noSuchObject:
     title: "Non trovato"
+    description: "La risorsa richiesta non è stata trovata. Verificare nuovamente la URL."
