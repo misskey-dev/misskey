@@ -1671,6 +1671,10 @@ export interface Locale extends ILocale {
      */
     "avoidMultiCaptchaConfirm": string;
     /**
+     * サイトキーに"{testSiteKey}"と入力することでプレビューを確認できます。
+     */
+    "testSiteKeyMessage": ParameterizedString<"testSiteKey">;
+    /**
      * アンテナ
      */
     "antennas": string;

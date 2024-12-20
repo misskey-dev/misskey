@@ -15,7 +15,8 @@ export const meta = {
 	requireModerator: true,
 	secure: true,
 
-	kind: 'read:admin:captcha',
+	// 実態はmetaの更新であるため
+	kind: 'write:admin:meta',
 
 	errors: {
 		invalidProvider: {

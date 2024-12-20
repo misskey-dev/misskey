@@ -42,12 +42,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSlot>
 			<MkInfo>
 				<div :class="$style.captchaInfoMsg">
+					<div>{{ i18n.tsx.testSiteKeyMessage({ testSiteKey: '10000000-ffff-ffff-ffff-000000000001' }) }}</div>
 					<div>
-						サイトキーに"10000000-ffff-ffff-ffff-000000000001"と入力することで動作をテスト出来ます。<br/>本番運用時には必ず正規のサイトキーを設定してください。
-					</div>
-					<div>
-						ref: <a href="https://docs.hcaptcha.com/#integration-testing-test-keys" target="_blank">hCaptcha
-							Developer Guide</a>
+						<span>ref: </span><a href="https://docs.hcaptcha.com/#integration-testing-test-keys" target="_blank">hCaptcha Developer Guide</a>
 					</div>
 				</div>
 			</MkInfo>
@@ -93,11 +90,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSlot>
 			<MkInfo>
 				<div :class="$style.captchaInfoMsg">
+					<div>{{ i18n.tsx.testSiteKeyMessage({ testSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' }) }}</div>
 					<div>
-						サイトキーに"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"と入力することで動作をテスト出来ます。<br/>本番運用時には必ず正規のサイトキーを設定してください。
-					</div>
-					<div>
-						ref: <a
+						<span>ref: </span>
+						<a
 							href="https://developers.google.com/recaptcha/docs/faq?hl=ja#id-like-to-run-automated-tests-with-recaptcha.-what-should-i-do"
 							target="_blank"
 						>reCAPTCHA FAQ</a>
@@ -124,12 +120,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSlot>
 			<MkInfo>
 				<div :class="$style.captchaInfoMsg">
-					<div>
-						サイトキーに"1x00000000000000000000AA"と入力することで動作をテスト出来ます。<br/>本番運用時には必ず正規のサイトキーを設定してください。
+					<div :class="$style.noSpace">
+						{{ i18n.tsx.testSiteKeyMessage({ testSiteKey: '1x00000000000000000000AA' }) }}
 					</div>
-					<div>
-						ref: <a href="https://developers.cloudflare.com/turnstile/troubleshooting/testing/" target="_blank">Cloudflare
-							Docs</a>
+					<div :class="$style.noSpace">
+						<span>ref: </span><a href="https://developers.cloudflare.com/turnstile/troubleshooting/testing/" target="_blank">Cloudflare Docs</a>
 					</div>
 				</div>
 			</MkInfo>
@@ -245,5 +240,9 @@ watch(botProtectionForm.state, () => {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+}
+
+.noSpace {
+	white-space-collapse: discard;
 }
 </style>
