@@ -929,7 +929,7 @@ useDrawerReactionPickerForMobile: "Mostrar el selector de reaccions com un calai
 welcomeBackWithName: "Benvingut de nou, {name}"
 clickToFinishEmailVerification: "Si us plau, fes clic a [{ok}] per completar la verificació per correu electrònic "
 overridedDeviceKind: "Tipus de dispositiu"
-smartphone: "Telèfon intel·ligent"
+smartphone: "Mòbil "
 tablet: "Tauleta"
 auto: "Automàtic "
 themeColor: "Color del tema"
