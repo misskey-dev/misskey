@@ -6586,11 +6586,11 @@ export type operations = {
       content: {
         'application/json': {
           /** @enum {string} */
-          provider: 'hcaptcha' | 'mcaptcha' | 'recaptcha' | 'turnstile' | 'testcaptcha';
-          sitekey?: string;
-          secret?: string;
-          instanceUrl?: string;
-          captchaResult?: string;
+          provider: 'none' | 'hcaptcha' | 'mcaptcha' | 'recaptcha' | 'turnstile' | 'testcaptcha';
+          captchaResult?: string | null;
+          sitekey?: string | null;
+          secret?: string | null;
+          instanceUrl?: string | null;
         };
       };
     };

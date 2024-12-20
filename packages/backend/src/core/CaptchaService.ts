@@ -6,8 +6,10 @@
 import { Injectable } from '@nestjs/common';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
+import { MetaService } from '@/core/MetaService.js';
+import { MiMeta } from '@/models/Meta.js';
 
-export const supportedCaptchaProviders = ['hcaptcha', 'mcaptcha', 'recaptcha', 'turnstile', 'testcaptcha'] as const;
+export const supportedCaptchaProviders = ['none', 'hcaptcha', 'mcaptcha', 'recaptcha', 'turnstile', 'testcaptcha'] as const;
 export type CaptchaProvider = typeof supportedCaptchaProviders[number];
 
 export const captchaErrorCodes = {
@@ -30,14 +32,14 @@ export class CaptchaError extends Error {
 	}
 }
 
-export type ValidateSuccess = {
+export type CaptchaSaveSuccess = {
 	success: true;
 }
-export type ValidateFailure = {
+export type CaptchaSaveFailure = {
 	success: false;
 	error: CaptchaError;
 }
-export type ValidateResult = ValidateSuccess | ValidateFailure;
+export type CaptchaSaveResult = CaptchaSaveSuccess | CaptchaSaveFailure;
 
 type CaptchaResponse = {
 	success: boolean;
@@ -48,6 +50,7 @@ type CaptchaResponse = {
 export class CaptchaService {
 	constructor(
 		private httpRequestService: HttpRequestService,
+		private metaService: MetaService,
 	) {
 	}
 
@@ -166,16 +169,15 @@ export class CaptchaService {
 	}
 
 	/**
-	 * フロントエンド側で受け取ったcaptchaからの戻り値を検証します.
+	 * captchaの設定を更新します. その際、フロントエンド側で受け取ったcaptchaからの戻り値を検証し、passした場合のみ設定を更新します.
 	 * 実際の検証処理はサービス内で定義されている各captchaプロバイダの検証関数に委譲します.
 	 *
+	 * @param provider 検証するcaptchaのプロバイダ
 	 * @param params
-	 * @param params.provider 検証するcaptchaのプロバイダ
-	 * @param params.sitekey mcaptchaの場合に指定するsitekey. それ以外のプロバイダでは無視されます
+	 * @param params.sitekey hcaptcha, recaptcha, turnstile, mcaptchaの場合に指定するsitekey. それ以外のプロバイダでは無視されます
 	 * @param params.secret hcaptcha, recaptcha, turnstile, mcaptchaの場合に指定するsecret. それ以外のプロバイダでは無視されます
 	 * @param params.instanceUrl mcaptchaの場合に指定するインスタンスのURL. それ以外のプロバイダでは無視されます
 	 * @param params.captchaResult フロントエンド側で受け取ったcaptchaプロバイダからの戻り値. この値を使ってサーバサイドでの検証を行います
-	 *
 	 * @see verifyHcaptcha
 	 * @see verifyMcaptcha
 	 * @see verifyRecaptcha
@@ -183,56 +185,70 @@ export class CaptchaService {
 	 * @see verifyTestcaptcha
 	 */
 	@bindThis
-	public async verify(params: {
-		provider: CaptchaProvider;
-		sitekey?: string;
-		secret?: string;
-		instanceUrl?: string;
-		captchaResult?: string | null;
-	}): Promise<ValidateResult> {
-		if (!supportedCaptchaProviders.includes(params.provider)) {
+	public async save(
+		provider: CaptchaProvider,
+		params?: {
+			sitekey?: string | null;
+			secret?: string | null;
+			instanceUrl?: string | null;
+			captchaResult?: string | null;
+		},
+	): Promise<CaptchaSaveResult> {
+		if (!supportedCaptchaProviders.includes(provider)) {
 			return {
 				success: false,
-				error: new CaptchaError(captchaErrorCodes.invalidProvider, `Invalid captcha provider: ${params.provider}`),
+				error: new CaptchaError(captchaErrorCodes.invalidProvider, `Invalid captcha provider: ${provider}`),
 			};
 		}
 
 		const operation = {
+			none: async () => {
+				await this.updateMeta(provider, params);
+			},
 			hcaptcha: async () => {
-				if (!params.secret) {
-					throw new CaptchaError(captchaErrorCodes.invalidParameters, 'hcaptcha-failed: secret and response are required');
+				if (!params?.secret || !params.captchaResult) {
+					throw new CaptchaError(captchaErrorCodes.invalidParameters, 'hcaptcha-failed: secret and captureResult are required');
 				}
 
-				return this.verifyHcaptcha(params.secret, params.captchaResult);
+				await this.verifyHcaptcha(params.secret, params.captchaResult);
+				await this.updateMeta(provider, params);
 			},
 			mcaptcha: async () => {
-				if (!params.secret || !params.sitekey || !params.instanceUrl) {
-					throw new CaptchaError(captchaErrorCodes.invalidParameters, 'mcaptcha-failed: secret, sitekey, instanceUrl and response are required');
+				if (!params?.secret || !params.sitekey || !params.instanceUrl || !params.captchaResult) {
+					throw new CaptchaError(captchaErrorCodes.invalidParameters, 'mcaptcha-failed: secret, sitekey, instanceUrl and captureResult are required');
 				}
 
-				return this.verifyMcaptcha(params.secret, params.sitekey, params.instanceUrl, params.captchaResult);
+				await this.verifyMcaptcha(params.secret, params.sitekey, params.instanceUrl, params.captchaResult);
+				await this.updateMeta(provider, params);
 			},
 			recaptcha: async () => {
-				if (!params.secret) {
-					throw new CaptchaError(captchaErrorCodes.invalidParameters, 'recaptcha-failed: secret and response are required');
+				if (!params?.secret || !params.captchaResult) {
+					throw new CaptchaError(captchaErrorCodes.invalidParameters, 'recaptcha-failed: secret and captureResult are required');
 				}
 
-				return this.verifyRecaptcha(params.secret, params.captchaResult);
+				await this.verifyRecaptcha(params.secret, params.captchaResult);
+				await this.updateMeta(provider, params);
 			},
 			turnstile: async () => {
-				if (!params.secret) {
-					throw new CaptchaError(captchaErrorCodes.invalidParameters, 'turnstile-failed: secret and response are required');
+				if (!params?.secret || !params.captchaResult) {
+					throw new CaptchaError(captchaErrorCodes.invalidParameters, 'turnstile-failed: secret and captureResult are required');
 				}
 
-				return this.verifyTurnstile(params.secret, params.captchaResult);
+				await this.verifyTurnstile(params.secret, params.captchaResult);
+				await this.updateMeta(provider, params);
 			},
 			testcaptcha: async () => {
-				return this.verifyTestcaptcha(params.captchaResult);
+				if (!params?.captchaResult) {
+					throw new CaptchaError(captchaErrorCodes.invalidParameters, 'turnstile-failed: captureResult are required');
+				}
+
+				await this.verifyTestcaptcha(params.captchaResult);
+				await this.updateMeta(provider, params);
 			},
-		}[params.provider];
+		}[provider];
 
 		return operation()
-			.then(() => ({ success: true }) as ValidateSuccess)
+			.then(() => ({ success: true }) as CaptchaSaveSuccess)
 			.catch(err => {
 				const error = err instanceof CaptchaError
 					? err
@@ -242,6 +258,64 @@ export class CaptchaService {
 					error,
 				};
 			});
+	}
+
+	@bindThis
+	private async updateMeta(
+		provider: CaptchaProvider,
+		params?: {
+			sitekey?: string | null;
+			secret?: string | null;
+			instanceUrl?: string | null;
+		},
+	) {
+		const metaPartial: Partial<
+			Pick<
+				MiMeta,
+				('enableHcaptcha' | 'hcaptchaSiteKey' | 'hcaptchaSecretKey') |
+				('enableMcaptcha' | 'mcaptchaSitekey' | 'mcaptchaSecretKey' | 'mcaptchaInstanceUrl') |
+				('enableRecaptcha' | 'recaptchaSiteKey' | 'recaptchaSecretKey') |
+				('enableTurnstile' | 'turnstileSiteKey' | 'turnstileSecretKey') |
+				('enableTestcaptcha')
+			>
+		> = {
+			enableHcaptcha: provider === 'hcaptcha',
+			enableMcaptcha: provider === 'mcaptcha',
+			enableRecaptcha: provider === 'recaptcha',
+			enableTurnstile: provider === 'turnstile',
+			enableTestcaptcha: provider === 'testcaptcha',
+		};
+
+		const updateIfNotUndefined = <K extends keyof typeof metaPartial>(key: K, value: typeof metaPartial[K]) => {
+			if (value !== undefined) {
+				metaPartial[key] = value;
+			}
+		};
+		switch (provider) {
+			case 'hcaptcha': {
+				updateIfNotUndefined('hcaptchaSiteKey', params?.sitekey);
+				updateIfNotUndefined('hcaptchaSecretKey', params?.secret);
+				break;
+			}
+			case 'mcaptcha': {
+				updateIfNotUndefined('mcaptchaSitekey', params?.sitekey);
+				updateIfNotUndefined('mcaptchaSecretKey', params?.secret);
+				updateIfNotUndefined('mcaptchaInstanceUrl', params?.instanceUrl);
+				break;
+			}
+			case 'recaptcha': {
+				updateIfNotUndefined('recaptchaSiteKey', params?.sitekey);
+				updateIfNotUndefined('recaptchaSecretKey', params?.secret);
+				break;
+			}
+			case 'turnstile': {
+				updateIfNotUndefined('turnstileSiteKey', params?.sitekey);
+				updateIfNotUndefined('turnstileSecretKey', params?.secret);
+				break;
+			}
+		}
+
+		await this.metaService.update(metaPartial);
 	}
 }
 

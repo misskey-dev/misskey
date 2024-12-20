@@ -258,9 +258,9 @@ watch(captchaResult, async () => {
 	if (captchaResult.value) {
 		const result = await misskeyApi('admin/captcha/test', {
 			provider: provider as Misskey.entities.AdminCaptchaTestRequest['provider'],
-			sitekey: sitekey ?? undefined,
-			secret: secret ?? undefined,
-			instanceUrl: botProtectionForm.state.mcaptchaInstanceUrl ?? undefined,
+			sitekey: sitekey,
+			secret: secret,
+			instanceUrl: botProtectionForm.state.mcaptchaInstanceUrl,
 			captchaResult: captchaResult.value,
 		});
 

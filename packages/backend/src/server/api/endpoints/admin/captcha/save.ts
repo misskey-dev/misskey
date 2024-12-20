@@ -46,17 +46,17 @@ export const paramDef = {
 			type: 'string',
 			enum: supportedCaptchaProviders,
 		},
+		captchaResult: {
+			type: 'string', nullable: true,
+		},
 		sitekey: {
-			type: 'string',
+			type: 'string', nullable: true,
 		},
 		secret: {
-			type: 'string',
+			type: 'string', nullable: true,
 		},
 		instanceUrl: {
-			type: 'string',
-		},
-		captchaResult: {
-			type: 'string',
+			type: 'string', nullable: true,
 		},
 	},
 	required: ['provider'],
@@ -67,13 +67,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private captchaService: CaptchaService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
-			const result = await this.captchaService.verify({
-				provider: ps.provider,
+		super(meta, paramDef, async (ps) => {
+			const result = await this.captchaService.save(ps.provider, ps.captchaResult, {
 				sitekey: ps.sitekey,
 				secret: ps.secret,
 				instanceUrl: ps.instanceUrl,
-				captchaResult: ps.captchaResult,
 			});
 
 			if (result.success) {

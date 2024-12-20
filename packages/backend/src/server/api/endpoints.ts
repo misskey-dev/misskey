@@ -33,7 +33,7 @@ import * as ep___admin_avatarDecorations_create from './endpoints/admin/avatar-d
 import * as ep___admin_avatarDecorations_delete from './endpoints/admin/avatar-decorations/delete.js';
 import * as ep___admin_avatarDecorations_list from './endpoints/admin/avatar-decorations/list.js';
 import * as ep___admin_avatarDecorations_update from './endpoints/admin/avatar-decorations/update.js';
-import * as ep___admin_captcha_test from './endpoints/admin/captcha/test.js';
+import * as ep___admin_captcha_save from './endpoints/admin/captcha/save.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
 import * as ep___admin_unsetUserAvatar from './endpoints/admin/unset-user-avatar.js';
 import * as ep___admin_unsetUserBanner from './endpoints/admin/unset-user-banner.js';
@@ -421,7 +421,7 @@ const eps = [
 	['admin/avatar-decorations/delete', ep___admin_avatarDecorations_delete],
 	['admin/avatar-decorations/list', ep___admin_avatarDecorations_list],
 	['admin/avatar-decorations/update', ep___admin_avatarDecorations_update],
-	['admin/captcha/test', ep___admin_captcha_test],
+	['admin/captcha/test', ep___admin_captcha_save],
 	['admin/delete-all-files-of-a-user', ep___admin_deleteAllFilesOfAUser],
 	['admin/unset-user-avatar', ep___admin_unsetUserAvatar],
 	['admin/unset-user-banner', ep___admin_unsetUserBanner],

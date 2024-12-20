@@ -10,16 +10,19 @@ import {
 	CaptchaError,
 	CaptchaErrorCode,
 	captchaErrorCodes,
+	CaptchaSaveResult,
 	CaptchaService,
-	ValidateResult,
 } from '@/core/CaptchaService.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { MiMeta } from '@/models/Meta.js';
 
 describe('CaptchaService', () => {
 	let app: TestingModule;
 	let service: CaptchaService;
 	let httpRequestService: jest.Mocked<HttpRequestService>;
+	let metaService: jest.Mocked<MetaService>;
 
 	beforeAll(async () => {
 		app = await Test.createTestingModule({
@@ -31,6 +34,9 @@ describe('CaptchaService', () => {
 				{
 					provide: HttpRequestService, useFactory: () => ({ send: jest.fn() }),
 				},
+				{
+					provide: MetaService, useFactory: () => ({ update: jest.fn() }),
+				},
 			],
 		}).compile();
 
@@ -38,10 +44,12 @@ describe('CaptchaService', () => {
 
 		service = app.get(CaptchaService);
 		httpRequestService = app.get(HttpRequestService) as jest.Mocked<HttpRequestService>;
+		metaService = app.get(MetaService) as jest.Mocked<MetaService>;
 	});
 
 	beforeEach(() => {
 		httpRequestService.send.mockClear();
+		metaService.update.mockClear();
 	});
 
 	afterAll(async () => {
@@ -76,7 +84,6 @@ describe('CaptchaService', () => {
 			await test();
 			expect(false).toBe(true);
 		} catch (e) {
-			console.log(e);
 			expect(e instanceof CaptchaError).toBe(true);
 
 			const _e = e as CaptchaError;
@@ -184,81 +191,194 @@ describe('CaptchaService', () => {
 		});
 	});
 
-	describe('validateSettings', () => {
+	describe('save', () => {
 		const host = 'https://localhost';
 
-		describe('success', () => {
+		describe('[success] 検証に成功した時だけ保存できる＋他のプロバイダの設定値を誤って更新しない', () => {
 			beforeEach(() => {
 				successMock({ success: true, valid: true });
 			});
 
-			async function assertSuccess(promise: Promise<ValidateResult>) {
+			async function assertSuccess(promise: Promise<CaptchaSaveResult>, expectMeta: Partial<MiMeta>) {
 				await expect(promise)
 					.resolves
 					.toStrictEqual({ success: true });
+				const partialParams = metaService.update.mock.calls[0][0];
+				expect(partialParams).toStrictEqual(expectMeta);
 			}
 
+			test('none', async () => {
+				await assertSuccess(
+					service.save('none'),
+					{
+						enableHcaptcha: false,
+						enableMcaptcha: false,
+						enableRecaptcha: false,
+						enableTurnstile: false,
+						enableTestcaptcha: false,
+					},
+				);
+			});
+
 			test('hcaptcha', async () => {
-				await assertSuccess(service.verify({ provider: 'hcaptcha', secret: 'secret', captchaResult: 'response' }));
+				await assertSuccess(
+					service.save('hcaptcha', {
+						sitekey: 'hcaptcha-sitekey',
+						secret: 'hcaptcha-secret',
+						captchaResult: 'hcaptcha-passed',
+					}),
+					{
+						enableHcaptcha: true,
+						enableMcaptcha: false,
+						enableRecaptcha: false,
+						enableTurnstile: false,
+						enableTestcaptcha: false,
+						hcaptchaSiteKey: 'hcaptcha-sitekey',
+						hcaptchaSecretKey: 'hcaptcha-secret',
+					},
+				);
 			});
 
 			test('mcaptcha', async () => {
-				await assertSuccess(service.verify({
-					provider: 'mcaptcha',
-					secret: 'secret',
-					sitekey: 'sitekey',
-					instanceUrl: host,
-					captchaResult: 'response',
-				}));
+				await assertSuccess(
+					service.save('mcaptcha', {
+						sitekey: 'mcaptcha-sitekey',
+						secret: 'mcaptcha-secret',
+						instanceUrl: host,
+						captchaResult: 'mcaptcha-passed',
+					}),
+					{
+						enableHcaptcha: false,
+						enableMcaptcha: true,
+						enableRecaptcha: false,
+						enableTurnstile: false,
+						enableTestcaptcha: false,
+						mcaptchaSitekey: 'mcaptcha-sitekey',
+						mcaptchaSecretKey: 'mcaptcha-secret',
+						mcaptchaInstanceUrl: host,
+					},
+				);
 			});
 
 			test('recaptcha', async () => {
-				await assertSuccess(service.verify({ provider: 'recaptcha', secret: 'secret', captchaResult: 'response' }));
+				await assertSuccess(
+					service.save('recaptcha', {
+						sitekey: 'recaptcha-sitekey',
+						secret: 'recaptcha-secret',
+						captchaResult: 'recaptcha-passed',
+					}),
+					{
+						enableHcaptcha: false,
+						enableMcaptcha: false,
+						enableRecaptcha: true,
+						enableTurnstile: false,
+						enableTestcaptcha: false,
+						recaptchaSiteKey: 'recaptcha-sitekey',
+						recaptchaSecretKey: 'recaptcha-secret',
+					},
+				);
 			});
 
 			test('turnstile', async () => {
-				await assertSuccess(service.verify({ provider: 'turnstile', secret: 'secret', captchaResult: 'response' }));
+				await assertSuccess(
+					service.save('turnstile', {
+						sitekey: 'turnstile-sitekey',
+						secret: 'turnstile-secret',
+						captchaResult: 'turnstile-passed',
+					}),
+					{
+						enableHcaptcha: false,
+						enableMcaptcha: false,
+						enableRecaptcha: false,
+						enableTurnstile: true,
+						enableTestcaptcha: false,
+						turnstileSiteKey: 'turnstile-sitekey',
+						turnstileSecretKey: 'turnstile-secret',
+					},
+				);
 			});
 
 			test('testcaptcha', async () => {
-				await assertSuccess(service.verify({ provider: 'testcaptcha', captchaResult: 'testcaptcha-passed' }));
+				await assertSuccess(
+					service.save('testcaptcha', {
+						sitekey: 'testcaptcha-sitekey',
+						secret: 'testcaptcha-secret',
+						captchaResult: 'testcaptcha-passed',
+					}),
+					{
+						enableHcaptcha: false,
+						enableMcaptcha: false,
+						enableRecaptcha: false,
+						enableTurnstile: false,
+						enableTestcaptcha: true,
+					},
+				);
 			});
 		});
 
-		describe('failure', () => {
-			async function assertFailure(code: CaptchaErrorCode, promise: Promise<ValidateResult>) {
+		describe('[failure] 検証に失敗した場合は保存できない＋設定値の更新そのものが発生しない', () => {
+			async function assertFailure(code: CaptchaErrorCode, promise: Promise<CaptchaSaveResult>) {
 				const res = await promise;
 				expect(res.success).toBe(false);
 				if (!res.success) {
 					expect(res.error.code).toBe(code);
 				}
+				expect(metaService.update).not.toBeCalled();
 			}
 
-			describe('noResponseProvided', () => {
+			describe('invalidParameters', () => {
 				test('hcaptcha', async () => {
-					await assertFailure(captchaErrorCodes.noResponseProvided, service.verify({ provider: 'hcaptcha', secret: 'secret', captchaResult: null }));
+					await assertFailure(
+						captchaErrorCodes.invalidParameters,
+						service.save('hcaptcha', {
+							sitekey: 'hcaptcha-sitekey',
+							secret: 'hcaptcha-secret',
+							captchaResult: null,
+						}),
+					);
 				});
 
 				test('mcaptcha', async () => {
-					await assertFailure(captchaErrorCodes.noResponseProvided, service.verify({
-						provider: 'mcaptcha',
-						secret: 'secret',
-						sitekey: 'sitekey',
-						instanceUrl: host,
-						captchaResult: null,
-					}));
+					await assertFailure(
+						captchaErrorCodes.invalidParameters,
+						service.save('mcaptcha', {
+							sitekey: 'mcaptcha-sitekey',
+							secret: 'mcaptcha-secret',
+							instanceUrl: host,
+							captchaResult: null,
+						}),
+					);
 				});
 
 				test('recaptcha', async () => {
-					await assertFailure(captchaErrorCodes.noResponseProvided, service.verify({ provider: 'recaptcha', secret: 'secret', captchaResult: null }));
+					await assertFailure(
+						captchaErrorCodes.invalidParameters,
+						service.save('recaptcha', {
+							sitekey: 'recaptcha-sitekey',
+							secret: 'recaptcha-secret',
+							captchaResult: null,
+						}),
+					);
 				});
 
 				test('turnstile', async () => {
-					await assertFailure(captchaErrorCodes.noResponseProvided, service.verify({ provider: 'turnstile', secret: 'secret', captchaResult: null }));
+					await assertFailure(
+						captchaErrorCodes.invalidParameters,
+						service.save('turnstile', {
+							sitekey: 'turnstile-sitekey',
+							secret: 'turnstile-secret',
+							captchaResult: null,
+						}),
+					);
 				});
 
 				test('testcaptcha', async () => {
-					await assertFailure(captchaErrorCodes.noResponseProvided, service.verify({ provider: 'testcaptcha', captchaResult: null }));
+					await assertFailure(
+						captchaErrorCodes.invalidParameters,
+						service.save('testcaptcha', {
+							captchaResult: null,
+						}),
+					);
 				});
 			});
 
@@ -268,29 +388,51 @@ describe('CaptchaService', () => {
 				});
 
 				test('hcaptcha', async () => {
-					await assertFailure(captchaErrorCodes.requestFailed, service.verify({ provider: 'hcaptcha', secret: 'secret', captchaResult: 'res' }));
+					await assertFailure(
+						captchaErrorCodes.requestFailed,
+						service.save('hcaptcha', {
+							sitekey: 'hcaptcha-sitekey',
+							secret: 'hcaptcha-secret',
+							captchaResult: 'hcaptcha-passed',
+						}),
+					);
 				});
 
 				test('mcaptcha', async () => {
-					await assertFailure(captchaErrorCodes.requestFailed, service.verify({
-						provider: 'mcaptcha',
-						secret: 'secret',
-						sitekey: 'sitekey',
-						instanceUrl: host,
-						captchaResult: 'res',
-					}));
+					await assertFailure(
+						captchaErrorCodes.requestFailed,
+						service.save('mcaptcha', {
+							sitekey: 'mcaptcha-sitekey',
+							secret: 'mcaptcha-secret',
+							instanceUrl: host,
+							captchaResult: 'mcaptcha-passed',
+						}),
+					);
 				});
 
 				test('recaptcha', async () => {
-					await assertFailure(captchaErrorCodes.requestFailed, service.verify({ provider: 'recaptcha', secret: 'secret', captchaResult: 'res' }));
+					await assertFailure(
+						captchaErrorCodes.requestFailed,
+						service.save('recaptcha', {
+							sitekey: 'recaptcha-sitekey',
+							secret: 'recaptcha-secret',
+							captchaResult: 'recaptcha-passed',
+						}),
+					);
 				});
 
 				test('turnstile', async () => {
-					await assertFailure(captchaErrorCodes.requestFailed, service.verify({ provider: 'turnstile', secret: 'secret', captchaResult: 'res' }));
+					await assertFailure(
+						captchaErrorCodes.requestFailed,
+						service.save('turnstile', {
+							sitekey: 'turnstile-sitekey',
+							secret: 'turnstile-secret',
+							captchaResult: 'turnstile-passed',
+						}),
+					);
 				});
 
-				// testcaptchaはrequestFailedが発生しない
-				// test('testcaptcha', () => {});
+				// testchapchaはrequestFailedがない
 			});
 
 			describe('verificationFailed', () => {
@@ -299,29 +441,57 @@ describe('CaptchaService', () => {
 				});
 
 				test('hcaptcha', async () => {
-					await assertFailure(captchaErrorCodes.verificationFailed, service.verify({ provider: 'hcaptcha', secret: 'secret', captchaResult: 'res' }));
+					await assertFailure(
+						captchaErrorCodes.verificationFailed,
+						service.save('hcaptcha', {
+							sitekey: 'hcaptcha-sitekey',
+							secret: 'hcaptcha-secret',
+							captchaResult: 'hccaptcha-passed',
+						}),
+					);
 				});
 
 				test('mcaptcha', async () => {
-					await assertFailure(captchaErrorCodes.verificationFailed, service.verify({
-						provider: 'mcaptcha',
-						secret: 'secret',
-						sitekey: 'sitekey',
-						instanceUrl: host,
-						captchaResult: 'res',
-					}));
+					await assertFailure(
+						captchaErrorCodes.verificationFailed,
+						service.save('mcaptcha', {
+							sitekey: 'mcaptcha-sitekey',
+							secret: 'mcaptcha-secret',
+							instanceUrl: host,
+							captchaResult: 'mcaptcha-passed',
+						}),
+					);
 				});
 
 				test('recaptcha', async () => {
-					await assertFailure(captchaErrorCodes.verificationFailed, service.verify({ provider: 'recaptcha', secret: 'secret', captchaResult: 'res' }));
+					await assertFailure(
+						captchaErrorCodes.verificationFailed,
+						service.save('recaptcha', {
+							sitekey: 'recaptcha-sitekey',
+							secret: 'recaptcha-secret',
+							captchaResult: 'recaptcha-passed',
+						}),
+					);
 				});
 
 				test('turnstile', async () => {
-					await assertFailure(captchaErrorCodes.verificationFailed, service.verify({ provider: 'turnstile', secret: 'secret', captchaResult: 'res' }));
+					await assertFailure(
+						captchaErrorCodes.verificationFailed,
+						service.save('turnstile', {
+							sitekey: 'turnstile-sitekey',
+							secret: 'turnstile-secret',
+							captchaResult: 'turnstile-passed',
+						}),
+					);
 				});
 
 				test('testcaptcha', async () => {
-					await assertFailure(captchaErrorCodes.verificationFailed, service.verify({ provider: 'testcaptcha', captchaResult: 'testcaptcha-failed' }));
+					await assertFailure(
+						captchaErrorCodes.verificationFailed,
+						service.save('testcaptcha', {
+							captchaResult: 'testcaptcha-failed',
+						}),
+					);
 				});
 			});
 		});
