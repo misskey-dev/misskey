@@ -215,6 +215,16 @@ export type paths = {
      */
     post: operations['admin___avatar-decorations___update'];
   };
+  '/admin/captcha/test': {
+    /**
+     * admin/captcha/test
+     * @description No description provided.
+     *
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes* / **Permission**: *read:admin:captcha*
+     */
+    post: operations['admin___captcha___test'];
+  };
   '/admin/delete-all-files-of-a-user': {
     /**
      * admin/delete-all-files-of-a-user
@@ -6531,6 +6541,71 @@ export type operations = {
       /** @description OK (without any results) */
       204: {
         content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/captcha/test
+   * @description No description provided.
+   *
+   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+   * **Credential required**: *Yes* / **Permission**: *read:admin:captcha*
+   */
+  admin___captcha___test: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @enum {string} */
+          provider: 'hcaptcha' | 'mcaptcha' | 'recaptcha' | 'turnstile' | 'testcaptcha';
+          sitekey?: string;
+          secret?: string;
+          instanceUrl?: string;
+          captchaResult?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            success: boolean;
+            error: {
+              code: string;
+              message: string;
+            } | null;
+          };
+        };
       };
       /** @description Client error */
       400: {
