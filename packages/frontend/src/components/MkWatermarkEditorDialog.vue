@@ -167,7 +167,7 @@ const rotate = computed({
 	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, rotate: v },
 });
 const preserveBoundingRect = computed({
-	get: () => watermarkConfig.value?.noBoundingBoxExpansion ?? false,
+	get: () => !(watermarkConfig.value?.noBoundingBoxExpansion ?? false),
 	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, noBoundingBoxExpansion: !v },
 });
 
