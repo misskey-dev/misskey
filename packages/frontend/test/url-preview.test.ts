@@ -77,7 +77,7 @@ describe('MkUrlPreview', () => {
 				url: 'https://example.local/player',
 				width: null,
 				height: null,
-				allow: undefined as unknown as string[],
+				allow: [],
 			},
 		});
 		const buttons = mkUrlPreview.getAllByRole('button');
@@ -123,7 +123,7 @@ describe('MkUrlPreview', () => {
 				url: 'https://example.local/player',
 				width: null,
 				height: null,
-				allow: [],
+				allow: undefined as unknown as string[],
 			},
 		});
 		assert.exists(iframe, 'iframe should exist');
