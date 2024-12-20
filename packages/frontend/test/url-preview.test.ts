@@ -77,7 +77,7 @@ describe('MkUrlPreview', () => {
 				url: 'https://example.local/player',
 				width: null,
 				height: null,
-				allow: [],
+				allow: undefined as unknown as string[],
 			},
 		});
 		const buttons = mkUrlPreview.getAllByRole('button');
