@@ -4549,7 +4549,7 @@ export interface Locale extends ILocale {
     /**
      * 透明度
      */
-    "opacity": string;
+    "transparency": string;
     /**
      * サーバールール
      */

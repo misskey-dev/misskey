@@ -41,8 +41,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.size }}</template>
 					</MkRange>
 
-					<MkRange v-model="opacity" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`">
-						<template #label>{{ i18n.ts.opacity }}</template>
+					<MkRange v-model="transparency" :min="0" :max="1" :step="0.01" :textConverter="(v) => `${Math.floor(v * 100)}%`">
+						<template #label>{{ i18n.ts.transparency }}</template>
 					</MkRange>
 
 					<MkRange v-model="rotate" :min="-45" :max="45" :textConverter="(v) => `${Math.floor(v)}°`">
@@ -158,9 +158,9 @@ const repeat = computed({
 	get: () => watermarkConfig.value?.repeat ?? true,
 	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, repeat: v },
 });
-const opacity = computed({
-	get: () => watermarkConfig.value?.opacity ?? 0.2,
-	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, opacity: v },
+const transparency = computed({
+	get: () => 1 - (watermarkConfig.value?.opacity ?? 0.2),
+	set: (v) => watermarkConfig.value = { ...watermarkConfig.value, opacity: (1 - v) },
 });
 const rotate = computed({
 	get: () => watermarkConfig.value?.rotate ?? 15,

@@ -34,7 +34,7 @@ export type WatermarkUserConfig = {
 	fileUrl?: string;
 	/** 親画像に対するウォーターマークの幅比率。ない場合は1。親画像が縦長の場合は幅の比率として、横長の場合は高さ比率として使用される */
 	sizeRatio?: number;
-	/** 透明度 */
+	/** 不透明度 */
 	opacity?: number;
 	/** 回転角度（度数） */
 	rotate?: number;
@@ -70,7 +70,7 @@ export type WatermarkConfig = {
 	fileUrl?: string;
 	/** 親画像に対するウォーターマークの幅比率。ない場合は1。親画像が縦長の場合は幅の比率として、横長の場合は高さ比率として使用される */
 	sizeRatio?: number;
-	/** 透明度 */
+	/** 不透明度 */
 	opacity?: number;
 	/** 回転角度（度数） */
 	rotate?: number;
