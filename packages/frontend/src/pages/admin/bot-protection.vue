@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div class="_gaps_m">
 		<MkRadios v-model="botProtectionForm.state.provider">
-			<option :value="null">{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</option>
+			<option value="none">{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</option>
 			<option value="hcaptcha">hCaptcha</option>
 			<option value="mcaptcha">mCaptcha</option>
 			<option value="recaptcha">reCAPTCHA</option>
@@ -158,12 +158,69 @@ import MkInfo from '@/components/MkInfo.vue';
 
 const MkCaptcha = defineAsyncComponent(() => import('@/components/MkCaptcha.vue'));
 
-const meta = await misskeyApi('admin/meta');
-
 const captchaResult = ref<string | null>(null);
 
+const meta = await misskeyApi('admin/captcha/current');
+const botProtectionForm = useForm({
+	provider: meta.provider,
+	hcaptchaSiteKey: meta.hcaptcha.siteKey,
+	hcaptchaSecretKey: meta.hcaptcha.secretKey,
+	mcaptchaSiteKey: meta.mcaptcha.siteKey,
+	mcaptchaSecretKey: meta.mcaptcha.secretKey,
+	mcaptchaInstanceUrl: meta.mcaptcha.instanceUrl,
+	recaptchaSiteKey: meta.recaptcha.siteKey,
+	recaptchaSecretKey: meta.recaptcha.secretKey,
+	turnstileSiteKey: meta.turnstile.siteKey,
+	turnstileSecretKey: meta.turnstile.secretKey,
+}, async (state) => {
+	const provider = state.provider;
+
+	const sitekey = provider === 'hcaptcha'
+		? state.hcaptchaSiteKey
+		: provider === 'mcaptcha'
+			? state.mcaptchaSiteKey
+			: provider === 'recaptcha'
+				? state.recaptchaSiteKey
+				: provider === 'turnstile'
+					? state.turnstileSiteKey
+					: null;
+	const secret = provider === 'hcaptcha'
+		? state.hcaptchaSecretKey
+		: provider === 'mcaptcha'
+			? state.mcaptchaSecretKey
+			: provider === 'recaptcha'
+				? state.recaptchaSecretKey
+				: provider === 'turnstile'
+					? state.turnstileSecretKey
+					: null;
+
+	if (provider === 'none') {
+		await os.apiWithDialog(
+			'admin/captcha/save',
+			{ provider: provider as Misskey.entities.AdminCaptchaSaveRequest['provider'] },
+		);
+	} else {
+		await os.apiWithDialog(
+			'admin/captcha/save',
+			{
+				provider: provider as Misskey.entities.AdminCaptchaSaveRequest['provider'],
+				sitekey: sitekey,
+				secret: secret,
+				instanceUrl: state.mcaptchaInstanceUrl,
+				captchaResult: captchaResult.value,
+			},
+		);
+	}
+
+	await fetchInstance(true);
+});
+
+watch(botProtectionForm.state, () => {
+	captchaResult.value = null;
+});
+
 const canSaving = computed((): boolean => {
-	return (botProtectionForm.state.provider === null) ||
+	return (botProtectionForm.state.provider === 'none') ||
 		(botProtectionForm.state.provider === 'hcaptcha' && !!captchaResult.value) ||
 		(botProtectionForm.state.provider === 'mcaptcha' && !!captchaResult.value) ||
 		(botProtectionForm.state.provider === 'recaptcha' && !!captchaResult.value) ||
@@ -171,68 +228,6 @@ const canSaving = computed((): boolean => {
 		(botProtectionForm.state.provider === 'testcaptcha' && !!captchaResult.value);
 });
 
-const botProtectionForm = useForm({
-	provider: meta.enableHcaptcha
-		? 'hcaptcha'
-		: meta.enableRecaptcha
-			? 'recaptcha'
-			: meta.enableTurnstile
-				? 'turnstile'
-				: meta.enableMcaptcha
-					? 'mcaptcha'
-					: meta.enableTestcaptcha
-						? 'testcaptcha'
-						: null,
-	hcaptchaSiteKey: meta.hcaptchaSiteKey,
-	hcaptchaSecretKey: meta.hcaptchaSecretKey,
-	mcaptchaSiteKey: meta.mcaptchaSiteKey,
-	mcaptchaSecretKey: meta.mcaptchaSecretKey,
-	mcaptchaInstanceUrl: meta.mcaptchaInstanceUrl,
-	recaptchaSiteKey: meta.recaptchaSiteKey,
-	recaptchaSecretKey: meta.recaptchaSecretKey,
-	turnstileSiteKey: meta.turnstileSiteKey,
-	turnstileSecretKey: meta.turnstileSecretKey,
-}, async (state) => {
-	const provider = botProtectionForm.state.provider;
-
-	const sitekey = provider === 'hcaptcha'
-		? botProtectionForm.state.hcaptchaSiteKey
-		: provider === 'mcaptcha'
-			? botProtectionForm.state.mcaptchaSiteKey
-			: provider === 'recaptcha'
-				? botProtectionForm.state.recaptchaSiteKey
-				: provider === 'turnstile'
-					? botProtectionForm.state.turnstileSiteKey
-					: null;
-	const secret = provider === 'hcaptcha'
-		? botProtectionForm.state.hcaptchaSecretKey
-		: provider === 'mcaptcha'
-			? botProtectionForm.state.mcaptchaSecretKey
-			: provider === 'recaptcha'
-				? botProtectionForm.state.recaptchaSecretKey
-				: provider === 'turnstile'
-					? botProtectionForm.state.turnstileSecretKey
-					: null;
-
-	if (captchaResult.value) {
-		await os.apiWithDialog(
-			'admin/captcha/save',
-			{
-				provider: provider as Misskey.entities.AdminCaptchaSaveRequest['provider'],
-				sitekey: sitekey,
-				secret: secret,
-				instanceUrl: botProtectionForm.state.mcaptchaInstanceUrl,
-				captchaResult: captchaResult.value,
-			},
-		);
-
-		await fetchInstance(true);
-	}
-});
-
-watch(botProtectionForm.state, () => {
-	captchaResult.value = null;
-});
 </script>
 
 <style lang="scss" module>

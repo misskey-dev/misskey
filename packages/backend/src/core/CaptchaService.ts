@@ -8,6 +8,8 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MiMeta } from '@/models/Meta.js';
+import Logger from '@/logger.js';
+import { LoggerService } from './LoggerService.js';
 
 export const supportedCaptchaProviders = ['none', 'hcaptcha', 'mcaptcha', 'recaptcha', 'turnstile', 'testcaptcha'] as const;
 export type CaptchaProvider = typeof supportedCaptchaProviders[number];
@@ -22,12 +24,35 @@ export const captchaErrorCodes = {
 } as const;
 export type CaptchaErrorCode = typeof captchaErrorCodes[keyof typeof captchaErrorCodes];
 
+export type CaptchaSetting = {
+	provider: CaptchaProvider;
+	hcaptcha: {
+		siteKey: string | null;
+		secretKey: string | null;
+	}
+	mcaptcha: {
+		siteKey: string | null;
+		secretKey: string | null;
+		instanceUrl: string | null;
+	}
+	recaptcha: {
+		siteKey: string | null;
+		secretKey: string | null;
+	}
+	turnstile: {
+		siteKey: string | null;
+		secretKey: string | null;
+	}
+}
+
 export class CaptchaError extends Error {
 	public readonly code: CaptchaErrorCode;
+	public readonly cause?: unknown;
 
-	constructor(code: CaptchaErrorCode, message: string) {
+	constructor(code: CaptchaErrorCode, message: string, cause?: unknown) {
 		super(message);
 		this.code = code;
+		this.cause = cause;
 		this.name = 'CaptchaError';
 	}
 }
@@ -48,10 +73,14 @@ type CaptchaResponse = {
 
 @Injectable()
 export class CaptchaService {
+	private readonly logger: Logger;
+
 	constructor(
 		private httpRequestService: HttpRequestService,
 		private metaService: MetaService,
+		loggerService: LoggerService,
 	) {
+		this.logger = loggerService.getLogger('captcha');
 	}
 
 	@bindThis
@@ -126,7 +155,7 @@ export class CaptchaService {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-		});
+		}, { throwErrorWhenResponseNotOk: false });
 
 		if (result.status !== 200) {
 			throw new CaptchaError(captchaErrorCodes.requestFailed, 'mcaptcha-failed: mcaptcha didn\'t return 200 OK');
@@ -166,6 +195,60 @@ export class CaptchaService {
 		if (!success) {
 			throw new CaptchaError(captchaErrorCodes.verificationFailed, 'testcaptcha-failed');
 		}
+	}
+
+	@bindThis
+	public async get(): Promise<CaptchaSetting> {
+		const meta = await this.metaService.fetch(true);
+
+		let provider: CaptchaProvider;
+		switch (true) {
+			case meta.enableHcaptcha: {
+				provider = 'hcaptcha';
+				break;
+			}
+			case meta.enableMcaptcha: {
+				provider = 'mcaptcha';
+				break;
+			}
+			case meta.enableRecaptcha: {
+				provider = 'recaptcha';
+				break;
+			}
+			case meta.enableTurnstile: {
+				provider = 'turnstile';
+				break;
+			}
+			case meta.enableTestcaptcha: {
+				provider = 'testcaptcha';
+				break;
+			}
+			default: {
+				provider = 'none';
+				break;
+			}
+		}
+
+		return {
+			provider: provider,
+			hcaptcha: {
+				siteKey: meta.hcaptchaSiteKey,
+				secretKey: meta.hcaptchaSecretKey,
+			},
+			mcaptcha: {
+				siteKey: meta.mcaptchaSitekey,
+				secretKey: meta.mcaptchaSecretKey,
+				instanceUrl: meta.mcaptchaInstanceUrl,
+			},
+			recaptcha: {
+				siteKey: meta.recaptchaSiteKey,
+				secretKey: meta.recaptchaSecretKey,
+			},
+			turnstile: {
+				siteKey: meta.turnstileSiteKey,
+				secretKey: meta.turnstileSecretKey,
+			},
+		};
 	}
 
 	/**
@@ -250,6 +333,7 @@ export class CaptchaService {
 		return operation()
 			.then(() => ({ success: true }) as CaptchaSaveSuccess)
 			.catch(err => {
+				this.logger.info(err);
 				const error = err instanceof CaptchaError
 					? err
 					: new CaptchaError(captchaErrorCodes.unknown, `unknown error: ${err}`);

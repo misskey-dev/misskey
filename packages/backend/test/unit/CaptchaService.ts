@@ -35,7 +35,10 @@ describe('CaptchaService', () => {
 					provide: HttpRequestService, useFactory: () => ({ send: jest.fn() }),
 				},
 				{
-					provide: MetaService, useFactory: () => ({ update: jest.fn() }),
+					provide: MetaService, useFactory: () => ({
+						fetch: jest.fn(),
+						update: jest.fn(),
+					}),
 				},
 			],
 		}).compile();
@@ -50,6 +53,7 @@ describe('CaptchaService', () => {
 	beforeEach(() => {
 		httpRequestService.send.mockClear();
 		metaService.update.mockClear();
+		metaService.fetch.mockClear();
 	});
 
 	afterAll(async () => {
@@ -188,6 +192,123 @@ describe('CaptchaService', () => {
 
 		test('verificationFailed', async () => {
 			await testCaptchaError(captchaErrorCodes.verificationFailed, () => service.verifyTestcaptcha('testcaptcha-failed'));
+		});
+	});
+
+	describe('get', () => {
+		function setupMeta(meta: Partial<MiMeta>) {
+			metaService.fetch.mockResolvedValue(meta as MiMeta);
+		}
+
+		test('values', async () => {
+			setupMeta({
+				enableHcaptcha: false,
+				enableMcaptcha: false,
+				enableRecaptcha: false,
+				enableTurnstile: false,
+				enableTestcaptcha: false,
+				hcaptchaSiteKey: 'hcaptcha-sitekey',
+				hcaptchaSecretKey: 'hcaptcha-secret',
+				mcaptchaSitekey: 'mcaptcha-sitekey',
+				mcaptchaSecretKey: 'mcaptcha-secret',
+				mcaptchaInstanceUrl: 'https://localhost',
+				recaptchaSiteKey: 'recaptcha-sitekey',
+				recaptchaSecretKey: 'recaptcha-secret',
+				turnstileSiteKey: 'turnstile-sitekey',
+				turnstileSecretKey: 'turnstile-secret',
+			});
+
+			const result = await service.get();
+			expect(result.provider).toBe('none');
+			expect(result.hcaptcha.siteKey).toBe('hcaptcha-sitekey');
+			expect(result.hcaptcha.secretKey).toBe('hcaptcha-secret');
+			expect(result.mcaptcha.siteKey).toBe('mcaptcha-sitekey');
+			expect(result.mcaptcha.secretKey).toBe('mcaptcha-secret');
+			expect(result.mcaptcha.instanceUrl).toBe('https://localhost');
+			expect(result.recaptcha.siteKey).toBe('recaptcha-sitekey');
+			expect(result.recaptcha.secretKey).toBe('recaptcha-secret');
+			expect(result.turnstile.siteKey).toBe('turnstile-sitekey');
+			expect(result.turnstile.secretKey).toBe('turnstile-secret');
+		});
+
+		describe('provider', () => {
+			test('none', async () => {
+				setupMeta({
+					enableHcaptcha: false,
+					enableMcaptcha: false,
+					enableRecaptcha: false,
+					enableTurnstile: false,
+					enableTestcaptcha: false,
+				});
+
+				const result = await service.get();
+				expect(result.provider).toBe('none');
+			});
+
+			test('hcaptcha', async () => {
+				setupMeta({
+					enableHcaptcha: true,
+					enableMcaptcha: false,
+					enableRecaptcha: false,
+					enableTurnstile: false,
+					enableTestcaptcha: false,
+				});
+
+				const result = await service.get();
+				expect(result.provider).toBe('hcaptcha');
+			});
+
+			test('mcaptcha', async () => {
+				setupMeta({
+					enableHcaptcha: false,
+					enableMcaptcha: true,
+					enableRecaptcha: false,
+					enableTurnstile: false,
+					enableTestcaptcha: false,
+				});
+
+				const result = await service.get();
+				expect(result.provider).toBe('mcaptcha');
+			});
+
+			test('recaptcha', async () => {
+				setupMeta({
+					enableHcaptcha: false,
+					enableMcaptcha: false,
+					enableRecaptcha: true,
+					enableTurnstile: false,
+					enableTestcaptcha: false,
+				});
+
+				const result = await service.get();
+				expect(result.provider).toBe('recaptcha');
+			});
+
+			test('turnstile', async () => {
+				setupMeta({
+					enableHcaptcha: false,
+					enableMcaptcha: false,
+					enableRecaptcha: false,
+					enableTurnstile: true,
+					enableTestcaptcha: false,
+				});
+
+				const result = await service.get();
+				expect(result.provider).toBe('turnstile');
+			});
+
+			test('testcaptcha', async () => {
+				setupMeta({
+					enableHcaptcha: false,
+					enableMcaptcha: false,
+					enableRecaptcha: false,
+					enableTurnstile: false,
+					enableTestcaptcha: true,
+				});
+
+				const result = await service.get();
+				expect(result.provider).toBe('testcaptcha');
+			});
 		});
 	});
 

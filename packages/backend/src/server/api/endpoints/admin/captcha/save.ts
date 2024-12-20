@@ -12,8 +12,7 @@ export const meta = {
 	tags: ['admin', 'captcha'],
 
 	requireCredential: true,
-	requireModerator: true,
-	secure: true,
+	requireAdmin: true,
 
 	// 実態はmetaの更新であるため
 	kind: 'write:admin:meta',

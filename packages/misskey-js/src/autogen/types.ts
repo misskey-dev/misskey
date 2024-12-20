@@ -215,13 +215,21 @@ export type paths = {
      */
     post: operations['admin___avatar-decorations___update'];
   };
+  '/admin/captcha/current': {
+    /**
+     * admin/captcha/current
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:admin:meta*
+     */
+    post: operations['admin___captcha___current'];
+  };
   '/admin/captcha/save': {
     /**
      * admin/captcha/save
      * @description No description provided.
      *
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-     * **Credential required**: *Yes* / **Permission**: *read:admin:captcha*
+     * **Credential required**: *Yes* / **Permission**: *write:admin:meta*
      */
     post: operations['admin___captcha___save'];
   };
@@ -6575,11 +6583,76 @@ export type operations = {
     };
   };
   /**
+   * admin/captcha/current
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:admin:meta*
+   */
+  admin___captcha___current: {
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            /** @enum {string} */
+            provider: 'none' | 'hcaptcha' | 'mcaptcha' | 'recaptcha' | 'turnstile' | 'testcaptcha';
+            hcaptcha: {
+              siteKey: string | null;
+              secretKey: string | null;
+            };
+            mcaptcha: {
+              siteKey: string | null;
+              secretKey: string | null;
+              instanceUrl: string | null;
+            };
+            recaptcha: {
+              siteKey: string | null;
+              secretKey: string | null;
+            };
+            turnstile: {
+              siteKey: string | null;
+              secretKey: string | null;
+            };
+          };
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * admin/captcha/save
    * @description No description provided.
    *
-   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-   * **Credential required**: *Yes* / **Permission**: *read:admin:captcha*
+   * **Credential required**: *Yes* / **Permission**: *write:admin:meta*
    */
   admin___captcha___save: {
     requestBody: {
