@@ -17,6 +17,7 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MiMeta } from '@/models/Meta.js';
+import { LoggerService } from '@/core/LoggerService.js';
 
 describe('CaptchaService', () => {
 	let app: TestingModule;
@@ -31,6 +32,7 @@ describe('CaptchaService', () => {
 			],
 			providers: [
 				CaptchaService,
+				LoggerService,
 				{
 					provide: HttpRequestService, useFactory: () => ({ send: jest.fn() }),
 				},
