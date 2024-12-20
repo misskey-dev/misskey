@@ -970,7 +970,7 @@ requireAdminForView: "Per visualizzarli, è necessario aver effettuato l'accesso
 isSystemAccount: "Questi profili vengono creati e gestiti automaticamente dal sistema"
 typeToConfirm: "Digita {x} per continuare"
 deleteAccount: "Eliminazione profilo"
-document: "Documento"
+document: "Documentazione"
 numberOfPageCache: "Numero di pagine cache"
 numberOfPageCacheDescription: "Aumenta l'usabilità, ma aumenta anche il carico e l'utilizzo della memoria."
 logoutConfirm: "Vuoi davvero uscire da Misskey? "
