@@ -53,7 +53,7 @@ export class ApGameService {
 		if (apgame.game_state.type === 'settings') {
 			const key = apgame.game_state.key;
 			const value = apgame.game_state.value;
-			if (key && value) {
+			if (key && value && (key === 'map' || key === 'bw' || key === 'isLlotheo' || key === 'canPutEverywhere' || key === 'loopedBoard' || key === 'timeLimitForEachTurn')) {
 				await this.reversiService.updateSettings(id, remote_user, key, value);
 			} else {
 				this.logger.warn('skip ApReversi settings unknown key or value');

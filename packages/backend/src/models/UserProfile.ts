@@ -105,7 +105,7 @@ export class MiUserProfile {
 		enum: notesVisibilities,
 		default: 'public',
 	})
-	public notesVisibility: typeof notesVisibilities[number]
+	public notesVisibility: typeof notesVisibilities[number];
 
 	@Column('enum', {
 		enum: followingVisibilities,
