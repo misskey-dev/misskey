@@ -30,6 +30,9 @@ import { ref, shallowRef, computed, onMounted, onBeforeUnmount, watch, onUnmount
 import { defaultStore } from '@/store.js';
 
 // APIs provided by Captcha services
+// see: https://docs.hcaptcha.com/configuration/#javascript-api
+// see: https://developers.google.com/recaptcha/docs/display?hl=ja
+// see: https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/#explicitly-render-the-turnstile-widget
 export type Captcha = {
 	render(container: string | Node, options: {
 		readonly [_ in 'sitekey' | 'theme' | 'type' | 'size' | 'tabindex' | 'callback' | 'expired' | 'expired-callback' | 'error-callback' | 'endpoint']?: unknown;
@@ -53,6 +56,7 @@ declare global {
 const props = defineProps<{
 	provider: CaptchaProvider;
 	sitekey: string | null; // null will show error on request
+	secretKey?: string | null;
 	instanceUrl?: string | null;
 	modelValue?: string | null;
 }>();
@@ -64,7 +68,7 @@ const emit = defineEmits<{
 const available = ref(false);
 
 const captchaEl = shallowRef<HTMLDivElement | undefined>();
-
+const captchaWidgetId = ref<string | undefined>(undefined);
 const testcaptchaInput = ref('');
 const testcaptchaPassed = ref(false);
 
@@ -94,10 +98,11 @@ const scriptId = computed(() => `script-${props.provider}`);
 
 const captcha = computed<Captcha>(() => window[variable.value] || {} as unknown as Captcha);
 
-watch(() => [props.instanceUrl, props.sitekey], async () => {
+watch(() => [props.instanceUrl, props.sitekey, props.secretKey], async () => {
 	// 変更があったときはリフレッシュと再レンダリングをしておかないと、変更後の値で再検証が出来ない
 	if (available.value) {
 		callback(undefined);
+		clearWidget();
 		await requestRender();
 	}
 });
@@ -114,9 +119,9 @@ if (loaded || props.provider === 'mcaptcha' || props.provider === 'testcaptcha')
 }
 
 function reset() {
-	if (captcha.value.reset) {
+	if (captcha.value.reset && captchaWidgetId.value !== undefined) {
 		try {
-			captcha.value.reset();
+			captcha.value.reset(captchaWidgetId.value);
 		} catch (error: unknown) {
 			// ignore
 			if (_DEV_) console.warn(error);
@@ -126,28 +131,33 @@ function reset() {
 	testcaptchaInput.value = '';
 }
 
+function remove() {
+	if (captcha.value.remove && captchaWidgetId.value) {
+		try {
+			if (_DEV_) console.log('remove', props.provider, captchaWidgetId.value);
+			captcha.value.remove(captchaWidgetId.value);
+		} catch (error: unknown) {
+			// ignore
+			if (_DEV_) console.warn(error);
+		}
+	}
+}
+
 async function requestRender() {
-	if (captcha.value.render && captchaEl.value instanceof Element) {
-		// 設定値の変更時などのタイミングで再レンダリングを行う際はリセットしておく必要がある
-		reset();
-		captchaEl.value.innerHTML = '';
+	if (captcha.value.render && captchaEl.value instanceof Element && props.sitekey) {
+		// reCAPTCHAのレンダリング重複判定を回避するため、captchaEl配下に仮のdivを用意する.
+		// （同じdivに対して複数回renderを呼び出すとreCAPTCHAはエラーを返すので）
+		const elem = document.createElement('div');
+		captchaEl.value.appendChild(elem);
 
-		if (props.sitekey && props.sitekey.length > 0) {
-			captcha.value.render(captchaEl.value, {
-				sitekey: props.sitekey,
-				theme: defaultStore.state.darkMode ? 'dark' : 'light',
-				callback: callback,
-				'expired-callback': () => callback(undefined),
-				'error-callback': () => callback(undefined),
-			});
-		}
+		captchaWidgetId.value = captcha.value.render(elem, {
+			sitekey: props.sitekey,
+			theme: defaultStore.state.darkMode ? 'dark' : 'light',
+			callback: callback,
+			'expired-callback': () => callback(undefined),
+			'error-callback': () => callback(undefined),
+		});
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
-		// 設定値の変更時などのタイミングで再レンダリングを行う際はコンテナ内をクリアしておかないと更新されるたびに増えていく
-		const container = document.getElementById('mcaptcha__widget-container');
-		if (container) {
-			container.innerHTML = '';
-		}
-
 		const { default: Widget } = await import('@mcaptcha/vanilla-glue');
 		new Widget({
 			siteKey: {
@@ -157,6 +167,23 @@ async function requestRender() {
 		});
 	} else {
 		window.setTimeout(requestRender, 1);
+	}
+}
+
+function clearWidget() {
+	if (props.provider === 'mcaptcha') {
+		const container = document.getElementById('mcaptcha__widget-container');
+		if (container) {
+			container.innerHTML = '';
+		}
+	} else {
+		reset();
+		remove();
+
+		if (captchaEl.value) {
+			// レンダリング先のコンテナの中身を掃除し、フォームが増殖するのを抑止
+			captchaEl.value.innerHTML = '';
+		}
 	}
 }
 
@@ -192,7 +219,7 @@ onUnmounted(() => {
 });
 
 onBeforeUnmount(() => {
-	reset();
+	clearWidget();
 });
 
 defineExpose({

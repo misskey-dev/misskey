@@ -28,21 +28,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkRadios>
 
 		<template v-if="botProtectionForm.state.provider === 'hcaptcha'">
-			<MkInput v-model="botProtectionForm.state.hcaptchaSiteKey">
+			<MkInput v-model="botProtectionForm.state.hcaptchaSiteKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.hcaptchaSiteKey }}</template>
 			</MkInput>
-			<MkInput v-model="botProtectionForm.state.hcaptchaSecretKey">
+			<MkInput v-model="botProtectionForm.state.hcaptchaSecretKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.hcaptchaSecretKey }}</template>
 			</MkInput>
 			<FormSlot v-if="botProtectionForm.state.hcaptchaSiteKey">
-				<template #label>{{ i18n.ts.preview }}</template>
-				<MkCaptcha v-model="captchaResult" provider="hcaptcha" :sitekey="botProtectionForm.state.hcaptchaSiteKey"/>
+				<template #label>{{ i18n.ts._captcha.verify }}</template>
+				<MkCaptcha
+					v-model="captchaResult"
+					provider="hcaptcha"
+					:sitekey="botProtectionForm.state.hcaptchaSiteKey"
+					:secretKey="botProtectionForm.state.hcaptchaSecretKey"
+				/>
 			</FormSlot>
 			<MkInfo>
 				<div :class="$style.captchaInfoMsg">
-					<div>{{ i18n.tsx.testSiteKeyMessage({ testSiteKey: '10000000-ffff-ffff-ffff-000000000001' }) }}</div>
+					<div>{{ i18n.ts._captcha.testSiteKeyMessage }}</div>
 					<div>
 						<span>ref: </span><a href="https://docs.hcaptcha.com/#integration-testing-test-keys" target="_blank">hCaptcha Developer Guide</a>
 					</div>
@@ -51,46 +56,51 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<template v-else-if="botProtectionForm.state.provider === 'mcaptcha'">
-			<MkInput v-model="botProtectionForm.state.mcaptchaSiteKey">
+			<MkInput v-model="botProtectionForm.state.mcaptchaSiteKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.mcaptchaSiteKey }}</template>
 			</MkInput>
-			<MkInput v-model="botProtectionForm.state.mcaptchaSecretKey">
+			<MkInput v-model="botProtectionForm.state.mcaptchaSecretKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.mcaptchaSecretKey }}</template>
 			</MkInput>
-			<MkInput v-model="botProtectionForm.state.mcaptchaInstanceUrl">
+			<MkInput v-model="botProtectionForm.state.mcaptchaInstanceUrl" debounce>
 				<template #prefix><i class="ti ti-link"></i></template>
 				<template #label>{{ i18n.ts.mcaptchaInstanceUrl }}</template>
 			</MkInput>
 			<FormSlot v-if="botProtectionForm.state.mcaptchaSiteKey && botProtectionForm.state.mcaptchaInstanceUrl">
-				<template #label>{{ i18n.ts.preview }}</template>
+				<template #label>{{ i18n.ts._captcha.verify }}</template>
 				<MkCaptcha
-					v-model="captchaResult" provider="mcaptcha" :sitekey="botProtectionForm.state.mcaptchaSiteKey"
+					v-model="captchaResult"
+					provider="mcaptcha"
+					:sitekey="botProtectionForm.state.mcaptchaSiteKey"
+					:secretKey="botProtectionForm.state.mcaptchaSecretKey"
 					:instanceUrl="botProtectionForm.state.mcaptchaInstanceUrl"
 				/>
 			</FormSlot>
 		</template>
 
 		<template v-else-if="botProtectionForm.state.provider === 'recaptcha'">
-			<MkInput v-model="botProtectionForm.state.recaptchaSiteKey">
+			<MkInput v-model="botProtectionForm.state.recaptchaSiteKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.recaptchaSiteKey }}</template>
 			</MkInput>
-			<MkInput v-model="botProtectionForm.state.recaptchaSecretKey">
+			<MkInput v-model="botProtectionForm.state.recaptchaSecretKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.recaptchaSecretKey }}</template>
 			</MkInput>
 			<FormSlot v-if="botProtectionForm.state.recaptchaSiteKey">
-				<template #label>{{ i18n.ts.preview }}</template>
+				<template #label>{{ i18n.ts._captcha.verify }}</template>
 				<MkCaptcha
-					v-model="captchaResult" provider="recaptcha"
+					v-model="captchaResult"
+					provider="recaptcha"
 					:sitekey="botProtectionForm.state.recaptchaSiteKey"
+					:secretKey="botProtectionForm.state.recaptchaSecretKey"
 				/>
 			</FormSlot>
 			<MkInfo>
 				<div :class="$style.captchaInfoMsg">
-					<div>{{ i18n.tsx.testSiteKeyMessage({ testSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' }) }}</div>
+					<div>{{ i18n.ts._captcha.testSiteKeyMessage }}</div>
 					<div>
 						<span>ref: </span>
 						<a
@@ -103,27 +113,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<template v-else-if="botProtectionForm.state.provider === 'turnstile'">
-			<MkInput v-model="botProtectionForm.state.turnstileSiteKey">
+			<MkInput v-model="botProtectionForm.state.turnstileSiteKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.turnstileSiteKey }}</template>
 			</MkInput>
-			<MkInput v-model="botProtectionForm.state.turnstileSecretKey">
+			<MkInput v-model="botProtectionForm.state.turnstileSecretKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.turnstileSecretKey }}</template>
 			</MkInput>
 			<FormSlot v-if="botProtectionForm.state.turnstileSiteKey">
-				<template #label>{{ i18n.ts.preview }}</template>
+				<template #label>{{ i18n.ts._captcha.verify }}</template>
 				<MkCaptcha
-					v-model="captchaResult" provider="turnstile"
+					v-model="captchaResult"
+					provider="turnstile"
 					:sitekey="botProtectionForm.state.turnstileSiteKey"
+					:secretKey="botProtectionForm.state.turnstileSecretKey"
 				/>
 			</FormSlot>
 			<MkInfo>
 				<div :class="$style.captchaInfoMsg">
-					<div :class="$style.noSpace">
-						{{ i18n.tsx.testSiteKeyMessage({ testSiteKey: '1x00000000000000000000AA' }) }}
+					<div>
+						{{ i18n.ts._captcha.testSiteKeyMessage }}
 					</div>
-					<div :class="$style.noSpace">
+					<div>
 						<span>ref: </span><a href="https://developers.cloudflare.com/turnstile/troubleshooting/testing/" target="_blank">Cloudflare Docs</a>
 					</div>
 				</div>
@@ -133,7 +145,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-else-if="botProtectionForm.state.provider === 'testcaptcha'">
 			<MkInfo warn><span v-html="i18n.ts.testCaptchaWarning"></span></MkInfo>
 			<FormSlot>
-				<template #label>{{ i18n.ts.preview }}</template>
+				<template #label>{{ i18n.ts._captcha.verify }}</template>
 				<MkCaptcha v-model="captchaResult" provider="testcaptcha" :sitekey="null"/>
 			</FormSlot>
 		</template>
@@ -155,8 +167,27 @@ import { useForm } from '@/scripts/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import { ApiWithDialogCustomErrors } from '@/os.js';
 
 const MkCaptcha = defineAsyncComponent(() => import('@/components/MkCaptcha.vue'));
+
+const errorHandler: ApiWithDialogCustomErrors = {
+	// 検証リクエストそのものに失敗
+	'0f4fe2f1-2c15-4d6e-b714-efbfcde231cd': {
+		title: i18n.ts._captcha._error._requestFailed.title,
+		text: i18n.ts._captcha._error._requestFailed.text,
+	},
+	// 検証リクエストの結果が不正
+	'c41c067f-24f3-4150-84b2-b5a3ae8c2214': {
+		title: i18n.ts._captcha._error._verificationFailed.title,
+		text: i18n.ts._captcha._error._verificationFailed.text,
+	},
+	// 不明なエラー
+	'f868d509-e257-42a9-99c1-42614b031a97': {
+		title: i18n.ts._captcha._error._unknown.title,
+		text: i18n.ts._captcha._error._unknown.text,
+	},
+};
 
 const captchaResult = ref<string | null>(null);
 
@@ -174,32 +205,33 @@ const botProtectionForm = useForm({
 	turnstileSecretKey: meta.turnstile.secretKey,
 }, async (state) => {
 	const provider = state.provider;
-
-	const sitekey = provider === 'hcaptcha'
-		? state.hcaptchaSiteKey
-		: provider === 'mcaptcha'
-			? state.mcaptchaSiteKey
-			: provider === 'recaptcha'
-				? state.recaptchaSiteKey
-				: provider === 'turnstile'
-					? state.turnstileSiteKey
-					: null;
-	const secret = provider === 'hcaptcha'
-		? state.hcaptchaSecretKey
-		: provider === 'mcaptcha'
-			? state.mcaptchaSecretKey
-			: provider === 'recaptcha'
-				? state.recaptchaSecretKey
-				: provider === 'turnstile'
-					? state.turnstileSecretKey
-					: null;
-
 	if (provider === 'none') {
 		await os.apiWithDialog(
 			'admin/captcha/save',
 			{ provider: provider as Misskey.entities.AdminCaptchaSaveRequest['provider'] },
+			undefined,
+			errorHandler,
 		);
 	} else {
+		const sitekey = provider === 'hcaptcha'
+			? state.hcaptchaSiteKey
+			: provider === 'mcaptcha'
+				? state.mcaptchaSiteKey
+				: provider === 'recaptcha'
+					? state.recaptchaSiteKey
+					: provider === 'turnstile'
+						? state.turnstileSiteKey
+						: null;
+		const secret = provider === 'hcaptcha'
+			? state.hcaptchaSecretKey
+			: provider === 'mcaptcha'
+				? state.mcaptchaSecretKey
+				: provider === 'recaptcha'
+					? state.recaptchaSecretKey
+					: provider === 'turnstile'
+						? state.turnstileSecretKey
+						: null;
+
 		await os.apiWithDialog(
 			'admin/captcha/save',
 			{
@@ -209,6 +241,8 @@ const botProtectionForm = useForm({
 				instanceUrl: state.mcaptchaInstanceUrl,
 				captchaResult: captchaResult.value,
 			},
+			undefined,
+			errorHandler,
 		);
 	}
 
@@ -235,9 +269,5 @@ const canSaving = computed((): boolean => {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-}
-
-.noSpace {
-	white-space-collapse: discard;
 }
 </style>
