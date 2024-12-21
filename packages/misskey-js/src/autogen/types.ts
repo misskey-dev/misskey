@@ -3587,6 +3587,15 @@ export type paths = {
      */
     post: operations['users___show'];
   };
+  '/users/get-security-info': {
+    /**
+     * users/get-security-info
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['users___get-security-info'];
+  };
   '/users/stats': {
     /**
      * users/stats
@@ -29162,6 +29171,70 @@ export type operations = {
       };
       /** @description I'm Ai */
       418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * users/get-security-info
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  'users___get-security-info': {
+    requestBody: {
+      content: {
+        'application/json': {
+          email: string;
+          password: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            twoFactorEnabled: boolean;
+            usePasswordLessLogin: boolean;
+            securityKeys: boolean;
+          };
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description To many requests */
+      429: {
         content: {
           'application/json': components['schemas']['Error'];
         };

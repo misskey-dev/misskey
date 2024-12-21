@@ -5,6 +5,7 @@
 
 import { defineAsyncComponent, reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { set as gtagSet, time as gtagTime } from 'vue-gtag';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -14,7 +15,6 @@ import { apiUrl } from '@/config.js';
 import { waiting, popup, popupMenu, success, alert } from '@/os.js';
 import { generateClientTransactionId, misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
-import { set as gtagSet, time as gtagTime } from 'vue-gtag';
 import { instance } from '@/instance.js';
 
 // TODO: 他のタブと永続化されたstateを同期

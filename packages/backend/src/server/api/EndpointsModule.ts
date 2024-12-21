@@ -382,6 +382,7 @@ import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
+import * as ep___users_get_security_info from './endpoints/users/get-security-info.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
@@ -751,6 +752,7 @@ const $users_following: Provider = { provide: 'ep:users/following', useClass: ep
 const $users_gallery_posts: Provider = { provide: 'ep:users/gallery/posts', useClass: ep___users_gallery_posts.default };
 const $users_getFollowingBirthdayUsers: Provider = { provide: 'ep:users/get-following-birthday-users', useClass: ep___users_getFollowingBirthdayUsers.default };
 const $users_getFrequentlyRepliedUsers: Provider = { provide: 'ep:users/get-frequently-replied-users', useClass: ep___users_getFrequentlyRepliedUsers.default };
+const $users_getSecurityInfo: Provider = { provide: 'ep:users/get-security-info', useClass: ep___users_get_security_info.default };
 const $users_getSkebStatus: Provider = { provide: 'ep:users/get-skeb-status', useClass: ep___users_getSkebStatus.default };
 const $users_featuredNotes: Provider = { provide: 'ep:users/featured-notes', useClass: ep___users_featuredNotes.default };
 const $users_lists_create: Provider = { provide: 'ep:users/lists/create', useClass: ep___users_lists_create.default };
@@ -1149,6 +1151,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$users_gallery_posts,
 		$users_getFollowingBirthdayUsers,
 		$users_getFrequentlyRepliedUsers,
+		$users_getSecurityInfo,
 		$users_getSkebStatus,
 		$users_featuredNotes,
 		$users_lists_create,
@@ -1539,6 +1542,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$users_gallery_posts,
 		$users_getFollowingBirthdayUsers,
 		$users_getFrequentlyRepliedUsers,
+		$users_getSecurityInfo,
 		$users_getSkebStatus,
 		$users_featuredNotes,
 		$users_lists_create,

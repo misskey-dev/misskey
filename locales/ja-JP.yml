@@ -1323,6 +1323,8 @@ pleaseConsentToTracking: "{host}は[プライバシーポリシー]({privacyPoli
 consentEssential: "必須項目のみ許可"
 consentAll: "全て許可"
 consentSelected: "選択した項目のみ許可"
+emailAddressLogin: "メールアドレスでログイン"
+usernameLogin: "ユーザー名でログイン"
 
 _bubbleGame:
   howToPlay: "遊び方"

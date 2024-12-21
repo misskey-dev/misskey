@@ -5318,6 +5318,14 @@ export interface Locale extends ILocale {
      * 選択した項目のみ許可
      */
     "consentSelected": string;
+    /**
+     * メールアドレスでログイン
+     */
+    "emailAddressLogin": string;
+    /**
+     * ユーザー名でログイン
+     */
+    "usernameLogin": string;
     "_bubbleGame": {
         /**
          * 遊び方

@@ -27,7 +27,7 @@ import { i18n } from '@/i18n.js';
 
 withDefaults(defineProps<{
 	autoSet?: boolean;
-	message?: string,
+	message?: string;
 }>(), {
 	autoSet: false,
 	message: '',

@@ -1776,6 +1776,8 @@ declare namespace entities {
         UsersSearchResponse,
         UsersShowRequest,
         UsersShowResponse,
+        UsersGetSecurityInfoRequest,
+        UsersGetSecurityInfoResponse,
         UsersStatsRequest,
         UsersStatsResponse,
         UsersAchievementsRequest,
@@ -3165,6 +3167,12 @@ type UsersGetFrequentlyRepliedUsersRequest = operations['users___get-frequently-
 
 // @public (undocumented)
 type UsersGetFrequentlyRepliedUsersResponse = operations['users___get-frequently-replied-users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGetSecurityInfoRequest = operations['users___get-security-info']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGetSecurityInfoResponse = operations['users___get-security-info']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type UsersGetSkebStatusRequest = operations['users___get-skeb-status']['requestBody']['content']['application/json'];
