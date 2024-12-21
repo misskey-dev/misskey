@@ -242,7 +242,7 @@ export class ApRequestService {
 				const alternate = document.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
 				if (alternate) {
 					const href = alternate.getAttribute('href');
-					if (href && this.utilityService.punyHost(url) === this.utilityService.punyHost(href)) {
+					if (href && new URL(url).host === new URL(href).host) {
 						return await this.signedGet(href, user, false);
 					}
 				}

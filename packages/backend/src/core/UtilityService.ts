@@ -36,7 +36,7 @@ export class UtilityService {
 
 	@bindThis
 	public isUriLocal(uri: string): boolean {
-		return this.punyHost(uri) === this.toPuny(this.config.host);
+		return new URL(uri).host === this.toPuny(this.config.host);
 	}
 
 	@bindThis
@@ -113,13 +113,6 @@ export class UtilityService {
 	public toPunyNullable(host: string | null | undefined): string | null {
 		if (host == null) return null;
 		return toASCII(host.toLowerCase());
-	}
-
-	@bindThis
-	public punyHost(url: string): string {
-		const urlObj = new URL(url);
-		const host = `${this.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
-		return host;
 	}
 
 	@bindThis
