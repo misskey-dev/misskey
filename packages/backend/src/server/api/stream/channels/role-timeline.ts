@@ -16,6 +16,7 @@ class RoleTimelineChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false as const;
 	private roleId: string;
+	private idOnly: boolean;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -32,6 +33,7 @@ class RoleTimelineChannel extends Channel {
 	public async init(params: JsonObject) {
 		if (typeof params.roleId !== 'string') return;
 		this.roleId = params.roleId;
+		this.idOnly = !!(params.idOnly ?? false);
 
 		this.subscriber.on(`roleTimelineStream:${this.roleId}`, this.onEvent);
 	}
@@ -48,7 +50,12 @@ class RoleTimelineChannel extends Channel {
 
 			if (this.isNoteMutedOrBlocked(note)) return;
 
-			this.send('note', note);
+			if (this.idOnly && ['public', 'home'].includes(note.visibility)) {
+				const idOnlyNote = { id: note.id };
+				this.send('note', idOnlyNote);
+			} else {
+				this.send('note', note);
+			}
 		} else {
 			this.send(data.type, data.body);
 		}

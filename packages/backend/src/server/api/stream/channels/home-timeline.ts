@@ -18,6 +18,7 @@ class HomeTimelineChannel extends Channel {
 	public static kind = 'read:account';
 	private withRenotes: boolean;
 	private withFiles: boolean;
+	private idOnly: boolean;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -33,6 +34,7 @@ class HomeTimelineChannel extends Channel {
 	public async init(params: JsonObject) {
 		this.withRenotes = !!(params.withRenotes ?? true);
 		this.withFiles = !!(params.withFiles ?? false);
+		this.idOnly = !!(params.idOnly ?? false);
 
 		this.subscriber.on('notesStream', this.onNote);
 	}
@@ -86,9 +88,13 @@ class HomeTimelineChannel extends Channel {
 			}
 		}
 
-		this.connection.cacheNote(note);
-
-		this.send('note', note);
+		if (this.idOnly && ['public', 'home'].includes(note.visibility)) {
+			const idOnlyNote = { id: note.id };
+			this.send('note', idOnlyNote);
+		} else {
+			this.connection.cacheNote(note);
+			this.send('note', note);
+		}
 	}
 
 	@bindThis

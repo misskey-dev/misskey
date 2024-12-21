@@ -22,6 +22,7 @@ class UserListChannel extends Channel {
 	private listUsersClock: NodeJS.Timeout;
 	private withFiles: boolean;
 	private withRenotes: boolean;
+	private idOnly: boolean;
 
 	constructor(
 		private userListsRepository: UserListsRepository,
@@ -42,6 +43,7 @@ class UserListChannel extends Channel {
 		this.listId = params.listId;
 		this.withFiles = !!(params.withFiles ?? false);
 		this.withRenotes = !!(params.withRenotes ?? true);
+		this.idOnly = !!(params.idOnly ?? false);
 
 		// Check existence and owner
 		const listExist = await this.userListsRepository.exists({
@@ -118,9 +120,13 @@ class UserListChannel extends Channel {
 			}
 		}
 
-		this.connection.cacheNote(note);
-
-		this.send('note', note);
+		if (this.idOnly && ['public', 'home'].includes(note.visibility)) {
+			const idOnlyNote = { id: note.id };
+			this.send('note', idOnlyNote);
+		} else {
+			this.connection.cacheNote(note);
+			this.send('note', note);
+		}
 	}
 
 	@bindThis

@@ -632,6 +632,7 @@ export type Channels = {
         params: {
             withRenotes?: boolean;
             withFiles?: boolean;
+            idOnly?: boolean;
         };
         events: {
             note: (payload: Note) => void;
@@ -643,6 +644,7 @@ export type Channels = {
             withRenotes?: boolean;
             withReplies?: boolean;
             withFiles?: boolean;
+            idOnly?: boolean;
         };
         events: {
             note: (payload: Note) => void;
@@ -654,6 +656,7 @@ export type Channels = {
             withRenotes?: boolean;
             withReplies?: boolean;
             withFiles?: boolean;
+            idOnly?: boolean;
         };
         events: {
             note: (payload: Note) => void;
@@ -664,6 +667,7 @@ export type Channels = {
         params: {
             withRenotes?: boolean;
             withFiles?: boolean;
+            idOnly?: boolean;
         };
         events: {
             note: (payload: Note) => void;
@@ -675,6 +679,7 @@ export type Channels = {
             listId: string;
             withFiles?: boolean;
             withRenotes?: boolean;
+            idOnly?: boolean;
         };
         events: {
             note: (payload: Note) => void;
@@ -693,6 +698,7 @@ export type Channels = {
     roleTimeline: {
         params: {
             roleId: string;
+            idOnly?: boolean;
         };
         events: {
             note: (payload: Note) => void;
@@ -702,6 +708,7 @@ export type Channels = {
     antenna: {
         params: {
             antennaId: string;
+            idOnly?: boolean;
         };
         events: {
             note: (payload: Note) => void;
@@ -711,6 +718,7 @@ export type Channels = {
     channel: {
         params: {
             channelId: string;
+            idOnly?: boolean;
         };
         events: {
             note: (payload: Note) => void;
