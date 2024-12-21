@@ -3176,6 +3176,15 @@ export type paths = {
      */
     post: operations['promo___read'];
   };
+  '/reactions-stat': {
+    /**
+     * reactions-stat
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:account*
+     */
+    post: operations['reactions-stat'];
+  };
   '/renote-mute/create': {
     /**
      * renote-mute/create
@@ -24815,6 +24824,63 @@ export type operations = {
       /** @description OK (without any results) */
       204: {
         content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * reactions-stat
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:account*
+   */
+  'reactions-stat': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default false */
+          site?: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+              reaction: string;
+              count: number;
+            }[];
+        };
       };
       /** @description Client error */
       400: {
