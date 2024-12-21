@@ -15,11 +15,17 @@ export const pendingApiRequestsCount = ref(0);
 let id: string | null = miLocalStorage.getItem('id');
 export function generateClientTransactionId(initiator: string) {
 	if (id === null) {
-		id = crypto.randomUUID();
+		id = crypto.randomUUID().replaceAll('-', '');
 		miLocalStorage.setItem('id', id);
 	}
 
-	return `${id}-${initiator}-${crypto.randomUUID()}`;
+	// ハイフンが含まれている場合は除去
+	if (id.includes('-')) {
+		id = id.replaceAll('-', '');
+		miLocalStorage.setItem('id', id);
+	}
+
+	return `${id}-${initiator}-${crypto.randomUUID().replaceAll('-', '')}`;
 }
 
 function handleResponse<_ResT>(
@@ -58,24 +64,22 @@ export function misskeyApi<
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
 	pendingApiRequestsCount.value++;
 
+	const credential = token ? token : $i ? $i.token : undefined;
+
 	const onFinally = () => {
 		pendingApiRequestsCount.value--;
 	};
 
 	const promise = new Promise<_ResT>((resolve, reject) => {
-		// Append a credential
-		if ($i) (data as any).i = $i.token;
-		if (token !== undefined) (data as any).i = token;
-
 		// Send request
 		const initiateTime = Date.now();
 		window.fetch(`${apiUrl}/${endpoint}`, {
 			method: 'POST',
 			body: JSON.stringify(data),
 			credentials: 'omit',
-			cache: 'no-cache',
 			headers: {
 				'Content-Type': 'application/json',
+				'Authorization': credential ? `Bearer ${credential}` : 'anonymous',
 				'X-Client-Transaction-Id': generateClientTransactionId(initiator),
 			},
 			signal,
@@ -121,8 +125,8 @@ export function misskeyApiGet<
 		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',
 			credentials: 'omit',
-			cache: 'default',
 			headers: {
+				'Authorization': 'anonymous',
 				'X-Client-Transaction-Id': generateClientTransactionId(initiator),
 			},
 		}).then(res => {

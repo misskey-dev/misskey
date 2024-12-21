@@ -5,7 +5,7 @@
 
 import { computed, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERROR_IMAGE_URL } from '@/const.js';
 
@@ -47,7 +47,7 @@ export async function fetchInstance(force = false): Promise<Misskey.entities.Met
 		}
 	}
 
-	const meta = await misskeyApi('meta', {
+	const meta = await misskeyApiGet('meta', {
 		detail: true,
 	});
 

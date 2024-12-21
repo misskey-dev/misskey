@@ -62,10 +62,6 @@ export async function common(createVue: () => App<Element>) {
 		});
 	}
 
-	if (miLocalStorage.getItem('id') === null) {
-		miLocalStorage.setItem('id', crypto.randomUUID());
-	}
-
 	let isClientUpdated = false;
 
 	//#region クライアントが更新されたかチェック

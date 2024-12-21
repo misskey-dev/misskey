@@ -2541,6 +2541,13 @@ export type paths = {
      *
      * **Credential required**: *No*
      */
+    get: operations['meta_get'];
+    /**
+     * meta
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
     post: operations['meta'];
   };
   '/emojis': {
@@ -3229,6 +3236,13 @@ export type paths = {
     post: operations['server-info'];
   };
   '/stats': {
+    /**
+     * stats
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    get: operations['stats_get'];
     /**
      * stats
      * @description No description provided.
@@ -22277,6 +22291,60 @@ export type operations = {
    *
    * **Credential required**: *No*
    */
+  meta_get: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default true */
+          detail?: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['MetaLite'] | components['schemas']['MetaDetailed'];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * meta
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
   meta: {
     requestBody: {
       content: {
@@ -26741,6 +26809,60 @@ export type operations = {
               total: number;
               used: number;
             };
+          };
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * stats
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  stats_get: {
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            notesCount: number;
+            originalNotesCount: number;
+            usersCount: number;
+            originalUsersCount: number;
+            instances: number;
+            driveUsageLocal: number;
+            driveUsageRemote: number;
           };
         };
       };

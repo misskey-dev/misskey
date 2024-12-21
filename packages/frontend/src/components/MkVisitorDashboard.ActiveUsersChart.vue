@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, shallowRef, ref, nextTick } from 'vue';
 import { Chart } from 'chart.js';
 import tinycolor from 'tinycolor2';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { chartVLine } from '@/scripts/chart-vline.js';
@@ -52,7 +52,7 @@ async function renderChart() {
 		}));
 	};
 
-	const raw = await misskeyApi('charts/active-users', { limit: chartLimit, span: 'day' });
+	const raw = await misskeyApiGet('charts/active-users', { limit: chartLimit, span: 'day' });
 
 	fetching.value = false;
 

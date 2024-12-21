@@ -164,7 +164,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkInstanceStats from '@/components/MkInstanceStats.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -187,8 +187,7 @@ watch(tab, () => {
 	}
 });
 
-const initStats = () => misskeyApi('stats', {
-}).then((res) => {
+const initStats = () => misskeyApiGet('stats').then((res) => {
 	stats.value = res;
 });
 

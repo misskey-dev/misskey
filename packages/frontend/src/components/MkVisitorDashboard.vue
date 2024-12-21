@@ -79,7 +79,7 @@ import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -89,7 +89,7 @@ import { openInstanceMenu } from '@/ui/_common_/common';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
-misskeyApi('stats', {}).then((res) => {
+misskeyApiGet('stats').then((res) => {
 	stats.value = res;
 });
 
