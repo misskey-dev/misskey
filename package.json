@@ -48,11 +48,11 @@
 	"resolutions": {
 		"@tensorflow/tfjs-core": "4.22.0",
 		"axios": "1.7.9",
-		"chokidar": "4.0.2",
+		"chokidar": "4.0.3",
 		"cookie": "1.0.2",
 		"cookie-signature": "1.2.2",
 		"debug": "4.4.0",
-		"esbuild": "0.24.0",
+		"esbuild": "0.24.2",
 		"jpeg-js": "0.4.4",
 		"lodash": "4.17.21",
 		"punycode": "npm:punycode.js@2.3.1",
