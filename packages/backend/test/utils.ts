@@ -400,7 +400,7 @@ export const waitFire = async <C extends keyof misskey.Channels>(user: UserToken
 					if (timer) clearTimeout(timer);
 					res(true);
 				}
-			}, params);
+			}, { ...params, idOnly: false });
 		} catch (e) {
 			rej(e);
 		}

@@ -616,6 +616,81 @@ export class ClientServerService {
 			}
 		});
 
+		fastify.get<{ Params: { note: string; } }>('/notes/:note.json', async (request, reply) => {
+			const note = await this.notesRepository.findOneBy({
+				id: request.params.note,
+				visibility: In(['public', 'home']),
+			});
+
+			if (note) {
+				try {
+					const _note = await this.noteEntityService.pack(note, null);
+					reply.header('Content-Type', 'application/json; charset=utf-8');
+					reply.header('Cache-Control', 'public, max-age=600');
+					return reply.send(_note);
+				} catch (err) {
+					reply.header('Cache-Control', 'max-age=10, must-revalidate');
+					if (err instanceof IdentifiableError) {
+						this.clientLoggerService.logger.error(`Internal error occurred in ${request.routeOptions.url}: ${err.message}`, {
+							path: request.routeOptions.url,
+							params: request.params,
+							query: request.query,
+							id: err.id,
+							error: {
+								message: err.message,
+								code: 'INTERNAL_ERROR',
+								stack: err.stack,
+							},
+						});
+						const httpStatusCode = err.id === '85ab9bd7-3a41-4530-959d-f07073900109' ? 403 : 500;
+						reply.code(httpStatusCode);
+						return reply.send({
+							message: err.message,
+							code: 'INTERNAL_ERROR',
+							id: err.id,
+							kind: 'server',
+							httpStatusCode,
+							info: {
+								message: err.message,
+								code: err.name,
+								id: err.id,
+							},
+						});
+					} else {
+						const error = err as Error;
+						const errId = randomUUID();
+						this.clientLoggerService.logger.error(`Internal error occurred in ${request.routeOptions.url}: ${error.message}`, {
+							path: request.routeOptions.url,
+							params: request.params,
+							query: request.query,
+							id: errId,
+							error: {
+								message: error.message,
+								code: error.name,
+								stack: error.stack,
+							},
+						});
+						reply.code(500);
+						return reply.send({
+							message: 'Internal error occurred. Please contact us if the error persists.',
+							code: 'INTERNAL_ERROR',
+							id: 'b9f2a7f9-fe64-434b-9484-cb1f804d1a80',
+							kind: 'server',
+							httpStatusCode: 500,
+							info: {
+								message: error.message,
+								code: error.name,
+								id: errId,
+							},
+						});
+					}
+				}
+			} else {
+				reply.code(404);
+				return;
+			}
+		});
+
 		// Page
 		fastify.get<{ Params: { user: string; page: string; } }>('/@:user/pages/:page', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.user);
