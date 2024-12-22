@@ -6,17 +6,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.wrapper" data-cy-signin-page-password>
 	<div class="_gaps" :class="$style.root">
-		<div :class="$style.avatar" :style="{ backgroundImage: user ? `url('${user.avatarUrl}')` : undefined }"></div>
+		<div v-if="user" :class="$style.avatar" :style="{ backgroundImage: `url('${user.avatarUrl}')` }"></div>
+		<div v-else :class="[$style.avatar, $style.avatarFallback]">
+			<i class="ti ti-user"></i>
+		</div>
 		<div :class="$style.welcomeBackMessage">
-			<I18n :src="i18n.ts.welcomeBackWithName" tag="span">
+			<I18n v-if="user" :src="i18n.ts.welcomeBackWithName" tag="span">
 				<template #name><Mfm :text="user.name ?? user.username" :plain="true"/></template>
 			</I18n>
+			<span v-else>{{ i18n.ts.welcomeBack }}</span>
 		</div>
 
 		<!-- password入力 -->
 		<form class="_gaps_s" @submit.prevent="onSubmit">
 			<!-- ブラウザ オートコンプリート用 -->
-			<input type="hidden" name="username" autocomplete="username" :value="user.username">
+			<input v-if="user" type="hidden" name="username" autocomplete="username" :value="user.username">
 
 			<MkInput v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true" required autofocus data-cy-signin-password>
 				<template #prefix><i class="ti ti-lock"></i></template>
@@ -63,7 +67,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkCaptcha from '@/components/MkCaptcha.vue';
 
 const props = defineProps<{
-	user: Misskey.entities.UserDetailed;
+	user: Misskey.entities.UserDetailed | null;
 	needCaptcha: boolean;
 }>();
 
@@ -147,6 +151,16 @@ defineExpose({
 	background-position: center;
 	background-size: cover;
 	border-radius: 100%;
+
+	&.avatarFallback {
+		background-color: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
+		text-align: center;
+		height: 64px;
+		width: 64px;
+		font-size: 24px;
+		line-height: 64px;
+	}
 }
 
 .welcomeBackMessage {

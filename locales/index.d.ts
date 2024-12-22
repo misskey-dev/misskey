@@ -3723,6 +3723,10 @@ export interface Locale extends ILocale {
      */
     "useDrawerReactionPickerForMobile": string;
     /**
+     * おかえりなさい
+     */
+    "welcomeBack": string;
+    /**
      * おかえりなさい、{name}さん
      */
     "welcomeBackWithName": ParameterizedString<"name">;

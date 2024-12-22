@@ -926,6 +926,7 @@ incorrectTotp: "ワンタイムパスワードが間違っているか、期限�
 voteConfirm: "「{choice}」に投票しますか？"
 hide: "隠す"
 useDrawerReactionPickerForMobile: "モバイルデバイスのときドロワーで表示"
+welcomeBack: "おかえりなさい"
 welcomeBackWithName: "おかえりなさい、{name}さん"
 clickToFinishEmailVerification: "[{ok}]を押して、メールアドレスの確認を完了してください。"
 overridedDeviceKind: "デバイスタイプ"

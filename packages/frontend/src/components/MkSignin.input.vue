@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-model="username"
 				:placeholder="isEmail ? i18n.ts.emailAddress : i18n.ts.username"
 				:type="isEmail ? 'email' : 'text'"
-				:pattern="isEmail ? '^[^@]+@[^@]+$' : undefined"
+				:pattern="isEmail ? undefined : '^[^@]+$'"
 				:spellcheck="false"
 				:autocomplete="isEmail ? 'email' : 'username webauthn'"
 				autofocus
