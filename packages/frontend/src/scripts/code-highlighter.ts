@@ -4,7 +4,7 @@
  */
 
 import { createHighlighterCore } from 'shiki/core';
-import { createOnigurumaEngine, loadWasm } from 'shiki/engine/oniguruma';
+import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
 import darkPlus from 'shiki/themes/dark-plus.mjs';
 import { bundledThemesInfo } from 'shiki/themes';
 import { bundledLanguagesInfo } from 'shiki/langs';
