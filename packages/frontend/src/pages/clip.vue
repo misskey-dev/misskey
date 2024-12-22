@@ -49,7 +49,7 @@ import { genEmbedCode } from '@/scripts/get-embed-code.js';
 import { assertServerContext, serverContext } from '@/server-context.js';
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
-const CTX_CLIP = $i && assertServerContext(serverContext, 'clip') ? serverContext.clip : null;
+const CTX_CLIP = !$i && assertServerContext(serverContext, 'clip') ? serverContext.clip : null;
 
 const props = defineProps<{
 	clipId: string,
