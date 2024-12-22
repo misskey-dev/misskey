@@ -156,8 +156,6 @@ defineExpose({
 		background-color: var(--MI_THEME-accentedBg);
 		color: var(--MI_THEME-accent);
 		text-align: center;
-		height: 64px;
-		width: 64px;
 		font-size: 24px;
 		line-height: 64px;
 	}
