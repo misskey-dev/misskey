@@ -216,6 +216,13 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						data,
 					}];
 
+				case 'loginFailed':
+					return [i18n.ts._notification.loginFailed, {
+						body: i18n.tsx._notification.loginFailedDescription({ ip: data.body.ip }),
+						badge: iconUrl('login-2'),
+						data,
+					}];
+
 				case 'exportCompleted': {
 					const entityName = {
 						antenna: i18n.ts.antennas,

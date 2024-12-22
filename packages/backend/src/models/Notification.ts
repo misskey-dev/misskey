@@ -91,6 +91,11 @@ export type MiNotification = {
 	id: string;
 	createdAt: string;
 } | {
+	type: 'loginFailed';
+	id: string;
+	createdAt: string;
+	userIp: string;
+} | {
 	type: 'app';
 	id: string;
 	createdAt: string;

@@ -2497,6 +2497,8 @@ _notification:
   flushNotification: "通知の履歴をリセットする"
   exportOfXCompleted: "{x}のエクスポートが完了しました"
   login: "ログインがありました"
+  loginFailed: "ログインに失敗しました"
+  loginFailedDescription: "{ip}からのログインに失敗しました。\n自身のip以外でのログインが行われている場合、セキュリティのために設定にてパスワードを変更してください。"
 
   _types:
     all: "すべて"
