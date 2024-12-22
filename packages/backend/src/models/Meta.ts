@@ -544,6 +544,11 @@ export class MiMeta {
 	})
 	public enableIdenticonGeneration: boolean;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public enableEnhancedServerStats: boolean;
+
 	@Column('jsonb', {
 		default: { },
 	})
