@@ -1,7 +1,8 @@
 ## 2024.11.1
 
 ### General
--
+- Feat: メールアドレスでログインできるように  
+  (Based on https://github.com/MisskeyIO/misskey/pull/836)
 
 ### Client
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
