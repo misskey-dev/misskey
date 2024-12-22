@@ -110,7 +110,7 @@ export class SigninApiService {
 		}
 
 		// Fetch user
-		const profile = await this.userProfilesRepository.findOne({
+		const profiles = await this.userProfilesRepository.find({
 			relations: ['user'],
 			where: username.includes('@') ? {
 				email: username,
@@ -124,7 +124,22 @@ export class SigninApiService {
 					host: IsNull(),
 				},
 			},
+			//同一のメールアドレスを使用しているアカウントが他にないかどうかを確認するために最大2件取得する
+			take: 2,
+			order: {
+				userId: 1,
+			},
 		});
+
+		if (profiles.length !== 1) {
+			// v12.96.0以前では同一のメールを複数のアカウントで使える。アカウントが複数見つかった場合・一つも見つからなかった場合は
+			// アカウントが見つからなかったときと同一のエラーを返す
+			return error(404, {
+				id: '6cc579cc-885d-43d8-95c2-b8c7fc963280',
+			});
+		}
+
+		const profile = profiles[0];
 		const user = (profile?.user as MiLocalUser) ?? null;
 
 		if (user == null || profile == null) {
