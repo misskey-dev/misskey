@@ -13,7 +13,6 @@ import type {
 	SigninsRepository,
 	UserProfilesRepository,
 	UserSecurityKeysRepository,
-	UsersRepository,
 } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
@@ -37,9 +36,6 @@ export class SigninApiService {
 
 		@Inject(DI.meta)
 		private meta: MiMeta,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
@@ -114,12 +110,24 @@ export class SigninApiService {
 		}
 
 		// Fetch user
-		const user = await this.usersRepository.findOneBy({
-			usernameLower: username.toLowerCase(),
-			host: IsNull(),
-		}) as MiLocalUser;
+		const profile = await this.userProfilesRepository.findOne({
+			relations: ['user'],
+			where: username.includes('@') ? {
+				email: username,
+				emailVerified: true,
+				user: {
+					host: IsNull(),
+				}
+			} : {
+				user: {
+					usernameLower: username.toLowerCase(),
+					host: IsNull(),
+				},
+			},
+		});
+		const user = (profile?.user as MiLocalUser) ?? null;
 
-		if (user == null) {
+		if (user == null || profile == null) {
 			return error(404, {
 				id: '6cc579cc-885d-43d8-95c2-b8c7fc963280',
 			});
@@ -130,8 +138,6 @@ export class SigninApiService {
 				id: 'e03a5f46-d309-4865-9b69-56282d94e1eb',
 			});
 		}
-
-		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 		const securityKeysAvailable = await this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1);
 
 		if (password == null) {
