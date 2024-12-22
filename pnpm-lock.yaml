@@ -728,8 +728,8 @@ importers:
         specifier: 3.5.12
         version: 3.5.12
       aiscript-vscode:
-        specifier: github:aiscript-dev/aiscript-vscode#v0.1.11
-        version: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/e1e1b27f2f72cd28a473e004b6da0d8fc0bd40d9
+        specifier: github:aiscript-dev/aiscript-vscode#v0.1.14
+        version: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/b8ec99ac732acf9d67ba574d8db7c7f2451f99da
       astring:
         specifier: 1.9.0
         version: 1.9.0
@@ -4938,9 +4938,9 @@ packages:
     resolution: {integrity: sha512-gOsf2YwSlleG6IjRYG2A7k0HmBMEo6qVNk9Bp/EaLgAJT5ngH6PXbqa4ItvnEwCm/velL5jAnQgsHsWnjhGmvw==}
     engines: {node: '>=18'}
 
-  aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/e1e1b27f2f72cd28a473e004b6da0d8fc0bd40d9:
-    resolution: {tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/e1e1b27f2f72cd28a473e004b6da0d8fc0bd40d9}
-    version: 0.1.11
+  aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/b8ec99ac732acf9d67ba574d8db7c7f2451f99da:
+    resolution: {tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/b8ec99ac732acf9d67ba574d8db7c7f2451f99da}
+    version: 0.1.14
     engines: {vscode: ^1.83.0}
 
   ajv-draft-04@1.0.0:
@@ -11786,7 +11786,7 @@ snapshots:
       '@babel/traverse': 7.23.5
       '@babel/types': 7.24.7
       convert-source-map: 2.0.0
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -11806,7 +11806,7 @@ snapshots:
       '@babel/traverse': 7.24.7
       '@babel/types': 7.24.7
       convert-source-map: 2.0.0
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -12065,7 +12065,7 @@ snapshots:
       '@babel/helper-split-export-declaration': 7.22.6
       '@babel/parser': 7.25.6
       '@babel/types': 7.24.7
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -12080,7 +12080,7 @@ snapshots:
       '@babel/helper-split-export-declaration': 7.24.7
       '@babel/parser': 7.25.6
       '@babel/types': 7.25.6
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -12471,7 +12471,7 @@ snapshots:
   '@eslint/config-array@0.18.0':
     dependencies:
       '@eslint/object-schema': 2.1.4
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -12481,7 +12481,7 @@ snapshots:
   '@eslint/eslintrc@3.1.0':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       espree: 10.3.0
       globals: 14.0.0
       ignore: 5.3.1
@@ -15643,7 +15643,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -15664,7 +15664,7 @@ snapshots:
       clean-stack: 5.2.0
       indent-string: 5.0.0
 
-  aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/e1e1b27f2f72cd28a473e004b6da0d8fc0bd40d9:
+  aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/b8ec99ac732acf9d67ba574d8db7c7f2451f99da:
     dependencies:
       '@aiscript-dev/aiscript-languageserver': https://github.com/aiscript-dev/aiscript-languageserver/releases/download/0.1.6/aiscript-dev-aiscript-languageserver-0.1.6.tgz
       vscode-languageclient: 9.0.1
@@ -17254,7 +17254,7 @@ snapshots:
 
   esbuild-register@3.5.0(esbuild@0.24.0):
     dependencies:
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       esbuild: 0.24.0
     transitivePeerDependencies:
       - supports-color
@@ -17496,7 +17496,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       escape-string-regexp: 4.0.0
       eslint-scope: 8.2.0
       eslint-visitor-keys: 4.2.0
@@ -17941,7 +17941,7 @@ snapshots:
 
   follow-redirects@1.15.9(debug@4.3.7):
     optionalDependencies:
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
 
   for-each@0.3.3:
     dependencies:
@@ -18811,7 +18811,7 @@ snapshots:
 
   istanbul-lib-source-maps@4.0.1:
     dependencies:
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       istanbul-lib-coverage: 3.2.2
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -19913,7 +19913,7 @@ snapshots:
   micromark@4.0.0:
     dependencies:
       '@types/debug': 4.1.12
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       decode-named-character-reference: 1.0.2
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.0
@@ -21373,7 +21373,7 @@ snapshots:
 
   require-in-the-middle@7.3.0:
     dependencies:
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       module-details-from-path: 1.0.3
       resolve: 1.22.8
     transitivePeerDependencies:
@@ -21798,7 +21798,7 @@ snapshots:
   socks-proxy-agent@8.0.2:
     dependencies:
       agent-base: 7.1.0
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       socks: 2.7.1
     transitivePeerDependencies:
       - supports-color
@@ -21907,7 +21907,7 @@ snapshots:
       arg: 5.0.2
       bluebird: 3.7.2
       check-more-types: 2.24.0
-      debug: 4.3.7(supports-color@5.5.0)
+      debug: 4.3.7(supports-color@8.1.1)
       execa: 5.1.1
       lazy-ass: 1.6.0
       ps-tree: 1.2.0
