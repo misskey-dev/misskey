@@ -857,7 +857,7 @@ importers:
         specifier: 5.4.11
         version: 5.4.11(@types/node@22.9.0)(sass@1.79.3)(terser@5.36.0)
       vscode-oniguruma:
-        specifier: ^2.0.1
+        specifier: 2.0.1
         version: 2.0.1
       vue:
         specifier: 3.5.12
