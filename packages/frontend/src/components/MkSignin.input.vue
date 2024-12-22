@@ -44,10 +44,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				data-cy-signin-username
 			>
 				<template #prefix>
-					<i v-if="isEmail" class="ti ti-email"></i>
-					<span v-else>@</span>
+					<i v-if="isEmail" class="ti ti-mail"></i>
+					<i v-else class="ti ti-at"></i>
 				</template>
-				<template #suffix>@{{ host }}</template>
+				<template v-if="!isEmail" #suffix>@{{ host }}</template>
 				<template #caption><button class="_textButton" type="button" @click="isEmail = !isEmail">{{ isEmail ? i18n.ts.useUsername : i18n.ts.useEmail }}</button></template>
 			</MkInput>
 			<MkButton type="submit" large primary rounded style="margin: 0 auto;" data-cy-signin-page-input-continue>{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
