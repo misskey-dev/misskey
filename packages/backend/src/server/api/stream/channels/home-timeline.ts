@@ -84,12 +84,18 @@ class HomeTimelineChannel extends Channel {
 				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
 				note.renote.myReaction = myRenoteReaction;
 			}
+			if (note.renote && note.renote.reply) {
+				if (Object.keys(note.renote.reply.reactions).length > 0) {
+					const myReplyReaction = await this.noteEntityService.populateMyReaction(note.renote.reply, this.user.id);
+					note.renote.reply.myReaction = myReplyReaction;
+				}
+			}
 		}
 
 		if (this.user && note.reply) {
 			if (Object.keys(note.reply.reactions).length > 0) {
-				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.reply, this.user.id);
-				note.reply.myReaction = myRenoteReaction;
+				const myReplyReaction = await this.noteEntityService.populateMyReaction(note.reply, this.user.id);
+				note.reply.myReaction = myReplyReaction;
 			}
 		}
 
