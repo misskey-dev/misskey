@@ -62,6 +62,13 @@ class GlobalTimelineChannel extends Channel {
 			}
 		}
 
+		if (this.user && note.reply) {
+			if (Object.keys(note.reply.reactions).length > 0) {
+				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.reply, this.user.id);
+				note.reply.myReaction = myRenoteReaction;
+			}
+		}
+
 		this.connection.cacheNote(note);
 
 		this.send('note', note);
