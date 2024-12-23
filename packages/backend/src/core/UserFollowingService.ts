@@ -7,6 +7,7 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { IsNull } from 'typeorm';
 import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import type { Packed } from '@/misc/json-schema.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
@@ -380,7 +381,13 @@ export class UserFollowingService implements OnModuleInit {
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
 				for (const webhook of webhooks) {
 					this.queueService.userWebhookDeliver(webhook, 'follow', {
-						user: packed,
+						user: {
+							...packed,
+							updatedAt: packed.updatedAt,
+							lastFetchedAt: packed.lastFetchedAt,
+							followersCount: packed.followersCount,
+							followingCount: packed.followingCount,
+						},
 					});
 				}
 			});
@@ -467,19 +474,12 @@ export class UserFollowingService implements OnModuleInit {
 		// UnFollow
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(follower.id, followee).then(async packed => {
-				this.globalEventService.publishMainStream(followee.id, 'unfollow', packed);
+				this.globalEventService.publishMainStream(followee.id, 'followed', packed);
 
-				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('unfollow'));
-				for (const webhook of webhooks) {
-					this.queueService.userWebhookDeliver(webhook, 'unfollow', {
-						user: packed,
-					});
-				}
+				// 通知を作成
+				this.notificationService.createNotification(followee.id, 'unfollow', {
+				}, follower.id);
 			});
-
-			// 通知を作成
-			this.notificationService.createNotification(followee.id, 'unfollow', {
-			}, follower.id);
 		}
 	}
 

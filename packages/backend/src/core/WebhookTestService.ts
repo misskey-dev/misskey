@@ -91,6 +91,7 @@ function generateDummyUser(override?: Partial<MiUser>): MiUser {
 		uri: null,
 		followersUri: null,
 		token: null,
+		isInHanaMode: false,
 		...override,
 	};
 }
@@ -103,6 +104,7 @@ function generateDummyNote(override?: Partial<MiNote>): MiNote {
 		renoteId: null,
 		renote: null,
 		threadId: null,
+		isNoteInHanaMode: false,
 		text: 'This is a dummy note for testing purposes.',
 		name: null,
 		cw: null,
@@ -133,6 +135,7 @@ function generateDummyNote(override?: Partial<MiNote>): MiNote {
 		replyUserHost: null,
 		renoteUserId: null,
 		renoteUserHost: null,
+		deleteAt: null,
 		...override,
 	};
 }
@@ -211,6 +214,7 @@ function toPackedUserDetailedNotMe(user: MiUser, override?: Packed<'UserDetailed
 		url: null,
 		uri: null,
 		movedTo: null,
+		hideActivity: false,
 		alsoKnownAs: [],
 		createdAt: new Date().toISOString(),
 		updatedAt: user.updatedAt?.toISOString() ?? null,
@@ -253,6 +257,7 @@ function toPackedUserDetailedNotMe(user: MiUser, override?: Packed<'UserDetailed
 		isRenoteMuted: false,
 		notify: 'none',
 		withReplies: true,
+		hideProfileFiles: false,
 		...override,
 	};
 }

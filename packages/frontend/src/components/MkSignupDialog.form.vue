@@ -322,7 +322,6 @@ async function onSubmit(): Promise<void> {
 		onSignupApiError();
 	}
 
-
 	submitting.value = false;
 }
 
