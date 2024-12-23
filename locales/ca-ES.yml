@@ -1473,7 +1473,7 @@ _accountMigration:
   startMigration: "Migrar"
   migrationConfirm: "Vols migrar aquest compte a {account}? Una vegada comenci la migració no es podrà parar O fer marxa enrere i no podràs tornar a fer servir aquest compte mai més."
   movedAndCannotBeUndone: "Aquest compte ha migrat.\nLes migracions no es poden desfer."
-  postMigrationNote: "Aquest compte deixarà de seguir tots els comptes que segueix 24 hores després de germinar la migració.\nEl nombre de seguidors i seguits passarà a ser de zero. Per evitar que els teus seguidors no puguin veure les publicacions marcades com a només seguidors continuaren seguint aquest compte."
+  postMigrationNote: "Aquest compte deixarà de seguir tots els comptes que segueix 24 hores després de terminar la migració.\nEl nombre de seguidors i seguits passarà a ser de zero. Per evitar que els teus seguidors no puguin veure les publicacions marcades com a només seguidors continuaren seguint aquest compte."
   movedTo: "Nou compte:"
 _achievements:
   earnedAt: "Desbloquejat el"
