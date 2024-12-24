@@ -183,7 +183,7 @@ export class ApNoteService {
 		// eslint-disable-next-line no-param-reassign
 		actor ??= await this.apPersonService.fetchPerson(uri) as MiRemoteUser | undefined;
 		if (actor && actor.isSuspended) {
-			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', `User ${cachedActor.id} has been suspended.`);
+			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', `User ${actor.id} has been suspended.`);
 		}
 
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
