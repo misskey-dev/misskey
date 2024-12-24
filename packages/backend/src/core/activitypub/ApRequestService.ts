@@ -204,7 +204,11 @@ export class ApRequestService {
 		//#region リクエスト先がhtmlかつactivity+jsonへのalternate linkタグがあるとき
 		const contentType = res.headers.get('content-type');
 
-		if ((contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' && _followAlternate) {
+		if (
+			res.ok &&
+			(contentType ?? '').split(';')[0].trimEnd().toLowerCase() === 'text/html' &&
+			_followAlternate
+		) {
 			const html = await res.text();
 			try {
 				const fragment = JSDOM.fragment(html);
