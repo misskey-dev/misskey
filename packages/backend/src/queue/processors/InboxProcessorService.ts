@@ -180,6 +180,8 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			if (signerHost !== activityIdHost) {
 				throw new Bull.UnrecoverableError(`skip: signerHost(${signerHost}) !== activity.id host(${activityIdHost}`);
 			}
+		} else {
+			throw new Bull.UnrecoverableError('skip: activity id is not a string');
 		}
 
 		// Update stats
@@ -198,7 +200,11 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 		// アクティビティを処理
 		try {
-			await this.apInboxService.performActivity(authUser.user, activity, job.data.user?.id);
+			const result = await this.apInboxService.performActivity(authUser.user, activity, undefined, job.data.user?.id);
+			if (result && !result.startsWith('ok')) {
+				this.logger.warn(`inbox activity ignored (maybe): id=${activity.id} reason=${result}`);
+				return result;
+			}
 		} catch (e) {
 			if (e instanceof IdentifiableError) {
 				if ([
@@ -206,6 +212,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 					'689ee33f-f97c-479a-ac49-1b9f8140af99',
 					'9f466dab-c856-48cd-9e65-ff90ff750580',
 					'85ab9bd7-3a41-4530-959d-f07073900109',
+					'd450b8a9-48e4-4dab-ae36-f4db763fda7c',
 				].includes(e.id)) return e.message;
 			}
 			throw e;

@@ -20,7 +20,8 @@ import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
-import { MiMeta, MiNote } from '@/models/_.js';
+import { MiMeta, MiNote, UserProfilesRepository } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -86,6 +87,7 @@ async function createRandomRemoteUser(
 }
 
 describe('ActivityPub', () => {
+	let userProfilesRepository: UserProfilesRepository;
 	let imageService: ApImageService;
 	let noteService: ApNoteService;
 	let personService: ApPersonService;
@@ -126,6 +128,8 @@ describe('ActivityPub', () => {
 
 		await app.init();
 		app.enableShutdownHooks();
+
+		userProfilesRepository = app.get(DI.userProfilesRepository);
 
 		noteService = app.get<ApNoteService>(ApNoteService);
 		personService = app.get<ApPersonService>(ApPersonService);
@@ -169,7 +173,7 @@ describe('ActivityPub', () => {
 			resolver.register(actor.id, actor);
 			resolver.register(post.id, post);
 
-			const note = await noteService.createNote(post.id, resolver, true);
+			const note = await noteService.createNote(post.id, undefined, resolver, true);
 
 			assert.deepStrictEqual(note?.uri, post.id);
 			assert.deepStrictEqual(note.visibility, 'public');
@@ -202,6 +206,53 @@ describe('ActivityPub', () => {
 			const user = await personService.createPerson(actor.id, resolver);
 
 			assert.strictEqual(user.name, null);
+		});
+	});
+
+	describe('Collection visibility', () => {
+		test('Public following/followers', async () => {
+			const actor = createRandomActor();
+			actor.following = {
+				id: `${actor.id}/following`,
+				type: 'OrderedCollection',
+				totalItems: 0,
+				first: `${actor.id}/following?page=1`,
+			};
+			actor.followers = `${actor.id}/followers`;
+
+			resolver.register(actor.id, actor);
+			resolver.register(actor.followers, {
+				id: actor.followers,
+				type: 'OrderedCollection',
+				totalItems: 0,
+				first: `${actor.followers}?page=1`,
+			});
+
+			const user = await personService.createPerson(actor.id, resolver);
+			const userProfile = await userProfilesRepository.findOneByOrFail({ userId: user.id });
+
+			assert.deepStrictEqual(userProfile.followingVisibility, 'public');
+			assert.deepStrictEqual(userProfile.followersVisibility, 'public');
+		});
+
+		test('Private following/followers', async () => {
+			const actor = createRandomActor();
+			actor.following = {
+				id: `${actor.id}/following`,
+				type: 'OrderedCollection',
+				totalItems: 0,
+				// first: …
+			};
+			actor.followers = `${actor.id}/followers`;
+
+			resolver.register(actor.id, actor);
+			//resolver.register(actor.followers, { … });
+
+			const user = await personService.createPerson(actor.id, resolver);
+			const userProfile = await userProfilesRepository.findOneByOrFail({ userId: user.id });
+
+			assert.deepStrictEqual(userProfile.followingVisibility, 'private');
+			assert.deepStrictEqual(userProfile.followersVisibility, 'private');
 		});
 	});
 
@@ -282,7 +333,7 @@ describe('ActivityPub', () => {
 			resolver.register(actor.featured, featured);
 			resolver.register(firstNote.id, firstNote);
 
-			const note = await noteService.createNote(firstNote.id as string, resolver);
+			const note = await noteService.createNote(firstNote.id as string, undefined, resolver);
 			assert.strictEqual(note?.uri, firstNote.id);
 		});
 	});
