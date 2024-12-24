@@ -6,6 +6,7 @@
 ### Client
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
+- Enhance: 照会に失敗した場合、その理由を表示するように
 - Enhance: ノートの添付ファイルを一覧で遡れる「ファイル」タブを追加  
   (Based on https://github.com/Otaku-Social/maniakey/pull/14)
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
