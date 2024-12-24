@@ -24,7 +24,7 @@ jobs:
   pnpm_install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         submodules: true
@@ -35,7 +35,6 @@ jobs:
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
 
   lint:
@@ -50,7 +49,7 @@ jobs:
         - sw
         - misskey-js
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         submodules: true
@@ -61,7 +60,6 @@ jobs:
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - run: pnpm --filter ${{ matrix.workspace }} run eslint
 
@@ -75,7 +73,7 @@ jobs:
         - backend
         - misskey-js
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         submodules: true
@@ -86,7 +84,6 @@ jobs:
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - run: pnpm -r run build:tsc
       if: ${{ matrix.workspace == 'backend' }}

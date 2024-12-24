@@ -14,11 +14,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	&& apt-get install -yqq --no-install-recommends \
 	build-essential
 
-RUN corepack enable
-
 WORKDIR /misskey
 
 COPY --link pnpm-lock.yaml ./
+RUN npm install -g pnpm
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm fetch --ignore-scripts
 
@@ -36,11 +35,7 @@ RUN pnpm i --frozen-lockfile --aggregate-output --offline \
 
 COPY --link . ./
 
-ARG NODE_ENV=production
-
-RUN git submodule update --init
-RUN pnpm build
-RUN rm -rf .git/
+RUN NODE_ENV=production pnpm build
 
 # build native dependencies for target platform
 
@@ -50,11 +45,10 @@ RUN apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
 	build-essential
 
-RUN corepack enable
-
 WORKDIR /misskey
 
 COPY --link pnpm-lock.yaml ./
+RUN npm install -g pnpm
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm fetch --ignore-scripts
 
@@ -75,9 +69,8 @@ ARG GID="991"
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
-	  curl ffmpeg libjemalloc-dev libjemalloc2 tini \
+	curl ffmpeg libjemalloc-dev libjemalloc2 tini \
 	&& ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so \
-	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
 	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey \
 	&& find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /u+s -ignore_readdir_race -exec chmod u-s {} \; \
@@ -85,8 +78,10 @@ RUN apt-get update \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists
 
-USER misskey
 WORKDIR /misskey
+
+COPY --chown=misskey:misskey pnpm-lock.yaml ./
+RUN npm install -g pnpm
 
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
@@ -101,13 +96,10 @@ COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/bui
 COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY --chown=misskey:misskey . ./
 
-RUN corepack install \
-	&& corepack pack
-
+USER misskey
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV MALLOC_CONF=background_thread:true,metadata_thp:auto,dirty_decay_ms:30000,muzzy_decay_ms:30000
 ENV NODE_ENV=production
-ENV COREPACK_ENABLE_NETWORK=0
 HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/misskey/healthcheck.sh"]
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["pnpm", "run", "migrateandstart:docker"]

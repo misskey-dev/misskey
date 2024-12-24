@@ -9,17 +9,6 @@
 node_modules
 report.*.json
 
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-packages/frontend/.yarn/cache
-packages/backend/.yarn/cache
-packages/sw/.yarn/cache
-
 # pnpm
 .pnpm-store
 
@@ -35,8 +24,11 @@ coverage
 !/.config/example.yml
 !/.config/docker_example.yml
 !/.config/docker_example.env
+compose.yml
 docker-compose.yml
+!/.devcontainer/compose.yml
 !/.devcontainer/docker-compose.yml
+!/packages/backend/test/compose.yml
 !/packages/backend/test/docker-compose.yml
 
 # misskey
