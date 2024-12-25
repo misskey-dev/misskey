@@ -254,11 +254,17 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.visibleUsers = [];
 		if (data.channel != null) data.localOnly = true;
 
-		if (data.visibility === 'public' && data.channel == null) {
+		if (['public', 'public_non_ltl'].includes(data.visibility) && data.channel == null) {
 			const sensitiveWords = this.meta.sensitiveWords;
 			if (this.utilityService.isKeyWordIncluded(data.cw ?? data.text ?? '', sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
+				data.visibility = 'home';
+			}
+		}
+
+		if (['public_non_ltl'].includes(data.visibility) && data.channel == null) {
+			if ((await this.roleService.getUserPolicies(user.id)).canPublicNonLtlNote === false) {
 				data.visibility = 'home';
 			}
 		}
@@ -284,9 +290,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 				case 'public':
 					// public noteは無条件にrenote可能
 					break;
+				case 'public_non_ltl':
+					// publicと同じ
+					break;
 				case 'home':
 					// home noteはhome以下にrenote可能
-					if (data.visibility === 'public') {
+					if (data.visibility === 'public' || data.visibility === 'public_non_ltl') {
 						data.visibility = 'home';
 					}
 					break;
@@ -317,8 +326,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		// 返信対象がpublicではないならhomeにする
-		if (data.reply && data.reply.visibility !== 'public' && data.visibility === 'public') {
+		// 返信対象がpublicまたはpublic_non_ltlではないならhomeにする
+		if (data.reply && ['public', 'public_non_ltl'].includes(data.reply.visibility) && ['public', 'public_non_ltl'].includes(data.visibility)) {
 			data.visibility = 'home';
 		}
 
@@ -525,7 +534,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// ハッシュタグ更新
-		if (data.visibility === 'public' || data.visibility === 'home') {
+		if (data.visibility === 'public' || data.visibility === 'public_non_ltl' || data.visibility === 'home') {
 			this.hashtagService.updateHashtags(user, tags);
 		}
 
@@ -693,11 +702,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 					}
 
 					// フォロワーに配送
-					if (['public', 'home', 'followers'].includes(note.visibility)) {
+					if (['public', 'public_non_ltl', 'home', 'followers'].includes(note.visibility)) {
 						dm.addFollowersRecipe();
 					}
 
-					if (['public'].includes(note.visibility)) {
+					if (['public', 'public_non_ltl'].includes(note.visibility)) {
 						this.relayService.deliverToRelays(user, noteActivity);
 					}
 

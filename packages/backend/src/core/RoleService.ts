@@ -63,6 +63,7 @@ export type RolePolicies = {
 	canImportFollowing: boolean;
 	canImportMuting: boolean;
 	canImportUserLists: boolean;
+	canPublicNonLtlNote: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -97,6 +98,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportFollowing: true,
 	canImportMuting: true,
 	canImportUserLists: true,
+	canPublicNonLtlNote: false,
 };
 
 @Injectable()
@@ -402,6 +404,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canImportFollowing: calc('canImportFollowing', vs => vs.some(v => v === true)),
 			canImportMuting: calc('canImportMuting', vs => vs.some(v => v === true)),
 			canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
+			canPublicNonLtlNote: calc('canPublicNonLtlNote', vs => vs.some(v => v === true)),
 		};
 	}
 

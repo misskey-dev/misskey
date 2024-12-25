@@ -69,7 +69,7 @@ export const packedNoteSchema = {
 		visibility: {
 			type: 'string',
 			optional: false, nullable: false,
-			enum: ['public', 'home', 'followers', 'specified'],
+			enum: ['public', 'public_non_ltl', 'home', 'followers', 'specified'],
 		},
 		mentions: {
 			type: 'array',
