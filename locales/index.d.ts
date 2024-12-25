@@ -2759,6 +2759,10 @@ export interface Locale extends ILocale {
      */
     "hardWordMute": string;
     /**
+     * ミュートされたワードを表示
+     */
+    "showMutedWord": string;
+    /**
      * 正規表現エラー
      */
     "regexpError": string;
@@ -2774,6 +2778,10 @@ export interface Locale extends ILocale {
      * {name}が何かを言いました
      */
     "userSaysSomething": ParameterizedString<"name">;
+    /**
+     * {name}が「{word}」について何かを言いました
+     */
+    "userSaysSomethingAbout": ParameterizedString<"name" | "word">;
     /**
      * アクティブにする
      */

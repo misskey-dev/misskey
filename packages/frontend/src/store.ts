@@ -506,6 +506,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
+	showSoftWordMutedWord: {
+		where: 'device',
+		default: false,
+	},
 	reactionChecksMuting: {
 		where: 'device',
 		default: true,

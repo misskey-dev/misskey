@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export function checkWordMute(note: Record<string, any>, me: Record<string, any> | null | undefined, mutedWords: Array<string | string[]>): boolean {
+export function checkWordMute(note: Record<string, any>, me: Record<string, any> | null | undefined, mutedWords: Array<string | string[]>): Array<string | string[]> | false {
 	// 自分自身
 	if (me && (note.userId === me.id)) return false;
 
@@ -12,7 +12,7 @@ export function checkWordMute(note: Record<string, any>, me: Record<string, any>
 
 		if (text === '') return false;
 
-		const matched = mutedWords.some(filter => {
+		const matched = mutedWords.filter(filter => {
 			if (Array.isArray(filter)) {
 				// Clean up
 				const filteredFilter = filter.filter(keyword => keyword !== '');
@@ -35,7 +35,7 @@ export function checkWordMute(note: Record<string, any>, me: Record<string, any>
 			}
 		});
 
-		if (matched) return true;
+		if (matched.length > 0) return matched;
 	}
 
 	return false;
