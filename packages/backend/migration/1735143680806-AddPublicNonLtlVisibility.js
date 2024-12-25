@@ -12,6 +12,9 @@ export class AddPublicNonLtlVisibility1735143680806 {
     }
 
     async down(queryRunner) {
+			//visibilityがpublic_non_ltlのNoteをvisibility: homeに変更
+			await queryRunner.query(`UPDATE notes SET visibility = 'home' WHERE visibility = 'public_non_ltl'`);
+
 			//Noteのvisibilityからpublic_non_ltlを削除
 			await queryRunner.query(`ALTER TYPE "note_visibility_enum" DROP VALUE 'public_non_ltl'`);
     }
