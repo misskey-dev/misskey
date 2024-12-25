@@ -94,9 +94,9 @@ class HomeTimelineChannel extends Channel {
 		if (this.minimize && ['public', 'home'].includes(note.visibility)) {
 			this.send('note', {
 				id: note.id, myReaction: note.myReaction,
-				poll: note.poll ? { choices: note.poll.choices } : undefined,
-				reply: note.reply ? { myReaction: note.reply.myReaction } : undefined,
-				renote: note.renote ? { myReaction: note.renote.myReaction } : undefined,
+				poll: note.poll?.choices ? { choices: note.poll.choices } : undefined,
+				reply: note.reply?.myReaction ? { myReaction: note.reply.myReaction } : undefined,
+				renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
 			});
 		} else {
 			this.connection.cacheNote(note);
