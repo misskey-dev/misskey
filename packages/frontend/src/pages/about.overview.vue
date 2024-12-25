@@ -126,7 +126,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { host, version } from '@/config.js';
+import { host, version } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import number from '@/filters/number.js';
@@ -147,7 +147,7 @@ const initStats = () => misskeyApi('stats', {});
 	text-align: center;
 	border-radius: 10px;
 	overflow: clip;
-	background-color: var(--panel);
+	background-color: var(--MI_THEME-panel);
 	background-size: cover;
 	background-position: center center;
 }
@@ -183,14 +183,14 @@ const initStats = () => misskeyApi('stats', {});
 		flex-shrink: 0;
 		display: flex;
 		position: sticky;
-		top: calc(var(--stickyTop, 0px) + 8px);
+		top: calc(var(--MI-stickyTop, 0px) + 8px);
 		counter-increment: item;
 		content: counter(item);
 		width: 32px;
 		height: 32px;
 		line-height: 32px;
-		background-color: var(--accentedBg);
-		color: var(--accent);
+		background-color: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
 		font-size: 13px;
 		font-weight: bold;
 		align-items: center;

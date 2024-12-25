@@ -140,7 +140,7 @@ watch(v, newValue => {
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 
 	&:empty {
 		display: none;
@@ -160,17 +160,17 @@ watch(v, newValue => {
 	margin: 0;
 	border-radius: 6px;
 	padding: 0;
-	color: var(--fg);
-	border: solid 1px var(--panel);
+	color: var(--MI_THEME-fg);
+	border: solid 1px var(--MI_THEME-panel);
 	transition: border-color 0.1s ease-out;
 	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
 	&:hover {
-		border-color: var(--inputBorderHover) !important;
+		border-color: var(--MI_THEME-inputBorderHover) !important;
 	}
 }
 
 .focused.codeEditorRoot {
-	border-color: var(--accent) !important;
+	border-color: var(--MI_THEME-accent) !important;
 	border-radius: 6px;
 }
 
@@ -196,7 +196,7 @@ watch(v, newValue => {
 	resize: none;
 	text-align: left;
 	color: transparent;
-	caret-color: var(--fg);
+	caret-color: var(--MI_THEME-fg);
 	background-color: transparent;
 	border: 0;
 	border-radius: 6px;
@@ -211,6 +211,6 @@ watch(v, newValue => {
 }
 
 .textarea::selection {
-	color: var(--bg);
+	color: var(--MI_THEME-bg);
 }
 </style>

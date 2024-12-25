@@ -96,15 +96,11 @@ async function generateEndpoints(
 				endpoint.request = req;
 
 				const reqType = new EndpointReqMediaType(path, req);
-				endpointReqMediaTypesSet.add(reqType.getMediaType());
-				endpointReqMediaTypes.push(reqType);
-			} else {
-				endpointReqMediaTypesSet.add('application/json');
-				endpointReqMediaTypes.push(new EndpointReqMediaType(path, undefined, 'application/json'));
+				if (reqType.getMediaType() !== 'application/json') {
+					endpointReqMediaTypesSet.add(reqType.getMediaType());
+					endpointReqMediaTypes.push(reqType);
+				}
 			}
-		} else {
-			endpointReqMediaTypesSet.add('application/json');
-			endpointReqMediaTypes.push(new EndpointReqMediaType(path, undefined, 'application/json'));
 		}
 
 		if (operation.responses && isResponseObject(operation.responses['200']) && operation.responses['200'].content) {
@@ -158,16 +154,19 @@ async function generateEndpoints(
 	endpointOutputLine.push('');
 
 	function generateEndpointReqMediaTypesType() {
-		return `Record<keyof Endpoints, ${[...endpointReqMediaTypesSet].map((t) => `'${t}'`).join(' | ')}>`;
+		return `{ [K in keyof Endpoints]?: ${[...endpointReqMediaTypesSet].map((t) => `'${t}'`).join(' | ')}; }`;
 	}
 
-	endpointOutputLine.push(`export const endpointReqTypes: ${generateEndpointReqMediaTypesType()} = {`);
+	endpointOutputLine.push(`/**
+ * NOTE: The content-type for all endpoints not listed here is application/json.
+ */`);
+	endpointOutputLine.push('export const endpointReqTypes = {');
 
 	endpointOutputLine.push(
 		...endpointReqMediaTypes.map(it => '\t' + it.toLine()),
 	);
 
-	endpointOutputLine.push('};');
+	endpointOutputLine.push(`} as const satisfies ${generateEndpointReqMediaTypesType()};`);
 	endpointOutputLine.push('');
 
 	await writeFile(endpointOutputPath, endpointOutputLine.join('\n'));

@@ -82,7 +82,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import MkNotes from '@/components/MkNotes.vue';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import { favoritedChannelsCache } from '@/cache.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -269,14 +269,14 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .main {
-	min-height: calc(100cqh - (var(--stickyTop, 0px) + var(--stickyBottom, 0px)));
+	min-height: calc(100cqh - (var(--MI-stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
 }
 
 .footer {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	background: var(--acrylicBg);
-	border-top: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	background: var(--MI_THEME-acrylicBg);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 .bannerContainer {
@@ -310,7 +310,7 @@ definePageMetadata(() => ({
 	left: 0;
 	width: 100%;
 	height: 64px;
-	background: linear-gradient(0deg, var(--panel), var(--X15));
+	background: linear-gradient(0deg, var(--MI_THEME-panel), color(from var(--MI_THEME-panel) srgb r g b / 0));
 }
 
 .bannerStatus {
@@ -335,7 +335,7 @@ definePageMetadata(() => ({
 	bottom: 16px;
 	left: 16px;
 	background: rgba(0, 0, 0, 0.7);
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 	border-radius: 6px;
 	font-weight: bold;
 	font-size: 1em;

@@ -18,7 +18,7 @@ import type {
 
 export const notificationTypes = ['note', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app', 'roleAssigned', 'achievementEarned'] as const;
 
-export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
+export const noteVisibilities = ['public', 'public_non_ltl', 'home', 'followers', 'specified'] as const;
 
 export const mutedNoteReasons = ['word', 'manual', 'spam', 'other'] as const;
 
@@ -142,6 +142,8 @@ export const moderationLogTypes = [
 	'markSensitiveDriveFile',
 	'unmarkSensitiveDriveFile',
 	'resolveAbuseReport',
+	'forwardAbuseReport',
+	'updateAbuseReportNote',
 	'createInvitation',
 	'createAd',
 	'updateAd',
@@ -330,7 +332,18 @@ export type ModerationLogPayloads = {
 	resolveAbuseReport: {
 		reportId: string;
 		report: ReceivedAbuseReport;
-		forwarded: boolean;
+		forwarded?: boolean;
+		resolvedAs?: string | null;
+	};
+	forwardAbuseReport: {
+		reportId: string;
+		report: ReceivedAbuseReport;
+	};
+	updateAbuseReportNote: {
+		reportId: string;
+		report: ReceivedAbuseReport;
+		before: string;
+		after: string;
 	};
 	createInvitation: {
 		invitations: InviteCode[];

@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, inject, onMounted, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import { getUnicodeEmoji } from '@@/js/emojilist.js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
@@ -34,7 +35,8 @@ import { i18n } from '@/i18n.js';
 import * as sound from '@/scripts/sound.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
-import { getUnicodeEmoji } from '@/scripts/emojilist.js';
+
+const reactionChecksMuting = computed(defaultStore.makeGetterSetter('reactionChecksMuting'));
 
 const props = defineProps<{
 	reaction: string;
@@ -146,7 +148,9 @@ onMounted(() => {
 
 if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
-		const reactions = await misskeyApiGet('notes/reactions', {
+		const useGet = !reactionChecksMuting.value;
+		const apiCall = useGet ? misskeyApiGet : misskeyApi;
+		const reactions = await apiCall('notes/reactions', {
 			noteId: props.note.id,
 			type: props.reaction,
 			limit: 10,
@@ -154,12 +158,13 @@ if (!mock) {
 		});
 
 		const users = reactions.map(x => x.user);
+		const count = users.length;
 
 		const { dispose } = os.popup(XDetails, {
 			showing,
 			reaction: props.reaction,
 			users,
-			count: props.count,
+			count,
 			targetElement: buttonEl.value,
 		}, {
 			closed: () => dispose(),
@@ -180,7 +185,7 @@ if (!mock) {
 	justify-content: center;
 
 	&.canToggle {
-		background: var(--buttonBg);
+		background: var(--MI_THEME-buttonBg);
 
 		&:hover {
 			background: rgba(0, 0, 0, 0.1);
@@ -214,12 +219,12 @@ if (!mock) {
 	}
 
 	&.reacted, &.reacted:hover {
-		background: var(--accentedBg);
-		color: var(--accent);
-		box-shadow: 0 0 0 1px var(--accent) inset;
+		background: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
+		box-shadow: 0 0 0 1px var(--MI_THEME-accent) inset;
 
 		> .count {
-			color: var(--accent);
+			color: var(--MI_THEME-accent);
 		}
 
 		> .icon {

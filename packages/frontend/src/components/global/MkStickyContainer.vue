@@ -5,31 +5,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="rootEl">
-	<div ref="headerEl">
+	<div ref="headerEl" :class="$style.header">
 		<slot name="header"></slot>
 	</div>
 	<div
-		ref="bodyEl"
+		:class="$style.body"
 		:data-sticky-container-header-height="headerHeight"
 		:data-sticky-container-footer-height="footerHeight"
 	>
 		<slot></slot>
 	</div>
-	<div ref="footerEl">
+	<div ref="footerEl" :class="$style.footer">
 		<slot name="footer"></slot>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, shallowRef } from 'vue';
+import { onMounted, onUnmounted, provide, inject, Ref, ref, watch, useTemplateRef } from 'vue';
 
-import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const.js';
+import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@@/js/const.js';
 
-const rootEl = shallowRef<HTMLElement>();
-const headerEl = shallowRef<HTMLElement>();
-const footerEl = shallowRef<HTMLElement>();
-const bodyEl = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
+const headerEl = useTemplateRef('headerEl');
+const footerEl = useTemplateRef('footerEl');
 
 const headerHeight = ref<string | undefined>();
 const childStickyTop = ref(0);
@@ -66,31 +65,11 @@ onMounted(() => {
 
 	watch([parentStickyTop, parentStickyBottom], calc);
 
-	watch(childStickyTop, () => {
-		if (bodyEl.value == null) return;
-		bodyEl.value.style.setProperty('--stickyTop', `${childStickyTop.value}px`);
-	}, {
-		immediate: true,
-	});
-
-	watch(childStickyBottom, () => {
-		if (bodyEl.value == null) return;
-		bodyEl.value.style.setProperty('--stickyBottom', `${childStickyBottom.value}px`);
-	}, {
-		immediate: true,
-	});
-
 	if (headerEl.value != null) {
-		headerEl.value.style.position = 'sticky';
-		headerEl.value.style.top = 'var(--stickyTop, 0)';
-		headerEl.value.style.zIndex = '1000';
 		observer.observe(headerEl.value);
 	}
 
 	if (footerEl.value != null) {
-		footerEl.value.style.position = 'sticky';
-		footerEl.value.style.bottom = 'var(--stickyBottom, 0)';
-		footerEl.value.style.zIndex = '1000';
 		observer.observe(footerEl.value);
 	}
 });
@@ -100,6 +79,27 @@ onUnmounted(() => {
 });
 
 defineExpose({
-	rootEl: rootEl,
+	rootEl,
 });
 </script>
+
+<style lang='scss' module>
+.body {
+	position: relative;
+	z-index: 0;
+	--MI-stickyTop: v-bind("childStickyTop + 'px'");
+	--MI-stickyBottom: v-bind("childStickyBottom + 'px'");
+}
+
+.header {
+	position: sticky;
+	top: var(--MI-stickyTop, 0);
+	z-index: 1;
+}
+
+.footer {
+	position: sticky;
+	bottom: var(--MI-stickyBottom, 0);
+	z-index: 1;
+}
+</style>

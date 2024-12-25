@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="replaying" class="_woodenFrame">
 				<div class="_woodenFrameInner">
 					<div style="background: #0004;">
-						<div style="height: 10px; background: var(--accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
+						<div style="height: 10px; background: var(--MI_THEME-accent); will-change: width;" :style="{ width: `${(currentFrame / endedAtFrame) * 100}%` }"></div>
 					</div>
 				</div>
 				<div class="_woodenFrameInner">
@@ -205,8 +205,8 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { apiUrl } from '@/config.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { apiUrl } from '@@/js/config.js';
 import { $i } from '@/account.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';

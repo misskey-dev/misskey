@@ -121,33 +121,49 @@ function onNote() {
 	sound.playMisskeySfxFile(soundSetting.value);
 }
 
-const menu = computed<MenuItem[]>(() => [{
-	icon: 'ti ti-pencil',
-	text: i18n.ts.timeline,
-	action: setType,
-}, {
-	icon: 'ti ti-bell',
-	text: i18n.ts._deck.newNoteNotificationSettings,
-	action: () => soundSettingsButton(soundSetting),
-}, {
-	type: 'switch',
-	text: i18n.ts.showRenotes,
-	ref: withRenotes,
-}, hasWithReplies(props.column.tl) ? {
-	type: 'switch',
-	text: i18n.ts.showRepliesToOthersInTimeline,
-	ref: withReplies,
-	disabled: onlyFiles,
-} : undefined, {
-	type: 'switch',
-	text: i18n.ts.fileAttachedOnly,
-	ref: onlyFiles,
-	disabled: hasWithReplies(props.column.tl) ? withReplies : false,
-}, hasLocalOnly(props.column.tl) ? {
-	type: 'switch',
-	text: i18n.ts.localOnly,
-	ref: onlyLocal,
-} : undefined]);
+const menu = computed<MenuItem[]>(() => {
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
+		icon: 'ti ti-pencil',
+		text: i18n.ts.timeline,
+		action: setType,
+	}, {
+		icon: 'ti ti-bell',
+		text: i18n.ts._deck.newNoteNotificationSettings,
+		action: () => soundSettingsButton(soundSetting),
+	}, {
+		type: 'switch',
+		text: i18n.ts.showRenotes,
+		ref: withRenotes,
+	});
+
+	if (hasWithReplies(props.column.tl)) {
+		menuItems.push({
+			type: 'switch',
+			text: i18n.ts.showRepliesToOthersInTimeline,
+			ref: withReplies,
+			disabled: onlyFiles,
+		});
+	}
+
+	menuItems.push({
+		type: 'switch',
+		text: i18n.ts.fileAttachedOnly,
+		ref: onlyFiles,
+		disabled: hasWithReplies(props.column.tl) ? withReplies : false,
+	});
+
+	if (hasLocalOnly(props.column.tl)) {
+		menuItems.push({
+			type: 'switch',
+			text: i18n.ts.localOnly,
+			ref: onlyLocal,
+		});
+	}
+
+	return menuItems;
+});
 </script>
 
 <style lang="scss" module>
