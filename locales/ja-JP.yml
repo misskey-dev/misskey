@@ -1400,6 +1400,7 @@ _initialTutorial:
     _visibility:
       description: "ノートを表示できる相手を制限できます。"
       public: "すべてのユーザーに公開。"
+      public_non_ltl: "全てのユーザーに公開されますが、LTLには掲載されません"
       home: "ホームタイムラインのみに公開。フォロワー・プロフィールを見に来た人・リノートから、他のユーザーも見ることができます。"
       followers: "フォロワーにのみ公開。本人以外がリノートすることはできず、またフォロワー以外は閲覧できません。"
       direct: "指定したユーザーにのみ公開され、また相手に通知が入ります。ダイレクトメッセージのかわりにお使いいただけます。"
@@ -2286,6 +2287,8 @@ _poll:
 _visibility:
   public: "パブリック"
   publicDescription: "全てのユーザーに公開"
+  public_non_ltl: "パブリック（非LTL）"
+  public_non_ltlDescription: "全てのユーザーに公開（ローカルタイムラインには表示されません）"
   home: "ホーム"
   homeDescription: "ホームタイムラインのみに公開"
   followers: "フォロワー"
