@@ -34,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:title="video.comment ?? undefined"
 			:alt="video.comment"
 			preload="metadata"
+			crossorigin="anonymous"
 			controls
 			@keydown.prevent
 		>
@@ -54,6 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:title="video.comment ?? undefined"
 			:alt="video.comment"
 			preload="metadata"
+			crossorigin="anonymous"
 			playsinline
 			@keydown.prevent
 			@click.self="togglePlayPause"
