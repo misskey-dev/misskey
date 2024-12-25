@@ -18,8 +18,6 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	tags: ['notes', 'channels'],
 
-	kind: 'read:channels',
-
 	requireCredential: true,
 
 	res: {

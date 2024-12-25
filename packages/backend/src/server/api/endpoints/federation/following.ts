@@ -13,11 +13,7 @@ import { DI } from '@/di-symbols.js';
 export const meta = {
 	tags: ['federation'],
 
-	kind: 'read:following',
-
 	requireCredential: true,
-
-	secure: true,
 
 	res: {
 		type: 'array',

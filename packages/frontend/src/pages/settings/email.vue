@@ -88,7 +88,7 @@ const emailNotification_mention = ref($i.emailNotificationTypes.includes('mentio
 const emailNotification_reply = ref($i.emailNotificationTypes.includes('reply'));
 const emailNotification_quote = ref($i.emailNotificationTypes.includes('quote'));
 const emailNotification_follow = ref($i.emailNotificationTypes.includes('follow'));
-const emailNotification_unfollow = ref($i.emailNotificationTypes.includes('unfollow'));
+const emailNotification_unfollow = ref($i.emailNotificationTypes.includes('unfollow'))
 const emailNotification_receiveFollowRequest = ref($i.emailNotificationTypes.includes('receiveFollowRequest'));
 
 const saveNotificationSettings = () => {
@@ -104,7 +104,7 @@ const saveNotificationSettings = () => {
 	});
 };
 
-watch([emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_unfollow, emailNotification_receiveFollowRequest], () => {
+watch([emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_unfollow,emailNotification_receiveFollowRequest], () => {
 	saveNotificationSettings();
 });
 

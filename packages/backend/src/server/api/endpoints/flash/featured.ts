@@ -13,8 +13,6 @@ import { FlashService } from '@/core/FlashService.js';
 export const meta = {
 	tags: ['flash'],
 
-	kind: 'read:flash',
-
 	requireCredential: true,
 
 	res: {

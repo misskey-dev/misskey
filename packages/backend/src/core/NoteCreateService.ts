@@ -45,7 +45,6 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
 import { SearchService } from '@/core/SearchService.js';
@@ -212,7 +211,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private webhookService: UserWebhookService,
 		private featuredService: FeaturedService,
 		private remoteUserResolveService: RemoteUserResolveService,
-		private metaService: MetaService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private apRendererService: ApRendererService,
 		private roleService: RoleService,
@@ -964,15 +962,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Register host
 		if (this.userEntityService.isRemoteUser(user)) {
 			this.federatedInstanceService.fetch(user.host).then(async i => {
-				if (i) {
-					if (note.renote && note.text) {
-						this.instancesRepository.increment({ id: i.id }, 'notesCount', 1);
-					} else if (!note.renote) {
-						this.instancesRepository.increment({ id: i.id }, 'notesCount', 1);
-					}
-					if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
-						this.instanceChart.updateNote(i.host, note, true);
-					}
+				if (note.renote && note.text) {
+					this.instancesRepository.increment({ id: i.id }, 'notesCount', 1);
+				} else if (!note.renote) {
+					this.instancesRepository.increment({ id: i.id }, 'notesCount', 1);
+				}
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateNote(i.host, note, true);
 				}
 			});
 		}
