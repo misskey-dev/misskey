@@ -2747,5 +2747,15 @@ _followRequest:
 _remoteLookupErrors:
   _federationNotAllowed:
     title: "無法與這個伺服器通訊"
+    description: "與此伺服器的通訊可能被停用、或封鎖了該伺服器，或被該伺服器封鎖。\n請聯繫您的伺服器管理員。"
+  _uriInvalid:
+    title: "URI 不正確"
+    description: "輸入的 URI 有問題。請檢查是否輸入了 URI 中不能使用的字元。"
+  _requestFailed:
+    title: "請求失敗"
+    description: "與此伺服器的通訊失敗。可能是對方伺服器斷線。 此外，請檢查是否輸入了不正確或不存在的 URI。"
+  _responseInvalid:
+    title: "回應不正確"
+    description: "雖然能夠與這個伺服器通訊，但是取得的資料不正確。"
   _noSuchObject:
     title: "查無項目"
