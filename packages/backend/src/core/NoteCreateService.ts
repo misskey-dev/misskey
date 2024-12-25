@@ -263,6 +263,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
+		if (['public_non_ltl'].includes(data.visibility) && data.channel == null) {
+			if ((await this.roleService.getUserPolicies(user.id)).canPublicNonLtlNote === false) {
+				data.visibility = 'home';
+			}
+		}
+
 		const hasProhibitedWords = this.checkProhibitedWordsContain({
 			cw: data.cw,
 			text: data.text,

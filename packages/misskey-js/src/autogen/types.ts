@@ -4909,6 +4909,7 @@ export type components = {
       canImportFollowing: boolean;
       canImportMuting: boolean;
       canImportUserLists: boolean;
+      canPublicNonLtlNote: boolean;
     };
     ReversiGameLite: {
       /** Format: id */

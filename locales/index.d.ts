@@ -6935,6 +6935,10 @@ export interface Locale extends ILocale {
              * リストのインポートを許可
              */
             "canImportUserLists": string;
+            /**
+             * パブリック投稿（非LTL）の許可
+             */
+            "canPublicNonLtlNote": string;
         };
         "_condition": {
             /**

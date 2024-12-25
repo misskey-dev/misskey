@@ -1791,6 +1791,7 @@ _role:
     canImportFollowing: "フォローのインポートを許可"
     canImportMuting: "ミュートのインポートを許可"
     canImportUserLists: "リストのインポートを許可"
+    canPublicNonLtlNote: "パブリック投稿（非LTL）の許可"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"

@@ -471,6 +471,7 @@ function setVisibility() {
 		isSilenced: $i.isSilenced,
 		localOnly: localOnly.value,
 		src: visibilityButton.value,
+		isPublicNonLtlRestrected: $i.policies.canPublicNonLtlNote !== true,
 		...(props.reply ? { isReplyVisibilitySpecified: props.reply.visibility === 'specified' } : {}),
 	}, {
 		changeVisibility: v => {

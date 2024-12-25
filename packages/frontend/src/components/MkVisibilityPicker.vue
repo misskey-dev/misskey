@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
-		<button key="public_non_ltl" :disabled="isSilenced || isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'public_non_ltl' }]" data-index="2" @click="choose('public_non_ltl')">
+		<button v-show="!isPublicNonLtlRestrected" key="public_non_ltl" :disabled="isSilenced || isReplyVisibilitySpecified || isPublicNonLtlRestrected" class="_button" :class="[$style.item, { [$style.active]: v === 'public_non_ltl' }]" data-index="2" @click="choose('public_non_ltl')">
 			<div :class="$style.icon"><i class="ti ti-broadcast"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public_non_ltl }}</span>
@@ -62,6 +62,7 @@ const props = withDefaults(defineProps<{
 	localOnly: boolean;
 	src?: HTMLElement;
 	isReplyVisibilitySpecified?: boolean;
+	isPublicNonLtlRestrected?: boolean;
 }>(), {
 });
 
