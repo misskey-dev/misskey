@@ -17,6 +17,7 @@ export type RedisOptionsSource = Partial<RedisOptions> & {
 	pass: string;
 	db?: number;
 	prefix?: string;
+	queueNameSuffix?: string;
 };
 
 /**

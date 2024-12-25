@@ -38,7 +38,7 @@ jobs:
         env:
           DFLY_version_check: false
           DFLY_tcp_backlog: 2048
-          DFLY_default_lua_flags: allow-undeclared-keys
+          DFLY_lock_on_hashtags: true
           DFLY_pipeline_squash: 0
           DFLY_multi_exec_squash: false
           DFLY_conn_io_threads: 4
@@ -99,7 +99,7 @@ jobs:
         env:
           DFLY_version_check: false
           DFLY_tcp_backlog: 2048
-          DFLY_default_lua_flags: allow-undeclared-keys
+          DFLY_lock_on_hashtags: true
           DFLY_pipeline_squash: 0
           DFLY_multi_exec_squash: false
           DFLY_conn_io_threads: 4

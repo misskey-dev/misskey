@@ -6,8 +6,8 @@
 import { Inject, Module, OnApplicationShutdown } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
-import { QUEUE, baseQueueOptions } from '@/queue/const.js';
+import type { Config, RedisOptionsSource } from '@/config.js';
+import { QUEUE, baseQueueOptions, formatQueueName } from '@/queue/const.js';
 import { allSettled } from '@/misc/promise-tracker.js';
 import { Queues } from '@/misc/queues.js';
 import type { Provider } from '@nestjs/common';
@@ -36,13 +36,13 @@ const $endedPollNotification: Provider = {
 
 const $deliver: Provider = {
 	provide: 'queue:deliver',
-	useFactory: (config: Config) => new Queues(config.redisForDeliverQueues.map(queueConfig => new Bull.Queue(QUEUE.DELIVER, baseQueueOptions(queueConfig, config.bullmqQueueOptions, QUEUE.DELIVER)))),
+	useFactory: (config: Config) => createQueues(QUEUE.DELIVER, config.redisForDeliverQueues, config.bullmqQueueOptions),
 	inject: [DI.config],
 };
 
 const $inbox: Provider = {
 	provide: 'queue:inbox',
-	useFactory: (config: Config) => new Queues(config.redisForInboxQueues.map(queueConfig => new Bull.Queue(QUEUE.INBOX, baseQueueOptions(queueConfig, config.bullmqQueueOptions, QUEUE.INBOX)))),
+	useFactory: (config: Config) => createQueues(QUEUE.INBOX, config.redisForInboxQueues, config.bullmqQueueOptions),
 	inject: [DI.config],
 };
 
@@ -54,7 +54,7 @@ const $db: Provider = {
 
 const $relationship: Provider = {
 	provide: 'queue:relationship',
-	useFactory: (config: Config) => new Queues(config.redisForRelationshipQueues.map(queueConfig => new Bull.Queue(QUEUE.RELATIONSHIP, baseQueueOptions(queueConfig, config.bullmqQueueOptions, QUEUE.RELATIONSHIP)))),
+	useFactory: (config: Config) => createQueues(QUEUE.RELATIONSHIP, config.redisForRelationshipQueues, config.bullmqQueueOptions),
 	inject: [DI.config],
 };
 
@@ -69,6 +69,10 @@ const $webhookDeliver: Provider = {
 	useFactory: (config: Config) => new Bull.Queue(QUEUE.WEBHOOK_DELIVER, baseQueueOptions(config.redisForWebhookDeliverQueue, config.bullmqQueueOptions, QUEUE.WEBHOOK_DELIVER)),
 	inject: [DI.config],
 };
+
+function createQueues(name: typeof QUEUE[keyof typeof QUEUE], config: RedisOptionsSource[], queueOptions: Partial<Bull.QueueOptions>): Queues {
+	return new Queues(config.map(queueConfig => new Bull.Queue(formatQueueName(queueConfig, name), baseQueueOptions(queueConfig, queueOptions, name))));
+}
 
 @Module({
 	imports: [

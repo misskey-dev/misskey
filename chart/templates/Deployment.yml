@@ -44,8 +44,8 @@ spec:
               value: false
             - name: DFLY_tcp_backlog
               value: 2048
-            - name: DFLY_default_lua_flags
-              value: allow-undeclared-keys
+            - name: DFLY_lock_on_hashtags
+              value: true
             - name: DFLY_pipeline_squash
               value: 0
             - name: DFLY_multi_exec_squash

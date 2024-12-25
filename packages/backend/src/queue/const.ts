@@ -18,7 +18,12 @@ export const QUEUE = {
 	WEBHOOK_DELIVER: 'webhookDeliver',
 };
 
+export function formatQueueName(config: RedisOptionsSource, queueName: typeof QUEUE[keyof typeof QUEUE]): string {
+	return typeof config.queueNameSuffix === 'string' ? `${queueName}-${config.queueNameSuffix}` : queueName;
+}
+
 export function baseQueueOptions(config: RedisOptions & RedisOptionsSource, queueOptions: Partial<Bull.QueueOptions>, queueName: typeof QUEUE[keyof typeof QUEUE]): Bull.QueueOptions {
+	const name = formatQueueName(config, queueName);
 	return {
 		...queueOptions,
 		connection: {
@@ -33,11 +38,12 @@ export function baseQueueOptions(config: RedisOptions & RedisOptionsSource, queu
 				return 1;
 			},
 		},
-		prefix: config.prefix ? `${config.prefix}:queue:${queueName}` : `queue:${queueName}`,
+		prefix: config.prefix ? `{${config.prefix}:queue:${name}}` : `{queue:${name}}`,
 	};
 }
 
 export function baseWorkerOptions(config: RedisOptions & RedisOptionsSource, workerOptions: Partial<Bull.WorkerOptions>, queueName: typeof QUEUE[keyof typeof QUEUE]): Bull.WorkerOptions {
+	const name = formatQueueName(config, queueName);
 	return {
 		...workerOptions,
 		connection: {
@@ -52,6 +58,6 @@ export function baseWorkerOptions(config: RedisOptions & RedisOptionsSource, wor
 				return 1;
 			},
 		},
-		prefix: config.prefix ? `${config.prefix}:queue:${queueName}` : `queue:${queueName}`,
+		prefix: config.prefix ? `{${config.prefix}:queue:${name}}` : `{queue:${name}}`,
 	};
 }
