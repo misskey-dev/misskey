@@ -52,4 +52,11 @@ export class MiRoleAssignment {
 		nullable: true,
 	})
 	public expiresAt: Date | null;
+
+	@Column('varchar', {
+		comment: 'memo for the role assignment',
+		length: 256,
+		nullable: true,
+	})
+	public memo: string | null;
 }

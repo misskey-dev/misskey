@@ -295,7 +295,14 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 								: period === 'oneMonth' ? Date.now() + (1000 * 60 * 60 * 24 * 30)
 								: null;
 
-							os.apiWithDialog('admin/roles/assign', { roleId: r.id, userId: user.id, expiresAt });
+							const { canceled: canceled3, result: memo } = await os.inputText({
+								title: i18n.ts.addMemo,
+								type: 'textarea',
+								placeholder: i18n.ts.memo,
+							});
+							if (canceled3) return;
+
+							os.apiWithDialog('admin/roles/assign', { roleId: r.id, userId: user.id, memo: memo ?? undefined, expiresAt });
 						},
 					}));
 				},

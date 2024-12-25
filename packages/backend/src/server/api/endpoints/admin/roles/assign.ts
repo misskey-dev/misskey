@@ -49,6 +49,7 @@ export const paramDef = {
 	properties: {
 		roleId: { type: 'string', format: 'misskey:id' },
 		userId: { type: 'string', format: 'misskey:id' },
+		memo: { type: 'string' },
 		expiresAt: {
 			type: 'integer',
 			nullable: true,
@@ -90,7 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return;
 			}
 
-			await this.roleService.assign(user.id, role.id, ps.expiresAt ? new Date(ps.expiresAt) : null, me);
+			await this.roleService.assign(user.id, role.id, ps.memo, ps.expiresAt ? new Date(ps.expiresAt) : null, me);
 		});
 	}
 }

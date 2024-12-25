@@ -239,7 +239,7 @@ describe('RoleService', () => {
 					},
 				},
 			});
-			await roleService.assign(user.id, role.id, new Date(Date.now() + (1000 * 60 * 60 * 24)));
+			await roleService.assign(user.id, role.id, 'test', new Date(Date.now() + (1000 * 60 * 60 * 24)));
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					canManageCustomEmojis: false,

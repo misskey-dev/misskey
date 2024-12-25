@@ -90,10 +90,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-else-if="log.type === 'assignRole'">
 			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
 			<div>{{ i18n.ts.role }}: {{ log.info.roleName }} [{{ log.info.roleId }}]</div>
+			<div>{{ i18n.ts.memo }}: {{ log.info.memo }}</div>
+			<div>{{ i18n.ts.expirationDate }}: {{ log.info.expiresAt ?? i18n.ts.indefinitely }}</div>
 		</template>
 		<template v-else-if="log.type === 'unassignRole'">
 			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
 			<div>{{ i18n.ts.role }}: {{ log.info.roleName }} [{{ log.info.roleId }}]</div>
+			<div>{{ i18n.ts.memo }}: {{ log.info.memo }}</div>
 		</template>
 		<template v-else-if="log.type === 'updateCustomEmoji'">
 			<div>{{ i18n.ts.emoji }}: {{ log.info.emojiId }}</div>

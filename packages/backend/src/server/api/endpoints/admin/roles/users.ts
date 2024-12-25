@@ -36,6 +36,7 @@ export const meta = {
 				id: { type: 'string', format: 'misskey:id' },
 				createdAt: { type: 'string', format: 'date-time' },
 				user: { ref: 'UserDetailed' },
+				memo: { type: 'string', nullable: true },
 				expiresAt: { type: 'string', format: 'date-time', nullable: true },
 			},
 			required: ['id', 'createdAt', 'user'],
@@ -93,6 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				id: assign.id,
 				createdAt: this.idService.parse(assign.id).date.toISOString(),
 				user: await this.userEntityService.pack(assign.user!, me, { schema: 'UserDetailed' }),
+				memo: assign.memo,
 				expiresAt: assign.expiresAt?.toISOString() ?? null,
 			})));
 		});

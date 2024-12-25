@@ -177,6 +177,10 @@ export const meta = {
 							type: 'string',
 							optional: false, nullable: false,
 						},
+						memo: {
+							type: 'string',
+							optional: false, nullable: true,
+						}
 					},
 				},
 			},
@@ -262,6 +266,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					createdAt: this.idService.parse(a.id).date.toISOString(),
 					expiresAt: a.expiresAt ? a.expiresAt.toISOString() : null,
 					roleId: a.roleId,
+					memo: a.memo,
 				})),
 			};
 		});

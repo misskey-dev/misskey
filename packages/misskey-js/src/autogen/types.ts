@@ -9830,6 +9830,7 @@ export type operations = {
                 createdAt: string;
                 expiresAt: string | null;
                 roleId: string;
+                memo: string | null;
               })[];
           };
         };
@@ -10619,6 +10620,7 @@ export type operations = {
           roleId: string;
           /** Format: misskey:id */
           userId: string;
+          memo?: string;
           expiresAt?: number | null;
         };
       };
@@ -10796,6 +10798,7 @@ export type operations = {
               /** Format: date-time */
               createdAt: string;
               user: components['schemas']['UserDetailed'];
+              memo: string | null;
               /** Format: date-time */
               expiresAt: string | null;
             })[];
