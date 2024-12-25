@@ -4,13 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Brackets, type FindOptionsWhere } from 'typeorm';
 import type { NoteReactionsRepository } from '@/models/_.js';
-import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { QueryService } from '@/core/QueryService.js';
+import { CacheService } from '@/core/CacheService.js';
 
 export const meta = {
 	tags: ['notes', 'reactions'],
@@ -59,12 +58,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteReactionEntityService: NoteReactionEntityService,
 		private queryService: QueryService,
+		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.noteReactionsRepository.createQueryBuilder('reaction'), ps.sinceId, ps.untilId)
 				.andWhere('reaction.noteId = :noteId', { noteId: ps.noteId })
 				.leftJoinAndSelect('reaction.user', 'user')
 				.leftJoinAndSelect('reaction.note', 'note');
+
+			if (me != null) {
+				const [userIdsWhoMeMuting, userIdsWhoBlockingMe] = await Promise.all([
+					this.cacheService.userMutingsCache.get(me.id),
+					this.cacheService.userBlockedCache.get(me.id),
+				]);
+
+			  query.andWhere('reaction.userId NOT IN (:...userIds)', { userIds: Array.from(userIdsWhoMeMuting ?? []).concat(Array.from(userIdsWhoBlockingMe ?? [])) });
+			}
 
 			if (ps.type) {
 				// ローカルリアクションはホスト名が . とされているが

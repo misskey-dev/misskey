@@ -2797,3 +2797,7 @@ _embedCodeGen:
   generateCode: "埋め込みコードを作成"
   codeGenerated: "コードが生成されました"
   codeGeneratedDescription: "生成されたコードをウェブサイトに貼り付けてご利用ください。"
+
+_reactionChecksMuting:
+  title: "リアクションでミュートを考慮する"
+  caption: "リアクションがミュートを考慮しますが、キャッシュが効かず通信量が増えることがあります。"

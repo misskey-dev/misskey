@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar :class="$style.avatar" :user="u"/>
 				<MkUserName :user="u" :nowrap="true"/>
 			</div>
+			<div v-if="count <= 0" :class="$style.user"> {{ i18n.ts.noUsers }} </div>
 			<div v-if="count > 10" :class="$style.more">+{{ count - 10 }}</div>
 		</div>
 	</div>
@@ -26,6 +27,7 @@ import { } from 'vue';
 import { getEmojiName } from '@@/js/emojilist.js';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
+import { i18n } from '@/i18n';
 
 defineProps<{
 	showing: boolean;

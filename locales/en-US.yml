@@ -2702,3 +2702,6 @@ _embedCodeGen:
   generateCode: "Generate embed code"
   codeGenerated: "The code has been generated"
   codeGeneratedDescription: "Paste the generated code into your website to embed the content."
+_reactionChecksMuting:
+  title: "Check mutings when get reactions"
+  caption: "Check mutings when get reactions, but cache does not work and may increase traffic"
