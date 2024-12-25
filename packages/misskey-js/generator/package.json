@@ -7,7 +7,7 @@
 		"generate": "tsx src/generator.ts && eslint ./built/**/* --ext .ts --fix"
 	},
 	"devDependencies": {
-		"@misskey-dev/eslint-plugin": "^1.0.0",
+		"@misskey-dev/eslint-plugin": "1.0.0",
 		"@readme/openapi-parser": "2.6.0",
 		"@types/node": "22.10.2",
 		"@typescript-eslint/eslint-plugin": "7.10.0",

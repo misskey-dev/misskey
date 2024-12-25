@@ -58,11 +58,11 @@ export class AiService {
 			const sharp = await sharpBmp(path, mime);
 			const { data, info } = await sharp
 				.resize(299, 299, { fit: 'inside' })
-				.ensureAlpha()
-				.raw({ depth: 'int' })
+				.removeAlpha()
+				.raw({ depth: 'uchar' })
 				.toBuffer({ resolveWithObject: true });
 
-			const image = tf.tensor3d(data, [info.height, info.width, info.channels], 'int32');
+			const image = tf.tensor3d(data, [info.height, info.width, info.channels], 'bool');
 			try {
 				return await this.model.classify(image);
 			} finally {
