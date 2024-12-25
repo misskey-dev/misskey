@@ -2745,5 +2745,7 @@ _followRequest:
   recieved: "收到的請求"
   sent: "送出的請求"
 _remoteLookupErrors:
+  _federationNotAllowed:
+    title: "無法與這個伺服器通訊"
   _noSuchObject:
     title: "查無項目"
