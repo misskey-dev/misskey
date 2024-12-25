@@ -17,13 +17,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, ref, shallowRef } from 'vue';
+import { computed, watch, onUnmounted, provide, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { BasicTimelineType } from '@/timelines.js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
+import { deepMerge } from '@/scripts/merge.js';
 import { $i, iAmModerator } from '@/account.js';
 import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
@@ -79,7 +80,7 @@ async function prepend(data) {
 	let note = data;
 
 	// チェックするプロパティはなんでも良い
-	// idOnlyが有効でid以外が存在しない場合は取得する
+	// minimizeが有効でid以外が存在しない場合は取得する
 	if (!data.visibility) {
 		const initiateTime = Date.now();
 		const res = await window.fetch(`/notes/${data.id}.json`, {
@@ -100,7 +101,7 @@ async function prepend(data) {
 			return res;
 		});
 		if (!res.ok) return;
-		note = await res.json();
+		note = deepMerge(data, await res.json());
 	}
 
 	tlNotesCount++;
@@ -121,7 +122,7 @@ async function prepend(data) {
 let connection: Misskey.ChannelConnection | null = null;
 let connection2: Misskey.ChannelConnection | null = null;
 let paginationQuery: Paging | null = null;
-const idOnly = !iAmModerator;
+const minimize = !iAmModerator;
 
 const stream = useStream();
 
@@ -130,13 +131,13 @@ function connectChannel() {
 		if (props.antenna == null) return;
 		connection = stream.useChannel('antenna', {
 			antennaId: props.antenna,
-			idOnly: idOnly,
+			minimize: minimize,
 		});
 	} else if (props.src === 'home') {
 		connection = stream.useChannel('homeTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
-			idOnly: idOnly,
+			minimize: minimize,
 		});
 		connection2 = stream.useChannel('main');
 	} else if (props.src === 'local') {
@@ -144,20 +145,20 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
-			idOnly: idOnly,
+			minimize: minimize,
 		});
 	} else if (props.src === 'social') {
 		connection = stream.useChannel('hybridTimeline', {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.onlyFiles ? true : undefined,
-			idOnly: idOnly,
+			minimize: minimize,
 		});
 	} else if (props.src === 'global') {
 		connection = stream.useChannel('globalTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
-			idOnly: idOnly,
+			minimize: minimize,
 		});
 	} else if (props.src === 'mentions') {
 		connection = stream.useChannel('main');
@@ -176,19 +177,19 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
 			listId: props.list,
-			idOnly: idOnly,
+			minimize: minimize,
 		});
 	} else if (props.src === 'channel') {
 		if (props.channel == null) return;
 		connection = stream.useChannel('channel', {
 			channelId: props.channel,
-			idOnly: idOnly,
+			minimize: minimize,
 		});
 	} else if (props.src === 'role') {
 		if (props.role == null) return;
 		connection = stream.useChannel('roleTimeline', {
 			roleId: props.role,
-			idOnly: idOnly,
+			minimize: minimize,
 		});
 	}
 	if (props.src !== 'directs' && props.src !== 'mentions') connection?.on('note', prepend);

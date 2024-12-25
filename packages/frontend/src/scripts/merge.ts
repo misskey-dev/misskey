@@ -22,7 +22,7 @@ export function deepMerge<X extends Record<string | number | symbol, unknown>>(v
 	if (isPureObject(value) && isPureObject(def)) {
 		const result = deepClone(value as Cloneable) as X;
 		for (const [k, v] of Object.entries(def) as [keyof X, X[keyof X]][]) {
-			if (!Object.prototype.hasOwnProperty.call(value, k) || value[k] === undefined) {
+			if (!Object.hasOwn(value, k) || value[k] === undefined) {
 				result[k] = v;
 			} else if (isPureObject(v) && isPureObject(result[k])) {
 				const child = deepClone(result[k] as Cloneable) as DeepPartial<X[keyof X] & Record<string | number | symbol, unknown>>;
