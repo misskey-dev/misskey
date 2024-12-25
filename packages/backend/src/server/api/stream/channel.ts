@@ -10,6 +10,7 @@ import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import type Connection from './Connection.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 
 /**
  * Stream channel
@@ -101,6 +102,14 @@ export default abstract class Channel {
 	public dispose?(): void;
 
 	public onMessage?(type: string, body: JsonValue): void;
+
+	public async assignMyReaction(note: Packed<'Note'>, noteEntityService: NoteEntityService) {
+		if (this.user === undefined) { return; }
+		if (Object.keys(note.reactions).length > 0) {
+			const myReaction = await noteEntityService.populateMyReaction(note, this.user.id);
+			note.myReaction = myReaction;
+		}
+	}
 }
 
 export type MiChannelService<T extends boolean> = {

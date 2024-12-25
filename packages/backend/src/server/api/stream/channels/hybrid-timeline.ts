@@ -93,26 +93,19 @@ class HybridTimelineChannel extends Channel {
 			}
 		}
 
-		if (this.user && note.renoteId && !note.text) {
-			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
-				console.log(note.renote.reactionAndUserPairCache);
-				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
-				note.renote.myReaction = myRenoteReaction;
-			}
-			if (note.renote && note.renote.reply) {
-				if (Object.keys(note.renote.reply.reactions).length > 0) {
-					const myReplyReaction = await this.noteEntityService.populateMyReaction(note.renote.reply, this.user.id);
-					note.renote.reply.myReaction = myReplyReaction;
+		const reactionsToFetch = [];
+		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
+			if (note.renote) {
+				reactionsToFetch.push(this.assignMyReaction(note.renote, this.noteEntityService));
+				if (note.renote.reply) {
+					reactionsToFetch.push(this.assignMyReaction(note.renote.reply, this.noteEntityService));
 				}
 			}
+		} else if (this.user && note.reply) {
+			reactionsToFetch.push(this.assignMyReaction(note.reply, this.noteEntityService));
 		}
 
-		if (this.user && note.reply) {
-			if (Object.keys(note.reply.reactions).length > 0) {
-				const myReplyReaction = await this.noteEntityService.populateMyReaction(note.reply, this.user.id);
-				note.reply.myReaction = myReplyReaction;
-			}
-		}
+		await Promise.all(reactionsToFetch);
 
 		this.connection.cacheNote(note);
 
