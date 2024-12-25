@@ -15,7 +15,7 @@ class AntennaChannel extends Channel {
 	public static readonly requireCredential = true as const;
 	public static readonly kind = 'read:account';
 	private antennaId: string;
-	private idOnly: boolean;
+	private minimize: boolean;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -30,7 +30,7 @@ class AntennaChannel extends Channel {
 	@bindThis
 	public async init(params: any) {
 		this.antennaId = params.antennaId as string;
-		this.idOnly = params.idOnly ?? false;
+		this.minimize = params.minimize ?? false;
 
 		// Subscribe stream
 		this.subscriber.on(`antennaStream:${this.antennaId}`, this.onEvent);
@@ -51,9 +51,13 @@ class AntennaChannel extends Channel {
 
 			if (this.isNoteMutedOrBlocked(note)) return;
 
-			if (this.idOnly && ['public', 'home'].includes(note.visibility)) {
-				const idOnlyNote = { id: note.id };
-				this.send('note', idOnlyNote);
+			if (this.minimize && ['public', 'home'].includes(note.visibility)) {
+				this.send('note', {
+					id: note.id, myReaction: note.myReaction,
+					poll: note.poll ? { choices: note.poll.choices } : undefined,
+					reply: note.reply ? { myReaction: note.reply.myReaction } : undefined,
+					renote: note.renote ? { myReaction: note.renote.myReaction } : undefined,
+				});
 			} else {
 				this.connection.cacheNote(note);
 				this.send('note', note);

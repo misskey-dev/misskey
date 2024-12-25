@@ -17,7 +17,7 @@ class HomeTimelineChannel extends Channel {
 	public static readonly kind = 'read:account';
 	private withRenotes: boolean;
 	private withFiles: boolean;
-	private idOnly: boolean;
+	private minimize: boolean;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -33,7 +33,7 @@ class HomeTimelineChannel extends Channel {
 	public async init(params: any) {
 		this.withRenotes = params.withRenotes ?? true;
 		this.withFiles = params.withFiles ?? false;
-		this.idOnly = params.idOnly ?? false;
+		this.minimize = params.minimize ?? false;
 
 		this.subscriber.on('notesStream', this.onNote);
 	}
@@ -91,9 +91,13 @@ class HomeTimelineChannel extends Channel {
 			}
 		}
 
-		if (this.idOnly && ['public', 'home'].includes(note.visibility)) {
-			const idOnlyNote = { id: note.id };
-			this.send('note', idOnlyNote);
+		if (this.minimize && ['public', 'home'].includes(note.visibility)) {
+			this.send('note', {
+				id: note.id, myReaction: note.myReaction,
+				poll: note.poll ? { choices: note.poll.choices } : undefined,
+				reply: note.reply ? { myReaction: note.reply.myReaction } : undefined,
+				renote: note.renote ? { myReaction: note.renote.myReaction } : undefined,
+			});
 		} else {
 			this.connection.cacheNote(note);
 			this.send('note', note);
