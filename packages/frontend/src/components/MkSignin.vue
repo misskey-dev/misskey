@@ -241,7 +241,7 @@ function loginFailed(err: any): void {
 			os.alert({
 				type: 'error',
 				title: i18n.ts.loginFailed,
-				text: i18n.ts.incorrectPassword,
+				text: i18n.ts.authenticationFailed,
 			});
 			break;
 		}

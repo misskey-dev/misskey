@@ -3704,6 +3704,10 @@ export interface Locale extends ILocale {
      */
     "incorrectPassword": string;
     /**
+     * 認証に失敗しました。
+     */
+    "authenticationFailed": string;
+    /**
      * 「{choice}」に投票しますか？
      */
     "voteConfirm": ParameterizedString<"choice">;
