@@ -15,6 +15,7 @@
 - Fix: 絵文字管理画面で一部の絵文字が表示されない問題を修正
 
 ### Server
+- Enhance: URLプレビューの結果を内部的にキャッシュするように
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)

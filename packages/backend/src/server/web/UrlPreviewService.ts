@@ -4,6 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as Redis from 'ioredis';
 import { summaly } from '@misskey-dev/summaly';
 import { SummalyResult } from '@misskey-dev/summaly/built/summary.js';
 import { DI } from '@/di-symbols.js';
@@ -15,6 +16,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
 import { MiMeta } from '@/models/Meta.js';
+import { createHash } from 'crypto';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
@@ -24,6 +26,9 @@ export class UrlPreviewService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.meta)
 		private meta: MiMeta,
@@ -74,6 +79,19 @@ export class UrlPreviewService {
 			};
 		}
 
+		const redisCacheKey = createHash('sha256').update(url.trim()).digest('hex');
+
+		const cachedSummary = await this.redisClient.get(`url-preview:${lang}:${redisCacheKey}`);
+
+		if (cachedSummary) {
+			this.logger.succ(`Got preview of ${url}@${lang} from cache`);
+
+			// Cache 7days
+			reply.header('Cache-Control', 'max-age=604800, immutable');
+
+			return JSON.parse(cachedSummary);
+		}
+
 		this.logger.info(this.meta.urlPreviewSummaryProxyUrl
 			? `(Proxy) Getting preview of ${url}@${lang} ...`
 			: `Getting preview of ${url}@${lang} ...`);
@@ -98,6 +116,9 @@ export class UrlPreviewService {
 
 			// Cache 7days
 			reply.header('Cache-Control', 'max-age=604800, immutable');
+
+			// Cache internally for 1day
+			this.redisClient.setex(`url-preview:${lang}:${redisCacheKey}`, 86400, JSON.stringify(summary));
 
 			return summary;
 		} catch (err) {
