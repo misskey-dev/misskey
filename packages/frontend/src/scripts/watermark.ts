@@ -160,6 +160,7 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 
 							return { width, height };
 						})();
+						const rotateRad = (config.rotate ?? 0) * Math.PI / 180;
 
 						ctx.globalAlpha = config.opacity ?? 1;
 
@@ -181,7 +182,6 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 							if (pattern) {
 								ctx.fillStyle = pattern;
 								if (config.rotate != null && config.rotate !== 0) {
-									const rotateRad = config.rotate * Math.PI / 180;
 									ctx.translate(canvas.width / 2, canvas.height / 2);
 									ctx.rotate(rotateRad);
 									ctx.translate(-canvas.width / 2, -canvas.height / 2);
@@ -196,6 +196,12 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 							}
 						} else {
 							const x = (() => {
+								let rotateX = 0; // 回転によるX座標の補正
+
+								if (config.rotate != null && config.rotate !== 0 && !config.noBoundingBoxExpansion) {
+									rotateX = Math.abs(Math.abs(width * Math.cos(rotateRad)) + Math.abs(height * Math.sin(rotateRad)) - width) / 2;
+								}
+
 								switch (config.anchor) {
 									case 'center':
 									case 'top':
@@ -204,11 +210,11 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 									case 'left':
 									case 'top-left':
 									case 'bottom-left':
-										return 0 + (config.padding ? config.padding.left ?? 0 : 0);
+										return rotateX + (config.padding ? config.padding.left ?? 0 : 0);
 									case 'right':
 									case 'top-right':
 									case 'bottom-right':
-										return canvas.width - width - (config.padding ? config.padding.right ?? 0 : 0);
+										return canvas.width - width - (config.padding ? config.padding.right ?? 0 : 0) - rotateX;
 								}
 							})();
 
@@ -216,7 +222,6 @@ export function applyWatermark(img: string | Blob, el: HTMLCanvasElement | Offsc
 								let rotateY = 0; // 回転によるY座標の補正
 
 								if (config.rotate != null && config.rotate !== 0 && !config.noBoundingBoxExpansion) {
-									const rotateRad = config.rotate * Math.PI / 180;
 									rotateY = Math.abs(Math.abs(width * Math.sin(rotateRad)) + Math.abs(height * Math.cos(rotateRad)) - height) / 2;
 								}
 
