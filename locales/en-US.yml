@@ -1297,6 +1297,7 @@ yourNameContainsProhibitedWordsDescription: "If you wish to use this name, pleas
 thisContentsAreMarkedAsSigninRequiredByAuthor: "Set by the author to require login to view"
 lockdown: "Lockdown"
 pleaseSelectAccount: "Select an account"
+availableRoles: "Available roles"
 here: "here"
 mutualLink: "Mutual Link"
 saveThisFile: "Save this file to Drive"
@@ -1314,6 +1315,8 @@ pleaseConsentToTracking: "{host} may collect information that may include person
 consentEssential: "Allow Essential Items"
 consentAll: "Allow All Items"
 consentSelected: "Allow Selected Items"
+emailAddressLogin: "Login with email address"
+usernameLogin: "Login with username"
 
 _bubbleGame:
   howToPlay: "How to play"
@@ -2434,6 +2437,9 @@ _pages:
   contentBlocks: "Content"
   inputBlocks: "Input"
   specialBlocks: "Special"
+  visibility: "Visibility"
+  public: "Public"
+  private: "Private"
   blocks:
     text: "Text"
     textarea: "Text area"
@@ -2734,3 +2740,9 @@ _skebStatus:
   yenX: "JPY {x}"
   nWorks: "Delivered {n} works"
   nRequests: "Requested {n} times"
+_selfXssPrevention:
+  warning: "Warning"
+  title: "All \"Paste something on this screen\" requests are *SCAMS*."
+  description1: "If you paste something here, you may be at risk of having your account hijacked or your personal information stolen by malicious users."
+  description2: "If you do not understand exactly what you are trying to paste, %cstop immediately and close this window."
+  description3: "For more information, please check here. {link}"

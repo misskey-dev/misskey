@@ -1294,6 +1294,7 @@ yourNameContainsProhibitedWords: "바꾸려는 이름에 금지된 키워드가 
 yourNameContainsProhibitedWordsDescription: "이름에 금지된 키워드가 있습니다. 이름을 사용해야 하는 경우, 서버 관리자에 문의하세요."
 lockdown: "잠금"
 pleaseSelectAccount: "계정을 선택해 주세요"
+availableRoles: "사용 가능한 역할"
 here: "여기"
 mutualLink: "서로링크"
 saveThisFile: "이 파일을 드라이브에 저장"
@@ -1311,6 +1312,8 @@ pleaseConsentToTracking: "{host}는 [개인정보 처리방침]({privacyPolicyUr
 consentEssential: "필수 항목만 허용"
 consentAll: "모두 허용"
 consentSelected: "선택한 항목만 허용"
+emailAddressLogin: "이메일 주소로 로그인"
+usernameLogin: "사용자명으로 로그인"
 
 _bubbleGame:
   howToPlay: "설명"
@@ -2419,6 +2422,9 @@ _pages:
   contentBlocks: "콘텐츠"
   inputBlocks: "입력"
   specialBlocks: "특수"
+  visibility: "공개 범위"
+  public: "공개"
+  private: "비공개"
   blocks:
     text: "텍스트"
     textarea: "텍스트 영역"
@@ -2719,3 +2725,9 @@ _skebStatus:
   yenX: "JPY {x}"
   nWorks: "납품 실적 {n}건"
   nRequests: "거래 실적 {n}건"
+_selfXssPrevention:
+  warning: "경고"
+  title: "「이 화면에 무언가를 붙여넣으라는 메시지」는 모두 *사기*입니다."
+  description1: "여기에 무언가를 붙여넣으면, 악의를 가진 사용자에게 계정을 탈취당하거나 개인정보를 훔쳐갈 수 있습니다."
+  description2: "붙여넣으려는 것이 무엇인지 정확히 이해하지 못하면, %c지금 작업을 중단하고 이 창을 닫으십시오."
+  description3: "자세한 내용은 여기를 확인하십시오. {link}"
