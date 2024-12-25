@@ -78,7 +78,6 @@ async function prepend(data) {
 	// チェックするプロパティはなんでも良い
 	// idOnlyが有効でid以外が存在しない場合は取得する
 	if (!data.visibility) {
-		const initiateTime = Date.now();
 		const res = await window.fetch(`/notes/${data.id}.json`, {
 			method: 'GET',
 			credentials: 'omit',
@@ -86,15 +85,6 @@ async function prepend(data) {
 				'Authorization': 'anonymous',
 				'X-Client-Transaction-Id': generateClientTransactionId('misskey'),
 			},
-		}).then(res => {
-			if (instance.googleAnalyticsId) {
-				gtagTime({
-					name: 'api-get',
-					event_category: `/notes/${data.id}.json`,
-					value: Date.now() - initiateTime,
-				});
-			}
-			return res;
 		});
 		if (!res.ok) return;
 		note = await res.json();
