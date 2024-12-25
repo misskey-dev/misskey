@@ -8,7 +8,6 @@ import { MiNote } from '@/models/Note.js';
 
 const base: MiNote = {
 	id: 'some-note-id',
-	deleteAt: null,
 	replyId: null,
 	reply: null,
 	renoteId: null,

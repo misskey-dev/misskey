@@ -454,9 +454,10 @@ export class UserEntityService implements OnModuleInit {
 		}
 
 		const notesCount = profile == null ? null :
-			(profile.notesVisibility === 'public') || isMe || iAmModerator ? user.notesCount :
-			(profile.notesVisibility === 'followers') && (relation && relation.isFollowing) ? user.notesCount :
+    (profile.notesVisibility === 'public') || isMe || iAmModerator ? user.notesCount :
+    (profile.notesVisibility === 'followers') && (relation && relation.isFollowing) ? user.notesCount :
     	null;
+
 
 		const followingCount = profile == null ? null :
 			(profile.followingVisibility === 'public') || isMe || iAmModerator ? user.followingCount :
@@ -599,6 +600,7 @@ export class UserEntityService implements OnModuleInit {
 				isDeleted: user.isDeleted,
 				twoFactorBackupCodesStock: profile?.twoFactorBackupSecret?.length === 5 ? 'full' : (profile?.twoFactorBackupSecret?.length ?? 0) > 0 ? 'partial' : 'none',
 				hideOnlineStatus: user.hideOnlineStatus,
+				enableGTL: profile!.enableGTL,
 				hasUnreadSpecifiedNotes: this.noteUnreadsRepository.count({
 					where: { userId: user.id, isSpecified: true },
 					take: 1,

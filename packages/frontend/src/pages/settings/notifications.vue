@@ -98,6 +98,7 @@ const filteredNotificationTypes = computed(() => {
 	});
 });
 
+
 async function readAllUnreadNotes() {
 	await os.apiWithDialog('i/read-all-unread-notes');
 }
