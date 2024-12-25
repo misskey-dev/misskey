@@ -7,9 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import { Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { InstancesRepository } from '@/models/_.js';
+import type { InstancesRepository, MiMeta } from '@/models/_.js';
 import type Logger from '@/logger.js';
-import { MetaService } from '@/core/MetaService.js';
 import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
@@ -31,10 +30,12 @@ export class DeliverProcessorService {
 	private latest: string | null;
 
 	constructor(
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
-		private metaService: MetaService,
 		private utilityService: UtilityService,
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
@@ -52,9 +53,7 @@ export class DeliverProcessorService {
 	public async process(job: Bull.Job<DeliverJobData>): Promise<string> {
 		const { host } = new URL(job.data.to);
 
-		// ブロックしてたら中断
-		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.toPuny(host))) {
+		if (!this.utilityService.isFederationAllowedUri(job.data.to)) {
 			return 'skip (blocked)';
 		}
 
@@ -75,8 +74,17 @@ export class DeliverProcessorService {
 		try {
 			await this.apRequestService.signedPost(job.data.user, job.data.to, job.data.content, job.data.digest);
 
-			// Update stats
-			this.federatedInstanceService.fetch(host).then(i => {
+			this.apRequestChart.deliverSucc();
+			this.federationChart.deliverd(host, true);
+
+			// Update instance stats
+			process.nextTick(async () => {
+				const i = await (this.meta.enableStatsForFederatedInstances
+					? this.federatedInstanceService.fetchOrRegister(host)
+					: this.federatedInstanceService.fetch(host));
+
+				if (i == null) return;
+
 				if (i.isNotResponding) {
 					this.federatedInstanceService.update(i.id, {
 						isNotResponding: false,
@@ -84,19 +92,22 @@ export class DeliverProcessorService {
 					});
 				}
 
-				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-				this.apRequestChart.deliverSucc();
-				this.federationChart.deliverd(i.host, true);
+				if (this.meta.enableStatsForFederatedInstances) {
+					this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
+				}
 
-				if (meta.enableChartsForFederatedInstances) {
+				if (this.meta.enableChartsForFederatedInstances) {
 					this.instanceChart.requestSent(i.host, true);
 				}
 			});
 
 			return 'Success';
 		} catch (res) {
-			// Update stats
-			this.federatedInstanceService.fetch(host).then(i => {
+			this.apRequestChart.deliverFail();
+			this.federationChart.deliverd(host, false);
+
+			// Update instance stats
+			this.federatedInstanceService.fetchOrRegister(host).then(i => {
 				if (!i.isNotResponding) {
 					this.federatedInstanceService.update(i.id, {
 						isNotResponding: true,
@@ -117,10 +128,7 @@ export class DeliverProcessorService {
 					});
 				}
 
-				this.apRequestChart.deliverFail();
-				this.federationChart.deliverd(i.host, false);
-
-				if (meta.enableChartsForFederatedInstances) {
+				if (this.meta.enableChartsForFederatedInstances) {
 					this.instanceChart.requestSent(i.host, false);
 				}
 			});
@@ -130,7 +138,7 @@ export class DeliverProcessorService {
 				if (!res.isRetryable) {
 					// 相手が閉鎖していることを明示しているため、配送停止する
 					if (job.data.isSharedInbox && res.statusCode === 410) {
-						this.federatedInstanceService.fetch(host).then(i => {
+						this.federatedInstanceService.fetchOrRegister(host).then(i => {
 							this.federatedInstanceService.update(i.id, {
 								suspensionState: 'goneSuspended',
 							});

@@ -104,7 +104,7 @@ import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -121,7 +121,7 @@ import { instance } from '@/instance.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
-import { MenuItem } from '@/types/menu';
+import type { MenuItem } from '@/types/menu.js';
 
 const router = useRouter();
 
@@ -165,18 +165,23 @@ function fetchPage() {
 function share(ev: MouseEvent) {
 	if (!page.value) return;
 
-	os.popupMenu([
-		{
-			text: i18n.ts.shareWithNote,
-			icon: 'ti ti-pencil',
-			action: shareWithNote,
-		},
-		...(isSupportShare() ? [{
+	const menuItems: MenuItem[] = [];
+
+	menuItems.push({
+		text: i18n.ts.shareWithNote,
+		icon: 'ti ti-pencil',
+		action: shareWithNote,
+	});
+
+	if (isSupportShare()) {
+		menuItems.push({
 			text: i18n.ts.share,
 			icon: 'ti ti-share',
 			action: shareWithNavigator,
-		}] : []),
-	], ev.currentTarget ?? ev.target);
+		});
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 function copyLink() {
@@ -256,51 +261,59 @@ function reportAbuse() {
 function showMenu(ev: MouseEvent) {
 	if (!page.value) return;
 
-	const menu: MenuItem[] = [
-		...($i && $i.id === page.value.userId ? [
-			{
-				icon: 'ti ti-code',
-				text: i18n.ts._pages.viewSource,
-				action: () => router.push(`/@${props.username}/pages/${props.pageName}/view-source`),
-			},
-			...($i.pinnedPageId === page.value.id ? [{
+	const menuItems: MenuItem[] = [];
+
+	if ($i && $i.id === page.value.userId) {
+		menuItems.push({
+			icon: 'ti ti-pencil',
+			text: i18n.ts.editThisPage,
+			action: () => router.push(`/pages/edit/${page.value.id}`),
+		});
+
+		if ($i.pinnedPageId === page.value.id) {
+			menuItems.push({
 				icon: 'ti ti-pinned-off',
 				text: i18n.ts.unpin,
 				action: () => pin(false),
-			}] : [{
+			});
+		} else {
+			menuItems.push({
 				icon: 'ti ti-pin',
 				text: i18n.ts.pin,
 				action: () => pin(true),
-			}]),
-		] : []),
-		...($i && $i.id !== page.value.userId ? [
-			{
-				icon: 'ti ti-exclamation-circle',
-				text: i18n.ts.reportAbuse,
-				action: reportAbuse,
-			},
-			...($i.isModerator || $i.isAdmin ? [
-				{
-					type: 'divider' as const,
-				},
-				{
-					icon: 'ti ti-trash',
-					text: i18n.ts.delete,
-					danger: true,
-					action: () => os.confirm({
-						type: 'warning',
-						text: i18n.ts.deleteConfirm,
-					}).then(({ canceled }) => {
-						if (canceled || !page.value) return;
+			});
+		}
+	} else if ($i && $i.id !== page.value.userId) {
+		menuItems.push({
+				icon: 'ti ti-code',
+				text: i18n.ts._pages.viewSource,
+				action: () => router.push(`/@${props.username}/pages/${props.pageName}/view-source`),
+		}, {
+			icon: 'ti ti-exclamation-circle',
+			text: i18n.ts.reportAbuse,
+			action: reportAbuse,
+		});
 
-						os.apiWithDialog('pages/delete', { pageId: page.value.id });
-					}),
-				},
-			] : []),
-		] : []),
-	];
+		if ($i.isModerator || $i.isAdmin) {
+			menuItems.push({
+				type: 'divider',
+			}, {
+				icon: 'ti ti-trash',
+				text: i18n.ts.delete,
+				danger: true,
+				action: () => os.confirm({
+					type: 'warning',
+					text: i18n.ts.deleteConfirm,
+				}).then(({ canceled }) => {
+					if (canceled || !page.value) return;
 
-	os.popupMenu(menu, ev.currentTarget ?? ev.target);
+					os.apiWithDialog('pages/delete', { pageId: page.value.id });
+				}),
+			});
+		}
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 watch(() => path.value, fetchPage, { immediate: true });
@@ -344,24 +357,24 @@ definePageMetadata(() => ({
 
 	&:hover,
 	&:focus-visible {
-		background-color: var(--accentedBg);
-		color: var(--accent);
+		background-color: var(--MI_THEME-accentedBg);
+		color: var(--MI_THEME-accent);
 		text-decoration: none;
 		outline: none;
 	}
 }
 
 .pageMain {
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	padding: 2rem;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	box-sizing: border-box;
 }
 
 .pageBanner {
 	width: calc(100% + 4rem);
 	margin: -2rem -2rem 1.5rem;
-	border-radius: var(--radius) var(--radius) 0 0;
+	border-radius: var(--MI-radius) var(--MI-radius) 0 0;
 	overflow: hidden;
 	position: relative;
 
@@ -386,7 +399,7 @@ definePageMetadata(() => ({
 		}
 
 		.pageBannerBgFallback2 {
-			background-color: var(--accentedBg);
+			background-color: var(--MI_THEME-accentedBg);
 		}
 
 		&::after {
@@ -396,7 +409,7 @@ definePageMetadata(() => ({
 			bottom: 0;
 			width: 100%;
 			height: 100px;
-			background: linear-gradient(0deg, var(--panel), transparent);
+			background: linear-gradient(0deg, var(--MI_THEME-panel), transparent);
 		}
 	}
 
@@ -420,7 +433,7 @@ definePageMetadata(() => ({
 		h1 {
 			font-size: 2rem;
 			font-weight: 700;
-			color: var(--fg);
+			color: var(--MI_THEME-fg);
 			margin: 0;
 		}
 
@@ -433,20 +446,19 @@ definePageMetadata(() => ({
 		.pageBannerTitleUser {
 			--height: 32px;
 			flex-shrink: 0;
+			line-height: var(--height);
 
 			.avatar {
 				height: var(--height);
 				width: var(--height);
 			}
-
-			line-height: var(--height);
 		}
 
 		.pageBannerTitleSubActions {
 			flex-shrink: 0;
 			display: flex;
 			align-items: center;
-			gap: var(--marginHalf);
+			gap: var(--MI-marginHalf);
 			margin-left: auto;
 		}
 	}
@@ -460,14 +472,14 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 
-	border-top: 1px solid var(--divider);
+	border-top: 1px solid var(--MI_THEME-divider);
 	padding-top: 1.5rem;
 	margin-bottom: 1.5rem;
 
 	> .other {
 		margin-left: auto;
 		display: flex;
-		gap: var(--marginHalf);
+		gap: var(--MI-marginHalf);
 	}
 }
 
@@ -475,7 +487,7 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 
-	border-top: 1px solid var(--divider);
+	border-top: 1px solid var(--MI_THEME-divider);
 	padding-top: 1.5rem;
 	margin-bottom: 1.5rem;
 
@@ -514,14 +526,14 @@ definePageMetadata(() => ({
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	gap: var(--marginHalf);
+	gap: var(--MI-marginHalf);
 }
 
 .relatedPagesRoot {
-	padding: var(--margin);
+	padding: var(--MI-margin);
 }
 
 .relatedPagesItem > article {
-	background-color: var(--panelHighlight) !important;
+	background-color: var(--MI_THEME-panelHighlight) !important;
 }
 </style>

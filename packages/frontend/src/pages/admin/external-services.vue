@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
-			<FormSection>
+			<MkFolder>
 				<template #label>DeepL Translation</template>
 
 				<div class="_gaps_m">
@@ -19,17 +19,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="deeplIsPro">
 						<template #label>Pro account</template>
 					</MkSwitch>
+					<MkButton primary @click="save_deepl">Save</MkButton>
 				</div>
-			</FormSection>
+			</MkFolder>
 		</FormSuspense>
 	</MkSpacer>
-	<template #footer>
-		<div :class="$style.footer">
-			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
-				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-			</MkSpacer>
-		</div>
-	</template>
 </MkStickyContainer>
 </template>
 
@@ -40,12 +34,12 @@ import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkFolder from '@/components/MkFolder.vue';
 
 const deeplAuthKey = ref<string>('');
 const deeplIsPro = ref<boolean>(false);
@@ -56,7 +50,7 @@ async function init() {
 	deeplIsPro.value = meta.deeplIsPro;
 }
 
-function save() {
+function save_deepl() {
 	os.apiWithDialog('admin/update-meta', {
 		deeplAuthKey: deeplAuthKey.value,
 		deeplIsPro: deeplIsPro.value,
@@ -74,10 +68,3 @@ definePageMetadata(() => ({
 	icon: 'ti ti-link',
 }));
 </script>
-
-<style lang="scss" module>
-.footer {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-}
-</style>

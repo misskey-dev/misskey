@@ -17,8 +17,6 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
-import { MetaService } from '@/core/MetaService.js';
-import { UtilityService } from '@/core/UtilityService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../error.js';
 
@@ -138,7 +136,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], default: 'public' },
+		visibility: { type: 'string', enum: ['public', 'public_non_ltl', 'home', 'followers', 'specified'], default: 'public' },
 		visibleUserIds: { type: 'array', uniqueItems: true, items: {
 			type: 'string', format: 'misskey:id',
 		} },

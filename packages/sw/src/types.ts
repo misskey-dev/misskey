@@ -51,4 +51,5 @@ export type BadgeNames =
 	| 'bell'
 	| 'repeat'
 	| 'user-plus'
-	| 'users';
+	| 'users'
+	| 'login-2';

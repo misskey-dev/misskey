@@ -70,7 +70,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { host as currentHost, hostname } from '@/config.js';
+import { host as currentHost, hostname } from '@@/js/config.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
@@ -195,11 +195,11 @@ onMounted(() => {
 	font-size: 14px;
 
 	&:hover {
-		background: var(--X7);
+		background: var(--MI_THEME-X7);
 	}
 
 	&.selected {
-		background: var(--accent);
+		background: var(--MI_THEME-accent);
 		color: #fff;
 	}
 }
