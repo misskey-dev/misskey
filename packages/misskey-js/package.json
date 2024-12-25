@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2024.5.0-io.4d",
+	"version": "2024.5.0-io.5",
 	"description": "Misskey SDK for JavaScript",
 	"types": "./built/dts/index.d.ts",
 	"exports": {
