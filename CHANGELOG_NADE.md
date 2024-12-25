@@ -9,6 +9,13 @@
 ### Server
 -->
 
+### nade 1.6.0
+### General
+- 公開範囲: パブリック（非LTL）の追加
+### Client
+- ワードミュートで引っかかったワードを表示可能にする機能
+- リアクションした人一覧でブロック・ミュートを考慮するように
+
 ## nade 1.5.7
 ### Server
 - https://github.com/misskey-dev/misskey/pull/13495 の変更を取り込み
