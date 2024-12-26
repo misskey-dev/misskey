@@ -37,6 +37,10 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.userListMembershipsRepository)
 		private userListMembershipsRepository: UserListMembershipsRepository,
 
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
+
+		private cacheService: CacheService,
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
 		private fanoutTimelineService: FanoutTimelineService,
@@ -111,8 +115,16 @@ export class AntennaService implements OnApplicationShutdown {
 
 	@bindThis
 	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<boolean> {
-		if (note.visibility === 'specified') return false;
-		if (note.visibility === 'followers') return false;
+		if (note.visibility === 'specified') {
+			if (note.userId !== antenna.userId) {
+				if (note.visibleUserIds == null) return false;
+				if (!note.visibleUserIds.includes(antenna.userId)) return false;
+			}
+		}
+		if (note.visibility === 'followers') {
+			const isFollowing = Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(antenna.userId), note.userId);
+			if (!isFollowing && antenna.userId !== note.userId) return false;
+		}
 
 		if (antenna.excludeBots && noteUser.isBot) return false;
 
