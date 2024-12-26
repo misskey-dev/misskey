@@ -9,7 +9,11 @@
 ### Server
 -->
 
-### nade 1.6.0
+## nade 1.6.1
+### Client
+- enhance: ヘッダー/詳細に不足してる部分を追加
+
+## nade 1.6.0
 ### General
 - 公開範囲: パブリック（非LTL）の追加
 ### Client
