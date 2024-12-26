@@ -2745,5 +2745,20 @@ _followRequest:
   recieved: "Received application"
   sent: "Sent application"
 _remoteLookupErrors:
+  _federationNotAllowed:
+    title: "Unable to communicate with this server"
+    description: "Communication with this server may have been disabled or this server may be blocked.\nPlease contact the server administrator."
+  _uriInvalid:
+    title: "URI is invalid"
+    description: "There is a problem with the URI you entered. Please check if you entered characters that cannot be used in the URI."
+  _requestFailed:
+    title: "Request failed"
+    description: "Communication with this server failed. The server may be down. Also, please make sure that you have not entered an invalid or nonexistent URI."
+  _responseInvalid:
+    title: "Response is invalid"
+    description: "It could communicate with this server, but the data obtained was incorrect."
+  _responseInvalidIdHostNotMatch:
+    description: "The domain of the entered URI differs from the domain of the final obtained URI. If you are looking up remote content through a third-party server, please look up again using a URI that can be obtained from the origin server."
   _noSuchObject:
     title: "Not found"
+    description: "The requested resource was not found, please recheck the URI."
