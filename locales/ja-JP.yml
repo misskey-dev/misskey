@@ -2290,7 +2290,7 @@ _poll:
 _visibility:
   public: "パブリック"
   publicDescription: "全てのユーザーに公開"
-  public_non_ltl: "パブリック（非LTL）"
+  public_non_ltl: "セミパブリック"
   public_non_ltlDescription: "全てのユーザーに公開（ローカルタイムラインには表示されません）"
   home: "ホーム"
   homeDescription: "ホームタイムラインのみに公開"

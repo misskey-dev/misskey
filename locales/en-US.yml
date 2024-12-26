@@ -1385,6 +1385,7 @@ _initialTutorial:
     _visibility:
       description: "You can limit who can view your note."
       public: "Your note will be visible for all users."
+      public_non_ltl: "It will be made public to all users, but it will not be published in LTL."
       home: "Public only on the Home timeline. People visiting your profile, via followers, and through renotes can see it."
       followers: "Visible to followers only. Only followers can see it and no one else, and it cannot be renoted by others."
       direct: "Visible only to specified users, and the recipient will be notified. It can be used as an alternative to direct messaging."
@@ -2228,6 +2229,8 @@ _poll:
 _visibility:
   public: "Public"
   publicDescription: "Your note will be visible for all users"
+  public_non_ltl: "Semi-Public"
+  public_non_ltlDescription: "Public to all users (will not be displayed on the local timeline)"
   home: "Home"
   homeDescription: "Post to home timeline only"
   followers: "Followers"
