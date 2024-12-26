@@ -73,7 +73,8 @@ class LocalTimelineChannel extends Channel {
 					reactionsToFetch.push(this.assignMyReaction(note.renote.reply, this.noteEntityService));
 				}
 			}
-		} else if (this.user && note.reply) {
+		}
+		if (this.user && note.reply) {
 			reactionsToFetch.push(this.assignMyReaction(note.reply, this.noteEntityService));
 		}
 
