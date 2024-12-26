@@ -220,7 +220,6 @@ import { isEnabledUrlPreview } from '@/instance.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
-import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
