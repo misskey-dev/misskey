@@ -369,7 +369,7 @@ export class NoteEntityService implements OnModuleInit {
 			user: packedUsers?.get(note.userId) ?? this.userEntityService.pack(note.user ?? note.userId, me),
 			text: text,
 			cw: note.cw,
-			visibility: note.visibility,
+			visibility: note.visibility !== 'public_non_ltl' ? note.visibility : 'public',
 			localOnly: note.localOnly,
 			reactionAcceptance: note.reactionAcceptance,
 			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
@@ -397,6 +397,7 @@ export class NoteEntityService implements OnModuleInit {
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri ?? undefined,
 			url: note.url ?? undefined,
+			dontShowOnLtl: note.visibility === 'public_non_ltl',
 
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,
