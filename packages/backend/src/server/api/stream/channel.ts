@@ -104,8 +104,7 @@ export default abstract class Channel {
 	public onMessage?(type: string, body: JsonValue): void;
 
 	public async assignMyReaction(note: Packed<'Note'>, noteEntityService: NoteEntityService) {
-		if (this.user === undefined) { return; }
-		if (Object.keys(note.reactions).length > 0) {
+		if (this.user && Object.keys(note.reactions).length > 0) {
 			const myReaction = await noteEntityService.populateMyReaction(note, this.user.id);
 			note.myReaction = myReaction;
 		}
