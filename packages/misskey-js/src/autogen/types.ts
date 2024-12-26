@@ -4127,7 +4127,7 @@ export type components = {
       renote?: components['schemas']['Note'] | null;
       isHidden?: boolean;
       /** @enum {string} */
-      visibility: 'public' | 'public_non_ltl' | 'home' | 'followers' | 'specified';
+      visibility: 'public' | 'home' | 'followers' | 'specified';
       mentions?: string[];
       visibleUserIds?: string[];
       fileIds?: string[];
@@ -4176,6 +4176,7 @@ export type components = {
       reactionAndUserPairCache?: string[];
       clippedCount?: number;
       myReaction?: string | null;
+      dontShowOnLtl: boolean;
     };
     NoteReaction: {
       /**

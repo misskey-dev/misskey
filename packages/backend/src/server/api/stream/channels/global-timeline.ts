@@ -48,7 +48,7 @@ class GlobalTimelineChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
-		if (note.visibility !== 'public' && note.visibility !== 'public_non_ltl') return;
+		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
 
 		if (isRenotePacked(note) && !isQuotePacked(note) && !this.withRenotes) return;

@@ -69,7 +69,7 @@ export const packedNoteSchema = {
 		visibility: {
 			type: 'string',
 			optional: false, nullable: false,
-			enum: ['public', 'public_non_ltl', 'home', 'followers', 'specified'],
+			enum: ['public', 'home', 'followers', 'specified'],
 		},
 		mentions: {
 			type: 'array',
@@ -260,6 +260,11 @@ export const packedNoteSchema = {
 		myReaction: {
 			type: 'string',
 			optional: true, nullable: true,
+		},
+
+		dontShowOnLtl: {
+			type: 'boolean',
+			optional: false, nullable: false,
 		},
 	},
 } as const;

@@ -36,8 +36,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="isMyRenote" class="ti ti-dots" style="margin-right: 4px;"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
-				<i v-if="note.visibility === 'public_non_ltl'" class="ti ti-broadcast"></i>
+			<span v-if="note.visibility === 'public' && note.dontShowOnLtl === true" style="margin-left: 0.5em;" :title="i18n.ts._visibility['public_non_ltl']">
+				<i class="ti ti-broadcast"></i>
+			</span>
+			<span v-else-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
@@ -55,8 +57,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkA>
 					<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
 					<div :class="$style.noteHeaderInfo">
-						<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
-							<i v-if="appearNote.visibility === 'public_non_ltl'" class="ti ti-broadcast"></i>
+						<span v-if="appearNote.visibility === 'public' && appearNote.dontShowOnLtl === true" style="margin-left: 0.5em;" :title="i18n.ts._visibility['public_non_ltl']">
+							<i class="ti ti-broadcast"></i>
+						</span>
+						<span v-else-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
+
 							<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
 							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
 							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
