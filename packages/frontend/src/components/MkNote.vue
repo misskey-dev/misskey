@@ -32,7 +32,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-dots" :class="$style.renoteMenu"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
+			<span v-if="note.visibility === 'public' && note.dontShowOnLtl === true" style="margin-left: 0.5em;" :title="i18n.ts._visibility['public_non_ltl']">
+				<i class="ti ti-broadcast"></i>
+			</span>
+			<span v-else-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 				<i v-if="note.dontShowOnLtl === true" class="ti ti-broadcast"></i>
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
