@@ -17,7 +17,16 @@ export function misskeyApi<
 	_ResT = ResT extends void ? Misskey.api.SwitchCaseResponseType<E, P> : ResT,
 >(
 	endpoint: E,
-	data: P & { i?: string | null; } = {} as any,
+	data?: P & { i?: string | null; },
+	token?: string | null | undefined,
+	signal?: AbortSignal,
+): Promise<_ResT> {
+	return misskeyApiUntyped(endpoint, data, token, signal);
+}
+
+export function misskeyApiUntyped<_ResT>(
+	endpoint: string,
+	data: { i?: string | null; } = {} as any,
 	token?: string | null | undefined,
 	signal?: AbortSignal,
 ): Promise<_ResT> {
