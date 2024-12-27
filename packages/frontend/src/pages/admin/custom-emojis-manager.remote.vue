@@ -4,99 +4,101 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
-	<div class="_gaps">
-		<MkFolder>
-			<template #icon><i class="ti ti-search"></i></template>
-			<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchSettings }}</template>
-			<template #caption>
-				{{ i18n.ts._customEmojisManager._gridCommon.searchSettingCaption }}
+<MkStickyContainer>
+	<template #default>
+		<div :class="$style.root" class="_gaps">
+			<MkFolder>
+				<template #icon><i class="ti ti-search"></i></template>
+				<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchSettings }}</template>
+				<template #caption>
+					{{ i18n.ts._customEmojisManager._gridCommon.searchSettingCaption }}
+				</template>
+
+				<div class="_gaps">
+					<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
+						<MkInput
+							v-model="queryName"
+							type="search"
+							autocapitalize="off"
+							:class="[$style.col1, $style.row1]"
+							@enter="onSearchRequest"
+						>
+							<template #label>name</template>
+						</MkInput>
+						<MkInput
+							v-model="queryHost"
+							type="search"
+							autocapitalize="off"
+							:class="[$style.col2, $style.row1]"
+							@enter="onSearchRequest"
+						>
+							<template #label>host</template>
+						</MkInput>
+						<MkInput
+							v-model="queryUri"
+							type="search"
+							autocapitalize="off"
+							:class="[$style.col1, $style.row2]"
+							@enter="onSearchRequest"
+						>
+							<template #label>uri</template>
+						</MkInput>
+						<MkInput
+							v-model="queryPublicUrl"
+							type="search"
+							autocapitalize="off"
+							:class="[$style.col2, $style.row2]"
+							@enter="onSearchRequest"
+						>
+							<template #label>publicUrl</template>
+						</MkInput>
+					</div>
+
+					<MkFolder :spacerMax="8" :spacerMin="8">
+						<template #icon><i class="ti ti-arrows-sort"></i></template>
+						<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
+						<MkSortOrderEditor
+							:baseOrderKeyNames="gridSortOrderKeys"
+							:currentOrders="sortOrders"
+							@update="onSortOrderUpdate"
+						/>
+					</MkFolder>
+
+					<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
+						<MkButton primary @click="onSearchRequest">
+							{{ i18n.ts.search }}
+						</MkButton>
+						<MkButton @click="onQueryResetButtonClicked">
+							{{ i18n.ts.reset }}
+						</MkButton>
+					</div>
+				</div>
+			</MkFolder>
+
+			<XRegisterLogsFolder :logs="requestLogs"/>
+
+			<div v-if="gridItems.length === 0" style="text-align: center">
+				{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
+			</div>
+
+			<template v-else>
+				<div v-if="gridItems.length > 0" :class="$style.gridArea">
+					<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
+				</div>
+
+				<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
 			</template>
 
-			<div class="_gaps">
-				<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
-					<MkInput
-						v-model="queryName"
-						type="search"
-						autocapitalize="off"
-						:class="[$style.col1, $style.row1]"
-						@enter="onSearchRequest"
-					>
-						<template #label>name</template>
-					</MkInput>
-					<MkInput
-						v-model="queryHost"
-						type="search"
-						autocapitalize="off"
-						:class="[$style.col2, $style.row1]"
-						@enter="onSearchRequest"
-					>
-						<template #label>host</template>
-					</MkInput>
-					<MkInput
-						v-model="queryUri"
-						type="search"
-						autocapitalize="off"
-						:class="[$style.col1, $style.row2]"
-						@enter="onSearchRequest"
-					>
-						<template #label>uri</template>
-					</MkInput>
-					<MkInput
-						v-model="queryPublicUrl"
-						type="search"
-						autocapitalize="off"
-						:class="[$style.col2, $style.row2]"
-						@enter="onSearchRequest"
-					>
-						<template #label>publicUrl</template>
-					</MkInput>
-				</div>
-
-				<MkFolder :spacerMax="8" :spacerMin="8">
-					<template #icon><i class="ti ti-arrows-sort"></i></template>
-					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
-					<MkSortOrderEditor
-						:baseOrderKeyNames="gridSortOrderKeys"
-						:currentOrders="sortOrders"
-						@update="onSortOrderUpdate"
-					/>
-				</MkFolder>
-
-				<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
-					<MkButton primary @click="onSearchRequest">
-						{{ i18n.ts.search }}
-					</MkButton>
-					<MkButton @click="onQueryResetButtonClicked">
-						{{ i18n.ts.reset }}
-					</MkButton>
-				</div>
+			<div v-if="gridItems.length > 0" class="_gaps" :class="$style.buttons">
+				<MkButton primary @click="onImportClicked">
+					{{
+						i18n.ts._customEmojisManager._remote.importEmojisButton
+					}}
+				</MkButton>
 			</div>
-		</MkFolder>
-
-		<XRegisterLogsFolder :logs="requestLogs"/>
-
-		<div v-if="gridItems.length === 0" style="text-align: center">
-			{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
 		</div>
-
-		<template v-else>
-			<div v-if="gridItems.length > 0" :class="$style.gridArea">
-				<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
-			</div>
-
-			<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
-		</template>
-
-		<div v-if="gridItems.length > 0" class="_gaps" :class="$style.buttons">
-			<MkButton primary @click="onImportClicked">
-				{{
-					i18n.ts._customEmojisManager._remote.importEmojisButton
-				}}
-			</MkButton>
-		</div>
-	</div>
-</div>
+	</template>
+</MkStickyContainer>
 </template>
 
 <script setup lang="ts">
@@ -335,10 +337,7 @@ onMounted(async () => {
 }
 
 .root {
-	--stickyTop: 0px;
-
 	padding: 16px;
-	overflow: scroll;
 }
 
 .searchArea {
