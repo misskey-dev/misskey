@@ -2188,7 +2188,7 @@ _poll:
 _visibility:
   public: "パブリック"
   publicDescription: "みんなに公開"
-  public_non_ltl: "社会進出"
+  public_non_ltl: "よそいき"
   public_non_ltlDescription: "LTL以外のみんなに公開するで"
   home: "ホーム"
   homeDescription: "ホームタイムラインのみに公開するで"
