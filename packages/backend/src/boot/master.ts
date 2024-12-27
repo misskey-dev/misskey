@@ -33,11 +33,13 @@ function greet() {
 	if (!envOption.quiet) {
 		//#region Misskey logo
 		const v = `v${meta.version}`;
-		console.log(themeColor('  _____ _         _           '));
-		console.log(themeColor(' |     |_|___ ___| |_ ___ _ _ '));
-		console.log(themeColor(' | | | | |_ -|_ -| \'_| -_| | |'));
-		console.log(themeColor(' |_|_|_|_|___|___|_,_|___|_  |'));
-		console.log(' ' + chalk.gray(v) + themeColor('                        |___|\n'.substring(v.length)));
+		console.log(themeColor('_____.___               __               __'));
+		console.log(themeColor('\\__  |  |____    _____ |__| ______ _____|  | __ ____ ___.__.'));
+		console.log(themeColor('/    |  \\__  \\  /     \\|  |/  ___//  ___/  |/ // __ <   |  |'));
+		console.log(themeColor('\\____   |/ __ \\|  Y Y  \\  |\\___ \\ \\___ \\|    <\\  ___/\\___  |'));
+		console.log(themeColor('/ ______(____  /__|_|  /__/______/______/__|__\\\\____>/ ____|'));
+		console.log(themeColor('\\/           \\/      \\/                              \\/'));
+		console.log(' ' + chalk.gray(v));
 		//#endregion
 
 		console.log(' Misskey is an open-source decentralized microblogging platform.');
