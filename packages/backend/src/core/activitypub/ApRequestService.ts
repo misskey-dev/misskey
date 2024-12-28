@@ -220,7 +220,7 @@ export class ApRequestService {
 				const alternate = fragment.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
 				if (alternate) {
 					const href = alternate.getAttribute('href');
-					if (href && this.utilityService.punyHost(url) === this.utilityService.punyHost(href)) {
+					if (href && this.utilityService.extractHost(url) === this.utilityService.extractHost(href)) {
 						return await this.signedGet(href, user, false);
 					}
 				}

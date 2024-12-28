@@ -53,7 +53,7 @@ export class DeliverProcessorService {
 
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.toPuny(host))) {
+		if (this.utilityService.isItemListedIn(host, meta.blockedHosts)) {
 			return 'skip (blocked)';
 		}
 
@@ -67,7 +67,7 @@ export class DeliverProcessorService {
 			});
 			this.suspendedHostsCache.set(suspendedHosts);
 		}
-		if (suspendedHosts.map(x => x.host).includes(this.utilityService.toPuny(host))) {
+		if (suspendedHosts.map(x => x.host).includes(this.utilityService.normalizeHost(host))) {
 			return 'skip (suspended)';
 		}
 

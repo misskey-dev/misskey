@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.instancesRepository
-				.findOneBy({ host: this.utilityService.toPuny(ps.host) });
+				.findOneBy({ host: this.utilityService.normalizeHost(ps.host) });
 
 			return instance ? await this.instanceEntityService.pack(instance, me) : null;
 		});

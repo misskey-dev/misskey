@@ -311,7 +311,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			: this.utilityService.isSelfHost(src) ? null	// 自ホスト指定
 			: (src || noteUserHost);	// 指定されたホスト || ノートなどの所有者のホスト (こっちがリアクションにマッチすることはない)
 
-		host = this.utilityService.toPunyNullable(host);
+		host = host ? this.utilityService.normalizeHost(host) : null;
 
 		return host;
 	}
@@ -324,7 +324,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		const name = match[1];
 
 		// ホスト正規化
-		const host = this.utilityService.toPunyNullable(this.normalizeHost(match[2], noteUserHost));
+		const host = this.normalizeHost(match[2], noteUserHost);
 
 		return { name, host };
 	}

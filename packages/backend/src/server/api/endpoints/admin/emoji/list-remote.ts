@@ -94,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (ps.host == null) {
 				q.andWhere('emoji.host IS NOT NULL');
 			} else {
-				q.andWhere('emoji.host = :host', { host: this.utilityService.toPuny(ps.host) });
+				q.andWhere('emoji.host = :host', { host: this.utilityService.normalizeHost(ps.host) });
 			}
 
 			if (ps.query) {

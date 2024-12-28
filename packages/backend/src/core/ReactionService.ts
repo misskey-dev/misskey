@@ -129,7 +129,7 @@ export class ReactionService {
 		} else if (_reaction) {
 			const custom = reaction.match(isCustomEmojiRegexp);
 			if (custom) {
-				const reacterHost = this.utilityService.toPunyNullable(user.host);
+				const reacterHost = user.host ? this.utilityService.normalizeHost(user.host) : null;
 
 				const name = custom[1];
 				const emoji = reacterHost == null

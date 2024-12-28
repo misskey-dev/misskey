@@ -236,7 +236,7 @@ export class EmailService {
 		}
 
 		const emailDomain: string = emailAddress.split('@')[1];
-		const isBanned = this.utilityService.isBlockedHost(meta.bannedEmailDomains, emailDomain);
+		const isBanned = this.utilityService.isItemListedIn(emailDomain, meta.bannedEmailDomains);
 
 		if (isBanned) {
 			return {
@@ -304,7 +304,7 @@ export class EmailService {
 				reason: 'mx',
 			};
 		}
-		if (json.mx_host?.some(host => this.utilityService.isBlockedHost(meta.bannedEmailDomains, host))) {
+		if (json.mx_host?.some(host => this.utilityService.isItemListedIn(host, meta.bannedEmailDomains))) {
 			return {
 				valid: false,
 				reason: 'mx',

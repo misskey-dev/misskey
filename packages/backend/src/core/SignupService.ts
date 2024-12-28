@@ -141,7 +141,7 @@ export class SignupService {
 					id: this.idService.gen(),
 					username: username,
 					usernameLower: username.toLowerCase(),
-					host: this.utilityService.toPunyNullable(host),
+					host: host ? this.utilityService.normalizeHost(host) : null,
 					token: secret,
 					isRoot: isTheFirstUser,
 				}));

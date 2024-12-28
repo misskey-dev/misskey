@@ -89,18 +89,18 @@ export class Resolver {
 		}
 
 		if (this.history.size > this.recursionLimit) {
-			throw new Error(`hit recursion limit: ${this.utilityService.extractDbHost(value)}`);
+			throw new Error(`hit recursion limit: ${this.utilityService.extractHost(value)}`);
 		}
 
 		this.history.add(value);
 
-		const host = this.utilityService.extractDbHost(value);
+		const host = this.utilityService.extractHost(value);
 		if (this.utilityService.isSelfHost(host)) {
 			return await this.resolveLocal(value);
 		}
 
 		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
+		if (this.utilityService.isItemListedIn(host, meta.blockedHosts)) {
 			throw new Error('Instance is blocked');
 		}
 
@@ -128,7 +128,7 @@ export class Resolver {
 			throw new Error('invalid AP object: missing id');
 		}
 
-		if (this.utilityService.punyHost(object.id) !== this.utilityService.punyHost(value)) {
+		if (this.utilityService.extractHost(object.id) !== this.utilityService.extractHost(value)) {
 			throw new Error(`invalid AP object ${value}: id ${object.id} has different host`);
 		}
 

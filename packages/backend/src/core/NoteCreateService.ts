@@ -285,7 +285,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Notes including prohibited words are not allowed.');
 		}
 
-		const inSilencedInstance = this.utilityService.isSilencedHost(meta.silencedHosts, user.host);
+		const inSilencedInstance = this.utilityService.isItemListedIn(user.host, meta.silencedHosts);
 
 		if (data.visibility === 'public' && inSilencedInstance && user.host !== null) {
 			data.visibility = 'home';

@@ -81,20 +81,21 @@ export class ApNoteService {
 
 	@bindThis
 	public validateNote(object: IObject, uri: string, actor?: MiRemoteUser): Error | null {
-		const expectHost = this.utilityService.extractDbHost(uri);
+		const expectedHost = this.utilityService.extractHost(uri);
 		const apType = getApType(object);
 
 		if (apType == null || !validPost.includes(apType)) {
 			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: invalid object type ${apType ?? 'undefined'}`);
 		}
 
-		if (object.id && this.utilityService.extractDbHost(object.id) !== expectHost) {
-			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: id has different host. expected: ${expectHost}, actual: ${this.utilityService.extractDbHost(object.id)}`);
+		let actualHost = object.id && this.utilityService.extractHost(object.id);
+		if (actualHost && expectedHost !== actualHost) {
+			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: id has different host. expected: ${expectedHost}, actual: ${actualHost}`);
 		}
 
-		const actualHost = object.attributedTo && this.utilityService.extractDbHost(getOneApId(object.attributedTo));
-		if (object.attributedTo && actualHost !== expectHost) {
-			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${actualHost}`);
+		actualHost = object.attributedTo && this.utilityService.extractHost(getOneApId(object.attributedTo));
+		if (actualHost && expectedHost !== actualHost) {
+			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: attributedTo has different host. expected: ${expectedHost}, actual: ${actualHost}`);
 		}
 
 		if (object.published && !this.idService.isSafeT(new Date(object.published).valueOf())) {
@@ -165,8 +166,8 @@ export class ApNoteService {
 				throw new Error('unexpected schema of note url: ' + url);
 			}
 
-			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(note.id)) {
-				throw new Error(`note url & uri host mismatch: note url: ${url}, note uri: ${note.id}`);
+			if (this.utilityService.extractHost(note.id) !== this.utilityService.extractHost(url)) {
+				throw new Error(`note id and url have different host: ${note.id} - ${url}`);
 			}
 		}
 
@@ -234,7 +235,7 @@ export class ApNoteService {
 			}
 		}
 
-		const isSensitiveMediaHost = this.utilityService.isSensitiveMediaHost(meta.sensitiveMediaHosts, this.utilityService.extractDbHost(note.id ?? entryUri));
+		const isSensitiveMediaHost = this.utilityService.isItemListedIn(this.utilityService.extractHost(note.id ?? entryUri), meta.sensitiveMediaHosts);
 
 		// 添付ファイル
 		const files: MiDriveFile[] = [];
@@ -349,7 +350,7 @@ export class ApNoteService {
 			this.logger.info('The note is already inserted while creating itself, reading again');
 			const duplicate = await this.fetchNote(value);
 			if (!duplicate) {
-				throw new Error('The note creation failed with duplication error even when there is no duplication');
+				throw new Error(`The note creation failed with duplication error even when there is no duplication: ${entryUri}`);
 			}
 			return duplicate;
 		}
@@ -367,7 +368,7 @@ export class ApNoteService {
 
 		// ブロックしていたら中断
 		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) {
+		if (this.utilityService.isItemListedIn(this.utilityService.extractHost(uri), meta.blockedHosts)) {
 			throw new StatusError('blocked host', 451);
 		}
 
@@ -396,7 +397,7 @@ export class ApNoteService {
 	@bindThis
 	public async extractEmojis(tags: IObject | IObject[], host: string): Promise<MiEmoji[]> {
 		// eslint-disable-next-line no-param-reassign
-		host = this.utilityService.toPuny(host);
+		host = this.utilityService.normalizeHost(host);
 
 		const eomjiTags = toArray(tags).filter(isEmoji);
 

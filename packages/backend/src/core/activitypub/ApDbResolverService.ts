@@ -64,8 +64,9 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	public parseUri(value: string | IObject): UriParseResult {
 		const separator = '/';
 
-		const uri = new URL(getApId(value));
-		if (this.utilityService.toPuny(uri.host) !== this.utilityService.toPuny(this.config.host)) {
+		const apId = getApId(value);
+		const uri = new URL(apId);
+		if (!this.utilityService.isUriLocal(apId)) {
 			return { local: false, uri: uri.href };
 		}
 

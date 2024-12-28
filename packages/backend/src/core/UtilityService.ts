@@ -5,8 +5,8 @@
 
 import { URL } from 'node:url';
 import punycode from 'punycode.js';
-import { Inject, Injectable } from '@nestjs/common';
 import RE2 from 're2';
+import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
@@ -21,36 +21,26 @@ export class UtilityService {
 
 	@bindThis
 	public getFullApAccount(username: string, host: string | null): string {
-		return host ? `${username}@${this.toPuny(host)}` : `${username}@${this.toPuny(this.config.host)}`;
+		return host ? `${username}@${this.normalizeHost(host)}` : `${username}@${this.normalizeHost(this.config.host)}`;
 	}
 
 	@bindThis
 	public isSelfHost(host: string | null): boolean {
 		if (host == null) return true;
-		return this.toPuny(this.config.host) === this.toPuny(host);
+		return this.normalizeHost(this.config.host) === this.normalizeHost(host);
 	}
 
 	@bindThis
 	public isUriLocal(uri: string): boolean {
-		return this.punyHost(uri) === this.toPuny(this.config.host);
+		return this.normalizeHost(this.config.hostname) === this.extractHost(uri);
 	}
 
 	@bindThis
-	public isBlockedHost(blockedHosts: string[], host: string | null): boolean {
-		if (host == null) return false;
-		return blockedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
-	}
-
-	@bindThis
-	public isSilencedHost(silencedHosts: string[] | undefined, host: string | null): boolean {
-		if (!silencedHosts || host == null) return false;
-		return silencedHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
-	}
-
-	@bindThis
-	public isSensitiveMediaHost(sensitiveMediaHosts: string[] | undefined, host: string | null): boolean {
-		if (!sensitiveMediaHosts || host == null) return false;
-		return sensitiveMediaHosts.some(x => `.${host.toLowerCase()}`.endsWith(`.${x}`));
+	public isItemListedIn(item: string | null, list: string[] | undefined): boolean {
+		if (!list || !item) return false;
+		list = list.map(x => '.' + this.normalizeHost(x).split(':')[0]);
+		item = '.' + this.normalizeHost(item).split(':')[0];
+		return list.some(x => item.endsWith(x));
 	}
 
 	@bindThis
@@ -93,26 +83,14 @@ export class UtilityService {
 	}
 
 	@bindThis
-	public extractDbHost(uri: string): string {
-		const url = new URL(uri);
-		return this.toPuny(url.host);
-	}
-
-	@bindThis
-	public toPuny(host: string): string {
+	public normalizeHost(host: string): string {
 		return punycode.toASCII(host.toLowerCase());
 	}
 
 	@bindThis
-	public toPunyNullable(host: string | null | undefined): string | null {
-		if (host == null) return null;
-		return punycode.toASCII(host.toLowerCase());
-	}
-
-	@bindThis
-	public punyHost(url: string): string {
-		const urlObj = new URL(url);
-		const host = `${this.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
-		return host;
+	public extractHost(uri: string): string {
+		// ASCII String で返されるので punycode 化はいらない
+		// ref: https://url.spec.whatwg.org/#host-serializing
+		return new URL(uri).host;
 	}
 }

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URL } from 'node:url';
 import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import httpSignature from '@peertube/http-signature';
 import * as Bull from 'bullmq';
@@ -65,11 +64,11 @@ export class InboxProcessorService implements OnApplicationShutdown {
 		this.logger.debug(JSON.stringify(info, null, 2));
 		//#endregion
 
-		const host = this.utilityService.toPuny(new URL(signature.keyId).hostname);
+		const host = this.utilityService.extractHost(signature.keyId);
 
 		// ブロックしてたら中断
 		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
+		if (this.utilityService.isItemListedIn(host, meta.blockedHosts)) {
 			return `Blocked request: ${host}`;
 		}
 
@@ -164,8 +163,8 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				}
 
 				// ブロックしてたら中断
-				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
-				if (this.utilityService.isBlockedHost(meta.blockedHosts, ldHost)) {
+				const ldHost = this.utilityService.extractHost(authUser.user.uri);
+				if (this.utilityService.isItemListedIn(ldHost, meta.blockedHosts)) {
 					throw new Bull.UnrecoverableError(`Blocked request: ${ldHost}`);
 				}
 			} else {
@@ -175,8 +174,8 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 		// activity.idがあればホストが署名者のホストであることを確認する
 		if (typeof activity.id === 'string') {
-			const signerHost = this.utilityService.extractDbHost(authUser.user.uri!);
-			const activityIdHost = this.utilityService.extractDbHost(activity.id);
+			const signerHost = this.utilityService.extractHost(authUser.user.uri!);
+			const activityIdHost = this.utilityService.extractHost(activity.id);
 			if (signerHost !== activityIdHost) {
 				throw new Bull.UnrecoverableError(`skip: signerHost(${signerHost}) !== activity.id host(${activityIdHost}`);
 			}

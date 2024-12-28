@@ -137,7 +137,7 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	private validateActor(x: IObject, uri: string): IActor {
-		const expectHost = this.utilityService.punyHost(uri);
+		const expectedHost = this.utilityService.extractHost(uri);
 
 		if (!isActor(x)) {
 			throw new Error(`invalid Actor type '${x.type}'`);
@@ -151,15 +151,18 @@ export class ApPersonService implements OnModuleInit {
 			throw new Error('invalid Actor: wrong inbox');
 		}
 
-		if (this.utilityService.punyHost(x.inbox) !== expectHost) {
-			throw new Error('invalid Actor: inbox has different host');
+		let actualHost = this.utilityService.extractHost(x.inbox);
+		if (expectedHost !== actualHost) {
+			throw new Error(`invalid Actor: inbox has different host. expected: ${expectedHost}, actual: ${actualHost}`);
 		}
 
 		const sharedInboxObject = x.sharedInbox ?? (x.endpoints ? x.endpoints.sharedInbox : undefined);
 		if (sharedInboxObject != null) {
 			const sharedInbox = getApId(sharedInboxObject);
-			if (!(typeof sharedInbox === 'string' && sharedInbox.length > 0 && this.utilityService.punyHost(sharedInbox) === expectHost)) {
-				throw new Error('invalid Actor: wrong shared inbox');
+			if (!sharedInbox) throw new Error('invalid Actor: wrong shared inbox');
+			actualHost = this.utilityService.extractHost(sharedInbox);
+			if (expectedHost !== actualHost) {
+				throw new Error(`invalid Actor: shared inbox has different host. expected: ${expectedHost}, actual: ${actualHost}`);
 			}
 		}
 
@@ -167,12 +170,10 @@ export class ApPersonService implements OnModuleInit {
 			const xCollection = (x as IActor)[collection];
 			if (xCollection != null) {
 				const collectionUri = getApId(xCollection);
-				if (typeof collectionUri === 'string' && collectionUri.length > 0) {
-					if (this.utilityService.punyHost(collectionUri) !== expectHost) {
-						throw new Error(`invalid Actor: ${collection} has different host`);
-					}
-				} else if (collectionUri != null) {
-					throw new Error(`invalid Actor: wrong ${collection}`);
+				if (!collectionUri) throw new Error(`invalid Actor: wrong ${collection}`);
+				actualHost = this.utilityService.extractHost(collectionUri);
+				if (expectedHost !== actualHost) {
+					throw new Error(`invalid Actor: ${collection} has different host. expected: ${expectedHost}, actual: ${actualHost}`);
 				}
 			}
 		}
@@ -200,9 +201,9 @@ export class ApPersonService implements OnModuleInit {
 			x.summary = truncate(x.summary, summaryLength);
 		}
 
-		const idHost = this.utilityService.punyHost(x.id);
-		if (idHost !== expectHost) {
-			throw new Error('invalid Actor: id has different host');
+		actualHost = this.utilityService.extractHost(x.id);
+		if (expectedHost !== actualHost) {
+			throw new Error(`invalid Actor: id has different host. expected: ${expectedHost}, actual: ${actualHost}`);
 		}
 
 		if (x.publicKey) {
@@ -210,9 +211,9 @@ export class ApPersonService implements OnModuleInit {
 				throw new Error('invalid Actor: publicKey.id is not a string');
 			}
 
-			const publicKeyIdHost = this.utilityService.punyHost(x.publicKey.id);
-			if (publicKeyIdHost !== expectHost) {
-				throw new Error('invalid Actor: publicKey.id has different host');
+			actualHost = this.utilityService.extractHost(x.publicKey.id);
+			if (expectedHost !== actualHost) {
+				throw new Error(`invalid Actor: publicKey.id has different host. expected: ${expectedHost}, actual: ${actualHost}`);
 			}
 		}
 
@@ -258,7 +259,7 @@ export class ApPersonService implements OnModuleInit {
 			if (Array.isArray(img)) {
 				img = img.find(item => item && item.url) ?? null;
 			}
-			
+
 			// if we have an explicitly missing image, return an
 			// explicitly-null set of values
 			if ((img == null) || (typeof img === 'object' && img.url == null)) {
@@ -296,8 +297,7 @@ export class ApPersonService implements OnModuleInit {
 	public async createPerson(uri: string, resolver?: Resolver): Promise<MiRemoteUser> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
-		const host = this.utilityService.punyHost(uri);
-		if (host === this.utilityService.toPuny(this.config.host)) {
+		if (this.utilityService.isUriLocal(uri)) {
 			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
 		}
 
@@ -345,13 +345,14 @@ export class ApPersonService implements OnModuleInit {
 				throw new Error('unexpected schema of person url: ' + url);
 			}
 
-			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(person.id)) {
-				throw new Error(`person url <> uri host mismatch: ${url} <> ${person.id}`);
+			if (this.utilityService.extractHost(person.id) !== this.utilityService.extractHost(url)) {
+				throw new Error(`person id and url have different host: ${person.id} - ${url}`);
 			}
 		}
 
 		// Create user
 		let user: MiRemoteUser | null = null;
+		const host = this.utilityService.extractHost(uri);
 
 		//#region カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
@@ -542,8 +543,8 @@ export class ApPersonService implements OnModuleInit {
 				throw new Error('unexpected schema of person url: ' + url);
 			}
 
-			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(person.id)) {
-				throw new Error(`person url <> uri host mismatch: ${url} <> ${person.id}`);
+			if (this.utilityService.extractHost(person.id) !== this.utilityService.extractHost(url)) {
+				throw new Error(`person id and url have different host: ${person.id} - ${url}`);
 			}
 		}
 

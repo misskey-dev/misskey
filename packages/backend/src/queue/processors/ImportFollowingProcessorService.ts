@@ -76,7 +76,7 @@ export class ImportFollowingProcessorService {
 				host: IsNull(),
 				usernameLower: username.toLowerCase(),
 			}) : await this.usersRepository.findOneBy({
-				host: this.utilityService.toPuny(host),
+				host: this.utilityService.normalizeHost(host),
 				usernameLower: username.toLowerCase(),
 			});
 

@@ -77,7 +77,7 @@ export default class InstanceChart extends Chart<typeof schema> { // eslint-disa
 	public async requestReceived(host: string): Promise<void> {
 		await this.commit({
 			'requests.received': 1,
-		}, this.utilityService.toPuny(host));
+		}, this.utilityService.normalizeHost(host));
 	}
 
 	@bindThis
@@ -85,7 +85,7 @@ export default class InstanceChart extends Chart<typeof schema> { // eslint-disa
 		await this.commit({
 			'requests.succeeded': isSucceeded ? 1 : 0,
 			'requests.failed': isSucceeded ? 0 : 1,
-		}, this.utilityService.toPuny(host));
+		}, this.utilityService.normalizeHost(host));
 	}
 
 	@bindThis
@@ -93,7 +93,7 @@ export default class InstanceChart extends Chart<typeof schema> { // eslint-disa
 		await this.commit({
 			'users.total': 1,
 			'users.inc': 1,
-		}, this.utilityService.toPuny(host));
+		}, this.utilityService.normalizeHost(host));
 	}
 
 	@bindThis
@@ -106,7 +106,7 @@ export default class InstanceChart extends Chart<typeof schema> { // eslint-disa
 			'notes.diffs.renote': note.renoteId != null ? (isAdditional ? 1 : -1) : 0,
 			'notes.diffs.reply': note.replyId != null ? (isAdditional ? 1 : -1) : 0,
 			'notes.diffs.withFile': note.fileIds.length > 0 ? (isAdditional ? 1 : -1) : 0,
-		}, this.utilityService.toPuny(host));
+		}, this.utilityService.normalizeHost(host));
 	}
 
 	@bindThis
@@ -115,7 +115,7 @@ export default class InstanceChart extends Chart<typeof schema> { // eslint-disa
 			'following.total': isAdditional ? 1 : -1,
 			'following.inc': isAdditional ? 1 : 0,
 			'following.dec': isAdditional ? 0 : 1,
-		}, this.utilityService.toPuny(host));
+		}, this.utilityService.normalizeHost(host));
 	}
 
 	@bindThis
@@ -124,7 +124,7 @@ export default class InstanceChart extends Chart<typeof schema> { // eslint-disa
 			'followers.total': isAdditional ? 1 : -1,
 			'followers.inc': isAdditional ? 1 : 0,
 			'followers.dec': isAdditional ? 0 : 1,
-		}, this.utilityService.toPuny(host));
+		}, this.utilityService.normalizeHost(host));
 	}
 
 	@bindThis

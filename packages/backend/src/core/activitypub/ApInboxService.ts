@@ -100,12 +100,12 @@ export class ApInboxService {
 
 			const items = toArray(isCollection(activity) ? activity.items : activity.orderedItems);
 			if (items.length >= resolver.getRecursionLimit()) {
-				throw new Error(`skipping activity: collection would surpass recursion limit: ${this.utilityService.extractDbHost(actor.uri)}`);
+				throw new Error(`skipping activity: collection would surpass recursion limit: ${this.utilityService.extractHost(actor.uri)}`);
 			}
 
 			for (const item of items) {
 				const act = await resolver.resolve(item);
-				if (act.id == null || this.utilityService.extractDbHost(act.id) !== this.utilityService.extractDbHost(actor.uri)) {
+				if (act.id == null || this.utilityService.extractHost(act.id) !== this.utilityService.extractHost(actor.uri)) {
 					this.logger.warn('skipping activity: activity id is null or mismatching');
 					continue;
 				}
@@ -310,7 +310,7 @@ export class ApInboxService {
 
 		// アナウンス先をブロックしてたら中断
 		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) return 'skip: blocked host';
+		if (this.utilityService.isItemListedIn(this.utilityService.extractHost(uri), meta.blockedHosts)) return 'skip: blocked host';
 
 		const unlock = await this.appLockService.getApLock(uri);
 
@@ -432,7 +432,7 @@ export class ApInboxService {
 			}
 
 			if (typeof note.id === 'string') {
-				if (this.utilityService.extractDbHost(actor.uri) !== this.utilityService.extractDbHost(note.id)) {
+				if (this.utilityService.extractHost(actor.uri) !== this.utilityService.extractHost(note.id)) {
 					return 'skip: host in actor.uri !== note.id';
 				}
 			} else {

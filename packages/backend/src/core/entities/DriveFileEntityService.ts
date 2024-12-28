@@ -158,7 +158,7 @@ export class DriveFileEntityService {
 	public async calcDriveUsageOfHost(host: string): Promise<number> {
 		const { sum } = await this.driveFilesRepository
 			.createQueryBuilder('file')
-			.where('file.userHost = :host', { host: this.utilityService.toPuny(host) })
+			.where('file.userHost = :host', { host: this.utilityService.normalizeHost(host) })
 			.andWhere('file.isLink = FALSE')
 			.select('SUM(file.size)', 'sum')
 			.getRawOne();
