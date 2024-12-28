@@ -29,6 +29,8 @@ import { $i, iAmModerator } from '@/account.js';
 import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
 import { Paging } from '@/components/MkPagination.vue';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { MisskeyEntity } from '@/types/date-separated-list.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -73,20 +75,33 @@ const tlComponent = shallowRef<InstanceType<typeof MkNotes>>();
 
 let tlNotesCount = 0;
 
-async function prepend(data) {
+async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote) {
 	if (tlComponent.value == null) return;
 
-	let note = data;
+	let note: Misskey.entities.Note & MisskeyEntity;
 
-	// チェックするプロパティはなんでも良い
-	// minimizeが有効でid以外が存在しない場合は取得する
-	if (!data.visibility) {
-		const res = await window.fetch(`/notes/${data.id}.json`, {
-			method: 'GET',
-			credentials: 'omit',
-		});
-		if (!res.ok) return;
-		note = deepMerge(data, await res.json());
+	if ('_allowCached_' in data) {
+		let fullNote: Misskey.entities.Note | null = null;
+
+		const { _allowCached_, ..._data } = data;
+
+		if (_allowCached_) {
+			const res = await window.fetch(`/notes/${data.id}.json`, {
+				method: 'GET',
+				credentials: 'omit',
+			});
+			if (!res.ok) return;
+			fullNote = await res.json();
+		} else {
+			fullNote = await misskeyApi('notes/show', {
+				noteId: data.id,
+			});
+		}
+		if (fullNote == null) return;
+
+		note = deepMerge(_data, fullNote);
+	} else {
+		note = data;
 	}
 
 	tlNotesCount++;

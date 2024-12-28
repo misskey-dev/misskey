@@ -29,7 +29,7 @@ class ChannelChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: any) {
+	public async init(params: JsonObject) {
 		if (typeof params.channelId !== 'string') return;
 		this.channelId = params.channelId as string;
 		this.minimize = !!(params.minimize ?? false);
@@ -51,13 +51,21 @@ class ChannelChannel extends Channel {
 			}
 		}
 
-		if (this.minimize && ['public', 'home'].includes(note.visibility)) {
-			this.send('note', {
-				id: note.id, myReaction: note.myReaction,
-				poll: note.poll?.choices ? { choices: note.poll.choices } : undefined,
-				reply: note.reply?.myReaction ? { myReaction: note.reply.myReaction } : undefined,
-				renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
-			});
+		if (this.minimize) {
+			if (this.noteEntityService.canCache(note)) {
+				this.send('note', {
+					id: note.id, myReaction: note.myReaction,
+					poll: note.poll?.choices ? { choices: note.poll.choices } : undefined,
+					reply: note.reply?.myReaction ? { myReaction: note.reply.myReaction } : undefined,
+					renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
+					_allowCached_: true,
+				});
+			} else {
+				this.send('note', {
+					id: note.id,
+					_allowCached_: false,
+				});
+			}
 		} else {
 			this.connection.cacheNote(note);
 			this.send('note', note);

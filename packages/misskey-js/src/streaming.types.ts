@@ -19,6 +19,7 @@ import {
 	QueueStatsLog,
 	ServerStats,
 	ServerStatsLog,
+	StreamNote,
 	ReversiGameDetailed,
 } from './entities.js';
 import {
@@ -76,7 +77,7 @@ export type Channels = {
 			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -88,7 +89,7 @@ export type Channels = {
 			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -100,7 +101,7 @@ export type Channels = {
 			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -111,7 +112,7 @@ export type Channels = {
 			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -123,7 +124,7 @@ export type Channels = {
 			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -142,7 +143,7 @@ export type Channels = {
 			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -152,7 +153,7 @@ export type Channels = {
 			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
@@ -162,7 +163,7 @@ export type Channels = {
 			minimize?: boolean;
 		};
 		events: {
-			note: (payload: Note) => void;
+			note: (payload: Note | StreamNote) => void;
 		};
 		receives: null;
 	};
