@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-for="[id, user] in accounts">
 				<MkUserCardMini v-if="user != null" :key="user.id" :user="user" :class="$style.user" @click.prevent="menu(user, $event)"/>
 				<button v-else v-panel class="_button" :class="$style.unknownUser" @click="menu(id, $event)">
-					<div :class="$style.unknownUserAvatarMock"></div>
+					<div :class="$style.unknownUserAvatarMock"><i class="ti ti-user-question"></i></div>
 					<div>
 						<div :class="$style.unknownUserTitle">{{ i18n.ts.unknown }}</div>
 						<div :class="$style.unknownUserSub">ID: <span class="_monospace">{{ id }}</span></div>
@@ -153,8 +153,12 @@ definePageMetadata(() => ({
 	display: block;
 	width: 34px;
 	height: 34px;
+	line-height: 34px;
+	text-align: center;
+	font-size: 16px;
 	margin-right: 12px;
-	background: var(--MI_THEME-fg);
+	background-color: color-mix(in srgb, var(--MI_THEME-fg), transparent 85%);
+	color: color-mix(in srgb, var(--MI_THEME-fg), transparent 25%);
 	border-radius: 50%;
 }
 
