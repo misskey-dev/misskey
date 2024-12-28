@@ -59,13 +59,13 @@ export type AsUiMfm = AsUiComponentBase & {
 	bold?: boolean;
 	color?: string;
 	font?: Font;
-	onClickEv?: (evId: string) => void
+	onClickEv?: (evId: string) => Promise<void>;
 };
 
 export type AsUiButton = AsUiComponentBase & {
 	type: 'button';
 	text?: string;
-	onClick?: () => void;
+	onClick?: () => Promise<void>;
 	primary?: boolean;
 	rounded?: boolean;
 	disabled?: boolean;
@@ -78,7 +78,7 @@ export type AsUiButtons = AsUiComponentBase & {
 
 export type AsUiSwitch = AsUiComponentBase & {
 	type: 'switch';
-	onChange?: (v: boolean) => void;
+	onChange?: (v: boolean) => Promise<void>;
 	default?: boolean;
 	label?: string;
 	caption?: string;
@@ -86,7 +86,7 @@ export type AsUiSwitch = AsUiComponentBase & {
 
 export type AsUiTextarea = AsUiComponentBase & {
 	type: 'textarea';
-	onInput?: (v: string) => void;
+	onInput?: (v: string) => Promise<void>;
 	default?: string;
 	label?: string;
 	caption?: string;
@@ -94,7 +94,7 @@ export type AsUiTextarea = AsUiComponentBase & {
 
 export type AsUiTextInput = AsUiComponentBase & {
 	type: 'textInput';
-	onInput?: (v: string) => void;
+	onInput?: (v: string) => Promise<void>;
 	default?: string;
 	label?: string;
 	caption?: string;
@@ -102,7 +102,7 @@ export type AsUiTextInput = AsUiComponentBase & {
 
 export type AsUiNumberInput = AsUiComponentBase & {
 	type: 'numberInput';
-	onInput?: (v: number) => void;
+	onInput?: (v: number) => Promise<void>;
 	default?: number;
 	label?: string;
 	caption?: string;
@@ -114,7 +114,7 @@ export type AsUiSelect = AsUiComponentBase & {
 		text: string;
 		value: string;
 	}[];
-	onChange?: (v: string) => void;
+	onChange?: (v: string) => Promise<void>;
 	default?: string;
 	label?: string;
 	caption?: string;
@@ -267,8 +267,8 @@ function getMfmOptions(def: values.Value | undefined, call: (fn: values.VFn, arg
 		bold: bold?.value,
 		color: color?.value,
 		font: font?.value,
-		onClickEv: (evId: string) => {
-			if (onClickEv) call(onClickEv, [values.STR(evId)]);
+		onClickEv: async (evId: string) => {
+			if (onClickEv) await call(onClickEv, [values.STR(evId)]);
 		},
 	};
 }
@@ -286,8 +286,8 @@ function getTextInputOptions(def: values.Value | undefined, call: (fn: values.VF
 	if (caption) utils.assertString(caption);
 
 	return {
-		onInput: (v) => {
-			if (onInput) call(onInput, [utils.jsToVal(v)]);
+		onInput: async (v) => {
+			if (onInput) await call(onInput, [utils.jsToVal(v)]);
 		},
 		default: defaultValue?.value,
 		label: label?.value,
@@ -308,8 +308,8 @@ function getTextareaOptions(def: values.Value | undefined, call: (fn: values.VFn
 	if (caption) utils.assertString(caption);
 
 	return {
-		onInput: (v) => {
-			if (onInput) call(onInput, [utils.jsToVal(v)]);
+		onInput: async (v) => {
+			if (onInput) await call(onInput, [utils.jsToVal(v)]);
 		},
 		default: defaultValue?.value,
 		label: label?.value,
@@ -330,8 +330,8 @@ function getNumberInputOptions(def: values.Value | undefined, call: (fn: values.
 	if (caption) utils.assertString(caption);
 
 	return {
-		onInput: (v) => {
-			if (onInput) call(onInput, [utils.jsToVal(v)]);
+		onInput: async (v) => {
+			if (onInput) await call(onInput, [utils.jsToVal(v)]);
 		},
 		default: defaultValue?.value,
 		label: label?.value,
@@ -355,8 +355,8 @@ function getButtonOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 
 	return {
 		text: text?.value,
-		onClick: () => {
-			if (onClick) call(onClick, []);
+		onClick: async () => {
+			if (onClick) await call(onClick, []);
 		},
 		primary: primary?.value,
 		rounded: rounded?.value,
@@ -386,8 +386,8 @@ function getButtonsOptions(def: values.Value | undefined, call: (fn: values.VFn,
 
 			return {
 				text: text.value,
-				onClick: () => {
-					call(onClick, []);
+				onClick: async () => {
+					await call(onClick, []);
 				},
 				primary: primary?.value,
 				rounded: rounded?.value,
@@ -410,8 +410,8 @@ function getSwitchOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 	if (caption) utils.assertString(caption);
 
 	return {
-		onChange: (v) => {
-			if (onChange) call(onChange, [utils.jsToVal(v)]);
+		onChange: async (v) => {
+			if (onChange) await call(onChange, [utils.jsToVal(v)]);
 		},
 		default: defaultValue?.value,
 		label: label?.value,
@@ -445,8 +445,8 @@ function getSelectOptions(def: values.Value | undefined, call: (fn: values.VFn, 
 				value: value ? value.value : text.value,
 			};
 		}) : [],
-		onChange: (v) => {
-			if (onChange) call(onChange, [utils.jsToVal(v)]);
+		onChange: async (v) => {
+			if (onChange) await call(onChange, [utils.jsToVal(v)]);
 		},
 		default: defaultValue?.value,
 		label: label?.value,

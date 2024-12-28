@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { registerAsUiLib } from "@/scripts/aiscript/ui.js";
-import { errors, Interpreter, Parser, values } from "@syuilo/aiscript";
-import { setTimeout } from "node:timers/promises";
-import { describe, expect, test } from "vitest";
-import { type Ref, ref } from "vue";
+import { registerAsUiLib } from '@/scripts/aiscript/ui.js';
+import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
+import { describe, expect, test } from 'vitest';
+import { type Ref, ref } from 'vue';
 import type {
 	AsUiButton,
 	AsUiButtons,
@@ -20,14 +19,13 @@ import type {
 	AsUiText,
 	AsUiTextarea,
 	AsUiTextInput,
-} from "@/scripts/aiscript/ui.js";
+} from '@/scripts/aiscript/ui.js';
 
 type ExeResult = {
 	root: AsUiRoot;
 	get: (id: string) => AsUiComponent;
 	outputs: values.Value[];
 }
-
 async function exe(script: string): Promise<ExeResult> {
 	const rootRef = ref<AsUiRoot>();
 	const componentRefs = ref<Ref<AsUiComponent>[]>([]);
@@ -286,8 +284,7 @@ describe('AiScript UI API', () => {
 				color: '#000',
 				font: 'sans-serif',
 			});
-			onClickEv!('a');
-			await setTimeout();
+			await onClickEv!('a');
 			expect(outputs).toStrictEqual([values.STR('a')]);
 		});
 
@@ -337,8 +334,7 @@ describe('AiScript UI API', () => {
 				label: 'b',
 				caption: 'c',
 			});
-			onInput!('d');
-			await setTimeout();
+			await onInput!('d');
 			expect(outputs).toStrictEqual([values.STR('d')]);
 		});
 
@@ -378,8 +374,7 @@ describe('AiScript UI API', () => {
 				label: 'b',
 				caption: 'c',
 			});
-			onInput!('d');
-			await setTimeout();
+			await onInput!('d');
 			expect(outputs).toStrictEqual([values.STR('d')]);
 		});
 
@@ -419,8 +414,7 @@ describe('AiScript UI API', () => {
 				label: 'a',
 				caption: 'b',
 			});
-			onInput!(2);
-			await setTimeout();
+			await onInput!(2);
 			expect(outputs).toStrictEqual([values.NUM(2)]);
 		});
 
@@ -462,8 +456,7 @@ describe('AiScript UI API', () => {
 				rounded: false,
 				disabled: false,
 			});
-			onClick!();
-			await setTimeout();
+			await onClick!();
 			expect(outputs).toStrictEqual([values.STR('clicked')]);
 		});
 
@@ -554,9 +547,8 @@ describe('AiScript UI API', () => {
 				rounded: false,
 				disabled: false,
 			});
-			onClickA!();
-			onClickB!();
-			await setTimeout();
+			await onClickA!();
+			await onClickB!();
 			expect(outputs).toStrictEqual(
 				[values.STR('clicked a'), values.STR('clicked b')]
 			);
@@ -583,8 +575,7 @@ describe('AiScript UI API', () => {
 				label: 'a',
 				caption: 'b',
 			});
-			onChange!(true);
-			await setTimeout();
+			await onChange!(true);
 			expect(outputs).toStrictEqual([values.TRUE]);
 		});
 
@@ -632,8 +623,7 @@ describe('AiScript UI API', () => {
 				label: 'c',
 				caption: 'd',
 			});
-			onChange!('b');
-			await setTimeout();
+			await onChange!('b');
 			expect(outputs).toStrictEqual([values.STR('b')]);
 		});
 
