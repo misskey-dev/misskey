@@ -332,7 +332,7 @@ export class NoteEntityService implements OnModuleInit {
 			(note.visibility === 'public' || note.visibility === 'home') &&
 			note.user?.makeNotesFollowersOnlyBefore == null &&
 			note.user?.makeNotesHiddenBefore == null &&
-			(note.user?.requireSigninToViewContents == false || note.user?.requireSigninToViewContents == null)
+			(note.user?.requireSigninToViewContents === false || note.user?.requireSigninToViewContents == null)
 		);
 	}
 
