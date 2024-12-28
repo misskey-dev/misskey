@@ -31,6 +31,6 @@ const modeTab = ref<PageMode>('list');
 
 <style module lang="scss">
 .root {
-	padding: 16px;
+	padding: var(--MI-margin);
 }
 </style>

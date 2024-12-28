@@ -2832,7 +2832,7 @@ _customEmojisManager:
   _remote:
     importSelectionRows: "選択行をインポート"
     importSelectionRangesRows: "選択範囲の行をインポート"
-    importEmojisButton: "チェックがついた絵文字をインポート"
+    importEmojisButton: "チェックされた絵文字をインポート"
     confirmImportEmojisTitle: "絵文字のインポート"
     confirmImportEmojisDescription: "リモートから受信した{count}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。実行しますか？"
   _local:
