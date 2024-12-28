@@ -86,23 +86,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
 				</div>
 
-				<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
-			</template>
+				<div :class="$style.footer">
+					<div>
+						<!-- レイアウト調整用のスペース -->
+					</div>
 
-			<div v-if="gridItems.length > 0" class="_gaps" :class="$style.buttons">
-				<MkButton primary @click="onImportClicked">
-					{{
-						i18n.ts._customEmojisManager._remote.importEmojisButton
-					}}
-				</MkButton>
-			</div>
+					<div :class="$style.center">
+						<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
+					</div>
+
+					<div :class="$style.right">
+						<MkButton primary @click="onImportClicked">
+							{{
+								i18n.ts._customEmojisManager._remote.importEmojisButton
+							}} ({{ checkedItemsCount }})
+						</MkButton>
+					</div>
+				</div>
+			</template>
 		</div>
 	</template>
 </MkStickyContainer>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -134,8 +142,19 @@ type GridItem = {
 }
 
 function setupGrid(): GridSetting {
+	const $style = useCssModule();
+
 	return {
 		row: {
+			// グリッドの行数をあらかじめ100行確保する
+			minimumDefinitionCount: 100,
+			styleRules: [
+				{
+					// チェックされたら背景色を変える
+					condition: ({ row }) => gridItems.value[row.index].checked,
+					applyStyle: { className: $style.changedRow },
+				},
+			],
 			contextMenuFactory: (row, context) => {
 				return [
 					{
@@ -191,6 +210,7 @@ const requestLogs = ref<RequestLogItem[]>([]);
 const gridItems = ref<GridItem[]>([]);
 
 const spMode = computed(() => ['smartphone', 'tablet'].includes(deviceKind));
+const checkedItemsCount = computed(() => gridItems.value.filter(it => it.checked).length);
 
 function onSortOrderUpdate(_sortOrders: SortOrder<GridSortOrderKey>[]) {
 	sortOrders.value = _sortOrders;
@@ -294,7 +314,7 @@ async function refreshCustomEmojis() {
 			limit: 100,
 			query: query,
 			page: currentPage.value,
-			sortKeys: sortOrders.value.map(({ key, direction }) => `${direction}${key}`),
+			sortKeys: sortOrders.value.map(({ key, direction }) => `${direction}${key}`) as never[],
 		}),
 		() => {
 		},
@@ -338,6 +358,10 @@ onMounted(async () => {
 
 .root {
 	padding: 16px;
+}
+
+.changedRow {
+	background-color: var(--MI_THEME-infoBg);
 }
 
 .searchArea {
@@ -385,10 +409,33 @@ onMounted(async () => {
 	}
 }
 
-.buttons {
-	display: inline-flex;
-	margin-left: auto;
+.footer {
+	background-color: var(--MI_THEME-bg);
+
+	position: sticky;
+	left:0;
+	bottom:0;
+	z-index: 1;
+	// stickyで追従させる都合上、フッター自身でpaddingを持つ必要があるため、親要素で画一的に指定している分をネガティブマージンで相殺している
+	margin-top: calc(var(--MI-margin) * -1);
+	margin-bottom: calc(var(--MI-margin) * -1);
+	padding-top: var(--MI-margin);
+	padding-bottom: var(--MI-margin);
+
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
 	gap: 8px;
-	flex-wrap: wrap;
+
+	& .center {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	& .right {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	}
 }
 </style>

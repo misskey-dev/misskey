@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		/>
 	</div>
 
-	<div v-if="gridItems.length > 0" :class="$style.buttons">
+	<div v-if="gridItems.length > 0" :class="$style.footer">
 		<MkButton primary :disabled="registerButtonDisabled" @click="onRegistryClicked">
 			{{ i18n.ts.registration }}
 		</MkButton>
@@ -456,8 +456,19 @@ onMounted(async () => {
 	padding-bottom: 8px;
 }
 
-.buttons {
-	margin-top: 16px;
+.footer {
+	background-color: var(--MI_THEME-bg);
+
+	position: sticky;
+	left:0;
+	bottom:0;
+	z-index: 1;
+	// stickyで追従させる都合上、フッター自身でpaddingを持つ必要があるため、親要素で画一的に指定している分をネガティブマージンで相殺している
+	margin-top: calc(var(--MI-margin) * -1);
+	margin-bottom: calc(var(--MI-margin) * -1);
+	padding-top: var(--MI-margin);
+	padding-bottom: var(--MI-margin);
+
 	display: flex;
 	gap: 8px;
 	flex-wrap: wrap;

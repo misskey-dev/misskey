@@ -145,18 +145,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
 				</div>
 
-				<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
-			</template>
+				<div :class="$style.footer">
+					<div :class="$style.left">
+						<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">
+							{{ i18n.ts.delete }} ({{ deleteItemsCount }})
+						</MkButton>
+					</div>
 
-			<div :class="$style.buttons">
-				<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">{{ i18n.ts.delete }}</MkButton>
-				<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">
-					{{
-						i18n.ts.update
-					}}
-				</MkButton>
-				<MkButton @click="onGridResetButtonClicked">{{ i18n.ts.reset }}</MkButton>
-			</div>
+					<div :class="$style.center">
+						<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
+					</div>
+
+					<div :class="$style.right">
+						<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">
+							{{ i18n.ts.update }} ({{ updatedItemsCount }})
+						</MkButton>
+						<MkButton @click="onGridResetButtonClicked">{{ i18n.ts.reset }}</MkButton>
+					</div>
+				</div>
+			</template>
 		</div>
 	</template>
 </MkStickyContainer>
@@ -388,6 +395,10 @@ const updateButtonDisabled = ref<boolean>(false);
 
 const spMode = computed(() => ['smartphone', 'tablet'].includes(deviceKind));
 const queryRolesText = computed(() => queryRoles.value.map(it => it.name).join(','));
+const updatedItemsCount = computed(() => {
+	return gridItems.value.filter((it, idx) => !it.checked && JSON.stringify(it) !== JSON.stringify(originGridItems.value[idx])).length;
+});
+const deleteItemsCount = computed(() => gridItems.value.filter(it => it.checked).length);
 
 async function onUpdateButtonClicked() {
 	const _items = gridItems.value;
@@ -698,12 +709,44 @@ onMounted(async () => {
 	padding-bottom: 8px;
 }
 
-.buttons {
-	display: flex;
-	align-items: flex-end;
-	justify-content: center;
+.footer {
+	background-color: var(--MI_THEME-bg);
+
+	position: sticky;
+	left:0;
+	bottom:0;
+	z-index: 1;
+	// stickyで追従させる都合上、フッター自身でpaddingを持つ必要があるため、親要素で画一的に指定している分をネガティブマージンで相殺している
+	margin-top: calc(var(--MI-margin) * -1);
+	margin-bottom: calc(var(--MI-margin) * -1);
+	padding-top: var(--MI-margin);
+	padding-bottom: var(--MI-margin);
+
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
 	gap: 8px;
-	flex-wrap: wrap;
+
+	& .left {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: 8px;
+	}
+
+	& .center {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+	}
+
+	& .right {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		flex-direction: row;
+		gap: 8px;
+	}
 }
 
 .divider {
