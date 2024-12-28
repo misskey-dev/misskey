@@ -7,6 +7,7 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { FollowingsRepository } from '@/models/_.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
@@ -42,6 +43,13 @@ export const meta = {
 			message: 'You are not following that user.',
 			code: 'NOT_FOLLOWING',
 			id: '5dbf82f5-c92b-40b1-87d1-6c8c0741fd09',
+		},
+
+		cannotUnfollowDueToServerPolicy: {
+			message: 'You cannot unfollow that user due to server policy.',
+			code: 'CANNOT_UNFOLLOW_DUE_TO_SERVER_POLICY',
+			id: '19f25f61-0141-4683-99dc-217a88d633cb',
+			httpStatusCode: 403,
 		},
 	},
 
@@ -96,7 +104,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.notFollowing);
 			}
 
-			await this.userFollowingService.unfollow(follower, followee);
+			await this.userFollowingService.unfollow(follower, followee).catch((err) => {
+				if (err instanceof IdentifiableError && err.id === meta.errors.cannotUnfollowDueToServerPolicy.id) {
+					throw new ApiError(meta.errors.cannotUnfollowDueToServerPolicy);
+				}
+			});
 
 			return await this.userEntityService.pack(followee.id, me);
 		});

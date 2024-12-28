@@ -21,6 +21,7 @@ import { bindThis } from '@/decorators.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserService } from '@/core/UserService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
 
 @Injectable()
 export class SignupService {
@@ -39,6 +40,7 @@ export class SignupService {
 
 		private utilityService: UtilityService,
 		private userService: UserService,
+		private userFollowingService: UserFollowingService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private instanceActorService: InstanceActorService,
@@ -151,6 +153,23 @@ export class SignupService {
 		});
 
 		this.usersChart.update(account, true);
+
+		//#region Default following
+		if (
+			!isTheFirstUser &&
+			(this.meta.defaultFollowedUsers.length > 0 || this.meta.forciblyFollowedUsers.length > 0)
+		) {
+			const userIdsToFollow = [
+				...this.meta.defaultFollowedUsers,
+				...this.meta.forciblyFollowedUsers,
+			];
+
+			await Promise.allSettled(userIdsToFollow.map(async userId => {
+				await this.userFollowingService.follow(account, { id: userId });
+			}));
+		}
+		//#endregion
+
 		this.userService.notifySystemWebhook(account, 'userCreated');
 
 		return { account, secret };
