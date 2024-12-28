@@ -122,7 +122,7 @@ async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote
 let connection: Misskey.ChannelConnection | null = null;
 let connection2: Misskey.ChannelConnection | null = null;
 let paginationQuery: Paging | null = null;
-const minimize = !iAmModerator;
+const minimize = !iAmModerator && instance.enableStreamNotesCdnCache;
 
 const stream = useStream();
 

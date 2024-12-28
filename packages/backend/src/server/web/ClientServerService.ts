@@ -661,6 +661,12 @@ export class ClientServerService {
 		});
 
 		fastify.get<{ Params: { note: string; } }>('/notes/:note.json', async (request, reply) => {
+			// 内部用途なのでCORSを無効化
+			reply.removeHeader('Access-Control-Allow-Origin');
+
+			// this.meta.enableStreamNotesCdnCacheにかかわらずレスポンスは返す
+			// （このプロパティを見ずにminimizeでChannelに繋いだ場合用）
+
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
 			});
