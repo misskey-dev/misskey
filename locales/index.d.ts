@@ -5227,7 +5227,7 @@ export interface Locale extends ILocale {
      */
     "enableStreamNotesCdnCache": string;
     /**
-     * サーバーでCDNを使用している場合は、この設定をオンにしたうえでCDNの設定を適切に調整するとサーバーへの負荷を軽減できます（上級者向け）。WebSocket通信ではリアルタイム性のある情報のみを送信し、残りの情報はCDNキャッシュから取得して突合します。このため、クライアント側の負荷やデータ通信量に影響が出る可能性があります。
+     * （上級者向け）サーバーでCDNを使用している場合は、この設定をオンにしたうえでCDNの設定を適切に調整するとサーバーへの負荷を軽減できます。WebSocket通信ではリアルタイム性のある情報のみを送信し、残りの情報はCDNキャッシュから取得して突合します。このため、クライアント側の負荷やデータ通信量に影響が出る可能性があります。
      */
     "enableStreamNotesCdnCacheDescription": string;
     "_accountSettings": {
