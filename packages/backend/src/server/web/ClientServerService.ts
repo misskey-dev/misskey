@@ -65,6 +65,7 @@ import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntitySer
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -662,10 +663,9 @@ export class ClientServerService {
 		fastify.get<{ Params: { note: string; } }>('/notes/:note.json', async (request, reply) => {
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
-				visibility: In(['public', 'home']),
 			});
 
-			if (note) {
+			if (note && this.noteEntityService.canCache(note)) {
 				try {
 					const _note = await this.noteEntityService.pack(note, null);
 					reply.header('Content-Type', 'application/json; charset=utf-8');
