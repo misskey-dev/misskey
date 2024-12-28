@@ -120,18 +120,6 @@ export class Resolver {
 			throw new Error('invalid response');
 		}
 
-		// HttpRequestService / ApRequestService have already checked that
-		// `object.id` or `object.url` matches the URL used to fetch the
-		// object after redirects; here we double-check that no redirects
-		// bounced between hosts
-		if (object.id == null) {
-			throw new Error('invalid AP object: missing id');
-		}
-
-		if (!this.utilityService.isRelatedUris(object.id, value)) {
-			throw new Error(`invalid AP object ${value}: id ${object.id} has unrelated host`);
-		}
-
 		return object;
 	}
 
