@@ -128,8 +128,8 @@ export class Resolver {
 			throw new Error('invalid AP object: missing id');
 		}
 
-		if (this.utilityService.extractHost(object.id) !== this.utilityService.extractHost(value)) {
-			throw new Error(`invalid AP object ${value}: id ${object.id} has different host`);
+		if (!this.utilityService.isRelatedUris(object.id, value)) {
+			throw new Error(`invalid AP object ${value}: id ${object.id} has unrelated host`);
 		}
 
 		return object;

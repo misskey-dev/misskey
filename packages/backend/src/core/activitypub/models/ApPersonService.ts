@@ -152,8 +152,8 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		let actualHost = this.utilityService.extractHost(x.inbox);
-		if (expectedHost !== actualHost) {
-			throw new Error(`invalid Actor: inbox has different host. expected: ${expectedHost}, actual: ${actualHost}`);
+		if (!this.utilityService.isRelatedHosts(expectedHost, actualHost)) {
+			throw new Error(`invalid Actor: inbox has unrelated host. expected: ${expectedHost}, actual: ${actualHost}`);
 		}
 
 		const sharedInboxObject = x.sharedInbox ?? (x.endpoints ? x.endpoints.sharedInbox : undefined);
@@ -161,8 +161,8 @@ export class ApPersonService implements OnModuleInit {
 			const sharedInbox = getApId(sharedInboxObject);
 			if (!sharedInbox) throw new Error('invalid Actor: wrong shared inbox');
 			actualHost = this.utilityService.extractHost(sharedInbox);
-			if (expectedHost !== actualHost) {
-				throw new Error(`invalid Actor: shared inbox has different host. expected: ${expectedHost}, actual: ${actualHost}`);
+			if (!this.utilityService.isRelatedHosts(expectedHost, actualHost)) {
+				throw new Error(`invalid Actor: shared inbox has unrelated host. expected: ${expectedHost}, actual: ${actualHost}`);
 			}
 		}
 
@@ -172,8 +172,8 @@ export class ApPersonService implements OnModuleInit {
 				const collectionUri = getApId(xCollection);
 				if (!collectionUri) throw new Error(`invalid Actor: wrong ${collection}`);
 				actualHost = this.utilityService.extractHost(collectionUri);
-				if (expectedHost !== actualHost) {
-					throw new Error(`invalid Actor: ${collection} has different host. expected: ${expectedHost}, actual: ${actualHost}`);
+				if (!this.utilityService.isRelatedHosts(expectedHost, actualHost)) {
+					throw new Error(`invalid Actor: ${collection} has unrelated host. expected: ${expectedHost}, actual: ${actualHost}`);
 				}
 			}
 		}
@@ -202,8 +202,8 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		actualHost = this.utilityService.extractHost(x.id);
-		if (expectedHost !== actualHost) {
-			throw new Error(`invalid Actor: id has different host. expected: ${expectedHost}, actual: ${actualHost}`);
+		if (!this.utilityService.isRelatedHosts(expectedHost, actualHost)) {
+			throw new Error(`invalid Actor: id has unrelated host. expected: ${expectedHost}, actual: ${actualHost}`);
 		}
 
 		if (x.publicKey) {
@@ -212,8 +212,8 @@ export class ApPersonService implements OnModuleInit {
 			}
 
 			actualHost = this.utilityService.extractHost(x.publicKey.id);
-			if (expectedHost !== actualHost) {
-				throw new Error(`invalid Actor: publicKey.id has different host. expected: ${expectedHost}, actual: ${actualHost}`);
+			if (!this.utilityService.isRelatedHosts(expectedHost, actualHost)) {
+				throw new Error(`invalid Actor: publicKey.id has unrelated host. expected: ${expectedHost}, actual: ${actualHost}`);
 			}
 		}
 
@@ -345,8 +345,8 @@ export class ApPersonService implements OnModuleInit {
 				throw new Error('unexpected schema of person url: ' + url);
 			}
 
-			if (this.utilityService.extractHost(person.id) !== this.utilityService.extractHost(url)) {
-				throw new Error(`person id and url have different host: ${person.id} - ${url}`);
+			if (!this.utilityService.isRelatedUris(person.id, url)) {
+				throw new Error(`person id and url has unrelated host: ${person.id} - ${url}`);
 			}
 		}
 
@@ -543,8 +543,8 @@ export class ApPersonService implements OnModuleInit {
 				throw new Error('unexpected schema of person url: ' + url);
 			}
 
-			if (this.utilityService.extractHost(person.id) !== this.utilityService.extractHost(url)) {
-				throw new Error(`person id and url have different host: ${person.id} - ${url}`);
+			if (!this.utilityService.isRelatedUris(person.id, url)) {
+				throw new Error(`person id and url has unrelated host: ${person.id} - ${url}`);
 			}
 		}
 

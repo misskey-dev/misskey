@@ -17,7 +17,6 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-import { assertActivityMatchesUrls } from '@/core/activitypub/misc/check-against-url.js';
 import type { IObject } from './type.js';
 
 type Request = {
@@ -182,6 +181,7 @@ export class ApRequestService {
 	 * Get AP object with http-signature
 	 * @param user http-signature user
 	 * @param url URL to fetch
+	 * @param followAlternate If true, follow alternate link tag in HTML
 	 */
 	@bindThis
 	public async signedGet(url: string, user: { id: MiUser['id'] }, followAlternate?: boolean): Promise<unknown> {
@@ -220,7 +220,7 @@ export class ApRequestService {
 				const alternate = fragment.querySelector('head > link[rel="alternate"][type="application/activity+json"]');
 				if (alternate) {
 					const href = alternate.getAttribute('href');
-					if (href && this.utilityService.extractHost(url) === this.utilityService.extractHost(href)) {
+					if (href && this.utilityService.isRelatedUris(url, href)) {
 						return await this.signedGet(href, user, false);
 					}
 				}
@@ -234,7 +234,7 @@ export class ApRequestService {
 		const finalUrl = res.url; // redirects may have been involved
 		const activity = await res.json() as IObject;
 
-		assertActivityMatchesUrls(activity, [finalUrl]);
+		this.utilityService.assertActivityRelatedToUrl(activity, finalUrl);
 
 		return activity;
 	}
