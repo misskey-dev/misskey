@@ -10,6 +10,6 @@ export function assertStringAndIsIn<A extends readonly string[]>(value: values.V
 	const str = value.value;
 	if (!expects.includes(str)) {
 		const expected = expects.map((expect) => `"${expect}"`).join(', ');
-		throw new errors.AiScriptTypeError(`"${value.value}" is not in ${expected}`);
+		throw new errors.AiScriptRuntimeError(`"${value.value}" is not in ${expected}`);
 	}
 }
