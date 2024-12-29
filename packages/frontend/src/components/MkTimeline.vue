@@ -91,12 +91,16 @@ async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote
 				credentials: 'omit',
 			});
 			if (!res.ok) return;
-			fullNote = (await res.json()) as Misskey.entities.Note;
-		} else {
+			fullNote = (await res.json().catch(() => null)) as Misskey.entities.Note | null;
+		}
+
+		// キャッシュできないノート or キャッシュ用のノートが取得できなかった場合
+		if (fullNote == null) {
 			fullNote = await misskeyApi('notes/show', {
 				noteId: data.id,
-			});
+			}).catch(() => null);
 		}
+
 		if (fullNote == null) return;
 
 		note = deepMerge(_data, fullNote);
