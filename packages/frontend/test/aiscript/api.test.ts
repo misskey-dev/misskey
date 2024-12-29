@@ -96,21 +96,21 @@ describe('AiScript common API', () => {
 				};
 			});
 
-			test.sequential('USER_ID', async () => {
+			test.concurrent('USER_ID', async () => {
 				const [res] = await exe(`
 					<: USER_ID
 				`);
 				expect(res).toStrictEqual(values.STR('xxxxxxxx'));
 			});
 
-			test.sequential('USER_NAME', async () => {
+			test.concurrent('USER_NAME', async () => {
 				const [res] = await exe(`
 					<: USER_NAME
 				`);
 				expect(res).toStrictEqual(values.STR('藍'));
 			});
 
-			test.sequential('USER_USERNAME', async () => {
+			test.concurrent('USER_USERNAME', async () => {
 				const [res] = await exe(`
 					<: USER_USERNAME
 				`);
@@ -123,21 +123,21 @@ describe('AiScript common API', () => {
 				accountMock = null;
 			});
 
-			test.sequential('USER_ID', async () => {
+			test.concurrent('USER_ID', async () => {
 				const [res] = await exe(`
 					<: USER_ID
 				`);
 				expect(res).toStrictEqual(values.NULL);
 			});
 
-			test.sequential('USER_NAME', async () => {
+			test.concurrent('USER_NAME', async () => {
 				const [res] = await exe(`
 					<: USER_NAME
 				`);
 				expect(res).toStrictEqual(values.NULL);
 			});
 
-			test.sequential('USER_USERNAME', async () => {
+			test.concurrent('USER_USERNAME', async () => {
 				const [res] = await exe(`
 					<: USER_USERNAME
 				`);
