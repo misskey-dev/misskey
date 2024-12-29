@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div class="_gaps">
-		<MkInfo>{{ i18n.ts._hana.searchIsInBeta }}</MkInfo>
+		<MkInfo v-if="!$i || !$i.policies.canSearchWithHanamiSearchV1">{{ i18n.ts._hana.searchIsInBeta }}</MkInfo>
 
 		<HanaSearchInput v-model="searchQuery" v-model:mode="searchMode" :large="true" :autofocus="true" @enter.prevent="search">
 			<template #prefix><i class="ti ti-search"></i></template>
