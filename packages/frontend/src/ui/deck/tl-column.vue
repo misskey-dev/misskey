@@ -44,6 +44,9 @@ import { instance } from '@/instance.js';
 import { SoundStore } from '@/store.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 import * as sound from '@/scripts/sound.js';
+import { signinRequired } from '@/account.js';
+
+const $i = signinRequired();
 
 const props = defineProps<{
 	column: Column;
@@ -97,7 +100,9 @@ async function setType() {
 		title: i18n.ts.timeline,
 		items: [{
 			value: 'home' as const, text: i18n.ts._timelines.home,
-		}, {
+		}, ...($i.policies.hanamiTlAvailable ? [{
+			value: 'hanami' as const, text: i18n.ts._timelines.hanami,
+		}] : []), {
 			value: 'local' as const, text: i18n.ts._timelines.local,
 		}, {
 			value: 'social' as const, text: i18n.ts._timelines.social,
