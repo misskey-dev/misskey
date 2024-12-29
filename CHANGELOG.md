@@ -37,6 +37,9 @@
 - Fix: ActivityPubリクエストかどうかの判定が正しくない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/869)
 
+### Misskey.js
+- Feat: allow setting `binaryType` of WebSocket connection
+
 ## 2024.11.0
 
 ### Note
