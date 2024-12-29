@@ -970,6 +970,7 @@ export type Endpoints = {
 	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse };
 	'reversi/verify': { req: ReversiVerifyRequest; res: ReversiVerifyResponse };
 }
+
 /**
  * NOTE: The content-type for all endpoints not listed here is application/json.
  */
