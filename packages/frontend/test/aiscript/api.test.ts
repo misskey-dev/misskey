@@ -4,9 +4,7 @@
  */
 
 import { miLocalStorage } from '@/local-storage.js';
-import * as os from '@/os.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import * as misskeyApi from '@/scripts/misskey-api.js';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
 import {
 	afterAll,
@@ -35,16 +33,34 @@ async function exe(script: string): Promise<values.Value[]> {
 	return outputs;
 }
 
-let accountMock = vi.hoisted<Partial<typeof import('@/account.js').$i> | null >(
+let $iMock = vi.hoisted<Partial<typeof import('@/account.js').$i> | null >(
 	() => null
 );
 
 vi.mock('@/account.js', () => {
 	return {
 		get $i() {
-			return accountMock;
+			return $iMock;
 		},
 	};
+});
+
+const osMock = vi.hoisted(() => {
+	return {
+		inputText: vi.fn(),
+		alert: vi.fn(),
+		confirm: vi.fn(),
+	};
+});
+
+vi.mock('@/os.js', () => {
+	return osMock;
+});
+
+const misskeyApiUntypedMock = vi.hoisted(() => vi.fn());
+
+vi.mock('@/scripts/misskey-api.js', () => {
+	return { misskeyApiUntyped: misskeyApiUntypedMock };
 });
 
 describe('AiScript common API', () => {
@@ -58,7 +74,7 @@ describe('AiScript common API', () => {
 		});
 
 		test.sequential('ok', async () => {
-			vi.spyOn(os, 'inputText').mockImplementationOnce(async ({ title }) => {
+			osMock.inputText.mockImplementationOnce(async ({ title }) => {
 				expect(title).toBe('question');
 				return {
 					canceled: false,
@@ -69,10 +85,11 @@ describe('AiScript common API', () => {
 				<: readline('question')
 			`);
 			expect(res).toStrictEqual(values.STR('Hello'));
+			expect(osMock.inputText).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('cancelled', async () => {
-			vi.spyOn(os, 'inputText').mockImplementationOnce(async ({ title }) => {
+			osMock.inputText.mockImplementationOnce(async ({ title }) => {
 				expect(title).toBe('question');
 				return {
 					canceled: true,
@@ -83,13 +100,14 @@ describe('AiScript common API', () => {
 				<: readline('question')
 			`);
 			expect(res).toStrictEqual(values.STR(''));
+			expect(osMock.inputText).toHaveBeenCalledOnce();
 		});
 	});
 
 	describe('user constants', () => {
 		describe.sequential('logged in', () => {
 			beforeAll(() => {
-				accountMock = {
+				$iMock = {
 					id: 'xxxxxxxx',
 					name: '藍',
 					username: 'ai',
@@ -120,7 +138,7 @@ describe('AiScript common API', () => {
 
 		describe.sequential('not logged in', () => {
 			beforeAll(() => {
-				accountMock = null;
+				$iMock = null;
 			});
 
 			test.concurrent('USER_ID', async () => {
@@ -152,8 +170,7 @@ describe('AiScript common API', () => {
 		});
 
 		test.sequential('ok', async () => {
-			const alertMock = vi.spyOn(os, 'alert')
-				.mockImplementationOnce(async ({ type, title, text }) => {
+			osMock.alert.mockImplementationOnce(async ({ type, title, text }) => {
 					expect(type).toBe('success');
 					expect(title).toBe('Hello');
 					expect(text).toBe('world');
@@ -162,12 +179,11 @@ describe('AiScript common API', () => {
 				<: Mk:dialog('Hello', 'world', 'success')
 			`);
 			expect(res).toStrictEqual(values.NULL);
-			expect(alertMock).toHaveBeenCalledOnce();
+			expect(osMock.alert).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('omit type', async () => {
-			const alertMock = vi.spyOn(os, 'alert')
-				.mockImplementationOnce(async ({ type, title, text }) => {
+			osMock.alert.mockImplementationOnce(async ({ type, title, text }) => {
 					expect(type).toBe('info');
 					expect(title).toBe('Hello');
 					expect(text).toBe('world');
@@ -176,15 +192,14 @@ describe('AiScript common API', () => {
 				<: Mk:dialog('Hello', 'world')
 			`);
 			expect(res).toStrictEqual(values.NULL);
-			expect(alertMock).toHaveBeenCalledOnce();
+			expect(osMock.alert).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('invalid type', async () => {
-			const alertMock = vi.spyOn(os, 'alert');
 			await expect(() => exe(`
 				<: Mk:dialog('Hello', 'world', 'invalid')
 			`)).rejects.toBeInstanceOf(errors.AiScriptRuntimeError);
-			expect(alertMock).not.toHaveBeenCalled();
+			expect(osMock.alert).not.toHaveBeenCalled();
 		});
 	});
 
@@ -194,8 +209,7 @@ describe('AiScript common API', () => {
 		});
 
 		test.sequential('ok', async () => {
-			const confirmMock = vi.spyOn(os, 'confirm')
-				.mockImplementationOnce(async ({ type, title, text }) => {
+			osMock.confirm.mockImplementationOnce(async ({ type, title, text }) => {
 					expect(type).toBe('success');
 					expect(title).toBe('Hello');
 					expect(text).toBe('world');
@@ -205,11 +219,11 @@ describe('AiScript common API', () => {
 				<: Mk:confirm('Hello', 'world', 'success')
 			`);
 			expect(res).toStrictEqual(values.TRUE);
-			expect(confirmMock).toHaveBeenCalledOnce();
+			expect(osMock.confirm).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('omit type', async () => {
-			const confirmMock = vi.spyOn(os, 'confirm')
+			osMock.confirm
 				.mockImplementationOnce(async ({ type, title, text }) => {
 					expect(type).toBe('question');
 					expect(title).toBe('Hello');
@@ -220,12 +234,11 @@ describe('AiScript common API', () => {
 				<: Mk:confirm('Hello', 'world')
 			`);
 			expect(res).toStrictEqual(values.TRUE);
-			expect(confirmMock).toHaveBeenCalledOnce();
+			expect(osMock.confirm).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('canceled', async () => {
-			const confirmMock = vi.spyOn(os, 'confirm')
-				.mockImplementationOnce(async ({ type, title, text }) => {
+			osMock.confirm.mockImplementationOnce(async ({ type, title, text }) => {
 					expect(type).toBe('question');
 					expect(title).toBe('Hello');
 					expect(text).toBe('world');
@@ -235,15 +248,15 @@ describe('AiScript common API', () => {
 				<: Mk:confirm('Hello', 'world')
 			`);
 			expect(res).toStrictEqual(values.FALSE);
-			expect(confirmMock).toHaveBeenCalledOnce();
+			expect(osMock.confirm).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('invalid type', async () => {
-			const alertMock = vi.spyOn(os, 'confirm');
+			const confirm = osMock.confirm;
 			await expect(() => exe(`
 				<: Mk:confirm('Hello', 'world', 'invalid')
 			`)).rejects.toBeInstanceOf(errors.AiScriptRuntimeError);
-			expect(alertMock).not.toHaveBeenCalled();
+			expect(confirm).not.toHaveBeenCalled();
 		});
 	});
 
@@ -253,69 +266,68 @@ describe('AiScript common API', () => {
 		});
 
 		test.sequential('successful', async () => {
-			const misskeyApiMock = vi.spyOn(misskeyApi, 'misskeyApiUntyped')
-				.mockImplementationOnce(async (endpoint, data, token) => {
+			misskeyApiUntypedMock.mockImplementationOnce(
+				async (endpoint, data, token) => {
 					expect(endpoint).toBe('ping');
 					expect(data).toStrictEqual({});
 					expect(token).toBeNull();
 					return { pong: 1735657200000 };
-				});
+				}
+			);
 			const [res] = await exe(`
 				<: Mk:api('ping', {})
 			`);
 			expect(res).toStrictEqual(values.OBJ(new Map([
 				['pong', values.NUM(1735657200000)],
 			])));
-			expect(misskeyApiMock).toHaveBeenCalledOnce();
+			expect(misskeyApiUntypedMock).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('with token', async () => {
-			const misskeyApiMock = vi.spyOn(misskeyApi, 'misskeyApiUntyped')
-				.mockImplementationOnce(async (endpoint, data, token) => {
+			misskeyApiUntypedMock.mockImplementationOnce(
+				async (endpoint, data, token) => {
 					expect(endpoint).toBe('ping');
 					expect(data).toStrictEqual({});
 					expect(token).toStrictEqual('xxxxxxxx');
 					return { pong: 1735657200000 };
-				});
+				}
+			);
 			const [res] = await exe(`
 				<: Mk:api('ping', {}, 'xxxxxxxx')
 			`);
 			expect(res).toStrictEqual(values.OBJ(new Map([
 				['pong', values.NUM(1735657200000 )],
 			])));
-			expect(misskeyApiMock).toHaveBeenCalledOnce();
+			expect(misskeyApiUntypedMock).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('request failed', async () => {
-			const misskeyApiMock = vi.spyOn(misskeyApi, 'misskeyApiUntyped')
-				.mockRejectedValueOnce('Not Found');
+			misskeyApiUntypedMock.mockRejectedValueOnce('Not Found');
 			const [res] = await exe(`
 				<: Mk:api('this/endpoint/should/not/be/found', {})
 			`);
 			expect(res).toStrictEqual(
 				values.ERROR('request_failed', values.STR('Not Found'))
 			);
-			expect(misskeyApiMock).toHaveBeenCalledOnce();
+			expect(misskeyApiUntypedMock).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('invalid endpoint', async () => {
-			const misskeyApiMock = vi.spyOn(misskeyApi, 'misskeyApiUntyped');
 			await expect(() => exe(`
 				Mk:api('https://example.com/api/ping', {})
 			`)).rejects.toStrictEqual(
 				new errors.AiScriptRuntimeError('invalid endpoint'),
 			);
-			expect(misskeyApiMock).not.toHaveBeenCalled();
+			expect(misskeyApiUntypedMock).not.toHaveBeenCalled();
 		});
 
 		test.sequential('missing param', async () => {
-			const misskeyApiMock = vi.spyOn(misskeyApi, 'misskeyApiUntyped');
 			await expect(() => exe(`
 				Mk:api('ping')
 			`)).rejects.toStrictEqual(
 				new errors.AiScriptRuntimeError('expected param'),
 			);
-			expect(misskeyApiMock).not.toHaveBeenCalled();
+			expect(misskeyApiUntypedMock).not.toHaveBeenCalled();
 		});
 	});
 
