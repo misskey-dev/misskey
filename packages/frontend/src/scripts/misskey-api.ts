@@ -10,7 +10,7 @@ import { $i } from '@/account.js';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
-export function misskeyApi<
+export const misskeyApi: <
 	ResT = void,
 	E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints,
 	P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req'],
@@ -20,9 +20,7 @@ export function misskeyApi<
 	data?: P & { i?: string | null; },
 	token?: string | null | undefined,
 	signal?: AbortSignal,
-): Promise<_ResT> {
-	return misskeyApiUntyped(endpoint, data, token, signal);
-}
+) => Promise<_ResT> = misskeyApiUntyped;
 
 export function misskeyApiUntyped<_ResT>(
 	endpoint: string,
