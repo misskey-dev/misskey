@@ -80,7 +80,7 @@ async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote
 
 	let note: Misskey.entities.Note & MisskeyEntity;
 
-	if ('_allowCached_' in data) {
+	if (Misskey.note.isStreamNote(data)) {
 		let fullNote: Misskey.entities.Note | null = null;
 
 		const { _allowCached_, ..._data } = data;
@@ -91,7 +91,7 @@ async function prepend(data: Misskey.entities.Note | Misskey.entities.StreamNote
 				credentials: 'omit',
 			});
 			if (!res.ok) return;
-			fullNote = await res.json();
+			fullNote = (await res.json()) as Misskey.entities.Note;
 		} else {
 			fullNote = await misskeyApi('notes/show', {
 				noteId: data.id,

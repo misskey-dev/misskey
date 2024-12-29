@@ -2360,6 +2360,9 @@ type ISigninHistoryResponse = operations['i___signin-history']['responses']['200
 function isPureRenote(note: Note): note is PureRenote;
 
 // @public (undocumented)
+function isStreamNote(note: Note | StreamNote): note is StreamNote;
+
+// @public (undocumented)
 export interface IStream extends EventEmitter<StreamEvents> {
     // (undocumented)
     close(): void;
@@ -2652,7 +2655,8 @@ type Note = components['schemas']['Note'];
 
 declare namespace note {
     export {
-        isPureRenote
+        isPureRenote,
+        isStreamNote
     }
 }
 export { note }
@@ -3194,14 +3198,13 @@ export type StreamEvents = {
 } & BroadcastEvents;
 
 // @public (undocumented)
-type StreamNote = ({
+type StreamNote = {
     id: Note['id'];
     poll?: Pick<NonNullable<Note['poll']>, 'choices'>;
     reply?: Pick<NonNullable<Note['reply']>, 'myReaction'>;
     renote?: Pick<NonNullable<Note['renote']>, 'myReaction'>;
-} & {
     _allowCached_: true;
-}) | {
+} | {
     id: Note['id'];
     _allowCached_: false;
 };

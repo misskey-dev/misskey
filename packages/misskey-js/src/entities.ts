@@ -248,14 +248,13 @@ export type AnnouncementCreated = {
 	announcement: Announcement;
 };
 
-export type StreamNote = ({
+export type StreamNote = {
 	id: Note['id'];
 	poll?: Pick<NonNullable<Note['poll']>, 'choices'>;
 	reply?: Pick<NonNullable<Note['reply']>, 'myReaction'>;
 	renote?: Pick<NonNullable<Note['renote']>, 'myReaction'>;
-} & {
 	_allowCached_: true;
-}) | {
+} | {
 	id: Note['id'];
 	_allowCached_: false;
 };
