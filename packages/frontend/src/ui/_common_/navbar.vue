@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</component>
 			</template>
 			<div :class="$style.divider"></div>
-			<MkA v-if="$i.isAdmin || $i.isModerator" v-tooltip.noDelay.right="i18n.ts.controlPanel" :class="$style.item" :activeClass="$style.active" to="/admin">
+			<MkA v-if="$i != null && ($i.isAdmin || $i.isModerator)" v-tooltip.noDelay.right="i18n.ts.controlPanel" :class="$style.item" :activeClass="$style.active" to="/admin">
 				<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
 			</MkA>
 			<button class="_button" :class="$style.item" @click="more">
@@ -48,14 +48,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</div>
 		<div :class="$style.bottom">
-			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="os.post">
+			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="() => { os.post(); }">
 				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
 			</button>
-			<button v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="_button" :class="[$style.account]" @click="openAccountMenu">
+			<button v-if="$i != null" v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="_button" :class="[$style.account]" @click="openAccountMenu">
 				<MkAvatar :user="$i" :class="$style.avatar"/><MkAcct class="_nowrap" :class="$style.acct" :user="$i"/>
 			</button>
 		</div>
 	</div>
+	<button v-if="!forceIconOnly" class="_button" :class="$style.toggleButton" @click="toggleIconOnly">
+		<!--
+		<svg viewBox="0 0 16 48" :class="$style.toggleButtonShape">
+			<g transform="matrix(0.333333,0,0,0.222222,0.000895785,13.3333)">
+				<path d="M23.935,-24C37.223,-24 47.995,-7.842 47.995,12.09C47.995,34.077 47.995,62.07 47.995,84.034C47.995,93.573 45.469,102.721 40.972,109.466C36.475,116.211 30.377,120 24.018,120L23.997,120C10.743,120 -0.003,136.118 -0.003,156C-0.003,156 -0.003,156 -0.003,156L-0.003,-60L-0.003,-59.901C-0.003,-50.379 2.519,-41.248 7.007,-34.515C11.496,-27.782 17.584,-24 23.931,-24C23.932,-24 23.934,-24 23.935,-24Z" style="fill:var(--MI_THEME-navBg);"/>
+			</g>
+		</svg>
+		-->
+		<svg viewBox="0 0 16 64" :class="$style.toggleButtonShape">
+			<g transform="matrix(0.333333,0,0,0.222222,0.000895785,21.3333)">
+				<path d="M47.488,7.995C47.79,10.11 47.943,12.266 47.943,14.429C47.997,26.989 47.997,84 47.997,84C47.997,84 44.018,118.246 23.997,133.5C-0.374,152.07 -0.003,192 -0.003,192L-0.003,-96C-0.003,-96 0.151,-56.216 23.997,-37.5C40.861,-24.265 46.043,-1.243 47.488,7.995Z" style="fill:var(--MI_THEME-navBg);"/>
+			</g>
+		</svg>
+		<i :class="'ti ' + `ti-chevron-${ iconOnly ? 'right' : 'left' }`" style="font-size: 12px; margin-left: -8px;"></i>
+	</button>
 </div>
 </template>
 
@@ -68,8 +83,12 @@ import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
+import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
 
-const iconOnly = ref(false);
+const forceIconOnly = ref(window.innerWidth <= 1279);
+const iconOnly = computed(() => {
+	return forceIconOnly.value || (defaultStore.reactiveState.menuDisplay.value === 'sideIcon');
+});
 
 const menu = computed(() => defaultStore.state.menu);
 const otherMenuItemIndicated = computed(() => {
@@ -80,17 +99,19 @@ const otherMenuItemIndicated = computed(() => {
 	return false;
 });
 
-const calcViewState = () => {
-	iconOnly.value = (window.innerWidth <= 1279) || (defaultStore.state.menuDisplay === 'sideIcon');
-};
-
-calcViewState();
+function calcViewState() {
+	forceIconOnly.value = window.innerWidth <= 1279;
+}
 
 window.addEventListener('resize', calcViewState);
 
 watch(defaultStore.reactiveState.menuDisplay, () => {
 	calcViewState();
 });
+
+function toggleIconOnly() {
+	defaultStore.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
+}
 
 function openAccountMenu(ev: MouseEvent) {
 	openAccountMenu_({
@@ -99,8 +120,10 @@ function openAccountMenu(ev: MouseEvent) {
 }
 
 function more(ev: MouseEvent) {
+	const target = getHTMLElementOrNull(ev.currentTarget ?? ev.target);
+	if (!target) return;
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
-		src: ev.currentTarget ?? ev.target,
+		src: target,
 	}, {
 		closed: () => dispose(),
 	});
@@ -133,6 +156,38 @@ function more(ev: MouseEvent) {
 	contain: strict;
 	display: flex;
 	flex-direction: column;
+	direction: rtl; // スクロールバーを左に表示したいため
+}
+
+.top {
+	direction: ltr;
+}
+
+.middle {
+	direction: ltr;
+}
+
+.bottom {
+	direction: ltr;
+}
+
+.toggleButton {
+	position: fixed;
+	bottom: 20px;
+	left: var(--nav-width);
+	z-index: 1001;
+	width: 16px;
+	height: 64px;
+	box-sizing: border-box;
+}
+
+.toggleButtonShape {
+	position: absolute;
+	z-index: -1;
+	top: 0;
+	left: 0;
+	width: 16px;
+	height: 64px;
 }
 
 .root:not(.iconOnly) {
@@ -363,6 +418,10 @@ function more(ev: MouseEvent) {
 		position: relative;
 		font-size: 0.9em;
 	}
+
+	.toggleButton {
+		left: var(--nav-width);
+	}
 }
 
 .root.iconOnly {
@@ -562,6 +621,10 @@ function more(ev: MouseEvent) {
 			right: 4px;
 			font-size: 10px;
 		}
+	}
+
+	.toggleButton {
+		left: var(--nav-icon-only-width);
 	}
 }
 </style>
