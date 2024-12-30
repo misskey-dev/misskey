@@ -4,12 +4,16 @@
 -
 
 ### Client
+- Enhance: PC画面でチャンネルが複数列で表示されるように  
+  (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
+- Enhance: 照会に失敗した場合、その理由を表示するように
 - Enhance: CWの注釈で入力済みの文字数を表示
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
 - Fix: ノートがログインしているユーザーしか見れない場合にログインダイアログを閉じるとその後の動線がなくなる問題を修正
 - Fix: 公開範囲がホームのノートの埋め込みウィジェットが読み込まれない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/803)
+- Fix: 絵文字管理画面で一部の絵文字が表示されない問題を修正
 - Fix: CWの注釈が100文字を超えている場合、ノート投稿ボタンを非アクティブに
 
 ### Server
