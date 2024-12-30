@@ -2710,5 +2710,7 @@ _embedCodeGen:
   codeGenerated: "コード作ったで"
   codeGeneratedDescription: "作ったコードはウェブサイトに貼っつけて使ってや。"
 _remoteLookupErrors:
+  _requestFailed:
+    title: "リクエスト失敗してもうたで"
   _noSuchObject:
     title: "見つからへんね"
