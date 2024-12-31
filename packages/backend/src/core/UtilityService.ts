@@ -35,7 +35,7 @@ export class UtilityService {
 
 	@bindThis
 	public isUriLocal(uri: string): boolean {
-		return this.normalizeHost(this.config.hostname) === this.extractHost(uri);
+		return this.normalizeHost(this.config.host) === this.extractHost(uri);
 	}
 
 	@bindThis
