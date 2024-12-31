@@ -146,7 +146,7 @@ async function assign() {
 	const { canceled: canceled3, result: memo } = await os.inputText({
 		title: i18n.ts.addMemo,
 		type: 'textarea',
-		placeholder: i18n.ts.memo,
+		default: '',
 	});
 	if (canceled3) return;
 
