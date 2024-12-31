@@ -190,7 +190,7 @@ export class SearchService {
 			userId?: MiNote['userId'] | null;
 			channelId?: MiNote['channelId'] | null;
 			host?: string | null;
-			preferredMethod?: 'meilisearch' | 'hanamisearch' | null;
+			preferredMethod?: 'meilisearch' | 'hanamisearchv1' | 'hanamisearchv2' | null;
 		},
 		pagination: {
 			untilId?: MiNote['id'];
@@ -200,10 +200,10 @@ export class SearchService {
 	): Promise<MiNote[]> {
 		const preferredMethod = opts.preferredMethod ?? 'meilisearch';
 
-		if ((preferredMethod === 'meilisearch' && this.meilisearch) || (preferredMethod === 'hanamisearch' && this.hanamisearch)) {
+		if ((preferredMethod === 'meilisearch' && this.meilisearch) || (preferredMethod === 'hanamisearchv1' && this.hanamisearch)) {
 			const searchClient = preferredMethod === 'meilisearch' ? this.meilisearchNoteIndex! : this.hanamisearchNoteIndex!;
-			const shouldSort = preferredMethod === 'meilisearch';
-			return this.searchWithExternalEngine(searchClient, q, me, opts, pagination, shouldSort);
+			const shouldTimeSeriesSort = true;
+			return this.searchWithExternalEngine(searchClient, q, me, opts, pagination, shouldTimeSeriesSort);
 		}
 
 		if (!this.meilisearch && !this.hanamisearch && preferredMethod === 'meilisearch') {
@@ -227,7 +227,7 @@ export class SearchService {
 			sinceId?: MiNote['id'];
 			limit?: number;
 		},
-		shouldSort: boolean,
+		shouldTimeSeriesSort: boolean,
 	): Promise<MiNote[]> {
 		const filter: Q = { op: 'and', qs: [] };
 
@@ -240,7 +240,7 @@ export class SearchService {
 		}
 
 		const res = await searchClient.search(q, {
-			sort: shouldSort ? ['createdAt:desc'] : undefined,
+			sort: shouldTimeSeriesSort ? ['createdAt:desc'] : undefined,
 			matchingStrategy: 'all',
 			attributesToRetrieve: ['id', 'createdAt'],
 			filter: compileQuery(filter),
@@ -265,7 +265,7 @@ export class SearchService {
 		});
 
 		// ソートは MeiliSearch の場合のみ適用
-		return shouldSort ? notes.sort((a, b) => (a.id > b.id ? -1 : 1)) : notes;
+		return shouldTimeSeriesSort ? notes.sort((a, b) => (a.id > b.id ? -1 : 1)) : notes;
 	}
 
 	private async searchWithInternalDB(

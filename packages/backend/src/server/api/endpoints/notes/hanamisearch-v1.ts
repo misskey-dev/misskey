@@ -59,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userId: ps.userId,
 				channelId: ps.channelId,
 				host: ps.host,
-				preferredMethod: 'hanamisearch',
+				preferredMethod: 'hanamisearchv1',
 			}, {
 				untilId: ps.untilId,
 				sinceId: ps.sinceId,
