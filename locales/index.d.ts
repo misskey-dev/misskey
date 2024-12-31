@@ -11068,6 +11068,16 @@ export interface Locale extends ILocale {
              */
             "v1Description": string;
         };
+        "_willBeMergedToUpstream": {
+            /**
+             * 未来の日付が選択されています。
+             */
+            "settingFutureDateToChangeNotesVisibilityIsProhibited": string;
+            /**
+             * ロックダウン設定にて未来の日付を設定することはできません。
+             */
+            "settingFutureDateToChangeNotesVisibilityIsProhibitedDescription": string;
+        };
     };
 }
 declare const locales: {

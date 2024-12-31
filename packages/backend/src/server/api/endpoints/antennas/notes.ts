@@ -15,6 +15,7 @@ import { IdService } from '@/core/IdService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+import { isMustRemove } from '@/misc/is-hidden-or-visibility-modified.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -126,7 +127,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			this.noteReadService.read(me.id, notes);
 
-			return await this.noteEntityService.packMany(notes, me);
+			return (await this.noteEntityService.packMany(notes, me)).filter(note => !isMustRemove(note, 'home'));
 		});
 	}
 }

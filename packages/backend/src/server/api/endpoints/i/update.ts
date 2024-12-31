@@ -122,6 +122,13 @@ export const meta = {
 			id: '0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191',
 			httpStatusCode: 422,
 		},
+
+		settingFutureDateToChangeNotesVisibilityIsProhibited: {
+			message: 'Setting a future date to change notes visibility is prohibited.',
+			code: 'SETTING_FUTURE_DATE_TO_CHANGE_NOTES_VISIBILITY_IS_PROHIBITED',
+			id: '1cce0e54-b0a3-49a7-8fdc-3340ab4b9604',
+			httpStatusCode: 422,
+		},
 	},
 
 	res: {
@@ -339,8 +346,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 			if (typeof ps.preventAiLearning === 'boolean') profileUpdates.preventAiLearning = ps.preventAiLearning;
 			if (typeof ps.requireSigninToViewContents === 'boolean') updates.requireSigninToViewContents = ps.requireSigninToViewContents;
-			if ((typeof ps.makeNotesFollowersOnlyBefore === 'number') || (ps.makeNotesFollowersOnlyBefore === null)) updates.makeNotesFollowersOnlyBefore = ps.makeNotesFollowersOnlyBefore;
-			if ((typeof ps.makeNotesHiddenBefore === 'number') || (ps.makeNotesHiddenBefore === null)) updates.makeNotesHiddenBefore = ps.makeNotesHiddenBefore;
+			if ((typeof ps.makeNotesFollowersOnlyBefore === 'number') || (ps.makeNotesFollowersOnlyBefore === null)) {
+				if (typeof ps.makeNotesFollowersOnlyBefore === 'number' && ps.makeNotesFollowersOnlyBefore * 1000 > Date.now()) {
+					throw new ApiError(meta.errors.settingFutureDateToChangeNotesVisibilityIsProhibited);
+				}
+				updates.makeNotesFollowersOnlyBefore = ps.makeNotesFollowersOnlyBefore;
+			}
+			if ((typeof ps.makeNotesHiddenBefore === 'number') || (ps.makeNotesHiddenBefore === null)) {
+				if (typeof ps.makeNotesHiddenBefore === 'number' && ps.makeNotesHiddenBefore * 1000 > Date.now()) {
+					throw new ApiError(meta.errors.settingFutureDateToChangeNotesVisibilityIsProhibited);
+				}
+				updates.makeNotesHiddenBefore = ps.makeNotesHiddenBefore;
+			}
 			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
 			if (typeof ps.isInHanaMode === 'boolean') updates.isInHanaMode = ps.isInHanaMode;
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;

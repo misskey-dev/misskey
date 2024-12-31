@@ -8,6 +8,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
+import { isMustRemove } from '@/misc/is-hidden-or-visibility-modified.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class AntennaChannel extends Channel {
@@ -40,6 +41,8 @@ class AntennaChannel extends Channel {
 	private async onEvent(data: GlobalEvents['antenna']['payload']) {
 		if (data.type === 'note') {
 			const note = await this.noteEntityService.pack(data.body.id, this.user, { detail: true });
+
+			if (isMustRemove(note, 'home')) return;
 
 			if (this.isNoteMutedOrBlocked(note)) return;
 

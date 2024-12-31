@@ -12,6 +12,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { isMustRemove } from '@/misc/is-hidden-or-visibility-modified.js';
 
 export const meta = {
 	tags: ['notes', 'hashtags'],
@@ -136,7 +137,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// Search notes
 			const notes = await query.limit(ps.limit).getMany();
 
-			return await this.noteEntityService.packMany(notes, me);
+			return (await this.noteEntityService.packMany(notes, me)).filter(note => !isMustRemove(note, 'home'));
 		});
 	}
 }

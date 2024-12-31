@@ -8,6 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { SearchService } from '@/core/SearchService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { isMustRemove } from '@/misc/is-hidden-or-visibility-modified.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -77,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				limit: ps.limit,
 			});
 
-			return await this.noteEntityService.packMany(notes, me);
+			return (await this.noteEntityService.packMany(notes, me)).filter(note => !isMustRemove(note, 'home'));
 		});
 	}
 }

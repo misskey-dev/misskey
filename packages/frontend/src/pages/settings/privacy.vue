@@ -232,20 +232,30 @@ async function update_requireSigninToViewContents(value: boolean) {
 }
 
 function save() {
-	misskeyApi('i/update', {
-		isLocked: !!isLocked.value,
-		autoAcceptFollowed: !!autoAcceptFollowed.value,
-		noCrawle: !!noCrawle.value,
-		preventAiLearning: !!preventAiLearning.value,
-		isExplorable: !!isExplorable.value,
-		requireSigninToViewContents: !!requireSigninToViewContents.value,
-		makeNotesFollowersOnlyBefore: makeNotesFollowersOnlyBefore.value,
-		makeNotesHiddenBefore: makeNotesHiddenBefore.value,
-		hideOnlineStatus: !!hideOnlineStatus.value,
-		publicReactions: !!publicReactions.value,
-		followingVisibility: followingVisibility.value,
-		followersVisibility: followersVisibility.value,
-	});
+	os.apiWithDialog(
+		'i/update',
+		{
+			isLocked: !!isLocked.value,
+			autoAcceptFollowed: !!autoAcceptFollowed.value,
+			noCrawle: !!noCrawle.value,
+			preventAiLearning: !!preventAiLearning.value,
+			isExplorable: !!isExplorable.value,
+			requireSigninToViewContents: !!requireSigninToViewContents.value,
+			makeNotesFollowersOnlyBefore: makeNotesFollowersOnlyBefore.value,
+			makeNotesHiddenBefore: makeNotesHiddenBefore.value,
+			hideOnlineStatus: !!hideOnlineStatus.value,
+			publicReactions: !!publicReactions.value,
+			followingVisibility: followingVisibility.value,
+			followersVisibility: followersVisibility.value,
+		},
+		undefined,
+		{
+			'1cce0e54-b0a3-49a7-8fdc-3340ab4b9604': {
+				title: i18n.ts._hana._willBeMergedToUpstream.settingFutureDateToChangeNotesVisibilityIsProhibited,
+				text: i18n.ts._hana._willBeMergedToUpstream.settingFutureDateToChangeNotesVisibilityIsProhibitedDescription,
+			},
+		},
+	);
 }
 
 const headerActions = computed(() => []);

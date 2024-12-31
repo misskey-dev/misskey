@@ -2954,3 +2954,6 @@ _hana:
     new: "新登場"
     v0Description: "通常のMisskeyと同じ検索システム"
     v1Description: "精度が大幅改善 / 演算子などで高度な検索が可能"
+  _willBeMergedToUpstream:
+    settingFutureDateToChangeNotesVisibilityIsProhibited: "未来の日付が選択されています。"
+    settingFutureDateToChangeNotesVisibilityIsProhibitedDescription: "ロックダウン設定にて未来の日付を設定することはできません。"
