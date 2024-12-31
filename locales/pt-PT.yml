@@ -1297,6 +1297,7 @@ prohibitedWordsForNameOfUserDescription: "Se quaisquer palavras dessa lista fore
 yourNameContainsProhibitedWords: "O seu nome possui palavras proibidas"
 yourNameContainsProhibitedWordsDescription: "Se você deseja utilizar esse nome, entre em contato com o administrador do servidor."
 thisContentsAreMarkedAsSigninRequiredByAuthor: "O autor exige que você esteja cadastrado para ver"
+lockdown: "Lockdown"
 pleaseSelectAccount: "Selecione uma conta"
 availableRoles: "Cargos disponíveis"
 acknowledgeNotesAndEnable: "Ative após compreender as precauções."
@@ -1306,7 +1307,19 @@ _accountSettings:
   requireSigninToViewContentsDescription2: "Conteúdo não será exibido nas prévias de URL (OGP), incorporado em outras páginas web ou em servidores que não têm suporte a citações."
   requireSigninToViewContentsDescription3: "Essas restrições podem não ser aplicadas a conteúdo federado de outros servidores."
   makeNotesFollowersOnlyBefore: "Tornar notas passadas visíveis apenas para seguidores."
-  makeNotesFollowersOnlyBeforeDescription: "Com essa função ativada, apenas seguidores podem ver as notas anteriores à data e hora marcadas."
+  makeNotesFollowersOnlyBeforeDescription: "Com essa função ativada, apenas seguidores podem ver as notas anteriores à data e hora marcadas. Se isso for desativado, o status de publicação da nota será reestabelecido."
+  makeNotesHiddenBefore: "Tornar notas passadas privadas"
+  makeNotesHiddenBeforeDescription: "Com essa função ativada, apenas você poderá ver as notas anteriores à data e hora marcadas. Se isso for desativado, o status de publicação da nota será reestabelecido."
+  mayNotEffectForFederatedNotes: "Notas federadas a servidores remotos podem não ser afetadas."
+  notesHavePassedSpecifiedPeriod: "Notas que duraram um tempo específico."
+  notesOlderThanSpecifiedDateAndTime: "Notas antes do tempo específico."
+_abuseUserReport:
+  forward: "Encaminhar"
+  forwardDescription: "Encaminhar a denúncia ao servidor remoto como uma conta anônima do sistema."
+  resolve: "Resolver"
+  accept: "Aceitar"
+  reject: "Rejeitar"
+  resolveTutorial: "Se a denúncia for legítima em conteúdo, selecione \"Aceitar\" para marcar o caso como resolvido afirmativamente.\nSe a denúncia for ilegítima em conteúdo, selecione \"Rejeitar\" para marcar o caso como resolvido negativamente."
 _delivery:
   status: "Estado de entrega"
   stop: "Suspenso"
@@ -1441,8 +1454,11 @@ _serverSettings:
   fanoutTimelineDescription: "Melhora significativamente a performance do retorno da linha do tempo e reduz o impacto no banco de dados quando habilitado. Em contrapartida, o uso de memória do Redis aumentará. Considere desabilitar em casos de baixa disponibilidade de memória ou instabilidade do servidor."
   fanoutTimelineDbFallback: "\"Fallback\" ao banco de dados"
   fanoutTimelineDbFallbackDescription: "Quando habilitado, a linha do tempo irá recuar ao banco de dados caso consultas adicionais sejam feitas e ela não estiver em cache. Quando desabilitado, o impacto no servidor será reduzido ao eliminar o recuo, mas limita a quantidade de linhas do tempo que podem ser recebidas."
+  reactionsBufferingDescription: "Quando ativado, o desempenho durante a criação de uma reação será melhorado substancialmente, reduzindo a carga do banco de dados. Porém, a o uso de memória do Redis irá aumentar."
   inquiryUrl: "URL de inquérito"
   inquiryUrlDescription: "Especifique um URL para um formulário de inquérito para a administração ou uma página web com informações de contato."
+  openRegistration: "Abrir a criação de contas"
+  openRegistrationWarning: "Abrir cadastros contém riscos. É recomendado apenas habilitá-los se houver um sistema de monitoramento contínuo e resolução imediata de problemas."
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "Se nenhuma atividade da moderação for detectada por um tempo, essa configuração será desativada para prevenir spam."
 _accountMigration:
   moveFrom: "Migrar outra conta para essa"
@@ -1778,6 +1794,8 @@ _role:
     canImportAntennas: "Permitir importação de antenas"
     canImportBlocking: "Permitir importação de bloqueios"
     canImportFollowing: "Permitir importação de usuários seguidos"
+    canImportMuting: "Permitir importação de silenciamentos"
+    canImportUserLists: "Permitir importação de listas"
   _condition:
     roleAssignedTo: "Atribuído a cargos manuais"
     isLocal: "Usuário local"
@@ -2161,8 +2179,11 @@ _auth:
   permissionAsk: "O aplicativo solicita as seguintes permissões"
   pleaseGoBack: "Por favor, volte ao aplicativo"
   callback: "Retornando ao aplicativo"
+  accepted: "Acesso permitido"
   denied: "Acesso negado"
+  scopeUser: "Operar como o usuário a seguir"
   pleaseLogin: "Por favor, entre para autorizar aplicativos."
+  byClickingYouWillBeRedirectedToThisUrl: "Quando o acesso for permitido, você será redirecionado para o seguinte endereço"
 _antennaSources:
   all: "Todas as notas"
   homeTimeline: "Notas de usuários seguidos"
@@ -2271,6 +2292,9 @@ _profile:
   changeBanner: "Mudar banner"
   verifiedLinkDescription: "Ao inserir um URL que contém um link para essa conta, um ícone de verificação será exibido ao lado do campo"
   avatarDecorationMax: "Você pode adicionar até {max} decorações."
+  followedMessage: "Mensagem exibida quando alguém segue você"
+  followedMessageDescription: "Você pode definir uma curta mensagem que será exibida aos usuários que seguirem você."
+  followedMessageDescriptionForLockedAccount: "Se você aceita pedidos de seguidor manualmente, isso será exibido quando você aceitá-los."
 _exportOrImport:
   allNotes: "Todas as notas"
   favoritedNotes: "Notas nos favoritos"
@@ -2409,6 +2433,8 @@ _notification:
   renotedBySomeUsers: "{n} usuários repostaram a nota"
   followedBySomeUsers: "{n} usuários te seguiram"
   flushNotification: "Limpar notificações"
+  exportOfXCompleted: "Exportação de {x} foi concluída"
+  login: "Alguém entrou na conta"
   _types:
     all: "Todas"
     note: "Novas notas"
@@ -2423,7 +2449,9 @@ _notification:
     followRequestAccepted: "Aceitou pedidos de seguidor"
     roleAssigned: "Cargo dado"
     achievementEarned: "Conquista desbloqueada"
+    exportCompleted: "A exportação foi concluída"
     login: "Iniciar sessão"
+    test: "Notificação teste"
     app: "Notificações de aplicativos conectados"
   _actions:
     followBack: "te seguiu de volta"
@@ -2489,7 +2517,10 @@ _webhookSettings:
     abuseReport: "Quando receber um relatório de abuso"
     abuseReportResolved: "Quando relatórios de abuso forem resolvidos "
     userCreated: "Quando um usuário é criado"
+    inactiveModeratorsWarning: "Quando moderadores estiverem inativos por um tempo"
+    inactiveModeratorsInvitationOnlyChanged: "Quando um moderador está inativo por um tempo e os cadastros passam a exigir convites"
   deleteConfirm: "Você tem certeza de que deseja excluir o Webhook?"
+  testRemarks: "Clique no botão à direita do interruptor para enviar um Webhook de teste com dados fictícios."
 _abuseReport:
   _notificationRecipient:
     createRecipient: "Adicionar destinatário para relatórios de abuso"
@@ -2533,6 +2564,8 @@ _moderationLogTypes:
   markSensitiveDriveFile: "Arquivo marcado como sensível"
   unmarkSensitiveDriveFile: "Arquivo desmarcado como sensível"
   resolveAbuseReport: "Relatório resolvido"
+  forwardAbuseReport: "Denúncia encaminhada"
+  updateAbuseReportNote: "Nota de moderação da denúncia atualizada"
   createInvitation: "Convite gerado"
   createAd: "Propaganda criada"
   deleteAd: "Propaganda excluída"
@@ -2688,6 +2721,44 @@ _contextMenu:
   app: "Aplicativo"
   appWithShift: "Aplicativo com a tecla shift"
   native: "Nativo"
+_embedCodeGen:
+  title: "Personalizar código do embed"
+  header: "Exibir cabeçalho"
+  autoload: "Carregar mais automaticamente (obsoleto)"
+  maxHeight: "Altura máxima"
+  maxHeightDescription: "Colocar em 0 desabilita a altura máxima. Especifique um valor para prevenir uma expansão vertical contínua."
+  maxHeightWarn: "O limite de altura máxima está desabilitado (0). Se isso não for intencional, insira um valor para a altura máxima."
+  previewIsNotActual: "A exibição difere do embed original porque ela excede o tamanho da tela de prévia."
+  rounded: "Tornar arredondado"
+  border: "Adicionar uma borda ao quadro externo"
+  applyToPreview: "Aplicar para a prévia"
+  generateCode: "Gerar código de embed"
+  codeGenerated: "O código foi gerado"
+  codeGeneratedDescription: "Coloque o código no seu website para incorporar o conteúdo."
+_selfXssPrevention:
+  warning: "AVISO"
+  title: "\"Cole algo nessa tela\" é uma fraude"
+  description1: "Se você colar algo aqui, um usuário malicioso pode sabotar a sua conta ou roubar informações pessoais."
+  description2: "Se você não entender exatamente o que está colando, %cpare agora e feche essa janela."
+  description3: "Para mais informação, clique no link. {link}"
+_followRequest:
+  recieved: "Aplicação recebida"
+  sent: "Aplicação enviada"
 _remoteLookupErrors:
+  _federationNotAllowed:
+    title: "Não foi possível se comunicar com o servidor"
+    description: "Comunicação com esse servidor pode ter sido desabilitada ou o servidor pode ter sido bloqueado.\nPor favor, entre em contato com o administrador do servidor."
+  _uriInvalid:
+    title: "Endereço inválido"
+    description: "Há um problema com o endereço inserido. Por favor, confira se você não inseriu caracteres inválidos."
+  _requestFailed:
+    title: "Solicitação falhou"
+    description: "Comunicação com esse servidor falhou. O servidor pode estar inativo. Além disso, confira se você não inseriu um endereço inválido ou inexistente."
+  _responseInvalid:
+    title: "Resposta inválida"
+    description: "Foi possível comunicar com o servidor, porém os dados obtidos foram incorretos."
+  _responseInvalidIdHostNotMatch:
+    description: "O domínio do endereço inserido difere do domínio do endereço final. Se você estiver pesquisando por um servidor de terceiros, tente buscar novamente com um endereço que pode ser obtido através do servidor original."
   _noSuchObject:
     title: "Não encontrado"
+    description: "O recurso solicitado não foi encontrado, confira o endereço."
