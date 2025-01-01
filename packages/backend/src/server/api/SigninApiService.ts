@@ -27,6 +27,7 @@ import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
+import { EmailService } from '@/core/EmailService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
@@ -54,6 +55,7 @@ export class SigninApiService {
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
+		private emailService: EmailService,
 		private userAuthService: UserAuthService,
 		private webAuthnService: WebAuthnService,
 		private captchaService: CaptchaService,
@@ -173,6 +175,19 @@ export class SigninApiService {
 			await this.notificationService.createNotification(user.id, 'loginFailed', {
 				userIp: request.ip,
 			});
+
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
+			if (profile.email && profile.emailVerified) {
+				this.emailService.sendEmail(profile.email, 'Login failed / ログインに失敗しました',
+					`userid: ${user.name ?? `@${user.username}`} <br>` +
+					`ip: ${request.ip} <br>` +
+					'header: ' + JSON.stringify(request.headers) + '<br>' +
+					'There is a new login. If you do not recognize this login, update the security status of your account, including changing your password. / 新しいログインがありました。このログインに心当たりがない場合は、パスワードを変更するなど、アカウントのセキュリティ状態を更新してください。',
+					`userid: ${user.name ?? `@${user.username}`} \n` +
+					`ip: ${request.ip} \n` +
+					'header: ' + JSON.stringify(request.headers) + '\n' +
+					'There is a new login. If you do not recognize this login, update the security status of your account, including changing your password. / 新しいログインがありました。このログインに心当たりがない場合は、パスワードを変更するなど、アカウントのセキュリティ状態を更新してください。');
+			}
 
 			return error(status ?? 500, failure ?? { id: '4e30e80c-e338-45a0-8c8f-44455efa3b76' });
 		};
