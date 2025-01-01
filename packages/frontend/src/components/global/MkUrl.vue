@@ -41,6 +41,17 @@ function safeURIDecode(str: string): string {
 	}
 }
 
+function ellipsize (v: string, size: number): string {
+  try {
+    if (size < v.length) {
+      return v.slice(0, 16) + '…';
+    }
+    return v;
+  } catch {
+    return v;
+  }
+}
+
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: string;
@@ -72,7 +83,7 @@ if (props.showUrlPreview && isEnabledUrlPreview.value) {
 const schema = props.shorten ? null : url.protocol;
 const hostname = decodePunycode(url.hostname);
 const port = url.port;
-const pathname = props.shorten ? safeURIDecode(url.pathname).substring(1, 16) : safeURIDecode(url.pathname);
+const pathname = props.shorten ? ellipsize(safeURIDecode(url.pathname), 16) : safeURIDecode(url.pathname);
 const query = props.shorten ? null : safeURIDecode(url.search);
 const hash = props.shorten ? null : safeURIDecode(url.hash);
 const attr = self ? 'to' : 'href';
