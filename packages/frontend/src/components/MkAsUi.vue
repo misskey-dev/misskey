@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkInput>
-	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :modelValue="c.default ?? null" @update:modelValue="c.onChange">
+	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :modelValue="valueForSelect" @update:modelValue="onSelectUpdate">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 		<option v-for="item in c.items" :key="item.value" :value="item.value">{{ item.text }}</option>
@@ -124,6 +124,15 @@ const valueForSwitch = ref('default' in c && typeof c.default === 'boolean' ? c.
 
 function onSwitchUpdate(v) {
 	valueForSwitch.value = v;
+	if ('onChange' in c && c.onChange) {
+		c.onChange(v as never);
+	}
+}
+
+const valueForSelect = ref(c.default ?? null);
+
+function onSelectUpdate(v) {
+	valueForSelect.value = v;
 	if ('onChange' in c && c.onChange) {
 		c.onChange(v as never);
 	}
