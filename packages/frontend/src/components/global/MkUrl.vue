@@ -44,7 +44,7 @@ function safeURIDecode(str: string): string {
 function ellipsize (v: string, size: number): string {
   try {
     if (size < v.length) {
-      return v.slice(0, 16) + '…';
+      return v.slice(0, size) + '…';
     }
     return v;
   } catch {
