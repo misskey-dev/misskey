@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@contextmenu.stop="() => {}"
 >
 	<template v-if="!self">
-		<span :class="$style.schema">{{ schema }}//</span>
+		<span v-if="schema" :class="$style.schema">{{ schema }}//</span>
 		<span :class="$style.hostname">{{ hostname }}</span>
 		<span v-if="port != ''">:{{ port }}</span>
 	</template>
@@ -45,9 +45,11 @@ const props = withDefaults(defineProps<{
 	url: string;
 	rel?: string;
 	showUrlPreview?: boolean;
+	shorten?: boolean;
 	navigationBehavior?: MkABehavior;
 }>(), {
 	showUrlPreview: true,
+	shorten: false,
 });
 
 const self = props.url.startsWith(local);
@@ -67,12 +69,12 @@ if (props.showUrlPreview && isEnabledUrlPreview.value) {
 	});
 }
 
-const schema = url.protocol;
+const schema = props.shorten ? null : url.protocol;
 const hostname = decodePunycode(url.hostname);
 const port = url.port;
-const pathname = safeURIDecode(url.pathname);
-const query = safeURIDecode(url.search);
-const hash = safeURIDecode(url.hash);
+const pathname = props.shorten ? safeURIDecode(url.pathname).substring(1, 16) : safeURIDecode(url.pathname);
+const query = props.shorten ? null : safeURIDecode(url.search);
+const hash = props.shorten ? null : safeURIDecode(url.hash);
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 </script>

@@ -351,6 +351,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
+					shorten: true,
 					navigationBehavior: props.linkNavigationBehavior,
 				})];
 			}
