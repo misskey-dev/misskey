@@ -102,8 +102,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	private async hideNote(packedNote: Packed<'Note'>, meId: MiUser['id'] | null): Promise<void> {
-		// FIXME: このvisibility変更処理が当関数にあるのは若干不自然かもしれない(関数名を treatVisibility とかに変える手もある)
+	private async treatVisibility(packedNote: Packed<'Note'>): Promise<void> {
 		if (packedNote.visibility === 'public' || packedNote.visibility === 'home') {
 			const followersOnlyBefore = packedNote.user.makeNotesFollowersOnlyBefore;
 			if ((followersOnlyBefore != null)
@@ -115,7 +114,10 @@ export class NoteEntityService implements OnModuleInit {
 				packedNote.visibility = 'followers';
 			}
 		}
+	}
 
+	@bindThis
+	private async hideNote(packedNote: Packed<'Note'>, meId: MiUser['id'] | null): Promise<void> {
 		if (meId === packedNote.userId) return;
 
 		// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
@@ -359,6 +361,7 @@ export class NoteEntityService implements OnModuleInit {
 		const opts = Object.assign({
 			detail: true,
 			skipHide: false,
+			skipTreatVisibility: false,
 			withReactionAndUserPairCache: false,
 		}, options);
 
@@ -457,6 +460,10 @@ export class NoteEntityService implements OnModuleInit {
 				} : {}),
 			} : {}),
 		});
+
+		if (!opts.skipTreatVisibility) {
+			await this.treatVisibility(packed, meId);
+		}
 
 		if (!opts.skipHide) {
 			await this.hideNote(packed, meId);
