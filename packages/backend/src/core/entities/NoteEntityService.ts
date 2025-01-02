@@ -462,7 +462,7 @@ export class NoteEntityService implements OnModuleInit {
 		});
 
 		if (!opts.skipTreatVisibility) {
-			await this.treatVisibility(packed, meId);
+			await this.treatVisibility(packed);
 		}
 
 		if (!opts.skipHide) {
