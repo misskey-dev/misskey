@@ -1,4 +1,12 @@
 services:
+  cloudflared:
+    restart: always
+    image: cloudflare/cloudflared
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN
+    networks:
+      - external_network
   web:
     build: .
     restart: always
@@ -12,8 +20,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    ports:
-      - "3000:3000"
     networks:
       - internal_network
       - external_network
