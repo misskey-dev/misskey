@@ -564,7 +564,6 @@ export class ClientServerService {
 		fastify.get<{ Params: { user: string; } }>('/users/:user', async (request, reply) => {
 			const user = await this.usersRepository.findOneBy({
 				id: request.params.user,
-				host: IsNull(),
 				isSuspended: false,
 			});
 
