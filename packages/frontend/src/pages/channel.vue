@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkNotes :pagination="featuredPagination"/>
 			</div>
 			<div v-else-if="tab === 'search'" key="search">
-				<div class="_gaps">
+				<div v-if="notesSearchAvailable" class="_gaps">
 					<div>
 						<HanaSearchInput v-model="searchQuery" v-model:mode="searchMode" @enter.prevent="search()">
 							<template #prefix><i class="ti ti-search"></i></template>
@@ -53,6 +53,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
 					</div>
 					<MkNotes v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
+				</div>
+				<div v-else>
+					<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
 				</div>
 			</div>
 		</MkHorizontalSwipe>
@@ -95,6 +98,7 @@ import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { PageHeaderItem } from '@/types/page-header.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { notesSearchAvailable } from '@/scripts/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router/supplier.js';
 import type { SearchMode } from '@/hana/types/search.js';

@@ -290,7 +290,7 @@ export class SearchService {
 
 		if (opts.userId) query.andWhere('note.userId = :userId', { userId: opts.userId });
 		if (opts.channelId) query.andWhere('note.channelId = :channelId', { channelId: opts.channelId });
-		query.andWhere('note.text ILIKE :q', { q: `%${sqlLikeEscape(q)}%` });
+		query.andWhere('LOWER(note.text) LIKE :q', { q: `%${sqlLikeEscape(q.toLowerCase())}%` });
 
 		query
 			.innerJoinAndSelect('note.user', 'user')
