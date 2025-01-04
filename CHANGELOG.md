@@ -13,12 +13,17 @@
 - Fix: 公開範囲がホームのノートの埋め込みウィジェットが読み込まれない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/803)
 - Fix: 絵文字管理画面で一部の絵文字が表示されない問題を修正
+- Fix: ノート検索が使用できない場合でもチャンネルのノート検索欄がでていた問題を修正
+- Fix: `Ui:C:select`で値の変更が画面に反映されない問題を修正
+- Fix: MiAuth認可画面で、認可処理に失敗した場合でもコールバックURLに遷移してしまう問題を修正  
+  (Cherry-picked from https://github.com/TeamNijimiss/misskey/commit/800359623e41a662551d774de15b0437b6849bb4)
 - Fix: デッキでリンクをダブルクリックすると、ウィンドウが2枚開いてしまう問題を修正
 
 ### Server
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
+- Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
 
 
 ## 2024.11.0
