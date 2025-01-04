@@ -363,6 +363,25 @@ describe('AiScript common API', () => {
 			`);
 			expect(res).toStrictEqual(values.NULL);
 		});
+
+		test.sequential('remove existing', async () => {
+			const res = await exe(`
+				Mk:save('key', 'value')
+				<: Mk:load('key')
+				<: Mk:remove('key')
+				<: Mk:load('key')
+			`);
+			expect(res).toStrictEqual([values.STR('value'), values.NULL, values.NULL]);
+		});
+
+		test.sequential('remove nothing', async () => {
+			const res = await exe(`
+				<: Mk:load('key')
+				<: Mk:remove('key')
+				<: Mk:load('key')
+			`);
+			expect(res).toStrictEqual([values.NULL, values.NULL, values.NULL]);
+		});
 	});
 
 	test.concurrent('url', async () => {
