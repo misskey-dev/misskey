@@ -353,7 +353,7 @@ describe('AiScript common API', () => {
 			await expect(() => exe(`
 				Mk:save('key')
 			`)).rejects.toStrictEqual(
-				new errors.AiScriptRuntimeError('expected value')
+				new errors.AiScriptRuntimeError('Expect anything, but got nothing.'),
 			);
 		});
 
