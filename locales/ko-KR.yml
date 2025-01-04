@@ -684,7 +684,9 @@ smtpSecure: "SMTP 연결에 Implicit SSL/TTS 사용"
 smtpSecureInfo: "STARTTLS 사용 시에는 해제합니다."
 testEmail: "이메일 전송 테스트"
 wordMute: "단어 뮤트"
+wordMuteDescription: "정해진 단어가 포함된 노트를 최소화 한 상태로 표시합니다. 최소화 된 노트는 클릭해서 표시할 수 있습니다."
 hardWordMute: "하드 단어 뮤트"
+hardWordMuteDescription: "정한 단어가 들어간 노트를 숨깁니다. 단어 뮤트와 차이점은 노트가 아예 보이지 않습니다."
 regexpError: "정규 표현식 오류"
 regexpErrorDescription: "{tab}단어 뮤트 {line}행의 정규 표현식에 오류가 발생했습니다:"
 instanceMute: "서버 뮤트"
@@ -2750,5 +2752,9 @@ _remoteLookupErrors:
     description: "이 서버와의 통신이 비활성화 되었거나, 이 서버를 차단 중이거나 서버에게 차단되었을 수 있습니다.\n서버 관리자에게 문의하세요."
   _uriInvalid:
     title: "URI가 잘못되었습니다."
+    description: "입력한 URI에 문제가 있습니다. URI에 쓸 수 없는 문자를 넣었는지 확인해보세요."
+  _requestFailed:
+    title: "요청을 실패했습니다."
+    description: "해당 서버와 통신을 실패했습니다. 상대방 서버에 접속 불가능한 상태일 수도 있습니다. 또는 잘못된 URI 또는 없는 URI를 입력했는지 확인해보세요."
   _noSuchObject:
     title: "찾을 수 없습니다"
