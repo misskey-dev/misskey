@@ -263,6 +263,7 @@ const canPost = computed((): boolean => {
 		) &&
 		(textLength.value <= maxTextLength.value) &&
 		(cwTextLength.value <= maxCwTextLength.value) &&
+		(files.value.length <= 16) &&
 		(!poll.value || poll.value.choices.length >= 2);
 });
 

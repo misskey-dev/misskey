@@ -19,6 +19,7 @@
 - Fix: `Ui:C:select`で値の変更が画面に反映されない問題を修正
 - Fix: MiAuth認可画面で、認可処理に失敗した場合でもコールバックURLに遷移してしまう問題を修正  
   (Cherry-picked from https://github.com/TeamNijimiss/misskey/commit/800359623e41a662551d774de15b0437b6849bb4)
+- Fix: ノート作成画面でファイルの添付可能個数を超えてもノートボタンが押せていた問題を修正
 - Fix: CWの注釈が100文字を超えている場合、ノート投稿ボタンを非アクティブに
 
 ### Server
