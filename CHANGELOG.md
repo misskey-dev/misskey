@@ -7,6 +7,7 @@
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
 - Enhance: 照会に失敗した場合、その理由を表示するように
+- Enhance: AiScriptのセーブデータを明示的に削除する関数`Mk:remove`を追加
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
 - Fix: ノートがログインしているユーザーしか見れない場合にログインダイアログを閉じるとその後の動線がなくなる問題を修正
@@ -17,6 +18,7 @@
 - Fix: `Ui:C:select`で値の変更が画面に反映されない問題を修正
 - Fix: MiAuth認可画面で、認可処理に失敗した場合でもコールバックURLに遷移してしまう問題を修正  
   (Cherry-picked from https://github.com/TeamNijimiss/misskey/commit/800359623e41a662551d774de15b0437b6849bb4)
+- Fix: ノート作成画面でファイルの添付可能個数を超えてもノートボタンが押せていた問題を修正
 - Fix: デッキでリンクをダブルクリックすると、ウィンドウが2枚開いてしまう問題を修正
 
 ### Server
