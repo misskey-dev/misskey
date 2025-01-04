@@ -6,6 +6,7 @@
 ### Client
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
+- Enhance: 照会に失敗した場合、その理由を表示するように
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
 - Fix: ノートがログインしているユーザーしか見れない場合にログインダイアログを閉じるとその後の動線がなくなる問題を修正
@@ -13,11 +14,13 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/803)
 - Fix: 絵文字管理画面で一部の絵文字が表示されない問題を修正
 - Fix: ノート検索が使用できない場合でもチャンネルのノート検索欄がでていた問題を修正
+- Fix: `Ui:C:select`で値の変更が画面に反映されない問題を修正
 
 ### Server
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
+- Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
 
 
 ## 2024.11.0
