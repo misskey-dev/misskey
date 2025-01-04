@@ -1,5 +1,5 @@
 import MkInput from '@/components/MkInput.vue';
-import { fireEvent, render, screen } from '@testing-library/vue';
+import { fireEvent, render } from '@testing-library/vue';
 import { components } from '@/components/index.js';
 import { directives } from '@/directives/index.js';
 import { describe, expect, test, vi } from 'vitest';
