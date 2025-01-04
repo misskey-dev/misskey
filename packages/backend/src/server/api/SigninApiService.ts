@@ -140,9 +140,9 @@ export class SigninApiService {
 		}
 
 		const profile = profiles[0];
-		const user = (profile?.user as MiLocalUser) ?? null;
+		const user = (profile?.user as MiLocalUser | null) ?? null;
 
-		if (user == null || profile == null) {
+		if (user == null) {
 			return error(404, {
 				id: '6cc579cc-885d-43d8-95c2-b8c7fc963280',
 			});
