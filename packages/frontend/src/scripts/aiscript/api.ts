@@ -100,19 +100,18 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		*/
 		'Mk:save': values.FN_NATIVE(([key, value]) => {
 			utils.assertString(key);
-			if (value == null) {
-				throw new errors.AiScriptRuntimeError('expected value');
-			}
+			utils.expectAny(value);
 			miLocalStorage.setItem(`aiscript:${opts.storageKey}:${key.value}`, JSON.stringify(utils.valToJs(value)));
 			return values.NULL;
 		}),
 		'Mk:load': values.FN_NATIVE(([key]) => {
 			utils.assertString(key);
-			const item = miLocalStorage.getItem(`aiscript:${opts.storageKey}:${key.value}`);
-			if (item == null) {
-				return values.NULL;
-			}
-			return utils.jsToVal(JSON.parse(item));
+			return utils.jsToVal(miLocalStorage.getItemAsJson(`aiscript:${opts.storageKey}:${key.value}`) ?? null);
+		}),
+		'Mk:remove': values.FN_NATIVE(([key]) => {
+			utils.assertString(key);
+			miLocalStorage.removeItem(`aiscript:${opts.storageKey}:${key.value}`);
+			return values.NULL;
 		}),
 		'Mk:url': values.FN_NATIVE(() => {
 			return values.STR(window.location.href);
