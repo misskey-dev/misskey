@@ -524,8 +524,8 @@ export class ActivityPubServerService {
 			},
 			deriveConstraint(request: IncomingMessage) {
 				const accepted = accepts(request).type(['html', ACTIVITY_JSON, LD_JSON]);
-				const isAp = typeof accepted === 'string' && !accepted.match(/html/);
-				return isAp ? 'ap' : 'html';
+				if (accepted === false) return null;
+				return accepted !== 'html' ? 'ap' : 'html';
 			},
 		});
 
