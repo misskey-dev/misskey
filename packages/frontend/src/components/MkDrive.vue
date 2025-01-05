@@ -157,7 +157,12 @@ const ilFilesObserver = new IntersectionObserver(
 	(entries) => entries.some((entry) => entry.isIntersecting) && !fetching.value && moreFiles.value && fetchMoreFiles(),
 );
 
+const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort']>>('+createdAt');
+
 watch(folder, () => emit('cd', folder.value));
+watch(sortModeSelect, () => {
+	fetch();
+});
 
 function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
 	addFile(file, true);
@@ -193,7 +198,7 @@ function onStreamDriveFolderDeleted(folderId: string) {
 	removeFolder(folderId);
 }
 
-function onDragover(ev: DragEvent): any {
+function onDragover(ev: DragEvent) {
 	if (!ev.dataTransfer) return;
 
 	// ドラッグ元が自分自身の所有するアイテムだったら
@@ -238,7 +243,7 @@ function onDragleave() {
 	draghover.value = false;
 }
 
-function onDrop(ev: DragEvent): any {
+function onDrop(ev: DragEvent) {
 	draghover.value = false;
 
 	if (!ev.dataTransfer) return;
@@ -327,7 +332,7 @@ function createFolder() {
 		title: i18n.ts.createFolder,
 		placeholder: i18n.ts.folderName,
 	}).then(({ canceled, result: name }) => {
-		if (canceled) return;
+		if (canceled || name == null) return;
 		misskeyApi('drive/folders/create', {
 			name: name,
 			parentId: folder.value ? folder.value.id : undefined,
@@ -558,6 +563,7 @@ async function fetch() {
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
 		limit: filesMax + 1,
+		sort: sortModeSelect.value,
 	}).then(fetchedFiles => {
 		if (fetchedFiles.length === filesMax + 1) {
 			moreFiles.value = true;
@@ -607,6 +613,7 @@ function fetchMoreFiles() {
 		type: props.type,
 		untilId: files.value.at(-1)?.id,
 		limit: max + 1,
+		sort: sortModeSelect.value,
 	}).then(files => {
 		if (files.length === max + 1) {
 			moreFiles.value = true;
@@ -640,6 +647,43 @@ function getMenu() {
 	}, { type: 'divider' }, {
 		text: folder.value ? folder.value.name : i18n.ts.drive,
 		type: 'label',
+	});
+
+	menu.push({
+		type: 'parent',
+		text: i18n.ts.sort,
+		icon: 'ti ti-arrows-sort',
+		children: [{
+			text: `${i18n.ts.registeredDate} (${i18n.ts.descendingOrder})`,
+			icon: 'ti ti-sort-descending-letters',
+			action: () => { sortModeSelect.value = '+createdAt'; },
+			active: sortModeSelect.value === '+createdAt',
+		}, {
+			text: `${i18n.ts.registeredDate} (${i18n.ts.ascendingOrder})`,
+			icon: 'ti ti-sort-ascending-letters',
+			action: () => { sortModeSelect.value = '-createdAt'; },
+			active: sortModeSelect.value === '-createdAt',
+		}, {
+			text: `${i18n.ts.size} (${i18n.ts.descendingOrder})`,
+			icon: 'ti ti-sort-descending-letters',
+			action: () => { sortModeSelect.value = '+size'; },
+			active: sortModeSelect.value === '+size',
+		}, {
+			text: `${i18n.ts.size} (${i18n.ts.ascendingOrder})`,
+			icon: 'ti ti-sort-ascending-letters',
+			action: () => { sortModeSelect.value = '-size'; },
+			active: sortModeSelect.value === '-size',
+		}, {
+			text: `${i18n.ts.name} (${i18n.ts.descendingOrder})`,
+			icon: 'ti ti-sort-descending-letters',
+			action: () => { sortModeSelect.value = '+name'; },
+			active: sortModeSelect.value === '+name',
+		}, {
+			text: `${i18n.ts.name} (${i18n.ts.ascendingOrder})`,
+			icon: 'ti ti-sort-ascending-letters',
+			action: () => { sortModeSelect.value = '-name'; },
+			active: sortModeSelect.value === '-name',
+		}],
 	});
 
 	if (folder.value) {
