@@ -1,6 +1,9 @@
 import { EventEmitter } from 'eventemitter3';
-import ReconnectingWebSocket, { Options } from 'reconnecting-websocket';
+import _ReconnectingWebSocket, { Options } from 'reconnecting-websocket';
 import type { BroadcastEvents, Channels } from './streaming.types.js';
+
+const ReconnectingWebSocketConstructor = _ReconnectingWebSocket as unknown as typeof _ReconnectingWebSocket.default;
+type ReconnectingWebSocket = _ReconnectingWebSocket.default;
 
 export function urlQuery(obj: Record<string, string | number | boolean | undefined>): string {
 	const params = Object.entries(obj)
@@ -41,7 +44,7 @@ export interface IStream extends EventEmitter<StreamEvents> {
  */
 // eslint-disable-next-line import/no-default-export
 export default class Stream extends EventEmitter<StreamEvents> implements IStream {
-	private stream: ReconnectingWebSocket.default;
+	private stream: ReconnectingWebSocket;
 	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
@@ -78,7 +81,7 @@ export default class Stream extends EventEmitter<StreamEvents> implements IStrea
 
 		const wsOrigin = origin.replace('http://', 'ws://').replace('https://', 'wss://');
 
-		this.stream = new ReconnectingWebSocket.default(`${wsOrigin}/streaming?${query}`, '', {
+		this.stream = new ReconnectingWebSocketConstructor(`${wsOrigin}/streaming?${query}`, '', {
 			minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
 			WebSocket: options.WebSocket,
 		});
