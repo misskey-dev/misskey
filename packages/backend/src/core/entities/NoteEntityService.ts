@@ -102,7 +102,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	private treatVisibility(packedNote: Packed<'Note'>): Promise<void> {
+	private treatVisibility(packedNote: Packed<'Note'>): Packed<'Note'>['visibility'] {
 		if (packedNote.visibility === 'public' || packedNote.visibility === 'home') {
 			const followersOnlyBefore = packedNote.user.makeNotesFollowersOnlyBefore;
 			if ((followersOnlyBefore != null)
@@ -114,6 +114,7 @@ export class NoteEntityService implements OnModuleInit {
 				packedNote.visibility = 'followers';
 			}
 		}
+		return packedNote.visibility;
 	}
 
 	@bindThis
