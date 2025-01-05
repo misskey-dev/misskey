@@ -274,12 +274,8 @@ export class AccountMoveService {
 
 		if (!srcprofile || !dstprofile) return;
 
-		await this.userProfilesRepository.update({ userId: dst.id }, {
-			moderationNote: srcprofile.moderationNote + '\n' + dstprofile.moderationNote,
-		});
-
-		await this.userProfilesRepository.update({ userId: src.id }, {
-			moderationNote: srcprofile.moderationNote + '\n' + dstprofile.moderationNote,
+		await this.userProfilesRepository.update({ userId: In([src.id, dst.id]) }, {
+			moderationNote: (srcprofile.moderationNote + '\n' + dstprofile.moderationNote).trim(),
 		});
 	}
 
