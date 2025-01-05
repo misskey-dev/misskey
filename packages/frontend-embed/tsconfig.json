@@ -11,7 +11,7 @@
 		"sourceMap": false,
 		"target": "ES2022",
 		"module": "ES2022",
-		"moduleResolution": "nodenext",
+		"moduleResolution": "Bundler",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
