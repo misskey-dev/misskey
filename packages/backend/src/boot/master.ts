@@ -99,8 +99,10 @@ export async function masterMain() {
 		// clusterモジュール有効時
 
 		if (envOption.onlyServer) {
-			// onlyServer かつ enableCluster な場合、
-			// メインプロセスでlistenするとワーカープロセス側のlistenと衝突するため、メインプロセスはforkのみに制限する(listenしない)
+			// onlyServer かつ enableCluster な場合、メインプロセスはforkのみに制限する(listenしない)。
+			// ワーカープロセス側でlistenすると、メインプロセスでポートへの着信を受け入れてワーカープロセスへの分配を行う動作をする。
+			// そのため、メインプロセスでも直接listenするとポートの競合が発生して起動に失敗してしまう。
+			// see: https://nodejs.org/api/cluster.html#cluster
 		} else if (envOption.onlyQueue) {
 			await jobQueue();
 		} else {
