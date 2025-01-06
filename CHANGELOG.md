@@ -27,7 +27,7 @@
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
 - Fix: ActivityPubリクエストかどうかの判定が正しくない問題を修正  
-	(Cherry-picked from https://github.com/MisskeyIO/misskey/pull/869)
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/869)
 
 
 ## 2024.11.0
