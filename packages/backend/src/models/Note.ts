@@ -4,7 +4,7 @@
  */
 
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-import { noteVisibilities } from '@/types.js';
+import { noteVisibilities, mfmTypes } from '@/types.js';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiChannel } from './Channel.js';
@@ -64,6 +64,9 @@ export class MiNote {
 		length: 512, nullable: true,
 	})
 	public cw: string | null;
+
+	@Column('enum', { enum: mfmTypes })
+	public mfmType: typeof mfmTypes[number];
 
 	@Index()
 	@Column({

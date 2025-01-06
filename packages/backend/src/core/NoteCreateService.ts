@@ -143,6 +143,7 @@ type Option = {
 	uri?: string | null;
 	url?: string | null;
 	app?: MiApp | null;
+	mfmType?: string | null;
 };
 
 @Injectable()
@@ -253,6 +254,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.visibility = 'public';
 		if (data.channel != null) data.visibleUsers = [];
 		if (data.channel != null) data.localOnly = true;
+		if (data.mfmType == null) data.mfmType = 'full';
 
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = this.meta.sensitiveWords;
@@ -430,6 +432,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					? data.visibleUsers.map(u => u.id)
 					: []
 				: [],
+			mfmType: data.mfmType as any,
 
 			attachedFileTypes: data.files ? data.files.map(file => file.type) : [],
 

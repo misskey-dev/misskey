@@ -187,12 +187,14 @@ export class ApNoteService {
 
 		// テキストのパース
 		let text: string | null = null;
+		let mfmType: string = 'full';
 		if (note.source?.mediaType === 'text/x.misskeymarkdown' && typeof note.source.content === 'string') {
 			text = note.source.content;
 		} else if (typeof note._misskey_content !== 'undefined') {
 			text = note._misskey_content;
 		} else if (typeof note.content === 'string') {
 			text = this.apMfmService.htmlToMfm(note.content, note.tag);
+			mfmType = 'html';
 		}
 
 		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
@@ -332,6 +334,7 @@ export class ApNoteService {
 				poll,
 				uri: note.id,
 				url: url,
+				mfmType,
 			}, silent);
 		} catch (err: any) {
 			if (err.name !== 'duplicated') {

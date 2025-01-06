@@ -34,6 +34,8 @@
 - Fix: disableClustering設定時の初期化ロジックを調整( #15223 )
 - Fix: ActivityPubリクエストかどうかの判定が正しくない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/869)
+- Feat: リモート投稿のsourceをみて、適用するMFMの種類をノートに記録するように
+
 
 ## 2024.11.0
 
