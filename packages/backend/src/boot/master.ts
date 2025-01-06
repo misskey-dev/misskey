@@ -91,24 +91,16 @@ export async function masterMain() {
 		});
 	}
 
-	if (envOption.disableClustering) {
-		if (envOption.onlyServer) {
-			await server();
-		} else if (envOption.onlyQueue) {
-			await jobQueue();
-		} else {
-			await server();
-			await jobQueue();
-		}
+	if (envOption.onlyServer) {
+		await server();
+	} else if (envOption.onlyQueue) {
+		await jobQueue();
 	} else {
-		if (envOption.onlyServer) {
-			// nop
-		} else if (envOption.onlyQueue) {
-			// nop
-		} else {
-			await server();
-		}
+		await server();
+		await jobQueue();
+	}
 
+	if (!envOption.disableClustering) {
 		await spawnWorkers(config.clusterLimit);
 	}
 
