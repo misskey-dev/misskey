@@ -91,17 +91,31 @@ export async function masterMain() {
 		});
 	}
 
-	if (envOption.onlyServer) {
-		await server();
-	} else if (envOption.onlyQueue) {
-		await jobQueue();
-	} else {
-		await server();
-		await jobQueue();
-	}
-
 	if (!envOption.disableClustering) {
+		// clusterモジュール有効時
+
+		if (envOption.onlyServer) {
+			// onlyServer かつ enableCluster な場合、
+			// メインプロセスでlistenするとワーカープロセス側のlistenと衝突するため、メインプロセスはforkのみに制限する(listenしない)
+		} else if (envOption.onlyQueue) {
+			await jobQueue();
+		} else {
+			await server();
+			await jobQueue();
+		}
+
 		await spawnWorkers(config.clusterLimit);
+	} else {
+		// clusterモジュール無効時
+
+		if (envOption.onlyServer) {
+			await server();
+		} else if (envOption.onlyQueue) {
+			await jobQueue();
+		} else {
+			await server();
+			await jobQueue();
+		}
 	}
 
 	if (envOption.onlyQueue) {
