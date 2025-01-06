@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</header>
 		<div :class="[$style.noteContent, { [$style.contentCollapsed]: collapsed }]">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
-				<EmMfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
+				<EmMfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'" :mfmType="appearNote.mfmType"/>
 				<button style="display: block; width: 100%; margin: 4px 0;" class="_buttonGray _buttonRounded" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</button>
 			</p>
 			<div v-show="appearNote.cw == null || showContent">
@@ -69,6 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-if="appearNote.text"
 					:parsedNodes="parsed"
 					:text="appearNote.text"
+					:mfmType="appearNote.mfmType"
 					:author="appearNote.user"
 					:nyaize="'respect'"
 					:emojiUrls="appearNote.emojis"

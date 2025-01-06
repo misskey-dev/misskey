@@ -39,6 +39,7 @@ opacity: 0.7;
 type MfmProps = {
 	text: string;
 	plain?: boolean;
+	mfmType?: string;
 	nowrap?: boolean;
 	author?: Misskey.entities.UserLite;
 	isNote?: boolean;
@@ -66,7 +67,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (props.text == null || props.text === '') return;
 
-	const rootAst = props.parsedNodes ?? (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
+	const rootAst = props.parsedNodes ?? (props.plain ? mfm.parseSimple : props.mfmType === 'full' ? mfm.parse : mfm.parseHtml)(props.text);
 
 	const validTime = (t: string | boolean | null | undefined) => {
 		if (t == null) return null;

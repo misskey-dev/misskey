@@ -282,7 +282,7 @@ if (props.reply && (props.reply.user.username !== $i.username || (props.reply.us
 }
 
 if (props.reply && props.reply.text != null) {
-	const ast = mfm.parse(props.reply.text);
+	const ast = props.reply.mfmType === 'full' ? mfm.parse(props.reply.text) : mfm.parseHtml(props.reply.text);
 	const otherHost = props.reply.user.host;
 
 	for (const x of extractMentions(ast)) {

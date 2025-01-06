@@ -34,6 +34,7 @@ opacity: 0.7;
 type MfmProps = {
 	text: string;
 	plain?: boolean;
+	mfmType?: string;
 	nowrap?: boolean;
 	author?: Misskey.entities.UserLite;
 	isNote?: boolean;
