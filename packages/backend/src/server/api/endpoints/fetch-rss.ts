@@ -7,7 +7,6 @@ import Parser from 'rss-parser';
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { URL } from 'url';
 
 const rssParser = new Parser();
 
@@ -220,7 +219,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private httpRequestService: HttpRequestService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const res = await this.httpRequestService.send(ps.url, {
+			const res = await this.httpRequestService.send(decodeURIComponent(ps.url), {
 				method: 'GET',
 				headers: {
 					Accept: 'application/rss+xml, */*',
