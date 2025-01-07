@@ -18,8 +18,7 @@
 		"esModuleInterop": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./*"],
-			"@@/*": ["./*"]
+			"@/js/*": ["./js/*"]
 		},
 		"typeRoots": [
 			"./@types",

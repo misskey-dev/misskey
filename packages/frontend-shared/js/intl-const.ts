@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { lang } from '@@/js/config.js';
+import { lang } from '@/js/config.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 export const versatileLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP');

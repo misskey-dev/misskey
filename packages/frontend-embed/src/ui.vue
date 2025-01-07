@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
 import { postMessageToParentWindow } from '@/post-message.js';
 import { DI } from '@/di.js';
-import { defaultEmbedParams } from '@@/js/embed-page.js';
+import { defaultEmbedParams } from 'frontend-shared/js/embed-page';
 import EmNotePage from '@/pages/note.vue';
 import EmUserTimelinePage from '@/pages/user-timeline.vue';
 import EmClipPage from '@/pages/clip.vue';

@@ -30,8 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, provide, ref, shallowRef } from 'vue';
-import { url } from '@@/js/config.js';
-import { getScrollContainer } from '@@/js/scroll.js';
+import { url } from 'frontend-shared/js/config';
+import { getScrollContainer } from 'frontend-shared/js/scroll';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout.js';

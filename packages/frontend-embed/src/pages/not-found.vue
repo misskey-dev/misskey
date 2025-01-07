@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { inject, computed } from 'vue';
-import { DEFAULT_NOT_FOUND_IMAGE_URL } from '@@/js/const.js';
+import { DEFAULT_NOT_FOUND_IMAGE_URL } from 'frontend-shared/js/const';
 import { DI } from '@/di.js';
 import { i18n } from '@/i18n.js';
 

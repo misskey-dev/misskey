@@ -46,9 +46,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import { markRaw, ref, shallowRef, computed, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import sanitizeHtml from 'sanitize-html';
-import { emojilist, getEmojiName } from '@@/js/emojilist.js';
+import { emojilist, getEmojiName } from 'frontend-shared/js/emojilist';
 import contains from '@/scripts/contains.js';
-import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@@/js/emoji-base.js';
+import { char2twemojiFilePath, char2fluentEmojiFilePath } from 'frontend-shared/js/emoji-base';
 import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -56,7 +56,7 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
-import { MFM_TAGS, MFM_PARAMS } from '@@/js/const.js';
+import { MFM_TAGS, MFM_PARAMS } from 'frontend-shared/js/const';
 import { searchEmoji, EmojiDef } from '@/scripts/search-emoji.js';
 
 const lib = emojilist.filter(x => x.category !== 'flags');

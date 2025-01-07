@@ -108,8 +108,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import { shouldCollapsed } from '@@/js/collapsed.js';
-import { url } from '@@/js/config.js';
+import { shouldCollapsed } from 'frontend-shared/js/collapsed';
+import { url } from 'frontend-shared/js/config';
 import I18n from '@/components/I18n.vue';
 import EmNoteSub from '@/components/EmNoteSub.vue';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';

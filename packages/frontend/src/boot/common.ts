@@ -5,7 +5,7 @@
 
 import { computed, watch, version as vueVersion, App } from 'vue';
 import { compareVersions } from 'compare-versions';
-import { version, lang, updateLocale, locale } from '@@/js/config.js';
+import { version, lang, updateLocale, locale } from 'frontend-shared/js/config';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';

@@ -96,9 +96,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, provide, onMounted, computed, ref, watch, shallowRef, Ref } from 'vue';
-import { instanceName } from '@@/js/config.js';
-import { CURRENT_STICKY_BOTTOM } from '@@/js/const.js';
-import { isLink } from '@@/js/is-link.js';
+import { instanceName } from 'frontend-shared/js/config';
+import { CURRENT_STICKY_BOTTOM } from 'frontend-shared/js/const';
+import { isLink } from 'frontend-shared/js/is-link';
 import XCommon from './_common_/common.vue';
 import type MkStickyContainer from '@/components/global/MkStickyContainer.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';

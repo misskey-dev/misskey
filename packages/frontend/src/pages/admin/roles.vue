@@ -281,7 +281,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
-import { ROLE_POLICIES } from '@@/js/const.js';
+import { ROLE_POLICIES } from 'frontend-shared/js/const';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';

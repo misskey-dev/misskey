@@ -57,7 +57,7 @@ import MkButton from '@/components/MkButton.vue';
 import { widgets as widgetDefs } from '@/widgets/index.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { isLink } from '@@/js/is-link.js';
+import { isLink } from 'frontend-shared/js/is-link';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 

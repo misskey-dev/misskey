@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { i18n } from '@/i18n.js';
-import { dateTimeFormat } from '@@/js/intl-const.js';
+import { dateTimeFormat } from 'frontend-shared/js/intl-const';
 
 const props = withDefaults(defineProps<{
 	time: Date | string | number | null;

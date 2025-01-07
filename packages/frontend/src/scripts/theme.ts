@@ -4,56 +4,37 @@
  */
 
 import { ref } from 'vue';
-import tinycolor from 'tinycolor2';
-import lightTheme from '@@/themes/_light.json5';
-import darkTheme from '@@/themes/_dark.json5';
+import { compile, type Theme } from 'frontend-shared/js/theme';
+import lightTheme from 'frontend-shared/themes/_light.json5';
+import darkTheme from 'frontend-shared/themes/_dark.json5';
 import { deepClone } from './clone.js';
-import type { BundledTheme } from 'shiki/themes';
 import { globalEvents } from '@/events.js';
 import { miLocalStorage } from '@/local-storage.js';
 
-export type Theme = {
-	id: string;
-	name: string;
-	author: string;
-	desc?: string;
-	base?: 'dark' | 'light';
-	props: Record<string, string>;
-	codeHighlighter?: {
-		base: BundledTheme;
-		overrides?: Record<string, any>;
-	} | {
-		base: '_none_';
-		overrides: Record<string, any>;
-	};
-};
-
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
-export const getBuiltinThemes = () => Promise.all(
-	[
-		'l-light',
-		'l-coffee',
-		'l-apricot',
-		'l-rainy',
-		'l-botanical',
-		'l-vivid',
-		'l-cherry',
-		'l-sushi',
-		'l-u0',
+export const getBuiltinThemes = () => Promise.all([
+	import('frontend-shared/themes/l-light.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/l-coffee.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/l-apricot.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/l-rainy.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/l-botanical.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/l-vivid.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/l-cherry.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/l-sushi.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/l-u0.json5').then(({ default: _default }): Theme => _default),
 
-		'd-dark',
-		'd-persimmon',
-		'd-astro',
-		'd-future',
-		'd-botanical',
-		'd-green-lime',
-		'd-green-orange',
-		'd-cherry',
-		'd-ice',
-		'd-u0',
-	].map(name => import(`@@/themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
-);
+	import('frontend-shared/themes/d-dark.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/d-persimmon.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/d-astro.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/d-future.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/d-botanical.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/d-green-lime.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/d-green-orange.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/d-cherry.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/d-ice.json5').then(({ default: _default }): Theme => _default),
+	import('frontend-shared/themes/d-u0.json5').then(({ default: _default }): Theme => _default),
+]);
 
 export const getBuiltinThemesRef = () => {
 	const builtinThemes = ref<Theme[]>([]);
@@ -106,52 +87,4 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	// 色計算など再度行えるようにクライアント全体に通知
 	globalEvents.emit('themeChanged');
-}
-
-function compile(theme: Theme): Record<string, string> {
-	function getColor(val: string): tinycolor.Instance {
-		if (val[0] === '@') { // ref (prop)
-			return getColor(theme.props[val.substring(1)]);
-		} else if (val[0] === '$') { // ref (const)
-			return getColor(theme.props[val]);
-		} else if (val[0] === ':') { // func
-			const parts = val.split('<');
-			const func = parts.shift().substring(1);
-			const arg = parseFloat(parts.shift());
-			const color = getColor(parts.join('<'));
-
-			switch (func) {
-				case 'darken': return color.darken(arg);
-				case 'lighten': return color.lighten(arg);
-				case 'alpha': return color.setAlpha(arg);
-				case 'hue': return color.spin(arg);
-				case 'saturate': return color.saturate(arg);
-			}
-		}
-
-		// other case
-		return tinycolor(val);
-	}
-
-	const props = {};
-
-	for (const [k, v] of Object.entries(theme.props)) {
-		if (k.startsWith('$')) continue; // ignore const
-
-		props[k] = v.startsWith('"') ? v.replace(/^"\s*/, '') : genValue(getColor(v));
-	}
-
-	return props;
-}
-
-function genValue(c: tinycolor.Instance): string {
-	return c.toRgbString();
-}
-
-export function validateTheme(theme: Record<string, any>): boolean {
-	if (theme.id == null || typeof theme.id !== 'string') return false;
-	if (theme.name == null || typeof theme.name !== 'string') return false;
-	if (theme.base == null || !['light', 'dark'].includes(theme.base)) return false;
-	if (theme.props == null || typeof theme.props !== 'object') return false;
-	return true;
 }

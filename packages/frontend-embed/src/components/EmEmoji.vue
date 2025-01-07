@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { char2twemojiFilePath } from '@@/js/emoji-base.js';
+import { char2twemojiFilePath } from 'frontend-shared/js/emoji-base';
 
 const props = defineProps<{
 	emoji: string;

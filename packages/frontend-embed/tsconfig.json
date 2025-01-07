@@ -24,7 +24,6 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
-			"@@/*": ["../frontend-shared/*"]
 		},
 		"typeRoots": [
 			"./@types",

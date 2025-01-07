@@ -4,7 +4,7 @@
  */
 
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
-import { ui } from '@@/js/config.js';
+import { ui } from 'frontend-shared/js/config';
 import { common } from './common.js';
 import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';

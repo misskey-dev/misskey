@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, onUnmounted, ref, shallowRef, watch, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os.js';
-import { scrollToTop } from '@@/js/scroll.js';
+import { scrollToTop } from 'frontend-shared/js/scroll';
 import MkButton from '@/components/MkButton.vue';
 import { globalEvents } from '@/events.js';
 import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
