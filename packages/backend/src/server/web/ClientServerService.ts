@@ -564,7 +564,6 @@ export class ClientServerService {
 		fastify.get<{ Params: { user: string; } }>('/users/:user', async (request, reply) => {
 			const user = await this.usersRepository.findOneBy({
 				id: request.params.user,
-				isSuspended: false,
 			});
 
 			if (!user || (user.isDeleted && user.isSuspended)) {
