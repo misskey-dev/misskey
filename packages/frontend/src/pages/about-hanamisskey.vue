@@ -22,8 +22,8 @@
 							<template #icon><i class="ti ti-notebook"></i></template>
 							{{ i18n.ts._hana._aboutHanaMisskey.documentation }}
 						</FormLink>
-						<FormLink to="https://stats.uptimerobot.com/cyfsDKVzjx" external>
-							<template #icon><i class="ti ti-health-recognition"></i></template>
+						<FormLink to="https://status.misskey.flowers" external>
+							<template #icon><i class="ti ti-device-analytics"></i></template>
 							{{ i18n.ts._hana._aboutHanaMisskey.serviceStatus }}
 						</FormLink>
 						<FormLink to="https://legacy.misskey.flowers" external>
