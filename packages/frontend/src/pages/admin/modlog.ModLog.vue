@@ -200,6 +200,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div><Mfm :text="log.info.announcement.text"/></div>
 			</div>
 		</template>
+		<template v-if="log.type === 'createRole'">
+			<div class="_gaps_s">
+				<div>{{ i18n.ts.role }} : {{ log.info.role.name }}</div>
+				<div>{{ i18n.ts._role.assignTarget }} : {{ i18n.ts._role[log.info.role.target] }}</div>
+				<div>{{ i18n.ts.public }} : {{ log.info.role.isPublic ? i18n.ts.yes : i18n.ts.no }}</div>
+				<div>{{ i18n.ts.administrator }} : {{ log.info.role.isAdministrator ? i18n.ts.yes : i18n.ts.no }}</div>
+				<div>{{ i18n.ts.moderator }} : {{ log.info.role.isModerator ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+		</template>
+		<template v-if="log.type === 'deleteRole'">
+			<div class="_gaps_s">
+				<div>{{ i18n.ts.role }} : {{ log.info.role.name }}</div>
+				<div>{{ i18n.ts._role.assignTarget }} : {{ i18n.ts._role[log.info.role.target] }}</div>
+				<div>{{ i18n.ts.public }} : {{ log.info.role.isPublic ? i18n.ts.yes : i18n.ts.no }}</div>
+				<div>{{ i18n.ts.administrator }} : {{ log.info.role.isAdministrator ? i18n.ts.yes : i18n.ts.no }}</div>
+				<div>{{ i18n.ts.moderator }} : {{ log.info.role.isModerator ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+		</template>
 
 		<details>
 			<summary>raw</summary>
