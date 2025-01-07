@@ -10030,7 +10030,8 @@ export interface Locale extends ILocale {
          * ギャラリーの投稿を削除
          */
         "deleteGalleryPost": string;
-        /** ジョブキューをクリア
+        /**
+         * ジョブキューをクリア
          */
         "clearQueue": string;
         /**
