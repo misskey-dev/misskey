@@ -52,7 +52,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		title: { type: 'string' },
-		name: { type: 'string', minLength: 1 },
+		name: { type: 'string', minLength: 1, pattern: /^[a-zA-Z0-9_-]+$/.toString().slice(1, -1) },
 		summary: { type: 'string', nullable: true },
 		content: { type: 'array', items: {
 			type: 'object', additionalProperties: true,

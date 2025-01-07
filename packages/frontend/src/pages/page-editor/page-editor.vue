@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts._pages.summary }}</template>
 				</MkInput>
 
-				<MkInput v-model="name">
+				<MkInput v-model="name" type="text" pattern="^[a-zA-Z0-9_-]+$" autocapitalize="off">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
 					<template #label>{{ i18n.ts._pages.url }}</template>
 				</MkInput>
@@ -158,7 +158,7 @@ function save() {
 
 	if (pageId.value) {
 		options.pageId = pageId.value;
-		misskeyApi('pages/update', options)
+		os.apiWithDialog('pages/update', options)
 			.then(page => {
 				currentName.value = name.value.trim();
 				os.alert({
@@ -167,7 +167,7 @@ function save() {
 				});
 			}).catch(onError);
 	} else {
-		misskeyApi('pages/create', options)
+		os.apiWithDialog('pages/create', options)
 			.then(created => {
 				pageId.value = created.id;
 				currentName.value = name.value.trim();
