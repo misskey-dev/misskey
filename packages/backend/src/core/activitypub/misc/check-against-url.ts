@@ -11,7 +11,11 @@ export function assertActivityMatchesUrls(activity: IObject, urls: string[]) {
 	// string | (IObject | string)[]`, but if it's a complicated thing
 	// and the `activity.id` doesn't match, I think we're fine
 	// rejecting the activity
-	const urlOk = typeof(activity.url) === 'string' && urls.includes(activity.url);
+	let urlOk = false;
+	if (typeof(activity.url) === 'string') {
+		const actUrlHost = new URL(activity.url).host;
+		urlOk = urls.map(it => new URL(it).host).includes(actUrlHost);
+	}
 
 	if (!idOk && !urlOk) {
 		throw new Error(`bad Activity: neither id(${activity?.id}) nor url(${activity?.url}) match location(${urls})`);
