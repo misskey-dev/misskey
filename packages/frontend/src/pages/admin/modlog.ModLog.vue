@@ -218,6 +218,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>{{ i18n.ts.moderator }} : {{ log.info.role.isModerator ? i18n.ts.yes : i18n.ts.no }}</div>
 			</div>
 		</template>
+		<template v-if="log.type === 'addCustomEmoji'">
+			<div class="_gaps_s">
+				<div>{{ i18n.ts.emoji }} : {{ log.info.emoji.name }}</div>
+				<div>{{ i18n.ts.customEmoji }} : <img :src="log.info.emoji.publicUrl" style="width: 24px; height: 24px; object-fit: contain; line-height: 1;"/></div>
+				<div>{{ i18n.ts.emojiUrl }} : {{ log.info.emoji.url }}</div>
+				<div>{{ i18n.ts.aliases }} : {{ log.info.emoji.aliases.join(' ') }}</div>
+				<div>{{ i18n.ts.license }} : {{ log.info.emoji.license }}</div>
+				<div>{{ i18n.ts.category }} : {{ log.info.emoji.category }}</div>
+				<div>{{ i18n.ts.localOnly }} : {{ log.info.emoji.localOnly }}</div>
+				<div>{{ i18n.ts.isSensitive }} : {{ log.info.emoji.isSensitive }}</div>
+			</div>
+		</template>
 
 		<details>
 			<summary>raw</summary>
