@@ -362,7 +362,6 @@ export class NoteEntityService implements OnModuleInit {
 		const opts = Object.assign({
 			detail: true,
 			skipHide: false,
-			skipTreatVisibility: false,
 			withReactionAndUserPairCache: false,
 		}, options);
 
@@ -462,9 +461,7 @@ export class NoteEntityService implements OnModuleInit {
 			} : {}),
 		});
 
-		if (!opts.skipTreatVisibility) {
-			this.treatVisibility(packed);
-		}
+		this.treatVisibility(packed);
 
 		if (!opts.skipHide) {
 			await this.hideNote(packed, meId);
