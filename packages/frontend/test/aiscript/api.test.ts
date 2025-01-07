@@ -57,10 +57,10 @@ vi.mock('@/os.js', () => {
 	return osMock;
 });
 
-const misskeyApiUntypedMock = vi.hoisted(() => vi.fn());
+const misskeyApiMock = vi.hoisted(() => vi.fn());
 
 vi.mock('@/scripts/misskey-api.js', () => {
-	return { misskeyApiUntyped: misskeyApiUntypedMock };
+	return { misskeyApi: misskeyApiMock };
 });
 
 describe('AiScript common API', () => {
@@ -266,7 +266,7 @@ describe('AiScript common API', () => {
 		});
 
 		test.sequential('successful', async () => {
-			misskeyApiUntypedMock.mockImplementationOnce(
+			misskeyApiMock.mockImplementationOnce(
 				async (endpoint, data, token) => {
 					expect(endpoint).toBe('ping');
 					expect(data).toStrictEqual({});
@@ -280,11 +280,11 @@ describe('AiScript common API', () => {
 			expect(res).toStrictEqual(values.OBJ(new Map([
 				['pong', values.NUM(1735657200000)],
 			])));
-			expect(misskeyApiUntypedMock).toHaveBeenCalledOnce();
+			expect(misskeyApiMock).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('with token', async () => {
-			misskeyApiUntypedMock.mockImplementationOnce(
+			misskeyApiMock.mockImplementationOnce(
 				async (endpoint, data, token) => {
 					expect(endpoint).toBe('ping');
 					expect(data).toStrictEqual({});
@@ -298,18 +298,18 @@ describe('AiScript common API', () => {
 			expect(res).toStrictEqual(values.OBJ(new Map([
 				['pong', values.NUM(1735657200000 )],
 			])));
-			expect(misskeyApiUntypedMock).toHaveBeenCalledOnce();
+			expect(misskeyApiMock).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('request failed', async () => {
-			misskeyApiUntypedMock.mockRejectedValueOnce('Not Found');
+			misskeyApiMock.mockRejectedValueOnce('Not Found');
 			const [res] = await exe(`
 				<: Mk:api('this/endpoint/should/not/be/found', {})
 			`);
 			expect(res).toStrictEqual(
 				values.ERROR('request_failed', values.STR('Not Found'))
 			);
-			expect(misskeyApiUntypedMock).toHaveBeenCalledOnce();
+			expect(misskeyApiMock).toHaveBeenCalledOnce();
 		});
 
 		test.sequential('invalid endpoint', async () => {
@@ -318,7 +318,7 @@ describe('AiScript common API', () => {
 			`)).rejects.toStrictEqual(
 				new errors.AiScriptRuntimeError('invalid endpoint'),
 			);
-			expect(misskeyApiUntypedMock).not.toHaveBeenCalled();
+			expect(misskeyApiMock).not.toHaveBeenCalled();
 		});
 
 		test.sequential('missing param', async () => {
@@ -327,7 +327,7 @@ describe('AiScript common API', () => {
 			`)).rejects.toStrictEqual(
 				new errors.AiScriptRuntimeError('expected param'),
 			);
-			expect(misskeyApiUntypedMock).not.toHaveBeenCalled();
+			expect(misskeyApiMock).not.toHaveBeenCalled();
 		});
 	});
 

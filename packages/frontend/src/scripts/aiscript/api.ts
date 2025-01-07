@@ -8,7 +8,7 @@ import * as Misskey from 'misskey-js';
 import { url, lang } from '@@/js/config.js';
 import { assertStringAndIsIn } from './common.js';
 import * as os from '@/os.js';
-import { misskeyApiUntyped } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
@@ -80,7 +80,8 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			if (param == null) {
 				throw new errors.AiScriptRuntimeError('expected param');
 			}
-			return misskeyApiUntyped(ep.value, utils.valToJs(param), actualToken).then(res => {
+			utils.assertObject(param);
+			return misskeyApi(ep.value, utils.valToJs(param) as object, actualToken).then(res => {
 				return utils.jsToVal(res);
 			}, err => {
 				return values.ERROR('request_failed', utils.jsToVal(err));
