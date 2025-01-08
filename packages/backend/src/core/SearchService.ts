@@ -222,7 +222,7 @@ export class SearchService {
 		if (this.config.fulltextSearch?.provider === 'sqlPgroonga') {
 			query.andWhere('note.text &@ :q', { q });
 		} else {
-			query.andWhere('note.text ILIKE :q', { q: `%${sqlLikeEscape(q)}%` });
+			query.andWhere('LOWER(note.text) LIKE :q', { q: `%${ sqlLikeEscape(q.toLowerCase()) }%` });
 		}
 
 		if (opts.host) {
