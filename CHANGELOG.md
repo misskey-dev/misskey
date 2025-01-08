@@ -8,6 +8,7 @@
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
 - Enhance: 照会に失敗した場合、その理由を表示するように
 - Enhance: AiScriptのセーブデータを明示的に削除する関数`Mk:remove`を追加
+- Enhance: AiScriptの拡張API関数において引数の型チェックをより厳格に
 - Enhance: CWの注釈で入力済みの文字数を表示
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
@@ -20,14 +21,16 @@
 - Fix: MiAuth認可画面で、認可処理に失敗した場合でもコールバックURLに遷移してしまう問題を修正  
   (Cherry-picked from https://github.com/TeamNijimiss/misskey/commit/800359623e41a662551d774de15b0437b6849bb4)
 - Fix: ノート作成画面でファイルの添付可能個数を超えてもノートボタンが押せていた問題を修正
+- Fix: 「アカウントを管理」画面で、ユーザー情報の取得に失敗したアカウント（削除されたアカウントなど）が表示されない問題を修正
 - Fix: CWの注釈が100文字を超えている場合、ノート投稿ボタンを非アクティブに
 
 ### Server
+- Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
-- Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
-
+- Fix: ロックダウンされた期間指定のノートがStreaming経由でLTLに出現するのを修正 ( #15200 )
+- Fix: disableClustering設定時の初期化ロジックを調整( #15223 )
 
 ## 2024.11.0
 
