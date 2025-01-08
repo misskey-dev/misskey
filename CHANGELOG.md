@@ -30,6 +30,8 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
 - Fix: ロックダウンされた期間指定のノートがStreaming経由でLTLに出現するのを修正 ( #15200 )
 - Fix: disableClustering設定時の初期化ロジックを調整( #15223 )
+- Fix: ActivityPubリクエストかどうかの判定が正しくない問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/869)
 
 ## 2024.11.0
 
