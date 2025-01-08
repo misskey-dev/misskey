@@ -105,6 +105,8 @@ export default abstract class Channel {
 
 	public async assignMyReaction(note: Packed<'Note'>, noteEntityService: NoteEntityService): Promise<Packed<'Note'>> {
 		let changed = false;
+		// cloning here seems like the best solution for a race condition
+		// where multiple users shared the same myReaction. (Sharkey #877)
 		const clonedNote = { ...note };
 		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
