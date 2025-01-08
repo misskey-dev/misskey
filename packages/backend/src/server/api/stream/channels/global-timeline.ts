@@ -55,24 +55,11 @@ class GlobalTimelineChannel extends Channel {
 
 		if (this.isNoteMutedOrBlocked(note)) return;
 
-		const reactionsToFetch = [];
-		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
-			if (note.renote) {
-				reactionsToFetch.push(this.assignMyReaction(note.renote, this.noteEntityService));
-				if (note.renote.reply) {
-					reactionsToFetch.push(this.assignMyReaction(note.renote.reply, this.noteEntityService));
-				}
-			}
-		}
-		if (this.user && note.reply) {
-			reactionsToFetch.push(this.assignMyReaction(note.reply, this.noteEntityService));
-		}
+		const clonedNote = await this.assignMyReaction(note, this.noteEntityService);
 
-		await Promise.all(reactionsToFetch);
+		this.connection.cacheNote(clonedNote);
 
-		this.connection.cacheNote(note);
-
-		this.send('note', note);
+		this.send('note', clonedNote);
 	}
 
 	@bindThis
