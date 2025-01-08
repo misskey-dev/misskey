@@ -2766,6 +2766,7 @@ export interface Locale extends ILocale {
      * ミュートされたワードを表示
      */
     "showMutedWord": string;
+    /**
      * 指定した語句を含むノートを隠します。ワードミュートとは異なり、ノートは完全に表示されなくなります。
      */
     "hardWordMuteDescription": string;
