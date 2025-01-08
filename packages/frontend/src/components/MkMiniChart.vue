@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import tinycolor from 'tinycolor2';
-import { useInterval } from '@@/js/use-interval.js';
+import { useInterval } from 'frontend-shared/js/use-interval';
 
 const props = defineProps<{
 	src: number[];

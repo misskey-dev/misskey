@@ -47,8 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, computed, inject, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import { url, instanceName } from '@@/js/config.js';
-import { defaultEmbedParams } from '@@/js/embed-page.js';
+import { url, instanceName } from 'frontend-shared/js/config';
+import { defaultEmbedParams } from 'frontend-shared/js/embed-page';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
@@ -56,8 +56,8 @@ import EmUserName from '@/components/EmUserName.vue';
 import I18n from '@/components/I18n.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
-import { scrollToTop } from '@@/js/scroll.js';
-import { isLink } from '@@/js/is-link.js';
+import { scrollToTop } from 'frontend-shared/js/scroll';
+import { isLink } from 'frontend-shared/js/is-link';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { assertServerContext } from '@/server-context.js';

@@ -23,7 +23,7 @@ import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, Wid
 import { GetFormResultType } from '@/scripts/form.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useInterval } from '@@/js/use-interval.js';
+import { useInterval } from 'frontend-shared/js/use-interval';
 import { i18n } from '@/i18n.js';
 
 const name = 'slideshow';

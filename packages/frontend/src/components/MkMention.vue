@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { toUnicode } from 'punycode';
 import { computed } from 'vue';
-import { host as localHost } from '@@/js/config.js';
+import { host as localHost } from 'frontend-shared/js/config';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';

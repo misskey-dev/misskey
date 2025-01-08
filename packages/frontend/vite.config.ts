@@ -90,7 +90,6 @@ export function getConfig(): UserConfig {
 			extensions,
 			alias: {
 				'@/': __dirname + '/src/',
-				'@@/': __dirname + '/../frontend-shared/',
 				'/client-assets/': __dirname + '/assets/',
 				'/static-assets/': __dirname + '/../backend/assets/',
 				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
@@ -168,7 +167,7 @@ export function getConfig(): UserConfig {
 
 			// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
 			commonjsOptions: {
-				include: [/misskey-js/, /misskey-reversi/, /misskey-bubble-game/, /node_modules/],
+				include: [/misskey-js/, /misskey-reversi/, /misskey-bubble-game/, /frontend-shared/, /node_modules/],
 			},
 		},
 

@@ -28,9 +28,9 @@ import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { url as base } from '@@/js/config.js';
+import { url as base } from 'frontend-shared/js/config';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@@/js/use-interval.js';
+import { useInterval } from 'frontend-shared/js/use-interval';
 import { infoImageUrl } from '@/instance.js';
 
 const name = 'rss';

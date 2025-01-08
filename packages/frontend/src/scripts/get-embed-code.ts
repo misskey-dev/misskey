@@ -4,11 +4,11 @@
  */
 import { defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
-import type { EmbedParams, EmbeddableEntity } from '@@/js/embed-page.js';
-import { url } from '@@/js/config.js';
+import type { EmbedParams, EmbeddableEntity } from 'frontend-shared/js/embed-page';
+import { url } from 'frontend-shared/js/config';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { defaultEmbedParams, embedRouteWithScrollbar } from '@@/js/embed-page.js';
+import { defaultEmbedParams, embedRouteWithScrollbar } from 'frontend-shared/js/embed-page';
 
 const MOBILE_THRESHOLD = 500;
 

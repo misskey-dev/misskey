@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { host } from '@@/js/config.js';
+import { host } from 'frontend-shared/js/config';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import MkNotes from '@/components/MkNotes.vue';

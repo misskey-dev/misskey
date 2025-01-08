@@ -20,9 +20,9 @@ import { useStream } from '@/stream.js';
 import { signinRequired } from '@/account.js';
 import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
-import { url } from '@@/js/config.js';
+import { url } from 'frontend-shared/js/config';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@@/js/use-interval.js';
+import { useInterval } from 'frontend-shared/js/use-interval';
 
 const $i = signinRequired();
 

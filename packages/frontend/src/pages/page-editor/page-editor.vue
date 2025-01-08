@@ -69,7 +69,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
-import { url } from '@@/js/config.js';
+import { url } from 'frontend-shared/js/config';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { selectFile } from '@/scripts/select-file.js';

@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, provide, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { url } from '@@/js/config.js';
+import { url } from 'frontend-shared/js/config';
 import type { MenuItem } from '@/types/menu.js';
 import MkNotes from '@/components/MkNotes.vue';
 import { $i } from '@/account.js';

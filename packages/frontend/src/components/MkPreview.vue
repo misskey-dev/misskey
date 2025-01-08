@@ -42,7 +42,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkRadio from '@/components/MkRadio.vue';
 import * as os from '@/os.js';
-import * as config from '@@/js/config.js';
+import * as config from 'frontend-shared/js/config';
 import { $i } from '@/account.js';
 
 const text = ref('');

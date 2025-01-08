@@ -137,7 +137,7 @@ import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { host } from '@@/js/config.js';
+import { host } from 'frontend-shared/js/config';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';

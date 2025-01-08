@@ -34,8 +34,8 @@ import MarqueeText from '@/components/MkMarquee.vue';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { shuffle } from '@/scripts/shuffle.js';
-import { url as base } from '@@/js/config.js';
-import { useInterval } from '@@/js/use-interval.js';
+import { url as base } from 'frontend-shared/js/config';
+import { useInterval } from 'frontend-shared/js/use-interval';
 
 const name = 'rssTicker';
 

@@ -170,9 +170,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, onMounted, ref, shallowRef, Ref, watch, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import { isLink } from '@@/js/is-link.js';
-import { shouldCollapsed } from '@@/js/collapsed.js';
-import { host } from '@@/js/config.js';
+import { isLink } from 'frontend-shared/js/is-link';
+import { shouldCollapsed } from 'frontend-shared/js/collapsed';
+import { host } from 'frontend-shared/js/config';
 import type { MenuItem } from '@/types/menu.js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';

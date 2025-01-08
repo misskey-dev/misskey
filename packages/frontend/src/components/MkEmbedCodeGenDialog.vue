@@ -90,9 +90,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { shallowRef, ref, computed, nextTick, onMounted, onDeactivated, onUnmounted } from 'vue';
-import { url } from '@@/js/config.js';
-import { embedRouteWithScrollbar } from '@@/js/embed-page.js';
-import type { EmbeddableEntity, EmbedParams } from '@@/js/embed-page.js';
+import { url } from 'frontend-shared/js/config';
+import { embedRouteWithScrollbar } from 'frontend-shared/js/embed-page';
+import type { EmbeddableEntity, EmbedParams } from 'frontend-shared/js/embed-page';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 
 import MkInput from '@/components/MkInput.vue';

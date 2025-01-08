@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { host } from '@@/js/config.js';
+import { host } from 'frontend-shared/js/config';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';

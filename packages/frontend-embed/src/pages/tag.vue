@@ -39,16 +39,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, inject, useTemplateRef } from 'vue';
-import { scrollToTop } from '@@/js/scroll.js';
+import { scrollToTop } from 'frontend-shared/js/scroll';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
 import { i18n } from '@/i18n.js';
-import { url, instanceName } from '@@/js/config.js';
-import { isLink } from '@@/js/is-link.js';
+import { url, instanceName } from 'frontend-shared/js/config';
+import { isLink } from 'frontend-shared/js/is-link';
 import { DI } from '@/di.js';
-import { defaultEmbedParams } from '@@/js/embed-page.js';
+import { defaultEmbedParams } from 'frontend-shared/js/embed-page';
 
 const props = defineProps<{
 	tag: string;

@@ -41,7 +41,7 @@ import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { scroll } from '@@/js/scroll.js';
+import { scroll } from 'frontend-shared/js/scroll';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';

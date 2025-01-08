@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
 import EmA from './EmA.vue';
-import { url as local } from '@@/js/config.js';
+import { url as local } from 'frontend-shared/js/config';
 
 function safeURIDecode(str: string): string {
 	try {

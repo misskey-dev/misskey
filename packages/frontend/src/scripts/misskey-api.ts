@@ -5,7 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
-import { apiUrl } from '@@/js/config.js';
+import { apiUrl } from 'frontend-shared/js/config';
 import { $i } from '@/account.js';
 export const pendingApiRequestsCount = ref(0);
 

@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Theme, getBuiltinThemes } from '@/scripts/theme.js';
+import { getBuiltinThemes } from '@/scripts/theme.js';
+import type { Theme } from 'frontend-shared/js/theme';
 import { miLocalStorage } from '@/local-storage.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i } from '@/account.js';

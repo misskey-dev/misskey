@@ -5,7 +5,7 @@
 
 import { defineAsyncComponent, Ref, ShallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import { url } from '@@/js/config.js';
+import { url } from 'frontend-shared/js/config';
 import { claimAchievement } from './achievements.js';
 import type { MenuItem } from '@/types/menu.js';
 import { $i } from '@/account.js';

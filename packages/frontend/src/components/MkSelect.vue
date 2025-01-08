@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@keydown.prevent="() => {}"
 		>
 			<div style="pointer-events: none;">{{ currentValueText ?? '' }}</div>
-			<div style="display: none;">
+			<div ref="inputOptionsEl" style="display: none;">
 				<slot></slot>
 			</div>
 		</div>
@@ -40,8 +40,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, computed, toRefs, VNode, useSlots, VNodeChild } from 'vue';
-import { useInterval } from '@@/js/use-interval.js';
+import { onMounted, nextTick, ref, useTemplateRef, watch, computed, toRefs, VNode, useSlots, VNodeChild, onBeforeUnmount } from 'vue';
+import { useInterval } from 'frontend-shared/js/use-interval';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 
@@ -67,10 +67,11 @@ const { modelValue, autofocus } = toRefs(props);
 const focused = ref(false);
 const opening = ref(false);
 const currentValueText = ref<string | null>(null);
-const inputEl = ref<HTMLObjectElement | null>(null);
-const prefixEl = ref<HTMLElement | null>(null);
-const suffixEl = ref<HTMLElement | null>(null);
-const container = ref<HTMLElement | null>(null);
+const inputEl = useTemplateRef('inputEl');
+const inputOptionsEl = useTemplateRef('inputOptionsEl');
+const prefixEl = useTemplateRef('prefixEl');
+const suffixEl = useTemplateRef('suffixEl');
+const container = useTemplateRef('container');
 const height =
 	props.small ? 33 :
 	props.large ? 39 :
@@ -98,36 +99,51 @@ useInterval(() => {
 	afterMounted: true,
 });
 
+const scanOptions = (options: VNodeChild[]) => {
+	for (const vnode of options) {
+		if (typeof vnode !== 'object' || vnode === null || Array.isArray(vnode)) continue;
+		if (vnode.type === 'optgroup') {
+			const optgroup = vnode;
+			if (Array.isArray(optgroup.children)) scanOptions(optgroup.children);
+		} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
+			const fragment = vnode;
+			if (Array.isArray(fragment.children)) scanOptions(fragment.children);
+		} else if (vnode.props == null) { // v-if で条件が false のときにこうなる
+			// nop?
+		} else {
+			const option = vnode;
+			if (option.props?.value === modelValue.value) {
+				currentValueText.value = option.children as string;
+				break;
+			}
+		}
+	}
+};
+
+const mo = new MutationObserver(() => {
+	scanOptions(slots.default!());
+});
+
 onMounted(() => {
 	nextTick(() => {
+		if (inputOptionsEl.value) {
+			mo.observe(inputOptionsEl.value, {
+				childList: true,
+				subtree: true,
+			});
+		}
+
 		if (autofocus.value) {
 			focus();
 		}
 	});
 });
 
-watch(modelValue, () => {
-	const scanOptions = (options: VNodeChild[]) => {
-		for (const vnode of options) {
-			if (typeof vnode !== 'object' || vnode === null || Array.isArray(vnode)) continue;
-			if (vnode.type === 'optgroup') {
-				const optgroup = vnode;
-				if (Array.isArray(optgroup.children)) scanOptions(optgroup.children);
-			} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
-				const fragment = vnode;
-				if (Array.isArray(fragment.children)) scanOptions(fragment.children);
-			} else if (vnode.props == null) { // v-if で条件が false のときにこうなる
-				// nop?
-			} else {
-				const option = vnode;
-				if (option.props?.value === modelValue.value) {
-					currentValueText.value = option.children as string;
-					break;
-				}
-			}
-		}
-	};
+onBeforeUnmount(() => {
+	mo.disconnect();
+})
 
+watch(modelValue, () => {
 	scanOptions(slots.default!());
 }, { immediate: true });
 

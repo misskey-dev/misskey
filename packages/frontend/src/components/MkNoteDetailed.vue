@@ -213,8 +213,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject, onMounted, provide, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import { isLink } from '@@/js/is-link.js';
-import { host } from '@@/js/config.js';
+import { isLink } from 'frontend-shared/js/is-link';
+import { host } from 'frontend-shared/js/config';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';

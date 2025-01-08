@@ -13,8 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
-import { WorkerMultiDispatch } from '@@/js/worker-multi-dispatch.js';
-import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
+import { WorkerMultiDispatch } from 'frontend-shared/js/worker-multi-dispatch';
+import { extractAvgColorFromBlurhash } from 'frontend-shared/js/extract-avg-color-from-blurhash';
 
 const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resolve => {
 	// テスト環境で Web Worker インスタンスは作成できない
