@@ -211,6 +211,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 
 				<MkFolder>
+					<template #icon><i class="ti ti-planet"></i></template>
+					<template #label>{{ i18n.ts.federation }}</template>
+					<template v-if="federationForm.savedState.federation === 'all'" #suffix>{{ i18n.ts.all }}</template>
+					<template v-else-if="federationForm.savedState.federation === 'specified'" #suffix>{{ i18n.ts.specifyHost }}</template>
+					<template v-else-if="federationForm.savedState.federation === 'none'" #suffix>{{ i18n.ts.none }}</template>
+					<template v-if="federationForm.modified.value" #footer>
+						<MkFormFooter :form="federationForm"/>
+					</template>
+
+					<div class="_gaps">
+						<MkRadios v-model="federationForm.state.federation">
+							<template #label>{{ i18n.ts.behavior }}<span v-if="federationForm.modifiedStates.federation" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<option value="all">{{ i18n.ts.all }}</option>
+							<option value="specified">{{ i18n.ts.specifyHost }}</option>
+							<option value="none">{{ i18n.ts.none }}</option>
+						</MkRadios>
+
+						<MkTextarea v-if="federationForm.state.federation === 'specified'" v-model="federationForm.state.federationHosts">
+							<template #label>{{ i18n.ts.federationAllowedHosts }}<span v-if="federationForm.modifiedStates.federationHosts" class="_modified">{{ i18n.ts.modified }}</span></template>
+							<template #caption>{{ i18n.ts.federationAllowedHostsDescription }}</template>
+						</MkTextarea>
+					</div>
+				</MkFolder>
+
+				<MkFolder>
 					<template #icon><i class="ti ti-ghost"></i></template>
 					<template #label>{{ i18n.ts.proxyAccount }}</template>
 
@@ -248,6 +273,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import { useForm } from '@/scripts/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
+import MkRadios from '@/components/MkRadios.vue';
 
 const meta = await misskeyApi('admin/meta');
 
@@ -341,6 +367,17 @@ const urlPreviewForm = useForm({
 	fetchInstance(true);
 });
 
+const federationForm = useForm({
+	federation: meta.federation,
+	federationHosts: meta.federationHosts.join('\n'),
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		federation: state.federation,
+		federationHosts: state.federationHosts.split('\n'),
+	});
+	fetchInstance(true);
+});
+
 function chooseProxyAccount() {
 	os.selectUser({ localOnly: true }).then(user => {
 		proxyAccount.value = user;
@@ -363,6 +400,6 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .subCaption {
 	font-size: 0.85em;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 </style>

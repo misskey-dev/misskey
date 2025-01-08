@@ -155,6 +155,11 @@ export class MiUser {
 	})
 	public tags: string[];
 
+	@Column('integer', {
+		default: 0,
+	})
+	public score: number;
+
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether the User is suspended.',
@@ -196,6 +201,23 @@ export class MiUser {
 		default: false,
 	})
 	public isHibernated: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public requireSigninToViewContents: boolean;
+
+	// in sec, マイナスで相対時間
+	@Column('integer', {
+		nullable: true,
+	})
+	public makeNotesFollowersOnlyBefore: number | null;
+
+	// in sec, マイナスで相対時間
+	@Column('integer', {
+		nullable: true,
+	})
+	public makeNotesHiddenBefore: number | null;
 
 	// アカウントが削除されたかどうかのフラグだが、完全に削除される際は物理削除なので実質削除されるまでの「削除が進行しているかどうか」のフラグ
 	@Column('boolean', {
@@ -289,5 +311,6 @@ export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toStr
 export const passwordSchema = { type: 'string', minLength: 1 } as const;
 export const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
 export const descriptionSchema = { type: 'string', minLength: 1, maxLength: 1500 } as const;
+export const followedMessageSchema = { type: 'string', minLength: 1, maxLength: 256 } as const;
 export const locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
 export const birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;

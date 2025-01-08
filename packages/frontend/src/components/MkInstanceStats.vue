@@ -121,7 +121,7 @@ function createDoughnut(chartEl, tooltip, data) {
 			labels: data.map(x => x.name),
 			datasets: [{
 				backgroundColor: data.map(x => x.color),
-				borderColor: getComputedStyle(document.documentElement).getPropertyValue('--panel'),
+				borderColor: getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-panel'),
 				borderWidth: 2,
 				hoverOffset: 0,
 				data: data.map(x => x.value),
@@ -256,8 +256,8 @@ onMounted(() => {
 				flex: 1;
 				min-width: 0;
 				position: relative;
-				background: var(--panel);
-				border-radius: var(--radius);
+				background: var(--MI_THEME-panel);
+				border-radius: var(--MI-radius);
 				padding: 24px;
 				max-height: 300px;
 

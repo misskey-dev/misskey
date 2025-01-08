@@ -17,9 +17,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span v-if="$i && !announcement.silence && !announcement.isRead" style="margin-right: 0.5em;">🆕</span>
 							<span style="margin-right: 0.5em;">
 								<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
-								<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
-								<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
-								<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+								<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i>
+								<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
+								<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 							</span>
 							<MkA :to="`/announcements/${announcement.id}`"><span>{{ announcement.title }}</span></MkA>
 						</div>
@@ -56,7 +56,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i, updateAccount } from '@/account.js';
+import { $i, updateAccountPartial } from '@/account.js';
 
 const paginationCurrent = {
 	endpoint: 'announcements' as const,
@@ -94,7 +94,7 @@ async function read(target) {
 		return a;
 	});
 	misskeyApi('i/read-announcement', { announcementId: target.id });
-	updateAccount({
+	updateAccountPartial({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== target.id),
 	});
 }

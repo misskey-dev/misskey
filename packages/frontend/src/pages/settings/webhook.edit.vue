@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_renote)" @click="test('renote')"><i class="ti ti-send"></i></MkButton>
 				</div>
 				<div :class="$style.switchBox">
-					<MkSwitch v-model="event_reaction">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
+					<MkSwitch v-model="event_reaction" :disabled="true">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
 					<MkButton transparent :class="$style.testButton" :disabled="!(active && event_reaction)" @click="test('reaction')"><i class="ti ti-send"></i></MkButton>
 				</div>
 				<div :class="$style.switchBox">
@@ -184,6 +184,6 @@ definePageMetadata(() => ({
 .description {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 </style>
