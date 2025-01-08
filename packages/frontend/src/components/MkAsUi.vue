@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkInput>
-	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :modelValue="c.default ?? null" @update:modelValue="c.onChange">
+	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :modelValue="valueForSelect" @update:modelValue="onSelectUpdate">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 		<option v-for="item in c.items" :key="item.value" :value="item.value">{{ item.text }}</option>
@@ -77,8 +77,8 @@ import MkPostForm from '@/components/MkPostForm.vue';
 const props = withDefaults(defineProps<{
 	component: AsUiComponent;
 	components: Ref<AsUiComponent>[];
-	size: 'small' | 'medium' | 'large';
-	align: 'left' | 'center' | 'right';
+	size?: 'small' | 'medium' | 'large';
+	align?: 'left' | 'center' | 'right';
 }>(), {
 	size: 'medium',
 	align: 'left',
@@ -86,7 +86,7 @@ const props = withDefaults(defineProps<{
 
 const c = props.component;
 
-function g(id) {
+function g(id: string) {
 	const v = props.components.find(x => x.value.id === id)?.value;
 	if (v) return v;
 
@@ -122,8 +122,17 @@ const containerStyle = computed(() => {
 
 const valueForSwitch = ref('default' in c && typeof c.default === 'boolean' ? c.default : false);
 
-function onSwitchUpdate(v) {
+function onSwitchUpdate(v: boolean) {
 	valueForSwitch.value = v;
+	if ('onChange' in c && c.onChange) {
+		c.onChange(v as never);
+	}
+}
+
+const valueForSelect = ref('default' in c && typeof c.default !== 'boolean' ? c.default ?? null : null);
+
+function onSelectUpdate(v) {
+	valueForSelect.value = v;
 	if ('onChange' in c && c.onChange) {
 		c.onChange(v as never);
 	}
