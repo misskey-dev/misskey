@@ -115,14 +115,14 @@ export default abstract class Channel {
 					clonedNote.renote.myReaction = myReaction;
 				}
 			}
-		}
-		if (this.user && note.renote?.reply && Object.keys(note.renote.reply.reactions).length > 0) {
-			const myReaction = await noteEntityService.populateMyReaction(note.renote.reply, this.user.id);
-			if (myReaction) {
-				changed = true;
-				clonedNote.renote = { ...note.renote };
-				clonedNote.renote.reply = { ...note.renote.reply };
-				clonedNote.renote.reply.myReaction = myReaction;
+			if (note.renote?.reply && Object.keys(note.renote.reply.reactions).length > 0) {
+				const myReaction = await noteEntityService.populateMyReaction(note.renote.reply, this.user.id);
+				if (myReaction) {
+					changed = true;
+					clonedNote.renote = { ...note.renote };
+					clonedNote.renote.reply = { ...note.renote.reply };
+					clonedNote.renote.reply.myReaction = myReaction;
+				}
 			}
 		}
 		if (this.user && note.reply && Object.keys(note.reply.reactions).length > 0) {
