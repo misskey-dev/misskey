@@ -7,7 +7,7 @@ import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import * as parse5 from 'parse5';
 import { Window, XMLSerializer } from 'happy-dom';
-import twemojiRegex from '@twemoji/parser/dist/lib/regex';
+import twemojiRegex from '@twemoji/parser/dist/lib/regex.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/misc/prelude/array.js';

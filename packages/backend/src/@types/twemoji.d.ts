@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-declare module '@twemoji/parser/dist/lib/regex' {
+declare module '@twemoji/parser/dist/lib/regex.js' {
 	const regex: RegExp;
 	export default { default: regex };
 }
