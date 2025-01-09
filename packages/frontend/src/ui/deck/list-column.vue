@@ -41,7 +41,11 @@ const listName = ref<string | null>(null);
 onMounted(() => {
 	if (props.column.listId == null) {
 		setList();
-	} else {
+	}
+});
+
+watch([() => props.column.name, () => props.column.listId], () => {
+	if (!props.column.name && props.column.listId) {
 		misskeyApi('users/lists/show', { listId: props.column.listId })
 			.then(value => listName.value = value.name);
 	}

@@ -40,11 +40,13 @@ const antennaName = ref<string | null>(null);
 onMounted(() => {
 	if (props.column.antennaId == null) {
 		setAntenna();
-	} else {
+	}
+});
+
+watch([() => props.column.name, () => props.column.antennaId], () => {
+	if (!props.column.name && props.column.antennaId) {
 		misskeyApi('antennas/show', { antennaId: props.column.antennaId })
-			.then(value => {
-				antennaName.value = value.name;
-			});
+			.then(value => antennaName.value = value.name);
 	}
 });
 

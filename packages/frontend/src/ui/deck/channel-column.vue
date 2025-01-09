@@ -47,7 +47,11 @@ const channelName = ref<string | null>(null);
 onMounted(() => {
 	if (props.column.channelId == null) {
 		setChannel();
-	} else {
+	}
+});
+
+watch([() => props.column.name, () => props.column.channelId], () => {
+	if (!props.column.name && props.column.channelId) {
 		misskeyApi('channels/show', { channelId: props.column.channelId })
 			.then(value => channelName.value = value.name);
 	}

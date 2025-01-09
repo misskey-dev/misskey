@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef, watch } from 'vue';
+import { computed, onMounted, ref, shallowRef, watch } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
@@ -38,7 +38,11 @@ const roleName = ref<string | null>(null);
 onMounted(() => {
 	if (props.column.roleId == null) {
 		setRole();
-	} else {
+	}
+});
+
+watch([() => props.column.name, () => props.column.roleId], () => {
+	if (!props.column.name && props.column.roleId) {
 		misskeyApi('roles/show', { roleId: props.column.roleId })
 			.then(value => roleName.value = value.name);
 	}
