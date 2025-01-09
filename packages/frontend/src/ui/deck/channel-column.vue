@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
-		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name || channelName || i18n.ts._deck._columns.channel }}</span>
+		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name || channel?.name || i18n.ts._deck._columns.channel }}</span>
 	</template>
 
 	<template v-if="column.channelId">
@@ -42,7 +42,6 @@ const props = defineProps<{
 const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
 const channel = shallowRef<Misskey.entities.Channel>();
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
-const channelName = ref<string | null>(null);
 
 onMounted(() => {
 	if (props.column.channelId == null) {
@@ -53,7 +52,7 @@ onMounted(() => {
 watch([() => props.column.name, () => props.column.channelId], () => {
 	if (!props.column.name && props.column.channelId) {
 		misskeyApi('channels/show', { channelId: props.column.channelId })
-			.then(value => channelName.value = value.name);
+			.then(value => channel.value = value);
 	}
 });
 
