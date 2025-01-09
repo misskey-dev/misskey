@@ -68,9 +68,19 @@ export class MfmService {
 			}
 		}
 
+		function escape(text: string): string {
+			if (/[<>*~@#:]|[$?]\[|(検索|search$)/.test(text)) {
+				// the text possibly contains some MFM so escape with <plain>
+				return `<plain>${text}</plain>`;
+			} else {
+				// otherwise, we don't need to escape
+				return text;
+			}
+		}
+
 		function analyze(node: Node) {
 			if (treeAdapter.isTextNode(node)) {
-				text += node.value;
+				text += escape(node.value);
 				return;
 			}
 
@@ -121,10 +131,11 @@ export class MfmService {
 									return `<${href.value}>`;
 								}
 							}
+							// TODO: inline style in link text are not proceed correctly
 							if (href.value.match(urlRegex) && !href.value.match(urlRegexFull)) {
-								return `[${txt}](<${href.value}>)`;	// #6846
+								return `[${escape(txt)}](<${href.value}>)`;	// #6846
 							} else {
-								return `[${txt}](${href.value})`;
+								return `[${escape(txt)}](${href.value})`;
 							}
 						};
 
@@ -194,8 +205,8 @@ export class MfmService {
 				case 'blockquote': {
 					const t = getText(node);
 					if (t) {
-						text += '\n> ';
-						text += t.split('\n').join('\n> ');
+						// TODO: HTML in blockquote are not proceed correctly
+						text += escape(t).split('\n').map(l => `\n> ${l}`).join('');
 					}
 					break;
 				}
