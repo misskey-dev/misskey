@@ -68,19 +68,9 @@ export class MfmService {
 			}
 		}
 
-		function escape(text: string): string {
-			if (/[<>*~@#:]|[$?]\[|(検索|search$)/.test(text)) {
-				// the text possibly contains some MFM so escape with <plain>
-				return `<plain>${text}</plain>`;
-			} else {
-				// otherwise, we don't need to escape
-				return text;
-			}
-		}
-
 		function analyze(node: Node) {
 			if (treeAdapter.isTextNode(node)) {
-				text += escape(node.value);
+				text += MfmService.escapeMFM(node.value);
 				return;
 			}
 
@@ -133,9 +123,9 @@ export class MfmService {
 							}
 							// TODO: inline style in link text are not proceed correctly
 							if (href.value.match(urlRegex) && !href.value.match(urlRegexFull)) {
-								return `[${escape(txt)}](<${href.value}>)`;	// #6846
+								return `[${MfmService.escapeMFM(txt)}](<${href.value}>)`;	// #6846
 							} else {
-								return `[${escape(txt)}](${href.value})`;
+								return `[${MfmService.escapeMFM(txt)}](${href.value})`;
 							}
 						};
 
@@ -206,7 +196,7 @@ export class MfmService {
 					const t = getText(node);
 					if (t) {
 						// TODO: HTML in blockquote are not proceed correctly
-						text += escape(t).split('\n').map(l => `\n> ${l}`).join('');
+						text += MfmService.escapeMFM(t).split('\n').map(l => `\n> ${l}`).join('');
 					}
 					break;
 				}
@@ -241,6 +231,19 @@ export class MfmService {
 					break;
 				}
 			}
+		}
+	}
+
+	/**
+	 * HTMLのプレーンテキストをMFMにならないようにエスケープする。
+	 */
+	public static escapeMFM(text: string): string {
+		if (/[<>*~@#:]|[$?]\[|(検索|search$)/.test(text)) {
+			// the text possibly contains some MFM so escape with <plain>
+			return `<plain>${text}</plain>`;
+		} else {
+			// otherwise, we don't need to escape
+			return text;
 		}
 	}
 
