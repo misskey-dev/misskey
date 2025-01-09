@@ -7,6 +7,7 @@ import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import * as parse5 from 'parse5';
 import { Window, XMLSerializer } from 'happy-dom';
+import twemojiRegex from '@twemoji/parser/dist/lib/regex';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { intersperse } from '@/misc/prelude/array.js';
@@ -236,15 +237,68 @@ export class MfmService {
 
 	/**
 	 * HTMLのプレーンテキストをMFMにならないようにエスケープする。
+	 * ただし、:emoji:と unicode emoji についてはエスケープしない。
 	 */
 	public static escapeMFM(text: string): string {
-		if (/[<>*~@#:]|[$?]\[|(検索|search$)/.test(text)) {
-			// the text possibly contains some MFM so escape with <plain>
-			return `<plain>${text}</plain>`;
-		} else {
-			// otherwise, we don't need to escape
-			return text;
+		function escapeSegment(text: string): string {
+			if (/[<>*~@#:]|[$?]\[|(検索|search$)/.test(text)) {
+				// the text possibly contains some MFM so escape with <plain>
+				return `<plain>${text}</plain>`;
+			} else {
+				// otherwise, we don't need to escape
+				return text;
+			}
 		}
+
+		/**
+		 * textをregexesで分割するが、分割するときに regexes にマッチした部分も含める。
+		 */
+		function splitSegments(text: string, regexes: RegExp[]): [regexIdx: number, text: string][] {
+			const result: [regexIdx: number, text: string][] = [];
+
+			let rest = text;
+			for (;;) {
+				let matchRegex: [number, RegExpExecArray] | null = null;
+
+				for (let i = 0; i < regexes.length; i++) {
+					const regex = regexes[i];
+					regex.lastIndex = 0;
+					const matchCurrent = regex.exec(rest);
+					if (matchCurrent) {
+						if (matchRegex != null) {
+							if (matchCurrent.index < matchRegex[1].index) {
+								matchRegex = [i, matchCurrent];
+							}
+						} else {
+							matchRegex = [i, matchCurrent];
+						}
+					}
+				}
+
+				if (matchRegex != null) {
+					const [i, match] = matchRegex;
+
+					const head = rest.slice(0, match.index);
+					const segment = match[0];
+					const tail = rest.slice(match.index + segment.length);
+
+					result.push([-1, head]);
+					result.push([i, segment]);
+					rest = tail;
+				} else {
+					result.push([-1, rest]);
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		const emojiCodeRegex = /(?<![a-z0-9]):[a-z0-9_]+:(?![a-z0-9])/i;
+
+		return splitSegments(text, [twemojiRegex.default, emojiCodeRegex])
+			.map(([regexIdx, segment]) => regexIdx === -1 ? escapeSegment(segment) : segment)
+			.join('');
 	}
 
 	@bindThis
