@@ -4,7 +4,7 @@
  */
 
 import { URL } from 'node:url';
-import { toASCII } from 'punycode/punycode.js';
+import { toASCII } from 'punycode/punycode.es6.js';
 import { Inject, Injectable } from '@nestjs/common';
 import RE2 from 're2';
 import { DI } from '@/di-symbols.js';
