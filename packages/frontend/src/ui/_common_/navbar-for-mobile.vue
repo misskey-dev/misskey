@@ -8,7 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.top">
 		<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
 		<button class="_button" :class="$style.instance" @click="openInstanceMenu">
-			<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
+			<img v-if="kawaiiMode" src="/client-assets/kawaii/misskey-io.png" alt="" :class="$style.instanceIconAlt"/>
+			<img v-else :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
 		</button>
 	</div>
 	<div :class="$style.middle">
@@ -57,7 +58,9 @@ import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
+import { miLocalStorage } from "@/local-storage.js";
 
+const kawaiiMode = miLocalStorage.getItem('kawaii') === 'true';
 const menu = toRef(defaultStore.state, 'menu');
 const otherMenuItemIndicated = computed(() => {
 	for (const def in navbarItemDef) {
@@ -118,6 +121,11 @@ function more() {
 	display: inline-block;
 	width: 38px;
 	aspect-ratio: 1;
+}
+
+.instanceIconAlt {
+	display: inline-block;
+	width: 85%;
 }
 
 .bottom {
