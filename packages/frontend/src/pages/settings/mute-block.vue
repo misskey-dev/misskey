@@ -176,7 +176,7 @@ const showSoftWordMutedWord = computed(defaultStore.makeGetterSetter('showSoftWo
 watch([
 	showSoftWordMutedWord,
 ], async () => {
-	await reloadAsk();
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 
 async function unrenoteMute(user, ev) {
