@@ -802,7 +802,7 @@ importers:
       photoswipe:
         specifier: 5.4.4
         version: 5.4.4
-      punycode:
+      punycode.js:
         specifier: 2.3.1
         version: 2.3.1
       rollup:
@@ -932,9 +932,9 @@ importers:
       '@types/node':
         specifier: 22.9.0
         version: 22.9.0
-      '@types/punycode':
-        specifier: 2.1.4
-        version: 2.1.4
+      '@types/punycode.js':
+        specifier: npm:@types/punycode@2.1.4
+        version: '@types/punycode@2.1.4'
       '@types/sanitize-html':
         specifier: 2.13.0
         version: 2.13.0
@@ -1088,7 +1088,7 @@ importers:
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
-      punycode:
+      punycode.js:
         specifier: 2.3.1
         version: 2.3.1
       rollup:
@@ -1137,9 +1137,9 @@ importers:
       '@types/node':
         specifier: 22.9.0
         version: 22.9.0
-      '@types/punycode':
-        specifier: 2.1.4
-        version: 2.1.4
+      '@types/punycode.js':
+        specifier: npm:@types/punycode@2.1.4
+        version: '@types/punycode@2.1.4'
       '@types/tinycolor2':
         specifier: 1.4.6
         version: 1.4.6
@@ -9379,6 +9379,10 @@ packages:
 
   pump@3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
+
+  punycode.js@2.3.1:
+    resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
+    engines: {node: '>=6'}
 
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -21122,6 +21126,8 @@ snapshots:
     dependencies:
       end-of-stream: 1.4.4
       once: 1.4.0
+
+  punycode.js@2.3.1: {}
 
   punycode@2.3.1: {}
 

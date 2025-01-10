@@ -104,7 +104,7 @@ import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shal
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import { toASCII } from 'punycode/';
+import { toASCII } from 'punycode.js';
 import { host, url } from '@@/js/config.js';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
