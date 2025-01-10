@@ -22,7 +22,7 @@
 		"astring": "1.9.0",
 		"buraha": "0.0.1",
 		"estree-walker": "3.0.3",
-		"mfm-js": "0.24.0",
+		"mfm-js": "git+https://github.com/fedibird/mfm.js#feature/parse_html_package",
 		"misskey-js": "workspace:*",
 		"frontend-shared": "workspace:*",
 		"punycode": "2.3.1",

@@ -136,7 +136,7 @@
 		"jsrsasign": "11.1.0",
 		"meilisearch": "0.45.0",
 		"juice": "11.0.0",
-		"mfm-js": "0.24.0",
+		"mfm-js": "git+https://github.com/fedibird/mfm.js#feature/parse_html_package",
 		"microformats-parser": "2.0.2",
 		"mime-types": "2.1.35",
 		"misskey-js": "workspace:*",
