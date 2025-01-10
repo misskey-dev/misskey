@@ -35,10 +35,7 @@ export default [
 	{
 		rules: {
 			'no-restricted-imports': ['error', {
-				paths: [{
-					name: 'punycode',
-					message: 'use "punycode/" (punycode.js) instead!',
-				}],
+				paths: [{ name: 'punycode' }],
 			}],
 		},
 	},
