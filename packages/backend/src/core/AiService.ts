@@ -28,7 +28,7 @@ export class AiService {
 	}
 
 	@bindThis
-	public async detectSensitive(path: string): Promise<nsfw.predictionType[] | null> {
+	public async detectSensitive(path: string): Promise<nsfw.PredictionType[] | null> {
 		try {
 			if (isSupportedCpu === undefined) {
 				const cpuFlags = await this.getCpuFlags();
