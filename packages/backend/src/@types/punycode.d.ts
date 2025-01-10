@@ -4,6 +4,6 @@
  */
 
 // see https://github.com/misskey-dev/misskey/pull/15248
-module 'punycode/punycode.es6.js' {
+declare module 'punycode/punycode.es6.js' {
 	export * from 'punycode/';
 }
