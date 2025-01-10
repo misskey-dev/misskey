@@ -46,14 +46,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
 					<template v-else>{{ submitText }}</template>
-					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : 'ti ti-send'"></i>
+					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : noteToRenote ? 'ti ti-quote' : 'ti ti-send'"></i>
 				</div>
 			</button>
 		</div>
 	</header>
 	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
-	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
-	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
+	<MkNoteSimple v-if="noteToRenote" :class="$style.targetNote" :note="noteToRenote"/>
+	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null; noteToRenote = null;"><i class="ti ti-x"></i></button></div>
 	<div v-if="visibility === 'specified'" :class="$style.toSpecified">
 		<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
 		<div :class="$style.visibleUsers">
@@ -106,6 +106,7 @@ import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode/';
 import { host, url } from '@@/js/config.js';
+import type { PostFormProps } from '@/types/post-form.js';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
@@ -129,7 +130,6 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
-import type { PostFormProps } from '@/types/post-form.js';
 
 const $i = signinRequired();
 
@@ -190,12 +190,13 @@ const imeText = ref('');
 const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
 const justEndedComposition = ref(false);
+const noteToRenote = shallowRef(props.renote);
 
 const draftKey = computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
 
-	if (props.renote) {
-		key += `renote:${props.renote.id}`;
+	if (noteToRenote.value) {
+		key += `renote:${noteToRenote.value.id}`;
 	} else if (props.reply) {
 		key += `reply:${props.reply.id}`;
 	} else {
@@ -206,7 +207,7 @@ const draftKey = computed((): string => {
 });
 
 const placeholder = computed((): string => {
-	if (props.renote) {
+	if (noteToRenote.value) {
 		return i18n.ts._postForm.quotePlaceholder;
 	} else if (props.reply) {
 		return i18n.ts._postForm.replyPlaceholder;
@@ -226,7 +227,7 @@ const placeholder = computed((): string => {
 });
 
 const submitText = computed((): string => {
-	return props.renote
+	return noteToRenote.value
 		? i18n.ts.quote
 		: props.reply
 			? i18n.ts.reply
@@ -247,7 +248,7 @@ const canPost = computed((): boolean => {
 			1 <= textLength.value ||
 			1 <= files.value.length ||
 			poll.value != null ||
-			props.renote != null ||
+			noteToRenote.value != null ||
 			quoteId.value != null
 		) &&
 		(textLength.value <= maxTextLength.value) &&
@@ -598,7 +599,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 	const paste = ev.clipboardData.getData('text');
 
-	if (!props.renote && !quoteId.value && paste.startsWith(url + '/notes/')) {
+	if (!noteToRenote.value && !quoteId.value && paste.startsWith(url + '/notes/')) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -777,7 +778,7 @@ async function post(ev?: MouseEvent) {
 		text: text.value === '' ? null : text.value,
 		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
 		replyId: props.reply ? props.reply.id : undefined,
-		renoteId: props.renote ? props.renote.id : quoteId.value ? quoteId.value : undefined,
+		renoteId: noteToRenote.value ? noteToRenote.value.id : quoteId.value ? quoteId.value : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
 		poll: poll.value,
 		cw: useCw.value ? cw.value ?? '' : null,
@@ -865,7 +866,7 @@ async function post(ev?: MouseEvent) {
 				claimAchievement('brainDiver');
 			}
 
-			if (props.renote && (props.renote.userId === $i.id) && text.length > 0) {
+			if (noteToRenote.value && (noteToRenote.value.userId === $i.id) && text.length > 0) {
 				claimAchievement('selfQuote');
 			}
 
@@ -1032,7 +1033,7 @@ onMounted(() => {
 					users.forEach(u => pushVisibleUser(u));
 				});
 			}
-			quoteId.value = init.renote ? init.renote.id : null;
+			quoteId.value = noteToRenote.value ? noteToRenote.value.id : null;
 			reactionAcceptance.value = init.reactionAcceptance;
 		}
 
