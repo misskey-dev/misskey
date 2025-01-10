@@ -18,7 +18,7 @@
 		"build:tsc": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
 		"watch": "node ./scripts/watch.mjs",
 		"restart": "pnpm build && pnpm start",
-		"dev": "node --trace-deprecation ./scripts/dev.mjs",
+		"dev": "node ./scripts/dev.mjs",
 		"typecheck": "tsc --noEmit && tsc -p test --noEmit && tsc -p test-federation --noEmit",
 		"eslint": "eslint --quiet \"{src,test-federation}/**/*.ts\"",
 		"lint": "pnpm typecheck && pnpm eslint",
