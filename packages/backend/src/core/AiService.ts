@@ -10,6 +10,7 @@ import { Injectable } from '@nestjs/common';
 import * as nsfw from 'nsfwjs';
 import si from 'systeminformation';
 import { Mutex } from 'async-mutex';
+import fetch from 'node-fetch';
 import { bindThis } from '@/decorators.js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -41,6 +42,7 @@ export class AiService {
 			}
 
 			const tf = await import('@tensorflow/tfjs-node');
+			tf.env().global.fetch = fetch;
 
 			if (this.model == null) {
 				await this.modelLoadMutex.runExclusive(async () => {
