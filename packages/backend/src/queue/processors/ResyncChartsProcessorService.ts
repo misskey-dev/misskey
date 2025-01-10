@@ -31,11 +31,9 @@ export class ResyncChartsProcessorService {
 
 		// TODO: ユーザーごとのチャートも更新する
 		// TODO: インスタンスごとのチャートも更新する
-		await Promise.all([
-			this.driveChart.resync(),
-			this.notesChart.resync(),
-			this.usersChart.resync(),
-		]);
+		await this.driveChart.resync();
+		await this.notesChart.resync();
+		await this.usersChart.resync();
 
 		this.logger.succ('All charts successfully resynced.');
 	}
