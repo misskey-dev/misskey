@@ -46,6 +46,7 @@ function start(_game: Misskey.entities.ReversiGameDetailed) {
 		misskeyApi('notes/create', {
 			text: i18n.ts._reversi.iStartedAGame + '\n' + location.href,
 			visibility: 'home',
+			noCreatedNote: true,
 		});
 	}
 

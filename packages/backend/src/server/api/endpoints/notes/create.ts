@@ -40,7 +40,7 @@ export const meta = {
 
 	res: {
 		type: 'object',
-		optional: false, nullable: false,
+		optional: true, nullable: false,
 		properties: {
 			createdNote: {
 				type: 'object',
@@ -207,6 +207,7 @@ export const paramDef = {
 			},
 			required: ['choices'],
 		},
+		noCreatedNote: { type: 'boolean', default: false },
 	},
 	// (re)note with text, files and poll are optional
 	if: {
@@ -281,7 +282,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const note = await this.notesRepository.findOneBy({ id: idempotent });
 				if (note) {
 					logger.info('The request has already been processed.', { noteId: note.id });
-					return { createdNote: await this.noteEntityService.pack(note, me) };
+					if (ps.noCreatedNote) return;
+					else return { createdNote: await this.noteEntityService.pack(note, me) };
 				}
 			}
 
@@ -453,7 +455,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				await this.redisForTimelines.set(`note:idempotent:${me.id}:${hash}`, note.id, 'EX', 60);
 
 				logger.info('Successfully created a note.', { noteId: note.id });
-				return {
+				if (ps.noCreatedNote) return;
+				else return {
 					createdNote: await this.noteEntityService.pack(note, me),
 				};
 			} catch (err) {

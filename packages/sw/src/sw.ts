@@ -114,7 +114,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 						if ('note' in data.body) client = await swos.openPost({ reply: data.body.note }, loginId);
 						break;
 					case 'renote':
-						if ('note' in data.body) await swos.api('notes/create', loginId, { renoteId: data.body.note.id });
+						if ('note' in data.body) await swos.api('notes/create', loginId, { renoteId: data.body.note.id, noCreatedNote: true });
 						break;
 					case 'accept':
 						switch (data.body.type) {

@@ -41,7 +41,8 @@ window.onload = async () => {
 
 	document.getElementById('submit').addEventListener('click', () => {
 		api('notes/create', {
-			text: document.getElementById('text').value
+			text: document.getElementById('text').value,
+			noCreatedNote: true,
 		}).then(() => {
 			location.reload();
 		});

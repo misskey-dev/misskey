@@ -23333,6 +23333,8 @@ export type operations = {
             expiresAt?: number | null;
             expiredAfter?: number | null;
           }) | null;
+          /** @default false */
+          noCreatedNote?: boolean;
         };
       };
     };
@@ -23344,6 +23346,10 @@ export type operations = {
             createdNote: components['schemas']['Note'];
           };
         };
+      };
+      /** @description OK (without any results) */
+      204: {
+        content: never;
       };
       /** @description Client error */
       400: {
