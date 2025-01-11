@@ -9,8 +9,8 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type Connection from './Connection.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 
 /**
  * Stream channel
@@ -105,7 +105,7 @@ export default abstract class Channel {
 
 	public async assignMyReaction(note: Packed<'Note'>, noteEntityService: NoteEntityService): Promise<Packed<'Note'>> {
 		let changed = false;
-		// cloning here seems like the best solution for a race condition
+		// cloning here seems like the best solution for not sharing changes with other users.
 		// where multiple users shared the same myReaction. (Sharkey #877)
 		const clonedNote = { ...note };
 		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
@@ -138,7 +138,6 @@ export default abstract class Channel {
 		return changed ? clonedNote : note;
 	}
 }
-
 
 export type MiChannelService<T extends boolean> = {
 	shouldShare: boolean;
