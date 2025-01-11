@@ -48,6 +48,7 @@ export class TickChartsProcessorService {
 	public async process(): Promise<void> {
 		this.logger.info('Tick charts...');
 
+		// DBへの同時接続を避けるためにPromise.allを使わずひとつずつ実行する
 		await this.federationChart.tick(false);
 		await this.notesChart.tick(false);
 		await this.usersChart.tick(false);

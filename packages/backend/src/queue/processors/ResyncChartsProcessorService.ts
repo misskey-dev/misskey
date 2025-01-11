@@ -29,6 +29,7 @@ export class ResyncChartsProcessorService {
 	public async process(): Promise<void> {
 		this.logger.info('Resync charts...');
 
+		// DBへの同時接続を避けるためにPromise.allを使わずひとつずつ実行する
 		// TODO: ユーザーごとのチャートも更新する
 		// TODO: インスタンスごとのチャートも更新する
 		await this.driveChart.resync();

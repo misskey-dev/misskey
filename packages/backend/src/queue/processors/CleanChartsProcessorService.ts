@@ -48,6 +48,7 @@ export class CleanChartsProcessorService {
 	public async process(): Promise<void> {
 		this.logger.info('Clean charts...');
 
+		// DBへの同時接続を避けるためにPromise.allを使わずひとつずつ実行する
 		await this.federationChart.clean();
 		await this.notesChart.clean();
 		await this.usersChart.clean();
