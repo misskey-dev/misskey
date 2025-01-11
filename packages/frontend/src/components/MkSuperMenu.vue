@@ -28,11 +28,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { } from 'vue';
+<script lang="ts">
+export type SuperMenuDef = {
+	title?: string;
+	items: ({
+		type: 'a';
+		href: string;
+		target?: string;
+		icon?: string;
+		text: string;
+		danger?: boolean;
+		active?: boolean;
+	} | {
+		type: 'button';
+		icon?: string;
+		text: string;
+		danger?: boolean;
+		active?: boolean;
+		action: (ev: MouseEvent) => void;
+	} | {
+		type: 'link';
+		to: string;
+		icon?: string;
+		text: string;
+		danger?: boolean;
+		active?: boolean;
+	})[];
+};
+</script>
 
+<script lang="ts" setup>
 defineProps<{
-	def: any[];
+	def: SuperMenuDef[];
 	grid?: boolean;
 }>();
 </script>
@@ -43,7 +70,7 @@ defineProps<{
 		& + .group {
 			margin-top: 16px;
 			padding-top: 16px;
-			border-top: solid 0.5px var(--divider);
+			border-top: solid 0.5px var(--MI_THEME-divider);
 		}
 
 		> .title {
@@ -64,7 +91,7 @@ defineProps<{
 
 				&:hover {
 					text-decoration: none;
-					background: var(--panelHighlight);
+					background: var(--MI_THEME-panelHighlight);
 				}
 
 				&:focus-visible {
@@ -72,12 +99,12 @@ defineProps<{
 				}
 
 				&.active {
-					color: var(--accent);
-					background: var(--accentedBg);
+					color: var(--MI_THEME-accent);
+					background: var(--MI_THEME-accentedBg);
 				}
 
 				&.danger {
-					color: var(--error);
+					color: var(--MI_THEME-error);
 				}
 
 				> .icon {
@@ -100,13 +127,13 @@ defineProps<{
 
 	&.grid {
 		> .group {
+			margin-left: 0;
+			margin-right: 0;
+
 			& + .group {
 				padding-top: 0;
 				border-top: none;
 			}
-
-			margin-left: 0;
-			margin-right: 0;
 
 			> .title {
 				font-size: 1em;
@@ -128,10 +155,10 @@ defineProps<{
 					&:hover {
 						text-decoration: none;
 						background: none;
-						color: var(--accent);
+						color: var(--MI_THEME-accent);
 
 						> .icon {
-							background: var(--accentedBg);
+							background: var(--MI_THEME-accentedBg);
 						}
 					}
 
@@ -144,7 +171,7 @@ defineProps<{
 						width: 60px;
 						height: 60px;
 						aspect-ratio: 1;
-						background: var(--panel);
+						background: var(--MI_THEME-panel);
 						border-radius: 100%;
 					}
 

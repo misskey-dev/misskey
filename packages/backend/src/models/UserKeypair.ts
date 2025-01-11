@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { PrimaryColumn, Entity, JoinColumn, Column, OneToOne } from 'typeorm';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
@@ -12,41 +12,21 @@ export class MiUserKeypair {
 	@PrimaryColumn(id())
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@OneToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: MiUser | null;
 
-	/**
-	 * RSA public key
-	 */
 	@Column('varchar', {
 		length: 4096,
 	})
 	public publicKey: string;
 
-	/**
-	 * RSA private key
-	 */
 	@Column('varchar', {
 		length: 4096,
 	})
 	public privateKey: string;
-
-	@Column('varchar', {
-		length: 128,
-		nullable: true,
-		default: null,
-	})
-	public ed25519PublicKey: string | null;
-
-	@Column('varchar', {
-		length: 128,
-		nullable: true,
-		default: null,
-	})
-	public ed25519PrivateKey: string | null;
 
 	constructor(data: Partial<MiUserKeypair>) {
 		if (data == null) return;

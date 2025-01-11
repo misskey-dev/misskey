@@ -7,12 +7,15 @@ import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiWebhook, webhookEventTypes } from '@/models/Webhook.js';
+import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import type { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
+import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
+import { type SystemWebhookPayload } from '@/core/SystemWebhookService.js';
+import { type UserWebhookPayload } from './UserWebhookService.js';
 import type {
 	DbJobData,
 	DeliverJobData,
@@ -29,10 +32,10 @@ import type {
 	ObjectStorageQueue,
 	RelationshipQueue,
 	SystemQueue,
-	UserWebhookDeliverQueue,
 	SystemWebhookDeliverQueue,
+	UserWebhookDeliverQueue,
 } from './QueueModule.js';
-import { genRFC3230DigestHeader, type PrivateKeyWithPem, type ParsedSignature } from '@misskey-dev/node-http-message-signatures';
+import type httpSignature from '@peertube/http-signature';
 import type * as Bull from 'bullmq';
 
 @Injectable()
@@ -86,24 +89,37 @@ export class QueueService {
 			repeat: { pattern: '*/5 * * * *' },
 			removeOnComplete: true,
 		});
+
+		this.systemQueue.add('bakeBufferedReactions', {
+		}, {
+			repeat: { pattern: '0 0 * * *' },
+			removeOnComplete: true,
+		});
+
+		this.systemQueue.add('checkModeratorsActivity', {
+		}, {
+			// 毎時30分に起動
+			repeat: { pattern: '30 * * * *' },
+			removeOnComplete: true,
+		});
 	}
 
 	@bindThis
-	public async deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean, privateKey?: PrivateKeyWithPem) {
+	public deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean) {
 		if (content == null) return null;
 		if (to == null) return null;
 
 		const contentBody = JSON.stringify(content);
+		const digest = ApRequestCreator.createDigest(contentBody);
 
 		const data: DeliverJobData = {
 			user: {
 				id: user.id,
 			},
 			content: contentBody,
-			digest: await genRFC3230DigestHeader(contentBody, 'SHA-256'),
+			digest,
 			to,
 			isSharedInbox,
-			privateKey: privateKey && { keyId: privateKey.keyId, privateKeyPem: privateKey.privateKeyPem },
 		};
 
 		return this.deliverQueue.add(to, data, {
@@ -121,13 +137,13 @@ export class QueueService {
 	 * @param user `{ id: string; }` この関数ではThinUserに変換しないので前もって変換してください
 	 * @param content IActivity | null
 	 * @param inboxes `Map<string, boolean>` / key: to (inbox url), value: isSharedInbox (whether it is sharedInbox)
-	 * @param forceMainKey boolean | undefined, force to use main (rsa) key
 	 * @returns void
 	 */
 	@bindThis
-	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>, privateKey?: PrivateKeyWithPem) {
+	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
 		if (content == null) return null;
 		const contentBody = JSON.stringify(content);
+		const digest = ApRequestCreator.createDigest(contentBody);
 
 		const opts = {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
@@ -143,9 +159,9 @@ export class QueueService {
 			data: {
 				user,
 				content: contentBody,
+				digest,
 				to: d[0],
 				isSharedInbox: d[1],
-				privateKey: privateKey && { keyId: privateKey.keyId, privateKeyPem: privateKey.privateKeyPem },
 			} as DeliverJobData,
 			opts,
 		})));
@@ -154,7 +170,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public inbox(activity: IActivity, signature: ParsedSignature | null) {
+	public inbox(activity: IActivity, signature: httpSignature.IParsedSignature) {
 		const data = {
 			activity: activity,
 			signature,
@@ -451,10 +467,15 @@ export class QueueService {
 
 	/**
 	 * @see UserWebhookDeliverJobData
-	 * @see WebhookDeliverProcessorService
+	 * @see UserWebhookDeliverProcessorService
 	 */
 	@bindThis
-	public userWebhookDeliver(webhook: MiWebhook, type: typeof webhookEventTypes[number], content: unknown) {
+	public userWebhookDeliver<T extends WebhookEventTypes>(
+		webhook: MiWebhook,
+		type: T,
+		content: UserWebhookPayload<T>,
+		opts?: { attempts?: number },
+	) {
 		const data: UserWebhookDeliverJobData = {
 			type,
 			content,
@@ -467,7 +488,7 @@ export class QueueService {
 		};
 
 		return this.userWebhookDeliverQueue.add(webhook.id, data, {
-			attempts: 4,
+			attempts: opts?.attempts ?? 4,
 			backoff: {
 				type: 'custom',
 			},
@@ -478,10 +499,15 @@ export class QueueService {
 
 	/**
 	 * @see SystemWebhookDeliverJobData
-	 * @see WebhookDeliverProcessorService
+	 * @see SystemWebhookDeliverProcessorService
 	 */
 	@bindThis
-	public systemWebhookDeliver(webhook: MiSystemWebhook, type: SystemWebhookEventType, content: unknown) {
+	public systemWebhookDeliver<T extends SystemWebhookEventType>(
+		webhook: MiSystemWebhook,
+		type: T,
+		content: SystemWebhookPayload<T>,
+		opts?: { attempts?: number },
+	) {
 		const data: SystemWebhookDeliverJobData = {
 			type,
 			content,
@@ -493,7 +519,7 @@ export class QueueService {
 		};
 
 		return this.systemWebhookDeliverQueue.add(webhook.id, data, {
-			attempts: 4,
+			attempts: opts?.attempts ?? 4,
 			backoff: {
 				type: 'custom',
 			},

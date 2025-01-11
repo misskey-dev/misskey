@@ -70,18 +70,25 @@ jobs:
       - id: out-diff
         name: Build diff Comment
         run: |
-          cat <<- EOF > ./output.md
-          このPRによるapi.jsonの差分
-          <details>
-          <summary>差分はこちら</summary>
-
-          \`\`\`diff
-          $(cat ./api.json.diff)
-          \`\`\`
-          </details>
-
-          [Get diff files from Workflow Page](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})
-          EOF
+          HEADER="このPRによるapi.jsonの差分"
+          FOOTER="[Get diff files from Workflow Page](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
+          DIFF_BYTES="$(stat ./api.json.diff -c '%s' | tr -d '\n')"
+          
+          echo "$HEADER" > ./output.md
+          
+          if (( "$DIFF_BYTES" <= 1 )); then
+            echo '差分はありません。' >> ./output.md
+          else
+            echo '<details>' >> ./output.md
+            echo '<summary>差分はこちら</summary>' >> ./output.md
+            echo >> ./output.md
+            echo '```diff' >> ./output.md
+            cat ./api.json.diff >> ./output.md
+            echo '```' >> ./output.md
+            echo '</details>' >> .output.md
+          fi
+          
+          echo "$FOOTER" >> ./output.md
       - uses: thollander/actions-comment-pull-request@v2
         with:
           pr_number: ${{ steps.load-pr-num.outputs.pr-number }}

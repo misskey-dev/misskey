@@ -28,9 +28,9 @@ import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { url as base } from '@/config.js';
+import { url as base } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { infoImageUrl } from '@/instance.js';
 
 const name = 'rss';
@@ -70,7 +70,7 @@ const items = computed(() => rawItems.value.slice(0, widgetProps.maxEntries));
 const fetching = ref(true);
 const fetchEndpoint = computed(() => {
 	const url = new URL('/api/fetch-rss', base);
-	url.searchParams.set('url', widgetProps.url);
+	url.searchParams.set('url', encodeURIComponent(widgetProps.url));
 	return url;
 });
 const intervalClear = ref<(() => void) | undefined>();
@@ -113,7 +113,7 @@ defineExpose<WidgetComponentExpose>({
 .item {
 	display: block;
 	padding: 8px 16px;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;

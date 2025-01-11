@@ -14,10 +14,10 @@ import type { InstanceActorService } from '@/core/InstanceActorService.js';
 import type { LoggerService } from '@/core/LoggerService.js';
 import type { MetaService } from '@/core/MetaService.js';
 import type { UtilityService } from '@/core/UtilityService.js';
-import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { bindThis } from '@/decorators.js';
 import type {
 	FollowRequestsRepository,
+	MiMeta,
 	NoteReactionsRepository,
 	NotesRepository,
 	PollsRepository,
@@ -36,6 +36,7 @@ export class MockResolver extends Resolver {
 	constructor(loggerService: LoggerService) {
 		super(
 			{} as Config,
+			{} as MiMeta,
 			{} as UsersRepository,
 			{} as NotesRepository,
 			{} as PollsRepository,
@@ -43,12 +44,10 @@ export class MockResolver extends Resolver {
 			{} as FollowRequestsRepository,
 			{} as UtilityService,
 			{} as InstanceActorService,
-			{} as MetaService,
 			{} as ApRequestService,
 			{} as HttpRequestService,
 			{} as ApRendererService,
 			{} as ApDbResolverService,
-			{} as FederatedInstanceService,
 			loggerService,
 		);
 	}

@@ -21,12 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				].includes(log.type),
 				[$style.logYellow]: [
 					'markSensitiveDriveFile',
-					'resetPassword'
+					'resetPassword',
+					'suspendRemoteInstance',
 				].includes(log.type),
 				[$style.logRed]: [
 					'suspend',
 					'deleteRole',
-					'suspendRemoteInstance',
 					'deleteGlobalAnnouncement',
 					'deleteUserAnnouncement',
 					'deleteCustomEmoji',
@@ -36,6 +36,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					'deleteAvatarDecoration',
 					'deleteSystemWebhook',
 					'deleteAbuseReportNotificationRecipient',
+					'deleteAccount',
+					'deletePage',
+					'deleteFlash',
+					'deleteGalleryPost',
 				].includes(log.type)
 			}"
 		>{{ i18n.ts._moderationLogTypes[log.type] }}</b>
@@ -72,6 +76,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="log.type === 'createAbuseReportNotificationRecipient'">: {{ log.info.recipient.name }}</span>
 		<span v-else-if="log.type === 'updateAbuseReportNotificationRecipient'">: {{ log.info.before.name }}</span>
 		<span v-else-if="log.type === 'deleteAbuseReportNotificationRecipient'">: {{ log.info.recipient.name }}</span>
+		<span v-else-if="log.type === 'deleteAccount'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
+		<span v-else-if="log.type === 'deletePage'">: @{{ log.info.pageUserUsername }}</span>
+		<span v-else-if="log.type === 'deleteFlash'">: @{{ log.info.flashUserUsername }}</span>
+		<span v-else-if="log.type === 'deleteGalleryPost'">: @{{ log.info.postUserUsername }}</span>
 	</template>
 	<template #icon>
 		<MkAvatar :user="log.user" :class="$style.avatar"/>
@@ -81,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div>
-		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+		<div style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
 			<div style="flex: 1;">{{ i18n.ts.moderator }}: <MkA :to="`/admin/user/${log.userId}`" class="_link">@{{ log.user?.username }}</MkA></div>
 			<div style="flex: 1;">{{ i18n.ts.dateAndTime }}: <MkTime :time="log.createdAt" mode="detail"/></div>
 		</div>
@@ -143,7 +151,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateRemoteInstanceNote'">
-			<div>{{ i18n.ts.user }}: {{ log.info.userId }}</div>
 			<div :class="$style.diff">
 				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
 			</div>
@@ -156,6 +163,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-else-if="log.type === 'updateAbuseReportNotificationRecipient'">
 			<div :class="$style.diff">
 				<CodeDiff :context="5" :hideHeader="true" :oldString="JSON5.stringify(log.info.before, null, '\t')" :newString="JSON5.stringify(log.info.after, null, '\t')" language="javascript" maxHeight="300px"/>
+			</div>
+		</template>
+		<template v-else-if="log.type === 'updateAbuseReportNote'">
+			<div :class="$style.diff">
+				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
 			</div>
 		</template>
 
@@ -193,14 +205,14 @@ const props = defineProps<{
 }
 
 .logYellow {
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 }
 
 .logRed {
-	color: var(--error);
+	color: var(--MI_THEME-error);
 }
 
 .logGreen {
-	color: var(--success);
+	color: var(--MI_THEME-success);
 }
 </style>

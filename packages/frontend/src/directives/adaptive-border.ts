@@ -4,24 +4,16 @@
  */
 
 import { Directive } from 'vue';
+import { getBgColor } from '@/scripts/get-bg-color.js';
 
 export default {
 	mounted(src, binding, vn) {
-		const getBgColor = (el: HTMLElement) => {
-			const style = window.getComputedStyle(el);
-			if (style.backgroundColor && !['rgba(0, 0, 0, 0)', 'rgba(0,0,0,0)', 'transparent'].includes(style.backgroundColor)) {
-				return style.backgroundColor;
-			} else {
-				return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
-			}
-		};
-
-		const parentBg = getBgColor(src.parentElement);
+		const parentBg = getBgColor(src.parentElement) ?? 'transparent';
 
 		const myBg = window.getComputedStyle(src).backgroundColor;
 
 		if (parentBg === myBg) {
-			src.style.borderColor = 'var(--divider)';
+			src.style.borderColor = 'var(--MI_THEME-divider)';
 		} else {
 			src.style.borderColor = myBg;
 		}

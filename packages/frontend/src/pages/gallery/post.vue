@@ -31,6 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
 								<button v-tooltip="i18n.ts.copyLink" v-click-anime class="_button" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
 								<button v-if="isSupportShare()" v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
+								<button v-if="$i && $i.id !== post.user.id" v-click-anime class="_button" @mousedown="showMenu"><i class="ti ti-dots ti-fw"></i></button>
 							</div>
 						</div>
 						<div class="user">
@@ -62,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -71,7 +72,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import { url } from '@/config.js';
+import { url } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
@@ -79,6 +80,7 @@ import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const router = useRouter();
 
@@ -153,13 +155,56 @@ function edit() {
 	router.push(`/gallery/${post.value.id}/edit`);
 }
 
+function reportAbuse() {
+	if (!post.value) return;
+
+	const pageUrl = `${url}/gallery/${post.value.id}`;
+
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+		user: post.value.user,
+		initialComment: `Post: ${pageUrl}\n-----\n`,
+	}, {
+		closed: () => dispose(),
+	});
+}
+
+function showMenu(ev: MouseEvent) {
+	if (!post.value) return;
+
+	const menuItems: MenuItem[] = [];
+
+	if ($i && $i.id !== post.value.userId) {
+		menuItems.push({
+			icon: 'ti ti-exclamation-circle',
+			text: i18n.ts.reportAbuse,
+			action: reportAbuse,
+		});
+
+		if ($i.isModerator || $i.isAdmin) {
+			menuItems.push({
+				type: 'divider',
+			}, {
+				icon: 'ti ti-trash',
+				text: i18n.ts.delete,
+				danger: true,
+				action: () => os.confirm({
+					type: 'warning',
+					text: i18n.ts.deleteConfirm,
+				}).then(({ canceled }) => {
+					if (canceled || !post.value) return;
+
+					os.apiWithDialog('gallery/posts/delete', { postId: post.value.id });
+				}),
+			});
+		}
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+}
+
 watch(() => props.postId, fetchPost, { immediate: true });
 
-const headerActions = computed(() => [{
-	icon: 'ti ti-pencil',
-	text: i18n.ts.edit,
-	handler: edit,
-}]);
+const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
@@ -217,14 +262,14 @@ definePageMetadata(() => ({
 			align-items: center;
 			margin-top: 16px;
 			padding: 16px 0 0 0;
-			border-top: solid 0.5px var(--divider);
+			border-top: solid 0.5px var(--MI_THEME-divider);
 
 			> .like {
 				> .button {
-					--accent: rgb(241 97 132);
-					--X8: rgb(241 92 128);
-					--buttonBg: rgb(216 71 106 / 5%);
-					--buttonHoverBg: rgb(216 71 106 / 10%);
+					--MI_THEME-accent: rgb(241 97 132);
+					--MI_THEME-X8: rgb(241 92 128);
+					--MI_THEME-buttonBg: rgb(216 71 106 / 5%);
+					--MI_THEME-buttonHoverBg: rgb(216 71 106 / 10%);
 					color: #ff002f;
 
 					::v-deep(.count) {
@@ -241,7 +286,7 @@ definePageMetadata(() => ({
 					margin: 0 8px;
 
 					&:hover {
-						color: var(--fgHighlighted);
+						color: var(--MI_THEME-fgHighlighted);
 					}
 				}
 			}
@@ -250,7 +295,7 @@ definePageMetadata(() => ({
 		> .user {
 			margin-top: 16px;
 			padding: 16px 0 0 0;
-			border-top: solid 0.5px var(--divider);
+			border-top: solid 0.5px var(--MI_THEME-divider);
 			display: flex;
 			align-items: center;
 			flex-wrap: wrap;
@@ -276,7 +321,7 @@ definePageMetadata(() => ({
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 	grid-gap: 12px;
-	margin: var(--margin);
+	margin: var(--MI-margin);
 
 	> .post {
 

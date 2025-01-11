@@ -7,7 +7,14 @@
 
 import { Component, onMounted, shallowRef, ShallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
+
+function safeURIDecode(str: string): string {
+	try {
+		return decodeURIComponent(str);
+	} catch {
+		return str;
+	}
+}
 
 interface RouteDefBase {
 	path: string;
@@ -28,6 +35,8 @@ interface RouteDefWithRedirect extends RouteDefBase {
 }
 
 export type RouteDef = RouteDefWithComponent | RouteDefWithRedirect;
+
+export type RouterFlag = 'forcePage';
 
 type ParsedPath = (string | {
 	name: string;
@@ -100,7 +109,7 @@ export interface IRouter extends EventEmitter<RouterEvent> {
 	current: Resolved;
 	currentRef: ShallowRef<Resolved>;
 	currentRoute: ShallowRef<RouteDef>;
-	navHook: ((path: string, flag?: any) => boolean) | null;
+	navHook: ((path: string, flag?: RouterFlag) => boolean) | null;
 
 	/**
 	 * ルートの初期化（eventListenerの定義後に必ず呼び出すこと）
@@ -109,11 +118,11 @@ export interface IRouter extends EventEmitter<RouterEvent> {
 
 	resolve(path: string): Resolved | null;
 
-	getCurrentPath(): any;
+	getCurrentPath(): string;
 
 	getCurrentKey(): string;
 
-	push(path: string, flag?: any): void;
+	push(path: string, flag?: RouterFlag): void;
 
 	replace(path: string, key?: string | null): void;
 
@@ -190,7 +199,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 	private currentKey = Date.now().toString();
 	private redirectCount = 0;
 
-	public navHook: ((path: string, flag?: any) => boolean) | null = null;
+	public navHook: ((path: string, flag?: RouterFlag) => boolean) | null = null;
 
 	constructor(routes: Router['routes'], currentPath: Router['currentPath'], isLoggedIn: boolean, notFoundPageComponent: Component) {
 		super();
@@ -397,7 +406,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		return this.currentKey;
 	}
 
-	public push(path: string, flag?: any) {
+	public push(path: string, flag?: RouterFlag) {
 		const beforePath = this.currentPath;
 		if (path === beforePath) {
 			this.emit('same');

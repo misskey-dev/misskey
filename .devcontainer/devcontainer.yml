@@ -103,6 +103,14 @@ redis:
 #  #prefix: example-prefix
 #  #db: 1
 
+#redisForReactions:
+#  host: redis
+#  port: 6379
+#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+#  #pass: example-pass
+#  #prefix: example-prefix
+#  #db: 1
+
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
@@ -157,12 +165,12 @@ id: 'aidx'
 #clusterLimit: 1
 
 # Job concurrency per worker
-# deliverJobConcurrency: 16
-# inboxJobConcurrency: 4
+# deliverJobConcurrency: 128
+# inboxJobConcurrency: 16
 
 # Job rate limiter
-# deliverJobPerSec: 1024
-# inboxJobPerSec: 64
+# deliverJobPerSec: 128
+# inboxJobPerSec: 32
 
 # Job attempts
 # deliverJobMaxAttempts: 12
