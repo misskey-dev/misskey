@@ -29,7 +29,7 @@
 		"@twemoji/parser": "15.1.1",
 		"@vitejs/plugin-vue": "5.2.0",
 		"@vue/compiler-sfc": "3.5.12",
-		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.1.11",
+		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.1.15",
 		"astring": "1.9.0",
 		"broadcast-channel": "7.0.0",
 		"buraha": "0.0.1",

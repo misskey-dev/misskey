@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createHighlighterCore, loadWasm } from 'shiki/core';
+import { createHighlighterCore } from 'shiki/core';
+import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
 import darkPlus from 'shiki/themes/dark-plus.mjs';
 import { bundledThemesInfo } from 'shiki/themes';
 import { bundledLanguagesInfo } from 'shiki/langs';
@@ -60,8 +61,6 @@ export async function getHighlighter(): Promise<HighlighterCore> {
 }
 
 async function initHighlighter() {
-	await loadWasm(import('shiki/onig.wasm?init'));
-
 	// テーマの重複を消す
 	const themes = unique([
 		darkPlus,
@@ -70,6 +69,7 @@ async function initHighlighter() {
 
 	const jsLangInfo = bundledLanguagesInfo.find(t => t.id === 'javascript');
 	const highlighter = await createHighlighterCore({
+		engine: createOnigurumaEngine(() => import('shiki/onig.wasm?init')),
 		themes,
 		langs: [
 			...(jsLangInfo ? [async () => await jsLangInfo.import()] : []),
