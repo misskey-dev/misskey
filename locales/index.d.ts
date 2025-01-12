@@ -9531,6 +9531,10 @@ export interface Locale extends ILocale {
              */
             "login": string;
             /**
+             * ログインに失敗
+             */
+            "loginFailed": string;
+            /**
              * 通知のテスト
              */
             "test": string;
