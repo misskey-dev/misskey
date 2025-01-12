@@ -9471,7 +9471,7 @@ export interface Locale extends ILocale {
         "loginFailed": string;
         /**
          * {ip}からのログインに失敗しました。
-         * 自身のip以外でのログインが行われている場合、セキュリティのために設定にてパスワードを変更してください。
+         * 心当たりがない場合はパスワードの変更を行ってください。
          */
         "loginFailedDescription": ParameterizedString<"ip">;
         "_types": {

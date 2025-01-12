@@ -2499,7 +2499,7 @@ _notification:
   login: "ログインがありました"
   loginDescription: "{ip}からログインされました。\n心当たりがない場合、設定の「{text}」からすべての機器をログアウトしてください。"
   loginFailed: "ログインに失敗しました"
-  loginFailedDescription: "{ip}からのログインに失敗しました。\n自身のip以外でのログインが行われている場合、セキュリティのために設定にてパスワードを変更してください。"
+  loginFailedDescription: "{ip}からのログインに失敗しました。\n心当たりがない場合はパスワードの変更を行ってください。"
 
   _types:
     all: "すべて"
