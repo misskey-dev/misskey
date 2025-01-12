@@ -70,7 +70,7 @@ export class MfmService {
 
 		function analyze(node: Node) {
 			if (treeAdapter.isTextNode(node)) {
-				text += node.value;
+				text += node.value.replace(/</g, '<plain><</plain>');
 				return;
 			}
 
