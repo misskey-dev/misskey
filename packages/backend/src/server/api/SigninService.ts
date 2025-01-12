@@ -36,7 +36,9 @@ export class SigninService {
 	@bindThis
 	public signin(request: FastifyRequest, reply: FastifyReply, user: MiLocalUser) {
 		setImmediate(async () => {
-			this.notificationService.createNotification(user.id, 'login', {});
+			this.notificationService.createNotification(user.id, 'login', {
+				userIp: request.ip,
+			});
 
 			const record = await this.signinsRepository.insertOne({
 				id: this.idService.gen(),

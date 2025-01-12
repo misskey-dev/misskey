@@ -331,6 +331,10 @@ export const packedNotificationSchema = {
 				optional: false, nullable: false,
 				enum: ['login'],
 			},
+			ip: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
 		},
 	}, {
 		type: 'object',

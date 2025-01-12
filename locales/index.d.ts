@@ -9461,6 +9461,11 @@ export interface Locale extends ILocale {
          */
         "login": string;
         /**
+         * {ip}からログインされました。
+         * 心当たりがない場合、設定の「{text}」からすべての機器をログアウトしてください。
+         */
+        "loginDescription": ParameterizedString<"ip" | "text">;
+        /**
          * ログインに失敗しました
          */
         "loginFailed": string;

@@ -212,6 +212,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 
 				case 'login':
 					return [i18n.ts._notification.login, {
+						body: i18n.tsx._notification.loginDescription({ ip: data.body.ip, text: i18n.ts.regenerateLoginToken }),
 						badge: iconUrl('login-2'),
 						data,
 					}];

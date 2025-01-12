@@ -4324,6 +4324,8 @@ export type components = {
     }) | {
       /** Format: id */
       id: string;
+      /** Format: ip */
+      ip: string;
       /** Format: date-time */
       createdAt: string;
       /** @enum {string} */
