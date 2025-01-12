@@ -1314,6 +1314,8 @@ consentAll: "모두 허용"
 consentSelected: "선택한 항목만 허용"
 emailAddressLogin: "이메일 주소로 로그인"
 usernameLogin: "사용자명으로 로그인"
+autoloadDrafts: "글 작성 시 자동으로 임시 저장된 글 불러오기"
+drafts: "임시 저장"
 
 _bubbleGame:
   howToPlay: "설명"

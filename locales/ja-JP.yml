@@ -1326,6 +1326,8 @@ consentAll: "全て許可"
 consentSelected: "選択した項目のみ許可"
 emailAddressLogin: "メールアドレスでログイン"
 usernameLogin: "ユーザー名でログイン"
+autoloadDrafts: "投稿フォームを開いたときに下書きを自動で読み込む"
+drafts: "下書き"
 
 _bubbleGame:
   howToPlay: "遊び方"

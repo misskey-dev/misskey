@@ -279,6 +279,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	autoloadDrafts: {
+		where: 'device',
+		default: true,
+	},
 	enableInfiniteScroll: {
 		where: 'device',
 		default: true,

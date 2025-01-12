@@ -5330,6 +5330,14 @@ export interface Locale extends ILocale {
      * ユーザー名でログイン
      */
     "usernameLogin": string;
+    /**
+     * 投稿フォームを開いたときに下書きを自動で読み込む
+     */
+    "autoloadDrafts": string;
+    /**
+     * 下書き
+     */
+    "drafts": string;
     "_bubbleGame": {
         /**
          * 遊び方

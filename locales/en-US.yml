@@ -1317,6 +1317,8 @@ consentAll: "Allow All Items"
 consentSelected: "Allow Selected Items"
 emailAddressLogin: "Login with email address"
 usernameLogin: "Login with username"
+autoloadDrafts: "Automatically load drafts when opening the posting form"
+drafts: "Drafts"
 
 _bubbleGame:
   howToPlay: "How to play"

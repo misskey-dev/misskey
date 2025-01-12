@@ -84,6 +84,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'useBlurEffect',
 	'showFixedPostForm',
 	'showFixedPostFormInChannel',
+	'autoloadDrafts',
 	'enableInfiniteScroll',
 	'useReactionPickerForContextMenu',
 	'showGapBetweenNotesInTimeline',
