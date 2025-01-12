@@ -4328,6 +4328,15 @@ export type components = {
       createdAt: string;
       /** @enum {string} */
       type: 'login';
+    } | {
+      /** Format: id */
+      id: string;
+      /** Format: ip */
+      ip: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** @enum {string} */
+      type: 'loginFailed';
     } | ({
       /** Format: id */
       id: string;
