@@ -76,12 +76,10 @@ describe('MkAsUi', () => {
 			buttons: [
 				{
 					text: 'left',
-					id: 'test',
 					onClick: vi.fn(),
 				},
 				{
 					text: 'right',
-					id: 'test',
 					onClick: vi.fn(),
 				},
 			],
