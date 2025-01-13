@@ -1,8 +1,10 @@
 import { EventEmitter } from 'eventemitter3';
-import _ReconnectingWebsocket from 'reconnecting-websocket';
+import _ReconnectingWebSocket, { Options } from 'reconnecting-websocket';
 import type { BroadcastEvents, Channels } from './streaming.types.js';
 
-const ReconnectingWebsocket = _ReconnectingWebsocket as unknown as typeof _ReconnectingWebsocket['default'];
+// コンストラクタとクラスそのものの定義が上手く解決出来ないため再定義
+const ReconnectingWebSocketConstructor = _ReconnectingWebSocket as unknown as typeof _ReconnectingWebSocket.default;
+type ReconnectingWebSocket = _ReconnectingWebSocket.default;
 
 export function urlQuery(obj: Record<string, string | number | boolean | undefined>): string {
 	const params = Object.entries(obj)
@@ -26,7 +28,7 @@ type StreamEvents = {
  * Misskey stream connection
  */
 export default class Stream extends EventEmitter<StreamEvents> {
-	private stream: _ReconnectingWebsocket.default;
+	private stream: ReconnectingWebSocket;
 	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
@@ -34,7 +36,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	private idCounter = 0;
 
 	constructor(origin: string, user: { token: string; } | null, options?: {
-		WebSocket?: _ReconnectingWebsocket.Options['WebSocket'];
+		WebSocket?: Options['WebSocket'];
 	}) {
 		super();
 
@@ -62,7 +64,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 
 		const wsOrigin = origin.replace('http://', 'ws://').replace('https://', 'wss://');
 
-		this.stream = new ReconnectingWebsocket(`${wsOrigin}/streaming?${query}`, '', {
+		this.stream = new ReconnectingWebSocketConstructor(`${wsOrigin}/streaming?${query}`, '', {
 			minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
 			WebSocket: options.WebSocket,
 		});
