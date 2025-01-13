@@ -1,13 +1,13 @@
 services:
-   cloudflared:
-     restart: always
-     image: cloudflare/cloudflared
-     command: tunnel run
-     depends_on:
-       web:
-         condition: service_healthy
-     env_file:
-       - .config/tunnel.env
+  cloudflared:
+    restart: always
+    image: cloudflare/cloudflared
+    command: tunnel run
+    depends_on:
+      web:
+        condition: service_healthy
+    env_file:
+      - .config/tunnel.env
   web:
     build: .
     restart: always
