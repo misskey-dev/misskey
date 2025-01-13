@@ -105,8 +105,11 @@ export default abstract class Channel {
 
 	public async assignMyReaction(note: Packed<'Note'>, noteEntityService: NoteEntityService): Promise<Packed<'Note'>> {
 		let changed = false;
-		// cloning here seems like the best solution for not sharing changes with other users.
-		// where multiple users shared the same myReaction. (Sharkey #877)
+		// StreamingApiServerService creates a single EventEmitter per server process,
+		// so a new note arriving from redis gets de-serialised once per server process,
+		// and then that single object is passed to all active channels on each connection.
+		// If we didn't clone the notes here, different connections would asynchronously write
+		// different values to the same object, resulting in a random value being sent to each frontend. -- Dakkar
 		const clonedNote = { ...note };
 		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
