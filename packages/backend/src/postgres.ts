@@ -89,27 +89,68 @@ export const dbLogger = new MisskeyLogger('db');
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
 
+export type LoggerProps = {
+	disableHighlight?: boolean;
+	disableQueryTruncation?: boolean;
+	enableQueryParamLogging?: boolean;
+}
+
+function highlightSql(sql: string) {
+	return highlight.highlight(sql, {
+		language: 'sql', ignoreIllegals: true,
+	});
+}
+
+function truncateSql(sql: string) {
+	return sql.length > 100 ? `${sql.substring(0, 100)}...` : sql;
+}
+
 class MyCustomLogger implements Logger {
+	constructor(private props: LoggerProps = {}) {
+	}
+
 	@bindThis
-	private highlight(sql: string) {
-		return highlight.highlight(sql, {
-			language: 'sql', ignoreIllegals: true,
-		});
+	private transformQueryLog(sql: string) {
+		let modded = sql;
+		if (!this.props.disableQueryTruncation) {
+			modded = truncateSql(modded);
+		}
+		if (!this.props.disableHighlight) {
+			modded = highlightSql(modded);
+		}
+		return modded;
+	}
+
+	@bindThis
+	private transformParameters(parameters?: any[]) {
+		function stringifyParameter(param: any) {
+			if (param instanceof Date) {
+				return param.toISOString();
+			} else {
+				return param;
+			}
+		}
+
+		if (!this.props.enableQueryParamLogging || !parameters || parameters.length === 0) {
+			return undefined;
+		}
+
+		return parameters.map(stringifyParameter);
 	}
 
 	@bindThis
 	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query).substring(0, 100));
+		sqlLogger.info(this.transformQueryLog(query), this.transformParameters(parameters));
 	}
 
 	@bindThis
 	public logQueryError(error: string, query: string, parameters?: any[]) {
-		sqlLogger.error(this.highlight(query));
+		sqlLogger.error(this.transformQueryLog(query), this.transformParameters(parameters));
 	}
 
 	@bindThis
 	public logQuerySlow(time: number, query: string, parameters?: any[]) {
-		sqlLogger.warn(this.highlight(query));
+		sqlLogger.warn(this.transformQueryLog(query), this.transformParameters(parameters));
 	}
 
 	@bindThis
@@ -247,7 +288,13 @@ export function createPostgresDataSource(config: Config) {
 			},
 		} : false,
 		logging: log,
-		logger: log ? new MyCustomLogger() : undefined,
+		logger: log
+			? new MyCustomLogger({
+				disableHighlight: config.logging?.sql?.disableHighlight,
+				disableQueryTruncation: config.logging?.sql?.disableQueryTruncation,
+				enableQueryParamLogging: config.logging?.sql?.enableQueryParamLogging,
+			})
+			: undefined,
 		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],
