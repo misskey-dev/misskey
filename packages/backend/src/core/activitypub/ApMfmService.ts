@@ -29,7 +29,7 @@ export class ApMfmService {
 		let noMisskeyContent = false;
 		const srcMfm = (note.text ?? '') + (apAppend ?? '');
 
-		const parsed = note.mfmType == 'full' ? mfm.parse(srcMfm) : mfm.parseHtml(srcMfm);
+		const parsed = note.mfmType == 'html' ? mfm.parseHtml(srcMfm) : mfm.parse(srcMfm);
 
 		if (!apAppend && parsed?.every(n => ['text', 'unicodeEmoji', 'emojiCode', 'mention', 'hashtag', 'url'].includes(n.type))) {
 			noMisskeyContent = true;
