@@ -628,6 +628,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			await this.createMentionedEvents(mentionedUsers, note, nm);
 
 			// If has in reply to note
+			let isOnThreadMutedTree = false;
 			if (data.reply) {
 				// 通知
 				if (data.reply.userHost === null) {
@@ -637,6 +638,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 							threadId: data.reply.threadId ?? data.reply.id,
 						},
 					});
+					isOnThreadMutedTree = isThreadMuted;
 
 					if (!isThreadMuted) {
 						nm.push(data.reply.userId, 'reply');
@@ -665,7 +667,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 						},
 					});
 
-					if (!isThreadMuted) {
+					// If the quoted note is not thread muted but the quoting note is on thread muted tree, need to mute it.
+					if (!isThreadMuted && !isOnThreadMutedTree) {
 						nm.push(data.renote.userId, type);
 
 						// Publish event
