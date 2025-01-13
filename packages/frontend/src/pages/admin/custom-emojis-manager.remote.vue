@@ -77,32 +77,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<XRegisterLogsFolder :logs="requestLogs"/>
 
-			<div v-if="gridItems.length === 0" style="text-align: center">
-				{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
-			</div>
-
+			<component :is="loadingHandler.component.value" v-if="loadingHandler.showing.value"/>
 			<template v-else>
-				<div v-if="gridItems.length > 0" :class="$style.gridArea">
-					<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
+				<div v-if="gridItems.length === 0" style="text-align: center">
+					{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
 				</div>
 
-				<div :class="$style.footer">
-					<div>
-						<!-- レイアウト調整用のスペース -->
+				<template v-else>
+					<div v-if="gridItems.length > 0" :class="$style.gridArea">
+						<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
 					</div>
 
-					<div :class="$style.center">
-						<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
-					</div>
+					<div :class="$style.footer">
+						<div>
+							<!-- レイアウト調整用のスペース -->
+						</div>
 
-					<div :class="$style.right">
-						<MkButton primary @click="onImportClicked">
-							{{
-								i18n.ts._customEmojisManager._remote.importEmojisButton
-							}} ({{ checkedItemsCount }})
-						</MkButton>
+						<div :class="$style.center">
+							<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
+						</div>
+
+						<div :class="$style.right">
+							<MkButton primary @click="onImportClicked">
+								{{
+									i18n.ts._customEmojisManager._remote.importEmojisButton
+								}} ({{ checkedItemsCount }})
+							</MkButton>
+						</div>
 					</div>
-				</div>
+				</template>
 			</template>
 		</div>
 	</template>
@@ -132,6 +135,7 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
 import { SortOrder } from '@/components/MkSortOrderEditor.define.js';
+import { useLoading } from "@/components/hook/useLoading.js";
 
 type GridItem = {
 	checked: boolean;
@@ -195,6 +199,8 @@ function setupGrid(): GridSetting {
 	};
 }
 
+const loadingHandler = useLoading();
+
 const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
 const allPages = ref<number>(0);
 const currentPage = ref<number>(0);
@@ -253,18 +259,6 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 }
 
 async function importEmojis(targets: GridItem[]) {
-	const action = () => {
-		return targets.map(item =>
-			misskeyApi(
-				'admin/emoji/copy',
-				{
-					emojiId: item.id!,
-				})
-				.then(() => ({ item, success: true, err: undefined }))
-				.catch(err => ({ item, success: false, err })),
-		);
-	};
-
 	const confirm = await os.confirm({
 		type: 'info',
 		title: i18n.ts._customEmojisManager._remote.confirmImportEmojisTitle,
@@ -275,7 +269,19 @@ async function importEmojis(targets: GridItem[]) {
 		return;
 	}
 
-	const result = await os.promiseDialog(Promise.all(action()));
+	const result = await os.promiseDialog(
+		Promise.all(
+			targets.map(item =>
+				misskeyApi(
+					'admin/emoji/copy',
+					{
+						emojiId: item.id!,
+					})
+					.then(() => ({ item, success: true, err: undefined }))
+					.catch(err => ({ item, success: false, err })),
+			),
+		),
+	);
 	const failedItems = result.filter(it => !it.success);
 
 	if (failedItems.length > 0) {
@@ -309,18 +315,12 @@ async function refreshCustomEmojis() {
 		currentPage.value = 1;
 	}
 
-	const result = await os.promiseDialog(
-		misskeyApi('v2/admin/emoji/list', {
-			limit: 100,
-			query: query,
-			page: currentPage.value,
-			sortKeys: sortOrders.value.map(({ key, direction }) => `${direction}${key}`) as never[],
-		}),
-		() => {
-		},
-		() => {
-		},
-	);
+	const result = await loadingHandler.scope(() => misskeyApi('v2/admin/emoji/list', {
+		limit: 100,
+		query: query,
+		page: currentPage.value,
+		sortKeys: sortOrders.value.map(({ key, direction }) => `${direction}${key}`) as never[],
+	}));
 
 	customEmojis.value = result.emojis;
 	allPages.value = result.allPages;

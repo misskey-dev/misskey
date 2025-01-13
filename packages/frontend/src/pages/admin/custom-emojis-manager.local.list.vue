@@ -136,33 +136,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<XRegisterLogsFolder :logs="requestLogs"/>
 
-			<div v-if="gridItems.length === 0" style="text-align: center">
-				{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
-			</div>
-
+			<component :is="loadingHandler.component.value" v-if="loadingHandler.showing.value"/>
 			<template v-else>
-				<div :class="$style.gridArea">
-					<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
+				<div v-if="gridItems.length === 0" style="text-align: center">
+					{{ i18n.ts._customEmojisManager._local._list.emojisNothing }}
 				</div>
 
-				<div :class="$style.footer">
-					<div :class="$style.left">
-						<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">
-							{{ i18n.ts.delete }} ({{ deleteItemsCount }})
-						</MkButton>
+				<template v-else>
+					<div :class="$style.gridArea">
+						<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
 					</div>
 
-					<div :class="$style.center">
-						<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
-					</div>
+					<div :class="$style.footer">
+						<div :class="$style.left">
+							<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">
+								{{ i18n.ts.delete }} ({{ deleteItemsCount }})
+							</MkButton>
+						</div>
 
-					<div :class="$style.right">
-						<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">
-							{{ i18n.ts.update }} ({{ updatedItemsCount }})
-						</MkButton>
-						<MkButton @click="onGridResetButtonClicked">{{ i18n.ts.reset }}</MkButton>
+						<div :class="$style.center">
+							<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
+						</div>
+
+						<div :class="$style.right">
+							<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">
+								{{ i18n.ts.update }} ({{ updatedItemsCount }})
+							</MkButton>
+							<MkButton @click="onGridResetButtonClicked">{{ i18n.ts.reset }}</MkButton>
+						</div>
 					</div>
-				</div>
+				</template>
 			</template>
 		</div>
 	</template>
@@ -199,6 +202,7 @@ import { selectFile } from '@/scripts/select-file.js';
 import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
 import { SortOrder } from '@/components/MkSortOrderEditor.define.js';
+import { useLoading } from "@/components/hook/useLoading.js";
 
 type GridItem = {
 	checked: boolean;
@@ -370,6 +374,8 @@ function setupGrid(): GridSetting {
 		},
 	};
 }
+
+const loadingHandler = useLoading();
 
 const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
 const allPages = ref<number>(0);
@@ -588,18 +594,12 @@ async function refreshCustomEmojis() {
 		currentPage.value = 1;
 	}
 
-	const result = await os.promiseDialog(
-		misskeyApi('v2/admin/emoji/list', {
-			query: query,
-			limit: limit,
-			page: currentPage.value,
-			sortKeys: sortOrders.value.map(({ key, direction }) => `${direction}${key}` as any),
-		}),
-		() => {
-		},
-		() => {
-		},
-	);
+	const result = await loadingHandler.scope(() => misskeyApi('v2/admin/emoji/list', {
+		query: query,
+		limit: limit,
+		page: currentPage.value,
+		sortKeys: sortOrders.value.map(({ key, direction }) => `${direction}${key}` as any),
+	}));
 
 	customEmojis.value = result.emojis;
 	allPages.value = result.allPages;
