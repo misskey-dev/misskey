@@ -28,12 +28,16 @@ export class AntennaService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
+
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
+
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
+
 		@Inject(DI.userListMembershipsRepository)
 		private userListMembershipsRepository: UserListMembershipsRepository,
+
 		private cacheService: CacheService,
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
@@ -90,12 +94,7 @@ export class AntennaService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addNoteToAntennas(note: MiNote, noteUser: {
-		id: MiUser['id'];
-		username: string;
-		host: string | null;
-		isBot: boolean;
-	}): Promise<void> {
+	public async addNoteToAntennas(note: MiNote, noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<void> {
 		const antennas = await this.getAntennas();
 		const antennasWithMatchResult = await Promise.all(antennas.map(antenna => this.checkHitAntenna(antenna, note, noteUser).then(hit => [antenna, hit] as const)));
 		const matchedAntennas = antennasWithMatchResult.filter(([, hit]) => hit).map(([antenna]) => antenna);
@@ -113,12 +112,7 @@ export class AntennaService implements OnApplicationShutdown {
 	// NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
 
 	@bindThis
-	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: {
-		id: MiUser['id'];
-		username: string;
-		host: string | null;
-		isBot: boolean;
-	}): Promise<boolean> {
+	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<boolean> {
 		if (antenna.excludeBots && noteUser.isBot) return false;
 
 		if (antenna.localOnly && noteUser.host != null) return false;
