@@ -656,6 +656,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (this.isRenote(data)) {
 				const type = this.isQuote(data) ? 'quote' : 'renote';
 
+				// Notify
 				if (data.renote.userHost === null) {
 					const isThreadMuted = await this.noteThreadMutingsRepository.exists({
 						where: {
@@ -665,7 +666,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 					});
 
 					if (!isThreadMuted) {
-						// Notify
 						nm.push(data.renote.userId, type);
 
 						// Publish event
