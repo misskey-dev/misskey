@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { computed, h, ref } from 'vue';
 import MkLoading from '@/components/global/MkLoading.vue';
 
