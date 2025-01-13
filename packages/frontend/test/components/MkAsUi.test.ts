@@ -1,11 +1,12 @@
 import MkAsUi from '@/components/MkAsUi.vue';
-import { fireEvent, render } from '@testing-library/vue';
 import { components as globalComponents } from '@/components/index.js';
 import { directives } from '@/directives/index.js';
-import { assert, describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { ComponentProps } from 'vue-component-type-helpers';
 import { AsUiComponent } from '@/scripts/aiscript/ui.js';
 import { ref } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import MkButton from '@/components/MkButton.vue';
 
 describe('MkAsUi', () => {
 	function renderComponent<C extends AsUiComponent>(
@@ -14,7 +15,7 @@ describe('MkAsUi', () => {
 	) {
 		const componentRef = ref(component);
 		const componentsRef = ref([componentRef]);
-		const mkAsUi = render(MkAsUi, {
+		const wrapper = shallowMount(MkAsUi, {
 			props: {
 				component: componentRef.value,
 				components: componentsRef.value,
@@ -22,31 +23,29 @@ describe('MkAsUi', () => {
 			},
 			global: { directives, components: globalComponents },
 		});
-		return { mkAsUi, component };
+		return { wrapper, component };
 	}
 
 	test('root', async () => {
-		const { mkAsUi } = renderComponent({
+		const { wrapper } = renderComponent({
 			type: 'root',
 			id: 'id',
 			children: [],
 		});
-		const element = mkAsUi.baseElement;
-		assert(element instanceof HTMLElement);
-		expect(element.innerText).toBe('');
+		expect(wrapper.text()).toBe('');
 	});
 
 	test('text', async () => {
-		const { mkAsUi } = renderComponent({
+		const { wrapper } = renderComponent({
 			type: 'text',
 			id: 'id',
 			text: 'Hello, world!',
 		});
-		expect(mkAsUi.queryByText('Hello, world!')).toBeTruthy();
+		expect(wrapper.text()).toBe('Hello, world!');
 	});
 
 	test('mfm', async () => {
-		const { component, mkAsUi } = renderComponent({
+		const { component, wrapper } = renderComponent({
 			type: 'mfm',
 			id: 'id',
 			text: '$[clickable.ev=evId Click me!]',
@@ -54,23 +53,23 @@ describe('MkAsUi', () => {
 				expect(evId).toBe('evId');
 			}),
 		});
-		await fireEvent.click(mkAsUi.getByText('Click me!'));
+		wrapper.findComponent(globalComponents.Mfm).vm.$emit('clickEv', 'evId');
 		expect(component.onClickEv).toHaveBeenCalledOnce();
 	});
 
 	test('button', async () => {
-		const { component, mkAsUi } = renderComponent({
+		const { component, wrapper } = renderComponent({
 			type: 'button',
 			id: 'id',
 			text: 'Click me!',
 			onClick: vi.fn(),
 		});
-		await fireEvent.click(mkAsUi.getByText('Click me!'));
+		wrapper.findComponent(MkButton).vm.$emit('click');
 		expect(component.onClick).toHaveBeenCalledOnce();
 	});
 
 	test('buttons', async () => {
-		const { component, mkAsUi } = renderComponent({
+		const { component, wrapper } = renderComponent({
 			type: 'buttons',
 			id: 'id',
 			buttons: [
@@ -84,9 +83,15 @@ describe('MkAsUi', () => {
 				},
 			],
 		});
-		await fireEvent.click(mkAsUi.getByText('left'));
+		const buttons = wrapper.findAllComponents(MkButton);
+		expect(buttons.length).toBe(2);
+
+		const leftButton = buttons[0];
+		leftButton.vm.$emit('click');
 		expect(component.buttons[0].onClick).toHaveBeenCalledOnce();
-		await fireEvent.click(mkAsUi.getByText('right'));
-		expect(component.buttons[0].onClick).toHaveBeenCalledOnce();
+
+		const rightButton = buttons[1];
+		rightButton.vm.$emit('click');
+		expect(component.buttons[1].onClick).toHaveBeenCalledOnce();
 	});
 });
