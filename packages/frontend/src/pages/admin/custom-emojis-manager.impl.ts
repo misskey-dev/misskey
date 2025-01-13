@@ -34,7 +34,7 @@ export function emptyStrToNull(value: string) {
 }
 
 export function emptyStrToEmptyArray(value: string) {
-	return value === '' ? [] : value.split(',').map(it => it.trim());
+	return value === '' ? [] : value.split(' ').map(it => it.trim());
 }
 
 export function roleIdsParser(text: string): { id: string, name: string }[] {
