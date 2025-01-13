@@ -104,6 +104,14 @@ function truncateSql(sql: string) {
 	return sql.length > 100 ? `${sql.substring(0, 100)}...` : sql;
 }
 
+function stringifyParameter(param: any) {
+	if (param instanceof Date) {
+		return param.toISOString();
+	} else {
+		return param;
+	}
+}
+
 class MyCustomLogger implements Logger {
 	constructor(private props: LoggerProps = {}) {
 	}
@@ -120,19 +128,11 @@ class MyCustomLogger implements Logger {
 
 	@bindThis
 	private transformParameters(parameters?: any[]) {
-		function stringifyParameter(param: any) {
-			if (param instanceof Date) {
-				return param.toISOString();
-			} else {
-				return param;
-			}
+		if (this.props.enableQueryParamLogging && parameters && parameters.length > 0) {
+			return parameters.map(stringifyParameter);
 		}
 
-		if (!this.props.enableQueryParamLogging || !parameters || parameters.length === 0) {
-			return undefined;
-		}
-
-		return parameters.map(stringifyParameter);
+		return undefined;
 	}
 
 	@bindThis
