@@ -5,18 +5,19 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import * as Acct from '@/misc/acct.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { AntennasRepository, UserListMembershipsRepository } from '@/models/_.js';
 import type { MiAntenna } from '@/models/Antenna.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import * as Acct from '@/misc/acct.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UserListMembershipsRepository } from '@/models/_.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { bindThis } from '@/decorators.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { CacheService } from './CacheService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -27,19 +28,12 @@ export class AntennaService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
-
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
-
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
-
 		@Inject(DI.userListMembershipsRepository)
 		private userListMembershipsRepository: UserListMembershipsRepository,
-
-		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
-
 		private cacheService: CacheService,
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
@@ -96,7 +90,12 @@ export class AntennaService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addNoteToAntennas(note: MiNote, noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<void> {
+	public async addNoteToAntennas(note: MiNote, noteUser: {
+		id: MiUser['id'];
+		username: string;
+		host: string | null;
+		isBot: boolean;
+	}): Promise<void> {
 		const antennas = await this.getAntennas();
 		const antennasWithMatchResult = await Promise.all(antennas.map(antenna => this.checkHitAntenna(antenna, note, noteUser).then(hit => [antenna, hit] as const)));
 		const matchedAntennas = antennasWithMatchResult.filter(([, hit]) => hit).map(([antenna]) => antenna);
@@ -114,7 +113,12 @@ export class AntennaService implements OnApplicationShutdown {
 	// NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
 
 	@bindThis
-	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<boolean> {
+	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: {
+		id: MiUser['id'];
+		username: string;
+		host: string | null;
+		isBot: boolean;
+	}): Promise<boolean> {
 		if (note.visibility === 'specified') {
 			if (note.userId !== antenna.userId) {
 				if (note.visibleUserIds == null) return false;
