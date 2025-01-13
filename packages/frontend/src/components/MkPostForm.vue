@@ -1441,7 +1441,7 @@ defineExpose({
 	}
 }
 
-@container (max-width: 400px) {
+@container (max-width: 375px) {
 	.submitInner {
 		min-width: 20px;
 	}
