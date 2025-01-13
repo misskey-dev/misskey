@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { PostNoteCreateData } from '@/core/NoteCreateService.js';
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiNote } from '@/models/Note.js';
@@ -126,6 +127,14 @@ export type UserWebhookDeliverJobData = {
 	createdAt: number;
 	eventId: string;
 };
+
+// 他のも増えそうな余地あるので
+export type LocalUserDeliverJobData = LocalUserDeliverPostNoteCreatedJobData;
+
+type LocalUserDeliverPostNoteCreatedJobData = {
+	type: 'postNoteCreated';
+	data: PostNoteCreateData;
+}
 
 export type ThinUser = {
 	id: MiUser['id'];
