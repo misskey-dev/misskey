@@ -4,19 +4,20 @@
  */
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { Brackets, In, IsNull, ObjectLiteral, SelectQueryBuilder, WhereExpressionBuilder } from 'typeorm';
 import * as Redis from 'ioredis';
-import { DI } from '@/di-symbols.js';
-import { IdService } from '@/core/IdService.js';
+import { In, IsNull } from 'typeorm';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { MiEmoji } from '@/models/Emoji.js';
-import type { EmojisRepository, MiRole, MiUser } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
-import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import type { Serialized } from '@/types.js';
+import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import type { EmojisRepository, MiRole, MiUser } from '@/models/_.js';
+import type { MiEmoji } from '@/models/Emoji.js';
+import type { Serialized } from '@/types.js';
 
 const parseEmojiStrRegexp = /^([-\w]+)(?:@([\w.-]+))?$/;
 
@@ -139,7 +140,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	@bindThis
 	public async update(data: (
 		{ id: MiEmoji['id'], name?: string; } | { name: string; id?: MiEmoji['id'], }
-	) & {
+		) & {
 		originalUrl?: string;
 		publicUrl?: string;
 		fileType?: string;
@@ -478,17 +479,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			sortKeys?: FetchEmojisSortKeys[]
 		},
 	) {
-		function multipleWordsToQuery<T extends ObjectLiteral>(
-			query: string,
-			builder: SelectQueryBuilder<T>,
-			action: (qb: WhereExpressionBuilder, idx: number, word: string) => void,
-		) {
-			const words = query.split(/\s/);
-			builder.andWhere(new Brackets((qb => {
-				for (const [idx, word] of words.entries()) {
-					action(qb, idx, word);
-				}
-			})));
+		function multipleWordsToQuery(words: string) {
+			return words.split(/\s/).filter(x => x.length > 0).map(x => `%${sqlLikeEscape(x)}%`);
 		}
 
 		const builder = this.emojisRepository.createQueryBuilder('emoji');
@@ -503,9 +495,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 				builder.andWhere('CAST(emoji.updatedAt AS DATE) <= :updateAtTo', { updateAtTo: q.updatedAtTo });
 			}
 			if (q.name) {
-				multipleWordsToQuery(q.name, builder, (qb, idx, word) => {
-					qb.orWhere(`emoji.name LIKE :name${idx}`, Object.fromEntries([[`name${idx}`, `%${word}%`]]));
-				});
+				builder.andWhere('emoji.name ~~ ANY(ARRAY[:...name])', { name: multipleWordsToQuery(q.name) });
 			}
 
 			switch (true) {
@@ -516,9 +506,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 				case q.hostType === 'remote': {
 					if (q.host) {
 						// noIndexScan
-						multipleWordsToQuery(q.host, builder, (qb, idx, word) => {
-							qb.orWhere(`emoji.host LIKE :host${idx}`, Object.fromEntries([[`host${idx}`, `%${word}%`]]));
-						});
+						builder.andWhere('emoji.host ~~ ANY(ARRAY[:...host])', { host: multipleWordsToQuery(q.host) });
 					} else {
 						builder.andWhere('emoji.host IS NOT NULL');
 					}
@@ -528,21 +516,15 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 			if (q.uri) {
 				// noIndexScan
-				multipleWordsToQuery(q.uri, builder, (qb, idx, word) => {
-					qb.orWhere(`emoji.uri LIKE :uri${idx}`, Object.fromEntries([[`uri${idx}`, `%${word}%`]]));
-				});
+				builder.andWhere('emoji.uri ~~ ANY(ARRAY[:...uri])', { uri: multipleWordsToQuery(q.uri) });
 			}
 			if (q.publicUrl) {
 				// noIndexScan
-				multipleWordsToQuery(q.publicUrl, builder, (qb, idx, word) => {
-					qb.orWhere(`emoji.publicUrl LIKE :publicUrl${idx}`, Object.fromEntries([[`publicUrl${idx}`, `%${word}%`]]));
-				});
+				builder.andWhere('emoji.publicUrl ~~ ANY(ARRAY[:...publicUrl])', { publicUrl: multipleWordsToQuery(q.publicUrl) });
 			}
 			if (q.type) {
 				// noIndexScan
-				multipleWordsToQuery(q.type, builder, (qb, idx, word) => {
-					qb.orWhere(`emoji.type LIKE :type${idx}`, Object.fromEntries([[`type${idx}`, `%${word}%`]]));
-				});
+				builder.andWhere('emoji.type ~~ ANY(ARRAY[:...type])', { type: multipleWordsToQuery(q.type) });
 			}
 			if (q.aliases) {
 				// noIndexScan
@@ -555,23 +537,17 @@ export class CustomEmojiService implements OnApplicationShutdown {
 							.from('emoji', 'subEmoji'),
 						'aliasTable',
 					)
-					.where('"emoji"."id" = "aliasTable"."id"');
-				multipleWordsToQuery(q.aliases, subQueryBuilder, (qb, idx, word) => {
-					qb.orWhere(`"aliasTable"."alias" LIKE :aliases${idx}`, Object.fromEntries([[`aliases${idx}`, `%${word}%`]]));
-				});
+					.where('"emoji"."id" = "aliasTable"."id"')
+					.andWhere('"aliasTable"."alias" ~~ ANY(ARRAY[:...aliases])', { aliases: multipleWordsToQuery(q.aliases) });
 
 				builder.andWhere(`(${subQueryBuilder.getQuery()}) > 0`);
 			}
 			if (q.category) {
-				multipleWordsToQuery(q.category, builder, (qb, idx, word) => {
-					qb.orWhere(`emoji.category LIKE :category${idx}`, Object.fromEntries([[`category${idx}`, `%${word}%`]]));
-				});
+				builder.andWhere('emoji.category ~~ ANY(ARRAY[:...category])', { category: multipleWordsToQuery(q.category) });
 			}
 			if (q.license) {
 				// noIndexScan
-				multipleWordsToQuery(q.license, builder, (qb, idx, word) => {
-					qb.orWhere(`emoji.license LIKE :license${idx}`, Object.fromEntries([[`license${idx}`, `%${word}%`]]));
-				});
+				builder.andWhere('emoji.license ~~ ANY(ARRAY[:...license])', { license: multipleWordsToQuery(q.license) });
 			}
 			if (q.isSensitive != null) {
 				// noIndexScan
@@ -582,7 +558,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 				builder.andWhere('emoji.localOnly = :localOnly', { localOnly: q.localOnly });
 			}
 			if (q.roleIds && q.roleIds.length > 0) {
-				builder.andWhere('emoji.roleIdsThatCanBeUsedThisEmojiAsReaction @> :roleIds', { roleIds: q.roleIds });
+				builder.andWhere('emoji.roleIdsThatCanBeUsedThisEmojiAsReaction && ARRAY[:...roleIds]::VARCHAR[]', { roleIds: q.roleIds });
 			}
 		}
 
