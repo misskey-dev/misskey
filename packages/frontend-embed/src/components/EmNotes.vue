@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #default="{ items: notes }">
 		<div :class="[$style.root]">
-			<EmNote v-for="note in notes" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
+			<EmNote v-for="note in notes" :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note as Misskey.entities.Note"/>
 		</div>
 	</template>
 </EmPagination>
@@ -24,6 +24,7 @@ import { useTemplateRef } from 'vue';
 import EmNote from '@/components/EmNote.vue';
 import EmPagination, { Paging } from '@/components/EmPagination.vue';
 import { i18n } from '@/i18n.js';
+import * as Misskey from 'misskey-js';
 
 withDefaults(defineProps<{
 	pagination: Paging;
