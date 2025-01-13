@@ -119,22 +119,23 @@ export class AntennaService implements OnApplicationShutdown {
 		host: string | null;
 		isBot: boolean;
 	}): Promise<boolean> {
+		if (antenna.excludeBots && noteUser.isBot) return false;
+
+		if (antenna.localOnly && noteUser.host != null) return false;
+
+		if (!antenna.withReplies && note.replyId != null) return false;
+
 		if (note.visibility === 'specified') {
 			if (note.userId !== antenna.userId) {
 				if (note.visibleUserIds == null) return false;
 				if (!note.visibleUserIds.includes(antenna.userId)) return false;
 			}
 		}
+
 		if (note.visibility === 'followers') {
 			const isFollowing = Object.hasOwn(await this.cacheService.userFollowingsCache.fetch(antenna.userId), note.userId);
 			if (!isFollowing && antenna.userId !== note.userId) return false;
 		}
-
-		if (antenna.excludeBots && noteUser.isBot) return false;
-
-		if (antenna.localOnly && noteUser.host != null) return false;
-
-		if (!antenna.withReplies && note.replyId != null) return false;
 
 		if (antenna.src === 'home') {
 			// TODO
