@@ -90,7 +90,6 @@ export const dbLogger = new MisskeyLogger('db');
 const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
 
 export type LoggerProps = {
-	disableHighlight?: boolean;
 	disableQueryTruncation?: boolean;
 	enableQueryParamLogging?: boolean;
 }
@@ -115,10 +114,8 @@ class MyCustomLogger implements Logger {
 		if (!this.props.disableQueryTruncation) {
 			modded = truncateSql(modded);
 		}
-		if (!this.props.disableHighlight) {
-			modded = highlightSql(modded);
-		}
-		return modded;
+
+		return highlightSql(modded);
 	}
 
 	@bindThis
@@ -290,7 +287,6 @@ export function createPostgresDataSource(config: Config) {
 		logging: log,
 		logger: log
 			? new MyCustomLogger({
-				disableHighlight: config.logging?.sql?.disableHighlight,
 				disableQueryTruncation: config.logging?.sql?.disableQueryTruncation,
 				enableQueryParamLogging: config.logging?.sql?.enableQueryParamLogging,
 			})

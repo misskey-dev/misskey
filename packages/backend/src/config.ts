@@ -102,7 +102,6 @@ type Source = {
 
 	logging?: {
 		sql?: {
-			disableHighlight? : boolean,
 			disableQueryTruncation? : boolean,
 			enableQueryParamLogging? : boolean,
 		}
@@ -161,7 +160,6 @@ export type Config = {
 	signToActivityPubGet: boolean | undefined;
 	logging?: {
 		sql?: {
-			disableHighlight? : boolean,
 			disableQueryTruncation? : boolean,
 			enableQueryParamLogging? : boolean,
 		}
