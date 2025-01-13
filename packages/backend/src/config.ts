@@ -91,7 +91,7 @@ type Source = {
 
 	deliverLocalUser?: {
 		postNoteCreated?: {
-			runOnWorker?: boolean;
+			runOn?: 'immediate' | 'worker';
 		}
 	}
 
@@ -157,7 +157,7 @@ export type Config = {
 	inboxJobMaxAttempts: number | undefined;
 	deliverLocalUser?: {
 		postNoteCreated?: {
-			runOnWorker?: boolean;
+			runOn?: 'immediate' | 'worker';
 		}
 	};
 	proxyRemoteFiles: boolean | undefined;

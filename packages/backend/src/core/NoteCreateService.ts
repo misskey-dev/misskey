@@ -258,10 +258,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 			});
 		};
 
-		this.postNoteCreatedCaller = this.config.deliverLocalUser?.postNoteCreated?.runOnWorker
+		this.postNoteCreatedCaller = this.config.deliverLocalUser?.postNoteCreated?.runOn === 'worker'
 			? runOnWorker
 			: runOnImmediate;
-		this.logger.info('postNoteCreatedCaller: ' + this.config.deliverLocalUser?.postNoteCreated?.runOnWorker ? 'worker' : 'immediate');
+		const runOnName = this.config.deliverLocalUser?.postNoteCreated?.runOn
+			? this.config.deliverLocalUser.postNoteCreated.runOn
+			: 'immediate';
+		this.logger.info(`postNoteCreatedCaller: ${runOnName}`);
 	}
 
 	@bindThis
