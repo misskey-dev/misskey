@@ -1441,6 +1441,16 @@ defineExpose({
 	}
 }
 
+@container (max-width: 400px) {
+	.submitInner {
+		min-width: 20px;
+	}
+
+	.submitButtonText {
+		display: none;
+	}
+}
+
 @container (max-width: 350px) {
 	.footer {
 		font-size: 0.9em;
@@ -1457,14 +1467,5 @@ defineExpose({
 	.headerRight {
 		gap: 0;
 	}
-
-	.submitInner {
-		min-width: 20px;
-	}
-
-	.submitButtonText {
-		display: none;
-	}
-
 }
 </style>
