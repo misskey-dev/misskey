@@ -7,6 +7,7 @@
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
 - Enhance: 照会に失敗した場合、その理由を表示するように
+- Enhance: 連合がホワイトリスト化・無効化されているサーバー向けのデザイン修正
 - Enhance: AiScriptのセーブデータを明示的に削除する関数`Mk:remove`を追加
 - Enhance: AiScriptの拡張API関数において引数の型チェックをより厳格に
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正

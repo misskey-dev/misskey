@@ -5047,6 +5047,8 @@ export type components = {
        */
       noteSearchableScope: 'local' | 'global';
       maxFileSize: number;
+      /** @enum {string} */
+      federation: 'all' | 'specified' | 'none';
     };
     MetaDetailedOnly: {
       features?: {
