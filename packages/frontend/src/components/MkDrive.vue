@@ -607,14 +607,26 @@ function fetchMoreFiles() {
 
 	const max = 30;
 
-	// ファイル一覧取得
-	misskeyApi('drive/files', {
+	let fetchMoreFilesData = {
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
-		untilId: files.value.at(-1)?.id,
 		limit: max + 1,
 		sort: sortModeSelect.value,
-	}).then(files => {
+	};
+	if (sortModeSelect.value.startsWith('+')) {
+		fetchMoreFilesData = {
+			...fetchMoreFilesData,
+			untilId: files.value.at(-1)?.id,
+		};
+	} else if (sortModeSelect.value.startsWith('-')) {
+		fetchMoreFilesData = {
+			...fetchMoreFilesData,
+			sinceId: files.value.at(-1)?.id,
+		};
+	}
+
+	// ファイル一覧取得
+	misskeyApi('drive/files', fetchMoreFilesData).then(files => {
 		if (files.length === max + 1) {
 			moreFiles.value = true;
 			files.pop();

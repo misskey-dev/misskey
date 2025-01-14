@@ -51,8 +51,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.driveFilesRepository.createQueryBuilder('file'), ps.sinceId, ps.untilId)
+			let query = this.queryService.makePaginationQuery(this.driveFilesRepository.createQueryBuilder('file'), ps.sinceId, ps.untilId)
 				.andWhere('file.userId = :userId', { userId: me.id });
+
+			// 名前でソートする場合の対処
+			if (ps.sort?.includes('name')) {
+				query = this.driveFilesRepository.createQueryBuilder('file')
+					.andWhere('file.userId = :userId', { userId: me.id });
+				if (ps.sinceId) {
+					query.andWhere('file.name > (select file.name from drive_file file where file.id = :sinceId)', { sinceId: ps.sinceId });
+				} else if (ps.untilId) {
+					query.andWhere('file.name < (select file.name from drive_file file where file.id = :untilId)', { untilId: ps.untilId });
+				}
+			// サイズでソートする場合の対処
+			} else if (ps.sort?.includes('size')) {
+				query = this.driveFilesRepository.createQueryBuilder('file')
+					.andWhere('file.userId = :userId', { userId: me.id });
+				if (ps.sinceId) {
+					query.andWhere('file.size > (select file.size from drive_file file where file.id = :sinceId)', { sinceId: ps.sinceId });
+				} else if (ps.untilId) {
+					query.andWhere('file.size < (select file.size from drive_file file where file.id = :untilId)', { untilId: ps.untilId });
+				}
+			}
 
 			if (ps.folderId) {
 				query.andWhere('file.folderId = :folderId', { folderId: ps.folderId });
