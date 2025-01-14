@@ -4,7 +4,7 @@
  */
 import * as Misskey from 'misskey-js';
 
-export function checkWordMute(note: Misskey.entities.Note, me: Misskey.entities.UserLite | null | undefined, mutedWords: Array<string | string[]>): Array<string | string[]> | false {
+export function checkWordMute(note: Misskey.entities.Note, me: Misskey.entities.UserLite | null | undefined, mutedWords: Array<string | string[]>): string | string[] | false {
 	// 自分自身
 	if (me && (note.userId === me.id)) return false;
 
@@ -13,7 +13,7 @@ export function checkWordMute(note: Misskey.entities.Note, me: Misskey.entities.
 
 		if (text === '') return false;
 
-		const matched = mutedWords.filter(filter => {
+		const matched = mutedWords.find((filter: string | string[]) => {
 			if (Array.isArray(filter)) {
 				// Clean up
 				const filteredFilter = filter.filter(keyword => keyword !== '');
@@ -36,7 +36,7 @@ export function checkWordMute(note: Misskey.entities.Note, me: Misskey.entities.
 			}
 		});
 
-		if (matched.length > 0) return matched;
+		if (matched != null) return matched;
 	}
 
 	return false;
