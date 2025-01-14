@@ -231,15 +231,10 @@ export class CheckModeratorsActivityProcessorService {
 
 		// -- SystemWebhook
 
-		const systemWebhooks = await this.systemWebhookService.fetchActiveSystemWebhooks()
-			.then(it => it.filter(it => it.on.includes('inactiveModeratorsWarning')));
-		for (const systemWebhook of systemWebhooks) {
-			this.systemWebhookService.enqueueSystemWebhook(
-				systemWebhook,
-				'inactiveModeratorsWarning',
-				{ remainingTime: remainingTime },
-			);
-		}
+		return this.systemWebhookService.enqueueSystemWebhook(
+			'inactiveModeratorsWarning',
+			{ remainingTime: remainingTime },
+		);
 	}
 
 	@bindThis
@@ -269,15 +264,10 @@ export class CheckModeratorsActivityProcessorService {
 
 		// -- SystemWebhook
 
-		const systemWebhooks = await this.systemWebhookService.fetchActiveSystemWebhooks()
-			.then(it => it.filter(it => it.on.includes('inactiveModeratorsInvitationOnlyChanged')));
-		for (const systemWebhook of systemWebhooks) {
-			this.systemWebhookService.enqueueSystemWebhook(
-				systemWebhook,
-				'inactiveModeratorsInvitationOnlyChanged',
-				{},
-			);
-		}
+		return this.systemWebhookService.enqueueSystemWebhook(
+			'inactiveModeratorsInvitationOnlyChanged',
+			{},
+		);
 	}
 
 	@bindThis
