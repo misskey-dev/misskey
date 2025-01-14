@@ -23,9 +23,14 @@
 - Fix: 「アカウントを管理」画面で、ユーザー情報の取得に失敗したアカウント（削除されたアカウントなど）が表示されない問題を修正
 - Fix: 言語データのキャッシュ状況によっては、埋め込みウィジェットが正しく起動しない問題を修正
 - Fix: 「削除して編集」でノートの引用を解除出来なかった問題を修正( #14476 )
+- Fix: RSSウィジェットが正しく表示されない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/857)
 
 ### Server
 - Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
+- Enhance: チャート更新時にDBに同時接続しないように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/830)
+- Enhance: config(default.yml)からSQLログ全文を出力するか否かを設定可能に ( #15266 )
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
@@ -33,6 +38,7 @@
 - Fix: disableClustering設定時の初期化ロジックを調整( #15223 )
 - Fix: ActivityPubリクエストかどうかの判定が正しくない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/869)
+- Fix: AIセンシティブ判定が arm64 環境で動作しない問題を修正
 
 ## 2024.11.0
 

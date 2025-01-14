@@ -99,6 +99,13 @@ type Source = {
 	perUserNotificationsMaxCount?: number;
 	deactivateAntennaThreshold?: number;
 	pidFile: string;
+
+	logging?: {
+		sql?: {
+			disableQueryTruncation? : boolean,
+			enableQueryParamLogging? : boolean,
+		}
+	}
 };
 
 export type Config = {
@@ -151,6 +158,12 @@ export type Config = {
 	inboxJobMaxAttempts: number | undefined;
 	proxyRemoteFiles: boolean | undefined;
 	signToActivityPubGet: boolean | undefined;
+	logging?: {
+		sql?: {
+			disableQueryTruncation? : boolean,
+			enableQueryParamLogging? : boolean,
+		}
+	}
 
 	version: string;
 	publishTarballInsteadOfProvideRepositoryUrl: boolean;
@@ -293,6 +306,7 @@ export function loadConfig(): Config {
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 500,
 		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 		pidFile: config.pidFile,
+		logging: config.logging,
 	};
 }
 
