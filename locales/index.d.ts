@@ -2755,9 +2755,17 @@ export interface Locale extends ILocale {
      */
     "wordMute": string;
     /**
+     * 指定した語句を含むノートを最小化します。最小化されたノートをクリックすることで表示することができます。
+     */
+    "wordMuteDescription": string;
+    /**
      * ハードワードミュート
      */
     "hardWordMute": string;
+    /**
+     * 指定した語句を含むノートを隠します。ワードミュートとは異なり、ノートは完全に表示されなくなります。
+     */
+    "hardWordMuteDescription": string;
     /**
      * 正規表現エラー
      */
@@ -5222,6 +5230,14 @@ export interface Locale extends ILocale {
      * 注意事項を理解した上でオンにします。
      */
     "acknowledgeNotesAndEnable": string;
+    /**
+     * このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。
+     */
+    "federationSpecified": string;
+    /**
+     * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
+     */
+    "federationDisabled": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -10600,6 +10616,108 @@ export interface Locale extends ILocale {
          * 送った申請
          */
         "sent": string;
+    };
+    "_remoteLookupErrors": {
+        "_federationNotAllowed": {
+            /**
+             * このサーバーとは通信できません
+             */
+            "title": string;
+            /**
+             * このサーバーとの通信が無効化されているか、このサーバーをブロックしている・ブロックされている可能性があります。
+             * サーバー管理者にお問い合わせください。
+             */
+            "description": string;
+        };
+        "_uriInvalid": {
+            /**
+             * URIが不正です
+             */
+            "title": string;
+            /**
+             * 入力されたURIに問題があります。URIに使用できない文字を入力していないか確認してください。
+             */
+            "description": string;
+        };
+        "_requestFailed": {
+            /**
+             * リクエストに失敗しました
+             */
+            "title": string;
+            /**
+             * このサーバーとの通信に失敗しました。相手サーバーがダウンしている可能性があります。また、不正なURIや存在しないURIを入力していないか確認してください。
+             */
+            "description": string;
+        };
+        "_responseInvalid": {
+            /**
+             * レスポンスが不正です
+             */
+            "title": string;
+            /**
+             * このサーバーと通信することはできましたが、得られたデータが不正なものでした。
+             */
+            "description": string;
+        };
+        "_responseInvalidIdHostNotMatch": {
+            /**
+             * 入力されたURIのドメインと最終的に得られたURIのドメインとが異なります。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。
+             */
+            "description": string;
+        };
+        "_noSuchObject": {
+            /**
+             * 見つかりません
+             */
+            "title": string;
+            /**
+             * 要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。
+             */
+            "description": string;
+        };
+    };
+    "_captcha": {
+        /**
+         * CAPTCHAを通過してください
+         */
+        "verify": string;
+        /**
+         * サイトキーとシークレットキーにテスト用の値を入力することでプレビューを確認できます。
+         * 詳細は下記ページをご確認ください。
+         */
+        "testSiteKeyMessage": string;
+        "_error": {
+            "_requestFailed": {
+                /**
+                 * CAPTCHAのリクエストに失敗しました
+                 */
+                "title": string;
+                /**
+                 * しばらく後に実行するか、設定をもう一度ご確認ください。
+                 */
+                "text": string;
+            };
+            "_verificationFailed": {
+                /**
+                 * CAPTCHAの検証に失敗しました
+                 */
+                "title": string;
+                /**
+                 * 設定が正しいかどうかもう一度確認ください。
+                 */
+                "text": string;
+            };
+            "_unknown": {
+                /**
+                 * CAPTCHAエラー
+                 */
+                "title": string;
+                /**
+                 * 想定外のエラーが発生しました。
+                 */
+                "text": string;
+            };
+        };
     };
 }
 declare const locales: {

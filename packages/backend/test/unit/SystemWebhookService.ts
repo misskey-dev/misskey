@@ -314,9 +314,10 @@ describe('SystemWebhookService', () => {
 					isActive: true,
 					on: ['abuseReport'],
 				});
-				await service.enqueueSystemWebhook(webhook.id, 'abuseReport', { foo: 'bar' } as any);
+				await service.enqueueSystemWebhook('abuseReport', { foo: 'bar' } as any);
 
-				expect(queueService.systemWebhookDeliver).toHaveBeenCalled();
+				expect(queueService.systemWebhookDeliver).toHaveBeenCalledTimes(1);
+				expect(queueService.systemWebhookDeliver.mock.calls[0][0] as MiSystemWebhook).toEqual(webhook);
 			});
 
 			test('非アクティブなWebhookはキューに追加されない', async () => {
@@ -324,7 +325,7 @@ describe('SystemWebhookService', () => {
 					isActive: false,
 					on: ['abuseReport'],
 				});
-				await service.enqueueSystemWebhook(webhook.id, 'abuseReport', { foo: 'bar' } as any);
+				await service.enqueueSystemWebhook('abuseReport', { foo: 'bar' } as any);
 
 				expect(queueService.systemWebhookDeliver).not.toHaveBeenCalled();
 			});
@@ -338,10 +339,48 @@ describe('SystemWebhookService', () => {
 					isActive: true,
 					on: ['abuseReportResolved'],
 				});
-				await service.enqueueSystemWebhook(webhook1.id, 'abuseReport', { foo: 'bar' } as any);
-				await service.enqueueSystemWebhook(webhook2.id, 'abuseReport', { foo: 'bar' } as any);
+				await service.enqueueSystemWebhook('abuseReport', { foo: 'bar' } as any);
 
 				expect(queueService.systemWebhookDeliver).not.toHaveBeenCalled();
+			});
+
+			test('混在した時、有効かつ許可されたイベント種別のみ', async () => {
+				const webhook1 = await createWebhook({
+					isActive: true,
+					on: ['abuseReport'],
+				});
+				const webhook2 = await createWebhook({
+					isActive: true,
+					on: ['abuseReportResolved'],
+				});
+				const webhook3 = await createWebhook({
+					isActive: false,
+					on: ['abuseReport'],
+				});
+				const webhook4 = await createWebhook({
+					isActive: false,
+					on: ['abuseReportResolved'],
+				});
+				await service.enqueueSystemWebhook('abuseReport', { foo: 'bar' } as any);
+
+				expect(queueService.systemWebhookDeliver).toHaveBeenCalledTimes(1);
+				expect(queueService.systemWebhookDeliver.mock.calls[0][0] as MiSystemWebhook).toEqual(webhook1);
+			});
+
+			test('除外指定した場合は送信されない', async () => {
+				const webhook1 = await createWebhook({
+					isActive: true,
+					on: ['abuseReport'],
+				});
+				const webhook2 = await createWebhook({
+					isActive: true,
+					on: ['abuseReport'],
+				});
+
+				await service.enqueueSystemWebhook('abuseReport', { foo: 'bar' } as any, { excludes: [webhook2.id] });
+
+				expect(queueService.systemWebhookDeliver).toHaveBeenCalledTimes(1);
+				expect(queueService.systemWebhookDeliver.mock.calls[0][0] as MiSystemWebhook).toEqual(webhook1);
 			});
 		});
 
