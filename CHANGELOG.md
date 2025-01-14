@@ -41,6 +41,7 @@
 - Fix: URLとURIが異なるエンティティの照会に失敗する問題を修正( #15039 )
 - Fix: ActivityPubリクエストかどうかの判定が正しくない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/869)
+- Fix: `/api/pages/update`にて`name`を指定せずにリクエストするとエラーが発生する問題を修正
 - Fix: AIセンシティブ判定が arm64 環境で動作しない問題を修正
 
 ## 2024.11.0
