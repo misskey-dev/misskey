@@ -19,7 +19,7 @@ import MkAnimBg from '@/components/MkAnimBg.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkAuthConfirm from '@/components/MkAuthConfirm.vue';
 import { nextTick, onMounted, useTemplateRef } from "vue";
-import { $i } from "@/account.js";
+import { $i } from '@/account.js';
 
 const transactionIdMeta = document.querySelector<HTMLMetaElement>('meta[name="misskey:sso:transaction-id"]');
 if (transactionIdMeta) {

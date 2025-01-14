@@ -58,7 +58,7 @@ import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { miLocalStorage } from "@/local-storage.js";
+import { miLocalStorage } from '@/local-storage.js';
 
 const kawaiiMode = miLocalStorage.getItem('kawaii') === 'true';
 const menu = toRef(defaultStore.state, 'menu');
