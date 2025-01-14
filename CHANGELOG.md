@@ -1,5 +1,11 @@
 ## 2025.1.0
 
+### Note
+- [重要] ノート検索プロバイダの追加に伴い、configファイル（default.ymlなど）の構成が少し変わります.
+  - 新しい設定項目"fulltextSearch.provider"が追加されました. sqlLike, sqlPgroonga, meilisearchのいずれかを設定出来ます.
+  - すでにMeilisearchをお使いの場合、 **"fulltextSearch.provider"を"meilisearch"に設定する必要** があります.
+  - 詳細は #14730 および `.config/example.yml` または `.config/docker_example.yml`の'Fulltext search configuration'をご参照願います.
+
 ### General
 -
 
@@ -32,6 +38,7 @@
 
 ### Server
 - Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
+- Enhance: ノート検索の選択肢としてpgroongaに対応 ( #14730 )
 - Enhance: チャート更新時にDBに同時接続しないように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/830)
 - Enhance: config(default.yml)からSQLログ全文を出力するか否かを設定可能に ( #15266 )
