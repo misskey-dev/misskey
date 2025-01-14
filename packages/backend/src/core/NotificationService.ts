@@ -155,10 +155,11 @@ export class NotificationService implements OnApplicationShutdown {
 			...data,
 		} as any as FilterUnionByProperty<MiNotification, 'type', T>;
 
+		// TODO: 同一ミリ秒に生成されたときにランダム部分が昇順じゃなくてXADDが失敗する可能性があるのでid再生成しながらリトライするべきかも。またはidをRedisの生成したものから生成するようにする。
 		const redisIdPromise = this.redisClient.xadd(
 			`notificationTimeline:${notifieeId}`,
 			'MAXLEN', '~', this.config.perUserNotificationsMaxCount.toString(),
-			'*',
+			this.toXListId(notification.id),
 			'data', JSON.stringify(notification));
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
@@ -228,6 +229,11 @@ export class NotificationService implements OnApplicationShutdown {
 		this.#shutdownController.abort();
 	}
 
+	private toXListId(id: string): string {
+		const { date, additional } = this.idService.parseFull(id);
+		return date.toString() + '-' + additional.toString();
+	}
+
 	@bindThis
 	public async getNotifications(
 		userId: MiUser['id'],
@@ -246,8 +252,8 @@ export class NotificationService implements OnApplicationShutdown {
 			excludeTypes?: (MiNotification['type'] | string)[],
 		},
 	): Promise<MiNotification[]> {
-		let sinceTime = sinceId ? this.idService.parse(sinceId).date.getTime().toString() : null;
-		let untilTime = untilId ? this.idService.parse(untilId).date.getTime().toString() : null;
+		let sinceTime = sinceId ? this.toXListId(sinceId) : null;
+		let untilTime = untilId ? this.toXListId(untilId) : null;
 
 		let notifications: MiNotification[];
 		for (;;) {
