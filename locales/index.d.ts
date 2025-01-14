@@ -5231,6 +5231,14 @@ export interface Locale extends ILocale {
      */
     "acknowledgeNotesAndEnable": string;
     /**
+     * このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。
+     */
+    "federationSpecified": string;
+    /**
+     * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
+     */
+    "federationDisabled": string;
+    /**
      * リアクションする際に確認する
      */
     "confirmOnReact": string;
@@ -10674,6 +10682,49 @@ export interface Locale extends ILocale {
              * 要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。
              */
             "description": string;
+        };
+    };
+    "_captcha": {
+        /**
+         * CAPTCHAを通過してください
+         */
+        "verify": string;
+        /**
+         * サイトキーとシークレットキーにテスト用の値を入力することでプレビューを確認できます。
+         * 詳細は下記ページをご確認ください。
+         */
+        "testSiteKeyMessage": string;
+        "_error": {
+            "_requestFailed": {
+                /**
+                 * CAPTCHAのリクエストに失敗しました
+                 */
+                "title": string;
+                /**
+                 * しばらく後に実行するか、設定をもう一度ご確認ください。
+                 */
+                "text": string;
+            };
+            "_verificationFailed": {
+                /**
+                 * CAPTCHAの検証に失敗しました
+                 */
+                "title": string;
+                /**
+                 * 設定が正しいかどうかもう一度確認ください。
+                 */
+                "text": string;
+            };
+            "_unknown": {
+                /**
+                 * CAPTCHAエラー
+                 */
+                "title": string;
+                /**
+                 * 想定外のエラーが発生しました。
+                 */
+                "text": string;
+            };
         };
     };
 }
