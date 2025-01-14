@@ -369,9 +369,6 @@ importers:
       redis-info:
         specifier: 3.1.0
         version: 3.1.0
-      redis-lock:
-        specifier: 1.0.0
-        version: 1.0.0
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
@@ -9159,10 +9156,6 @@ packages:
 
   redis-info@3.1.0:
     resolution: {integrity: sha512-ER4L9Sh/vm63DkIE0bkSjxluQlioBiBgf5w1UuldaW/3vPcecdljVDisZhmnCMvsxHNiARTTDDHGg9cGwTfrKg==}
-
-  redis-lock@1.0.0:
-    resolution: {integrity: sha512-zfI+Il36jXwRT/W8SBsG132Bc2yp3tMuf3KTGjSzXimadI17NEGBvb/KrDkCuAC2hzVxW5uR5ns/rxuqiWeV3Q==}
-    engines: {node: '>=12'}
 
   redis-parser@3.0.0:
     resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
@@ -20216,8 +20209,6 @@ snapshots:
   redis-info@3.1.0:
     dependencies:
       lodash: 4.17.21
-
-  redis-lock@1.0.0: {}
 
   redis-parser@3.0.0:
     dependencies:
