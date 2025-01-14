@@ -1303,6 +1303,8 @@ lockdown: "ロックダウン"
 pleaseSelectAccount: "アカウントを選択してください"
 availableRoles: "利用可能なロール"
 acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
+federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
+federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -2847,3 +2849,17 @@ _remoteLookupErrors:
   _noSuchObject:
     title: "見つかりません"
     description: "要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。"
+
+_captcha:
+  verify: "CAPTCHAを通過してください"
+  testSiteKeyMessage: "サイトキーとシークレットキーにテスト用の値を入力することでプレビューを確認できます。\n詳細は下記ページをご確認ください。"
+  _error:
+    _requestFailed:
+      title: "CAPTCHAのリクエストに失敗しました"
+      text: "しばらく後に実行するか、設定をもう一度ご確認ください。"
+    _verificationFailed:
+      title: "CAPTCHAの検証に失敗しました"
+      text: "設定が正しいかどうかもう一度確認ください。"
+    _unknown:
+      title: "CAPTCHAエラー"
+      text: "想定外のエラーが発生しました。"
