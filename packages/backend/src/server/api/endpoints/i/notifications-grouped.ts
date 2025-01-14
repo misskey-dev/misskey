@@ -102,17 +102,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return [];
 			}
 
-			let notifications = notificationsRes.map(x => JSON.parse(x[1][1])).filter(x => x.id !== ps.untilId && x !== ps.sinceId) as MiNotification[];
-
-			if (includeTypes && includeTypes.length > 0) {
-				notifications = notifications.filter(notification => includeTypes.includes(notification.type));
-			} else if (excludeTypes && excludeTypes.length > 0) {
-				notifications = notifications.filter(notification => !excludeTypes.includes(notification.type));
-			}
-
-			if (notifications.length === 0) {
-				return [];
-			}
+			const notifications = await this.notificationService.getNotifications(me.id, {
+				sinceId: ps.sinceId,
+				untilId: ps.untilId,
+				limit: ps.limit,
+				includeTypes,
+				excludeTypes,
+			});
 
 			// Mark all as read
 			if (ps.markAsRead) {

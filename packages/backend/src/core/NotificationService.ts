@@ -19,7 +19,7 @@ import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { UserListService } from '@/core/UserListService.js';
-import type { FilterUnionByProperty } from '@/types.js';
+import { FilterUnionByProperty, groupedNotificationTypes, obsoleteNotificationTypes } from '@/types.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 
 @Injectable()
@@ -226,6 +226,74 @@ export class NotificationService implements OnApplicationShutdown {
 	@bindThis
 	public dispose(): void {
 		this.#shutdownController.abort();
+	}
+
+	@bindThis
+	public async getNotifications(
+		userId: MiUser['id'],
+		{
+			sinceId,
+			untilId,
+			limit = 20,
+			includeTypes,
+			excludeTypes,
+		}: {
+			sinceId?: string,
+			untilId?: string,
+			limit?: number,
+			// any extra types are allowed, those are no-op
+			includeTypes?: (MiNotification['type'] | string)[],
+			excludeTypes?: (MiNotification['type'] | string)[],
+		},
+	): Promise<MiNotification[]> {
+		let sinceTime = sinceId ? this.idService.parse(sinceId).date.getTime().toString() : null;
+		let untilTime = untilId ? this.idService.parse(untilId).date.getTime().toString() : null;
+
+		let notifications: MiNotification[];
+		for (;;) {
+			let notificationsRes: [id: string, fields: string[]][];
+
+			// sinceidのみの場合は古い順、そうでない場合は新しい順。 QueryService.makePaginationQueryも参照
+			if (sinceTime && !untilTime) {
+				notificationsRes = await this.redisClient.xrange(
+					`notificationTimeline:${userId}`,
+					'(' + sinceTime,
+					'+',
+					'COUNT', limit);
+			} else {
+				notificationsRes = await this.redisClient.xrevrange(
+					`notificationTimeline:${userId}`,
+					untilTime ? '(' + untilTime : '+',
+					sinceTime ? '(' + sinceTime : '-',
+					'COUNT', limit);
+			}
+
+			if (notificationsRes.length === 0) {
+				return [];
+			}
+
+			notifications = notificationsRes.map(x => JSON.parse(x[1][1])) as MiNotification[];
+
+			if (includeTypes && includeTypes.length > 0) {
+				notifications = notifications.filter(notification => includeTypes.includes(notification.type));
+			} else if (excludeTypes && excludeTypes.length > 0) {
+				notifications = notifications.filter(notification => !excludeTypes.includes(notification.type));
+			}
+
+			if (notifications.length !== 0) {
+				// 通知が１件以上ある場合は返す
+				break;
+			}
+
+			// フィルタしたことで通知が0件になった場合、次のページを取得する
+			if (sinceId && !untilId) {
+				sinceTime = notificationsRes[notificationsRes.length - 1][0];
+			} else {
+				untilTime = notificationsRes[notificationsRes.length - 1][0];
+			}
+		}
+
+		return notifications;
 	}
 
 	@bindThis
