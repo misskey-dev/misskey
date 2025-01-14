@@ -55,6 +55,9 @@
 - Fix: `/api/pages/update`にて`name`を指定せずにリクエストするとエラーが発生する問題を修正
 - Fix: AIセンシティブ判定が arm64 環境で動作しない問題を修正
 
+### Misskey.js
+- Feat: allow setting `binaryType` of WebSocket connection
+
 ## 2024.11.0
 
 ### Note
