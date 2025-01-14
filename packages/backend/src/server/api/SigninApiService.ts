@@ -13,7 +13,6 @@ import type {
 	SigninsRepository,
 	UserProfilesRepository,
 	UserSecurityKeysRepository,
-	UsersRepository,
 } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
@@ -37,9 +36,6 @@ export class SigninApiService {
 
 		@Inject(DI.meta)
 		private meta: MiMeta,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
@@ -114,10 +110,37 @@ export class SigninApiService {
 		}
 
 		// Fetch user
-		const user = await this.usersRepository.findOneBy({
-			usernameLower: username.toLowerCase(),
-			host: IsNull(),
-		}) as MiLocalUser;
+		const profiles = await this.userProfilesRepository.find({
+			relations: ['user'],
+			where: username.includes('@') ? {
+				email: username,
+				emailVerified: true,
+				user: {
+					host: IsNull(),
+				}
+			} : {
+				user: {
+					usernameLower: username.toLowerCase(),
+					host: IsNull(),
+				},
+			},
+			//同一のメールアドレスを使用しているアカウントが他にないかどうかを確認するために最大2件取得する
+			take: 2,
+			order: {
+				userId: 1,
+			},
+		});
+
+		if (profiles.length !== 1) {
+			// v12.96.0以前では同一のメールを複数のアカウントで使える。アカウントが複数見つかった場合・一つも見つからなかった場合は
+			// アカウントが見つからなかったときと同一のエラーを返す
+			return error(404, {
+				id: '6cc579cc-885d-43d8-95c2-b8c7fc963280',
+			});
+		}
+
+		const profile = profiles[0];
+		const user = (profile?.user as MiLocalUser | null) ?? null;
 
 		if (user == null) {
 			return error(404, {
@@ -130,8 +153,6 @@ export class SigninApiService {
 				id: 'e03a5f46-d309-4865-9b69-56282d94e1eb',
 			});
 		}
-
-		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 		const securityKeysAvailable = await this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1);
 
 		if (password == null) {

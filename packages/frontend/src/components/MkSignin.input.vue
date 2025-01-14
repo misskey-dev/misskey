@@ -32,9 +32,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<!-- username入力 -->
 		<form class="_gaps_s" @submit.prevent="emit('usernameSubmitted', username)">
-			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-cy-signin-username>
-				<template #prefix>@</template>
-				<template #suffix>@{{ host }}</template>
+			<MkInput
+				v-model="username"
+				:placeholder="isEmail ? i18n.ts.emailAddress : i18n.ts.username"
+				:type="isEmail ? 'email' : 'text'"
+				:pattern="isEmail ? undefined : '^[^@]+$'"
+				:spellcheck="false"
+				:autocomplete="isEmail ? 'email' : 'username webauthn'"
+				autofocus
+				required
+				data-cy-signin-username
+			>
+				<template #prefix>
+					<i v-if="isEmail" class="ti ti-mail"></i>
+					<i v-else class="ti ti-at"></i>
+				</template>
+				<template v-if="!isEmail" #suffix>@{{ host }}</template>
+				<template #caption><button class="_textButton" type="button" @click="isEmail = !isEmail">{{ isEmail ? i18n.ts.useUsername : i18n.ts.useEmail }}</button></template>
 			</MkInput>
 			<MkButton type="submit" large primary rounded style="margin: 0 auto;" data-cy-signin-page-input-continue>{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</form>
@@ -82,6 +96,7 @@ const emit = defineEmits<{
 const host = toUnicode(configHost);
 
 const username = ref('');
+const isEmail = ref(false);
 
 //#region Open on remote
 function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {

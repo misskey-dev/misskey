@@ -3731,6 +3731,10 @@ export interface Locale extends ILocale {
      */
     "useDrawerReactionPickerForMobile": string;
     /**
+     * おかえりなさい
+     */
+    "welcomeBack": string;
+    /**
      * おかえりなさい、{name}さん
      */
     "welcomeBackWithName": ParameterizedString<"name">;
@@ -5230,6 +5234,14 @@ export interface Locale extends ILocale {
      * 注意事項を理解した上でオンにします。
      */
     "acknowledgeNotesAndEnable": string;
+    /**
+     * ユーザー名を使う
+     */
+    "useUsername": string;
+    /**
+     * メールアドレスを使う
+     */
+    "useEmail": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
