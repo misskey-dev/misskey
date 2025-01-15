@@ -15,12 +15,12 @@ const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.s
 
 //#region バックエンド/フロントエンド分離開発モード時のデータをプロキシする
 // https://github.com/misskey-dev/misskey/pull/15284
-const { port } = yaml.load(await readFile('../../.config/default.yml', 'utf-8'));
+const serverConfig = process.env.NODE_ENV === 'development' ? yaml.load(await readFile('../../.config/default.yml', 'utf-8')) : null;
 
 function getProxySettings(): NonNullable<UserConfig['server']>['proxy'] {
 	if (process.env.NODE_ENV === 'development') {
 		return {
-			'/files': `http://localhost:${port}`,
+			'/files': `http://localhost:${serverConfig.port}`,
 		};
 	} else {
 		return {};
