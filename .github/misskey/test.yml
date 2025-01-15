@@ -15,7 +15,3 @@ redis:
   host: 127.0.0.1
   port: 56312
 id: aidx
-
-logging:
-  sql:
-    disableQueryTruncation: true
