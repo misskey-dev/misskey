@@ -27,6 +27,7 @@
 - Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
 - Enhance: チャート更新時にDBに同時接続しないように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/830)
+- Enhance: ノート作成後の後処理をワーカープロセスで実行するオプションを追加( #15052 )
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
