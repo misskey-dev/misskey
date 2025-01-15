@@ -248,9 +248,7 @@ const cwTextLength = computed((): number => {
 	return cw.value?.length ?? 0;
 });
 
-const maxCwTextLength = computed((): number => {
-	return 100;
-});
+const maxCwTextLength = 100;
 
 const canPost = computed((): boolean => {
 	return !props.mock && !posting.value && !posted.value &&
