@@ -6,7 +6,6 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import {
 	api,
 	failedApiCall,
@@ -19,6 +18,7 @@ import {
 	userList,
 } from '../utils.js';
 import type * as misskey from 'misskey-js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 const compareBy = <T extends { id: string }>(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
 	return selector(a).localeCompare(selector(b));
@@ -232,12 +232,12 @@ describe('アンテナ', () => {
 		await failedApiCall({
 			endpoint: 'antennas/create',
 			parameters: { ...defaultParam, keywords: [[]], excludeKeywords: [[]] },
-			user: alice
+			user: alice,
 		}, {
 			status: 400,
 			code: 'EMPTY_KEYWORD',
-			id: '53ee222e-1ddd-4f9a-92e5-9fb82ddb463a'
-		})
+			id: '53ee222e-1ddd-4f9a-92e5-9fb82ddb463a',
+		});
 	});
 	//#endregion
 	//#region 更新(antennas/update)
@@ -271,12 +271,12 @@ describe('アンテナ', () => {
 		await failedApiCall({
 			endpoint: 'antennas/update',
 			parameters: { ...defaultParam, antennaId: antenna.id, keywords: [[]], excludeKeywords: [[]] },
-			user: alice
+			user: alice,
 		}, {
 			status: 400,
 			code: 'EMPTY_KEYWORD',
-			id: '721aaff6-4e1b-4d88-8de6-877fae9f68c4'
-		})
+			id: '721aaff6-4e1b-4d88-8de6-877fae9f68c4',
+		});
 	});
 
 	//#endregion
@@ -372,8 +372,6 @@ describe('アンテナ', () => {
 				],
 			},
 			{
-				// https://github.com/misskey-dev/misskey/issues/9025
-				// https://github.com/yojo-art/cherrypick/pull/568
 				label: 'フォロワー限定投稿とDM投稿を含む',
 				parameters: () => ({}),
 				posts: [
@@ -384,8 +382,6 @@ describe('アンテナ', () => {
 				],
 			},
 			{
-				// https://github.com/misskey-dev/misskey/issues/9025
-				// https://github.com/yojo-art/cherrypick/pull/568
 				label: 'フォロワー限定投稿とDM投稿を含まない',
 				parameters: () => ({}),
 				posts: [
