@@ -567,7 +567,7 @@ objectStorageRegionDesc: "指定一个可用区，例如“xx-east-1”。 如�
 objectStorageUseSSL: "使用 SSL"
 objectStorageUseSSLDesc: "如果不使用 https 进行 API 连接，请关闭。"
 objectStorageUseProxy: "使用代理"
-objectStorageUseProxyDesc: "如果您不使用代理进行 API 连接，请将其关闭。"
+objectStorageUseProxyDesc: "如果不使用代理进行 API 连接，请关闭。"
 objectStorageSetPublicRead: "上传时设置为 public-read"
 s3ForcePathStyleDesc: "启用 s3ForcePathStyle 会强制将存储桶名称指定为 URL 中路径的一部分，而不是主机名。使用自托管 Minio 等时可能需要启用。"
 serverLogs: "服务器日志"
@@ -1326,7 +1326,7 @@ _abuseUserReport:
   resolve: "解决"
   accept: "确认"
   reject: "拒绝"
-  resolveTutorial: "如果举报内容有理且已解决，选择「确认」将案件以肯定的态度标记为已解决。\n如果举报内容站不住脚，选择「拒绝」将案件以否定的态度标记为已解决。"
+  resolveTutorial: "如果认可举报并已解决，选择「确认」将案件以肯定的态度标记为已解决。\n如果不认可举报，选择「拒绝」将案件以否定的态度标记为已解决。"
 _delivery:
   status: "投递状态"
   stop: "停止投递"
