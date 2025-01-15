@@ -115,10 +115,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkSelect v-model="emojiPickerStyle">
 				<template #label>{{ i18n.ts.style }}</template>
-				<template #caption>{{ i18n.ts.needReloadToApply }}</template>
 				<option value="auto">{{ i18n.ts.auto }}</option>
 				<option value="popup">{{ i18n.ts.popup }}</option>
 				<option value="drawer">{{ i18n.ts.drawer }}</option>
+				<option value="window">{{ i18n.ts.window }}</option>
 			</MkSelect>
 		</div>
 	</FormSection>
@@ -142,6 +142,7 @@ import { emojiPicker } from '@/scripts/emoji-picker.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import { reloadAsk } from '@/scripts/reload-ask';
 
 const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
 const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));
@@ -164,7 +165,9 @@ function previewReaction(ev: MouseEvent) {
 }
 
 function previewEmoji(ev: MouseEvent) {
-	emojiPicker.show(getHTMLElement(ev));
+	emojiPicker.show({
+		src: getHTMLElement(ev),
+	});
 }
 
 async function overwriteFromPinnedEmojis() {
@@ -238,6 +241,10 @@ watch(pinnedEmojis, () => {
 	defaultStore.set('pinnedEmojis', pinnedEmojis.value);
 }, {
 	deep: true,
+});
+
+watch(emojiPickerStyle, async () => {
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 
 definePageMetadata(() => ({
