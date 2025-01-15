@@ -211,6 +211,10 @@ export interface Locale extends ILocale {
      */
     "copyLink": string;
     /**
+     * リモートのリンクをコピー
+     */
+    "copyRemoteLink": string;
+    /**
      * リノートのリンクをコピー
      */
     "copyLinkRenote": string;
@@ -2763,6 +2767,10 @@ export interface Locale extends ILocale {
      */
     "hardWordMute": string;
     /**
+     * ミュートされたワードを表示
+     */
+    "showMutedWord": string;
+    /**
      * 指定した語句を含むノートを隠します。ワードミュートとは異なり、ノートは完全に表示されなくなります。
      */
     "hardWordMuteDescription": string;
@@ -2782,6 +2790,10 @@ export interface Locale extends ILocale {
      * {name}が何かを言いました
      */
     "userSaysSomething": ParameterizedString<"name">;
+    /**
+     * {name}が「{word}」について何かを言いました
+     */
+    "userSaysSomethingAbout": ParameterizedString<"name" | "word">;
     /**
      * アクティブにする
      */

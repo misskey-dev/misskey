@@ -13,6 +13,7 @@
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
 - Enhance: 照会に失敗した場合、その理由を表示するように
+- Enhance: ワードミュートで検知されたワードを表示できるように
 - Enhance: リモートのノートのリンクをコピーできるように
 - Enhance: 連合がホワイトリスト化・無効化されているサーバー向けのデザイン修正
 - Enhance: AiScriptのセーブデータを明示的に削除する関数`Mk:remove`を追加
@@ -55,6 +56,7 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/869)
 - Fix: `/api/pages/update`にて`name`を指定せずにリクエストするとエラーが発生する問題を修正
 - Fix: AIセンシティブ判定が arm64 環境で動作しない問題を修正
+- Fix: 非Misskey系のソフトウェアからHTML`<ruby>`タグを含むノートを受信した場合、MFMの読み仮名（ルビ）文法に変換して表示
 
 ### Misskey.js
 - Feat: allow setting `binaryType` of WebSocket connection
