@@ -38,8 +38,9 @@ function onPosted() {
 }
 
 function onModalClose() {
-	// MkPostFormでもonBeforeUnmountで発火しているが、modalの場合は閉じるまでのトランジションがあるので
+	// MkPostFormでもonBeforeUnmountで発火しているが、Dialogの場合は閉じるまでのトランジションがあるので
 	// 閉じるボタンが押された瞬間に先に発火する
+	// なのでDialogの場合は2回発火されるが、ウィンドウを閉じる指示のため悪影響はない
 	globalEvents.emit('requestCloseEmojiPickerWindow');
 }
 
