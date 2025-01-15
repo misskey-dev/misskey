@@ -100,8 +100,8 @@ function highlightSql(sql: string) {
 	});
 }
 
-function truncateSql(sql: string) {
-	return sql.length > 100 ? `${sql.substring(0, 100)}...` : sql;
+function truncateSql(sql: string): [string, boolean] {
+	return sql.length > 100 ? [`${sql.substring(0, 100)}`, true] : [sql, false];
 }
 
 function stringifyParameter(param: any) {
@@ -117,13 +117,16 @@ class MyCustomLogger implements Logger {
 	}
 
 	@bindThis
-	private transformQueryLog(sql: string) {
+	private transformQueryLog(sql: string): string {
 		let modded = sql;
+		let truncated: boolean = false;
 		if (!this.props.disableQueryTruncation) {
-			modded = truncateSql(modded);
+			[modded, truncated] = truncateSql(modded);
 		}
 
-		return highlightSql(modded);
+		modded = highlightSql(modded);
+		if (truncated) modded += '...';
+		return modded;
 	}
 
 	@bindThis
