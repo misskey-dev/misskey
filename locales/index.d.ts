@@ -211,6 +211,10 @@ export interface Locale extends ILocale {
      */
     "copyLink": string;
     /**
+     * リモートのリンクをコピー
+     */
+    "copyRemoteLink": string;
+    /**
      * リノートのリンクをコピー
      */
     "copyLinkRenote": string;
