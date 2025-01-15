@@ -54,6 +54,7 @@ export default class Stream extends EventEmitter<StreamEvents> implements IStrea
 
 	constructor(origin: string, user: { token: string; } | null, options?: {
 		WebSocket?: Options['WebSocket'];
+		binaryType?: ReconnectingWebSocket['binaryType'];
 	}) {
 		super();
 
@@ -86,6 +87,9 @@ export default class Stream extends EventEmitter<StreamEvents> implements IStrea
 			minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
 			WebSocket: options.WebSocket,
 		});
+		if (options.binaryType) {
+			this.stream.binaryType = options.binaryType;
+		}
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);
