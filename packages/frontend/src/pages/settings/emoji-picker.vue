@@ -139,10 +139,10 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { deepClone } from '@/scripts/clone.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
+import { reloadAsk } from '@/scripts/reload-ask.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { reloadAsk } from '@/scripts/reload-ask';
 
 const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
 const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));
