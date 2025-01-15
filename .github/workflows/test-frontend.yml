@@ -24,6 +24,7 @@ on:
       - .github/misskey/test.yml
 jobs:
   vitest:
+    name: Unit tests (frontend)
     runs-on: ubuntu-latest
 
     strategy:
@@ -58,6 +59,7 @@ jobs:
         files: ./packages/frontend/coverage/coverage-final.json
 
   e2e:
+    name: E2E tests (frontend)
     runs-on: ubuntu-latest
 
     strategy:

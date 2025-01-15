@@ -12,6 +12,7 @@ env:
 
 jobs:
   production:
+    name: Production build
     runs-on: ubuntu-latest
 
     strategy:
