@@ -33,7 +33,8 @@ import type {
 	RelationshipQueue,
 	SystemQueue,
 	UserWebhookDeliverQueue,
-	SystemWebhookDeliverQueue, LocalUserDeliverQueue,
+	SystemWebhookDeliverQueue,
+	LocalUserDeliverQueue,
 } from '@/core/QueueModule.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
