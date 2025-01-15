@@ -1,6 +1,4 @@
 import path from 'path';
-import { readFile } from 'fs/promises';
-import * as yaml from 'js-yaml';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
 
@@ -10,21 +8,6 @@ import packageInfo from './package.json' with { type: 'json' };
 import pluginJson5 from './vite.json5.js';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
-
-//#region バックエンド/フロントエンド分離開発モード時のデータをプロキシする
-// https://github.com/misskey-dev/misskey/pull/15284
-const serverConfig = process.env.NODE_ENV === 'development' ? yaml.load(await readFile('../../.config/default.yml', 'utf-8')) : null;
-
-function getProxySettings(): NonNullable<UserConfig['server']>['proxy'] {
-	if (process.env.NODE_ENV === 'development') {
-		return {
-			'/files': `http://localhost:${serverConfig.port}`,
-		};
-	} else {
-		return {};
-	}
-}
-//#endregion
 
 /**
  * Misskeyのフロントエンドにバンドルせず、CDNなどから別途読み込むリソースを記述する。
@@ -86,7 +69,6 @@ export function getConfig(): UserConfig {
 				// クライアント側のWSポートをViteサーバーのポートに強制させることで、正しくHMRが機能するようになる
 				clientPort: 5174,
 			},
-			proxy: getProxySettings(),
 		},
 
 		plugins: [

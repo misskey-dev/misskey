@@ -1,9 +1,7 @@
 import path from 'path';
-import { readFile } from 'fs/promises';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
-import * as yaml from 'js-yaml';
 
 import locales from '../../locales/index.js';
 import meta from '../../package.json';
@@ -12,21 +10,6 @@ import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-modul
 import pluginJson5 from './vite.json5.js';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
-
-//#region バックエンド/フロントエンド分離開発モード時のデータをプロキシする
-// https://github.com/misskey-dev/misskey/pull/15284
-const serverConfig = process.env.NODE_ENV === 'development' ? yaml.load(await readFile('../../.config/default.yml', 'utf-8')) : null;
-
-function getProxySettings(): NonNullable<UserConfig['server']>['proxy'] {
-	if (process.env.NODE_ENV === 'development') {
-		return {
-			'/files': `http://localhost:${serverConfig.port}`,
-		};
-	} else {
-		return {};
-	}
-}
-//#endregion
 
 /**
  * Misskeyのフロントエンドにバンドルせず、CDNなどから別途読み込むリソースを記述する。
@@ -88,7 +71,6 @@ export function getConfig(): UserConfig {
 				// クライアント側のWSポートをViteサーバーのポートに強制させることで、正しくHMRが機能するようになる
 				clientPort: 5173,
 			},
-			proxy: getProxySettings(),
 			headers: { // なんか効かない
 				'X-Frame-Options': 'DENY',
 			},
