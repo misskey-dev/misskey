@@ -553,7 +553,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const html = await this.httpRequestService.getHtml(url);
 
 			const { window } = new JSDOM(html);
-			const doc = window.document;
+			const doc: Document = window.document;
 
 			const myLink = `${this.config.url}/@${user.username}`;
 
