@@ -31,7 +31,7 @@ import { globalEvents } from '@/events.js';
 import MkWindow from '@/components/MkWindow.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
 	src?: HTMLElement;
 	showPinned?: boolean;
 	pinnedEmojis?: string[];
