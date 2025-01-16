@@ -67,7 +67,8 @@ const textCountPercentage = computed(() => {
 	return props.textLength / maxTextLength.value * 100;
 });
 
-// actionを発火した瞬間にMkMenuItemからcloseイベントが出るが、それを利用すると正しくemitできないため、action内で別途closeを呼ぶ
+// actionを発火した瞬間にMkMenuItemからcloseイベントが出るが、それ経由でmodalをcloseしてしまうと正しくemitできない
+// （emitする前にこのコンポーネントが閉じられてdisposeされてしまう）ため、action内で別途modalをcloseするようにする
 const menuDef = computed<MenuItem[]>(() => {
 	let reactionAcceptanceIcon = 'ti ti-icons';
 
