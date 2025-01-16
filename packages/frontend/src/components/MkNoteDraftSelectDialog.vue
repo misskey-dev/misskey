@@ -23,10 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div :class="$style.draftHeader">
 								<div :class="$style.headerLeft">
 									<div v-if="draft.reply">
-										<i class="ti ti-arrow-back-up"></i><MkAvatar :user="draft.reply.user" :class="$style.headerAvater"/>@{{ draft.reply.user.username }} <span>{{ truncateText(draft.reply.text, 10) }}</span>
+										<i class="ti ti-arrow-back-up"></i><MkAvatar :user="draft.reply.user" :class="$style.headerAvater"/>@{{ `${draft.reply.user.username}${ draft.reply.user.host ? `@${draft.reply.user.host}` : '' }` }} <span>{{ truncateText(draft.reply.text, 10) }}</span>
 									</div>
 									<div v-else-if="draft.renote">
-										<i class="ti ti-quote"></i><MkAvatar :user="draft.renote.user" :class="$style.headerAvater"/>@{{ draft.renote.user.username }} <span>{{ truncateText(draft.renote?.text, 10) }}</span>
+										<i class="ti ti-quote"></i><MkAvatar :user="draft.renote.user" :class="$style.headerAvater"/>@{{ `${draft.renote.user.username}${ draft.renote.user.host ? `@${draft.renote.user.host}` : '' }` }} <span>{{ truncateText(draft.renote?.text, 10) }}</span>
 									</div>
 									<div v-else>
 										<i class="ti ti-pencil-minus"></i>
