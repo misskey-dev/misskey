@@ -1054,7 +1054,7 @@ function showDraftMenu() {
 		localOnly.value = draft.localOnly ?? false;
 		files.value = draft.files ?? [];
 		hashtags.value = draft.hashtag ?? '';
-		//if (draft.hashtag) withHashtags.value = true;
+		if (draft.hashtag) withHashtags.value = true;
 		if (draft.poll) {
 			// 投票を一時的に空にしないと反映されないため
 			poll.value = null;
