@@ -15,6 +15,7 @@ import { MiUser } from '@/models/_.js';
 import { ApiError } from '@/server/api/error.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { NoteDraftEntityService } from '@/core/entities/NoteDraftEntityService.js';
 
 export const meta = {
 	tags: ['notes', 'drafts'],
@@ -199,6 +200,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private noteDraftService: NoteDraftService,
+		private noteDraftEntityService: NoteDraftEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// TODO: ノートendpointのバリデーションとServiceとして共通化
@@ -340,8 +342,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				channel,
 			});
 
+			const createdDraft = await this.noteDraftEntityService.pack(draft, me);
+
 			return {
-				createdDraft: draft,
+				createdDraft,
 			};
 		});
 	}
