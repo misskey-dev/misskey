@@ -5,6 +5,7 @@
 
 import { defineAsyncComponent } from 'vue';
 import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { popup } from '@/os.js';
 
@@ -51,10 +52,17 @@ export function pleaseLogin(opts: {
 } = {}) {
 	if ($i) return;
 
+	let _openOnRemote: OpenOnRemoteOptions | undefined = undefined;
+
+	// 連合できる場合と、（連合ができなくても）共有する場合は外部連携オプションを設定
+	if (opts.openOnRemote != null && (instance.federation !== 'none' || opts.openOnRemote.type === 'share')) {
+		_openOnRemote = opts.openOnRemote;
+	}
+
 	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {
 		autoSet: true,
-		message: opts.message ?? (opts.openOnRemote ? i18n.ts.signinOrContinueOnRemote : i18n.ts.signinRequired),
-		openOnRemote: opts.openOnRemote,
+		message: opts.message ?? (_openOnRemote ? i18n.ts.signinOrContinueOnRemote : i18n.ts.signinRequired),
+		openOnRemote: _openOnRemote,
 	}, {
 		cancelled: () => {
 			if (opts.path) {

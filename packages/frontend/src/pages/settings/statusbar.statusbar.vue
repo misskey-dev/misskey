@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSelect v-model="statusbar.type" placeholder="Please select">
 		<template #label>{{ i18n.ts.type }}</template>
 		<option value="rss">RSS</option>
-		<option value="federation">Federation</option>
+		<option v-if="instance.federation !== 'none'" value="federation">Federation</option>
 		<option value="userList">User list timeline</option>
 	</MkSelect>
 
@@ -96,6 +96,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import { deepClone } from '@/scripts/clone.js';
 
 const props = defineProps<{

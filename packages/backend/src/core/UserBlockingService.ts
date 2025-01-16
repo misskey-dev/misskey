@@ -118,13 +118,7 @@ export class UserBlockingService implements OnModuleInit {
 				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
-
-				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
-				for (const webhook of webhooks) {
-					this.queueService.userWebhookDeliver(webhook, 'unfollow', {
-						user: packed,
-					});
-				}
+				this.webhookService.enqueueUserWebhook(follower.id, 'unfollow', { user: packed });
 			});
 		}
 
