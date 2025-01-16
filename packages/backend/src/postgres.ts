@@ -82,7 +82,7 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import { MiNoteDraft } from './models/NoteDraft.js';
+import { MiNoteDraft } from '@/models/NoteDraft.js';
 
 pg.types.setTypeParser(20, Number);
 
