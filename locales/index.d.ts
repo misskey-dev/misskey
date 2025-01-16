@@ -5250,6 +5250,26 @@ export interface Locale extends ILocale {
      * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
      */
     "federationDisabled": string;
+    /**
+     * 下書き
+     */
+    "draft": string;
+    /**
+     * 下書きを選択
+     */
+    "selectDraft": string;
+    /**
+     * 下書きはありません
+     */
+    "noDrafts": string;
+    /**
+     * 下書きを保存
+     */
+    "saveDraft": string;
+    /**
+     * 下書きを削除
+     */
+    "removeDraft": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

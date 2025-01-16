@@ -1308,6 +1308,11 @@ availableRoles: "利用可能なロール"
 acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
 federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
+draft: "下書き"
+selectDraft: "下書きを選択"
+noDrafts: "下書きはありません"
+saveDraft: "下書きを保存"
+removeDraft: "下書きを削除"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
