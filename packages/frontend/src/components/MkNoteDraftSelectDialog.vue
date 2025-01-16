@@ -34,13 +34,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</div>
 								<div :class="$style.headerRight">
 									<div style="margin-left: 0.5em;" :title="i18n.ts._visibility[draft.visibility]">
-										<i v-if="draft.visibility === 'public'" class="ti ti-world"></i>
+										<i v-if="draft.visibility === 'public' && draft.channel == null" class="ti ti-world"></i>
 										<i v-else-if="draft.visibility === 'home'" class="ti ti-home"></i>
 										<i v-else-if="draft.visibility === 'followers'" class="ti ti-lock"></i>
 										<i v-else-if="draft.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 									</div>
-									<span v-if="draft.localOnly" v-tooltip="i18n.ts.localOnly"><i class="ti ti-rocket-off"></i></span>
 									<span v-if="draft.channel" v-tooltip="i18n.ts.channel"><i class="ti ti-device-tv"></i> </span>
+									<span v-if="draft.localOnly" v-tooltip="i18n.ts.localOnly"><i class="ti ti-rocket-off"></i></span>
 								</div>
 							</div>
 							<div :class="$style.draftBody">
@@ -169,6 +169,11 @@ onMounted(() => {
 }
 
 .headerLeft {
+	display: flex;
+	align-items: center;
+}
+
+.headerRight {
 	display: flex;
 	align-items: center;
 }
