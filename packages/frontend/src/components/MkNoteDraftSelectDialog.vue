@@ -19,31 +19,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.drafts">
 				<div v-for="draft in drafts" :key="draft.id" class="_button" :class="[$style.draft, { [$style.selected]: selected && selected.id === draft.id }]" @click="selected = draft" @dblclick="ok()">
 					<div :class="$style.draftContainer">
-						<div :class="$style.draftHeader">
-							<div :class="$style.headerLeft">
-								<div v-if="draft.reply">
-									<i class="ti ti-arrow-back-up"></i><MkAvatar :user="draft.reply.user" :class="$style.headerAvater"/><span>{{ truncateText(draft.reply.text, 10) }}</span>
+						<div :class="$style.draftContent">
+							<div :class="$style.draftHeader">
+								<div :class="$style.headerLeft">
+									<div v-if="draft.reply">
+										<i class="ti ti-arrow-back-up"></i><MkAvatar :user="draft.reply.user" :class="$style.headerAvater"/>@{{ draft.reply.user.username }} <span>{{ truncateText(draft.reply.text, 10) }}</span>
+									</div>
+									<div v-else-if="draft.renote">
+										<i class="ti ti-quote"></i><MkAvatar :user="draft.renote.user" :class="$style.headerAvater"/>@{{ draft.renote.user.username }} <span>{{ truncateText(draft.renote?.text, 10) }}</span>
+									</div>
+									<div v-else>
+										<i class="ti ti-pencil-minus"></i>
+									</div>
 								</div>
-								<div v-else-if="draft.renote">
-									<i class="ti ti-quote"></i><MkAvatar :user="draft.renote.user" :class="$style.headerAvater"/><span>{{ truncateText(draft.renote?.text, 10) }}</span>
-								</div>
-								<div v-else>
-									<i class="ti ti-pencil-minus"></i>
+								<div :class="$style.headerRight">
+									<div style="margin-left: 0.5em;" :title="i18n.ts._visibility[draft.visibility]">
+										<i v-if="draft.visibility === 'public'" class="ti ti-world"></i>
+										<i v-else-if="draft.visibility === 'home'" class="ti ti-home"></i>
+										<i v-else-if="draft.visibility === 'followers'" class="ti ti-lock"></i>
+										<i v-else-if="draft.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+									</div>
 								</div>
 							</div>
-							<div :class="$style.headerRight">
-								<div style="margin-left: 0.5em;" :title="i18n.ts._visibility[draft.visibility]">
-									<i v-if="draft.visibility === 'public'" class="ti ti-world"></i>
-									<i v-else-if="draft.visibility === 'home'" class="ti ti-home"></i>
-									<i v-else-if="draft.visibility === 'followers'" class="ti ti-lock"></i>
-									<i v-else-if="draft.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
-								</div>
+							<div :class="$style.draftBody">
+								<div v-if="draft.cw != null" class="cw">{{ truncateText(draft.cw, 20) }}</div>
+								{{ truncateText(draft.text, 20) }}
 							</div>
 						</div>
-						<div :class="$style.draftBody">
-							<div v-if="draft.cw != null" class="cw">{{ truncateText(draft.cw, 20) }}</div>
-							{{ truncateText(draft.text, 20) }}
-						</div>
+						<MkButton short :class="$style.deleteButton" @click="deleteDraft(draft)"><i class="ti ti-trash"></i></MkButton>
 					</div>
 				</div>
 				<div v-if="drafts.length === 0" class="_empty" :class="$style.empty">{{ i18n.ts.noDrafts }}</div>
@@ -56,6 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkButton from './MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -88,6 +92,12 @@ async function ok() {
 function cancel() {
 	emit('cancel');
 	dialogEl.value?.close();
+}
+
+function deleteDraft(draft: Misskey.entities.NoteDraft) {
+	misskeyApi('notes/drafts/delete', { draftId: draft.id }).then(() => {
+		drafts.value = drafts.value.filter(d => d.id !== draft.id);
+	});
 }
 
 onMounted(() => {
@@ -138,6 +148,12 @@ onMounted(() => {
 
 .draftContainer {
 	display: flex;
+	flex: 1;
+	flex-basis: 100%;
+}
+
+.draftContent {
+	display: flex;
 	flex-direction: column;
 	flex: 1;
 	flex-basis: 100%;
@@ -164,6 +180,12 @@ onMounted(() => {
 .draftBody {
 	padding: 0 8px;
 	min-width: 0;
+}
+
+.deleteButton {
+	align-self: center;
+	margin-left: 0.5em;
+	min-width: 40px;
 }
 
 .empty {

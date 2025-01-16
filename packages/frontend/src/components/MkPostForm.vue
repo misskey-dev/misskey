@@ -195,6 +195,8 @@ const justEndedComposition = ref(false);
 const renoteTargetNote: ShallowRef<PostFormProps['renote'] | null> = shallowRef(props.renote);
 const replyTargetNote: ShallowRef<PostFormProps['reply'] | null> = shallowRef(props.reply);
 
+const serverDraftId = ref<string | null>(null);
+
 const draftKey = computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
 
@@ -883,6 +885,10 @@ async function post(ev?: MouseEvent) {
 			if (m === 0 && s === 0) {
 				claimAchievement('postedAt0min0sec');
 			}
+
+			if (serverDraftId.value != null) {
+				misskeyApi('notes/drafts/delete', { draftId: serverDraftId.value });
+			}
 		});
 	}).catch(err => {
 		posting.value = false;
@@ -1019,6 +1025,8 @@ async function showDraftMenu() {
 	renoteTargetNote.value = draft.renote;
 	replyTargetNote.value = draft.reply;
 	reactionAcceptance.value = draft.reactionAcceptance;
+
+	serverDraftId.value = draft.id;
 }
 
 onMounted(() => {
