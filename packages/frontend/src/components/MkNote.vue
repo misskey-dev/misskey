@@ -569,13 +569,8 @@ function emitUpdReaction(emoji: string, delta: number) {
 	overflow: clip;
 	contain: content;
 
-	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
-	// 下の方までスクロールすると上のノートの高さがここで決め打ちされたものに変化し、表示しているノートの位置が変わってしまう
-	// ノートがマウントされたときに自身の高さを取得し contain-intrinsic-size を設定しなおせばほぼ解決できそうだが、
-	// 今度はその処理自体がパフォーマンス低下の原因にならないか懸念される。また、被リアクションでも高さは変化するため、やはり多少のズレは生じる
-	// 一度レンダリングされた要素はブラウザがよしなにサイズを覚えておいてくれるような実装になるまで待った方が良さそう(なるのか？)
-	//content-visibility: auto;
-  //contain-intrinsic-size: 0 128px;
+	content-visibility: auto;
+	contain-intrinsic-size: auto none auto 128px;
 
 	&:focus-visible {
 		outline: none;
