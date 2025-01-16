@@ -125,7 +125,7 @@ export const paramDef = {
 			type: 'string', format: 'misskey:id',
 		} },
 		cw: { type: 'string', nullable: true, minLength: 1, maxLength: 100 },
-		hashtag: { type: 'string', nullable: true, minLength: 1, maxLength: 200 },
+		hashtag: { type: 'string', nullable: true, maxLength: 200 },
 		localOnly: { type: 'boolean', default: false },
 		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote'], default: null },
 		replyId: { type: 'string', format: 'misskey:id', nullable: true },
