@@ -73,6 +73,7 @@ export class NoteDraftService {
 		const draft = await this.noteDraftsRepository.insertOne({
 			id: this.idService.gen(),
 			visibility: data.visibility,
+			cw: data.cw,
 			fileIds: data.files ? data.files.map(file => file.id) : [],
 			replyId: data.reply ? data.reply.id : null,
 			renoteId: data.renote ? data.renote.id : null,
