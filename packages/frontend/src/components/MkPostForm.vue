@@ -724,6 +724,43 @@ function deleteDraft() {
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
+function saveServerDraft() {
+	if (serverDraftId.value == null) {
+		misskeyApi('notes/drafts/create', {
+			text: text.value,
+			useCw: useCw.value,
+			cw: cw.value,
+			visibility: visibility.value,
+			localOnly: localOnly.value,
+			hashtag: hashtags.value,
+			files: files.value,
+			poll: poll.value,
+			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
+			renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
+			replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
+			quoteId: quoteId.value,
+			reactionAcceptance: reactionAcceptance.value,
+		});
+	} else {
+		misskeyApi('notes/drafts/update', {
+			id: serverDraftId.value,
+			text: text.value,
+			useCw: useCw.value,
+			cw: cw.value,
+			visibility: visibility.value,
+			localOnly: localOnly.value,
+			hashtag: hashtags.value,
+			files: files.value,
+			poll: poll.value,
+			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
+			renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
+			replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
+			quoteId: quoteId.value,
+			reactionAcceptance: reactionAcceptance.value,
+		});
+	}
+}
+
 async function post(ev?: MouseEvent) {
 	if (useCw.value && (cw.value == null || cw.value.trim() === '')) {
 		os.alert({
@@ -899,7 +936,12 @@ async function post(ev?: MouseEvent) {
 	});
 }
 
-function cancel() {
+async function cancel() {
+	if (canPost.value === true) {
+		os.confirm({ type: 'question', text: i18n.ts.saveDraft, okText: i18n.ts.save, cancelText: i18n.ts.no }).then(( { canceled } ) => {
+			if (!canceled) saveServerDraft();
+		});
+	}
 	emit('cancel');
 }
 
@@ -1008,6 +1050,8 @@ function showDraftMenu() {
 		visibility.value = draft.visibility;
 		localOnly.value = draft.localOnly ?? false;
 		files.value = draft.files ?? [];
+		hashtags.value = draft.hashtag ?? '';
+		//if (draft.hashtag) withHashtags.value = true;
 		if (draft.poll) {
 			poll.value = {
 				choices: draft.poll.choices,
