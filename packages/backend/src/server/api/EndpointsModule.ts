@@ -28,6 +28,8 @@ import * as ep___admin_avatarDecorations_create from './endpoints/admin/avatar-d
 import * as ep___admin_avatarDecorations_delete from './endpoints/admin/avatar-decorations/delete.js';
 import * as ep___admin_avatarDecorations_list from './endpoints/admin/avatar-decorations/list.js';
 import * as ep___admin_avatarDecorations_update from './endpoints/admin/avatar-decorations/update.js';
+import * as ep___admin_captcha_current from './endpoints/admin/captcha/current.js';
+import * as ep___admin_captcha_save from './endpoints/admin/captcha/save.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
 import * as ep___admin_unsetUserAvatar from './endpoints/admin/unset-user-avatar.js';
 import * as ep___admin_unsetUserBanner from './endpoints/admin/unset-user-banner.js';
@@ -416,6 +418,8 @@ const $admin_avatarDecorations_create: Provider = { provide: 'ep:admin/avatar-de
 const $admin_avatarDecorations_delete: Provider = { provide: 'ep:admin/avatar-decorations/delete', useClass: ep___admin_avatarDecorations_delete.default };
 const $admin_avatarDecorations_list: Provider = { provide: 'ep:admin/avatar-decorations/list', useClass: ep___admin_avatarDecorations_list.default };
 const $admin_avatarDecorations_update: Provider = { provide: 'ep:admin/avatar-decorations/update', useClass: ep___admin_avatarDecorations_update.default };
+const $admin_captcha_current: Provider = { provide: 'ep:admin/captcha/current', useClass: ep___admin_captcha_current.default };
+const $admin_captcha_save: Provider = { provide: 'ep:admin/captcha/save', useClass: ep___admin_captcha_save.default };
 const $admin_deleteAllFilesOfAUser: Provider = { provide: 'ep:admin/delete-all-files-of-a-user', useClass: ep___admin_deleteAllFilesOfAUser.default };
 const $admin_unsetUserAvatar: Provider = { provide: 'ep:admin/unset-user-avatar', useClass: ep___admin_unsetUserAvatar.default };
 const $admin_unsetUserBanner: Provider = { provide: 'ep:admin/unset-user-banner', useClass: ep___admin_unsetUserBanner.default };
@@ -808,6 +812,8 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_avatarDecorations_delete,
 		$admin_avatarDecorations_list,
 		$admin_avatarDecorations_update,
+		$admin_captcha_current,
+		$admin_captcha_save,
 		$admin_deleteAllFilesOfAUser,
 		$admin_unsetUserAvatar,
 		$admin_unsetUserBanner,
@@ -1194,6 +1200,8 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_avatarDecorations_delete,
 		$admin_avatarDecorations_list,
 		$admin_avatarDecorations_update,
+		$admin_captcha_current,
+		$admin_captcha_save,
 		$admin_deleteAllFilesOfAUser,
 		$admin_unsetUserAvatar,
 		$admin_unsetUserBanner,

@@ -48,20 +48,19 @@ export class CleanChartsProcessorService {
 	public async process(): Promise<void> {
 		this.logger.info('Clean charts...');
 
-		await Promise.all([
-			this.federationChart.clean(),
-			this.notesChart.clean(),
-			this.usersChart.clean(),
-			this.activeUsersChart.clean(),
-			this.instanceChart.clean(),
-			this.perUserNotesChart.clean(),
-			this.perUserPvChart.clean(),
-			this.driveChart.clean(),
-			this.perUserReactionsChart.clean(),
-			this.perUserFollowingChart.clean(),
-			this.perUserDriveChart.clean(),
-			this.apRequestChart.clean(),
-		]);
+		// DBへの同時接続を避けるためにPromise.allを使わずひとつずつ実行する
+		await this.federationChart.clean();
+		await this.notesChart.clean();
+		await this.usersChart.clean();
+		await this.activeUsersChart.clean();
+		await this.instanceChart.clean();
+		await this.perUserNotesChart.clean();
+		await this.perUserPvChart.clean();
+		await this.driveChart.clean();
+		await this.perUserReactionsChart.clean();
+		await this.perUserFollowingChart.clean();
+		await this.perUserDriveChart.clean();
+		await this.apRequestChart.clean();
 
 		this.logger.succ('All charts successfully cleaned.');
 	}
