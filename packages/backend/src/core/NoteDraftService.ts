@@ -85,6 +85,7 @@ export class NoteDraftService {
 			pollMultiple: data.poll ? data.poll.multiple : false,
 			pollExpiresAt: data.poll ? data.poll.expiresAt : null,
 			pollExpiredAfter: data.poll ? data.poll.expiredAfter : null,
+			localOnly: data.localOnly,
 			userId: me.id,
 		});
 
@@ -125,6 +126,7 @@ export class NoteDraftService {
 			pollMultiple: data.poll ? data.poll.multiple : false,
 			pollExpiresAt: data.poll ? data.poll.expiresAt : null,
 			pollExpiredAfter: data.poll ? data.poll.expiredAfter : null,
+			localOnly: data.localOnly,
 		});
 	}
 
