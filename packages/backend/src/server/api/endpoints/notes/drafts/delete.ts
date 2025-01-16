@@ -56,8 +56,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			await this.noteDraftService.delete(me, draft.id);
-
-			return { message: 'success' };
 		});
 	}
 }

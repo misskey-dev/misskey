@@ -459,8 +459,11 @@ import type {
 	NotesUserListTimelineRequest,
 	NotesUserListTimelineResponse,
 	NotesDraftsRequest,
+	NotesDraftsResponse,
 	NotesDraftsCreateRequest,
+	NotesDraftsCreateResponse,
 	NotesDraftsUpdateRequest,
+	NotesDraftsUpdateResponse,
 	NotesDraftsDeleteRequest,
 	NotificationsCreateRequest,
 	PagePushRequest,
@@ -892,9 +895,9 @@ export type Endpoints = {
 	'notes/translate': { req: NotesTranslateRequest; res: NotesTranslateResponse };
 	'notes/unrenote': { req: NotesUnrenoteRequest; res: EmptyResponse };
 	'notes/user-list-timeline': { req: NotesUserListTimelineRequest; res: NotesUserListTimelineResponse };
-	'notes/drafts': { req: NotesDraftsRequest; res: EmptyResponse };
-	'notes/drafts/create': { req: NotesDraftsCreateRequest; res: EmptyResponse };
-	'notes/drafts/update': { req: NotesDraftsUpdateRequest; res: EmptyResponse };
+	'notes/drafts': { req: NotesDraftsRequest; res: NotesDraftsResponse };
+	'notes/drafts/create': { req: NotesDraftsCreateRequest; res: NotesDraftsCreateResponse };
+	'notes/drafts/update': { req: NotesDraftsUpdateRequest; res: NotesDraftsUpdateResponse };
 	'notes/drafts/delete': { req: NotesDraftsDeleteRequest; res: EmptyResponse };
 	'notifications/create': { req: NotificationsCreateRequest; res: EmptyResponse };
 	'notifications/flush': { req: EmptyRequest; res: EmptyResponse };
