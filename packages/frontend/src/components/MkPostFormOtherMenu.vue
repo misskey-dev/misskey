@@ -19,12 +19,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div :class="$style.menuRoot">
-			<MkMenuItem
-				v-for="item in menuDef"
-				:item="item"
-				:childShowingItem="null"
-				:asDrawer="type === 'drawer'"
-			/>
+			<button
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item]"
+				@click.prevent="toggleReactionAcceptance"
+			>
+				<i
+					class="ti-fw"
+					:class="[$style.icon, {
+						'ti ti-heart': props.currentReactionAcceptance === 'likeOnly',
+						[$style.danger]: props.currentReactionAcceptance === 'likeOnly',
+						'ti ti-heart-plus': props.currentReactionAcceptance === 'likeOnlyForRemote',
+						'ti ti-icons': props.currentReactionAcceptance == null || !['likeOnly', 'likeOnlyForRemote'].includes(props.currentReactionAcceptance),
+					}]"
+				></i>
+				<div :class="$style.menuItem_content">
+					<span :class="$style.menuItem_content_text">{{ i18n.ts.reactionAcceptance }}</span>
+				</div>
+			</button>
+			<div role="separator" tabindex="-1" :class="$style.divider"></div>
+			<button
+				role="menuitem"
+				tabindex="0"
+				:class="['_button', $style.item, $style.danger]"
+				@click.prevent="reset"
+			>
+				<i
+					class="ti-fw ti ti-trash"
+					:class="$style.icon"
+				></i>
+				<div :class="$style.menuItem_content">
+					<span :class="$style.menuItem_content_text">{{ i18n.ts.reset }}</span>
+				</div>
+			</button>
 		</div>
 	</div>
 </MkModal>
@@ -33,16 +61,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { shallowRef, computed, inject } from 'vue';
 import * as Misskey from 'misskey-js';
-
 import MkModal from '@/components/MkModal.vue';
-import MkMenuItem from '@/components/MkMenu.item.vue';
-
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import number from '@/filters/number.js';
-
-import type { NonModalCompatibleInnerMenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const mock = inject<boolean>('mock', false);
 
@@ -69,7 +93,7 @@ const textCountPercentage = computed(() => {
 });
 
 // actionを発火した瞬間にMkMenuItemからcloseイベントが出るが、それを利用すると正しくemitできないため、action内で別途closeを呼ぶ
-const menuDef = computed<NonModalCompatibleInnerMenuItem[]>(() => {
+const menuDef = computed<MenuItem[]>(() => {
 	let reactionAcceptanceIcon = 'ti ti-icons';
 
 	if (props.currentReactionAcceptance === 'likeOnly') {
@@ -145,6 +169,25 @@ async function reset() {
 
 		.menuRoot {
 			padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
+
+			> .item {
+				font-size: 1em;
+				padding: 12px 24px;
+
+				&::before {
+					width: calc(100% - 24px);
+					border-radius: 12px;
+				}
+
+				> .icon {
+					margin-right: 14px;
+					width: 24px;
+				}
+			}
+
+			> .divider {
+				margin: 12px 0;
+			}
 		}
 	}
 }
@@ -208,5 +251,106 @@ async function reset() {
 
 .menuRoot {
 	padding: 8px 0;
+
+	> .item {
+		display: flex;
+		align-items: center;
+		position: relative;
+		padding: 5px 16px;
+		width: 100%;
+		box-sizing: border-box;
+		white-space: nowrap;
+		font-size: 0.9em;
+		line-height: 20px;
+		text-align: left;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-decoration: none !important;
+		color: var(--menuFg, var(--MI_THEME-fg));
+
+		&::before {
+			content: "";
+			display: block;
+			position: absolute;
+			z-index: -1;
+			top: 0;
+			left: 0;
+			right: 0;
+			margin: auto;
+			width: calc(100% - 16px);
+			height: 100%;
+			border-radius: 6px;
+		}
+
+		&:focus-visible {
+			outline: none;
+
+			&:not(:hover):not(:active)::before {
+				outline: var(--MI_THEME-focus) solid 2px;
+				outline-offset: -2px;
+			}
+		}
+
+		&:hover,
+		&:focus-visible:active,
+		&:focus-visible.active {
+			color: var(--menuHoverFg, var(--MI_THEME-accent));
+
+			&::before {
+				background-color: var(--menuHoverBg, var(--MI_THEME-accentedBg));
+			}
+		}
+
+		&:not(:focus-visible):active,
+		&:not(:focus-visible).active {
+			color: var(--menuActiveFg, var(--MI_THEME-fgOnAccent));
+
+			&::before {
+				background-color: var(--menuActiveBg, var(--MI_THEME-accent));
+			}
+		}
+
+		&:disabled {
+			cursor: not-allowed;
+		}
+
+		&.danger {
+			--menuFg: #ff2a2a;
+			--menuHoverFg: #fff;
+			--menuHoverBg: #ff4242;
+			--menuActiveFg: #fff;
+			--menuActiveBg: #d42e2e;
+		}
+
+		.icon {
+			margin-right: 8px;
+			line-height: 1;
+		}
+
+		.icon.danger {
+			color: var(--MI_THEME-error);
+		}
+	}
+
+	> .divider {
+		margin: 8px 0;
+		border-top: solid 0.5px var(--MI_THEME-divider);
+	}
+}
+
+.menuItem_content {
+	width: 100%;
+	max-width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	text-overflow: ellipsis;
+}
+
+.menuItem_content_text {
+	max-width: calc(100vw - 4rem);
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 </style>
