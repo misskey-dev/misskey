@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 		<div :class="$style.headerRight">
-			<template v-if="!(channel != null && fixed)">
-				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+			<template v-if="!(targetChannel != null && fixed)">
+				<button v-if="targetChannel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
 					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
 					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
@@ -29,10 +29,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</button>
 				<button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
 					<span><i class="ti ti-device-tv"></i></span>
-					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
+					<span :class="$style.headerRightButtonText">{{ targetChannel.name }}</span>
 				</button>
 			</template>
-			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
+			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="targetChannel != null || visibility === 'specified'" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
-		<div v-if="channel" :class="$style.colorBar" :style="{ background: channel.color }"></div>
+		<div v-if="targetChannel" :class="$style.colorBar" :style="{ background: targetChannel.color }"></div>
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @keyup="onKeyup" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
@@ -194,11 +194,12 @@ const textAreaReadOnly = ref(false);
 const justEndedComposition = ref(false);
 const renoteTargetNote: ShallowRef<PostFormProps['renote'] | null> = shallowRef(props.renote);
 const replyTargetNote: ShallowRef<PostFormProps['reply'] | null> = shallowRef(props.reply);
+const targetChannel = shallowRef(props.channel);
 
 const serverDraftId = ref<string | null>(null);
 
 const draftKey = computed((): string => {
-	let key = props.channel ? `channel:${props.channel.id}` : '';
+	let key = targetChannel.value ? `channel:${targetChannel.value.id}` : '';
 
 	if (renoteTargetNote.value) {
 		key += `renote:${renoteTargetNote.value.id}`;
@@ -216,7 +217,7 @@ const placeholder = computed((): string => {
 		return i18n.ts._postForm.quotePlaceholder;
 	} else if (replyTargetNote.value) {
 		return i18n.ts._postForm.replyPlaceholder;
-	} else if (props.channel) {
+	} else if (targetChannel.value) {
 		return i18n.ts._postForm.channelPlaceholder;
 	} else {
 		const xs = [
@@ -312,7 +313,7 @@ if ($i.isSilenced && visibility.value === 'public') {
 	visibility.value = 'home';
 }
 
-if (props.channel) {
+if (targetChannel.value) {
 	visibility.value = 'public';
 	localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 }
@@ -455,7 +456,7 @@ function upload(file: File, name?: string): void {
 }
 
 function setVisibility() {
-	if (props.channel) {
+	if (targetChannel.value) {
 		visibility.value = 'public';
 		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 		return;
@@ -479,7 +480,7 @@ function setVisibility() {
 }
 
 async function toggleLocalOnly() {
-	if (props.channel) {
+	if (targetChannel.value) {
 		visibility.value = 'public';
 		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 		return;
@@ -739,11 +740,12 @@ function saveServerDraft() {
 			renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
 			replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
 			quoteId: quoteId.value,
+			channelId: targetChannel.value ? targetChannel.value.id : undefined,
 			reactionAcceptance: reactionAcceptance.value,
 		});
 	} else {
 		misskeyApi('notes/drafts/update', {
-			id: serverDraftId.value,
+			draftId: serverDraftId.value,
 			text: text.value,
 			useCw: useCw.value,
 			cw: cw.value,
@@ -756,6 +758,7 @@ function saveServerDraft() {
 			renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
 			replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
 			quoteId: quoteId.value,
+			channelId: targetChannel.value ? targetChannel.value.id : undefined,
 			reactionAcceptance: reactionAcceptance.value,
 		});
 	}
@@ -821,7 +824,7 @@ async function post(ev?: MouseEvent) {
 		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
 		replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
 		renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : quoteId.value ? quoteId.value : undefined,
-		channelId: props.channel ? props.channel.id : undefined,
+		channelId: targetChannel.value ? targetChannel.value.id : undefined,
 		poll: poll.value,
 		cw: useCw.value ? cw.value ?? '' : null,
 		localOnly: localOnly.value,
@@ -1069,6 +1072,7 @@ function showDraftMenu() {
 		renoteTargetNote.value = draft.renote;
 		replyTargetNote.value = draft.reply;
 		reactionAcceptance.value = draft.reactionAcceptance;
+		if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
 
 		serverDraftId.value = draft.id;
 	});
