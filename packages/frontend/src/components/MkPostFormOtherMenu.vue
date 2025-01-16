@@ -4,57 +4,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :src="src" :transparentBg="true" @click="modal?.close()" @closed="emit('closed')" @esc="modal?.close()">
-	<div class="_popup _shadow" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
-		<div :class="$style.textCountRoot">
-			<div :class="$style.textCountLabel">{{ i18n.ts.textCount }}</div>
-			<div
-				:class="[$style.textCount,
-					{ [$style.danger]: textCountPercentage > 100 },
-					{ [$style.warning]: textCountPercentage > 90 && textCountPercentage <= 100 },
-				]"
-			>
-				<div :class="$style.textCountGraph"></div>
-				<div><span :class="$style.textCountCurrent">{{ number(textLength) }}</span> / {{ number(maxTextLength) }}</div>
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :zPriority="'high'" :src="src" :transparentBg="true" @click="modal?.close()" @closed="emit('closed')" @esc="modal?.close()">
+	<MkMenu
+		:items="menuDef"
+		:align="align"
+		:width="width"
+		:maxHeight="maxHeight"
+		:asDrawer="type === 'drawer'"
+	>
+		<template #header>
+			<div :class="[$style.textCountRoot, { [$style.asDrawer]: type === 'drawer' }]">
+				<div :class="$style.textCountLabel">{{ i18n.ts.textCount }}</div>
+				<div
+					:class="[$style.textCount,
+						{ [$style.danger]: textCountPercentage > 100 },
+						{ [$style.warning]: textCountPercentage > 90 && textCountPercentage <= 100 },
+					]"
+				>
+					<div :class="$style.textCountGraph"></div>
+					<div><span :class="$style.textCountCurrent">{{ number(textLength) }}</span> / {{ number(maxTextLength) }}</div>
+				</div>
 			</div>
-		</div>
-		<div :class="$style.menuRoot">
-			<button
-				role="menuitem"
-				tabindex="0"
-				:class="['_button', $style.item]"
-				@click.prevent="toggleReactionAcceptance"
-			>
-				<i
-					class="ti-fw"
-					:class="[$style.icon, {
-						'ti ti-heart': props.currentReactionAcceptance === 'likeOnly',
-						[$style.danger]: props.currentReactionAcceptance === 'likeOnly',
-						'ti ti-heart-plus': props.currentReactionAcceptance === 'likeOnlyForRemote',
-						'ti ti-icons': props.currentReactionAcceptance == null || !['likeOnly', 'likeOnlyForRemote'].includes(props.currentReactionAcceptance),
-					}]"
-				></i>
-				<div :class="$style.menuItem_content">
-					<span :class="$style.menuItem_content_text">{{ i18n.ts.reactionAcceptance }}</span>
-				</div>
-			</button>
-			<div role="separator" tabindex="-1" :class="$style.divider"></div>
-			<button
-				role="menuitem"
-				tabindex="0"
-				:class="['_button', $style.item, $style.danger]"
-				@click.prevent="reset"
-			>
-				<i
-					class="ti-fw ti ti-trash"
-					:class="$style.icon"
-				></i>
-				<div :class="$style.menuItem_content">
-					<span :class="$style.menuItem_content_text">{{ i18n.ts.reset }}</span>
-				</div>
-			</button>
-		</div>
-	</div>
+		</template>
+	</MkMenu>
 </MkModal>
 </template>
 
@@ -62,6 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { shallowRef, computed, inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
+import MkMenu from '@/components/MkMenu.vue';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -75,6 +48,8 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 const props = defineProps<{
 	currentReactionAcceptance: Misskey.entities.Note['reactionAcceptance'];
 	textLength: number;
+	align?: 'center' | string;
+	width?: number;
 	src?: HTMLElement;
 }>();
 
@@ -154,48 +129,14 @@ async function reset() {
 </script>
 
 <style lang="scss" module>
-.root {
-	min-width: 200px;
-
-	&.asDrawer {
-		width: 100%;
-		border-radius: 24px;
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
-
-		.textCountRoot {
-			padding: 12px 24px;
-		}
-
-		.menuRoot {
-			padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
-
-			> .item {
-				font-size: 1em;
-				padding: 12px 24px;
-
-				&::before {
-					width: calc(100% - 24px);
-					border-radius: 12px;
-				}
-
-				> .icon {
-					margin-right: 14px;
-					width: 24px;
-				}
-			}
-
-			> .divider {
-				margin: 12px 0;
-			}
-		}
-	}
-}
-
 .textCountRoot {
 	--textCountBg: color-mix(in srgb, var(--MI_THEME-panel), var(--MI_THEME-fg) 15%);
 	background-color: var(--textCountBg);
 	padding: 10px 14px;
+
+	&.asDrawer {
+		padding: 12px 24px;
+	}
 }
 
 .textCountLabel {
@@ -247,110 +188,5 @@ async function reset() {
 		font-weight: 700;
 		font-size: 18px;
 	}
-}
-
-.menuRoot {
-	padding: 8px 0;
-
-	> .item {
-		display: flex;
-		align-items: center;
-		position: relative;
-		padding: 5px 16px;
-		width: 100%;
-		box-sizing: border-box;
-		white-space: nowrap;
-		font-size: 0.9em;
-		line-height: 20px;
-		text-align: left;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		text-decoration: none !important;
-		color: var(--menuFg, var(--MI_THEME-fg));
-
-		&::before {
-			content: "";
-			display: block;
-			position: absolute;
-			z-index: -1;
-			top: 0;
-			left: 0;
-			right: 0;
-			margin: auto;
-			width: calc(100% - 16px);
-			height: 100%;
-			border-radius: 6px;
-		}
-
-		&:focus-visible {
-			outline: none;
-
-			&:not(:hover):not(:active)::before {
-				outline: var(--MI_THEME-focus) solid 2px;
-				outline-offset: -2px;
-			}
-		}
-
-		&:hover,
-		&:focus-visible:active,
-		&:focus-visible.active {
-			color: var(--menuHoverFg, var(--MI_THEME-accent));
-
-			&::before {
-				background-color: var(--menuHoverBg, var(--MI_THEME-accentedBg));
-			}
-		}
-
-		&:not(:focus-visible):active,
-		&:not(:focus-visible).active {
-			color: var(--menuActiveFg, var(--MI_THEME-fgOnAccent));
-
-			&::before {
-				background-color: var(--menuActiveBg, var(--MI_THEME-accent));
-			}
-		}
-
-		&:disabled {
-			cursor: not-allowed;
-		}
-
-		&.danger {
-			--menuFg: #ff2a2a;
-			--menuHoverFg: #fff;
-			--menuHoverBg: #ff4242;
-			--menuActiveFg: #fff;
-			--menuActiveBg: #d42e2e;
-		}
-
-		.icon {
-			margin-right: 8px;
-			line-height: 1;
-		}
-
-		.icon.danger {
-			color: var(--MI_THEME-error);
-		}
-	}
-
-	> .divider {
-		margin: 8px 0;
-		border-top: solid 0.5px var(--MI_THEME-divider);
-	}
-}
-
-.menuItem_content {
-	width: 100%;
-	max-width: 100vw;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 8px;
-	text-overflow: ellipsis;
-}
-
-.menuItem_content_text {
-	max-width: calc(100vw - 4rem);
-	text-overflow: ellipsis;
-	overflow: hidden;
 }
 </style>
