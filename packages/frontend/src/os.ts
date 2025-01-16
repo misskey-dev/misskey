@@ -427,28 +427,36 @@ export function inputNumber(props: {
 	});
 }
 
-export function inputDate(props: {
+export function inputDateTime(props: {
 	title?: string | null;
 	text?: string | null;
 	placeholder?: string | null;
-	default?: string | null;
+	default?: Date | null;
 }): Promise<{
 	canceled: true; result: undefined;
 } | {
 	canceled: false; result: Date;
 }> {
+	const defaultValue = props.default ?? new Date();
+	defaultValue.setMinutes(defaultValue.getMinutes() - defaultValue.getTimezoneOffset());
+
 	return new Promise(resolve => {
 		popup(MkDialog, {
 			title: props.title ?? undefined,
 			text: props.text ?? undefined,
 			input: {
-				type: 'date',
+				type: 'datetime-local',
 				placeholder: props.placeholder,
-				default: props.default ?? null,
+				default: defaultValue.toISOString().slice(0, -5),
 			},
 		}, {
 			done: result => {
-				resolve(result ? { result: new Date(result.result), canceled: false } : { result: undefined, canceled: true });
+				const date = result ? new Date(result.result) : undefined;
+				if (date && !isNaN(date.getTime())) {
+					resolve({ result: date, canceled: false });
+				} else {
+					resolve({ result: undefined, canceled: true });
+				}
 			},
 		}, 'closed');
 	});

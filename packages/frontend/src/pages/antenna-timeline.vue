@@ -57,7 +57,7 @@ function top() {
 }
 
 async function timetravel() {
-	const { canceled, result: date } = await os.inputDate({
+	const { canceled, result: date } = await os.inputDateTime({
 		title: i18n.ts.date,
 	});
 	if (canceled) return;

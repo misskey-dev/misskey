@@ -13,16 +13,28 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
-import type { ChannelFollowingsRepository, ChannelsRepository, FollowingsRepository, InstancesRepository, MiFollowing, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import { MiScheduledNote } from '@/models/ScheduledNote.js';
+import type {
+	ChannelFollowingsRepository,
+	ChannelsRepository,
+	FollowingsRepository,
+	InstancesRepository,
+	MiFollowing,
+	NotesRepository,
+	NoteThreadMutingsRepository,
+	ScheduledNotesRepository,
+	UserListMembershipsRepository,
+	UserProfilesRepository,
+	UsersRepository
+} from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiApp } from '@/models/App.js';
 import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import type { IPoll } from '@/models/Poll.js';
 import { MiPoll } from '@/models/Poll.js';
+import type { NoteCreateOption, MinimumUser } from '@/types.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import type { MiChannel } from '@/models/Channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -118,35 +130,6 @@ class NotificationManager {
 	}
 }
 
-type MinimumUser = {
-	id: MiUser['id'];
-	host: MiUser['host'];
-	username: MiUser['username'];
-	uri: MiUser['uri'];
-};
-
-type Option = {
-	createdAt?: Date | null;
-	name?: string | null;
-	text?: string | null;
-	reply?: MiNote | null;
-	renote?: MiNote | null;
-	files?: MiDriveFile[] | null;
-	poll?: IPoll | null;
-	localOnly?: boolean | null;
-	reactionAcceptance?: MiNote['reactionAcceptance'];
-	cw?: string | null;
-	visibility?: string;
-	visibleUsers?: MinimumUser[] | null;
-	channel?: MiChannel | null;
-	apMentions?: MinimumUser[] | null;
-	apHashtags?: string[] | null;
-	apEmojis?: string[] | null;
-	uri?: string | null;
-	url?: string | null;
-	app?: MiApp | null;
-};
-
 @Injectable()
 export class NoteCreateService implements OnApplicationShutdown {
 	private logger: Logger;
@@ -168,6 +151,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.scheduledNotesRepository)
+		private scheduledNotesRepository: ScheduledNotesRepository,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -229,7 +215,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
-	}, data: Option, silent = false): Promise<MiNote> {
+	}, data: NoteCreateOption, silent = false): Promise<MiNote | MiScheduledNote> {
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 		if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
@@ -425,18 +411,30 @@ export class NoteCreateService implements OnApplicationShutdown {
 			throw new IdentifiableError('9f466dab-c856-48cd-9e65-ff90ff750580', `Notes including mentions are limited to ${policies.mentionLimit} users.`);
 		}
 
-		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
+		if (!data.scheduledAt) {
+			const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
-		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
-			() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!),
-			() => { /* aborted, ignore this */ },
-		);
+			setImmediate('post created', { signal: this.#shutdownController.signal }).then(
+				() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!),
+				() => { /* aborted, ignore this */ },
+			);
 
-		return note;
+			return note;
+		} else {
+			if (!policies.canScheduleNote) {
+				throw new IdentifiableError('7cc42034-f7ab-4f7c-87b4-e00854479080', 'User has no permission to schedule notes.');
+			}
+
+			const draft = await this.insertScheduledNote(user, data);
+
+			await this.queueService.createScheduledNoteJob(draft.id, draft.scheduledAt!);
+
+			return draft;
+		}
 	}
 
 	@bindThis
-	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
+	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: NoteCreateOption, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 		const insert = new MiNote({
 			id: this.idService.gen(data.createdAt?.getTime()),
 			createdAt: data.createdAt!,
@@ -535,12 +533,39 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	private async insertScheduledNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: NoteCreateOption) {
+		const insert = new MiScheduledNote({
+			id: this.idService.gen(data.createdAt?.getTime()),
+			createdAt: data.createdAt!,
+			scheduledAt: data.scheduledAt!,
+			userId: user.id,
+			draft: data,
+		});
+
+		// 予約投稿を作成
+		try {
+			await this.scheduledNotesRepository.insert(insert);
+
+			return insert;
+		} catch (e) {
+			// duplicate key error
+			if (isDuplicateKeyValueError(e)) {
+				throw new IdentifiableError('5ea8e4f5-9d64-4e6c-92b8-9e2b5a4756bc', 'There is already a scheduled note with the same time.');
+			}
+
+			this.logger.error(`Failed to create scheduled note: ${e}`, { error: e });
+
+			throw e;
+		}
+	}
+
+	@bindThis
 	private async postNoteCreated(note: MiNote, user: {
 		id: MiUser['id'];
 		username: MiUser['username'];
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
-	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
+	}, data: NoteCreateOption, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		const meta = await this.metaService.fetch();
 
 		this.notesChart.update(note, true);
@@ -792,12 +817,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private isRenote(note: Option): note is Option & { renote: MiNote } {
+	private isRenote(note: NoteCreateOption): note is NoteCreateOption & { renote: MiNote } {
 		return note.renote != null;
 	}
 
 	@bindThis
-	private isQuote(note: Option): note is Option & { renote: MiNote } & (
+	private isQuote(note: NoteCreateOption): note is NoteCreateOption & { renote: MiNote } & (
 		{ text: string } | { cw: string } | { reply: MiNote } | { poll: IPoll } | { files: MiDriveFile[] }
 		) {
 		// NOTE: SYNC WITH misc/is-renote.ts
@@ -873,7 +898,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async renderNoteOrRenoteActivity(data: Option, note: MiNote) {
+	private async renderNoteOrRenoteActivity(data: NoteCreateOption, note: MiNote) {
 		if (data.localOnly) return null;
 
 		const content = this.isRenote(data) && !this.isQuote(data)

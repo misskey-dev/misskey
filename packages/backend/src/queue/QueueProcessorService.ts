@@ -35,10 +35,12 @@ import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesP
 import { DeleteFileProcessorService } from './processors/DeleteFileProcessorService.js';
 import { RelationshipProcessorService } from './processors/RelationshipProcessorService.js';
 import { ReportAbuseProcessorService } from './processors/ReportAbuseProcessorService.js';
-import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
+import { ScheduledNoteProcessorService } from './processors/ScheduledNoteProcessorService.js';
+import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
 import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
+import { CheckMissingScheduledNoteProcessorService } from './processors/CheckMissingScheduledNoteProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
@@ -113,11 +115,13 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private cleanRemoteFilesProcessorService: CleanRemoteFilesProcessorService,
 		private relationshipProcessorService: RelationshipProcessorService,
 		private reportAbuseProcessorService: ReportAbuseProcessorService,
-		private tickChartsProcessorService: TickChartsProcessorService,
 		private resyncChartsProcessorService: ResyncChartsProcessorService,
+		private scheduledNoteProcessorService: ScheduledNoteProcessorService,
+		private tickChartsProcessorService: TickChartsProcessorService,
 		private cleanChartsProcessorService: CleanChartsProcessorService,
 		private aggregateRetentionProcessorService: AggregateRetentionProcessorService,
 		private checkExpiredMutingsProcessorService: CheckExpiredMutingsProcessorService,
+		private checkMissingScheduledNoteProcessorService: CheckMissingScheduledNoteProcessorService,
 		private cleanProcessorService: CleanProcessorService,
 	) {
 		this.logger = this.queueLoggerService.logger;
@@ -141,11 +145,13 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		//#region system
 		this.systemQueueWorker = new Bull.Worker(QUEUE.SYSTEM, (job) => {
 			switch (job.name) {
+				case 'scheduledNote': return this.scheduledNoteProcessorService.process(job);
 				case 'tickCharts': return this.tickChartsProcessorService.process();
 				case 'resyncCharts': return this.resyncChartsProcessorService.process();
 				case 'cleanCharts': return this.cleanChartsProcessorService.process();
 				case 'aggregateRetention': return this.aggregateRetentionProcessorService.process();
 				case 'checkExpiredMutings': return this.checkExpiredMutingsProcessorService.process();
+				case 'checkMissingScheduledNote': return this.checkMissingScheduledNoteProcessorService.process();
 				case 'clean': return this.cleanProcessorService.process();
 				default: throw new Error(`unrecognized job type ${job.name} for system`);
 			}

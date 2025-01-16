@@ -13,6 +13,7 @@ import { EndedPollNotificationProcessorService } from './processors/EndedPollNot
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
 import { WebhookDeliverProcessorService } from './processors/WebhookDeliverProcessorService.js';
 import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
+import { CheckMissingScheduledNoteProcessorService } from './processors/CheckMissingScheduledNoteProcessorService.js';
 import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
@@ -36,6 +37,7 @@ import { ImportUserListsProcessorService } from './processors/ImportUserListsPro
 import { ImportAntennasProcessorService } from './processors/ImportAntennasProcessorService.js';
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
 import { ReportAbuseProcessorService } from './processors/ReportAbuseProcessorService.js';
+import { ScheduledNoteProcessorService } from './processors/ScheduledNoteProcessorService.js';
 import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
@@ -52,6 +54,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		ResyncChartsProcessorService,
 		CleanChartsProcessorService,
 		CheckExpiredMutingsProcessorService,
+		CheckMissingScheduledNoteProcessorService,
 		CleanProcessorService,
 		DeleteDriveFilesProcessorService,
 		ExportCustomEmojisProcessorService,
@@ -75,6 +78,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		CleanRemoteFilesProcessorService,
 		RelationshipProcessorService,
 		ReportAbuseProcessorService,
+		ScheduledNoteProcessorService,
 		WebhookDeliverProcessorService,
 		EndedPollNotificationProcessorService,
 		DeliverProcessorService,

@@ -1640,6 +1640,9 @@ declare namespace entities {
         NotesCreateRequest,
         NotesCreateResponse,
         NotesDeleteRequest,
+        NotesScheduledCancelRequest,
+        NotesScheduledListRequest,
+        NotesScheduledListResponse,
         NotesFavoritesCreateRequest,
         NotesFavoritesDeleteRequest,
         NotesFeaturedRequest,
@@ -1825,6 +1828,7 @@ declare namespace entities {
         Announcement,
         App,
         Note,
+        NoteDraft,
         NoteReaction,
         NoteFavorite,
         Notification_2 as Notification,
@@ -2574,6 +2578,9 @@ type MyAppsResponse = operations['my___apps']['responses']['200']['content']['ap
 type Note = components['schemas']['Note'];
 
 // @public (undocumented)
+type NoteDraft = components['schemas']['NoteDraft'];
+
+// @public (undocumented)
 type NoteFavorite = components['schemas']['NoteFavorite'];
 
 // @public (undocumented)
@@ -2682,6 +2689,15 @@ type NotesRequest = operations['notes']['requestBody']['content']['application/j
 type NotesResponse = operations['notes']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesScheduledCancelRequest = operations['notes___scheduled___cancel']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesScheduledListRequest = operations['notes___scheduled___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesScheduledListResponse = operations['notes___scheduled___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type NotesSearchByTagRequest = operations['notes___search-by-tag']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2742,7 +2758,7 @@ type Notification_2 = components['schemas']['Notification'];
 type NotificationsCreateRequest = operations['notifications___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "achievementEarned"];
+export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "achievementEarned", "noteScheduled", "scheduledNotePosted", "scheduledNoteError"];
 
 // @public (undocumented)
 type Page = components['schemas']['Page'];

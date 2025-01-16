@@ -352,7 +352,7 @@ export class ApNoteService {
 				poll,
 				uri: note.id,
 				url: url,
-			}, silent);
+			}, silent) as MiNote;
 		} catch (err: any) {
 			if (err.name !== 'duplicated') {
 				throw err;

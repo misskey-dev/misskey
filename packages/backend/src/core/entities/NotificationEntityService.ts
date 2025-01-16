@@ -20,14 +20,16 @@ import { RoleEntityService } from './RoleEntityService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
+import type { ScheduledNoteEntityService } from './ScheduledNoteEntityService.js';
 
-const NOTE_REQUIRED_NOTIFICATION_TYPES = new Set(['note', 'mention', 'reply', 'renote', 'renote:grouped', 'quote', 'reaction', 'reaction:grouped', 'pollEnded'] as (typeof groupedNotificationTypes[number])[]);
+const NOTE_REQUIRED_NOTIFICATION_TYPES = new Set(['note', 'mention', 'reply', 'renote', 'renote:grouped', 'quote', 'reaction', 'reaction:grouped', 'pollEnded', 'scheduledNotePosted'] as (typeof groupedNotificationTypes[number])[]);
 
 @Injectable()
 export class NotificationEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private noteEntityService: NoteEntityService;
 	private roleEntityService: RoleEntityService;
+	private scheduledNoteEntityService: ScheduledNoteEntityService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -52,6 +54,7 @@ export class NotificationEntityService implements OnModuleInit {
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
 		this.roleEntityService = this.moduleRef.get('RoleEntityService');
+		this.scheduledNoteEntityService = this.moduleRef.get('ScheduledNoteEntityService');
 	}
 
 	/**
@@ -83,6 +86,11 @@ export class NotificationEntityService implements OnModuleInit {
 		) : undefined;
 		// if the note has been deleted, don't show this notification
 		if (needsNote && !noteIfNeed) return null;
+
+		const needsDraft = 'draftId' in notification;
+		const draftIfNeed = needsDraft ? this.scheduledNoteEntityService.pack(notification.draftId, { id: meId }) : undefined;
+		// if the draft has been deleted, don't show this notification
+		if (needsDraft && !draftIfNeed) return null;
 
 		const needsUser = 'notifierId' in notification;
 		const userIfNeed = needsUser ? (
@@ -116,6 +124,7 @@ export class NotificationEntityService implements OnModuleInit {
 				createdAt: new Date(notification.createdAt).toISOString(),
 				type: notification.type,
 				note: noteIfNeed,
+				draft: draftIfNeed,
 				reactions,
 			});
 		} else if (notification.type === 'renote:grouped') {
@@ -139,6 +148,7 @@ export class NotificationEntityService implements OnModuleInit {
 				createdAt: new Date(notification.createdAt).toISOString(),
 				type: notification.type,
 				note: noteIfNeed,
+				draft: draftIfNeed,
 				users,
 			});
 		}
@@ -158,6 +168,7 @@ export class NotificationEntityService implements OnModuleInit {
 			userId: 'notifierId' in notification ? notification.notifierId : undefined,
 			...(userIfNeed != null ? { user: userIfNeed } : {}),
 			...(noteIfNeed != null ? { note: noteIfNeed } : {}),
+			...(draftIfNeed != null ? { draft: draftIfNeed } : {}),
 			...(notification.type === 'reaction' ? {
 				reaction: notification.reaction,
 			} : {}),

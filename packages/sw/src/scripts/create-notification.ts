@@ -39,7 +39,7 @@ export async function createNotification<K extends keyof PushNotificationDataMap
 	}
 }
 
-async function composeNotification(data: PushNotificationDataMap[keyof PushNotificationDataMap]): Promise<[string, NotificationOptions] | null> {
+async function composeNotification(data: PushNotificationDataMap[keyof PushNotificationDataMap]): Promise<[string, NotificationOptions & { actions?: Record<string, string>[], renotify?: boolean }] | null> {
 	const i18n = await (swLang.i18n ?? swLang.fetchLocale());
 	const { t } = i18n;
 	switch (data.type) {
@@ -60,7 +60,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					const userDetail = await cli.request('users/show', { userId: data.body.userId }, account.token);
 					return [t('_notification.youWereFollowed'), {
 						body: getUserName(data.body.user),
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('user-plus'),
 						data,
 						actions: userDetail.isFollowing ? [] : [
@@ -75,7 +75,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'mention':
 					return [t('_notification.youGotMention', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('at'),
 						data,
 						actions: [
@@ -89,7 +89,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'reply':
 					return [t('_notification.youGotReply', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('arrow-back-up'),
 						data,
 						actions: [
@@ -103,7 +103,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'renote':
 					return [t('_notification.youRenoted', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('repeat'),
 						data,
 						actions: [
@@ -117,7 +117,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'quote':
 					return [t('_notification.youGotQuote', { name: getUserName(data.body.user) }), {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('quote'),
 						data,
 						actions: [
@@ -137,7 +137,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'note':
 					return [t('_notification.newNote') + ': ' + getUserName(data.body.user), {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						data,
 					}];
 
@@ -164,7 +164,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					const tag = `reaction:${data.body.note.id}`;
 					return [`${reaction} ${getUserName(data.body.user)}`, {
 						body: data.body.note.text ?? '',
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						tag,
 						badge,
 						data,
@@ -180,7 +180,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'receiveFollowRequest':
 					return [t('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.body.user),
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('user-plus'),
 						data,
 						actions: [
@@ -198,8 +198,15 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				case 'followRequestAccepted':
 					return [t('_notification.yourFollowRequestAccepted'), {
 						body: getUserName(data.body.user),
-						icon: data.body.user.avatarUrl,
+						icon: data.body.user.avatarUrl ?? undefined,
 						badge: iconUrl('circle-check'),
+						data,
+					}];
+
+				case 'pollEnded':
+					return [t('_notification.pollEnded'), {
+						body: data.body.note.text ?? '',
+						badge: iconUrl('chart-arrows'),
 						data,
 					}];
 
@@ -211,10 +218,32 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						tag: `achievement:${data.body.achievement}`,
 					}];
 
-				case 'pollEnded':
-					return [t('_notification.pollEnded'), {
+				case 'noteScheduled':
+					return [t('_notification.noteScheduled'), {
+						body: data.body.draft.data.text ?? '',
+						badge: iconUrl('calendar-clock'),
+						data,
+					}];
+
+				case 'scheduledNotePosted':
+					return [t('_notification.scheduledNotePosted'), {
 						body: data.body.note.text ?? '',
-						badge: iconUrl('chart-arrows'),
+						badge: iconUrl('calendar-check'),
+						data,
+					}];
+
+				case 'scheduledNoteError':
+					return [t('_notification.scheduledNoteError'), {
+						body: data.body.draft.reason ?? '',
+						badge: iconUrl('calendar-exclamation'),
+						data,
+					}];
+
+				case 'roleAssigned':
+					return [t('_notification.roleAssigned'), {
+						body: data.body.role.name,
+						icon: data.body.role.iconUrl ?? undefined,
+						badge: iconUrl('badges'),
 						data,
 					}];
 
@@ -238,7 +267,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 		case 'unreadAntennaNote':
 			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
 				body: `${getUserName(data.body.note.user)}: ${data.body.note.text ?? ''}`,
-				icon: data.body.note.user.avatarUrl,
+				icon: data.body.note.user.avatarUrl ?? undefined,
 				badge: iconUrl('antenna'),
 				tag: `antenna:${data.body.antenna.id}`,
 				data,

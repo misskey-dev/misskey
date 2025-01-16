@@ -17,6 +17,7 @@ import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -148,6 +149,31 @@ export const meta = {
 			id: '66819f28-9525-389d-4b0a-4974363fbbbf',
 		},
 
+		cannotScheduleToPast: {
+			message: 'Cannot schedule to the past.',
+			code: 'CANNOT_SCHEDULE_TO_PAST',
+			id: 'e577d185-8179-4a17-b47f-6093985558e6',
+		},
+
+		cannotScheduleToFarFuture: {
+			message: 'Cannot schedule to the far future.',
+			code: 'CANNOT_SCHEDULE_TO_FAR_FUTURE',
+			id: 'ea102856-e8da-4ae9-a98a-0326821bd177',
+		},
+
+		cannotScheduleSameTime: {
+			message: 'Cannot schedule multiple notes at the same time.',
+			code: 'CANNOT_SCHEDULE_SAME_TIME',
+			id: '187a8fab-fd83-4ae6-a46c-0f6f07784634',
+		},
+
+		rolePermissionDenied: {
+			message: 'You are not assigned to a required role.',
+			code: 'ROLE_PERMISSION_DENIED',
+			kind: 'permission',
+			id: '12f1d5d2-f7ec-4d7c-b608-e873f4b20327',
+			status: 403,
+		},
 	},
 } as const;
 
@@ -207,6 +233,7 @@ export const paramDef = {
 			},
 			required: ['choices'],
 		},
+		scheduledAt: { type: 'integer', nullable: true },
 		noCreatedNote: { type: 'boolean', default: false },
 	},
 	// (re)note with text, files and poll are optional
@@ -263,6 +290,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private loggerService: LoggerService,
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
+		private notificationService: NotificationService,
 	) {
 		super(meta, paramDef, async (ps, me, _token, _file, _cleanup, ip, headers) => {
 			const logger = this.loggerService.getLogger('api:notes:create');
@@ -318,7 +346,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let renote: MiNote | null = null;
 			if (ps.renoteId != null) {
 				// Fetch renote to note
-				renote = await this.notesRepository.findOneBy({ id: ps.renoteId });
+				renote = await this.notesRepository.findOne({ where: { id: ps.renoteId }, relations: ['user'] });
 
 				if (renote == null) {
 					logger.error('No such renote target.', { renoteId: ps.renoteId });
@@ -371,7 +399,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			let reply: MiNote | null = null;
 			if (ps.replyId != null) {
 				// Fetch reply
-				reply = await this.notesRepository.findOneBy({ id: ps.replyId });
+				reply = await this.notesRepository.findOne({ where: { id: ps.replyId }, relations: ['user'] });
 
 				if (reply == null) {
 					logger.error('No such reply target.', { replyId: ps.replyId });
@@ -384,11 +412,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
 				} else if (reply.visibility === 'specified' && ps.visibility !== 'specified') {
 					throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
-				} else if ( me.isBot ) {
-					const replayuser = await this.usersRepository.findOneBy({ id: reply.userId });
-					if (replayuser?.isBot) {
-						throw new ApiError(meta.errors.replyingToAnotherBot);
-					}
+				} else if (me.isBot && reply.user!.isBot) {
+					throw new ApiError(meta.errors.replyingToAnotherBot);
 				}
 
 				// Check blocking
@@ -427,10 +452,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
+			let scheduledAt: Date | null = null;
+			if (ps.scheduledAt) {
+				const now = new Date();
+				scheduledAt = new Date(ps.scheduledAt);
+				scheduledAt.setMilliseconds(0);
+
+				if (scheduledAt < now) {
+					logger.error('Cannot schedule to the past.', { scheduledAt });
+					throw new ApiError(meta.errors.cannotScheduleToPast);
+				}
+
+				if (scheduledAt.getTime() - now.getTime() > ms('1year')) {
+					logger.error('Cannot schedule to the far future.', { scheduledAt });
+					throw new ApiError(meta.errors.cannotScheduleToFarFuture);
+				}
+			}
+
 			// 投稿を作成
 			try {
 				const note = await this.noteCreateService.create(me, {
 					createdAt: new Date(),
+					scheduledAt: ps.scheduledAt ? scheduledAt : null,
 					files: files,
 					poll: ps.poll ? {
 						choices: ps.poll.choices,
@@ -454,10 +497,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				// 1分間、リクエストの処理結果を記録
 				await this.redisForTimelines.set(`note:idempotent:${me.id}:${hash}`, note.id, 'EX', 60);
 
-				logger.info('Successfully created a note.', { noteId: note.id });
-				if (ps.noCreatedNote) return;
+				if (!scheduledAt) {
+					logger.info('Successfully created a note.', { noteId: note.id });
+				} else {
+					this.notificationService.createNotification(me.id, "noteScheduled", {
+						draftId: note.id,
+					});
+					logger.info('Successfully scheduled a note.', { draftId: note.id });
+				}
+
+				if (ps.noCreatedNote || scheduledAt) return;
 				else return {
-					createdNote: await this.noteEntityService.pack(note, me),
+					createdNote: await this.noteEntityService.pack(note as MiNote, me),
 				};
 			} catch (err) {
 				// エラーが発生した場合、まだ処理中として記録されている場合はリクエストの処理結果を削除
@@ -468,6 +519,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (err instanceof IdentifiableError) {
 					if (err.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') throw new ApiError(meta.errors.containsProhibitedWords);
 					if (err.id === '9f466dab-c856-48cd-9e65-ff90ff750580') throw new ApiError(meta.errors.containsTooManyMentions);
+					if (err.id === '7cc42034-f7ab-4f7c-87b4-e00854479080') throw new ApiError(meta.errors.rolePermissionDenied);
+					if (err.id === '5ea8e4f5-9d64-4e6c-92b8-9e2b5a4756bc') throw new ApiError(meta.errors.cannotScheduleSameTime);
 				}
 
 				throw err;

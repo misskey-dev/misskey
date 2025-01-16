@@ -81,6 +81,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="mk-input-text" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
+	<div v-if="scheduledTime" :class="$style.scheduledTime">
+		<div><i class="ti ti-calendar-clock"></i></div>
+		<span>{{ i18n.tsx.willBePostedAt({ x: dateTimeFormat.format(scheduledTime) }) }}</span>
+		<button class="_button" style="margin-left: auto" @click="scheduledTime = null"><i class="ti ti-x"></i></button>
+	</div>
 	<MkInfo v-if="files.length > 0" warn :class="$style.guidelineInfo" :rounded="false"><Mfm :text="i18n.tsx._postForm.guidelineInfo({ tosUrl: instance.tosUrl, nsfwGuideUrl })"/></MkInfo>
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
@@ -94,6 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
+			<button v-if="$i.policies.canScheduleNote" v-tooltip="i18n.ts.setScheduledTime" class="_button" :class="$style.footerButton" @click="setScheduledTime"><i class="ti ti-calendar-clock"></i></button>
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
 			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
@@ -115,7 +121,6 @@ import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode.js';
-import type { NoteDraftItem } from '@/types/note-draft-item.js';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
@@ -138,8 +143,8 @@ import { uploadFile } from '@/scripts/upload.js';
 import { deepClone } from '@/scripts/clone.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
+import { dateTimeFormat } from '@/scripts/intl-const.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
 
 const $i = signinRequired();
@@ -211,6 +216,7 @@ if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
 const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
+const scheduledTime = ref<Date | null>(null);
 const autocompleteTextareaInput = ref<Autocomplete | null>(null);
 const autocompleteCwInput = ref<Autocomplete | null>(null);
 const autocompleteHashtagsInput = ref<Autocomplete | null>(null);
@@ -259,11 +265,15 @@ const placeholder = computed((): string => {
 });
 
 const submitText = computed((): string => {
-	return renote.value
-		? i18n.ts.quote
-		: reply.value
-			? i18n.ts.reply
-			: i18n.ts.note;
+	if (scheduledTime.value) {
+		return i18n.ts.schedule;
+	} else if (renote.value) {
+		return i18n.ts.quote;
+	} else if (reply.value) {
+		return i18n.ts.reply;
+	} else {
+		return i18n.ts.note;
+	}
 });
 
 const textLength = computed((): number => {
@@ -389,6 +399,7 @@ function watchForDraft() {
 	watch(files, () => saveDraft(), { deep: true });
 	watch(visibility, () => saveDraft());
 	watch(localOnly, () => saveDraft());
+	watch(scheduledTime, () => saveDraft());
 }
 
 function checkMissingMention() {
@@ -583,10 +594,25 @@ function removeVisibleUser(user) {
 	visibleUsers.value = erase(user, visibleUsers.value);
 }
 
+async function setScheduledTime() {
+	const { canceled, result: date } = await os.inputDateTime({
+		title: i18n.ts.setScheduledTime,
+	});
+	if (canceled) return;
+
+	scheduledTime.value = date;
+}
+
 function clear() {
 	text.value = '';
+	useCw.value = false;
+	cw.value = null;
+	visibility.value = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
+	localOnly.value = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
 	files.value = [];
 	poll.value = null;
+	visibleUsers.value = [];
+	scheduledTime.value = null;
 	quoteId.value = null;
 }
 
@@ -694,10 +720,16 @@ function onDrop(ev: DragEvent): void {
 function saveDraft() {
 	if (props.instant || props.mock) return;
 
-	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as Record<string, NoteDraftItem>;
+	let scheduledAt = scheduledTime.value ?? null;
+	if (scheduledAt && (isNaN(scheduledAt.getTime()) || scheduledAt.getTime() < Date.now())) {
+		scheduledAt = null;
+	}
+
+	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as Record<string, Misskey.entities.NoteDraft>;
 
 	draftData[draftKey.value] = {
 		updatedAt: new Date().toISOString(),
+		scheduledAt: scheduledAt?.toISOString() ?? null,
 		channel: channel.value ? {
 			id: channel.value.id,
 			name: channel.value.name,
@@ -737,7 +769,7 @@ function saveDraft() {
 }
 
 function deleteDraft() {
-	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as Record<string, NoteDraftItem>;
+	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as Record<string, Misskey.entities.NoteDraft>;
 
 	delete draftData[draftKey.value];
 
@@ -777,7 +809,7 @@ async function openDrafts() {
 }
 
 function loadDraft(exactMatch = false) {
-	const drafts = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as Record<string, NoteDraftItem>;
+	const drafts = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as Record<string, Misskey.entities.NoteDraft>;
 	const scope = exactMatch ? draftKey.value : draftKey.value.replace(`note:${draftId.value}`, 'note:');
 	const draft = Object.entries(drafts).filter(([k]) => k.startsWith(scope))
 		.map(r => ({ key: r[0], value: { ...r[1], updatedAt: new Date(r[1].updatedAt).getTime() } }))
@@ -788,7 +820,11 @@ function loadDraft(exactMatch = false) {
 			draftId.value = draft.key.replace(scope, '');
 		}
 
-		text.value = draft.value.data.text;
+		scheduledTime.value = draft.value.scheduledAt ? new Date(draft.value.scheduledAt) : null;
+		if (scheduledTime.value && (isNaN(scheduledTime.value.getTime()) || scheduledTime.value.getTime() < Date.now())) {
+			scheduledTime.value = null;
+		}
+		text.value = draft.value.data.text ?? '';
 		useCw.value = draft.value.data.useCw;
 		cw.value = draft.value.data.cw;
 		visibility.value = draft.value.data.visibility;
@@ -872,6 +908,7 @@ async function post(ev?: MouseEvent) {
 		visibility: visibility.value,
 		visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(u => u.id) : undefined,
 		reactionAcceptance: reactionAcceptance.value,
+		scheduledAt: scheduledTime.value?.getTime() ?? undefined,
 		noCreatedNote: true,
 	};
 
@@ -1079,6 +1116,7 @@ onMounted(() => {
 			visibility.value = init.visibility;
 			localOnly.value = init.localOnly ?? false;
 			quoteId.value = init.renote ? init.renote.id : null;
+			scheduledTime.value = null;
 		}
 
 		nextTick(() => watchForDraft());
@@ -1350,6 +1388,13 @@ defineExpose({
 	&.textOver {
 		color: #ff2a2a;
 	}
+}
+
+.scheduledTime {
+	display: flex;
+	padding: 8px 24px;
+	gap: 4px;
+	background: var(--infoBg);
 }
 
 .footer {

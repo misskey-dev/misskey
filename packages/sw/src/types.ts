@@ -50,4 +50,9 @@ export type BadgeNames =
 	| 'quote'
 	| 'repeat'
 	| 'user-plus'
-	| 'users';
+	| 'users'
+	| 'badges'
+	| 'calendar-clock'
+	| 'calendar-check'
+	| 'calendar-exclamation'
+	;

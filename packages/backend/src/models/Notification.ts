@@ -5,6 +5,7 @@
 
 import { MiUser } from './User.js';
 import { MiNote } from './Note.js';
+import { MiScheduledNote } from './ScheduledNote.js';
 import { MiAccessToken } from './AccessToken.js';
 import { MiRole } from './Role.js';
 
@@ -77,6 +78,21 @@ export type MiNotification = {
 	id: string;
 	createdAt: string;
 	achievement: string;
+} | {
+	type: 'noteScheduled';
+	id: string;
+	createdAt: string;
+	draftId: MiScheduledNote['id'];
+} | {
+	type: 'scheduledNotePosted';
+	id: string;
+	createdAt: string;
+	noteId: MiNote['id'];
+} | {
+	type: 'scheduledNoteError';
+	id: string;
+	createdAt: string;
+	draftId: MiScheduledNote['id'];
 } | {
 	type: 'app';
 	id: string;

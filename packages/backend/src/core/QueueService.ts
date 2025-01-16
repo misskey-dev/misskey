@@ -7,6 +7,7 @@ import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiScheduledNote } from '@/models/ScheduledNote.js';
 import type { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import type { MiWebhook, webhookEventTypes } from '@/models/Webhook.js';
 import type { Config } from '@/config.js';
@@ -34,6 +35,11 @@ export class QueueService {
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
 	) {
+		this.ensureRepeatJobs();
+	}
+
+	@bindThis
+	private ensureRepeatJobs() {
 		this.systemQueue.add('tickCharts', {
 		}, {
 			repeat: { pattern: '55 * * * *' },
@@ -65,6 +71,12 @@ export class QueueService {
 		});
 
 		this.systemQueue.add('checkExpiredMutings', {
+		}, {
+			repeat: { pattern: '*/5 * * * *' },
+			removeOnComplete: true,
+		});
+
+		this.systemQueue.add('checkMissingScheduledNote', {
 		}, {
 			repeat: { pattern: '*/5 * * * *' },
 			removeOnComplete: true,
@@ -377,6 +389,18 @@ export class QueueService {
 	@bindThis
 	public createReportAbuseJob(report: MiAbuseUserReport) {
 		return this.dbQueue.add('reportAbuse', report, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
+	public createScheduledNoteJob(draftId: MiScheduledNote['id'], scheduledAt: Date) {
+		return this.systemQueue.add('scheduledNote', {
+			draftId,
+		}, {
+			jobId: `scheduledNote:${draftId}`,
+			delay: Math.max(scheduledAt.getTime() - Date.now(), 0) + Math.floor(Math.random() * 500 + 250),
 			removeOnComplete: true,
 			removeOnFail: true,
 		});

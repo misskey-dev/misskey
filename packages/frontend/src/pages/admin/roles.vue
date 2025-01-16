@@ -48,6 +48,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canScheduleNote, 'canScheduleNote'])">
+							<template #label>{{ i18n.ts._role._options.canScheduleNote }}</template>
+							<template #suffix>{{ policies.canScheduleNote ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canScheduleNote">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canInitiateConversation, 'canInitiateConversation'])">
 							<template #label>{{ i18n.ts._role._options.canInitiateConversation }}</template>
 							<template #suffix>{{ policies.canInitiateConversation ? i18n.ts.yes : i18n.ts.no }}</template>

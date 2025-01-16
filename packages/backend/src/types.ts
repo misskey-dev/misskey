@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { IPoll } from '@/models/Poll.js';
+import type { MiChannel } from '@/models/Channel.js';
+import type { MiApp } from '@/models/App.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
+
 /**
  * note - 通知オンにしているユーザーが投稿した
  * follow - フォローされた
@@ -16,6 +23,9 @@
  * followRequestAccepted - 自分の送ったフォローリクエストが承認された
  * roleAssigned - ロールが付与された
  * achievementEarned - 実績を獲得
+ * noteScheduled - 予約投稿が予約された
+ * scheduledNotePosted - 予約投稿が投稿された
+ * scheduledNoteError - 予約投稿がエラーになった
  * app - アプリ通知
  * test - テスト通知（サーバー側）
  */
@@ -32,6 +42,9 @@ export const notificationTypes = [
 	'followRequestAccepted',
 	'roleAssigned',
 	'achievementEarned',
+	'noteScheduled',
+	'scheduledNotePosted',
+	'scheduledNoteError',
 	'app',
 	'test',
 ] as const;
@@ -336,6 +349,36 @@ export type ModerationLogPayloads = {
 		userUsername: string;
 		userMutualLinkSections: { name: string | null; mutualLinks: { id: string; url: string; fileId: string; description: string | null; imgSrc: string; }[]; }[] | []
 	}
+};
+
+export type MinimumUser = {
+	id: MiUser['id'];
+	host: MiUser['host'];
+	username: MiUser['username'];
+	uri: MiUser['uri'];
+};
+
+export type NoteCreateOption = {
+	createdAt?: Date | null;
+	scheduledAt?: Date | null;
+	name?: string | null;
+	text?: string | null;
+	reply?: MiNote | null;
+	renote?: MiNote | null;
+	files?: MiDriveFile[] | null;
+	poll?: IPoll | null;
+	localOnly?: boolean | null;
+	reactionAcceptance?: MiNote['reactionAcceptance'];
+	cw?: string | null;
+	visibility?: string;
+	visibleUsers?: MinimumUser[] | null;
+	channel?: MiChannel | null;
+	apMentions?: MinimumUser[] | null;
+	apHashtags?: string[] | null;
+	apEmojis?: string[] | null;
+	uri?: string | null;
+	url?: string | null;
+	app?: MiApp | null;
 };
 
 export type Serialized<T> = {
