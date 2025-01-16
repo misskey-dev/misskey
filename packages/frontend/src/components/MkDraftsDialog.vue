@@ -46,15 +46,15 @@
 							</div>
 							<MkTime :time="draft.createdAt" colored />
 						</div>
-						<span v-if="draft.visibility !== 'public'" :title="i18n.ts._visibility[draft.visibility]" style="margin-left: 0.5em">
+						<span v-if="draft.visibility !== 'public'" :title="i18n.ts._visibility[draft.visibility]">
 							<i v-if="draft.visibility === 'home'" class="ti ti-home"></i>
 							<i v-else-if="draft.visibility === 'followers'" class="ti ti-lock"></i>
 							<i v-else-if="draft.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 						</span>
-						<span v-if="draft.localOnly" :title="i18n.ts._visibility['disableFederation']" style="margin-left: 0.5em">
+						<span v-if="draft.localOnly" :title="i18n.ts._visibility['disableFederation']">
 							<i class="ti ti-rocket-off"></i>
 						</span>
-						<span v-if="draft.channel" :title="draft.channel.name" style="margin-left: 0.5em">
+						<span v-if="draft.channel" :title="draft.channel.name">
 							<i class="ti ti-device-tv"></i>
 						</span>
 					</div>
@@ -107,17 +107,17 @@
 								</div>
 								<MkTime :time="draft.createdAt" colored />
 							</div>
-							<span v-if="draft.visibility !== 'public'" :title="i18n.ts._visibility[draft.visibility]" style="margin-left: 0.5em">
-							<i v-if="draft.visibility === 'home'" class="ti ti-home"></i>
-							<i v-else-if="draft.visibility === 'followers'" class="ti ti-lock"></i>
-							<i v-else-if="draft.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
-						</span>
-							<span v-if="draft.localOnly" :title="i18n.ts._visibility['disableFederation']" style="margin-left: 0.5em">
-							<i class="ti ti-rocket-off"></i>
-						</span>
-							<span v-if="draft.channel" :title="draft.channel.name" style="margin-left: 0.5em">
-							<i class="ti ti-device-tv"></i>
-						</span>
+							<span v-if="draft.visibility !== 'public'" :title="i18n.ts._visibility[draft.visibility]">
+								<i v-if="draft.visibility === 'home'" class="ti ti-home"></i>
+								<i v-else-if="draft.visibility === 'followers'" class="ti ti-lock"></i>
+								<i v-else-if="draft.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+							</span>
+							<span v-if="draft.localOnly" :title="i18n.ts._visibility['disableFederation']">
+								<i class="ti ti-rocket-off"></i>
+							</span>
+							<span v-if="draft.channel" :title="draft.channel.name">
+								<i class="ti ti-device-tv"></i>
+							</span>
 						</div>
 					</div>
 					<div>
@@ -285,8 +285,10 @@ const scheduledPagination = {
 }
 
 .draftNoteInfo {
+	display: flex;
 	flex-shrink: 0;
 	margin-left: auto;
+	gap: 4px;
 }
 
 .draftNoteCw {
