@@ -1056,12 +1056,16 @@ function showDraftMenu() {
 		hashtags.value = draft.hashtag ?? '';
 		//if (draft.hashtag) withHashtags.value = true;
 		if (draft.poll) {
-			poll.value = {
-				choices: draft.poll.choices,
-				multiple: draft.poll.multiple,
-				expiresAt: draft.poll.expiresAt ? (new Date(draft.poll.expiresAt)).getTime() : null,
-				expiredAfter: null,
-			};
+			// 投票を一時的に空にしないと反映されないため
+			poll.value = null;
+			nextTick(() => {
+				poll.value = {
+					choices: draft.poll!.choices,
+					multiple: draft.poll!.multiple,
+					expiresAt: draft.poll!.expiresAt ? (new Date(draft.poll!.expiresAt)).getTime() : null,
+					expiredAfter: null,
+				};
+			});
 		}
 		if (draft.visibleUserIds) {
 			misskeyApi('users/show', { userIds: draft.visibleUserIds }).then(users => {
