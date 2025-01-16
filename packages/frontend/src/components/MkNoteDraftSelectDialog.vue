@@ -104,7 +104,7 @@ function deleteDraft(draft: Misskey.entities.NoteDraft) {
 
 onMounted(() => {
 	misskeyApi('notes/drafts', {}).then(_drafts => {
-		drafts.value = _drafts as unknown as Misskey.entities.NoteDraft[];
+		drafts.value = _drafts;
 	});
 });
 </script>
