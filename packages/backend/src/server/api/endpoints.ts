@@ -314,6 +314,10 @@ import * as ep___notes_timeline from './endpoints/notes/timeline.js';
 import * as ep___notes_translate from './endpoints/notes/translate.js';
 import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
+import * as ep___notes_drafts_list from './endpoints/notes/drafts/list.js';
+import * as ep___notes_drafts_create from './endpoints/notes/drafts/create.js';
+import * as ep___notes_drafts_delete from './endpoints/notes/drafts/delete.js';
+import * as ep___notes_drafts_update from './endpoints/notes/drafts/update.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_flush from './endpoints/notifications/flush.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
@@ -700,6 +704,10 @@ const eps = [
 	['notes/translate', ep___notes_translate],
 	['notes/unrenote', ep___notes_unrenote],
 	['notes/user-list-timeline', ep___notes_userListTimeline],
+	['notes/drafts', ep___notes_drafts_list],
+	['notes/drafts/create', ep___notes_drafts_create],
+	['notes/drafts/update', ep___notes_drafts_update],
+	['notes/drafts/delete', ep___notes_drafts_delete],
 	['notifications/create', ep___notifications_create],
 	['notifications/flush', ep___notifications_flush],
 	['notifications/mark-all-as-read', ep___notifications_markAllAsRead],

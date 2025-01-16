@@ -1681,6 +1681,10 @@ declare namespace entities {
         NotesUnrenoteRequest,
         NotesUserListTimelineRequest,
         NotesUserListTimelineResponse,
+        NotesDraftsRequest,
+        NotesDraftsCreateRequest,
+        NotesDraftsUpdateRequest,
+        NotesDraftsDeleteRequest,
         NotificationsCreateRequest,
         PagePushRequest,
         PagesCreateRequest,
@@ -1817,6 +1821,7 @@ declare namespace entities {
         Announcement,
         App,
         Note,
+        NoteDraft,
         NoteReaction,
         NoteFavorite,
         Notification_2 as Notification,
@@ -2649,6 +2654,9 @@ declare namespace note {
 export { note }
 
 // @public (undocumented)
+type NoteDraft = components['schemas']['NoteDraft'];
+
+// @public (undocumented)
 type NoteFavorite = components['schemas']['NoteFavorite'];
 
 // @public (undocumented)
@@ -2680,6 +2688,18 @@ type NotesCreateResponse = operations['notes___create']['responses']['200']['con
 
 // @public (undocumented)
 type NotesDeleteRequest = operations['notes___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsCreateRequest = operations['notes___drafts___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsDeleteRequest = operations['notes___drafts___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsRequest = operations['notes___drafts']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsUpdateRequest = operations['notes___drafts___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesFavoritesCreateRequest = operations['notes___favorites___create']['requestBody']['content']['application/json'];

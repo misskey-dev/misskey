@@ -23,6 +23,7 @@ export class NoteDraftEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private driveFileEntityService: DriveFileEntityService;
 	private idService: IdService;
+	private noteEntityService: NoteEntityService;
 	private noteDraftLoader = new DebounceLoader(this.findNoteDraftOrFail);
 
 	constructor(
@@ -33,8 +34,6 @@ export class NoteDraftEntityService implements OnModuleInit {
 
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
-
-		private noteEntityService: NoteEntityService,
 	) {
 	}
 

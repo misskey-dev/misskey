@@ -308,6 +308,10 @@ import * as ep___notes_timeline from './endpoints/notes/timeline.js';
 import * as ep___notes_translate from './endpoints/notes/translate.js';
 import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
+import * as ep___notes_drafts_list from './endpoints/notes/drafts/list.js';
+import * as ep___notes_drafts_create from './endpoints/notes/drafts/create.js';
+import * as ep___notes_drafts_delete from './endpoints/notes/drafts/delete.js';
+import * as ep___notes_drafts_update from './endpoints/notes/drafts/update.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_flush from './endpoints/notifications/flush.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
@@ -696,6 +700,10 @@ const $notes_timeline: Provider = { provide: 'ep:notes/timeline', useClass: ep__
 const $notes_translate: Provider = { provide: 'ep:notes/translate', useClass: ep___notes_translate.default };
 const $notes_unrenote: Provider = { provide: 'ep:notes/unrenote', useClass: ep___notes_unrenote.default };
 const $notes_userListTimeline: Provider = { provide: 'ep:notes/user-list-timeline', useClass: ep___notes_userListTimeline.default };
+const $notes_drafts_list : Provider = { provide: 'ep:notes/drafts', useClass: ep___notes_drafts_list.default };
+const $notes_drafts_create: Provider = { provide: 'ep:notes/drafts/create', useClass: ep___notes_drafts_create.default };
+const $notes_drafts_update: Provider = { provide: 'ep:notes/drafts/update', useClass: ep___notes_drafts_update.default };
+const $notes_drafts_delete: Provider = { provide: 'ep:notes/drafts/delete', useClass: ep___notes_drafts_delete.default };
 const $notifications_create: Provider = { provide: 'ep:notifications/create', useClass: ep___notifications_create.default };
 const $notifications_flush: Provider = { provide: 'ep:notifications/flush', useClass: ep___notifications_flush.default };
 const $notifications_markAllAsRead: Provider = { provide: 'ep:notifications/mark-all-as-read', useClass: ep___notifications_markAllAsRead.default };
@@ -1088,6 +1096,10 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$notes_translate,
 		$notes_unrenote,
 		$notes_userListTimeline,
+		$notes_drafts_list,
+		$notes_drafts_create,
+		$notes_drafts_update,
+		$notes_drafts_delete,
 		$notifications_create,
 		$notifications_flush,
 		$notifications_markAllAsRead,
@@ -1473,6 +1485,10 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$notes_translate,
 		$notes_unrenote,
 		$notes_userListTimeline,
+		$notes_drafts_list,
+		$notes_drafts_create,
+		$notes_drafts_update,
+		$notes_drafts_delete,
 		$notifications_create,
 		$notifications_flush,
 		$notifications_markAllAsRead,

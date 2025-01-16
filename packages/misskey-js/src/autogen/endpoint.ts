@@ -456,6 +456,10 @@ import type {
 	NotesUnrenoteRequest,
 	NotesUserListTimelineRequest,
 	NotesUserListTimelineResponse,
+	NotesDraftsRequest,
+	NotesDraftsCreateRequest,
+	NotesDraftsUpdateRequest,
+	NotesDraftsDeleteRequest,
 	NotificationsCreateRequest,
 	PagePushRequest,
 	PagesCreateRequest,
@@ -884,6 +888,10 @@ export type Endpoints = {
 	'notes/translate': { req: NotesTranslateRequest; res: NotesTranslateResponse };
 	'notes/unrenote': { req: NotesUnrenoteRequest; res: EmptyResponse };
 	'notes/user-list-timeline': { req: NotesUserListTimelineRequest; res: NotesUserListTimelineResponse };
+	'notes/drafts': { req: NotesDraftsRequest; res: EmptyResponse };
+	'notes/drafts/create': { req: NotesDraftsCreateRequest; res: EmptyResponse };
+	'notes/drafts/update': { req: NotesDraftsUpdateRequest; res: EmptyResponse };
+	'notes/drafts/delete': { req: NotesDraftsDeleteRequest; res: EmptyResponse };
 	'notifications/create': { req: NotificationsCreateRequest; res: EmptyResponse };
 	'notifications/flush': { req: EmptyRequest; res: EmptyResponse };
 	'notifications/mark-all-as-read': { req: EmptyRequest; res: EmptyResponse };
