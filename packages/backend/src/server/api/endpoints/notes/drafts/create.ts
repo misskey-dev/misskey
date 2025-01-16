@@ -25,6 +25,18 @@ export const meta = {
 
 	kind: 'write:account',
 
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		properties: {
+			createdDraft: {
+				type: 'object',
+				optional: false, nullable: false,
+				ref: 'NoteDraft',
+			},
+		},
+	},
+
 	errors: {
 		noSuchRenoteTarget: {
 			message: 'No such renote target.',
@@ -329,7 +341,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			return {
-				draft,
+				createdDraft: draft,
 			};
 		});
 	}

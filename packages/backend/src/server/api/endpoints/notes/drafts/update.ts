@@ -15,6 +15,7 @@ import { isRenote, isQuote } from '@/misc/is-renote.js';
 import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { NoteDraftEntityService } from '@/core/entities/NoteDraftEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -25,6 +26,18 @@ export const meta = {
 	prohibitMoved: true,
 
 	kind: 'write:account',
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		properties: {
+			updatedDraft: {
+				type: 'object',
+				optional: false, nullable: false,
+				ref: 'NoteDraft',
+			},
+		},
+	},
 
 	errors: {
 		noSuchRenoteTarget: {
@@ -202,6 +215,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private noteDraftService: NoteDraftService,
+		private noteDraftEntityService: NoteDraftEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const draft = await this.noteDraftService.get(me, ps.draftId);
@@ -353,8 +367,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				channel,
 			});
 
+			const updatedDraft = await this.noteDraftEntityService.pack(draft, me);
+
 			return {
-				draft,
+				updatedDraft,
 			};
 		});
 	}

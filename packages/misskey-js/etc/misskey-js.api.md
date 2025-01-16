@@ -1691,8 +1691,11 @@ declare namespace entities {
         NotesUserListTimelineRequest,
         NotesUserListTimelineResponse,
         NotesDraftsRequest,
+        NotesDraftsResponse,
         NotesDraftsCreateRequest,
+        NotesDraftsCreateResponse,
         NotesDraftsUpdateRequest,
+        NotesDraftsUpdateResponse,
         NotesDraftsDeleteRequest,
         NotificationsCreateRequest,
         PagePushRequest,
@@ -2702,13 +2705,22 @@ type NotesDeleteRequest = operations['notes___delete']['requestBody']['content']
 type NotesDraftsCreateRequest = operations['notes___drafts___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type NotesDraftsCreateResponse = operations['notes___drafts___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type NotesDraftsDeleteRequest = operations['notes___drafts___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type NotesDraftsRequest = operations['notes___drafts']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type NotesDraftsResponse = operations['notes___drafts']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type NotesDraftsUpdateRequest = operations['notes___drafts___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesDraftsUpdateResponse = operations['notes___drafts___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesFavoritesCreateRequest = operations['notes___favorites___create']['requestBody']['content']['application/json'];

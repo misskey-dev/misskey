@@ -19,6 +19,16 @@ export const meta = {
 
 	kind: 'read:account',
 
+	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'NoteDraft',
+		},
+	},
+
 	errors: {
 	},
 } as const;
