@@ -56,12 +56,12 @@ export class CreateNoteDraft1736686850345 {
 
 			await queryRunner.query(`
 				ALTER TABLE "note_draft"
-				ADD CONSTRAINT "FK_NOTE_DRAFT_REPLY_ID" FOREIGN KEY ("replyId") REFERENCES "note_draft"("id") ON DELETE CASCADE
+				ADD CONSTRAINT "FK_NOTE_DRAFT_REPLY_ID" FOREIGN KEY ("replyId") REFERENCES "note"("id") ON DELETE CASCADE
 			`);
 
 			await queryRunner.query(`
 				ALTER TABLE "note_draft"
-				ADD CONSTRAINT "FK_NOTE_DRAFT_RENOTE_ID" FOREIGN KEY ("renoteId") REFERENCES "note_draft"("id") ON DELETE CASCADE
+				ADD CONSTRAINT "FK_NOTE_DRAFT_RENOTE_ID" FOREIGN KEY ("renoteId") REFERENCES "note"("id") ON DELETE CASCADE
 			`);
 
 			await queryRunner.query(`
