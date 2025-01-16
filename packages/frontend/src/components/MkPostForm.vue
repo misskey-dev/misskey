@@ -998,35 +998,36 @@ function getNoteDraftDialog(): Promise<Misskey.entities.NoteDraft | null> {
 	});
 }
 
-async function showDraftMenu() {
-	const draft = await getNoteDraftDialog();
-	if (draft == null) return;
+function showDraftMenu() {
+	getNoteDraftDialog().then(draft => {
+		if (draft == null) return;
 
-	text.value = draft.text ?? '';
-	useCw.value = draft.cw != null;
-	cw.value = draft.cw ?? null;
-	visibility.value = draft.visibility;
-	localOnly.value = draft.localOnly ?? false;
-	files.value = draft.files ?? [];
-	if (draft.poll) {
-		poll.value = {
-			choices: draft.poll.choices,
-			multiple: draft.poll.multiple,
-			expiresAt: draft.poll.expiresAt ? (new Date(draft.poll.expiresAt)).getTime() : null,
-			expiredAfter: null,
-		};
-	}
-	if (draft.visibleUserIds) {
-		misskeyApi('users/show', { userIds: draft.visibleUserIds }).then(users => {
-			users.forEach(u => pushVisibleUser(u));
-		});
-	}
-	quoteId.value = draft.renoteId ?? null;
-	renoteTargetNote.value = draft.renote;
-	replyTargetNote.value = draft.reply;
-	reactionAcceptance.value = draft.reactionAcceptance;
+		text.value = draft.text ?? '';
+		useCw.value = draft.cw != null;
+		cw.value = draft.cw ?? null;
+		visibility.value = draft.visibility;
+		localOnly.value = draft.localOnly ?? false;
+		files.value = draft.files ?? [];
+		if (draft.poll) {
+			poll.value = {
+				choices: draft.poll.choices,
+				multiple: draft.poll.multiple,
+				expiresAt: draft.poll.expiresAt ? (new Date(draft.poll.expiresAt)).getTime() : null,
+				expiredAfter: null,
+			};
+		}
+		if (draft.visibleUserIds) {
+			misskeyApi('users/show', { userIds: draft.visibleUserIds }).then(users => {
+				users.forEach(u => pushVisibleUser(u));
+			});
+		}
+		quoteId.value = draft.renoteId ?? null;
+		renoteTargetNote.value = draft.renote;
+		replyTargetNote.value = draft.reply;
+		reactionAcceptance.value = draft.reactionAcceptance;
 
-	serverDraftId.value = draft.id;
+		serverDraftId.value = draft.id;
+	});
 }
 
 onMounted(() => {
