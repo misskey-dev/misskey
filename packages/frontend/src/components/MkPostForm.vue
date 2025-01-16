@@ -708,7 +708,7 @@ function saveDraft() {
 			localOnly: localOnly.value,
 			files: files.value,
 			poll: poll.value,
-			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
+			...( visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
 			quoteId: quoteId.value,
 			reactionAcceptance: reactionAcceptance.value,
 		},
@@ -736,7 +736,7 @@ function saveServerDraft() {
 			hashtag: hashtags.value,
 			...(files.value.length > 0 ? { fileIds: files.value.map(f => f.id) } : {}),
 			poll: poll.value,
-			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
+			...( visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
 			renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
 			replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
 			quoteId: quoteId.value,
@@ -754,7 +754,7 @@ function saveServerDraft() {
 			hashtag: hashtags.value,
 			...(files.value.length > 0 ? { fileIds: files.value.map(f => f.id) } : {}),
 			poll: poll.value,
-			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
+			...( visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
 			renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
 			replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
 			quoteId: quoteId.value,
@@ -1077,6 +1077,15 @@ function showDraftMenu() {
 		replyTargetNote.value = draft.reply;
 		reactionAcceptance.value = draft.reactionAcceptance;
 		if (draft.channel) targetChannel.value = draft.channel as unknown as Misskey.entities.Channel;
+
+		visibleUsers.value = [];
+		draft.visibleUserIds?.forEach(uid => {
+			if (!visibleUsers.value.some(u => u.id === uid)) {
+				misskeyApi('users/show', { userId: uid }).then(user => {
+					pushVisibleUser(user);
+				});
+			}
+		});
 
 		serverDraftId.value = draft.id;
 	});
