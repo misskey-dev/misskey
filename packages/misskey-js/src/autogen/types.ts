@@ -23539,6 +23539,7 @@ export type operations = {
           visibility?: 'public' | 'home' | 'followers' | 'specified';
           visibleUserIds?: string[];
           cw?: string | null;
+          hashtag?: string | null;
           /** @default false */
           localOnly?: boolean;
           /**
@@ -23625,6 +23626,7 @@ export type operations = {
           visibility?: 'public' | 'home' | 'followers' | 'specified';
           visibleUserIds?: string[];
           cw?: string | null;
+          hashtag?: string | null;
           /** @default false */
           localOnly?: boolean;
           /**
