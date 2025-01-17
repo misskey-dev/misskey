@@ -163,6 +163,10 @@ export interface Locale extends ILocale {
      */
     "save": string;
     /**
+     * 保存しない
+     */
+    "dontSave": string;
+    /**
      * ユーザー
      */
     "users": string;
@@ -10745,14 +10749,9 @@ export interface Locale extends ILocale {
          */
         "saveConfirm": string;
         /**
-         * ここで「いいえ」を選択しても、下書きは端末内に保存されます。
-         * サーバーに保存することで、端末間で下書きを共有したり、もしもの時にデータが失われるのを防いだりすることができます。
+         * ここで「保存しない」を選択しても、下書きは端末内に保存されます。
          */
         "saveConfirmDescription": string;
-        /**
-         * これ以上下書きを作成できません
-         */
-        "youCantCreateAnymore": string;
         /**
          * 下書きを削除
          */

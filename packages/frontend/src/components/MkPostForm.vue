@@ -726,7 +726,7 @@ function deleteDraft() {
 }
 
 async function saveServerDraft() {
-	const promise = misskeyApi(serverDraftId.value == null ? 'notes/drafts/create' : 'notes/drafts/update', {
+	await os.apiWithDialog(serverDraftId.value == null ? 'notes/drafts/create' : 'notes/drafts/update', {
 		...(serverDraftId.value == null ? {} : { draftId: serverDraftId.value }),
 		text: text.value,
 		useCw: useCw.value,
@@ -742,21 +742,6 @@ async function saveServerDraft() {
 		quoteId: quoteId.value,
 		channelId: targetChannel.value ? targetChannel.value.id : undefined,
 		reactionAcceptance: reactionAcceptance.value,
-	});
-
-	await os.promiseDialog(promise, null, (err) => {
-		if (err.id === '9ee33bbe-fde3-4c71-9b51-e50492c6b9c8') {
-			os.alert({
-				type: 'error',
-				text: i18n.ts._drafts.youCantCreateAnymore,
-			});
-		} else {
-			os.alert({
-				type: 'error',
-				title: i18n.ts.somethingHappened,
-				text: err.message + '\n' + err.id,
-			});
-		}
 	});
 }
 
@@ -942,7 +927,7 @@ async function confirmSavingServerDraft() {
 			title: i18n.ts._drafts.saveConfirm,
 			text: i18n.ts._drafts.saveConfirmDescription,
 			okText: i18n.ts.save,
-			cancelText: i18n.ts.no,
+			cancelText: i18n.ts.dontSave,
 		});
 
 		if (!canceled) {
