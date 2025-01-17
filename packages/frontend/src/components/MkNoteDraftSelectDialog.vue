@@ -116,7 +116,21 @@ const pagingComponent = useTemplateRef('pagingEl');
 const selected = ref<Misskey.entities.NoteDraft | null>(null);
 const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
 
+let lockId: string | null = null;
+let lockTimer: number | null = null;
+
 function toggleSelected(draft: Misskey.entities.NoteDraft) {
+	if (lockId === draft.id) {
+		return;
+	} else {
+		if (lockTimer != null) {
+			window.clearTimeout(lockTimer);
+		}
+		lockId = draft.id;
+		lockTimer = window.setTimeout(() => {
+			lockId = null;
+		}, 300);
+	}
 	if (selected.value?.id === draft.id) {
 		selected.value = null;
 	} else {
