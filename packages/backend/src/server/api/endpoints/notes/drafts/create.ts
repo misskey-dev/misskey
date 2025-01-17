@@ -16,6 +16,7 @@ import { ApiError } from '@/server/api/error.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteDraftEntityService } from '@/core/entities/NoteDraftEntityService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export const meta = {
 	tags: ['notes', 'drafts'],
@@ -121,6 +122,12 @@ export const meta = {
 			message: 'Cannot post because it exceeds the allowed number of mentions.',
 			code: 'CONTAINS_TOO_MANY_MENTIONS',
 			id: '4de0363a-3046-481b-9b0f-feff3e211025',
+		},
+
+		tooManyDrafts: {
+			message: 'You cannot create drafts any more.',
+			code: 'TOO_MANY_DRAFTS',
+			id: '9ee33bbe-fde3-4c71-9b51-e50492c6b9c8',
 		},
 	},
 
@@ -340,6 +347,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				visibility: ps.visibility,
 				visibleUsers,
 				channel,
+			}).catch((err) => {
+				if (err instanceof IdentifiableError && err.id === 'c9a2c1d8-d153-40be-9cac-9fc2eb56b581') {
+					throw new ApiError(meta.errors.tooManyDrafts);
+				}
+				throw err;
 			});
 
 			const createdDraft = await this.noteDraftEntityService.pack(draft, me);

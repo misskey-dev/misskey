@@ -12,6 +12,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { IPoll } from '@/models/Poll.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export type NoteDraftOptions = {
 	reply?: MiNote | null;
@@ -30,9 +31,6 @@ export type NoteDraftOptions = {
 
 @Injectable()
 export class NoteDraftService {
-	public static NoSuchNoteDraftError = class extends Error {};
-	public static TooManyNoteDraftsError = class extends Error {};
-
 	constructor(
 		@Inject(DI.noteDraftsRepository)
 		private noteDraftsRepository: NoteDraftsRepository,
@@ -67,7 +65,7 @@ export class NoteDraftService {
 			userId: me.id,
 		});
 		if (currentCount >= (await this.roleService.getUserPolicies(me.id)).noteDraftLimit) {
-			throw new NoteDraftService.TooManyNoteDraftsError();
+			throw new IdentifiableError('c9a2c1d8-d153-40be-9cac-9fc2eb56b581', 'Too many drafts');
 		}
 
 		const draft = await this.noteDraftsRepository.insertOne({
@@ -110,7 +108,7 @@ export class NoteDraftService {
 		});
 
 		if (draft == null) {
-			throw new NoteDraftService.NoSuchNoteDraftError();
+			throw new IdentifiableError('03a9514d-ff73-4c48-a55a-0282c8311ec6', 'No such note draft');
 		}
 
 		await this.noteDraftsRepository.update(draft.id, {
@@ -140,7 +138,7 @@ export class NoteDraftService {
 		});
 
 		if (draft == null) {
-			throw new NoteDraftService.NoSuchNoteDraftError();
+			throw new IdentifiableError('03a9514d-ff73-4c48-a55a-0282c8311ec6', 'No such note draft');
 		}
 
 		await this.noteDraftsRepository.delete(draft.id);

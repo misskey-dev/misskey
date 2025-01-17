@@ -21,13 +21,13 @@ export const meta = {
 		noSuchNoteDraft: {
 			message: 'No such note draft.',
 			code: 'NO_SUCH_NOTE_DRAFT',
-			id: '',
+			id: '49cd6b9d-848e-41ee-b0b9-adaca711a6b1',
 		},
 
 		accessDenied: {
 			message: 'Access denied.',
 			code: 'ACCESS_DENIED',
-			id: '',
+			id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e',
 		},
 	},
 } as const;
