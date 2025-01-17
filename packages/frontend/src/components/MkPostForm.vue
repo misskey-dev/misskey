@@ -1172,10 +1172,6 @@ onMounted(() => {
 	});
 });
 
-onBeforeUnmount(async () => {
-
-});
-
 defineExpose({
 	clear,
 });
