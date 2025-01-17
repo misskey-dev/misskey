@@ -4990,6 +4990,7 @@ export type components = {
       canImportFollowing: boolean;
       canImportMuting: boolean;
       canImportUserLists: boolean;
+      noteDraftLimit: number;
     };
     ReversiGameLite: {
       /** Format: id */
