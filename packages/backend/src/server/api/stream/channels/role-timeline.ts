@@ -73,6 +73,10 @@ class RoleTimelineChannel extends Channel {
 				}
 			}
 
+			if (this.user && (note.visibleUserIds?.includes(this.user.id) ?? note.mentions?.includes(this.user.id))) {
+				this.connection.cacheNote(note);
+			}
+
 			if (this.minimize && ['public', 'home'].includes(note.visibility)) {
 				this.send('note', {
 					id: note.id, myReaction: note.myReaction,
@@ -81,7 +85,6 @@ class RoleTimelineChannel extends Channel {
 					renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
 				});
 			} else {
-				this.connection.cacheNote(note);
 				this.send('note', note);
 			}
 		} else {

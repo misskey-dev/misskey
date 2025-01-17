@@ -60,7 +60,9 @@ class HashtagChannel extends Channel {
 			}
 		}
 
-		this.connection.cacheNote(note);
+		if (this.user && (note.visibleUserIds?.includes(this.user.id) ?? note.mentions?.includes(this.user.id))) {
+			this.connection.cacheNote(note);
+		}
 
 		this.send('note', note);
 	}

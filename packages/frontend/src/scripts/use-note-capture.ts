@@ -60,6 +60,8 @@ export function useNoteCapture(props: {
 			}
 
 			case 'pollVoted': {
+				if (note.value.poll == null) return;
+
 				const choice = body.choice;
 
 				const choices = [...note.value.poll.choices];
@@ -84,8 +86,9 @@ export function useNoteCapture(props: {
 
 	function capture(withHandler = false): void {
 		if (connection) {
-			// TODO: このノートがストリーミング経由で流れてきた場合のみ sr する
-			connection.send(document.body.contains(props.rootEl.value ?? null as Node | null) ? 'sr' : 's', { id: note.value.id });
+			if ($i && (note.value?.visibleUserIds?.includes($i.id) ?? note.value?.mentions?.includes($i.id))) {
+				connection.send(document.body.contains(props.rootEl.value ?? null as Node | null) ? 'sr' : 's', { id: note.value.id });
+			}
 			if (pureNote.value.id !== note.value.id) connection.send('s', { id: pureNote.value.id });
 			if (withHandler) connection.on('noteUpdated', onStreamNoteUpdated);
 		}
