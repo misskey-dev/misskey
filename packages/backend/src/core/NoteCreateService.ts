@@ -425,6 +425,15 @@ export class NoteCreateService implements OnApplicationShutdown {
 				throw new IdentifiableError('7cc42034-f7ab-4f7c-87b4-e00854479080', 'User has no permission to schedule notes.');
 			}
 
+			if ((data.scheduledAt.getTime() - Date.now()) / 86_400_000 > policies.scheduleNoteMaxDays) {
+				throw new IdentifiableError('506006cf-3092-4ae1-8145-b025001c591f', `User can schedule notes up to ${policies.scheduleNoteMaxDays} days in the future.`);
+			}
+
+			const scheduledCount = await this.scheduledNotesRepository.countBy({ userId: user.id });
+			if (scheduledCount >= policies.scheduleNoteLimit) {
+				throw new IdentifiableError('7fc78d25-d947-45c1-9547-02257b98cab3', `User can schedule up to ${policies.scheduleNoteLimit} notes.`);
+			}
+
 			const draft = await this.insertScheduledNote(user, data);
 
 			await this.queueService.createScheduledNoteJob(draft.id, draft.scheduledAt!);

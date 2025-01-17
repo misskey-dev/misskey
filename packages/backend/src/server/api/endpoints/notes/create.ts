@@ -155,16 +155,24 @@ export const meta = {
 			id: 'e577d185-8179-4a17-b47f-6093985558e6',
 		},
 
-		cannotScheduleToFarFuture: {
-			message: 'Cannot schedule to the far future.',
-			code: 'CANNOT_SCHEDULE_TO_FAR_FUTURE',
-			id: 'ea102856-e8da-4ae9-a98a-0326821bd177',
-		},
-
 		cannotScheduleSameTime: {
 			message: 'Cannot schedule multiple notes at the same time.',
 			code: 'CANNOT_SCHEDULE_SAME_TIME',
 			id: '187a8fab-fd83-4ae6-a46c-0f6f07784634',
+		},
+
+		tooManyScheduledNotes: {
+			message: 'You cannot schedule notes any more.',
+			code: 'TOO_MANY_SCHEDULED_NOTES',
+			kind: 'permission',
+			id: '9e33041f-f6fb-414d-98c1-591466e55287'
+		},
+
+		cannotScheduleToFarFuture: {
+			message: 'Cannot schedule to the far future.',
+			code: 'CANNOT_SCHEDULE_TO_FAR_FUTURE',
+			kind: 'permission',
+			id: 'ea102856-e8da-4ae9-a98a-0326821bd177',
 		},
 
 		rolePermissionDenied: {
@@ -462,11 +470,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					logger.error('Cannot schedule to the past.', { scheduledAt });
 					throw new ApiError(meta.errors.cannotScheduleToPast);
 				}
-
-				if (scheduledAt.getTime() - now.getTime() > ms('1year')) {
-					logger.error('Cannot schedule to the far future.', { scheduledAt });
-					throw new ApiError(meta.errors.cannotScheduleToFarFuture);
-				}
 			}
 
 			// 投稿を作成
@@ -517,10 +520,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				logger.error('Failed to create a note.', { error: err });
 
 				if (err instanceof IdentifiableError) {
-					if (err.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') throw new ApiError(meta.errors.containsProhibitedWords);
-					if (err.id === '9f466dab-c856-48cd-9e65-ff90ff750580') throw new ApiError(meta.errors.containsTooManyMentions);
-					if (err.id === '7cc42034-f7ab-4f7c-87b4-e00854479080') throw new ApiError(meta.errors.rolePermissionDenied);
-					if (err.id === '5ea8e4f5-9d64-4e6c-92b8-9e2b5a4756bc') throw new ApiError(meta.errors.cannotScheduleSameTime);
+					if (err.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') throw new ApiError(meta.errors.containsProhibitedWords, { message: err.message });
+					if (err.id === '9f466dab-c856-48cd-9e65-ff90ff750580') throw new ApiError(meta.errors.containsTooManyMentions, { message: err.message });
+					if (err.id === '5ea8e4f5-9d64-4e6c-92b8-9e2b5a4756bc') throw new ApiError(meta.errors.cannotScheduleSameTime, { message: err.message });
+					if (err.id === '7fc78d25-d947-45c1-9547-02257b98cab3') throw new ApiError(meta.errors.tooManyScheduledNotes, { message: err.message });
+					if (err.id === '506006cf-3092-4ae1-8145-b025001c591f') throw new ApiError(meta.errors.cannotScheduleToFarFuture, { message: err.message });
+					if (err.id === '7cc42034-f7ab-4f7c-87b4-e00854479080') throw new ApiError(meta.errors.rolePermissionDenied, { message: err.message });
 				}
 
 				throw err;

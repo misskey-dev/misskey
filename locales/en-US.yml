@@ -1794,6 +1794,8 @@ _role:
     ltlAvailable: "Can view the local timeline"
     canPublicNote: "Can send public notes"
     canScheduleNote: "Can schedule notes"
+    scheduleNoteLimit: "Maximum number of scheduled notes"
+    scheduleNoteMaxDays: "Maximum number of days that note can be scheduled"
     canInitiateConversation: "Can mention, reply or quote"
     canCreateContent: "Can create contents"
     canUpdateContent: "Can edit contents"
@@ -2324,6 +2326,7 @@ _postForm:
     d: "What do you want to say?"
     e: "Start writing..."
     f: "Waiting for you to write..."
+  policyScheduleNoteMaxDaysExceeded: "The maximum number of days you can schedule notes for with your current support plan is {max}.\nYou can upgrade your plan [here](https://go.misskey.io/donate)."
   tosAndGuidelinesInfo: "Before posting, please read the [Terms of Service]({tosUrl}) and [NSFW Guidelines](https://go.misskey.io/media-guideline)."
 _profile:
   name: "Name"

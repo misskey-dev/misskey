@@ -7020,6 +7020,14 @@ export interface Locale extends ILocale {
              */
             "canScheduleNote": string;
             /**
+             * 予約投稿の最大数
+             */
+            "scheduleNoteLimit": string;
+            /**
+             * 予約投稿の最大日数
+             */
+            "scheduleNoteMaxDays": string;
+            /**
              * メンション、リプライ、引用の許可
              */
             "canInitiateConversation": string;
@@ -9067,6 +9075,11 @@ export interface Locale extends ILocale {
              */
             "f": string;
         };
+        /**
+         * 現在の支援プランで予約できる日数の上限は{max}日です。
+         * [ここ](https://go.misskey.io/donate)からプランをアップグレードできます。
+         */
+        "policyScheduleNoteMaxDaysExceeded": ParameterizedString<"max">;
         /**
          * 投稿する前に、[利用規約]({tosUrl})と[NSFWガイドライン](https://go.misskey.io/media-guideline)を必ずお読みください。
          */

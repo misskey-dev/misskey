@@ -1791,6 +1791,8 @@ _role:
     ltlAvailable: "로컬 타임라인 보이기"
     canPublicNote: "공개 노트 허용"
     canScheduleNote: "노트 예약 허용"
+    scheduleNoteLimit: "노트 예약 한도"
+    scheduleNoteMaxDays: "노트 예약 최대 일수"
     mentionMax: "노트에 넣을 수 있는 멘션 수"
     canCreateContent: "컨텐츠 생성 허용"
     canUpdateContent: "컨텐츠 수정 허용"
@@ -2310,6 +2312,7 @@ _postForm:
     d: "말하고 싶은 게 있나요?"
     e: "여기에 적어 주세요"
     f: "글 쓰기를 기다려요…"
+  policyScheduleNoteMaxDaysExceeded: "현재 지원 플랜의 예약 가능한 최대 일수는 {max}일입니다.\n[여기](https://go.misskey.io/donate)에서 플랜을 업그레이드할 수 있습니다."
   tosAndGuidelinesInfo: "노트를 게시하기 전에 [이용약관]({tosUrl})과 [NSFW 가이드라인](https://go.misskey.io/media-guideline)을 반드시 읽어 주세요."
 _profile:
   name: "이름"

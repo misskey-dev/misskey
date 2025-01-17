@@ -1808,6 +1808,8 @@ _role:
     ltlAvailable: "ローカルタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
     canScheduleNote: "予約投稿の許可"
+    scheduleNoteLimit: "予約投稿の最大数"
+    scheduleNoteMaxDays: "予約投稿の最大日数"
     canInitiateConversation: "メンション、リプライ、引用の許可"
     canCreateContent: "コンテンツの作成"
     canUpdateContent: "コンテンツの編集"
@@ -2377,6 +2379,7 @@ _postForm:
     d: "言いたいことは？"
     e: "ここに書いてください"
     f: "あなたが書くのを待っています..."
+  policyScheduleNoteMaxDaysExceeded: "現在の支援プランで予約できる日数の上限は{max}日です。\n[ここ](https://go.misskey.io/donate)からプランをアップグレードできます。"
   tosAndGuidelinesInfo: "投稿する前に、[利用規約]({tosUrl})と[NSFWガイドライン](https://go.misskey.io/media-guideline)を必ずお読みください。"
 
 _profile:

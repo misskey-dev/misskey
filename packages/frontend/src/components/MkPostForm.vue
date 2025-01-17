@@ -82,8 +82,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="mk-input-text" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<div v-if="scheduledTime" :class="$style.scheduledTime">
-		<div><i class="ti ti-calendar-clock"></i></div>
-		<span>{{ i18n.tsx.willBePostedAt({ x: dateTimeFormat.format(scheduledTime) }) }}</span>
+		<div>
+			<div style="display: flex; gap: 4px" :style="scheduledTimeExceededPolicy ? 'color: var(--error)' : undefined">
+				<span style="margin-right: 4px"><i class="ti ti-calendar-clock"></i></span>
+				<component :is="scheduledTimeExceededPolicy ? 'del' : 'span'" :style="scheduledTimeExceededPolicy ? 'opacity: 0.6' : undefined">
+					{{ i18n.tsx.willBePostedAt({ x: dateTimeFormat.format(scheduledTime) }) }}
+				</component>
+			</div>
+			<div v-if="scheduledTimeExceededPolicy" style="display: flex; gap: 4px; margin-top: 4px; color: var(--infoWarnFg)">
+				<span style="margin-right: 4px"><i class="ti ti-exclamation-circle"></i></span>
+				<Mfm :text="i18n.tsx._postForm.policyScheduleNoteMaxDaysExceeded({ max: $i.policies.scheduleNoteMaxDays })"/>
+			</div>
+		</div>
 		<button class="_button" style="margin-left: auto" @click="scheduledTime = null"><i class="ti ti-x"></i></button>
 	</div>
 	<MkInfo v-if="files.length > 0 && instance.tosUrl" warn style="margin-top: 8px;" :rounded="false">
@@ -219,6 +229,9 @@ if (props.initialVisibleUsers) {
 }
 const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
 const scheduledTime = ref<Date | null>(null);
+const scheduledTimeExceededPolicy = computed(() =>
+	scheduledTime.value ? (scheduledTime.value.getTime() - Date.now()) / 86_400_000 > $i!.policies.scheduleNoteMaxDays : false
+);
 const autocompleteTextareaInput = ref<Autocomplete | null>(null);
 const autocompleteCwInput = ref<Autocomplete | null>(null);
 const autocompleteHashtagsInput = ref<Autocomplete | null>(null);
@@ -285,16 +298,20 @@ const maxTextLength = computed((): number => {
 });
 
 const canPost = computed((): boolean => {
-	return !props.mock && !posting.value && !posted.value &&
-		(
+	return !props.mock
+		&& !posting.value
+		&& !posted.value
+		&& (
 			1 <= textLength.value ||
 			1 <= files.value.length ||
 			poll.value != null ||
 			renote.value != null ||
 			(reply.value != null && quoteId.value != null)
-		) &&
-		(textLength.value <= maxTextLength.value) &&
-		(!poll.value || poll.value.choices.length >= 2);
+		)
+		&& (textLength.value <= maxTextLength.value)
+		&& (!poll.value || poll.value.choices.length >= 2)
+		&& !scheduledTimeExceededPolicy.value
+	;
 });
 
 const withHashtags = computed(defaultStore.makeGetterSetter('postFormWithHashtags'));
@@ -1393,8 +1410,10 @@ defineExpose({
 
 .scheduledTime {
 	display: flex;
-	padding: 8px 24px;
+	padding: 8px 12px;
 	gap: 4px;
+	align-items: center;
+	font-size: 90%;
 	background: var(--infoBg);
 }
 
