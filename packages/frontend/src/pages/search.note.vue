@@ -194,7 +194,7 @@ const fixHostIfLocal = (target: string | null | undefined) => {
 	return target;
 };
 
-const searchParams = computed(() => {
+const searchParams = computed<SearchParams | null>(() => {
 	const trimmedQuery = searchQuery.value.trim();
 	if (!trimmedQuery) return null;
 
@@ -204,7 +204,7 @@ const searchParams = computed(() => {
 			query: trimmedQuery,
 			host: fixHostIfLocal(user.value.host),
 			userId: user.value.id,
-		} as const satisfies SearchParams;
+		};
 	}
 
 	if (instance.federation !== 'none' && searchScope.value === 'server') {
@@ -218,19 +218,19 @@ const searchParams = computed(() => {
 		return {
 			query: trimmedQuery,
 			host: fixHostIfLocal(trimmedHost),
-		} as const satisfies SearchParams;
+		};
 	}
 
 	if (instance.federation === 'none' || searchScope.value === 'local') {
 		return {
 			query: trimmedQuery,
 			host: '.',
-		} as const satisfies SearchParams;
+		};
 	}
 
 	return {
 		query: trimmedQuery,
-	} as const satisfies SearchParams;
+	};
 });
 
 function selectUser() {
