@@ -73,6 +73,7 @@ import { ProxyAccountService } from './ProxyAccountService.js';
 import { UtilityService } from './UtilityService.js';
 import { FileInfoService } from './FileInfoService.js';
 import { SearchService } from './SearchService.js';
+import { HanamiSearchService } from './HanamiSearchService.js';
 import { ClipService } from './ClipService.js';
 import { FeaturedService } from './FeaturedService.js';
 import { FanoutTimelineService } from './FanoutTimelineService.js';
@@ -220,6 +221,7 @@ const $UtilityService: Provider = { provide: 'UtilityService', useExisting: Util
 const $FileInfoService: Provider = { provide: 'FileInfoService', useExisting: FileInfoService };
 const $FlashService: Provider = { provide: 'FlashService', useExisting: FlashService };
 const $SearchService: Provider = { provide: 'SearchService', useExisting: SearchService };
+const $HanamiSearchService: Provider = { provide: 'HanamiSearchService', useExisting: HanamiSearchService };
 const $ClipService: Provider = { provide: 'ClipService', useExisting: ClipService };
 const $FeaturedService: Provider = { provide: 'FeaturedService', useExisting: FeaturedService };
 const $FanoutTimelineService: Provider = { provide: 'FanoutTimelineService', useExisting: FanoutTimelineService };
@@ -371,6 +373,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FileInfoService,
 		FlashService,
 		SearchService,
+		HanamiSearchService,
 		ClipService,
 		FeaturedService,
 		FanoutTimelineService,
@@ -518,6 +521,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FileInfoService,
 		$FlashService,
 		$SearchService,
+		$HanamiSearchService,
 		$ClipService,
 		$FeaturedService,
 		$FanoutTimelineService,
@@ -666,6 +670,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FileInfoService,
 		FlashService,
 		SearchService,
+		HanamiSearchService,
 		ClipService,
 		FeaturedService,
 		FanoutTimelineService,
@@ -811,6 +816,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UtilityService,
 		$FileInfoService,
 		$SearchService,
+		$HanamiSearchService,
 		$ClipService,
 		$FeaturedService,
 		$FanoutTimelineService,

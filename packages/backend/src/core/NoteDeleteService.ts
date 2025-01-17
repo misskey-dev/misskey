@@ -20,9 +20,10 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { SearchService } from '@/core/SearchService.js';
+import { HanamiSearchService } from '@/core/HanamiSearchService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
+import { SearchService } from './SearchService.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -49,6 +50,7 @@ export class NoteDeleteService {
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private searchService: SearchService,
+		private hanamiSearchService: HanamiSearchService,
 		private moderationLogService: ModerationLogService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
@@ -120,8 +122,10 @@ export class NoteDeleteService {
 
 		for (const cascadingNote of cascadingNotes) {
 			this.searchService.unindexNote(cascadingNote);
+			this.hanamiSearchService.unindexNote(cascadingNote);
 		}
 		this.searchService.unindexNote(note);
+		this.hanamiSearchService.unindexNote(note);
 
 		await this.notesRepository.delete({
 			id: note.id,

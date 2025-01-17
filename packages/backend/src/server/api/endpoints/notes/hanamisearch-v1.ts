@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { SearchService } from '@/core/SearchService.js';
+import { HanamiSearchService } from '@/core/HanamiSearchService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { isMustRemove } from '@/misc/is-hidden-or-visibility-modified.js';
 
@@ -53,10 +53,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private noteEntityService: NoteEntityService,
-		private searchService: SearchService,
+		private hanamiSearchService: HanamiSearchService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const notes = await this.searchService.searchNote(ps.query, me, {
+			const notes = await this.hanamiSearchService.searchNote(ps.query, me, {
 				userId: ps.userId,
 				channelId: ps.channelId,
 				host: ps.host,

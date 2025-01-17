@@ -14,4 +14,12 @@ db:
 redis:
   host: 127.0.0.1
   port: 56312
+meilisearch:
+  host: 127.0.0.1
+  port: 17700
+  index: 'test'
+hanamisearch:
+  host: 127.0.0.1
+  port: 17701
+  index: 'test-hanami'
 id: aidx

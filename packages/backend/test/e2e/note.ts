@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Repository } from "typeorm";
+import type { Repository } from 'typeorm';
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import type * as misskey from 'misskey-js';
 import { MiNote } from '@/models/Note.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { api, castAsError, initTestDb, post, role, signup, uploadFile, uploadUrl } from '../utils.js';
-import type * as misskey from 'misskey-js';
 
 describe('Note', () => {
 	let Notes: Repository<MiNote>;
@@ -20,6 +20,8 @@ describe('Note', () => {
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
 	let tom: misskey.entities.SignupResponse;
+
+	const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 	beforeAll(async () => {
 		const connection = await initTestDb(true);
@@ -40,6 +42,33 @@ describe('Note', () => {
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 		assert.strictEqual(res.body.createdNote.text, post.text);
+	});
+
+	test('検索できる', async () => {
+		const post = {
+			text: 'あ',
+		};
+
+		await api('notes/create', post, alice);
+		// indexに反映されるまで待つ(indexが終わったことを確認できないので時間を目分量で決める)
+		await wait(10000);
+		// TODO: HanamiSearchのテストは別にして並列実行できるようにする
+		const resMeili = await api('notes/search', {
+			query: 'あ',
+		}, alice);
+		const resHanami = await api('notes/hanamisearch-v1', {
+			query: 'あ',
+		}, alice);
+
+		assert.strictEqual(resMeili.status, 200);
+		assert.strictEqual(Array.isArray(resMeili.body), true);
+		assert.strictEqual(resMeili.body.length, 1);
+		assert.strictEqual(resMeili.body[0].text, 'あ');
+
+		assert.strictEqual(resHanami.status, 200);
+		assert.strictEqual(Array.isArray(resHanami.body), true);
+		assert.strictEqual(resHanami.body.length, 1);
+		assert.strictEqual(resHanami.body[0].text, 'あ');
 	});
 
 	test('ファイルを添付できる', async () => {

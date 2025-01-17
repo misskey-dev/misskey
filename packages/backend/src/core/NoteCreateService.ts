@@ -47,7 +47,7 @@ import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
-import { SearchService } from '@/core/SearchService.js';
+import { HanamiSearchService } from '@/core/HanamiSearchService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { FanoutTimelineNamePrefix, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -57,6 +57,7 @@ import { trackPromise } from '@/misc/promise-tracker.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 import { CacheService } from '@/core/CacheService.js';
+import { SearchService } from './SearchService.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -213,6 +214,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private apRendererService: ApRendererService,
 		private roleService: RoleService,
 		private searchService: SearchService,
+		private hanamiSearchService: HanamiSearchService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
 		private activeUsersChart: ActiveUsersChart,
@@ -1082,6 +1084,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (note.text == null && note.cw == null) return;
 
 		this.searchService.indexNote(note);
+		this.hanamiSearchService.indexNote(note);
 	}
 
 	@bindThis
