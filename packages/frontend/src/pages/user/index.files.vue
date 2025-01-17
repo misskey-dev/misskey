@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :max-height="300" :foldable="true">
+<MkContainer :max-height="300" :foldable="true" :onUnfold="unfoldContainer">
 	<template #icon><i class="ti ti-photo"></i></template>
 	<template #header>{{ i18n.ts.files }}</template>
 	<div :class="$style.root">
@@ -29,8 +29,17 @@ const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 
+const emit = defineEmits<{
+	(ev: 'unfold'): void;
+}>();
+
 const fetching = ref(true);
 const notes = ref<Misskey.entities.Note[]>([]);
+
+function unfoldContainer(): boolean {
+	emit('unfold');
+	return false;
+}
 
 onMounted(() => {
 	misskeyApi('users/notes', {

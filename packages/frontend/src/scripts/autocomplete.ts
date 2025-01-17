@@ -5,7 +5,7 @@
 
 import { nextTick, Ref, ref, defineAsyncComponent } from 'vue';
 import getCaretCoordinates from 'textarea-caret';
-import { toASCII } from 'punycode/';
+import { toASCII } from 'punycode.js';
 import { popup } from '@/os.js';
 
 export type SuggestionType = 'user' | 'hashtag' | 'emoji' | 'mfmTag' | 'mfmParam';

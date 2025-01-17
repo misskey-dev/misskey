@@ -13,8 +13,12 @@
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
 - Enhance: 照会に失敗した場合、その理由を表示するように
+- Enhance: ワードミュートで検知されたワードを表示できるように
+- Enhance: リモートのノートのリンクをコピーできるように
 - Enhance: 連合がホワイトリスト化・無効化されているサーバー向けのデザイン修正
 - Enhance: AiScriptのセーブデータを明示的に削除する関数`Mk:remove`を追加
+- Enhance: ノートの添付ファイルを一覧で遡れる「ファイル」タブを追加  
+  (Based on https://github.com/Otaku-Social/maniakey/pull/14)
 - Enhance: AiScriptの拡張API関数において引数の型チェックをより厳格に
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
@@ -43,6 +47,7 @@
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
+- Fix: 絵文字の連合でライセンス欄を相互にやり取りするように ( #10859, #14109 )
 - Fix: ロックダウンされた期間指定のノートがStreaming経由でLTLに出現するのを修正 ( #15200 )
 - Fix: disableClustering設定時の初期化ロジックを調整( #15223 )
 - Fix: URLとURIが異なるエンティティの照会に失敗する問題を修正( #15039 )
@@ -50,6 +55,10 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/869)
 - Fix: `/api/pages/update`にて`name`を指定せずにリクエストするとエラーが発生する問題を修正
 - Fix: AIセンシティブ判定が arm64 環境で動作しない問題を修正
+- Fix: 非Misskey系のソフトウェアからHTML`<ruby>`タグを含むノートを受信した場合、MFMの読み仮名（ルビ）文法に変換して表示
+
+### Misskey.js
+- Feat: allow setting `binaryType` of WebSocket connection
 
 ## 2024.11.0
 

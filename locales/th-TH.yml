@@ -2709,3 +2709,6 @@ _embedCodeGen:
   generateCode: "สร้างโค้ดสำหรับการฝัง"
   codeGenerated: "รหัสถูกสร้างขึ้นแล้ว"
   codeGeneratedDescription: "นำโค้ดที่สร้างแล้วไปวางในเว็บไซต์ของคุณเพื่อฝังเนื้อหา"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "ไม่พบหน้าที่ต้องการ"

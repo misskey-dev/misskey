@@ -474,3 +474,6 @@ _abuseReport:
       mail: "ອີເມວ"
 _moderationLogTypes:
   suspend: "ລະງັບ"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "ບໍ່ພົບ"
