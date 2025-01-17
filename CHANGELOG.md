@@ -37,6 +37,7 @@
 - Fix: 「削除して編集」でノートの引用を解除出来なかった問題を修正( #14476 )
 - Fix: RSSウィジェットが正しく表示されない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/857)
+- Fix: ワードミュートの保存失敗時にAPIエラーが握りつぶされる事があるのを修正
 
 ### Server
 - Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
