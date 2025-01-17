@@ -126,6 +126,7 @@ function toggleSelected(draft: Misskey.entities.NoteDraft) {
 	} else {
 		if (lockTimer != null) {
 			window.clearTimeout(lockTimer);
+			lockTimer = null;
 		}
 		lockId = draft.id;
 		lockTimer = window.setTimeout(() => {
