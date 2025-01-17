@@ -261,6 +261,10 @@ const canPost = computed((): boolean => {
 		(!poll.value || poll.value.choices.length >= 2);
 });
 
+const canSaveAsServerDraft = computed((): boolean => {
+	return canPost.value && (textLength.value > 0 || files.value.length > 0 || poll.value != null);
+});
+
 const withHashtags = computed(defaultStore.makeGetterSetter('postFormWithHashtags'));
 const hashtags = computed(defaultStore.makeGetterSetter('postFormHashtags'));
 
@@ -928,7 +932,7 @@ async function post(ev?: MouseEvent) {
 }
 
 async function confirmSavingServerDraft(ev?: Event) {
-	if (canPost.value) {
+	if (canSaveAsServerDraft.value) {
 		ev?.stopPropagation();
 
 		const { canceled, result } = await os.actions({
