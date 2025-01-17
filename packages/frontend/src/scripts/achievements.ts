@@ -48,7 +48,7 @@ export const ACHIEVEMENT_TYPES = [
 	'myNoteFavorited1',
 	'profileFilled',
 	'markedAsCat',
-	'markedAsHanaModeUser',
+	'markedAsYamiModeUser',
 	'following1',
 	'following10',
 	'following50',
@@ -269,7 +269,7 @@ export const ACHIEVEMENT_BADGES = {
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
 		frame: 'bronze',
 	},
-	'markedAsHanaModeUser': {
+	'markedAsYamiModeUser': {
 		img: '/fluent-emoji/1f338.png',
 		bg: 'linear-gradient(0deg, rgb(255,205,231), rgb(234,202,255))',
 		frame: 'gold',

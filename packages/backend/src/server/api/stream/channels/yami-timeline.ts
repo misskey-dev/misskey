@@ -12,8 +12,8 @@ import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
-class HanamiTimelineChannel extends Channel {
-	public readonly chName = 'hanamiTimeline';
+class YamiTimelineChannel extends Channel {
+	public readonly chName = 'yamiTimeline';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
 	public static kind = 'read:account';
@@ -34,7 +34,7 @@ class HanamiTimelineChannel extends Channel {
 	@bindThis
 	public async init(params: JsonObject): Promise<void> {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
-		if (!policies.hanamiTlAvailable) return;
+		if (!policies.yamiTlAvailable) return;
 
 		this.withRenotes = !!(params.withRenotes ?? true);
 		this.withFiles = !!(params.withFiles ?? false);
@@ -104,10 +104,10 @@ class HanamiTimelineChannel extends Channel {
 }
 
 @Injectable()
-export class HanamiTimelineChannelService implements MiChannelService<true> {
-	public readonly shouldShare = HanamiTimelineChannel.shouldShare;
-	public readonly requireCredential = HanamiTimelineChannel.requireCredential;
-	public readonly kind = HanamiTimelineChannel.kind;
+export class YamiTimelineChannelService implements MiChannelService<true> {
+	public readonly shouldShare = YamiTimelineChannel.shouldShare;
+	public readonly requireCredential = YamiTimelineChannel.requireCredential;
+	public readonly kind = YamiTimelineChannel.kind;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -116,8 +116,8 @@ export class HanamiTimelineChannelService implements MiChannelService<true> {
 	}
 
 	@bindThis
-	public create(id: string, connection: Channel['connection']): HanamiTimelineChannel {
-		return new HanamiTimelineChannel(
+	public create(id: string, connection: Channel['connection']): YamiTimelineChannel {
+		return new YamiTimelineChannel(
 			this.noteEntityService,
 			this.roleService,
 			id,

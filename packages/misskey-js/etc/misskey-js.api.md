@@ -1656,8 +1656,8 @@ declare namespace entities {
         NotesHybridTimelineResponse,
         NotesLocalTimelineRequest,
         NotesLocalTimelineResponse,
-        NotesHanamiTimelineRequest,
-        NotesHanamiTimelineResponse,
+        NotesYamiTimelineRequest,
+        NotesYamiTimelineResponse,
         NotesMentionsRequest,
         NotesMentionsResponse,
         NotesPollsRecommendationRequest,
@@ -2713,10 +2713,10 @@ type NotesGlobalTimelineRequest = operations['notes___global-timeline']['request
 type NotesGlobalTimelineResponse = operations['notes___global-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type NotesHanamiTimelineRequest = operations['notes___hanami-timeline']['requestBody']['content']['application/json'];
+type NotesYamiTimelineRequest = operations['notes___yami-timeline']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type NotesHanamiTimelineResponse = operations['notes___hanami-timeline']['responses']['200']['content']['application/json'];
+type NotesYamiTimelineResponse = operations['notes___yami-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesHybridTimelineRequest = operations['notes___hybrid-timeline']['requestBody']['content']['application/json'];

@@ -44,9 +44,9 @@ export const meta = {
 	},
 
 	errors: {
-		HanamiTlDisabled: {
-			message: 'Hanami timeline has been disabled.',
-			code: 'HanamiTL_DISABLED',
+		YamiTlDisabled: {
+			message: 'Yami timeline has been disabled.',
+			code: 'YamiTL_DISABLED',
 			id: 'ffa57e0f-d14e-48d6-a64c-8fbcba5635ab',
 		},
 	},
@@ -98,8 +98,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
 
 			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
-			if (!policies.hanamiTlAvailable) {
-				throw new ApiError(meta.errors.HanamiTlDisabled);
+			if (!policies.yamiTlAvailable) {
+				throw new ApiError(meta.errors.YamiTlDisabled);
 			}
 
 			const serverSettings = await this.metaService.fetch();

@@ -86,7 +86,7 @@ export class MiNote {
 	@Column('boolean', {
 		default: false,
 	})
-	public isNoteInHanaMode: boolean;
+	public isNoteInYamiMode: boolean;
 
 	@Column('varchar', {
 		length: 64, nullable: true,

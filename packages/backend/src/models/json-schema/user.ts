@@ -132,7 +132,7 @@ export const packedUserLiteSchema = {
 			type: 'number',
 			nullable: true, optional: true,
 		},
-		isInHanaMode: {
+		isInYamiMode: {
 			type: 'boolean',
 			nullable: false, optional: true,
 		},

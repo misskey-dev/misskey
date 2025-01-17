@@ -207,10 +207,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				if (followees.length > 0) {
 					const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
 					qb.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
-					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.isNoteInHanaMode IS FALSE)');
+					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.isNoteInYamiMode IS FALSE)');
 				} else {
 					qb.where('note.userId = :meId', { meId: me.id });
-					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.isNoteInHanaMode IS FALSE)');
+					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.isNoteInYamiMode IS FALSE)');
 				}
 			}))
 			.innerJoinAndSelect('note.user', 'user')

@@ -8,6 +8,7 @@ import * as mfm from 'mfm-js';
 import { In, DataSource, IsNull, LessThan } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { Data } from 'ws';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
@@ -55,7 +56,6 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { Data } from 'ws';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 import { CacheService } from '@/core/CacheService.js';
 
@@ -133,7 +133,7 @@ type Option = {
 	files?: MiDriveFile[] | null;
 	poll?: IPoll | null;
 	localOnly?: boolean | null;
-	isNoteInHanaMode?: boolean | null;
+	isNoteInYamiMode?: boolean | null;
 	reactionAcceptance?: MiNote['reactionAcceptance'];
 	cw?: string | null;
 	visibility?: string;
@@ -233,11 +233,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
-		isInHanaMode: MiUser['isInHanaMode'];
+		isInYamiMode: MiUser['isInYamiMode'];
 	}, data: Option, silent = false): Promise<MiNote> {
-		// ノートのisNoteInHanaMode属性は投稿時のユーザーの属性に基本的に依存する
-		if (data.isNoteInHanaMode == null) {
-			data.isNoteInHanaMode = user.isInHanaMode;
+		// ノートのisNoteInYamiMode属性は投稿時のユーザーの属性に基本的に依存する
+		if (data.isNoteInYamiMode == null) {
+			data.isNoteInYamiMode = user.isInYamiMode;
 		}
 
 		// チャンネル外にリプライしたら対象のスコープに合わせる
@@ -428,10 +428,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
-		if (data.isNoteInHanaMode) {
-			throw new IdentifiableError('cb4feb26-a6e8-44b4-8c9d-d21c48a73d93', 'Unable to re-import notes created in HanaMisskey.');
+		if (data.isNoteInYamiMode) {
+			throw new IdentifiableError('cb4feb26-a6e8-44b4-8c9d-d21c48a73d93', 'Unable to re-import notes created in yamisskey.');
 		} else {
-			data.isNoteInHanaMode = false;
+			data.isNoteInYamiMode = false;
 		}
 
 		// チャンネル内にリプライしたら対象のスコープに合わせる
@@ -615,7 +615,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			emojis,
 			userId: user.id,
 			localOnly: data.localOnly!,
-			isNoteInHanaMode: data.isNoteInHanaMode!,
+			isNoteInYamiMode: data.isNoteInYamiMode!,
 			reactionAcceptance: data.reactionAcceptance,
 			visibility: data.visibility as any,
 			visibleUserIds: data.visibility === 'specified'
@@ -725,9 +725,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Increment notes count (user)
 		this.incNotesCountOfUser(user);
 
-		// はなモードが有効なユーザーであることと、はなモード内でのノートであることは等価であることが保証されているので
+		// やみモードが有効なユーザーであることと、やみモード内でのノートであることは等価であることが保証されているので
 		// チャンネルに関してもこれでOK
-		if (note.isNoteInHanaMode) {
+		if (note.isNoteInYamiMode) {
 			this.pushToTl(note, user, ['localTimeline']);
 		} else {
 			this.pushToTl(note, user);
@@ -781,7 +781,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.deleteAt) {
 			const delay = data.deleteAt.getTime() - Date.now();
 			this.queueService.scheduledNoteDeleteQueue.add(note.id, {
-				noteId: note.id
+				noteId: note.id,
 			}, {
 				delay,
 				removeOnComplete: true,

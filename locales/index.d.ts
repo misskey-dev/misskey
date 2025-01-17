@@ -5887,9 +5887,9 @@ export interface Locale extends ILocale {
     };
     "_timelineDescription": {
         /**
-         * はなみタイムラインでは、フォローしているアカウントの投稿に加えて、連合しているサーバーの人気な投稿も見られます。
+         * やみタイムラインでは、病んでいる人のみが閲覧・投稿できます。
          */
-        "hanami": string;
+        "yami": string;
         /**
          * ホームタイムラインでは、あなたがフォローしているアカウントの投稿を見られます。
          */
@@ -6453,13 +6453,13 @@ export interface Locale extends ILocale {
                  */
                 "flavor": string;
             };
-            "_markedAsHanaModeUser": {
+            "_markedAsYamiModeUser": {
                 /**
                  * 菫ほどな小さき人に生まれたし
                  */
                 "title": string;
                 /**
-                 * はなモードを有効にした
+                 * やみモードを有効にした
                  */
                 "description": string;
             };
@@ -7064,9 +7064,9 @@ export interface Locale extends ILocale {
              */
             "ltlAvailable": string;
             /**
-             * はなみタイムラインの閲覧
+             * やみタイムラインの閲覧
              */
-            "hanamiTlAvailable": string;
+            "yamiTlAvailable": string;
             /**
              * パブリック投稿の許可
              */
@@ -7226,9 +7226,9 @@ export interface Locale extends ILocale {
              */
             "isBot": string;
             /**
-             * はなモードが有効なユーザー
+             * やみモードが有効なユーザー
              */
-            "isInHanaMode": string;
+            "isInYamiMode": string;
             /**
              * サスペンド済みユーザー
              */
@@ -8892,10 +8892,10 @@ export interface Locale extends ILocale {
          * 今日誕生日のユーザー
          */
         "birthdayFollowings": string;
-				/**
-				 * listenBrainz
-				 */
-				"listenBrainz": string;
+        /**
+         * listenBrainz
+         */
+        "listenBrainz": string;
     };
     "_cw": {
         /**
@@ -9297,9 +9297,9 @@ export interface Locale extends ILocale {
          */
         "home": string;
         /**
-         * はなみ
+         * やみ
          */
-        "hanami": string;
+        "yami": string;
         /**
          * ローカル
          */
@@ -10897,24 +10897,24 @@ export interface Locale extends ILocale {
          */
         "all": string;
     };
-    "_hana": {
+    "_yami": {
         /**
-         * はなみすきー設定
+         * やみ設定
          */
-        "hanaSettings": string;
+        "yamiSettings": string;
         /**
-         * はなモード
+         * やみモード
          */
-        "hanaMode": string;
+        "yamiMode": string;
         /**
-         * はな
+         * やみ
          */
-        "hanaModeShort": string;
-        "_hanaModeSwitcher": {
+        "yamiModeShort": string;
+        "_yamiModeSwitcher": {
             /**
              * こんな方におすすめ
              */
-            "recomenddedFor": string;
+            "recommendedFor": string;
             /**
              * 通常
              */
@@ -10928,25 +10928,25 @@ export interface Locale extends ILocale {
              */
             "normal2": string;
             /**
-             * サーバー内のユーザーとの交流を重視したい方
+             * SNSでの通常の交流を楽しみたい方
              */
             "normalRecommend": string;
             /**
-             * LTLが使えません
+             * 他人のノートを一時的に見えなくします
              */
-            "hana1": string;
+            "yami1": string;
             /**
-             * 公開範囲「パブリック」で投稿した内容はLTLに表示されません
+             * LTLとパブリックな投稿が非表示になります
              */
-            "hana2": string;
+            "yami2": string;
             /**
-             * フォロー中ユーザーの最新のノートとFediverseの人気の投稿をザッピングできる「はなみタイムライン」が使用できます
+             * 同じ気持ちの人とつながれる「やみタイムライン」が使用できます
              */
-            "hana3": string;
+            "yami3": string;
             /**
-             * おひとりさまサーバーのような分散SNS体験をしたい方（内々での交流だけでなく、外部サーバーとの交流もしっかり重視したい方）
+             * SNSでの比較で疲れを感じている方、一時的に静かな環境で過ごしたい方
              */
-            "hanaRecommend": string;
+            "yamiRecommend": string;
             /**
              * 一定期間にモードを変更できる回数には制限があります。
              */

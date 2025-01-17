@@ -21,13 +21,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.headerRight">
 			<template v-if="!(channel != null && fixed)">
 				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
-					<span v-if="visibility === 'public' && $i.isInHanaMode"><i class="ti ti-hanamisskey-hanamode"></i></span>
+					<span v-if="visibility === 'public' && $i.isInYamiMode"><i class="ti ti-moon"></i></span>
 					<span v-else-if="visibility === 'public'"><i class="ti ti-world"></i></span>
 					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
 					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
 					<span :class="$style.headerRightButtonText">
-						{{ i18n.ts._visibility[visibility] }}{{ visibility === 'public' && $i.isInHanaMode ? ` (${i18n.ts._hana.hanaModeShort})` : '' }}
+						{{ i18n.ts._visibility[visibility] }}{{ visibility === 'public' && $i.isInYamiMode ? ` (${i18n.ts._yami.yamiModeShort})` : '' }}
 					</span>
 				</button>
 				<button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
@@ -105,6 +105,7 @@ import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode/';
 import { host, url } from '@@/js/config.js';
+import type { PostFormProps } from '@/types/post-form.js';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
@@ -130,7 +131,6 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
 import { bottomItemDef } from '@/scripts/post-form.js';
-import type { PostFormProps } from '@/types/post-form.js';
 
 const $i = signinRequired();
 

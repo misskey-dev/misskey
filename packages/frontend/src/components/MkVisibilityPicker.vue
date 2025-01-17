@@ -11,11 +11,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<button key="public" :disabled="isSilenced || isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
 			<div :class="$style.icon">
-				<i v-if="$i.isInHanaMode" class="ti ti-hanamisskey-hanamode"></i>
+				<i v-if="$i.isInYamiMode" class="ti ti-moon"></i>
 				<i v-else class="ti ti-world"></i>
 			</div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}{{ $i.isInHanaMode ? ` (${i18n.ts._hana.hanaModeShort})` : '' }}</span>
+				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}{{ $i.isInYamiMode ? ` (${i18n.ts._yami.yamiModeShort})` : '' }}</span>
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</span>
 			</div>
 		</button>

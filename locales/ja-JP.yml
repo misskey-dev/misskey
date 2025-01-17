@@ -1486,7 +1486,7 @@ _initialTutorial:
     description: "ここで紹介した機能はほんの一部にすぎません。Misskeyの使い方をより詳しく知るには、{link}をご覧ください。"
 
 _timelineDescription:
-  hanami: "はなみタイムラインでは、フォローしているアカウントの投稿に加えて、連合しているサーバーの人気な投稿も見られます。"
+  yami: "やみタイムラインでは、病んでいる人のみが閲覧・投稿できます。"
   home: "ホームタイムラインでは、あなたがフォローしているアカウントの投稿を見られます。"
   local: "ローカルタイムラインでは、このサーバーにいるユーザー全員の投稿を見られます。"
   social: "ソーシャルタイムラインには、ホームタイムラインとローカルタイムラインの投稿が両方表示されます。"
@@ -1649,9 +1649,9 @@ _achievements:
       title: "吾輩は猫である"
       description: "アカウントをCatとして設定した"
       flavor: "名前はまだない。"
-    _markedAsHanaModeUser:
+    _markedAsYamiModeUser:
       title: "菫ほどな小さき人に生まれたし"
-      description: "はなモードを有効にした"
+      description: "やみモードを有効にした"
     _following1:
       title: "はじめてのフォロー"
       description: "初めてフォローした"
@@ -1825,7 +1825,7 @@ _role:
   _options:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
-    hanamiTlAvailable: "はなみタイムラインの閲覧"
+    yamiTlAvailable: "やみタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
     mentionMax: "ノート内の最大メンション数"
     canImportNotes: "ノートのインポート"
@@ -1866,7 +1866,7 @@ _role:
     isRemote: "リモートユーザー"
     isCat: "猫ユーザー"
     isBot: "botユーザー"
-    isInHanaMode: "はなモードが有効なユーザー"
+    isInYamiMode: "やみモードが有効なユーザー"
     isSuspended: "サスペンド済みユーザー"
     isLocked: "鍵アカウントユーザー"
     isExplorable: "「アカウントを見つけやすくする」が有効なユーザー"
@@ -2449,7 +2449,7 @@ _instanceCharts:
 
 _timelines:
   home: "ホーム"
-  hanami: "はなみ"
+  yami: "やみ"
   local: "ローカル"
   social: "ソーシャル"
   global: "グローバル"
@@ -2904,18 +2904,18 @@ _hideReactionCount:
   others: "自分以外のノートのみ"
   all: "全てのノート"
 
-_hana:
-  hanaSettings: "はなみすきー設定"
-  hanaMode: "はなモード"
-  hanaModeShort: "はな"
-  _hanaModeSwitcher:
-    recomenddedFor: "こんな方におすすめ"
+_yami:
+  yamiSettings: "やみ設定"
+  yamiMode: "やみモード"
+  yamiModeShort: "やみ"
+  _yamiModeSwitcher:
+    recommendedFor: "こんな方におすすめ"
     normal: "通常"
     normal1: "LTLが使えます"
     normal2: "公開範囲「パブリック」で投稿した内容はLTLに表示されます"
-    normalRecommend: "サーバー内のユーザーとの交流を重視したい方"
-    hana1: "LTLが使えません"
-    hana2: "公開範囲「パブリック」で投稿した内容はLTLに表示されません"
-    hana3: "フォロー中ユーザーの最新のノートとFediverseの人気の投稿をザッピングできる「はなみタイムライン」が使用できます"
-    hanaRecommend: "おひとりさまサーバーのような分散SNS体験をしたい方（内々での交流だけでなく、外部サーバーとの交流もしっかり重視したい方）"
+    normalRecommend: "SNSでの通常の交流を楽しみたい方"
+    yami1: "他人のノートを一時的に見えなくします"
+    yami2: "LTLとパブリックな投稿が非表示になります"
+    yami3: "同じ気持ちの人とつながれる「やみタイムライン」が使用できます"
+    yamiRecommend: "SNSでの比較で疲れを感じている方、一時的に静かな環境で過ごしたい方"
     saveConfirmDescription: "一定期間にモードを変更できる回数には制限があります。"

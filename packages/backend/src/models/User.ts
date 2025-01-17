@@ -186,9 +186,9 @@ export class MiUser {
 
 	@Column('boolean', {
 		default: false,
-		comment: 'Whether the User is in Hana Mode.',
+		comment: 'Whether the User is in yami Mode.',
 	})
-	public isInHanaMode: boolean;
+	public isInYamiMode: boolean;
 
 	@Column('boolean', {
 		default: false,

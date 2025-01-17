@@ -1,39 +1,39 @@
 <template>
 <div class="_gaps">
 	<div class="_gaps_s">
-		<input id="hana" v-model="mode" :class="$style.radio" type="radio" name="hanamodeSwitcher" value="hana">
-		<label :class="$style.radioRoot" class="_gaps_s" for="hana">
+		<input id="yami" v-model="mode" :class="$style.radio" type="radio" name="yamimodeSwitcher" value="yami">
+		<label :class="$style.radioRoot" class="_gaps_s" for="yami">
 			<div :class="$style.radioTitle">
 				<div :class="$style.tick">
 					<i class="ti ti-check"></i>
 				</div>
-				<div :class="$style.title"><i class="ti ti-hanamisskey-hanamode"></i> {{ i18n.ts._hana.hanaMode }}</div>
+				<div :class="$style.title"><i class="ti ti-moon"></i> {{ i18n.ts._yami.yamiMode }}</div>
 			</div>
 			<ul>
-				<li>{{ i18n.ts._hana._hanaModeSwitcher.hana1 }}</li>
-				<li>{{ i18n.ts._hana._hanaModeSwitcher.hana2 }}</li>
-				<li>{{ i18n.ts._hana._hanaModeSwitcher.hana3 }}</li>
+				<li>{{ i18n.ts._yami._yamiModeSwitcher.yami1 }}</li>
+				<li>{{ i18n.ts._yami._yamiModeSwitcher.yami2 }}</li>
+				<li>{{ i18n.ts._yami._yamiModeSwitcher.yami3 }}</li>
 			</ul>
 			<div :class="$style.radioRecommendedFor">
-				<div :class="$style.title">{{ i18n.ts._hana._hanaModeSwitcher.recomenddedFor }}</div>
-				<div>{{ i18n.ts._hana._hanaModeSwitcher.hanaRecommend }}</div>
+				<div :class="$style.title">{{ i18n.ts._yami._yamiModeSwitcher.recommendedFor }}</div>
+				<div>{{ i18n.ts._yami._yamiModeSwitcher.yamiRecommend }}</div>
 			</div>
 		</label>
-		<input id="normal" v-model="mode" :class="$style.radio" type="radio" name="hanamodeSwitcher" value="normal">
+		<input id="normal" v-model="mode" :class="$style.radio" type="radio" name="yamimodeSwitcher" value="normal">
 		<label :class="$style.radioRoot" class="_gaps_s" for="normal">
 			<div :class="$style.radioTitle">
 				<div :class="$style.tick">
 					<i class="ti ti-check"></i>
 				</div>
-				<div :class="$style.title"><i class="ti ti-users-group"></i> {{ i18n.ts._hana._hanaModeSwitcher.normal }}</div>
+				<div :class="$style.title"><i class="ti ti-users-group"></i> {{ i18n.ts._yami._yamiModeSwitcher.normal }}</div>
 			</div>
 			<ul>
-				<li>{{ i18n.ts._hana._hanaModeSwitcher.normal1 }}</li>
-				<li>{{ i18n.ts._hana._hanaModeSwitcher.normal2 }}</li>
+				<li>{{ i18n.ts._yami._yamiModeSwitcher.normal1 }}</li>
+				<li>{{ i18n.ts._yami._yamiModeSwitcher.normal2 }}</li>
 			</ul>
 			<div :class="$style.radioRecommendedFor">
-				<div :class="$style.title">{{ i18n.ts._hana._hanaModeSwitcher.recomenddedFor }}</div>
-				<div>{{ i18n.ts._hana._hanaModeSwitcher.normalRecommend }}</div>
+				<div :class="$style.title">{{ i18n.ts._yami._yamiModeSwitcher.recommendedFor }}</div>
+				<div>{{ i18n.ts._yami._yamiModeSwitcher.normalRecommend }}</div>
 			</div>
 		</label>
 	</div>
@@ -53,8 +53,8 @@ import MkButton from '@/components/MkButton.vue';
 
 const $i = signinRequired();
 
-const originalMode = $i.isInHanaMode ? 'hana' : 'normal';
-const mode = ref<'normal' | 'hana'>(originalMode);
+const originalMode = $i.isInYamiMode ? 'yami' : 'normal';
+const mode = ref<'normal' | 'yami'>(originalMode);
 
 const hasChanged = computed(() => mode.value !== originalMode);
 
@@ -62,17 +62,17 @@ async function setMode() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		title: i18n.ts.saveConfirm,
-		text: i18n.ts._hana._hanaModeSwitcher.saveConfirmDescription,
+		text: i18n.ts._yami._yamiModeSwitcher.saveConfirmDescription,
 	});
 
 	if (canceled) return;
 
 	os.apiWithDialog('i/update', {
-		isInHanaMode: mode.value === 'hana',
+		isInYamiMode: mode.value === 'yami',
 	});
 	globalEvents.emit('requestClearPageCache');
-	if (mode.value === 'hana') {
-		claimAchievement('markedAsHanaModeUser');
+	if (mode.value === 'yami') {
+		claimAchievement('markedAsYamiModeUser');
 	}
 }
 </script>

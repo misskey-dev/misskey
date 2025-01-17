@@ -99,12 +99,12 @@ const menuDef = computed(() => [{
 		active: currentPage.value?.route.name === 'security',
 	}],
 }, {
-	title: i18n.ts._hana.hanaSettings,
+	title: i18n.ts._yami.yamiSettings,
 	items: [{
-		icon: 'ti ti-hanamisskey-hanamode',
-		text: i18n.ts._hana.hanaMode,
-		to: '/settings/hanamode',
-		active: currentPage.value?.route.name === 'hanamode',
+		icon: 'ti ti-moon',
+		text: i18n.ts._yami.yamiMode,
+		to: '/settings/yamimode',
+		active: currentPage.value?.route.name === 'yamimode',
 	}],
 }, {
 	title: i18n.ts.clientSettings,

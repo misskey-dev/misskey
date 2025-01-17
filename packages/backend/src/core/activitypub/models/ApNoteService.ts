@@ -324,7 +324,7 @@ export class ApNoteService {
 				cw,
 				text,
 				localOnly: false,
-				isNoteInHanaMode: false,
+				isNoteInYamiMode: false,
 				visibility,
 				visibleUsers,
 				apMentions,

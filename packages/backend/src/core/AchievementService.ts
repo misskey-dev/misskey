@@ -52,7 +52,7 @@ export const ACHIEVEMENT_TYPES = [
 	'myNoteFavorited1',
 	'profileFilled',
 	'markedAsCat',
-	'markedAsHanaModeUser',
+	'markedAsYamiModeUser',
 	'following1',
 	'following10',
 	'following50',

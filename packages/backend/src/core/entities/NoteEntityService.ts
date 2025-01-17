@@ -154,7 +154,7 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		// 未ログインなら非表示
-		if(!meId){
+		if (!meId) {
 			hide = true;
 		}
 
@@ -292,7 +292,7 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		// 未ログインなら非表示
-		if(!meId){
+		if (!meId) {
 			return false;
 		}
 
@@ -438,7 +438,7 @@ export class NoteEntityService implements OnModuleInit {
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri ?? undefined,
 			url: note.url ?? undefined,
-			isNoteInHanaMode: note.isNoteInHanaMode,
+			isNoteInYamiMode: note.isNoteInYamiMode,
 
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,

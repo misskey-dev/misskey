@@ -34,7 +34,7 @@ import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
-	hanamiTlAvailable: boolean;
+	yamiTlAvailable: boolean;
 	canPublicNote: boolean;
 	mentionLimit: number;
 	canInvite: boolean;
@@ -73,7 +73,7 @@ export type RolePolicies = {
 export const DEFAULT_POLICIES: RolePolicies = {
 	gtlAvailable: true,
 	ltlAvailable: true,
-	hanamiTlAvailable: true,
+	yamiTlAvailable: true,
 	canPublicNote: true,
 	mentionLimit: 20,
 	canInvite: false,
@@ -266,9 +266,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				case 'isCat': {
 					return user.isCat;
 				}
-				// はなモードが有効
-				case 'isInHanaMode':{
-					return user.isInHanaMode;
+				// やみモードが有効
+				case 'isInYamiMode':{
+					return user.isInYamiMode;
 				}
 				// 「ユーザを見つけやすくする」が有効なアカウント
 				case 'isExplorable': {
@@ -395,7 +395,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		return {
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
-			hanamiTlAvailable: calc('hanamiTlAvailable', vs => vs.some(v => v === true)),
+			yamiTlAvailable: calc('yamiTlAvailable', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
 			mentionLimit: calc('mentionLimit', vs => Math.max(...vs)),
 			canInvite: calc('canInvite', vs => vs.some(v => v === true)),

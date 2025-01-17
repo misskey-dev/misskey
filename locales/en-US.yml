@@ -1456,6 +1456,7 @@ _initialTutorial:
     description: "The functions introduced here are just a small part. For a more detailed understanding of using Misskey, please refer to {link}."
 _timelineDescription:
   home: "In the Home timeline, you can see notes from accounts you follow."
+  yami: "In the Yami timeline, you can see notes from accounts you follow, but with the visibility of the notes set to 'followers only.'"
   local: "In the Local timeline, you can see notes from all users on this server."
   social: "The Social timeline displays notes from both the Home and Local timelines."
   global: "In the Global timeline, you can see notes from all connected servers."
@@ -1611,9 +1612,9 @@ _achievements:
       title: "I Am a Cat"
       description: "Mark your account as a cat"
       flavor: "I'll give you a name later."
-    _markedAsHanaModeUser:
+    _markedAsYamiModeUser:
       title: "Wish I were born a small person like a violet"
-      description: "Unlocked Hana Mode to take the first step of your tiny, comfy fedi experience"
+      description: "Unlocked Yami Mode to take the first step of your tiny, comfy fedi experience"
     _following1:
       title: "Following your first user"
       description: "Follow a user"
@@ -2360,7 +2361,7 @@ _instanceCharts:
   filesTotal: "Cumulative number of files"
 _timelines:
   home: "Home"
-  hanami: "Hanami"
+  yami: "Yami"
   local: "Local"
   social: "Social"
   global: "Global"
@@ -2780,19 +2781,3 @@ _hideReactionCount:
   self: "Only my notes"
   others: "Only notes of others"
   all: "All notes"
-
-_hana:
-  hanaSettings: "HanaMisskey Settings"
-  hanaMode: "Hana Mode"
-  _hanaModeSwitcher:
-    recommendedFor: "Recommended for"
-    normal: "Normal"
-    normal1: "You can use the LTL (Local Timeline)"
-    normal2: "Posts set to 'Public' will appear on the LTL"
-    normalRecommend: "For those who want to prioritize interaction with users on the same server"
-    hana1: "LTL is not available"
-    hana2: "Posts set to 'Public' will not appear on the LTL"
-    hana3: "You can use the 'Hana Timeline,' which allows you to browse the latest notes from users you follow and popular posts from the Fediverse"
-    hanaRecommend: "For those who want a decentralized SNS experience similar to a private server, while still emphasizing interaction with external servers as well"
-    saveConfirmDescription: "There is a limit on how many times you can switch modes within a certain period."
-

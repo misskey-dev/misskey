@@ -206,7 +206,7 @@ export const packedNoteSchema = {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
-		isNoteInHanaMode: {
+		isNoteInYamiMode: {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},

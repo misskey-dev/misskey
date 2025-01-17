@@ -454,10 +454,9 @@ export class UserEntityService implements OnModuleInit {
 		}
 
 		const notesCount = profile == null ? null :
-    (profile.notesVisibility === 'public') || isMe || iAmModerator ? user.notesCount :
-    (profile.notesVisibility === 'followers') && (relation && relation.isFollowing) ? user.notesCount :
+			(profile.notesVisibility === 'public') || isMe || iAmModerator ? user.notesCount :
+			(profile.notesVisibility === 'followers') && (relation && relation.isFollowing) ? user.notesCount :
     	null;
-
 
 		const followingCount = profile == null ? null :
 			(profile.followingVisibility === 'public') || isMe || iAmModerator ? user.followingCount :
@@ -499,7 +498,7 @@ export class UserEntityService implements OnModuleInit {
 			requireSigninToViewContents: user.requireSigninToViewContents === false ? undefined : true,
 			makeNotesFollowersOnlyBefore: user.makeNotesFollowersOnlyBefore ?? undefined,
 			makeNotesHiddenBefore: user.makeNotesHiddenBefore ?? undefined,
-			isInHanaMode: user.isInHanaMode,
+			isInYamiMode: user.isInYamiMode,
 			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
