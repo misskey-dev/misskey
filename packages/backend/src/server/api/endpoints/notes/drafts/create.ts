@@ -155,7 +155,7 @@ export const paramDef = {
 		// anyOf内にバリデーションを書いても最初の一つしかチェックされない
 		text: {
 			type: 'string',
-			minLength: 1,
+			minLength: 0,
 			maxLength: MAX_NOTE_TEXT_LENGTH,
 			nullable: true,
 		},

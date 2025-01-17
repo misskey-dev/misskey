@@ -163,7 +163,7 @@ export const paramDef = {
 		// See https://github.com/misskey-dev/misskey/pull/10082
 		text: {
 			type: 'string',
-			minLength: 1,
+			minLength: 0,
 			maxLength: MAX_NOTE_TEXT_LENGTH,
 			nullable: true,
 		},
