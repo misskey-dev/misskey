@@ -748,12 +748,7 @@ async function saveServerDraft(clearLocal = false): Promise<{ canClosePostForm: 
 		}
 		return { canClosePostForm: true };
 	}).catch((err) => {
-		// これ以上下書きが保存できない場合のみ、投稿フォームを閉じずに元の画面に戻る
-		if (err.id === '9ee33bbe-fde3-4c71-9b51-e50492c6b9c8') {
-			return { canClosePostForm: false };
-		} else {
-			return { canClosePostForm: true };
-		}
+		return { canClosePostForm: false };
 	});
 }
 
