@@ -8,6 +8,7 @@ import { noteVisibilities, noteReactionAcceptances } from '@/types.js';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiChannel } from './Channel.js';
+import { MiNote } from './Note.js';
 import type { MiDriveFile } from './DriveFile.js';
 
 @Entity('note_draft')
@@ -23,11 +24,11 @@ export class MiNoteDraft {
 	})
 	public replyId: MiNoteDraft['id'] | null;
 
-	@ManyToOne(type => MiNoteDraft, {
+	@ManyToOne(type => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public reply: MiNoteDraft | null;
+	public reply: MiNote | null;
 
 	@Index()
 	@Column({
@@ -35,13 +36,13 @@ export class MiNoteDraft {
 		nullable: true,
 		comment: 'The ID of renote target.',
 	})
-	public renoteId: MiNoteDraft['id'] | null;
+	public renoteId: MiNote['id'] | null;
 
-	@ManyToOne(type => MiNoteDraft, {
+	@ManyToOne(type => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public renote: MiNoteDraft | null;
+	public renote: MiNote | null;
 
 	// TODO: varcharにしたい(Note.tsと同じ)
 	@Column('text', {
