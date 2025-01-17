@@ -20,13 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div class="_gaps_m">
 				<MkRadios v-model="searchScope">
-					<option v-if="noteSearchableScope === 'global'" value="all">{{ i18n.ts._search.searchScopeAll }}</option>
-					<option value="local">{{ i18n.ts._search.searchScopeLocal }}</option>
-					<option v-if="noteSearchableScope === 'global'" value="server">{{ i18n.ts._search.searchScopeServer }}</option>
+					<option v-if="instance.federation !== 'none' && noteSearchableScope === 'global'" value="all">{{ i18n.ts._search.searchScopeAll }}</option>
+					<option value="local">{{ instance.federation === 'none' ? i18n.ts._search.searchScopeAll : i18n.ts._search.searchScopeLocal }}</option>
+					<option v-if="instance.federation !== 'none' && noteSearchableScope === 'global'" value="server">{{ i18n.ts._search.searchScopeServer }}</option>
 					<option value="user">{{ i18n.ts._search.searchScopeUser }}</option>
 				</MkRadios>
 
-				<div v-if="searchScope === 'server'" :class="$style.subOptionRoot">
+				<div v-if="instance.federation !== 'none' && searchScope === 'server'" :class="$style.subOptionRoot">
 					<MkInput
 						v-model="hostInput"
 						:placeholder="i18n.ts._search.serverHostPlaceholder"
@@ -207,7 +207,7 @@ const searchParams = computed(() => {
 		} as const satisfies SearchParams;
 	}
 
-	if (searchScope.value === 'server') {
+	if (instance.federation !== 'none' && searchScope.value === 'server') {
 		let trimmedHost = hostInput.value?.trim();
 		if (!trimmedHost) return null;
 		if (trimmedHost.startsWith('https://') || trimmedHost.startsWith('http://')) {
@@ -221,7 +221,7 @@ const searchParams = computed(() => {
 		} as const satisfies SearchParams;
 	}
 
-	if (searchScope.value === 'local') {
+	if (instance.federation === 'none' || searchScope.value === 'local') {
 		return {
 			query: trimmedQuery,
 			host: '.',
