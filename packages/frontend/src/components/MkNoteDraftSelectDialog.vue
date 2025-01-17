@@ -120,6 +120,7 @@ let lockId: string | null = null;
 let lockTimer: number | null = null;
 
 function toggleSelected(draft: Misskey.entities.NoteDraft) {
+	// ダブルクリックでの選択解除を防ぐ
 	if (lockId === draft.id) {
 		return;
 	} else {
@@ -131,6 +132,7 @@ function toggleSelected(draft: Misskey.entities.NoteDraft) {
 			lockId = null;
 		}, 300);
 	}
+
 	if (selected.value?.id === draft.id) {
 		selected.value = null;
 	} else {
