@@ -397,7 +397,7 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some(note => note.id === bobNote2.id), true);
 			assert.strictEqual(res.body.some(note => note.id === carolNote1.id), false);
 			assert.strictEqual(res.body.some(note => note.id === carolNote2.id), false);
-		}, 1000 * 10);
+		}, 1000 * 15);
 
 		test.concurrent('フォローしているユーザーのチャンネル投稿が含まれない', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);

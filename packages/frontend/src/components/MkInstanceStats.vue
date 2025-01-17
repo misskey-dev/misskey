@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.chart">
 			<div class="selects">
 				<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
-					<optgroup :label="i18n.ts.federation">
+					<optgroup v-if="shouldShowFederation" :label="i18n.ts.federation">
 						<option value="federation">{{ i18n.ts._charts.federation }}</option>
 						<option value="ap-request">{{ i18n.ts._charts.apRequest }}</option>
 					</optgroup>
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<optgroup :label="i18n.ts.notes">
 						<option value="notes">{{ i18n.ts._charts.notesIncDec }}</option>
 						<option value="local-notes">{{ i18n.ts._charts.localNotesIncDec }}</option>
-						<option value="remote-notes">{{ i18n.ts._charts.remoteNotesIncDec }}</option>
+						<option v-if="shouldShowFederation" value="remote-notes">{{ i18n.ts._charts.remoteNotesIncDec }}</option>
 						<option value="notes-total">{{ i18n.ts._charts.notesTotal }}</option>
 					</optgroup>
 					<optgroup :label="i18n.ts.drive">
@@ -46,9 +46,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSelect v-model="heatmapSrc" style="margin: 0 0 12px 0;">
 			<option value="active-users">Active users</option>
 			<option value="notes">Notes</option>
-			<option value="ap-requests-inbox-received">AP Requests: inboxReceived</option>
-			<option value="ap-requests-deliver-succeeded">AP Requests: deliverSucceeded</option>
-			<option value="ap-requests-deliver-failed">AP Requests: deliverFailed</option>
+			<option v-if="shouldShowFederation" value="ap-requests-inbox-received">AP Requests: inboxReceived</option>
+			<option v-if="shouldShowFederation" value="ap-requests-deliver-succeeded">AP Requests: deliverSucceeded</option>
+			<option v-if="shouldShowFederation" value="ap-requests-deliver-failed">AP Requests: deliverFailed</option>
 		</MkSelect>
 		<div class="_panel" :class="$style.heatmap">
 			<MkHeatmap :src="heatmapSrc" :label="'Read & Write'"/>
@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFoldableSection>
 
-	<MkFoldableSection class="item">
+	<MkFoldableSection v-if="shouldShowFederation" class="item">
 		<template #header>Federation</template>
 		<div :class="$style.federation">
 			<div class="pies">
@@ -84,13 +84,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef } from 'vue';
+import { onMounted, ref, computed, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { $i } from '@/account.js';
 import * as os from '@/os.js';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import MkHeatmap, { type HeatmapSource } from '@/components/MkHeatmap.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
@@ -99,6 +101,8 @@ import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
 import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
+
+const shouldShowFederation = computed(() => instance.federation !== 'none' || $i?.isModerator);
 
 const chartLimit = 500;
 const chartSpan = ref<'hour' | 'day'>('hour');
