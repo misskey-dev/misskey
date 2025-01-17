@@ -11,6 +11,7 @@ on:
       # for e2e
       - packages/backend/**
       - .github/workflows/test-frontend.yml
+      - .github/misskey/test.yml
   pull_request:
     paths:
       - packages/frontend/**
@@ -19,8 +20,10 @@ on:
       # for e2e
       - packages/backend/**
       - .github/workflows/test-frontend.yml
+      - .github/misskey/test.yml
 jobs:
   vitest:
+    name: Unit tests (frontend)
     runs-on: ubuntu-latest
 
     strategy:
@@ -55,6 +58,7 @@ jobs:
         files: ./packages/frontend/coverage/coverage-final.json
 
   e2e:
+    name: E2E tests (frontend)
     runs-on: ubuntu-latest
 
     strategy:

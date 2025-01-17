@@ -10,6 +10,7 @@ import { Injectable } from '@nestjs/common';
 import * as nsfw from 'nsfwjs';
 import si from 'systeminformation';
 import { Mutex } from 'async-mutex';
+import fetch from 'node-fetch';
 import { bindThis } from '@/decorators.js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -28,7 +29,7 @@ export class AiService {
 	}
 
 	@bindThis
-	public async detectSensitive(path: string): Promise<nsfw.predictionType[] | null> {
+	public async detectSensitive(path: string): Promise<nsfw.PredictionType[] | null> {
 		try {
 			if (isSupportedCpu === undefined) {
 				isSupportedCpu = await this.computeIsSupportedCpu();
@@ -40,6 +41,7 @@ export class AiService {
 			}
 
 			const tf = await import('@tensorflow/tfjs-node');
+			tf.env().global.fetch = fetch;
 
 			if (this.model == null) {
 				await this.modelLoadMutex.runExclusive(async () => {
