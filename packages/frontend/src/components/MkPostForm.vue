@@ -597,6 +597,7 @@ function removeVisibleUser(user) {
 async function setScheduledTime() {
 	const { canceled, result: date } = await os.inputDateTime({
 		title: i18n.ts.setScheduledTime,
+		default: scheduledTime.value ?? undefined,
 	});
 	if (canceled) return;
 
