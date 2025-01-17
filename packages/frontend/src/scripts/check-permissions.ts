@@ -17,11 +17,3 @@ export const notesSearchAvailable = (
 export const canSearchNonLocalNotes = (
 	instance.noteSearchableScope === 'global'
 );
-
-export const serverNoteDraftAvailable = (
-	// FIXME: instance.policies would be null in Vitest
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	($i == null && instance.policies != null && instance.policies.noteDraftLimit > 0) ||
-	($i != null && $i.policies.noteDraftLimit > 0) ||
-	false
-);
