@@ -4,7 +4,7 @@ import { directives } from '@/directives/index.js';
 import { describe, expect, test, vi } from 'vitest';
 import { ComponentProps } from 'vue-component-type-helpers';
 import { AsUiComponent } from '@/scripts/aiscript/ui.js';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
@@ -13,6 +13,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import MkFolder from '@/components/MkFolder.vue';
 
 const osPostMock = vi.hoisted(() => vi.fn() satisfies typeof os.post);
 
@@ -27,18 +28,24 @@ describe('MkAsUi', () => {
 		component: C,
 		opts?: Omit<ComponentProps<typeof MkAsUi>, 'component' | 'components'>
 	) {
-		const componentRef = ref(component);
-		const componentsRef = ref([componentRef]);
-		const wrapper = shallowMount(MkAsUi, {
-			props: {
-				component: componentRef.value,
-				components: componentsRef.value,
-				...opts,
-			},
-			global: { directives, components: globalComponents },
-		});
+		const componentsRef = ref([ref(component)]);
+		const wrapper = shallowMountUi(component, componentsRef.value, opts);
 		return { wrapper, component };
 	}
+
+	function shallowMountUi(
+		component: AsUiComponent,
+		components: Ref<AsUiComponent>[],
+		opts?: Omit<ComponentProps<typeof MkAsUi>, 'component' | 'components'>,
+	): ReturnType<typeof shallowMount<typeof MkAsUi>> {
+		return shallowMount(MkAsUi, {
+			props: { component, components, ...opts },
+			global: {
+				directives,
+				components: globalComponents,
+			},
+		});
+	};
 
 	test('root', async () => {
 		const { wrapper } = renderComponent({
@@ -235,5 +242,24 @@ describe('MkAsUi', () => {
 		expect(form.props('initialCw')).toBe('world');
 		expect(form.props('initialVisibility')).toBe('home');
 		expect(form.props('initialLocalOnly')).toBe(true);
+	});
+
+	test('folder', async () => {
+		const childComponent = {
+			type: 'text',
+			id: 'id1',
+			text: 'Hello, world!',
+		} satisfies AsUiComponent;
+		const component = {
+			type: 'folder',
+			id: 'id2',
+			title: 'Title',
+			children: [childComponent.id],
+			opened: false,
+		} satisfies AsUiComponent;
+		const components = [ref(childComponent), ref(component)];
+		const wrapper = shallowMountUi(component, components);
+		const folder = wrapper.findComponent(MkFolder);
+		expect(folder.props('defaultOpen')).toBe(false);
 	});
 });
