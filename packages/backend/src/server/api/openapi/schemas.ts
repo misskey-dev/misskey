@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { deepClone } from '@/misc/clone.js';
 import type { Schema } from '@/misc/json-schema.js';
 import { refs } from '@/misc/json-schema.js';
 
@@ -10,7 +11,7 @@ export function convertSchemaToOpenApiSchema(schema: Schema, type: 'param' | 're
 	// optional, nullable, refはスキーマ定義に含まれないので分離しておく
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { optional, nullable, ref, selfRef, ..._res }: any = schema;
-	const res = structuredClone(_res);
+	const res = deepClone(_res);
 
 	if (schema.type === 'object' && schema.properties) {
 		if (type === 'res') {
