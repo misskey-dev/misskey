@@ -101,7 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, type ShallowRef } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, type ShallowRef, onBeforeUnmount } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -572,7 +572,7 @@ function onKeydown(ev: KeyboardEvent) {
 
 	// justEndedComposition.value is for Safari, which keyDown occurs after compositionend.
 	// ev.isComposing is for another browsers.
-	if (ev.key === 'Escape' && !justEndedComposition.value && !ev.isComposing) emit('esc');
+	if (ev.key === 'Escape' && !justEndedComposition.value && !ev.isComposing) esc();
 }
 
 function onKeyup(ev: KeyboardEvent) {
@@ -725,43 +725,39 @@ function deleteDraft() {
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
-function saveServerDraft() {
-	if (serverDraftId.value == null) {
-		misskeyApi('notes/drafts/create', {
-			text: text.value,
-			useCw: useCw.value,
-			cw: cw.value,
-			visibility: visibility.value,
-			localOnly: localOnly.value,
-			hashtag: hashtags.value,
-			...(files.value.length > 0 ? { fileIds: files.value.map(f => f.id) } : {}),
-			poll: poll.value,
-			...( visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
-			renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
-			replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
-			quoteId: quoteId.value,
-			channelId: targetChannel.value ? targetChannel.value.id : undefined,
-			reactionAcceptance: reactionAcceptance.value,
-		});
-	} else {
-		misskeyApi('notes/drafts/update', {
-			draftId: serverDraftId.value,
-			text: text.value,
-			useCw: useCw.value,
-			cw: cw.value,
-			visibility: visibility.value,
-			localOnly: localOnly.value,
-			hashtag: hashtags.value,
-			...(files.value.length > 0 ? { fileIds: files.value.map(f => f.id) } : {}),
-			poll: poll.value,
-			...( visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
-			renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
-			replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
-			quoteId: quoteId.value,
-			channelId: targetChannel.value ? targetChannel.value.id : undefined,
-			reactionAcceptance: reactionAcceptance.value,
-		});
-	}
+async function saveServerDraft() {
+	const promise = misskeyApi(serverDraftId.value == null ? 'notes/drafts/create' : 'notes/drafts/update', {
+		...(serverDraftId.value == null ? {} : { draftId: serverDraftId.value }),
+		text: text.value,
+		useCw: useCw.value,
+		cw: cw.value,
+		visibility: visibility.value,
+		localOnly: localOnly.value,
+		hashtag: hashtags.value,
+		...(files.value.length > 0 ? { fileIds: files.value.map(f => f.id) } : {}),
+		poll: poll.value,
+		...(visibleUsers.value.length > 0 ? { visibleUserIds: visibleUsers.value.map(x => x.id) } : {}),
+		renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : undefined,
+		replyId: replyTargetNote.value ? replyTargetNote.value.id : undefined,
+		quoteId: quoteId.value,
+		channelId: targetChannel.value ? targetChannel.value.id : undefined,
+		reactionAcceptance: reactionAcceptance.value,
+	});
+
+	await os.promiseDialog(promise, null, (err) => {
+		if (err.id === '9ee33bbe-fde3-4c71-9b51-e50492c6b9c8') {
+			os.alert({
+				type: 'error',
+				text: i18n.ts._drafts.youCantCreateAnymore,
+			});
+		} else {
+			os.alert({
+				type: 'error',
+				title: i18n.ts.somethingHappened,
+				text: err.message + '\n' + err.id,
+			});
+		}
+	});
 }
 
 async function post(ev?: MouseEvent) {
@@ -939,12 +935,29 @@ async function post(ev?: MouseEvent) {
 	});
 }
 
-async function cancel() {
+async function confirmSavingServerDraft() {
 	if (canPost.value === true) {
-		os.confirm({ type: 'question', text: i18n.ts.saveDraft, okText: i18n.ts.save, cancelText: i18n.ts.no }).then(( { canceled } ) => {
-			if (!canceled) saveServerDraft();
+		const { canceled } = await os.confirm({
+			type: 'question',
+			title: i18n.ts._drafts.saveConfirm,
+			text: i18n.ts._drafts.saveConfirmDescription,
+			okText: i18n.ts.save,
+			cancelText: i18n.ts.no,
 		});
+
+		if (!canceled) {
+			await saveServerDraft();
+		}
 	}
+}
+
+async function esc() {
+	await confirmSavingServerDraft();
+	emit('esc');
+}
+
+async function cancel() {
+	await confirmSavingServerDraft();
 	emit('cancel');
 }
 
@@ -1157,6 +1170,10 @@ onMounted(() => {
 
 		nextTick(() => watchForDraft());
 	});
+});
+
+onBeforeUnmount(async () => {
+
 });
 
 defineExpose({

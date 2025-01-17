@@ -1309,10 +1309,6 @@ acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします�
 federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
 draft: "下書き"
-selectDraft: "下書きを選択"
-noDrafts: "下書きはありません"
-saveDraft: "下書きを保存"
-removeDraft: "下書きを削除"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -2871,3 +2867,15 @@ _captcha:
     _unknown:
       title: "CAPTCHAエラー"
       text: "想定外のエラーが発生しました。"
+
+_drafts:
+  select: "下書きを選択"
+  saveConfirm: "サーバーに下書きを保存しますか？"
+  saveConfirmDescription: "ここで「いいえ」を選択しても、下書きは端末内に保存されます。\nサーバーに保存することで、端末間で下書きを共有したり、もしもの時にデータが失われるのを防いだりすることができます。"
+  youCantCreateAnymore: "これ以上下書きを作成できません"
+  delete: "下書きを削除"
+  deleteAreYouSure: "下書きを削除しますか？"
+  noDrafts: "下書きはありません"
+  replyTo: "{user}への返信"
+  quoteOf: "{user}のノートへの引用"
+  postTo: "{channel}への投稿"

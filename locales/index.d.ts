@@ -5254,22 +5254,6 @@ export interface Locale extends ILocale {
      * 下書き
      */
     "draft": string;
-    /**
-     * 下書きを選択
-     */
-    "selectDraft": string;
-    /**
-     * 下書きはありません
-     */
-    "noDrafts": string;
-    /**
-     * 下書きを保存
-     */
-    "saveDraft": string;
-    /**
-     * 下書きを削除
-     */
-    "removeDraft": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -10750,6 +10734,49 @@ export interface Locale extends ILocale {
                 "text": string;
             };
         };
+    };
+    "_drafts": {
+        /**
+         * 下書きを選択
+         */
+        "select": string;
+        /**
+         * サーバーに下書きを保存しますか？
+         */
+        "saveConfirm": string;
+        /**
+         * ここで「いいえ」を選択しても、下書きは端末内に保存されます。
+         * サーバーに保存することで、端末間で下書きを共有したり、もしもの時にデータが失われるのを防いだりすることができます。
+         */
+        "saveConfirmDescription": string;
+        /**
+         * これ以上下書きを作成できません
+         */
+        "youCantCreateAnymore": string;
+        /**
+         * 下書きを削除
+         */
+        "delete": string;
+        /**
+         * 下書きを削除しますか？
+         */
+        "deleteAreYouSure": string;
+        /**
+         * 下書きはありません
+         */
+        "noDrafts": string;
+        /**
+         * {user}への返信
+         */
+        "replyTo": ParameterizedString<"user">;
+        /**
+         * {user}のノートへの引用
+         */
+        "quoteOf": ParameterizedString<"user">;
+        /**
+         * {channel}への投稿
+         */
+        "postTo": ParameterizedString<"channel">;
     };
 }
 declare const locales: {
