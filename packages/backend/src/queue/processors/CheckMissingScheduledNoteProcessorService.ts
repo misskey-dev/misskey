@@ -37,7 +37,7 @@ export class CheckMissingScheduledNoteProcessorService {
 		}
 
 		const query = this.scheduledNotesRepository.createQueryBuilder('draft')
-			.where('draft.scheduledAt < now() - interval \'5 minutes\'').orderBy('draft.createdAt', 'ASC');
+			.where('draft.scheduledAt < now() + interval \'10 minutes\'').orderBy('draft.createdAt', 'ASC');
 
 		let lastId = '0';
 		while (true) {
