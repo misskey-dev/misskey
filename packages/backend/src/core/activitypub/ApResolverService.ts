@@ -20,6 +20,7 @@ import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export class Resolver {
 	private history: Set<string>;
@@ -66,7 +67,7 @@ export class Resolver {
 		if (isCollectionOrOrderedCollection(collection)) {
 			return collection;
 		} else {
-			throw new Error(`unrecognized collection type: ${collection.type}`);
+			throw new IdentifiableError('f100eccf-f347-43fb-9b45-96a0831fb635', `unrecognized collection type: ${collection.type}`);
 		}
 	}
 
@@ -80,15 +81,15 @@ export class Resolver {
 			// URLs with fragment parts cannot be resolved correctly because
 			// the fragment part does not get transmitted over HTTP(S).
 			// Avoid strange behaviour by not trying to resolve these at all.
-			throw new Error(`cannot resolve URL with fragment: ${value}`);
+			throw new IdentifiableError('b94fd5b1-0e3b-4678-9df2-dad4cd515ab2', `cannot resolve URL with fragment: ${value}`);
 		}
 
 		if (this.history.has(value)) {
-			throw new Error('cannot resolve already resolved one');
+			throw new IdentifiableError('0dc86cf6-7cd6-4e56-b1e6-5903d62d7ea5', 'cannot resolve already resolved one');
 		}
 
 		if (this.history.size > this.recursionLimit) {
-			throw new Error(`hit recursion limit: ${this.utilityService.extractDbHost(value)}`);
+			throw new IdentifiableError('d592da9f-822f-4d91-83d7-4ceefabcf3d2', `hit recursion limit: ${this.utilityService.extractDbHost(value)}`);
 		}
 
 		this.history.add(value);
@@ -99,7 +100,7 @@ export class Resolver {
 		}
 
 		if (!this.utilityService.isFederationAllowedHost(host)) {
-			throw new Error('Instance is blocked');
+			throw new IdentifiableError('09d79f9e-64f1-4316-9cfa-e75c4d091574', 'Instance is blocked');
 		}
 
 		if (this.config.signToActivityPubGet && !this.user) {
@@ -115,7 +116,7 @@ export class Resolver {
 				!(object['@context'] as unknown[]).includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		) {
-			throw new Error('invalid response');
+			throw new IdentifiableError('72180409-793c-4973-868e-5a118eb5519b', 'invalid response');
 		}
 
 		// HttpRequestService / ApRequestService have already checked that
@@ -123,11 +124,11 @@ export class Resolver {
 		// object after redirects; here we double-check that no redirects
 		// bounced between hosts
 		if (object.id == null) {
-			throw new Error('invalid AP object: missing id');
+			throw new IdentifiableError('ad2dc287-75c1-44c4-839d-3d2e64576675', 'invalid AP object: missing id');
 		}
 
 		if (this.utilityService.punyHost(object.id) !== this.utilityService.punyHost(value)) {
-			throw new Error(`invalid AP object ${value}: id ${object.id} has different host`);
+			throw new IdentifiableError('fd93c2fa-69a8-440f-880b-bf178e0ec877', `invalid AP object ${value}: id ${object.id} has different host`);
 		}
 
 		return object;
@@ -136,7 +137,7 @@ export class Resolver {
 	@bindThis
 	private resolveLocal(url: string): Promise<IObject> {
 		const parsed = this.apDbResolverService.parseUri(url);
-		if (!parsed.local) throw new Error('resolveLocal: not local');
+		if (!parsed.local) throw new IdentifiableError('02b40cd0-fa92-4b0c-acc9-fb2ada952ab8', 'resolveLocal: not local');
 
 		switch (parsed.type) {
 			case 'notes':
@@ -165,7 +166,7 @@ export class Resolver {
 			case 'follows':
 				return this.followRequestsRepository.findOneBy({ id: parsed.id })
 					.then(async followRequest => {
-						if (followRequest == null) throw new Error('resolveLocal: invalid follow request ID');
+						if (followRequest == null) throw new IdentifiableError('a9d946e5-d276-47f8-95fb-f04230289bb0', 'resolveLocal: invalid follow request ID');
 						const [follower, followee] = await Promise.all([
 							this.usersRepository.findOneBy({
 								id: followRequest.followerId,
@@ -177,12 +178,12 @@ export class Resolver {
 							}),
 						]);
 						if (follower == null || followee == null) {
-							throw new Error('resolveLocal: follower or followee does not exist');
+							throw new IdentifiableError('06ae3170-1796-4d93-a697-2611ea6d83b6', 'resolveLocal: follower or followee does not exist');
 						}
 						return this.apRendererService.addContext(this.apRendererService.renderFollow(follower as MiLocalUser | MiRemoteUser, followee as MiLocalUser | MiRemoteUser, url));
 					});
 			default:
-				throw new Error(`resolveLocal: type ${parsed.type} unhandled`);
+				throw new IdentifiableError('7a5d2fc0-94bc-4db6-b8b8-1bf24a2e23d0', `resolveLocal: type ${parsed.type} unhandled`);
 		}
 	}
 }
