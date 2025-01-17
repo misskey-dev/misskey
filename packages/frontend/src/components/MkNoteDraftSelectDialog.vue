@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							v-tooltip="i18n.ts._drafts.delete"
 							short
 							:class="$style.itemButton"
-							@click="deleteDraft(draft)"
+							@click.stop="deleteDraft(draft)"
 						><i class="ti ti-trash"></i></MkButton>
 					</div>
 				</button>

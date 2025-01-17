@@ -131,7 +131,6 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
-import { popup } from '@/os.js';
 
 const $i = signinRequired();
 
@@ -572,7 +571,7 @@ function onKeydown(ev: KeyboardEvent) {
 
 	// justEndedComposition.value is for Safari, which keyDown occurs after compositionend.
 	// ev.isComposing is for another browsers.
-	if (ev.key === 'Escape' && !justEndedComposition.value && !ev.isComposing) esc();
+	if (ev.key === 'Escape' && !justEndedComposition.value && !ev.isComposing) esc(ev);
 }
 
 function onKeyup(ev: KeyboardEvent) {
@@ -725,8 +724,8 @@ function deleteDraft() {
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
-async function saveServerDraft() {
-	await os.apiWithDialog(serverDraftId.value == null ? 'notes/drafts/create' : 'notes/drafts/update', {
+async function saveServerDraft(clearLocal = false): Promise<{ canClosePostForm: boolean }> {
+	return await os.apiWithDialog(serverDraftId.value == null ? 'notes/drafts/create' : 'notes/drafts/update', {
 		...(serverDraftId.value == null ? {} : { draftId: serverDraftId.value }),
 		text: text.value,
 		useCw: useCw.value,
@@ -742,6 +741,19 @@ async function saveServerDraft() {
 		quoteId: quoteId.value,
 		channelId: targetChannel.value ? targetChannel.value.id : undefined,
 		reactionAcceptance: reactionAcceptance.value,
+	}).then(() => {
+		if (clearLocal) {
+			clear();
+			deleteDraft();
+		}
+		return { canClosePostForm: true };
+	}).catch((err) => {
+		// これ以上下書きが保存できない場合のみ、投稿フォームを閉じずに元の画面に戻る
+		if (err.id === '9ee33bbe-fde3-4c71-9b51-e50492c6b9c8') {
+			return { canClosePostForm: false };
+		} else {
+			return { canClosePostForm: true };
+		}
 	});
 }
 
@@ -920,30 +932,51 @@ async function post(ev?: MouseEvent) {
 	});
 }
 
-async function confirmSavingServerDraft() {
-	if (canPost.value === true) {
-		const { canceled } = await os.confirm({
+async function confirmSavingServerDraft(ev?: Event) {
+	if (canPost.value) {
+		ev?.stopPropagation();
+
+		const { canceled, result } = await os.actions({
 			type: 'question',
 			title: i18n.ts._drafts.saveConfirm,
 			text: i18n.ts._drafts.saveConfirmDescription,
-			okText: i18n.ts.save,
-			cancelText: i18n.ts.dontSave,
+			actions: [{
+				value: 'save' as const,
+				text: i18n.ts.save,
+				primary: true,
+			}, {
+				value: 'discard' as const,
+				text: i18n.ts.dontSave,
+			}, {
+				value: 'cancel' as const,
+				text: i18n.ts.cancel,
+			}]
 		});
 
-		if (!canceled) {
-			await saveServerDraft();
+		if (canceled || result === 'cancel') {
+			return { canClosePostForm: false };
+		} else if (result === 'save') {
+			return await saveServerDraft(true);
+		} else {
+			return { canClosePostForm: true };
 		}
+	} else {
+		return { canClosePostForm: true };
 	}
 }
 
-async function esc() {
-	await confirmSavingServerDraft();
-	emit('esc');
+async function esc(ev: Event) {
+	const { canClosePostForm } = await confirmSavingServerDraft(ev);
+	if (canClosePostForm) {
+		emit('esc');
+	}
 }
 
 async function cancel() {
-	await confirmSavingServerDraft();
-	emit('cancel');
+	const { canClosePostForm } = await confirmSavingServerDraft();
+	if (canClosePostForm) {
+		emit('cancel');
+	}
 }
 
 function insertMention() {
@@ -1027,7 +1060,7 @@ function openAccountMenu(ev: MouseEvent) {
 
 function getNoteDraftDialog(): Promise<Misskey.entities.NoteDraft | null> {
 	return new Promise((resolve) => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkNoteDraftSelectDialog.vue')), {}, {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftSelectDialog.vue')), {}, {
 			ok: async (res: Misskey.entities.NoteDraft) => {
 				resolve(res);
 			},
@@ -1159,6 +1192,8 @@ onMounted(() => {
 
 defineExpose({
 	clear,
+	onEsc: esc,
+	onCancel: cancel,
 });
 </script>
 
