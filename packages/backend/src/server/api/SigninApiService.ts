@@ -97,10 +97,15 @@ export class SigninApiService {
 			reply.code(429);
 			return {
 				error: {
-					message: 'Too many failed attempts to sign in. Try again later.',
-					code: 'TOO_MANY_AUTHENTICATION_FAILURES',
+					message: 'Rate limit exceeded. Please try again later.',
+					code: 'RATE_LIMIT_EXCEEDED',
 					id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
-				},
+					info: {
+						message: 'Too many failed attempts to sign in.',
+						code: 'TOO_MANY_AUTHENTICATION_FAILURES',
+						id: '6c181469-ecb9-42d2-82c9-60db5486a819',
+					},
+				}
 			};
 		}
 
