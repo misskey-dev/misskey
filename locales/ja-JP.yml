@@ -48,6 +48,7 @@ pin: "ピン留め"
 unpin: "ピン留め解除"
 copyContent: "内容をコピー"
 copyLink: "リンクをコピー"
+copyRemoteLink: "リモートのリンクをコピー"
 copyLinkRenote: "リノートのリンクをコピー"
 delete: "削除"
 deleteAndEdit: "削除して編集"
@@ -382,7 +383,6 @@ enableLocalTimeline: "ローカルタイムラインを有効にする"
 enableGlobalTimeline: "グローバルタイムラインを有効にする"
 disablingTimelinesInfo: "これらのタイムラインを無効化しても、利便性のため管理者およびモデレーターは引き続き利用することができます。"
 registration: "登録"
-enableRegistration: "誰でも新規登録できるようにする"
 invite: "招待"
 driveCapacityPerLocalAccount: "ローカルユーザーひとりあたりのドライブ容量"
 driveCapacityPerRemoteAccount: "リモートユーザーひとりあたりのドライブ容量"
@@ -587,6 +587,7 @@ masterVolume: "マスター音量"
 notUseSound: "サウンドを出力しない"
 useSoundOnlyWhenActive: "Misskeyがアクティブな時のみサウンドを出力する"
 details: "詳細"
+renoteDetails: "リノートの詳細"
 chooseEmoji: "絵文字を選択"
 unableToProcess: "操作を完了できません"
 recentUsed: "最近使用"
@@ -684,11 +685,15 @@ smtpSecure: "SMTP 接続に暗黙的なSSL/TLSを使用する"
 smtpSecureInfo: "STARTTLS使用時はオフにします。"
 testEmail: "配信テスト"
 wordMute: "ワードミュート"
+wordMuteDescription: "指定した語句を含むノートを最小化します。最小化されたノートをクリックすることで表示することができます。"
 hardWordMute: "ハードワードミュート"
+showMutedWord: "ミュートされたワードを表示"
+hardWordMuteDescription: "指定した語句を含むノートを隠します。ワードミュートとは異なり、ノートは完全に表示されなくなります。"
 regexpError: "正規表現エラー"
 regexpErrorDescription: "{tab}ワードミュートの{line}行目の正規表現にエラーが発生しました:"
 instanceMute: "サーバーミュート"
 userSaysSomething: "{name}が何かを言いました"
+userSaysSomethingAbout: "{name}が「{word}」について何かを言いました"
 makeActive: "アクティブにする"
 display: "表示"
 copy: "コピー"
@@ -1300,6 +1305,9 @@ thisContentsAreMarkedAsSigninRequiredByAuthor: "投稿者により、表示に�
 lockdown: "ロックダウン"
 pleaseSelectAccount: "アカウントを選択してください"
 availableRoles: "利用可能なロール"
+acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
+federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
+federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
 alwaysUseAbsoluteTime: "常に絶対時刻で表示する"
 
 _accountSettings:
@@ -1467,6 +1475,8 @@ _serverSettings:
   reactionsBufferingDescription: "有効にすると、リアクション作成時のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。"
   inquiryUrl: "問い合わせ先URL"
   inquiryUrlDescription: "サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。"
+  openRegistration: "アカウントの作成をオープンにする"
+  openRegistrationWarning: "登録を開放することはリスクが伴います。サーバーを常に監視し、トラブルが発生した際にすぐに対応できる体制がある場合のみオンにすることを推奨します。"
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "一定期間モデレーターのアクティビティが検出されなかった場合、スパム防止のためこの設定は自動でオフになります。"
 
 _accountMigration:
@@ -2820,3 +2830,40 @@ _selfXssPrevention:
   description1: "ここに何かを貼り付けると、悪意のあるユーザーにアカウントを乗っ取られたり、個人情報を盗まれたりする可能性があります。"
   description2: "貼り付けようとしているものが何なのかを正確に理解していない場合は、%c今すぐ作業を中止してこのウィンドウを閉じてください。"
   description3: "詳しくはこちらをご確認ください。 {link}"
+
+_followRequest:
+  recieved: "受け取った申請"
+  sent: "送った申請"
+
+_remoteLookupErrors:
+  _federationNotAllowed:
+    title: "このサーバーとは通信できません"
+    description: "このサーバーとの通信が無効化されているか、このサーバーをブロックしている・ブロックされている可能性があります。\nサーバー管理者にお問い合わせください。"
+  _uriInvalid:
+    title: "URIが不正です"
+    description: "入力されたURIに問題があります。URIに使用できない文字を入力していないか確認してください。"
+  _requestFailed:
+    title: "リクエストに失敗しました"
+    description: "このサーバーとの通信に失敗しました。相手サーバーがダウンしている可能性があります。また、不正なURIや存在しないURIを入力していないか確認してください。"
+  _responseInvalid:
+    title: "レスポンスが不正です"
+    description: "このサーバーと通信することはできましたが、得られたデータが不正なものでした。"
+  _responseInvalidIdHostNotMatch:
+    description: "入力されたURIのドメインと最終的に得られたURIのドメインとが異なります。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。"
+  _noSuchObject:
+    title: "見つかりません"
+    description: "要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。"
+
+_captcha:
+  verify: "CAPTCHAを通過してください"
+  testSiteKeyMessage: "サイトキーとシークレットキーにテスト用の値を入力することでプレビューを確認できます。\n詳細は下記ページをご確認ください。"
+  _error:
+    _requestFailed:
+      title: "CAPTCHAのリクエストに失敗しました"
+      text: "しばらく後に実行するか、設定をもう一度ご確認ください。"
+    _verificationFailed:
+      title: "CAPTCHAの検証に失敗しました"
+      text: "設定が正しいかどうかもう一度確認ください。"
+    _unknown:
+      title: "CAPTCHAエラー"
+      text: "想定外のエラーが発生しました。"

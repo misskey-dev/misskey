@@ -28,6 +28,8 @@ import * as ep___admin_avatarDecorations_create from './endpoints/admin/avatar-d
 import * as ep___admin_avatarDecorations_delete from './endpoints/admin/avatar-decorations/delete.js';
 import * as ep___admin_avatarDecorations_list from './endpoints/admin/avatar-decorations/list.js';
 import * as ep___admin_avatarDecorations_update from './endpoints/admin/avatar-decorations/update.js';
+import * as ep___admin_captcha_current from './endpoints/admin/captcha/current.js';
+import * as ep___admin_captcha_save from './endpoints/admin/captcha/save.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
 import * as ep___admin_unsetUserAvatar from './endpoints/admin/unset-user-avatar.js';
 import * as ep___admin_unsetUserBanner from './endpoints/admin/unset-user-banner.js';
@@ -187,6 +189,7 @@ import * as ep___following_invalidate from './endpoints/following/invalidate.js'
 import * as ep___following_requests_accept from './endpoints/following/requests/accept.js';
 import * as ep___following_requests_cancel from './endpoints/following/requests/cancel.js';
 import * as ep___following_requests_list from './endpoints/following/requests/list.js';
+import * as ep___following_requests_sent from './endpoints/following/requests/sent.js';
 import * as ep___following_requests_reject from './endpoints/following/requests/reject.js';
 import * as ep___gallery_featured from './endpoints/gallery/featured.js';
 import * as ep___gallery_popular from './endpoints/gallery/popular.js';
@@ -415,6 +418,8 @@ const $admin_avatarDecorations_create: Provider = { provide: 'ep:admin/avatar-de
 const $admin_avatarDecorations_delete: Provider = { provide: 'ep:admin/avatar-decorations/delete', useClass: ep___admin_avatarDecorations_delete.default };
 const $admin_avatarDecorations_list: Provider = { provide: 'ep:admin/avatar-decorations/list', useClass: ep___admin_avatarDecorations_list.default };
 const $admin_avatarDecorations_update: Provider = { provide: 'ep:admin/avatar-decorations/update', useClass: ep___admin_avatarDecorations_update.default };
+const $admin_captcha_current: Provider = { provide: 'ep:admin/captcha/current', useClass: ep___admin_captcha_current.default };
+const $admin_captcha_save: Provider = { provide: 'ep:admin/captcha/save', useClass: ep___admin_captcha_save.default };
 const $admin_deleteAllFilesOfAUser: Provider = { provide: 'ep:admin/delete-all-files-of-a-user', useClass: ep___admin_deleteAllFilesOfAUser.default };
 const $admin_unsetUserAvatar: Provider = { provide: 'ep:admin/unset-user-avatar', useClass: ep___admin_unsetUserAvatar.default };
 const $admin_unsetUserBanner: Provider = { provide: 'ep:admin/unset-user-banner', useClass: ep___admin_unsetUserBanner.default };
@@ -574,6 +579,7 @@ const $following_invalidate: Provider = { provide: 'ep:following/invalidate', us
 const $following_requests_accept: Provider = { provide: 'ep:following/requests/accept', useClass: ep___following_requests_accept.default };
 const $following_requests_cancel: Provider = { provide: 'ep:following/requests/cancel', useClass: ep___following_requests_cancel.default };
 const $following_requests_list: Provider = { provide: 'ep:following/requests/list', useClass: ep___following_requests_list.default };
+const $following_requests_sent: Provider = { provide: 'ep:following/requests/sent', useClass: ep___following_requests_sent.default };
 const $following_requests_reject: Provider = { provide: 'ep:following/requests/reject', useClass: ep___following_requests_reject.default };
 const $gallery_featured: Provider = { provide: 'ep:gallery/featured', useClass: ep___gallery_featured.default };
 const $gallery_popular: Provider = { provide: 'ep:gallery/popular', useClass: ep___gallery_popular.default };
@@ -806,6 +812,8 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_avatarDecorations_delete,
 		$admin_avatarDecorations_list,
 		$admin_avatarDecorations_update,
+		$admin_captcha_current,
+		$admin_captcha_save,
 		$admin_deleteAllFilesOfAUser,
 		$admin_unsetUserAvatar,
 		$admin_unsetUserBanner,
@@ -965,6 +973,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$following_requests_accept,
 		$following_requests_cancel,
 		$following_requests_list,
+		$following_requests_sent,
 		$following_requests_reject,
 		$gallery_featured,
 		$gallery_popular,
@@ -1191,6 +1200,8 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$admin_avatarDecorations_delete,
 		$admin_avatarDecorations_list,
 		$admin_avatarDecorations_update,
+		$admin_captcha_current,
+		$admin_captcha_save,
 		$admin_deleteAllFilesOfAUser,
 		$admin_unsetUserAvatar,
 		$admin_unsetUserBanner,

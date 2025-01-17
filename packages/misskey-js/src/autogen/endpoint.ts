@@ -36,6 +36,8 @@ import type {
 	AdminAvatarDecorationsListRequest,
 	AdminAvatarDecorationsListResponse,
 	AdminAvatarDecorationsUpdateRequest,
+	AdminCaptchaCurrentResponse,
+	AdminCaptchaSaveRequest,
 	AdminDeleteAllFilesOfAUserRequest,
 	AdminUnsetUserAvatarRequest,
 	AdminUnsetUserBannerRequest,
@@ -279,6 +281,8 @@ import type {
 	FollowingRequestsCancelResponse,
 	FollowingRequestsListRequest,
 	FollowingRequestsListResponse,
+	FollowingRequestsSentRequest,
+	FollowingRequestsSentResponse,
 	FollowingRequestsRejectRequest,
 	GalleryFeaturedRequest,
 	GalleryFeaturedResponse,
@@ -602,6 +606,8 @@ export type Endpoints = {
 	'admin/avatar-decorations/delete': { req: AdminAvatarDecorationsDeleteRequest; res: EmptyResponse };
 	'admin/avatar-decorations/list': { req: AdminAvatarDecorationsListRequest; res: AdminAvatarDecorationsListResponse };
 	'admin/avatar-decorations/update': { req: AdminAvatarDecorationsUpdateRequest; res: EmptyResponse };
+	'admin/captcha/current': { req: EmptyRequest; res: AdminCaptchaCurrentResponse };
+	'admin/captcha/save': { req: AdminCaptchaSaveRequest; res: EmptyResponse };
 	'admin/delete-all-files-of-a-user': { req: AdminDeleteAllFilesOfAUserRequest; res: EmptyResponse };
 	'admin/unset-user-avatar': { req: AdminUnsetUserAvatarRequest; res: EmptyResponse };
 	'admin/unset-user-banner': { req: AdminUnsetUserBannerRequest; res: EmptyResponse };
@@ -761,6 +767,7 @@ export type Endpoints = {
 	'following/requests/accept': { req: FollowingRequestsAcceptRequest; res: EmptyResponse };
 	'following/requests/cancel': { req: FollowingRequestsCancelRequest; res: FollowingRequestsCancelResponse };
 	'following/requests/list': { req: FollowingRequestsListRequest; res: FollowingRequestsListResponse };
+	'following/requests/sent': { req: FollowingRequestsSentRequest; res: FollowingRequestsSentResponse };
 	'following/requests/reject': { req: FollowingRequestsRejectRequest; res: EmptyResponse };
 	'gallery/featured': { req: GalleryFeaturedRequest; res: GalleryFeaturedResponse };
 	'gallery/popular': { req: EmptyRequest; res: GalleryPopularResponse };

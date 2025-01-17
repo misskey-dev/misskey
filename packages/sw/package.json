@@ -9,7 +9,7 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
-		"esbuild": "0.23.1",
+		"esbuild": "0.24.0",
 		"idb-keyval": "6.2.1",
 		"misskey-js": "workspace:*"
 	},
@@ -18,7 +18,7 @@
 		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.67",
 		"eslint-plugin-import": "2.30.0",
 		"nodemon": "3.1.7",
-		"typescript": "5.6.2"
+		"typescript": "5.6.3"
 	},
 	"type": "module"
 }
