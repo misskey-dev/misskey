@@ -86,7 +86,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span>{{ i18n.tsx.willBePostedAt({ x: dateTimeFormat.format(scheduledTime) }) }}</span>
 		<button class="_button" style="margin-left: auto" @click="scheduledTime = null"><i class="ti ti-x"></i></button>
 	</div>
-	<MkInfo v-if="files.length > 0" warn :class="$style.guidelineInfo" :rounded="false"><Mfm :text="i18n.tsx._postForm.guidelineInfo({ tosUrl: instance.tosUrl, nsfwGuideUrl })"/></MkInfo>
+	<MkInfo v-if="files.length > 0 && instance.tosUrl" warn style="margin-top: 8px;" :rounded="false">
+		<Mfm :text="i18n.tsx._postForm.tosAndGuidelinesInfo({ tosUrl: instance.tosUrl })"/>
+	</MkInfo>
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
@@ -227,8 +229,6 @@ const recentHashtags = ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'
 const imeText = ref('');
 const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
-
-const nsfwGuideUrl = 'https://go.misskey.io/media-guideline';
 
 const draftKey = computed((): string => {
 	let key = channel.value ? `channel:${channel.value.id}` : '';
@@ -1441,10 +1441,6 @@ defineExpose({
 
 .previewButtonActive {
 	color: var(--accent);
-}
-
-.guidelineInfo {
-	margin-top: 8px;
 }
 
 @container (max-width: 500px) {

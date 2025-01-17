@@ -5490,11 +5490,11 @@ export interface Locale extends ILocale {
          */
         "violationRights_description": string;
         /**
-         * 権利侵害やなりすまし（第三者による通報）
+         * 権利侵害（第三者による通報）
          */
         "violationRightsOther": string;
         /**
-         * 他人の著作権、商標権、またはその他の権利を侵害する投稿及びなりすまし行為
+         * 他人の著作権、商標権、またはその他の権利を侵害する行為
          * 第三者による通報の場合、法律で定められた非親告罪の範囲外のケースには対応できないことがあります
          */
         "violationRightsOther_description": string;
@@ -9068,9 +9068,9 @@ export interface Locale extends ILocale {
             "f": string;
         };
         /**
-         * [NSFWガイドライン]({nsfwGuideUrl})を必ずお読みになってからご利用ください。
+         * 投稿する前に、[利用規約]({tosUrl})と[NSFWガイドライン](https://go.misskey.io/media-guideline)を必ずお読みください。
          */
-        "guidelineInfo": ParameterizedString<"nsfwGuideUrl">;
+        "tosAndGuidelinesInfo": ParameterizedString<"tosUrl">;
     };
     "_profile": {
         /**
@@ -9166,7 +9166,8 @@ export interface Locale extends ILocale {
          */
         "sectionNameNone": string;
         /**
-         * 現在の支援プランの表示上限({max}個)を超えているため、この項目は表示されません。[ここ](https://go.misskey.io/donate)からプランをアップグレードできます。
+         * 現在の支援プランの表示上限({max}個)を超えているため、この項目は表示されません。
+         * [ここ](https://go.misskey.io/donate)からプランをアップグレードできます。
          */
         "policyDisplayLimitExceeded": ParameterizedString<"max">;
     };

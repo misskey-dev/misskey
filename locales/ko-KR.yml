@@ -1362,8 +1362,8 @@ _abuseReportCategory:
   otherBreach_description: "명확하게 분류되지 않는 기타 규약 위반 행위"
   violationRights: "권리 침해 또는 사칭 (권리자 본인에 의한 신고)"
   violationRights_description: "권리자 본인의 저작권, 상표권 또는 기타 권리를 침해하는 게시물 및 사칭 행위"
-  violationRightsOther: "권리 침해 또는 사칭 (제3자에 의한 신고)"
-  violationRightsOther_description: "타인의 저작권, 상표권 또는 기타 권리를 침해하는 게시물 및 사칭 행위\n제3자에 의한 신고의 경우, 법으로 정해진 비친고죄 범위 외의 사례에는 대응할 수 없습니다"
+  violationRightsOther: "권리 침해 (제3자에 의한 신고)"
+  violationRightsOther_description: "타인의 저작권, 상표권 또는 기타 권리를 침해하는 행위\n제3자에 의한 신고의 경우, 법으로 정해진 비친고죄 범위 외의 사례에는 대응할 수 없습니다"
   notLike: "이 사람이 마음에 들지 않음"
   notLike_description: "개인적인 이유로 불쾌감을 느끼는 사용자나 게시물"
   other: "기타"
@@ -2310,6 +2310,7 @@ _postForm:
     d: "말하고 싶은 게 있나요?"
     e: "여기에 적어 주세요"
     f: "글 쓰기를 기다려요…"
+  tosAndGuidelinesInfo: "노트를 게시하기 전에 [이용약관]({tosUrl})과 [NSFW 가이드라인](https://go.misskey.io/media-guideline)을 반드시 읽어 주세요."
 _profile:
   name: "이름"
   username: "사용자 이름"
@@ -2334,7 +2335,7 @@ _profile:
   sectionName: "섹션 이름"
   sectionNameNoneDescription: "섹션 이름이 표시되지 않도록 합니다"
   sectionNameNone: "이름이 표시되지 않는 섹션"
-  policyDisplayLimitExceeded: "현재 지원 플랜의 표시 제한({max}개)을 초과하였기 때문에 이 항목은 표시되지 않습니다. [여기](https://go.misskey.io/donate)에서 플랜을 업그레이드할 수 있습니다."
+  policyDisplayLimitExceeded: "현재 지원 플랜의 표시 제한({max}개)을 초과하였기 때문에 이 항목은 표시되지 않습니다.\n[여기](https://go.misskey.io/donate)에서 플랜을 업그레이드할 수 있습니다."
 _exportOrImport:
   allNotes: "모든 노트"
   favoritedNotes: "즐겨찾기한 노트"

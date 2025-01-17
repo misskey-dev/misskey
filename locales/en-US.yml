@@ -1365,8 +1365,8 @@ _abuseReportCategory:
   otherBreach_description: "Other actions that violate the terms but do not fall under specific categories"
   violationRights: "Rights Infringement or Impersonation (Reported by Rights Holder)"
   violationRights_description: "Posts infringing the rights (such as copyright or trademark) of the rights holder or impersonation"
-  violationRightsOther: "Rights Infringement or Impersonation (Reported by Third Party)"
-  violationRightsOther_description: "Posts infringing the rights (such as copyright or trademark) of others or impersonation\nIf reported by a third party, cases outside the scope of non-complaint offenses as defined by law may not be addressed"
+  violationRightsOther: "Rights Infringement (Reported by Third Party)"
+  violationRightsOther_description: "Posts infringing the rights (such as copyright or trademark) of others\nIf reported by a third party, cases outside the scope of non-complaint offenses as defined by law may not be addressed"
   notLike: "Dislike This Person"
   notLike_description: "Users or posts that you find unpleasant for personal reasons"
   other: "Other"
@@ -2324,6 +2324,7 @@ _postForm:
     d: "What do you want to say?"
     e: "Start writing..."
     f: "Waiting for you to write..."
+  tosAndGuidelinesInfo: "Before posting, please read the [Terms of Service]({tosUrl}) and [NSFW Guidelines](https://go.misskey.io/media-guideline)."
 _profile:
   name: "Name"
   username: "Username"
@@ -2348,7 +2349,7 @@ _profile:
   sectionName: "Section name"
   sectionNameNoneDescription: "Do not display the section name"
   sectionNameNone: "Section without name"
-  policyDisplayLimitExceeded: "The number of items displayed exceeds the current support plan's limit ({max}). This item will not be displayed. You can upgrade your plan [here](https://go.misskey.io/donate)."
+  policyDisplayLimitExceeded: "The number of items displayed exceeds the current support plan's limit ({max}). This item will not be displayed.\nYou can upgrade your plan [here](https://go.misskey.io/donate)."
 _exportOrImport:
   allNotes: "All notes"
   favoritedNotes: "Favorite notes"
