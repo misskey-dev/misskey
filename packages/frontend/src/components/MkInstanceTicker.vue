@@ -4,16 +4,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root" :style="bg">
+<div :class="$style.root" :style="themeColorStyle">
 	<img v-if="faviconUrl" :class="$style.icon" :src="faviconUrl"/>
-	<div :class="$style.name">{{ instance.name }}</div>
+	<div :class="$style.name">{{ instanceName }}</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { instanceName } from '@@/js/config.js';
-import { instance as Instance } from '@/instance.js';
+import { computed, type CSSProperties } from 'vue';
+import { instanceName as localInstanceName } from '@@/js/config.js';
+import { instance as localInstance } from '@/instance.js';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
@@ -25,18 +25,16 @@ const props = defineProps<{
 }>();
 
 // if no instance data is given, this is for the local instance
-const instance = props.instance ?? {
-	name: instanceName,
-	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement).content,
-};
+const instanceName = computed(() => props.instance?.name ?? localInstanceName);
 
-const faviconUrl = computed(() => props.instance ? getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : getProxiedImageUrlNullable(Instance.iconUrl, 'preview') ?? '/favicon.ico');
+const faviconUrl = computed(() => getProxiedImageUrlNullable(props.instance?.faviconUrl ?? localInstance.iconUrl, 'preview') ?? '/favicon.ico');
 
-const themeColor = instance.themeColor ?? '#777777';
-
-const bg = {
-	background: `linear-gradient(90deg, ${themeColor}, ${themeColor}00)`,
-};
+const themeColorStyle = computed<CSSProperties>(() => {
+	const themeColor = props.instance?.themeColor ?? localInstance.themeColor ?? '#777777';
+	return {
+		background: `linear-gradient(90deg, ${themeColor}, ${themeColor}00)`,
+	};
+});
 </script>
 
 <style lang="scss" module>

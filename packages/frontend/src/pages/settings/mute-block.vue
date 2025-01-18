@@ -142,7 +142,6 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 import { instance, infoImageUrl } from '@/instance.js';
 import { signinRequired } from '@/account.js';
 import MkInfo from '@/components/MkInfo.vue';
@@ -238,11 +237,11 @@ async function toggleBlockItem(item) {
 }
 
 async function saveMutedWords(mutedWords: (string | string[])[]) {
-	await misskeyApi('i/update', { mutedWords });
+	await os.apiWithDialog('i/update', { mutedWords });
 }
 
 async function saveHardMutedWords(hardMutedWords: (string | string[])[]) {
-	await misskeyApi('i/update', { hardMutedWords });
+	await os.apiWithDialog('i/update', { hardMutedWords });
 }
 
 const headerActions = computed(() => []);
