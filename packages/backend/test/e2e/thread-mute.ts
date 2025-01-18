@@ -10,7 +10,7 @@ import { setTimeout } from 'node:timers/promises';
 import { api, connectStream, post, signup, react } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
-function waitForPushToTl() {
+function waitForPushToNotification() {
 	return setTimeout(500);
 }
 
@@ -34,7 +34,7 @@ describe('Note thread mute', () => {
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 		const carolReplyWithoutMention = await post(carol, { replyId: aliceReply.id, text: 'child note' });
 
-		await waitForPushToTl();
+		await waitForPushToNotification();
 
 		const res = await api('notes/mentions', {}, alice);
 
@@ -55,7 +55,7 @@ describe('Note thread mute', () => {
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 
-		await waitForPushToTl();
+		await waitForPushToNotification();
 
 		const res = await api('i', {}, alice);
 
@@ -75,8 +75,7 @@ describe('Note thread mute', () => {
 
 		const ws = await connectStream(alice, 'main', async ({ type, body }) => {
 			if (type === 'unreadMention') {
-				if (body === bobNote.id) return;
-				fired = true;
+				if (body === bobNote.id) fired = true;
 			}
 		});
 
@@ -100,7 +99,7 @@ describe('Note thread mute', () => {
 		const carolQuote = await post(carol, { renoteId: aliceReply.id, text: 'quote note' });
 		await react(carol, aliceReply, 'like'); // react method returns nothing.
 
-		await waitForPushToTl();
+		await waitForPushToNotification();
 
 		const res = await api('i/notifications', {}, alice);
 
@@ -124,7 +123,7 @@ describe('Note thread mute', () => {
 
 		const carolReplyWithQuotingAnother = await post(carol, { replyId: aliceReply.id, renoteId: aliceNote.id, text: 'child note with quoting another note' });
 
-		await waitForPushToTl();
+		await waitForPushToNotification();
 
 		const res = await api('i/notifications', {}, alice);
 
@@ -143,7 +142,7 @@ describe('Note thread mute', () => {
 		const carolMentionWithQuotingMuted = await post(carol, { renoteId: aliceReply.id, text: '@alice another root note with quoting muted note' });
 		const carolReplyWithQuotingMuted = await post(carol, { replyId: aliceNote.id, renoteId: aliceReply.id, text: 'another child note with quoting muted note' });
 
-		await waitForPushToTl();
+		await waitForPushToNotification();
 
 		const res = await api('i/notifications', {}, alice);
 
