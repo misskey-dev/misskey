@@ -6,8 +6,13 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { setTimeout } from 'node:timers/promises';
 import { api, connectStream, post, signup, react } from '../utils.js';
 import type * as misskey from 'misskey-js';
+
+function waitForPushToTl() {
+	return setTimeout(500);
+}
 
 describe('Note thread mute', () => {
 	let alice: misskey.entities.SignupResponse;
@@ -29,6 +34,8 @@ describe('Note thread mute', () => {
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 		const carolReplyWithoutMention = await post(carol, { replyId: aliceReply.id, text: 'child note' });
 
+		await waitForPushToTl();
+
 		const res = await api('notes/mentions', {}, alice);
 
 		assert.strictEqual(res.status, 200);
@@ -48,13 +55,15 @@ describe('Note thread mute', () => {
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 
+		await waitForPushToTl();
+
 		const res = await api('i', {}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(res.body.hasUnreadMentions, false);
 	});
 
-	test('ミュートしているスレッドからメンションされても、ストリームに unreadMention イベントが流れてこない', () => new Promise<void>(async done => {
+	test('ミュートしているスレッドからメンションされても、ストリームに unreadMention イベントが流れてこない', async () => {
 		// 状態リセット
 		await api('i/read-all-unread-notes', {}, alice);
 
@@ -73,12 +82,11 @@ describe('Note thread mute', () => {
 
 		const carolReply = await post(carol, { replyId: bobNote.id, text: '@bob @alice child note' });
 
-		setTimeout(() => {
-			assert.strictEqual(fired, false);
-			ws.close();
-			done();
-		}, 5000);
-	}));
+		await setTimeout(5000);
+
+		assert.strictEqual(fired, false);
+		ws.close();
+	});
 
 	test('i/notifications にミュートしているスレッドの通知(メンション, リプライ, リノート, 引用リノート, リアクション)が含まれない', async () => {
 		const bobNote = await post(bob, { text: '@alice @carol root note' });
@@ -91,6 +99,8 @@ describe('Note thread mute', () => {
 		const carolRenote = await post(carol, { renoteId: aliceReply.id });
 		const carolQuote = await post(carol, { renoteId: aliceReply.id, text: 'quote note' });
 		await react(carol, aliceReply, 'like'); // react method returns nothing.
+
+		await waitForPushToTl();
 
 		const res = await api('i/notifications', {}, alice);
 
@@ -114,6 +124,8 @@ describe('Note thread mute', () => {
 
 		const carolReplyWithQuotingAnother = await post(carol, { replyId: aliceReply.id, renoteId: aliceNote.id, text: 'child note with quoting another note' });
 
+		await waitForPushToTl();
+
 		const res = await api('i/notifications', {}, alice);
 
 		assert.strictEqual(res.status, 200);
@@ -130,6 +142,8 @@ describe('Note thread mute', () => {
 
 		const carolMentionWithQuotingMuted = await post(carol, { renoteId: aliceReply.id, text: '@alice another root note with quoting muted note' });
 		const carolReplyWithQuotingMuted = await post(carol, { replyId: aliceNote.id, renoteId: aliceReply.id, text: 'another child note with quoting muted note' });
+
+		await waitForPushToTl();
 
 		const res = await api('i/notifications', {}, alice);
 
