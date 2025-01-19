@@ -110,7 +110,7 @@ export type EndedPollNotificationJobData = {
 };
 
 export type SystemWebhookDeliverJobData<T extends SystemWebhookEventType = SystemWebhookEventType> = {
-	type: string;
+	type: T;
 	content: SystemWebhookPayload<T>;
 	webhookId: MiWebhook['id'];
 	to: string;
@@ -120,7 +120,7 @@ export type SystemWebhookDeliverJobData<T extends SystemWebhookEventType = Syste
 };
 
 export type UserWebhookDeliverJobData<T extends WebhookEventTypes = WebhookEventTypes> = {
-	type: string;
+	type: T;
 	content: UserWebhookPayload<T>;
 	webhookId: MiWebhook['id'];
 	userId: MiUser['id'];
