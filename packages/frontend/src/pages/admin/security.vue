@@ -85,6 +85,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-key"></i></template>
 						<template #label>TrueMail API Auth Key</template>
 					</MkInput>
+					<MkSwitch v-model="emailValidationForm.state.enableAutoAddBannedEmailDomain">
+						<template #label>Enable Auto Add Banned Email Domain</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
+				<template #label>Allowed Email Domains</template>
+				<template v-if="allowedEmailDomainsForm.modified.value" #footer>
+					<MkFormFooter :form="allowedEmailDomainsForm"/>
+				</template>
+
+				<div class="_gaps_m">
+					<MkTextarea v-model="allowedEmailDomainsForm.state.allowedEmailDomains">
+						<template #label>Allowed Email Domains List</template>
+					</MkTextarea>
+
+					<MkSwitch v-model="allowedEmailDomainsForm.state.enableAllowedEmailDomainsOnly">
+						<template #label>Enable Allowed Email Domains Only</template>
+					</MkSwitch>
 				</div>
 			</MkFolder>
 
@@ -181,6 +201,7 @@ const emailValidationForm = useForm({
 	enableTruemailApi: meta.enableTruemailApi,
 	truemailInstance: meta.truemailInstance,
 	truemailAuthKey: meta.truemailAuthKey,
+	enableAutoAddBannedEmailDomain: meta.enableAutoAddBannedEmailDomain,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		enableActiveEmailValidation: state.enableActiveEmailValidation,
@@ -189,6 +210,18 @@ const emailValidationForm = useForm({
 		enableTruemailApi: state.enableTruemailApi,
 		truemailInstance: state.truemailInstance,
 		truemailAuthKey: state.truemailAuthKey,
+		enableAutoAddBannedEmailDomain: state.enableAutoAddBannedEmailDomain,
+	});
+	fetchInstance(true);
+});
+
+const allowedEmailDomainsForm = useForm({
+	allowedEmailDomains: meta.allowedEmailDomains?.join('\n') || '',
+	enableAllowedEmailDomainsOnly: meta.enableAllowedEmailDomainsOnly,
+}, async (state) => {
+	await os.apiWithDialog('admin/update-meta', {
+		allowedEmailDomains: state.allowedEmailDomains.split('\n'),
+		enableAllowedEmailDomainsOnly: state.enableAllowedEmailDomainsOnly,
 	});
 	fetchInstance(true);
 });

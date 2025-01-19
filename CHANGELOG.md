@@ -5,6 +5,9 @@
   - 新しい設定項目"fulltextSearch.provider"が追加されました. sqlLike, sqlPgroonga, meilisearchのいずれかを設定出来ます.
   - すでにMeilisearchをお使いの場合、 **"fulltextSearch.provider"を"meilisearch"に設定する必要** があります.
   - 詳細は #14730 および `.config/example.yml` または `.config/docker_example.yml`の'Fulltext search configuration'をご参照願います.
+- 登録時メールアドレスドメインのブラックリストの判定方式が後方一致から完全一致に変更されました。サブドメインごとブロックする場合は先頭に`.`を付けることで後方一致になります。
+	- 例: `example.com` は `example.com` をブロックしますが、`sub.example.com` をブロックしません。
+  - 例: `.example.com` は `example.com` および `sub.example.com` をブロックします。
 
 ### General
 -
@@ -53,6 +56,9 @@
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
+- Enhance: 登録時メールアドレスドメインのブラックリストの判定方式を改善
+- Enhance: 登録時メールアドレスドメインのホワイトリストを追加
+- Enhance: Active Email Validationでブロックされたドメインを自動でブラックリストに追加するオプションを追加
 - Fix: 絵文字の連合でライセンス欄を相互にやり取りするように ( #10859, #14109 )
 - Fix: ロックダウンされた期間指定のノートがStreaming経由でLTLに出現するのを修正 ( #15200 )
 - Fix: disableClustering設定時の初期化ロジックを調整( #15223 )

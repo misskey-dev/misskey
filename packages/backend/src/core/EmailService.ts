@@ -16,6 +16,7 @@ import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { MetaService } from '@/core/MetaService.js';
 
 @Injectable()
 export class EmailService {
@@ -34,6 +35,7 @@ export class EmailService {
 		private loggerService: LoggerService,
 		private utilityService: UtilityService,
 		private httpRequestService: HttpRequestService,
+		private metaService: MetaService,
 	) {
 		this.logger = this.loggerService.getLogger('email');
 	}
@@ -162,8 +164,15 @@ export class EmailService {
 	@bindThis
 	public async validateEmailForAccount(emailAddress: string): Promise<{
 		available: boolean;
-		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned' | 'network' | 'blacklist';
+		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned' | 'network' | 'blacklist' | 'allowedOnly';
 	}> {
+		if (!this.utilityService.validateEmailFormat(emailAddress)) {
+			return {
+				available: false,
+				reason: 'format',
+			};
+		}
+
 		const exist = await this.userProfilesRepository.countBy({
 			emailVerified: true,
 			email: emailAddress,
@@ -173,6 +182,33 @@ export class EmailService {
 			return {
 				available: false,
 				reason: 'used',
+			};
+		}
+
+		const emailDomain: string = emailAddress.split('@')[1];
+
+		// ホワイトリストに含まれている場合は即座にtrueを返す
+		if (this.utilityService.isAllowedHost(this.meta.allowedEmailDomains, emailDomain)) {
+			return {
+				available: true,
+				reason: null,
+			};
+		}
+
+		// ホワイトリストのみ許可の場合は即座にfalseを返す
+		if (this.meta.enableAllowedEmailDomainsOnly) {
+			return {
+				available: false,
+				reason: 'allowedOnly',
+			};
+		}
+
+		const isBanned = this.utilityService.isBlockedHost(this.meta.bannedEmailDomains, emailDomain);
+
+		if (isBanned) {
+			return {
+				available: false,
+				reason: 'banned',
 			};
 		}
 
@@ -208,19 +244,14 @@ export class EmailService {
 				blacklist: 'blacklist',
 			};
 
+			// 自動追加が有効な場合はブラックリストに追加する
+			if (this.meta.enableAutoAddBannedEmailDomain) {
+				await this.addBlockedHost(emailDomain);
+			}
+
 			return {
 				available: false,
 				reason: validated.reason ? formatReason[validated.reason] ?? null : null,
-			};
-		}
-
-		const emailDomain: string = emailAddress.split('@')[1];
-		const isBanned = this.utilityService.isBlockedHost(this.meta.bannedEmailDomains, emailDomain);
-
-		if (isBanned) {
-			return {
-				available: false,
-				reason: 'banned',
 			};
 		}
 
@@ -362,5 +393,12 @@ export class EmailService {
 				reason: 'network',
 			};
 		}
+	}
+
+	private async addBlockedHost(domain: string) {
+		const set = {} as Partial<MiMeta>;
+		set.bannedEmailDomains = this.meta.bannedEmailDomains;
+		set.bannedEmailDomains.push(domain);
+		await this.metaService.update(set);
 	}
 }

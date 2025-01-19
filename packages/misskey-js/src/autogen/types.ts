@@ -5158,6 +5158,7 @@ export type operations = {
             prohibitedWords: string[];
             prohibitedWordsForNameOfUser: string[];
             bannedEmailDomains?: string[];
+            allowedEmailDomains?: string[];
             preservedUsernames: string[];
             hcaptchaSecretKey: string | null;
             mcaptchaSecretKey: string | null;
@@ -5195,6 +5196,8 @@ export type operations = {
             enableTruemailApi: boolean;
             truemailInstance: string | null;
             truemailAuthKey: string | null;
+            enableAutoAddBannedEmailDomain: boolean;
+            enableAllowedEmailDomainsOnly: boolean;
             enableChartsForRemoteUser: boolean;
             enableChartsForFederatedInstances: boolean;
             enableStatsForFederatedInstances: boolean;
@@ -9720,6 +9723,9 @@ export type operations = {
           enableIdenticonGeneration?: boolean;
           serverRules?: string[];
           bannedEmailDomains?: string[];
+          allowedEmailDomains?: string[];
+          enableAutoAddBannedEmailDomain?: boolean;
+          enableAllowedEmailDomainsOnly?: boolean;
           preservedUsernames?: string[];
           manifestJsonOverride?: string;
           enableFanoutTimeline?: boolean;
