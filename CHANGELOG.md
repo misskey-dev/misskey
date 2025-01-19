@@ -41,6 +41,8 @@
 - Fix: ワードミュートの保存失敗時にAPIエラーが握りつぶされる事があるのを修正
 - Fix: アンケートでリモートの絵文字が正しく描画できない問題の修正
   (Cherry-picked from https://github.com/yojo-art/cherrypick/pull/153)
+- Fix: 非ログイン時のサーバー概要画面のメニューボタンが押せないことがあるのを修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/656)
 
 ### Server
 - Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
