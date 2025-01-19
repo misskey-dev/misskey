@@ -6,12 +6,12 @@
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { BlockingsRepository, UsersRepository } from '@/models/_.js';
+import type { UsersRepository, BlockingsRepository } from '@/models/_.js';
 import { MiBlockingType } from '@/models/Blocking.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -19,7 +19,7 @@ export const meta = {
 
 	limit: {
 		duration: ms('1hour'),
-		max: 20,
+		max: 100,
 	},
 
 	requireCredential: true,
@@ -30,19 +30,19 @@ export const meta = {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: '7cc4f851-e2f1-4621-9633-ec9e1d00c01e',
+			id: '8621d8bf-c358-4303-a066-5ea78610eb3f',
 		},
 
 		blockeeIsYourself: {
 			message: 'Blockee is yourself.',
 			code: 'BLOCKEE_IS_YOURSELF',
-			id: '88b19138-f28d-42c0-8499-6a31bbd0fdc6',
+			id: '06f6fac6-524b-473c-a354-e97a40ae6eac',
 		},
 
-		alreadyBlocking: {
-			message: 'You are already blocking that user.',
-			code: 'ALREADY_BLOCKING',
-			id: '787fed64-acb9-464a-82eb-afbd745b9614',
+		notBlocking: {
+			message: 'You are not blocking that user.',
+			code: 'NOT_BLOCKING',
+			id: '291b2efa-60c6-45c0-9f6a-045c8f9b02cd',
 		},
 	},
 
@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const blocker = await this.usersRepository.findOneByOrFail({ id: me.id });
 
-			// 自分自身
+			// Check if the blockee is yourself
 			if (me.id === ps.userId) {
 				throw new ApiError(meta.errors.blockeeIsYourself);
 			}
@@ -88,20 +88,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
-			// Check if already blocking
+			// Check not blocking
 			const exist = await this.blockingsRepository.exists({
 				where: {
 					blockerId: blocker.id,
 					blockeeId: blockee.id,
-					blockType: MiBlockingType.User,
+					blockType: MiBlockingType.Reaction,
 				},
 			});
 
-			if (exist) {
-				throw new ApiError(meta.errors.alreadyBlocking);
+			if (!exist) {
+				throw new ApiError(meta.errors.notBlocking);
 			}
 
-			await this.userBlockingService.block(blocker, blockee);
+			// Delete blocking
+			await this.userBlockingService.reactionUnblock(blocker, blockee);
 
 			return await this.userEntityService.pack(blockee.id, blocker, {
 				schema: 'UserDetailedNotMe',

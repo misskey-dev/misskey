@@ -9,9 +9,9 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { BlockingsRepository, UsersRepository } from '@/models/_.js';
 import { MiBlockingType } from '@/models/Blocking.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -93,7 +93,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				where: {
 					blockerId: blocker.id,
 					blockeeId: blockee.id,
-					blockType: MiBlockingType.User,
+					blockType: MiBlockingType.Reaction,
 				},
 			});
 
@@ -101,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.alreadyBlocking);
 			}
 
-			await this.userBlockingService.block(blocker, blockee);
+			await this.userBlockingService.reactionBlock(blocker, blockee);
 
 			return await this.userEntityService.pack(blockee.id, blocker, {
 				schema: 'UserDetailedNotMe',

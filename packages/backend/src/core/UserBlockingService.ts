@@ -8,10 +8,16 @@ import { ModuleRef } from '@nestjs/core';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiBlocking } from '@/models/Blocking.js';
+import { MiBlockingType } from '@/models/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
+import type {
+	BlockingsRepository,
+	FollowRequestsRepository,
+	UserListMembershipsRepository,
+	UserListsRepository,
+} from '@/models/_.js';
 import Logger from '@/logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -67,14 +73,27 @@ export class UserBlockingService implements OnModuleInit {
 			this.removeFromList(blockee, blocker),
 		]);
 
-		const blocking = {
-			id: this.idService.gen(),
-			blocker,
+		const blocking = await this.blockingsRepository.findOneBy({
 			blockerId: blocker.id,
-			blockee,
 			blockeeId: blockee.id,
-		} as MiBlocking;
+		}).then(blocking => {
+			if (blocking) {
+				return blocking;
+			}
+			return {
+				id: this.idService.gen(),
+				blocker,
+				blockerId: blocker.id,
+				blockee,
+				blockeeId: blockee.id,
+				blockType: MiBlockingType.User,
+			} as MiBlocking;
+		});
 
+		if (blocking.blockType === MiBlockingType.Reaction) {
+			await this.reactionUnblock(blocker, blockee);
+		}
+		blocking.blockType = MiBlockingType.User;
 		await this.blockingsRepository.insert(blocking);
 
 		this.cacheService.userBlockingCache.refresh(blocker.id);
@@ -154,6 +173,7 @@ export class UserBlockingService implements OnModuleInit {
 		const blocking = await this.blockingsRepository.findOneBy({
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
+			blockType: MiBlockingType.User,
 		});
 
 		if (blocking == null) {
@@ -163,6 +183,7 @@ export class UserBlockingService implements OnModuleInit {
 
 		// Since we already have the blocker and blockee, we do not need to fetch
 		// them in the query above and can just manually insert them here.
+		// But we don't need to do this because we are not using them in this function.
 		blocking.blocker = blocker;
 		blocking.blockee = blockee;
 
@@ -187,4 +208,73 @@ export class UserBlockingService implements OnModuleInit {
 	public async checkBlocked(blockerId: MiUser['id'], blockeeId: MiUser['id']): Promise<boolean> {
 		return (await this.cacheService.userBlockingCache.fetch(blockerId)).has(blockeeId);
 	}
+
+	@bindThis
+	public async reactionBlock(blocker: MiUser, blockee: MiUser, silent = false) {
+		const blocking = await this.blockingsRepository.findOneBy({
+			blockerId: blocker.id,
+			blockeeId: blockee.id,
+		}).then(blocking => {
+			if (blocking) {
+				return blocking;
+			}
+			return {
+				id: this.idService.gen(),
+				blocker,
+				blockerId: blocker.id,
+				blockee,
+				blockeeId: blockee.id,
+				blockType: MiBlockingType.Reaction,
+			} as MiBlocking;
+		});
+
+		if (blocking.blockType === MiBlockingType.User) {
+			await this.unblock(blocker, blockee);
+		}
+		blocking.blockType = MiBlockingType.Reaction;
+		await this.blockingsRepository.insert(blocking);
+
+		this.cacheService.userReactionBlockingCache.refresh(blocker.id);
+		this.cacheService.userReactionBlockedCache.refresh(blockee.id);
+
+		this.globalEventService.publishInternalEvent('blockingReactionCreated', {
+			blockerId: blocker.id,
+			blockeeId: blockee.id,
+		});
+	}
+
+	@bindThis
+	public async reactionUnblock(blocker: MiUser, blockee: MiUser) {
+		const blocking = await this.blockingsRepository.findOneBy({
+			blockerId: blocker.id,
+			blockeeId: blockee.id,
+			blockType: MiBlockingType.Reaction,
+		});
+
+		if (blocking == null) {
+			this.logger.warn('Unblock requested, but the target was not blocked.');
+			return;
+		}
+
+		// Since we already have the blocker and blockee, we do not need to fetch
+		// them in the query above and can just manually insert them here.
+		blocking.blocker = blocker;
+		blocking.blockee = blockee;
+
+		await this.blockingsRepository.delete(blocking.id);
+
+		this.cacheService.userReactionBlockingCache.refresh(blocker.id);
+		this.cacheService.userReactionBlockedCache.refresh(blockee.id);
+
+		this.globalEventService.publishInternalEvent('blockingReactionDeleted', {
+			blockerId: blocker.id,
+			blockeeId: blockee.id,
+		});
+	}
+
+	@bindThis
+	public async checkReactionBlocked(blockerId: MiUser['id'], blockeeId: MiUser['id']): Promise<boolean> {
+		return (await this.cacheService.userReactionBlockingCache.fetch(blockerId)).has(blockeeId);
+	}
 }
+

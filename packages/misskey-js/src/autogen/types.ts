@@ -1015,6 +1015,33 @@ export type paths = {
      */
     post: operations['blocking___list'];
   };
+  '/blocking-reaction-user/create': {
+    /**
+     * blocking-reaction-user/create
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:blocks*
+     */
+    post: operations['blocking-reaction-user___create'];
+  };
+  '/blocking-reaction-user/delete': {
+    /**
+     * blocking-reaction-user/delete
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:blocks*
+     */
+    post: operations['blocking-reaction-user___delete'];
+  };
+  '/blocking-reaction-user/list': {
+    /**
+     * blocking-reaction-user/list
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:blocks*
+     */
+    post: operations['blocking-reaction-user___list'];
+  };
   '/channels/create': {
     /**
      * channels/create
@@ -3843,6 +3870,8 @@ export type components = {
       hasPendingFollowRequestToYou?: boolean;
       isBlocking?: boolean;
       isBlocked?: boolean;
+      isReactionBlocking?: boolean;
+      isReactionBlocked?: boolean;
       isMuted?: boolean;
       isRenoteMuted?: boolean;
       /** @enum {string} */
@@ -4504,6 +4533,8 @@ export type components = {
       /** Format: id */
       blockeeId: string;
       blockee: components['schemas']['UserDetailedNotMe'];
+      /** @enum {string} */
+      blockType: 'user' | 'reaction';
     };
     Hashtag: {
       /** @example misskey */
@@ -11796,6 +11827,184 @@ export type operations = {
    * **Credential required**: *Yes* / **Permission**: *read:blocks*
    */
   blocking___list: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 30 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['Blocking'][];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * blocking-reaction-user/create
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:blocks*
+   */
+  'blocking-reaction-user___create': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          userId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['UserDetailedNotMe'];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description To many requests */
+      429: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * blocking-reaction-user/delete
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:blocks*
+   */
+  'blocking-reaction-user___delete': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          userId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['UserDetailedNotMe'];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description To many requests */
+      429: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * blocking-reaction-user/list
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:blocks*
+   */
+  'blocking-reaction-user___list': {
     requestBody: {
       content: {
         'application/json': {

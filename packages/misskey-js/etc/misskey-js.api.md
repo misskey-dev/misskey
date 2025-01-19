@@ -559,6 +559,24 @@ type BlockingListRequest = operations['blocking___list']['requestBody']['content
 type BlockingListResponse = operations['blocking___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type BlockingReactionUserCreateRequest = operations['blocking-reaction-user___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingReactionUserCreateResponse = operations['blocking-reaction-user___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingReactionUserDeleteRequest = operations['blocking-reaction-user___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingReactionUserDeleteResponse = operations['blocking-reaction-user___delete']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingReactionUserListRequest = operations['blocking-reaction-user___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type BlockingReactionUserListResponse = operations['blocking-reaction-user___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type BubbleGameRankingRequest = operations['bubble-game___ranking']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1390,6 +1408,12 @@ declare namespace entities {
         BlockingDeleteResponse,
         BlockingListRequest,
         BlockingListResponse,
+        BlockingReactionUserCreateRequest,
+        BlockingReactionUserCreateResponse,
+        BlockingReactionUserDeleteRequest,
+        BlockingReactionUserDeleteResponse,
+        BlockingReactionUserListRequest,
+        BlockingReactionUserListResponse,
         ChannelsCreateRequest,
         ChannelsCreateResponse,
         ChannelsFeaturedResponse,
