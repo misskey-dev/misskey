@@ -258,7 +258,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 
 					<div class="_gaps_m">
-						<MkRange :min="0" :max="1" :step="0.05" v-model="featuredForm.state.featuredUpdateRatio">
+						<MkRange v-model="featuredForm.state.featuredUpdateRatio" :min="0" :max="1" :step="0.05">
 							<template #label>{{ i18n.ts._featuredSetting.updateRatio }} <span v-if="featuredForm.modifiedStates.featuredUpdateRatio" class="_modified">{{ i18n.ts.modified }}</span></template>
 							<template #caption>{{ i18n.ts._featuredSetting.updateRatioDescription }}</template>
 						</MkRange>
