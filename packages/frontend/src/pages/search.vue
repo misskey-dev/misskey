@@ -8,14 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-		<MkSpacer v-if="tab === 'note'" key="note" :contentMax="800">
+		<div v-if="tab === 'note'" key="note">
 			<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable">
 				<XNote v-bind="props"/>
 			</div>
-			<div v-else>
+			<MkSpacer v-else :contentMax="800">
 				<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
-			</div>
-		</MkSpacer>
+			</MkSpacer>
+		</div>
 
 		<MkSpacer v-else-if="tab === 'user'" key="user" :contentMax="800">
 			<XUser v-bind="props"/>
@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<{
 	ignoreNotesSearchAvailable: false,
 });
 
-const XNote = defineAsyncComponent(() => import('./search.note.vue'));
+const XNote = defineAsyncComponent(() => import('./search.note.hana.vue'));
 const XUser = defineAsyncComponent(() => import('./search.user.vue'));
 
 const tab = ref(toRef(props, 'type').value);

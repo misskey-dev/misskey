@@ -6,11 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div class="_gaps">
-		<MkInfo v-if="!$i || !$i.policies.canSearchWithHanamiSearchV1">{{ i18n.ts._hana.searchIsInBeta }}</MkInfo>
-
-		<HanaSearchInput v-model="searchQuery" v-model:mode="searchMode" :large="true" :autofocus="true" @enter.prevent="search">
+		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter.prevent="search">
 			<template #prefix><i class="ti ti-search"></i></template>
-		</HanaSearchInput>
+		</MkInput>
 		<MkFoldableSection :expanded="true">
 			<template #header>{{ i18n.ts.options }}</template>
 
@@ -60,7 +58,6 @@ import type { UserDetailed } from 'misskey-js/entities.js';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkInput from '@/components/MkInput.vue';
-import HanaSearchInput from '@/components/HanaSearchInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -72,9 +69,6 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
-
-import MkInfo from '@/components/MkInfo.vue';
-import type { SearchMode } from '@/hana/types/search.js';
 
 const props = withDefaults(defineProps<{
 	query?: string;
@@ -91,7 +85,6 @@ const props = withDefaults(defineProps<{
 const router = useRouter();
 const key = ref(0);
 const searchQuery = ref(toRef(props, 'query').value);
-const searchMode = ref<SearchMode>($i?.policies.canSearchWithHanamiSearchV1 ? 'v1' : 'v0');
 const notePagination = ref<Paging>();
 const user = ref<UserDetailed | null>(null);
 const hostInput = ref(toRef(props, 'host').value);
@@ -201,27 +194,15 @@ async function search() {
 		}
 	}
 
-	if ($i?.policies.canSearchWithHanamiSearchV1 === true && searchMode.value === 'v1') {
-		notePagination.value = {
-			endpoint: 'notes/hanamisearch-v1',
-			limit: 10,
-			params: {
-				query: searchQuery.value,
-				userId: user.value ? user.value.id : null,
-				...(searchHost.value ? { host: searchHost.value } : {}),
-			},
-		};
-	} else {
-		notePagination.value = {
-			endpoint: 'notes/search',
-			limit: 10,
-			params: {
-				query: searchQuery.value,
-				userId: user.value ? user.value.id : null,
-				...(searchHost.value ? { host: searchHost.value } : {}),
-			},
-		};
-	}
+	notePagination.value = {
+		endpoint: 'notes/search',
+		limit: 10,
+		params: {
+			query: searchQuery.value,
+			userId: user.value ? user.value.id : null,
+			...(searchHost.value ? { host: searchHost.value } : {}),
+		},
+	};
 
 	key.value++;
 }
