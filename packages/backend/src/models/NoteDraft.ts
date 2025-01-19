@@ -22,7 +22,7 @@ export class MiNoteDraft {
 		nullable: true,
 		comment: 'The ID of reply target.',
 	})
-	public replyId: MiNoteDraft['id'] | null;
+	public replyId: MiNote['id'] | null;
 
 	@ManyToOne(type => MiNote, {
 		onDelete: 'CASCADE',
