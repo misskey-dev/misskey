@@ -14,6 +14,7 @@ export type APIError = {
 	code: string;
 	message: string;
 	kind: 'client' | 'server';
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	info: Record<string, any>;
 };
 
@@ -29,6 +30,7 @@ export type FetchLike = (input: string, init?: {
 	headers: { [key in string]: string }
 }) => Promise<{
 	status: number;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	json(): Promise<any>;
 }>;
 
@@ -42,15 +44,20 @@ export class APIClient {
 		credential?: APIClient['credential'];
 		fetch?: APIClient['fetch'] | null | undefined;
 	}) {
-		this.origin = opts.origin;
+		this.origin = opts.origin.replace(/\/$/, '');
 		this.credential = opts.credential;
 		// ネイティブ関数をそのまま変数に代入して使おうとするとChromiumではIllegal invocationエラーが発生するため、
 		// 環境で実装されているfetchを使う場合は無名関数でラップして使用する
 		this.fetch = opts.fetch ?? ((...args) => fetch(...args));
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private assertIsRecord<T>(obj: T): obj is T & Record<string, any> {
 		return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
+	}
+
+	private assertSpecialEpReqType(ep: keyof Endpoints): ep is keyof typeof endpointReqTypes {
+		return ep in endpointReqTypes;
 	}
 
 	public request<E extends keyof Endpoints, P extends Endpoints[E]['req']>(
@@ -60,9 +67,12 @@ export class APIClient {
 	): Promise<SwitchCaseResponseType<E, P>> {
 		return new Promise((resolve, reject) => {
 			let mediaType = 'application/json';
-			if (endpoint in endpointReqTypes) {
+			// （autogenがバグったときのため、念の為nullチェックも行う）
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			if (this.assertSpecialEpReqType(endpoint) && endpointReqTypes[endpoint] != null) {
 				mediaType = endpointReqTypes[endpoint];
 			}
+
 			let payload: FormData | string = '{}';
 
 			if (mediaType === 'application/json') {
@@ -97,7 +107,7 @@ export class APIClient {
 				method: 'POST',
 				body: payload,
 				headers: {
-					'Content-Type': endpointReqTypes[endpoint],
+					'Content-Type': mediaType,
 				},
 				credentials: 'omit',
 				cache: 'no-cache',

@@ -12,26 +12,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton @click="init"><i class="ti ti-refresh"></i> {{ i18n.ts.reloadAccountsList }}</MkButton>
 			</div>
 
-			<MkUserCardMini v-for="user in accounts" :key="user.id" :user="user" :class="$style.user" @click.prevent="menu(user, $event)"/>
+			<template v-for="[id, user] in accounts">
+				<MkUserCardMini v-if="user != null" :key="user.id" :user="user" :class="$style.user" @click.prevent="menu(user, $event)"/>
+				<button v-else v-panel class="_button" :class="$style.unknownUser" @click="menu(id, $event)">
+					<div :class="$style.unknownUserAvatarMock"><i class="ti ti-user-question"></i></div>
+					<div>
+						<div :class="$style.unknownUserTitle">{{ i18n.ts.unknown }}</div>
+						<div :class="$style.unknownUserSub">ID: <span class="_monospace">{{ id }}</span></div>
+					</div>
+				</button>
+			</template>
 		</div>
 	</FormSuspense>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import type * as Misskey from 'misskey-js';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { getAccounts, addAccount as addAccounts, removeAccount as _removeAccount, login, $i } from '@/account.js';
+import { getAccounts, removeAccount as _removeAccount, login, $i, getAccountWithSigninDialog, getAccountWithSignupDialog } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import { MenuItem } from '@/types/menu';
 
 const storedAccounts = ref<{ id: string, token: string }[] | null>(null);
-const accounts = ref<Misskey.entities.UserDetailed[]>([]);
+const accounts = ref(new Map<string, Misskey.entities.UserDetailed | null>());
 
 const init = async () => {
 	getAccounts().then(accounts => {
@@ -41,24 +51,38 @@ const init = async () => {
 			userIds: storedAccounts.value.map(x => x.id),
 		});
 	}).then(response => {
-		accounts.value = response;
+		if (storedAccounts.value == null) return;
+		accounts.value = new Map(storedAccounts.value.map(x => [x.id, response.find((y: Misskey.entities.UserDetailed) => y.id === x.id) ?? null]));
 	});
 };
 
-function menu(account, ev) {
-	os.popupMenu([{
-		text: i18n.ts.switch,
-		icon: 'ti ti-switch-horizontal',
-		action: () => switchAccount(account),
-	}, {
-		text: i18n.ts.logout,
-		icon: 'ti ti-trash',
-		danger: true,
-		action: () => removeAccount(account),
-	}], ev.currentTarget ?? ev.target);
+function menu(account: Misskey.entities.UserDetailed | string, ev: MouseEvent) {
+	let menu: MenuItem[];
+
+	if (typeof account === 'string') {
+		menu = [{
+			text: i18n.ts.logout,
+			icon: 'ti ti-trash',
+			danger: true,
+			action: () => removeAccount(account),
+		}];
+	} else {
+		menu = [{
+			text: i18n.ts.switch,
+			icon: 'ti ti-switch-horizontal',
+			action: () => switchAccount(account.id),
+		}, {
+			text: i18n.ts.logout,
+			icon: 'ti ti-trash',
+			danger: true,
+			action: () => removeAccount(account.id),
+		}];
+	}
+
+	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }
 
-function addAccount(ev) {
+function addAccount(ev: MouseEvent) {
 	os.popupMenu([{
 		text: i18n.ts.existingAccount,
 		action: () => { addExistingAccount(); },
@@ -68,35 +92,31 @@ function addAccount(ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function removeAccount(account) {
-	await _removeAccount(account.id);
-	accounts.value = accounts.value.filter(x => x.id !== account.id);
+async function removeAccount(id: string) {
+	await _removeAccount(id);
+	accounts.value.delete(id);
 }
 
 function addExistingAccount() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
-		done: async res => {
-			await addAccounts(res.id, res.i);
+	getAccountWithSigninDialog().then((res) => {
+		if (res != null) {
 			os.success();
 			init();
-		},
-		closed: () => dispose(),
+		}
 	});
 }
 
 function createAccount() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkSignupDialog.vue')), {}, {
-		done: async res => {
-			await addAccounts(res.id, res.i);
-			switchAccountWithToken(res.i);
-		},
-		closed: () => dispose(),
+	getAccountWithSignupDialog().then((res) => {
+		if (res != null) {
+			switchAccountWithToken(res.token);
+		}
 	});
 }
 
-async function switchAccount(account: any) {
-	const fetchedAccounts: any[] = await getAccounts();
-	const token = fetchedAccounts.find(x => x.id === account.id).token;
+async function switchAccount(id: string) {
+	const fetchedAccounts = await getAccounts();
+	const token = fetchedAccounts.find(x => x.id === id)!.token;
 	switchAccountWithToken(token);
 }
 
@@ -116,6 +136,49 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .user {
-    cursor: pointer;
+	cursor: pointer;
+}
+
+.unknownUser {
+	display: flex;
+	align-items: center;
+	text-align: start;
+	padding: 16px;
+	background: var(--MI_THEME-panel);
+	border-radius: 8px;
+	font-size: 0.9em;
+}
+
+.unknownUserAvatarMock {
+	display: block;
+	width: 34px;
+	height: 34px;
+	line-height: 34px;
+	text-align: center;
+	font-size: 16px;
+	margin-right: 12px;
+	background-color: color-mix(in srgb, var(--MI_THEME-fg), transparent 85%);
+	color: color-mix(in srgb, var(--MI_THEME-fg), transparent 25%);
+	border-radius: 50%;
+}
+
+.unknownUserTitle {
+	display: block;
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 18px;
+}
+
+.unknownUserSub {
+	display: block;
+	width: 100%;
+	font-size: 95%;
+	opacity: 0.7;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 16px;
 }
 </style>

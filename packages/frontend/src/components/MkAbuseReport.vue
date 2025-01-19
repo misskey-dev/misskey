@@ -4,112 +4,151 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="bcekxzvu _margin _panel">
-	<div class="target">
-		<MkA v-user-preview="report.targetUserId" class="info" :to="`/admin/user/${report.targetUserId}`" :behavior="'window'">
-			<MkAvatar class="avatar" :user="report.targetUser" indicator/>
-			<div class="names">
-				<MkUserName class="name" :user="report.targetUser"/>
-				<MkAcct class="acct" :user="report.targetUser" style="display: block;"/>
-			</div>
-		</MkA>
-		<MkKeyValue>
-			<template #key>{{ i18n.ts.registeredDate }}</template>
-			<template #value>{{ dateString(report.targetUser.createdAt) }} (<MkTime :time="report.targetUser.createdAt"/>)</template>
-		</MkKeyValue>
-	</div>
-	<div class="detail">
-		<div>
-			<Mfm :text="report.comment" :linkNavigationBehavior="'window'"/>
+<MkFolder>
+	<template #icon>
+		<i v-if="report.resolved && report.resolvedAs === 'accept'" class="ti ti-check" style="color: var(--MI_THEME-success)"></i>
+		<i v-else-if="report.resolved && report.resolvedAs === 'reject'" class="ti ti-x" style="color: var(--MI_THEME-error)"></i>
+		<i v-else-if="report.resolved" class="ti ti-slash"></i>
+		<i v-else class="ti ti-exclamation-circle" style="color: var(--MI_THEME-warn)"></i>
+	</template>
+	<template #label><MkAcct :user="report.targetUser"/> (by <MkAcct :user="report.reporter"/>)</template>
+	<template #caption>{{ report.comment }}</template>
+	<template #suffix><MkTime :time="report.createdAt"/></template>
+	<template #footer>
+		<div class="_buttons">
+			<template v-if="!report.resolved">
+				<MkButton @click="resolve('accept')"><i class="ti ti-check" style="color: var(--MI_THEME-success)"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts._abuseUserReport.accept }})</MkButton>
+				<MkButton @click="resolve('reject')"><i class="ti ti-x" style="color: var(--MI_THEME-error)"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts._abuseUserReport.reject }})</MkButton>
+				<MkButton @click="resolve(null)"><i class="ti ti-slash"></i> {{ i18n.ts._abuseUserReport.resolve }} ({{ i18n.ts.other }})</MkButton>
+			</template>
+			<template v-if="report.targetUser.host != null">
+				<MkButton :disabled="report.forwarded" primary @click="forward"><i class="ti ti-corner-up-right"></i> {{ i18n.ts._abuseUserReport.forward }}</MkButton>
+				<div v-tooltip:dialog="i18n.ts._abuseUserReport.forwardDescription" class="_button _help"><i class="ti ti-help-circle"></i></div>
+			</template>
+			<button class="_button" style="margin-left: auto; width: 34px;" @click="showMenu"><i class="ti ti-dots"></i></button>
 		</div>
-		<hr/>
-		<div>{{ i18n.ts.reporter }}: <MkA :to="`/admin/user/${report.reporter.id}`" class="_link" :behavior="'window'">@{{ report.reporter.username }}</MkA></div>
+	</template>
+
+	<div class="_gaps_s">
+		<MkFolder :withSpacer="false">
+			<template #icon><MkAvatar :user="report.targetUser" style="width: 18px; height: 18px;"/></template>
+			<template #label>{{ i18n.ts.target }}: <MkAcct :user="report.targetUser"/></template>
+			<template #suffix>#{{ report.targetUserId.toUpperCase() }}</template>
+
+			<div style="container-type: inline-size;">
+				<RouterView :router="targetRouter"/>
+			</div>
+		</MkFolder>
+
+		<MkFolder :defaultOpen="true">
+			<template #icon><i class="ti ti-message-2"></i></template>
+			<template #label>{{ i18n.ts.details }}</template>
+			<div class="_gaps_s">
+				<Mfm :text="report.comment" :linkNavigationBehavior="'window'"/>
+			</div>
+		</MkFolder>
+
+		<MkFolder :withSpacer="false">
+			<template #icon><MkAvatar :user="report.reporter" style="width: 18px; height: 18px;"/></template>
+			<template #label>{{ i18n.ts.reporter }}: <MkAcct :user="report.reporter"/></template>
+			<template #suffix>#{{ report.reporterId.toUpperCase() }}</template>
+
+			<div style="container-type: inline-size;">
+				<RouterView :router="reporterRouter"/>
+			</div>
+		</MkFolder>
+
+		<MkFolder :defaultOpen="false">
+			<template #icon><i class="ti ti-message-2"></i></template>
+			<template #label>{{ i18n.ts.moderationNote }}</template>
+			<template #suffix>{{ moderationNote.length > 0 ? '...' : i18n.ts.none }}</template>
+			<div class="_gaps_s">
+				<MkTextarea v-model="moderationNote" manualSave>
+					<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
+				</MkTextarea>
+			</div>
+		</MkFolder>
+
 		<div v-if="report.assignee">
 			{{ i18n.ts.moderator }}:
 			<MkAcct :user="report.assignee"/>
 		</div>
-		<div><MkTime :time="report.createdAt"/></div>
-		<div class="action">
-			<MkSwitch v-model="forward" :disabled="report.targetUser.host == null || report.resolved">
-				{{ i18n.ts.forwardReport }}
-				<template #caption>{{ i18n.ts.forwardReportIsAnonymous }}</template>
-			</MkSwitch>
-			<MkButton v-if="!report.resolved" primary @click="resolve">{{ i18n.ts.abuseMarkAsResolved }}</MkButton>
-		</div>
 	</div>
-</div>
+</MkFolder>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { provide, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
+import MkFolder from '@/components/MkFolder.vue';
+import RouterView from '@/components/global/RouterView.vue';
+import { useRouterFactory } from '@/router/supplier';
+import MkTextarea from '@/components/MkTextarea.vue';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
-	report: any;
+	report: Misskey.entities.AdminAbuseUserReportsResponse[number];
 }>();
 
 const emit = defineEmits<{
 	(ev: 'resolved', reportId: string): void;
 }>();
 
-const forward = ref(props.report.forwarded);
+const routerFactory = useRouterFactory();
+const targetRouter = routerFactory(`/admin/user/${props.report.targetUserId}`);
+targetRouter.init();
+const reporterRouter = routerFactory(`/admin/user/${props.report.reporterId}`);
+reporterRouter.init();
 
-function resolve() {
-	os.apiWithDialog('admin/resolve-abuse-user-report', {
-		forward: forward.value,
+const moderationNote = ref(props.report.moderationNote ?? '');
+
+watch(moderationNote, async () => {
+	os.apiWithDialog('admin/update-abuse-user-report', {
 		reportId: props.report.id,
+		moderationNote: moderationNote.value,
+	}).then(() => {
+	});
+});
+
+function resolve(resolvedAs) {
+	os.apiWithDialog('admin/resolve-abuse-user-report', {
+		reportId: props.report.id,
+		resolvedAs,
 	}).then(() => {
 		emit('resolved', props.report.id);
 	});
 }
+
+function forward() {
+	os.apiWithDialog('admin/forward-abuse-user-report', {
+		reportId: props.report.id,
+	}).then(() => {
+
+	});
+}
+
+function showMenu(ev: MouseEvent) {
+	os.popupMenu([{
+		icon: 'ti ti-id',
+		text: 'Copy ID',
+		action: () => {
+			copyToClipboard(props.report.id);
+		},
+	}, {
+		icon: 'ti ti-json',
+		text: 'Copy JSON',
+		action: () => {
+			copyToClipboard(JSON.stringify(props.report, null, '\t'));
+		},
+	}], ev.currentTarget ?? ev.target);
+}
 </script>
 
-<style lang="scss" scoped>
-.bcekxzvu {
-	display: flex;
-
-	> .target {
-		width: 35%;
-		box-sizing: border-box;
-		text-align: left;
-		padding: 24px;
-		border-right: solid 1px var(--divider);
-
-		> .info {
-			display: flex;
-			box-sizing: border-box;
-			align-items: center;
-			padding: 14px;
-			border-radius: 8px;
-			--c: rgb(255 196 0 / 15%);
-			background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
-			background-size: 16px 16px;
-
-			> .avatar {
-				width: 42px;
-				height: 42px;
-			}
-
-			> .names {
-				margin-left: 0.3em;
-				padding: 0 8px;
-				flex: 1;
-
-				> .name {
-					font-weight: bold;
-				}
-			}
-		}
-	}
-
-	> .detail {
-		flex: 1;
-		padding: 24px;
-	}
-}
+<style lang="scss" module>
 </style>

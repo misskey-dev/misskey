@@ -9,10 +9,11 @@ import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import { getCompressionConfig } from './upload/compress-config.js';
 import { defaultStore } from '@/store.js';
-import { apiUrl } from '@/config.js';
+import { apiUrl } from '@@/js/config.js';
 import { $i } from '@/account.js';
 import { alert } from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 
 type Uploading = {
 	id: string;
@@ -31,13 +32,22 @@ const mimeTypeMap = {
 
 export function uploadFile(
 	file: File,
-	folder?: any,
+	folder?: string | Misskey.entities.DriveFolder,
 	name?: string,
 	keepOriginal: boolean = defaultStore.state.keepOriginalUploading,
 ): Promise<Misskey.entities.DriveFile> {
 	if ($i == null) throw new Error('Not logged in');
 
-	if (folder && typeof folder === 'object') folder = folder.id;
+	const _folder = typeof folder === 'string' ? folder : folder?.id;
+
+	if (file.size > instance.maxFileSize) {
+		alert({
+			type: 'error',
+			title: i18n.ts.failedToUpload,
+			text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
+		});
+		return Promise.reject();
+	}
 
 	return new Promise((resolve, reject) => {
 		const id = uuid();
@@ -79,11 +89,11 @@ export function uploadFile(
 			}
 
 			const formData = new FormData();
-			formData.append('i', $i.token);
+			formData.append('i', $i!.token);
 			formData.append('force', 'true');
 			formData.append('file', resizedImage ?? file);
 			formData.append('name', ctx.name);
-			if (folder) formData.append('folderId', folder);
+			if (_folder) formData.append('folderId', _folder);
 
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', apiUrl + '/drive/files/create', true);

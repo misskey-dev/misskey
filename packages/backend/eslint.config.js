@@ -4,14 +4,14 @@ import sharedConfig from '../shared/eslint.config.js';
 export default [
 	...sharedConfig,
 	{
-		ignores: ['**/node_modules', 'built', '@types/**/*'],
+		ignores: ['**/node_modules', 'built', '@types/**/*', 'migration'],
 	},
 	{
 		files: ['**/*.ts', '**/*.tsx'],
 		languageOptions: {
 			parserOptions: {
 				parser: tsParser,
-				project: ['./tsconfig.json', './test/tsconfig.json'],
+				project: ['./tsconfig.json', './test/tsconfig.json', './test-federation/tsconfig.json'],
 				sourceType: 'module',
 				tsconfigRootDir: import.meta.dirname,
 			},

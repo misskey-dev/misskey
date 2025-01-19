@@ -53,7 +53,6 @@ await fs.readFile(
 			'../../assets/**',
 			'../../fluent-emojis/**',
 			'../../locales/ja-JP.yml',
-			'../../misskey-assets/**',
 			'assets/**',
 			'public/**',
 			'../../pnpm-lock.yaml',

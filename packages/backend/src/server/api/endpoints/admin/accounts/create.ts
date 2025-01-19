@@ -12,10 +12,26 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { localUsernameSchema, passwordSchema } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
+import { ApiError } from '@/server/api/error.js';
 import { Packed } from '@/misc/json-schema.js';
 
 export const meta = {
 	tags: ['admin'],
+
+	errors: {
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: '1fb7cb09-d46a-4fff-b8df-057708cce513',
+		},
+
+		wrongInitialPassword: {
+			message: 'Initial password is incorrect.',
+			code: 'INCORRECT_INITIAL_PASSWORD',
+			id: '97147c55-1ae1-4f6f-91d6-e1c3e0e76d62',
+		},
+	},
 
 	res: {
 		type: 'object',
@@ -35,6 +51,7 @@ export const paramDef = {
 	properties: {
 		username: localUsernameSchema,
 		password: passwordSchema,
+		setupPassword: { type: 'string', nullable: true },
 	},
 	required: ['username', 'password'],
 } as const;
@@ -42,6 +59,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -52,7 +72,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, _me, token) => {
 			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
 			const realUsers = await this.instanceActorService.realLocalUsersPresent();
-			if ((realUsers && !me?.isRoot) || token !== null) throw new Error('access denied');
+
+			if (!realUsers && me == null && token == null) {
+				// 初回セットアップの場合
+				if (this.config.setupPassword != null) {
+					// 初期パスワードが設定されている場合
+					if (ps.setupPassword !== this.config.setupPassword) {
+						// 初期パスワードが違う場合
+						throw new ApiError(meta.errors.wrongInitialPassword);
+					}
+				} else if (ps.setupPassword != null && ps.setupPassword.trim() !== '') {
+					// 初期パスワードが設定されていないのに初期パスワードが入力された場合
+					throw new ApiError(meta.errors.wrongInitialPassword);
+				}
+			} else if ((realUsers && !me?.isRoot) || token !== null) {
+				// 初回セットアップではなく、管理者でない場合 or 外部トークンを使用している場合
+				throw new ApiError(meta.errors.accessDenied);
+			}
 
 			const { account, secret } = await this.signupService.signup({
 				username: ps.username,
