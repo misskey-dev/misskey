@@ -47,7 +47,7 @@ import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
-import { HanamiSearchService } from '@/core/HanamiSearchService.js';
+import { HanamiSearchService } from '@/core/hanamisearch/HanamiSearchService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { FanoutTimelineNamePrefix, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { UtilityService } from '@/core/UtilityService.js';

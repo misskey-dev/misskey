@@ -14,7 +14,7 @@ import type { MiNote } from '@/models/Note.js';
 import { EmailService } from '@/core/EmailService.js';
 import { bindThis } from '@/decorators.js';
 import { SearchService } from '@/core/SearchService.js';
-import { HanamiSearchService } from '@/core/HanamiSearchService.js';
+import { HanamiSearchService } from '@/core/hanamisearch/HanamiSearchService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbUserDeleteJobData } from '../types.js';

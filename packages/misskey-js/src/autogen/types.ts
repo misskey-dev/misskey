@@ -23082,6 +23082,8 @@ export type operations = {
            * @default null
            */
           channelId?: string | null;
+          /** @default false */
+          onlyWithFiles?: boolean;
         };
       };
     };

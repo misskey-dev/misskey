@@ -73,7 +73,7 @@ import { ProxyAccountService } from './ProxyAccountService.js';
 import { UtilityService } from './UtilityService.js';
 import { FileInfoService } from './FileInfoService.js';
 import { SearchService } from './SearchService.js';
-import { HanamiSearchService } from './HanamiSearchService.js';
+import { HanamiSearchService } from './hanamisearch/HanamiSearchService.js';
 import { ClipService } from './ClipService.js';
 import { FeaturedService } from './FeaturedService.js';
 import { FanoutTimelineService } from './FanoutTimelineService.js';

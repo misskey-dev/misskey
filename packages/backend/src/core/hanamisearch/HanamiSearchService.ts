@@ -76,7 +76,6 @@ export class HanamiSearchService {
 		private notesRepository: NotesRepository,
 
 		private cacheService: CacheService,
-		private queryService: QueryService,
 		private idService: IdService,
 	) {
 		this.hanamisearchIndexScope = config.hanamisearch?.scope || 'global';
@@ -100,6 +99,7 @@ export class HanamiSearchService {
 				'userHost',
 				'channelId',
 				'tags',
+				'fileIds',
 			],
 			typoTolerance: {
 				enabled: false,
@@ -116,6 +116,10 @@ export class HanamiSearchService {
 		if (note.text == null && note.cw == null) return;
 		if (!['home', 'public'].includes(note.visibility)) return;
 
+		// 配列が空の場合は null にする（検索時のパフォーマンスのためにインデックスしない）
+		const fileIds = (note.fileIds.length > 0) ? note.fileIds : null;
+		const tags = (note.tags.length > 0) ? note.tags : null;
+
 		const createdAt = this.idService.parse(note.id).date.getTime();
 		const noteData = {
 			id: note.id,
@@ -125,7 +129,8 @@ export class HanamiSearchService {
 			channelId: note.channelId,
 			cw: note.cw,
 			text: note.text,
-			tags: note.tags,
+			tags: tags,
+			fileIds: fileIds,
 		};
 
 		const shouldIndex = (scope: string | string[], userHost: string | null): boolean => {
@@ -165,6 +170,7 @@ export class HanamiSearchService {
 			channelId?: MiNote['channelId'] | null;
 			host?: string | null;
 			preferredMethod?: 'hanamisearchv1' | 'hanamisearchv2' | null;
+			onlyWithFiles?: boolean;
 		},
 		pagination: {
 			untilId?: MiNote['id'];
@@ -191,6 +197,7 @@ export class HanamiSearchService {
 			userId?: MiNote['userId'] | null;
 			channelId?: MiNote['channelId'] | null;
 			host?: string | null;
+			onlyWithFiles?: boolean;
 		},
 		pagination: {
 			untilId?: MiNote['id'];
@@ -208,6 +215,7 @@ export class HanamiSearchService {
 		if (opts.host) {
 			filter.qs.push(opts.host === '.' ? { op: 'is null', k: 'userHost' } : { op: '=', k: 'userHost', v: opts.host });
 		}
+		if (opts.onlyWithFiles) filter.qs.push({ op: 'is not null', k: 'fileIds' });
 
 		const res = await searchClient.search(q, {
 			sort: shouldTimeSeriesSort ? ['createdAt:desc'] : undefined,

@@ -20,7 +20,7 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { HanamiSearchService } from '@/core/HanamiSearchService.js';
+import { HanamiSearchService } from '@/core/hanamisearch/HanamiSearchService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { SearchService } from './SearchService.js';
