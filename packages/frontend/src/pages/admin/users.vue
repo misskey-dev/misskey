@@ -33,11 +33,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSelect>
 				</div>
 				<div :class="$style.inputs">
-					<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false" @update:modelValue="$refs.users.reload()">
+					<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false">
 						<template #prefix>@</template>
 						<template #label>{{ i18n.ts.username }}</template>
 					</MkInput>
-					<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:modelValue="$refs.users.reload()">
+					<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'">
 						<template #prefix>@</template>
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
@@ -99,19 +99,19 @@ async function addUser() {
 	const { canceled: canceled1, result: username } = await os.inputText({
 		title: i18n.ts.username,
 	});
-	if (canceled1) return;
+	if (canceled1 || username == null) return;
 
 	const { canceled: canceled2, result: password } = await os.inputText({
 		title: i18n.ts.password,
 		type: 'password',
 	});
-	if (canceled2) return;
+	if (canceled2 || password == null) return;
 
 	os.apiWithDialog('admin/accounts/create', {
 		username: username,
 		password: password,
 	}).then(res => {
-		paginationComponent.value.reload();
+		paginationComponent.value?.reload();
 	});
 }
 

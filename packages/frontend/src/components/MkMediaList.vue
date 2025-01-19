@@ -37,7 +37,7 @@ import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import { defaultStore } from '@/store.js';
 import { focusParent } from '@/scripts/focus.js';
 
@@ -138,15 +138,13 @@ onMounted(() => {
 		pswpModule: PhotoSwipe,
 	});
 
-	lightbox.on('itemData', (ev) => {
-		const { itemData } = ev;
-
+	lightbox.addFilter('itemData', (itemData) => {
 		// element is children
 		const { element } = itemData;
 
 		const id = element?.dataset.id;
 		const file = props.mediaList.find(media => media.id === id);
-		if (!file) return;
+		if (!file) return itemData;
 
 		itemData.src = file.url;
 		itemData.w = Number(file.properties.width);
@@ -158,6 +156,8 @@ onMounted(() => {
 		itemData.alt = file.comment ?? file.name;
 		itemData.comment = file.comment ?? file.name;
 		itemData.thumbCropped = true;
+
+		return itemData;
 	});
 
 	lightbox.on('uiRegister', () => {
@@ -310,14 +310,14 @@ defineExpose({
 
 :global(.pswp) {
 	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
-	--pswp-bg: var(--modalBg) !important;
+	--pswp-bg: var(--MI_THEME-modalBg) !important;
 }
 </style>
 
 <style lang="scss">
 .pswp__bg {
-	background: var(--modalBg);
-	backdrop-filter: var(--modalBgFilter);
+	background: var(--MI_THEME-modalBg);
+	backdrop-filter: var(--MI-modalBgFilter);
 }
 
 .pswp__alt-text-container {
@@ -335,14 +335,14 @@ defineExpose({
 }
 
 .pswp__alt-text {
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	margin: 0 auto;
 	text-align: center;
-	padding: var(--margin);
-	border-radius: var(--radius);
+	padding: var(--MI-margin);
+	border-radius: var(--MI-radius);
 	max-height: 8em;
 	overflow-y: auto;
-	text-shadow: var(--bg) 0 0 10px, var(--bg) 0 0 3px, var(--bg) 0 0 3px;
+	text-shadow: var(--MI_THEME-bg) 0 0 10px, var(--MI_THEME-bg) 0 0 3px, var(--MI_THEME-bg) 0 0 3px;
 	white-space: pre-line;
 }
 </style>

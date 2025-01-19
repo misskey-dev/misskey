@@ -31,6 +31,7 @@ export const Default = {
 	},
 	args: {
 		clip: clip(),
+		noUserInfo: false,
 	},
 	parameters: {
 		layout: 'fullscreen',

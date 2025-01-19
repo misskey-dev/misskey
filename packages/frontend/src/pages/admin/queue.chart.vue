@@ -49,7 +49,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { markRaw, onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import * as Misskey from 'misskey-js';
 import XChart from './queue.chart.chart.vue';
+import type { ApQueueDomain } from '@/pages/admin/queue.vue';
 import number from '@/filters/number.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
@@ -62,17 +64,17 @@ const activeSincePrevTick = ref(0);
 const active = ref(0);
 const delayed = ref(0);
 const waiting = ref(0);
-const jobs = ref<(string | number)[][]>([]);
+const jobs = ref<Misskey.Endpoints[`admin/queue/${ApQueueDomain}-delayed`]['res']>([]);
 const chartProcess = shallowRef<InstanceType<typeof XChart>>();
 const chartActive = shallowRef<InstanceType<typeof XChart>>();
 const chartDelayed = shallowRef<InstanceType<typeof XChart>>();
 const chartWaiting = shallowRef<InstanceType<typeof XChart>>();
 
 const props = defineProps<{
-	domain: string;
+	domain: ApQueueDomain;
 }>();
 
-const onStats = (stats) => {
+function onStats(stats: Misskey.entities.QueueStats) {
 	activeSincePrevTick.value = stats[props.domain].activeSincePrevTick;
 	active.value = stats[props.domain].active;
 	delayed.value = stats[props.domain].delayed;
@@ -82,13 +84,13 @@ const onStats = (stats) => {
 	chartActive.value.pushData(stats[props.domain].active);
 	chartDelayed.value.pushData(stats[props.domain].delayed);
 	chartWaiting.value.pushData(stats[props.domain].waiting);
-};
+}
 
-const onStatsLog = (statsLog) => {
-	const dataProcess = [];
-	const dataActive = [];
-	const dataDelayed = [];
-	const dataWaiting = [];
+function onStatsLog(statsLog: Misskey.entities.QueueStatsLog) {
+	const dataProcess: Misskey.entities.QueueStats[ApQueueDomain]['activeSincePrevTick'][] = [];
+	const dataActive: Misskey.entities.QueueStats[ApQueueDomain]['active'][] = [];
+	const dataDelayed: Misskey.entities.QueueStats[ApQueueDomain]['delayed'][] = [];
+	const dataWaiting: Misskey.entities.QueueStats[ApQueueDomain]['waiting'][] = [];
 
 	for (const stats of [...statsLog].reverse()) {
 		dataProcess.push(stats[props.domain].activeSincePrevTick);
@@ -101,14 +103,12 @@ const onStatsLog = (statsLog) => {
 	chartActive.value.setData(dataActive);
 	chartDelayed.value.setData(dataDelayed);
 	chartWaiting.value.setData(dataWaiting);
-};
+}
 
 onMounted(() => {
-	if (props.domain === 'inbox' || props.domain === 'deliver') {
-		misskeyApi(`admin/queue/${props.domain}-delayed`).then(result => {
-			jobs.value = result;
-		});
-	}
+	misskeyApi(`admin/queue/${props.domain}-delayed`).then(result => {
+		jobs.value = result;
+	});
 
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
@@ -135,8 +135,8 @@ onUnmounted(() => {
 .chart {
 	min-width: 0;
 	padding: 16px;
-	background: var(--panel);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-panel);
+	border-radius: var(--MI-radius);
 }
 
 .chartTitle {

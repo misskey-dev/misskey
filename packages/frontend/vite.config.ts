@@ -65,6 +65,15 @@ export function getConfig(): UserConfig {
 
 		server: {
 			port: 5173,
+			hmr: {
+				// バックエンド経由での起動時、Viteは5173経由でアセットを参照していると思い込んでいるが実際は3000から配信される
+				// そのため、バックエンドのWSサーバーにHMRのWSリクエストが吸収されてしまい、正しくHMRが機能しない
+				// クライアント側のWSポートをViteサーバーのポートに強制させることで、正しくHMRが機能するようになる
+				clientPort: 5173,
+			},
+			headers: { // なんか効かない
+				'X-Frame-Options': 'DENY',
+			},
 		},
 
 		plugins: [
@@ -87,6 +96,7 @@ export function getConfig(): UserConfig {
 			extensions,
 			alias: {
 				'@/': __dirname + '/src/',
+				'@@/': __dirname + '/../frontend-shared/',
 				'/client-assets/': __dirname + '/assets/',
 				'/static-assets/': __dirname + '/../backend/assets/',
 				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
@@ -103,6 +113,11 @@ export function getConfig(): UserConfig {
 					} else {
 						return id;
 					}
+				},
+			},
+			preprocessorOptions: {
+				scss: {
+					api: 'modern-compiler',
 				},
 			},
 		},
@@ -151,7 +166,7 @@ export function getConfig(): UserConfig {
 				},
 			},
 			cssCodeSplit: true,
-			outDir: __dirname + '/../../built/_vite_',
+			outDir: __dirname + '/../../built/_frontend_vite_',
 			assetsDir: '.',
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV === 'development',

@@ -4,7 +4,11 @@
 
 ```ts
 
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { EventEmitter } from 'eventemitter3';
+import { Options } from 'reconnecting-websocket';
+import type { PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
+import _ReconnectingWebSocket from 'reconnecting-websocket';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
 //
@@ -119,6 +123,9 @@ type AdminAnnouncementsUpdateRequest = operations['admin___announcements___updat
 type AdminAvatarDecorationsCreateRequest = operations['admin___avatar-decorations___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAvatarDecorationsCreateResponse = operations['admin___avatar-decorations___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminAvatarDecorationsDeleteRequest = operations['admin___avatar-decorations___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -129,6 +136,12 @@ type AdminAvatarDecorationsListResponse = operations['admin___avatar-decorations
 
 // @public (undocumented)
 type AdminAvatarDecorationsUpdateRequest = operations['admin___avatar-decorations___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminCaptchaCurrentResponse = operations['admin___captcha___current']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminCaptchaSaveRequest = operations['admin___captcha___save']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminDeleteAccountRequest = operations['admin___delete-account']['requestBody']['content']['application/json'];
@@ -210,6 +223,9 @@ type AdminFederationRemoveAllFollowingRequest = operations['admin___federation__
 
 // @public (undocumented)
 type AdminFederationUpdateInstanceRequest = operations['admin___federation___update-instance']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminForwardAbuseUserReportRequest = operations['admin___forward-abuse-user-report']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminGetIndexStatsResponse = operations['admin___get-index-stats']['responses']['200']['content']['application/json'];
@@ -359,6 +375,9 @@ type AdminSystemWebhookShowRequest = operations['admin___system-webhook___show']
 type AdminSystemWebhookShowResponse = operations['admin___system-webhook___show']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminSystemWebhookTestRequest = operations['admin___system-webhook___test']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminSystemWebhookUpdateRequest = operations['admin___system-webhook___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -372,6 +391,9 @@ type AdminUnsetUserBannerRequest = operations['admin___unset-user-banner']['requ
 
 // @public (undocumented)
 type AdminUnsuspendUserRequest = operations['admin___unsuspend-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateAbuseUserReportRequest = operations['admin___update-abuse-user-report']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminUpdateMetaRequest = operations['admin___update-meta']['requestBody']['content']['application/json'];
@@ -551,7 +573,7 @@ type Channel = components['schemas']['Channel'];
 // Warning: (ae-forgotten-export) The symbol "AnyOf" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export abstract class ChannelConnection<Channel extends AnyOf<Channels> = any> extends EventEmitter<Channel['events']> {
+export abstract class ChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> implements IChannelConnection<Channel> {
     constructor(stream: Stream, channel: string, name?: string);
     // (undocumented)
     channel: string;
@@ -668,7 +690,7 @@ export type Channels = {
     };
     hashtag: {
         params: {
-            q?: string;
+            q: string[][];
         };
         events: {
             note: (payload: Note) => void;
@@ -771,12 +793,12 @@ export type Channels = {
                 user1: boolean;
                 user2: boolean;
             }) => void;
-            updateSettings: (payload: {
+            updateSettings: <K extends ReversiUpdateKey>(payload: {
                 userId: User['id'];
-                key: string;
-                value: any;
+                key: K;
+                value: ReversiGameDetailed[K];
             }) => void;
-            log: (payload: Record<string, any>) => void;
+            log: (payload: Record<string, unknown>) => void;
         };
         receives: {
             putStone: {
@@ -785,10 +807,7 @@ export type Channels = {
             };
             ready: boolean;
             cancel: null | Record<string, never>;
-            updateSettings: {
-                key: string;
-                value: any;
-            };
+            updateSettings: ReversiUpdateSettings<ReversiUpdateKey>;
             claimTimeIsUp: null | Record<string, never>;
         };
     };
@@ -1156,9 +1175,25 @@ export type Endpoints = Overwrite<Endpoints_2, {
         req: SignupPendingRequest;
         res: SignupPendingResponse;
     };
-    'signin': {
-        req: SigninRequest;
-        res: SigninResponse;
+    'signin-flow': {
+        req: SigninFlowRequest;
+        res: SigninFlowResponse;
+    };
+    'signin-with-passkey': {
+        req: SigninWithPasskeyRequest;
+        res: {
+            $switch: {
+                $cases: [
+                [
+                    {
+                    context: string;
+                },
+                SigninWithPasskeyResponse
+                ]
+                ];
+                $default: SigninWithPasskeyInitResponse;
+            };
+        };
     };
     'admin/roles/create': {
         req: Overwrite<AdminRolesCreateRequest, {
@@ -1175,6 +1210,7 @@ declare namespace entities {
     export {
         ID,
         DateString,
+        PureRenote,
         PageEvent,
         ModerationLog,
         ServerStats,
@@ -1189,8 +1225,11 @@ declare namespace entities {
         SignupResponse,
         SignupPendingRequest,
         SignupPendingResponse,
-        SigninRequest,
-        SigninResponse,
+        SigninFlowRequest,
+        SigninFlowResponse,
+        SigninWithPasskeyRequest,
+        SigninWithPasskeyInitResponse,
+        SigninWithPasskeyResponse,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
@@ -1224,10 +1263,13 @@ declare namespace entities {
         AdminAnnouncementsListResponse,
         AdminAnnouncementsUpdateRequest,
         AdminAvatarDecorationsCreateRequest,
+        AdminAvatarDecorationsCreateResponse,
         AdminAvatarDecorationsDeleteRequest,
         AdminAvatarDecorationsListRequest,
         AdminAvatarDecorationsListResponse,
         AdminAvatarDecorationsUpdateRequest,
+        AdminCaptchaCurrentResponse,
+        AdminCaptchaSaveRequest,
         AdminDeleteAllFilesOfAUserRequest,
         AdminUnsetUserAvatarRequest,
         AdminUnsetUserBannerRequest,
@@ -1276,6 +1318,8 @@ declare namespace entities {
         AdminResetPasswordRequest,
         AdminResetPasswordResponse,
         AdminResolveAbuseUserReportRequest,
+        AdminForwardAbuseUserReportRequest,
+        AdminUpdateAbuseUserReportRequest,
         AdminSendEmailRequest,
         AdminServerInfoResponse,
         AdminShowModerationLogsRequest,
@@ -1310,6 +1354,7 @@ declare namespace entities {
         AdminSystemWebhookShowResponse,
         AdminSystemWebhookUpdateRequest,
         AdminSystemWebhookUpdateResponse,
+        AdminSystemWebhookTestRequest,
         AnnouncementsRequest,
         AnnouncementsResponse,
         AnnouncementsShowRequest,
@@ -1468,6 +1513,8 @@ declare namespace entities {
         FollowingRequestsCancelResponse,
         FollowingRequestsListRequest,
         FollowingRequestsListResponse,
+        FollowingRequestsSentRequest,
+        FollowingRequestsSentResponse,
         FollowingRequestsRejectRequest,
         GalleryFeaturedRequest,
         GalleryFeaturedResponse,
@@ -1569,6 +1616,7 @@ declare namespace entities {
         IWebhooksShowResponse,
         IWebhooksUpdateRequest,
         IWebhooksDeleteRequest,
+        IWebhooksTestRequest,
         InviteCreateResponse,
         InviteDeleteRequest,
         InviteListRequest,
@@ -1656,6 +1704,7 @@ declare namespace entities {
         FlashCreateRequest,
         FlashCreateResponse,
         FlashDeleteRequest,
+        FlashFeaturedRequest,
         FlashFeaturedResponse,
         FlashLikeRequest,
         FlashShowRequest,
@@ -1906,6 +1955,9 @@ type FlashCreateResponse = operations['flash___create']['responses']['200']['con
 type FlashDeleteRequest = operations['flash___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type FlashFeaturedRequest = operations['flash___featured']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type FlashFeaturedResponse = operations['flash___featured']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
@@ -1976,6 +2028,12 @@ type FollowingRequestsListResponse = operations['following___requests___list']['
 
 // @public (undocumented)
 type FollowingRequestsRejectRequest = operations['following___requests___reject']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsSentRequest = operations['following___requests___sent']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsSentResponse = operations['following___requests___sent']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type FollowingUpdateAllRequest = operations['following___update-all']['requestBody']['content']['application/json'];
@@ -2120,6 +2178,24 @@ type IAuthorizedAppsResponse = operations['i___authorized-apps']['responses']['2
 
 // @public (undocumented)
 type IChangePasswordRequest = operations['i___change-password']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+export interface IChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
+    // (undocumented)
+    channel: string;
+    // (undocumented)
+    dispose(): void;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    inCount: number;
+    // (undocumented)
+    name?: string;
+    // (undocumented)
+    outCount: number;
+    // (undocumented)
+    send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]): void;
+}
 
 // @public (undocumented)
 type IClaimAchievementRequest = operations['i___claim-achievement']['requestBody']['content']['application/json'];
@@ -2281,6 +2357,43 @@ type ISigninHistoryRequest = operations['i___signin-history']['requestBody']['co
 type ISigninHistoryResponse = operations['i___signin-history']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+function isPureRenote(note: Note): note is PureRenote;
+
+// @public (undocumented)
+export interface IStream extends EventEmitter<StreamEvents> {
+    // (undocumented)
+    close(): void;
+    // Warning: (ae-forgotten-export) The symbol "NonSharedConnection" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    disconnectToChannel(connection: NonSharedConnection): void;
+    // (undocumented)
+    heartbeat(): void;
+    // (undocumented)
+    ping(): void;
+    // Warning: (ae-forgotten-export) The symbol "SharedConnection" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    removeSharedConnection(connection: SharedConnection): void;
+    // Warning: (ae-forgotten-export) The symbol "Pool" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    removeSharedConnectionPool(pool: Pool): void;
+    // (undocumented)
+    send(typeOrPayload: string): void;
+    // (undocumented)
+    send(typeOrPayload: string, payload: unknown): void;
+    // (undocumented)
+    send(typeOrPayload: Record<string, unknown> | unknown[]): void;
+    // (undocumented)
+    send(typeOrPayload: string | Record<string, unknown> | unknown[], payload?: unknown): void;
+    // (undocumented)
+    state: 'initializing' | 'reconnecting' | 'connected';
+    // (undocumented)
+    useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): IChannelConnection<Channels[C]>;
+}
+
+// @public (undocumented)
 type IUnpinRequest = operations['i___unpin']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2315,6 +2428,9 @@ type IWebhooksShowRequest = operations['i___webhooks___show']['requestBody']['co
 
 // @public (undocumented)
 type IWebhooksShowResponse = operations['i___webhooks___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type IWebhooksTestRequest = operations['i___webhooks___test']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type IWebhooksUpdateRequest = operations['i___webhooks___update']['requestBody']['content']['application/json'];
@@ -2461,8 +2577,17 @@ type ModerationLog = {
     type: 'resolveAbuseReport';
     info: ModerationLogPayloads['resolveAbuseReport'];
 } | {
+    type: 'forwardAbuseReport';
+    info: ModerationLogPayloads['forwardAbuseReport'];
+} | {
+    type: 'updateAbuseReportNote';
+    info: ModerationLogPayloads['updateAbuseReportNote'];
+} | {
     type: 'unsetUserAvatar';
     info: ModerationLogPayloads['unsetUserAvatar'];
+} | {
+    type: 'unsetUserBanner';
+    info: ModerationLogPayloads['unsetUserBanner'];
 } | {
     type: 'createSystemWebhook';
     info: ModerationLogPayloads['createSystemWebhook'];
@@ -2481,10 +2606,22 @@ type ModerationLog = {
 } | {
     type: 'deleteAbuseReportNotificationRecipient';
     info: ModerationLogPayloads['deleteAbuseReportNotificationRecipient'];
+} | {
+    type: 'deleteAccount';
+    info: ModerationLogPayloads['deleteAccount'];
+} | {
+    type: 'deletePage';
+    info: ModerationLogPayloads['deletePage'];
+} | {
+    type: 'deleteFlash';
+    info: ModerationLogPayloads['deleteFlash'];
+} | {
+    type: 'deleteGalleryPost';
+    info: ModerationLogPayloads['deleteGalleryPost'];
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "updateRemoteInstanceNote", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "updateRemoteInstanceNote", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "forwardAbuseReport", "updateAbuseReportNote", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner", "createSystemWebhook", "updateSystemWebhook", "deleteSystemWebhook", "createAbuseReportNotificationRecipient", "updateAbuseReportNotificationRecipient", "deleteAbuseReportNotificationRecipient", "deleteAccount", "deletePage", "deleteFlash", "deleteGalleryPost"];
 
 // @public (undocumented)
 type MuteCreateRequest = operations['mute___create']['requestBody']['content']['application/json'];
@@ -2512,6 +2649,13 @@ type MyAppsResponse = operations['my___apps']['responses']['200']['content']['ap
 
 // @public (undocumented)
 type Note = components['schemas']['Note'];
+
+declare namespace note {
+    export {
+        isPureRenote
+    }
+}
+export { note }
 
 // @public (undocumented)
 type NoteFavorite = components['schemas']['NoteFavorite'];
@@ -2685,6 +2829,9 @@ type NotificationsCreateRequest = operations['notifications___create']['requestB
 export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "achievementEarned"];
 
 // @public (undocumented)
+export function nyaize(text: string): string;
+
+// @public (undocumented)
 type Page = components['schemas']['Page'];
 
 // @public (undocumented)
@@ -2730,7 +2877,7 @@ type PagesUnlikeRequest = operations['pages___unlike']['requestBody']['content']
 type PagesUpdateRequest = operations['pages___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-function parse(acct: string): Acct;
+function parse(_acct: string): Acct;
 
 // Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
 //
@@ -2752,6 +2899,15 @@ type PinnedUsersResponse = operations['pinned-users']['responses']['200']['conte
 
 // @public (undocumented)
 type PromoReadRequest = operations['promo___read']['requestBody']['content']['application/json'];
+
+// Warning: (ae-forgotten-export) The symbol "AllNullRecord" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "NonNullableRecord" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+type PureRenote = Omit<Note, 'renote' | 'renoteId' | 'reply' | 'replyId' | 'text' | 'cw' | 'files' | 'fileIds' | 'poll'> & AllNullRecord<Pick<Note, 'reply' | 'replyId' | 'text' | 'cw' | 'poll'>> & {
+    files: [];
+    fileIds: [];
+} & NonNullableRecord<Pick<Note, 'renote' | 'renoteId'>>;
 
 // @public (undocumented)
 type QueueCount = components['schemas']['QueueCount'];
@@ -2831,6 +2987,9 @@ type ReversiShowGameResponse = operations['reversi___show-game']['responses']['2
 
 // @public (undocumented)
 type ReversiSurrenderRequest = operations['reversi___surrender']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+export const reversiUpdateKeys: ["map", "bw", "isLlotheo", "canPutEverywhere", "loopedBoard", "timeLimitForEachTurn"];
 
 // @public (undocumented)
 type ReversiVerifyRequest = operations['reversi___verify']['requestBody']['content']['application/json'];
@@ -2919,16 +3078,48 @@ type ServerStatsLog = ServerStats[];
 type Signin = components['schemas']['Signin'];
 
 // @public (undocumented)
-type SigninRequest = {
+type SigninFlowRequest = {
     username: string;
-    password: string;
+    password?: string;
     token?: string;
+    credential?: AuthenticationResponseJSON;
+    'hcaptcha-response'?: string | null;
+    'g-recaptcha-response'?: string | null;
+    'turnstile-response'?: string | null;
+    'm-captcha-response'?: string | null;
 };
 
 // @public (undocumented)
-type SigninResponse = {
+type SigninFlowResponse = {
+    finished: true;
     id: User['id'];
     i: string;
+} | {
+    finished: false;
+    next: 'captcha' | 'password' | 'totp';
+} | {
+    finished: false;
+    next: 'passkey';
+    authRequest: PublicKeyCredentialRequestOptionsJSON;
+};
+
+// @public (undocumented)
+type SigninWithPasskeyInitResponse = {
+    option: PublicKeyCredentialRequestOptionsJSON;
+    context: string;
+};
+
+// @public (undocumented)
+type SigninWithPasskeyRequest = {
+    credential?: AuthenticationResponseJSON;
+    context?: string;
+};
+
+// @public (undocumented)
+type SigninWithPasskeyResponse = {
+    signinResponse: SigninFlowResponse & {
+        finished: true;
+    };
 };
 
 // @public (undocumented)
@@ -2952,6 +3143,7 @@ type SignupRequest = {
     'hcaptcha-response'?: string | null;
     'g-recaptcha-response'?: string | null;
     'turnstile-response'?: string | null;
+    'm-captcha-response'?: string | null;
 };
 
 // @public (undocumented)
@@ -2962,44 +3154,45 @@ type SignupResponse = MeDetailed & {
 // @public (undocumented)
 type StatsResponse = operations['stats']['responses']['200']['content']['application/json'];
 
-// Warning: (ae-forgotten-export) The symbol "StreamEvents" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
-export class Stream extends EventEmitter<StreamEvents> {
+export class Stream extends EventEmitter<StreamEvents> implements IStream {
     constructor(origin: string, user: {
         token: string;
     } | null, options?: {
-        WebSocket?: any;
+        WebSocket?: Options['WebSocket'];
+        binaryType?: ReconnectingWebSocket['binaryType'];
     });
     // (undocumented)
     close(): void;
-    // Warning: (ae-forgotten-export) The symbol "NonSharedConnection" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     disconnectToChannel(connection: NonSharedConnection): void;
     // (undocumented)
     heartbeat(): void;
     // (undocumented)
     ping(): void;
-    // Warning: (ae-forgotten-export) The symbol "SharedConnection" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     removeSharedConnection(connection: SharedConnection): void;
-    // Warning: (ae-forgotten-export) The symbol "Pool" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     removeSharedConnectionPool(pool: Pool): void;
     // (undocumented)
     send(typeOrPayload: string): void;
     // (undocumented)
-    send(typeOrPayload: string, payload: any): void;
+    send(typeOrPayload: string, payload: unknown): void;
     // (undocumented)
-    send(typeOrPayload: Record<string, any> | any[]): void;
+    send(typeOrPayload: Record<string, unknown> | unknown[]): void;
     // (undocumented)
     state: 'initializing' | 'reconnecting' | 'connected';
     // (undocumented)
     useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): ChannelConnection<Channels[C]>;
 }
+
+// Warning: (ae-forgotten-export) The symbol "BroadcastEvents" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type StreamEvents = {
+    _connected_: void;
+    _disconnected_: void;
+} & BroadcastEvents;
 
 // Warning: (ae-forgotten-export) The symbol "SwitchCase" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "IsCaseMatched" needs to be exported by the entry point index.d.ts
@@ -3229,7 +3422,10 @@ type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['
 
 // Warnings were encountered during analysis:
 //
-// src/entities.ts:34:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
+// src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

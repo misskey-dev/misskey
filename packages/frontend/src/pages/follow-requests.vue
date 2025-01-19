@@ -5,69 +5,104 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
-		<MkPagination ref="paginationComponent" :pagination="pagination">
-			<template #empty>
-				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
-					<div>{{ i18n.ts.noFollowRequests }}</div>
-				</div>
-			</template>
-			<template #default="{items}">
-				<div class="mk-follow-requests">
-					<div v-for="req in items" :key="req.id" class="user _panel">
-						<MkAvatar class="avatar" :user="req.follower" indicator link preview/>
-						<div class="body">
-							<div class="name">
-								<MkA v-user-preview="req.follower.id" class="name" :to="userPage(req.follower)"><MkUserName :user="req.follower"/></MkA>
-								<p class="acct">@{{ acct(req.follower) }}</p>
-							</div>
-							<div class="commands">
-								<MkButton class="command" rounded primary @click="accept(req.follower)"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
-								<MkButton class="command" rounded danger @click="reject(req.follower)"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+			<div :key="tab" class="_gaps">
+				<MkPagination ref="paginationComponent" :pagination="pagination">
+					<template #empty>
+						<div class="_fullinfo">
+							<img :src="infoImageUrl" class="_ghost"/>
+							<div>{{ i18n.ts.noFollowRequests }}</div>
+						</div>
+					</template>
+					<template #default="{items}">
+						<div class="mk-follow-requests _gaps">
+							<div v-for="req in items" :key="req.id" class="user _panel">
+								<MkAvatar class="avatar" :user="displayUser(req)" indicator link preview/>
+								<div class="body">
+									<div class="name">
+										<MkA v-user-preview="displayUser(req).id" class="name" :to="userPage(displayUser(req))"><MkUserName :user="displayUser(req)"/></MkA>
+										<p class="acct">@{{ acct(displayUser(req)) }}</p>
+									</div>
+									<div v-if="tab === 'list'" class="commands">
+										<MkButton class="command" rounded primary @click="accept(displayUser(req))"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
+										<MkButton class="command" rounded danger @click="reject(displayUser(req))"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
+									</div>
+									<div v-else class="commands">
+										<MkButton class="command" rounded danger @click="cancel(displayUser(req))"><i class="ti ti-x"/> {{ i18n.ts.cancel }}</MkButton>
+									</div>
+								</div>
 							</div>
 						</div>
-					</div>
-				</div>
-			</template>
-		</MkPagination>
+					</template>
+				</MkPagination>
+			</div>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, computed } from 'vue';
-import MkPagination from '@/components/MkPagination.vue';
+import * as Misskey from 'misskey-js';
+import { shallowRef, computed, ref } from 'vue';
+import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { userPage, acct } from '@/filters/user.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { infoImageUrl } from '@/instance.js';
+import { $i } from '@/account.js';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-const pagination = {
-	endpoint: 'following/requests/list' as const,
+const pagination = computed<Paging>(() => tab.value === 'list' ? {
+	endpoint: 'following/requests/list',
 	limit: 10,
-};
+} : {
+	endpoint: 'following/requests/sent',
+	limit: 10,
+});
 
-function accept(user) {
-	misskeyApi('following/requests/accept', { userId: user.id }).then(() => {
-		paginationComponent.value.reload();
+function accept(user: Misskey.entities.UserLite) {
+	os.apiWithDialog('following/requests/accept', { userId: user.id }).then(() => {
+		paginationComponent.value?.reload();
 	});
 }
 
-function reject(user) {
-	misskeyApi('following/requests/reject', { userId: user.id }).then(() => {
-		paginationComponent.value.reload();
+function reject(user: Misskey.entities.UserLite) {
+	os.apiWithDialog('following/requests/reject', { userId: user.id }).then(() => {
+		paginationComponent.value?.reload();
 	});
+}
+
+function cancel(user: Misskey.entities.UserLite) {
+	os.apiWithDialog('following/requests/cancel', { userId: user.id }).then(() => {
+		paginationComponent.value?.reload();
+	});
+}
+
+function displayUser(req) {
+	return tab.value === 'list' ? req.follower : req.followee;
 }
 
 const headerActions = computed(() => []);
 
-const headerTabs = computed(() => []);
+const headerTabs = computed(() => [
+	{
+		key: 'list',
+		title: i18n.ts._followRequest.recieved,
+		icon: 'ti ti-download',
+	}, {
+		key: 'sent',
+		title: i18n.ts._followRequest.sent,
+		icon: 'ti ti-upload',
+	},
+]);
+
+const tab = ref($i?.isLocked ? 'list' : 'sent');
 
 definePageMetadata(() => ({
 	title: i18n.ts.followRequests,

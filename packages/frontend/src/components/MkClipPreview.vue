@@ -12,10 +12,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="clip.lastClippedAt">{{ i18n.ts.updatedAt }}: <MkTime :time="clip.lastClippedAt" mode="detail"/></div>
 			<div v-if="clip.notesCount != null">{{ i18n.ts.notesCount }}: {{ number(clip.notesCount) }} / {{ $i?.policies.noteEachClipsLimit }} ({{ i18n.tsx.remainingN({ n: remaining }) }})</div>
 		</div>
-		<div :class="$style.divider"></div>
-		<div>
-			<MkAvatar :user="clip.user" :class="$style.userAvatar" indicator link preview/> <MkUserName :user="clip.user" :nowrap="false"/>
-		</div>
+		<template v-if="!props.noUserInfo">
+			<div :class="$style.divider"></div>
+			<div>
+				<MkAvatar :user="clip.user" :class="$style.userAvatar" indicator link preview/> <MkUserName :user="clip.user" :nowrap="false"/>
+			</div>
+		</template>
 	</div>
 </MkA>
 </template>
@@ -27,9 +29,12 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import number from '@/filters/number.js';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	clip: Misskey.entities.Clip;
-}>();
+	noUserInfo?: boolean;
+}>(), {
+	noUserInfo: false,
+});
 
 const remaining = computed(() => {
 	return ($i?.policies && props.clip.notesCount != null) ? ($i.policies.noteEachClipsLimit - props.clip.notesCount) : i18n.ts.unknown;
@@ -44,13 +49,13 @@ const remaining = computed(() => {
 		outline: none;
 
 		.root {
-			box-shadow: inset 0 0 0 2px var(--focus);
+			box-shadow: inset 0 0 0 2px var(--MI_THEME-focus);
 		}
 	}
 
 	&:hover {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 
@@ -60,7 +65,7 @@ const remaining = computed(() => {
 
 .divider {
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .description {

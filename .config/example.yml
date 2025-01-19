@@ -59,6 +59,20 @@
 #
 # publishTarballInsteadOfProvideRepositoryUrl: true
 
+#   ┌────────────────────────┐
+#───┘ Initial Setup Password └─────────────────────────────────────────────────────
+
+# Password to initiate setting up admin account.
+# It will not be used after the initial setup is complete.
+#
+# Be sure to change this when you set up Misskey via the Internet.
+#
+# The provider of the service who sets up Misskey on behalf of the customer should
+# set this value to something unique when generating the Misskey config file,
+# and provide it to the customer.
+#
+# setupPassword: example_password_please_change_this_or_you_will_get_hacked
+
 #   ┌─────┐
 #───┘ URL └─────────────────────────────────────────────────────
 
@@ -172,9 +186,37 @@ redis:
 #  # You can specify more ioredis options...
 #  #username: example-username
 
-#   ┌───────────────────────────┐
-#───┘ MeiliSearch configuration └─────────────────────────────
+#redisForReactions:
+#  host: localhost
+#  port: 6379
+#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+#  #pass: example-pass
+#  #prefix: example-prefix
+#  #db: 1
+#  # You can specify more ioredis options...
+#  #username: example-username
 
+#   ┌───────────────────────────────┐
+#───┘ Fulltext search configuration └─────────────────────────────
+
+# These are the setting items for the full-text search provider.
+fulltextSearch:
+  # You can select the ID generation method.
+  # - sqlLike (default)
+  #   Use SQL-like search.
+  #   This is a standard feature of PostgreSQL, so no special extensions are required.
+  # - sqlPgroonga
+  #   Use pgroonga.
+  #   You need to install pgroonga and configure it as a PostgreSQL extension.
+  #   In addition to the above, you need to create a pgroonga index on the text column of the note table.
+  #   see: https://pgroonga.github.io/tutorial/
+  # - meilisearch
+  #   Use Meilisearch.
+  #   You need to install Meilisearch and configure.
+  provider: sqlLike
+
+# For Meilisearch settings.
+# If you select "meilisearch" for "fulltextSearch.provider", it must be set.
 # You can set scope to local (default value) or global
 # (include notes from remote).
 
@@ -297,3 +339,13 @@ signToActivityPubGet: true
 
 # PID File of master process
 #pidFile: /tmp/misskey.pid
+
+# Log settings
+# logging:
+#   sql:
+#     # Outputs query parameters during SQL execution to the log.
+#     # default: false
+#     enableQueryParamLogging: false
+#     # Disable query truncation. If set to true, the full text of the query will be output to the log.
+#     # default: false
+#     disableQueryTruncation: false
