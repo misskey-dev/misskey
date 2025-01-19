@@ -102,15 +102,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			await this.pagesRepository.findBy({
-				id: Not(ps.pageId),
-				userId: me.id,
-				name: ps.name,
-			}).then(result => {
-				if (result.length > 0) {
-					throw new ApiError(meta.errors.nameAlreadyExists);
-				}
-			});
+			if (ps.name != null) {
+				await this.pagesRepository.findBy({
+					id: Not(ps.pageId),
+					userId: me.id,
+					name: ps.name,
+				}).then(result => {
+					if (result.length > 0) {
+						throw new ApiError(meta.errors.nameAlreadyExists);
+					}
+				});
+			}
 
 			await this.pagesRepository.update(page.id, {
 				updatedAt: new Date(),
