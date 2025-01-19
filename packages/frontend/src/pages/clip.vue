@@ -46,9 +46,10 @@ import { clipsCache } from '@/cache.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { genEmbedCode } from '@/scripts/get-embed-code.js';
-import { getServerContext } from '@/server-context.js';
+import { assertServerContext, serverContext } from '@/server-context.js';
 
-const CTX_CLIP = getServerContext('clip');
+// contextは非ログイン状態の情報しかないためログイン時は利用できない
+const CTX_CLIP = !$i && assertServerContext(serverContext, 'clip') ? serverContext.clip : null;
 
 const props = defineProps<{
 	clipId: string,
