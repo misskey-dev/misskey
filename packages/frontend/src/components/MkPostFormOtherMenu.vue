@@ -4,51 +4,50 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type }" :zPriority="'high'" :src="src" :transparentBg="true" @click="modal?.close()" @closed="emit('closed')" @esc="modal?.close()">
-	<div class="_popup _shadow" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
-		<div :class="$style.textCountRoot">
-			<div :class="$style.textCountLabel">{{ i18n.ts.textCount }}</div>
-			<div
-				:class="[$style.textCount,
-					{ [$style.danger]: textCountPercentage > 100 },
-					{ [$style.warning]: textCountPercentage > 90 && textCountPercentage <= 100 },
-				]"
-			>
-				<div :class="$style.textCountGraph"></div>
-				<div><span :class="$style.textCountCurrent">{{ number(textLength) }}</span> / {{ number(maxTextLength) }}</div>
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :zPriority="'high'" :src="src" :transparentBg="true" @click="modal?.close()" @closed="emit('closed')" @esc="modal?.close()">
+	<MkMenu
+		:items="menuDef"
+		:align="align"
+		:width="width"
+		:maxHeight="maxHeight"
+		:asDrawer="type === 'drawer'"
+	>
+		<template #header>
+			<div :class="[$style.textCountRoot, { [$style.asDrawer]: type === 'drawer' }]">
+				<div :class="$style.textCountLabel">{{ i18n.ts.textCount }}</div>
+				<div
+					:class="[$style.textCount,
+						{ [$style.danger]: textCountPercentage > 100 },
+						{ [$style.warning]: textCountPercentage > 90 && textCountPercentage <= 100 },
+					]"
+				>
+					<div :class="$style.textCountGraph"></div>
+					<div><span :class="$style.textCountCurrent">{{ number(textLength) }}</span> / {{ number(maxTextLength) }}</div>
+				</div>
 			</div>
-		</div>
-		<div :class="$style.menuRoot">
-			<MkMenuItem
-				v-for="item in menuDef"
-				:item="item"
-				:childShowingItem="null"
-				:asDrawer="type === 'drawer'"
-			/>
-		</div>
-	</div>
+		</template>
+	</MkMenu>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
 import { shallowRef, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-
 import MkModal from '@/components/MkModal.vue';
-import MkMenuItem from '@/components/MkMenu.item.vue';
-
+import MkMenu from '@/components/MkMenu.vue';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import number from '@/filters/number.js';
-
-import type { NonModalCompatibleInnerMenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const props = defineProps<{
 	currentReactionAcceptance: Misskey.entities.Note['reactionAcceptance'];
 	textLength: number;
+	align?: 'center' | string;
+	width?: number;
 	src?: HTMLElement;
 }>();
 
@@ -66,8 +65,9 @@ const textCountPercentage = computed(() => {
 	return props.textLength / maxTextLength.value * 100;
 });
 
-// actionを発火した瞬間にMkMenuItemからcloseイベントが出るが、それを利用すると正しくemitできないため、action内で別途closeを呼ぶ
-const menuDef = computed<NonModalCompatibleInnerMenuItem[]>(() => {
+// actionを発火した瞬間にMkMenuItemからcloseイベントが出るが、それ経由でmodalをcloseしてしまうと正しくemitできない
+// （emitする前にこのコンポーネントが閉じられてdisposeされてしまう）ため、action内で別途modalをcloseするようにする
+const menuDef = computed<MenuItem[]>(() => {
 	let reactionAcceptanceIcon = 'ti ti-icons';
 
 	if (props.currentReactionAcceptance === 'likeOnly') {
@@ -127,29 +127,14 @@ async function reset() {
 </script>
 
 <style lang="scss" module>
-.root {
-	min-width: 200px;
-
-	&.asDrawer {
-		width: 100%;
-		border-radius: 24px;
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
-
-		.textCountRoot {
-			padding: 12px 24px;
-		}
-
-		.menuRoot {
-			padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
-		}
-	}
-}
-
 .textCountRoot {
 	--textCountBg: color-mix(in srgb, var(--MI_THEME-panel), var(--MI_THEME-fg) 15%);
 	background-color: var(--textCountBg);
 	padding: 10px 14px;
+
+	&.asDrawer {
+		padding: 12px 24px;
+	}
 }
 
 .textCountLabel {
@@ -201,9 +186,5 @@ async function reset() {
 		font-weight: 700;
 		font-size: 18px;
 	}
-}
-
-.menuRoot {
-	padding: 8px 0;
 }
 </style>
