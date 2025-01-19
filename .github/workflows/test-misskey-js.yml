@@ -16,6 +16,7 @@ on:
       - .github/workflows/test-misskey-js.yml
 jobs:
   test:
+    name: Unit tests (misskey.js)
 
     runs-on: ubuntu-latest
 
