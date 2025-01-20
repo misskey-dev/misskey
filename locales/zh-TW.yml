@@ -2728,6 +2728,9 @@ _contextMenu:
   app: "應用程式"
   appWithShift: "Shift 鍵應用程式"
   native: "瀏覽器的使用者介面"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "錯誤"
 _embedCodeGen:
   title: "自訂嵌入程式碼"
   header: "檢視標頭 "
