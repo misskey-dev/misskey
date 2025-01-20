@@ -7,7 +7,8 @@
   - 詳細は #14730 および `.config/example.yml` または `.config/docker_example.yml`の'Fulltext search configuration'をご参照願います.
 
 ### General
--
+- Feat: カスタム絵文字管理画面をリニューアル #10996
+	* β版として公開のため、旧画面も引き続き利用可能です
 
 ### Client
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
@@ -39,6 +40,10 @@
 - Fix: RSSウィジェットが正しく表示されない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/857)
 - Fix: ワードミュートの保存失敗時にAPIエラーが握りつぶされる事があるのを修正
+- Fix: アンケートでリモートの絵文字が正しく描画できない問題の修正
+  (Cherry-picked from https://github.com/yojo-art/cherrypick/pull/153)
+- Fix: 非ログイン時のサーバー概要画面のメニューボタンが押せないことがあるのを修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/656)
 
 ### Server
 - Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
