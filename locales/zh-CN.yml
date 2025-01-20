@@ -5,6 +5,7 @@ introMisskey: "欢迎！Misskey是一个开源的、去中心化的“微博客�
 poweredByMisskeyDescription: "{name} 是开源平台 <b>Misskey</b> 的服务器之一。"
 monthAndDay: "{month}月 {day}日"
 search: "搜索"
+reset: "重置"
 notifications: "通知"
 username: "用户名"
 password: "密码"
@@ -2728,9 +2729,30 @@ _contextMenu:
   app: "应用"
   appWithShift: "Shift 键应用"
   native: "浏览器的用户界面"
+_gridComponent:
+  _error:
+    requiredValue: "此值为必填项"
+    columnTypeNotSupport: "正则表达式验证仅支持 type:text 列。"
+    patternNotMatch: "此值与 {pattern} 的模式不一致"
+    notUnique: "此值必须唯一"
+_roleSelectDialog:
+  notSelected: "未选中"
 _customEmojisManager:
   _gridCommon:
+    copySelectionRows: "复制所选行"
+    copySelectionRanges: "复制所选范围"
+    deleteSelectionRows: "删除所选行"
+    deleteSelectionRanges: "删除所选范围的行"
+    searchSettings: "搜索设置"
+    searchSettingCaption: "设置详细的搜索条件。"
+    sortOrder: "排序方式"
+    registrationLogs: "注册日志"
     alertEmojisRegisterFailedTitle: "错误"
+  _local:
+    _register:
+      confirmRegisterEmojisTitle: "确定"
+      confirmClearEmojisTitle: "确定"
+      confirmUploadEmojisTitle: "确定"
 _embedCodeGen:
   title: "自定义嵌入代码"
   header: "显示标题"
