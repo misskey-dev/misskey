@@ -5,6 +5,7 @@ introMisskey: "Eccoci! Misskey è un servizio di microblogging decentralizzato, 
 poweredByMisskeyDescription: "{name} è uno dei servizi (chiamati istanze) che utilizzano la piattaforma open source <b>Misskey</b>."
 monthAndDay: "{day}/{month}"
 search: "Cerca"
+reset: "Ripristinare"
 notifications: "Notifiche"
 username: "Nome utente"
 password: "Password"
@@ -2728,9 +2729,36 @@ _contextMenu:
   app: "Applicazione"
   appWithShift: "Applicazione Shift+Tasto"
   native: "Interfaccia utente del browser"
+_gridComponent:
+  _error:
+    requiredValue: "Campo obbligatorio"
+    columnTypeNotSupport: "Solo le colonne type:text permettono la convalida delle Espresioni Regolari"
+    patternNotMatch: "Il valore non coincide con {pattern}"
+    notUnique: "Il valore deve essere univoco"
+_roleSelectDialog:
+  notSelected: "Niente selezioato"
 _customEmojisManager:
   _gridCommon:
+    copySelectionRows: "Copia le righe selezionate"
+    copySelectionRanges: "Copia l'intervallo selezionato"
+    deleteSelectionRows: "Elimina le righe selezionate"
+    deleteSelectionRanges: "Elimina le righe nell'intervallo selezionato"
+    searchSettings: "Impostazioni di ricerca"
+    searchSettingCaption: "Imposta condizioni di ricerca dettagliate."
+    sortOrder: "Ordine"
+    registrationLogs: "Storico della registrazione"
+    registrationLogsCaption: "Lo storico verrà visualizzato in base alla attività sulle emoji. Scompare quando si esegue un'operazione di aggiornamento/eliminazione o si modifica/ricarica la pagina."
     alertEmojisRegisterFailedTitle: "Errore"
+    alertEmojisRegisterFailedDescription: "Attenzione, è impossibile modificare la emoji. Si prega di controllare lo storico per ulteriori dettagli."
+  _logs:
+    showSuccessLogSwitch: "Mostra le azioni a buon fine"
+    failureLogNothing: "Non ci sono errori nello storico delle emoji"
+    logNothing: "Lo storico è vuoto."
+  _remote:
+    importSelectionRows: "Importa le righe selezionate"
+    importSelectionRangesRows: "Importa le righe nell'intervallo selezionato"
+    importEmojisButton: "Importa le emoji selezionate"
+    confirmImportEmojisTitle: "Importazione emoji"
 _embedCodeGen:
   title: "Personalizza il codice di incorporamento"
   header: "Mostra la testata"
