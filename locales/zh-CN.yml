@@ -2728,6 +2728,9 @@ _contextMenu:
   app: "应用"
   appWithShift: "Shift 键应用"
   native: "浏览器的用户界面"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "错误"
 _embedCodeGen:
   title: "自定义嵌入代码"
   header: "显示标题"
