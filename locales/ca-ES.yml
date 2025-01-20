@@ -2728,6 +2728,9 @@ _contextMenu:
   app: "Aplicació "
   appWithShift: "Aplicació amb la tecla shift"
   native: "Interfície del navegador"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Error"
 _embedCodeGen:
   title: "Personalitza el codi per incrustar"
   header: "Mostrar la capçalera"
