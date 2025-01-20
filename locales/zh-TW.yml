@@ -5,6 +5,7 @@ introMisskey: "歡迎！Misskey 是一個開放原始碼且去中心化的社群
 poweredByMisskeyDescription: "{name}是開放原始碼平臺 <b>Misskey</b> 的伺服器之一。"
 monthAndDay: "{month} 月 {day} 日"
 search: "搜尋"
+reset: "重設"
 notifications: "通知"
 username: "使用者名稱"
 password: "密碼"
@@ -2728,6 +2729,11 @@ _contextMenu:
   app: "應用程式"
   appWithShift: "Shift 鍵應用程式"
   native: "瀏覽器的使用者介面"
+_gridComponent:
+  _error:
+    requiredValue: "此值為必填欄位"
+    columnTypeNotSupport: "正規表達式驗證僅支援 type:text 的欄位。"
+    patternNotMatch: "此值不符合 {pattern} 中的樣式。"
 _customEmojisManager:
   _gridCommon:
     alertEmojisRegisterFailedTitle: "錯誤"
