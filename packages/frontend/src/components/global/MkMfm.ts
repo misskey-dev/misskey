@@ -17,6 +17,7 @@ import MkCode from '@/components/MkCode.vue';
 import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
+import MkGlitchFx from '@/components/MkGlitchFx.vue';
 import MkA, { MkABehavior } from '@/components/global/MkA.vue';
 import { defaultStore } from '@/store.js';
 
@@ -232,6 +233,12 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							return genEl(token.children, scale);
 						}
 						return h(MkSparkle, {}, genEl(token.children, scale));
+					}
+					case 'glitch': {
+						if (!useAnim) {
+							return genEl(token.children, scale);
+						}
+						return h(MkGlitchFx, {}, genEl(token.children, scale));
 					}
 					case 'rotate': {
 						const degrees = safeParseFloat(token.props.args.deg) ?? 90;
