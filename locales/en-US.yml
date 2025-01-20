@@ -2728,6 +2728,9 @@ _contextMenu:
   app: "Application"
   appWithShift: "Application with shift key"
   native: "Native"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Error"
 _embedCodeGen:
   title: "Customize embed code"
   header: "Show header"
