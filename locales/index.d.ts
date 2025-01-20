@@ -37,6 +37,10 @@ export interface Locale extends ILocale {
      */
     "search": string;
     /**
+     * リセット
+     */
+    "reset": string;
+    /**
      * 通知
      */
     "notifications": string;
@@ -210,6 +214,10 @@ export interface Locale extends ILocale {
      * リンクをコピー
      */
     "copyLink": string;
+    /**
+     * リモートのリンクをコピー
+     */
+    "copyRemoteLink": string;
     /**
      * リノートのリンクをコピー
      */
@@ -2763,6 +2771,10 @@ export interface Locale extends ILocale {
      */
     "hardWordMute": string;
     /**
+     * ミュートされたワードを表示
+     */
+    "showMutedWord": string;
+    /**
      * 指定した語句を含むノートを隠します。ワードミュートとは異なり、ノートは完全に表示されなくなります。
      */
     "hardWordMuteDescription": string;
@@ -2782,6 +2794,10 @@ export interface Locale extends ILocale {
      * {name}が何かを言いました
      */
     "userSaysSomething": ParameterizedString<"name">;
+    /**
+     * {name}が「{word}」について何かを言いました
+     */
+    "userSaysSomethingAbout": ParameterizedString<"name" | "word">;
     /**
      * アクティブにする
      */
@@ -10530,6 +10546,226 @@ export interface Locale extends ILocale {
          * ブラウザのUI
          */
         "native": string;
+    };
+    "_gridComponent": {
+        "_error": {
+            /**
+             * この値は必須項目です
+             */
+            "requiredValue": string;
+            /**
+             * 正規表現によるバリデーションはtype:textのカラムのみサポートします。
+             */
+            "columnTypeNotSupport": string;
+            /**
+             * この値は{pattern}のパターンに一致しません
+             */
+            "patternNotMatch": ParameterizedString<"pattern">;
+            /**
+             * この値は一意である必要があります
+             */
+            "notUnique": string;
+        };
+    };
+    "_roleSelectDialog": {
+        /**
+         * 選択されていません
+         */
+        "notSelected": string;
+    };
+    "_customEmojisManager": {
+        "_gridCommon": {
+            /**
+             * 選択行をコピー
+             */
+            "copySelectionRows": string;
+            /**
+             * 選択範囲をコピー
+             */
+            "copySelectionRanges": string;
+            /**
+             * 選択行を削除
+             */
+            "deleteSelectionRows": string;
+            /**
+             * 選択範囲の行を削除
+             */
+            "deleteSelectionRanges": string;
+            /**
+             * 検索設定
+             */
+            "searchSettings": string;
+            /**
+             * 検索条件を詳細に設定します。
+             */
+            "searchSettingCaption": string;
+            /**
+             * 並び順
+             */
+            "sortOrder": string;
+            /**
+             * 登録ログ
+             */
+            "registrationLogs": string;
+            /**
+             * 絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページを遷移・リロードすると消えます。
+             */
+            "registrationLogsCaption": string;
+            /**
+             * エラー
+             */
+            "alertEmojisRegisterFailedTitle": string;
+            /**
+             * 絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。
+             */
+            "alertEmojisRegisterFailedDescription": string;
+        };
+        "_logs": {
+            /**
+             * 成功ログを表示
+             */
+            "showSuccessLogSwitch": string;
+            /**
+             * 失敗ログはありません。
+             */
+            "failureLogNothing": string;
+            /**
+             * ログはありません。
+             */
+            "logNothing": string;
+        };
+        "_remote": {
+            /**
+             * 選択行をインポート
+             */
+            "importSelectionRows": string;
+            /**
+             * 選択範囲の行をインポート
+             */
+            "importSelectionRangesRows": string;
+            /**
+             * チェックされた絵文字をインポート
+             */
+            "importEmojisButton": string;
+            /**
+             * 絵文字のインポート
+             */
+            "confirmImportEmojisTitle": string;
+            /**
+             * リモートから受信した{count}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。実行しますか？
+             */
+            "confirmImportEmojisDescription": ParameterizedString<"count">;
+        };
+        "_local": {
+            /**
+             * 登録済み絵文字一覧
+             */
+            "tabTitleList": string;
+            /**
+             * 絵文字の登録
+             */
+            "tabTitleRegister": string;
+            "_list": {
+                /**
+                 * 登録された絵文字はありません。
+                 */
+                "emojisNothing": string;
+                /**
+                 * 選択行を削除対象にする
+                 */
+                "markAsDeleteTargetRows": string;
+                /**
+                 * 選択範囲の行を削除対象にする
+                 */
+                "markAsDeleteTargetRanges": string;
+                /**
+                 * 変更された絵文字はありません。
+                 */
+                "alertUpdateEmojisNothingDescription": string;
+                /**
+                 * 削除対象の絵文字はありません。
+                 */
+                "alertDeleteEmojisNothingDescription": string;
+                /**
+                 * 確認
+                 */
+                "confirmUpdateEmojisTitle": string;
+                /**
+                 * {count}個の絵文字を更新します。実行しますか？
+                 */
+                "confirmUpdateEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * 確認
+                 */
+                "confirmDeleteEmojisTitle": string;
+                /**
+                 * チェックがつけられた{count}個の絵文字を削除します。実行しますか？
+                 */
+                "confirmDeleteEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * 絵文字に設定されたロールで検索
+                 */
+                "dialogSelectRoleTitle": string;
+            };
+            "_register": {
+                /**
+                 * アップロード設定
+                 */
+                "uploadSettingTitle": string;
+                /**
+                 * この画面で絵文字アップロードを行う際の動作を設定できます。
+                 */
+                "uploadSettingDescription": string;
+                /**
+                 * ディレクトリ名を"category"に入力する
+                 */
+                "directoryToCategoryLabel": string;
+                /**
+                 * ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を"category"に入力します。
+                 */
+                "directoryToCategoryCaption": string;
+                /**
+                 * いずれかの方法で登録する絵文字を選択してください。
+                 */
+                "emojiInputAreaCaption": string;
+                /**
+                 * この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ
+                 */
+                "emojiInputAreaList1": string;
+                /**
+                 * このリンクをクリックしてPCから選択する
+                 */
+                "emojiInputAreaList2": string;
+                /**
+                 * このリンクをクリックしてドライブから選択する
+                 */
+                "emojiInputAreaList3": string;
+                /**
+                 * 確認
+                 */
+                "confirmRegisterEmojisTitle": string;
+                /**
+                 * リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）
+                 */
+                "confirmRegisterEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * 確認
+                 */
+                "confirmClearEmojisTitle": string;
+                /**
+                 * 編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？
+                 */
+                "confirmClearEmojisDescription": string;
+                /**
+                 * 確認
+                 */
+                "confirmUploadEmojisTitle": string;
+                /**
+                 * ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？
+                 */
+                "confirmUploadEmojisDescription": ParameterizedString<"count">;
+            };
+        };
     };
     "_embedCodeGen": {
         /**

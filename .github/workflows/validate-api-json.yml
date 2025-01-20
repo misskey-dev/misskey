@@ -1,4 +1,4 @@
-name: Test (backend)
+name: api.json validation
 
 on:
   push:
