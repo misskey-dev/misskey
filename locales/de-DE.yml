@@ -2496,6 +2496,9 @@ _mediaControls:
 _contextMenu:
   title: "Kontextmenü"
   app: "Anwendung"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Fehler"
 _embedCodeGen:
   title: "Einbettungscode anpassen"
   header: "Kopfzeile anzeigen"
