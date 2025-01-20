@@ -2728,6 +2728,9 @@ _contextMenu:
   app: "Applicazione"
   appWithShift: "Applicazione Shift+Tasto"
   native: "Interfaccia utente del browser"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Errore"
 _embedCodeGen:
   title: "Personalizza il codice di incorporamento"
   header: "Mostra la testata"
