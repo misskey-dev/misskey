@@ -1,0 +1,102 @@
+name: Publish Docker image
+
+on:
+  push:
+    branches-ignore:
+      - dependabot/**
+
+  workflow_dispatch:
+
+env:
+  REGISTRY_IMAGE: kanarikanaru/hanamisskey
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
+    steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+      - name: Check out the repo
+        uses: actions/checkout@v4.1.1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push image
+        id: build-image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: ${{ matrix.platform }}
+          provenance: false
+          labels: ${{ env.IMAGE_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests/linux
+          digest="${{ steps.build-image.outputs.digest }}"
+          if [ -z "$digest" ]; then
+            echo "Digest is empty. Exiting with error."
+            exit 1
+          fi
+          echo "$digest" > "/tmp/digests/${{ matrix.platform }}.digest"
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/linux/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+          sanitized_tag=$(echo "${GITHUB_REF_NAME}" | sed 's/[^a-zA-Z0-9_.-]/-/g')
+          echo "IMAGE_TAG=${sanitized_tag}" >> $GITHUB_ENV
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests/linux
+          pattern: digests-*
+          merge-multiple: true
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Create manifest list and push
+        working-directory: /tmp/digests/linux
+        run: |
+          docker buildx imagetools create --tag "${{ env.REGISTRY_IMAGE }}:${{ env.IMAGE_TAG }}" \
+            $(for f in *.digest; do
+                digest_contents=$(cat "$f")
+                echo "${{ env.REGISTRY_IMAGE }}@${digest_contents}"
+              done
+            )
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ env.IMAGE_TAG }}
