@@ -2734,9 +2734,34 @@ _gridComponent:
     requiredValue: "此值為必填欄位"
     columnTypeNotSupport: "正規表達式驗證僅支援 type:text 的欄位。"
     patternNotMatch: "此值不符合 {pattern} 中的樣式。"
+    notUnique: "此值必須是唯一的"
+_roleSelectDialog:
+  notSelected: "未選擇"
 _customEmojisManager:
   _gridCommon:
+    copySelectionRows: "複製選取的行"
+    copySelectionRanges: "複製選取的範圍"
+    deleteSelectionRows: "刪除所選的行"
+    deleteSelectionRanges: "刪除選取範圍的行"
+    searchSettings: "搜尋設定"
+    searchSettingCaption: "詳細設定搜尋條件。"
+    sortOrder: "排序"
+    registrationLogs: "登錄日誌"
+    registrationLogsCaption: "會顯示更新或刪除表情符號時的日誌。進行更新或刪除操作，或切換頁面、重新載入後，日誌將會消失。"
     alertEmojisRegisterFailedTitle: "錯誤"
+    alertEmojisRegisterFailedDescription: "更新或刪除表情符號失敗。詳情請查看登錄日誌。"
+  _logs:
+    showSuccessLogSwitch: "顯示成功日誌"
+    failureLogNothing: "沒有失敗的日誌。"
+    logNothing: "沒有日誌。"
+  _remote:
+    importSelectionRows: "匯入選取的行"
+    importSelectionRangesRows: "匯入選取範圍的行"
+    importEmojisButton: "匯入勾選的表情符號"
+    confirmImportEmojisTitle: "匯入表情符號"
+    confirmImportEmojisDescription: "將從遠端接收的{count}個表情符號進行匯入。請務必注意表情符號的授權。是否執行此操作？"
+  _local:
+    tabTitleList: "已登錄的表情符號列表"
 _embedCodeGen:
   title: "自訂嵌入程式碼"
   header: "檢視標頭 "
