@@ -1310,7 +1310,6 @@ acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします�
 federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
 textCount: "文字数"
-reset: "リセット"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
