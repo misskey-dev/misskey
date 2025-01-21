@@ -5,6 +5,7 @@ introMisskey: "Benvingut! Misskey és un servei de microblogging descentralitzat
 poweredByMisskeyDescription: "{name} És un dels serveis (anomenats instàncies de Misskey) que utilitzen la plataforma de codi obert <b>Misskey</b>."
 monthAndDay: "{day}/{month}"
 search: "Cercar"
+reset: "Reiniciar"
 notifications: "Notificacions"
 username: "Nom d'usuari"
 password: "Contrasenya"
@@ -2728,8 +2729,24 @@ _contextMenu:
   app: "Aplicació "
   appWithShift: "Aplicació amb la tecla shift"
   native: "Interfície del navegador"
+_gridComponent:
+  _error:
+    requiredValue: "Aquest camp és obligatori"
+    columnTypeNotSupport: "La validació d'expressions regulars només s'admet per columnes de tipus text."
+    patternNotMatch: "Aquest valor no coincideix amb {pattern}"
+    notUnique: "Aquest valor ha de ser únic "
+_roleSelectDialog:
+  notSelected: "No seleccionat"
 _customEmojisManager:
   _gridCommon:
+    copySelectionRows: "Copiar línies seleccionades "
+    copySelectionRanges: "Copiar selecció "
+    deleteSelectionRows: "Esborrar línies seleccionades"
+    deleteSelectionRanges: "Esborrar files de la selecció "
+    searchSettings: "Configuració del cercador"
+    searchSettingCaption: "Defineix criteris de cerca detallats."
+    sortOrder: "Ordenar"
+    registrationLogs: "Registres d'inscripcions "
     alertEmojisRegisterFailedTitle: "Error"
 _embedCodeGen:
   title: "Personalitza el codi per incrustar"
