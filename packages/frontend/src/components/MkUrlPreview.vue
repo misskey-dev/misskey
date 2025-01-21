@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
 			scrolling="no"
 			:style="{ position: 'relative', width: '100%', height: `${postHeight}px`, border: 0 }"
-			:src="`https://embed.bsky.app/embed/${bskyDid}/app.bsky.feed.post/${bskyPostRecordKey}?id=${embedId}`"
+			:src="`https://embed.bsky.app/embed/${bskyDid}/app.bsky.feed.post/${bskyPostRecordKey}?id=${embedId}&colorMode=system`"
 		></iframe>
 	</div>
 	<div :class="$style.action">
