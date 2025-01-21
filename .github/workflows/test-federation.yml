@@ -17,6 +17,7 @@ on:
 
 jobs:
   test:
+    name: Federation test
     runs-on: ubuntu-latest
     strategy:
       matrix:
