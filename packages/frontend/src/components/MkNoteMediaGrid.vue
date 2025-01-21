@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import { notePage } from '@/filters/note.js';
 import { i18n } from '@/i18n.js';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { defaultStore } from '@/store.js';
 
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
