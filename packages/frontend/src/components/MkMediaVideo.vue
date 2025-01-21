@@ -110,9 +110,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, shallowRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
-import * as Misskey from 'misskey-js';
+import type* as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
-import { type Keymap } from '@/scripts/hotkey.js';
+import type { Keymap } from '@/scripts/hotkey.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import { defaultStore } from '@/store.js';
