@@ -331,7 +331,6 @@ enableLocalTimeline: "Povoliť lokálnu časovú os"
 enableGlobalTimeline: "Povoliť globálnu časovú os"
 disablingTimelinesInfo: "Administrátori a moderátori majú vždy prístup ku všetkým časovým osiam, aj keď sú vypnuté."
 registration: "Registrácia"
-enableRegistration: "Povoliť registráciu nových používateľov"
 invite: "Pozvať"
 driveCapacityPerLocalAccount: "Kapacita disku pre používateľa"
 driveCapacityPerRemoteAccount: "Kapacita disku pre vzdialeného používateľa"
@@ -1450,3 +1449,6 @@ _moderationLogTypes:
   resetPassword: "Resetovať heslo"
 _reversi:
   total: "Celkom"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Nenájdené"

@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import { toUnicode } from 'punycode/';
+import { toUnicode } from 'punycode.js';
 import * as Misskey from 'misskey-js';
 import * as config from '@@/js/config.js';
 import MkButton from './MkButton.vue';
@@ -277,7 +277,7 @@ async function onSubmit(): Promise<void> {
 		return null;
 	});
 
-	if (res) {
+	if (res && res.ok) {
 		if (res.status === 204 || instance.emailRequiredForSignup) {
 			os.alert({
 				type: 'success',
@@ -295,6 +295,8 @@ async function onSubmit(): Promise<void> {
 				await login(resJson.token);
 			}
 		}
+	} else {
+		onSignupApiError();
 	}
 
 	submitting.value = false;
