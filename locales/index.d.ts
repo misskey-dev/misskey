@@ -5275,10 +5275,6 @@ export interface Locale extends ILocale {
      */
     "textCount": string;
     /**
-     * リセット
-     */
-    "reset": string;
-    /**
      * 常に絶対時刻で表示する
      */
     "alwaysUseAbsoluteTime": string;
