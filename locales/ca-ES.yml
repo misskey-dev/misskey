@@ -2747,7 +2747,11 @@ _customEmojisManager:
     searchSettingCaption: "Defineix criteris de cerca detallats."
     sortOrder: "Ordenar"
     registrationLogs: "Registres d'inscripcions "
+    registrationLogsCaption: "Quan s'actualitzin o s'esborrin emojis es mostrarà un registre. Desapareixeran quan s'actualitzin, s'esborrin, visitis una nova pàgina o la recarreguis."
     alertEmojisRegisterFailedTitle: "Error"
+    alertEmojisRegisterFailedDescription: "No s'ha pogut actualitzar o esborrar l'emoji. Si us plau, dona una ullada al registre per més detalls."
+  _logs:
+    showSuccessLogSwitch: "Mostrar el registre d'èxit "
 _embedCodeGen:
   title: "Personalitza el codi per incrustar"
   header: "Mostrar la capçalera"
