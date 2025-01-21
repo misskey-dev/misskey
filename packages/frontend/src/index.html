@@ -21,7 +21,7 @@
 			script-src 'self' 'unsafe-eval' https://*.hcaptcha.com https://*.recaptcha.net https://*.gstatic.com https://challenges.cloudflare.com https://esm.sh;
 			style-src 'self' 'unsafe-inline' static-assets.misskey.flowers fonts.googleapis.com;
 			img-src 'self' data: blob: www.google.com xn--931a.moe static-assets.misskey.flowers localhost:3000 localhost:5174 127.0.0.1:5174 127.0.0.1:3000;
-			font-src 'self' static-assets.misskey.flowers fonts.gstatic.com;
+			font-src 'self' data: static-assets.misskey.flowers fonts.gstatic.com;
 			media-src 'self' localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000;
 			connect-src 'self' localhost:3000 localhost:5173 127.0.0.1:5173 127.0.0.1:3000 https://saize-static-assets.misskey.flowers https://newassets.hcaptcha.com https://public.api.bsky.app;
 			frame-src *;"
