@@ -220,7 +220,7 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	contain: content;
 
 	content-visibility: auto;
-	contain-intrinsic-size: auto none auto 100px;
+	contain-intrinsic-size: none auto 100px;
 }
 
 .head {

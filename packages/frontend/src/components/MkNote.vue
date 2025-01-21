@@ -570,7 +570,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 	contain: content;
 
 	content-visibility: auto;
-	contain-intrinsic-size: auto none auto 128px;
+	contain-intrinsic-size: none auto 128px;
 
 	&:focus-visible {
 		outline: none;
