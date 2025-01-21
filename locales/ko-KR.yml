@@ -684,7 +684,9 @@ smtpSecure: "SMTP 연결에 Implicit SSL/TTS 사용"
 smtpSecureInfo: "STARTTLS 사용 시에는 해제합니다."
 testEmail: "이메일 전송 테스트"
 wordMute: "단어 뮤트"
+wordMuteDescription: "정해진 단어가 포함된 노트를 최소화 한 상태로 표시합니다. 최소화 된 노트는 클릭해서 표시할 수 있습니다."
 hardWordMute: "하드 단어 뮤트"
+hardWordMuteDescription: "정한 단어가 들어간 노트를 숨깁니다. 단어 뮤트와 차이점은 노트가 아예 보이지 않습니다."
 regexpError: "정규 표현식 오류"
 regexpErrorDescription: "{tab}단어 뮤트 {line}행의 정규 표현식에 오류가 발생했습니다:"
 instanceMute: "서버 뮤트"
@@ -1302,12 +1304,12 @@ pleaseSelectAccount: "계정을 선택해주세요."
 availableRoles: "사용 가능한 역할"
 acknowledgeNotesAndEnable: "활성화 하기 전에 주의 사항을 확인했습니다."
 _accountSettings:
-  requireSigninToViewContents: "콘텐츠 열람을 위해 로그인으 필수로 설정하기"
+  requireSigninToViewContents: "콘텐츠 열람을 위해 로그인을 필수로 설정하기"
   requireSigninToViewContentsDescription1: "자신이 작성한 모든 노트 등의 콘텐츠를 보기 위해 로그인을 필수로 설정합니다. 크롤러가 정보 수집하는 것을 방지하는 효과를 기대할 수 있습니다."
   requireSigninToViewContentsDescription2: "URL 미리보기(OGP), 웹페이지에 삽입, 노트 인용을 지원하지 않는 서버에서 볼 수 없게 됩니다."
   requireSigninToViewContentsDescription3: "원격 서버에 연합된 콘텐츠에는 이러한 제한이 적용되지 않을 수 있습니다."
   makeNotesFollowersOnlyBefore: "과거 노트는 팔로워만 볼 수 있도록 설정하기"
-  makeNotesFollowersOnlyBeforeDescription: "이 기능이 활성화되어 있는 동안, 설정된 날짜 및 시간보다 과거 또는 설정된 시간이 지난 노트는 팔로워만 볼 수 있게 됩니다.비활성화하면 노트의 공개 상태도 원래대로 돌아갑니다."
+  makeNotesFollowersOnlyBeforeDescription: "이 기능이 활성화되어 있는 동안, 설정된 날짜 및 시간보다 과거 또는 설정된 시간이 지난 노트는 팔로워만 볼 수 있게 됩니다. 비활성화하면 노트의 공개 상태도 원래대로 돌아갑니다."
   makeNotesHiddenBefore: "과거 노트 비공개로 전환하기"
   makeNotesHiddenBeforeDescription: "이 기능이 활성화되어 있는 동안 설정한 날짜 및 시간보다 과거 또는 설정한 시간이 지난 노트는 본인만 볼 수 있게(비공개로 전환) 됩니다. 비활성화하면 노트의 공개 상태도 원래대로 돌아갑니다."
   mayNotEffectForFederatedNotes: "원격 서버에 연합된 노트에는 효과가 없을 수도 있습니다."
@@ -2514,7 +2516,7 @@ _webhookSettings:
     reaction: "누군가 내 노트에 리액션했을 때"
     mention: "누군가 나를 멘션했을 때"
   _systemEvents:
-    abuseReport: "유저롭"
+    abuseReport: "유저로부터 신고를 받았을 때"
     abuseReportResolved: "받은 신고를 처리했을 때"
     userCreated: "유저가 생성되었을 때"
     inactiveModeratorsWarning: "모더레이터가 일정 기간동안 활동하지 않은 경우"
@@ -2744,3 +2746,15 @@ _selfXssPrevention:
 _followRequest:
   recieved: "받은 신청"
   sent: "보낸 신청"
+_remoteLookupErrors:
+  _federationNotAllowed:
+    title: "이 서버와 통신할 수 없음"
+    description: "이 서버와의 통신이 비활성화 되었거나, 이 서버를 차단 중이거나 서버에게 차단되었을 수 있습니다.\n서버 관리자에게 문의하세요."
+  _uriInvalid:
+    title: "URI가 잘못되었습니다."
+    description: "입력한 URI에 문제가 있습니다. URI에 쓸 수 없는 문자를 넣었는지 확인해보세요."
+  _requestFailed:
+    title: "요청을 실패했습니다."
+    description: "해당 서버와 통신을 실패했습니다. 상대방 서버에 접속 불가능한 상태일 수도 있습니다. 또는 잘못된 URI 또는 없는 URI를 입력했는지 확인해보세요."
+  _noSuchObject:
+    title: "찾을 수 없습니다"
