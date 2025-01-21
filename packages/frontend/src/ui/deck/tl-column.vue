@@ -34,7 +34,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, watch, ref, shallowRef, computed } from 'vue';
 import XColumn from './column.vue';
-import { removeColumn, updateColumn, Column } from './deck-store.js';
+import { removeColumn, updateColumn } from './deck-store.js';
+import type { Column } from './deck-store.js';
 import type { MenuItem } from '@/types/menu.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
