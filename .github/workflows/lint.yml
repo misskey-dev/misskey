@@ -36,7 +36,7 @@ jobs:
         fetch-depth: 0
         submodules: true
     - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v4.0.4
+    - uses: actions/setup-node@v4.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -67,14 +67,14 @@ jobs:
         fetch-depth: 0
         submodules: true
     - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v4.0.4
+    - uses: actions/setup-node@v4.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Restore eslint cache
-      uses: actions/cache@v4.1.0
+      uses: actions/cache@v4.2.0
       with:
         path: ${{ env.eslint-cache-path }}
         key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
@@ -97,7 +97,7 @@ jobs:
         fetch-depth: 0
         submodules: true
     - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v4.0.4
+    - uses: actions/setup-node@v4.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
