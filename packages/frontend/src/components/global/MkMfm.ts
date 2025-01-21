@@ -17,6 +17,7 @@ import MkCode from '@/components/MkCode.vue';
 import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
+import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkA, { MkABehavior } from '@/components/global/MkA.vue';
 import { defaultStore } from '@/store.js';
 
@@ -398,12 +399,19 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'quote': {
-				if (!props.nowrap) {
-					return [h('div', {
+				if (props.nowrap) {
+					return [h('span', {
 						style: QUOTE_STYLE,
 					}, genEl(token.children, scale, true))];
+				} else if (token.children.length === 1 && token.children[0].type === 'url') {
+					return [h('div', { style: 'padding-block: 8px' }, [
+						h(MkUrlPreview, {
+							url: token.children[0].props.url,
+							compact: true,
+						}),
+					])];
 				} else {
-					return [h('span', {
+					return [h('div', {
 						style: QUOTE_STYLE,
 					}, genEl(token.children, scale, true))];
 				}
