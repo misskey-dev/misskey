@@ -26,22 +26,34 @@ let prevTime = 0;
 let angle1 = 0;
 let angle2 = 0;
 
-let scene, camera, renderer, width, height, uniforms, texture, maskTexture, dataArray1, dataArray2, dataArrayOrigin, bufferLength: number;
+const scene = new THREE.Scene();
+const camera = new THREE.OrthographicCamera();
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+let width: number;
+let height: number;
+let uniforms: { [p: string]: THREE.IUniform };
+let texture: THREE.Texture;
+let maskTexture: THREE.Texture;
+let dataArray1: Uint8Array;
+let dataArray2: Uint8Array;
+let dataArrayOrigin: Uint8Array;
+let bufferLength: number;
 
 const init = () => {
 	const parent = container.value ?? { offsetWidth: 0 };
 	width = parent.offsetWidth;
 	height = Math.floor(width * 9 / 16);
 
-	scene = new THREE.Scene();
-	camera = new THREE.OrthographicCamera();
+	scene.clear();
+	camera.clear();
+
 	camera.left = width / -2;
 	camera.right = width / 2;
 	camera.top = height / 2;
 	camera.bottom = height / -2;
 	camera.updateProjectionMatrix();
 
-	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setSize(width, height);
 
 	if (container.value) {
@@ -176,7 +188,7 @@ const animate = (time) => {
 	renderer.render(scene, camera);
 };
 
-const onResize = () => {
+const resize = () => {
 	const parent = container.value ?? { offsetWidth: 0 };
 	width = parent.offsetWidth;
 	height = Math.floor(width * 9 / 16);
@@ -189,17 +201,25 @@ const onResize = () => {
 	uniforms.resolution.value.set(width, height);
 };
 
+const ro = new ResizeObserver((entries, observer) => {
+	resize();
+});
+
 onMounted(async () => {
 	nextTick().then(() => {
 		init();
-		window.addEventListener('resize', onResize);
+		resize();
 	});
+
+	if (!container.value) return;
+	ro.observe(container.value);
 });
 
 onUnmounted(() => {
 	if (renderer) {
 		renderer.dispose();
 	}
+	ro.disconnect();
 });
 
 defineExpose({
