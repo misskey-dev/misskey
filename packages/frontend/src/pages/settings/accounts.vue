@@ -38,7 +38,7 @@ import { getAccounts, removeAccount as _removeAccount, login, $i, getAccountWith
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { MenuItem } from '@/types/menu';
+import type { MenuItem } from '@/types/menu.js';
 
 const storedAccounts = ref<{ id: string, token: string }[] | null>(null);
 const accounts = ref(new Map<string, Misskey.entities.UserDetailed | null>());

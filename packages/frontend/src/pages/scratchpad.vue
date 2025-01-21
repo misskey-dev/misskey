@@ -69,11 +69,13 @@ import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui.js';
+import { registerAsUiLib } from '@/scripts/aiscript/ui.js';
 import type { AsUiComponent } from '@/scripts/aiscript/ui.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+
+import type { AsUiRoot } from '@/scripts/aiscript/ui.js';
 
 const parser = new Parser();
 let aiscript: Interpreter;
