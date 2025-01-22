@@ -296,7 +296,7 @@ export const packedMetaDetailedOnlySchema = {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},
-				hanamiTimeline: {
+				yamiTimeline: {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},

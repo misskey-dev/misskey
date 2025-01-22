@@ -10317,7 +10317,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@google-cloud/spanner': ^5.18.0
-      '@sap/hana-client': ^2.12.25
+      '@sap/yami-client': ^2.12.25
       better-sqlite3: ^7.1.2 || ^8.0.0 || ^9.0.0
       hdb-pool: ^0.1.6
       ioredis: ^5.0.4
@@ -10336,7 +10336,7 @@ packages:
     peerDependenciesMeta:
       '@google-cloud/spanner':
         optional: true
-      '@sap/hana-client':
+      '@sap/yami-client':
         optional: true
       better-sqlite3:
         optional: true

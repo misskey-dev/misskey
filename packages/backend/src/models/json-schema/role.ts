@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { envOption } from "@/env.js";
-
 import { Optional } from '@nestjs/common';
+import { envOption } from '@/env.js';
 
 export const packedRoleCondFormulaLogicsSchema = {
 	type: 'object',
@@ -180,7 +179,7 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		hanamiTlAvailable: {
+		yamiTlAvailable: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
