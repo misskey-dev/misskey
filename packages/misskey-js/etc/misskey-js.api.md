@@ -1170,6 +1170,13 @@ export type Endpoints = Overwrite<Endpoints_2, {
             };
         };
     };
+    'admin/roles/create': {
+        req: Overwrite<AdminRolesCreateRequest, {
+            policies: PartialRolePolicyOverride;
+        }>;
+        res: AdminRolesCreateResponse;
+    };
+}> & {
     'signup': {
         req: SignupRequest;
         res: SignupResponse;
@@ -1198,13 +1205,11 @@ export type Endpoints = Overwrite<Endpoints_2, {
             };
         };
     };
-    'admin/roles/create': {
-        req: Overwrite<AdminRolesCreateRequest, {
-            policies: PartialRolePolicyOverride;
-        }>;
-        res: AdminRolesCreateResponse;
+    [ep: `miauth/${string}/check`]: {
+        req: EmptyRequest;
+        res: MiAuthCheckResponse;
     };
-}>;
+};
 
 // @public (undocumented)
 type EndpointsResponse = operations['endpoints']['responses']['200']['content']['application/json'];
@@ -1233,6 +1238,7 @@ declare namespace entities {
         SigninWithPasskeyRequest,
         SigninWithPasskeyInitResponse,
         SigninWithPasskeyResponse,
+        MiAuthCheckResponse,
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
@@ -2461,6 +2467,15 @@ type MetaRequest = operations['meta']['requestBody']['content']['application/jso
 
 // @public (undocumented)
 type MetaResponse = operations['meta']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type MiAuthCheckResponse = {
+    ok: true;
+    token: string;
+    user: UserDetailedNotMe;
+} | {
+    ok: false;
+};
 
 // @public (undocumented)
 type MiauthGenTokenRequest = operations['miauth___gen-token']['requestBody']['content']['application/json'];

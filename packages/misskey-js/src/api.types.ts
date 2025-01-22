@@ -1,6 +1,6 @@
 import { Endpoints as Gen } from './autogen/endpoint.js';
 import { UserDetailed } from './autogen/models.js';
-import { AdminRolesCreateRequest, AdminRolesCreateResponse, UsersShowRequest } from './autogen/entities.js';
+import { AdminRolesCreateRequest, AdminRolesCreateResponse, UsersShowRequest, EmptyRequest } from './autogen/entities.js';
 import {
 	PartialRolePolicyOverride,
 	SigninFlowRequest,
@@ -12,6 +12,7 @@ import {
 	SignupPendingResponse,
 	SignupRequest,
 	SignupResponse,
+	MiAuthCheckResponse,
 } from './entities.js';
 
 type Overwrite<T, U extends { [Key in keyof T]?: unknown }> = Omit<
@@ -57,6 +58,7 @@ export type SwitchCaseResponseType<E extends keyof Endpoints, P extends Endpoint
 export type Endpoints = Overwrite<
 	Gen,
 	{
+		// ▼ api.jsonのオーバーライド ▼
 		'users/show': {
 			req: UsersShowRequest;
 			res: {
@@ -70,40 +72,45 @@ export type Endpoints = Overwrite<
 				};
 			};
 		},
-		// api.jsonには載せないものなのでここで定義
-		'signup': {
-			req: SignupRequest;
-			res: SignupResponse;
-		},
-		// api.jsonには載せないものなのでここで定義
-		'signup-pending': {
-			req: SignupPendingRequest;
-			res: SignupPendingResponse;
-		},
-		// api.jsonには載せないものなのでここで定義
-		'signin-flow': {
-			req: SigninFlowRequest;
-			res: SigninFlowResponse;
-		},
-		'signin-with-passkey': {
-			req: SigninWithPasskeyRequest;
-			res: {
-				$switch: {
-					$cases: [
-						[
-							{
-								context: string;
-							},
-							SigninWithPasskeyResponse,
-						],
-					];
-					$default: SigninWithPasskeyInitResponse;
-				},
-			},
-		},
 		'admin/roles/create': {
 			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;
 			res: AdminRolesCreateResponse;
-		}
+		},
+		// ▲ api.jsonのオーバーライド ▲
 	}
->
+> & {
+	// ▼ api.jsonに載らないもの ▼
+	'signup': {
+		req: SignupRequest;
+		res: SignupResponse;
+	},
+	'signup-pending': {
+		req: SignupPendingRequest;
+		res: SignupPendingResponse;
+	},
+	'signin-flow': {
+		req: SigninFlowRequest;
+		res: SigninFlowResponse;
+	},
+	'signin-with-passkey': {
+		req: SigninWithPasskeyRequest;
+		res: {
+			$switch: {
+				$cases: [
+					[
+						{
+							context: string;
+						},
+						SigninWithPasskeyResponse,
+					],
+				];
+				$default: SigninWithPasskeyInitResponse;
+			},
+		},
+	},
+	[ep: `miauth/${string}/check`]: {
+		req: EmptyRequest;
+		res: MiAuthCheckResponse;
+	},
+	// ▲ api.jsonに載らないもの ▲
+};

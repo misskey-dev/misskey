@@ -144,6 +144,7 @@
 - Fix: セキュリティに関する修正
 
 ### Misskey.js
+- Enhance: `/miauth/{sessionId}/check` の型を追加
 - Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
 
 ## 2024.10.1
