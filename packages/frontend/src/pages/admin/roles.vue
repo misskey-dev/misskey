@@ -43,10 +43,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
-						<MkFolder v-if="matchQuery([i18n.ts._role._options.hanamiTlAvailable, 'hanamiTlAvailable'])">
-							<template #label>{{ i18n.ts._role._options.hanamiTlAvailable }}</template>
-							<template #suffix>{{ policies.hanamiTlAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="policies.hanamiTlAvailable">
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.yamiTlAvailable, 'yamiTlAvailable'])">
+							<template #label>{{ i18n.ts._role._options.yamiTlAvailable }}</template>
+							<template #suffix>{{ policies.yamiTlAvailable ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.yamiTlAvailable">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
