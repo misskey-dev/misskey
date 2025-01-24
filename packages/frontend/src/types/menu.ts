@@ -6,6 +6,7 @@
 import * as Misskey from 'misskey-js';
 import { ComputedRef, Ref } from 'vue';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface MenuRadioOptionsDef extends Record<string, any> { }
 
 export type MenuAction = (ev: MouseEvent) => void;
