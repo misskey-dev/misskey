@@ -2723,6 +2723,9 @@ _contextMenu:
   app: "애플리케이션"
   appWithShift: "Shift 키로 애플리케이션"
   native: "브라우저의 UI"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "오류"
 _embedCodeGen:
   title: "임베디드 코드를 커스터마이즈"
   header: "해더를 표시"
