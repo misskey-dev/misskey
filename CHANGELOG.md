@@ -7,7 +7,8 @@
   - 詳細は #14730 および `.config/example.yml` または `.config/docker_example.yml`の'Fulltext search configuration'をご参照願います.
 
 ### General
--
+- Feat: カスタム絵文字管理画面をリニューアル #10996
+	* β版として公開のため、旧画面も引き続き利用可能です
 
 ### Client
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
@@ -20,6 +21,7 @@
 - Enhance: ノートの添付ファイルを一覧で遡れる「ファイル」タブを追加  
   (Based on https://github.com/Otaku-Social/maniakey/pull/14)
 - Enhance: AiScriptの拡張API関数において引数の型チェックをより厳格に
+- Enhance: クエリパラメータでuiを一時的に変更できるように #15240
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
 - Fix: ノートがログインしているユーザーしか見れない場合にログインダイアログを閉じるとその後の動線がなくなる問題を修正
