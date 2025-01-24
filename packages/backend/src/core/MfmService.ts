@@ -492,7 +492,7 @@ export class MfmService {
 
 		appendChildren(nodes, body);
 
-		const serialized = new XMLSerializer().serializeToString(body);
+		const serialized = body.outerHTML;
 
 		happyDOM.close().catch(err => {});
 
