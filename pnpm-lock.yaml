@@ -51,8 +51,8 @@ importers:
         version: 4.4.0(encoding@0.1.13)
     devDependencies:
       '@misskey-dev/eslint-plugin':
-        specifier: 2.0.3
-        version: 2.0.3(@eslint/compat@1.1.1)(@typescript-eslint/eslint-plugin@8.20.0(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3))(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0))(eslint@9.18.0)(globals@15.14.0)
+        specifier: 2.1.0
+        version: 2.1.0(@eslint/compat@1.1.1)(@stylistic/eslint-plugin@2.13.0(eslint@9.18.0)(typescript@5.7.3))(@typescript-eslint/eslint-plugin@8.20.0(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3))(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0))(eslint@9.18.0)(globals@15.14.0)
       '@types/node':
         specifier: 22.10.7
         version: 22.10.7
@@ -142,7 +142,7 @@ importers:
         version: 11.0.1(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/testing':
         specifier: 11.0.1
-        version: 11.0.1(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1))
+        version: 11.0.1(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1)(@nestjs/platform-express@10.4.7)
       '@peertube/http-signature':
         specifier: 1.7.0
         version: 1.7.0
@@ -1157,7 +1157,7 @@ importers:
         version: 8.20.0(eslint@9.18.0)(typescript@5.7.3)
       '@vitest/coverage-v8':
         specifier: 1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@22.10.7)(happy-dom@16.6.0)(jsdom@26.0.0)(sass@1.83.4)(terser@5.37.0))
+        version: 1.6.0(vitest@1.6.0(@types/node@22.10.7)(happy-dom@16.6.0)(jsdom@26.0.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))(sass@1.83.4)(terser@5.37.0))
       '@vue/runtime-core':
         specifier: 3.5.13
         version: 3.5.13
@@ -2996,13 +2996,14 @@ packages:
   '@misskey-dev/browser-image-resizer@2024.1.0':
     resolution: {integrity: sha512-4EnO0zLW5NDtng3Gaz5MuT761uiuoOuplwX18wBqgj8w56LTU5BjLn/vbHwDIIe0j2gwqDYhMb7bDjmr1/Fomg==}
 
-  '@misskey-dev/eslint-plugin@2.0.3':
-    resolution: {integrity: sha512-Gd7chezh53Gq4BZ+Tw/uRi4t5DocXR+vTFuTSRpwrZjbyTk6tWMHLV0EtaGY/6GT+Q6WH3UMJYExsFyHFK+JPw==}
+  '@misskey-dev/eslint-plugin@2.1.0':
+    resolution: {integrity: sha512-f++Vv1r3BQyGqEE0SB5algUZwRoTMZIYfVtpcuQ2fLuYUm0cQ5BBTs/gwAHPajVB2YD8F33gzPIReTKtuJyCwQ==}
     peerDependencies:
       '@eslint/compat': '>= 1'
-      '@typescript-eslint/eslint-plugin': '>= 7'
-      '@typescript-eslint/parser': '>= 7'
-      eslint: '>= 8'
+      '@stylistic/eslint-plugin': '>= 2'
+      '@typescript-eslint/eslint-plugin': '>= 8'
+      '@typescript-eslint/parser': '>= 8'
+      eslint: '>= 9'
       eslint-plugin-import: '>= 2'
       globals: '>= 15'
 
@@ -4245,6 +4246,12 @@ packages:
     peerDependencies:
       storybook: ^8.5.0
       vue: ^3.0.0
+
+  '@stylistic/eslint-plugin@2.13.0':
+    resolution: {integrity: sha512-RnO1SaiCFHn666wNz2QfZEFxvmiNRqhzaMXHXxXXKt+MEP7aajlPxUSMIQpKAaJfverpovEYqjBOXDq6dDcaOQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      eslint: '>=8.40.0'
 
   '@swc/cli@0.3.12':
     resolution: {integrity: sha512-h7bvxT+4+UDrLWJLFHt6V+vNAcUNii2G4aGSSotKz1ECEk4MyEh5CWxmeSscwuz5K3i+4DWTgm4+4EyMCQKn+g==}
@@ -13356,9 +13363,10 @@ snapshots:
 
   '@misskey-dev/browser-image-resizer@2024.1.0': {}
 
-  '@misskey-dev/eslint-plugin@2.0.3(@eslint/compat@1.1.1)(@typescript-eslint/eslint-plugin@8.20.0(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3))(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0))(eslint@9.18.0)(globals@15.14.0)':
+  '@misskey-dev/eslint-plugin@2.1.0(@eslint/compat@1.1.1)(@stylistic/eslint-plugin@2.13.0(eslint@9.18.0)(typescript@5.7.3))(@typescript-eslint/eslint-plugin@8.20.0(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3))(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0))(eslint@9.18.0)(globals@15.14.0)':
     dependencies:
       '@eslint/compat': 1.1.1
+      '@stylistic/eslint-plugin': 2.13.0(eslint@9.18.0)(typescript@5.7.3)
       '@typescript-eslint/eslint-plugin': 8.20.0(@typescript-eslint/parser@8.20.0(eslint@9.18.0)(typescript@5.7.3))(eslint@9.18.0)(typescript@5.7.3)
       '@typescript-eslint/parser': 8.20.0(eslint@9.18.0)(typescript@5.7.3)
       eslint: 9.18.0
@@ -13497,7 +13505,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@nestjs/testing@11.0.1(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1))':
+  '@nestjs/testing@11.0.1(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1)(@nestjs/platform-express@10.4.7)':
     dependencies:
       '@nestjs/common': 11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/core': 11.0.1(@nestjs/common@11.0.1(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -14913,6 +14921,18 @@ snapshots:
       vue: 3.5.13(typescript@5.7.3)
       vue-component-type-helpers: 2.2.0
 
+  '@stylistic/eslint-plugin@2.13.0(eslint@9.18.0)(typescript@5.7.3)':
+    dependencies:
+      '@typescript-eslint/utils': 8.20.0(eslint@9.18.0)(typescript@5.7.3)
+      eslint: 9.18.0
+      eslint-visitor-keys: 4.2.0
+      espree: 10.3.0
+      estraverse: 5.3.0
+      picomatch: 4.0.2
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
   '@swc/cli@0.3.12(@swc/core@1.9.2)(chokidar@3.5.3)':
     dependencies:
       '@mole-inc/bin-wrapper': 8.0.1
@@ -15719,25 +15739,6 @@ snapshots:
       strip-literal: 2.1.0
       test-exclude: 6.0.0
       vitest: 1.6.0(@types/node@22.10.7)(happy-dom@16.6.0)(jsdom@26.0.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))(sass@1.83.4)(terser@5.37.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@types/node@22.10.7)(happy-dom@16.6.0)(jsdom@26.0.0)(sass@1.83.4)(terser@5.37.0))':
-    dependencies:
-      '@ampproject/remapping': 2.2.1
-      '@bcoe/v8-coverage': 0.2.3
-      debug: 4.3.5
-      istanbul-lib-coverage: 3.2.2
-      istanbul-lib-report: 3.0.1
-      istanbul-lib-source-maps: 5.0.4
-      istanbul-reports: 3.1.6
-      magic-string: 0.30.10
-      magicast: 0.3.4
-      picocolors: 1.0.1
-      std-env: 3.7.0
-      strip-literal: 2.1.0
-      test-exclude: 6.0.0
-      vitest: 1.6.0(@types/node@22.10.7)(happy-dom@16.6.0)(jsdom@26.0.0)(sass@1.83.4)(terser@5.37.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -23012,42 +23013,6 @@ snapshots:
       '@types/node': 22.10.7
       happy-dom: 16.6.0
       jsdom: 26.0.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
-    transitivePeerDependencies:
-      - less
-      - lightningcss
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-
-  vitest@1.6.0(@types/node@22.10.7)(happy-dom@16.6.0)(jsdom@26.0.0)(sass@1.83.4)(terser@5.37.0):
-    dependencies:
-      '@vitest/expect': 1.6.0
-      '@vitest/runner': 1.6.0
-      '@vitest/snapshot': 1.6.0
-      '@vitest/spy': 1.6.0
-      '@vitest/utils': 1.6.0
-      acorn-walk: 8.3.2
-      chai: 4.3.10
-      debug: 4.3.4
-      execa: 8.0.1
-      local-pkg: 0.5.0
-      magic-string: 0.30.10
-      pathe: 1.1.2
-      picocolors: 1.0.0
-      std-env: 3.7.0
-      strip-literal: 2.1.0
-      tinybench: 2.6.0
-      tinypool: 0.8.4
-      vite: 5.4.11(@types/node@22.10.7)(sass@1.83.4)(terser@5.37.0)
-      vite-node: 1.6.0(@types/node@22.10.7)(sass@1.83.4)(terser@5.37.0)
-      why-is-node-running: 2.2.2
-    optionalDependencies:
-      '@types/node': 22.10.7
-      happy-dom: 16.6.0
-      jsdom: 26.0.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
     transitivePeerDependencies:
       - less
       - lightningcss

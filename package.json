@@ -64,7 +64,7 @@
 		"glob": "11.0.1"
 	},
 	"devDependencies": {
-		"@misskey-dev/eslint-plugin": "2.0.3",
+		"@misskey-dev/eslint-plugin": "2.1.0",
 		"@types/node": "22.10.7",
 		"@typescript-eslint/eslint-plugin": "8.20.0",
 		"@typescript-eslint/parser": "8.20.0",
