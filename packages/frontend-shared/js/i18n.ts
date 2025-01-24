@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/naming-convention */
-// ↑TODO: Error while loading rule '@typescript-eslint/naming-convention': Cannot use 'in' operator to search for 'type' in undefined のため一時的に無効化
-
 import type { ILocale, ParameterizedString } from '../../../locales/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
