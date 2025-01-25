@@ -45,12 +45,9 @@ function close() {
 		justify-content: center;
 		overflow: hidden;
 
-		// backgroundの市松模様
-		background-image: linear-gradient(45deg, #999 25%, transparent 25%, transparent 75%, #999 75%),
-	  									linear-gradient(45deg, #999 25%, transparent 25%, transparent 75%, #999 75%);
-		background-position: 0 0, 8px 8px;
-		background-size: 16px 16px;
-		background-color: #ccc;
+		background-color: var(--MI_THEME-bg);
+		background-size: auto auto;
+		background-image: repeating-linear-gradient(135deg, transparent, transparent 6px, var(--MI_THEME-panel) 6px, var(--MI_THEME-panel) 12px);
 	}
 
 	.img {
