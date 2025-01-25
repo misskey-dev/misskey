@@ -2837,6 +2837,7 @@ _customEmojisManager:
     failureLogNothing: "失敗ログはありません。"
     logNothing: "ログはありません。"
   _remote:
+    selectionRowDetail: "選択行の詳細"
     importSelectionRows: "選択行をインポート"
     importSelectionRangesRows: "選択範囲の行をインポート"
     importEmojisButton: "チェックされた絵文字をインポート"

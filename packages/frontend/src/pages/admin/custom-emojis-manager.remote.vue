@@ -35,6 +35,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>host</template>
 						</MkInput>
 						<MkInput
+							v-model="queryLicense"
+							type="search"
+							autocapitalize="off"
+							:class="[$style.col3, $style.row1]"
+							@enter="onSearchRequest"
+						>
+							<template #label>license</template>
+						</MkInput>
+
+						<MkInput
 							v-model="queryUri"
 							type="search"
 							autocapitalize="off"
@@ -115,6 +125,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, onMounted, ref, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
+import MkRemoteEmojiEditDialog from '@/components/MkRemoteEmojiEditDialog.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -135,7 +146,7 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
 import { SortOrder } from '@/components/MkSortOrderEditor.define.js';
-import { useLoading } from "@/components/hook/useLoading.js";
+import { useLoading } from '@/components/hook/useLoading.js';
 
 type GridItem = {
 	checked: boolean;
@@ -178,12 +189,37 @@ function setupGrid(): GridSetting {
 			{ bindTo: 'url', icon: 'ti-icons', type: 'image', editable: false, width: 'auto' },
 			{ bindTo: 'name', title: 'name', type: 'text', editable: false, width: 'auto' },
 			{ bindTo: 'host', title: 'host', type: 'text', editable: false, width: 'auto' },
+			{ bindTo: 'license', title: 'license', type: 'text', editable: false, width: 200 },
 			{ bindTo: 'uri', title: 'uri', type: 'text', editable: false, width: 'auto' },
 			{ bindTo: 'publicUrl', title: 'publicUrl', type: 'text', editable: false, width: 'auto' },
 		],
 		cells: {
 			contextMenuFactory: (col, row, value, context) => {
 				return [
+					{
+						type: 'button',
+						text: i18n.ts._customEmojisManager._remote.selectionRowDetail,
+						icon: 'ti ti-info-circle',
+						action: async () => {
+							const target = customEmojis.value[row.index];
+							const { dispose } = os.popup(MkRemoteEmojiEditDialog, {
+								emoji: {
+									id: target.id,
+									name: target.name,
+									host: target.host!,
+									license: target.license,
+									url: target.publicUrl,
+								},
+							}, {
+								done: () => {
+									dispose();
+								},
+								closed: () => {
+									dispose();
+								},
+							});
+						},
+					},
 					{
 						type: 'button',
 						text: i18n.ts._customEmojisManager._remote.importSelectionRangesRows,
@@ -207,6 +243,7 @@ const currentPage = ref<number>(0);
 
 const queryName = ref<string | null>(null);
 const queryHost = ref<string | null>(null);
+const queryLicense = ref<string | null>(null);
 const queryUri = ref<string | null>(null);
 const queryPublicUrl = ref<string | null>(null);
 const previousQuery = ref<string | undefined>(undefined);
@@ -229,6 +266,7 @@ async function onSearchRequest() {
 function onQueryResetButtonClicked() {
 	queryName.value = null;
 	queryHost.value = null;
+	queryLicense.value = null;
 	queryUri.value = null;
 	queryPublicUrl.value = null;
 }
@@ -306,6 +344,7 @@ async function refreshCustomEmojis() {
 	const query: Misskey.entities.V2AdminEmojiListRequest['query'] = {
 		name: emptyStrToUndefined(queryName.value),
 		host: emptyStrToUndefined(queryHost.value),
+		license: emptyStrToUndefined(queryLicense.value),
 		uri: emptyStrToUndefined(queryUri.value),
 		publicUrl: emptyStrToUndefined(queryPublicUrl.value),
 		hostType: 'remote',
@@ -330,6 +369,7 @@ async function refreshCustomEmojis() {
 		id: it.id,
 		url: it.publicUrl,
 		name: it.name,
+		license: it.license,
 		host: it.host!,
 	}));
 }
@@ -356,6 +396,10 @@ onMounted(async () => {
 	grid-column: 2 / 3;
 }
 
+.col3 {
+	grid-column: 3 / 4;
+}
+
 .root {
 	padding: 16px;
 }
@@ -366,7 +410,7 @@ onMounted(async () => {
 
 .searchArea {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr;
 	gap: 16px;
 }
 

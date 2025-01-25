@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkWindow
 	ref="windowEl"
 	:initialWidth="400"
-	:initialHeight="500"
+	:initialHeight="560"
 	:canResize="true"
 	@close="windowEl?.close()"
 	@closed="emit('closed')"
@@ -35,6 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="name" disabled>
 					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
+				<MkInput v-model="host" disabled>
+					<template #label>{{ i18n.ts.host }}</template>
+				</MkInput>
 				<MkTextarea v-model="license" disabled>
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkTextarea>
@@ -50,7 +53,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -60,7 +62,13 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 const props = defineProps<{
-	emoji: Misskey.entities.EmojiDetailed,
+	emoji: {
+		id: string,
+		name: string,
+		host: string,
+		license: string | null,
+		url: string
+	},
 }>();
 
 const emit = defineEmits<{
@@ -72,6 +80,7 @@ const emit = defineEmits<{
 const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
 
 const name = computed(() => props.emoji.name);
+const host = computed(() => props.emoji.host);
 const license = computed(() => props.emoji.license);
 const imgUrl = computed(() => props.emoji.url);
 
