@@ -537,6 +537,9 @@ _moderationLogTypes:
   resetPassword: "Wachtwoord terugzetten"
 _reversi:
   total: "Totaal"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Fout"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Niet gevonden"
