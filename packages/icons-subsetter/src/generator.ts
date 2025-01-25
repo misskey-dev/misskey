@@ -79,7 +79,7 @@ async function main() {
 	src: url("./tabler-icons.woff2") format("woff2");
 }`];
 
-		// サブセット化したフォントの中身がある（＝unicodeRangeValuesの配列が殻ではない）場合のみ、サブセットしたものに関する情報を追記
+		// サブセット化したフォントの中身がある（＝unicodeRangeValuesの配列が空ではない）場合のみ、サブセットしたものに関する情報を追記
 		if (unicodeRangeValues.get(key)!.length > 0) {
 			await fsp.writeFile(`./built/tabler-icons-${key}.woff2`, buffer);
 
