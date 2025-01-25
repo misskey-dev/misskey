@@ -56,6 +56,7 @@
 - Enhance: チャート更新時にDBに同時接続しないように  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/830)
 - Enhance: config(default.yml)からSQLログ全文を出力するか否かを設定可能に ( #15266 )
+- Enhance: アンテナでセンシティブなチャンネルのノートを除外できるように ( #14177 )
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
@@ -128,7 +129,6 @@
   (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
 - Enhance: リモートユーザーの照会をオリジナルにリダイレクトするように
-- Enhance: アンテナでセンシティブなチャンネルのノートを除外できるように
 - Fix: sharedInboxが無いActorに紐づくリモートユーザーを照会できない
 - Fix: Aproving request from GtS appears with some delay
 - Fix: フォロワーへのメッセージの絵文字をemojisに含めるように
