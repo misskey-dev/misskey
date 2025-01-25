@@ -733,6 +733,9 @@ _moderationLogTypes:
   resetPassword: "Resetează parola"
 _reversi:
   total: "Total"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Eroare"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Nu a fost găsit"
