@@ -303,9 +303,12 @@ export class ClientServerService {
 				done();
 			});
 		} else {
+			const configUrl = new URL(this.config.url);
+			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
+
 			const port = (process.env.VITE_PORT ?? '5173');
 			fastify.register(fastifyProxy, {
-				upstream: 'http://localhost:' + port,
+				upstream: urlOriginWithoutPort + ':' + port,
 				prefix: '/vite',
 				rewritePrefix: '/vite',
 			});
