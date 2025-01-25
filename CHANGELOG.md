@@ -5,6 +5,7 @@
   - 新しい設定項目"fulltextSearch.provider"が追加されました. sqlLike, sqlPgroonga, meilisearchのいずれかを設定出来ます.
   - すでにMeilisearchをお使いの場合、 **"fulltextSearch.provider"を"meilisearch"に設定する必要** があります.
   - 詳細は #14730 および `.config/example.yml` または `.config/docker_example.yml`の'Fulltext search configuration'をご参照願います.
+- 【開発者向け】従来の開発モードでHMRが機能しない問題が修正されたため、バックエンド・フロントエンド分離型の開発モードが削除されました。開発環境においてconfigの変更が必要となる可能性があります。
 
 ### General
 - Feat: カスタム絵文字管理画面をリニューアル #10996
@@ -21,6 +22,7 @@
 - Enhance: ノートの添付ファイルを一覧で遡れる「ファイル」タブを追加  
   (Based on https://github.com/Otaku-Social/maniakey/pull/14)
 - Enhance: AiScriptの拡張API関数において引数の型チェックをより厳格に
+- Enhance: クエリパラメータでuiを一時的に変更できるように #15240
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
 - Fix: ノートがログインしているユーザーしか見れない場合にログインダイアログを閉じるとその後の動線がなくなる問題を修正
@@ -44,6 +46,7 @@
   (Cherry-picked from https://github.com/yojo-art/cherrypick/pull/153)
 - Fix: 非ログイン時のサーバー概要画面のメニューボタンが押せないことがあるのを修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/656)
+- Fix: URLにはじめから`#pswp`が含まれている場合に画像ビューワーがブラウザの戻るボタンで閉じられない問題を修正
 
 ### Server
 - Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
