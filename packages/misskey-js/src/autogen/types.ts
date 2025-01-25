@@ -11202,6 +11202,7 @@ export type operations = {
           excludeBots?: boolean;
           withReplies?: boolean;
           withFile?: boolean;
+          hideNotesInSensitiveChannel?: boolean;
         };
       };
     };
