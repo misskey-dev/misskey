@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import MkAsUi from '@/components/MkAsUi.vue';
 import { components as globalComponents } from '@/components/index.js';
 import { directives } from '@/directives/index.js';

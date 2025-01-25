@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import MkInput from '@/components/MkInput.vue';
 import { fireEvent, render } from '@testing-library/vue';
 import { components } from '@/components/index.js';
