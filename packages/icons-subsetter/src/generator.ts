@@ -27,9 +27,8 @@ async function main() {
 		rgMap.set(matches[1], matches[2]);
 	}
 
-	// 3. tabler-icons-classes.cssから、@font-faceを削除して書き出し
-	const cssWithoutFontFace = css.replace(/@font-face\s*{[^}]*}/g, '');
-	await fsp.writeFile('./built/tabler-icons-classes.css', cssWithoutFontFace);
+	// 3. tabler-icons-classes.cssから、.tiのルールを抽出
+	const classTiBaseRule = css.match(/\.ti\s*{[^}]*}/)![0];
 
 	// 4. フォールバック用のtabler-icons.woff2をコピー
 	const fontPath = 'node_modules/@tabler/icons-webfont/dist/fonts/';
@@ -110,9 +109,17 @@ async function main() {
 	src: url("./tabler-icons-${key}.woff2") format("woff2");
 	unicode-range: ${unicodeRangeString};
 }`);
+
+			cssRules.push(classTiBaseRule);
+
+			// 使用されているアイコンのclassとの対応を追記
+			for (const icon of unicodeRangeValues.get(key)!) {
+				const iconClass = Array.from(rgMap.entries()).find(([_, unicode]) => parseInt(unicode, 16) === icon)![0];
+				cssRules.push(`.${iconClass}::before { content: "\\${icon.toString(16)}"; }`);
+			}
 		}
 
-		await fsp.writeFile(`./built/tabler-icons-${key}.css`, cssRules.join('\n\n') + '\n');
+		await fsp.writeFile(`./built/tabler-icons-${key}.css`, cssRules.join('\n') + '\n');
 	}));
 
 	const end = performance.now();
