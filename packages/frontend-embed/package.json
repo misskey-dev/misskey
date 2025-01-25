@@ -4,7 +4,6 @@
 	"type": "module",
 	"scripts": {
 		"watch": "vite",
-		"dev": "vite --config vite.config.local-dev.ts --debug hmr",
 		"build": "vite build",
 		"typecheck": "vue-tsc --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",

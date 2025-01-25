@@ -474,6 +474,9 @@ _abuseReport:
       mail: "ອີເມວ"
 _moderationLogTypes:
   suspend: "ລະງັບ"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "ຂໍ້ຜິດພາດ"
 _remoteLookupErrors:
   _noSuchObject:
     title: "ບໍ່ພົບ"

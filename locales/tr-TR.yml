@@ -460,3 +460,6 @@ _deck:
 _moderationLogTypes:
   suspend: "askıya al"
   resetPassword: "Şifre sıfırlama"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "hata"
