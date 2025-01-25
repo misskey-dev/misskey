@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { promises as fsp, existsSync } from 'fs';
 import path from 'path';
 import glob from 'tiny-glob';

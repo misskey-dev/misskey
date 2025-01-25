@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { promises as fsp } from 'fs';
 import { ttf2woff } from 'wasm-ttf2woff';
 
