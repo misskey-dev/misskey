@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<div class="_gaps">
 						<div :class="$style.userItem">
-							<MkUserCardMini v-if="user" :class="$style.userCard" :user="user" :withChart="false"/>
+							<MkUserCardMini v-if="user" :class="$style.userCard" :user="user"/>
 							<MkButton v-if="user == null && $i != null" transparent :class="$style.addMeButton" @click="selectSelf"><div :class="$style.addUserButtonInner"><span><i class="ti ti-plus"></i><i class="ti ti-user"></i></span><span>{{ i18n.ts.selectSelf }}</span></div></MkButton>
 							<MkButton v-if="user == null" transparent :class="$style.addUserButton" @click="selectUser"><div :class="$style.addUserButtonInner"><i class="ti ti-plus"></i><span>{{ i18n.ts.selectUser }}</span></div></MkButton>
 							<button class="_button" :class="$style.remove" :disabled="user == null" @click="removeUser"><i class="ti ti-x"></i></button>

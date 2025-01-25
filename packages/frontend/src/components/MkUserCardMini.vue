@@ -4,7 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-adaptive-bg :class="[$style.root]">
+<div
+	:class="[$style.root, {
+		[$style.isSilenced]: 'isSilenced' in user && user.isSilenced,
+		[$style.isSuspended]: 'isSuspended' in user && user.isSuspended,
+	}]"
+>
 	<MkAvatar :class="$style.avatar" :user="user" indicator/>
 	<div :class="$style.body">
 		<span :class="$style.name"><MkUserName :user="user"/></span>
@@ -15,29 +20,42 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { onMounted, ref } from 'vue';
-import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { acct } from '@/filters/user.js';
+import MkMiniChart from '@/components/MkMiniChart.vue';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
 	withChart?: boolean;
 }>(), {
-	withChart: true,
+	withChart: false,
 });
 
-const chartValues = ref<number[] | null>(null);
+const chartValues = shallowRef<number[] | null>(null);
 
-onMounted(() => {
-	if (props.withChart) {
-		misskeyApiGet('charts/user/notes', { userId: props.user.id, limit: 16 + 1, span: 'day' }).then(res => {
+watch([
+	() => props.user.id,
+	() => props.withChart,
+], ([userId, withChart]) => {
+	if (withChart) {
+		misskeyApiGet('charts/user/notes', {
+			userId,
+			limit: 16 + 1,
+			span: 'day',
+		}).then(res => {
 			// 今日のぶんの値はまだ途中の値であり、それも含めると大抵の場合前日よりも下降しているようなグラフになってしまうため今日は弾く
-			res.inc.splice(0, 1);
+			res.inc.shift();
 			chartValues.value = res.inc;
+		}).catch(() => {
+			chartValues.value = null;
 		});
+	} else {
+		chartValues.value = null;
 	}
+}, {
+	immediate: true,
 });
 </script>
 
@@ -49,8 +67,37 @@ $bodyInfoHieght: 16px;
 	display: flex;
 	align-items: center;
 	padding: 16px;
-	background: var(--MI_THEME-panel);
 	border-radius: 8px;
+	background-color: var(--MI-THEME-panel);
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--c) 6px,
+		var(--c) 16px
+	);
+	--c: transparent;
+
+	&,
+	html[data-color-scheme=light] & {
+		&.isSilenced {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), blue 50%) srgb r g b / 0.25);
+		}
+
+		&.isSuspended {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), black 15%) srgb r g b / 0.25);
+		}
+	}
+
+	html[data-color-scheme=dark] & {
+		&.isSilenced {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), blue 50%) srgb r g b / 0.5);
+		}
+
+		&.isSuspended {
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), white 15%) srgb r g b / 0.5);
+		}
+	}
 }
 
 .avatar {

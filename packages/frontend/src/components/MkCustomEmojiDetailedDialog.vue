@@ -83,12 +83,27 @@ function cancel() {
 
 <style lang="scss" module>
 .emojiImgWrapper {
-  max-width: 100%;
-  height: 40cqh;
-  background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-X5) 8px, var(--MI_THEME-X5) 14px);
-  border-radius: var(--MI-radius);
-  margin: auto;
-  overflow-y: hidden;
+	max-width: 100%;
+	height: 40cqh;
+	border-radius: var(--MI-radius);
+	margin: auto;
+	overflow-y: hidden;
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--c) 6px,
+		var(--c) 16px
+	);
+
+	&,
+	html[data-color-scheme=light] & {
+		--c: rgb(0 0 0 / 0.02);
+	}
+
+	html[data-color-scheme=dark] & {
+		--c: rgb(255 255 255 / 0.02);
+	}
 }
 
 .aliases {

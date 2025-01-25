@@ -242,8 +242,13 @@ onMounted(() => {
 	background: var(--MI_THEME-acrylicBg);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, var(--MI_THEME-panel) 5px, var(--MI_THEME-panel) 10px);
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--MI_THEME-panel) 6px,
+		var(--MI_THEME-panel) 16px
+	);
 	border-radius: 0 0 6px 6px;
 }
 </style>

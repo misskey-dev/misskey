@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div v-for="item in items" :key="item.id">
 									<div :class="$style.userItem">
 										<MkA :class="$style.userItemBody" :to="`${userPage(item.user)}`">
-											<MkUserCardMini :user="item.user"/>
+											<MkUserCardMini :user="item.user" withChart/>
 										</MkA>
 										<button class="_button" :class="$style.menu" @click="showMembershipMenu(item, $event)"><i class="ti ti-dots"></i></button>
 										<button class="_button" :class="$style.remove" @click="removeUser(item, $event)"><i class="ti ti-x"></i></button>

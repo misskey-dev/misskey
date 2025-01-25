@@ -444,14 +444,17 @@ rt {
 	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
 	border-radius: 10px;
 
-	--MI_THEME-bg: #F1E8DC;
-	--MI_THEME-fg: #693410;
-}
+	&,
+	html[data-color-scheme=light] & {
+		--bg: #F1E8DC;
+		--fg: #693410;
+	}
 
-html[data-color-scheme=dark] ._woodenFrame {
-	--MI_THEME-bg: #1d0c02;
-	--MI_THEME-fg: #F1E8DC;
-	--MI_THEME-panel: #192320;
+	html[data-color-scheme=dark] & {
+		--bg: #1d0c02;
+		--fg: #F1E8DC;
+		--panel: #192320;
+	}
 }
 
 ._woodenFrameH {

@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<template v-for="[id, user] in accounts">
-				<MkUserCardMini v-if="user != null" :key="user.id" :user="user" :class="$style.user" @click.prevent="menu(user, $event)"/>
+				<MkUserCardMini v-if="user != null" :key="user.id" :user="user" withChart :class="$style.user" @click.prevent="menu(user, $event)"/>
 				<button v-else v-panel class="_button" :class="$style.unknownUser" @click="menu(id, $event)">
 					<div :class="$style.unknownUserAvatarMock"><i class="ti ti-user-question"></i></div>
 					<div>
