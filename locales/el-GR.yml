@@ -397,3 +397,6 @@ _moderationLogTypes:
   suspend: "Αποβολή"
 _reversi:
   total: "Σύνολο"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Σφάλμα"

@@ -476,6 +476,11 @@ describe('test', () => {
 コード上でMisskeyのドメイン固有の概念には`Mi`をprefixすることで、他のドメインの同様の概念と区別できるほか、名前の衝突を防ぐ。
 ただし、文脈上Misskeyのものを指すことが明らかであり、名前の衝突の恐れがない場合は、一時的なローカル変数に限って`Mi`を省略してもよい。
 
+### Misskey.jsの型生成
+```bash
+pnpm build-misskey-js-with-types
+```
+
 ### How to resolve conflictions occurred at pnpm-lock.yaml?
 
 Just execute `pnpm` to fix it.
