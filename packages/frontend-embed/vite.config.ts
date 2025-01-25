@@ -9,7 +9,7 @@ import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginJson5 from './vite.json5.js';
 
-const { url } = process.env.NODE_ENV === 'development' ?  yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')) : null;
+const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
