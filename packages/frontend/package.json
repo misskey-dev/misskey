@@ -95,7 +95,7 @@
 		"@storybook/types": "8.4.4",
 		"@storybook/vue3": "8.4.4",
 		"@storybook/vue3-vite": "8.4.4",
-		"@tabler/icons-webfont": "3.3.0",
+		"@tabler/icons-webfont": "https://github.com/misskey-dev/tabler-icons/archive/refs/tags/3.29.0-mi.1913+5921534bc.tar.gz",
 		"@testing-library/vue": "8.1.0",
 		"@types/canvas-confetti": "^1.6.4",
 		"@types/estree": "1.0.6",

@@ -40,7 +40,7 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/summaly": "5.1.0",
-		"@tabler/icons-webfont": "3.3.0",
+		"@tabler/icons-webfont": "https://github.com/misskey-dev/tabler-icons/archive/refs/tags/3.29.0-mi.1913+5921534bc.tar.gz",
 		"@testing-library/vue": "8.1.0",
 		"@types/estree": "1.0.6",
 		"@types/micromatch": "4.0.9",
