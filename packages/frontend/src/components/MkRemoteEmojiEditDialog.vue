@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkWindow
 	ref="windowEl"
 	:initialWidth="400"
-	:initialHeight="560"
+	:initialHeight="500"
 	:canResize="true"
 	@close="windowEl?.close()"
 	@closed="emit('closed')"
@@ -32,15 +32,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 
-				<MkInput v-model="name" disabled>
-					<template #label>{{ i18n.ts.name }}</template>
-				</MkInput>
-				<MkInput v-model="host" disabled>
-					<template #label>{{ i18n.ts.host }}</template>
-				</MkInput>
-				<MkTextarea v-model="license" disabled>
-					<template #label>{{ i18n.ts.license }}</template>
-				</MkTextarea>
+				<MkKeyValue>
+					<template #key>{{ i18n.ts.id }}</template>
+					<template #value>{{ name }}</template>
+				</MkKeyValue>
+				<MkKeyValue>
+					<template #key>{{ i18n.ts.host }}</template>
+					<template #value>{{ host }}</template>
+				</MkKeyValue>
+				<MkKeyValue>
+					<template #key>{{ i18n.ts.license }}</template>
+					<template #value>{{ license }}</template>
+				</MkKeyValue>
 			</div>
 		</MkSpacer>
 		<div :class="$style.footer">
@@ -54,6 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
