@@ -6,13 +6,14 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsx src/generator.ts",
-		"lint": "eslint"
+		"eslint": "eslint src/**/*.ts",
+		"typecheck": "tsc --noEmit",
+		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
 		"@types/node": "22.9.0",
 		"@typescript-eslint/eslint-plugin": "7.17.0",
-		"@typescript-eslint/parser": "7.17.0",
-		"eslint": "8.0.0"
+		"@typescript-eslint/parser": "7.17.0"
 	},
 	"dependencies": {
 		"@tabler/icons-webfont": "https://github.com/misskey-dev/tabler-icons/archive/refs/tags/3.29.0-mi.1913+5921534bc.tar.gz",
