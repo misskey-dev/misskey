@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
 import { Feed } from 'feed';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, NotesRepository, UserProfilesRepository } from '@/models/_.js';
+import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -19,12 +19,19 @@ import { parse as mfmParse } from 'mfm-js';
 import { MiNote } from '@/models/Note.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
+import Logger from '@/logger.js';
+import { LoggerService } from '@/core/LoggerService.js';
 
 @Injectable()
 export class FeedService {
+	private readonly logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
@@ -39,7 +46,10 @@ export class FeedService {
 		private driveFileEntityService: DriveFileEntityService,
 		private idService: IdService,
 		private mfmService: MfmService,
+
+		loggerService: LoggerService,
 	) {
+		this.logger = loggerService.getLogger('feed');
 	}
 
 	@bindThis
@@ -55,7 +65,6 @@ export class FeedService {
 		const notes = await this.notesRepository.find({
 			where: {
 				userId: user.id,
-				renoteId: IsNull(),
 				visibility: In(['public', 'home']),
 			},
 			order: { id: -1 },
@@ -82,7 +91,7 @@ export class FeedService {
 			let contentStr = await this.noteToString(note, true);
 			let next = note.renoteId ? note.renoteId : note.replyId;
 			let depth = 10;
-			let noteintitle = true;
+			const noteintitle = true;
 			let title = `Post by ${author.name}`;
 			while (depth > 0 && next) {
 				const finding = await this.findById(next);
@@ -120,13 +129,13 @@ export class FeedService {
 	}
 
 	private escapeCDATA(str: string) {
-		return str.replaceAll("]]>", "]]]]><![CDATA[>").replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "");
+		return str?.replaceAll("]]>", "]]]]><![CDATA[>").replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "");
 	}
 
 	private async noteToString(note: MiNote, isTheNote = false) {
 		const author = isTheNote
 			? null
-			: await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
+			: await this.usersRepository.findOneByOrFail({ id: note.userId });
 		let outstr = author
 			? `${author.name}(@${author.username}@${
 					author.host ? author.host : this.config.host
@@ -134,7 +143,7 @@ export class FeedService {
 					note.renoteId ? "renotes" : note.replyId ? "replies" : "says"
 				}: <br>`
 			: "";
-		const files = note.fileIds.length > 0 ? await this.driveFilesRepository.findBy({
+		const files = note.fileIds?.length ? await this.driveFilesRepository.findBy({
 			id: In(note.fileIds),
 		}) : [];
 		let fileEle = "";
@@ -169,22 +178,20 @@ export class FeedService {
 		return outstr;
 	}
 
-	private async findById(id : String) {
+	private async findById(id : string) {
 		let text = "";
 		let next = null;
-		const findings = await this.notesRepository.find({
-			where: {
-				id: id,
-				renoteId: IsNull(),
-				visibility: In(['public', 'home']),
-			},
-			order: { id: -1 },
-			take: 1,
+		const findings = await this.notesRepository.findOneBy({
+			id: id,
+			visibility: In(['public', 'home']),
 		});
+		
 		if (findings) {
 			text += `<hr>`;
 			text += await this.noteToString(findings);
 			next = findings.renoteId ? findings.renoteId : findings.replyId;
+		} else {
+			this.logger.info(`Note ${id} not in scope`);
 		}
 		return { text, next };
 	}
