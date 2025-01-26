@@ -16,6 +16,9 @@ import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { MfmService } from "@/core/MfmService.js";
 import { parse as mfmParse } from 'mfm-js';
+import { MiNote } from '@/models/Note.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
+import { getNoteSummary } from '@/misc/get-note-summary.js';
 
 @Injectable()
 export class FeedService {
@@ -43,6 +46,7 @@ export class FeedService {
 	public async packFeed(user: MiUser) {
 		const author = {
 			link: `${this.config.url}/@${user.username}`,
+			email: `${user.username}@${this.config.host}`,
 			name: user.name ?? user.username,
 		};
 
@@ -75,22 +79,113 @@ export class FeedService {
 		});
 
 		for (const note of notes) {
-			const files = note.fileIds.length > 0 ? await this.driveFilesRepository.findBy({
-				id: In(note.fileIds),
-			}) : [];
-			const file = files.find(file => file.type.startsWith('image/'));
-			const text = note.text;
+			let contentStr = await this.noteToString(note, true);
+			let next = note.renoteId ? note.renoteId : note.replyId;
+			let depth = 10;
+			let noteintitle = true;
+			let title = `Post by ${author.name}`;
+			while (depth > 0 && next) {
+				const finding = await this.findById(next);
+				contentStr += finding.text;
+				next = finding.next;
+				depth -= 1;
+			}
+
+			if (noteintitle) {
+				if (note.renoteId) {
+					title = `Boost by ${author.name}`;
+				} else if (note.replyId) {
+					title = `Reply by ${author.name}`;
+				} else {
+					title = `Post by ${author.name}`;
+				}
+				const effectiveNote =
+					!isQuote(note) && note.renote != null ? note.renote : note;
+				const content = getNoteSummary(effectiveNote);
+				if (content) {
+					title += `: ${content}`;
+				}
+			}
 
 			feed.addItem({
-				title: `New note by ${author.name}`,
+				title: this.escapeCDATA(title).substring(0, 100),
 				link: `${this.config.url}/notes/${note.id}`,
 				date: this.idService.parse(note.id).date,
-				description: note.cw ?? undefined,
-				content: text ? this.mfmService.toHtml(mfmParse(text), JSON.parse(note.mentionedRemoteUsers)) ?? undefined : undefined,
-				image: file ? this.driveFileEntityService.getPublicUrl(file) : undefined,
+				description: this.escapeCDATA(note.cw) ?? undefined,
+				content: this.escapeCDATA(contentStr) || undefined,
 			});
 		}
 
 		return feed;
+	}
+
+	private escapeCDATA(str: string) {
+		return str.replaceAll("]]>", "]]]]><![CDATA[>").replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "");
+	}
+
+	private async noteToString(note: MiNote, isTheNote = false) {
+		const author = isTheNote
+			? null
+			: await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
+		let outstr = author
+			? `${author.name}(@${author.username}@${
+					author.host ? author.host : this.config.host
+				}) ${
+					note.renoteId ? "renotes" : note.replyId ? "replies" : "says"
+				}: <br>`
+			: "";
+		const files = note.fileIds.length > 0 ? await this.driveFilesRepository.findBy({
+			id: In(note.fileIds),
+		}) : [];
+		let fileEle = "";
+		for (const file of files) {
+			if (file.type.startsWith("image/")) {
+				fileEle += ` <br><img src="${this.driveFileEntityService.getPublicUrl(file)}">`;
+			} else if (file.type.startsWith("audio/")) {
+				fileEle += ` <br><audio controls src="${this.driveFileEntityService.getPublicUrl(
+					file,
+				)}" type="${file.type}">`;
+			} else if (file.type.startsWith("video/")) {
+				fileEle += ` <br><video controls src="${this.driveFileEntityService.getPublicUrl(
+					file,
+				)}" type="${file.type}">`;
+			} else {
+				fileEle += ` <br><a href="${this.driveFileEntityService.getPublicUrl(file)}" download="${
+					file.name
+				}">${file.name}</a>`;
+			}
+		}
+
+		outstr += `${note.cw ? note.cw + "<br>" : ""}${
+			(note.text ? this.mfmService.toHtml(mfmParse(note.text), JSON.parse(note.mentionedRemoteUsers)) ?? undefined : undefined) || ""
+		}${fileEle}`;
+		if (isTheNote) {
+			outstr += ` <span class="${
+				note.renoteId ? "renote_note" : note.replyId ? "reply_note" : "new_note"
+			} ${
+				fileEle.indexOf("img src") !== -1 ? "with_img" : "without_img"
+			}"></span>`;
+		}
+		return outstr;
+	}
+
+	private async findById(id : String) {
+		let text = "";
+		let next = null;
+		const findings = await this.notesRepository.find({
+			where: {
+				id: id,
+				renoteId: IsNull(),
+				visibility: In(['public', 'home']),
+			},
+			order: { id: -1 },
+			take: 1,
+		});
+		if (findings) {
+			text += `<hr>`;
+			text += await this.noteToString(findings);
+			next = findings.renoteId ? findings.renoteId : findings.replyId;
+		}
+		return { text, next };
 	}
 }
