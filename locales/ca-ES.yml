@@ -2755,6 +2755,7 @@ _customEmojisManager:
     failureLogNothing: "No hi ha registres de fallades."
     logNothing: "No hi ha registres."
   _remote:
+    selectionRowDetail: "Detall de la línia seleccionada"
     importSelectionRows: "Importar les files seleccionades"
     importSelectionRangesRows: "Importar les files de la selecció "
     importEmojisButton: "Importar els Emojis marcats"
