@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkSpacer :contentMax="1200">
-	<MkTab v-model="origin" style="margin-bottom: var(--MI-margin);">
+	<MkTab v-if="instance.federation !== 'none'" v-model="origin" style="margin-bottom: var(--MI-margin);">
 		<option value="local">{{ i18n.ts.local }}</option>
 		<option value="remote">{{ i18n.ts.remote }}</option>
 	</MkTab>
@@ -69,6 +69,7 @@ import MkUserList from '@/components/MkUserList.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
