@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<template v-else>
-					<div>
+					<div :class="$style.grid">
 						<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
 					</div>
 				</template>
@@ -543,6 +543,32 @@ const headerActions = computed(() => [{
 		});
 	},
 }, {
+	icon: 'ti ti-list-numbers',
+	text: i18n.ts._customEmojisManager._gridCommon.searchLimit,
+	handler: (ev: MouseEvent) => {
+		function changeSearchLimit(to: number) {
+			searchQuery.value.limit = to;
+			refreshCustomEmojis();
+		}
+
+		os.popupMenu([{
+			type: 'radioOption',
+			text: '25',
+			active: computed(() => searchQuery.value.limit === 25),
+			action: () => changeSearchLimit(25),
+		}, {
+			type: 'radioOption',
+			text: '50',
+			active: computed(() => searchQuery.value.limit === 50),
+			action: () => changeSearchLimit(50),
+		}, {
+			type: 'radioOption',
+			text: '100',
+			active: computed(() => searchQuery.value.limit === 100),
+			action: () => changeSearchLimit(100),
+		}], ev.currentTarget ?? ev.target);
+	},
+}, {
 	icon: 'ti ti-notes',
 	text: i18n.ts._customEmojisManager._gridCommon.registrationLogs,
 	handler: () => {
@@ -573,6 +599,11 @@ const headerActions = computed(() => [{
 .main {
 	height: calc(100vh - var(--MI-stickyTop) - var(--MI-stickyBottom));
 	overflow: scroll;
+}
+
+.grid {
+	width: max-content;
+	border-bottom: 1px solid var(--MI_THEME-divider);
 }
 
 .footer {

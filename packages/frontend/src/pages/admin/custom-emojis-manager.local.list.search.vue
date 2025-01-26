@@ -107,13 +107,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@update="onSortOrderUpdate"
 					/>
 				</MkFolder>
-				<MkInput
-					v-model="model.limit"
-					type="number"
-					:max="100"
-				>
-					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchLimit }}</template>
-				</MkInput>
 			</div>
 		</MkSpacer>
 		<div :class="$style.footerActions">
