@@ -2755,6 +2755,7 @@ _customEmojisManager:
     failureLogNothing: "没有失败日志。"
     logNothing: "没有日志"
   _remote:
+    selectionRowDetail: "所选行的详细信息"
     importSelectionRows: "导入所选行"
     importSelectionRangesRows: "导入所选范围的行"
     importEmojisButton: "导入已选择的表情符号"
