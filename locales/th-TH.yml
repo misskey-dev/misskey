@@ -2695,9 +2695,6 @@ _contextMenu:
   app: "แอปพลิเคชัน"
   appWithShift: "แอปฟลิเคชันด้วยปุ่มยกแคร่ (Shift)"
   native: "UI ของเบราว์เซอร์"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "ผิดพลาด!"
 _embedCodeGen:
   title: "ปรับแต่งโค้ดฝัง"
   header: "แสดงส่วนหัว"
