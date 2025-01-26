@@ -12,12 +12,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:iconClass="order.direction === '+' ? 'ti ti-arrow-up' : 'ti ti-arrow-down'"
 			:exButtonIconClass="'ti ti-x'"
 			:content="order.key"
+			:class="$style.sortOrderTag"
 			@click="onToggleSortOrderButtonClicked(order)"
 			@exButtonClick="onRemoveSortOrderButtonClicked(order)"
 		/>
 	</div>
 	<MkButton :class="$style.sortOrderAddButton" @click="onAddSortOrderButtonClicked">
-		<span class="ti ti-plus"/>
+		<span class="ti ti-plus"></span>
 	</MkButton>
 </div>
 </template>
@@ -108,5 +109,10 @@ function emitOrder(sortOrders: SortOrder<T>[]) {
 	margin-left: auto;
 	border-radius: 9999px;
 	background-color: var(--MI_THEME-buttonBg);
+}
+
+.sortOrderTag {
+	user-select: none;
+	cursor: pointer;
 }
 </style>
