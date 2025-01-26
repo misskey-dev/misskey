@@ -2695,6 +2695,9 @@ _contextMenu:
   app: "แอปพลิเคชัน"
   appWithShift: "แอปฟลิเคชันด้วยปุ่มยกแคร่ (Shift)"
   native: "UI ของเบราว์เซอร์"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "ผิดพลาด!"
 _embedCodeGen:
   title: "ปรับแต่งโค้ดฝัง"
   header: "แสดงส่วนหัว"
@@ -2709,3 +2712,6 @@ _embedCodeGen:
   generateCode: "สร้างโค้ดสำหรับการฝัง"
   codeGenerated: "รหัสถูกสร้างขึ้นแล้ว"
   codeGeneratedDescription: "นำโค้ดที่สร้างแล้วไปวางในเว็บไซต์ของคุณเพื่อฝังเนื้อหา"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "ไม่พบหน้าที่ต้องการ"
