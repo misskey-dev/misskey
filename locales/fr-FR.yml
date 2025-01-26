@@ -2361,6 +2361,9 @@ _reversi:
   lookingForPlayer: "Recherche d'adversaire"
 _mediaControls:
   playbackRate: "Vitesse de lecture"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Erreur"
 _embedCodeGen:
   title: "Personnaliser le code d'intégration"
   generateCode: "Générer le code d'intégration"

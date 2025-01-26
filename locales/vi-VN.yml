@@ -1930,6 +1930,9 @@ _moderationLogTypes:
   createInvitation: "Tạo lời mời"
 _reversi:
   total: "Tổng cộng"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Lỗi"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Không tìm thấy"

@@ -39,13 +39,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ cell.value }}
 				</div>
 				<div v-else-if="cellType === 'boolean'">
-					<span v-if="cell.value === true" class="ti ti-check"/>
-					<span v-else class="ti"/>
+					<div :class="[$style.bool, {
+						[$style.boolTrue]: cell.value === true,
+						'ti ti-check': cell.value === true,
+					}]"></div>
 				</div>
 				<div v-else-if="cellType === 'image'">
 					<img
-						:src="cell.value as string"
-						:alt="cell.value as string"
+						:src="cell.value"
+						:alt="cell.value"
 						:class="$style.viewImage"
 						@load="emitContentSizeChanged"
 					/>
@@ -373,6 +375,31 @@ $cellHeight: 28px;
 	max-height: $cellHeight;
 	height: $cellHeight;
 	object-fit: cover;
+}
+
+.bool {
+	position: relative;
+	width: 18px;
+	height: 18px;
+	background: var(--MI_THEME-panel);
+	border: solid 2px var(--MI_THEME-divider);
+	border-radius: 4px;
+	box-sizing: border-box;
+
+	&.boolTrue {
+		border-color: var(--MI_THEME-accent);
+		background: var(--MI_THEME-accent);
+
+		&::before {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			color: var(--MI_THEME-fgOnAccent);
+			font-size: 12px;
+			line-height: 18px;
+		}
+	}
 }
 
 .editingInput {

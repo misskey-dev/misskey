@@ -1063,7 +1063,7 @@ hiddenTags: "Скрытые хештеги"
 notesSearchNotAvailable: "Поиск заметок недоступен"
 license: "Лицензия"
 unfavoriteConfirm: "Удалить избранное?"
-myClips: "Мои клипы"
+myClips: "Мои подборки"
 drivecleaner: "Очиститель дисков"
 retryAllQueuesNow: "Повторить все очереди сейчас"
 retryAllQueuesConfirmTitle: "Хотите попробовать ещё раз?"
@@ -2147,6 +2147,9 @@ _hemisphere:
   caption: "Используется для некоторых настроек клиента для определения сезона."
 _reversi:
   total: "Всего"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Ошибка"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Не найдено"

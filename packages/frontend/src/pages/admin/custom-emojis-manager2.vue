@@ -5,12 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<!-- コンテナが入れ子になるのでz-indexが被らないよう大きめの数値を設定する-->
-	<MkStickyContainer :headerZIndex="2000">
+	<MkStickyContainer>
 		<template #header>
 			<MkPageHeader v-model:tab="headerTab" :tabs="headerTabs"/>
 		</template>
-		<XGridLocalComponent v-if="headerTab === 'local'"/>
+		<XGridLocalComponent v-if="headerTab === 'local'" :class="$style.local"/>
 		<XGridRemoteComponent v-else/>
 	</MkStickyContainer>
 </div>
@@ -40,5 +39,13 @@ const headerTabs = computed(() => [{
 definePageMetadata(computed(() => ({
 	title: i18n.ts.customEmojis,
 	icon: 'ti ti-icons',
+	needWideArea: true,
 })));
 </script>
+
+<style lang="css" module>
+.local {
+	height: calc(100dvh - var(--MI-stickyTop) - var(--MI-stickyBottom));
+	overflow: clip;
+}
+</style>

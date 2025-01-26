@@ -705,5 +705,8 @@ _reversi:
   rules: "Regler"
   black: "Svart"
   white: "Vit"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Fel!"
 _selfXssPrevention:
   warning: "VARNING"

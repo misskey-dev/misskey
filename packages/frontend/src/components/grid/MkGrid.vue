@@ -7,7 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div
 	ref="rootEl"
 	class="mk_grid_border"
-	:class="[$style.grid]"
+	:class="[$style.grid, {
+		[$style.noOverflowHandling]: rootSetting.noOverflowStyle,
+		'mk_grid_root_rounded': rootSetting.rounded,
+		'mk_grid_root_border': rootSetting.outerBorder,
+	}]"
 	@mousedown.prevent="onMouseDown"
 	@keydown="onKeyDown"
 	@contextmenu.prevent.stop="onContextMenu"
@@ -77,9 +81,16 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps<{
-	settings: GridSetting,
-	data: DataSource[]
+	settings: GridSetting;
+	data: DataSource[];
 }>();
+
+const rootSetting: Required<GridSetting['root']> = {
+	noOverflowStyle: false,
+	rounded: true,
+	outerBorder: true,
+	...props.settings.root,
+};
 
 // non-reactive
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
@@ -1277,32 +1288,48 @@ onMounted(() => {
 	overflow-x: scroll;
 	// firefoxだとスクロールバーがセルに重なって見づらくなってしまうのでスペースを空けておく
 	padding-bottom: 8px;
+
+	&.noOverflowHandling {
+		overflow-x: revert;
+		padding-bottom: 0;
+	}
 }
 </style>
 
 <style lang="scss">
 $borderSetting: solid 0.5px var(--MI_THEME-divider);
-$borderRadius: var(--MI-radius);
 
 // 配下コンポーネントを含めて一括してコントロールするため、scopedもmoduleも使用できない
 .mk_grid_border {
+	--rootBorderSetting: none;
+	--borderRadius: 0;
+
 	border-spacing: 0;
+
+	&.mk_grid_root_border {
+		--rootBorderSetting: #{$borderSetting};
+	}
+
+	&.mk_grid_root_rounded {
+		--borderRadius: var(--MI-radius);
+	}
 
 	.mk_grid_thead {
 		.mk_grid_tr {
 			.mk_grid_th {
 				border-left: $borderSetting;
-				border-top: $borderSetting;
+				border-top: var(--rootBorderSetting);
 
 				&:first-child {
 					// 左上セル
-					border-top-left-radius: $borderRadius;
+					border-left: var(--rootBorderSetting);
+					border-top-left-radius: var(--borderRadius);
 				}
 
 				&:last-child {
 					// 右上セル
-					border-top-right-radius: $borderRadius;
-					border-right: $borderSetting;
+					border-top-right-radius: var(--borderRadius);
+					border-right: var(--rootBorderSetting);
 				}
 			}
 		}
@@ -1314,9 +1341,14 @@ $borderRadius: var(--MI-radius);
 				border-left: $borderSetting;
 				border-top: $borderSetting;
 
+				&:first-child {
+					// 左端の列
+					border-left: var(--rootBorderSetting);
+				}
+
 				&:last-child {
 					// 一番右端の列
-					border-right: $borderSetting;
+					border-right: var(--rootBorderSetting);
 				}
 			}
 		}
@@ -1324,16 +1356,16 @@ $borderRadius: var(--MI-radius);
 		.last_row {
 			.mk_grid_td, .mk_grid_th {
 				// 一番下の行
-				border-bottom: $borderSetting;
+				border-bottom: var(--rootBorderSetting);
 
 				&:first-child {
 					// 左下セル
-					border-bottom-left-radius: $borderRadius;
+					border-bottom-left-radius: var(--borderRadius);
 				}
 
 				&:last-child {
 					// 右下セル
-					border-bottom-right-radius: $borderRadius;
+					border-bottom-right-radius: var(--borderRadius);
 				}
 			}
 		}

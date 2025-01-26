@@ -1449,6 +1449,9 @@ _moderationLogTypes:
   resetPassword: "Resetovať heslo"
 _reversi:
   total: "Celkom"
+_customEmojisManager:
+  _gridCommon:
+    alertEmojisRegisterFailedTitle: "Chyba"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Nenájdené"
