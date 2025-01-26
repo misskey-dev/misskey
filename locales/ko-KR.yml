@@ -2745,10 +2745,10 @@ _customEmojisManager:
     deleteSelectionRanges: "선택한 행을 삭제"
     searchSettings: "검색 설정"
     searchSettingCaption: "고급 검색을 설정합니다."
+    searchLimit: "표시 건수"
     sortOrder: "정렬 순서"
     registrationLogs: "등록 로그"
     registrationLogsCaption: "이모지를 갱신하거나 삭제할 때 로그가 표시됩니다. 갱신 또는 삭제하거나, 페이지 이동, 새로 고침하면 삭제됩니다."
-    alertEmojisRegisterFailedTitle: "오류"
     alertEmojisRegisterFailedDescription: "이모지를 갱신 또는 삭제하지 못했습니다. 자세한 내용은 등록 로그를 확인해주세요."
   _logs:
     showSuccessLogSwitch: "성공 로그를 표시"
@@ -2770,10 +2770,12 @@ _customEmojisManager:
       markAsDeleteTargetRanges: "선택한 범위의 행을 삭제 대상으로 하기"
       alertUpdateEmojisNothingDescription: "변경할 이모지가 없습니다."
       alertDeleteEmojisNothingDescription: "삭제 대상의 이모지는 없습니다."
-      confirmUpdateEmojisTitle: "확인"
+      confirmMovePage: "페이지를 이동할까요?"
+      confirmChangeView: "표시를 바꿀까요?"
       confirmUpdateEmojisDescription: "{count}개의 이모지를 갱신합니다. 실행할까요?"
-      confirmDeleteEmojisTitle: "확인"
       confirmDeleteEmojisDescription: "선택한 이모지 {count}개를 삭제합니다. 실행할까요?"
+      confirmResetDescription: "지금까지 했던 변경 내용이 모두 초기화됩니다."
+      confirmMovePageDesciption: "이 페이지의 이모지에 변경이 있습니다.\n저장하지 않은 상태로 페이지를 이동하면, 이 페이지에서 바꾼 변경 내용이 모두 지워집니다."
       dialogSelectRoleTitle: "이모지에 설정된 역할을 검색"
     _register:
       uploadSettingTitle: "업로드 설정"
@@ -2784,9 +2786,9 @@ _customEmojisManager:
       emojiInputAreaList1: "이 틀 안에 이미지 파일 또는 디렉토리를 끌어서 가져오기"
       emojiInputAreaList2: "이 링크를 클릭해서 PC에서 선택하기"
       emojiInputAreaList3: "이 링크를 클릭해서 드라이브에서 선택하기"
-      confirmRegisterEmojisTitle: "확인"
-      confirmClearEmojisTitle: "확인"
-      confirmUploadEmojisTitle: "확인"
+      confirmRegisterEmojisDescription: "리스트에 표시되어진 이모지를 새로운 커스텀 이모지로 등록합니다. 실행할까요? (부하를 피하기 위해, 한 번에 등록할 수 있는 이모지는 {count}건까지 입니다.)"
+      confirmClearEmojisDescription: "편집 내용을 지우고, 목록에 표시되어진 이모지를 지웁니다. 실행할까요?"
+      confirmUploadEmojisDescription: "드래그 앤 드롭한 {count}개의 파일을 드라이브에 업로드 합니다. 실행할까요?"
 _embedCodeGen:
   title: "임베디드 코드를 커스터마이즈"
   header: "해더를 표시"
@@ -2820,5 +2822,13 @@ _remoteLookupErrors:
   _requestFailed:
     title: "요청을 실패했습니다."
     description: "해당 서버와 통신을 실패했습니다. 상대방 서버에 접속 불가능한 상태일 수도 있습니다. 또는 잘못된 URI 또는 없는 URI를 입력했는지 확인해보세요."
+  _responseInvalid:
+    title: "유효하지 않은 반응입니다."
+    description: "이 서버와 통신할 수 있지만, 데이터가 올바르지 않습니다."
+  _responseInvalidIdHostNotMatch:
+    description: "입력된 URI과 실제 URI가 다릅니다. 제 3자 서버를 통한 리모트 컨텐츠를 조회하는 경우, 원래 서버 측에서 받아올 수 있는 URI를 사용하여 조회하시길 바랍니다."
   _noSuchObject:
     title: "찾을 수 없습니다"
+    description: "요구된 리소스를 찾을 수 없습니다. URI를 다시 한 번 확인해보세요."
+_captcha:
+  verify: "CAPTCHA를 먼저 해결하세요."
