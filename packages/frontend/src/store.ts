@@ -106,7 +106,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultNoteLocalOnly: {
 		where: 'account',
-		default: true,
+		default: false,
 	},
 	defaultScheduledNoteDelete: {
 		where: 'account',
@@ -134,7 +134,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactions: {
 		where: 'account',
-		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+		default: ['👍', '💙', '💜', '🥺', '😇', '😢', '😭', '🤔', '😮', '🍮'],
 	},
 	pinnedEmojis: {
 		where: 'account',
@@ -142,7 +142,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactionAcceptance: {
 		where: 'account',
-		default: 'likeOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
+		default: 'nonSensitiveOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
 	},
 	mutedAds: {
 		where: 'account',
@@ -191,7 +191,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	showPreview: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	statusbars: {
 		where: 'deviceAccount',
@@ -216,12 +216,12 @@ export const defaultStore = markRaw(new Storage('base', {
 	tl: {
 		where: 'deviceAccount',
 		default: {
-			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
+			src: 'local' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
 			userList: null as Misskey.entities.UserList | null,
 			filter: {
-				withReplies: true,
+				withReplies: false,
 				withRenotes: true,
-				withSensitive: true,
+				withSensitive: false,
 				onlyFiles: false,
 				localOnly: false,
 			},
@@ -238,15 +238,15 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	serverDisconnectedBehavior: {
 		where: 'device',
-		default: 'quiet' as 'quiet' | 'reload' | 'dialog',
+		default: 'dialog' as 'quiet' | 'reload' | 'dialog',
 	},
 	nsfw: {
 		where: 'device',
-		default: 'respect' as 'respect' | 'force' | 'ignore',
+		default: 'force' as 'respect' | 'force' | 'ignore',
 	},
 	highlightSensitiveMedia: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	animation: {
 		where: 'device',
@@ -266,7 +266,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	enableQuickAddMfmFunction: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	loadRawImages: {
 		where: 'device',
@@ -318,7 +318,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	darkMode: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	instanceTicker: {
 		where: 'device',
@@ -326,19 +326,19 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	instanceIcon: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	emojiPickerScale: {
 		where: 'device',
-		default: 1,
+		default: 3,
 	},
 	emojiPickerWidth: {
 		where: 'device',
-		default: 1,
+		default: 5,
 	},
 	emojiPickerHeight: {
 		where: 'device',
-		default: 2,
+		default: 4,
 	},
 	emojiPickerStyle: {
 		where: 'device',
@@ -386,7 +386,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	numberOfPageCache: {
 		where: 'device',
-		default: 3,
+		default: 2,
 	},
 	showNoteActionsOnlyHover: {
 		where: 'device',
@@ -406,7 +406,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	hideReactionCount: {
 		where: 'account',
-		default: 'none' as 'none' | 'self' | 'others' | 'all',
+		default: 'others' as 'none' | 'self' | 'others' | 'all',
 	},
 	limitWidthOfReaction: {
 		where: 'device',
@@ -438,7 +438,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	enableCondensedLine: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	additionalUnicodeEmojiIndexes: {
 		where: 'device',
@@ -463,10 +463,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	dataSaver: {
 		where: 'device',
 		default: {
-			media: false,
-			avatar: false,
-			urlPreview: false,
-			code: false,
+			media: true,
+			avatar: true,
+			urlPreview: true,
+			code: true,
 		} as Record<string, boolean>,
 	},
 	enableSeasonalScreenEffect: {
@@ -494,7 +494,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	keepOriginalFilename: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	alwaysConfirmFollow: {
 		where: 'device',
@@ -502,7 +502,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	confirmWhenRevealingSensitiveMedia: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	contextMenu: {
 		where: 'device',
@@ -515,7 +515,7 @@ export const defaultStore = markRaw(new Storage('base', {
 
 	sound_masterVolume: {
 		where: 'device',
-		default: 0.3,
+		default: 0.2,
 	},
 	sound_notUseSound: {
 		where: 'device',
@@ -523,7 +523,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	sound_useSoundOnlyWhenActive: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	sound_note: {
 		where: 'device',
@@ -543,7 +543,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	searchEngine: {
 		where: 'device',
-		default: 'https://google.com/search?q=',
+		default: 'https://search.yami.ski/search?',
 	},
 	reactionChecksMuting: {
 		where: 'device',
