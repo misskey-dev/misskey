@@ -2748,7 +2748,6 @@ _customEmojisManager:
     sortOrder: "排序"
     registrationLogs: "登錄日誌"
     registrationLogsCaption: "會顯示更新或刪除表情符號時的日誌。進行更新或刪除操作，或切換頁面、重新載入後，日誌將會消失。"
-    alertEmojisRegisterFailedTitle: "錯誤"
     alertEmojisRegisterFailedDescription: "更新或刪除表情符號失敗。詳情請查看登錄日誌。"
   _logs:
     showSuccessLogSwitch: "顯示成功日誌"
@@ -2769,9 +2768,7 @@ _customEmojisManager:
       markAsDeleteTargetRanges: "將選取範圍的行設為刪除對象\n"
       alertUpdateEmojisNothingDescription: "沒有選取需要變更的表情符號。"
       alertDeleteEmojisNothingDescription: "沒有選取需要刪除的表情符號。"
-      confirmUpdateEmojisTitle: "確定"
       confirmUpdateEmojisDescription: "將更新{count}個表情符號。是否執行此操作？"
-      confirmDeleteEmojisTitle: "確定"
       confirmDeleteEmojisDescription: "將刪除勾選的{count}個表情符號。是否執行此操作？"
       dialogSelectRoleTitle: "根據表情符號設定的角色進行搜尋"
     _register:
@@ -2783,11 +2780,8 @@ _customEmojisManager:
       emojiInputAreaList1: "將圖片檔案或目錄拖放到此框中"
       emojiInputAreaList2: "點擊此連結從電腦中選擇"
       emojiInputAreaList3: "點擊此連結從雲端硬碟中選擇"
-      confirmRegisterEmojisTitle: "確定"
       confirmRegisterEmojisDescription: "將列表中顯示的表情符號登錄為新的自定表情符號。是否確定？（為避免過高負荷，每次操作最多可登錄{count}個表情符號）"
-      confirmClearEmojisTitle: "確定"
       confirmClearEmojisDescription: "放棄編輯內容並清除列表中顯示的表情符號。是否確定？"
-      confirmUploadEmojisTitle: "確定"
       confirmUploadEmojisDescription: "將拖放的{count}個檔案上傳到雲端硬碟。是否執行此操作？"
 _embedCodeGen:
   title: "自訂嵌入程式碼"
