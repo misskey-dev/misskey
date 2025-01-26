@@ -17,11 +17,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 
 					<div class="_gaps">
-						<MkInput v-model="infoForm.state.name">
+						<MkInput v-model="infoForm.state.name" type="text">
 							<template #label>{{ i18n.ts.instanceName }}<span v-if="infoForm.modifiedStates.name" class="_modified">{{ i18n.ts.modified }}</span></template>
 						</MkInput>
 
-						<MkInput v-model="infoForm.state.shortName">
+						<MkInput v-model="infoForm.state.shortName" type="text">
 							<template #label>{{ i18n.ts._serverSettings.shortName }} ({{ i18n.ts.optional }})<span v-if="infoForm.modifiedStates.shortName" class="_modified">{{ i18n.ts.modified }}</span></template>
 							<template #caption>{{ i18n.ts._serverSettings.shortNameDescription }}</template>
 						</MkInput>
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkTextarea>
 
 						<FormSplit :minWidth="300">
-							<MkInput v-model="infoForm.state.maintainerName">
+							<MkInput v-model="infoForm.state.maintainerName" type="text">
 								<template #label>{{ i18n.ts.maintainerName }}<span v-if="infoForm.modifiedStates.maintainerName" class="_modified">{{ i18n.ts.modified }}</span></template>
 							</MkInput>
 
@@ -124,12 +124,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkSwitch>
 
 						<template v-if="serviceWorkerForm.state.enableServiceWorker">
-							<MkInput v-model="serviceWorkerForm.state.swPublicKey">
+							<MkInput v-model="serviceWorkerForm.state.swPublicKey" type="text">
 								<template #label>Public key<span v-if="serviceWorkerForm.modifiedStates.swPublicKey" class="_modified">{{ i18n.ts.modified }}</span></template>
 								<template #prefix><i class="ti ti-key"></i></template>
 							</MkInput>
 
-							<MkInput v-model="serviceWorkerForm.state.swPrivateKey">
+							<MkInput v-model="serviceWorkerForm.state.swPrivateKey" type="text">
 								<template #label>Private key<span v-if="serviceWorkerForm.modifiedStates.swPrivateKey" class="_modified">{{ i18n.ts.modified }}</span></template>
 								<template #prefix><i class="ti ti-key"></i></template>
 							</MkInput>

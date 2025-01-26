@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span :class="$style.itemHandle"><i class="ti ti-menu"/></span>
 								<button class="_button" :class="$style.itemRemove" @click="remove(index)"><i class="ti ti-x"></i></button>
 							</div>
-							<MkInput v-model="serverRules[index]"/>
+							<MkInput v-model="serverRules[index]" type="text"/>
 						</div>
 					</template>
 				</Sortable>

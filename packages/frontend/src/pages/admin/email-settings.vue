@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div class="_gaps_m">
 							<FormSplit :minWidth="280">
-								<MkInput v-model="smtpHost">
+								<MkInput v-model="smtpHost" type="text">
 									<template #label>{{ i18n.ts.smtpHost }}</template>
 								</MkInput>
 								<MkInput v-model="smtpPort" type="number">
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkInput>
 							</FormSplit>
 							<FormSplit :minWidth="280">
-								<MkInput v-model="smtpUser">
+								<MkInput v-model="smtpUser" type="text">
 									<template #label>{{ i18n.ts.smtpUser }}</template>
 								</MkInput>
 								<MkInput v-model="smtpPass" type="password">

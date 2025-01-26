@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 
 					<div class="_gaps">
-						<MkInput v-model="announcement.title">
+						<MkInput v-model="announcement.title" type="text">
 							<template #label>{{ i18n.ts.title }}</template>
 						</MkInput>
 						<MkTextarea v-model="announcement.text" mfmAutocomplete :mfmPreview="true">

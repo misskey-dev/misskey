@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { action } from '@storybook/addon-actions';
 import { expect, userEvent, waitFor, within } from '@storybook/test';
 import { StoryObj } from '@storybook/vue3';
@@ -61,7 +60,7 @@ const common = {
 					this.textarea = this.$refs.input.$refs.inputEl;
 				},
 			},
-			template: '<MkInput v-model="q" ref="input" @vue:mounted="inputMounted"/><story v-if="textarea" :q="q" :textarea="textarea"/>',
+			template: '<MkInput v-model="q" ref="input" @vue:mounted="inputMounted" type="text"/><story v-if="textarea" :q="q" :textarea="textarea"/>',
 		}),
 	],
 	parameters: {

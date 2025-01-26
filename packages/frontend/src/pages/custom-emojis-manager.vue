@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #prefix><i class="ti ti-search"></i></template>
 							<template #label>{{ i18n.ts.search }}</template>
 						</MkInput>
-						<MkInput v-model="host" :debounce="true">
+						<MkInput v-model="host" :debounce="true" type="text">
 							<template #label>{{ i18n.ts.host }}</template>
 						</MkInput>
 					</FormSplit>

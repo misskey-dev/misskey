@@ -16,16 +16,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div>
 		<div :class="$style.form">
-			<MkInput v-if="computedLocalOnly" v-model="username" :autofocus="true" @update:modelValue="search">
+			<MkInput v-if="computedLocalOnly" v-model="username" :autofocus="true" type="text" @update:modelValue="search">
 				<template #label>{{ i18n.ts.username }}</template>
 				<template #prefix>@</template>
 			</MkInput>
 			<FormSplit v-else :minWidth="170">
-				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
+				<MkInput v-model="username" :autofocus="true" type="text" @update:modelValue="search">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" :datalist="[hostname]" @update:modelValue="search">
+				<MkInput v-model="host" :datalist="[hostname]" type="text" @update:modelValue="search">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
@@ -63,6 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref, computed, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { host as currentHost, hostname } from '@@/js/config.js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -71,7 +72,6 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
-import { host as currentHost, hostname } from '@@/js/config.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;

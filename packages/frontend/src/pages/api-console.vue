@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="700">
 		<div class="_gaps_m">
 			<div class="_gaps_m">
-				<MkInput v-model="endpoint" :datalist="endpoints" @update:modelValue="onEndpointChange()">
+				<MkInput v-model="endpoint" :datalist="endpoints" type="text" @update:modelValue="onEndpointChange()">
 					<template #label>Endpoint</template>
 				</MkInput>
 				<MkTextarea v-model="body" code>

@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</optgroup>
 	</MkSelect>
 	<template v-if="selectedTheme">
-		<MkInput readonly :modelValue="selectedTheme.author">
+		<MkInput readonly :modelValue="selectedTheme.author" type="text">
 			<template #label>{{ i18n.ts.author }}</template>
 		</MkInput>
 		<MkTextarea v-if="selectedTheme.desc" readonly :modelValue="selectedTheme.desc">

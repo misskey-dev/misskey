@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</FormSlot>
 
-	<MkInput v-model="name" :max="30" manualSave data-cy-user-setup-user-name>
+	<MkInput v-model="name" :max="30" manualSave data-cy-user-setup-user-name type="text">
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
@@ -49,7 +49,7 @@ const description = ref($i.description ?? '');
 watch(name, () => {
 	os.apiWithDialog('i/update', {
 		// 空文字列をnullにしたいので??は使うな
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
 		name: name.value || null,
 	}, undefined, {
 		'0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191': {
@@ -62,7 +62,7 @@ watch(name, () => {
 watch(description, () => {
 	os.apiWithDialog('i/update', {
 		// 空文字列をnullにしたいので??は使うな
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
 		description: description.value || null,
 	});
 });

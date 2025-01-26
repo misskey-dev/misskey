@@ -70,18 +70,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="emailValidationForm.state.enableVerifymailApi">
 						<template #label>Use Verifymail.io API</template>
 					</MkSwitch>
-					<MkInput v-model="emailValidationForm.state.verifymailAuthKey">
+					<MkInput v-model="emailValidationForm.state.verifymailAuthKey" type="text">
 						<template #prefix><i class="ti ti-key"></i></template>
 						<template #label>Verifymail.io API Auth Key</template>
 					</MkInput>
 					<MkSwitch v-model="emailValidationForm.state.enableTruemailApi">
 						<template #label>Use TrueMail API</template>
 					</MkSwitch>
-					<MkInput v-model="emailValidationForm.state.truemailInstance">
+					<MkInput v-model="emailValidationForm.state.truemailInstance" type="text">
 						<template #prefix><i class="ti ti-key"></i></template>
 						<template #label>TrueMail API Instance</template>
 					</MkInput>
-					<MkInput v-model="emailValidationForm.state.truemailAuthKey">
+					<MkInput v-model="emailValidationForm.state.truemailAuthKey" type="text">
 						<template #prefix><i class="ti ti-key"></i></template>
 						<template #label>TrueMail API Auth Key</template>
 					</MkInput>

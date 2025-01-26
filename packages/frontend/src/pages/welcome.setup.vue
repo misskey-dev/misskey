@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.initialPasswordForSetup }} <div v-tooltip:dialog="i18n.ts.initialPasswordForSetupDescription" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 					<template #prefix><i class="ti ti-lock"></i></template>
 				</MkInput>
-				<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
+				<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username type="text">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 					<template #suffix>@{{ host }}</template>

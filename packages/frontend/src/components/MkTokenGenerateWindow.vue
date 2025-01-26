@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo warn>{{ information }}</MkInfo>
 			</div>
 			<div>
-				<MkInput v-model="name">
+				<MkInput v-model="name" type="text">
 					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
 			</div>

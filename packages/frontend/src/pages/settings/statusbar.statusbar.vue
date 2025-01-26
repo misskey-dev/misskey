@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="userList">User list timeline</option>
 	</MkSelect>
 
-	<MkInput v-model="statusbar.name" manualSave>
+	<MkInput v-model="statusbar.name" manualSave type="text">
 		<template #label>{{ i18n.ts.label }}</template>
 	</MkInput>
 

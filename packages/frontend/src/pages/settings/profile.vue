@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
+	<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']" type="text">
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>
 
-	<MkInput v-model="profile.location" manualSave>
+	<MkInput v-model="profile.location" manualSave type="text">
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="ti ti-map-pin"></i></template>
 	</MkInput>
@@ -73,9 +73,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
 							<div :class="$style.dragItemForm">
 								<FormSplit :minWidth="200">
-									<MkInput v-model="element.name" small :placeholder="i18n.ts._profile.metadataLabel">
+									<MkInput v-model="element.name" small :placeholder="i18n.ts._profile.metadataLabel" type="text">
 									</MkInput>
-									<MkInput v-model="element.value" small :placeholder="i18n.ts._profile.metadataContent">
+									<MkInput v-model="element.value" small :placeholder="i18n.ts._profile.metadataContent" type="text">
 									</MkInput>
 								</FormSplit>
 							</div>
@@ -87,7 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
 	</FormSlot>
 
-	<MkInput v-model="profile.followedMessage" :max="200" manualSave :mfmPreview="false">
+	<MkInput v-model="profile.followedMessage" :max="200" manualSave :mfmPreview="false" type="text">
 		<template #label>{{ i18n.ts._profile.followedMessage }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 		<template #caption>
 			<div>{{ i18n.ts._profile.followedMessageDescription }}</div>
