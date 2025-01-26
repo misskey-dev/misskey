@@ -2748,7 +2748,6 @@ _customEmojisManager:
     sortOrder: "Ordenar"
     registrationLogs: "Registres d'inscripcions "
     registrationLogsCaption: "Quan s'actualitzin o s'esborrin emojis es mostrarà un registre. Desapareixeran quan s'actualitzin, s'esborrin, visitis una nova pàgina o la recarreguis."
-    alertEmojisRegisterFailedTitle: "Error"
     alertEmojisRegisterFailedDescription: "No s'ha pogut actualitzar o esborrar l'emoji. Si us plau, dona una ullada al registre per més detalls."
   _logs:
     showSuccessLogSwitch: "Mostrar el registre d'èxit "
@@ -2770,9 +2769,7 @@ _customEmojisManager:
       markAsDeleteTargetRanges: "Selecció de files per la seva eliminació "
       alertUpdateEmojisNothingDescription: "No hi ha Emojis actualitzats."
       alertDeleteEmojisNothingDescription: "No hi ha Emoji per esborrar."
-      confirmUpdateEmojisTitle: "Confirmar"
       confirmUpdateEmojisDescription: "Actualitzar {count} Emojis. Vols executar-ho?"
-      confirmDeleteEmojisTitle: "Confirmar"
       confirmDeleteEmojisDescription: "Esborrar {count} Emojis marcats. Vols continuar?"
       dialogSelectRoleTitle: "Buscar Emojis per rol"
     _register:
@@ -2784,11 +2781,8 @@ _customEmojisManager:
       emojiInputAreaList1: "Arrossega i deixar anar fitxers o directoris dintre del quadrat."
       emojiInputAreaList2: "Clica l'enllaç per seleccionar un fitxer des del teu ordinador."
       emojiInputAreaList3: "Clica aquest enllaç per seleccionar del Disc"
-      confirmRegisterEmojisTitle: "Confirmar"
       confirmRegisterEmojisDescription: "Registrar els Emojis de la llista com a nous Emojis personalitzats. Vols continuar? (Per evitar una sobrecàrrega només {count} Emojis es poden registrar d'una sola vegada)"
-      confirmClearEmojisTitle: "Confirmar"
       confirmClearEmojisDescription: "Descartar els canvis i esborrar els Emojis de la llista. Vols continuar?"
-      confirmUploadEmojisTitle: "Confirmar"
       confirmUploadEmojisDescription: "Pujar els {count} fitxers que has arrossegat al disc. Vols continuar?"
 _embedCodeGen:
   title: "Personalitza el codi per incrustar"
