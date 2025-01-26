@@ -64,6 +64,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkInput>
 					</div>
 
+					<hr>
+
 					<MkFolder :spacerMax="8" :spacerMin="8">
 						<template #icon><i class="ti ti-arrows-sort"></i></template>
 						<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
@@ -73,6 +75,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							@update="onSortOrderUpdate"
 						/>
 					</MkFolder>
+
+					<MkInput
+						v-model="queryLimit"
+						type="number"
+						:max="100"
+					>
+						<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchLimit }}</template>
+					</MkInput>
 
 					<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
 						<MkButton primary @click="onSearchRequest">
@@ -85,7 +95,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 
-			<XRegisterLogsFolder :logs="requestLogs"/>
+			<MkFolder>
+				<template #icon><i class="ti ti-notes"></i></template>
+				<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
+				<template #caption>
+					{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
+				</template>
+				<XRegisterLogs :logs="requestLogs"/>
+			</MkFolder>
 
 			<component :is="loadingHandler.component.value" v-if="loadingHandler.showing.value"/>
 			<template v-else>
@@ -139,7 +156,7 @@ import {
 } from '@/pages/admin/custom-emojis-manager.impl.js';
 import { GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import MkFolder from '@/components/MkFolder.vue';
-import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import * as os from '@/os.js';
 import { GridSetting } from '@/components/grid/grid.js';
 import { deviceKind } from '@/scripts/device-kind.js';
@@ -246,6 +263,7 @@ const queryHost = ref<string | null>(null);
 const queryLicense = ref<string | null>(null);
 const queryUri = ref<string | null>(null);
 const queryPublicUrl = ref<string | null>(null);
+const queryLimit = ref<number>(25);
 const previousQuery = ref<string | undefined>(undefined);
 const sortOrders = ref<SortOrder<GridSortOrderKey>[]>([]);
 const requestLogs = ref<RequestLogItem[]>([]);
@@ -325,7 +343,7 @@ async function importEmojis(targets: GridItem[]) {
 	if (failedItems.length > 0) {
 		await os.alert({
 			type: 'error',
-			title: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedTitle,
+			title: i18n.ts.somethingHappened,
 			text: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
 		});
 	}
@@ -355,7 +373,7 @@ async function refreshCustomEmojis() {
 	}
 
 	const result = await loadingHandler.scope(() => misskeyApi('v2/admin/emoji/list', {
-		limit: 100,
+		limit: queryLimit.value,
 		query: query,
 		page: currentPage.value,
 		sortKeys: sortOrders.value.map(({ key, direction }) => `${direction}${key}`) as never[],

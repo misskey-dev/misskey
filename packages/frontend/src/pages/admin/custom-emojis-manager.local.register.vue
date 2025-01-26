@@ -30,7 +30,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFolder>
 
-	<XRegisterLogsFolder :logs="requestLogs"/>
+	<MkFolder>
+		<template #icon><i class="ti ti-notes"></i></template>
+		<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
+		<template #caption>
+			{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
+		</template>
+		<XRegisterLogs :logs="requestLogs"/>
+	</MkFolder>
 
 	<div
 		:class="[$style.uploadBox, [isDragOver ? $style.dragOver : {}]]"
@@ -91,7 +98,7 @@ import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js'
 import { uploadFile } from '@/scripts/upload.js';
 import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import { DroppedFile, extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
-import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
+import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import { GridSetting } from '@/components/grid/grid.js';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
 import { GridRow } from '@/components/grid/row.js';
@@ -245,7 +252,6 @@ const isDragOver = ref<boolean>(false);
 async function onRegistryClicked() {
 	const dialogSelection = await os.confirm({
 		type: 'info',
-		title: i18n.ts._customEmojisManager._local._register.confirmRegisterEmojisTitle,
 		text: i18n.tsx._customEmojisManager._local._register.confirmRegisterEmojisDescription({ count: MAXIMUM_EMOJI_REGISTER_COUNT }),
 	});
 
@@ -279,7 +285,7 @@ async function onRegistryClicked() {
 	if (failedItems.length > 0) {
 		await os.alert({
 			type: 'error',
-			title: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedTitle,
+			title: i18n.ts.somethingHappened,
 			text: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
 		});
 	}
@@ -299,7 +305,6 @@ async function onRegistryClicked() {
 async function onClearClicked() {
 	const result = await os.confirm({
 		type: 'warning',
-		title: i18n.ts._customEmojisManager._local._register.confirmClearEmojisTitle,
 		text: i18n.ts._customEmojisManager._local._register.confirmClearEmojisDescription,
 	});
 
@@ -314,7 +319,6 @@ async function onDrop(ev: DragEvent) {
 	const droppedFiles = await extractDroppedItems(ev).then(it => flattenDroppedFiles(it));
 	const confirm = await os.confirm({
 		type: 'info',
-		title: i18n.ts._customEmojisManager._local._register.confirmUploadEmojisTitle,
 		text: i18n.tsx._customEmojisManager._local._register.confirmUploadEmojisDescription({ count: droppedFiles.length }),
 	});
 	if (confirm.canceled) {
