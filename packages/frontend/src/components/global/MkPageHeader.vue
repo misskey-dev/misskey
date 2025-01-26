@@ -48,13 +48,16 @@ import { scrollToTop } from '@@/js/scroll.js';
 import { globalEvents } from '@/events.js';
 import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
-import { PageHeaderItem } from '@/types/page-header.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
+import type { PageMetadata } from '@/scripts/page-metadata.js';
 
 const props = withDefaults(defineProps<{
+	overridePageMetadata?: PageMetadata;
 	tabs?: Tab[];
 	tab?: string;
 	actions?: PageHeaderItem[] | null;
 	thin?: boolean;
+	hideTitle?: boolean;
 	displayMyAvatar?: boolean;
 }>(), {
 	tabs: () => ([] as Tab[]),
@@ -64,9 +67,10 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
 }>();
 
-const pageMetadata = injectReactiveMetadata();
+const injectedPageMetadata = injectReactiveMetadata();
+const pageMetadata = computed(() => props.overridePageMetadata ?? injectedPageMetadata.value);
 
-const hideTitle = inject('shouldOmitHeaderTitle', false);
+const hideTitle = computed(() => inject('shouldOmitHeaderTitle', false) || props.hideTitle);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
 const el = shallowRef<HTMLElement | undefined>(undefined);
