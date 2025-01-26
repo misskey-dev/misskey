@@ -2755,6 +2755,7 @@ _customEmojisManager:
     failureLogNothing: "There is no failure log."
     logNothing: "There is no log."
   _remote:
+    selectionRowDetail: "Selected row's detail"
     importSelectionRows: "Import selected rows"
     importSelectionRangesRows: "Import rows in the selection"
     importEmojisButton: "Import checked Emojis"
