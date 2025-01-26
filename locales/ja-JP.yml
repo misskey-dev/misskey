@@ -2824,7 +2824,7 @@ _customEmojisManager:
     copySelectionRows: "選択行をコピー"
     copySelectionRanges: "選択範囲をコピー"
     deleteSelectionRows: "選択行を削除"
-    deleteSelectionRanges: "選択範囲の行を削除"
+    deleteSelectionRanges: "選択範囲の値をクリア"
     searchSettings: "検索設定"
     searchSettingCaption: "検索条件を詳細に設定します。"
     searchLimit: "表示件数"
