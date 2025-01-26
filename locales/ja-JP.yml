@@ -2852,10 +2852,11 @@ _customEmojisManager:
       alertUpdateEmojisNothingDescription: "変更された絵文字はありません。"
       alertDeleteEmojisNothingDescription: "削除対象の絵文字はありません。"
       confirmMovePage: "ページを移動しますか？"
+      confirmChangeView: "表示を変更しますか？"
       confirmUpdateEmojisDescription: "{count}個の絵文字を更新します。実行しますか？"
       confirmDeleteEmojisDescription: "チェックがつけられた{count}個の絵文字を削除します。実行しますか？"
       confirmResetDescription: "今までに加えた変更がすべてリセットされます。"
-      confirmMovePageDesciption: "このページの絵文字に変更が加えられています。\nこのままページを移動すると、このページで加えた変更はすべて破棄されます。"
+      confirmMovePageDesciption: "このページの絵文字に変更が加えられています。\n保存せずにこのままページを移動すると、このページで加えた変更はすべて破棄されます。"
       dialogSelectRoleTitle: "絵文字に設定されたロールで検索"
     _register:
       uploadSettingTitle: "アップロード設定"

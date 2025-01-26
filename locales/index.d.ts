@@ -10691,6 +10691,10 @@ export interface Locale extends ILocale {
                  */
                 "confirmMovePage": string;
                 /**
+                 * 表示を変更しますか？
+                 */
+                "confirmChangeView": string;
+                /**
                  * {count}個の絵文字を更新します。実行しますか？
                  */
                 "confirmUpdateEmojisDescription": ParameterizedString<"count">;
@@ -10704,7 +10708,7 @@ export interface Locale extends ILocale {
                 "confirmResetDescription": string;
                 /**
                  * このページの絵文字に変更が加えられています。
-                 * このままページを移動すると、このページで加えた変更はすべて破棄されます。
+                 * 保存せずにこのままページを移動すると、このページで加えた変更はすべて破棄されます。
                  */
                 "confirmMovePageDesciption": string;
                 /**

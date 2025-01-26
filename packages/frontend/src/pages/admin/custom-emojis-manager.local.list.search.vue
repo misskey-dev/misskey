@@ -97,7 +97,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #suffix><i class="ti ti-pencil"></i></template>
 					</MkInput>
 				</div>
-				<hr>
 				<MkFolder :spacerMax="8" :spacerMin="8">
 					<template #icon><i class="ti ti-arrows-sort"></i></template>
 					<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
