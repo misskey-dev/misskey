@@ -13,7 +13,6 @@ export type PageMetadata = {
 	avatar?: Misskey.entities.User | null;
 	userName?: Misskey.entities.User | null;
 	needWideArea?: boolean;
-	hideWidgetFab?: boolean;
 };
 
 type PageMetadataGetter = () => PageMetadata;

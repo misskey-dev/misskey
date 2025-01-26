@@ -40,7 +40,6 @@ definePageMetadata(computed(() => ({
 	title: i18n.ts.customEmojis,
 	icon: 'ti ti-icons',
 	needWideArea: true,
-	hideWidgetFab: true,
 })));
 </script>
 

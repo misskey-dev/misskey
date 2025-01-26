@@ -267,7 +267,6 @@ provideMetadataReceiver((metadataGetter) => {
 	} else {
 		childInfo.value = info;
 		INFO.value.needWideArea = info.needWideArea ?? undefined;
-		INFO.value.hideWidgetFab = info.hideWidgetFab ?? undefined;
 	}
 });
 provideReactiveMetadata(INFO);
