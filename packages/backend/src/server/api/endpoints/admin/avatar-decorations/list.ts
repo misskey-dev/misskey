@@ -4,15 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { AnnouncementsRepository, AnnouncementReadsRepository, UsersRepository } from '@/models/_.js';
-import type { MiAnnouncement } from '@/models/Announcement.js';
+import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { RoleService } from '@/core/RoleService.js';
-
 
 export const meta = {
 	tags: ['admin'],

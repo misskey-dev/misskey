@@ -114,6 +114,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async () => {
 			const memStats = await si.mem();
 			const fsStats = await si.fsSize();
+			let fsCur = fsStats[0];
+			const psCur = process.cwd();
+			let maxMount = 0;
+			for( const fsOne of fsStats ){
+				if ( (fsOne.mount.length > maxMount) && (psCur.startsWith(fsOne.mount)) ){
+			        	fsCur = fsOne;
+			        	maxMount = fsOne.mount.length;
+				}
+			}
+
 			const netInterface = await si.networkInterfaceDefault();
 
 			const redisServerInfo = await this.redisClient.info('Server');
@@ -134,8 +144,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					total: memStats.total,
 				},
 				fs: {
-					total: fsStats[0].size,
-					used: fsStats[0].used,
+					total: fsCur.size,
+					used:  fsCur.used,
 				},
 				net: {
 					interface: netInterface,
