@@ -5,11 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkInput v-if="readonly" :modelValue="role.id" :readonly="true" type="text">
+	<MkInput v-if="readonly" :modelValue="role.id" :readonly="true">
 		<template #label>ID</template>
 	</MkInput>
 
-	<MkInput v-model="role.name" :readonly="readonly" type="text">
+	<MkInput v-model="role.name" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.name }}</template>
 	</MkInput>
 

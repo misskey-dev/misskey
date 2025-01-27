@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="tab === 'search'" key="search">
 				<div v-if="notesSearchAvailable" class="_gaps">
 					<div>
-						<MkInput v-model="searchQuery" type="text" @enter="search()">
+						<MkInput v-model="searchQuery" @enter="search()">
 							<template #prefix><i class="ti ti-search"></i></template>
 						</MkInput>
 						<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
@@ -75,7 +75,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { url } from '@@/js/config.js';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
@@ -86,6 +85,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import MkNotes from '@/components/MkNotes.vue';
+import { url } from '@@/js/config.js';
 import { favoritedChannelsCache } from '@/cache.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';

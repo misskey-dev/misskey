@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkSpacer :contentMax="700">
 	<div>
 		<div class="_gaps_m">
-			<MkInput v-model="name" type="text">
+			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 			<MkSelect v-model="src">
@@ -53,7 +53,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { DeepPartial } from '@/scripts/merge.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -63,6 +62,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { deepMerge } from '@/scripts/merge.js';
+import type { DeepPartial } from '@/scripts/merge.js';
 
 type PartialAllowedAntenna = Omit<Misskey.entities.Antenna, 'id' | 'createdAt' | 'updatedAt'> & {
 	id?: string;

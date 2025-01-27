@@ -26,10 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkAvatar style="width: 60px; height: 60px;" :user="$i" :decorations="url != '' ? [{ url }] : []" forceShowDecoration/>
 					</div>
 				</div>
-				<MkInput v-model="name" type="text">
+				<MkInput v-model="name">
 					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
-				<MkInput v-model="url" type="text">
+				<MkInput v-model="url">
 					<template #label>{{ i18n.ts.imageUrl }}</template>
 				</MkInput>
 				<MkTextarea v-model="description">

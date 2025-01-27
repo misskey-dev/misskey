@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init" class="_gaps">
-			<MkInput v-model="title" type="text">
+			<MkInput v-model="title">
 				<template #label>{{ i18n.ts.title }}</template>
 			</MkInput>
 

@@ -23,13 +23,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :marginMin="20" :marginMax="28" style="flex-grow: 1;">
 			<MkLoading v-if="loading !== 0"/>
 			<div v-else :class="$style.root" class="_gaps_m">
-				<MkInput v-model="title" type="text">
+				<MkInput v-model="title">
 					<template #label>{{ i18n.ts._webhookSettings.name }}</template>
 				</MkInput>
-				<MkInput v-model="url" type="text">
+				<MkInput v-model="url">
 					<template #label>URL</template>
 				</MkInput>
-				<MkInput v-model="secret" type="text">
+				<MkInput v-model="secret">
 					<template #label>{{ i18n.ts._webhookSettings.secret }}</template>
 				</MkInput>
 				<MkFolder :defaultOpen="true">

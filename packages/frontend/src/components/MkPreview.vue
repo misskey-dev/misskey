@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.preview">
 	<div>
-		<MkInput v-model="text" type="text">
+		<MkInput v-model="text">
 			<template #label>Text</template>
 		</MkInput>
 		<MkSwitch v-model="flag" :class="$style.preview__content1__switch_button">
@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkRadio v-model="radio" value="pleroma">Pleroma</MkRadio>
 		</div>
 		<div :class="$style.preview__content1__button">
-			<MkButton inline>This is</MkButton>
-			<MkButton inline primary>the button</MkButton>
+		<MkButton inline>This is</MkButton>
+		<MkButton inline primary>the button</MkButton>
 		</div>
 	</div>
 	<div :class="$style.preview__content2" style="pointer-events: none;">
@@ -36,13 +36,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as config from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkRadio from '@/components/MkRadio.vue';
 import * as os from '@/os.js';
+import * as config from '@@/js/config.js';
 import { $i } from '@/account.js';
 
 const text = ref('');

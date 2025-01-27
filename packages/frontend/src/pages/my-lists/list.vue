@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.settings }}</template>
 
 				<div class="_gaps">
-					<MkInput v-model="name" type="text">
+					<MkInput v-model="name">
 						<template #label>{{ i18n.ts.name }}</template>
 					</MkInput>
 					<MkSwitch v-model="isPublic">{{ i18n.ts.public }}</MkSwitch>

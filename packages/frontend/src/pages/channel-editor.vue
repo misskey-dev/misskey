@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700">
 		<div v-if="channelId == null || channel != null" class="_gaps_m">
-			<MkInput v-model="name" type="text">
+			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 

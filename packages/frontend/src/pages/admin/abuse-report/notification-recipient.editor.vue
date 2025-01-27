@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="loading === 0" style="display: flex; flex-direction: column; min-height: 100%;">
 		<MkSpacer :marginMin="20" :marginMax="28" style="flex-grow: 1;">
 			<div :class="$style.root" class="_gaps_m">
-				<MkInput v-model="title" type="text">
+				<MkInput v-model="title">
 					<template #label>{{ i18n.ts.title }}</template>
 				</MkInput>
 				<MkSelect v-model="method">

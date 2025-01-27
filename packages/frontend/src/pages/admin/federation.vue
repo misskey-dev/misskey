@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="900">
 			<div class="_gaps">
 				<div>
-					<MkInput v-model="host" :debounce="true" class="" type="text">
+					<MkInput v-model="host" :debounce="true" class="">
 						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>

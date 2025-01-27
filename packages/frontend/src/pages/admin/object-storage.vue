@@ -17,29 +17,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #caption>{{ i18n.ts.objectStorageBaseUrlDesc }}</template>
 					</MkInput>
 
-					<MkInput v-model="objectStorageBucket" type="text">
+					<MkInput v-model="objectStorageBucket">
 						<template #label>{{ i18n.ts.objectStorageBucket }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBucketDesc }}</template>
 					</MkInput>
 
-					<MkInput v-model="objectStoragePrefix" type="text">
+					<MkInput v-model="objectStoragePrefix">
 						<template #label>{{ i18n.ts.objectStoragePrefix }}</template>
 						<template #caption>{{ i18n.ts.objectStoragePrefixDesc }}</template>
 					</MkInput>
 
-					<MkInput v-model="objectStorageEndpoint" :placeholder="'example.com'" type="text">
+					<MkInput v-model="objectStorageEndpoint" :placeholder="'example.com'">
 						<template #label>{{ i18n.ts.objectStorageEndpoint }}</template>
 						<template #prefix>https://</template>
 						<template #caption>{{ i18n.ts.objectStorageEndpointDesc }}</template>
 					</MkInput>
 
-					<MkInput v-model="objectStorageRegion" type="text">
+					<MkInput v-model="objectStorageRegion">
 						<template #label>{{ i18n.ts.objectStorageRegion }}</template>
 						<template #caption>{{ i18n.ts.objectStorageRegionDesc }}</template>
 					</MkInput>
 
 					<FormSplit :minWidth="280">
-						<MkInput v-model="objectStorageAccessKey" type="text">
+						<MkInput v-model="objectStorageAccessKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Access key</template>
 						</MkInput>

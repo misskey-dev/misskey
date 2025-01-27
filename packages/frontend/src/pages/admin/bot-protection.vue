@@ -28,11 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkRadios>
 
 		<template v-if="botProtectionForm.state.provider === 'hcaptcha'">
-			<MkInput v-model="botProtectionForm.state.hcaptchaSiteKey" debounce type="text">
+			<MkInput v-model="botProtectionForm.state.hcaptchaSiteKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.hcaptchaSiteKey }}</template>
 			</MkInput>
-			<MkInput v-model="botProtectionForm.state.hcaptchaSecretKey" debounce type="text">
+			<MkInput v-model="botProtectionForm.state.hcaptchaSecretKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.hcaptchaSecretKey }}</template>
 			</MkInput>
@@ -56,15 +56,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<template v-else-if="botProtectionForm.state.provider === 'mcaptcha'">
-			<MkInput v-model="botProtectionForm.state.mcaptchaSiteKey" debounce type="text">
+			<MkInput v-model="botProtectionForm.state.mcaptchaSiteKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.mcaptchaSiteKey }}</template>
 			</MkInput>
-			<MkInput v-model="botProtectionForm.state.mcaptchaSecretKey" debounce type="text">
+			<MkInput v-model="botProtectionForm.state.mcaptchaSecretKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.mcaptchaSecretKey }}</template>
 			</MkInput>
-			<MkInput v-model="botProtectionForm.state.mcaptchaInstanceUrl" debounce type="text">
+			<MkInput v-model="botProtectionForm.state.mcaptchaInstanceUrl" debounce>
 				<template #prefix><i class="ti ti-link"></i></template>
 				<template #label>{{ i18n.ts.mcaptchaInstanceUrl }}</template>
 			</MkInput>
@@ -81,11 +81,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<template v-else-if="botProtectionForm.state.provider === 'recaptcha'">
-			<MkInput v-model="botProtectionForm.state.recaptchaSiteKey" debounce type="text">
+			<MkInput v-model="botProtectionForm.state.recaptchaSiteKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.recaptchaSiteKey }}</template>
 			</MkInput>
-			<MkInput v-model="botProtectionForm.state.recaptchaSecretKey" debounce type="text">
+			<MkInput v-model="botProtectionForm.state.recaptchaSecretKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.recaptchaSecretKey }}</template>
 			</MkInput>
@@ -113,11 +113,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<template v-else-if="botProtectionForm.state.provider === 'turnstile'">
-			<MkInput v-model="botProtectionForm.state.turnstileSiteKey" debounce type="text">
+			<MkInput v-model="botProtectionForm.state.turnstileSiteKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.turnstileSiteKey }}</template>
 			</MkInput>
-			<MkInput v-model="botProtectionForm.state.turnstileSecretKey" debounce type="text">
+			<MkInput v-model="botProtectionForm.state.turnstileSecretKey" debounce>
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>{{ i18n.ts.turnstileSecretKey }}</template>
 			</MkInput>

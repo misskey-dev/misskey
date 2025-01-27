@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><i class="ti ti-note"></i> {{ i18n.ts._pages.blocks.note }}</template>
 
 	<section style="padding: 16px;" class="_gaps_s">
-		<MkInput v-model="id" type="text">
+		<MkInput v-model="id">
 			<template #label>{{ i18n.ts._pages.blocks._note.id }}</template>
 			<template #caption>{{ i18n.ts._pages.blocks._note.idDescription }}</template>
 		</MkInput>
