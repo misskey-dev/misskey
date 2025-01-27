@@ -1624,9 +1624,6 @@ _moderationLogTypes:
   resetPassword: "Скинути пароль"
 _reversi:
   total: "Всього"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "Помилка"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Не знайдено"
