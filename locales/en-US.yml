@@ -2748,13 +2748,13 @@ _customEmojisManager:
     sortOrder: "Sort order"
     registrationLogs: "Registration log"
     registrationLogsCaption: "Logs will be displayed when updating or deleting Emojis. They will disappear after updating or deleting them, moving to a new page, or reloading."
-    alertEmojisRegisterFailedTitle: "Error"
     alertEmojisRegisterFailedDescription: "Failed to update or delete Emojis. Please check the registration log for details."
   _logs:
     showSuccessLogSwitch: "Show success log"
     failureLogNothing: "There is no failure log."
     logNothing: "There is no log."
   _remote:
+    selectionRowDetail: "Selected row's detail"
     importSelectionRows: "Import selected rows"
     importSelectionRangesRows: "Import rows in the selection"
     importEmojisButton: "Import checked Emojis"
@@ -2769,9 +2769,7 @@ _customEmojisManager:
       markAsDeleteTargetRanges: "Mark rows in the selection as a target to delete"
       alertUpdateEmojisNothingDescription: "There are no updated Emojis."
       alertDeleteEmojisNothingDescription: "There are no Emojis to be deleted."
-      confirmUpdateEmojisTitle: "Confirm"
       confirmUpdateEmojisDescription: "Update {count} Emoji(s). Are you sure to continue?"
-      confirmDeleteEmojisTitle: "Confirm"
       confirmDeleteEmojisDescription: "Delete checked {count} Emoji(s). Are you sure to continue?"
       dialogSelectRoleTitle: "Search by roll set in Emojis"
     _register:
@@ -2783,11 +2781,8 @@ _customEmojisManager:
       emojiInputAreaList1: "Drag and drop image files or a directory into this frame"
       emojiInputAreaList2: "Click this link to select from your computer"
       emojiInputAreaList3: "Click this link to select from the drive"
-      confirmRegisterEmojisTitle: "Confirm"
       confirmRegisterEmojisDescription: "Register the Emojis from the list as new custom Emojis. Are you sure to continue? (To avoid overload, only {count} Emoji(s) can be registered in a single operation)"
-      confirmClearEmojisTitle: "Confirm"
       confirmClearEmojisDescription: "Discard the edits and clear the Emojis from the list. Are you sure to continue?"
-      confirmUploadEmojisTitle: "Confirm"
       confirmUploadEmojisDescription: "Upload the dragged and dropped {count} file(s) to the drive. Are you sure to continue?"
 _embedCodeGen:
   title: "Customize embed code"
