@@ -5,6 +5,7 @@ introMisskey: "ようこそ！Misskeyは、オープンソースの分散型マ�
 poweredByMisskeyDescription: "{name}は、オープンソースのプラットフォーム<b>Misskey</b>のサーバーのひとつです。"
 monthAndDay: "{month}月 {day}日"
 search: "検索"
+reset: "リセット"
 notifications: "通知"
 username: "ユーザー名"
 password: "パスワード"
@@ -48,6 +49,7 @@ pin: "ピン留め"
 unpin: "ピン留め解除"
 copyContent: "内容をコピー"
 copyLink: "リンクをコピー"
+copyRemoteLink: "リモートのリンクをコピー"
 copyLinkRenote: "リノートのリンクをコピー"
 delete: "削除"
 deleteAndEdit: "削除して編集"
@@ -684,11 +686,15 @@ smtpSecure: "SMTP 接続に暗黙的なSSL/TLSを使用する"
 smtpSecureInfo: "STARTTLS使用時はオフにします。"
 testEmail: "配信テスト"
 wordMute: "ワードミュート"
+wordMuteDescription: "指定した語句を含むノートを最小化します。最小化されたノートをクリックすることで表示することができます。"
 hardWordMute: "ハードワードミュート"
+showMutedWord: "ミュートされたワードを表示"
+hardWordMuteDescription: "指定した語句を含むノートを隠します。ワードミュートとは異なり、ノートは完全に表示されなくなります。"
 regexpError: "正規表現エラー"
 regexpErrorDescription: "{tab}ワードミュートの{line}行目の正規表現にエラーが発生しました:"
 instanceMute: "サーバーミュート"
 userSaysSomething: "{name}が何かを言いました"
+userSaysSomethingAbout: "{name}が「{word}」について何かを言いました"
 makeActive: "アクティブにする"
 display: "表示"
 copy: "コピー"
@@ -1301,6 +1307,8 @@ lockdown: "ロックダウン"
 pleaseSelectAccount: "アカウントを選択してください"
 availableRoles: "利用可能なロール"
 acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
+federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
+federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -2801,6 +2809,69 @@ _contextMenu:
   appWithShift: "Shiftキーでアプリケーション"
   native: "ブラウザのUI"
 
+_gridComponent:
+  _error:
+    requiredValue: "この値は必須項目です"
+    columnTypeNotSupport: "正規表現によるバリデーションはtype:textのカラムのみサポートします。"
+    patternNotMatch: "この値は{pattern}のパターンに一致しません"
+    notUnique: "この値は一意である必要があります"
+
+_roleSelectDialog:
+  notSelected: "選択されていません"
+
+_customEmojisManager:
+  _gridCommon:
+    copySelectionRows: "選択行をコピー"
+    copySelectionRanges: "選択範囲をコピー"
+    deleteSelectionRows: "選択行を削除"
+    deleteSelectionRanges: "選択範囲の値をクリア"
+    searchSettings: "検索設定"
+    searchSettingCaption: "検索条件を詳細に設定します。"
+    searchLimit: "表示件数"
+    sortOrder: "並び順"
+    registrationLogs: "登録ログ"
+    registrationLogsCaption: "絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページを遷移・リロードすると消えます。"
+    alertEmojisRegisterFailedDescription: "絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。"
+  _logs:
+    showSuccessLogSwitch: "成功ログを表示"
+    failureLogNothing: "失敗ログはありません。"
+    logNothing: "ログはありません。"
+  _remote:
+    selectionRowDetail: "選択行の詳細"
+    importSelectionRows: "選択行をインポート"
+    importSelectionRangesRows: "選択範囲の行をインポート"
+    importEmojisButton: "チェックされた絵文字をインポート"
+    confirmImportEmojisTitle: "絵文字のインポート"
+    confirmImportEmojisDescription: "リモートから受信した{count}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。実行しますか？"
+  _local:
+    tabTitleList: "登録済み絵文字一覧"
+    tabTitleRegister: "絵文字の登録"
+    _list:
+      emojisNothing: "登録された絵文字はありません。"
+      markAsDeleteTargetRows: "選択行を削除対象にする"
+      markAsDeleteTargetRanges: "選択範囲の行を削除対象にする"
+      alertUpdateEmojisNothingDescription: "変更された絵文字はありません。"
+      alertDeleteEmojisNothingDescription: "削除対象の絵文字はありません。"
+      confirmMovePage: "ページを移動しますか？"
+      confirmChangeView: "表示を変更しますか？"
+      confirmUpdateEmojisDescription: "{count}個の絵文字を更新します。実行しますか？"
+      confirmDeleteEmojisDescription: "チェックがつけられた{count}個の絵文字を削除します。実行しますか？"
+      confirmResetDescription: "今までに加えた変更がすべてリセットされます。"
+      confirmMovePageDesciption: "このページの絵文字に変更が加えられています。\n保存せずにこのままページを移動すると、このページで加えた変更はすべて破棄されます。"
+      dialogSelectRoleTitle: "絵文字に設定されたロールで検索"
+    _register:
+      uploadSettingTitle: "アップロード設定"
+      uploadSettingDescription: "この画面で絵文字アップロードを行う際の動作を設定できます。"
+      directoryToCategoryLabel: "ディレクトリ名を\"category\"に入力する"
+      directoryToCategoryCaption: "ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を\"category\"に入力します。"
+      emojiInputAreaCaption: "いずれかの方法で登録する絵文字を選択してください。"
+      emojiInputAreaList1: "この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ"
+      emojiInputAreaList2: "このリンクをクリックしてPCから選択する"
+      emojiInputAreaList3: "このリンクをクリックしてドライブから選択する"
+      confirmRegisterEmojisDescription: "リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）"
+      confirmClearEmojisDescription: "編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？"
+      confirmUploadEmojisDescription: "ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？"
+
 _embedCodeGen:
   title: "埋め込みコードをカスタマイズ"
   header: "ヘッダーを表示"
@@ -2826,3 +2897,36 @@ _selfXssPrevention:
 _followRequest:
   recieved: "受け取った申請"
   sent: "送った申請"
+
+_remoteLookupErrors:
+  _federationNotAllowed:
+    title: "このサーバーとは通信できません"
+    description: "このサーバーとの通信が無効化されているか、このサーバーをブロックしている・ブロックされている可能性があります。\nサーバー管理者にお問い合わせください。"
+  _uriInvalid:
+    title: "URIが不正です"
+    description: "入力されたURIに問題があります。URIに使用できない文字を入力していないか確認してください。"
+  _requestFailed:
+    title: "リクエストに失敗しました"
+    description: "このサーバーとの通信に失敗しました。相手サーバーがダウンしている可能性があります。また、不正なURIや存在しないURIを入力していないか確認してください。"
+  _responseInvalid:
+    title: "レスポンスが不正です"
+    description: "このサーバーと通信することはできましたが、得られたデータが不正なものでした。"
+  _responseInvalidIdHostNotMatch:
+    description: "入力されたURIのドメインと最終的に得られたURIのドメインとが異なります。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。"
+  _noSuchObject:
+    title: "見つかりません"
+    description: "要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。"
+
+_captcha:
+  verify: "CAPTCHAを通過してください"
+  testSiteKeyMessage: "サイトキーとシークレットキーにテスト用の値を入力することでプレビューを確認できます。\n詳細は下記ページをご確認ください。"
+  _error:
+    _requestFailed:
+      title: "CAPTCHAのリクエストに失敗しました"
+      text: "しばらく後に実行するか、設定をもう一度ご確認ください。"
+    _verificationFailed:
+      title: "CAPTCHAの検証に失敗しました"
+      text: "設定が正しいかどうかもう一度確認ください。"
+    _unknown:
+      title: "CAPTCHAエラー"
+      text: "想定外のエラーが発生しました。"
