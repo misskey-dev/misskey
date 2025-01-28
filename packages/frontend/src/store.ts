@@ -9,10 +9,10 @@ import { hemisphere } from '@@/js/intl-const.js';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
 import type { SoundType } from '@/scripts/sound.js';
+import type { Ast } from '@syuilo/aiscript';
 import { DEFAULT_DEVICE_KIND, type DeviceKind } from '@/scripts/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { Storage } from '@/pizzax.js';
-import type { Ast } from '@syuilo/aiscript';
 
 interface PostFormAction {
 	title: string,
@@ -114,7 +114,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultScheduledNoteDeleteTime: {
 		where: 'account',
-		default: 86400000,
+		default: 600000,
 	},
 	uploadFolder: {
 		where: 'account',
@@ -170,15 +170,15 @@ export const defaultStore = markRaw(new Storage('base', {
 	postFormActions: {
 		where: 'deviceAccount',
 		default: [
-			'attachFile',
-			'poll',
-			'scheduledNoteDelete',
-			'useCw',
 			'mention',
-			'hashtags',
-			'plugins',
+			'attachFile',
 			'emoji',
 			'addMfmFunction',
+			'scheduledNoteDelete',
+			'useCw',
+			'poll',
+			'hashtags',
+			'plugins',
 		],
 	},
 	visibility: {
@@ -219,9 +219,9 @@ export const defaultStore = markRaw(new Storage('base', {
 			src: 'local' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
 			userList: null as Misskey.entities.UserList | null,
 			filter: {
-				withReplies: false,
+				withReplies: true,
 				withRenotes: true,
-				withSensitive: false,
+				withSensitive: true,
 				onlyFiles: false,
 				localOnly: false,
 			},
@@ -242,7 +242,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	nsfw: {
 		where: 'device',
-		default: 'force' as 'respect' | 'force' | 'ignore',
+		default: 'respect' as 'respect' | 'force' | 'ignore',
 	},
 	highlightSensitiveMedia: {
 		where: 'device',
@@ -262,7 +262,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	showReactionsCount: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	enableQuickAddMfmFunction: {
 		where: 'device',
@@ -386,7 +386,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	numberOfPageCache: {
 		where: 'device',
-		default: 2,
+		default: 3,
 	},
 	showNoteActionsOnlyHover: {
 		where: 'device',
@@ -402,11 +402,11 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	hideReactionUsers: {
 		where: 'account',
-		default: true,
+		default: false,
 	},
 	hideReactionCount: {
 		where: 'account',
-		default: 'others' as 'none' | 'self' | 'others' | 'all',
+		default: 'self' as 'none' | 'self' | 'others' | 'all',
 	},
 	limitWidthOfReaction: {
 		where: 'device',
@@ -450,7 +450,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultWithReplies: {
 		where: 'account',
-		default: false,
+		default: true,
 	},
 	disableStreamingTimeline: {
 		where: 'device',
@@ -463,10 +463,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	dataSaver: {
 		where: 'device',
 		default: {
-			media: true,
-			avatar: true,
-			urlPreview: true,
-			code: true,
+			media: false,
+			avatar: false,
+			urlPreview: false,
+			code: false,
 		} as Record<string, boolean>,
 	},
 	enableSeasonalScreenEffect: {
@@ -515,7 +515,7 @@ export const defaultStore = markRaw(new Storage('base', {
 
 	sound_masterVolume: {
 		where: 'device',
-		default: 0.2,
+		default: 0.3,
 	},
 	sound_notUseSound: {
 		where: 'device',
