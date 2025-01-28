@@ -727,9 +727,6 @@ _abuseReport:
       mail: "E-post"
 _moderationLogTypes:
   suspend: "Suspender"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "Feil"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Ikke funnet"

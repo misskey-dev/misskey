@@ -2541,9 +2541,6 @@ _contextMenu:
 _gridComponent:
   _error:
     requiredValue: "Dieser Wert ist ein Pflichtfeld"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "Fehler"
 _embedCodeGen:
   title: "Einbettungscode anpassen"
   header: "Kopfzeile anzeigen"
