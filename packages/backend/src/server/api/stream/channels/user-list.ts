@@ -4,11 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { RoleService } from '@/core/RoleService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
@@ -26,6 +27,7 @@ class UserListChannel extends Channel {
 	constructor(
 		private userListsRepository: UserListsRepository,
 		private userListMembershipsRepository: UserListMembershipsRepository,
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
@@ -135,11 +137,14 @@ class UserListChannel extends Channel {
 		}
 
 		if (this.minimize && ['public', 'home'].includes(note.visibility)) {
+			const badgeRoles = this.iAmModerator ? await this.roleService.getUserBadgeRoles(note.userId, false) : undefined;
+
 			this.send('note', {
 				id: note.id, myReaction: note.myReaction,
 				poll: note.poll?.choices ? { choices: note.poll.choices } : undefined,
 				reply: note.reply?.myReaction ? { myReaction: note.reply.myReaction } : undefined,
 				renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
+				...(badgeRoles?.length ? { user: { badgeRoles } } : {}),
 			});
 		} else {
 			this.send('note', note);
@@ -169,6 +174,7 @@ export class UserListChannelService implements MiChannelService<false> {
 		@Inject(DI.userListMembershipsRepository)
 		private userListMembershipsRepository: UserListMembershipsRepository,
 
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
 	}
@@ -178,6 +184,7 @@ export class UserListChannelService implements MiChannelService<false> {
 		return new UserListChannel(
 			this.userListsRepository,
 			this.userListMembershipsRepository,
+			this.roleService,
 			this.noteEntityService,
 			id,
 			connection,

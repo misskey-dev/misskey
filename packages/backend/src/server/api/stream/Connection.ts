@@ -14,6 +14,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { MiFollowing, MiUserProfile } from '@/models/_.js';
 import type { StreamEventEmitter, GlobalEvents } from '@/core/GlobalEventService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import { RoleService } from '@/core/RoleService.js';
 import type { ChannelsService } from './ChannelsService.js';
 import type { EventEmitter } from 'events';
 import type Channel from './channel.js';
@@ -31,6 +32,7 @@ export default class Connection {
 	private subscribingNotes: any = {};
 	private cachedNotes: Packed<'Note'>[] = [];
 	public userProfile: MiUserProfile | null = null;
+	public isModerator = false;
 	public following: Record<string, Pick<MiFollowing, 'withReplies'> | undefined> = {};
 	public followingChannels: Set<string> = new Set();
 	public userIdsWhoMeMuting: Set<string> = new Set();
@@ -44,6 +46,7 @@ export default class Connection {
 		private noteReadService: NoteReadService,
 		private notificationService: NotificationService,
 		private cacheService: CacheService,
+		private roleService: RoleService,
 		private channelFollowingService: ChannelFollowingService,
 
 		user: MiUser | null | undefined,
@@ -77,6 +80,7 @@ export default class Connection {
 	public async init() {
 		if (this.user != null) {
 			await this.fetch();
+			this.isModerator = await this.roleService.isModerator(this.user);
 
 			if (!this.fetchIntervalId) {
 				this.fetchIntervalId = setInterval(this.fetch, 1000 * 10);

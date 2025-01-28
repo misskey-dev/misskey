@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import Channel, { type MiChannelService } from '../channel.js';
@@ -19,8 +19,8 @@ class RoleTimelineChannel extends Channel {
 	private minimize: boolean;
 
 	constructor(
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
-		private roleservice: RoleService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -42,7 +42,7 @@ class RoleTimelineChannel extends Channel {
 		if (data.type === 'note') {
 			const note = data.body;
 
-			if (!(await this.roleservice.isExplorable({ id: this.roleId }))) {
+			if (!(await this.roleService.isExplorable({ id: this.roleId }))) {
 				return;
 			}
 			if (note.visibility !== 'public') return;
@@ -78,11 +78,14 @@ class RoleTimelineChannel extends Channel {
 			}
 
 			if (this.minimize && ['public', 'home'].includes(note.visibility)) {
+				const badgeRoles = this.iAmModerator ? await this.roleService.getUserBadgeRoles(note.userId, false) : undefined;
+
 				this.send('note', {
 					id: note.id, myReaction: note.myReaction,
 					poll: note.poll?.choices ? { choices: note.poll.choices } : undefined,
 					reply: note.reply?.myReaction ? { myReaction: note.reply.myReaction } : undefined,
 					renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
+					...(badgeRoles?.length ? { user: { badgeRoles } } : {}),
 				});
 			} else {
 				this.send('note', note);
@@ -106,16 +109,16 @@ export class RoleTimelineChannelService implements MiChannelService<false> {
 	public readonly kind = RoleTimelineChannel.kind;
 
 	constructor(
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
-		private roleservice: RoleService,
 	) {
 	}
 
 	@bindThis
 	public create(id: string, connection: Channel['connection']): RoleTimelineChannel {
 		return new RoleTimelineChannel(
+			this.roleService,
 			this.noteEntityService,
-			this.roleservice,
 			id,
 			connection,
 		);

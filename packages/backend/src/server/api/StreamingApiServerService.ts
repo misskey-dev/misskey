@@ -15,6 +15,7 @@ import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { UserService } from '@/core/UserService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import MainStreamConnection from './stream/Connection.js';
@@ -40,6 +41,7 @@ export class StreamingApiServerService {
 		private channelsService: ChannelsService,
 		private notificationService: NotificationService,
 		private usersService: UserService,
+		private roleService: RoleService,
 		private channelFollowingService: ChannelFollowingService,
 	) {
 	}
@@ -99,6 +101,7 @@ export class StreamingApiServerService {
 				this.noteReadService,
 				this.notificationService,
 				this.cacheService,
+				this.roleService,
 				this.channelFollowingService,
 				user, app,
 			);

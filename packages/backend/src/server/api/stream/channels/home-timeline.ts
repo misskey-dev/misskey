@@ -4,9 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { Packed } from '@/misc/json-schema.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { RoleService } from '@/core/RoleService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
@@ -20,6 +21,7 @@ class HomeTimelineChannel extends Channel {
 	private minimize: boolean;
 
 	constructor(
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
@@ -96,11 +98,14 @@ class HomeTimelineChannel extends Channel {
 		}
 
 		if (this.minimize && ['public', 'home'].includes(note.visibility)) {
+			const badgeRoles = this.iAmModerator ? await this.roleService.getUserBadgeRoles(note.userId, false) : undefined;
+
 			this.send('note', {
 				id: note.id, myReaction: note.myReaction,
 				poll: note.poll?.choices ? { choices: note.poll.choices } : undefined,
 				reply: note.reply?.myReaction ? { myReaction: note.reply.myReaction } : undefined,
 				renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
+				...(badgeRoles?.length ? { user: { badgeRoles } } : {}),
 			});
 		} else {
 			this.send('note', note);
@@ -121,6 +126,7 @@ export class HomeTimelineChannelService implements MiChannelService<true> {
 	public readonly kind = HomeTimelineChannel.kind;
 
 	constructor(
+		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
 	}
@@ -128,6 +134,7 @@ export class HomeTimelineChannelService implements MiChannelService<true> {
 	@bindThis
 	public create(id: string, connection: Channel['connection']): HomeTimelineChannel {
 		return new HomeTimelineChannel(
+			this.roleService,
 			this.noteEntityService,
 			id,
 			connection,

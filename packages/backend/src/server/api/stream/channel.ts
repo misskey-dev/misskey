@@ -30,6 +30,10 @@ export default abstract class Channel {
 		return this.connection.userProfile;
 	}
 
+	protected get iAmModerator() {
+		return this.connection.isModerator;
+	}
+
 	protected get following() {
 		return this.connection.following;
 	}

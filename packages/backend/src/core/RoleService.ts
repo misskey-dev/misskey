@@ -350,7 +350,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	 * 指定ユーザーのバッジロール一覧取得
 	 */
 	@bindThis
-	public async getUserBadgeRoles(userId: MiUser['id']) {
+	public async getUserBadgeRoles(userId: MiUser['id'], publicOnly: boolean) {
 		const now = Date.now();
 		let assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
 		// 期限切れのロールを除外
@@ -362,10 +362,23 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		if (badgeCondRoles.length > 0) {
 			const user = roles.some(r => r.target === 'conditional') ? await this.cacheService.findUserById(userId) : null;
 			const matchedBadgeCondRoles = badgeCondRoles.filter(r => this.evalCond(user!, assignedRoles, r.condFormula));
-			return [...assignedBadgeRoles, ...matchedBadgeCondRoles];
+			return this.sortAndMapBadgeRoles([...assignedBadgeRoles, ...matchedBadgeCondRoles], publicOnly);
 		} else {
-			return assignedBadgeRoles;
+			return this.sortAndMapBadgeRoles(assignedBadgeRoles, publicOnly);
 		}
+	}
+
+	@bindThis
+	private sortAndMapBadgeRoles(roles: MiRole[], publicOnly: boolean) {
+		return roles
+			.filter((r) => r.isPublic || !publicOnly)
+			.sort((a, b) => b.displayOrder - a.displayOrder)
+			.map((r) => ({
+				name: r.name,
+				iconUrl: r.iconUrl,
+				displayOrder: r.displayOrder,
+				behavior: r.badgeBehavior ?? undefined,
+			}));
 	}
 
 	@bindThis
