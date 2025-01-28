@@ -9,6 +9,11 @@ import type { GridColumnSetting } from '@/components/grid/column.js';
 import type { GridRowSetting } from '@/components/grid/row.js';
 
 export type GridSetting = {
+	root?: {
+		noOverflowStyle?: boolean;
+		rounded?: boolean;
+		outerBorder?: boolean;
+	};
 	row?: GridRowSetting;
 	cols: GridColumnSetting[];
 	cells?: GridCellSetting;

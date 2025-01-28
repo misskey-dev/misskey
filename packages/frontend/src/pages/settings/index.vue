@@ -46,7 +46,7 @@ const indexInfo = {
 	icon: 'ti ti-settings',
 	hideHeader: true,
 };
-const INFO = ref(indexInfo);
+const INFO = ref<PageMetadata>(indexInfo);
 const el = shallowRef<HTMLElement | null>(null);
 const childInfo = ref<null | PageMetadata>(null);
 
