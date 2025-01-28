@@ -4,6 +4,8 @@ VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
 
+- fix(frontend): Unable to see VRTL when logged in
+
 -- 2024.11.0-kinel.2 --
 -- 2024.11.0-kinel.1 --
 -- 2024.10.0-kinel.2 --

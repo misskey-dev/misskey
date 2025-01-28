@@ -156,14 +156,8 @@ export class ApNoteService {
 
 		const url = getOneApHrefNullable(note.url);
 
-		if (url != null) {
-			if (!checkHttps(url)) {
-				throw new Error('unexpected schema of note url: ' + url);
-			}
-
-			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(note.id)) {
-				throw new Error(`note url & uri host mismatch: note url: ${url}, note uri: ${note.id}`);
-			}
+		if (url && !checkHttps(url)) {
+			throw new Error('unexpected schema of note url: ' + url);
 		}
 
 		this.logger.info(`Creating the Note: ${note.id}`);
@@ -455,6 +449,8 @@ export class ApNoteService {
 						originalUrl: tag.icon.url,
 						publicUrl: tag.icon.url,
 						updatedAt: new Date(),
+						// _misskey_license が存在しなければ `null`
+						license: (tag._misskey_license?.freeText ?? null)
 					});
 
 					const emoji = await this.emojisRepository.findOneBy({ host, name });
@@ -476,6 +472,8 @@ export class ApNoteService {
 				publicUrl: tag.icon.url,
 				updatedAt: new Date(),
 				aliases: [],
+				// _misskey_license が存在しなければ `null`
+				license: (tag._misskey_license?.freeText ?? null)
 			});
 		}));
 	}

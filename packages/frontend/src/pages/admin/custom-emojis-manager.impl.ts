@@ -22,7 +22,8 @@ export const gridSortOrderKeys = [
 	'isSensitive',
 	'localOnly',
 	'updatedAt',
-];
+] as const satisfies string[];
+
 export type GridSortOrderKey = typeof gridSortOrderKeys[number];
 
 export function emptyStrToUndefined(value: string | null) {
@@ -34,7 +35,7 @@ export function emptyStrToNull(value: string) {
 }
 
 export function emptyStrToEmptyArray(value: string) {
-	return value === '' ? [] : value.split(',').map(it => it.trim());
+	return value === '' ? [] : value.split(' ').map(it => it.trim());
 }
 
 export function roleIdsParser(text: string): { id: string, name: string }[] {
