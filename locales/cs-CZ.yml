@@ -2024,9 +2024,6 @@ _moderationLogTypes:
   createInvitation: "Vygenerovat pozvánku"
 _reversi:
   total: "Celkem"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "Chyba"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Nenalezeno"
