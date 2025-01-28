@@ -50,17 +50,11 @@ async function main() {
 		const files = await glob(dir, { cwd });
 		for (const file of files) {
 			//console.log(`Scanning ${file}`);
-			if (file.includes('MkSignin')) {
-				console.log(`Scanning ${file}`);
-			}
 			const content = await fsp.readFile(path.resolve(cwd, file), 'utf-8');
 			const classRegex = /ti-[a-z0-9-]+/g;
 			let matches: RegExpExecArray | null;
 			while ((matches = classRegex.exec(content)) !== null) {
 				const icon = matches[0];
-				if (file.includes('MkSignin')) {
-					console.log(`Found ${icon}, ${rgMap.has(icon)}`);
-				}
 				if (rgMap.has(icon)) {
 					iconsToPack.add(icon);
 				}
