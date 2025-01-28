@@ -1588,11 +1588,7 @@ _achievements:
       description: "Vous vous êtes connecté à la date de votre anniversaire"
     _loggedInOnNewYearsDay:
       title: "Bonne année !"
-      description: "Vous vous êtes connecté le premier jour de l'année"
-      flavor: "Merci pour le soutient continue sur cette instance."
-    _cookieClicked:
-      title: "Jeu de clic sur des cookies"
-      description: "Cliqué sur un cookie"
+    _puddingClicked:
       flavor: "Attendez une minute, vous êtes sur le mauvais site web ?"
     _brainDiver:
       title: "Brain Diver"

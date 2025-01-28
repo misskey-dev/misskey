@@ -1714,8 +1714,8 @@ _achievements:
       title: "恭贺新禧"
       description: "在元旦登入"
       flavor: "今年也请对本服务器多多指教！"
-    _cookieClicked:
-      title: "饼干点点乐"
+    _puddingClicked:
+      title: "点击饼干小游戏"
       description: "点击了饼干"
       flavor: "穿越了？"
     _brainDiver:
