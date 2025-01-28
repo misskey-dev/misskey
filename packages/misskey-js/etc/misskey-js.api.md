@@ -1734,6 +1734,10 @@ declare namespace entities {
         NotesUnrenoteRequest,
         NotesUserListTimelineRequest,
         NotesUserListTimelineResponse,
+        NotesVmimiRelayHybridTimelineRequest,
+        NotesVmimiRelayHybridTimelineResponse,
+        NotesVmimiRelayTimelineRequest,
+        NotesVmimiRelayTimelineResponse,
         NotificationsCreateRequest,
         PagePushRequest,
         PagesCreateRequest,
@@ -2845,6 +2849,18 @@ type NotesUserListTimelineRequest = operations['notes___user-list-timeline']['re
 
 // @public (undocumented)
 type NotesUserListTimelineResponse = operations['notes___user-list-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayHybridTimelineRequest = operations['notes___vmimi-relay-hybrid-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayHybridTimelineResponse = operations['notes___vmimi-relay-hybrid-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayTimelineRequest = operations['notes___vmimi-relay-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesVmimiRelayTimelineResponse = operations['notes___vmimi-relay-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 export const noteVisibilities: readonly ["public", "home", "followers", "specified"];
