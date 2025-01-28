@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: ノートの下書き機能
 
 ### Client
 -
