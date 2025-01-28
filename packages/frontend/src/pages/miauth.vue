@@ -59,18 +59,18 @@ async function onAccept(token: string) {
 		name: props.name,
 		iconUrl: props.icon,
 		permission: _permissions.value,
-	}, token).catch(() => {
+	}, token).then(() => {
+		if (props.callback && props.callback !== '') {
+			const cbUrl = new URL(props.callback);
+			if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:', 'vbscript:'].includes(cbUrl.protocol)) throw new Error('invalid url');
+			cbUrl.searchParams.set('session', props.session);
+			location.href = cbUrl.toString();
+		} else {
+			authRoot.value?.showUI('success');
+		}
+	}).catch(() => {
 		authRoot.value?.showUI('failed');
 	});
-
-	if (props.callback && props.callback !== '') {
-		const cbUrl = new URL(props.callback);
-		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:', 'vbscript:'].includes(cbUrl.protocol)) throw new Error('invalid url');
-		cbUrl.searchParams.set('session', props.session);
-		location.href = cbUrl.toString();
-	} else {
-		authRoot.value?.showUI('success');
-	}
 }
 
 function onDeny() {
@@ -117,5 +117,6 @@ definePageMetadata(() => ({
 	border-radius: var(--MI-radius);
 	background-color: var(--MI_THEME-panel);
 	overflow-x: scroll;
+	white-space: nowrap;
 }
 </style>
