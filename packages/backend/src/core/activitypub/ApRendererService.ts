@@ -183,6 +183,9 @@ export class ApRendererService {
 				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 				url: emoji.publicUrl || emoji.originalUrl,
 			},
+			_misskey_license: {
+				freeText: emoji.license
+			},
 		};
 	}
 
@@ -495,6 +498,9 @@ export class ApRendererService {
 			summary: profile.description ? this.mfmService.toHtml(mfm.parse(profile.description)) : null,
 			_misskey_summary: profile.description,
 			_misskey_followedMessage: profile.followedMessage,
+			_misskey_requireSigninToViewContents: user.requireSigninToViewContents,
+			_misskey_makeNotesFollowersOnlyBefore: user.makeNotesFollowersOnlyBefore,
+			_misskey_makeNotesHiddenBefore: user.makeNotesHiddenBefore,
 			icon: avatar ? this.renderImage(avatar) : null,
 			image: banner ? this.renderImage(banner) : null,
 			tag,

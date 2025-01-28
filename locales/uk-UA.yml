@@ -334,7 +334,6 @@ enableLocalTimeline: "Увімкнути локальну стрічку"
 enableGlobalTimeline: "Увімкнути глобальну стрічку"
 disablingTimelinesInfo: "Адміністратори та модератори завжди мають доступ до всіх стрічок, навіть якщо вони вимкнуті."
 registration: "Реєстрація"
-enableRegistration: "Дозволити реєстрацію"
 invite: "Запросити"
 driveCapacityPerLocalAccount: "Об'єм диска на одного локального користувача"
 driveCapacityPerRemoteAccount: "Об'єм диска на одного віддаленого користувача"
@@ -1625,3 +1624,6 @@ _moderationLogTypes:
   resetPassword: "Скинути пароль"
 _reversi:
   total: "Всього"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Не знайдено"

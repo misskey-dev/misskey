@@ -37,6 +37,10 @@ export interface Locale extends ILocale {
      */
     "search": string;
     /**
+     * リセット
+     */
+    "reset": string;
+    /**
      * 通知
      */
     "notifications": string;
@@ -210,6 +214,10 @@ export interface Locale extends ILocale {
      * リンクをコピー
      */
     "copyLink": string;
+    /**
+     * リモートのリンクをコピー
+     */
+    "copyRemoteLink": string;
     /**
      * リノートのリンクをコピー
      */
@@ -1547,10 +1555,6 @@ export interface Locale extends ILocale {
      */
     "registration": string;
     /**
-     * 誰でも新規登録できるようにする
-     */
-    "enableRegistration": string;
-    /**
      * 招待
      */
     "invite": string;
@@ -2371,6 +2375,10 @@ export interface Locale extends ILocale {
      */
     "details": string;
     /**
+     * リノートの詳細
+     */
+    "renoteDetails": string;
+    /**
      * 絵文字を選択
      */
     "chooseEmoji": string;
@@ -2759,9 +2767,21 @@ export interface Locale extends ILocale {
      */
     "wordMute": string;
     /**
+     * 指定した語句を含むノートを最小化します。最小化されたノートをクリックすることで表示することができます。
+     */
+    "wordMuteDescription": string;
+    /**
      * ハードワードミュート
      */
     "hardWordMute": string;
+    /**
+     * ミュートされたワードを表示
+     */
+    "showMutedWord": string;
+    /**
+     * 指定した語句を含むノートを隠します。ワードミュートとは異なり、ノートは完全に表示されなくなります。
+     */
+    "hardWordMuteDescription": string;
     /**
      * 正規表現エラー
      */
@@ -2778,6 +2798,10 @@ export interface Locale extends ILocale {
      * {name}が何かを言いました
      */
     "userSaysSomething": ParameterizedString<"name">;
+    /**
+     * {name}が「{word}」について何かを言いました
+     */
+    "userSaysSomethingAbout": ParameterizedString<"name" | "word">;
     /**
      * アクティブにする
      */
@@ -3810,6 +3834,18 @@ export interface Locale extends ILocale {
      * 1ヶ月
      */
     "oneMonth": string;
+    /**
+     * 3ヶ月
+     */
+    "threeMonths": string;
+    /**
+     * 1年
+     */
+    "oneYear": string;
+    /**
+     * 3日
+     */
+    "threeDays": string;
     /**
      * 反映されるまで時間がかかる場合があります。
      */
@@ -5199,6 +5235,80 @@ export interface Locale extends ILocale {
      * 名前に禁止されている文字列が含まれています。この名前を使用したい場合は、サーバー管理者にお問い合わせください。
      */
     "yourNameContainsProhibitedWordsDescription": string;
+    /**
+     * 投稿者により、表示にはログインが必要と設定されています
+     */
+    "thisContentsAreMarkedAsSigninRequiredByAuthor": string;
+    /**
+     * ロックダウン
+     */
+    "lockdown": string;
+    /**
+     * アカウントを選択してください
+     */
+    "pleaseSelectAccount": string;
+    /**
+     * 利用可能なロール
+     */
+    "availableRoles": string;
+    /**
+     * 注意事項を理解した上でオンにします。
+     */
+    "acknowledgeNotesAndEnable": string;
+    /**
+     * このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。
+     */
+    "federationSpecified": string;
+    /**
+     * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
+     */
+    "federationDisabled": string;
+    "_accountSettings": {
+        /**
+         * コンテンツの表示にログインを必須にする
+         */
+        "requireSigninToViewContents": string;
+        /**
+         * あなたが作成した全てのノートなどのコンテンツを表示するのにログインを必須にします。クローラーに情報が収集されるのを防ぐ効果が期待できます。
+         */
+        "requireSigninToViewContentsDescription1": string;
+        /**
+         * URLプレビュー(OGP)、Webページへの埋め込み、ノートの引用に対応していないサーバーからの表示も不可になります。
+         */
+        "requireSigninToViewContentsDescription2": string;
+        /**
+         * リモートサーバーに連合されたコンテンツでは、これらの制限が適用されない場合があります。
+         */
+        "requireSigninToViewContentsDescription3": string;
+        /**
+         * 過去のノートをフォロワーのみ表示可能にする
+         */
+        "makeNotesFollowersOnlyBefore": string;
+        /**
+         * この機能が有効になっている間、設定された日時より過去、または設定された時間を経過しているノートがフォロワーのみ表示可能になります。無効に戻すと、ノートの公開状態も元に戻ります。
+         */
+        "makeNotesFollowersOnlyBeforeDescription": string;
+        /**
+         * 過去のノートを非公開化する
+         */
+        "makeNotesHiddenBefore": string;
+        /**
+         * この機能が有効になっている間、設定された日時より過去、または設定された時間を経過しているノートが自分のみ表示可能(非公開化)になります。無効に戻すと、ノートの公開状態も元に戻ります。
+         */
+        "makeNotesHiddenBeforeDescription": string;
+        /**
+         * リモートサーバーに連合されたノートには効果が及ばない場合があります。
+         */
+        "mayNotEffectForFederatedNotes": string;
+        /**
+         * 指定した時間を経過しているノート
+         */
+        "notesHavePassedSpecifiedPeriod": string;
+        /**
+         * 指定した日時より前のノート
+         */
+        "notesOlderThanSpecifiedDateAndTime": string;
+    };
     "_abuseUserReport": {
         /**
          * 転送
@@ -5729,6 +5839,14 @@ export interface Locale extends ILocale {
          * サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。
          */
         "inquiryUrlDescription": string;
+        /**
+         * アカウントの作成をオープンにする
+         */
+        "openRegistration": string;
+        /**
+         * 登録を開放することはリスクが伴います。サーバーを常に監視し、トラブルが発生した際にすぐに対応できる体制がある場合のみオンにすることを推奨します。
+         */
+        "openRegistrationWarning": string;
         /**
          * 一定期間モデレーターのアクティビティが検出されなかった場合、スパム防止のためこの設定は自動でオフになります。
          */
@@ -8400,13 +8518,25 @@ export interface Locale extends ILocale {
          */
         "callback": string;
         /**
+         * アクセスを許可しました
+         */
+        "accepted": string;
+        /**
          * アクセスを拒否しました
          */
         "denied": string;
         /**
+         * 以下のユーザーとして操作しています
+         */
+        "scopeUser": string;
+        /**
          * アプリケーションにアクセス許可を与えるには、ログインが必要です。
          */
         "pleaseLogin": string;
+        /**
+         * アクセスを許可すると、自動で以下のURLに遷移します
+         */
+        "byClickingYouWillBeRedirectedToThisUrl": string;
     };
     "_antennaSources": {
         /**
@@ -9292,7 +9422,7 @@ export interface Locale extends ILocale {
          */
         "youGotQuote": ParameterizedString<"name">;
         /**
-         * {name}がRenoteしました
+         * {name}がリノートしました
          */
         "youRenoted": ParameterizedString<"name">;
         /**
@@ -9397,7 +9527,7 @@ export interface Locale extends ILocale {
              */
             "reply": string;
             /**
-             * Renote
+             * リノート
              */
             "renote": string;
             /**
@@ -9455,7 +9585,7 @@ export interface Locale extends ILocale {
              */
             "reply": string;
             /**
-             * Renote
+             * リノート
              */
             "renote": string;
         };
@@ -10438,6 +10568,227 @@ export interface Locale extends ILocale {
          */
         "native": string;
     };
+    "_gridComponent": {
+        "_error": {
+            /**
+             * この値は必須項目です
+             */
+            "requiredValue": string;
+            /**
+             * 正規表現によるバリデーションはtype:textのカラムのみサポートします。
+             */
+            "columnTypeNotSupport": string;
+            /**
+             * この値は{pattern}のパターンに一致しません
+             */
+            "patternNotMatch": ParameterizedString<"pattern">;
+            /**
+             * この値は一意である必要があります
+             */
+            "notUnique": string;
+        };
+    };
+    "_roleSelectDialog": {
+        /**
+         * 選択されていません
+         */
+        "notSelected": string;
+    };
+    "_customEmojisManager": {
+        "_gridCommon": {
+            /**
+             * 選択行をコピー
+             */
+            "copySelectionRows": string;
+            /**
+             * 選択範囲をコピー
+             */
+            "copySelectionRanges": string;
+            /**
+             * 選択行を削除
+             */
+            "deleteSelectionRows": string;
+            /**
+             * 選択範囲の値をクリア
+             */
+            "deleteSelectionRanges": string;
+            /**
+             * 検索設定
+             */
+            "searchSettings": string;
+            /**
+             * 検索条件を詳細に設定します。
+             */
+            "searchSettingCaption": string;
+            /**
+             * 表示件数
+             */
+            "searchLimit": string;
+            /**
+             * 並び順
+             */
+            "sortOrder": string;
+            /**
+             * 登録ログ
+             */
+            "registrationLogs": string;
+            /**
+             * 絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページを遷移・リロードすると消えます。
+             */
+            "registrationLogsCaption": string;
+            /**
+             * 絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。
+             */
+            "alertEmojisRegisterFailedDescription": string;
+        };
+        "_logs": {
+            /**
+             * 成功ログを表示
+             */
+            "showSuccessLogSwitch": string;
+            /**
+             * 失敗ログはありません。
+             */
+            "failureLogNothing": string;
+            /**
+             * ログはありません。
+             */
+            "logNothing": string;
+        };
+        "_remote": {
+            /**
+             * 選択行の詳細
+             */
+            "selectionRowDetail": string;
+            /**
+             * 選択行をインポート
+             */
+            "importSelectionRows": string;
+            /**
+             * 選択範囲の行をインポート
+             */
+            "importSelectionRangesRows": string;
+            /**
+             * チェックされた絵文字をインポート
+             */
+            "importEmojisButton": string;
+            /**
+             * 絵文字のインポート
+             */
+            "confirmImportEmojisTitle": string;
+            /**
+             * リモートから受信した{count}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。実行しますか？
+             */
+            "confirmImportEmojisDescription": ParameterizedString<"count">;
+        };
+        "_local": {
+            /**
+             * 登録済み絵文字一覧
+             */
+            "tabTitleList": string;
+            /**
+             * 絵文字の登録
+             */
+            "tabTitleRegister": string;
+            "_list": {
+                /**
+                 * 登録された絵文字はありません。
+                 */
+                "emojisNothing": string;
+                /**
+                 * 選択行を削除対象にする
+                 */
+                "markAsDeleteTargetRows": string;
+                /**
+                 * 選択範囲の行を削除対象にする
+                 */
+                "markAsDeleteTargetRanges": string;
+                /**
+                 * 変更された絵文字はありません。
+                 */
+                "alertUpdateEmojisNothingDescription": string;
+                /**
+                 * 削除対象の絵文字はありません。
+                 */
+                "alertDeleteEmojisNothingDescription": string;
+                /**
+                 * ページを移動しますか？
+                 */
+                "confirmMovePage": string;
+                /**
+                 * 表示を変更しますか？
+                 */
+                "confirmChangeView": string;
+                /**
+                 * {count}個の絵文字を更新します。実行しますか？
+                 */
+                "confirmUpdateEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * チェックがつけられた{count}個の絵文字を削除します。実行しますか？
+                 */
+                "confirmDeleteEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * 今までに加えた変更がすべてリセットされます。
+                 */
+                "confirmResetDescription": string;
+                /**
+                 * このページの絵文字に変更が加えられています。
+                 * 保存せずにこのままページを移動すると、このページで加えた変更はすべて破棄されます。
+                 */
+                "confirmMovePageDesciption": string;
+                /**
+                 * 絵文字に設定されたロールで検索
+                 */
+                "dialogSelectRoleTitle": string;
+            };
+            "_register": {
+                /**
+                 * アップロード設定
+                 */
+                "uploadSettingTitle": string;
+                /**
+                 * この画面で絵文字アップロードを行う際の動作を設定できます。
+                 */
+                "uploadSettingDescription": string;
+                /**
+                 * ディレクトリ名を"category"に入力する
+                 */
+                "directoryToCategoryLabel": string;
+                /**
+                 * ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を"category"に入力します。
+                 */
+                "directoryToCategoryCaption": string;
+                /**
+                 * いずれかの方法で登録する絵文字を選択してください。
+                 */
+                "emojiInputAreaCaption": string;
+                /**
+                 * この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ
+                 */
+                "emojiInputAreaList1": string;
+                /**
+                 * このリンクをクリックしてPCから選択する
+                 */
+                "emojiInputAreaList2": string;
+                /**
+                 * このリンクをクリックしてドライブから選択する
+                 */
+                "emojiInputAreaList3": string;
+                /**
+                 * リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）
+                 */
+                "confirmRegisterEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * 編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？
+                 */
+                "confirmClearEmojisDescription": string;
+                /**
+                 * ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？
+                 */
+                "confirmUploadEmojisDescription": ParameterizedString<"count">;
+            };
+        };
+    };
     "_embedCodeGen": {
         /**
          * 埋め込みコードをカスタマイズ
@@ -10491,6 +10842,140 @@ export interface Locale extends ILocale {
          * 生成されたコードをウェブサイトに貼り付けてご利用ください。
          */
         "codeGeneratedDescription": string;
+    };
+    "_selfXssPrevention": {
+        /**
+         * 警告
+         */
+        "warning": string;
+        /**
+         * 「この画面に何か貼り付けろ」はすべて詐欺です。
+         */
+        "title": string;
+        /**
+         * ここに何かを貼り付けると、悪意のあるユーザーにアカウントを乗っ取られたり、個人情報を盗まれたりする可能性があります。
+         */
+        "description1": string;
+        /**
+         * 貼り付けようとしているものが何なのかを正確に理解していない場合は、%c今すぐ作業を中止してこのウィンドウを閉じてください。
+         */
+        "description2": string;
+        /**
+         * 詳しくはこちらをご確認ください。 {link}
+         */
+        "description3": ParameterizedString<"link">;
+    };
+    "_followRequest": {
+        /**
+         * 受け取った申請
+         */
+        "recieved": string;
+        /**
+         * 送った申請
+         */
+        "sent": string;
+    };
+    "_remoteLookupErrors": {
+        "_federationNotAllowed": {
+            /**
+             * このサーバーとは通信できません
+             */
+            "title": string;
+            /**
+             * このサーバーとの通信が無効化されているか、このサーバーをブロックしている・ブロックされている可能性があります。
+             * サーバー管理者にお問い合わせください。
+             */
+            "description": string;
+        };
+        "_uriInvalid": {
+            /**
+             * URIが不正です
+             */
+            "title": string;
+            /**
+             * 入力されたURIに問題があります。URIに使用できない文字を入力していないか確認してください。
+             */
+            "description": string;
+        };
+        "_requestFailed": {
+            /**
+             * リクエストに失敗しました
+             */
+            "title": string;
+            /**
+             * このサーバーとの通信に失敗しました。相手サーバーがダウンしている可能性があります。また、不正なURIや存在しないURIを入力していないか確認してください。
+             */
+            "description": string;
+        };
+        "_responseInvalid": {
+            /**
+             * レスポンスが不正です
+             */
+            "title": string;
+            /**
+             * このサーバーと通信することはできましたが、得られたデータが不正なものでした。
+             */
+            "description": string;
+        };
+        "_responseInvalidIdHostNotMatch": {
+            /**
+             * 入力されたURIのドメインと最終的に得られたURIのドメインとが異なります。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。
+             */
+            "description": string;
+        };
+        "_noSuchObject": {
+            /**
+             * 見つかりません
+             */
+            "title": string;
+            /**
+             * 要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。
+             */
+            "description": string;
+        };
+    };
+    "_captcha": {
+        /**
+         * CAPTCHAを通過してください
+         */
+        "verify": string;
+        /**
+         * サイトキーとシークレットキーにテスト用の値を入力することでプレビューを確認できます。
+         * 詳細は下記ページをご確認ください。
+         */
+        "testSiteKeyMessage": string;
+        "_error": {
+            "_requestFailed": {
+                /**
+                 * CAPTCHAのリクエストに失敗しました
+                 */
+                "title": string;
+                /**
+                 * しばらく後に実行するか、設定をもう一度ご確認ください。
+                 */
+                "text": string;
+            };
+            "_verificationFailed": {
+                /**
+                 * CAPTCHAの検証に失敗しました
+                 */
+                "title": string;
+                /**
+                 * 設定が正しいかどうかもう一度確認ください。
+                 */
+                "text": string;
+            };
+            "_unknown": {
+                /**
+                 * CAPTCHAエラー
+                 */
+                "title": string;
+                /**
+                 * 想定外のエラーが発生しました。
+                 */
+                "text": string;
+            };
+        };
     };
 }
 declare const locales: {

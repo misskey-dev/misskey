@@ -47,11 +47,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 
 const props = defineProps<{
-	channel: Record<string, any>;
+	channel: Misskey.entities.Channel;
 }>();
 
 const getLastReadedAt = (): number | null => {
@@ -124,7 +125,9 @@ const bannerStyle = computed(() => {
 			position: absolute;
 			top: 16px;
 			left: 16px;
+			max-width: calc(100% - 32px);
 			padding: 12px 16px;
+			box-sizing: border-box;
 			background: rgba(0, 0, 0, 0.7);
 			color: #fff;
 			font-size: 1.2em;

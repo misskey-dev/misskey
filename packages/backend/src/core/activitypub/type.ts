@@ -14,6 +14,9 @@ export interface IObject {
 	summary?: string;
 	_misskey_summary?: string;
 	_misskey_followedMessage?: string | null;
+	_misskey_requireSigninToViewContents?: boolean;
+	_misskey_makeNotesFollowersOnlyBefore?: number | null;
+	_misskey_makeNotesHiddenBefore?: number | null;
 	published?: string;
 	cc?: ApObject;
 	to?: ApObject;
@@ -239,6 +242,11 @@ export interface IApEmoji extends IObject {
 	type: 'Emoji';
 	name: string;
 	updated: string;
+	// Misskey拡張。後方互換性のためにoptional。
+	// 将来の拡張性を考慮してobjectにしている
+	_misskey_license?: {
+		freeText: string | null;
+	};
 }
 
 export const isEmoji = (object: IObject): object is IApEmoji =>

@@ -136,7 +136,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">
 					<MkLazy>
-						<XFiles :key="user.id" :user="user"/>
+						<XFiles :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
 					</MkLazy>
 					<MkLazy>
 						<XActivity :key="user.id" :user="user"/>
@@ -150,7 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
-			<XFiles :key="user.id" :user="user"/>
+			<XFiles :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
 			<XActivity :key="user.id" :user="user"/>
 		</div>
 	</div>
@@ -212,6 +212,10 @@ const props = withDefaults(defineProps<{
 	disableNotes: false,
 });
 
+const emit = defineEmits<{
+	(ev: 'unfoldFiles'): void;
+}>();
+
 const router = useRouter();
 
 const user = ref(props.user);
@@ -257,7 +261,7 @@ function parallaxLoop() {
 }
 
 function parallax() {
-	const banner = bannerEl.value as any;
+	const banner = bannerEl.value;
 	if (banner == null) return;
 
 	const top = getScrollPosition(rootEl.value);

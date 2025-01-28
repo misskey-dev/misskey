@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+			<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm
@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="appearNote.files && appearNote.files.length > 0">
 						<MkMediaList ref="galleryEl" :mediaList="appearNote.files"/>
 					</div>
-					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :class="$style.poll"/>
+					<MkPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :author="appearNote.user" :emojiUrls="appearNote.emojis" :class="$style.poll"/>
 					<div v-if="isEnabledUrlPreview">
 						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
 					</div>
@@ -150,11 +150,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</template>
 	</I18n>
-	<I18n v-else :src="i18n.ts.userSaysSomething" tag="small">
+	<I18n v-else-if="showSoftWordMutedWord !== true" :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
+		</template>
+	</I18n>
+	<I18n v-else :src="i18n.ts.userSaysSomethingAbout" tag="small">
+		<template #name>
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+				<MkUserName :user="appearNote.user"/>
+			</MkA>
+		</template>
+		<template #word>
+			{{ Array.isArray(muted) ? muted.map(words => Array.isArray(words) ? words.join() : words).slice(0, 3).join(' ') : muted }}
 		</template>
 	</I18n>
 </div>
@@ -187,6 +197,7 @@ import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
+import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import number from '@/filters/number.js';
 import * as os from '@/os.js';
@@ -227,6 +238,7 @@ const emit = defineEmits<{
 }>();
 
 const inTimeline = inject<boolean>('inTimeline', false);
+const tl_withSensitive = inject<Ref<boolean>>('tl_withSensitive', ref(true));
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
@@ -270,6 +282,7 @@ const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
 const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords, true));
+const showSoftWordMutedWord = computed(() => defaultStore.state.showSoftWordMutedWord);
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
@@ -288,18 +301,26 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 
 /* Overload FunctionにLintが対応していないのでコメントアウト
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): boolean | 'sensitiveMute';
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): Array<string | string[]> | false | 'sensitiveMute';
 */
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): boolean | 'sensitiveMute' {
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | false | 'sensitiveMute' {
 	if (mutedWords == null) return false;
 
-	if (checkWordMute(noteToCheck, $i, mutedWords)) return true;
-	if (noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords)) return true;
-	if (noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords)) return true;
+	const result = checkWordMute(noteToCheck, $i, mutedWords);
+	if (Array.isArray(result)) return result;
+
+	const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
+	if (Array.isArray(replyResult)) return replyResult;
+
+	const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
+	if (Array.isArray(renoteResult)) return renoteResult;
 
 	if (checkOnly) return false;
 
-	if (inTimeline && !defaultStore.state.tl.filter.withSensitive && noteToCheck.files?.some((v) => v.isSensitive)) return 'sensitiveMute';
+	if (inTimeline && tl_withSensitive.value === false && noteToCheck.files?.some((v) => v.isSensitive)) {
+		return 'sensitiveMute';
+	}
+
 	return false;
 }
 
@@ -419,7 +440,7 @@ if (!props.mock) {
 }
 
 function renote(viaKeyboard = false) {
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
 
 	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock });
@@ -429,7 +450,7 @@ function renote(viaKeyboard = false) {
 }
 
 function reply(): void {
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	if (props.mock) {
 		return;
 	}
@@ -442,7 +463,7 @@ function reply(): void {
 }
 
 function react(): void {
-	pleaseLogin(undefined, pleaseLoginContext.value);
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
@@ -562,15 +583,24 @@ function showRenoteMenu(): void {
 		};
 	}
 
+	const renoteDetailsMenu: MenuItem = {
+		type: 'link',
+		text: i18n.ts.renoteDetails,
+		icon: 'ti ti-info-circle',
+		to: notePage(note.value),
+	};
+
 	if (isMyRenote) {
-		pleaseLogin(undefined, pleaseLoginContext.value);
+		pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 		os.popupMenu([
+			renoteDetailsMenu,
 			getCopyNoteLinkMenu(note.value, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
 			getUnrenote(),
 		], renoteTime.value);
 	} else {
 		os.popupMenu([
+			renoteDetailsMenu,
 			getCopyNoteLinkMenu(note.value, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
 			getAbuseNoteMenu(note.value, i18n.ts.reportAbuseRenote),
