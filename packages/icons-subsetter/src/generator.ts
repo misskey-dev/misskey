@@ -50,11 +50,17 @@ async function main() {
 		const files = await glob(dir, { cwd });
 		for (const file of files) {
 			//console.log(`Scanning ${file}`);
+			if (file.includes('MkSignin')) {
+				console.log(`Scanning ${file}`);
+			}
 			const content = await fsp.readFile(path.resolve(cwd, file), 'utf-8');
 			const classRegex = /ti-[a-z0-9-]+/g;
 			let matches: RegExpExecArray | null;
 			while ((matches = classRegex.exec(content)) !== null) {
 				const icon = matches[0];
+				if (file.includes('MkSignin')) {
+					console.log(`Found ${icon}, ${rgMap.has(icon)}`);
+				}
 				if (rgMap.has(icon)) {
 					iconsToPack.add(icon);
 				}
@@ -119,8 +125,12 @@ async function main() {
 
 			// 使用されているアイコンのclassとの対応を追記
 			for (const icon of unicodeRangeValues.get(key)!) {
-				const iconClass = Array.from(rgMap.entries()).find(([_, unicode]) => parseInt(unicode, 16) === icon)![0];
-				cssRules.push(`.${iconClass}::before { content: "\\${icon.toString(16)}"; }`);
+				const iconClasses = Array.from(rgMap.entries()).filter(([_, unicode]) => parseInt(unicode, 16) === icon);
+				if (iconClasses.length > 1) {
+					console.warn(`[WARN] Multiple classes for the same unicode: ${iconClasses.map(([cls]) => cls).join(', ')}. Maybe it's deprecated?`);
+				}
+				const iconSelector = iconClasses.map(([className]) => `.${className}::before`).join(', ');
+				cssRules.push(`${iconSelector} { content: "\\${icon.toString(16)}"; }`);
 			}
 		}
 
