@@ -88,10 +88,9 @@ import { selectFile } from '@/scripts/select-file.js';
 import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
 import { useLoading } from "@/components/hook/useLoading.js";
 
-import type { GridSortOrderKey, RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import type { GridSetting } from '@/components/grid/grid.js';
-import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 
 type GridItem = {
 	checked: boolean;

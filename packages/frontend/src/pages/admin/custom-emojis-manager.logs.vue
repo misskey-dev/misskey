@@ -37,9 +37,6 @@ import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
 import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import type { GridSetting } from '@/components/grid/grid.js';
 
-import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import type { GridSetting } from '@/components/grid/grid.js';
-
 function setupGrid(): GridSetting {
 	return {
 		row: {
