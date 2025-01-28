@@ -119,8 +119,12 @@ async function main() {
 
 			// 使用されているアイコンのclassとの対応を追記
 			for (const icon of unicodeRangeValues.get(key)!) {
-				const iconClass = Array.from(rgMap.entries()).find(([_, unicode]) => parseInt(unicode, 16) === icon)![0];
-				cssRules.push(`.${iconClass}::before { content: "\\${icon.toString(16)}"; }`);
+				const iconClasses = Array.from(rgMap.entries()).filter(([_, unicode]) => parseInt(unicode, 16) === icon);
+				if (iconClasses.length > 1) {
+					console.warn(`[WARN] Multiple classes for the same unicode: ${iconClasses.map(([cls]) => cls).join(', ')}. Maybe it's deprecated?`);
+				}
+				const iconSelector = iconClasses.map(([className]) => `.${className}::before`).join(', ');
+				cssRules.push(`${iconSelector} { content: "\\${icon.toString(16)}"; }`);
 			}
 		}
 
