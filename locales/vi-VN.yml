@@ -1930,3 +1930,6 @@ _moderationLogTypes:
   createInvitation: "Tạo lời mời"
 _reversi:
   total: "Tổng cộng"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Không tìm thấy"
