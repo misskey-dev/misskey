@@ -4,6 +4,15 @@ VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
 
+--- 2025.1.0-vrtl.2 released at this time ---
+
+- fix(backend): Unexpectedly removed VRTL endpoints in 2025.1.0-vrtl.1
+- fix(frontend): Unable to see VRTL when logged in
+
+--- 2025.1.0-vrtl.1 released at this time ---
+
+--- 2024.11.0-vrtl.1 released at this time ---
+
 --- 2024.10.1-vrtl.1 released at this time ---
 
 --- 2024.9.0-vrtl.1 released at this time ---
