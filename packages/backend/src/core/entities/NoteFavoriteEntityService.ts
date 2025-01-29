@@ -28,6 +28,7 @@ export class NoteFavoriteEntityService {
 	public async pack(
 		src: MiNoteFavorite['id'] | MiNoteFavorite,
 		me?: { id: MiUser['id'] } | null | undefined,
+		withReactionAndUserPairCache?: boolean,
 	) {
 		const favorite = typeof src === 'object' ? src : await this.noteFavoritesRepository.findOneByOrFail({ id: src });
 
@@ -35,7 +36,7 @@ export class NoteFavoriteEntityService {
 			id: favorite.id,
 			createdAt: this.idService.parse(favorite.id).date.toISOString(),
 			noteId: favorite.noteId,
-			note: await this.noteEntityService.pack(favorite.note ?? favorite.noteId, me),
+			note: await this.noteEntityService.pack(favorite.note ?? favorite.noteId, me, { withReactionAndUserPairCache: withReactionAndUserPairCache }),
 		};
 	}
 
@@ -43,7 +44,8 @@ export class NoteFavoriteEntityService {
 	public packMany(
 		favorites: any[],
 		me: { id: MiUser['id'] },
+		withReactionAndUserPairCache?: boolean,
 	) {
-		return Promise.all(favorites.map(x => this.pack(x, me)));
+		return Promise.all(favorites.map(x => this.pack(x, me, withReactionAndUserPairCache)));
 	}
 }

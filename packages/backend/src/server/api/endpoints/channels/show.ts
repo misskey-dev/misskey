@@ -6,8 +6,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { ChannelsRepository } from '@/models/_.js';
+import { CacheService } from '@/core/CacheService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { DI } from '@/di-symbols.js';
+import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -44,6 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
 
+		private cacheService: CacheService,
 		private channelEntityService: ChannelEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -55,7 +59,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			return await this.channelEntityService.pack(channel, me, true);
+			const packedChannel = await this.channelEntityService.pack(channel, me, true, true);
+			if (packedChannel.pinnedNotes) {
+				const [
+					userIdsWhoMeMuting,
+					userIdsWhoBlockingMe,
+				] = me ? await Promise.all([
+					this.cacheService.userMutingsCache.fetch(me.id),
+					this.cacheService.userBlockedCache.fetch(me.id),
+				]) : [new Set<string>(), new Set<string>()];
+				packedChannel.pinnedNotes.filter(note => {
+					if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+					if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+					return true;
+				});
+				await Promise.all(
+					packedChannel.pinnedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
+				);
+			}
+			return packedChannel;
 		});
 	}
 }

@@ -11,6 +11,7 @@ import { DI } from '@/di-symbols.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
+import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -106,7 +107,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			notes.sort((a, b) => a.id > b.id ? -1 : 1);
 
-			return await this.noteEntityService.packMany(notes, me);
+			const packedNotes = await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true });
+			await Promise.all(
+				packedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
+			);
+			return packedNotes;
 		});
 	}
 }

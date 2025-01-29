@@ -7,6 +7,8 @@ import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -47,6 +49,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private noteEntityService: NoteEntityService,
+		private cacheService: CacheService,
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -59,9 +62,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.signinRequired);
 			}
 
-			return await this.noteEntityService.pack(note, me, {
+			const packedNote = await this.noteEntityService.pack(note, me, {
 				detail: true,
+				withReactionAndUserPairCache: true,
 			});
+
+			if (!me) {
+				delete packedNote.reactionAndUserPairCache;
+				return packedNote;
+			} else {
+				const userIdsWhoMeMuting = await this.cacheService.userMutingsCache.fetch(me.id);
+				return await removeMutedUsersReactions(packedNote, userIdsWhoMeMuting);
+			}
 		});
 	}
 }

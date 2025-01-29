@@ -9,6 +9,10 @@ import type { NotesRepository, ClipsRepository, ClipNotesRepository } from '@/mo
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
+import { CacheService } from '@/core/CacheService.js';
+import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -60,6 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.clipNotesRepository)
 		private clipNotesRepository: ClipNotesRepository,
 
+		private cacheService: CacheService,
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 	) {
@@ -76,6 +81,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchClip);
 			}
 
+			const [
+				userIdsWhoMeMuting,
+				userIdsWhoBlockingMe,
+				userMutedInstances,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+				this.cacheService.userBlockedCache.fetch(me.id),
+				this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
+			]) : [new Set<string>(), new Set<string>(), new Set<string>()];
+
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.innerJoin(this.clipNotesRepository.metadata.targetName, 'clipNote', 'clipNote.noteId = note.id')
 				.innerJoinAndSelect('note.user', 'user')
@@ -87,15 +102,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (me) {
 				this.queryService.generateVisibilityQuery(query, me);
-				this.queryService.generateMutedUserQuery(query, me);
-				this.queryService.generateBlockedUserQuery(query, me);
 			}
 
-			const notes = await query
-				.limit(ps.limit)
-				.getMany();
+			const notes = (await query.getMany()).filter(note => {
+				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
+				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+				if (me && isInstanceMuted(note, userMutedInstances)) return false;
 
-			return await this.noteEntityService.packMany(notes, me);
+				return true;
+			});
+
+			const packedNotes = await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true });
+			await Promise.all(
+				packedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
+			);
+			return packedNotes;
 		});
 	}
 }
