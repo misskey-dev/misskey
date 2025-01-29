@@ -2147,9 +2147,6 @@ _hemisphere:
   caption: "Используется для некоторых настроек клиента для определения сезона."
 _reversi:
   total: "Всего"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "Ошибка"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Не найдено"
