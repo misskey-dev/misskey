@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onActivated, onMounted, onUnmounted, provide, watch, ref, computed } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
+import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { instance } from '@/instance.js';
 import { lookup } from '@/scripts/lookup.js';
@@ -56,7 +57,7 @@ const indexInfo = {
 
 provide('shouldOmitHeaderTitle', false);
 
-const INFO = ref(indexInfo);
+const INFO = ref<PageMetadata>(indexInfo);
 const childInfo = ref<null | PageMetadata>(null);
 const narrow = ref(false);
 const view = ref(null);
@@ -91,7 +92,7 @@ const ro = new ResizeObserver((entries, observer) => {
 	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
 });
 
-const menuDef = computed(() => [{
+const menuDef = computed<SuperMenuDef[]>(() => [{
 	title: i18n.ts.quickAction,
 	items: [{
 		type: 'button',
@@ -99,7 +100,7 @@ const menuDef = computed(() => [{
 		text: i18n.ts.lookup,
 		action: adminLookup,
 	}, ...(instance.disableRegistration ? [{
-		type: 'button',
+		type: 'button' as const,
 		icon: 'ti ti-user-plus',
 		text: i18n.ts.createInviteCode,
 		action: invite,
@@ -136,6 +137,11 @@ const menuDef = computed(() => [{
 		text: i18n.ts.customEmojis,
 		to: '/admin/emojis',
 		active: currentPage.value?.route.name === 'emojis',
+	}, {
+		icon: 'ti ti-icons',
+		text: i18n.ts.customEmojis + '(beta)',
+		to: '/admin/emojis2',
+		active: currentPage.value?.route.name === 'emojis2',
 	}, {
 		icon: 'ti ti-sparkles',
 		text: i18n.ts.avatarDecorations,
@@ -343,12 +349,14 @@ defineExpose({
 		height: 100%;
 
 		> .nav {
+			position: sticky;
+			top: 0;
 			width: 32%;
 			max-width: 280px;
 			box-sizing: border-box;
 			border-right: solid 0.5px var(--MI_THEME-divider);
 			overflow: auto;
-			height: 100%;
+			height: 100dvh;
 		}
 
 		> .main {

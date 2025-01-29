@@ -37,6 +37,12 @@ export default function(app: App) {
 	app.component('WidgetListenBrainz', defineAsyncComponent(() => import('./WidgetListenBrainz.vue')));
 }
 
+export const federationWidgets = [
+	'federation',
+	'instanceCloud',
+	// Add other federation-related widgets here
+];
+
 export const widgets = [
 	'profile',
 	'instanceInfo',

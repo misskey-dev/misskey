@@ -5,6 +5,7 @@ introMisskey: "ようこそ！Misskeyは、オープンソースの分散型マ�
 poweredByMisskeyDescription: "{name}は、オープンソースのプラットフォーム<b>Misskey</b>のサーバーのひとつです。"
 monthAndDay: "{month}月 {day}日"
 search: "検索"
+reset: "リセット"
 notifications: "通知"
 username: "ユーザー名"
 password: "パスワード"
@@ -49,6 +50,7 @@ pin: "ピン留め"
 unpin: "ピン留め解除"
 copyContent: "内容をコピー"
 copyLink: "リンクをコピー"
+copyRemoteLink: "リモートのリンクをコピー"
 copyLinkRenote: "リノートのリンクをコピー"
 delete: "削除"
 deleteAndEdit: "削除して編集"
@@ -70,7 +72,6 @@ loadMore: "もっと見る"
 showMore: "もっと見る"
 showLess: "閉じる"
 youGotNewFollower: "フォローされました"
-youGotUnFollower: "フォロー解除されました"
 receiveFollowRequest: "フォローリクエストされました"
 followRequestAccepted: "フォローが承認されました"
 mention: "メンション"
@@ -78,10 +79,6 @@ mentions: "あなた宛て"
 directNotes: "ダイレクト投稿"
 importAndExport: "インポートとエクスポート"
 import: "インポート"
-importOrigin: "インポート元"
-importNoteInfo: "他サービスでエクスポートしたノートなどをインポートすることができます。"
-importNoteDisclaimer: "すべてのノートがインポートできるわけではありません。改変のないMisskey以外では全くインポートできない場合もあります。"
-importNoteWarm: "インポートされたノートは、ユーザーページ以外には表示されない場合があります。"
 export: "エクスポート"
 files: "ファイル"
 download: "ダウンロード"
@@ -692,11 +689,15 @@ smtpSecure: "SMTP 接続に暗黙的なSSL/TLSを使用する"
 smtpSecureInfo: "STARTTLS使用時はオフにします。"
 testEmail: "配信テスト"
 wordMute: "ワードミュート"
+wordMuteDescription: "指定した語句を含むノートを最小化します。最小化されたノートをクリックすることで表示することができます。"
 hardWordMute: "ハードワードミュート"
+showMutedWord: "ミュートされたワードを表示"
+hardWordMuteDescription: "指定した語句を含むノートを隠します。ワードミュートとは異なり、ノートは完全に表示されなくなります。"
 regexpError: "正規表現エラー"
 regexpErrorDescription: "{tab}ワードミュートの{line}行目の正規表現にエラーが発生しました:"
 instanceMute: "サーバーミュート"
 userSaysSomething: "{name}が何かを言いました"
+userSaysSomethingAbout: "{name}が「{word}」について何かを言いました"
 makeActive: "アクティブにする"
 display: "表示"
 copy: "コピー"
@@ -734,7 +735,6 @@ openInSideView: "サイドビューで開く"
 defaultNavigationBehaviour: "デフォルトのナビゲーション"
 editTheseSettingsMayBreakAccount: "これらの設定を編集するとアカウントが破損する可能性があります。"
 instanceTicker: "ノートのサーバー情報"
-instanceIcon: "サーバー情報をアイコンのみにする"
 waitingFor: "{x}を待っています"
 random: "ランダム"
 system: "システム"
@@ -1011,7 +1011,6 @@ cannotUploadBecauseInappropriate: "不適切な内容を含む可能性がある
 cannotUploadBecauseNoFreeSpace: "ドライブの空き容量が無いためアップロードできません。"
 cannotUploadBecauseExceedsFileSizeLimit: "ファイルサイズの制限を超えているためアップロードできません。"
 beta: "ベータ"
-originalFeature: "独自機能"
 enableAutoSensitive: "自動センシティブ判定"
 enableAutoSensitiveDescription: "利用可能な場合は、機械学習を利用して自動でメディアにセンシティブフラグを設定します。この機能をオフにしても、サーバーによっては自動で設定されることがあります。"
 activeEmailValidationDescription: "ユーザーのメールアドレスのバリデーションを、捨てアドかどうかや実際に通信可能かどうかなどを判定しより積極的に行います。オフにすると単に文字列として正しいかどうかのみチェックされます。"
@@ -1285,8 +1284,6 @@ enableHorizontalSwipe: "スワイプしてタブを切り替える"
 loading: "読み込み中"
 surrender: "やめる"
 gameRetry: "リトライ"
-defaultScheduledNoteDeleteTime: "ノートの自己消滅の初期値"
-scheduledNoteDeleteEnabled: "ノートの自己消滅が有効になっています"
 notUsePleaseLeaveBlank: "使用しない場合は空欄にしてください"
 useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
@@ -1302,7 +1299,6 @@ confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示�
 sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
 createdLists: "作成したリスト"
 createdAntennas: "作成したアンテナ"
-searchEngine: "MFMの検索で利用する検索エンジン"
 fromX: "{x}から"
 genEmbedCode: "埋め込みコードを生成"
 noteOfThisUser: "このユーザーのノート一覧"
@@ -1327,6 +1323,8 @@ lockdown: "ロックダウン"
 pleaseSelectAccount: "アカウントを選択してください"
 availableRoles: "利用可能なロール"
 acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
+federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
+federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -1358,6 +1356,7 @@ _delivery:
     manuallySuspended: "手動停止中"
     goneSuspended: "サーバー削除のため停止中"
     autoSuspendedForNotResponding: "サーバー応答なしのため停止中"
+
 scheduledNoteDelete: "時限爆弾"
 noteDeletationAt: "このノートは{time}に削除されます"
 cannotScheduleLaterThanOneYear: "1年以上先の日時を指定することはできません"
@@ -1388,6 +1387,7 @@ _bubbleGame:
     section1: "位置を調整してハコにモノを落とします。"
     section2: "同じ種類のモノがくっつくと別のモノに変化して、スコアが得られます。"
     section3: "モノがハコからあふれるとゲームオーバーです。ハコからあふれないようにしつつモノを融合させてハイスコアを目指そう！"
+
 autoRejectFollowRequest: "フォローリクエストを自動で拒否する"
 autoRejectFollowRequestDescription: "フォローリクエストを自動で拒否するようにします。「フォロー中ユーザーからのフォロリクを自動承認」がONになっている場合は、フォロー中ユーザーからのフォローリクエストは自動的に承認され、それ以外のユーザーからのフォローリクエストは自動的に拒否されるようになります。"
 
@@ -1650,7 +1650,7 @@ _achievements:
       description: "アカウントをCatとして設定した"
       flavor: "名前はまだない。"
     _markedAsYamiModeUser:
-      title: "菫ほどな小さき人に生まれたし"
+      title: "心の静寂を求めて"
       description: "やみモードを有効にした"
     _following1:
       title: "はじめてのフォロー"
@@ -1828,7 +1828,6 @@ _role:
     yamiTlAvailable: "やみタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
     mentionMax: "ノート内の最大メンション数"
-    canImportNotes: "ノートのインポート"
     canInvite: "サーバー招待コードの発行"
     inviteLimit: "招待コードの作成可能数"
     inviteLimitCycle: "招待コードの発行間隔"
@@ -1852,9 +1851,6 @@ _role:
     canSearchNotes: "ノート検索の利用"
     canUseTranslator: "翻訳機能の利用"
     avatarDecorationLimit: "アイコンデコレーションの最大取付個数"
-    canChangeQuoteNotificationSetting: "引用通知の変更を許可"
-    canFollow: "フォローを許可"
-    canFollowed: "フォローされるのを許可"
     canImportAntennas: "アンテナのインポートを許可"
     canImportBlocking: "ブロックのインポートを許可"
     canImportFollowing: "フォローのインポートを許可"
@@ -1878,8 +1874,6 @@ _role:
     followingMoreThanOrEq: "フォロー数が～以上"
     notesLessThanOrEq: "投稿数が～以下"
     notesMoreThanOrEq: "投稿数が～以上"
-    activedMoreThan: "最終アクティブ日時が～未満"
-    activedLessThan: "最終アクティブ日時が～以上"
     and: "～かつ～"
     or: "～または～"
     not: "～ではない"
@@ -1946,8 +1940,6 @@ _gallery:
 _email:
   _follow:
     title: "フォローされました"
-  _unfollow:
-    title: "フォロー解除されました"
   _receiveFollowRequest:
     title: "フォローリクエストを受け取りました"
 
@@ -2334,7 +2326,6 @@ _widgets:
     chooseList: "リストを選択"
   clicker: "クリッカー"
   birthdayFollowings: "今日誕生日のユーザー"
-  listenBrainz: "listenBrainz"
 
 _cw:
   hide: "隠す"
@@ -2537,7 +2528,6 @@ _notification:
   youGotQuote: "{name}による引用"
   youRenoted: "{name}がリノートしました"
   youWereFollowed: "フォローされました"
-  youWereUnFollower: "フォロー解除されました"
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   pollEnded: "アンケートの結果が出ました"
@@ -2554,7 +2544,6 @@ _notification:
   likedBySomeUsers: "{n}人がいいねしました"
   renotedBySomeUsers: "{n}人がリノートしました"
   followedBySomeUsers: "{n}人にフォローされました"
-  unfollowerBySomeUsers: "{n}人にフォロー解除されました"
   flushNotification: "通知の履歴をリセットする"
   exportOfXCompleted: "{x}のエクスポートが完了しました"
   login: "ログインがありました"
@@ -2563,7 +2552,6 @@ _notification:
     all: "すべて"
     note: "ユーザーの新規投稿"
     follow: "フォロー"
-    unfollow: "フォロー解除"
     mention: "メンション"
     reply: "リプライ"
     renote: "リノート"
@@ -2676,7 +2664,6 @@ _moderationLogTypes:
   updateRole: "ロールを更新"
   assignRole: "ロールへアサイン"
   unassignRole: "ロールのアサイン解除"
-  approve: "承認済み"
   suspend: "凍結"
   unsuspend: "凍結解除"
   addCustomEmoji: "カスタム絵文字追加"
@@ -2835,9 +2822,6 @@ _reversi:
   disallowIrregularRules: "変則なし"
   showBoardLabels: "盤面に行・列番号を表示"
   useAvatarAsStone: "石をアイコンにする"
-  remoteVersionUnknown: "リモートサーバーのバージョンが不明です"
-  remoteVersionUnknownCaption: "対応していない可能性があります"
-  remoteVersionBad: "リモートサーバーのバージョンが非互換です"
 
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"
@@ -2869,9 +2853,68 @@ _contextMenu:
   appWithShift: "Shiftキーでアプリケーション"
   native: "ブラウザのUI"
 
-_reactionChecksMuting:
-  title: "リアクションでミュートを考慮する"
-  caption: "リアクションがミュートを考慮しますが、キャッシュが効かず通信量が増えることがあります。"
+_gridComponent:
+  _error:
+    requiredValue: "この値は必須項目です"
+    columnTypeNotSupport: "正規表現によるバリデーションはtype:textのカラムのみサポートします。"
+    patternNotMatch: "この値は{pattern}のパターンに一致しません"
+    notUnique: "この値は一意である必要があります"
+
+_roleSelectDialog:
+  notSelected: "選択されていません"
+
+_customEmojisManager:
+  _gridCommon:
+    copySelectionRows: "選択行をコピー"
+    copySelectionRanges: "選択範囲をコピー"
+    deleteSelectionRows: "選択行を削除"
+    deleteSelectionRanges: "選択範囲の値をクリア"
+    searchSettings: "検索設定"
+    searchSettingCaption: "検索条件を詳細に設定します。"
+    searchLimit: "表示件数"
+    sortOrder: "並び順"
+    registrationLogs: "登録ログ"
+    registrationLogsCaption: "絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページを遷移・リロードすると消えます。"
+    alertEmojisRegisterFailedDescription: "絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。"
+  _logs:
+    showSuccessLogSwitch: "成功ログを表示"
+    failureLogNothing: "失敗ログはありません。"
+    logNothing: "ログはありません。"
+  _remote:
+    selectionRowDetail: "選択行の詳細"
+    importSelectionRows: "選択行をインポート"
+    importSelectionRangesRows: "選択範囲の行をインポート"
+    importEmojisButton: "チェックされた絵文字をインポート"
+    confirmImportEmojisTitle: "絵文字のインポート"
+    confirmImportEmojisDescription: "リモートから受信した{count}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。実行しますか？"
+  _local:
+    tabTitleList: "登録済み絵文字一覧"
+    tabTitleRegister: "絵文字の登録"
+    _list:
+      emojisNothing: "登録された絵文字はありません。"
+      markAsDeleteTargetRows: "選択行を削除対象にする"
+      markAsDeleteTargetRanges: "選択範囲の行を削除対象にする"
+      alertUpdateEmojisNothingDescription: "変更された絵文字はありません。"
+      alertDeleteEmojisNothingDescription: "削除対象の絵文字はありません。"
+      confirmMovePage: "ページを移動しますか？"
+      confirmChangeView: "表示を変更しますか？"
+      confirmUpdateEmojisDescription: "{count}個の絵文字を更新します。実行しますか？"
+      confirmDeleteEmojisDescription: "チェックがつけられた{count}個の絵文字を削除します。実行しますか？"
+      confirmResetDescription: "今までに加えた変更がすべてリセットされます。"
+      confirmMovePageDesciption: "このページの絵文字に変更が加えられています。\n保存せずにこのままページを移動すると、このページで加えた変更はすべて破棄されます。"
+      dialogSelectRoleTitle: "絵文字に設定されたロールで検索"
+    _register:
+      uploadSettingTitle: "アップロード設定"
+      uploadSettingDescription: "この画面で絵文字アップロードを行う際の動作を設定できます。"
+      directoryToCategoryLabel: "ディレクトリ名を\"category\"に入力する"
+      directoryToCategoryCaption: "ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を\"category\"に入力します。"
+      emojiInputAreaCaption: "いずれかの方法で登録する絵文字を選択してください。"
+      emojiInputAreaList1: "この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ"
+      emojiInputAreaList2: "このリンクをクリックしてPCから選択する"
+      emojiInputAreaList3: "このリンクをクリックしてドライブから選択する"
+      confirmRegisterEmojisDescription: "リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）"
+      confirmClearEmojisDescription: "編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？"
+      confirmUploadEmojisDescription: "ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？"
 
 _embedCodeGen:
   title: "埋め込みコードをカスタマイズ"
@@ -2898,11 +2941,6 @@ _selfXssPrevention:
 _followRequest:
   recieved: "受け取った申請"
   sent: "送った申請"
-_hideReactionCount:
-  none: "非表示にしない"
-  self: "自分のノートのみ"
-  others: "自分以外のノートのみ"
-  all: "全てのノート"
 
 _yami:
   yamiSettings: "やみ設定"
@@ -2919,3 +2957,36 @@ _yami:
     yami3: "同じ気持ちの人とつながれる「やみタイムライン」が使用できます"
     yamiRecommend: "SNSでの比較で疲れを感じている方、一時的に静かな環境で過ごしたい方"
     saveConfirmDescription: "一定期間にモードを変更できる回数には制限があります。"
+
+_remoteLookupErrors:
+  _federationNotAllowed:
+    title: "このサーバーとは通信できません"
+    description: "このサーバーとの通信が無効化されているか、このサーバーをブロックしている・ブロックされている可能性があります。\nサーバー管理者にお問い合わせください。"
+  _uriInvalid:
+    title: "URIが不正です"
+    description: "入力されたURIに問題があります。URIに使用できない文字を入力していないか確認してください。"
+  _requestFailed:
+    title: "リクエストに失敗しました"
+    description: "このサーバーとの通信に失敗しました。相手サーバーがダウンしている可能性があります。また、不正なURIや存在しないURIを入力していないか確認してください。"
+  _responseInvalid:
+    title: "レスポンスが不正です"
+    description: "このサーバーと通信することはできましたが、得られたデータが不正なものでした。"
+  _responseInvalidIdHostNotMatch:
+    description: "入力されたURIのドメインと最終的に得られたURIのドメインとが異なります。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。"
+  _noSuchObject:
+    title: "見つかりません"
+    description: "要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。"
+
+_captcha:
+  verify: "CAPTCHAを通過してください"
+  testSiteKeyMessage: "サイトキーとシークレットキーにテスト用の値を入力することでプレビューを確認できます。\n詳細は下記ページをご確認ください。"
+  _error:
+    _requestFailed:
+      title: "CAPTCHAのリクエストに失敗しました"
+      text: "しばらく後に実行するか、設定をもう一度ご確認ください。"
+    _verificationFailed:
+      title: "CAPTCHAの検証に失敗しました"
+      text: "設定が正しいかどうかもう一度確認ください。"
+    _unknown:
+      title: "CAPTCHAエラー"
+      text: "想定外のエラーが発生しました。"

@@ -1,10 +1,10 @@
 {
   "name": "misskey",
-  "version": "2024.11.0-yami-1.4.3",
+  "version": "2025.1.0-yami-1.4.3",
   "codename": "nasubi",
   "repository": {
     "type": "git",
-    "url": "https://github.com/misskey-dev/misskey.git"
+    "url": "https://github.com/yamissskey/yamisskey.git"
   },
   "packageManager": "pnpm@9.6.0",
   "workspaces": [
