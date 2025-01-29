@@ -17,6 +17,7 @@ on:
 
 jobs:
   test:
+    name: Federation test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,9 +29,22 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
       - name: Install FFmpeg
-        uses: FedericoCarboni/setup-ffmpeg@v3
+        run: |
+          for i in {1..3}; do
+            echo "Attempt $i: Installing FFmpeg..."
+            curl -s -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o ffmpeg.tar.xz && \
+            tar -xf ffmpeg.tar.xz && \
+            mv ffmpeg-*-static/ffmpeg /usr/local/bin/ && \
+            mv ffmpeg-*-static/ffprobe /usr/local/bin/ && \
+            rm -rf ffmpeg.tar.xz ffmpeg-*-static/ && \
+            break || sleep 10
+            if [ $i -eq 3 ]; then
+              echo "Failed to install FFmpeg after 3 attempts"
+              exit 1
+            fi
+          done
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@v4.1.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
