@@ -2721,9 +2721,6 @@ _contextMenu:
   app: "アプリ"
   appWithShift: "Shiftキーでアプリ"
   native: "ブラウザのUI"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "おかしなったで"
 _embedCodeGen:
   title: "埋め込みコードをカスタム"
   header: "ヘッダー出す"

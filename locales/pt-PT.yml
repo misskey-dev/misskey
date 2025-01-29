@@ -2721,9 +2721,6 @@ _contextMenu:
   app: "Aplicativo"
   appWithShift: "Aplicativo com a tecla shift"
   native: "Nativo"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "Erro"
 _embedCodeGen:
   title: "Personalizar código do embed"
   header: "Exibir cabeçalho"

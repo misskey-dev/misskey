@@ -1583,9 +1583,6 @@ _moderationLogTypes:
   resetPassword: "Zresetuj hasło"
 _reversi:
   total: "Łącznie"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "Błąd"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Nie znaleziono"

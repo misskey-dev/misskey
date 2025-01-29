@@ -2557,9 +2557,6 @@ _mediaControls:
   pip: "Picture in Picture"
   playbackRate: "Velocidad de reproducción"
   loop: "Reproducción en bucle"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "Error"
 _remoteLookupErrors:
   _noSuchObject:
     title: "No se encuentra"
