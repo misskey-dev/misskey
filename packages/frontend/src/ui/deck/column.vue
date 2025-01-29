@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@dragstart="onDragstart"
 		@dragend="onDragend"
 		@contextmenu.prevent.stop="onContextmenu"
-		@wheel="emit('headerWheel', $event)"
+		@wheel.passive="emit('headerWheel', $event)"
 	>
 		<svg viewBox="0 0 256 128" :class="$style.tabShape">
 			<g transform="matrix(6.2431,0,0,6.2431,-677.417,-29.3839)">
@@ -128,7 +128,8 @@ function getMenu() {
 		icon: 'ti ti-settings',
 		text: i18n.ts._deck.configureColumn,
 		action: async () => {
-			const { canceled, result } = await os.form(props.column.name, {
+			const name = props.column.name ?? i18n.ts._deck._columns[props.column.type];
+			const { canceled, result } = await os.form(name, {
 				name: {
 					type: 'string',
 					label: i18n.ts.name,
@@ -143,7 +144,7 @@ function getMenu() {
 				flexible: {
 					type: 'boolean',
 					label: i18n.ts._deck.flexible,
-					default: props.column.flexible,
+					default: props.column.flexible ?? null,
 				},
 			});
 			if (canceled) return;
