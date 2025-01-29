@@ -1,7 +1,4 @@
-## Unreleased
-
-### General
--
+## 2025.1.0-kinel.1
 
 ### Client
 - Feat: 投稿フォームで画像をプレビュー可能に
