@@ -37,6 +37,10 @@ export interface Locale extends ILocale {
      */
     "search": string;
     /**
+     * リセット
+     */
+    "reset": string;
+    /**
      * 通知
      */
     "notifications": string;
@@ -215,6 +219,10 @@ export interface Locale extends ILocale {
      */
     "copyLink": string;
     /**
+     * リモートのリンクをコピー
+     */
+    "copyRemoteLink": string;
+    /**
      * リノートのリンクをコピー
      */
     "copyLinkRenote": string;
@@ -299,10 +307,6 @@ export interface Locale extends ILocale {
      */
     "youGotNewFollower": string;
     /**
-     * フォロー解除されました
-     */
-    "youGotUnFollower": string;
-    /**
      * フォローリクエストされました
      */
     "receiveFollowRequest": string;
@@ -330,22 +334,6 @@ export interface Locale extends ILocale {
      * インポート
      */
     "import": string;
-    /**
-     * インポート元
-     */
-    "importOrigin": string;
-    /**
-     * 他サービスでエクスポートしたノートなどをインポートすることができます。
-     */
-    "importNoteInfo": string;
-    /**
-     * すべてのノートがインポートできるわけではありません。改変のないMisskey以外では全くインポートできない場合もあります。
-     */
-    "importNoteDisclaimer": string;
-    /**
-     * インポートされたノートは、ユーザーページ以外には表示されない場合があります。
-     */
-    "importNoteWarm": string;
     /**
      * エクスポート
      */
@@ -2787,9 +2775,21 @@ export interface Locale extends ILocale {
      */
     "wordMute": string;
     /**
+     * 指定した語句を含むノートを最小化します。最小化されたノートをクリックすることで表示することができます。
+     */
+    "wordMuteDescription": string;
+    /**
      * ハードワードミュート
      */
     "hardWordMute": string;
+    /**
+     * ミュートされたワードを表示
+     */
+    "showMutedWord": string;
+    /**
+     * 指定した語句を含むノートを隠します。ワードミュートとは異なり、ノートは完全に表示されなくなります。
+     */
+    "hardWordMuteDescription": string;
     /**
      * 正規表現エラー
      */
@@ -2806,6 +2806,10 @@ export interface Locale extends ILocale {
      * {name}が何かを言いました
      */
     "userSaysSomething": ParameterizedString<"name">;
+    /**
+     * {name}が「{word}」について何かを言いました
+     */
+    "userSaysSomethingAbout": ParameterizedString<"name" | "word">;
     /**
      * アクティブにする
      */
@@ -2954,10 +2958,6 @@ export interface Locale extends ILocale {
      * ノートのサーバー情報
      */
     "instanceTicker": string;
-    /**
-     * サーバー情報をアイコンのみにする
-     */
-    "instanceIcon": string;
     /**
      * {x}を待っています
      */
@@ -3731,10 +3731,6 @@ export interface Locale extends ILocale {
      */
     "unmuteThread": string;
     /**
-     * ノート数の公開範囲
-     */
-    "notesVisibility": string;
-    /**
      * フォローの公開範囲
      */
     "followingVisibility": string;
@@ -4062,10 +4058,6 @@ export interface Locale extends ILocale {
      * ベータ
      */
     "beta": string;
-    /**
-     * 独自機能
-     */
-    "originalFeature": string;
     /**
      * 自動センシティブ判定
      */
@@ -5159,14 +5151,6 @@ export interface Locale extends ILocale {
      */
     "gameRetry": string;
     /**
-     * ノートの自己消滅の初期値
-     */
-    "defaultScheduledNoteDeleteTime": string;
-    /**
-     * ノートの自己消滅が有効になっています
-     */
-    "scheduledNoteDeleteEnabled": string;
-    /**
      * 使用しない場合は空欄にしてください
      */
     "notUsePleaseLeaveBlank": string;
@@ -5226,10 +5210,6 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
-    /**
-     * MFMの検索で利用する検索エンジン
-     */
-    "searchEngine": string;
     /**
      * {x}から
      */
@@ -5326,6 +5306,14 @@ export interface Locale extends ILocale {
      * 注意事項を理解した上でオンにします。
      */
     "acknowledgeNotesAndEnable": string;
+    /**
+     * このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。
+     */
+    "federationSpecified": string;
+    /**
+     * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
+     */
+    "federationDisabled": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -6455,7 +6443,7 @@ export interface Locale extends ILocale {
             };
             "_markedAsYamiModeUser": {
                 /**
-                 * 菫ほどな小さき人に生まれたし
+                 * 心の静寂を求めて
                  */
                 "title": string;
                 /**
@@ -7076,10 +7064,6 @@ export interface Locale extends ILocale {
              */
             "mentionMax": string;
             /**
-             * ノートのインポート
-             */
-            "canImportNotes": string;
-            /**
              * サーバー招待コードの発行
              */
             "canInvite": string;
@@ -7172,18 +7156,6 @@ export interface Locale extends ILocale {
              */
             "avatarDecorationLimit": string;
             /**
-             * 引用通知の変更を許可
-             */
-            "canChangeQuoteNotificationSetting": string;
-            /**
-             * フォローを許可
-             */
-            "canFollow": string;
-            /**
-             * フォローされるのを許可
-             */
-            "canFollowed": string;
-            /**
              * アンテナのインポートを許可
              */
             "canImportAntennas": string;
@@ -7273,14 +7245,6 @@ export interface Locale extends ILocale {
              * 投稿数が～以上
              */
             "notesMoreThanOrEq": string;
-            /**
-             * 最終アクティブ日時が～未満
-             */
-            "activedMoreThan": string;
-            /**
-             * 最終アクティブ日時が～以上
-             */
-            "activedLessThan": string;
             /**
              * ～かつ～
              */
@@ -7487,12 +7451,6 @@ export interface Locale extends ILocale {
         "_follow": {
             /**
              * フォローされました
-             */
-            "title": string;
-        };
-        "_unfollow": {
-            /**
-             * フォロー解除されました
              */
             "title": string;
         };
@@ -8892,10 +8850,6 @@ export interface Locale extends ILocale {
          * 今日誕生日のユーザー
          */
         "birthdayFollowings": string;
-        /**
-         * listenBrainz
-         */
-        "listenBrainz": string;
     };
     "_cw": {
         /**
@@ -9617,10 +9571,6 @@ export interface Locale extends ILocale {
          */
         "youWereFollowed": string;
         /**
-         * フォロー解除されました
-         */
-        "youWereUnFollower": string;
-        /**
          * フォローリクエストが来ました
          */
         "youReceivedFollowRequest": string;
@@ -9685,10 +9635,6 @@ export interface Locale extends ILocale {
          */
         "followedBySomeUsers": ParameterizedString<"n">;
         /**
-         * {n}人にフォロー解除されました
-         */
-        "unfollowerBySomeUsers": ParameterizedString<"n">;
-        /**
          * 通知の履歴をリセットする
          */
         "flushNotification": string;
@@ -9713,10 +9659,6 @@ export interface Locale extends ILocale {
              * フォロー
              */
             "follow": string;
-            /**
-             * フォロー解除
-             */
-            "unfollow": string;
             /**
              * メンション
              */
@@ -10102,10 +10044,6 @@ export interface Locale extends ILocale {
          * ロールのアサイン解除
          */
         "unassignRole": string;
-        /**
-         * 承認済み
-         */
-        "approve": string;
         /**
          * 凍結
          */
@@ -10674,18 +10612,6 @@ export interface Locale extends ILocale {
          * 石をアイコンにする
          */
         "useAvatarAsStone": string;
-        /**
-         * リモートサーバーのバージョンが不明です
-         */
-        "remoteVersionUnknown": string;
-        /**
-         * 対応していない可能性があります
-         */
-        "remoteVersionUnknownCaption": string;
-        /**
-         * リモートサーバーのバージョンが非互換です
-         */
-        "remoteVersionBad": string;
     };
     "_offlineScreen": {
         /**
@@ -10783,15 +10709,226 @@ export interface Locale extends ILocale {
          */
         "native": string;
     };
-    "_reactionChecksMuting": {
+    "_gridComponent": {
+        "_error": {
+            /**
+             * この値は必須項目です
+             */
+            "requiredValue": string;
+            /**
+             * 正規表現によるバリデーションはtype:textのカラムのみサポートします。
+             */
+            "columnTypeNotSupport": string;
+            /**
+             * この値は{pattern}のパターンに一致しません
+             */
+            "patternNotMatch": ParameterizedString<"pattern">;
+            /**
+             * この値は一意である必要があります
+             */
+            "notUnique": string;
+        };
+    };
+    "_roleSelectDialog": {
         /**
-         * リアクションでミュートを考慮する
+         * 選択されていません
          */
-        "title": string;
-        /**
-         * リアクションがミュートを考慮しますが、キャッシュが効かず通信量が増えることがあります。
-         */
-        "caption": string;
+        "notSelected": string;
+    };
+    "_customEmojisManager": {
+        "_gridCommon": {
+            /**
+             * 選択行をコピー
+             */
+            "copySelectionRows": string;
+            /**
+             * 選択範囲をコピー
+             */
+            "copySelectionRanges": string;
+            /**
+             * 選択行を削除
+             */
+            "deleteSelectionRows": string;
+            /**
+             * 選択範囲の値をクリア
+             */
+            "deleteSelectionRanges": string;
+            /**
+             * 検索設定
+             */
+            "searchSettings": string;
+            /**
+             * 検索条件を詳細に設定します。
+             */
+            "searchSettingCaption": string;
+            /**
+             * 表示件数
+             */
+            "searchLimit": string;
+            /**
+             * 並び順
+             */
+            "sortOrder": string;
+            /**
+             * 登録ログ
+             */
+            "registrationLogs": string;
+            /**
+             * 絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページを遷移・リロードすると消えます。
+             */
+            "registrationLogsCaption": string;
+            /**
+             * 絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。
+             */
+            "alertEmojisRegisterFailedDescription": string;
+        };
+        "_logs": {
+            /**
+             * 成功ログを表示
+             */
+            "showSuccessLogSwitch": string;
+            /**
+             * 失敗ログはありません。
+             */
+            "failureLogNothing": string;
+            /**
+             * ログはありません。
+             */
+            "logNothing": string;
+        };
+        "_remote": {
+            /**
+             * 選択行の詳細
+             */
+            "selectionRowDetail": string;
+            /**
+             * 選択行をインポート
+             */
+            "importSelectionRows": string;
+            /**
+             * 選択範囲の行をインポート
+             */
+            "importSelectionRangesRows": string;
+            /**
+             * チェックされた絵文字をインポート
+             */
+            "importEmojisButton": string;
+            /**
+             * 絵文字のインポート
+             */
+            "confirmImportEmojisTitle": string;
+            /**
+             * リモートから受信した{count}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。実行しますか？
+             */
+            "confirmImportEmojisDescription": ParameterizedString<"count">;
+        };
+        "_local": {
+            /**
+             * 登録済み絵文字一覧
+             */
+            "tabTitleList": string;
+            /**
+             * 絵文字の登録
+             */
+            "tabTitleRegister": string;
+            "_list": {
+                /**
+                 * 登録された絵文字はありません。
+                 */
+                "emojisNothing": string;
+                /**
+                 * 選択行を削除対象にする
+                 */
+                "markAsDeleteTargetRows": string;
+                /**
+                 * 選択範囲の行を削除対象にする
+                 */
+                "markAsDeleteTargetRanges": string;
+                /**
+                 * 変更された絵文字はありません。
+                 */
+                "alertUpdateEmojisNothingDescription": string;
+                /**
+                 * 削除対象の絵文字はありません。
+                 */
+                "alertDeleteEmojisNothingDescription": string;
+                /**
+                 * ページを移動しますか？
+                 */
+                "confirmMovePage": string;
+                /**
+                 * 表示を変更しますか？
+                 */
+                "confirmChangeView": string;
+                /**
+                 * {count}個の絵文字を更新します。実行しますか？
+                 */
+                "confirmUpdateEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * チェックがつけられた{count}個の絵文字を削除します。実行しますか？
+                 */
+                "confirmDeleteEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * 今までに加えた変更がすべてリセットされます。
+                 */
+                "confirmResetDescription": string;
+                /**
+                 * このページの絵文字に変更が加えられています。
+                 * 保存せずにこのままページを移動すると、このページで加えた変更はすべて破棄されます。
+                 */
+                "confirmMovePageDesciption": string;
+                /**
+                 * 絵文字に設定されたロールで検索
+                 */
+                "dialogSelectRoleTitle": string;
+            };
+            "_register": {
+                /**
+                 * アップロード設定
+                 */
+                "uploadSettingTitle": string;
+                /**
+                 * この画面で絵文字アップロードを行う際の動作を設定できます。
+                 */
+                "uploadSettingDescription": string;
+                /**
+                 * ディレクトリ名を"category"に入力する
+                 */
+                "directoryToCategoryLabel": string;
+                /**
+                 * ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を"category"に入力します。
+                 */
+                "directoryToCategoryCaption": string;
+                /**
+                 * いずれかの方法で登録する絵文字を選択してください。
+                 */
+                "emojiInputAreaCaption": string;
+                /**
+                 * この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ
+                 */
+                "emojiInputAreaList1": string;
+                /**
+                 * このリンクをクリックしてPCから選択する
+                 */
+                "emojiInputAreaList2": string;
+                /**
+                 * このリンクをクリックしてドライブから選択する
+                 */
+                "emojiInputAreaList3": string;
+                /**
+                 * リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）
+                 */
+                "confirmRegisterEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * 編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？
+                 */
+                "confirmClearEmojisDescription": string;
+                /**
+                 * ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？
+                 */
+                "confirmUploadEmojisDescription": ParameterizedString<"count">;
+            };
+        };
     };
     "_embedCodeGen": {
         /**
@@ -10879,24 +11016,6 @@ export interface Locale extends ILocale {
          */
         "sent": string;
     };
-    "_hideReactionCount": {
-        /**
-         * 非表示にしない
-         */
-        "none": string;
-        /**
-         * 自分のノートのみ
-         */
-        "self": string;
-        /**
-         * 自分以外のノートのみ
-         */
-        "others": string;
-        /**
-         * 全てのノート
-         */
-        "all": string;
-    };
     "_yami": {
         /**
          * やみ設定
@@ -10951,6 +11070,108 @@ export interface Locale extends ILocale {
              * 一定期間にモードを変更できる回数には制限があります。
              */
             "saveConfirmDescription": string;
+        };
+    };
+    "_remoteLookupErrors": {
+        "_federationNotAllowed": {
+            /**
+             * このサーバーとは通信できません
+             */
+            "title": string;
+            /**
+             * このサーバーとの通信が無効化されているか、このサーバーをブロックしている・ブロックされている可能性があります。
+             * サーバー管理者にお問い合わせください。
+             */
+            "description": string;
+        };
+        "_uriInvalid": {
+            /**
+             * URIが不正です
+             */
+            "title": string;
+            /**
+             * 入力されたURIに問題があります。URIに使用できない文字を入力していないか確認してください。
+             */
+            "description": string;
+        };
+        "_requestFailed": {
+            /**
+             * リクエストに失敗しました
+             */
+            "title": string;
+            /**
+             * このサーバーとの通信に失敗しました。相手サーバーがダウンしている可能性があります。また、不正なURIや存在しないURIを入力していないか確認してください。
+             */
+            "description": string;
+        };
+        "_responseInvalid": {
+            /**
+             * レスポンスが不正です
+             */
+            "title": string;
+            /**
+             * このサーバーと通信することはできましたが、得られたデータが不正なものでした。
+             */
+            "description": string;
+        };
+        "_responseInvalidIdHostNotMatch": {
+            /**
+             * 入力されたURIのドメインと最終的に得られたURIのドメインとが異なります。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。
+             */
+            "description": string;
+        };
+        "_noSuchObject": {
+            /**
+             * 見つかりません
+             */
+            "title": string;
+            /**
+             * 要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。
+             */
+            "description": string;
+        };
+    };
+    "_captcha": {
+        /**
+         * CAPTCHAを通過してください
+         */
+        "verify": string;
+        /**
+         * サイトキーとシークレットキーにテスト用の値を入力することでプレビューを確認できます。
+         * 詳細は下記ページをご確認ください。
+         */
+        "testSiteKeyMessage": string;
+        "_error": {
+            "_requestFailed": {
+                /**
+                 * CAPTCHAのリクエストに失敗しました
+                 */
+                "title": string;
+                /**
+                 * しばらく後に実行するか、設定をもう一度ご確認ください。
+                 */
+                "text": string;
+            };
+            "_verificationFailed": {
+                /**
+                 * CAPTCHAの検証に失敗しました
+                 */
+                "title": string;
+                /**
+                 * 設定が正しいかどうかもう一度確認ください。
+                 */
+                "text": string;
+            };
+            "_unknown": {
+                /**
+                 * CAPTCHAエラー
+                 */
+                "title": string;
+                /**
+                 * 想定外のエラーが発生しました。
+                 */
+                "text": string;
+            };
         };
     };
 }

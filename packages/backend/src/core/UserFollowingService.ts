@@ -376,13 +376,7 @@ export class UserFollowingService implements OnModuleInit {
 				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
 				this.globalEventService.publishMainStream(follower.id, 'follow', packed);
-
-				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
-				for (const webhook of webhooks) {
-					this.queueService.userWebhookDeliver(webhook, 'follow', {
-						user: packed,
-					});
-				}
+				this.webhookService.enqueueUserWebhook(follower.id, 'follow', { user: packed });
 			});
 		}
 
@@ -390,13 +384,7 @@ export class UserFollowingService implements OnModuleInit {
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(follower.id, followee).then(async packed => {
 				this.globalEventService.publishMainStream(followee.id, 'followed', packed);
-
-				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('followed'));
-				for (const webhook of webhooks) {
-					this.queueService.userWebhookDeliver(webhook, 'followed', {
-						user: packed,
-					});
-				}
+				this.webhookService.enqueueUserWebhook(followee.id, 'followed', { user: packed });
 			});
 
 			// 通知を作成
@@ -443,13 +431,7 @@ export class UserFollowingService implements OnModuleInit {
 				schema: 'UserDetailedNotMe',
 			}).then(async packed => {
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
-
-				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
-				for (const webhook of webhooks) {
-					this.queueService.userWebhookDeliver(webhook, 'unfollow', {
-						user: packed,
-					});
-				}
+				this.webhookService.enqueueUserWebhook(follower.id, 'unfollow', { user: packed });
 			});
 		}
 
@@ -807,13 +789,7 @@ export class UserFollowingService implements OnModuleInit {
 		});
 
 		this.globalEventService.publishMainStream(follower.id, 'unfollow', packedFollowee);
-
-		const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
-		for (const webhook of webhooks) {
-			this.queueService.userWebhookDeliver(webhook, 'unfollow', {
-				user: packedFollowee,
-			});
-		}
+		this.webhookService.enqueueUserWebhook(follower.id, 'unfollow', { user: packedFollowee });
 	}
 
 	@bindThis

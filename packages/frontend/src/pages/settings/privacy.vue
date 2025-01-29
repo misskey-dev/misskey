@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption>
 					<div>{{ i18n.ts._accountSettings.requireSigninToViewContentsDescription1 }}</div>
 					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription2 }}</div>
-					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription3 }}</div>
+					<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription3 }}</div>
 				</template>
 			</MkSwitch>
 
@@ -110,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<template #caption>
 					<div>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</div>
-					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
+					<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 				</template>
 			</FormSlot>
 
@@ -146,7 +146,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<template #caption>
 					<div>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</div>
-					<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
+					<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 				</template>
 			</FormSlot>
 		</div>
@@ -188,6 +188,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import { signinRequired } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import FormSlot from '@/components/form/slot.vue';
@@ -244,7 +245,7 @@ watch([makeNotesFollowersOnlyBefore, makeNotesHiddenBefore], () => {
 });
 
 async function update_requireSigninToViewContents(value: boolean) {
-	if (value) {
+	if (value === true && instance.federation !== 'none') {
 		const { canceled } = await os.confirm({
 			type: 'warning',
 			text: i18n.ts.acknowledgeNotesAndEnable,
