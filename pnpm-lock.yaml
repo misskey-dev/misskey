@@ -807,6 +807,9 @@ importers:
       photoswipe:
         specifier: 5.4.4
         version: 5.4.4
+      punycode:
+        specifier: ^2.3.1
+        version: 2.3.1
       punycode.js:
         specifier: 2.3.1
         version: 2.3.1
@@ -7900,6 +7903,7 @@ packages:
 
   lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
+    deprecated: This package is deprecated. Use the optional chaining (?.) operator instead.
 
   lodash.isarguments@3.1.0:
     resolution: {integrity: sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==}
