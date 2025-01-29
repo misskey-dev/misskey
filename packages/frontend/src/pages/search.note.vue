@@ -13,15 +13,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #header>{{ i18n.ts.options }}</template>
 
 			<div class="_gaps_m">
-				<MkRadios v-model="hostSelect">
-					<template #label>{{ i18n.ts.host }}</template>
-					<option value="all" default>{{ i18n.ts.all }}</option>
-					<option value="local">{{ i18n.ts.local }}</option>
-					<option v-if="noteSearchableScope === 'global'" value="specified">{{ i18n.ts.specifyHost }}</option>
-				</MkRadios>
-				<MkInput v-if="noteSearchableScope === 'global'" v-model="hostInput" :disabled="hostSelect !== 'specified'" :large="true" type="search">
-					<template #prefix><i class="ti ti-server"></i></template>
-				</MkInput>
+				<template v-if="instance.federation !== 'none'">
+					<MkRadios v-model="hostSelect">
+						<template #label>{{ i18n.ts.host }}</template>
+						<option value="all" default>{{ i18n.ts.all }}</option>
+						<option value="local">{{ i18n.ts.local }}</option>
+						<option v-if="noteSearchableScope === 'global'" value="specified">{{ i18n.ts.specifyHost }}</option>
+					</MkRadios>
+					<MkInput v-if="noteSearchableScope === 'global'" v-model="hostInput" :disabled="hostSelect !== 'specified'" :large="true" type="search">
+						<template #prefix><i class="ti ti-server"></i></template>
+					</MkInput>
+					<MkRadios v-model="attachedSelect">
+						<template #label>添付ファイルで絞り込み</template>
+						<option value="all" default>絞らない</option>
+						<option value="image">画像</option>
+						<option value="video">動画</option>
+						<option value="audio">♪</option>
+					</MkRadios>
+				</template>
 
 				<MkFolder :defaultOpen="true">
 					<template #label>{{ i18n.ts.specifyUser }}</template>
@@ -73,11 +82,13 @@ const props = withDefaults(defineProps<{
 	userId?: string;
 	username?: string;
 	host?: string | null;
+	attachedFileType?: string | null;
 }>(), {
 	query: '',
 	userId: undefined,
 	username: undefined,
 	host: '',
+	attachedFileType: '',
 });
 
 const router = useRouter();
@@ -88,6 +99,12 @@ const user = ref<UserDetailed | null>(null);
 const hostInput = ref(toRef(props, 'host').value);
 
 const noteSearchableScope = instance.noteSearchableScope ?? 'local';
+
+const attachedSelect = ref<'all' | 'image' | 'video' | 'audio'>('all');
+const searchAttached = computed(() => {
+	if (attachedSelect.value === 'all' ) return null;
+	return attachedSelect.value;
+});
 
 const hostSelect = ref<'all' | 'local' | 'specified'>('all');
 
@@ -102,7 +119,7 @@ setHostSelectWithInput(hostInput.value, undefined);
 watch(hostInput, setHostSelectWithInput);
 
 const searchHost = computed(() => {
-	if (hostSelect.value === 'local') return '.';
+	if (hostSelect.value === 'local' || instance.federation === 'none') return '.';
 	if (hostSelect.value === 'specified') return hostInput.value;
 	return null;
 });
@@ -192,12 +209,20 @@ async function search() {
 		}
 	}
 
+	console.log('---note search');
+	if( searchAttached.value ){
+		console.log(searchAttached.value);
+	}else{
+		console.log('no searchAttached value');
+	}
+
 	notePagination.value = {
 		endpoint: 'notes/search',
 		limit: 10,
 		params: {
 			query: searchQuery.value,
 			userId: user.value ? user.value.id : null,
+			...(searchAttached.value ? { attachedFileType: searchAttached.value } : {}),
 			...(searchHost.value ? { host: searchHost.value } : {}),
 		},
 	};

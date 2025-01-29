@@ -56,12 +56,18 @@ export function openInstanceMenu(ev: MouseEvent) {
 		text: i18n.ts.customEmojis,
 		icon: 'ti ti-icons',
 		to: '/about#emojis',
-	}, {
-		type: 'link',
-		text: i18n.ts.federation,
-		icon: 'ti ti-whirl',
-		to: '/about#federation',
-	}, {
+	});
+
+	if (instance.federation !== 'none') {
+		menuItems.push({
+			type: 'link',
+			text: i18n.ts.federation,
+			icon: 'ti ti-whirl',
+			to: '/about#federation',
+		});
+	}
+
+	menuItems.push({
 		type: 'link',
 		text: i18n.ts.charts,
 		icon: 'ti ti-chart-line',
@@ -124,7 +130,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 		});
 	}
 
-	if (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) {
+	if (instance.impressumUrl != null || instance.tosUrl != null || instance.privacyPolicyUrl != null) {
 		menuItems.push({ type: 'divider' });
 	}
 

@@ -840,3 +840,6 @@ _reversi:
   black: "꺼멍"
   white: "허영"
   total: "합게"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "몬 찾앗십니다"

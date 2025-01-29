@@ -35,8 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkTextarea v-model="description">
 					<template #label>{{ i18n.ts.description }}</template>
 				</MkTextarea>
-				<!----
-				<MkFolder>
+				<MkFolder v-if="$i && ($i.isModerator)">
 					<template #label>{{ i18n.ts.availableRoles }}</template>
 					<template #suffix>{{ rolesThatCanBeUsedThisDecoration.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisDecoration.length }}</template>
 
@@ -50,7 +49,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 				</MkFolder>
-				----->
 				<MkButton v-if="avatarDecoration" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</MkSpacer>
