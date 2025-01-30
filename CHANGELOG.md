@@ -7,7 +7,8 @@
 -
 
 ### Server
--
+- Fix: 自分がしたリアクションが正常に表示されないことがある問題を修正
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/839, https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/840)
 
 
 ## 2025.1.0
@@ -85,8 +86,6 @@
 - Fix: 非Misskey系のソフトウェアからHTML`<ruby>`タグを含むノートを受信した場合、MFMの読み仮名（ルビ）文法に変換して表示
 - Fix: 連合OFFで投稿されたノートに対する冗長な処理を抑止 ( #15018 )
 - Fix: `/api.json`のレスポンスが2回目のリクエスト以降おかしくなる問題を修正
-- Fix: 自分がしたリアクションが正常に表示されないことがある問題を修正
-  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/839, https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/840)
 
 ### Misskey.js
 - Feat: allow setting `binaryType` of WebSocket connection
