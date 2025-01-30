@@ -2706,6 +2706,9 @@ _reversi:
   disallowIrregularRules: "変則なし"
   showBoardLabels: "盤面に行・列番号を表示"
   useAvatarAsStone: "石をアイコンにする"
+  remoteVersionUnknown: "リモートサーバーのバージョンが不明やで"
+  remoteVersionUnknownCaption: "対応していない可能性がないで"
+  remoteVersionBad: "リモートサーバーのバージョンが非互換やで"
 _offlineScreen:
   title: "オフライン - サーバーに接続できひんで"
   header: "サーバーに接続できへんわ"
@@ -2755,6 +2758,11 @@ _selfXssPrevention:
 _followRequest:
   recieved: "もらった申請"
   sent: "送った申請"
+_hideReactionCount:
+  none: "非表示にしない"
+  self: "自分のノートのみ"
+  others: "自分以外のノートのみ"
+  all: "全てのノート"
 _remoteLookupErrors:
   _federationNotAllowed:
     title: "このサーバーと通信できん"

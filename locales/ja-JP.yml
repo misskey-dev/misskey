@@ -1011,6 +1011,7 @@ cannotUploadBecauseInappropriate: "不適切な内容を含む可能性がある
 cannotUploadBecauseNoFreeSpace: "ドライブの空き容量が無いためアップロードできません。"
 cannotUploadBecauseExceedsFileSizeLimit: "ファイルサイズの制限を超えているためアップロードできません。"
 beta: "ベータ"
+originalFeature: "独自機能"
 enableAutoSensitive: "自動センシティブ判定"
 enableAutoSensitiveDescription: "利用可能な場合は、機械学習を利用して自動でメディアにセンシティブフラグを設定します。この機能をオフにしても、サーバーによっては自動で設定されることがあります。"
 activeEmailValidationDescription: "ユーザーのメールアドレスのバリデーションを、捨てアドかどうかや実際に通信可能かどうかなどを判定しより積極的に行います。オフにすると単に文字列として正しいかどうかのみチェックされます。"
@@ -1284,6 +1285,8 @@ enableHorizontalSwipe: "スワイプしてタブを切り替える"
 loading: "読み込み中"
 surrender: "やめる"
 gameRetry: "リトライ"
+defaultScheduledNoteDeleteTime: "ノートの自己消滅の初期値"
+scheduledNoteDeleteEnabled: "ノートの自己消滅が有効になっています"
 notUsePleaseLeaveBlank: "使用しない場合は空欄にしてください"
 useTotp: "ワンタイムパスワードを使う"
 useBackupCode: "バックアップコードを使う"
@@ -1299,6 +1302,7 @@ confirmWhenRevealingSensitiveMedia: "センシティブなメディアを表示�
 sensitiveMediaRevealConfirm: "センシティブなメディアです。表示しますか？"
 createdLists: "作成したリスト"
 createdAntennas: "作成したアンテナ"
+searchEngine: "MFMの検索で利用する検索エンジン"
 fromX: "{x}から"
 genEmbedCode: "埋め込みコードを生成"
 noteOfThisUser: "このユーザーのノート一覧"
@@ -1828,6 +1832,7 @@ _role:
     yamiTlAvailable: "やみタイムラインの閲覧"
     canPublicNote: "パブリック投稿の許可"
     mentionMax: "ノート内の最大メンション数"
+    canImportNotes: "ノートのインポート"
     canInvite: "サーバー招待コードの発行"
     inviteLimit: "招待コードの作成可能数"
     inviteLimitCycle: "招待コードの発行間隔"
@@ -1851,6 +1856,9 @@ _role:
     canSearchNotes: "ノート検索の利用"
     canUseTranslator: "翻訳機能の利用"
     avatarDecorationLimit: "アイコンデコレーションの最大取付個数"
+    canChangeQuoteNotificationSetting: "引用通知の変更を許可"
+    canFollow: "フォローを許可"
+    canFollowed: "フォローされるのを許可"
     canImportAntennas: "アンテナのインポートを許可"
     canImportBlocking: "ブロックのインポートを許可"
     canImportFollowing: "フォローのインポートを許可"
@@ -1874,6 +1882,8 @@ _role:
     followingMoreThanOrEq: "フォロー数が～以上"
     notesLessThanOrEq: "投稿数が～以下"
     notesMoreThanOrEq: "投稿数が～以上"
+    activedMoreThan: "最終アクティブ日時が～未満"
+    activedLessThan: "最終アクティブ日時が～以上"
     and: "～かつ～"
     or: "～または～"
     not: "～ではない"
@@ -1940,6 +1950,8 @@ _gallery:
 _email:
   _follow:
     title: "フォローされました"
+  _unfollow:
+    title: "フォロー解除されました"
   _receiveFollowRequest:
     title: "フォローリクエストを受け取りました"
 
@@ -2326,6 +2338,7 @@ _widgets:
     chooseList: "リストを選択"
   clicker: "クリッカー"
   birthdayFollowings: "今日誕生日のユーザー"
+  listenBrainz: "listenBrainz"
 
 _cw:
   hide: "隠す"
@@ -2528,6 +2541,7 @@ _notification:
   youGotQuote: "{name}による引用"
   youRenoted: "{name}がリノートしました"
   youWereFollowed: "フォローされました"
+  youWereUnFollower: "フォロー解除されました"
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   pollEnded: "アンケートの結果が出ました"
@@ -2544,6 +2558,7 @@ _notification:
   likedBySomeUsers: "{n}人がいいねしました"
   renotedBySomeUsers: "{n}人がリノートしました"
   followedBySomeUsers: "{n}人にフォローされました"
+  unfollowerBySomeUsers: "{n}人にフォロー解除されました"
   flushNotification: "通知の履歴をリセットする"
   exportOfXCompleted: "{x}のエクスポートが完了しました"
   login: "ログインがありました"
@@ -2552,6 +2567,7 @@ _notification:
     all: "すべて"
     note: "ユーザーの新規投稿"
     follow: "フォロー"
+    unfollow: "フォロー解除"
     mention: "メンション"
     reply: "リプライ"
     renote: "リノート"
@@ -2664,6 +2680,7 @@ _moderationLogTypes:
   updateRole: "ロールを更新"
   assignRole: "ロールへアサイン"
   unassignRole: "ロールのアサイン解除"
+  approve: "承認済み"
   suspend: "凍結"
   unsuspend: "凍結解除"
   addCustomEmoji: "カスタム絵文字追加"
@@ -2822,6 +2839,9 @@ _reversi:
   disallowIrregularRules: "変則なし"
   showBoardLabels: "盤面に行・列番号を表示"
   useAvatarAsStone: "石をアイコンにする"
+  remoteVersionUnknown: "リモートサーバーのバージョンが不明です"
+  remoteVersionUnknownCaption: "対応していない可能性があります"
+  remoteVersionBad: "リモートサーバーのバージョンが非互換です"
 
 _offlineScreen:
   title: "オフライン - サーバーに接続できません"
@@ -2852,6 +2872,10 @@ _contextMenu:
   app: "アプリケーション"
   appWithShift: "Shiftキーでアプリケーション"
   native: "ブラウザのUI"
+
+_reactionChecksMuting:
+  title: "リアクションでミュートを考慮する"
+  caption: "リアクションがミュートを考慮しますが、キャッシュが効かず通信量が増えることがあります。"
 
 _gridComponent:
   _error:
@@ -2941,6 +2965,12 @@ _selfXssPrevention:
 _followRequest:
   recieved: "受け取った申請"
   sent: "送った申請"
+
+_hideReactionCount:
+  none: "非表示にしない"
+  self: "自分のノートのみ"
+  others: "自分以外のノートのみ"
+  all: "全てのノート"
 
 _yami:
   yamiSettings: "やみ設定"

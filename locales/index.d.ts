@@ -3731,6 +3731,10 @@ export interface Locale extends ILocale {
      */
     "unmuteThread": string;
     /**
+     * ノート数の公開範囲
+     */
+    "notesVisibility": string;
+    /**
      * フォローの公開範囲
      */
     "followingVisibility": string;
@@ -4058,6 +4062,10 @@ export interface Locale extends ILocale {
      * ベータ
      */
     "beta": string;
+    /**
+     * 独自機能
+     */
+    "originalFeature": string;
     /**
      * 自動センシティブ判定
      */
@@ -5151,6 +5159,14 @@ export interface Locale extends ILocale {
      */
     "gameRetry": string;
     /**
+     * ノートの自己消滅の初期値
+     */
+    "defaultScheduledNoteDeleteTime": string;
+    /**
+     * ノートの自己消滅が有効になっています
+     */
+    "scheduledNoteDeleteEnabled": string;
+    /**
      * 使用しない場合は空欄にしてください
      */
     "notUsePleaseLeaveBlank": string;
@@ -5210,6 +5226,10 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     "createdAntennas": string;
+    /**
+     * MFMの検索で利用する検索エンジン
+     */
+    "searchEngine": string;
     /**
      * {x}から
      */
@@ -7064,6 +7084,10 @@ export interface Locale extends ILocale {
              */
             "mentionMax": string;
             /**
+             * ノートのインポート
+             */
+            "canImportNotes": string;
+            /**
              * サーバー招待コードの発行
              */
             "canInvite": string;
@@ -7156,6 +7180,18 @@ export interface Locale extends ILocale {
              */
             "avatarDecorationLimit": string;
             /**
+             * 引用通知の変更を許可
+             */
+            "canChangeQuoteNotificationSetting": string;
+            /**
+             * フォローを許可
+             */
+            "canFollow": string;
+            /**
+             * フォローされるのを許可
+             */
+            "canFollowed": string;
+            /**
              * アンテナのインポートを許可
              */
             "canImportAntennas": string;
@@ -7245,6 +7281,14 @@ export interface Locale extends ILocale {
              * 投稿数が～以上
              */
             "notesMoreThanOrEq": string;
+            /**
+             * 最終アクティブ日時が～未満
+             */
+            "activedMoreThan": string;
+            /**
+             * 最終アクティブ日時が～以上
+             */
+            "activedLessThan": string;
             /**
              * ～かつ～
              */
@@ -7451,6 +7495,12 @@ export interface Locale extends ILocale {
         "_follow": {
             /**
              * フォローされました
+             */
+            "title": string;
+        };
+        "_unfollow": {
+            /**
+             * フォロー解除されました
              */
             "title": string;
         };
@@ -8850,6 +8900,10 @@ export interface Locale extends ILocale {
          * 今日誕生日のユーザー
          */
         "birthdayFollowings": string;
+        /**
+         * listenBrainz
+         */
+        "listenBrainz": string;
     };
     "_cw": {
         /**
@@ -9571,6 +9625,10 @@ export interface Locale extends ILocale {
          */
         "youWereFollowed": string;
         /**
+         * フォロー解除されました
+         */
+        "youWereUnFollower": string;
+        /**
          * フォローリクエストが来ました
          */
         "youReceivedFollowRequest": string;
@@ -9635,6 +9693,10 @@ export interface Locale extends ILocale {
          */
         "followedBySomeUsers": ParameterizedString<"n">;
         /**
+         * {n}人にフォロー解除されました
+         */
+        "unfollowerBySomeUsers": ParameterizedString<"n">;
+        /**
          * 通知の履歴をリセットする
          */
         "flushNotification": string;
@@ -9659,6 +9721,10 @@ export interface Locale extends ILocale {
              * フォロー
              */
             "follow": string;
+            /**
+             * フォロー解除
+             */
+            "unfollow": string;
             /**
              * メンション
              */
@@ -10044,6 +10110,10 @@ export interface Locale extends ILocale {
          * ロールのアサイン解除
          */
         "unassignRole": string;
+        /**
+         * 承認済み
+         */
+        "approve": string;
         /**
          * 凍結
          */
@@ -10612,6 +10682,18 @@ export interface Locale extends ILocale {
          * 石をアイコンにする
          */
         "useAvatarAsStone": string;
+        /**
+         * リモートサーバーのバージョンが不明です
+         */
+        "remoteVersionUnknown": string;
+        /**
+         * 対応していない可能性があります
+         */
+        "remoteVersionUnknownCaption": string;
+        /**
+         * リモートサーバーのバージョンが非互換です
+         */
+        "remoteVersionBad": string;
     };
     "_offlineScreen": {
         /**
@@ -10708,6 +10790,16 @@ export interface Locale extends ILocale {
          * ブラウザのUI
          */
         "native": string;
+    };
+    "_reactionChecksMuting": {
+        /**
+         * リアクションでミュートを考慮する
+         */
+        "title": string;
+        /**
+         * リアクションがミュートを考慮しますが、キャッシュが効かず通信量が増えることがあります。
+         */
+        "caption": string;
     };
     "_gridComponent": {
         "_error": {
@@ -11015,6 +11107,24 @@ export interface Locale extends ILocale {
          * 送った申請
          */
         "sent": string;
+    };
+    "_hideReactionCount": {
+        /**
+         * 非表示にしない
+         */
+        "none": string;
+        /**
+         * 自分のノートのみ
+         */
+        "self": string;
+        /**
+         * 自分以外のノートのみ
+         */
+        "others": string;
+        /**
+         * 全てのノート
+         */
+        "all": string;
     };
     "_yami": {
         /**
