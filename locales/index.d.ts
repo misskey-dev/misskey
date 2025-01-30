@@ -5452,6 +5452,10 @@ export interface Locale extends ILocale {
      */
     "cannotScheduleLaterThanOneYear": string;
     /**
+     * 時限削除する期限の入力が必要です
+     */
+    "cannotScheduleInputIsRequired": string;
+    /**
      * アクティビティを非公開にする
      */
     "hideActivity": string;
