@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				summaryText }}</div>
 		<MkInfo v-if="!isValid" warn>
 			<template v-if="isEmpty">
-				{{ i18n.ts.inputRequired }}
+				{{ i18n.ts.cannotScheduleInputIsRequired }}
 			</template>
 			<template v-else-if="isOverOneYear">
 				{{ i18n.ts.cannotScheduleLaterThanOneYear }}
