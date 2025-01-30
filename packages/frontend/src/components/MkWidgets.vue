@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<header :class="$style.editHeader">
 			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--MI-margin)" data-cy-widget-select>
 				<template #label>{{ i18n.ts.selectWidget }}</template>
-				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ i18n.ts._widgets[widget] }}</option>
+				<option v-for="widget in _widgetDefs" :key="widget" :value="widget">{{ i18n.ts._widgets[widget] }}</option>
 			</MkSelect>
 			<MkButton inline primary data-cy-widget-add @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 			<MkButton inline @click="emit('exit')">{{ i18n.ts.close }}</MkButton>
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</Sortable>
 	</template>
-	<component :is="`widget-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
+	<component :is="`widget-${widget.name}`" v-for="widget in _widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
 </template>
 
@@ -50,13 +50,14 @@ export type DefaultStoredWidget = {
 </script>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, computed } from 'vue';
 import { v4 as uuid } from 'uuid';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
-import { widgets as widgetDefs } from '@/widgets/index.js';
+import { widgets as widgetDefs, federationWidgets } from '@/widgets/index.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import { isLink } from '@@/js/is-link.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
@@ -65,6 +66,16 @@ const props = defineProps<{
 	widgets: Widget[];
 	edit: boolean;
 }>();
+
+const _widgetDefs = computed(() => {
+	if (instance.federation === 'none') {
+		return widgetDefs.filter(x => !federationWidgets.includes(x));
+	} else {
+		return widgetDefs;
+	}
+});
+
+const _widgets = computed(() => props.widgets.filter(x => _widgetDefs.value.includes(x.name)));
 
 const emit = defineEmits<{
 	(ev: 'updateWidgets', widgets: Widget[]): void;
