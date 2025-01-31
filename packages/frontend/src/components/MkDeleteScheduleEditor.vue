@@ -9,7 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@click="showDetail = !showDetail"><i class="ti" :class="showDetail ? 'ti-chevron-up' : 'ti-chevron-down'"></i> {{
 				summaryText }}</div>
 		<MkInfo v-if="!isValid" warn>
-			<template v-if="isEmpty">
+			<template v-if="invalidInput">
+				{{ i18n.ts.invalidValue }}
+			</template>
+			<template v-else-if="isEmpty">
 				{{ i18n.ts.cannotScheduleInputIsRequired }}
 			</template>
 			<template v-else-if="isOverOneYear">
@@ -32,8 +35,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 				</section>
 				<section v-else-if="expiration === 'after'">
-					<MkInput v-model="after" small type="text" class="input" pattern="[0-9]*" @input="handleInput"
-						@keypress="validateKeyPress">
+					<MkInput
+						v-model="after"
+						small
+						type="text"
+						class="input"
+						:pattern="'^[1-9][0-9]*$'"
+						inputmode="numeric"
+						@input="handleInput"
+						@blur="validateInput">
 						<template #label>{{ i18n.ts._poll.duration }}</template>
 					</MkInput>
 					<MkSelect v-model="unit" small>
@@ -49,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import MkInput from './MkInput.vue';
 import MkSelect from './MkSelect.vue';
 import MkInfo from './MkInfo.vue';
@@ -77,31 +87,43 @@ const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-
 const atTime = ref('00:00');
 const after = ref('');
 const unit = ref<'second' | 'minute' | 'hour' | 'day'>('second');
+const invalidInput = ref(false);
+
+// 入力値の検証
+const validateInput = () => {
+  const value = after.value;
+
+  // 空の場合は許可
+  if (!value) {
+    invalidInput.value = false;
+    return;
+  }
+
+  const numValue = parseInt(value);
+  // パターンチェック
+  const isValidPattern = /^[1-9][0-9]*$/.test(value);
+  invalidInput.value = !isValidPattern || isNaN(numValue) || numValue <= 0;
+
+  if (invalidInput.value) {
+    after.value = '';
+  }
+};
 
 // Input validation functions
 const handleInput = (event: Event) => {
-	const input = event.target as HTMLInputElement;
-	const value = input.value;
-	// 数字以外の文字を削除
-	const sanitizedValue = value.replace(/[^0-9]/g, '');
-	// 先頭の0を削除
-	const normalizedValue = sanitizedValue.replace(/^0+/, '') || '';
-	after.value = normalizedValue;
+  const input = event.target as HTMLInputElement;
+  const value = input.value;
+
+  // 数字以外の文字を削除
+  const sanitizedValue = value.replace(/[^0-9]/g, '');
+  // 先頭の0を削除
+  const normalizedValue = sanitizedValue.replace(/^0+/, '') || '';
+  after.value = normalizedValue;
+
+  validateInput();
 };
 
-const validateKeyPress = (event: KeyboardEvent) => {
-	// 数字以外のキー入力をブロック
-	if (!/[0-9]/.test(event.key) && event.key !== 'Backspace' && event.key !== 'Delete' && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') {
-		event.preventDefault();
-	}
-
-	// 値が空で0を入力しようとする場合をブロック
-	if (event.key === '0' && (!after.value || after.value === '0')) {
-		event.preventDefault();
-	}
-};
-
-const showDetail = ref(!defaultStore.state.defaultScheduledNoteDelete);
+const showDetail = ref(false); // 常に折りたたんだ状態から始める
 const summaryText = computed(() => {
 	if (showDetail.value) {
 		return i18n.ts.scheduledNoteDelete;
@@ -141,19 +163,55 @@ const beautifyAfter = (base: number) => {
 	after.value = time.toString();
 };
 
-if (defaultStore.state.defaultScheduledNoteDeleteTime > 0) {
-	beautifyAfter(defaultStore.state.defaultScheduledNoteDeleteTime / 1000);
-}
+// 初期値の設定
+onMounted(() => {
+  // デフォルト時間を先にセット
+  if (defaultStore.state.defaultScheduledNoteDeleteTime > 0) {
+    beautifyAfter(defaultStore.state.defaultScheduledNoteDeleteTime / 1000);
+  }
 
-if (props.modelValue.deleteAt) {
-	expiration.value = 'at';
-	const deleteAt = new Date(props.modelValue.deleteAt);
-	atDate.value = formatDateTimeString(deleteAt, 'yyyy-MM-dd');
-	atTime.value = formatDateTimeString(deleteAt, 'HH:mm');
-} else if (typeof props.modelValue.deleteAfter === 'number' && props.modelValue.deleteAfter > 0) {
-	expiration.value = 'after';
-	beautifyAfter(props.modelValue.deleteAfter / 1000);
-}
+  // モデル値の確認
+  const hasModelValue = props.modelValue.deleteAt !== null || props.modelValue.deleteAfter !== null;
+
+  // デフォルトの自己消滅設定が有効な場合
+  if (defaultStore.state.defaultScheduledNoteDelete && !hasModelValue) {
+    if (defaultStore.state.defaultScheduledNoteDeleteTime > 0) {
+      expiration.value = 'after';
+      // 初期状態として有効な状態をemit
+      emit('update:modelValue', {
+        deleteAt: null,
+        deleteAfter: calcAfter(),
+        isValid: true,
+      });
+    }
+  } else if (hasModelValue) {
+    // 既存のモデル値がある場合はそれを優先
+    if (props.modelValue.deleteAt) {
+      expiration.value = 'at';
+      const deleteAt = new Date(props.modelValue.deleteAt);
+      atDate.value = formatDateTimeString(deleteAt, 'yyyy-MM-dd');
+      atTime.value = formatDateTimeString(deleteAt, 'HH:mm');
+    } else if (props.modelValue.deleteAfter && props.modelValue.deleteAfter > 0) {
+      expiration.value = 'after';
+      beautifyAfter(props.modelValue.deleteAfter / 1000);
+    }
+  }
+});
+// showDetailの変更監視
+watch(showDetail, (newValue) => {
+  if (newValue) {  // トグルを開いたとき
+    if (!after.value || !calcAfter()) {
+      // 値が未設定または無効な場合のみデフォルト時間をセット
+      beautifyAfter(defaultStore.state.defaultScheduledNoteDeleteTime / 1000);
+      emit('update:modelValue', {
+        deleteAt: null,
+        deleteAfter: calcAfter(),
+        isValid: true,
+      });
+    }
+  }
+  // トグルを閉じるときは何もしない（入力値を保持）
+});
 
 const calcAt = () => {
 	return new Date(`${atDate.value} ${atTime.value}`).getTime();
@@ -162,6 +220,8 @@ const calcAt = () => {
 const calcAfter = () => {
 	if (!after.value) return null;
 	let base = parseInt(after.value);
+	if (isNaN(base) || base <= 0) return null;
+
 	switch (unit.value) {
 		// @ts-expect-error fallthrough
 		case 'day': base *= 24;
@@ -172,16 +232,6 @@ const calcAfter = () => {
 		// eslint-disable-next-line no-fallthrough
 		case 'second': return base *= 1000;
 		default: return null;
-	}
-};
-
-const isValidTime = () => {
-	if (expiration.value === 'at') {
-		return calcAt() < Date.now() + (1000 * 60 * 60 * 24 * 365);
-	} else {
-		const afterMs = calcAfter();
-		if (afterMs === null) return false;
-		return afterMs < 1000 * 60 * 60 * 24 * 365;
 	}
 };
 
@@ -201,7 +251,17 @@ const isOverOneYear = computed(() => {
 	return false;
 });
 
-const isValid = computed(() => !isEmpty.value && !isOverOneYear.value);
+const isValid = computed(() => {
+  if (expiration.value === 'after') {
+    if (isEmpty.value) return false;
+    if (invalidInput.value) return false;
+    if (isOverOneYear.value) return false;
+
+    const afterValue = parseInt(after.value);
+    return !isNaN(afterValue) && afterValue > 0;
+  }
+  return true;
+});
 
 watch([expiration, atDate, atTime, after, unit, isValid], () => {
 	const isValidTimeValue = isValidTime();
@@ -209,11 +269,21 @@ watch([expiration, atDate, atTime, after, unit, isValid], () => {
 	emit('update:modelValue', {
 		deleteAt: expiration.value === 'at' ? calcAt() : null,
 		deleteAfter: expiration.value === 'after' ? calcAfter() : null,
-		isValid: isValidTimeValue && !isEmpty.value,
+		isValid: isValidTimeValue && !invalidInput.value,
 	});
 }, {
 	deep: true,
 });
+
+const isValidTime = () => {
+	if (expiration.value === 'at') {
+		return calcAt() < Date.now() + (1000 * 60 * 60 * 24 * 365);
+	} else {
+		const afterMs = calcAfter();
+		if (afterMs === null) return false;
+		return afterMs < 1000 * 60 * 60 * 24 * 365;
+	}
+};
 </script>
 
 <style lang="scss" module>

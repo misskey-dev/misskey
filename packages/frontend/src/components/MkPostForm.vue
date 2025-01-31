@@ -169,7 +169,26 @@ const posted = ref(false);
 const text = ref(props.initialText ?? '');
 const files = ref(props.initialFiles ?? []);
 const poll = ref<PollEditorModelValue | null>(null);
-const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(defaultStore.state.defau ? { deletltScheduledNoteDeleteAt: null, deleteAfter: defaultStore.state.defaultScheduledNoteDeleteTime, isValid: true } : null);
+// フォームの初期値を取得する関数
+const getInitialScheduledDelete = () => {
+  return defaultStore.state.defaultScheduledNoteDelete 
+    ? { 
+        deleteAt: null, 
+        deleteAfter: defaultStore.state.defaultScheduledNoteDeleteTime, 
+        isValid: true 
+      } 
+    : null;
+};
+// 初期化
+const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(getInitialScheduledDelete());
+// デフォルト設定の変更を監視
+watch(() => defaultStore.state.defaultScheduledNoteDelete, (newValue) => {
+  scheduledNoteDelete.value = getInitialScheduledDelete();
+});
+// フォームがリセットされたときに初期化（新規投稿時）
+watch(() => props.initialNote, () => {
+  scheduledNoteDelete.value = getInitialScheduledDelete();
+});
 const useCw = ref<boolean>(!!props.initialCw);
 const showPreview = ref(defaultStore.state.showPreview);
 watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
