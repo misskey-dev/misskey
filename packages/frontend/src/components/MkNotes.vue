@@ -131,18 +131,18 @@ function initNoteRenderSkipping() {
 				mutationObserver = new MutationObserver((mutations) => {
 					mutations.forEach((mutation) => {
 						mutation.addedNodes.forEach((note) => {
-							if (note.dataset?.id == null) return;
+							if (note.dataset?.noteId == null) return;
 							const noteEl = getHTMLElementOrNull(note);
 							if (noteEl == null) return;
 
 							const rect = (noteEl).getBoundingClientRect();
 							if (rect.top < window.innerHeight && rect.bottom > 0) {
-								visibleNotes.value.add(note.dataset.id);
+								visibleNotes.value.add(note.dataset.noteId);
 							}
 							intersectionObserver!.observe(noteEl);
 						});
 						mutation.removedNodes.forEach((note) => {
-							if (note.dataset?.id == null) return;
+							if (note.dataset?.noteId == null) return;
 							intersectionObserver!.unobserve(noteEl);
 						});
 					});
