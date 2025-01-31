@@ -142,7 +142,9 @@ function initNoteRenderSkipping() {
 							intersectionObserver!.observe(noteEl);
 						});
 						mutation.removedNodes.forEach((note) => {
-							if (note.dataset?.noteId == null) return;
+							const noteEl = getHTMLElementOrNull(note);
+							if (noteEl == null) return;
+							if (noteEl.dataset?.noteId == null) return;
 							intersectionObserver!.unobserve(noteEl);
 						});
 					});
