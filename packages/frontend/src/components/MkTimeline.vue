@@ -10,7 +10,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		ref="tlComponent"
 		:pagination="paginationQuery"
 		:noGap="!defaultStore.state.showGapBetweenNotesInTimeline"
-		:renderSkippable="true"
 		@queue="emit('queue', $event)"
 		@status="prComponent?.setDisabled($event)"
 	/>
