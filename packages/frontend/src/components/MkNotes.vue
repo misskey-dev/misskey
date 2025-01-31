@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XNote
 					:key="note._featuredId_ || note._prId_ || note.id"
 					:class="$style.note"
-					:data-id="note.id"
+					:data-note-id="note.id"
 					:note="note"
 					:visible="disableJsRenderSkip || !initialComputeDone || visibleNotes.has(note.id)"
 					:withHardMute="true"
@@ -46,6 +46,7 @@ import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 import { defaultStore } from '@/store.js';
+import { getHTMLElementOrNull } from "@/scripts/get-dom-node-or-null.js";
 import { getScrollContainer } from '@@/js/scroll.js';
 
 const props = withDefaults(defineProps<{
@@ -80,10 +81,11 @@ function initNoteRenderSkipping() {
 				// 初回：現在見えているノートを洗い出す
 				initialComputeDone.value = false;
 				visibleNotes.value.clear();
-				rootEl.value.querySelectorAll('[data-id]').forEach((note) => {
-					const id = (note as HTMLElement).dataset?.id;
+				rootEl.value.querySelectorAll('[data-note-id]').forEach((note) => {
+					const el = getHTMLElementOrNull(note);
+					const id = el.dataset?.noteId;
 					if (id) {
-						const rect = (note as HTMLElement).getBoundingClientRect();
+						const rect = el.getBoundingClientRect();
 						if (rect.top < window.innerHeight && rect.bottom > 0) {
 							visibleNotes.value.add(id);
 						}
@@ -96,16 +98,18 @@ function initNoteRenderSkipping() {
 					entries.forEach((entry) => {
 						if (rootEl.value == null) return;
 						if (rootEl.value.classList.contains('list-move')) return;
+
+						const el = getHTMLElementOrNull(entry.target);
+						if (el == null) return;
+
 						if (entry.isIntersecting) {
-							const note = entry.target as HTMLElement;
-							const id = note.dataset?.id;
+							const id = el.dataset?.noteId;
 							if (id) {
 								if (_DEV_) console.log('visible', id);
 								visibleNotes.value.add(id);
 							}
 						} else {
-							const note = entry.target as HTMLElement;
-							const id = note.dataset?.id;
+							const id = el.dataset?.noteId;
 							if (id) {
 								if (_DEV_) console.log('invisible', id);
 								visibleNotes.value.delete(id);
@@ -118,8 +122,8 @@ function initNoteRenderSkipping() {
 				});
 
 				// 初回
-				rootEl.value.querySelectorAll('[data-id]').forEach((note) => {
-					intersectionObserver!.observe(note as Element);
+				rootEl.value.querySelectorAll<HTMLElement>('[data-note-id]').forEach((note) => {
+					intersectionObserver!.observe(note);
 				});
 
 				// ノートが追加されたらそれもIntersectionObserverに登録
@@ -128,15 +132,18 @@ function initNoteRenderSkipping() {
 					mutations.forEach((mutation) => {
 						mutation.addedNodes.forEach((note) => {
 							if (note.dataset?.id == null) return;
-							const rect = (note as HTMLElement).getBoundingClientRect();
+							const noteEl = getHTMLElementOrNull(note);
+							if (noteEl == null) return;
+
+							const rect = (noteEl).getBoundingClientRect();
 							if (rect.top < window.innerHeight && rect.bottom > 0) {
 								visibleNotes.value.add(note.dataset.id);
 							}
-							intersectionObserver!.observe(note as Element);
+							intersectionObserver!.observe(noteEl);
 						});
 						mutation.removedNodes.forEach((note) => {
 							if (note.dataset?.id == null) return;
-							intersectionObserver!.unobserve(note as Element);
+							intersectionObserver!.unobserve(noteEl);
 						});
 					});
 				});
