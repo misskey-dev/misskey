@@ -93,7 +93,7 @@ async function toggleReaction() {
 		if (defaultStore.state.confirmOnReact) {
 			const confirm = await os.confirm({
 				type: 'question',
-				text: i18n.tsx.reactAreYouSure({ emoji: props.reaction }),
+				text: i18n.tsx.reactAreYouSure({ emoji: props.reaction.replace('@.', '') }),
 			});
 
 			if (confirm.canceled) return;
