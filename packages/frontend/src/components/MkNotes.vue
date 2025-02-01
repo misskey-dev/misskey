@@ -40,6 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { useTemplateRef, ref, watch, onActivated, onDeactivated, onBeforeUnmount } from 'vue';
+import type { WatchStopHandle } from 'vue';
 import XNote from '@/components/MkNotes.note.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
@@ -64,6 +65,7 @@ const rootEl = useTemplateRef('rootEl');
 //#region Note Render Skipping (JS)
 let intersectionObserver: IntersectionObserver | null = null;
 let mutationObserver: MutationObserver | null = null;
+let rootElWatcher: WatchStopHandle | null = null;
 const visibleNotes = ref(new Set<string>());
 const initialComputeDone = ref(false);
 
@@ -74,7 +76,7 @@ function initNoteRenderSkipping() {
 		!props.disableJsRenderSkip &&
 		defaultStore.state.skipNoteRender === 'js'
 	) {
-		watch(rootEl, (to) => {
+		rootElWatcher = watch(rootEl, (to) => {
 			if (to != null) {
 				// 既存の仮想スクロール処理を破棄
 				disposeNoteRenderSkipping();
@@ -162,7 +164,7 @@ function initNoteRenderSkipping() {
 					mutationObserver.disconnect();
 				}
 			}
-		}, { flush: 'post' });
+		}, { immediate: true, flush: 'post' });
 	}
 }
 
@@ -174,6 +176,9 @@ function disposeNoteRenderSkipping() {
 	}
 	if (mutationObserver) {
 		mutationObserver.disconnect();
+	}
+	if (rootElWatcher) {
+		rootElWatcher();
 	}
 	visibleNotes.value.clear();
 	initialComputeDone.value = false;
