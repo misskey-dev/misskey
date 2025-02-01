@@ -1498,7 +1498,9 @@ _accountMigration:
   migrationConfirm: "Really migrate this account to {account}? Once started, this process cannot be stopped or taken back, and you will not be able to use this account in its original state anymore."
   movedAndCannotBeUndone: "\nThis account has been migrated.\nMigration cannot be reversed."
   postMigrationNote: "This account will unfollow all accounts it is currently following 24 hours after migration finishes.\nBoth the number of follows and followers will then become zero. To avoid your followers from being unable to see followers only posts of this account, they will however continue following this account."
-  movedTo: "New account:"
+  movedTo: "Migrated account:"
+  movedToServer: "Migrated server"
+  movedFromServer: "Original server"
 _achievements:
   earnedAt: "Unlocked at"
   _types:

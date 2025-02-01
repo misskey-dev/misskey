@@ -2,13 +2,29 @@
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
-		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-			<MkInput v-model="movedFromId" style="margin: 0; flex: 1;">
-				<template #label> {{ i18n.ts.moveFromId }}</template>
-			</MkInput>
-			<MkInput v-model="movedToId" style="margin: 0; flex: 1;">
-				<template #label> {{ i18n.ts.movedToId }}</template>
-			</MkInput>
+		<div style="display: flex; flex-direction: column; gap: var(--margin); flex-wrap: wrap;">
+			<div :class="$style.inputs">
+				<MkSelect v-model="from" :class="$style.input">
+					<template #label>{{ i18n.ts._accountMigration.movedFromServer }}</template>
+					<option value="all">{{ i18n.ts.all }}</option>
+					<option value="remote">{{ i18n.ts.remote }}</option>
+					<option value="local">{{ i18n.ts.local }}</option>
+				</MkSelect>
+				<MkSelect v-model="to" :class="$style.input">
+					<template #label>{{ i18n.ts._accountMigration.movedToServer }}</template>
+					<option value="all">{{ i18n.ts.all }}</option>
+					<option value="remote">{{ i18n.ts.remote }}</option>
+					<option value="local">{{ i18n.ts.local }}</option>
+				</MkSelect>
+			</div>
+			<div :class="$style.inputs">
+				<MkInput v-model="movedFromId" :class="$style.input">
+					<template #label> {{ i18n.ts.moveFromId }}</template>
+				</MkInput>
+				<MkInput v-model="movedToId" :class="$style.input">
+					<template #label> {{ i18n.ts.movedToId }}</template>
+				</MkInput>
+			</div>
 		</div>
 
 		<MkPagination v-slot="{items}" ref="logs" :pagination="pagination" style="margin-top: var(--margin);">
@@ -48,11 +64,15 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { userPage } from '@/filters/user.js';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
 const logs = shallowRef<InstanceType<typeof MkPagination>>();
 
 const movedToId = ref('');
 const movedFromId = ref('');
+const from = ref('all');
+const to = ref('all');
 
 const pagination = {
 	endpoint: 'admin/show-user-account-move-logs' as const,
@@ -60,6 +80,8 @@ const pagination = {
 	params: computed(() => ({
 		movedFromId: movedFromId.value === '' ? null : movedFromId.value,
 		movedToId: movedToId.value === '' ? null : movedToId.value,
+		from: from.value,
+		to: to.value,
 	})),
 };
 
@@ -95,4 +117,14 @@ definePageMetadata(() => ({
 	flex-direction: column;
 }
 
+.inputs {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.input {
+	margin: 0;
+	flex: 1;
+}
 </style>

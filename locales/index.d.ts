@@ -6004,6 +6004,14 @@ export interface Locale extends ILocale {
          * 移行先のアカウント:
          */
         "movedTo": string;
+        /**
+         * 移行先のサーバー
+         */
+        "movedToServer": string;
+        /**
+         * 移行元のサーバー
+         */
+        "movedFromServer": string;
     };
     "_achievements": {
         /**

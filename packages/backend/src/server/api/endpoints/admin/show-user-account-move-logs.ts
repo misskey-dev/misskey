@@ -62,6 +62,8 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		movedFromId: { type: 'string', format: 'misskey:id', nullable: true },
 		movedToId: { type: 'string', format: 'misskey:id', nullable: true },
+		from: { type: 'string', enum: ['local', 'remote', 'all'], nullable: true },
+		to: { type: 'string', enum: ['local', 'remote', 'all'], nullable: true },
 	},
 	required: [],
 } as const;
@@ -84,6 +86,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.movedToId != null) {
 				query.andWhere('accountMoveLogs.movedToId = :movedToId', { movedToId: ps.movedToId });
+			}
+
+			if (ps.from != null || ps.to != null) {
+				query
+					.innerJoin('accountMoveLogs.movedFrom', 'movedFrom')
+					.innerJoin('accountMoveLogs.movedTo', 'movedTo');
+
+				if (ps.from === 'local') {
+					query.andWhere('movedFrom.host IS NULL');
+				}
+
+				if (ps.from === 'remote') {
+					query.andWhere('movedFrom.host IS NOT NULL');
+				}
+
+				if (ps.to === 'local') {
+					query.andWhere('movedTo.host IS NULL');
+				}
+
+				if (ps.to === 'remote') {
+					query.andWhere('movedTo.host IS NOT NULL');
+				}
 			}
 
 			const accountMoveLogs = await query.limit(ps.limit).getMany();

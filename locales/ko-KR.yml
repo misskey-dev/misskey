@@ -1496,6 +1496,8 @@ _accountMigration:
   movedAndCannotBeUndone: "\n이사한 계정입니다.\n이사는 취소할 수 없습니다."
   postMigrationNote: "이 계정의 팔로잉 해제는 이사 후 24시간 뒤에 실행됩니다.\n이 계정의 팔로우 및 팔로워 수는 0으로 표시됩니다. 팔로워 해제는 이루어지지 않으므로, 당신의 팔로워는 이 계정의 팔로워 한정 게시물을 계속해서 열람할 수 있습니다."
   movedTo: "이사할 계정:"
+  movedToServer: "이사한 서버"
+  movedFromServer: "기존 서버"
 _achievements:
   earnedAt: "달성 일시"
   _types:

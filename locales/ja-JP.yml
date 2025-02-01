@@ -1511,6 +1511,8 @@ _accountMigration:
   movedAndCannotBeUndone: "\nアカウントは移行されています。\n移行を取り消すことはできません。"
   postMigrationNote: "このアカウントからのフォロー解除は移行操作から24時間後に実行されます。\nこのアカウントのフォロー・フォロワー数は0になっています。フォロワーの解除はされないため、あなたのフォロワーはこのアカウントのフォロワー向け投稿を引き続き閲覧できます。"
   movedTo: "移行先のアカウント:"
+  movedToServer: "移行先のサーバー"
+  movedFromServer: "移行元のサーバー"
 
 _achievements:
   earnedAt: "獲得日時"
