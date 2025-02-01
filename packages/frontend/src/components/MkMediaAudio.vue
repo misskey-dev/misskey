@@ -48,8 +48,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</audio>
 			<div :class="[$style.controlsChild, $style.controlsLeft]">
 				<button class="_button" :class="$style.controlButton" @click.prevent.stop="togglePlayPause">
-					<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
-					<i v-else class="ti ti-player-play-filled"></i>
+					<i v-if="isPlaying" class="ti-filled ti-filled-player-pause"></i>
+					<i v-else class="ti-filled ti-filled-player-play"></i>
 				</button>
 			</div>
 			<div :class="[$style.controlsChild, $style.controlsRight]">

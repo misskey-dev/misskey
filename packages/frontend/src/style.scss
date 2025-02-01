@@ -6,6 +6,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+@use '@tabler/icons-webfont/dist/tabler-icons-filled' with (
+	$ti-prefix: 'ti-filled'
+);
+
 :root {
 	--radius: 12px;
 	--marginFull: 16px;
@@ -144,6 +148,16 @@ rt {
 }
 
 .ti {
+	width: 1.28em;
+	vertical-align: -12%;
+	line-height: 1em;
+
+	&:before {
+		font-size: 128%;
+	}
+}
+
+.ti-filled {
 	width: 1.28em;
 	vertical-align: -12%;
 	line-height: 1em;
