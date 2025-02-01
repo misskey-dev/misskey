@@ -43,6 +43,12 @@ export async function signout() {
 	if (!$i) return;
 
 	waiting();
+	document.cookie.split(';').forEach((cookie) => {
+		const cookieName = cookie.split('=')[0].trim();
+		if (cookieName === 'token') {
+			document.cookie = `${cookieName}=; max-age=0; path=/`;
+		}
+	});
 	miLocalStorage.removeItem('account');
 	await removeAccount($i.id);
 	const accounts = await getAccounts();
