@@ -79,6 +79,9 @@ function initNoteRenderSkipping() {
 				// 既存の仮想スクロール処理を破棄
 				disposeNoteRenderSkipping();
 
+				const scrollEl = getScrollContainer(to);
+				const scrollElRect = (scrollEl ?? document.body).getBoundingClientRect();
+
 				// 画面内に入ったノートを記録
 				intersectionObserver = new IntersectionObserver((entries) => {
 					entries.forEach((entry) => {
@@ -102,7 +105,7 @@ function initNoteRenderSkipping() {
 						}
 					});
 				}, {
-					root: getScrollContainer(to),
+					root: scrollEl,
 					rootMargin: '50% 0% 50% 0%',
 				});
 
@@ -113,7 +116,7 @@ function initNoteRenderSkipping() {
 					const id = el.dataset?.noteId;
 					if (id) {
 						const rect = el.getBoundingClientRect();
-						if (rect.top < window.innerHeight && rect.bottom > 0) {
+						if (rect.top < (scrollElRect.top + scrollElRect.height) && rect.bottom > 0) {
 							visibleNotes.value.add(id);
 						}
 					}
