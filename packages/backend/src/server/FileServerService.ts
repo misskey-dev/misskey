@@ -26,6 +26,7 @@ import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
+import { appendQuery, query } from '@/misc/prelude/url.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
@@ -34,6 +35,16 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const assets = `${_dirname}/../../server/file/assets/`;
+
+interface TransformQuery {
+	origin?: string;
+	fallback?: string;
+	emoji?: string;
+	avatar?: string;
+	static?: string;
+	preview?: string;
+	badge?: string;
+}
 
 @Injectable()
 export class FileServerService {
@@ -88,9 +99,17 @@ export class FileServerService {
 		});
 
 		fastify.get<{
+			Params: { type: string; url: string; };
+			Querystring: { url?: string; } & TransformQuery;
+		}>('/proxy/:type/:url', async (request, reply) => {
+			return await this.proxyHandler(request, reply)
+				.catch(err => this.errorHandler(request, reply, err));
+		});
+
+		fastify.get<{
 			Params: { url: string; };
-			Querystring: { url?: string; };
-		}>('/proxy/:url*', async (request, reply) => {
+			Querystring: { url?: string; } & TransformQuery;
+		}>('/proxy/:url', async (request, reply) => {
 			return await this.proxyHandler(request, reply)
 				.catch(err => this.errorHandler(request, reply, err));
 		});
@@ -142,12 +161,15 @@ export class FileServerService {
 					if (isMimeImage(file.mime, 'sharp-convertible-image-with-bmp')) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-						const url = new URL(`${this.config.mediaProxy}/static.webp`);
-						url.searchParams.set('url', file.url);
-						url.searchParams.set('static', '1');
+						const url = appendQuery(
+							`${this.config.mediaProxy}/static/${encodeURIComponent(file.url)}`,
+							query({
+								static: '1',
+							}),
+						);
 
 						file.cleanup();
-						return await reply.redirect(url.toString(), 301);
+						return await reply.redirect(url, 301);
 					} else if (file.mime.startsWith('video/')) {
 						const externalThumbnail = this.videoProcessingService.getExternalVideoThumbnailUrl(file.url);
 						if (externalThumbnail) {
@@ -163,11 +185,10 @@ export class FileServerService {
 					if (['image/svg+xml'].includes(file.mime)) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-						const url = new URL(`${this.config.mediaProxy}/svg.webp`);
-						url.searchParams.set('url', file.url);
+						const url = `${this.config.mediaProxy}/svg/${encodeURIComponent(file.url)}`;
 
 						file.cleanup();
-						return await reply.redirect(url.toString(), 301);
+						return await reply.redirect(url, 301);
 					}
 				}
 
@@ -291,30 +312,43 @@ export class FileServerService {
 	}
 
 	@bindThis
-	private async proxyHandler(request: FastifyRequest<{ Params: { url: string; }; Querystring: { url?: string; }; }>, reply: FastifyReply) {
-		const url = 'url' in request.query ? request.query.url : 'https://' + request.params.url;
+	private async proxyHandler(request: FastifyRequest<{ Params: { type?: string; url: string; }; Querystring: { url?: string; } & TransformQuery; }>, reply: FastifyReply) {
+		let url: string;
+		if ('url' in request.query && request.query.url) {
+			url = request.query.url;
+		} else {
+			url = request.params.url;
+		}
 
-		if (typeof url !== 'string') {
+		// noinspection HttpUrlsUsage
+		if (url
+			&& !url.startsWith('http://')
+			&& !url.startsWith('https://')
+		) {
+			url = 'https://' + url;
+		}
+
+		if (!url) {
 			reply.code(400);
 			return;
 		}
 
 		// アバタークロップなど、どうしてもオリジンである必要がある場合
 		const mustOrigin = 'origin' in request.query;
+		const transformQuery = request.query as TransformQuery;
 
 		if (this.config.externalMediaProxyEnabled && !mustOrigin) {
 			// 外部のメディアプロキシが有効なら、そちらにリダイレクト
 
 			reply.header('Cache-Control', 'public, max-age=259200'); // 3 days
 
-			const url = new URL(`${this.config.mediaProxy}/${request.params.url || ''}`);
-
-			for (const [key, value] of Object.entries(request.query)) {
-				url.searchParams.append(key, value);
-			}
+			const url = appendQuery(
+				`${this.config.mediaProxy}/redirect/${encodeURIComponent(request.params.url)}`,
+				query(transformQuery as Record<string, string>),
+			);
 
 			return reply.redirect(
-				url.toString(),
+				url,
 				301,
 			);
 		}
@@ -344,11 +378,11 @@ export class FileServerService {
 			const isAnimationConvertibleImage = isMimeImage(file.mime, 'sharp-animation-convertible-image-with-bmp');
 
 			if (
-				'emoji' in request.query ||
-				'avatar' in request.query ||
-				'static' in request.query ||
-				'preview' in request.query ||
-				'badge' in request.query
+				'emoji' in transformQuery ||
+				'avatar' in transformQuery ||
+				'static' in transformQuery ||
+				'preview' in transformQuery ||
+				'badge' in transformQuery
 			) {
 				if (!isConvertibleImage) {
 					// 画像でないなら404でお茶を濁す
@@ -357,17 +391,17 @@ export class FileServerService {
 			}
 
 			let image: IImageStreamable | null = null;
-			if ('emoji' in request.query || 'avatar' in request.query) {
-				if (!isAnimationConvertibleImage && !('static' in request.query)) {
+			if ('emoji' in transformQuery || 'avatar' in transformQuery) {
+				if (!isAnimationConvertibleImage && !('static' in transformQuery)) {
 					image = {
 						data: fs.createReadStream(file.path),
 						ext: file.ext,
 						type: file.mime,
 					};
 				} else {
-					const data = (await sharpBmp(file.path, file.mime, { animated: !('static' in request.query) }))
+					const data = (await sharpBmp(file.path, file.mime, { animated: !('static' in transformQuery) }))
 						.resize({
-							height: 'emoji' in request.query ? 128 : 320,
+							height: 'emoji' in transformQuery ? 128 : 320,
 							withoutEnlargement: true,
 						})
 						.webp(webpDefault);
@@ -378,11 +412,11 @@ export class FileServerService {
 						type: 'image/webp',
 					};
 				}
-			} else if ('static' in request.query) {
+			} else if ('static' in transformQuery) {
 				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 498, 422);
-			} else if ('preview' in request.query) {
+			} else if ('preview' in transformQuery) {
 				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 200, 200);
-			} else if ('badge' in request.query) {
+			} else if ('badge' in transformQuery) {
 				const mask = (await sharpBmp(file.path, file.mime))
 					.resize(96, 96, {
 						fit: 'contain',

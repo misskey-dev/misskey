@@ -12,7 +12,7 @@ import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type Logger from '@/logger.js';
-import { query } from '@/misc/prelude/url.js';
+import { appendQuery, query } from '@/misc/prelude/url.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
@@ -36,14 +36,15 @@ export class UrlPreviewService {
 
 	@bindThis
 	private wrap(url?: string | null): string | null {
-		return url != null
-			? url.match(/^https?:\/\//)
-				? `${this.config.mediaProxy}/preview.webp?${query({
-					url,
-					preview: '1',
-				})}`
-				: url
-			: null;
+		if (!url) return null;
+		if (!RegExp(/^https?:\/\//).exec(url)) return url;
+
+		return appendQuery(
+			`${this.config.mediaProxy}/preview/${encodeURIComponent(url)}`,
+			query({
+				preview: '1',
+			}),
+		);
 	}
 
 	@bindThis

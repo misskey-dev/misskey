@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { query } from '@/scripts/url.js';
+import { appendQuery, query } from '@/scripts/url.js';
 import { url } from '@/config.js';
 import { instance } from '@/instance.js';
 
@@ -12,18 +12,26 @@ export function getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' 
 
 	if (imageUrl.startsWith(instance.mediaProxy + '/') || imageUrl.startsWith('/proxy/') || imageUrl.startsWith(localProxy + '/')) {
 		// もう既にproxyっぽそうだったらurlを取り出す
-		imageUrl = (new URL(imageUrl)).searchParams.get('url') ?? imageUrl;
+		const url = (new URL(imageUrl)).searchParams.get('url');
+		if (url) {
+			imageUrl = url;
+		} else if (imageUrl.startsWith(instance.mediaProxy + '/')) {
+			imageUrl = imageUrl.slice(instance.mediaProxy.length + 1);
+		} else if (imageUrl.startsWith('/proxy/')) {
+			imageUrl = imageUrl.slice('/proxy/'.length);
+		} else if (imageUrl.startsWith(localProxy + '/')) {
+			imageUrl = imageUrl.slice(localProxy.length + 1);
+		}
 	}
 
-	return `${mustOrigin ? localProxy : instance.mediaProxy}/${
-		type === 'preview' ? 'preview.webp'
-		: 'image.webp'
-	}?${query({
-		url: imageUrl,
-		...(!noFallback ? { 'fallback': '1' } : {}),
-		...(type ? { [type]: '1' } : {}),
-		...(mustOrigin ? { origin: '1' } : {}),
-	})}`;
+	return appendQuery(
+		`${mustOrigin ? localProxy : instance.mediaProxy}/${type === 'preview' ? 'preview' : 'image'}/${encodeURIComponent(imageUrl)}`,
+		query({
+			...(!noFallback ? { 'fallback': '1' } : {}),
+			...(type ? { [type]: '1' } : {}),
+			...(mustOrigin ? { origin: '1' } : {}),
+		}),
+	);
 }
 
 export function getProxiedImageUrlNullable(imageUrl: string | null | undefined, type?: 'preview'): string | null {
@@ -46,8 +54,8 @@ export function getStaticImageUrl(baseUrl: string): string {
 		return u.href;
 	}
 
-	return `${instance.mediaProxy}/static.webp?${query({
-		url: u.href,
-		static: '1',
-	})}`;
+	return appendQuery(
+		`${instance.mediaProxy}/static/${encodeURIComponent(u.href)}`,
+		query({ static: '1' }),
+	);
 }
