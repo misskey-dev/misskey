@@ -18,6 +18,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div>
 			<div v-for="ad in ads" class="_panel _gaps_m" :class="$style.ad">
 				<MkAd v-if="ad.url" :key="ad.id" :specify="ad"/>
+				<MkInput v-if="ad.id" v-model="ad.id" :readonly="true">
+					<template #label>ID</template>
+				</MkInput>
 				<MkInput v-model="ad.url" type="url">
 					<template #label>URL</template>
 				</MkInput>
