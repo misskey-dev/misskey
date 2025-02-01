@@ -26,7 +26,7 @@ import { FileInfoService } from '@/core/FileInfoService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
-import { appendQuery, query } from '@/misc/prelude/url.js';
+import { appendQuery, omitHttps, query } from '@/misc/prelude/url.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
@@ -162,7 +162,7 @@ export class FileServerService {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
 						const url = appendQuery(
-							`${this.config.mediaProxy}/static/${encodeURIComponent(file.url)}`,
+							`${this.config.mediaProxy}/static/${encodeURIComponent(omitHttps(file.url))}`,
 							query({
 								static: '1',
 							}),
@@ -185,7 +185,7 @@ export class FileServerService {
 					if (['image/svg+xml'].includes(file.mime)) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-						const url = `${this.config.mediaProxy}/svg/${encodeURIComponent(file.url)}`;
+						const url = `${this.config.mediaProxy}/svg/${encodeURIComponent(omitHttps(file.url))}`;
 
 						file.cleanup();
 						return await reply.redirect(url, 301);
@@ -342,13 +342,13 @@ export class FileServerService {
 
 			reply.header('Cache-Control', 'public, max-age=259200'); // 3 days
 
-			const url = appendQuery(
-				`${this.config.mediaProxy}/redirect/${encodeURIComponent(request.params.url)}`,
+			const redirectUrl = appendQuery(
+				`${this.config.mediaProxy}/redirect/${encodeURIComponent(omitHttps(url))}`,
 				query(transformQuery as Record<string, string>),
 			);
 
 			return reply.redirect(
-				url,
+				redirectUrl,
 				301,
 			);
 		}

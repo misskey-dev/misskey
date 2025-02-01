@@ -14,10 +14,16 @@ export function query(obj: Record<string, unknown>): string {
 		.reduce((a, [k, v]) => (a[k] = v, a), {} as Record<string, any>);
 
 	return Object.entries(params)
-		.map((e) => `${e[0]}=${encodeURIComponent(e[1])}`)
+		.map((p) => `${p[0]}=${encodeURIComponent(p[1])}`)
 		.join('&');
 }
 
 export function appendQuery(url: string, query: string): string {
 	return `${url}${/\?/.test(url) ? url.endsWith('?') ? '' : '&' : '?'}${query}`;
+}
+
+export function omitHttps(url: string): string {
+	if (url.startsWith('https://')) return url.slice(8);
+	if (url.startsWith('https%3A%2F%2F')) return url.slice(14);
+	return url;
 }

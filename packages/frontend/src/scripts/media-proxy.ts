@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { appendQuery, query } from '@/scripts/url.js';
+import { appendQuery, omitHttps, query } from '@/scripts/url.js';
 import { url } from '@/config.js';
 import { instance } from '@/instance.js';
 
@@ -25,7 +25,7 @@ export function getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' 
 	}
 
 	return appendQuery(
-		`${mustOrigin ? localProxy : instance.mediaProxy}/${type === 'preview' ? 'preview' : 'image'}/${encodeURIComponent(imageUrl)}`,
+		`${mustOrigin ? localProxy : instance.mediaProxy}/${type === 'preview' ? 'preview' : 'image'}/${encodeURIComponent(omitHttps(imageUrl))}`,
 		query({
 			...(!noFallback ? { 'fallback': '1' } : {}),
 			...(type ? { [type]: '1' } : {}),
@@ -55,7 +55,7 @@ export function getStaticImageUrl(baseUrl: string): string {
 	}
 
 	return appendQuery(
-		`${instance.mediaProxy}/static/${encodeURIComponent(u.href)}`,
+		`${instance.mediaProxy}/static/${encodeURIComponent(omitHttps(u.href))}`,
 		query({ static: '1' }),
 	);
 }

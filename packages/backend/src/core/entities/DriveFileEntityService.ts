@@ -12,7 +12,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import { appendQuery, query } from '@/misc/prelude/url.js';
+import { appendQuery, omitHttps, query } from '@/misc/prelude/url.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
@@ -77,7 +77,7 @@ export class DriveFileEntityService {
 	@bindThis
 	private getProxiedUrl(url: string, mode?: 'static' | 'avatar'): string {
 		return appendQuery(
-			`${this.config.mediaProxy}/${mode ?? 'image'}/${encodeURIComponent(url)}`,
+			`${this.config.mediaProxy}/${mode ?? 'image'}/${encodeURIComponent(omitHttps(url))}`,
 			query({
 				...(mode ? { [mode]: '1' } : {}),
 			}),

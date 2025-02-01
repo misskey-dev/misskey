@@ -19,7 +19,7 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
-import { appendQuery, query } from '@/misc/prelude/url.js';
+import { appendQuery, omitHttps, query } from '@/misc/prelude/url.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
@@ -167,7 +167,7 @@ export class ServerService implements OnApplicationShutdown {
 			if ('badge' in request.query) {
 				url = appendQuery(
 					// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-					`${this.config.mediaProxy}/emoji/${encodeURIComponent(emoji.publicUrl || emoji.originalUrl)}`,
+					`${this.config.mediaProxy}/emoji/${encodeURIComponent(omitHttps(emoji.publicUrl || emoji.originalUrl))}`,
 					query({
 						badge: '1',
 					}),
@@ -175,7 +175,7 @@ export class ServerService implements OnApplicationShutdown {
 			} else {
 				url = appendQuery(
 					// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-					`${this.config.mediaProxy}/emoji/${encodeURIComponent(emoji.publicUrl || emoji.originalUrl)}`,
+					`${this.config.mediaProxy}/emoji/${encodeURIComponent(omitHttps(emoji.publicUrl || emoji.originalUrl))}`,
 					query({
 						emoji: '1',
 						...('static' in request.query ? { static: '1' } : {}),
