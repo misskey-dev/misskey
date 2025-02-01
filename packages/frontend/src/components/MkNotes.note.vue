@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, useTemplateRef } from 'vue';
+import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { defaultStore } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
@@ -37,8 +37,6 @@ const props = withDefaults(defineProps<{
 }>(), {
 	visible: true,
 });
-
-const noteComponent = useTemplateRef('noteComponent');
 
 const height = ref<number>(150);
 const heightResolved = ref(false);
