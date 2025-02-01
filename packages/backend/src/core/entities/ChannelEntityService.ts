@@ -45,7 +45,6 @@ export class ChannelEntityService {
 		src: MiChannel['id'] | MiChannel,
 		me?: { id: MiUser['id'] } | null | undefined,
 		detailed?: boolean,
-		pinnedNotesWithReactionAndUserPairCache?: boolean | false,
 	): Promise<Packed<'Channel'>> {
 		const channel = typeof src === 'object' ? src : await this.channelsRepository.findOneByOrFail({ id: src });
 		const meId = me ? me.id : null;
@@ -95,7 +94,7 @@ export class ChannelEntityService {
 			} : {}),
 
 			...(detailed ? {
-				pinnedNotes: (await this.noteEntityService.packMany(pinnedNotes, me, { withReactionAndUserPairCache: pinnedNotesWithReactionAndUserPairCache })).sort((a, b) => channel.pinnedNoteIds.indexOf(a.id) - channel.pinnedNoteIds.indexOf(b.id)),
+				pinnedNotes: (await this.noteEntityService.packMany(pinnedNotes, me)).sort((a, b) => channel.pinnedNoteIds.indexOf(a.id) - channel.pinnedNoteIds.indexOf(b.id)),
 			} : {}),
 		};
 	}

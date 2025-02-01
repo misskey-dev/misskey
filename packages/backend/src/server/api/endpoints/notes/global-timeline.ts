@@ -8,14 +8,10 @@ import { Brackets } from 'typeorm';
 import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
-import { CacheService } from '@/core/CacheService.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
-import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
-import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -61,7 +57,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private notesRepository: NotesRepository,
 
 		private noteEntityService: NoteEntityService,
-		private cacheService: CacheService,
 		private queryService: QueryService,
 		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
@@ -71,16 +66,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (!policies.gtlAvailable) {
 				throw new ApiError(meta.errors.gtlDisabled);
 			}
-
-			const [
-				userIdsWhoMeMuting,
-				userIdsWhoBlockingMe,
-				userMutedInstances,
-			] = me ? await Promise.all([
-				this.cacheService.userMutingsCache.fetch(me.id),
-				this.cacheService.userBlockedCache.fetch(me.id),
-				this.cacheService.userProfileCache.fetch(me.id).then(p => new Set(p.mutedInstances)),
-			]) : [new Set<string>(), new Set<string>(), new Set<string>()];
 
 			//#region Construct query
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
@@ -94,6 +79,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			if (me) {
+				this.queryService.generateMutedUserQuery(query, me);
+				this.queryService.generateBlockedUserQuery(query, me);
 				this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 			}
 
@@ -110,15 +97,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}));
 				}));
 			}
-
-			const notes = (await query.getMany()).filter(note => {
-				if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
-				if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
-				if (me && isInstanceMuted(note, userMutedInstances)) return false;
-
-				return true;
-			});
 			//#endregion
+
+			const timeline = await query.limit(ps.limit).getMany();
 
 			process.nextTick(() => {
 				if (me) {
@@ -126,11 +107,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			});
 
-			const packedNotes = await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true });
-			await Promise.all(
-				packedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
-			);
-			return packedNotes;
+			return await this.noteEntityService.packMany(timeline, me);
 		});
 	}
 }

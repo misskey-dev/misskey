@@ -403,7 +403,6 @@ export class UserEntityService implements OnModuleInit {
 			userRelations?: Map<MiUser['id'], UserRelation>,
 			userMemos?: Map<MiUser['id'], string | null>,
 			pinNotes?: Map<MiUser['id'], MiUserNotePining[]>,
-			pinNotesWithReactionAndUserPairCache?: boolean,
 		},
 	): Promise<Packed<S>> {
 		const opts = Object.assign({
@@ -544,7 +543,6 @@ export class UserEntityService implements OnModuleInit {
 				pinnedNoteIds: pins.map(pin => pin.noteId),
 				pinnedNotes: this.noteEntityService.packMany(pins.map(pin => pin.note!), me, {
 					detail: true,
-					withReactionAndUserPairCache: opts.pinNotesWithReactionAndUserPairCache,
 				}),
 				pinnedPageId: profile!.pinnedPageId,
 				pinnedPage: profile!.pinnedPageId ? this.pageEntityService.pack(profile!.pinnedPageId, me) : null,

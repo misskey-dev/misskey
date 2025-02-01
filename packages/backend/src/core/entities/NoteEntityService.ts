@@ -478,7 +478,6 @@ export class NoteEntityService implements OnModuleInit {
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
-			withReactionAndUserPairCache?: boolean;
 		},
 	) {
 		if (notes.length === 0) return [];

@@ -26,7 +26,6 @@ import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointServ
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
-import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -116,7 +115,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const followingsPromise = this.cacheService.userFollowingsCache.fetch(me.id);
-			const [packedHomeTimelineNotes, packedFeauturedNotes] = await Promise.all([
+			const [packedHomeTimelineNotes, feauturedNotes] = await Promise.all([
 				(async () => {
 					const followings = await followingsPromise;
 					return this.fanoutTimelineEndpointService.timeline({
@@ -154,9 +153,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}, me),
 			]);
 
-			if (packedFeauturedNotes.length === 0) {
+			if (feauturedNotes.length === 0) {
 				return packedHomeTimelineNotes;
 			}
+			const packedFeauturedNotes = await this.noteEntityService.packMany(feauturedNotes, me);
 
 			if (packedHomeTimelineNotes.length === 0) {
 				return packedFeauturedNotes.sort((a, b) => a.id > b.id ? -1 : 1).slice(0, ps.limit); ;
@@ -269,12 +269,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			return true;
 		});
 
-		const packedFeauturedNotes = await this.noteEntityService.packMany(feauturedNotes, me, { withReactionAndUserPairCache: true });
-		await Promise.all(
-			packedFeauturedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
-		);
-
-		return packedFeauturedNotes;
+		return feauturedNotes;
 	}
 
 	private async getFromDb(ps: { untilId: string | null; sinceId: string | null; limit: number; includeMyRenotes: boolean; includeRenotedMyNotes: boolean; includeLocalRenotes: boolean; withFiles: boolean; withRenotes: boolean; }, me: MiLocalUser) {

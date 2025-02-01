@@ -9,8 +9,6 @@ import type { NoteFavoritesRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteFavoriteEntityService } from '@/core/entities/NoteFavoriteEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
-import { CacheService } from '@/core/CacheService.js';
 
 export const meta = {
 	tags: ['account', 'notes', 'favorites'],
@@ -46,7 +44,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: NoteFavoritesRepository,
 
-		private cacheService: CacheService,
 		private noteFavoriteEntityService: NoteFavoriteEntityService,
 		private queryService: QueryService,
 	) {
@@ -59,16 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.limit(ps.limit)
 				.getMany();
 
-			const packedFavorites = await this.noteFavoriteEntityService.packMany(favorites, me, true);
-			const userIdsWhoMeMuting = await this.cacheService.userMutingsCache.fetch(me.id);
-
-			return await Promise.all(packedFavorites.map(async fav => {
-				const note = fav.note;
-				return {
-					...fav,
-					note: await removeMutedUsersReactions(note, userIdsWhoMeMuting),
-				};
-			}));
+			return await this.noteFavoriteEntityService.packMany(favorites, me);
 		});
 	}
 }
