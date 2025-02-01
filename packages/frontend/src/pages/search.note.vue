@@ -144,6 +144,35 @@ async function search() {
 
 	if (query == null || query === '') return;
 
+	// URLに検索条件を反映
+	const params = new URLSearchParams(window.location.search);
+
+	if (query !== '') {
+		params.set('q', query);
+	} else {
+		params.delete('q');
+	}
+
+	if (user.value) {
+		params.set('userId', user.value.id);
+		if (user.value.username) {
+			params.set('username', user.value.username);
+		}
+	} else {
+		params.delete('userId');
+		params.delete('username');
+	}
+
+	if (hostSelect.value === 'local') {
+		params.set('host', 'local');
+	} else if (hostSelect.value === 'specified' && hostInput.value) {
+		params.set('host', hostInput.value);
+	} else {
+		params.delete('host');
+	}
+
+	window.history.replaceState(null, '', `?${params.toString()}`);
+
 	//#region AP lookup
 	if (query.startsWith('https://') && !query.includes(' ')) {
 		const confirm = await os.confirm({
