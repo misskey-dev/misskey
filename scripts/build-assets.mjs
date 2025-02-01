@@ -21,6 +21,16 @@ async function copyFrontendFonts() {
 
 async function copyFrontendTablerIcons() {
   await fs.cp('./packages/frontend/node_modules/@tabler/icons-webfont', `./built/_frontend_dist_/tabler-icons.${meta.version}`, { dereference: true, recursive: true });
+  for (const file of [
+    `./built/_frontend_dist_/tabler-icons.${meta.version}/dist/tabler-icons-filled.scss`,
+    `./built/_frontend_dist_/tabler-icons.${meta.version}/dist/tabler-icons-filled.css`,
+    `./built/_frontend_dist_/tabler-icons.${meta.version}/dist/tabler-icons-filled.min.css`,
+  ]) {
+    let source = await fs.readFile(file, { encoding: 'utf-8' });
+    source = source.replaceAll('$ti-prefix: \'ti\'', '$ti-prefix: \'ti-filled\'');
+    source = source.replaceAll('.ti', '.ti-filled');
+    await fs.writeFile(file, source);
+  }
 }
 
 async function copyFrontendLocales() {
@@ -91,13 +101,13 @@ async function build() {
 await build();
 
 if (process.argv.includes("--watch")) {
-	const watcher = fs.watch('./locales');
-	for await (const event of watcher) {
-		const filename = event.filename?.replaceAll('\\', '/');
-		if (/^[a-z]+-[A-Z]+\.yml/.test(filename)) {
-			console.log(`update ${filename} ...`)
-			locales = buildLocales();
-			await copyFrontendLocales()
-		}
-	}
+  const watcher = fs.watch('./locales');
+  for await (const event of watcher) {
+    const filename = event.filename?.replaceAll('\\', '/');
+    if (/^[a-z]+-[A-Z]+\.yml/.test(filename)) {
+      console.log(`update ${filename} ...`)
+      locales = buildLocales();
+      await copyFrontendLocales()
+    }
+  }
 }

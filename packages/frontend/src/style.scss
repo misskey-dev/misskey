@@ -6,10 +6,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-@use '@tabler/icons-webfont/dist/tabler-icons-filled' with (
-	$ti-prefix: 'ti-filled'
-);
-
 :root {
 	--radius: 12px;
 	--marginFull: 16px;
