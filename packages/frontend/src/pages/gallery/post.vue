@@ -182,23 +182,23 @@ definePageMetadata(() => ({
 }
 
 .rkxwuolj {
-	> .files {
-		> .file {
-			> img {
-				display: block;
-				max-width: 100%;
-				max-height: 500px;
-				margin: 0 auto;
-			}
-
-			& + .file {
-				margin-top: 16px;
-			}
-		}
-	}
-
 	> .body {
 		padding: 32px;
+
+		> .files {
+			> .file {
+				> img {
+					display: block;
+					max-width: 100%;
+					max-height: 500px;
+					margin: 0 auto;
+				}
+
+				& + .file {
+					margin-top: 16px;
+				}
+			}
+		}
 
 		> .title {
 			font-weight: bold;
