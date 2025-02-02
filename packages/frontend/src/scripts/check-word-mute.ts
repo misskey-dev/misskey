@@ -3,41 +3,53 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import * as Misskey from 'misskey-js';
-
-export function checkWordMute(note: Misskey.entities.Note, me: Misskey.entities.UserLite | null | undefined, mutedWords: Array<string | string[]>): Array<string | string[]> | false {
-	// 自分自身
+import * as AhoCorasick from 'modern-ahocorasick';
+export function checkWordMute(
+	note: Misskey.entities.Note,
+	me: Misskey.entities.UserLite | null | undefined,
+	mutedWords: Array<string | string[]>,
+): Array<string | string[]> | false {
+	// 自分自身の投稿は対象外
 	if (me && (note.userId === me.id)) return false;
+	if (mutedWords.length <= 0) return false;
 
-	if (mutedWords.length > 0) {
-		const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+	const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+	if (text === '') return false;
 
-		if (text === '') return false;
+	const normalTexts: string[] = [];
+	const andTexts: string[][] = [];
+	const regexTexts: Array<{ originaL: string; regex: RegExp }> = [];
 
-		const matched = mutedWords.filter(filter => {
-			if (Array.isArray(filter)) {
-				// Clean up
-				const filteredFilter = filter.filter(keyword => keyword !== '');
-				if (filteredFilter.length === 0) return false;
-
-				return filteredFilter.every(keyword => text.includes(keyword));
+	for (const filter of mutedWords) {
+		if (Array.isArray(filter)) {
+			if (filter.length === 1) {
+				normalTexts.push(filter[0]);
 			} else {
-				// represents RegExp
-				const regexp = filter.match(/^\/(.+)\/(.*)$/);
-
-				// This should never happen due to input sanitisation.
-				if (!regexp) return false;
-
-				try {
-					return new RegExp(regexp[1], regexp[2]).test(text);
-				} catch (err) {
-					// This should never happen due to input sanitisation.
-					return false;
-				}
+				andTexts.push(filter);
 			}
-		});
-
-		if (matched.length > 0) return matched;
+		} else if (filter.startsWith('/') && filter.endsWith('/')) {
+			const regExp = filter.match(/^\/(.+)\/(.*)$/);
+			if (!regExp) continue;
+			try {
+				regexTexts.push({ originaL: filter, regex: new RegExp(filter.slice(1, -1)) });
+			} catch {
+				// 無効な正規表現はスキップ
+			}
+		} else {
+			normalTexts.push(filter);
+		}
 	}
+	// normal wordmute with AhoCorasick
+	const ac = new AhoCorasick.default(normalTexts);
+	const normalMatches = ac.search(text);
 
-	return false;
+	// andTexts
+	const andMatches = andTexts.filter(texts => texts.filter(keyword => keyword !== '').every(keyword => text.includes(keyword)));
+
+	// RegExp
+	const regexMatches = regexTexts.filter(({ regex }) => regex.test(text));
+
+	const matched: Array<string | string[]> = normalMatches.map(match	=> match[1]).concat(andMatches, regexMatches.map(({ originaL }) => originaL));
+
+	return matched.length > 0 ? matched : false;
 }
