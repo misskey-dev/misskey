@@ -2,8 +2,8 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import * as Misskey from 'misskey-js';
 import * as AhoCorasick from 'modern-ahocorasick';
+import type * as Misskey from 'misskey-js';
 export function checkWordMute(
 	note: Misskey.entities.Note,
 	me: Misskey.entities.UserLite | null | undefined,
