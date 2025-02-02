@@ -5,13 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import { type WebhooksRepository } from '@/models/_.js';
+import { MiUser, type WebhooksRepository } from '@/models/_.js';
 import { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { GlobalEvents } from '@/core/GlobalEventService.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
+import { QueueService } from '@/core/QueueService.js';
+import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type UserWebhookPayload<T extends WebhookEventTypes> =
 	T extends 'note' | 'reply' | 'renote' |'mention' ? {
@@ -34,6 +35,7 @@ export class UserWebhookService implements OnApplicationShutdown {
 		private redisForSub: Redis.Redis,
 		@Inject(DI.webhooksRepository)
 		private webhooksRepository: WebhooksRepository,
+		private queueService: QueueService,
 	) {
 		this.redisForSub.on('message', this.onMessage);
 	}
@@ -73,6 +75,25 @@ export class UserWebhookService implements OnApplicationShutdown {
 		}
 
 		return query.getMany();
+	}
+
+	/**
+	 * UserWebhook をWebhook配送キューに追加する
+	 * @see QueueService.userWebhookDeliver
+	 */
+	@bindThis
+	public async enqueueUserWebhook<T extends WebhookEventTypes>(
+		userId: MiUser['id'],
+		type: T,
+		content: UserWebhookPayload<T>,
+	) {
+		const webhooks = await this.getActiveWebhooks()
+			.then(webhooks => webhooks.filter(webhook => webhook.userId === userId && webhook.on.includes(type)));
+		return Promise.all(
+			webhooks.map(webhook => {
+				return this.queueService.userWebhookDeliver(webhook, type, content);
+			}),
+		);
 	}
 
 	@bindThis
