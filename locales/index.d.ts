@@ -5254,6 +5254,14 @@ export interface Locale extends ILocale {
      * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
      */
     "federationDisabled": string;
+    /**
+     * リアクション統計
+     */
+    "reactionStats": string;
+    /**
+     * 最も使用された絵文字リアクション上位100件を表示します
+     */
+    "reactionsStatsDescription": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
