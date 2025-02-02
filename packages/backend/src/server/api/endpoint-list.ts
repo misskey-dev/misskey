@@ -339,7 +339,7 @@ export * as 'pages/update' from './endpoints/pages/update.js';
 export * as 'ping' from './endpoints/ping.js';
 export * as 'pinned-users' from './endpoints/pinned-users.js';
 export * as 'promo/read' from './endpoints/promo/read.js';
-export * as 'reactions-stats' from './endpoints/reactions-stats.js';
+export * as 'reaction-stats' from './endpoints/reaction-stats.js';
 export * as 'renote-mute/create' from './endpoints/renote-mute/create.js';
 export * as 'renote-mute/delete' from './endpoints/renote-mute/delete.js';
 export * as 'renote-mute/list' from './endpoints/renote-mute/list.js';

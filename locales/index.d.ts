@@ -5261,7 +5261,7 @@ export interface Locale extends ILocale {
     /**
      * 最も使用された絵文字リアクション上位100件を表示します
      */
-    "reactionsStatsDescription": string;
+    "reactionStatsDescription": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

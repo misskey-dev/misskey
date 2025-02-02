@@ -176,10 +176,10 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: `/@${$i?.username}`,
 	},
-	reactionStat: {
-		title: i18n.ts.reactionsStat,
+	reactionStats: {
+		title: i18n.ts.reactionStats,
 		icon: 'ti ti-chart-bar',
-		to: '/reactions-stat',
+		to: '/reaction-stats',
 	},
 	cacheClear: {
 		title: i18n.ts.clearCache,

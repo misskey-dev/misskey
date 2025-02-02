@@ -579,7 +579,7 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/timeline.vue')),
 }, {
 	path: '/reactions-stats',
-	component: page(() => import('@/pages/reactions-stats.vue')),
+	component: page(() => import('@/pages/reaction-stats.vue')),
 	loginRequired: true,
 }, {
 	name: 'index',

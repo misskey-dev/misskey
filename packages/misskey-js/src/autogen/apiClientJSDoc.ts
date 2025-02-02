@@ -3676,7 +3676,7 @@ declare module '../api.js' {
      * 
      * **Credential required**: *Yes* / **Permission**: *read:account*
      */
-    request<E extends 'reactions-stats', P extends Endpoints[E]['req']>(
+    request<E extends 'reaction-stats', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
