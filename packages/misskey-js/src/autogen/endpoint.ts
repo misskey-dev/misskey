@@ -489,8 +489,8 @@ import type {
 	PingResponse,
 	PinnedUsersResponse,
 	PromoReadRequest,
-	ReactionsStatRequest,
-	ReactionsStatResponse,
+	ReactionsStatsRequest,
+	ReactionsStatsResponse,
 	RenoteMuteCreateRequest,
 	RenoteMuteDeleteRequest,
 	RenoteMuteListRequest,
@@ -917,7 +917,7 @@ export type Endpoints = {
 	'ping': { req: EmptyRequest; res: PingResponse };
 	'pinned-users': { req: EmptyRequest; res: PinnedUsersResponse };
 	'promo/read': { req: PromoReadRequest; res: EmptyResponse };
-	'reactions-stat': { req: ReactionsStatRequest; res: ReactionsStatResponse };
+	'reactions-stats': { req: ReactionsStatsRequest; res: ReactionsStatsResponse };
 	'renote-mute/create': { req: RenoteMuteCreateRequest; res: EmptyResponse };
 	'renote-mute/delete': { req: RenoteMuteDeleteRequest; res: EmptyResponse };
 	'renote-mute/list': { req: RenoteMuteListRequest; res: RenoteMuteListResponse };

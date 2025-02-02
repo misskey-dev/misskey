@@ -3176,14 +3176,14 @@ export type paths = {
      */
     post: operations['promo___read'];
   };
-  '/reactions-stat': {
+  '/reactions-stats': {
     /**
-     * reactions-stat
+     * reactions-stats
      * @description No description provided.
      *
      * **Credential required**: *Yes* / **Permission**: *read:account*
      */
-    post: operations['reactions-stat'];
+    post: operations['reactions-stats'];
   };
   '/renote-mute/create': {
     /**
@@ -24858,12 +24858,12 @@ export type operations = {
     };
   };
   /**
-   * reactions-stat
+   * reactions-stats
    * @description No description provided.
    *
    * **Credential required**: *Yes* / **Permission**: *read:account*
    */
-  'reactions-stat': {
+  'reactions-stats': {
     requestBody: {
       content: {
         'application/json': {

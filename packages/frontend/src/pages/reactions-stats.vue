@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkInfo>
-		{{ i18n.ts.reactionsStatDescription }}
+		{{ i18n.ts.reactionsStatsDescription }}
 	</MkInfo>
 	<MkSpacer v-if="tab === 'me'" :contentMax="1000" :marginMin="20">
 		<div class="_gaps_s">
@@ -53,7 +53,7 @@ watch(tab, async () => {
 	if (tab.value === 'site' && serverReactionsListMfm.value !== 'Loading...') { return; }
 	if (tab.value !== 'site' && myReactionsListMfm.value !== 'Loading...') { return; }
 
-	const reactionsList = await misskeyApi('reactions-stat', { site: tab.value === 'site' });
+	const reactionsList = await misskeyApi('reactions-stats', { site: tab.value === 'site' });
 
 	const res = reactionsList.map((x) => `${x.reaction} ${x.count}`).join('\n');
 
@@ -80,7 +80,7 @@ const headerTabs = computed(() => [{
 }]);
 
 definePageMetadata(() => ({
-	title: i18n.ts.reactionsStat,
+	title: i18n.ts.reactionsStats,
 	icon: 'ti ti-chart-bar',
 }));
 </script>
