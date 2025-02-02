@@ -5,137 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
+	<template #header>
+		<MkPageHeader :overridePageMetadata="headerPageMetadata" :actions="headerActions"/>
+	</template>
 	<template #default>
-		<div class="_gaps">
-			<MkFolder>
-				<template #icon><i class="ti ti-search"></i></template>
-				<template #label>{{ i18n.ts._customEmojisManager._gridCommon.searchSettings }}</template>
-				<template #caption>
-					{{ i18n.ts._customEmojisManager._gridCommon.searchSettingCaption }}
-				</template>
-
-				<div class="_gaps">
-					<div :class="[[spMode ? $style.searchAreaSp : $style.searchArea]]">
-						<MkInput
-							v-model="queryName"
-							type="search"
-							autocapitalize="off"
-							:class="[$style.col1, $style.row1]"
-							@enter="onSearchRequest"
-						>
-							<template #label>name</template>
-						</MkInput>
-						<MkInput
-							v-model="queryCategory"
-							type="search"
-							autocapitalize="off"
-							:class="[$style.col2, $style.row1]"
-							@enter="onSearchRequest"
-						>
-							<template #label>category</template>
-						</MkInput>
-						<MkInput
-							v-model="queryAliases"
-							type="search"
-							autocapitalize="off"
-							:class="[$style.col3, $style.row1]"
-							@enter="onSearchRequest"
-						>
-							<template #label>aliases</template>
-						</MkInput>
-
-						<MkInput
-							v-model="queryType"
-							type="search"
-							autocapitalize="off"
-							:class="[$style.col1, $style.row2]"
-							@enter="onSearchRequest"
-						>
-							<template #label>type</template>
-						</MkInput>
-						<MkInput
-							v-model="queryLicense"
-							type="search"
-							autocapitalize="off"
-							:class="[$style.col2, $style.row2]"
-							@enter="onSearchRequest"
-						>
-							<template #label>license</template>
-						</MkInput>
-						<MkSelect
-							v-model="querySensitive"
-							:class="[$style.col3, $style.row2]"
-						>
-							<template #label>sensitive</template>
-							<option :value="null">-</option>
-							<option :value="true">true</option>
-							<option :value="false">false</option>
-						</MkSelect>
-
-						<MkSelect
-							v-model="queryLocalOnly"
-							:class="[$style.col1, $style.row3]"
-						>
-							<template #label>localOnly</template>
-							<option :value="null">-</option>
-							<option :value="true">true</option>
-							<option :value="false">false</option>
-						</MkSelect>
-						<MkInput
-							v-model="queryUpdatedAtFrom"
-							type="date"
-							autocapitalize="off"
-							:class="[$style.col2, $style.row3]"
-							@enter="onSearchRequest"
-						>
-							<template #label>updatedAt(from)</template>
-						</MkInput>
-						<MkInput
-							v-model="queryUpdatedAtTo"
-							type="date"
-							autocapitalize="off"
-							:class="[$style.col3, $style.row3]"
-							@enter="onSearchRequest"
-						>
-							<template #label>updatedAt(to)</template>
-						</MkInput>
-
-						<MkInput
-							v-model="queryRolesText"
-							type="text"
-							readonly
-							autocapitalize="off"
-							:class="[$style.col1, $style.row4]"
-							@click="onQueryRolesEditClicked"
-						>
-							<template #label>role</template>
-							<template #suffix><span class="ti ti-pencil"/></template>
-						</MkInput>
-					</div>
-
-					<MkFolder :spacerMax="8" :spacerMin="8">
-						<template #icon><i class="ti ti-arrows-sort"></i></template>
-						<template #label>{{ i18n.ts._customEmojisManager._gridCommon.sortOrder }}</template>
-						<MkSortOrderEditor
-							:baseOrderKeyNames="gridSortOrderKeys"
-							:currentOrders="sortOrders"
-							@update="onSortOrderUpdate"
-						/>
-					</MkFolder>
-
-					<div :class="[[spMode ? $style.searchButtonsSp : $style.searchButtons]]">
-						<MkButton primary @click="onSearchRequest">
-							{{ i18n.ts.search }}
-						</MkButton>
-						<MkButton @click="onQueryResetButtonClicked">
-							{{ i18n.ts.reset }}
-						</MkButton>
-					</div>
-				</div>
-			</MkFolder>
-
-			<XRegisterLogsFolder :logs="requestLogs"/>
-
+		<div class="_gaps" :class="$style.main">
 			<component :is="loadingHandler.component.value" v-if="loadingHandler.showing.value"/>
 			<template v-else>
 				<div v-if="gridItems.length === 0" style="text-align: center">
@@ -143,65 +17,78 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<template v-else>
-					<div :class="$style.gridArea">
+					<div :class="$style.grid">
 						<MkGrid :data="gridItems" :settings="setupGrid()" @event="onGridEvent"/>
-					</div>
-
-					<div :class="$style.footer">
-						<div :class="$style.left">
-							<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">
-								{{ i18n.ts.delete }} ({{ deleteItemsCount }})
-							</MkButton>
-						</div>
-
-						<div :class="$style.center">
-							<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
-						</div>
-
-						<div :class="$style.right">
-							<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">
-								{{ i18n.ts.update }} ({{ updatedItemsCount }})
-							</MkButton>
-							<MkButton @click="onGridResetButtonClicked">{{ i18n.ts.reset }}</MkButton>
-						</div>
 					</div>
 				</template>
 			</template>
 		</div>
 	</template>
+
+	<template #footer>
+		<div v-if="gridItems.length > 0" :class="$style.footer">
+			<div :class="$style.left">
+				<MkButton danger style="margin-right: auto" @click="onDeleteButtonClicked">
+					{{ i18n.ts.delete }} ({{ deleteItemsCount }})
+				</MkButton>
+			</div>
+
+			<div :class="$style.center">
+				<MkPagingButtons :current="currentPage" :max="allPages" :buttonCount="5" @pageChanged="onPageChanged"/>
+			</div>
+
+			<div :class="$style.right">
+				<MkButton primary :disabled="updateButtonDisabled" @click="onUpdateButtonClicked">
+					{{ i18n.ts.update }} ({{ updatedItemsCount }})
+				</MkButton>
+				<MkButton @click="onGridResetButtonClicked">{{ i18n.ts.reset }}</MkButton>
+			</div>
+		</div>
+	</template>
 </MkStickyContainer>
 </template>
 
+<script lang="ts">
+import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
+import type { GridSortOrderKey } from './custom-emojis-manager.impl.js';
+
+export type EmojiSearchQuery = {
+	name: string | null;
+	category: string | null;
+	aliases: string | null;
+	type: string | null;
+	license: string | null;
+	updatedAtFrom: string | null;
+	updatedAtTo: string | null;
+	sensitive: string | null;
+	localOnly: string | null;
+	roles: { id: string, name: string }[];
+	sortOrders: SortOrder<GridSortOrderKey>[];
+	limit: number;
+};
+</script>
+
 <script setup lang="ts">
-import { computed, onMounted, ref, useCssModule } from 'vue';
+import { computed, defineAsyncComponent, onMounted, ref, nextTick, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import {
 	emptyStrToEmptyArray,
 	emptyStrToNull,
 	emptyStrToUndefined,
-	GridSortOrderKey,
-	gridSortOrderKeys,
 	RequestLogItem,
 	roleIdsParser,
 } from '@/pages/admin/custom-emojis-manager.impl.js';
 import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
-import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import { validators } from '@/components/grid/cell-validators.js';
 import { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
-import XRegisterLogsFolder from '@/pages/admin/custom-emojis-manager.logs-folder.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import { deviceKind } from '@/scripts/device-kind.js';
 import { GridSetting } from '@/components/grid/grid.js';
 import { selectFile } from '@/scripts/select-file.js';
 import { copyGridDataToClipboard, removeDataFromGrid } from '@/components/grid/grid-utils.js';
-import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
-import { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 import { useLoading } from "@/components/hook/useLoading.js";
 
 type GridItem = {
@@ -230,6 +117,11 @@ function setupGrid(): GridSetting {
 	const regex = validators.regex(/^[a-zA-Z0-9_]+$/);
 	const unique = validators.unique();
 	return {
+		root: {
+			noOverflowStyle: true,
+			rounded: false,
+			outerBorder: false,
+		},
 		row: {
 			showNumber: true,
 			selectable: true,
@@ -381,16 +273,22 @@ const customEmojis = ref<Misskey.entities.EmojiDetailedAdmin[]>([]);
 const allPages = ref<number>(0);
 const currentPage = ref<number>(0);
 
-const queryName = ref<string | null>(null);
-const queryCategory = ref<string | null>(null);
-const queryAliases = ref<string | null>(null);
-const queryType = ref<string | null>(null);
-const queryLicense = ref<string | null>(null);
-const queryUpdatedAtFrom = ref<string | null>(null);
-const queryUpdatedAtTo = ref<string | null>(null);
-const querySensitive = ref<string | null>(null);
-const queryLocalOnly = ref<string | null>(null);
-const queryRoles = ref<{ id: string, name: string }[]>([]);
+const searchQuery = ref<EmojiSearchQuery>({
+	name: null,
+	category: null,
+	aliases: null,
+	type: null,
+	license: null,
+	updatedAtFrom: null,
+	updatedAtTo: null,
+	sensitive: null,
+	localOnly: null,
+	roles: [],
+	sortOrders: [],
+	limit: 25,
+});
+let searchWindowOpening = false;
+
 const previousQuery = ref<string | undefined>(undefined);
 const sortOrders = ref<SortOrder<GridSortOrderKey>[]>([]);
 const requestLogs = ref<RequestLogItem[]>([]);
@@ -399,8 +297,6 @@ const gridItems = ref<GridItem[]>([]);
 const originGridItems = ref<GridItem[]>([]);
 const updateButtonDisabled = ref<boolean>(false);
 
-const spMode = computed(() => ['smartphone', 'tablet'].includes(deviceKind));
-const queryRolesText = computed(() => queryRoles.value.map(it => it.name).join(','));
 const updatedItemsCount = computed(() => {
 	return gridItems.value.filter((it, idx) => !it.checked && JSON.stringify(it) !== JSON.stringify(originGridItems.value[idx])).length;
 });
@@ -422,12 +318,11 @@ async function onUpdateButtonClicked() {
 		return;
 	}
 
-	const confirm = await os.confirm({
+	const { canceled } = await os.confirm({
 		type: 'info',
-		title: i18n.ts._customEmojisManager._local._list.confirmUpdateEmojisTitle,
 		text: i18n.tsx._customEmojisManager._local._list.confirmUpdateEmojisDescription({ count: updatedItems.length }),
 	});
-	if (confirm.canceled) {
+	if (canceled) {
 		return;
 	}
 
@@ -458,7 +353,7 @@ async function onUpdateButtonClicked() {
 	if (failedItems.length > 0) {
 		await os.alert({
 			type: 'error',
-			title: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedTitle,
+			title: i18n.ts.somethingHappened,
 			text: i18n.ts._customEmojisManager._gridCommon.alertEmojisRegisterFailedDescription,
 		});
 	}
@@ -489,12 +384,11 @@ async function onDeleteButtonClicked() {
 		return;
 	}
 
-	const confirm = await os.confirm({
+	const { canceled } = await os.confirm({
 		type: 'info',
-		title: i18n.ts._customEmojisManager._local._list.confirmDeleteEmojisTitle,
 		text: i18n.tsx._customEmojisManager._local._list.confirmDeleteEmojisDescription({ count: deleteItems.length }),
 	});
-	if (confirm.canceled) {
+	if (canceled) {
 		return;
 	}
 
@@ -508,47 +402,35 @@ async function onDeleteButtonClicked() {
 	);
 }
 
-function onGridResetButtonClicked() {
-	refreshGridItems();
-}
-
-async function onQueryRolesEditClicked() {
-	const result = await os.selectRole({
-		initialRoleIds: queryRoles.value.map(it => it.id),
-		title: i18n.ts._customEmojisManager._local._list.dialogSelectRoleTitle,
-		publicOnly: true,
+async function onGridResetButtonClicked() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: i18n.ts.resetAreYouSure,
+		text: i18n.ts._customEmojisManager._local._list.confirmResetDescription,
 	});
-	if (result.canceled) {
-		return;
-	}
 
-	queryRoles.value = result.result;
-}
+	if (canceled) return;
 
-function onSortOrderUpdate(_sortOrders: SortOrder<GridSortOrderKey>[]) {
-	sortOrders.value = _sortOrders;
+	refreshGridItems();
 }
 
 async function onSearchRequest() {
 	await refreshCustomEmojis();
 }
 
-function onQueryResetButtonClicked() {
-	queryName.value = null;
-	queryCategory.value = null;
-	queryAliases.value = null;
-	queryType.value = null;
-	queryLicense.value = null;
-	queryUpdatedAtFrom.value = null;
-	queryUpdatedAtTo.value = null;
-	querySensitive.value = null;
-	queryLocalOnly.value = null;
-	queryRoles.value = [];
-}
-
 async function onPageChanged(pageNumber: number) {
+	if (updatedItemsCount.value > 0) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			title: i18n.ts._customEmojisManager._local._list.confirmMovePage,
+			text: i18n.ts._customEmojisManager._local._list.confirmMovePageDesciption,
+		});
+		if (canceled) return;
+	}
+
 	currentPage.value = pageNumber;
-	await refreshCustomEmojis();
+	await nextTick();
+	refreshCustomEmojis();
 }
 
 function onGridEvent(event: GridEvent) {
@@ -574,19 +456,19 @@ function onGridCellValueChange(event: GridCellValueChangeEvent) {
 }
 
 async function refreshCustomEmojis() {
-	const limit = 100;
+	const limit = searchQuery.value.limit;
 
 	const query: Misskey.entities.V2AdminEmojiListRequest['query'] = {
-		name: emptyStrToUndefined(queryName.value),
-		type: emptyStrToUndefined(queryType.value),
-		aliases: emptyStrToUndefined(queryAliases.value),
-		category: emptyStrToUndefined(queryCategory.value),
-		license: emptyStrToUndefined(queryLicense.value),
-		isSensitive: querySensitive.value ? Boolean(querySensitive.value).valueOf() : undefined,
-		localOnly: queryLocalOnly.value ? Boolean(queryLocalOnly.value).valueOf() : undefined,
-		updatedAtFrom: emptyStrToUndefined(queryUpdatedAtFrom.value),
-		updatedAtTo: emptyStrToUndefined(queryUpdatedAtTo.value),
-		roleIds: queryRoles.value.map(it => it.id),
+		name: emptyStrToUndefined(searchQuery.value.name),
+		type: emptyStrToUndefined(searchQuery.value.type),
+		aliases: emptyStrToUndefined(searchQuery.value.aliases),
+		category: emptyStrToUndefined(searchQuery.value.category),
+		license: emptyStrToUndefined(searchQuery.value.license),
+		isSensitive: searchQuery.value.sensitive ? Boolean(searchQuery.value.sensitive).valueOf() : undefined,
+		localOnly: searchQuery.value.localOnly ? Boolean(searchQuery.value.localOnly).valueOf() : undefined,
+		updatedAtFrom: emptyStrToUndefined(searchQuery.value.updatedAtFrom),
+		updatedAtTo: emptyStrToUndefined(searchQuery.value.updatedAtTo),
+		roleIds: searchQuery.value.roles.map(it => it.id),
 		hostType: 'local',
 	};
 
@@ -635,6 +517,83 @@ onMounted(async () => {
 	await refreshCustomEmojis();
 });
 
+const headerPageMetadata = computed(() => ({
+	title: i18n.ts._customEmojisManager._local.tabTitleList,
+	icon: 'ti ti-icons',
+}));
+
+const headerActions = computed(() => [{
+	icon: 'ti ti-search',
+	text: i18n.ts.search,
+	handler: () => {
+		if (searchWindowOpening) return;
+		searchWindowOpening = true;
+		const { dispose } = os.popup(defineAsyncComponent(() => import('./custom-emojis-manager.local.list.search.vue')), {
+			query: searchQuery.value,
+		}, {
+			queryUpdated: (query: EmojiSearchQuery) => {
+				searchQuery.value = query;
+			},
+			sortOrderUpdated: (orders: SortOrder<GridSortOrderKey>[]) => {
+				sortOrders.value = orders;
+			},
+			search: () => {
+				onSearchRequest();
+			},
+			closed: () => {
+				dispose();
+				searchWindowOpening = false;
+			},
+		});
+	},
+}, {
+	icon: 'ti ti-list-numbers',
+	text: i18n.ts._customEmojisManager._gridCommon.searchLimit,
+	handler: (ev: MouseEvent) => {
+		async function changeSearchLimit(to: number) {
+			if (updatedItemsCount.value > 0) {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					title: i18n.ts._customEmojisManager._local._list.confirmChangeView,
+					text: i18n.ts._customEmojisManager._local._list.confirmMovePageDesciption,
+				});
+				if (canceled) return;
+			}
+
+			searchQuery.value.limit = to;
+			refreshCustomEmojis();
+		}
+
+		os.popupMenu([{
+			type: 'radioOption',
+			text: '25',
+			active: computed(() => searchQuery.value.limit === 25),
+			action: () => changeSearchLimit(25),
+		}, {
+			type: 'radioOption',
+			text: '50',
+			active: computed(() => searchQuery.value.limit === 50),
+			action: () => changeSearchLimit(50),
+		}, {
+			type: 'radioOption',
+			text: '100',
+			active: computed(() => searchQuery.value.limit === 100),
+			action: () => changeSearchLimit(100),
+		}], ev.currentTarget ?? ev.target);
+	},
+}, {
+	icon: 'ti ti-notes',
+	text: i18n.ts._customEmojisManager._gridCommon.registrationLogs,
+	handler: () => {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('./custom-emojis-manager.local.list.logs.vue')), {
+			logs: requestLogs.value,
+		}, {
+			closed: () => {
+				dispose();
+			},
+		});
+	}
+}]);
 </script>
 
 <style module lang="scss">
@@ -650,77 +609,21 @@ onMounted(async () => {
 	background-color: var(--MI_THEME-infoBg);
 }
 
-.row1 {
-	grid-row: 1 / 2;
+.main {
+	height: calc(100vh - var(--MI-stickyTop) - var(--MI-stickyBottom));
+	overflow: scroll;
 }
 
-.row2 {
-	grid-row: 2 / 3;
-}
-
-.row3 {
-	grid-row: 3 / 4;
-}
-
-.row4 {
-	grid-row: 4 / 5;
-}
-
-.col1 {
-	grid-column: 1 / 2;
-}
-
-.col2 {
-	grid-column: 2 / 3;
-}
-
-.col3 {
-	grid-column: 3 / 4;
-}
-
-.searchArea {
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	gap: 16px;
-}
-
-.searchAreaSp {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.searchButtons {
-	display: flex;
-	justify-content: flex-end;
-	align-items: flex-end;
-	gap: 8px;
-}
-
-.searchButtonsSp {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 8px;
-}
-
-.gridArea {
-	padding-top: 8px;
-	padding-bottom: 8px;
+.grid {
+	width: max-content;
+	border-bottom: 1px solid var(--MI_THEME-divider);
 }
 
 .footer {
 	background-color: var(--MI_THEME-bg);
 
-	position: sticky;
-	left:0;
-	bottom:0;
-	z-index: 1;
-	// stickyで追従させる都合上、フッター自身でpaddingを持つ必要があるため、親要素で画一的に指定している分をネガティブマージンで相殺している
-	margin-top: calc(var(--MI-margin) * -1);
-	margin-bottom: calc(var(--MI-margin) * -1);
-	padding-top: var(--MI-margin);
-	padding-bottom: var(--MI-margin);
+	padding: var(--MI-margin);
+	border-top: 1px solid var(--MI_THEME-divider);
 
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
