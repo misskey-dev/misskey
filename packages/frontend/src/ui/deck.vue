@@ -209,12 +209,11 @@ function pointerEvent(ev: PointerEvent) {
 }
 
 document.addEventListener('pointerdown', pointerEvent);
-document.addEventListener('pointermove', pointerEvent);
-document.addEventListener('pointerup', pointerEvent);
 
 function onWheel(ev: WheelEvent) {
+  // WheelEvent はマウスからしか発火しないのでスナップスクロールは無効化する
+  snapScroll.value = false;
 	if (ev.deltaX === 0 && columnsEl.value != null) {
-		snapScroll.value = false;
 		columnsEl.value.scrollLeft += ev.deltaY;
 	}
 }
