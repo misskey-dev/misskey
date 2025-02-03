@@ -1,3 +1,9 @@
+## 2025.1.0-kinel.2
+
+### General
+- Fix: Docker のビルドに失敗する問題を修正  
+	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/883)
+
 ## 2025.1.0-kinel.1
 
 ### Client
