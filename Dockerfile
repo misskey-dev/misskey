@@ -6,6 +6,8 @@ ARG NODE_VERSION=22.11.0-bookworm
 
 FROM --platform=$BUILDPLATFORM node:${NODE_VERSION} AS native-builder
 
+ENV COREPACK_DEFAULT_TO_LATEST=0
+
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/var/lib/apt,sharing=locked \
 	rm -f /etc/apt/apt.conf.d/docker-clean \
@@ -68,6 +70,7 @@ FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS runner
 
 ARG UID="991"
 ARG GID="991"
+ENV COREPACK_DEFAULT_TO_LATEST=0
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
