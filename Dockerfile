@@ -46,6 +46,8 @@ RUN rm -rf .git/
 
 FROM --platform=$TARGETPLATFORM node:${NODE_VERSION} AS target-builder
 
+ENV COREPACK_DEFAULT_TO_LATEST=0
+
 RUN apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
 	build-essential
