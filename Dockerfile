@@ -14,7 +14,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	&& apt-get install -yqq --no-install-recommends \
 	build-essential
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
 
 WORKDIR /misskey
 
@@ -48,7 +48,7 @@ RUN apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
 	build-essential
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
 
 WORKDIR /misskey
 
@@ -74,6 +74,7 @@ RUN apt-get update \
 	ffmpeg tini curl libjemalloc-dev libjemalloc2 \
 	&& ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so \
 	&& corepack enable \
+	&& corepack prepare pnpm@10.0.0 --activate \
 	&& groupadd -g "${GID}" misskey \
 	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey \
 	&& find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /u+s -ignore_readdir_race -exec chmod u-s {} \; \
@@ -106,6 +107,7 @@ RUN rm -rf .git .gitmodules
 
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV NODE_ENV=production
+ENV COREPACK_INTEGRITY_KEYS=0
 HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/misskey/healthcheck.sh"]
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["pnpm", "run", "migrateandstart"]
