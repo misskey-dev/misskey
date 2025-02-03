@@ -48,8 +48,6 @@ jobs:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: corepack enable
-      env:
-        COREPACK_DEFAULT_TO_LATEST: 0
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml

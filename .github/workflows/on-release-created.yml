@@ -38,6 +38,5 @@ jobs:
           pnpm build
           pnpm --filter misskey-js publish --access public --no-git-checks --provenance
         env:
-          COREPACK_DEFAULT_TO_LATEST: 0
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
