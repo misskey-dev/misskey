@@ -2775,6 +2775,7 @@ _customEmojisManager:
       confirmUpdateEmojisDescription: "Update {count} Emoji(s). Are you sure to continue?"
       confirmDeleteEmojisDescription: "Delete checked {count} Emoji(s). Are you sure to continue?"
       confirmResetDescription: ""
+      confirmMovePageDesciption: "Changes have been made to the Emojis on this page.\nIf you leave the page without saving, all changes made on this page will be discarded."
       dialogSelectRoleTitle: "Search by roll set in Emojis"
     _register:
       uploadSettingTitle: "Upload settings"
