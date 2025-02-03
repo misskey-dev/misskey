@@ -6,9 +6,12 @@
 import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiNote } from '@/models/Note.js';
+import type { SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import type { MiUser } from '@/models/User.js';
-import type { MiWebhook } from '@/models/Webhook.js';
+import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
 import type { IActivity } from '@/core/activitypub/type.js';
+import type { SystemWebhookPayload } from '@/core/SystemWebhookService.js';
+import type { UserWebhookPayload } from '@/core/UserWebhookService.js';
 import type httpSignature from '@peertube/http-signature';
 
 export type DeliverJobData = {
@@ -106,9 +109,9 @@ export type EndedPollNotificationJobData = {
 	noteId: MiNote['id'];
 };
 
-export type SystemWebhookDeliverJobData = {
-	type: string;
-	content: unknown;
+export type SystemWebhookDeliverJobData<T extends SystemWebhookEventType = SystemWebhookEventType> = {
+	type: T;
+	content: SystemWebhookPayload<T>;
 	webhookId: MiWebhook['id'];
 	to: string;
 	secret: string;
@@ -116,9 +119,9 @@ export type SystemWebhookDeliverJobData = {
 	eventId: string;
 };
 
-export type UserWebhookDeliverJobData = {
-	type: string;
-	content: unknown;
+export type UserWebhookDeliverJobData<T extends WebhookEventTypes = WebhookEventTypes> = {
+	type: T;
+	content: UserWebhookPayload<T>;
 	webhookId: MiWebhook['id'];
 	userId: MiUser['id'];
 	to: string;

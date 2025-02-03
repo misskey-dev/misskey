@@ -2024,3 +2024,6 @@ _moderationLogTypes:
   createInvitation: "Vygenerovat pozvánku"
 _reversi:
   total: "Celkem"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Nenalezeno"

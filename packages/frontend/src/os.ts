@@ -11,6 +11,7 @@ import * as Misskey from 'misskey-js';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/scripts/form.js';
 import type { MenuItem } from '@/types/menu.js';
+import type { PostFormProps } from '@/types/post-form.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -28,15 +29,15 @@ import { pleaseLogin } from '@/scripts/please-login.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
 import { focusParent } from '@/scripts/focus.js';
-import type { PostFormProps } from '@/types/post-form.js';
 
 export const openingWindowsCount = ref(0);
 
+export type ApiWithDialogCustomErrors = Record<string, { title?: string; text: string; }>;
 export const apiWithDialog = (<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req']>(
 	endpoint: E,
 	data: P,
 	token?: string | null | undefined,
-	customErrors?: Record<string, { title?: string; text: string; }>,
+	customErrors?: ApiWithDialogCustomErrors,
 ) => {
 	const promise = misskeyApi(endpoint, data, token);
 	promiseDialog(promise, null, async (err) => {
@@ -598,6 +599,27 @@ export async function selectDriveFolder(multiple: boolean): Promise<Misskey.enti
 			},
 			closed: () => dispose(),
 		});
+	});
+}
+
+export async function selectRole(params: {
+	initialRoleIds?: string[],
+	title?: string,
+	infoMessage?: string,
+	publicOnly?: boolean,
+}): Promise<
+	{ canceled: true; result: undefined; } |
+	{ canceled: false; result: Misskey.entities.Role[] }
+> {
+	return new Promise((resolve) => {
+		popup(defineAsyncComponent(() => import('@/components/MkRoleSelectDialog.vue')), params, {
+			done: roles => {
+				resolve({ canceled: false, result: roles });
+			},
+			close: () => {
+				resolve({ canceled: true, result: undefined });
+			},
+		}, 'dispose');
 	});
 }
 
