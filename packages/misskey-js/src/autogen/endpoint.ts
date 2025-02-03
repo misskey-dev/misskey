@@ -74,6 +74,9 @@ import type {
 	AdminInviteListRequest,
 	AdminInviteListResponse,
 	AdminMetaResponse,
+	AdminNirilaDeleteUserLogAccessRequest,
+	AdminNirilaDeleteUserLogAccessResponse,
+	AdminNotePublicToHomeRequest,
 	AdminPromoCreateRequest,
 	AdminQueueDeliverDelayedResponse,
 	AdminQueueInboxDelayedResponse,
@@ -643,6 +646,8 @@ export type Endpoints = {
 	'admin/invite/create': { req: AdminInviteCreateRequest; res: AdminInviteCreateResponse };
 	'admin/invite/list': { req: AdminInviteListRequest; res: AdminInviteListResponse };
 	'admin/meta': { req: EmptyRequest; res: AdminMetaResponse };
+	'admin/nirila-delete-user-log-access': { req: AdminNirilaDeleteUserLogAccessRequest; res: AdminNirilaDeleteUserLogAccessResponse };
+	'admin/note-public-to-home': { req: AdminNotePublicToHomeRequest; res: EmptyResponse };
 	'admin/promo/create': { req: AdminPromoCreateRequest; res: EmptyResponse };
 	'admin/queue/clear': { req: EmptyRequest; res: EmptyResponse };
 	'admin/queue/deliver-delayed': { req: EmptyRequest; res: AdminQueueDeliverDelayedResponse };

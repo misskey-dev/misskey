@@ -255,6 +255,15 @@ type AdminInviteListResponse = operations['admin___invite___list']['responses'][
 type AdminMetaResponse = operations['admin___meta']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type AdminNirilaDeleteUserLogAccessRequest = operations['admin___nirila-delete-user-log-access']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminNirilaDeleteUserLogAccessResponse = operations['admin___nirila-delete-user-log-access']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminNotePublicToHomeRequest = operations['admin___note-public-to-home']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminPromoCreateRequest = operations['admin___promo___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1333,6 +1342,9 @@ declare namespace entities {
         AdminInviteListRequest,
         AdminInviteListResponse,
         AdminMetaResponse,
+        AdminNirilaDeleteUserLogAccessRequest,
+        AdminNirilaDeleteUserLogAccessResponse,
+        AdminNotePublicToHomeRequest,
         AdminPromoCreateRequest,
         AdminQueueDeliverDelayedResponse,
         AdminQueueInboxDelayedResponse,
