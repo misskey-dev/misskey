@@ -5254,6 +5254,14 @@ export interface Locale extends ILocale {
      * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
      */
     "federationDisabled": string;
+    /**
+     * 公開範囲に応じて色分けする
+     */
+    "enableNoteVisibilityColor": string;
+    /**
+     * ノートの詳細表示ページなど、一部の箇所には適用されません。
+     */
+    "enableNoteVisibilityColorDescription": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
