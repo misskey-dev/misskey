@@ -24,7 +24,7 @@ import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
 import { type Keymap, makeHotkey } from '@/scripts/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
-import { initMuteInfo } from '@/scripts/check-word-mute.js';
+import { initWordMuteInfo } from '@/scripts/check-word-mute.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => {
@@ -344,14 +344,14 @@ export async function mainBoot() {
 			}
 		}
 
-		initMuteInfo();
+		initWordMuteInfo();
 
 		const main = markRaw(stream.useChannel('main', null, 'System'));
 
 		// 自分の情報が更新されたとき
 		main.on('meUpdated', i => {
 			updateAccountPartial(i);
-			initMuteInfo();
+			initWordMuteInfo();
 		});
 
 		main.on('readAllNotifications', () => {

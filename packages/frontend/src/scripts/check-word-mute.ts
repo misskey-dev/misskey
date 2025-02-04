@@ -67,7 +67,7 @@ function getWordMuteInfo(): GlobalMisskeyWordMute | undefined {
 	return globalThis._misskeyWordMute as unknown as GlobalMisskeyWordMute;
 }
 
-export function initMuteInfo(): void {
+export function initWordMuteInfo(): void {
 	const mutedWords = $i?.mutedWords ?? [];
 	const hardMutedWords = $i?.hardMutedWords ?? [];
 
