@@ -39,6 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	-->
 	<!-- MFMで上位レイヤーに表示されるため、リンクをクリックできるようにstyleにpointer-events: none;を付与。 -->
 	<svg v-for="particle in particles" :key="particle.id" :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: -32px; left: -32px; pointer-events: none;">
+		<!-- SVGのanimateTransformを使用するとChromeで描画できなくなるためCSSアニメーションを使用している (Issue 14155) -->
 		<path
 			:style="{
 				'--translateX': particle.x + 'px',
