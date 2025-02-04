@@ -10,6 +10,7 @@ import type { PagesRepository, DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
+import { pageNameSchema } from '@/models/Page.js';
 
 export const meta = {
 	tags: ['pages'],
@@ -36,11 +37,6 @@ export const meta = {
 			code: 'ACCESS_DENIED',
 			id: '3c15cd52-3b4b-4274-967d-6456fc4f792b',
 		},
-		invalidName: {
-			message: 'Invalid name.',
-			code: 'INVALID_NAME',
-			id: '75a78404-bcd1-4d98-9354-25c60f930e78',
-		},
 		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
@@ -59,7 +55,7 @@ export const paramDef = {
 	properties: {
 		pageId: { type: 'string', format: 'misskey:id' },
 		title: { type: 'string' },
-		name: { type: 'string', minLength: 1 },
+		name: { ...pageNameSchema, minLength: 1 },
 		summary: { type: 'string', nullable: true },
 		content: { type: 'array', items: {
 			type: 'object', additionalProperties: true,
@@ -106,20 +102,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.name != null) {
-				const trimmedName = ps.name.trim();
-
-				if (trimmedName.trim() === '') {
-					throw new ApiError(meta.errors.invalidName);
-				}
-
-				if ([' ', '/', '\\', '.', '#', '&', '%', '?', '!', '+', '<', '>'].some(c => trimmedName.includes(c))) {
-					throw new ApiError(meta.errors.invalidName);
-				}
-
 				await this.pagesRepository.findBy({
 					id: Not(ps.pageId),
 					userId: me.id,
-					name: trimmedName,
+					name: ps.name,
 				}).then(result => {
 					if (result.length > 0) {
 						throw new ApiError(meta.errors.nameAlreadyExists);
@@ -130,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.pagesRepository.update(page.id, {
 				updatedAt: new Date(),
 				title: ps.title,
-				name: ps.name ? ps.name.trim() : undefined,
+				name: ps.name,
 				summary: ps.summary === undefined ? page.summary : ps.summary,
 				content: ps.content,
 				variables: ps.variables,

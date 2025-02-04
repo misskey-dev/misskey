@@ -7,7 +7,7 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import type { DriveFilesRepository, PagesRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import { MiPage } from '@/models/Page.js';
+import { MiPage, pageNameSchema } from '@/models/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -39,11 +39,6 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: 'b7b97489-0f66-4b12-a5ff-b21bd63f6e1c',
 		},
-		invalidName: {
-			message: 'Invalid name.',
-			code: 'INVALID_NAME',
-			id: '8702f702-f18f-4657-b50b-f746a3dffd3c',
-		},
 		nameAlreadyExists: {
 			message: 'Specified name already exists.',
 			code: 'NAME_ALREADY_EXISTS',
@@ -56,7 +51,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		title: { type: 'string' },
-		name: { type: 'string', minLength: 1 },
+		name: { ...pageNameSchema, minLength: 1 },
 		summary: { type: 'string', nullable: true },
 		content: { type: 'array', items: {
 			type: 'object', additionalProperties: true,
@@ -86,16 +81,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const trimmedName = ps.name.trim();
-
-			if (trimmedName.trim() === '') {
-				throw new ApiError(meta.errors.invalidName);
-			}
-
-			if ([' ', '/', '\\', '.', '#', '&', '%', '?', '!', '+', '<', '>'].some(c => trimmedName.includes(c))) {
-				throw new ApiError(meta.errors.invalidName);
-			}
-
 			let eyeCatchingImage = null;
 			if (ps.eyeCatchingImageId != null) {
 				eyeCatchingImage = await this.driveFilesRepository.findOneBy({
@@ -110,7 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			await this.pagesRepository.findBy({
 				userId: me.id,
-				name: trimmedName,
+				name: ps.name,
 			}).then(result => {
 				if (result.length > 0) {
 					throw new ApiError(meta.errors.nameAlreadyExists);
@@ -121,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				id: this.idService.gen(),
 				updatedAt: new Date(),
 				title: ps.title,
-				name: trimmedName,
+				name: ps.name,
 				summary: ps.summary,
 				content: ps.content,
 				variables: ps.variables,
