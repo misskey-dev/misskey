@@ -4,11 +4,15 @@
 - ページの「ソースを見る」機能は削除されました
 
 ### General
+- Fix: Docker のビルドに失敗する問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/883)
 
 ### Client
 - Fix: 一部環境でセンシティブなファイルを含むノートの非表示が効かない問題 
 - Fix: データセーバー有効時にもユーザーページの「ファイル」タブで画像が読み込まれてしまう問題を修正
+- Fix: MFMの `sparkle` エフェクトが正しく表示されない問題を修正
 - Fix: ページのURLにスラッシュが含まれている場合にページが正しく表示されない問題を修正
+- ローカライゼーションの更新
 
 ### Server
 - Fix: 個別お知らせページのmetaタグ出力の条件が間違っていたのを修正
