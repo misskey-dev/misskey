@@ -39,6 +39,11 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: 'b7b97489-0f66-4b12-a5ff-b21bd63f6e1c',
 		},
+		invalidName: {
+			message: 'Invalid name.',
+			code: 'INVALID_NAME',
+			id: '8702f702-f18f-4657-b50b-f746a3dffd3c',
+		},
 		nameAlreadyExists: {
 			message: 'Specified name already exists.',
 			code: 'NAME_ALREADY_EXISTS',
@@ -81,6 +86,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const trimmedName = ps.name.trim();
+
+			if (trimmedName.trim() === '') {
+				throw new ApiError(meta.errors.invalidName);
+			}
+
+			if ([' ', '/', '\\', '.', '#', '&', '%', '?', '!', '+', '<', '>'].some(c => trimmedName.includes(c))) {
+				throw new ApiError(meta.errors.invalidName);
+			}
+
 			let eyeCatchingImage = null;
 			if (ps.eyeCatchingImageId != null) {
 				eyeCatchingImage = await this.driveFilesRepository.findOneBy({
@@ -95,7 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			await this.pagesRepository.findBy({
 				userId: me.id,
-				name: ps.name,
+				name: trimmedName,
 			}).then(result => {
 				if (result.length > 0) {
 					throw new ApiError(meta.errors.nameAlreadyExists);
@@ -106,7 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				id: this.idService.gen(),
 				updatedAt: new Date(),
 				title: ps.title,
-				name: ps.name,
+				name: trimmedName,
 				summary: ps.summary,
 				content: ps.content,
 				variables: ps.variables,

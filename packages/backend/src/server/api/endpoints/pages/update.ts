@@ -31,13 +31,16 @@ export const meta = {
 			code: 'NO_SUCH_PAGE',
 			id: '21149b9e-3616-4778-9592-c4ce89f5a864',
 		},
-
 		accessDenied: {
 			message: 'Access denied.',
 			code: 'ACCESS_DENIED',
 			id: '3c15cd52-3b4b-4274-967d-6456fc4f792b',
 		},
-
+		invalidName: {
+			message: 'Invalid name.',
+			code: 'INVALID_NAME',
+			id: '75a78404-bcd1-4d98-9354-25c60f930e78',
+		},
 		noSuchFile: {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
@@ -103,10 +106,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.name != null) {
+				const trimmedName = ps.name.trim();
+
+				if (trimmedName.trim() === '') {
+					throw new ApiError(meta.errors.invalidName);
+				}
+
+				if ([' ', '/', '\\', '.', '#', '&', '%', '?', '!', '+', '<', '>'].some(c => trimmedName.includes(c))) {
+					throw new ApiError(meta.errors.invalidName);
+				}
+
 				await this.pagesRepository.findBy({
 					id: Not(ps.pageId),
 					userId: me.id,
-					name: ps.name,
+					name: trimmedName,
 				}).then(result => {
 					if (result.length > 0) {
 						throw new ApiError(meta.errors.nameAlreadyExists);
@@ -117,7 +130,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.pagesRepository.update(page.id, {
 				updatedAt: new Date(),
 				title: ps.title,
-				name: ps.name,
+				name: ps.name ? ps.name.trim() : undefined,
 				summary: ps.summary === undefined ? page.summary : ps.summary,
 				content: ps.content,
 				variables: ps.variables,
