@@ -8,6 +8,9 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/883)
 
 ### Client
+- Feat: ノートの描画処理を軽量化できる機能を追加（実験的機能のためデフォルト無効）
+  - 実験的機能 → Skip note rendering → JS (Unstable) でお試しいただけます
+  - まだ実験的な機能のため、不具合が発生する可能性があります
 - Fix: 一部環境でセンシティブなファイルを含むノートの非表示が効かない問題 
 - Fix: データセーバー有効時にもユーザーページの「ファイル」タブで画像が読み込まれてしまう問題を修正
 - Fix: MFMの `sparkle` エフェクトが正しく表示されない問題を修正
