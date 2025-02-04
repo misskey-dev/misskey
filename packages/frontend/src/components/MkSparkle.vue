@@ -41,8 +41,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<svg v-for="particle in particles" :key="particle.id" :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: -32px; left: -32px; pointer-events: none;">
 		<path
 			:style="{
-				'--transformX': particle.x + 'px',
-				'--transformY': particle.y + 'px',
+				'--translateX': particle.x + 'px',
+				'--translateY': particle.y + 'px',
 				'--duration': particle.dur + 'ms',
 				'--size': particle.size,
 			}"
@@ -119,7 +119,7 @@ onUnmounted(() => {
 .particle {
 	transform-origin: center;
 	transform-box: fill-box;
-	translate: var(--transformX) var(--transformY);
+	translate: var(--translateX) var(--translateY);
 	animation: particleAnimation var(--duration) linear infinite;
 }
 
