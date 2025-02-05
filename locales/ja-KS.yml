@@ -2357,9 +2357,6 @@ _pages:
   newPage: "ページを作る"
   editPage: "ページの編集"
   readPage: "ソースを表示中"
-  created: "ページを作成したで"
-  updated: "ページを更新したで"
-  deleted: "ページを削除したで"
   pageSetting: "ページ設定"
   nameAlreadyExists: "指定されたページURLはもうあるみたいや"
   invalidNameTitle: "正しくないページURLみたいやで"
@@ -2721,9 +2718,6 @@ _contextMenu:
   app: "アプリ"
   appWithShift: "Shiftキーでアプリ"
   native: "ブラウザのUI"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "おかしなったで"
 _embedCodeGen:
   title: "埋め込みコードをカスタム"
   header: "ヘッダー出す"

@@ -1976,9 +1976,6 @@ _pages:
   newPage: "Создать страницу"
   editPage: "Править страницу"
   readPage: "Читать страницу"
-  created: "Страница успешно создана."
-  updated: "Страница успешно обновлена."
-  deleted: "Страница успешно удалена."
   pageSetting: "Настройки страницы"
   nameAlreadyExists: "Указанный адрес страницы уже существует."
   invalidNameTitle: "Указанный адрес страницы недопустим."
@@ -2147,9 +2144,6 @@ _hemisphere:
   caption: "Используется для некоторых настроек клиента для определения сезона."
 _reversi:
   total: "Всего"
-_customEmojisManager:
-  _gridCommon:
-    alertEmojisRegisterFailedTitle: "Ошибка"
 _remoteLookupErrors:
   _noSuchObject:
     title: "Не найдено"
