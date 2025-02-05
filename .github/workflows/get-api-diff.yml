@@ -9,6 +9,10 @@ on:
     paths:
       - packages/backend/**
       - .github/workflows/get-api-diff.yml
+
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   get-from-misskey:
     runs-on: ubuntu-latest

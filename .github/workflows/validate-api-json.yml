@@ -12,6 +12,10 @@ on:
     paths:
       - packages/backend/**
       - .github/workflows/validate-api-json.yml
+
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   validate-api-json:
     runs-on: ubuntu-latest
