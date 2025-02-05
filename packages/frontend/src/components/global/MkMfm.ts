@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { VNode, h, SetupContext, provide } from 'vue';
+import { h, provide } from 'vue';
+import type { VNode, SetupContext } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
@@ -18,7 +19,8 @@ import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import HanaSaizeMenuBadge from '@/components/HanaSaizeMenuBadge.vue';
-import MkA, { MkABehavior } from '@/components/global/MkA.vue';
+import MkA from '@/components/global/MkA.vue';
+import type { MkABehavior } from '@/components/global/MkA.vue';
 import { defaultStore } from '@/store.js';
 
 function safeParseFloat(str: unknown): number | null {

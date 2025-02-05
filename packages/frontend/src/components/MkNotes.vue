@@ -43,7 +43,8 @@ import { useTemplateRef, ref, watch, onActivated, onDeactivated, onBeforeUnmount
 import type { WatchStopHandle } from 'vue';
 import XNote from '@/components/MkNotes.note.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import type { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 import { defaultStore } from '@/store.js';

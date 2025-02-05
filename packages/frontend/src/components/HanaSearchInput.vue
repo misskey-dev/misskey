@@ -72,10 +72,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent, useTemplateRef, ref, computed, watch, type InputHTMLAttributes } from 'vue';
+import { defineAsyncComponent, useTemplateRef, ref, computed, watch } from 'vue';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { useInterval } from '@@/js/use-interval.js';
+import type { InputHTMLAttributes } from 'vue';
 import type { SuggestionType } from '@/scripts/autocomplete.js';
 import type { SearchMode } from '@/hana/types/search.js';
 

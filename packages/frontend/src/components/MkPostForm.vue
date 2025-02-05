@@ -99,7 +99,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, type ShallowRef } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
+import type { ShallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -109,7 +110,8 @@ import type { PostFormProps } from '@/types/post-form.js';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
-import MkPollEditor, { type PollEditorModelValue } from '@/components/MkPollEditor.vue';
+import MkPollEditor from '@/components/MkPollEditor.vue';
+import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
 import { erase, unique } from '@/scripts/array.js';
 import { extractMentions } from '@/scripts/extract-mentions.js';
 import { formatTimeString } from '@/scripts/format-time-string.js';
@@ -1175,7 +1177,7 @@ defineExpose({
 	border-radius: 6px;
 
 	&:hover {
-		background: var(--MI_THEME-X5);
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 	}
 
 	&:disabled {
@@ -1247,7 +1249,7 @@ html[data-color-scheme=light] .preview {
 	margin-right: 14px;
 	padding: 8px 0 8px 8px;
 	border-radius: 8px;
-	background: var(--MI_THEME-X4);
+	background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 }
 
 .hasNotSpecifiedMentions {
@@ -1358,7 +1360,7 @@ html[data-color-scheme=light] .preview {
 	border-radius: 6px;
 
 	&:hover {
-		background: var(--MI_THEME-X5);
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 	}
 
 	&.footerButtonActive {
