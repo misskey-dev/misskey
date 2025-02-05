@@ -16,6 +16,9 @@ import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { isMustRemove } from '@/misc/is-hidden-or-visibility-modified.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
+import { CacheService } from '@/core/CacheService.js';
+import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -69,6 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
+		private cacheService: CacheService,
 		private idService: IdService,
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
@@ -106,6 +110,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return [];
 			}
 
+			const [
+				userIdsWhoMeMuting,
+				userIdsWhoBlockingMe,
+			] = me ? await Promise.all([
+				this.cacheService.userMutingsCache.fetch(me.id),
+				this.cacheService.userBlockedCache.fetch(me.id),
+			]) : [new Set<string>(), new Set<string>()];
+
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.id IN (:...noteIds)', { noteIds: noteIds })
 				.innerJoinAndSelect('note.user', 'user')
@@ -115,10 +127,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateVisibilityQuery(query, me);
-			this.queryService.generateMutedUserQuery(query, me);
-			this.queryService.generateBlockedUserQuery(query, me);
 
-			const notes = await query.getMany();
+			const notes = (await query.getMany()).filter(note => {
+				if (isUserRelated(note, userIdsWhoBlockingMe)) return false;
+				if (isUserRelated(note, userIdsWhoMeMuting)) return false;
+
+				return true;
+			});
+
 			if (sinceId != null && untilId == null) {
 				notes.sort((a, b) => a.id < b.id ? -1 : 1);
 			} else {
@@ -127,7 +143,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			this.noteReadService.read(me.id, notes);
 
-			return (await this.noteEntityService.packMany(notes, me)).filter(note => !isMustRemove(note, 'home'));
+			const packedNotes = (await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true })).filter(note => !isMustRemove(note, 'home'));
+			await Promise.all(
+				packedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
+			);
+			return packedNotes;
 		});
 	}
 }

@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { HanamiSearchService } from '@/core/hanamisearch/HanamiSearchService.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { isMustRemove } from '@/misc/is-hidden-or-visibility-modified.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -53,11 +51,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private noteEntityService: NoteEntityService,
 		private hanamiSearchService: HanamiSearchService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const notes = await this.hanamiSearchService.searchNote(ps.query, me, {
+			return await this.hanamiSearchService.searchNote(ps.query, me, {
 				userId: ps.userId,
 				channelId: ps.channelId,
 				host: ps.host,
@@ -68,7 +65,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				sinceId: ps.sinceId,
 				limit: ps.limit,
 			});
-			return (await this.noteEntityService.packMany(notes, me)).filter(note => !isMustRemove(note, 'home'));
 		});
 	}
 }

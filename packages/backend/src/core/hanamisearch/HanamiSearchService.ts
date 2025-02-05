@@ -8,13 +8,16 @@ import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
+import { Packed } from '@/misc/json-schema.js';
 import { MiNote } from '@/models/Note.js';
 import { MiUser } from '@/models/_.js';
 import type { NotesRepository } from '@/models/_.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { CacheService } from '@/core/CacheService.js';
-import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
+import { isMustRemove } from '@/misc/is-hidden-or-visibility-modified.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
 import type { Index, MeiliSearch } from 'meilisearch';
 
 type K = string;
@@ -75,6 +78,7 @@ export class HanamiSearchService {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		private noteEntityService: NoteEntityService,
 		private cacheService: CacheService,
 		private idService: IdService,
 	) {
@@ -177,7 +181,7 @@ export class HanamiSearchService {
 			sinceId?: MiNote['id'];
 			limit?: number;
 		},
-	): Promise<MiNote[]> {
+	): Promise<Packed<'Note'>[]> {
 		const preferredMethod = opts.preferredMethod ?? 'hanamisearchv1';
 
 		if ((preferredMethod === 'hanamisearchv1' && this.hanamisearch)) {
@@ -205,7 +209,7 @@ export class HanamiSearchService {
 			limit?: number;
 		},
 		shouldTimeSeriesSort: boolean,
-	): Promise<MiNote[]> {
+	): Promise<Packed<'Note'>[]> {
 		const filter: Q = { op: 'and', qs: [] };
 
 		if (pagination.untilId) filter.qs.push({ op: '<', k: 'createdAt', v: this.idService.parse(pagination.untilId).date.getTime() });
@@ -242,6 +246,12 @@ export class HanamiSearchService {
 			return true;
 		});
 
-		return shouldTimeSeriesSort ? notes.sort((a, b) => (a.id > b.id ? -1 : 1)) : notes;
+		notes.sort((a, b) => a.id > b.id ? -1 : 1);
+		const packedNotes = (await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true })).filter(note => !isMustRemove(note, 'home'));
+		await Promise.all(
+			packedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
+		);
+
+		return packedNotes;
 	}
 }
