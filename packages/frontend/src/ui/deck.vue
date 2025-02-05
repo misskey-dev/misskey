@@ -95,7 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref, watch, shallowRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
-import { deckStore, columnTypes, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
+import { deckStore, columnTypes, addColumn as addColumnToStore, forceSaveDeck, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
 import type { ColumnType } from './deck/deck-store.js';
 import type { MenuItem } from '@/types/menu.js';
 import XSidebar from '@/ui/_common_/navbar.vue';
@@ -233,10 +233,15 @@ function changeProfile(ev: MouseEvent) {
 					title: i18n.ts._deck.profile,
 					minLength: 1,
 				});
+
 				if (canceled || name == null) return;
 
-				deckStore.set('profile', name);
-				unisonReload();
+				os.promiseDialog((async () => {
+					await deckStore.set('profile', name);
+					await forceSaveDeck();
+				})(), () => {
+					unisonReload();
+				});
 			},
 		});
 	}).then(() => {
@@ -251,9 +256,18 @@ async function deleteProfile() {
 	});
 	if (canceled) return;
 
-	deleteProfile_(deckStore.state.profile);
-	deckStore.set('profile', 'default');
-	unisonReload();
+	os.promiseDialog((async () => {
+		if (deckStore.state.profile === 'default') {
+			await deckStore.set('columns', []);
+			await deckStore.set('layout', []);
+			await forceSaveDeck();
+		} else {
+			await deleteProfile_(deckStore.state.profile);
+		}
+		await deckStore.set('profile', 'default');
+	})(), () => {
+		unisonReload();
+	});
 }
 </script>
 
