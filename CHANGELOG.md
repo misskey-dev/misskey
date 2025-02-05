@@ -6,7 +6,6 @@
 ### Client
 - Enhance: Blueskyの投稿埋め込みプレビューに対応
 
-
 ### Server
 -
 
