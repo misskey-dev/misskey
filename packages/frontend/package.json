@@ -75,7 +75,7 @@
 		"vuedraggable": "next"
 	},
 	"devDependencies": {
-		"@misskey-dev/summaly": "5.1.0",
+		"@misskey-dev/summaly": "5.2.0",
 		"@storybook/addon-actions": "8.5.0",
 		"@storybook/addon-essentials": "8.5.0",
 		"@storybook/addon-interactions": "8.5.0",

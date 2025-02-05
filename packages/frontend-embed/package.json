@@ -38,7 +38,7 @@
 		"vue": "3.5.13"
 	},
 	"devDependencies": {
-		"@misskey-dev/summaly": "5.1.0",
+		"@misskey-dev/summaly": "5.2.0",
 		"@testing-library/vue": "8.1.0",
 		"@types/estree": "1.0.6",
 		"@types/micromatch": "4.0.9",
