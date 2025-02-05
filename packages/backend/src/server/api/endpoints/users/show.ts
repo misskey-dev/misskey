@@ -155,7 +155,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					pinNotesWithReactionAndUserPairCache: true,
 				});
 				if (packedUserProfile.pinnedNotes.length > 0) {
-					const userIdsWhoMeMuting = await this.cacheService.userMutingsCache.fetch(user.id);
+					const userIdsWhoMeMuting = me ? await this.cacheService.userMutingsCache.fetch(me.id) : new Set<string>();
 					await Promise.all(
 						packedUserProfile.pinnedNotes.map(note => removeMutedUsersReactions(note, userIdsWhoMeMuting)),
 					);
