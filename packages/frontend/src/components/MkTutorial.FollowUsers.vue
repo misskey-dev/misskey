@@ -37,8 +37,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
-import XUser from '@/components/MkTutorial.FollowUsers.UserCard.vue';
-import MkPagination, { type Paging } from '@/components/MkPagination.vue';
+import XUser from '@/components/MkUserSetupDialog.User.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import type { Paging } from '@/components/MkPagination.vue';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const pinnedUsers: Paging = {
