@@ -78,9 +78,14 @@ export const defaultStore = markRaw(new Storage('base', {
 			local: false,
 			social: false,
 			global: false,
+			antenna: false,
 		},
 	},
 	abusesTutorial: {
+		where: 'account',
+		default: false,
+	},
+	notificationTutorial: {
 		where: 'account',
 		default: false,
 	},

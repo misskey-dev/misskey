@@ -9,6 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'all'" key="all">
+				<MkInfo v-if="!defaultStore.reactiveState.notificationTutorial.value" style="margin-bottom: var(--MI-margin);" closable @close="closeTutorial()">
+					<I18n :src="i18n.ts.oldNotificationsWillBeDeleted" tag="span">
+						<template #here>
+							<MkA class="_link" to="/settings/notifications">{{ i18n.ts.oldNotificationsWillBeDeletedPlaceholderHere }}</MkA>
+						</template>
+					</I18n>
+				</MkInfo>
+
 				<XNotifications :class="$style.notifications" :excludeTypes="excludeTypes"/>
 			</div>
 			<div v-else-if="tab === 'mentions'" key="mention">
@@ -25,16 +33,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import XNotifications from '@/components/MkNotifications.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { notificationTypes } from '@@/js/const.js';
+import I18n from '@/components/global/I18n.vue';
 
 const tab = ref('all');
 const includeTypes = ref<string[] | null>(null);
 const excludeTypes = computed(() => includeTypes.value ? notificationTypes.filter(t => !includeTypes.value.includes(t)) : null);
+
+function closeTutorial() {
+	defaultStore.set('notificationTutorial', false);
+}
 
 const mentionsPagination = {
 	endpoint: 'notes/mentions' as const,

@@ -8,6 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div ref="rootEl">
+			<MkInfo v-if="!defaultStore.reactiveState.timelineTutorials.value.antenna" style="margin-bottom: var(--MI-margin);" closable @close="closeTutorial()">
+				{{ i18n.ts._timelineDescription.antenna }}
+			</MkInfo>
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 			<div :class="$style.tl">
 				<MkTimeline
@@ -27,11 +30,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkTimeline from '@/components/MkTimeline.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { scroll } from '@@/js/scroll.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
@@ -44,6 +49,13 @@ const antenna = ref<Misskey.entities.Antenna | null>(null);
 const queue = ref(0);
 const rootEl = shallowRef<HTMLElement>();
 const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
+
+function closeTutorial() {
+	defaultStore.set('timelineTutorials', {
+		...defaultStore.state.timelineTutorials,
+		antenna: false,
+	});
+}
 
 function queueUpdated(q) {
 	queue.value = q;

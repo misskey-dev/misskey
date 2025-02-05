@@ -38,7 +38,7 @@ import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import * as Misskey from 'misskey-js';
 
 const props = defineProps<{
-	excludeTypes?: typeof notificationTypes[number][];
+	excludeTypes?: typeof notificationTypes[number][] | null;
 }>();
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
