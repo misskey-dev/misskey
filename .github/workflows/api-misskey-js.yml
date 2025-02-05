@@ -9,6 +9,10 @@ on:
     paths:
       - packages/misskey-js/**
       - .github/workflows/api-misskey-js.yml
+
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   report:
 
