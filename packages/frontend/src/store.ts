@@ -479,6 +479,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	alwaysUseAbsoluteTime: {
+		where: 'device',
+		default: false,
+	},
 
 	sound_masterVolume: {
 		where: 'device',
