@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+			<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm
@@ -304,16 +304,16 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): Array<string | string[]> | false | 'sensitiveMute';
 */
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | false | 'sensitiveMute' {
-	if (mutedWords == null) return false;
+	if (mutedWords != null) {
+		const result = checkWordMute(noteToCheck, $i, mutedWords);
+		if (Array.isArray(result)) return result;
 
-	const result = checkWordMute(noteToCheck, $i, mutedWords);
-	if (Array.isArray(result)) return result;
+		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
+		if (Array.isArray(replyResult)) return replyResult;
 
-	const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
-	if (Array.isArray(replyResult)) return replyResult;
-
-	const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
-	if (Array.isArray(renoteResult)) return renoteResult;
+		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
+		if (Array.isArray(renoteResult)) return renoteResult;
+	}
 
 	if (checkOnly) return false;
 

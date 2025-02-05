@@ -6,6 +6,9 @@ on:
 
   workflow_dispatch:
 
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   publish-misskey-js:
     name: Publish misskey-js
@@ -26,7 +29,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.0.4
+        uses: actions/setup-node@v4.1.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'

@@ -17,6 +17,7 @@ services:
       - ./.config/docker.env
     environment:
       - NODE_ENV=production
+      - COREPACK_DEFAULT_TO_LATEST=0
     volumes:
       - type: bind
         source: ../../../built
