@@ -91,7 +91,7 @@ function moduleJobQueue(envs: Partial<typeof envOption>) {
 
 export function parseWorkerArguments(args: Record<string, unknown>): WorkerArguments {
 	return {
-		__moduleServer: args.moduleServer === 'true' || args.moduleServer === true,
-		__moduleJobQueue: args.moduleJobQueue === 'true' || args.moduleJobQueue === true,
+		__moduleServer: args.__moduleServer === 'true' || args.__moduleServer === true,
+		__moduleJobQueue: args.__moduleJobQueue === 'true' || args.__moduleJobQueue === true,
 	};
 }
