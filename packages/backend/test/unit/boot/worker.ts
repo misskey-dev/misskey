@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { setCpuCount } from '@/boot/common.js';
 import { WorkerArguments } from '@/boot/const.js';
