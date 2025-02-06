@@ -1883,9 +1883,6 @@ _pages:
   newPage: "Vytvořit novou stránku"
   editPage: "Upravit stránku"
   readPage: "Prohlížení zdroje této stránky"
-  created: "Stránka byla úspěšně vytvořena"
-  updated: "Stránka byla úspěšně aktualizována"
-  deleted: "Stránka byla úspěšně smazána"
   pageSetting: "Nastavení stránky"
   nameAlreadyExists: "Zadaná adresa URL stránky již existuje"
   invalidNameTitle: "Zadaná adresa URL stránky je neplatná"
@@ -2024,3 +2021,6 @@ _moderationLogTypes:
   createInvitation: "Vygenerovat pozvánku"
 _reversi:
   total: "Celkem"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Nenalezeno"
