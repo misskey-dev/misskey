@@ -137,6 +137,7 @@ import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
 import { $i } from '@/account.js';
+import { romajiIncludes } from '@/hana/scripts/romaji-includes.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
 
 const props = withDefaults(defineProps<{
@@ -235,7 +236,7 @@ watch(q, () => {
 
 			// 名前にキーワードが含まれている
 			for (const emoji of emojis) {
-				if (keywords.every(keyword => emoji.name.includes(keyword))) {
+				if (keywords.every(keyword => romajiIncludes(emoji.name, keyword))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
 				}
@@ -244,7 +245,7 @@ watch(q, () => {
 
 			// 名前またはエイリアスにキーワードが含まれている
 			for (const emoji of emojis) {
-				if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.aliases.some(alias => alias.includes(keyword)))) {
+				if (keywords.every(keyword => romajiIncludes(emoji.name, keyword) || emoji.aliases.some(alias => romajiIncludes(alias, keyword)))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
 				}
@@ -280,7 +281,7 @@ watch(q, () => {
 			if (matches.size >= max) return matches;
 
 			for (const emoji of emojis) {
-				if (emoji.name.includes(newQ)) {
+				if (romajiIncludes(emoji.name, newQ)) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
 				}
@@ -288,7 +289,7 @@ watch(q, () => {
 			if (matches.size >= max) return matches;
 
 			for (const emoji of emojis) {
-				if (emoji.aliases.some(alias => alias.includes(newQ))) {
+				if (emoji.aliases.some(alias => romajiIncludes(alias, newQ))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
 				}
