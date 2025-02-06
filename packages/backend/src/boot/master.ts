@@ -18,7 +18,7 @@ import { loadConfig } from '@/config.js';
 import { envOption } from '@/env.js';
 import Logger from '@/logger.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
-import { actualClusterLimit, isHttpServerOnPrimary, jobQueue, server } from './common.js';
+import { isHttpServerOnPrimary, jobQueue, server } from './common.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

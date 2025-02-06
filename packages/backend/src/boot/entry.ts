@@ -19,8 +19,6 @@ import { readyRef } from './ready.js';
 
 import 'reflect-metadata';
 
-process.title = `Misskey (${cluster.isPrimary ? 'master' : 'worker'})`;
-
 Error.stackTraceLimit = Infinity;
 EventEmitter.defaultMaxListeners = 128;
 
@@ -71,11 +69,13 @@ process.on('exit', code => {
 if (!envOption.disableClustering) {
 	if (cluster.isPrimary) {
 		logger.info(`Start main process... pid: ${process.pid}`);
+		process.title = 'Misskey (master)';
 		await masterMain();
 		ev.mount();
 	} else if (cluster.isWorker) {
 		logger.info(`Start worker process... pid: ${process.pid}`);
 		const workerArguments = parseWorkerArguments(process.env);
+		process.title = `Misskey (worker${workerArguments.__workerName ? `: ${workerArguments.__workerName}` : ''})`;
 		await workerMain(workerArguments);
 	} else {
 		throw new Error('Unknown process type');
@@ -83,6 +83,7 @@ if (!envOption.disableClustering) {
 } else {
 	// 非clusterの場合はMasterのみが起動するため、Workerの処理は行わない(cluster.isWorker === trueの状態でこのブロックに来ることはない)
 	logger.info(`Start main process... pid: ${process.pid}`);
+	process.title = 'Misskey (master)';
 	await masterMain();
 	ev.mount();
 }
