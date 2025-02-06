@@ -18,7 +18,7 @@ import { loadConfig } from '@/config.js';
 import { envOption } from '@/env.js';
 import Logger from '@/logger.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
-import { actualClusterLimit, jobQueue, server } from './common.js';
+import { actualClusterLimit, isHttpServerOnPrimary, jobQueue, server } from './common.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -83,8 +83,8 @@ export async function masterMain() {
 	if (!envOption.disableClustering) {
 		// clusterモジュール有効時
 
-		if (envOption.onlyServer || (config.cluster?.httpServer?.instances ?? 1) >= 2) {
-			// enableCluster && (onlyServer || cluster.httpServer.instances >= 2) な場合、ワーカープロセス側でのlistenが必要になるため、メインプロセスはforkのみに制限する(listenしない)。
+		if (envOption.onlyServer || !isHttpServerOnPrimary(config)) {
+			// このブロックに入る場合はワーカープロセス側でのlistenが必要になると判断されているため、メインプロセスはforkのみに制限する(listenしない)。
 			// ワーカープロセス側でlistenすると、メインプロセスでポートへの着信を受け入れてワーカープロセスへの分配を行う動作をする。
 			// そのため、メインプロセスでも直接listenするとポートの競合が発生して起動に失敗してしまう。
 			// see: https://nodejs.org/api/cluster.html#cluster
@@ -173,13 +173,12 @@ async function connectDb(): Promise<void> {
 */
 
 async function spawnWorkers(config: Config) {
-	const workers = actualClusterLimit(config);
-	bootLogger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
+	const workerArgs = computeWorkerArguments(config, envOption);
+	bootLogger.info(`Starting ${workerArgs.length} worker${workerArgs.length === 1 ? '' : 's'}...`);
 
-	await Promise.all([...Array(workers)].map((_, workerIndex) => {
-		const args = computeWorkerArguments(workerIndex, config, envOption);
-		return spawnWorker(args);
-	}));
+	await Promise.all(
+		workerArgs.map(it => spawnWorker(it)),
+	);
 
 	bootLogger.succ('All workers started');
 }

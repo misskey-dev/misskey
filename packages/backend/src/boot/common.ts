@@ -5,8 +5,8 @@
 
 import os from 'node:os';
 import * as process from 'node:process';
-import { NestFactory } from '@nestjs/core';
 import { INestApplicationContext } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { Config } from '@/config.js';
 import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
 import { QueueStatsService } from '@/daemons/QueueStatsService.js';
@@ -47,6 +47,26 @@ export async function jobQueue(): Promise<INestApplicationContext> {
 
 export function actualClusterLimit(config: Partial<Config>): number {
 	return Math.min(config.clusterLimit ?? 1, cpuCount);
+}
+
+/** メインプロセス上でHTTPサーバモジュールを動作させるべきかを判断する */
+export function isHttpServerOnPrimary(config: Partial<Config>): boolean {
+	const actualLimit = actualClusterLimit(config);
+	if (actualLimit === 1) {
+		// - クラスタ数の設定が無い（デフォルト値1を使用）
+		// - クラスタ数の設定が存在するものの、値が1である
+		// - そもそもCPUコアが1つしかない
+		return true;
+	}
+
+	if (!config.cluster?.workers || config.cluster.workers.length === 0) {
+		// - ワーカーの構成が無い
+		return true;
+	}
+
+	// ワーカーの構成が存在する＋httpサーバ用プロセスとする設定が1つ以下のようなケースも考えられるが、ケアしない
+	// （明示的にそのようなconfigを記述しているので、挙動を理解したうえでの設定と判断する）
+	return false;
 }
 
 // for testing
