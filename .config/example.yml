@@ -269,7 +269,7 @@ id: 'aidx'
 #disableHsts: true
 
 # Number of worker processes
-clusterLimit: 1
+#clusterLimit: 1
 
 # Cluster configuration
 #cluster:
