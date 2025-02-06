@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Enhance: 投稿フォームの「迷惑になる可能性があります」のダイアログを表示する条件においてCWを考慮するように
 
 ### Server
 -
@@ -17,7 +17,6 @@
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/883)
 
 ### Client
-- Enhance: 投稿フォームの「迷惑になる可能性があります」のダイアログを表示する条件においてCWを考慮するように
 - Fix: パスキーでパスワードレスログインが出来ない問題を修正
 - Fix: 一部環境でセンシティブなファイルを含むノートの非表示が効かない問題 
 - Fix: データセーバー有効時にもユーザーページの「ファイル」タブで画像が読み込まれてしまう問題を修正
