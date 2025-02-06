@@ -15,6 +15,9 @@ on:
       - packages/misskey-js/**
       - .github/workflows/test-federation.yml
 
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   test:
     name: Federation test
