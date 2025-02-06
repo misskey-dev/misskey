@@ -8,7 +8,7 @@
  * https://en.wikipedia.org/wiki/Identicon
  */
 
-import { createCanvas } from '@napi-rs/canvas';
+import { createCanvas } from 'canvas';
 import gen from 'random-seed';
 
 const size = 128; // px
@@ -100,5 +100,5 @@ export async function genIdenticon(seed: string): Promise<Buffer> {
 		}
 	}
 
-	return await canvas.encode('png');
+	return await canvas.toBuffer('image/png');
 }
