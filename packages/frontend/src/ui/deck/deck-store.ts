@@ -112,9 +112,8 @@ export const loadDeck = async () => {
 	deckStore.set('layout', deck.layout);
 };
 
-// TODO: deckがloadされていない状態でsaveすると意図せず上書きが発生するので対策する
-export const saveDeck = throttle(1000, () => {
-	misskeyApi('i/registry/set', {
+export async function forceSaveDeck() {
+	await misskeyApi('i/registry/set', {
 		scope: ['client', 'deck', 'profiles'],
 		key: deckStore.state.profile,
 		value: {
@@ -122,6 +121,11 @@ export const saveDeck = throttle(1000, () => {
 			layout: deckStore.reactiveState.layout.value,
 		},
 	});
+}
+
+// TODO: deckがloadされていない状態でsaveすると意図せず上書きが発生するので対策する
+export const saveDeck = throttle(1000, () => {
+	forceSaveDeck();
 });
 
 export async function getProfiles(): Promise<string[]> {
