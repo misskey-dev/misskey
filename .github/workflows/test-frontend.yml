@@ -22,6 +22,10 @@ on:
       - packages/backend/**
       - .github/workflows/test-frontend.yml
       - .github/misskey/test.yml
+
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   vitest:
     name: Unit tests (frontend)
