@@ -8,8 +8,7 @@
 
 ### Server
 - Fix: FreeBSDで起動できない問題を修正  
-  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/887)  
-  **注意：**Misskeyは基本的にはFreeBSDでの動作をサポートしていません。この修正は一部の環境での動作を改善するためのものです。
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/887)
 
 
 ## 2025.2.0
