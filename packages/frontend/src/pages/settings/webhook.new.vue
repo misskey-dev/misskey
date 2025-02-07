@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkInput>
 
 	<FormSection>
-		<template #label>{{ i18n.ts._webhookSettings.events }}</template>
+		<template #label>{{ i18n.ts._webhookSettings.trigger }}</template>
 
 		<div class="_gaps_s">
 			<MkSwitch v-model="event_follow">{{ i18n.ts._webhookSettings._events.follow }}</MkSwitch>
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="event_note">{{ i18n.ts._webhookSettings._events.note }}</MkSwitch>
 			<MkSwitch v-model="event_reply">{{ i18n.ts._webhookSettings._events.reply }}</MkSwitch>
 			<MkSwitch v-model="event_renote">{{ i18n.ts._webhookSettings._events.renote }}</MkSwitch>
-			<MkSwitch v-model="event_reaction">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
+			<MkSwitch v-model="event_reaction" :disabled="true">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
 			<MkSwitch v-model="event_mention">{{ i18n.ts._webhookSettings._events.mention }}</MkSwitch>
 		</div>
 	</FormSection>

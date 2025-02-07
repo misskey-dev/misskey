@@ -21,8 +21,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkFolder v-for="type in operationTypes" :key="type">
 				<template #label>{{ i18n.ts._sfx[type] }}</template>
 				<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
-
-				<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
+				<Suspense>
+					<template #default>
+						<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
+					</template>
+					<template #fallback>
+						<MkLoading/>
+					</template>
+				</Suspense>
 			</MkFolder>
 		</div>
 	</FormSection>
@@ -32,7 +38,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { Ref, computed, ref } from 'vue';
+import { computed, ref } from 'vue';
+import type { Ref } from 'vue';
 import XSound from './sounds.sound.vue';
 import type { SoundType, OperationType } from '@/scripts/sound.js';
 import type { SoundStore } from '@/store.js';
@@ -54,8 +61,6 @@ const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
 	note: defaultStore.reactiveState.sound_note,
 	noteMy: defaultStore.reactiveState.sound_noteMy,
 	notification: defaultStore.reactiveState.sound_notification,
-	antenna: defaultStore.reactiveState.sound_antenna,
-	channel: defaultStore.reactiveState.sound_channel,
 	reaction: defaultStore.reactiveState.sound_reaction,
 });
 

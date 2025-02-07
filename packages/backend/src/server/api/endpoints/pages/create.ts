@@ -7,7 +7,7 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import type { DriveFilesRepository, PagesRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import { MiPage } from '@/models/Page.js';
+import { MiPage, pageNameSchema } from '@/models/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -51,7 +51,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		title: { type: 'string' },
-		name: { type: 'string', minLength: 1 },
+		name: { ...pageNameSchema, minLength: 1 },
 		summary: { type: 'string', nullable: true },
 		content: { type: 'array', items: {
 			type: 'object', additionalProperties: true,
@@ -102,7 +102,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			});
 
-			const page = await this.pagesRepository.insert(new MiPage({
+			const page = await this.pagesRepository.insertOne(new MiPage({
 				id: this.idService.gen(),
 				updatedAt: new Date(),
 				title: ps.title,
@@ -117,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				alignCenter: ps.alignCenter,
 				hideTitleWhenPinned: ps.hideTitleWhenPinned,
 				font: ps.font,
-			})).then(x => this.pagesRepository.findOneByOrFail(x.identifiers[0]));
+			}));
 
 			return await this.pageEntityService.pack(page);
 		});

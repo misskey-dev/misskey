@@ -35,12 +35,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormSection v-if="iAmModerator">
 					<template #label>Moderation</template>
 					<div class="_gaps_s">
-						<MkSwitch v-model="suspended" :disabled="!instance" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
+						<MkKeyValue>
+							<template #key>
+								{{ i18n.ts._delivery.status }}
+							</template>
+							<template #value>
+								{{ i18n.ts._delivery._type[suspensionState] }}
+							</template>
+						</MkKeyValue>
+						<MkButton v-if="suspensionState === 'none'" :disabled="!instance" danger @click="stopDelivery">{{ i18n.ts._delivery.stop }}</MkButton>
+						<MkButton v-if="suspensionState !== 'none'" :disabled="!instance" @click="resumeDelivery">{{ i18n.ts._delivery.resume }}</MkButton>
 						<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 						<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
+						<MkSwitch v-model="isMediaSilenced" :disabled="!meta || !instance" @update:modelValue="toggleMediaSilenced">{{ i18n.ts.mediaSilenceThisInstance }}</MkSwitch>
 						<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 						<MkTextarea v-model="moderationNote" manualSave>
 							<template #label>{{ i18n.ts.moderationNote }}</template>
+							<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 						</MkTextarea>
 					</div>
 				</FormSection>
@@ -125,6 +136,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
+import type { ChartSrc } from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
@@ -141,6 +153,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import type { Paging } from '@/components/MkPagination.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 import { dateString } from '@/filters/date.js';
@@ -152,17 +165,18 @@ const props = defineProps<{
 
 const tab = ref('overview');
 
-const chartSrc = ref('instance-requests');
+const chartSrc = ref<ChartSrc>('instance-requests');
 const meta = ref<Misskey.entities.AdminMetaResponse | null>(null);
 const instance = ref<Misskey.entities.FederationInstance | null>(null);
-const suspended = ref(false);
+const suspensionState = ref<'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding'>('none');
 const isBlocked = ref(false);
 const isSilenced = ref(false);
+const isMediaSilenced = ref(false);
 const faviconUrl = ref<string | null>(null);
 const moderationNote = ref('');
 
 const usersPagination = {
-	endpoint: iAmModerator ? 'admin/show-users' : 'users' as const,
+	endpoint: iAmModerator ? 'admin/show-users' : 'users',
 	limit: 10,
 	params: {
 		sort: '+updatedAt',
@@ -170,11 +184,14 @@ const usersPagination = {
 		hostname: props.host,
 	},
 	offsetMode: true,
-};
+} satisfies Paging;
 
-watch(moderationNote, async () => {
-	await misskeyApi('admin/federation/update-instance', { host: instance.value.host, moderationNote: moderationNote.value });
-});
+if (iAmModerator) {
+	watch(moderationNote, async () => {
+		if (instance.value == null) return;
+		await misskeyApi('admin/federation/update-instance', { host: instance.value.host, moderationNote: moderationNote.value });
+	});
+}
 
 async function fetch(): Promise<void> {
 	if (iAmAdmin) {
@@ -183,14 +200,16 @@ async function fetch(): Promise<void> {
 	instance.value = await misskeyApi('federation/show-instance', {
 		host: props.host,
 	});
-	suspended.value = instance.value?.isSuspended ?? false;
+	suspensionState.value = instance.value?.suspensionState ?? 'none';
 	isBlocked.value = instance.value?.isBlocked ?? false;
 	isSilenced.value = instance.value?.isSilenced ?? false;
+	isMediaSilenced.value = instance.value?.isMediaSilenced ?? false;
 	faviconUrl.value = getProxiedImageUrlNullable(instance.value?.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.value?.iconUrl, 'preview');
-	moderationNote.value = instance.value?.moderationNote;
+	moderationNote.value = instance.value?.moderationNote ?? '';
 }
 
 async function toggleBlock(): Promise<void> {
+	if (!iAmAdmin) return;
 	if (!meta.value) throw new Error('No meta?');
 	if (!instance.value) throw new Error('No instance?');
 	const { host } = instance.value;
@@ -200,6 +219,7 @@ async function toggleBlock(): Promise<void> {
 }
 
 async function toggleSilenced(): Promise<void> {
+	if (!iAmAdmin) return;
 	if (!meta.value) throw new Error('No meta?');
 	if (!instance.value) throw new Error('No instance?');
 	const { host } = instance.value;
@@ -209,15 +229,39 @@ async function toggleSilenced(): Promise<void> {
 	});
 }
 
-async function toggleSuspend(): Promise<void> {
+async function toggleMediaSilenced(): Promise<void> {
+	if (!iAmAdmin) return;
+	if (!meta.value) throw new Error('No meta?');
 	if (!instance.value) throw new Error('No instance?');
+	const { host } = instance.value;
+	const mediaSilencedHosts = meta.value.mediaSilencedHosts ?? [];
+	await misskeyApi('admin/update-meta', {
+		mediaSilencedHosts: isMediaSilenced.value ? mediaSilencedHosts.concat([host]) : mediaSilencedHosts.filter(x => x !== host),
+	});
+}
+
+async function stopDelivery(): Promise<void> {
+	if (!iAmModerator) return;
+	if (!instance.value) throw new Error('No instance?');
+	suspensionState.value = 'manuallySuspended';
 	await misskeyApi('admin/federation/update-instance', {
 		host: instance.value.host,
-		isSuspended: suspended.value,
+		isSuspended: true,
+	});
+}
+
+async function resumeDelivery(): Promise<void> {
+	if (!iAmModerator) return;
+	if (!instance.value) throw new Error('No instance?');
+	suspensionState.value = 'none';
+	await misskeyApi('admin/federation/update-instance', {
+		host: instance.value.host,
+		isSuspended: false,
 	});
 }
 
 function refreshMetadata(): void {
+	if (!iAmModerator) return;
 	if (!instance.value) throw new Error('No instance?');
 	misskeyApi('admin/federation/refresh-remote-instance-metadata', {
 		host: instance.value.host,

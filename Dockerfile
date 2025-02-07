@@ -1,10 +1,12 @@
 # syntax = docker/dockerfile:1.4
 
-ARG NODE_VERSION=20.10.0-bullseye
+ARG NODE_VERSION=22.11.0-bookworm
 
 # build assets & compile TypeScript
 
 FROM --platform=$BUILDPLATFORM node:${NODE_VERSION} AS native-builder
+
+ENV COREPACK_DEFAULT_TO_LATEST=0
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -21,7 +23,9 @@ WORKDIR /misskey
 COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
 COPY --link ["scripts", "./scripts"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
+COPY --link ["packages/frontend-shared/package.json", "./packages/frontend-shared/"]
 COPY --link ["packages/frontend/package.json", "./packages/frontend/"]
+COPY --link ["packages/frontend-embed/package.json", "./packages/frontend-embed/"]
 COPY --link ["packages/sw/package.json", "./packages/sw/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]
@@ -41,6 +45,8 @@ RUN rm -rf .git/
 # build native dependencies for target platform
 
 FROM --platform=$TARGETPLATFORM node:${NODE_VERSION} AS target-builder
+
+ENV COREPACK_DEFAULT_TO_LATEST=0
 
 RUN apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
@@ -66,6 +72,7 @@ FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS runner
 
 ARG UID="991"
 ARG GID="991"
+ENV COREPACK_DEFAULT_TO_LATEST=0
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
@@ -81,6 +88,10 @@ RUN apt-get update \
 
 USER misskey
 WORKDIR /misskey
+
+# add package.json to add pnpm
+COPY --chown=misskey:misskey ./package.json ./package.json
+RUN corepack install
 
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules

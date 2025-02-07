@@ -37,12 +37,12 @@ export class NodeinfoServerService {
 	@bindThis
 	public getLinks() {
 		return [{
-				rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1',
-				href: this.config.url + nodeinfo2_1path
-			}, {
-				rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0',
-				href: this.config.url + nodeinfo2_0path,
-			}];
+			rel: 'http://nodeinfo.diaspora.software/ns/schema/2.1',
+			href: this.config.url + nodeinfo2_1path,
+		}, {
+			rel: 'http://nodeinfo.diaspora.software/ns/schema/2.0',
+			href: this.config.url + nodeinfo2_0path,
+		}];
 	}
 
 	@bindThis
@@ -108,6 +108,7 @@ export class NodeinfoServerService {
 					langs: meta.langs,
 					tosUrl: meta.termsOfServiceUrl,
 					privacyPolicyUrl: meta.privacyPolicyUrl,
+					inquiryUrl: meta.inquiryUrl,
 					impressumUrl: meta.impressumUrl,
 					repositoryUrl: meta.repositoryUrl,
 					feedbackUrl: meta.feedbackUrl,
@@ -133,7 +134,7 @@ export class NodeinfoServerService {
 			return document;
 		};
 
-		const cache = new MemorySingleCache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10);
+		const cache = new MemorySingleCache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10); // 10m
 
 		fastify.get(nodeinfo2_1path, async (request, reply) => {
 			const base = await cache.fetch(() => nodeinfo2(21));

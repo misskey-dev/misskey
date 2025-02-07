@@ -80,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			const channel = await this.channelsRepository.insert({
+			const channel = await this.channelsRepository.insertOne({
 				id: this.idService.gen(),
 				userId: me.id,
 				name: ps.name,
@@ -89,7 +89,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isSensitive: ps.isSensitive ?? false,
 				...(ps.color !== undefined ? { color: ps.color } : {}),
 				allowRenoteToExternal: ps.allowRenoteToExternal ?? true,
-			} as MiChannel).then(x => this.channelsRepository.findOneByOrFail(x.identifiers[0]));
+			} as MiChannel);
 
 			return await this.channelEntityService.pack(channel, me);
 		});

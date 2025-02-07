@@ -4,16 +4,17 @@
  */
 
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
+import { ui } from '@@/js/config.js';
 import { common } from './common.js';
-import { ui } from '@/config.js';
+import * as Misskey from 'misskey-js';
+import type { Component } from 'vue';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
-import { $i, signout, updateAccount } from '@/account.js';
+import { $i, signout, updateAccountPartial } from '@/account.js';
 import { instance } from '@/instance.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
@@ -21,21 +22,51 @@ import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
+import { makeHotkey } from '@/scripts/hotkey.js';
+import type { Keymap } from '@/scripts/hotkey.js';
+import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 
 export async function mainBoot() {
-	const { isClientUpdated } = await common(() => createApp(
-		new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
-		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
-		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
-		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
-		defineAsyncComponent(() => import('@/ui/universal.vue')),
-	));
+	const { isClientUpdated } = await common(() => {
+		let uiStyle = ui;
+		const searchParams = new URLSearchParams(window.location.search);
+
+		if (!$i) uiStyle = 'visitor';
+
+		if (searchParams.has('zen')) uiStyle = 'zen';
+		if (uiStyle === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') uiStyle = 'zen';
+
+		if (searchParams.has('ui')) uiStyle = searchParams.get('ui');
+
+		let rootComponent: Component;
+		switch (uiStyle) {
+			case 'zen':
+				rootComponent = defineAsyncComponent(() => import('@/ui/zen.vue'));
+				break;
+			case 'deck':
+				rootComponent = defineAsyncComponent(() => import('@/ui/deck.vue'));
+				break;
+			case 'visitor':
+				rootComponent = defineAsyncComponent(() => import('@/ui/visitor.vue'));
+				break;
+			case 'classic':
+				rootComponent = defineAsyncComponent(() => import('@/ui/classic.vue'));
+				break;
+			default:
+				rootComponent = defineAsyncComponent(() => import('@/ui/universal.vue'));
+				break;
+		}
+
+		return createApp(rootComponent);
+	});
 
 	reactionPicker.init();
 	emojiPicker.init();
 
 	if (isClientUpdated && $i) {
-		popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {
+			closed: () => dispose(),
+		});
 	}
 
 	const stream = useStream();
@@ -59,6 +90,18 @@ export async function mainBoot() {
 		}
 	});
 
+	stream.on('emojiAdded', emojiData => {
+		addCustomEmoji(emojiData.emoji);
+	});
+
+	stream.on('emojiUpdated', emojiData => {
+		updateCustomEmojis(emojiData.emojis);
+	});
+
+	stream.on('emojiDeleted', emojiData => {
+		removeCustomEmojis(emojiData.emojis);
+	});
+
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 		import('@/plugin.js').then(async ({ install }) => {
 			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
@@ -67,14 +110,6 @@ export async function mainBoot() {
 		});
 	}
 
-	const hotkeys = {
-		'd': (): void => {
-			defaultStore.set('darkMode', !defaultStore.state.darkMode);
-		},
-		's': (): void => {
-			mainRouter.push('/search');
-		},
-	};
 	try {
 		if (defaultStore.state.enableSeasonalScreenEffect) {
 			const month = new Date().getMonth() + 1;
@@ -96,36 +131,41 @@ export async function mainBoot() {
 					}).render();
 				}
 			}
-		}	
+		}
 	} catch (error) {
 		// console.error(error);
 		console.error('Failed to initialise the seasonal screen effect canvas context:', error);
 	}
 
 	if ($i) {
-		// only add post shortcuts if logged in
-		hotkeys['p|n'] = post;
-
 		defaultStore.loaded.then(() => {
 			if (defaultStore.state.accountSetupWizard !== -1) {
-				popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
+				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
+					closed: () => dispose(),
+				});
 			}
 		});
 
 		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
-			popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
 				announcement,
-			}, {}, 'closed');
+			}, {
+				closed: () => dispose(),
+			});
 		}
 
-		stream.on('announcementCreated', (ev) => {
+		function onAnnouncementCreated (ev: { announcement: Misskey.entities.Announcement }) {
 			const announcement = ev.announcement;
 			if (announcement.display === 'dialog') {
-				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
 					announcement,
-				}, {}, 'closed');
+				}, {
+					closed: () => dispose(),
+				});
 			}
-		});
+		}
+
+		stream.on('announcementCreated', onAnnouncementCreated);
 
 		if ($i.isDeleted) {
 			alert({
@@ -217,43 +257,84 @@ export async function mainBoot() {
 			claimAchievement('collectAchievements30');
 		}
 
-		window.setInterval(() => {
-			if (Math.floor(Math.random() * 20000) === 0) {
-				claimAchievement('justPlainLucky');
+		if (!claimedAchievements.includes('justPlainLucky')) {
+			let justPlainLuckyTimer: number | null = null;
+			let lastVisibilityChangedAt = Date.now();
+
+			function claimPlainLucky() {
+				if (document.visibilityState !== 'visible') {
+					if (justPlainLuckyTimer != null) window.clearTimeout(justPlainLuckyTimer);
+					return;
+				}
+
+				if (Math.floor(Math.random() * 20000) === 0) {
+					claimAchievement('justPlainLucky');
+				} else {
+					justPlainLuckyTimer = window.setTimeout(claimPlainLucky, 1000 * 10);
+				}
 			}
-		}, 1000 * 10);
 
-		window.setTimeout(() => {
-			claimAchievement('client30min');
-		}, 1000 * 60 * 30);
+			window.addEventListener('visibilitychange', () => {
+				const now = Date.now();
 
-		window.setTimeout(() => {
-			claimAchievement('client60min');
-		}, 1000 * 60 * 60);
+				if (document.visibilityState === 'visible') {
+					// タブを高速で切り替えたら取得処理が何度も走るのを防ぐ
+					if ((now - lastVisibilityChangedAt) < 1000 * 10) {
+						justPlainLuckyTimer = window.setTimeout(claimPlainLucky, 1000 * 10);
+					} else {
+						claimPlainLucky();
+					}
+				} else if (justPlainLuckyTimer != null) {
+					window.clearTimeout(justPlainLuckyTimer);
+					justPlainLuckyTimer = null;
+				}
 
-		const lastUsed = miLocalStorage.getItem('lastUsed');
-		if (lastUsed) {
-			const lastUsedDate = parseInt(lastUsed, 10);
-			// 二時間以上前なら
-			if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-				toast(i18n.tsx.welcomeBackWithName({
-					name: $i.name || $i.username,
-				}));
-			}
+				lastVisibilityChangedAt = now;
+			}, { passive: true });
+
+			claimPlainLucky();
 		}
-		miLocalStorage.setItem('lastUsed', Date.now().toString());
+
+		if (!claimedAchievements.includes('client30min')) {
+			window.setTimeout(() => {
+				claimAchievement('client30min');
+			}, 1000 * 60 * 30);
+		}
+
+		if (!claimedAchievements.includes('client60min')) {
+			window.setTimeout(() => {
+				claimAchievement('client60min');
+			}, 1000 * 60 * 60);
+		}
+
+		// 邪魔
+		//const lastUsed = miLocalStorage.getItem('lastUsed');
+		//if (lastUsed) {
+		//	const lastUsedDate = parseInt(lastUsed, 10);
+		//	// 二時間以上前なら
+		//	if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
+		//		toast(i18n.tsx.welcomeBackWithName({
+		//			name: $i.name || $i.username,
+		//		}));
+		//	}
+		//}
+		//miLocalStorage.setItem('lastUsed', Date.now().toString());
 
 		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
 		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
 		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
 			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
-				popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
+				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {
+					closed: () => dispose(),
+				});
 			}
 		}
 
 		const modifiedVersionMustProminentlyOfferInAgplV3Section13Read = miLocalStorage.getItem('modifiedVersionMustProminentlyOfferInAgplV3Section13Read');
 		if (modifiedVersionMustProminentlyOfferInAgplV3Section13Read !== 'true' && instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey') {
-			popup(defineAsyncComponent(() => import('@/components/MkSourceCodeAvailablePopup.vue')), {}, {}, 'closed');
+			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSourceCodeAvailablePopup.vue')), {}, {
+				closed: () => dispose(),
+			});
 		}
 
 		if ('Notification' in window) {
@@ -267,11 +348,11 @@ export async function mainBoot() {
 
 		// 自分の情報が更新されたとき
 		main.on('meUpdated', i => {
-			updateAccount(i);
+			updateAccountPartial(i);
 		});
 
 		main.on('readAllNotifications', () => {
-			updateAccount({
+			updateAccountPartial({
 				hasUnreadNotification: false,
 				unreadNotificationsCount: 0,
 			});
@@ -279,40 +360,43 @@ export async function mainBoot() {
 
 		main.on('unreadNotification', () => {
 			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
-			updateAccount({
+			updateAccountPartial({
 				hasUnreadNotification: true,
 				unreadNotificationsCount,
 			});
 		});
 
 		main.on('unreadMention', () => {
-			updateAccount({ hasUnreadMentions: true });
+			updateAccountPartial({ hasUnreadMentions: true });
 		});
 
 		main.on('readAllUnreadMentions', () => {
-			updateAccount({ hasUnreadMentions: false });
+			updateAccountPartial({ hasUnreadMentions: false });
 		});
 
 		main.on('unreadSpecifiedNote', () => {
-			updateAccount({ hasUnreadSpecifiedNotes: true });
+			updateAccountPartial({ hasUnreadSpecifiedNotes: true });
 		});
 
 		main.on('readAllUnreadSpecifiedNotes', () => {
-			updateAccount({ hasUnreadSpecifiedNotes: false });
+			updateAccountPartial({ hasUnreadSpecifiedNotes: false });
 		});
 
 		main.on('readAllAntennas', () => {
-			updateAccount({ hasUnreadAntenna: false });
+			updateAccountPartial({ hasUnreadAntenna: false });
 		});
 
 		main.on('unreadAntenna', () => {
-			updateAccount({ hasUnreadAntenna: true });
+			updateAccountPartial({ hasUnreadAntenna: true });
 			sound.playMisskeySfx('antenna');
 		});
 
 		main.on('readAllAnnouncements', () => {
-			updateAccount({ hasUnreadAnnouncement: false });
+			updateAccountPartial({ hasUnreadAnnouncement: false });
 		});
+
+		// 個人宛てお知らせが発行されたとき
+		main.on('announcementCreated', onAnnouncementCreated);
 
 		// トークンが再生成されたとき
 		// このままではMisskeyが利用できないので強制的にサインアウトさせる
@@ -322,7 +406,19 @@ export async function mainBoot() {
 	}
 
 	// shortcut
-	document.addEventListener('keydown', makeHotkey(hotkeys));
+	const keymap = {
+		'p|n': () => {
+			if ($i == null) return;
+			post();
+		},
+		'd': () => {
+			defaultStore.set('darkMode', !defaultStore.state.darkMode);
+		},
+		's': () => {
+			mainRouter.push('/search');
+		},
+	} as const satisfies Keymap;
+	document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
 
 	initializeSw();
 }

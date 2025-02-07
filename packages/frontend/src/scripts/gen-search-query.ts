@@ -4,7 +4,7 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { host as localHost } from '@/config.js';
+import { host as localHost } from '@@/js/config.js';
 
 export async function genSearchQuery(v: any, q: string) {
 	let host: string;

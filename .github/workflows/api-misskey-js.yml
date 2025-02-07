@@ -4,9 +4,14 @@ on:
   push:
     paths:
       - packages/misskey-js/**
+      - .github/workflows/api-misskey-js.yml
   pull_request:
     paths:
       - packages/misskey-js/**
+      - .github/workflows/api-misskey-js.yml
+
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
 
 jobs:
   report:
@@ -20,7 +25,7 @@ jobs:
       - run: corepack enable
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.1.0
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'

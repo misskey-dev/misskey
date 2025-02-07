@@ -7,7 +7,7 @@ import { In } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable } from '@nestjs/common';
 import type { NotesRepository } from '@/models/_.js';
-import { obsoleteNotificationTypes, notificationTypes, FilterUnionByProperty } from '@/types.js';
+import { FilterUnionByProperty, notificationTypes, obsoleteNotificationTypes } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
@@ -84,27 +84,51 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const includeTypes = ps.includeTypes && ps.includeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];
 			const excludeTypes = ps.excludeTypes && ps.excludeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];
 
-			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
-			const notificationsRes = await this.redisClient.xrevrange(
-				`notificationTimeline:${me.id}`,
-				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : '+',
-				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : '-',
-				'COUNT', limit);
+			let sinceTime = ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime().toString() : null;
+			let untilTime = ps.untilId ? this.idService.parse(ps.untilId).date.getTime().toString() : null;
 
-			if (notificationsRes.length === 0) {
-				return [];
-			}
+			let notifications: MiNotification[];
+			for (;;) {
+				let notificationsRes: [id: string, fields: string[]][];
 
-			let notifications = notificationsRes.map(x => JSON.parse(x[1][1])).filter(x => x.id !== ps.untilId && x !== ps.sinceId) as MiNotification[];
+				// sinceidのみの場合は古い順、そうでない場合は新しい順。 QueryService.makePaginationQueryも参照
+				if (sinceTime && !untilTime) {
+					notificationsRes = await this.redisClient.xrange(
+						`notificationTimeline:${me.id}`,
+						'(' + sinceTime,
+						'+',
+						'COUNT', ps.limit);
+				} else {
+					notificationsRes = await this.redisClient.xrevrange(
+						`notificationTimeline:${me.id}`,
+						untilTime ? '(' + untilTime : '+',
+						sinceTime ? '(' + sinceTime : '-',
+						'COUNT', ps.limit);
+				}
 
-			if (includeTypes && includeTypes.length > 0) {
-				notifications = notifications.filter(notification => includeTypes.includes(notification.type));
-			} else if (excludeTypes && excludeTypes.length > 0) {
-				notifications = notifications.filter(notification => !excludeTypes.includes(notification.type));
-			}
+				if (notificationsRes.length === 0) {
+					return [];
+				}
 
-			if (notifications.length === 0) {
-				return [];
+				notifications = notificationsRes.map(x => JSON.parse(x[1][1])) as MiNotification[];
+
+				if (includeTypes && includeTypes.length > 0) {
+					notifications = notifications.filter(notification => includeTypes.includes(notification.type));
+				} else if (excludeTypes && excludeTypes.length > 0) {
+					notifications = notifications.filter(notification => !excludeTypes.includes(notification.type));
+				}
+
+				if (notifications.length !== 0) {
+					// 通知が１件以上ある場合は返す
+					break;
+				}
+
+				// フィルタしたことで通知が0件になった場合、次のページを取得する
+				if (ps.sinceId && !ps.untilId) {
+					sinceTime = notificationsRes[notificationsRes.length - 1][0];
+				} else {
+					untilTime = notificationsRes[notificationsRes.length - 1][0];
+				}
 			}
 
 			// Mark all as read

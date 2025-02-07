@@ -30,9 +30,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		[$style.transition_modal_leaveTo]: transitionName === 'modal',
 		[$style.transition_send_leaveTo]: transitionName === 'send',
 	})"
-	:duration="transitionDuration" appear @afterLeave="emit('closed')" @enter="emit('opening')" @afterEnter="onOpened"
+	:duration="transitionDuration" appear @afterLeave="onClosed" @enter="emit('opening')" @afterEnter="onOpened"
 >
-	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+	<div v-show="manualShowing != null ? manualShowing : showing" ref="modalRootEl" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<div data-cy-bg :data-cy-transparent="isEnableBgTransparent" class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div ref="content" :class="[$style.content, { [$style.fixed]: fixed }]" :style="{ zIndex }" @click.self="onBgClick">
 			<slot :max-height="maxHeight" :type="type"></slot>
@@ -47,6 +47,9 @@ import * as os from '@/os.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { defaultStore } from '@/store.js';
 import { deviceKind } from '@/scripts/device-kind.js';
+import type { Keymap } from '@/scripts/hotkey.js';
+import { focusTrap } from '@/scripts/focus-trap.js';
+import { focusParent } from '@/scripts/focus.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -68,6 +71,8 @@ const props = withDefaults(defineProps<{
 	zPriority?: 'low' | 'middle' | 'high';
 	noOverlap?: boolean;
 	transparentBg?: boolean;
+	hasInteractionWithOtherFocusTrappedEls?: boolean;
+	returnFocusTo?: HTMLElement | null;
 }>(), {
 	manualShowing: null,
 	src: null,
@@ -76,6 +81,8 @@ const props = withDefaults(defineProps<{
 	zPriority: 'low',
 	noOverlap: true,
 	transparentBg: false,
+	hasInteractionWithOtherFocusTrappedEls: false,
+	returnFocusTo: null,
 });
 
 const emit = defineEmits<{
@@ -93,12 +100,13 @@ const maxHeight = ref<number>();
 const fixed = ref(false);
 const transformOrigin = ref('center');
 const showing = ref(true);
+const modalRootEl = shallowRef<HTMLElement>();
 const content = shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
 const useSendAnime = ref(false);
 const type = computed<ModalTypes>(() => {
 	if (props.preferType === 'auto') {
-		if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
+		if ((defaultStore.state.menuStyle === 'drawer') || (defaultStore.state.menuStyle === 'auto' && isTouchUsing && deviceKind === 'smartphone')) {
 			return 'drawer';
 		} else {
 			return props.src != null ? 'popup' : 'dialog';
@@ -131,6 +139,7 @@ const transitionDuration = computed((() =>
 					: 0
 ));
 
+let releaseFocusTrap: (() => void) | null = null;
 let contentClicking = false;
 
 function close(opts: { useSendAnimation?: boolean } = {}) {
@@ -154,8 +163,11 @@ if (type.value === 'drawer') {
 }
 
 const keymap = {
-	'esc': () => emit('esc'),
-};
+	'esc': {
+		allowRepeat: true,
+		callback: () => emit('esc'),
+	},
+} as const satisfies Keymap;
 
 const MARGIN = 16;
 const SCROLLBAR_THICKNESS = 16;
@@ -276,17 +288,27 @@ const align = () => {
 const onOpened = () => {
 	emit('opened');
 
-	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
-	const el = content.value!.children[0];
-	el.addEventListener('mousedown', ev => {
-		contentClicking = true;
-		window.addEventListener('mouseup', ev => {
-			// click イベントより先に mouseup イベントが発生するかもしれないのでちょっと待つ
-			window.setTimeout(() => {
-				contentClicking = false;
-			}, 100);
-		}, { passive: true, once: true });
-	}, { passive: true });
+	// contentの子要素にアクセスするためレンダリングの完了を待つ必要がある（nextTickが必要）
+	nextTick(() => {
+		// NOTE: Chromatic テストの際に undefined になる場合がある
+		if (content.value == null) return;
+
+		// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
+		const el = content.value.children[0];
+		el.addEventListener('mousedown', ev => {
+			contentClicking = true;
+			window.addEventListener('mouseup', ev => {
+				// click イベントより先に mouseup イベントが発生するかもしれないのでちょっと待つ
+				window.setTimeout(() => {
+					contentClicking = false;
+				}, 100);
+			}, { passive: true, once: true });
+		}, { passive: true });
+	});
+};
+
+const onClosed = () => {
+	emit('closed');
 };
 
 const alignObserver = new ResizeObserver((entries, observer) => {
@@ -304,6 +326,20 @@ onMounted(() => {
 		await nextTick();
 
 		align();
+	}, { immediate: true });
+
+	watch([showing, () => props.manualShowing], ([showing, manualShowing]) => {
+		if (manualShowing === true || (manualShowing == null && showing === true)) {
+			if (modalRootEl.value != null) {
+				const { release } = focusTrap(modalRootEl.value, props.hasInteractionWithOtherFocusTrappedEls);
+
+				releaseFocusTrap = release;
+				modalRootEl.value.focus();
+			}
+		} else {
+			releaseFocusTrap?.();
+			focusParent(props.returnFocusTo ?? props.src, true, false);
+		}
 	}, { immediate: true });
 
 	nextTick(() => {
