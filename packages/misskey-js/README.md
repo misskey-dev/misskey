@@ -64,6 +64,8 @@ location.href = url;
 コールバックURLを指定した場合、セッションIDはURLパラメータの`session`から取得できます。
 
 ``` ts
+const sessionId = new URL(location.href).searchParams.get('session');
+
 const cli = new Misskey.api.APIClient({
 	origin: 'https://misskey.test',
 });
