@@ -10,6 +10,8 @@
 ### Server
 -
 
+### Misskey.js
+- Feat: MiAuth 認証ラッパー
 
 ## 2025.2.0
 
