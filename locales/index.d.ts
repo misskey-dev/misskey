@@ -10982,7 +10982,7 @@ export interface Locale extends ILocale {
          */
         "otherOption1": string;
         /**
-         * 簡易版のクライアントを起動
+         * 簡易クライアントを起動
          */
         "otherOption2": string;
         /**

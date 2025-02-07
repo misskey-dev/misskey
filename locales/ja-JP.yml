@@ -2938,5 +2938,5 @@ _bootErrors:
   solution4: "(Tor Browser) dom.webaudio.enabledをtrueに設定する"
   otherOption: "その他のオプション"
   otherOption1: "クライアント設定とキャッシュを削除"
-  otherOption2: "簡易版のクライアントを起動"
+  otherOption2: "簡易クライアントを起動"
   otherOption3: "修復ツールを起動"
