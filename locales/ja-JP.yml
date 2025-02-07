@@ -2500,6 +2500,8 @@ _notification:
   flushNotification: "通知の履歴をリセットする"
   exportOfXCompleted: "{x}のエクスポートが完了しました"
   login: "ログインがありました"
+  createToken: "アクセストークンが作成されました"
+  createTokenDescription: "心当たりがない場合は「{text}」を通じてアクセストークンを削除してください。"
 
   _types:
     all: "すべて"

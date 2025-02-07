@@ -2440,6 +2440,8 @@ _notification:
   flushNotification: "Clear notifications"
   exportOfXCompleted: "Export of {x} has been completed"
   login: "Someone logged in"
+  createToken: "Access token has been created"
+  createTokenDescription: "If you don't recognize this, please delete the access token through {text}"
   _types:
     all: "All"
     note: "New notes"
