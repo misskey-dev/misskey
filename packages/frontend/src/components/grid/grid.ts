@@ -4,11 +4,16 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import { CellValue, GridCellSetting } from '@/components/grid/cell.js';
-import { GridColumnSetting } from '@/components/grid/column.js';
-import { GridRowSetting } from '@/components/grid/row.js';
+import type { CellValue, GridCellSetting } from '@/components/grid/cell.js';
+import type { GridColumnSetting } from '@/components/grid/column.js';
+import type { GridRowSetting } from '@/components/grid/row.js';
 
 export type GridSetting = {
+	root?: {
+		noOverflowStyle?: boolean;
+		rounded?: boolean;
+		outerBorder?: boolean;
+	};
 	row?: GridRowSetting;
 	cols: GridColumnSetting[];
 	cells?: GridCellSetting;

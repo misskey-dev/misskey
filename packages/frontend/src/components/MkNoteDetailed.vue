@@ -70,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<img v-for="(role, i) in appearNote.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.noteHeaderBadgeRole" :src="role.iconUrl!"/>
 					</div>
 				</div>
-				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+				<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
 		<div :class="$style.noteContent">
@@ -225,7 +225,8 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
 import { notePage } from '@/filters/note.js';
@@ -246,12 +247,13 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import MkPagination, { type Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import type { Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
-import { type Keymap } from '@/scripts/hotkey.js';
+import type { Keymap } from '@/scripts/hotkey.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
