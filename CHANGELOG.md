@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Enhance: クライアントエラー画面の多言語対応
 
 ### Server
 -
