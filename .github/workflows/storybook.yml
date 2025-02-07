@@ -13,8 +13,13 @@ on:
       # This is a waste of chromatic build quota, so we don't run storybook CI on pull requests targets master.
       - master
 
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   build:
+    # chromatic is not likely to be available for fork repositories, so we disable for fork repositories.
+    if: github.repository == 'misskey-dev/misskey'
     runs-on: ubuntu-latest
 
     env:
@@ -41,7 +46,7 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v4
     - name: Use Node.js 20.x
-      uses: actions/setup-node@v4.0.4
+      uses: actions/setup-node@v4.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

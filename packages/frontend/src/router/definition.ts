@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AsyncComponentLoader, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent } from 'vue';
+import type { AsyncComponentLoader } from 'vue';
 import type { IRouter, RouteDef } from '@/nirax.js';
 import { Router } from '@/nirax.js';
 import { $i, iAmModerator } from '@/account.js';
@@ -17,10 +18,7 @@ export const page = (loader: AsyncComponentLoader) => defineAsyncComponent({
 });
 
 const routes: RouteDef[] = [{
-	path: '/@:initUser/pages/:initPageName/view-source',
-	component: page(() => import('@/pages/page-editor/page-editor.vue')),
-}, {
-	path: '/@:username/pages/:pageName',
+	path: '/@:username/pages/:pageName(*)',
 	component: page(() => import('@/pages/page.vue')),
 }, {
 	path: '/@:acct/following',
@@ -382,6 +380,10 @@ const routes: RouteDef[] = [{
 		path: '/emojis',
 		name: 'emojis',
 		component: page(() => import('@/pages/custom-emojis-manager.vue')),
+	}, {
+		path: '/emojis2',
+		name: 'emojis2',
+		component: page(() => import('@/pages/admin/custom-emojis-manager2.vue')),
 	}, {
 		path: '/avatar-decorations',
 		name: 'avatarDecorations',

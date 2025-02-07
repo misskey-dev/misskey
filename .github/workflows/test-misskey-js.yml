@@ -14,8 +14,13 @@ on:
     paths:
       - packages/misskey-js/**
       - .github/workflows/test-misskey-js.yml
+
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   test:
+    name: Unit tests (misskey.js)
 
     runs-on: ubuntu-latest
 
@@ -31,7 +36,7 @@ jobs:
       - run: corepack enable
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.0.4
+        uses: actions/setup-node@v4.1.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'

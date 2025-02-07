@@ -1802,9 +1802,6 @@ _pages:
   newPage: "Tạo Trang mới"
   editPage: "Sửa Trang này"
   readPage: "Xem mã nguồn Trang này"
-  created: "Trang đã được tạo thành công"
-  updated: "Trang đã được cập nhật thành công"
-  deleted: "Trang đã được xóa thành công"
   pageSetting: "Cài đặt trang"
   nameAlreadyExists: "URL Trang đã tồn tại"
   invalidNameTitle: "URL Trang không hợp lệ"
@@ -1930,3 +1927,6 @@ _moderationLogTypes:
   createInvitation: "Tạo lời mời"
 _reversi:
   total: "Tổng cộng"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Không tìm thấy"

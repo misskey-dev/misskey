@@ -582,7 +582,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.avatarDecorationLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.avatarDecorationLimit.value" type="number" :min="0">
+					<MkInput v-model="role.policies.avatarDecorationLimit.value" type="number" :min="0" :max="16" @update:modelValue="updateAvatarDecorationLimit">
 						<template #label>{{ i18n.ts._role._options.avatarDecorationLimit }}</template>
 					</MkInput>
 					<MkRange v-model="role.policies.avatarDecorationLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
@@ -752,6 +752,12 @@ for (const ROLE_POLICY of ROLE_POLICIES) {
 			value: instance.policies[ROLE_POLICY],
 		};
 	}
+}
+
+function updateAvatarDecorationLimit(value: string | number) {
+	const numValue = Number(value);
+	const limited = Math.min(16, Math.max(0, numValue));
+	role.value.policies.avatarDecorationLimit.value = limited;
 }
 
 const rolePermission = computed({
