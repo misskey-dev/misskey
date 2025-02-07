@@ -22,7 +22,7 @@ async function generateBaseTypes(
 	lines.push('');
 
 	// NOTE: Align `operationId` of GET and POST to avoid duplication of type definitions
-	const openApi = JSON.parse(readFile(openApiJsonPath).toString()) as OpenAPI3;
+	const openApi = JSON.parse(await readFile(openApiJsonPath, 'utf8')) as OpenAPI3;
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	for (const [key, item] of Object.entries(openApi.paths!)) {
 		assert('post' in item);
