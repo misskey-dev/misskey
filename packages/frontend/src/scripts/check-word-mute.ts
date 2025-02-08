@@ -18,7 +18,7 @@ type GlobalMisskeyWordMute = {
 	hard: WordMuteInfo;
 };
 
-function createWordMuteInfo(mutedWords: Array<string | string[]>) : WordMuteInfo {
+export function createWordMuteInfo(mutedWords: Array<string | string[]>) : WordMuteInfo {
 	if (mutedWords.length <= 0) return false;
 	const normalTexts: string[] = [];
 	const andTexts: string[][] = [];
