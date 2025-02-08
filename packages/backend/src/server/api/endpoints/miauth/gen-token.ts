@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			// アクセストークンが生成されたことを通知
-			await this.notificationService.createNotification(me.id, 'createToken', {});
+			this.notificationService.createNotification(me.id, 'createToken', {});
 
 			return {
 				token: accessToken,
