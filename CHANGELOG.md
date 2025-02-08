@@ -9,7 +9,7 @@
 - Enhance: クライアントエラー画面の多言語対応
 
 ### Server
--
+- Enhance: ノート検索プロバイダがsqlLikeの場合に、検索文字列でAND/OR/NOTをpgroonga互換の記法で指定できるように
 
 
 ## 2025.2.0
