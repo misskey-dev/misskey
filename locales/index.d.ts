@@ -9472,6 +9472,20 @@ export interface Locale extends ILocale {
          * ログインがありました
          */
         "login": string;
+        /**
+         * {ip}からログインされました。
+         * 心当たりがない場合、設定の「{text}」からすべての機器をログアウトしてください。
+         */
+        "loginDescription": ParameterizedString<"ip" | "text">;
+        /**
+         * ログインに失敗しました
+         */
+        "loginFailed": string;
+        /**
+         * {ip}からのログインに失敗しました。
+         * 心当たりがない場合はパスワードの変更を行ってください。
+         */
+        "loginFailedDescription": ParameterizedString<"ip">;
         "_types": {
             /**
              * すべて
@@ -9533,6 +9547,10 @@ export interface Locale extends ILocale {
              * ログイン
              */
             "login": string;
+            /**
+             * ログインに失敗
+             */
+            "loginFailed": string;
             /**
              * 通知のテスト
              */
