@@ -52,7 +52,7 @@ describe('check-word-mute', () => {
 			mutedWords: ['/M[isk]*ey/'],
 			result: ['/M[isk]*ey/'],
 		},
-		// multi wordas
+		// multi words
 		{
 			text: 'Hello, Misskey!',
 			mutedWords: [['Hello', 'Misskey'], ['Mi']],
