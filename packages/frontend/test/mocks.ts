@@ -16,7 +16,7 @@ export const UserLiteMock = vi.fn(() => {
 		avatarBlurhash: null,
 		avatarDecorations: [],
 		emojis: {},
-		onlineStatus:	'online',
+		onlineStatus: 'online',
 	} as Misskey.entities.UserLite;
 });
 
