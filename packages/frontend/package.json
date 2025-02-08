@@ -54,7 +54,7 @@
 		"misskey-bubble-game": "workspace:*",
 		"misskey-js": "workspace:*",
 		"misskey-reversi": "workspace:*",
-		"modern-ahocorasick": "2.0.2",
+		"modern-ahocorasick": "2.0.3",
 		"photoswipe": "5.4.4",
 		"punycode.js": "2.3.1",
 		"rollup": "4.26.0",
