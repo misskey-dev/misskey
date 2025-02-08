@@ -7033,6 +7033,10 @@ export interface Locale extends ILocale {
              * リストのインポートを許可
              */
             "canImportUserLists": string;
+            /**
+             * モデレーターの活動状況チェックの対象に含める
+             */
+            "isModeratorInactivityCheckTarget": string;
         };
         "_condition": {
             /**
