@@ -2840,3 +2840,12 @@ _captcha:
     _unknown:
       title: "Error CAPTCHA"
       text: "S'ha produït un error inesperat."
+_bootErrors:
+  title: "Hi ha hagut en error en carregar"
+  serverError: "Si el problema persisteix després d'esperar una mica i recarregar, posa't en contacte amb l'administrador del servidor amb el següent codi d'error."
+  solution: "Per intentar resoldre el problema pots fer el següent."
+  solution1: "Actualitza el navegador i el sistema operatiu a l'última versió "
+  solution2: "Desactiva els adblockers"
+  solution3: "Esborra la memòria cau del navegador"
+  solution4: "(Navegador Tor) configura dom.webaudio.enabled a true"
+  otherOption: "Altres opcions"
