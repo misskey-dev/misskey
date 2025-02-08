@@ -2849,3 +2849,6 @@ _bootErrors:
   solution3: "Esborra la memòria cau del navegador"
   solution4: "(Navegador Tor) configura dom.webaudio.enabled a true"
   otherOption: "Altres opcions"
+  otherOption1: "Esborrar la configuració i la memòria cau del client"
+  otherOption2: "Iniciar client senzill"
+  otherOption3: "Iniciar l'eina de reparació "
