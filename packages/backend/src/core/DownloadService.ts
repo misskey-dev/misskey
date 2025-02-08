@@ -60,8 +60,8 @@ export class DownloadService {
 				request: operationTimeout,	// whole operation timeout
 			},
 			agent: {
-				http: this.httpRequestService.httpAgent,
-				https: this.httpRequestService.httpsAgent,
+				http: this.httpRequestService.getAgentForHttp(urlObj),
+				https: this.httpRequestService.getAgentForHttps(urlObj),
 			},
 			http2: false,	// default
 			retry: {
