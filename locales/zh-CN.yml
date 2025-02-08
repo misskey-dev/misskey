@@ -2777,8 +2777,8 @@ _customEmojisManager:
     _register:
       uploadSettingTitle: "上传设置"
       uploadSettingDescription: "可以在此页面设置上传表情符号时的行为。"
-      directoryToCategoryLabel: "目录名请输入「category」"
-      directoryToCategoryCaption: "拖放目录时，目录名请输入「category」"
+      directoryToCategoryLabel: "将目录名设为「category」"
+      directoryToCategoryCaption: "拖放目录时，将目录名设置为「category」"
       emojiInputAreaCaption: "请使用其中一种方法选择要注册的表情符号。"
       emojiInputAreaList1: "在此区域内拖放图像文件或者目录"
       emojiInputAreaList2: "单击此链接以从电脑中选择"
@@ -2840,3 +2840,15 @@ _captcha:
     _unknown:
       title: "CAPTCHA 错误"
       text: "发生意外错误。"
+_bootErrors:
+  title: "加载失败"
+  serverError: "请稍等片刻再重试。若问题仍无法解决，请将以下 Error ID 一起发送给管理员。"
+  solution: "以下方法或许可以解决问题："
+  solution1: "将浏览器及操作系统更新到最新版本"
+  solution2: "禁用广告屏蔽插件"
+  solution3: "清除浏览器缓存"
+  solution4: "（Tor Browser）将 dom.webaudio.enabled 设定为 true"
+  otherOption: "其它选项"
+  otherOption1: "清除客户端设定与缓存"
+  otherOption2: "使用简易客户端"
+  otherOption3: "启动修复工具"
