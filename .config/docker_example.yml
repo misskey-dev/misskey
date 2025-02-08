@@ -189,6 +189,33 @@ id: 'aidx'
 # Number of worker processes
 #clusterLimit: 1
 
+# Cluster configuration
+#cluster:
+# ---------------------------------------------------------
+# This setting determines the role of worker processes.
+# Roles refer to the HTTP server (Web API server) function and the Job Queue function.
+# You can configure how many worker processes should be started for each role, such as two worker processes for the HTTP server role and four for the Job Queue role.
+#
+# The workers setting is an array of the following objects:
+#   name: The name of the worker process (optional).
+#   instances: The number of worker processes to start for this configuration. The total of these values must not exceed the clusterLimit setting.
+#   type: Specifies the role of the worker process. Available options are http and jobQueue. Since this is an array, a worker process can have multiple roles.
+# ---------------------------------------------------------
+#  workers:
+#    - name: http worker
+#      instances: 2
+#      type:
+#        - http
+#    - name: jobQueue worker
+#      instances: 4
+#      type:
+#        - jobQueue
+#    - name: both worker
+#      instances: 2
+#      type:
+#        - http
+#        - jobQueue
+
 # Job concurrency per worker
 # deliverJobConcurrency: 128
 # inboxJobConcurrency: 16
