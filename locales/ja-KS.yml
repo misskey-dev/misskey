@@ -2749,6 +2749,26 @@ _customEmojisManager:
     alertEmojisRegisterFailedDescription: "絵文字の更新・削除に失敗したで。詳細は登録ログを確認してな。"
   _logs:
     showSuccessLogSwitch: "成功ログを表示するで"
+    failureLogNothing: "失敗ログはあらへん。"
+    logNothing: "失敗ログはあらへん。"
+  _remote:
+    selectionRowDetail: "選択行の詳細やで"
+    importSelectionRows: "選択行をインポートするで"
+    importSelectionRangesRows: "選択範囲の行をインポートするで"
+    importEmojisButton: "チェックされた絵文字をインポートするで"
+    confirmImportEmojisTitle: "絵文字のインポートするで"
+    confirmImportEmojisDescription: "リモートから受信した{count}個の絵文字をインポートするで。絵文字のライセンスには十分気ぃつけてな。実行してもええか？"
+  _local:
+    tabTitleList: "登録済み絵文字一覧"
+    _list:
+      emojisNothing: "登録された絵文字はないで。"
+      markAsDeleteTargetRows: "選択行を削除対象にするで"
+      markAsDeleteTargetRanges: "選択範囲の行を削除対象にするで"
+      alertUpdateEmojisNothingDescription: "変更された絵文字はないで。"
+      alertDeleteEmojisNothingDescription: "削除対象の絵文字はないで。"
+      confirmMovePage: "ページを移動してもええんか？"
+      confirmChangeView: "表示を変更してもええんか？"
+      confirmUpdateEmojisDescription: "{count}個の絵文字を更新するで。実行してもええか？"
 _embedCodeGen:
   title: "埋め込みコードをカスタム"
   header: "ヘッダー出す"
