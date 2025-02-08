@@ -2840,3 +2840,12 @@ _captcha:
     _unknown:
       title: "CAPTCHA 錯誤"
       text: "發生了意外的錯誤。"
+_bootErrors:
+  title: "載入失敗"
+  serverError: "如果稍等片刻並重新載入後問題仍然存在，請聯絡您的伺服器管理員並提供以下的錯誤 ID。"
+  solution: "執行以下操作或許可以解決問題。"
+  solution1: "將瀏覽器和作業系統更新至最新版本"
+  solution2: "停用廣告攔截器"
+  solution3: "清除瀏覽器的快取"
+  solution4: "（Tor 瀏覽器）將 dom.webaudio.enabled 設為 true"
+  otherOption: "其他選項"
