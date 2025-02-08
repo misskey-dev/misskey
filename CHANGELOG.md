@@ -4,10 +4,12 @@
 -
 
 ### Client
--
+- Enhance: 投稿フォームの「迷惑になる可能性があります」のダイアログを表示する条件においてCWを考慮するように
+- Enhance: アンテナ、リスト等の名前をカラム名のデフォルト値にするように `#13992`
+- Enhance: クライアントエラー画面の多言語対応
 
 ### Server
--
+- Fix: `following/invalidate`でフォロワーを解除しようとしているユーザーの情報を返すように
 
 
 ## 2025.2.0
@@ -45,6 +47,7 @@
 	* β版として公開のため、旧画面も引き続き利用可能です
 
 ### Client
+- Feat: 投稿フォームで画像をプレビュー可能に
 - Enhance: PC画面でチャンネルが複数列で表示されるように  
   (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
 - Enhance: 照会に失敗した場合、その理由を表示するように
