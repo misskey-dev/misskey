@@ -5,7 +5,8 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { Component, markRaw, Ref, ref, defineAsyncComponent, nextTick } from 'vue';
+import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
+import type { Component, Ref } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
@@ -309,6 +310,21 @@ export function inputText(props: {
 } | {
 	canceled: false; result: string;
 }>;
+// min lengthが指定されてたら result は null になり得ないことを保証する overload function
+export function inputText(props: {
+	type?: 'text' | 'email' | 'password' | 'url';
+	title?: string;
+	text?: string;
+	placeholder?: string | null;
+	autocomplete?: string;
+	default?: string;
+	minLength: number;
+	maxLength?: number;
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
+	canceled: false; result: string;
+}>;
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
 	title?: string;
@@ -599,6 +615,27 @@ export async function selectDriveFolder(multiple: boolean): Promise<Misskey.enti
 			},
 			closed: () => dispose(),
 		});
+	});
+}
+
+export async function selectRole(params: {
+	initialRoleIds?: string[],
+	title?: string,
+	infoMessage?: string,
+	publicOnly?: boolean,
+}): Promise<
+	{ canceled: true; result: undefined; } |
+	{ canceled: false; result: Misskey.entities.Role[] }
+> {
+	return new Promise((resolve) => {
+		popup(defineAsyncComponent(() => import('@/components/MkRoleSelectDialog.vue')), params, {
+			done: roles => {
+				resolve({ canceled: false, result: roles });
+			},
+			close: () => {
+				resolve({ canceled: true, result: undefined });
+			},
+		}, 'dispose');
 	});
 }
 
