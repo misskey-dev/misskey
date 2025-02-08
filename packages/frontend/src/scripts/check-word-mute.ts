@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import * as AhoCorasick from 'modern-ahocorasick';
-import { c } from 'node_modules/vite/dist/node/types.d-aGj9QkWt';
 import type * as Misskey from 'misskey-js';
 import { $i } from '@/account.js';
 
