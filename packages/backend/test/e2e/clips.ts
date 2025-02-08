@@ -199,8 +199,20 @@ describe('クリップ', () => {
 	}));
 
 	test('の作成はdescriptionが空文字ならnullになる', async () => {
-		const res = await create({ description: '' });
-		assert.strictEqual(res.description, null);
+		const clip = await successfulApiCall({
+			endpoint: 'clips/create',
+			parameters: {
+				...defaultCreate(),
+				description: '',
+			},
+			user: alice,
+		});
+
+		assert.deepStrictEqual(clip, {
+			...clip,
+			...defaultCreate(),
+			description: null,
+		});
 	});
 
 	test('の更新ができる', async () => {
@@ -254,12 +266,21 @@ describe('クリップ', () => {
 	}));
 
 	test('の更新はdescriptionが空文字ならnullになる', async () => {
-		const res = await update({
-			clipId: (await create()).id,
-			name: 'updated',
-			description: '',
+		const clip = await successfulApiCall({
+			endpoint: 'clips/update',
+			parameters: {
+				clipId: (await create()).id,
+				name: 'updated',
+				description: '',
+			},
+			user: alice,
 		});
-		assert.strictEqual(res.description, null);
+
+		assert.deepStrictEqual(clip, {
+			...clip,
+			name: 'updated',
+			description: null,
+		});
 	});
 
 	test('の削除ができる', async () => {
