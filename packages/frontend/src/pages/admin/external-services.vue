@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>Google Analytics</template>
 
 					<div class="_gaps_m">
-						<MkInput v-model="deeplAuthKey">
+						<MkInput v-model="googleAnalyticsMeasurementId">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Measurement ID</template>
 						</MkInput>
