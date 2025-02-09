@@ -18,6 +18,7 @@
 	"dependencies": {
 		"@discordapp/twemoji": "15.1.0",
 		"@github/webauthn-json": "2.1.1",
+		"@iconify/vue": "^4.3.0",
 		"@mcaptcha/vanilla-glue": "0.1.0-alpha-3",
 		"@misskey-dev/browser-image-resizer": "2024.1.0",
 		"@rollup/plugin-json": "6.1.0",

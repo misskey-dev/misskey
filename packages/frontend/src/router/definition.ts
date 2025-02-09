@@ -18,6 +18,10 @@ export const page = (loader: AsyncComponentLoader) => defineAsyncComponent({
 });
 
 const routes: RouteDef[] = [{
+	name: 'mailVerify',
+	path: '/verify-email/:code',
+	component: page(() => import('@/pages/verify-email.vue')),
+}, {
 	path: '/@:username/pages/:pageName(*)',
 	component: page(() => import('@/pages/page.vue')),
 }, {
