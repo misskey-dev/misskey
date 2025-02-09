@@ -1,7 +1,8 @@
 ## Unreleased
 
 ### General
--
+- Enhance: フロントエンドのエラートラッキングができるように
+	- `.config/default.yml`中の項目`sentryForFrontend`を適宜設定してください。
 
 ### Client
 - Enhance: 投稿フォームの「迷惑になる可能性があります」のダイアログを表示する条件においてCWを考慮するように
