@@ -4,7 +4,7 @@
  */
 
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
-import { ui } from '@@/js/config.js';
+import { apiUrl, ui } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 import { common } from './common.js';
@@ -32,7 +32,7 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { launchPlugins } from '@/plugin.js';
 
 export async function mainBoot() {
-	const { isClientUpdated } = await common(() => {
+	const { isClientUpdated, app } = await common(() => {
 		let uiStyle = ui;
 		const searchParams = new URLSearchParams(window.location.search);
 
@@ -64,6 +64,34 @@ export async function mainBoot() {
 
 		return createApp(rootComponent);
 	});
+
+	if (instance.sentryForFrontend) {
+		const Sentry = await import('@sentry/vue');
+		Sentry.init({
+			app,
+			integrations: [
+				...(instance.sentryForFrontend.enableBrowserTracing ? [Sentry.browserTracingIntegration()] : []),
+				...(instance.sentryForFrontend.enableReplay ? [Sentry.replayIntegration()] : []),
+			],
+
+			// Set tracesSampleRate to 1.0 to capture 100%
+			tracesSampleRate: 1.0,
+
+			// Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+			...(instance.sentryForFrontend.enableBrowserTracing ? {
+				tracePropagationTargets: [apiUrl],
+			} : {}),
+
+			// Capture Replay for 10% of all sessions,
+			// plus for 100% of sessions with an error
+			...(instance.sentryForFrontend.enableReplay ? {
+				replaysSessionSampleRate: 0.1,
+				replaysOnErrorSampleRate: 1.0,
+			} : {}),
+
+			...instance.sentryForFrontend.options,
+		});
+	}
 
 	reactionPicker.init();
 	emojiPicker.init();

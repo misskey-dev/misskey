@@ -5080,6 +5080,14 @@ export type components = {
       enableEmail: boolean;
       enableServiceWorker: boolean;
       translatorAvailable: boolean;
+      sentryForFrontend: {
+        options: {
+          dsn: string;
+          [key: string]: unknown;
+        };
+        enableBrowserTracing: boolean;
+        enableReplay: boolean;
+      } | null;
       mediaProxy: string;
       enableUrlPreview: boolean;
       backgroundImageUrl: string | null;

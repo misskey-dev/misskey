@@ -1,7 +1,8 @@
 ## 2025.3.2
 
 ### General
--
+- Enhance: フロントエンドのエラートラッキングができるように
+	- `.config/default.yml`中の項目`sentryForFrontend`を適宜設定してください。
 
 ### Client
 - Feat: 設定の管理が強化されました
