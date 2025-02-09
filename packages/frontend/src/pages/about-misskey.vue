@@ -39,11 +39,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							{{ i18n.ts._aboutMisskey.translation }}
 							<template #suffix>Crowdin</template>
 						</FormLink>
-						<FormLink to="https://www.patreon.com/syuilo" external>
-							<template #icon><i class="ti ti-pig-money"></i></template>
-							{{ i18n.ts._aboutMisskey.donate }}
-							<template #suffix>Patreon</template>
-						</FormLink>
 					</div>
 				</FormSection>
 				<FormSection v-if="instance.repositoryUrl !== 'https://github.com/misskey-dev/misskey'">
@@ -51,78 +46,61 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInfo>
 							{{ i18n.tsx._aboutMisskey.thisIsModifiedVersion({ name: instance.name }) }}
 						</MkInfo>
+						<MkInfo>
+							不过！不用担心！虽然现在咱(@AlienFamilyHub/misskey)暂时还没有i18n，但是等过上一段时间说不定就有了呢？
+							将这一切交由时间，我们的未来定然是光明璀璨的！
+						</MkInfo>
 						<FormLink v-if="instance.repositoryUrl" :to="instance.repositoryUrl" external>
 							<template #icon><i class="ti ti-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}
 						</FormLink>
-						<FormLink v-if="instance.providesTarball" :to="`/tarball/misskey-${version}.tar.gz`" external>
-							<template #icon><i class="ti ti-download"></i></template>
-							{{ i18n.ts._aboutMisskey.source }}
-							<template #suffix>Tarball</template>
-						</FormLink>
-						<MkInfo v-if="!instance.repositoryUrl && !instance.providesTarball" warn>
-							{{ i18n.ts.sourceCodeIsNotYetProvided }}
-						</MkInfo>
 					</div>
 				</FormSection>
 				<FormSection>
-					<template #label>{{ i18n.ts._aboutMisskey.projectMembers }}</template>
+					<template #label>Misskey {{ i18n.ts._aboutMisskey.projectMembers }}</template>
 					<div :class="$style.contributors">
 						<a href="https://github.com/syuilo" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/4439005?v=4" :class="$style.contributorAvatar">
+							<img src="https://avatars-githubusercontent.webp.se/syuilo" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@syuilo</span>
 						</a>
 						<a href="https://github.com/acid-chicken" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/20679825?v=4" :class="$style.contributorAvatar">
+							<img src="https://avatars-githubusercontent.webp.se/acid-chicken" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@acid-chicken</span>
 						</a>
 						<a href="https://github.com/kakkokari-gtyih" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/67428053?v=4" :class="$style.contributorAvatar">
+							<img src="https://avatars-githubusercontent.webp.se/kakkokari-gtyih" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@kakkokari-gtyih</span>
 						</a>
 						<a href="https://github.com/tai-cha" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/40626578?v=4" :class="$style.contributorAvatar">
+							<img src="https://avatars-githubusercontent.webp.se/tai-cha" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@tai-cha</span>
 						</a>
 						<a href="https://github.com/samunohito" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/46447427?v=4" :class="$style.contributorAvatar">
+							<img src="https://avatars-githubusercontent.webp.se/samunohito" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@samunohito</span>
 						</a>
 						<a href="https://github.com/anatawa12" target="_blank" :class="$style.contributor">
-							<img src="https://avatars.githubusercontent.com/u/22656849?v=4" :class="$style.contributorAvatar">
+							<img src="https://avatars-githubusercontent.webp.se/anatawa12" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@anatawa12</span>
 						</a>
 					</div>
 				</FormSection>
 				<FormSection>
-					<template #label>Special thanks</template>
-					<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));grid-gap:24px;align-items:center;">
-						<div>
-							<a style="display: inline-block;" class="masknetwork" title="Mask Network" href="https://mask.io/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/masknetwork.png" alt="Mask Network"></a>
-						</div>
-						<div>
-							<a style="display: inline-block;" class="xserver" title="XServer" href="https://www.xserver.ne.jp/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/xserver.png" alt="XServer"></a>
-						</div>
-						<div>
-							<a style="display: inline-block;" class="skeb" title="Skeb" href="https://skeb.jp/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/skeb.svg" alt="Skeb"></a>
-						</div>
-						<div>
-							<a style="display: inline-block;" class="pepabo" title="GMO Pepabo" href="https://pepabo.com/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/gmo_pepabo.svg" alt="GMO Pepabo"></a>
-						</div>
+					<template #label>@AlienFamilyHub/misskey {{ i18n.ts._aboutMisskey.projectMembers }}</template>
+					<div :class="$style.contributors">
+						<a href="https://github.com/TNXG" target="_blank" :class="$style.contributor">
+							<img src="https://avatars-githubusercontent.webp.se/TNXG" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@TNXG</span>
+						</a>
+						<a href="https://github.com/Kindle-deep" target="_blank" :class="$style.contributor">
+							<img src="https://avatars-githubusercontent.webp.se/Kindle-deep" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@Kindle-deep</span>
+						</a>
+						<a href="https://github.com/Hoshino-Yumetsuki" target="_blank" :class="$style.contributor">
+							<img src="https://avatars-githubusercontent.webp.se/Hoshino-Yumetsuki" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@Hoshino-Yumetsuki</span>
+						</a>
 					</div>
-				</FormSection>
-				<FormSection>
-					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
-					<div :class="$style.patronsWithIcon">
-						<div v-for="patron in patronsWithIcon" :class="$style.patronWithIcon">
-							<img :src="patron.icon" :class="$style.patronIcon">
-							<span :class="$style.patronName">{{ patron.name }}</span>
-						</div>
-					</div>
-					<div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
-						<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
-					</div>
-					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
 				</FormSection>
 			</div>
 		</MkSpacer>
