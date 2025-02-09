@@ -3,7 +3,7 @@ name: Build and Push Misskey Docker Image (ARMv8)
 on:
   push:
     branches:
-      - main
+      - develop
   workflow_dispatch:  # 允许手动触发
 
 jobs:
