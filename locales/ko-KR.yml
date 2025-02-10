@@ -2840,3 +2840,6 @@ _captcha:
     _unknown:
       title: "CAPTCHA 에러"
       text: "알 수 없는 에러가 발생했습니다."
+_bootErrors:
+  title: "로딩이 실패함"
+  solution4: "(Tor Browser) dom.webaudio.enabled를 true로 설정하세요"
