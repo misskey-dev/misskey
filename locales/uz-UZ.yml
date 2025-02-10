@@ -1004,9 +1004,6 @@ _play:
 _pages:
   newPage: "Yangi Sahifa yaratish"
   editPage: "Ushbu Sahifani tahrirlash"
-  created: "Sahifa muvaffaqiyatli yaratildi"
-  updated: "Sahifa muvaffaqiyatli tahrirlandi"
-  deleted: "Sahifa muvaffaqiyatli o'chirildi"
   pageSetting: "Sahifa sozlamalari"
   nameAlreadyExists: "Ko'rsatilgan Sahifa URL'i allaqachon mavjud"
   invalidNameTitle: "Ko'rsatilgan Sahifa URL'i yaroqsiz"
@@ -1094,3 +1091,6 @@ _moderationLogTypes:
   resetPassword: "Parolni tiklash"
 _reversi:
   total: "Jami"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Topilmadi"
