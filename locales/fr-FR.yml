@@ -2118,9 +2118,6 @@ _pages:
   newPage: "Créer une page"
   editPage: "Modifier une page"
   readPage: "Affichage de la source en cours"
-  created: "La page a été créée !"
-  updated: "La page a été mise à jour !"
-  deleted: "La page a été supprimée"
   pageSetting: "Paramètres de la Page"
   nameAlreadyExists: "L'URL de page spécifiée existe déjà"
   invalidNameTitle: "L'URL de page spécifiée n’est pas valide"
@@ -2364,3 +2361,6 @@ _mediaControls:
 _embedCodeGen:
   title: "Personnaliser le code d'intégration"
   generateCode: "Générer le code d'intégration"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Non trouvé"

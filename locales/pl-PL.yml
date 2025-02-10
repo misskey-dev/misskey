@@ -1459,9 +1459,6 @@ _pages:
   newPage: "Utwórz stronę"
   editPage: "Edytuj tę stronę"
   readPage: "Aktywowano widok źródła"
-  created: "Pomyślnie utworzono stronę!"
-  updated: "Pomyślnie zaktualizowano stronę!"
-  deleted: "Strona została usunięta"
   pageSetting: "Ustawienia strony"
   nameAlreadyExists: "Określony adres URL strony już istnieje"
   invalidNameTitle: "Podany adres URL strony jest nieprawidłowy"
@@ -1583,3 +1580,6 @@ _moderationLogTypes:
   resetPassword: "Zresetuj hasło"
 _reversi:
   total: "Łącznie"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Nie znaleziono"

@@ -2331,9 +2331,6 @@ _pages:
   newPage: "สร้างหน้าเพจใหม่"
   editPage: "แก้ไขหน้าเพจ"
   readPage: "กำลังดูแหล่งที่มาของเพจนี้"
-  created: "สร้างหน้าเพจสำเร็จเรียบร้อยแล้ว"
-  updated: "แก้ไขหน้าเพจสำเร็จเรียบร้อยแล้ว"
-  deleted: "ลบหน้าเพจสำเร็จเรียบร้อยแล้ว"
   pageSetting: "การตั้งค่าหน้าเพจ"
   nameAlreadyExists: "URL ของหน้าที่ระบุนั้นมีอยู่แล้ว"
   invalidNameTitle: "URL ของหน้าที่ระบุนั้นไม่ถูกต้อง"
@@ -2709,3 +2706,6 @@ _embedCodeGen:
   generateCode: "สร้างโค้ดสำหรับการฝัง"
   codeGenerated: "รหัสถูกสร้างขึ้นแล้ว"
   codeGeneratedDescription: "นำโค้ดที่สร้างแล้วไปวางในเว็บไซต์ของคุณเพื่อฝังเนื้อหา"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "ไม่พบหน้าที่ต้องการ"

@@ -1332,9 +1332,6 @@ _pages:
   newPage: "Vytvoriť novú stránku"
   editPage: "Upraviť túto stránku"
   readPage: "Zobrazenie zdroja aktívne"
-  created: "Stránka úspešne vytvorená"
-  updated: "Stránka úspešne upravená"
-  deleted: "Stránka úspešne odstránená"
   pageSetting: "Nastavenia stránky"
   nameAlreadyExists: "Zadaná URL stránku už existuje"
   invalidNameTitle: "Zadaná URL stránku je nesprávna"
@@ -1449,3 +1446,6 @@ _moderationLogTypes:
   resetPassword: "Resetovať heslo"
 _reversi:
   total: "Celkom"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Nenájdené"
