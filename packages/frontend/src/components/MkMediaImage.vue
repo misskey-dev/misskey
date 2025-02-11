@@ -147,7 +147,7 @@ function showMenu(ev: MouseEvent) {
 		details.push({
 			type: 'link',
 			text: i18n.ts._fileViewer.titleAdmin,
-			icon: 'ti ti-pencil',
+			icon: 'ti ti-info-circle',
 			to: `/admin/file/${props.image.id}`,
 		});
 	}
