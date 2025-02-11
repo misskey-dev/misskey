@@ -4422,7 +4422,7 @@ export type components = {
       size: number;
       isSensitive: boolean;
       /** @enum {string} */
-      sensitiveChangeReason: 'user' | 'moderator' | 'auto';
+      sensitiveChangeReason: 'user' | 'moderator' | 'auto' | 'none';
       blurhash: string | null;
       properties: {
         /** @example 1280 */
