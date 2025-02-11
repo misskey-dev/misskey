@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class SensitiveReason1739257753979 {
     name = 'SensitiveReason1739257753979'
 
