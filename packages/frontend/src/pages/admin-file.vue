@@ -117,9 +117,17 @@ async function del() {
 	});
 }
 
-async function toggleIsSensitive(v) {
-	await misskeyApi('drive/files/update', { fileId: props.fileId, isSensitive: v });
-	isSensitive.value = v;
+async function toggleIsSensitive(v: boolean) {
+	await misskeyApi('drive/files/update', { fileId: props.fileId, isSensitive: v })
+		.then(() => isSensitive.value = v)
+		.catch(err => {
+			isSensitive.value = !v;
+			os.alert({
+				type: 'error',
+				title: i18n.ts.error,
+				text: err.message,
+			});
+		});
 }
 
 const headerActions = computed(() => [{

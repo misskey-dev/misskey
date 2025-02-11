@@ -109,6 +109,12 @@ function toggleSensitive(file) {
 		isSensitive: !file.isSensitive,
 	}).then(() => {
 		emit('changeSensitive', file, !file.isSensitive);
+	}).catch(err => {
+		os.alert({
+			type: 'error',
+			title: i18n.ts.error,
+			text: err.message,
+		});
 	});
 }
 

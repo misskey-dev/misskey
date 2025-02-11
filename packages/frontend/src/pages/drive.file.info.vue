@@ -171,12 +171,6 @@ function toggleSensitive() {
 		isSensitive: !file.value.isSensitive,
 	}).then(async () => {
 		await fetch();
-	}).catch(err => {
-		os.alert({
-			type: 'error',
-			title: i18n.ts.error,
-			text: err.message,
-		});
 	});
 }
 
