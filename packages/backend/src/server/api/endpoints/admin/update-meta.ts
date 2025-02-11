@@ -16,16 +16,7 @@ export const meta = {
 	requireCredential: true,
 	requireAdmin: true,
 	kind: 'write:admin:meta',
-	errors: {
-		invalidObjectStoragePrefix: {
-			message: 'Object storage prefix contains invalid characters.',
-			code: 'INVALID_OBJECT_STORAGE_PREFIX',
-			id: 'b3165f19-d54f-40d0-81d2-7ba1696aa8df',
-		},
-	},
 } as const;
-
-const S3_SAFE_CHARS = /^[a-zA-Z0-9-._]+$/;
 
 export const paramDef = {
 	type: 'object',
@@ -127,7 +118,7 @@ export const paramDef = {
 		useObjectStorage: { type: 'boolean' },
 		objectStorageBaseUrl: { type: 'string', nullable: true },
 		objectStorageBucket: { type: 'string', nullable: true },
-		objectStoragePrefix: { type: 'string', nullable: true },
+		objectStoragePrefix: { type: 'string', pattern: /^[a-zA-Z0-9-._]*$/.source, nullable: true },
 		objectStorageEndpoint: { type: 'string', nullable: true },
 		objectStorageRegion: { type: 'string', nullable: true },
 		objectStoragePort: { type: 'integer', nullable: true },
@@ -490,9 +481,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.objectStoragePrefix !== undefined) {
-				if (ps.objectStoragePrefix !== null && ps.objectStoragePrefix !== '' && !S3_SAFE_CHARS.test(ps.objectStoragePrefix)) {
-					throw new ApiError(meta.errors.invalidObjectStoragePrefix);
-				}
 				set.objectStoragePrefix = ps.objectStoragePrefix;
 			}
 
