@@ -589,7 +589,7 @@ export interface Locale extends ILocale {
     /**
      * モデレーターによってセンシティブとして設定されたため解除できません。
      */
-    "canNotUnmarkAsSensitive_Moderator": string;
+    "canNotUnmarkSensitive_setByModerator": string;
     /**
      * ファイル名を入力
      */
@@ -10084,6 +10084,10 @@ export interface Locale extends ILocale {
          * このページは、このファイルをアップロードしたユーザーしか閲覧できません。
          */
         "thisPageCanBeSeenFromTheAuthor": string;
+        /**
+         * このファイルはモデレーターによりセンシティブとして設定されました。
+         */
+        "setAsSensitiveByModerator": string;
     };
     "_externalResourceInstaller": {
         /**

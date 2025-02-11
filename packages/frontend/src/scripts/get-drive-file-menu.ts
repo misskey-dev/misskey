@@ -55,7 +55,7 @@ function toggleSensitive(file: Misskey.entities.DriveFile) {
 	if (!$i?.isModerator && file.isSensitive && file.sensitiveChangeReason === 'moderator') {
 		os.alert({
 			type: 'warning',
-			text: i18n.ts.canNotUnmarkAsSensitive_Moderator,
+			text: i18n.ts.canNotUnmarkSensitive_setByModerator,
 		});
 		return;
 	}
