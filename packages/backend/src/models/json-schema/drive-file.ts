@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { driveFileSensitiveReasons } from '@/models/DriveFile.js';
+
 export const packedDriveFileSchema = {
 	type: 'object',
 	properties: {
@@ -40,6 +42,11 @@ export const packedDriveFileSchema = {
 		},
 		isSensitive: {
 			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		sensitiveChangeReason: {
+			type: 'string',
+			enum: driveFileSensitiveReasons,
 			optional: false, nullable: false,
 		},
 		blurhash: {
