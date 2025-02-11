@@ -2440,6 +2440,7 @@ _notification:
   flushNotification: "重置通知历史"
   exportOfXCompleted: "已完成 {x} 的导出"
   login: "有新的登录"
+  createToken: "访问令牌已创建"
   _types:
     all: "全部"
     note: "用户的新帖子"
