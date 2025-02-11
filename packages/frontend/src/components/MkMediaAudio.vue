@@ -217,15 +217,27 @@ function showMenu(ev: MouseEvent) {
 		});
 	}
 
+	const details: MenuItem[] = [];
 	if ($i?.id === props.audio.userId) {
-		menu.push({
-			type: 'divider',
-		}, {
+		details.push({
 			type: 'link',
 			text: i18n.ts._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.audio.id}`,
 		});
+	}
+
+	if (iAmModerator) {
+		details.push({
+			type: 'link',
+			text: i18n.ts._fileViewer.titleAdmin,
+			icon: 'ti ti-pencil',
+			to: `/admin/file/${props.audio.id}`,
+		});
+	}
+
+	if (details.length > 0) {
+		menu.push({ type: 'divider' }, ...details);
 	}
 
 	if (defaultStore.state.devMode) {
