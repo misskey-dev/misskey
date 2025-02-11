@@ -8,7 +8,7 @@ import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiDriveFolder } from './DriveFolder.js';
 
-export const driveFileSensitiveReasons = ['user', 'moderator', 'auto'] as const;
+export const driveFileSensitiveReasons = ['user', 'moderator', 'auto', 'none'] as const;
 export type DriveFileSensitiveReason = typeof driveFileSensitiveReasons[number];
 
 @Entity('drive_file')

@@ -15,7 +15,7 @@ import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, Use
 import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import type { MiRemoteUser, MiUser } from '@/models/User.js';
-import { MiDriveFile } from '@/models/DriveFile.js';
+import { DriveFileSensitiveReason, MiDriveFile } from '@/models/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
@@ -703,12 +703,21 @@ export class DriveService {
 			}
 		}
 
+		let sensitiveChangeReason: DriveFileSensitiveReason = file.sensitiveChangeReason;
+		if (isChangeSensitive) {
+			if (values.isSensitive) {
+				// モデレータではないがユーザIDが異なる場合は呼び出し元で弾かれてるはずなのでここでは考慮しない
+				sensitiveChangeReason = (isModerator && file.userId !== updater.id)
+					? 'moderator'
+					: 'user';
+			} else {
+				sensitiveChangeReason = 'none';
+			}
+		}
+
 		await this.driveFilesRepository.update(file.id, {
 			...values,
-			// モデレータではないがユーザIDが異なる場合は呼び出し元で弾かれてるはずなのでここでは考慮しない
-			sensitiveChangeReason: (isModerator && file.userId !== updater.id)
-				? 'moderator'
-				: 'user',
+			sensitiveChangeReason: sensitiveChangeReason,
 		});
 
 		const fileObj = await this.driveFileEntityService.pack(file.id, { self: true });

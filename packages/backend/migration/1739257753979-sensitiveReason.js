@@ -8,11 +8,11 @@ export class SensitiveReason1739257753979 {
 
     async up(queryRunner) {
         await queryRunner.query(`
-            CREATE TYPE "public"."drive_file_sensitivechangereason_enum" AS ENUM('user', 'moderator', 'auto')
+            CREATE TYPE "public"."drive_file_sensitivechangereason_enum" AS ENUM('user', 'moderator', 'auto', 'none')
         `);
         await queryRunner.query(`
             ALTER TABLE "drive_file"
-            ADD "sensitiveChangeReason" "public"."drive_file_sensitivechangereason_enum" NOT NULL DEFAULT 'user'
+            ADD "sensitiveChangeReason" "public"."drive_file_sensitivechangereason_enum" NOT NULL DEFAULT 'none'
         `);
     }
 
