@@ -80,7 +80,6 @@ class AnalyticsProxy implements AnalyticsInstance {
 export const analytics = new AnalyticsProxy();
 
 export async function initAnalytics(instance: Misskey.entities.MetaDetailed) {
-
 	// アナリティクスプロバイダに関する設定がひとつもない場合は、アナリティクスモジュールを読み込まない
 	if (!instance.googleAnalyticsMeasurementId) {
 		return;
