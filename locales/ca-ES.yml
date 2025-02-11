@@ -2440,6 +2440,8 @@ _notification:
   flushNotification: "Netejar notificacions"
   exportOfXCompleted: "Completada l'exportació de {x}"
   login: "Algú ha iniciat sessió "
+  createToken: "Token d'accés generat"
+  createTokenDescription: "Si no saps què és, esborra el token des de {text}."
   _types:
     all: "Tots"
     note: "Notes noves"
