@@ -78,6 +78,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, computed, defineAsyncComponent, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
+import { $i } from '@/account';
 import MkInfo from '@/components/MkInfo.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -155,6 +156,14 @@ function move() {
 
 function toggleSensitive() {
 	if (!file.value) return;
+
+	if (!$i?.isModerator && file.value.isSensitive && file.value.sensitiveChangeReason === 'moderator') {
+		os.alert({
+			type: 'warning',
+			text: i18n.ts.canNotUnmarkAsSensitive_Moderator,
+		});
+		return;
+	}
 
 	os.apiWithDialog('drive/files/update', {
 		fileId: file.value.id,

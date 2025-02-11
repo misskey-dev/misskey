@@ -38,6 +38,7 @@ import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu';
 import { defaultStore } from '@/store';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard';
+import { $i } from '@/account';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -92,6 +93,14 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 function toggleSensitive(file) {
 	if (mock) {
 		emit('changeSensitive', file, !file.isSensitive);
+		return;
+	}
+
+	if (!$i?.isModerator && file.isSensitive && file.sensitiveChangeReason === 'moderator') {
+		os.alert({
+			type: 'warning',
+			text: i18n.ts.canNotUnmarkAsSensitive_Moderator,
+		});
 		return;
 	}
 

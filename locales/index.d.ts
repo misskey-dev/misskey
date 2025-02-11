@@ -587,6 +587,10 @@ export interface Locale extends ILocale {
      */
     "unmarkAsSensitive": string;
     /**
+     * モデレーターによってセンシティブとして設定されたため解除できません。
+     */
+    "canNotUnmarkAsSensitive_Moderator": string;
+    /**
      * ファイル名を入力
      */
     "enterFileName": string;

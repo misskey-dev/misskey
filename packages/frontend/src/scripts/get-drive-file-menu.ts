@@ -5,11 +5,12 @@
 
 import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
+import { $i } from '@/account';
 import { i18n } from '@/i18n.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import type { MenuItem } from '@/types/menu.js';
 import { defaultStore } from '@/store.js';
 
 function rename(file: Misskey.entities.DriveFile) {
@@ -51,6 +52,14 @@ function move(file: Misskey.entities.DriveFile) {
 }
 
 function toggleSensitive(file: Misskey.entities.DriveFile) {
+	if (!$i?.isModerator && file.isSensitive && file.sensitiveChangeReason === 'moderator') {
+		os.alert({
+			type: 'warning',
+			text: i18n.ts.canNotUnmarkAsSensitive_Moderator,
+		});
+		return;
+	}
+
 	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
