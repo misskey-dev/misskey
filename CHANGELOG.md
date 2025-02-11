@@ -12,6 +12,7 @@
 
 ### Server
 - Fix: `following/invalidate`でフォロワーを解除しようとしているユーザーの情報を返すように
+- Fix: `update-meta`でobjectStoragePrefixにS3_SAFEかつURL-safeでない文字列を使えないように
 
 
 ## 2025.2.0
