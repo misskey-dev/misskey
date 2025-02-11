@@ -50,6 +50,12 @@ export const meta = {
 			code: 'RESTRICTED_BY_ROLE',
 			id: '7f59dccb-f465-75ab-5cf4-3ce44e3282f7',
 		},
+
+		nsfwMarkedByModerator: {
+			message: 'Cannot be removed because it has been flagged as NSFW by a moderator.',
+			code: 'NSFW_MARKED_BY_MODERATOR',
+			id: 'c9ff65ab-c344-d715-f3c8-0c325f852951',
+		},
 	},
 	res: {
 		type: 'object',
@@ -103,8 +109,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.invalidFileName);
 				} else if (e instanceof DriveService.NoSuchFolderError) {
 					throw new ApiError(meta.errors.noSuchFolder);
-				} else if (e instanceof DriveService.CannotUnmarkSensitiveError) {
+				} else if (e instanceof DriveService.CannotUnmarkSensitiveError_RestrictRole) {
 					throw new ApiError(meta.errors.restrictedByRole);
+				} else if (e instanceof DriveService.CannotUnmarkSensitiveError_NsfwMarkedByModerator) {
+					throw new ApiError(meta.errors.nsfwMarkedByModerator);
 				} else {
 					throw e;
 				}

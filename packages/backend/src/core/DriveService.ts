@@ -89,7 +89,8 @@ type UploadFromUrlArgs = {
 export class DriveService {
 	public static NoSuchFolderError = class extends Error {};
 	public static InvalidFileNameError = class extends Error {};
-	public static CannotUnmarkSensitiveError = class extends Error {};
+	public static CannotUnmarkSensitiveError_RestrictRole = class extends Error {};
+	public static CannotUnmarkSensitiveError_NsfwMarkedByModerator = class extends Error {};
 	private registerLogger: Logger;
 	private downloaderLogger: Logger;
 	private deleteLogger: Logger;
@@ -681,12 +682,12 @@ export class DriveService {
 
 				if (!isModerator && file.sensitiveChangeReason === 'moderator') {
 					// モデレータ以外はモデレータによるセンシティブ解除を許可しない
-					throw new DriveService.CannotUnmarkSensitiveError();
+					throw new DriveService.CannotUnmarkSensitiveError_NsfwMarkedByModerator();
 				}
 
 				if (!isModerator && (await this.roleService.getUserPolicies(file.userId)).alwaysMarkNsfw) {
 					// 常にセンシティブとするポリシーが設定されている場合、センシティブを解除できない
-					throw new DriveService.CannotUnmarkSensitiveError();
+					throw new DriveService.CannotUnmarkSensitiveError_RestrictRole();
 				}
 			}
 		}
