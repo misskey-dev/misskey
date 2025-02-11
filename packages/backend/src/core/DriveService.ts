@@ -685,7 +685,7 @@ export class DriveService {
 					throw new DriveService.CannotUnmarkSensitiveError_NsfwMarkedByModerator();
 				}
 
-				if (!isModerator && (await this.roleService.getUserPolicies(file.userId)).alwaysMarkNsfw) {
+				if ((await this.roleService.getUserPolicies(file.userId)).alwaysMarkNsfw) {
 					// 常にセンシティブとするポリシーが設定されている場合、センシティブを解除できない
 					throw new DriveService.CannotUnmarkSensitiveError_RestrictRole();
 				}
