@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import bytes from '@/filters/bytes.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
@@ -140,6 +141,16 @@ function showMenu(ev: MouseEvent) {
 			text: i18n.ts._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.image.id}`,
+		});
+	}
+
+	if (defaultStore.state.devMode) {
+		menuItems.push({ type: 'divider' }, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(props.image.id);
+			},
 		});
 	}
 

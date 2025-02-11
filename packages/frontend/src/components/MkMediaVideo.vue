@@ -113,6 +113,7 @@ import { ref, shallowRef, computed, watch, onDeactivated, onActivated, onMounted
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import type { Keymap } from '@/scripts/hotkey.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import { defaultStore } from '@/store.js';
@@ -249,6 +250,16 @@ function showMenu(ev: MouseEvent) {
 			text: i18n.ts._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.video.id}`,
+		});
+	}
+
+	if (defaultStore.state.devMode) {
+		menu.push({ type: 'divider' }, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(props.video.id);
+			},
 		});
 	}
 
