@@ -2441,6 +2441,7 @@ _notification:
   exportOfXCompleted: "已完成 {x} 的导出"
   login: "有新的登录"
   createToken: "访问令牌已创建"
+  createTokenDescription: "如果不明白其用途，请遵循「{text}」的指示删除访问令牌。"
   _types:
     all: "全部"
     note: "用户的新帖子"
