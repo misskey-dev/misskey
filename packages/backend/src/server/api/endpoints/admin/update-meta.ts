@@ -8,6 +8,7 @@ import type { MiMeta } from '@/models/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -15,7 +16,16 @@ export const meta = {
 	requireCredential: true,
 	requireAdmin: true,
 	kind: 'write:admin:meta',
+	errors: {
+		invalidObjectStoragePrefix: {
+			message: 'Object storage prefix contains invalid characters.',
+			code: 'INVALID_OBJECT_STORAGE_PREFIX',
+			id: 'b3165f19-d54f-40d0-81d2-7ba1696aa8df',
+		},
+	},
 } as const;
+
+const S3_SAFE_CHARS = /^[a-zA-Z0-9-._]+$/;
 
 export const paramDef = {
 	type: 'object',
@@ -480,6 +490,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.objectStoragePrefix !== undefined) {
+				if (ps.objectStoragePrefix !== null && ps.objectStoragePrefix !== '' && !S3_SAFE_CHARS.test(ps.objectStoragePrefix)) {
+					throw new ApiError(meta.errors.invalidObjectStoragePrefix);
+				}
 				set.objectStoragePrefix = ps.objectStoragePrefix;
 			}
 
