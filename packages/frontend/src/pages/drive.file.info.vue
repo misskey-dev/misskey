@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInfo>{{ i18n.ts._fileViewer.thisPageCanBeSeenFromTheAuthor }}</MkInfo>
 	<MkLoading v-if="fetching"/>
 	<div v-else-if="file" class="_gaps">
-		<MkInfo v-if="file.sensitiveChangeReason === 'moderator'" warn>{{ i18n.ts._fileViewer.setAsSensitiveByModerator }}</MkInfo>
+		<MkInfo v-if="file.isSensitive && file.sensitiveChangeReason === 'moderator'" warn>{{ i18n.ts._fileViewer.setAsSensitiveByModerator }}</MkInfo>
 		<div :class="$style.filePreviewRoot">
 			<MkMediaList :mediaList="[file]"></MkMediaList>
 		</div>
