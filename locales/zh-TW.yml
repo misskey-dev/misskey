@@ -2440,6 +2440,8 @@ _notification:
   flushNotification: "重置通知歷史紀錄"
   exportOfXCompleted: "{x} 的匯出已完成。"
   login: "已登入"
+  createToken: "已產生存取權杖"
+  createTokenDescription: "如果您不知道，請透過「{text}」刪除存取權杖。"
   _types:
     all: "全部 "
     note: "使用者的最新貼文"
