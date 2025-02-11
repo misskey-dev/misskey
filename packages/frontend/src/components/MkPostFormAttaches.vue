@@ -99,7 +99,7 @@ function toggleSensitive(file) {
 	if (!$i?.isModerator && file.isSensitive && file.sensitiveChangeReason === 'moderator') {
 		os.alert({
 			type: 'warning',
-			text: i18n.ts.canNotUnmarkSensitive_setByModerator,
+			text: i18n.ts.canNotUnmarkSensitive_markedByModerator,
 		});
 		return;
 	}

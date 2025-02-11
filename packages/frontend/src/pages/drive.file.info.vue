@@ -161,7 +161,7 @@ function toggleSensitive() {
 	if (!$i?.isModerator && file.value.isSensitive && file.value.sensitiveChangeReason === 'moderator') {
 		os.alert({
 			type: 'warning',
-			text: i18n.ts.canNotUnmarkSensitive_setByModerator,
+			text: i18n.ts.canNotUnmarkSensitive_markedByModerator,
 		});
 		return;
 	}
