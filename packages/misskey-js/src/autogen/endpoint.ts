@@ -447,6 +447,10 @@ import type {
 	NotesLocalTimelineResponse,
 	NotesMentionsRequest,
 	NotesMentionsResponse,
+	NotesMutingCreateRequest,
+	NotesMutingDeleteRequest,
+	NotesMutingListResponse,
+	NotesMutingUpdateRequest,
 	NotesPollsRecommendationRequest,
 	NotesPollsRecommendationResponse,
 	NotesPollsVoteRequest,
@@ -883,6 +887,10 @@ export type Endpoints = {
 	'notes/hybrid-timeline': { req: NotesHybridTimelineRequest; res: NotesHybridTimelineResponse };
 	'notes/local-timeline': { req: NotesLocalTimelineRequest; res: NotesLocalTimelineResponse };
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };
+	'notes/muting/create': { req: NotesMutingCreateRequest; res: EmptyResponse };
+	'notes/muting/delete': { req: NotesMutingDeleteRequest; res: EmptyResponse };
+	'notes/muting/list': { req: EmptyRequest; res: NotesMutingListResponse };
+	'notes/muting/update': { req: NotesMutingUpdateRequest; res: EmptyResponse };
 	'notes/polls/recommendation': { req: NotesPollsRecommendationRequest; res: NotesPollsRecommendationResponse };
 	'notes/polls/vote': { req: NotesPollsVoteRequest; res: EmptyResponse };
 	'notes/reactions': { req: NotesReactionsRequest; res: NotesReactionsResponse };
@@ -973,7 +981,7 @@ export type Endpoints = {
 	'users/show': { req: UsersShowRequest; res: UsersShowResponse };
 	'users/update-memo': { req: UsersUpdateMemoRequest; res: EmptyResponse };
 	'v2/admin/emoji/list': { req: V2AdminEmojiListRequest; res: V2AdminEmojiListResponse };
-}
+};
 
 /**
  * NOTE: The content-type for all endpoints not listed here is application/json.

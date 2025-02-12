@@ -7,7 +7,7 @@
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { EventEmitter } from 'eventemitter3';
 import { Options } from 'reconnecting-websocket';
-import type { PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
+import type { PublicKeyCredentialRequestOptionsJSON as PublicKeyCredentialRequestOptionsJSON_2 } from '@simplewebauthn/types';
 import _ReconnectingWebSocket from 'reconnecting-websocket';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
@@ -1682,6 +1682,10 @@ declare namespace entities {
         NotesLocalTimelineResponse,
         NotesMentionsRequest,
         NotesMentionsResponse,
+        NotesMutingCreateRequest,
+        NotesMutingDeleteRequest,
+        NotesMutingListResponse,
+        NotesMutingUpdateRequest,
         NotesPollsRecommendationRequest,
         NotesPollsRecommendationResponse,
         NotesPollsVoteRequest,
@@ -2733,6 +2737,18 @@ type NotesMentionsRequest = operations['notes___mentions']['requestBody']['conte
 type NotesMentionsResponse = operations['notes___mentions']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NotesMutingCreateRequest = operations['notes___muting___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesMutingDeleteRequest = operations['notes___muting___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesMutingListResponse = operations['notes___muting___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesMutingUpdateRequest = operations['notes___muting___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type NotesPollsRecommendationRequest = operations['notes___polls___recommendation']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3106,12 +3122,12 @@ type SigninFlowResponse = {
 } | {
     finished: false;
     next: 'passkey';
-    authRequest: PublicKeyCredentialRequestOptionsJSON;
+    authRequest: PublicKeyCredentialRequestOptionsJSON_2;
 };
 
 // @public (undocumented)
 type SigninWithPasskeyInitResponse = {
-    option: PublicKeyCredentialRequestOptionsJSON;
+    option: PublicKeyCredentialRequestOptionsJSON_2;
     context: string;
 };
 

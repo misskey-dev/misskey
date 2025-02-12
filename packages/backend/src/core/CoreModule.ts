@@ -4,6 +4,7 @@
  */
 
 import { Module } from '@nestjs/common';
+import { NoteMutingService } from '@/core/note/NoteMutingService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
@@ -189,6 +190,7 @@ const $NoteCreateService: Provider = { provide: 'NoteCreateService', useExisting
 const $NoteDeleteService: Provider = { provide: 'NoteDeleteService', useExisting: NoteDeleteService };
 const $NotePiningService: Provider = { provide: 'NotePiningService', useExisting: NotePiningService };
 const $NoteReadService: Provider = { provide: 'NoteReadService', useExisting: NoteReadService };
+const $NoteMutingService: Provider = { provide: 'NoteMutingService', useExisting: NoteMutingService };
 const $NotificationService: Provider = { provide: 'NotificationService', useExisting: NotificationService };
 const $PollService: Provider = { provide: 'PollService', useExisting: PollService };
 const $ProxyAccountService: Provider = { provide: 'ProxyAccountService', useExisting: ProxyAccountService };
@@ -340,6 +342,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		NoteDeleteService,
 		NotePiningService,
 		NoteReadService,
+		NoteMutingService,
 		NotificationService,
 		PollService,
 		ProxyAccountService,
@@ -487,6 +490,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$NoteDeleteService,
 		$NotePiningService,
 		$NoteReadService,
+		$NoteMutingService,
 		$NotificationService,
 		$PollService,
 		$ProxyAccountService,
@@ -635,6 +639,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		NoteDeleteService,
 		NotePiningService,
 		NoteReadService,
+		NoteMutingService,
 		NotificationService,
 		PollService,
 		ProxyAccountService,
@@ -781,6 +786,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$NoteDeleteService,
 		$NotePiningService,
 		$NoteReadService,
+		$NoteMutingService,
 		$NotificationService,
 		$PollService,
 		$ProxyAccountService,
