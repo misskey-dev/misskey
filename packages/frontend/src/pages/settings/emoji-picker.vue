@@ -114,11 +114,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 
 			<MkSelect v-model="emojiPickerStyle">
-				<template #label>{{ i18n.ts.style }}</template>
+				<template #label>{{ i18n.ts.style }} ({{ i18n.ts.emojiPicker }})</template>
 				<option value="auto">{{ i18n.ts.auto }}</option>
 				<option value="popup">{{ i18n.ts.popup }}</option>
 				<option value="drawer">{{ i18n.ts.drawer }}</option>
 				<option value="window">{{ i18n.ts.window }}</option>
+			</MkSelect>
+
+			<MkSelect v-model="reactionPickerStyle">
+				<template #label>{{ i18n.ts.style }} ({{ i18n.ts.reactionPicker }})</template>
+				<option value="auto">{{ i18n.ts.auto }}</option>
+				<option value="popup">{{ i18n.ts.popup }}</option>
+				<option value="drawer">{{ i18n.ts.drawer }}</option>
 			</MkSelect>
 		</div>
 	</FormSection>
@@ -152,6 +159,7 @@ const emojiPickerScale = computed(defaultStore.makeGetterSetter('emojiPickerScal
 const emojiPickerWidth = computed(defaultStore.makeGetterSetter('emojiPickerWidth'));
 const emojiPickerHeight = computed(defaultStore.makeGetterSetter('emojiPickerHeight'));
 const emojiPickerStyle = computed(defaultStore.makeGetterSetter('emojiPickerStyle'));
+const reactionPickerStyle = computed(defaultStore.makeGetterSetter('reactionPickerStyle'));
 
 const removeReaction = (reaction: string, ev: MouseEvent) => remove(pinnedEmojisForReaction, reaction, ev);
 const chooseReaction = (ev: MouseEvent) => pickEmoji(pinnedEmojisForReaction, ev);
@@ -244,7 +252,10 @@ watch(pinnedEmojis, () => {
 	deep: true,
 });
 
-watch(emojiPickerStyle, async () => {
+watch([
+	emojiPickerStyle,
+	reactionPickerStyle,
+], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 

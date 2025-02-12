@@ -315,6 +315,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'auto' as 'auto' | 'popup' | 'drawer' | 'window',
 	},
+	reactionPickerStyle: {
+		where: 'device',
+		default: 'auto' as 'auto' | 'popup' | 'drawer',
+	},
 	recentlyUsedEmojis: {
 		where: 'device',
 		default: [] as string[],

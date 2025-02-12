@@ -547,6 +547,10 @@ export interface Locale extends ILocale {
      */
     "emojiPicker": string;
     /**
+     * リアクションピッカー
+     */
+    "reactionPicker": string;
+    /**
      * リアクション時にピン留め表示する絵文字を設定できます
      */
     "pinnedEmojisForReactionSettingDescription": string;
