@@ -146,8 +146,8 @@ function showMenu(ev: MouseEvent) {
 	if (iAmModerator) {
 		details.push({
 			type: 'link',
-			text: i18n.ts._fileViewer.titleAdmin,
-			icon: 'ti ti-info-circle',
+			text: i18n.ts.moderation,
+			icon: 'ti ti-photo-exclamation',
 			to: `/admin/file/${props.image.id}`,
 		});
 	}
