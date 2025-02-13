@@ -1298,6 +1298,9 @@ importers:
       reconnecting-websocket:
         specifier: 4.4.0
         version: 4.4.0
+      uuid:
+        specifier: 10.0.0
+        version: 10.0.0
     devDependencies:
       '@microsoft/api-extractor':
         specifier: 7.47.11
@@ -1311,6 +1314,9 @@ importers:
       '@types/node':
         specifier: 22.9.0
         version: 22.9.0
+      '@types/uuid':
+        specifier: 10.0.0
+        version: 10.0.0
       '@typescript-eslint/eslint-plugin':
         specifier: 7.17.0
         version: 7.17.0(@typescript-eslint/parser@7.17.0(eslint@9.14.0)(typescript@5.6.3))(eslint@9.14.0)(typescript@5.6.3)

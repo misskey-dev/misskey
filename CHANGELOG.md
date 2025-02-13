@@ -17,6 +17,8 @@
 - Fix: `following/invalidate`でフォロワーを解除しようとしているユーザーの情報を返すように
 - Fix: オブジェクトストレージの設定でPrefixを設定していなかった場合nullまたは空文字になる問題を修正
 
+### Misskey.js
+- Feat: MiAuth 認証ラッパー
 
 ## 2025.2.0
 
