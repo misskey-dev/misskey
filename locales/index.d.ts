@@ -9631,6 +9631,14 @@ export interface Locale extends ILocale {
          * ログインがありました
          */
         "login": string;
+        /**
+         * アクセストークンが作成されました
+         */
+        "createToken": string;
+        /**
+         * 心当たりがない場合は「{text}」を通じてアクセストークンを削除してください。
+         */
+        "createTokenDescription": ParameterizedString<"text">;
         "_types": {
             /**
              * すべて
