@@ -7,6 +7,7 @@ import { EventEmitter } from 'eventemitter3';
 import type { IRouter, Resolved, RouteDef, RouterEvent, RouterFlag } from '@/nirax.js';
 
 import type { App, ShallowRef } from 'vue';
+import { analytics } from '@/analytics.js';
 
 /**
  * {@link Router}による画面遷移を可能とするために{@link mainRouter}をセットアップする。
@@ -23,6 +24,10 @@ export function setupRouter(app: App, routerFactory: ((path: string) => IRouter)
 
 	mainRouter.addListener('push', ctx => {
 		window.history.pushState({ key: ctx.key }, '', ctx.path);
+
+		analytics.page({
+			path: ctx.path,
+		});
 	});
 
 	mainRouter.addListener('replace', ctx => {

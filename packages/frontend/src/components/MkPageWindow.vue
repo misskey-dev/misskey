@@ -32,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, onUnmounted, provide, ref, shallowRef } from 'vue';
 import { url } from '@@/js/config.js';
 import { getScrollContainer } from '@@/js/scroll.js';
+import type { PageMetadata } from '@/scripts/page-metadata.js';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout.js';
@@ -39,7 +40,6 @@ import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { i18n } from '@/i18n.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
-import type { PageMetadata } from '@/scripts/page-metadata.js';
 import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { useRouterFactory } from '@/router/supplier.js';
@@ -92,6 +92,8 @@ const reloadCount = ref(0);
 
 windowRouter.addListener('push', ctx => {
 	history.value.push({ path: ctx.path, key: ctx.key });
+
+	// ga
 });
 
 windowRouter.addListener('replace', ctx => {
