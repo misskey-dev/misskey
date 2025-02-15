@@ -177,7 +177,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, Ref, watch, provide } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, watch, provide } from 'vue';
+import type { Ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -195,7 +196,8 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
@@ -217,7 +219,7 @@ import { getNoteSummary } from '@/scripts/get-note-summary.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { isEnabledUrlPreview } from '@/instance.js';
-import { type Keymap } from '@/scripts/hotkey.js';
+import type { Keymap } from '@/scripts/hotkey.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
 
@@ -304,16 +306,16 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: false): Array<string | string[]> | false | 'sensitiveMute';
 */
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | false | 'sensitiveMute' {
-	if (mutedWords == null) return false;
+	if (mutedWords != null) {
+		const result = checkWordMute(noteToCheck, $i, mutedWords);
+		if (Array.isArray(result)) return result;
 
-	const result = checkWordMute(noteToCheck, $i, mutedWords);
-	if (Array.isArray(result)) return result;
+		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
+		if (Array.isArray(replyResult)) return replyResult;
 
-	const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
-	if (Array.isArray(replyResult)) return replyResult;
-
-	const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
-	if (Array.isArray(renoteResult)) return renoteResult;
+		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
+		if (Array.isArray(renoteResult)) return renoteResult;
+	}
 
 	if (checkOnly) return false;
 
@@ -487,7 +489,16 @@ function react(): void {
 		}
 	} else {
 		blur();
-		reactionPicker.show(reactButton.value ?? null, note.value, reaction => {
+		reactionPicker.show(reactButton.value ?? null, note.value, async (reaction) => {
+			if (defaultStore.state.confirmOnReact) {
+				const confirm = await os.confirm({
+					type: 'question',
+					text: i18n.tsx.reactAreYouSure({ emoji: reaction.replace('@.', '') }),
+				});
+
+				if (confirm.canceled) return;
+			}
+
 			sound.playMisskeySfx('reaction');
 
 			if (props.mock) {
