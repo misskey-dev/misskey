@@ -4,9 +4,9 @@
  */
 
 import { computed, watch, version as vueVersion } from 'vue';
-import type { App } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { version, lang, updateLocale, locale } from '@@/js/config.js';
+import type { App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
@@ -242,13 +242,14 @@ export async function common(createVue: () => App<Element>) {
 		await fetchCustomEmojis();
 	} catch (err) { /* empty */ }
 
-	await fetchInstanceMetaPromise;
+	// analytics
+	fetchInstanceMetaPromise.then(async () => {
+		await initAnalytics(instance);
 
-	await initAnalytics(instance);
-
-	if ($i) {
-		analytics.identify($i.id);
-	}
+		if ($i) {
+			analytics.identify($i.id);
+		}
+	});
 
 	const app = createVue();
 
