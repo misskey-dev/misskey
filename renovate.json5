@@ -12,6 +12,12 @@
 	"dependencyDashboardAutoclose": true,
 	"osvVulnerabilityAlerts": true,
 	"dependencyDashboardOSVVulnerabilitySummary": "unresolved",
+	"ignoreDeps": [
+		// https://github.com/misskey-dev/misskey/pull/15489#issuecomment-2660717458
+		"@typescript/lib-webworker",
+		// https://github.com/misskey-dev/misskey/pull/15494#issuecomment-2660775258
+		"nsfwjs",
+	],
 	"packageRules": [
 		{
 			"groupName": "[Backend] Update dependencies",
