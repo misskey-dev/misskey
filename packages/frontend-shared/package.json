@@ -22,8 +22,8 @@
 	},
 	"devDependencies": {
 		"@types/node": "22.13.4",
-		"@typescript-eslint/eslint-plugin": "7.18.0",
-		"@typescript-eslint/parser": "7.18.0",
+		"@typescript-eslint/eslint-plugin": "8.24.0",
+		"@typescript-eslint/parser": "8.24.0",
 		"esbuild": "0.25.0",
 		"eslint-plugin-vue": "9.32.0",
 		"nodemon": "3.1.9",
