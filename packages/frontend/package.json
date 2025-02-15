@@ -70,7 +70,7 @@
 		"typescript": "5.7.3",
 		"uuid": "11.0.5",
 		"v-code-diff": "1.13.1",
-		"vite": "6.0.7",
+		"vite": "6.0.9",
 		"vue": "3.5.13",
 		"vuedraggable": "next"
 	},
