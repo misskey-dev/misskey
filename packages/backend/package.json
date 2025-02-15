@@ -104,7 +104,7 @@
 		"body-parser": "1.20.3",
 		"bullmq": "5.34.10",
 		"cacheable-lookup": "7.0.0",
-		"canvas": "^3.1.0",
+		"canvas": "3.1.0",
 		"cbor": "9.0.2",
 		"chalk": "5.4.1",
 		"chalk-template": "1.1.0",
