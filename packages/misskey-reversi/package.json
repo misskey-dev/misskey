@@ -28,7 +28,7 @@
 		"execa": "8.0.1",
 		"nodemon": "3.1.9",
 		"typescript": "5.7.3",
-		"esbuild": "0.24.2",
+		"esbuild": "0.25.0",
 		"glob": "11.0.1"
 	},
 	"files": [
