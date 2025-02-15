@@ -77,7 +77,7 @@ export class APIClient {
 
 			if (mediaType === 'application/json') {
 				payload = JSON.stringify({
-					...params,
+					...(this.assertIsRecord(params) ? params : {}),
 					i: credential !== undefined ? credential : this.credential,
 				});
 			} else if (mediaType === 'multipart/form-data') {
