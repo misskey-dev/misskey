@@ -20,6 +20,8 @@
 ### Server
 - Fix: `following/invalidate`でフォロワーを解除しようとしているユーザーの情報を返すように
 - Fix: オブジェクトストレージの設定でPrefixを設定していなかった場合nullまたは空文字になる問題を修正
+- Fix: pgroongaでの検索時にはじめのキーワードのみが検索に使用される問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/886)
 
 
 ## 2025.2.0
