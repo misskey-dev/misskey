@@ -56,7 +56,7 @@ export type SoundStore = {
 	fileUrl: string;
 
 	volume: number;
-}
+};
 
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
@@ -476,6 +476,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: true,
 	},
 	showSoftWordMutedWord: {
+		where: 'device',
+		default: false,
+	},
+	confirmOnReact: {
 		where: 'device',
 		default: false,
 	},
