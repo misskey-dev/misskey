@@ -7,6 +7,7 @@ import { defineAsyncComponent, reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { apiUrl } from '@@/js/config.js';
 import type { MenuItem, MenuButton } from '@/types/menu.js';
+import { defaultMemoryStorage } from '@/memory-storage';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -39,6 +40,8 @@ export function incNotesCount() {
 
 export async function signout() {
 	if (!$i) return;
+
+	defaultMemoryStorage.clear();
 
 	waiting();
 	document.cookie.split(';').forEach((cookie) => {
@@ -107,7 +110,7 @@ export async function removeAccount(idOrToken: Account['id']) {
 }
 
 function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Promise<Account> {
-	document.cookie = "token=; path=/; max-age=0";
+	document.cookie = 'token=; path=/; max-age=0';
 	document.cookie = `token=${token}; path=/queue; max-age=86400; SameSite=Strict; Secure`; // bull dashboardの認証とかで使う
 
 	return new Promise((done, fail) => {
