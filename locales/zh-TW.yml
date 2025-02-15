@@ -1309,6 +1309,8 @@ availableRoles: "可用角色"
 acknowledgeNotesAndEnable: "了解注意事項後再開啟。"
 federationSpecified: "此伺服器以白名單聯邦的方式運作。除了管理員指定的伺服器外，它無法與其他伺服器互動。"
 federationDisabled: "此伺服器未開啟站台聯邦。無法與其他伺服器上的使用者互動。"
+confirmOnReact: "反應時確認"
+reactAreYouSure: "用「 {emoji} 」反應嗎？"
 _accountSettings:
   requireSigninToViewContents: "須登入以顯示內容"
   requireSigninToViewContentsDescription1: "必須登入才會顯示您建立的貼文等內容。可望有效防止資訊被爬蟲蒐集。"
