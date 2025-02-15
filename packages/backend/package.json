@@ -78,7 +78,7 @@
 		"@fastify/cors": "10.0.2",
 		"@fastify/express": "4.0.2",
 		"@fastify/http-proxy": "10.0.1",
-		"@fastify/multipart": "9.0.2",
+		"@fastify/multipart": "9.0.3",
 		"@fastify/static": "8.0.4",
 		"@fastify/view": "10.0.2",
 		"@misskey-dev/sharp-read-bmp": "1.2.0",
