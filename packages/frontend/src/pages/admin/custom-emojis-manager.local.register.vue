@@ -124,7 +124,7 @@ type GridItem = {
 	localOnly: boolean;
 	roleIdsThatCanBeUsedThisEmojiAsReaction: { id: string, name: string }[];
 	type: string | null;
-}
+};
 
 function setupGrid(): GridSetting {
 	const $style = useCssModule();

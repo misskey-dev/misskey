@@ -58,7 +58,7 @@ jobs:
           MEILI_ENV: 'development'
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.2.2
       with:
         submodules: true
     - name: Install pnpm
@@ -79,7 +79,7 @@ jobs:
           fi
         done
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.1.0
+      uses: actions/setup-node@v4.2.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -135,13 +135,13 @@ jobs:
           MEILI_ENV: 'development'
 
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.2.2
         with:
           submodules: true
       - name: Install pnpm
         uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v4.2.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'

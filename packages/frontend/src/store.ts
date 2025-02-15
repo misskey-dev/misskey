@@ -56,7 +56,7 @@ export type SoundStore = {
 	fileUrl: string;
 
 	volume: number;
-}
+};
 
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
