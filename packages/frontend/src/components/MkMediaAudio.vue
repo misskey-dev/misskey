@@ -91,10 +91,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { shallowRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
+import type { Keymap } from '@/scripts/hotkey.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { type Keymap } from '@/scripts/hotkey.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
@@ -216,14 +217,36 @@ function showMenu(ev: MouseEvent) {
 		});
 	}
 
+	const details: MenuItem[] = [];
 	if ($i?.id === props.audio.userId) {
-		menu.push({
-			type: 'divider',
-		}, {
+		details.push({
 			type: 'link',
 			text: i18n.ts._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.audio.id}`,
+		});
+	}
+
+	if (iAmModerator) {
+		details.push({
+			type: 'link',
+			text: i18n.ts.moderation,
+			icon: 'ti ti-photo-exclamation',
+			to: `/admin/file/${props.audio.id}`,
+		});
+	}
+
+	if (details.length > 0) {
+		menu.push({ type: 'divider' }, ...details);
+	}
+
+	if (defaultStore.state.devMode) {
+		menu.push({ type: 'divider' }, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(props.audio.id);
+			},
 		});
 	}
 
