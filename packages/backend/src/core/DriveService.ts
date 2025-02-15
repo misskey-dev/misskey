@@ -15,7 +15,7 @@ import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, Use
 import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import type { MiRemoteUser, MiUser } from '@/models/User.js';
-import { MiDriveFile } from '@/models/DriveFile.js';
+import { DriveFileSensitiveReason, MiDriveFile } from '@/models/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
@@ -89,7 +89,8 @@ type UploadFromUrlArgs = {
 export class DriveService {
 	public static NoSuchFolderError = class extends Error {};
 	public static InvalidFileNameError = class extends Error {};
-	public static CannotUnmarkSensitiveError = class extends Error {};
+	public static CannotUnmarkSensitiveError_RestrictRole = class extends Error {};
+	public static CannotUnmarkSensitiveError_NsfwMarkedByModerator = class extends Error {};
 	private registerLogger: Logger;
 	private downloaderLogger: Logger;
 	private deleteLogger: Logger;
@@ -581,14 +582,23 @@ export class DriveService {
 		file.requestHeaders = requestHeaders;
 		file.maybeSensitive = info.sensitive;
 		file.maybePorn = info.porn;
+
+		file.sensitiveChangeReason = 'user';
 		file.isSensitive = user
-			? this.userEntityService.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
-			sensitive ?? false
+			? this.userEntityService.isLocalUser(user) && profile!.alwaysMarkNsfw
+				? true
+				: sensitive ?? false
 			: false;
 
 		if (user && this.utilityService.isMediaSilencedHost(this.meta.mediaSilencedHosts, user.host)) file.isSensitive = true;
-		if (info.sensitive && profile!.autoSensitive) file.isSensitive = true;
-		if (info.sensitive && this.meta.setSensitiveFlagAutomatically) file.isSensitive = true;
+		if (info.sensitive && profile!.autoSensitive) {
+			file.sensitiveChangeReason = 'auto';
+			file.isSensitive = true;
+		}
+		if (info.sensitive && this.meta.setSensitiveFlagAutomatically) {
+			file.sensitiveChangeReason = 'auto';
+			file.isSensitive = true;
+		}
 		if (userRoleNSFW) file.isSensitive = true;
 
 		if (url !== null) {
@@ -659,14 +669,28 @@ export class DriveService {
 
 	@bindThis
 	public async updateFile(file: MiDriveFile, values: Partial<MiDriveFile>, updater: MiUser) {
-		const alwaysMarkNsfw = (await this.roleService.getUserPolicies(file.userId)).alwaysMarkNsfw;
-
 		if (values.name != null && !this.driveFileEntityService.validateFileName(values.name)) {
 			throw new DriveService.InvalidFileNameError();
 		}
 
-		if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive && alwaysMarkNsfw && !values.isSensitive) {
-			throw new DriveService.CannotUnmarkSensitiveError();
+		const isChangeSensitive = values.isSensitive !== undefined && values.isSensitive !== file.isSensitive;
+		const isModerator = await this.roleService.isModerator(updater);
+		if (isChangeSensitive) {
+			// センシティブフラグの更新要求があるとき
+
+			if (!values.isSensitive) {
+				// センシティブフラグを解除するときの動き
+
+				if (!isModerator && file.sensitiveChangeReason === 'moderator') {
+					// モデレータ以外はモデレータによるセンシティブ解除を許可しない
+					throw new DriveService.CannotUnmarkSensitiveError_NsfwMarkedByModerator();
+				}
+
+				if ((await this.roleService.getUserPolicies(file.userId)).alwaysMarkNsfw) {
+					// 常にセンシティブとするポリシーが設定されている場合、センシティブを解除できない
+					throw new DriveService.CannotUnmarkSensitiveError_RestrictRole();
+				}
+			}
 		}
 
 		if (values.folderId != null) {
@@ -680,7 +704,22 @@ export class DriveService {
 			}
 		}
 
-		await this.driveFilesRepository.update(file.id, values);
+		let sensitiveChangeReason: DriveFileSensitiveReason = file.sensitiveChangeReason;
+		if (isChangeSensitive) {
+			if (values.isSensitive) {
+				// モデレータではないがユーザIDが異なる場合は呼び出し元で弾かれてるはずなのでここでは考慮しない
+				sensitiveChangeReason = (isModerator && file.userId !== updater.id)
+					? 'moderator'
+					: 'user';
+			} else {
+				sensitiveChangeReason = 'none';
+			}
+		}
+
+		await this.driveFilesRepository.update(file.id, {
+			...values,
+			sensitiveChangeReason: sensitiveChangeReason,
+		});
 
 		const fileObj = await this.driveFileEntityService.pack(file.id, { self: true });
 
@@ -689,8 +728,8 @@ export class DriveService {
 			this.globalEventService.publishDriveStream(file.userId, 'fileUpdated', fileObj);
 		}
 
-		if (await this.roleService.isModerator(updater) && (file.userId !== updater.id)) {
-			if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive) {
+		if (isModerator && (file.userId !== updater.id)) {
+			if (isChangeSensitive) {
 				const user = file.userId ? await this.usersRepository.findOneByOrFail({ id: file.userId }) : null;
 				if (values.isSensitive) {
 					this.moderationLogService.log(updater, 'markSensitiveDriveFile', {

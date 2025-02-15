@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInfo>{{ i18n.ts._fileViewer.thisPageCanBeSeenFromTheAuthor }}</MkInfo>
 	<MkLoading v-if="fetching"/>
 	<div v-else-if="file" class="_gaps">
+		<MkInfo v-if="file.isSensitive && file.sensitiveChangeReason === 'moderator'" warn>{{ i18n.ts._fileViewer.setAsSensitiveByModerator }}</MkInfo>
 		<div :class="$style.filePreviewRoot">
 			<MkMediaList :mediaList="[file]"></MkMediaList>
 		</div>
@@ -78,6 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, computed, defineAsyncComponent, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
+import { $i } from '@/account';
 import MkInfo from '@/components/MkInfo.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -156,17 +158,19 @@ function move() {
 function toggleSensitive() {
 	if (!file.value) return;
 
+	if (!$i?.isModerator && file.value.isSensitive && file.value.sensitiveChangeReason === 'moderator') {
+		os.alert({
+			type: 'warning',
+			text: i18n.ts.canNotUnmarkSensitive_markedByModerator,
+		});
+		return;
+	}
+
 	os.apiWithDialog('drive/files/update', {
 		fileId: file.value.id,
 		isSensitive: !file.value.isSensitive,
 	}).then(async () => {
 		await fetch();
-	}).catch(err => {
-		os.alert({
-			type: 'error',
-			title: i18n.ts.error,
-			text: err.message,
-		});
 	});
 }
 
