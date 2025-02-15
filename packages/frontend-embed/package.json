@@ -45,7 +45,6 @@
 		"@types/node": "22.13.4",
 		"@types/punycode.js": "npm:@types/punycode@2.1.4",
 		"@types/tinycolor2": "1.4.6",
-		"@types/uuid": "10.0.0",
 		"@types/ws": "8.5.14",
 		"@typescript-eslint/eslint-plugin": "8.24.0",
 		"@typescript-eslint/parser": "8.24.0",
