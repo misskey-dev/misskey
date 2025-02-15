@@ -18,6 +18,7 @@
  * achievementEarned - 実績を獲得
  * exportCompleted - エクスポートが完了
  * login - ログイン
+ * createToken - トークン作成
  * app - アプリ通知
  * test - テスト通知（サーバー側）
  */
@@ -36,6 +37,7 @@ export const notificationTypes = [
 	'achievementEarned',
 	'exportCompleted',
 	'login',
+	'createToken',
 	'app',
 	'test',
 ] as const;

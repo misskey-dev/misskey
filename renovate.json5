@@ -1,0 +1,85 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"config:recommended"
+	],
+	"timezone": "Asia/Tokyo",
+	"schedule": [
+		"* 0 * * *"
+	],
+	"prHourlyLimit": 5,
+	"dependencyDashboardApproval": true,
+	"dependencyDashboardAutoclose": true,
+	"osvVulnerabilityAlerts": true,
+	"dependencyDashboardOSVVulnerabilitySummary": "unresolved",
+	"ignoreDeps": [
+		// https://github.com/misskey-dev/misskey/pull/15489#issuecomment-2660717458
+		"@typescript/lib-webworker",
+		// https://github.com/misskey-dev/misskey/pull/15494#issuecomment-2660775258
+		"nsfwjs",
+	],
+	"packageRules": [
+		{
+			"groupName": "[Backend] Update dependencies",
+			"matchPaths": [
+				"packages/backend/**/package.json"
+			]
+		},
+		{
+			"groupName": "[Frontend] Update dependencies",
+			"matchPaths": [
+				"packages/frontend/**/package.json",
+				"packages/frontend-embed/**/package.json",
+				"packages/frontend-shared/**/package.json",
+				"packages/misskey-bubble-game/**/package.json",
+				"packages/misskey-reversi/**/package.json",
+				"packages/sw/**/package.json"
+			]
+		},
+		{
+			"groupName": "[misskey-js] Update dependencies",
+			"matchPaths": [
+				"packages/misskey-js/**/package.json"
+			]
+		},
+		{
+			"groupName": "[Root] Update dependencies",
+			"matchPaths": [
+				"package.json"
+			]
+		},
+		{
+			"groupName": "[Tools] Update dependencies",
+			"matchPaths": [
+				"scripts/**/package.json"
+			]
+		},
+		{
+			"groupName": "[GitHub Actions] Update dependencies",
+			"matchPaths": [
+				".github/workflows/**/*.yml"
+			]
+		},
+		{
+			"groupName": "[Node.js] Update dependencies",
+			"matchPaths": [
+				".node-version"
+			]
+		},
+		{
+			"groupName": "[Docker] Update dependencies",
+			"matchPaths": [
+				"compose.local-db.yml",
+				"compose_example.yml",
+				"packages/backend/test-federation/*.yml",
+				"Dockerfile"
+			]
+		},
+		{
+			"groupName": "[devcontainer] Update dependencies",
+			"matchPaths": [
+				".devcontainer/**"
+			]
+		}
+	]
+}

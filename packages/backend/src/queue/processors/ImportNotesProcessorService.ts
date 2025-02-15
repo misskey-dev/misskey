@@ -78,7 +78,7 @@ export class ImportNotesProcessorService {
 	}
 
 	@bindThis
-	private downloadUrl(url: string, path:string): Promise<{filename: string}> {
+	private downloadUrl(url: string, path:string): Promise<{ filename: string }> {
 		return this.downloadService.downloadUrl(url, path, { operationTimeout: this.config.import?.downloadTimeout, maxSize: this.config.import?.maxFileSize });
 	}
 
