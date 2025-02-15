@@ -66,8 +66,8 @@
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "2.1.0",
 		"@types/node": "22.10.7",
-		"@typescript-eslint/eslint-plugin": "8.20.0",
-		"@typescript-eslint/parser": "8.20.0",
+		"@typescript-eslint/eslint-plugin": "8.24.0",
+		"@typescript-eslint/parser": "8.24.0",
 		"cross-env": "7.0.3",
 		"cypress": "14.0.0",
 		"eslint": "9.18.0",
