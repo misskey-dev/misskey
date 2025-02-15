@@ -1309,6 +1309,8 @@ availableRoles: "可用角色"
 acknowledgeNotesAndEnable: "理解注意事项后再开启。"
 federationSpecified: "此服务器已开启联合白名单。只能与管理员指定的服务器通信。"
 federationDisabled: "此服务器已禁用联合。无法与其它服务器上的用户通信。"
+confirmOnReact: "发送回应前需要确认"
+reactAreYouSure: "要用「{emoji}」进行回应吗？"
 _accountSettings:
   requireSigninToViewContents: "需要登录才能显示内容"
   requireSigninToViewContentsDescription1: "您发布的所有帖子将变成需要登入后才会显示。有望防止爬虫收集各种信息。"
