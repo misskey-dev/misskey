@@ -321,8 +321,8 @@ importers:
         specifier: 6.10.0
         version: 6.10.0
       nsfwjs:
-        specifier: 4.2.1
-        version: 4.2.1(@tensorflow/tfjs@4.22.0(encoding@0.1.13)(seedrandom@3.0.5))(buffer@6.0.3)
+        specifier: 4.2.0
+        version: 4.2.0(@tensorflow/tfjs@4.22.0(encoding@0.1.13)(seedrandom@3.0.5))(buffer@6.0.3)
       oauth:
         specifier: 0.10.0
         version: 0.10.0
@@ -8639,8 +8639,8 @@ packages:
     resolution: {integrity: sha512-AqZtDUWOMKs1G/8lwylVjrdYgqA4d9nu8hc+0gzRxlDb1I10+FHBGMXs6aiQHFdCUUlqH99MUMuLfzWDNDtfxw==}
     deprecated: This package is no longer supported.
 
-  nsfwjs@4.2.1:
-    resolution: {integrity: sha512-8ixL8Uk7+9Ir67yUxwtbLFZv6NgmsXsgP2oX5zNxmyTIXUfNdj6FLLVS+YI0pYlMEOExLp69ocfQznzTU9ATGw==}
+  nsfwjs@4.2.0:
+    resolution: {integrity: sha512-8eMmV+Hfr3hqSX7PzDJx94kFSP4QiN4/G9+b92I3catgQuqOb9Qmns1nDyVI0jMcWc1sVWdqBIA6eYLvKkryxA==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.0.0
       buffer: ^6.0.3
@@ -20135,7 +20135,7 @@ snapshots:
       set-blocking: 2.0.0
     optional: true
 
-  nsfwjs@4.2.1(@tensorflow/tfjs@4.22.0(encoding@0.1.13)(seedrandom@3.0.5))(buffer@6.0.3):
+  nsfwjs@4.2.0(@tensorflow/tfjs@4.22.0(encoding@0.1.13)(seedrandom@3.0.5))(buffer@6.0.3):
     dependencies:
       '@tensorflow/tfjs': 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
       buffer: 6.0.3
