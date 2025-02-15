@@ -43,6 +43,12 @@
 			]
 		},
 		{
+			"groupName": "[icons-subsetter] Update dependencies",
+			"matchPaths": [
+				"packages/icons-subsetter/**/package.json"
+			]
+		},
+		{
 			"groupName": "[Root] Update dependencies",
 			"matchPaths": [
 				"package.json"
