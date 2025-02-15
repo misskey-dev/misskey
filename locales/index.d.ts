@@ -5271,6 +5271,14 @@ export interface Locale extends ILocale {
      */
     "federationDisabled": string;
     /**
+     * リアクションする際に確認する
+     */
+    "confirmOnReact": string;
+    /**
+     * " {emoji} " をリアクションしますか？
+     */
+    "reactAreYouSure": ParameterizedString<"emoji">;
+    /**
      * 文字数
      */
     "textCount": string;
@@ -5286,14 +5294,6 @@ export interface Locale extends ILocale {
      * 新規登録したユーザーに表示されるチュートリアルをスキップできないようにします。チュートリアルを完了しなかったりチュートリアルページを回避したりした場合でも、強制的にリダイレクトされます。
      */
     "prohibitSkippingInitialTutorialDescription": string;
-    /**
-     * リアクションする際に確認する
-     */
-    "confirmOnReact": string;
-    /**
-     * " {emoji} " をリアクションしますか？
-     */
-    "reactAreYouSure": ParameterizedString<"emoji">;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

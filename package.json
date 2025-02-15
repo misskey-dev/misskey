@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@9.6.0",
+	"packageManager": "pnpm@9.15.0",
 	"workspaces": [
 		"packages/frontend-shared",
 		"packages/frontend",
