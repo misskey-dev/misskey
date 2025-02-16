@@ -2,6 +2,7 @@
 
 ### General
 - Feat: アクセストークン発行時に通知するように
+- 依存関係の更新
 
 ### Client
 - Feat: 投稿フォームで画像をプレビュー可能に
@@ -19,9 +20,11 @@
 ### Server
 - Fix: `following/invalidate`でフォロワーを解除しようとしているユーザーの情報を返すように
 - Fix: オブジェクトストレージの設定でPrefixを設定していなかった場合nullまたは空文字になる問題を修正
+- Fix: pgroongaでの検索時にはじめのキーワードのみが検索に使用される問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/886)
+- Fix: メールアドレスの形式が正しくなければ以降の処理を行わないように
 - Fix: FreeBSDで起動できない問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/887)
-
 
 ## 2025.2.0
 
