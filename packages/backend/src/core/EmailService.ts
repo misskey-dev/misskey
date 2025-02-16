@@ -164,7 +164,7 @@ export class EmailService {
 		available: boolean;
 		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned' | 'network' | 'blacklist';
 	}> {
-		if (this.utilityService.validateEmailFormat(emailAddress)) {
+		if (!this.utilityService.validateEmailFormat(emailAddress)) {
 			return {
 				available: false,
 				reason: 'format',
