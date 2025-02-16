@@ -1383,6 +1383,9 @@ _initialTutorial:
     title: "Was sind Notizen?"
     description: "Beiträge auf Misskey heißen \"Notizen\". Notizen werden chronologisch in der Chronik angeordnet und in Echtzeit aktualisiert."
     reply: "Klicke auf diesen Button, um auf eine Nachricht zu antworten. Es ist auch möglich, auf Antworten zu antworten und die Unterhaltung wie einen Thread fortzusetzen."
+    renote: "Du kannst diese Notiz in deiner eigenen Chronik teilen. Du kannst sie auch mit deinen Kommentaren zitieren."
+    reaction: "Du kannst der Notiz Reaktionen hinzufügen. Weitere Einzelheiten werden auf der nächsten Seite erläutert."
+    menu: "Du kannst Details zu Notizen anzeigen, Links kopieren und verschiedene andere Aktionen durchführen."
   _reaction:
     title: "Was sind Reaktionen?"
     description: "Auf Notizen kann mit verschiedenen Emojis reagiert werden. Reaktionen ermöglichen es dir, Nuancen auszudrücken, die mit einem einfachen „Gefällt mir“ vielleicht nicht ausgedrückt werden können."
