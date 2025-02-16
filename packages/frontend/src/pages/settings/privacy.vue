@@ -5,7 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkSwitch v-model="isLocked" @update:modelValue="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
+	<MkSearchMarker markerId="acbfe8cb-c3c9-4d90-8c62-713025814b2e">
+		<MkSwitch v-model="isLocked" @update:modelValue="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
+	</MkSearchMarker>
+
 	<MkSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:modelValue="save()">{{ i18n.ts.autoAcceptFollowed }}</MkSwitch>
 
 	<MkSwitch v-model="publicReactions" @update:modelValue="save()">
@@ -174,6 +177,7 @@ import FormSlot from '@/components/form/slot.vue';
 import { formatDateTimeString } from '@/scripts/format-time-string.js';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
+import MkSearchMarker from '@/components/MkSearchMarker.vue';
 
 const $i = signinRequired();
 
