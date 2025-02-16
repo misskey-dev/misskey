@@ -25,6 +25,7 @@ import { mainRouter } from '@/router/main.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import type { Keymap } from '@/scripts/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
+import { postButtonHandler } from '@/scripts/post-button-handler.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => {
@@ -409,7 +410,7 @@ export async function mainBoot() {
 	const keymap = {
 		'p|n': () => {
 			if ($i == null) return;
-			post();
+			postButtonHandler(mainRouter.currentRef.value);
 		},
 		'd': () => {
 			defaultStore.set('darkMode', !defaultStore.state.darkMode);
