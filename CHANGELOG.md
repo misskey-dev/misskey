@@ -22,7 +22,7 @@
 - Fix: オブジェクトストレージの設定でPrefixを設定していなかった場合nullまたは空文字になる問題を修正
 - Fix: pgroongaでの検索時にはじめのキーワードのみが検索に使用される問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/886)
-
+- Fix: メールアドレスの形式が正しくなければ以降の処理を行わないように
 
 ## 2025.2.0
 
