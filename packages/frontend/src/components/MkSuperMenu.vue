@@ -76,33 +76,14 @@ import { ref, watch } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
 
-defineProps<{
+const props = defineProps<{
 	def: SuperMenuDef[];
 	grid?: boolean;
+	searchIndex: { id: string; path: string; locationLabel: string[]; keywords: string[]; icon?: string; }[];
 }>();
 
 const search = ref('');
 const searchResult = ref<any[]>([]);
-
-const INDEX = [{
-	id: '727cc9e8-ad67-474a-9241-b5a9a6475e47',
-	locationLabel: [i18n.ts.profile, i18n.ts._profile.name],
-	icon: 'ti ti-user',
-	keywords: ['name'],
-	path: '/settings/profile',
-}, {
-	id: '1a06c7f9-e85e-46cb-bf5f-b3efa8e71b93',
-	locationLabel: [i18n.ts.profile, i18n.ts._profile.description],
-	icon: 'ti ti-user',
-	keywords: ['bio'],
-	path: '/settings/profile',
-}, {
-	id: 'acbfe8cb-c3c9-4d90-8c62-713025814b2e',
-	locationLabel: [i18n.ts.privacy, i18n.ts.makeFollowManuallyApprove],
-	icon: 'ti ti-lock-open',
-	keywords: ['follow', 'lock', i18n.ts.lockedAccountInfo],
-	path: '/settings/privacy',
-}];
 
 watch(search, (value) => {
 	if (value === '') {
@@ -110,7 +91,7 @@ watch(search, (value) => {
 		return;
 	}
 
-	searchResult.value = INDEX.filter((item) => {
+	searchResult.value = props.searchIndex.filter((item) => {
 		// TODO: 日本語でひらがなカタカナの区別をしない
 		return item.locationLabel.some((x) => x.toLowerCase().includes(value.toLowerCase())) || item.keywords.some((x) => x.toLowerCase().includes(value.toLowerCase()));
 	});
