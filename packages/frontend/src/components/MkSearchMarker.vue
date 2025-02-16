@@ -14,9 +14,11 @@ import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 
 const props = defineProps<{
 	markerId: string;
+	children?: string[];
 }>();
 
-const highlighted = window.location.hash.slice(1) === props.markerId;
+const hash = window.location.hash.slice(1);
+const highlighted = hash === props.markerId || (props.children && props.children.includes(hash));
 </script>
 
 <style lang="scss" module>
