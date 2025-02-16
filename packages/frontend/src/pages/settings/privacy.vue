@@ -5,7 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkSearchMarker markerId="acbfe8cb-c3c9-4d90-8c62-713025814b2e">
+	<MkSearchMarker
+		:locationLabel="[i18n.ts.privacy, i18n.ts.makeFollowManuallyApprove]"
+		icon="ti ti-lock-open"
+		:keywords="['follow', 'lock', i18n.ts.lockedAccountInfo]"
+	>
 		<MkSwitch v-model="isLocked" @update:modelValue="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
 	</MkSearchMarker>
 
