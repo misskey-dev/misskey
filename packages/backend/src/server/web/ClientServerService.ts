@@ -512,6 +512,7 @@ export class ClientServerService {
 				usernameLower: username.toLowerCase(),
 				host: host ?? IsNull(),
 				isSuspended: false,
+				requireSigninToViewContents: false,
 			});
 
 			return user && await this.feedService.packFeed(user);
@@ -816,6 +817,7 @@ export class ClientServerService {
 		fastify.get<{ Params: { announcementId: string; } }>('/announcements/:announcementId', async (request, reply) => {
 			const announcement = await this.announcementsRepository.findOneBy({
 				id: request.params.announcementId,
+				userId: IsNull(),
 			});
 
 			if (announcement) {
