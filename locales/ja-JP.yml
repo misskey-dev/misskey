@@ -1309,6 +1309,8 @@ availableRoles: "利用可能なロール"
 acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
 federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
+confirmOnReact: "リアクションする際に確認する"
+reactAreYouSure: "\" {emoji} \" をリアクションしますか？"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -2500,6 +2502,8 @@ _notification:
   flushNotification: "通知の履歴をリセットする"
   exportOfXCompleted: "{x}のエクスポートが完了しました"
   login: "ログインがありました"
+  createToken: "アクセストークンが作成されました"
+  createTokenDescription: "心当たりがない場合は「{text}」を通じてアクセストークンを削除してください。"
 
   _types:
     all: "すべて"
@@ -2927,3 +2931,16 @@ _captcha:
     _unknown:
       title: "CAPTCHAエラー"
       text: "想定外のエラーが発生しました。"
+
+_bootErrors:
+  title: "読み込みに失敗しました"
+  serverError: "少し待ってからリロードしてもまだ問題が解決されない場合、以下のError IDを添えてサーバー管理者に連絡してください。"
+  solution: "以下を行うと解決する可能性があります。"
+  solution1: "ブラウザおよびOSを最新バージョンに更新する"
+  solution2: "アドブロッカーを無効にする"
+  solution3: "ブラウザのキャッシュをクリアする"
+  solution4: "(Tor Browser) dom.webaudio.enabledをtrueに設定する"
+  otherOption: "その他のオプション"
+  otherOption1: "クライアント設定とキャッシュを削除"
+  otherOption2: "簡易クライアントを起動"
+  otherOption3: "修復ツールを起動"

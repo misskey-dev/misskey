@@ -30,14 +30,14 @@ jobs:
             ref: refs/pull/${{ github.event.number }}/merge
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.2.2
       with:
         ref: ${{ matrix.ref }}
         submodules: true
     - name: Install pnpm
       uses: pnpm/action-setup@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.1.0
+      uses: actions/setup-node@v4.2.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
