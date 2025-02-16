@@ -16,6 +16,7 @@
 - Fix: 埋め込みプレイヤーから外部ページに移動できない問題を修正
 - Fix: Play の再読込時に UI が以前の状態を引き継いでしまう問題を修正 `#14378`
 - Fix: カスタム絵文字管理画面(beta)にてisSensitive/localOnlyの絞り込みが上手くいかない問題の修正 ( #15445 )
+- Enhance: Unicode絵文字をslugから入力する際に`:ok:`のように最後の`:`を入力したあとにUnicode絵文字に変換できるように
 
 ### Server
 - Fix: `following/invalidate`でフォロワーを解除しようとしているユーザーの情報を返すように
