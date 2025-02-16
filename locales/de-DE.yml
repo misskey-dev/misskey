@@ -2364,9 +2364,11 @@ _notification:
   sendTestNotification: "Testbenachrichtigung senden"
   notificationWillBeDisplayedLikeThis: "Benachrichtigungen sehen so aus"
   reactedBySomeUsers: "{n} Benutzer haben eine Reaktion geschickt"
+  likedBySomeUsers: "{n} Benutzer mochten deine Notiz"
   renotedBySomeUsers: "Renote von {n} Benutzern"
   followedBySomeUsers: "Von {n} Benutzern gefolgt"
   flushNotification: "Benachrichtigungen löschen"
+  exportOfXCompleted: "Der Export von {x} ist abgeschlossen"
   login: "Neue Anmeldung erfolgt"
   _types:
     all: "Alle"
@@ -2450,11 +2452,18 @@ _webhookSettings:
 _abuseReport:
   _notificationRecipient:
     createRecipient: "Meldungsempfänger hinzufügen"
+    modifyRecipient: "Bearbeite einen Empfänger für Meldungen"
     recipientType: "Art der Benachrichtigung"
     _recipientType:
       mail: "Email"
       webhook: "Webhook"
+      _captions:
+        mail: "Die Benachrichtigung wird bei Eingang einer Meldung an die E-Mail-Adressen der Moderatoren gesendet"
+        webhook: "Sendet eine Benachrichtigung an den System Webhook, wenn eine Meldung eingegangen ist oder gelöst wurde"
     keywords: "Schlüsselwort"
+    notifiedUser: "Zu benachrichtigender Benutzer"
+    notifiedWebhook: "Zu verwendender Webhook"
+    deleteConfirm: "Bist du sicher, dass du den Empfänger der Benachrichtigung entfernen möchtest?"
 _moderationLogTypes:
   createRole: "Rolle erstellt"
   deleteRole: "Rolle gelöscht"
