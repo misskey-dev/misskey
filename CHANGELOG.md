@@ -1,3 +1,50 @@
+## Unreleased
+
+### General
+- Feat: アクセストークン発行時に通知するように
+- 依存関係の更新
+
+### Client
+- Feat: 投稿フォームで画像をプレビュー可能に
+- Enhance: 投稿フォームの「迷惑になる可能性があります」のダイアログを表示する条件においてCWを考慮するように
+- Enhance: アンテナ、リスト等の名前をカラム名のデフォルト値にするように `#13992`
+- Enhance: クライアントエラー画面の多言語対応
+- Enhance: 開発者モードでメニューからファイルIDをコピー出来るように `#15441'
+- Enhance: ノートに埋め込まれたメディアのコンテキストメニューから管理者用のファイル管理画面を開けるように ( #15440 )
+- Enhance: リアクションする際に確認ダイアログを表示できるように
+- Fix: コンディショナルロールを手動で割り当てできる導線を削除 `#13529`
+- Fix: 埋め込みプレイヤーから外部ページに移動できない問題を修正
+- Fix: Play の再読込時に UI が以前の状態を引き継いでしまう問題を修正 `#14378`
+- Fix: カスタム絵文字管理画面(beta)にてisSensitive/localOnlyの絞り込みが上手くいかない問題の修正 ( #15445 )
+
+### Server
+- Fix: `following/invalidate`でフォロワーを解除しようとしているユーザーの情報を返すように
+- Fix: オブジェクトストレージの設定でPrefixを設定していなかった場合nullまたは空文字になる問題を修正
+- Fix: pgroongaでの検索時にはじめのキーワードのみが検索に使用される問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/886)
+
+
+## 2025.2.0
+
+### General
+- Fix: Docker のビルドに失敗する問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/883)
+
+### Client
+- Fix: パスキーでパスワードレスログインが出来ない問題を修正
+- Fix: 一部環境でセンシティブなファイルを含むノートの非表示が効かない問題 
+- Fix: データセーバー有効時にもユーザーページの「ファイル」タブで画像が読み込まれてしまう問題を修正
+- Fix: MFMの `sparkle` エフェクトが正しく表示されない問題を修正
+- Fix: ページのURLにスラッシュが含まれている場合にページが正しく表示されない問題を修正
+- Fix: デッキのプロファイルが新規作成できない問題を修正
+- Fix: セキュリティに関する修正
+- ローカライゼーションの更新
+- Playが実装されたため、ページ機能の「ソースを見る」は削除されました
+
+### Server
+- Enhance: ページのURLに使用可能な文字を限定するように
+- Fix: 個別お知らせページのmetaタグ出力の条件が間違っていたのを修正
+
 ## 2025.1.0
 
 ### Note
@@ -5,6 +52,7 @@
   - 新しい設定項目"fulltextSearch.provider"が追加されました. sqlLike, sqlPgroonga, meilisearchのいずれかを設定出来ます.
   - すでにMeilisearchをお使いの場合、 **"fulltextSearch.provider"を"meilisearch"に設定する必要** があります.
   - 詳細は #14730 および `.config/example.yml` または `.config/docker_example.yml`の'Fulltext search configuration'をご参照願います.
+- 【開発者向け】従来の開発モードでHMRが機能しない問題が修正されたため、バックエンド・フロントエンド分離型の開発モードが削除されました。開発環境においてconfigの変更が必要となる可能性があります。
 
 ### General
 - Feat: カスタム絵文字管理画面をリニューアル #10996
@@ -21,6 +69,8 @@
 - Enhance: ノートの添付ファイルを一覧で遡れる「ファイル」タブを追加  
   (Based on https://github.com/Otaku-Social/maniakey/pull/14)
 - Enhance: AiScriptの拡張API関数において引数の型チェックをより厳格に
+- Enhance: クエリパラメータでuiを一時的に変更できるように #15240
+- Enhance: リモート絵文字のインポート時に詳細を確認できるように #15336
 - Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
 - Fix: サーバー情報メニューに区切り線が不足していたのを修正
 - Fix: ノートがログインしているユーザーしか見れない場合にログインダイアログを閉じるとその後の動線がなくなる問題を修正
@@ -35,6 +85,7 @@
   (Cherry-picked from https://github.com/TeamNijimiss/misskey/commit/800359623e41a662551d774de15b0437b6849bb4)
 - Fix: ノート作成画面でファイルの添付可能個数を超えてもノートボタンが押せていた問題を修正
 - Fix: 「アカウントを管理」画面で、ユーザー情報の取得に失敗したアカウント（削除されたアカウントなど）が表示されない問題を修正
+- Fix: MacOSでChrome系ブラウザを使用している場合に、Misskeyを閉じた際に他のタブのオーディオ機能と干渉する問題を修正
 - Fix: 言語データのキャッシュ状況によっては、埋め込みウィジェットが正しく起動しない問題を修正
 - Fix: 「削除して編集」でノートの引用を解除出来なかった問題を修正( #14476 )
 - Fix: RSSウィジェットが正しく表示されない問題を修正  
@@ -44,6 +95,9 @@
   (Cherry-picked from https://github.com/yojo-art/cherrypick/pull/153)
 - Fix: 非ログイン時のサーバー概要画面のメニューボタンが押せないことがあるのを修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/656)
+- Fix: URLにはじめから`#pswp`が含まれている場合に画像ビューワーがブラウザの戻るボタンで閉じられない問題を修正
+- Fix: ロール作成画面で設定できるアイコンデコレーションの最大取付個数を16に制限
+- Fix: Firefox Nightlyなどでアイコンが読み込めない問題を修正
 
 ### Server
 - Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
@@ -54,6 +108,7 @@
 - Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
 - Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
+- Fix: ノートの閲覧にログイン必須にしてもFeedでノートが表示されてしまう問題を修正
 - Fix: 絵文字の連合でライセンス欄を相互にやり取りするように ( #10859, #14109 )
 - Fix: ロックダウンされた期間指定のノートがStreaming経由でLTLに出現するのを修正 ( #15200 )
 - Fix: disableClustering設定時の初期化ロジックを調整( #15223 )

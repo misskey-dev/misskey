@@ -4195,7 +4195,7 @@ export interface Locale extends ILocale {
      */
     "invalidParamError": string;
     /**
-     * リクエストパラメータに問題があります。通常これはバグですが、入力した文字数が多すぎる等の可能性もあります。
+     * リクエストパラメータに問題があります。通常これはバグですが、入力した文字数が多すぎる・許可されていない文字を入力している等の可能性もあります。
      */
     "invalidParamErrorDescription": string;
     /**
@@ -5254,6 +5254,14 @@ export interface Locale extends ILocale {
      * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
      */
     "federationDisabled": string;
+    /**
+     * リアクションする際に確認する
+     */
+    "confirmOnReact": string;
+    /**
+     * " {emoji} " をリアクションしますか？
+     */
+    "reactAreYouSure": ParameterizedString<"emoji">;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -9181,18 +9189,6 @@ export interface Locale extends ILocale {
          */
         "readPage": string;
         /**
-         * ページを作成しました
-         */
-        "created": string;
-        /**
-         * ページを更新しました
-         */
-        "updated": string;
-        /**
-         * ページを削除しました
-         */
-        "deleted": string;
-        /**
          * ページ設定
          */
         "pageSetting": string;
@@ -9484,6 +9480,14 @@ export interface Locale extends ILocale {
          * ログインがありました
          */
         "login": string;
+        /**
+         * アクセストークンが作成されました
+         */
+        "createToken": string;
+        /**
+         * 心当たりがない場合は「{text}」を通じてアクセストークンを削除してください。
+         */
+        "createTokenDescription": ParameterizedString<"text">;
         "_types": {
             /**
              * すべて
@@ -10588,7 +10592,7 @@ export interface Locale extends ILocale {
              */
             "deleteSelectionRows": string;
             /**
-             * 選択範囲の行を削除
+             * 選択範囲の値をクリア
              */
             "deleteSelectionRanges": string;
             /**
@@ -10599,6 +10603,10 @@ export interface Locale extends ILocale {
              * 検索条件を詳細に設定します。
              */
             "searchSettingCaption": string;
+            /**
+             * 表示件数
+             */
+            "searchLimit": string;
             /**
              * 並び順
              */
@@ -10611,10 +10619,6 @@ export interface Locale extends ILocale {
              * 絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページを遷移・リロードすると消えます。
              */
             "registrationLogsCaption": string;
-            /**
-             * エラー
-             */
-            "alertEmojisRegisterFailedTitle": string;
             /**
              * 絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。
              */
@@ -10635,6 +10639,10 @@ export interface Locale extends ILocale {
             "logNothing": string;
         };
         "_remote": {
+            /**
+             * 選択行の詳細
+             */
+            "selectionRowDetail": string;
             /**
              * 選択行をインポート
              */
@@ -10687,21 +10695,30 @@ export interface Locale extends ILocale {
                  */
                 "alertDeleteEmojisNothingDescription": string;
                 /**
-                 * 確認
+                 * ページを移動しますか？
                  */
-                "confirmUpdateEmojisTitle": string;
+                "confirmMovePage": string;
+                /**
+                 * 表示を変更しますか？
+                 */
+                "confirmChangeView": string;
                 /**
                  * {count}個の絵文字を更新します。実行しますか？
                  */
                 "confirmUpdateEmojisDescription": ParameterizedString<"count">;
                 /**
-                 * 確認
-                 */
-                "confirmDeleteEmojisTitle": string;
-                /**
                  * チェックがつけられた{count}個の絵文字を削除します。実行しますか？
                  */
                 "confirmDeleteEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * 今までに加えた変更がすべてリセットされます。
+                 */
+                "confirmResetDescription": string;
+                /**
+                 * このページの絵文字に変更が加えられています。
+                 * 保存せずにこのままページを移動すると、このページで加えた変更はすべて破棄されます。
+                 */
+                "confirmMovePageDesciption": string;
                 /**
                  * 絵文字に設定されたロールで検索
                  */
@@ -10741,25 +10758,13 @@ export interface Locale extends ILocale {
                  */
                 "emojiInputAreaList3": string;
                 /**
-                 * 確認
-                 */
-                "confirmRegisterEmojisTitle": string;
-                /**
                  * リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）
                  */
                 "confirmRegisterEmojisDescription": ParameterizedString<"count">;
                 /**
-                 * 確認
-                 */
-                "confirmClearEmojisTitle": string;
-                /**
                  * 編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？
                  */
                 "confirmClearEmojisDescription": string;
-                /**
-                 * 確認
-                 */
-                "confirmUploadEmojisTitle": string;
                 /**
                  * ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？
                  */
@@ -10954,6 +10959,52 @@ export interface Locale extends ILocale {
                 "text": string;
             };
         };
+    };
+    "_bootErrors": {
+        /**
+         * 読み込みに失敗しました
+         */
+        "title": string;
+        /**
+         * 少し待ってからリロードしてもまだ問題が解決されない場合、以下のError IDを添えてサーバー管理者に連絡してください。
+         */
+        "serverError": string;
+        /**
+         * 以下を行うと解決する可能性があります。
+         */
+        "solution": string;
+        /**
+         * ブラウザおよびOSを最新バージョンに更新する
+         */
+        "solution1": string;
+        /**
+         * アドブロッカーを無効にする
+         */
+        "solution2": string;
+        /**
+         * ブラウザのキャッシュをクリアする
+         */
+        "solution3": string;
+        /**
+         * (Tor Browser) dom.webaudio.enabledをtrueに設定する
+         */
+        "solution4": string;
+        /**
+         * その他のオプション
+         */
+        "otherOption": string;
+        /**
+         * クライアント設定とキャッシュを削除
+         */
+        "otherOption1": string;
+        /**
+         * 簡易クライアントを起動
+         */
+        "otherOption2": string;
+        /**
+         * 修復ツールを起動
+         */
+        "otherOption3": string;
     };
 }
 declare const locales: {
