@@ -266,6 +266,9 @@ export class SignupApiService {
 					username, password, host,
 				});
 
+				// ここで承認済みに設定する処理が必要
+				await this.usersRepository.update({ id: account.id }, { approved: true });
+
 				const res = await this.userEntityService.pack(account, account, {
 					schema: 'MeDetailed',
 					includeSecrets: true,
