@@ -249,6 +249,10 @@ export async function common(createVue: () => App<Element>) {
 		if ($i) {
 			analytics.identify($i.id);
 		}
+
+		analytics.page({
+			path: window.location.pathname,
+		});
 	});
 
 	const app = createVue();

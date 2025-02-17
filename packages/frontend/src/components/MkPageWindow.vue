@@ -168,6 +168,10 @@ function popout() {
 useScrollPositionManager(() => getScrollContainer(contents.value), windowRouter);
 
 onMounted(() => {
+	analytics.page({
+		path: props.initialPath,
+	});
+
 	openingWindowsCount.value++;
 	if (openingWindowsCount.value >= 3) {
 		claimAchievement('open3windows');
