@@ -784,6 +784,9 @@ importers:
       json5:
         specifier: 2.2.3
         version: 2.2.3
+      magic-string:
+        specifier: 0.30.17
+        version: 0.30.17
       matter-js:
         specifier: 0.20.0
         version: 0.20.0
@@ -7895,9 +7898,6 @@ packages:
     resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
     engines: {node: '>=12'}
 
-  magic-string@0.30.11:
-    resolution: {integrity: sha512-+Wri9p0QHMy+545hKww7YAu5NyzF8iomPL/RQazugQ9+Ez4Ic3mERMd8ZTX5rfK944j+560ZJi8iAwgak1Ac7A==}
-
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
 
@@ -10729,6 +10729,9 @@ packages:
   vue-component-type-helpers@2.2.0:
     resolution: {integrity: sha512-cYrAnv2me7bPDcg9kIcGwjJiSB6Qyi08+jLDo9yuvoFQjzHiPTzML7RnkJB1+3P6KMsX/KbCD4QE3Tv/knEllw==}
 
+  vue-component-type-helpers@2.2.2:
+    resolution: {integrity: sha512-6lLY+n2xz2kCYshl59mL6gy8OUUTmkscmDFMO8i7Lj+QKwgnIFUZmM1i/iTYObtrczZVdw7UakPqDTGwVSGaRg==}
+
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
     engines: {node: '>=12'}
@@ -13408,7 +13411,7 @@ snapshots:
   '@rollup/plugin-replace@6.0.2(rollup@4.34.7)':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.34.7)
-      magic-string: 0.30.11
+      magic-string: 0.30.17
     optionalDependencies:
       rollup: 4.34.7
 
@@ -14248,7 +14251,7 @@ snapshots:
       '@storybook/builder-vite': 8.5.6(storybook@8.5.6(bufferutil@4.0.9)(prettier@3.5.1)(utf-8-validate@6.0.5))(vite@6.1.0(@types/node@22.13.4)(sass@1.85.0)(terser@5.39.0)(tsx@4.19.2))
       '@storybook/react': 8.5.6(@storybook/test@8.5.6(storybook@8.5.6(bufferutil@4.0.9)(prettier@3.5.1)(utf-8-validate@6.0.5)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(storybook@8.5.6(bufferutil@4.0.9)(prettier@3.5.1)(utf-8-validate@6.0.5))(typescript@5.7.3)
       find-up: 5.0.0
-      magic-string: 0.30.11
+      magic-string: 0.30.17
       react: 19.0.0
       react-docgen: 7.0.1
       react-dom: 19.0.0(react@19.0.0)
@@ -14311,7 +14314,7 @@ snapshots:
       '@storybook/builder-vite': 8.5.6(storybook@8.5.6(bufferutil@4.0.9)(prettier@3.5.1)(utf-8-validate@6.0.5))(vite@6.1.0(@types/node@22.13.4)(sass@1.85.0)(terser@5.39.0)(tsx@4.19.2))
       '@storybook/vue3': 8.5.6(storybook@8.5.6(bufferutil@4.0.9)(prettier@3.5.1)(utf-8-validate@6.0.5))(vue@3.5.13(typescript@5.7.3))
       find-package-json: 1.2.0
-      magic-string: 0.30.11
+      magic-string: 0.30.17
       storybook: 8.5.6(bufferutil@4.0.9)(prettier@3.5.1)(utf-8-validate@6.0.5)
       typescript: 5.7.3
       vite: 6.1.0(@types/node@22.13.4)(sass@1.85.0)(terser@5.39.0)(tsx@4.19.2)
@@ -14332,7 +14335,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.5.13(typescript@5.7.3)
-      vue-component-type-helpers: 2.2.0
+      vue-component-type-helpers: 2.2.2
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.20.1)(typescript@5.7.3)':
     dependencies:
@@ -15146,7 +15149,7 @@ snapshots:
       '@vue/compiler-ssr': 3.5.13
       '@vue/shared': 3.5.13
       estree-walker: 2.0.2
-      magic-string: 0.30.11
+      magic-string: 0.30.17
       postcss: 8.5.2
       source-map-js: 1.2.1
 
@@ -19037,10 +19040,6 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  magic-string@0.30.11:
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
-
   magic-string@0.30.17:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
@@ -22136,6 +22135,8 @@ snapshots:
   vue-component-type-helpers@2.0.16: {}
 
   vue-component-type-helpers@2.2.0: {}
+
+  vue-component-type-helpers@2.2.2: {}
 
   vue-demi@0.14.7(vue@3.5.13(typescript@5.7.3)):
     dependencies:
