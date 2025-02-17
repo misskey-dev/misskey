@@ -24,14 +24,17 @@ export function setupRouter(app: App, routerFactory: ((path: string) => IRouter)
 
 	mainRouter.addListener('push', ctx => {
 		window.history.pushState({ key: ctx.key }, '', ctx.path);
-
-		analytics.page({
-			path: ctx.path,
-		});
 	});
 
 	mainRouter.addListener('replace', ctx => {
 		window.history.replaceState({ key: ctx.key }, '', ctx.path);
+	});
+
+	mainRouter.addListener('change', ctx => {
+		console.log('mainRouter: change', ctx.path);
+		analytics.page({
+			path: ctx.path,
+		});
 	});
 
 	mainRouter.init();

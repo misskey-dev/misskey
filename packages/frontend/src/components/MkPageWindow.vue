@@ -44,6 +44,7 @@ import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { useRouterFactory } from '@/router/supplier.js';
 import { mainRouter } from '@/router/main.js';
+import { analytics } from '@/analytics.js';
 
 const props = defineProps<{
 	initialPath: string;
@@ -92,13 +93,18 @@ const reloadCount = ref(0);
 
 windowRouter.addListener('push', ctx => {
 	history.value.push({ path: ctx.path, key: ctx.key });
-
-	// ga
 });
 
 windowRouter.addListener('replace', ctx => {
 	history.value.pop();
 	history.value.push({ path: ctx.path, key: ctx.key });
+});
+
+windowRouter.addListener('change', ctx => {
+	console.log('windowRouter: change', ctx.path);
+	analytics.page({
+		path: ctx.path,
+	});
 });
 
 windowRouter.init();
