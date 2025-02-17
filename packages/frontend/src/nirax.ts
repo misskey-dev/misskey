@@ -6,8 +6,8 @@
 // NIRAX --- A lightweight router
 
 import { onMounted, shallowRef } from 'vue';
-import type { Component, ShallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
+import type { Component, ShallowRef } from 'vue';
 
 function safeURIDecode(str: string): string {
 	try {
@@ -241,8 +241,6 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			queryString,
 			hash,
 		};
-
-		if (_DEV_) console.log('Routing: ', path, queryString);
 
 		function check(routes: RouteDef[], _parts: string[]): Resolved | null {
 			forEachRouteLoop:
