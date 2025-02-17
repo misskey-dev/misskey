@@ -64,6 +64,7 @@ temp
 /packages/frontend/src/**/*.stories.ts
 tsdoc-metadata.json
 misskey-assets
+/packages/frontend/src/scripts/autogen/search-index.ts
 
 # Vite temporary files
 vite.config.js.timestamp-*
