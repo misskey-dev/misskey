@@ -132,6 +132,8 @@ export class SignupService {
 				token: secret,
 				isRoot: isTheFirstUser,
 				signupReason: opts.reason,
+				// 初回ユーザー（admin）は常に承認済みにする
+				approved: isTheFirstUser ? true : !this.meta.approvalRequiredForSignup,
 			}));
 
 			await transactionalEntityManager.save(new MiUserKeypair({
