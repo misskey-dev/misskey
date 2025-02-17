@@ -86,7 +86,7 @@ export function getConfig(): UserConfig {
 		plugins: [
 			pluginCreateSearchIndex({
 				targetFilePaths: ['src/pages/settings/*.vue'],
-				exportFilePath: './src/scripts/autogen/search-index.ts'
+				exportFilePath: './src/scripts/autogen/settings-search-index.ts'
 			}),
 			pluginVue(),
 			pluginUnwindCssModuleClassName(),
