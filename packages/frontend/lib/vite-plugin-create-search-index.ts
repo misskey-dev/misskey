@@ -248,7 +248,7 @@ async function processVueFile(
 
 		traverse(ast); // AST を traverse (1段階目: ID 生成と親子関係記録)
 
-		// ★ 2段階目: :children 属性の追加
+		// 2段階目: :children 属性の追加
 		markerRelations.forEach(relation => {
 			if (relation.parentId) { // 親 ID が存在する (子マーカーである) 場合
 				const parentRelation = markerRelations.find(r => r.markerId === relation.parentId); // 親 Relation を検索
@@ -258,7 +258,7 @@ async function processVueFile(
 					const childMarkerId = relation.markerId;
 
 					if (childrenProp) {
-						// ★ 既存の :children 属性を JavaScript 配列として解析・更新
+						// 既存の :children 属性を JavaScript 配列として解析・更新
 						try {
 							const childrenStart = code.indexOf('[', childrenProp.exp.loc.start.offset);
 							const childrenEnd = code.indexOf(']', childrenProp.exp.loc.start.offset);
@@ -273,7 +273,7 @@ async function processVueFile(
 							console.error('[create-search-index] Error updating :children attribute:', e); // エラーログ
 						}
 					} else {
-						// ★ :children 属性が存在しない場合は新規作成 (テンプレートリテラルを使用)
+						// :children 属性が存在しない場合は新規作成 (テンプレートリテラルを使用)
 						const startTagEnd = code.indexOf('>', parentNode.loc.start.offset); // 親の開始タグの閉じ > の位置
 						if (startTagEnd !== -1) {
 							s.appendRight(startTagEnd, ` :children="${JSON.stringify([childMarkerId]).replace(/"/g, "'")}"`); // :children 属性を追記
