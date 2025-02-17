@@ -202,7 +202,7 @@ async function processVueFile(
 ) {
 	const s = new MagicString(code); // magic-string のインスタンスを作成
 	const ast = vueSfcParse(code, { filename: id }).descriptor.template?.ast; // テンプレート AST を取得
-	const markerRelations: MarkerRelation[] = []; // ★ MarkerRelation 配列を初期化
+	const markerRelations: MarkerRelation[] = []; //  MarkerRelation 配列を初期化
 
 	if (ast) {
 		function traverse(node: any, currentParent?: any) {
@@ -286,8 +286,8 @@ async function processVueFile(
 
 	}
 
-	const transformedCode = s.toString(); // ★ 変換後のコードを取得
-	transformedCodeCache[id] = transformedCode; // ★ 変換後のコードをキャッシュに保存
+	const transformedCode = s.toString(); //  変換後のコードを取得
+	transformedCodeCache[id] = transformedCode; //  変換後のコードをキャッシュに保存
 
 	return {
 		code: transformedCode, // 変更後のコードを返す
@@ -301,7 +301,7 @@ export default function pluginCreateSearchIndex(options: {
 	targetFilePaths: string[],
 	exportFilePath: string
 }): Plugin {
-	let transformedCodeCache: Record<string, string> = {}; // ★ キャッシュオブジェクトをプラグインスコープで定義
+	let transformedCodeCache: Record<string, string> = {}; //  キャッシュオブジェクトをプラグインスコープで定義
 	const isDevServer = process.env.NODE_ENV === 'development'; // 開発サーバーかどうか
 
 	return {
