@@ -220,7 +220,7 @@ export default function pluginCreateSearchIndex(options: {
 		enforce: 'pre',
 
 		async buildStart() {
-			if (isDevServer) {
+			if (!isDevServer) {
 				return;
 			}
 
