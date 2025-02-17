@@ -20,7 +20,6 @@ export interface AnalysisResult {
 export interface ComponentUsageInfo {
 	staticProps: Record<string, string>;
 	bindProps: Record<string, string>;
-	componentName: string;
 }
 
 function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisResult[]): void {
@@ -74,7 +73,7 @@ export type ComponentUsageInfo = AnalysisResults[number]['usage'][number];
 
 function extractUsageInfoFromTemplateAst(
 	templateAst: any,
-	targetComponents: string[]
+	code: string,
 ): ComponentUsageInfo[] {
 	const usageInfoList: ComponentUsageInfo[] = [];
 
@@ -83,32 +82,62 @@ function extractUsageInfoFromTemplateAst(
 	}
 
 	function traverse(node: any) {
-		if (node.type === 1 /* ELEMENT */ && node.tag && targetComponents.includes(node.tag)) {
-			const componentTag = node.tag;
-
+		if (node.type === 1 && node.tag === 'MkSearchMarker') {
+			// 元々の props を staticProps に全て展開する
 			const staticProps: Record<string, string> = {};
-			const bindProps: Record<string, string> = {}; // bindProps の型を string に戻す
-
 			if (node.props && Array.isArray(node.props)) {
 				node.props.forEach((prop: any) => {
-					if (prop.type === 6 /* ATTRIBUTE */) { // type 6 は StaticAttribute
-						staticProps[prop.name] = prop.value?.content || ''; //  属性値を文字列として取得
-					} else if (prop.type === 7 /* DIRECTIVE */ && prop.name === 'bind' && prop.arg?.content) { // type 7 は DirectiveNode, v-bind:propName の場合
-						if (prop.exp?.content && prop.arg.content !== 'class') {
-							bindProps[prop.arg.content] = prop.exp.content; // prop.exp.content (文字列) を格納
-						}
+					if (prop.type === 6 && prop.name) {
+						staticProps[prop.name] = prop.value?.content || '';
 					}
 				});
+			}
+			// markerId は __markerId または既存の props から取得
+			const markerId = node.__markerId || staticProps['markerId'];
+			if (markerId) {
+				staticProps['markerId'] = markerId;
+			}
+
+			const bindProps: Record<string, any> = {};
+
+			// 元々の props から bindProps を抽出
+			if (node.props && Array.isArray(node.props)) {
+				node.props.forEach((prop: any) => {
+					if (prop.type === 7 && prop.name === 'bind' && prop.arg.content) {
+						bindProps[prop.arg.content] = prop.exp?.content || '';
+					}
+				});
+			}
+
+			// __children がある場合、bindProps に children を追加
+			if (node.__children) {
+				bindProps['children'] = node.__children;
+			} else if (node.props && Array.isArray(node.props)) {
+				const childrenProp = node.props.find(
+					(prop: any) =>
+						prop.type === 7 &&
+						prop.name === 'bind' &&
+						prop.arg?.content === 'children'
+				);
+				if (childrenProp && childrenProp.exp) {
+					try {
+						bindProps['children'] = JSON5.parse(
+							code.slice(childrenProp.exp.loc.start.offset, childrenProp.exp.loc.end.offset).replace(/'/g, '"')
+						);
+					} catch (e) {
+						console.error('Error parsing :children attribute', e);
+					}
+				}
 			}
 
 			usageInfoList.push({
 				staticProps,
 				bindProps,
-				componentName: componentTag,
 			});
+		}
 
-		} else if (node.children && Array.isArray(node.children)) {
-			node.children.forEach(child => traverse(child));
+		if (node.children && Array.isArray(node.children)) {
+			node.children.forEach((child: any) => traverse(child));
 		}
 	}
 
@@ -117,13 +146,10 @@ function extractUsageInfoFromTemplateAst(
 }
 
 export async function analyzeVueProps(options: {
-	targetComponents: string[],
 	targetFilePaths: string[],
 	exportFilePath: string,
-	transformedCodeCache: Record<string, string> // ★ transformedCodeCache を options から受け取る
+	transformedCodeCache: Record<string, string>
 }): Promise<void> {
-
-	const targetComponents = options.targetComponents || [];
 	const analysisResults: AnalysisResult[] = [];
 
 	//  対象ファイルパスを glob で展開
@@ -134,7 +160,6 @@ export async function analyzeVueProps(options: {
 
 
 	for (const filePath of filePaths) {
-		// ★ キャッシュから変換済みコードを取得 (修正): キャッシュに存在しない場合はエラーにする (キャッシュ必須)
 		const code = options.transformedCodeCache[path.resolve(filePath)]; // options 経由でキャッシュ参照
 		if (!code) { // キャッシュミスの場合
 			console.error(`[create-search-index] Error: No cached code found for: ${filePath}.`); // エラーログ
@@ -149,8 +174,7 @@ export async function analyzeVueProps(options: {
 			continue; // エラーが発生したファイルはスキップ
 		}
 
-		// テンプレートASTを走査してコンポーネント使用箇所とpropsの値を取得
-		const usageInfo = extractUsageInfoFromTemplateAst(descriptor.template?.ast, targetComponents);
+		const usageInfo = extractUsageInfoFromTemplateAst(descriptor.template?.ast, code);
 		if (!usageInfo) continue;
 
 		if (usageInfo.length > 0) {
@@ -164,36 +188,102 @@ export async function analyzeVueProps(options: {
 	outputAnalysisResultAsTS(options.exportFilePath, analysisResults); // outputAnalysisResultAsTS を呼び出す
 }
 
+interface MarkerRelation {
+	parentId?: string;
+	markerId: string;
+	node: any;
+}
+
 async function processVueFile(
 	code: string,
 	id: string,
-	options: { targetComponents: string[], targetFilePaths: string[], exportFilePath: string },
+	options: { targetFilePaths: string[], exportFilePath: string },
 	transformedCodeCache: Record<string, string>
 ) {
 	const s = new MagicString(code); // magic-string のインスタンスを作成
 	const ast = vueSfcParse(code, { filename: id }).descriptor.template?.ast; // テンプレート AST を取得
+	const markerRelations: MarkerRelation[] = []; // ★ MarkerRelation 配列を初期化
 
 	if (ast) {
-		function traverse(node: any) {
-			if (node.type === 1 /* ELEMENT */ && node.tag === 'MkSearchMarker') { // MkSearchMarker コンポーネントを検出
-				const markerId = randomUUID(); // UUID を生成
+		function traverse(node: any, currentParent?: any) {
+			// ノードが MkSearchMarker なら、markerId を生成しノードにセット（すでに存在する場合はその値を使用）
+			let nodeMarkerId: string | undefined;
+			if (node.type === 1 && node.tag === 'MkSearchMarker') {
+				const markerId = String(randomUUID());
 				const props = node.props || [];
-				const hasMarkerIdProp = props.some((prop: any) => prop.type === 6 && prop.name === 'markerId'); // markerId 属性が既に存在するか確認
+				const hasMarkerIdProp = props.some((prop: any) => prop.type === 6 && prop.name === 'markerId');
+				nodeMarkerId = hasMarkerIdProp
+					? props.find((prop: any) => prop.type === 6 && prop.name === 'markerId')?.value?.content as string
+					: markerId;
+				node.__markerId = nodeMarkerId;
+
+				// 子マーカーの場合、親ノードに __children を設定しておく
+				if (currentParent && currentParent.type === 1 && currentParent.tag === 'MkSearchMarker') {
+					currentParent.__children = currentParent.__children || [];
+					currentParent.__children.push(nodeMarkerId);
+				}
+
+				// markerRelations の処理はそのまま
+				const parentMarkerId = currentParent && currentParent.__markerId;
+				markerRelations.push({
+					parentId: parentMarkerId,
+					markerId: nodeMarkerId,
+					node: node,
+				});
 
 				if (!hasMarkerIdProp) {
-					// magic-string を使って markerId 属性を <MkSearchMarker> に追加
-					const startTagEnd = code.indexOf('>', node.loc.start.offset); // 開始タグの閉じ > の位置を検索
+					const startTagEnd = code.indexOf('>', node.loc.start.offset);
 					if (startTagEnd !== -1) {
-						s.appendRight(startTagEnd, ` markerId="${markerId}"`); //  markerId 属性を追記
+						s.appendRight(startTagEnd, ` markerId="${markerId}"`);
 					}
 				}
 			}
 
+			const newParent = node.type === 1 && node.tag === 'MkSearchMarker' ? node : currentParent;
 			if (node.children && Array.isArray(node.children)) {
-				node.children.forEach(child => traverse(child)); // 子ノードを再帰的に traverse
+				node.children.forEach(child => traverse(child, newParent));
 			}
 		}
-		traverse(ast); // AST を traverse
+
+
+		traverse(ast); // AST を traverse (1段階目: ID 生成と親子関係記録)
+
+		// ★ 2段階目: :children 属性の追加
+		markerRelations.forEach(relation => {
+			if (relation.parentId) { // 親 ID が存在する (子マーカーである) 場合
+				const parentRelation = markerRelations.find(r => r.markerId === relation.parentId); // 親 Relation を検索
+				if (parentRelation && parentRelation.node) {
+					const parentNode = parentRelation.node;
+					const childrenProp = parentNode.props?.find((prop: any) => prop.type === 7 && prop.name === 'bind' && prop.arg?.content === 'children');
+					const childMarkerId = relation.markerId;
+
+					if (childrenProp) {
+						// ★ 既存の :children 属性を JavaScript 配列として解析・更新
+						try {
+							const childrenStart = code.indexOf('[', childrenProp.exp.loc.start.offset);
+							const childrenEnd = code.indexOf(']', childrenProp.exp.loc.start.offset);
+							if (childrenStart !== -1 && childrenEnd !== -1) {
+								const childrenArrayStr = code.slice(childrenStart, childrenEnd + 1);
+								const childrenArray = JSON5.parse(childrenArrayStr.replace(/'/g, '"')); // JSON5 で解析 (シングルクォート対応)
+								childrenArray.push(childMarkerId); // 子マーカーIDを追加
+								const updatedChildrenArrayStr = JSON.stringify(childrenArray).replace(/"/g, "'"); // シングルクォートの配列文字列に再変換
+								s.overwrite(childrenStart, childrenEnd + 1, updatedChildrenArrayStr); // 属性値を書き換え
+							}
+						} catch (e) {
+							console.error('[create-search-index] Error updating :children attribute:', e); // エラーログ
+						}
+					} else {
+						// ★ :children 属性が存在しない場合は新規作成 (テンプレートリテラルを使用)
+						const startTagEnd = code.indexOf('>', parentNode.loc.start.offset); // 親の開始タグの閉じ > の位置
+						if (startTagEnd !== -1) {
+							s.appendRight(startTagEnd, ` :children="${JSON.stringify([childMarkerId]).replace(/"/g, "'")}"`); // :children 属性を追記
+						}
+					}
+				}
+			}
+		});
+
+
 	}
 
 	const transformedCode = s.toString(); // ★ 変換後のコードを取得
@@ -208,7 +298,6 @@ async function processVueFile(
 
 // Rollup プラグインとして export
 export default function pluginCreateSearchIndex(options: {
-	targetComponents: string[],
 	targetFilePaths: string[],
 	exportFilePath: string
 }): Plugin {
@@ -241,7 +330,7 @@ export default function pluginCreateSearchIndex(options: {
 
 		async transform(code, id) {
 			if (!id.endsWith('.vue')) {
-				return null;
+				return;
 			}
 
 			// targetFilePaths にマッチするファイルのみ処理を行う
@@ -262,7 +351,7 @@ export default function pluginCreateSearchIndex(options: {
 
 
 			if (!isMatch) {
-				return null;
+				return;
 			}
 
 			const transformed = await processVueFile(code, id, options, transformedCodeCache);

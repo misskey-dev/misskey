@@ -85,7 +85,6 @@ export function getConfig(): UserConfig {
 
 		plugins: [
 			pluginCreateSearchIndex({
-				targetComponents: ['MkSearchMarker'],
 				targetFilePaths: ['src/pages/settings/*.vue'],
 				exportFilePath: './src/scripts/autogen/search-index.ts'
 			}),
