@@ -1955,10 +1955,10 @@ _displayOfSensitiveMedia:
 
 _instanceTicker:
   none: "表示しない"
-  remote: "リモートユーザーに表示"
-  always: "常に表示"
-  remoteIcon: "リモートユーザーに表示(アイコンのみ)"
-  alwaysIcon: "常に表示(アイコンのみ)"
+  remote: "リモートユーザーに表示(バナー)"
+  always: "常に表示(バナー)"
+  remoteIcon: "リモートユーザーに表示(アイコン)"
+  alwaysIcon: "常に表示(アイコン)"
 
 _serverDisconnectedBehavior:
   reload: "自動でリロード"

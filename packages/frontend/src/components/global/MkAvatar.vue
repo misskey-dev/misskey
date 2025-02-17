@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<div v-if="showInstance">
-		<img v-if="faviconUrl" :class="$style.instanceIcon" :src="faviconUrl" :title="instance.name ?? undefined"/>
+		<img v-if="faviconUrl" :class="$style.instanceIcon" :src="faviconUrl" :title="instanceName"/>
 	</div>
 	<template v-if="showDecoration">
 		<img
@@ -45,11 +45,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import { instanceName } from '@@/js/config.js';
+import { instanceName as localInstanceName } from '@@/js/config.js';
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import MkA from './MkA.vue';
-import { instance as Instance } from '@/instance.js';
+import { instance as localInstance } from '@/instance.js';
 import { getStaticImageUrl, getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 import { acct, userPage } from '@/filters/user.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
@@ -68,10 +68,12 @@ const props = withDefaults(defineProps<{
 	decorations?: (Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'> & { blink?: boolean; })[];
 	forceShowDecoration?: boolean;
 	showInstance?: boolean;
+	host?: string | null;
 	instance?: {
-		faviconUrl?: string | null,
-		name?: string | null,
-	};
+		faviconUrl?: string | null
+		name?: string | null
+		themeColor?: string | null
+	}
 }>(), {
 	target: null,
 	link: false,
@@ -80,6 +82,7 @@ const props = withDefaults(defineProps<{
 	decorations: undefined,
 	forceShowDecoration: false,
 	showInstance: false,
+	host: null,
 	instance: undefined,
 });
 
@@ -89,11 +92,21 @@ const emit = defineEmits<{
 
 const showDecoration = props.forceShowDecoration || defaultStore.state.showAvatarDecorations;
 
-const instance = props.instance ?? {
-	name: instanceName,
-};
+const instanceName = computed(() => props.host == null ? localInstanceName : props.instance?.name ?? props.host);
 
-const faviconUrl = computed(() => props.instance ? getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') : getProxiedImageUrlNullable(Instance.iconUrl, 'preview') ?? '/favicon.ico');
+const faviconUrl = computed(() => {
+	let imageSrc: string | null = null;
+	if (props.host == null) {
+		if (localInstance.iconUrl == null) {
+			return '/favicon.ico';
+		} else {
+			imageSrc = localInstance.iconUrl;
+		}
+	} else {
+		imageSrc = props.instance?.faviconUrl ?? null;
+	}
+	return getProxiedImageUrlNullable(imageSrc);
+});
 
 const bound = computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
