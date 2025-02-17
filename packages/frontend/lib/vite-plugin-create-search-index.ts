@@ -67,7 +67,6 @@ export type ComponentUsageInfo = AnalysisResults[number]['usage'][number];
 
 	try {
 		fs.writeFileSync(outputPath, tsOutput, 'utf-8');
-		console.log(`[create-search-index]: output done. ${outputPath}`);
 	} catch (error) {
 		console.error('[create-search-index]: error: ', error);
 	}
@@ -214,20 +213,23 @@ export default function pluginCreateSearchIndex(options: {
 	exportFilePath: string
 }): Plugin {
 	let transformedCodeCache: Record<string, string> = {}; // ★ キャッシュオブジェクトをプラグインスコープで定義
+	const isDevServer = process.env.NODE_ENV === 'development'; // 開発サーバーかどうか
 
 	return {
 		name: 'createSearchIndex',
 		enforce: 'pre',
 
 		async buildStart() {
-			transformedCodeCache = {};
+			if (isDevServer) {
+				return;
+			}
 
 			const filePaths = options.targetFilePaths.reduce<string[]>((acc, filePathPattern) => {
 				const matchedFiles = glob.sync(filePathPattern);
 				return [...acc, ...matchedFiles];
 			}, []);
 
-			for (const filePath of filePaths) { // ★ 全ファイルパスに対して処理を実行
+			for (const filePath of filePaths) {
 				const id = path.resolve(filePath); // 絶対パスに変換
 				const code = fs.readFileSync(filePath, 'utf-8'); // ファイル内容を読み込む
 				await processVueFile(code, id, options, transformedCodeCache); // processVueFile 関数を呼び出す
@@ -262,10 +264,11 @@ export default function pluginCreateSearchIndex(options: {
 			if (!isMatch) {
 				return null;
 			}
-			console.log(`[create-search-index] transform: Processing file: ${id}`); // ログ: transform で処理中のファイル
 
 			const transformed = await processVueFile(code, id, options, transformedCodeCache);
-			await analyzeVueProps({ ...options, transformedCodeCache }); // analyzeVueProps を呼び出す
+			if (isDevServer) {
+				await analyzeVueProps({ ...options, transformedCodeCache }); // analyzeVueProps を呼び出す
+			}
 			return transformed;
 		},
 
