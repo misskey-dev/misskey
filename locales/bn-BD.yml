@@ -1237,9 +1237,6 @@ _pages:
   newPage: "নতুন পৃষ্ঠা বানান"
   editPage: "পৃষ্ঠাটি সম্পাদনা করুন"
   readPage: "উৎস দেখছেন"
-  created: "পৃষ্ঠা তৈরি করা হয়েছে"
-  updated: "পৃষ্ঠা সম্পাদনা করা হয়েছে"
-  deleted: "পৃষ্ঠা মুছে ফেলা হয়েছে"
   pageSetting: "পৃষ্ঠার সেটিংস"
   nameAlreadyExists: "পৃষ্ঠার URLটি ইতিমধ্যেই ব্যাবহার করা হয়েছে"
   invalidNameTitle: "পৃষ্ঠার URL অবৈধ"
@@ -1348,3 +1345,6 @@ _moderationLogTypes:
   resetPassword: "পাসওয়ার্ড রিসেট করুন"
 _reversi:
   total: "মোট"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "পাওয়া যায়নি"

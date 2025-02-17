@@ -17,10 +17,7 @@ export const page = (loader: AsyncComponentLoader) => defineAsyncComponent({
 });
 
 const routes: RouteDef[] = [{
-	path: '/@:initUser/pages/:initPageName/view-source',
-	component: page(() => import('@/pages/page-editor/page-editor.vue')),
-}, {
-	path: '/@:username/pages/:pageName',
+	path: '/@:username/pages/:pageName(*)',
 	component: page(() => import('@/pages/page.vue')),
 }, {
 	path: '/@:acct/following',
@@ -382,6 +379,10 @@ const routes: RouteDef[] = [{
 		path: '/emojis',
 		name: 'emojis',
 		component: page(() => import('@/pages/custom-emojis-manager.vue')),
+	}, {
+		path: '/emojis2',
+		name: 'emojis2',
+		component: page(() => import('@/pages/admin/custom-emojis-manager2.vue')),
 	}, {
 		path: '/avatar-decorations',
 		name: 'avatarDecorations',

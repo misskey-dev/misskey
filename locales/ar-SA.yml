@@ -1460,9 +1460,6 @@ _pages:
   newPage: "أنشئ صفحة جديدة"
   editPage: "عدّل الصفحة"
   readPage: "نُشّط عرض المصدر"
-  created: "نجح إنشاء الصفحة"
-  updated: "نجح تعديل الصفحة"
-  deleted: "نجح حذف الصفحة"
   pageSetting: "إعدادات الصفحة"
   nameAlreadyExists: "رابط الصفحة موجود مسبقًا"
   invalidNameTitle: "رابط الصفحة ليس صالحًا"
@@ -1584,3 +1581,6 @@ _reversi:
 _offlineScreen:
   title: "غير متصل - يتعذر الاتصال بالخادم"
   header: "يتعذر الاتصال بالخادم"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "غير موجود"

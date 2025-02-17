@@ -2285,9 +2285,6 @@ _pages:
   newPage: "Buat halaman baru"
   editPage: "Sunting halaman"
   readPage: "Lihat sumber kode aktif"
-  created: "Halaman berhasil dibuat"
-  updated: "Halaman berhasil diperbaharui!"
-  deleted: "Halaman telah dihapus"
   pageSetting: "Pengaturan Halaman"
   nameAlreadyExists: "URL Halaman yang ditentukan sudah ada"
   invalidNameTitle: "URL Halaman yang ditentukan tidak valid"
@@ -2610,3 +2607,6 @@ _mediaControls:
   pip: "Gambar dalam Gambar"
   playbackRate: "Kecepatan Pemutaran"
   loop: "Ulangi Pemutaran"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Tidak dapat ditemukan"
