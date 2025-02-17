@@ -10,6 +10,7 @@ import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
 import pluginJson5 from './vite.json5.js';
+import pluginCreateSearchIndex from './lib/rollup-plugin-create-search-index.js';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -83,6 +84,11 @@ export function getConfig(): UserConfig {
 		},
 
 		plugins: [
+			pluginCreateSearchIndex({
+				targetComponents: ['MkSearchMarker'],
+				targetFilePaths: ['/src/pages/settings'],
+				exportFilePath: './search-index.ts'
+			}),
 			pluginVue(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
