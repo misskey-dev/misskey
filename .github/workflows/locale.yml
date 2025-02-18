@@ -9,6 +9,10 @@ on:
     paths:
       - locales/**
       - .github/workflows/locale.yml
+
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   locale_verify:
     runs-on: ubuntu-latest

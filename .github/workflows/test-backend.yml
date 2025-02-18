@@ -18,6 +18,10 @@ on:
       - packages/misskey-js/**
       - .github/workflows/test-backend.yml
       - .github/misskey/test.yml
+
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   unit:
     name: Unit tests (backend)
