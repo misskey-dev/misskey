@@ -6,6 +6,9 @@ on:
 
   workflow_dispatch:
 
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   publish-misskey-js:
     name: Publish misskey-js
