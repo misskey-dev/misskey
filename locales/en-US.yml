@@ -1309,6 +1309,8 @@ availableRoles: "Available roles"
 acknowledgeNotesAndEnable: "Turn on after understanding the precautions."
 federationSpecified: "This server is operated in a whitelist federation. Interacting with servers other than those designated by the administrator is not allowed."
 federationDisabled: "Federation is disabled on this server. You cannot interact with users on other servers."
+confirmOnReact: "Confirm when reacting"
+reactAreYouSure: "Would you like to add a \"{emoji}\" reaction?"
 _accountSettings:
   requireSigninToViewContents: "Require sign-in to view contents"
   requireSigninToViewContentsDescription1: "Require login to view all notes and other content you have created. This will have the effect of preventing crawlers from collecting your information."
@@ -2441,6 +2443,7 @@ _notification:
   exportOfXCompleted: "Export of {x} has been completed"
   login: "Someone logged in"
   createToken: ""
+  createTokenDescription: "If you have no idea, delete the access token through \"{text}\"."
   _types:
     all: "All"
     note: "New notes"
@@ -2841,3 +2844,15 @@ _captcha:
     _unknown:
       title: "CAPTCHA error"
       text: "An unexpected error occurred."
+_bootErrors:
+  title: "Failed to load"
+  serverError: "If the problem persists after waiting a moment and reloading, please contact the server administrator with the following Error ID."
+  solution: "The following may solve the problem."
+  solution1: "Update your browser and OS to the latest version"
+  solution2: "Disable ad blocker"
+  solution3: "Clear the browser cache"
+  solution4: "Set the dom.webaudio.enabled to true for Tor Browser"
+  otherOption: "Other options"
+  otherOption1: "Delete client settings and cache"
+  otherOption2: "Start the simple client"
+  otherOption3: "Launch the repair tool"
