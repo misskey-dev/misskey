@@ -129,6 +129,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</MkPagination>
 	</MkFolder>
+
+	<MkFolder>
+		<template #icon><i class="ti ti-ban"></i></template>
+		<template #label>{{ 'ミュートしたノート' }}</template>
+
+		<XNoteMute/>
+	</MkFolder>
 </div>
 </template>
 
@@ -136,6 +143,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, watch } from 'vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
+import XNoteMute from './mute-block.note-mute.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';

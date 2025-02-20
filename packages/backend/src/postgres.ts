@@ -7,6 +7,7 @@
 import pg from 'pg';
 import { DataSource, Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
+import { MiNoteMuting } from '@/models/NoteMuting.js';
 import { entities as charts } from '@/core/chart/entities.js';
 
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
@@ -92,7 +93,7 @@ const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
 export type LoggerProps = {
 	disableQueryTruncation?: boolean;
 	enableQueryParamLogging?: boolean;
-}
+};
 
 function highlightSql(sql: string) {
 	return highlight.highlight(sql, {
@@ -195,6 +196,7 @@ export const entities = [
 	MiNoteReaction,
 	MiNoteThreadMuting,
 	MiNoteUnread,
+	MiNoteMuting,
 	MiPage,
 	MiPageLike,
 	MiGalleryPost,
