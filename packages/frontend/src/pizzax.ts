@@ -6,8 +6,8 @@
 // PIZZAX --- A lightweight store
 
 import { onUnmounted, ref, watch } from 'vue';
-import type { Ref } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
+import type { Ref } from 'vue';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { get, set } from '@/scripts/idb-proxy.js';
@@ -113,7 +113,6 @@ export class Storage<T extends StateDef> {
 				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceAccountState[k], v.default);
 			} else {
 				this.reactiveState[k].value = this.state[k] = v.default;
-				if (_DEV_) console.log('Use default value', k, v.default);
 			}
 		}
 
@@ -180,12 +179,9 @@ export class Storage<T extends StateDef> {
 		// (JSON.parse(JSON.stringify(value))の代わり)
 		const rawValue = deepClone(value);
 
-		if (_DEV_) console.log('set', key, rawValue, value);
-
 		this.reactiveState[key].value = this.state[key] = rawValue;
 
 		return this.addIdbSetJob(async () => {
-			if (_DEV_) console.log(`set ${String(key)} start`);
 			switch (this.def[key].where) {
 				case 'device': {
 					this.pizzaxChannel.postMessage({
@@ -224,7 +220,6 @@ export class Storage<T extends StateDef> {
 					break;
 				}
 			}
-			if (_DEV_) console.log(`set ${String(key)} complete`);
 		});
 	}
 
@@ -247,9 +242,9 @@ export class Storage<T extends StateDef> {
 		getter?: (v: T[K]['default']) => R,
 		setter?: (v: R) => T[K]['default'],
 	): {
-		get: () => R;
-		set: (value: R) => void;
-	} {
+			get: () => R;
+			set: (value: R) => void;
+		} {
 		const valueRef = ref(this.state[key]);
 
 		const stop = watch(this.reactiveState[key], val => {
