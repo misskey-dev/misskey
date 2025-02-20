@@ -113,17 +113,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			if (antenna.hideNotesInSensitiveChannel) {
-				// TypeORMにはRIGHT JOINがないので、サブクエリで代用。
-				query
-					.andWhere('note.channelId IS NULL OR EXISTS(' +
-						query.subQuery()
-							.from('channel', 'channel')
-							.where('channel.id = note.channelId')
-							.andWhere('channel.isSensitive = false')
-							.getQuery() +
-						' )');
-			}
+			// NOTE: センシティブ除外の設定はこのエンドポイントでは無視する。
+			// https://github.com/misskey-dev/misskey/pull/15346#discussion_r1929950255
 
 			this.queryService.generateVisibilityQuery(query, me);
 			this.queryService.generateMutedUserQuery(query, me);
