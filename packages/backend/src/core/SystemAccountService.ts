@@ -9,7 +9,7 @@ import { DataSource, IsNull } from 'typeorm';
 import bcrypt from 'bcryptjs';
 import { MiLocalUser, MiUser } from '@/models/User.js';
 import { MiSystemAccount, MiUsedUsername, MiUserKeypair, MiUserProfile, type UsersRepository, type SystemAccountsRepository } from '@/models/_.js';
-import type { UserProfilesRepository } from '@/models/_.js';
+import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -26,6 +26,9 @@ export class SystemAccountService {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.systemAccountsRepository)
 		private systemAccountsRepository: SystemAccountsRepository,
@@ -64,6 +67,7 @@ export class SystemAccountService {
 		} else {
 			const created = await this.createCorrespondingUser(type, {
 				username: `system.${type}`,
+				name: this.meta.name,
 			});
 			this.cache.set(type, created);
 			return created;
@@ -72,8 +76,8 @@ export class SystemAccountService {
 
 	@bindThis
 	private async createCorrespondingUser(type: typeof SYSTEM_ACCOUNT_TYPES[number], extra: {
-		username: string;
-		name?: string;
+		username: MiUser['username'];
+		name?: MiUser['name'];
 	}): Promise<MiLocalUser> {
 		const password = randomUUID();
 
@@ -139,7 +143,7 @@ export class SystemAccountService {
 	@bindThis
 	public async updateCorrespondingUserProfile(type: typeof SYSTEM_ACCOUNT_TYPES[number], extra: {
 		name?: string;
-		description?: string;
+		description?: MiUserProfile['description'];
 	}): Promise<MiLocalUser> {
 		const user = await this.fetch(type);
 

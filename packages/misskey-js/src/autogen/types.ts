@@ -8282,8 +8282,6 @@ export type operations = {
             sensitiveMediaDetectionSensitivity: string;
             setSensitiveFlagAutomatically: boolean;
             enableSensitiveMediaDetectionForVideos: boolean;
-            /** Format: id */
-            proxyAccountId: string | null;
             email: string | null;
             smtpSecure: boolean;
             smtpHost: string | null;
@@ -10623,8 +10621,6 @@ export type operations = {
           sensitiveMediaDetectionSensitivity?: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
           setSensitiveFlagAutomatically?: boolean;
           enableSensitiveMediaDetectionForVideos?: boolean;
-          /** Format: misskey:id */
-          proxyAccountId?: string | null;
           maintainerName?: string | null;
           maintainerEmail?: string | null;
           langs?: string[];
