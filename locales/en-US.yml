@@ -2442,7 +2442,7 @@ _notification:
   flushNotification: "Clear notifications"
   exportOfXCompleted: "Export of {x} has been completed"
   login: "Someone logged in"
-  createToken: ""
+  createToken: "An access token has been created"
   createTokenDescription: "If you have no idea, delete the access token through \"{text}\"."
   _types:
     all: "All"
