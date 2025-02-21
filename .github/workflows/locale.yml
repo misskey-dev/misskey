@@ -9,17 +9,21 @@ on:
     paths:
       - locales/**
       - .github/workflows/locale.yml
+
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   locale_verify:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.2.2
       with:
         fetch-depth: 0
         submodules: true
     - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v4.0.4
+    - uses: actions/setup-node@v4.2.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

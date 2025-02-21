@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #default="{items}">
 							<div class="ldhfsamy">
 								<button v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" :class="{ selected: selectedEmojis.includes(emoji.id) }" @click="selectMode ? toggleSelect(emoji) : edit(emoji)">
-									<img :src="`/emoji/${emoji.name}.webp`" class="img" :alt="emoji.name"/>
+									<img :src="emoji.url" class="img" :alt="emoji.name"/>
 									<div class="body">
 										<div class="name _monospace">{{ emoji.name }}</div>
 										<div class="info">{{ emoji.category }}</div>
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #default="{items}">
 							<div class="ldhfsamy">
 								<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
-									<img :src="`/emoji/${emoji.name}@${emoji.host}.webp`" class="img" :alt="emoji.name"/>
+									<img :src="getProxiedImageUrl(emoji.url, 'emoji')" class="img" :alt="emoji.name"/>
 									<div class="body">
 										<div class="name _monospace">{{ emoji.name }}</div>
 										<div class="info">{{ emoji.host }}</div>
@@ -78,11 +78,13 @@ import { computed, defineAsyncComponent, ref, shallowRef } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import MkRemoteEmojiEditDialog from '@/components/MkRemoteEmojiEditDialog.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSplit from '@/components/form/split.vue';
 import { selectFile } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -158,6 +160,19 @@ const edit = (emoji) => {
 	});
 };
 
+const detailRemoteEmoji = (emoji) => {
+	const { dispose } = os.popup(MkRemoteEmojiEditDialog, {
+		emoji: emoji,
+	}, {
+		done: () => {
+			dispose();
+		},
+		closed: () => {
+			dispose();
+		},
+	});
+};
+
 const importEmoji = (emoji) => {
 	os.apiWithDialog('admin/emoji/copy', {
 		emojiId: emoji.id,
@@ -168,6 +183,10 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 	os.popupMenu([{
 		type: 'label',
 		text: ':' + emoji.name + ':',
+	}, {
+		text: i18n.ts.details,
+		icon: 'ti ti-info-circle',
+		action: () => { detailRemoteEmoji(emoji); },
 	}, {
 		text: i18n.ts.import,
 		icon: 'ti ti-plus',

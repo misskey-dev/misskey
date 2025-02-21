@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URL } from 'node:url';
-import { toASCII } from 'punycode';
+import { URL, domainToASCII } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import RE2 from 're2';
 import { DI } from '@/di-symbols.js';
@@ -37,6 +36,14 @@ export class UtilityService {
 	@bindThis
 	public isUriLocal(uri: string): boolean {
 		return this.punyHost(uri) === this.toPuny(this.config.host);
+	}
+
+	// メールアドレスのバリデーションを行う
+	// https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
+	@bindThis
+	public validateEmailFormat(email: string): boolean {
+		const regexp = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+		return regexp.test(email);
 	}
 
 	@bindThis
@@ -106,13 +113,13 @@ export class UtilityService {
 
 	@bindThis
 	public toPuny(host: string): string {
-		return toASCII(host.toLowerCase());
+		return domainToASCII(host.toLowerCase());
 	}
 
 	@bindThis
 	public toPunyNullable(host: string | null | undefined): string | null {
 		if (host == null) return null;
-		return toASCII(host.toLowerCase());
+		return domainToASCII(host.toLowerCase());
 	}
 
 	@bindThis

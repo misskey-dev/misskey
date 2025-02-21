@@ -127,11 +127,11 @@ export class WebAuthnService {
 		const { registrationInfo } = verification;
 
 		return {
-			credentialID: registrationInfo.credentialID,
-			credentialPublicKey: registrationInfo.credentialPublicKey,
+			credentialID: registrationInfo.credential.id,
+			credentialPublicKey: registrationInfo.credential.publicKey,
 			attestationObject: registrationInfo.attestationObject,
 			fmt: registrationInfo.fmt,
-			counter: registrationInfo.counter,
+			counter: registrationInfo.credential.counter,
 			userVerified: registrationInfo.userVerified,
 			credentialDeviceType: registrationInfo.credentialDeviceType,
 			credentialBackedUp: registrationInfo.credentialBackedUp,
@@ -189,13 +189,11 @@ export class WebAuthnService {
 	 */
 	@bindThis
 	public async verifySignInWithPasskeyAuthentication(context: string, response: AuthenticationResponseJSON): Promise<MiUser['id'] | null> {
-		const challenge = await this.redisClient.get(`webauthn:challenge:${context}`);
+		const challenge = await this.redisClient.getdel(`webauthn:challenge:${context}`);
 
 		if (!challenge) {
 			throw new IdentifiableError('2d16e51c-007b-4edd-afd2-f7dd02c947f6', `challenge '${context}' not found`);
 		}
-
-		await this.redisClient.del(`webauthn:challenge:${context}`);
 
 		const key = await this.userSecurityKeysRepository.findOneBy({
 			id: response.id,
@@ -214,9 +212,9 @@ export class WebAuthnService {
 				expectedChallenge: challenge,
 				expectedOrigin: relyingParty.origin,
 				expectedRPID: relyingParty.rpId,
-				authenticator: {
-					credentialID: key.id,
-					credentialPublicKey: Buffer.from(key.publicKey, 'base64url'),
+				credential: {
+					id: key.id,
+					publicKey: Buffer.from(key.publicKey, 'base64url'),
 					counter: key.counter,
 					transports: key.transports ? key.transports as AuthenticatorTransportFuture[] : undefined,
 				},
@@ -294,9 +292,9 @@ export class WebAuthnService {
 				expectedChallenge: challenge,
 				expectedOrigin: relyingParty.origin,
 				expectedRPID: relyingParty.rpId,
-				authenticator: {
-					credentialID: key.id,
-					credentialPublicKey: Buffer.from(key.publicKey, 'base64url'),
+				credential: {
+					id: key.id,
+					publicKey: Buffer.from(key.publicKey, 'base64url'),
 					counter: key.counter,
 					transports: key.transports ? key.transports as AuthenticatorTransportFuture[] : undefined,
 				},

@@ -22,18 +22,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 	</Sortable>
-	<p :class="$style.remain">{{ 16 - props.modelValue.length }}/16</p>
+	<p
+		:class="[$style.remain, {
+			[$style.exceeded]: props.modelValue.length > 16,
+		}]"
+	>
+		{{ 16 - props.modelValue.length }}/16
+	</p>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { defineAsyncComponent, inject } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu';
+import { defaultStore } from '@/store';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import type { MenuItem } from '@/types/menu.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -166,6 +174,14 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 			text: i18n.ts.cropImage,
 			icon: 'ti ti-crop',
 			action: () : void => { crop(file); },
+		}, {
+			text: i18n.ts.preview,
+			icon: 'ti ti-photo-search',
+			action: () => {
+				os.popup(defineAsyncComponent(() => import('@/components/MkImgPreviewDialog.vue')), {
+					file: file,
+				});
+			},
 		});
 	}
 
@@ -181,6 +197,16 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 		danger: true,
 		action: () => { detachAndDeleteMedia(file); },
 	});
+
+	if (defaultStore.state.devMode) {
+		menuItems.push({ type: 'divider' }, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(file.id);
+			},
+		});
+	}
 
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target).then(() => menuShowing = false);
 	menuShowing = true;
@@ -239,5 +265,9 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 	margin: 0;
 	padding: 0;
 	font-size: 90%;
+
+	&.exceeded {
+		color: var(--MI_THEME-error);
+	}
 }
 </style>
