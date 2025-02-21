@@ -42,6 +42,13 @@ export class SystemAccountService {
 	}
 
 	@bindThis
+	public async list(): Promise<MiSystemAccount[]> {
+		const accounts = await this.systemAccountsRepository.findBy({});
+
+		return accounts;
+	}
+
+	@bindThis
 	public async fetch(type: typeof SYSTEM_ACCOUNT_TYPES[number]): Promise<MiLocalUser> {
 		const cached = this.cache.get(type);
 		if (cached) return cached;
