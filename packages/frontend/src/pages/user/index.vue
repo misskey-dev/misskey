@@ -9,10 +9,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<div v-if="user">
 			<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-				<XHome v-if="tab === 'home'" key="home" :user="user"/>
+				<XHome v-if="tab === 'home'" :key="user.id" :user="user" @unfoldFiles="tab = 'files'"/>
 				<MkSpacer v-else-if="tab === 'notes'" key="notes" :contentMax="800" style="padding-top: 0">
 					<XTimeline :user="user"/>
 				</MkSpacer>
+				<XFiles v-else-if="tab === 'files'" key="files" :user="user"/>
 				<XActivity v-else-if="tab === 'activity'" key="activity" :user="user"/>
 				<XAchievements v-else-if="tab === 'achievements'" key="achievements" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" key="reactions" :user="user"/>
@@ -43,6 +44,7 @@ import { serverContext, assertServerContext } from '@/server-context.js';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
+const XFiles = defineAsyncComponent(() => import('./files.vue'));
 const XActivity = defineAsyncComponent(() => import('./activity.vue'));
 const XAchievements = defineAsyncComponent(() => import('./achievements.vue'));
 const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
@@ -106,6 +108,10 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'activity',
 	title: i18n.ts.activity,
 	icon: 'ti ti-chart-line',
+}] : [], ...(!user.value.hideProfileFiles || ($i && ($i.id === user.value.id || $i.isAdmin || $i.isModerator))) ? [{
+	key: 'files',
+	title: i18n.ts.files,
+	icon: 'ti ti-photo',
 }] : [], ...(user.value.host == null ? [{
 	key: 'achievements',
 	title: i18n.ts.achievements,

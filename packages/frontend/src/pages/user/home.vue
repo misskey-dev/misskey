@@ -150,7 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
-			<XFiles v-if="!user.hideProfileFiles" :key="user.id" :user="user"/>
+			<XFiles v-if="!user.hideProfileFiles" :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
 			<XActivity v-if="!user.hideActivity" :key="user.id" :user="user"/>
 		</div>
 	</div>
@@ -184,6 +184,10 @@ import { isNotesVisibilityForMe, isFollowingVisibleForMe, isFollowersVisibleForM
 import { useRouter } from '@/router/supplier.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import MkSparkle from '@/components/MkSparkle.vue';
+
+const emit = defineEmits<{
+  (ev: 'unfoldFiles'): void;
+}>();
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
