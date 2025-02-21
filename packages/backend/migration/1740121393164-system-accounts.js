@@ -22,7 +22,8 @@ export class SystemAccounts1740121393164 {
 					await queryRunner.query(`INSERT INTO "system_account" ("id", "userId", "type") VALUES ('${relayActor[0].id}', '${relayActor[0].id}', 'relay')`);
 				}
 
-				// TODO: proxy
+				const meta = await queryRunner.query(`SELECT "proxyAccountId" FROM "meta" ORDER BY "id" DESC LIMIT 1`);
+				await queryRunner.query(`INSERT INTO "system_account" ("id", "userId", "type") VALUES ('${meta[0].proxyAccountId}', '${meta[0].proxyAccountId}', 'proxy')`);
     }
 
     async down(queryRunner) {
