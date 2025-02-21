@@ -23,7 +23,9 @@ export class SystemAccounts1740121393164 {
 				}
 
 				const meta = await queryRunner.query(`SELECT "proxyAccountId" FROM "meta" ORDER BY "id" DESC LIMIT 1`);
-				await queryRunner.query(`INSERT INTO "system_account" ("id", "userId", "type") VALUES ('${meta[0].proxyAccountId}', '${meta[0].proxyAccountId}', 'proxy')`);
+				if (meta[0].proxyAccountId) {
+					await queryRunner.query(`INSERT INTO "system_account" ("id", "userId", "type") VALUES ('${meta[0].proxyAccountId}', '${meta[0].proxyAccountId}', 'proxy')`);
+				}
     }
 
     async down(queryRunner) {
