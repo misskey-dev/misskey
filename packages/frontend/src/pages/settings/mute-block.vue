@@ -6,11 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<MkSearchMarker
-		markerId="test"
 		:locationLabel="[i18n.ts.muteAndBlock]"
 		icon="ti ti-ban"
 		:keywords="['mute', i18n.ts.wordMute]"
-		:children="['test2']"
 	>
 		<MkFolder>
 			<template #icon><i class="ti ti-message-off"></i></template>
@@ -20,7 +18,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo>{{ i18n.ts.wordMuteDescription }}</MkInfo>
 
 				<MkSearchMarker
-					markerId="test2"
 					:locationLabel="[i18n.ts.muteAndBlock, i18n.ts.wordMute]"
 					icon="ti ti-ban"
 					:keywords="['showMutedWord', i18n.ts.showMutedWord]"

@@ -11,6 +11,7 @@ import JSON5 from 'json5';
 import { randomUUID } from 'crypto';
 import MagicString from 'magic-string';
 import path from 'node:path'
+import { hash, toBase62 } from '../vite.config';
 
 export interface AnalysisResult {
 	filePath: string;
@@ -201,20 +202,26 @@ async function processVueFile(
 	transformedCodeCache: Record<string, string>
 ) {
 	const s = new MagicString(code); // magic-string のインスタンスを作成
-	const ast = vueSfcParse(code, { filename: id }).descriptor.template?.ast; // テンプレート AST を取得
+	const parsed = vueSfcParse(code, { filename: id });
+	if (!parsed.descriptor.template) {
+		return;
+	}
+	const ast = parsed.descriptor.template.ast; // テンプレート AST を取得
 	const markerRelations: MarkerRelation[] = []; //  MarkerRelation 配列を初期化
 
 	if (ast) {
 		function traverse(node: any, currentParent?: any) {
-			// ノードが MkSearchMarker なら、markerId を生成しノードにセット（すでに存在する場合はその値を使用）
-			let nodeMarkerId: string | undefined;
 			if (node.type === 1 && node.tag === 'MkSearchMarker') {
-				const markerId = String(randomUUID());
+				// 行番号はコード先頭からの改行数で取得
+				const lineNumber = code.slice(0, node.loc.start.offset).split('\n').length;
+				// ファイルパスと行番号からハッシュ値を生成
+				const generatedMarkerId = toBase62(hash(`${id}:${lineNumber}`));
+
 				const props = node.props || [];
 				const hasMarkerIdProp = props.some((prop: any) => prop.type === 6 && prop.name === 'markerId');
-				nodeMarkerId = hasMarkerIdProp
+				const nodeMarkerId = hasMarkerIdProp
 					? props.find((prop: any) => prop.type === 6 && prop.name === 'markerId')?.value?.content as string
-					: markerId;
+					: generatedMarkerId;
 				node.__markerId = nodeMarkerId;
 
 				// 子マーカーの場合、親ノードに __children を設定しておく
@@ -223,7 +230,6 @@ async function processVueFile(
 					currentParent.__children.push(nodeMarkerId);
 				}
 
-				// markerRelations の処理はそのまま
 				const parentMarkerId = currentParent && currentParent.__markerId;
 				markerRelations.push({
 					parentId: parentMarkerId,
@@ -234,7 +240,7 @@ async function processVueFile(
 				if (!hasMarkerIdProp) {
 					const startTagEnd = code.indexOf('>', node.loc.start.offset);
 					if (startTagEnd !== -1) {
-						s.appendRight(startTagEnd, ` markerId="${markerId}"`);
+						s.appendRight(startTagEnd, ` markerId="${generatedMarkerId}"`);
 					}
 				}
 			}

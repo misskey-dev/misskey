@@ -18,13 +18,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<MkSearchMarker markerId="727cc9e8-ad67-474a-9241-b5a9a6475e47">
+	<MkSearchMarker>
 		<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
 			<template #label>{{ i18n.ts._profile.name }}</template>
 		</MkInput>
 	</MkSearchMarker>
 
-	<MkSearchMarker markerId="1a06c7f9-e85e-46cb-bf5f-b3efa8e71b93">
+	<MkSearchMarker>
 		<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
 			<template #label>{{ i18n.ts._profile.description }}</template>
 			<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
