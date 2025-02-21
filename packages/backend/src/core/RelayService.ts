@@ -48,7 +48,7 @@ export class RelayService {
 		if (user) return user as MiLocalUser;
 
 		const created = await this.createSystemUserService.createSystemUser(ACTOR_USERNAME);
-		return created as MiLocalUser;
+		return created;
 	}
 
 	@bindThis

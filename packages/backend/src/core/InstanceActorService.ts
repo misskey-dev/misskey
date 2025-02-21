@@ -49,7 +49,7 @@ export class InstanceActorService {
 			this.cache.set(user);
 			return user;
 		} else {
-			const created = await this.createSystemUserService.createSystemUser(ACTOR_USERNAME) as MiLocalUser;
+			const created = await this.createSystemUserService.createSystemUser(ACTOR_USERNAME);
 			this.cache.set(created);
 			return created;
 		}
