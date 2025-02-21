@@ -9,7 +9,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository } from '@/models/_.js';
 import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { InstanceActorService } from '@/core/SystemAccountService.js';
 import { localUsernameSchema, passwordSchema } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -67,11 +66,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private userEntityService: UserEntityService,
 		private signupService: SignupService,
-		private instanceActorService: InstanceActorService,
 	) {
 		super(meta, paramDef, async (ps, _me, token) => {
 			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
-			const realUsers = await this.instanceActorService.realLocalUsersPresent();
+			const realUsers = await this.instanceActorService.realLocalUsersPresent(); // TODO
 
 			if (!realUsers && me == null && token == null) {
 				// 初回セットアップの場合

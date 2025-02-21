@@ -16,11 +16,11 @@ import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUsedUsername } from '@/models/UsedUsername.js';
 import generateUserToken from '@/misc/generate-native-user-token.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { InstanceActorService } from '@/core/SystemAccountService.js';
 import { bindThis } from '@/decorators.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserService } from '@/core/UserService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 
 @Injectable()
 export class SignupService {
@@ -41,7 +41,7 @@ export class SignupService {
 		private userService: UserService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
-		private instanceActorService: InstanceActorService,
+		private systemAccountService: SystemAccountService,
 		private usersChart: UsersChart,
 	) {
 	}
@@ -86,7 +86,7 @@ export class SignupService {
 			throw new Error('USED_USERNAME');
 		}
 
-		const isTheFirstUser = !await this.instanceActorService.realLocalUsersPresent();
+		const isTheFirstUser = !await this.instanceActorService.realLocalUsersPresent(); // TODO
 
 		if (!opts.ignorePreservedUsernames && !isTheFirstUser) {
 			const isPreserved = this.meta.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
