@@ -72,7 +72,6 @@ const props = withDefaults(defineProps<{
 	instance?: {
 		faviconUrl?: string | null
 		name?: string | null
-		themeColor?: string | null
 	}
 }>(), {
 	target: null,
