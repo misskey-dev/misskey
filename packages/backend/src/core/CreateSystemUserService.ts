@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { IsNull, DataSource } from 'typeorm';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
-import { MiUser } from '@/models/User.js';
+import { MiLocalUser, MiUser } from '@/models/User.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
 import { IdService } from '@/core/IdService.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
@@ -28,7 +28,9 @@ export class CreateSystemUserService {
 	}
 
 	@bindThis
-	public async createSystemUser(username: string): Promise<MiUser> {
+	public async createSystemUser(username: string, extra: {
+		name: string;
+	}): Promise<MiLocalUser> {
 		const password = randomUUID();
 
 		// Generate hash of password
@@ -61,6 +63,7 @@ export class CreateSystemUserService {
 				isLocked: true,
 				isExplorable: false,
 				isBot: true,
+				name: extra.name,
 			}).then(x => transactionalEntityManager.findOneByOrFail(MiUser, x.identifiers[0]));
 
 			await transactionalEntityManager.insert(MiUserKeypair, {
@@ -81,6 +84,6 @@ export class CreateSystemUserService {
 			});
 		});
 
-		return account;
+		return account as MiLocalUser;
 	}
 }

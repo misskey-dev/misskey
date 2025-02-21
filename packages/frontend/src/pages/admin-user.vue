@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 
+				<!-- TODO: 判定を修正 -->
 				<MkInfo v-if="['instance.actor', 'relay.actor'].includes(user.username)">{{ i18n.ts.isSystemAccount }}</MkInfo>
 
 				<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>

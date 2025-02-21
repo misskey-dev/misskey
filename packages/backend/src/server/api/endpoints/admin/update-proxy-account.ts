@@ -30,12 +30,6 @@ export const meta = {
 	kind: 'write:admin:update-proxy-account',
 
 	errors: {
-		noSuchUser: {
-			message: 'No such user.',
-			code: 'NO_SUCH_USER',
-			id: 'cd26a927-1df4-4ff4-843e-ff27e2c88de4',
-		},
-
 		accessDenied: {
 			message: 'Only administrators can edit members of the role.',
 			code: 'ACCESS_DENIED',
@@ -84,7 +78,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const proxy = await this.proxyAccountService.fetch();
-			if (!proxy) throw new ApiError(meta.errors.noSuchUser);
 
 			const profileUpdates = {} as Partial<MiUserProfile>;
 

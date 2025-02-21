@@ -33,21 +33,19 @@ export class ProxyAccountService {
 	}
 
 	@bindThis
-	public async fetch(): Promise<MiLocalUser | null> {
-		if (this.meta.proxyAccountId == null) return null;
+	public async fetch(): Promise<MiLocalUser> {
 		const cached = this.cache.get();
 		if (cached) return cached;
 
-		const user = await this.usersRepository.findOneBy({
-			host: IsNull(),
-			username: ACTOR_USERNAME,
-		}) as MiLocalUser | undefined;
+		const user = this.meta.proxyAccountId ? await this.usersRepository.findOneBy({
+			id: this.meta.proxyAccountId,
+		}) as MiLocalUser | undefined : null;
 
 		if (user) {
 			this.cache.set(user);
 			return user;
 		} else {
-			const created = await this.createSystemUserService.createSystemUser(ACTOR_USERNAME) as MiLocalUser;
+			const created = await this.createSystemUserService.createSystemUser(ACTOR_USERNAME);
 			this.cache.set(created);
 			const set = {} as Partial<MiMeta>;
 			set.proxyAccountId = created.id;
