@@ -8282,6 +8282,8 @@ export type operations = {
             sensitiveMediaDetectionSensitivity: string;
             setSensitiveFlagAutomatically: boolean;
             enableSensitiveMediaDetectionForVideos: boolean;
+            /** Format: id */
+            proxyAccountId: string | null;
             email: string | null;
             smtpSecure: boolean;
             smtpHost: string | null;
