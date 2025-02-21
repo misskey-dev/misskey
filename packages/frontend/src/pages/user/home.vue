@@ -61,6 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkA>
 						</span>
 					</div>
+					<!-- TODO: 判定を修正 -->
 					<div v-if="['instance.actor', 'relay.actor', 'proxy.actor'].includes(user.username)" class="isSystemAccount">
 						<MkInfo>{{ i18n.ts.isSystemAccount }}</MkInfo>
 					</div>

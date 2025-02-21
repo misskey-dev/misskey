@@ -172,6 +172,7 @@ export class MiMeta {
 	})
 	public cacheRemoteSensitiveFiles: boolean;
 
+	// TODO: 消す
 	@Column({
 		...id(),
 		nullable: true,
