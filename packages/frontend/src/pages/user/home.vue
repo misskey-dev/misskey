@@ -136,7 +136,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">
 					<MkLazy>
-						<XFiles v-if="!user.hideProfileFiles" :key="user.id" :user="user"/>
+						<XFiles v-if="!user.hideProfileFiles" :key="user.id" :user="user" @unfold="emit('unfoldFiles')"/>
 					</MkLazy>
 					<MkLazy>
 						<XActivity v-if="!user.hideActivity" :key="user.id" :user="user"/>
@@ -243,7 +243,7 @@ const style = computed(() => {
 		return {
 			backgroundImage: `url(${ props.user.bannerUrl })`,
 		};
-	};
+	}
 });
 
 const age = computed(() => {
