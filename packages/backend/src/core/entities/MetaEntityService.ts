@@ -11,8 +11,7 @@ import type { MiMeta } from '@/models/Meta.js';
 import type { AdsRepository } from '@/models/_.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { bindThis } from '@/decorators.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { InstanceActorService } from '@/core/SystemAccountService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
@@ -29,8 +28,7 @@ export class MetaEntityService {
 		@Inject(DI.adsRepository)
 		private adsRepository: AdsRepository,
 
-		private userEntityService: UserEntityService,
-		private instanceActorService: InstanceActorService,
+		private systemAccountService: SystemAccountService,
 	) { }
 
 	@bindThis
@@ -148,12 +146,14 @@ export class MetaEntityService {
 
 		const packed = await this.pack(instance);
 
+		const proxyAccount = await this.systemAccountService.fetch('proxy');
+
 		const packDetailed: Packed<'MetaDetailed'> = {
 			...packed,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
-			requireSetup: !await this.instanceActorService.realLocalUsersPresent(),
-			proxyAccountName: proxyAccount ? proxyAccount.username : null, // TODO
+			requireSetup: !await this.instanceActorService.realLocalUsersPresent(), // TODO
+			proxyAccountName: proxyAccount.username,
 			features: {
 				localTimeline: instance.policies.ltlAvailable,
 				globalTimeline: instance.policies.gtlAvailable,
