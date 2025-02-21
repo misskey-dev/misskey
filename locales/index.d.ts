@@ -9910,10 +9910,10 @@ export interface Locale extends ILocale {
          * サーバー設定更新
          */
         "updateServerSettings": string;
-				/**
-				 * ユーザーを更新
-				 */
-				"updateUser": string;
+        /**
+         * ユーザーを更新
+         */
+        "updateUser": string;
         /**
          * ユーザーのモデレーションノート更新
          */

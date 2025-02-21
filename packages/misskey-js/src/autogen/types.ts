@@ -215,17 +215,7 @@ export type paths = {
      */
     post: operations['admin___captcha___current'];
   };
-  '/admin/update-proxy-account': {
-    /**
-     * admin/update-proxy-account
-     * @description No description provided.
-     *
-     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-     * **Credential required**: *Yes* / **Permission**: *write:admin:update-proxy-account*
-     */
-    post: operations['admin___update-proxy-account'];
-  };
-  '/admin/unset-user-avatar': {
+  '/admin/captcha/save': {
     /**
      * admin/captcha/save
      * @description No description provided.
@@ -843,6 +833,16 @@ export type paths = {
      * **Credential required**: *Yes* / **Permission**: *write:admin:meta*
      */
     post: operations['admin___update-meta'];
+  };
+  '/admin/update-proxy-account': {
+    /**
+     * admin/update-proxy-account
+     * @description No description provided.
+     *
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes* / **Permission**: *write:admin:update-proxy-account*
+     */
+    post: operations['admin___update-proxy-account'];
   };
   '/admin/update-user-note': {
     /**
@@ -6589,66 +6589,7 @@ export type operations = {
     };
   };
   /**
-   * admin/update-proxy-account
-   * @description No description provided.
-   *
-   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
-   * **Credential required**: *Yes* / **Permission**: *write:admin:update-proxy-account*
-   */
-  'admin___update-proxy-account': {
-    requestBody: {
-      content: {
-        'application/json': {
-          name?: string | null;
-          description?: string | null;
-          /** Format: misskey:id */
-          avatarId?: string | null;
-          /** Format: misskey:id */
-          bannerId?: string | null;
-        };
-      };
-    };
-    responses: {
-      /** @description OK (with results) */
-      200: {
-        content: {
-          'application/json': components['schemas']['UserDetailed'];
-        };
-      };
-      /** @description Client error */
-      400: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Authentication error */
-      401: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Forbidden error */
-      403: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description I'm Ai */
-      418: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-    };
-  };
-  /**
-   * admin/unset-user-avatar
+   * admin/delete-account
    * @description No description provided.
    *
    * **Credential required**: *Yes* / **Permission**: *write:admin:delete-account*
@@ -10772,6 +10713,65 @@ export type operations = {
       /** @description OK (without any results) */
       204: {
         content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/update-proxy-account
+   * @description No description provided.
+   *
+   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+   * **Credential required**: *Yes* / **Permission**: *write:admin:update-proxy-account*
+   */
+  'admin___update-proxy-account': {
+    requestBody: {
+      content: {
+        'application/json': {
+          name?: string | null;
+          description?: string | null;
+          /** Format: misskey:id */
+          avatarId?: string | null;
+          /** Format: misskey:id */
+          bannerId?: string | null;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['UserDetailed'];
+        };
       };
       /** @description Client error */
       400: {
