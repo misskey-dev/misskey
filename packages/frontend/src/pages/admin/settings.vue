@@ -400,69 +400,6 @@ const proxyAccountForm = useForm({
 	fetchInstance(true);
 });
 
-function changeProxyAccountAvatar(ev) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar).then(async (file) => {
-		let originalOrCropped = file;
-
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.cropImageAsk,
-			okText: i18n.ts.cropYes,
-			cancelText: i18n.ts.cropNo,
-		});
-
-		if (!canceled) {
-			originalOrCropped = await os.cropImage(file, {
-				aspectRatio: 1,
-			});
-		}
-
-		const proxy = await os.apiWithDialog('admin/update-proxy-account', {
-			avatarId: originalOrCropped.id,
-		});
-		proxyAccount.value.avatarId = proxy.avatarId;
-		proxyAccount.value.avatarUrl = proxy.avatarUrl;
-		globalEvents.emit('requestClearPageCache');
-	});
-}
-
-function changeProxyAccountBanner(ev) {
-	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner).then(async (file) => {
-		let originalOrCropped = file;
-
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.cropImageAsk,
-			okText: i18n.ts.cropYes,
-			cancelText: i18n.ts.cropNo,
-		});
-
-		if (!canceled) {
-			originalOrCropped = await os.cropImage(file, {
-				aspectRatio: 2,
-			});
-		}
-
-		const proxy = await os.apiWithDialog('admin/update-proxy-account', {
-			bannerId: originalOrCropped.id,
-		});
-		proxyAccount.value.bannerId = proxy.bannerId;
-		proxyAccount.value.bannerUrl = proxy.bannerUrl;
-		globalEvents.emit('requestClearPageCache');
-	});
-}
-
-function chooseProxyAccount() {
-	os.selectUser({ localOnly: true }).then(user => {
-		proxyAccount.value = user;
-		os.apiWithDialog('admin/update-meta', {
-			proxyAccountId: user.id,
-		}).then(() => {
-			fetchInstance(true);
-		});
-	});
-}
-
 const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
