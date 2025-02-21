@@ -97,7 +97,7 @@ export class MiUserProfile {
 	public emailNotificationTypes: string[];
 
 	@Column('boolean', {
-		default: true,
+		default: false, // trueからfalseに変更
 	})
 	public publicReactions: boolean;
 
@@ -105,7 +105,7 @@ export class MiUserProfile {
 		enum: notesVisibilities,
 		default: 'public',
 	})
-	public notesVisibility: typeof notesVisibilities[number]
+	public notesVisibility: typeof notesVisibilities[number];
 
 	@Column('enum', {
 		enum: followingVisibilities,
@@ -121,6 +121,11 @@ export class MiUserProfile {
 
 	@Column('boolean', {
 		default: false,
+	})
+	public autoRejectFollowRequest: boolean;
+
+	@Column('boolean', {
+		default: true, // falseからtrueに変更
 	})
 	public hideActivity: boolean;
 
