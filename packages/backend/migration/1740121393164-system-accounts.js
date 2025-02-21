@@ -14,8 +14,15 @@ export class SystemAccounts1740121393164 {
 
 				const instanceActor = await queryRunner.query(`SELECT "id" FROM "user" WHERE "username" = 'instance.actor'`);
 				if (instanceActor.length > 0) {
-					await queryRunner.query(`INSERT INTO "system_account" ("id", "userId", "type") VALUES ('TODO', '${instanceActor[0].id}', 'instance.actor')`);
+					await queryRunner.query(`INSERT INTO "system_account" ("id", "userId", "type") VALUES ('${instanceActor[0].id}', '${instanceActor[0].id}', 'actor')`);
 				}
+
+				const relayActor = await queryRunner.query(`SELECT "id" FROM "user" WHERE "username" = 'relay.actor'`);
+				if (relayActor.length > 0) {
+					await queryRunner.query(`INSERT INTO "system_account" ("id", "userId", "type") VALUES ('${relayActor[0].id}', '${relayActor[0].id}', 'relay')`);
+				}
+
+				// TODO: proxy
     }
 
     async down(queryRunner) {

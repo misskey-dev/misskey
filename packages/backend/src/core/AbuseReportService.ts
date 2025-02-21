@@ -10,7 +10,7 @@ import { bindThis } from '@/decorators.js';
 import type { AbuseUserReportsRepository, MiAbuseUserReport, MiUser, UsersRepository } from '@/models/_.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import { QueueService } from '@/core/QueueService.js';
-import { InstanceActorService } from '@/core/InstanceActorService.js';
+import { InstanceActorService } from '@/core/SystemAccountService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { IdService } from './IdService.js';

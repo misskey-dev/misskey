@@ -172,18 +172,6 @@ export class MiMeta {
 	})
 	public cacheRemoteSensitiveFiles: boolean;
 
-	@Column({
-		...id(),
-		nullable: true,
-	})
-	public proxyAccountId: MiUser['id'] | null;
-
-	@ManyToOne(type => MiUser, {
-		onDelete: 'SET NULL',
-	})
-	@JoinColumn()
-	public proxyAccount: MiUser | null;
-
 	@Column('boolean', {
 		default: false,
 	})
