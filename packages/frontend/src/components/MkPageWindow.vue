@@ -104,6 +104,7 @@ windowRouter.addListener('change', ctx => {
 	console.log('windowRouter: change', ctx.path);
 	analytics.page({
 		path: ctx.path,
+		title: ctx.path,
 	});
 });
 
@@ -170,6 +171,7 @@ useScrollPositionManager(() => getScrollContainer(contents.value), windowRouter)
 onMounted(() => {
 	analytics.page({
 		path: props.initialPath,
+		title: props.initialPath,
 	});
 
 	openingWindowsCount.value++;

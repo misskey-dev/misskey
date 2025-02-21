@@ -34,6 +34,7 @@ export function setupRouter(app: App, routerFactory: ((path: string) => IRouter)
 		console.log('mainRouter: change', ctx.path);
 		analytics.page({
 			path: ctx.path,
+			title: ctx.path,
 		});
 	});
 
