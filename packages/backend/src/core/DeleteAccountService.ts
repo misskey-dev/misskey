@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
-import type { FollowingsRepository, MiUser, UsersRepository } from '@/models/_.js';
+import type { FollowingsRepository, MiMeta, MiUser, UsersRepository } from '@/models/_.js';
 import { QueueService } from '@/core/QueueService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -18,6 +18,9 @@ import { SystemAccountService } from '@/core/SystemAccountService.js';
 @Injectable()
 export class DeleteAccountService {
 	constructor(
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -38,8 +41,9 @@ export class DeleteAccountService {
 		id: string;
 		host: string | null;
 	}, moderator?: MiUser): Promise<void> {
+		if (this.meta.rootUserId === user.id) throw new Error('cannot delete a root account');
+
 		const _user = await this.usersRepository.findOneByOrFail({ id: user.id });
-		if (_user.isRoot) throw new Error('cannot delete a root account');
 
 		const systemAccounts = await this.systemAccountService.list();
 		for (const systemAccount of systemAccounts) {

@@ -152,7 +152,7 @@ export class MetaEntityService {
 			...packed,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
-			requireSetup: !await this.instanceActorService.realLocalUsersPresent(), // TODO
+			requireSetup: this.meta.rootUserId == null,
 			proxyAccountName: proxyAccount.username,
 			features: {
 				localTimeline: instance.policies.ltlAvailable,

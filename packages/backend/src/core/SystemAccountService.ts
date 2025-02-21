@@ -103,7 +103,6 @@ export class SystemAccountService {
 				usernameLower: extra.username.toLowerCase(),
 				host: null,
 				token: secret,
-				isRoot: false,
 				isLocked: true,
 				isExplorable: false,
 				isBot: true,

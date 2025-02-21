@@ -406,15 +406,15 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async isModerator(user: { id: MiUser['id']; isRoot: MiUser['isRoot'] } | null): Promise<boolean> {
+	public async isModerator(user: { id: MiUser['id'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
+		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
 	}
 
 	@bindThis
-	public async isAdministrator(user: { id: MiUser['id']; isRoot: MiUser['isRoot'] } | null): Promise<boolean> {
+	public async isAdministrator(user: { id: MiUser['id'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
+		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
 	}
 
 	@bindThis
@@ -463,16 +463,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				.map(a => a.userId),
 		);
 
-		if (includeRoot) {
-			const rootUserId = await this.rootUserIdCache.fetch(async () => {
-				const it = await this.usersRepository.createQueryBuilder('users')
-					.select('id')
-					.where({ isRoot: true })
-					.getRawOne<{ id: string }>();
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				return it!.id;
-			});
-			resultSet.add(rootUserId);
+		if (includeRoot && this.meta.rootUserId) {
+			resultSet.add(this.meta.rootUserId);
 		}
 
 		return [...resultSet].sort((x, y) => x.localeCompare(y));
