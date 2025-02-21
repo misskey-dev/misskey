@@ -61,6 +61,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkA>
 						</span>
 					</div>
+					<div v-if="user.host == null && user.username.startsWith('system.')" class="isSystemAccount">
+						<MkInfo>{{ i18n.ts.isSystemAccount }}</MkInfo>
+					</div>
 					<div v-if="iAmModerator" class="moderationNote">
 						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
 							<template #label>{{ i18n.ts.moderationNote }}</template>
