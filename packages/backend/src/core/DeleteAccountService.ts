@@ -13,6 +13,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 
 @Injectable()
 export class DeleteAccountService {
@@ -28,6 +29,7 @@ export class DeleteAccountService {
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
 		private moderationLogService: ModerationLogService,
+		private systemAccountService: SystemAccountService,
 	) {
 	}
 
@@ -38,6 +40,13 @@ export class DeleteAccountService {
 	}, moderator?: MiUser): Promise<void> {
 		const _user = await this.usersRepository.findOneByOrFail({ id: user.id });
 		if (_user.isRoot) throw new Error('cannot delete a root account');
+
+		const systemAccounts = await this.systemAccountService.list();
+		for (const systemAccount of systemAccounts) {
+			if (systemAccount.userId === user.id) {
+				throw new Error('cannot delete a system account');
+			}
+		}
 
 		if (moderator != null) {
 			this.moderationLogService.log(moderator, 'deleteAccount', {
