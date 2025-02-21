@@ -410,7 +410,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 			replyId: data.reply ? data.reply.id : null,
 			renoteId: data.renote ? data.renote.id : null,
 			channelId: data.channel ? data.channel.id : null,
-			channel: data.channel,
 			threadId: data.reply
 				? data.reply.threadId
 					? data.reply.threadId
@@ -535,7 +534,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		this.pushToTl(note, user);
 
-		this.antennaService.addNoteToAntennas(note, user);
+		this.antennaService.addNoteToAntennas({
+			...note,
+			channel: data.channel ?? null,
+		}, user);
 
 		if (data.reply) {
 			this.saveReply(data.reply, note);
