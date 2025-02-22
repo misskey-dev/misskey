@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
+<SearchMarker path="/settings/privacy" :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
 	<div class="_gaps_m">
 		<SearchMarker
 			:label="i18n.ts.makeFollowManuallyApprove"

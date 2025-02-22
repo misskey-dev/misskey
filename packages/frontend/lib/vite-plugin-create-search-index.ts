@@ -287,8 +287,6 @@ async function processVueFile(
 				}
 			}
 		});
-
-
 	}
 
 	const transformedCode = s.toString(); //  変換後のコードを取得
