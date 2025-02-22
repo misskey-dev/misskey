@@ -29,7 +29,6 @@ type AdditionalArgs<F> = F extends (context: EffectLayerFunctionContext<EffectSt
 let effectLayerIdCount = 0;
 const effects: EffectLayer<EffectStore>[] = [];
 
-
 /**
  * エフェクトレイヤーを定義する関数。
  *
@@ -38,7 +37,7 @@ const effects: EffectLayer<EffectStore>[] = [];
  * @returns エフェクトレイヤーを実行する関数。
  */
 export function defineEffectLayer<S extends EffectStore, F extends (context: EffectLayerFunctionContext<S>, ...args: any) => void>(fn: F, forceDisposeTime: number) {
-	return function (...args: AdditionalArgs<F>) {
+	return (...args: AdditionalArgs<F>) => {
 		const id = effectLayerIdCount++;
 		effects.push({
 			id,
@@ -52,7 +51,7 @@ export function defineEffectLayer<S extends EffectStore, F extends (context: Eff
 		}, forceDisposeTime);
 
 		return id;
-	}
+	};
 }
 
 // cubic-bezierのy座標を返す関数を生成（CSSのcubic-bezier()と互換）
