@@ -25,6 +25,7 @@
 - Fix: pgroongaでの検索時にはじめのキーワードのみが検索に使用される問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/886)
 - Fix: メールアドレスの形式が正しくなければ以降の処理を行わないように
+- Fix: カスタム絵文字パックが普通のファイルであるかどうかを確認するように
 
 ## 2025.2.0
 
