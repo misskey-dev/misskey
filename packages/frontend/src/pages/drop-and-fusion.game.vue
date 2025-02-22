@@ -197,7 +197,7 @@ import * as Misskey from 'misskey-js';
 import { DropAndFusionGame } from 'misskey-bubble-game';
 import type { Mono } from 'misskey-bubble-game';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { launchRipple } from '@/scripts/ripple-effect.js';
 import * as os from '@/os.js';
 import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
@@ -1010,11 +1010,7 @@ function attachGameEvents() {
 		const domY = rect.top + (y * viewScale);
 		const scoreUnit = getScoreUnit(props.gameMode);
 
-		{
-			const { dispose } = os.popup(MkRippleEffect, { x: domX, y: domY }, {
-				end: () => dispose(),
-			});
-		}
+		launchRipple(domX, domY);
 
 		{
 			const { dispose } = os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (scoreUnit === 'pt' ? '' : scoreUnit) }, {

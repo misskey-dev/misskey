@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { popup } from '@/os.js';
+import { launchRipple } from '@/scripts/ripple-effect.js';
 
 export default {
 	mounted(el, binding, vn) {
@@ -17,9 +16,7 @@ export default {
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
 
-			const { dispose } = popup(MkRippleEffect, { x, y }, {
-				end: () => dispose(),
-			});
+			launchRipple(x, y);
 		});
 	},
 };

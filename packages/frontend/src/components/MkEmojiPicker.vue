@@ -129,7 +129,7 @@ import type {
 	CustomEmojiFolderTree,
 } from '@@/js/emojilist.js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { launchRipple } from '@/scripts/ripple-effect.js';
 import * as os from '@/os.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { deviceKind } from '@/scripts/device-kind.js';
@@ -417,9 +417,7 @@ function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, 
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);
-		const { dispose } = os.popup(MkRippleEffect, { x, y }, {
-			end: () => dispose(),
-		});
+		launchRipple(x, y);
 	}
 
 	const key = getKey(emoji);

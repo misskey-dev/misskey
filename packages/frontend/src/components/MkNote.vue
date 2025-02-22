@@ -216,7 +216,7 @@ import { deepClone } from '@/scripts/clone.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { getNoteSummary } from '@/scripts/get-note-summary.js';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { launchRipple } from '@/scripts/ripple-effect.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import type { Keymap } from '@/scripts/hotkey.js';
@@ -483,9 +483,7 @@ function react(): void {
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
-			const { dispose } = os.popup(MkRippleEffect, { x, y }, {
-				end: () => dispose(),
-			});
+			launchRipple(x, y);
 		}
 	} else {
 		blur();

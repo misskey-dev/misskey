@@ -42,10 +42,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="dev" id="devTicker"><span style="animation: dev-ticker-blink 2s infinite;">DEV BUILD</span></div>
 
 <div v-if="$i && $i.isBot" id="botWarn"><span style="animation: dev-ticker-blink 2s infinite;">{{ i18n.ts.loggedInAsBot }}</span></div>
+
+<canvas ref="globalEffectCanvas" :class="$style.geCanvas"></canvas>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, useTemplateRef, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
@@ -58,6 +60,7 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { globalEvents } from '@/events.js';
+import { attachEffectLayer } from '@/scripts/effect-layer.js';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
@@ -96,6 +99,14 @@ if ($i) {
 		swInject();
 	}
 }
+
+const geCanvas = useTemplateRef('globalEffectCanvas');
+
+onMounted(() => {
+	if (geCanvas.value) {
+		attachEffectLayer(geCanvas.value);
+	}
+});
 </script>
 
 <style lang="scss" module>
@@ -200,6 +211,16 @@ if ($i) {
 
 .notification {
 	container-type: inline-size;
+}
+
+.geCanvas {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100dvw;
+	height: 100dvh;
+	z-index: 3950000;
+	pointer-events: none;
 }
 </style>
 

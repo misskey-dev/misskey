@@ -27,9 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, inject, ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
-import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { defaultStore } from '@/store.js';
 import { customEmojisMap } from '@/custom-emojis.js';
+import { getCustomEmojiName, resolveCustomEmojiUrl } from '@/scripts/emoji.js';
 import * as os from '@/os.js';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
@@ -52,34 +53,13 @@ const props = defineProps<{
 
 const react = inject<((name: string) => void) | null>('react', null);
 
-const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
-const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
-
-const rawUrl = computed(() => {
-	if (props.url) {
-		return props.url;
-	}
-	if (isLocal.value) {
-		return customEmojisMap.get(customEmojiName.value)?.url ?? null;
-	}
-	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
-});
-
+const customEmojiName = computed(() => getCustomEmojiName(props.name));
 const url = computed(() => {
-	if (rawUrl.value == null) return undefined;
+	const emojiUrl = resolveCustomEmojiUrl(props.name, props.host, props.useOriginalSize);
 
-	const proxied =
-		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))
-			? rawUrl.value
-			: getProxiedImageUrl(
-				rawUrl.value,
-				props.useOriginalSize ? undefined : 'emoji',
-				false,
-				true,
-			);
 	return defaultStore.reactiveState.disableShowingAnimatedImages.value
-		? getStaticImageUrl(proxied)
-		: proxied;
+		? getStaticImageUrl(emojiUrl)
+		: emojiUrl;
 });
 
 const alt = computed(() => `:${customEmojiName.value}:`);

@@ -28,7 +28,7 @@ import * as os from '@/os.js';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { $i } from '@/account.js';
-import MkReactionEffect from '@/components/MkReactionEffect.vue';
+import { launchReactionEffect } from '@/scripts/reaction-effect.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -140,9 +140,7 @@ function anime() {
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;
 	const y = rect.top + (buttonEl.value.offsetHeight / 2);
-	const { dispose } = os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {
-		end: () => dispose(),
-	});
+	launchReactionEffect(x, y, props.reaction);
 }
 
 watch(() => props.count, (newCount, oldCount) => {
