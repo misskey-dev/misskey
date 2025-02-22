@@ -122,7 +122,10 @@ export class MetaService implements OnApplicationShutdown {
 
 				return metas[0];
 			} else {
-				return await transactionalEntityManager.save(MiMeta, data);
+				return await transactionalEntityManager.save(MiMeta, {
+					...data,
+					id: 'x',
+				});
 			}
 		});
 
