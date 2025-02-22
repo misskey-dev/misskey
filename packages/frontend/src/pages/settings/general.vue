@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</FormSection>
 
-		<MkSearchSection :label="i18n.ts.displayOfNote" :keywords="['note']">
+		<MkSearchSection :label="i18n.ts.displayOfNote" :keywords="['note', 'display']">
 			<FormSection>
 				<template #label>{{ i18n.ts.displayOfNote }}</template>
 
@@ -133,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<MkSearchMarker
 							:label="i18n.ts.loadRawImages"
-							:keywords="['image', 'photo', 'picture', 'thumbnail', 'quality', 'raw', 'attachment']"
+							:keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment']"
 						>
 							<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 						</MkSearchMarker>
@@ -158,54 +158,86 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkSearchMarker>
 					</div>
 
-					<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
-						<template #label>{{ i18n.ts.instanceTicker }}</template>
-						<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
-						<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
-						<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
-					</MkSelect>
+					<MkSearchMarker
+						:label="i18n.ts.instanceTicker"
+						:keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']"
+					>
+						<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
+							<template #label>{{ i18n.ts.instanceTicker }}</template>
+							<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
+							<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
+							<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
+						</MkSelect>
+					</MkSearchMarker>
 
-					<MkSelect v-model="nsfw">
-						<template #label>{{ i18n.ts.displayOfSensitiveMedia }}</template>
-						<option value="respect">{{ i18n.ts._displayOfSensitiveMedia.respect }}</option>
-						<option value="ignore">{{ i18n.ts._displayOfSensitiveMedia.ignore }}</option>
-						<option value="force">{{ i18n.ts._displayOfSensitiveMedia.force }}</option>
-					</MkSelect>
+					<MkSearchMarker
+						:label="i18n.ts.displayOfSensitiveMedia"
+						:keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility']"
+					>
+						<MkSelect v-model="nsfw">
+							<template #label>{{ i18n.ts.displayOfSensitiveMedia }}</template>
+							<option value="respect">{{ i18n.ts._displayOfSensitiveMedia.respect }}</option>
+							<option value="ignore">{{ i18n.ts._displayOfSensitiveMedia.ignore }}</option>
+							<option value="force">{{ i18n.ts._displayOfSensitiveMedia.force }}</option>
+						</MkSelect>
+					</MkSearchMarker>
 
-					<MkRadios v-model="mediaListWithOneImageAppearance">
-						<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
-						<option value="expand">{{ i18n.ts.default }}</option>
-						<option value="16_9">{{ i18n.tsx.limitTo({ x: '16:9' }) }}</option>
-						<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
-						<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
-					</MkRadios>
+					<MkSearchMarker
+						:label="i18n.ts.mediaListWithOneImageAppearance"
+						:keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'list', 'size', 'height']"
+					>
+						<MkRadios v-model="mediaListWithOneImageAppearance">
+							<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
+							<option value="expand">{{ i18n.ts.default }}</option>
+							<option value="16_9">{{ i18n.tsx.limitTo({ x: '16:9' }) }}</option>
+							<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
+							<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
+						</MkRadios>
+					</MkSearchMarker>
 				</div>
 			</FormSection>
 		</MkSearchSection>
 
-		<FormSection>
-			<template #label>{{ i18n.ts.notificationDisplay }}</template>
+		<MkSearchSection :label="i18n.ts.notificationDisplay" :keywords="['notification', 'display']">
+			<FormSection>
+				<template #label>{{ i18n.ts.notificationDisplay }}</template>
 
-			<div class="_gaps_m">
-				<MkSwitch v-model="useGroupedNotifications">{{ i18n.ts.useGroupedNotifications }}</MkSwitch>
+				<div class="_gaps_m">
+					<MkSearchMarker
+						:label="i18n.ts.useGroupedNotifications"
+						:keywords="['group']"
+					>
+						<MkSwitch v-model="useGroupedNotifications">{{ i18n.ts.useGroupedNotifications }}</MkSwitch>
+					</MkSearchMarker>
 
-				<MkRadios v-model="notificationPosition">
-					<template #label>{{ i18n.ts.position }}</template>
-					<option value="leftTop"><i class="ti ti-align-box-left-top"></i> {{ i18n.ts.leftTop }}</option>
-					<option value="rightTop"><i class="ti ti-align-box-right-top"></i> {{ i18n.ts.rightTop }}</option>
-					<option value="leftBottom"><i class="ti ti-align-box-left-bottom"></i> {{ i18n.ts.leftBottom }}</option>
-					<option value="rightBottom"><i class="ti ti-align-box-right-bottom"></i> {{ i18n.ts.rightBottom }}</option>
-				</MkRadios>
+					<MkSearchMarker
+						:label="i18n.ts.position"
+						:keywords="['position']"
+					>
+						<MkRadios v-model="notificationPosition">
+							<template #label>{{ i18n.ts.position }}</template>
+							<option value="leftTop"><i class="ti ti-align-box-left-top"></i> {{ i18n.ts.leftTop }}</option>
+							<option value="rightTop"><i class="ti ti-align-box-right-top"></i> {{ i18n.ts.rightTop }}</option>
+							<option value="leftBottom"><i class="ti ti-align-box-left-bottom"></i> {{ i18n.ts.leftBottom }}</option>
+							<option value="rightBottom"><i class="ti ti-align-box-right-bottom"></i> {{ i18n.ts.rightBottom }}</option>
+						</MkRadios>
+					</MkSearchMarker>
 
-				<MkRadios v-model="notificationStackAxis">
-					<template #label>{{ i18n.ts.stackAxis }}</template>
-					<option value="vertical"><i class="ti ti-carousel-vertical"></i> {{ i18n.ts.vertical }}</option>
-					<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
-				</MkRadios>
+					<MkSearchMarker
+						:label="i18n.ts.stackAxis"
+						:keywords="['stack', 'axis', 'direction']"
+					>
+						<MkRadios v-model="notificationStackAxis">
+							<template #label>{{ i18n.ts.stackAxis }}</template>
+							<option value="vertical"><i class="ti ti-carousel-vertical"></i> {{ i18n.ts.vertical }}</option>
+							<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
+						</MkRadios>
+					</MkSearchMarker>
 
-				<MkButton @click="testNotification">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
-			</div>
-		</FormSection>
+					<MkButton @click="testNotification">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
+				</div>
+			</FormSection>
+		</MkSearchSection>
 
 		<FormSection>
 			<template #label>{{ i18n.ts.appearance }}</template>
