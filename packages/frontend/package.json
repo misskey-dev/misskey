@@ -59,7 +59,7 @@
 		"rollup": "4.34.7",
 		"sanitize-html": "2.14.0",
 		"sass": "1.85.0",
-		"shiki": "2.3.2",
+		"shiki": "2.4.1",
 		"strict-event-emitter-types": "2.0.0",
 		"textarea-caret": "3.1.0",
 		"three": "0.173.0",
@@ -132,8 +132,8 @@
 		"vite-plugin-turbosnap": "1.0.3",
 		"vitest": "3.0.5",
 		"vitest-fetch-mock": "0.4.3",
-		"vue-component-type-helpers": "2.2.0",
+		"vue-component-type-helpers": "2.2.2",
 		"vue-eslint-parser": "9.4.3",
-		"vue-tsc": "2.2.0"
+		"vue-tsc": "2.2.2"
 	}
 }

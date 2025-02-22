@@ -27,7 +27,7 @@
 		"punycode.js": "2.3.1",
 		"rollup": "4.34.7",
 		"sass": "1.85.0",
-		"shiki": "2.3.2",
+		"shiki": "2.4.1",
 		"tinycolor2": "1.6.0",
 		"tsc-alias": "1.8.10",
 		"tsconfig-paths": "4.2.0",
@@ -63,8 +63,8 @@
 		"prettier": "3.5.1",
 		"start-server-and-test": "2.0.10",
 		"vite-plugin-turbosnap": "1.0.3",
-		"vue-component-type-helpers": "2.2.0",
+		"vue-component-type-helpers": "2.2.2",
 		"vue-eslint-parser": "9.4.3",
-		"vue-tsc": "2.2.0"
+		"vue-tsc": "2.2.2"
 	}
 }
