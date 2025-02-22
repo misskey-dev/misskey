@@ -281,10 +281,6 @@ const meta = await misskeyApi('admin/meta');
 
 const proxyAccount = await misskeyApi('users/show', { userId: meta.proxyAccountId });
 
-const proxyAccountProfile = reactive({
-	description: proxyAccount.description,
-});
-
 const infoForm = useForm({
 	name: meta.name ?? '',
 	shortName: meta.shortName ?? '',
@@ -385,7 +381,7 @@ const federationForm = useForm({
 });
 
 const proxyAccountForm = useForm({
-	description: proxyAccountProfile.description,
+	description: proxyAccount.description,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-proxy-account', {
 		description: state.description,

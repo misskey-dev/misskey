@@ -234,7 +234,7 @@ export const meta = {
 			},
 			proxyAccountId: {
 				type: 'string',
-				optional: false, nullable: true,
+				optional: false, nullable: false,
 				format: 'id',
 			},
 			email: {
