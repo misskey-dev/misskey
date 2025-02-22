@@ -150,12 +150,16 @@ export class SystemAccountService {
 		const updates = {} as Partial<MiUser>;
 		if (extra.name !== undefined) updates.name = extra.name;
 
-		await this.usersRepository.update(user.id, updates);
+		if (Object.keys(updates).length > 0) {
+			await this.usersRepository.update(user.id, updates);
+		}
 
 		const profileUpdates = {} as Partial<MiUserProfile>;
 		if (extra.description !== undefined) profileUpdates.description = extra.description;
 
-		await this.userProfilesRepository.update(user.id, profileUpdates);
+		if (Object.keys(profileUpdates).length > 0) {
+			await this.userProfilesRepository.update(user.id, profileUpdates);
+		}
 
 		const updated = await this.usersRepository.findOneByOrFail({ id: user.id }) as MiLocalUser;
 		this.cache.set(type, updated);
