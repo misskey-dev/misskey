@@ -103,7 +103,7 @@
 		"bcryptjs": "2.4.3",
 		"blurhash": "2.0.5",
 		"body-parser": "1.20.3",
-		"bullmq": "5.41.0",
+		"bullmq": "5.41.1",
 		"cacheable-lookup": "7.0.0",
 		"cbor": "9.0.2",
 		"chalk": "5.4.1",
