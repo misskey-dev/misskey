@@ -27,7 +27,7 @@
 		"punycode.js": "2.3.1",
 		"rollup": "4.34.7",
 		"sass": "1.85.0",
-		"shiki": "2.4.1",
+		"shiki": "3.0.0",
 		"tinycolor2": "1.6.0",
 		"tsc-alias": "1.8.10",
 		"tsconfig-paths": "4.2.0",
