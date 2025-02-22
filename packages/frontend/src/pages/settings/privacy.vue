@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<MkSearchSection :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
+<MkSearchSection :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
+	<div class="_gaps_m">
 		<MkSearchMarker
 			:label="i18n.ts.makeFollowManuallyApprove"
 			:keywords="['follow', 'lock', i18n.ts.lockedAccountInfo]"
@@ -238,8 +238,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<MkSwitch v-model="keepCw" @update:modelValue="save()">{{ i18n.ts.keepCw }}</MkSwitch>
 		</MkSearchMarker>
-	</MkSearchSection>
-</div>
+	</div>
+</MkSearchSection>
 </template>
 
 <script lang="ts" setup>
