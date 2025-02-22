@@ -16,7 +16,7 @@ export function resolveCustomEmojiUrl(name: string, host?: string, useOriginalSi
 
 	const rawUrl = (() => {
 		if (isLocal) {
-			return customEmojisMap.get(emojiName)?.url ?? null
+			return customEmojisMap.get(emojiName)?.url ?? null;
 		} else {
 			return host ? `/emoji/${emojiName}@${host}.webp` : `/emoji/${emojiName}.webp`;
 		}

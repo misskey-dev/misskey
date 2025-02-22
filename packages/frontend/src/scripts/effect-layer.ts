@@ -41,7 +41,7 @@ export function defineEffectLayer<S extends EffectStore, F extends (context: Eff
 
 		if (forceDisposeTime != null) {
 			setTimeout(() => {
-				effects.splice(effects.findIndex(e => e.id === id), 1);
+				effects.splice(effects.findIndex(effect => effect.id === id), 1);
 			}, forceDisposeTime);
 		}
 
@@ -88,7 +88,7 @@ export function attachEffectLayer(el: HTMLCanvasElement) {
 					effect.store = store;
 				},
 				done: () => {
-					effects.splice(effects.findIndex(e => e.id === effect.id), 1);
+					effects.splice(effects.findIndex(eff => eff.id === effect.id), 1);
 				}
 			});
 
