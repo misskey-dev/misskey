@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSearchSection :label="i18n.ts.general" :keywords="['general']" icon="ti ti-adjustments">
+<SearchMarker :label="i18n.ts.general" :keywords="['general']" icon="ti ti-adjustments">
 	<div class="_gaps_m">
 		<SearchMarker
 			:label="i18n.ts.uiLanguage"
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</FormSection>
 
-		<MkSearchSection :label="i18n.ts.displayOfNote" :keywords="['note', 'display']">
+		<SearchMarker :label="i18n.ts.displayOfNote" :keywords="['note', 'display']">
 			<FormSection>
 				<template #label>{{ i18n.ts.displayOfNote }}</template>
 
@@ -196,9 +196,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</SearchMarker>
 				</div>
 			</FormSection>
-		</MkSearchSection>
+		</SearchMarker>
 
-		<MkSearchSection :label="i18n.ts.notificationDisplay" :keywords="['notification', 'display']">
+		<SearchMarker :label="i18n.ts.notificationDisplay" :keywords="['notification', 'display']">
 			<FormSection>
 				<template #label>{{ i18n.ts.notificationDisplay }}</template>
 
@@ -237,7 +237,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton @click="testNotification">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
 				</div>
 			</FormSection>
-		</MkSearchSection>
+		</SearchMarker>
 
 		<FormSection>
 			<template #label>{{ i18n.ts.appearance }}</template>
@@ -373,7 +373,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</FormSection>
 	</div>
-</MkSearchSection>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>

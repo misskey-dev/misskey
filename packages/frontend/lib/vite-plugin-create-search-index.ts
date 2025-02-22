@@ -251,7 +251,6 @@ async function processVueFile(
 			}
 		}
 
-
 		traverse(ast); // AST を traverse (1段階目: ID 生成と親子関係記録)
 
 		// 2段階目: :children 属性の追加

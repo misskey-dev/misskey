@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSearchSection :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
+<SearchMarker :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
 	<div class="_gaps_m">
 		<SearchMarker
 			:label="i18n.ts.makeFollowManuallyApprove"
@@ -94,7 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</SearchMarker>
 
-		<MkSearchSection :label="i18n.ts.lockdown" :keywords="['lockdown']">
+		<SearchMarker :label="i18n.ts.lockdown" :keywords="['lockdown']">
 			<FormSection>
 				<template #label>{{ i18n.ts.lockdown }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 
@@ -196,7 +196,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</SearchMarker>
 				</div>
 			</FormSection>
-		</MkSearchSection>
+		</SearchMarker>
 
 		<FormSection>
 			<div class="_gaps_m">
@@ -239,7 +239,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="keepCw" @update:modelValue="save()">{{ i18n.ts.keepCw }}</MkSwitch>
 		</SearchMarker>
 	</div>
-</MkSearchSection>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
