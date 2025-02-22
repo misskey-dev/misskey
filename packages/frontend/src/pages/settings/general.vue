@@ -66,55 +66,122 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</FormSection>
 
-		<FormSection>
-			<template #label>{{ i18n.ts.displayOfNote }}</template>
+		<MkSearchSection :label="i18n.ts.displayOfNote" :keywords="['note']">
+			<FormSection>
+				<template #label>{{ i18n.ts.displayOfNote }}</template>
 
-			<div class="_gaps_m">
-				<div class="_gaps_s">
-					<MkSwitch v-model="collapseRenotes">
-						<template #label>{{ i18n.ts.collapseRenotes }}</template>
-						<template #caption>{{ i18n.ts.collapseRenotesDescription }}</template>
-					</MkSwitch>
-					<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
-					<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
-					<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
-					<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
-					<MkSwitch v-if="advancedMfm" v-model="enableQuickAddMfmFunction">{{ i18n.ts.enableQuickAddMfmFunction }}</MkSwitch>
-					<MkSwitch v-model="showReactionsCount">{{ i18n.ts.showReactionsCount }}</MkSwitch>
-					<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
-					<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
-					<MkRadios v-model="reactionsDisplaySize">
-						<template #label>{{ i18n.ts.reactionsDisplaySize }}</template>
-						<option value="small">{{ i18n.ts.small }}</option>
-						<option value="medium">{{ i18n.ts.medium }}</option>
-						<option value="large">{{ i18n.ts.large }}</option>
+				<div class="_gaps_m">
+					<div class="_gaps_s">
+						<MkSearchMarker
+							:label="i18n.ts.collapseRenotes"
+							:keywords="['renote', i18n.ts.collapseRenotesDescription]"
+						>
+							<MkSwitch v-model="collapseRenotes">
+								<template #label>{{ i18n.ts.collapseRenotes }}</template>
+								<template #caption>{{ i18n.ts.collapseRenotesDescription }}</template>
+							</MkSwitch>
+						</MkSearchMarker>
+
+						<MkSearchMarker
+							:label="i18n.ts.showNoteActionsOnlyHover"
+							:keywords="['hover', 'show', 'footer', 'action']"
+						>
+							<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
+						</MkSearchMarker>
+
+						<MkSearchMarker
+							:label="i18n.ts.showClipButtonInNoteFooter"
+							:keywords="['footer', 'action', 'clip', 'show']"
+						>
+							<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
+						</MkSearchMarker>
+
+						<MkSearchMarker
+							:label="i18n.ts.enableAdvancedMfm"
+							:keywords="['mfm', 'enable', 'show', 'advanced']"
+						>
+							<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
+						</MkSearchMarker>
+
+						<MkSearchMarker
+							:label="i18n.ts.enableAnimatedMfm"
+							:keywords="['mfm', 'enable', 'show', 'animated']"
+						>
+							<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
+						</MkSearchMarker>
+
+						<MkSearchMarker
+							:label="i18n.ts.enableQuickAddMfmFunction"
+							:keywords="['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn']"
+						>
+							<MkSwitch v-if="advancedMfm" v-model="enableQuickAddMfmFunction">{{ i18n.ts.enableQuickAddMfmFunction }}</MkSwitch>
+						</MkSearchMarker>
+
+						<MkSearchMarker
+							:label="i18n.ts.showReactionsCount"
+							:keywords="['reaction', 'count', 'show']"
+						>
+							<MkSwitch v-model="showReactionsCount">{{ i18n.ts.showReactionsCount }}</MkSwitch>
+						</MkSearchMarker>
+
+						<MkSearchMarker
+							:label="i18n.ts.showGapBetweenNotesInTimeline"
+							:keywords="['note', 'timeline', 'gap']"
+						>
+							<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
+						</MkSearchMarker>
+
+						<MkSearchMarker
+							:label="i18n.ts.loadRawImages"
+							:keywords="['image', 'photo', 'picture', 'thumbnail', 'quality', 'raw', 'attachment']"
+						>
+							<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
+						</MkSearchMarker>
+
+						<MkSearchMarker
+							:label="i18n.ts.reactionsDisplaySize"
+							:keywords="['reaction', 'size', 'scale', 'display']"
+						>
+							<MkRadios v-model="reactionsDisplaySize">
+								<template #label>{{ i18n.ts.reactionsDisplaySize }}</template>
+								<option value="small">{{ i18n.ts.small }}</option>
+								<option value="medium">{{ i18n.ts.medium }}</option>
+								<option value="large">{{ i18n.ts.large }}</option>
+							</MkRadios>
+						</MkSearchMarker>
+
+						<MkSearchMarker
+							:label="i18n.ts.limitWidthOfReaction"
+							:keywords="['reaction', 'size', 'scale', 'display', 'width', 'limit']"
+						>
+							<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
+						</MkSearchMarker>
+					</div>
+
+					<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
+						<template #label>{{ i18n.ts.instanceTicker }}</template>
+						<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
+						<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
+						<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
+					</MkSelect>
+
+					<MkSelect v-model="nsfw">
+						<template #label>{{ i18n.ts.displayOfSensitiveMedia }}</template>
+						<option value="respect">{{ i18n.ts._displayOfSensitiveMedia.respect }}</option>
+						<option value="ignore">{{ i18n.ts._displayOfSensitiveMedia.ignore }}</option>
+						<option value="force">{{ i18n.ts._displayOfSensitiveMedia.force }}</option>
+					</MkSelect>
+
+					<MkRadios v-model="mediaListWithOneImageAppearance">
+						<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
+						<option value="expand">{{ i18n.ts.default }}</option>
+						<option value="16_9">{{ i18n.tsx.limitTo({ x: '16:9' }) }}</option>
+						<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
+						<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
 					</MkRadios>
-					<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
 				</div>
-
-				<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
-					<template #label>{{ i18n.ts.instanceTicker }}</template>
-					<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
-					<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
-					<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
-				</MkSelect>
-
-				<MkSelect v-model="nsfw">
-					<template #label>{{ i18n.ts.displayOfSensitiveMedia }}</template>
-					<option value="respect">{{ i18n.ts._displayOfSensitiveMedia.respect }}</option>
-					<option value="ignore">{{ i18n.ts._displayOfSensitiveMedia.ignore }}</option>
-					<option value="force">{{ i18n.ts._displayOfSensitiveMedia.force }}</option>
-				</MkSelect>
-
-				<MkRadios v-model="mediaListWithOneImageAppearance">
-					<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
-					<option value="expand">{{ i18n.ts.default }}</option>
-					<option value="16_9">{{ i18n.tsx.limitTo({ x: '16:9' }) }}</option>
-					<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
-					<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
-				</MkRadios>
-			</div>
-		</FormSection>
+			</FormSection>
+		</MkSearchSection>
 
 		<FormSection>
 			<template #label>{{ i18n.ts.notificationDisplay }}</template>
