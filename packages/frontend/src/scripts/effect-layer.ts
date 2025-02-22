@@ -29,7 +29,15 @@ type AdditionalArgs<F> = F extends (context: EffectLayerFunctionContext<EffectSt
 let effectLayerIdCount = 0;
 const effects: EffectLayer<EffectStore>[] = [];
 
-export function defineEffectLayer<S extends EffectStore, F extends (context: EffectLayerFunctionContext<S>, ...args: any) => void>(fn: F, forceDisposeTime?: number) {
+
+/**
+ * エフェクトレイヤーを定義する関数。
+ *
+ * @param fn - エフェクト描画関数。エフェクトレイヤーのコンテキストと、定義後に帰る関数で指定できる追加の引数を受け取る。
+ * @param forceDisposeTime - エフェクトレイヤーが強制的に破棄されるまでの時間（ミリ秒）。
+ * @returns エフェクトレイヤーを実行する関数。
+ */
+export function defineEffectLayer<S extends EffectStore, F extends (context: EffectLayerFunctionContext<S>, ...args: any) => void>(fn: F, forceDisposeTime: number) {
 	return function (...args: AdditionalArgs<F>) {
 		const id = effectLayerIdCount++;
 		effects.push({
@@ -39,11 +47,9 @@ export function defineEffectLayer<S extends EffectStore, F extends (context: Eff
 			fn: (context: EffectLayerFunctionContext<EffectStore>) => fn(context as EffectLayerFunctionContext<S>, ...args),
 		});
 
-		if (forceDisposeTime != null) {
-			setTimeout(() => {
-				effects.splice(effects.findIndex(effect => effect.id === id), 1);
-			}, forceDisposeTime);
-		}
+		setTimeout(() => {
+			effects.splice(effects.findIndex(effect => effect.id === id), 1);
+		}, forceDisposeTime);
 
 		return id;
 	}
@@ -63,10 +69,27 @@ export function createCubicBezier(_p1x: number, p1y: number, _p2x: number, p2y: 
 	};
 }
 
+/**
+ * エフェクトレイヤーをCanvasにアタッチする。
+ *
+ * @param el - エフェクトレイヤーをアタッチするHTMLCanvasElement。
+ */
 export function attachEffectLayer(el: HTMLCanvasElement) {
 	const ctx = el.getContext('2d')!;
+	let isPageActive = true;
+
+	function handleVisibilityChange() {
+		isPageActive = !document.hidden;
+	}
+
+	document.addEventListener('visibilitychange', handleVisibilityChange);
 
 	function tick(timestamp: DOMHighResTimeStamp) {
+		if (!isPageActive) {
+			requestAnimationFrame(tick);
+			return;
+		}
+
 		el.width = window.innerWidth;
 		el.height = window.innerHeight;
 
