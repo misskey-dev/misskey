@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
 				<MkFolder>
-					<template #label>Google Analytics</template>
+					<template #label>Google Analytics<span class="_beta">{{ i18n.ts.beta }}</span></template>
 
 					<div class="_gaps_m">
 						<MkInput v-model="googleAnalyticsMeasurementId">

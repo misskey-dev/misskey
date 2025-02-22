@@ -686,7 +686,7 @@ importers:
   packages/frontend:
     dependencies:
       '@analytics/google-analytics':
-        specifier: ^1.1.0
+        specifier: 1.1.0
         version: 1.1.0
       '@discordapp/twemoji':
         specifier: 15.1.0
@@ -728,7 +728,7 @@ importers:
         specifier: github:aiscript-dev/aiscript-vscode#v0.1.15
         version: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/c3cde89e79a41d93540cf8a48cd619c3f2dcb1b7
       analytics:
-        specifier: ^0.8.16
+        specifier: 0.8.16
         version: 0.8.16(@types/dlv@1.1.5)
       astring:
         specifier: 1.9.0
