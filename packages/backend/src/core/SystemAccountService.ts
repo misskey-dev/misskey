@@ -66,7 +66,7 @@ export class SystemAccountService {
 			return systemAccount.user as MiLocalUser;
 		} else {
 			const created = await this.createCorrespondingUser(type, {
-				username: `system.${type}`, // NOTE: (できれば避けたいが)system.から始まるかどうかでシステムアカウントかどうかを判定している処理もあるので変えないように
+				username: `system.${type}`, // NOTE: (できれば避けたいが) . が含まれるかどうかでシステムアカウントかどうかを判定している処理もあるので変えないように
 				name: this.meta.name,
 			});
 			this.cache.set(type, created);

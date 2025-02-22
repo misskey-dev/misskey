@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkA>
 						</span>
 					</div>
-					<div v-if="user.host == null && user.username.startsWith('system.')" class="isSystemAccount">
+					<div v-if="user.host == null && user.username.includes('.')" class="isSystemAccount">
 						<MkInfo>{{ i18n.ts.isSystemAccount }}</MkInfo>
 					</div>
 					<div v-if="iAmModerator" class="moderationNote">
