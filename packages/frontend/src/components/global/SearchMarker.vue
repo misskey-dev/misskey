@@ -13,7 +13,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 
 const props = defineProps<{
-	markerId: string;
+	markerId?: string;
+	label?: string;
+	icon?: string;
+	keywords?: string[];
 	children?: string[];
 }>();
 
