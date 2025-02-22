@@ -83,7 +83,7 @@ function extractUsageInfoFromTemplateAst(
 	}
 
 	function traverse(node: any) {
-		if (node.type === 1 && node.tag === 'MkSearchMarker') {
+		if (node.type === 1 && node.tag === 'SearchMarker') {
 			// 元々の props を staticProps に全て展開する
 			const staticProps: Record<string, string> = {};
 			if (node.props && Array.isArray(node.props)) {
@@ -211,7 +211,7 @@ async function processVueFile(
 
 	if (ast) {
 		function traverse(node: any, currentParent?: any) {
-			if (node.type === 1 && node.tag === 'MkSearchMarker') {
+			if (node.type === 1 && node.tag === 'SearchMarker') {
 				// 行番号はコード先頭からの改行数で取得
 				const lineNumber = code.slice(0, node.loc.start.offset).split('\n').length;
 				// ファイルパスと行番号からハッシュ値を生成
@@ -225,7 +225,7 @@ async function processVueFile(
 				node.__markerId = nodeMarkerId;
 
 				// 子マーカーの場合、親ノードに __children を設定しておく
-				if (currentParent && currentParent.type === 1 && currentParent.tag === 'MkSearchMarker') {
+				if (currentParent && currentParent.type === 1 && currentParent.tag === 'SearchMarker') {
 					currentParent.__children = currentParent.__children || [];
 					currentParent.__children.push(nodeMarkerId);
 				}
@@ -245,7 +245,7 @@ async function processVueFile(
 				}
 			}
 
-			const newParent = node.type === 1 && node.tag === 'MkSearchMarker' ? node : currentParent;
+			const newParent = node.type === 1 && node.tag === 'SearchMarker' ? node : currentParent;
 			if (node.children && Array.isArray(node.children)) {
 				node.children.forEach(child => traverse(child, newParent));
 			}

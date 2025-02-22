@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkSearchMarker
+	<SearchMarker
 		:locationLabel="[i18n.ts.muteAndBlock]"
 		icon="ti ti-ban"
 		:keywords="['mute', i18n.ts.wordMute]"
@@ -17,18 +17,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<MkInfo>{{ i18n.ts.wordMuteDescription }}</MkInfo>
 
-				<MkSearchMarker
+				<SearchMarker
 					:locationLabel="[i18n.ts.muteAndBlock, i18n.ts.wordMute]"
 					icon="ti ti-ban"
 					:keywords="['showMutedWord', i18n.ts.showMutedWord]"
 				>
 					<MkSwitch v-model="showSoftWordMutedWord">{{ i18n.ts.showMutedWord }}</MkSwitch>
-				</MkSearchMarker>
+				</SearchMarker>
 
 				<XWordMute :muted="$i.mutedWords" @save="saveMutedWords"/>
 			</div>
 		</MkFolder>
-	</MkSearchMarker>
+	</SearchMarker>
 
 	<MkFolder>
 		<template #icon><i class="ti ti-message-off"></i></template>
@@ -163,7 +163,6 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { defaultStore } from '@/store';
 import { reloadAsk } from '@/scripts/reload-ask.js';
-import MkSearchMarker from '@/components/MkSearchMarker.vue';
 
 const $i = signinRequired();
 

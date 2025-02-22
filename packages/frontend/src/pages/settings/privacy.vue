@@ -6,21 +6,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkSearchSection :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
 	<div class="_gaps_m">
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.makeFollowManuallyApprove"
 			:keywords="['follow', 'lock', i18n.ts.lockedAccountInfo]"
 		>
 			<MkSwitch v-model="isLocked" @update:modelValue="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.autoAcceptFollowed"
 			:keywords="['follow', 'auto', 'accept']"
 		>
 			<MkSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:modelValue="save()">{{ i18n.ts.autoAcceptFollowed }}</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.makeReactionsPublic"
 			:keywords="['reaction', 'public', i18n.ts.makeReactionsPublicDescription]"
 		>
@@ -28,9 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.makeReactionsPublic }}
 				<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template>
 			</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.followingVisibility"
 			:keywords="['following', 'visibility']"
 		>
@@ -40,9 +40,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 				<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
 			</MkSelect>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.followersVisibility"
 			:keywords="['follower', 'visibility']"
 		>
@@ -52,9 +52,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 				<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
 			</MkSelect>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.hideOnlineStatus"
 			:keywords="['online', 'status', i18n.ts.hideOnlineStatusDescription]"
 		>
@@ -62,9 +62,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.hideOnlineStatus }}
 				<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
 			</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.noCrawle"
 			:keywords="['crawle', 'index', 'search', i18n.ts.noCrawleDescription]"
 		>
@@ -72,9 +72,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.noCrawle }}
 				<template #caption>{{ i18n.ts.noCrawleDescription }}</template>
 			</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.preventAiLearning"
 			:keywords="['crawle', 'ai', i18n.ts.preventAiLearningDescription]"
 		>
@@ -82,9 +82,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.preventAiLearning }}
 				<template #caption>{{ i18n.ts.preventAiLearningDescription }}</template>
 			</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.makeExplorable"
 			:keywords="['explore', i18n.ts.makeExplorableDescription]"
 		>
@@ -92,14 +92,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.makeExplorable }}
 				<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
 			</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
 		<MkSearchSection :label="i18n.ts.lockdown" :keywords="['lockdown']">
 			<FormSection>
 				<template #label>{{ i18n.ts.lockdown }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 
 				<div class="_gaps_m">
-					<MkSearchMarker
+					<SearchMarker
 						:label="i18n.ts._accountSettings.requireSigninToViewContents"
 						:keywords="['login', 'signin', i18n.ts._accountSettings.requireSigninToViewContentsDescription1, i18n.ts._accountSettings.requireSigninToViewContentsDescription2, i18n.ts._accountSettings.requireSigninToViewContentsDescription3]"
 					>
@@ -111,9 +111,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription3 }}</div>
 							</template>
 						</MkSwitch>
-					</MkSearchMarker>
+					</SearchMarker>
 
-					<MkSearchMarker
+					<SearchMarker
 						:label="i18n.ts._accountSettings.makeNotesFollowersOnlyBefore"
 						:keywords="['follower', i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription]"
 					>
@@ -152,9 +152,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 							</template>
 						</FormSlot>
-					</MkSearchMarker>
+					</SearchMarker>
 
-					<MkSearchMarker
+					<SearchMarker
 						:label="i18n.ts._accountSettings.makeNotesHiddenBefore"
 						:keywords="['hidden', i18n.ts._accountSettings.makeNotesHiddenBeforeDescription]"
 					>
@@ -193,21 +193,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 							</template>
 						</FormSlot>
-					</MkSearchMarker>
+					</SearchMarker>
 				</div>
 			</FormSection>
 		</MkSearchSection>
 
 		<FormSection>
 			<div class="_gaps_m">
-				<MkSearchMarker
+				<SearchMarker
 					:label="i18n.ts.rememberNoteVisibility"
 					:keywords="['remember', 'keep', 'note', 'visibility']"
 				>
 					<MkSwitch v-model="rememberNoteVisibility" @update:modelValue="save()">{{ i18n.ts.rememberNoteVisibility }}</MkSwitch>
-				</MkSearchMarker>
+				</SearchMarker>
 
-				<MkSearchMarker
+				<SearchMarker
 					:label="i18n.ts.defaultNoteVisibility"
 					:keywords="['default', 'note', 'visibility']"
 				>
@@ -228,16 +228,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.disableFederation }}</MkSwitch>
 						</div>
 					</MkFolder>
-				</MkSearchMarker>
+				</SearchMarker>
 			</div>
 		</FormSection>
 
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.keepCw"
 			:keywords="['remember', 'keep', 'note', 'cw']"
 		>
 			<MkSwitch v-model="keepCw" @update:modelValue="save()">{{ i18n.ts.keepCw }}</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 	</div>
 </MkSearchSection>
 </template>
@@ -258,7 +258,6 @@ import FormSlot from '@/components/form/slot.vue';
 import { formatDateTimeString } from '@/scripts/format-time-string.js';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
-import MkSearchMarker from '@/components/MkSearchMarker.vue';
 
 const $i = signinRequired();
 

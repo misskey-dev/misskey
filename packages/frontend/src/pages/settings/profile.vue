@@ -18,18 +18,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<MkSearchMarker>
+	<SearchMarker>
 		<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
 			<template #label>{{ i18n.ts._profile.name }}</template>
 		</MkInput>
-	</MkSearchMarker>
+	</SearchMarker>
 
-	<MkSearchMarker>
+	<SearchMarker>
 		<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
 			<template #label>{{ i18n.ts._profile.description }}</template>
 			<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 		</MkTextarea>
-	</MkSearchMarker>
+	</SearchMarker>
 
 	<MkInput v-model="profile.location" manualSave>
 		<template #label>{{ i18n.ts.location }}</template>
@@ -125,7 +125,6 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkSearchMarker from '@/components/MkSearchMarker.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';

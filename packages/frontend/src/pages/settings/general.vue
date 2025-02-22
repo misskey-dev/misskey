@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkSearchSection :label="i18n.ts.general" :keywords="['general']" icon="ti ti-adjustments">
 	<div class="_gaps_m">
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.uiLanguage"
 			:keywords="['language']"
 		>
@@ -21,9 +21,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</I18n>
 				</template>
 			</MkSelect>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
+		<SearchMarker
 			:label="i18n.ts.overridedDeviceKind"
 			:keywords="['device', 'type', 'kind', 'smartphone', 'tablet', 'desktop']"
 		>
@@ -34,25 +34,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="tablet"><i class="ti ti-device-tablet"/> {{ i18n.ts.tablet }}</option>
 				<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
 			</MkRadios>
-		</MkSearchMarker>
+		</SearchMarker>
 
 		<FormSection>
 			<div class="_gaps_s">
-				<MkSearchMarker
+				<SearchMarker
 					:label="i18n.ts.showFixedPostForm"
 					:keywords="['post', 'form', 'timeline']"
 				>
 					<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
-				</MkSearchMarker>
+				</SearchMarker>
 
-				<MkSearchMarker
+				<SearchMarker
 					:label="i18n.ts.showFixedPostFormInChannel"
 					:keywords="['post', 'form', 'timeline', 'channel']"
 				>
 					<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
-				</MkSearchMarker>
+				</SearchMarker>
 
-				<MkSearchMarker
+				<SearchMarker
 					:label="i18n.ts.pinnedList"
 					:keywords="['pinned', 'list']"
 				>
@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
 						<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 					</MkFolder>
-				</MkSearchMarker>
+				</SearchMarker>
 			</div>
 		</FormSection>
 
@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_gaps_m">
 					<div class="_gaps_s">
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.collapseRenotes"
 							:keywords="['renote', i18n.ts.collapseRenotesDescription]"
 						>
@@ -80,65 +80,65 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label>{{ i18n.ts.collapseRenotes }}</template>
 								<template #caption>{{ i18n.ts.collapseRenotesDescription }}</template>
 							</MkSwitch>
-						</MkSearchMarker>
+						</SearchMarker>
 
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.showNoteActionsOnlyHover"
 							:keywords="['hover', 'show', 'footer', 'action']"
 						>
 							<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
-						</MkSearchMarker>
+						</SearchMarker>
 
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.showClipButtonInNoteFooter"
 							:keywords="['footer', 'action', 'clip', 'show']"
 						>
 							<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
-						</MkSearchMarker>
+						</SearchMarker>
 
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.enableAdvancedMfm"
 							:keywords="['mfm', 'enable', 'show', 'advanced']"
 						>
 							<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
-						</MkSearchMarker>
+						</SearchMarker>
 
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.enableAnimatedMfm"
 							:keywords="['mfm', 'enable', 'show', 'animated']"
 						>
 							<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
-						</MkSearchMarker>
+						</SearchMarker>
 
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.enableQuickAddMfmFunction"
 							:keywords="['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn']"
 						>
 							<MkSwitch v-if="advancedMfm" v-model="enableQuickAddMfmFunction">{{ i18n.ts.enableQuickAddMfmFunction }}</MkSwitch>
-						</MkSearchMarker>
+						</SearchMarker>
 
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.showReactionsCount"
 							:keywords="['reaction', 'count', 'show']"
 						>
 							<MkSwitch v-model="showReactionsCount">{{ i18n.ts.showReactionsCount }}</MkSwitch>
-						</MkSearchMarker>
+						</SearchMarker>
 
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.showGapBetweenNotesInTimeline"
 							:keywords="['note', 'timeline', 'gap']"
 						>
 							<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
-						</MkSearchMarker>
+						</SearchMarker>
 
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.loadRawImages"
 							:keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment']"
 						>
 							<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
-						</MkSearchMarker>
+						</SearchMarker>
 
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.reactionsDisplaySize"
 							:keywords="['reaction', 'size', 'scale', 'display']"
 						>
@@ -148,17 +148,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<option value="medium">{{ i18n.ts.medium }}</option>
 								<option value="large">{{ i18n.ts.large }}</option>
 							</MkRadios>
-						</MkSearchMarker>
+						</SearchMarker>
 
-						<MkSearchMarker
+						<SearchMarker
 							:label="i18n.ts.limitWidthOfReaction"
 							:keywords="['reaction', 'size', 'scale', 'display', 'width', 'limit']"
 						>
 							<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
-						</MkSearchMarker>
+						</SearchMarker>
 					</div>
 
-					<MkSearchMarker
+					<SearchMarker
 						:label="i18n.ts.instanceTicker"
 						:keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']"
 					>
@@ -168,9 +168,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
 							<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
 						</MkSelect>
-					</MkSearchMarker>
+					</SearchMarker>
 
-					<MkSearchMarker
+					<SearchMarker
 						:label="i18n.ts.displayOfSensitiveMedia"
 						:keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility']"
 					>
@@ -180,9 +180,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<option value="ignore">{{ i18n.ts._displayOfSensitiveMedia.ignore }}</option>
 							<option value="force">{{ i18n.ts._displayOfSensitiveMedia.force }}</option>
 						</MkSelect>
-					</MkSearchMarker>
+					</SearchMarker>
 
-					<MkSearchMarker
+					<SearchMarker
 						:label="i18n.ts.mediaListWithOneImageAppearance"
 						:keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'list', 'size', 'height']"
 					>
@@ -193,7 +193,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
 							<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
 						</MkRadios>
-					</MkSearchMarker>
+					</SearchMarker>
 				</div>
 			</FormSection>
 		</MkSearchSection>
@@ -203,14 +203,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.notificationDisplay }}</template>
 
 				<div class="_gaps_m">
-					<MkSearchMarker
+					<SearchMarker
 						:label="i18n.ts.useGroupedNotifications"
 						:keywords="['group']"
 					>
 						<MkSwitch v-model="useGroupedNotifications">{{ i18n.ts.useGroupedNotifications }}</MkSwitch>
-					</MkSearchMarker>
+					</SearchMarker>
 
-					<MkSearchMarker
+					<SearchMarker
 						:label="i18n.ts.position"
 						:keywords="['position']"
 					>
@@ -221,9 +221,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<option value="leftBottom"><i class="ti ti-align-box-left-bottom"></i> {{ i18n.ts.leftBottom }}</option>
 							<option value="rightBottom"><i class="ti ti-align-box-right-bottom"></i> {{ i18n.ts.rightBottom }}</option>
 						</MkRadios>
-					</MkSearchMarker>
+					</SearchMarker>
 
-					<MkSearchMarker
+					<SearchMarker
 						:label="i18n.ts.stackAxis"
 						:keywords="['stack', 'axis', 'direction']"
 					>
@@ -232,7 +232,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<option value="vertical"><i class="ti ti-carousel-vertical"></i> {{ i18n.ts.vertical }}</option>
 							<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
 						</MkRadios>
-					</MkSearchMarker>
+					</SearchMarker>
 
 					<MkButton @click="testNotification">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
 				</div>
