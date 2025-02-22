@@ -13,7 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div class="profile _gaps">
 				<MkAccountMoved v-if="user.movedTo" :movedTo="user.movedTo"/>
-				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
+				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!"/>
+				<MkInfo v-if="user.host == null && user.username.includes('.')">{{ i18n.ts.isSystemAccount }}</MkInfo>
 
 				<div :key="user.id" class="main _panel">
 					<div class="banner-container" :style="style">
@@ -60,9 +61,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								{{ role.name }}
 							</MkA>
 						</span>
-					</div>
-					<div v-if="user.host == null && user.username.includes('.')" class="isSystemAccount">
-						<MkInfo>{{ i18n.ts.isSystemAccount }}</MkInfo>
 					</div>
 					<div v-if="iAmModerator" class="moderationNote">
 						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
