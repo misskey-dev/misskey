@@ -366,70 +366,145 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSection>
 		</SearchMarker>
 
-		<FormSection>
-			<template #label>{{ i18n.ts.behavior }}</template>
+		<SearchMarker :label="i18n.ts.behavior" :keywords="['behavior']">
+			<FormSection>
+				<template #label>{{ i18n.ts.behavior }}</template>
 
-			<div class="_gaps_m">
-				<div class="_gaps_s">
-					<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
-					<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
-					<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
-					<MkSwitch v-model="keepScreenOn">{{ i18n.ts.keepScreenOn }}</MkSwitch>
-					<MkSwitch v-model="disableStreamingTimeline">{{ i18n.ts.disableStreamingTimeline }}</MkSwitch>
-					<MkSwitch v-model="enableHorizontalSwipe">{{ i18n.ts.enableHorizontalSwipe }}</MkSwitch>
-					<MkSwitch v-model="alwaysConfirmFollow">{{ i18n.ts.alwaysConfirmFollow }}</MkSwitch>
-					<MkSwitch v-model="confirmWhenRevealingSensitiveMedia">{{ i18n.ts.confirmWhenRevealingSensitiveMedia }}</MkSwitch>
-					<MkSwitch v-model="confirmOnReact">{{ i18n.ts.confirmOnReact }}</MkSwitch>
-				</div>
-				<MkSelect v-model="serverDisconnectedBehavior">
-					<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
-					<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
-					<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
-					<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
-				</MkSelect>
-				<MkSelect v-model="contextMenu">
-					<template #label>{{ i18n.ts._contextMenu.title }}</template>
-					<option value="app">{{ i18n.ts._contextMenu.app }}</option>
-					<option value="appWithShift">{{ i18n.ts._contextMenu.appWithShift }}</option>
-					<option value="native">{{ i18n.ts._contextMenu.native }}</option>
-				</MkSelect>
-				<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
-					<template #label>{{ i18n.ts.numberOfPageCache }}</template>
-					<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
-				</MkRange>
+				<div class="_gaps_m">
+					<div class="_gaps_s">
+						<SearchMarker
+							:label="i18n.ts.openImageInNewTab"
+							:keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab']"
+						>
+							<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
+						</SearchMarker>
 
-				<MkFolder>
-					<template #label>{{ i18n.ts.dataSaver }}</template>
+						<SearchMarker
+							:label="i18n.ts.useReactionPickerForContextMenu"
+							:keywords="['reaction', 'picker', 'contextmenu', 'open']"
+						>
+							<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
+						</SearchMarker>
 
-					<div class="_gaps_m">
-						<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
+						<SearchMarker
+							:label="i18n.ts.enableInfiniteScroll"
+							:keywords="['load', 'auto', 'more']"
+						>
+							<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
+						</SearchMarker>
 
-						<div class="_buttons">
-							<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
-							<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
-						</div>
-						<div class="_gaps_m">
-							<MkSwitch v-model="dataSaver.media">
-								{{ i18n.ts._dataSaver._media.title }}
-								<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
-							</MkSwitch>
-							<MkSwitch v-model="dataSaver.avatar">
-								{{ i18n.ts._dataSaver._avatar.title }}
-								<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
-							</MkSwitch>
-							<MkSwitch v-model="dataSaver.urlPreview">
-								{{ i18n.ts._dataSaver._urlPreview.title }}
-								<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
-							</MkSwitch>
-							<MkSwitch v-model="dataSaver.code">
-								{{ i18n.ts._dataSaver._code.title }}
-								<template #caption>{{ i18n.ts._dataSaver._code.description }}</template>
-							</MkSwitch>
-						</div>
+						<SearchMarker
+							:label="i18n.ts.keepScreenOn"
+							:keywords="['keep', 'screen', 'display', 'on']"
+						>
+							<MkSwitch v-model="keepScreenOn">{{ i18n.ts.keepScreenOn }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.disableStreamingTimeline"
+							:keywords="['disable', 'streaming', 'timeline']"
+						>
+							<MkSwitch v-model="disableStreamingTimeline">{{ i18n.ts.disableStreamingTimeline }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.enableHorizontalSwipe"
+							:keywords="['swipe', 'horizontal', 'tab']"
+						>
+							<MkSwitch v-model="enableHorizontalSwipe">{{ i18n.ts.enableHorizontalSwipe }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.alwaysConfirmFollow"
+							:keywords="['follow', 'confirm', 'always']"
+						>
+							<MkSwitch v-model="alwaysConfirmFollow">{{ i18n.ts.alwaysConfirmFollow }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.confirmWhenRevealingSensitiveMedia"
+							:keywords="['sensitive', 'nsfw', 'media', 'image', 'photo', 'picture', 'attachment', 'confirm']"
+						>
+							<MkSwitch v-model="confirmWhenRevealingSensitiveMedia">{{ i18n.ts.confirmWhenRevealingSensitiveMedia }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.confirmOnReact"
+							:keywords="['reaction', 'confirm']"
+						>
+							<MkSwitch v-model="confirmOnReact">{{ i18n.ts.confirmOnReact }}</MkSwitch>
+						</SearchMarker>
 					</div>
-				</MkFolder>
-			</div>
-		</FormSection>
+
+					<SearchMarker
+						:label="i18n.ts.whenServerDisconnected"
+						:keywords="['server', 'disconnect', 'reconnect', 'reload', 'streaming']"
+					>
+						<MkSelect v-model="serverDisconnectedBehavior">
+							<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
+							<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
+							<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
+							<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
+						</MkSelect>
+					</SearchMarker>
+
+					<SearchMarker
+						:label="i18n.ts._contextMenu.title"
+						:keywords="['contextmenu', 'system', 'native']"
+					>
+						<MkSelect v-model="contextMenu">
+							<template #label>{{ i18n.ts._contextMenu.title }}</template>
+							<option value="app">{{ i18n.ts._contextMenu.app }}</option>
+							<option value="appWithShift">{{ i18n.ts._contextMenu.appWithShift }}</option>
+							<option value="native">{{ i18n.ts._contextMenu.native }}</option>
+						</MkSelect>
+					</SearchMarker>
+
+					<SearchMarker
+						:label="i18n.ts.numberOfPageCache"
+						:keywords="['cache', 'page']"
+					>
+						<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
+							<template #label>{{ i18n.ts.numberOfPageCache }}</template>
+							<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
+						</MkRange>
+					</SearchMarker>
+
+					<SearchMarker :label="i18n.ts.dataSaver" :keywords="['datasaver']">
+						<MkFolder>
+							<template #label>{{ i18n.ts.dataSaver }}</template>
+
+							<div class="_gaps_m">
+								<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
+
+								<div class="_buttons">
+									<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
+									<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
+								</div>
+								<div class="_gaps_m">
+									<MkSwitch v-model="dataSaver.media">
+										{{ i18n.ts._dataSaver._media.title }}
+										<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
+									</MkSwitch>
+									<MkSwitch v-model="dataSaver.avatar">
+										{{ i18n.ts._dataSaver._avatar.title }}
+										<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
+									</MkSwitch>
+									<MkSwitch v-model="dataSaver.urlPreview">
+										{{ i18n.ts._dataSaver._urlPreview.title }}
+										<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
+									</MkSwitch>
+									<MkSwitch v-model="dataSaver.code">
+										{{ i18n.ts._dataSaver._code.title }}
+										<template #caption>{{ i18n.ts._dataSaver._code.description }}</template>
+									</MkSwitch>
+								</div>
+							</div>
+						</MkFolder>
+					</SearchMarker>
+				</div>
+			</FormSection>
+		</SearchMarker>
 
 		<FormSection>
 			<template #label>{{ i18n.ts.other }}</template>
