@@ -2805,8 +2805,6 @@ _remoteLookupErrors:
   _responseInvalid:
     title: "レスポンスがおかしいで"
     description: "このサーバーと通信することはできたけど、もらったデータがおかしかったで。"
-  _responseInvalidIdHostNotMatch:
-    description: "入力されたURIのドメインと最終的に得られたURIのドメインとが違うで。第三者のサーバーを介してリモートのコンテンツを照会してるんやったら、発信元のサーバーで取得できるURIを使って照会し直して。"
   _noSuchObject:
     title: "見つからへんね"
     description: "求められたリソースが見つからんかったで。URIをもっかい確かめてや。"
