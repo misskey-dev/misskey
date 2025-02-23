@@ -46,6 +46,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
+		remoteOnly: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -77,6 +78,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
+
+			// リモートのみフィルタを追加
+			if (ps.remoteOnly) {
+				query.andWhere('note.userHost IS NOT NULL'); // ユーザーがリモートであることを確認
+			}
 
 			if (me) {
 				this.queryService.generateMutedUserQuery(query, me);

@@ -40,6 +40,11 @@ export type FanoutTimelineName =
 
 export type FanoutTimelineNamePrefix = 'homeTimeline' | 'localTimeline' | 'antennaTimeline' | 'userTimeline' | 'userListTimeline' | 'channelTimeline' | 'roleTimeline';
 
+export type TimelineOptions = {
+    localOnly?: boolean; // ホーム/ソーシャルTL用
+    remoteOnly?: boolean; // グローバルTL用
+};
+
 @Injectable()
 export class FanoutTimelineService {
 	constructor(

@@ -18,22 +18,25 @@ import { CacheService } from '@/core/CacheService.js';
 import { isReply } from '@/misc/is-reply.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 
+// TimelineOptionsの型定義を修正
 type TimelineOptions = {
-	untilId: string | null,
-	sinceId: string | null,
-	limit: number,
-	allowPartial: boolean,
-	me?: { id: MiUser['id'] } | undefined | null,
-	useDbFallback: boolean,
-	redisTimelines: FanoutTimelineName[],
-	noteFilter?: (note: MiNote) => boolean,
-	alwaysIncludeMyNotes?: boolean;
-	ignoreAuthorFromBlock?: boolean;
-	ignoreAuthorFromMute?: boolean;
-	excludeNoFiles?: boolean;
-	excludeReplies?: boolean;
-	excludePureRenotes: boolean;
-	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
+  untilId: string | null;
+  sinceId: string | null;
+  limit: number;
+  allowPartial: boolean;
+  me?: { id: MiUser['id'] } | undefined | null;
+  useDbFallback: boolean;
+  redisTimelines: FanoutTimelineName[];
+  noteFilter?: (note: MiNote) => boolean;
+  alwaysIncludeMyNotes?: boolean;
+  ignoreAuthorFromBlock?: boolean;
+  ignoreAuthorFromMute?: boolean;
+  excludeNoFiles?: boolean;
+  excludeReplies?: boolean;
+  excludePureRenotes: boolean;
+  dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>;
+  localOnly?: boolean;
+  remoteOnly?: boolean;
 };
 
 @Injectable()
@@ -132,7 +135,7 @@ export class FanoutTimelineEndpointService {
 
 				readFromRedis += noteIds.length;
 
-				const gotFromDb = await this.getAndFilterFromDb(noteIds, filter, idCompare);
+				const gotFromDb = await this.getAndFilterFromDb(noteIds, filter, idCompare, ps);
 				redisTimeline.push(...gotFromDb);
 				lastSuccessfulRate = gotFromDb.length / noteIds.length;
 
@@ -160,9 +163,14 @@ export class FanoutTimelineEndpointService {
 		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
 	}
 
-	private async getAndFilterFromDb(noteIds: string[], noteFilter: (note: MiNote) => boolean, idCompare: (a: string, b: string) => number): Promise<MiNote[]> {
+	private async getAndFilterFromDb(
+		noteIds: string[],
+		noteFilter: (note: MiNote) => boolean,
+		idCompare: (a: string, b: string) => number,
+		ps: TimelineOptions,
+	): Promise<MiNote[]> {
 		const query = this.notesRepository.createQueryBuilder('note')
-			.where('note.id IN (:...noteIds)', { noteIds: noteIds })
+			.where('note.id IN (:...noteIds)', { noteIds })
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')
@@ -170,10 +178,22 @@ export class FanoutTimelineEndpointService {
 			.leftJoinAndSelect('renote.user', 'renoteUser')
 			.leftJoinAndSelect('note.channel', 'channel');
 
-		const notes = (await query.getMany()).filter(noteFilter);
+		// 既存のフィルタリング条件を保持
+		const conditions: string[] = [];
 
-		notes.sort((a, b) => idCompare(a.id, b.id));
+		// ローカルのみ/リモートのみフィルターの適用
+		if (ps.localOnly || ps.remoteOnly) {
+			conditions.push(ps.localOnly ? 'note.userHost IS NULL' : 'note.userHost IS NOT NULL');
+		}
 
-		return notes;
+		// 条件の結合
+		if (conditions.length > 0) {
+			query.andWhere(conditions.join(' AND '));
+		}
+
+		const notes = await query.getMany();
+		return notes
+			.filter(note => noteFilter(note))
+			.sort((a, b) => idCompare(a.id, b.id));
 	}
 }

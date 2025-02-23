@@ -45,6 +45,7 @@ export const meta = {
 	},
 } as const;
 
+// パラメータ定義の修正
 export const paramDef = {
 	type: 'object',
 	properties: {

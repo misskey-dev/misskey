@@ -17,14 +17,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.tl">
 					<MkTimeline
 						ref="tlComponent"
-						:key="src + withRenotes + withReplies + onlyFiles + localOnly + withSensitive"
+						:key="src + withRenotes + withReplies + withFiles + localOnly + remoteOnly + withSensitive"
 						:src="src.split(':')[0]"
 						:list="src.split(':')[1]"
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
-						:localOnly="localOnly"
 						:withSensitive="withSensitive"
-						:onlyFiles="onlyFiles"
+						:withFiles="withFiles"
+						:localOnly="localOnly"
+						:remoteOnly="remoteOnly"
 						:sound="true"
 						@queue="queueUpdated"
 					/>
@@ -37,12 +38,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
+import { scroll } from '@@/js/scroll.js';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
+import type { MenuItem } from '@/types/menu.js';
+import type { BasicTimelineType } from '@/timelines.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { scroll } from '@@/js/scroll.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
@@ -52,10 +55,8 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
-import type { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
-import type { BasicTimelineType } from '@/timelines.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -75,21 +76,27 @@ const withRenotes = computed<boolean>({
 	set: (x) => saveTlFilter('withRenotes', x),
 });
 const localOnly = computed<boolean>({
-    get: () => defaultStore.reactiveState.tl.value.filter.localOnly,
-    set: (x) => saveTlFilter('localOnly', x),
+	get: () => defaultStore.reactiveState.tl.value.filter.localOnly,
+	set: (x) => saveTlFilter('localOnly', x),
+});
+
+// ここに remoteOnly を追加
+const remoteOnly = computed<boolean>({
+	get: () => defaultStore.reactiveState.tl.value.filter.remoteOnly,
+	set: (x) => saveTlFilter('remoteOnly', x),
 });
 
 // computed内での無限ループを防ぐためのフラグ
-const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>(
+const localSocialTLFilterSwitchStore = ref<'withReplies' | 'withFiles' | false>(
 	defaultStore.reactiveState.tl.value.filter.withReplies ? 'withReplies' :
-	defaultStore.reactiveState.tl.value.filter.onlyFiles ? 'onlyFiles' :
+	defaultStore.reactiveState.tl.value.filter.withFiles ? 'withFiles' :
 	false,
 );
 
 const withReplies = computed<boolean>({
 	get: () => {
 		if (!$i) return false;
-		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
+		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withFiles') {
 			return false;
 		} else {
 			return defaultStore.reactiveState.tl.value.filter.withReplies;
@@ -97,22 +104,22 @@ const withReplies = computed<boolean>({
 	},
 	set: (x) => saveTlFilter('withReplies', x),
 });
-const onlyFiles = computed<boolean>({
+const withFiles = computed<boolean>({
 	get: () => {
 		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
 			return false;
 		} else {
-			return defaultStore.reactiveState.tl.value.filter.onlyFiles;
+			return defaultStore.reactiveState.tl.value.filter.withFiles;
 		}
 	},
-	set: (x) => saveTlFilter('onlyFiles', x),
+	set: (x) => saveTlFilter('withFiles', x),
 });
 
-watch([withReplies, onlyFiles], ([withRepliesTo, onlyFilesTo]) => {
+watch([withReplies, withFiles], ([withRepliesTo, withFilesTo]) => {
 	if (withRepliesTo) {
 		localSocialTLFilterSwitchStore.value = 'withReplies';
-	} else if (onlyFilesTo) {
-		localSocialTLFilterSwitchStore.value = 'onlyFiles';
+	} else if (withFilesTo) {
+		localSocialTLFilterSwitchStore.value = 'withFiles';
 	} else {
 		localSocialTLFilterSwitchStore.value = false;
 	}
@@ -259,26 +266,21 @@ const headerActions = computed(() => {
 			icon: 'ti ti-dots',
 			text: i18n.ts.options,
 			handler: (ev) => {
-				const menuItems: MenuItem[] = [];
-
-				menuItems.push({
-					type: 'switch',
-					text: i18n.ts.localOnly,
-					ref: localOnly,
-				});
-
-				menuItems.push({
-					type: 'switch',
-					text: i18n.ts.showRenotes,
-					ref: withRenotes,
-				});
+				const menuItems: MenuItem[] = [
+					...filterItems.value,
+					{
+						type: 'switch',
+						text: i18n.ts.showRenotes,
+						ref: withRenotes,
+					},
+				];
 
 				if (isBasicTimeline(src.value) && hasWithReplies(src.value)) {
 					menuItems.push({
 						type: 'switch',
 						text: i18n.ts.showRepliesToOthersInTimeline,
 						ref: withReplies,
-						disabled: onlyFiles,
+						disabled: withFiles,
 					});
 				}
 
@@ -289,7 +291,7 @@ const headerActions = computed(() => {
 				}, {
 					type: 'switch',
 					text: i18n.ts.fileAttachedOnly,
-					ref: onlyFiles,
+					ref: withFiles,
 					disabled: isBasicTimeline(src.value) && hasWithReplies(src.value) ? withReplies : false,
 				});
 
@@ -307,6 +309,27 @@ const headerActions = computed(() => {
 		});
 	}
 	return tmp;
+});
+
+const filterItems = computed(() => {
+	const items: MenuItem[] = [];
+
+	// ホームとやみを除外し、ソーシャルTLのみにlocalOnlyを適用
+	if (src.value === 'social') {
+		items.push({
+			type: 'switch',
+			text: i18n.ts.localOnly,
+			ref: localOnly,
+		});
+	} else if (src.value === 'global') {
+		items.push({
+			type: 'switch',
+			text: i18n.ts.remoteOnly,
+			ref: remoteOnly,
+		});
+	}
+
+	return items;
 });
 
 const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
