@@ -72,7 +72,7 @@ jobs:
         if: ${{ steps.start_servers.outcome == 'failure' }}
         run: |
           cd packages/backend/test-federation
-          docker compose logs
+          docker compose logs | tail -n 300
           exit 1
       - name: Test
         run: |
