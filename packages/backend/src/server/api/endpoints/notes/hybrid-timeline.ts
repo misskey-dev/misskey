@@ -66,6 +66,7 @@ export const paramDef = {
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
 		withReplies: { type: 'boolean', default: false },
+		localOnly: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -158,6 +159,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				useDbFallback: this.serverSettings.enableFanoutTimelineDbFallback,
 				alwaysIncludeMyNotes: true,
 				excludePureRenotes: !ps.withRenotes,
+				localOnly: ps.localOnly, // ローカルのみフィルター
 				noteFilter: note => {
 					if (note.reply && note.reply.visibility === 'followers') {
 						if (!Object.hasOwn(followings, note.reply.userId) && note.reply.userId !== me.id) return false;

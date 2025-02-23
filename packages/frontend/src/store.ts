@@ -150,19 +150,19 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	autoRejectFollowRequest: {
 		where: 'account',
-		default: false,  // デフォルトで無効
+		default: false, // デフォルトで無効
 	},
 	publicReactions: {
 		where: 'account',
-		default: false,  // デフォルトで無効
+		default: false, // デフォルトで無効
 	},
 	hideActivity: {
 		where: 'account',
-		default: true,   // デフォルトで有効
+		default: true, // デフォルトで有効
 	},
 	hideProfileFiles: {
 		where: 'account',
-		default: true,   // デフォルトで有効
+		default: true, // デフォルトで有効
 	},
 
 	menu: {
@@ -240,6 +240,7 @@ export const defaultStore = markRaw(new Storage('base', {
 				withSensitive: true,
 				onlyFiles: false,
 				localOnly: false,
+				remoteOnly: false,
 			},
 		},
 	},
