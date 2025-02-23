@@ -2826,8 +2826,6 @@ _remoteLookupErrors:
   _responseInvalid:
     title: "La resposta no és correcta "
     description: "Hem pogut comunicar-nos amb aquest servidor, però les dades rebudes no són correctes."
-  _responseInvalidIdHostNotMatch:
-    description: "El domini de l'adreça introduïda no és el mateix que el domini de l'adreça final obtinguda. Si estàs consultant continguts remots mitjançant servidors tercers, torna a fer la consulta fent servir l'adreça que es pot obtenir en el servidor origen."
   _noSuchObject:
     title: "No s'ha trobat"
     description: "No es pot trobar el recurs sol·licitat, si us plau comprova l'adreça una altra vegada."
