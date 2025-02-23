@@ -62,10 +62,18 @@ jobs:
           bash ./setup.sh
           sudo chmod 644 ./certificates/*.test.key
       - name: Start servers
+        id: start_servers
+        continue-on-error: true
         # https://github.com/docker/compose/issues/1294#issuecomment-374847206
         run: |
           cd packages/backend/test-federation
           docker compose up -d --scale tester=0
+      - name: Print start_servers error
+        if: ${{ steps.start_servers.outcome == 'failure' }}
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs
+          exit 1
       - name: Test
         run: |
           cd packages/backend/test-federation
