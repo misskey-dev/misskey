@@ -20,6 +20,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '../../error.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -52,11 +53,6 @@ export const meta = {
 			message: 'Response from remote server is invalid.',
 			code: 'RESPONSE_INVALID',
 			id: '70193c39-54f3-4813-82f0-70a680f7495b',
-		},
-		responseInvalidIdHostNotMatch: {
-			message: 'Requested URI and response URI host does not match.',
-			code: 'RESPONSE_INVALID_ID_HOST_NOT_MATCH',
-			id: 'a2c9c61a-cb72-43ab-a964-3ca5fddb410a',
 		},
 		noSuchObject: {
 			message: 'No such object.',
@@ -153,7 +149,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		// リモートから一旦オブジェクトフェッチ
 		const resolver = this.apResolverService.createResolver();
-		const object = await resolver.resolve(uri).catch((err) => {
+		// allow ap/show exclusively to lookup URLs that are cross-origin or non-canonical (like https://alice.example.com/@bob@bob.example.com -> https://bob.example.com/@bob)
+		const object = await resolver.resolve(uri, FetchAllowSoftFailMask.CrossOrigin | FetchAllowSoftFailMask.NonCanonicalId).catch((err) => {
 			if (err instanceof IdentifiableError) {
 				switch (err.id) {
 					// resolve
@@ -165,10 +162,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					case '09d79f9e-64f1-4316-9cfa-e75c4d091574':
 						throw new ApiError(meta.errors.federationNotAllowed);
 					case '72180409-793c-4973-868e-5a118eb5519b':
-					case 'ad2dc287-75c1-44c4-839d-3d2e64576675':
 						throw new ApiError(meta.errors.responseInvalid);
-					case 'fd93c2fa-69a8-440f-880b-bf178e0ec877':
-						throw new ApiError(meta.errors.responseInvalidIdHostNotMatch);
 
 					// resolveLocal
 					case '02b40cd0-fa92-4b0c-acc9-fb2ada952ab8':
