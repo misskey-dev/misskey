@@ -44,14 +44,14 @@ const props = withDefaults(defineProps<{
   withRenotes?: boolean;
   withReplies?: boolean;
   withSensitive?: boolean;
-  onlyFiles?: boolean;
+  withFiles?: boolean;
   localOnly?: boolean; // 追加
   remoteOnly?: boolean; // 追加
 }>(), {
 	withRenotes: true,
 	withReplies: false,
 	withSensitive: true,
-	onlyFiles: false,
+	withFiles: false,
 	localOnly: false, // 追加
 	remoteOnly: false, // 追加
 });
@@ -121,32 +121,32 @@ function connectChannel() {
 	} else if (props.src === 'home') {
 		connection = stream.useChannel('homeTimeline', {
 			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 		});
 		connection2 = stream.useChannel('main');
 	} else if (props.src === 'yami') {
 		connection = stream.useChannel('yamiTimeline', {
 			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 		});
 		connection2 = stream.useChannel('main');
 	} else if (props.src === 'local') {
 		connection = stream.useChannel('localTimeline', {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 		});
 	} else if (props.src === 'social') {
 		connection = stream.useChannel('hybridTimeline', {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 			localOnly: props.localOnly, // 追加
 		});
 	} else if (props.src === 'global') {
 		connection = stream.useChannel('globalTimeline', {
 			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 			remoteOnly: props.remoteOnly, // これが正しく渡されているか確認
 		});
 	} else if (props.src === 'mentions') {
@@ -164,7 +164,7 @@ function connectChannel() {
 		if (props.list == null) return;
 		connection = stream.useChannel('userList', {
 			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 			listId: props.list,
 		});
 	} else if (props.src === 'channel') {
@@ -197,34 +197,34 @@ function updatePaginationQuery() {
 		endpoint = 'notes/timeline';
 		query = {
 			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 		};
 	} else if (props.src === 'yami') {
 		endpoint = 'notes/yami-timeline';
 		query = {
 			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 		};
 	} else if (props.src === 'local') {
 		endpoint = 'notes/local-timeline';
 		query = {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 		};
 	} else if (props.src === 'social') {
 		endpoint = 'notes/hybrid-timeline';
 		query = {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 			localOnly: props.localOnly, // 追加
 		};
 	} else if (props.src === 'global') {
 		endpoint = 'notes/global-timeline';
 		query = {
 			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 			remoteOnly: props.remoteOnly, // これが正しく渡されているか確認
 		};
 	} else if (props.src === 'mentions') {
@@ -239,7 +239,7 @@ function updatePaginationQuery() {
 		endpoint = 'notes/user-list-timeline';
 		query = {
 			withRenotes: props.withRenotes,
-			withFiles: props.onlyFiles ? true : undefined,
+			withFiles: props.withFiles ? true : undefined,
 			listId: props.list,
 		};
 	} else if (props.src === 'channel') {

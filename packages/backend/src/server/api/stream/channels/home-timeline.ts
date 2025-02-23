@@ -18,7 +18,6 @@ class HomeTimelineChannel extends Channel {
 	public static kind = 'read:account';
 	private withRenotes: boolean;
 	private withFiles: boolean;
-	private localOnly: boolean;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -34,7 +33,6 @@ class HomeTimelineChannel extends Channel {
 	public async init(params: JsonObject) {
 		this.withRenotes = !!(params.withRenotes ?? true);
 		this.withFiles = !!(params.withFiles ?? false);
-		this.localOnly = !!(params.localOnly ?? false); // 追加
 
 		this.subscriber.on('notesStream', this.onNote);
 	}
@@ -42,9 +40,6 @@ class HomeTimelineChannel extends Channel {
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
 		const isMe = this.user!.id === note.userId;
-
-		// ローカルのみフィルターの適用
-		if (this.localOnly && note.user.host !== null) return;
 
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
