@@ -239,50 +239,132 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSection>
 		</SearchMarker>
 
-		<FormSection>
-			<template #label>{{ i18n.ts.appearance }}</template>
+		<SearchMarker :label="i18n.ts.appearance" :keywords="['appearance']">
+			<FormSection>
+				<template #label>{{ i18n.ts.appearance }}</template>
 
-			<div class="_gaps_m">
-				<div class="_gaps_s">
-					<MkSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</MkSwitch>
-					<MkSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</MkSwitch>
-					<MkSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</MkSwitch>
-					<MkSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</MkSwitch>
-					<MkSwitch v-model="highlightSensitiveMedia">{{ i18n.ts.highlightSensitiveMedia }}</MkSwitch>
-					<MkSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</MkSwitch>
-					<MkSwitch v-model="showAvatarDecorations">{{ i18n.ts.showAvatarDecorations }}</MkSwitch>
-					<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
-					<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
-					<MkSwitch v-model="enableSeasonalScreenEffect">{{ i18n.ts.seasonalScreenEffect }}</MkSwitch>
-					<MkSwitch v-model="useNativeUIForVideoAudioPlayer">{{ i18n.ts.useNativeUIForVideoAudioPlayer }}</MkSwitch>
+				<div class="_gaps_m">
+					<div class="_gaps_s">
+						<SearchMarker
+							:label="i18n.ts.reduceUiAnimation"
+							:keywords="['animation', 'motion', 'reduce']"
+						>
+							<MkSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.useBlurEffect"
+							:keywords="['blur']"
+						>
+							<MkSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.useBlurEffectForModal"
+							:keywords="['blur', 'modal']"
+						>
+							<MkSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.disableShowingAnimatedImages"
+							:keywords="['disable', 'animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif']"
+						>
+							<MkSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.highlightSensitiveMedia"
+							:keywords="['highlight', 'sensitive', 'nsfw', 'image', 'photo', 'picture', 'media', 'thumbnail']"
+						>
+							<MkSwitch v-model="highlightSensitiveMedia">{{ i18n.ts.highlightSensitiveMedia }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.squareAvatars"
+							:keywords="['avatar', 'icon', 'square']"
+						>
+							<MkSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.showAvatarDecorations"
+							:keywords="['avatar', 'icon', 'decoration', 'show']"
+						>
+							<MkSwitch v-model="showAvatarDecorations">{{ i18n.ts.showAvatarDecorations }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.useSystemFont"
+							:keywords="['font', 'system', 'native']"
+						>
+							<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.forceShowAds"
+							:keywords="['ad', 'show']"
+						>
+							<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.seasonalScreenEffect"
+							:keywords="['effect', 'show']"
+						>
+							<MkSwitch v-model="enableSeasonalScreenEffect">{{ i18n.ts.seasonalScreenEffect }}</MkSwitch>
+						</SearchMarker>
+
+						<SearchMarker
+							:label="i18n.ts.useNativeUIForVideoAudioPlayer"
+							:keywords="['native', 'system', 'video', 'audio', 'player', 'media']"
+						>
+							<MkSwitch v-model="useNativeUIForVideoAudioPlayer">{{ i18n.ts.useNativeUIForVideoAudioPlayer }}</MkSwitch>
+						</SearchMarker>
+					</div>
+
+					<SearchMarker
+						:label="i18n.ts.menuStyle"
+						:keywords="['menu', 'style', 'popup', 'drawer']"
+					>
+						<MkSelect v-model="menuStyle">
+							<template #label>{{ i18n.ts.menuStyle }}</template>
+							<option value="auto">{{ i18n.ts.auto }}</option>
+							<option value="popup">{{ i18n.ts.popup }}</option>
+							<option value="drawer">{{ i18n.ts.drawer }}</option>
+						</MkSelect>
+					</SearchMarker>
+
+					<SearchMarker
+						:label="i18n.ts.emojiStyle"
+						:keywords="['emoji', 'style', 'native', 'system', 'fluent', 'twemoji']"
+					>
+						<div>
+							<MkRadios v-model="emojiStyle">
+								<template #label>{{ i18n.ts.emojiStyle }}</template>
+								<option value="native">{{ i18n.ts.native }}</option>
+								<option value="fluentEmoji">Fluent Emoji</option>
+								<option value="twemoji">Twemoji</option>
+							</MkRadios>
+							<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
+						</div>
+					</SearchMarker>
+
+					<SearchMarker
+						:label="i18n.ts.fontSize"
+						:keywords="['font', 'size']"
+					>
+						<MkRadios v-model="fontSize">
+							<template #label>{{ i18n.ts.fontSize }}</template>
+							<option :value="null"><span style="font-size: 14px;">Aa</span></option>
+							<option value="1"><span style="font-size: 15px;">Aa</span></option>
+							<option value="2"><span style="font-size: 16px;">Aa</span></option>
+							<option value="3"><span style="font-size: 17px;">Aa</span></option>
+						</MkRadios>
+					</SearchMarker>
 				</div>
-
-				<MkSelect v-model="menuStyle">
-					<template #label>{{ i18n.ts.menuStyle }}</template>
-					<option value="auto">{{ i18n.ts.auto }}</option>
-					<option value="popup">{{ i18n.ts.popup }}</option>
-					<option value="drawer">{{ i18n.ts.drawer }}</option>
-				</MkSelect>
-
-				<div>
-					<MkRadios v-model="emojiStyle">
-						<template #label>{{ i18n.ts.emojiStyle }}</template>
-						<option value="native">{{ i18n.ts.native }}</option>
-						<option value="fluentEmoji">Fluent Emoji</option>
-						<option value="twemoji">Twemoji</option>
-					</MkRadios>
-					<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
-				</div>
-
-				<MkRadios v-model="fontSize">
-					<template #label>{{ i18n.ts.fontSize }}</template>
-					<option :value="null"><span style="font-size: 14px;">Aa</span></option>
-					<option value="1"><span style="font-size: 15px;">Aa</span></option>
-					<option value="2"><span style="font-size: 16px;">Aa</span></option>
-					<option value="3"><span style="font-size: 17px;">Aa</span></option>
-				</MkRadios>
-			</div>
-		</FormSection>
+			</FormSection>
+		</SearchMarker>
 
 		<FormSection>
 			<template #label>{{ i18n.ts.behavior }}</template>
