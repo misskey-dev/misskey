@@ -34,12 +34,12 @@ export enum FetchAllowSoftFailMask {
 	// Allow all softfail flags
 	//
 	// do not use this flag on released code
-	Any = ~0
+	Any = ~0,
 }
 
 /**
  * Fuzz match on whether the candidate host has authority over the request host
- * 
+ *
  * @param requestHost The host of the requested resources
  * @param candidateHost The host of final response
  * @returns Whether the candidate host has authority over the request host, or if a soft fail is required for a match
@@ -78,7 +78,7 @@ function normalizeSynonymousSubdomain(url: URL | string): URL {
 export function assertActivityMatchesUrls(requestUrl: string | URL, activity: IObject, candidateUrls: (string | URL)[], allowSoftfail: FetchAllowSoftFailMask): FetchAllowSoftFailMask {
 	// must have a unique identifier to verify authority
 	if (!activity.id) {
-		throw new Error(`bad Activity: missing id field`);
+		throw new Error('bad Activity: missing id field');
 	}
 
 	let softfail = 0;
@@ -90,38 +90,38 @@ export function assertActivityMatchesUrls(requestUrl: string | URL, activity: IO
 		}
 
 		softfail |= needed;
-	}
+	};
 
 	const requestUrlParsed = normalizeSynonymousSubdomain(requestUrl);
 	const idParsed = normalizeSynonymousSubdomain(activity.id);
-	
+
 	const candidateUrlsParsed = candidateUrls.map(it => normalizeSynonymousSubdomain(it));
 
 	const requestUrlSecure = requestUrlParsed.protocol === 'https:';
 	const finalUrlSecure = candidateUrlsParsed.every(it => it.protocol === 'https:');
 	if (requestUrlSecure && !finalUrlSecure) {
-		throw new Error(`bad Activity: id(${activity?.id}) is not allowed to have http:// in the url`);
+		throw new Error(`bad Activity: id(${activity.id}) is not allowed to have http:// in the url`);
 	}
 
 	// Compare final URL to the ID
 	if (!candidateUrlsParsed.some(it => it.href === idParsed.href)) {
-		requireSoftfail(FetchAllowSoftFailMask.NonCanonicalId, `bad Activity: id(${activity?.id}) does not match response url(${candidateUrlsParsed.map(it => it.toString())})`);
+		requireSoftfail(FetchAllowSoftFailMask.NonCanonicalId, `bad Activity: id(${activity.id}) does not match response url(${candidateUrlsParsed.map(it => it.toString())})`);
 
-		// at lease host need to match exactly (ActivityPub requirement) 
+		// at lease host need to match exactly (ActivityPub requirement)
 		if (!candidateUrlsParsed.some(it => idParsed.host === it.host)) {
-			throw new Error(`bad Activity: id(${activity?.id}) does not match response host(${candidateUrlsParsed.map(it => it.host)})`);
+			throw new Error(`bad Activity: id(${activity.id}) does not match response host(${candidateUrlsParsed.map(it => it.host)})`);
 		}
 	}
 
 	// Compare request URL to the ID
 	if (!requestUrlParsed.href.includes(idParsed.href)) {
-		requireSoftfail(FetchAllowSoftFailMask.NonCanonicalId, `bad Activity: id(${activity?.id}) does not match request url(${requestUrlParsed.toString()})`);
+		requireSoftfail(FetchAllowSoftFailMask.NonCanonicalId, `bad Activity: id(${activity.id}) does not match request url(${requestUrlParsed.toString()})`);
 
 		// if cross-origin lookup is allowed, we can accept some variation between the original request URL to the final object ID (but not between the final URL and the object ID)
 		const hostResult = hostFuzzyMatch(requestUrlParsed.host, idParsed.host);
 
-		requireSoftfail(hostResult, `bad Activity: id(${activity?.id}) is valid but is not the same origin as request url(${requestUrlParsed.toString()})`);
+		requireSoftfail(hostResult, `bad Activity: id(${activity.id}) is valid but is not the same origin as request url(${requestUrlParsed.toString()})`);
 	}
-	
+
 	return softfail;
 }
