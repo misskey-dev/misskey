@@ -2826,8 +2826,6 @@ _remoteLookupErrors:
   _responseInvalid:
     title: "Response is invalid"
     description: "It could communicate with this server, but the data obtained was incorrect."
-  _responseInvalidIdHostNotMatch:
-    description: "The domain of the entered URI differs from the domain of the final obtained URI. If you are looking up remote content through a third-party server, please look up again using a URI that can be obtained from the origin server."
   _noSuchObject:
     title: "Not found"
     description: "The requested resource was not found, please recheck the URI."
