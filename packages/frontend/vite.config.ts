@@ -158,8 +158,9 @@ export function getConfig(): UserConfig {
 						vue: ['vue'],
 						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
 					},
-					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
-					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
+					entryFileNames: process.env.NODE_ENV === 'production' ? `${meta.version}.[hash:8].js` : '[name]-[hash:8].js',
+					chunkFileNames: process.env.NODE_ENV === 'production' ? `${meta.version}.[hash:8].js` : '[name]-[hash:8].js',
+					assetFileNames: process.env.NODE_ENV === 'production' ? `${meta.version}.[hash:8][extname]` : '[name]-[hash:8][extname]',
 					paths(id) {
 						for (const p of externalPackages) {
 							if (p.match.test(id)) {
