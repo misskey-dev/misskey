@@ -150,6 +150,7 @@ const props = withDefaults(defineProps<PostFormProps & {
 	autofocus: true,
 	mock: false,
 	initialLocalOnly: undefined,
+	deleteInitialNoteAfterPost: false,
 });
 
 provide('mock', props.mock);
@@ -846,7 +847,7 @@ async function post(ev?: MouseEvent) {
 		}
 		nextTick(() => {
 			// 削除して編集の対象ノートを削除
-			if (props.initialNote) {
+			if (props.initialNote && props.deleteInitialNoteAfterPost) {
 				misskeyApi('notes/delete', {
 					noteId: props.initialNote.id,
 				});
