@@ -2826,8 +2826,6 @@ _remoteLookupErrors:
   _responseInvalid:
     title: "回應不正確"
     description: "雖然能夠與這個伺服器通訊，但是取得的資料不正確。"
-  _responseInvalidIdHostNotMatch:
-    description: "輸入的 URI 的網域與最終取得的 URI 的網域不同。 如果您是透過第三方伺服器查詢遠端內容，請使用可在原始伺服器上取得的 URI 再次查詢。"
   _noSuchObject:
     title: "查無項目"
     description: "無法找到所要求的資源，請再次檢查 URI。"
