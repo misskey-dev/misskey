@@ -113,20 +113,20 @@ export class MetaService implements OnApplicationShutdown {
 
 			if (before) {
 				await transactionalEntityManager.update(MiMeta, before.id, data);
-
-				const metas = await transactionalEntityManager.find(MiMeta, {
-					order: {
-						id: 'DESC',
-					},
-				});
-
-				return metas[0];
 			} else {
-				return await transactionalEntityManager.save(MiMeta, {
+				await transactionalEntityManager.save(MiMeta, {
 					...data,
 					id: 'x',
 				});
 			}
+
+			const afters = await transactionalEntityManager.find(MiMeta, {
+				order: {
+					id: 'DESC',
+				},
+			});
+
+			return afters[0];
 		});
 
 		if (data.hiddenTags) {
