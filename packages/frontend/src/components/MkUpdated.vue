@@ -33,7 +33,7 @@ function whatIsNew() {
 
 function whatIsNewHana() {
 	modal.value?.close();
-	window.open(`https://docs.misskey.flowers/changelog/web#_${version.replace(/\./g, '-')}`, '_blank');
+	window.open(`https://docs.misskey.flowers/changelog/web#_${version.replace(/[.+]/g, '-')}`, '_blank');
 }
 
 onMounted(() => {
