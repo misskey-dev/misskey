@@ -124,9 +124,11 @@ class HanamiTimelineChannel extends Channel {
 			}
 		}
 
-		this.connection.cacheNote(note);
+		const reactionMutedNote = await this.removeMutedReactions(note);
 
-		this.send('note', note);
+		this.connection.cacheNote(reactionMutedNote);
+
+		this.send('note', reactionMutedNote);
 	}
 
 	@bindThis

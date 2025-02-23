@@ -7,6 +7,7 @@ import { bindThis } from '@/decorators.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import { removeMutedUsersReactions } from '@/misc/reactions-mute.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import type Connection from './Connection.js';
@@ -75,6 +76,10 @@ export default abstract class Channel {
 		if (isRenotePacked(note) && !isQuotePacked(note) && this.userIdsWhoMeMutingRenotes.has(note.user.id)) return true;
 
 		return false;
+	}
+
+	protected async removeMutedReactions(note: Packed<'Note'>): Promise<Packed<'Note'>> {
+		return await removeMutedUsersReactions(note, this.userIdsWhoMeMuting);
 	}
 
 	constructor(id: string, connection: Connection) {
