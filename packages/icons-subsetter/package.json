@@ -16,7 +16,7 @@
 		"@typescript-eslint/parser": "7.17.0"
 	},
 	"dependencies": {
-		"@tabler/icons-webfont": "https://github.com/misskey-dev/tabler-icons/archive/refs/tags/3.29.0-mi.1913+5921534bc.tar.gz",
+		"@tabler/icons-webfont": "https://github.com/misskey-dev/tabler-icons/archive/refs/tags/3.30.0-mi.1932+ab127beee.tar.gz",
 		"harfbuzzjs": "0.4.4",
 		"tiny-glob": "^0.2.9",
 		"tsx": "4.4.0",
