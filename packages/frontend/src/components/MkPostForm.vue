@@ -903,8 +903,8 @@ async function post(ev?: MouseEvent) {
 			if (m === 0 && s === 0) {
 				claimAchievement('postedAt0min0sec');
 			}
-			if (props.initialNote) {
-				if (date - new Date(props.initialNote.createdAt).getTime() < 1000 * 60 && props.initialNote.userId === $i.id) {
+			if (props.initialNote && props.deleteInitialNoteAfterPost) {
+				if (date.getTime() - new Date(props.initialNote.createdAt).getTime() < 1000 * 60 && props.initialNote.userId === $i.id) {
 					claimAchievement('noteDeletedWithin1min');
 				}
 			}
