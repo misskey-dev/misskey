@@ -317,16 +317,19 @@ export class ClientServerService {
 				done();
 			});
 		} else {
+			const configUrl = new URL(this.config.url);
+			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
+
 			const port = (process.env.VITE_PORT ?? '5173');
 			fastify.register(fastifyProxy, {
-				upstream: 'http://localhost:' + port,
+				upstream: urlOriginWithoutPort + ':' + port,
 				prefix: '/vite',
 				rewritePrefix: '/vite',
 			});
 
 			const embedPort = (process.env.EMBED_VITE_PORT ?? '5174');
 			fastify.register(fastifyProxy, {
-				upstream: 'http://localhost:' + embedPort,
+				upstream: urlOriginWithoutPort + ':' + embedPort,
 				prefix: '/embed_vite',
 				rewritePrefix: '/embed_vite',
 			});
@@ -509,6 +512,7 @@ export class ClientServerService {
 				usernameLower: username.toLowerCase(),
 				host: host ?? IsNull(),
 				isSuspended: false,
+				requireSigninToViewContents: false,
 			});
 
 			return user && await this.feedService.packFeed(user);
@@ -559,7 +563,7 @@ export class ClientServerService {
 			}
 		});
 
-		//#region SSR (for crawlers)
+		//#region SSR
 		// User
 		fastify.get<{ Params: { user: string; sub?: string; } }>('/@:user/:sub?', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.user);
@@ -584,11 +588,20 @@ export class ClientServerService {
 					reply.header('X-Robots-Tag', 'noimageai');
 					reply.header('X-Robots-Tag', 'noai');
 				}
+
+				const _user = await this.userEntityService.pack(user, null, {
+					schema: 'UserDetailed',
+					userProfile: profile,
+				});
+
 				return await reply.view('user', {
 					user, profile, me,
 					avatarUrl: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
 					sub: request.params.sub,
 					...await this.generateCommonPugData(this.meta),
+					clientCtx: htmlSafeJsonStringify({
+						user: _user,
+					}),
 				});
 			} else {
 				// リモートユーザーなので
@@ -641,6 +654,9 @@ export class ClientServerService {
 					// TODO: Let locale changeable by instance setting
 					summary: getNoteSummary(_note),
 					...await this.generateCommonPugData(this.meta),
+					clientCtx: htmlSafeJsonStringify({
+						note: _note,
+					}),
 				});
 			} else {
 				return await renderBase(reply);
@@ -729,6 +745,9 @@ export class ClientServerService {
 					profile,
 					avatarUrl: _clip.user.avatarUrl,
 					...await this.generateCommonPugData(this.meta),
+					clientCtx: htmlSafeJsonStringify({
+						clip: _clip,
+					}),
 				});
 			} else {
 				return await renderBase(reply);
@@ -798,6 +817,7 @@ export class ClientServerService {
 		fastify.get<{ Params: { announcementId: string; } }>('/announcements/:announcementId', async (request, reply) => {
 			const announcement = await this.announcementsRepository.findOneBy({
 				id: request.params.announcementId,
+				userId: IsNull(),
 			});
 
 			if (announcement) {
@@ -856,7 +876,7 @@ export class ClientServerService {
 			});
 
 			if (note == null) return;
-			if (note.visibility !== 'public') return;
+			if (['specified', 'followers'].includes(note.visibility)) return;
 			if (note.userHost != null) return;
 
 			const _note = await this.noteEntityService.pack(note, null, { detail: true });

@@ -357,7 +357,6 @@ enableLocalTimeline: "Bật bảng tin máy chủ"
 enableGlobalTimeline: "Bật bảng tin liên hợp"
 disablingTimelinesInfo: "Quản trị viên và Kiểm duyệt viên luôn có quyền truy cập mọi bảng tin, kể cả khi chúng không được bật."
 registration: "Đăng ký"
-enableRegistration: "Cho phép đăng ký mới"
 invite: "Mời"
 driveCapacityPerLocalAccount: "Dung lượng ổ đĩa tối đa cho mỗi người dùng"
 driveCapacityPerRemoteAccount: "Dung lượng ổ đĩa tối đa cho mỗi người dùng từ xa"
@@ -1803,9 +1802,6 @@ _pages:
   newPage: "Tạo Trang mới"
   editPage: "Sửa Trang này"
   readPage: "Xem mã nguồn Trang này"
-  created: "Trang đã được tạo thành công"
-  updated: "Trang đã được cập nhật thành công"
-  deleted: "Trang đã được xóa thành công"
   pageSetting: "Cài đặt trang"
   nameAlreadyExists: "URL Trang đã tồn tại"
   invalidNameTitle: "URL Trang không hợp lệ"
@@ -1931,3 +1927,6 @@ _moderationLogTypes:
   createInvitation: "Tạo lời mời"
 _reversi:
   total: "Tổng cộng"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Không tìm thấy"

@@ -43,9 +43,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, watch, shallowRef, ref, computed } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store.js';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from './deck-store.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import type { Column } from './deck-store.js';
 import type { MenuItem } from '@/types/menu.js';
 
 provide('shouldHeaderThin', true);
@@ -128,7 +129,8 @@ function getMenu() {
 		icon: 'ti ti-settings',
 		text: i18n.ts._deck.configureColumn,
 		action: async () => {
-			const { canceled, result } = await os.form(props.column.name, {
+			const name = props.column.name ?? i18n.ts._deck._columns[props.column.type];
+			const { canceled, result } = await os.form(name, {
 				name: {
 					type: 'string',
 					label: i18n.ts.name,
@@ -143,7 +145,7 @@ function getMenu() {
 				flexible: {
 					type: 'boolean',
 					label: i18n.ts._deck.flexible,
-					default: props.column.flexible,
+					default: props.column.flexible ?? null,
 				},
 			});
 			if (canceled) return;

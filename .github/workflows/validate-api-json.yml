@@ -1,4 +1,4 @@
-name: Test (backend)
+name: api.json validation
 
 on:
   push:
@@ -12,6 +12,10 @@ on:
     paths:
       - packages/backend/**
       - .github/workflows/validate-api-json.yml
+
+env:
+  COREPACK_DEFAULT_TO_LATEST: 0
+
 jobs:
   validate-api-json:
     runs-on: ubuntu-latest
@@ -21,13 +25,13 @@ jobs:
         node-version: [22.11.0]
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.2.2
       with:
         submodules: true
     - name: Install pnpm
       uses: pnpm/action-setup@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.4
+      uses: actions/setup-node@v4.2.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'

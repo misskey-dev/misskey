@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="limitWidthOfReaction">{{ i18n.ts.limitWidthOfReaction }}</MkSwitch>
 			</div>
 
-			<MkSelect v-model="instanceTicker">
+			<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
 				<template #label>{{ i18n.ts.instanceTicker }}</template>
 				<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
 				<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
@@ -170,6 +170,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="enableHorizontalSwipe">{{ i18n.ts.enableHorizontalSwipe }}</MkSwitch>
 				<MkSwitch v-model="alwaysConfirmFollow">{{ i18n.ts.alwaysConfirmFollow }}</MkSwitch>
 				<MkSwitch v-model="confirmWhenRevealingSensitiveMedia">{{ i18n.ts.confirmWhenRevealingSensitiveMedia }}</MkSwitch>
+				<MkSwitch v-model="confirmOnReact">{{ i18n.ts.confirmOnReact }}</MkSwitch>
 			</div>
 			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
@@ -263,6 +264,7 @@ import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
+import { instance } from '@/instance.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
@@ -319,6 +321,7 @@ const enableHorizontalSwipe = computed(defaultStore.makeGetterSetter('enableHori
 const useNativeUIForVideoAudioPlayer = computed(defaultStore.makeGetterSetter('useNativeUIForVideoAudioPlayer'));
 const alwaysConfirmFollow = computed(defaultStore.makeGetterSetter('alwaysConfirmFollow'));
 const confirmWhenRevealingSensitiveMedia = computed(defaultStore.makeGetterSetter('confirmWhenRevealingSensitiveMedia'));
+const confirmOnReact = computed(defaultStore.makeGetterSetter('confirmOnReact'));
 const contextMenu = computed(defaultStore.makeGetterSetter('contextMenu'));
 
 watch(lang, () => {

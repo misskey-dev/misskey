@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
-import { toUnicode } from 'punycode/';
+import { toUnicode } from 'punycode.js';
 import tinycolor from 'tinycolor2';
 import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
@@ -87,7 +87,8 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
 
 import { $i } from '@/account.js';
-import { Theme, applyTheme } from '@/scripts/theme.js';
+import { applyTheme } from '@/scripts/theme.js';
+import type { Theme } from '@/scripts/theme.js';
 import { host } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
