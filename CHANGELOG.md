@@ -18,6 +18,8 @@
 - Fix: Play の再読込時に UI が以前の状態を引き継いでしまう問題を修正 `#14378`
 - Fix: カスタム絵文字管理画面(beta)にてisSensitive/localOnlyの絞り込みが上手くいかない問題の修正 ( #15445 )
 - Fix: CWの注釈が100文字を超えている場合、ノート投稿ボタンを非アクティブに
+- Fix: リアルタイム通信の接続が瞬間的に切れた際には再接続を促すダイアログが表示されないように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/172)
 
 ### Server
 - Enhance: 成り済まし対策として、ActivityPub照会された時にリモートのリダイレクトを拒否できるように (config.disallowExternalApRedirect)
