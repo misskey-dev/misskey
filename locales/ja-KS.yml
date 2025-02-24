@@ -1309,6 +1309,8 @@ availableRoles: "使えるロール"
 acknowledgeNotesAndEnable: "注意事項をわかった上でオンにする。"
 federationSpecified: "このサーバーはホワイトリスト連合で運用されてるで。管理者が指定したサーバー以外とはやり取りできひんで。"
 federationDisabled: "このサーバーは連合が無効化されてるで。他のサーバーのユーザーとやり取りすることはできひんで。"
+confirmOnReact: "ツッコむときに確認とる"
+reactAreYouSure: "\" {emoji} \" でツッコむ？"
 _accountSettings:
   requireSigninToViewContents: "ログインしてもらってからコンテンツ見てもらう"
   requireSigninToViewContentsDescription1: "あなたが作成した全部のノートとかのコンテンツを見れるようにするのにログインがいるようにするで。クローラーにいろいろ収集されるんを防げるかもしれん。"
@@ -2440,6 +2442,8 @@ _notification:
   flushNotification: "通知の履歴をリセットする"
   exportOfXCompleted: "{x}のエクスポートが終わったわ"
   login: "ログインしとったで"
+  createToken: "アクセストークンが作成されたで"
+  createTokenDescription: "心当たりないんやったら「{text}」でアクセストークンを削除してやって。"
   _types:
     all: "すべて"
     note: "あんたらの新規投稿"
@@ -2760,6 +2764,7 @@ _customEmojisManager:
     confirmImportEmojisDescription: "リモートから受信した{count}個の絵文字をインポートするで。絵文字のライセンスには十分気ぃつけてな。実行してもええか？"
   _local:
     tabTitleList: "登録済み絵文字一覧"
+    tabTitleRegister: "絵文字の登録"
     _list:
       emojisNothing: "登録された絵文字はないで。"
       markAsDeleteTargetRows: "選択行を削除対象にするで"
@@ -2769,6 +2774,22 @@ _customEmojisManager:
       confirmMovePage: "ページを移動してもええんか？"
       confirmChangeView: "表示を変更してもええんか？"
       confirmUpdateEmojisDescription: "{count}個の絵文字を更新するで。実行してもええか？"
+      confirmDeleteEmojisDescription: "チェックがつけられた{count}個の絵文字を削除するで。ほんまにええか？"
+      confirmResetDescription: "今までやった変更が全部リセットされるで。"
+      confirmMovePageDesciption: "このページの絵文字に変更が加えられてるで。\n保存せずページを移動してまうと、このページで加えた変更が全てパーになるで。"
+      dialogSelectRoleTitle: "絵文字に設定されたロールで検索"
+    _register:
+      uploadSettingTitle: "アップロード設定"
+      uploadSettingDescription: "この画面で絵文字アップロードするときの動きを設定できるで。"
+      directoryToCategoryLabel: "ディレクトリ名を\"category\"に入力する"
+      directoryToCategoryCaption: "ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を\"category\"に入力します。"
+      emojiInputAreaCaption: "どれかの方法で登録する絵文字を選択して。"
+      emojiInputAreaList1: "この枠に画像ファイルかディレクトリをドラッグ&ドロップ"
+      emojiInputAreaList2: "このリンクをクリックしてPCから選択する"
+      emojiInputAreaList3: "このリンクをクリックしてドライブから選択する"
+      confirmRegisterEmojisDescription: "リストに表示されてる絵文字を新たなカスタム絵文字として登録するで。ほんまにええか？ (サーバーがしんどくなるから、一回で登録できる絵文字は{count}件までやで)"
+      confirmClearEmojisDescription: "編集内容をほかして、リストに表示されている絵文字をクリアするで。ほんまにええか？"
+      confirmUploadEmojisDescription: "ドラッグ&ドロップされた{count}個のファイルをドライブにアップロードするで。ほんまにええか？"
 _embedCodeGen:
   title: "埋め込みコードをカスタム"
   header: "ヘッダー出す"
@@ -2808,3 +2829,28 @@ _remoteLookupErrors:
   _noSuchObject:
     title: "見つからへんね"
     description: "求められたリソースが見つからんかったで。URIをもっかい確かめてや。"
+_captcha:
+  verify: "CAPTCHAしばいたって"
+  testSiteKeyMessage: "サイトキーとシークレットキーにテスト用の値を入力することでプレビューを確認できるで。\n詳細は下記ページを確認してな。"
+  _error:
+    _requestFailed:
+      title: "CAPTCHAのリクエストに失敗してもうた"
+      text: "しばらく後で実行するか、設定をもっかい確認してや。"
+    _verificationFailed:
+      title: "CAPTCHAのリクエストに失敗してもうた"
+      text: "設定がほんまに合ってるかもっかい確認してや。"
+    _unknown:
+      title: "CAPTCHAエラー"
+      text: "思いもせんかったエラーが起きたわ。"
+_bootErrors:
+  title: "読み込みに失敗したで"
+  serverError: "少し待ってからリロードしてもまだ問題が解決されんのやったら、以下のError IDを添えてサーバー管理者に連絡して。"
+  solution: "以下のことやったら解決するかもやで。"
+  solution1: "ブラウザとかOSを最新バージョンに更新する"
+  solution2: "アドブロッカーを無効にする"
+  solution3: "ブラウザのキャッシュをクリアする"
+  solution4: "(Tor Browser) dom.webaudio.enabledをtrueに設定する"
+  otherOption: "ほかのオプション"
+  otherOption1: "クライアント設定とキャッシュをほかす"
+  otherOption2: "簡易クライアントを起動"
+  otherOption3: "修復ツールを起動"
