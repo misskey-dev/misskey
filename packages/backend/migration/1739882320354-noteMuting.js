@@ -19,11 +19,15 @@ export class NoteMuting1739882320354 {
 			);
 			CREATE INDEX "IDX_note_muting_userId" ON "note_muting" ("userId");
 			CREATE INDEX "IDX_note_muting_noteId" ON "note_muting" ("noteId");
+			CREATE INDEX "IDX_note_muting_expiresAt" ON "note_muting" ("expiresAt");
+			CREATE UNIQUE INDEX "IDX_note_muting_userId_noteId_unique" ON note_muting ("userId", "noteId");
 		`);
 	}
 
 	async down(queryRunner) {
 		await queryRunner.query(`
+			DROP INDEX "IDX_note_muting_userId_noteId_unique";
+			DROP INDEX "IDX_note_muting_expiresAt";
 			DROP INDEX "IDX_note_muting_noteId";
 			DROP INDEX "IDX_note_muting_userId";
 			DROP TABLE "note_muting";

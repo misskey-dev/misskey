@@ -16,18 +16,13 @@ export const meta = {
 	kind: 'read:account',
 
 	res: {
-		type: 'object',
-		properties: {
-			notes: {
-				type: 'array',
-				items: {
-					type: 'object',
-					properties: {
-						id: { type: 'string' },
-						expiresAt: { type: 'string', format: 'date-time', nullable: true },
-						note: { type: 'object', ref: 'Note' },
-					},
-				},
+		type: 'array',
+		items: {
+			type: 'object',
+			properties: {
+				id: { type: 'string' },
+				expiresAt: { type: 'string', format: 'date-time', nullable: true },
+				note: { type: 'object', ref: 'Note' },
 			},
 		},
 	},
@@ -35,7 +30,12 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {},
+	properties: {
+		sinceId: { type: 'string', format: 'misskey:id', nullable: true },
+		untilId: { type: 'string', format: 'misskey:id', nullable: true },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		offset: { type: 'integer' },
+	},
 	required: [],
 } as const;
 
@@ -46,7 +46,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private readonly noteEntityService: NoteEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const mutings = await this.noteMutingService.listByUserId(me.id, { joinNote: true });
+			const mutings = await this.noteMutingService.listByUserId(
+				{ userId: me.id },
+				{
+					joinNote: true,
+					limit: ps.limit,
+					offset: ps.offset,
+				});
 
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const packedNotes = await this.noteEntityService.packMany(mutings.map(m => m.note!))
@@ -54,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			return mutings.map(m => ({
 				id: m.id,
-				expiresAt: m.expiresAt,
+				expiresAt: m.expiresAt?.toISOString(),
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				note: packedNotes.get(m.noteId)!,
 			}));

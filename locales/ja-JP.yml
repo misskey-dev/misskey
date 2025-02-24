@@ -3021,3 +3021,10 @@ _search:
   pleaseEnterServerHost: "サーバーのホストを入力してください"
   pleaseSelectUser: "ユーザーを選択してください"
   serverHostPlaceholder: "例: misskey.example.com"
+
+_noteMuting:
+  muteNote: "ノートをミュート"
+  unmuteNote: "ノートのミュートを解除"
+  notMutedNote: "このノートはミュートされていません"
+  labelSuffix: "のノート"
+  unmuteCaption: "ミュートを解除したノートを再表示するにはタイムラインの再読み込みが必要です。"

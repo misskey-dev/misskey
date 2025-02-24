@@ -326,7 +326,6 @@ export * as 'notes/translate' from './endpoints/notes/translate.js';
 export * as 'notes/unrenote' from './endpoints/notes/unrenote.js';
 export * as 'notes/user-list-timeline' from './endpoints/notes/user-list-timeline.js';
 export * as 'notes/muting/create' from './endpoints/notes/muting/create.js';
-export * as 'notes/muting/update' from './endpoints/notes/muting/update.js';
 export * as 'notes/muting/delete' from './endpoints/notes/muting/delete.js';
 export * as 'notes/muting/list' from './endpoints/notes/muting/list.js';
 export * as 'notifications/create' from './endpoints/notifications/create.js';
