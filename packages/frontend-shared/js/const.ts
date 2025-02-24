@@ -64,6 +64,8 @@ export const notificationTypes = [
 	'quote',
 	'reaction',
 	'pollEnded',
+	'blocked',
+	'unblocked',
 	'receiveFollowRequest',
 	'followRequestAccepted',
 	'roleAssigned',
@@ -72,6 +74,8 @@ export const notificationTypes = [
 	'login',
 	'test',
 	'app',
+	'blocked',
+	'unblocked',
 ] as const;
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 

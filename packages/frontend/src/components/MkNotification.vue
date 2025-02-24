@@ -29,10 +29,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				[$style.t_exportCompleted]: notification.type === 'exportCompleted',
 				[$style.t_login]: notification.type === 'login',
 				[$style.t_roleAssigned]: notification.type === 'roleAssigned' && notification.role.iconUrl == null,
+				// ブロック通知関係
+				[$style.t_block]: notification.type === 'blocked',
+				[$style.t_unblock]: notification.type === 'unblocked',
 			}]"
 		>
 			<i v-if="notification.type === 'follow'" class="ti ti-plus"></i>
 			<i v-else-if="notification.type === 'unfollow'" class="ti ti-minus"></i>
+			<i v-else-if="notification.type === 'blocked'" class="ti ti-ban"></i>
+			<i v-else-if="notification.type === 'unblocked'" class="ti ti-check"></i>
 			<i v-else-if="notification.type === 'receiveFollowRequest'" class="ti ti-clock"></i>
 			<i v-else-if="notification.type === 'followRequestAccepted'" class="ti ti-check"></i>
 			<i v-else-if="notification.type === 'renote'" class="ti ti-repeat"></i>
@@ -65,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'login'">{{ i18n.ts._notification.login }}</span>
 			<span v-else-if="notification.type === 'test'">{{ i18n.ts._notification.testNotification }}</span>
 			<span v-else-if="notification.type === 'exportCompleted'">{{ i18n.tsx._notification.exportOfXCompleted({ x: exportEntityName[notification.exportedEntity] }) }}</span>
-			<MkA v-else-if="notification.type === 'follow' || notification.type === 'unfollow' || notification.type === 'mention' || notification.type === 'reply' || notification.type === 'renote' || notification.type === 'quote' || notification.type === 'reaction' || notification.type === 'receiveFollowRequest' || notification.type === 'followRequestAccepted'" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
+			<MkA v-else-if="notification.type === 'follow' || notification.type === 'unfollow' || notification.type === 'mention' || notification.type === 'reply' || notification.type === 'renote' || notification.type === 'quote' || notification.type === 'reaction' || notification.type === 'receiveFollowRequest' || notification.type === 'followRequestAccepted' || notification.type === 'followRequestRejected' || notification.type === 'blocked' || notification.type === 'unblocked'" v-user-preview="notification.user.id" :class="$style.headerName" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
 			<span v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'">{{ i18n.tsx._notification.likedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'reaction:grouped'">{{ i18n.tsx._notification.reactedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'renote:grouped'">{{ i18n.tsx._notification.renotedBySomeUsers({ n: notification.users.length }) }}</span>
@@ -116,6 +121,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotUnFollower }}</span>
 				<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div>
 			</template>
+			<template v-else-if="notification.type === 'blocked'">
+				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotBlocked }}</span>
+			</template>
+			<template v-else-if="notification.type === 'unblocked'">
+				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.youGotUnblocked }}</span>
+				<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div>
+			</template>
 			<template v-else-if="notification.type === 'followRequestAccepted'">
 				<div :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</div>
 				<div v-if="notification.message" :class="$style.text" style="opacity: 0.6; font-style: oblique;">
@@ -135,7 +147,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'app'" :class="$style.text">
 				<Mfm :text="notification.body" :nowrap="false"/>
 			</span>
-
 			<div v-if="notification.type === 'reaction:grouped'">
 				<div v-for="reaction of notification.reactions" :key="reaction.user.id + reaction.reaction" :class="$style.reactionsItem">
 					<MkAvatar :class="$style.reactionsItemAvatar" :user="reaction.user" link preview/>
@@ -230,7 +241,7 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	contain-intrinsic-size: 0 100px;
 
 	--eventFollow: #36aed2;
-	--eventUnFollow: #f08080;
+	--eventUnFollow: #d23636;
 	--eventRenote: #36d298;
 	--eventReply: #007aff;
 	--eventReactionHeart: var(--MI_THEME-love);
@@ -238,6 +249,8 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	--eventAchievement: #cb9a11;
 	--eventLogin: #007aff;
 	--eventOther: #88a6b7;
+	--eventBlock: #ff0000;
+	--eventUnBlock: #00b7ff;
 }
 
 .head {
@@ -304,13 +317,13 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	}
 }
 
-.t_follow, .t_followRequestAccepted, .t_receiveFollowRequest {
+.t_follow, .t_followRequestAccepted, .t_receiveFollowRequest, .t_unblocked {
 	padding: 3px;
 	background: var(--eventFollow);
 	pointer-events: none;
 }
 
-.t_unfollow {
+.t_unfollow,.t_blocked {
 	padding: 3px;
 	background: var(--eventUnFollow);
 	pointer-events: none;

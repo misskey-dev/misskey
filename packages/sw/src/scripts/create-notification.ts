@@ -221,6 +221,28 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						data,
 					}];
 
+				case 'blocked': {
+					const account = await getAccountFromId(data.userId);
+					if (!account) return null;
+					return [i18n.ts._notification.youWereBlocked, {
+						body: getUserName(data.body.user),
+						icon: data.body.user.avatarUrl ?? undefined,
+						badge: iconUrl('ban'),
+						data,
+					}];
+				}
+
+				case 'unblocked': {
+					const account = await getAccountFromId(data.userId);
+					if (!account) return null;
+					return [i18n.ts._notification.youWereUnblocked, {
+						body: getUserName(data.body.user),
+						icon: data.body.user.avatarUrl ?? undefined,
+						badge: iconUrl('circle-check'),
+						data,
+					}];
+				}
+
 				case 'achievementEarned':
 					return [i18n.ts._notification.achievementEarned, {
 						body: i18n.ts._achievements._types[`_${data.body.achievement}`].title,

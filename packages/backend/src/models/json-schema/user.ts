@@ -632,6 +632,8 @@ export const packedMeDetailedOnlySchema = {
 				achievementEarned: { optional: true, ...notificationRecieveConfig },
 				app: { optional: true, ...notificationRecieveConfig },
 				test: { optional: true, ...notificationRecieveConfig },
+				blocked: { optional: true, ...notificationRecieveConfig },
+				unblocked: { optional: true, ...notificationRecieveConfig },
 			},
 		},
 		emailNotificationTypes: {

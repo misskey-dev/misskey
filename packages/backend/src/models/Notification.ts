@@ -21,6 +21,11 @@ export type MiNotification = {
 	id: string;
 	createdAt: string;
 	notifierId: MiUser['id'];
+} | { // フォロー解除
+	type: 'unfollow';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
 } | {
 	type: 'unfollow';
 	id: string;
@@ -125,6 +130,16 @@ export type MiNotification = {
 	type: 'test';
 	id: string;
 	createdAt: string;
+} | { // ブロック
+	type: 'blocked';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+} | { // ブロック解除
+	type: 'unblocked';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
 };
 
 export type MiGroupedNotification = MiNotification | {
