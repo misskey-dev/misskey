@@ -16,10 +16,11 @@ export const meta = {
 	kind: 'write:account',
 
 	errors: {
-		noSuchItem: {
-			message: 'No such item.',
-			code: 'NO_SUCH_ITEM',
+		notMuted: {
+			message: 'Not muted.',
+			code: 'NOT_MUTED',
 			id: '6ad3b6c9-f173-60f7-b558-5eea13896254',
+			httpStatusCode: 400,
 		},
 	},
 } as const;
@@ -27,9 +28,9 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		id: { type: 'string', format: 'misskey:id' },
+		noteId: { type: 'string', format: 'misskey:id' },
 	},
-	required: ['id'],
+	required: ['noteId'],
 } as const;
 
 @Injectable()
@@ -37,19 +38,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private readonly noteMutingService: NoteMutingService,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(meta, paramDef, async (ps, me) => {
 			try {
-				// Existence check
-				await this.noteMutingService.get(ps.id);
+				await this.noteMutingService.delete(me.id, ps.noteId);
 			} catch (e) {
-				if (e instanceof NoteMutingService.NoSuchItemError) {
-					throw new ApiError(meta.errors.noSuchItem);
+				if (e instanceof NoteMutingService.NotMutedError) {
+					throw new ApiError(meta.errors.notMuted);
+				} else {
+					throw e;
 				}
-
-				throw e;
 			}
-
-			await this.noteMutingService.delete(ps.id);
 		});
 	}
 }

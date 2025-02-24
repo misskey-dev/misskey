@@ -449,8 +449,8 @@ import type {
 	NotesMentionsResponse,
 	NotesMutingCreateRequest,
 	NotesMutingDeleteRequest,
+	NotesMutingListRequest,
 	NotesMutingListResponse,
-	NotesMutingUpdateRequest,
 	NotesPollsRecommendationRequest,
 	NotesPollsRecommendationResponse,
 	NotesPollsVoteRequest,
@@ -889,8 +889,7 @@ export type Endpoints = {
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };
 	'notes/muting/create': { req: NotesMutingCreateRequest; res: EmptyResponse };
 	'notes/muting/delete': { req: NotesMutingDeleteRequest; res: EmptyResponse };
-	'notes/muting/list': { req: EmptyRequest; res: NotesMutingListResponse };
-	'notes/muting/update': { req: NotesMutingUpdateRequest; res: EmptyResponse };
+	'notes/muting/list': { req: NotesMutingListRequest; res: NotesMutingListResponse };
 	'notes/polls/recommendation': { req: NotesPollsRecommendationRequest; res: NotesPollsRecommendationResponse };
 	'notes/polls/vote': { req: NotesPollsVoteRequest; res: EmptyResponse };
 	'notes/reactions': { req: NotesReactionsRequest; res: NotesReactionsResponse };

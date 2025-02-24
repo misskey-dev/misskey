@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { NotesRepository, NoteThreadMutingsRepository, NoteFavoritesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { NoteMutingService } from '@/core/note/NoteMutingService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -23,6 +24,10 @@ export const meta = {
 				optional: false, nullable: false,
 			},
 			isMutedThread: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			isMutedNote: {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
@@ -49,11 +54,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: NoteFavoritesRepository,
+
+		private noteMutingService: NoteMutingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const note = await this.notesRepository.findOneByOrFail({ id: ps.noteId });
 
-			const [favorite, threadMuting] = await Promise.all([
+			const [favorite, threadMuting, isMutedNote] = await Promise.all([
 				this.noteFavoritesRepository.count({
 					where: {
 						userId: me.id,
@@ -68,11 +75,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					},
 					take: 1,
 				}),
+				this.noteMutingService.isMuting(me.id, note.id),
 			]);
 
 			return {
 				isFavorited: favorite !== 0,
 				isMutedThread: threadMuting !== 0,
+				isMutedNote,
 			};
 		});
 	}

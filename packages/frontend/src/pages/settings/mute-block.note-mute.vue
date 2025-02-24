@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPagination :pagination="blockingPagination">
+<MkPagination ref="pagingComponent" :pagination="noteMutingPagination">
 	<template #empty>
 		<div class="_fullinfo">
 			<img :src="infoImageUrl" class="_ghost"/>
@@ -13,36 +13,80 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<template #default="{ items }">
-		<div class="_gaps_s">
-			<div v-for="item in items" :key="item.blockee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedBlockItems.includes(item.id) }]">
-				<div :class="$style.userItemMain">
-					<MkA :class="$style.userItemMainBody" :to="userPage(item.blockee)">
-						<MkUserCardMini :user="item.blockee"/>
-					</MkA>
-					<button class="_button" :class="$style.userToggle" @click="toggleBlockItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
-					<button class="_button" :class="$style.remove" @click="unblock(item.blockee, $event)"><i class="ti ti-x"></i></button>
+		<MkFolder v-for="item in (items as entities.NotesMutingListResponse)" :key="item.id" style="margin-bottom: 1rem;">
+			<template #label>
+				<div>
+					<span>[{{ i18n.ts.expiration }}: </span>
+					<MkTime v-if="item.expiresAt" :time="item.expiresAt" mode="absolute"/>
+					<span v-else>{{ i18n.ts.none }}</span>
+					<span>] </span>
+					<span>
+						{{ ((item.note.user.name) ? item.note.user.name + ` (@${item.note.user.username})` : `@${item.note.user.username}`) }}
+					</span>
+					<span>
+						{{ i18n.ts._noteMuting.labelSuffix }}
+					</span>
 				</div>
-				<div v-if="expandedBlockItems.includes(item.id)" :class="$style.userItemSub">
-					<div>Blocked at: <MkTime :time="item.createdAt" mode="detail"/></div>
-					<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
-					<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
+			</template>
+
+			<template #default>
+				<MkNoteSub :note="item.note"/>
+			</template>
+
+			<template #footer>
+				<div style="display: flex; flex-direction: column" class="_gaps">
+					<MkButton :danger="true" @click="onClickUnmuteNote(item.note.id)">{{ i18n.ts._noteMuting.unmuteNote }}</MkButton>
+					<span :class="$style.caption">{{ i18n.ts._noteMuting.unmuteCaption }}</span>
 				</div>
-			</div>
-		</div>
+			</template>
+		</MkFolder>
 	</template>
 </MkPagination>
 </template>
 
 <script lang="ts" setup>
-
+import { entities } from 'misskey-js';
+import { shallowRef } from 'vue';
+import type { Paging } from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import { infoImageUrl } from '@/instance';
+import * as os from '@/os';
 
-const noteMutingPagination = {
-	endpoint: 'notes/muting/list' as const,
+const noteMutingPagination: Paging = {
+	endpoint: 'notes/muting/list',
 	limit: 10,
 };
+
+const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+
+async function onClickUnmuteNote(noteId: string) {
+	await os.apiWithDialog(
+		'notes/muting/delete',
+		{
+			noteId,
+		},
+		undefined,
+		{
+			'6ad3b6c9-f173-60f7-b558-5eea13896254': {
+				title: i18n.ts.error,
+				text: i18n.ts._noteMuting.notMutedNote,
+			},
+		},
+	);
+
+	pagingComponent.value?.reload();
+}
+
 </script>
+
+<style lang="scss" module>
+.caption {
+	font-size: 0.85em;
+	padding: 8px 0 0 0;
+	color: var(--MI_THEME-fgTransparentWeak);
+}
+</style>

@@ -10998,6 +10998,28 @@ export interface Locale extends ILocale {
          */
         "otherOption3": string;
     };
+    "_noteMuting": {
+        /**
+         * ノートをミュート
+         */
+        "muteNote": string;
+        /**
+         * ノートのミュートを解除
+         */
+        "unmuteNote": string;
+        /**
+         * このノートはミュートされていません
+         */
+        "notMutedNote": string;
+        /**
+         * のノート
+         */
+        "labelSuffix": string;
+        /**
+         * ミュートを解除したノートを再表示するにはタイムラインの再読み込みが必要です。
+         */
+        "unmuteCaption": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

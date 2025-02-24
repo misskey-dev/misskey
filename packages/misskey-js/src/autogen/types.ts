@@ -2907,15 +2907,6 @@ export type paths = {
      */
 		post: operations['notes___muting___list'];
 	};
-	'/notes/muting/update': {
-		/**
-     * notes/muting/update
-     * @description No description provided.
-     *
-     * **Credential required**: *Yes* / **Permission**: *write:account*
-     */
-		post: operations['notes___muting___update'];
-	};
 	'/notes/polls/recommendation': {
 		/**
      * notes/polls/recommendation
@@ -23115,7 +23106,7 @@ export type operations = {
 			content: {
 				'application/json': {
 					/** Format: misskey:id */
-					id: string;
+					noteId: string;
 				};
 			};
 		};
@@ -23163,72 +23154,30 @@ export type operations = {
    * **Credential required**: *Yes* / **Permission**: *read:account*
    */
 	notes___muting___list: {
-		responses: {
-			/** @description OK (with results) */
-			200: {
-				content: {
-					'application/json': {
-						notes: ({
-							id: string;
-							/** Format: date-time */
-							expiresAt: string | null;
-							note: components['schemas']['Note'];
-						})[];
-					};
-				};
-			};
-			/** @description Client error */
-			400: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description Authentication error */
-			401: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description Forbidden error */
-			403: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description I'm Ai */
-			418: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description Internal server error */
-			500: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-		};
-	};
-	/**
-   * notes/muting/update
-   * @description No description provided.
-   *
-   * **Credential required**: *Yes* / **Permission**: *write:account*
-   */
-	notes___muting___update: {
 		requestBody: {
 			content: {
 				'application/json': {
 					/** Format: misskey:id */
-					id: string;
-					expiresAt?: number | null;
+					sinceId?: string | null;
+					/** Format: misskey:id */
+					untilId?: string | null;
+					/** @default 10 */
+					limit?: number;
+					offset?: number;
 				};
 			};
 		};
 		responses: {
-			/** @description OK (without any results) */
-			204: {
-				content: never;
+			/** @description OK (with results) */
+			200: {
+				content: {
+					'application/json': ({
+						id: string;
+						/** Format: date-time */
+						expiresAt: string | null;
+						note: components['schemas']['Note'];
+					})[];
+				};
 			};
 			/** @description Client error */
 			400: {
@@ -23250,12 +23199,6 @@ export type operations = {
 			};
 			/** @description I'm Ai */
 			418: {
-				content: {
-					'application/json': components['schemas']['Error'];
-				};
-			};
-			/** @description Too many requests */
-			429: {
 				content: {
 					'application/json': components['schemas']['Error'];
 				};
@@ -23892,6 +23835,7 @@ export type operations = {
 					'application/json': {
 						isFavorited: boolean;
 						isMutedThread: boolean;
+						isMutedNote: boolean;
 					};
 				};
 			};

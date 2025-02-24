@@ -44,19 +44,21 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private readonly noteMutingService: NoteMutingService,
-		private readonly getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const note = await this.getterService.getNote(ps.noteId).catch(err => {
-				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-				throw err;
-			});
-
-			await this.noteMutingService.create({
-				userId: me.id,
-				noteId: note.id,
-				expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
-			});
+			try {
+				await this.noteMutingService.create({
+					userId: me.id,
+					noteId: ps.noteId,
+					expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
+				});
+			} catch (e) {
+				if (e instanceof NoteMutingService.NoSuchNoteError) {
+					throw new ApiError(meta.errors.noSuchNote);
+				} else {
+					throw e;
+				}
+			}
 		});
 	}
 }

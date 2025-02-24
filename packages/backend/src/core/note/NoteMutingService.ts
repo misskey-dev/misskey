@@ -5,11 +5,14 @@ import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { MiNoteMuting, NoteMutingsRepository } from '@/models/_.js';
+import type { MiNoteMuting, NoteMutingsRepository, NotesRepository } from '@/models/_.js';
+import { QueryService } from '@/core/QueryService.js';
 
 @Injectable()
 export class NoteMutingService implements OnApplicationShutdown {
-	public static NoSuchItemError = class extends Error {
+	public static NoSuchNoteError = class extends Error {
+	};
+	public static NotMutedError = class extends Error {
 	};
 
 	private cache: RedisKVCache<Set<string>>;
@@ -19,16 +22,27 @@ export class NoteMutingService implements OnApplicationShutdown {
 		private redisClient: Redis.Redis,
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 		@Inject(DI.noteMutingsRepository)
 		private noteMutingsRepository: NoteMutingsRepository,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
+		private queryService: QueryService,
 	) {
 		this.redisForSub.on('message', this.onMessage);
-		this.cache = new RedisKVCache<Set<string>>(this.redisClient, 'noteMutings', {
-			lifetime: 1000 * 60 * 30, // 30m
-			memoryCacheLifetime: 1000 * 60, // 1m
-			fetcher: (userId) => this.listByUserId(userId).then(xs => new Set(xs.map(x => x.noteId))),
+		this.cache = new RedisKVCache<Set<MiNoteMuting['noteId']>>(this.redisClient, 'noteMutings', {
+			// 使用頻度が高く使用される期間も長いためキャッシュの有効期限切れ→再取得が頻発すると思われる。
+			// よって、有効期限を長めに設定して再取得の頻度を抑える（キャッシュの鮮度はRedisイベント経由で保たれているので問題ないはず）
+			lifetime: 1000 * 60 * 60 * 24, // 1d
+			memoryCacheLifetime: 1000 * 60 * 60 * 24, // 1d
+			fetcher: async (userId) => {
+				return this.noteMutingsRepository.createQueryBuilder('noteMuting')
+					.select('noteMuting.noteId')
+					.where('noteMuting.userId = :userId', { userId })
+					.getRawMany<{ noteMuting_noteId: string }>()
+					.then((results) => new Set(results.map(x => x.noteMuting_noteId)));
+			},
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
@@ -62,20 +76,35 @@ export class NoteMutingService implements OnApplicationShutdown {
 
 	@bindThis
 	public async listByUserId(
-		userId: MiNoteMuting['userId'],
+		params: {
+			userId: MiNoteMuting['userId'],
+			sinceId?: MiNoteMuting['id'] | null,
+			untilId?: MiNoteMuting['id'] | null,
+		},
 		opts?: {
+			limit?: number;
+			offset?: number;
 			joinUser?: boolean;
 			joinNote?: boolean;
 		},
 	): Promise<MiNoteMuting[]> {
-		const q = this.noteMutingsRepository.createQueryBuilder('noteMuting');
+		const q = this.queryService.makePaginationQuery(this.noteMutingsRepository.createQueryBuilder('noteMuting'), params.sinceId, params.untilId);
 
-		q.where('noteMuting.userId = :userId', { userId });
+		q.where('noteMuting.userId = :userId', { userId: params.userId });
 		if (opts?.joinUser) {
 			q.leftJoinAndSelect('noteMuting.user', 'user');
 		}
 		if (opts?.joinNote) {
 			q.leftJoinAndSelect('noteMuting.note', 'note');
+		}
+
+		q.orderBy('noteMuting.id', 'DESC');
+
+		const limit = opts?.limit ?? 10;
+		q.limit(limit);
+
+		if (opts?.offset) {
+			q.offset(opts.offset);
 		}
 
 		return q.getMany();
@@ -87,19 +116,18 @@ export class NoteMutingService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async get(id: MiNoteMuting['id']): Promise<MiNoteMuting> {
-		const result = await this.noteMutingsRepository.findOne({ where: { id } });
-		if (!result) {
-			throw new NoteMutingService.NoSuchItemError();
-		}
-
-		return result;
+	public async isMuting(userId: MiNoteMuting['userId'], noteId: MiNoteMuting['noteId']): Promise<boolean> {
+		return this.cache.fetch(userId).then(noteIds => noteIds.has(noteId));
 	}
 
 	@bindThis
 	public async create(
 		params: Pick<MiNoteMuting, 'userId' | 'noteId' | 'expiresAt'>,
 	): Promise<void> {
+		if (!await this.notesRepository.existsBy({ id: params.noteId })) {
+			throw new NoteMutingService.NoSuchNoteError();
+		}
+
 		const id = this.idService.gen();
 		const result = await this.noteMutingsRepository.insertOne({
 			id,
@@ -110,25 +138,31 @@ export class NoteMutingService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async update(
-		id: MiNoteMuting['id'],
-		params: Partial<Pick<MiNoteMuting, 'expiresAt'>>,
-	): Promise<void> {
-		await this.noteMutingsRepository.update(id, params);
+	public async delete(userId: MiNoteMuting['userId'], noteId: MiNoteMuting['noteId']): Promise<void> {
+		const value = await this.noteMutingsRepository.findOne({ where: { userId, noteId } });
+		if (!value) {
+			throw new NoteMutingService.NotMutedError();
+		}
 
-		// 現状、ミュート設定の有無しかキャッシュしていないので更新時はイベントを発行しない。
-		// 他に細かい設定が登場した場合はキャッシュの型をSetからMapに変えつつ、イベントを発行するようにする。
+		await this.noteMutingsRepository.delete(value.id);
+		this.globalEventService.publishInternalEvent('noteMuteDeleted', value);
 	}
 
 	@bindThis
-	public async delete(id: MiNoteMuting['id']): Promise<void> {
-		const value = await this.noteMutingsRepository.findOne({ where: { id } });
-		if (!value) {
-			return;
-		}
+	public async cleanupExpiredMutes(): Promise<void> {
+		const now = new Date();
+		const noteMutings = await this.noteMutingsRepository.createQueryBuilder('noteMuting')
+			.select(['noteMuting.id', 'noteMuting.userId'])
+			.where('noteMuting.expiresAt < :now', { now })
+			.andWhere('noteMuting.expiresAt IS NOT NULL')
+			.getRawMany<{ noteMuting_id: MiNoteMuting['id'], noteMuting_userId: MiNoteMuting['id'] }>();
 
-		await this.noteMutingsRepository.delete(id);
-		this.globalEventService.publishInternalEvent('noteMuteDeleted', value);
+		await this.noteMutingsRepository.delete(noteMutings.map(x => x.noteMuting_id));
+
+		for (const id of [...new Set(noteMutings.map(x => x.noteMuting_userId))]) {
+			// 同時多発的なDBアクセスが発生することを避けるため1回ごとにawaitする
+			await this.cache.refresh(id);
+		}
 	}
 
 	@bindThis

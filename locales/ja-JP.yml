@@ -2942,3 +2942,10 @@ _bootErrors:
   otherOption1: "クライアント設定とキャッシュを削除"
   otherOption2: "簡易クライアントを起動"
   otherOption3: "修復ツールを起動"
+
+_noteMuting:
+  muteNote: "ノートをミュート"
+  unmuteNote: "ノートのミュートを解除"
+  notMutedNote: "このノートはミュートされていません"
+  labelSuffix: "のノート"
+  unmuteCaption: "ミュートを解除したノートを再表示するにはタイムラインの再読み込みが必要です。"
