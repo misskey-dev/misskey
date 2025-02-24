@@ -18,6 +18,12 @@ import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbUserImportJobData } from '../types.js';
 
+async function ensureRegularFile(path: string) {
+	if (!(await fs.promises.stat(path)).isFile()) {
+		throw new Error(`'${path}' is not a file`);
+	}
+}
+
 // TODO: 名前衝突時の動作を選べるようにする
 @Injectable()
 export class ImportCustomEmojisProcessorService {
@@ -69,7 +75,9 @@ export class ImportCustomEmojisProcessorService {
 		try {
 			this.logger.succ(`Unzipping to ${outputPath}`);
 			ZipReader.withDestinationPath(outputPath).viaBuffer(await fs.promises.readFile(destPath));
-			const metaRaw = fs.readFileSync(outputPath + '/meta.json', 'utf-8');
+			const metaPath = outputPath + '/meta.json';
+			await ensureRegularFile(metaPath);
+			const metaRaw = await fs.promises.readFile(metaPath, 'utf-8');
 			const meta = JSON.parse(metaRaw);
 
 			for (const record of meta.emojis) {
@@ -84,6 +92,7 @@ export class ImportCustomEmojisProcessorService {
 					continue;
 				}
 				const emojiPath = outputPath + '/' + record.fileName;
+				await ensureRegularFile(emojiPath);
 				await this.emojisRepository.delete({
 					name: emojiInfo.name,
 				});
