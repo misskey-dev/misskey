@@ -59,7 +59,7 @@
 		"rollup": "4.34.7",
 		"sanitize-html": "2.14.0",
 		"sass": "1.85.0",
-		"shiki": "2.4.1",
+		"shiki": "3.0.0",
 		"strict-event-emitter-types": "2.0.0",
 		"textarea-caret": "3.1.0",
 		"three": "0.173.0",
