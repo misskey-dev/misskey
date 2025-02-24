@@ -79,6 +79,7 @@ import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiUserListFavorite } from '@/models/UserListFavorite.js';
 import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
+import { MiNoteMuting } from './NoteMuting.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
@@ -157,6 +158,7 @@ export {
 	MiNote,
 	MiNoteFavorite,
 	MiNoteReaction,
+	MiNoteMuting,
 	MiNoteThreadMuting,
 	MiNoteUnread,
 	MiPage,
@@ -228,6 +230,7 @@ export type RenoteMutingsRepository = Repository<MiRenoteMuting> & MiRepository<
 export type NotesRepository = Repository<MiNote> & MiRepository<MiNote>;
 export type NoteFavoritesRepository = Repository<MiNoteFavorite> & MiRepository<MiNoteFavorite>;
 export type NoteReactionsRepository = Repository<MiNoteReaction> & MiRepository<MiNoteReaction>;
+export type NoteMutingsRepository = Repository<MiNoteMuting> & MiRepository<MiNoteMuting>;
 export type NoteThreadMutingsRepository = Repository<MiNoteThreadMuting> & MiRepository<MiNoteThreadMuting>;
 export type NoteUnreadsRepository = Repository<MiNoteUnread> & MiRepository<MiNoteUnread>;
 export type PagesRepository = Repository<MiPage> & MiRepository<MiPage>;

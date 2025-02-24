@@ -234,8 +234,11 @@ export class SearchService {
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
-		if (me) this.queryService.generateMutedUserQuery(query, me);
-		if (me) this.queryService.generateBlockedUserQuery(query, me);
+		if (me) {
+			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateBlockedUserQuery(query, me);
+			this.queryService.generateMutedNoteQuery(query, me);
+		}
 
 		return query.limit(pagination.limit).getMany();
 	}
