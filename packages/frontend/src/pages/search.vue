@@ -18,7 +18,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSpacer>
 
 		<MkSpacer v-else-if="tab === 'user'" key="user" :contentMax="800">
-			<XUser v-bind="props"/>
+			<div v-if="usersSearchAvailable">
+				<XUser v-bind="props"/>
+			</div>
+			<div v-else>
+				<MkInfo warn>{{ i18n.ts.usersSearchNotAvailable }}</MkInfo>
+			</div>
 		</MkSpacer>
 	</MkHorizontalSwipe>
 </MkStickyContainer>
@@ -28,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref, toRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { notesSearchAvailable } from '@/scripts/check-permissions.js';
+import { notesSearchAvailable, usersSearchAvailable } from '@/scripts/check-permissions.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 

@@ -12,6 +12,7 @@ import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import type { Config } from '@/config.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { Packed } from '@/misc/json-schema.js';
+import { RoleService } from '@/core/RoleService.js';
 
 function defaultActiveThreshold() {
 	return new Date(Date.now() - 1000 * 60 * 60 * 24 * 30);
@@ -27,6 +28,7 @@ export class UserSearchService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 		private userEntityService: UserEntityService,
+		private roleService: RoleService, // 追加
 	) {
 	}
 
@@ -70,6 +72,21 @@ export class UserSearchService {
 		},
 		me?: MiUser | null,
 	): Promise<Packed<'User'>[]> {
+		// ロールによる権限チェック
+		const policies = await this.roleService.getUserPolicies(me?.id ?? null);
+
+		// デバッグログを追加
+		console.log('User search policies:', {
+			userId: me?.id,
+			canSearchUsers: policies.canSearchUsers,
+			policies: policies,
+		});
+
+		if (!policies.canSearchUsers) {
+			throw new Error('No permission to search users');
+		}
+
+		// meの有無で適切なクエリを使用
 		const queries = me ? this.buildSearchUserQueries(me, params) : this.buildSearchUserNoLoginQueries(params);
 
 		let resultSet = new Set<MiUser['id']>();

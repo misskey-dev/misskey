@@ -129,6 +129,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canSearchUsers, 'canSearchUsers'])">
+							<template #label>{{ i18n.ts._role._options.canSearchUsers }}</template>
+							<template #suffix>{{ policies.canSearchUsers ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canSearchUsers">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseTranslator, 'canSearchNotes'])">
 							<template #label>{{ i18n.ts._role._options.canUseTranslator }}</template>
 							<template #suffix>{{ policies.canUseTranslator ? i18n.ts.yes : i18n.ts.no }}</template>
@@ -367,7 +375,10 @@ async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-policies', {
 		policies,
 	});
-	fetchInstance(true);
+	// インスタンス情報を更新
+	await fetchInstance(true);
+	// 更新後の設定を確認
+	console.log('Updated base role policies:', policies);
 }
 
 function create() {
