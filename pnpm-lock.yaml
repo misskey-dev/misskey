@@ -685,6 +685,9 @@ importers:
 
   packages/frontend:
     dependencies:
+      '@analytics/google-analytics':
+        specifier: 1.1.0
+        version: 1.1.0
       '@discordapp/twemoji':
         specifier: 15.1.0
         version: 15.1.0
@@ -724,6 +727,9 @@ importers:
       aiscript-vscode:
         specifier: github:aiscript-dev/aiscript-vscode#v0.1.15
         version: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/c3cde89e79a41d93540cf8a48cd619c3f2dcb1b7
+      analytics:
+        specifier: 0.8.16
+        version: 0.8.16(@types/dlv@1.1.5)
       astring:
         specifier: 1.9.0
         version: 1.9.0
@@ -1447,6 +1453,30 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@analytics/cookie-utils@0.2.12':
+    resolution: {integrity: sha512-2h/yuIu3kmu+ZJlKmlT6GoRvUEY2k1BbQBezEv5kGhnn9KpmzPz715Y3GmM2i+m7Y0QmBdVUoA260dQZkofs2A==}
+
+  '@analytics/core@0.12.17':
+    resolution: {integrity: sha512-GMxRm5Dp3Wam/w5NNvqNKMO6zWecozbVv21Kn4WhftCx6OjJI7zMlVtiLpjGjxa0RRZfVG80YhupF0Qh9XL2gw==}
+
+  '@analytics/global-storage-utils@0.1.7':
+    resolution: {integrity: sha512-V+spzGLZYm4biZT4uefaylm80SrLXf8WOTv9hCgA46cLcyxx3LD4GCpssp1lj+RcWLl/uXJQBRO4Mnn/o1x6Gw==}
+
+  '@analytics/google-analytics@1.1.0':
+    resolution: {integrity: sha512-i8uGyELMtwEUAf3GNWNLNBzhRvReDn1RUxvMdMhjUA7+GNGxPOM4kkzFfv3giQXKNxTEjfsh75kqNcscbJsuaA==}
+
+  '@analytics/localstorage-utils@0.1.10':
+    resolution: {integrity: sha512-uJS+Jp1yLG5VFCgA5T82ZODYBS0xuDQx0NtAZrgbqt9j51BX3TcgmOez5LVkrUNu/lpbxjCLq35I4TKj78VmOQ==}
+
+  '@analytics/session-storage-utils@0.0.7':
+    resolution: {integrity: sha512-PSv40UxG96HVcjY15e3zOqU2n8IqXnH8XvTkg1X43uXNTKVSebiI2kUjA3Q7ESFbw5DPwcLbJhV7GforpuBLDw==}
+
+  '@analytics/storage-utils@0.4.2':
+    resolution: {integrity: sha512-AXObwyVQw9h2uJh1t2hUgabtVxzYpW+7uKVbdHQK80vr3Td5rrmCxrCxarh7HUuAgSDZ0bZWqmYxVgmwKceaLg==}
+
+  '@analytics/type-utils@0.6.2':
+    resolution: {integrity: sha512-TD+xbmsBLyYy/IxFimW/YL/9L2IEnM7/EoV9Aeh56U64Ify8o27HJcKjo38XY9Tcn0uOq1AX3thkKgvtWvwFQg==}
 
   '@apidevtools/swagger-methods@3.0.2':
     resolution: {integrity: sha512-QAkD5kK2b1WfjDS/UQn/qQkbwF31uqRjPTrsCs5ZG9BQGAkjwvqGFjjPqAuzac/IYzpPtRzjCP1WrTuAIjMrXg==}
@@ -4226,6 +4256,9 @@ packages:
   '@types/disposable-email-domains@1.0.2':
     resolution: {integrity: sha512-SDKwyYTjk3y5aZBxxc38yRecpJPjsqn57STz1bNxYYlv4k11bBe7QB8w4llXDTmQXKT1mFvgGmJv+8Zdu3YmJw==}
 
+  '@types/dlv@1.1.5':
+    resolution: {integrity: sha512-JHOWNfiWepAhfwlSw17kiWrWrk6od2dEQgHltJw9AS0JPFoLZJBge5+Dnil2NfdjAvJ/+vGSX60/BRW20PpUXw==}
+
   '@types/doctrine@0.0.9':
     resolution: {integrity: sha512-eOIHzCUSH7SMfonMG1LsC2f8vxBFtho6NGBznK41R84YzPuvSBzrhEps33IsQiOW9+VL6NQ9DbjQJznk/S4uRA==}
 
@@ -4863,6 +4896,14 @@ packages:
 
   alien-signals@1.0.3:
     resolution: {integrity: sha512-zQOh3wAYK5ujENxvBBR3CFGF/b6afaSzZ/c9yNhJ1ENrGHETvpUuKQsa93Qrclp0+PzTF93MaZ7scVp1uUozhA==}
+
+  analytics-utils@1.0.14:
+    resolution: {integrity: sha512-9v0kPd8v0GuBvfQcg5BO48AElaEAr9IXMAfJWXYMAhrD3QprgozEIUgMp/de0vS136PUOBB+10XQH9eBgBmfMw==}
+    peerDependencies:
+      '@types/dlv': ^1.0.0
+
+  analytics@0.8.16:
+    resolution: {integrity: sha512-LEFQ47G9V1zVp9WIh2xhnbmSFEJq+WEzSv6voJ5uba88lefiIIYeG2nq87gFu83ocz1qtb9u7XgeaKKVBbbgWA==}
 
   ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
@@ -5946,6 +5987,9 @@ packages:
 
   disposable-email-domains@1.0.62:
     resolution: {integrity: sha512-LBQvhRw7mznQTPoyZbsmYeNOZt1pN5aCsx4BAU/3siVFuiM9f2oyKzUaB8v1jbxFjE3aYqYiMo63kAL4pHgfWQ==}
+
+  dlv@1.1.3:
+    resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
 
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
@@ -10953,6 +10997,42 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
+  '@analytics/cookie-utils@0.2.12':
+    dependencies:
+      '@analytics/global-storage-utils': 0.1.7
+
+  '@analytics/core@0.12.17(@types/dlv@1.1.5)':
+    dependencies:
+      '@analytics/global-storage-utils': 0.1.7
+      '@analytics/type-utils': 0.6.2
+      analytics-utils: 1.0.14(@types/dlv@1.1.5)
+    transitivePeerDependencies:
+      - '@types/dlv'
+
+  '@analytics/global-storage-utils@0.1.7':
+    dependencies:
+      '@analytics/type-utils': 0.6.2
+
+  '@analytics/google-analytics@1.1.0': {}
+
+  '@analytics/localstorage-utils@0.1.10':
+    dependencies:
+      '@analytics/global-storage-utils': 0.1.7
+
+  '@analytics/session-storage-utils@0.0.7':
+    dependencies:
+      '@analytics/global-storage-utils': 0.1.7
+
+  '@analytics/storage-utils@0.4.2':
+    dependencies:
+      '@analytics/cookie-utils': 0.2.12
+      '@analytics/global-storage-utils': 0.1.7
+      '@analytics/localstorage-utils': 0.1.10
+      '@analytics/session-storage-utils': 0.0.7
+      '@analytics/type-utils': 0.6.2
+
+  '@analytics/type-utils@0.6.2': {}
+
   '@apidevtools/swagger-methods@3.0.2': {}
 
   '@asamuzakjp/css-color@2.8.3':
@@ -14499,6 +14579,8 @@ snapshots:
 
   '@types/disposable-email-domains@1.0.2': {}
 
+  '@types/dlv@1.1.5': {}
+
   '@types/doctrine@0.0.9': {}
 
   '@types/eslint@7.29.0':
@@ -15311,6 +15393,19 @@ snapshots:
       require-from-string: 2.0.2
 
   alien-signals@1.0.3: {}
+
+  analytics-utils@1.0.14(@types/dlv@1.1.5):
+    dependencies:
+      '@analytics/type-utils': 0.6.2
+      '@types/dlv': 1.1.5
+      dlv: 1.1.3
+
+  analytics@0.8.16(@types/dlv@1.1.5):
+    dependencies:
+      '@analytics/core': 0.12.17(@types/dlv@1.1.5)
+      '@analytics/storage-utils': 0.4.2
+    transitivePeerDependencies:
+      - '@types/dlv'
 
   ansi-colors@4.1.3: {}
 
@@ -16546,6 +16641,8 @@ snapshots:
       path-type: 4.0.0
 
   disposable-email-domains@1.0.62: {}
+
+  dlv@1.1.3: {}
 
   doctrine@2.1.0:
     dependencies:

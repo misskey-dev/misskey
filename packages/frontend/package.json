@@ -16,6 +16,7 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
+		"@analytics/google-analytics": "1.1.0",
 		"@discordapp/twemoji": "15.1.0",
 		"@github/webauthn-json": "2.1.1",
 		"@mcaptcha/vanilla-glue": "0.1.0-alpha-3",
@@ -29,6 +30,7 @@
 		"@vitejs/plugin-vue": "5.2.1",
 		"@vue/compiler-sfc": "3.5.13",
 		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.1.15",
+		"analytics": "0.8.16",
 		"astring": "1.9.0",
 		"broadcast-channel": "7.0.0",
 		"buraha": "0.0.1",
