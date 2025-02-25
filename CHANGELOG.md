@@ -2,6 +2,7 @@
 
 ### General
 - Feat: アクセストークン発行時に通知するように
+- Feat: 実験的なGoogleAnalyticsサポートを追加
 - 依存関係の更新
 
 ### Client
