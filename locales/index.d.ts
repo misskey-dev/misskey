@@ -5262,6 +5262,14 @@ export interface Locale extends ILocale {
      * " {emoji} " をリアクションしますか？
      */
     "reactAreYouSure": ParameterizedString<"emoji">;
+    /**
+     * 古い通知は自動的に削除されます。{here}から手動でリセットすることもできます。
+     */
+    "oldNotificationsWillBeDeleted": ParameterizedString<"here">;
+    /**
+     * こちら
+     */
+    "oldNotificationsWillBeDeletedPlaceholderHere": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -5774,6 +5782,10 @@ export interface Locale extends ILocale {
          * グローバルタイムラインでは、接続している他のすべてのサーバーからの投稿を見られます。
          */
         "global": string;
+        /**
+         * アンテナに保持されているノートは古いものから削除されていきます。必要に応じてクリップなどに移動させてください。
+         */
+        "antenna": string;
     };
     "_serverRules": {
         /**
