@@ -36,8 +36,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA v-if="file.user" class="user" :to="`/admin/user/${file.user.id}`">
 				<MkUserCardMini :user="file.user"/>
 			</MkA>
+
 			<div>
-				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
+				<MkButton danger @click="toggleSensitive">
+					<i class="ti ti-eye-exclamation"></i> {{ isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive }}
+				</MkButton>
 			</div>
 
 			<div>
@@ -117,9 +120,20 @@ async function del() {
 	});
 }
 
-async function toggleIsSensitive(v) {
-	await misskeyApi('drive/files/update', { fileId: props.fileId, isSensitive: v });
-	isSensitive.value = v;
+async function toggleSensitive() {
+	if (!file.value) return;
+
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: file.value.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+	});
+
+	if (canceled) return;
+
+	os.apiWithDialog('drive/files/update', {
+		fileId: file.value.id,
+		isSensitive: !file.value.isSensitive,
+	});
 }
 
 const headerActions = computed(() => [{
