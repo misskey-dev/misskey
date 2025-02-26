@@ -2,6 +2,7 @@
 
 ### General
 - Feat: アクセストークン発行時に通知するように
+- Feat: 実験的なGoogleAnalyticsサポートを追加
 - 依存関係の更新
 
 ### Client
@@ -20,12 +21,14 @@
 - Fix: CWの注釈が100文字を超えている場合、ノート投稿ボタンを非アクティブに
 
 ### Server
+- Enhance: 成り済まし対策として、ActivityPub照会された時にリモートのリダイレクトを拒否できるように (config.disallowExternalApRedirect)
 - Fix: `following/invalidate`でフォロワーを解除しようとしているユーザーの情報を返すように
 - Fix: オブジェクトストレージの設定でPrefixを設定していなかった場合nullまたは空文字になる問題を修正
 - Fix: pgroongaでの検索時にはじめのキーワードのみが検索に使用される問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/886)
 - Fix: メールアドレスの形式が正しくなければ以降の処理を行わないように
 - Fix: クリップの説明欄を更新する際に空にできない問題を修正
+- Fix: フォロワーではないユーザーにリノートもしくは返信された場合にノートのDeleteアクティビティが送られていない問題を修正
 
 ## 2025.2.0
 
