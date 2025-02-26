@@ -143,15 +143,27 @@ function showMenu(ev: MouseEvent) {
 		});
 	}
 
+	const details: MenuItem[] = [];
 	if ($i?.id === props.image.userId) {
-		menuItems.push({
-			type: 'divider',
-		}, {
+		details.push({
 			type: 'link',
 			text: i18n.ts._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.image.id}`,
 		});
+	}
+
+	if (iAmModerator) {
+		details.push({
+			type: 'link',
+			text: i18n.ts.moderation,
+			icon: 'ti ti-photo-exclamation',
+			to: `/admin/file/${props.image.id}`,
+		});
+	}
+
+	if (details.length > 0) {
+		menuItems.push({ type: 'divider' }, ...details);
 	}
 
 	if (defaultStore.state.devMode) {
