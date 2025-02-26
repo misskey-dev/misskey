@@ -2,6 +2,7 @@
 
 ### General
 - Feat: アクセストークン発行時に通知するように
+- Feat: 実験的なGoogleAnalyticsサポートを追加
 - 依存関係の更新
 
 ### Client
@@ -17,15 +18,20 @@
 - Fix: 埋め込みプレイヤーから外部ページに移動できない問題を修正
 - Fix: Play の再読込時に UI が以前の状態を引き継いでしまう問題を修正 `#14378`
 - Fix: カスタム絵文字管理画面(beta)にてisSensitive/localOnlyの絞り込みが上手くいかない問題の修正 ( #15445 )
+- Fix: ユーザのサジェスト中に@を入力してもサジェスト結果が消えないように `#14385`
 - Fix: CWの注釈が100文字を超えている場合、ノート投稿ボタンを非アクティブに
 
 ### Server
+- Enhance: 成り済まし対策として、ActivityPub照会された時にリモートのリダイレクトを拒否できるように (config.disallowExternalApRedirect)
 - Fix: `following/invalidate`でフォロワーを解除しようとしているユーザーの情報を返すように
 - Fix: オブジェクトストレージの設定でPrefixを設定していなかった場合nullまたは空文字になる問題を修正
+- Fix: HTTPプロキシとその除外設定を行った状態でカスタム絵文字の一括インポートをしたとき、除外設定が効かないのを修正( #8766 )
 - Fix: pgroongaでの検索時にはじめのキーワードのみが検索に使用される問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/886)
 - Fix: メールアドレスの形式が正しくなければ以降の処理を行わないように
 - Fix: `update-meta`でobjectStoragePrefixにS3_SAFEかつURL-safeでない文字列を使えないように
+- Fix: クリップの説明欄を更新する際に空にできない問題を修正
+- Fix: フォロワーではないユーザーにリノートもしくは返信された場合にノートのDeleteアクティビティが送られていない問題を修正
 
 ## 2025.2.0
 
