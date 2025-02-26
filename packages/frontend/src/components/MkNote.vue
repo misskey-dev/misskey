@@ -211,10 +211,11 @@ import { isEnabledUrlPreview } from '@/instance.js';
 import { type Keymap } from '@/scripts/hotkey.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
+import { checkCollapseRenote } from '@/scripts/collapse-renotes';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note & {
-		isNoteInYamiMode?: boolean;  // YamiModeフラグを追加
+		isNoteInYamiMode?: boolean; // YamiModeフラグを追加
 	};
 	pinned?: boolean;
 	mock?: boolean;
@@ -280,35 +281,23 @@ const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const showInstanceIcon = ref(defaultStore.state.instanceIcon);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
-const renoteCollapsed = ref(false); // 初期値はfalse
+const renoteCollapsed = ref(false);
 
 // appearNoteが変更されるたびに判定を更新
 watch(() => appearNote.value, () => {
-  if (!appearNote.value) return;
+	if (!appearNote.value) return;
 
-  try {
-    // リノート判定のロジックを適用
-    if (isRenote && defaultStore.state.collapseRenotes) {
-      // セルフリノートの場合
-      if (defaultStore.state.collapseSelfRenotes &&
-          note.value.renoteId &&
-          note.value.userId === appearNote.value.userId) {
-        renoteCollapsed.value = true;
-        return;
-      }
-
-      // 通常のリノート判定
-      if (($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) ||
-          (appearNote.value.myReaction != null)) {
-        renoteCollapsed.value = true;
-        return;
-      }
-    }
-    renoteCollapsed.value = false;
-  } catch (e) {
-    console.error('Error in renote collapse detection:', e);
-    renoteCollapsed.value = false;
-  }
+	try {
+		// isRenoteがtrueの場合のみcollapse-renotes.tsのロジックを使用
+		if (isRenote) {
+			renoteCollapsed.value = checkCollapseRenote(appearNote.value, note.value, $i);
+		} else {
+			renoteCollapsed.value = false;
+		}
+	} catch (e) {
+		console.error('Error in renote collapse detection:', e);
+		renoteCollapsed.value = false;
+	}
 }, { immediate: true });
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
