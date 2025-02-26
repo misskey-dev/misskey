@@ -5262,6 +5262,10 @@ export interface Locale extends ILocale {
      * " {emoji} " をリアクションしますか？
      */
     "reactAreYouSure": ParameterizedString<"emoji">;
+    /**
+     * 文字数
+     */
+    "textCount": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
