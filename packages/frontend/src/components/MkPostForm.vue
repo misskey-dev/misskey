@@ -580,12 +580,6 @@ function showOtherSettings() {
 		textLength: textLength.value,
 		src: otherSettingsButton.value,
 	}, {
-		changeReactionAcceptance: (value: Misskey.entities.Note['reactionAcceptance']) => {
-			reactionAcceptance.value = value;
-		},
-		reset: () => {
-			clear();
-		},
 		closed: () => dispose(),
 	});
 }
