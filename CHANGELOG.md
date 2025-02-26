@@ -27,6 +27,7 @@
 - Fix: pgroongaでの検索時にはじめのキーワードのみが検索に使用される問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/886)
 - Fix: メールアドレスの形式が正しくなければ以降の処理を行わないように
+- Fix: フォロワーではないユーザーにリノートもしくは返信された場合にノートのDeleteアクティビティが送られていない問題を修正
 
 ## 2025.2.0
 
