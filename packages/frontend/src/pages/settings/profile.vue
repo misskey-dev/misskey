@@ -18,14 +18,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
-		<template #label>{{ i18n.ts._profile.name }}</template>
-	</MkInput>
+	<MkSearchMarker markerId="727cc9e8-ad67-474a-9241-b5a9a6475e47">
+		<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
+			<template #label>{{ i18n.ts._profile.name }}</template>
+		</MkInput>
+	</MkSearchMarker>
 
-	<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
-		<template #label>{{ i18n.ts._profile.description }}</template>
-		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
-	</MkTextarea>
+	<MkSearchMarker markerId="1a06c7f9-e85e-46cb-bf5f-b3efa8e71b93">
+		<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
+			<template #label>{{ i18n.ts._profile.description }}</template>
+			<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
+		</MkTextarea>
+	</MkSearchMarker>
 
 	<MkInput v-model="profile.location" manualSave>
 		<template #label>{{ i18n.ts.location }}</template>
@@ -121,6 +125,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import MkSearchMarker from '@/components/MkSearchMarker.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';

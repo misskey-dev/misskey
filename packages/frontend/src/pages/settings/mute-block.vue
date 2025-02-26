@@ -5,16 +5,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkFolder>
-		<template #icon><i class="ti ti-message-off"></i></template>
-		<template #label>{{ i18n.ts.wordMute }}</template>
+	<MkSearchMarker
+		markerId="test"
+		:locationLabel="[i18n.ts.muteAndBlock]"
+		icon="ti ti-ban"
+		:keywords="['mute', i18n.ts.wordMute]"
+		:children="['test2']"
+	>
+		<MkFolder>
+			<template #icon><i class="ti ti-message-off"></i></template>
+			<template #label>{{ i18n.ts.wordMute }}</template>
 
-		<div class="_gaps_m">
-			<MkInfo>{{ i18n.ts.wordMuteDescription }}</MkInfo>
-			<MkSwitch v-model="showSoftWordMutedWord">{{ i18n.ts.showMutedWord }}</MkSwitch>
-			<XWordMute :muted="$i.mutedWords" @save="saveMutedWords"/>
-		</div>
-	</MkFolder>
+			<div class="_gaps_m">
+				<MkInfo>{{ i18n.ts.wordMuteDescription }}</MkInfo>
+
+				<MkSearchMarker
+					markerId="test2"
+					:locationLabel="[i18n.ts.muteAndBlock, i18n.ts.wordMute]"
+					icon="ti ti-ban"
+					:keywords="['showMutedWord', i18n.ts.showMutedWord]"
+				>
+					<MkSwitch v-model="showSoftWordMutedWord">{{ i18n.ts.showMutedWord }}</MkSwitch>
+				</MkSearchMarker>
+
+				<XWordMute :muted="$i.mutedWords" @save="saveMutedWords"/>
+			</div>
+		</MkFolder>
+	</MkSearchMarker>
 
 	<MkFolder>
 		<template #icon><i class="ti ti-message-off"></i></template>
@@ -149,6 +166,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { defaultStore } from '@/store';
 import { reloadAsk } from '@/scripts/reload-ask.js';
+import MkSearchMarker from '@/components/MkSearchMarker.vue';
 
 const $i = signinRequired();
 
