@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { UtilityService } from '@/core/UtilityService.js';
-
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
@@ -19,6 +17,7 @@ import { QueueService } from '@/core/QueueService.js';
 import { RelayService } from '@/core/RelayService.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { GlobalModule } from '@/GlobalModule.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 const moduleMocker = new ModuleMocker(global);
 
