@@ -24,6 +24,7 @@
 - Enhance: 成り済まし対策として、ActivityPub照会された時にリモートのリダイレクトを拒否できるように (config.disallowExternalApRedirect)
 - Fix: `following/invalidate`でフォロワーを解除しようとしているユーザーの情報を返すように
 - Fix: オブジェクトストレージの設定でPrefixを設定していなかった場合nullまたは空文字になる問題を修正
+- Fix: HTTPプロキシとその除外設定を行った状態でカスタム絵文字の一括インポートをしたとき、除外設定が効かないのを修正( #8766 )
 - Fix: pgroongaでの検索時にはじめのキーワードのみが検索に使用される問題を修正  
   (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/886)
 - Fix: メールアドレスの形式が正しくなければ以降の処理を行わないように
