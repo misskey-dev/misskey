@@ -2664,6 +2664,7 @@ _moderationLogTypes:
   deletePage: "ページを削除"
   deleteFlash: "Playを削除"
   deleteGalleryPost: "ギャラリーの投稿を削除"
+  updateProxyAccountDescription: "プロキシアカウントの説明を更新"
 
 _fileViewer:
   title: "ファイルの詳細"

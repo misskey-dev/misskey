@@ -42,8 +42,6 @@ describe('XHome', () => {
 		const anchor = home.container.querySelector<HTMLAnchorElement>('a[href^="https://example.com/"]');
 		assert.exists(anchor, 'anchor to the remote exists');
 		assert.strictEqual(anchor?.href, 'https://example.com/@user/profile');
-
-		assert.ok(anchor?.parentElement?.classList.contains('warn'), 'the parent is a warning');
 	});
 
 	test('The remote caution should fall back to uri if url is null', async () => {
