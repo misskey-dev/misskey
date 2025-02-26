@@ -3,6 +3,8 @@
 ### General
 - Feat: アクセストークン発行時に通知するように
 - Feat: 実験的なGoogleAnalyticsサポートを追加
+- Enhance: フロントエンドのエラートラッキングができるように
+	- `.config/default.yml`中の項目`sentryForFrontend`を適宜設定してください。
 - 依存関係の更新
 
 ### Client

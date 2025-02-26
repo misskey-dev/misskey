@@ -173,6 +173,8 @@ id: "aidx"
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
 #sentryForFrontend:
+#  enableBrowserTracing: true
+#  enableReplay: true
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
