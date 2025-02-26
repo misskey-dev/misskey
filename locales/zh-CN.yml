@@ -1309,6 +1309,8 @@ availableRoles: "可用角色"
 acknowledgeNotesAndEnable: "理解注意事项后再开启。"
 federationSpecified: "此服务器已开启联合白名单。只能与管理员指定的服务器通信。"
 federationDisabled: "此服务器已禁用联合。无法与其它服务器上的用户通信。"
+confirmOnReact: "发送回应前需要确认"
+reactAreYouSure: "要用「{emoji}」进行回应吗？"
 _accountSettings:
   requireSigninToViewContents: "需要登录才能显示内容"
   requireSigninToViewContentsDescription1: "您发布的所有帖子将变成需要登入后才会显示。有望防止爬虫收集各种信息。"
@@ -2440,6 +2442,8 @@ _notification:
   flushNotification: "重置通知历史"
   exportOfXCompleted: "已完成 {x} 的导出"
   login: "有新的登录"
+  createToken: "访问令牌已创建"
+  createTokenDescription: "如果不明白其用途，请遵循「{text}」的指示删除访问令牌。"
   _types:
     all: "全部"
     note: "用户的新帖子"
@@ -2777,8 +2781,8 @@ _customEmojisManager:
     _register:
       uploadSettingTitle: "上传设置"
       uploadSettingDescription: "可以在此页面设置上传表情符号时的行为。"
-      directoryToCategoryLabel: "目录名请输入「category」"
-      directoryToCategoryCaption: "拖放目录时，目录名请输入「category」"
+      directoryToCategoryLabel: "将目录名设为「category」"
+      directoryToCategoryCaption: "拖放目录时，将目录名设置为「category」"
       emojiInputAreaCaption: "请使用其中一种方法选择要注册的表情符号。"
       emojiInputAreaList1: "在此区域内拖放图像文件或者目录"
       emojiInputAreaList2: "单击此链接以从电脑中选择"
@@ -2822,8 +2826,6 @@ _remoteLookupErrors:
   _responseInvalid:
     title: "响应无效"
     description: "成功与此服务器通信，但返回的数据无效。"
-  _responseInvalidIdHostNotMatch:
-    description: "输入 URI 的域名和最终取得的 URI 的域名不同。如果是通过第三方服务器获取远程内容，请使用可以从原始服务器获取内容的 URI 再试一次。"
   _noSuchObject:
     title: "未找到"
     description: "未找到请求的资源。请再次检查 URI。"
@@ -2840,3 +2842,15 @@ _captcha:
     _unknown:
       title: "CAPTCHA 错误"
       text: "发生意外错误。"
+_bootErrors:
+  title: "加载失败"
+  serverError: "请稍等片刻再重试。若问题仍无法解决，请将以下 Error ID 一起发送给管理员。"
+  solution: "以下方法或许可以解决问题："
+  solution1: "将浏览器及操作系统更新到最新版本"
+  solution2: "禁用广告屏蔽插件"
+  solution3: "清除浏览器缓存"
+  solution4: "（Tor Browser）将 dom.webaudio.enabled 设定为 true"
+  otherOption: "其它选项"
+  otherOption1: "清除客户端设定与缓存"
+  otherOption2: "使用简易客户端"
+  otherOption3: "启动修复工具"
