@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
 		<i v-if="column.tl != null" :class="basicTimelineIconClass(column.tl)"/>
-		<span style="margin-left: 8px;">{{ column.name }}</span>
+		<span style="margin-left: 8px;">{{ column.name || (column.tl ? i18n.ts._timelines[column.tl] : null) || i18n.ts._deck._columns.tl }}</span>
 	</template>
 
 	<div v-if="!isAvailableBasicTimeline(column.tl)" :class="$style.disabled">
@@ -34,14 +34,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, watch, ref, shallowRef, computed } from 'vue';
 import XColumn from './column.vue';
-import { removeColumn, updateColumn, Column } from './deck-store.js';
+import { removeColumn, updateColumn } from './deck-store.js';
+import type { Column } from './deck-store.js';
 import type { MenuItem } from '@/types/menu.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { instance } from '@/instance.js';
-import { SoundStore } from '@/store.js';
+import type { SoundStore } from '@/store.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 import * as sound from '@/scripts/sound.js';
 

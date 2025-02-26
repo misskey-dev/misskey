@@ -16,7 +16,7 @@ import type { Config } from '@/config.js';
 import { StatusError } from '@/misc/status-error.js';
 import { bindThis } from '@/decorators.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-import { assertActivityMatchesUrls } from '@/core/activitypub/misc/check-against-url.js';
+import { assertActivityMatchesUrls, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import type { IObject } from '@/core/activitypub/type.js';
 import type { Response } from 'node-fetch';
 import type { URL } from 'node:url';
@@ -115,32 +115,32 @@ export class HttpRequestService {
 	/**
 	 * Get http non-proxy agent (without local address filtering)
 	 */
-	private httpNative: http.Agent;
+	private readonly httpNative: http.Agent;
 
 	/**
 	 * Get https non-proxy agent (without local address filtering)
 	 */
-	private httpsNative: https.Agent;
+	private readonly httpsNative: https.Agent;
 
 	/**
 	 * Get http non-proxy agent
 	 */
-	private http: http.Agent;
+	private readonly http: http.Agent;
 
 	/**
 	 * Get https non-proxy agent
 	 */
-	private https: https.Agent;
+	private readonly https: https.Agent;
 
 	/**
 	 * Get http proxy or non-proxy agent
 	 */
-	public httpAgent: http.Agent;
+	public readonly httpAgent: http.Agent;
 
 	/**
 	 * Get https proxy or non-proxy agent
 	 */
-	public httpsAgent: https.Agent;
+	public readonly httpsAgent: https.Agent;
 
 	constructor(
 		@Inject(DI.config)
@@ -197,7 +197,8 @@ export class HttpRequestService {
 	/**
 	 * Get agent by URL
 	 * @param url URL
-	 * @param bypassProxy Allways bypass proxy
+	 * @param bypassProxy Always bypass proxy
+	 * @param isLocalAddressAllowed
 	 */
 	@bindThis
 	public getAgentByUrl(url: URL, bypassProxy = false, isLocalAddressAllowed = false): http.Agent | https.Agent {
@@ -214,8 +215,40 @@ export class HttpRequestService {
 		}
 	}
 
+	/**
+	 * Get agent for http by URL
+	 * @param url URL
+	 * @param isLocalAddressAllowed
+	 */
 	@bindThis
-	public async getActivityJson(url: string, isLocalAddressAllowed = false): Promise<IObject> {
+	public getAgentForHttp(url: URL, isLocalAddressAllowed = false): http.Agent {
+		if ((this.config.proxyBypassHosts ?? []).includes(url.hostname)) {
+			return isLocalAddressAllowed
+				? this.httpNative
+				: this.http;
+		} else {
+			return this.httpAgent;
+		}
+	}
+
+	/**
+	 * Get agent for https by URL
+	 * @param url URL
+	 * @param isLocalAddressAllowed
+	 */
+	@bindThis
+	public getAgentForHttps(url: URL, isLocalAddressAllowed = false): https.Agent {
+		if ((this.config.proxyBypassHosts ?? []).includes(url.hostname)) {
+			return isLocalAddressAllowed
+				? this.httpsNative
+				: this.https;
+		} else {
+			return this.httpsAgent;
+		}
+	}
+
+	@bindThis
+	public async getActivityJson(url: string, isLocalAddressAllowed = false, allowSoftfail: FetchAllowSoftFailMask = FetchAllowSoftFailMask.Strict): Promise<IObject> {
 		const res = await this.send(url, {
 			method: 'GET',
 			headers: {
@@ -232,7 +265,7 @@ export class HttpRequestService {
 		const finalUrl = res.url; // redirects may have been involved
 		const activity = await res.json() as IObject;
 
-		assertActivityMatchesUrls(activity, [finalUrl]);
+		assertActivityMatchesUrls(url, activity, [finalUrl], allowSoftfail);
 
 		return activity;
 	}

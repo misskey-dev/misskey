@@ -1309,6 +1309,8 @@ availableRoles: "Ruoli disponibili"
 acknowledgeNotesAndEnable: "Attivare dopo averne compreso il comportamento."
 federationSpecified: "Questo server è federato solo con istanze specifiche del Fediverso. Puoi interagire solo con quelle scelte dall'amministrazione."
 federationDisabled: "Questo server ha la federazione disabilitata. Non puoi interagire con profili provenienti da altri server."
+confirmOnReact: "Confermare le reazioni"
+reactAreYouSure: "Vuoi davvero reagire con {emoji} ?"
 _accountSettings:
   requireSigninToViewContents: "Per vedere il contenuto, è necessaria l'iscrizione"
   requireSigninToViewContentsDescription1: "Richiedere l'iscrizione per visualizzare tutte le Note e gli altri contenuti che hai creato. Probabilmente l'effetto è impedire la raccolta di informazioni da parte dei bot crawler."
@@ -2440,6 +2442,8 @@ _notification:
   flushNotification: "Azzera le notifiche"
   exportOfXCompleted: "Abbiamo completato l'esportazione di {x}"
   login: "Autenticazione avvenuta"
+  createToken: "È stato creato un token di accesso"
+  createTokenDescription: "In caso contrario, eliminare il token di accesso tramite ({text})."
   _types:
     all: "Tutto"
     note: "Nuove Note"
@@ -2822,8 +2826,6 @@ _remoteLookupErrors:
   _responseInvalid:
     title: "Risposta non valida"
     description: "La comunicazione col server è andata a buon fine, ma abbiamo ricevuto dati non validi."
-  _responseInvalidIdHostNotMatch:
-    description: "L'indirizzo immesso non coincide con la URL finale. Interrogando i server per un contenuto remoto, assicurarsi di utilizzare la URL finale e non quella di un server intermedio."
   _noSuchObject:
     title: "Non trovato"
     description: "La risorsa richiesta non è stata trovata. Verificare nuovamente la URL."
@@ -2840,3 +2842,15 @@ _captcha:
     _unknown:
       title: "Errore CAPTCHA"
       text: "Si è verificato un errore imprevisto."
+_bootErrors:
+  title: "Caricamento non riuscito"
+  serverError: "Dopo una breve attesa, e dopo aver ricaricato la pagina, se il problema persiste, contatta l'amministrazione comunicando il seguente ID di errore."
+  solution: "Di seguito, alcune probabili soluzioni al problema."
+  solution1: "Aggiornare browser e il sistema operativo all'ultima versione"
+  solution2: "Disattivare gli adblocker"
+  solution3: "Cancellare la cache del browser"
+  solution4: "(Per chi utilizza il Browser Tor) Impostare dom.webaudio.enabled = vero"
+  otherOption: "Altre opzioni"
+  otherOption1: "Nelle impostazioni, cancellare le impostazioni del client e svuotare la cache"
+  otherOption2: "Avviare il client predefinito"
+  otherOption3: "Avviare lo strumento di riparazione"

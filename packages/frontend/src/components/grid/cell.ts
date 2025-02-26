@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ValidateViolation } from '@/components/grid/cell-validators.js';
-import { Size } from '@/components/grid/grid.js';
-import { GridColumn } from '@/components/grid/column.js';
-import { GridRow } from '@/components/grid/row.js';
-import { MenuItem } from '@/types/menu.js';
-import { GridContext } from '@/components/grid/grid-event.js';
+import type { ValidateViolation } from '@/components/grid/cell-validators.js';
+import type { Size } from '@/components/grid/grid.js';
+import type { GridColumn } from '@/components/grid/column.js';
+import type { GridRow } from '@/components/grid/row.js';
+import type { MenuItem } from '@/types/menu.js';
+import type { GridContext } from '@/components/grid/grid-event.js';
 
 export type CellValue = string | boolean | number | undefined | null | Array<unknown> | NonNullable<unknown>;
 
 export type CellAddress = {
 	row: number;
 	col: number;
-}
+};
 
 export const CELL_ADDRESS_NONE: CellAddress = {
 	row: -1,
@@ -32,13 +32,13 @@ export type GridCell = {
 	contentSize: Size;
 	setting: GridCellSetting;
 	violation: ValidateViolation;
-}
+};
 
 export type GridCellContextMenuFactory = (col: GridColumn, row: GridRow, value: CellValue, context: GridContext) => MenuItem[];
 
 export type GridCellSetting = {
 	contextMenuFactory?: GridCellContextMenuFactory;
-}
+};
 
 export function createCell(
 	column: GridColumn,

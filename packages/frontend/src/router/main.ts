@@ -4,9 +4,10 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import { IRouter, Resolved, RouteDef, RouterEvent, RouterFlag } from '@/nirax.js';
+import type { IRouter, Resolved, RouteDef, RouterEvent, RouterFlag } from '@/nirax.js';
 
 import type { App, ShallowRef } from 'vue';
+import { analytics } from '@/analytics.js';
 
 /**
  * {@link Router}による画面遷移を可能とするために{@link mainRouter}をセットアップする。
@@ -27,6 +28,14 @@ export function setupRouter(app: App, routerFactory: ((path: string) => IRouter)
 
 	mainRouter.addListener('replace', ctx => {
 		window.history.replaceState({ key: ctx.key }, '', ctx.path);
+	});
+
+	mainRouter.addListener('change', ctx => {
+		console.log('mainRouter: change', ctx.path);
+		analytics.page({
+			path: ctx.path,
+			title: ctx.path,
+		});
 	});
 
 	mainRouter.init();

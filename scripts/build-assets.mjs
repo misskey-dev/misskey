@@ -60,7 +60,8 @@ async function buildBackendScript() {
     './packages/backend/src/server/web/boot.js',
     './packages/backend/src/server/web/boot.embed.js',
     './packages/backend/src/server/web/bios.js',
-    './packages/backend/src/server/web/cli.js'
+    './packages/backend/src/server/web/cli.js',
+    './packages/backend/src/server/web/error.js',
   ]) {
     let source = await fs.readFile(file, { encoding: 'utf-8' });
     source = source.replaceAll('LANGS', JSON.stringify(Object.keys(locales)));

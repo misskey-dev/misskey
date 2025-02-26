@@ -220,5 +220,10 @@ allowedPrivateNetworks: [
   '127.0.0.1/32'
 ]
 
+# Disable automatic redirect for ActivityPub object lookup. (default: false)
+# This is a strong defense against potential impersonation attacks if the viewer instance has inadequate validation.
+# However it will make it impossible for other instances to lookup third-party user and notes through your URL.
+#disallowExternalApRedirect: true
+
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000

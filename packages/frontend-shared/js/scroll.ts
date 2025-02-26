@@ -134,7 +134,6 @@ export function scrollToBottom(
 
 export function isTopVisible(el: HTMLElement, tolerance = 1): boolean {
 	const scrollTop = getScrollPosition(el);
-	if (_DEV_) console.log(scrollTop, tolerance, scrollTop <= tolerance);
 	return scrollTop <= tolerance;
 }
 
