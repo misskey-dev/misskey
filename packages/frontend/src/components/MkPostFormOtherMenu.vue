@@ -52,8 +52,6 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'changeReactionAcceptance', value: Misskey.entities.Note['reactionAcceptance']): void;
-	(ev: 'reset'): void;
 	(ev: 'closed'): void;
 }>();
 
