@@ -22,6 +22,7 @@
 - Fix: カスタム絵文字管理画面(beta)にてisSensitive/localOnlyの絞り込みが上手くいかない問題の修正 ( #15445 )
 - Fix: ユーザのサジェスト中に@を入力してもサジェスト結果が消えないように `#14385`
 - Fix: CWの注釈が100文字を超えている場合、ノート投稿ボタンを非アクティブに
+- 翻訳の更新
 
 ### Server
 - Enhance: 成り済まし対策として、ActivityPub照会された時にリモートのリダイレクトを拒否できるように (config.disallowExternalApRedirect)
