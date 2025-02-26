@@ -28,7 +28,7 @@ jobs:
       wait_time: ${{ steps.get-wait-time.outputs.wait_time }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.2
 
       - name: Check allowed users
         id: check-allowed-users

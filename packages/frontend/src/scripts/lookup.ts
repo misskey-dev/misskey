@@ -54,10 +54,6 @@ export async function lookup(router?: Router) {
 					title = i18n.ts._remoteLookupErrors._responseInvalid.title;
 					text = i18n.ts._remoteLookupErrors._responseInvalid.description;
 					break;
-				case 'a2c9c61a-cb72-43ab-a964-3ca5fddb410a':
-					title = i18n.ts._remoteLookupErrors._responseInvalid.title;
-					text = i18n.ts._remoteLookupErrors._responseInvalidIdHostNotMatch.description;
-					break;
 				case 'dc94d745-1262-4e63-a17d-fecaa57efc82':
 					title = i18n.ts._remoteLookupErrors._noSuchObject.title;
 					text = i18n.ts._remoteLookupErrors._noSuchObject.description;
