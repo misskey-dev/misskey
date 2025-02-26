@@ -1309,6 +1309,8 @@ availableRoles: "利用可能なロール"
 acknowledgeNotesAndEnable: "注意事項を理解した上でオンにします。"
 federationSpecified: "このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。"
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
+confirmOnReact: "リアクションする際に確認する"
+reactAreYouSure: "\" {emoji} \" をリアクションしますか？"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -2909,9 +2911,7 @@ _remoteLookupErrors:
     description: "このサーバーとの通信に失敗しました。相手サーバーがダウンしている可能性があります。また、不正なURIや存在しないURIを入力していないか確認してください。"
   _responseInvalid:
     title: "レスポンスが不正です"
-    description: "このサーバーと通信することはできましたが、得られたデータが不正なものでした。"
-  _responseInvalidIdHostNotMatch:
-    description: "入力されたURIのドメインと最終的に得られたURIのドメインとが異なります。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。"
+    description: "このサーバーと通信することはできましたが、得られたデータが不正なものでした。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。"
   _noSuchObject:
     title: "見つかりません"
     description: "要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。"
