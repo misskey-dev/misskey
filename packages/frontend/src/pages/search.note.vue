@@ -69,6 +69,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
+import { doLookup } from '@/scripts/lookup.js';
 
 const props = withDefaults(defineProps<{
 	query?: string;
@@ -151,13 +152,7 @@ async function search() {
 			text: i18n.ts.lookupConfirm,
 		});
 		if (!confirm.canceled) {
-			const promise = misskeyApi('ap/show', {
-				uri: query,
-			});
-
-			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
-
-			const res = await promise;
+			const res = await doLookup(query);
 
 			if (res.type === 'User') {
 				router.push(`/@${res.object.username}@${res.object.host}`);
