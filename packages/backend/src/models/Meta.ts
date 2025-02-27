@@ -664,6 +664,12 @@ export class MiMeta {
 	})
 	public federationHosts: string[];
 
+	@Column('varchar', {
+		length: 64,
+		nullable: true,
+	})
+	public googleAnalyticsMeasurementId: string | null;
+
 	@Column('boolean', {
 		default: false,
 	})

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { nextTick, Ref, ref, defineAsyncComponent } from 'vue';
+import { nextTick, ref, defineAsyncComponent } from 'vue';
 import getCaretCoordinates from 'textarea-caret';
 import { toASCII } from 'punycode.js';
+import type { Ref } from 'vue';
 import type { CompleteInfo } from '@/components/MkAutocomplete.vue';
 import { popup } from '@/os.js';
 
@@ -98,7 +99,7 @@ export class Autocomplete {
 
 		const isMention = mentionIndex !== -1;
 		const isHashtag = hashtagIndex !== -1;
-		const isMfmParam = mfmParamIndex !== -1 && afterLastMfmParam?.includes('.') && !afterLastMfmParam?.includes(' ');
+		const isMfmParam = mfmParamIndex !== -1 && afterLastMfmParam?.includes('.') && !afterLastMfmParam.includes(' ');
 		const isMfmTag = mfmTagIndex !== -1 && !isMfmParam;
 		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
 		// :ok:などを🆗にするたいおぷ
@@ -107,8 +108,14 @@ export class Autocomplete {
 		let opened = false;
 
 		if (isMention && this.onlyType.includes('user')) {
-			const username = text.substring(mentionIndex + 1);
-			if (username !== '' && username.match(/^[a-zA-Z0-9_]+$/)) {
+			// ユーザのサジェスト中に@を入力すると、その位置から新たにユーザ名を取りなおそうとしてしまう
+			// この動きはリモートユーザのサジェストを阻害するので、@を検知したらその位置よりも前の@を探し、
+			// ホスト名を含むリモートのユーザ名を全て拾えるようにする
+			const mentionIndexAlt = text.lastIndexOf('@', mentionIndex - 1);
+			const username = mentionIndexAlt === -1
+				? text.substring(mentionIndex + 1)
+				: text.substring(mentionIndexAlt + 1);
+			if (username !== '' && username.match(/^[a-zA-Z0-9_@.]+$/)) {
 				this.open('user', username);
 				opened = true;
 			} else if (username === '') {
