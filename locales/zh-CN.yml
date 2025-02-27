@@ -2857,4 +2857,4 @@ _bootErrors:
 _search:
   searchScopeAll: "全部"
   searchScopeLocal: "本地"
-  searchScopeUser: "用户指定"
+  searchScopeUser: "指定用户"
