@@ -4,6 +4,8 @@ VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
 
+--- 2025.2.1-vrtl.1 released at this time ---
+
 --- 2025.2.0-vrtl.1 released at this time ---
 
 --- 2025.1.0-vrtl.2 released at this time ---
