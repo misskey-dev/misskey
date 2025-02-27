@@ -2854,3 +2854,7 @@ _bootErrors:
   otherOption1: "Nelle impostazioni, cancellare le impostazioni del client e svuotare la cache"
   otherOption2: "Avviare il client predefinito"
   otherOption3: "Avviare lo strumento di riparazione"
+_search:
+  searchScopeAll: "Tutte"
+  searchScopeLocal: "Locale"
+  searchScopeUser: "Profilo specifico"
