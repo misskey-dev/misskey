@@ -24,6 +24,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/main.js';
 import { createMainRouter } from '@/router/definition.js';
+import { applyFont } from '@/scripts/font.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -169,6 +170,16 @@ export async function common(createVue: () => App<Element>) {
 			applyTheme(theme);
 		}
 	});
+
+	// フォントの初期適用
+	if (defaultStore.state.customFont) {
+		applyFont(defaultStore.state.customFont);
+	}
+
+	// フォント設定変更の監視
+	watch(defaultStore.reactiveState.customFont, (font) => {
+		applyFont(font);
+	}, { immediate: false });
 
 	//#region Sync dark mode
 	if (ColdDeviceStorage.get('syncDeviceDarkMode')) {

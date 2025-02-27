@@ -347,7 +347,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	customFont: {
 		where: 'device',
-		default: null as null | string,
+		default: 'yusei-magic', // null から変更
 	},
 	instanceTicker: {
 		where: 'device',

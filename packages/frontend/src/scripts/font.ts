@@ -2,6 +2,11 @@ import { watch } from 'vue';
 import { defaultStore } from '@/store.js';
 
 export const fontList = {
+	'browser-default': {
+		name: 'ブラウザ標準',
+		fontFamily: 'system-ui',
+		importUrl: null,
+	},
 	'noto-sans': {
 		name: 'Noto Sans',
 		fontFamily: 'Noto Sans JP',
@@ -82,6 +87,17 @@ export function applyFont(fontname: null | string) {
 	const font = fontList[fontname];
 	if (!font) return;
 
+	// ブラウザ標準フォントの場合
+	if (fontname === 'browser-default') {
+		style.innerHTML = `
+			body {
+				font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			}
+		`;
+		return;
+	}
+
+	// Webフォントの場合（既存コード）
 	style.innerHTML = `
 		@import url('${font.importUrl}');
 		body {
