@@ -24,9 +24,9 @@
 	"devDependencies": {
 		"@types/matter-js": "0.19.8",
 		"@types/seedrandom": "3.0.8",
-		"@types/node": "22.13.4",
-		"@typescript-eslint/eslint-plugin": "8.24.0",
-		"@typescript-eslint/parser": "8.24.0",
+		"@types/node": "22.13.5",
+		"@typescript-eslint/eslint-plugin": "8.24.1",
+		"@typescript-eslint/parser": "8.24.1",
 		"nodemon": "3.1.9",
 		"execa": "9.5.2",
 		"typescript": "5.7.3",
