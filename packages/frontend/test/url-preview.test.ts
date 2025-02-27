@@ -24,7 +24,10 @@ describe('MkUrlPreview', () => {
 			};
 		}
 
-		fetchMock.mockOnceIf(/^\/url?/, () => {
+		fetchMock.mockOnceIf((req) => {
+			const url = new URL(req.url);
+			return url.pathname === '/url';
+		}, () => {
 			return {
 				status: 200,
 				body: JSON.stringify(summary),
@@ -98,7 +101,7 @@ describe('MkUrlPreview', () => {
 		assert.strictEqual(iframe?.src, 'https://example.local/player?autoplay=1&auto_play=1');
 		assert.strictEqual(
 			iframe?.sandbox.toString(),
-			'allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin',
+			'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-storage-access-by-user-activation allow-same-origin',
 		);
 	});
 

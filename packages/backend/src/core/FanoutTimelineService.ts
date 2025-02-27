@@ -9,7 +9,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 
-export type FanoutTimelineName =
+export type FanoutTimelineName = (
 	// home timeline
 	| `homeTimeline:${string}`
 	| `homeTimelineWithFiles:${string}` // only notes with files are included
@@ -43,6 +43,7 @@ export type FanoutTimelineName =
 	| 'vmimiRelayTimelineWithFiles' // only non-reply notes with files are included
 	| 'vmimiRelayTimelineWithReplies' // only replies are included
 	| `vmimiRelayTimelineWithReplyTo:${string}` // Only replies to specific local user are included. Parameter is reply user id.
+);
 
 @Injectable()
 export class FanoutTimelineService {
