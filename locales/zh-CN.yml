@@ -2857,4 +2857,8 @@ _bootErrors:
 _search:
   searchScopeAll: "全部"
   searchScopeLocal: "本地"
+  searchScopeServer: "指定服务器"
   searchScopeUser: "指定用户"
+  pleaseEnterServerHost: "请填写服务器主机名"
+  pleaseSelectUser: "请选择用户"
+  serverHostPlaceholder: "如：misskey.example.com"
