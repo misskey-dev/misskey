@@ -2854,3 +2854,7 @@ _bootErrors:
   otherOption1: "Esborrar la configuració i la memòria cau del client"
   otherOption2: "Iniciar client senzill"
   otherOption3: "Iniciar l'eina de reparació "
+_search:
+  searchScopeAll: "tot"
+  searchScopeLocal: "Local"
+  searchScopeUser: "Especificar usuari"
