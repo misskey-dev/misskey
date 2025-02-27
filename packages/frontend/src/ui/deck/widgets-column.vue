@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <XColumn :menu="menu" :naked="true" :column="column" :isStacked="isStacked">
-	<template #header><i class="ti ti-apps" style="margin-right: 8px;"></i>{{ column.name }}</template>
+	<template #header><i class="ti ti-apps" style="margin-right: 8px;"></i>{{ column.name || i18n.ts._deck._columns[props.column.type] }}</template>
 
 	<div :class="$style.root">
 		<div v-if="!(column.widgets && column.widgets.length > 0) && !edit" :class="$style.intro">{{ i18n.ts._deck.widgetsIntroduction }}</div>
@@ -17,7 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import XColumn from './column.vue';
-import { addColumnWidget, Column, removeColumnWidget, setColumnWidgets, updateColumnWidget } from './deck-store.js';
+import { addColumnWidget, removeColumnWidget, setColumnWidgets, updateColumnWidget } from './deck-store.js';
+import type { Column } from './deck-store.js';
 import XWidgets from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n.js';
 
