@@ -2854,3 +2854,7 @@ _bootErrors:
   otherOption1: "クライアント設定とキャッシュをほかす"
   otherOption2: "簡易クライアントを起動"
   otherOption3: "修復ツールを起動"
+_search:
+  searchScopeAll: "みんな"
+  searchScopeLocal: "ローカル"
+  searchScopeUser: "ユーザー指定"

@@ -2854,3 +2854,7 @@ _bootErrors:
   otherOption1: "Delete client settings and cache"
   otherOption2: "Start the simple client"
   otherOption3: "Launch the repair tool"
+_search:
+  searchScopeAll: "All"
+  searchScopeLocal: "Local"
+  searchScopeUser: "Specific user"

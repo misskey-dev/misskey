@@ -2589,3 +2589,7 @@ _followRequest:
 _remoteLookupErrors:
   _noSuchObject:
     title: "No se encuentra"
+_search:
+  searchScopeAll: "Todo"
+  searchScopeLocal: "Local"
+  searchScopeUser: "Especificar usuario"
