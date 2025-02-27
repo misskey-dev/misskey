@@ -2854,3 +2854,7 @@ _bootErrors:
   otherOption1: "刪除用戶端設定和快取"
   otherOption2: "啟動簡易用戶端"
   otherOption3: "啟動修復工具"
+_search:
+  searchScopeAll: "全部"
+  searchScopeLocal: "本地"
+  searchScopeUser: "指定使用者"
