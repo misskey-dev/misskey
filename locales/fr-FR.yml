@@ -2364,3 +2364,7 @@ _embedCodeGen:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Non trouvé"
+_search:
+  searchScopeAll: "Tous"
+  searchScopeLocal: "Local"
+  searchScopeUser: "Spécifier l'utilisateur·rice"

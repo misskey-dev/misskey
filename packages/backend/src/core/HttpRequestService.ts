@@ -115,32 +115,32 @@ export class HttpRequestService {
 	/**
 	 * Get http non-proxy agent (without local address filtering)
 	 */
-	private httpNative: http.Agent;
+	private readonly httpNative: http.Agent;
 
 	/**
 	 * Get https non-proxy agent (without local address filtering)
 	 */
-	private httpsNative: https.Agent;
+	private readonly httpsNative: https.Agent;
 
 	/**
 	 * Get http non-proxy agent
 	 */
-	private http: http.Agent;
+	private readonly http: http.Agent;
 
 	/**
 	 * Get https non-proxy agent
 	 */
-	private https: https.Agent;
+	private readonly https: https.Agent;
 
 	/**
 	 * Get http proxy or non-proxy agent
 	 */
-	public httpAgent: http.Agent;
+	public readonly httpAgent: http.Agent;
 
 	/**
 	 * Get https proxy or non-proxy agent
 	 */
-	public httpsAgent: https.Agent;
+	public readonly httpsAgent: https.Agent;
 
 	constructor(
 		@Inject(DI.config)
@@ -197,7 +197,8 @@ export class HttpRequestService {
 	/**
 	 * Get agent by URL
 	 * @param url URL
-	 * @param bypassProxy Allways bypass proxy
+	 * @param bypassProxy Always bypass proxy
+	 * @param isLocalAddressAllowed
 	 */
 	@bindThis
 	public getAgentByUrl(url: URL, bypassProxy = false, isLocalAddressAllowed = false): http.Agent | https.Agent {
@@ -211,6 +212,38 @@ export class HttpRequestService {
 				return url.protocol === 'http:' ? this.httpNative : this.httpsNative;
 			}
 			return url.protocol === 'http:' ? this.httpAgent : this.httpsAgent;
+		}
+	}
+
+	/**
+	 * Get agent for http by URL
+	 * @param url URL
+	 * @param isLocalAddressAllowed
+	 */
+	@bindThis
+	public getAgentForHttp(url: URL, isLocalAddressAllowed = false): http.Agent {
+		if ((this.config.proxyBypassHosts ?? []).includes(url.hostname)) {
+			return isLocalAddressAllowed
+				? this.httpNative
+				: this.http;
+		} else {
+			return this.httpAgent;
+		}
+	}
+
+	/**
+	 * Get agent for https by URL
+	 * @param url URL
+	 * @param isLocalAddressAllowed
+	 */
+	@bindThis
+	public getAgentForHttps(url: URL, isLocalAddressAllowed = false): https.Agent {
+		if ((this.config.proxyBypassHosts ?? []).includes(url.hostname)) {
+			return isLocalAddressAllowed
+				? this.httpsNative
+				: this.https;
+		} else {
+			return this.httpsAgent;
 		}
 	}
 
