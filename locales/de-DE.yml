@@ -2614,3 +2614,7 @@ _remoteLookupErrors:
   _noSuchObject:
     title: "Nicht gefunden"
     description: "Die angeforderte Ressource konnte nicht gefunden werden, bitte überprüfe die URI erneut."
+_search:
+  searchScopeAll: "Alle"
+  searchScopeLocal: "Lokal"
+  searchScopeUser: "Spezifischer Benutzer"
