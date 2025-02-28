@@ -211,6 +211,31 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		sentryForFrontend: {
+			type: 'object',
+			optional: false, nullable: true,
+			properties: {
+				options: {
+					type: 'object',
+					optional: false, nullable: false,
+					properties: {
+						dsn: {
+							type: 'string',
+							optional: false, nullable: false,
+						},
+					},
+					additionalProperties: true,
+				},
+				enableBrowserTracing: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				enableReplay: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+			},
+		},
 		mediaProxy: {
 			type: 'string',
 			optional: false, nullable: false,
