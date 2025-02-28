@@ -96,7 +96,7 @@ import { computed, onMounted, ref, shallowRef, toRefs } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import {
+import type {
 	MkSystemWebhookEditorProps,
 	MkSystemWebhookResult,
 	SystemWebhookEventType,
@@ -114,7 +114,7 @@ type EventType = {
 	userCreated: boolean;
 	inactiveModeratorsWarning: boolean;
 	inactiveModeratorsInvitationOnlyChanged: boolean;
-}
+};
 
 const emit = defineEmits<{
 	(ev: 'submitted', result: MkSystemWebhookResult): void;

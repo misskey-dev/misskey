@@ -1,0 +1,41 @@
+# @link https://tech-blog.rakus.co.jp/entry/20240208/issue_forms
+name: 不具合報告
+description: 不具合報告はこちら。
+labels: ["bug"]
+body:
+  - type: textarea
+    attributes:
+      label: 概要
+      description: 不具合の概要を記載してください。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 現象
+      description: |
+        不具合の詳細を記載してください。
+        見た目に関係する場合は、スクリーンショット等を貼り付けてください。
+  - type: textarea
+    attributes:
+      label: 期待される動作
+      description: 「現象」が、本来どの様なふるまいであるべきかを記載してください。
+  - type: textarea
+    attributes:
+      label: 再現環境
+  - type: input
+    attributes:
+      label: 発生時刻
+      description: |
+        不具合が発生した日付と時刻を、可能な限り記載してください。
+        ログとの照合を行うため、可能な限り、分単位で正しい時刻を記載してください。
+  - type: textarea
+    attributes:
+      label: 再現手順
+      description: 不具合を再現させる手順を記載してください。
+      value: |
+        1.
+        2.
+        3.
+  - type: textarea
+    attributes:
+      label: 補足
