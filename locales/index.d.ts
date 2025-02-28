@@ -10896,13 +10896,7 @@ export interface Locale extends ILocale {
              */
             "title": string;
             /**
-             * このサーバーと通信することはできましたが、得られたデータが不正なものでした。
-             */
-            "description": string;
-        };
-        "_responseInvalidIdHostNotMatch": {
-            /**
-             * 入力されたURIのドメインと最終的に得られたURIのドメインとが異なります。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。
+             * このサーバーと通信することはできましたが、得られたデータが不正なものでした。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。
              */
             "description": string;
         };
@@ -11005,6 +10999,36 @@ export interface Locale extends ILocale {
          * 修復ツールを起動
          */
         "otherOption3": string;
+    };
+    "_search": {
+        /**
+         * 全て
+         */
+        "searchScopeAll": string;
+        /**
+         * ローカル
+         */
+        "searchScopeLocal": string;
+        /**
+         * サーバー指定
+         */
+        "searchScopeServer": string;
+        /**
+         * ユーザー指定
+         */
+        "searchScopeUser": string;
+        /**
+         * サーバーのホストを入力してください
+         */
+        "pleaseEnterServerHost": string;
+        /**
+         * ユーザーを選択してください
+         */
+        "pleaseSelectUser": string;
+        /**
+         * 例: misskey.example.com
+         */
+        "serverHostPlaceholder": string;
     };
 }
 declare const locales: {
