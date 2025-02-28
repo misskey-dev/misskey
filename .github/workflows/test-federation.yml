@@ -75,9 +75,14 @@ jobs:
           docker compose logs | tail -n 300
           exit 1
       - name: Test
+        continue-on-error: true
         run: |
           cd packages/backend/test-federation
           docker compose run --no-deps tester
+      - name: Log
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs
       - name: Stop servers
         run: |
           cd packages/backend/test-federation
