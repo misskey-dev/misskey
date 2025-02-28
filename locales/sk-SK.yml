@@ -1449,3 +1449,6 @@ _reversi:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Nenájdené"
+_search:
+  searchScopeAll: "Všetko"
+  searchScopeLocal: "Lokálne"

@@ -26,12 +26,12 @@ jobs:
       NODE_OPTIONS: "--max_old_space_size=7168"
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.2.2
       if: github.event_name != 'pull_request_target'
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.2.2
       if: github.event_name == 'pull_request_target'
       with:
         fetch-depth: 0
@@ -46,7 +46,7 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v4
     - name: Use Node.js 20.x
-      uses: actions/setup-node@v4.1.0
+      uses: actions/setup-node@v4.2.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
