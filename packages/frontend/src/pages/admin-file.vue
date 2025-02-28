@@ -38,9 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 
 			<div>
-				<MkButton danger @click="toggleSensitive">
-					<i class="ti ti-eye-exclamation"></i> {{ isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive }}
-				</MkButton>
+				<MkSwitch :modelValue="isSensitive" @update:modelValue="toggleSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
 			</div>
 
 			<div>
@@ -125,10 +123,11 @@ async function toggleSensitive() {
 
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: file.value.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+		text: isSensitive.value ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
 	});
 
 	if (canceled) return;
+	isSensitive.value = !isSensitive.value;
 
 	os.apiWithDialog('drive/files/update', {
 		fileId: file.value.id,
