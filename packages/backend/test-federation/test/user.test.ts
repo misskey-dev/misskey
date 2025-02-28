@@ -380,7 +380,8 @@ describe('User', () => {
 				strictEqual(followers.length, 1); // followed by Bob
 
 				await alice.client.request('i/delete-account', { password: alice.password });
-				await sleep();
+				// NOTE: user deletion query is slow
+				await sleep(2000);
 
 				const following = await bob.client.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 0); // no following relation
@@ -478,7 +479,8 @@ describe('User', () => {
 				strictEqual(followers.length, 1); // followed by Bob
 
 				await aAdmin.client.request('admin/suspend-user', { userId: alice.id });
-				await sleep();
+				// NOTE: user deletion query is slow
+				await sleep(2000);
 
 				const following = await bob.client.request('users/following', { userId: bob.id });
 				strictEqual(following.length, 0); // no following relation
