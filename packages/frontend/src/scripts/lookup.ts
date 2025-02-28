@@ -29,7 +29,7 @@ export async function lookup(router?: Router) {
 	}
 
 	if (query.startsWith('https://')) {
-		const res = await doLookup(query);
+		const res = await apLookup(query);
 
 		if (res.type === 'User') {
 			_router.push(`/@${res.object.username}@${res.object.host}`);
@@ -41,7 +41,7 @@ export async function lookup(router?: Router) {
 	}
 }
 
-export async function doLookup(query: string) {
+export async function apLookup(query: string) {
 	const promise = misskeyApi('ap/show', {
 		uri: query,
 	});
