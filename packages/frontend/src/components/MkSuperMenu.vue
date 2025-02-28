@@ -5,26 +5,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="rrevdjwu" :class="{ grid }">
-	<div v-for="group in def" class="group">
-		<div v-if="group.title" class="title">{{ group.title }}</div>
+	<MkInput v-model="search" :placeholder="i18n.ts.search" type="search" style="margin-bottom: 16px;" @keydown.enter="searchSubmit">
+		<template #prefix><i class="ti ti-search"></i></template>
+	</MkInput>
 
-		<div class="items">
-			<template v-for="(item, i) in group.items">
-				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" class="_button item" :class="{ danger: item.danger, active: item.active }">
-					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
-					<span class="text">{{ item.text }}</span>
-				</a>
-				<button v-else-if="item.type === 'button'" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
-					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
-					<span class="text">{{ item.text }}</span>
-				</button>
-				<MkA v-else :to="item.to" class="_button item" :class="{ danger: item.danger, active: item.active }">
-					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
-					<span class="text">{{ item.text }}</span>
-				</MkA>
-			</template>
+	<template v-if="search == ''">
+		<div v-for="group in def" class="group">
+			<div v-if="group.title" class="title">{{ group.title }}</div>
+
+			<div class="items">
+				<template v-for="(item, i) in group.items">
+					<a v-if="item.type === 'a'" :href="item.href" :target="item.target" class="_button item" :class="{ danger: item.danger, active: item.active }">
+						<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
+						<span class="text">{{ item.text }}</span>
+					</a>
+					<button v-else-if="item.type === 'button'" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
+						<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
+						<span class="text">{{ item.text }}</span>
+					</button>
+					<MkA v-else :to="item.to" class="_button item" :class="{ danger: item.danger, active: item.active }">
+						<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
+						<span class="text">{{ item.text }}</span>
+					</MkA>
+				</template>
+			</div>
 		</div>
-	</div>
+	</template>
+	<template v-else>
+		<div v-for="item in searchResult">
+			<MkA :to="item.path + '#' + item.id" class="_button searchResultItem">
+				<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
+				<span class="text">{{ item.locationLabel.join(' > ') }}</span>
+			</MkA>
+		</div>
+	</template>
 </div>
 </template>
 
@@ -58,10 +72,33 @@ export type SuperMenuDef = {
 </script>
 
 <script lang="ts" setup>
-defineProps<{
+import { ref, watch } from 'vue';
+import MkInput from '@/components/MkInput.vue';
+import { i18n } from '@/i18n.js';
+
+const props = defineProps<{
 	def: SuperMenuDef[];
 	grid?: boolean;
+	searchIndex: { id: string; path: string; locationLabel: string[]; keywords: string[]; icon?: string; }[];
 }>();
+
+const search = ref('');
+const searchResult = ref<any[]>([]);
+
+watch(search, (value) => {
+	if (value === '') {
+		searchResult.value = [];
+		return;
+	}
+
+	searchResult.value = props.searchIndex.filter((item) => {
+		// TODO: 日本語でひらがなカタカナの区別をしない
+		return item.locationLabel.some((x) => x.toLowerCase().includes(value.toLowerCase())) || item.keywords.some((x) => x.toLowerCase().includes(value.toLowerCase()));
+	});
+});
+
+function searchSubmit() {
+}
 </script>
 
 <style lang="scss" scoped>
@@ -182,6 +219,48 @@ defineProps<{
 					}
 				}
 			}
+		}
+	}
+
+	.searchResultItem {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		box-sizing: border-box;
+		padding: 9px 16px 9px 8px;
+		border-radius: 9px;
+		font-size: 0.9em;
+
+		&:hover {
+			text-decoration: none;
+			background: var(--MI_THEME-panelHighlight);
+		}
+
+		&:focus-visible {
+			outline-offset: -2px;
+		}
+
+		&.active {
+			color: var(--MI_THEME-accent);
+			background: var(--MI_THEME-accentedBg);
+		}
+
+		&.danger {
+			color: var(--MI_THEME-error);
+		}
+
+		> .icon {
+			width: 32px;
+			margin-right: 2px;
+			flex-shrink: 0;
+			text-align: center;
+			opacity: 0.8;
+		}
+
+		> .text {
+			white-space: normal;
+			padding-right: 12px;
+			flex-shrink: 1;
 		}
 	}
 }
