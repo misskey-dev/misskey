@@ -7,7 +7,8 @@
 -
 
 ### Server
--
+- Fix: FreeBSDで起動できない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/887)
 
 
 ## 2025.2.1
@@ -50,8 +51,6 @@
 - Fix: `update-meta`でobjectStoragePrefixにS3_SAFEかつURL-safeでない文字列を使えないように
 - Fix: クリップの説明欄を更新する際に空にできない問題を修正
 - Fix: フォロワーではないユーザーにリノートもしくは返信された場合にノートのDeleteアクティビティが送られていない問題を修正
-- Fix: FreeBSDで起動できない問題を修正  
-  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/887)
 
 ## 2025.2.0
 
