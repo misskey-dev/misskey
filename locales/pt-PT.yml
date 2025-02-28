@@ -2757,3 +2757,7 @@ _remoteLookupErrors:
   _noSuchObject:
     title: "Não encontrado"
     description: "O recurso solicitado não foi encontrado, confira o endereço."
+_search:
+  searchScopeAll: "Todos"
+  searchScopeLocal: "Local"
+  searchScopeUser: "Usuário específico"

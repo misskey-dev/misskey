@@ -2841,3 +2841,7 @@ _captcha:
 _bootErrors:
   title: "로딩이 실패함"
   solution4: "(Tor Browser) dom.webaudio.enabled를 true로 설정하세요"
+_search:
+  searchScopeAll: "전체"
+  searchScopeLocal: "로컬"
+  searchScopeUser: "사용자 지정"
