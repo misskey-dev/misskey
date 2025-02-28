@@ -78,6 +78,9 @@ type Source = {
 	maxFileSize?: number;
 
 	clusterLimit?: number;
+	cluster?: {
+		workers: ClusterWorker[]
+	};
 
 	id: string;
 
@@ -153,6 +156,9 @@ export type Config = {
 	disallowExternalApRedirect: boolean;
 	maxFileSize: number;
 	clusterLimit: number | undefined;
+	cluster?: {
+		workers: ClusterWorker[]
+	};
 	id: string;
 	outgoingAddress: string | undefined;
 	outgoingAddressFamily: 'ipv4' | 'ipv6' | 'dual' | undefined;
@@ -206,6 +212,13 @@ export type Config = {
 };
 
 export type FulltextSearchProvider = 'sqlLike' | 'sqlPgroonga' | 'meilisearch';
+
+export type ClusterWorkerType = 'http' | 'jobQueue';
+export type ClusterWorker = {
+	name?: string;
+	instances: number;
+	type: ClusterWorkerType[];
+}
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -292,6 +305,7 @@ export function loadConfig(): Config {
 		disallowExternalApRedirect: config.disallowExternalApRedirect ?? false,
 		maxFileSize: config.maxFileSize ?? 262144000,
 		clusterLimit: config.clusterLimit,
+		cluster: config.cluster,
 		outgoingAddress: config.outgoingAddress,
 		outgoingAddressFamily: config.outgoingAddressFamily,
 		deliverJobConcurrency: config.deliverJobConcurrency,
