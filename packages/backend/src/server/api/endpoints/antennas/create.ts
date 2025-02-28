@@ -3,14 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { IdService } from '@/core/IdService.js';
-import type { UserListsRepository, AntennasRepository } from '@/models/_.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { Injectable } from '@nestjs/common';
+import { AntennaService } from '@/core/AntennaService.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
-import { DI } from '@/di-symbols.js';
-import { RoleService } from '@/core/RoleService.js';
+import { antennaSources } from '@/models/Antenna.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -40,6 +37,13 @@ export const meta = {
 			code: 'EMPTY_KEYWORD',
 			id: '53ee222e-1ddd-4f9a-92e5-9fb82ddb463a',
 		},
+
+		invalidRegexPattern: {
+			message: 'Invalid regex pattern.',
+			code: 'INVALID_REGEX_PATTERN',
+			id: 'b06d08f4-6434-5faa-0fdd-a2aaf85e9de7',
+			httpStatusCode: 400,
+		},
 	},
 
 	res: {
@@ -53,91 +57,65 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
-		src: { type: 'string', enum: ['home', 'all', 'users', 'list', 'users_blacklist'] },
-		userListId: { type: 'string', format: 'misskey:id', nullable: true },
-		keywords: { type: 'array', items: {
-			type: 'array', items: {
-				type: 'string',
+		src: { type: 'string', enum: antennaSources },
+		keywords: {
+			type: 'array',
+			items: {
+				type: 'array',
+				items: { type: 'string' },
 			},
-		} },
-		excludeKeywords: { type: 'array', items: {
-			type: 'array', items: {
-				type: 'string',
+		},
+		excludeKeywords: {
+			type: 'array',
+			items: {
+				type: 'array',
+				items: { type: 'string' },
 			},
-		} },
-		users: { type: 'array', items: {
-			type: 'string',
-		} },
+		},
+		users: {
+			type: 'array',
+			items: { type: 'string' },
+		},
 		caseSensitive: { type: 'boolean' },
 		localOnly: { type: 'boolean' },
 		excludeBots: { type: 'boolean' },
+		useRegex: { type: 'boolean' },
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
 	},
-	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile'],
+	required: [
+		'name',
+		'src',
+		'keywords',
+		'excludeKeywords',
+		'users',
+		'caseSensitive',
+		'withReplies',
+		'withFile',
+	],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.antennasRepository)
-		private antennasRepository: AntennasRepository,
-
-		@Inject(DI.userListsRepository)
-		private userListsRepository: UserListsRepository,
-
-		private antennaEntityService: AntennaEntityService,
-		private roleService: RoleService,
-		private idService: IdService,
-		private globalEventService: GlobalEventService,
+		private readonly antennaEntityService: AntennaEntityService,
+		private readonly antennaService: AntennaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (ps.keywords.flat().every(x => x === '') && ps.excludeKeywords.flat().every(x => x === '')) {
-				throw new ApiError(meta.errors.emptyKeyword);
-			}
-
-			const currentAntennasCount = await this.antennasRepository.countBy({
-				userId: me.id,
-			});
-			if (currentAntennasCount >= (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
-				throw new ApiError(meta.errors.tooManyAntennas);
-			}
-
-			let userList;
-
-			if (ps.src === 'list' && ps.userListId) {
-				userList = await this.userListsRepository.findOneBy({
-					id: ps.userListId,
-					userId: me.id,
-				});
-
-				if (userList == null) {
-					throw new ApiError(meta.errors.noSuchUserList);
+			try {
+				const antenna = await this.antennaService.create(ps, me);
+				return this.antennaEntityService.pack(antenna);
+			} catch (e) {
+				if (e instanceof AntennaService.EmptyKeyWordError) {
+					throw new ApiError(meta.errors.emptyKeyword);
+				} else if (e instanceof AntennaService.TooManyAntennasError) {
+					throw new ApiError(meta.errors.tooManyAntennas);
+				} else if (e instanceof AntennaService.InvalidRegexPatternError) {
+					throw new ApiError(meta.errors.invalidRegexPattern);
+				} else {
+					throw e;
 				}
 			}
-
-			const now = new Date();
-
-			const antenna = await this.antennasRepository.insertOne({
-				id: this.idService.gen(now.getTime()),
-				lastUsedAt: now,
-				userId: me.id,
-				name: ps.name,
-				src: ps.src,
-				userListId: userList ? userList.id : null,
-				keywords: ps.keywords,
-				excludeKeywords: ps.excludeKeywords,
-				users: ps.users,
-				caseSensitive: ps.caseSensitive,
-				localOnly: ps.localOnly,
-				excludeBots: ps.excludeBots,
-				withReplies: ps.withReplies,
-				withFile: ps.withFile,
-			});
-
-			this.globalEventService.publishInternalEvent('antennaCreated', antenna);
-
-			return await this.antennaEntityService.pack(antenna);
 		});
 	}
 }

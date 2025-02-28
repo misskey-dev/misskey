@@ -39,6 +39,7 @@ export class AntennaEntityService {
 			caseSensitive: antenna.caseSensitive,
 			localOnly: antenna.localOnly,
 			excludeBots: antenna.excludeBots,
+			useRegex: antenna.useRegex,
 			withReplies: antenna.withReplies,
 			withFile: antenna.withFile,
 			isActive: antenna.isActive,

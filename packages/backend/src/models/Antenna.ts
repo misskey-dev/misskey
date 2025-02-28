@@ -9,6 +9,15 @@ import { MiUser } from './User.js';
 import { MiUserList } from './UserList.js';
 import { id } from './util/id.js';
 
+export const antennaSources = [
+	'all',
+	'users',
+	'users_blacklist',
+	// 'home', // TODO
+	// 'list', // NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
+] as const;
+export type AntennaSource = typeof antennaSources[number];
+
 @Entity('antenna')
 export class MiAntenna {
 	@PrimaryColumn(id())
@@ -37,8 +46,8 @@ export class MiAntenna {
 	})
 	public name: string;
 
-	@Column('enum', { enum: ['home', 'all', 'users', 'list', 'users_blacklist'] })
-	public src: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
+	@Column('enum', { enum: antennaSources })
+	public src: AntennaSource;
 
 	@Column({
 		...id(),
