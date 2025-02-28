@@ -75,14 +75,17 @@ jobs:
           docker compose logs | tail -n 300
           exit 1
       - name: Test
+        id: test
         continue-on-error: true
         run: |
           cd packages/backend/test-federation
           docker compose run --no-deps tester
       - name: Log
+        if: ${{ steps.test.outcome == 'failure' }}
         run: |
           cd packages/backend/test-federation
           docker compose logs
+          exit 1
       - name: Stop servers
         run: |
           cd packages/backend/test-federation
