@@ -2854,3 +2854,7 @@ _bootErrors:
   otherOption1: "清除客户端设定与缓存"
   otherOption2: "使用简易客户端"
   otherOption3: "启动修复工具"
+_search:
+  searchScopeAll: "全部"
+  searchScopeLocal: "本地"
+  searchScopeUser: "用户指定"

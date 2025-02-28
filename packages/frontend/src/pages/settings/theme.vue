@@ -32,27 +32,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div class="selects">
-		<MkSelect v-model="lightThemeId" large class="select">
+		<MkSelect v-model="lightThemeId" large class="select" :items="lightThemeSelectorItems">
 			<template #label>{{ i18n.ts.themeForLightMode }}</template>
 			<template #prefix><i class="ti ti-sun"></i></template>
-			<option v-if="instanceLightTheme" :key="'instance:' + instanceLightTheme.id" :value="instanceLightTheme.id">{{ instanceLightTheme.name }}</option>
-			<optgroup v-if="installedLightThemes.length > 0" :label="i18n.ts._theme.installedThemes">
-				<option v-for="x in installedLightThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="i18n.ts._theme.builtinThemes">
-				<option v-for="x in builtinLightThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
 		</MkSelect>
-		<MkSelect v-model="darkThemeId" large class="select">
+		<MkSelect v-model="darkThemeId" large class="select" :items="darkThemeSelectorItems">
 			<template #label>{{ i18n.ts.themeForDarkMode }}</template>
 			<template #prefix><i class="ti ti-moon"></i></template>
-			<option v-if="instanceDarkTheme" :key="'instance:' + instanceDarkTheme.id" :value="instanceDarkTheme.id">{{ instanceDarkTheme.name }}</option>
-			<optgroup v-if="installedDarkThemes.length > 0" :label="i18n.ts._theme.installedThemes">
-				<option v-for="x in installedDarkThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="i18n.ts._theme.builtinThemes">
-				<option v-for="x in builtinDarkThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
 		</MkSelect>
 	</div>
 
@@ -73,6 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onActivated, ref, watch } from 'vue';
 import JSON5 from 'json5';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
@@ -101,6 +88,70 @@ const instanceLightTheme = computed(() => instance.defaultLightTheme ? JSON5.par
 const installedLightThemes = computed(() => installedThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const builtinLightThemes = computed(() => builtinThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const themes = computed(() => uniqueBy([instanceDarkTheme.value, instanceLightTheme.value, ...builtinThemes.value, ...installedThemes.value].filter(x => x != null), theme => theme.id));
+
+const lightThemeSelectorItems = computed(() => {
+	const items = [] as MkSelectItem[];
+	if (instanceLightTheme.value) {
+		items.push({
+			type: 'option',
+			value: instanceLightTheme.value.id,
+			label: instanceLightTheme.value.name,
+		});
+	}
+	if (installedLightThemes.value.length > 0) {
+		items.push({
+			type: 'group',
+			label: i18n.ts._theme.installedThemes,
+			items: installedLightThemes.value.map(x => ({
+				type: 'option',
+				value: x.id,
+				label: x.name,
+			})),
+		});
+	}
+	items.push({
+		type: 'group',
+		label: i18n.ts._theme.builtinThemes,
+		items: builtinLightThemes.value.map(x => ({
+			type: 'option',
+			value: x.id,
+			label: x.name,
+		})),
+	});
+	return items;
+});
+
+const darkThemeSelectorItems = computed(() => {
+	const items = [] as MkSelectItem[];
+	if (instanceDarkTheme.value) {
+		items.push({
+			type: 'option',
+			value: instanceDarkTheme.value.id,
+			label: instanceDarkTheme.value.name,
+		});
+	}
+	if (installedDarkThemes.value.length > 0) {
+		items.push({
+			type: 'group',
+			label: i18n.ts._theme.installedThemes,
+			items: installedDarkThemes.value.map(x => ({
+				type: 'option',
+				value: x.id,
+				label: x.name,
+			})),
+		});
+	}
+	items.push({
+		type: 'group',
+		label: i18n.ts._theme.builtinThemes,
+		items: builtinDarkThemes.value.map(x => ({
+			type: 'option',
+			value: x.id,
+			label: x.name,
+		})),
+	});
+	return items;
+});
 
 const darkTheme = ColdDeviceStorage.ref('darkTheme');
 const darkThemeId = computed({
