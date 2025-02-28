@@ -261,7 +261,7 @@ async function search() {
 			text: i18n.ts.lookupConfirm,
 		});
 		if (!confirm.canceled) {
-			const res = await doLookup(query);
+			const res = await doLookup(searchParams.value.query);
 
 			if (res.type === 'User') {
 				router.push(`/@${res.object.username}@${res.object.host}`);
