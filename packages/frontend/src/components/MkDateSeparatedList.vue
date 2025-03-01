@@ -105,9 +105,7 @@ export default defineComponent({
 					return [h('div', {
 						key: item.id + ':ad',
 						class: $style['ad-wrapper'],
-					}, [h(MkAd, {
-						prefer: ['horizontal', 'horizontal-big'],
-					})]), el];
+					}, [h(MkAd, {})]), el];
 				} else {
 					return el;
 				}

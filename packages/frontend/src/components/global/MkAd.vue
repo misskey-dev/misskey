@@ -51,10 +51,12 @@ import { $i } from '@/account.js';
 
 type Ad = (typeof instance)['ads'][number];
 
-const props = defineProps<{
-	prefer: string[];
+const props = withDefaults(defineProps<{
+	prefer?: string[];
 	specify?: Ad;
-}>();
+}>(), {
+	prefer: () => [] as string[],
+});
 
 const showMenu = ref(false);
 const toggleMenu = (): void => {
@@ -71,24 +73,28 @@ const choseAd = (): Ad | null => {
 		ratio: 0,
 	} : ad);
 
-	let ads = allAds.filter(ad => props.prefer.includes(ad.place));
+	const valuableAds = allAds.filter(ad => ad.ratio !== 0);
+	const lowPriorityAds = allAds.filter(ad => ad.ratio === 0);
 
-	if (ads.length === 0) {
-		ads = allAds.filter(ad => ad.place === 'square');
+	let ads: Ad[];
+	const preferredAds = valuableAds.filter(ad => props.prefer.includes(ad.place));
+	if (preferredAds.length !== 0) {
+		ads = preferredAds;
+	} else {
+		ads = lowPriorityAds.filter(ad => props.prefer.includes(ad.place));
 	}
 
-	const lowPriorityAds = ads.filter(ad => ad.ratio === 0);
-	ads = ads.filter(ad => ad.ratio !== 0);
-
 	if (ads.length === 0) {
-		if (lowPriorityAds.length !== 0) {
-			return lowPriorityAds[Math.floor(Math.random() * lowPriorityAds.length)];
+		const nonPreferredAds = valuableAds.filter(ad => !props.prefer.includes(ad.place));
+		if (nonPreferredAds.length !== 0) {
+			ads = nonPreferredAds;
 		} else {
-			return null;
+			ads = lowPriorityAds.filter(ad => !props.prefer.includes(ad.place));
 		}
 	}
 
 	const totalFactor = ads.reduce((a, b) => a + b.ratio, 0);
+	if (totalFactor === 0) return ads[Math.floor(Math.random() * ads.length)];
 	const r = Math.random() * totalFactor;
 
 	let stackedFactor = 0;
