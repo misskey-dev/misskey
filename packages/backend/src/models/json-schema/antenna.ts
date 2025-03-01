@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { antennaSources } from '@/models/Antenna.js';
+
 export const packedAntennaSchema = {
 	type: 'object',
 	properties: {
@@ -47,7 +49,7 @@ export const packedAntennaSchema = {
 		src: {
 			type: 'string',
 			optional: false, nullable: false,
-			enum: ['home', 'all', 'users', 'list', 'users_blacklist'],
+			enum: antennaSources,
 		},
 		userListId: {
 			type: 'string',

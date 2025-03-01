@@ -4643,7 +4643,7 @@ export type components = {
       keywords: string[][];
       excludeKeywords: string[][];
       /** @enum {string} */
-      src: 'home' | 'all' | 'users' | 'list' | 'users_blacklist';
+      src: 'all' | 'users' | 'users_blacklist';
       /** Format: id */
       userListId: string | null;
       users: string[];

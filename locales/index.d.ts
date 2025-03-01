@@ -1707,6 +1707,14 @@ export interface Locale extends ILocale {
      */
     "antennaExcludeBots": string;
     /**
+     * 正規表現を使用する
+     */
+    "antennaUseRegex": string;
+    /**
+     * {src}の{line}行目にエラーがあります。
+     */
+    "antennaUseRegexError": ParameterizedString<"src" | "line">;
+    /**
      * スペースで区切るとAND指定になり、改行で区切るとOR指定になります
      */
     "antennaKeywordsDescription": string;

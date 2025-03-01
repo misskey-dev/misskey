@@ -13,21 +13,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSelect v-model="src">
 				<template #label>{{ i18n.ts.antennaSource }}</template>
 				<option value="all">{{ i18n.ts._antennaSources.all }}</option>
-				<!--<option value="home">{{ i18n.ts._antennaSources.homeTimeline }}</option>-->
 				<option value="users">{{ i18n.ts._antennaSources.users }}</option>
-				<!--<option value="list">{{ i18n.ts._antennaSources.userList }}</option>-->
 				<option value="users_blacklist">{{ i18n.ts._antennaSources.userBlacklist }}</option>
 			</MkSelect>
-			<MkSelect v-if="src === 'list'" v-model="userListId">
-				<template #label>{{ i18n.ts.userList }}</template>
-				<option v-for="list in userLists" :key="list.id" :value="list.id">{{ list.name }}</option>
-			</MkSelect>
-			<MkTextarea v-else-if="src === 'users' || src === 'users_blacklist'" v-model="users">
+			<MkTextarea v-if="src === 'users' || src === 'users_blacklist'" v-model="users">
 				<template #label>{{ i18n.ts.users }}</template>
 				<template #caption>{{ i18n.ts.antennaUsersDescription }} <button class="_textButton" @click="addUser">{{ i18n.ts.addUser }}</button></template>
 			</MkTextarea>
 			<MkSwitch v-model="excludeBots">{{ i18n.ts.antennaExcludeBots }}</MkSwitch>
 			<MkSwitch v-model="withReplies">{{ i18n.ts.withReplies }}</MkSwitch>
+			<MkSwitch v-model="useRegex">{{ i18n.ts.antennaUseRegex }}</MkSwitch>
 			<MkTextarea v-model="keywords">
 				<template #label>{{ i18n.ts.antennaKeywords }}</template>
 				<template #caption>{{ i18n.ts.antennaKeywordsDescription }}</template>
@@ -53,6 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { DeepPartial } from '@/scripts/merge.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -62,7 +58,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { deepMerge } from '@/scripts/merge.js';
-import type { DeepPartial } from '@/scripts/merge.js';
 
 type PartialAllowedAntenna = Omit<Misskey.entities.Antenna, 'id' | 'createdAt' | 'updatedAt'> & {
 	id?: string;
@@ -86,6 +81,7 @@ const initialAntenna = deepMerge<PartialAllowedAntenna>(props.antenna ?? {}, {
 	caseSensitive: false,
 	localOnly: false,
 	withFile: false,
+	useRegex: false,
 	isActive: true,
 	hasUnreadNote: false,
 	notify: false,
@@ -107,16 +103,50 @@ const caseSensitive = ref<boolean>(initialAntenna.caseSensitive);
 const localOnly = ref<boolean>(initialAntenna.localOnly);
 const excludeBots = ref<boolean>(initialAntenna.excludeBots);
 const withReplies = ref<boolean>(initialAntenna.withReplies);
+const useRegex = ref<boolean>(initialAntenna.useRegex);
 const withFile = ref<boolean>(initialAntenna.withFile);
-const userLists = ref<Misskey.entities.UserList[] | null>(null);
-
-watch(() => src.value, async () => {
-	if (src.value === 'list' && userLists.value === null) {
-		userLists.value = await misskeyApi('users/lists/list');
-	}
-});
 
 async function saveAntenna() {
+	const _keywords: string[][] = [];
+	const _excludeKeywords: string[][] = [];
+
+	if (useRegex.value) {
+		function checkRegExError(words: string[], type: string) {
+			const errLineNumbers = words
+				.map((x, i) => {
+					try {
+						// RE2にしてバックエンドと揃える？
+						new RegExp(x);
+						return null;
+					} catch {
+						return i + 1;
+					}
+				})
+				.filter(x => x != null);
+			if (errLineNumbers.length > 0) {
+				os.alert({
+					type: 'error',
+					text: i18n.tsx.antennaUseRegexError({ src: type, line: errLineNumbers.join(', ') }),
+				});
+				return false;
+			}
+
+			return true;
+		}
+
+		const keywordsDraft = keywords.value.trim().split('\n').map(x => x.trim()).filter(x => x.length > 0);
+		if (!checkRegExError(keywordsDraft, i18n.ts.antennaKeywords)) return;
+
+		const excludeKeywordsDraft = excludeKeywords.value.trim().split('\n').map(x => x.trim()).filter(x => x.length > 0);
+		if (!checkRegExError(excludeKeywordsDraft, i18n.ts.antennaExcludeKeywords)) return;
+
+		_keywords.push(...keywordsDraft.map(x => [x]));
+		_excludeKeywords.push(...excludeKeywordsDraft.map(x => [x]));
+	} else {
+		_keywords.push(...keywords.value.trim().split('\n').map(x => x.trim().split(' ')).filter(x => x.length > 0));
+		_excludeKeywords.push(...excludeKeywords.value.trim().split('\n').map(x => x.trim().split(' ')).filter(x => x.length > 0));
+	}
+
 	const antennaData = {
 		name: name.value,
 		src: src.value,
@@ -126,9 +156,10 @@ async function saveAntenna() {
 		withFile: withFile.value,
 		caseSensitive: caseSensitive.value,
 		localOnly: localOnly.value,
-		users: users.value.trim().split('\n').map(x => x.trim()),
-		keywords: keywords.value.trim().split('\n').map(x => x.trim().split(' ')),
-		excludeKeywords: excludeKeywords.value.trim().split('\n').map(x => x.trim().split(' ')),
+		useRegex: useRegex.value,
+		users: users.value.trim().split('\n').map(x => x.trim()).filter(x => x.length > 0),
+		keywords: _keywords,
+		excludeKeywords: _excludeKeywords,
 	};
 
 	if (initialAntenna.id == null) {
