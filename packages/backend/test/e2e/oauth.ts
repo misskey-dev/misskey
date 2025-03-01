@@ -72,11 +72,12 @@ const clientConfig: ModuleOptions<'client_id'> = {
 	},
 };
 
-function getMeta(html: string): { transactionId: string | undefined, clientName: string | undefined } {
+function getMeta(html: string): { transactionId: string | undefined, clientName: string | undefined, clientLogo: string | undefined } {
 	const fragment = JSDOM.fragment(html);
 	return {
 		transactionId: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]')?.content,
 		clientName: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-name"]')?.content,
+		clientLogo: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-logo"]')?.content,
 	};
 }
 
@@ -913,6 +914,59 @@ describe('OAuth', () => {
 			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 200);
 			assert.strictEqual(getMeta(await response.text()).clientName, `http://127.0.0.1:${clientPort}/`);
+		});
+
+		test('With Logo', async () => {
+			sender = (reply): void => {
+				reply.header('Link', '</redirect>; rel="redirect_uri"');
+				reply.send(`
+					<!DOCTYPE html>
+					<div class="h-app">
+						<a href="/" class="u-url p-name">Misklient</a>
+						<img src="/logo.png" class="u-logo" />
+					</div>
+				`);
+				reply.send();
+			};
+
+			const client = new AuthorizationCode(clientConfig);
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			} as AuthorizationParamsExtended));
+			assert.strictEqual(response.status, 200);
+			const meta = getMeta(await response.text());
+			assert.strictEqual(meta.clientName, 'Misklient');
+			assert.strictEqual(meta.clientLogo, `http://127.0.0.1:${clientPort}/logo.png`);
+		});
+
+		test('Missing Logo', async () => {
+			sender = (reply): void => {
+				reply.header('Link', '</redirect>; rel="redirect_uri"');
+				reply.send(`
+					<!DOCTYPE html>
+					<div class="h-app"><a href="/" class="u-url p-name">Misklient
+				`);
+				reply.send();
+			};
+
+			const client = new AuthorizationCode(clientConfig);
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			} as AuthorizationParamsExtended));
+			assert.strictEqual(response.status, 200);
+			const meta = getMeta(await response.text());
+			assert.strictEqual(meta.clientName, 'Misklient');
+			assert.strictEqual(meta.clientLogo, undefined);
 		});
 
 		test('Mismatching URL in h-app', async () => {
