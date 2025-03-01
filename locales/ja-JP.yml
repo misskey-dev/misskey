@@ -2912,9 +2912,7 @@ _remoteLookupErrors:
     description: "このサーバーとの通信に失敗しました。相手サーバーがダウンしている可能性があります。また、不正なURIや存在しないURIを入力していないか確認してください。"
   _responseInvalid:
     title: "レスポンスが不正です"
-    description: "このサーバーと通信することはできましたが、得られたデータが不正なものでした。"
-  _responseInvalidIdHostNotMatch:
-    description: "入力されたURIのドメインと最終的に得られたURIのドメインとが異なります。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。"
+    description: "このサーバーと通信することはできましたが、得られたデータが不正なものでした。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。"
   _noSuchObject:
     title: "見つかりません"
     description: "要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。"
@@ -2945,3 +2943,12 @@ _bootErrors:
   otherOption1: "クライアント設定とキャッシュを削除"
   otherOption2: "簡易クライアントを起動"
   otherOption3: "修復ツールを起動"
+
+_search:
+  searchScopeAll: "全て"
+  searchScopeLocal: "ローカル"
+  searchScopeServer: "サーバー指定"
+  searchScopeUser: "ユーザー指定"
+  pleaseEnterServerHost: "サーバーのホストを入力してください"
+  pleaseSelectUser: "ユーザーを選択してください"
+  serverHostPlaceholder: "例: misskey.example.com"
