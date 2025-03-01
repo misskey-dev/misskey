@@ -25,6 +25,7 @@ import { mainRouter } from '@/router/main.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import type { Keymap } from '@/scripts/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
+import { initWordMuteInfo } from '@/scripts/check-word-mute.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => {
@@ -344,11 +345,14 @@ export async function mainBoot() {
 			}
 		}
 
+		initWordMuteInfo();
+
 		const main = markRaw(stream.useChannel('main', null, 'System'));
 
 		// 自分の情報が更新されたとき
 		main.on('meUpdated', i => {
 			updateAccountPartial(i);
+			initWordMuteInfo();
 		});
 
 		main.on('readAllNotifications', () => {
