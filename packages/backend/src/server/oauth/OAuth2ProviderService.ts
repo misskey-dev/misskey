@@ -128,13 +128,13 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 		let logo: string | null = null;
 		if (text) {
 			const microformats = mf2(text, { baseUrl: res.url });
-			const correspondingProperty = microformats.items.find(item => item.type?.includes('h-app') && item.properties.url.includes(id));
-			if (correspondingProperty) {
-				const nameProperty = correspondingProperty.properties.name[0];
+			const correspondingProperties = microformats.items.find(item => item.type?.includes('h-app') && item.properties.url.includes(id));
+			if (correspondingProperties) {
+				const nameProperty = correspondingProperties.properties.name?.[0];
 				if (typeof nameProperty === 'string') {
 					name = nameProperty;
 				}
-				const logoProperty = correspondingProperty.properties.logo[0];
+				const logoProperty = correspondingProperties.properties.logo?.[0];
 				if (typeof logoProperty === 'string') {
 					logo = logoProperty;
 				}
