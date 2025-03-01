@@ -99,7 +99,10 @@ export class SystemAccountService {
 				host: IsNull(),
 			});
 
-			if (exist) throw new Error('the user is already exists');
+			if (exist) {
+				account = exist;
+				return;
+			}
 
 			account = await transactionalEntityManager.insert(MiUser, {
 				id: this.idService.gen(),
