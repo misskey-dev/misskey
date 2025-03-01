@@ -87,6 +87,8 @@ const prevUserPagination: Paging = {
 	params: computed(() => note.value ? ({
 		userId: note.value.userId,
 		untilId: note.value.id,
+		withChannelNotes: true,
+		includeSensitiveChannel: $i != null,
 	}) : undefined),
 };
 
@@ -97,6 +99,8 @@ const nextUserPagination: Paging = {
 	params: computed(() => note.value ? ({
 		userId: note.value.userId,
 		sinceId: note.value.id,
+		withChannelNotes: true,
+		includeSensitiveChannel: $i != null,
 	}) : undefined),
 };
 
