@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: アンテナでセンシティブなチャンネルのノートを除外できるように `#14177`
 
 ### Client
 -
