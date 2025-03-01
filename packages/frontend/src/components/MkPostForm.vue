@@ -144,7 +144,6 @@ const props = withDefaults(defineProps<PostFormProps & {
 	fixed?: boolean;
 	autofocus?: boolean;
 	freezeAfterPosted?: boolean;
-	maxHeight?: number;
 	mock?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
