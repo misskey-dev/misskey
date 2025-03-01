@@ -131,9 +131,6 @@ importers:
       '@misskey-dev/summaly':
         specifier: 5.2.0
         version: 5.2.0
-      '@napi-rs/canvas':
-        specifier: 0.1.67
-        version: 0.1.67
       '@nestjs/common':
         specifier: 11.0.9
         version: 11.0.9(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -197,6 +194,9 @@ importers:
       cacheable-lookup:
         specifier: 7.0.0
         version: 7.0.0
+      canvas:
+        specifier: 3.1.0
+        version: 3.1.0
       cbor:
         specifier: 9.0.2
         version: 9.0.2
@@ -2620,70 +2620,6 @@ packages:
   '@mswjs/interceptors@0.37.5':
     resolution: {integrity: sha512-AAwRb5vXFcY4L+FvZ7LZusDuZ0vEe0Zm8ohn1FM6/X7A3bj4mqmkAcGRWuvC2JwSygNwHAAmMnAI73vPHeqsHA==}
     engines: {node: '>=18'}
-
-  '@napi-rs/canvas-android-arm64@0.1.67':
-    resolution: {integrity: sha512-W+3DFG5h0WU8Vqqb3W5fNmm5/TPH5ECZRinQDK4CAKFSUkc4iZcDwrmyFG9sB4KdHazf1mFVHCpEeVMO6Mk6Zg==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [android]
-
-  '@napi-rs/canvas-darwin-arm64@0.1.67':
-    resolution: {integrity: sha512-xzrv7QboI47yhIHR5P5u/9KGswokuOKLiKSukr1Ku03RRJxP6lGuVtrAZAgdRg7F9FsuF2REf2yK53YVb6pMlA==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@napi-rs/canvas-darwin-x64@0.1.67':
-    resolution: {integrity: sha512-SNk9lYBr84N0gW8MZ2IrjygFtbFBILr3SEqMdHzHHuph20SQmssFvJGPZwSSCMEyKAvyqhogbmlew0te5Z4w9Q==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@napi-rs/canvas-linux-arm-gnueabihf@0.1.67':
-    resolution: {integrity: sha512-qmBlSvUpl567bzH8tNXi82u5FrL4d0qINqd6K9O7GWGGGFmKMJdrgi2/SW3wwCTxqHBasIDdVWc4KSJfwyaoDQ==}
-    engines: {node: '>= 10'}
-    cpu: [arm]
-    os: [linux]
-
-  '@napi-rs/canvas-linux-arm64-gnu@0.1.67':
-    resolution: {integrity: sha512-k3nAPQefkMeFuJ65Rqdnx92KX1JXQhEKjjWeKsCJB+7sIBgQUWtHo9c3etfVLv5pkWJJDFi/Zc2soNkH3E8dRA==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@napi-rs/canvas-linux-arm64-musl@0.1.67':
-    resolution: {integrity: sha512-lZwHWR1cCP408l86n3Qbs3X1oFeAYMjJIQvQl1VMZh6wo5PfI+jaZSKBUOd8x44TnVllX9yhLY9unNRztk/sUQ==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@napi-rs/canvas-linux-riscv64-gnu@0.1.67':
-    resolution: {integrity: sha512-PdBC9p6bLHA1W3OdA0vTHj701SB/kioGQ1uCFBRMs5KBCaMLb/H4aNi8uaIUIEvBWnxeAjoNcLU7//q0FxEosw==}
-    engines: {node: '>= 10'}
-    cpu: [riscv64]
-    os: [linux]
-
-  '@napi-rs/canvas-linux-x64-gnu@0.1.67':
-    resolution: {integrity: sha512-kJJX6eWzjipL/LdKOWCJctc88e5yzuXri8+s0V/lN06OwuLGW62TWS3lvi8qlUrGMOfRGabSWWlB4omhASSB8w==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-
-  '@napi-rs/canvas-linux-x64-musl@0.1.67':
-    resolution: {integrity: sha512-jLKiPWGeN6ZzhnaLG7ex7eexsiHJ1mdtPK1qKvETIcu45dApMXyUIHvdL6XWB5gFFtj5ScHzLUxv1vkfPZsoxA==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-
-  '@napi-rs/canvas-win32-x64-msvc@0.1.67':
-    resolution: {integrity: sha512-K/JmkOFbc4iRZYUqJhj0jwqfHA/wNQEmTiGNsgZ6d59yF/IBNp5T0D5eg3B8ghjI8GxDYCiSJ6DNX8mC3Oh2EQ==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [win32]
-
-  '@napi-rs/canvas@0.1.67':
-    resolution: {integrity: sha512-VA4Khm/5Kg2bQGx3jXotTC4MloOG8b1Ung80exafUK0k5u6yJmIz3Q2iXeeWZs5weV+LQOEB+CPKsYwEYaGAjw==}
-    engines: {node: '>= 10'}
 
   '@nestjs/common@11.0.9':
     resolution: {integrity: sha512-+SKMYQE7O55tJGQVibnAlR9sXRBCF/8gM1cILdLT7cLj7+51NYD7eAHuAcGYiQIyXsTehZoO7C+B7S3ibNi3aw==}
@@ -12550,49 +12486,6 @@ snapshots:
       outvariant: 1.4.3
       strict-event-emitter: 0.5.1
 
-  '@napi-rs/canvas-android-arm64@0.1.67':
-    optional: true
-
-  '@napi-rs/canvas-darwin-arm64@0.1.67':
-    optional: true
-
-  '@napi-rs/canvas-darwin-x64@0.1.67':
-    optional: true
-
-  '@napi-rs/canvas-linux-arm-gnueabihf@0.1.67':
-    optional: true
-
-  '@napi-rs/canvas-linux-arm64-gnu@0.1.67':
-    optional: true
-
-  '@napi-rs/canvas-linux-arm64-musl@0.1.67':
-    optional: true
-
-  '@napi-rs/canvas-linux-riscv64-gnu@0.1.67':
-    optional: true
-
-  '@napi-rs/canvas-linux-x64-gnu@0.1.67':
-    optional: true
-
-  '@napi-rs/canvas-linux-x64-musl@0.1.67':
-    optional: true
-
-  '@napi-rs/canvas-win32-x64-msvc@0.1.67':
-    optional: true
-
-  '@napi-rs/canvas@0.1.67':
-    optionalDependencies:
-      '@napi-rs/canvas-android-arm64': 0.1.67
-      '@napi-rs/canvas-darwin-arm64': 0.1.67
-      '@napi-rs/canvas-darwin-x64': 0.1.67
-      '@napi-rs/canvas-linux-arm-gnueabihf': 0.1.67
-      '@napi-rs/canvas-linux-arm64-gnu': 0.1.67
-      '@napi-rs/canvas-linux-arm64-musl': 0.1.67
-      '@napi-rs/canvas-linux-riscv64-gnu': 0.1.67
-      '@napi-rs/canvas-linux-x64-gnu': 0.1.67
-      '@napi-rs/canvas-linux-x64-musl': 0.1.67
-      '@napi-rs/canvas-win32-x64-msvc': 0.1.67
-
   '@nestjs/common@11.0.9(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
       iterare: 1.2.1
@@ -15534,7 +15427,6 @@ snapshots:
       buffer: 5.7.1
       inherits: 2.0.4
       readable-stream: 3.6.0
-    optional: true
 
   blob-util@2.0.2: {}
 
@@ -15745,7 +15637,6 @@ snapshots:
     dependencies:
       node-addon-api: 7.1.1
       prebuild-install: 7.1.3
-    optional: true
 
   caseless@0.12.0: {}
 
@@ -15859,8 +15750,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  chownr@1.1.4:
-    optional: true
+  chownr@1.1.4: {}
 
   chownr@2.0.0: {}
 
@@ -16423,8 +16313,7 @@ snapshots:
       which-collection: 1.0.1
       which-typed-array: 1.1.11
 
-  deep-extend@0.6.0:
-    optional: true
+  deep-extend@0.6.0: {}
 
   deep-is@0.1.4: {}
 
@@ -17127,8 +17016,7 @@ snapshots:
 
   exit@0.1.2: {}
 
-  expand-template@2.0.3:
-    optional: true
+  expand-template@2.0.3: {}
 
   expect-type@1.1.0: {}
 
@@ -17464,8 +17352,7 @@ snapshots:
 
   from@0.1.7: {}
 
-  fs-constants@1.0.0:
-    optional: true
+  fs-constants@1.0.0: {}
 
   fs-extra@11.3.0:
     dependencies:
@@ -17598,8 +17485,7 @@ snapshots:
     dependencies:
       assert-plus: 1.0.0
 
-  github-from-package@0.0.0:
-    optional: true
+  github-from-package@0.0.0: {}
 
   glob-parent@5.1.2:
     dependencies:
@@ -19474,8 +19360,7 @@ snapshots:
       minipass: 3.3.6
       yallist: 4.0.0
 
-  mkdirp-classic@0.5.3:
-    optional: true
+  mkdirp-classic@0.5.3: {}
 
   mkdirp@0.5.6:
     dependencies:
@@ -19575,8 +19460,7 @@ snapshots:
 
   nanoid@5.1.0: {}
 
-  napi-build-utils@2.0.0:
-    optional: true
+  napi-build-utils@2.0.0: {}
 
   natural-compare@1.4.0: {}
 
@@ -19619,8 +19503,7 @@ snapshots:
   node-addon-api@3.2.1:
     optional: true
 
-  node-addon-api@7.1.1:
-    optional: true
+  node-addon-api@7.1.1: {}
 
   node-domexception@1.0.0: {}
 
@@ -20329,7 +20212,6 @@ snapshots:
       simple-get: 4.0.1
       tar-fs: 2.1.2
       tunnel-agent: 0.6.0
-    optional: true
 
   prelude-ls@1.2.1: {}
 
@@ -20570,7 +20452,6 @@ snapshots:
       ini: 1.3.8
       minimist: 1.2.8
       strip-json-comments: 2.0.1
-    optional: true
 
   rdf-canonize@3.4.0:
     dependencies:
@@ -21062,15 +20943,13 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  simple-concat@1.0.1:
-    optional: true
+  simple-concat@1.0.1: {}
 
   simple-get@4.0.1:
     dependencies:
       decompress-response: 6.0.0
       once: 1.4.0
       simple-concat: 1.0.1
-    optional: true
 
   simple-oauth2@5.1.0:
     dependencies:
@@ -21452,8 +21331,7 @@ snapshots:
     dependencies:
       min-indent: 1.0.1
 
-  strip-json-comments@2.0.1:
-    optional: true
+  strip-json-comments@2.0.1: {}
 
   strip-json-comments@3.1.1: {}
 
@@ -21511,7 +21389,6 @@ snapshots:
       mkdirp-classic: 0.5.3
       pump: 3.0.0
       tar-stream: 2.2.0
-    optional: true
 
   tar-stream@2.2.0:
     dependencies:
@@ -21520,7 +21397,6 @@ snapshots:
       fs-constants: 1.0.0
       inherits: 2.0.4
       readable-stream: 3.6.0
-    optional: true
 
   tar-stream@3.1.6:
     dependencies:

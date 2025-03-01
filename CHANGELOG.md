@@ -7,7 +7,8 @@
 -
 
 ### Server
--
+- Fix: FreeBSDで起動できない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/887)
 
 
 ## 2025.2.1
