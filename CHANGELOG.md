@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Enhance: Blueskyの投稿埋め込みプレビューに対応
 
 ### Server
 - Fix: 特定のケースでActivityPubの処理がデッドロックになることがあるのを修正
