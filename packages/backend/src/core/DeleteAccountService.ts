@@ -45,8 +45,7 @@ export class DeleteAccountService {
 
 		const _user = await this.usersRepository.findOneByOrFail({ id: user.id });
 
-		const systemAccounts = await this.systemAccountService.list();
-		if (systemAccounts.some(x => x.id === user.id)) {
+		if (user.host === null && _user.username.includes('.')) {
 			throw new Error('cannot delete a system account');
 		}
 
