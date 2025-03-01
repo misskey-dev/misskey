@@ -939,8 +939,9 @@ describe('OAuth', () => {
 				code_challenge_method: 'S256',
 			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 200);
-			assert.strictEqual(getMeta(await response.text()).clientName, 'Misklient');
-			assert.strictEqual(getMeta(await response.text()).clientLogo, `http://127.0.0.1:${clientPort}/logo.png`);
+			const meta = getMeta(await response.text());
+			assert.strictEqual(meta.clientName, 'Misklient');
+			assert.strictEqual(meta.clientLogo, `http://127.0.0.1:${clientPort}/logo.png`);
 		});
 
 		test('Missing Logo', async () => {
@@ -963,8 +964,9 @@ describe('OAuth', () => {
 				code_challenge_method: 'S256',
 			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 200);
-			assert.strictEqual(getMeta(await response.text()).clientName, 'Misklient');
-			assert.strictEqual(getMeta(await response.text()).clientLogo, undefined);
+			const meta = getMeta(await response.text());
+			assert.strictEqual(meta.clientName, 'Misklient');
+			assert.strictEqual(meta.clientLogo, undefined);
 		});
 
 		test('Mismatching URL in h-app', async () => {
