@@ -4,7 +4,8 @@
 -
 
 ### Client
--
+- Fix: 広告の選定条件を変更  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/293)
 
 ### Server
 -
