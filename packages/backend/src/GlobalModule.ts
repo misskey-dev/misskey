@@ -133,7 +133,7 @@ const $meta: Provider = {
 						for (const key in body.after) {
 							(meta as any)[key] = (body.after as any)[key];
 						}
-						meta.proxyAccount = null; // joinなカラムは通常取ってこないので
+						meta.rootUser = null; // joinなカラムは通常取ってこないので
 						break;
 					}
 					default:

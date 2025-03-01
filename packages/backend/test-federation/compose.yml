@@ -20,7 +20,11 @@ services:
     depends_on:
       a.test:
         condition: service_healthy
+      misskey.a.test:
+        condition: service_healthy
       b.test:
+        condition: service_healthy
+      misskey.b.test:
         condition: service_healthy
     environment:
       - NODE_ENV=development
