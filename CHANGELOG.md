@@ -1,7 +1,8 @@
 ## Unreleased
 
 ### General
--
+- Enhance: OAuthで外部アプリからロゴが提供されている場合、それを表示できるように  
+  書式は https://indieauth.spec.indieweb.org/20220212/#example-2 に準じます。
 
 ### Client
 -
