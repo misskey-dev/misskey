@@ -14,11 +14,11 @@
 		"misskey-js": "workspace:*"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "8.24.1",
+		"@typescript-eslint/parser": "8.25.0",
 		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.74",
 		"eslint-plugin-import": "2.31.0",
 		"nodemon": "3.1.9",
-		"typescript": "5.7.3"
+		"typescript": "5.8.2"
 	},
 	"type": "module"
 }
