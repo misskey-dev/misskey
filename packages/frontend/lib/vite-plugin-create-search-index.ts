@@ -291,9 +291,9 @@ export type SearchIndexItem = {
 	id: string;
 	path?: string;
 	label: string;
-	keywords: string | string[];
+	keywords: string[];
 	icon?: string;
-	children?: (SearchIndexItem[] | string);
+	children?: SearchIndexItem[];
 };
 
 export const searchIndexes:SearchIndexItem[] = ${customStringify(resolvedRootMarkers)} as const;

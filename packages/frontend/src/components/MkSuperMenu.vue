@@ -92,14 +92,18 @@ const searchResult = ref<{
 }[]>([]);
 
 watch(search, (value) => {
+	searchResult.value = [];
+
 	if (value === '') {
-		searchResult.value = [];
 		return;
 	}
 
 	const dive = (items: SearchIndexItem[], parents: SearchIndexItem[] = []) => {
 		for (const item of items) {
-			const matched = item.label.includes(value.toLowerCase()) || item.keywords.some((x) => x.toLowerCase().includes(value.toLowerCase()));
+			const matched =
+				item.label.includes(value.toLowerCase()) ||
+				item.keywords.some((x) => x.toLowerCase().includes(value.toLowerCase()));
+
 			if (matched) {
 				searchResult.value.push({
 					id: item.id,
