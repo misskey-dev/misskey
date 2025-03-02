@@ -790,7 +790,7 @@ function extractUsageInfoFromTemplateAst(
 			}
 
 			//pathがない場合はファイルパスを設定
-			if (markerInfo.path == null && parentId == null) markerInfo.path = id.match(/.*(\/settings\/[^\/]+)\.vue$/)?.[1];
+			if (markerInfo.path == null && parentId == null) markerInfo.path = id.match(/.*(\/(admin|settings)\/[^\/]+)\.vue$/)?.[1];
 
 			// SearchLabelとSearchKeywordを抽出 (AST全体を探索)
 			if (node.children && Array.isArray(node.children)) {
