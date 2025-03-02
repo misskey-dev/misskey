@@ -73,12 +73,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_m">
 					<div class="_gaps_s">
 						<SearchMarker
-							:label="i18n.ts.collapseRenotes"
-							:keywords="['renote', i18n.ts.collapseRenotesDescription]"
+							:keywords="['renote']"
 						>
 							<MkSwitch v-model="collapseRenotes">
-								<template #label>{{ i18n.ts.collapseRenotes }}</template>
-								<template #caption>{{ i18n.ts.collapseRenotesDescription }}</template>
+								<template #label><SearchLabel>{{ i18n.ts.collapseRenotes }}</SearchLabel></template>
+								<template #caption><SearchKeyword>{{ i18n.ts.collapseRenotesDescription }}</SearchKeyword></template>
 							</MkSwitch>
 						</SearchMarker>
 
