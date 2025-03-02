@@ -754,8 +754,7 @@ function extractUsageInfoFromTemplateAst(
 			// マーカーID取得
 			const markerIdProp = node.props?.find((p: any) => p.name === 'markerId');
 			const markerId = markerIdProp?.value?.content ||
-				node.__markerId ||
-				`marker-${Math.random().toString(36).substring(2, 10)}`;
+				node.__markerId;
 
 			// マーカー基本情報
 			const markerInfo: SearchIndexItem = {
