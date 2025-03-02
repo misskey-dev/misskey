@@ -11,6 +11,7 @@ import JSON5 from 'json5';
 import MagicString from 'magic-string';
 import path from 'node:path'
 import { hash, toBase62 } from '../vite.config';
+import { createLogger } from 'vite';
 
 export type AnalysisResult = {
 	filePath: string;
@@ -26,15 +27,35 @@ export type SearchIndexItem = {
 	children?: (SearchIndexItem[] | string);
 }
 
+const logger = createLogger();
+const loggerInfo = logger.info;
+const loggerWarn = logger.warn;
+const loggerError = logger.error;
+
+logger.info = (msg, options) => {
+	msg = `[create-search-index] ${msg}`;
+	loggerInfo(msg, options);
+}
+
+logger.warn = (msg, options) => {
+	msg = `[create-search-index] ${msg}`;
+	loggerWarn(msg, options);
+}
+
+logger.error = (msg, options) => {
+	msg = `[create-search-index] ${msg}`;
+	loggerError(msg, options);
+}
+
 function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisResult[]): void {
-  console.log(`[create-search-index] Processing ${analysisResults.length} files for output`);
+  logger.info(`Processing ${analysisResults.length} files for output`);
 
   // 新しいツリー構造を構築
   const allMarkers = new Map<string, SearchIndexItem>();
 
   // 1. すべてのマーカーを一旦フラットに収集
   for (const file of analysisResults) {
-    console.log(`[create-search-index] Processing file: ${file.filePath} with ${file.usage.length} markers`);
+    logger.info(`Processing file: ${file.filePath} with ${file.usage.length} markers`);
     for (const marker of file.usage) {
       if (marker.id) {
         // キーワードの処理（文字列から配列へ変換）
@@ -45,7 +66,7 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
             keywords = JSON5.parse(keywords.replace(/'/g, '"'));
           } catch (e) {
             // 解析に失敗した場合は文字列のままにする
-            console.log(`[create-search-index] Keeping keywords as string expression: ${keywords}`);
+            logger.warn(`Keeping keywords as string expression: ${keywords}`);
           }
         }
 
@@ -57,14 +78,14 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
             children = JSON5.parse(children.replace(/'/g, '"'));
           } catch (e) {
             // 解析に失敗した場合は空配列に
-            console.log(`[create-search-index] Could not parse children: ${children}, using empty array`);
+            logger.warn(`Could not parse children: ${children}, using empty array`);
             children = [];
           }
         }
 
         // 子マーカーの内部構造を適切に更新
         if (Array.isArray(children) && children.length > 0) {
-          console.log(`[create-search-index] Marker ${marker.id} has ${children.length} children: ${JSON.stringify(children)}`);
+          logger.info(`Marker ${marker.id} has ${children.length} children: ${JSON.stringify(children)}`);
         }
 
         allMarkers.set(marker.id, {
@@ -76,7 +97,7 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
     }
   }
 
-  console.log(`[create-search-index] Collected total ${allMarkers.size} unique markers`);
+  logger.info(`Collected total ${allMarkers.size} unique markers`);
 
   // 2. 子マーカーIDの収集
   const childIds = new Set<string>();
@@ -87,7 +108,7 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
       children.forEach(childId => {
         if (typeof childId === 'string') {
           if (!allMarkers.has(childId)) {
-            console.warn(`[create-search-index] Warning: Child marker ID ${childId} referenced but not found`);
+          	logger.warn(`Warning: Child marker ID ${childId} referenced but not found`);
           } else {
             childIds.add(childId);
           }
@@ -96,7 +117,7 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
     }
   });
 
-  console.log(`[create-search-index] Found ${childIds.size} child markers`);
+  logger.info(`Found ${childIds.size} child markers`);
 
   // 3. ルートマーカーの特定（他の誰かの子でないマーカー）
   const rootMarkers: SearchIndexItem[] = [];
@@ -105,11 +126,11 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
     if (!childIds.has(id)) {
       // このマーカーはルート（他の誰の子でもない）
       rootMarkers.push(marker);
-      console.log(`[create-search-index] Added root marker to output: ${id} with label ${marker.label}`);
+      logger.info(`Added root marker to output: ${id} with label ${marker.label}`);
     }
   });
 
-  console.log(`[create-search-index] Found ${rootMarkers.length} root markers`);
+  logger.info(`Found ${rootMarkers.length} root markers`);
 
   // 4. 子マーカーの参照を解決（IDから実際のオブジェクトに）
   function resolveChildrenReferences(marker: SearchIndexItem): SearchIndexItem {
@@ -128,7 +149,7 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
             // 子マーカーの子も再帰的に解決
             const resolvedChild = resolveChildrenReferences(childMarker);
             children.push(resolvedChild);
-            console.log(`[create-search-index] Resolved child ${childId} for parent ${marker.id}`);
+            logger.info(`Resolved child ${childId} for parent ${marker.id}`);
           }
         }
       }
@@ -233,7 +254,7 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
   }
 
   countNestedMarkers(resolvedRootMarkers);
-  console.log(`[create-search-index] Total markers in tree: ${totalMarkers} (${resolvedRootMarkers.length} roots + ${totalChildren} nested children)`);
+  logger.info(`Total markers in tree: ${totalMarkers} (${resolvedRootMarkers.length} roots + ${totalChildren} nested children)`);
 
   // 結果をTS形式で出力
   const tsOutput = `
@@ -267,9 +288,9 @@ export type SearchIndex = typeof searchIndexes;
 
   try {
     fs.writeFileSync(outputPath, tsOutput, 'utf-8');
-    console.log(`[create-search-index] Successfully wrote search index to ${outputPath} with ${resolvedRootMarkers.length} root entries and ${totalChildren} nested children`);
+    logger.info(`Successfully wrote search index to ${outputPath} with ${resolvedRootMarkers.length} root entries and ${totalChildren} nested children`);
   } catch (error) {
-    console.error('[create-search-index]: error: ', error);
+    logger.error('[create-search-index]: error: ', error);
   }
 }
 
@@ -289,7 +310,7 @@ function extractUsageInfoFromTemplateAst(
   }
 
   // デバッグ情報
-  console.log('[create-search-index] Started extracting markers from AST');
+  logger.info('Started extracting markers from AST');
 
   // マーカーの基本情報を収集
   function collectMarkers(node: any, parentId: string | null = null) {
@@ -301,7 +322,7 @@ function extractUsageInfoFromTemplateAst(
                       node.__markerId ||
                       `marker-${Math.random().toString(36).substring(2, 10)}`;
 
-      console.log(`[create-search-index] Found SearchMarker with ID: ${markerId}`);
+      logger.info(`Found SearchMarker with ID: ${markerId}`);
 
       // マーカー基本情報
       const markerInfo: SearchIndexItem = {
@@ -320,7 +341,7 @@ function extractUsageInfoFromTemplateAst(
             else if (prop.name === 'icon') markerInfo.icon = prop.value?.content || '';
             else if (prop.name === 'label') markerInfo.label = prop.value?.content || '';
 
-            console.log(`[create-search-index] Static prop ${prop.name}:`, prop.value?.content);
+            logger.info(`Static prop ${prop.name}:`, prop.value?.content);
           }
         });
       }
@@ -332,7 +353,7 @@ function extractUsageInfoFromTemplateAst(
             const propName = prop.arg.content;
             const propValue = prop.exp?.content || '';
 
-            console.log(`[create-search-index] Bind prop ${propName}:`, propValue);
+            logger.info(`Bind prop ${propName}:`, propValue);
 
             if (propName === 'label') {
               markerInfo.label = propValue;
@@ -374,7 +395,7 @@ function extractUsageInfoFromTemplateAst(
             parent.children = [markerId];
           }
           childrenIds.add(markerId);
-          console.log(`[create-search-index] Added ${markerId} as child of ${parentId}`);
+          logger.info(`Added ${markerId} as child of ${parentId}`);
         }
       }
 
@@ -402,7 +423,7 @@ function extractUsageInfoFromTemplateAst(
   collectMarkers(templateAst);
 
   // デバッグ情報
-  console.log(`[create-search-index] Found ${markerMap.size} markers, ${childrenIds.size} children`);
+  logger.info(`Found ${markerMap.size} markers, ${childrenIds.size} children`);
 
   // 重要: すべてのマーカー情報を返す
   return allMarkers;
@@ -421,20 +442,20 @@ export async function analyzeVueProps(options: {
 		return [...acc, ...matchedFiles];
 	}, []);
 
-	console.log(`[create-search-index] Found ${filePaths.length} matching files to analyze`);
+	logger.info(`Found ${filePaths.length} matching files to analyze`);
 
 	for (const filePath of filePaths) {
 		const id = path.resolve(filePath); // 絶対パスに変換
 		const code = options.transformedCodeCache[id]; // options 経由でキャッシュ参照
 		if (!code) { // キャッシュミスの場合
-			console.error(`[create-search-index] Error: No cached code found for: ${filePath}.`); // エラーログ
+			logger.error(`Error: No cached code found for: ${filePath}.`); // エラーログ
 			// ファイルを直接読み込む代替策を実行
 			try {
 				const directCode = fs.readFileSync(filePath, 'utf-8');
 				options.transformedCodeCache[id] = directCode;
-				console.log(`[create-search-index] Loaded file directly instead: ${filePath}`);
+				logger.info(`Loaded file directly instead: ${filePath}`);
 			} catch (err) {
-				console.error(`[create-search-index] Failed to load file directly: ${filePath}`, err);
+				logger.error(`Failed to load file directly: ${filePath}`, err);
 				continue;
 			}
 		}
@@ -445,7 +466,7 @@ export async function analyzeVueProps(options: {
 			});
 
 			if (errors.length) {
-				console.error(`[create-search-index] Compile Error: ${filePath}`, errors);
+				logger.error(`Compile Error: ${filePath}`, errors);
 				continue; // エラーが発生したファイルはスキップ
 			}
 
@@ -453,12 +474,12 @@ export async function analyzeVueProps(options: {
 
 			if (fileMarkers && fileMarkers.length > 0) {
 				allMarkers.push(...fileMarkers); // すべてのマーカーを収集
-				console.log(`[create-search-index] Successfully extracted ${fileMarkers.length} markers from ${filePath}`);
+				logger.info(`Successfully extracted ${fileMarkers.length} markers from ${filePath}`);
 			} else {
-				console.log(`[create-search-index] No markers found in ${filePath}`);
+				logger.info(`No markers found in ${filePath}`);
 			}
 		} catch (error) {
-			console.error(`[create-search-index] Error analyzing file ${filePath}:`, error);
+			logger.error(`Error analyzing file ${filePath}:`, error);
 		}
 	}
 
@@ -487,7 +508,7 @@ async function processVueFile(
 ) {
 	// すでにキャッシュに存在する場合は、そのまま返す
 	if (transformedCodeCache[id] && transformedCodeCache[id].includes('markerId=')) {
-		console.log(`[create-search-index] Using cached version for ${id}`);
+		logger.info(`Using cached version for ${id}`);
 		return {
 			code: transformedCodeCache[id],
 			map: null
@@ -555,9 +576,9 @@ async function processVueFile(
 
 						if (!markerIdRegex.test(tagText)) {
 							s.appendRight(endOfStartTag, ` markerId="${generatedMarkerId}"`);
-							console.log(`[create-search-index] Adding markerId="${generatedMarkerId}" to ${id}:${lineNumber}`);
+							logger.info(`Adding markerId="${generatedMarkerId}" to ${id}:${lineNumber}`);
 						} else {
-							console.log(`[create-search-index] markerId already exists in ${id}:${lineNumber}`);
+							logger.warn(`markerId already exists in ${id}:${lineNumber}`);
 						}
 					}
 				}
@@ -619,11 +640,11 @@ async function processVueFile(
 							childrenArray = [...childrenArray, ...newIds];
 							const updatedChildrenArrayStr = JSON5.stringify(childrenArray).replace(/"/g, "'");
 							s.overwrite(childrenStart, childrenEnd + 1, updatedChildrenArrayStr);
-							console.log(`[create-search-index] Added ${newIds.length} child markerIds to existing :children in ${id}`);
+							logger.info(`Added ${newIds.length} child markerIds to existing :children in ${id}`);
 						}
 					}
 				} catch (e) {
-					console.error('[create-search-index] Error updating :children attribute:', e);
+					logger.error('Error updating :children attribute:', e);
 				}
 			} else {
 				// AST では検出されなかった場合、タグテキストを調べる
@@ -652,17 +673,17 @@ async function processVueFile(
 									const absoluteEnd = parentNodeStart + attrValueEnd;
 									const updatedArrayStr = JSON5.stringify(childrenArray).replace(/"/g, "'");
 									s.overwrite(absoluteStart, absoluteEnd, updatedArrayStr);
-									console.log(`[create-search-index] Updated existing :children in tag text for ${id}`);
+									logger.info(`Updated existing :children in tag text for ${id}`);
 								}
 							}
 						}
 					} catch (e) {
-						console.error('[create-search-index] Error updating :children in tag text:', e);
+						logger.error('Error updating :children in tag text:', e);
 					}
 				} else {
 					// :children 属性がまだない場合、新規作成
 					s.appendRight(endOfParentStartTag, ` :children="${JSON5.stringify(childIds).replace(/"/g, "'")}"`);
-					console.log(`[create-search-index] Created new :children attribute with ${childIds.length} markerIds in ${id}`);
+					logger.info(`Created new :children attribute with ${childIds.length} markerIds in ${id}`);
 				}
 			}
 		}
