@@ -2971,14 +2971,6 @@ export interface Locale extends ILocale {
      */
     "switchUi": string;
     /**
-     * モロヘイヤHOME
-     */
-    "mulukhiyaHome": string;
-    /**
-     * ダイスキーBlog
-     */
-    "daisskeyBlog": string;
-    /**
      * デスクトップ
      */
     "desktop": string;
