@@ -474,7 +474,7 @@ export class ClientServerService {
 		});
 
 		// ナビゲーションバーの追加リンク
-		fastify.get('/links.hson', async (request, reply) => {
+		fastify.get('/links.json', async (request, reply) => {
 			return await reply.sendFile('/links.json', staticAssets);
 		});
 
