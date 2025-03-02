@@ -2147,3 +2147,7 @@ _reversi:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Не найдено"
+_search:
+  searchScopeAll: "Все"
+  searchScopeLocal: "Местная"
+  searchScopeUser: "Указанный пользователь"

@@ -1930,3 +1930,7 @@ _reversi:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Không tìm thấy"
+_search:
+  searchScopeAll: "Tất cả"
+  searchScopeLocal: "Máy chủ này"
+  searchScopeUser: "Người dùng chỉ định"
