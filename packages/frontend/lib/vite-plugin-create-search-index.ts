@@ -740,7 +740,7 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 
 function extractUsageInfoFromTemplateAst(
 	templateAst: any,
-	code: string,
+	id: string,
 ): SearchIndexItem[] {
 	const allMarkers: SearchIndexItem[] = [];
 	const markerMap = new Map<string, SearchIndexItem>();
@@ -788,6 +788,9 @@ function extractUsageInfoFromTemplateAst(
 					markerInfo.keywords = bindings.keywords || [];
 				}
 			}
+
+			//pathがない場合はファイルパスを設定
+			if (markerInfo.path == null && parentId == null) markerInfo.path = id.match(/.*(\/settings\/[^\/]+)\.vue$/)?.[1];
 
 			// SearchLabelとSearchKeywordを抽出 (AST全体を探索)
 			if (node.children && Array.isArray(node.children)) {
@@ -1050,7 +1053,7 @@ export async function analyzeVueProps(options: {
 				continue; // エラーが発生したファイルはスキップ
 			}
 
-			const fileMarkers = extractUsageInfoFromTemplateAst(descriptor.template?.ast, options.transformedCodeCache[id]);
+			const fileMarkers = extractUsageInfoFromTemplateAst(descriptor.template?.ast, id);
 
 			if (fileMarkers && fileMarkers.length > 0) {
 				allMarkers.push(...fileMarkers); // すべてのマーカーを収集

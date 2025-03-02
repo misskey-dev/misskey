@@ -502,6 +502,7 @@ export const searchIndexes:SearchIndexItem[] = [
 		label: i18n.ts.general,
 		keywords: ['general'],
 		icon: 'ti ti-adjustments',
+		path: '/settings/general',
 	},
 ] as const;
 
