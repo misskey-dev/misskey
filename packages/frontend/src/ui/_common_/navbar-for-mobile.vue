@@ -30,11 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
 		</MkA>
 
-		<button :class="$style.item" class="_button" @click="mulukhiya">
-			<i :class="$style.itemIcon" class="ti ti-leaf ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.mulukhiyaHome }}</span>
-		</button>
-		<button :class="$style.item" class="_button" @click="daisskeyBlog">
-			<i :class="$style.itemIcon" class="ti ti-file ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.daisskeyBlog }}</span>
+		<button :class="$style.item" class="_button"  @click="openWindow(menuitem.href)" v-for="menuitem of menuitems">
+			<i :class="$style.itemIcon + ' ' + menuitem.icon" class="ti ti-fw"></i><span :class="$style.itemText">{{ menuitem.body }}</span>
 		</button>
 
 		<button :class="$style.item" class="_button" @click="more">
@@ -57,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, toRef } from 'vue';
+import { computed, defineAsyncComponent, reactive, toRef } from 'vue';
 import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
@@ -75,18 +72,19 @@ const otherMenuItemIndicated = computed(() => {
 	return false;
 });
 
+const menuitems = reactive([]);
+fetch('/links.json')
+	.then((response) => response.json())
+	.then((result) => result.map((v) => menuitems.push(v)));
+
 function openAccountMenu(ev: MouseEvent) {
 	openAccountMenu_({
 		withExtraOperation: true,
 	}, ev);
 }
 
-function mulukhiya(ev: MouseEvent) {
-	window.open('/mulukhiya');
-}
-
-function daisskeyBlog(ev: MouseEvent) {
-	window.open('https://blog.misskey.delmulin.com');
+function openWindow(href: string) {
+	window.open(href);
 }
 
 function more() {
