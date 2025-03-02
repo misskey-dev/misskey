@@ -188,6 +188,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { defaultStore } from '@/store';
 import { reloadAsk } from '@/scripts/reload-ask.js';
+import MkSearchMarker from '@/components/MkSearchMarker.vue';
 
 const $i = signinRequired();
 
