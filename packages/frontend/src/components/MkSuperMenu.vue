@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-for="item in searchResult">
 			<MkA :to="item.path + '#' + item.id" class="_button searchResultItem">
 				<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
-				<span class="text">{{ item.locationLabel.join(' > ') }}</span>
+				<span class="text">{{ item.labels.toReversed().join(' > ') }}</span>
 			</MkA>
 		</div>
 	</template>
@@ -73,17 +73,23 @@ export type SuperMenuDef = {
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
+import type { SearchIndexItem } from '@/scripts/autogen/settings-search-index.js';
 import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	def: SuperMenuDef[];
 	grid?: boolean;
-	searchIndex: { id: string; path: string; locationLabel: string[]; keywords: string[]; icon?: string; }[];
+	searchIndex: SearchIndexItem[];
 }>();
 
 const search = ref('');
-const searchResult = ref<any[]>([]);
+const searchResult = ref<{
+	id: string;
+	path: string;
+	labels: string[];
+	icon?: string;
+}[]>([]);
 
 watch(search, (value) => {
 	if (value === '') {
@@ -91,10 +97,25 @@ watch(search, (value) => {
 		return;
 	}
 
-	searchResult.value = props.searchIndex.filter((item) => {
-		// TODO: 日本語でひらがなカタカナの区別をしない
-		return item.locationLabel.some((x) => x.toLowerCase().includes(value.toLowerCase())) || item.keywords.some((x) => x.toLowerCase().includes(value.toLowerCase()));
-	});
+	const dive = (items: SearchIndexItem[], parents: SearchIndexItem[] = []) => {
+		for (const item of items) {
+			const matched = item.label.includes(value.toLowerCase()) || item.keywords.some((x) => x.toLowerCase().includes(value.toLowerCase()));
+			if (matched) {
+				searchResult.value.push({
+					id: item.id,
+					path: item.path ?? parents.find((x) => x.path != null)?.path,
+					labels: [item.label, ...parents.map((x) => x.label)],
+					icon: item.icon ?? parents.find((x) => x.icon != null)?.icon,
+				});
+			}
+
+			if (item.children) {
+				dive(item.children, [item, ...parents]);
+			}
+		}
+	};
+
+	dive(props.searchIndex);
 });
 
 function searchSubmit() {

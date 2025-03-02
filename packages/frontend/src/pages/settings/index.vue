@@ -40,8 +40,9 @@ import { instance } from '@/instance.js';
 import { definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import * as os from '@/os.js';
 import { useRouter } from '@/router/supplier.js';
+import { searchIndexes } from '@/scripts/autogen/settings-search-index.js';
 
-const SETTING_INDEX = 'TODO';
+const SETTING_INDEX = searchIndexes;
 
 const indexInfo = {
 	title: i18n.ts.settings,
