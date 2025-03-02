@@ -1109,7 +1109,9 @@ async function processVueFile(
 				// 行番号はコード先頭からの改行数で取得
 				const lineNumber = code.slice(0, node.loc.start.offset).split('\n').length;
 				// ファイルパスと行番号からハッシュ値を生成
-				const generatedMarkerId = toBase62(hash(`${id}:${lineNumber}`));
+				// この際実行環境で差が出ないようにファイルパスを正規化
+				const idKey = id.split('packages/frontend/')[1]
+				const generatedMarkerId = toBase62(hash(`${idKey}:${lineNumber}`));
 
 				const props = node.props || [];
 				const hasMarkerIdProp = props.some((prop: any) => prop.type === 6 && prop.name === 'markerId');

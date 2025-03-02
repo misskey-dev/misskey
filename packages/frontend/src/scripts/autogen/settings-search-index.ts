@@ -20,58 +20,58 @@ export type SearchIndexItem = {
 
 export const searchIndexes:SearchIndexItem[] = [
 	{
-		id: 'marker-ivoxldn2',
+		id: 'w4L6myH61',
 		children: [
 			{
-				id: 'marker-442hcgtm',
+				id: 'o1r83vQ5x',
 				label: i18n.ts._profile.name,
 				keywords: ['name'],
 			},
 			{
-				id: 'marker-rv9gdc0i',
+				id: 'gQ1q57Z60',
 				label: i18n.ts._profile.description,
 				keywords: ['description', 'bio'],
 			},
 			{
-				id: 'marker-m12hb2cg',
+				id: 'pWi4OLS8g',
 				label: i18n.ts.location,
 				keywords: ['location', 'locale'],
 			},
 			{
-				id: 'marker-8ghv5rt5',
+				id: 'nwDUM7yxq',
 				label: i18n.ts.birthday,
 				keywords: ['birthday', 'birthdate', 'age'],
 			},
 			{
-				id: 'marker-pgvmorvh',
+				id: 'jBJbaV70t',
 				label: i18n.ts.language,
 				keywords: ['language', 'locale'],
 			},
 			{
-				id: 'marker-x2k1chpn',
+				id: 'psZmSom14',
 				label: i18n.ts._profile.metadataEdit,
 				keywords: ['metadata'],
 			},
 			{
-				id: 'marker-jjutta5s',
+				id: 'j3lwoPCmq',
 				label: i18n.ts._profile.followedMessage,
 				keywords: ['follow', 'message', i18n.ts._profile.followedMessageDescription],
 			},
 			{
-				id: 'marker-pmexhj89',
+				id: 's1QTAFbu',
 				label: i18n.ts.reactionAcceptance,
 				keywords: ['reaction'],
 			},
 			{
-				id: 'marker-ycrvsaf6',
+				id: 'cdqZBOrdl',
 				children: [
 					{
-						id: 'marker-oigaag5u',
+						id: 'uqcIORpyy',
 						label: i18n.ts.flagAsCat,
 						keywords: ['cat', i18n.ts.flagAsCatDescription],
 					},
 					{
-						id: 'marker-8e5my3jw',
+						id: 'qKT3S3U4v',
 						label: i18n.ts.flagAsBot,
 						keywords: ['bot', i18n.ts.flagAsBotDescription],
 					},
@@ -86,68 +86,68 @@ export const searchIndexes:SearchIndexItem[] = [
 		icon: 'ti ti-user',
 	},
 	{
-		id: 'marker-qkmo5xt7',
+		id: '2rp9ka5Ht',
 		children: [
 			{
-				id: 'marker-gq65ed46',
+				id: 'qBUSKPxLW',
 				label: i18n.ts.makeFollowManuallyApprove,
 				keywords: ['follow', 'lock', i18n.ts.lockedAccountInfo],
 			},
 			{
-				id: 'marker-us4p761g',
+				id: 'rPrD9hseA',
 				label: i18n.ts.autoAcceptFollowed,
 				keywords: ['follow', 'auto', 'accept'],
 			},
 			{
-				id: 'marker-ltdqnojh',
+				id: 'ANJfIs1m8',
 				label: i18n.ts.makeReactionsPublic,
 				keywords: ['reaction', 'public', i18n.ts.makeReactionsPublicDescription],
 			},
 			{
-				id: 'marker-28jtlr19',
+				id: '5hAiPsvL6',
 				label: i18n.ts.followingVisibility,
 				keywords: ['following', 'visibility'],
 			},
 			{
-				id: 'marker-x8p8jntc',
+				id: '222gQg5jr',
 				label: i18n.ts.followersVisibility,
 				keywords: ['follower', 'visibility'],
 			},
 			{
-				id: 'marker-wl1av375',
+				id: 'EV3fBAsVU',
 				label: i18n.ts.hideOnlineStatus,
 				keywords: ['online', 'status', i18n.ts.hideOnlineStatusDescription],
 			},
 			{
-				id: 'marker-o9mx5epn',
+				id: 's7LdSpiLn',
 				label: i18n.ts.noCrawle,
 				keywords: ['crawle', 'index', 'search', i18n.ts.noCrawleDescription],
 			},
 			{
-				id: 'marker-nlrfi880',
+				id: 'cyeDbLN8N',
 				label: i18n.ts.preventAiLearning,
 				keywords: ['crawle', 'ai', i18n.ts.preventAiLearningDescription],
 			},
 			{
-				id: 'marker-meuqilul',
+				id: 'xltm8YEFo',
 				label: i18n.ts.makeExplorable,
 				keywords: ['explore', i18n.ts.makeExplorableDescription],
 			},
 			{
-				id: 'marker-xh8dhnmy',
+				id: 'lUtOQbnwi',
 				children: [
 					{
-						id: 'marker-d8j5spte',
+						id: 'xryqY95La',
 						label: i18n.ts._accountSettings.requireSigninToViewContents,
 						keywords: ['login', 'signin', i18n.ts._accountSettings.requireSigninToViewContentsDescription1, i18n.ts._accountSettings.requireSigninToViewContentsDescription2, i18n.ts._accountSettings.requireSigninToViewContentsDescription3],
 					},
 					{
-						id: 'marker-jqrc6mwj',
+						id: '9QtbNiKFM',
 						label: i18n.ts._accountSettings.makeNotesFollowersOnlyBefore,
 						keywords: ['follower', i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription],
 					},
 					{
-						id: 'marker-ixe02l4z',
+						id: '5JGl5CuHV',
 						label: i18n.ts._accountSettings.makeNotesHiddenBefore,
 						keywords: ['hidden', i18n.ts._accountSettings.makeNotesHiddenBeforeDescription],
 					},
@@ -156,17 +156,17 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['lockdown'],
 			},
 			{
-				id: 'marker-jnzn6ufj',
+				id: '5jvX4bb1M',
 				label: i18n.ts.rememberNoteVisibility,
 				keywords: ['remember', 'keep', 'note', 'visibility'],
 			},
 			{
-				id: 'marker-3ckk29gw',
+				id: '22a5EQ1e',
 				label: i18n.ts.defaultNoteVisibility,
 				keywords: ['default', 'note', 'visibility'],
 			},
 			{
-				id: 'marker-g2rd6clc',
+				id: 'cwHVT1RF0',
 				label: i18n.ts.keepCw,
 				keywords: ['remember', 'keep', 'note', 'cw'],
 			},
@@ -177,13 +177,13 @@ export const searchIndexes:SearchIndexItem[] = [
 		icon: 'ti ti-lock-open',
 	},
 	{
-		id: 'marker-dmj8mric',
+		id: '3icEvyv2D',
 		children: [
 			{
-				id: 'marker-rlomnwy4',
+				id: 'Tyt3gZTy',
 				children: [
 					{
-						id: 'marker-03maf29t',
+						id: '9b7ZURyAt',
 						label: i18n.ts.showMutedWord,
 						keywords: ['show'],
 					},
@@ -192,27 +192,27 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['note', 'word', 'soft', 'mute', 'hide'],
 			},
 			{
-				id: 'marker-5kzrz4t5',
+				id: 'kdMk41II0',
 				label: i18n.ts.hardWordMute,
 				keywords: ['note', 'word', 'hard', 'mute', 'hide'],
 			},
 			{
-				id: 'marker-ptyw2prf',
+				id: 'mjORQamAK',
 				label: i18n.ts.instanceMute,
 				keywords: ['note', 'server', 'instance', 'host', 'federation', 'mute', 'hide'],
 			},
 			{
-				id: 'marker-epiezv85',
+				id: '1ZT7S9FZd',
 				label: `${i18n.ts.mutedUsers} (${ i18n.ts.renote })`,
 				keywords: ['renote', 'mute', 'hide', 'user'],
 			},
 			{
-				id: 'marker-ilputfis',
+				id: 'ANrPit3kQ',
 				label: i18n.ts.mutedUsers,
 				keywords: ['note', 'mute', 'hide', 'user'],
 			},
 			{
-				id: 'marker-304lg4wb',
+				id: 'bPAE4lfno',
 				label: i18n.ts.blockedUsers,
 				keywords: ['block', 'user'],
 			},
@@ -223,103 +223,103 @@ export const searchIndexes:SearchIndexItem[] = [
 		icon: 'ti ti-ban',
 	},
 	{
-		id: 'marker-f6l3ctlv',
+		id: 'BHYnopAJj',
 		children: [
 			{
-				id: 'marker-rm16co08',
+				id: 'td5wn279u',
 				label: i18n.ts.uiLanguage,
 				keywords: ['language'],
 			},
 			{
-				id: 'marker-ovxxndfu',
+				id: '1VUmze3h9',
 				label: i18n.ts.overridedDeviceKind,
 				keywords: ['device', 'type', 'kind', 'smartphone', 'tablet', 'desktop'],
 			},
 			{
-				id: 'marker-k3kz2rjt',
+				id: 'hDmIFtgMg',
 				label: i18n.ts.showFixedPostForm,
 				keywords: ['post', 'form', 'timeline'],
 			},
 			{
-				id: 'marker-2o43q70p',
+				id: '7FFid91y5',
 				label: i18n.ts.showFixedPostFormInChannel,
 				keywords: ['post', 'form', 'timeline', 'channel'],
 			},
 			{
-				id: 'marker-x65x1cua',
+				id: '42RwKVTja',
 				label: i18n.ts.pinnedList,
 				keywords: ['pinned', 'list'],
 			},
 			{
-				id: 'marker-bd2jol5x',
+				id: 'uQAj9Utao',
 				children: [
 					{
-						id: 'marker-t1kgtukj',
+						id: 'nDZ5ErWVT',
 						label: i18n.ts.collapseRenotes,
 						keywords: ['renote', i18n.ts.collapseRenotesDescription],
 					},
 					{
-						id: 'marker-ggf1jcz4',
+						id: 'qyocaM8g1',
 						label: i18n.ts.showNoteActionsOnlyHover,
 						keywords: ['hover', 'show', 'footer', 'action'],
 					},
 					{
-						id: 'marker-vtkhzc0l',
+						id: '5v373W0MI',
 						label: i18n.ts.showClipButtonInNoteFooter,
 						keywords: ['footer', 'action', 'clip', 'show'],
 					},
 					{
-						id: 'marker-nfqqk7xd',
+						id: 'ESSXOZsEN',
 						label: i18n.ts.enableAdvancedMfm,
 						keywords: ['mfm', 'enable', 'show', 'advanced'],
 					},
 					{
-						id: 'marker-o4lbfl0j',
+						id: 'qyZKZU9ho',
 						label: i18n.ts.enableAnimatedMfm,
 						keywords: ['mfm', 'enable', 'show', 'animated'],
 					},
 					{
-						id: 'marker-08pdc0i5',
+						id: 'jt6SLsCCn',
 						label: i18n.ts.enableQuickAddMfmFunction,
 						keywords: ['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn'],
 					},
 					{
-						id: 'marker-ci1v1ju0',
+						id: 'lJhIi4Ao8',
 						label: i18n.ts.showReactionsCount,
 						keywords: ['reaction', 'count', 'show'],
 					},
 					{
-						id: 'marker-vq1li3y5',
+						id: 'A4qypcTM2',
 						label: i18n.ts.showGapBetweenNotesInTimeline,
 						keywords: ['note', 'timeline', 'gap'],
 					},
 					{
-						id: 'marker-4zzmm7rh',
+						id: '7EhwaW0pa',
 						label: i18n.ts.loadRawImages,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment'],
 					},
 					{
-						id: 'marker-zdl3a4x4',
+						id: 'yUsy4JTN5',
 						label: i18n.ts.reactionsDisplaySize,
 						keywords: ['reaction', 'size', 'scale', 'display'],
 					},
 					{
-						id: 'marker-lf78qj0l',
+						id: 'DFpxq45Hb',
 						label: i18n.ts.limitWidthOfReaction,
 						keywords: ['reaction', 'size', 'scale', 'display', 'width', 'limit'],
 					},
 					{
-						id: 'marker-1g3tuirr',
+						id: 'fbWazGKPi',
 						label: i18n.ts.instanceTicker,
 						keywords: ['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation'],
 					},
 					{
-						id: 'marker-bc0by80n',
+						id: 'DMZls6vk7',
 						label: i18n.ts.displayOfSensitiveMedia,
 						keywords: ['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility'],
 					},
 					{
-						id: 'marker-050keh4u',
+						id: '7jTywaYhy',
 						label: i18n.ts.mediaListWithOneImageAppearance,
 						keywords: ['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'list', 'size', 'height'],
 					},
@@ -328,20 +328,20 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['note', 'display'],
 			},
 			{
-				id: 'marker-ontmcscb',
+				id: '5eAweHfbB',
 				children: [
 					{
-						id: 'marker-jtc2j2vk',
+						id: 'CEebUGfhp',
 						label: i18n.ts.useGroupedNotifications,
 						keywords: ['group'],
 					},
 					{
-						id: 'marker-2c0dfum1',
+						id: 't1tZdQBfO',
 						label: i18n.ts.position,
 						keywords: ['position'],
 					},
 					{
-						id: 'marker-8cpow4bx',
+						id: 'flN1faGoA',
 						label: i18n.ts.stackAxis,
 						keywords: ['stack', 'axis', 'direction'],
 					},
@@ -350,75 +350,75 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['notification', 'display'],
 			},
 			{
-				id: 'marker-ll2x7yjf',
+				id: 'mQGRRx6tT',
 				children: [
 					{
-						id: 'marker-q6spj6dn',
+						id: '3ZIw8fJes',
 						label: i18n.ts.reduceUiAnimation,
 						keywords: ['animation', 'motion', 'reduce'],
 					},
 					{
-						id: 'marker-kpw3mmoq',
+						id: '4fF9YEwzx',
 						label: i18n.ts.useBlurEffect,
 						keywords: ['blur'],
 					},
 					{
-						id: 'marker-3x3evqye',
+						id: '9SzXVj08I',
 						label: i18n.ts.useBlurEffectForModal,
 						keywords: ['blur', 'modal'],
 					},
 					{
-						id: 'marker-8xmqhbab',
+						id: '2evMKPUjt',
 						label: i18n.ts.disableShowingAnimatedImages,
 						keywords: ['disable', 'animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif'],
 					},
 					{
-						id: 'marker-8pkps5p8',
+						id: 'r4RRPrEzy',
 						label: i18n.ts.highlightSensitiveMedia,
 						keywords: ['highlight', 'sensitive', 'nsfw', 'image', 'photo', 'picture', 'media', 'thumbnail'],
 					},
 					{
-						id: 'marker-t9guemea',
+						id: '4Wt4cwgCv',
 						label: i18n.ts.squareAvatars,
 						keywords: ['avatar', 'icon', 'square'],
 					},
 					{
-						id: 'marker-eb58wnac',
+						id: 'mVrBof6ht',
 						label: i18n.ts.showAvatarDecorations,
 						keywords: ['avatar', 'icon', 'decoration', 'show'],
 					},
 					{
-						id: 'marker-5s4pr4hg',
+						id: 'bxl56I6Js',
 						label: i18n.ts.useSystemFont,
 						keywords: ['font', 'system', 'native'],
 					},
 					{
-						id: 'marker-m94oss9b',
+						id: 'nE0OJHP1F',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: 'marker-zy7zggt9',
+						id: '50tT4J1Il',
 						label: i18n.ts.seasonalScreenEffect,
 						keywords: ['effect', 'show'],
 					},
 					{
-						id: 'marker-4dqzhhx5',
+						id: 'cYlqNA2ja',
 						label: i18n.ts.useNativeUIForVideoAudioPlayer,
 						keywords: ['native', 'system', 'video', 'audio', 'player', 'media'],
 					},
 					{
-						id: 'marker-89ux5qm5',
+						id: '8idWXW0kM',
 						label: i18n.ts.menuStyle,
 						keywords: ['menu', 'style', 'popup', 'drawer'],
 					},
 					{
-						id: 'marker-6k38wplg',
+						id: 'tRYGdMhC5',
 						label: i18n.ts.emojiStyle,
 						keywords: ['emoji', 'style', 'native', 'system', 'fluent', 'twemoji'],
 					},
 					{
-						id: 'marker-ux9fnd1o',
+						id: 'rJGb6kbug',
 						label: i18n.ts.fontSize,
 						keywords: ['font', 'size'],
 					},
@@ -427,70 +427,70 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['appearance'],
 			},
 			{
-				id: 'marker-54qde4dz',
+				id: 'yHf6FwZzS',
 				children: [
 					{
-						id: 'marker-w266ia02',
+						id: '3SAZzl6ov',
 						label: i18n.ts.openImageInNewTab,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab'],
 					},
 					{
-						id: 'marker-qga4vg3h',
+						id: 'kgaoT60Jf',
 						label: i18n.ts.useReactionPickerForContextMenu,
 						keywords: ['reaction', 'picker', 'contextmenu', 'open'],
 					},
 					{
-						id: 'marker-034surqc',
+						id: 'exAVRnfgM',
 						label: i18n.ts.enableInfiniteScroll,
 						keywords: ['load', 'auto', 'more'],
 					},
 					{
-						id: 'marker-hpxyuoft',
+						id: 'mg4bkLiRn',
 						label: i18n.ts.keepScreenOn,
 						keywords: ['keep', 'screen', 'display', 'on'],
 					},
 					{
-						id: 'marker-hqux8ljb',
+						id: 'OoduRTGi',
 						label: i18n.ts.disableStreamingTimeline,
 						keywords: ['disable', 'streaming', 'timeline'],
 					},
 					{
-						id: 'marker-9k3fmkjq',
+						id: 'DIvAShWJT',
 						label: i18n.ts.enableHorizontalSwipe,
 						keywords: ['swipe', 'horizontal', 'tab'],
 					},
 					{
-						id: 'marker-0f43qpk3',
+						id: 'gnvsK1f4t',
 						label: i18n.ts.alwaysConfirmFollow,
 						keywords: ['follow', 'confirm', 'always'],
 					},
 					{
-						id: 'marker-2s2ry7hk',
+						id: '8ej4d4fzp',
 						label: i18n.ts.confirmWhenRevealingSensitiveMedia,
 						keywords: ['sensitive', 'nsfw', 'media', 'image', 'photo', 'picture', 'attachment', 'confirm'],
 					},
 					{
-						id: 'marker-8xiglms2',
+						id: 'pweoSKdds',
 						label: i18n.ts.confirmOnReact,
 						keywords: ['reaction', 'confirm'],
 					},
 					{
-						id: 'marker-17gnrcdd',
+						id: 'Dl4LzynZL',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: 'marker-8kzrvf60',
+						id: 'yi1mGhcTJ',
 						label: i18n.ts._contextMenu.title,
 						keywords: ['contextmenu', 'system', 'native'],
 					},
 					{
-						id: 'marker-rtxgjbdb',
+						id: 'r0DOAeSV1',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: 'marker-keaqtsok',
+						id: 'z0Swo69MZ',
 						label: i18n.ts.dataSaver,
 						keywords: ['datasaver'],
 					},
