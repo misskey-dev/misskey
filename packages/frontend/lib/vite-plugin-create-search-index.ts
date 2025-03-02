@@ -201,6 +201,15 @@ async function processVueFile(
 	options: { targetFilePaths: string[], exportFilePath: string },
 	transformedCodeCache: Record<string, string>
 ) {
+	// すでにキャッシュに存在する場合は、そのまま返す
+	if (transformedCodeCache[id] && transformedCodeCache[id].includes('markerId=')) {
+		console.log(`[create-search-index] Using cached version for ${id}`);
+		return {
+			code: transformedCodeCache[id],
+			map: null
+		};
+	}
+
 	const s = new MagicString(code); // magic-string のインスタンスを作成
 	const parsed = vueSfcParse(code, { filename: id });
 	if (!parsed.descriptor.template) {
@@ -238,9 +247,34 @@ async function processVueFile(
 				});
 
 				if (!hasMarkerIdProp) {
-					const startTagEnd = code.indexOf('>', node.loc.start.offset);
-					if (startTagEnd !== -1) {
-						s.appendRight(startTagEnd, ` markerId="${generatedMarkerId}"`);
+					const nodeStart = node.loc.start.offset;
+					let endOfStartTag;
+
+					if (node.children && node.children.length > 0) {
+						// 子要素がある場合、最初の子要素の開始位置を基準にする
+						endOfStartTag = code.lastIndexOf('>', node.children[0].loc.start.offset);
+					} else if (node.loc.end.offset > nodeStart) {
+						// 子要素がない場合、自身の終了位置から逆算
+						const nodeSource = code.substring(nodeStart, node.loc.end.offset);
+						// 自己終了タグか通常の終了タグかを判断
+						if (nodeSource.includes('/>')) {
+							endOfStartTag = code.indexOf('/>', nodeStart) - 1;
+						} else {
+							endOfStartTag = code.indexOf('>', nodeStart);
+						}
+					}
+
+					if (endOfStartTag !== undefined && endOfStartTag !== -1) {
+						// markerId が既に存在しないことを確認
+						const tagText = code.substring(nodeStart, endOfStartTag + 1);
+						const markerIdRegex = /\s+markerId\s*=\s*["'][^"']*["']/;
+
+						if (!markerIdRegex.test(tagText)) {
+							s.appendRight(endOfStartTag, ` markerId="${generatedMarkerId}"`);
+							console.log(`[create-search-index] Adding markerId="${generatedMarkerId}" to ${id}:${lineNumber}`);
+						} else {
+							console.log(`[create-search-index] markerId already exists in ${id}:${lineNumber}`);
+						}
 					}
 				}
 			}
@@ -254,39 +288,100 @@ async function processVueFile(
 		traverse(ast); // AST を traverse (1段階目: ID 生成と親子関係記録)
 
 		// 2段階目: :children 属性の追加
-		markerRelations.forEach(relation => {
-			if (relation.parentId) { // 親 ID が存在する (子マーカーである) 場合
-				const parentRelation = markerRelations.find(r => r.markerId === relation.parentId); // 親 Relation を検索
-				if (parentRelation && parentRelation.node) {
-					const parentNode = parentRelation.node;
-					const childrenProp = parentNode.props?.find((prop: any) => prop.type === 7 && prop.name === 'bind' && prop.arg?.content === 'children');
-					const childMarkerId = relation.markerId;
+		// 最初に親マーカーごとに子マーカーIDを集約する処理を追加
+		const parentChildrenMap = new Map<string, string[]>();
 
-					if (childrenProp) {
-						// 既存の :children 属性を JavaScript 配列として解析・更新
-						try {
-							const childrenStart = code.indexOf('[', childrenProp.exp.loc.start.offset);
-							const childrenEnd = code.indexOf(']', childrenProp.exp.loc.start.offset);
-							if (childrenStart !== -1 && childrenEnd !== -1) {
-								const childrenArrayStr = code.slice(childrenStart, childrenEnd + 1);
-								const childrenArray = JSON5.parse(childrenArrayStr.replace(/'/g, '"')); // JSON5 で解析 (シングルクォート対応)
-								childrenArray.push(childMarkerId); // 子マーカーIDを追加
-								const updatedChildrenArrayStr = JSON.stringify(childrenArray).replace(/"/g, "'"); // シングルクォートの配列文字列に再変換
-								s.overwrite(childrenStart, childrenEnd + 1, updatedChildrenArrayStr); // 属性値を書き換え
-							}
-						} catch (e) {
-							console.error('[create-search-index] Error updating :children attribute:', e); // エラーログ
-						}
-					} else {
-						// :children 属性が存在しない場合は新規作成 (テンプレートリテラルを使用)
-						const startTagEnd = code.indexOf('>', parentNode.loc.start.offset); // 親の開始タグの閉じ > の位置
-						if (startTagEnd !== -1) {
-							s.appendRight(startTagEnd, ` :children="${JSON.stringify([childMarkerId]).replace(/"/g, "'")}"`); // :children 属性を追記
-						}
-					}
+		// 1. まず親ごとのすべての子マーカーIDを収集
+		markerRelations.forEach(relation => {
+			if (relation.parentId) {
+				if (!parentChildrenMap.has(relation.parentId)) {
+					parentChildrenMap.set(relation.parentId, []);
 				}
+				parentChildrenMap.get(relation.parentId)?.push(relation.markerId);
 			}
 		});
+
+		// 2. 親ごとにまとめて :children 属性を処理
+		for (const [parentId, childIds] of parentChildrenMap.entries()) {
+			const parentRelation = markerRelations.find(r => r.markerId === parentId);
+			if (!parentRelation || !parentRelation.node) continue;
+
+			const parentNode = parentRelation.node;
+			const childrenProp = parentNode.props?.find((prop: any) => prop.type === 7 && prop.name === 'bind' && prop.arg?.content === 'children');
+
+			// 親ノードの開始位置を特定
+			const parentNodeStart = parentNode.loc.start.offset;
+			const endOfParentStartTag = parentNode.children && parentNode.children.length > 0
+				? code.lastIndexOf('>', parentNode.children[0].loc.start.offset)
+				: code.indexOf('>', parentNodeStart);
+
+			if (endOfParentStartTag === -1) continue;
+
+			// 親タグのテキストを取得
+			const parentTagText = code.substring(parentNodeStart, endOfParentStartTag + 1);
+
+			if (childrenProp) {
+				// AST で :children 属性が検出された場合、それを更新
+				try {
+					const childrenStart = code.indexOf('[', childrenProp.exp.loc.start.offset);
+					const childrenEnd = code.indexOf(']', childrenProp.exp.loc.start.offset);
+					if (childrenStart !== -1 && childrenEnd !== -1) {
+						const childrenArrayStr = code.slice(childrenStart, childrenEnd + 1);
+						let childrenArray = JSON5.parse(childrenArrayStr.replace(/'/g, '"'));
+
+						// 新しいIDを追加（重複は除外）
+						const newIds = childIds.filter(id => !childrenArray.includes(id));
+						if (newIds.length > 0) {
+							childrenArray = [...childrenArray, ...newIds];
+							const updatedChildrenArrayStr = JSON.stringify(childrenArray).replace(/"/g, "'");
+							s.overwrite(childrenStart, childrenEnd + 1, updatedChildrenArrayStr);
+							console.log(`[create-search-index] Added ${newIds.length} child markerIds to existing :children in ${id}`);
+						}
+					}
+				} catch (e) {
+					console.error('[create-search-index] Error updating :children attribute:', e);
+				}
+			} else {
+				// AST では検出されなかった場合、タグテキストを調べる
+				const childrenRegex = /:children\s*=\s*["']\[(.*?)\]["']/;
+				const childrenMatch = parentTagText.match(childrenRegex);
+
+				if (childrenMatch) {
+					// テキストから :children 属性値を解析して更新
+					try {
+						const childrenContent = childrenMatch[1];
+						const childrenArrayStr = `[${childrenContent}]`;
+						const childrenArray = JSON5.parse(childrenArrayStr.replace(/'/g, '"'));
+
+						// 新しいIDを追加（重複は除外）
+						const newIds = childIds.filter(id => !childrenArray.includes(id));
+						if (newIds.length > 0) {
+							childrenArray.push(...newIds);
+
+							// :children="[...]" の位置を特定して上書き
+							const attrStart = parentTagText.indexOf(':children=');
+							if (attrStart > -1) {
+								const attrValueStart = parentTagText.indexOf('[', attrStart);
+								const attrValueEnd = parentTagText.indexOf(']', attrValueStart) + 1;
+								if (attrValueStart > -1 && attrValueEnd > -1) {
+									const absoluteStart = parentNodeStart + attrValueStart;
+									const absoluteEnd = parentNodeStart + attrValueEnd;
+									const updatedArrayStr = JSON.stringify(childrenArray).replace(/"/g, "'");
+									s.overwrite(absoluteStart, absoluteEnd, updatedArrayStr);
+									console.log(`[create-search-index] Updated existing :children in tag text for ${id}`);
+								}
+							}
+						}
+					} catch (e) {
+						console.error('[create-search-index] Error updating :children in tag text:', e);
+					}
+				} else {
+					// :children 属性がまだない場合、新規作成
+					s.appendRight(endOfParentStartTag, ` :children="${JSON.stringify(childIds).replace(/"/g, "'")}"`);
+					console.log(`[create-search-index] Created new :children attribute with ${childIds.length} markerIds in ${id}`);
+				}
+			}
+		}
 	}
 
 	const transformedCode = s.toString(); //  変換後のコードを取得
