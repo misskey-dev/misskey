@@ -473,6 +473,11 @@ export class ClientServerService {
 			return await reply.sendFile('/robots.txt', staticAssets);
 		});
 
+		// ナビゲーションバーの追加リンク
+		fastify.get('/links.json', async (request, reply) => {
+			return await reply.sendFile('/links.json', staticAssets);
+		});
+
 		// OpenSearch XML
 		fastify.get('/opensearch.xml', async (request, reply) => {
 			const name = this.meta.name ?? 'Misskey';
