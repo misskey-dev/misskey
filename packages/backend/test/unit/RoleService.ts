@@ -57,6 +57,12 @@ describe('RoleService', () => {
 		return await usersRepository.findOneByOrFail(x.identifiers[0]);
 	}
 
+	async function createRoot(data: Partial<MiUser> = {}) {
+		const user = await createUser(data);
+		meta.rootUserId = user.id;
+		return user;
+	}
+
 	async function createRole(data: Partial<MiRole> = {}) {
 		const x = await rolesRepository.insert({
 			id: genAidx(Date.now()),
@@ -279,7 +285,7 @@ describe('RoleService', () => {
 	describe('getModeratorIds', () => {
 		test('includeAdmins = false, includeRoot = false, excludeExpire = false', async () => {
 			const [adminUser1, adminUser2, modeUser1, modeUser2, normalUser1, normalUser2, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createUser({ isRoot: true }),
+				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
@@ -305,7 +311,7 @@ describe('RoleService', () => {
 
 		test('includeAdmins = false, includeRoot = false, excludeExpire = true', async () => {
 			const [adminUser1, adminUser2, modeUser1, modeUser2, normalUser1, normalUser2, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createUser({ isRoot: true }),
+				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
@@ -331,7 +337,7 @@ describe('RoleService', () => {
 
 		test('includeAdmins = true, includeRoot = false, excludeExpire = false', async () => {
 			const [adminUser1, adminUser2, modeUser1, modeUser2, normalUser1, normalUser2, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createUser({ isRoot: true }),
+				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
@@ -357,7 +363,7 @@ describe('RoleService', () => {
 
 		test('includeAdmins = true, includeRoot = false, excludeExpire = true', async () => {
 			const [adminUser1, adminUser2, modeUser1, modeUser2, normalUser1, normalUser2, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createUser({ isRoot: true }),
+				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
@@ -383,7 +389,7 @@ describe('RoleService', () => {
 
 		test('includeAdmins = false, includeRoot = true, excludeExpire = false', async () => {
 			const [adminUser1, adminUser2, modeUser1, modeUser2, normalUser1, normalUser2, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createUser({ isRoot: true }),
+				createUser(), createUser(), createUser(), createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
@@ -409,7 +415,7 @@ describe('RoleService', () => {
 
 		test('root has moderator role', async () => {
 			const [adminUser1, modeUser1, normalUser1, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createUser({ isRoot: true }),
+				createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
@@ -433,7 +439,7 @@ describe('RoleService', () => {
 
 		test('root has administrator role', async () => {
 			const [adminUser1, modeUser1, normalUser1, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createUser({ isRoot: true }),
+				createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
@@ -457,7 +463,7 @@ describe('RoleService', () => {
 
 		test('root has moderator role(expire)', async () => {
 			const [adminUser1, modeUser1, normalUser1, rootUser] = await Promise.all([
-				createUser(), createUser(), createUser(), createUser({ isRoot: true }),
+				createUser(), createUser(), createUser(), createRoot(),
 			]);
 
 			const role1 = await createRole({ name: 'admin', isAdministrator: true });
