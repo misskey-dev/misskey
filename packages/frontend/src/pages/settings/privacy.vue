@@ -258,7 +258,6 @@ import FormSlot from '@/components/form/slot.vue';
 import { formatDateTimeString } from '@/scripts/format-time-string.js';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
-import MkSearchMarker from '@/components/MkSearchMarker.vue';
 
 const $i = signinRequired();
 
