@@ -2709,3 +2709,7 @@ _embedCodeGen:
 _remoteLookupErrors:
   _noSuchObject:
     title: "ไม่พบหน้าที่ต้องการ"
+_search:
+  searchScopeAll: "ทั้งหมด"
+  searchScopeLocal: "ท้องถิ่น"
+  searchScopeUser: "ผู้ใช้เฉพาะ"

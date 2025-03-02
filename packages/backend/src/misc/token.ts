@@ -5,5 +5,6 @@
 
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 
-// eslint-disable-next-line import/no-default-export
-export default () => secureRndstr(16);
+export const generateNativeUserToken = () => secureRndstr(16);
+
+export const isNativeUserToken = (token: string) => token.length === 16;

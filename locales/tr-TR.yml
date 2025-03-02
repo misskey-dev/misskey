@@ -460,3 +460,5 @@ _deck:
 _moderationLogTypes:
   suspend: "askıya al"
   resetPassword: "Şifre sıfırlama"
+_search:
+  searchScopeAll: "Tümü"
