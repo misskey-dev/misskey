@@ -2594,6 +2594,7 @@ _moderationLogTypes:
   deletePage: "删除了页面"
   deleteFlash: "删除了 Play"
   deleteGalleryPost: "删除了图库稿件"
+  updateProxyAccountDescription: "更新代理账户的说明"
 _fileViewer:
   title: "文件信息"
   type: "文件类型"
