@@ -1274,7 +1274,7 @@ async function processVueFile(
 						const markerIdRegex = /\s+markerId\s*=\s*["'][^"']*["']/;
 
 						if (!markerIdRegex.test(tagText)) {
-							s.appendRight(endOfStartTag, ` markerId="${generatedMarkerId}"`);
+							s.appendRight(endOfStartTag, ` markerId="${generatedMarkerId}" data-in-app-search-marker-id="${generatedMarkerId}"`);
 							logger.info(`Adding markerId="${generatedMarkerId}" to ${id}:${lineNumber}`);
 						} else {
 							logger.info(`markerId already exists in ${id}:${lineNumber}`);
