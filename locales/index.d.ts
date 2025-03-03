@@ -5270,6 +5270,10 @@ export interface Locale extends ILocale {
      * このメディアのセンシティブ指定を解除しますか？
      */
     "unmarkAsSensitiveConfirm": string;
+    /**
+     * 環境設定
+     */
+    "preferences": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

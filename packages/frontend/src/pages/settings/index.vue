@@ -66,7 +66,6 @@ const ro = new ResizeObserver((entries, observer) => {
 });
 
 const menuDef = computed<SuperMenuDef[]>(() => [{
-	title: i18n.ts.basicSettings,
 	items: [{
 		icon: 'ti ti-user',
 		text: i18n.ts.profile,
@@ -104,12 +103,11 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		active: currentPage.value?.route.name === 'security',
 	}],
 }, {
-	title: i18n.ts.clientSettings,
 	items: [{
 		icon: 'ti ti-adjustments',
-		text: i18n.ts.general,
-		to: '/settings/general',
-		active: currentPage.value?.route.name === 'general',
+		text: i18n.ts.preferences,
+		to: '/settings/preferences',
+		active: currentPage.value?.route.name === 'preferences',
 	}, {
 		icon: 'ti ti-palette',
 		text: i18n.ts.theme,
@@ -137,7 +135,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		active: currentPage.value?.route.name === 'plugin',
 	}],
 }, {
-	title: i18n.ts.otherSettings,
 	items: [{
 		icon: 'ti ti-badges',
 		text: i18n.ts.roles,

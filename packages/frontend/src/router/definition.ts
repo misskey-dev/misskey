@@ -90,9 +90,9 @@ const routes: RouteDef[] = [{
 		name: 'security',
 		component: page(() => import('@/pages/settings/security.vue')),
 	}, {
-		path: '/general',
-		name: 'general',
-		component: page(() => import('@/pages/settings/general.vue')),
+		path: '/preferences',
+		name: 'preferences',
+		component: page(() => import('@/pages/settings/preferences.vue')),
 	}, {
 		path: '/theme/install',
 		name: 'theme',
@@ -163,7 +163,7 @@ const routes: RouteDef[] = [{
 		component: page(() => import('@/pages/settings/preferences-backups.vue')),
 	}, {
 		path: '/custom-css',
-		name: 'general',
+		name: 'preferences',
 		component: page(() => import('@/pages/settings/custom-css.vue')),
 	}, {
 		path: '/accounts',

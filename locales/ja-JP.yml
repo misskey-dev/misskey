@@ -1313,6 +1313,7 @@ confirmOnReact: "リアクションする際に確認する"
 reactAreYouSure: "\" {emoji} \" をリアクションしますか？"
 markAsSensitiveConfirm: "このメディアをセンシティブとして設定しますか？"
 unmarkAsSensitiveConfirm: "このメディアのセンシティブ指定を解除しますか？"
+preferences: "環境設定"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
