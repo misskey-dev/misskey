@@ -18,10 +18,11 @@ const props = defineProps<{
 	icon?: string;
 	keywords?: string[];
 	children?: string[];
+	childrenHidden?: boolean;
 }>();
 
 const hash = window.location.hash.slice(1);
-const highlighted = hash === props.markerId || (props.children && props.children.includes(hash));
+const highlighted = hash === props.markerId || (props.children && props.childrenHidden && props.children.includes(hash));
 </script>
 
 <style lang="scss" module>
