@@ -2594,6 +2594,7 @@ _moderationLogTypes:
   deletePage: "Esborrar la pàgina"
   deleteFlash: "Esborrar el guió"
   deleteGalleryPost: "Esborrar la publicació de la galeria"
+  updateProxyAccountDescription: "Actualitzar descripció del compte proxy"
 _fileViewer:
   title: "Detall del fitxer"
   type: "Tipus de fitxer"
