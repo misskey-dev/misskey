@@ -19,63 +19,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<SearchMarker
-			:label="i18n.ts._profile.name"
-			:keywords="['name']"
-		>
+		<SearchMarker :keywords="['name']">
 			<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
-				<template #label>{{ i18n.ts._profile.name }}</template>
+				<template #label><SearchLabel>{{ i18n.ts._profile.name }}</SearchLabel></template>
 			</MkInput>
 		</SearchMarker>
 
-		<SearchMarker
-			:label="i18n.ts._profile.description"
-			:keywords="['description', 'bio']"
-		>
+		<SearchMarker :keywords="['description', 'bio']">
 			<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
-				<template #label>{{ i18n.ts._profile.description }}</template>
+				<template #label><SearchLabel>{{ i18n.ts._profile.description }}</SearchLabel></template>
 				<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 			</MkTextarea>
 		</SearchMarker>
 
-		<SearchMarker
-			:label="i18n.ts.location"
-			:keywords="['location', 'locale']"
-		>
+		<SearchMarker :keywords="['location', 'locale']">
 			<MkInput v-model="profile.location" manualSave>
-				<template #label>{{ i18n.ts.location }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.location }}</SearchLabel></template>
 				<template #prefix><i class="ti ti-map-pin"></i></template>
 			</MkInput>
 		</SearchMarker>
 
-		<SearchMarker
-			:label="i18n.ts.birthday"
-			:keywords="['birthday', 'birthdate', 'age']"
-		>
+		<SearchMarker :keywords="['birthday', 'birthdate', 'age']">
 			<MkInput v-model="profile.birthday" type="date" manualSave>
-				<template #label>{{ i18n.ts.birthday }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.birthday }}</SearchLabel></template>
 				<template #prefix><i class="ti ti-cake"></i></template>
 			</MkInput>
 		</SearchMarker>
 
-		<SearchMarker
-			:label="i18n.ts.language"
-			:keywords="['language', 'locale']"
-		>
+		<SearchMarker :keywords="['language', 'locale']">
 			<MkSelect v-model="profile.lang">
-				<template #label>{{ i18n.ts.language }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.language }}</SearchLabel></template>
 				<option v-for="x in Object.keys(langmap)" :key="x" :value="x">{{ langmap[x].nativeName }}</option>
 			</MkSelect>
 		</SearchMarker>
 
-		<SearchMarker
-			:label="i18n.ts._profile.metadataEdit"
-			:keywords="['metadata']"
-		>
+		<SearchMarker :keywords="['metadata']">
 			<FormSlot>
 				<MkFolder>
 					<template #icon><i class="ti ti-list"></i></template>
-					<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
+					<template #label><SearchLabel>{{ i18n.ts._profile.metadataEdit }}</SearchLabel></template>
 					<template #footer>
 						<div class="_buttons">
 							<MkButton primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
@@ -118,25 +100,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSlot>
 		</SearchMarker>
 
-		<SearchMarker
-			:label="i18n.ts._profile.followedMessage"
-			:keywords="['follow', 'message', i18n.ts._profile.followedMessageDescription]"
-		>
+		<SearchMarker :keywords="['follow', 'message']">
 			<MkInput v-model="profile.followedMessage" :max="200" manualSave :mfmPreview="false">
-				<template #label>{{ i18n.ts._profile.followedMessage }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
+				<template #label><SearchLabel>{{ i18n.ts._profile.followedMessage }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
 				<template #caption>
-					<div>{{ i18n.ts._profile.followedMessageDescription }}</div>
+					<div><SearchKeyword>{{ i18n.ts._profile.followedMessageDescription }}</SearchKeyword></div>
 					<div>{{ i18n.ts._profile.followedMessageDescriptionForLockedAccount }}</div>
 				</template>
 			</MkInput>
 		</SearchMarker>
 
-		<SearchMarker
-			:label="i18n.ts.reactionAcceptance"
-			:keywords="['reaction']"
-		>
+		<SearchMarker :keywords="['reaction']">
 			<MkSelect v-model="reactionAcceptance">
-				<template #label>{{ i18n.ts.reactionAcceptance }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.reactionAcceptance }}</SearchLabel></template>
 				<option :value="null">{{ i18n.ts.all }}</option>
 				<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
 				<option value="nonSensitiveOnly">{{ i18n.ts.nonSensitiveOnly }}</option>
@@ -145,23 +121,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSelect>
 		</SearchMarker>
 
-		<SearchMarker :label="i18n.ts.advancedSettings">
+		<SearchMarker>
 			<MkFolder>
-				<template #label>{{ i18n.ts.advancedSettings }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.advancedSettings }}</SearchLabel></template>
 
 				<div class="_gaps_m">
-					<SearchMarker
-						:label="i18n.ts.flagAsCat"
-						:keywords="['cat', i18n.ts.flagAsCatDescription]"
-					>
-						<MkSwitch v-model="profile.isCat">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></MkSwitch>
+					<SearchMarker :keywords="['cat']">
+						<MkSwitch v-model="profile.isCat">
+							<template #label><SearchLabel>{{ i18n.ts.flagAsCat }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts.flagAsCatDescription }}</template>
+						</MkSwitch>
 					</SearchMarker>
 
-					<SearchMarker
-						:label="i18n.ts.flagAsBot"
-						:keywords="['bot', i18n.ts.flagAsBotDescription]"
-					>
-						<MkSwitch v-model="profile.isBot">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></MkSwitch>
+					<SearchMarker :keywords="['bot']">
+						<MkSwitch v-model="profile.isBot">
+							<template #label><SearchLabel>{{ i18n.ts.flagAsBot }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts.flagAsBotDescription }}</template>
+						</MkSwitch>
 					</SearchMarker>
 				</div>
 			</MkFolder>
