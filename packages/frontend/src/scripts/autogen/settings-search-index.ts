@@ -25,13 +25,44 @@ export const searchIndexes:SearchIndexItem[] = [
 			{
 				id: 'nO7NnzqiC',
 				label: i18n.ts.notUseSound,
-				keywords: [],
+				keywords: ['mute'],
+			},
+			{
+				id: 'xy5OOBB4A',
+				label: i18n.ts.useSoundOnlyWhenActive,
+				keywords: ['active', 'mute'],
+			},
+			{
+				id: '9MxYVIf7k',
+				label: i18n.ts.masterVolume,
+				keywords: ['volume', 'master'],
 			},
 		],
 		label: i18n.ts.sounds,
 		keywords: ['sounds'],
 		path: '/settings/sounds',
 		icon: 'ti ti-music',
+	},
+	{
+		id: '5BjnxMfYV',
+		children: [
+			{
+				id: '3UqdSCaFw',
+				children: [
+					{
+						id: '75QPEg57v',
+						label: i18n.ts.changePassword,
+						keywords: [],
+					},
+				],
+				label: i18n.ts.password,
+				keywords: ['password'],
+			},
+		],
+		label: i18n.ts.security,
+		keywords: ['security'],
+		path: '/settings/security',
+		icon: 'ti ti-lock',
 	},
 	{
 		id: 'w4L6myH61',
@@ -152,7 +183,7 @@ export const searchIndexes:SearchIndexItem[] = [
 				children: [
 					{
 						id: 'joHMIl2pJ',
-						label: i18n.ts.requireSigninToViewContents,
+						label: i18n.ts._accountSettings.requireSigninToViewContents,
 						keywords: ['login', 'signin'],
 					},
 					{
