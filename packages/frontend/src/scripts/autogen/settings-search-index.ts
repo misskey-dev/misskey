@@ -119,55 +119,65 @@ export const searchIndexes:SearchIndexItem[] = [
 		id: 'w4L6myH61',
 		children: [
 			{
-				id: 'o1r83vQ5x',
+				id: 'ru8DrOn3J',
+				label: i18n.ts._profile.changeBanner,
+				keywords: ['banner', 'change'],
+			},
+			{
+				id: 'CCnD8Apnu',
+				label: i18n.ts._profile.changeAvatar,
+				keywords: ['avatar', 'icon', 'change'],
+			},
+			{
+				id: 'yFEVCJxFX',
 				label: i18n.ts._profile.name,
 				keywords: ['name'],
 			},
 			{
-				id: 'yFEVCJxFX',
+				id: '2O1S5reaB',
 				label: i18n.ts._profile.description,
 				keywords: ['description', 'bio'],
 			},
 			{
-				id: 'qQSKqwYYC',
+				id: 'pWi4OLS8g',
 				label: i18n.ts.location,
 				keywords: ['location', 'locale'],
 			},
 			{
-				id: 's1gC4wLGe',
+				id: 'oLO5X6Wtw',
 				label: i18n.ts.birthday,
 				keywords: ['birthday', 'birthdate', 'age'],
 			},
 			{
-				id: '9N9E2JDrl',
+				id: 'm2trKwPgq',
 				label: i18n.ts.language,
 				keywords: ['language', 'locale'],
 			},
 			{
-				id: 'pPPwtfzRZ',
+				id: 'kfDZxCDp9',
 				label: i18n.ts._profile.metadataEdit,
 				keywords: ['metadata'],
 			},
 			{
-				id: 'nc9iLkzEn',
+				id: 'uPt3MFymp',
 				label: i18n.ts._profile.followedMessage,
 				keywords: ['follow', 'message', i18n.ts._profile.followedMessageDescription],
 			},
 			{
-				id: 'yciwBnW3c',
+				id: 'wuGg0tBjw',
 				label: i18n.ts.reactionAcceptance,
 				keywords: ['reaction'],
 			},
 			{
-				id: 'qYM6CtIby',
+				id: 'EezPpmMnf',
 				children: [
 					{
-						id: 'aCgNi4HMB',
+						id: 'f2cRLh8ad',
 						label: i18n.ts.flagAsCat,
 						keywords: ['cat'],
 					},
 					{
-						id: 'aHQCTp7cf',
+						id: 'eVoViiF3h',
 						label: i18n.ts.flagAsBot,
 						keywords: ['bot'],
 					},

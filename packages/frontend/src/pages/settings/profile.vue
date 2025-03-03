@@ -8,12 +8,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps_m">
 		<div class="_panel">
 			<div :class="$style.banner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
-				<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
+				<div :class="$style.bannerEdit">
+					<SearchMarker :keywords="['banner', 'change']">
+						<MkButton primary rounded @click="changeBanner"><SearchLabel>{{ i18n.ts._profile.changeBanner }}</SearchLabel></MkButton>
+					</SearchMarker>
+				</div>
 			</div>
 			<div :class="$style.avatarContainer">
 				<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration @click="changeAvatar"/>
 				<div class="_buttonsCenter">
-					<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+					<SearchMarker :keywords="['avatar', 'icon', 'change']">
+						<MkButton primary rounded @click="changeAvatar"><SearchLabel>{{ i18n.ts._profile.changeAvatar }}</SearchLabel></MkButton>
+					</SearchMarker>
 					<MkButton primary rounded link to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
 				</div>
 			</div>
