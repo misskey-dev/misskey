@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</SearchMarker>
 
 		<SearchMarker :keywords="['follow', 'auto', 'accept']">
-			<MkSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:modelValue="save()">
+			<MkSwitch v-model="autoAcceptFollowed" :disabled="!isLocked" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.autoAcceptFollowed }}</SearchLabel></template>
 			</MkSwitch>
 		</SearchMarker>
