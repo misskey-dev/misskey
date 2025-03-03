@@ -283,6 +283,35 @@ export const searchIndexes:SearchIndexItem[] = [
 		icon: 'ti ti-lock-open',
 	},
 	{
+		id: 'F1uK9ssiY',
+		children: [
+			{
+				id: 'msAcN6u3S',
+				label: i18n.ts.accountInfo,
+				keywords: ['account', 'info'],
+			},
+			{
+				id: 'ts8DgdnZV',
+				label: i18n.ts.closeAccount,
+				keywords: ['account', 'close', 'delete', i18n.ts._accountDelete.requestAccountDelete],
+			},
+			{
+				id: '8P9azj6h6',
+				label: i18n.ts.experimentalFeatures,
+				keywords: ['experimental', 'feature', 'flags'],
+			},
+			{
+				id: 'eBKeiwImw',
+				label: i18n.ts.developer,
+				keywords: ['developer', 'mode', 'debug'],
+			},
+		],
+		label: i18n.ts.other,
+		keywords: ['other'],
+		path: '/settings/other',
+		icon: 'ti ti-dots',
+	},
+	{
 		id: '3icEvyv2D',
 		children: [
 			{
