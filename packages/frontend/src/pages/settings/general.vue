@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker :label="i18n.ts.general" :keywords="['general']" icon="ti ti-adjustments">
+<SearchMarker path="/settings/general" :label="i18n.ts.general" :keywords="['general']" icon="ti ti-adjustments">
 	<div class="_gaps_m">
 		<SearchMarker
 			:label="i18n.ts.uiLanguage"

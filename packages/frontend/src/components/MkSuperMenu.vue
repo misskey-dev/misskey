@@ -35,7 +35,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-for="item in searchResult">
 			<MkA :to="item.path + '#' + item.id" class="_button searchResultItem">
 				<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
-				<span class="text">{{ item.labels.toReversed().join(' > ') }}</span>
+				<span class="text">
+					<template v-if="item.isRoot">
+						{{ item.label }}
+					</template>
+					<template v-else>
+						<span style="opacity: 0.7; font-size: 90%;">{{ item.parentLabels.join(' > ') }}</span>
+						<br>
+						<span>{{ item.label }}</span>
+					</template>
+				</span>
 			</MkA>
 		</div>
 	</template>
@@ -87,8 +96,10 @@ const search = ref('');
 const searchResult = ref<{
 	id: string;
 	path: string;
-	labels: string[];
+	label: string;
 	icon?: string;
+	isRoot: boolean;
+	parentLabels: string[];
 }[]>([]);
 
 watch(search, (value) => {
@@ -108,8 +119,10 @@ watch(search, (value) => {
 				searchResult.value.push({
 					id: item.id,
 					path: item.path ?? parents.find((x) => x.path != null)?.path,
-					labels: [item.label, ...parents.map((x) => x.label)],
+					label: item.label,
+					parentLabels: parents.map((x) => x.label).toReversed(),
 					icon: item.icon ?? parents.find((x) => x.icon != null)?.icon,
+					isRoot: parents.length === 0,
 				});
 			}
 
