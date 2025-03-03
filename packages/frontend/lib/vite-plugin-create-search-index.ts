@@ -1031,15 +1031,7 @@ export async function analyzeVueProps(options: {
 		const code = options.transformedCodeCache[id]; // options 経由でキャッシュ参照
 		if (!code) { // キャッシュミスの場合
 			logger.error(`Error: No cached code found for: ${filePath}.`); // エラーログ
-			// ファイルを直接読み込む代替策を実行
-			try {
-				const directCode = fs.readFileSync(filePath, 'utf-8');
-				options.transformedCodeCache[id] = directCode;
-				logger.info(`Loaded file directly instead: ${filePath}`);
-			} catch (err) {
-				logger.error(`Failed to load file directly: ${filePath}`, err);
-				continue;
-			}
+			throw new Error(`No cached code found for: ${filePath}.`); // エラーを投げる
 		}
 
 		try {
@@ -1087,20 +1079,29 @@ async function processVueFile(
 	id: string,
 	options: { targetFilePaths: string[], exportFilePath: string },
 	transformedCodeCache: Record<string, string>
-) {
+) : Promise<{
+	code: string,
+	map: any,
+	transformedCodeCache: Record<string, string>
+}> {
 	// すでにキャッシュに存在する場合は、そのまま返す
 	if (transformedCodeCache[id] && transformedCodeCache[id].includes('markerId=')) {
 		logger.info(`Using cached version for ${id}`);
 		return {
 			code: transformedCodeCache[id],
-			map: null
+			map: null,
+			transformedCodeCache
 		};
 	}
 
 	const s = new MagicString(code); // magic-string のインスタンスを作成
 	const parsed = vueSfcParse(code, { filename: id });
 	if (!parsed.descriptor.template) {
-		return;
+		return {
+			code,
+			map: null,
+			transformedCodeCache
+		};
 	}
 	const ast = parsed.descriptor.template.ast; // テンプレート AST を取得
 	const markerRelations: MarkerRelation[] = []; //  MarkerRelation 配列を初期化
@@ -1279,6 +1280,7 @@ async function processVueFile(
 	return {
 		code: transformedCode, // 変更後のコードを返す
 		map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
+		transformedCodeCache // キャッシュも返す
 	};
 }
 
@@ -1308,9 +1310,9 @@ export default function pluginCreateSearchIndex(options: {
 			for (const filePath of filePaths) {
 				const id = path.resolve(filePath); // 絶対パスに変換
 				const code = fs.readFileSync(filePath, 'utf-8'); // ファイル内容を読み込む
-				await processVueFile(code, id, options, transformedCodeCache); // processVueFile 関数を呼び出す
+				const { transformedCodeCache: newCache } = await processVueFile(code, id, options, transformedCodeCache); // processVueFile 関数を呼び出す
+				transformedCodeCache = newCache; // キャッシュを更新
 			}
-
 
 			await analyzeVueProps({ ...options, transformedCodeCache }); // 開発サーバー起動時にも analyzeVueProps を実行
 		},
@@ -1343,6 +1345,7 @@ export default function pluginCreateSearchIndex(options: {
 
 			const transformed = await processVueFile(code, id, options, transformedCodeCache);
 			if (isDevServer) {
+				transformedCodeCache = transformed.transformedCodeCache; // キャッシュを更新
 				await analyzeVueProps({ ...options, transformedCodeCache }); // analyzeVueProps を呼び出す
 			}
 			return transformed;
