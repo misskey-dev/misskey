@@ -642,6 +642,50 @@ export const searchIndexes:SearchIndexItem[] = [
 		icon: 'ti ti-mail',
 	},
 	{
+		id: 'tnYoppRiv',
+		children: [
+			{
+				id: 'ncIq6TAR2',
+				label: i18n.ts.usageAmount,
+				keywords: ['capacity', 'usage'],
+			},
+			{
+				id: '2c4CQSvSr',
+				label: i18n.ts.statistics,
+				keywords: ['statistics', 'usage'],
+			},
+			{
+				id: 'pepHELHMt',
+				label: i18n.ts.uploadFolder,
+				keywords: ['default', 'upload', 'folder'],
+			},
+			{
+				id: 'xqOWrABxV',
+				label: i18n.ts.keepOriginalUploading,
+				keywords: ['keep', 'original', 'raw', 'upload', i18n.ts.keepOriginalUploadingDescription],
+			},
+			{
+				id: 'oqUiI5w0s',
+				label: i18n.ts.keepOriginalFilename,
+				keywords: ['keep', 'original', 'filename', i18n.ts.keepOriginalFilenameDescription],
+			},
+			{
+				id: 'Aszkikq9n',
+				label: i18n.ts.alwaysMarkSensitive,
+				keywords: ['always', 'default', 'mark', 'nsfw', 'sensitive', 'media', 'file'],
+			},
+			{
+				id: 'iGlVjsfVj',
+				label: i18n.ts.enableAutoSensitive,
+				keywords: ['auto', 'nsfw', 'sensitive', 'media', 'file', i18n.ts.enableAutoSensitiveDescription],
+			},
+		],
+		label: i18n.ts.drive,
+		keywords: ['drive'],
+		path: '/settings/drive',
+		icon: 'ti ti-cloud',
+	},
+	{
 		id: 'gtaOSdIJB',
 		label: i18n.ts.avatarDecorations,
 		keywords: ['avatar', 'icon', 'decoration'],
