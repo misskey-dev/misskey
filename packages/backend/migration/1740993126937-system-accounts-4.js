@@ -11,7 +11,7 @@ export class SystemAccounts41740993126937 {
     }
 
     async down(queryRunner) {
-        // down 実行時は isRoot = true のユーザーが存在しないため手動で対応する必要あり
+        // down 実行時は isRoot = true のユーザーが存在しなくなるため手動で対応する必要あり
         await queryRunner.query(`ALTER TABLE "user" ADD "isRoot" boolean NOT NULL DEFAULT false`);
     }
 }
