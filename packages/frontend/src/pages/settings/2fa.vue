@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker markerId="2fa" :keywords="['2fa']">
+<SearchMarker :keywords="['2fa']">
 	<FormSection :first="first">
 		<template #label><SearchLabel>{{ i18n.ts['2fa'] }}</SearchLabel></template>
 
