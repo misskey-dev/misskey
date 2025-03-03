@@ -64,8 +64,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</FormSection>
 
-		<MkButton v-if="wallpaper == null" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</MkButton>
-		<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
+		<SearchMarker :keywords="['wallpaper']">
+			<MkButton v-if="wallpaper == null" @click="setWallpaper"><SearchLabel>{{ i18n.ts.setWallpaper }}</SearchLabel></MkButton>
+			<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
+		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
