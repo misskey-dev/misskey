@@ -21,6 +21,7 @@
 - サーバーとの接続が失われたとき
   - `なにもしない`オプションの追加
 - [ナビゲーションバー拡張](https://github.com/pooza/misskey/pull/342)
+- [プロキシアカウント無効化](https://github.com/pooza/misskey/pull/346)
 - クラシックUIの廃止
 - 各種パラメータ調整
 
