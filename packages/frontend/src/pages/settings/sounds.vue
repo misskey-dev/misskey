@@ -6,18 +6,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/sounds" :label="i18n.ts.sounds" :keywords="['sounds']" icon="ti ti-music">
 	<div class="_gaps_m">
-		<SearchMarker>
+		<SearchMarker :keywords="['mute']">
 			<MkSwitch v-model="notUseSound">
 				<template #label><SearchLabel>{{ i18n.ts.notUseSound }}</SearchLabel></template>
 			</MkSwitch>
 		</SearchMarker>
 
-		<MkSwitch v-model="useSoundOnlyWhenActive">
-			<template #label>{{ i18n.ts.useSoundOnlyWhenActive }}</template>
-		</MkSwitch>
-		<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
-			<template #label>{{ i18n.ts.masterVolume }}</template>
-		</MkRange>
+		<SearchMarker :keywords="['active', 'mute']">
+			<MkSwitch v-model="useSoundOnlyWhenActive">
+				<template #label><SearchLabel>{{ i18n.ts.useSoundOnlyWhenActive }}</SearchLabel></template>
+			</MkSwitch>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['volume', 'master']">
+			<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
+				<template #label><SearchLabel>{{ i18n.ts.masterVolume }}</SearchLabel></template>
+			</MkRange>
+		</SearchMarker>
 
 		<FormSection>
 			<template #label>{{ i18n.ts.sounds }}</template>
