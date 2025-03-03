@@ -29,7 +29,6 @@ services:
     environment:
       - NODE_ENV=development
       - NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/rootCA.crt
-      - COREPACK_DEFAULT_TO_LATEST=0
     volumes:
       - type: bind
         source: ../package.json
@@ -90,8 +89,6 @@ services:
     depends_on:
       redis.test:
         condition: service_healthy
-    environment:
-      - COREPACK_DEFAULT_TO_LATEST=0
     volumes:
       - type: bind
         source: ../package.json

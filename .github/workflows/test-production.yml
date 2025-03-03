@@ -9,7 +9,6 @@ on:
 
 env:
   NODE_ENV: production
-  COREPACK_DEFAULT_TO_LATEST: 0
 
 jobs:
   production:
