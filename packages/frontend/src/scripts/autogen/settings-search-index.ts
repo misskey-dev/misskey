@@ -20,6 +20,30 @@ export type SearchIndexItem = {
 
 export const searchIndexes:SearchIndexItem[] = [
 	{
+		id: 'flXd1LC7r',
+		children: [
+			{
+				id: 'hB11H5oul',
+				label: i18n.ts.syncDeviceDarkMode,
+				keywords: ['sync', 'device', 'dark', 'light', 'mode'],
+			},
+			{
+				id: 'fDbLtIKeo',
+				label: i18n.ts.themeForLightMode,
+				keywords: ['light', 'theme'],
+			},
+			{
+				id: 'eLOwK5Ia2',
+				label: i18n.ts.themeForDarkMode,
+				keywords: ['dark', 'theme'],
+			},
+		],
+		label: i18n.ts.theme,
+		keywords: ['theme'],
+		path: '/settings/theme',
+		icon: 'ti ti-palette',
+	},
+	{
 		id: '6fFIRXUww',
 		children: [
 			{
@@ -565,6 +589,53 @@ export const searchIndexes:SearchIndexItem[] = [
 		keywords: ['general'],
 		path: '/settings/general',
 		icon: 'ti ti-adjustments',
+	},
+	{
+		id: '3Tcxw4Fwl',
+		children: [
+			{
+				id: 'iIai9O65I',
+				label: i18n.ts.emailAddress,
+				keywords: ['email', 'address'],
+			},
+			{
+				id: 'i6cC6oi0m',
+				label: i18n.ts.receiveAnnouncementFromInstance,
+				keywords: ['announcement', 'email'],
+			},
+			{
+				id: 'C1YTinP11',
+				label: i18n.ts.emailNotification,
+				keywords: ['notification', 'email'],
+			},
+		],
+		label: i18n.ts.email,
+		keywords: ['email'],
+		path: '/settings/email',
+		icon: 'ti ti-mail',
+	},
+	{
+		id: '2fa',
+		children: [
+			{
+				id: 'qCXM0HtJ7',
+				label: i18n.ts.totp,
+				keywords: ['totp', 'app', i18n.ts.totpDescription],
+			},
+			{
+				id: '3g1RePuD9',
+				label: i18n.ts.securityKeyAndPasskey,
+				keywords: ['security', 'key', 'passkey'],
+			},
+			{
+				id: 'pFRud5u8k',
+				label: i18n.ts.passwordLessLogin,
+				keywords: ['password', 'less', 'key', 'passkey', 'login', 'signin', i18n.ts.passwordLessLoginDescription],
+			},
+		],
+		label: 'Unnamed marker',
+		keywords: ['2fa'],
+		path: '/settings/2fa',
 	},
 ] as const;
 
