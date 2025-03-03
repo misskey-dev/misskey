@@ -1344,8 +1344,8 @@ export default function pluginCreateSearchIndex(options: {
 			}
 
 			const transformed = await processVueFile(code, id, options, transformedCodeCache);
+			transformedCodeCache = transformed.transformedCodeCache; // キャッシュを更新
 			if (isDevServer) {
-				transformedCodeCache = transformed.transformedCodeCache; // キャッシュを更新
 				await analyzeVueProps({ ...options, transformedCodeCache }); // analyzeVueProps を呼び出す
 			}
 			return transformed;
