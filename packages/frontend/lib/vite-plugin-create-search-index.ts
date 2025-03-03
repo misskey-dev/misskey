@@ -745,6 +745,7 @@ function extractUsageInfoFromTemplateAst(
 	const allMarkers: SearchIndexItem[] = [];
 	const markerMap = new Map<string, SearchIndexItem>();
 	const childrenIds = new Set<string>();
+	const normalizedId = id.replace(/\\/g, '/');
 
 	if (!templateAst) return allMarkers;
 
@@ -796,7 +797,9 @@ function extractUsageInfoFromTemplateAst(
 			}
 
 			//pathがない場合はファイルパスを設定
-			if (markerInfo.path == null && parentId == null) markerInfo.path = id.match(/.*(\/(admin|settings)\/[^\/]+)\.vue$/)?.[1];
+			if (markerInfo.path == null && parentId == null) {
+				markerInfo.path = normalizedId.match(/.*(\/(admin|settings)\/[^\/]+)\.vue$/)?.[1];
+			}
 
 			// SearchLabelとSearchKeywordを抽出 (AST全体を探索)
 			if (node.children && Array.isArray(node.children)) {
@@ -1084,11 +1087,12 @@ async function processVueFile(
 	map: any,
 	transformedCodeCache: Record<string, string>
 }> {
+	const normalizedId = id.replace(/\\/g, '/'); // ファイルパスを正規化
 	// すでにキャッシュに存在する場合は、そのまま返す
-	if (transformedCodeCache[id] && transformedCodeCache[id].includes('markerId=')) {
+	if (transformedCodeCache[normalizedId] && transformedCodeCache[normalizedId].includes('markerId=')) {
 		logger.info(`Using cached version for ${id}`);
 		return {
-			code: transformedCodeCache[id],
+			code: transformedCodeCache[normalizedId],
 			map: null,
 			transformedCodeCache
 		};
@@ -1113,7 +1117,7 @@ async function processVueFile(
 				const lineNumber = code.slice(0, node.loc.start.offset).split('\n').length;
 				// ファイルパスと行番号からハッシュ値を生成
 				// この際実行環境で差が出ないようにファイルパスを正規化
-				const idKey = id.split('packages/frontend/')[1]
+				const idKey = id.replace(/\\/g, '/').split('packages/frontend/')[1]
 				const generatedMarkerId = toBase62(hash(`${idKey}:${lineNumber}`));
 
 				const props = node.props || [];
@@ -1275,7 +1279,7 @@ async function processVueFile(
 	}
 
 	const transformedCode = s.toString(); //  変換後のコードを取得
-	transformedCodeCache[id] = transformedCode; //  変換後のコードをキャッシュに保存
+	transformedCodeCache[normalizedId] = transformedCode; //  変換後のコードをキャッシュに保存
 
 	return {
 		code: transformedCode, // 変更後のコードを返す
