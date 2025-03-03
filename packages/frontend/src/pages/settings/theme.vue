@@ -28,7 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div class="sync">
-				<MkSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</MkSwitch>
+				<SearchMarker :keywords="['sync', 'device', 'dark', 'light', 'mode']">
+					<MkSwitch v-model="syncDeviceDarkMode">
+						<template #label><SearchLabel>{{ i18n.ts.syncDeviceDarkMode }}</SearchLabel></template>
+					</MkSwitch>
+				</SearchMarker>
 			</div>
 		</div>
 
