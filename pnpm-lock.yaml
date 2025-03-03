@@ -45,10 +45,6 @@ importers:
       typescript:
         specifier: 5.7.3
         version: 5.7.3
-    optionalDependencies:
-      '@tensorflow/tfjs-core':
-        specifier: 4.22.0
-        version: 4.22.0(encoding@0.1.13)
     devDependencies:
       '@misskey-dev/eslint-plugin':
         specifier: 2.1.0
@@ -80,6 +76,10 @@ importers:
       start-server-and-test:
         specifier: 2.0.10
         version: 2.0.10
+    optionalDependencies:
+      '@tensorflow/tfjs-core':
+        specifier: 4.22.0
+        version: 4.22.0(encoding@0.1.13)
 
   packages/backend:
     dependencies:
@@ -437,94 +437,6 @@ importers:
       xev:
         specifier: 3.0.2
         version: 3.0.2
-    optionalDependencies:
-      '@swc/core-android-arm64':
-        specifier: 1.3.11
-        version: 1.3.11
-      '@swc/core-darwin-arm64':
-        specifier: 1.10.16
-        version: 1.10.16
-      '@swc/core-darwin-x64':
-        specifier: 1.10.16
-        version: 1.10.16
-      '@swc/core-freebsd-x64':
-        specifier: 1.3.11
-        version: 1.3.11
-      '@swc/core-linux-arm-gnueabihf':
-        specifier: 1.10.16
-        version: 1.10.16
-      '@swc/core-linux-arm64-gnu':
-        specifier: 1.10.16
-        version: 1.10.16
-      '@swc/core-linux-arm64-musl':
-        specifier: 1.10.16
-        version: 1.10.16
-      '@swc/core-linux-x64-gnu':
-        specifier: 1.10.16
-        version: 1.10.16
-      '@swc/core-linux-x64-musl':
-        specifier: 1.10.16
-        version: 1.10.16
-      '@swc/core-win32-arm64-msvc':
-        specifier: 1.10.16
-        version: 1.10.16
-      '@swc/core-win32-ia32-msvc':
-        specifier: 1.10.16
-        version: 1.10.16
-      '@swc/core-win32-x64-msvc':
-        specifier: 1.10.16
-        version: 1.10.16
-      '@tensorflow/tfjs':
-        specifier: 4.22.0
-        version: 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node':
-        specifier: 4.22.0
-        version: 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
-      bufferutil:
-        specifier: 4.0.9
-        version: 4.0.9
-      slacc-android-arm-eabi:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-android-arm64:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-darwin-arm64:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-darwin-universal:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-darwin-x64:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-freebsd-x64:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-linux-arm-gnueabihf:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-linux-arm64-gnu:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-linux-arm64-musl:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-linux-x64-gnu:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-linux-x64-musl:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-win32-arm64-msvc:
-        specifier: 0.0.10
-        version: 0.0.10
-      slacc-win32-x64-msvc:
-        specifier: 0.0.10
-        version: 0.0.10
-      utf-8-validate:
-        specifier: 6.0.5
-        version: 6.0.5
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -682,6 +594,94 @@ importers:
       simple-oauth2:
         specifier: 5.1.0
         version: 5.1.0
+    optionalDependencies:
+      '@swc/core-android-arm64':
+        specifier: 1.3.11
+        version: 1.3.11
+      '@swc/core-darwin-arm64':
+        specifier: 1.10.16
+        version: 1.10.16
+      '@swc/core-darwin-x64':
+        specifier: 1.10.16
+        version: 1.10.16
+      '@swc/core-freebsd-x64':
+        specifier: 1.3.11
+        version: 1.3.11
+      '@swc/core-linux-arm-gnueabihf':
+        specifier: 1.10.16
+        version: 1.10.16
+      '@swc/core-linux-arm64-gnu':
+        specifier: 1.10.16
+        version: 1.10.16
+      '@swc/core-linux-arm64-musl':
+        specifier: 1.10.16
+        version: 1.10.16
+      '@swc/core-linux-x64-gnu':
+        specifier: 1.10.16
+        version: 1.10.16
+      '@swc/core-linux-x64-musl':
+        specifier: 1.10.16
+        version: 1.10.16
+      '@swc/core-win32-arm64-msvc':
+        specifier: 1.10.16
+        version: 1.10.16
+      '@swc/core-win32-ia32-msvc':
+        specifier: 1.10.16
+        version: 1.10.16
+      '@swc/core-win32-x64-msvc':
+        specifier: 1.10.16
+        version: 1.10.16
+      '@tensorflow/tfjs':
+        specifier: 4.22.0
+        version: 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
+      '@tensorflow/tfjs-node':
+        specifier: 4.22.0
+        version: 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
+      bufferutil:
+        specifier: 4.0.9
+        version: 4.0.9
+      slacc-android-arm-eabi:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-android-arm64:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-darwin-arm64:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-darwin-universal:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-darwin-x64:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-freebsd-x64:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-linux-arm-gnueabihf:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-linux-arm64-gnu:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-linux-arm64-musl:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-linux-x64-gnu:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-linux-x64-musl:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-win32-arm64-msvc:
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-win32-x64-msvc:
+        specifier: 0.0.10
+        version: 0.0.10
+      utf-8-validate:
+        specifier: 6.0.5
+        version: 6.0.5
 
   packages/frontend:
     dependencies:
@@ -1445,8 +1445,8 @@ packages:
   '@adobe/css-tools@4.4.0':
     resolution: {integrity: sha512-Ff9+ksdQQB3rMncgqDK78uLznstjyfIf2Arnh22pW8kBpLs6rpKDwgnZT46hin5Hl1WzazzK64DOrhSwYpS7bQ==}
 
-  '@aiscript-dev/aiscript-languageserver@https://github.com/aiscript-dev/aiscript-languageserver/releases/download/0.1.6/aiscript-dev-aiscript-languageserver-0.1.6.tgz':
-    resolution: {tarball: https://github.com/aiscript-dev/aiscript-languageserver/releases/download/0.1.6/aiscript-dev-aiscript-languageserver-0.1.6.tgz}
+  '@aiscript-dev/aiscript-languageserver@https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T102731Z&X-Amz-Expires=300&X-Amz-Signature=13958f8cb31917a4687157e3308a663b9cf2c824f3e3fc7b56bad02cddb96a23&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream':
+    resolution: {tarball: https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T102731Z&X-Amz-Expires=300&X-Amz-Signature=13958f8cb31917a4687157e3308a663b9cf2c824f3e3fc7b56bad02cddb96a23&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream}
     version: 0.1.6
     hasBin: true
 
@@ -10558,6 +10558,9 @@ packages:
   vue-component-type-helpers@2.2.4:
     resolution: {integrity: sha512-F66p0XLbAu92BRz6kakHyAcaUSF7HWpWX/THCqL0TxySSj7z/nok5UUMohfNkkCm1pZtawsdzoJ4p1cjNqCx0Q==}
 
+  vue-component-type-helpers@2.2.8:
+    resolution: {integrity: sha512-4bjIsC284coDO9om4HPA62M7wfsTvcmZyzdfR0aUlFXqq4tXxM1APyXpNVxPC8QazKw9OhmZNHBVDA6ODaZsrA==}
+
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
     engines: {node: '>=12'}
@@ -10844,7 +10847,7 @@ snapshots:
 
   '@adobe/css-tools@4.4.0': {}
 
-  '@aiscript-dev/aiscript-languageserver@https://github.com/aiscript-dev/aiscript-languageserver/releases/download/0.1.6/aiscript-dev-aiscript-languageserver-0.1.6.tgz':
+  '@aiscript-dev/aiscript-languageserver@https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T102731Z&X-Amz-Expires=300&X-Amz-Signature=13958f8cb31917a4687157e3308a663b9cf2c824f3e3fc7b56bad02cddb96a23&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream':
     dependencies:
       seedrandom: 3.0.5
       stringz: 2.1.0
@@ -14036,7 +14039,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.5.13(typescript@5.8.2)
-      vue-component-type-helpers: 2.2.4
+      vue-component-type-helpers: 2.2.8
 
   '@stylistic/eslint-plugin@2.13.0(eslint@9.20.1)(typescript@5.7.3)':
     dependencies:
@@ -15148,7 +15151,7 @@ snapshots:
 
   aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/c3cde89e79a41d93540cf8a48cd619c3f2dcb1b7:
     dependencies:
-      '@aiscript-dev/aiscript-languageserver': https://github.com/aiscript-dev/aiscript-languageserver/releases/download/0.1.6/aiscript-dev-aiscript-languageserver-0.1.6.tgz
+      '@aiscript-dev/aiscript-languageserver': https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T102731Z&X-Amz-Expires=300&X-Amz-Signature=13958f8cb31917a4687157e3308a663b9cf2c824f3e3fc7b56bad02cddb96a23&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream
       vscode-languageclient: 9.0.1
 
   ajv-draft-04@1.0.0(ajv@8.13.0):
@@ -22144,6 +22147,8 @@ snapshots:
   vue-component-type-helpers@2.0.16: {}
 
   vue-component-type-helpers@2.2.4: {}
+
+  vue-component-type-helpers@2.2.8: {}
 
   vue-demi@0.14.7(vue@3.5.13(typescript@5.8.2)):
     dependencies:
