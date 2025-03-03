@@ -168,60 +168,60 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['follow', 'lock', i18n.ts.lockedAccountInfo],
 			},
 			{
-				id: 'rPrD9hseA',
+				id: '3LZBlZCej',
 				label: i18n.ts.autoAcceptFollowed,
 				keywords: ['follow', 'auto', 'accept'],
 			},
 			{
-				id: 'waWwFHTcL',
+				id: '9gOp28wKG',
 				label: i18n.ts.makeReactionsPublic,
 				keywords: ['reaction', 'public', i18n.ts.makeReactionsPublicDescription],
 			},
 			{
-				id: 'eFPEyCri0',
+				id: 'CjAkqMhct',
 				label: i18n.ts.followingVisibility,
 				keywords: ['following', 'visibility'],
 			},
 			{
-				id: 'bQmNoFUku',
+				id: '4nEwI6LYt',
 				label: i18n.ts.followersVisibility,
 				keywords: ['follower', 'visibility'],
 			},
 			{
-				id: '3HiV7Q9u9',
+				id: 'naMp37wTL',
 				label: i18n.ts.hideOnlineStatus,
 				keywords: ['online', 'status', i18n.ts.hideOnlineStatusDescription],
 			},
 			{
-				id: 'izbVlS3rh',
+				id: 'p0dCVR0UP',
 				label: i18n.ts.noCrawle,
 				keywords: ['crawle', 'index', 'search', i18n.ts.noCrawleDescription],
 			},
 			{
-				id: 'fhfOeQYCY',
+				id: 'aceURmNPq',
 				label: i18n.ts.preventAiLearning,
 				keywords: ['crawle', 'ai', i18n.ts.preventAiLearningDescription],
 			},
 			{
-				id: '468e8XVmt',
+				id: 'ahABA0j7u',
 				label: i18n.ts.makeExplorable,
 				keywords: ['explore', i18n.ts.makeExplorableDescription],
 			},
 			{
-				id: '7LmVNpBSU',
+				id: 'cyeDbLN8N',
 				children: [
 					{
-						id: 'joHMIl2pJ',
+						id: 'xEYlOghao',
 						label: i18n.ts._accountSettings.requireSigninToViewContents,
 						keywords: ['login', 'signin'],
 					},
 					{
-						id: 'fINiZIxXR',
+						id: 'sMmYFCS60',
 						label: i18n.ts._accountSettings.makeNotesFollowersOnlyBefore,
 						keywords: ['follower', i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription],
 					},
 					{
-						id: 'faEaYmXP9',
+						id: '2prkeWRSd',
 						label: i18n.ts._accountSettings.makeNotesHiddenBefore,
 						keywords: ['hidden', i18n.ts._accountSettings.makeNotesHiddenBeforeDescription],
 					},
@@ -230,17 +230,17 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['lockdown'],
 			},
 			{
-				id: 'hcwjvHhTV',
+				id: '37QLEyrtk',
 				label: i18n.ts.rememberNoteVisibility,
 				keywords: ['remember', 'keep', 'note', 'visibility'],
 			},
 			{
-				id: 'sNr7Jwfhv',
+				id: 'rhKwScbVS',
 				label: i18n.ts.defaultNoteVisibility,
 				keywords: ['default', 'note', 'visibility'],
 			},
 			{
-				id: 'q8KaaudMT',
+				id: '3EmXVyevo',
 				label: i18n.ts.keepCw,
 				keywords: ['remember', 'keep', 'note', 'cw'],
 			},

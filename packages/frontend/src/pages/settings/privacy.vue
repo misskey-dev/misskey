@@ -13,11 +13,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</SearchMarker>
 
-		<SearchMarker :keywords="['follow', 'auto', 'accept']">
-			<MkSwitch v-model="autoAcceptFollowed" :disabled="!isLocked" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.autoAcceptFollowed }}</SearchLabel></template>
-			</MkSwitch>
-		</SearchMarker>
+		<MkDisableSection :disabled="!isLocked">
+			<SearchMarker :keywords="['follow', 'auto', 'accept']">
+				<MkSwitch v-model="autoAcceptFollowed" @update:modelValue="save()">
+					<template #label><SearchLabel>{{ i18n.ts.autoAcceptFollowed }}</SearchLabel></template>
+				</MkSwitch>
+			</SearchMarker>
+		</MkDisableSection>
 
 		<SearchMarker :keywords="['reaction', 'public']">
 			<MkSwitch v-model="publicReactions" @update:modelValue="save()">
@@ -222,6 +224,7 @@ import FormSlot from '@/components/form/slot.vue';
 import { formatDateTimeString } from '@/scripts/format-time-string.js';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
+import MkDisableSection from '@/components/MkDisableSection.vue';
 
 const $i = signinRequired();
 
