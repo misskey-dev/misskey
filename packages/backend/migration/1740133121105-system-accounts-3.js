@@ -18,11 +18,6 @@ export class SystemAccounts31740133121105 {
 
     async down(queryRunner) {
         await queryRunner.query(`ALTER TABLE "meta" DROP CONSTRAINT "FK_c80e4079d632f95eac06a9d28cc"`);
-        await queryRunner.query(`ALTER TABLE "user" ADD "isRoot" boolean NOT NULL DEFAULT false`);
-        const rootUserId = await queryRunner.query(`SELECT "rootUserId" FROM "meta" ORDER BY "id" DESC LIMIT 1`);
-        if (rootUserId && rootUserId.length >= 1) {
-            await queryRunner.query(`UPDATE "user" SET "isRoot" = true WHERE "id" = $1`, [rootUserId[0].rootUserId]);
-        }
         await queryRunner.query(`ALTER TABLE "meta" DROP COLUMN "rootUserId"`);
     }
 }
