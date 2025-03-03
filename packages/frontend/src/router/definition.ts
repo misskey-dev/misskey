@@ -162,10 +162,6 @@ const routes: RouteDef[] = [{
 		name: 'preferences-backups',
 		component: page(() => import('@/pages/settings/preferences-backups.vue')),
 	}, {
-		path: '/migration',
-		name: 'migration',
-		component: page(() => import('@/pages/settings/migration.vue')),
-	}, {
 		path: '/custom-css',
 		name: 'general',
 		component: page(() => import('@/pages/settings/custom-css.vue')),

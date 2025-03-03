@@ -292,16 +292,21 @@ export const searchIndexes:SearchIndexItem[] = [
 			},
 			{
 				id: 'ts8DgdnZV',
+				label: i18n.ts.accountMigration,
+				keywords: ['account', 'move', 'migration'],
+			},
+			{
+				id: '4BG7nBECm',
 				label: i18n.ts.closeAccount,
 				keywords: ['account', 'close', 'delete', i18n.ts._accountDelete.requestAccountDelete],
 			},
 			{
-				id: '8P9azj6h6',
+				id: '2qI6ruPgi',
 				label: i18n.ts.experimentalFeatures,
 				keywords: ['experimental', 'feature', 'flags'],
 			},
 			{
-				id: 'eBKeiwImw',
+				id: 'cIeaax47o',
 				label: i18n.ts.developer,
 				keywords: ['developer', 'mode', 'debug'],
 			},

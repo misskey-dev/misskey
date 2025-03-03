@@ -37,6 +37,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkFolder>
 				</SearchMarker>
 
+				<SearchMarker :keywords="['account', 'move', 'migration']">
+					<MkFolder>
+						<template #icon><i class="ti ti-plane"></i></template>
+						<template #label><SearchLabel>{{ i18n.ts.accountMigration }}</SearchLabel></template>
+
+						<XMigration/>
+					</MkFolder>
+				</SearchMarker>
+
 				<SearchMarker :keywords="['account', 'close', 'delete']">
 					<MkFolder>
 						<template #icon><i class="ti ti-alert-triangle"></i></template>
@@ -99,6 +108,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
+import XMigration from './migration.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';

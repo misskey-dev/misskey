@@ -164,11 +164,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/settings/import-export',
 		active: currentPage.value?.route.name === 'import-export',
 	}, {
-		icon: 'ti ti-plane',
-		text: `${i18n.ts.accountMigration}`,
-		to: '/settings/migration',
-		active: currentPage.value?.route.name === 'migration',
-	}, {
 		icon: 'ti ti-dots',
 		text: i18n.ts.other,
 		to: '/settings/other',
