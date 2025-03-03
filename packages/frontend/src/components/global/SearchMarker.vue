@@ -48,7 +48,7 @@ const highlighted = hash === props.markerId || (props.children && props.children
 @keyframes blink {
 	0%, 100% {
 		background: color(from var(--MI_THEME-accent) srgb r g b / 0.05);
-		border: 1px solid color(from var(--MI_THEME-accent) srgb r g b / 0.3);
+		border: 1px solid color(from var(--MI_THEME-accent) srgb r g b / 0.7);
 	}
 	50% {
 		background: transparent;
