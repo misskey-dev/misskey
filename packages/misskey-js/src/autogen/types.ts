@@ -834,6 +834,15 @@ export type paths = {
      */
     post: operations['admin___update-meta'];
   };
+  '/admin/update-proxy-account': {
+    /**
+     * admin/update-proxy-account
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:account*
+     */
+    post: operations['admin___update-proxy-account'];
+  };
   '/admin/update-user-note': {
     /**
      * admin/update-user-note
@@ -8285,7 +8294,7 @@ export type operations = {
             setSensitiveFlagAutomatically: boolean;
             enableSensitiveMediaDetectionForVideos: boolean;
             /** Format: id */
-            proxyAccountId: string | null;
+            proxyAccountId: string;
             email: string | null;
             smtpSecure: boolean;
             smtpHost: string | null;
@@ -10626,8 +10635,6 @@ export type operations = {
           sensitiveMediaDetectionSensitivity?: 'medium' | 'low' | 'high' | 'veryLow' | 'veryHigh';
           setSensitiveFlagAutomatically?: boolean;
           enableSensitiveMediaDetectionForVideos?: boolean;
-          /** Format: misskey:id */
-          proxyAccountId?: string | null;
           maintainerName?: string | null;
           maintainerEmail?: string | null;
           langs?: string[];
@@ -10706,6 +10713,59 @@ export type operations = {
       /** @description OK (without any results) */
       204: {
         content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/update-proxy-account
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:account*
+   */
+  'admin___update-proxy-account': {
+    requestBody: {
+      content: {
+        'application/json': {
+          description?: string | null;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['UserDetailed'];
+        };
       };
       /** @description Client error */
       400: {

@@ -9,11 +9,11 @@ import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { MemorySingleCache } from '@/misc/cache.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import NotesChart from '@/core/chart/charts/notes.js';
 import UsersChart from '@/core/chart/charts/users.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
@@ -26,7 +26,7 @@ export class NodeinfoServerService {
 		@Inject(DI.config)
 		private config: Config,
 
-		private userEntityService: UserEntityService,
+		private systemAccountService: SystemAccountService,
 		private metaService: MetaService,
 		private notesChart: NotesChart,
 		private usersChart: UsersChart,
@@ -70,7 +70,7 @@ export class NodeinfoServerService {
 			const activeHalfyear = null;
 			const activeMonth = null;
 
-			const proxyAccount = meta.proxyAccountId ? await this.userEntityService.pack(meta.proxyAccountId).catch(() => null) : null;
+			const proxyAccount = await this.systemAccountService.fetch('proxy');
 
 			const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
@@ -123,7 +123,7 @@ export class NodeinfoServerService {
 					maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 					enableEmail: meta.enableEmail,
 					enableServiceWorker: meta.enableServiceWorker,
-					proxyAccountName: proxyAccount ? proxyAccount.username : null,
+					proxyAccountName: proxyAccount.username,
 					themeColor: meta.themeColor ?? '#86b300',
 				},
 			};
