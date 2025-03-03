@@ -45,7 +45,7 @@ export type SearchIndexItem = {
 	label: string;
 	keywords: string | string[];
 	icon?: string;
-	children?: (SearchIndexItem[] | string);
+	children?: SearchIndexItem[];
 }
 
 // 関連するノードタイプの定数化
@@ -749,12 +749,18 @@ function extractUsageInfoFromTemplateAst(
 	if (!templateAst) return allMarkers;
 
 	// マーカーの基本情報を収集
-	function collectMarkers(node: any, parentId: string | null = null) {
+	function collectMarkers(node: VueAstNode, parentId: string | null = null) {
 		if (node.type === 1 && node.tag === 'SearchMarker') {
 			// マーカーID取得
 			const markerIdProp = node.props?.find((p: any) => p.name === 'markerId');
 			const markerId = markerIdProp?.value?.content ||
 				node.__markerId;
+
+			// SearchMarkerにマーカーIDがない場合はエラー
+			if (markerId == null) {
+				logger.error(`Marker ID not found for node: ${JSON.stringify(node)}`);
+				throw new Error(`Marker ID not found in file ${id}`);
+			}
 
 			// マーカー基本情報
 			const markerInfo: SearchIndexItem = {
@@ -833,29 +839,22 @@ function extractUsageInfoFromTemplateAst(
 			if (parentId) {
 				const parent = markerMap.get(parentId);
 				if (parent) {
-					if (!parent.children) parent.children = [];
-					if (Array.isArray(parent.children)) {
-						parent.children.push(markerId);
-					} else {
-						parent.children = [markerId];
-					}
 					childrenIds.add(markerId);
 				}
 			}
 
 			// 子ノードを処理
 			if (node.children && Array.isArray(node.children)) {
-				node.children.forEach((child: any) => {
+				node.children.forEach((child: VueAstNode) => {
 					collectMarkers(child, markerId);
 				});
 			}
 
 			return markerId;
 		}
-
-		// 子ノードを処理
-		if (node.children && Array.isArray(node.children)) {
-			node.children.forEach((child: any) => {
+		// SearchMarkerでない場合は再帰的に子ノードを処理
+		else if (node.children && Array.isArray(node.children)) {
+			node.children.forEach((child: VueAstNode) => {
 				collectMarkers(child, parentId);
 			});
 		}
@@ -869,7 +868,7 @@ function extractUsageInfoFromTemplateAst(
 }
 
 // バインドプロパティの処理を修正する関数
-function extractNodeBindings(node: any): Record<string, any> {
+function extractNodeBindings(node: VueAstNode): Record<keyof SearchIndexItem, any> {
 	const bindings: Record<string, any> = {};
 
 	if (!node.props || !Array.isArray(node.props)) return bindings;
@@ -1048,7 +1047,7 @@ export async function analyzeVueProps(options: {
 				filename: filePath,
 			});
 
-			if (errors.length) {
+			if (errors.length > 0) {
 				logger.error(`Compile Error: ${filePath}, ${errors}`);
 				continue; // エラーが発生したファイルはスキップ
 			}
