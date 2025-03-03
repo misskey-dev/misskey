@@ -73,6 +73,9 @@ importers:
       ncp:
         specifier: 2.0.0
         version: 2.0.0
+      pnpm:
+        specifier: 10.5.2
+        version: 10.5.2
       start-server-and-test:
         specifier: 2.0.10
         version: 2.0.10
@@ -1445,8 +1448,8 @@ packages:
   '@adobe/css-tools@4.4.2':
     resolution: {integrity: sha512-baYZExFpsdkBNuvGKTKWCwKH57HRZLVtycZS05WTQNVOiXVSeAki3nU35zlRbToeMW8aHlJfyS+1C4BOv27q0A==}
 
-  '@aiscript-dev/aiscript-languageserver@https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T111358Z&X-Amz-Expires=300&X-Amz-Signature=ebdecf8ce25284c5147090a24794aeb7e61b5fcd6328aa77ebd176dfde334008&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream':
-    resolution: {tarball: https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T111358Z&X-Amz-Expires=300&X-Amz-Signature=ebdecf8ce25284c5147090a24794aeb7e61b5fcd6328aa77ebd176dfde334008&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream}
+  '@aiscript-dev/aiscript-languageserver@https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T112038Z&X-Amz-Expires=300&X-Amz-Signature=f348f441da3efb023f1092c6bb6bcba6a0650398c1e5486c3721b73a6d424aa6&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream':
+    resolution: {tarball: https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T112038Z&X-Amz-Expires=300&X-Amz-Signature=f348f441da3efb023f1092c6bb6bcba6a0650398c1e5486c3721b73a6d424aa6&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream}
     version: 0.1.6
     hasBin: true
 
@@ -8441,6 +8444,11 @@ packages:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
 
+  pnpm@10.5.2:
+    resolution: {integrity: sha512-2p3CjNP/QNBZIYgjWrJdMgKt2KIHr77caCIg5KACn/v/RWIQK55uRrTj+ei9U+bQXeSFRLDFfUsBeeIsdtEZmw==}
+    engines: {node: '>=18.12'}
+    hasBin: true
+
   polished@4.3.1:
     resolution: {integrity: sha512-OBatVyC/N7SCW/FaDHrSd+vn0o5cS855TOmYi4OkdWUMSJCET/xip//ch8xGUvtr3i44X9LVyWwQlRMTN3pwSA==}
     engines: {node: '>=10'}
@@ -10562,7 +10570,7 @@ snapshots:
 
   '@adobe/css-tools@4.4.2': {}
 
-  '@aiscript-dev/aiscript-languageserver@https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T111358Z&X-Amz-Expires=300&X-Amz-Signature=ebdecf8ce25284c5147090a24794aeb7e61b5fcd6328aa77ebd176dfde334008&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream':
+  '@aiscript-dev/aiscript-languageserver@https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T112038Z&X-Amz-Expires=300&X-Amz-Signature=f348f441da3efb023f1092c6bb6bcba6a0650398c1e5486c3721b73a6d424aa6&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream':
     dependencies:
       seedrandom: 3.0.5
       stringz: 2.1.0
@@ -14797,7 +14805,7 @@ snapshots:
 
   aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/c3cde89e79a41d93540cf8a48cd619c3f2dcb1b7:
     dependencies:
-      '@aiscript-dev/aiscript-languageserver': https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T111358Z&X-Amz-Expires=300&X-Amz-Signature=ebdecf8ce25284c5147090a24794aeb7e61b5fcd6328aa77ebd176dfde334008&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream
+      '@aiscript-dev/aiscript-languageserver': https://objects.githubusercontent.com/github-production-release-asset-2e65be/719047635/e986a4bc-d6d1-4ccc-8772-37eead5f7832?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20250303%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250303T112038Z&X-Amz-Expires=300&X-Amz-Signature=f348f441da3efb023f1092c6bb6bcba6a0650398c1e5486c3721b73a6d424aa6&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3Daiscript-dev-aiscript-languageserver-0.1.6.tgz&response-content-type=application%2Foctet-stream
       vscode-languageclient: 9.0.1
 
   ajv-draft-04@1.0.0(ajv@8.13.0):
@@ -19486,6 +19494,8 @@ snapshots:
       irregular-plurals: 3.5.0
 
   pngjs@5.0.0: {}
+
+  pnpm@10.5.2: {}
 
   polished@4.3.1:
     dependencies:

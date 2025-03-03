@@ -8,8 +8,8 @@ services:
       file: ./compose.tpl.yml
       service: misskey
     command: >
+      wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - &&
       bash -c "
-        npm install -g pnpm
         pnpm -F backend i
         pnpm -F misskey-js i
         pnpm -F misskey-reversi i
@@ -76,8 +76,8 @@ services:
         read_only: true
     working_dir: /misskey
     entrypoint: >
+      wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - &&
       bash -c '
-        npm install -g pnpm
         pnpm -F misskey-js i --frozen-lockfile
         pnpm -F backend i --frozen-lockfile
         exec "$0" "$@"
@@ -116,8 +116,8 @@ services:
         read_only: true
     working_dir: /misskey
     command: >
+      wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash - &&
       bash -c "
-        npm install -g pnpm
         pnpm -F backend i --frozen-lockfile
         pnpm exec tsc -p ./packages/backend/test-federation
         node ./packages/backend/test-federation/built/daemon.js
