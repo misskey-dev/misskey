@@ -467,6 +467,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	includeChannelOnUserFiles: {
+		where: 'device',
+		default: true,
+	},
 	contextMenu: {
 		where: 'device',
 		default: 'app' as 'app' | 'appWithShift' | 'native',

@@ -5270,6 +5270,10 @@ export interface Locale extends ILocale {
      * このメディアのセンシティブ指定を解除しますか？
      */
     "unmarkAsSensitiveConfirm": string;
+    /**
+     * ユーザーページの'ファイル付き'ノート一覧と'ファイル'タブでチャンネル投稿を含む
+     */
+    "includeChannelOnUserFiles": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

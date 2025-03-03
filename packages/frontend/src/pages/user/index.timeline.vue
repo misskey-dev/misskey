@@ -23,6 +23,8 @@ import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
@@ -43,7 +45,7 @@ const pagination = computed(() => tab.value === 'featured' ? {
 		userId: props.user.id,
 		withRenotes: tab.value === 'all',
 		withReplies: tab.value === 'all',
-		withChannelNotes: tab.value === 'all',
+		withChannelNotes: tab.value === 'all' || (tab.value === 'files' && ($i == null || defaultStore.state.includeChannelOnUserFiles)),
 		withFiles: tab.value === 'files',
 	},
 });

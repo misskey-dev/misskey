@@ -18,6 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store';
 
 import MkNoteMediaGrid from '@/components/MkNoteMediaGrid.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -32,6 +34,7 @@ const pagination = {
 	params: computed(() => ({
 		userId: props.user.id,
 		withFiles: true,
+		withChannelNotes: $i == null || defaultStore.state.includeChannelOnUserFiles,
 	})),
 };
 </script>
