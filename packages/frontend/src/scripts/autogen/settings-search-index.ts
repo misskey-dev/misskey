@@ -662,6 +662,55 @@ export const searchIndexes:SearchIndexItem[] = [
 		icon: 'ti ti-ban',
 	},
 	{
+		id: 'qE2vLlMkF',
+		children: [
+			{
+				id: 'hPPEzjvZC',
+				label: i18n.ts._exportOrImport.allNotes,
+				keywords: ['notes'],
+			},
+			{
+				id: 'AFaeHsCUB',
+				label: i18n.ts._exportOrImport.favoritedNotes,
+				keywords: ['favorite', 'notes'],
+			},
+			{
+				id: 'xyCPmQiRo',
+				label: i18n.ts._exportOrImport.clips,
+				keywords: ['clip', 'notes'],
+			},
+			{
+				id: 'Ch7hWAGUy',
+				label: i18n.ts._exportOrImport.followingList,
+				keywords: ['following', 'users'],
+			},
+			{
+				id: 'AwPgFboEx',
+				label: i18n.ts._exportOrImport.userLists,
+				keywords: ['user', 'lists'],
+			},
+			{
+				id: 'nporiHshC',
+				label: i18n.ts._exportOrImport.muteList,
+				keywords: ['mute', 'users'],
+			},
+			{
+				id: 'BsCzR7vNw',
+				label: i18n.ts._exportOrImport.blockingList,
+				keywords: ['block', 'users'],
+			},
+			{
+				id: 'dvf4IgYrQ',
+				label: i18n.ts.antennas,
+				keywords: ['antennas'],
+			},
+		],
+		label: i18n.ts.importAndExport,
+		keywords: ['import', 'export', 'data'],
+		path: '/settings/import-export',
+		icon: 'ti ti-package',
+	},
+	{
 		id: '3Tcxw4Fwl',
 		children: [
 			{
