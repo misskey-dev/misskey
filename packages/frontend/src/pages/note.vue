@@ -87,7 +87,6 @@ const prevUserPagination: Paging = {
 		userId: note.value.userId,
 		untilId: note.value.id,
 		withChannelNotes: true,
-		includeSensitiveChannel: $i != null,
 	}) : undefined),
 };
 
