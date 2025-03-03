@@ -14,7 +14,6 @@ export class SystemAccounts31740133121105 {
         if (users.length > 0) {
             await queryRunner.query(`UPDATE "meta" SET "rootUserId" = $1`, [users[0].id]);
         }
-        queryRunner.query(`ALTER TABLE "user" DROP COLUMN "isRoot"`);
     }
 
     async down(queryRunner) {
