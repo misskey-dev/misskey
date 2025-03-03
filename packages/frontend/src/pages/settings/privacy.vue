@@ -4,121 +4,95 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSearchSection :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
+<SearchMarker path="/settings/privacy" :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
 	<div class="_gaps_m">
-		<MkSearchMarker
-			:label="i18n.ts.makeFollowManuallyApprove"
-			:keywords="['follow', 'lock', i18n.ts.lockedAccountInfo]"
-		>
-			<MkSwitch v-model="isLocked" @update:modelValue="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
-		</MkSearchMarker>
+		<SearchMarker :keywords="['follow', 'lock']">
+			<MkSwitch v-model="isLocked" @update:modelValue="save()">
+				<template #label><SearchLabel>{{ i18n.ts.makeFollowManuallyApprove }}</SearchLabel></template>
+				<template #caption><SearchKeyword>{{ i18n.ts.lockedAccountInfo }}</SearchKeyword></template>
+			</MkSwitch>
+		</SearchMarker>
 
-		<MkSearchMarker
-			:label="i18n.ts.autoAcceptFollowed"
-			:keywords="['follow', 'auto', 'accept']"
-		>
-			<MkSwitch v-if="isLocked" v-model="autoAcceptFollowed" @update:modelValue="save()">{{ i18n.ts.autoAcceptFollowed }}</MkSwitch>
-		</MkSearchMarker>
+		<MkDisableSection :disabled="!isLocked">
+			<SearchMarker :keywords="['follow', 'auto', 'accept']">
+				<MkSwitch v-model="autoAcceptFollowed" @update:modelValue="save()">
+					<template #label><SearchLabel>{{ i18n.ts.autoAcceptFollowed }}</SearchLabel></template>
+				</MkSwitch>
+			</SearchMarker>
+		</MkDisableSection>
 
-		<MkSearchMarker
-			:label="i18n.ts.makeReactionsPublic"
-			:keywords="['reaction', 'public', i18n.ts.makeReactionsPublicDescription]"
-		>
+		<SearchMarker :keywords="['reaction', 'public']">
 			<MkSwitch v-model="publicReactions" @update:modelValue="save()">
-				{{ i18n.ts.makeReactionsPublic }}
-				<template #caption>{{ i18n.ts.makeReactionsPublicDescription }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.makeReactionsPublic }}</SearchLabel></template>
+				<template #caption><SearchKeyword>{{ i18n.ts.makeReactionsPublicDescription }}</SearchKeyword></template>
 			</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
-			:label="i18n.ts.followingVisibility"
-			:keywords="['following', 'visibility']"
-		>
+		<SearchMarker :keywords="['following', 'visibility']">
 			<MkSelect v-model="followingVisibility" @update:modelValue="save()">
-				<template #label>{{ i18n.ts.followingVisibility }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.followingVisibility }}</SearchLabel></template>
 				<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 				<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 				<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
 			</MkSelect>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
-			:label="i18n.ts.followersVisibility"
-			:keywords="['follower', 'visibility']"
-		>
+		<SearchMarker :keywords="['follower', 'visibility']">
 			<MkSelect v-model="followersVisibility" @update:modelValue="save()">
-				<template #label>{{ i18n.ts.followersVisibility }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.followersVisibility }}</SearchLabel></template>
 				<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 				<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 				<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
 			</MkSelect>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
-			:label="i18n.ts.hideOnlineStatus"
-			:keywords="['online', 'status', i18n.ts.hideOnlineStatusDescription]"
-		>
+		<SearchMarker :keywords="['online', 'status']">
 			<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
-				{{ i18n.ts.hideOnlineStatus }}
-				<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.hideOnlineStatus }}</SearchLabel></template>
+				<template #caption><SearchKeyword>{{ i18n.ts.hideOnlineStatusDescription }}</SearchKeyword></template>
 			</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
-			:label="i18n.ts.noCrawle"
-			:keywords="['crawle', 'index', 'search', i18n.ts.noCrawleDescription]"
-		>
+		<SearchMarker :keywords="['crawle', 'index', 'search']">
 			<MkSwitch v-model="noCrawle" @update:modelValue="save()">
-				{{ i18n.ts.noCrawle }}
-				<template #caption>{{ i18n.ts.noCrawleDescription }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.noCrawle }}</SearchLabel></template>
+				<template #caption><SearchKeyword>{{ i18n.ts.noCrawleDescription }}</SearchKeyword></template>
 			</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
-			:label="i18n.ts.preventAiLearning"
-			:keywords="['crawle', 'ai', i18n.ts.preventAiLearningDescription]"
-		>
+		<SearchMarker :keywords="['crawle', 'ai']">
 			<MkSwitch v-model="preventAiLearning" @update:modelValue="save()">
-				{{ i18n.ts.preventAiLearning }}
-				<template #caption>{{ i18n.ts.preventAiLearningDescription }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.preventAiLearning }}</SearchLabel></template>
+				<template #caption><SearchKeyword>{{ i18n.ts.preventAiLearningDescription }}</SearchKeyword></template>
 			</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchMarker
-			:label="i18n.ts.makeExplorable"
-			:keywords="['explore', i18n.ts.makeExplorableDescription]"
-		>
+		<SearchMarker :keywords="['explore']">
 			<MkSwitch v-model="isExplorable" @update:modelValue="save()">
-				{{ i18n.ts.makeExplorable }}
-				<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.makeExplorable }}</SearchLabel></template>
+				<template #caption><SearchKeyword>{{ i18n.ts.makeExplorableDescription }}</SearchKeyword></template>
 			</MkSwitch>
-		</MkSearchMarker>
+		</SearchMarker>
 
-		<MkSearchSection :label="i18n.ts.lockdown" :keywords="['lockdown']">
+		<SearchMarker :keywords="['lockdown']">
 			<FormSection>
-				<template #label>{{ i18n.ts.lockdown }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
+				<template #label><SearchLabel>{{ i18n.ts.lockdown }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
 
 				<div class="_gaps_m">
-					<MkSearchMarker
-						:label="i18n.ts._accountSettings.requireSigninToViewContents"
-						:keywords="['login', 'signin', i18n.ts._accountSettings.requireSigninToViewContentsDescription1, i18n.ts._accountSettings.requireSigninToViewContentsDescription2, i18n.ts._accountSettings.requireSigninToViewContentsDescription3]"
-					>
+					<SearchMarker :keywords="['login', 'signin']">
 						<MkSwitch :modelValue="requireSigninToViewContents" @update:modelValue="update_requireSigninToViewContents">
-							{{ i18n.ts._accountSettings.requireSigninToViewContents }}
+							<template #label><SearchLabel>{{ i18n.ts._accountSettings.requireSigninToViewContents }}</SearchLabel></template>
 							<template #caption>
 								<div>{{ i18n.ts._accountSettings.requireSigninToViewContentsDescription1 }}</div>
 								<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription2 }}</div>
 								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription3 }}</div>
 							</template>
 						</MkSwitch>
-					</MkSearchMarker>
+					</SearchMarker>
 
-					<MkSearchMarker
-						:label="i18n.ts._accountSettings.makeNotesFollowersOnlyBefore"
-						:keywords="['follower', i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription]"
-					>
+					<SearchMarker :keywords="['follower']">
 						<FormSlot>
-							<template #label>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBefore }}</template>
+							<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBefore }}</SearchLabel></template>
 
 							<div class="_gaps_s">
 								<MkSelect :modelValue="makeNotesFollowersOnlyBefore_type" @update:modelValue="makeNotesFollowersOnlyBefore = $event === 'relative' ? -604800 : $event === 'absolute' ? Math.floor(Date.now() / 1000) : null">
@@ -148,18 +122,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 
 							<template #caption>
-								<div>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</div>
+								<div><SearchKeyword>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</SearchKeyword></div>
 								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 							</template>
 						</FormSlot>
-					</MkSearchMarker>
+					</SearchMarker>
 
-					<MkSearchMarker
-						:label="i18n.ts._accountSettings.makeNotesHiddenBefore"
-						:keywords="['hidden', i18n.ts._accountSettings.makeNotesHiddenBeforeDescription]"
-					>
+					<SearchMarker :keywords="['hidden']">
 						<FormSlot>
-							<template #label>{{ i18n.ts._accountSettings.makeNotesHiddenBefore }}</template>
+							<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesHiddenBefore }}</SearchLabel></template>
 
 							<div class="_gaps_s">
 								<MkSelect :modelValue="makeNotesHiddenBefore_type" @update:modelValue="makeNotesHiddenBefore = $event === 'relative' ? -604800 : $event === 'absolute' ? Math.floor(Date.now() / 1000) : null">
@@ -189,30 +160,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 
 							<template #caption>
-								<div>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</div>
+								<div><SearchKeyword>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</SearchKeyword></div>
 								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 							</template>
 						</FormSlot>
-					</MkSearchMarker>
+					</SearchMarker>
 				</div>
 			</FormSection>
-		</MkSearchSection>
+		</SearchMarker>
 
 		<FormSection>
 			<div class="_gaps_m">
-				<MkSearchMarker
-					:label="i18n.ts.rememberNoteVisibility"
-					:keywords="['remember', 'keep', 'note', 'visibility']"
-				>
-					<MkSwitch v-model="rememberNoteVisibility" @update:modelValue="save()">{{ i18n.ts.rememberNoteVisibility }}</MkSwitch>
-				</MkSearchMarker>
+				<SearchMarker :keywords="['remember', 'keep', 'note', 'visibility']">
+					<MkSwitch v-model="rememberNoteVisibility" @update:modelValue="save()">
+						<template #label><SearchLabel>{{ i18n.ts.rememberNoteVisibility }}</SearchLabel></template>
+					</MkSwitch>
+				</SearchMarker>
 
-				<MkSearchMarker
-					:label="i18n.ts.defaultNoteVisibility"
-					:keywords="['default', 'note', 'visibility']"
-				>
+				<SearchMarker :keywords="['default', 'note', 'visibility']">
 					<MkFolder v-if="!rememberNoteVisibility">
-						<template #label>{{ i18n.ts.defaultNoteVisibility }}</template>
+						<template #label><SearchLabel>{{ i18n.ts.defaultNoteVisibility }}</SearchLabel></template>
 						<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
 						<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
 						<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
@@ -228,18 +195,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.disableFederation }}</MkSwitch>
 						</div>
 					</MkFolder>
-				</MkSearchMarker>
+				</SearchMarker>
 			</div>
 		</FormSection>
 
-		<MkSearchMarker
-			:label="i18n.ts.keepCw"
-			:keywords="['remember', 'keep', 'note', 'cw']"
-		>
-			<MkSwitch v-model="keepCw" @update:modelValue="save()">{{ i18n.ts.keepCw }}</MkSwitch>
-		</MkSearchMarker>
+		<SearchMarker :keywords="['remember', 'keep', 'note', 'cw']">
+			<MkSwitch v-model="keepCw" @update:modelValue="save()">
+				<template #label><SearchLabel>{{ i18n.ts.keepCw }}</SearchLabel></template>
+			</MkSwitch>
+		</SearchMarker>
 	</div>
-</MkSearchSection>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
@@ -258,7 +224,7 @@ import FormSlot from '@/components/form/slot.vue';
 import { formatDateTimeString } from '@/scripts/format-time-string.js';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
-import MkSearchMarker from '@/components/MkSearchMarker.vue';
+import MkDisableSection from '@/components/MkDisableSection.vue';
 
 const $i = signinRequired();
 
