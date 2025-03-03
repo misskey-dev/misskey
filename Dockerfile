@@ -86,7 +86,7 @@ WORKDIR /misskey
 # add package.json to add pnpm
 COPY --chown=misskey:misskey ./package.json ./package.json
 
-RUN npm install -g pnpm
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
 
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
