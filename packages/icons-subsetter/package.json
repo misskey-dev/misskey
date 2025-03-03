@@ -1,0 +1,30 @@
+{
+	"name": "icons-subsetter",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Subset tabler-icons webfont",
+	"type": "module",
+	"scripts": {
+		"build": "tsx src/generator.ts",
+		"eslint": "eslint src/**/*.ts",
+		"typecheck": "tsc --noEmit",
+		"lint": "pnpm typecheck && pnpm eslint"
+	},
+	"devDependencies": {
+		"@types/node": "22.13.8",
+		"@types/wawoff2": "1.0.2",
+		"@typescript-eslint/eslint-plugin": "8.25.0",
+		"@typescript-eslint/parser": "8.25.0"
+	},
+	"dependencies": {
+		"@tabler/icons-webfont": "https://github.com/misskey-dev/tabler-icons/archive/refs/tags/3.30.0-mi.1932+ab127beee.tar.gz",
+		"harfbuzzjs": "0.4.5",
+		"tiny-glob": "0.2.9",
+		"tsx": "4.19.3",
+		"typescript": "5.8.2",
+		"wawoff2": "2.0.1"
+	},
+	"files": [
+		"built"
+	]
+}
