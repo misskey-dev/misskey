@@ -332,6 +332,7 @@ $widgets-hide-threshold: 1090px;
 	overscroll-behavior: contain;
 	background: var(--MI_THEME-bg);
 	scroll-padding-top: 60px; // TODO: ちゃんと計算する
+	scroll-padding-bottom: 60px; // TODO: ちゃんと計算する
 }
 
 .widgets {
