@@ -638,9 +638,9 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['password', 'less', 'key', 'passkey', 'login', 'signin', i18n.ts.passwordLessLoginDescription],
 			},
 		],
-		label: 'Unnamed marker',
+		label: i18n.ts['2fa'],
 		keywords: ['2fa'],
-		path: '/settings/2fa',
+		path: '/settings/security',
 	},
 ] as const;
 
