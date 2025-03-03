@@ -4,13 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.highlighted]: highlighted }]">
+<div ref="root" :class="[$style.root, { [$style.highlighted]: highlighted }]">
 	<slot></slot>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { onActivated, onMounted, onUnmounted, ref, shallowRef, useTemplateRef } from 'vue';
 
 const props = defineProps<{
 	markerId?: string;
@@ -22,8 +22,27 @@ const props = defineProps<{
 	inlining?: string[];
 }>();
 
+const rootEl = useTemplateRef<HTMLDivElement>('root');
 const hash = window.location.hash.slice(1);
 const highlighted = hash === props.markerId || (props.children && props.childrenHidden && props.children.includes(hash));
+
+onMounted(() => {
+	if (highlighted) {
+		rootEl.value?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'start',
+		});
+	}
+});
+
+onActivated(() => {
+	if (highlighted) {
+		rootEl.value?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'start',
+		});
+	}
+});
 </script>
 
 <style lang="scss" module>
