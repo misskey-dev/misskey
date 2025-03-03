@@ -37,6 +37,11 @@ export const searchIndexes:SearchIndexItem[] = [
 				label: i18n.ts.themeForDarkMode,
 				keywords: ['dark', 'theme'],
 			},
+			{
+				id: 'ujvMfyzUr',
+				label: i18n.ts.setWallpaper,
+				keywords: ['wallpaper'],
+			},
 		],
 		label: i18n.ts.theme,
 		keywords: ['theme'],
