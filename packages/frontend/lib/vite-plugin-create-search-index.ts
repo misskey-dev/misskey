@@ -171,7 +171,7 @@ function collectChildIds(allMarkers: Map<string, SearchIndexItem>): Set<string> 
 					}
 				}
 			});
-			}
+		}
 
 		// inlining処理を追加
 		if (marker.inlining) {
@@ -268,15 +268,15 @@ function resolveChildReferences(
 		if (typeof marker.inlining === 'string') {
 			try {
 				// 文字列形式の配列を実際の配列に変換
-                const inliningStr = marker.inlining.trim();
-                if (inliningStr.startsWith('[') && inliningStr.endsWith(']')) {
-                    inliningIds = JSON5.parse(inliningStr.replace(/'/g, '"'));
-                    logger.info(`Converted string inlining to array: ${inliningStr} -> ${JSON.stringify(inliningIds)}`);
-                } else {
-                    // 単一値の場合は配列に
-                    inliningIds = [inliningStr];
-                    logger.info(`Converted single string inlining to array: ${inliningStr}`);
-                }
+				const inliningStr = (marker.inlining as string).trim();
+				if (inliningStr.startsWith('[') && inliningStr.endsWith(']')) {
+					inliningIds = JSON5.parse(inliningStr.replace(/'/g, '"'));
+					logger.info(`Converted string inlining to array: ${inliningStr} -> ${JSON.stringify(inliningIds)}`);
+				} else {
+					// 単一値の場合は配列に
+					inliningIds = [inliningStr];
+					logger.info(`Converted single string inlining to array: ${inliningStr}`);
+				}
 			} catch (e) {
 				logger.error(`Failed to parse inlining string: ${marker.inlining}`, e);
 			}
@@ -1192,7 +1192,7 @@ async function processVueFile(
 	id: string,
 	options: { targetFilePaths: string[], exportFilePath: string },
 	transformedCodeCache: Record<string, string>
-) : Promise<{
+): Promise<{
 	code: string,
 	map: any,
 	transformedCodeCache: Record<string, string>
