@@ -19,6 +19,7 @@ const props = defineProps<{
 	keywords?: string[];
 	children?: string[];
 	childrenHidden?: boolean;
+	inlining?: string[];
 }>();
 
 const hash = window.location.hash.slice(1);
