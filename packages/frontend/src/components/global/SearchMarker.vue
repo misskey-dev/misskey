@@ -30,7 +30,7 @@ onMounted(() => {
 	if (highlighted) {
 		rootEl.value?.scrollIntoView({
 			behavior: 'smooth',
-			block: 'start',
+			block: 'center',
 		});
 	}
 });
@@ -39,7 +39,7 @@ onActivated(() => {
 	if (highlighted) {
 		rootEl.value?.scrollIntoView({
 			behavior: 'smooth',
-			block: 'start',
+			block: 'center',
 		});
 	}
 });
