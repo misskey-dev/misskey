@@ -42,7 +42,7 @@ import * as os from '@/os.js';
 import { useRouter } from '@/router/supplier.js';
 import { searchIndexes } from '@/scripts/autogen/settings-search-index.js';
 
-const SETTING_INDEX = searchIndexes;
+const SETTING_INDEX = searchIndexes; // TODO: lazy load
 
 const indexInfo = {
 	title: i18n.ts.settings,
