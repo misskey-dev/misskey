@@ -11,17 +11,18 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "22.9.0",
-		"@typescript-eslint/eslint-plugin": "7.17.0",
-		"@typescript-eslint/parser": "7.17.0"
+		"@types/node": "22.13.8",
+		"@types/wawoff2": "1.0.2",
+		"@typescript-eslint/eslint-plugin": "8.25.0",
+		"@typescript-eslint/parser": "8.25.0"
 	},
 	"dependencies": {
 		"@tabler/icons-webfont": "https://github.com/misskey-dev/tabler-icons/archive/refs/tags/3.30.0-mi.1932+ab127beee.tar.gz",
-		"harfbuzzjs": "0.4.4",
-		"tiny-glob": "^0.2.9",
-		"tsx": "4.4.0",
-		"typescript": "5.6.3",
-		"wasm-ttf2woff": "1.0.0"
+		"harfbuzzjs": "0.4.5",
+		"tiny-glob": "0.2.9",
+		"tsx": "4.19.3",
+		"typescript": "5.8.2",
+		"wawoff2": "2.0.1"
 	},
 	"files": [
 		"built"

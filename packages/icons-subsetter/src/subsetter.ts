@@ -4,7 +4,7 @@
  */
 
 import { promises as fsp } from 'fs';
-import { ttf2woff } from 'wasm-ttf2woff';
+import { compress } from 'wawoff2';
 
 export async function generateSubsettedFont(ttfPath: string, unicodeRangeValues: Map<string, number[]>) {
 	const ttf = await fsp.readFile(ttfPath);
@@ -68,7 +68,7 @@ export async function generateSubsettedFont(ttfPath: string, unicodeRangeValues:
 		}
 
 		// サブセットフォントをバッファに格納
-		subsetFonts.set(key, Buffer.from(await ttf2woff(heapu8.slice(offset, offset + subsetByteLength))));
+		subsetFonts.set(key, Buffer.from(await compress(heapu8.slice(offset, offset + subsetByteLength))));
 
 		// メモリを解放
 		harfbuzzWasm.hb_blob_destroy(result);
