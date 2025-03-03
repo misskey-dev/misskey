@@ -26,18 +26,31 @@ const highlighted = hash === props.markerId || (props.children && props.children
 
 <style lang="scss" module>
 .root {
+	position: relative;
 }
 
 .highlighted {
-	animation: blink 1s infinite;
+	&::after {
+		content: '';
+		position: absolute;
+		top: -8px;
+		left: -8px;
+		width: calc(100% + 16px);
+		height: calc(100% + 16px);
+		border-radius: 6px;
+		animation: blink 1s infinite;
+		pointer-events: none;
+	}
 }
 
 @keyframes blink {
 	0%, 100% {
-		box-shadow: 0 0 0 2px color(from var(--MI_THEME-accent) srgb r g b / 0.3);
+		background: color(from var(--MI_THEME-accent) srgb r g b / 0.05);
+		border: 1px solid color(from var(--MI_THEME-accent) srgb r g b / 0.3);
 	}
 	50% {
-		box-shadow: 0 0 0 2px transparent;
+		background: transparent;
+		border: 1px solid transparent;
 	}
 }
 </style>
