@@ -4,12 +4,14 @@
  */
 
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { defaultStore } from '@/store.js';
 import { popup } from '@/os.js';
 
 export default {
 	mounted(el, binding, vn) {
 		// 明示的に false であればバインドしない
 		if (binding.value === false) return;
+		if (!defaultStore.state.animation) return;
 
 		el.addEventListener('click', () => {
 			const rect = el.getBoundingClientRect();
