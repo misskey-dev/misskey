@@ -387,7 +387,7 @@ function formatSpecialProperty(key: string, value: any): string {
 	// 文字列値の場合の特別処理
 	if (typeof value === 'string') {
 		// i18n.ts 参照を含む場合 - クォートなしでそのまま出力
-		if (value.includes('i18n.ts.')) {
+		if (isI18nReference(value)) {
 			logger.info(`Preserving i18n reference in output: ${value}`);
 			return value;
 		}
@@ -408,7 +408,7 @@ function formatSpecialProperty(key: string, value: any): string {
 function formatArrayForOutput(items: any[]): string {
 	return items.map(item => {
 		// i18n.ts. 参照の文字列はそのままJavaScript式として出力
-		if (typeof item === 'string' && item.includes('i18n.ts.')) {
+		if (typeof item === 'string' && isI18nReference(item)) {
 			logger.info(`Preserving i18n reference in array: ${item}`);
 			return item; // クォートなしでそのまま
 		}
@@ -451,7 +451,6 @@ function extractElementText(node: VueAstNode): string | null {
 	// 5. 再帰的に子ノードを探索
 	return extractNestedContent(node.children);
 }
-
 /**
  * ノードから直接コンテンツを抽出
  */
@@ -470,14 +469,14 @@ function extractDirectContent(node: VueAstNode): string | null {
 	const mustachePattern = /^\s*{{\s*(.*?)\s*}}\s*$/;
 	const mustacheMatch = content.match(mustachePattern);
 
-	if (mustacheMatch && mustacheMatch[1] && mustacheMatch[1].includes('i18n.ts.')) {
+	if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
 		const extractedContent = mustacheMatch[1].trim();
 		console.log(`Extracted i18n reference from mustache: ${extractedContent}`);
 		return extractedContent;
 	}
 
 	// 直接i18n参照を含む場合
-	if (content.includes('i18n.ts.')) {
+	if (isI18nReference(content)) {
 		console.log(`Direct i18n reference found: ${content}`);
 		return content;
 	}
@@ -498,7 +497,7 @@ function extractInterpolationContent(children: VueAstNode[]): string | null {
 				const content = child.content.content.trim();
 				console.log(`Interpolation content: ${content}`);
 
-				if (content.includes('i18n.ts.')) {
+				if (isI18nReference(content)) {
 					return content;
 				}
 			} else if (child.content && typeof child.content === 'object') {
@@ -508,7 +507,7 @@ function extractInterpolationContent(children: VueAstNode[]): string | null {
 				if (child.content.content) {
 					const content = child.content.content.trim();
 
-					if (content.includes('i18n.ts.')) {
+					if (isI18nReference(content)) {
 						console.log(`Found i18n reference in complex interpolation: ${content}`);
 						return content;
 					}
@@ -529,7 +528,7 @@ function extractExpressionContent(children: VueAstNode[]): string | null {
 		if (child.type === NODE_TYPES.EXPRESSION && child.content) {
 			const expr = child.content.trim();
 
-			if (expr.includes('i18n.ts.')) {
+			if (isI18nReference(expr)) {
 				console.log(`Found i18n reference in expression node: ${expr}`);
 				return expr;
 			}
@@ -563,7 +562,7 @@ function extractTextContent(children: VueAstNode[]): string | null {
 				const mustachePattern = /^\s*{{\s*(.*?)\s*}}\s*$/;
 				const mustacheMatch = text.match(mustachePattern);
 
-				if (mustacheMatch && mustacheMatch[1] && mustacheMatch[1].includes('i18n.ts.')) {
+				if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
 					console.log(`Extracted i18n ref from text mustache: ${mustacheMatch[1]}`);
 					return mustacheMatch[1].trim();
 				}
@@ -601,6 +600,7 @@ function extractNestedContent(children: VueAstNode[]): string | null {
 
 	return null;
 }
+
 
 /**
  * SearchLabelとSearchKeywordを探して抽出する関数
@@ -646,14 +646,14 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 										JSON.stringify(child.content);
 
 									console.log(`Interpolation expression: ${expression}`);
-									if (typeof expression === 'string' && expression.includes('i18n.ts.')) {
+									if (typeof expression === 'string' && isI18nReference(expression)) {
 										label = expression.trim();
 										console.log(`Found i18n in interpolation: ${label}`);
 										break;
 									}
 								}
 								// 式ノード
-								else if (child.type === NODE_TYPES.EXPRESSION && child.content && child.content.includes('i18n.ts.')) {
+								else if (child.type === NODE_TYPES.EXPRESSION && child.content && isI18nReference(child.content)) {
 									label = child.content.trim();
 									console.log(`Found i18n in expression: ${label}`);
 									break;
@@ -661,7 +661,7 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 								// テキストノードでもMustache構文を探す
 								else if (child.type === NODE_TYPES.TEXT && child.content) {
 									const mustacheMatch = child.content.trim().match(/^\s*{{\s*(.*?)\s*}}\s*$/);
-									if (mustacheMatch && mustacheMatch[1] && mustacheMatch[1].includes('i18n.ts.')) {
+									if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
 										label = mustacheMatch[1].trim();
 										console.log(`Found i18n in text mustache: ${label}`);
 										break;
@@ -694,7 +694,7 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 										JSON.stringify(child.content);
 
 									console.log(`Keyword interpolation: ${expression}`);
-									if (typeof expression === 'string' && expression.includes('i18n.ts.')) {
+									if (typeof expression === 'string' && isI18nReference(expression)) {
 										const keyword = expression.trim();
 										keywords.push(keyword);
 										console.log(`Found i18n keyword in interpolation: ${keyword}`);
@@ -702,7 +702,7 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 									}
 								}
 								// 式ノード
-								else if (child.type === NODE_TYPES.EXPRESSION && child.content && child.content.includes('i18n.ts.')) {
+								else if (child.type === NODE_TYPES.EXPRESSION && child.content && isI18nReference(child.content)) {
 									const keyword = child.content.trim();
 									keywords.push(keyword);
 									console.log(`Found i18n keyword in expression: ${keyword}`);
@@ -711,7 +711,7 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 								// テキストノードでもMustache構文を探す
 								else if (child.type === NODE_TYPES.TEXT && child.content) {
 									const mustacheMatch = child.content.trim().match(/^\s*{{\s*(.*?)\s*}}\s*$/);
-									if (mustacheMatch && mustacheMatch[1] && mustacheMatch[1].includes('i18n.ts.')) {
+									if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
 										const keyword = mustacheMatch[1].trim();
 										keywords.push(keyword);
 										console.log(`Found i18n keyword in text mustache: ${keyword}`);
@@ -737,6 +737,7 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 	console.log(`Extraction completed: label=${label}, keywords=[${keywords.join(', ')}]`);
 	return { label, keywords };
 }
+
 
 function extractUsageInfoFromTemplateAst(
 	templateAst: any,
@@ -1360,4 +1361,14 @@ export default function pluginCreateSearchIndex(options: {
 			await analyzeVueProps({ ...options, transformedCodeCache }); // ビルド時にも analyzeVueProps を実行
 		},
 	};
+}
+
+// i18n参照を検出するためのヘルパー関数を追加
+function isI18nReference(text: string | null | undefined): boolean {
+	if (!text) return false;
+	// ドット記法（i18n.ts.something）
+	const dotPattern = /i18n\.ts\.\w+/;
+	// ブラケット記法（i18n.ts['something']）
+	const bracketPattern = /i18n\.ts\[['"][^'"]+['"]\]/;
+	return dotPattern.test(text) || bracketPattern.test(text);
 }
