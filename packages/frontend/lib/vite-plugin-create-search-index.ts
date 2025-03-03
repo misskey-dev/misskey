@@ -1031,8 +1031,8 @@ export async function analyzeVueProps(options: {
 	logger.info(`Found ${filePaths.length} matching files to analyze`);
 
 	for (const filePath of filePaths) {
-		// バックスラッシュをスラッシュに変換
-		const id = path.resolve(filePath).replace(/\\/g, '/'); // 絶対パスに変換
+		const absolutePath = path.join(process.cwd(), filePath);
+		const id = absolutePath.replace(/\\/g, '/'); // 絶対パスに変換
 		const code = options.transformedCodeCache[id]; // options 経由でキャッシュ参照
 		if (!code) { // キャッシュミスの場合
 			logger.error(`Error: No cached code found for: ${id}.`); // エラーログ
