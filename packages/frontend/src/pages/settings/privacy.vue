@@ -6,11 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/privacy" :label="i18n.ts.privacy" :keywords="['privacy']" icon="ti ti-lock-open">
 	<div class="_gaps_m">
-		<SearchMarker
-			:label="i18n.ts.makeFollowManuallyApprove"
-			:keywords="['follow', 'lock', i18n.ts.lockedAccountInfo]"
-		>
-			<MkSwitch v-model="isLocked" @update:modelValue="save()">{{ i18n.ts.makeFollowManuallyApprove }}<template #caption>{{ i18n.ts.lockedAccountInfo }}</template></MkSwitch>
+		<SearchMarker :keywords="['follow', 'lock']">
+			<MkSwitch v-model="isLocked" @update:modelValue="save()">
+				<template #label><SearchLabel>{{ i18n.ts.makeFollowManuallyApprove }}</SearchLabel></template>
+				<template #caption><SearchKeyword>{{ i18n.ts.lockedAccountInfo }}</SearchKeyword></template>
+			</MkSwitch>
 		</SearchMarker>
 
 		<SearchMarker
