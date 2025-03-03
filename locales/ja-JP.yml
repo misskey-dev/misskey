@@ -1314,6 +1314,8 @@ reactAreYouSure: "\" {emoji} \" をリアクションしますか？"
 markAsSensitiveConfirm: "このメディアをセンシティブとして設定しますか？"
 unmarkAsSensitiveConfirm: "このメディアのセンシティブ指定を解除しますか？"
 includeChannelOnUserFiles: "ユーザーページの'ファイル付き'ノート一覧と'ファイル'タブでチャンネル投稿を含む"
+showAllOnNotesPrevNext: "前後ノートの表示にリプライなどを含める"
+showAllOnNotesPrevNextDescription: "ユーザーページの'全て'と同様の基準で前後のノートを表示するようにします。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"

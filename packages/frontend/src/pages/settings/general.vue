@@ -56,6 +56,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
 				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 				<MkSwitch v-model="includeChannelOnUserFiles">{{ i18n.ts.includeChannelOnUserFiles }}</MkSwitch>
+				<MkSwitch v-model="showAllOnNotesPrevNext">
+					<template #label>{{ i18n.ts.showAllOnNotesPrevNext }}</template>
+					<template #caption>{{ i18n.ts.showAllOnNotesPrevNextDescription }}</template>
+				</MkSwitch>
 				<MkRadios v-model="reactionsDisplaySize">
 					<template #label>{{ i18n.ts.reactionsDisplaySize }}</template>
 					<option value="small">{{ i18n.ts.small }}</option>
@@ -301,6 +305,7 @@ const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('dis
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
 const includeChannelOnUserFiles = computed(defaultStore.makeGetterSetter('includeChannelOnUserFiles'));
+const showAllOnNotesPrevNext = computed(defaultStore.makeGetterSetter('showAllOnNotesPrevNext'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));

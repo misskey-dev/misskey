@@ -69,6 +69,7 @@ import { $i } from '@/account.js';
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
 const CTX_NOTE = !$i && assertServerContext(serverContext, 'note') ? serverContext.note : null;
+const SHOW_ALL = $i != null && defaultStore.state.showAllOnNotesPrevNext;
 
 const props = defineProps<{
 	noteId: string;
@@ -87,6 +88,9 @@ const prevUserPagination: Paging = {
 	params: computed(() => note.value ? ({
 		userId: note.value.userId,
 		untilId: note.value.id,
+		withRenotes: SHOW_ALL,
+		withReplies: SHOW_ALL,
+		withChannelNotes: SHOW_ALL,
 	}) : undefined),
 };
 
@@ -97,6 +101,9 @@ const nextUserPagination: Paging = {
 	params: computed(() => note.value ? ({
 		userId: note.value.userId,
 		sinceId: note.value.id,
+		withRenotes: SHOW_ALL,
+		withReplies: SHOW_ALL,
+		withChannelNotes: SHOW_ALL,
 	}) : undefined),
 };
 
@@ -106,6 +113,8 @@ const prevChannelPagination: Paging = {
 	params: computed(() => note.value ? ({
 		channelId: note.value.channelId,
 		untilId: note.value.id,
+		withRenotes: SHOW_ALL,
+		withReplies: SHOW_ALL,
 	}) : undefined),
 };
 
@@ -116,6 +125,8 @@ const nextChannelPagination: Paging = {
 	params: computed(() => note.value ? ({
 		channelId: note.value.channelId,
 		sinceId: note.value.id,
+		withRenotes: SHOW_ALL,
+		withReplies: SHOW_ALL,
 	}) : undefined),
 };
 

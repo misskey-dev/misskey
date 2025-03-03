@@ -471,6 +471,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	showAllOnNotesPrevNext: {
+		where: 'device',
+		default: false,
+	},
 	contextMenu: {
 		where: 'device',
 		default: 'app' as 'app' | 'appWithShift' | 'native',
