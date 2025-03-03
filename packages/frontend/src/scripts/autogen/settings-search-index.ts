@@ -620,6 +620,13 @@ export const searchIndexes:SearchIndexItem[] = [
 		icon: 'ti ti-mail',
 	},
 	{
+		id: 'gtaOSdIJB',
+		label: i18n.ts.avatarDecorations,
+		keywords: ['avatar', 'icon', 'decoration'],
+		path: '/settings/avatar-decoration',
+		icon: 'ti ti-sparkles',
+	},
+	{
 		id: '2fa',
 		children: [
 			{
