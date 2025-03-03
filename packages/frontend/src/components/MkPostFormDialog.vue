@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="modal"
 	:preferType="'dialog'"
 	@click="modal?.close()"
+	@close="onModalClose()"
 	@closed="onModalClosed()"
 	@esc="modal?.close()"
 >
@@ -28,6 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
+import { globalEvents } from '@/events.js';
 import type { PostFormProps } from '@/types/post-form.js';
 
 const props = withDefaults(defineProps<PostFormProps & {
@@ -49,6 +51,13 @@ function onPosted() {
 	modal.value?.close({
 		useSendAnimation: true,
 	});
+}
+
+function onModalClose() {
+	// MkPostFormでもonBeforeUnmountで発火しているが、Dialogの場合は閉じるまでのトランジションがあるので
+	// 閉じるボタンが押された瞬間に先に発火する
+	// なのでDialogの場合は2回発火されるが、ウィンドウを閉じる指示のため悪影響はない
+	globalEvents.emit('requestCloseEmojiPickerWindow');
 }
 
 function onModalClosed() {
