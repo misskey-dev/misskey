@@ -23,7 +23,7 @@ import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
-import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/_.js';
+import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository, MiMeta } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { IdService } from '@/core/IdService.js';
@@ -38,6 +38,9 @@ export class ApRendererService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -186,7 +189,7 @@ export class ApRendererService {
 				url: emoji.publicUrl || emoji.originalUrl,
 			},
 			_misskey_license: {
-				freeText: emoji.license
+				freeText: emoji.license,
 			},
 		};
 	}
@@ -252,6 +255,38 @@ export class ApRendererService {
 			url: this.driveFileEntityService.getPublicUrl(file),
 			sensitive: file.isSensitive,
 			name: file.comment,
+		};
+	}
+
+	@bindThis
+	public renderIdenticon(user: MiLocalUser): IApImage {
+		return {
+			type: 'Image',
+			url: this.userEntityService.getIdenticonUrl(user),
+			sensitive: false,
+			name: null,
+		};
+	}
+
+	@bindThis
+	public renderSystemAvatar(user: MiLocalUser): IApImage {
+		if (this.meta.iconUrl == null) return this.renderIdenticon(user);
+		return {
+			type: 'Image',
+			url: this.meta.iconUrl,
+			sensitive: false,
+			name: null,
+		};
+	}
+
+	@bindThis
+	public renderSystemBanner(): IApImage | null {
+		if (this.meta.bannerUrl == null) return null;
+		return {
+			type: 'Image',
+			url: this.meta.bannerUrl,
+			sensitive: false,
+			name: null,
 		};
 	}
 
@@ -503,8 +538,8 @@ export class ApRendererService {
 			_misskey_requireSigninToViewContents: user.requireSigninToViewContents,
 			_misskey_makeNotesFollowersOnlyBefore: user.makeNotesFollowersOnlyBefore,
 			_misskey_makeNotesHiddenBefore: user.makeNotesHiddenBefore,
-			icon: avatar ? this.renderImage(avatar) : null,
-			image: banner ? this.renderImage(banner) : null,
+			icon: avatar ? this.renderImage(avatar) : isSystem ? this.renderSystemAvatar(user) : this.renderIdenticon(user),
+			image: banner ? this.renderImage(banner) : isSystem ? this.renderSystemBanner() : null,
 			tag,
 			manuallyApprovesFollowers: user.isLocked,
 			discoverable: user.isExplorable,

@@ -22,7 +22,7 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "22.13.7",
+		"@types/node": "22.13.8",
 		"@typescript-eslint/eslint-plugin": "8.25.0",
 		"@typescript-eslint/parser": "8.25.0",
 		"execa": "9.5.2",

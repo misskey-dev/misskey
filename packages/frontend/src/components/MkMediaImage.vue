@@ -124,11 +124,21 @@ function showMenu(ev: MouseEvent) {
 
 	if (iAmModerator) {
 		menuItems.push({
-			text: i18n.ts.markAsSensitive,
+			text: props.image.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
 			icon: 'ti ti-eye-exclamation',
 			danger: true,
-			action: () => {
-				os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
+			action: async () => {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					text: props.image.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+				});
+
+				if (canceled) return;
+
+				os.apiWithDialog('drive/files/update', {
+					fileId: props.image.id,
+					isSensitive: !props.image.isSensitive,
+				});
 			},
 		});
 	}
