@@ -284,7 +284,14 @@ function showMenu(ev: MouseEvent) {
 	});
 }
 
-function toggleSensitive(file: Misskey.entities.DriveFile) {
+async function toggleSensitive(file: Misskey.entities.DriveFile) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: file.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+	});
+
+	if (canceled) return;
+
 	os.apiWithDialog('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
