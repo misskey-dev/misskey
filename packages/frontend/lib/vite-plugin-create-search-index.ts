@@ -1030,11 +1030,12 @@ export async function analyzeVueProps(options: {
 	logger.info(`Found ${filePaths.length} matching files to analyze`);
 
 	for (const filePath of filePaths) {
-		const id = path.resolve(filePath); // 絶対パスに変換
+		// バックスラッシュをスラッシュに変換
+		const id = path.resolve(filePath).replace(/\\/g, '/'); // 絶対パスに変換
 		const code = options.transformedCodeCache[id]; // options 経由でキャッシュ参照
 		if (!code) { // キャッシュミスの場合
-			logger.error(`Error: No cached code found for: ${filePath}.`); // エラーログ
-			throw new Error(`No cached code found for: ${filePath}.`); // エラーを投げる
+			logger.error(`Error: No cached code found for: ${id}.`); // エラーログ
+			throw new Error(`No cached code found for: ${id}.`); // エラーを投げる
 		}
 
 		try {
