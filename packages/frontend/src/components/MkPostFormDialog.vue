@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="modal"
 	:preferType="'dialog'"
 	@click="modal?.close()"
+	@close="onModalClose()"
 	@closed="onModalClosed()"
 	@esc="modal?.close()"
 >
