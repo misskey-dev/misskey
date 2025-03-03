@@ -87,6 +87,28 @@ export const searchIndexes:SearchIndexItem[] = [
 				label: i18n.ts.password,
 				keywords: ['password'],
 			},
+			{
+				id: '2fa',
+				children: [
+					{
+						id: 'qCXM0HtJ7',
+						label: i18n.ts.totp,
+						keywords: ['totp', 'app', i18n.ts.totpDescription],
+					},
+					{
+						id: '3g1RePuD9',
+						label: i18n.ts.securityKeyAndPasskey,
+						keywords: ['security', 'key', 'passkey'],
+					},
+					{
+						id: 'pFRud5u8k',
+						label: i18n.ts.passwordLessLogin,
+						keywords: ['password', 'less', 'key', 'passkey', 'login', 'signin', i18n.ts.passwordLessLoginDescription],
+					},
+				],
+				label: i18n.ts['2fa'],
+				keywords: ['2fa'],
+			},
 		],
 		label: i18n.ts.security,
 		keywords: ['security'],
@@ -625,29 +647,6 @@ export const searchIndexes:SearchIndexItem[] = [
 		keywords: ['avatar', 'icon', 'decoration'],
 		path: '/settings/avatar-decoration',
 		icon: 'ti ti-sparkles',
-	},
-	{
-		id: '2fa',
-		children: [
-			{
-				id: 'qCXM0HtJ7',
-				label: i18n.ts.totp,
-				keywords: ['totp', 'app', i18n.ts.totpDescription],
-			},
-			{
-				id: '3g1RePuD9',
-				label: i18n.ts.securityKeyAndPasskey,
-				keywords: ['security', 'key', 'passkey'],
-			},
-			{
-				id: 'pFRud5u8k',
-				label: i18n.ts.passwordLessLogin,
-				keywords: ['password', 'less', 'key', 'passkey', 'login', 'signin', i18n.ts.passwordLessLoginDescription],
-			},
-		],
-		label: i18n.ts['2fa'],
-		keywords: ['2fa'],
-		path: '/settings/security',
 	},
 ] as const;
 

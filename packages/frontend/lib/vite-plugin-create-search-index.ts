@@ -45,6 +45,7 @@ export type SearchIndexItem = {
 	label: string;
 	keywords: string | string[];
 	icon?: string;
+	inlining?: string[];
 	children?: SearchIndexItem[];
 }
 
@@ -158,6 +159,7 @@ function collectChildIds(allMarkers: Map<string, SearchIndexItem>): Set<string> 
 	const childIds = new Set<string>();
 
 	allMarkers.forEach((marker, id) => {
+		// 通常のchildren処理
 		const children = marker.children;
 		if (Array.isArray(children)) {
 			children.forEach(childId => {
@@ -169,6 +171,43 @@ function collectChildIds(allMarkers: Map<string, SearchIndexItem>): Set<string> 
 					}
 				}
 			});
+			}
+
+		// inlining処理を追加
+		if (marker.inlining) {
+			let inliningIds: string[] = [];
+
+			// 文字列の場合は配列に変換
+			if (typeof marker.inlining === 'string') {
+				try {
+					const inliningStr = marker.inlining.trim();
+					if (inliningStr.startsWith('[') && inliningStr.endsWith(']')) {
+						inliningIds = JSON5.parse(inliningStr.replace(/'/g, '"'));
+						logger.info(`Parsed inlining string to array: ${inliningStr} -> ${JSON.stringify(inliningIds)}`);
+					} else {
+						inliningIds = [inliningStr];
+					}
+				} catch (e) {
+					logger.error(`Failed to parse inlining string: ${marker.inlining}`, e);
+				}
+			}
+			// 既に配列の場合
+			else if (Array.isArray(marker.inlining)) {
+				inliningIds = marker.inlining;
+			}
+
+			// inliningで指定されたIDを子セットに追加
+			for (const inlineId of inliningIds) {
+				if (typeof inlineId === 'string') {
+					if (!allMarkers.has(inlineId)) {
+						logger.warn(`Warning: Inlining marker ID ${inlineId} referenced but not found`);
+					} else {
+						// inliningで参照されているマーカーも子として扱う
+						childIds.add(inlineId);
+						logger.info(`Added inlined marker ${inlineId} as child in collectChildIds`);
+					}
+				}
+			}
 		}
 	});
 
@@ -204,31 +243,70 @@ function resolveChildReferences(
 	function resolveChildrenForMarker(marker: SearchIndexItem): SearchIndexItem {
 		// マーカーのディープコピーを作成
 		const resolvedMarker = { ...marker };
+		// 明示的に子マーカー配列を作成
+		const resolvedChildren: SearchIndexItem[] = [];
 
-		// 子リファレンスを解決
+		// 通常のchildren処理
 		if (Array.isArray(marker.children)) {
-			const children: SearchIndexItem[] = [];
-
 			for (const childId of marker.children) {
 				if (typeof childId === 'string') {
 					const childMarker = allMarkers.get(childId);
-
 					if (childMarker) {
 						// 子マーカーの子も再帰的に解決
 						const resolvedChild = resolveChildrenForMarker(childMarker);
-						children.push(resolvedChild);
-						logger.info(`Resolved child ${childId} for parent ${marker.id}`);
+						resolvedChildren.push(resolvedChild);
+						logger.info(`Resolved regular child ${childId} for parent ${marker.id}`);
 					}
 				}
 			}
+		}
 
-			// 子が存在する場合のみchildrenプロパティを設定
-			if (children.length > 0) {
-				resolvedMarker.children = children;
-			} else {
-				// 子がない場合はchildrenプロパティを削除
-				delete resolvedMarker.children;
+		// inlining属性の処理
+		let inliningIds: string[] = [];
+
+		// 文字列の場合は配列に変換。例: "['2fa']" -> ['2fa']
+		if (typeof marker.inlining === 'string') {
+			try {
+				// 文字列形式の配列を実際の配列に変換
+                const inliningStr = marker.inlining.trim();
+                if (inliningStr.startsWith('[') && inliningStr.endsWith(']')) {
+                    inliningIds = JSON5.parse(inliningStr.replace(/'/g, '"'));
+                    logger.info(`Converted string inlining to array: ${inliningStr} -> ${JSON.stringify(inliningIds)}`);
+                } else {
+                    // 単一値の場合は配列に
+                    inliningIds = [inliningStr];
+                    logger.info(`Converted single string inlining to array: ${inliningStr}`);
+                }
+			} catch (e) {
+				logger.error(`Failed to parse inlining string: ${marker.inlining}`, e);
 			}
+		}
+		// 既に配列の場合はそのまま使用
+		else if (Array.isArray(marker.inlining)) {
+			inliningIds = marker.inlining;
+		}
+
+		// インライン指定されたマーカーを子として追加
+		for (const inlineId of inliningIds) {
+			if (typeof inlineId === 'string') {
+				const inlineMarker = allMarkers.get(inlineId);
+				if (inlineMarker) {
+					// インライン指定されたマーカーを再帰的に解決
+					const resolvedInline = resolveChildrenForMarker(inlineMarker);
+					delete resolvedInline.path
+					resolvedChildren.push(resolvedInline);
+					logger.info(`Added inlined marker ${inlineId} as child to ${marker.id}`);
+				} else {
+					logger.warn(`Inlining target not found: ${inlineId} referenced by ${marker.id}`);
+				}
+			}
+		}
+
+		// 解決した子が存在する場合のみchildrenプロパティを設定
+		if (resolvedChildren.length > 0) {
+			resolvedMarker.children = resolvedChildren;
+		} else {
+			delete resolvedMarker.children;
 		}
 
 		return resolvedMarker;
@@ -348,6 +426,7 @@ function customStringify(obj: any, depth = 0): string {
 		.filter(([key, value]) => {
 			if (value === undefined) return false;
 			if (key === 'children' && Array.isArray(value) && value.length === 0) return false;
+			if (key === 'inlining') return false;
 			return true;
 		})
 		// 各プロパティを変換
@@ -789,6 +868,10 @@ function extractUsageInfoFromTemplateAst(
 			if (bindings.icon) markerInfo.icon = bindings.icon;
 			if (bindings.label) markerInfo.label = bindings.label;
 			if (bindings.children) markerInfo.children = bindings.children;
+			if (bindings.inlining) {
+				markerInfo.inlining = bindings.inlining;
+				logger.info(`Added inlining ${JSON.stringify(bindings.inlining)} to marker ${markerId}`);
+			}
 			if (bindings.keywords) {
 				if (Array.isArray(bindings.keywords)) {
 					markerInfo.keywords = bindings.keywords;
@@ -885,6 +968,31 @@ function extractNodeBindings(node: VueAstNode): Record<keyof SearchIndexItem, an
 
 			logger.info(`Processing bind prop ${propName}: ${propContent}`);
 
+			// inliningプロパティの処理を追加
+			if (propName === 'inlining') {
+				try {
+					const content = propContent.trim();
+
+					// 配列式の場合
+					if (content.startsWith('[') && content.endsWith(']')) {
+						// 配列要素を解析
+						const elements = parseArrayExpression(content);
+						if (elements.length > 0) {
+							bindings.inlining = elements;
+							logger.info(`Parsed inlining array: ${JSON5.stringify(elements)}`);
+						} else {
+							bindings.inlining = [];
+						}
+					}
+					// 文字列の場合は配列に変換
+					else if (content) {
+						bindings.inlining = [content]; // 単一の値を配列に
+						logger.info(`Converting inlining to array: [${content}]`);
+					}
+				} catch (e) {
+					logger.error(`Failed to parse inlining binding: ${propContent}`, e);
+				}
+			}
 			// keywordsの特殊処理
 			if (propName === 'keywords') {
 				try {
