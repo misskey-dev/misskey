@@ -238,11 +238,16 @@ function menuEdit() {
 
 	&:hover {
 		color: var(--MI_THEME-fgHighlighted);
+
+		.subButtonIcon {
+			opacity: 1;
+		}
 	}
 }
 
 .subButtonIcon {
 	margin-left: -4px;
+	opacity: 0.7;
 }
 
 .subButtonGapFill {
