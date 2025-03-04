@@ -195,6 +195,8 @@ import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
 import { DropAndFusionGame } from 'misskey-bubble-game';
+import { useInterval } from '@@/js/use-interval.js';
+import { apiUrl } from '@@/js/config.js';
 import type { Mono } from 'misskey-bubble-game';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -206,12 +208,11 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@@/js/use-interval.js';
-import { apiUrl } from '@@/js/config.js';
 import { $i } from '@/account.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { prefer } from '@/preferences.js';
 
 type FrontendMonoDefinition = {
 	id: string;
@@ -623,7 +624,7 @@ function loadMonoTextures() {
 		if (renderer.textures[mono.img]) return;
 
 		let src = mono.img;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		 
 		if (monoTextureUrls[mono.img]) {
 			src = monoTextureUrls[mono.img];
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -648,8 +649,7 @@ function loadMonoTextures() {
 
 function getTextureImageUrl(mono: Mono) {
 	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
-
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	 
 	if (monoTextureUrls[def.img]) {
 		return monoTextureUrls[def.img];
 
@@ -909,8 +909,8 @@ function getGameImageDriveFile() {
 				formData.append('name', `bubble-game-${Date.now()}.png`);
 				formData.append('isSensitive', 'false');
 				formData.append('i', $i.token);
-				if (defaultStore.state.uploadFolder) {
-					formData.append('folderId', defaultStore.state.uploadFolder);
+				if (prefer.s.uploadFolder) {
+					formData.append('folderId', prefer.s.uploadFolder);
 				}
 
 				window.fetch(apiUrl + '/drive/files/create', {

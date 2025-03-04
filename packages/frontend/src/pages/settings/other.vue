@@ -123,13 +123,14 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import FormSection from '@/components/form/section.vue';
+import { prefer } from '@/preferences.js';
 
 const $i = signinRequired();
 
-const reportError = computed(defaultStore.makeGetterSetter('reportError'));
-const enableCondensedLine = computed(defaultStore.makeGetterSetter('enableCondensedLine'));
-const skipNoteRender = computed(defaultStore.makeGetterSetter('skipNoteRender'));
-const devMode = computed(defaultStore.makeGetterSetter('devMode'));
+const reportError = prefer.model('reportError');
+const enableCondensedLine = prefer.model('enableCondensedLine');
+const skipNoteRender = prefer.model('skipNoteRender');
+const devMode = prefer.model('devMode');
 const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
 
 watch(skipNoteRender, async () => {

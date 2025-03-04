@@ -48,6 +48,7 @@ import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
+import { prefer } from '@/preferences.js';
 
 type Ad = (typeof instance)['ads'][number];
 
@@ -107,7 +108,7 @@ const chosen = ref(choseAd());
 
 const self = computed(() => chosen.value?.url.startsWith(local));
 
-const shouldHide = ref(!defaultStore.state.forceShowAds && $i && $i.policies.canHideAds && (props.specify == null));
+const shouldHide = ref(!prefer.s.forceShowAds && $i && $i.policies.canHideAds && (props.specify == null));
 
 function reduceFrequency(): void {
 	if (chosen.value == null) return;

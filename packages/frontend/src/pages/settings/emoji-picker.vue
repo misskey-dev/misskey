@@ -127,8 +127,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import type { Ref } from 'vue';
 import Sortable from 'vuedraggable';
+import type { Ref } from 'vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
@@ -143,14 +143,15 @@ import { emojiPicker } from '@/scripts/emoji-picker.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import { prefer } from '@/preferences.js';
 
 const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
 const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));
 
-const emojiPickerScale = computed(defaultStore.makeGetterSetter('emojiPickerScale'));
-const emojiPickerWidth = computed(defaultStore.makeGetterSetter('emojiPickerWidth'));
-const emojiPickerHeight = computed(defaultStore.makeGetterSetter('emojiPickerHeight'));
-const emojiPickerStyle = computed(defaultStore.makeGetterSetter('emojiPickerStyle'));
+const emojiPickerScale = prefer.model('emojiPickerScale');
+const emojiPickerWidth = prefer.model('emojiPickerWidth');
+const emojiPickerHeight = prefer.model('emojiPickerHeight');
+const emojiPickerStyle = prefer.model('emojiPickerStyle');
 
 const removeReaction = (reaction: string, ev: MouseEvent) => remove(pinnedEmojisForReaction, reaction, ev);
 const chooseReaction = (ev: MouseEvent) => pickEmoji(pinnedEmojisForReaction, ev);

@@ -84,10 +84,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
-	rememberNoteVisibility: {
-		where: 'account',
-		default: false,
-	},
 	defaultNoteVisibility: {
 		where: 'account',
 		default: 'public' as (typeof Misskey.noteVisibilities)[number],
@@ -99,10 +95,6 @@ export const defaultStore = markRaw(new Storage('base', {
 	pastedFileName: {
 		where: 'account',
 		default: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
-	},
-	keepOriginalUploading: {
-		where: 'account',
-		default: false,
 	},
 	memo: {
 		where: 'account',
@@ -183,10 +175,6 @@ export const defaultStore = markRaw(new Storage('base', {
 	menuDisplay: {
 		where: 'device',
 		default: 'sideFull' as 'sideFull' | 'sideIcon' | 'top',
-	},
-	reportError: {
-		where: 'device',
-		default: false,
 	},
 	postFormWithHashtags: {
 		where: 'device',
