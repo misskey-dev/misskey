@@ -169,6 +169,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label><SearchLabel>{{ i18n.ts.confirmOnReact }}</SearchLabel></template>
 							</MkSwitch>
 						</SearchMarker>
+
+						<SearchMarker :keywords="['remember', 'keep', 'note', 'cw']">
+							<MkSwitch v-model="keepCw">
+								<template #label><SearchLabel>{{ i18n.ts.keepCw }}</SearchLabel></template>
+							</MkSwitch>
+						</SearchMarker>
 					</div>
 
 					<SearchMarker :keywords="['server', 'disconnect', 'reconnect', 'reload', 'streaming']">
@@ -292,33 +298,36 @@ import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { preferences } from '@/preferences.js';
 
 const lang = ref(miLocalStorage.getItem('lang'));
-const dataSaver = ref(defaultStore.state.dataSaver);
+const dataSaver = ref(preferences.s.dataSaver);
 
 const hemisphere = computed(defaultStore.makeGetterSetter('hemisphere'));
 const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDeviceKind'));
-const serverDisconnectedBehavior = computed(defaultStore.makeGetterSetter('serverDisconnectedBehavior'));
-const showNoteActionsOnlyHover = computed(defaultStore.makeGetterSetter('showNoteActionsOnlyHover'));
-const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showClipButtonInNoteFooter'));
-const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
-const advancedMfm = computed(defaultStore.makeGetterSetter('advancedMfm'));
-const showReactionsCount = computed(defaultStore.makeGetterSetter('showReactionsCount'));
-const enableQuickAddMfmFunction = computed(defaultStore.makeGetterSetter('enableQuickAddMfmFunction'));
-const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
-const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
-const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
-const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
-const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
-const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
-const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
-const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
-const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
-const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
-const alwaysConfirmFollow = computed(defaultStore.makeGetterSetter('alwaysConfirmFollow'));
-const confirmWhenRevealingSensitiveMedia = computed(defaultStore.makeGetterSetter('confirmWhenRevealingSensitiveMedia'));
-const confirmOnReact = computed(defaultStore.makeGetterSetter('confirmOnReact'));
-const contextMenu = computed(defaultStore.makeGetterSetter('contextMenu'));
+
+const keepCw = preferences.model('keepCw');
+const serverDisconnectedBehavior = preferences.model('serverDisconnectedBehavior');
+const showNoteActionsOnlyHover = preferences.model('showNoteActionsOnlyHover');
+const showClipButtonInNoteFooter = preferences.model('showClipButtonInNoteFooter');
+const collapseRenotes = preferences.model('collapseRenotes');
+const advancedMfm = preferences.model('advancedMfm');
+const showReactionsCount = preferences.model('showReactionsCount');
+const enableQuickAddMfmFunction = preferences.model('enableQuickAddMfmFunction');
+const forceShowAds = preferences.model('forceShowAds');
+const loadRawImages = preferences.model('loadRawImages');
+const imageNewTab = preferences.model('imageNewTab');
+const showFixedPostForm = preferences.model('showFixedPostForm');
+const showFixedPostFormInChannel = preferences.model('showFixedPostFormInChannel');
+const numberOfPageCache = preferences.model('numberOfPageCache');
+const enableInfiniteScroll = preferences.model('enableInfiniteScroll');
+const useReactionPickerForContextMenu = preferences.model('useReactionPickerForContextMenu');
+const disableStreamingTimeline = preferences.model('disableStreamingTimeline');
+const useGroupedNotifications = preferences.model('useGroupedNotifications');
+const alwaysConfirmFollow = preferences.model('alwaysConfirmFollow');
+const confirmWhenRevealingSensitiveMedia = preferences.model('confirmWhenRevealingSensitiveMedia');
+const confirmOnReact = preferences.model('confirmOnReact');
+const contextMenu = preferences.model('contextMenu');
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -402,7 +411,7 @@ function removePinnedList() {
 }
 
 function enableAllDataSaver() {
-	const g = { ...defaultStore.state.dataSaver };
+	const g = { ...preferences.s.dataSaver };
 
 	Object.keys(g).forEach((key) => { g[key] = true; });
 
@@ -410,7 +419,7 @@ function enableAllDataSaver() {
 }
 
 function disableAllDataSaver() {
-	const g = { ...defaultStore.state.dataSaver };
+	const g = { ...preferences.s.dataSaver };
 
 	Object.keys(g).forEach((key) => { g[key] = false; });
 
@@ -418,7 +427,7 @@ function disableAllDataSaver() {
 }
 
 watch(dataSaver, (to) => {
-	defaultStore.set('dataSaver', to);
+	preferences.set('dataSaver', to);
 }, {
 	deep: true,
 });

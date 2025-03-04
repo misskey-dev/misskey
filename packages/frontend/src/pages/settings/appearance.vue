@@ -183,7 +183,7 @@ import * as Misskey from 'misskey-js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import { defaultStore } from '@/store.js';
+import { preferences } from '@/preferences.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -198,22 +198,22 @@ import { instance } from '@/instance.js';
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
 
-const showAvatarDecorations = computed(defaultStore.makeGetterSetter('showAvatarDecorations'));
-const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
-const menuStyle = computed(defaultStore.makeGetterSetter('menuStyle'));
-const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
-const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
-const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
-const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
-const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
-const showGapBetweenNotesInTimeline = computed(defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'));
-const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
-const reactionsDisplaySize = computed(defaultStore.makeGetterSetter('reactionsDisplaySize'));
-const limitWidthOfReaction = computed(defaultStore.makeGetterSetter('limitWidthOfReaction'));
-const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
-const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
-const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
-const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
+const showAvatarDecorations = preferences.model('showAvatarDecorations');
+const emojiStyle = preferences.model('emojiStyle');
+const menuStyle = preferences.model('menuStyle');
+const useBlurEffectForModal = preferences.model('useBlurEffectForModal');
+const useBlurEffect = preferences.model('useBlurEffect');
+const highlightSensitiveMedia = preferences.model('highlightSensitiveMedia');
+const squareAvatars = preferences.model('squareAvatars');
+const enableSeasonalScreenEffect = preferences.model('enableSeasonalScreenEffect');
+const showGapBetweenNotesInTimeline = preferences.model('showGapBetweenNotesInTimeline');
+const mediaListWithOneImageAppearance = preferences.model('mediaListWithOneImageAppearance');
+const reactionsDisplaySize = preferences.model('reactionsDisplaySize');
+const limitWidthOfReaction = preferences.model('limitWidthOfReaction');
+const notificationPosition = preferences.model('notificationPosition');
+const notificationStackAxis = preferences.model('notificationStackAxis');
+const nsfw = preferences.model('nsfw');
+const instanceTicker = preferences.model('instanceTicker');
 
 watch(fontSize, () => {
 	if (fontSize.value == null) {

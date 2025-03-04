@@ -57,10 +57,11 @@ import { defaultStore } from '@/store.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { PREF_DEF, preferences } from '@/preferences.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-const items = ref(defaultStore.state.menu.map(x => ({
+const items = ref(preferences.s.menu.map(x => ({
 	id: Math.random().toString(),
 	type: x,
 })));
@@ -68,7 +69,7 @@ const items = ref(defaultStore.state.menu.map(x => ({
 const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
 
 async function addItem() {
-	const menu = Object.keys(navbarItemDef).filter(k => !defaultStore.state.menu.includes(k));
+	const menu = Object.keys(navbarItemDef).filter(k => !preferences.s.menu.includes(k));
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
@@ -89,12 +90,12 @@ function removeItem(index: number) {
 }
 
 async function save() {
-	defaultStore.set('menu', items.value.map(x => x.type));
+	preferences.set('menu', items.value.map(x => x.type));
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 }
 
 function reset() {
-	items.value = defaultStore.def.menu.default.map(x => ({
+	items.value = PREF_DEF.menu.default.map(x => ({
 		id: Math.random().toString(),
 		type: x,
 	}));

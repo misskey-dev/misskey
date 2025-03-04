@@ -23,6 +23,7 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
 import { genEmbedCode } from '@/scripts/get-embed-code.js';
+import { preferences } from '@/preferences.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -499,7 +500,7 @@ export function getNoteMenu(props: {
 		})));
 	}
 
-	if (defaultStore.state.devMode) {
+	if (preferences.s.devMode) {
 		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyNoteId,
@@ -550,7 +551,7 @@ export function getRenoteMenu(props: {
 			icon: 'ti ti-repeat',
 			action: () => {
 				const el = props.renoteButton.value;
-				if (el && defaultStore.state.animation) {
+				if (el && preferences.s.animation) {
 					const rect = el.getBoundingClientRect();
 					const x = rect.left + (el.offsetWidth / 2);
 					const y = rect.top + (el.offsetHeight / 2);
@@ -588,7 +589,7 @@ export function getRenoteMenu(props: {
 			icon: 'ti ti-repeat',
 			action: () => {
 				const el = props.renoteButton.value;
-				if (el && defaultStore.state.animation) {
+				if (el && preferences.s.animation) {
 					const rect = el.getBoundingClientRect();
 					const x = rect.left + (el.offsetWidth / 2);
 					const y = rect.top + (el.offsetHeight / 2);
@@ -639,7 +640,7 @@ export function getRenoteMenu(props: {
 					text: channel.name,
 					action: () => {
 						const el = props.renoteButton.value;
-						if (el && defaultStore.state.animation) {
+						if (el && preferences.s.animation) {
 							const rect = el.getBoundingClientRect();
 							const x = rect.left + (el.offsetWidth / 2);
 							const y = rect.top + (el.offsetHeight / 2);

@@ -271,11 +271,6 @@ export const searchIndexes:SearchIndexItem[] = [
 				label: i18n.ts.defaultNoteVisibility,
 				keywords: ['default', 'note', 'visibility'],
 			},
-			{
-				id: '3EmXVyevo',
-				label: i18n.ts.keepCw,
-				keywords: ['remember', 'keep', 'note', 'cw'],
-			},
 		],
 		label: i18n.ts.privacy,
 		keywords: ['privacy'],
@@ -403,17 +398,22 @@ export const searchIndexes:SearchIndexItem[] = [
 						keywords: ['reaction', 'confirm'],
 					},
 					{
-						id: 'nygexkaUk',
+						id: 'ykifk3NHS',
+						label: i18n.ts.keepCw,
+						keywords: ['remember', 'keep', 'note', 'cw'],
+					},
+					{
+						id: '4tJcJQWv9',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: 'whKYKvaQB',
+						id: '7W6g8Dcqz',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: 'lBbtAg0Hm',
+						id: '6QwAqeJUl',
 						label: i18n.ts.dataSaver,
 						keywords: ['datasaver'],
 					},
@@ -422,20 +422,20 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['behavior'],
 			},
 			{
-				id: 'y2v7CV9zs',
+				id: 'oH0GTzdro',
 				children: [
 					{
-						id: 'k1qTdyfzM',
+						id: 'e9As4Us48',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: 'e9As4Us48',
+						id: 'aiaf3B6g7',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: 'zvM13vl26',
+						id: 'pnCPAvH28',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},

@@ -56,11 +56,12 @@ import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
+import { preferences } from '@/preferences.js';
 
 const WINDOW_THRESHOLD = 1400;
 
 const settingsWindowed = ref(window.innerWidth > WINDOW_THRESHOLD);
-const menu = ref(defaultStore.state.menu);
+const menu = ref(preferences.s.menu);
 // const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
 const otherNavItemIndicated = computed<boolean>(() => {
 	for (const def in navbarItemDef) {

@@ -62,10 +62,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enterActiveClass="preferences.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leaveActiveClass="preferences.s.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enterFromClass="preferences.s.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leaveToClass="preferences.s.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -77,10 +77,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</Transition>
 
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enterActiveClass="preferences.s.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leaveActiveClass="preferences.s.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enterFromClass="preferences.s.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leaveToClass="preferences.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menu">
 			<XDrawerMenu/>
@@ -96,7 +96,6 @@ import { computed, defineAsyncComponent, ref, watch, shallowRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
 import { deckStore, columnTypes, addColumn as addColumnToStore, forceSaveDeck, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
-import type { ColumnType } from './deck/deck-store.js';
 import type { MenuItem } from '@/types/menu.js';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
@@ -107,7 +106,7 @@ import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { deviceKind } from '@/scripts/device-kind.js';
-import { defaultStore } from '@/store.js';
+import { preferences } from '@/preferences.js';
 import XMainColumn from '@/ui/deck/main-column.vue';
 import XTlColumn from '@/ui/deck/tl-column.vue';
 import XAntennaColumn from '@/ui/deck/antenna-column.vue';

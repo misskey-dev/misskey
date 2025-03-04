@@ -4,11 +4,11 @@
  */
 
 import type { Directive } from 'vue';
-import { defaultStore } from '@/store.js';
+import { preferences } from '@/preferences.js';
 
 export default {
 	mounted(el: HTMLElement, binding, vn) {
-		if (!defaultStore.state.animation) return;
+		if (!preferences.s.animation) return;
 
 		const target = el.children[0];
 

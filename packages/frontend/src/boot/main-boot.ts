@@ -5,9 +5,10 @@
 
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { ui } from '@@/js/config.js';
-import { common } from './common.js';
 import * as Misskey from 'misskey-js';
+import { common } from './common.js';
 import type { Component } from 'vue';
+import type { Keymap } from '@/scripts/hotkey.js';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
@@ -23,8 +24,8 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
-import type { Keymap } from '@/scripts/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
+import { preferences } from '@/preferences.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => {
@@ -73,9 +74,9 @@ export async function mainBoot() {
 
 	let reloadDialogShowing = false;
 	stream.on('_disconnected_', async () => {
-		if (defaultStore.state.serverDisconnectedBehavior === 'reload') {
+		if (preferences.s.serverDisconnectedBehavior === 'reload') {
 			location.reload();
-		} else if (defaultStore.state.serverDisconnectedBehavior === 'dialog') {
+		} else if (preferences.s.serverDisconnectedBehavior === 'dialog') {
 			if (reloadDialogShowing) return;
 			reloadDialogShowing = true;
 			const { canceled } = await confirm({
@@ -111,7 +112,7 @@ export async function mainBoot() {
 	}
 
 	try {
-		if (defaultStore.state.enableSeasonalScreenEffect) {
+		if (preferences.s.enableSeasonalScreenEffect) {
 			const month = new Date().getMonth() + 1;
 			if (defaultStore.state.hemisphere === 'S') {
 				// ▼南半球

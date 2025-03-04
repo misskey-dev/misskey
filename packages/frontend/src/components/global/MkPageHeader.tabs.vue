@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.tabsInner">
 		<button
 			v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title"
-			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: defaultStore.reactiveState.animation.value }]"
+			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: preferences.r.animation.value }]"
 			@mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)"
 		>
 			<div :class="$style.tabInner">
 				<i v-if="t.icon" :class="[$style.tabIcon, t.icon]"></i>
 				<div
-					v-if="!t.iconOnly || (!defaultStore.reactiveState.animation.value && t.key === tab)"
+					v-if="!t.iconOnly || (!preferences.r.animation.value && t.key === tab)"
 					:class="$style.tabTitle"
 				>
 					{{ t.title }}
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div
 		ref="tabHighlightEl"
-		:class="[$style.tabHighlight, { [$style.animate]: defaultStore.reactiveState.animation.value }]"
+		:class="[$style.tabHighlight, { [$style.animate]: preferences.r.animation.value }]"
 	></div>
 </div>
 </template>
@@ -41,20 +41,20 @@ export type Tab = {
 	onClick?: (ev: MouseEvent) => void;
 } & (
 	| {
-			iconOnly?: false;
-			title: string;
-			icon?: string;
-		}
+		iconOnly?: false;
+		title: string;
+		icon?: string;
+	}
 	| {
-			iconOnly: true;
-			icon: string;
-		}
+		iconOnly: true;
+		icon: string;
+	}
 );
 </script>
 
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
-import { defaultStore } from '@/store.js';
+import { preferences } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];

@@ -198,12 +198,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 			</div>
 		</FormSection>
-
-		<SearchMarker :keywords="['remember', 'keep', 'note', 'cw']">
-			<MkSwitch v-model="keepCw" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.keepCw }}</SearchLabel></template>
-			</MkSwitch>
-		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
@@ -244,7 +238,6 @@ const followersVisibility = ref($i.followersVisibility);
 const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
 const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
-const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
 
 const makeNotesFollowersOnlyBefore_type = computed(() => {
 	if (makeNotesFollowersOnlyBefore.value == null) {

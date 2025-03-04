@@ -22,11 +22,11 @@ import XStatusbar from './statusbar.statusbar.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { preferences } from '@/preferences.js';
 
-const statusbars = defaultStore.reactiveState.statusbars;
+const statusbars = preferences.r.statusbars;
 
 const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
@@ -37,13 +37,13 @@ onMounted(() => {
 });
 
 async function add() {
-	defaultStore.push('statusbars', {
+	preferences.set('statusbars', [...statusbars.value, {
 		id: uuid(),
 		type: null,
 		black: false,
 		size: 'medium',
 		props: {},
-	});
+	}]);
 }
 
 const headerActions = computed(() => []);
