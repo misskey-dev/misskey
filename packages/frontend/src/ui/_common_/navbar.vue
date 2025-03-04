@@ -99,7 +99,7 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
 import { useRouter } from '@/router/supplier.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const router = useRouter();
 
@@ -108,7 +108,7 @@ const iconOnly = computed(() => {
 	return forceIconOnly.value || (defaultStore.reactiveState.menuDisplay.value === 'sideIcon');
 });
 
-const menu = computed(() => preferences.s.menu);
+const menu = computed(() => prefer.s.menu);
 const otherMenuItemIndicated = computed(() => {
 	for (const def in navbarItemDef) {
 		if (menu.value.includes(def)) continue;

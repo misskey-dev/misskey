@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<Transition :name="preferences.s.animation ? 'tray-back' : ''">
+	<Transition :name="prefer.s.animation ? 'tray-back' : ''">
 		<div
 			v-if="widgetsShowing"
 			class="tray-back _modalBg"
@@ -35,11 +35,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></div>
 	</Transition>
 
-	<Transition :name="preferences.s.animation ? 'tray' : ''">
+	<Transition :name="prefer.s.animation ? 'tray' : ''">
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</Transition>
 
-	<iframe v-if="preferences.s.aiChanMode" ref="live2d" class="ivnzpscs" src="https://misskey-dev.github.io/mascot-web/?scale=2&y=1.4"></iframe>
+	<iframe v-if="prefer.s.aiChanMode" ref="live2d" class="ivnzpscs" src="https://misskey-dev.github.io/mascot-web/?scale=2&y=1.4"></iframe>
 
 	<XCommon/>
 </div>
@@ -59,7 +59,7 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { mainRouter } from '@/router/main.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
@@ -163,7 +163,7 @@ onMounted(() => {
 		isDesktop.value = (window.innerWidth >= DESKTOP_THRESHOLD);
 	}, { passive: true });
 
-	if (preferences.s.aiChanMode) {
+	if (prefer.s.aiChanMode) {
 		const iframeRect = live2d.value.getBoundingClientRect();
 		window.addEventListener('mousemove', ev => {
 			live2d.value.contentWindow.postMessage({

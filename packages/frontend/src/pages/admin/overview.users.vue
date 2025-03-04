@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<Transition :name="preferences.s.animation ? '_transition_zoom' : ''" mode="out-in">
+	<Transition :name="prefer.s.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="users">
 			<MkA v-for="(user, i) in newUsers" :key="user.id" :to="`/admin/user/${user.id}`" class="user">
@@ -22,7 +22,7 @@ import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const newUsers = ref<Misskey.entities.UserDetailed[] | null>(null);
 const fetching = ref(true);

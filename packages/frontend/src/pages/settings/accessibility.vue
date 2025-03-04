@@ -60,18 +60,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-const reduceAnimation = preferences.model('animation', v => !v, v => !v);
-const animatedMfm = preferences.model('animatedMfm');
-const disableShowingAnimatedImages = preferences.model('disableShowingAnimatedImages');
-const keepScreenOn = preferences.model('keepScreenOn');
-const enableHorizontalSwipe = preferences.model('enableHorizontalSwipe');
-const useNativeUIForVideoAudioPlayer = preferences.model('useNativeUIForVideoAudioPlayer');
-const contextMenu = preferences.model('contextMenu');
+const reduceAnimation = prefer.model('animation', v => !v, v => !v);
+const animatedMfm = prefer.model('animatedMfm');
+const disableShowingAnimatedImages = prefer.model('disableShowingAnimatedImages');
+const keepScreenOn = prefer.model('keepScreenOn');
+const enableHorizontalSwipe = prefer.model('enableHorizontalSwipe');
+const useNativeUIForVideoAudioPlayer = prefer.model('useNativeUIForVideoAudioPlayer');
+const contextMenu = prefer.model('contextMenu');
 
 watch([
 	keepScreenOn,

@@ -5,11 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <TransitionGroup
-	:enterActiveClass="preferences.s.animation ? $style.transition_x_enterActive : ''"
-	:leaveActiveClass="preferences.s.animation ? $style.transition_x_leaveActive : ''"
-	:enterFromClass="preferences.s.animation ? $style.transition_x_enterFrom : ''"
-	:leaveToClass="preferences.s.animation ? $style.transition_x_leaveTo : ''"
-	:moveClass="preferences.s.animation ? $style.transition_x_move : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
+	:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
 	tag="div" :class="$style.root"
 >
 	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note" @reactionToggled="onMockToggleReaction"/>
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { inject, watch, ref } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;

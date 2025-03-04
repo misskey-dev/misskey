@@ -5,10 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <Transition
-	:enterActiveClass="preferences.s.animation ? $style.transition_fade_enterActive : ''"
-	:leaveActiveClass="preferences.s.animation ? $style.transition_fade_leaveActive : ''"
-	:enterFromClass="preferences.s.animation ? $style.transition_fade_enterFrom : ''"
-	:leaveToClass="preferences.s.animation ? $style.transition_fade_leaveTo : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_fade_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_fade_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_fade_leaveTo : ''"
 	mode="out-in"
 >
 	<MkLoading v-if="fetching"/>
@@ -51,7 +51,7 @@ import type { ComputedRef } from 'vue';
 import type { MisskeyEntity } from '@/types/date-separated-list.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 16;
@@ -139,7 +139,7 @@ const empty = computed(() => items.value.size === 0);
 const error = ref(false);
 const {
 	enableInfiniteScroll,
-} = preferences.r;
+} = prefer.r;
 
 const contentEl = computed(() => props.pagination.pageEl ?? rootEl.value);
 const scrollableElement = computed(() => contentEl.value ? getScrollContainer(contentEl.value) : document.body);

@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div class="poamfof">
-		<Transition :name="preferences.s.animation ? 'fade' : ''" mode="out-in">
+		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="player.url && (player.url.startsWith('http://') || player.url.startsWith('https://'))" class="player">
 				<iframe v-if="!fetching" :src="transformPlayerUrl(player.url)" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 			</div>
@@ -28,7 +28,7 @@ import { ref } from 'vue';
 import { versatileLang } from '@@/js/intl-const.js';
 import MkWindow from '@/components/MkWindow.vue';
 import { transformPlayerUrl } from '@/scripts/player-url-transform.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	url: string;

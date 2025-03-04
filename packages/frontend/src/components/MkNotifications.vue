@@ -35,7 +35,7 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
@@ -43,7 +43,7 @@ const props = defineProps<{
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
-const pagination = computed(() => preferences.r.useGroupedNotifications.value ? {
+const pagination = computed(() => prefer.r.useGroupedNotifications.value ? {
 	endpoint: 'i/notifications-grouped' as const,
 	limit: 20,
 	params: computed(() => ({

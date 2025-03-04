@@ -49,7 +49,7 @@ import { isTouchUsing } from '@/scripts/touch.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { focusTrap } from '@/scripts/focus-trap.js';
 import { focusParent } from '@/scripts/focus.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -106,7 +106,7 @@ const zIndex = os.claimZIndex(props.zPriority);
 const useSendAnime = ref(false);
 const type = computed<ModalTypes>(() => {
 	if (props.preferType === 'auto') {
-		if ((preferences.s.menuStyle === 'drawer') || (preferences.s.menuStyle === 'auto' && isTouchUsing && deviceKind === 'smartphone')) {
+		if ((prefer.s.menuStyle === 'drawer') || (prefer.s.menuStyle === 'auto' && isTouchUsing && deviceKind === 'smartphone')) {
 			return 'drawer';
 		} else {
 			return props.src != null ? 'popup' : 'dialog';
@@ -117,7 +117,7 @@ const type = computed<ModalTypes>(() => {
 });
 const isEnableBgTransparent = computed(() => props.transparentBg && (type.value === 'popup'));
 const transitionName = computed((() =>
-	preferences.s.animation
+	prefer.s.animation
 		? useSendAnime.value
 			? 'send'
 			: type.value === 'drawer'

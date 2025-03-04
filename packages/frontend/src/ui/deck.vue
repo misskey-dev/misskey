@@ -62,10 +62,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<Transition
-		:enterActiveClass="preferences.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leaveActiveClass="preferences.s.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enterFromClass="preferences.s.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leaveToClass="preferences.s.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -77,10 +77,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</Transition>
 
 	<Transition
-		:enterActiveClass="preferences.s.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leaveActiveClass="preferences.s.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enterFromClass="preferences.s.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leaveToClass="preferences.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menu">
 			<XDrawerMenu/>
@@ -106,7 +106,7 @@ import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { deviceKind } from '@/scripts/device-kind.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 import XMainColumn from '@/ui/deck/main-column.vue';
 import XTlColumn from '@/ui/deck/tl-column.vue';
 import XAntennaColumn from '@/ui/deck/antenna-column.vue';

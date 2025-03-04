@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="1000" :marginMin="16" :marginMax="32">
 		<div class="_root">
-			<Transition :name="preferences.s.animation ? 'fade' : ''" mode="out-in">
+			<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
 					<div class="files">
 						<div v-for="file in post.files" :key="file.id" class="file">
@@ -76,7 +76,7 @@ import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';

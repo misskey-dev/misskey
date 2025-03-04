@@ -8,10 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<Transition
-			:enterActiveClass="preferences.s.animation ? $style.fadeEnterActive : ''"
-			:leaveActiveClass="preferences.s.animation ? $style.fadeLeaveActive : ''"
-			:enterFromClass="preferences.s.animation ? $style.fadeEnterFrom : ''"
-			:leaveToClass="preferences.s.animation ? $style.fadeLeaveTo : ''"
+			:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
+			:leaveActiveClass="prefer.s.animation ? $style.fadeLeaveActive : ''"
+			:enterFromClass="prefer.s.animation ? $style.fadeEnterFrom : ''"
+			:leaveToClass="prefer.s.animation ? $style.fadeLeaveTo : ''"
 			mode="out-in"
 		>
 			<div v-if="page" :key="page.id" class="_gaps">
@@ -122,7 +122,7 @@ import { instance } from '@/instance.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const router = useRouter();
 

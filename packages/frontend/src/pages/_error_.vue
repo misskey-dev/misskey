@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkLoading v-if="!loaded"/>
-<Transition :name="preferences.s.animation ? '_transition_zoom' : ''" appear>
+<Transition :name="prefer.s.animation ? '_transition_zoom' : ''" appear>
 	<div v-show="loaded" :class="$style.root">
 		<img :src="serverErrorImageUrl" class="_ghost" :class="$style.img"/>
 		<div class="_gaps">
@@ -35,7 +35,7 @@ import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 import { serverErrorImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{

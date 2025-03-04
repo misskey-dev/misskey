@@ -183,7 +183,7 @@ import * as Misskey from 'misskey-js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -198,22 +198,22 @@ import { instance } from '@/instance.js';
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
 
-const showAvatarDecorations = preferences.model('showAvatarDecorations');
-const emojiStyle = preferences.model('emojiStyle');
-const menuStyle = preferences.model('menuStyle');
-const useBlurEffectForModal = preferences.model('useBlurEffectForModal');
-const useBlurEffect = preferences.model('useBlurEffect');
-const highlightSensitiveMedia = preferences.model('highlightSensitiveMedia');
-const squareAvatars = preferences.model('squareAvatars');
-const enableSeasonalScreenEffect = preferences.model('enableSeasonalScreenEffect');
-const showGapBetweenNotesInTimeline = preferences.model('showGapBetweenNotesInTimeline');
-const mediaListWithOneImageAppearance = preferences.model('mediaListWithOneImageAppearance');
-const reactionsDisplaySize = preferences.model('reactionsDisplaySize');
-const limitWidthOfReaction = preferences.model('limitWidthOfReaction');
-const notificationPosition = preferences.model('notificationPosition');
-const notificationStackAxis = preferences.model('notificationStackAxis');
-const nsfw = preferences.model('nsfw');
-const instanceTicker = preferences.model('instanceTicker');
+const showAvatarDecorations = prefer.model('showAvatarDecorations');
+const emojiStyle = prefer.model('emojiStyle');
+const menuStyle = prefer.model('menuStyle');
+const useBlurEffectForModal = prefer.model('useBlurEffectForModal');
+const useBlurEffect = prefer.model('useBlurEffect');
+const highlightSensitiveMedia = prefer.model('highlightSensitiveMedia');
+const squareAvatars = prefer.model('squareAvatars');
+const enableSeasonalScreenEffect = prefer.model('enableSeasonalScreenEffect');
+const showGapBetweenNotesInTimeline = prefer.model('showGapBetweenNotesInTimeline');
+const mediaListWithOneImageAppearance = prefer.model('mediaListWithOneImageAppearance');
+const reactionsDisplaySize = prefer.model('reactionsDisplaySize');
+const limitWidthOfReaction = prefer.model('limitWidthOfReaction');
+const notificationPosition = prefer.model('notificationPosition');
+const notificationStackAxis = prefer.model('notificationStackAxis');
+const nsfw = prefer.model('nsfw');
+const instanceTicker = prefer.model('instanceTicker');
 
 watch(fontSize, () => {
 	if (fontSize.value == null) {

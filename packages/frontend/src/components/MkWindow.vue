@@ -5,10 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <Transition
-	:enterActiveClass="preferences.s.animation ? $style.transition_window_enterActive : ''"
-	:leaveActiveClass="preferences.s.animation ? $style.transition_window_leaveActive : ''"
-	:enterFromClass="preferences.s.animation ? $style.transition_window_enterFrom : ''"
-	:leaveToClass="preferences.s.animation ? $style.transition_window_leaveTo : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_window_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_window_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_window_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_window_leaveTo : ''"
 	appear
 	@afterLeave="emit('closed')"
 >
@@ -58,7 +58,7 @@ import type { MenuItem } from '@/types/menu.js';
 import contains from '@/scripts/contains.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 type WindowButton = {
 	title: string;

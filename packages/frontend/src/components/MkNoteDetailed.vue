@@ -146,9 +146,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
 				<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 				<i v-else class="ti ti-plus"></i>
-				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || preferences.s.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
+				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
 			</button>
-			<button v-if="preferences.s.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown.prevent="clip()">
+			<button v-if="prefer.s.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown.prevent="clip()">
 				<i class="ti ti-paperclip"></i>
 			</button>
 			<button ref="menuButton" class="_button" :class="$style.noteFooterButton" @mousedown.prevent="showMenu()">
@@ -254,7 +254,7 @@ import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -304,7 +304,7 @@ const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null;
-const showTicker = (preferences.s.instanceTicker === 'always') || (preferences.s.instanceTicker === 'remote' && appearNote.value.user.instance);
+const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.value.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);
@@ -320,7 +320,7 @@ const keymap = {
 	'q': () => renote(),
 	'm': () => showMenu(),
 	'c': () => {
-		if (!preferences.s.showClipButtonInNoteFooter) return;
+		if (!prefer.s.showClipButtonInNoteFooter) return;
 		clip();
 	},
 	'o': () => galleryEl.value?.openGallery(),
@@ -443,7 +443,7 @@ function react(): void {
 			reaction: '❤️',
 		});
 		const el = reactButton.value;
-		if (el && preferences.s.animation) {
+		if (el && prefer.s.animation) {
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
@@ -454,7 +454,7 @@ function react(): void {
 	} else {
 		blur();
 		reactionPicker.show(reactButton.value ?? null, note.value, async (reaction) => {
-			if (preferences.s.confirmOnReact) {
+			if (prefer.s.confirmOnReact) {
 				const confirm = await os.confirm({
 					type: 'question',
 					text: i18n.tsx.reactAreYouSure({ emoji: reaction.replace('@.', '') }),
@@ -498,7 +498,7 @@ function onContextmenu(ev: MouseEvent): void {
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
-	if (preferences.s.useReactionPickerForContextMenu) {
+	if (prefer.s.useReactionPickerForContextMenu) {
 		ev.preventDefault();
 		react();
 	} else {

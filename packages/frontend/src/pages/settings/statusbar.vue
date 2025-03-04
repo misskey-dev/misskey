@@ -24,9 +24,9 @@ import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
-const statusbars = preferences.r.statusbars;
+const statusbars = prefer.r.statusbars;
 
 const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
@@ -37,7 +37,7 @@ onMounted(() => {
 });
 
 async function add() {
-	preferences.set('statusbars', [...statusbars.value, {
+	prefer.set('statusbars', [...statusbars.value, {
 		id: uuid(),
 		type: null,
 		black: false,

@@ -135,7 +135,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const $i = signinRequired();
 
@@ -178,8 +178,8 @@ const poll = ref<PollEditorModelValue | null>(null);
 const useCw = ref<boolean>(!!props.initialCw);
 const showPreview = ref(defaultStore.state.showPreview);
 watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
-const showAddMfmFunction = ref(preferences.s.enableQuickAddMfmFunction);
-watch(showAddMfmFunction, () => preferences.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
+const showAddMfmFunction = ref(prefer.s.enableQuickAddMfmFunction);
+watch(showAddMfmFunction, () => prefer.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
 const localOnly = ref(props.initialLocalOnly ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly));
 const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility));
@@ -359,7 +359,7 @@ if (props.specified) {
 }
 
 // keep cw when reply
-if (preferences.s.keepCw && props.reply && props.reply.cw) {
+if (prefer.s.keepCw && props.reply && props.reply.cw) {
 	useCw.value = true;
 	cw.value = props.reply.cw;
 }
@@ -458,7 +458,7 @@ function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities
 function upload(file: File, name?: string): void {
 	if (props.mock) return;
 
-	uploadFile(file, preferences.s.uploadFolder, name).then(res => {
+	uploadFile(file, prefer.s.uploadFolder, name).then(res => {
 		files.value.push(res);
 	});
 }
@@ -753,7 +753,7 @@ async function post(ev?: MouseEvent) {
 	if (ev) {
 		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
 
-		if (el && preferences.s.animation) {
+		if (el && prefer.s.animation) {
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);

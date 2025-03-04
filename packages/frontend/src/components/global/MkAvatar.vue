@@ -48,10 +48,10 @@ import MkA from './MkA.vue';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { acct, userPage } from '@/filters/user.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
-const animation = ref(preferences.s.animation);
-const squareAvatars = ref(preferences.s.squareAvatars);
+const animation = ref(prefer.s.animation);
+const squareAvatars = ref(prefer.s.squareAvatars);
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
@@ -74,7 +74,7 @@ const emit = defineEmits<{
 	(ev: 'click', v: MouseEvent): void;
 }>();
 
-const showDecoration = props.forceShowDecoration || preferences.s.showAvatarDecorations;
+const showDecoration = props.forceShowDecoration || prefer.s.showAvatarDecorations;
 
 const bound = computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
@@ -82,7 +82,7 @@ const bound = computed(() => props.link
 
 const url = computed(() => {
 	if (props.user.avatarUrl == null) return null;
-	if (preferences.s.disableShowingAnimatedImages || preferences.s.dataSaver.avatar) return getStaticImageUrl(props.user.avatarUrl);
+	if (prefer.s.disableShowingAnimatedImages || prefer.s.dataSaver.avatar) return getStaticImageUrl(props.user.avatarUrl);
 	return props.user.avatarUrl;
 });
 
@@ -92,7 +92,7 @@ function onClick(ev: MouseEvent): void {
 }
 
 function getDecorationUrl(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
-	if (preferences.s.disableShowingAnimatedImages || preferences.s.dataSaver.avatar) return getStaticImageUrl(decoration.url);
+	if (prefer.s.disableShowingAnimatedImages || prefer.s.dataSaver.avatar) return getStaticImageUrl(decoration.url);
 	return decoration.url;
 }
 

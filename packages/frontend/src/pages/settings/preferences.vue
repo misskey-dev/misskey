@@ -298,36 +298,36 @@ import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const lang = ref(miLocalStorage.getItem('lang'));
-const dataSaver = ref(preferences.s.dataSaver);
+const dataSaver = ref(prefer.s.dataSaver);
 
 const hemisphere = computed(defaultStore.makeGetterSetter('hemisphere'));
 const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDeviceKind'));
 
-const keepCw = preferences.model('keepCw');
-const serverDisconnectedBehavior = preferences.model('serverDisconnectedBehavior');
-const showNoteActionsOnlyHover = preferences.model('showNoteActionsOnlyHover');
-const showClipButtonInNoteFooter = preferences.model('showClipButtonInNoteFooter');
-const collapseRenotes = preferences.model('collapseRenotes');
-const advancedMfm = preferences.model('advancedMfm');
-const showReactionsCount = preferences.model('showReactionsCount');
-const enableQuickAddMfmFunction = preferences.model('enableQuickAddMfmFunction');
-const forceShowAds = preferences.model('forceShowAds');
-const loadRawImages = preferences.model('loadRawImages');
-const imageNewTab = preferences.model('imageNewTab');
-const showFixedPostForm = preferences.model('showFixedPostForm');
-const showFixedPostFormInChannel = preferences.model('showFixedPostFormInChannel');
-const numberOfPageCache = preferences.model('numberOfPageCache');
-const enableInfiniteScroll = preferences.model('enableInfiniteScroll');
-const useReactionPickerForContextMenu = preferences.model('useReactionPickerForContextMenu');
-const disableStreamingTimeline = preferences.model('disableStreamingTimeline');
-const useGroupedNotifications = preferences.model('useGroupedNotifications');
-const alwaysConfirmFollow = preferences.model('alwaysConfirmFollow');
-const confirmWhenRevealingSensitiveMedia = preferences.model('confirmWhenRevealingSensitiveMedia');
-const confirmOnReact = preferences.model('confirmOnReact');
-const contextMenu = preferences.model('contextMenu');
+const keepCw = prefer.model('keepCw');
+const serverDisconnectedBehavior = prefer.model('serverDisconnectedBehavior');
+const showNoteActionsOnlyHover = prefer.model('showNoteActionsOnlyHover');
+const showClipButtonInNoteFooter = prefer.model('showClipButtonInNoteFooter');
+const collapseRenotes = prefer.model('collapseRenotes');
+const advancedMfm = prefer.model('advancedMfm');
+const showReactionsCount = prefer.model('showReactionsCount');
+const enableQuickAddMfmFunction = prefer.model('enableQuickAddMfmFunction');
+const forceShowAds = prefer.model('forceShowAds');
+const loadRawImages = prefer.model('loadRawImages');
+const imageNewTab = prefer.model('imageNewTab');
+const showFixedPostForm = prefer.model('showFixedPostForm');
+const showFixedPostFormInChannel = prefer.model('showFixedPostFormInChannel');
+const numberOfPageCache = prefer.model('numberOfPageCache');
+const enableInfiniteScroll = prefer.model('enableInfiniteScroll');
+const useReactionPickerForContextMenu = prefer.model('useReactionPickerForContextMenu');
+const disableStreamingTimeline = prefer.model('disableStreamingTimeline');
+const useGroupedNotifications = prefer.model('useGroupedNotifications');
+const alwaysConfirmFollow = prefer.model('alwaysConfirmFollow');
+const confirmWhenRevealingSensitiveMedia = prefer.model('confirmWhenRevealingSensitiveMedia');
+const confirmOnReact = prefer.model('confirmOnReact');
+const contextMenu = prefer.model('contextMenu');
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -411,7 +411,7 @@ function removePinnedList() {
 }
 
 function enableAllDataSaver() {
-	const g = { ...preferences.s.dataSaver };
+	const g = { ...prefer.s.dataSaver };
 
 	Object.keys(g).forEach((key) => { g[key] = true; });
 
@@ -419,7 +419,7 @@ function enableAllDataSaver() {
 }
 
 function disableAllDataSaver() {
-	const g = { ...preferences.s.dataSaver };
+	const g = { ...prefer.s.dataSaver };
 
 	Object.keys(g).forEach((key) => { g[key] = false; });
 
@@ -427,7 +427,7 @@ function disableAllDataSaver() {
 }
 
 watch(dataSaver, (to) => {
-	preferences.set('dataSaver', to);
+	prefer.set('dataSaver', to);
 }, {
 	deep: true,
 });

@@ -321,7 +321,7 @@ class Preferences {
 	}
 }
 
-export const preferences = new Preferences(currentProfile.preferences, (preferences) => {
+export const prefer = new Preferences(currentProfile.preferences, (preferences) => {
 	currentProfile.preferences = preferences;
 	miLocalStorage.setItem(`preferences:${currentProfile.id}`, JSON.stringify(currentProfile));
 });

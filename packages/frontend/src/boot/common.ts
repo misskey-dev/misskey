@@ -26,7 +26,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/main.js';
 import { createMainRouter } from '@/router/definition.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -197,11 +197,11 @@ export async function common(createVue: () => App<Element>) {
 		updateDeviceKind(kind);
 	}, { immediate: true });
 
-	watch(preferences.r.useBlurEffectForModal, v => {
+	watch(prefer.r.useBlurEffectForModal, v => {
 		document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');
 	}, { immediate: true });
 
-	watch(preferences.r.useBlurEffect, v => {
+	watch(prefer.r.useBlurEffect, v => {
 		if (v) {
 			document.documentElement.style.removeProperty('--MI-blur');
 		} else {
@@ -215,7 +215,7 @@ export async function common(createVue: () => App<Element>) {
 			navigator.wakeLock.request('screen');
 		}
 	});
-	if (preferences.s.keepScreenOn && 'wakeLock' in navigator) {
+	if (prefer.s.keepScreenOn && 'wakeLock' in navigator) {
 		navigator.wakeLock.request('screen')
 			.then(onVisibilityChange)
 			.catch(() => {

@@ -57,11 +57,11 @@ import { defaultStore } from '@/store.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { PREF_DEF, preferences } from '@/preferences.js';
+import { PREF_DEF, prefer } from '@/preferences.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-const items = ref(preferences.s.menu.map(x => ({
+const items = ref(prefer.s.menu.map(x => ({
 	id: Math.random().toString(),
 	type: x,
 })));
@@ -69,7 +69,7 @@ const items = ref(preferences.s.menu.map(x => ({
 const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
 
 async function addItem() {
-	const menu = Object.keys(navbarItemDef).filter(k => !preferences.s.menu.includes(k));
+	const menu = Object.keys(navbarItemDef).filter(k => !prefer.s.menu.includes(k));
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
@@ -90,7 +90,7 @@ function removeItem(index: number) {
 }
 
 async function save() {
-	preferences.set('menu', items.value.map(x => x.type));
+	prefer.set('menu', items.value.map(x => x.type));
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 }
 

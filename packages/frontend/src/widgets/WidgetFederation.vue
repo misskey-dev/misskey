@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div class="wbrkwalb">
 		<MkLoading v-if="fetching"/>
-		<TransitionGroup v-else tag="div" :name="preferences.s.animation ? 'chart' : ''" class="instances">
+		<TransitionGroup v-else tag="div" :name="prefer.s.animation ? 'chart' : ''" class="instances">
 			<div v-for="(instance, i) in instances" :key="instance.id" class="instance">
 				<img :src="getInstanceIcon(instance)" alt=""/>
 				<div class="body">
@@ -36,7 +36,7 @@ import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const name = 'federation';
 

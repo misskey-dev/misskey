@@ -138,7 +138,7 @@ import { defaultStore } from '@/store.js';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
 import { $i } from '@/account.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
@@ -164,7 +164,7 @@ const {
 	emojiPickerScale,
 	emojiPickerWidth,
 	emojiPickerHeight,
-} = preferences.r;
+} = prefer.r;
 
 const recentlyUsedEmojis = defaultStore.reactiveState.recentlyUsedEmojis;
 
@@ -415,7 +415,7 @@ function computeButtonTitle(ev: MouseEvent): void {
 
 function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, ev?: MouseEvent) {
 	const el = ev && (ev.currentTarget ?? ev.target) as HTMLElement | null | undefined;
-	if (el && preferences.s.animation) {
+	if (el && prefer.s.animation) {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);

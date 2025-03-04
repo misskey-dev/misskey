@@ -25,7 +25,7 @@ import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
-import { preferences } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => {
@@ -74,9 +74,9 @@ export async function mainBoot() {
 
 	let reloadDialogShowing = false;
 	stream.on('_disconnected_', async () => {
-		if (preferences.s.serverDisconnectedBehavior === 'reload') {
+		if (prefer.s.serverDisconnectedBehavior === 'reload') {
 			location.reload();
-		} else if (preferences.s.serverDisconnectedBehavior === 'dialog') {
+		} else if (prefer.s.serverDisconnectedBehavior === 'dialog') {
 			if (reloadDialogShowing) return;
 			reloadDialogShowing = true;
 			const { canceled } = await confirm({
@@ -112,7 +112,7 @@ export async function mainBoot() {
 	}
 
 	try {
-		if (preferences.s.enableSeasonalScreenEffect) {
+		if (prefer.s.enableSeasonalScreenEffect) {
 			const month = new Date().getMonth() + 1;
 			if (defaultStore.state.hemisphere === 'S') {
 				// ▼南半球
