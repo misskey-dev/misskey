@@ -114,20 +114,20 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/settings/theme',
 		active: currentPage.value?.route.name === 'theme',
 	}, {
-		icon: 'ti ti-menu-2',
-		text: i18n.ts.navbar,
-		to: '/settings/navbar',
-		active: currentPage.value?.route.name === 'navbar',
-	}, {
-		icon: 'ti ti-equal-double',
-		text: i18n.ts.statusbar,
-		to: '/settings/statusbar',
-		active: currentPage.value?.route.name === 'statusbar',
+		icon: 'ti ti-device-desktop',
+		text: i18n.ts.appearance,
+		to: '/settings/appearance',
+		active: currentPage.value?.route.name === 'appearance',
 	}, {
 		icon: 'ti ti-music',
 		text: i18n.ts.sounds,
 		to: '/settings/sounds',
 		active: currentPage.value?.route.name === 'sounds',
+	}, {
+		icon: 'ti ti-accessible',
+		text: i18n.ts.accessibility,
+		to: '/settings/accessibility',
+		active: currentPage.value?.route.name === 'accessibility',
 	}, {
 		icon: 'ti ti-plug',
 		text: i18n.ts.plugins,

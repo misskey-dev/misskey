@@ -106,6 +106,10 @@ const routes: RouteDef[] = [{
 		name: 'theme',
 		component: page(() => import('@/pages/settings/theme.vue')),
 	}, {
+		path: '/appearance',
+		name: 'appearance',
+		component: page(() => import('@/pages/settings/appearance.vue')),
+	}, {
 		path: '/navbar',
 		name: 'navbar',
 		component: page(() => import('@/pages/settings/navbar.vue')),
@@ -117,6 +121,10 @@ const routes: RouteDef[] = [{
 		path: '/sounds',
 		name: 'sounds',
 		component: page(() => import('@/pages/settings/sounds.vue')),
+	}, {
+		path: '/accessibility',
+		name: 'accessibility',
+		component: page(() => import('@/pages/settings/accessibility.vue')),
 	}, {
 		path: '/plugin/install',
 		name: 'plugin',

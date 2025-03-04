@@ -52,12 +52,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 					</MkFolder>
 				</SearchMarker>
+
+				<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn']">
+					<MkSwitch v-model="enableQuickAddMfmFunction">
+						<template #label><SearchLabel>{{ i18n.ts.enableQuickAddMfmFunction }}</SearchLabel></template>
+					</MkSwitch>
+				</SearchMarker>
 			</div>
 		</FormSection>
 
-		<SearchMarker :keywords="['note', 'display']">
+		<SearchMarker :keywords="['note']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.displayOfNote }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ i18n.ts.note }}</SearchLabel></template>
 
 				<div class="_gaps_m">
 					<div class="_gaps_s">
@@ -86,27 +92,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</SearchMarker>
 
-						<SearchMarker :keywords="['mfm', 'enable', 'show', 'animated']">
-							<MkSwitch v-if="advancedMfm" v-model="animatedMfm">
-								<template #label><SearchLabel>{{ i18n.ts.enableAnimatedMfm }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn']">
-							<MkSwitch v-if="advancedMfm" v-model="enableQuickAddMfmFunction">
-								<template #label><SearchLabel>{{ i18n.ts.enableQuickAddMfmFunction }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
 						<SearchMarker :keywords="['reaction', 'count', 'show']">
 							<MkSwitch v-model="showReactionsCount">
 								<template #label><SearchLabel>{{ i18n.ts.showReactionsCount }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['note', 'timeline', 'gap']">
-							<MkSwitch v-model="showGapBetweenNotesInTimeline">
-								<template #label><SearchLabel>{{ i18n.ts.showGapBetweenNotesInTimeline }}</SearchLabel></template>
 							</MkSwitch>
 						</SearchMarker>
 
@@ -115,190 +103,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label><SearchLabel>{{ i18n.ts.loadRawImages }}</SearchLabel></template>
 							</MkSwitch>
 						</SearchMarker>
-
-						<SearchMarker :keywords="['reaction', 'size', 'scale', 'display']">
-							<MkRadios v-model="reactionsDisplaySize">
-								<template #label><SearchLabel>{{ i18n.ts.reactionsDisplaySize }}</SearchLabel></template>
-								<option value="small">{{ i18n.ts.small }}</option>
-								<option value="medium">{{ i18n.ts.medium }}</option>
-								<option value="large">{{ i18n.ts.large }}</option>
-							</MkRadios>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['reaction', 'size', 'scale', 'display', 'width', 'limit']">
-							<MkSwitch v-model="limitWidthOfReaction">
-								<template #label><SearchLabel>{{ i18n.ts.limitWidthOfReaction }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
 					</div>
-
-					<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
-						<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
-							<template #label><SearchLabel>{{ i18n.ts.instanceTicker }}</SearchLabel></template>
-							<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
-							<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
-							<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
-						</MkSelect>
-					</SearchMarker>
-
-					<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility']">
-						<MkSelect v-model="nsfw">
-							<template #label><SearchLabel>{{ i18n.ts.displayOfSensitiveMedia }}</SearchLabel></template>
-							<option value="respect">{{ i18n.ts._displayOfSensitiveMedia.respect }}</option>
-							<option value="ignore">{{ i18n.ts._displayOfSensitiveMedia.ignore }}</option>
-							<option value="force">{{ i18n.ts._displayOfSensitiveMedia.force }}</option>
-						</MkSelect>
-					</SearchMarker>
-
-					<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'list', 'size', 'height']">
-						<MkRadios v-model="mediaListWithOneImageAppearance">
-							<template #label><SearchLabel>{{ i18n.ts.mediaListWithOneImageAppearance }}</SearchLabel></template>
-							<option value="expand">{{ i18n.ts.default }}</option>
-							<option value="16_9">{{ i18n.tsx.limitTo({ x: '16:9' }) }}</option>
-							<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
-							<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
-						</MkRadios>
-					</SearchMarker>
 				</div>
 			</FormSection>
 		</SearchMarker>
 
-		<SearchMarker :keywords="['notification', 'display']">
+		<SearchMarker :keywords="['notification']">
 			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.notificationDisplay }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ i18n.ts.notifications }}</SearchLabel></template>
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['group']">
 						<MkSwitch v-model="useGroupedNotifications">
 							<template #label><SearchLabel>{{ i18n.ts.useGroupedNotifications }}</SearchLabel></template>
 						</MkSwitch>
-					</SearchMarker>
-
-					<SearchMarker :keywords="['position']">
-						<MkRadios v-model="notificationPosition">
-							<template #label><SearchLabel>{{ i18n.ts.position }}</SearchLabel></template>
-							<option value="leftTop"><i class="ti ti-align-box-left-top"></i> {{ i18n.ts.leftTop }}</option>
-							<option value="rightTop"><i class="ti ti-align-box-right-top"></i> {{ i18n.ts.rightTop }}</option>
-							<option value="leftBottom"><i class="ti ti-align-box-left-bottom"></i> {{ i18n.ts.leftBottom }}</option>
-							<option value="rightBottom"><i class="ti ti-align-box-right-bottom"></i> {{ i18n.ts.rightBottom }}</option>
-						</MkRadios>
-					</SearchMarker>
-
-					<SearchMarker :keywords="['stack', 'axis', 'direction']">
-						<MkRadios v-model="notificationStackAxis">
-							<template #label><SearchLabel>{{ i18n.ts.stackAxis }}</SearchLabel></template>
-							<option value="vertical"><i class="ti ti-carousel-vertical"></i> {{ i18n.ts.vertical }}</option>
-							<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
-						</MkRadios>
-					</SearchMarker>
-
-					<MkButton @click="testNotification">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
-				</div>
-			</FormSection>
-		</SearchMarker>
-
-		<SearchMarker :keywords="['appearance']">
-			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts.appearance }}</SearchLabel></template>
-
-				<div class="_gaps_m">
-					<div class="_gaps_s">
-						<SearchMarker :keywords="['animation', 'motion', 'reduce']">
-							<MkSwitch v-model="reduceAnimation">
-								<template #label><SearchLabel>{{ i18n.ts.reduceUiAnimation }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['blur']">
-							<MkSwitch v-model="useBlurEffect">
-								<template #label><SearchLabel>{{ i18n.ts.useBlurEffect }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['blur', 'modal']">
-							<MkSwitch v-model="useBlurEffectForModal">
-								<template #label><SearchLabel>{{ i18n.ts.useBlurEffectForModal }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['disable', 'animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif']">
-							<MkSwitch v-model="disableShowingAnimatedImages">
-								<template #label><SearchLabel>{{ i18n.ts.disableShowingAnimatedImages }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['highlight', 'sensitive', 'nsfw', 'image', 'photo', 'picture', 'media', 'thumbnail']">
-							<MkSwitch v-model="highlightSensitiveMedia">
-								<template #label><SearchLabel>{{ i18n.ts.highlightSensitiveMedia }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['avatar', 'icon', 'square']">
-							<MkSwitch v-model="squareAvatars">
-								<template #label><SearchLabel>{{ i18n.ts.squareAvatars }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['avatar', 'icon', 'decoration', 'show']">
-							<MkSwitch v-model="showAvatarDecorations">
-								<template #label><SearchLabel>{{ i18n.ts.showAvatarDecorations }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['font', 'system', 'native']">
-							<MkSwitch v-model="useSystemFont">
-								<template #label><SearchLabel>{{ i18n.ts.useSystemFont }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['ad', 'show']">
-							<MkSwitch v-model="forceShowAds">
-								<template #label><SearchLabel>{{ i18n.ts.forceShowAds }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['effect', 'show']">
-							<MkSwitch v-model="enableSeasonalScreenEffect">
-								<template #label><SearchLabel>{{ i18n.ts.seasonalScreenEffect }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['native', 'system', 'video', 'audio', 'player', 'media']">
-							<MkSwitch v-model="useNativeUIForVideoAudioPlayer">
-								<template #label><SearchLabel>{{ i18n.ts.useNativeUIForVideoAudioPlayer }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-					</div>
-
-					<SearchMarker :keywords="['menu', 'style', 'popup', 'drawer']">
-						<MkSelect v-model="menuStyle">
-							<template #label><SearchLabel>{{ i18n.ts.menuStyle }}</SearchLabel></template>
-							<option value="auto">{{ i18n.ts.auto }}</option>
-							<option value="popup">{{ i18n.ts.popup }}</option>
-							<option value="drawer">{{ i18n.ts.drawer }}</option>
-						</MkSelect>
-					</SearchMarker>
-
-					<SearchMarker :keywords="['emoji', 'style', 'native', 'system', 'fluent', 'twemoji']">
-						<div>
-							<MkRadios v-model="emojiStyle">
-								<template #label><SearchLabel>{{ i18n.ts.emojiStyle }}</SearchLabel></template>
-								<option value="native">{{ i18n.ts.native }}</option>
-								<option value="fluentEmoji">Fluent Emoji</option>
-								<option value="twemoji">Twemoji</option>
-							</MkRadios>
-							<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
-						</div>
-					</SearchMarker>
-
-					<SearchMarker :keywords="['font', 'size']">
-						<MkRadios v-model="fontSize">
-							<template #label><SearchLabel>{{ i18n.ts.fontSize }}</SearchLabel></template>
-							<option :value="null"><span style="font-size: 14px;">Aa</span></option>
-							<option value="1"><span style="font-size: 15px;">Aa</span></option>
-							<option value="2"><span style="font-size: 16px;">Aa</span></option>
-							<option value="3"><span style="font-size: 17px;">Aa</span></option>
-						</MkRadios>
 					</SearchMarker>
 				</div>
 			</FormSection>
@@ -328,21 +146,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</SearchMarker>
 
-						<SearchMarker :keywords="['keep', 'screen', 'display', 'on']">
-							<MkSwitch v-model="keepScreenOn">
-								<template #label><SearchLabel>{{ i18n.ts.keepScreenOn }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
 						<SearchMarker :keywords="['disable', 'streaming', 'timeline']">
 							<MkSwitch v-model="disableStreamingTimeline">
 								<template #label><SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel></template>
-							</MkSwitch>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['swipe', 'horizontal', 'tab']">
-							<MkSwitch v-model="enableHorizontalSwipe">
-								<template #label><SearchLabel>{{ i18n.ts.enableHorizontalSwipe }}</SearchLabel></template>
 							</MkSwitch>
 						</SearchMarker>
 
@@ -371,15 +177,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
 							<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
 							<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
-						</MkSelect>
-					</SearchMarker>
-
-					<SearchMarker :keywords="['contextmenu', 'system', 'native']">
-						<MkSelect v-model="contextMenu">
-							<template #label><SearchLabel>{{ i18n.ts._contextMenu.title }}</SearchLabel></template>
-							<option value="app">{{ i18n.ts._contextMenu.app }}</option>
-							<option value="appWithShift">{{ i18n.ts._contextMenu.appWithShift }}</option>
-							<option value="native">{{ i18n.ts._contextMenu.native }}</option>
 						</MkSelect>
 					</SearchMarker>
 
@@ -431,6 +228,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label><SearchLabel>{{ i18n.ts.other }}</SearchLabel></template>
 
 				<div class="_gaps">
+					<SearchMarker :keywords="['ad', 'show']">
+						<MkSwitch v-model="forceShowAds">
+							<template #label><SearchLabel>{{ i18n.ts.forceShowAds }}</SearchLabel></template>
+						</MkSwitch>
+					</SearchMarker>
+
 					<SearchMarker>
 						<MkRadios v-model="hemisphere">
 							<template #label><SearchLabel>{{ i18n.ts.hemisphere }}</SearchLabel></template>
@@ -452,8 +255,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkFolder>
 					</SearchMarker>
 
+					<FormLink to="/settings/navbar">{{ i18n.ts.navbar }}</FormLink>
+					<FormLink to="/settings/statusbar">{{ i18n.ts.statusbar }}</FormLink>
 					<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
-					<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 				</div>
 			</FormSection>
 		</SearchMarker>
@@ -483,12 +287,8 @@ import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { globalEvents } from '@/events.js';
-import { claimAchievement } from '@/scripts/achievements.js';
 
 const lang = ref(miLocalStorage.getItem('lang'));
-const fontSize = ref(miLocalStorage.getItem('fontSize'));
-const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
 const dataSaver = ref(defaultStore.state.dataSaver);
 
 const hemisphere = computed(defaultStore.makeGetterSetter('hemisphere'));
@@ -496,42 +296,20 @@ const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDev
 const serverDisconnectedBehavior = computed(defaultStore.makeGetterSetter('serverDisconnectedBehavior'));
 const showNoteActionsOnlyHover = computed(defaultStore.makeGetterSetter('showNoteActionsOnlyHover'));
 const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showClipButtonInNoteFooter'));
-const reactionsDisplaySize = computed(defaultStore.makeGetterSetter('reactionsDisplaySize'));
-const limitWidthOfReaction = computed(defaultStore.makeGetterSetter('limitWidthOfReaction'));
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
-const reduceAnimation = computed(defaultStore.makeGetterSetter('animation', v => !v, v => !v));
-const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
-const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
-const showGapBetweenNotesInTimeline = computed(defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'));
-const animatedMfm = computed(defaultStore.makeGetterSetter('animatedMfm'));
 const advancedMfm = computed(defaultStore.makeGetterSetter('advancedMfm'));
 const showReactionsCount = computed(defaultStore.makeGetterSetter('showReactionsCount'));
 const enableQuickAddMfmFunction = computed(defaultStore.makeGetterSetter('enableQuickAddMfmFunction'));
-const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
-const menuStyle = computed(defaultStore.makeGetterSetter('menuStyle'));
-const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
-const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
-const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
 const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
 const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
-const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
-const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
-const showAvatarDecorations = computed(defaultStore.makeGetterSetter('showAvatarDecorations'));
-const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
-const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
-const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
-const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
 const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
-const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
-const enableHorizontalSwipe = computed(defaultStore.makeGetterSetter('enableHorizontalSwipe'));
-const useNativeUIForVideoAudioPlayer = computed(defaultStore.makeGetterSetter('useNativeUIForVideoAudioPlayer'));
 const alwaysConfirmFollow = computed(defaultStore.makeGetterSetter('alwaysConfirmFollow'));
 const confirmWhenRevealingSensitiveMedia = computed(defaultStore.makeGetterSetter('confirmWhenRevealingSensitiveMedia'));
 const confirmOnReact = computed(defaultStore.makeGetterSetter('confirmOnReact'));
@@ -543,40 +321,13 @@ watch(lang, () => {
 	miLocalStorage.removeItem('localeVersion');
 });
 
-watch(fontSize, () => {
-	if (fontSize.value == null) {
-		miLocalStorage.removeItem('fontSize');
-	} else {
-		miLocalStorage.setItem('fontSize', fontSize.value);
-	}
-});
-
-watch(useSystemFont, () => {
-	if (useSystemFont.value) {
-		miLocalStorage.setItem('useSystemFont', 't');
-	} else {
-		miLocalStorage.removeItem('useSystemFont');
-	}
-});
-
 watch([
 	hemisphere,
 	lang,
-	fontSize,
-	useSystemFont,
 	enableInfiniteScroll,
-	squareAvatars,
 	showNoteActionsOnlyHover,
-	showGapBetweenNotesInTimeline,
-	instanceTicker,
 	overridedDeviceKind,
-	mediaListWithOneImageAppearance,
-	reactionsDisplaySize,
-	limitWidthOfReaction,
-	highlightSensitiveMedia,
-	keepScreenOn,
 	disableStreamingTimeline,
-	enableSeasonalScreenEffect,
 	alwaysConfirmFollow,
 	confirmWhenRevealingSensitiveMedia,
 	contextMenu,
@@ -643,33 +394,6 @@ async function setPinnedList() {
 
 function removePinnedList() {
 	defaultStore.set('pinnedUserLists', []);
-}
-
-let smashCount = 0;
-let smashTimer: number | null = null;
-
-function testNotification(): void {
-	const notification: Misskey.entities.Notification = {
-		id: Math.random().toString(),
-		createdAt: new Date().toUTCString(),
-		isRead: false,
-		type: 'test',
-	};
-
-	globalEvents.emit('clientNotification', notification);
-
-	// セルフ通知破壊 実績関連
-	smashCount++;
-	if (smashCount >= 10) {
-		claimAchievement('smashTestNotificationButton');
-		smashCount = 0;
-	}
-	if (smashTimer) {
-		clearTimeout(smashTimer);
-	}
-	smashTimer = window.setTimeout(() => {
-		smashCount = 0;
-	}, 300);
 }
 
 function enableAllDataSaver() {
