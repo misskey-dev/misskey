@@ -55,7 +55,7 @@ const XFlashs = defineAsyncComponent(() => import('./flashs.vue'));
 const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
 const XRaw = defineAsyncComponent(() => import('./raw.vue'));
 
-const CTX_USER = assertServerContext(serverContext, 'user') ? serverContext.user : null;
+const CTX_USER = !$i && assertServerContext(serverContext, 'user') ? serverContext.user : null;
 
 const props = withDefaults(defineProps<{
 	acct: string;
