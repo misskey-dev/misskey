@@ -6,41 +6,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/accessibility" :label="i18n.ts.accessibility" :keywords="['accessibility']" icon="ti ti-accessible">
 	<div class="_gaps_m">
-		<SearchMarker :keywords="['animation', 'motion', 'reduce']">
-			<MkSwitch v-model="reduceAnimation">
-				<template #label><SearchLabel>{{ i18n.ts.reduceUiAnimation }}</SearchLabel></template>
-			</MkSwitch>
-		</SearchMarker>
+		<div class="_gaps_s">
+			<SearchMarker :keywords="['animation', 'motion', 'reduce']">
+				<MkSwitch v-model="reduceAnimation">
+					<template #label><SearchLabel>{{ i18n.ts.reduceUiAnimation }}</SearchLabel></template>
+				</MkSwitch>
+			</SearchMarker>
 
-		<SearchMarker :keywords="['disable', 'animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif']">
-			<MkSwitch v-model="disableShowingAnimatedImages">
-				<template #label><SearchLabel>{{ i18n.ts.disableShowingAnimatedImages }}</SearchLabel></template>
-			</MkSwitch>
-		</SearchMarker>
+			<SearchMarker :keywords="['disable', 'animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif']">
+				<MkSwitch v-model="disableShowingAnimatedImages">
+					<template #label><SearchLabel>{{ i18n.ts.disableShowingAnimatedImages }}</SearchLabel></template>
+				</MkSwitch>
+			</SearchMarker>
 
-		<SearchMarker :keywords="['mfm', 'enable', 'show', 'animated']">
-			<MkSwitch v-model="animatedMfm">
-				<template #label><SearchLabel>{{ i18n.ts.enableAnimatedMfm }}</SearchLabel></template>
-			</MkSwitch>
-		</SearchMarker>
+			<SearchMarker :keywords="['mfm', 'enable', 'show', 'animated']">
+				<MkSwitch v-model="animatedMfm">
+					<template #label><SearchLabel>{{ i18n.ts.enableAnimatedMfm }}</SearchLabel></template>
+				</MkSwitch>
+			</SearchMarker>
 
-		<SearchMarker :keywords="['swipe', 'horizontal', 'tab']">
-			<MkSwitch v-model="enableHorizontalSwipe">
-				<template #label><SearchLabel>{{ i18n.ts.enableHorizontalSwipe }}</SearchLabel></template>
-			</MkSwitch>
-		</SearchMarker>
+			<SearchMarker :keywords="['swipe', 'horizontal', 'tab']">
+				<MkSwitch v-model="enableHorizontalSwipe">
+					<template #label><SearchLabel>{{ i18n.ts.enableHorizontalSwipe }}</SearchLabel></template>
+				</MkSwitch>
+			</SearchMarker>
 
-		<SearchMarker :keywords="['keep', 'screen', 'display', 'on']">
-			<MkSwitch v-model="keepScreenOn">
-				<template #label><SearchLabel>{{ i18n.ts.keepScreenOn }}</SearchLabel></template>
-			</MkSwitch>
-		</SearchMarker>
+			<SearchMarker :keywords="['keep', 'screen', 'display', 'on']">
+				<MkSwitch v-model="keepScreenOn">
+					<template #label><SearchLabel>{{ i18n.ts.keepScreenOn }}</SearchLabel></template>
+				</MkSwitch>
+			</SearchMarker>
 
-		<SearchMarker :keywords="['native', 'system', 'video', 'audio', 'player', 'media']">
-			<MkSwitch v-model="useNativeUIForVideoAudioPlayer">
-				<template #label><SearchLabel>{{ i18n.ts.useNativeUIForVideoAudioPlayer }}</SearchLabel></template>
-			</MkSwitch>
-		</SearchMarker>
+			<SearchMarker :keywords="['native', 'system', 'video', 'audio', 'player', 'media']">
+				<MkSwitch v-model="useNativeUIForVideoAudioPlayer">
+					<template #label><SearchLabel>{{ i18n.ts.useNativeUIForVideoAudioPlayer }}</SearchLabel></template>
+				</MkSwitch>
+			</SearchMarker>
+		</div>
 
 		<SearchMarker :keywords="['contextmenu', 'system', 'native']">
 			<MkSelect v-model="contextMenu">

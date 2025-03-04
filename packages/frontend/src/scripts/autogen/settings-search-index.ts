@@ -770,37 +770,37 @@ export const searchIndexes:SearchIndexItem[] = [
 		id: 'f08Mi1Uwn',
 		children: [
 			{
-				id: 'u0g7YMJTM',
+				id: '7ov7ceoij',
 				label: i18n.ts.reduceUiAnimation,
 				keywords: ['animation', 'motion', 'reduce'],
 			},
 			{
-				id: 'o2NiYKVBG',
+				id: 'RhYwm8At',
 				label: i18n.ts.disableShowingAnimatedImages,
 				keywords: ['disable', 'animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif'],
 			},
 			{
-				id: 'dGjZ05AAq',
+				id: '5mZxz2cru',
 				label: i18n.ts.enableAnimatedMfm,
 				keywords: ['mfm', 'enable', 'show', 'animated'],
 			},
 			{
-				id: 'bsxH2MVdI',
+				id: 'bgjamYEis',
 				label: i18n.ts.enableHorizontalSwipe,
 				keywords: ['swipe', 'horizontal', 'tab'],
 			},
 			{
-				id: 'rAznWz2H2',
+				id: 'yPEpJigqY',
 				label: i18n.ts.keepScreenOn,
 				keywords: ['keep', 'screen', 'display', 'on'],
 			},
 			{
-				id: 'ArKVjs6kG',
+				id: 'oxwiGKMu0',
 				label: i18n.ts.useNativeUIForVideoAudioPlayer,
 				keywords: ['native', 'system', 'video', 'audio', 'player', 'media'],
 			},
 			{
-				id: 'bz3XT5Tdv',
+				id: 'n90tffyiU',
 				label: i18n.ts._contextMenu.title,
 				keywords: ['contextmenu', 'system', 'native'],
 			},

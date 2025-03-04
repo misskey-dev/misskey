@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<path d="M47.488,7.995C47.79,10.11 47.943,12.266 47.943,14.429C47.997,26.989 47.997,84 47.997,84C47.997,84 44.018,118.246 23.997,133.5C-0.374,152.07 -0.003,192 -0.003,192L-0.003,-96C-0.003,-96 0.151,-56.216 23.997,-37.5C40.861,-24.265 46.043,-1.243 47.488,7.995Z" style="fill:var(--MI_THEME-navBg);"/>
 				</g>
 			</svg>
-			<button class="_button" :class="$style.subButtonClickable" @click="menuEdit"><i class="ti ti-settings-2"></i></button>
+			<button class="_button" :class="$style.subButtonClickable" @click="menuEdit"><i :class="$style.subButtonIcon" class="ti ti-settings-2"></i></button>
 		</div>
 		<div v-if="!forceIconOnly" :class="$style.subButtonGapFill"></div>
 		<div v-if="!forceIconOnly" :class="$style.subButtonGapFillDivider"></div>
@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<path d="M47.488,7.995C47.79,10.11 47.943,12.266 47.943,14.429C47.997,26.989 47.997,84 47.997,84C47.997,84 44.018,118.246 23.997,133.5C-0.374,152.07 -0.003,192 -0.003,192L-0.003,-96C-0.003,-96 0.151,-56.216 23.997,-37.5C40.861,-24.265 46.043,-1.243 47.488,7.995Z" style="fill:var(--MI_THEME-navBg);"/>
 				</g>
 			</svg>
-			<button class="_button" :class="$style.subButtonClickable" @click="toggleIconOnly"><i :class="'ti ' + `ti-chevron-${ iconOnly ? 'right' : 'left' }`"></i></button>
+			<button class="_button" :class="$style.subButtonClickable" @click="toggleIconOnly"><i v-if="iconOnly" class="ti ti-chevron-right" :class="$style.subButtonIcon"></i><i v-else class="ti ti-chevron-left" :class="$style.subButtonIcon"></i></button>
 		</div>
 	</div>
 </div>
@@ -197,7 +197,7 @@ function menuEdit() {
 .subButtons {
 	position: fixed;
 	left: var(--nav-width);
-	bottom: 20px;
+	bottom: 80px;
 	z-index: 1001;
 	box-sizing: border-box;
 }
@@ -231,13 +231,17 @@ function menuEdit() {
 	height: 42px;
 	top: 0;
 	bottom: 0;
-	left: -6px;
+	left: -4px;
 	margin: auto;
 	font-size: 10px;
 
 	&:hover {
 		color: var(--MI_THEME-fgHighlighted);
 	}
+}
+
+.subButtonIcon {
+	margin-left: -4px;
 }
 
 .subButtonGapFill {
