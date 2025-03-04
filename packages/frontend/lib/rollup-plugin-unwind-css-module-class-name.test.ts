@@ -393,7 +393,7 @@ const _sfc_main = defineComponent({
       el.style.left = "";
     }
     return () => h(
-      preferences.s.animation ? TransitionGroup : "div",
+      prefer.s.animation ? TransitionGroup : "div",
       {
         class: {
           [$style["date-separated-list"]]: true,
@@ -402,7 +402,7 @@ const _sfc_main = defineComponent({
           [$style["direction-down"]]: props.direction === "down",
           [$style["direction-up"]]: props.direction === "up"
         },
-        ...preferences.s.animation ? {
+        ...prefer.s.animation ? {
           name: "list",
           tag: "div",
           onBeforeLeave,
@@ -555,7 +555,7 @@ const _sfc_main = defineComponent({
       el.style.top = "";
       el.style.left = "";
     }
-    return () => h(preferences.s.animation ? TransitionGroup : "div", {
+    return () => h(prefer.s.animation ? TransitionGroup : "div", {
       class: {
         [$style["date-separated-list"]]: true,
         [$style["date-separated-list-nogap"]]: props.noGap,
@@ -563,7 +563,7 @@ const _sfc_main = defineComponent({
         [$style["direction-down"]]: props.direction === "down",
         [$style["direction-up"]]: props.direction === "up"
       },
-      ...preferences.s.animation ? {
+      ...prefer.s.animation ? {
         name: "list",
         tag: "div",
         onBeforeLeave,
