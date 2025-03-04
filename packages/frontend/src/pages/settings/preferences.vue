@@ -257,10 +257,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<FormLink to="/settings/navbar">{{ i18n.ts.navbar }}</FormLink>
 					<FormLink to="/settings/statusbar">{{ i18n.ts.statusbar }}</FormLink>
-					<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
 				</div>
 			</FormSection>
 		</SearchMarker>
+
+		<FormSection>
+			<div class="_gaps">
+				<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
+			</div>
+		</FormSection>
 	</div>
 </SearchMarker>
 </template>

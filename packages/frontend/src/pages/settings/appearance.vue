@@ -170,7 +170,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSection>
 		</SearchMarker>
 
-		<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
+		<FormSection>
+			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
+		</FormSection>
 	</div>
 </SearchMarker>
 </template>
