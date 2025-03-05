@@ -90,7 +90,7 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/scripts/array.js';
-import { fetchThemes, getThemes } from '@/theme-store.js';
+import { getThemes } from '@/theme-store.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
@@ -217,12 +217,6 @@ watch(wallpaper, async () => {
 });
 
 onActivated(() => {
-	fetchThemes().then(() => {
-		installedThemes.value = getThemes();
-	});
-});
-
-fetchThemes().then(() => {
 	installedThemes.value = getThemes();
 });
 
