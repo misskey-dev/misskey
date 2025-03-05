@@ -260,7 +260,7 @@ noCustomEmojis: "No hi ha emojis personalitzats"
 noJobs: "No hi ha feines"
 federating: "Federant"
 blocked: "Bloquejat"
-suspended: "Suspés"
+suspended: "Anul·lar subscripció "
 all: "tot"
 subscribing: "Subscrit a"
 publishing: "S'està publicant"
@@ -1334,7 +1334,7 @@ _abuseUserReport:
   resolveTutorial: "Si l'informe és legítim selecciona \"Acceptar\" per resoldre'l positivament. Però si l'informe no és legítim selecciona \"Rebutjar\" per resoldre'l negativament."
 _delivery:
   status: "Estat d'entrega "
-  stop: "Suspés"
+  stop: "Anul·lar subscripció "
   resume: "Torna a enviar"
   _type:
     none: "S'està publicant"
