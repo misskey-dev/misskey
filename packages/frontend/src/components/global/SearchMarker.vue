@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { useInterval } from '@@/js/use-interval.js';
-import { onActivated, onMounted, ref, useTemplateRef, inject } from 'vue';
+import { onActivated, onMounted, ref, useTemplateRef, inject, watch } from 'vue';
 
 const props = defineProps<{
 	markerId?: string;
@@ -25,6 +25,20 @@ const props = defineProps<{
 const rootEl = useTemplateRef<HTMLDivElement>('root');
 const searchMarkerId = inject<string>('inAppSearchMarkerId', window.location.hash.slice(1));
 const highlighted = ref(props.markerId === searchMarkerId);
+let highlightedMarkerTimer: number | null = null;
+
+watch(highlighted, (to) => {
+	if (highlightedMarkerTimer != null) {
+		clearTimeout(highlightedMarkerTimer);
+		highlightedMarkerTimer = null;
+	}
+
+	if (to) {
+		highlightedMarkerTimer = window.setTimeout(() => {
+			highlighted.value = false;
+		}, 3000);
+	}
+}, { immediate: true });
 
 function checkChildren() {
 	if (props.children?.includes(searchMarkerId)) {
