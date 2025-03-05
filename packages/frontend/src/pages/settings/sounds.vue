@@ -7,21 +7,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/sounds" :label="i18n.ts.sounds" :keywords="['sounds']" icon="ti ti-music">
 	<div class="_gaps_m">
 		<SearchMarker :keywords="['mute']">
-			<MkSwitch v-model="notUseSound">
-				<template #label><SearchLabel>{{ i18n.ts.notUseSound }}</SearchLabel></template>
-			</MkSwitch>
+			<MkPreferenceContainer k="sound.notUseSound">
+				<MkSwitch v-model="notUseSound">
+					<template #label><SearchLabel>{{ i18n.ts.notUseSound }}</SearchLabel></template>
+				</MkSwitch>
+			</MkPreferenceContainer>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['active', 'mute']">
-			<MkSwitch v-model="useSoundOnlyWhenActive">
-				<template #label><SearchLabel>{{ i18n.ts.useSoundOnlyWhenActive }}</SearchLabel></template>
-			</MkSwitch>
+			<MkPreferenceContainer k="sound.useSoundOnlyWhenActive">
+				<MkSwitch v-model="useSoundOnlyWhenActive">
+					<template #label><SearchLabel>{{ i18n.ts.useSoundOnlyWhenActive }}</SearchLabel></template>
+				</MkSwitch>
+			</MkPreferenceContainer>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['volume', 'master']">
-			<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
-				<template #label><SearchLabel>{{ i18n.ts.masterVolume }}</SearchLabel></template>
-			</MkRange>
+			<MkPreferenceContainer k="sound.masterVolume">
+				<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
+					<template #label><SearchLabel>{{ i18n.ts.masterVolume }}</SearchLabel></template>
+				</MkRange>
+			</MkPreferenceContainer>
 		</SearchMarker>
 
 		<FormSection>
@@ -62,6 +68,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { operationTypes } from '@/scripts/sound.js';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
 const notUseSound = prefer.model('sound.notUseSound');
 const useSoundOnlyWhenActive = prefer.model('sound.useSoundOnlyWhenActive');
