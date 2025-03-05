@@ -415,6 +415,8 @@ class ProfileManager {
 		}
 
 		this.prefer = new Preferences(data, (key, v) => {
+			console.log('set', key, v);
+
 			const hasAccountOverride = $i != null && this.profile.accountOverrides[`${host}/${$i.id}`] != null && this.profile.accountOverrides[`${host}/${$i.id}`][key] !== undefined;
 
 			if (hasAccountOverride) {
@@ -486,3 +488,8 @@ export const profileManager = new ProfileManager(currentProfile, (p) => {
 	miLocalStorage.setItem(`preferences:${p.id}`, JSON.stringify(p));
 });
 export const prefer = profileManager.prefer;
+
+if (_DEV_) {
+	(window as any).profileManager = profileManager;
+	(window as any).prefer = prefer;
+}

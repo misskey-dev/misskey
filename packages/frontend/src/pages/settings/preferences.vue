@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder>
 						<template #label><SearchLabel>{{ i18n.ts.pinnedList }}</SearchLabel></template>
 						<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
-						<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
+						<MkButton v-if="prefer.r.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
 						<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 					</MkFolder>
 				</SearchMarker>
@@ -278,7 +278,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import * as Misskey from 'misskey-js';
 import { langs } from '@@/js/config.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -292,7 +291,6 @@ import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
-import { instance } from '@/instance.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
@@ -402,12 +400,13 @@ async function setPinnedList() {
 		})),
 	});
 	if (canceled) return;
+	if (list == null) return;
 
-	defaultStore.set('pinnedUserLists', [list]);
+	prefer.set('pinnedUserLists', [list]);
 }
 
 function removePinnedList() {
-	defaultStore.set('pinnedUserLists', []);
+	prefer.set('pinnedUserLists', []);
 }
 
 function enableAllDataSaver() {
