@@ -46,8 +46,6 @@ jobs:
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.1.0
-      with:
-        run_install: false
     - name: Install FFmpeg
       run: |
         for i in {1..3}; do
@@ -110,8 +108,6 @@ jobs:
           submodules: true
       - name: Setup pnpm
         uses: pnpm/action-setup@v4.1.0
-        with:
-          run_install: false
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.2.0
         with:

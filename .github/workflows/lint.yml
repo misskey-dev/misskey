@@ -38,8 +38,6 @@ jobs:
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.1.0
-      with:
-        run_install: false
     - uses: actions/setup-node@v4.2.0
       with:
         node-version-file: '.node-version'
@@ -71,8 +69,6 @@ jobs:
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.1.0
-      with:
-        run_install: false
     - uses: actions/setup-node@v4.2.0
       with:
         node-version-file: '.node-version'
@@ -103,8 +99,6 @@ jobs:
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.1.0
-      with:
-        run_install: false
     - uses: actions/setup-node@v4.2.0
       with:
         node-version-file: '.node-version'

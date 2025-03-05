@@ -42,8 +42,6 @@ jobs:
         git checkout $(git rev-list --parents -n1 HEAD | cut -d" " -f3)
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.1.0
-      with:
-        run_install: false
     - name: Use Node.js 20.x
       uses: actions/setup-node@v4.2.0
       with:
