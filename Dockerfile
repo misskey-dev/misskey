@@ -29,7 +29,7 @@ COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bu
 
 ARG NODE_ENV=production
 
-RUN jq -r '.packageManager' package.json | xargs -p npm install -g
+RUN jq -r '.packageManager' package.json | xargs npm install -g
 
 RUN npm install -g pnpm
 
@@ -61,7 +61,7 @@ COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bu
 
 ARG NODE_ENV=production
 
-RUN jq -r '.packageManager' package.json | xargs -p npm install -g
+RUN jq -r '.packageManager' package.json | xargs npm install -g
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm i --frozen-lockfile --aggregate-output
