@@ -15,10 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { profileManager } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
@@ -27,37 +24,7 @@ const props = withDefaults(defineProps<{
 });
 
 function showMenu(ev: MouseEvent) {
-	const overrideByAccount = ref(profileManager.isAccountOverrided(props.k));
-
-	watch(overrideByAccount, () => {
-		if (overrideByAccount.value) {
-			profileManager.setAccountOverride(props.k);
-		} else {
-			profileManager.clearAccountOverride(props.k);
-		}
-	});
-
-	os.popupMenu([{
-		icon: 'ti ti-copy',
-		text: i18n.ts.copyPreferenceId,
-		action: () => {
-			copyToClipboard(props.k);
-		},
-	}, {
-		icon: 'ti ti-refresh',
-		text: i18n.ts.resetToDefaultValue,
-		danger: true,
-		action: () => {
-			// TODO
-		},
-	}, {
-		type: 'divider',
-	}, {
-		type: 'switch',
-		icon: 'ti ti-user-cog',
-		text: i18n.ts.overrideByAccount,
-		ref: overrideByAccount,
-	}], ev.currentTarget ?? ev.target);
+	os.popupMenu(profileManager.getPerPrefMenu(props.k), ev.currentTarget ?? ev.target);
 }
 </script>
 

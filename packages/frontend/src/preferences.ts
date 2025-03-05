@@ -8,9 +8,12 @@ import { v4 as uuid } from 'uuid';
 import * as Misskey from 'misskey-js';
 import { host, version } from '@@/js/config.js';
 import { $i } from './account.js';
+import { copyToClipboard } from './scripts/copy-to-clipboard.js';
+import { i18n } from './i18n.js';
 import type { Ref, WritableComputedRef } from 'vue';
 import type { Theme } from '@/scripts/theme.js';
 import type { SoundType } from '@/scripts/sound.js';
+import type { MenuItem } from './types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
 
@@ -478,6 +481,40 @@ class ProfileManager {
 		}
 
 		this.save();
+	}
+
+	public getPerPrefMenu<K extends keyof PREF>(key: K): MenuItem[] {
+		const overrideByAccount = ref(this.isAccountOverrided(key));
+
+		watch(overrideByAccount, () => {
+			if (overrideByAccount.value) {
+				this.setAccountOverride(key);
+			} else {
+				this.clearAccountOverride(key);
+			}
+		});
+
+		return [{
+			icon: 'ti ti-copy',
+			text: i18n.ts.copyPreferenceId,
+			action: () => {
+				copyToClipboard(key);
+			},
+		}, {
+			icon: 'ti ti-refresh',
+			text: i18n.ts.resetToDefaultValue,
+			danger: true,
+			action: () => {
+				// TODO
+			},
+		}, {
+			type: 'divider',
+		}, {
+			type: 'switch',
+			icon: 'ti ti-user-cog',
+			text: i18n.ts.overrideByAccount,
+			ref: overrideByAccount,
+		}];
 	}
 }
 

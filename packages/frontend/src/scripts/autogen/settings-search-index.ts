@@ -57,12 +57,12 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['mute'],
 			},
 			{
-				id: 'xy5OOBB4A',
+				id: 'oALW4ja7U',
 				label: i18n.ts.useSoundOnlyWhenActive,
 				keywords: ['active', 'mute'],
 			},
 			{
-				id: '9MxYVIf7k',
+				id: 'BbJK2SKT2',
 				label: i18n.ts.masterVolume,
 				keywords: ['volume', 'master'],
 			},
