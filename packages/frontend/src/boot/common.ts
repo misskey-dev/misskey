@@ -16,7 +16,7 @@ import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { updateI18n, i18n } from '@/i18n.js';
 import { $i, refreshAccount, login } from '@/account.js';
-import { defaultStore, ColdDeviceStorage } from '@/store.js';
+import { defaultStore } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind, updateDeviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';

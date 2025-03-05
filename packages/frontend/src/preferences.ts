@@ -6,7 +6,8 @@
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import * as Misskey from 'misskey-js';
-import { version } from '@@/js/config.js';
+import { host, version } from '@@/js/config.js';
+import { $i } from './account.js';
 import type { Ref, WritableComputedRef } from 'vue';
 import type { Theme } from '@/scripts/theme.js';
 import type { SoundType } from '@/scripts/sound.js';
@@ -309,31 +310,19 @@ type PreferencesProfile = {
 	preferences: {
 		[K in keyof PREF]?: ValueOf<K>;
 	};
+	// 将来的にマルチサーバー対応した場合のため
+	serverOverrides: Record<string, { // key is <host>
+		[K in keyof PREF]?: ValueOf<K>;
+	}>;
+	accountOverrides: Record<string, { // key is <host>/<userId>
+		[K in keyof PREF]?: ValueOf<K>;
+	}>;
 };
-
-function newProfile(): PreferencesProfile {
-	return {
-		id: uuid(),
-		version: version,
-		type: 'main',
-		modifiedAt: Date.now(),
-		name: '',
-		preferences: {},
-	};
-}
-
-const preferencesProfileId = miLocalStorage.getItem('preferencesProfileId');
-const currentProfileRaw = preferencesProfileId ? miLocalStorage.getItem(`preferences:${preferencesProfileId}`) : null;
-const currentProfile = currentProfileRaw ? JSON.parse(currentProfileRaw) as PreferencesProfile : newProfile();
-if (currentProfileRaw == null) {
-	miLocalStorage.setItem(`preferences:${currentProfile.id}`, JSON.stringify(currentProfile));
-	miLocalStorage.setItem('preferencesProfileId', currentProfile.id);
-}
 
 // TODO: タブ間で同期
 
 class Preferences {
-	public save: (preferences: { [K in keyof PREF]: ValueOf<K> }) => void;
+	public save: <K extends keyof PREF>(key: K, value: ValueOf<K>) => void;
 
 	/**
 	 * static の略 (static が予約語のため)
@@ -349,11 +338,11 @@ class Preferences {
 		[K in keyof PREF]: Ref<ValueOf<K>>;
 	};
 
-	constructor(preferences: { [K in keyof PREF]?: ValueOf<K> }, save: Preferences['save']) {
+	constructor(data: { [K in keyof PREF]: ValueOf<K> }, save: Preferences['save']) {
 		this.save = save;
 
-		for (const key in PREF_DEF) {
-			this.s[key] = preferences[key] ?? PREF_DEF[key]['default'];
+		for (const key in data) {
+			this.s[key] = data[key];
 			this.r[key] = ref(this.s[key]);
 		}
 	}
@@ -361,7 +350,7 @@ class Preferences {
 	public set<K extends keyof PREF>(key: K, value: ValueOf<K>) {
 		this.r[key].value = this.s[key] = value;
 
-		this.save(this.s);
+		this.save(key, value);
 	}
 
 	/**
@@ -402,8 +391,88 @@ class Preferences {
 	}
 }
 
-export const prefer = new Preferences(currentProfile.preferences, (preferences) => {
-	currentProfile.preferences = preferences;
-	currentProfile.modifiedAt = Date.now();
+class ProfileManager {
+	private write: (profile: PreferencesProfile) => void;
+	public profile: PreferencesProfile;
+	public prefer: Preferences;
+
+	constructor(profile: PreferencesProfile, write: ProfileManager['write']) {
+		this.profile = profile;
+		this.write = write;
+
+		const data = {} as { [K in keyof PREF]: ValueOf<K> };
+		for (const key in PREF_DEF) {
+			// NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
+
+			const hasAccountOverride = $i != null && this.profile.accountOverrides[`${host}/${$i.id}`] != null && this.profile.accountOverrides[`${host}/${$i.id}`][key] !== undefined;
+			data[key] = hasAccountOverride
+				? this.profile.accountOverrides[`${host}/${$i!.id}`][key]
+				: this.profile.preferences[key] !== undefined
+					? this.profile.preferences[key]
+					: PREF_DEF[key].default;
+		}
+
+		this.prefer = new Preferences(data, (key, v) => {
+			const hasAccountOverride = $i != null && this.profile.accountOverrides[`${host}/${$i.id}`] != null && this.profile.accountOverrides[`${host}/${$i.id}`][key] !== undefined;
+			if (hasAccountOverride) {
+				this.profile.accountOverrides[`${host}/${$i!.id}`][key] = v;
+			} else {
+				this.profile.preferences[key] = v;
+			}
+			this.save();
+		});
+	}
+
+	public static newProfile(): PreferencesProfile {
+		return {
+			id: uuid(),
+			version: version,
+			type: 'main',
+			modifiedAt: Date.now(),
+			name: '',
+			preferences: {},
+			serverOverrides: {},
+			accountOverrides: {},
+		};
+	}
+
+	public save() {
+		this.profile.modifiedAt = Date.now();
+		this.profile.version = version;
+		this.write(this.profile);
+	}
+
+	public setAccountOverride<K extends keyof PREF>(key: K) {
+		if ($i == null) return;
+
+		if (this.profile.accountOverrides[`${host}/${$i.id}`] == null) {
+			this.profile.accountOverrides[`${host}/${$i.id}`] = {};
+		}
+
+		this.profile.accountOverrides[`${host}/${$i.id}`][key] = this.profile.preferences[key] !== undefined ? this.profile.preferences[key] : PREF_DEF[key].default;
+		this.save();
+	}
+
+	public clearAccountOverride<K extends keyof PREF>(key: K) {
+		if ($i == null) return;
+
+		if (this.profile.accountOverrides[`${host}/${$i.id}`] != null) {
+			delete this.profile.accountOverrides[`${host}/${$i.id}`][key];
+		}
+
+		this.save();
+	}
+}
+
+const preferencesProfileId = miLocalStorage.getItem('preferencesProfileId');
+const currentProfileRaw = preferencesProfileId ? miLocalStorage.getItem(`preferences:${preferencesProfileId}`) : null;
+const currentProfile = currentProfileRaw ? JSON.parse(currentProfileRaw) as PreferencesProfile : ProfileManager.newProfile();
+if (currentProfileRaw == null) {
 	miLocalStorage.setItem(`preferences:${currentProfile.id}`, JSON.stringify(currentProfile));
+	miLocalStorage.setItem('preferencesProfileId', currentProfile.id);
+}
+
+export const profileManager = new ProfileManager(currentProfile, (p) => {
+	miLocalStorage.setItem(`preferences:${p.id}`, JSON.stringify(p));
 });
+export const prefer = profileManager.prefer;
