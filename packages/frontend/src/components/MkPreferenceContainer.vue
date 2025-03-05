@@ -67,6 +67,18 @@ function showMenu(ev: MouseEvent) {
 	display: flex;
 
 	&:hover {
+		&::after {
+			content: '';
+			position: absolute;
+			top: -8px;
+			left: -8px;
+			width: calc(100% + 16px);
+			height: calc(100% + 16px);
+			border-radius: 8px;
+			background: light-dark(rgba(0, 0, 0, 0.02), rgba(255, 255, 255, 0.02));
+			pointer-events: none;
+		}
+
 		.menu {
 			opacity: 0.7;
 		}
