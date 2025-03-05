@@ -18,6 +18,76 @@ import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
 //	[K in keyof T as K extends string ? K extends `${infer A}.${infer B}` ? A : K : K]: K extends `${infer A}.${infer B}` ? DottedToNested<{ [key in B]: T[K] }> : T[K];
 //};
 
+class Preferences<Data extends Record<string, any>> {
+	public save: <K extends keyof Data>(key: K, value: Data[K]) => void;
+
+	/**
+	 * static の略 (static が予約語のため)
+	 */
+	public s = {} as {
+		[K in keyof Data]: Data[K];
+	};
+
+	/**
+	 * reactive の略
+	 */
+	public r = {} as {
+		[K in keyof Data]: Ref<Data[K]>;
+	};
+
+	constructor(data: { [K in keyof Data]: Data[K] }, save: Preferences<Data>['save']) {
+		this.save = save;
+
+		for (const key in data) {
+			this.s[key] = data[key];
+			this.r[key] = ref(this.s[key]);
+		}
+	}
+
+	public set<K extends keyof Data>(key: K, value: Data[K]) {
+		this.r[key].value = this.s[key] = value;
+
+		this.save(key, value);
+	}
+
+	/**
+	 * 特定のキーの、簡易的なcomputed refを作ります
+	 * 主にvue上で設定コントロールのmodelとして使う用
+	 */
+	public model<K extends keyof Data, V extends Data[K] = Data[K]>(
+		key: K,
+		getter?: (v: Data[K]) => V,
+		setter?: (v: V) => Data[K],
+	): WritableComputedRef<V> {
+		const valueRef = ref(this.s[key]);
+
+		const stop = watch(this.r[key], val => {
+			valueRef.value = val;
+		});
+
+		// NOTE: vueコンポーネント内で呼ばれない限りは、onUnmounted は無意味なのでメモリリークする
+		onUnmounted(() => {
+			stop();
+		});
+
+		// TODO: VueのcustomRef使うと良い感じになるかも
+		return computed({
+			get: () => {
+				if (getter) {
+					return getter(valueRef.value);
+				} else {
+					return valueRef.value;
+				}
+			},
+			set: (value) => {
+				const val = setter ? setter(value) : value;
+				this.set(key, val);
+				valueRef.value = val;
+			},
+		});
+	}
+}
+
 // TODO: accountDependent考慮
 // TODO: lazyLoad機能？(ColdDeviceStorage代替)
 
@@ -293,10 +363,9 @@ export const PREF_DEF = {
 		default: true,
 	},
 	'deck.columnAlign': {
-		where: 'deviceAccount',
 		default: 'left' as 'left' | 'right' | 'center',
 	},
-};
+} satisfies Record<string, { default: any, accountDependent?: boolean }>;
 
 type PREF = typeof PREF_DEF;
 type ValueOf<K extends keyof PREF> = PREF[K]['default'];
@@ -321,80 +390,12 @@ type PreferencesProfile = {
 
 // TODO: タブ間で同期
 
-class Preferences {
-	public save: <K extends keyof PREF>(key: K, value: ValueOf<K>) => void;
-
-	/**
-	 * static の略 (static が予約語のため)
-	 */
-	public s = {} as {
-		[K in keyof PREF]: ValueOf<K>;
-	};
-
-	/**
-	 * reactive の略
-	 */
-	public r = {} as {
-		[K in keyof PREF]: Ref<ValueOf<K>>;
-	};
-
-	constructor(data: { [K in keyof PREF]: ValueOf<K> }, save: Preferences['save']) {
-		this.save = save;
-
-		for (const key in data) {
-			this.s[key] = data[key];
-			this.r[key] = ref(this.s[key]);
-		}
-	}
-
-	public set<K extends keyof PREF>(key: K, value: ValueOf<K>) {
-		this.r[key].value = this.s[key] = value;
-
-		this.save(key, value);
-	}
-
-	/**
-	 * 特定のキーの、簡易的なcomputed refを作ります
-	 * 主にvue上で設定コントロールのmodelとして使う用
-	 */
-	public model<K extends keyof PREF, V = ValueOf<K>>(
-		key: K,
-		getter?: (v: ValueOf<K>) => V,
-		setter?: (v: V) => ValueOf<K>,
-	): WritableComputedRef<V> {
-		const valueRef = ref(this.s[key]);
-
-		const stop = watch(this.r[key], val => {
-			valueRef.value = val;
-		});
-
-		// NOTE: vueコンポーネント内で呼ばれない限りは、onUnmounted は無意味なのでメモリリークする
-		onUnmounted(() => {
-			stop();
-		});
-
-		// TODO: VueのcustomRef使うと良い感じになるかも
-		return computed({
-			get: () => {
-				if (getter) {
-					return getter(valueRef.value);
-				} else {
-					return valueRef.value;
-				}
-			},
-			set: (value) => {
-				const val = setter ? setter(value) : value;
-				this.set(key, val);
-				valueRef.value = val;
-			},
-		});
-	}
-}
-
 class ProfileManager {
 	private write: (profile: PreferencesProfile) => void;
 	public profile: PreferencesProfile;
-	public prefer: Preferences;
+	public prefer: Preferences<{
+		[K in keyof PREF]: ValueOf<K>;
+	}>;
 
 	constructor(profile: PreferencesProfile, write: ProfileManager['write']) {
 		this.profile = profile;
@@ -405,6 +406,7 @@ class ProfileManager {
 			// NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
 
 			const hasAccountOverride = $i != null && this.profile.accountOverrides[`${host}/${$i.id}`] != null && this.profile.accountOverrides[`${host}/${$i.id}`][key] !== undefined;
+
 			data[key] = hasAccountOverride
 				? this.profile.accountOverrides[`${host}/${$i!.id}`][key]
 				: this.profile.preferences[key] !== undefined
@@ -414,8 +416,14 @@ class ProfileManager {
 
 		this.prefer = new Preferences(data, (key, v) => {
 			const hasAccountOverride = $i != null && this.profile.accountOverrides[`${host}/${$i.id}`] != null && this.profile.accountOverrides[`${host}/${$i.id}`][key] !== undefined;
+
 			if (hasAccountOverride) {
 				this.profile.accountOverrides[`${host}/${$i!.id}`][key] = v;
+			} else if ($i != null && PREF_DEF[key].accountDependent) {
+				if (this.profile.accountOverrides[`${host}/${$i.id}`] == null) {
+					this.profile.accountOverrides[`${host}/${$i.id}`] = {};
+				}
+				this.profile.accountOverrides[`${host}/${$i.id}`][key] = v;
 			} else {
 				this.profile.preferences[key] = v;
 			}
@@ -444,6 +452,7 @@ class ProfileManager {
 
 	public setAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
+		if (PREF_DEF[key].accountDependent) throw new Error('already account-dependent');
 
 		if (this.profile.accountOverrides[`${host}/${$i.id}`] == null) {
 			this.profile.accountOverrides[`${host}/${$i.id}`] = {};
@@ -455,6 +464,7 @@ class ProfileManager {
 
 	public clearAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
+		if (PREF_DEF[key].accountDependent) throw new Error('cannot clear override for this account-dependent property');
 
 		if (this.profile.accountOverrides[`${host}/${$i.id}`] != null) {
 			delete this.profile.accountOverrides[`${host}/${$i.id}`][key];
