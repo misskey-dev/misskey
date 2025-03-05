@@ -25,6 +25,7 @@ import { mainRouter } from '@/router/main.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => {
@@ -138,10 +139,14 @@ export async function mainBoot() {
 	}
 
 	if ($i) {
-		defaultStore.loaded.then(() => {
+		defaultStore.loaded.then(async () => {
 			// prefereces migration
 			// TODO: そのうち消す
 			if (defaultStore.state.menu.length > 0) {
+				const themes = await misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []);
+				if (themes.length > 0) {
+					miLocalStorage.setItem('themes', JSON.stringify(themes));
+				}
 				prefer.set('lightTheme', ColdDeviceStorage.get('lightTheme'));
 				prefer.set('darkTheme', ColdDeviceStorage.get('darkTheme'));
 				prefer.set('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
