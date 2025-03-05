@@ -33,9 +33,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormSection>
 			<div class="_gaps_s">
 				<SearchMarker :keywords="['post', 'form', 'timeline']">
-					<MkSwitch v-model="showFixedPostForm">
-						<template #label><SearchLabel>{{ i18n.ts.showFixedPostForm }}</SearchLabel></template>
-					</MkSwitch>
+					<MkPreferenceContainer k="showFixedPostForm">
+						<MkSwitch v-model="showFixedPostForm">
+							<template #label><SearchLabel>{{ i18n.ts.showFixedPostForm }}</SearchLabel></template>
+						</MkSwitch>
+					</MkPreferenceContainer>
 				</SearchMarker>
 
 				<SearchMarker :keywords="['post', 'form', 'timeline', 'channel']">
@@ -297,6 +299,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);

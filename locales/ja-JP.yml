@@ -1316,6 +1316,9 @@ unmarkAsSensitiveConfirm: "このメディアのセンシティブ指定を解�
 preferences: "環境設定"
 accessibility: "アクセシビリティ"
 preferencesProfile: "設定のプロファイル"
+copyPreferenceId: "設定IDをコピー"
+resetToDefaultValue: "初期値に戻す"
+overrideByAccount: "アカウントで上書き"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"

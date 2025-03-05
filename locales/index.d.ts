@@ -5282,6 +5282,18 @@ export interface Locale extends ILocale {
      * 設定のプロファイル
      */
     "preferencesProfile": string;
+    /**
+     * 設定IDをコピー
+     */
+    "copyPreferenceId": string;
+    /**
+     * 初期値に戻す
+     */
+    "resetToDefaultValue": string;
+    /**
+     * アカウントで上書き
+     */
+    "overrideByAccount": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

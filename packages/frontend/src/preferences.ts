@@ -452,6 +452,11 @@ class ProfileManager {
 		this.write(this.profile);
 	}
 
+	public isAccountOverrided<K extends keyof PREF>(key: K): boolean {
+		if ($i == null) return false;
+		return this.profile.accountOverrides[`${host}/${$i.id}`] != null && this.profile.accountOverrides[`${host}/${$i.id}`][key] !== undefined;
+	}
+
 	public setAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
 		if (PREF_DEF[key].accountDependent) throw new Error('already account-dependent');
