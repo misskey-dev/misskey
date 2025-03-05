@@ -52,7 +52,8 @@ import { computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
 import type { Ref } from 'vue';
 import type { SoundType, OperationType } from '@/scripts/sound.js';
-import type { SoundStore } from '@/store.js';
+import type { SoundStore } from '@/preferences.js';
+import { PREF_DEF, prefer } from '@/preferences.js';
 import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
@@ -60,18 +61,17 @@ import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { operationTypes } from '@/scripts/sound.js';
-import { defaultStore } from '@/store.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 
-const notUseSound = computed(defaultStore.makeGetterSetter('sound_notUseSound'));
-const useSoundOnlyWhenActive = computed(defaultStore.makeGetterSetter('sound_useSoundOnlyWhenActive'));
-const masterVolume = computed(defaultStore.makeGetterSetter('sound_masterVolume'));
+const notUseSound = prefer.model('sound.notUseSound');
+const useSoundOnlyWhenActive = prefer.model('sound.useSoundOnlyWhenActive');
+const masterVolume = prefer.model('sound.masterVolume');
 
 const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
-	note: defaultStore.reactiveState.sound_note,
-	noteMy: defaultStore.reactiveState.sound_noteMy,
-	notification: defaultStore.reactiveState.sound_notification,
-	reaction: defaultStore.reactiveState.sound_reaction,
+	note: prefer.r['sound.on.note'],
+	noteMy: prefer.r['sound.on.noteMy'],
+	notification: prefer.r['sound.on.notification'],
+	reaction: prefer.r['sound.on.reaction'],
 });
 
 function getSoundTypeName(f: SoundType): string {
@@ -93,14 +93,14 @@ async function updated(type: keyof typeof sounds.value, sound) {
 		volume: sound.volume,
 	};
 
-	defaultStore.set(`sound_${type}`, v);
+	prefer.set(`sound.on.${type}`, v);
 	sounds.value[type] = v;
 }
 
 function reset() {
 	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
-		const v = defaultStore.def[`sound_${sound}`].default;
-		defaultStore.set(`sound_${sound}`, v);
+		const v = PREF_DEF[`sound.on.${sound}`].default;
+		prefer.set(`sound.on.${sound}`, v);
 		sounds.value[sound] = v;
 	}
 }

@@ -9,10 +9,31 @@ import * as Misskey from 'misskey-js';
 import { version } from '@@/js/config.js';
 import type { Ref, WritableComputedRef } from 'vue';
 import type { Theme } from '@/scripts/theme.js';
+import type { SoundType } from '@/scripts/sound.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
 
+//type DottedToNested<T extends Record<string, any>> = {
+//	[K in keyof T as K extends string ? K extends `${infer A}.${infer B}` ? A : K : K]: K extends `${infer A}.${infer B}` ? DottedToNested<{ [key in B]: T[K] }> : T[K];
+//};
+
 // TODO: accountDependent考慮
+
+/** サウンド設定 */
+export type SoundStore = {
+	type: Exclude<SoundType, '_driveFile_'>;
+	volume: number;
+} | {
+	type: '_driveFile_';
+
+	/** ドライブのファイルID */
+	fileId: string;
+
+	/** ファイルURL（こちらが優先される） */
+	fileUrl: string;
+
+	volume: number;
+};
 
 export const PREF_DEF = {
 	pinnedUserLists: {
@@ -229,6 +250,40 @@ export const PREF_DEF = {
 	},
 	confirmOnReact: {
 		default: false,
+	},
+	'sound.masterVolume': {
+		default: 0.3,
+	},
+	'sound.notUseSound': {
+		default: false,
+	},
+	'sound.useSoundOnlyWhenActive': {
+		default: false,
+	},
+	'sound.on.note': {
+		default: { type: 'syuilo/n-aec', volume: 1 } as SoundStore,
+	},
+	'sound.on.noteMy': {
+		default: { type: 'syuilo/n-cea-4va', volume: 1 } as SoundStore,
+	},
+	'sound.on.notification': {
+		default: { type: 'syuilo/n-ea', volume: 1 } as SoundStore,
+	},
+	'sound.on.reaction': {
+		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
+	},
+	'deck.alwaysShowMainColumn': {
+		default: true,
+	},
+	'deck.navWindow': {
+		default: true,
+	},
+	'deck.useSimpleUiForNonRootPages': {
+		default: true,
+	},
+	'deck.columnAlign': {
+		where: 'deviceAccount',
+		default: 'left' as 'left' | 'right' | 'center',
 	},
 };
 

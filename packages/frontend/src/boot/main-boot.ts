@@ -20,7 +20,6 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
 import { initializeSw } from '@/scripts/initialize-sw.js';
-import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
@@ -35,7 +34,7 @@ export async function mainBoot() {
 		if (!$i) uiStyle = 'visitor';
 
 		if (searchParams.has('zen')) uiStyle = 'zen';
-		if (uiStyle === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') uiStyle = 'zen';
+		if (uiStyle === 'deck' && prefer.s['deck.useSimpleUiForNonRootPages'] && location.pathname !== '/') uiStyle = 'zen';
 
 		if (searchParams.has('ui')) uiStyle = searchParams.get('ui');
 
@@ -205,6 +204,13 @@ export async function mainBoot() {
 				prefer.set('skipNoteRender', defaultStore.state.skipNoteRender);
 				prefer.set('showSoftWordMutedWord', defaultStore.state.showSoftWordMutedWord);
 				prefer.set('confirmOnReact', defaultStore.state.confirmOnReact);
+				prefer.set('sound.masterVolume', defaultStore.state.sound_masterVolume);
+				prefer.set('sound.notUseSound', defaultStore.state.sound_notUseSound);
+				prefer.set('sound.useSoundOnlyWhenActive', defaultStore.state.sound_useSoundOnlyWhenActive);
+				prefer.set('sound.on.note', defaultStore.state.sound_note as any);
+				prefer.set('sound.on.noteMy', defaultStore.state.sound_noteMy as any);
+				prefer.set('sound.on.notification', defaultStore.state.sound_notification as any);
+				prefer.set('sound.on.reaction', defaultStore.state.sound_reaction as any);
 				defaultStore.set('menu', []);
 			}
 

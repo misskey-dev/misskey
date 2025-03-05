@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.main">
 		<XAnnouncements v-if="$i"/>
 		<XStatusBars/>
-		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
+		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: prefer.r['deck.columnAlign'].value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
 			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 			<section
 				v-for="ids in layout"
@@ -137,7 +137,7 @@ const columnComponents = {
 mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;
 	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
-	if (deckStore.state.navWindow || noMainColumn) {
+	if (prefer.s['deck.navWindow'] || noMainColumn) {
 		os.pageWindow(path);
 		return true;
 	}
