@@ -489,6 +489,34 @@ export const profileManager = new ProfileManager(currentProfile, (p) => {
 });
 export const prefer = profileManager.prefer;
 
+export function exportCurrentProfile() {
+	const p = profileManager.profile;
+	const txtBlob = new Blob([JSON.stringify(p)], { type: 'text/plain' });
+	const dummya = document.createElement('a');
+	dummya.href = URL.createObjectURL(txtBlob);
+	dummya.download = `${p.id}.misskeypreferences`;
+	dummya.click();
+}
+
+export function importProfile() {
+	const input = document.createElement('input');
+	input.type = 'file';
+	input.accept = '.misskeypreferences';
+	input.onchange = async () => {
+		if (input.files == null || input.files.length === 0) return;
+
+		const file = input.files[0];
+		const txt = await file.text();
+		const profile = JSON.parse(txt) as PreferencesProfile;
+
+		miLocalStorage.setItem(`preferences:${profile.id}`, JSON.stringify(profile));
+		miLocalStorage.setItem('preferencesProfileId', profile.id);
+		location.reload();
+	};
+
+	input.click();
+}
+
 if (_DEV_) {
 	(window as any).profileManager = profileManager;
 	(window as any).prefer = prefer;

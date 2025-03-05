@@ -5278,6 +5278,10 @@ export interface Locale extends ILocale {
      * アクセシビリティ
      */
     "accessibility": string;
+    /**
+     * 設定のプロファイル
+     */
+    "preferencesProfile": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

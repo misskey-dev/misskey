@@ -1315,6 +1315,7 @@ markAsSensitiveConfirm: "このメディアをセンシティブとして設定�
 unmarkAsSensitiveConfirm: "このメディアのセンシティブ指定を解除しますか？"
 preferences: "環境設定"
 accessibility: "アクセシビリティ"
+preferencesProfile: "設定のプロファイル"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"

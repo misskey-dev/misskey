@@ -41,6 +41,7 @@ import { definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } 
 import * as os from '@/os.js';
 import { useRouter } from '@/router/supplier.js';
 import { searchIndexes } from '@/scripts/autogen/settings-search-index.js';
+import { exportCurrentProfile, importProfile } from '@/preferences.js';
 
 const SETTING_INDEX = searchIndexes; // TODO: lazy load
 
@@ -168,10 +169,24 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 	}],
 }, {
 	items: [{
-		icon: 'ti ti-device-floppy',
-		text: i18n.ts.preferencesBackups,
-		to: '/settings/preferences-backups',
-		active: currentPage.value?.route.name === 'preferences-backups',
+		type: 'button',
+		icon: 'ti ti-settings-2',
+		text: i18n.ts.preferencesProfile,
+		action: async (ev: MouseEvent) => {
+			os.popupMenu([{
+				text: i18n.ts.export,
+				icon: 'ti ti-download',
+				action: () => {
+					exportCurrentProfile();
+				},
+			}, {
+				text: i18n.ts.import,
+				icon: 'ti ti-upload',
+				action: () => {
+					importProfile();
+				},
+			}], ev.currentTarget ?? ev.target);
+		},
 	}, {
 		type: 'button',
 		icon: 'ti ti-trash',
