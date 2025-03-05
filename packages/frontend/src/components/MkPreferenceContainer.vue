@@ -67,17 +67,8 @@ function showMenu(ev: MouseEvent) {
 	display: flex;
 
 	&:hover {
-		&::after {
-			content: '';
-			position: absolute;
-			top: -8px;
-			left: -8px;
-			width: calc(100% + 16px);
-			height: calc(100% + 16px);
-			border-radius: 8px;
-			border: 1px solid var(--MI_THEME-divider);
+		.menu {
 			opacity: 0.7;
-			pointer-events: none;
 		}
 	}
 
@@ -89,7 +80,7 @@ function showMenu(ev: MouseEvent) {
 		align-content: center;
 		margin-left: 12px;
 		font-size: 12px;
-		opacity: 0.7;
+		opacity: 0.3;
 
 		&:hover {
 			opacity: 1;
