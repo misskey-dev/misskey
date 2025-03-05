@@ -140,6 +140,74 @@ export async function mainBoot() {
 
 	if ($i) {
 		defaultStore.loaded.then(() => {
+			// prefereces migration
+			// TODO: そのうち消す
+			if (defaultStore.state.menu.length > 0) {
+				prefer.set('keepCw', defaultStore.state.keepCw);
+				prefer.set('collapseRenotes', defaultStore.state.collapseRenotes);
+				prefer.set('rememberNoteVisibility', defaultStore.state.rememberNoteVisibility);
+				prefer.set('uploadFolder', defaultStore.state.uploadFolder);
+				prefer.set('keepOriginalUploading', defaultStore.state.keepOriginalUploading);
+				prefer.set('menu', defaultStore.state.menu);
+				prefer.set('statusbars', defaultStore.state.statusbars);
+				prefer.set('pinnedUserLists', defaultStore.state.pinnedUserLists);
+				prefer.set('serverDisconnectedBehavior', defaultStore.state.serverDisconnectedBehavior);
+				prefer.set('nsfw', defaultStore.state.nsfw);
+				prefer.set('highlightSensitiveMedia', defaultStore.state.highlightSensitiveMedia);
+				prefer.set('animation', defaultStore.state.animation);
+				prefer.set('animatedMfm', defaultStore.state.animatedMfm);
+				prefer.set('advancedMfm', defaultStore.state.advancedMfm);
+				prefer.set('showReactionsCount', defaultStore.state.showReactionsCount);
+				prefer.set('enableQuickAddMfmFunction', defaultStore.state.enableQuickAddMfmFunction);
+				prefer.set('loadRawImages', defaultStore.state.loadRawImages);
+				prefer.set('imageNewTab', defaultStore.state.imageNewTab);
+				prefer.set('disableShowingAnimatedImages', defaultStore.state.disableShowingAnimatedImages);
+				prefer.set('emojiStyle', defaultStore.state.emojiStyle);
+				prefer.set('menuStyle', defaultStore.state.menuStyle);
+				prefer.set('useBlurEffectForModal', defaultStore.state.useBlurEffectForModal);
+				prefer.set('useBlurEffect', defaultStore.state.useBlurEffect);
+				prefer.set('showFixedPostForm', defaultStore.state.showFixedPostForm);
+				prefer.set('showFixedPostFormInChannel', defaultStore.state.showFixedPostFormInChannel);
+				prefer.set('enableInfiniteScroll', defaultStore.state.enableInfiniteScroll);
+				prefer.set('useReactionPickerForContextMenu', defaultStore.state.useReactionPickerForContextMenu);
+				prefer.set('showGapBetweenNotesInTimeline', defaultStore.state.showGapBetweenNotesInTimeline);
+				prefer.set('instanceTicker', defaultStore.state.instanceTicker);
+				prefer.set('emojiPickerScale', defaultStore.state.emojiPickerScale);
+				prefer.set('emojiPickerWidth', defaultStore.state.emojiPickerWidth);
+				prefer.set('emojiPickerHeight', defaultStore.state.emojiPickerHeight);
+				prefer.set('emojiPickerStyle', defaultStore.state.emojiPickerStyle);
+				prefer.set('reportError', defaultStore.state.reportError);
+				prefer.set('squareAvatars', defaultStore.state.squareAvatars);
+				prefer.set('showAvatarDecorations', defaultStore.state.showAvatarDecorations);
+				prefer.set('numberOfPageCache', defaultStore.state.numberOfPageCache);
+				prefer.set('showNoteActionsOnlyHover', defaultStore.state.showNoteActionsOnlyHover);
+				prefer.set('showClipButtonInNoteFooter', defaultStore.state.showClipButtonInNoteFooter);
+				prefer.set('reactionsDisplaySize', defaultStore.state.reactionsDisplaySize);
+				prefer.set('limitWidthOfReaction', defaultStore.state.limitWidthOfReaction);
+				prefer.set('forceShowAds', defaultStore.state.forceShowAds);
+				prefer.set('aiChanMode', defaultStore.state.aiChanMode);
+				prefer.set('devMode', defaultStore.state.devMode);
+				prefer.set('mediaListWithOneImageAppearance', defaultStore.state.mediaListWithOneImageAppearance);
+				prefer.set('notificationPosition', defaultStore.state.notificationPosition);
+				prefer.set('notificationStackAxis', defaultStore.state.notificationStackAxis);
+				prefer.set('enableCondensedLine', defaultStore.state.enableCondensedLine);
+				prefer.set('keepScreenOn', defaultStore.state.keepScreenOn);
+				prefer.set('disableStreamingTimeline', defaultStore.state.disableStreamingTimeline);
+				prefer.set('useGroupedNotifications', defaultStore.state.useGroupedNotifications);
+				prefer.set('dataSaver', defaultStore.state.dataSaver);
+				prefer.set('enableSeasonalScreenEffect', defaultStore.state.enableSeasonalScreenEffect);
+				prefer.set('enableHorizontalSwipe', defaultStore.state.enableHorizontalSwipe);
+				prefer.set('useNativeUiForVideoAudioPlayer', defaultStore.state.useNativeUIForVideoAudioPlayer);
+				prefer.set('keepOriginalFilename', defaultStore.state.keepOriginalFilename);
+				prefer.set('alwaysConfirmFollow', defaultStore.state.alwaysConfirmFollow);
+				prefer.set('confirmWhenRevealingSensitiveMedia', defaultStore.state.confirmWhenRevealingSensitiveMedia);
+				prefer.set('contextMenu', defaultStore.state.contextMenu);
+				prefer.set('skipNoteRender', defaultStore.state.skipNoteRender);
+				prefer.set('showSoftWordMutedWord', defaultStore.state.showSoftWordMutedWord);
+				prefer.set('confirmOnReact', defaultStore.state.confirmOnReact);
+				defaultStore.set('menu', []);
+			}
+
 			if (defaultStore.state.accountSetupWizard !== -1) {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
 					closed: () => dispose(),

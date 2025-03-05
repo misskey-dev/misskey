@@ -13,6 +13,7 @@ import type { Ast } from '@syuilo/aiscript';
 import type { DeviceKind } from '@/scripts/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { Storage } from '@/pizzax.js';
+import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
 
 interface PostFormAction {
 	title: string,
@@ -64,6 +65,9 @@ export const noteViewInterruptors: NoteViewInterruptor[] = [];
 export const notePostInterruptors: NotePostInterruptor[] = [];
 export const pageViewInterruptors: PageViewInterruptor[] = [];
 
+/**
+ * 「状態」を管理するストア(not「設定」)
+ */
 export const defaultStore = markRaw(new Storage('base', {
 	accountSetupWizard: {
 		where: 'account',
@@ -230,6 +234,280 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
+
+	//#region TODO: そのうち消す
+	keepCw: {
+		where: 'account',
+		default: true,
+	},
+	collapseRenotes: {
+		where: 'account',
+		default: true,
+	},
+	rememberNoteVisibility: {
+		where: 'account',
+		default: false,
+	},
+	uploadFolder: {
+		where: 'account',
+		default: null as string | null,
+	},
+	keepOriginalUploading: {
+		where: 'account',
+		default: false,
+	},
+	menu: {
+		where: 'deviceAccount',
+		default: [
+			'notifications',
+			'clips',
+			'drive',
+			'followRequests',
+			'-',
+			'explore',
+			'announcements',
+			'search',
+			'-',
+			'ui',
+		],
+	},
+	statusbars: {
+		where: 'deviceAccount',
+		default: [] as {
+			name: string;
+			id: string;
+			type: string;
+			size: 'verySmall' | 'small' | 'medium' | 'large' | 'veryLarge';
+			black: boolean;
+			props: Record<string, any>;
+		}[],
+	},
+	pinnedUserLists: {
+		where: 'deviceAccount',
+		default: [] as Misskey.entities.UserList[],
+	},
+	serverDisconnectedBehavior: {
+		where: 'device',
+		default: 'quiet' as 'quiet' | 'reload' | 'dialog',
+	},
+	nsfw: {
+		where: 'device',
+		default: 'respect' as 'respect' | 'force' | 'ignore',
+	},
+	highlightSensitiveMedia: {
+		where: 'device',
+		default: false,
+	},
+	animation: {
+		where: 'device',
+		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+	},
+	animatedMfm: {
+		where: 'device',
+		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+	},
+	advancedMfm: {
+		where: 'device',
+		default: true,
+	},
+	showReactionsCount: {
+		where: 'device',
+		default: false,
+	},
+	enableQuickAddMfmFunction: {
+		where: 'device',
+		default: false,
+	},
+	loadRawImages: {
+		where: 'device',
+		default: false,
+	},
+	imageNewTab: {
+		where: 'device',
+		default: false,
+	},
+	disableShowingAnimatedImages: {
+		where: 'device',
+		default: window.matchMedia('(prefers-reduced-motion)').matches,
+	},
+	emojiStyle: {
+		where: 'device',
+		default: 'twemoji', // twemoji / fluentEmoji / native
+	},
+	menuStyle: {
+		where: 'device',
+		default: 'auto' as 'auto' | 'popup' | 'drawer',
+	},
+	useBlurEffectForModal: {
+		where: 'device',
+		default: DEFAULT_DEVICE_KIND === 'desktop',
+	},
+	useBlurEffect: {
+		where: 'device',
+		default: DEFAULT_DEVICE_KIND === 'desktop',
+	},
+	showFixedPostForm: {
+		where: 'device',
+		default: false,
+	},
+	showFixedPostFormInChannel: {
+		where: 'device',
+		default: false,
+	},
+	enableInfiniteScroll: {
+		where: 'device',
+		default: true,
+	},
+	useReactionPickerForContextMenu: {
+		where: 'device',
+		default: false,
+	},
+	showGapBetweenNotesInTimeline: {
+		where: 'device',
+		default: false,
+	},
+	instanceTicker: {
+		where: 'device',
+		default: 'remote' as 'none' | 'remote' | 'always',
+	},
+	emojiPickerScale: {
+		where: 'device',
+		default: 1,
+	},
+	emojiPickerWidth: {
+		where: 'device',
+		default: 1,
+	},
+	emojiPickerHeight: {
+		where: 'device',
+		default: 2,
+	},
+	emojiPickerStyle: {
+		where: 'device',
+		default: 'auto' as 'auto' | 'popup' | 'drawer',
+	},
+	reportError: {
+		where: 'device',
+		default: false,
+	},
+	squareAvatars: {
+		where: 'device',
+		default: false,
+	},
+	showAvatarDecorations: {
+		where: 'device',
+		default: true,
+	},
+	numberOfPageCache: {
+		where: 'device',
+		default: 3,
+	},
+	showNoteActionsOnlyHover: {
+		where: 'device',
+		default: false,
+	},
+	showClipButtonInNoteFooter: {
+		where: 'device',
+		default: false,
+	},
+	reactionsDisplaySize: {
+		where: 'device',
+		default: 'medium' as 'small' | 'medium' | 'large',
+	},
+	limitWidthOfReaction: {
+		where: 'device',
+		default: true,
+	},
+	forceShowAds: {
+		where: 'device',
+		default: false,
+	},
+	aiChanMode: {
+		where: 'device',
+		default: false,
+	},
+	devMode: {
+		where: 'device',
+		default: false,
+	},
+	mediaListWithOneImageAppearance: {
+		where: 'device',
+		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
+	},
+	notificationPosition: {
+		where: 'device',
+		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
+	},
+	notificationStackAxis: {
+		where: 'device',
+		default: 'horizontal' as 'vertical' | 'horizontal',
+	},
+	enableCondensedLine: {
+		where: 'device',
+		default: true,
+	},
+	keepScreenOn: {
+		where: 'device',
+		default: false,
+	},
+	disableStreamingTimeline: {
+		where: 'device',
+		default: false,
+	},
+	useGroupedNotifications: {
+		where: 'device',
+		default: true,
+	},
+	dataSaver: {
+		where: 'device',
+		default: {
+			media: false,
+			avatar: false,
+			urlPreview: false,
+			code: false,
+		} as Record<string, boolean>,
+	},
+	enableSeasonalScreenEffect: {
+		where: 'device',
+		default: false,
+	},
+	enableHorizontalSwipe: {
+		where: 'device',
+		default: true,
+	},
+	useNativeUIForVideoAudioPlayer: {
+		where: 'device',
+		default: false,
+	},
+	keepOriginalFilename: {
+		where: 'device',
+		default: true,
+	},
+	alwaysConfirmFollow: {
+		where: 'device',
+		default: true,
+	},
+	confirmWhenRevealingSensitiveMedia: {
+		where: 'device',
+		default: false,
+	},
+	contextMenu: {
+		where: 'device',
+		default: 'app' as 'app' | 'appWithShift' | 'native',
+	},
+	skipNoteRender: {
+		where: 'device',
+		default: true,
+	},
+	showSoftWordMutedWord: {
+		where: 'device',
+		default: false,
+	},
+	confirmOnReact: {
+		where: 'device',
+		default: false,
+	},
+	//#endregion
 }));
 
 // TODO: 他のタブと永続化されたstateを同期

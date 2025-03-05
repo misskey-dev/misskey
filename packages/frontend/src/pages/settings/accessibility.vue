@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker :keywords="['native', 'system', 'video', 'audio', 'player', 'media']">
-				<MkSwitch v-model="useNativeUIForVideoAudioPlayer">
+				<MkSwitch v-model="useNativeUiForVideoAudioPlayer">
 					<template #label><SearchLabel>{{ i18n.ts.useNativeUIForVideoAudioPlayer }}</SearchLabel></template>
 				</MkSwitch>
 			</SearchMarker>
@@ -70,7 +70,7 @@ const animatedMfm = prefer.model('animatedMfm');
 const disableShowingAnimatedImages = prefer.model('disableShowingAnimatedImages');
 const keepScreenOn = prefer.model('keepScreenOn');
 const enableHorizontalSwipe = prefer.model('enableHorizontalSwipe');
-const useNativeUIForVideoAudioPlayer = prefer.model('useNativeUIForVideoAudioPlayer');
+const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPlayer');
 const contextMenu = prefer.model('contextMenu');
 
 watch([

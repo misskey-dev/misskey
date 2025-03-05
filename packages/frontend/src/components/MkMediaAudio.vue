@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<div v-else-if="prefer.s.useNativeUIForVideoAudioPlayer" :class="$style.nativeAudioContainer">
+	<div v-else-if="prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.nativeAudioContainer">
 		<audio
 			ref="audioEl"
 			preload="metadata"

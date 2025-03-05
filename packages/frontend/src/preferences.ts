@@ -6,6 +6,7 @@
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import * as Misskey from 'misskey-js';
+import { version } from '@@/js/config.js';
 import type { Ref, WritableComputedRef } from 'vue';
 import type { Theme } from '@/scripts/theme.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -205,7 +206,7 @@ export const PREF_DEF = {
 	enableHorizontalSwipe: {
 		default: true,
 	},
-	useNativeUIForVideoAudioPlayer: {
+	useNativeUiForVideoAudioPlayer: {
 		default: false,
 	},
 	keepOriginalFilename: {
@@ -236,6 +237,9 @@ type ValueOf<K extends keyof PREF> = PREF[K]['default'];
 
 type PreferencesProfile = {
 	id: string;
+	version: string;
+	type: 'main';
+	modifiedAt: number;
 	name: string;
 	preferences: {
 		[K in keyof PREF]?: ValueOf<K>;
@@ -245,6 +249,9 @@ type PreferencesProfile = {
 function newProfile(): PreferencesProfile {
 	return {
 		id: uuid(),
+		version: version,
+		type: 'main',
+		modifiedAt: Date.now(),
 		name: '',
 		preferences: {},
 	};
@@ -332,5 +339,6 @@ class Preferences {
 
 export const prefer = new Preferences(currentProfile.preferences, (preferences) => {
 	currentProfile.preferences = preferences;
+	currentProfile.modifiedAt = Date.now();
 	miLocalStorage.setItem(`preferences:${currentProfile.id}`, JSON.stringify(currentProfile));
 });
