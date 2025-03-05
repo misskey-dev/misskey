@@ -374,7 +374,7 @@ export type SearchIndexItem = {
 	children?: SearchIndexItem[];
 };
 
-export const searchIndexes:SearchIndexItem[] = ${customStringify(resolvedRootMarkers)} as const;
+export const searchIndexes: SearchIndexItem[] = ${customStringify(resolvedRootMarkers)} as const;
 
 export type SearchIndex = typeof searchIndexes;
 `;
