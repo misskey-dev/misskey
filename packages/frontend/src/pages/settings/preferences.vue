@@ -41,9 +41,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker :keywords="['post', 'form', 'timeline', 'channel']">
-					<MkSwitch v-model="showFixedPostFormInChannel">
-						<template #label><SearchLabel>{{ i18n.ts.showFixedPostFormInChannel }}</SearchLabel></template>
-					</MkSwitch>
+					<MkPreferenceContainer k="showFixedPostFormInChannel">
+						<MkSwitch v-model="showFixedPostFormInChannel">
+							<template #label><SearchLabel>{{ i18n.ts.showFixedPostFormInChannel }}</SearchLabel></template>
+						</MkSwitch>
+					</MkPreferenceContainer>
 				</SearchMarker>
 
 				<SearchMarker :keywords="['pinned', 'list']">
@@ -56,9 +58,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn']">
-					<MkSwitch v-model="enableQuickAddMfmFunction">
-						<template #label><SearchLabel>{{ i18n.ts.enableQuickAddMfmFunction }}</SearchLabel></template>
-					</MkSwitch>
+					<MkPreferenceContainer k="enableQuickAddMfmFunction">
+						<MkSwitch v-model="enableQuickAddMfmFunction">
+							<template #label><SearchLabel>{{ i18n.ts.enableQuickAddMfmFunction }}</SearchLabel></template>
+						</MkSwitch>
+					</MkPreferenceContainer>
 				</SearchMarker>
 			</div>
 		</FormSection>
@@ -70,40 +74,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_m">
 					<div class="_gaps_s">
 						<SearchMarker :keywords="['renote']">
-							<MkSwitch v-model="collapseRenotes">
-								<template #label><SearchLabel>{{ i18n.ts.collapseRenotes }}</SearchLabel></template>
-								<template #caption><SearchKeyword>{{ i18n.ts.collapseRenotesDescription }}</SearchKeyword></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="collapseRenotes">
+								<MkSwitch v-model="collapseRenotes">
+									<template #label><SearchLabel>{{ i18n.ts.collapseRenotes }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.collapseRenotesDescription }}</SearchKeyword></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['hover', 'show', 'footer', 'action']">
-							<MkSwitch v-model="showNoteActionsOnlyHover">
-								<template #label><SearchLabel>{{ i18n.ts.showNoteActionsOnlyHover }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="showNoteActionsOnlyHover">
+								<MkSwitch v-model="showNoteActionsOnlyHover">
+									<template #label><SearchLabel>{{ i18n.ts.showNoteActionsOnlyHover }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['footer', 'action', 'clip', 'show']">
-							<MkSwitch v-model="showClipButtonInNoteFooter">
-								<template #label><SearchLabel>{{ i18n.ts.showClipButtonInNoteFooter }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="showClipButtonInNoteFooter">
+								<MkSwitch v-model="showClipButtonInNoteFooter">
+									<template #label><SearchLabel>{{ i18n.ts.showClipButtonInNoteFooter }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced']">
-							<MkSwitch v-model="advancedMfm">
-								<template #label><SearchLabel>{{ i18n.ts.enableAdvancedMfm }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="advancedMfm">
+								<MkSwitch v-model="advancedMfm">
+									<template #label><SearchLabel>{{ i18n.ts.enableAdvancedMfm }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['reaction', 'count', 'show']">
-							<MkSwitch v-model="showReactionsCount">
-								<template #label><SearchLabel>{{ i18n.ts.showReactionsCount }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="showReactionsCount">
+								<MkSwitch v-model="showReactionsCount">
+									<template #label><SearchLabel>{{ i18n.ts.showReactionsCount }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment']">
-							<MkSwitch v-model="loadRawImages">
-								<template #label><SearchLabel>{{ i18n.ts.loadRawImages }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="loadRawImages">
+								<MkSwitch v-model="loadRawImages">
+									<template #label><SearchLabel>{{ i18n.ts.loadRawImages }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 					</div>
 				</div>
@@ -116,9 +132,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['group']">
-						<MkSwitch v-model="useGroupedNotifications">
-							<template #label><SearchLabel>{{ i18n.ts.useGroupedNotifications }}</SearchLabel></template>
-						</MkSwitch>
+						<MkPreferenceContainer k="useGroupedNotifications">
+							<MkSwitch v-model="useGroupedNotifications">
+								<template #label><SearchLabel>{{ i18n.ts.useGroupedNotifications }}</SearchLabel></template>
+							</MkSwitch>
+						</MkPreferenceContainer>
 					</SearchMarker>
 				</div>
 			</FormSection>
@@ -131,68 +149,88 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_m">
 					<div class="_gaps_s">
 						<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab']">
-							<MkSwitch v-model="imageNewTab">
-								<template #label><SearchLabel>{{ i18n.ts.openImageInNewTab }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="imageNewTab">
+								<MkSwitch v-model="imageNewTab">
+									<template #label><SearchLabel>{{ i18n.ts.openImageInNewTab }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['reaction', 'picker', 'contextmenu', 'open']">
-							<MkSwitch v-model="useReactionPickerForContextMenu">
-								<template #label><SearchLabel>{{ i18n.ts.useReactionPickerForContextMenu }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="useReactionPickerForContextMenu">
+								<MkSwitch v-model="useReactionPickerForContextMenu">
+									<template #label><SearchLabel>{{ i18n.ts.useReactionPickerForContextMenu }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['load', 'auto', 'more']">
-							<MkSwitch v-model="enableInfiniteScroll">
-								<template #label><SearchLabel>{{ i18n.ts.enableInfiniteScroll }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="enableInfiniteScroll">
+								<MkSwitch v-model="enableInfiniteScroll">
+									<template #label><SearchLabel>{{ i18n.ts.enableInfiniteScroll }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['disable', 'streaming', 'timeline']">
-							<MkSwitch v-model="disableStreamingTimeline">
-								<template #label><SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="disableStreamingTimeline">
+								<MkSwitch v-model="disableStreamingTimeline">
+									<template #label><SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['follow', 'confirm', 'always']">
-							<MkSwitch v-model="alwaysConfirmFollow">
-								<template #label><SearchLabel>{{ i18n.ts.alwaysConfirmFollow }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="alwaysConfirmFollow">
+								<MkSwitch v-model="alwaysConfirmFollow">
+									<template #label><SearchLabel>{{ i18n.ts.alwaysConfirmFollow }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['sensitive', 'nsfw', 'media', 'image', 'photo', 'picture', 'attachment', 'confirm']">
-							<MkSwitch v-model="confirmWhenRevealingSensitiveMedia">
-								<template #label><SearchLabel>{{ i18n.ts.confirmWhenRevealingSensitiveMedia }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="confirmWhenRevealingSensitiveMedia">
+								<MkSwitch v-model="confirmWhenRevealingSensitiveMedia">
+									<template #label><SearchLabel>{{ i18n.ts.confirmWhenRevealingSensitiveMedia }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['reaction', 'confirm']">
-							<MkSwitch v-model="confirmOnReact">
-								<template #label><SearchLabel>{{ i18n.ts.confirmOnReact }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="confirmOnReact">
+								<MkSwitch v-model="confirmOnReact">
+									<template #label><SearchLabel>{{ i18n.ts.confirmOnReact }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['remember', 'keep', 'note', 'cw']">
-							<MkSwitch v-model="keepCw">
-								<template #label><SearchLabel>{{ i18n.ts.keepCw }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="keepCw">
+								<MkSwitch v-model="keepCw">
+									<template #label><SearchLabel>{{ i18n.ts.keepCw }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 					</div>
 
 					<SearchMarker :keywords="['server', 'disconnect', 'reconnect', 'reload', 'streaming']">
-						<MkSelect v-model="serverDisconnectedBehavior">
-							<template #label><SearchLabel>{{ i18n.ts.whenServerDisconnected }}</SearchLabel></template>
-							<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
-							<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
-							<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
-						</MkSelect>
+						<MkPreferenceContainer k="serverDisconnectedBehavior">
+							<MkSelect v-model="serverDisconnectedBehavior">
+								<template #label><SearchLabel>{{ i18n.ts.whenServerDisconnected }}</SearchLabel></template>
+								<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
+								<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
+								<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
+							</MkSelect>
+						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['cache', 'page']">
-						<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
-							<template #label><SearchLabel>{{ i18n.ts.numberOfPageCache }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
-						</MkRange>
+						<MkPreferenceContainer k="numberOfPageCache">
+							<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
+								<template #label><SearchLabel>{{ i18n.ts.numberOfPageCache }}</SearchLabel></template>
+								<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
+							</MkRange>
+						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker :label="i18n.ts.dataSaver" :keywords="['datasaver']">
@@ -237,9 +275,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_gaps">
 					<SearchMarker :keywords="['ad', 'show']">
-						<MkSwitch v-model="forceShowAds">
-							<template #label><SearchLabel>{{ i18n.ts.forceShowAds }}</SearchLabel></template>
-						</MkSwitch>
+						<MkPreferenceContainer k="forceShowAds">
+							<MkSwitch v-model="forceShowAds">
+								<template #label><SearchLabel>{{ i18n.ts.forceShowAds }}</SearchLabel></template>
+							</MkSwitch>
+						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker>

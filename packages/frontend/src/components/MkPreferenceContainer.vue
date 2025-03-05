@@ -70,6 +70,13 @@ function showMenu(ev: MouseEvent) {
 	}
 
 	.menu {
+		align-content: center;
+		margin-left: 12px;
+		opacity: 0.7;
+
+		&:hover {
+			opacity: 1;
+		}
 	}
 }
 </style>

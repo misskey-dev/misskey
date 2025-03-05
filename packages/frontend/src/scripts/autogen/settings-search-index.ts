@@ -301,45 +301,45 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['post', 'form', 'timeline', 'channel'],
 			},
 			{
-				id: '4g9rmV9Bu',
+				id: '8j36S4Ev6',
 				label: i18n.ts.pinnedList,
 				keywords: ['pinned', 'list'],
 			},
 			{
-				id: 'lSDzKC8PH',
+				id: 'CWpyT9vLK',
 				label: i18n.ts.enableQuickAddMfmFunction,
 				keywords: ['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn'],
 			},
 			{
-				id: 't46qyPqQm',
+				id: 'puIqj1a8b',
 				children: [
 					{
-						id: '1yhown1Xc',
+						id: '1x3JNXj8N',
 						label: i18n.ts.collapseRenotes,
 						keywords: ['renote', i18n.ts.collapseRenotesDescription],
 					},
 					{
-						id: 'bJTbBEVL7',
+						id: 'c98gbF9c6',
 						label: i18n.ts.showNoteActionsOnlyHover,
 						keywords: ['hover', 'show', 'footer', 'action'],
 					},
 					{
-						id: 'c98gbF9c6',
+						id: '4LxdiOMNh',
 						label: i18n.ts.showClipButtonInNoteFooter,
 						keywords: ['footer', 'action', 'clip', 'show'],
 					},
 					{
-						id: 'zx0e321ao',
+						id: '9gTCaLkIf',
 						label: i18n.ts.enableAdvancedMfm,
 						keywords: ['mfm', 'enable', 'show', 'advanced'],
 					},
 					{
-						id: 'a3vKgTg4k',
+						id: '6kMj4HVOg',
 						label: i18n.ts.showReactionsCount,
 						keywords: ['reaction', 'count', 'show'],
 					},
 					{
-						id: '39QibFJfd',
+						id: 'dPersnkzh',
 						label: i18n.ts.loadRawImages,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment'],
 					},
@@ -348,10 +348,10 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['note'],
 			},
 			{
-				id: 'tMm9kH9gy',
+				id: '5XhS6ukl8',
 				children: [
 					{
-						id: 'khT3n6byY',
+						id: '3GcWIaZf8',
 						label: i18n.ts.useGroupedNotifications,
 						keywords: ['group'],
 					},
@@ -360,60 +360,60 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['notification'],
 			},
 			{
-				id: 'iOJ3Crlky',
+				id: 'dSGDnj2PA',
 				children: [
 					{
-						id: 'wRpIPnyzi',
+						id: '1LHOhDKGW',
 						label: i18n.ts.openImageInNewTab,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab'],
 					},
 					{
-						id: 'rq69GTeB4',
+						id: 'DSzwvTp7i',
 						label: i18n.ts.useReactionPickerForContextMenu,
 						keywords: ['reaction', 'picker', 'contextmenu', 'open'],
 					},
 					{
-						id: 'dSGDnj2PA',
+						id: '5QTUzrpT3',
 						label: i18n.ts.enableInfiniteScroll,
 						keywords: ['load', 'auto', 'more'],
 					},
 					{
-						id: '1LHOhDKGW',
+						id: '7Uf8ksn3q',
 						label: i18n.ts.disableStreamingTimeline,
 						keywords: ['disable', 'streaming', 'timeline'],
 					},
 					{
-						id: 'p2wlrnwLo',
+						id: 'whKYKvaQB',
 						label: i18n.ts.alwaysConfirmFollow,
 						keywords: ['follow', 'confirm', 'always'],
 					},
 					{
-						id: 'bSiZ10Y8Q',
+						id: 'nf4kcPeYw',
 						label: i18n.ts.confirmWhenRevealingSensitiveMedia,
 						keywords: ['sensitive', 'nsfw', 'media', 'image', 'photo', 'picture', 'attachment', 'confirm'],
 					},
 					{
-						id: '3SBAYM8Fk',
+						id: 'rRisK1YYQ',
 						label: i18n.ts.confirmOnReact,
 						keywords: ['reaction', 'confirm'],
 					},
 					{
-						id: '7Uf8ksn3q',
+						id: '6AH0lnjf1',
 						label: i18n.ts.keepCw,
 						keywords: ['remember', 'keep', 'note', 'cw'],
 					},
 					{
-						id: '6ylW3eIcD',
+						id: 'uHcTVSGDv',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: 'nf4kcPeYw',
+						id: 'fzPca1Gk9',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: 'E9whefUtX',
+						id: 'mNU5IBln7',
 						label: i18n.ts.dataSaver,
 						keywords: ['datasaver'],
 					},
@@ -422,20 +422,20 @@ export const searchIndexes:SearchIndexItem[] = [
 				keywords: ['behavior'],
 			},
 			{
-				id: 'A8a5hcLce',
+				id: 'C3psHYdZn',
 				children: [
 					{
-						id: 'fyod6U3QX',
+						id: 'iCEiAg4Wg',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: 'aY52aBjgg',
+						id: 'qj9eChQ5B',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: 'k55mQTk4B',
+						id: 'zrJicawH9',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},
