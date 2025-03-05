@@ -6,6 +6,8 @@
 import { computed, watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { version, lang, updateLocale, locale } from '@@/js/config.js';
+import defaultLightTheme from '@@/themes/l-light.json5';
+import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import type { App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
@@ -153,44 +155,44 @@ export async function common(createVue: () => App<Element>) {
 
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
 	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
-		applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
+		applyTheme(darkMode
+			? (prefer.s.darkTheme ?? defaultDarkTheme)
+			: (prefer.s.lightTheme ?? defaultLightTheme),
+		);
 	}, { immediate: miLocalStorage.getItem('theme') == null });
 
 	document.documentElement.dataset.colorScheme = defaultStore.state.darkMode ? 'dark' : 'light';
 
-	const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
-	const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
+	const darkTheme = prefer.model('darkTheme');
+	const lightTheme = prefer.model('lightTheme');
 
 	watch(darkTheme, (theme) => {
 		if (defaultStore.state.darkMode) {
-			applyTheme(theme);
+			applyTheme(theme ?? defaultDarkTheme);
 		}
 	});
 
 	watch(lightTheme, (theme) => {
 		if (!defaultStore.state.darkMode) {
-			applyTheme(theme);
+			applyTheme(theme ?? defaultLightTheme);
 		}
 	});
 
 	//#region Sync dark mode
-	if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
+	if (prefer.s.syncDeviceDarkMode) {
 		defaultStore.set('darkMode', isDeviceDarkmode());
 	}
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
-		if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
+		if (prefer.s.syncDeviceDarkMode) {
 			defaultStore.set('darkMode', mql.matches);
 		}
 	});
 	//#endregion
 
 	fetchInstanceMetaPromise.then(() => {
-		if (defaultStore.state.themeInitial) {
-			if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(instance.defaultLightTheme));
-			if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
-			defaultStore.set('themeInitial', false);
-		}
+		if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.set('lightTheme', JSON.parse(instance.defaultLightTheme));
+		if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
 	});
 
 	watch(defaultStore.reactiveState.overridedDeviceKind, (kind) => {

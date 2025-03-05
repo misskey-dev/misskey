@@ -18,6 +18,7 @@ import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
 //};
 
 // TODO: accountDependent考慮
+// TODO: lazyLoad機能？(ColdDeviceStorage代替)
 
 /** サウンド設定 */
 export type SoundStore = {
@@ -45,6 +46,15 @@ export const PREF_DEF = {
 		default: null as string | null,
 	},
 
+	lightTheme: {
+		default: null as Theme | null,
+	},
+	darkTheme: {
+		default: null as Theme | null,
+	},
+	syncDeviceDarkMode: {
+		default: true,
+	},
 	keepCw: {
 		default: true,
 	},

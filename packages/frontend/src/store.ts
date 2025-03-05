@@ -8,8 +8,8 @@ import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
-import type { Ast } from '@syuilo/aiscript';
 import type { DeviceKind } from '@/scripts/device-kind.js';
+import type { Plugin } from '@/plugin.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { Storage } from '@/pizzax.js';
 import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
@@ -165,10 +165,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: '',
 	},
-	themeInitial: {
-		where: 'device',
-		default: true,
-	},
 	additionalUnicodeEmojiIndexes: {
 		where: 'device',
 		default: {} as Record<string, Record<string, string[]>>,
@@ -189,7 +185,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: hemisphere as 'N' | 'S',
 	},
 
-	//#region TODO: そのうち消す
+	//#region TODO: そのうち消す (preferに移行済み)
 	keepCw: {
 		where: 'account',
 		default: true,
@@ -496,21 +492,6 @@ export const defaultStore = markRaw(new Storage('base', {
 
 const PREFIX = 'miux:' as const;
 
-export type Plugin = {
-	id: string;
-	name: string;
-	active: boolean;
-	config?: Record<string, { default: any }>;
-	configData: Record<string, any>;
-	token: string;
-	src: string | null;
-	version: string;
-	ast: Ast.Node[];
-	author?: string;
-	description?: string;
-	permissions?: string[];
-};
-
 interface Watcher {
 	key: string;
 	callback: (value: unknown) => void;
@@ -519,12 +500,11 @@ interface Watcher {
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
-
 export class ColdDeviceStorage {
 	public static default = {
-		lightTheme,
-		darkTheme,
-		syncDeviceDarkMode: true,
+		lightTheme, // TODO: 消す(preferに移行済みのため)
+		darkTheme, // TODO: 消す(preferに移行済みのため)
+		syncDeviceDarkMode: true, // TODO: 消す(preferに移行済みのため)
 		plugins: [] as Plugin[],
 	};
 

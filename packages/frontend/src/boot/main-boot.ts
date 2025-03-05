@@ -142,6 +142,9 @@ export async function mainBoot() {
 			// prefereces migration
 			// TODO: そのうち消す
 			if (defaultStore.state.menu.length > 0) {
+				prefer.set('lightTheme', ColdDeviceStorage.get('lightTheme'));
+				prefer.set('darkTheme', ColdDeviceStorage.get('darkTheme'));
+				prefer.set('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
 				prefer.set('keepCw', defaultStore.state.keepCw);
 				prefer.set('collapseRenotes', defaultStore.state.collapseRenotes);
 				prefer.set('rememberNoteVisibility', defaultStore.state.rememberNoteVisibility);

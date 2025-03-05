@@ -14,14 +14,14 @@ import { unique } from './array.js';
 import { deepClone } from './clone.js';
 import { deepMerge } from './merge.js';
 import type { HighlighterCore, LanguageRegistration, ThemeRegistration, ThemeRegistrationRaw } from 'shiki/core';
-import { ColdDeviceStorage } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 let _highlighter: HighlighterCore | null = null;
 
 export async function getTheme(mode: 'light' | 'dark', getName: true): Promise<string>;
 export async function getTheme(mode: 'light' | 'dark', getName?: false): Promise<ThemeRegistration | ThemeRegistrationRaw>;
 export async function getTheme(mode: 'light' | 'dark', getName = false): Promise<ThemeRegistration | ThemeRegistrationRaw | string | null> {
-	const theme = deepClone(ColdDeviceStorage.get(mode === 'light' ? 'lightTheme' : 'darkTheme'));
+	const theme = deepClone(prefer.s[mode === 'light' ? 'lightTheme' : 'darkTheme']);
 
 	if (theme.base) {
 		const base = [lightTheme, darkTheme].find(x => x.id === theme.base);
@@ -77,19 +77,19 @@ async function initHighlighter() {
 		],
 	});
 
-	ColdDeviceStorage.watch('lightTheme', async () => {
-		const newTheme = await getTheme('light');
-		if (newTheme.name && !highlighter.getLoadedThemes().includes(newTheme.name)) {
-			highlighter.loadTheme(newTheme);
-		}
-	});
-
-	ColdDeviceStorage.watch('darkTheme', async () => {
-		const newTheme = await getTheme('dark');
-		if (newTheme.name && !highlighter.getLoadedThemes().includes(newTheme.name)) {
-			highlighter.loadTheme(newTheme);
-		}
-	});
+	// TODO
+	//watch('lightTheme', async () => {
+	//	const newTheme = await getTheme('light');
+	//	if (newTheme.name && !highlighter.getLoadedThemes().includes(newTheme.name)) {
+	//		highlighter.loadTheme(newTheme);
+	//	}
+	//});
+	//watch('darkTheme', async () => {
+	//	const newTheme = await getTheme('dark');
+	//	if (newTheme.name && !highlighter.getLoadedThemes().includes(newTheme.name)) {
+	//		highlighter.loadTheme(newTheme);
+	//	}
+	//});
 
 	_highlighter = highlighter;
 

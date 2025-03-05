@@ -4,11 +4,25 @@
  */
 
 import { ref } from 'vue';
-import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
+import { Ast, Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import { inputText } from '@/os.js';
 import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store.js';
-import type { Plugin } from '@/store.js';
+
+// tokenなどは別で管理する？
+export type Plugin = {
+	id: string;
+	name: string;
+	active: boolean;
+	config?: Record<string, { default: any }>;
+	configData: Record<string, any>;
+	token: string;
+	src: string | null;
+	version: string;
+	ast: Ast.Node[];
+	author?: string;
+	description?: string;
+	permissions?: string[];
+};
 
 const parser = new Parser();
 const pluginContexts = new Map<string, Interpreter>();
