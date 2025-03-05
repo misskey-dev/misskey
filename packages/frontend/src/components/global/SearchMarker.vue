@@ -56,7 +56,7 @@ watch([
 	}
 }, { flush: 'post' });
 
-onMounted(() => {
+function init() {
 	checkChildren();
 
 	if (highlighted.value) {
@@ -72,31 +72,16 @@ onMounted(() => {
 			subtree: true,
 		});
 	}
-});
+}
 
-onActivated(() => {
-	if (highlighted.value) {
-		rootEl.value?.scrollIntoView({
-			behavior: 'smooth',
-			block: 'center',
-		});
-	}
-
-	if (rootEl.value != null) {
-		rootElMutationObserver.observe(rootEl.value, {
-			childList: true,
-			subtree: true,
-		});
-	}
-});
-
-onDeactivated(() => {
+function dispose() {
 	rootElMutationObserver.disconnect();
-});
+}
 
-onBeforeUnmount(() => {
-	rootElMutationObserver.disconnect();
-});
+onMounted(init);
+onActivated(init);
+onDeactivated(dispose);
+onBeforeUnmount(dispose);
 </script>
 
 <style lang="scss" module>
