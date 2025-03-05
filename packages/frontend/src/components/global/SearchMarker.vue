@@ -10,8 +10,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { useInterval } from '@@/js/use-interval.js';
-import { onActivated, onMounted, ref, useTemplateRef, inject, watch } from 'vue';
+import {
+	onActivated,
+	onDeactivated,
+	onMounted,
+	onBeforeUnmount,
+	watch,
+	computed,
+	ref,
+	useTemplateRef,
+	inject,
+} from 'vue';
+import type { Ref } from 'vue';
 
 const props = defineProps<{
 	markerId?: string;
@@ -22,9 +32,13 @@ const props = defineProps<{
 	inlining?: string[];
 }>();
 
-const rootEl = useTemplateRef<HTMLDivElement>('root');
-const searchMarkerId = inject<string>('inAppSearchMarkerId', window.location.hash.slice(1));
-const highlighted = ref(props.markerId === searchMarkerId);
+const rootEl = useTemplateRef('root');
+const rootElMutationObserver = new MutationObserver(() => {
+	checkChildren();
+});
+const injectedSearchMarkerId = inject<Ref<string | null>>('inAppSearchMarkerId');
+const searchMarkerId = computed(() => injectedSearchMarkerId?.value ?? window.location.hash.slice(1));
+const highlighted = ref(props.markerId === searchMarkerId.value);
 let highlightedMarkerTimer: number | null = null;
 
 watch(highlighted, (to) => {
@@ -41,17 +55,20 @@ watch(highlighted, (to) => {
 }, { immediate: true });
 
 function checkChildren() {
-	if (props.children?.includes(searchMarkerId)) {
-		const el = document.querySelector(`[data-in-app-search-marker-id="${searchMarkerId}"]`);
+	if (props.children?.includes(searchMarkerId.value)) {
+		const el = document.querySelector(`[data-in-app-search-marker-id="${searchMarkerId.value}"]`);
 		highlighted.value = el == null;
 	}
 }
 
-if (props.children != null && props.children.length > 0) {
-	useInterval(() => {
+watch([
+	searchMarkerId,
+	() => props.children,
+], () => {
+	if (props.children != null && props.children.length > 0) {
 		checkChildren();
-	}, 1000, { immediate: false, afterMounted: true });
-}
+	}
+}, { flush: 'post' });
 
 onMounted(() => {
 	checkChildren();
@@ -60,6 +77,13 @@ onMounted(() => {
 		rootEl.value?.scrollIntoView({
 			behavior: 'smooth',
 			block: 'center',
+		});
+	}
+
+	if (rootEl.value != null) {
+		rootElMutationObserver.observe(rootEl.value, {
+			childList: true,
+			subtree: true,
 		});
 	}
 });
@@ -71,6 +95,21 @@ onActivated(() => {
 			block: 'center',
 		});
 	}
+
+	if (rootEl.value != null) {
+		rootElMutationObserver.observe(rootEl.value, {
+			childList: true,
+			subtree: true,
+		});
+	}
+});
+
+onDeactivated(() => {
+	rootElMutationObserver.disconnect();
+});
+
+onBeforeUnmount(() => {
+	rootElMutationObserver.disconnect();
 });
 </script>
 

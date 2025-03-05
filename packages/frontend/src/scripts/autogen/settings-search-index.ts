@@ -18,7 +18,7 @@ export type SearchIndexItem = {
 	children?: SearchIndexItem[];
 };
 
-export const searchIndexes:SearchIndexItem[] = [
+export const searchIndexes: SearchIndexItem[] = [
 	{
 		id: 'flXd1LC7r',
 		children: [
