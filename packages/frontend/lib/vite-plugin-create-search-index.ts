@@ -37,7 +37,7 @@ interface VueAstNode {
 export type AnalysisResult = {
 	filePath: string;
 	usage: SearchIndexItem[];
-};
+}
 
 export type SearchIndexItem = {
 	id: string;
@@ -94,7 +94,7 @@ logger.error = (msg, options) => {
 /**
  * 解析結果をTypeScriptファイルとして出力する
  */
-function outputAnalysisResultAsTS(analysisResults: AnalysisResult[], options: Options): void {
+function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisResult[]): void {
 	logger.info(`Processing ${analysisResults.length} files for output`);
 
 	// 新しいツリー構造を構築
@@ -102,7 +102,7 @@ function outputAnalysisResultAsTS(analysisResults: AnalysisResult[], options: Op
 
 	// 1. すべてのマーカーを一旦フラットに収集
 	for (const file of analysisResults) {
-		if (options.verbose) logger.info(`Processing file: ${file.filePath} with ${file.usage.length} markers`);
+		logger.info(`Processing file: ${file.filePath} with ${file.usage.length} markers`);
 
 		for (const marker of file.usage) {
 			if (marker.id) {
@@ -118,25 +118,25 @@ function outputAnalysisResultAsTS(analysisResults: AnalysisResult[], options: Op
 		}
 	}
 
-	if (options.verbose) logger.info(`Collected total ${allMarkers.size} unique markers`);
+	logger.info(`Collected total ${allMarkers.size} unique markers`);
 
 	// 2. 子マーカーIDの収集
-	const childIds = collectChildIds(allMarkers, options);
-	if (options.verbose) logger.info(`Found ${childIds.size} child markers`);
+	const childIds = collectChildIds(allMarkers);
+	logger.info(`Found ${childIds.size} child markers`);
 
 	// 3. ルートマーカーの特定（他の誰かの子でないマーカー）
-	const rootMarkers = identifyRootMarkers(allMarkers, childIds, options);
-	if (options.verbose) logger.info(`Found ${rootMarkers.length} root markers`);
+	const rootMarkers = identifyRootMarkers(allMarkers, childIds);
+	logger.info(`Found ${rootMarkers.length} root markers`);
 
 	// 4. 子マーカーの参照を解決
-	const resolvedRootMarkers = resolveChildReferences(rootMarkers, allMarkers, options);
+	const resolvedRootMarkers = resolveChildReferences(rootMarkers, allMarkers);
 
 	// 5. デバッグ情報を生成
 	const { totalMarkers, totalChildren } = countMarkers(resolvedRootMarkers);
-	if (options.verbose) logger.info(`Total markers in tree: ${totalMarkers} (${resolvedRootMarkers.length} roots + ${totalChildren} nested children)`);
+	logger.info(`Total markers in tree: ${totalMarkers} (${resolvedRootMarkers.length} roots + ${totalChildren} nested children)`);
 
 	// 6. 結果をTS形式で出力
-	writeOutputFile(options.exportFilePath, resolvedRootMarkers, options);
+	writeOutputFile(outputPath, resolvedRootMarkers);
 }
 
 /**
@@ -161,7 +161,7 @@ function processMarkerProperty(propValue: any, propType: 'keywords' | 'children'
 /**
  * 全マーカーから子IDを収集する
  */
-function collectChildIds(allMarkers: Map<string, SearchIndexItem>, options: Options): Set<string> {
+function collectChildIds(allMarkers: Map<string, SearchIndexItem>): Set<string> {
 	const childIds = new Set<string>();
 
 	allMarkers.forEach((marker, id) => {
@@ -189,7 +189,7 @@ function collectChildIds(allMarkers: Map<string, SearchIndexItem>, options: Opti
 					const inliningStr = (marker.inlining as string).trim();
 					if (inliningStr.startsWith('[') && inliningStr.endsWith(']')) {
 						inliningIds = JSON5.parse(inliningStr.replace(/'/g, '"'));
-						if (options.verbose) logger.info(`Parsed inlining string to array: ${inliningStr} -> ${JSON.stringify(inliningIds)}`);
+						logger.info(`Parsed inlining string to array: ${inliningStr} -> ${JSON.stringify(inliningIds)}`);
 					} else {
 						inliningIds = [inliningStr];
 					}
@@ -210,7 +210,7 @@ function collectChildIds(allMarkers: Map<string, SearchIndexItem>, options: Opti
 					} else {
 						// inliningで参照されているマーカーも子として扱う
 						childIds.add(inlineId);
-						if (options.verbose) logger.info(`Added inlined marker ${inlineId} as child in collectChildIds`);
+						logger.info(`Added inlined marker ${inlineId} as child in collectChildIds`);
 					}
 				}
 			}
@@ -225,15 +225,14 @@ function collectChildIds(allMarkers: Map<string, SearchIndexItem>, options: Opti
  */
 function identifyRootMarkers(
 	allMarkers: Map<string, SearchIndexItem>,
-	childIds: Set<string>,
-	options: Options,
+	childIds: Set<string>
 ): SearchIndexItem[] {
 	const rootMarkers: SearchIndexItem[] = [];
 
 	allMarkers.forEach((marker, id) => {
 		if (!childIds.has(id)) {
 			rootMarkers.push(marker);
-			if (options.verbose) logger.info(`Added root marker to output: ${id} with label ${marker.label}`);
+			logger.info(`Added root marker to output: ${id} with label ${marker.label}`);
 		}
 	});
 
@@ -245,8 +244,7 @@ function identifyRootMarkers(
  */
 function resolveChildReferences(
 	rootMarkers: SearchIndexItem[],
-	allMarkers: Map<string, SearchIndexItem>,
-	options: Options,
+	allMarkers: Map<string, SearchIndexItem>
 ): SearchIndexItem[] {
 	function resolveChildrenForMarker(marker: SearchIndexItem): SearchIndexItem {
 		// マーカーのディープコピーを作成
@@ -263,7 +261,7 @@ function resolveChildReferences(
 						// 子マーカーの子も再帰的に解決
 						const resolvedChild = resolveChildrenForMarker(childMarker);
 						resolvedChildren.push(resolvedChild);
-						if (options.verbose) logger.info(`Resolved regular child ${childId} for parent ${marker.id}`);
+						logger.info(`Resolved regular child ${childId} for parent ${marker.id}`);
 					}
 				}
 			}
@@ -279,11 +277,11 @@ function resolveChildReferences(
 				const inliningStr = (marker.inlining as string).trim();
 				if (inliningStr.startsWith('[') && inliningStr.endsWith(']')) {
 					inliningIds = JSON5.parse(inliningStr.replace(/'/g, '"'));
-					if (options.verbose) logger.info(`Converted string inlining to array: ${inliningStr} -> ${JSON.stringify(inliningIds)}`);
+					logger.info(`Converted string inlining to array: ${inliningStr} -> ${JSON.stringify(inliningIds)}`);
 				} else {
 					// 単一値の場合は配列に
 					inliningIds = [inliningStr];
-					if (options.verbose) logger.info(`Converted single string inlining to array: ${inliningStr}`);
+					logger.info(`Converted single string inlining to array: ${inliningStr}`);
 				}
 			} catch (e) {
 				logger.error(`Failed to parse inlining string: ${marker.inlining}`, e);
@@ -303,7 +301,7 @@ function resolveChildReferences(
 					const resolvedInline = resolveChildrenForMarker(inlineMarker);
 					delete resolvedInline.path
 					resolvedChildren.push(resolvedInline);
-					if (options.verbose) logger.info(`Added inlined marker ${inlineId} as child to ${marker.id}`);
+					logger.info(`Added inlined marker ${inlineId} as child to ${marker.id}`);
 				} else {
 					logger.warn(`Inlining target not found: ${inlineId} referenced by ${marker.id}`);
 				}
@@ -348,9 +346,9 @@ function countMarkers(markers: SearchIndexItem[]): { totalMarkers: number, total
 /**
  * 最終的なTypeScriptファイルを出力
  */
-function writeOutputFile(outputPath: string, resolvedRootMarkers: SearchIndexItem[], options: Options): void {
+function writeOutputFile(outputPath: string, resolvedRootMarkers: SearchIndexItem[]): void {
 	try {
-		const tsOutput = generateTypeScriptCode(resolvedRootMarkers, options);
+		const tsOutput = generateTypeScriptCode(resolvedRootMarkers);
 		fs.writeFileSync(outputPath, tsOutput, 'utf-8');
 		logger.info(`Successfully wrote search index to ${outputPath} with ${resolvedRootMarkers.length} root entries`);
 	} catch (error) {
@@ -361,7 +359,7 @@ function writeOutputFile(outputPath: string, resolvedRootMarkers: SearchIndexIte
 /**
  * TypeScriptコード生成
  */
-function generateTypeScriptCode(resolvedRootMarkers: SearchIndexItem[], options: Options): string {
+function generateTypeScriptCode(resolvedRootMarkers: SearchIndexItem[]): string {
 	return `
 /*
  * SPDX-FileCopyrightText: syuilo and misskey-project
@@ -382,7 +380,7 @@ export type SearchIndexItem = {
 	children?: SearchIndexItem[];
 };
 
-export const searchIndexes: SearchIndexItem[] = ${customStringify(resolvedRootMarkers, undefined, options)} as const;
+export const searchIndexes: SearchIndexItem[] = ${customStringify(resolvedRootMarkers)} as const;
 
 export type SearchIndex = typeof searchIndexes;
 `;
@@ -392,7 +390,7 @@ export type SearchIndex = typeof searchIndexes;
  * オブジェクトを特殊な形式の文字列に変換する
  * i18n参照を保持しつつ適切な形式に変換
  */
-function customStringify(obj: any, depth = 0, options: Options): string {
+function customStringify(obj: any, depth = 0): string {
 	const INDENT_STR = '\t';
 
 	// 配列の処理
@@ -405,7 +403,7 @@ function customStringify(obj: any, depth = 0, options: Options): string {
 		const items = obj.map(item => {
 			// オブジェクト要素
 			if (typeof item === 'object' && item !== null) {
-				return `${childIndent}${customStringify(item, depth + 1, options)}`;
+				return `${childIndent}${customStringify(item, depth + 1)}`;
 			}
 
 			// i18n参照を含む文字列要素
@@ -441,11 +439,11 @@ function customStringify(obj: any, depth = 0, options: Options): string {
 		.map(([key, value]) => {
 			// 子要素配列の特殊処理
 			if (key === 'children' && Array.isArray(value) && value.length > 0) {
-				return `${childIndent}${key}: ${customStringify(value, depth + 1, options)}`;
+				return `${childIndent}${key}: ${customStringify(value, depth + 1)}`;
 			}
 
 			// ラベルやその他プロパティを処理
-			return `${childIndent}${key}: ${formatSpecialProperty(key, value, options)}`;
+			return `${childIndent}${key}: ${formatSpecialProperty(key, value)}`;
 		});
 
 	if (entries.length === 0) return '{}';
@@ -455,7 +453,7 @@ function customStringify(obj: any, depth = 0, options: Options): string {
 /**
  * 特殊プロパティの書式設定
  */
-function formatSpecialProperty(key: string, value: any, options: Options): string {
+function formatSpecialProperty(key: string, value: any): string {
 	// 値がundefinedの場合は空文字列を返す
 	if (value === undefined) {
 		return '""';
@@ -463,19 +461,19 @@ function formatSpecialProperty(key: string, value: any, options: Options): strin
 
 	// childrenが配列の場合は特別に処理
 	if (key === 'children' && Array.isArray(value)) {
-		return customStringify(value, undefined, options);
+		return customStringify(value);
 	}
 
 	// keywordsが配列の場合、特別に処理
 	if (key === 'keywords' && Array.isArray(value)) {
-		return `[${formatArrayForOutput(value, options)}]`;
+		return `[${formatArrayForOutput(value)}]`;
 	}
 
 	// 文字列値の場合の特別処理
 	if (typeof value === 'string') {
 		// i18n.ts 参照を含む場合 - クォートなしでそのまま出力
 		if (isI18nReference(value)) {
-			if (options.verbose) logger.info(`Preserving i18n reference in output: ${value}`);
+			logger.info(`Preserving i18n reference in output: ${value}`);
 			return value;
 		}
 
@@ -492,11 +490,11 @@ function formatSpecialProperty(key: string, value: any, options: Options): strin
 /**
  * 配列式の文字列表現を生成
  */
-function formatArrayForOutput(items: any[], options: Options): string {
+function formatArrayForOutput(items: any[]): string {
 	return items.map(item => {
 		// i18n.ts. 参照の文字列はそのままJavaScript式として出力
 		if (typeof item === 'string' && isI18nReference(item)) {
-			if (options.verbose) logger.info(`Preserving i18n reference in array: ${item}`);
+			logger.info(`Preserving i18n reference in array: ${item}`);
 			return item; // クォートなしでそのまま
 		}
 
@@ -509,13 +507,13 @@ function formatArrayForOutput(items: any[], options: Options): string {
  * 要素ノードからテキスト内容を抽出する
  * 各抽出方法を分離して可読性を向上
  */
-function extractElementText(node: VueAstNode, options: Options): string | null {
+function extractElementText(node: VueAstNode): string | null {
 	if (!node) return null;
 
-	if (options.verbose) console.log(`Extracting text from node type=${node.type}, tag=${node.tag || 'unknown'}`);
+	console.log(`Extracting text from node type=${node.type}, tag=${node.tag || 'unknown'}`);
 
 	// 1. 直接コンテンツの抽出を試行
-	const directContent = extractDirectContent(node, options);
+	const directContent = extractDirectContent(node);
 	if (directContent) return directContent;
 
 	// 子要素がない場合は終了
@@ -524,24 +522,24 @@ function extractElementText(node: VueAstNode, options: Options): string | null {
 	}
 
 	// 2. インターポレーションノードを検索
-	const interpolationContent = extractInterpolationContent(node.children, options);
+	const interpolationContent = extractInterpolationContent(node.children);
 	if (interpolationContent) return interpolationContent;
 
 	// 3. 式ノードを検索
-	const expressionContent = extractExpressionContent(node.children, options);
+	const expressionContent = extractExpressionContent(node.children);
 	if (expressionContent) return expressionContent;
 
 	// 4. テキストノードを検索
-	const textContent = extractTextContent(node.children, options);
+	const textContent = extractTextContent(node.children);
 	if (textContent) return textContent;
 
 	// 5. 再帰的に子ノードを探索
-	return extractNestedContent(node.children, options);
+	return extractNestedContent(node.children);
 }
 /**
  * ノードから直接コンテンツを抽出
  */
-function extractDirectContent(node: VueAstNode, options: Options): string | null {
+function extractDirectContent(node: VueAstNode): string | null {
 	if (!node.content) return null;
 
 	const content = typeof node.content === 'string'
@@ -550,7 +548,7 @@ function extractDirectContent(node: VueAstNode, options: Options): string | null
 
 	if (!content) return null;
 
-	if (options.verbose) console.log(`Direct node content found: ${content}`);
+	console.log(`Direct node content found: ${content}`);
 
 	// Mustache構文のチェック
 	const mustachePattern = /^\s*{{\s*(.*?)\s*}}\s*$/;
@@ -558,13 +556,13 @@ function extractDirectContent(node: VueAstNode, options: Options): string | null
 
 	if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
 		const extractedContent = mustacheMatch[1].trim();
-		if (options.verbose) console.log(`Extracted i18n reference from mustache: ${extractedContent}`);
+		console.log(`Extracted i18n reference from mustache: ${extractedContent}`);
 		return extractedContent;
 	}
 
 	// 直接i18n参照を含む場合
 	if (isI18nReference(content)) {
-		if (options.verbose) console.log(`Direct i18n reference found: ${content}`);
+		console.log(`Direct i18n reference found: ${content}`);
 		return content;
 	}
 
@@ -575,27 +573,27 @@ function extractDirectContent(node: VueAstNode, options: Options): string | null
 /**
  * インターポレーションノード（Mustache）からコンテンツを抽出
  */
-function extractInterpolationContent(children: VueAstNode[], options: Options): string | null {
+function extractInterpolationContent(children: VueAstNode[]): string | null {
 	for (const child of children) {
 		if (child.type === NODE_TYPES.INTERPOLATION) {
-			if (options.verbose) console.log(`Found interpolation node (Mustache): `, child);
+			console.log(`Found interpolation node (Mustache): `, child);
 
 			if (child.content && child.content.type === 4 && child.content.content) {
 				const content = child.content.content.trim();
-				if (options.verbose) console.log(`Interpolation content: ${content}`);
+				console.log(`Interpolation content: ${content}`);
 
 				if (isI18nReference(content)) {
 					return content;
 				}
 			} else if (child.content && typeof child.content === 'object') {
 				// オブジェクト形式のcontentを探索
-				if (options.verbose) console.log(`Complex interpolation node:`, JSON.stringify(child.content).substring(0, 100));
+				console.log(`Complex interpolation node:`, JSON.stringify(child.content).substring(0, 100));
 
 				if (child.content.content) {
 					const content = child.content.content.trim();
 
 					if (isI18nReference(content)) {
-						if (options.verbose) console.log(`Found i18n reference in complex interpolation: ${content}`);
+						console.log(`Found i18n reference in complex interpolation: ${content}`);
 						return content;
 					}
 				}
@@ -609,14 +607,14 @@ function extractInterpolationContent(children: VueAstNode[], options: Options): 
 /**
  * 式ノードからコンテンツを抽出
  */
-function extractExpressionContent(children: VueAstNode[], options: Options): string | null {
+function extractExpressionContent(children: VueAstNode[]): string | null {
 	// i18n.ts. 参照パターンを持つものを優先
 	for (const child of children) {
 		if (child.type === NODE_TYPES.EXPRESSION && child.content) {
 			const expr = child.content.trim();
 
 			if (isI18nReference(expr)) {
-				if (options.verbose) console.log(`Found i18n reference in expression node: ${expr}`);
+				console.log(`Found i18n reference in expression node: ${expr}`);
 				return expr;
 			}
 		}
@@ -626,7 +624,7 @@ function extractExpressionContent(children: VueAstNode[], options: Options): str
 	for (const child of children) {
 		if (child.type === NODE_TYPES.EXPRESSION && child.content) {
 			const expr = child.content.trim();
-			if (options.verbose) console.log(`Found expression: ${expr}`);
+			console.log(`Found expression: ${expr}`);
 			return expr;
 		}
 	}
@@ -637,20 +635,20 @@ function extractExpressionContent(children: VueAstNode[], options: Options): str
 /**
  * テキストノードからコンテンツを抽出
  */
-function extractTextContent(children: VueAstNode[], options: Options): string | null {
+function extractTextContent(children: VueAstNode[]): string | null {
 	for (const child of children) {
 		if (child.type === NODE_TYPES.TEXT && child.content) {
 			const text = child.content.trim();
 
 			if (text) {
-				if (options.verbose) console.log(`Found text node: ${text}`);
+				console.log(`Found text node: ${text}`);
 
 				// Mustache構文のチェック
 				const mustachePattern = /^\s*{{\s*(.*?)\s*}}\s*$/;
 				const mustacheMatch = text.match(mustachePattern);
 
 				if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
-					if (options.verbose) console.log(`Extracted i18n ref from text mustache: ${mustacheMatch[1]}`);
+					console.log(`Extracted i18n ref from text mustache: ${mustacheMatch[1]}`);
 					return mustacheMatch[1].trim();
 				}
 
@@ -665,21 +663,21 @@ function extractTextContent(children: VueAstNode[], options: Options): string | 
 /**
  * 子ノードを再帰的に探索してコンテンツを抽出
  */
-function extractNestedContent(children: VueAstNode[], options: Options): string | null {
+function extractNestedContent(children: VueAstNode[]): string | null {
 	for (const child of children) {
 		if (child.children && Array.isArray(child.children) && child.children.length > 0) {
-			const nestedContent = extractElementText(child, options);
+			const nestedContent = extractElementText(child);
 
 			if (nestedContent) {
-				if (options.verbose) console.log(`Found nested content: ${nestedContent}`);
+				console.log(`Found nested content: ${nestedContent}`);
 				return nestedContent;
 			}
 		} else if (child.type === NODE_TYPES.ELEMENT) {
 			// childrenがなくても内部を調査
-			const nestedContent = extractElementText(child, options);
+			const nestedContent = extractElementText(child);
 
 			if (nestedContent) {
-				if (options.verbose) console.log(`Found content in childless element: ${nestedContent}`);
+				console.log(`Found content in childless element: ${nestedContent}`);
 				return nestedContent;
 			}
 		}
@@ -692,35 +690,35 @@ function extractNestedContent(children: VueAstNode[], options: Options): string 
 /**
  * SearchLabelとSearchKeywordを探して抽出する関数
  */
-function extractLabelsAndKeywords(nodes: VueAstNode[], options: Options): { label: string | null, keywords: any[] } {
+function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, keywords: any[] } {
 	let label: string | null = null;
 	const keywords: any[] = [];
 
-	if (options.verbose) console.log(`Extracting labels and keywords from ${nodes.length} nodes`);
+	console.log(`Extracting labels and keywords from ${nodes.length} nodes`);
 
 	// 再帰的にSearchLabelとSearchKeywordを探索（ネストされたSearchMarkerは処理しない）
 	function findComponents(nodes: VueAstNode[]) {
 		for (const node of nodes) {
 			if (node.type === NODE_TYPES.ELEMENT) {
-				if (options.verbose) console.log(`Checking element: ${node.tag}`);
+				console.log(`Checking element: ${node.tag}`);
 
 				// SearchMarkerの場合は、その子要素は別スコープなのでスキップ
 				if (node.tag === 'SearchMarker') {
-					if (options.verbose) console.log(`Found nested SearchMarker - skipping its content to maintain scope isolation`);
+					console.log(`Found nested SearchMarker - skipping its content to maintain scope isolation`);
 					continue; // このSearchMarkerの中身は処理しない (スコープ分離)
 				}
 
 				// SearchLabelの処理
 				if (node.tag === 'SearchLabel') {
-					if (options.verbose) console.log(`Found SearchLabel node, structure:`, JSON.stringify(node).substring(0, 200) + '...');
+					console.log(`Found SearchLabel node, structure:`, JSON.stringify(node).substring(0, 200) + '...');
 
 					// まず完全なノード内容の抽出を試みる
-					const content = extractElementText(node, options);
+					const content = extractElementText(node);
 					if (content) {
 						label = content;
-						if (options.verbose) console.log(`SearchLabel content extracted: ${content}`);
+						console.log(`SearchLabel content extracted: ${content}`);
 					} else {
-						if (options.verbose) console.log(`SearchLabel found but extraction failed, trying direct children inspection`);
+						console.log(`SearchLabel found but extraction failed, trying direct children inspection`);
 
 						// バックアップ: 子直接確認 - type=5のMustacheインターポレーションを重点的に確認
 						if (node.children && Array.isArray(node.children)) {
@@ -732,17 +730,17 @@ function extractLabelsAndKeywords(nodes: VueAstNode[], options: Options): { labe
 										(child.content.type === 4 ? child.content.content : null) ||
 										JSON.stringify(child.content);
 
-									if (options.verbose) console.log(`Interpolation expression: ${expression}`);
+									console.log(`Interpolation expression: ${expression}`);
 									if (typeof expression === 'string' && isI18nReference(expression)) {
 										label = expression.trim();
-										if (options.verbose) console.log(`Found i18n in interpolation: ${label}`);
+										console.log(`Found i18n in interpolation: ${label}`);
 										break;
 									}
 								}
 								// 式ノード
 								else if (child.type === NODE_TYPES.EXPRESSION && child.content && isI18nReference(child.content)) {
 									label = child.content.trim();
-									if (options.verbose) console.log(`Found i18n in expression: ${label}`);
+									console.log(`Found i18n in expression: ${label}`);
 									break;
 								}
 								// テキストノードでもMustache構文を探す
@@ -750,7 +748,7 @@ function extractLabelsAndKeywords(nodes: VueAstNode[], options: Options): { labe
 									const mustacheMatch = child.content.trim().match(/^\s*{{\s*(.*?)\s*}}\s*$/);
 									if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
 										label = mustacheMatch[1].trim();
-										if (options.verbose) console.log(`Found i18n in text mustache: ${label}`);
+										console.log(`Found i18n in text mustache: ${label}`);
 										break;
 									}
 								}
@@ -760,15 +758,15 @@ function extractLabelsAndKeywords(nodes: VueAstNode[], options: Options): { labe
 				}
 				// SearchKeywordの処理
 				else if (node.tag === 'SearchKeyword') {
-					if (options.verbose) console.log(`Found SearchKeyword node`);
+					console.log(`Found SearchKeyword node`);
 
 					// まず完全なノード内容の抽出を試みる
-					const content = extractElementText(node, options);
+					const content = extractElementText(node);
 					if (content) {
 						keywords.push(content);
-						if (options.verbose) console.log(`SearchKeyword content extracted: ${content}`);
+						console.log(`SearchKeyword content extracted: ${content}`);
 					} else {
-						if (options.verbose) console.log(`SearchKeyword found but extraction failed, trying direct children inspection`);
+						console.log(`SearchKeyword found but extraction failed, trying direct children inspection`);
 
 						// バックアップ: 子直接確認 - type=5のMustacheインターポレーションを重点的に確認
 						if (node.children && Array.isArray(node.children)) {
@@ -784,7 +782,7 @@ function extractLabelsAndKeywords(nodes: VueAstNode[], options: Options): { labe
 									if (typeof expression === 'string' && isI18nReference(expression)) {
 										const keyword = expression.trim();
 										keywords.push(keyword);
-										if (options.verbose) console.log(`Found i18n keyword in interpolation: ${keyword}`);
+										console.log(`Found i18n keyword in interpolation: ${keyword}`);
 										break;
 									}
 								}
@@ -792,7 +790,7 @@ function extractLabelsAndKeywords(nodes: VueAstNode[], options: Options): { labe
 								else if (child.type === NODE_TYPES.EXPRESSION && child.content && isI18nReference(child.content)) {
 									const keyword = child.content.trim();
 									keywords.push(keyword);
-									if (options.verbose) console.log(`Found i18n keyword in expression: ${keyword}`);
+									console.log(`Found i18n keyword in expression: ${keyword}`);
 									break;
 								}
 								// テキストノードでもMustache構文を探す
@@ -801,7 +799,7 @@ function extractLabelsAndKeywords(nodes: VueAstNode[], options: Options): { labe
 									if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
 										const keyword = mustacheMatch[1].trim();
 										keywords.push(keyword);
-										if (options.verbose) console.log(`Found i18n keyword in text mustache: ${keyword}`);
+										console.log(`Found i18n keyword in text mustache: ${keyword}`);
 										break;
 									}
 								}
@@ -821,13 +819,12 @@ function extractLabelsAndKeywords(nodes: VueAstNode[], options: Options): { labe
 	findComponents(nodes);
 
 	// デバッグ情報
-	if (options.verbose) console.log(`Extraction completed: label=${label}, keywords=[${keywords.join(', ')}]`);
+	console.log(`Extraction completed: label=${label}, keywords=[${keywords.join(', ')}]`);
 	return { label, keywords };
 }
 
 
 function extractUsageInfoFromTemplateAst(
-	options: Options,
 	templateAst: any,
 	id: string,
 ): SearchIndexItem[] {
@@ -848,7 +845,7 @@ function extractUsageInfoFromTemplateAst(
 
 			// SearchMarkerにマーカーIDがない場合はエラー
 			if (markerId == null) {
-				if (options.verbose) logger.error(`Marker ID not found for node: ${JSON.stringify(node)}`);
+				logger.error(`Marker ID not found for node: ${JSON.stringify(node)}`);
 				throw new Error(`Marker ID not found in file ${id}`);
 			}
 
@@ -872,14 +869,14 @@ function extractUsageInfoFromTemplateAst(
 			}
 
 			// バインドプロパティを取得
-			const bindings = extractNodeBindings(node, options);
+			const bindings = extractNodeBindings(node);
 			if (bindings.path) markerInfo.path = bindings.path;
 			if (bindings.icon) markerInfo.icon = bindings.icon;
 			if (bindings.label) markerInfo.label = bindings.label;
 			if (bindings.children) markerInfo.children = bindings.children;
 			if (bindings.inlining) {
 				markerInfo.inlining = bindings.inlining;
-				if (options.verbose) logger.info(`Added inlining ${JSON.stringify(bindings.inlining)} to marker ${markerId}`);
+				logger.info(`Added inlining ${JSON.stringify(bindings.inlining)} to marker ${markerId}`);
 			}
 			if (bindings.keywords) {
 				if (Array.isArray(bindings.keywords)) {
@@ -896,18 +893,18 @@ function extractUsageInfoFromTemplateAst(
 
 			// SearchLabelとSearchKeywordを抽出 (AST全体を探索)
 			if (node.children && Array.isArray(node.children)) {
-				if (options.verbose) console.log(`Processing marker ${markerId} for labels and keywords`);
-				const extracted = extractLabelsAndKeywords(node.children, options);
+				console.log(`Processing marker ${markerId} for labels and keywords`);
+				const extracted = extractLabelsAndKeywords(node.children);
 
 				// SearchLabelからのラベル取得は最優先で適用
 				if (extracted.label) {
 					markerInfo.label = extracted.label;
-					if (options.verbose) console.log(`Using extracted label for ${markerId}: ${extracted.label}`);
+					console.log(`Using extracted label for ${markerId}: ${extracted.label}`);
 				} else if (markerInfo.label) {
-					if (options.verbose) console.log(`Using existing label for ${markerId}: ${markerInfo.label}`);
+					console.log(`Using existing label for ${markerId}: ${markerInfo.label}`);
 				} else {
 					markerInfo.label = 'Unnamed marker';
-					if (options.verbose) console.log(`No label found for ${markerId}, using default`);
+					console.log(`No label found for ${markerId}, using default`);
 				}
 
 				// SearchKeywordからのキーワード取得を追加
@@ -920,7 +917,7 @@ function extractUsageInfoFromTemplateAst(
 					const combinedKeywords = [...existingKeywords];
 					for (const kw of extracted.keywords) {
 						combinedKeywords.push(kw);
-						if (options.verbose) console.log(`Added extracted keyword to ${markerId}: ${kw}`);
+						console.log(`Added extracted keyword to ${markerId}: ${kw}`);
 					}
 
 					markerInfo.keywords = combinedKeywords;
@@ -964,7 +961,7 @@ function extractUsageInfoFromTemplateAst(
 }
 
 // バインドプロパティの処理を修正する関数
-function extractNodeBindings(node: VueAstNode, options: Options): Record<keyof SearchIndexItem, any> {
+function extractNodeBindings(node: VueAstNode): Record<keyof SearchIndexItem, any> {
 	const bindings: Record<string, any> = {};
 
 	if (!node.props || !Array.isArray(node.props)) return bindings;
@@ -975,7 +972,7 @@ function extractNodeBindings(node: VueAstNode, options: Options): Record<keyof S
 			const propName = prop.arg.content;
 			const propContent = prop.exp?.content || '';
 
-			if (options.verbose) logger.info(`Processing bind prop ${propName}: ${propContent}`);
+			logger.info(`Processing bind prop ${propName}: ${propContent}`);
 
 			// inliningプロパティの処理を追加
 			if (propName === 'inlining') {
@@ -985,10 +982,10 @@ function extractNodeBindings(node: VueAstNode, options: Options): Record<keyof S
 					// 配列式の場合
 					if (content.startsWith('[') && content.endsWith(']')) {
 						// 配列要素を解析
-						const elements = parseArrayExpression(content, options);
+						const elements = parseArrayExpression(content);
 						if (elements.length > 0) {
 							bindings.inlining = elements;
-							if (options.verbose) logger.info(`Parsed inlining array: ${JSON5.stringify(elements)}`);
+							logger.info(`Parsed inlining array: ${JSON5.stringify(elements)}`);
 						} else {
 							bindings.inlining = [];
 						}
@@ -996,7 +993,7 @@ function extractNodeBindings(node: VueAstNode, options: Options): Record<keyof S
 					// 文字列の場合は配列に変換
 					else if (content) {
 						bindings.inlining = [content]; // 単一の値を配列に
-						if (options.verbose) logger.info(`Converting inlining to array: [${content}]`);
+						logger.info(`Converting inlining to array: [${content}]`);
 					}
 				} catch (e) {
 					logger.error(`Failed to parse inlining binding: ${propContent}`, e);
@@ -1010,22 +1007,22 @@ function extractNodeBindings(node: VueAstNode, options: Options): Record<keyof S
 					// 配列式の場合
 					if (content.startsWith('[') && content.endsWith(']')) {
 						// i18n参照や特殊な式を保持するため、各要素を個別に解析
-						const elements = parseArrayExpression(content, options);
+						const elements = parseArrayExpression(content);
 						if (elements.length > 0) {
 							bindings.keywords = elements;
-							if (options.verbose) logger.info(`Parsed keywords array: ${JSON5.stringify(elements)}`);
+							logger.info(`Parsed keywords array: ${JSON5.stringify(elements)}`);
 						} else {
 							bindings.keywords = [];
-							if (options.verbose) logger.info('Empty keywords array');
+							logger.info('Empty keywords array');
 						}
 					}
 					// その他の式（非配列）
 					else if (content) {
 						bindings.keywords = content; // 式をそのまま保持
-						if (options.verbose) logger.info(`Keeping keywords as expression: ${content}`);
+						logger.info(`Keeping keywords as expression: ${content}`);
 					} else {
 						bindings.keywords = [];
-						if (options.verbose) logger.info('No keywords provided');
+						logger.info('No keywords provided');
 					}
 				} catch (e) {
 					logger.error(`Failed to parse keywords binding: ${propContent}`, e);
@@ -1037,7 +1034,7 @@ function extractNodeBindings(node: VueAstNode, options: Options): Record<keyof S
 			else if (propName === 'label') {
 				// ラベルの場合も式として保持
 				bindings[propName] = propContent;
-				if (options.verbose) logger.info(`Set label from bind expression: ${propContent}`);
+				logger.info(`Set label from bind expression: ${propContent}`);
 			}
 			else {
 				bindings[propName] = propContent;
@@ -1049,13 +1046,13 @@ function extractNodeBindings(node: VueAstNode, options: Options): Record<keyof S
 }
 
 // 配列式をパースする補助関数（文字列リテラル処理を改善）
-function parseArrayExpression(expr: string, options: Options): any[] {
+function parseArrayExpression(expr: string): any[] {
 	try {
 		// 単純なケースはJSON5でパースを試みる
 		return JSON5.parse(expr.replace(/'/g, '"'));
 	} catch (e) {
 		// 複雑なケース（i18n.ts.xxx などの式を含む場合）は手動パース
-		if (options.verbose) logger.info(`Complex array expression, trying manual parsing: ${expr}`);
+		logger.info(`Complex array expression, trying manual parsing: ${expr}`);
 
 		// "["と"]"を取り除く
 		const content = expr.substring(1, expr.length - 1).trim();
@@ -1127,7 +1124,7 @@ function parseArrayExpression(expr: string, options: Options): any[] {
 			}
 		}
 
-		if (options.verbose) logger.info(`Parsed complex array expression: ${expr} -> ${JSON.stringify(result)}`);
+		logger.info(`Parsed complex array expression: ${expr} -> ${JSON.stringify(result)}`);
 		return result;
 	}
 }
@@ -1143,14 +1140,14 @@ export async function analyzeVueProps(options: Options & {
 		return [...acc, ...matchedFiles];
 	}, []);
 
-	if (options.verbose) logger.info(`Found ${filePaths.length} matching files to analyze`);
+	logger.info(`Found ${filePaths.length} matching files to analyze`);
 
 	for (const filePath of filePaths) {
 		const absolutePath = path.join(process.cwd(), filePath);
 		const id = absolutePath.replace(/\\/g, '/'); // 絶対パスに変換
 		const code = options.transformedCodeCache[id]; // options 経由でキャッシュ参照
 		if (!code) { // キャッシュミスの場合
-			if (options.verbose) logger.error(`Error: No cached code found for: ${id}.`); // エラーログ
+			logger.error(`Error: No cached code found for: ${id}.`); // エラーログ
 			throw new Error(`No cached code found for: ${id}.`); // エラーを投げる
 		}
 
@@ -1160,17 +1157,17 @@ export async function analyzeVueProps(options: Options & {
 			});
 
 			if (errors.length > 0) {
-				if (options.verbose) logger.error(`Compile Error: ${filePath}, ${errors}`);
+				logger.error(`Compile Error: ${filePath}, ${errors}`);
 				continue; // エラーが発生したファイルはスキップ
 			}
 
-			const fileMarkers = extractUsageInfoFromTemplateAst(options, descriptor.template?.ast, id);
+			const fileMarkers = extractUsageInfoFromTemplateAst(descriptor.template?.ast, id);
 
 			if (fileMarkers && fileMarkers.length > 0) {
 				allMarkers.push(...fileMarkers); // すべてのマーカーを収集
-				if (options.verbose) logger.info(`Successfully extracted ${fileMarkers.length} markers from ${filePath}`);
+				logger.info(`Successfully extracted ${fileMarkers.length} markers from ${filePath}`);
 			} else {
-				if (options.verbose) logger.info(`No markers found in ${filePath}`);
+				logger.info(`No markers found in ${filePath}`);
 			}
 		} catch (error) {
 			logger.error(`Error analyzing file ${filePath}:`, error);
@@ -1185,7 +1182,7 @@ export async function analyzeVueProps(options: Options & {
 		}
 	];
 
-	outputAnalysisResultAsTS(analysisResult, options); // すべてのマーカー情報を渡す
+	outputAnalysisResultAsTS(options.exportFilePath, analysisResult); // すべてのマーカー情報を渡す
 }
 
 interface MarkerRelation {
@@ -1282,9 +1279,9 @@ async function processVueFile(
 
 						if (!markerIdRegex.test(tagText)) {
 							s.appendRight(endOfStartTag, ` markerId="${generatedMarkerId}" data-in-app-search-marker-id="${generatedMarkerId}"`);
-							if (options.verbose) logger.info(`Adding markerId="${generatedMarkerId}" to ${id}:${lineNumber}`);
+							logger.info(`Adding markerId="${generatedMarkerId}" to ${id}:${lineNumber}`);
 						} else {
-							if (options.verbose) logger.info(`markerId already exists in ${id}:${lineNumber}`);
+							logger.info(`markerId already exists in ${id}:${lineNumber}`);
 						}
 					}
 				}
@@ -1346,7 +1343,7 @@ async function processVueFile(
 							childrenArray = [...childrenArray, ...newIds];
 							const updatedChildrenArrayStr = JSON5.stringify(childrenArray).replace(/"/g, "'");
 							s.overwrite(childrenStart, childrenEnd + 1, updatedChildrenArrayStr);
-							if (options.verbose) logger.info(`Added ${newIds.length} child markerIds to existing :children in ${id}`);
+							logger.info(`Added ${newIds.length} child markerIds to existing :children in ${id}`);
 						}
 					}
 				} catch (e) {
@@ -1379,7 +1376,7 @@ async function processVueFile(
 									const absoluteEnd = parentNodeStart + attrValueEnd;
 									const updatedArrayStr = JSON5.stringify(childrenArray).replace(/"/g, "'");
 									s.overwrite(absoluteStart, absoluteEnd, updatedArrayStr);
-									if (options.verbose) logger.info(`Updated existing :children in tag text for ${id}`);
+									logger.info(`Updated existing :children in tag text for ${id}`);
 								}
 							}
 						}
@@ -1389,7 +1386,7 @@ async function processVueFile(
 				} else {
 					// :children 属性がまだない場合、新規作成
 					s.appendRight(endOfParentStartTag, ` :children="${JSON5.stringify(childIds).replace(/"/g, "'")}"`);
-					if (options.verbose) logger.info(`Created new :children attribute with ${childIds.length} markerIds in ${id}`);
+					logger.info(`Created new :children attribute with ${childIds.length} markerIds in ${id}`);
 				}
 			}
 		}
