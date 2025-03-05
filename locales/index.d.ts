@@ -5270,6 +5270,18 @@ export interface Locale extends ILocale {
      * このメディアのセンシティブ指定を解除しますか？
      */
     "unmarkAsSensitiveConfirm": string;
+    /**
+     * ユーザーページの'ファイル付き'ノート一覧と'ファイル'タブでチャンネル投稿を含む
+     */
+    "includeChannelOnUserFiles": string;
+    /**
+     * 前後ノートの表示にリプライなどを含める
+     */
+    "showAllOnNotesPrevNext": string;
+    /**
+     * ユーザーページの'全て'と同様の基準で前後のノートを表示するようにします。
+     */
+    "showAllOnNotesPrevNextDescription": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

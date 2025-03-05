@@ -24,6 +24,8 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { i18n } from '@/i18n.js';
 import MkNoteMediaGrid from '@/components/MkNoteMediaGrid.vue';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
@@ -46,6 +48,7 @@ onMounted(() => {
 		userId: props.user.id,
 		withFiles: true,
 		limit: 10,
+		withChannelNotes: $i == null || defaultStore.state.includeChannelOnUserFiles,
 	}).then(_notes => {
 		notes.value = _notes;
 		fetching.value = false;
