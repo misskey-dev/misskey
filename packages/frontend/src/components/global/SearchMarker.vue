@@ -39,20 +39,6 @@ const rootElMutationObserver = new MutationObserver(() => {
 const injectedSearchMarkerId = inject<Ref<string | null>>('inAppSearchMarkerId');
 const searchMarkerId = computed(() => injectedSearchMarkerId?.value ?? window.location.hash.slice(1));
 const highlighted = ref(props.markerId === searchMarkerId.value);
-let highlightedMarkerTimer: number | null = null;
-
-watch(highlighted, (to) => {
-	if (highlightedMarkerTimer != null) {
-		clearTimeout(highlightedMarkerTimer);
-		highlightedMarkerTimer = null;
-	}
-
-	if (to) {
-		highlightedMarkerTimer = window.setTimeout(() => {
-			highlighted.value = false;
-		}, 3000);
-	}
-}, { immediate: true });
 
 function checkChildren() {
 	if (props.children?.includes(searchMarkerId.value)) {
@@ -127,7 +113,7 @@ onBeforeUnmount(() => {
 		width: calc(100% + 16px);
 		height: calc(100% + 16px);
 		border-radius: 6px;
-		animation: blink 1s infinite;
+		animation: blink 1s 3.5;
 		pointer-events: none;
 	}
 }
