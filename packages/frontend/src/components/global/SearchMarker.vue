@@ -113,7 +113,7 @@ onBeforeUnmount(() => {
 		width: calc(100% + 16px);
 		height: calc(100% + 16px);
 		border-radius: 6px;
-		animation: blink 1s infinite;
+		animation: blink 1s 3.5;
 		pointer-events: none;
 	}
 }
