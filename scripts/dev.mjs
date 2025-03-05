@@ -59,12 +59,6 @@ execa('pnpm', ['--filter', 'frontend-shared', 'watch', '--no-clean'], {
 });
 
 execa('pnpm', ['--filter', 'frontend', 'watch'], {
-	env: {
-		...process.env,
-		...(process.argv.includes('--frontend-search-index-verbose') ? {
-			FRONTEND_SEARCH_INDEX_VERBOSE: 'true',
-		} : {}),
-	},
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,
