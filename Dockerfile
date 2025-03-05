@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
 	&& apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
-	build-essential
+	build-essential jq
 
 WORKDIR /misskey
 
@@ -28,6 +28,8 @@ COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-revers
 COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
 
 ARG NODE_ENV=production
+
+RUN jq -r '.packageManager | sub("pnpm@(?<a>[\\d.]+)$"; "\(.a)")' package.json | xargs -i npm install -g pnpm@{}
 
 RUN npm install -g pnpm
 
@@ -46,7 +48,7 @@ FROM --platform=$TARGETPLATFORM node:${NODE_VERSION} AS target-builder
 
 RUN apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
-	build-essential
+	build-essential jq
 
 WORKDIR /misskey
 
@@ -59,7 +61,7 @@ COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bu
 
 ARG NODE_ENV=production
 
-RUN npm install -g pnpm
+RUN jq -r '.packageManager | sub("pnpm@(?<a>[\\d.]+)$"; "\(.a)")' package.json | xargs -i npm install -g pnpm@{}
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm i --frozen-lockfile --aggregate-output
