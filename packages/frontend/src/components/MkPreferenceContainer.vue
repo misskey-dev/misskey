@@ -63,7 +63,23 @@ function showMenu(ev: MouseEvent) {
 
 <style lang="scss" module>
 .root {
+	position: relative;
 	display: flex;
+
+	&:hover {
+		&::after {
+			content: '';
+			position: absolute;
+			top: -8px;
+			left: -8px;
+			width: calc(100% + 16px);
+			height: calc(100% + 16px);
+			border-radius: 8px;
+			border: 1px solid var(--MI_THEME-divider);
+			opacity: 0.7;
+			pointer-events: none;
+		}
+	}
 
 	.body {
 		flex: 1;
@@ -72,6 +88,7 @@ function showMenu(ev: MouseEvent) {
 	.menu {
 		align-content: center;
 		margin-left: 12px;
+		font-size: 12px;
 		opacity: 0.7;
 
 		&:hover {
