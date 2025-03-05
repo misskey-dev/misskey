@@ -10,7 +10,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated, onMounted, watch, ref, useTemplateRef, inject, computed } from 'vue';
+import {
+	onActivated,
+	onDeactivated,
+	onMounted,
+	onBeforeUnmount,
+	watch,
+	computed,
+	ref,
+	useTemplateRef,
+	inject,
+} from 'vue';
 import type { Ref } from 'vue';
 
 const props = defineProps<{
@@ -22,7 +32,10 @@ const props = defineProps<{
 	inlining?: string[];
 }>();
 
-const rootEl = useTemplateRef<HTMLDivElement>('root');
+const rootEl = useTemplateRef('root');
+const rootElMutationObserver = new MutationObserver(() => {
+	checkChildren();
+});
 const injectedSearchMarkerId = inject<Ref<string | null>>('inAppSearchMarkerId');
 const searchMarkerId = computed(() => injectedSearchMarkerId?.value ?? window.location.hash.slice(1));
 const highlighted = ref(props.markerId === searchMarkerId.value);
@@ -52,6 +65,13 @@ onMounted(() => {
 			block: 'center',
 		});
 	}
+
+	if (rootEl.value != null) {
+		rootElMutationObserver.observe(rootEl.value, {
+			childList: true,
+			subtree: true,
+		});
+	}
 });
 
 onActivated(() => {
@@ -61,6 +81,21 @@ onActivated(() => {
 			block: 'center',
 		});
 	}
+
+	if (rootEl.value != null) {
+		rootElMutationObserver.observe(rootEl.value, {
+			childList: true,
+			subtree: true,
+		});
+	}
+});
+
+onDeactivated(() => {
+	rootElMutationObserver.disconnect();
+});
+
+onBeforeUnmount(() => {
+	rootElMutationObserver.disconnect();
 });
 </script>
 
