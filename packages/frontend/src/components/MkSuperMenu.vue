@@ -4,8 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="rrevdjwu" :class="{ grid }">
-	<MkInput v-model="search" :placeholder="i18n.ts.search" type="search" style="margin-bottom: 16px;" @keydown.enter="searchSubmit">
+<div ref="rootEl" class="rrevdjwu" :class="{ grid }">
+	<MkInput
+		v-model="search"
+		:placeholder="i18n.ts.search"
+		type="search"
+		style="margin-bottom: 16px;"
+		@keydown="searchOnKeyDown"
+	>
 		<template #prefix><i class="ti ti-search"></i></template>
 	</MkInput>
 
@@ -32,8 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</template>
 	<template v-else>
-		<div v-for="item in searchResult">
-			<MkA :to="item.path + '#' + item.id" class="_button searchResultItem">
+		<div v-for="item, index in searchResult">
+			<MkA
+				:to="item.path + '#' + item.id"
+				class="_button searchResultItem"
+				:class="{ selected: searchSelectedIndex !== null && searchSelectedIndex === index }"
+			>
 				<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 				<span class="text">
 					<template v-if="item.isRoot">
@@ -81,10 +91,12 @@ export type SuperMenuDef = {
 </script>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { useTemplateRef, ref, watch, nextTick } from 'vue';
 import type { SearchIndexItem } from '@/scripts/autogen/settings-search-index.js';
 import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
+import { getScrollContainer } from '@@/js/scroll.js';
+import { useRouter } from '@/router/supplier.js';
 
 const props = defineProps<{
 	def: SuperMenuDef[];
@@ -92,7 +104,11 @@ const props = defineProps<{
 	searchIndex: SearchIndexItem[];
 }>();
 
+const router = useRouter();
+const rootEl = useTemplateRef('rootEl');
+
 const search = ref('');
+const searchSelectedIndex = ref<null | number>(null);
 const searchResult = ref<{
 	id: string;
 	path: string;
@@ -104,6 +120,7 @@ const searchResult = ref<{
 
 watch(search, (value) => {
 	searchResult.value = [];
+	searchSelectedIndex.value = null;
 
 	if (value === '') {
 		return;
@@ -135,7 +152,36 @@ watch(search, (value) => {
 	dive(props.searchIndex);
 });
 
-function searchSubmit() {
+function searchOnKeyDown(ev: KeyboardEvent) {
+	if (ev.isComposing) return;
+
+	if (ev.key === 'Enter' && searchSelectedIndex.value != null) {
+		ev.preventDefault();
+		router.push(searchResult.value[searchSelectedIndex.value].path + '#' + searchResult.value[searchSelectedIndex.value].id);
+	} else if (ev.key === 'ArrowDown') {
+		ev.preventDefault();
+		const current = searchSelectedIndex.value ?? -1;
+		searchSelectedIndex.value = current + 1 >= searchResult.value.length ? 0 : current + 1;
+	} else if (ev.key === 'ArrowUp') {
+		ev.preventDefault();
+		const current = searchSelectedIndex.value ?? 0;
+		searchSelectedIndex.value = current - 1 < 0 ? searchResult.value.length - 1 : current - 1;
+	}
+
+	if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+		nextTick(() => {
+			if (!rootEl.value) return;
+			const selectedEl = rootEl.value.querySelector<HTMLElement>('.searchResultItem.selected');
+			if (selectedEl != null) {
+				const scrollContainer = getScrollContainer(selectedEl);
+				if (!scrollContainer) return;
+				scrollContainer.scrollTo({
+					top: selectedEl.offsetTop - scrollContainer.clientHeight / 2 + selectedEl.clientHeight / 2,
+					behavior: 'instant',
+				});
+			}
+		});
+	}
 }
 </script>
 
@@ -274,7 +320,12 @@ function searchSubmit() {
 			background: var(--MI_THEME-panelHighlight);
 		}
 
-		&:focus-visible {
+		&.selected {
+			outline: 2px solid var(--MI_THEME-focus);
+		}
+
+		&:focus-visible,
+		&.selected {
 			outline-offset: -2px;
 		}
 
