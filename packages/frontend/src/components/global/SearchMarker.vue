@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { useInterval } from '@@/js/use-interval.js';
-import { onActivated, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, inject } from 'vue';
+import { onActivated, onMounted, ref, useTemplateRef, inject } from 'vue';
 
 const props = defineProps<{
 	markerId?: string;
