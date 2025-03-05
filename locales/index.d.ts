@@ -7499,13 +7499,21 @@ export interface Locale extends ILocale {
          */
         "none": string;
         /**
-         * リモートユーザーに表示
+         * リモートユーザーに表示(バナー)
          */
         "remote": string;
         /**
-         * 常に表示
+         * 常に表示(バナー)
          */
         "always": string;
+        /**
+         * リモートユーザーに表示(アイコン)
+         */
+        "remoteIcon": string;
+        /**
+         * 常に表示(アイコン)
+         */
+        "alwaysIcon": string;
     };
     "_serverDisconnectedBehavior": {
         /**
