@@ -53,90 +53,9 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 
-const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
-	'collapseRenotes',
-	'menu',
-	'visibility',
-	'localOnly',
-	'statusbars',
-	'widgets',
-	'tl',
-	'pinnedUserLists',
-	'overridedDeviceKind',
-	'serverDisconnectedBehavior',
-	'nsfw',
-	'highlightSensitiveMedia',
-	'animation',
-	'animatedMfm',
-	'advancedMfm',
-	'showReactionsCount',
-	'loadRawImages',
-	'imageNewTab',
-	'dataSaver',
-	'disableShowingAnimatedImages',
-	'emojiStyle',
-	'menuStyle',
-	'useBlurEffectForModal',
-	'useBlurEffect',
-	'showFixedPostForm',
-	'showFixedPostFormInChannel',
-	'enableInfiniteScroll',
-	'useReactionPickerForContextMenu',
-	'showGapBetweenNotesInTimeline',
-	'instanceTicker',
-	'emojiPickerScale',
-	'emojiPickerWidth',
-	'emojiPickerHeight',
-	'emojiPickerStyle',
-	'defaultSideView',
-	'menuDisplay',
-	'reportError',
-	'squareAvatars',
-	'showAvatarDecorations',
-	'numberOfPageCache',
-	'showNoteActionsOnlyHover',
-	'showClipButtonInNoteFooter',
-	'reactionsDisplaySize',
-	'forceShowAds',
-	'aiChanMode',
-	'devMode',
-	'mediaListWithOneImageAppearance',
-	'notificationPosition',
-	'notificationStackAxis',
-	'keepScreenOn',
-	'defaultWithReplies',
-	'disableStreamingTimeline',
-	'useGroupedNotifications',
-	'sound_masterVolume',
-	'sound_note',
-	'sound_noteMy',
-	'sound_notification',
-];
-const coldDeviceStorageSaveKeys: (keyof typeof ColdDeviceStorage.default)[] = [
-	'lightTheme',
-	'darkTheme',
-	'syncDeviceDarkMode',
-	'plugins',
-];
-
 const scope = ['clientPreferencesProfiles'];
 
 const profileProps = ['name', 'createdAt', 'updatedAt', 'misskeyVersion', 'settings', 'host'];
-
-type Profile = {
-	name: string;
-	createdAt: string;
-	updatedAt: string | null;
-	misskeyVersion: string;
-	host: string;
-	settings: {
-		hot: Record<keyof typeof defaultStoreSaveKeys, unknown>;
-		cold: Record<keyof typeof coldDeviceStorageSaveKeys, unknown>;
-		fontSize: string | null;
-		useSystemFont: 't' | null;
-		wallpaper: string | null;
-	};
-};
 
 const connection = $i && useStream().useChannel('main');
 
