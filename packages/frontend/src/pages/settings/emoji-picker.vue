@@ -89,37 +89,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.emojiPickerDisplay }}</template>
 
 		<div class="_gaps_m">
-			<MkRadios v-model="emojiPickerScale">
-				<template #label>{{ i18n.ts.size }}</template>
-				<option :value="1">{{ i18n.ts.small }}</option>
-				<option :value="2">{{ i18n.ts.medium }}</option>
-				<option :value="3">{{ i18n.ts.large }}</option>
-			</MkRadios>
+			<MkPreferenceContainer k="emojiPickerScale">
+				<MkRadios v-model="emojiPickerScale">
+					<template #label>{{ i18n.ts.size }}</template>
+					<option :value="1">{{ i18n.ts.small }}</option>
+					<option :value="2">{{ i18n.ts.medium }}</option>
+					<option :value="3">{{ i18n.ts.large }}</option>
+				</MkRadios>
+			</MkPreferenceContainer>
 
-			<MkRadios v-model="emojiPickerWidth">
-				<template #label>{{ i18n.ts.numberOfColumn }}</template>
-				<option :value="1">5</option>
-				<option :value="2">6</option>
-				<option :value="3">7</option>
-				<option :value="4">8</option>
-				<option :value="5">9</option>
-			</MkRadios>
+			<MkPreferenceContainer k="emojiPickerWidth">
+				<MkRadios v-model="emojiPickerWidth">
+					<template #label>{{ i18n.ts.numberOfColumn }}</template>
+					<option :value="1">5</option>
+					<option :value="2">6</option>
+					<option :value="3">7</option>
+					<option :value="4">8</option>
+					<option :value="5">9</option>
+				</MkRadios>
+			</MkPreferenceContainer>
 
-			<MkRadios v-model="emojiPickerHeight">
-				<template #label>{{ i18n.ts.height }}</template>
-				<option :value="1">{{ i18n.ts.small }}</option>
-				<option :value="2">{{ i18n.ts.medium }}</option>
-				<option :value="3">{{ i18n.ts.large }}</option>
-				<option :value="4">{{ i18n.ts.large }}+</option>
-			</MkRadios>
+			<MkPreferenceContainer k="emojiPickerHeight">
+				<MkRadios v-model="emojiPickerHeight">
+					<template #label>{{ i18n.ts.height }}</template>
+					<option :value="1">{{ i18n.ts.small }}</option>
+					<option :value="2">{{ i18n.ts.medium }}</option>
+					<option :value="3">{{ i18n.ts.large }}</option>
+					<option :value="4">{{ i18n.ts.large }}+</option>
+				</MkRadios>
+			</MkPreferenceContainer>
 
-			<MkSelect v-model="emojiPickerStyle">
-				<template #label>{{ i18n.ts.style }}</template>
-				<template #caption>{{ i18n.ts.needReloadToApply }}</template>
-				<option value="auto">{{ i18n.ts.auto }}</option>
-				<option value="popup">{{ i18n.ts.popup }}</option>
-				<option value="drawer">{{ i18n.ts.drawer }}</option>
-			</MkSelect>
+			<MkPreferenceContainer k="emojiPickerStyle">
+				<MkSelect v-model="emojiPickerStyle">
+					<template #label>{{ i18n.ts.style }}</template>
+					<template #caption>{{ i18n.ts.needReloadToApply }}</template>
+					<option value="auto">{{ i18n.ts.auto }}</option>
+					<option value="popup">{{ i18n.ts.popup }}</option>
+					<option value="drawer">{{ i18n.ts.drawer }}</option>
+				</MkSelect>
+			</MkPreferenceContainer>
 		</div>
 	</FormSection>
 </div>
@@ -144,6 +152,7 @@ import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { prefer } from '@/preferences.js';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
 const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
 const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));

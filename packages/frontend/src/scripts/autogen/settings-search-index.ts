@@ -626,17 +626,17 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['keep', 'original', 'raw', 'upload', i18n.ts.keepOriginalUploadingDescription],
 			},
 			{
-				id: 'oqUiI5w0s',
+				id: 'D8HUTGWE1',
 				label: i18n.ts.keepOriginalFilename,
 				keywords: ['keep', 'original', 'filename', i18n.ts.keepOriginalFilenameDescription],
 			},
 			{
-				id: 'Aszkikq9n',
+				id: '6xAvsWSZi',
 				label: i18n.ts.alwaysMarkSensitive,
 				keywords: ['always', 'default', 'mark', 'nsfw', 'sensitive', 'media', 'file'],
 			},
 			{
-				id: 'iGlVjsfVj',
+				id: 'csNNPF1KX',
 				label: i18n.ts.enableAutoSensitive,
 				keywords: ['auto', 'nsfw', 'sensitive', 'media', 'file', i18n.ts.enableAutoSensitiveDescription],
 			},
