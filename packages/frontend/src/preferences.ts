@@ -651,7 +651,7 @@ export function importProfile() {
 	input.click();
 }
 
-let latestSyncedAt = 0;
+let latestSyncedAt = Date.now();
 
 function syncBetweenTabs() {
 	const latest = miLocalStorage.getItem('latestPreferencesUpdate');
