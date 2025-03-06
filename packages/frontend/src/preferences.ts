@@ -375,11 +375,12 @@ export const PREF_DEF = {
 
 type PREF = typeof PREF_DEF;
 type ValueOf<K extends keyof PREF> = PREF[K]['default'];
+type Account = string; // <host>/<userId>
 
 type Cond = {
-	server: string | null;
-	account: string | null;
-	device: string | null;
+	server: string | null; // 将来のため
+	account: Account | null;
+	device: string | null; // 将来のため
 };
 
 type PreferencesProfile = {
@@ -391,9 +392,7 @@ type PreferencesProfile = {
 	preferences: {
 		[K in keyof PREF]: [Cond, ValueOf<K>][];
 	};
-	syncByAccount: Record<string, { // key is <host>/<userId>
-		[K in keyof PREF]?: K[];
-	}>;
+	syncByAccount: [Account, keyof PREF][],
 };
 
 // TODO: タブ間で同期
@@ -484,7 +483,7 @@ class ProfileManager {
 			modifiedAt: Date.now(),
 			name: '',
 			preferences: data,
-			syncByAccount: {},
+			syncByAccount: [],
 		};
 	}
 
