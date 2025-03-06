@@ -58,8 +58,8 @@ import { computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
 import type { Ref } from 'vue';
 import type { SoundType, OperationType } from '@/scripts/sound.js';
-import type { SoundStore } from '@/preferences.js';
-import { PREF_DEF, prefer } from '@/preferences.js';
+import type { SoundStore } from '@/preferences/def.js';
+import { prefer } from '@/preferences.js';
 import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
@@ -69,6 +69,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { operationTypes } from '@/scripts/sound.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import { PREF_DEF } from '@/preferences/def.js';
 
 const notUseSound = prefer.model('sound.notUseSound');
 const useSoundOnlyWhenActive = prefer.model('sound.useSoundOnlyWhenActive');

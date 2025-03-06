@@ -19,8 +19,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import type { PREF_DEF } from '@/preferences/def.js';
 import * as os from '@/os.js';
-import { profileManager, PREF_DEF } from '@/preferences.js';
+import { profileManager } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	k: keyof typeof PREF_DEF;

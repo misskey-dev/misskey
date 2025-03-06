@@ -10,6 +10,8 @@ import { bundledThemesInfo } from 'shiki/themes';
 import { bundledLanguagesInfo } from 'shiki/langs';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
+import defaultLightTheme from '@@/themes/l-light.json5';
+import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import { unique } from './array.js';
 import { deepClone } from './clone.js';
 import { deepMerge } from './merge.js';
@@ -21,7 +23,7 @@ let _highlighter: HighlighterCore | null = null;
 export async function getTheme(mode: 'light' | 'dark', getName: true): Promise<string>;
 export async function getTheme(mode: 'light' | 'dark', getName?: false): Promise<ThemeRegistration | ThemeRegistrationRaw>;
 export async function getTheme(mode: 'light' | 'dark', getName = false): Promise<ThemeRegistration | ThemeRegistrationRaw | string | null> {
-	const theme = deepClone(prefer.s[mode === 'light' ? 'lightTheme' : 'darkTheme']);
+	const theme = deepClone(mode === 'light' ? prefer.s.lightTheme ?? defaultLightTheme : prefer.s.darkTheme ?? defaultDarkTheme);
 
 	if (theme.base) {
 		const base = [lightTheme, darkTheme].find(x => x.id === theme.base);

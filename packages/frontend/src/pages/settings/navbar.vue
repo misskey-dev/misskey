@@ -57,7 +57,8 @@ import { defaultStore } from '@/store.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { PREF_DEF, prefer } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
+import { PREF_DEF } from '@/preferences/def.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 

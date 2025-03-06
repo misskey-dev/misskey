@@ -5294,6 +5294,14 @@ export interface Locale extends ILocale {
      * アカウントで上書き
      */
     "overrideByAccount": string;
+    /**
+     * 無題
+     */
+    "untitled": string;
+    /**
+     * 名前はありません
+     */
+    "noName": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

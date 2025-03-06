@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { SoundStore } from '@/preferences.js';
-import { PREF_DEF, prefer } from '@/preferences.js';
+import type { SoundStore } from '@/preferences/def.js';
+import { prefer } from '@/preferences.js';
+import { PREF_DEF } from '@/preferences/def.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();

@@ -1319,6 +1319,8 @@ preferencesProfile: "設定のプロファイル"
 copyPreferenceId: "設定IDをコピー"
 resetToDefaultValue: "初期値に戻す"
 overrideByAccount: "アカウントで上書き"
+untitled: "無題"
+noName: "名前はありません"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"

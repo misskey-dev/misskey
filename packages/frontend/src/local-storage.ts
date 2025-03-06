@@ -31,8 +31,7 @@ export type Keys = (
 	'message_drafts' |
 	'scratchpad' |
 	'debug' |
-	'preferencesProfileId' |
-	`preferences:${string}` |
+	'preferences' |
 	'latestPreferencesUpdate' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
