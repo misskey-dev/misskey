@@ -60,6 +60,8 @@ document.addEventListener('visibilitychange', () => {
 
 const BACKUP_FOLER_NAME = 'Misskey Preferences Backups';
 
+let latestBackupAt = 0;
+
 async function cloudBackup() {
 	if ($i == null) return;
 
@@ -98,14 +100,16 @@ async function cloudBackup() {
 		method: 'POST',
 		body: formData,
 	});
+
+	latestBackupAt = Date.now();
 }
 
 window.setInterval(() => {
-	if (defaultStore.state.enablePreferencesAutoCloudBackup) {
-		if (document.visibilityState === 'visible') { // 同期されていない古い値がバックアップされるのを防ぐ
-			cloudBackup();
-		}
-	}
+	if (!defaultStore.state.enablePreferencesAutoCloudBackup) return;
+	if (document.visibilityState !== 'visible') return; // 同期されていない古い値がバックアップされるのを防ぐ
+	if (profileManager.profile.modifiedAt <= latestBackupAt) return;
+
+	cloudBackup();
 }, 1000 * 60 * 3);
 
 if (_DEV_) {
