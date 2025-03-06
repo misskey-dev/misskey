@@ -39,6 +39,10 @@ const config = {
 		if (~replacePluginForIsChromatic) {
 			config.plugins?.splice(replacePluginForIsChromatic, 1);
 		}
+
+		//pluginsからcreateSearchIndexを削除、複数あるかもしれないので全て削除
+		config.plugins = config.plugins?.filter((plugin: Plugin) => plugin && plugin.name !== 'createSearchIndex') ?? [];
+
 		return mergeConfig(config, {
 			plugins: [
 				{
