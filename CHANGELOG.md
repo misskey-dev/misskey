@@ -14,6 +14,8 @@
 
 ### Server
 - Fix: 特定のケースでActivityPubの処理がデッドロックになることがあるのを修正
+- Fix: S3互換オブジェクトストレージでファイルのアップロードに失敗することがある問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/895)
 
 
 ## 2025.2.1
