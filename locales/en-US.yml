@@ -2652,7 +2652,7 @@ _dataSaver:
     description: "Prevents images/videos from being loaded automatically. Hidden images/videos will be loaded when tapped."
   _avatar:
     title: "Avatar image"
-    description: "Stop avatar image animation. Animated images can be larger in file size than normal  images, potentially leading to further reductions in data traffic."
+    description: "Stop avatar image animation. Animated images can be larger in file size than normal images, potentially leading to further reductions in data traffic."
   _urlPreview:
     title: "URL preview thumbnails"
     description: "URL preview thumbnail images will no longer be loaded."
