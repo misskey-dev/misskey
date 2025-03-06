@@ -368,10 +368,19 @@ export const PREF_DEF = {
 	'deck.columnAlign': {
 		default: 'left' as 'left' | 'right' | 'center',
 	},
-} satisfies Record<string, { default: any, accountDependent?: boolean }>;
+} satisfies Record<string, {
+	default: any;
+	accountDependent?: boolean;
+}>;
 
 type PREF = typeof PREF_DEF;
 type ValueOf<K extends keyof PREF> = PREF[K]['default'];
+
+type Cond = {
+	server: string | null;
+	account: string | null;
+	device: string | null;
+};
 
 type PreferencesProfile = {
 	id: string;
@@ -380,14 +389,10 @@ type PreferencesProfile = {
 	modifiedAt: number;
 	name: string;
 	preferences: {
-		[K in keyof PREF]?: ValueOf<K>;
+		[K in keyof PREF]: [Cond, ValueOf<K>][];
 	};
-	// 将来的にマルチサーバー対応した場合のため
-	serverOverrides: Record<string, { // key is <host>
-		[K in keyof PREF]?: ValueOf<K>;
-	}>;
-	accountOverrides: Record<string, { // key is <host>/<userId>
-		[K in keyof PREF]?: ValueOf<K>;
+	syncByAccount: Record<string, { // key is <host>/<userId>
+		[K in keyof PREF]?: K[];
 	}>;
 };
 
@@ -404,48 +409,105 @@ class ProfileManager {
 		this.profile = profile;
 		this.write = write;
 
+		// NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
+
 		const data = {} as { [K in keyof PREF]: ValueOf<K> };
-		for (const key in PREF_DEF) {
-			// NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
+		let key: keyof PREF;
+		for (key in PREF_DEF) {
+			if ($i == null) {
+				data[key] = PREF_DEF[key].default;
+				continue;
+			}
 
-			const hasAccountOverride = $i != null && this.profile.accountOverrides[`${host}/${$i.id}`] != null && this.profile.accountOverrides[`${host}/${$i.id}`][key] !== undefined;
+			const records = this.profile.preferences[key];
 
-			data[key] = hasAccountOverride
-				? this.profile.accountOverrides[`${host}/${$i!.id}`][key]
-				: this.profile.preferences[key] !== undefined
-					? this.profile.preferences[key]
-					: PREF_DEF[key].default;
+			const override = records.find(([cond, v]) => cond.account === `${host}/${$i!.id}`);
+			if (override) {
+				data[key] = override[1];
+				continue;
+			}
+
+			const value = records.find(([cond, v]) => cond.account == null);
+			if (value) {
+				data[key] = value[1];
+				continue;
+			}
 		}
 
 		this.prefer = new Preferences(data, (key, v) => {
-			console.log('set', key, v);
+			console.log('prefer:set', key, v);
 
-			const hasAccountOverride = $i != null && this.profile.accountOverrides[`${host}/${$i.id}`] != null && this.profile.accountOverrides[`${host}/${$i.id}`][key] !== undefined;
-
-			if (hasAccountOverride) {
-				this.profile.accountOverrides[`${host}/${$i!.id}`][key] = v;
-			} else if ($i != null && PREF_DEF[key].accountDependent) {
-				if (this.profile.accountOverrides[`${host}/${$i.id}`] == null) {
-					this.profile.accountOverrides[`${host}/${$i.id}`] = {};
-				}
-				this.profile.accountOverrides[`${host}/${$i.id}`][key] = v;
-			} else {
-				this.profile.preferences[key] = v;
+			if ($i == null) {
+				return;
 			}
-			this.save();
+
+			const records = this.profile.preferences[key];
+
+			const override = records.find(([cond, v]) => cond.account === `${host}/${$i!.id}`);
+			if (override) {
+				override[1] = v;
+				this.save();
+				return;
+			} else if (PREF_DEF[key].accountDependent) {
+				records.push([{
+					server: null,
+					account: `${host}/${$i!.id}`,
+					device: null,
+				}, v]);
+				this.save();
+				return;
+			}
+
+			const value = records.find(([cond, v]) => cond.account == null);
+			if (value) {
+				value[1] = v;
+				this.save();
+				return;
+			}
 		});
 	}
 
 	public static newProfile(): PreferencesProfile {
+		const data = {} as PreferencesProfile['preferences'];
+		let key: keyof PREF;
+		for (key in PREF_DEF) {
+			data[key] = [[{
+				server: null,
+				account: null,
+				device: null,
+			}, PREF_DEF[key].default]];
+		}
 		return {
 			id: uuid(),
 			version: version,
 			type: 'main',
 			modifiedAt: Date.now(),
 			name: '',
-			preferences: {},
-			serverOverrides: {},
-			accountOverrides: {},
+			preferences: data,
+			syncByAccount: {},
+		};
+	}
+
+	public static normalizeProfile(profile: any): PreferencesProfile {
+		const data = {} as PreferencesProfile['preferences'];
+		let key: keyof PREF;
+		for (key in PREF_DEF) {
+			const records = profile.preferences[key];
+			if (records == null || records.length === 0) {
+				data[key] = [[{
+					server: null,
+					account: null,
+					device: null,
+				}, PREF_DEF[key].default]];
+				continue;
+			} else {
+				data[key] = records;
+			}
+		}
+
+		return {
+			...profile,
+			preferences: data,
 		};
 	}
 
@@ -457,18 +519,21 @@ class ProfileManager {
 
 	public isAccountOverrided<K extends keyof PREF>(key: K): boolean {
 		if ($i == null) return false;
-		return this.profile.accountOverrides[`${host}/${$i.id}`] != null && this.profile.accountOverrides[`${host}/${$i.id}`][key] !== undefined;
+		return this.profile.preferences[key].some(([cond, v]) => cond.account === `${host}/${$i!.id}`) ?? false;
 	}
 
 	public setAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
 		if (PREF_DEF[key].accountDependent) throw new Error('already account-dependent');
+		if (this.isAccountOverrided(key)) return;
 
-		if (this.profile.accountOverrides[`${host}/${$i.id}`] == null) {
-			this.profile.accountOverrides[`${host}/${$i.id}`] = {};
-		}
+		const records = this.profile.preferences[key];
+		records.push([{
+			server: null,
+			account: `${host}/${$i!.id}`,
+			device: null,
+		}, this.prefer.s[key]]);
 
-		this.profile.accountOverrides[`${host}/${$i.id}`][key] = this.profile.preferences[key] !== undefined ? this.profile.preferences[key] : PREF_DEF[key].default;
 		this.save();
 	}
 
@@ -476,11 +541,14 @@ class ProfileManager {
 		if ($i == null) return;
 		if (PREF_DEF[key].accountDependent) throw new Error('cannot clear override for this account-dependent property');
 
-		if (this.profile.accountOverrides[`${host}/${$i.id}`] != null) {
-			delete this.profile.accountOverrides[`${host}/${$i.id}`][key];
-		}
+		const records = this.profile.preferences[key];
 
-		this.save();
+		const index = records.findIndex(([cond, v]) => cond.account === `${host}/${$i!.id}`);
+		if (index === -1) return;
+
+		records.splice(index, 1);
+
+		this.prefer.set(key, records.find(([cond, v]) => cond.account == null)![1]);
 	}
 
 	public getPerPrefMenu<K extends keyof PREF>(key: K): MenuItem[] {
@@ -520,7 +588,7 @@ class ProfileManager {
 
 const preferencesProfileId = miLocalStorage.getItem('preferencesProfileId');
 const currentProfileRaw = preferencesProfileId ? miLocalStorage.getItem(`preferences:${preferencesProfileId}`) : null;
-const currentProfile = currentProfileRaw ? JSON.parse(currentProfileRaw) as PreferencesProfile : ProfileManager.newProfile();
+const currentProfile = currentProfileRaw ? ProfileManager.normalizeProfile(JSON.parse(currentProfileRaw)) : ProfileManager.newProfile();
 if (currentProfileRaw == null) {
 	miLocalStorage.setItem(`preferences:${currentProfile.id}`, JSON.stringify(currentProfile));
 	miLocalStorage.setItem('preferencesProfileId', currentProfile.id);
