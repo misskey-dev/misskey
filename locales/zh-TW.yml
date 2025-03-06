@@ -1311,6 +1311,8 @@ federationSpecified: "此伺服器以白名單聯邦的方式運作。除了管�
 federationDisabled: "此伺服器未開啟站台聯邦。無法與其他伺服器上的使用者互動。"
 confirmOnReact: "反應時確認"
 reactAreYouSure: "用「 {emoji} 」反應嗎？"
+markAsSensitiveConfirm: "要將這個媒體設定為敏感嗎？"
+unmarkAsSensitiveConfirm: "要解除這個媒體的敏感設定嗎？"
 _accountSettings:
   requireSigninToViewContents: "須登入以顯示內容"
   requireSigninToViewContentsDescription1: "必須登入才會顯示您建立的貼文等內容。可望有效防止資訊被爬蟲蒐集。"
@@ -2594,6 +2596,7 @@ _moderationLogTypes:
   deletePage: "刪除頁面"
   deleteFlash: "刪除 Play"
   deleteGalleryPost: "刪除相簿的貼文"
+  updateProxyAccountDescription: "更新代理帳戶的說明"
 _fileViewer:
   title: "檔案詳細資訊"
   type: "檔案類型 "
@@ -2857,4 +2860,8 @@ _bootErrors:
 _search:
   searchScopeAll: "全部"
   searchScopeLocal: "本地"
+  searchScopeServer: "指定伺服器"
   searchScopeUser: "指定使用者"
+  pleaseEnterServerHost: "請輸入伺服器的主機名稱"
+  pleaseSelectUser: "請選擇使用者"
+  serverHostPlaceholder: "例：misskey.example.com"
