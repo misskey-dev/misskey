@@ -34,6 +34,7 @@ export type Keys = (
 	'debug' |
 	'preferencesProfileId' |
 	`preferences:${string}` |
+	'latestPreferencesUpdate' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
 	`themes:${string}` | // DEPRECATED

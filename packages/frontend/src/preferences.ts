@@ -19,6 +19,8 @@ import type { MenuItem } from './types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
 
+const TAB_ID = uuid();
+
 // NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
 
 //type DottedToNested<T extends Record<string, any>> = {
@@ -617,6 +619,7 @@ if (currentProfileRaw == null) {
 
 export const profileManager = new ProfileManager(currentProfile, (p) => {
 	miLocalStorage.setItem(`preferences:${p.id}`, JSON.stringify(p));
+	miLocalStorage.setItem('latestPreferencesUpdate', `${TAB_ID}/${Date.now()}`);
 });
 export const prefer = profileManager.store;
 
@@ -647,6 +650,33 @@ export function importProfile() {
 
 	input.click();
 }
+
+let latestSyncedAt = 0;
+
+function syncBetweenTabs() {
+	const latest = miLocalStorage.getItem('latestPreferencesUpdate');
+	if (latest == null) return;
+
+	const latestTab = latest.split('/')[0];
+	const latestAt = parseInt(latest.split('/')[1]);
+
+	if (latestTab === TAB_ID) return;
+	if (latestAt <= latestSyncedAt) return;
+
+	profileManager.updateProfile(ProfileManager.normalizeProfile(JSON.parse(miLocalStorage.getItem(`preferences:${preferencesProfileId}`)!)));
+
+	latestSyncedAt = Date.now();
+
+	if (_DEV_) console.log('prefer:synced');
+}
+
+window.setInterval(syncBetweenTabs, 5000);
+
+document.addEventListener('visibilitychange', () => {
+	if (document.visibilityState === 'visible') {
+		syncBetweenTabs();
+	}
+});
 
 if (_DEV_) {
 	(window as any).profileManager = profileManager;
