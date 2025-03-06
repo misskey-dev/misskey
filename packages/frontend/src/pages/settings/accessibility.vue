@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps_m">
 		<div class="_gaps_s">
 			<SearchMarker :keywords="['animation', 'motion', 'reduce']">
-				<MkPreferenceContainer k="reduceAnimation">
+				<MkPreferenceContainer k="animation">
 					<MkSwitch v-model="reduceAnimation">
 						<template #label><SearchLabel>{{ i18n.ts.reduceUiAnimation }}</SearchLabel></template>
 					</MkSwitch>
