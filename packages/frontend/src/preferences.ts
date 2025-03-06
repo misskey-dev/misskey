@@ -572,7 +572,7 @@ class ProfileManager {
 			text: i18n.ts.resetToDefaultValue,
 			danger: true,
 			action: () => {
-				// TODO
+				this.prefer.set(key, PREF_DEF[key].default);
 			},
 		}, {
 			type: 'divider',
