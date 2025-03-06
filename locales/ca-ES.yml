@@ -260,7 +260,7 @@ noCustomEmojis: "No hi ha emojis personalitzats"
 noJobs: "No hi ha feines"
 federating: "Federant"
 blocked: "Bloquejat"
-suspended: "Suspés"
+suspended: "Anul·lar subscripció "
 all: "tot"
 subscribing: "Subscrit a"
 publishing: "S'està publicant"
@@ -1311,6 +1311,8 @@ federationSpecified: "Aquest servidor treballa amb una federació de llistes bla
 federationDisabled: "La unió es troba deshabilitada en aquest servidor. No es pot interactuar amb usuaris d'altres servidors."
 confirmOnReact: "Confirmar en reaccionar"
 reactAreYouSure: "Vols reaccionar amb \"{emoji}\"?"
+markAsSensitiveConfirm: "Vols marcar aquest contingut com a sensible?"
+unmarkAsSensitiveConfirm: "Vols deixar de marcar com a sensible aquest contingut?"
 _accountSettings:
   requireSigninToViewContents: "És obligatori l'inici de sessió per poder veure el contingut"
   requireSigninToViewContentsDescription1: "Es requereix l'inici de sessió per poder veure totes les notes i el contingut que has creat. Amb això esperem evitar que els rastrejadors recopilin informació."
@@ -1332,7 +1334,7 @@ _abuseUserReport:
   resolveTutorial: "Si l'informe és legítim selecciona \"Acceptar\" per resoldre'l positivament. Però si l'informe no és legítim selecciona \"Rebutjar\" per resoldre'l negativament."
 _delivery:
   status: "Estat d'entrega "
-  stop: "Suspés"
+  stop: "Anul·lar subscripció "
   resume: "Torna a enviar"
   _type:
     none: "S'està publicant"
@@ -2594,6 +2596,7 @@ _moderationLogTypes:
   deletePage: "Esborrar la pàgina"
   deleteFlash: "Esborrar el guió"
   deleteGalleryPost: "Esborrar la publicació de la galeria"
+  updateProxyAccountDescription: "Actualitzar descripció del compte proxy"
 _fileViewer:
   title: "Detall del fitxer"
   type: "Tipus de fitxer"
