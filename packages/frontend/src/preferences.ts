@@ -53,6 +53,8 @@ document.addEventListener('visibilitychange', () => {
 	}
 });
 
+// TODO: auto backup
+
 if (_DEV_) {
 	(window as any).profileManager = profileManager;
 	(window as any).prefer = prefer;
