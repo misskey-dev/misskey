@@ -267,7 +267,7 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['remember', 'keep', 'note', 'visibility'],
 			},
 			{
-				id: 'rhKwScbVS',
+				id: '1u5HZuujV',
 				label: i18n.ts.defaultNoteVisibility,
 				keywords: ['default', 'note', 'visibility'],
 			},
@@ -435,7 +435,7 @@ export const searchIndexes: SearchIndexItem[] = [
 						keywords: [],
 					},
 					{
-						id: 'zrJicawH9',
+						id: 'uItIge5hw',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},

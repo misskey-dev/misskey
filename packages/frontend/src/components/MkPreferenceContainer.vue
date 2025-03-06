@@ -9,7 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<slot></slot>
 	</div>
 	<div :class="$style.menu">
-		<button class="_button" style="color: var(--MI_THEME-fg)" @click="showMenu"><i class="ti ti-dots"></i></button>
+		<div :class="$style.buttons">
+			<button class="_button" style="color: var(--MI_THEME-fg)" @click="showMenu"><i class="ti ti-dots"></i></button>
+		</div>
 	</div>
 </div>
 </template>
@@ -47,7 +49,9 @@ function showMenu(ev: MouseEvent) {
 		}
 
 		.menu {
-			opacity: 0.7;
+			.buttons {
+				opacity: 0.7;
+			}
 		}
 	}
 
@@ -59,10 +63,17 @@ function showMenu(ev: MouseEvent) {
 		align-content: center;
 		margin-left: 12px;
 		font-size: 12px;
-		opacity: 0.3;
+		padding-left: 8px;
+		border-left: solid 1px var(--MI_THEME-divider);
 
 		&:hover {
-			opacity: 1;
+			.buttons {
+				opacity: 1;
+			}
+		}
+
+		.buttons {
+			opacity: 0.3;
 		}
 	}
 }
