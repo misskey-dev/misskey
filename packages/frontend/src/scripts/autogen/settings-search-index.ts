@@ -688,54 +688,54 @@ export const searchIndexes: SearchIndexItem[] = [
 			},
 			{
 				id: 'AWi72xbrl',
-				label: i18n.ts.useSystemFont,
-				keywords: ['font', 'system', 'native'],
-			},
-			{
-				id: 'crEhzPeQj',
 				label: i18n.ts.seasonalScreenEffect,
 				keywords: ['effect', 'show'],
 			},
 			{
-				id: 'zDr3fbP12',
+				id: 'Ces8FsJws',
 				label: i18n.ts.menuStyle,
 				keywords: ['menu', 'style', 'popup', 'drawer'],
 			},
 			{
-				id: 'jaP50tN0y',
+				id: 'wDr9xSXCv',
 				label: i18n.ts.emojiStyle,
 				keywords: ['emoji', 'style', 'native', 'system', 'fluent', 'twemoji'],
 			},
 			{
-				id: 'e0pZfcbsx',
+				id: 'vFB0pLzck',
 				label: i18n.ts.fontSize,
 				keywords: ['font', 'size'],
 			},
 			{
-				id: 's05dHQ1dW',
+				id: '23BhvYXPC',
+				label: i18n.ts.useSystemFont,
+				keywords: ['font', 'system', 'native'],
+			},
+			{
+				id: 'EeNLndAOa',
 				children: [
 					{
-						id: 'zoMbYCvP0',
+						id: 'rAAPoaodS',
 						label: i18n.ts.reactionsDisplaySize,
 						keywords: ['reaction', 'size', 'scale', 'display'],
 					},
 					{
-						id: 'lGFzLnWfB',
+						id: 'qTLAvNWsc',
 						label: i18n.ts.limitWidthOfReaction,
 						keywords: ['reaction', 'size', 'scale', 'display', 'width', 'limit'],
 					},
 					{
-						id: '9E0v8VKIY',
+						id: '2lWgzAm13',
 						label: i18n.ts.mediaListWithOneImageAppearance,
 						keywords: ['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'list', 'size', 'height'],
 					},
 					{
-						id: 'xB7MPEF4Q',
+						id: 'EU7HbxOR5',
 						label: i18n.ts.instanceTicker,
 						keywords: ['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation'],
 					},
 					{
-						id: '7siYCSodm',
+						id: 'AEtM0FAp1',
 						label: i18n.ts.displayOfSensitiveMedia,
 						keywords: ['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility'],
 					},
@@ -744,15 +744,15 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['note', 'display'],
 			},
 			{
-				id: 'uQfyiHMSs',
+				id: 'A1FMC2Zon',
 				children: [
 					{
-						id: 'y3uTXsSQ6',
+						id: 'CB37G5ZDo',
 						label: i18n.ts.position,
 						keywords: ['position'],
 					},
 					{
-						id: 'PILAdkVM',
+						id: 'gGS2i19hS',
 						label: i18n.ts.stackAxis,
 						keywords: ['stack', 'axis', 'direction'],
 					},

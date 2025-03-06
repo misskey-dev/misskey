@@ -57,14 +57,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkPreferenceContainer>
 					</SearchMarker>
 
-					<SearchMarker :keywords="['font', 'system', 'native']">
-						<MkPreferenceContainer k="useSystemFont">
-							<MkSwitch v-model="useSystemFont">
-								<template #label><SearchLabel>{{ i18n.ts.useSystemFont }}</SearchLabel></template>
-							</MkSwitch>
-						</MkPreferenceContainer>
-					</SearchMarker>
-
 					<SearchMarker :keywords="['effect', 'show']">
 						<MkPreferenceContainer k="enableSeasonalScreenEffect">
 							<MkSwitch v-model="enableSeasonalScreenEffect">
@@ -100,15 +92,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker :keywords="['font', 'size']">
-					<MkPreferenceContainer k="fontSize">
-						<MkRadios v-model="fontSize">
-							<template #label><SearchLabel>{{ i18n.ts.fontSize }}</SearchLabel></template>
-							<option :value="null"><span style="font-size: 14px;">Aa</span></option>
-							<option value="1"><span style="font-size: 15px;">Aa</span></option>
-							<option value="2"><span style="font-size: 16px;">Aa</span></option>
-							<option value="3"><span style="font-size: 17px;">Aa</span></option>
-						</MkRadios>
-					</MkPreferenceContainer>
+					<MkRadios v-model="fontSize">
+						<template #label><SearchLabel>{{ i18n.ts.fontSize }}</SearchLabel></template>
+						<option :value="null"><span style="font-size: 14px;">Aa</span></option>
+						<option value="1"><span style="font-size: 15px;">Aa</span></option>
+						<option value="2"><span style="font-size: 16px;">Aa</span></option>
+						<option value="3"><span style="font-size: 17px;">Aa</span></option>
+					</MkRadios>
+				</SearchMarker>
+
+				<SearchMarker :keywords="['font', 'system', 'native']">
+					<MkSwitch v-model="useSystemFont">
+						<template #label><SearchLabel>{{ i18n.ts.useSystemFont }}</SearchLabel></template>
+					</MkSwitch>
 				</SearchMarker>
 			</div>
 		</FormSection>
