@@ -5302,6 +5302,10 @@ export interface Locale extends ILocale {
      * 名前はありません
      */
     "noName": string;
+    /**
+     * 自動バックアップ
+     */
+    "autoBackup": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

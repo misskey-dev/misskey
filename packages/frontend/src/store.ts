@@ -162,6 +162,11 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: false,
 	},
 
+	enablePreferencesAutoCloudBackup: {
+		where: 'device',
+		default: true,
+	},
+
 	//#region TODO: そのうち消す (preferに移行済み)
 	defaultSideView: {
 		where: 'device',

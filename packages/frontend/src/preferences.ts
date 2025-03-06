@@ -6,6 +6,7 @@
 import { v4 as uuid } from 'uuid';
 import { miLocalStorage } from '@/local-storage.js';
 import { ProfileManager } from '@/preferences/profile.js';
+import { defaultStore } from '@/store.js';
 
 const TAB_ID = uuid();
 
@@ -53,7 +54,17 @@ document.addEventListener('visibilitychange', () => {
 	}
 });
 
-// TODO: auto backup
+function cloudBackup() {
+
+}
+
+window.setInterval(() => {
+	if (defaultStore.state.enablePreferencesAutoCloudBackup) {
+		if (document.visibilityState === 'visible') { // 同期されていない古い値がバックアップされるのを防ぐ
+			cloudBackup();
+		}
+	}
+}, 1000 * 60 * 3);
 
 if (_DEV_) {
 	(window as any).profileManager = profileManager;

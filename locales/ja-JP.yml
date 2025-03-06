@@ -1321,6 +1321,7 @@ resetToDefaultValue: "初期値に戻す"
 overrideByAccount: "アカウントで上書き"
 untitled: "無題"
 noName: "名前はありません"
+autoBackup: "自動バックアップ"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"

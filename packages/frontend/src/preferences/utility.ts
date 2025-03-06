@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ref, watch } from 'vue';
 import type { PreferencesProfile } from './profile.js';
 import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
@@ -10,8 +11,19 @@ import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { profileManager } from '@/preferences.js';
 import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
 
 export function getPreferencesProfileMenu(): MenuItem[] {
+	const autoBackupEnabled = ref(defaultStore.state.enablePreferencesAutoCloudBackup);
+
+	watch(autoBackupEnabled, () => {
+		if (autoBackupEnabled.value) {
+			defaultStore.set('enablePreferencesAutoCloudBackup', true);
+		} else {
+			defaultStore.set('enablePreferencesAutoCloudBackup', false);
+		}
+	});
+
 	return [{
 		type: 'label',
 		text: profileManager.profile.name || `(${i18n.ts.noName})`,
@@ -21,6 +33,13 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 		action: () => {
 			renameProfile();
 		},
+	}, {
+		type: 'switch',
+		icon: 'ti ti-cloud-cog',
+		text: i18n.ts.autoBackup,
+		ref: autoBackupEnabled,
+	}, {
+		type: 'divider',
 	}, {
 		text: i18n.ts.export,
 		icon: 'ti ti-download',
