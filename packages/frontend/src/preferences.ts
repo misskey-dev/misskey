@@ -4,9 +4,13 @@
  */
 
 import { v4 as uuid } from 'uuid';
+import { apiUrl } from '@@/js/config.js';
+import * as Misskey from 'misskey-js';
 import { miLocalStorage } from '@/local-storage.js';
 import { ProfileManager } from '@/preferences/profile.js';
 import { defaultStore } from '@/store.js';
+import { $i } from '@/account.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const TAB_ID = uuid();
 
@@ -54,8 +58,46 @@ document.addEventListener('visibilitychange', () => {
 	}
 });
 
-function cloudBackup() {
+const BACKUP_FOLER_NAME = 'Misskey Preferences Backups';
 
+async function cloudBackup() {
+	if ($i == null) return;
+
+	const fileName = `${profileManager.profile.name || profileManager.profile.id}.misskeypreferences`;
+
+	let folder = (await misskeyApi('drive/folders/find', {
+		name: BACKUP_FOLER_NAME,
+	}))[0] as Misskey.entities.DriveFolder | null;
+
+	if (folder) {
+		const existingFiles = await misskeyApi('drive/files/find', {
+			name: fileName,
+			folderId: folder.id,
+		});
+		if (existingFiles.length > 0) {
+			for (const file of existingFiles) {
+				misskeyApi('drive/files/delete', {
+					fileId: file.id,
+				});
+			}
+		}
+	} else {
+		folder = await misskeyApi('drive/folders/create', {
+			name: BACKUP_FOLER_NAME,
+		});
+	}
+
+	const blob = new Blob([JSON.stringify(profileManager.profile)], { type: 'text/plain' });
+	const formData = new FormData();
+	formData.append('file', blob);
+	formData.append('name', fileName);
+	formData.append('isSensitive', 'false');
+	formData.append('i', $i.token);
+	formData.append('folderId', folder!.id);
+	window.fetch(apiUrl + '/drive/files/create', {
+		method: 'POST',
+		body: formData,
+	});
 }
 
 window.setInterval(() => {
@@ -69,4 +111,5 @@ window.setInterval(() => {
 if (_DEV_) {
 	(window as any).profileManager = profileManager;
 	(window as any).prefer = prefer;
+	(window as any).cloudBackup = cloudBackup;
 }

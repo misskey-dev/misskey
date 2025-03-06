@@ -70,7 +70,7 @@ function exportCurrentProfile() {
 	const txtBlob = new Blob([JSON.stringify(p)], { type: 'text/plain' });
 	const dummya = document.createElement('a');
 	dummya.href = URL.createObjectURL(txtBlob);
-	dummya.download = `${p.name || i18n.ts.untitled}.${p.id}.misskeypreferences`;
+	dummya.download = `${p.name || p.id}.misskeypreferences`;
 	dummya.click();
 }
 
