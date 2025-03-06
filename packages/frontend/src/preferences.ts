@@ -663,6 +663,7 @@ function syncBetweenTabs() {
 	if (latestTab === TAB_ID) return;
 	if (latestAt <= latestSyncedAt) return;
 
+	// TODO: 将来的にプロファイルの切り替えが実装された折には考慮が必要
 	profileManager.updateProfile(ProfileManager.normalizeProfile(JSON.parse(miLocalStorage.getItem(`preferences:${preferencesProfileId}`)!)));
 
 	latestSyncedAt = Date.now();
