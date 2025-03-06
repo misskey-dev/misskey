@@ -587,8 +587,8 @@ const showConfig = ref(false);
 const replaying = ref(false);
 const replayPlaybackRate = ref(1);
 const currentFrame = ref(0);
-const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
-const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
+const bgmVolume = ref(prefer.s['game.dropAndFusion'].bgmVolume);
+const sfxVolume = ref(prefer.s['game.dropAndFusion'].sfxVolume);
 
 watch(replayPlaybackRate, (newValue) => {
 	game.replayPlaybackRate = newValue;
@@ -624,7 +624,7 @@ function loadMonoTextures() {
 		if (renderer.textures[mono.img]) return;
 
 		let src = mono.img;
-		 
+
 		if (monoTextureUrls[mono.img]) {
 			src = monoTextureUrls[mono.img];
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -649,7 +649,7 @@ function loadMonoTextures() {
 
 function getTextureImageUrl(mono: Mono) {
 	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
-	 
+
 	if (monoTextureUrls[def.img]) {
 		return monoTextureUrls[def.img];
 
@@ -853,13 +853,13 @@ function exportLog() {
 }
 
 function updateSettings<
-	K extends keyof typeof defaultStore.state.dropAndFusion,
-	V extends typeof defaultStore.state.dropAndFusion[K],
+	K extends keyof typeof prefer.s['game.dropAndFusion'],
+	V extends typeof prefer.s['game.dropAndFusion'][K],
 >(key: K, value: V) {
 	const changes: { [P in K]?: V } = {};
 	changes[key] = value;
-	defaultStore.set('dropAndFusion', {
-		...defaultStore.state.dropAndFusion,
+	prefer.set('game.dropAndFusion', {
+		...prefer.s['game.dropAndFusion'],
 		...changes,
 	});
 }

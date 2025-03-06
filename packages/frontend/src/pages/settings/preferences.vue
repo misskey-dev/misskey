@@ -283,12 +283,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</SearchMarker>
 
 					<SearchMarker>
-						<MkRadios v-model="hemisphere">
-							<template #label><SearchLabel>{{ i18n.ts.hemisphere }}</SearchLabel></template>
-							<option value="N">{{ i18n.ts._hemisphere.N }}</option>
-							<option value="S">{{ i18n.ts._hemisphere.S }}</option>
-							<template #caption>{{ i18n.ts._hemisphere.caption }}</template>
-						</MkRadios>
+						<MkPreferenceContainer k="hemisphere">
+							<MkRadios v-model="hemisphere">
+								<template #label><SearchLabel>{{ i18n.ts.hemisphere }}</SearchLabel></template>
+								<option value="N">{{ i18n.ts._hemisphere.N }}</option>
+								<option value="S">{{ i18n.ts._hemisphere.S }}</option>
+								<template #caption>{{ i18n.ts._hemisphere.caption }}</template>
+							</MkRadios>
+						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['emoji', 'dictionary', 'additional', 'extra']">
@@ -344,11 +346,11 @@ import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);
 
-const hemisphere = computed(defaultStore.makeGetterSetter('hemisphere'));
 const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDeviceKind'));
 
 const keepCw = prefer.model('keepCw');
 const serverDisconnectedBehavior = prefer.model('serverDisconnectedBehavior');
+const hemisphere = prefer.model('hemisphere');
 const showNoteActionsOnlyHover = prefer.model('showNoteActionsOnlyHover');
 const showClipButtonInNoteFooter = prefer.model('showClipButtonInNoteFooter');
 const collapseRenotes = prefer.model('collapseRenotes');

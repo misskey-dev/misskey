@@ -114,7 +114,7 @@ export async function mainBoot() {
 	try {
 		if (prefer.s.enableSeasonalScreenEffect) {
 			const month = new Date().getMonth() + 1;
-			if (defaultStore.state.hemisphere === 'S') {
+			if (prefer.s.hemisphere === 'S') {
 				// ▼南半球
 				if (month === 7 || month === 8) {
 					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;

@@ -5,9 +5,9 @@
 
 import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { hemisphere } from '@@/js/intl-const.js';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
+import { hemisphere } from '@@/js/intl-const.js';
 import type { DeviceKind } from '@/scripts/device-kind.js';
 import type { Plugin } from '@/plugin.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -66,14 +66,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		},
 	},
 	abusesTutorial: {
-		where: 'account',
-		default: false,
-	},
-	defaultNoteVisibility: {
-		where: 'account',
-		default: 'public' as (typeof Misskey.noteVisibilities)[number],
-	},
-	defaultNoteLocalOnly: {
 		where: 'account',
 		default: false,
 	},
@@ -149,10 +141,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: [] as string[],
 	},
-	defaultSideView: {
-		where: 'device',
-		default: false,
-	},
 	menuDisplay: {
 		where: 'device',
 		default: 'sideFull' as 'sideFull' | 'sideIcon' | 'top',
@@ -173,19 +161,20 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
-	dropAndFusion: {
-		where: 'device',
-		default: {
-			bgmVolume: 0.25,
-			sfxVolume: 1,
-		},
-	},
-	hemisphere: {
-		where: 'device',
-		default: hemisphere as 'N' | 'S',
-	},
 
 	//#region TODO: そのうち消す (preferに移行済み)
+	defaultSideView: {
+		where: 'device',
+		default: false,
+	},
+	defaultNoteVisibility: {
+		where: 'account',
+		default: 'public' as (typeof Misskey.noteVisibilities)[number],
+	},
+	defaultNoteLocalOnly: {
+		where: 'account',
+		default: false,
+	},
 	keepCw: {
 		where: 'account',
 		default: true,
@@ -457,6 +446,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	hemisphere: {
+		where: 'device',
+		default: hemisphere as 'N' | 'S',
+	},
 	sound_masterVolume: {
 		where: 'device',
 		default: 0.3,
@@ -484,6 +477,13 @@ export const defaultStore = markRaw(new Storage('base', {
 	sound_reaction: {
 		where: 'device',
 		default: { type: 'syuilo/bubble2', volume: 1 },
+	},
+	dropAndFusion: {
+		where: 'device',
+		default: {
+			bgmVolume: 0.25,
+			sfxVolume: 1,
+		},
 	},
 	//#endregion
 }));

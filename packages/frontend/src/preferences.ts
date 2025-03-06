@@ -7,6 +7,7 @@ import { computed, onUnmounted, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import * as Misskey from 'misskey-js';
 import { host, version } from '@@/js/config.js';
+import { hemisphere } from '@@/js/intl-const.js';
 import { $i } from './account.js';
 import { copyToClipboard } from './scripts/copy-to-clipboard.js';
 import { i18n } from './i18n.js';
@@ -128,6 +129,12 @@ export const PREF_DEF = {
 	},
 	syncDeviceDarkMode: {
 		default: true,
+	},
+	defaultNoteVisibility: {
+		default: 'public' as (typeof Misskey.noteVisibilities)[number],
+	},
+	defaultNoteLocalOnly: {
+		default: false,
 	},
 	keepCw: {
 		default: true,
@@ -305,6 +312,9 @@ export const PREF_DEF = {
 			code: false,
 		} as Record<string, boolean>,
 	},
+	hemisphere: {
+		default: hemisphere as 'N' | 'S',
+	},
 	enableSeasonalScreenEffect: {
 		default: false,
 	},
@@ -367,6 +377,12 @@ export const PREF_DEF = {
 	},
 	'deck.columnAlign': {
 		default: 'left' as 'left' | 'right' | 'center',
+	},
+	'game.dropAndFusion': {
+		default: {
+			bgmVolume: 0.25,
+			sfxVolume: 1,
+		},
 	},
 } satisfies Record<string, {
 	default: any;
