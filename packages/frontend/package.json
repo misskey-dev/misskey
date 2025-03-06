@@ -25,7 +25,7 @@
 		"@rollup/plugin-replace": "6.0.2",
 		"@rollup/pluginutils": "5.1.4",
 		"@syuilo/aiscript": "0.19.0",
-		"@tabler/icons-webfont": "https://github.com/misskey-dev/tabler-icons/archive/refs/tags/3.30.0-mi.1932+ab127beee.tar.gz",
+		"@tabler/icons-webfont": "3.31.0",
 		"@twemoji/parser": "15.1.1",
 		"@vitejs/plugin-vue": "5.2.1",
 		"@vue/compiler-sfc": "3.5.13",
