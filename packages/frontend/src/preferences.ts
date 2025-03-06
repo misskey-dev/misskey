@@ -58,7 +58,7 @@ document.addEventListener('visibilitychange', () => {
 	}
 });
 
-const BACKUP_FOLER_NAME = 'Misskey Preferences Backups';
+const BACKUP_FOLDER_NAME = 'Misskey Preferences Backups';
 
 let latestBackupAt = 0;
 
@@ -68,24 +68,19 @@ async function cloudBackup() {
 	const fileName = `${profileManager.profile.name || profileManager.profile.id}.misskeypreferences`;
 
 	let folder = (await misskeyApi('drive/folders/find', {
-		name: BACKUP_FOLER_NAME,
+		name: BACKUP_FOLDER_NAME,
 	}))[0] as Misskey.entities.DriveFolder | null;
 
+	let existingFiles: Misskey.entities.DriveFile[] = [];
+
 	if (folder) {
-		const existingFiles = await misskeyApi('drive/files/find', {
+		existingFiles = await misskeyApi('drive/files/find', {
 			name: fileName,
 			folderId: folder.id,
 		});
-		if (existingFiles.length > 0) {
-			for (const file of existingFiles) {
-				misskeyApi('drive/files/delete', {
-					fileId: file.id,
-				});
-			}
-		}
 	} else {
 		folder = await misskeyApi('drive/folders/create', {
-			name: BACKUP_FOLER_NAME,
+			name: BACKUP_FOLDER_NAME,
 		});
 	}
 
@@ -99,9 +94,18 @@ async function cloudBackup() {
 	window.fetch(apiUrl + '/drive/files/create', {
 		method: 'POST',
 		body: formData,
+	}).then(async res => {
+		if (res.ok) {
+			res.json().then((created: Misskey.entities.DriveFile) => {
+				for (const file of existingFiles.filter(f => f.id !== created.id)) { // ファイルハッシュが同じ場合、既存のファイルが返ってくる場合があるのでそれは除外
+					misskeyApi('drive/files/delete', {
+						fileId: file.id,
+					});
+				}
+			});
+			latestBackupAt = Date.now();
+		}
 	});
-
-	latestBackupAt = Date.now();
 }
 
 window.setInterval(() => {
