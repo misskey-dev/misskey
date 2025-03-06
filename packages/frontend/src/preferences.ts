@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid';
 import * as Misskey from 'misskey-js';
 import { host, version } from '@@/js/config.js';
 import { hemisphere } from '@@/js/intl-const.js';
+import { EventEmitter } from 'eventemitter3';
 import { $i } from './account.js';
 import { copyToClipboard } from './scripts/copy-to-clipboard.js';
 import { i18n } from './i18n.js';
@@ -18,13 +19,20 @@ import type { MenuItem } from './types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
 
+// NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
+
 //type DottedToNested<T extends Record<string, any>> = {
 //	[K in keyof T as K extends string ? K extends `${infer A}.${infer B}` ? A : K : K]: K extends `${infer A}.${infer B}` ? DottedToNested<{ [key in B]: T[K] }> : T[K];
 //};
 
-class Preferences<Data extends Record<string, any>> {
-	public save: <K extends keyof Data>(key: K, value: Data[K]) => void;
+type StoreEvent<Data extends Record<string, any>> = {
+	updated: <K extends keyof Data>(ctx: {
+		key: K;
+		value: Data[K];
+	}) => void;
+};
 
+class Store<Data extends Record<string, any>> extends EventEmitter<StoreEvent<Data>> {
 	/**
 	 * static の略 (static が予約語のため)
 	 */
@@ -39,8 +47,8 @@ class Preferences<Data extends Record<string, any>> {
 		[K in keyof Data]: Ref<Data[K]>;
 	};
 
-	constructor(data: { [K in keyof Data]: Data[K] }, save: Preferences<Data>['save']) {
-		this.save = save;
+	constructor(data: { [K in keyof Data]: Data[K] }) {
+		super();
 
 		for (const key in data) {
 			this.s[key] = data[key];
@@ -50,8 +58,11 @@ class Preferences<Data extends Record<string, any>> {
 
 	public set<K extends keyof Data>(key: K, value: Data[K]) {
 		this.r[key].value = this.s[key] = value;
+		this.emit('updated', { key, value });
+	}
 
-		this.save(key, value);
+	public rewrite<K extends keyof Data>(key: K, value: Data[K]) {
+		this.r[key].value = this.s[key] = value;
 	}
 
 	/**
@@ -411,12 +422,10 @@ type PreferencesProfile = {
 	syncByAccount: [Account, keyof PREF][],
 };
 
-// TODO: タブ間で同期
-
 class ProfileManager {
 	private write: (profile: PreferencesProfile) => void;
 	public profile: PreferencesProfile;
-	public prefer: Preferences<{
+	public store: Store<{
 		[K in keyof PREF]: ValueOf<K>;
 	}>;
 
@@ -424,62 +433,37 @@ class ProfileManager {
 		this.profile = profile;
 		this.write = write;
 
-		// NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
+		const states = this.genStates();
 
-		const data = {} as { [K in keyof PREF]: ValueOf<K> };
-		let key: keyof PREF;
-		for (key in PREF_DEF) {
-			if ($i == null) {
-				data[key] = PREF_DEF[key].default;
-				continue;
-			}
+		this.store = new Store(states);
+		this.store.addListener('updated', ({ key, value }) => {
+			console.log('prefer:set', key, value);
 
-			const records = this.profile.preferences[key];
-
-			const override = records.find(([cond, v]) => cond.account === `${host}/${$i!.id}`);
-			if (override) {
-				data[key] = override[1];
-				continue;
-			}
-
-			const value = records.find(([cond, v]) => cond.account == null);
-			if (value) {
-				data[key] = value[1];
-				continue;
-			}
-		}
-
-		this.prefer = new Preferences(data, (key, v) => {
-			console.log('prefer:set', key, v);
-
-			if ($i == null) {
-				return;
-			}
-
-			const records = this.profile.preferences[key];
-
-			const override = records.find(([cond, v]) => cond.account === `${host}/${$i!.id}`);
-			if (override) {
-				override[1] = v;
-				this.save();
-				return;
-			} else if (PREF_DEF[key].accountDependent) {
-				records.push([{
+			const record = this.getMatchedRecord(key);
+			if (record[0].account == null && PREF_DEF[key].accountDependent) {
+				this.profile.preferences[key].push([{
 					server: null,
 					account: `${host}/${$i!.id}`,
 					device: null,
-				}, v]);
+				}, value]);
 				this.save();
 				return;
 			}
 
-			const value = records.find(([cond, v]) => cond.account == null);
-			if (value) {
-				value[1] = v;
-				this.save();
-				return;
-			}
+			record[1] = value;
+			this.save();
 		});
+	}
+
+	private genStates() {
+		const states = {} as { [K in keyof PREF]: ValueOf<K> };
+		let key: keyof PREF;
+		for (key in PREF_DEF) {
+			const record = this.getMatchedRecord(key);
+			states[key] = record[1];
+		}
+
+		return states;
 	}
 
 	public static newProfile(): PreferencesProfile {
@@ -532,6 +516,18 @@ class ProfileManager {
 		this.write(this.profile);
 	}
 
+	public getMatchedRecord<K extends keyof PREF>(key: K): [Cond, ValueOf<K>] {
+		const records = this.profile.preferences[key];
+
+		if ($i == null) records.find(([cond, v]) => cond.account == null)!;
+
+		const accountOverrideRecord = records.find(([cond, v]) => cond.account === `${host}/${$i!.id}`);
+		if (accountOverrideRecord) return accountOverrideRecord;
+
+		const record = records.find(([cond, v]) => cond.account == null);
+		return record!;
+	}
+
 	public isAccountOverrided<K extends keyof PREF>(key: K): boolean {
 		if ($i == null) return false;
 		return this.profile.preferences[key].some(([cond, v]) => cond.account === `${host}/${$i!.id}`) ?? false;
@@ -547,7 +543,7 @@ class ProfileManager {
 			server: null,
 			account: `${host}/${$i!.id}`,
 			device: null,
-		}, this.prefer.s[key]]);
+		}, this.store.s[key]]);
 
 		this.save();
 	}
@@ -563,7 +559,17 @@ class ProfileManager {
 
 		records.splice(index, 1);
 
-		this.prefer.set(key, records.find(([cond, v]) => cond.account == null)![1]);
+		this.store.rewrite(key, this.getMatchedRecord(key)[1]);
+
+		this.save();
+	}
+
+	public updateProfile(profile: PreferencesProfile) {
+		this.profile = profile;
+		const states = this.genStates();
+		for (const key in states) {
+			this.store.rewrite(key, states[key]);
+		}
 	}
 
 	public getPerPrefMenu<K extends keyof PREF>(key: K): MenuItem[] {
@@ -588,7 +594,7 @@ class ProfileManager {
 			text: i18n.ts.resetToDefaultValue,
 			danger: true,
 			action: () => {
-				this.prefer.set(key, PREF_DEF[key].default);
+				this.store.set(key, PREF_DEF[key].default);
 			},
 		}, {
 			type: 'divider',
@@ -612,7 +618,7 @@ if (currentProfileRaw == null) {
 export const profileManager = new ProfileManager(currentProfile, (p) => {
 	miLocalStorage.setItem(`preferences:${p.id}`, JSON.stringify(p));
 });
-export const prefer = profileManager.prefer;
+export const prefer = profileManager.store;
 
 export function exportCurrentProfile() {
 	const p = profileManager.profile;
