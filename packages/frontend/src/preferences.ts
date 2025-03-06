@@ -134,6 +134,9 @@ export const PREF_DEF = {
 		default: null as string | null,
 	},
 
+	themes: {
+		default: [] as Theme[],
+	},
 	lightTheme: {
 		default: null as Theme | null,
 	},
@@ -163,9 +166,6 @@ export const PREF_DEF = {
 	},
 	collapseRenotes: {
 		default: true,
-	},
-	themes: {
-		default: [] as Theme[],
 	},
 	menu: {
 		default: [

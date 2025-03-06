@@ -145,7 +145,7 @@ export async function mainBoot() {
 			if (defaultStore.state.menu.length > 0) {
 				const themes = await misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []);
 				if (themes.length > 0) {
-					miLocalStorage.setItem('themes', JSON.stringify(themes));
+					prefer.set('themes', themes);
 				}
 				prefer.set('lightTheme', ColdDeviceStorage.get('lightTheme'));
 				prefer.set('darkTheme', ColdDeviceStorage.get('darkTheme'));
