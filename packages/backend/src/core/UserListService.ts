@@ -58,7 +58,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	async onModuleInit() {
-		this.roleService = this.moduleRef.get(RoleService.name);
+		this.roleService = this.moduleRef.get(RoleService);
 	}
 
 	@bindThis
