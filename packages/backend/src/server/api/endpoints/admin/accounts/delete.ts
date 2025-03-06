@@ -42,10 +42,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error('user not found');
 			}
 
-			if (user.isRoot) {
-				throw new Error('cannot delete a root account');
-			}
-
 			await this.deleteAccoountService.deleteAccount(user, me);
 		});
 	}

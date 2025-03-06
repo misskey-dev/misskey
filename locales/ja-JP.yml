@@ -1311,6 +1311,8 @@ federationSpecified: "このサーバーはホワイトリスト連合で運用�
 federationDisabled: "このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。"
 confirmOnReact: "リアクションする際に確認する"
 reactAreYouSure: "\" {emoji} \" をリアクションしますか？"
+markAsSensitiveConfirm: "このメディアをセンシティブとして設定しますか？"
+unmarkAsSensitiveConfirm: "このメディアのセンシティブ指定を解除しますか？"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -2664,6 +2666,7 @@ _moderationLogTypes:
   deletePage: "ページを削除"
   deleteFlash: "Playを削除"
   deleteGalleryPost: "ギャラリーの投稿を削除"
+  updateProxyAccountDescription: "プロキシアカウントの説明を更新"
 
 _fileViewer:
   title: "ファイルの詳細"
