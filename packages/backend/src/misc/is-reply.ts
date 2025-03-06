@@ -6,6 +6,6 @@
 import { MiUser } from '@/models/User.js';
 import { MiNote } from '@/models/Note.js';
 
-export function isReply(note: Note, viewerId?: MiUser['id'] | undefined | null): boolean {
+export function isReply(note: MiNote, viewerId?: MiUser['id'] | undefined | null): boolean {
 	return note.replyId && note.replyUserId !== note.userId && note.replyUserId !== viewerId;
 }
