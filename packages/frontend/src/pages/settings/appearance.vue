@@ -213,7 +213,6 @@ const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
-const flowerEffect = computed(defaultStore.makeGetterSetter('flowerEffect'));
 const showGapBetweenNotesInTimeline = computed(defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 const reactionsDisplaySize = computed(defaultStore.makeGetterSetter('reactionsDisplaySize'));
