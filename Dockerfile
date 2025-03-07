@@ -31,8 +31,6 @@ ARG NODE_ENV=production
 
 RUN jq -r '.packageManager' package.json | xargs npm install -g
 
-RUN npm install -g pnpm
-
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm i --frozen-lockfile --aggregate-output
 
