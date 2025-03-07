@@ -150,7 +150,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</SearchMarker>
 
 		<SearchMarker :keywords="['hana', 'welcome', 'card']">
-			<MkButton @click="welcomeCard"><SearchKeyword>{{ i18n.ts._hana._welcomeCardGen.title }}</SearchKeyword></MkButton>
+			<MkButton @click="welcomeCard"><SearchLabel>{{ i18n.ts._hana._welcomeCardGen.title }}</SearchLabel></MkButton>
 		</SearchMarker>
 	</div>
 </SearchMarker>
