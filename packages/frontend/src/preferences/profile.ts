@@ -142,7 +142,7 @@ export class ProfileManager extends EventEmitter<{
 	public getMatchedRecord<K extends keyof PREF>(key: K): [Cond, ValueOf<K>] {
 		const records = this.profile.preferences[key];
 
-		if ($i == null) records.find(([cond, v]) => cond.account == null)!;
+		if ($i == null) return records.find(([cond, v]) => cond.account == null)!;
 
 		const accountOverrideRecord = records.find(([cond, v]) => cond.account === `${host}/${$i!.id}`);
 		if (accountOverrideRecord) return accountOverrideRecord;
