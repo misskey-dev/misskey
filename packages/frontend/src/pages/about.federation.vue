@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #prefix><i class="ti ti-search"></i></template>
 			<template #label>{{ i18n.ts.host }}</template>
 		</MkInput>
-		<FormSplit style="margin-top: var(--margin);">
+		<FormSplit style="margin-top: var(--MI-margin);">
 			<MkSelect v-model="state">
 				<template #label>{{ i18n.ts.state }}</template>
 				<option value="all">{{ i18n.ts.all }}</option>
@@ -54,7 +54,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import type { Paging } from '@/components/MkPagination.vue';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
 import { i18n } from '@/i18n.js';

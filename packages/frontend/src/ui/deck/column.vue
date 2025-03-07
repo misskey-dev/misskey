@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<svg viewBox="0 0 256 128" :class="$style.tabShape">
 			<g transform="matrix(6.2431,0,0,6.2431,-677.417,-29.3839)">
-				<path d="M149.512,4.707L108.507,4.707C116.252,4.719 118.758,14.958 118.758,14.958C118.758,14.958 121.381,25.283 129.009,25.209L149.512,25.209L149.512,4.707Z" style="fill:var(--deckBg);"/>
+				<path d="M149.512,4.707L108.507,4.707C116.252,4.719 118.758,14.958 118.758,14.958C118.758,14.958 121.381,25.283 129.009,25.209L149.512,25.209L149.512,4.707Z" style="fill:var(--MI_THEME-deckBg);"/>
 			</g>
 		</svg>
 		<div :class="$style.color"></div>
@@ -43,10 +43,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, watch, shallowRef, ref, computed } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store.js';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from './deck-store.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { MenuItem } from '@/types/menu.js';
+import type { Column } from './deck-store.js';
+import type { MenuItem } from '@/types/menu.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
@@ -104,11 +105,32 @@ function toggleActive() {
 }
 
 function getMenu() {
-	let items: MenuItem[] = [{
+	const menuItems: MenuItem[] = [];
+
+	if (props.menu) {
+		menuItems.push(...props.menu, {
+			type: 'divider',
+		});
+	}
+
+	if (props.refresher) {
+		menuItems.push({
+			icon: 'ti ti-refresh',
+			text: i18n.ts.reload,
+			action: () => {
+				if (props.refresher) {
+					props.refresher();
+				}
+			},
+		});
+	}
+
+	menuItems.push({
 		icon: 'ti ti-settings',
 		text: i18n.ts._deck.configureColumn,
 		action: async () => {
-			const { canceled, result } = await os.form(props.column.name, {
+			const name = props.column.name ?? i18n.ts._deck._columns[props.column.type];
+			const { canceled, result } = await os.form(name, {
 				name: {
 					type: 'string',
 					label: i18n.ts.name,
@@ -123,80 +145,79 @@ function getMenu() {
 				flexible: {
 					type: 'boolean',
 					label: i18n.ts._deck.flexible,
-					default: props.column.flexible,
+					default: props.column.flexible ?? null,
 				},
 			});
 			if (canceled) return;
 			updateColumn(props.column.id, result);
 		},
+	});
+
+	const moveToMenuItems: MenuItem[] = [];
+
+	moveToMenuItems.push({
+		icon: 'ti ti-arrow-left',
+		text: i18n.ts._deck.swapLeft,
+		action: () => {
+			swapLeftColumn(props.column.id);
+		},
 	}, {
-		type: 'parent',
-		text: i18n.ts.move + '...',
-		icon: 'ti ti-arrows-move',
-		children: [{
-			icon: 'ti ti-arrow-left',
-			text: i18n.ts._deck.swapLeft,
-			action: () => {
-				swapLeftColumn(props.column.id);
-			},
-		}, {
-			icon: 'ti ti-arrow-right',
-			text: i18n.ts._deck.swapRight,
-			action: () => {
-				swapRightColumn(props.column.id);
-			},
-		}, props.isStacked ? {
+		icon: 'ti ti-arrow-right',
+		text: i18n.ts._deck.swapRight,
+		action: () => {
+			swapRightColumn(props.column.id);
+		},
+	});
+
+	if (props.isStacked) {
+		moveToMenuItems.push({
 			icon: 'ti ti-arrow-up',
 			text: i18n.ts._deck.swapUp,
 			action: () => {
 				swapUpColumn(props.column.id);
 			},
-		} : undefined, props.isStacked ? {
+		}, {
 			icon: 'ti ti-arrow-down',
 			text: i18n.ts._deck.swapDown,
 			action: () => {
 				swapDownColumn(props.column.id);
 			},
-		} : undefined],
+		});
+	}
+
+	menuItems.push({
+		type: 'parent',
+		text: i18n.ts.move + '...',
+		icon: 'ti ti-arrows-move',
+		children: moveToMenuItems,
 	}, {
 		icon: 'ti ti-stack-2',
 		text: i18n.ts._deck.stackLeft,
 		action: () => {
 			stackLeftColumn(props.column.id);
 		},
-	}, props.isStacked ? {
-		icon: 'ti ti-window-maximize',
-		text: i18n.ts._deck.popRight,
-		action: () => {
-			popRightColumn(props.column.id);
-		},
-	} : undefined, { type: 'divider' }, {
+	});
+
+	if (props.isStacked) {
+		menuItems.push({
+			icon: 'ti ti-window-maximize',
+			text: i18n.ts._deck.popRight,
+			action: () => {
+				popRightColumn(props.column.id);
+			},
+		});
+	}
+
+	menuItems.push({ type: 'divider' }, {
 		icon: 'ti ti-trash',
 		text: i18n.ts.remove,
 		danger: true,
 		action: () => {
 			removeColumn(props.column.id);
 		},
-	}];
+	});
 
-	if (props.menu) {
-		items.unshift({ type: 'divider' });
-		items = props.menu.concat(items);
-	}
-
-	if (props.refresher) {
-		items = [{
-			icon: 'ti ti-refresh',
-			text: i18n.ts.reload,
-			action: () => {
-				if (props.refresher) {
-					props.refresher();
-				}
-			},
-		}, ...items];
-	}
-
-	return items;
+	return menuItems;
 }
 
 function showSettingsMenu(ev: MouseEvent) {
@@ -280,7 +301,7 @@ function onDrop(ev) {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: var(--focus);
+			background: var(--MI_THEME-focus);
 		}
 	}
 
@@ -294,7 +315,7 @@ function onDrop(ev) {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: var(--focus);
+			background: var(--MI_THEME-focus);
 			opacity: 0.5;
 		}
 	}
@@ -312,37 +333,37 @@ function onDrop(ev) {
 	}
 
 	&.naked {
-		background: var(--acrylicBg) !important;
-		-webkit-backdrop-filter: var(--blur, blur(10px));
-		backdrop-filter: var(--blur, blur(10px));
+		background: var(--MI_THEME-acrylicBg) !important;
+		-webkit-backdrop-filter: var(--MI-blur, blur(10px));
+		backdrop-filter: var(--MI-blur, blur(10px));
 
 		> .header {
 			background: transparent;
 			box-shadow: none;
-			color: var(--fg);
+			color: var(--MI_THEME-fg);
 		}
 
 		> .body {
 			background: transparent !important;
+			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
 
 			&::-webkit-scrollbar-track {
 				background: transparent;
 			}
-			scrollbar-color: var(--scrollbarHandle) transparent;
 		}
 	}
 
 	&.paged {
-		background: var(--bg) !important;
+		background: var(--MI_THEME-bg) !important;
 
 		> .body {
-			background: var(--bg) !important;
+			background: var(--MI_THEME-bg) !important;
 			overflow-y: scroll !important;
+			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
 
 			&::-webkit-scrollbar-track {
 				background: inherit;
 			}
-			scrollbar-color: var(--scrollbarHandle) transparent;
 		}
 	}
 }
@@ -355,9 +376,9 @@ function onDrop(ev) {
 	height: var(--deckColumnHeaderHeight);
 	padding: 0 16px 0 30px;
 	font-size: 0.9em;
-	color: var(--panelHeaderFg);
-	background: var(--panelHeaderBg);
-	box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
+	color: var(--MI_THEME-panelHeaderFg);
+	background: var(--MI_THEME-panelHeaderBg);
+	box-shadow: 0 1px 0 0 var(--MI_THEME-panelHeaderDivider);
 	cursor: pointer;
 	user-select: none;
 }
@@ -368,7 +389,7 @@ function onDrop(ev) {
 	left: 12px;
 	width: 3px;
 	height: calc(100% - 24px);
-	background: var(--accent);
+	background: var(--MI_THEME-accent);
 	border-radius: 999px;
 }
 
@@ -422,11 +443,11 @@ function onDrop(ev) {
 	overscroll-behavior-y: contain;
 	box-sizing: border-box;
 	container-type: size;
-	background-color: var(--bg);
+	background-color: var(--MI_THEME-bg);
+	scrollbar-color: var(--MI_THEME-scrollbarHandle) var(--MI_THEME-panel);
 
 	&::-webkit-scrollbar-track {
-		background: var(--panel);
+		background: var(--MI_THEME-panel);
 	}
-	scrollbar-color: var(--scrollbarHandle) var(--panel);
 }
 </style>

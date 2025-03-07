@@ -21,8 +21,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { GetFormResultType } from '@/scripts/form.js';
 import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
@@ -126,10 +127,10 @@ defineExpose<WidgetComponentExpose>({
 		max-width: 100%;
 		min-width: 100%;
 		padding: 16px;
-		color: var(--fg);
+		color: var(--MI_THEME-fg);
 		background: transparent;
 		border: none;
-		border-bottom: solid 0.5px var(--divider);
+		border-bottom: solid 0.5px var(--MI_THEME-divider);
 		border-radius: 0;
 		box-sizing: border-box;
 		font: inherit;
@@ -154,7 +155,7 @@ defineExpose<WidgetComponentExpose>({
 	}
 
 	> .logs {
-		border-top: solid 0.5px var(--divider);
+		border-top: solid 0.5px var(--MI_THEME-divider);
 		text-align: left;
 		padding: 16px;
 

@@ -5,19 +5,31 @@
 
 import * as Misskey from 'misskey-js';
 import { ref } from 'vue';
-import { apiUrl } from '@/config.js';
+import { apiUrl } from '@@/js/config.js';
 import { $i } from '@/account.js';
 export const pendingApiRequestsCount = ref(0);
+
+export type Endpoint = keyof Misskey.Endpoints;
+
+export type Request<E extends Endpoint> = Misskey.Endpoints[E]['req'];
+
+export type AnyRequest<E extends Endpoint | (string & unknown)> =
+	(E extends Endpoint ? Request<E> : never) | object;
+
+export type Response<E extends Endpoint | (string & unknown), P extends AnyRequest<E>> =
+	E extends Endpoint
+	? P extends Request<E> ? Misskey.api.SwitchCaseResponseType<E, P> : never
+	: object;
 
 // Implements Misskey.api.ApiClient.request
 export function misskeyApi<
 	ResT = void,
-	E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints,
-	P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req'],
-	_ResT = ResT extends void ? Misskey.api.SwitchCaseResponseType<E, P> : ResT,
+	E extends Endpoint | NonNullable<string> = Endpoint,
+	P extends AnyRequest<E> = E extends Endpoint ? Request<E> : never,
+	_ResT = ResT extends void ? Response<E, P> : ResT,
 >(
 	endpoint: E,
-	data: P = {} as any,
+	data: P & { i?: string | null; } = {} as any,
 	token?: string | null | undefined,
 	signal?: AbortSignal,
 ): Promise<_ResT> {
@@ -30,8 +42,8 @@ export function misskeyApi<
 
 	const promise = new Promise<_ResT>((resolve, reject) => {
 		// Append a credential
-		if ($i) (data as any).i = $i.token;
-		if (token !== undefined) (data as any).i = token;
+		if ($i) data.i = $i.token;
+		if (token !== undefined) data.i = token;
 
 		// Send request
 		window.fetch(`${apiUrl}/${endpoint}`, {

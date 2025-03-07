@@ -47,7 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import XPie, { type InstanceForPie } from './overview.pie.vue';
+import XPie from './overview.pie.vue';
+import type { InstanceForPie } from './overview.pie.vue';
 import * as os from '@/os.js';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import number from '@/filters/number.js';
@@ -151,8 +152,8 @@ onMounted(async () => {
 					height: 100%;
 					aspect-ratio: 1;
 					margin-right: 12px;
-					background: var(--accentedBg);
-					color: var(--accent);
+					background: var(--MI_THEME-accentedBg);
+					color: var(--MI_THEME-accent);
 					border-radius: 10px;
 				}
 

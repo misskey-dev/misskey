@@ -27,7 +27,7 @@ import * as sound from '@/scripts/sound.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
 import { defaultStore } from '@/store.js';
-import { Paging } from '@/components/MkPagination.vue';
+import type { Paging } from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -38,10 +38,12 @@ const props = withDefaults(defineProps<{
 	sound?: boolean;
 	withRenotes?: boolean;
 	withReplies?: boolean;
+	withSensitive?: boolean;
 	onlyFiles?: boolean;
 }>(), {
 	withRenotes: true,
 	withReplies: false,
+	withSensitive: true,
 	onlyFiles: false,
 });
 
@@ -51,18 +53,19 @@ const emit = defineEmits<{
 }>();
 
 provide('inTimeline', true);
+provide('tl_withSensitive', computed(() => props.withSensitive));
 provide('inChannel', computed(() => props.src === 'channel'));
 
 type TimelineQueryType = {
-  antennaId?: string,
-  withRenotes?: boolean,
-  withReplies?: boolean,
-  withFiles?: boolean,
-  visibility?: string,
-  listId?: string,
-  channelId?: string,
-  roleId?: string
-}
+	antennaId?: string,
+	withRenotes?: boolean,
+	withReplies?: boolean,
+	withFiles?: boolean,
+	visibility?: string,
+	listId?: string,
+	channelId?: string,
+	roleId?: string
+};
 
 const prComponent = shallowRef<InstanceType<typeof MkPullToRefresh>>();
 const tlComponent = shallowRef<InstanceType<typeof MkNotes>>();
@@ -247,6 +250,9 @@ function refreshEndpointAndChannel() {
 // デッキのリストカラムでwithRenotesを変更した場合に自動的に更新されるようにさせる
 // IDが切り替わったら切り替え先のTLを表示させたい
 watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes], refreshEndpointAndChannel);
+
+// withSensitiveはクライアントで完結する処理のため、単にリロードするだけでOK
+watch(() => props.withSensitive, reloadTimeline);
 
 // 初回表示用
 refreshEndpointAndChannel();

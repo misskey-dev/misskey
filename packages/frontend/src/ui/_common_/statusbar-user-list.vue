@@ -35,7 +35,7 @@ import { ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { getNoteSummary } from '@/scripts/get-note-summary.js';
 import { notePage } from '@/filters/note.js';
 

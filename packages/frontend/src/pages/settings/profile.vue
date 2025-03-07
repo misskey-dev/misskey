@@ -4,108 +4,152 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<div class="_panel">
-		<div :class="$style.banner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
-			<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
-		</div>
-		<div :class="$style.avatarContainer">
-			<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration @click="changeAvatar"/>
-			<div class="_buttonsCenter">
-				<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
-				<MkButton primary rounded link to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
+<SearchMarker path="/settings/profile" :label="i18n.ts.profile" :keywords="['profile']" icon="ti ti-user">
+	<div class="_gaps_m">
+		<div class="_panel">
+			<div :class="$style.banner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+				<div :class="$style.bannerEdit">
+					<SearchMarker :keywords="['banner', 'change']">
+						<MkButton primary rounded @click="changeBanner"><SearchLabel>{{ i18n.ts._profile.changeBanner }}</SearchLabel></MkButton>
+					</SearchMarker>
+				</div>
+			</div>
+			<div :class="$style.avatarContainer">
+				<MkAvatar :class="$style.avatar" :user="$i" forceShowDecoration @click="changeAvatar"/>
+				<div class="_buttonsCenter">
+					<SearchMarker :keywords="['avatar', 'icon', 'change']">
+						<MkButton primary rounded @click="changeAvatar"><SearchLabel>{{ i18n.ts._profile.changeAvatar }}</SearchLabel></MkButton>
+					</SearchMarker>
+					<MkButton primary rounded link to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
-		<template #label>{{ i18n.ts._profile.name }}</template>
-	</MkInput>
+		<SearchMarker :keywords="['name']">
+			<MkInput v-model="profile.name" :max="30" manualSave :mfmAutocomplete="['emoji']">
+				<template #label><SearchLabel>{{ i18n.ts._profile.name }}</SearchLabel></template>
+			</MkInput>
+		</SearchMarker>
 
-	<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
-		<template #label>{{ i18n.ts._profile.description }}</template>
-		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
-	</MkTextarea>
+		<SearchMarker :keywords="['description', 'bio']">
+			<MkTextarea v-model="profile.description" :max="500" tall manualSave mfmAutocomplete :mfmPreview="true">
+				<template #label><SearchLabel>{{ i18n.ts._profile.description }}</SearchLabel></template>
+				<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
+			</MkTextarea>
+		</SearchMarker>
 
-	<MkInput v-model="profile.location" manualSave>
-		<template #label>{{ i18n.ts.location }}</template>
-		<template #prefix><i class="ti ti-map-pin"></i></template>
-	</MkInput>
+		<SearchMarker :keywords="['location', 'locale']">
+			<MkInput v-model="profile.location" manualSave>
+				<template #label><SearchLabel>{{ i18n.ts.location }}</SearchLabel></template>
+				<template #prefix><i class="ti ti-map-pin"></i></template>
+			</MkInput>
+		</SearchMarker>
 
-	<MkInput v-model="profile.birthday" type="date" manualSave>
-		<template #label>{{ i18n.ts.birthday }}</template>
-		<template #prefix><i class="ti ti-cake"></i></template>
-	</MkInput>
+		<SearchMarker :keywords="['birthday', 'birthdate', 'age']">
+			<MkInput v-model="profile.birthday" type="date" manualSave>
+				<template #label><SearchLabel>{{ i18n.ts.birthday }}</SearchLabel></template>
+				<template #prefix><i class="ti ti-cake"></i></template>
+			</MkInput>
+		</SearchMarker>
 
-	<MkSelect v-model="profile.lang">
-		<template #label>{{ i18n.ts.language }}</template>
-		<option v-for="x in Object.keys(langmap)" :key="x" :value="x">{{ langmap[x].nativeName }}</option>
-	</MkSelect>
+		<SearchMarker :keywords="['language', 'locale']">
+			<MkSelect v-model="profile.lang">
+				<template #label><SearchLabel>{{ i18n.ts.language }}</SearchLabel></template>
+				<option v-for="x in Object.keys(langmap)" :key="x" :value="x">{{ langmap[x].nativeName }}</option>
+			</MkSelect>
+		</SearchMarker>
 
-	<FormSlot>
-		<MkFolder>
-			<template #icon><i class="ti ti-list"></i></template>
-			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
-
-			<div :class="$style.metadataRoot">
-				<div :class="$style.metadataMargin">
-					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-					<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" inline danger style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-					<MkButton v-else inline style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-arrows-sort"></i> {{ i18n.ts.rearrange }}</MkButton>
-					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-				</div>
-
-				<Sortable
-					v-model="fields"
-					class="_gaps_s"
-					itemKey="id"
-					:animation="150"
-					:handle="'.' + $style.dragItemHandle"
-					@start="e => e.item.classList.add('active')"
-					@end="e => e.item.classList.remove('active')"
-				>
-					<template #item="{element, index}">
-						<div :class="$style.fieldDragItem">
-							<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
-							<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
-							<div :class="$style.dragItemForm">
-								<FormSplit :minWidth="200">
-									<MkInput v-model="element.name" small>
-										<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
-									</MkInput>
-									<MkInput v-model="element.value" small>
-										<template #label>{{ i18n.ts._profile.metadataContent }}</template>
-									</MkInput>
-								</FormSplit>
-							</div>
+		<SearchMarker :keywords="['metadata']">
+			<FormSlot>
+				<MkFolder>
+					<template #icon><i class="ti ti-list"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts._profile.metadataEdit }}</SearchLabel></template>
+					<template #footer>
+						<div class="_buttons">
+							<MkButton primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+							<MkButton :disabled="fields.length >= 16" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+							<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" danger @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+							<MkButton v-else @click="fieldEditMode = !fieldEditMode"><i class="ti ti-arrows-sort"></i> {{ i18n.ts.rearrange }}</MkButton>
 						</div>
 					</template>
-				</Sortable>
 
-				<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
-			</div>
-		</MkFolder>
-		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
-	</FormSlot>
+					<div :class="$style.metadataRoot" class="_gaps_s">
+						<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
 
-	<MkFolder>
-		<template #label>{{ i18n.ts.advancedSettings }}</template>
+						<Sortable
+							v-model="fields"
+							class="_gaps_s"
+							itemKey="id"
+							:animation="150"
+							:handle="'.' + $style.dragItemHandle"
+							@start="e => e.item.classList.add('active')"
+							@end="e => e.item.classList.remove('active')"
+						>
+							<template #item="{element, index}">
+								<div v-panel :class="$style.fieldDragItem">
+									<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
+									<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
+									<div :class="$style.dragItemForm">
+										<FormSplit :minWidth="200">
+											<MkInput v-model="element.name" small :placeholder="i18n.ts._profile.metadataLabel">
+											</MkInput>
+											<MkInput v-model="element.value" small :placeholder="i18n.ts._profile.metadataContent">
+											</MkInput>
+										</FormSplit>
+									</div>
+								</div>
+							</template>
+						</Sortable>
+					</div>
+				</MkFolder>
+				<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
+			</FormSlot>
+		</SearchMarker>
 
-		<div class="_gaps_m">
-			<MkSwitch v-model="profile.isCat">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></MkSwitch>
-			<MkSwitch v-model="profile.isBot">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></MkSwitch>
-		</div>
-	</MkFolder>
+		<SearchMarker :keywords="['follow', 'message']">
+			<MkInput v-model="profile.followedMessage" :max="200" manualSave :mfmPreview="false">
+				<template #label><SearchLabel>{{ i18n.ts._profile.followedMessage }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+				<template #caption>
+					<div><SearchKeyword>{{ i18n.ts._profile.followedMessageDescription }}</SearchKeyword></div>
+					<div>{{ i18n.ts._profile.followedMessageDescriptionForLockedAccount }}</div>
+				</template>
+			</MkInput>
+		</SearchMarker>
 
-	<MkSelect v-model="reactionAcceptance">
-		<template #label>{{ i18n.ts.reactionAcceptance }}</template>
-		<option :value="null">{{ i18n.ts.all }}</option>
-		<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
-		<option value="nonSensitiveOnly">{{ i18n.ts.nonSensitiveOnly }}</option>
-		<option value="nonSensitiveOnlyForLocalLikeOnlyForRemote">{{ i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote }}</option>
-		<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
-	</MkSelect>
-</div>
+		<SearchMarker :keywords="['reaction']">
+			<MkSelect v-model="reactionAcceptance">
+				<template #label><SearchLabel>{{ i18n.ts.reactionAcceptance }}</SearchLabel></template>
+				<option :value="null">{{ i18n.ts.all }}</option>
+				<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
+				<option value="nonSensitiveOnly">{{ i18n.ts.nonSensitiveOnly }}</option>
+				<option value="nonSensitiveOnlyForLocalLikeOnlyForRemote">{{ i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote }}</option>
+				<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
+			</MkSelect>
+		</SearchMarker>
+
+		<SearchMarker>
+			<MkFolder>
+				<template #label><SearchLabel>{{ i18n.ts.advancedSettings }}</SearchLabel></template>
+
+				<div class="_gaps_m">
+					<SearchMarker :keywords="['cat']">
+						<MkSwitch v-model="profile.isCat">
+							<template #label><SearchLabel>{{ i18n.ts.flagAsCat }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts.flagAsCatDescription }}</template>
+						</MkSwitch>
+					</SearchMarker>
+
+					<SearchMarker :keywords="['bot']">
+						<MkSwitch v-model="profile.isBot">
+							<template #label><SearchLabel>{{ i18n.ts.flagAsBot }}</SearchLabel></template>
+							<template #caption>{{ i18n.ts.flagAsBotDescription }}</template>
+						</MkSwitch>
+					</SearchMarker>
+				</div>
+			</MkFolder>
+		</SearchMarker>
+	</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
@@ -135,12 +179,17 @@ const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.d
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 
+function assertVaildLang(lang: string | null): lang is keyof typeof langmap {
+	return lang != null && lang in langmap;
+}
+
 const profile = reactive({
 	name: $i.name,
 	description: $i.description,
+	followedMessage: $i.followedMessage,
 	location: $i.location,
 	birthday: $i.birthday,
-	lang: $i.lang,
+	lang: assertVaildLang($i.lang) ? $i.lang : null,
 	isBot: $i.isBot ?? false,
 	isCat: $i.isCat ?? false,
 });
@@ -185,6 +234,8 @@ function save() {
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		description: profile.description || null,
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+		followedMessage: profile.followedMessage || null,
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		location: profile.location || null,
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		birthday: profile.birthday || null,
@@ -192,6 +243,11 @@ function save() {
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
+	}, undefined, {
+		'0b3f9f6a-2f4d-4b1f-9fb4-49d3a2fd7191': {
+			title: i18n.ts.yourNameContainsProhibitedWords,
+			text: i18n.ts.yourNameContainsProhibitedWordsDescription,
+		},
 	});
 	globalEvents.emit('requestClearPageCache');
 	claimAchievement('profileFilled');
@@ -272,7 +328,7 @@ definePageMetadata(() => ({
 	height: 130px;
 	background-size: cover;
 	background-position: center;
-	border-bottom: solid 1px var(--divider);
+	border-bottom: solid 1px var(--MI_THEME-divider);
 	overflow: clip;
 }
 
@@ -299,19 +355,11 @@ definePageMetadata(() => ({
 	container-type: inline-size;
 }
 
-.metadataMargin {
-	margin-bottom: 1.5em;
-}
-
 .fieldDragItem {
 	display: flex;
-	padding-bottom: .75em;
+	padding: 10px;
 	align-items: flex-end;
-	border-bottom: solid 0.5px var(--divider);
-
-	&:last-child {
-		border-bottom: 0;
-	}
+	border-radius: 6px;
 
 	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
 	@container (max-width: 452px) {

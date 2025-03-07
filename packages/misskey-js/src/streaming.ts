@@ -1,8 +1,10 @@
 import { EventEmitter } from 'eventemitter3';
-import _ReconnectingWebsocket from 'reconnecting-websocket';
+import _ReconnectingWebSocket, { Options } from 'reconnecting-websocket';
 import type { BroadcastEvents, Channels } from './streaming.types.js';
 
-const ReconnectingWebsocket = _ReconnectingWebsocket as unknown as typeof _ReconnectingWebsocket['default'];
+// コンストラクタとクラスそのものの定義が上手く解決出来ないため再定義
+const ReconnectingWebSocketConstructor = _ReconnectingWebSocket as unknown as typeof _ReconnectingWebSocket.default;
+type ReconnectingWebSocket = _ReconnectingWebSocket.default;
 
 export function urlQuery(obj: Record<string, string | number | boolean | undefined>): string {
 	const params = Object.entries(obj)
@@ -17,17 +19,33 @@ export function urlQuery(obj: Record<string, string | number | boolean | undefin
 
 type AnyOf<T extends Record<PropertyKey, unknown>> = T[keyof T];
 
-type StreamEvents = {
+export type StreamEvents = {
 	_connected_: void;
 	_disconnected_: void;
 } & BroadcastEvents;
+
+export interface IStream extends EventEmitter<StreamEvents> {
+	state: 'initializing' | 'reconnecting' | 'connected';
+
+	useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): IChannelConnection<Channels[C]>;
+	removeSharedConnection(connection: SharedConnection): void;
+	removeSharedConnectionPool(pool: Pool): void;
+	disconnectToChannel(connection: NonSharedConnection): void;
+	send(typeOrPayload: string): void;
+	send(typeOrPayload: string, payload: unknown): void;
+	send(typeOrPayload: Record<string, unknown> | unknown[]): void;
+	send(typeOrPayload: string | Record<string, unknown> | unknown[], payload?: unknown): void;
+	ping(): void;
+	heartbeat(): void;
+	close(): void;
+}
 
 /**
  * Misskey stream connection
  */
 // eslint-disable-next-line import/no-default-export
-export default class Stream extends EventEmitter<StreamEvents> {
-	private stream: _ReconnectingWebsocket.default;
+export default class Stream extends EventEmitter<StreamEvents> implements IStream {
+	private stream: ReconnectingWebSocket;
 	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
@@ -35,7 +53,8 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	private idCounter = 0;
 
 	constructor(origin: string, user: { token: string; } | null, options?: {
-		WebSocket?: WebSocket;
+		WebSocket?: Options['WebSocket'];
+		binaryType?: ReconnectingWebSocket['binaryType'];
 	}) {
 		super();
 
@@ -64,10 +83,13 @@ export default class Stream extends EventEmitter<StreamEvents> {
 
 		const wsOrigin = origin.replace('http://', 'ws://').replace('https://', 'wss://');
 
-		this.stream = new ReconnectingWebsocket(`${wsOrigin}/streaming?${query}`, '', {
+		this.stream = new ReconnectingWebSocketConstructor(`${wsOrigin}/streaming?${query}`, '', {
 			minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
 			WebSocket: options.WebSocket,
 		});
+		if (options.binaryType) {
+			this.stream.binaryType = options.binaryType;
+		}
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);
@@ -175,9 +197,9 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 * Send a message to connection
 	 * ! ストリーム上のやり取りはすべてJSONで行われます !
 	 */
-	public send(typeOrPayload: string): void
-	public send(typeOrPayload: string, payload: unknown): void
-	public send(typeOrPayload: Record<string, unknown> | unknown[]): void
+	public send(typeOrPayload: string): void;
+	public send(typeOrPayload: string, payload: unknown): void;
+	public send(typeOrPayload: Record<string, unknown> | unknown[]): void;
 	public send(typeOrPayload: string | Record<string, unknown> | unknown[], payload?: unknown): void {
 		if (typeof typeOrPayload === 'string') {
 			this.stream.send(JSON.stringify({
@@ -277,7 +299,18 @@ class Pool {
 	}
 }
 
-export abstract class Connection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
+export interface IChannelConnection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> {
+	id: string;
+	name?: string;
+	inCount: number;
+	outCount: number;
+	channel: string;
+
+	send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]): void;
+	dispose(): void;
+}
+
+export abstract class Connection<Channel extends AnyOf<Channels> = AnyOf<Channels>> extends EventEmitter<Channel['events']> implements IChannelConnection<Channel> {
 	public channel: string;
 	protected stream: Stream;
 	public abstract id: string;

@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { AISCRIPT_VERSION } from '@syuilo/aiscript';
 import type { entities } from 'misskey-js'
+import { date, imageDataUrl, text } from "./fake-utils.js";
 
 export function abuseUserReport() {
 	return {
@@ -111,6 +113,40 @@ export function file(isSensitive = false) {
 		folder: null,
 		userId: null,
 		user: null,
+	};
+}
+
+const script = `/// @ ${AISCRIPT_VERSION}
+
+var name = ""
+
+Ui:render([
+	Ui:C:textInput({
+		label: "Your name"
+		onInput: @(v) { name = v }
+	})
+	Ui:C:button({
+		text: "Hello"
+		onClick: @() {
+			Mk:dialog(null, \`Hello, {name}!\`)
+		}
+	})
+])
+`;
+
+export function flash(): entities.Flash {
+	return {
+		id: 'someflashid',
+		createdAt: '2016-12-28T22:49:51.000Z',
+		updatedAt: '2016-12-28T22:49:51.000Z',
+		userId: 'someuserid',
+		user: userLite(),
+		title: 'Some Play title',
+		summary: 'Some Play summary',
+		script,
+		visibility: 'public',
+		likedCount: 0,
+		isLiked: false,
 	};
 }
 
@@ -264,5 +300,95 @@ export function inviteCode(isUsed = false, hasExpiration = false, isExpired = fa
 		usedBy: isUsed ? userDetailed('3i3r2znx1v') : null,
 		usedAt: isUsed ? date.toISOString() : null,
 		used: isUsed,
+	}
+}
+
+export function role(params: {
+	id?: string,
+	name?: string,
+	color?: string | null,
+	iconUrl?: string | null,
+	description?: string,
+	isModerator?: boolean,
+	isAdministrator?: boolean,
+	displayOrder?: number,
+	createdAt?: string,
+	updatedAt?: string,
+	target?: 'manual' | 'conditional',
+	isPublic?: boolean,
+	isExplorable?: boolean,
+	asBadge?: boolean,
+	canEditMembersByModerator?: boolean,
+	usersCount?: number,
+}, seed?: string): entities.Role {
+	const prefix = params.displayOrder ? params.displayOrder.toString().padStart(3, '0') + '-' : '';
+	const genId = text(36, seed);
+	const createdAt = params.createdAt ?? date({}, seed).toISOString();
+	const updatedAt = params.updatedAt ?? date({}, seed).toISOString();
+
+	return {
+		id: params.id ?? genId,
+		name: params.name ?? `${prefix}TestRole-${genId}`,
+		color: params.color ?? '#445566',
+		iconUrl: params.iconUrl ?? null,
+		description: params.description ?? '',
+		isModerator: params.isModerator ?? false,
+		isAdministrator: params.isAdministrator ?? false,
+		displayOrder: params.displayOrder ?? 0,
+		createdAt: createdAt,
+		updatedAt: updatedAt,
+		target: params.target ?? 'manual',
+		isPublic: params.isPublic ?? true,
+		isExplorable: params.isExplorable ?? true,
+		asBadge: params.asBadge ?? true,
+		canEditMembersByModerator: params.canEditMembersByModerator ?? false,
+		usersCount: params.usersCount ?? 10,
+		condFormula: {
+			id: '',
+			type: 'or',
+			values: []
+		},
+		policies: {},
+	}
+}
+
+export function emoji(params?: {
+	id?: string,
+	name?: string,
+	host?: string,
+	uri?: string,
+	publicUrl?: string,
+	originalUrl?: string,
+	type?: string,
+	aliases?: string[],
+	category?: string,
+	license?: string,
+	isSensitive?: boolean,
+	localOnly?: boolean,
+	roleIdsThatCanBeUsedThisEmojiAsReaction?: {id:string, name:string}[],
+	updatedAt?: string,
+}, seed?: string): entities.EmojiDetailedAdmin {
+	const _seed = seed ?? (params?.id ?? "DEFAULT_SEED");
+	const id = params?.id ?? text(32, _seed);
+	const name = params?.name ?? text(8, _seed);
+	const updatedAt = params?.updatedAt ?? date({}, _seed).toISOString();
+
+	const image = imageDataUrl({}, _seed)
+
+	return {
+		id: id,
+		name: name,
+		host: params?.host ?? null,
+		uri: params?.uri ?? null,
+		publicUrl: params?.publicUrl ?? image,
+		originalUrl: params?.originalUrl ?? image,
+		type: params?.type ?? 'image/png',
+		aliases: params?.aliases ?? [`alias1-${name}`, `alias2-${name}`],
+		category: params?.category ?? null,
+		license: params?.license ?? null,
+		isSensitive: params?.isSensitive ?? false,
+		localOnly: params?.localOnly ?? false,
+		roleIdsThatCanBeUsedThisEmojiAsReaction: params?.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
+		updatedAt: updatedAt,
 	}
 }

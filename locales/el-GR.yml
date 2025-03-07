@@ -378,6 +378,7 @@ _notification:
     renote: "Κοινοποίηση σημειώματος"
     quote: "Παράθεση"
     reaction: "Αντιδράσεις"
+    login: "Σύνδεση"
   _actions:
     reply: "Απάντηση"
     renote: "Κοινοποίηση σημειώματος"
@@ -396,3 +397,5 @@ _moderationLogTypes:
   suspend: "Αποβολή"
 _reversi:
   total: "Σύνολο"
+_search:
+  searchScopeLocal: "Τοπικό"

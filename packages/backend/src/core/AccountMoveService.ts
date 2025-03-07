@@ -9,7 +9,7 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MiMeta, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';
@@ -20,15 +20,17 @@ import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { MetaService } from '@/core/MetaService.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 
 @Injectable()
 export class AccountMoveService {
 	constructor(
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -53,13 +55,12 @@ export class AccountMoveService {
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private globalEventService: GlobalEventService,
-		private proxyAccountService: ProxyAccountService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private federatedInstanceService: FederatedInstanceService,
 		private instanceChart: InstanceChart,
-		private metaService: MetaService,
 		private relayService: RelayService,
 		private queueService: QueueService,
+		private systemAccountService: SystemAccountService,
 	) {
 	}
 
@@ -125,11 +126,11 @@ export class AccountMoveService {
 		}
 
 		// follow the new account
-		const proxy = await this.proxyAccountService.fetch();
+		const proxy = await this.systemAccountService.fetch('proxy');
 		const followings = await this.followingsRepository.findBy({
 			followeeId: src.id,
 			followerHost: IsNull(), // follower is local
-			followerId: proxy ? Not(proxy.id) : undefined,
+			followerId: Not(proxy.id),
 		});
 		const followJobs = followings.map(following => ({
 			from: { id: following.followerId },
@@ -249,10 +250,8 @@ export class AccountMoveService {
 
 		// Have the proxy account follow the new account in the same way as UserListService.push
 		if (this.userEntityService.isRemoteUser(dst)) {
-			const proxy = await this.proxyAccountService.fetch();
-			if (proxy) {
-				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
-			}
+			const proxy = await this.systemAccountService.fetch('proxy');
+			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
 		}
 	}
 
@@ -273,13 +272,15 @@ export class AccountMoveService {
 		}
 
 		// Update instance stats by decreasing remote followers count by the number of local followers who were following the old account.
-		if (this.userEntityService.isRemoteUser(oldAccount)) {
-			this.federatedInstanceService.fetch(oldAccount.host).then(async i => {
-				this.instancesRepository.decrement({ id: i.id }, 'followersCount', localFollowerIds.length);
-				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
-					this.instanceChart.updateFollowers(i.host, false);
-				}
-			});
+		if (this.meta.enableStatsForFederatedInstances) {
+			if (this.userEntityService.isRemoteUser(oldAccount)) {
+				this.federatedInstanceService.fetchOrRegister(oldAccount.host).then(async i => {
+					this.instancesRepository.decrement({ id: i.id }, 'followersCount', localFollowerIds.length);
+					if (this.meta.enableChartsForFederatedInstances) {
+						this.instanceChart.updateFollowers(i.host, false);
+					}
+				});
+			}
 		}
 
 		// FIXME: expensive?

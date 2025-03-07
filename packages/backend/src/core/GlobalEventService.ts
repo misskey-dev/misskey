@@ -211,7 +211,7 @@ type SerializedAll<T> = {
 
 type UndefinedAsNullAll<T> = {
 	[K in keyof T]: T[K] extends undefined ? null : T[K];
-}
+};
 
 export interface InternalEventTypes {
 	userChangeSuspendedState: { id: MiUser['id']; isSuspended: MiUser['isSuspended']; };
@@ -241,7 +241,7 @@ export interface InternalEventTypes {
 	avatarDecorationCreated: MiAvatarDecoration;
 	avatarDecorationDeleted: MiAvatarDecoration;
 	avatarDecorationUpdated: MiAvatarDecoration;
-	metaUpdated: MiMeta;
+	metaUpdated: { before?: MiMeta; after: MiMeta; };
 	followChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
 	unfollowChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
 	updateUserProfile: MiUserProfile;

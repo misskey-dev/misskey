@@ -15,7 +15,7 @@ import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
-import { instanceName } from '@/config.js';
+import { instanceName } from '@@/js/config.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { fetchInstance } from '@/instance.js';
 

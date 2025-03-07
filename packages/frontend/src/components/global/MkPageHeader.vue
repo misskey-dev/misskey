@@ -43,18 +43,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, inject, shallowRef, computed } from 'vue';
 import tinycolor from 'tinycolor2';
-import XTabs, { Tab } from './MkPageHeader.tabs.vue';
-import { scrollToTop } from '@/scripts/scroll.js';
+import XTabs from './MkPageHeader.tabs.vue';
+import type { Tab } from './MkPageHeader.tabs.vue';
+import { scrollToTop } from '@@/js/scroll.js';
 import { globalEvents } from '@/events.js';
 import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
-import { PageHeaderItem } from '@/types/page-header.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
+import type { PageMetadata } from '@/scripts/page-metadata.js';
 
 const props = withDefaults(defineProps<{
+	overridePageMetadata?: PageMetadata;
 	tabs?: Tab[];
 	tab?: string;
 	actions?: PageHeaderItem[] | null;
 	thin?: boolean;
+	hideTitle?: boolean;
 	displayMyAvatar?: boolean;
 }>(), {
 	tabs: () => ([] as Tab[]),
@@ -64,9 +68,10 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
 }>();
 
-const pageMetadata = injectReactiveMetadata();
+const injectedPageMetadata = injectReactiveMetadata();
+const pageMetadata = computed(() => props.overridePageMetadata ?? injectedPageMetadata.value);
 
-const hideTitle = inject('shouldOmitHeaderTitle', false);
+const hideTitle = computed(() => inject('shouldOmitHeaderTitle', false) || props.hideTitle);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
 const el = shallowRef<HTMLElement | undefined>(undefined);
@@ -75,7 +80,7 @@ const narrow = ref(false);
 const hasTabs = computed(() => props.tabs.length > 0);
 const hasActions = computed(() => props.actions && props.actions.length > 0);
 const show = computed(() => {
-	return !hideTitle || hasTabs.value || hasActions.value;
+	return !hideTitle.value || hasTabs.value || hasActions.value;
 });
 
 const preventDrag = (ev: TouchEvent) => {
@@ -99,7 +104,7 @@ function onTabClick(): void {
 }
 
 const calcBg = () => {
-	const rawBg = 'var(--bg)';
+	const rawBg = 'var(--MI_THEME-bg)';
 	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
 	bg.value = tinyBg.toRgbString();
@@ -130,9 +135,9 @@ onUnmounted(() => {
 
 <style lang="scss" module>
 .root {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	border-bottom: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 	width: 100%;
 }
 
@@ -145,7 +150,7 @@ onUnmounted(() => {
 .upper {
 	--height: 50px;
 	display: flex;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 	height: var(--height);
 
 	.tabs:first-child {
@@ -230,7 +235,7 @@ onUnmounted(() => {
 	}
 
 	&.highlighted {
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 

@@ -12,14 +12,28 @@ import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { uploadFile } from '@/scripts/upload.js';
 
-export function chooseFileFromPc(multiple: boolean, keepOriginal = false): Promise<Misskey.entities.DriveFile[]> {
+export function chooseFileFromPc(
+	multiple: boolean,
+	options?: {
+		uploadFolder?: string | null;
+		keepOriginal?: boolean;
+		nameConverter?: (file: File) => string | undefined;
+	},
+): Promise<Misskey.entities.DriveFile[]> {
+	const uploadFolder = options?.uploadFolder ?? defaultStore.state.uploadFolder;
+	const keepOriginal = options?.keepOriginal ?? defaultStore.state.keepOriginalUploading;
+	const nameConverter = options?.nameConverter ?? (() => undefined);
+
 	return new Promise((res, rej) => {
 		const input = document.createElement('input');
 		input.type = 'file';
 		input.multiple = multiple;
 		input.onchange = () => {
 			if (!input.files) return res([]);
-			const promises = Array.from(input.files, file => uploadFile(file, defaultStore.state.uploadFolder, undefined, keepOriginal));
+			const promises = Array.from(
+				input.files,
+				file => uploadFile(file, uploadFolder, nameConverter(file), keepOriginal),
+			);
 
 			Promise.all(promises).then(driveFiles => {
 				res(driveFiles);
@@ -80,7 +94,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 	});
 }
 
-function select(src: any, label: string | null, multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
+function select(src: HTMLElement | EventTarget | null, label: string | null, multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
 
@@ -94,7 +108,7 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Miss
 		}, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
-			action: () => chooseFileFromPc(multiple, keepOriginal.value).then(files => res(files)),
+			action: () => chooseFileFromPc(multiple, { keepOriginal: keepOriginal.value }).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',
@@ -107,10 +121,10 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Miss
 	});
 }
 
-export function selectFile(src: any, label: string | null = null): Promise<Misskey.entities.DriveFile> {
+export function selectFile(src: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile> {
 	return select(src, label, false).then(files => files[0]);
 }
 
-export function selectFiles(src: any, label: string | null = null): Promise<Misskey.entities.DriveFile[]> {
+export function selectFiles(src: HTMLElement | EventTarget | null, label: string | null = null): Promise<Misskey.entities.DriveFile[]> {
 	return select(src, label, true);
 }

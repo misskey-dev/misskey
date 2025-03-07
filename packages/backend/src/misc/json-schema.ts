@@ -33,7 +33,11 @@ import { packedClipSchema } from '@/models/json-schema/clip.js';
 import { packedFederationInstanceSchema } from '@/models/json-schema/federation-instance.js';
 import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
 import { packedGalleryPostSchema } from '@/models/json-schema/gallery-post.js';
-import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
+import {
+	packedEmojiDetailedAdminSchema,
+	packedEmojiDetailedSchema,
+	packedEmojiSimpleSchema,
+} from '@/models/json-schema/emoji.js';
 import { packedFlashSchema } from '@/models/json-schema/flash.js';
 import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 import { packedSigninSchema } from '@/models/json-schema/signin.js';
@@ -95,6 +99,7 @@ export const refs = {
 	GalleryPost: packedGalleryPostSchema,
 	EmojiSimple: packedEmojiSimpleSchema,
 	EmojiDetailed: packedEmojiDetailedSchema,
+	EmojiDetailedAdmin: packedEmojiDetailedAdminSchema,
 	Flash: packedFlashSchema,
 	Signin: packedSigninSchema,
 	RoleCondFormulaLogics: packedRoleCondFormulaLogicsSchema,
@@ -138,13 +143,15 @@ type OfSchema = {
 	readonly anyOf?: ReadonlyArray<Schema>;
 	readonly oneOf?: ReadonlyArray<Schema>;
 	readonly allOf?: ReadonlyArray<Schema>;
-}
+};
 
 export interface Schema extends OfSchema {
 	readonly type?: TypeStringef;
 	readonly nullable?: boolean;
 	readonly optional?: boolean;
+	readonly prefixItems?: ReadonlyArray<Schema>;
 	readonly items?: Schema;
+	readonly unevaluatedItems?: Schema | boolean;
 	readonly properties?: Obj;
 	readonly required?: ReadonlyArray<Extract<keyof NonNullable<this['properties']>, string>>;
 	readonly description?: string;
@@ -198,6 +205,7 @@ type UnionSchemaType<a extends readonly any[], X extends Schema = a[number]> = X
 //type UnionObjectSchemaType<a extends readonly any[], X extends Schema = a[number]> = X extends any ? ObjectSchemaType<X> : never;
 type UnionObjType<s extends Obj, a extends readonly any[], X extends ReadonlyArray<keyof s> = a[number]> = X extends any ? ObjType<s, X> : never;
 type ArrayUnion<T> = T extends any ? Array<T> : never;
+type ArrayToTuple<X extends ReadonlyArray<Schema>> = { [K in keyof X]: SchemaType<X[K]> };
 
 type ObjectSchemaTypeDef<p extends Schema> =
 	p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
@@ -209,7 +217,7 @@ type ObjectSchemaTypeDef<p extends Schema> =
 	:
 	p['anyOf'] extends ReadonlyArray<Schema> ? never : // see CONTRIBUTING.md
 	p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
-	any
+	any;
 
 type ObjectSchemaType<p extends Schema> = NullOrUndefined<p, ObjectSchemaTypeDef<p>>;
 
@@ -231,6 +239,12 @@ export type SchemaTypeDef<p extends Schema> =
 			p['items']['oneOf'] extends ReadonlyArray<Schema> ? ArrayUnion<UnionSchemaType<NonNullable<p['items']['oneOf']>>> :
 			p['items']['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<NonNullable<p['items']['allOf']>>>[] :
 			never
+		) :
+		p['prefixItems'] extends ReadonlyArray<Schema> ? (
+			p['items'] extends NonNullable<Schema> ? [...ArrayToTuple<p['prefixItems']>, ...SchemaType<p['items']>[]] :
+			p['items'] extends false ? ArrayToTuple<p['prefixItems']> :
+			p['unevaluatedItems'] extends false ? ArrayToTuple<p['prefixItems']> :
+			[...ArrayToTuple<p['prefixItems']>, ...unknown[]]
 		) :
 		p['items'] extends NonNullable<Schema> ? SchemaType<p['items']>[] :
 		any[]

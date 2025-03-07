@@ -56,7 +56,7 @@ export class RemoteUserResolveService {
 
 		host = this.utilityService.toPuny(host);
 
-		if (this.config.host === host) {
+		if (host === this.utilityService.toPuny(this.config.host)) {
 			this.logger.info(`return local user: ${usernameLower}`);
 			return await this.usersRepository.findOneBy({ usernameLower, host: IsNull() }).then(u => {
 				if (u == null) {
@@ -74,7 +74,7 @@ export class RemoteUserResolveService {
 		if (user == null) {
 			const self = await this.resolveSelf(acctLower);
 
-			if (self.href.startsWith(this.config.url)) {
+			if (this.utilityService.isUriLocal(self.href)) {
 				const local = this.apDbResolverService.parseUri(self.href);
 				if (local.local && local.type === 'users') {
 					// the LR points to local

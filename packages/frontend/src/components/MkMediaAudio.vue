@@ -91,10 +91,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { shallowRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
+import type { Keymap } from '@/scripts/hotkey.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { type Keymap } from '@/scripts/hotkey.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
@@ -172,9 +173,7 @@ async function show() {
 const menuShowing = ref(false);
 
 function showMenu(ev: MouseEvent) {
-	let menu: MenuItem[] = [];
-
-	menu = [
+	const menu: MenuItem[] = [
 		// TODO: 再生キューに追加
 		{
 			type: 'switch',
@@ -218,14 +217,36 @@ function showMenu(ev: MouseEvent) {
 		});
 	}
 
+	const details: MenuItem[] = [];
 	if ($i?.id === props.audio.userId) {
-		menu.push({
-			type: 'divider',
-		}, {
-			type: 'link' as const,
+		details.push({
+			type: 'link',
 			text: i18n.ts._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.audio.id}`,
+		});
+	}
+
+	if (iAmModerator) {
+		details.push({
+			type: 'link',
+			text: i18n.ts.moderation,
+			icon: 'ti ti-photo-exclamation',
+			to: `/admin/file/${props.audio.id}`,
+		});
+	}
+
+	if (details.length > 0) {
+		menu.push({ type: 'divider' }, ...details);
+	}
+
+	if (defaultStore.state.devMode) {
+		menu.push({ type: 'divider' }, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(props.audio.id);
+			},
 		});
 	}
 
@@ -238,7 +259,14 @@ function showMenu(ev: MouseEvent) {
 	});
 }
 
-function toggleSensitive(file: Misskey.entities.DriveFile) {
+async function toggleSensitive(file: Misskey.entities.DriveFile) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: file.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+	});
+
+	if (canceled) return;
+
 	os.apiWithDialog('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
@@ -393,8 +421,8 @@ onDeactivated(() => {
 .audioContainer {
 	container-type: inline-size;
 	position: relative;
-	border: .5px solid var(--divider);
-	border-radius: var(--radius);
+	border: .5px solid var(--MI_THEME-divider);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 
 	&:focus-visible {
@@ -414,7 +442,7 @@ onDeactivated(() => {
 		height: 100%;
 		pointer-events: none;
 		border-radius: inherit;
-		box-shadow: inset 0 0 0 4px var(--warn);
+		box-shadow: inset 0 0 0 4px var(--MI_THEME-warn);
 	}
 }
 
@@ -456,12 +484,12 @@ onDeactivated(() => {
 
 	.controlButton {
 		padding: 6px;
-		border-radius: calc(var(--radius) / 2);
+		border-radius: calc(var(--MI-radius) / 2);
 		font-size: 1.05rem;
 
 		&:hover {
-			color: var(--accent);
-			background-color: var(--accentedBg);
+			color: var(--MI_THEME-accent);
+			background-color: var(--MI_THEME-accentedBg);
 		}
 
 		&:focus-visible {
