@@ -10,6 +10,7 @@ import darkTheme from '@@/themes/d-green-lime.json5';
 import { hemisphere } from '@@/js/intl-const.js';
 import type { DeviceKind } from '@/scripts/device-kind.js';
 import type { Plugin } from '@/plugin.js';
+import type { Column } from '@/deck.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { Storage } from '@/pizzax.js';
 import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
@@ -89,7 +90,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: [] as string[],
 	},
-
 	visibility: {
 		where: 'deviceAccount',
 		default: 'public' as (typeof Misskey.noteVisibilities)[number],
@@ -124,7 +124,6 @@ export const defaultStore = markRaw(new Storage('base', {
 			},
 		},
 	},
-
 	overridedDeviceKind: {
 		where: 'device',
 		default: null as DeviceKind | null,
@@ -160,6 +159,18 @@ export const defaultStore = markRaw(new Storage('base', {
 	defaultWithReplies: {
 		where: 'account',
 		default: false,
+	},
+	'deck.profile': {
+		where: 'deviceAccount',
+		default: 'default',
+	},
+	'deck.columns': {
+		where: 'deviceAccount',
+		default: [] as Column[],
+	},
+	'deck.layout': {
+		where: 'deviceAccount',
+		default: [] as Column['id'][][],
 	},
 
 	enablePreferencesAutoCloudBackup: {

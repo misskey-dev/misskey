@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.sideMenu">
 				<div :class="$style.sideMenuTop">
-					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${deckStore.state.profile}`" :class="$style.sideMenuButton" class="_button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
+					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${defaultStore.state['deck.profile']}`" :class="$style.sideMenuButton" class="_button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
 					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" :class="$style.sideMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
 				</div>
 				<div :class="$style.sideMenuMiddle">
@@ -95,7 +95,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref, watch, shallowRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
-import { deckStore, columnTypes, addColumn as addColumnToStore, forceSaveDeck, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
 import type { MenuItem } from '@/types/menu.js';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
@@ -118,6 +117,8 @@ import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 import { mainRouter } from '@/router/main.js';
+import { defaultStore } from '@/store.js';
+import { columnTypes, forceSaveDeck, getProfiles, loadDeck, addColumn as addColumnToStore, deleteProfile as deleteProfile_ } from '@/deck.js';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
@@ -136,7 +137,7 @@ const columnComponents = {
 
 mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;
-	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
+	const noMainColumn = !defaultStore.state['deck.columns'].some(x => x.type === 'main');
 	if (prefer.s['deck.navWindow'] || noMainColumn) {
 		os.pageWindow(path);
 		return true;
@@ -159,8 +160,8 @@ watch(route, () => {
 });
 */
 
-const columns = deckStore.reactiveState.columns;
-const layout = deckStore.reactiveState.layout;
+const columns = defaultStore.reactiveState['deck.columns'];
+const layout = defaultStore.reactiveState['deck.layout'];
 const menuIndicated = computed(() => {
 	if ($i == null) return false;
 	for (const def in navbarItemDef) {
@@ -213,15 +214,15 @@ loadDeck();
 
 function changeProfile(ev: MouseEvent) {
 	let items: MenuItem[] = [{
-		text: deckStore.state.profile,
+		text: defaultStore.state['deck.profile'],
 		active: true,
 		action: () => {},
 	}];
 	getProfiles().then(profiles => {
-		items.push(...(profiles.filter(k => k !== deckStore.state.profile).map(k => ({
+		items.push(...(profiles.filter(k => k !== defaultStore.state['deck.profile']).map(k => ({
 			text: k,
 			action: () => {
-				deckStore.set('profile', k);
+				defaultStore.set('deck.profile', k);
 				unisonReload();
 			},
 		}))), { type: 'divider' as const }, {
@@ -236,7 +237,7 @@ function changeProfile(ev: MouseEvent) {
 				if (canceled || name == null) return;
 
 				os.promiseDialog((async () => {
-					await deckStore.set('profile', name);
+					await defaultStore.set('deck.profile', name);
 					await forceSaveDeck();
 				})(), () => {
 					unisonReload();
@@ -251,19 +252,19 @@ function changeProfile(ev: MouseEvent) {
 async function deleteProfile() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.deleteAreYouSure({ x: deckStore.state.profile }),
+		text: i18n.tsx.deleteAreYouSure({ x: defaultStore.state['deck.profile'] }),
 	});
 	if (canceled) return;
 
 	os.promiseDialog((async () => {
-		if (deckStore.state.profile === 'default') {
-			await deckStore.set('columns', []);
-			await deckStore.set('layout', []);
+		if (defaultStore.state['deck.profile'] === 'default') {
+			await defaultStore.set('deck.columns', []);
+			await defaultStore.set('deck.layout', []);
 			await forceSaveDeck();
 		} else {
-			await deleteProfile_(deckStore.state.profile);
+			await deleteProfile_(defaultStore.state['deck.profile']);
 		}
-		await deckStore.set('profile', 'default');
+		await defaultStore.set('deck.profile', 'default');
 	})(), () => {
 		unisonReload();
 	});

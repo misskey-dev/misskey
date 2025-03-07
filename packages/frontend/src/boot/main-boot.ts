@@ -26,6 +26,7 @@ import { makeHotkey } from '@/scripts/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { deckStore } from '@/ui/deck/deck-store.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => {
@@ -219,6 +220,9 @@ export async function mainBoot() {
 				prefer.set('sound.on.noteMy', defaultStore.state.sound_noteMy as any);
 				prefer.set('sound.on.notification', defaultStore.state.sound_notification as any);
 				prefer.set('sound.on.reaction', defaultStore.state.sound_reaction as any);
+				defaultStore.set('deck.profile', deckStore.state.profile);
+				defaultStore.set('deck.columns', deckStore.state.columns);
+				defaultStore.set('deck.layout', deckStore.state.layout);
 				defaultStore.set('menu', []);
 			}
 
