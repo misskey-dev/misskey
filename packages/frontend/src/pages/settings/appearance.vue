@@ -56,6 +56,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label><SearchLabel>{{ i18n.ts.seasonalScreenEffect }}</SearchLabel></template>
 						</MkSwitch>
 					</SearchMarker>
+
+					<SearchMarker :keywords="['effect', 'show']">
+						<MkSwitch v-model="flowerEffect">
+							<template #label><SearchLabel>{{ i18n.ts._hana.flowerEffect }}</SearchLabel></template>
+						</MkSwitch>
+					</SearchMarker>
 				</div>
 
 				<SearchMarker :keywords="['menu', 'style', 'popup', 'drawer']">
@@ -184,6 +190,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import { defaultStore } from '@/store.js';
+import { hanaStore } from '@/hana/store.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -206,6 +213,7 @@ const useBlurEffect = computed(defaultStore.makeGetterSetter('useBlurEffect'));
 const highlightSensitiveMedia = computed(defaultStore.makeGetterSetter('highlightSensitiveMedia'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const enableSeasonalScreenEffect = computed(defaultStore.makeGetterSetter('enableSeasonalScreenEffect'));
+const flowerEffect = computed(defaultStore.makeGetterSetter('flowerEffect'));
 const showGapBetweenNotesInTimeline = computed(defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 const reactionsDisplaySize = computed(defaultStore.makeGetterSetter('reactionsDisplaySize'));
@@ -214,6 +222,7 @@ const notificationPosition = computed(defaultStore.makeGetterSetter('notificatio
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'));
+const flowerEffect = computed(hanaStore.makeGetterSetter('flowerEffect'));
 
 watch(fontSize, () => {
 	if (fontSize.value == null) {
@@ -245,6 +254,7 @@ watch([
 	reactionsDisplaySize,
 	limitWidthOfReaction,
 	instanceTicker,
+	flowerEffect,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
