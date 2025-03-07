@@ -24,7 +24,8 @@ defineProps<{
 }
 
 .disabled {
-	opacity: 0.7;
+	opacity: 0.3;
+	filter: saturate(0.5);
 }
 
 .cover {
