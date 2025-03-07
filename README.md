@@ -21,7 +21,6 @@
 - サーバーとの接続が失われたとき
   - `なにもしない`オプションの追加
 - [ナビゲーションバー拡張](https://github.com/pooza/misskey/pull/342)
-- [プロキシアカウント無効化](https://github.com/pooza/misskey/pull/346)
 - クラシックUIの廃止
 - 各種パラメータ調整
 
@@ -31,3 +30,4 @@
 	- デフォルトハッシュタグを含む投稿を、検索時にも「ローカル」とみなす。
   - https://github.com/misskey-dev/misskey/pull/13098
 - 2024/2に大量発生したスパムへの対策
+- [プロキシアカウント無効化](https://github.com/pooza/misskey/pull/346)
