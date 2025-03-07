@@ -1313,6 +1313,8 @@ confirmOnReact: "Confirmar en reaccionar"
 reactAreYouSure: "Vols reaccionar amb \"{emoji}\"?"
 markAsSensitiveConfirm: "Vols marcar aquest contingut com a sensible?"
 unmarkAsSensitiveConfirm: "Vols deixar de marcar com a sensible aquest contingut?"
+preferences: "Preferències "
+accessibility: "Accessibilitat "
 _accountSettings:
   requireSigninToViewContents: "És obligatori l'inici de sessió per poder veure el contingut"
   requireSigninToViewContentsDescription1: "Es requereix l'inici de sessió per poder veure totes les notes i el contingut que has creat. Amb això esperem evitar que els rastrejadors recopilin informació."
