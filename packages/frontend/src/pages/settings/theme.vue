@@ -8,9 +8,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps_m rsljpzjq">
 		<div v-adaptive-border class="rfqxtzch _panel">
 			<div
-        class="toggle"
-        :class="{ disabled: syncDeviceDarkMode }"
-      >
+				class="toggle"
+				:class="{ disabled: syncDeviceDarkMode }"
+			>
 				<div class="toggleWrapper">
 					<input id="dn" v-model="darkMode" type="checkbox" class="dn" :disabled="syncDeviceDarkMode"/>
 					<label for="dn" class="toggle">
