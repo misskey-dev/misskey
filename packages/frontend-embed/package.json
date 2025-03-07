@@ -53,7 +53,7 @@
 		"acorn": "8.14.1",
 		"cross-env": "7.0.3",
 		"eslint-plugin-import": "2.31.0",
-		"eslint-plugin-vue": "9.33.0",
+		"eslint-plugin-vue": "10.0.0",
 		"fast-glob": "3.3.3",
 		"happy-dom": "17.3.0",
 		"intersection-observer": "0.12.2",
@@ -64,7 +64,7 @@
 		"start-server-and-test": "2.0.10",
 		"vite-plugin-turbosnap": "1.0.3",
 		"vue-component-type-helpers": "2.2.8",
-		"vue-eslint-parser": "9.4.3",
+		"vue-eslint-parser": "10.1.1",
 		"vue-tsc": "2.2.8"
 	}
 }
