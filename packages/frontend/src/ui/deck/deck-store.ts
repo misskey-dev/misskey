@@ -7,7 +7,7 @@ import { throttle } from 'throttle-debounce';
 import { markRaw } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import type { BasicTimelineType } from '@/timelines.js';
-import type { SoundStore } from '@/store.js';
+import type { SoundStore } from '@/preferences/def.js';
 import { Storage } from '@/pizzax.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { deepClone } from '@/scripts/clone.js';
