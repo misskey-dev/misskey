@@ -1,5 +1,9 @@
 ## 2025.3.1
 
+### General
+- pnpmをv10に更新
+- Corepackを削除
+
 ### Client
 - Feat: 設定の検索を追加(実験的)
 
@@ -14,8 +18,6 @@
 - Enhance: OAuthで外部アプリからロゴが提供されている場合、それを表示できるように  
   書式は https://indieauth.spec.indieweb.org/20220212/#example-2 に準じます。
 - Fix: システムアカウントが削除できる問題を修正
-- pnpmをv10に更新
-- Corepackを削除
 
 ### Client
 - Enhance: モデレーターがセンシティブ設定を変更する際に確認ダイアログを出すように
