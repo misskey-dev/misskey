@@ -216,7 +216,7 @@ const componentsDef: Tuple<ComponentDef, typeof tutorialBodyPagesDef.length> = [
 	{ component: XMinorSettings },
 ];
 
-// eslint-disable-next-line vue/no-setup-props-destructure
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const page = ref(props.initialPage ?? 0);
 
 const currentPageDef = computed(() => {
