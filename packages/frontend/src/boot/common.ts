@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, watch, version as vueVersion, App } from 'vue';
+import { computed, watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { version, lang, updateLocale, locale } from '@@/js/config.js';
+import type { App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
@@ -15,11 +16,12 @@ import { updateI18n, i18n } from '@/i18n.js';
 import { $i, refreshAccount, login } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { deviceKind, updateDeviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
 import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
+import { analytics, initAnalytics } from '@/analytics.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/main.js';
@@ -97,6 +99,11 @@ export async function common(createVue: () => App<Element>) {
 
 	// タッチデバイスでCSSの:hoverを機能させる
 	document.addEventListener('touchend', () => {}, { passive: true });
+
+	// URLに#pswpを含む場合は取り除く
+	if (location.hash === '#pswp') {
+		history.replaceState(null, '', location.href.replace('#pswp', ''));
+	}
 
 	// 一斉リロード
 	reloadChannel.addEventListener('message', path => {
@@ -185,6 +192,10 @@ export async function common(createVue: () => App<Element>) {
 		}
 	});
 
+	watch(defaultStore.reactiveState.overridedDeviceKind, (kind) => {
+		updateDeviceKind(kind);
+	}, { immediate: true });
+
 	watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
 		document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');
 	}, { immediate: true });
@@ -230,6 +241,19 @@ export async function common(createVue: () => App<Element>) {
 	try {
 		await fetchCustomEmojis();
 	} catch (err) { /* empty */ }
+
+	// analytics
+	fetchInstanceMetaPromise.then(async () => {
+		await initAnalytics(instance);
+
+		if ($i) {
+			analytics.identify($i.id);
+		}
+
+		analytics.page({
+			path: window.location.pathname,
+		});
+	});
 
 	const app = createVue();
 

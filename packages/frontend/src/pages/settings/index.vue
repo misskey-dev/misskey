@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 					<div class="baaadecd">
 						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-						<MkSuperMenu :def="menuDef" :grid="narrow"></MkSuperMenu>
+						<MkSuperMenu :def="menuDef" :grid="narrow" :searchIndex="SETTING_INDEX"></MkSuperMenu>
 					</div>
 				</div>
 				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
@@ -29,22 +29,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import type { PageMetadata } from '@/scripts/page-metadata.js';
+import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
 import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { signout, $i } from '@/account.js';
 import { clearCache } from '@/scripts/clear-cache.js';
 import { instance } from '@/instance.js';
-import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import * as os from '@/os.js';
 import { useRouter } from '@/router/supplier.js';
+import { searchIndexes } from '@/scripts/autogen/settings-search-index.js';
+
+const SETTING_INDEX = searchIndexes; // TODO: lazy load
 
 const indexInfo = {
 	title: i18n.ts.settings,
 	icon: 'ti ti-settings',
 	hideHeader: true,
 };
-const INFO = ref(indexInfo);
+const INFO = ref<PageMetadata>(indexInfo);
 const el = shallowRef<HTMLElement | null>(null);
 const childInfo = ref<null | PageMetadata>(null);
 
@@ -60,8 +65,7 @@ const ro = new ResizeObserver((entries, observer) => {
 	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
 });
 
-const menuDef = computed(() => [{
-	title: i18n.ts.basicSettings,
+const menuDef = computed<SuperMenuDef[]>(() => [{
 	items: [{
 		icon: 'ti ti-user',
 		text: i18n.ts.profile,
@@ -99,32 +103,31 @@ const menuDef = computed(() => [{
 		active: currentPage.value?.route.name === 'security',
 	}],
 }, {
-	title: i18n.ts.clientSettings,
 	items: [{
 		icon: 'ti ti-adjustments',
-		text: i18n.ts.general,
-		to: '/settings/general',
-		active: currentPage.value?.route.name === 'general',
+		text: i18n.ts.preferences,
+		to: '/settings/preferences',
+		active: currentPage.value?.route.name === 'preferences',
 	}, {
 		icon: 'ti ti-palette',
 		text: i18n.ts.theme,
 		to: '/settings/theme',
 		active: currentPage.value?.route.name === 'theme',
 	}, {
-		icon: 'ti ti-menu-2',
-		text: i18n.ts.navbar,
-		to: '/settings/navbar',
-		active: currentPage.value?.route.name === 'navbar',
-	}, {
-		icon: 'ti ti-equal-double',
-		text: i18n.ts.statusbar,
-		to: '/settings/statusbar',
-		active: currentPage.value?.route.name === 'statusbar',
+		icon: 'ti ti-device-desktop',
+		text: i18n.ts.appearance,
+		to: '/settings/appearance',
+		active: currentPage.value?.route.name === 'appearance',
 	}, {
 		icon: 'ti ti-music',
 		text: i18n.ts.sounds,
 		to: '/settings/sounds',
 		active: currentPage.value?.route.name === 'sounds',
+	}, {
+		icon: 'ti ti-accessible',
+		text: i18n.ts.accessibility,
+		to: '/settings/accessibility',
+		active: currentPage.value?.route.name === 'accessibility',
 	}, {
 		icon: 'ti ti-plug',
 		text: i18n.ts.plugins,
@@ -132,7 +135,6 @@ const menuDef = computed(() => [{
 		active: currentPage.value?.route.name === 'plugin',
 	}],
 }, {
-	title: i18n.ts.otherSettings,
 	items: [{
 		icon: 'ti ti-badges',
 		text: i18n.ts.roles,
@@ -158,11 +160,6 @@ const menuDef = computed(() => [{
 		text: i18n.ts.importAndExport,
 		to: '/settings/import-export',
 		active: currentPage.value?.route.name === 'import-export',
-	}, {
-		icon: 'ti ti-plane',
-		text: `${i18n.ts.accountMigration}`,
-		to: '/settings/migration',
-		active: currentPage.value?.route.name === 'migration',
 	}, {
 		icon: 'ti ti-dots',
 		text: i18n.ts.other,

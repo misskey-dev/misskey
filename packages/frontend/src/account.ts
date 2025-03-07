@@ -7,6 +7,7 @@ import { defineAsyncComponent, reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { apiUrl } from '@@/js/config.js';
 import type { MenuItem, MenuButton } from '@/types/menu.js';
+import { defaultMemoryStorage } from '@/memory-storage';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -40,7 +41,15 @@ export function incNotesCount() {
 export async function signout() {
 	if (!$i) return;
 
+	defaultMemoryStorage.clear();
+
 	waiting();
+	document.cookie.split(';').forEach((cookie) => {
+		const cookieName = cookie.split('=')[0].trim();
+		if (cookieName === 'token') {
+			document.cookie = `${cookieName}=; max-age=0; path=/`;
+		}
+	});
 	miLocalStorage.removeItem('account');
 	await removeAccount($i.id);
 	const accounts = await getAccounts();
@@ -101,6 +110,9 @@ export async function removeAccount(idOrToken: Account['id']) {
 }
 
 function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Promise<Account> {
+	document.cookie = 'token=; path=/; max-age=0';
+	document.cookie = `token=${token}; path=/queue; max-age=86400; SameSite=Strict; Secure`; // bull dashboardの認証とかで使う
+
 	return new Promise((done, fail) => {
 		window.fetch(`${apiUrl}/i`, {
 			method: 'POST',
@@ -213,7 +225,6 @@ export async function login(token: Account['token'], redirect?: string) {
 			throw reason;
 		});
 	miLocalStorage.setItem('account', JSON.stringify(me));
-	document.cookie = `token=${token}; path=/; max-age=31536000`; // bull dashboardの認証とかで使う
 	await addAccount(me.id, token);
 
 	if (redirect) {

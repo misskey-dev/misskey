@@ -46,14 +46,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
 					<template v-else>{{ submitText }}</template>
-					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : 'ti ti-send'"></i>
+					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renoteTargetNote ? 'ti ti-quote' : 'ti ti-send'"></i>
 				</div>
 			</button>
 		</div>
 	</header>
 	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
-	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
-	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
+	<MkNoteSimple v-if="renoteTargetNote" :class="$style.targetNote" :note="renoteTargetNote"/>
+	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null; renoteTargetNote = null;"><i class="ti ti-x"></i></button></div>
 	<div v-if="visibility === 'specified'" :class="$style.toSpecified">
 		<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
 		<div :class="$style.visibleUsers">
@@ -65,7 +65,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
-	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
+	<div v-show="useCw" :class="$style.cwOuter">
+		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
+		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>		
+	</div>
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 		<div v-if="channel" :class="$style.colorBar" :style="{ background: channel.color }"></div>
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :readonly="textAreaReadOnly" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @keyup="onKeyup" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
@@ -101,15 +104,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
+import type { ShallowRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import { toASCII } from 'punycode/';
+import { toASCII } from 'punycode.js';
 import { host, url } from '@@/js/config.js';
+import type { PostFormProps } from '@/types/post-form.js';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
-import MkPollEditor, { type PollEditorModelValue } from '@/components/MkPollEditor.vue';
+import MkPollEditor from '@/components/MkPollEditor.vue';
+import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
 import { erase, unique } from '@/scripts/array.js';
 import { extractMentions } from '@/scripts/extract-mentions.js';
 import { formatTimeString } from '@/scripts/format-time-string.js';
@@ -129,7 +135,6 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
-import type { PostFormProps } from '@/types/post-form.js';
 
 const $i = signinRequired();
 
@@ -190,12 +195,13 @@ const imeText = ref('');
 const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
 const justEndedComposition = ref(false);
+const renoteTargetNote: ShallowRef<PostFormProps['renote'] | null> = shallowRef(props.renote);
 
 const draftKey = computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
 
-	if (props.renote) {
-		key += `renote:${props.renote.id}`;
+	if (renoteTargetNote.value) {
+		key += `renote:${renoteTargetNote.value.id}`;
 	} else if (props.reply) {
 		key += `reply:${props.reply.id}`;
 	} else {
@@ -206,7 +212,7 @@ const draftKey = computed((): string => {
 });
 
 const placeholder = computed((): string => {
-	if (props.renote) {
+	if (renoteTargetNote.value) {
 		return i18n.ts._postForm.quotePlaceholder;
 	} else if (props.reply) {
 		return i18n.ts._postForm.replyPlaceholder;
@@ -226,7 +232,7 @@ const placeholder = computed((): string => {
 });
 
 const submitText = computed((): string => {
-	return props.renote
+	return renoteTargetNote.value
 		? i18n.ts.quote
 		: props.reply
 			? i18n.ts.reply
@@ -241,16 +247,24 @@ const maxTextLength = computed((): number => {
 	return instance ? instance.maxNoteTextLength : 1000;
 });
 
+const cwTextLength = computed((): number => {
+	return cw.value?.length ?? 0;
+});
+
+const maxCwTextLength = 100;
+
 const canPost = computed((): boolean => {
 	return !props.mock && !posting.value && !posted.value &&
 		(
 			1 <= textLength.value ||
 			1 <= files.value.length ||
 			poll.value != null ||
-			props.renote != null ||
+			renoteTargetNote.value != null ||
 			quoteId.value != null
 		) &&
 		(textLength.value <= maxTextLength.value) &&
+		(cwTextLength.value <= maxCwTextLength) &&
+		(files.value.length <= 16) &&
 		(!poll.value || poll.value.choices.length >= 2);
 });
 
@@ -597,7 +611,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 	const paste = ev.clipboardData.getData('text');
 
-	if (!props.renote && !quoteId.value && paste.startsWith(url + '/notes/')) {
+	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(url + '/notes/')) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -717,6 +731,14 @@ function deleteDraft() {
 	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
+function isAnnoying(text: string): boolean {
+	return text.includes('$[x2') ||
+		text.includes('$[x3') ||
+		text.includes('$[x4') ||
+		text.includes('$[scale') ||
+		text.includes('$[position');
+}
+
 async function post(ev?: MouseEvent) {
 	if (useCw.value && (cw.value == null || cw.value.trim() === '')) {
 		os.alert({
@@ -729,7 +751,7 @@ async function post(ev?: MouseEvent) {
 	if (ev) {
 		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
 
-		if (el) {
+		if (el && defaultStore.state.animation) {
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
@@ -741,14 +763,10 @@ async function post(ev?: MouseEvent) {
 
 	if (props.mock) return;
 
-	const annoying =
-		text.value.includes('$[x2') ||
-		text.value.includes('$[x3') ||
-		text.value.includes('$[x4') ||
-		text.value.includes('$[scale') ||
-		text.value.includes('$[position');
-
-	if (annoying && visibility.value === 'public') {
+	if (visibility.value === 'public' && (
+		(useCw.value && cw.value != null && cw.value.trim() !== '' && isAnnoying(cw.value)) || // CWが迷惑になる場合
+		((!useCw.value || cw.value == null || cw.value.trim() === '') && text.value != null && text.value.trim() !== '' && isAnnoying(text.value)) // CWが無い かつ 本文が迷惑になる場合
+	)) {
 		const { canceled, result } = await os.actions({
 			type: 'warning',
 			text: i18n.ts.thisPostMayBeAnnoying,
@@ -776,7 +794,7 @@ async function post(ev?: MouseEvent) {
 		text: text.value === '' ? null : text.value,
 		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
 		replyId: props.reply ? props.reply.id : undefined,
-		renoteId: props.renote ? props.renote.id : quoteId.value ? quoteId.value : undefined,
+		renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : quoteId.value ? quoteId.value : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
 		poll: poll.value,
 		cw: useCw.value ? cw.value ?? '' : null,
@@ -871,7 +889,7 @@ async function post(ev?: MouseEvent) {
 				claimAchievement('brainDiver', token);
 			}
 
-			if (props.renote && (props.renote.userId === $i.id) && text.length > 0) {
+			if (renoteTargetNote.value && (renoteTargetNote.value.userId === $i.id) && text.length > 0) {
 				claimAchievement('selfQuote', token);
 			}
 
@@ -1038,7 +1056,7 @@ onMounted(() => {
 					users.forEach(u => pushVisibleUser(u));
 				});
 			}
-			quoteId.value = init.renote ? init.renote.id : null;
+			quoteId.value = renoteTargetNote.value ? renoteTargetNote.value.id : null;
 			reactionAcceptance.value = init.reactionAcceptance;
 		}
 
@@ -1059,6 +1077,8 @@ defineExpose({
 	&.modal {
 		width: 100%;
 		max-width: 520px;
+		overflow-x: clip;
+		overflow-y: auto;
 	}
 }
 
@@ -1115,7 +1135,7 @@ defineExpose({
 	&:focus-visible {
 		outline: none;
 
-		.submitInner {
+		> .submitInner {
 			outline: 2px solid var(--MI_THEME-fgOnAccent);
 			outline-offset: -4px;
 		}
@@ -1130,13 +1150,13 @@ defineExpose({
 	}
 
 	&:not(:disabled):hover {
-		> .inner {
+		> .submitInner {
 			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 		}
 	}
 
 	&:not(:disabled):active {
-		> .inner {
+		> .submitInner {
 			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 		}
 	}
@@ -1169,7 +1189,7 @@ defineExpose({
 	border-radius: 6px;
 
 	&:hover {
-		background: var(--MI_THEME-X5);
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 	}
 
 	&:disabled {
@@ -1241,7 +1261,7 @@ html[data-color-scheme=light] .preview {
 	margin-right: 14px;
 	padding: 8px 0 8px 8px;
 	border-radius: 8px;
-	background: var(--MI_THEME-X4);
+	background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 }
 
 .hasNotSpecifiedMentions {
@@ -1272,10 +1292,32 @@ html[data-color-scheme=light] .preview {
 	}
 }
 
+.cwOuter {
+	width: 100%;
+	position: relative;
+}
+
 .cw {
 	z-index: 1;
 	padding-bottom: 8px;
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
+}
+
+.cwTextCount {
+	position: absolute;
+	top: 0;
+	right: 2px;
+	padding: 2px 6px;
+	font-size: .9em;
+	color: var(--MI_THEME-warn);
+	border-radius: 6px;
+	max-width: 100%;
+	min-width: 1.6em;
+	text-align: center;
+
+	&.cwTextOver {
+		color: #ff2a2a;
+	}
 }
 
 .hashtags {
@@ -1352,7 +1394,7 @@ html[data-color-scheme=light] .preview {
 	border-radius: 6px;
 
 	&:hover {
-		background: var(--MI_THEME-X5);
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 	}
 
 	&.footerButtonActive {

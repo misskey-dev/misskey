@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter.prevent="search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
-		<MkRadios v-model="searchOrigin" @update:modelValue="search()">
+		<MkRadios v-if="instance.federation !== 'none'" v-model="searchOrigin" @update:modelValue="search()">
 			<option value="combined">{{ i18n.ts.all }}</option>
 			<option value="local">{{ i18n.ts.local }}</option>
 			<option value="remote">{{ i18n.ts.remote }}</option>
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkFoldableSection v-if="userPagination">
 		<template #header>{{ i18n.ts.searchResult }}</template>
-		<MkUserList :key="key" :pagination="userPagination"/>
+		<MkUserList :key="`searchUsers:${key}`" :pagination="userPagination"/>
 	</MkFoldableSection>
 </div>
 </template>
@@ -33,6 +33,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -48,14 +49,16 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter();
 
-const key = ref('');
+const key = ref(0);
+const userPagination = ref<Paging<'users/search'>>();
+
 const searchQuery = ref(toRef(props, 'query').value);
 const searchOrigin = ref(toRef(props, 'origin').value);
-const userPagination = ref<Paging>();
 
 async function search() {
 	const query = searchQuery.value.toString().trim();
 
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (query == null || query === '') return;
 
 	//#region AP lookup
@@ -75,6 +78,7 @@ async function search() {
 
 			if (res.type === 'User') {
 				router.push(`/@${res.object.username}@${res.object.host}`);
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			} else if (res.type === 'Note') {
 				router.push(`/notes/${res.object.id}`);
 			}
@@ -113,10 +117,10 @@ async function search() {
 		limit: 10,
 		params: {
 			query: query,
-			origin: searchOrigin.value,
+			origin: instance.federation === 'none' ? 'local' : searchOrigin.value,
 		},
 	};
 
-	key.value = query;
+	key.value++;
 }
 </script>

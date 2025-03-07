@@ -349,7 +349,6 @@ enableLocalTimeline: "Mahalliy vaqt mintaqasini yoqing"
 enableGlobalTimeline: "Global vaqt mintaqasini yoqing"
 disablingTimelinesInfo: "Administratorlar va Moderatorlar har doim barcha vaqt jadvallariga kirish huquqiga ega bo'ladilar, hatto ular yoqilmagan bo'lsa ham."
 registration: "Ro'yxatdan o'tish"
-enableRegistration: "Ro'yxatdan o'tishni yoqing"
 invite: "Taklif qilish"
 driveCapacityPerLocalAccount: "Har bir mahalliy foydalanuvchi uchun disk maydoni"
 driveCapacityPerRemoteAccount: "Har bir masofaviy foydalanuvchi uchun disk maydoni"
@@ -1005,9 +1004,6 @@ _play:
 _pages:
   newPage: "Yangi Sahifa yaratish"
   editPage: "Ushbu Sahifani tahrirlash"
-  created: "Sahifa muvaffaqiyatli yaratildi"
-  updated: "Sahifa muvaffaqiyatli tahrirlandi"
-  deleted: "Sahifa muvaffaqiyatli o'chirildi"
   pageSetting: "Sahifa sozlamalari"
   nameAlreadyExists: "Ko'rsatilgan Sahifa URL'i allaqachon mavjud"
   invalidNameTitle: "Ko'rsatilgan Sahifa URL'i yaroqsiz"
@@ -1095,3 +1091,9 @@ _moderationLogTypes:
   resetPassword: "Parolni tiklash"
 _reversi:
   total: "Jami"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Topilmadi"
+_search:
+  searchScopeAll: "Barcha"
+  searchScopeLocal: "Mahalliy"

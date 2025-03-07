@@ -50,6 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { host } from '@@/js/config.js';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import MkNotes from '@/components/MkNotes.vue';
@@ -62,13 +63,19 @@ import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { defaultStore } from '@/store.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
+import { getAppearNote } from '@/scripts/get-appear-note.js';
+import { serverContext, assertServerContext } from '@/server-context.js';
+import { $i } from '@/account.js';
+
+// contextは非ログイン状態の情報しかないためログイン時は利用できない
+const CTX_NOTE = !$i && assertServerContext(serverContext, 'note') ? serverContext.note : null;
 
 const props = defineProps<{
 	noteId: string;
 	initialTab?: string;
 }>();
 
-const note = ref<null | Misskey.entities.Note>();
+const note = ref<null | Misskey.entities.Note>(CTX_NOTE);
 const clips = ref<Misskey.entities.Clip[]>();
 const showPrev = ref<'user' | 'channel' | false>(false);
 const showNext = ref<'user' | 'channel' | false>(false);
@@ -116,14 +123,21 @@ function fetchNote() {
 	showPrev.value = false;
 	showNext.value = false;
 	note.value = null;
+
+	if (CTX_NOTE && CTX_NOTE.id === props.noteId) {
+		note.value = CTX_NOTE;
+		return;
+	}
+
 	misskeyApi('notes/show', {
 		noteId: props.noteId,
 	}).then(res => {
 		note.value = res;
+		const appearNote = getAppearNote(res);
 		// 古いノートは被クリップ数をカウントしていないので、2023-10-01以前のものは強制的にnotes/clipsを叩く
-		if (note.value.clippedCount > 0 || new Date(note.value.createdAt).getTime() < new Date('2023-10-01').getTime()) {
+		if ((appearNote.clippedCount ?? 0) > 0 || new Date(appearNote.createdAt).getTime() < new Date('2023-10-01').getTime()) {
 			misskeyApi('notes/clips', {
-				noteId: note.value.id,
+				noteId: appearNote.id,
 			}).then((_clips) => {
 				clips.value = _clips;
 			});
@@ -131,7 +145,12 @@ function fetchNote() {
 	}).catch(err => {
 		if (err.id === '8e75455b-738c-471d-9f80-62693f33372e') {
 			pleaseLogin({
+				path: '/',
 				message: i18n.ts.thisContentsAreMarkedAsSigninRequiredByAuthor,
+				openOnRemote: {
+					type: 'lookup',
+					url: `https://${host}/notes/${props.noteId}`,
+				},
 			});
 		}
 		error.value = err;
@@ -153,7 +172,7 @@ definePageMetadata(() => ({
 		avatar: note.value.user,
 		path: `/notes/${note.value.id}`,
 		share: {
-			title: i18n.tsx.noteOf({ user: note.value.user.name }),
+			title: i18n.tsx.noteOf({ user: note.value.user.name ?? note.value.user.username }),
 			text: note.value.text,
 		},
 	} : {},

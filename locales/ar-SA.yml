@@ -343,7 +343,6 @@ enableLocalTimeline: "تفعيل الخيط المحلي"
 enableGlobalTimeline: "تفعيل الخيط الزمني الشامل"
 disablingTimelinesInfo: "سيتمكن المديرون والمشرفون من الوصول إلى كل الخيوط الزمنية حتى وإن لم تفعّل."
 registration: "إنشاء حساب"
-enableRegistration: "تفعيل إنشاء الحسابات الجديدة"
 invite: "دعوة"
 driveCapacityPerLocalAccount: "حصة التخزين لكل مستخدم محلي"
 driveCapacityPerRemoteAccount: "حصة التخزين لكل مستخدم بعيد"
@@ -1461,9 +1460,6 @@ _pages:
   newPage: "أنشئ صفحة جديدة"
   editPage: "عدّل الصفحة"
   readPage: "نُشّط عرض المصدر"
-  created: "نجح إنشاء الصفحة"
-  updated: "نجح تعديل الصفحة"
-  deleted: "نجح حذف الصفحة"
   pageSetting: "إعدادات الصفحة"
   nameAlreadyExists: "رابط الصفحة موجود مسبقًا"
   invalidNameTitle: "رابط الصفحة ليس صالحًا"
@@ -1585,3 +1581,10 @@ _reversi:
 _offlineScreen:
   title: "غير متصل - يتعذر الاتصال بالخادم"
   header: "يتعذر الاتصال بالخادم"
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "غير موجود"
+_search:
+  searchScopeAll: "الكل"
+  searchScopeLocal: "المحلي"
+  searchScopeUser: "مستخدم محدد"

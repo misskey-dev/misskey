@@ -8,10 +8,12 @@ import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
-import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
-import { Storage } from '@/pizzax.js';
 import type { Ast } from '@syuilo/aiscript';
+import type { DeviceKind } from '@/scripts/device-kind.js';
+import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { Storage } from '@/pizzax.js';
 
 interface PostFormAction {
 	title: string,
@@ -54,7 +56,7 @@ export type SoundStore = {
 	fileUrl: string;
 
 	volume: number;
-}
+};
 
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
@@ -86,10 +88,6 @@ export const defaultStore = markRaw(new Storage('base', {
 	keepCw: {
 		where: 'account',
 		default: true,
-	},
-	showFullAcct: {
-		where: 'account',
-		default: false,
 	},
 	collapseRenotes: {
 		where: 'account',
@@ -207,7 +205,7 @@ export const defaultStore = markRaw(new Storage('base', {
 
 	overridedDeviceKind: {
 		where: 'device',
-		default: null as null | 'smartphone' | 'tablet' | 'desktop',
+		default: null as DeviceKind | null,
 	},
 	serverDisconnectedBehavior: {
 		where: 'device',
@@ -263,11 +261,11 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	useBlurEffectForModal: {
 		where: 'device',
-		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
+		default: DEFAULT_DEVICE_KIND === 'desktop',
 	},
 	useBlurEffect: {
 		where: 'device',
-		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
+		default: DEFAULT_DEVICE_KIND === 'desktop',
 	},
 	showFixedPostForm: {
 		where: 'device',
@@ -472,6 +470,14 @@ export const defaultStore = markRaw(new Storage('base', {
 	skipNoteRender: {
 		where: 'device',
 		default: true,
+	},
+	showSoftWordMutedWord: {
+		where: 'device',
+		default: false,
+	},
+	confirmOnReact: {
+		where: 'device',
+		default: false,
 	},
 
 	sound_masterVolume: {
