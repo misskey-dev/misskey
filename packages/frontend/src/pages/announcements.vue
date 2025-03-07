@@ -17,18 +17,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span v-if="$i && !announcement.silence && !announcement.isRead" style="margin-right: 0.5em;">🆕</span>
 							<span style="margin-right: 0.5em;">
 								<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
-								<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
-								<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
-								<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+								<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i>
+								<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
+								<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 							</span>
-							<span>{{ announcement.title }}</span>
+							<MkA :to="`/announcements/${announcement.id}`"><span>{{ announcement.title }}</span></MkA>
 						</div>
 						<div :class="$style.content">
 							<Mfm :text="announcement.text"/>
 							<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
-							<div style="opacity: 0.7; font-size: 85%;">
-								<MkTime :time="announcement.updatedAt ?? announcement.createdAt" mode="detail"/>
-							</div>
+							<MkA :to="`/announcements/${announcement.id}`">
+								<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
+									{{ i18n.ts.createdAt }}: <MkTime :time="announcement.createdAt" mode="detail"/>
+								</div>
+								<div v-if="announcement.updatedAt" style="opacity: 0.7; font-size: 85%;">
+									{{ i18n.ts.updatedAt }}: <MkTime :time="announcement.updatedAt" mode="detail"/>
+								</div>
+							</MkA>
 						</div>
 						<div v-if="tab !== 'past' && $i && !announcement.silence && !announcement.isRead" :class="$style.footer">
 							<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
@@ -51,7 +56,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i, updateAccount } from '@/account.js';
+import { $i, updateAccountPartial } from '@/account.js';
 
 const paginationCurrent = {
 	endpoint: 'announcements' as const,
@@ -73,24 +78,24 @@ const paginationEl = ref<InstanceType<typeof MkPagination>>();
 
 const tab = ref('current');
 
-async function read(announcement) {
-	if (announcement.needConfirmationToRead) {
+async function read(target) {
+	if (target.needConfirmationToRead) {
 		const confirm = await os.confirm({
 			type: 'question',
 			title: i18n.ts._announcement.readConfirmTitle,
-			text: i18n.tsx._announcement.readConfirmText({ title: announcement.title }),
+			text: i18n.tsx._announcement.readConfirmText({ title: target.title }),
 		});
 		if (confirm.canceled) return;
 	}
 
 	if (!paginationEl.value) return;
-	paginationEl.value.updateItem(announcement.id, a => {
+	paginationEl.value.updateItem(target.id, a => {
 		a.isRead = true;
 		return a;
 	});
-	misskeyApi('i/read-announcement', { announcementId: announcement.id });
-	updateAccount({
-		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== announcement.id),
+	misskeyApi('i/read-announcement', { announcementId: target.id });
+	updateAccountPartial({
+		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== target.id),
 	});
 }
 

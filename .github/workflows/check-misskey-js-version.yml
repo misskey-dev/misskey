@@ -6,12 +6,13 @@ on:
     paths:
       - packages/misskey-js/package.json
       - package.json
+      - .github/workflows/check-misskey-js-version.yml
   pull_request:
     branches: [ develop ]
     paths:
       - packages/misskey-js/package.json
       - package.json
-
+      - .github/workflows/check-misskey-js-version.yml
 jobs:
   check-version:
     # ルートの package.json と packages/misskey-js/package.json のバージョンが一致しているかを確認する
@@ -19,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.2
       - name: Check version
         run: |
           if [ "$(jq -r '.version' package.json)" != "$(jq -r '.version' packages/misskey-js/package.json)" ]; then

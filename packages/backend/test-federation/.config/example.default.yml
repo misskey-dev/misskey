@@ -1,0 +1,24 @@
+url: https://${HOST}/
+port: 3000
+db:
+  host: db.${HOST}
+  port: 5432
+  db: misskey
+  user: postgres
+  pass: postgres
+dbReplications: false
+redis:
+  host: redis.test
+  port: 6379
+id: 'aidx'
+proxyBypassHosts:
+  - api.deepl.com
+  - api-free.deepl.com
+  - www.recaptcha.net
+  - hcaptcha.com
+  - challenges.cloudflare.com
+proxyRemoteFiles: true
+signToActivityPubGet: true
+allowedPrivateNetworks:
+  - 127.0.0.1/32
+  - 172.20.0.0/16

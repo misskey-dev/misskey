@@ -3,19 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiInstance } from '@/models/Instance.js';
-import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MiUser } from '@/models/User.js';
+import { DI } from '@/di-symbols.js';
+import { MiMeta } from '@/models/_.js';
 
 @Injectable()
 export class InstanceEntityService {
 	constructor(
-		private metaService: MetaService,
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		private roleService: RoleService,
 
 		private utilityService: UtilityService,
@@ -27,7 +30,6 @@ export class InstanceEntityService {
 		instance: MiInstance,
 		me?: { id: MiUser['id']; } | null | undefined,
 	): Promise<Packed<'FederationInstance'>> {
-		const meta = await this.metaService.fetch();
 		const iAmModerator = me ? await this.roleService.isModerator(me as MiUser) : false;
 
 		return {
@@ -39,8 +41,9 @@ export class InstanceEntityService {
 			followingCount: instance.followingCount,
 			followersCount: instance.followersCount,
 			isNotResponding: instance.isNotResponding,
-			isSuspended: instance.isSuspended,
-			isBlocked: this.utilityService.isBlockedHost(meta.blockedHosts, instance.host),
+			isSuspended: instance.suspensionState !== 'none',
+			suspensionState: instance.suspensionState,
+			isBlocked: this.utilityService.isBlockedHost(this.meta.blockedHosts, instance.host),
 			softwareName: instance.softwareName,
 			softwareVersion: instance.softwareVersion,
 			openRegistrations: instance.openRegistrations,
@@ -48,7 +51,8 @@ export class InstanceEntityService {
 			description: instance.description,
 			maintainerName: instance.maintainerName,
 			maintainerEmail: instance.maintainerEmail,
-			isSilenced: this.utilityService.isSilencedHost(meta.silencedHosts, instance.host),
+			isSilenced: this.utilityService.isSilencedHost(this.meta.silencedHosts, instance.host),
+			isMediaSilenced: this.utilityService.isMediaSilencedHost(this.meta.mediaSilencedHosts, instance.host),
 			iconUrl: instance.iconUrl,
 			faviconUrl: instance.faviconUrl,
 			themeColor: instance.themeColor,
@@ -61,8 +65,9 @@ export class InstanceEntityService {
 	@bindThis
 	public packMany(
 		instances: MiInstance[],
+		me?: { id: MiUser['id']; } | null | undefined,
 	) {
-		return Promise.all(instances.map(x => this.pack(x)));
+		return Promise.all(instances.map(x => this.pack(x, me)));
 	}
 }
 

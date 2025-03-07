@@ -115,6 +115,14 @@ export const packedMetaLiteSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		enableTestcaptcha: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		googleAnalyticsMeasurementId: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 		swPublickey: {
 			type: 'string',
 			optional: false, nullable: true,
@@ -227,6 +235,10 @@ export const packedMetaLiteSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		inquiryUrl: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 		serverRules: {
 			type: 'array',
 			optional: false, nullable: false,
@@ -242,6 +254,21 @@ export const packedMetaLiteSchema = {
 			type: 'object',
 			optional: false, nullable: false,
 			ref: 'RolePolicies',
+		},
+		noteSearchableScope: {
+			type: 'string',
+			enum: ['local', 'global'],
+			optional: false, nullable: false,
+			default: 'local',
+		},
+		maxFileSize: {
+			type: 'number',
+			optional: false, nullable: false,
+		},
+		federation: {
+			type: 'string',
+			enum: ['all', 'specified', 'none'],
+			optional: false, nullable: false,
 		},
 	},
 } as const;

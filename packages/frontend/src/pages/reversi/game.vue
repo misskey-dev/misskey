@@ -20,8 +20,9 @@ import { useStream } from '@/stream.js';
 import { signinRequired } from '@/account.js';
 import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
+import { url } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 
 const $i = signinRequired();
 
@@ -44,7 +45,7 @@ function start(_game: Misskey.entities.ReversiGameDetailed) {
 
 	if (shareWhenStart.value) {
 		misskeyApi('notes/create', {
-			text: i18n.ts._reversi.iStartedAGame + '\n' + location.href,
+			text: `${i18n.ts._reversi.iStartedAGame}\n${url}/reversi/g/${props.gameId}`,
 			visibility: 'home',
 		});
 	}

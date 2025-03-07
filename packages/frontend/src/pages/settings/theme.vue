@@ -4,75 +4,78 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m rsljpzjq">
-	<div v-adaptive-border class="rfqxtzch _panel">
-		<div class="toggle">
-			<div class="toggleWrapper">
-				<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
-				<label for="dn" class="toggle">
-					<span class="before">{{ i18n.ts.light }}</span>
-					<span class="after">{{ i18n.ts.dark }}</span>
-					<span class="toggle__handler">
-						<span class="crater crater--1"></span>
-						<span class="crater crater--2"></span>
-						<span class="crater crater--3"></span>
-					</span>
-					<span class="star star--1"></span>
-					<span class="star star--2"></span>
-					<span class="star star--3"></span>
-					<span class="star star--4"></span>
-					<span class="star star--5"></span>
-					<span class="star star--6"></span>
-				</label>
+<SearchMarker path="/settings/theme" :label="i18n.ts.theme" :keywords="['theme']" icon="ti ti-palette">
+	<div class="_gaps_m rsljpzjq">
+		<div v-adaptive-border class="rfqxtzch _panel">
+			<div class="toggle">
+				<div class="toggleWrapper">
+					<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
+					<label for="dn" class="toggle">
+						<span class="before">{{ i18n.ts.light }}</span>
+						<span class="after">{{ i18n.ts.dark }}</span>
+						<span class="toggle__handler">
+							<span class="crater crater--1"></span>
+							<span class="crater crater--2"></span>
+							<span class="crater crater--3"></span>
+						</span>
+						<span class="star star--1"></span>
+						<span class="star star--2"></span>
+						<span class="star star--3"></span>
+						<span class="star star--4"></span>
+						<span class="star star--5"></span>
+						<span class="star star--6"></span>
+					</label>
+				</div>
+			</div>
+			<div class="sync">
+				<SearchMarker :keywords="['sync', 'device', 'dark', 'light', 'mode']">
+					<MkSwitch v-model="syncDeviceDarkMode">
+						<template #label><SearchLabel>{{ i18n.ts.syncDeviceDarkMode }}</SearchLabel></template>
+					</MkSwitch>
+				</SearchMarker>
 			</div>
 		</div>
-		<div class="sync">
-			<MkSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</MkSwitch>
+
+		<div class="selects">
+			<div class="select">
+				<SearchMarker :keywords="['light', 'theme']">
+					<MkSelect v-model="lightThemeId" large :items="lightThemeSelectorItems">
+						<template #label><SearchLabel>{{ i18n.ts.themeForLightMode }}</SearchLabel></template>
+						<template #prefix><i class="ti ti-sun"></i></template>
+					</MkSelect>
+				</SearchMarker>
+			</div>
+			<div class="select">
+				<SearchMarker :keywords="['dark', 'theme']">
+					<MkSelect v-model="darkThemeId" large :items="darkThemeSelectorItems">
+						<template #label><SearchLabel>{{ i18n.ts.themeForDarkMode }}</SearchLabel></template>
+						<template #prefix><i class="ti ti-moon"></i></template>
+					</MkSelect>
+				</SearchMarker>
+			</div>
 		</div>
+
+		<FormSection>
+			<div class="_formLinksGrid">
+				<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
+				<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
+				<FormLink to="/settings/theme/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
+				<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
+			</div>
+		</FormSection>
+
+		<SearchMarker :keywords="['wallpaper']">
+			<MkButton v-if="wallpaper == null" @click="setWallpaper"><SearchLabel>{{ i18n.ts.setWallpaper }}</SearchLabel></MkButton>
+			<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
+		</SearchMarker>
 	</div>
-
-	<div class="selects">
-		<MkSelect v-model="lightThemeId" large class="select">
-			<template #label>{{ i18n.ts.themeForLightMode }}</template>
-			<template #prefix><i class="ti ti-sun"></i></template>
-			<option v-if="instanceLightTheme" :key="'instance:' + instanceLightTheme.id" :value="instanceLightTheme.id">{{ instanceLightTheme.name }}</option>
-			<optgroup v-if="installedLightThemes.length > 0" :label="i18n.ts._theme.installedThemes">
-				<option v-for="x in installedLightThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="i18n.ts._theme.builtinThemes">
-				<option v-for="x in builtinLightThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-		</MkSelect>
-		<MkSelect v-model="darkThemeId" large class="select">
-			<template #label>{{ i18n.ts.themeForDarkMode }}</template>
-			<template #prefix><i class="ti ti-moon"></i></template>
-			<option v-if="instanceDarkTheme" :key="'instance:' + instanceDarkTheme.id" :value="instanceDarkTheme.id">{{ instanceDarkTheme.name }}</option>
-			<optgroup v-if="installedDarkThemes.length > 0" :label="i18n.ts._theme.installedThemes">
-				<option v-for="x in installedDarkThemes" :key="'installed:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-			<optgroup :label="i18n.ts._theme.builtinThemes">
-				<option v-for="x in builtinDarkThemes" :key="'builtin:' + x.id" :value="x.id">{{ x.name }}</option>
-			</optgroup>
-		</MkSelect>
-	</div>
-
-	<FormSection>
-		<div class="_formLinksGrid">
-			<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
-			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
-			<FormLink to="/settings/theme/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
-			<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
-		</div>
-	</FormSection>
-
-	<MkButton v-if="wallpaper == null" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</MkButton>
-	<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
-</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
 import { computed, onActivated, ref, watch } from 'vue';
 import JSON5 from 'json5';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
@@ -88,18 +91,8 @@ import { uniqueBy } from '@/scripts/array.js';
 import { fetchThemes, getThemes } from '@/theme-store.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { reloadAsk } from '@/scripts/reload-ask.js';
 import * as os from '@/os.js';
-
-async function reloadAsk() {
-	const { canceled } = await os.confirm({
-		type: 'info',
-		text: i18n.ts.reloadToApplySetting,
-	});
-	if (canceled) return;
-
-	unisonReload();
-}
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -111,6 +104,70 @@ const instanceLightTheme = computed(() => instance.defaultLightTheme ? JSON5.par
 const installedLightThemes = computed(() => installedThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const builtinLightThemes = computed(() => builtinThemes.value.filter(t => t.base === 'light' || t.kind === 'light'));
 const themes = computed(() => uniqueBy([instanceDarkTheme.value, instanceLightTheme.value, ...builtinThemes.value, ...installedThemes.value].filter(x => x != null), theme => theme.id));
+
+const lightThemeSelectorItems = computed(() => {
+	const items = [] as MkSelectItem[];
+	if (instanceLightTheme.value) {
+		items.push({
+			type: 'option',
+			value: instanceLightTheme.value.id,
+			label: instanceLightTheme.value.name,
+		});
+	}
+	if (installedLightThemes.value.length > 0) {
+		items.push({
+			type: 'group',
+			label: i18n.ts._theme.installedThemes,
+			items: installedLightThemes.value.map(x => ({
+				type: 'option',
+				value: x.id,
+				label: x.name,
+			})),
+		});
+	}
+	items.push({
+		type: 'group',
+		label: i18n.ts._theme.builtinThemes,
+		items: builtinLightThemes.value.map(x => ({
+			type: 'option',
+			value: x.id,
+			label: x.name,
+		})),
+	});
+	return items;
+});
+
+const darkThemeSelectorItems = computed(() => {
+	const items = [] as MkSelectItem[];
+	if (instanceDarkTheme.value) {
+		items.push({
+			type: 'option',
+			value: instanceDarkTheme.value.id,
+			label: instanceDarkTheme.value.name,
+		});
+	}
+	if (installedDarkThemes.value.length > 0) {
+		items.push({
+			type: 'group',
+			label: i18n.ts._theme.installedThemes,
+			items: installedDarkThemes.value.map(x => ({
+				type: 'option',
+				value: x.id,
+				label: x.name,
+			})),
+		});
+	}
+	items.push({
+		type: 'group',
+		label: i18n.ts._theme.builtinThemes,
+		items: builtinDarkThemes.value.map(x => ({
+			type: 'option',
+			value: x.id,
+			label: x.name,
+		})),
+	});
+	return items;
+});
 
 const darkTheme = ColdDeviceStorage.ref('darkTheme');
 const darkThemeId = computed({
@@ -148,13 +205,13 @@ watch(syncDeviceDarkMode, () => {
 	}
 });
 
-watch(wallpaper, () => {
+watch(wallpaper, async () => {
 	if (wallpaper.value == null) {
 		miLocalStorage.removeItem('wallpaper');
 	} else {
 		miLocalStorage.setItem('wallpaper', wallpaper.value);
 	}
-	reloadAsk();
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
 
 onActivated(() => {
@@ -213,12 +270,18 @@ definePageMetadata(() => ({
 			}
 		}
 
+		.dn:focus-visible ~ .toggle {
+			outline: 2px solid var(--MI_THEME-focus);
+			outline-offset: 2px;
+		}
+
 		.toggle {
 			cursor: pointer;
 			display: inline-block;
 			position: relative;
 			width: 90px;
 			height: 50px;
+			margin: 4px; // focus用のアウトライン
 			background-color: #83D8FF;
 			border-radius: 90px - 6;
 			transition: background-color 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
@@ -231,12 +294,12 @@ definePageMetadata(() => ({
 
 			> .before {
 				left: -70px;
-				color: var(--accent);
+				color: var(--MI_THEME-accent);
 			}
 
 			> .after {
 				right: -68px;
-				color: var(--fg);
+				color: var(--MI_THEME-fg);
 			}
 		}
 
@@ -354,11 +417,11 @@ definePageMetadata(() => ({
 				background-color: #749DD6;
 
 				> .before {
-					color: var(--fg);
+					color: var(--MI_THEME-fg);
 				}
 
 				> .after {
-					color: var(--accent);
+					color: var(--MI_THEME-accent);
 				}
 
 				.toggle__handler {
@@ -409,14 +472,14 @@ definePageMetadata(() => ({
 
 	> .sync {
 		padding: 14px 16px;
-		border-top: solid 0.5px var(--divider);
+		border-top: solid 0.5px var(--MI_THEME-divider);
 	}
 }
 
 .rsljpzjq {
 	> .selects {
 		display: flex;
-		gap: 1.5em var(--margin);
+		gap: 1.5em var(--MI-margin);
 		flex-wrap: wrap;
 
 		> .select {

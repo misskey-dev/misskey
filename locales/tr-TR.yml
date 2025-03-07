@@ -8,6 +8,7 @@ search: "Arama"
 notifications: "Bildirim"
 username: "Kullanıcı Adı"
 password: "Şifre"
+initialPasswordForSetup: ""
 forgotPassword: "şifremi unuttum"
 fetchingAsApObject: "從聯邦宇宙取得中..."
 ok: "TAMAM"
@@ -344,7 +345,6 @@ today: "Bugün"
 monthX: "{month} ay"
 pages: "Sayfalar"
 integration: "Entegrasyon"
-enableRegistration: "Kayıtlara izin ver"
 basicInfo: "Temel bilgiler"
 pinnedUsers: "Sabitlenmiş kullanıcılar"
 pinnedNotes: "Sabitlenen"
@@ -378,6 +378,10 @@ addMemo: "Kısa not ekle"
 icon: "Avatar"
 replies: "yanıt"
 renotes: "vazgeçme"
+_delivery:
+  stop: "Askıya alınmış"
+  _type:
+    none: "Paylaşım"
 _accountDelete:
   started: "Silme işlemi başlatıldı"
 _email:
@@ -442,6 +446,7 @@ _notification:
     reaction: "Tepkiler"
     receiveFollowRequest: "Takip isteği alındı"
     followRequestAccepted: "Takip isteği kabul edildi"
+    login: "Giriş Yap "
   _actions:
     reply: "yanıt"
     renote: "vazgeçme"
@@ -455,4 +460,5 @@ _deck:
 _moderationLogTypes:
   suspend: "askıya al"
   resetPassword: "Şifre sıfırlama"
-
+_search:
+  searchScopeAll: "Tümü"

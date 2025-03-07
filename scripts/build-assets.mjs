@@ -13,7 +13,7 @@ import * as terser from 'terser';
 
 import { build as buildLocales } from '../locales/index.js';
 import generateDTS from '../locales/generateDTS.js';
-import meta from '../package.json' assert { type: "json" };
+import meta from '../package.json' with { type: "json" };
 import buildTarball from './tarball.mjs';
 
 const configDir = fileURLToPath(new URL('../.config', import.meta.url));
@@ -58,8 +58,10 @@ async function buildBackendScript() {
 
   for (const file of [
     './packages/backend/src/server/web/boot.js',
+    './packages/backend/src/server/web/boot.embed.js',
     './packages/backend/src/server/web/bios.js',
-    './packages/backend/src/server/web/cli.js'
+    './packages/backend/src/server/web/cli.js',
+    './packages/backend/src/server/web/error.js',
   ]) {
     let source = await fs.readFile(file, { encoding: 'utf-8' });
     source = source.replaceAll('LANGS', JSON.stringify(Object.keys(locales)));
@@ -73,6 +75,7 @@ async function buildBackendStyle() {
 
   for (const file of [
     './packages/backend/src/server/web/style.css',
+    './packages/backend/src/server/web/style.embed.css',
     './packages/backend/src/server/web/bios.css',
     './packages/backend/src/server/web/cli.css',
     './packages/backend/src/server/web/error.css'

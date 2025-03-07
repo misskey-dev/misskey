@@ -78,6 +78,10 @@ export class FollowingEntityService {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
 		},
+		hint?: {
+			packedFollowee?: Packed<'UserDetailedNotMe'>,
+			packedFollower?: Packed<'UserDetailedNotMe'>,
+		},
 	): Promise<Packed<'Following'>> {
 		const following = typeof src === 'object' ? src : await this.followingsRepository.findOneByOrFail({ id: src });
 
@@ -88,25 +92,35 @@ export class FollowingEntityService {
 			createdAt: this.idService.parse(following.id).date.toISOString(),
 			followeeId: following.followeeId,
 			followerId: following.followerId,
-			followee: opts.populateFollowee ? this.userEntityService.pack(following.followee ?? following.followeeId, me, {
+			followee: opts.populateFollowee ? hint?.packedFollowee ?? this.userEntityService.pack(following.followee ?? following.followeeId, me, {
 				schema: 'UserDetailedNotMe',
 			}) : undefined,
-			follower: opts.populateFollower ? this.userEntityService.pack(following.follower ?? following.followerId, me, {
+			follower: opts.populateFollower ? hint?.packedFollower ?? this.userEntityService.pack(following.follower ?? following.followerId, me, {
 				schema: 'UserDetailedNotMe',
 			}) : undefined,
 		});
 	}
 
 	@bindThis
-	public packMany(
-		followings: any[],
+	public async packMany(
+		followings: MiFollowing[],
 		me?: { id: MiUser['id'] } | null | undefined,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
 		},
 	) {
-		return Promise.all(followings.map(x => this.pack(x, me, opts)));
+		const _followees = opts?.populateFollowee ? followings.map(({ followee, followeeId }) => followee ?? followeeId) : [];
+		const _followers = opts?.populateFollower ? followings.map(({ follower, followerId }) => follower ?? followerId) : [];
+		const _userMap = await this.userEntityService.packMany([..._followees, ..._followers], me, { schema: 'UserDetailedNotMe' })
+			.then(users => new Map(users.map(u => [u.id, u])));
+		return Promise.all(
+			followings.map(following => {
+				const packedFollowee = opts?.populateFollowee ? _userMap.get(following.followeeId) : undefined;
+				const packedFollower = opts?.populateFollower ? _userMap.get(following.followerId) : undefined;
+				return this.pack(following, me, opts, { packedFollowee, packedFollower });
+			}),
+		);
 	}
 }
 

@@ -33,9 +33,9 @@ describe('Note thread mute', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some((note: any) => note.id === bobNote.id), false);
-		assert.strictEqual(res.body.some((note: any) => note.id === carolReply.id), false);
-		assert.strictEqual(res.body.some((note: any) => note.id === carolReplyWithoutMention.id), false);
+		assert.strictEqual(res.body.some(note => note.id === bobNote.id), false);
+		assert.strictEqual(res.body.some(note => note.id === carolReply.id), false);
+		assert.strictEqual(res.body.some(note => note.id === carolReplyWithoutMention.id), false);
 	});
 
 	test('ミュートしているスレッドからメンションされても、hasUnreadMentions が true にならない', async () => {
@@ -93,8 +93,8 @@ describe('Note thread mute', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.some((notification: any) => notification.note.id === carolReply.id), false);
-		assert.strictEqual(res.body.some((notification: any) => notification.note.id === carolReplyWithoutMention.id), false);
+		assert.strictEqual(res.body.some(notification => 'note' in notification && notification.note.id === carolReply.id), false);
+		assert.strictEqual(res.body.some(notification => 'note' in notification && notification.note.id === carolReplyWithoutMention.id), false);
 
 		// NOTE: bobの投稿はスレッドミュート前に行われたため通知に含まれていてもよい
 	});

@@ -30,7 +30,7 @@ import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { notificationTypes } from '@/const.js';
+import { notificationTypes } from '@@/js/const.js';
 
 const tab = ref('all');
 const includeTypes = ref<string[] | null>(null);
@@ -102,7 +102,7 @@ definePageMetadata(() => ({
 
 <style module lang="scss">
 .notifications {
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 }
 </style>

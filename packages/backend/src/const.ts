@@ -8,6 +8,8 @@ export const MAX_NOTE_TEXT_LENGTH = 3000;
 export const USER_ONLINE_THRESHOLD = 1000 * 60 * 10; // 10min
 export const USER_ACTIVE_THRESHOLD = 1000 * 60 * 60 * 24 * 3; // 3days
 
+export const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
+
 //#region hard limits
 // If you change DB_* values, you must also change the DB schema.
 
@@ -23,6 +25,18 @@ export const DB_MAX_NOTE_TEXT_LENGTH = 8192;
  */
 export const DB_MAX_IMAGE_COMMENT_LENGTH = 512;
 //#endregion
+
+export const FILE_TYPE_IMAGE = [
+	'image/png',
+	'image/gif',
+	'image/jpeg',
+	'image/webp',
+	'image/avif',
+	'image/apng',
+	'image/bmp',
+	'image/tiff',
+	'image/x-icon',
+];
 
 // ブラウザで直接表示することを許可するファイルの種類のリスト
 // ここに含まれないものは application/octet-stream としてレスポンスされる

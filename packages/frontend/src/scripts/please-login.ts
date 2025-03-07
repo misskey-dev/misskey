@@ -5,22 +5,72 @@
 
 import { defineAsyncComponent } from 'vue';
 import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { popup } from '@/os.js';
 
-export function pleaseLogin(path?: string) {
+export type OpenOnRemoteOptions = {
+	/**
+	 * 外部のMisskey Webで特定のパスを開く
+	 */
+	type: 'web';
+
+	/**
+	 * 内部パス（例: `/settings`）
+	 */
+	path: string;
+} | {
+	/**
+	 * 外部のMisskey Webで照会する
+	 */
+	type: 'lookup';
+
+	/**
+	 * 照会したいエンティティのURL
+	 *
+	 * （例: `https://misskey.example.com/notes/abcdexxxxyz`）
+	 */
+	url: string;
+} | {
+	/**
+	 * 外部のMisskeyでノートする
+	 */
+	type: 'share';
+
+	/**
+	 * `/share` ページに渡すクエリストリング
+	 *
+	 * @see https://go.misskey-hub.net/spec/share/
+	 */
+	params: Record<string, string>;
+};
+
+export function pleaseLogin(opts: {
+	path?: string;
+	message?: string;
+	openOnRemote?: OpenOnRemoteOptions;
+} = {}) {
 	if ($i) return;
 
-	popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {
+	let _openOnRemote: OpenOnRemoteOptions | undefined = undefined;
+
+	// 連合できる場合と、（連合ができなくても）共有する場合は外部連携オプションを設定
+	if (opts.openOnRemote != null && (instance.federation !== 'none' || opts.openOnRemote.type === 'share')) {
+		_openOnRemote = opts.openOnRemote;
+	}
+
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {
 		autoSet: true,
-		message: i18n.ts.signinRequired,
+		message: opts.message ?? (_openOnRemote ? i18n.ts.signinOrContinueOnRemote : i18n.ts.signinRequired),
+		openOnRemote: _openOnRemote,
 	}, {
 		cancelled: () => {
-			if (path) {
-				window.location.href = path;
+			if (opts.path) {
+				window.location.href = opts.path;
 			}
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 
 	throw new Error('signin required');
 }

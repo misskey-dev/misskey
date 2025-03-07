@@ -52,8 +52,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, reactive, ref } from 'vue';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { GetFormResultType } from '@/scripts/form.js';
 import { useStream } from '@/stream.js';
 import kmg from '@/filters/kmg.js';
 import * as sound from '@/scripts/sound.js';
@@ -173,14 +174,14 @@ defineExpose<WidgetComponentExpose>({
 		padding: 16px;
 
 		&:not(:first-child) {
-			border-top: solid 0.5px var(--divider);
+			border-top: solid 0.5px var(--MI_THEME-divider);
 		}
 
 		> .label {
 			display: flex;
 
 			> .icon {
-				color: var(--warn);
+				color: var(--MI_THEME-warn);
 				margin-left: auto;
 				animation: warnBlink 1s infinite;
 			}
@@ -198,11 +199,11 @@ defineExpose<WidgetComponentExpose>({
 
 				> div:last-child {
 					&.inc {
-						color: var(--warn);
+						color: var(--MI_THEME-warn);
 					}
 
 					&.dec {
-						color: var(--success);
+						color: var(--MI_THEME-success);
 					}
 				}
 			}

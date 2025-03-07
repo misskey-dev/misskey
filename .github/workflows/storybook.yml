@@ -7,21 +7,28 @@ on:
       - develop
       - dev/storybook8 # for testing
   pull_request_target:
+    branches-ignore:
+      # Since pull requests targets master mostly is the "develop" branch.
+      # Storybook CI is checked on the "push" event of "develop" branch so it would cause a duplicate build.
+      # This is a waste of chromatic build quota, so we don't run storybook CI on pull requests targets master.
+      - master
 
 jobs:
   build:
+    # chromatic is not likely to be available for fork repositories, so we disable for fork repositories.
+    if: github.repository == 'misskey-dev/misskey'
     runs-on: ubuntu-latest
 
     env:
       NODE_OPTIONS: "--max_old_space_size=7168"
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.2.2
       if: github.event_name != 'pull_request_target'
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.2.2
       if: github.event_name == 'pull_request_target'
       with:
         fetch-depth: 0
@@ -33,14 +40,13 @@ jobs:
       run: |
         echo "base=$(git rev-list --parents -n1 HEAD | cut -d" " -f2)" >> $GITHUB_OUTPUT
         git checkout $(git rev-list --parents -n1 HEAD | cut -d" " -f3)
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.1.0
     - name: Use Node.js 20.x
-      uses: actions/setup-node@v4.0.2
+      uses: actions/setup-node@v4.2.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml
@@ -88,7 +94,7 @@ jobs:
         if [ "$BRANCH" = "misskey-dev:$HEAD_REF" ]; then
           BRANCH="$HEAD_REF"
         fi
-        pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static --branch-name $BRANCH $(echo "$CHROMATIC_PARAMETER")
+        pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static --branch-name "$BRANCH" $(echo "$CHROMATIC_PARAMETER")
       env:
         HEAD_REF: ${{ github.event.pull_request.head.ref }}
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}

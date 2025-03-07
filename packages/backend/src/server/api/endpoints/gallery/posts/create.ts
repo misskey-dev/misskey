@@ -12,7 +12,6 @@ import type { MiDriveFile } from '@/models/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 
 export const meta = {
 	tags: ['gallery'],
@@ -70,13 +69,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: fileId,
 					userId: me.id,
 				}),
-			))).filter(isNotNull);
+			))).filter(x => x != null);
 
 			if (files.length === 0) {
 				throw new Error();
 			}
 
-			const post = await this.galleryPostsRepository.insert(new MiGalleryPost({
+			const post = await this.galleryPostsRepository.insertOne(new MiGalleryPost({
 				id: this.idService.gen(),
 				updatedAt: new Date(),
 				title: ps.title,
@@ -84,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				userId: me.id,
 				isSensitive: ps.isSensitive,
 				fileIds: files.map(file => file.id),
-			})).then(x => this.galleryPostsRepository.findOneByOrFail(x.identifiers[0]));
+			}));
 
 			return await this.galleryPostEntityService.pack(post, me);
 		});

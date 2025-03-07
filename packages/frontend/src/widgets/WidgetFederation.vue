@@ -27,12 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { i18n } from '@/i18n.js';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 import { defaultStore } from '@/store.js';
@@ -105,7 +106,7 @@ defineExpose<WidgetComponentExpose>({
 			display: flex;
 			align-items: center;
 			padding: 14px 16px;
-			border-bottom: solid 0.5px var(--divider);
+			border-bottom: solid 0.5px var(--MI_THEME-divider);
 
 			> img {
 				display: block;
@@ -120,7 +121,7 @@ defineExpose<WidgetComponentExpose>({
 				flex: 1;
 				overflow: hidden;
 				font-size: 0.9em;
-				color: var(--fg);
+				color: var(--MI_THEME-fg);
 				padding-right: 8px;
 
 				> .a {

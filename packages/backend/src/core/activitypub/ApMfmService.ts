@@ -25,7 +25,7 @@ export class ApMfmService {
 	}
 
 	@bindThis
-	public getNoteHtml(note: MiNote, apAppend?: string) {
+	public getNoteHtml(note: Pick<MiNote, 'text' | 'mentionedRemoteUsers'>, apAppend?: string) {
 		let noMisskeyContent = false;
 		const srcMfm = (note.text ?? '') + (apAppend ?? '');
 

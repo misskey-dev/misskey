@@ -17,8 +17,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -84,10 +85,10 @@ defineExpose<WidgetComponentExpose>({
 	max-width: 100%;
 	min-width: 100%;
 	padding: 16px;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	background: transparent;
 	border: none;
-	border-bottom: solid 0.5px var(--divider);
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 	border-radius: 0;
 	box-sizing: border-box;
 	font: inherit;

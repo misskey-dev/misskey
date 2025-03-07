@@ -12,11 +12,14 @@ import WebSocket, { ClientOptions } from 'ws';
 import fetch, { File, RequestInit, type Headers } from 'node-fetch';
 import { DataSource } from 'typeorm';
 import { JSDOM } from 'jsdom';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
+import { type Response } from 'node-fetch';
+import Fastify from 'fastify';
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
+import { ApiError } from '@/server/api/error.js';
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
@@ -25,10 +28,22 @@ export interface UserToken {
 	bearer?: boolean;
 }
 
+export type SystemWebhookPayload = {
+	server: string;
+	hookId: string;
+	eventId: string;
+	createdAt: string;
+	type: string;
+	body: any;
+}
+
 const config = loadConfig();
 export const port = config.port;
 export const origin = config.url;
 export const host = new URL(config.url).host;
+
+export const WEBHOOK_HOST = 'http://localhost:15080';
+export const WEBHOOK_PORT = 15080;
 
 export const cookie = (me: UserToken): string => {
 	return `token=${me.token};`;
@@ -47,27 +62,28 @@ export const successfulApiCall = async <E extends keyof misskey.Endpoints, P ext
 	const res = await api(endpoint, parameters, user);
 	const status = assertion.status ?? (res.body == null ? 204 : 200);
 	assert.strictEqual(res.status, status, inspect(res.body, { depth: 5, colors: true }));
-	return res.body;
+
+	return res.body as misskey.api.SwitchCaseResponseType<E, P>;
 };
 
-export const failedApiCall = async <T, E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req']>(request: ApiRequest<E, P>, assertion: {
+export const failedApiCall = async <E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req']>(request: ApiRequest<E, P>, assertion: {
 	status: number,
 	code: string,
 	id: string
-}): Promise<T> => {
+}): Promise<void> => {
 	const { endpoint, parameters, user } = request;
 	const { status, code, id } = assertion;
 	const res = await api(endpoint, parameters, user);
 	assert.strictEqual(res.status, status, inspect(res.body));
-	assert.strictEqual(res.body.error.code, code, inspect(res.body));
-	assert.strictEqual(res.body.error.id, id, inspect(res.body));
-	return res.body;
+	assert.ok(res.body);
+	assert.strictEqual(castAsError(res.body as any).error.code, code, inspect(res.body));
+	assert.strictEqual(castAsError(res.body as any).error.id, id, inspect(res.body));
 };
 
-export const api = async <E extends keyof misskey.Endpoints>(path: E, params: misskey.Endpoints[E]['req'], me?: UserToken): Promise<{
+export const api = async <E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req']>(path: E, params: P, me?: UserToken): Promise<{
 	status: number,
 	headers: Headers,
-	body: any
+	body: misskey.api.SwitchCaseResponseType<E, P>
 }> => {
 	const bodyAuth: Record<string, string> = {};
 	const headers: Record<string, string> = {
@@ -88,13 +104,14 @@ export const api = async <E extends keyof misskey.Endpoints>(path: E, params: mi
 	});
 
 	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
-		? await res.json()
+		? await res.json() as misskey.api.SwitchCaseResponseType<E, P>
 		: null;
 
 	return {
 		status: res.status,
 		headers: res.headers,
-		body,
+		// FIXME: removing this non-null assertion: requires better typing around empty response.
+		body: body!,
 	};
 };
 
@@ -140,7 +157,8 @@ export const post = async (user: UserToken, params: misskey.Endpoints['notes/cre
 
 	const res = await api('notes/create', q, user);
 
-	return res.body ? res.body.createdNote : null;
+	// FIXME: the return type should reflect this fact.
+	return (res.body ? res.body.createdNote : null)!;
 };
 
 export const createAppToken = async (user: UserToken, permissions: (typeof misskey.permissions)[number][]) => {
@@ -296,7 +314,7 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 	body: misskey.entities.DriveFile | null
 }> => {
 	const absPath = path == null
-		? new URL('resources/Lenna.jpg', import.meta.url)
+		? new URL('resources/192.jpg', import.meta.url)
 		: isAbsolute(path.toString())
 			? new URL(path)
 			: new URL(path, new URL('resources/', import.meta.url));
@@ -454,7 +472,7 @@ export type SimpleGetResponse = {
 	type: string | null,
 	location: string | null
 };
-export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined): Promise<SimpleGetResponse> => {
+export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined, bodyExtractor: (res: Response) => Promise<string | null> = _ => Promise.resolve(null)): Promise<SimpleGetResponse> => {
 	const res = await relativeFetch(path, {
 		headers: {
 			Accept: accept,
@@ -482,7 +500,7 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 	const body =
 		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
 		htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
-		null;
+		await bodyExtractor(res);
 
 	return {
 		status: res.status,
@@ -604,14 +622,6 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	return db;
 }
 
-export function sleep(msec: number) {
-	return new Promise<void>(res => {
-		setTimeout(() => {
-			res();
-		}, msec);
-	});
-}
-
 export async function sendEnvUpdateRequest(params: { key: string, value?: string }) {
 	const res = await fetch(
 		`http://localhost:${port + 1000}/env`,
@@ -641,4 +651,44 @@ export async function sendEnvResetRequest() {
 	if (res.status !== 200) {
 		throw new Error('server env update failed.');
 	}
+}
+
+// 与えられた値を強制的にエラーとみなす。この関数は型安全性を破壊するため、異常系のアサーション以外で用いられるべきではない。
+// FIXME(misskey-js): misskey-jsがエラー情報を公開するようになったらこの関数を廃止する
+export function castAsError(obj: Record<string, unknown>): { error: ApiError } {
+	return obj as { error: ApiError };
+}
+
+export async function captureWebhook<T = SystemWebhookPayload>(postAction: () => Promise<void>, port = WEBHOOK_PORT): Promise<T> {
+	const fastify = Fastify();
+
+	let timeoutHandle: NodeJS.Timeout | null = null;
+	const result = await new Promise<string>(async (resolve, reject) => {
+		fastify.all('/', async (req, res) => {
+			timeoutHandle && clearTimeout(timeoutHandle);
+
+			const body = JSON.stringify(req.body);
+			res.status(200).send('ok');
+			await fastify.close();
+			resolve(body);
+		});
+
+		await fastify.listen({ port });
+
+		timeoutHandle = setTimeout(async () => {
+			await fastify.close();
+			reject(new Error('timeout'));
+		}, 3000);
+
+		try {
+			await postAction();
+		} catch (e) {
+			await fastify.close();
+			reject(e);
+		}
+	});
+
+	await fastify.close();
+
+	return JSON.parse(result) as T;
 }

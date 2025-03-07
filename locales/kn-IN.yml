@@ -77,6 +77,8 @@ _profile:
   username: "ಬಳಕೆಹೆಸರು"
 _notification:
   youWereFollowed: "ಹಿಂಬಾಲಿಸಿದರು"
+  _types:
+    login: "ಪ್ರವೇಶ"
   _actions:
     reply: "ಉತ್ತರಿಸು"
 _deck:
@@ -84,4 +86,3 @@ _deck:
     notifications: "ಅಧಿಸೂಚನೆಗಳು"
     tl: "ಸಮಯಸಾಲು"
     mentions: "ಹೆಸರಿಸಿದ"
-

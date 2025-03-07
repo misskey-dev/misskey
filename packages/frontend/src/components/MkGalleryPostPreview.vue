@@ -75,7 +75,7 @@ function leaveHover(): void {
 
 	&:hover {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 
 		> .thumbnail {
 			transform: scale(1.1);
@@ -83,7 +83,7 @@ function leaveHover(): void {
 
 		> article {
 			> footer {
-				&:before {
+				&::before {
 					opacity: 1;
 				}
 			}
@@ -139,7 +139,7 @@ function leaveHover(): void {
 			text-shadow: 0 0 8px #000;
 			background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
 
-			&:before {
+			&::before {
 				content: "";
 				display: block;
 				position: absolute;

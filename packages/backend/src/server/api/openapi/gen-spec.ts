@@ -15,7 +15,6 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 		info: {
 			version: config.version,
 			title: 'Misskey API',
-			'x-logo': { url: '/static-assets/api-doc.png' },
 		},
 
 		externalDocs: {
@@ -184,7 +183,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 				},
 				...(endpoint.meta.limit ? {
 					'429': {
-						description: 'To many requests',
+						description: 'Too many requests',
 						content: {
 							'application/json': {
 								schema: {
@@ -211,9 +210,15 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 
 		spec.paths['/' + endpoint.name] = {
 			...(endpoint.meta.allowGet ? {
-				get: info,
+				get: {
+					...info,
+					operationId: 'get___' + info.operationId,
+				},
 			} : {}),
-			post: info,
+			post: {
+				...info,
+				operationId: 'post___' + info.operationId,
+			},
 		};
 	}
 

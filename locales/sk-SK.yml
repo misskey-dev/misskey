@@ -331,7 +331,6 @@ enableLocalTimeline: "Povoliť lokálnu časovú os"
 enableGlobalTimeline: "Povoliť globálnu časovú os"
 disablingTimelinesInfo: "Administrátori a moderátori majú vždy prístup ku všetkým časovým osiam, aj keď sú vypnuté."
 registration: "Registrácia"
-enableRegistration: "Povoliť registráciu nových používateľov"
 invite: "Pozvať"
 driveCapacityPerLocalAccount: "Kapacita disku pre používateľa"
 driveCapacityPerRemoteAccount: "Kapacita disku pre vzdialeného používateľa"
@@ -454,7 +453,6 @@ uiLanguage: "Jazyk používateľského prostredia"
 aboutX: "O {x}"
 emojiStyle: "Štýl emoji"
 native: "Natívne"
-disableDrawer: "Nepoužívať šuflíkové menu"
 showNoteActionsOnlyHover: "Ovládacie prvky poznámky sa zobrazujú len po nabehnutí myši"
 noHistory: "Žiadna história"
 signinHistory: "História prihlásení"
@@ -632,10 +630,7 @@ abuseReported: "Vaše nahlásenie je odoslané. Veľmi pekne ďakujeme."
 reporter: "Nahlásil"
 reporteeOrigin: "Pôvod nahláseného"
 reporterOrigin: "Pôvod nahlasovača"
-forwardReport: "Preposlať nahlásenie na server"
-forwardReportIsAnonymous: "Namiesto vášho účtu bude zobrazený anonymný systémový účet na vzdialenom serveri ako autor nahlásenia."
 send: "Poslať"
-abuseMarkAsResolved: "Označiť nahlásenia ako vyriešené"
 openInNewTab: "Otvoriť v novom tabe"
 openInSideView: "Otvoriť v bočnom paneli"
 defaultNavigationBehaviour: "Predvolené správanie navigácie"
@@ -922,6 +917,10 @@ renotes: "Preposlať"
 sourceCode: "Zdrojový kód"
 flip: "Preklopiť"
 lastNDays: "Posledných {n} dní"
+_delivery:
+  stop: "Zmrazené"
+  _type:
+    none: "Zverejňovanie"
 _role:
   priority: "Priorita"
   _priority:
@@ -1108,7 +1107,6 @@ _theme:
     buttonBg: "Pozadie tlačidla"
     buttonHoverBg: "Pozadie tlačidla (pod kurzorom)"
     inputBorder: "Okraj vstupného poľa"
-    listItemHoverBg: "Pozadie položky zoznamu (pod kurzorom)"
     driveFolderBg: "Pozadie priečinu disku"
     wallpaperOverlay: "Vrstvenie pozadia"
     badge: "Odznak"
@@ -1120,8 +1118,6 @@ _sfx:
   note: "Poznámky"
   noteMy: "Vlastná poznámka"
   notification: "Oznámenia"
-  antenna: "Antény"
-  channel: "Upozornenia kanála"
 _ago:
   future: "Budúcnosť"
   justNow: "Teraz"
@@ -1336,9 +1332,6 @@ _pages:
   newPage: "Vytvoriť novú stránku"
   editPage: "Upraviť túto stránku"
   readPage: "Zobrazenie zdroja aktívne"
-  created: "Stránka úspešne vytvorená"
-  updated: "Stránka úspešne upravená"
-  deleted: "Stránka úspešne odstránená"
   pageSetting: "Nastavenia stránky"
   nameAlreadyExists: "Zadaná URL stránku už existuje"
   invalidNameTitle: "Zadaná URL stránku je nesprávna"
@@ -1408,6 +1401,7 @@ _notification:
     pollEnded: "Hlasovanie skončilo"
     receiveFollowRequest: "Doručené žiadosti o sledovanie"
     followRequestAccepted: "Schválené žiadosti o sledovanie"
+    login: "Prihlásiť sa"
     app: "Oznámenia z prepojených aplikácií"
   _actions:
     followBack: "Sledovať späť\n"
@@ -1443,9 +1437,18 @@ _deck:
 _webhookSettings:
   name: "Názov"
   active: "Zapnuté"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Email"
 _moderationLogTypes:
   suspend: "Zmraziť"
   resetPassword: "Resetovať heslo"
 _reversi:
   total: "Celkom"
-
+_remoteLookupErrors:
+  _noSuchObject:
+    title: "Nenájdené"
+_search:
+  searchScopeAll: "Všetko"
+  searchScopeLocal: "Lokálne"

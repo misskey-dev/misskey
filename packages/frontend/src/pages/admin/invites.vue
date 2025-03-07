@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-if="!noExpirationDate" v-model="expiresAt" type="datetime-local">
 						<template #label>{{ i18n.ts.expirationDate }}</template>
 					</MkInput>
-					<MkInput v-model="createCount" type="number">
+					<MkInput v-model="createCount" type="number" min="1">
 						<template #label>{{ i18n.ts.createCount }}</template>
 					</MkInput>
 					<MkButton primary rounded @click="createWithOptions">{{ i18n.ts.create }}</MkButton>
@@ -65,7 +65,8 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import type { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 

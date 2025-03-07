@@ -5,13 +5,12 @@
 
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
-pg.types.setTypeParser(20, Number);
-
 import { DataSource, Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
+import { MiAbuseReportNotificationRecipient } from '@/models/AbuseReportNotificationRecipient.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
 import { MiAnnouncement } from '@/models/Announcement.js';
@@ -69,6 +68,7 @@ import { MiUserProfile } from '@/models/UserProfile.js';
 import { MiUserPublickey } from '@/models/UserPublickey.js';
 import { MiUserSecurityKey } from '@/models/UserSecurityKey.js';
 import { MiWebhook } from '@/models/Webhook.js';
+import { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import { MiChannel } from '@/models/Channel.js';
 import { MiRetentionAggregation } from '@/models/RetentionAggregation.js';
 import { MiRole } from '@/models/Role.js';
@@ -82,32 +82,73 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { MiSystemAccount } from './models/SystemAccount.js';
+
+pg.types.setTypeParser(20, Number);
 
 export const dbLogger = new MisskeyLogger('db');
 
-const sqlLogger = dbLogger.createSubLogger('sql', 'gray', false);
+const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
+
+export type LoggerProps = {
+	disableQueryTruncation?: boolean;
+	enableQueryParamLogging?: boolean;
+};
+
+function highlightSql(sql: string) {
+	return highlight.highlight(sql, {
+		language: 'sql', ignoreIllegals: true,
+	});
+}
+
+function truncateSql(sql: string) {
+	return sql.length > 100 ? `${sql.substring(0, 100)}...` : sql;
+}
+
+function stringifyParameter(param: any) {
+	if (param instanceof Date) {
+		return param.toISOString();
+	} else {
+		return param;
+	}
+}
 
 class MyCustomLogger implements Logger {
+	constructor(private props: LoggerProps = {}) {
+	}
+
 	@bindThis
-	private highlight(sql: string) {
-		return highlight.highlight(sql, {
-			language: 'sql', ignoreIllegals: true,
-		});
+	private transformQueryLog(sql: string) {
+		let modded = sql;
+		if (!this.props.disableQueryTruncation) {
+			modded = truncateSql(modded);
+		}
+
+		return highlightSql(modded);
+	}
+
+	@bindThis
+	private transformParameters(parameters?: any[]) {
+		if (this.props.enableQueryParamLogging && parameters && parameters.length > 0) {
+			return parameters.map(stringifyParameter);
+		}
+
+		return undefined;
 	}
 
 	@bindThis
 	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query).substring(0, 100));
+		sqlLogger.info(this.transformQueryLog(query), this.transformParameters(parameters));
 	}
 
 	@bindThis
 	public logQueryError(error: string, query: string, parameters?: any[]) {
-		sqlLogger.error(this.highlight(query));
+		sqlLogger.error(this.transformQueryLog(query), this.transformParameters(parameters));
 	}
 
 	@bindThis
 	public logQuerySlow(time: number, query: string, parameters?: any[]) {
-		sqlLogger.warn(this.highlight(query));
+		sqlLogger.warn(this.transformQueryLog(query), this.transformParameters(parameters));
 	}
 
 	@bindThis
@@ -166,7 +207,9 @@ export const entities = [
 	MiEmoji,
 	MiHashtag,
 	MiSwSubscription,
+	MiSystemAccount,
 	MiAbuseUserReport,
+	MiAbuseReportNotificationRecipient,
 	MiRegistrationTicket,
 	MiSignin,
 	MiModerationLog,
@@ -185,6 +228,7 @@ export const entities = [
 	MiPasswordResetRequest,
 	MiUserPending,
 	MiWebhook,
+	MiSystemWebhook,
 	MiUserIp,
 	MiRetentionAggregation,
 	MiRole,
@@ -243,7 +287,12 @@ export function createPostgresDataSource(config: Config) {
 			},
 		} : false,
 		logging: log,
-		logger: log ? new MyCustomLogger() : undefined,
+		logger: log
+			? new MyCustomLogger({
+				disableQueryTruncation: config.logging?.sql?.disableQueryTruncation,
+				enableQueryParamLogging: config.logging?.sql?.enableQueryParamLogging,
+			})
+			: undefined,
 		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],
