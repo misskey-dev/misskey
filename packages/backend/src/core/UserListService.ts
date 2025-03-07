@@ -112,7 +112,8 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 		if (this.userEntityService.isRemoteUser(target)) {
 			const proxy = await this.systemAccountService.fetch('proxy');
-			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: target.id } }]);
+			// リモートユーザーのフォローは行わない
+			// this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: target.id } }]);
 		}
 	}
 
