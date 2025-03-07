@@ -534,7 +534,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		this.pushToTl(note, user);
 
-		this.antennaService.addNoteToAntennas(note, user);
+		this.antennaService.addNoteToAntennas({
+			...note,
+			channel: data.channel ?? null,
+		}, user);
 
 		if (data.reply) {
 			this.saveReply(data.reply, note);
