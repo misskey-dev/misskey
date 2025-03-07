@@ -104,9 +104,9 @@ const preview = {
 							}
 						}).catch(() => {})
 					: Promise.resolve();
-				const resetDefaultStorePromise = import('../src/store').then(({ defaultStore }) => {
+				const resetDefaultStorePromise = import('../src/store').then(({ store }) => {
 					// @ts-expect-error
-					defaultStore.init();
+					store.init();
 				}).catch(() => {});
 				Promise.all([resetIndexedDBPromise, resetDefaultStorePromise]).then(() => {
 					initLocalStorage();

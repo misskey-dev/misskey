@@ -86,7 +86,7 @@ import MkButton from '@/components/MkButton.vue';
 import { getBuiltinThemesRef } from '@/scripts/theme.js';
 import { selectFile } from '@/scripts/select-file.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/scripts/array.js';
@@ -196,14 +196,14 @@ const lightThemeId = computed({
 	},
 });
 
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+const darkMode = computed(store.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = prefer.model('syncDeviceDarkMode');
 const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
 
 watch(syncDeviceDarkMode, () => {
 	if (syncDeviceDarkMode.value) {
-		defaultStore.set('darkMode', isDeviceDarkmode());
+		store.set('darkMode', isDeviceDarkmode());
 	}
 });
 

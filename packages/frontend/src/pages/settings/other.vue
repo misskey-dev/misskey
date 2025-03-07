@@ -117,7 +117,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { signout, signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -131,7 +131,7 @@ const reportError = prefer.model('reportError');
 const enableCondensedLine = prefer.model('enableCondensedLine');
 const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
-const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
+const defaultWithReplies = computed(store.makeGetterSetter('defaultWithReplies'));
 
 watch(skipNoteRender, async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });

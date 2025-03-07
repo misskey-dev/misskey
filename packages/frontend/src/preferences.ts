@@ -8,7 +8,7 @@ import { apiUrl } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
 import { miLocalStorage } from '@/local-storage.js';
 import { ProfileManager } from '@/preferences/profile.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 
@@ -109,7 +109,7 @@ async function cloudBackup() {
 }
 
 window.setInterval(() => {
-	if (!defaultStore.state.enablePreferencesAutoCloudBackup) return;
+	if (!store.state.enablePreferencesAutoCloudBackup) return;
 	if (document.visibilityState !== 'visible') return; // 同期されていない古い値がバックアップされるのを防ぐ
 	if (profileManager.profile.modifiedAt <= latestBackupAt) return;
 

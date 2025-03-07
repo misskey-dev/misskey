@@ -15,7 +15,7 @@ import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i, signout, updateAccountPartial } from '@/account.js';
 import { instance } from '@/instance.js';
-import { ColdDeviceStorage, defaultStore } from '@/store.js';
+import { ColdDeviceStorage, store } from '@/store.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
@@ -140,10 +140,10 @@ export async function mainBoot() {
 	}
 
 	if ($i) {
-		defaultStore.loaded.then(async () => {
+		store.loaded.then(async () => {
 			// prefereces migration
 			// TODO: そのうち消す
-			if (defaultStore.state.menu.length > 0) {
+			if (store.state.menu.length > 0) {
 				const themes = await misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []);
 				if (themes.length > 0) {
 					prefer.set('themes', themes);
@@ -151,82 +151,82 @@ export async function mainBoot() {
 				prefer.set('lightTheme', ColdDeviceStorage.get('lightTheme'));
 				prefer.set('darkTheme', ColdDeviceStorage.get('darkTheme'));
 				prefer.set('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
-				prefer.set('keepCw', defaultStore.state.keepCw);
-				prefer.set('collapseRenotes', defaultStore.state.collapseRenotes);
-				prefer.set('rememberNoteVisibility', defaultStore.state.rememberNoteVisibility);
-				prefer.set('uploadFolder', defaultStore.state.uploadFolder);
-				prefer.set('keepOriginalUploading', defaultStore.state.keepOriginalUploading);
-				prefer.set('menu', defaultStore.state.menu);
-				prefer.set('statusbars', defaultStore.state.statusbars);
-				prefer.set('pinnedUserLists', defaultStore.state.pinnedUserLists);
-				prefer.set('serverDisconnectedBehavior', defaultStore.state.serverDisconnectedBehavior);
-				prefer.set('nsfw', defaultStore.state.nsfw);
-				prefer.set('highlightSensitiveMedia', defaultStore.state.highlightSensitiveMedia);
-				prefer.set('animation', defaultStore.state.animation);
-				prefer.set('animatedMfm', defaultStore.state.animatedMfm);
-				prefer.set('advancedMfm', defaultStore.state.advancedMfm);
-				prefer.set('showReactionsCount', defaultStore.state.showReactionsCount);
-				prefer.set('enableQuickAddMfmFunction', defaultStore.state.enableQuickAddMfmFunction);
-				prefer.set('loadRawImages', defaultStore.state.loadRawImages);
-				prefer.set('imageNewTab', defaultStore.state.imageNewTab);
-				prefer.set('disableShowingAnimatedImages', defaultStore.state.disableShowingAnimatedImages);
-				prefer.set('emojiStyle', defaultStore.state.emojiStyle);
-				prefer.set('menuStyle', defaultStore.state.menuStyle);
-				prefer.set('useBlurEffectForModal', defaultStore.state.useBlurEffectForModal);
-				prefer.set('useBlurEffect', defaultStore.state.useBlurEffect);
-				prefer.set('showFixedPostForm', defaultStore.state.showFixedPostForm);
-				prefer.set('showFixedPostFormInChannel', defaultStore.state.showFixedPostFormInChannel);
-				prefer.set('enableInfiniteScroll', defaultStore.state.enableInfiniteScroll);
-				prefer.set('useReactionPickerForContextMenu', defaultStore.state.useReactionPickerForContextMenu);
-				prefer.set('showGapBetweenNotesInTimeline', defaultStore.state.showGapBetweenNotesInTimeline);
-				prefer.set('instanceTicker', defaultStore.state.instanceTicker);
-				prefer.set('emojiPickerScale', defaultStore.state.emojiPickerScale);
-				prefer.set('emojiPickerWidth', defaultStore.state.emojiPickerWidth);
-				prefer.set('emojiPickerHeight', defaultStore.state.emojiPickerHeight);
-				prefer.set('emojiPickerStyle', defaultStore.state.emojiPickerStyle);
-				prefer.set('reportError', defaultStore.state.reportError);
-				prefer.set('squareAvatars', defaultStore.state.squareAvatars);
-				prefer.set('showAvatarDecorations', defaultStore.state.showAvatarDecorations);
-				prefer.set('numberOfPageCache', defaultStore.state.numberOfPageCache);
-				prefer.set('showNoteActionsOnlyHover', defaultStore.state.showNoteActionsOnlyHover);
-				prefer.set('showClipButtonInNoteFooter', defaultStore.state.showClipButtonInNoteFooter);
-				prefer.set('reactionsDisplaySize', defaultStore.state.reactionsDisplaySize);
-				prefer.set('limitWidthOfReaction', defaultStore.state.limitWidthOfReaction);
-				prefer.set('forceShowAds', defaultStore.state.forceShowAds);
-				prefer.set('aiChanMode', defaultStore.state.aiChanMode);
-				prefer.set('devMode', defaultStore.state.devMode);
-				prefer.set('mediaListWithOneImageAppearance', defaultStore.state.mediaListWithOneImageAppearance);
-				prefer.set('notificationPosition', defaultStore.state.notificationPosition);
-				prefer.set('notificationStackAxis', defaultStore.state.notificationStackAxis);
-				prefer.set('enableCondensedLine', defaultStore.state.enableCondensedLine);
-				prefer.set('keepScreenOn', defaultStore.state.keepScreenOn);
-				prefer.set('disableStreamingTimeline', defaultStore.state.disableStreamingTimeline);
-				prefer.set('useGroupedNotifications', defaultStore.state.useGroupedNotifications);
-				prefer.set('dataSaver', defaultStore.state.dataSaver);
-				prefer.set('enableSeasonalScreenEffect', defaultStore.state.enableSeasonalScreenEffect);
-				prefer.set('enableHorizontalSwipe', defaultStore.state.enableHorizontalSwipe);
-				prefer.set('useNativeUiForVideoAudioPlayer', defaultStore.state.useNativeUIForVideoAudioPlayer);
-				prefer.set('keepOriginalFilename', defaultStore.state.keepOriginalFilename);
-				prefer.set('alwaysConfirmFollow', defaultStore.state.alwaysConfirmFollow);
-				prefer.set('confirmWhenRevealingSensitiveMedia', defaultStore.state.confirmWhenRevealingSensitiveMedia);
-				prefer.set('contextMenu', defaultStore.state.contextMenu);
-				prefer.set('skipNoteRender', defaultStore.state.skipNoteRender);
-				prefer.set('showSoftWordMutedWord', defaultStore.state.showSoftWordMutedWord);
-				prefer.set('confirmOnReact', defaultStore.state.confirmOnReact);
-				prefer.set('sound.masterVolume', defaultStore.state.sound_masterVolume);
-				prefer.set('sound.notUseSound', defaultStore.state.sound_notUseSound);
-				prefer.set('sound.useSoundOnlyWhenActive', defaultStore.state.sound_useSoundOnlyWhenActive);
-				prefer.set('sound.on.note', defaultStore.state.sound_note as any);
-				prefer.set('sound.on.noteMy', defaultStore.state.sound_noteMy as any);
-				prefer.set('sound.on.notification', defaultStore.state.sound_notification as any);
-				prefer.set('sound.on.reaction', defaultStore.state.sound_reaction as any);
-				defaultStore.set('deck.profile', deckStore.state.profile);
-				defaultStore.set('deck.columns', deckStore.state.columns);
-				defaultStore.set('deck.layout', deckStore.state.layout);
-				defaultStore.set('menu', []);
+				prefer.set('keepCw', store.state.keepCw);
+				prefer.set('collapseRenotes', store.state.collapseRenotes);
+				prefer.set('rememberNoteVisibility', store.state.rememberNoteVisibility);
+				prefer.set('uploadFolder', store.state.uploadFolder);
+				prefer.set('keepOriginalUploading', store.state.keepOriginalUploading);
+				prefer.set('menu', store.state.menu);
+				prefer.set('statusbars', store.state.statusbars);
+				prefer.set('pinnedUserLists', store.state.pinnedUserLists);
+				prefer.set('serverDisconnectedBehavior', store.state.serverDisconnectedBehavior);
+				prefer.set('nsfw', store.state.nsfw);
+				prefer.set('highlightSensitiveMedia', store.state.highlightSensitiveMedia);
+				prefer.set('animation', store.state.animation);
+				prefer.set('animatedMfm', store.state.animatedMfm);
+				prefer.set('advancedMfm', store.state.advancedMfm);
+				prefer.set('showReactionsCount', store.state.showReactionsCount);
+				prefer.set('enableQuickAddMfmFunction', store.state.enableQuickAddMfmFunction);
+				prefer.set('loadRawImages', store.state.loadRawImages);
+				prefer.set('imageNewTab', store.state.imageNewTab);
+				prefer.set('disableShowingAnimatedImages', store.state.disableShowingAnimatedImages);
+				prefer.set('emojiStyle', store.state.emojiStyle);
+				prefer.set('menuStyle', store.state.menuStyle);
+				prefer.set('useBlurEffectForModal', store.state.useBlurEffectForModal);
+				prefer.set('useBlurEffect', store.state.useBlurEffect);
+				prefer.set('showFixedPostForm', store.state.showFixedPostForm);
+				prefer.set('showFixedPostFormInChannel', store.state.showFixedPostFormInChannel);
+				prefer.set('enableInfiniteScroll', store.state.enableInfiniteScroll);
+				prefer.set('useReactionPickerForContextMenu', store.state.useReactionPickerForContextMenu);
+				prefer.set('showGapBetweenNotesInTimeline', store.state.showGapBetweenNotesInTimeline);
+				prefer.set('instanceTicker', store.state.instanceTicker);
+				prefer.set('emojiPickerScale', store.state.emojiPickerScale);
+				prefer.set('emojiPickerWidth', store.state.emojiPickerWidth);
+				prefer.set('emojiPickerHeight', store.state.emojiPickerHeight);
+				prefer.set('emojiPickerStyle', store.state.emojiPickerStyle);
+				prefer.set('reportError', store.state.reportError);
+				prefer.set('squareAvatars', store.state.squareAvatars);
+				prefer.set('showAvatarDecorations', store.state.showAvatarDecorations);
+				prefer.set('numberOfPageCache', store.state.numberOfPageCache);
+				prefer.set('showNoteActionsOnlyHover', store.state.showNoteActionsOnlyHover);
+				prefer.set('showClipButtonInNoteFooter', store.state.showClipButtonInNoteFooter);
+				prefer.set('reactionsDisplaySize', store.state.reactionsDisplaySize);
+				prefer.set('limitWidthOfReaction', store.state.limitWidthOfReaction);
+				prefer.set('forceShowAds', store.state.forceShowAds);
+				prefer.set('aiChanMode', store.state.aiChanMode);
+				prefer.set('devMode', store.state.devMode);
+				prefer.set('mediaListWithOneImageAppearance', store.state.mediaListWithOneImageAppearance);
+				prefer.set('notificationPosition', store.state.notificationPosition);
+				prefer.set('notificationStackAxis', store.state.notificationStackAxis);
+				prefer.set('enableCondensedLine', store.state.enableCondensedLine);
+				prefer.set('keepScreenOn', store.state.keepScreenOn);
+				prefer.set('disableStreamingTimeline', store.state.disableStreamingTimeline);
+				prefer.set('useGroupedNotifications', store.state.useGroupedNotifications);
+				prefer.set('dataSaver', store.state.dataSaver);
+				prefer.set('enableSeasonalScreenEffect', store.state.enableSeasonalScreenEffect);
+				prefer.set('enableHorizontalSwipe', store.state.enableHorizontalSwipe);
+				prefer.set('useNativeUiForVideoAudioPlayer', store.state.useNativeUIForVideoAudioPlayer);
+				prefer.set('keepOriginalFilename', store.state.keepOriginalFilename);
+				prefer.set('alwaysConfirmFollow', store.state.alwaysConfirmFollow);
+				prefer.set('confirmWhenRevealingSensitiveMedia', store.state.confirmWhenRevealingSensitiveMedia);
+				prefer.set('contextMenu', store.state.contextMenu);
+				prefer.set('skipNoteRender', store.state.skipNoteRender);
+				prefer.set('showSoftWordMutedWord', store.state.showSoftWordMutedWord);
+				prefer.set('confirmOnReact', store.state.confirmOnReact);
+				prefer.set('sound.masterVolume', store.state.sound_masterVolume);
+				prefer.set('sound.notUseSound', store.state.sound_notUseSound);
+				prefer.set('sound.useSoundOnlyWhenActive', store.state.sound_useSoundOnlyWhenActive);
+				prefer.set('sound.on.note', store.state.sound_note as any);
+				prefer.set('sound.on.noteMy', store.state.sound_noteMy as any);
+				prefer.set('sound.on.notification', store.state.sound_notification as any);
+				prefer.set('sound.on.reaction', store.state.sound_reaction as any);
+				store.set('deck.profile', deckStore.state.profile);
+				store.set('deck.columns', deckStore.state.columns);
+				store.set('deck.layout', deckStore.state.layout);
+				store.set('menu', []);
 			}
 
-			if (defaultStore.state.accountSetupWizard !== -1) {
+			if (store.state.accountSetupWizard !== -1) {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
 					closed: () => dispose(),
 				});
@@ -499,7 +499,7 @@ export async function mainBoot() {
 			post();
 		},
 		'd': () => {
-			defaultStore.set('darkMode', !defaultStore.state.darkMode);
+			store.set('darkMode', !store.state.darkMode);
 		},
 		's': () => {
 			mainRouter.push('/search');

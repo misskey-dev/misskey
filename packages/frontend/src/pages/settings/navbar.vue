@@ -53,7 +53,7 @@ import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -67,7 +67,7 @@ const items = ref(prefer.s.menu.map(x => ({
 	type: x,
 })));
 
-const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
+const menuDisplay = computed(store.makeGetterSetter('menuDisplay'));
 
 async function addItem() {
 	const menu = Object.keys(navbarItemDef).filter(k => !prefer.s.menu.includes(k));

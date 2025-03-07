@@ -16,7 +16,7 @@ import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { updateI18n, i18n } from '@/i18n.js';
 import { $i, refreshAccount, login } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind, updateDeviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
@@ -41,7 +41,7 @@ export async function common(createVue: () => App<Element>) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(window as any).$i = $i;
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(window as any).$store = defaultStore;
+		(window as any).$store = store;
 
 		window.addEventListener('error', event => {
 			console.error(event);
@@ -126,7 +126,7 @@ export async function common(createVue: () => App<Element>) {
 	html.setAttribute('lang', lang);
 	//#endregion
 
-	await defaultStore.ready;
+	await store.ready;
 	await deckStore.ready;
 
 	const fetchInstanceMetaPromise = fetchInstance();
@@ -154,38 +154,38 @@ export async function common(createVue: () => App<Element>) {
 	//#endregion
 
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
-	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
+	watch(store.reactiveState.darkMode, (darkMode) => {
 		applyTheme(darkMode
 			? (prefer.s.darkTheme ?? defaultDarkTheme)
 			: (prefer.s.lightTheme ?? defaultLightTheme),
 		);
 	}, { immediate: miLocalStorage.getItem('theme') == null });
 
-	document.documentElement.dataset.colorScheme = defaultStore.state.darkMode ? 'dark' : 'light';
+	document.documentElement.dataset.colorScheme = store.state.darkMode ? 'dark' : 'light';
 
 	const darkTheme = prefer.model('darkTheme');
 	const lightTheme = prefer.model('lightTheme');
 
 	watch(darkTheme, (theme) => {
-		if (defaultStore.state.darkMode) {
+		if (store.state.darkMode) {
 			applyTheme(theme ?? defaultDarkTheme);
 		}
 	});
 
 	watch(lightTheme, (theme) => {
-		if (!defaultStore.state.darkMode) {
+		if (!store.state.darkMode) {
 			applyTheme(theme ?? defaultLightTheme);
 		}
 	});
 
 	//#region Sync dark mode
 	if (prefer.s.syncDeviceDarkMode) {
-		defaultStore.set('darkMode', isDeviceDarkmode());
+		store.set('darkMode', isDeviceDarkmode());
 	}
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
 		if (prefer.s.syncDeviceDarkMode) {
-			defaultStore.set('darkMode', mql.matches);
+			store.set('darkMode', mql.matches);
 		}
 	});
 	//#endregion
@@ -196,7 +196,7 @@ export async function common(createVue: () => App<Element>) {
 		if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
 	});
 
-	watch(defaultStore.reactiveState.overridedDeviceKind, (kind) => {
+	watch(store.reactiveState.overridedDeviceKind, (kind) => {
 		updateDeviceKind(kind);
 	}, { immediate: true });
 

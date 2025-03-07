@@ -11,16 +11,16 @@ import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { profileManager } from '@/preferences.js';
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 
 export function getPreferencesProfileMenu(): MenuItem[] {
-	const autoBackupEnabled = ref(defaultStore.state.enablePreferencesAutoCloudBackup);
+	const autoBackupEnabled = ref(store.state.enablePreferencesAutoCloudBackup);
 
 	watch(autoBackupEnabled, () => {
 		if (autoBackupEnabled.value) {
-			defaultStore.set('enablePreferencesAutoCloudBackup', true);
+			store.set('enablePreferencesAutoCloudBackup', true);
 		} else {
-			defaultStore.set('enablePreferencesAutoCloudBackup', false);
+			store.set('enablePreferencesAutoCloudBackup', false);
 		}
 	});
 

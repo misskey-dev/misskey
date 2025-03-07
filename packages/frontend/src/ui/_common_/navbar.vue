@@ -94,7 +94,7 @@ import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
@@ -105,7 +105,7 @@ const router = useRouter();
 
 const forceIconOnly = ref(window.innerWidth <= 1279);
 const iconOnly = computed(() => {
-	return forceIconOnly.value || (defaultStore.reactiveState.menuDisplay.value === 'sideIcon');
+	return forceIconOnly.value || (store.reactiveState.menuDisplay.value === 'sideIcon');
 });
 
 const menu = computed(() => prefer.s.menu);
@@ -123,12 +123,12 @@ function calcViewState() {
 
 window.addEventListener('resize', calcViewState);
 
-watch(defaultStore.reactiveState.menuDisplay, () => {
+watch(store.reactiveState.menuDisplay, () => {
 	calcViewState();
 });
 
 function toggleIconOnly() {
-	defaultStore.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
+	store.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
 }
 
 function openAccountMenu(ev: MouseEvent) {

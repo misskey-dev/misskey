@@ -55,7 +55,7 @@ import type { PageMetadata } from '@/scripts/page-metadata.js';
 import { StickySidebar } from '@/scripts/sticky-sidebar.js';
 import * as os from '@/os.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { mainRouter } from '@/router/main.js';
@@ -75,7 +75,7 @@ const widgetsShowing = ref(false);
 const fullView = ref(false);
 const globalHeaderHeight = ref(0);
 const wallpaper = miLocalStorage.getItem('wallpaper') != null;
-const showMenuOnTop = computed(() => defaultStore.state.menuDisplay === 'top');
+const showMenuOnTop = computed(() => store.state.menuDisplay === 'top');
 const live2d = shallowRef<HTMLIFrameElement>();
 const widgetsLeft = ref<HTMLElement>();
 const widgetsRight = ref<HTMLElement>();
@@ -97,7 +97,7 @@ provide('shouldHeaderThin', showMenuOnTop.value);
 provide('forceSpacerMin', true);
 
 function attachSticky(el: HTMLElement) {
-	const sticky = new StickySidebar(el, 0, defaultStore.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
+	const sticky = new StickySidebar(el, 0, store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 	window.addEventListener('scroll', () => {
 		sticky.calc(window.scrollY);
 	}, { passive: true });
@@ -143,9 +143,9 @@ if (window.innerWidth < 1024) {
 
 document.documentElement.style.overflowY = 'scroll';
 
-defaultStore.loaded.then(() => {
-	if (defaultStore.state.widgets.length === 0) {
-		defaultStore.set('widgets', [{
+store.loaded.then(() => {
+	if (store.state.widgets.length === 0) {
+		store.set('widgets', [{
 			name: 'calendar',
 			id: 'a', place: null, data: {},
 		}, {

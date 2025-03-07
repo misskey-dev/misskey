@@ -45,7 +45,7 @@ import { url as local, host } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { prefer } from '@/preferences.js';
@@ -67,7 +67,7 @@ const choseAd = (): Ad | null => {
 		return props.specify;
 	}
 
-	const allAds = instance.ads.map(ad => defaultStore.state.mutedAds.includes(ad.id) ? {
+	const allAds = instance.ads.map(ad => store.state.mutedAds.includes(ad.id) ? {
 		...ad,
 		ratio: 0,
 	} : ad);
@@ -112,8 +112,8 @@ const shouldHide = ref(!prefer.s.forceShowAds && $i && $i.policies.canHideAds &&
 
 function reduceFrequency(): void {
 	if (chosen.value == null) return;
-	if (defaultStore.state.mutedAds.includes(chosen.value.id)) return;
-	defaultStore.push('mutedAds', chosen.value.id);
+	if (store.state.mutedAds.includes(chosen.value.id)) return;
+	store.push('mutedAds', chosen.value.id);
 	os.success();
 	chosen.value = choseAd();
 	showMenu.value = false;

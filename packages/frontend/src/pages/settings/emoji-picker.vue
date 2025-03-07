@@ -142,7 +142,7 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { deepClone } from '@/scripts/clone.js';
@@ -154,8 +154,8 @@ import MkFolder from '@/components/MkFolder.vue';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
-const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
-const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));
+const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(store.state.reactions));
+const pinnedEmojis: Ref<string[]> = ref(deepClone(store.state.pinnedEmojis));
 
 const emojiPickerScale = prefer.model('emojiPickerScale');
 const emojiPickerWidth = prefer.model('emojiPickerWidth');
@@ -220,7 +220,7 @@ async function setDefault(itemsRef: Ref<string[]>) {
 	});
 	if (canceled) return;
 
-	itemsRef.value = deepClone(defaultStore.def.reactions.default);
+	itemsRef.value = deepClone(store.def.reactions.default);
 }
 
 async function pickEmoji(itemsRef: Ref<string[]>, ev: MouseEvent) {
@@ -240,13 +240,13 @@ function getHTMLElement(ev: MouseEvent): HTMLElement {
 }
 
 watch(pinnedEmojisForReaction, () => {
-	defaultStore.set('reactions', pinnedEmojisForReaction.value);
+	store.set('reactions', pinnedEmojisForReaction.value);
 }, {
 	deep: true,
 });
 
 watch(pinnedEmojis, () => {
-	defaultStore.set('pinnedEmojis', pinnedEmojis.value);
+	store.set('pinnedEmojis', pinnedEmojis.value);
 }, {
 	deep: true,
 });

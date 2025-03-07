@@ -21,7 +21,7 @@ import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 
 const name = 'memo';
@@ -48,12 +48,12 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const text = ref<string | null>(defaultStore.state.memo);
+const text = ref<string | null>(store.state.memo);
 const changed = ref(false);
 let timeoutId;
 
 const saveMemo = () => {
-	defaultStore.set('memo', text.value);
+	store.set('memo', text.value);
 	changed.value = false;
 };
 
@@ -63,7 +63,7 @@ const onChange = () => {
 	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 
-watch(() => defaultStore.reactiveState.memo, newText => {
+watch(() => store.reactiveState.memo, newText => {
 	text.value = newText.value;
 });
 

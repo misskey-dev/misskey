@@ -105,7 +105,7 @@ import type MkStickyContainer from '@/components/global/MkStickyContainer.vue';
 import type { PageMetadata } from '@/scripts/page-metadata.js';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { navbarItemDef } from '@/navbar.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
@@ -175,9 +175,9 @@ if (window.innerWidth > 1024) {
 	}
 }
 
-defaultStore.loaded.then(() => {
-	if (defaultStore.state.widgets.length === 0) {
-		defaultStore.set('widgets', [{
+store.loaded.then(() => {
+	if (store.state.widgets.length === 0) {
+		store.set('widgets', [{
 			name: 'calendar',
 			id: 'a', place: 'right', data: {},
 		}, {

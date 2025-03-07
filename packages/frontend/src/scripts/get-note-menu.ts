@@ -15,7 +15,7 @@ import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { defaultStore, noteActions } from '@/store.js';
+import { store, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import { clipsCache, favoritedChannelsCache } from '@/cache.js';
@@ -606,8 +606,8 @@ export function getRenoteMenu(props: {
 					});
 				}
 
-				const configuredVisibility = prefer.s.rememberNoteVisibility ? defaultStore.state.visibility : prefer.s.defaultNoteVisibility;
-				const localOnly = prefer.s.rememberNoteVisibility ? defaultStore.state.localOnly : prefer.s.defaultNoteLocalOnly;
+				const configuredVisibility = prefer.s.rememberNoteVisibility ? store.state.visibility : prefer.s.defaultNoteVisibility;
+				const localOnly = prefer.s.rememberNoteVisibility ? store.state.localOnly : prefer.s.defaultNoteLocalOnly;
 
 				let visibility = appearNote.visibility;
 				visibility = smallerVisibility(visibility, configuredVisibility);

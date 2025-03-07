@@ -52,7 +52,7 @@ export const pageViewInterruptors: PageViewInterruptor[] = [];
 /**
  * 「状態」を管理するストア(not「設定」)
  */
-export const defaultStore = markRaw(new Storage('base', {
+export const store = markRaw(new Storage('base', {
 	accountSetupWizard: {
 		where: 'account',
 		default: 0,

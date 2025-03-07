@@ -89,7 +89,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import { $i } from '@/account.js';
 import { applyTheme } from '@/scripts/theme.js';
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { addTheme } from '@/theme-store.js';
 import { i18n } from '@/i18n.js';
 import { useLeaveGuard } from '@/scripts/use-leave-guard.js';
@@ -200,7 +200,7 @@ async function saveAs() {
 	if (description.value) theme.value.desc = description.value;
 	await addTheme(theme.value);
 	applyTheme(theme.value);
-	if (defaultStore.state.darkMode) {
+	if (store.state.darkMode) {
 		prefer.set('darkTheme', theme.value);
 	} else {
 		prefer.set('lightTheme', theme.value);

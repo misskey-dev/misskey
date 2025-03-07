@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.sideMenu">
 				<div :class="$style.sideMenuTop">
-					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${defaultStore.state['deck.profile']}`" :class="$style.sideMenuButton" class="_button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
+					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${store.state['deck.profile']}`" :class="$style.sideMenuButton" class="_button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
 					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" :class="$style.sideMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
 				</div>
 				<div :class="$style.sideMenuMiddle">
@@ -117,7 +117,7 @@ import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 import { mainRouter } from '@/router/main.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { columnTypes, forceSaveDeck, getProfiles, loadDeck, addColumn as addColumnToStore, deleteProfile as deleteProfile_ } from '@/deck.js';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
@@ -137,7 +137,7 @@ const columnComponents = {
 
 mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;
-	const noMainColumn = !defaultStore.state['deck.columns'].some(x => x.type === 'main');
+	const noMainColumn = !store.state['deck.columns'].some(x => x.type === 'main');
 	if (prefer.s['deck.navWindow'] || noMainColumn) {
 		os.pageWindow(path);
 		return true;
@@ -160,8 +160,8 @@ watch(route, () => {
 });
 */
 
-const columns = defaultStore.reactiveState['deck.columns'];
-const layout = defaultStore.reactiveState['deck.layout'];
+const columns = store.reactiveState['deck.columns'];
+const layout = store.reactiveState['deck.layout'];
 const menuIndicated = computed(() => {
 	if ($i == null) return false;
 	for (const def in navbarItemDef) {
@@ -214,15 +214,15 @@ loadDeck();
 
 function changeProfile(ev: MouseEvent) {
 	let items: MenuItem[] = [{
-		text: defaultStore.state['deck.profile'],
+		text: store.state['deck.profile'],
 		active: true,
 		action: () => {},
 	}];
 	getProfiles().then(profiles => {
-		items.push(...(profiles.filter(k => k !== defaultStore.state['deck.profile']).map(k => ({
+		items.push(...(profiles.filter(k => k !== store.state['deck.profile']).map(k => ({
 			text: k,
 			action: () => {
-				defaultStore.set('deck.profile', k);
+				store.set('deck.profile', k);
 				unisonReload();
 			},
 		}))), { type: 'divider' as const }, {
@@ -237,7 +237,7 @@ function changeProfile(ev: MouseEvent) {
 				if (canceled || name == null) return;
 
 				os.promiseDialog((async () => {
-					await defaultStore.set('deck.profile', name);
+					await store.set('deck.profile', name);
 					await forceSaveDeck();
 				})(), () => {
 					unisonReload();
@@ -252,19 +252,19 @@ function changeProfile(ev: MouseEvent) {
 async function deleteProfile() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.deleteAreYouSure({ x: defaultStore.state['deck.profile'] }),
+		text: i18n.tsx.deleteAreYouSure({ x: store.state['deck.profile'] }),
 	});
 	if (canceled) return;
 
 	os.promiseDialog((async () => {
-		if (defaultStore.state['deck.profile'] === 'default') {
-			await defaultStore.set('deck.columns', []);
-			await defaultStore.set('deck.layout', []);
+		if (store.state['deck.profile'] === 'default') {
+			await store.set('deck.columns', []);
+			await store.set('deck.layout', []);
 			await forceSaveDeck();
 		} else {
-			await deleteProfile_(defaultStore.state['deck.profile']);
+			await deleteProfile_(store.state['deck.profile']);
 		}
-		await defaultStore.set('deck.profile', 'default');
+		await store.set('deck.profile', 'default');
 	})(), () => {
 		unisonReload();
 	});
