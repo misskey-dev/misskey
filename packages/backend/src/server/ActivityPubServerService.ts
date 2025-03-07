@@ -751,7 +751,7 @@ export class ActivityPubServerService {
 		});
 
 		// follow
-		fastify.get<{ Params: { followRequestId: string ; } }>('/follows/:followRequestId', async (request, reply) => {
+		fastify.get<{ Params: { followRequestId: string; } }>('/follows/:followRequestId', async (request, reply) => {
 			// This may be used before the follow is completed, so we do not
 			// check if the following exists and only check if the follow request exists.
 

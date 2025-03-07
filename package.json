@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@9.15.4",
+	"packageManager": "pnpm@10.6.1",
 	"workspaces": [
 		"packages/frontend-shared",
 		"packages/frontend",
@@ -73,9 +73,15 @@
 		"eslint": "9.20.1",
 		"globals": "15.15.0",
 		"ncp": "2.0.0",
+		"pnpm": "10.6.1",
 		"start-server-and-test": "2.0.10"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.22.0"
+	},
+	"pnpm": {
+		"overrides": {
+			"@aiscript-dev/aiscript-languageserver": "-"
+		}
 	}
 }
