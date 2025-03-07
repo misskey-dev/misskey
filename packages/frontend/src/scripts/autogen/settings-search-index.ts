@@ -185,6 +185,11 @@ export const searchIndexes: SearchIndexItem[] = [
 				label: i18n.ts.advancedSettings,
 				keywords: [],
 			},
+			{
+				id: 'CItbOXhxH',
+				label: i18n.ts._hana._welcomeCardGen.title,
+				keywords: ['hana', 'welcome', 'card'],
+			},
 		],
 		label: i18n.ts.profile,
 		keywords: ['profile'],
@@ -473,7 +478,7 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['experimental', 'feature', 'flags'],
 			},
 			{
-				id: 'cIeaax47o',
+				id: 'oAXB8zm2U',
 				label: i18n.ts.developer,
 				keywords: ['developer', 'mode', 'debug'],
 			},
@@ -538,37 +543,37 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['notes'],
 			},
 			{
-				id: 'AFaeHsCUB',
+				id: 'bL9WRR32H',
 				label: i18n.ts._exportOrImport.favoritedNotes,
 				keywords: ['favorite', 'notes'],
 			},
 			{
-				id: 'xyCPmQiRo',
+				id: 'd2aVv2UQq',
 				label: i18n.ts._exportOrImport.clips,
 				keywords: ['clip', 'notes'],
 			},
 			{
-				id: 'Ch7hWAGUy',
+				id: 'z6V4JXNvQ',
 				label: i18n.ts._exportOrImport.followingList,
 				keywords: ['following', 'users'],
 			},
 			{
-				id: 'AwPgFboEx',
+				id: 'nporiHshC',
 				label: i18n.ts._exportOrImport.userLists,
 				keywords: ['user', 'lists'],
 			},
 			{
-				id: 'nporiHshC',
+				id: 'BsCzR7vNw',
 				label: i18n.ts._exportOrImport.muteList,
 				keywords: ['mute', 'users'],
 			},
 			{
-				id: 'BsCzR7vNw',
+				id: 'dvf4IgYrQ',
 				label: i18n.ts._exportOrImport.blockingList,
 				keywords: ['block', 'users'],
 			},
 			{
-				id: 'dvf4IgYrQ',
+				id: 'pSDbTqmsm',
 				label: i18n.ts.antennas,
 				keywords: ['antennas'],
 			},
@@ -577,6 +582,13 @@ export const searchIndexes: SearchIndexItem[] = [
 		keywords: ['import', 'export', 'data'],
 		path: '/settings/import-export',
 		icon: 'ti ti-package',
+	},
+	{
+		id: 'pm1jrj8Gu',
+		label: i18n.ts._hana.hanaMode,
+		keywords: ['hana', 'mode'],
+		path: '/settings/hanamode',
+		icon: 'ti ti-hanamisskey-hanamode',
 	},
 	{
 		id: '3Tcxw4Fwl',
@@ -697,45 +709,50 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['effect', 'show'],
 			},
 			{
-				id: 'EdYo3hOK',
+				id: 'AWi72xbrl',
+				label: i18n.ts._hana.flowerEffect,
+				keywords: ['effect', 'show'],
+			},
+			{
+				id: '420ic9kst',
 				label: i18n.ts.menuStyle,
 				keywords: ['menu', 'style', 'popup', 'drawer'],
 			},
 			{
-				id: '9mSlX0EkD',
+				id: 't38m0f88h',
 				label: i18n.ts.emojiStyle,
 				keywords: ['emoji', 'style', 'native', 'system', 'fluent', 'twemoji'],
 			},
 			{
-				id: '44UmMwmUe',
+				id: 'jaP50tN0y',
 				label: i18n.ts.fontSize,
 				keywords: ['font', 'size'],
 			},
 			{
-				id: 'vFB0pLzck',
+				id: 'e8NLIKkyA',
 				children: [
 					{
-						id: 'pc7IpPEU4',
+						id: '6cvWebwIL',
 						label: i18n.ts.reactionsDisplaySize,
 						keywords: ['reaction', 'size', 'scale', 'display'],
 					},
 					{
-						id: 'siOW5aSwp',
+						id: 'dDUvhk13F',
 						label: i18n.ts.limitWidthOfReaction,
 						keywords: ['reaction', 'size', 'scale', 'display', 'width', 'limit'],
 					},
 					{
-						id: 'dDUvhk13F',
+						id: 'mtQtbs3YD',
 						label: i18n.ts.mediaListWithOneImageAppearance,
 						keywords: ['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'list', 'size', 'height'],
 					},
 					{
-						id: 'CLxNL1Rp0',
+						id: 'eQ33delPQ',
 						label: i18n.ts.instanceTicker,
 						keywords: ['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation'],
 					},
 					{
-						id: 'dP2KWDYzD',
+						id: 'm4To8YqLo',
 						label: i18n.ts.displayOfSensitiveMedia,
 						keywords: ['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility'],
 					},
@@ -744,15 +761,15 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['note', 'display'],
 			},
 			{
-				id: 'dVOzi22IW',
+				id: '5TnLts8pm',
 				children: [
 					{
-						id: 'aoF4ufUwn',
+						id: 'kOueLN5ap',
 						label: i18n.ts.position,
 						keywords: ['position'],
 					},
 					{
-						id: 'sKK2XSS69',
+						id: '60WATUY8L',
 						label: i18n.ts.stackAxis,
 						keywords: ['stack', 'axis', 'direction'],
 					},

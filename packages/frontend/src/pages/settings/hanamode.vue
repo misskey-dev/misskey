@@ -1,10 +1,12 @@
 <template>
-<div class="_gaps">
-	<FormSection first>
-		<template #label>{{ i18n.ts._hana.hanaMode }}</template>
-		<HanaHanaModeSwitcher></HanaHanaModeSwitcher>
-	</FormSection>
-</div>
+<SearchMarker path="/settings/hanamode" :label="i18n.ts._hana.hanaMode" :keywords="['hana', 'mode']" icon="ti ti-hanamisskey-hanamode">
+	<div class="_gaps">
+		<FormSection first>
+			<template #label>{{ i18n.ts._hana.hanaMode }}</template>
+			<HanaHanaModeSwitcher></HanaHanaModeSwitcher>
+		</FormSection>
+	</div>
+</SearchMarker>
 </template>
 
 <script setup lang="ts">
