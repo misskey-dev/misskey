@@ -10,10 +10,8 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { MiMeta } from '@/models/Meta.js';
 import type { AdsRepository } from '@/models/_.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { InstanceActorService } from '@/core/InstanceActorService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
@@ -24,12 +22,13 @@ export class MetaEntityService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.adsRepository)
 		private adsRepository: AdsRepository,
 
-		private userEntityService: UserEntityService,
-		private metaService: MetaService,
-		private instanceActorService: InstanceActorService,
+		private systemAccountService: SystemAccountService,
 	) { }
 
 	@bindThis
@@ -37,7 +36,7 @@ export class MetaEntityService {
 		let instance = meta;
 
 		if (!instance) {
-			instance = await this.metaService.fetch();
+			instance = this.meta;
 		}
 
 		const ads = await this.adsRepository.createQueryBuilder('ads')
@@ -49,6 +48,22 @@ export class MetaEntityService {
 					.orWhere('ads.dayOfWeek = 0');
 			}))
 			.getMany();
+
+		// クライアントの手間を減らすためあらかじめJSONに変換しておく
+		let defaultLightTheme = null;
+		let defaultDarkTheme = null;
+		if (instance.defaultLightTheme) {
+			try {
+				defaultLightTheme = JSON.stringify(JSON5.parse(instance.defaultLightTheme));
+			} catch (e) {
+			}
+		}
+		if (instance.defaultDarkTheme) {
+			try {
+				defaultDarkTheme = JSON.stringify(JSON5.parse(instance.defaultDarkTheme));
+			} catch (e) {
+			}
+		}
 
 		const packed: Packed<'MetaLite'> = {
 			maintainerName: instance.maintainerName,
@@ -79,6 +94,8 @@ export class MetaEntityService {
 			recaptchaSiteKey: instance.recaptchaSiteKey,
 			enableTurnstile: instance.enableTurnstile,
 			turnstileSiteKey: instance.turnstileSiteKey,
+			enableTestcaptcha: instance.enableTestcaptcha,
+			googleAnalyticsMeasurementId: instance.googleAnalyticsMeasurementId,
 			swPublickey: instance.swPublicKey,
 			themeColor: instance.themeColor,
 			mascotImageUrl: instance.mascotImageUrl ?? '/assets/ai.png',
@@ -90,9 +107,8 @@ export class MetaEntityService {
 			backgroundImageUrl: instance.backgroundImageUrl,
 			logoImageUrl: instance.logoImageUrl,
 			maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
-			// クライアントの手間を減らすためあらかじめJSONに変換しておく
-			defaultLightTheme: instance.defaultLightTheme ? JSON.stringify(JSON5.parse(instance.defaultLightTheme)) : null,
-			defaultDarkTheme: instance.defaultDarkTheme ? JSON.stringify(JSON5.parse(instance.defaultDarkTheme)) : null,
+			defaultLightTheme,
+			defaultDarkTheme,
 			ads: ads.map(ad => ({
 				id: ad.id,
 				url: ad.url,
@@ -113,6 +129,9 @@ export class MetaEntityService {
 
 			mediaProxy: this.config.mediaProxy,
 			enableUrlPreview: instance.urlPreviewEnabled,
+			noteSearchableScope: (this.config.meilisearch == null || this.config.meilisearch.scope !== 'local') ? 'global' : 'local',
+			maxFileSize: this.config.maxFileSize,
+			federation: this.meta.federation,
 		};
 
 		return packed;
@@ -123,19 +142,19 @@ export class MetaEntityService {
 		let instance = meta;
 
 		if (!instance) {
-			instance = await this.metaService.fetch();
+			instance = this.meta;
 		}
 
 		const packed = await this.pack(instance);
 
-		const proxyAccount = instance.proxyAccountId ? await this.userEntityService.pack(instance.proxyAccountId).catch(() => null) : null;
+		const proxyAccount = await this.systemAccountService.fetch('proxy');
 
 		const packDetailed: Packed<'MetaDetailed'> = {
 			...packed,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
-			requireSetup: !await this.instanceActorService.realLocalUsersPresent(),
-			proxyAccountName: proxyAccount ? proxyAccount.username : null,
+			requireSetup: this.meta.rootUserId == null,
+			proxyAccountName: proxyAccount.username,
 			features: {
 				localTimeline: instance.policies.ltlAvailable,
 				globalTimeline: instance.policies.gtlAvailable,

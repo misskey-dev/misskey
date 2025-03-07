@@ -3,25 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { App, AsyncComponentLoader, defineAsyncComponent, provide } from 'vue';
-import type { RouteDef } from '@/nirax.js';
-import { IRouter, Router } from '@/nirax.js';
+import { defineAsyncComponent } from 'vue';
+import type { AsyncComponentLoader } from 'vue';
+import type { IRouter, RouteDef } from '@/nirax.js';
+import { Router } from '@/nirax.js';
 import { $i, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
-import { setMainRouter } from '@/router/main.js';
 
-const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
+export const page = (loader: AsyncComponentLoader) => defineAsyncComponent({
 	loader: loader,
 	loadingComponent: MkLoading,
 	errorComponent: MkError,
 });
 
 const routes: RouteDef[] = [{
-	path: '/@:initUser/pages/:initPageName/view-source',
-	component: page(() => import('@/pages/page-editor/page-editor.vue')),
-}, {
-	path: '/@:username/pages/:pageName',
+	path: '/@:username/pages/:pageName(*)',
 	component: page(() => import('@/pages/page.vue')),
 }, {
 	path: '/@:acct/following',
@@ -93,9 +90,9 @@ const routes: RouteDef[] = [{
 		name: 'security',
 		component: page(() => import('@/pages/settings/security.vue')),
 	}, {
-		path: '/general',
-		name: 'general',
-		component: page(() => import('@/pages/settings/general.vue')),
+		path: '/preferences',
+		name: 'preferences',
+		component: page(() => import('@/pages/settings/preferences.vue')),
 	}, {
 		path: '/theme/install',
 		name: 'theme',
@@ -109,6 +106,10 @@ const routes: RouteDef[] = [{
 		name: 'theme',
 		component: page(() => import('@/pages/settings/theme.vue')),
 	}, {
+		path: '/appearance',
+		name: 'appearance',
+		component: page(() => import('@/pages/settings/appearance.vue')),
+	}, {
 		path: '/navbar',
 		name: 'navbar',
 		component: page(() => import('@/pages/settings/navbar.vue')),
@@ -120,6 +121,10 @@ const routes: RouteDef[] = [{
 		path: '/sounds',
 		name: 'sounds',
 		component: page(() => import('@/pages/settings/sounds.vue')),
+	}, {
+		path: '/accessibility',
+		name: 'accessibility',
+		component: page(() => import('@/pages/settings/accessibility.vue')),
 	}, {
 		path: '/plugin/install',
 		name: 'plugin',
@@ -165,12 +170,8 @@ const routes: RouteDef[] = [{
 		name: 'preferences-backups',
 		component: page(() => import('@/pages/settings/preferences-backups.vue')),
 	}, {
-		path: '/migration',
-		name: 'migration',
-		component: page(() => import('@/pages/settings/migration.vue')),
-	}, {
 		path: '/custom-css',
-		name: 'general',
+		name: 'preferences',
 		component: page(() => import('@/pages/settings/custom-css.vue')),
 	}, {
 		path: '/accounts',
@@ -218,7 +219,7 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/theme-editor.vue')),
 	loginRequired: true,
 }, {
-	path: '/roles/:role',
+	path: '/roles/:roleId',
 	component: page(() => import('@/pages/role.vue')),
 }, {
 	path: '/user-tags/:tag',
@@ -232,13 +233,26 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/search.vue')),
 	query: {
 		q: 'query',
+		userId: 'userId',
+		username: 'username',
+		host: 'host',
 		channel: 'channel',
 		type: 'type',
 		origin: 'origin',
 	},
 }, {
+	// Legacy Compatibility
 	path: '/authorize-follow',
-	component: page(() => import('@/pages/follow.vue')),
+	redirect: '/lookup',
+	loginRequired: true,
+}, {
+	// Mastodon Compatibility
+	path: '/authorize_interaction',
+	redirect: '/lookup',
+	loginRequired: true,
+}, {
+	path: '/lookup',
+	component: page(() => import('@/pages/lookup.vue')),
 	loginRequired: true,
 }, {
 	path: '/share',
@@ -251,6 +265,9 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/scratchpad',
 	component: page(() => import('@/pages/scratchpad.vue')),
+}, {
+	path: '/preview',
+	component: page(() => import('@/pages/preview.vue')),
 }, {
 	path: '/auth/:token',
 	component: page(() => import('@/pages/auth.vue')),
@@ -368,6 +385,10 @@ const routes: RouteDef[] = [{
 		name: 'emojis',
 		component: page(() => import('@/pages/custom-emojis-manager.vue')),
 	}, {
+		path: '/emojis2',
+		name: 'emojis2',
+		component: page(() => import('@/pages/admin/custom-emojis-manager2.vue')),
+	}, {
 		path: '/avatar-decorations',
 		name: 'avatarDecorations',
 		component: page(() => import('@/pages/avatar-decorations.vue')),
@@ -448,21 +469,13 @@ const routes: RouteDef[] = [{
 		name: 'relays',
 		component: page(() => import('@/pages/admin/relays.vue')),
 	}, {
-		path: '/instance-block',
-		name: 'instance-block',
-		component: page(() => import('@/pages/admin/instance-block.vue')),
-	}, {
-		path: '/proxy-account',
-		name: 'proxy-account',
-		component: page(() => import('@/pages/admin/proxy-account.vue')),
-	}, {
 		path: '/external-services',
 		name: 'external-services',
 		component: page(() => import('@/pages/admin/external-services.vue')),
 	}, {
-		path: '/other-settings',
-		name: 'other-settings',
-		component: page(() => import('@/pages/admin/other-settings.vue')),
+		path: '/performance',
+		name: 'performance',
+		component: page(() => import('@/pages/admin/performance.vue')),
 	}, {
 		path: '/server-rules',
 		name: 'server-rules',
@@ -471,6 +484,14 @@ const routes: RouteDef[] = [{
 		path: '/invites',
 		name: 'invites',
 		component: page(() => import('@/pages/admin/invites.vue')),
+	}, {
+		path: '/abuse-report-notification-recipient',
+		name: 'abuse-report-notification-recipient',
+		component: page(() => import('@/pages/admin/abuse-report/notification-recipient.vue')),
+	}, {
+		path: '/system-webhook',
+		name: 'system-webhook',
+		component: page(() => import('@/pages/admin/system-webhook.vue')),
 	}, {
 		path: '/',
 		component: page(() => import('@/pages/_empty_.vue')),
@@ -573,32 +594,6 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/not-found.vue')),
 }];
 
-function createRouterImpl(path: string): IRouter {
+export function createMainRouter(path: string): IRouter {
 	return new Router(routes, path, !!$i, page(() => import('@/pages/not-found.vue')));
-}
-
-/**
- * {@link Router}による画面遷移を可能とするために{@link mainRouter}をセットアップする。
- * また、{@link Router}のインスタンスを作成するためのファクトリも{@link provide}経由で公開する（`routerFactory`というキーで取得可能）
- */
-export function setupRouter(app: App) {
-	app.provide('routerFactory', createRouterImpl);
-
-	const mainRouter = createRouterImpl(location.pathname + location.search + location.hash);
-
-	window.addEventListener('popstate', (event) => {
-		mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key);
-	});
-
-	mainRouter.addListener('push', ctx => {
-		window.history.pushState({ key: ctx.key }, '', ctx.path);
-	});
-
-	mainRouter.addListener('replace', ctx => {
-		window.history.replaceState({ key: ctx.key }, '', ctx.path);
-	});
-
-	mainRouter.init();
-
-	setMainRouter(mainRouter);
 }

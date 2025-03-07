@@ -7,18 +7,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 	<MkSpacer :contentMax="600" :marginMin="20">
-		<div class="_gaps">
-			<MkKeyValue>
-				<template #key>{{ i18n.ts.inquiry }}</template>
+		<div class="_gaps_m">
+			<MkKeyValue :copy="instance.maintainerName">
+				<template #key>{{ i18n.ts.administrator }}</template>
 				<template #value>
-					<MkLink :url="instance.inquiryUrl" target="_blank">{{ instance.inquiryUrl }}</MkLink>
+					<template v-if="instance.maintainerName">{{ instance.maintainerName }}</template>
+					<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
 				</template>
 			</MkKeyValue>
-
-			<MkKeyValue>
-				<template #key>{{ i18n.ts.email }}</template>
+			<MkKeyValue :copy="instance.maintainerEmail">
+				<template #key>{{ i18n.ts.contact }}</template>
 				<template #value>
-					<div>{{ instance.maintainerEmail }}</div>
+					<template v-if="instance.maintainerEmail">{{ instance.maintainerEmail }}</template>
+					<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
+				</template>
+			</MkKeyValue>
+			<MkKeyValue :copy="instance.inquiryUrl">
+				<template #key>{{ i18n.ts.inquiry }}</template>
+				<template #value>
+					<MkLink v-if="instance.inquiryUrl" :url="instance.inquiryUrl" target="_blank">{{ instance.inquiryUrl }}</MkLink>
+					<span v-else style="opacity: 0.7;">({{ i18n.ts.none }})</span>
 				</template>
 			</MkKeyValue>
 		</div>
@@ -28,8 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { instance } from '@/instance.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
 

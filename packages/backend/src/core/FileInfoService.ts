@@ -13,14 +13,14 @@ import * as fileType from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
-import { type predictionType } from 'nsfwjs';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
-import { encode } from 'blurhash';
+import * as blurhash from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import type { PredictionType } from 'nsfwjs';
 
 export type FileInfo = {
 	size: number;
@@ -170,7 +170,7 @@ export class FileInfoService {
 		let sensitive = false;
 		let porn = false;
 
-		function judgePrediction(result: readonly predictionType[]): [sensitive: boolean, porn: boolean] {
+		function judgePrediction(result: readonly PredictionType[]): [sensitive: boolean, porn: boolean] {
 			let sensitive = false;
 			let porn = false;
 
@@ -268,7 +268,6 @@ export class FileInfoService {
 	private async *asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
 		const watcher = new FSWatcher({
 			cwd,
-			disableGlobbing: true,
 		});
 		let finished = false;
 		command.once('end', () => {
@@ -452,7 +451,7 @@ export class FileInfoService {
 	}
 
 	/**
-	 * Calculate average color of image
+	 * Calculate blurhash string of image
 	 */
 	@bindThis
 	private getBlurhash(path: string, type: string): Promise<string> {
@@ -467,7 +466,7 @@ export class FileInfoService {
 					let hash;
 
 					try {
-						hash = encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
+						hash = blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
 					} catch (e) {
 						return reject(e);
 					}

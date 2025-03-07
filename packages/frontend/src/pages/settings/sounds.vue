@@ -4,36 +4,53 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<MkSwitch v-model="notUseSound">
-		<template #label>{{ i18n.ts.notUseSound }}</template>
-	</MkSwitch>
-	<MkSwitch v-model="useSoundOnlyWhenActive">
-		<template #label>{{ i18n.ts.useSoundOnlyWhenActive }}</template>
-	</MkSwitch>
-	<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
-		<template #label>{{ i18n.ts.masterVolume }}</template>
-	</MkRange>
+<SearchMarker path="/settings/sounds" :label="i18n.ts.sounds" :keywords="['sounds']" icon="ti ti-music">
+	<div class="_gaps_m">
+		<SearchMarker :keywords="['mute']">
+			<MkSwitch v-model="notUseSound">
+				<template #label><SearchLabel>{{ i18n.ts.notUseSound }}</SearchLabel></template>
+			</MkSwitch>
+		</SearchMarker>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.sounds }}</template>
-		<div class="_gaps_s">
-			<MkFolder v-for="type in operationTypes" :key="type">
-				<template #label>{{ i18n.ts._sfx[type] }}</template>
-				<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
+		<SearchMarker :keywords="['active', 'mute']">
+			<MkSwitch v-model="useSoundOnlyWhenActive">
+				<template #label><SearchLabel>{{ i18n.ts.useSoundOnlyWhenActive }}</SearchLabel></template>
+			</MkSwitch>
+		</SearchMarker>
 
-				<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
-			</MkFolder>
-		</div>
-	</FormSection>
+		<SearchMarker :keywords="['volume', 'master']">
+			<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
+				<template #label><SearchLabel>{{ i18n.ts.masterVolume }}</SearchLabel></template>
+			</MkRange>
+		</SearchMarker>
 
-	<MkButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-</div>
+		<FormSection>
+			<template #label>{{ i18n.ts.sounds }}</template>
+			<div class="_gaps_s">
+				<MkFolder v-for="type in operationTypes" :key="type">
+					<template #label>{{ i18n.ts._sfx[type] }}</template>
+					<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
+					<Suspense>
+						<template #default>
+							<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
+						</template>
+						<template #fallback>
+							<MkLoading/>
+						</template>
+					</Suspense>
+				</MkFolder>
+			</div>
+		</FormSection>
+
+		<MkButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+	</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
-import { Ref, computed, ref } from 'vue';
+import { computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
+import type { Ref } from 'vue';
 import type { SoundType, OperationType } from '@/scripts/sound.js';
 import type { SoundStore } from '@/store.js';
 import MkRange from '@/components/MkRange.vue';
@@ -54,8 +71,6 @@ const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
 	note: defaultStore.reactiveState.sound_note,
 	noteMy: defaultStore.reactiveState.sound_noteMy,
 	notification: defaultStore.reactiveState.sound_notification,
-	antenna: defaultStore.reactiveState.sound_antenna,
-	channel: defaultStore.reactiveState.sound_channel,
 	reaction: defaultStore.reactiveState.sound_reaction,
 });
 

@@ -103,7 +103,7 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 	}
 
 	const token = realMeta.permissions == null || realMeta.permissions.length === 0 ? null : await new Promise((res, rej) => {
-		os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
 			initialName: realMeta.name,
@@ -118,7 +118,8 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 				});
 				res(token);
 			},
-		}, 'closed');
+			closed: () => dispose(),
+		});
 	});
 
 	savePlugin({

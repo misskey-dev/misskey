@@ -10,8 +10,8 @@
 		"declaration": false,
 		"sourceMap": false,
 		"target": "ES2022",
-		"module": "nodenext",
-		"moduleResolution": "nodenext",
+		"module": "ES2022",
+		"moduleResolution": "Bundler",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
@@ -21,9 +21,11 @@
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
 		"useDefineForClassFields": true,
+		"verbatimModuleSyntax": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@@/*": ["../frontend-shared/*"]
 		},
 		"typeRoots": [
 			"./@types",
@@ -37,15 +39,18 @@
 		],
 		"lib": [
 			"esnext",
-			"dom"
+			"dom",
+			"dom.iterable"
 		],
 		"jsx": "preserve"
 	},
 	"compileOnSave": false,
 	"include": [
-		".eslintrc.js",
-		"./**/*.ts",
-		"./**/*.vue"
+		"./src/**/*.ts",
+		"./src/**/*.vue",
+		"./test/**/*.ts",
+		"./test/**/*.vue",
+		"./@types/**/*.ts"
 	],
 	"exclude": [
 		".storybook/**/*"

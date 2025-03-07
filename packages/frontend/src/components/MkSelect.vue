@@ -6,66 +6,86 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
-	<div ref="container" :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]" @mousedown.prevent="show">
+	<div
+		ref="container"
+		tabindex="0"
+		:class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused || opening }]"
+		@focus="focused = true"
+		@blur="focused = false"
+		@mousedown.prevent="show"
+		@keydown.space.enter="show"
+	>
 		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
-		<select
+		<div
 			ref="inputEl"
-			v-model="v"
 			v-adaptive-border
+			tabindex="-1"
 			:class="$style.inputCore"
 			:disabled="disabled"
 			:required="required"
 			:readonly="readonly"
 			:placeholder="placeholder"
-			@focus="focused = true"
-			@blur="focused = false"
-			@input="onInput"
+			@mousedown.prevent="() => {}"
+			@keydown.prevent="() => {}"
 		>
-			<slot></slot>
-		</select>
+			<div style="pointer-events: none;">{{ currentValueText ?? '' }}</div>
+			<div style="display: none;">
+				<slot></slot>
+			</div>
+		</div>
 		<div ref="suffixEl" :class="$style.suffix"><i class="ti ti-chevron-down" :class="[$style.chevron, { [$style.chevronOpening]: opening }]"></i></div>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
-
-	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, computed, toRefs, VNode, useSlots, VNodeChild } from 'vue';
-import MkButton from '@/components/MkButton.vue';
+import { onMounted, nextTick, ref, watch, computed, toRefs, useSlots } from 'vue';
+import { useInterval } from '@@/js/use-interval.js';
+import type { VNode, VNodeChild } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { i18n } from '@/i18n.js';
-import { MenuItem } from '@/types/menu.js';
+
+type ItemOption = {
+	type?: 'option';
+	value: string | number | null;
+	label: string;
+};
+
+type ItemGroup = {
+	type: 'group';
+	label: string;
+	items: ItemOption[];
+};
+
+export type MkSelectItem = ItemOption | ItemGroup;
+
+// TODO: itemsをslot内のoptionで指定する用法は廃止する(props.itemsを必須化する)
+// see: https://github.com/misskey-dev/misskey/issues/15558
 
 const props = defineProps<{
-	modelValue: string | null;
+	modelValue: string | number | null;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
 	placeholder?: string;
 	autofocus?: boolean;
 	inline?: boolean;
-	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
+	items?: MkSelectItem[];
 }>();
 
 const emit = defineEmits<{
-	(ev: 'changeByUser', value: string | null): void;
-	(ev: 'update:modelValue', value: string | null): void;
+	(ev: 'update:modelValue', value: string | number | null): void;
 }>();
 
 const slots = useSlots();
 
 const { modelValue, autofocus } = toRefs(props);
-const v = ref(modelValue.value);
 const focused = ref(false);
 const opening = ref(false);
-const changed = ref(false);
-const invalid = ref(false);
-const filled = computed(() => v.value !== '' && v.value != null);
+const currentValueText = ref<string | null>(null);
 const inputEl = ref<HTMLObjectElement | null>(null);
 const prefixEl = ref<HTMLElement | null>(null);
 const suffixEl = ref<HTMLElement | null>(null);
@@ -75,27 +95,7 @@ const height =
 	props.large ? 39 :
 	36;
 
-const focus = () => inputEl.value?.focus();
-const onInput = (ev) => {
-	changed.value = true;
-};
-
-const updated = () => {
-	changed.value = false;
-	emit('update:modelValue', v.value);
-};
-
-watch(modelValue, newValue => {
-	v.value = newValue;
-});
-
-watch(v, () => {
-	if (!props.manualSave) {
-		updated();
-	}
-
-	invalid.value = inputEl.value?.validity.badInput ?? true;
-});
+const focus = () => container.value?.focus();
 
 // このコンポーネントが作成された時、非表示状態である場合がある
 // 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
@@ -125,34 +125,35 @@ onMounted(() => {
 	});
 });
 
-function show() {
-	focused.value = true;
-	opening.value = true;
-
-	const menu: MenuItem[] = [];
-	let options = slots.default!();
-
-	const pushOption = (option: VNode) => {
-		menu.push({
-			text: option.children as string,
-			active: computed(() => v.value === option.props?.value),
-			action: () => {
-				v.value = option.props?.value;
-				changed.value = true;
-				emit('changeByUser', v.value);
-			},
-		});
-	};
+watch([modelValue, () => props.items], () => {
+	if (props.items) {
+		let found: ItemOption | null = null;
+		for (const item of props.items) {
+			if (item.type === 'group') {
+				for (const option of item.items) {
+					if (option.value === modelValue.value) {
+						found = option;
+						break;
+					}
+				}
+			} else {
+				if (item.value === modelValue.value) {
+					found = item;
+					break;
+				}
+			}
+		}
+		if (found) {
+			currentValueText.value = found.label;
+		}
+		return;
+	}
 
 	const scanOptions = (options: VNodeChild[]) => {
 		for (const vnode of options) {
 			if (typeof vnode !== 'object' || vnode === null || Array.isArray(vnode)) continue;
 			if (vnode.type === 'optgroup') {
 				const optgroup = vnode;
-				menu.push({
-					type: 'label',
-					text: optgroup.props?.label,
-				});
 				if (Array.isArray(optgroup.children)) scanOptions(optgroup.children);
 			} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
 				const fragment = vnode;
@@ -161,20 +162,94 @@ function show() {
 				// nop?
 			} else {
 				const option = vnode;
-				pushOption(option);
+				if (option.props?.value === modelValue.value) {
+					currentValueText.value = option.children as string;
+					break;
+				}
 			}
 		}
 	};
 
-	scanOptions(options);
+	scanOptions(slots.default!());
+}, { immediate: true, deep: true });
+
+function show() {
+	if (opening.value) return;
+	focus();
+
+	opening.value = true;
+
+	const menu: MenuItem[] = [];
+
+	if (props.items) {
+		for (const item of props.items) {
+			if (item.type === 'group') {
+				menu.push({
+					type: 'label',
+					text: item.label,
+				});
+				for (const option of item.items) {
+					menu.push({
+						text: option.label,
+						active: computed(() => modelValue.value === option.value),
+						action: () => {
+							emit('update:modelValue', option.value);
+						},
+					});
+				}
+			} else {
+				menu.push({
+					text: item.label,
+					active: computed(() => modelValue.value === item.value),
+					action: () => {
+						emit('update:modelValue', item.value);
+					},
+				});
+			}
+		}
+	} else {
+		let options = slots.default!();
+
+		const pushOption = (option: VNode) => {
+			menu.push({
+				text: option.children as string,
+				active: computed(() => modelValue.value === option.props?.value),
+				action: () => {
+					emit('update:modelValue', option.props?.value);
+				},
+			});
+		};
+
+		const scanOptions = (options: VNodeChild[]) => {
+			for (const vnode of options) {
+				if (typeof vnode !== 'object' || vnode === null || Array.isArray(vnode)) continue;
+				if (vnode.type === 'optgroup') {
+					const optgroup = vnode;
+					menu.push({
+						type: 'label',
+						text: optgroup.props?.label,
+					});
+					if (Array.isArray(optgroup.children)) scanOptions(optgroup.children);
+				} else if (Array.isArray(vnode.children)) { // 何故かフラグメントになってくることがある
+					const fragment = vnode;
+					if (Array.isArray(fragment.children)) scanOptions(fragment.children);
+				} else if (vnode.props == null) { // v-if で条件が false のときにこうなる
+					// nop?
+				} else {
+					const option = vnode;
+					pushOption(option);
+				}
+			}
+		};
+
+		scanOptions(options);
+	}
 
 	os.popupMenu(menu, container.value, {
 		width: container.value?.offsetWidth,
 		onClosing: () => {
 			opening.value = false;
 		},
-	}).then(() => {
-		focused.value = false;
 	});
 }
 </script>
@@ -193,7 +268,7 @@ function show() {
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 
 	&:empty {
 		display: none;
@@ -211,8 +286,8 @@ function show() {
 
 	&.focused {
 		> .inputCore {
-			border-color: var(--accent) !important;
-			//box-shadow: 0 0 0 4px var(--focus);
+			border-color: var(--MI_THEME-accent) !important;
+			//box-shadow: 0 0 0 4px var(--MI_THEME-focus);
 		}
 	}
 
@@ -225,9 +300,13 @@ function show() {
 		}
 	}
 
+	&:focus {
+		outline: none;
+	}
+
 	&:hover {
 		> .inputCore {
-			border-color: var(--inputBorderHover) !important;
+			border-color: var(--MI_THEME-inputBorderHover) !important;
 		}
 	}
 }
@@ -235,7 +314,8 @@ function show() {
 .inputCore {
 	appearance: none;
 	-webkit-appearance: none;
-	display: block;
+	display: flex;
+	align-items: center;
 	height: v-bind("height + 'px'");
 	width: 100%;
 	margin: 0;
@@ -243,9 +323,9 @@ function show() {
 	font: inherit;
 	font-weight: normal;
 	font-size: 1em;
-	color: var(--fg);
-	background: var(--panel);
-	border: solid 1px var(--panel);
+	color: var(--MI_THEME-fg);
+	background: var(--MI_THEME-panel);
+	border: solid 1px var(--MI_THEME-panel);
 	border-radius: 6px;
 	outline: none;
 	box-shadow: none;

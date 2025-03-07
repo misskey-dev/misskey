@@ -10,7 +10,9 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import { WebhookDeliverProcessorService } from './processors/WebhookDeliverProcessorService.js';
+import { CheckModeratorsActivityProcessorService } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
+import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
+import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
 import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
@@ -38,6 +40,7 @@ import { TickChartsProcessorService } from './processors/TickChartsProcessorServ
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
 import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
 import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
+import { BakeBufferedReactionsProcessorService } from './processors/BakeBufferedReactionsProcessorService.js';
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
@@ -64,7 +67,7 @@ function getJobInfo(job: Bull.Job | undefined, increment = false): string {
 
 	// onActiveとかonCompletedのattemptsMadeがなぜか0始まりなのでインクリメントする
 	const currentAttempts = job.attemptsMade + (increment ? 1 : 0);
-	const maxAttempts = job.opts ? job.opts.attempts : 0;
+	const maxAttempts = job.opts.attempts ?? 0;
 
 	return `id=${job.id} attempts=${currentAttempts}/${maxAttempts} age=${formated}`;
 }
@@ -76,7 +79,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 	private dbQueueWorker: Bull.Worker;
 	private deliverQueueWorker: Bull.Worker;
 	private inboxQueueWorker: Bull.Worker;
-	private webhookDeliverQueueWorker: Bull.Worker;
+	private userWebhookDeliverQueueWorker: Bull.Worker;
+	private systemWebhookDeliverQueueWorker: Bull.Worker;
 	private relationshipQueueWorker: Bull.Worker;
 	private objectStorageQueueWorker: Bull.Worker;
 	private endedPollNotificationQueueWorker: Bull.Worker;
@@ -86,7 +90,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private config: Config,
 
 		private queueLoggerService: QueueLoggerService,
-		private webhookDeliverProcessorService: WebhookDeliverProcessorService,
+		private userWebhookDeliverProcessorService: UserWebhookDeliverProcessorService,
+		private systemWebhookDeliverProcessorService: SystemWebhookDeliverProcessorService,
 		private endedPollNotificationProcessorService: EndedPollNotificationProcessorService,
 		private deliverProcessorService: DeliverProcessorService,
 		private inboxProcessorService: InboxProcessorService,
@@ -115,24 +120,36 @@ export class QueueProcessorService implements OnApplicationShutdown {
 		private cleanChartsProcessorService: CleanChartsProcessorService,
 		private aggregateRetentionProcessorService: AggregateRetentionProcessorService,
 		private checkExpiredMutingsProcessorService: CheckExpiredMutingsProcessorService,
+		private bakeBufferedReactionsProcessorService: BakeBufferedReactionsProcessorService,
+		private checkModeratorsActivityProcessorService: CheckModeratorsActivityProcessorService,
 		private cleanProcessorService: CleanProcessorService,
 	) {
 		this.logger = this.queueLoggerService.logger;
 
-		function renderError(e: Error): any {
-			if (e) { // 何故かeがundefinedで来ることがある
-				return {
-					stack: e.stack,
-					message: e.message,
-					name: e.name,
-				};
-			} else {
-				return {
-					stack: '?',
-					message: '?',
-					name: '?',
-				};
+		function renderError(e?: Error) {
+			// 何故かeがundefinedで来ることがある
+			if (!e) return '?';
+
+			if (e instanceof Bull.UnrecoverableError || e.name === 'AbortError') {
+				return `${e.name}: ${e.message}`;
 			}
+
+			return {
+				stack: e.stack,
+				message: e.message,
+				name: e.name,
+			};
+		}
+
+		function renderJob(job?: Bull.Job) {
+			if (!job) return '?';
+
+			return {
+				name: job.name || undefined,
+				info: getJobInfo(job),
+				failedReason: job.failedReason || undefined,
+				data: job.data,
+			};
 		}
 
 		//#region system
@@ -144,6 +161,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					case 'cleanCharts': return this.cleanChartsProcessorService.process();
 					case 'aggregateRetention': return this.aggregateRetentionProcessorService.process();
 					case 'checkExpiredMutings': return this.checkExpiredMutingsProcessorService.process();
+					case 'bakeBufferedReactions': return this.bakeBufferedReactionsProcessorService.process();
+					case 'checkModeratorsActivity': return this.checkModeratorsActivityProcessorService.process();
 					case 'clean': return this.cleanProcessorService.process();
 					default: throw new Error(`unrecognized job type ${job.name} for system`);
 				}
@@ -160,22 +179,22 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				autorun: false,
 			});
 
-			const systemLogger = this.logger.createSubLogger('system');
+			const logger = this.logger.createSubLogger('system');
 
 			this.systemQueueWorker
-				.on('active', (job) => systemLogger.debug(`active id=${job.id}`))
-				.on('completed', (job, result) => systemLogger.debug(`completed(${result}) id=${job.id}`))
+				.on('active', (job) => logger.debug(`active id=${job.id}`))
+				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
 				.on('failed', (job, err: Error) => {
-					systemLogger.error(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) });
+					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
 					if (config.sentryForBackend) {
-						Sentry.captureMessage(`Queue: System: ${job?.name ?? '?'}: ${err.message}`, {
+						Sentry.captureMessage(`Queue: System: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					}
 				})
-				.on('error', (err: Error) => systemLogger.error(`error ${err.stack}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => systemLogger.warn(`stalled id=${jobId}`));
+				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
+				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
 		}
 		//#endregion
 
@@ -217,22 +236,22 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				autorun: false,
 			});
 
-			const dbLogger = this.logger.createSubLogger('db');
+			const logger = this.logger.createSubLogger('db');
 
 			this.dbQueueWorker
-				.on('active', (job) => dbLogger.debug(`active id=${job.id}`))
-				.on('completed', (job, result) => dbLogger.debug(`completed(${result}) id=${job.id}`))
+				.on('active', (job) => logger.debug(`active id=${job.id}`))
+				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
 				.on('failed', (job, err) => {
-					dbLogger.error(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) });
+					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
 					if (config.sentryForBackend) {
-						Sentry.captureMessage(`Queue: DB: ${job?.name ?? '?'}: ${err.message}`, {
+						Sentry.captureMessage(`Queue: DB: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					}
 				})
-				.on('error', (err: Error) => dbLogger.error(`error ${err.stack}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => dbLogger.warn(`stalled id=${jobId}`));
+				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
+				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
 		}
 		//#endregion
 
@@ -257,22 +276,22 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				},
 			});
 
-			const deliverLogger = this.logger.createSubLogger('deliver');
+			const logger = this.logger.createSubLogger('deliver');
 
 			this.deliverQueueWorker
-				.on('active', (job) => deliverLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
-				.on('completed', (job, result) => deliverLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
+				.on('active', (job) => logger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
+				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
 				.on('failed', (job, err) => {
-					deliverLogger.error(`failed(${err.stack}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
+					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
 					if (config.sentryForBackend) {
-						Sentry.captureMessage(`Queue: Deliver: ${err.message}`, {
+						Sentry.captureMessage(`Queue: Deliver: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					}
 				})
-				.on('error', (err: Error) => deliverLogger.error(`error ${err.stack}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => deliverLogger.warn(`stalled id=${jobId}`));
+				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
+				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
 		}
 		//#endregion
 
@@ -297,35 +316,35 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				},
 			});
 
-			const inboxLogger = this.logger.createSubLogger('inbox');
+			const logger = this.logger.createSubLogger('inbox');
 
 			this.inboxQueueWorker
-				.on('active', (job) => inboxLogger.debug(`active ${getJobInfo(job, true)}`))
-				.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
+				.on('active', (job) => logger.debug(`active ${getJobInfo(job, true)}`))
+				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
 				.on('failed', (job, err) => {
-					inboxLogger.error(`failed(${err.stack}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job, e: renderError(err) });
+					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job: renderJob(job), e: renderError(err) });
 					if (config.sentryForBackend) {
-						Sentry.captureMessage(`Queue: Inbox: ${err.message}`, {
+						Sentry.captureMessage(`Queue: Inbox: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					}
 				})
-				.on('error', (err: Error) => inboxLogger.error(`error ${err.stack}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
+				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
+				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
 		}
 		//#endregion
 
-		//#region webhook deliver
+		//#region user-webhook deliver
 		{
-			this.webhookDeliverQueueWorker = new Bull.Worker(QUEUE.WEBHOOK_DELIVER, (job) => {
+			this.userWebhookDeliverQueueWorker = new Bull.Worker(QUEUE.USER_WEBHOOK_DELIVER, (job) => {
 				if (this.config.sentryForBackend) {
-					return Sentry.startSpan({ name: 'Queue: WebhookDeliver' }, () => this.webhookDeliverProcessorService.process(job));
+					return Sentry.startSpan({ name: 'Queue: UserWebhookDeliver' }, () => this.userWebhookDeliverProcessorService.process(job));
 				} else {
-					return this.webhookDeliverProcessorService.process(job);
+					return this.userWebhookDeliverProcessorService.process(job);
 				}
 			}, {
-				...baseQueueOptions(this.config, QUEUE.WEBHOOK_DELIVER),
+				...baseQueueOptions(this.config, QUEUE.USER_WEBHOOK_DELIVER),
 				autorun: false,
 				concurrency: 64,
 				limiter: {
@@ -337,22 +356,62 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				},
 			});
 
-			const webhookLogger = this.logger.createSubLogger('webhook');
+			const logger = this.logger.createSubLogger('user-webhook');
 
-			this.webhookDeliverQueueWorker
-				.on('active', (job) => webhookLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
-				.on('completed', (job, result) => webhookLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
+			this.userWebhookDeliverQueueWorker
+				.on('active', (job) => logger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
+				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
 				.on('failed', (job, err) => {
-					webhookLogger.error(`failed(${err.stack}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
+					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
 					if (config.sentryForBackend) {
-						Sentry.captureMessage(`Queue: WebhookDeliver: ${err.message}`, {
+						Sentry.captureMessage(`Queue: UserWebhookDeliver: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					}
 				})
-				.on('error', (err: Error) => webhookLogger.error(`error ${err.stack}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => webhookLogger.warn(`stalled id=${jobId}`));
+				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
+				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
+		}
+		//#endregion
+
+		//#region system-webhook deliver
+		{
+			this.systemWebhookDeliverQueueWorker = new Bull.Worker(QUEUE.SYSTEM_WEBHOOK_DELIVER, (job) => {
+				if (this.config.sentryForBackend) {
+					return Sentry.startSpan({ name: 'Queue: SystemWebhookDeliver' }, () => this.systemWebhookDeliverProcessorService.process(job));
+				} else {
+					return this.systemWebhookDeliverProcessorService.process(job);
+				}
+			}, {
+				...baseQueueOptions(this.config, QUEUE.SYSTEM_WEBHOOK_DELIVER),
+				autorun: false,
+				concurrency: 16,
+				limiter: {
+					max: 16,
+					duration: 1000,
+				},
+				settings: {
+					backoffStrategy: httpRelatedBackoff,
+				},
+			});
+
+			const logger = this.logger.createSubLogger('system-webhook');
+
+			this.systemWebhookDeliverQueueWorker
+				.on('active', (job) => logger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
+				.on('completed', (job, result) => logger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
+				.on('failed', (job, err) => {
+					logger.error(`failed(${err.name}: ${err.message}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`);
+					if (config.sentryForBackend) {
+						Sentry.captureMessage(`Queue: SystemWebhookDeliver: ${err.name}: ${err.message}`, {
+							level: 'error',
+							extra: { job, err },
+						});
+					}
+				})
+				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
+				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
 		}
 		//#endregion
 
@@ -384,22 +443,22 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				},
 			});
 
-			const relationshipLogger = this.logger.createSubLogger('relationship');
+			const logger = this.logger.createSubLogger('relationship');
 
 			this.relationshipQueueWorker
-				.on('active', (job) => relationshipLogger.debug(`active id=${job.id}`))
-				.on('completed', (job, result) => relationshipLogger.debug(`completed(${result}) id=${job.id}`))
+				.on('active', (job) => logger.debug(`active id=${job.id}`))
+				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
 				.on('failed', (job, err) => {
-					relationshipLogger.error(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) });
+					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
 					if (config.sentryForBackend) {
-						Sentry.captureMessage(`Queue: Relationship: ${job?.name ?? '?'}: ${err.message}`, {
+						Sentry.captureMessage(`Queue: Relationship: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					}
 				})
-				.on('error', (err: Error) => relationshipLogger.error(`error ${err.stack}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => relationshipLogger.warn(`stalled id=${jobId}`));
+				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
+				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
 		}
 		//#endregion
 
@@ -425,22 +484,22 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				concurrency: 16,
 			});
 
-			const objectStorageLogger = this.logger.createSubLogger('objectStorage');
+			const logger = this.logger.createSubLogger('objectStorage');
 
 			this.objectStorageQueueWorker
-				.on('active', (job) => objectStorageLogger.debug(`active id=${job.id}`))
-				.on('completed', (job, result) => objectStorageLogger.debug(`completed(${result}) id=${job.id}`))
+				.on('active', (job) => logger.debug(`active id=${job.id}`))
+				.on('completed', (job, result) => logger.debug(`completed(${result}) id=${job.id}`))
 				.on('failed', (job, err) => {
-					objectStorageLogger.error(`failed(${err.stack}) id=${job ? job.id : '-'}`, { job, e: renderError(err) });
+					logger.error(`failed(${err.name}: ${err.message}) id=${job?.id ?? '?'}`, { job: renderJob(job), e: renderError(err) });
 					if (config.sentryForBackend) {
-						Sentry.captureMessage(`Queue: ObjectStorage: ${job?.name ?? '?'}: ${err.message}`, {
+						Sentry.captureMessage(`Queue: ObjectStorage: ${job?.name ?? '?'}: ${err.name}: ${err.message}`, {
 							level: 'error',
 							extra: { job, err },
 						});
 					}
 				})
-				.on('error', (err: Error) => objectStorageLogger.error(`error ${err.stack}`, { e: renderError(err) }))
-				.on('stalled', (jobId) => objectStorageLogger.warn(`stalled id=${jobId}`));
+				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
+				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
 		}
 		//#endregion
 
@@ -467,7 +526,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.dbQueueWorker.run(),
 			this.deliverQueueWorker.run(),
 			this.inboxQueueWorker.run(),
-			this.webhookDeliverQueueWorker.run(),
+			this.userWebhookDeliverQueueWorker.run(),
+			this.systemWebhookDeliverQueueWorker.run(),
 			this.relationshipQueueWorker.run(),
 			this.objectStorageQueueWorker.run(),
 			this.endedPollNotificationQueueWorker.run(),
@@ -481,7 +541,8 @@ export class QueueProcessorService implements OnApplicationShutdown {
 			this.dbQueueWorker.close(),
 			this.deliverQueueWorker.close(),
 			this.inboxQueueWorker.close(),
-			this.webhookDeliverQueueWorker.close(),
+			this.userWebhookDeliverQueueWorker.close(),
+			this.systemWebhookDeliverQueueWorker.close(),
 			this.relationshipQueueWorker.close(),
 			this.objectStorageQueueWorker.close(),
 			this.endedPollNotificationQueueWorker.close(),
