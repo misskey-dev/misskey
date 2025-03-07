@@ -1311,6 +1311,10 @@ federationSpecified: "此服务器已开启联合白名单。只能与管理员�
 federationDisabled: "此服务器已禁用联合。无法与其它服务器上的用户通信。"
 confirmOnReact: "发送回应前需要确认"
 reactAreYouSure: "要用「{emoji}」进行回应吗？"
+markAsSensitiveConfirm: "要将此媒体标记为敏感吗？"
+unmarkAsSensitiveConfirm: "要将此媒体解除敏感标记吗？"
+preferences: "设置"
+accessibility: "辅助功能"
 _accountSettings:
   requireSigninToViewContents: "需要登录才能显示内容"
   requireSigninToViewContentsDescription1: "您发布的所有帖子将变成需要登入后才会显示。有望防止爬虫收集各种信息。"
@@ -2594,6 +2598,7 @@ _moderationLogTypes:
   deletePage: "删除了页面"
   deleteFlash: "删除了 Play"
   deleteGalleryPost: "删除了图库稿件"
+  updateProxyAccountDescription: "更新代理账户的说明"
 _fileViewer:
   title: "文件信息"
   type: "文件类型"
@@ -2857,4 +2862,8 @@ _bootErrors:
 _search:
   searchScopeAll: "全部"
   searchScopeLocal: "本地"
-  searchScopeUser: "用户指定"
+  searchScopeServer: "指定服务器"
+  searchScopeUser: "指定用户"
+  pleaseEnterServerHost: "请填写服务器主机名"
+  pleaseSelectUser: "请选择用户"
+  serverHostPlaceholder: "如：misskey.example.com"
