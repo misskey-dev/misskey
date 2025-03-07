@@ -47,17 +47,17 @@
 		"cleanall": "pnpm clean-all"
 	},
 	"resolutions": {
-		"chokidar": "3.6.0",
+		"chokidar": "4.0.3",
 		"lodash": "4.17.21"
 	},
 	"dependencies": {
 		"cssnano": "7.0.6",
-		"execa": "8.0.1",
+		"execa": "9.5.2",
 		"fast-glob": "3.3.3",
-		"ignore-walk": "6.0.5",
+		"ignore-walk": "7.0.0",
 		"js-yaml": "4.1.0",
 		"postcss": "8.5.3",
-		"tar": "6.2.1",
+		"tar": "7.4.3",
 		"terser": "5.39.0",
 		"typescript": "5.8.2",
 		"esbuild": "0.25.0",
@@ -71,7 +71,7 @@
 		"cross-env": "7.0.3",
 		"cypress": "14.1.0",
 		"eslint": "9.21.0",
-		"globals": "15.15.0",
+		"globals": "16.0.0",
 		"ncp": "2.0.0",
 		"pnpm": "10.6.1",
 		"start-server-and-test": "2.0.10"
