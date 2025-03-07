@@ -1313,6 +1313,8 @@ confirmOnReact: "发送回应前需要确认"
 reactAreYouSure: "要用「{emoji}」进行回应吗？"
 markAsSensitiveConfirm: "要将此媒体标记为敏感吗？"
 unmarkAsSensitiveConfirm: "要将此媒体解除敏感标记吗？"
+preferences: "设置"
+accessibility: "辅助功能"
 _accountSettings:
   requireSigninToViewContents: "需要登录才能显示内容"
   requireSigninToViewContentsDescription1: "您发布的所有帖子将变成需要登入后才会显示。有望防止爬虫收集各种信息。"
