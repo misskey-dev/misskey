@@ -4,7 +4,8 @@
  */
 
 import { MiUser } from '@/models/User.js';
+import { MiNote } from '@/models/Note.js';
 
-export function isReply(note: any, viewerId?: MiUser['id'] | undefined | null): boolean {
-	return note.replyId && note.replyUserId !== note.userId && note.replyUserId !== viewerId;
+export function isReply(note: MiNote, viewerId?: MiUser['id'] | undefined | null): boolean {
+	return note.replyId !== undefined && note.replyUserId !== note.userId && note.replyUserId !== viewerId;
 }
