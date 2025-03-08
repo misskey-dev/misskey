@@ -145,6 +145,12 @@ export async function mainBoot() {
 				if (themes.length > 0) {
 					prefer.set('themes', themes);
 				}
+				const plugins = ColdDeviceStorage.get('plugins');
+				prefer.set('plugins', plugins.map(p => ({
+					...p,
+					installId: (p as any).id,
+					id: undefined,
+				})));
 				// TODO: plugin
 				prefer.set('lightTheme', ColdDeviceStorage.get('lightTheme'));
 				prefer.set('darkTheme', ColdDeviceStorage.get('darkTheme'));
