@@ -151,7 +151,6 @@ export async function mainBoot() {
 					installId: (p as any).id,
 					id: undefined,
 				})));
-				// TODO: plugin
 				prefer.set('lightTheme', ColdDeviceStorage.get('lightTheme'));
 				prefer.set('darkTheme', ColdDeviceStorage.get('darkTheme'));
 				prefer.set('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
