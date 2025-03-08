@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<template #label>{{ i18n.ts.manage }}</template>
 		<div class="_gaps_s">
-			<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_m" style="padding: 20px;">
+			<div v-for="plugin in plugins" :key="plugin.installId" class="_panel _gaps_m" style="padding: 20px;">
 				<div class="_gaps_s">
 					<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 					<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
@@ -47,10 +47,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<div class="_gaps_s">
 						<div class="_buttons">
-							<MkButton inline @click="copy(pluginLogs.get(plugin.id)?.join('\n'))"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+							<MkButton inline @click="copy(pluginLogs.get(plugin.installId)?.join('\n'))"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
 						</div>
 
-						<MkCode :code="pluginLogs.get(plugin.id)?.join('\n') ?? ''"/>
+						<MkCode :code="pluginLogs.get(plugin.installId)?.join('\n') ?? ''"/>
 					</div>
 				</MkFolder>
 
@@ -87,6 +87,9 @@ import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin } from '@/plugin.js';
+import { prefer } from '@/preferences.js';
+
+const plugins = prefer.r.plugins;
 
 async function uninstall(plugin) {
 	await uninstallPlugin(plugin);

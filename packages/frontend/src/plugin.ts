@@ -199,7 +199,8 @@ export async function launchPlugin(plugin: Plugin): Promise<void> {
 		},
 	});
 
-	initPlugin({ plugin, aiscript });
+	pluginContexts.set(plugin.installId, aiscript);
+	pluginLogs.value.set(plugin.installId, []);
 
 	aiscript.exec(parser.parse(plugin.src)).then(
 		() => {
@@ -250,11 +251,6 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 		}),
 		'Plugin:config': values.OBJ(config),
 	};
-}
-
-function initPlugin({ plugin, aiscript }): void {
-	pluginContexts.set(plugin.id, aiscript);
-	pluginLogs.value.set(plugin.id, []);
 }
 
 function registerPostFormAction({ pluginId, title, handler }): void {
