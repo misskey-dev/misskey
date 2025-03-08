@@ -1,3 +1,8 @@
+## Unreleased
+
+### Client
+- ノート検索ページのデザイン調整を差し戻しました
+
 ## 2025.2.1 (merged to 2025.2.1-kinel.1)
 
 ### General
