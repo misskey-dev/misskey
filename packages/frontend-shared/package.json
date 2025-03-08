@@ -25,10 +25,10 @@
 		"@typescript-eslint/eslint-plugin": "8.26.0",
 		"@typescript-eslint/parser": "8.26.0",
 		"esbuild": "0.25.0",
-		"eslint-plugin-vue": "9.33.0",
+		"eslint-plugin-vue": "10.0.0",
 		"nodemon": "3.1.9",
 		"typescript": "5.8.2",
-		"vue-eslint-parser": "9.4.3"
+		"vue-eslint-parser": "10.1.1"
 	},
 	"files": [
 		"js-built"

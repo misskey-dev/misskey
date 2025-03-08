@@ -7,8 +7,8 @@
 		"ghcr.io/devcontainers/features/node:1": {
 			"version": "22.11.0"
 		},
-		"ghcr.io/devcontainers-extra/features/corepack:1": {
-			"version": "0.31.0"
+		"ghcr.io/devcontainers-extra/features/pnpm:2": {
+			"version": "10.6.1"
 		}
 	},
 	"forwardPorts": [3000],
