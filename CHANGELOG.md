@@ -7,6 +7,8 @@
 ### Client
 - Feat: 設定の検索を追加(実験的)
 - Enhance: 設定項目の再配置
+- Fix: 広告の選定条件を変更  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/293)
 
 ### Server
 - Fix: DBマイグレーション際にシステムアカウントのユーザーID判定が正しくない問題を修正
