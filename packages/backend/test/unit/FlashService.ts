@@ -79,9 +79,9 @@ describe('FlashService', () => {
 		userProfilesRepository = app.get(DI.userProfilesRepository);
 		idService = app.get(IdService);
 
-		root = await createUser({ username: 'root', usernameLower: 'root', isRoot: true });
-		alice = await createUser({ username: 'alice', usernameLower: 'alice', isRoot: false });
-		bob = await createUser({ username: 'bob', usernameLower: 'bob', isRoot: false });
+		root = await createUser({ username: 'root', usernameLower: 'root' });
+		alice = await createUser({ username: 'alice', usernameLower: 'alice' });
+		bob = await createUser({ username: 'bob', usernameLower: 'bob' });
 	});
 
 	afterEach(async () => {

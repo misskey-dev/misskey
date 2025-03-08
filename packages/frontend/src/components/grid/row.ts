@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AdditionalStyle } from '@/components/grid/grid.js';
-import { GridCell } from '@/components/grid/cell.js';
-import { GridColumn } from '@/components/grid/column.js';
-import { MenuItem } from '@/types/menu.js';
-import { GridContext } from '@/components/grid/grid-event.js';
+import type { AdditionalStyle } from '@/components/grid/grid.js';
+import type { GridCell } from '@/components/grid/cell.js';
+import type { GridColumn } from '@/components/grid/column.js';
+import type { MenuItem } from '@/types/menu.js';
+import type { GridContext } from '@/components/grid/grid-event.js';
 
 export const defaultGridRowSetting: Required<GridRowSetting> = {
 	showNumber: true,
@@ -27,7 +27,7 @@ export type GridRowStyleRuleConditionParams = {
 export type GridRowStyleRule = {
 	condition: (params: GridRowStyleRuleConditionParams) => boolean;
 	applyStyle: AdditionalStyle;
-}
+};
 
 export type GridRowContextMenuFactory = (row: GridRow, context: GridContext) => MenuItem[];
 
@@ -40,7 +40,7 @@ export type GridRowSetting = {
 	events?: {
 		delete?: (rows: GridRow[]) => void;
 	}
-}
+};
 
 export type GridRow = {
 	index: number;
@@ -48,7 +48,7 @@ export type GridRow = {
 	using: boolean;
 	setting: GridRowSetting;
 	additionalStyles: AdditionalStyle[];
-}
+};
 
 export function createRow(index: number, using: boolean, setting: GridRowSetting): GridRow {
 	return {
