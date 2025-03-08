@@ -26,6 +26,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #caption>
 						{{ plugin.description }}
 					</template>
+					<template #footer>
+						<div class="_buttons">
+							<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
+							<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
+						</div>
+					</template>
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">
@@ -51,11 +57,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</ul>
 								</template>
 							</MkKeyValue>
-						</div>
-
-						<div class="_buttons">
-							<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
-							<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
 						</div>
 
 						<MkFolder>
