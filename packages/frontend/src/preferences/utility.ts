@@ -9,7 +9,7 @@ import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { profileManager } from '@/preferences.js';
+import { prefer, profileManager } from '@/preferences.js';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
 
@@ -24,7 +24,7 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 		}
 	});
 
-	return [{
+	const menu: MenuItem[] = [{
 		type: 'label',
 		text: profileManager.profile.name || `(${i18n.ts.noName})`,
 	}, {
@@ -53,6 +53,20 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 			importProfile();
 		},
 	}];
+
+	if (prefer.s.devMode) {
+		menu.push({
+			type: 'divider',
+		}, {
+			text: 'Copy profile as text',
+			icon: 'ti ti-clipboard',
+			action: () => {
+				copyToClipboard(JSON.stringify(profileManager.profile, null, '\t'));
+			},
+		});
+	}
+
+	return menu;
 }
 
 async function renameProfile() {
