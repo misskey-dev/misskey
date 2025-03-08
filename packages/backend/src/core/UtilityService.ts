@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URL } from 'node:url';
-import { toASCII } from 'punycode';
+import { URL, domainToASCII } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import RE2 from 're2';
 import { DI } from '@/di-symbols.js';
@@ -32,6 +31,11 @@ export class UtilityService {
 	public isSelfHost(host: string | null): boolean {
 		if (host == null) return true;
 		return this.toPuny(this.config.host) === this.toPuny(host);
+	}
+
+	@bindThis
+	public isUriLocal(uri: string): boolean {
+		return this.punyHost(uri) === this.toPuny(this.config.host);
 	}
 
 	@bindThis
@@ -96,18 +100,25 @@ export class UtilityService {
 	@bindThis
 	public extractDbHost(uri: string): string {
 		const url = new URL(uri);
-		return this.toPuny(url.hostname);
+		return this.toPuny(url.host);
 	}
 
 	@bindThis
 	public toPuny(host: string): string {
-		return toASCII(host.toLowerCase());
+		return domainToASCII(host.toLowerCase());
 	}
 
 	@bindThis
 	public toPunyNullable(host: string | null | undefined): string | null {
 		if (host == null) return null;
-		return toASCII(host.toLowerCase());
+		return domainToASCII(host.toLowerCase());
+	}
+
+	@bindThis
+	public punyHost(url: string): string {
+		const urlObj = new URL(url);
+		const host = `${this.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
+		return host;
 	}
 
 	@bindThis

@@ -96,6 +96,7 @@ export class MetaEntityService {
 			recaptchaSiteKey: instance.recaptchaSiteKey,
 			enableTurnstile: instance.enableTurnstile,
 			turnstileSiteKey: instance.turnstileSiteKey,
+			enableTestcaptcha: instance.enableTestcaptcha,
 			swPublickey: instance.swPublicKey,
 			themeColor: instance.themeColor,
 			mascotImageUrl: instance.mascotImageUrl ?? '/assets/ai.png',
@@ -131,6 +132,7 @@ export class MetaEntityService {
 			enableUrlPreview: instance.urlPreviewEnabled,
 			noteSearchableScope: (this.config.meilisearch == null || this.config.meilisearch.scope !== 'local') ? 'global' : 'local',
 			maxFileSize: this.config.maxFileSize,
+			federation: this.meta.federation,
 		};
 
 		return packed;

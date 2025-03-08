@@ -10,8 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<MkSwitch v-model="enableRegistration" @change="onChange_enableRegistration">
-						<template #label>{{ i18n.ts.enableRegistration }}</template>
+					<MkSwitch :modelValue="enableRegistration" @update:modelValue="onChange_enableRegistration">
+						<template #label>{{ i18n.ts._serverSettings.openRegistration }}</template>
+						<template #caption>
+							<div>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</div>
+							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.openRegistrationWarning }}</div>
+						</template>
 					</MkSwitch>
 
 					<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">
@@ -53,6 +57,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #caption>{{ i18n.ts.prohibitedWordsDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
 							</MkTextarea>
 							<MkButton primary @click="save_prohibitedWords">{{ i18n.ts.save }}</MkButton>
+						</div>
+					</MkFolder>
+
+					<MkFolder>
+						<template #icon><i class="ti ti-user-x"></i></template>
+						<template #label>{{ i18n.ts.prohibitedWordsForNameOfUser }}</template>
+
+						<div class="_gaps">
+							<MkTextarea v-model="prohibitedWordsForNameOfUser">
+								<template #caption>{{ i18n.ts.prohibitedWordsForNameOfUserDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
+							</MkTextarea>
+							<MkButton primary @click="save_prohibitedWordsForNameOfUser">{{ i18n.ts.save }}</MkButton>
 						</div>
 					</MkFolder>
 
@@ -130,6 +146,7 @@ const enableRegistration = ref<boolean>(false);
 const emailRequiredForSignup = ref<boolean>(false);
 const sensitiveWords = ref<string>('');
 const prohibitedWords = ref<string>('');
+const prohibitedWordsForNameOfUser = ref<string>('');
 const hiddenTags = ref<string>('');
 const preservedUsernames = ref<string>('');
 const blockedHosts = ref<string>('');
@@ -142,14 +159,25 @@ async function init() {
 	emailRequiredForSignup.value = meta.emailRequiredForSignup;
 	sensitiveWords.value = meta.sensitiveWords.join('\n');
 	prohibitedWords.value = meta.prohibitedWords.join('\n');
+	prohibitedWordsForNameOfUser.value = meta.prohibitedWordsForNameOfUser.join('\n');
 	hiddenTags.value = meta.hiddenTags.join('\n');
 	preservedUsernames.value = meta.preservedUsernames.join('\n');
 	blockedHosts.value = meta.blockedHosts.join('\n');
-	silencedHosts.value = meta.silencedHosts.join('\n');
+	silencedHosts.value = meta.silencedHosts?.join('\n') ?? '';
 	mediaSilencedHosts.value = meta.mediaSilencedHosts.join('\n');
 }
 
-function onChange_enableRegistration(value: boolean) {
+async function onChange_enableRegistration(value: boolean) {
+	if (value) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.acknowledgeNotesAndEnable,
+		});
+		if (canceled) return;
+	}
+
+	enableRegistration.value = value;
+
 	os.apiWithDialog('admin/update-meta', {
 		disableRegistration: !value,
 	}).then(() => {
@@ -184,6 +212,14 @@ function save_sensitiveWords() {
 function save_prohibitedWords() {
 	os.apiWithDialog('admin/update-meta', {
 		prohibitedWords: prohibitedWords.value.split('\n'),
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function save_prohibitedWordsForNameOfUser() {
+	os.apiWithDialog('admin/update-meta', {
+		prohibitedWordsForNameOfUser: prohibitedWordsForNameOfUser.value.split('\n'),
 	}).then(() => {
 		fetchInstance(true);
 	});

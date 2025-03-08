@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode.js';
 import { } from 'vue';
 import tinycolor from 'tinycolor2';
 import { host as localHost } from '@@/js/config.js';
@@ -27,7 +27,7 @@ const canonical = props.host === localHost ? `@${props.username}` : `@${props.us
 
 const url = `/${canonical}`;
 
-const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--mention'));
+const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-mention'));
 bg.setAlpha(0.1);
 const bgCss = bg.toRgbString();
 </script>
@@ -37,7 +37,7 @@ const bgCss = bg.toRgbString();
 	display: inline-block;
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
-	color: var(--mention);
+	color: var(--MI_THEME-mention);
 }
 
 .host {

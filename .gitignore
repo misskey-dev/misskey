@@ -35,6 +35,8 @@ coverage
 !/.config/example.yml
 !/.config/docker_example.yml
 !/.config/docker_example.env
+!/.config/tunnel_example.env
+!/.config/redis_example.conf
 !/.config/cypress-devcontainer.yml
 docker-compose.yml
 compose.yml
@@ -68,6 +70,8 @@ misskey-assets
 # Vite temporary files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+vite.config.local-dev.js.timestamp-*
+vite.config.local-dev.ts.timestamp-*
 
 # blender backups
 *.blend1

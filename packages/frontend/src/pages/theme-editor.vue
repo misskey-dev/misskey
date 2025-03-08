@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
-import { toUnicode } from 'punycode/';
+import { toUnicode } from 'punycode.js';
 import tinycolor from 'tinycolor2';
 import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
@@ -268,7 +268,7 @@ definePageMetadata(() => ({
 				}
 
 				&.active {
-					box-shadow: 0 0 0 2px var(--divider) inset;
+					box-shadow: 0 0 0 2px var(--MI_THEME-divider) inset;
 				}
 
 				&.rounded {

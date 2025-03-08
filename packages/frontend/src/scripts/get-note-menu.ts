@@ -5,19 +5,19 @@
 
 import { defineAsyncComponent, Ref, ShallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
 import { claimAchievement } from './achievements.js';
+import type { MenuItem } from '@/types/menu.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { url } from '@@/js/config.js';
 import { defaultStore, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import { clipsCache, favoritedChannelsCache } from '@/cache.js';
-import type { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
@@ -194,7 +194,7 @@ export function getNoteMenu(props: {
 				noteId: appearNote.id,
 			});
 
-			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60) {
+			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60 && appearNote.userId === $i.id) {
 				claimAchievement('noteDeletedWithin1min');
 			}
 		});
@@ -213,7 +213,7 @@ export function getNoteMenu(props: {
 
 			os.post({ initialNote: appearNote, renote: appearNote.renote, reply: appearNote.reply, channel: appearNote.channel });
 
-			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60) {
+			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60 && appearNote.userId === $i.id) {
 				claimAchievement('noteDeletedWithin1min');
 			}
 		});
@@ -237,21 +237,13 @@ export function getNoteMenu(props: {
 		os.success();
 	}
 
-	function copyLink(): void {
-		copyToClipboard(`${url}/notes/${appearNote.id}`);
-		os.success();
-	}
-
 	function togglePin(pin: boolean): void {
 		os.apiWithDialog(pin ? 'i/pin' : 'i/unpin', {
 			noteId: appearNote.id,
-		}, undefined, null, res => {
-			if (res.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
-				os.alert({
-					type: 'error',
-					text: i18n.ts.pinLimitExceeded,
-				});
-			}
+		}, undefined, {
+			'72dab508-c64d-498f-8740-a8eec1ba385a': {
+				text: i18n.ts.pinLimitExceeded,
+			},
 		});
 	}
 
@@ -325,6 +317,13 @@ export function getNoteMenu(props: {
 
 		if (appearNote.url || appearNote.uri) {
 			menuItems.push({
+				icon: 'ti ti-link',
+				text: i18n.ts.copyRemoteLink,
+				action: () => {
+					copyToClipboard(appearNote.url ?? appearNote.uri);
+					os.success();
+				},
+			}, {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
@@ -477,6 +476,13 @@ export function getNoteMenu(props: {
 
 		if (appearNote.url || appearNote.uri) {
 			menuItems.push({
+				icon: 'ti ti-link',
+				text: i18n.ts.copyRemoteLink,
+				action: () => {
+					copyToClipboard(appearNote.url ?? appearNote.uri);
+					os.success();
+				},
+			}, {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {

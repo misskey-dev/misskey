@@ -1,7 +1,206 @@
+## 2025.2.0
+
+### General
+- Fix: Docker のビルドに失敗する問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/883)
+
+### Client
+- Fix: パスキーでパスワードレスログインが出来ない問題を修正
+- Fix: 一部環境でセンシティブなファイルを含むノートの非表示が効かない問題 
+- Fix: データセーバー有効時にもユーザーページの「ファイル」タブで画像が読み込まれてしまう問題を修正
+- Fix: MFMの `sparkle` エフェクトが正しく表示されない問題を修正
+- Fix: ページのURLにスラッシュが含まれている場合にページが正しく表示されない問題を修正
+- Fix: デッキのプロファイルが新規作成できない問題を修正
+- Fix: セキュリティに関する修正
+- ローカライゼーションの更新
+- Playが実装されたため、ページ機能の「ソースを見る」は削除されました
+
+### Server
+- Enhance: ページのURLに使用可能な文字を限定するように
+- Fix: 個別お知らせページのmetaタグ出力の条件が間違っていたのを修正
+
+## 2025.1.0
+
+### Note
+- [重要] ノート検索プロバイダの追加に伴い、configファイル（default.ymlなど）の構成が少し変わります.
+  - 新しい設定項目"fulltextSearch.provider"が追加されました. sqlLike, sqlPgroonga, meilisearchのいずれかを設定出来ます.
+  - すでにMeilisearchをお使いの場合、 **"fulltextSearch.provider"を"meilisearch"に設定する必要** があります.
+  - 詳細は #14730 および `.config/example.yml` または `.config/docker_example.yml`の'Fulltext search configuration'をご参照願います.
+- 【開発者向け】従来の開発モードでHMRが機能しない問題が修正されたため、バックエンド・フロントエンド分離型の開発モードが削除されました。開発環境においてconfigの変更が必要となる可能性があります。
+
+### General
+- Feat: カスタム絵文字管理画面をリニューアル #10996
+	* β版として公開のため、旧画面も引き続き利用可能です
+
+### Client
+- Enhance: PC画面でチャンネルが複数列で表示されるように  
+  (Cherry-picked from https://github.com/Otaku-Social/maniakey/pull/13)
+- Enhance: 照会に失敗した場合、その理由を表示するように
+- Enhance: ワードミュートで検知されたワードを表示できるように
+- Enhance: リモートのノートのリンクをコピーできるように
+- Enhance: 連合がホワイトリスト化・無効化されているサーバー向けのデザイン修正
+- Enhance: AiScriptのセーブデータを明示的に削除する関数`Mk:remove`を追加
+- Enhance: ノートの添付ファイルを一覧で遡れる「ファイル」タブを追加  
+  (Based on https://github.com/Otaku-Social/maniakey/pull/14)
+- Enhance: AiScriptの拡張API関数において引数の型チェックをより厳格に
+- Enhance: クエリパラメータでuiを一時的に変更できるように #15240
+- Enhance: リモート絵文字のインポート時に詳細を確認できるように #15336
+- Fix: 画面サイズが変わった際にナビゲーションバーが自動で折りたたまれない問題を修正
+- Fix: サーバー情報メニューに区切り線が不足していたのを修正
+- Fix: ノートがログインしているユーザーしか見れない場合にログインダイアログを閉じるとその後の動線がなくなる問題を修正
+- Fix: 公開範囲がホームのノートの埋め込みウィジェットが読み込まれない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/803)
+- Fix: 絵文字管理画面で一部の絵文字が表示されない問題を修正
+- Fix: プラグイン `register_note_view_interruptor` でノートのサーバー情報の書き換えができない問題を修正
+- Fix: Botプロテクションの設定変更時は実際に検証を通過しないと保存できないように( #15137 )
+- Fix: ノート検索が使用できない場合でもチャンネルのノート検索欄がでていた問題を修正
+- Fix: `Ui:C:select`で値の変更が画面に反映されない問題を修正
+- Fix: MiAuth認可画面で、認可処理に失敗した場合でもコールバックURLに遷移してしまう問題を修正  
+  (Cherry-picked from https://github.com/TeamNijimiss/misskey/commit/800359623e41a662551d774de15b0437b6849bb4)
+- Fix: ノート作成画面でファイルの添付可能個数を超えてもノートボタンが押せていた問題を修正
+- Fix: 「アカウントを管理」画面で、ユーザー情報の取得に失敗したアカウント（削除されたアカウントなど）が表示されない問題を修正
+- Fix: MacOSでChrome系ブラウザを使用している場合に、Misskeyを閉じた際に他のタブのオーディオ機能と干渉する問題を修正
+- Fix: 言語データのキャッシュ状況によっては、埋め込みウィジェットが正しく起動しない問題を修正
+- Fix: 「削除して編集」でノートの引用を解除出来なかった問題を修正( #14476 )
+- Fix: RSSウィジェットが正しく表示されない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/857)
+- Fix: ワードミュートの保存失敗時にAPIエラーが握りつぶされる事があるのを修正
+- Fix: アンケートでリモートの絵文字が正しく描画できない問題の修正
+  (Cherry-picked from https://github.com/yojo-art/cherrypick/pull/153)
+- Fix: 非ログイン時のサーバー概要画面のメニューボタンが押せないことがあるのを修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/656)
+- Fix: URLにはじめから`#pswp`が含まれている場合に画像ビューワーがブラウザの戻るボタンで閉じられない問題を修正
+- Fix: ロール作成画面で設定できるアイコンデコレーションの最大取付個数を16に制限
+- Fix: Firefox Nightlyなどでアイコンが読み込めない問題を修正
+
+### Server
+- Enhance: pg_bigmが利用できるよう、ノートの検索をILIKE演算子でなくLIKE演算子でLOWER()をかけたテキストに対して行うように
+- Enhance: ノート検索の選択肢としてpgroongaに対応 ( #14730 )
+- Enhance: チャート更新時にDBに同時接続しないように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/830)
+- Enhance: config(default.yml)からSQLログ全文を出力するか否かを設定可能に ( #15266 )
+- Fix: ユーザーのプロフィール画面をアドレス入力などで直接表示した際に概要タブの描画に失敗する問題の修正( #15032 )
+- Fix: 起動前の疎通チェックが機能しなくなっていた問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/737)
+- Fix: ノートの閲覧にログイン必須にしてもFeedでノートが表示されてしまう問題を修正
+- Fix: 絵文字の連合でライセンス欄を相互にやり取りするように ( #10859, #14109 )
+- Fix: ロックダウンされた期間指定のノートがStreaming経由でLTLに出現するのを修正 ( #15200 )
+- Fix: disableClustering設定時の初期化ロジックを調整( #15223 )
+- Fix: URLとURIが異なるエンティティの照会に失敗する問題を修正( #15039 )
+- Fix: ActivityPubリクエストかどうかの判定が正しくない問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/869)
+- Fix: `/api/pages/update`にて`name`を指定せずにリクエストするとエラーが発生する問題を修正
+- Fix: AIセンシティブ判定が arm64 環境で動作しない問題を修正
+- Fix: 非Misskey系のソフトウェアからHTML`<ruby>`タグを含むノートを受信した場合、MFMの読み仮名（ルビ）文法に変換して表示
+- Fix: 連合OFFで投稿されたノートに対する冗長な処理を抑止 ( #15018 )
+- Fix: `/api.json`のレスポンスが2回目のリクエスト以降おかしくなる問題を修正
+
+### Misskey.js
+- Feat: allow setting `binaryType` of WebSocket connection
+
+## 2024.11.0
+
+### Note
+- Node.js 20.xは非推奨になりました。Node.js 22.x (LTS)の利用を推奨します。
+  - なお、Node.js 23.xは対応していません。
+- DockerのNode.jsが22.11.0に更新されました
+
+### General
+- Feat: コンテンツの表示にログインを必須にできるように
+- Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
+- Enhance: 依存関係の更新
+- Enhance: l10nの更新
+- Fix: お知らせ作成時に画像URL入力欄を空欄に変更できないのを修正 ( #14976 )
+
+### Client
+- Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
+- Enhance: ドライブでソートができるように
+- Enhance: アイコンデコレーション管理画面の改善
+- Enhance: 「単なるラッキー」の取得条件を変更
+- Enhance: 投稿フォームでEscキーを押したときIME入力中ならフォームを閉じないように（ #10866 ）  
+- Enhance: MiAuth, OAuthの認可画面の改善
+  - どのアカウントで認証しようとしているのかがわかるように
+  - 認証するアカウントを切り替えられるように
+- Enhance: Self-XSS防止用の警告を追加
+- Enhance: カタルーニャ語 (ca-ES) に対応
+- Enhance: 個別お知らせページではMetaタグを出力するように
+- Enhance: ノート詳細画面にロールのバッジを表示
+- Enhance: 過去に送信したフォローリクエストを確認できるように  
+  (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/663)
+- Enhance: サイドバーを簡単に展開・折りたたみできるように ( #14981 )
+- Enhance: リノートメニューに「リノートの詳細」を追加
+- Enhance: 非ログイン状態でMisskeyを開いた際のパフォーマンスを向上
+- Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
+- Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
+- Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
+- Fix: Encode RSS urls with escape sequences before fetching allowing query parameters to be used
+- Fix: リンク切れを修正
+- Fix: ノート投稿ボタンにホバー時のスタイルが適用されていないのを修正  
+  (Cherry-picked from https://github.com/taiyme/misskey/pull/305)
+- Fix: メールアドレス登録有効化時の「完了」ダイアログボックスの表示条件を修正
+- Fix: 画面幅が狭い環境でデザインが崩れる問題を修正  
+	(Cherry-picked from https://github.com/MisskeyIO/misskey/pull/815)
+- Fix: TypeScriptの型チェック対象ファイルを限定してビルドを高速化するように  
+	(Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/725)
+
+### Server
+- Enhance: DockerのNode.jsを22.11.0に更新
+- Enhance: 起動前の疎通チェックで、DBとメイン以外のRedisの疎通確認も行うように  
+  (Based on https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/588)  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/715)
+- Enhance: リモートユーザーの照会をオリジナルにリダイレクトするように
+- Fix: sharedInboxが無いActorに紐づくリモートユーザーを照会できない
+- Fix: Aproving request from GtS appears with some delay
+- Fix: フォロワーへのメッセージの絵文字をemojisに含めるように
+- Fix: Nested proxy requestsを検出した際にブロックするように
+  [ghsa-gq5q-c77c-v236](https://github.com/misskey-dev/misskey/security/advisories/ghsa-gq5q-c77c-v236)
+- Fix: 招待コードの発行可能な残り数算出に使用すべきロールポリシーの値が違う問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/706)
+- Fix: 連合への配信時に、acctの大小文字が区別されてしまい正しくメンションが処理されないことがある問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/711)
+- Fix: ローカルユーザーへのメンションを含むノートが連合される際に正しいURLに変換されないことがある問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/712)
+- Fix: FTT無効時にユーザーリストタイムラインが使用できない問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/709)
+- Fix: User Webhookテスト機能のMock Payloadを修正  
+- Fix: アカウント削除のモデレーションログが動作していないのを修正 (#14996)  
+- Fix: リノートミュートが新規投稿通知に対して作用していなかった問題を修正
+- Fix: Inboxの処理で生じるエラーを誤ってActivityとして処理することがある問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/730)
+- Fix: セキュリティに関する修正
+
+### Misskey.js
+- Fix: Stream初期化時、別途WebSocketを指定する場合の型定義を修正
+
+## 2024.10.1
+
+### Note
+- スパム対策として、モデレータ権限を持つユーザのアクティビティが7日以上確認できない場合は自動的に招待制へと切り替え（コントロールパネル -> モデレーション -> "誰でも新規登録できるようにする"をオフに変更）るようになりました。 ( #13437 )
+	- 切り替わった際はモデレーターへお知らせとして通知されます。登録をオープンな状態で継続したい場合は、コントロールパネルから再度設定を行ってください。
+
+### General
+- Feat: ユーザーの名前に禁止ワードを設定できるように
+
+### Client
+- Enhance: タイムライン表示時のパフォーマンスを向上
+- Enhance: アーカイブした個人宛のお知らせを表示・編集できるように
+- Enhance: l10nの更新
+- Fix: メールアドレス不要でCaptchaが有効な場合にアカウント登録完了後自動でのログインに失敗する問題を修正
+
+### Server
+- Feat: モデレータ権限を持つユーザが全員7日間活動しなかった場合は自動的に招待制へと切り替えるように ( #13437 )
+- Enhance: 個人宛のお知らせは「わかった」を押すと自動的にアーカイブされるように
+- Fix: `admin/emoji/update`エンドポイントのidのみ指定した時不正なエラーが発生するバグを修正
+- Fix: RBT有効時、リノートのリアクションが反映されない問題を修正
+- Fix: キューのエラーログを簡略化するように  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/649)
+
 ## 2024.10.0
 
 ### Note
-- サーバー初期設定時に使用する初期パスワードを設定できるようになりました。今後Misskeyサーバーを新たに設置する際には、初回の起動前にコンフィグファイルの`setupPassword`をコメントアウトし、初期パスワードを設定することをおすすめします。（すでに初期設定を完了しているサーバーについては、この変更に伴い対応する必要はありません）  
+- セキュリティ向上のため、サーバー初期設定時に使用する初期パスワードを設定できるようになりました。今後Misskeyサーバーを新たに設置する際には、初回の起動前にコンフィグファイルの`setupPassword`をコメントアウトし、初期パスワードを設定することをおすすめします。（すでに初期設定を完了しているサーバーについては、この変更に伴い対応する必要はありません）  
   - ホスティングサービスを運営している場合は、コンフィグファイルを構築する際に`setupPassword`をランダムな値に設定し、ユーザーに通知するようにシステムを更新することをおすすめします。
   - なお、初期パスワードが設定されていない場合でも初期設定を行うことが可能です（UI上で初期パスワードの入力欄を空欄にすると続行できます）。
 - ユーザーデータを読み込む際の型が一部変更されました。
@@ -21,6 +220,8 @@
 ### Client
 - Enhance: デザインの調整
 - Enhance: ログイン画面の認証フローを改善
+- Fix: クライアント上での時間ベースの実績獲得動作が実績獲得後も発動していた問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/657)
 
 ### Server
 - Enhance: セキュリティ向上のため、ログイン時にメール通知を行うように
