@@ -9,6 +9,11 @@ overrides:
   lodash: 4.17.21
   '@aiscript-dev/aiscript-languageserver': '-'
 
+patchedDependencies:
+  re2:
+    hash: 018babd22b7ce951bcd10d6246f1e541a7ac7ba212f7fa8985e774ece67d08e1
+    path: scripts/dependency-patches/re2.patch
+
 importers:
 
   .:
@@ -371,7 +376,7 @@ importers:
         version: 3.4.1
       re2:
         specifier: 1.21.4
-        version: 1.21.4
+        version: 1.21.4(patch_hash=018babd22b7ce951bcd10d6246f1e541a7ac7ba212f7fa8985e774ece67d08e1)
       redis-lock:
         specifier: 0.1.4
         version: 0.1.4
@@ -20379,7 +20384,7 @@ snapshots:
     dependencies:
       setimmediate: 1.0.5
 
-  re2@1.21.4:
+  re2@1.21.4(patch_hash=018babd22b7ce951bcd10d6246f1e541a7ac7ba212f7fa8985e774ece67d08e1):
     dependencies:
       install-artifact-from-github: 1.3.5
       nan: 2.20.0

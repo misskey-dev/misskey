@@ -82,6 +82,9 @@
 	"pnpm": {
 		"overrides": {
 			"@aiscript-dev/aiscript-languageserver": "-"
+		},
+		"patchedDependencies": {
+			"re2": "scripts/dependency-patches/re2.patch"
 		}
 	}
 }
