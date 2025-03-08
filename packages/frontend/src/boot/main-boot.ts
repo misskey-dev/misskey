@@ -27,6 +27,7 @@ import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
+import { launchPlugin } from '@/plugin.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => {
@@ -105,11 +106,7 @@ export async function mainBoot() {
 	});
 
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
-		import('@/plugin.js').then(async ({ install }) => {
-			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
-			await new Promise(r => setTimeout(r, 0));
-			install(plugin);
-		});
+		launchPlugin(plugin);
 	}
 
 	try {
@@ -148,6 +145,7 @@ export async function mainBoot() {
 				if (themes.length > 0) {
 					prefer.set('themes', themes);
 				}
+				// TODO: plugin
 				prefer.set('lightTheme', ColdDeviceStorage.get('lightTheme'));
 				prefer.set('darkTheme', ColdDeviceStorage.get('darkTheme'));
 				prefer.set('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));

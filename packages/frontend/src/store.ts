@@ -513,6 +513,7 @@ interface Watcher {
 	callback: (value: unknown) => void;
 }
 
+// TODO: 消す(preferに移行済みのため)
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
@@ -521,7 +522,7 @@ export class ColdDeviceStorage {
 		lightTheme, // TODO: 消す(preferに移行済みのため)
 		darkTheme, // TODO: 消す(preferに移行済みのため)
 		syncDeviceDarkMode: true, // TODO: 消す(preferに移行済みのため)
-		plugins: [] as Plugin[],
+		plugins: [] as Plugin[], // TODO: 消す(preferに移行済みのため)
 	};
 
 	public static watchers: Watcher[] = [];

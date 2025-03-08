@@ -7,6 +7,7 @@ import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
 import type { Theme } from '@/scripts/theme.js';
 import type { SoundType } from '@/scripts/sound.js';
+import type { Plugin } from '@/plugin.js';
 import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
 
 /** サウンド設定 */
@@ -258,6 +259,9 @@ export const PREF_DEF = {
 	},
 	confirmOnReact: {
 		default: false,
+	},
+	plugins: {
+		default: [] as Plugin[],
 	},
 	'sound.masterVolume': {
 		default: 0.3,

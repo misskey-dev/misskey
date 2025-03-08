@@ -3,12 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
 import { Ast, Interpreter, Parser, utils, values } from '@syuilo/aiscript';
+import { compareVersions } from 'compare-versions';
+import { v4 as uuid } from 'uuid';
 import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { i18n } from '@/i18n.js';
+import { prefer } from '@/preferences.js';
 
-// tokenなどは別で管理する？
+// tokenなどは別で管理する
+
 export type Plugin = {
 	id: string;
 	name: string;
@@ -24,11 +31,127 @@ export type Plugin = {
 	permissions?: string[];
 };
 
+export type AiScriptPluginMeta = {
+	name: string;
+	version: string;
+	author: string;
+	description?: string;
+	permissions?: string[];
+	config?: Record<string, any>;
+};
+
 const parser = new Parser();
+
+export function savePlugin({ id, meta, src, token }: {
+	id: string;
+	meta: AiScriptPluginMeta;
+	src: string;
+	token: string;
+}) {
+	prefer.set('plugins', prefer.s.plugins.concat({
+		...meta,
+		id,
+		active: true,
+		configData: {},
+		token: token,
+		src: src,
+	} as Plugin));
+}
+
+export function isSupportedAiScriptVersion(version: string): boolean {
+	try {
+		return (compareVersions(version, '0.12.0') >= 0);
+	} catch (err) {
+		return false;
+	}
+}
+
+export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta> {
+	if (!code) {
+		throw new Error('code is required');
+	}
+
+	const lv = utils.getLangVersion(code);
+	if (lv == null) {
+		throw new Error('No language version annotation found');
+	} else if (!isSupportedAiScriptVersion(lv)) {
+		throw new Error(`Aiscript version '${lv}' is not supported`);
+	}
+
+	let ast;
+	try {
+		ast = parser.parse(code);
+	} catch (err) {
+		throw new Error('Aiscript syntax error');
+	}
+
+	const meta = Interpreter.collectMetadata(ast);
+	if (meta == null) {
+		throw new Error('Meta block not found');
+	}
+
+	const metadata = meta.get(null);
+	if (metadata == null) {
+		throw new Error('Metadata not found');
+	}
+
+	const { name, version, author, description, permissions, config } = metadata;
+	if (name == null || version == null || author == null) {
+		throw new Error('Required property not found');
+	}
+
+	return {
+		name,
+		version,
+		author,
+		description,
+		permissions,
+		config,
+	};
+}
+
+export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
+	if (!code) return;
+
+	let realMeta: AiScriptPluginMeta;
+	if (!meta) {
+		realMeta = await parsePluginMeta(code);
+	} else {
+		realMeta = meta;
+	}
+
+	const token = realMeta.permissions == null || realMeta.permissions.length === 0 ? null : await new Promise((res, rej) => {
+		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {
+			title: i18n.ts.tokenRequested,
+			information: i18n.ts.pluginTokenRequestedDescription,
+			initialName: realMeta.name,
+			initialPermissions: realMeta.permissions,
+		}, {
+			done: async result => {
+				const { name, permissions } = result;
+				const { token } = await misskeyApi('miauth/gen-token', {
+					session: null,
+					name: name,
+					permission: permissions,
+				});
+				res(token);
+			},
+			closed: () => dispose(),
+		});
+	});
+
+	savePlugin({
+		id: uuid(),
+		meta: realMeta,
+		token,
+		src: code,
+	});
+}
+
 const pluginContexts = new Map<string, Interpreter>();
 export const pluginLogs = ref(new Map<string, string[]>());
 
-export async function install(plugin: Plugin): Promise<void> {
+export async function launchPlugin(plugin: Plugin): Promise<void> {
 	// 後方互換性のため
 	if (plugin.src == null) return;
 
