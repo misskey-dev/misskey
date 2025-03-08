@@ -13,14 +13,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_s">
 				<MkFolder v-for="plugin in plugins" :key="plugin.installId">
 					<template #icon><i class="ti ti-plug"></i></template>
+					<template #suffix>
+						<i v-if="plugin.active" class="ti ti-player-play" style="color: var(--MI_THEME-accent);"></i>
+						<i v-else class="ti ti-player-pause" style="opacity: 0.7;"></i>
+					</template>
 					<template #label>
-						<div style="display: flex; align-items: center;">
+						<div :style="plugin.active ? '' : 'opacity: 0.7;'">
 							{{ plugin.name }}
-							<span style="margin-left: auto;">v{{ plugin.version }}</span>
+							<span style="margin-left: 1em; opacity: 0.7;">v{{ plugin.version }}</span>
 						</div>
 					</template>
+					<template #caption>
+						{{ plugin.description }}
+					</template>
 
-					<div class="_gaps_m" style="padding: 20px;">
+					<div class="_gaps_m">
 						<div class="_gaps_s">
 							<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 							<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
