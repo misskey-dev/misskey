@@ -158,6 +158,10 @@ export async function uninstallPlugin(plugin: Plugin) {
 }
 
 export async function configPlugin(plugin: Plugin) {
+	if (plugin.config == null) {
+		throw new Error('This plugin does not have a config');
+	}
+
 	const config = plugin.config;
 	for (const key in plugin.configData) {
 		config[key].default = plugin.configData[key];
