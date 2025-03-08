@@ -80,11 +80,12 @@ RUN apt-get update \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists
 
+# add package.json to add pnpm
+COPY ./package.json ./package.json
+RUN node -e "console.log(JSON.parse(require('node:fs').readFileSync('./package.json')).packageManager)" | xargs npm install -g
+
 USER misskey
 WORKDIR /misskey
-
-# add package.json to add pnpm
-COPY --chown=misskey:misskey ./package.json ./package.json
 
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
