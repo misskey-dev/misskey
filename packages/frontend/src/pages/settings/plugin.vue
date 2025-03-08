@@ -4,72 +4,84 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormLink to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
+<SearchMarker path="/settings/plugin" :label="i18n.ts.plugins" :keywords="['plugin']" icon="ti ti-plug">
+	<div class="_gaps_m">
+		<FormLink to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.manage }}</template>
-		<div class="_gaps_s">
-			<div v-for="plugin in plugins" :key="plugin.installId" class="_panel _gaps_m" style="padding: 20px;">
-				<div class="_gaps_s">
-					<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
-					<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
-				</div>
+		<FormSection>
+			<template #label>{{ i18n.ts.manage }}</template>
+			<div class="_gaps_s">
+				<MkFolder v-for="plugin in plugins" :key="plugin.installId">
+					<template #icon><i class="ti ti-plug"></i></template>
+					<template #label>
+						<div style="display: flex; align-items: center;">
+							{{ plugin.name }}
+							<span style="margin-left: auto;">v{{ plugin.version }}</span>
+						</div>
+					</template>
 
-				<div class="_gaps_s">
-					<MkKeyValue>
-						<template #key>{{ i18n.ts.author }}</template>
-						<template #value>{{ plugin.author }}</template>
-					</MkKeyValue>
-					<MkKeyValue>
-						<template #key>{{ i18n.ts.description }}</template>
-						<template #value>{{ plugin.description }}</template>
-					</MkKeyValue>
-					<MkKeyValue>
-						<template #key>{{ i18n.ts.permission }}</template>
-						<template #value>
-							<ul style="margin-top: 0; margin-bottom: 0;">
-								<li v-for="permission in plugin.permissions" :key="permission">{{ i18n.ts._permissions[permission] }}</li>
-								<li v-if="!plugin.permissions || plugin.permissions.length === 0">{{ i18n.ts.none }}</li>
-							</ul>
-						</template>
-					</MkKeyValue>
-				</div>
-
-				<div class="_buttons">
-					<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
-					<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
-				</div>
-
-				<MkFolder>
-					<template #icon><i class="ti ti-terminal-2"></i></template>
-					<template #label>{{ i18n.ts._plugin.viewLog }}</template>
-
-					<div class="_gaps_s">
-						<div class="_buttons">
-							<MkButton inline @click="copy(pluginLogs.get(plugin.installId)?.join('\n'))"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+					<div class="_gaps_m" style="padding: 20px;">
+						<div class="_gaps_s">
+							<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
+							<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
 						</div>
 
-						<MkCode :code="pluginLogs.get(plugin.installId)?.join('\n') ?? ''"/>
-					</div>
-				</MkFolder>
-
-				<MkFolder>
-					<template #icon><i class="ti ti-code"></i></template>
-					<template #label>{{ i18n.ts._plugin.viewSource }}</template>
-
-					<div class="_gaps_s">
-						<div class="_buttons">
-							<MkButton inline @click="copy(plugin.src)"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+						<div class="_gaps_s">
+							<MkKeyValue>
+								<template #key>{{ i18n.ts.author }}</template>
+								<template #value>{{ plugin.author }}</template>
+							</MkKeyValue>
+							<MkKeyValue>
+								<template #key>{{ i18n.ts.description }}</template>
+								<template #value>{{ plugin.description }}</template>
+							</MkKeyValue>
+							<MkKeyValue>
+								<template #key>{{ i18n.ts.permission }}</template>
+								<template #value>
+									<ul style="margin-top: 0; margin-bottom: 0;">
+										<li v-for="permission in plugin.permissions" :key="permission">{{ i18n.ts._permissions[permission] }}</li>
+										<li v-if="!plugin.permissions || plugin.permissions.length === 0">{{ i18n.ts.none }}</li>
+									</ul>
+								</template>
+							</MkKeyValue>
 						</div>
 
-						<MkCode :code="plugin.src ?? ''" lang="is"/>
+						<div class="_buttons">
+							<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
+							<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
+						</div>
+
+						<MkFolder>
+							<template #icon><i class="ti ti-terminal-2"></i></template>
+							<template #label>{{ i18n.ts._plugin.viewLog }}</template>
+
+							<div class="_gaps_s">
+								<div class="_buttons">
+									<MkButton inline @click="copy(pluginLogs.get(plugin.installId)?.join('\n'))"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+								</div>
+
+								<MkCode :code="pluginLogs.get(plugin.installId)?.join('\n') ?? ''"/>
+							</div>
+						</MkFolder>
+
+						<MkFolder>
+							<template #icon><i class="ti ti-code"></i></template>
+							<template #label>{{ i18n.ts._plugin.viewSource }}</template>
+
+							<div class="_gaps_s">
+								<div class="_buttons">
+									<MkButton inline @click="copy(plugin.src)"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+								</div>
+
+								<MkCode :code="plugin.src ?? ''" lang="ais"/>
+							</div>
+						</MkFolder>
 					</div>
 				</MkFolder>
 			</div>
-		</div>
-	</FormSection>
-</div>
+		</FormSection>
+	</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
