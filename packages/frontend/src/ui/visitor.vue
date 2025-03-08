@@ -70,15 +70,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, provide, ref, computed } from 'vue';
-import XCommon from './_common_/common.vue';
 import { instanceName } from '@@/js/config.js';
+import XCommon from './_common_/common.vue';
+import type { PageMetadata } from '@/scripts/page-metadata.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
-import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
-import type { PageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { mainRouter } from '@/router/main.js';
@@ -108,7 +107,7 @@ const announcements = {
 	limit: 10,
 };
 
-const isTimelineAvailable = ref(instance.policies?.ltlAvailable || instance.policies?.gtlAvailable);
+const isTimelineAvailable = ref(instance.policies.ltlAvailable || instance.policies.gtlAvailable);
 
 const showMenu = ref(false);
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
@@ -116,10 +115,6 @@ const narrow = ref(window.innerWidth < 1280);
 
 const keymap = computed(() => {
 	return {
-		'd': () => {
-			if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
-			defaultStore.set('darkMode', !defaultStore.state.darkMode);
-		},
 		's': () => {
 			mainRouter.push('/search');
 		},

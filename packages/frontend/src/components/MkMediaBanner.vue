@@ -27,9 +27,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 import MkMediaAudio from '@/components/MkMediaAudio.vue';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	media: Misskey.entities.DriveFile;
@@ -38,7 +38,7 @@ const props = defineProps<{
 const hide = ref(true);
 
 async function show() {
-	if (props.media.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+	if (props.media.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
 		const { canceled } = await os.confirm({
 			type: 'question',
 			text: i18n.ts.sensitiveMediaRevealConfirm,

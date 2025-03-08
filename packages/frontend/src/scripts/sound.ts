@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { SoundStore } from '@/store.js';
-import { defaultStore } from '@/store.js';
+import type { SoundStore } from '@/preferences/def.js';
+import { prefer } from '@/preferences.js';
+import { PREF_DEF } from '@/preferences/def.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
@@ -127,11 +128,11 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
  * @param type スプライトの種類を指定
  */
 export function playMisskeySfx(operationType: OperationType) {
-	const sound = defaultStore.state[`sound_${operationType}`];
+	const sound = prefer.s[`sound.on.${operationType}`];
 	playMisskeySfxFile(sound).then((succeed) => {
 		if (!succeed && sound.type === '_driveFile_') {
 			// ドライブファイルが存在しない場合はデフォルトのサウンドを再生する
-			const soundName = defaultStore.def[`sound_${operationType}`].default.type as Exclude<SoundType, '_driveFile_'>;
+			const soundName = PREF_DEF[`sound_${operationType}`].default.type as Exclude<SoundType, '_driveFile_'>;
 			if (_DEV_) console.log(`Failed to play sound: ${sound.fileUrl}, so play default sound: ${soundName}`);
 			playMisskeySfxFileInternal({
 				type: soundName,
@@ -166,7 +167,7 @@ async function playMisskeySfxFileInternal(soundStore: SoundStore): Promise<boole
 	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
 		return false;
 	}
-	const masterVolume = defaultStore.state.sound_masterVolume;
+	const masterVolume = prefer.s['sound.masterVolume'];
 	if (isMute() || masterVolume === 0 || soundStore.volume === 0) {
 		return true; // ミュート時は成功として扱う
 	}
@@ -198,10 +199,10 @@ export function createSourceNode(buffer: AudioBuffer, opts: {
 	pan?: number;
 	playbackRate?: number;
 }): {
-	soundSource: AudioBufferSourceNode;
-	panNode: StereoPannerNode;
-	gainNode: GainNode;
-} {
+		soundSource: AudioBufferSourceNode;
+		panNode: StereoPannerNode;
+		gainNode: GainNode;
+	} {
 	const panNode = ctx.createStereoPanner();
 	panNode.pan.value = opts.pan ?? 0;
 
@@ -242,13 +243,13 @@ export async function getSoundDuration(file: string): Promise<number> {
  * ミュートすべきかどうかを判断する
  */
 export function isMute(): boolean {
-	if (defaultStore.state.sound_notUseSound) {
+	if (prefer.s['sound.notUseSound']) {
 		// サウンドを出力しない
 		return true;
 	}
 
 	// noinspection RedundantIfStatementJS
-	if (defaultStore.state.sound_useSoundOnlyWhenActive && document.visibilityState === 'hidden') {
+	if (prefer.s['sound.useSoundOnlyWhenActive'] && document.visibilityState === 'hidden') {
 		// ブラウザがアクティブな時のみサウンドを出力する
 		return true;
 	}

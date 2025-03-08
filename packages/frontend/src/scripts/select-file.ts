@@ -9,8 +9,8 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
 import { uploadFile } from '@/scripts/upload.js';
+import { prefer } from '@/preferences.js';
 
 export function chooseFileFromPc(
 	multiple: boolean,
@@ -20,8 +20,8 @@ export function chooseFileFromPc(
 		nameConverter?: (file: File) => string | undefined;
 	},
 ): Promise<Misskey.entities.DriveFile[]> {
-	const uploadFolder = options?.uploadFolder ?? defaultStore.state.uploadFolder;
-	const keepOriginal = options?.keepOriginal ?? defaultStore.state.keepOriginalUploading;
+	const uploadFolder = options?.uploadFolder ?? prefer.s.uploadFolder;
+	const keepOriginal = options?.keepOriginal ?? prefer.s.keepOriginalUploading;
 	const nameConverter = options?.nameConverter ?? (() => undefined);
 
 	return new Promise((res, rej) => {
@@ -82,7 +82,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 
 			misskeyApi('drive/files/upload-from-url', {
 				url: url,
-				folderId: defaultStore.state.uploadFolder,
+				folderId: prefer.s.uploadFolder,
 				marker,
 			});
 
@@ -96,7 +96,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 
 function select(src: HTMLElement | EventTarget | null, label: string | null, multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
-		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
+		const keepOriginal = ref(prefer.s.keepOriginalUploading);
 
 		os.popupMenu([label ? {
 			text: label,

@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.main">
 		<XAnnouncements v-if="$i"/>
 		<XStatusBars/>
-		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
+		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: prefer.r['deck.columnAlign'].value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
 			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 			<section
 				v-for="ids in layout"
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.sideMenu">
 				<div :class="$style.sideMenuTop">
-					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${deckStore.state.profile}`" :class="$style.sideMenuButton" class="_button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
+					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${store.state['deck.profile']}`" :class="$style.sideMenuButton" class="_button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
 					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" :class="$style.sideMenuButton" class="_button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
 				</div>
 				<div :class="$style.sideMenuMiddle">
@@ -62,10 +62,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -77,10 +77,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</Transition>
 
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menu">
 			<XDrawerMenu/>
@@ -95,8 +95,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref, watch, shallowRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
-import { deckStore, columnTypes, addColumn as addColumnToStore, forceSaveDeck, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store.js';
-import type { ColumnType } from './deck/deck-store.js';
 import type { MenuItem } from '@/types/menu.js';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
@@ -107,7 +105,7 @@ import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { deviceKind } from '@/scripts/device-kind.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import XMainColumn from '@/ui/deck/main-column.vue';
 import XTlColumn from '@/ui/deck/tl-column.vue';
 import XAntennaColumn from '@/ui/deck/antenna-column.vue';
@@ -119,6 +117,8 @@ import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 import { mainRouter } from '@/router/main.js';
+import { store } from '@/store.js';
+import { columnTypes, forceSaveDeck, getProfiles, loadDeck, addColumn as addColumnToStore, deleteProfile as deleteProfile_ } from '@/deck.js';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
@@ -137,8 +137,8 @@ const columnComponents = {
 
 mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;
-	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
-	if (deckStore.state.navWindow || noMainColumn) {
+	const noMainColumn = !store.state['deck.columns'].some(x => x.type === 'main');
+	if (prefer.s['deck.navWindow'] || noMainColumn) {
 		os.pageWindow(path);
 		return true;
 	}
@@ -160,8 +160,8 @@ watch(route, () => {
 });
 */
 
-const columns = deckStore.reactiveState.columns;
-const layout = deckStore.reactiveState.layout;
+const columns = store.reactiveState['deck.columns'];
+const layout = store.reactiveState['deck.layout'];
 const menuIndicated = computed(() => {
 	if ($i == null) return false;
 	for (const def in navbarItemDef) {
@@ -214,15 +214,15 @@ loadDeck();
 
 function changeProfile(ev: MouseEvent) {
 	let items: MenuItem[] = [{
-		text: deckStore.state.profile,
+		text: store.state['deck.profile'],
 		active: true,
 		action: () => {},
 	}];
 	getProfiles().then(profiles => {
-		items.push(...(profiles.filter(k => k !== deckStore.state.profile).map(k => ({
+		items.push(...(profiles.filter(k => k !== store.state['deck.profile']).map(k => ({
 			text: k,
 			action: () => {
-				deckStore.set('profile', k);
+				store.set('deck.profile', k);
 				unisonReload();
 			},
 		}))), { type: 'divider' as const }, {
@@ -237,7 +237,7 @@ function changeProfile(ev: MouseEvent) {
 				if (canceled || name == null) return;
 
 				os.promiseDialog((async () => {
-					await deckStore.set('profile', name);
+					await store.set('deck.profile', name);
 					await forceSaveDeck();
 				})(), () => {
 					unisonReload();
@@ -252,19 +252,19 @@ function changeProfile(ev: MouseEvent) {
 async function deleteProfile() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.tsx.deleteAreYouSure({ x: deckStore.state.profile }),
+		text: i18n.tsx.deleteAreYouSure({ x: store.state['deck.profile'] }),
 	});
 	if (canceled) return;
 
 	os.promiseDialog((async () => {
-		if (deckStore.state.profile === 'default') {
-			await deckStore.set('columns', []);
-			await deckStore.set('layout', []);
+		if (store.state['deck.profile'] === 'default') {
+			await store.set('deck.columns', []);
+			await store.set('deck.layout', []);
 			await forceSaveDeck();
 		} else {
-			await deleteProfile_(deckStore.state.profile);
+			await deleteProfile_(store.state['deck.profile']);
 		}
-		await deckStore.set('profile', 'default');
+		await store.set('deck.profile', 'default');
 	})(), () => {
 		unisonReload();
 	});

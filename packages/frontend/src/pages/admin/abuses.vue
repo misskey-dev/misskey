@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton link to="/admin/abuse-report-notification-recipient" primary>{{ i18n.ts.notificationSetting }}</MkButton>
 			</div>
 
-			<MkInfo v-if="!defaultStore.reactiveState.abusesTutorial.value" closable @close="closeTutorial()">
+			<MkInfo v-if="!store.reactiveState.abusesTutorial.value" closable @close="closeTutorial()">
 				{{ i18n.ts._abuseUserReport.resolveTutorial }}
 			</MkInfo>
 
@@ -68,7 +68,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 
 const reports = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -93,7 +93,7 @@ function resolved(reportId) {
 }
 
 function closeTutorial() {
-	defaultStore.set('abusesTutorial', false);
+	store.set('abusesTutorial', false);
 }
 
 const headerActions = computed(() => []);

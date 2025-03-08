@@ -5278,6 +5278,34 @@ export interface Locale extends ILocale {
      * アクセシビリティ
      */
     "accessibility": string;
+    /**
+     * 設定のプロファイル
+     */
+    "preferencesProfile": string;
+    /**
+     * 設定IDをコピー
+     */
+    "copyPreferenceId": string;
+    /**
+     * 初期値に戻す
+     */
+    "resetToDefaultValue": string;
+    /**
+     * アカウントで上書き
+     */
+    "overrideByAccount": string;
+    /**
+     * 無題
+     */
+    "untitled": string;
+    /**
+     * 名前はありません
+     */
+    "noName": string;
+    /**
+     * 自動バックアップ
+     */
+    "autoBackup": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

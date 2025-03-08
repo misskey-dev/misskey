@@ -1,3 +1,16 @@
+## Unreleased
+
+### General
+-
+
+### Client
+- Feat: 設定の管理が強化されました
+  - ドライブに自動バックアップされるように
+
+### Server
+-
+
+
 ## 2025.3.1
 
 ### General

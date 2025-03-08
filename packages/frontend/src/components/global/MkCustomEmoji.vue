@@ -28,7 +28,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, inject, ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { defaultStore } from '@/store.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import * as os from '@/os.js';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
@@ -37,6 +36,7 @@ import * as sound from '@/scripts/sound.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 import { $i } from '@/account.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	name: string;
@@ -77,7 +77,7 @@ const url = computed(() => {
 				false,
 				true,
 			);
-	return defaultStore.reactiveState.disableShowingAnimatedImages.value
+	return prefer.s.disableShowingAnimatedImages
 		? getStaticImageUrl(proxied)
 		: proxied;
 });

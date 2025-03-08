@@ -54,17 +54,18 @@ import contains from '@/scripts/contains.js';
 import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 import { searchEmoji } from '@/scripts/search-emoji.js';
+import { prefer } from '@/preferences.js';
 
 const lib = emojilist.filter(x => x.category !== 'flags');
 
 const emojiDb = computed(() => {
 	//#region Unicode Emoji
-	const char2path = defaultStore.reactiveState.emojiStyle.value === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
+	const char2path = prefer.r.emojiStyle.value === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
 	const unicodeEmojiDB: EmojiDef[] = lib.map(x => ({
 		emoji: x.char,
@@ -72,7 +73,7 @@ const emojiDb = computed(() => {
 		url: char2path(x.char),
 	}));
 
-	for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
+	for (const index of Object.values(store.state.additionalUnicodeEmojiIndexes)) {
 		for (const [emoji, keywords] of Object.entries(index)) {
 			for (const k of keywords) {
 				unicodeEmojiDB.push({
@@ -154,10 +155,10 @@ function complete(type: string, value: any) {
 	emit('done', { type, value });
 	emit('closed');
 	if (type === 'emoji') {
-		let recents = defaultStore.state.recentlyUsedEmojis;
+		let recents = store.state.recentlyUsedEmojis;
 		recents = recents.filter((emoji: any) => emoji !== value);
 		recents.unshift(value);
-		defaultStore.set('recentlyUsedEmojis', recents.splice(0, 32));
+		store.set('recentlyUsedEmojis', recents.splice(0, 32));
 	}
 }
 
@@ -237,7 +238,7 @@ function exec() {
 	} else if (props.type === 'emoji') {
 		if (!props.q || props.q === '') {
 			// 最近使った絵文字をサジェスト
-			emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => emojiDb.value.find(dbEmoji => dbEmoji.emoji === emoji)).filter(x => x) as EmojiDef[];
+			emojis.value = store.state.recentlyUsedEmojis.map(emoji => emojiDb.value.find(dbEmoji => dbEmoji.emoji === emoji)).filter(x => x) as EmojiDef[];
 			return;
 		}
 

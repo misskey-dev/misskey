@@ -26,7 +26,7 @@ import MkButton from '@/components/MkButton.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { genEmbedCode } from '@/scripts/get-embed-code.js';
 
@@ -44,11 +44,11 @@ const pagination = {
 const notes = ref<InstanceType<typeof MkNotes>>();
 
 async function post() {
-	defaultStore.set('postFormHashtags', props.tag);
-	defaultStore.set('postFormWithHashtags', true);
+	store.set('postFormHashtags', props.tag);
+	store.set('postFormWithHashtags', true);
 	await os.post();
-	defaultStore.set('postFormHashtags', '');
-	defaultStore.set('postFormWithHashtags', false);
+	store.set('postFormHashtags', '');
+	store.set('postFormWithHashtags', false);
 	notes.value?.pagingComponent?.reload();
 }
 

@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div class="wbrkwalb">
 		<MkLoading v-if="fetching"/>
-		<TransitionGroup v-else tag="div" :name="defaultStore.state.animation ? 'chart' : ''" class="instances">
+		<TransitionGroup v-else tag="div" :name="prefer.s.animation ? 'chart' : ''" class="instances">
 			<div v-for="(instance, i) in instances" :key="instance.id" class="instance">
 				<img :src="getInstanceIcon(instance)" alt=""/>
 				<div class="body">
@@ -27,16 +27,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
-import { useInterval } from '@@/js/use-interval.js';
 import { i18n } from '@/i18n.js';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const name = 'federation';
 

@@ -35,13 +35,13 @@ import { onMounted, shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
+import { apiUrl } from '@@/js/config.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
-import { apiUrl } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
+import { prefer } from '@/preferences.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;
@@ -81,8 +81,8 @@ const ok = async () => {
 			formData.append('i', $i!.token);
 			if (props.uploadFolder) {
 				formData.append('folderId', props.uploadFolder);
-			} else if (props.uploadFolder !== null && defaultStore.state.uploadFolder) {
-				formData.append('folderId', defaultStore.state.uploadFolder);
+			} else if (props.uploadFolder !== null && prefer.s.uploadFolder) {
+				formData.append('folderId', prefer.s.uploadFolder);
 			}
 
 			window.fetch(apiUrl + '/drive/files/create', {

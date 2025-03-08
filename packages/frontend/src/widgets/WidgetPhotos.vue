@@ -31,7 +31,7 @@ import { useStream } from '@/stream.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 
 const name = 'photos';
@@ -70,7 +70,7 @@ const onDriveFileCreated = (file) => {
 };
 
 const thumbnail = (image: Misskey.entities.DriveFile): string => {
-	return defaultStore.state.disableShowingAnimatedImages
+	return prefer.s.disableShowingAnimatedImages
 		? getStaticImageUrl(image.url)
 		: image.thumbnailUrl ?? image.url;
 };

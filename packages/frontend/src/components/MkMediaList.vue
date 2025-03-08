@@ -12,9 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="[
 				$style.medias,
 				count === 1 ? [$style.n1, {
-					[$style.n116_9]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '16_9',
-					[$style.n11_1]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '1_1',
-					[$style.n12_3]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '2_3',
+					[$style.n116_9]: prefer.s.mediaListWithOneImageAppearance === '16_9',
+					[$style.n11_1]: prefer.s.mediaListWithOneImageAppearance === '1_1',
+					[$style.n12_3]: prefer.s.mediaListWithOneImageAppearance === '2_3',
 				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
 			]"
 		>
@@ -33,13 +33,13 @@ import * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/style.css';
+import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
-import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
-import { defaultStore } from '@/store.js';
 import { focusParent } from '@/scripts/focus.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
@@ -75,7 +75,7 @@ async function calcAspectRatio() {
 		return `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
 	};
 
-	switch (defaultStore.state.mediaListWithOneImageAppearance) {
+	switch (prefer.s.mediaListWithOneImageAppearance) {
 		case '16_9':
 			gallery.value.style.aspectRatio = ratioMax(16 / 9);
 			break;

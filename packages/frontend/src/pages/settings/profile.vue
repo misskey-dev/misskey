@@ -168,7 +168,7 @@ import { signinRequired } from '@/account.js';
 import { langmap } from '@/scripts/langmap.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { globalEvents } from '@/events.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -177,7 +177,7 @@ const $i = signinRequired();
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
+const reactionAcceptance = computed(store.makeGetterSetter('reactionAcceptance'));
 
 function assertVaildLang(lang: string | null): lang is keyof typeof langmap {
 	return lang != null && lang in langmap;

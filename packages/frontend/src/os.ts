@@ -6,15 +6,15 @@
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
 import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
-import type { Component, Ref } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
+import type { Component, Ref } from 'vue';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/scripts/form.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { PostFormProps } from '@/types/post-form.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
@@ -626,7 +626,7 @@ export async function selectRole(params: {
 }): Promise<
 	{ canceled: true; result: undefined; } |
 	{ canceled: false; result: Misskey.entities.Role[] }
-> {
+	> {
 	return new Promise((resolve) => {
 		popup(defineAsyncComponent(() => import('@/components/MkRoleSelectDialog.vue')), params, {
 			done: roles => {
@@ -699,8 +699,8 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 
 export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 	if (
-		defaultStore.state.contextMenu === 'native' ||
-		(defaultStore.state.contextMenu === 'appWithShift' && !ev.shiftKey)
+		prefer.s.contextMenu === 'native' ||
+		(prefer.s.contextMenu === 'appWithShift' && !ev.shiftKey)
 	) {
 		return Promise.resolve();
 	}
