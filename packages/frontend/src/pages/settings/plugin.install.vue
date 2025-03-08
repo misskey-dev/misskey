@@ -23,10 +23,10 @@ import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
-import { installPlugin } from '@/scripts/install-plugin.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { installPlugin } from '@/plugin.js';
 
 const code = ref<string | null>(null);
 

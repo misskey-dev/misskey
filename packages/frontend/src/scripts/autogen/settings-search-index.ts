@@ -450,6 +450,13 @@ export const searchIndexes: SearchIndexItem[] = [
 		icon: 'ti ti-adjustments',
 	},
 	{
+		id: 'mwkwtw83Y',
+		label: i18n.ts.plugins,
+		keywords: ['plugin'],
+		path: '/settings/plugin',
+		icon: 'ti ti-plug',
+	},
+	{
 		id: 'F1uK9ssiY',
 		children: [
 			{
