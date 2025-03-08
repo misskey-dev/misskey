@@ -56,7 +56,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { parsePluginMeta, installPlugin } from '@/scripts/install-plugin.js';
 import type { AiScriptPluginMeta } from '@/scripts/install-plugin.js';
-import { parseThemeCode, installTheme } from '@/scripts/install-theme.js';
+import { parseThemeCode, installTheme } from '@/scripts/theme.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
