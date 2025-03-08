@@ -6,6 +6,7 @@
 import { v4 as uuid } from 'uuid';
 import { apiUrl } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
+import type { PreferencesProfile } from '@/preferences/profile.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { ProfileManager } from '@/preferences/profile.js';
 import { store } from '@/store.js';
@@ -15,16 +16,26 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 const TAB_ID = uuid();
 
 function createProfileManager() {
-	const currentProfileRaw = miLocalStorage.getItem('preferences');
-	const currentProfile = currentProfileRaw ? ProfileManager.normalizeProfile(JSON.parse(currentProfileRaw)) : ProfileManager.newProfile();
-	if (currentProfileRaw == null) {
-		miLocalStorage.setItem('preferences', JSON.stringify(currentProfile));
+	let profile: PreferencesProfile;
+	let newProfileCreated = false;
+
+	const savedProfileRaw = miLocalStorage.getItem('preferences');
+	if (savedProfileRaw == null) {
+		profile = ProfileManager.newProfile();
+		newProfileCreated = true;
+		miLocalStorage.setItem('preferences', JSON.stringify(profile));
+	} else {
+		profile = ProfileManager.normalizeProfile(JSON.parse(savedProfileRaw));
 	}
 
-	return new ProfileManager(currentProfile);
+	return {
+		profileManager: new ProfileManager(profile),
+		newProfileCreated,
+	};
 }
 
-export const profileManager = createProfileManager();
+const { profileManager, newProfileCreated } = createProfileManager();
+export { profileManager, newProfileCreated };
 profileManager.addListener('updated', ({ profile: p }) => {
 	miLocalStorage.setItem('preferences', JSON.stringify(p));
 	miLocalStorage.setItem('latestPreferencesUpdate', `${TAB_ID}/${Date.now()}`);
