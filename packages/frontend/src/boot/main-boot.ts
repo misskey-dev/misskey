@@ -105,7 +105,7 @@ export async function mainBoot() {
 		removeCustomEmojis(emojiData.emojis);
 	});
 
-	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
+	for (const plugin of prefer.s.plugins.filter(p => p.active)) {
 		launchPlugin(plugin);
 	}
 

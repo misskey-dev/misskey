@@ -4,28 +4,24 @@
  */
 
 import { ref, defineAsyncComponent } from 'vue';
-import { Ast, Interpreter, Parser, utils, values } from '@syuilo/aiscript';
+import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
 import { v4 as uuid } from 'uuid';
 import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store.js';
+import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors, store } from '@/store.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 
-// tokenなどは別で管理する
-
 export type Plugin = {
-	id: string;
+	installId: string;
 	name: string;
 	active: boolean;
 	config?: Record<string, { default: any }>;
 	configData: Record<string, any>;
-	token: string;
 	src: string | null;
 	version: string;
-	ast: Ast.Node[];
 	author?: string;
 	description?: string;
 	permissions?: string[];
@@ -41,22 +37,6 @@ export type AiScriptPluginMeta = {
 };
 
 const parser = new Parser();
-
-export function savePlugin({ id, meta, src, token }: {
-	id: string;
-	meta: AiScriptPluginMeta;
-	src: string;
-	token: string;
-}) {
-	prefer.set('plugins', prefer.s.plugins.concat({
-		...meta,
-		id,
-		active: true,
-		configData: {},
-		token: token,
-		src: src,
-	} as Plugin));
-}
 
 export function isSupportedAiScriptVersion(version: string): boolean {
 	try {
@@ -110,22 +90,16 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 	};
 }
 
-export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
-	if (!code) return;
+export async function authorizePlugin(plugin: Plugin) {
+	if (plugin.permissions == null || plugin.permissions.length === 0) return;
+	if (Object.hasOwn(store.state.pluginTokens, plugin.installId)) return;
 
-	let realMeta: AiScriptPluginMeta;
-	if (!meta) {
-		realMeta = await parsePluginMeta(code);
-	} else {
-		realMeta = meta;
-	}
-
-	const token = realMeta.permissions == null || realMeta.permissions.length === 0 ? null : await new Promise((res, rej) => {
+	const token = await new Promise<string>((res, rej) => {
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
-			initialName: realMeta.name,
-			initialPermissions: realMeta.permissions,
+			initialName: plugin.name,
+			initialPermissions: plugin.permissions,
 		}, {
 			done: async result => {
 				const { name, permissions } = result;
@@ -140,12 +114,63 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 		});
 	});
 
-	savePlugin({
-		id: uuid(),
-		meta: realMeta,
-		token,
-		src: code,
+	store.set('pluginTokens', {
+		...store.state.pluginTokens,
+		[plugin.installId]: token,
 	});
+}
+
+export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
+	if (!code) return;
+
+	let realMeta: AiScriptPluginMeta;
+	if (!meta) {
+		realMeta = await parsePluginMeta(code);
+	} else {
+		realMeta = meta;
+	}
+
+	const installId = uuid();
+
+	const plugin = {
+		...realMeta,
+		installId,
+		active: true,
+		configData: {},
+		src: code,
+	};
+
+	prefer.set('plugins', prefer.s.plugins.concat(plugin));
+
+	await authorizePlugin(plugin);
+}
+
+export async function uninstallPlugin(plugin: Plugin) {
+	prefer.set('plugins', prefer.s.plugins.filter(x => x.installId !== plugin.installId));
+	if (Object.hasOwn(store.state.pluginTokens, plugin.installId)) {
+		await os.apiWithDialog('i/revoke-token', {
+			token: store.state.pluginTokens[plugin.installId],
+		});
+		const pluginTokens = { ...store.state.pluginTokens };
+		delete pluginTokens[plugin.installId];
+		store.set('pluginTokens', pluginTokens);
+	}
+}
+
+export async function configPlugin(plugin: Plugin) {
+	const config = plugin.config;
+	for (const key in plugin.configData) {
+		config[key].default = plugin.configData[key];
+	}
+
+	const { canceled, result } = await os.form(plugin.name, config);
+	if (canceled) return;
+
+	prefer.set('plugins', prefer.s.plugins.map(x => x.installId === plugin.installId ? { ...x, configData: result } : x));
+}
+
+export function changePluginActive(plugin: Plugin, active: boolean) {
+	prefer.set('plugins', prefer.s.plugins.map(x => x.installId === plugin.installId ? { ...x, active } : x));
 }
 
 const pluginContexts = new Map<string, Interpreter>();
@@ -155,19 +180,21 @@ export async function launchPlugin(plugin: Plugin): Promise<void> {
 	// 後方互換性のため
 	if (plugin.src == null) return;
 
+	await authorizePlugin(plugin);
+
 	const aiscript = new Interpreter(createPluginEnv({
 		plugin: plugin,
-		storageKey: 'plugins:' + plugin.id,
+		storageKey: 'plugins:' + plugin.installId,
 	}), {
 		in: aiScriptReadline,
 		out: (value): void => {
 			console.log(value);
-			pluginLogs.value.get(plugin.id).push(utils.reprValue(value));
+			pluginLogs.value.get(plugin.installId).push(utils.reprValue(value));
 		},
 		log: (): void => {
 		},
 		err: (err): void => {
-			pluginLogs.value.get(plugin.id).push(`${err}`);
+			pluginLogs.value.get(plugin.installId).push(`${err}`);
 			throw err; // install時のtry-catchに反応させる
 		},
 	});
@@ -186,47 +213,36 @@ export async function launchPlugin(plugin: Plugin): Promise<void> {
 }
 
 function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<string, values.Value> {
+	const id = opts.plugin.installId;
+
 	const config = new Map<string, values.Value>();
 	for (const [k, v] of Object.entries(opts.plugin.config ?? {})) {
 		config.set(k, utils.jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
 	}
 
 	return {
-		...createAiScriptEnv({ ...opts, token: opts.plugin.token }),
-		//#region Deprecated
-		'Mk:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
-			utils.assertString(title);
-			registerPostFormAction({ pluginId: opts.plugin.id, title: title.value, handler });
-		}),
-		'Mk:register_user_action': values.FN_NATIVE(([title, handler]) => {
-			utils.assertString(title);
-			registerUserAction({ pluginId: opts.plugin.id, title: title.value, handler });
-		}),
-		'Mk:register_note_action': values.FN_NATIVE(([title, handler]) => {
-			utils.assertString(title);
-			registerNoteAction({ pluginId: opts.plugin.id, title: title.value, handler });
-		}),
-		//#endregion
+		...createAiScriptEnv({ ...opts, token: store.state.pluginTokens[id] }),
+
 		'Plugin:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);
-			registerPostFormAction({ pluginId: opts.plugin.id, title: title.value, handler });
+			registerPostFormAction({ pluginId: id, title: title.value, handler });
 		}),
 		'Plugin:register_user_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);
-			registerUserAction({ pluginId: opts.plugin.id, title: title.value, handler });
+			registerUserAction({ pluginId: id, title: title.value, handler });
 		}),
 		'Plugin:register_note_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);
-			registerNoteAction({ pluginId: opts.plugin.id, title: title.value, handler });
+			registerNoteAction({ pluginId: id, title: title.value, handler });
 		}),
 		'Plugin:register_note_view_interruptor': values.FN_NATIVE(([handler]) => {
-			registerNoteViewInterruptor({ pluginId: opts.plugin.id, handler });
+			registerNoteViewInterruptor({ pluginId: id, handler });
 		}),
 		'Plugin:register_note_post_interruptor': values.FN_NATIVE(([handler]) => {
-			registerNotePostInterruptor({ pluginId: opts.plugin.id, handler });
+			registerNotePostInterruptor({ pluginId: id, handler });
 		}),
 		'Plugin:register_page_view_interruptor': values.FN_NATIVE(([handler]) => {
-			registerPageViewInterruptor({ pluginId: opts.plugin.id, handler });
+			registerPageViewInterruptor({ pluginId: id, handler });
 		}),
 		'Plugin:open_url': values.FN_NATIVE(([url]) => {
 			utils.assertString(url);

@@ -160,6 +160,10 @@ export const store = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
+	pluginTokens: {
+		where: 'deviceAccount',
+		default: {} as Record<string, string>, // plugin id, token
+	},
 	'deck.profile': {
 		where: 'deviceAccount',
 		default: 'default',

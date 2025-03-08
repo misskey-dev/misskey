@@ -83,19 +83,13 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { ColdDeviceStorage } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { pluginLogs } from '@/plugin.js';
-
-const plugins = ref(ColdDeviceStorage.get('plugins'));
+import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin } from '@/plugin.js';
 
 async function uninstall(plugin) {
-	ColdDeviceStorage.set('plugins', plugins.value.filter(x => x.id !== plugin.id));
-	await os.apiWithDialog('i/revoke-token', {
-		token: plugin.token,
-	});
+	await uninstallPlugin(plugin);
 	nextTick(() => {
 		unisonReload();
 	});
@@ -106,30 +100,15 @@ function copy(text) {
 	os.success();
 }
 
-// TODO: この処理をstore側にactionとして移動し、設定画面を開くAiScriptAPIを実装できるようにする
 async function config(plugin) {
-	const config = plugin.config;
-	for (const key in plugin.configData) {
-		config[key].default = plugin.configData[key];
-	}
-
-	const { canceled, result } = await os.form(plugin.name, config);
-	if (canceled) return;
-
-	const coldPlugins = ColdDeviceStorage.get('plugins');
-	coldPlugins.find(p => p.id === plugin.id)!.configData = result;
-	ColdDeviceStorage.set('plugins', coldPlugins);
-
+	await configPlugin(plugin);
 	nextTick(() => {
 		location.reload();
 	});
 }
 
 function changeActive(plugin, active) {
-	const coldPlugins = ColdDeviceStorage.get('plugins');
-	coldPlugins.find(p => p.id === plugin.id)!.active = active;
-	ColdDeviceStorage.set('plugins', coldPlugins);
-
+	changePluginActive(plugin, active);
 	nextTick(() => {
 		location.reload();
 	});
