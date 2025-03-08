@@ -12,19 +12,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts._notification._types[type] }}</template>
 				<template #suffix>
 					{{
-						$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
-						$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
-						$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
-						$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
-						$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
-						$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
+						getNotificationConfigValue(type).type === 'never' ? i18n.ts.none :
+						getNotificationConfigValue(type).type === 'following' ? i18n.ts.following :
+						getNotificationConfigValue(type).type === 'follower' ? i18n.ts.followers :
+						getNotificationConfigValue(type).type === 'mutualFollow' ? i18n.ts.mutualFollow :
+						getNotificationConfigValue(type).type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
+						getNotificationConfigValue(type).type === 'list' ? i18n.ts.userList :
 						i18n.ts.all
 					}}
 				</template>
 
 				<XNotificationConfig
 					:userLists="userLists"
-					:value="$i.notificationRecieveConfig[type] ?? { type: 'all' }"
+					 :value="getNotificationConfigValue(type)"
 					:configurableTypes="onlyOnOrOffNotificationTypes.includes(type) ? ['all', 'never'] : undefined"
 					@update="(res) => updateReceiveConfig(type, res)"
 				/>
@@ -98,6 +98,15 @@ const filteredNotificationTypes = computed(() => {
 	});
 });
 
+// 通知設定の値を取得するヘルパー関数
+function getNotificationConfigValue(type) {
+  // unfollow, blocked, unblocked で設定がない場合は never をデフォルトにする
+  if ((type === 'unfollow' || type === 'blocked' || type === 'unblocked') && !$i.notificationRecieveConfig[type]) {
+    return { type: 'never' };
+  }
+  // その他はデフォルトで all
+  return $i.notificationRecieveConfig[type] ?? { type: 'all' };
+}
 
 async function readAllUnreadNotes() {
 	await os.apiWithDialog('i/read-all-unread-notes');

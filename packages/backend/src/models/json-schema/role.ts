@@ -291,6 +291,18 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canChangeUnfollowNotificationSetting: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canChangeBlockedNotificationSetting: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canChangeUnblockedNotificationSetting: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		canFollow: {
 			type: 'boolean',
 			optional: false, nullable: false,

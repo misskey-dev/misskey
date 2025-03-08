@@ -97,6 +97,13 @@ export class NotificationService implements OnApplicationShutdown {
 		// 古いMisskeyバージョンのキャッシュが残っている可能性がある
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		const recieveConfig = (profile.notificationRecieveConfig ?? {})[type];
+
+		// unfollow, blocked, unblocked は設定がない場合、デフォルトでneverとして扱う
+		if ((type === 'unfollow' || type === 'blocked' || type === 'unblocked') && !recieveConfig) {
+			return null; // 通知を送信しない
+		}
+
+		// 既存のチェック
 		if (recieveConfig?.type === 'never') {
 			return null;
 		}

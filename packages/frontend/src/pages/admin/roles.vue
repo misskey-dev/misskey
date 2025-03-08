@@ -249,6 +249,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeUnfollowNotificationSetting, 'canChangeUnfollowNotificationSetting'])">
+							<template #label>{{ i18n.ts._role._options.canChangeUnfollowNotificationSetting }}</template>
+							<template #suffix>{{ policies.canChangeUnfollowNotificationSetting ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canChangeUnfollowNotificationSetting">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeBlockedNotificationSetting, 'canChangeBlockedNotificationSetting'])">
+							<template #label>{{ i18n.ts._role._options.canChangeBlockedNotificationSetting }}</template>
+							<template #suffix>{{ policies.canChangeBlockedNotificationSetting ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canChangeBlockedNotificationSetting">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeUnblockedNotificationSetting, 'canChangeUnblockedNotificationSetting'])">
+							<template #label>{{ i18n.ts._role._options.canChangeUnblockedNotificationSetting }}</template>
+							<template #suffix>{{ policies.canChangeUnblockedNotificationSetting ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canChangeUnblockedNotificationSetting">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canFollow, 'canFollow'])">
 							<template #label>{{ i18n.ts._role._options.canFollow }}</template>
 							<template #suffix>{{ policies.canFollow ? i18n.ts.yes : i18n.ts.no }}</template>

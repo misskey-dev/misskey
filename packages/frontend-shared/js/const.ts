@@ -74,8 +74,6 @@ export const notificationTypes = [
 	'login',
 	'test',
 	'app',
-	'blocked',
-	'unblocked',
 ] as const;
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
 
@@ -110,6 +108,9 @@ export const ROLE_POLICIES = [
 	'rateLimitFactor',
 	'avatarDecorationLimit',
 	'canChangeQuoteNotificationSetting',
+	'canChangeUnfollowNotificationSetting',
+	'canChangeBlockedNotificationSetting',
+	'canChangeUnblockedNotificationSetting',
 	'canFollow',
 	'canFollowed',
 	'canImportAntennas',

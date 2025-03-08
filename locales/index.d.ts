@@ -7232,6 +7232,18 @@ export interface Locale extends ILocale {
              */
             "canChangeQuoteNotificationSetting": string;
             /**
+             * フォロー解除通知の変更を許可
+             */
+            "canChangeUnfollowNotificationSetting": string;
+            /**
+             * ブロック通知の変更を許可
+             */
+            "canChangeBlockedNotificationSetting": string;
+            /**
+             * ブロック解除通知の変更を許可
+             */
+            "canChangeUnblockedNotificationSetting": string;
+            /**
              * フォローを許可
              */
             "canFollow": string;

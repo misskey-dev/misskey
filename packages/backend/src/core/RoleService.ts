@@ -61,6 +61,9 @@ export type RolePolicies = {
 	rateLimitFactor: number;
 	avatarDecorationLimit: number;
 	canChangeQuoteNotificationSetting: boolean;
+	canChangeUnfollowNotificationSetting: boolean;
+	canChangeBlockedNotificationSetting: boolean;
+	canChangeUnblockedNotificationSetting: boolean;
 	canFollow: boolean;
 	canFollowed: boolean;
 	canImportAntennas: boolean;
@@ -101,6 +104,9 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
 	canChangeQuoteNotificationSetting: false,
+	canChangeUnfollowNotificationSetting: false,
+	canChangeBlockedNotificationSetting: false,
+	canChangeUnblockedNotificationSetting: false,
 	canFollow: true,
 	canFollowed: true,
 	canImportAntennas: true,
@@ -424,6 +430,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
 			canChangeQuoteNotificationSetting: calc('canChangeQuoteNotificationSetting', vs => vs.some(v => v === true)),
+			canChangeUnfollowNotificationSetting: calc('canChangeUnfollowNotificationSetting', vs => vs.some(v => v === true)),
+			canChangeBlockedNotificationSetting: calc('canChangeBlockedNotificationSetting', vs => vs.some(v => v === true)),
+			canChangeUnblockedNotificationSetting: calc('canChangeUnblockedNotificationSetting', vs => vs.some(v => v === true)),
 			canFollow: calc('canFollow', vs => vs.some(v => v === true)),
 			canFollowed: calc('canFollowed', vs => vs.some(v => v === true)),
 			canImportAntennas: calc('canImportAntennas', vs => vs.some(v => v === true)),
