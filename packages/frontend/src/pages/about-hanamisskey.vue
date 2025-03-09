@@ -103,9 +103,9 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 import { $i } from '@/account.js';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
+import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 
 const patronsWithIcon = [{
 	name: 'masnolia',

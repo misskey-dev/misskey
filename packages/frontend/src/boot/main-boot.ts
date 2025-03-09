@@ -221,6 +221,7 @@ export async function mainBoot() {
 				prefer.set('confirmWhenRevealingSensitiveMedia', store.state.confirmWhenRevealingSensitiveMedia);
 				prefer.set('contextMenu', store.state.contextMenu);
 				prefer.set('skipNoteRender', store.state.skipNoteRender);
+				prefer.set('alwaysUseAbsoluteTime', store.state.alwaysUseAbsoluteTime);
 				prefer.set('showSoftWordMutedWord', store.state.showSoftWordMutedWord);
 				prefer.set('confirmOnReact', store.state.confirmOnReact);
 				prefer.set('sound.masterVolume', store.state.sound_masterVolume);
@@ -234,12 +235,6 @@ export async function mainBoot() {
 				store.set('deck.columns', deckStore.state.columns);
 				store.set('deck.layout', deckStore.state.layout);
 				store.set('menu', []);
-			}
-
-			if (store.state.accountSetupWizard !== -1) {
-				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
-					closed: () => dispose(),
-				});
 			}
 		});
 

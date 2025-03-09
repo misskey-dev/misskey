@@ -142,10 +142,10 @@ export const PREF_DEF = {
 		default: 'auto' as 'auto' | 'popup' | 'drawer',
 	},
 	useBlurEffectForModal: {
-		default: DEFAULT_DEVICE_KIND === 'desktop',
+		default: false,
 	},
 	useBlurEffect: {
-		default: DEFAULT_DEVICE_KIND === 'desktop',
+		default: false,
 	},
 	showFixedPostForm: {
 		default: false,
@@ -261,7 +261,10 @@ export const PREF_DEF = {
 		default: 'app' as 'app' | 'appWithShift' | 'native',
 	},
 	skipNoteRender: {
-		default: true,
+		default: 'none' as 'css' | 'js' | 'none',
+	},
+	alwaysUseAbsoluteTime: {
+		default: false,
 	},
 	showSoftWordMutedWord: {
 		default: false,

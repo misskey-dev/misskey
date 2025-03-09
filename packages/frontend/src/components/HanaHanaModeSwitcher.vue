@@ -46,7 +46,7 @@ import { ref, computed } from 'vue';
 import { signinRequired, updateAccountPartial } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { claimAchievement } from '@/utility/achievements.js';
 import * as os from '@/os.js';
 
 import MkButton from '@/components/MkButton.vue';

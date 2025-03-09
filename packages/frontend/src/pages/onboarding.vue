@@ -113,8 +113,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, shallowRef, computed, onMounted } from 'vue';
 import { create as createConfetti } from 'canvas-confetti';
 
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
+import { reactionPicker } from '@/utility/reaction-picker.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { host } from '@@/js/config.js';

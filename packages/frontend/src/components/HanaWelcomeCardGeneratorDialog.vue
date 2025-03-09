@@ -73,7 +73,7 @@ import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { signinRequired } from '@/account.js';
 import { apiUrl, host } from '@@/js/config.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { hanaStore } from '@/hana/store.js';
 import * as os from '@/os.js';
 
@@ -281,8 +281,8 @@ async function note() {
 		formData.append('name', `hana-welcome-card-${Date.now()}.png`);
 		formData.append('isSensitive', 'false');
 		formData.append('i', $i.token);
-		if (defaultStore.state.uploadFolder) {
-			formData.append('folderId', defaultStore.state.uploadFolder);
+		if (prefer.s.uploadFolder) {
+			formData.append('folderId', prefer.s.uploadFolder);
 		}
 
 		const res = await window.fetch(apiUrl + '/drive/files/create', {

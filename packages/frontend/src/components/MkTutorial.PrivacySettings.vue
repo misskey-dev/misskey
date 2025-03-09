@@ -28,7 +28,7 @@ import { ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { signinRequired } from '@/account.js';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 

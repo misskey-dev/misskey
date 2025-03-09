@@ -155,7 +155,7 @@ import { host as localHost } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { useRouter } from '@/router/supplier.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
@@ -169,7 +169,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkNoteMediaGrid from '@/components/MkNoteMediaGrid.vue';
-import { getBgColor } from '@/scripts/get-bg-color.js';
+import { getBgColor } from '@/utility/get-bg-color.js';
 import type { SearchMode } from '@/hana/types/search.js';
 
 const props = withDefaults(defineProps<{
