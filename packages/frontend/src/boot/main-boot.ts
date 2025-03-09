@@ -24,7 +24,7 @@ import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
-import { newProfileCreated, prefer } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { launchPlugin } from '@/plugin.js';
@@ -235,10 +235,6 @@ export async function mainBoot() {
 				});
 			}
 		});
-
-		if (newProfileCreated) {
-			// TODO: バックアップが存在していればバックアップからの復元を提案
-		}
 
 		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
 			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {

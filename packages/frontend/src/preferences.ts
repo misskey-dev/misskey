@@ -15,25 +15,19 @@ const TAB_ID = uuid();
 
 function createProfileManager() {
 	let profile: PreferencesProfile;
-	let newProfileCreated = false;
 
 	const savedProfileRaw = miLocalStorage.getItem('preferences');
 	if (savedProfileRaw == null) {
 		profile = ProfileManager.newProfile();
-		newProfileCreated = true;
 		miLocalStorage.setItem('preferences', JSON.stringify(profile));
 	} else {
 		profile = ProfileManager.normalizeProfile(JSON.parse(savedProfileRaw));
 	}
 
-	return {
-		profileManager: new ProfileManager(profile),
-		newProfileCreated,
-	};
+	return new ProfileManager(profile);
 }
 
-const { profileManager, newProfileCreated } = createProfileManager();
-export { profileManager, newProfileCreated };
+export const profileManager = createProfileManager();
 profileManager.addListener('updated', ({ profile: p }) => {
 	miLocalStorage.setItem('preferences', JSON.stringify(p));
 	miLocalStorage.setItem('latestPreferencesUpdate', `${TAB_ID}/${Date.now()}`);
