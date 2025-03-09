@@ -27,7 +27,7 @@ import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
-import { launchPlugin } from '@/plugin.js';
+import { launchPlugins } from '@/plugin.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => {
@@ -105,9 +105,7 @@ export async function mainBoot() {
 		removeCustomEmojis(emojiData.emojis);
 	});
 
-	for (const plugin of prefer.s.plugins.filter(p => p.active)) {
-		launchPlugin(plugin);
-	}
+	launchPlugins();
 
 	try {
 		if (prefer.s.enableSeasonalScreenEffect) {

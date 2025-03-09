@@ -94,7 +94,6 @@ import MkButton from '@/components/MkButton.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/utility/page-metadata.js';
 import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin, reloadPlugin } from '@/plugin.js';
@@ -104,9 +103,6 @@ const plugins = prefer.r.plugins;
 
 async function uninstall(plugin: Plugin) {
 	await uninstallPlugin(plugin);
-	nextTick(() => {
-		unisonReload();
-	});
 }
 
 function reload(plugin: Plugin) {
@@ -119,9 +115,6 @@ async function config(plugin: Plugin) {
 
 function changeActive(plugin: Plugin, active: boolean) {
 	changePluginActive(plugin, active);
-	nextTick(() => {
-		location.reload();
-	});
 }
 
 const headerActions = computed(() => []);

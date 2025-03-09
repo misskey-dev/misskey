@@ -36,10 +36,6 @@ async function install() {
 	try {
 		await installPlugin(code.value);
 		os.success();
-
-		nextTick(() => {
-			unisonReload();
-		});
 	} catch (err) {
 		os.alert({
 			type: 'error',
