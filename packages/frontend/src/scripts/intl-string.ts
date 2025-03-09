@@ -34,6 +34,7 @@ export function normalizeString(str: string) {
 	return [...segmenter.segment(str)].map(({ segment }) => segment.normalize('NFKC')).join('').toLowerCase().trim();
 }
 
+// https://qiita.com/non-caffeine/items/77360dda05c8ce510084
 const hyphens = [
 	0x002d, // hyphen-minus
 	0x02d7, // modifier letter minus sign
@@ -67,7 +68,6 @@ const hyphensCodePoints = hyphens.map(code => `\\u${code.toString(16).padStart(4
 
 /** ハイフンを統一（ローマ字半角入力時に`ー`と`-`が判定できない問題の調整） */
 export function normalizeHyphens(str: string) {
-	// https://qiita.com/non-caffeine/items/77360dda05c8ce510084
 	return str.replace(new RegExp(`[${hyphensCodePoints.join('')}]`, 'g'), '\u002d');
 }
 
