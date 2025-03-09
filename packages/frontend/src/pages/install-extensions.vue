@@ -56,7 +56,7 @@ import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { parsePluginMeta, installPlugin } from '@/plugin.js';
-import { parseThemeCode, installTheme } from '@/utility/theme.js';
+import { parseThemeCode, installTheme } from '@/theme.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/utility/page-metadata.js';

@@ -5,8 +5,8 @@
 
 import { v4 as uuid } from 'uuid';
 
-import { themeProps } from './theme.js';
-import type { Theme } from './theme.js';
+import type { Theme } from '@/theme.js';
+import { themeProps } from '@/theme.js';
 
 export type Default = null;
 export type Color = string;

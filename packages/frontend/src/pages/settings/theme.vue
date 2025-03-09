@@ -83,7 +83,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getBuiltinThemesRef } from '@/utility/theme.js';
+import { getBuiltinThemesRef } from '@/theme.js';
 import { selectFile } from '@/utility/select-file.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { store } from '@/store.js';

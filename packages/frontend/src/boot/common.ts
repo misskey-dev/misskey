@@ -12,7 +12,7 @@ import type { App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { applyTheme } from '@/utility/theme.js';
+import { applyTheme } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { updateI18n, i18n } from '@/i18n.js';
 import { $i, refreshAccount, login } from '@/account.js';

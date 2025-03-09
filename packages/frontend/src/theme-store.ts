@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Theme } from '@/utility/theme.js';
-import { getBuiltinThemes } from '@/utility/theme.js';
+import type { Theme } from '@/theme.js';
+import { getBuiltinThemes } from '@/theme.js';
 import { $i } from '@/account.js';
 import { prefer } from '@/preferences.js';
 

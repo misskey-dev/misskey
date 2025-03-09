@@ -5,7 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
-import type { Theme } from '@/utility/theme.js';
+import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
