@@ -26,43 +26,43 @@ import { type MiChannelService } from './channel.js';
 
 @Injectable()
 export class ChannelsService {
-	    constructor(
-		        @Inject(forwardRef(() => MainChannelService))
-		        private mainChannelService: MainChannelService,
-		        @Inject(forwardRef(() => YamiTimelineChannelService))
-		        private yamiTimelineChannelService: YamiTimelineChannelService,
-		        @Inject(forwardRef(() => HomeTimelineChannelService))
-		        private homeTimelineChannelService: HomeTimelineChannelService,
-		        @Inject(forwardRef(() => LocalTimelineChannelService))
-		        private localTimelineChannelService: LocalTimelineChannelService,
-		        @Inject(forwardRef(() => HybridTimelineChannelService))
-		        private hybridTimelineChannelService: HybridTimelineChannelService,
-		        @Inject(forwardRef(() => GlobalTimelineChannelService))
-		        private globalTimelineChannelService: GlobalTimelineChannelService,
-		        @Inject(forwardRef(() => UserListChannelService))
-		        private userListChannelService: UserListChannelService,
-		        @Inject(forwardRef(() => HashtagChannelService))
-		        private hashtagChannelService: HashtagChannelService,
-		        @Inject(forwardRef(() => RoleTimelineChannelService))
-		        private roleTimelineChannelService: RoleTimelineChannelService,
-		        @Inject(forwardRef(() => AntennaChannelService))
-		        private antennaChannelService: AntennaChannelService,
-		        @Inject(forwardRef(() => ChannelChannelService))
-		        private channelChannelService: ChannelChannelService,
-		        @Inject(forwardRef(() => DriveChannelService))
-		        private driveChannelService: DriveChannelService,
-		        @Inject(forwardRef(() => ServerStatsChannelService))
-		        private serverStatsChannelService: ServerStatsChannelService,
-		        @Inject(forwardRef(() => QueueStatsChannelService))
-		        private queueStatsChannelService: QueueStatsChannelService,
-		        @Inject(forwardRef(() => AdminChannelService))
-		        private adminChannelService: AdminChannelService,
-		        @Inject(forwardRef(() => ReversiChannelService))
-		        private reversiChannelService: ReversiChannelService,
-		        @Inject(forwardRef(() => ReversiGameChannelService))
-		        private reversiGameChannelService: ReversiGameChannelService,
-		    ) {
-		    }
+	constructor(
+		@Inject(forwardRef(() => MainChannelService))
+		private mainChannelService: MainChannelService,
+		@Inject(forwardRef(() => YamiTimelineChannelService))
+		private yamiTimelineChannelService: YamiTimelineChannelService,
+		@Inject(forwardRef(() => HomeTimelineChannelService))
+		private homeTimelineChannelService: HomeTimelineChannelService,
+		@Inject(forwardRef(() => LocalTimelineChannelService))
+		private localTimelineChannelService: LocalTimelineChannelService,
+		@Inject(forwardRef(() => HybridTimelineChannelService))
+		private hybridTimelineChannelService: HybridTimelineChannelService,
+		@Inject(forwardRef(() => GlobalTimelineChannelService))
+		private globalTimelineChannelService: GlobalTimelineChannelService,
+		@Inject(forwardRef(() => UserListChannelService))
+		private userListChannelService: UserListChannelService,
+		@Inject(forwardRef(() => HashtagChannelService))
+		private hashtagChannelService: HashtagChannelService,
+		@Inject(forwardRef(() => RoleTimelineChannelService))
+		private roleTimelineChannelService: RoleTimelineChannelService,
+		@Inject(forwardRef(() => AntennaChannelService))
+		private antennaChannelService: AntennaChannelService,
+		@Inject(forwardRef(() => ChannelChannelService))
+		private channelChannelService: ChannelChannelService,
+		@Inject(forwardRef(() => DriveChannelService))
+		private driveChannelService: DriveChannelService,
+		@Inject(forwardRef(() => ServerStatsChannelService))
+		private serverStatsChannelService: ServerStatsChannelService,
+		@Inject(forwardRef(() => QueueStatsChannelService))
+		private queueStatsChannelService: QueueStatsChannelService,
+		@Inject(forwardRef(() => AdminChannelService))
+		private adminChannelService: AdminChannelService,
+		@Inject(forwardRef(() => ReversiChannelService))
+		private reversiChannelService: ReversiChannelService,
+		@Inject(forwardRef(() => ReversiGameChannelService))
+		private reversiGameChannelService: ReversiGameChannelService,
+	) {
+	}
 
 	@bindThis
 	public getChannelService(name: string): MiChannelService<boolean> {

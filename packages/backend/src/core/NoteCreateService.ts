@@ -590,7 +590,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 		if (data.createdAt) {
-			if (data.createdAt.getTime() > Date.now() + 1000 * 60 * 3 ) {
+			if (data.createdAt.getTime() > Date.now() + 1000 * 60 * 3) {
 				throw new Error('Invalid createdAt time: Time is more than 3 minutes ahead of the current time.');
 			}
 		}
@@ -1225,8 +1225,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 				// ダイレクトのとき、そのリストが対象外のユーザーの場合
 				// 「自分自身への返信 or そのリストの作成者への返信」のどちらでもない場合
 				if (note.visibility === 'specified' &&
-                note.userId !== userListMembership.userListUserId &&
-                !note.visibleUserIds.some(v => v === userListMembership.userListUserId)) continue;
+					note.userId !== userListMembership.userListUserId &&
+					!note.visibleUserIds.some(v => v === userListMembership.userListUserId)) continue;
 
 				if (isReply(note, userListMembership.userListUserId)) {
 					if (!userListMembership.withReplies) continue;

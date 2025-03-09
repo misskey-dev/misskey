@@ -499,8 +499,8 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 
 	const body =
 		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
-		htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
-		await bodyExtractor(res);
+			htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
+				await bodyExtractor(res);
 
 	return {
 		status: res.status,

@@ -65,7 +65,7 @@ function getJobInfo(job: Bull.Job | undefined, increment = false): string {
 
 	const formated = age > 60000 ? `${Math.floor(age / 1000 / 60)}m`
 		: age > 10000 ? `${Math.floor(age / 1000)}s`
-		: `${age}ms`;
+			: `${age}ms`;
 
 	// onActiveとかonCompletedのattemptsMadeがなぜか0始まりなのでインクリメントする
 	const currentAttempts = job.attemptsMade + (increment ? 1 : 0);
@@ -220,11 +220,11 @@ export class QueueProcessorService implements OnApplicationShutdown {
 					case 'importFollowing': return this.importFollowingProcessorService.process(job);
 					case 'importFollowingToDb': return this.importFollowingProcessorService.processDb(job);
 					case 'importNotes': return this.importNotesProcessorService.process(job);
-				  case 'importTweetsToDb': return this.importNotesProcessorService.processTwitterDb(job);
-				  case 'importIGToDb': return this.importNotesProcessorService.processIGDb(job);
-				  case 'importMastoToDb': return this.importNotesProcessorService.processMastoToDb(job);
-				  case 'importPleroToDb': return this.importNotesProcessorService.processPleroToDb(job);
-				  case 'importKeyNotesToDb': return this.importNotesProcessorService.processKeyNotesToDb(job);
+					case 'importTweetsToDb': return this.importNotesProcessorService.processTwitterDb(job);
+					case 'importIGToDb': return this.importNotesProcessorService.processIGDb(job);
+					case 'importMastoToDb': return this.importNotesProcessorService.processMastoToDb(job);
+					case 'importPleroToDb': return this.importNotesProcessorService.processPleroToDb(job);
+					case 'importKeyNotesToDb': return this.importNotesProcessorService.processKeyNotesToDb(job);
 					case 'importMuting': return this.importMutingProcessorService.process(job);
 					case 'importBlocking': return this.importBlockingProcessorService.process(job);
 					case 'importBlockingToDb': return this.importBlockingProcessorService.processDb(job);

@@ -74,8 +74,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				const userIds = Array.from(userIdsWhoMeMuting ?? []).concat(Array.from(userIdsWhoBlockingMe ?? []));
 
-				if (userIds.length > 0 ){
-			  	query.andWhere('reaction.userId NOT IN (:...userIds)', { userIds: Array.from(userIdsWhoMeMuting ?? []).concat(Array.from(userIdsWhoBlockingMe ?? [])) });
+				if (userIds.length > 0) {
+					query.andWhere('reaction.userId NOT IN (:...userIds)', { userIds: Array.from(userIdsWhoMeMuting ?? []).concat(Array.from(userIdsWhoBlockingMe ?? [])) });
 				}
 			}
 
