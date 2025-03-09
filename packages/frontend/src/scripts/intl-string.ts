@@ -28,39 +28,41 @@ export function normalizeString(str: string) {
 	return [...segmenter.segment(str)].map(({ segment }) => segment.normalize('NFKC')).join('').toLowerCase().trim();
 }
 
+const hyphens = [
+	0x002d, // hyphen-minus
+	0x02d7, // modifier letter minus sign
+	0x1173, // hangul jongseong eu
+	0x1680, // ogham space mark
+	0x1b78, // balinese musical symbol left-hand open pang
+	0x2010, // hyphen
+	0x2011, // non-breaking hyphen
+	0x2012, // figure dash
+	0x2013, // en dash
+	0x2014, // em dash
+	0x2015, // horizontal bar
+	0x2043, // hyphen bullet
+	0x207b, // superscript minus
+	0x2212, // minus sign
+	0x25ac, // black rectangle
+	0x2500, // box drawings light horizontal
+	0x2501, // box drawings heavy horizontal
+	0x2796, // heavy minus sign
+	0x30fc, // katakana-hiragana prolonged sound mark
+	0x3161, // hangul letter eu
+	0xfe58, // small em dash
+	0xfe63, // small hyphen-minus
+	0xff0d, // fullwidth hyphen-minus
+	0xff70, // halfwidth katakana-hiragana prolonged sound mark
+	0x10110, // aegean number ten
+	0x10191, // roman uncia sign
+];
+
+const hyphensCodePoints = hyphens.map(code => `\\u${code.toString(16).padStart(4, '0')}`);
+
 /** ハイフンを統一（ローマ字半角入力時に`ー`と`-`が判定できない問題の調整） */
 export function normalizeHyphens(str: string) {
 	// https://qiita.com/non-caffeine/items/77360dda05c8ce510084
-	const hyphens = [
-		'\u002d', // hyphen-minus
-		'\u02d7', // modifier letter minus sign
-		'\u1173', // hangul jongseong eu
-		'\u1680', // ogham space mark
-		'\u1b78', // balinese musical symbol left-hand open pang
-		'\u2010', // hyphen
-		'\u2011', // non-breaking hyphen
-		'\u2012', // figure dash
-		'\u2013', // en dash
-		'\u2014', // em dash
-		'\u2015', // horizontal bar
-		'\u2043', // hyphen bullet
-		'\u207b', // superscript minus
-		'\u2212', // minus sign
-		'\u25ac', // black rectangle
-		'\u2500', // box drawings light horizontal
-		'\u2501', // box drawings heavy horizontal
-		'\u2796', // heavy minus sign
-		'\u30fc', // katakana-hiragana prolonged sound mark
-		'\u3161', // hangul letter eu
-		'\ufe58', // small em dash
-		'\ufe63', // small hyphen-minus
-		'\uff0d', // fullwidth hyphen-minus
-		'\uff70', // halfwidth katakana-hiragana prolonged sound mark
-		'\u{10110}', // aegean number ten
-		'\u{10191}', // roman uncia sign
-	];
-
-	return str.replace(new RegExp(`[${hyphens.join('')}]`, 'g'), '\u002d');
+	return str.replace(new RegExp(`[${hyphensCodePoints.join('')}]`, 'g'), '\u002d');
 }
 
 /**
@@ -69,7 +71,7 @@ export function normalizeHyphens(str: string) {
  * （ローマ字じゃないものもローマ字として認識され変換されるので、文字列比較の際は `normalizeString` を併用する必要あり）
  */
 export function normalizeStringWithHiragana(str: string) {
-	return normalizeHyphens(toHiragana(normalizeString(str)));
+	return normalizeHyphens(toHiragana(normalizeString(str), { convertLongVowelMark: false }));
 }
 
 /** aとbが同じかどうか */

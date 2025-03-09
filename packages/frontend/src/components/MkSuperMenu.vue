@@ -128,8 +128,6 @@ watch(searchQuery, (value) => {
 });
 
 watch(rawSearchQuery, (value) => {
-	console.log('search', value);
-
 	searchResult.value = [];
 	searchSelectedIndex.value = null;
 
