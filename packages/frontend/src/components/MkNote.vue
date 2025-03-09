@@ -294,8 +294,8 @@ watch(() => appearNote.value, () => {
 		} else {
 			renoteCollapsed.value = false;
 		}
-	} catch (e) {
-		console.error('Error in renote collapse detection:', e);
+	} catch (error) {
+		console.error('Error in renote collapse detection:', error);
 		renoteCollapsed.value = false;
 	}
 }, { immediate: true });

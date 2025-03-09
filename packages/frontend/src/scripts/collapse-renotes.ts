@@ -46,9 +46,9 @@ export function checkCollapseRenote(appearNote: Record<string, any> | null, note
 				return false;
 			}
 		}
-	} catch (e) {
+	} catch (error) {
 		// エラー発生時は安全のためfalseを返す
-		console.error('Error in checkCollapseRenote:', e);
+		console.error('Error in checkCollapseRenote:', error);
 		return false;
 	}
 }

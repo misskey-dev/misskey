@@ -8,4 +8,4 @@
  */
 export function copyToClipboard(input: string | null) {
 	if (input) navigator.clipboard.writeText(input);
-};
+}

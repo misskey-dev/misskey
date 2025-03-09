@@ -193,7 +193,7 @@ onMounted(() => {
 });
 // showDetailの変更監視
 watch(showDetail, (newValue) => {
-	if (newValue) {  // トグルを開いたとき
+	if (newValue) { // トグルを開いたとき
 		if (!after.value || !calcAfter()) {
 			// 値が未設定または無効な場合のみデフォルト時間をセット
 			beautifyAfter(defaultStore.state.defaultScheduledNoteDeleteTime / 1000);
