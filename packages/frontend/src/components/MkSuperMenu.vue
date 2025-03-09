@@ -6,16 +6,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div ref="rootEl" class="rrevdjwu" :class="{ grid }">
 	<MkInput
-		v-model="search"
+		v-if="searchIndex && searchIndex.length > 0"
+		v-model="searchQuery"
 		:placeholder="i18n.ts.search"
 		type="search"
 		style="margin-bottom: 16px;"
+		@input.passive="searchOnInput"
 		@keydown="searchOnKeyDown"
 	>
 		<template #prefix><i class="ti ti-search"></i></template>
 	</MkInput>
 
-	<template v-if="search == ''">
+	<template v-if="rawSearchQuery == ''">
 		<div v-for="group in def" class="group">
 			<div v-if="group.title" class="title">{{ group.title }}</div>
 
@@ -97,17 +99,22 @@ import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@@/js/scroll.js';
 import { useRouter } from '@/router/supplier.js';
+import { initIntlString, compareStringIncludes } from '@/scripts/intl-string.js';
 
 const props = defineProps<{
 	def: SuperMenuDef[];
 	grid?: boolean;
-	searchIndex: SearchIndexItem[];
+	searchIndex?: SearchIndexItem[];
 }>();
+
+initIntlString();
 
 const router = useRouter();
 const rootEl = useTemplateRef('rootEl');
 
-const search = ref('');
+const searchQuery = ref('');
+const rawSearchQuery = ref('');
+
 const searchSelectedIndex = ref<null | number>(null);
 const searchResult = ref<{
 	id: string;
@@ -118,7 +125,11 @@ const searchResult = ref<{
 	parentLabels: string[];
 }[]>([]);
 
-watch(search, (value) => {
+watch(searchQuery, (value) => {
+	rawSearchQuery.value = value;
+});
+
+watch(rawSearchQuery, (value) => {
 	searchResult.value = [];
 	searchSelectedIndex.value = null;
 
@@ -128,14 +139,15 @@ watch(search, (value) => {
 
 	const dive = (items: SearchIndexItem[], parents: SearchIndexItem[] = []) => {
 		for (const item of items) {
-			const matched =
-				item.label.includes(value.toLowerCase()) ||
-				item.keywords.some((x) => x.toLowerCase().includes(value.toLowerCase()));
+			const matched = (
+				compareStringIncludes(item.label, value) ||
+				item.keywords.some((x) => compareStringIncludes(x, value))
+			);
 
 			if (matched) {
 				searchResult.value.push({
 					id: item.id,
-					path: item.path ?? parents.find((x) => x.path != null)?.path,
+					path: item.path ?? parents.find((x) => x.path != null)?.path ?? '/', // never gets `/`
 					label: item.label,
 					parentLabels: parents.map((x) => x.label).toReversed(),
 					icon: item.icon ?? parents.find((x) => x.icon != null)?.icon,
@@ -149,8 +161,15 @@ watch(search, (value) => {
 		}
 	};
 
-	dive(props.searchIndex);
+	if (props.searchIndex) {
+		dive(props.searchIndex);
+	}
 });
+
+function searchOnInput(ev: InputEvent) {
+	searchSelectedIndex.value = null;
+	rawSearchQuery.value = (ev.target as HTMLInputElement).value;
+}
 
 function searchOnKeyDown(ev: KeyboardEvent) {
 	if (ev.isComposing) return;
