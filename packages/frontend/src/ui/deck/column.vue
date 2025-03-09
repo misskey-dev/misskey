@@ -43,11 +43,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, watch, shallowRef, ref, computed } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from './deck-store.js';
+import type { Column } from '@/deck.js';
+import type { MenuItem } from '@/types/menu.js';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import type { Column } from './deck-store.js';
-import type { MenuItem } from '@/types/menu.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);

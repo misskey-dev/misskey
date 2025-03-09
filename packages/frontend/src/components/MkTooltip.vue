@@ -5,10 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <Transition
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_tooltip_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_tooltip_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_tooltip_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_tooltip_leaveTo : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_tooltip_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_tooltip_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_tooltip_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_tooltip_leaveTo : ''"
 	appear @afterLeave="emit('closed')"
 >
 	<div v-show="showing" ref="el" :class="$style.root" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onMounted, onUnmounted, shallowRef } from 'vue';
 import * as os from '@/os.js';
 import { calcPopupPosition } from '@/scripts/popup-position.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	showing: boolean;

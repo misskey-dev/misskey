@@ -166,10 +166,6 @@ const routes: RouteDef[] = [{
 		name: 'deck',
 		component: page(() => import('@/pages/settings/deck.vue')),
 	}, {
-		path: '/preferences-backups',
-		name: 'preferences-backups',
-		component: page(() => import('@/pages/settings/preferences-backups.vue')),
-	}, {
 		path: '/custom-css',
 		name: 'preferences',
 		component: page(() => import('@/pages/settings/custom-css.vue')),

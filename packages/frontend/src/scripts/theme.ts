@@ -7,10 +7,12 @@ import { ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
+import JSON5 from 'json5';
 import { deepClone } from './clone.js';
 import type { BundledTheme } from 'shiki/themes';
 import { globalEvents } from '@/events.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { addTheme, getThemes } from '@/theme-store.js';
 
 export type Theme = {
 	id: string;
@@ -101,6 +103,7 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	if (persist) {
 		miLocalStorage.setItem('theme', JSON.stringify(props));
+		miLocalStorage.setItem('themeId', theme.id);
 		miLocalStorage.setItem('colorScheme', colorScheme);
 	}
 
@@ -154,4 +157,33 @@ export function validateTheme(theme: Record<string, any>): boolean {
 	if (theme.base == null || !['light', 'dark'].includes(theme.base)) return false;
 	if (theme.props == null || typeof theme.props !== 'object') return false;
 	return true;
+}
+
+export function parseThemeCode(code: string): Theme {
+	let theme;
+
+	try {
+		theme = JSON5.parse(code);
+	} catch (err) {
+		throw new Error('Failed to parse theme json');
+	}
+	if (!validateTheme(theme)) {
+		throw new Error('This theme is invaild');
+	}
+	if (getThemes().some(t => t.id === theme.id)) {
+		throw new Error('This theme is already installed');
+	}
+
+	return theme;
+}
+
+export function previewTheme(code: string): void {
+	const theme = parseThemeCode(code);
+	if (theme) applyTheme(theme, false);
+}
+
+export async function installTheme(code: string): Promise<void> {
+	const theme = parseThemeCode(code);
+	if (!theme) return;
+	await addTheme(theme);
 }

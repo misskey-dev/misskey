@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkStickyContainer ref="contents" :class="$style.contents" style="container-type: inline-size;" @contextmenu.stop="onContextmenu">
 		<template #header>
 			<div>
+				<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
 				<XAnnouncements v-if="$i"/>
 				<XStatusBars :class="$style.statusbars"/>
 			</div>
@@ -38,10 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -53,10 +54,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</Transition>
 
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
 			<XDrawerMenu/>
@@ -64,10 +65,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</Transition>
 
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="widgetsShowing"
@@ -79,10 +80,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</Transition>
 
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_widgetsDrawer_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
 	>
 		<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
 			<button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false"><i class="ti ti-x"></i></button>
@@ -105,7 +106,7 @@ import type MkStickyContainer from '@/components/global/MkStickyContainer.vue';
 import type { PageMetadata } from '@/scripts/page-metadata.js';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { navbarItemDef } from '@/navbar.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
@@ -114,11 +115,14 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { mainRouter } from '@/router/main.js';
+import { prefer } from '@/preferences.js';
+import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
+const XPreferenceRestore = defineAsyncComponent(() => import('@/ui/_common_/PreferenceRestore.vue'));
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -174,9 +178,9 @@ if (window.innerWidth > 1024) {
 	}
 }
 
-defaultStore.loaded.then(() => {
-	if (defaultStore.state.widgets.length === 0) {
-		defaultStore.set('widgets', [{
+store.loaded.then(() => {
+	if (store.state.widgets.length === 0) {
+		store.set('widgets', [{
 			name: 'calendar',
 			id: 'a', place: 'right', data: {},
 		}, {

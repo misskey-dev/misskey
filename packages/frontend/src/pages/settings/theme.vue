@@ -75,6 +75,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onActivated, ref, watch } from 'vue';
 import JSON5 from 'json5';
+import defaultLightTheme from '@@/themes/l-light.json5';
+import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -84,15 +86,15 @@ import MkButton from '@/components/MkButton.vue';
 import { getBuiltinThemesRef } from '@/scripts/theme.js';
 import { selectFile } from '@/scripts/select-file.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
-import { ColdDeviceStorage, defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/scripts/array.js';
-import { fetchThemes, getThemes } from '@/theme-store.js';
+import { getThemes } from '@/theme-store.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
-import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -169,39 +171,39 @@ const darkThemeSelectorItems = computed(() => {
 	return items;
 });
 
-const darkTheme = ColdDeviceStorage.ref('darkTheme');
+const darkTheme = prefer.r.darkTheme;
 const darkThemeId = computed({
 	get() {
-		return darkTheme.value.id;
+		return darkTheme.value ? darkTheme.value.id : defaultDarkTheme.id;
 	},
 	set(id) {
 		const t = themes.value.find(x => x.id === id);
 		if (t) { // テーマエディタでテーマを作成したときなどは、themesに反映されないため undefined になる
-			ColdDeviceStorage.set('darkTheme', t);
+			prefer.set('darkTheme', t);
 		}
 	},
 });
-const lightTheme = ColdDeviceStorage.ref('lightTheme');
+const lightTheme = prefer.r.lightTheme;
 const lightThemeId = computed({
 	get() {
-		return lightTheme.value.id;
+		return lightTheme.value ? lightTheme.value.id : defaultLightTheme.id;
 	},
 	set(id) {
 		const t = themes.value.find(x => x.id === id);
 		if (t) { // テーマエディタでテーマを作成したときなどは、themesに反映されないため undefined になる
-			ColdDeviceStorage.set('lightTheme', t);
+			prefer.set('lightTheme', t);
 		}
 	},
 });
 
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
+const darkMode = computed(store.makeGetterSetter('darkMode'));
+const syncDeviceDarkMode = prefer.model('syncDeviceDarkMode');
 const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
 
 watch(syncDeviceDarkMode, () => {
 	if (syncDeviceDarkMode.value) {
-		defaultStore.set('darkMode', isDeviceDarkmode());
+		store.set('darkMode', isDeviceDarkmode());
 	}
 });
 
@@ -215,12 +217,6 @@ watch(wallpaper, async () => {
 });
 
 onActivated(() => {
-	fetchThemes().then(() => {
-		installedThemes.value = getThemes();
-	});
-});
-
-fetchThemes().then(() => {
 	installedThemes.value = getThemes();
 });
 

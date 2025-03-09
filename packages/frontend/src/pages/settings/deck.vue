@@ -23,14 +23,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import { deckStore } from '@/ui/deck/deck-store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { prefer } from '@/preferences.js';
 
-const navWindow = computed(deckStore.makeGetterSetter('navWindow'));
-const useSimpleUiForNonRootPages = computed(deckStore.makeGetterSetter('useSimpleUiForNonRootPages'));
-const alwaysShowMainColumn = computed(deckStore.makeGetterSetter('alwaysShowMainColumn'));
-const columnAlign = computed(deckStore.makeGetterSetter('columnAlign'));
+const navWindow = prefer.model('deck.navWindow');
+const useSimpleUiForNonRootPages = prefer.model('deck.useSimpleUiForNonRootPages');
+const alwaysShowMainColumn = prefer.model('deck.alwaysShowMainColumn');
+const columnAlign = prefer.model('deck.columnAlign');
 
 const headerActions = computed(() => []);
 

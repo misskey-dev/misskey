@@ -89,37 +89,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.emojiPickerDisplay }}</template>
 
 		<div class="_gaps_m">
-			<MkRadios v-model="emojiPickerScale">
-				<template #label>{{ i18n.ts.size }}</template>
-				<option :value="1">{{ i18n.ts.small }}</option>
-				<option :value="2">{{ i18n.ts.medium }}</option>
-				<option :value="3">{{ i18n.ts.large }}</option>
-			</MkRadios>
+			<MkPreferenceContainer k="emojiPickerScale">
+				<MkRadios v-model="emojiPickerScale">
+					<template #label>{{ i18n.ts.size }}</template>
+					<option :value="1">{{ i18n.ts.small }}</option>
+					<option :value="2">{{ i18n.ts.medium }}</option>
+					<option :value="3">{{ i18n.ts.large }}</option>
+				</MkRadios>
+			</MkPreferenceContainer>
 
-			<MkRadios v-model="emojiPickerWidth">
-				<template #label>{{ i18n.ts.numberOfColumn }}</template>
-				<option :value="1">5</option>
-				<option :value="2">6</option>
-				<option :value="3">7</option>
-				<option :value="4">8</option>
-				<option :value="5">9</option>
-			</MkRadios>
+			<MkPreferenceContainer k="emojiPickerWidth">
+				<MkRadios v-model="emojiPickerWidth">
+					<template #label>{{ i18n.ts.numberOfColumn }}</template>
+					<option :value="1">5</option>
+					<option :value="2">6</option>
+					<option :value="3">7</option>
+					<option :value="4">8</option>
+					<option :value="5">9</option>
+				</MkRadios>
+			</MkPreferenceContainer>
 
-			<MkRadios v-model="emojiPickerHeight">
-				<template #label>{{ i18n.ts.height }}</template>
-				<option :value="1">{{ i18n.ts.small }}</option>
-				<option :value="2">{{ i18n.ts.medium }}</option>
-				<option :value="3">{{ i18n.ts.large }}</option>
-				<option :value="4">{{ i18n.ts.large }}+</option>
-			</MkRadios>
+			<MkPreferenceContainer k="emojiPickerHeight">
+				<MkRadios v-model="emojiPickerHeight">
+					<template #label>{{ i18n.ts.height }}</template>
+					<option :value="1">{{ i18n.ts.small }}</option>
+					<option :value="2">{{ i18n.ts.medium }}</option>
+					<option :value="3">{{ i18n.ts.large }}</option>
+					<option :value="4">{{ i18n.ts.large }}+</option>
+				</MkRadios>
+			</MkPreferenceContainer>
 
-			<MkSelect v-model="emojiPickerStyle">
-				<template #label>{{ i18n.ts.style }}</template>
-				<template #caption>{{ i18n.ts.needReloadToApply }}</template>
-				<option value="auto">{{ i18n.ts.auto }}</option>
-				<option value="popup">{{ i18n.ts.popup }}</option>
-				<option value="drawer">{{ i18n.ts.drawer }}</option>
-			</MkSelect>
+			<MkPreferenceContainer k="emojiPickerStyle">
+				<MkSelect v-model="emojiPickerStyle">
+					<template #label>{{ i18n.ts.style }}</template>
+					<template #caption>{{ i18n.ts.needReloadToApply }}</template>
+					<option value="auto">{{ i18n.ts.auto }}</option>
+					<option value="popup">{{ i18n.ts.popup }}</option>
+					<option value="drawer">{{ i18n.ts.drawer }}</option>
+				</MkSelect>
+			</MkPreferenceContainer>
 		</div>
 	</FormSection>
 </div>
@@ -127,14 +135,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import type { Ref } from 'vue';
 import Sortable from 'vuedraggable';
+import type { Ref } from 'vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { deepClone } from '@/scripts/clone.js';
@@ -143,14 +151,16 @@ import { emojiPicker } from '@/scripts/emoji-picker.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import { prefer } from '@/preferences.js';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
-const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(defaultStore.state.reactions));
-const pinnedEmojis: Ref<string[]> = ref(deepClone(defaultStore.state.pinnedEmojis));
+const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(store.state.reactions));
+const pinnedEmojis: Ref<string[]> = ref(deepClone(store.state.pinnedEmojis));
 
-const emojiPickerScale = computed(defaultStore.makeGetterSetter('emojiPickerScale'));
-const emojiPickerWidth = computed(defaultStore.makeGetterSetter('emojiPickerWidth'));
-const emojiPickerHeight = computed(defaultStore.makeGetterSetter('emojiPickerHeight'));
-const emojiPickerStyle = computed(defaultStore.makeGetterSetter('emojiPickerStyle'));
+const emojiPickerScale = prefer.model('emojiPickerScale');
+const emojiPickerWidth = prefer.model('emojiPickerWidth');
+const emojiPickerHeight = prefer.model('emojiPickerHeight');
+const emojiPickerStyle = prefer.model('emojiPickerStyle');
 
 const removeReaction = (reaction: string, ev: MouseEvent) => remove(pinnedEmojisForReaction, reaction, ev);
 const chooseReaction = (ev: MouseEvent) => pickEmoji(pinnedEmojisForReaction, ev);
@@ -210,7 +220,7 @@ async function setDefault(itemsRef: Ref<string[]>) {
 	});
 	if (canceled) return;
 
-	itemsRef.value = deepClone(defaultStore.def.reactions.default);
+	itemsRef.value = deepClone(store.def.reactions.default);
 }
 
 async function pickEmoji(itemsRef: Ref<string[]>, ev: MouseEvent) {
@@ -230,13 +240,13 @@ function getHTMLElement(ev: MouseEvent): HTMLElement {
 }
 
 watch(pinnedEmojisForReaction, () => {
-	defaultStore.set('reactions', pinnedEmojisForReaction.value);
+	store.set('reactions', pinnedEmojisForReaction.value);
 }, {
 	deep: true,
 });
 
 watch(pinnedEmojis, () => {
-	defaultStore.set('pinnedEmojis', pinnedEmojis.value);
+	store.set('pinnedEmojis', pinnedEmojis.value);
 }, {
 	deep: true,
 });

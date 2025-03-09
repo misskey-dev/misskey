@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<div v-show="useCw" :class="$style.cwOuter">
 		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
-		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>		
+		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>
 	</div>
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 		<div v-if="channel" :class="$style.colorBar" :style="{ background: channel.color }"></div>
@@ -123,7 +123,7 @@ import { Autocomplete } from '@/scripts/autocomplete.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { selectFiles } from '@/scripts/select-file.js';
-import { defaultStore, notePostInterruptors, postFormActions } from '@/store.js';
+import { store, notePostInterruptors, postFormActions } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -135,6 +135,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
+import { prefer } from '@/preferences.js';
 
 const $i = signinRequired();
 
@@ -174,19 +175,18 @@ const text = ref(props.initialText ?? '');
 const files = ref(props.initialFiles ?? []);
 const poll = ref<PollEditorModelValue | null>(null);
 const useCw = ref<boolean>(!!props.initialCw);
-const showPreview = ref(defaultStore.state.showPreview);
-watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
-const showAddMfmFunction = ref(defaultStore.state.enableQuickAddMfmFunction);
-watch(showAddMfmFunction, () => defaultStore.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
+const showPreview = ref(store.state.showPreview);
+watch(showPreview, () => store.set('showPreview', showPreview.value));
+const showAddMfmFunction = ref(prefer.s.enableQuickAddMfmFunction);
+watch(showAddMfmFunction, () => prefer.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
-const localOnly = ref(props.initialLocalOnly ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly));
-const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility));
+const localOnly = ref(props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.state.localOnly : prefer.s.defaultNoteLocalOnly));
+const visibility = ref(props.initialVisibility ?? (prefer.s.rememberNoteVisibility ? store.state.visibility : prefer.s.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
-const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
-const autocomplete = ref(null);
+const reactionAcceptance = ref(store.state.reactionAcceptance);
 const draghover = ref(false);
 const quoteId = ref<string | null>(null);
 const hasNotSpecifiedMentions = ref(false);
@@ -268,8 +268,8 @@ const canPost = computed((): boolean => {
 		(!poll.value || poll.value.choices.length >= 2);
 });
 
-const withHashtags = computed(defaultStore.makeGetterSetter('postFormWithHashtags'));
-const hashtags = computed(defaultStore.makeGetterSetter('postFormHashtags'));
+const withHashtags = computed(store.makeGetterSetter('postFormWithHashtags'));
+const hashtags = computed(store.makeGetterSetter('postFormHashtags'));
 
 watch(text, () => {
 	checkMissingMention();
@@ -357,7 +357,7 @@ if (props.specified) {
 }
 
 // keep cw when reply
-if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
+if (prefer.s.keepCw && props.reply && props.reply.cw) {
 	useCw.value = true;
 	cw.value = props.reply.cw;
 }
@@ -456,7 +456,7 @@ function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities
 function upload(file: File, name?: string): void {
 	if (props.mock) return;
 
-	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
+	uploadFile(file, prefer.s.uploadFolder, name).then(res => {
 		files.value.push(res);
 	});
 }
@@ -477,8 +477,8 @@ function setVisibility() {
 	}, {
 		changeVisibility: v => {
 			visibility.value = v;
-			if (defaultStore.state.rememberNoteVisibility) {
-				defaultStore.set('visibility', visibility.value);
+			if (prefer.s.rememberNoteVisibility) {
+				store.set('visibility', visibility.value);
 			}
 		},
 		closed: () => dispose(),
@@ -525,8 +525,8 @@ async function toggleLocalOnly() {
 	}
 
 	localOnly.value = !localOnly.value;
-	if (defaultStore.state.rememberNoteVisibility) {
-		defaultStore.set('localOnly', localOnly.value);
+	if (prefer.s.rememberNoteVisibility) {
+		store.set('localOnly', localOnly.value);
 	}
 }
 
@@ -594,6 +594,8 @@ function onCompositionEnd(ev: CompositionEvent) {
 	justEndedComposition.value = true;
 }
 
+const pastedFileName = 'yyyy-MM-dd HH-mm-ss [{{number}}]';
+
 async function onPaste(ev: ClipboardEvent) {
 	if (props.mock) return;
 	if (!ev.clipboardData) return;
@@ -604,7 +606,7 @@ async function onPaste(ev: ClipboardEvent) {
 			if (!file) continue;
 			const lio = file.name.lastIndexOf('.');
 			const ext = lio >= 0 ? file.name.slice(lio) : '';
-			const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+			const formatted = `${formatTimeString(new Date(file.lastModified), pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
 			upload(file, formatted);
 		}
 	}
@@ -638,7 +640,7 @@ async function onPaste(ev: ClipboardEvent) {
 				return;
 			}
 
-			const fileName = formatTimeString(new Date(), defaultStore.state.pastedFileName).replace(/{{number}}/g, '0');
+			const fileName = formatTimeString(new Date(), pastedFileName).replace(/{{number}}/g, '0');
 			const file = new File([paste], `${fileName}.txt`, { type: 'text/plain' });
 			upload(file, `${fileName}.txt`);
 		});
@@ -751,7 +753,7 @@ async function post(ev?: MouseEvent) {
 	if (ev) {
 		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
 
-		if (el && defaultStore.state.animation) {
+		if (el && prefer.s.animation) {
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
