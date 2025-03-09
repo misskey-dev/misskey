@@ -73,7 +73,7 @@ class HybridTimelineChannel extends Channel {
 		// やみモードが有効な投稿はフォローしている人だけ配信
 		if (note.isNoteInYamiMode) {
 			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
-		};
+		}
 
 		if (this.isNoteMutedOrBlocked(note)) return;
 
