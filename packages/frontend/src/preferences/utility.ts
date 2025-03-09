@@ -188,4 +188,22 @@ async function restoreFromCloudBackup() {
 	}
 
 	console.log(files);
+
+	const select = await os.select({
+		title: i18n.ts._preferencesBackup.selectBackupToRestore,
+		items: files.map(f => ({
+			text: f.name,
+			value: f,
+		})),
+	});
+	if (select.canceled) return;
+	if (select.result == null) return;
+
+	const file = select.result;
+
+	const blob = await fetch(file.url).then(res => res.blob());
+	const txt = await new Response(blob).text();
+	const profile = JSON.parse(txt) as PreferencesProfile;
+
+	console.log(profile);
 }

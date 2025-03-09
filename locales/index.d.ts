@@ -5319,6 +5319,10 @@ export interface Locale extends ILocale {
          * 自動で作成されたバックアップは見つかりませんでしたが、バックアップファイルを手動で保存している場合、それをインポートして復元することはできます。
          */
         "noBackupsFoundDescription": string;
+        /**
+         * 復元するバックアップを選択してください
+         */
+        "selectBackupToRestore": string;
     };
     "_accountSettings": {
         /**
