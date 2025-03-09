@@ -6,4 +6,6 @@ block meta
 	//- XXX: Remove navigation bar in auth page?
 	meta(name='misskey:oauth:transaction-id' content=transactionId)
 	meta(name='misskey:oauth:client-name' content=clientName)
+	if clientLogo
+		meta(name='misskey:oauth:client-logo' content=clientLogo)
 	meta(name='misskey:oauth:scope' content=scope)

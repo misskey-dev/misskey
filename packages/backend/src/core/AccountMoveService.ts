@@ -20,10 +20,10 @@ import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 
 @Injectable()
 export class AccountMoveService {
@@ -55,12 +55,12 @@ export class AccountMoveService {
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private globalEventService: GlobalEventService,
-		private proxyAccountService: ProxyAccountService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private federatedInstanceService: FederatedInstanceService,
 		private instanceChart: InstanceChart,
 		private relayService: RelayService,
 		private queueService: QueueService,
+		private systemAccountService: SystemAccountService,
 	) {
 	}
 
@@ -126,11 +126,11 @@ export class AccountMoveService {
 		}
 
 		// follow the new account
-		const proxy = await this.proxyAccountService.fetch();
+		const proxy = await this.systemAccountService.fetch('proxy');
 		const followings = await this.followingsRepository.findBy({
 			followeeId: src.id,
 			followerHost: IsNull(), // follower is local
-			followerId: proxy ? Not(proxy.id) : undefined,
+			followerId: Not(proxy.id),
 		});
 		const followJobs = followings.map(following => ({
 			from: { id: following.followerId },
@@ -250,10 +250,8 @@ export class AccountMoveService {
 
 		// Have the proxy account follow the new account in the same way as UserListService.push
 		if (this.userEntityService.isRemoteUser(dst)) {
-			const proxy = await this.proxyAccountService.fetch();
-			if (proxy) {
-				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
-			}
+			const proxy = await this.systemAccountService.fetch('proxy');
+			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
 		}
 	}
 

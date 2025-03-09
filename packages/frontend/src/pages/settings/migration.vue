@@ -68,7 +68,6 @@ import MkUserInfo from '@/components/MkUserInfo.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { signinRequired } from '@/account.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 
@@ -120,11 +119,6 @@ async function save(): Promise<void> {
 }
 
 init();
-
-definePageMetadata(() => ({
-	title: i18n.ts.accountMigration,
-	icon: 'ti ti-plane',
-}));
 </script>
 
 <style lang="scss">

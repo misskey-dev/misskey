@@ -3,24 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { UtilityService } from '@/core/UtilityService.js';
-
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
-import { GlobalModule } from '@/GlobalModule.js';
-import { RelayService } from '@/core/RelayService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { QueueService } from '@/core/QueueService.js';
-import { IdService } from '@/core/IdService.js';
-import type { RelaysRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
+import { ModuleMocker } from 'jest-mock';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { RelayService } from '@/core/RelayService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 const moduleMocker = new ModuleMocker(global);
 
@@ -28,8 +25,6 @@ describe('RelayService', () => {
 	let app: TestingModule;
 	let relayService: RelayService;
 	let queueService: jest.Mocked<QueueService>;
-	let relaysRepository: RelaysRepository;
-	let userEntityService: UserEntityService;
 
 	beforeAll(async () => {
 		app = await Test.createTestingModule({
@@ -38,10 +33,10 @@ describe('RelayService', () => {
 			],
 			providers: [
 				IdService,
-				CreateSystemUserService,
 				ApRendererService,
 				RelayService,
 				UserEntityService,
+				SystemAccountService,
 				UtilityService,
 			],
 		})
@@ -61,8 +56,6 @@ describe('RelayService', () => {
 
 		relayService = app.get<RelayService>(RelayService);
 		queueService = app.get<QueueService>(QueueService) as jest.Mocked<QueueService>;
-		relaysRepository = app.get<RelaysRepository>(DI.relaysRepository);
-		userEntityService = app.get<UserEntityService>(UserEntityService);
 	});
 
 	afterAll(async () => {
