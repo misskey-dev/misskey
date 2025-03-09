@@ -5302,6 +5302,24 @@ export interface Locale extends ILocale {
      * 名前はありません
      */
     "noName": string;
+    /**
+     * スキップ
+     */
+    "skip": string;
+    "_preferencesProfile": {
+        /**
+         * プロファイル名
+         */
+        "profileName": string;
+        /**
+         * このデバイスを識別する名前を設定してください。
+         */
+        "profileNameDescription": string;
+        /**
+         * 例: 「メインPC」、「スマホ」など
+         */
+        "profileNameDescription2": string;
+    };
     "_preferencesBackup": {
         /**
          * 自動バックアップ
@@ -5323,6 +5341,14 @@ export interface Locale extends ILocale {
          * 復元するバックアップを選択してください
          */
         "selectBackupToRestore": string;
+        /**
+         * 自動バックアップを有効にするにはプロファイル名の設定が必要です。
+         */
+        "youNeedToNameYourProfileToEnableAutoBackup": string;
+        /**
+         * このデバイスで設定の自動バックアップは有効になっていません。
+         */
+        "autoPreferencesBackupIsNotEnabledForThisDevice": string;
     };
     "_accountSettings": {
         /**

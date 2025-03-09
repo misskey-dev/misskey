@@ -1321,6 +1321,12 @@ resetToDefaultValue: "初期値に戻す"
 overrideByAccount: "アカウントで上書き"
 untitled: "無題"
 noName: "名前はありません"
+skip: "スキップ"
+
+_preferencesProfile:
+  profileName: "プロファイル名"
+  profileNameDescription: "このデバイスを識別する名前を設定してください。"
+  profileNameDescription2: "例: 「メインPC」、「スマホ」など"
 
 _preferencesBackup:
   autoBackup: "自動バックアップ"
@@ -1328,6 +1334,8 @@ _preferencesBackup:
   noBackupsFoundTitle: "バックアップが見つかりませんでした"
   noBackupsFoundDescription: "自動で作成されたバックアップは見つかりませんでしたが、バックアップファイルを手動で保存している場合、それをインポートして復元することはできます。"
   selectBackupToRestore: "復元するバックアップを選択してください"
+  youNeedToNameYourProfileToEnableAutoBackup: "自動バックアップを有効にするにはプロファイル名の設定が必要です。"
+  autoPreferencesBackupIsNotEnabledForThisDevice: "このデバイスで設定の自動バックアップは有効になっていません。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"

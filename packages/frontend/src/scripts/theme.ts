@@ -103,6 +103,7 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	if (persist) {
 		miLocalStorage.setItem('theme', JSON.stringify(props));
+		miLocalStorage.setItem('themeId', theme.id);
 		miLocalStorage.setItem('colorScheme', colorScheme);
 	}
 

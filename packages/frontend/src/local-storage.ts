@@ -27,6 +27,7 @@ export type Keys = (
 	'locale' |
 	'localeVersion' |
 	'theme' |
+	'themeId' |
 	'customCss' |
 	'message_drafts' |
 	'scratchpad' |

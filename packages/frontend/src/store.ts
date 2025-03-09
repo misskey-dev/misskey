@@ -179,6 +179,10 @@ export const store = markRaw(new Storage('base', {
 
 	enablePreferencesAutoCloudBackup: {
 		where: 'device',
+		default: false,
+	},
+	showPreferencesAutoCloudBackupSuggestion: {
+		where: 'device',
 		default: true,
 	},
 

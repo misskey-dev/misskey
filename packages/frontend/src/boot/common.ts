@@ -190,6 +190,12 @@ export async function common(createVue: () => App<Element>) {
 	});
 	//#endregion
 
+	if (prefer.s.darkTheme && store.state.darkMode) {
+		if (miLocalStorage.getItem('themeId') !== prefer.s.darkTheme.id) applyTheme(prefer.s.darkTheme);
+	} else if (prefer.s.lightTheme && !store.state.darkMode) {
+		if (miLocalStorage.getItem('themeId') !== prefer.s.lightTheme.id) applyTheme(prefer.s.lightTheme);
+	}
+
 	fetchInstanceMetaPromise.then(() => {
 		// TODO: instance.defaultLightTheme/instance.defaultDarkThemeが不正な形式だった場合のケア
 		if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.set('lightTheme', JSON.parse(instance.defaultLightTheme));
