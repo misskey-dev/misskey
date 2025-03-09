@@ -229,7 +229,6 @@ export class QueryService {
 		}
 	}
 
-
 	@bindThis
 	public generateMutedUserRenotesQueryForNotes(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
 		const mutingQuery = this.renoteMutingsRepository.createQueryBuilder('renote_muting')
