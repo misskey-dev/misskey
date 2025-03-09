@@ -198,6 +198,18 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes* / **Permission**: *write:admin:approve-account*
+     */
+    request<E extends 'admin/approve-user', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
      * **Credential required**: *Yes* / **Permission**: *write:admin:avatar-decorations*
      */
     request<E extends 'admin/avatar-decorations/create', P extends Endpoints[E]['req']>(
@@ -1350,7 +1362,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'channels/timeline', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -1912,7 +1924,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'federation/followers', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -1923,7 +1935,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'federation/following', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -1934,7 +1946,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'federation/instances', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -1945,7 +1957,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'federation/show-instance', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -1956,7 +1968,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'federation/stats', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -1967,7 +1979,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'federation/update-remote-user', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -1978,7 +1990,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'federation/users', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -2034,7 +2046,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'flash/featured', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -3266,7 +3278,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'notes/featured', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -3500,6 +3512,17 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     request<E extends 'notes/user-list-timeline', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:account*
+     */
+    request<E extends 'notes/yami-timeline', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -3963,7 +3986,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'users', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -3996,7 +4019,7 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     request<E extends 'users/featured-notes', P extends Endpoints[E]['req']>(
       endpoint: E,

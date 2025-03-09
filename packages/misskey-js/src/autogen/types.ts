@@ -170,6 +170,16 @@ export type paths = {
      */
     post: operations['admin___announcements___update'];
   };
+  '/admin/approve-user': {
+    /**
+     * admin/approve-user
+     * @description No description provided.
+     *
+     * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+     * **Credential required**: *Yes* / **Permission**: *write:admin:approve-account*
+     */
+    post: operations['admin___approve-user'];
+  };
   '/admin/avatar-decorations/create': {
     /**
      * admin/avatar-decorations/create
@@ -1126,7 +1136,7 @@ export type paths = {
      * channels/timeline
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['channels___timeline'];
   };
@@ -1684,7 +1694,7 @@ export type paths = {
      * federation/followers
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___followers'];
   };
@@ -1693,7 +1703,7 @@ export type paths = {
      * federation/following
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___following'];
   };
@@ -1702,14 +1712,14 @@ export type paths = {
      * federation/instances
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     get: operations['federation___instances'];
     /**
      * federation/instances
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___instances'];
   };
@@ -1718,7 +1728,7 @@ export type paths = {
      * federation/show-instance
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___show-instance'];
   };
@@ -1727,14 +1737,14 @@ export type paths = {
      * federation/stats
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     get: operations['federation___stats'];
     /**
      * federation/stats
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___stats'];
   };
@@ -1743,7 +1753,7 @@ export type paths = {
      * federation/update-remote-user
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___update-remote-user'];
   };
@@ -1752,7 +1762,7 @@ export type paths = {
      * federation/users
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['federation___users'];
   };
@@ -1805,7 +1815,7 @@ export type paths = {
      * flash/featured
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['flash___featured'];
   };
@@ -2833,14 +2843,14 @@ export type paths = {
      * notes/featured
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     get: operations['notes___featured'];
     /**
      * notes/featured
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['notes___featured'];
   };
@@ -3039,6 +3049,15 @@ export type paths = {
      * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     post: operations['notes___user-list-timeline'];
+  };
+  '/notes/yami-timeline': {
+    /**
+     * notes/yami-timeline
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:account*
+     */
+    post: operations['notes___yami-timeline'];
   };
   '/notifications/create': {
     /**
@@ -3432,7 +3451,7 @@ export type paths = {
      * users
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['users'];
   };
@@ -3459,14 +3478,14 @@ export type paths = {
      * users/featured-notes
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     get: operations['users___featured-notes'];
     /**
      * users/featured-notes
      * @description No description provided.
      *
-     * **Credential required**: *No*
+     * **Credential required**: *Yes*
      */
     post: operations['users___featured-notes'];
   };
@@ -3757,6 +3776,11 @@ export type components = {
        * @example misskey.example.com
        */
       host: string | null;
+      /**
+       * @description User whom registeration is approved or not
+       * @default false
+       */
+      approved: boolean;
       /** Format: url */
       avatarUrl: string | null;
       avatarBlurhash: string | null;
@@ -3775,6 +3799,7 @@ export type components = {
       requireSigninToViewContents?: boolean;
       makeNotesFollowersOnlyBefore?: number | null;
       makeNotesHiddenBefore?: number | null;
+      isInYamiMode?: boolean;
       instance?: {
         name: string | null;
         softwareName: string | null;
@@ -3835,6 +3860,10 @@ export type components = {
       pinnedPageId: string | null;
       pinnedPage: components['schemas']['Page'] | null;
       publicReactions: boolean;
+      hideActivity: boolean;
+      hideProfileFiles: boolean;
+      /** @enum {string} */
+      notesVisibility: 'public' | 'followers' | 'private';
       /** @enum {string} */
       followingVisibility: 'public' | 'followers' | 'private';
       /** @enum {string} */
@@ -3846,6 +3875,7 @@ export type components = {
       twoFactorEnabled?: boolean;
       usePasswordLessLogin?: boolean;
       securityKeys?: boolean;
+      approved?: boolean;
       isFollowing?: boolean;
       isFollowed?: boolean;
       hasPendingFollowRequestFromYou?: boolean;
@@ -3879,6 +3909,7 @@ export type components = {
       /** @enum {string} */
       twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
       hideOnlineStatus: boolean;
+      hideSearchResult: boolean;
       hasUnreadSpecifiedNotes: boolean;
       hasUnreadMentions: boolean;
       hasUnreadAnnouncement: boolean;
@@ -4018,24 +4049,24 @@ export type components = {
           /** Format: misskey:id */
           userListId: string;
         }]>;
-				blocked?: OneOf<[{
-					/** @enum {string} */
-					type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
-				}, {
-					/** @enum {string} */
-					type: 'list';
-					/** Format: misskey:id */
-					userListId: string;
-				}]>;
-				unblocked?: OneOf<[{
-					/** @enum {string} */
-					type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
-				}, {
-					/** @enum {string} */
-					type: 'list';
-					/** Format: misskey:id */
-					userListId: string;
-				}]>;
+        blocked?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
+        unblocked?: OneOf<[{
+          /** @enum {string} */
+          type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+        }, {
+          /** @enum {string} */
+          type: 'list';
+          /** Format: misskey:id */
+          userListId: string;
+        }]>;
       };
       emailNotificationTypes: string[];
       achievements: {
@@ -4172,6 +4203,8 @@ export type components = {
             votes: number;
           }[];
       }) | null;
+      /** Format: date-time */
+      deleteAt?: string | null;
       emojis?: {
         [key: string]: string;
       };
@@ -4187,8 +4220,10 @@ export type components = {
         isSensitive: boolean;
         allowRenoteToExternal: boolean;
         userId: string | null;
+        propagateToTimelines: boolean;
       }) | null;
       localOnly?: boolean;
+      isNoteInYamiMode?: boolean;
       /** @enum {string|null} */
       reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
       reactionEmojis: {
@@ -4327,27 +4362,7 @@ export type components = {
       user: components['schemas']['UserLite'];
       /** Format: id */
       userId: string;
-    } | {
-	    /** Format: id */
-			id: string;
-			/** Format: date-time */
-			createdAt: string;
-			/** @enum {string} */
-			type: 'blocked';
-			user: components['schemas']['UserLite'];
-			/** Format: id */
-			userId: string;
-		} | {
-			/** Format: id */
-			id: string;
-			/** Format: date-time */
-			createdAt: string;
-			/** @enum {string} */
-			type: 'unblocked';
-			user: components['schemas']['UserLite'];
-				/** Format: id */
-				userId: string;
-	  } | {
+    } | ({
       /** Format: id */
       id: string;
       /** Format: date-time */
@@ -4358,7 +4373,7 @@ export type components = {
       /** Format: id */
       userId: string;
       message: string | null;
-    } | {
+    }) | {
       /** Format: id */
       id: string;
       /** Format: date-time */
@@ -4374,7 +4389,7 @@ export type components = {
       /** @enum {string} */
       type: 'achievementEarned';
       /** @enum {string} */
-      achievement: 'notes1' | 'notes10' | 'notes100' | 'notes500' | 'notes1000' | 'notes5000' | 'notes10000' | 'notes20000' | 'notes30000' | 'notes40000' | 'notes50000' | 'notes60000' | 'notes70000' | 'notes80000' | 'notes90000' | 'notes100000' | 'login3' | 'login7' | 'login15' | 'login30' | 'login60' | 'login100' | 'login200' | 'login300' | 'login400' | 'login500' | 'login600' | 'login700' | 'login800' | 'login900' | 'login1000' | 'passedSinceAccountCreated1' | 'passedSinceAccountCreated2' | 'passedSinceAccountCreated3' | 'loggedInOnBirthday' | 'loggedInOnNewYearsDay' | 'noteClipped1' | 'noteFavorited1' | 'myNoteFavorited1' | 'profileFilled' | 'markedAsCat' | 'following1' | 'following10' | 'following50' | 'following100' | 'following300' | 'followers1' | 'followers10' | 'followers50' | 'followers100' | 'followers300' | 'followers500' | 'followers1000' | 'collectAchievements30' | 'viewAchievements3min' | 'iLoveMisskey' | 'foundTreasure' | 'client30min' | 'client60min' | 'noteDeletedWithin1min' | 'postedAtLateNight' | 'postedAt0min0sec' | 'selfQuote' | 'htl20npm' | 'viewInstanceChart' | 'outputHelloWorldOnScratchpad' | 'open3windows' | 'driveFolderCircularReference' | 'reactWithoutRead' | 'clickedClickHere' | 'justPlainLucky' | 'setNameToSyuilo' | 'cookieClicked' | 'brainDiver' | 'smashTestNotificationButton' | 'tutorialCompleted' | 'bubbleGameExplodingHead' | 'bubbleGameDoubleExplodingHead';
+      achievement: 'notes1' | 'notes10' | 'notes100' | 'notes500' | 'notes1000' | 'notes5000' | 'notes10000' | 'notes20000' | 'notes30000' | 'notes40000' | 'notes50000' | 'notes60000' | 'notes70000' | 'notes80000' | 'notes90000' | 'notes100000' | 'login3' | 'login7' | 'login15' | 'login30' | 'login60' | 'login100' | 'login200' | 'login300' | 'login400' | 'login500' | 'login600' | 'login700' | 'login800' | 'login900' | 'login1000' | 'passedSinceAccountCreated1' | 'passedSinceAccountCreated2' | 'passedSinceAccountCreated3' | 'loggedInOnBirthday' | 'loggedInOnNewYearsDay' | 'noteClipped1' | 'noteFavorited1' | 'myNoteFavorited1' | 'profileFilled' | 'markedAsCat' | 'markedAsYamiModeUser' | 'following1' | 'following10' | 'following50' | 'following100' | 'following300' | 'followers1' | 'followers10' | 'followers50' | 'followers100' | 'followers300' | 'followers500' | 'followers1000' | 'collectAchievements30' | 'viewAchievements3min' | 'iLoveMisskey' | 'foundTreasure' | 'client30min' | 'client60min' | 'noteDeletedWithin1min' | 'postedAtLateNight' | 'postedAt0min0sec' | 'selfQuote' | 'htl20npm' | 'viewInstanceChart' | 'outputHelloWorldOnScratchpad' | 'open3windows' | 'driveFolderCircularReference' | 'reactWithoutRead' | 'clickedClickHere' | 'justPlainLucky' | 'setNameToSyuilo' | 'cookieClicked' | 'brainDiver' | 'smashTestNotificationButton' | 'tutorialCompleted' | 'bubbleGameExplodingHead' | 'bubbleGameDoubleExplodingHead';
     }) | ({
       /** Format: id */
       id: string;
@@ -4431,6 +4446,26 @@ export type components = {
       createdAt: string;
       /** @enum {string} */
       type: 'test';
+    } | {
+      /** Format: id */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** @enum {string} */
+      type: 'blocked';
+      user: components['schemas']['UserLite'];
+      /** Format: id */
+      userId: string;
+    } | {
+      /** Format: id */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** @enum {string} */
+      type: 'unblocked';
+      user: components['schemas']['UserLite'];
+      /** Format: id */
+      userId: string;
     };
     DriveFile: {
       /**
@@ -4654,6 +4689,7 @@ export type components = {
       notesCount: number;
       isSensitive: boolean;
       allowRenoteToExternal: boolean;
+      propagateToTimelines: boolean;
       isFollowing?: boolean;
       isFavorited?: boolean;
       pinnedNotes?: components['schemas']['Note'][];
@@ -4750,6 +4786,7 @@ export type components = {
       /** Format: date-time */
       latestRequestReceivedAt: string | null;
       moderationNote?: string | null;
+      reversiVersion?: string | null;
     };
     GalleryPost: {
       /**
@@ -4940,16 +4977,18 @@ export type components = {
     RolePolicies: {
       gtlAvailable: boolean;
       ltlAvailable: boolean;
+      yamiTlAvailable: boolean;
       canPublicNote: boolean;
       mentionLimit: number;
       canInvite: boolean;
+      canImportNotes: boolean;
       inviteLimit: number;
       inviteLimitCycle: number;
       inviteExpirationTime: number;
       canManageCustomEmojis: boolean;
       canManageAvatarDecorations: boolean;
       canSearchNotes: boolean;
-			canSearchUsers: boolean;
+      canSearchUsers: boolean;
       canUseTranslator: boolean;
       canHideAds: boolean;
       driveCapacityMb: number;
@@ -4965,10 +5004,12 @@ export type components = {
       userEachUserListsLimit: number;
       rateLimitFactor: number;
       avatarDecorationLimit: number;
-			canChangeQuoteNotificationSetting: boolean;
-			canChangeUnfollowNotificationSetting: boolean;
-			canChangeBlockedNotificationSetting: boolean;
-			canChangeUnblockedNotificationSetting: boolean;
+      canChangeQuoteNotificationSetting: boolean;
+      canChangeUnfollowNotificationSetting: boolean;
+      canChangeBlockedNotificationSetting: boolean;
+      canChangeUnblockedNotificationSetting: boolean;
+      canFollow: boolean;
+      canFollowed: boolean;
       canImportAntennas: boolean;
       canImportBlocking: boolean;
       canImportFollowing: boolean;
@@ -5068,6 +5109,8 @@ export type components = {
       defaultLightTheme: string | null;
       disableRegistration: boolean;
       emailRequiredForSignup: boolean;
+      /** @default false */
+      approvalRequiredForSignup: boolean;
       enableHcaptcha: boolean;
       hcaptchaSiteKey: string | null;
       enableMcaptcha: boolean;
@@ -5121,6 +5164,7 @@ export type components = {
        * @enum {string}
        */
       noteSearchableScope: 'local' | 'global';
+      reversiVersion: string;
       maxFileSize: number;
       /** @enum {string} */
       federation: 'all' | 'specified' | 'none';
@@ -5131,6 +5175,7 @@ export type components = {
         emailRequiredForSignup: boolean;
         localTimeline: boolean;
         globalTimeline: boolean;
+        yamiTimeline: boolean;
         hcaptcha: boolean;
         turnstile: boolean;
         recaptcha: boolean;
@@ -6203,6 +6248,59 @@ export type operations = {
           silence?: boolean;
           needConfirmationToRead?: boolean;
           isActive?: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/approve-user
+   * @description No description provided.
+   *
+   * **Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.
+   * **Credential required**: *Yes* / **Permission**: *write:admin:approve-account*
+   */
+  'admin___approve-user': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          userId: string;
         };
       };
     };
@@ -8277,6 +8375,7 @@ export type operations = {
             cacheRemoteFiles: boolean;
             cacheRemoteSensitiveFiles: boolean;
             emailRequiredForSignup: boolean;
+            approvalRequiredForSignup: boolean;
             enableHcaptcha: boolean;
             hcaptchaSiteKey: string | null;
             enableMcaptcha: boolean;
@@ -9816,6 +9915,24 @@ export type operations = {
                 /** Format: misskey:id */
                 userListId: string;
               }]>;
+              blocked?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
+              unblocked?: OneOf<[{
+                /** @enum {string} */
+                type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+              }, {
+                /** @enum {string} */
+                type: 'list';
+                /** Format: misskey:id */
+                userListId: string;
+              }]>;
               receiveFollowRequest?: OneOf<[{
                 /** @enum {string} */
                 type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
@@ -9885,6 +10002,7 @@ export type operations = {
                 expiresAt: string | null;
                 roleId: string;
               })[];
+            signupReason: string | null;
           };
         };
       };
@@ -9940,7 +10058,7 @@ export type operations = {
            * @default all
            * @enum {string}
            */
-          state?: 'all' | 'alive' | 'available' | 'admin' | 'moderator' | 'adminOrModerator' | 'suspended';
+          state?: 'all' | 'alive' | 'available' | 'admin' | 'moderator' | 'adminOrModerator' | 'suspended' | 'pending' | 'approved';
           /**
            * @default combined
            * @enum {string}
@@ -10638,6 +10756,7 @@ export type operations = {
           cacheRemoteFiles?: boolean;
           cacheRemoteSensitiveFiles?: boolean;
           emailRequiredForSignup?: boolean;
+          approvalRequiredForSignup?: boolean;
           enableHcaptcha?: boolean;
           hcaptchaSiteKey?: string | null;
           hcaptchaSecretKey?: string | null;
@@ -12058,6 +12177,8 @@ export type operations = {
           color?: string;
           isSensitive?: boolean | null;
           allowRenoteToExternal?: boolean | null;
+          /** @default false */
+          propagateToTimelines?: boolean;
         };
       };
     };
@@ -12540,7 +12661,7 @@ export type operations = {
    * channels/timeline
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   channels___timeline: {
     requestBody: {
@@ -12725,6 +12846,7 @@ export type operations = {
           color?: string;
           isSensitive?: boolean | null;
           allowRenoteToExternal?: boolean | null;
+          propagateToTimelines?: boolean | null;
         };
       };
     };
@@ -15606,7 +15728,7 @@ export type operations = {
    * federation/followers
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   federation___followers: {
     requestBody: {
@@ -15665,7 +15787,7 @@ export type operations = {
    * federation/following
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   federation___following: {
     requestBody: {
@@ -15724,7 +15846,7 @@ export type operations = {
    * federation/instances
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   federation___instances: {
     requestBody: {
@@ -15791,7 +15913,7 @@ export type operations = {
    * federation/show-instance
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   'federation___show-instance': {
     requestBody: {
@@ -15848,7 +15970,7 @@ export type operations = {
    * federation/stats
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   federation___stats: {
     requestBody: {
@@ -15907,7 +16029,7 @@ export type operations = {
    * federation/update-remote-user
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   'federation___update-remote-user': {
     requestBody: {
@@ -15959,7 +16081,7 @@ export type operations = {
    * federation/users
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   federation___users: {
     requestBody: {
@@ -16301,7 +16423,7 @@ export type operations = {
    * flash/featured
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   flash___featured: {
     requestBody: {
@@ -18895,7 +19017,7 @@ export type operations = {
       content: {
         'application/json': {
           /** @enum {string} */
-          name: 'notes1' | 'notes10' | 'notes100' | 'notes500' | 'notes1000' | 'notes5000' | 'notes10000' | 'notes20000' | 'notes30000' | 'notes40000' | 'notes50000' | 'notes60000' | 'notes70000' | 'notes80000' | 'notes90000' | 'notes100000' | 'login3' | 'login7' | 'login15' | 'login30' | 'login60' | 'login100' | 'login200' | 'login300' | 'login400' | 'login500' | 'login600' | 'login700' | 'login800' | 'login900' | 'login1000' | 'passedSinceAccountCreated1' | 'passedSinceAccountCreated2' | 'passedSinceAccountCreated3' | 'loggedInOnBirthday' | 'loggedInOnNewYearsDay' | 'noteClipped1' | 'noteFavorited1' | 'myNoteFavorited1' | 'profileFilled' | 'markedAsCat' | 'following1' | 'following10' | 'following50' | 'following100' | 'following300' | 'followers1' | 'followers10' | 'followers50' | 'followers100' | 'followers300' | 'followers500' | 'followers1000' | 'collectAchievements30' | 'viewAchievements3min' | 'iLoveMisskey' | 'foundTreasure' | 'client30min' | 'client60min' | 'noteDeletedWithin1min' | 'postedAtLateNight' | 'postedAt0min0sec' | 'selfQuote' | 'htl20npm' | 'viewInstanceChart' | 'outputHelloWorldOnScratchpad' | 'open3windows' | 'driveFolderCircularReference' | 'reactWithoutRead' | 'clickedClickHere' | 'justPlainLucky' | 'setNameToSyuilo' | 'cookieClicked' | 'brainDiver' | 'smashTestNotificationButton' | 'tutorialCompleted' | 'bubbleGameExplodingHead' | 'bubbleGameDoubleExplodingHead';
+          name: 'notes1' | 'notes10' | 'notes100' | 'notes500' | 'notes1000' | 'notes5000' | 'notes10000' | 'notes20000' | 'notes30000' | 'notes40000' | 'notes50000' | 'notes60000' | 'notes70000' | 'notes80000' | 'notes90000' | 'notes100000' | 'login3' | 'login7' | 'login15' | 'login30' | 'login60' | 'login100' | 'login200' | 'login300' | 'login400' | 'login500' | 'login600' | 'login700' | 'login800' | 'login900' | 'login1000' | 'passedSinceAccountCreated1' | 'passedSinceAccountCreated2' | 'passedSinceAccountCreated3' | 'loggedInOnBirthday' | 'loggedInOnNewYearsDay' | 'noteClipped1' | 'noteFavorited1' | 'myNoteFavorited1' | 'profileFilled' | 'markedAsCat' | 'markedAsYamiModeUser' | 'following1' | 'following10' | 'following50' | 'following100' | 'following300' | 'followers1' | 'followers10' | 'followers50' | 'followers100' | 'followers300' | 'followers500' | 'followers1000' | 'collectAchievements30' | 'viewAchievements3min' | 'iLoveMisskey' | 'foundTreasure' | 'client30min' | 'client60min' | 'noteDeletedWithin1min' | 'postedAtLateNight' | 'postedAt0min0sec' | 'selfQuote' | 'htl20npm' | 'viewInstanceChart' | 'outputHelloWorldOnScratchpad' | 'open3windows' | 'driveFolderCircularReference' | 'reactWithoutRead' | 'clickedClickHere' | 'justPlainLucky' | 'setNameToSyuilo' | 'cookieClicked' | 'brainDiver' | 'smashTestNotificationButton' | 'tutorialCompleted' | 'bubbleGameExplodingHead' | 'bubbleGameDoubleExplodingHead';
         };
       };
     };
@@ -19959,8 +20081,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-					includeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'blocked' | 'unblocked' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'blocked' | 'unblocked' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+          includeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'blocked' | 'unblocked' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+          excludeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'blocked' | 'unblocked' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
         };
       };
     };
@@ -20027,8 +20149,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-          includeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'blocked' | 'unblocked' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'blocked' | 'unblocked' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
+          includeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'blocked' | 'unblocked' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
+          excludeTypes?: ('note' | 'follow' | 'unfollow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'blocked' | 'unblocked' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'achievementEarned' | 'exportCompleted' | 'login' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
         };
       };
     };
@@ -21043,9 +21165,13 @@ export type operations = {
           isLocked?: boolean;
           isExplorable?: boolean;
           hideOnlineStatus?: boolean;
+          hideSearchResult?: boolean;
           publicReactions?: boolean;
+          hideActivity?: boolean;
+          hideProfileFiles?: boolean;
           carefulBot?: boolean;
           autoAcceptFollowed?: boolean;
+          autoRejectFollowRequest?: boolean;
           noCrawle?: boolean;
           preventAiLearning?: boolean;
           requireSigninToViewContents?: boolean;
@@ -21053,10 +21179,13 @@ export type operations = {
           makeNotesHiddenBefore?: number | null;
           isBot?: boolean;
           isCat?: boolean;
+          isInYamiMode?: boolean;
           injectFeaturedNote?: boolean;
           receiveAnnouncementEmail?: boolean;
           alwaysMarkNsfw?: boolean;
           autoSensitive?: boolean;
+          /** @enum {string} */
+          notesVisibility?: 'public' | 'followers' | 'private';
           /** @enum {string} */
           followingVisibility?: 'public' | 'followers' | 'private';
           /** @enum {string} */
@@ -21131,6 +21260,24 @@ export type operations = {
               userListId: string;
             }]>;
             pollEnded?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            blocked?: OneOf<[{
+              /** @enum {string} */
+              type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+            }, {
+              /** @enum {string} */
+              type: 'list';
+              /** Format: misskey:id */
+              userListId: string;
+            }]>;
+            unblocked?: OneOf<[{
               /** @enum {string} */
               type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
             }, {
@@ -22501,6 +22648,10 @@ export type operations = {
             expiresAt?: number | null;
             expiredAfter?: number | null;
           }) | null;
+          scheduledDelete?: ({
+            deleteAt?: number | null;
+            deleteAfter?: number | null;
+          }) | null;
         };
       };
     };
@@ -22723,7 +22874,7 @@ export type operations = {
    * notes/featured
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   notes___featured: {
     requestBody: {
@@ -22799,6 +22950,8 @@ export type operations = {
           untilId?: string;
           sinceDate?: number;
           untilDate?: number;
+          /** @default false */
+          remoteOnly?: boolean;
         };
       };
     };
@@ -22873,6 +23026,8 @@ export type operations = {
           withRenotes?: boolean;
           /** @default false */
           withReplies?: boolean;
+          /** @default false */
+          localOnly?: boolean;
         };
       };
     };
@@ -24040,6 +24195,80 @@ export type operations = {
            * @default false
            */
           withFiles?: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['Note'][];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * notes/yami-timeline
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:account*
+   */
+  'notes___yami-timeline': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+          sinceDate?: number;
+          untilDate?: number;
+          /** @default false */
+          allowPartial?: boolean;
+          /** @default true */
+          includeMyRenotes?: boolean;
+          /** @default true */
+          includeRenotedMyNotes?: boolean;
+          /** @default true */
+          includeLocalRenotes?: boolean;
+          /** @default false */
+          withFiles?: boolean;
+          /** @default true */
+          withRenotes?: boolean;
+          /** @default false */
+          localOnly?: boolean;
         };
       };
     };
@@ -25440,6 +25669,8 @@ export type operations = {
           noIrregularRules?: boolean;
           /** @default false */
           multiple?: boolean;
+          /** @default false */
+          accept_only?: boolean;
         };
       };
     };
@@ -26353,7 +26584,7 @@ export type operations = {
    * users
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   users: {
     requestBody: {
@@ -26543,7 +26774,7 @@ export type operations = {
    * users/featured-notes
    * @description No description provided.
    *
-   * **Credential required**: *No*
+   * **Credential required**: *Yes*
    */
   'users___featured-notes': {
     requestBody: {

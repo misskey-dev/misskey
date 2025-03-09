@@ -48,7 +48,8 @@
   },
   "resolutions": {
     "chokidar": "3.5.3",
-    "lodash": "4.17.21"
+    "lodash": "4.17.21",
+    "eslint": "8.57.1"
   },
   "dependencies": {
     "cssnano": "6.1.2",
