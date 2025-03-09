@@ -83,13 +83,10 @@ export const PREF_DEF = {
 			'notifications',
 			'clips',
 			'drive',
-			'followRequests',
 			'-',
 			'explore',
 			'announcements',
 			'search',
-			'-',
-			'ui',
 		],
 	},
 	statusbars: {
