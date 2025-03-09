@@ -28,10 +28,6 @@ on:
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - .github/workflows/lint.yml
-
-env:
-  COREPACK_DEFAULT_TO_LATEST: 0
-
 jobs:
   pnpm_install:
     runs-on: ubuntu-latest
@@ -40,12 +36,12 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
-    - uses: pnpm/action-setup@v4
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.1.0
     - uses: actions/setup-node@v4.2.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
 
   lint:
@@ -71,12 +67,12 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
-    - uses: pnpm/action-setup@v4
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.1.0
     - uses: actions/setup-node@v4.2.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Restore eslint cache
       uses: actions/cache@v4.2.2
@@ -101,12 +97,12 @@ jobs:
       with:
         fetch-depth: 0
         submodules: true
-    - uses: pnpm/action-setup@v4
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.1.0
     - uses: actions/setup-node@v4.2.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - run: pnpm --filter misskey-js run build
       if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'sw' }}

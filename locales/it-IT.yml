@@ -1313,6 +1313,8 @@ confirmOnReact: "Confermare le reazioni"
 reactAreYouSure: "Vuoi davvero reagire con {emoji} ?"
 markAsSensitiveConfirm: "Vuoi davvero indicare questo contenuto multimediale come esplicito?"
 unmarkAsSensitiveConfirm: "Vuoi davvero indicare come non esplicito il contenuto multimediale?"
+preferences: "Preferenze"
+accessibility: "Accessibilità"
 _accountSettings:
   requireSigninToViewContents: "Per vedere il contenuto, è necessaria l'iscrizione"
   requireSigninToViewContentsDescription1: "Richiedere l'iscrizione per visualizzare tutte le Note e gli altri contenuti che hai creato. Probabilmente l'effetto è impedire la raccolta di informazioni da parte dei bot crawler."
@@ -1475,7 +1477,7 @@ _serverSettings:
 _accountMigration:
   moveFrom: "Migra un altro profilo dentro a questo"
   moveFromSub: "Crea un alias verso un altro profilo remoto"
-  moveFromLabel: "Profilo da cui migrare #{n}"
+  moveFromLabel: "Profilo da cui migrare n. {n}"
   moveFromDescription: "Se desideri spostare i Follower da un altro profilo a questo, devi prima creare un alias qui. Assicurati averlo creato PRIMA di eseguire l'attività! Inserisci l'indirizzo del profilo mittente in questo modo: @persona@vecchia.istanza.it"
   moveTo: "Migrare questo profilo verso un un altro"
   moveToLabel: "Profilo verso cui migrare"
