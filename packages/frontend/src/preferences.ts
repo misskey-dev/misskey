@@ -4,14 +4,12 @@
  */
 
 import { v4 as uuid } from 'uuid';
-import { apiUrl } from '@@/js/config.js';
-import * as Misskey from 'misskey-js';
 import type { PreferencesProfile } from '@/preferences/profile.js';
+import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { ProfileManager } from '@/preferences/profile.js';
 import { store } from '@/store.js';
 import { $i } from '@/account.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 
 const TAB_ID = uuid();
 
@@ -69,62 +67,17 @@ document.addEventListener('visibilitychange', () => {
 	}
 });
 
-const BACKUP_FOLDER_NAME = 'Misskey Preferences Backups';
-
 let latestBackupAt = 0;
 
-async function cloudBackup() {
-	if ($i == null) return;
-
-	const fileName = `${profileManager.profile.name || profileManager.profile.id}.misskeypreferences`;
-
-	let folder = (await misskeyApi('drive/folders/find', {
-		name: BACKUP_FOLDER_NAME,
-	}))[0] as Misskey.entities.DriveFolder | null;
-
-	let existingFiles: Misskey.entities.DriveFile[] = [];
-
-	if (folder) {
-		existingFiles = await misskeyApi('drive/files/find', {
-			name: fileName,
-			folderId: folder.id,
-		});
-	} else {
-		folder = await misskeyApi('drive/folders/create', {
-			name: BACKUP_FOLDER_NAME,
-		});
-	}
-
-	const blob = new Blob([JSON.stringify(profileManager.profile)], { type: 'text/plain' });
-	const formData = new FormData();
-	formData.append('file', blob);
-	formData.append('name', fileName);
-	formData.append('isSensitive', 'false');
-	formData.append('i', $i.token);
-	formData.append('folderId', folder!.id);
-	window.fetch(apiUrl + '/drive/files/create', {
-		method: 'POST',
-		body: formData,
-	}).then(async res => {
-		if (res.ok) {
-			res.json().then((created: Misskey.entities.DriveFile) => {
-				for (const file of existingFiles.filter(f => f.id !== created.id)) { // ファイルハッシュが同じ場合、既存のファイルが返ってくる場合があるのでそれは除外
-					misskeyApi('drive/files/delete', {
-						fileId: file.id,
-					});
-				}
-			});
-			latestBackupAt = Date.now();
-		}
-	});
-}
-
 window.setInterval(() => {
+	if ($i == null) return;
 	if (!store.state.enablePreferencesAutoCloudBackup) return;
 	if (document.visibilityState !== 'visible') return; // 同期されていない古い値がバックアップされるのを防ぐ
 	if (profileManager.profile.modifiedAt <= latestBackupAt) return;
 
-	cloudBackup();
+	cloudBackup().then(() => {
+		latestBackupAt = Date.now();
+	});
 }, 1000 * 60 * 3);
 
 if (_DEV_) {

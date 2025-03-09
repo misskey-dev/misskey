@@ -5302,10 +5302,24 @@ export interface Locale extends ILocale {
      * 名前はありません
      */
     "noName": string;
-    /**
-     * 自動バックアップ
-     */
-    "autoBackup": string;
+    "_preferencesBackup": {
+        /**
+         * 自動バックアップ
+         */
+        "autoBackup": string;
+        /**
+         * バックアップから復元
+         */
+        "restoreFromBackup": string;
+        /**
+         * バックアップが見つかりませんでした
+         */
+        "noBackupsFoundTitle": string;
+        /**
+         * 自動で作成されたバックアップは見つかりませんでしたが、バックアップファイルを手動で保存している場合、それをインポートして復元することはできます。
+         */
+        "noBackupsFoundDescription": string;
+    };
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

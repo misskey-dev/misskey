@@ -1321,7 +1321,12 @@ resetToDefaultValue: "初期値に戻す"
 overrideByAccount: "アカウントで上書き"
 untitled: "無題"
 noName: "名前はありません"
-autoBackup: "自動バックアップ"
+
+_preferencesBackup:
+  autoBackup: "自動バックアップ"
+  restoreFromBackup: "バックアップから復元"
+  noBackupsFoundTitle: "バックアップが見つかりませんでした"
+  noBackupsFoundDescription: "自動で作成されたバックアップは見つかりませんでしたが、バックアップファイルを手動で保存している場合、それをインポートして復元することはできます。"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
