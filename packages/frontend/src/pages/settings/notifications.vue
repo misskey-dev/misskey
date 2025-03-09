@@ -89,12 +89,31 @@ const userLists = await misskeyApi('users/lists/list');
 const canQuote = $i.policies.canChangeQuoteNotificationSetting;
 
 const filteredNotificationTypes = computed(() => {
-	return notificationTypes.filter(type => {
-		if (type === 'quote' && !canQuote) {
-			return false; // canChangeQuoteNotificationSettingがfalseの場合、quoteを除外
-		}
-		return !nonConfigurableNotificationTypes.includes(type); // その他のタイプもフィルタリング
-	});
+    return notificationTypes.filter(type => {
+        // 設定不可能な通知タイプを除外
+        if (nonConfigurableNotificationTypes.includes(type)) {
+            return false;
+        }
+
+        // 各通知タイプに対応するポリシーに基づいたフィルタリング
+        if (type === 'quote' && !$i.policies.canChangeQuoteNotificationSetting) {
+            return false;
+        }
+
+        if (type === 'unfollow' && !$i.policies.canChangeUnfollowNotificationSetting) {
+            return false;
+        }
+
+        if (type === 'blocked' && !$i.policies.canChangeBlockedNotificationSetting) {
+            return false;
+        }
+
+        if (type === 'unblocked' && !$i.policies.canChangeUnblockedNotificationSetting) {
+            return false;
+        }
+
+        return true;
+    });
 });
 
 // 通知設定の値を取得するヘルパー関数
