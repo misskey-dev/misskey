@@ -145,7 +145,7 @@ watch(rawSearchQuery, (value) => {
 			if (matched) {
 				searchResult.value.push({
 					id: item.id,
-					path: item.path ?? parents.find((x) => x.path != null)?.path ?? '/',
+					path: item.path ?? parents.find((x) => x.path != null)?.path ?? '/', // never gets `/`
 					label: item.label,
 					parentLabels: parents.map((x) => x.label).toReversed(),
 					icon: item.icon ?? parents.find((x) => x.icon != null)?.icon,
