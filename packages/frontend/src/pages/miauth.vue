@@ -36,8 +36,8 @@ import MkAnimBg from '@/components/MkAnimBg.vue';
 import MkAuthConfirm from '@/components/MkAuthConfirm.vue';
 
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 
 const props = defineProps<{
 	session: string;

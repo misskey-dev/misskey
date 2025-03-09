@@ -37,7 +37,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { selectFile } from '@/scripts/select-file.js';
+import { chooseFileFromPc } from '@/utility/select-file.js';
 import * as os from '@/os.js';
 import { signinRequired, updateAccountPartial } from '@/account.js';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';

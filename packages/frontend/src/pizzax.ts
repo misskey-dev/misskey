@@ -9,12 +9,12 @@ import { onUnmounted, ref, watch } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
 import type { Ref } from 'vue';
 import { $i } from '@/account.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { get, set } from '@/scripts/idb-proxy.js';
-import { defaultStore } from '@/store.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { get, set } from '@/utility/idb-proxy.js';
+import { store } from '@/store.js';
 import { useStream } from '@/stream.js';
-import { deepClone } from '@/scripts/clone.js';
-import { deepMerge } from '@/scripts/merge.js';
+import { deepClone } from '@/utility/clone.js';
+import { deepMerge } from '@/utility/merge.js';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -148,7 +148,7 @@ export class Storage<T extends StateDef> {
 			if ($i) {
 				// api関数と循環参照なので一応setTimeoutしておく
 				window.setTimeout(async () => {
-					await defaultStore.ready;
+					await store.ready;
 
 					misskeyApi('i/registry/get-all', { scope: ['client', this.key] })
 						.then(kvs => {

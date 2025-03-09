@@ -1,10 +1,11 @@
-## Unreleased
+## 2025.3.2
 
 ### General
 -
 
 ### Client
--
+- Feat: 設定の管理が強化されました
+  - 自動でバックアップされるように
 
 ### Server
 -

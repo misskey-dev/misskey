@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_panel" :class="$style.root">
-	<div :class="$style.banner" :style="user.bannerUrl ? `background-image: url(${defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` : ''"></div>
+	<div :class="$style.banner" :style="user.bannerUrl ? `background-image: url(${prefer.s.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` : ''"></div>
 	<MkAvatar :class="$style.avatar" :user="user" indicator/>
 	<div :class="$style.title">
 		<MkA :class="$style.name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
@@ -40,9 +40,9 @@ import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { defaultStore } from '@/store.js';
+import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/utility/isFfVisibleForMe.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { prefer } from '@/preferences.js';
 
 defineProps<{
 	user: Misskey.entities.UserDetailed;

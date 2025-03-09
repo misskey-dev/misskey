@@ -69,9 +69,9 @@ import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
 
 import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
-import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
+import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';

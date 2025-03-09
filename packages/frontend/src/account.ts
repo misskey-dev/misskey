@@ -8,13 +8,13 @@ import * as Misskey from 'misskey-js';
 import { apiUrl } from '@@/js/config.js';
 import type { MenuItem, MenuButton } from '@/types/menu.js';
 import { defaultMemoryStorage } from '@/memory-storage';
-import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
+import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { del, get, set } from '@/scripts/idb-proxy.js';
+import { del, get, set } from '@/utility/idb-proxy.js';
 import { waiting, popup, popupMenu, success, alert } from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { unisonReload, reloadChannel } from '@/scripts/unison-reload.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { unisonReload, reloadChannel } from '@/utility/unison-reload.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 

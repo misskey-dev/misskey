@@ -49,7 +49,7 @@ import { entities } from 'misskey-js';
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import XRecipient from './notification-recipient.item.vue';
 import XHeader from '@/pages/admin/_header_.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';

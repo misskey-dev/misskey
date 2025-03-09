@@ -57,8 +57,8 @@ import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { userPage } from '@/filters/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -67,15 +67,15 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
 import { signinRequired } from '@/account.js';
-import { defaultStore } from '@/store.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { mainRouter } from '@/router/main.js';
+import { prefer } from '@/preferences.js';
 
 const $i = signinRequired();
 
 const {
 	enableInfiniteScroll,
-} = defaultStore.reactiveState;
+} = prefer.r;
 
 const props = defineProps<{
 	listId: string;

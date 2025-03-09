@@ -170,17 +170,17 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { selectFile } from '@/scripts/select-file.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { selectFile } from '@/utility/select-file.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 
 const excludeMutingUsers = ref(false);
 const excludeInactiveUsers = ref(false);
+const withReplies = ref(store.state.defaultWithReplies);
 const noteType = ref(null);
-const withReplies = ref(defaultStore.state.defaultWithReplies);
 
 const onExportSuccess = () => {
 	os.alert({

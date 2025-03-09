@@ -42,9 +42,9 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import * as os from '@/os.js';
-import { lookupFile } from '@/scripts/admin-lookup.js';
+import { lookupFile } from '@/utility/admin-lookup.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 
 const origin = ref('local');
 const type = ref<string | null>(null);

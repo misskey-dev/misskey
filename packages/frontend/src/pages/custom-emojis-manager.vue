@@ -81,12 +81,12 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkRemoteEmojiEditDialog from '@/components/MkRemoteEmojiEditDialog.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSplit from '@/components/form/split.vue';
-import { selectFile } from '@/scripts/select-file.js';
+import { selectFile } from '@/utility/select-file.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 

@@ -66,7 +66,7 @@ import {
 import * as os from '@/os.js';
 import { createColumn } from '@/components/grid/column.js';
 import { createRow, defaultGridRowSetting, resetRow } from '@/components/grid/row.js';
-import { handleKeyEvent } from '@/scripts/key-event.js';
+import { handleKeyEvent } from '@/utility/key-event.js';
 
 import type { DataSource, GridSetting, GridState, Size } from '@/components/grid/grid.js';
 import type { CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';

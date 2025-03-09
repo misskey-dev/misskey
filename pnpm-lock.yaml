@@ -875,7 +875,7 @@ importers:
         specifier: next
         version: 4.1.0(vue@3.5.13(typescript@5.8.2))
       wanakana:
-        specifier: ^5.3.1
+        specifier: 5.3.1
         version: 5.3.1
     devDependencies:
       '@misskey-dev/summaly':

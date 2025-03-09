@@ -107,8 +107,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 import { useStream } from '@/stream.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -118,8 +118,8 @@ import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
 import { useInterval } from '@@/js/use-interval.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
-import * as sound from '@/scripts/sound.js';
+import { pleaseLogin } from '@/utility/please-login.js';
+import * as sound from '@/utility/sound.js';
 
 const myGamesPagination = {
 	endpoint: 'reversi/games' as const,

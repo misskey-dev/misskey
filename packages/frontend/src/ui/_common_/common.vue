@@ -17,18 +17,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <TransitionGroup
 	tag="div"
 	:class="[$style.notifications, {
-		[$style.notificationsPosition_leftTop]: defaultStore.state.notificationPosition === 'leftTop',
-		[$style.notificationsPosition_leftBottom]: defaultStore.state.notificationPosition === 'leftBottom',
-		[$style.notificationsPosition_rightTop]: defaultStore.state.notificationPosition === 'rightTop',
-		[$style.notificationsPosition_rightBottom]: defaultStore.state.notificationPosition === 'rightBottom',
-		[$style.notificationsStackAxis_vertical]: defaultStore.state.notificationStackAxis === 'vertical',
-		[$style.notificationsStackAxis_horizontal]: defaultStore.state.notificationStackAxis === 'horizontal',
+		[$style.notificationsPosition_leftTop]: prefer.s.notificationPosition === 'leftTop',
+		[$style.notificationsPosition_leftBottom]: prefer.s.notificationPosition === 'leftBottom',
+		[$style.notificationsPosition_rightTop]: prefer.s.notificationPosition === 'rightTop',
+		[$style.notificationsPosition_rightBottom]: prefer.s.notificationPosition === 'rightBottom',
+		[$style.notificationsStackAxis_vertical]: prefer.s.notificationStackAxis === 'vertical',
+		[$style.notificationsStackAxis_horizontal]: prefer.s.notificationStackAxis === 'horizontal',
 	}]"
-	:moveClass="defaultStore.state.animation ? $style.transition_notification_move : ''"
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
+	:moveClass="prefer.s.animation ? $style.transition_notification_move : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_notification_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_notification_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_notification_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_notification_leaveTo : ''"
 >
 	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
 		<XNotification :notification="notification"/>
@@ -50,13 +50,13 @@ import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
 import { popups } from '@/os.js';
-import { pendingApiRequestsCount } from '@/scripts/misskey-api.js';
-import { uploads } from '@/scripts/upload.js';
-import * as sound from '@/scripts/sound.js';
+import { pendingApiRequestsCount } from '@/utility/misskey-api.js';
+import { uploads } from '@/utility/upload.js';
+import * as sound from '@/utility/sound.js';
 import { $i } from '@/account.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));

@@ -8,7 +8,7 @@
 
 import { defineAsyncComponent, ref } from 'vue';
 import type { Directive } from 'vue';
-import { isTouchUsing } from '@/scripts/touch.js';
+import { isTouchUsing } from '@/utility/touch.js';
 import { popup, alert } from '@/os.js';
 
 const start = isTouchUsing ? 'touchstart' : 'mouseenter';

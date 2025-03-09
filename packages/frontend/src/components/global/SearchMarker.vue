@@ -36,7 +36,7 @@ const rootEl = useTemplateRef('root');
 const rootElMutationObserver = new MutationObserver(() => {
 	checkChildren();
 });
-const injectedSearchMarkerId = inject<Ref<string | null>>('inAppSearchMarkerId');
+const injectedSearchMarkerId = inject<Ref<string | null> | null>('inAppSearchMarkerId', null);
 const searchMarkerId = computed(() => injectedSearchMarkerId?.value ?? window.location.hash.slice(1));
 const highlighted = ref(props.markerId === searchMarkerId.value);
 

@@ -143,7 +143,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, ref, useCssModule } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkRemoteEmojiEditDialog from '@/components/MkRemoteEmojiEditDialog.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -152,7 +152,7 @@ import { emptyStrToUndefined, gridSortOrderKeys } from '@/pages/admin/custom-emo
 import MkFolder from '@/components/MkFolder.vue';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import * as os from '@/os.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { deviceKind } from '@/utility/device-kind.js';
 import MkPagingButtons from '@/components/MkPagingButtons.vue';
 import MkSortOrderEditor from '@/components/MkSortOrderEditor.vue';
 import { useLoading } from '@/components/hook/useLoading.js';

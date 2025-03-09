@@ -90,7 +90,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import RouterView from '@/components/global/RouterView.vue';
 import { useRouterFactory } from '@/router/supplier';
 import MkTextarea from '@/components/MkTextarea.vue';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 const props = defineProps<{
 	report: Misskey.entities.AdminAbuseUserReportsResponse[number];

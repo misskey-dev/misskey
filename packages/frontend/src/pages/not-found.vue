@@ -15,8 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
+import { pleaseLogin } from '@/utility/please-login.js';
 import { notFoundImageUrl } from '@/instance.js';
 
 const props = defineProps<{
