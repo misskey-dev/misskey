@@ -28,14 +28,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</template>
 					<template #footer>
 						<div class="_buttons">
-							<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
-							<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
+							<MkButton :disabled="!plugin.active" @click="reload(plugin)"><i class="ti ti-refresh"></i> {{ i18n.ts.reload }}</MkButton>
+							<MkButton danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
+							<MkButton v-if="plugin.config" style="margin-left: auto;" @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
 						</div>
 					</template>
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">
-							<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 							<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
 						</div>
 
@@ -64,10 +64,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>{{ i18n.ts._plugin.viewLog }}</template>
 
 							<div class="_gaps_s">
-								<div class="_buttons">
-									<MkButton inline @click="copy(pluginLogs.get(plugin.installId)?.join('\n'))"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
-								</div>
-
 								<MkCode :code="pluginLogs.get(plugin.installId)?.join('\n') ?? ''"/>
 							</div>
 						</MkFolder>
@@ -77,10 +73,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>{{ i18n.ts._plugin.viewSource }}</template>
 
 							<div class="_gaps_s">
-								<div class="_buttons">
-									<MkButton inline @click="copy(plugin.src)"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
-								</div>
-
 								<MkCode :code="plugin.src ?? ''" lang="ais"/>
 							</div>
 						</MkFolder>
@@ -94,6 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, ref, computed } from 'vue';
+import type { Plugin } from '@/plugin.js';
 import FormLink from '@/components/form/link.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
@@ -101,36 +94,30 @@ import MkButton from '@/components/MkButton.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import * as os from '@/os.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/utility/page-metadata.js';
-import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin } from '@/plugin.js';
+import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin, reloadPlugin } from '@/plugin.js';
 import { prefer } from '@/preferences.js';
 
 const plugins = prefer.r.plugins;
 
-async function uninstall(plugin) {
+async function uninstall(plugin: Plugin) {
 	await uninstallPlugin(plugin);
 	nextTick(() => {
 		unisonReload();
 	});
 }
 
-function copy(text) {
-	copyToClipboard(text ?? '');
-	os.success();
+function reload(plugin: Plugin) {
+	reloadPlugin(plugin);
 }
 
-async function config(plugin) {
+async function config(plugin: Plugin) {
 	await configPlugin(plugin);
-	nextTick(() => {
-		location.reload();
-	});
 }
 
-function changeActive(plugin, active) {
+function changeActive(plugin: Plugin, active: boolean) {
 	changePluginActive(plugin, active);
 	nextTick(() => {
 		location.reload();

@@ -136,7 +136,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
 import { mfmFunctionPicker } from '@/utility/mfm-function-picker.js';
 import { prefer } from '@/preferences.js';
-import { notePostInterruptors, postFormActions } from '@/plugin.js';
+import { getPluginHandlers } from '@/plugin.js';
 
 const $i = signinRequired();
 
@@ -197,6 +197,7 @@ const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
 const justEndedComposition = ref(false);
 const renoteTargetNote: ShallowRef<PostFormProps['renote'] | null> = shallowRef(props.renote);
+const postFormActions = getPluginHandlers('post_form_action');
 
 const draftKey = computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
@@ -823,6 +824,7 @@ async function post(ev?: MouseEvent) {
 	}
 
 	// plugin
+	const notePostInterruptors = getPluginHandlers('note_post_interruptor');
 	if (notePostInterruptors.length > 0) {
 		for (const interruptor of notePostInterruptors) {
 			try {

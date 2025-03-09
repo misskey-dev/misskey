@@ -37,40 +37,6 @@ export type AiScriptPluginMeta = {
 	config?: Record<string, any>;
 };
 
-interface PostFormAction {
-	title: string,
-	handler: <T>(form: T, update: (key: unknown, value: unknown) => void) => void;
-}
-
-interface UserAction {
-	title: string,
-	handler: (user: Misskey.entities.UserDetailed) => void;
-}
-
-interface NoteAction {
-	title: string,
-	handler: (note: Misskey.entities.Note) => void;
-}
-
-interface NoteViewInterruptor {
-	handler: (note: Misskey.entities.Note) => unknown;
-}
-
-interface NotePostInterruptor {
-	handler: (note: FIXME) => unknown;
-}
-
-interface PageViewInterruptor {
-	handler: (page: Misskey.entities.Page) => unknown;
-}
-
-export const postFormActions: PostFormAction[] = [];
-export const userActions: UserAction[] = [];
-export const noteActions: NoteAction[] = [];
-export const noteViewInterruptors: NoteViewInterruptor[] = [];
-export const notePostInterruptors: NotePostInterruptor[] = [];
-export const pageViewInterruptors: PageViewInterruptor[] = [];
-
 const parser = new Parser();
 
 export function isSupportedAiScriptVersion(version: string): boolean {
@@ -215,6 +181,42 @@ export function changePluginActive(plugin: Plugin, active: boolean) {
 const pluginContexts = new Map<string, Interpreter>();
 export const pluginLogs = ref(new Map<string, string[]>());
 
+type HandlerDef = {
+	post_form_action: {
+		title: string,
+		handler: <T>(form: T, update: (key: unknown, value: unknown) => void) => void;
+	};
+	user_action: {
+		title: string,
+		handler: (user: Misskey.entities.UserDetailed) => void;
+	};
+	note_action: {
+		title: string,
+		handler: (note: Misskey.entities.Note) => void;
+	};
+	note_view_interruptor: {
+		handler: (note: Misskey.entities.Note) => unknown;
+	};
+	note_post_interruptor: {
+		handler: (note: FIXME) => unknown;
+	};
+	page_view_interruptor: {
+		handler: (page: Misskey.entities.Page) => unknown;
+	};
+};
+
+type PluginHandler<K extends keyof HandlerDef> = {
+	pluginInstallId: string;
+	type: K;
+	ctx: HandlerDef[K];
+};
+
+let pluginHandlers: PluginHandler<keyof HandlerDef>[] = [];
+
+function addPluginHandler<K extends keyof HandlerDef>(installId: Plugin['installId'], type: K, ctx: PluginHandler<K>['ctx']) {
+	pluginHandlers.push({ pluginInstallId: installId, type, ctx });
+}
+
 export async function launchPlugin(plugin: Plugin): Promise<void> {
 	// 後方互換性のため
 	if (plugin.src == null) return;
@@ -252,6 +254,18 @@ export async function launchPlugin(plugin: Plugin): Promise<void> {
 	);
 }
 
+export function reloadPlugin(plugin: Plugin): void {
+	const pluginContext = pluginContexts.get(plugin.installId);
+	if (!pluginContext) return;
+
+	pluginContext.abort();
+	pluginContexts.delete(plugin.installId);
+	pluginLogs.value.delete(plugin.installId);
+	pluginHandlers = pluginHandlers.filter(x => x.pluginInstallId !== plugin.installId);
+
+	launchPlugin(plugin);
+}
+
 function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<string, values.Value> {
 	const id = opts.plugin.installId;
 
@@ -260,111 +274,90 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 		config.set(k, utils.jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
 	}
 
+	function withContext<T>(fn: (ctx: Interpreter) => T): T {
+		console.log('withContext', id);
+		const ctx = pluginContexts.get(id);
+		if (!ctx) throw new Error('Plugin context not found');
+		return fn(ctx);
+	}
+
 	return {
 		...createAiScriptEnv({ ...opts, token: store.state.pluginTokens[id] }),
 
 		'Plugin:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);
-			registerPostFormAction({ pluginId: id, title: title.value, handler });
+			utils.assertFunction(handler);
+			addPluginHandler(id, 'post_form_action', {
+				title: title.value,
+				handler: withContext(ctx => (form, update) => {
+					ctx.execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
+						if (!key || !value) {
+							return;
+						}
+						update(utils.valToJs(key), utils.valToJs(value));
+					})]);
+				}),
+			});
 		}),
+
 		'Plugin:register_user_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);
-			registerUserAction({ pluginId: id, title: title.value, handler });
+			utils.assertFunction(handler);
+			addPluginHandler(id, 'user_action', {
+				title: title.value,
+				handler: withContext(ctx => (user) => {
+					ctx.execFn(handler, [utils.jsToVal(user)]);
+				}),
+			});
 		}),
+
 		'Plugin:register_note_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);
-			registerNoteAction({ pluginId: id, title: title.value, handler });
+			utils.assertFunction(handler);
+			addPluginHandler(id, 'note_action', {
+				title: title.value,
+				handler: withContext(ctx => (note) => {
+					ctx.execFn(handler, [utils.jsToVal(note)]);
+				}),
+			});
 		}),
+
 		'Plugin:register_note_view_interruptor': values.FN_NATIVE(([handler]) => {
-			registerNoteViewInterruptor({ pluginId: id, handler });
+			utils.assertFunction(handler);
+			addPluginHandler(id, 'note_view_interruptor', {
+				handler: withContext(ctx => async (note) => {
+					return utils.valToJs(await ctx.execFn(handler, [utils.jsToVal(note)]));
+				}),
+			});
 		}),
+
 		'Plugin:register_note_post_interruptor': values.FN_NATIVE(([handler]) => {
-			registerNotePostInterruptor({ pluginId: id, handler });
+			utils.assertFunction(handler);
+			addPluginHandler(id, 'note_post_interruptor', {
+				handler: withContext(ctx => async (note) => {
+					return utils.valToJs(await ctx.execFn(handler, [utils.jsToVal(note)]));
+				}),
+			});
 		}),
+
 		'Plugin:register_page_view_interruptor': values.FN_NATIVE(([handler]) => {
-			registerPageViewInterruptor({ pluginId: id, handler });
+			utils.assertFunction(handler);
+			addPluginHandler(id, 'page_view_interruptor', {
+				handler: withContext(ctx => async (page) => {
+					return utils.valToJs(await ctx.execFn(handler, [utils.jsToVal(page)]));
+				}),
+			});
 		}),
+
 		'Plugin:open_url': values.FN_NATIVE(([url]) => {
 			utils.assertString(url);
 			window.open(url.value, '_blank', 'noopener');
 		}),
+
 		'Plugin:config': values.OBJ(config),
 	};
 }
 
-function registerPostFormAction({ pluginId, title, handler }): void {
-	postFormActions.push({
-		title, handler: (form, update) => {
-			const pluginContext = pluginContexts.get(pluginId);
-			if (!pluginContext) {
-				return;
-			}
-			pluginContext.execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
-				if (!key || !value) {
-					return;
-				}
-				update(utils.valToJs(key), utils.valToJs(value));
-			})]);
-		},
-	});
-}
-
-function registerUserAction({ pluginId, title, handler }): void {
-	userActions.push({
-		title, handler: (user) => {
-			const pluginContext = pluginContexts.get(pluginId);
-			if (!pluginContext) {
-				return;
-			}
-			pluginContext.execFn(handler, [utils.jsToVal(user)]);
-		},
-	});
-}
-
-function registerNoteAction({ pluginId, title, handler }): void {
-	noteActions.push({
-		title, handler: (note) => {
-			const pluginContext = pluginContexts.get(pluginId);
-			if (!pluginContext) {
-				return;
-			}
-			pluginContext.execFn(handler, [utils.jsToVal(note)]);
-		},
-	});
-}
-
-function registerNoteViewInterruptor({ pluginId, handler }): void {
-	noteViewInterruptors.push({
-		handler: async (note) => {
-			const pluginContext = pluginContexts.get(pluginId);
-			if (!pluginContext) {
-				return;
-			}
-			return utils.valToJs(await pluginContext.execFn(handler, [utils.jsToVal(note)]));
-		},
-	});
-}
-
-function registerNotePostInterruptor({ pluginId, handler }): void {
-	notePostInterruptors.push({
-		handler: async (note) => {
-			const pluginContext = pluginContexts.get(pluginId);
-			if (!pluginContext) {
-				return;
-			}
-			return utils.valToJs(await pluginContext.execFn(handler, [utils.jsToVal(note)]));
-		},
-	});
-}
-
-function registerPageViewInterruptor({ pluginId, handler }): void {
-	pageViewInterruptors.push({
-		handler: async (page) => {
-			const pluginContext = pluginContexts.get(pluginId);
-			if (!pluginContext) {
-				return;
-			}
-			return utils.valToJs(await pluginContext.execFn(handler, [utils.jsToVal(page)]));
-		},
-	});
+export function getPluginHandlers<K extends keyof HandlerDef>(type: K): HandlerDef[K][] {
+	return pluginHandlers.filter((x): x is PluginHandler<K> => x.type === type).map(x => x.ctx);
 }
