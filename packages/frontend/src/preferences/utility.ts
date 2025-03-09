@@ -16,12 +16,16 @@ import { $i } from '@/account.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 
+function canAutoBackup() {
+	return profileManager.profile.name != null && profileManager.profile.name.trim() !== '';
+}
+
 export function getPreferencesProfileMenu(): MenuItem[] {
 	const autoBackupEnabled = ref(store.state.enablePreferencesAutoCloudBackup);
 
 	watch(autoBackupEnabled, () => {
 		if (autoBackupEnabled.value) {
-			if (profileManager.profile.name == null || profileManager.profile.name.trim() === '') {
+			if (!canAutoBackup()) {
 				autoBackupEnabled.value = false;
 				os.alert({
 					type: 'warning',
@@ -130,7 +134,7 @@ function importProfile() {
 
 export async function cloudBackup() {
 	if ($i == null) return;
-	if (profileManager.profile.name == null || profileManager.profile.name.trim() === '') {
+	if (!canAutoBackup()) {
 		throw new Error('Profile name is not set');
 	}
 
@@ -185,11 +189,11 @@ export async function restoreFromCloudBackup() {
 }
 
 export async function enableAutoBackup() {
-	if (profileManager.profile.name == null || profileManager.profile.name.trim() === '') {
+	if (!canAutoBackup()) {
 		await renameProfile();
 	}
 
-	if (profileManager.profile.name == null || profileManager.profile.name.trim() === '') {
+	if (!canAutoBackup()) {
 		return;
 	}
 
