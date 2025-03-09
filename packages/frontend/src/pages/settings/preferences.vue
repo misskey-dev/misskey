@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['remember', 'keep', 'note', 'visibility']">
 					<MkPreferenceContainer k="rememberNoteVisibility">
-						<MkSwitch v-model="rememberNoteVisibility" @update:modelValue="save()">
+						<MkSwitch v-model="rememberNoteVisibility">
 							<template #label><SearchLabel>{{ i18n.ts.rememberNoteVisibility }}</SearchLabel></template>
 						</MkSwitch>
 					</MkPreferenceContainer>
@@ -385,8 +385,7 @@ import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);
 
-const overridedDeviceKind = computed(store.makeGetterSetter('overridedDeviceKind'));
-
+const overridedDeviceKind = prefer.model('overridedDeviceKind');
 const keepCw = prefer.model('keepCw');
 const serverDisconnectedBehavior = prefer.model('serverDisconnectedBehavior');
 const hemisphere = prefer.model('hemisphere');

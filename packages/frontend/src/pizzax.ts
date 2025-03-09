@@ -237,6 +237,7 @@ export class Storage<T extends StateDef> {
 	 * 特定のキーの、簡易的なgetter/setterを作ります
 	 * 主にvue上で設定コントロールのmodelとして使う用
 	 */
+	// TODO: 廃止
 	public makeGetterSetter<K extends keyof T, R = T[K]['default']>(
 		key: K,
 		getter?: (v: T[K]['default']) => R,

@@ -114,7 +114,6 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/utility/page-metadata.js';
-import { pageViewInterruptors } from '@/store.js';
 import { deepClone } from '@/utility/clone.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/utility/navigator.js';
@@ -123,6 +122,7 @@ import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
 import { prefer } from '@/preferences.js';
+import { pageViewInterruptors } from '@/plugin.js';
 
 const router = useRouter();
 
