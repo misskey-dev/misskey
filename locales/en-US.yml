@@ -1333,6 +1333,9 @@ _preferencesBackup:
   noBackupsFoundTitle: "No backups found"
   noBackupsFoundDescription: "No auto-created backups were found, but if you have manually saved a backup file, you can import and restore it."
   selectBackupToRestore: "Select a backup to restore"
+  youNeedToNameYourProfileToEnableAutoBackup: "A profile name must be set to enable auto backup."
+  autoPreferencesBackupIsNotEnabledForThisDevice: "Settings auto backup is not enabled on this device."
+  backupFound: "Settings backup is found"
 _accountSettings:
   requireSigninToViewContents: "Require sign-in to view contents"
   requireSigninToViewContentsDescription1: "Require login to view all notes and other content you have created. This will have the effect of preventing crawlers from collecting your information."
