@@ -199,16 +199,20 @@ export async function enableAutoBackup() {
 export const shouldSuggestRestoreBackup = ref(false);
 
 if ($i != null) {
-	if (miLocalStorage.getItem('hidePreferencesRestoreSuggestion') !== 'true') {
-		misskeyApi('i/registry/keys', {
-			scope: ['client', 'preferences', 'backups'],
-		}).then(keys => {
-			if (keys.length === 0) {
-				miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');
-			} else {
-				shouldSuggestRestoreBackup.value = true;
-			}
-		});
+	if (new Date($i.createdAt).getTime() < (Date.now() - 1000 * 60 * 30)) { // アカウント作成直後は意味ないので除外
+		miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');
+	} else {
+		if (miLocalStorage.getItem('hidePreferencesRestoreSuggestion') !== 'true') {
+			misskeyApi('i/registry/keys', {
+				scope: ['client', 'preferences', 'backups'],
+			}).then(keys => {
+				if (keys.length === 0) {
+					miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');
+				} else {
+					shouldSuggestRestoreBackup.value = true;
+				}
+			});
+		}
 	}
 }
 
