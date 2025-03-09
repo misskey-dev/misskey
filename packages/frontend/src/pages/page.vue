@@ -122,7 +122,7 @@ import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
 import { prefer } from '@/preferences.js';
-import { pageViewInterruptors } from '@/plugin.js';
+import { getPluginHandlers } from '@/plugin.js';
 
 const router = useRouter();
 
@@ -151,6 +151,7 @@ function fetchPage() {
 		page.value = _page;
 
 		// plugin
+		const pageViewInterruptors = getPluginHandlers('page_view_interruptor');
 		if (pageViewInterruptors.length > 0) {
 			let result = deepClone(_page);
 			for (const interruptor of pageViewInterruptors) {
