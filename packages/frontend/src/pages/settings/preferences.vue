@@ -385,8 +385,7 @@ import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);
 
-const overridedDeviceKind = computed(store.makeGetterSetter('overridedDeviceKind'));
-
+const overridedDeviceKind = prefer.model('overridedDeviceKind');
 const keepCw = prefer.model('keepCw');
 const serverDisconnectedBehavior = prefer.model('serverDisconnectedBehavior');
 const hemisphere = prefer.model('hemisphere');

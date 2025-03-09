@@ -202,7 +202,7 @@ export async function common(createVue: () => App<Element>) {
 		if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
 	});
 
-	watch(store.reactiveState.overridedDeviceKind, (kind) => {
+	watch(prefer.r.overridedDeviceKind, (kind) => {
 		updateDeviceKind(kind);
 	}, { immediate: true });
 
