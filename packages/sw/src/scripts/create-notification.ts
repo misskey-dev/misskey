@@ -72,13 +72,12 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 				}
 
 				case 'unfollow': {
-					// フォローが外されたときの処理
 					const account = await getAccountFromId(data.userId);
 					if (!account) return null;
-					const userDetail = await cli.request('users/show', { userId: data.body.userId }, account.token);
+					const userDetail = await cli.request('users/show', { userId: (data.body as any).userId }, account.token);
 					return [i18n.ts._notification.youWereUnFollower, {
-						body: getUserName(data.body.user),
-						icon: data.body.user.avatarUrl ?? undefined,
+						body: getUserName((data.body as any).user),
+						icon: (data.body as any).user.avatarUrl ?? undefined,
 						badge: iconUrl('user-minus'),
 						data,
 						actions: userDetail.isFollowing ? [] : [
