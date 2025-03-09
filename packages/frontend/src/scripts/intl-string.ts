@@ -64,7 +64,7 @@ export function normalizeHyphens(str: string) {
 }
 
 /**
- * `normalizeString` に加えて、カタカナ・ローマ字をひらがなに揃える
+ * `normalizeString` に加えて、カタカナ・ローマ字をひらがなに揃え、ハイフンを統一
  *
  * （ローマ字じゃないものもローマ字として認識され変換されるので、文字列比較の際は `normalizeString` を併用する必要あり）
  */
