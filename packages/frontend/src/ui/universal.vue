@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkStickyContainer ref="contents" :class="$style.contents" style="container-type: inline-size;" @contextmenu.stop="onContextmenu">
 		<template #header>
 			<div>
+				<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
 				<XAnnouncements v-if="$i"/>
 				<XStatusBars :class="$style.statusbars"/>
 			</div>
@@ -115,11 +116,13 @@ import { miLocalStorage } from '@/local-storage.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { mainRouter } from '@/router/main.js';
 import { prefer } from '@/preferences.js';
+import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
+const XPreferenceRestore = defineAsyncComponent(() => import('@/ui/_common_/PreferenceRestore.vue'));
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 

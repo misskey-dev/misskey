@@ -1322,6 +1322,7 @@ overrideByAccount: "アカウントで上書き"
 untitled: "無題"
 noName: "名前はありません"
 skip: "スキップ"
+restore: "復元"
 
 _preferencesProfile:
   profileName: "プロファイル名"
@@ -1336,6 +1337,7 @@ _preferencesBackup:
   selectBackupToRestore: "復元するバックアップを選択してください"
   youNeedToNameYourProfileToEnableAutoBackup: "自動バックアップを有効にするにはプロファイル名の設定が必要です。"
   autoPreferencesBackupIsNotEnabledForThisDevice: "このデバイスで設定の自動バックアップは有効になっていません。"
+  backupFound: "設定のバックアップが見つかりました"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"

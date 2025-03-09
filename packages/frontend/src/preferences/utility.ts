@@ -120,6 +120,8 @@ function importProfile() {
 		const profile = JSON.parse(txt) as PreferencesProfile;
 
 		miLocalStorage.setItem('preferences', JSON.stringify(profile));
+		miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');
+		shouldSuggestRestoreBackup.value = false;
 		unisonReload();
 	};
 
@@ -139,7 +141,7 @@ export async function cloudBackup() {
 	});
 }
 
-async function restoreFromCloudBackup() {
+export async function restoreFromCloudBackup() {
 	if ($i == null) return;
 
 	// TODO: 更新日時でソートして取得したい
@@ -176,7 +178,9 @@ async function restoreFromCloudBackup() {
 	console.log(profile);
 
 	miLocalStorage.setItem('preferences', JSON.stringify(profile));
+	miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');
 	store.set('enablePreferencesAutoCloudBackup', true);
+	shouldSuggestRestoreBackup.value = false;
 	unisonReload();
 }
 
@@ -190,4 +194,25 @@ export async function enableAutoBackup() {
 	}
 
 	store.set('enablePreferencesAutoCloudBackup', true);
+}
+
+export const shouldSuggestRestoreBackup = ref(false);
+
+if ($i != null) {
+	if (miLocalStorage.getItem('hidePreferencesRestoreSuggestion') !== 'true') {
+		misskeyApi('i/registry/keys', {
+			scope: ['client', 'preferences', 'backups'],
+		}).then(keys => {
+			if (keys.length === 0) {
+				miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');
+			} else {
+				shouldSuggestRestoreBackup.value = true;
+			}
+		});
+	}
+}
+
+export function hideRestoreBackupSuggestion() {
+	miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');
+	shouldSuggestRestoreBackup.value = false;
 }

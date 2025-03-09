@@ -5306,6 +5306,10 @@ export interface Locale extends ILocale {
      * スキップ
      */
     "skip": string;
+    /**
+     * 復元
+     */
+    "restore": string;
     "_preferencesProfile": {
         /**
          * プロファイル名
@@ -5349,6 +5353,10 @@ export interface Locale extends ILocale {
          * このデバイスで設定の自動バックアップは有効になっていません。
          */
         "autoPreferencesBackupIsNotEnabledForThisDevice": string;
+        /**
+         * 設定のバックアップが見つかりました
+         */
+        "backupFound": string;
     };
     "_accountSettings": {
         /**
