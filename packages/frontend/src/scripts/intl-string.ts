@@ -14,8 +14,8 @@ let isWanakanaLoaded = false;
  * 
  * ここの比較系関数を使う際は事前に呼び出す必要がある
  */
-export async function initIntlString() {
-	if (!versatileLang.includes('ja') || isWanakanaLoaded) return;
+export async function initIntlString(forceWanakana = false) {
+	if ((!versatileLang.includes('ja') && !forceWanakana) || isWanakanaLoaded) return;
 	const { toHiragana: _toHiragana } = await import('wanakana');
 	toHiragana = _toHiragana;
 	isWanakanaLoaded = true;
@@ -64,11 +64,11 @@ const hyphens = [
 	0x10191, // roman uncia sign
 ];
 
-const hyphensCodePoints = hyphens.map(code => `\\u${code.toString(16).padStart(4, '0')}`);
+const hyphensCodePoints = hyphens.map(code => `\\u{${code.toString(16).padStart(4, '0')}}`);
 
 /** ハイフンを統一（ローマ字半角入力時に`ー`と`-`が判定できない問題の調整） */
 export function normalizeHyphens(str: string) {
-	return str.replace(new RegExp(`[${hyphensCodePoints.join('')}]`, 'g'), '\u002d');
+	return str.replace(new RegExp(`[${hyphensCodePoints.join('')}]`, 'ug'), '\u002d');
 }
 
 /**
