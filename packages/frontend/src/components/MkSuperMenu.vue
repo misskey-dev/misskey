@@ -99,13 +99,15 @@ import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@@/js/scroll.js';
 import { useRouter } from '@/router/supplier.js';
-import { compareStringIncludes } from '@/scripts/intl-string.js';
+import { initIntlString, compareStringIncludes } from '@/scripts/intl-string.js';
 
 const props = defineProps<{
 	def: SuperMenuDef[];
 	grid?: boolean;
 	searchIndex?: SearchIndexItem[];
 }>();
+
+initIntlString();
 
 const router = useRouter();
 const rootEl = useTemplateRef('rootEl');

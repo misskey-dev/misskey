@@ -22,7 +22,6 @@ import { deviceKind, updateDeviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
 import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
-import { initIntlString } from '@/scripts/intl-string.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { analytics, initAnalytics } from '@/analytics.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -126,8 +125,6 @@ export async function common(createVue: () => App<Element>) {
 	const html = document.documentElement;
 	html.setAttribute('lang', lang);
 	//#endregion
-
-	initIntlString();
 
 	await store.ready;
 	await deckStore.ready;

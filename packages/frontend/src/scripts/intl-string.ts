@@ -7,12 +7,18 @@ import { versatileLang } from '@@/js/intl-const.js';
 import type { toHiragana as toHiraganaType } from 'wanakana';
 
 let toHiragana: typeof toHiraganaType = (str?: string) => str ?? '';
+let isWanakanaLoaded = false;
 
-/** ローマ字変換のセットアップ（日本語以外の環境で読み込まないのでlazy-loading） */
+/** 
+ * ローマ字変換のセットアップ（日本語以外の環境で読み込まないのでlazy-loading）
+ * 
+ * ここの比較系関数を使う際は事前に呼び出す必要がある
+ */
 export async function initIntlString() {
-	if (!versatileLang.includes('ja')) return;
+	if (!versatileLang.includes('ja') || isWanakanaLoaded) return;
 	const { toHiragana: _toHiragana } = await import('wanakana');
 	toHiragana = _toHiragana;
+	isWanakanaLoaded = true;
 }
 
 /**
