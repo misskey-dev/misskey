@@ -266,7 +266,7 @@ const canPost = computed((): boolean => {
 		) &&
 		(textLength.value <= maxTextLength.value) &&
 		(
-			1 <= cwTextLength.value &&
+			useCw.value ? 1 <= cwTextLength.value : true &&
 			cwTextLength.value <= maxCwTextLength
 		) &&
 		(files.value.length <= 16) &&
