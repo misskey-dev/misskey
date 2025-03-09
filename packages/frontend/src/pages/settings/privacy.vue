@@ -168,45 +168,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</FormSection>
 		</SearchMarker>
-
-		<FormSection>
-			<div class="_gaps_m">
-				<SearchMarker :keywords="['remember', 'keep', 'note', 'visibility']">
-					<MkPreferenceContainer k="rememberNoteVisibility">
-						<MkSwitch v-model="rememberNoteVisibility" @update:modelValue="save()">
-							<template #label><SearchLabel>{{ i18n.ts.rememberNoteVisibility }}</SearchLabel></template>
-						</MkSwitch>
-					</MkPreferenceContainer>
-				</SearchMarker>
-
-				<SearchMarker :keywords="['default', 'note', 'visibility']">
-					<MkDisableSection :disabled="rememberNoteVisibility">
-						<MkFolder>
-							<template #label><SearchLabel>{{ i18n.ts.defaultNoteVisibility }}</SearchLabel></template>
-							<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
-							<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
-							<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
-							<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
-
-							<div class="_gaps_m">
-								<MkPreferenceContainer k="defaultNoteVisibility">
-									<MkSelect v-model="defaultNoteVisibility">
-										<option value="public">{{ i18n.ts._visibility.public }}</option>
-										<option value="home">{{ i18n.ts._visibility.home }}</option>
-										<option value="followers">{{ i18n.ts._visibility.followers }}</option>
-										<option value="specified">{{ i18n.ts._visibility.specified }}</option>
-									</MkSelect>
-								</MkPreferenceContainer>
-
-								<MkPreferenceContainer k="defaultNoteLocalOnly">
-									<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.disableFederation }}</MkSwitch>
-								</MkPreferenceContainer>
-							</div>
-						</MkFolder>
-					</MkDisableSection>
-				</SearchMarker>
-			</div>
-		</FormSection>
 	</div>
 </SearchMarker>
 </template>
@@ -227,8 +188,6 @@ import { formatDateTimeString } from '@/scripts/format-time-string.js';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
 import MkDisableSection from '@/components/MkDisableSection.vue';
-import { prefer } from '@/preferences.js';
-import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
 const $i = signinRequired();
 
@@ -244,10 +203,6 @@ const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
 const followingVisibility = ref($i.followingVisibility);
 const followersVisibility = ref($i.followersVisibility);
-
-const defaultNoteVisibility = prefer.model('defaultNoteVisibility');
-const defaultNoteLocalOnly = prefer.model('defaultNoteLocalOnly');
-const rememberNoteVisibility = prefer.model('rememberNoteVisibility');
 
 const makeNotesFollowersOnlyBefore_type = computed(() => {
 	if (makeNotesFollowersOnlyBefore.value == null) {
