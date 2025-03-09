@@ -206,7 +206,6 @@ import number from '@/filters/number.js';
 import * as os from '@/os.js';
 import * as sound from '@/utility/sound.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
-import { noteViewInterruptors } from '@/store.js';
 import { reactionPicker } from '@/utility/reaction-picker.js';
 import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
 import { $i } from '@/account.js';
@@ -223,6 +222,7 @@ import { isEnabledUrlPreview } from '@/instance.js';
 import { focusPrev, focusNext } from '@/utility/focus.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
+import { noteViewInterruptors } from '@/plugin.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;

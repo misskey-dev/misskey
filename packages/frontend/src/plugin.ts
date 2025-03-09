@@ -7,8 +7,9 @@ import { ref, defineAsyncComponent } from 'vue';
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
 import { v4 as uuid } from 'uuid';
+import * as Misskey from 'misskey-js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
-import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors, store } from '@/store.js';
+import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -35,6 +36,40 @@ export type AiScriptPluginMeta = {
 	permissions?: string[];
 	config?: Record<string, any>;
 };
+
+interface PostFormAction {
+	title: string,
+	handler: <T>(form: T, update: (key: unknown, value: unknown) => void) => void;
+}
+
+interface UserAction {
+	title: string,
+	handler: (user: Misskey.entities.UserDetailed) => void;
+}
+
+interface NoteAction {
+	title: string,
+	handler: (note: Misskey.entities.Note) => void;
+}
+
+interface NoteViewInterruptor {
+	handler: (note: Misskey.entities.Note) => unknown;
+}
+
+interface NotePostInterruptor {
+	handler: (note: FIXME) => unknown;
+}
+
+interface PageViewInterruptor {
+	handler: (page: Misskey.entities.Page) => unknown;
+}
+
+export const postFormActions: PostFormAction[] = [];
+export const userActions: UserAction[] = [];
+export const noteActions: NoteAction[] = [];
+export const noteViewInterruptors: NoteViewInterruptor[] = [];
+export const notePostInterruptors: NotePostInterruptor[] = [];
+export const pageViewInterruptors: PageViewInterruptor[] = [];
 
 const parser = new Parser();
 
