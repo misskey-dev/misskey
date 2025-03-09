@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 import type { EmbedParams, EmbeddableEntity } from '@@/js/embed-page.js';
 import { url } from '@@/js/config.js';
 import * as os from '@/os.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { defaultEmbedParams, embedRouteWithScrollbar } from '@@/js/embed-page.js';
 
 const MOBILE_THRESHOLD = 500;

@@ -140,13 +140,13 @@ import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { physics } from '@/scripts/physics.js';
+import { physics } from '@/utility/physics.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
+import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 import { $i } from '@/account.js';
 
 const patronsWithIcon = [{

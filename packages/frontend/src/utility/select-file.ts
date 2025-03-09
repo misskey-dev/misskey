@@ -6,10 +6,10 @@
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { uploadFile } from '@/scripts/upload.js';
+import { uploadFile } from '@/utility/upload.js';
 import { prefer } from '@/preferences.js';
 
 export function chooseFileFromPc(

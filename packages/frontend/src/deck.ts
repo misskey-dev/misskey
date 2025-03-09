@@ -7,8 +7,8 @@ import { throttle } from 'throttle-debounce';
 import { notificationTypes } from 'misskey-js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { deepClone } from '@/scripts/clone.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { deepClone } from '@/utility/clone.js';
 import { store } from '@/store.js';
 
 type ColumnWidget = {

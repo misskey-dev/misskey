@@ -12,11 +12,11 @@ import { onMounted, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
 import tinycolor from 'tinycolor2';
 import { store } from '@/store.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { chartVLine } from '@/scripts/chart-vline.js';
-import { alpha } from '@/scripts/color.js';
-import { initChart } from '@/scripts/init-chart.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { useChartTooltip } from '@/utility/use-chart-tooltip.js';
+import { chartVLine } from '@/utility/chart-vline.js';
+import { alpha } from '@/utility/color.js';
+import { initChart } from '@/utility/init-chart.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 initChart();
 

@@ -102,10 +102,10 @@ import MkCode from '@/components/MkCode.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin } from '@/plugin.js';
 import { prefer } from '@/preferences.js';
 

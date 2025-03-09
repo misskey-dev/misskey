@@ -24,12 +24,12 @@ import { onMounted, shallowRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import isChromatic from 'chromatic';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { chartVLine } from '@/scripts/chart-vline.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { useChartTooltip } from '@/utility/use-chart-tooltip.js';
+import { chartVLine } from '@/utility/chart-vline.js';
 import { store } from '@/store.js';
-import { alpha } from '@/scripts/color.js';
-import { initChart } from '@/scripts/init-chart.js';
+import { alpha } from '@/utility/color.js';
+import { initChart } from '@/utility/init-chart.js';
 
 initChart();
 

@@ -5,7 +5,7 @@
 
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 
 let isReloadConfirming = false;
 

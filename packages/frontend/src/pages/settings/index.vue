@@ -33,18 +33,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
-import type { PageMetadata } from '@/scripts/page-metadata.js';
+import type { PageMetadata } from '@/utility/page-metadata.js';
 import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
 import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { signout, $i } from '@/account.js';
-import { clearCache } from '@/scripts/clear-cache.js';
+import { clearCache } from '@/utility/clear-cache.js';
 import { instance } from '@/instance.js';
-import { definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/utility/page-metadata.js';
 import * as os from '@/os.js';
 import { useRouter } from '@/router/supplier.js';
-import { searchIndexes } from '@/scripts/autogen/settings-search-index.js';
+import { searchIndexes } from '@/utility/autogen/settings-search-index.js';
 import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utility.js';
 import { store } from '@/store.js';
 

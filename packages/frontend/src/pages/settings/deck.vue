@@ -24,7 +24,7 @@ import { computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 import { prefer } from '@/preferences.js';
 
 const navWindow = prefer.model('deck.navWindow');

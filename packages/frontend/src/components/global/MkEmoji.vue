@@ -14,8 +14,8 @@ import { colorizeEmoji, getEmojiName } from '@@/js/emojilist.js';
 import { char2fluentEmojiFilePath, char2twemojiFilePath } from '@@/js/emoji-base.js';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import * as sound from '@/scripts/sound.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import * as sound from '@/utility/sound.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 

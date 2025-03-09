@@ -21,7 +21,7 @@ let moduleInitialized = false;
 let unobserve = () => {};
 let misskeyOS = null;
 
-function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme']) {
+function loadTheme(applyTheme: typeof import('../src/utility/theme')['applyTheme']) {
 	unobserve();
 	const theme = themes[document.documentElement.dataset.misskeyTheme];
 	if (theme) {
@@ -67,7 +67,7 @@ queueMicrotask(() => {
 		import('../src/components'),
 		import('../src/directives'),
 		import('../src/widgets'),
-		import('../src/scripts/theme'),
+		import('../src/utility/theme'),
 		import('../src/preferences'),
 		import('../src/os'),
 	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { prefer }, os]) => {

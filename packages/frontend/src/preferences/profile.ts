@@ -11,7 +11,7 @@ import { PREF_DEF } from './def.js';
 import { Store } from './store.js';
 import type { MenuItem } from '@/types/menu.js';
 import { $i } from '@/account.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 
 // NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない

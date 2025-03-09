@@ -54,12 +54,12 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkUrl from '@/components/global/MkUrl.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { parsePluginMeta, installPlugin } from '@/plugin.js';
-import { parseThemeCode, installTheme } from '@/scripts/theme.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { parseThemeCode, installTheme } from '@/utility/theme.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 
 const uiPhase = ref<'fetching' | 'confirm' | 'error'>('fetching');
 const errorKV = ref<{

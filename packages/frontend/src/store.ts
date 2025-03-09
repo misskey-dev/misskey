@@ -8,12 +8,12 @@ import * as Misskey from 'misskey-js';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
 import { hemisphere } from '@@/js/intl-const.js';
-import type { DeviceKind } from '@/scripts/device-kind.js';
+import type { DeviceKind } from '@/utility/device-kind.js';
 import type { Plugin } from '@/plugin.js';
 import type { Column } from '@/deck.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { Storage } from '@/pizzax.js';
-import { DEFAULT_DEVICE_KIND } from '@/scripts/device-kind.js';
+import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 
 interface PostFormAction {
 	title: string,

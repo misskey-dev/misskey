@@ -8,24 +8,24 @@ import { ui } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
 import { common } from './common.js';
 import type { Component } from 'vue';
-import type { Keymap } from '@/scripts/hotkey.js';
+import type { Keymap } from '@/utility/hotkey.js';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
-import * as sound from '@/scripts/sound.js';
+import * as sound from '@/utility/sound.js';
 import { $i, signout, updateAccountPartial } from '@/account.js';
 import { instance } from '@/instance.js';
 import { ColdDeviceStorage, store } from '@/store.js';
-import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { reactionPicker } from '@/utility/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
-import { initializeSw } from '@/scripts/initialize-sw.js';
-import { emojiPicker } from '@/scripts/emoji-picker.js';
+import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
+import { initializeSw } from '@/utility/initialize-sw.js';
+import { emojiPicker } from '@/utility/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
-import { makeHotkey } from '@/scripts/hotkey.js';
+import { makeHotkey } from '@/utility/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { launchPlugin } from '@/plugin.js';
 
@@ -115,16 +115,16 @@ export async function mainBoot() {
 			if (prefer.s.hemisphere === 'S') {
 				// ▼南半球
 				if (month === 7 || month === 8) {
-					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					const SnowfallEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
 					new SnowfallEffect({}).render();
 				}
 			} else {
 				// ▼北半球
 				if (month === 12 || month === 1) {
-					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					const SnowfallEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
 					new SnowfallEffect({}).render();
 				} else if (month === 3 || month === 4) {
-					const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					const SakuraEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
 					new SakuraEffect({
 						sakura: true,
 					}).render();

@@ -4,7 +4,7 @@
  */
 
 import { ref, computed } from 'vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 type SaveData = {
 	gameVersion: number;

@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
+import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
 
 const focusTrapElements = new Set<HTMLElement>();
 const ignoreElements = [

@@ -45,8 +45,8 @@ import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { getDriveFileMenu } from '@/scripts/get-drive-file-menu.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
+import { deviceKind } from '@/utility/device-kind.js';
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();

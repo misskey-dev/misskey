@@ -96,7 +96,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { deepClone } from '@/scripts/clone.js';
+import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{

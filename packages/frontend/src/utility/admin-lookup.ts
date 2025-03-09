@@ -6,7 +6,7 @@
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 export async function lookupUser() {
 	const { canceled, result } = await os.inputText({

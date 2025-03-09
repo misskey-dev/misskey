@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { nextTick, onMounted, ref, shallowRef } from 'vue';
 import { prefer } from '@/preferences.js';
-import { getBgColor } from '@/scripts/get-bg-color.js';
+import { getBgColor } from '@/utility/get-bg-color.js';
 
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;

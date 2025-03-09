@@ -6,15 +6,15 @@
 import { ref, watch } from 'vue';
 import type { PreferencesProfile } from './profile.js';
 import type { MenuItem } from '@/types/menu.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { prefer, profileManager } from '@/preferences.js';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
 import { $i } from '@/account.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 
 function canAutoBackup() {
 	return profileManager.profile.name != null && profileManager.profile.name.trim() !== '';

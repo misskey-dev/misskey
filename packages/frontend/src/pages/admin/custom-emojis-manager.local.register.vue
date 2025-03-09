@@ -80,10 +80,10 @@ import * as Misskey from 'misskey-js';
 import { onMounted, ref, useCssModule } from 'vue';
 import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
 import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
-import type { DroppedFile } from '@/scripts/file-drop.js';
+import type { DroppedFile } from '@/utility/file-drop.js';
 import type { GridSetting } from '@/components/grid/grid.js';
 import type { GridRow } from '@/components/grid/row.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import {
 	emptyStrToEmptyArray,
 	emptyStrToNull,
@@ -97,9 +97,9 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { validators } from '@/components/grid/cell-validators.js';
-import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js';
-import { uploadFile } from '@/scripts/upload.js';
-import { extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
+import { chooseFileFromDrive, chooseFileFromPc } from '@/utility/select-file.js';
+import { uploadFile } from '@/utility/upload.js';
+import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
 

@@ -4,7 +4,7 @@
  */
 
 import { ref } from 'vue';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { deviceKind } from '@/utility/device-kind.js';
 
 const isTouchSupported = 'maxTouchPoints' in navigator && navigator.maxTouchPoints > 0;
 

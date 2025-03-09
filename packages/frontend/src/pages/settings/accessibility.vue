@@ -75,9 +75,9 @@ import { computed, ref, watch } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { prefer } from '@/preferences.js';
-import { reloadAsk } from '@/scripts/reload-ask.js';
+import { reloadAsk } from '@/utility/reload-ask.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
 const reduceAnimation = prefer.model('animation', v => !v, v => !v);

@@ -39,7 +39,7 @@ import { popupMenu } from '@/os.js';
 import { scrollToTop } from '@@/js/scroll.js';
 import MkButton from '@/components/MkButton.vue';
 import { globalEvents } from '@/events.js';
-import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
+import { injectReactiveMetadata } from '@/utility/page-metadata.js';
 
 type Tab = {
 	key?: string | null;
