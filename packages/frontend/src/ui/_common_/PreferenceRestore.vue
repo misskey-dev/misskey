@@ -39,15 +39,6 @@ function skip() {
 	overflow: clip;
 	contain: strict;
 	background: var(--MI_THEME-panel);
-
-	@container (max-width: 1000px) {
-		display: block;
-		text-align: center;
-
-		> .body {
-			display: none;
-		}
-	}
 }
 
 .icon {

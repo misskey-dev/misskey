@@ -203,7 +203,7 @@ export async function enableAutoBackup() {
 export const shouldSuggestRestoreBackup = ref(false);
 
 if ($i != null) {
-	if (new Date($i.createdAt).getTime() < (Date.now() - 1000 * 60 * 30)) { // アカウント作成直後は意味ないので除外
+	if (new Date($i.createdAt).getTime() > (Date.now() - 1000 * 60 * 30)) { // アカウント作成直後は意味ないので除外
 		miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');
 	} else {
 		if (miLocalStorage.getItem('hidePreferencesRestoreSuggestion') !== 'true') {

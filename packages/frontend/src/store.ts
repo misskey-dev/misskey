@@ -102,15 +102,6 @@ export const store = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	widgets: {
-		where: 'account',
-		default: [] as {
-			name: string;
-			id: string;
-			place: string | null;
-			data: Record<string, any>;
-		}[],
-	},
 	tl: {
 		where: 'deviceAccount',
 		default: {
@@ -187,6 +178,15 @@ export const store = markRaw(new Storage('base', {
 	},
 
 	//#region TODO: そのうち消す (preferに移行済み)
+	widgets: {
+		where: 'account',
+		default: [] as {
+			name: string;
+			id: string;
+			place: string | null;
+			data: Record<string, any>;
+		}[],
+	},
 	defaultSideView: {
 		where: 'device',
 		default: false,

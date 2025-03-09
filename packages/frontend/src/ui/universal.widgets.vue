@@ -19,7 +19,7 @@ const editMode = ref(false);
 <script lang="ts" setup>
 import XWidgets from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n.js';
-import { store } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	// null = 全てのウィジェットを表示
@@ -31,24 +31,24 @@ const props = withDefaults(defineProps<{
 });
 
 const widgets = computed(() => {
-	if (props.place === null) return store.reactiveState.widgets.value;
-	if (props.place === 'left') return store.reactiveState.widgets.value.filter(w => w.place === 'left');
-	return store.reactiveState.widgets.value.filter(w => w.place !== 'left');
+	if (props.place === null) return prefer.r.widgets.value;
+	if (props.place === 'left') return prefer.r.widgets.value.filter(w => w.place === 'left');
+	return prefer.r.widgets.value.filter(w => w.place !== 'left');
 });
 
 function addWidget(widget) {
-	store.set('widgets', [{
+	prefer.set('widgets', [{
 		...widget,
 		place: props.place,
-	}, ...store.state.widgets]);
+	}, ...prefer.s.widgets]);
 }
 
 function removeWidget(widget) {
-	store.set('widgets', store.state.widgets.filter(w => w.id !== widget.id));
+	prefer.set('widgets', prefer.s.widgets.filter(w => w.id !== widget.id));
 }
 
 function updateWidget({ id, data }) {
-	store.set('widgets', store.state.widgets.map(w => w.id === id ? {
+	prefer.set('widgets', prefer.s.widgets.map(w => w.id === id ? {
 		...w,
 		data,
 		place: props.place,
@@ -57,18 +57,18 @@ function updateWidget({ id, data }) {
 
 function updateWidgets(thisWidgets) {
 	if (props.place === null) {
-		store.set('widgets', thisWidgets);
+		prefer.set('widgets', thisWidgets);
 		return;
 	}
 	if (props.place === 'left') {
-		store.set('widgets', [
+		prefer.set('widgets', [
 			...thisWidgets.map(w => ({ ...w, place: 'left' })),
-			...store.state.widgets.filter(w => w.place !== 'left' && !thisWidgets.some(t => w.id === t.id)),
+			...prefer.s.widgets.filter(w => w.place !== 'left' && !thisWidgets.some(t => w.id === t.id)),
 		]);
 		return;
 	}
-	store.set('widgets', [
-		...store.state.widgets.filter(w => w.place === 'left' && !thisWidgets.some(t => w.id === t.id)),
+	prefer.set('widgets', [
+		...prefer.s.widgets.filter(w => w.place === 'left' && !thisWidgets.some(t => w.id === t.id)),
 		...thisWidgets.map(w => ({ ...w, place: 'right' })),
 	]);
 }

@@ -35,6 +35,15 @@ export const PREF_DEF = {
 		accountDependent: true,
 		default: null as string | null,
 	},
+	widgets: {
+		accountDependent: true,
+		default: [] as {
+			name: string;
+			id: string;
+			place: string | null;
+			data: Record<string, any>;
+		}[],
+	},
 
 	themes: {
 		default: [] as Theme[],

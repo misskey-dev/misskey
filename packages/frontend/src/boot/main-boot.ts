@@ -154,6 +154,7 @@ export async function mainBoot() {
 				prefer.set('lightTheme', ColdDeviceStorage.get('lightTheme'));
 				prefer.set('darkTheme', ColdDeviceStorage.get('darkTheme'));
 				prefer.set('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
+				prefer.set('widgets', store.state.widgets);
 				prefer.set('keepCw', store.state.keepCw);
 				prefer.set('collapseRenotes', store.state.collapseRenotes);
 				prefer.set('rememberNoteVisibility', store.state.rememberNoteVisibility);
