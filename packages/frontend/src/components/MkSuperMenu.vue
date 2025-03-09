@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:placeholder="i18n.ts.search"
 		type="search"
 		style="margin-bottom: 16px;"
-		@input="searchOnInput"
+		@input.passive="searchOnInput"
 		@keydown="searchOnKeyDown"
 	>
 		<template #prefix><i class="ti ti-search"></i></template>
