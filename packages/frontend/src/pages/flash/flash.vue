@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700">
-		<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
+		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="flash" :key="flash.id">
-				<Transition :name="defaultStore.state.animation ? 'zoom' : ''" mode="out-in">
+				<Transition :name="prefer.s.animation ? 'zoom' : ''" mode="out-in">
 					<div v-if="started" :class="$style.started">
 						<div class="main _panel">
 							<MkAsUi v-if="root" :component="root" :components="components"/>
@@ -79,7 +79,7 @@ import { registerAsUiLib } from '@/scripts/aiscript/ui.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';

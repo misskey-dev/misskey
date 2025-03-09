@@ -6,6 +6,8 @@
 import { computed, watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { version, lang, updateLocale, locale } from '@@/js/config.js';
+import defaultLightTheme from '@@/themes/l-light.json5';
+import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import type { App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
@@ -14,7 +16,7 @@ import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { updateI18n, i18n } from '@/i18n.js';
 import { $i, refreshAccount, login } from '@/account.js';
-import { defaultStore, ColdDeviceStorage } from '@/store.js';
+import { store } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind, updateDeviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
@@ -26,6 +28,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/main.js';
 import { createMainRouter } from '@/router/definition.js';
+import { prefer } from '@/preferences.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -38,7 +41,7 @@ export async function common(createVue: () => App<Element>) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(window as any).$i = $i;
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(window as any).$store = defaultStore;
+		(window as any).$store = store;
 
 		window.addEventListener('error', event => {
 			console.error(event);
@@ -123,7 +126,7 @@ export async function common(createVue: () => App<Element>) {
 	html.setAttribute('lang', lang);
 	//#endregion
 
-	await defaultStore.ready;
+	await store.ready;
 	await deckStore.ready;
 
 	const fetchInstanceMetaPromise = fetchInstance();
@@ -151,56 +154,63 @@ export async function common(createVue: () => App<Element>) {
 	//#endregion
 
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
-	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
-		applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
+	watch(store.reactiveState.darkMode, (darkMode) => {
+		applyTheme(darkMode
+			? (prefer.s.darkTheme ?? defaultDarkTheme)
+			: (prefer.s.lightTheme ?? defaultLightTheme),
+		);
 	}, { immediate: miLocalStorage.getItem('theme') == null });
 
-	document.documentElement.dataset.colorScheme = defaultStore.state.darkMode ? 'dark' : 'light';
+	document.documentElement.dataset.colorScheme = store.state.darkMode ? 'dark' : 'light';
 
-	const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
-	const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
+	const darkTheme = prefer.model('darkTheme');
+	const lightTheme = prefer.model('lightTheme');
 
 	watch(darkTheme, (theme) => {
-		if (defaultStore.state.darkMode) {
-			applyTheme(theme);
+		if (store.state.darkMode) {
+			applyTheme(theme ?? defaultDarkTheme);
 		}
 	});
 
 	watch(lightTheme, (theme) => {
-		if (!defaultStore.state.darkMode) {
-			applyTheme(theme);
+		if (!store.state.darkMode) {
+			applyTheme(theme ?? defaultLightTheme);
 		}
 	});
 
 	//#region Sync dark mode
-	if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
-		defaultStore.set('darkMode', isDeviceDarkmode());
+	if (prefer.s.syncDeviceDarkMode) {
+		store.set('darkMode', isDeviceDarkmode());
 	}
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
-		if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
-			defaultStore.set('darkMode', mql.matches);
+		if (prefer.s.syncDeviceDarkMode) {
+			store.set('darkMode', mql.matches);
 		}
 	});
 	//#endregion
 
+	if (prefer.s.darkTheme && store.state.darkMode) {
+		if (miLocalStorage.getItem('themeId') !== prefer.s.darkTheme.id) applyTheme(prefer.s.darkTheme);
+	} else if (prefer.s.lightTheme && !store.state.darkMode) {
+		if (miLocalStorage.getItem('themeId') !== prefer.s.lightTheme.id) applyTheme(prefer.s.lightTheme);
+	}
+
 	fetchInstanceMetaPromise.then(() => {
-		if (defaultStore.state.themeInitial) {
-			if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(instance.defaultLightTheme));
-			if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
-			defaultStore.set('themeInitial', false);
-		}
+		// TODO: instance.defaultLightTheme/instance.defaultDarkThemeが不正な形式だった場合のケア
+		if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.set('lightTheme', JSON.parse(instance.defaultLightTheme));
+		if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
 	});
 
-	watch(defaultStore.reactiveState.overridedDeviceKind, (kind) => {
+	watch(store.reactiveState.overridedDeviceKind, (kind) => {
 		updateDeviceKind(kind);
 	}, { immediate: true });
 
-	watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
+	watch(prefer.r.useBlurEffectForModal, v => {
 		document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');
 	}, { immediate: true });
 
-	watch(defaultStore.reactiveState.useBlurEffect, v => {
+	watch(prefer.r.useBlurEffect, v => {
 		if (v) {
 			document.documentElement.style.removeProperty('--MI-blur');
 		} else {
@@ -214,7 +224,7 @@ export async function common(createVue: () => App<Element>) {
 			navigator.wakeLock.request('screen');
 		}
 	});
-	if (defaultStore.state.keepScreenOn && 'wakeLock' in navigator) {
+	if (prefer.s.keepScreenOn && 'wakeLock' in navigator) {
 		navigator.wakeLock.request('screen')
 			.then(onVisibilityChange)
 			.catch(() => {

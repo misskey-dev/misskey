@@ -6,13 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import { defineComponent, h, TransitionGroup, useCssModule } from 'vue';
 import type { PropType } from 'vue';
+import type { MisskeyEntity } from '@/types/date-separated-list.js';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
-import { defaultStore } from '@/store.js';
-import type { MisskeyEntity } from '@/types/date-separated-list.js';
+import { prefer } from '@/preferences.js';
 
 export default defineComponent({
 	props: {
@@ -150,7 +150,7 @@ export default defineComponent({
 			[$style['direction-up']]: props.direction === 'up',
 		};
 
-		return () => defaultStore.state.animation ? h(TransitionGroup, {
+		return () => prefer.s.animation ? h(TransitionGroup, {
 			class: classes,
 			name: 'list',
 			tag: 'div',

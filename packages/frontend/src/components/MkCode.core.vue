@@ -13,7 +13,7 @@ import { computed, ref, watch } from 'vue';
 import { bundledLanguagesInfo } from 'shiki/langs';
 import type { BundledLanguage } from 'shiki/langs';
 import { getHighlighter, getTheme } from '@/scripts/code-highlighter.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 
 const props = defineProps<{
 	code: string;
@@ -22,7 +22,7 @@ const props = defineProps<{
 }>();
 
 const highlighter = await getHighlighter();
-const darkMode = defaultStore.reactiveState.darkMode;
+const darkMode = store.reactiveState.darkMode;
 const codeLang = ref<BundledLanguage | 'aiscript'>('js');
 
 const [lightThemeName, darkThemeName] = await Promise.all([

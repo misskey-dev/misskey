@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
+	<Transition :name="prefer.s.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.root">
 			<div class="item _panel users">
@@ -68,7 +68,7 @@ import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
 import { i18n } from '@/i18n.js';
 import { customEmojis } from '@/custom-emojis.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 const usersComparedToThePrevDay = ref<number>();

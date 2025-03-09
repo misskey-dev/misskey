@@ -68,7 +68,7 @@ import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { instance } from '@/instance.js';
@@ -128,10 +128,10 @@ async function ok() {
 	dialogEl.value?.close();
 
 	// 最近使ったユーザー更新
-	let recents = defaultStore.state.recentlyUsedUsers;
+	let recents = store.state.recentlyUsedUsers;
 	recents = recents.filter(x => x !== selected.value?.id);
 	recents.unshift(selected.value.id);
-	defaultStore.set('recentlyUsedUsers', recents.splice(0, 16));
+	store.set('recentlyUsedUsers', recents.splice(0, 16));
 }
 
 function cancel() {
@@ -141,7 +141,7 @@ function cancel() {
 
 onMounted(() => {
 	misskeyApi('users/show', {
-		userIds: defaultStore.state.recentlyUsedUsers,
+		userIds: store.state.recentlyUsedUsers,
 	}).then(foundUsers => {
 		let _users = foundUsers;
 		_users = _users.filter((u) => {

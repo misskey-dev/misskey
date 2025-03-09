@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div>
-			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
+			<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note">
 					<div v-if="showNext" class="_margin">
 						<MkNotes class="" :pagination="showNext === 'channel' ? nextChannelPagination : nextUserPagination" :noGap="true" :disableAutoLoad="true"/>
@@ -61,7 +61,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
 import { serverContext, assertServerContext } from '@/server-context.js';

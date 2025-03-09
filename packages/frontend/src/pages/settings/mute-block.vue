@@ -186,8 +186,8 @@ import { signinRequired } from '@/account.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { defaultStore } from '@/store';
 import { reloadAsk } from '@/scripts/reload-ask.js';
+import { prefer } from '@/preferences.js';
 
 const $i = signinRequired();
 
@@ -210,7 +210,7 @@ const expandedRenoteMuteItems = ref([]);
 const expandedMuteItems = ref([]);
 const expandedBlockItems = ref([]);
 
-const showSoftWordMutedWord = computed(defaultStore.makeGetterSetter('showSoftWordMutedWord'));
+const showSoftWordMutedWord = prefer.model('showSoftWordMutedWord');
 
 watch([
 	showSoftWordMutedWord,
