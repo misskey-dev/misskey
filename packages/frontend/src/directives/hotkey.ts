@@ -4,7 +4,7 @@
  */
 
 import type { Directive } from 'vue';
-import { makeHotkey } from '@/scripts/hotkey.js';
+import { makeHotkey } from '@/utility/hotkey.js';
 
 export default {
 	mounted(el, binding) {

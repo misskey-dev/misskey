@@ -6,10 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <Transition
 	appear
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_fade_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_fade_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_fade_leaveTo : ''"
 >
 	<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
 		<MkMenu :items="items" :align="'left'" @close="emit('closed')"/>
@@ -21,8 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, onBeforeUnmount, shallowRef, ref } from 'vue';
 import MkMenu from './MkMenu.vue';
 import type { MenuItem } from '@/types/menu.js';
-import contains from '@/scripts/contains.js';
-import { defaultStore } from '@/store.js';
+import contains from '@/utility/contains.js';
+import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
 
 const props = defineProps<{

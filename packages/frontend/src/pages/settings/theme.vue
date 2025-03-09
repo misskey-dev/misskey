@@ -4,79 +4,97 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m rsljpzjq">
-	<div v-adaptive-border class="rfqxtzch _panel">
-		<div class="toggle">
-			<div class="toggleWrapper">
-				<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
-				<label for="dn" class="toggle">
-					<span class="before">{{ i18n.ts.light }}</span>
-					<span class="after">{{ i18n.ts.dark }}</span>
-					<span class="toggle__handler">
-						<span class="crater crater--1"></span>
-						<span class="crater crater--2"></span>
-						<span class="crater crater--3"></span>
-					</span>
-					<span class="star star--1"></span>
-					<span class="star star--2"></span>
-					<span class="star star--3"></span>
-					<span class="star star--4"></span>
-					<span class="star star--5"></span>
-					<span class="star star--6"></span>
-				</label>
+<SearchMarker path="/settings/theme" :label="i18n.ts.theme" :keywords="['theme']" icon="ti ti-palette">
+	<div class="_gaps_m rsljpzjq">
+		<div v-adaptive-border class="rfqxtzch _panel">
+			<div class="toggle">
+				<div class="toggleWrapper">
+					<input id="dn" v-model="darkMode" type="checkbox" class="dn"/>
+					<label for="dn" class="toggle">
+						<span class="before">{{ i18n.ts.light }}</span>
+						<span class="after">{{ i18n.ts.dark }}</span>
+						<span class="toggle__handler">
+							<span class="crater crater--1"></span>
+							<span class="crater crater--2"></span>
+							<span class="crater crater--3"></span>
+						</span>
+						<span class="star star--1"></span>
+						<span class="star star--2"></span>
+						<span class="star star--3"></span>
+						<span class="star star--4"></span>
+						<span class="star star--5"></span>
+						<span class="star star--6"></span>
+					</label>
+				</div>
+			</div>
+			<div class="sync">
+				<SearchMarker :keywords="['sync', 'device', 'dark', 'light', 'mode']">
+					<MkSwitch v-model="syncDeviceDarkMode">
+						<template #label><SearchLabel>{{ i18n.ts.syncDeviceDarkMode }}</SearchLabel></template>
+					</MkSwitch>
+				</SearchMarker>
 			</div>
 		</div>
-		<div class="sync">
-			<MkSwitch v-model="syncDeviceDarkMode">{{ i18n.ts.syncDeviceDarkMode }}</MkSwitch>
+
+		<div class="selects">
+			<div class="select">
+				<SearchMarker :keywords="['light', 'theme']">
+					<MkSelect v-model="lightThemeId" large :items="lightThemeSelectorItems">
+						<template #label><SearchLabel>{{ i18n.ts.themeForLightMode }}</SearchLabel></template>
+						<template #prefix><i class="ti ti-sun"></i></template>
+					</MkSelect>
+				</SearchMarker>
+			</div>
+			<div class="select">
+				<SearchMarker :keywords="['dark', 'theme']">
+					<MkSelect v-model="darkThemeId" large :items="darkThemeSelectorItems">
+						<template #label><SearchLabel>{{ i18n.ts.themeForDarkMode }}</SearchLabel></template>
+						<template #prefix><i class="ti ti-moon"></i></template>
+					</MkSelect>
+				</SearchMarker>
+			</div>
 		</div>
+
+		<FormSection>
+			<div class="_formLinksGrid">
+				<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
+				<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
+				<FormLink to="/settings/theme/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
+				<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
+			</div>
+		</FormSection>
+
+		<SearchMarker :keywords="['wallpaper']">
+			<MkButton v-if="wallpaper == null" @click="setWallpaper"><SearchLabel>{{ i18n.ts.setWallpaper }}</SearchLabel></MkButton>
+			<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
+		</SearchMarker>
 	</div>
-
-	<div class="selects">
-		<MkSelect v-model="lightThemeId" large class="select" :items="lightThemeSelectorItems">
-			<template #label>{{ i18n.ts.themeForLightMode }}</template>
-			<template #prefix><i class="ti ti-sun"></i></template>
-		</MkSelect>
-		<MkSelect v-model="darkThemeId" large class="select" :items="darkThemeSelectorItems">
-			<template #label>{{ i18n.ts.themeForDarkMode }}</template>
-			<template #prefix><i class="ti ti-moon"></i></template>
-		</MkSelect>
-	</div>
-
-	<FormSection>
-		<div class="_formLinksGrid">
-			<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
-			<FormLink to="https://assets.misskey.io/theme/list" external><template #icon><i class="ti ti-world"></i></template>{{ i18n.ts._theme.explore }}</FormLink>
-			<FormLink to="/settings/theme/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._theme.install }}</FormLink>
-			<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
-		</div>
-	</FormSection>
-
-	<MkButton v-if="wallpaper == null" @click="setWallpaper">{{ i18n.ts.setWallpaper }}</MkButton>
-	<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
-</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
 import { computed, onActivated, ref, watch } from 'vue';
 import JSON5 from 'json5';
+import defaultLightTheme from '@@/themes/l-light.json5';
+import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getBuiltinThemesRef } from '@/scripts/theme.js';
-import { selectFile } from '@/scripts/select-file.js';
-import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
-import { ColdDeviceStorage, defaultStore } from '@/store.js';
+import { getBuiltinThemesRef } from '@/theme.js';
+import { selectFile } from '@/utility/select-file.js';
+import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { uniqueBy } from '@/scripts/array.js';
-import { fetchThemes, getThemes } from '@/theme-store.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { uniqueBy } from '@/utility/array.js';
+import { getThemes } from '@/theme-store.js';
+import { definePageMetadata } from '@/utility/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { reloadAsk } from '@/scripts/reload-ask.js';
-import * as os from '@/os.js';
+import { reloadAsk } from '@/utility/reload-ask.js';
+import { prefer } from '@/preferences.js';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -153,39 +171,39 @@ const darkThemeSelectorItems = computed(() => {
 	return items;
 });
 
-const darkTheme = ColdDeviceStorage.ref('darkTheme');
+const darkTheme = prefer.r.darkTheme;
 const darkThemeId = computed({
 	get() {
-		return darkTheme.value.id;
+		return darkTheme.value ? darkTheme.value.id : defaultDarkTheme.id;
 	},
 	set(id) {
 		const t = themes.value.find(x => x.id === id);
 		if (t) { // テーマエディタでテーマを作成したときなどは、themesに反映されないため undefined になる
-			ColdDeviceStorage.set('darkTheme', t);
+			prefer.set('darkTheme', t);
 		}
 	},
 });
-const lightTheme = ColdDeviceStorage.ref('lightTheme');
+const lightTheme = prefer.r.lightTheme;
 const lightThemeId = computed({
 	get() {
-		return lightTheme.value.id;
+		return lightTheme.value ? lightTheme.value.id : defaultLightTheme.id;
 	},
 	set(id) {
 		const t = themes.value.find(x => x.id === id);
 		if (t) { // テーマエディタでテーマを作成したときなどは、themesに反映されないため undefined になる
-			ColdDeviceStorage.set('lightTheme', t);
+			prefer.set('lightTheme', t);
 		}
 	},
 });
 
-const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
+const darkMode = computed(store.makeGetterSetter('darkMode'));
+const syncDeviceDarkMode = prefer.model('syncDeviceDarkMode');
 const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
 
 watch(syncDeviceDarkMode, () => {
 	if (syncDeviceDarkMode.value) {
-		defaultStore.set('darkMode', isDeviceDarkmode());
+		store.set('darkMode', isDeviceDarkmode());
 	}
 });
 
@@ -199,12 +217,6 @@ watch(wallpaper, async () => {
 });
 
 onActivated(() => {
-	fetchThemes().then(() => {
-		installedThemes.value = getThemes();
-	});
-});
-
-fetchThemes().then(() => {
 	installedThemes.value = getThemes();
 });
 

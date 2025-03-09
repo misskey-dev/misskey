@@ -4,15 +4,15 @@
  */
 
 import { computed, reactive } from 'vue';
-import { clearCache } from './scripts/clear-cache.js';
+import { clearCache } from './utility/clear-cache.js';
 import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { openInstanceMenu, openToolsMenu } from '@/ui/_common_/common.js';
-import { lookup } from '@/scripts/lookup.js';
+import { lookup } from '@/utility/lookup.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { ui } from '@@/js/config.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 
 export const navbarItemDef = reactive({
 	notifications: {

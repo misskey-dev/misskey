@@ -88,10 +88,10 @@ import { onMounted, ref, computed, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { useChartTooltip } from '@/utility/use-chart-tooltip.js';
 import { $i } from '@/account.js';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import MkHeatmap from '@/components/MkHeatmap.vue';
@@ -99,7 +99,7 @@ import type { HeatmapSource } from '@/components/MkHeatmap.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
 import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
-import { initChart } from '@/scripts/init-chart.js';
+import { initChart } from '@/utility/init-chart.js';
 
 initChart();
 

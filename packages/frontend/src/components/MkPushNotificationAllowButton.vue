@@ -46,7 +46,7 @@ import { $i, getAccounts } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 import { instance } from '@/instance.js';
 import { apiWithDialog, promiseDialog } from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 defineProps<{
