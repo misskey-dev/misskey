@@ -268,10 +268,9 @@ const canPost = computed((): boolean => {
 		(
 			useCw.value ?
 				(
-					1 <= cwTextLength.value &&
+					cw.value != null && cw.value.trim() !== '' &&
 					cwTextLength.value <= maxCwTextLength
-				) : true &&
-				cw.value != null && cw.value.trim() !== ''
+				) : true
 		) &&
 		(files.value.length <= 16) &&
 		(!poll.value || poll.value.choices.length >= 2);
