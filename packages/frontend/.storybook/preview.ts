@@ -68,9 +68,9 @@ queueMicrotask(() => {
 		import('../src/directives'),
 		import('../src/widgets'),
 		import('../src/scripts/theme'),
-		import('../src/store'),
+		import('../src/preferences'),
 		import('../src/os'),
-	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { defaultStore }, os]) => {
+	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { prefer }, os]) => {
 		setup((app) => {
 			moduleInitialized = true;
 			if (app[appInitialized]) {
@@ -83,7 +83,7 @@ queueMicrotask(() => {
 			widgets(app);
 			misskeyOS = os;
 			if (isChromatic()) {
-				defaultStore.set('animation', false);
+				prefer.set('animation', false);
 			}
 		});
 	});
@@ -104,9 +104,9 @@ const preview = {
 							}
 						}).catch(() => {})
 					: Promise.resolve();
-				const resetDefaultStorePromise = import('../src/store').then(({ defaultStore }) => {
+				const resetDefaultStorePromise = import('../src/store').then(({ store }) => {
 					// @ts-expect-error
-					defaultStore.init();
+					store.init();
 				}).catch(() => {});
 				Promise.all([resetIndexedDBPromise, resetDefaultStorePromise]).then(() => {
 					initLocalStorage();

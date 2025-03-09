@@ -78,6 +78,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as Misskey from 'misskey-js';
 import { onMounted, ref, useCssModule } from 'vue';
+import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
+import type { DroppedFile } from '@/scripts/file-drop.js';
+import type { GridSetting } from '@/components/grid/grid.js';
+import type { GridRow } from '@/components/grid/row.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import {
 	emptyStrToEmptyArray,
@@ -88,7 +93,6 @@ import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { defaultStore } from '@/store.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -99,11 +103,7 @@ import { extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
 
-import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
-import type { DroppedFile } from '@/scripts/file-drop.js';
-import type { GridSetting } from '@/components/grid/grid.js';
-import type { GridRow } from '@/components/grid/row.js';
+import { prefer } from '@/preferences.js';
 
 const MAXIMUM_EMOJI_REGISTER_COUNT = 100;
 
@@ -244,8 +244,8 @@ function setupGrid(): GridSetting {
 
 const uploadFolders = ref<FolderItem[]>([]);
 const gridItems = ref<GridItem[]>([]);
-const selectedFolderId = ref(defaultStore.state.uploadFolder);
-const keepOriginalUploading = ref(defaultStore.state.keepOriginalUploading);
+const selectedFolderId = ref(prefer.s.uploadFolder);
+const keepOriginalUploading = ref(prefer.s.keepOriginalUploading);
 const directoryToCategory = ref<boolean>(false);
 const registerButtonDisabled = ref<boolean>(false);
 const requestLogs = ref<RequestLogItem[]>([]);

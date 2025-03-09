@@ -67,15 +67,15 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
 import { signinRequired } from '@/account.js';
-import { defaultStore } from '@/store.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { mainRouter } from '@/router/main.js';
+import { prefer } from '@/preferences.js';
 
 const $i = signinRequired();
 
 const {
 	enableInfiniteScroll,
-} = defaultStore.reactiveState;
+} = prefer.r;
 
 const props = defineProps<{
 	listId: string;

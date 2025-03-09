@@ -27,10 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: maxHeight ? `auto` : undefined }" :aria-hidden="!opened">
 			<Transition
-				:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
-				:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
-				:enterFromClass="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
-				:leaveToClass="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
+				:enterActiveClass="prefer.s.animation ? $style.transition_toggle_enterActive : ''"
+				:leaveActiveClass="prefer.s.animation ? $style.transition_toggle_leaveActive : ''"
+				:enterFromClass="prefer.s.animation ? $style.transition_toggle_enterFrom : ''"
+				:leaveToClass="prefer.s.animation ? $style.transition_toggle_leaveTo : ''"
 				@enter="enter"
 				@afterEnter="afterEnter"
 				@leave="leave"
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onMounted, ref, shallowRef } from 'vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { getBgColor } from '@/scripts/get-bg-color.js';
 
 const props = withDefaults(defineProps<{
