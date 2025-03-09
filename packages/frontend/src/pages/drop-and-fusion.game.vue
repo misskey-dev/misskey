@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
-				<img v-if="defaultStore.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
+				<img v-if="store.state.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
 				<canvas ref="canvasEl" :class="$style.canvas"/>
 				<Transition
@@ -195,6 +195,8 @@ import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
 import { DropAndFusionGame } from 'misskey-bubble-game';
+import { useInterval } from '@@/js/use-interval.js';
+import { apiUrl } from '@@/js/config.js';
 import type { Mono } from 'misskey-bubble-game';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -203,15 +205,14 @@ import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { claimAchievement } from '@/scripts/achievements.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@@/js/use-interval.js';
-import { apiUrl } from '@@/js/config.js';
 import { $i } from '@/account.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { prefer } from '@/preferences.js';
 
 type FrontendMonoDefinition = {
 	id: string;
@@ -586,8 +587,8 @@ const showConfig = ref(false);
 const replaying = ref(false);
 const replayPlaybackRate = ref(1);
 const currentFrame = ref(0);
-const bgmVolume = ref(defaultStore.state.dropAndFusion.bgmVolume);
-const sfxVolume = ref(defaultStore.state.dropAndFusion.sfxVolume);
+const bgmVolume = ref(prefer.s['game.dropAndFusion'].bgmVolume);
+const sfxVolume = ref(prefer.s['game.dropAndFusion'].sfxVolume);
 
 watch(replayPlaybackRate, (newValue) => {
 	game.replayPlaybackRate = newValue;
@@ -623,7 +624,7 @@ function loadMonoTextures() {
 		if (renderer.textures[mono.img]) return;
 
 		let src = mono.img;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
 		if (monoTextureUrls[mono.img]) {
 			src = monoTextureUrls[mono.img];
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -649,7 +650,6 @@ function loadMonoTextures() {
 function getTextureImageUrl(mono: Mono) {
 	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (monoTextureUrls[def.img]) {
 		return monoTextureUrls[def.img];
 
@@ -853,13 +853,13 @@ function exportLog() {
 }
 
 function updateSettings<
-	K extends keyof typeof defaultStore.state.dropAndFusion,
-	V extends typeof defaultStore.state.dropAndFusion[K],
+	K extends keyof typeof prefer.s['game.dropAndFusion'],
+	V extends typeof prefer.s['game.dropAndFusion'][K],
 >(key: K, value: V) {
 	const changes: { [P in K]?: V } = {};
 	changes[key] = value;
-	defaultStore.set('dropAndFusion', {
-		...defaultStore.state.dropAndFusion,
+	prefer.set('game.dropAndFusion', {
+		...prefer.s['game.dropAndFusion'],
 		...changes,
 	});
 }
@@ -909,8 +909,8 @@ function getGameImageDriveFile() {
 				formData.append('name', `bubble-game-${Date.now()}.png`);
 				formData.append('isSensitive', 'false');
 				formData.append('i', $i.token);
-				if (defaultStore.state.uploadFolder) {
-					formData.append('folderId', defaultStore.state.uploadFolder);
+				if (prefer.s.uploadFolder) {
+					formData.append('folderId', prefer.s.uploadFolder);
 				}
 
 				window.fetch(apiUrl + '/drive/files/create', {

@@ -12,6 +12,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 					<div class="baaadecd">
 						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+						<MkInfo v-if="!store.reactiveState.enablePreferencesAutoCloudBackup.value && store.reactiveState.showPreferencesAutoCloudBackupSuggestion.value" class="info">
+							<div>{{ i18n.ts._preferencesBackup.autoPreferencesBackupIsNotEnabledForThisDevice }}</div>
+							<div><button class="_textButton" @click="enableAutoBackup">{{ i18n.ts.enable }}</button> | <button class="_textButton" @click="skipAutoBackup">{{ i18n.ts.skip }}</button></div>
+						</MkInfo>
 						<MkSuperMenu :def="menuDef" :grid="narrow" :searchIndex="SETTING_INDEX"></MkSuperMenu>
 					</div>
 				</div>
@@ -41,6 +45,8 @@ import { definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } 
 import * as os from '@/os.js';
 import { useRouter } from '@/router/supplier.js';
 import { searchIndexes } from '@/scripts/autogen/settings-search-index.js';
+import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utility.js';
+import { store } from '@/store.js';
 
 const SETTING_INDEX = searchIndexes; // TODO: lazy load
 
@@ -64,6 +70,10 @@ const ro = new ResizeObserver((entries, observer) => {
 	if (entries.length === 0) return;
 	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
 });
+
+function skipAutoBackup() {
+	store.set('showPreferencesAutoCloudBackupSuggestion', false);
+}
 
 const menuDef = computed<SuperMenuDef[]>(() => [{
 	items: [{
@@ -168,10 +178,12 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 	}],
 }, {
 	items: [{
-		icon: 'ti ti-device-floppy',
-		text: i18n.ts.preferencesBackups,
-		to: '/settings/preferences-backups',
-		active: currentPage.value?.route.name === 'preferences-backups',
+		type: 'button',
+		icon: 'ti ti-settings-2',
+		text: i18n.ts.preferencesProfile,
+		action: async (ev: MouseEvent) => {
+			os.popupMenu(getPreferencesProfileMenu(), ev.currentTarget ?? ev.target);
+		},
 	}, {
 		type: 'button',
 		icon: 'ti ti-trash',

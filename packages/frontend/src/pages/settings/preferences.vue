@@ -33,30 +33,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormSection>
 			<div class="_gaps_s">
 				<SearchMarker :keywords="['post', 'form', 'timeline']">
-					<MkSwitch v-model="showFixedPostForm">
-						<template #label><SearchLabel>{{ i18n.ts.showFixedPostForm }}</SearchLabel></template>
-					</MkSwitch>
+					<MkPreferenceContainer k="showFixedPostForm">
+						<MkSwitch v-model="showFixedPostForm">
+							<template #label><SearchLabel>{{ i18n.ts.showFixedPostForm }}</SearchLabel></template>
+						</MkSwitch>
+					</MkPreferenceContainer>
 				</SearchMarker>
 
 				<SearchMarker :keywords="['post', 'form', 'timeline', 'channel']">
-					<MkSwitch v-model="showFixedPostFormInChannel">
-						<template #label><SearchLabel>{{ i18n.ts.showFixedPostFormInChannel }}</SearchLabel></template>
-					</MkSwitch>
+					<MkPreferenceContainer k="showFixedPostFormInChannel">
+						<MkSwitch v-model="showFixedPostFormInChannel">
+							<template #label><SearchLabel>{{ i18n.ts.showFixedPostFormInChannel }}</SearchLabel></template>
+						</MkSwitch>
+					</MkPreferenceContainer>
 				</SearchMarker>
 
 				<SearchMarker :keywords="['pinned', 'list']">
 					<MkFolder>
 						<template #label><SearchLabel>{{ i18n.ts.pinnedList }}</SearchLabel></template>
 						<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
-						<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
+						<MkButton v-if="prefer.r.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
 						<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 					</MkFolder>
 				</SearchMarker>
 
 				<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn']">
-					<MkSwitch v-model="enableQuickAddMfmFunction">
-						<template #label><SearchLabel>{{ i18n.ts.enableQuickAddMfmFunction }}</SearchLabel></template>
-					</MkSwitch>
+					<MkPreferenceContainer k="enableQuickAddMfmFunction">
+						<MkSwitch v-model="enableQuickAddMfmFunction">
+							<template #label><SearchLabel>{{ i18n.ts.enableQuickAddMfmFunction }}</SearchLabel></template>
+						</MkSwitch>
+					</MkPreferenceContainer>
 				</SearchMarker>
 			</div>
 		</FormSection>
@@ -68,40 +74,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_m">
 					<div class="_gaps_s">
 						<SearchMarker :keywords="['renote']">
-							<MkSwitch v-model="collapseRenotes">
-								<template #label><SearchLabel>{{ i18n.ts.collapseRenotes }}</SearchLabel></template>
-								<template #caption><SearchKeyword>{{ i18n.ts.collapseRenotesDescription }}</SearchKeyword></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="collapseRenotes">
+								<MkSwitch v-model="collapseRenotes">
+									<template #label><SearchLabel>{{ i18n.ts.collapseRenotes }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.collapseRenotesDescription }}</SearchKeyword></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['hover', 'show', 'footer', 'action']">
-							<MkSwitch v-model="showNoteActionsOnlyHover">
-								<template #label><SearchLabel>{{ i18n.ts.showNoteActionsOnlyHover }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="showNoteActionsOnlyHover">
+								<MkSwitch v-model="showNoteActionsOnlyHover">
+									<template #label><SearchLabel>{{ i18n.ts.showNoteActionsOnlyHover }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['footer', 'action', 'clip', 'show']">
-							<MkSwitch v-model="showClipButtonInNoteFooter">
-								<template #label><SearchLabel>{{ i18n.ts.showClipButtonInNoteFooter }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="showClipButtonInNoteFooter">
+								<MkSwitch v-model="showClipButtonInNoteFooter">
+									<template #label><SearchLabel>{{ i18n.ts.showClipButtonInNoteFooter }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced']">
-							<MkSwitch v-model="advancedMfm">
-								<template #label><SearchLabel>{{ i18n.ts.enableAdvancedMfm }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="advancedMfm">
+								<MkSwitch v-model="advancedMfm">
+									<template #label><SearchLabel>{{ i18n.ts.enableAdvancedMfm }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['reaction', 'count', 'show']">
-							<MkSwitch v-model="showReactionsCount">
-								<template #label><SearchLabel>{{ i18n.ts.showReactionsCount }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="showReactionsCount">
+								<MkSwitch v-model="showReactionsCount">
+									<template #label><SearchLabel>{{ i18n.ts.showReactionsCount }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment']">
-							<MkSwitch v-model="loadRawImages">
-								<template #label><SearchLabel>{{ i18n.ts.loadRawImages }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="loadRawImages">
+								<MkSwitch v-model="loadRawImages">
+									<template #label><SearchLabel>{{ i18n.ts.loadRawImages }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 					</div>
 				</div>
@@ -114,9 +132,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['group']">
-						<MkSwitch v-model="useGroupedNotifications">
-							<template #label><SearchLabel>{{ i18n.ts.useGroupedNotifications }}</SearchLabel></template>
-						</MkSwitch>
+						<MkPreferenceContainer k="useGroupedNotifications">
+							<MkSwitch v-model="useGroupedNotifications">
+								<template #label><SearchLabel>{{ i18n.ts.useGroupedNotifications }}</SearchLabel></template>
+							</MkSwitch>
+						</MkPreferenceContainer>
 					</SearchMarker>
 				</div>
 			</FormSection>
@@ -129,62 +149,88 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_m">
 					<div class="_gaps_s">
 						<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab']">
-							<MkSwitch v-model="imageNewTab">
-								<template #label><SearchLabel>{{ i18n.ts.openImageInNewTab }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="imageNewTab">
+								<MkSwitch v-model="imageNewTab">
+									<template #label><SearchLabel>{{ i18n.ts.openImageInNewTab }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['reaction', 'picker', 'contextmenu', 'open']">
-							<MkSwitch v-model="useReactionPickerForContextMenu">
-								<template #label><SearchLabel>{{ i18n.ts.useReactionPickerForContextMenu }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="useReactionPickerForContextMenu">
+								<MkSwitch v-model="useReactionPickerForContextMenu">
+									<template #label><SearchLabel>{{ i18n.ts.useReactionPickerForContextMenu }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['load', 'auto', 'more']">
-							<MkSwitch v-model="enableInfiniteScroll">
-								<template #label><SearchLabel>{{ i18n.ts.enableInfiniteScroll }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="enableInfiniteScroll">
+								<MkSwitch v-model="enableInfiniteScroll">
+									<template #label><SearchLabel>{{ i18n.ts.enableInfiniteScroll }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['disable', 'streaming', 'timeline']">
-							<MkSwitch v-model="disableStreamingTimeline">
-								<template #label><SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="disableStreamingTimeline">
+								<MkSwitch v-model="disableStreamingTimeline">
+									<template #label><SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['follow', 'confirm', 'always']">
-							<MkSwitch v-model="alwaysConfirmFollow">
-								<template #label><SearchLabel>{{ i18n.ts.alwaysConfirmFollow }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="alwaysConfirmFollow">
+								<MkSwitch v-model="alwaysConfirmFollow">
+									<template #label><SearchLabel>{{ i18n.ts.alwaysConfirmFollow }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['sensitive', 'nsfw', 'media', 'image', 'photo', 'picture', 'attachment', 'confirm']">
-							<MkSwitch v-model="confirmWhenRevealingSensitiveMedia">
-								<template #label><SearchLabel>{{ i18n.ts.confirmWhenRevealingSensitiveMedia }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="confirmWhenRevealingSensitiveMedia">
+								<MkSwitch v-model="confirmWhenRevealingSensitiveMedia">
+									<template #label><SearchLabel>{{ i18n.ts.confirmWhenRevealingSensitiveMedia }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['reaction', 'confirm']">
-							<MkSwitch v-model="confirmOnReact">
-								<template #label><SearchLabel>{{ i18n.ts.confirmOnReact }}</SearchLabel></template>
-							</MkSwitch>
+							<MkPreferenceContainer k="confirmOnReact">
+								<MkSwitch v-model="confirmOnReact">
+									<template #label><SearchLabel>{{ i18n.ts.confirmOnReact }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['remember', 'keep', 'note', 'cw']">
+							<MkPreferenceContainer k="keepCw">
+								<MkSwitch v-model="keepCw">
+									<template #label><SearchLabel>{{ i18n.ts.keepCw }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
 						</SearchMarker>
 					</div>
 
 					<SearchMarker :keywords="['server', 'disconnect', 'reconnect', 'reload', 'streaming']">
-						<MkSelect v-model="serverDisconnectedBehavior">
-							<template #label><SearchLabel>{{ i18n.ts.whenServerDisconnected }}</SearchLabel></template>
-							<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
-							<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
-							<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
-						</MkSelect>
+						<MkPreferenceContainer k="serverDisconnectedBehavior">
+							<MkSelect v-model="serverDisconnectedBehavior">
+								<template #label><SearchLabel>{{ i18n.ts.whenServerDisconnected }}</SearchLabel></template>
+								<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
+								<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
+								<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
+							</MkSelect>
+						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['cache', 'page']">
-						<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
-							<template #label><SearchLabel>{{ i18n.ts.numberOfPageCache }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
-						</MkRange>
+						<MkPreferenceContainer k="numberOfPageCache">
+							<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
+								<template #label><SearchLabel>{{ i18n.ts.numberOfPageCache }}</SearchLabel></template>
+								<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
+							</MkRange>
+						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker :label="i18n.ts.dataSaver" :keywords="['datasaver']">
@@ -229,18 +275,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_gaps">
 					<SearchMarker :keywords="['ad', 'show']">
-						<MkSwitch v-model="forceShowAds">
-							<template #label><SearchLabel>{{ i18n.ts.forceShowAds }}</SearchLabel></template>
-						</MkSwitch>
+						<MkPreferenceContainer k="forceShowAds">
+							<MkSwitch v-model="forceShowAds">
+								<template #label><SearchLabel>{{ i18n.ts.forceShowAds }}</SearchLabel></template>
+							</MkSwitch>
+						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker>
-						<MkRadios v-model="hemisphere">
-							<template #label><SearchLabel>{{ i18n.ts.hemisphere }}</SearchLabel></template>
-							<option value="N">{{ i18n.ts._hemisphere.N }}</option>
-							<option value="S">{{ i18n.ts._hemisphere.S }}</option>
-							<template #caption>{{ i18n.ts._hemisphere.caption }}</template>
-						</MkRadios>
+						<MkPreferenceContainer k="hemisphere">
+							<MkRadios v-model="hemisphere">
+								<template #label><SearchLabel>{{ i18n.ts.hemisphere }}</SearchLabel></template>
+								<option value="N">{{ i18n.ts._hemisphere.N }}</option>
+								<option value="S">{{ i18n.ts._hemisphere.S }}</option>
+								<template #caption>{{ i18n.ts._hemisphere.caption }}</template>
+							</MkRadios>
+						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['emoji', 'dictionary', 'additional', 'extra']">
@@ -248,8 +298,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label><SearchLabel>{{ i18n.ts.additionalEmojiDictionary }}</SearchLabel></template>
 							<div class="_buttons">
 								<template v-for="lang in emojiIndexLangs" :key="lang">
-									<MkButton v-if="defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{ getEmojiIndexLangName(lang) }})</MkButton>
-									<MkButton v-else @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ getEmojiIndexLangName(lang) }}{{ defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
+									<MkButton v-if="store.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{ getEmojiIndexLangName(lang) }})</MkButton>
+									<MkButton v-else @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ getEmojiIndexLangName(lang) }}{{ store.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
 								</template>
 							</div>
 						</MkFolder>
@@ -272,7 +322,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import * as Misskey from 'misskey-js';
 import { langs } from '@@/js/config.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -284,41 +333,44 @@ import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import * as os from '@/os.js';
-import { instance } from '@/instance.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { prefer } from '@/preferences.js';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
 const lang = ref(miLocalStorage.getItem('lang'));
-const dataSaver = ref(defaultStore.state.dataSaver);
+const dataSaver = ref(prefer.s.dataSaver);
 
-const hemisphere = computed(defaultStore.makeGetterSetter('hemisphere'));
-const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDeviceKind'));
-const serverDisconnectedBehavior = computed(defaultStore.makeGetterSetter('serverDisconnectedBehavior'));
-const showNoteActionsOnlyHover = computed(defaultStore.makeGetterSetter('showNoteActionsOnlyHover'));
-const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showClipButtonInNoteFooter'));
-const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
-const advancedMfm = computed(defaultStore.makeGetterSetter('advancedMfm'));
-const showReactionsCount = computed(defaultStore.makeGetterSetter('showReactionsCount'));
-const enableQuickAddMfmFunction = computed(defaultStore.makeGetterSetter('enableQuickAddMfmFunction'));
-const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
-const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
-const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
-const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
-const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
-const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
-const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
-const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
-const disableStreamingTimeline = computed(defaultStore.makeGetterSetter('disableStreamingTimeline'));
-const useGroupedNotifications = computed(defaultStore.makeGetterSetter('useGroupedNotifications'));
-const alwaysConfirmFollow = computed(defaultStore.makeGetterSetter('alwaysConfirmFollow'));
-const confirmWhenRevealingSensitiveMedia = computed(defaultStore.makeGetterSetter('confirmWhenRevealingSensitiveMedia'));
-const confirmOnReact = computed(defaultStore.makeGetterSetter('confirmOnReact'));
-const contextMenu = computed(defaultStore.makeGetterSetter('contextMenu'));
+const overridedDeviceKind = computed(store.makeGetterSetter('overridedDeviceKind'));
+
+const keepCw = prefer.model('keepCw');
+const serverDisconnectedBehavior = prefer.model('serverDisconnectedBehavior');
+const hemisphere = prefer.model('hemisphere');
+const showNoteActionsOnlyHover = prefer.model('showNoteActionsOnlyHover');
+const showClipButtonInNoteFooter = prefer.model('showClipButtonInNoteFooter');
+const collapseRenotes = prefer.model('collapseRenotes');
+const advancedMfm = prefer.model('advancedMfm');
+const showReactionsCount = prefer.model('showReactionsCount');
+const enableQuickAddMfmFunction = prefer.model('enableQuickAddMfmFunction');
+const forceShowAds = prefer.model('forceShowAds');
+const loadRawImages = prefer.model('loadRawImages');
+const imageNewTab = prefer.model('imageNewTab');
+const showFixedPostForm = prefer.model('showFixedPostForm');
+const showFixedPostFormInChannel = prefer.model('showFixedPostFormInChannel');
+const numberOfPageCache = prefer.model('numberOfPageCache');
+const enableInfiniteScroll = prefer.model('enableInfiniteScroll');
+const useReactionPickerForContextMenu = prefer.model('useReactionPickerForContextMenu');
+const disableStreamingTimeline = prefer.model('disableStreamingTimeline');
+const useGroupedNotifications = prefer.model('useGroupedNotifications');
+const alwaysConfirmFollow = prefer.model('alwaysConfirmFollow');
+const confirmWhenRevealingSensitiveMedia = prefer.model('confirmWhenRevealingSensitiveMedia');
+const confirmOnReact = prefer.model('confirmOnReact');
+const contextMenu = prefer.model('contextMenu');
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -356,7 +408,7 @@ function getEmojiIndexLangName(targetLang: typeof emojiIndexLangs[number]) {
 
 function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 	async function main() {
-		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
+		const currentIndexes = store.state.additionalUnicodeEmojiIndexes;
 
 		function download() {
 			switch (lang) {
@@ -368,7 +420,7 @@ function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 		}
 
 		currentIndexes[lang] = await download();
-		await defaultStore.set('additionalUnicodeEmojiIndexes', currentIndexes);
+		await store.set('additionalUnicodeEmojiIndexes', currentIndexes);
 	}
 
 	os.promiseDialog(main());
@@ -376,9 +428,9 @@ function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 
 function removeEmojiIndex(lang: string) {
 	async function main() {
-		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
+		const currentIndexes = store.state.additionalUnicodeEmojiIndexes;
 		delete currentIndexes[lang];
-		await defaultStore.set('additionalUnicodeEmojiIndexes', currentIndexes);
+		await store.set('additionalUnicodeEmojiIndexes', currentIndexes);
 	}
 
 	os.promiseDialog(main());
@@ -393,16 +445,17 @@ async function setPinnedList() {
 		})),
 	});
 	if (canceled) return;
+	if (list == null) return;
 
-	defaultStore.set('pinnedUserLists', [list]);
+	prefer.set('pinnedUserLists', [list]);
 }
 
 function removePinnedList() {
-	defaultStore.set('pinnedUserLists', []);
+	prefer.set('pinnedUserLists', []);
 }
 
 function enableAllDataSaver() {
-	const g = { ...defaultStore.state.dataSaver };
+	const g = { ...prefer.s.dataSaver };
 
 	Object.keys(g).forEach((key) => { g[key] = true; });
 
@@ -410,7 +463,7 @@ function enableAllDataSaver() {
 }
 
 function disableAllDataSaver() {
-	const g = { ...defaultStore.state.dataSaver };
+	const g = { ...prefer.s.dataSaver };
 
 	Object.keys(g).forEach((key) => { g[key] = false; });
 
@@ -418,7 +471,7 @@ function disableAllDataSaver() {
 }
 
 watch(dataSaver, (to) => {
-	defaultStore.set('dataSaver', to);
+	prefer.set('dataSaver', to);
 }, {
 	deep: true,
 });

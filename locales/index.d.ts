@@ -5278,6 +5278,86 @@ export interface Locale extends ILocale {
      * アクセシビリティ
      */
     "accessibility": string;
+    /**
+     * 設定のプロファイル
+     */
+    "preferencesProfile": string;
+    /**
+     * 設定IDをコピー
+     */
+    "copyPreferenceId": string;
+    /**
+     * 初期値に戻す
+     */
+    "resetToDefaultValue": string;
+    /**
+     * アカウントで上書き
+     */
+    "overrideByAccount": string;
+    /**
+     * 無題
+     */
+    "untitled": string;
+    /**
+     * 名前はありません
+     */
+    "noName": string;
+    /**
+     * スキップ
+     */
+    "skip": string;
+    /**
+     * 復元
+     */
+    "restore": string;
+    "_preferencesProfile": {
+        /**
+         * プロファイル名
+         */
+        "profileName": string;
+        /**
+         * このデバイスを識別する名前を設定してください。
+         */
+        "profileNameDescription": string;
+        /**
+         * 例: 「メインPC」、「スマホ」など
+         */
+        "profileNameDescription2": string;
+    };
+    "_preferencesBackup": {
+        /**
+         * 自動バックアップ
+         */
+        "autoBackup": string;
+        /**
+         * バックアップから復元
+         */
+        "restoreFromBackup": string;
+        /**
+         * バックアップが見つかりませんでした
+         */
+        "noBackupsFoundTitle": string;
+        /**
+         * 自動で作成されたバックアップは見つかりませんでしたが、バックアップファイルを手動で保存している場合、それをインポートして復元することはできます。
+         */
+        "noBackupsFoundDescription": string;
+        /**
+         * 復元するバックアップを選択してください
+         */
+        "selectBackupToRestore": string;
+        /**
+         * 自動バックアップを有効にするにはプロファイル名の設定が必要です。
+         */
+        "youNeedToNameYourProfileToEnableAutoBackup": string;
+        /**
+         * このデバイスで設定の自動バックアップは有効になっていません。
+         */
+        "autoPreferencesBackupIsNotEnabledForThisDevice": string;
+        /**
+         * 設定のバックアップが見つかりました
+         */
+        "backupFound": string;
+    };
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする

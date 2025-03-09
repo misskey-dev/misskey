@@ -43,13 +43,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch, ref, shallowRef, computed } from 'vue';
+import type { Keymap } from '@/scripts/hotkey.js';
 import * as os from '@/os.js';
 import { isTouchUsing } from '@/scripts/touch.js';
-import { defaultStore } from '@/store.js';
 import { deviceKind } from '@/scripts/device-kind.js';
-import type { Keymap } from '@/scripts/hotkey.js';
 import { focusTrap } from '@/scripts/focus-trap.js';
 import { focusParent } from '@/scripts/focus.js';
+import { prefer } from '@/preferences.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -106,7 +106,7 @@ const zIndex = os.claimZIndex(props.zPriority);
 const useSendAnime = ref(false);
 const type = computed<ModalTypes>(() => {
 	if (props.preferType === 'auto') {
-		if ((defaultStore.state.menuStyle === 'drawer') || (defaultStore.state.menuStyle === 'auto' && isTouchUsing && deviceKind === 'smartphone')) {
+		if ((prefer.s.menuStyle === 'drawer') || (prefer.s.menuStyle === 'auto' && isTouchUsing && deviceKind === 'smartphone')) {
 			return 'drawer';
 		} else {
 			return props.src != null ? 'popup' : 'dialog';
@@ -117,7 +117,7 @@ const type = computed<ModalTypes>(() => {
 });
 const isEnableBgTransparent = computed(() => props.transparentBg && (type.value === 'popup'));
 const transitionName = computed((() =>
-	defaultStore.state.animation
+	prefer.s.animation
 		? useSendAnime.value
 			? 'send'
 			: type.value === 'drawer'

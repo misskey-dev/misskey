@@ -6,7 +6,7 @@
 import { defineAsyncComponent, ref } from 'vue';
 import type { Ref } from 'vue';
 import { popup } from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 
 /**
  * 絵文字ピッカーを表示する。
@@ -25,7 +25,7 @@ class EmojiPicker {
 	}
 
 	public async init() {
-		const emojisRef = defaultStore.reactiveState.pinnedEmojis;
+		const emojisRef = store.reactiveState.pinnedEmojis;
 		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src: this.src,
 			pinnedEmojis: emojisRef,

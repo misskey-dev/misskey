@@ -50,17 +50,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormLink>
 
 				<SearchMarker :keywords="['keep', 'original', 'raw', 'upload']">
-					<MkSwitch v-model="keepOriginalUploading">
-						<template #label><SearchLabel>{{ i18n.ts.keepOriginalUploading }}</SearchLabel></template>
-						<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalUploadingDescription }}</SearchKeyword></template>
-					</MkSwitch>
+					<MkPreferenceContainer k="keepOriginalUploading">
+						<MkSwitch v-model="keepOriginalUploading">
+							<template #label><SearchLabel>{{ i18n.ts.keepOriginalUploading }}</SearchLabel></template>
+							<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalUploadingDescription }}</SearchKeyword></template>
+						</MkSwitch>
+					</MkPreferenceContainer>
 				</SearchMarker>
 
 				<SearchMarker :keywords="['keep', 'original', 'filename']">
-					<MkSwitch v-model="keepOriginalFilename">
-						<template #label><SearchLabel>{{ i18n.ts.keepOriginalFilename }}</SearchLabel></template>
-						<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalFilenameDescription }}</SearchKeyword></template>
-					</MkSwitch>
+					<MkPreferenceContainer k="keepOriginalFilename">
+						<MkSwitch v-model="keepOriginalFilename">
+							<template #label><SearchLabel>{{ i18n.ts.keepOriginalFilename }}</SearchLabel></template>
+							<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalFilenameDescription }}</SearchKeyword></template>
+						</MkSwitch>
+					</MkPreferenceContainer>
 				</SearchMarker>
 
 				<SearchMarker :keywords="['always', 'default', 'mark', 'nsfw', 'sensitive', 'media', 'file']">
@@ -93,11 +97,12 @@ import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import bytes from '@/filters/bytes.js';
-import { defaultStore } from '@/store.js';
 import MkChart from '@/components/MkChart.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { signinRequired } from '@/account.js';
+import { prefer } from '@/preferences.js';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
 const $i = signinRequired();
 
@@ -120,8 +125,8 @@ const meterStyle = computed(() => {
 	};
 });
 
-const keepOriginalUploading = computed(defaultStore.makeGetterSetter('keepOriginalUploading'));
-const keepOriginalFilename = computed(defaultStore.makeGetterSetter('keepOriginalFilename'));
+const keepOriginalUploading = prefer.model('keepOriginalUploading');
+const keepOriginalFilename = prefer.model('keepOriginalFilename');
 
 misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;
@@ -129,9 +134,9 @@ misskeyApi('drive').then(info => {
 	fetching.value = false;
 });
 
-if (defaultStore.state.uploadFolder) {
+if (prefer.s.uploadFolder) {
 	misskeyApi('drive/folders/show', {
-		folderId: defaultStore.state.uploadFolder,
+		folderId: prefer.s.uploadFolder,
 	}).then(response => {
 		uploadFolder.value = response;
 	});
@@ -139,11 +144,11 @@ if (defaultStore.state.uploadFolder) {
 
 function chooseUploadFolder() {
 	os.selectDriveFolder(false).then(async folder => {
-		defaultStore.set('uploadFolder', folder[0] ? folder[0].id : null);
+		prefer.set('uploadFolder', folder[0] ? folder[0].id : null);
 		os.success();
-		if (defaultStore.state.uploadFolder) {
+		if (prefer.s.uploadFolder) {
 			uploadFolder.value = await misskeyApi('drive/folders/show', {
-				folderId: defaultStore.state.uploadFolder,
+				folderId: prefer.s.uploadFolder,
 			});
 		} else {
 			uploadFolder.value = null;
