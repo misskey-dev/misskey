@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: hitalin
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class FeatHideProfileFile1710146785086 {
     name = 'FeatHideProfileFile1710146785086'
 

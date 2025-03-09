@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: hitalin
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class Power9999999999999 {
   name = 'Power9999999999999';
 

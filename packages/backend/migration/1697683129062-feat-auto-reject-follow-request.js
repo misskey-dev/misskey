@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: hitalin
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class FeatAutoRejectFollowRequest1697683129062 {
     name = 'FeatAutoRejectFollowRequest1697683129062'
 

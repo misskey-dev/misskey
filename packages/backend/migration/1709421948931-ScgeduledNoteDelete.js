@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: hitalin
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class ScheduledNoteDelete1709187210308 {
 	name = 'ScheduledNoteDelete1709187210308'
 

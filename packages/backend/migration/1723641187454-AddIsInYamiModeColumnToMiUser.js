@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: hitalin
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class AddIsInYamiModeColumnToMiUser1723641187454 {
   name = 'AddIsInYamiModeColumnToMiUser1723641187454'
 
