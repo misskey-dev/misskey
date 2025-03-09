@@ -15,7 +15,7 @@ import components from '@/components/index.js';
 import { applyTheme } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { updateI18n, i18n } from '@/i18n.js';
-import { $i, refreshAccount, login } from '@/account.js';
+import { $i, iAmModerator, refreshAccount, login } from '@/account.js';
 import { store } from '@/store.js';
 import { hanaStore } from '@/hana/store.js';
 import { fetchInstance, instance } from '@/instance.js';
@@ -147,7 +147,7 @@ export async function common(createVue: () => App<Element>) {
 			const param = new URLSearchParams();
 			param.set('redirected_from', location.pathname + location.search + location.hash);
 			location.replace('/onboarding?' + param.toString());
-			return;
+			return { isClientUpdated, app: null };
 		}
 	}
 
