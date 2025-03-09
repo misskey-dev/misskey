@@ -16,6 +16,7 @@ import * as os from '@/os.js';
 import { store } from '@/store.js';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
 
 const BACKUP_FOLDER_NAME = 'Misskey Preferences Backups';
 
@@ -112,73 +113,33 @@ function importProfile() {
 		const profile = JSON.parse(txt) as PreferencesProfile;
 
 		miLocalStorage.setItem('preferences', JSON.stringify(profile));
-		location.reload();
+		unisonReload();
 	};
 
 	input.click();
 }
 
-export function cloudBackup() {
-	return new Promise<Misskey.entities.DriveFile>(async (resolve, reject) => {
-		if ($i == null) return reject();
+export async function cloudBackup() {
+	if ($i == null) return;
 
-		const fileName = `${profileManager.profile.name || profileManager.profile.id}.misskeypreferences`;
-
-		let folder = (await misskeyApi('drive/folders/find', {
-			name: BACKUP_FOLDER_NAME,
-		}))[0] as Misskey.entities.DriveFolder | null;
-
-		let existingFiles: Misskey.entities.DriveFile[] = [];
-
-		if (folder) {
-			existingFiles = await misskeyApi('drive/files/find', {
-				name: fileName,
-				folderId: folder.id,
-			});
-		} else {
-			folder = await misskeyApi('drive/folders/create', {
-				name: BACKUP_FOLDER_NAME,
-			});
-		}
-
-		const blob = new Blob([JSON.stringify(profileManager.profile)], { type: 'text/plain' });
-		const formData = new FormData();
-		formData.append('file', blob);
-		formData.append('name', fileName);
-		formData.append('isSensitive', 'false');
-		formData.append('i', $i.token);
-		formData.append('folderId', folder!.id);
-		window.fetch(apiUrl + '/drive/files/create', {
-			method: 'POST',
-			body: formData,
-		}).then(async res => {
-			if (res.ok) {
-				res.json().then((created: Misskey.entities.DriveFile) => {
-					resolve(created);
-
-					for (const file of existingFiles.filter(f => f.id !== created.id)) { // ファイルハッシュが同じ場合、既存のファイルが返ってくる場合があるのでそれは除外
-						misskeyApi('drive/files/delete', {
-							fileId: file.id,
-						});
-					}
-				});
-			}
-		});
+	await misskeyApi('i/registry/set', {
+		scope: ['client', 'preferences', 'backups'],
+		key: profileManager.profile.name || profileManager.profile.id,
+		value: profileManager.profile,
 	});
 }
 
 async function restoreFromCloudBackup() {
-	const folder = (await misskeyApi('drive/folders/find', {
-		name: BACKUP_FOLDER_NAME,
-	}))[0] as Misskey.entities.DriveFolder | null;
+	if ($i == null) return;
 
-	if (folder == null) return;
-
-	const files = await misskeyApi('drive/files', {
-		folderId: folder.id,
+	// TODO: 更新日時でソートして取得したい
+	const keys = await misskeyApi('i/registry/keys', {
+		scope: ['client', 'preferences', 'backups'],
 	});
 
-	if (files.length === 0) {
+	console.log(keys);
+
+	if (keys.length === 0) {
 		os.alert({
 			type: 'warning',
 			title: i18n.ts._preferencesBackup.noBackupsFoundTitle,
@@ -187,23 +148,23 @@ async function restoreFromCloudBackup() {
 		return;
 	}
 
-	console.log(files);
-
 	const select = await os.select({
 		title: i18n.ts._preferencesBackup.selectBackupToRestore,
-		items: files.map(f => ({
-			text: f.name,
-			value: f,
+		items: keys.map(k => ({
+			text: k,
+			value: k,
 		})),
 	});
 	if (select.canceled) return;
 	if (select.result == null) return;
 
-	const file = select.result;
-
-	const blob = await fetch(file.url).then(res => res.blob());
-	const txt = await new Response(blob).text();
-	const profile = JSON.parse(txt) as PreferencesProfile;
+	const profile = await misskeyApi('i/registry/get', {
+		scope: ['client', 'preferences', 'backups'],
+		key: select.result,
+	});
 
 	console.log(profile);
+
+	miLocalStorage.setItem('preferences', JSON.stringify(profile));
+	unisonReload();
 }
