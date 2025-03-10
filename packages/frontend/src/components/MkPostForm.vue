@@ -265,7 +265,13 @@ const canPost = computed((): boolean => {
 			quoteId.value != null
 		) &&
 		(textLength.value <= maxTextLength.value) &&
-		(cwTextLength.value <= maxCwTextLength) &&
+		(
+			useCw.value ?
+				(
+					cw.value != null && cw.value.trim() !== '' &&
+					cwTextLength.value <= maxCwTextLength
+				) : true
+		) &&
 		(files.value.length <= 16) &&
 		(!poll.value || poll.value.choices.length >= 2);
 });
@@ -744,14 +750,6 @@ function isAnnoying(text: string): boolean {
 }
 
 async function post(ev?: MouseEvent) {
-	if (useCw.value && (cw.value == null || cw.value.trim() === '')) {
-		os.alert({
-			type: 'error',
-			text: i18n.ts.cwNotationRequired,
-		});
-		return;
-	}
-
 	if (ev) {
 		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
 
