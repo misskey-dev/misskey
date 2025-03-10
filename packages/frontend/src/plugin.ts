@@ -145,7 +145,7 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 		src: code,
 	};
 
-	prefer.set('plugins', prefer.s.plugins.concat(plugin));
+	prefer.commit('plugins', prefer.s.plugins.concat(plugin));
 
 	await authorizePlugin(plugin);
 
@@ -154,7 +154,7 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 
 export async function uninstallPlugin(plugin: Plugin) {
 	abortPlugin(plugin);
-	prefer.set('plugins', prefer.s.plugins.filter(x => x.installId !== plugin.installId));
+	prefer.commit('plugins', prefer.s.plugins.filter(x => x.installId !== plugin.installId));
 	if (Object.hasOwn(store.s.pluginTokens, plugin.installId)) {
 		await os.apiWithDialog('i/revoke-token', {
 			token: store.s.pluginTokens[plugin.installId],
@@ -311,13 +311,13 @@ export async function configPlugin(plugin: Plugin) {
 	const { canceled, result } = await os.form(plugin.name, config);
 	if (canceled) return;
 
-	prefer.set('plugins', prefer.s.plugins.map(x => x.installId === plugin.installId ? { ...x, configData: result } : x));
+	prefer.commit('plugins', prefer.s.plugins.map(x => x.installId === plugin.installId ? { ...x, configData: result } : x));
 
 	reloadPlugin(plugin);
 }
 
 export function changePluginActive(plugin: Plugin, active: boolean) {
-	prefer.set('plugins', prefer.s.plugins.map(x => x.installId === plugin.installId ? { ...x, active } : x));
+	prefer.commit('plugins', prefer.s.plugins.map(x => x.installId === plugin.installId ? { ...x, active } : x));
 
 	if (active) {
 		launchPlugin(plugin.installId);

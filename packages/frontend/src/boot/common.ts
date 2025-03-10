@@ -198,8 +198,8 @@ export async function common(createVue: () => App<Element>) {
 
 	fetchInstanceMetaPromise.then(() => {
 		// TODO: instance.defaultLightTheme/instance.defaultDarkThemeが不正な形式だった場合のケア
-		if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.set('lightTheme', JSON.parse(instance.defaultLightTheme));
-		if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
+		if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.commit('lightTheme', JSON.parse(instance.defaultLightTheme));
+		if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.commit('darkTheme', JSON.parse(instance.defaultDarkTheme));
 	});
 
 	watch(prefer.r.overridedDeviceKind, (kind) => {

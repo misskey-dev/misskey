@@ -101,14 +101,14 @@ async function updated(type: keyof typeof sounds.value, sound) {
 		volume: sound.volume,
 	};
 
-	prefer.set(`sound.on.${type}`, v);
+	prefer.commit(`sound.on.${type}`, v);
 	sounds.value[type] = v;
 }
 
 function reset() {
 	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
 		const v = PREF_DEF[`sound.on.${sound}`].default;
-		prefer.set(`sound.on.${sound}`, v);
+		prefer.commit(`sound.on.${sound}`, v);
 		sounds.value[sound] = v;
 	}
 }

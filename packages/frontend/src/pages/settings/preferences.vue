@@ -488,11 +488,11 @@ async function setPinnedList() {
 	if (canceled) return;
 	if (list == null) return;
 
-	prefer.set('pinnedUserLists', [list]);
+	prefer.commit('pinnedUserLists', [list]);
 }
 
 function removePinnedList() {
-	prefer.set('pinnedUserLists', []);
+	prefer.commit('pinnedUserLists', []);
 }
 
 function enableAllDataSaver() {
@@ -512,7 +512,7 @@ function disableAllDataSaver() {
 }
 
 watch(dataSaver, (to) => {
-	prefer.set('dataSaver', to);
+	prefer.commit('dataSaver', to);
 }, {
 	deep: true,
 });
