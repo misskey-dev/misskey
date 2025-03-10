@@ -62,7 +62,7 @@ const WINDOW_THRESHOLD = 1400;
 
 const settingsWindowed = ref(window.innerWidth > WINDOW_THRESHOLD);
 const menu = ref(prefer.s.menu);
-// const menuDisplay = computed(store.makeGetterSetter('menuDisplay'));
+// const menuDisplay = store.model('menuDisplay');
 const otherNavItemIndicated = computed<boolean>(() => {
 	for (const def in navbarItemDef) {
 		if (menu.value.includes(def)) continue;

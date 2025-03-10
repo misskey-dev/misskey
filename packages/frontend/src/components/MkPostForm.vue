@@ -270,8 +270,8 @@ const canPost = computed((): boolean => {
 		(!poll.value || poll.value.choices.length >= 2);
 });
 
-const withHashtags = computed(store.makeGetterSetter('postFormWithHashtags'));
-const hashtags = computed(store.makeGetterSetter('postFormHashtags'));
+const withHashtags = store.model('postFormWithHashtags');
+const hashtags = store.model('postFormHashtags');
 
 watch(text, () => {
 	checkMissingMention();

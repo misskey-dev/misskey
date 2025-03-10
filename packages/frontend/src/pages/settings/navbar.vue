@@ -67,7 +67,7 @@ const items = ref(prefer.s.menu.map(x => ({
 	type: x,
 })));
 
-const menuDisplay = computed(store.makeGetterSetter('menuDisplay'));
+const menuDisplay = store.model('menuDisplay');
 
 async function addItem() {
 	const menu = Object.keys(navbarItemDef).filter(k => !prefer.s.menu.includes(k));

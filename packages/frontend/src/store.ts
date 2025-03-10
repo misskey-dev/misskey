@@ -752,7 +752,7 @@ export class ColdDeviceStorage {
 	 * 特定のキーの、簡易的なgetter/setterを作ります
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
-	public static makeGetterSetter<K extends keyof typeof ColdDeviceStorage.default>(key: K) {
+	public static model<K extends keyof typeof ColdDeviceStorage.default>(key: K) {
 		// TODO: VueのcustomRef使うと良い感じになるかも
 		const valueRef = ColdDeviceStorage.ref(key);
 		return {

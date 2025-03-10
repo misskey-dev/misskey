@@ -196,7 +196,7 @@ const lightThemeId = computed({
 	},
 });
 
-const darkMode = computed(store.makeGetterSetter('darkMode'));
+const darkMode = store.model('darkMode');
 const syncDeviceDarkMode = prefer.model('syncDeviceDarkMode');
 const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
