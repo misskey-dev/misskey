@@ -337,8 +337,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label><SearchLabel>{{ i18n.ts.additionalEmojiDictionary }}</SearchLabel></template>
 							<div class="_buttons">
 								<template v-for="lang in emojiIndexLangs" :key="lang">
-									<MkButton v-if="store.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{ getEmojiIndexLangName(lang) }})</MkButton>
-									<MkButton v-else @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ getEmojiIndexLangName(lang) }}{{ store.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
+									<MkButton v-if="store.r.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{ getEmojiIndexLangName(lang) }})</MkButton>
+									<MkButton v-else @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ getEmojiIndexLangName(lang) }}{{ store.r.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
 								</template>
 							</div>
 						</MkFolder>
@@ -449,7 +449,7 @@ function getEmojiIndexLangName(targetLang: typeof emojiIndexLangs[number]) {
 
 function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 	async function main() {
-		const currentIndexes = store.state.additionalUnicodeEmojiIndexes;
+		const currentIndexes = store.s.additionalUnicodeEmojiIndexes;
 
 		function download() {
 			switch (lang) {
@@ -469,7 +469,7 @@ function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 
 function removeEmojiIndex(lang: string) {
 	async function main() {
-		const currentIndexes = store.state.additionalUnicodeEmojiIndexes;
+		const currentIndexes = store.s.additionalUnicodeEmojiIndexes;
 		delete currentIndexes[lang];
 		await store.set('additionalUnicodeEmojiIndexes', currentIndexes);
 	}

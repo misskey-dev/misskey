@@ -105,7 +105,7 @@ const router = useRouter();
 
 const forceIconOnly = ref(window.innerWidth <= 1279);
 const iconOnly = computed(() => {
-	return forceIconOnly.value || (store.reactiveState.menuDisplay.value === 'sideIcon');
+	return forceIconOnly.value || (store.r.menuDisplay.value === 'sideIcon');
 });
 
 const menu = computed(() => prefer.s.menu);
@@ -123,7 +123,7 @@ function calcViewState() {
 
 window.addEventListener('resize', calcViewState);
 
-watch(store.reactiveState.menuDisplay, () => {
+watch(store.r.menuDisplay, () => {
 	calcViewState();
 });
 

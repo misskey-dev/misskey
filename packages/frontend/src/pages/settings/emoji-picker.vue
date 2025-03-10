@@ -154,8 +154,8 @@ import MkFolder from '@/components/MkFolder.vue';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
-const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(store.state.reactions));
-const pinnedEmojis: Ref<string[]> = ref(deepClone(store.state.pinnedEmojis));
+const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(store.s.reactions));
+const pinnedEmojis: Ref<string[]> = ref(deepClone(store.s.pinnedEmojis));
 
 const emojiPickerScale = prefer.model('emojiPickerScale');
 const emojiPickerWidth = prefer.model('emojiPickerWidth');

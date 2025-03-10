@@ -75,7 +75,7 @@ const widgetsShowing = ref(false);
 const fullView = ref(false);
 const globalHeaderHeight = ref(0);
 const wallpaper = miLocalStorage.getItem('wallpaper') != null;
-const showMenuOnTop = computed(() => store.state.menuDisplay === 'top');
+const showMenuOnTop = computed(() => store.s.menuDisplay === 'top');
 const live2d = shallowRef<HTMLIFrameElement>();
 const widgetsLeft = ref<HTMLElement>();
 const widgetsRight = ref<HTMLElement>();
@@ -97,7 +97,7 @@ provide('shouldHeaderThin', showMenuOnTop.value);
 provide('forceSpacerMin', true);
 
 function attachSticky(el: HTMLElement) {
-	const sticky = new StickySidebar(el, 0, store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
+	const sticky = new StickySidebar(el, 0, store.s.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 	window.addEventListener('scroll', () => {
 		sticky.calc(window.scrollY);
 	}, { passive: true });

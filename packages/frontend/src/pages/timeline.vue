@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
 			<div :key="src" ref="rootEl">
-				<MkInfo v-if="isBasicTimeline(src) && !store.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--MI-margin);" closable @close="closeTutorial()">
+				<MkInfo v-if="isBasicTimeline(src) && !store.r.timelineTutorials.value[src]" style="margin-bottom: var(--MI-margin);" closable @close="closeTutorial()">
 					{{ i18n.ts._timelineDescription[src] }}
 				</MkInfo>
 				<MkPostForm v-if="prefer.r.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--MI-margin);"/>
@@ -67,18 +67,18 @@ type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 const queue = ref(0);
 const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline('local') ? 'local' : 'global');
 const src = computed<TimelinePageSrc>({
-	get: () => ($i ? store.reactiveState.tl.value.src : srcWhenNotSignin.value),
+	get: () => ($i ? store.r.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
 });
 const withRenotes = computed<boolean>({
-	get: () => store.reactiveState.tl.value.filter.withRenotes,
+	get: () => store.r.tl.value.filter.withRenotes,
 	set: (x) => saveTlFilter('withRenotes', x),
 });
 
 // computed内での無限ループを防ぐためのフラグ
 const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>(
-	store.reactiveState.tl.value.filter.withReplies ? 'withReplies' :
-	store.reactiveState.tl.value.filter.onlyFiles ? 'onlyFiles' :
+	store.r.tl.value.filter.withReplies ? 'withReplies' :
+	store.r.tl.value.filter.onlyFiles ? 'onlyFiles' :
 	false,
 );
 
@@ -88,7 +88,7 @@ const withReplies = computed<boolean>({
 		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
 			return false;
 		} else {
-			return store.reactiveState.tl.value.filter.withReplies;
+			return store.r.tl.value.filter.withReplies;
 		}
 	},
 	set: (x) => saveTlFilter('withReplies', x),
@@ -98,7 +98,7 @@ const onlyFiles = computed<boolean>({
 		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
 			return false;
 		} else {
-			return store.reactiveState.tl.value.filter.onlyFiles;
+			return store.r.tl.value.filter.onlyFiles;
 		}
 	},
 	set: (x) => saveTlFilter('onlyFiles', x),
@@ -115,7 +115,7 @@ watch([withReplies, onlyFiles], ([withRepliesTo, onlyFilesTo]) => {
 });
 
 const withSensitive = computed<boolean>({
-	get: () => store.reactiveState.tl.value.filter.withSensitive,
+	get: () => store.r.tl.value.filter.withSensitive,
 	set: (x) => saveTlFilter('withSensitive', x),
 });
 
@@ -196,7 +196,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 }
 
 function saveSrc(newSrc: TimelinePageSrc): void {
-	const out = deepMerge({ src: newSrc }, store.state.tl);
+	const out = deepMerge({ src: newSrc }, store.s.tl);
 
 	if (newSrc.startsWith('userList:')) {
 		const id = newSrc.substring('userList:'.length);
@@ -209,9 +209,9 @@ function saveSrc(newSrc: TimelinePageSrc): void {
 	}
 }
 
-function saveTlFilter(key: keyof typeof store.state.tl.filter, newValue: boolean) {
+function saveTlFilter(key: keyof typeof store.s.tl.filter, newValue: boolean) {
 	if (key !== 'withReplies' || $i) {
-		const out = deepMerge({ filter: { [key]: newValue } }, store.state.tl);
+		const out = deepMerge({ filter: { [key]: newValue } }, store.s.tl);
 		store.set('tl', out);
 	}
 }
@@ -231,7 +231,7 @@ function focus(): void {
 
 function closeTutorial(): void {
 	if (!isBasicTimeline(src.value)) return;
-	const before = store.state.timelineTutorials;
+	const before = store.s.timelineTutorials;
 	before[src.value] = true;
 	store.set('timelineTutorials', before);
 }

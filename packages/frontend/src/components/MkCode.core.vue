@@ -22,7 +22,7 @@ const props = defineProps<{
 }>();
 
 const highlighter = await getHighlighter();
-const darkMode = store.reactiveState.darkMode;
+const darkMode = store.r.darkMode;
 const codeLang = ref<BundledLanguage | 'aiscript'>('js');
 
 const [lightThemeName, darkThemeName] = await Promise.all([

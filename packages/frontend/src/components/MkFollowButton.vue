@@ -121,11 +121,11 @@ async function onClick() {
 			} else {
 				await misskeyApi('following/create', {
 					userId: props.user.id,
-					withReplies: store.state.defaultWithReplies,
+					withReplies: store.s.defaultWithReplies,
 				});
 				emit('update:user', {
 					...props.user,
-					withReplies: store.state.defaultWithReplies,
+					withReplies: store.s.defaultWithReplies,
 				});
 				hasPendingFollowRequestFromYou.value = true;
 

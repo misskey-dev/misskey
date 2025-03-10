@@ -154,26 +154,26 @@ export async function common(createVue: () => App<Element>) {
 	//#endregion
 
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
-	watch(store.reactiveState.darkMode, (darkMode) => {
+	watch(store.r.darkMode, (darkMode) => {
 		applyTheme(darkMode
 			? (prefer.s.darkTheme ?? defaultDarkTheme)
 			: (prefer.s.lightTheme ?? defaultLightTheme),
 		);
 	}, { immediate: miLocalStorage.getItem('theme') == null });
 
-	document.documentElement.dataset.colorScheme = store.state.darkMode ? 'dark' : 'light';
+	document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
 
 	const darkTheme = prefer.model('darkTheme');
 	const lightTheme = prefer.model('lightTheme');
 
 	watch(darkTheme, (theme) => {
-		if (store.state.darkMode) {
+		if (store.s.darkMode) {
 			applyTheme(theme ?? defaultDarkTheme);
 		}
 	});
 
 	watch(lightTheme, (theme) => {
-		if (!store.state.darkMode) {
+		if (!store.s.darkMode) {
 			applyTheme(theme ?? defaultLightTheme);
 		}
 	});
@@ -190,9 +190,9 @@ export async function common(createVue: () => App<Element>) {
 	});
 	//#endregion
 
-	if (prefer.s.darkTheme && store.state.darkMode) {
+	if (prefer.s.darkTheme && store.s.darkMode) {
 		if (miLocalStorage.getItem('themeId') !== prefer.s.darkTheme.id) applyTheme(prefer.s.darkTheme);
-	} else if (prefer.s.lightTheme && !store.state.darkMode) {
+	} else if (prefer.s.lightTheme && !store.s.darkMode) {
 		if (miLocalStorage.getItem('themeId') !== prefer.s.lightTheme.id) applyTheme(prefer.s.lightTheme);
 	}
 

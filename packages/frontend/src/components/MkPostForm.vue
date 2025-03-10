@@ -176,18 +176,18 @@ const text = ref(props.initialText ?? '');
 const files = ref(props.initialFiles ?? []);
 const poll = ref<PollEditorModelValue | null>(null);
 const useCw = ref<boolean>(!!props.initialCw);
-const showPreview = ref(store.state.showPreview);
+const showPreview = ref(store.s.showPreview);
 watch(showPreview, () => store.set('showPreview', showPreview.value));
 const showAddMfmFunction = ref(prefer.s.enableQuickAddMfmFunction);
 watch(showAddMfmFunction, () => prefer.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
-const localOnly = ref(props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.state.localOnly : prefer.s.defaultNoteLocalOnly));
-const visibility = ref(props.initialVisibility ?? (prefer.s.rememberNoteVisibility ? store.state.visibility : prefer.s.defaultNoteVisibility));
+const localOnly = ref(props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly));
+const visibility = ref(props.initialVisibility ?? (prefer.s.rememberNoteVisibility ? store.s.visibility : prefer.s.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
-const reactionAcceptance = ref(store.state.reactionAcceptance);
+const reactionAcceptance = ref(store.s.reactionAcceptance);
 const draghover = ref(false);
 const quoteId = ref<string | null>(null);
 const hasNotSpecifiedMentions = ref(false);

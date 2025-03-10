@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton link to="/admin/abuse-report-notification-recipient" primary>{{ i18n.ts.notificationSetting }}</MkButton>
 			</div>
 
-			<MkInfo v-if="!store.reactiveState.abusesTutorial.value" closable @close="closeTutorial()">
+			<MkInfo v-if="!store.r.abusesTutorial.value" closable @close="closeTutorial()">
 				{{ i18n.ts._abuseUserReport.resolveTutorial }}
 			</MkInfo>
 
