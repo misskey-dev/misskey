@@ -223,10 +223,10 @@ export async function mainBoot() {
 				prefer.commit('sound.on.noteMy', store.s.sound_noteMy as any);
 				prefer.commit('sound.on.notification', store.s.sound_notification as any);
 				prefer.commit('sound.on.reaction', store.s.sound_reaction as any);
-				store.set('deck.profile', deckStore.s.profile);
-				store.set('deck.columns', deckStore.s.columns);
-				store.set('deck.layout', deckStore.s.layout);
-				store.set('menu', []);
+				store.commit('deck.profile', deckStore.s.profile);
+				store.commit('deck.columns', deckStore.s.columns);
+				store.commit('deck.layout', deckStore.s.layout);
+				store.commit('menu', []);
 			}
 
 			if (store.s.accountSetupWizard !== -1) {
@@ -502,7 +502,7 @@ export async function mainBoot() {
 			post();
 		},
 		'd': () => {
-			store.set('darkMode', !store.s.darkMode);
+			store.commit('darkMode', !store.s.darkMode);
 		},
 		's': () => {
 			mainRouter.push('/search');

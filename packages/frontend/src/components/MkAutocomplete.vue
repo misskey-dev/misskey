@@ -158,7 +158,7 @@ function complete(type: string, value: any) {
 		let recents = store.s.recentlyUsedEmojis;
 		recents = recents.filter((emoji: any) => emoji !== value);
 		recents.unshift(value);
-		store.set('recentlyUsedEmojis', recents.splice(0, 32));
+		store.commit('recentlyUsedEmojis', recents.splice(0, 32));
 	}
 }
 

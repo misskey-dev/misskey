@@ -461,7 +461,7 @@ function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 		}
 
 		currentIndexes[lang] = await download();
-		await store.set('additionalUnicodeEmojiIndexes', currentIndexes);
+		await store.commit('additionalUnicodeEmojiIndexes', currentIndexes);
 	}
 
 	os.promiseDialog(main());
@@ -471,7 +471,7 @@ function removeEmojiIndex(lang: string) {
 	async function main() {
 		const currentIndexes = store.s.additionalUnicodeEmojiIndexes;
 		delete currentIndexes[lang];
-		await store.set('additionalUnicodeEmojiIndexes', currentIndexes);
+		await store.commit('additionalUnicodeEmojiIndexes', currentIndexes);
 	}
 
 	os.promiseDialog(main());

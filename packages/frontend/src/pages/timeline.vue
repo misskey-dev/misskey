@@ -203,7 +203,7 @@ function saveSrc(newSrc: TimelinePageSrc): void {
 		out.userList = prefer.r.pinnedUserLists.value.find(l => l.id === id) ?? null;
 	}
 
-	store.set('tl', out);
+	store.commit('tl', out);
 	if (['local', 'global'].includes(newSrc)) {
 		srcWhenNotSignin.value = newSrc as 'local' | 'global';
 	}
@@ -212,7 +212,7 @@ function saveSrc(newSrc: TimelinePageSrc): void {
 function saveTlFilter(key: keyof typeof store.s.tl.filter, newValue: boolean) {
 	if (key !== 'withReplies' || $i) {
 		const out = deepMerge({ filter: { [key]: newValue } }, store.s.tl);
-		store.set('tl', out);
+		store.commit('tl', out);
 	}
 }
 
@@ -233,7 +233,7 @@ function closeTutorial(): void {
 	if (!isBasicTimeline(src.value)) return;
 	const before = store.s.timelineTutorials;
 	before[src.value] = true;
-	store.set('timelineTutorials', before);
+	store.commit('timelineTutorials', before);
 }
 
 function switchTlIfNeeded() {

@@ -8,11 +8,11 @@ import { v4 as uuid } from 'uuid';
 import { host, version } from '@@/js/config.js';
 import { EventEmitter } from 'eventemitter3';
 import { PREF_DEF } from './def.js';
-import { Store } from './store.js';
 import type { MenuItem } from '@/types/menu.js';
 import { $i } from '@/account.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
+import { Pizzax } from '@/pizzax.js';
 
 // NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
 
@@ -48,7 +48,7 @@ export class ProfileManager extends EventEmitter<{
 	}) => void;
 }> {
 	public profile: PreferencesProfile;
-	public store: Store<{
+	public store: Pizzax<{
 		[K in keyof PREF]: ValueOf<K>;
 	}>;
 
@@ -58,7 +58,7 @@ export class ProfileManager extends EventEmitter<{
 
 		const states = this.genStates();
 
-		this.store = new Store(states);
+		this.store = new Pizzax(states);
 		this.store.addListener('updated', ({ key, value }) => {
 			console.log('prefer:set', key, value);
 

@@ -131,7 +131,7 @@ async function ok() {
 	let recents = store.s.recentlyUsedUsers;
 	recents = recents.filter(x => x !== selected.value?.id);
 	recents.unshift(selected.value.id);
-	store.set('recentlyUsedUsers', recents.splice(0, 16));
+	store.commit('recentlyUsedUsers', recents.splice(0, 16));
 }
 
 function cancel() {

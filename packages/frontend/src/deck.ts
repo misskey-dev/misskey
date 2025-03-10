@@ -69,15 +69,15 @@ export const loadDeck = async () => {
 				return;
 			}
 
-			store.set('deck.columns', []);
-			store.set('deck.layout', []);
+			store.commit('deck.columns', []);
+			store.commit('deck.layout', []);
 			return;
 		}
 		throw err;
 	}
 
-	store.set('deck.columns', deck.columns);
-	store.set('deck.layout', deck.layout);
+	store.commit('deck.columns', deck.columns);
+	store.commit('deck.layout', deck.layout);
 };
 
 export async function forceSaveDeck() {
@@ -111,14 +111,14 @@ export async function deleteProfile(key: string): Promise<void> {
 
 export function addColumn(column: Column) {
 	if (column.name === undefined) column.name = null;
-	store.push('deck.columns', column);
-	store.push('deck.layout', [column.id]);
+	store.commit('deck.columns', [...store.s['deck.columns'], column]);
+	store.commit('deck.layout', [...store.s['deck.layout'], [column.id]]);
 	saveDeck();
 }
 
 export function removeColumn(id: Column['id']) {
-	store.set('deck.columns', store.s['deck.columns'].filter(c => c.id !== id));
-	store.set('deck.layout', store.s['deck.layout']
+	store.commit('deck.columns', store.s['deck.columns'].filter(c => c.id !== id));
+	store.commit('deck.layout', store.s['deck.layout']
 		.map(ids => ids.filter(_id => _id !== id))
 		.filter(ids => ids.length > 0));
 	saveDeck();
@@ -132,7 +132,7 @@ export function swapColumn(a: Column['id'], b: Column['id']) {
 	const layout = deepClone(store.s['deck.layout']);
 	layout[aX][aY] = b;
 	layout[bX][bY] = a;
-	store.set('deck.layout', layout);
+	store.commit('deck.layout', layout);
 	saveDeck();
 }
 
@@ -144,7 +144,7 @@ export function swapLeftColumn(id: Column['id']) {
 			if (left) {
 				layout[i - 1] = store.s['deck.layout'][i];
 				layout[i] = left;
-				store.set('deck.layout', layout);
+				store.commit('deck.layout', layout);
 			}
 			return true;
 		}
@@ -161,7 +161,7 @@ export function swapRightColumn(id: Column['id']) {
 			if (right) {
 				layout[i + 1] = store.s['deck.layout'][i];
 				layout[i] = right;
-				store.set('deck.layout', layout);
+				store.commit('deck.layout', layout);
 			}
 			return true;
 		}
@@ -182,7 +182,7 @@ export function swapUpColumn(id: Column['id']) {
 				ids[i] = up;
 
 				layout[idsIndex] = ids;
-				store.set('deck.layout', layout);
+				store.commit('deck.layout', layout);
 			}
 			return true;
 		}
@@ -203,7 +203,7 @@ export function swapDownColumn(id: Column['id']) {
 				ids[i] = down;
 
 				layout[idsIndex] = ids;
-				store.set('deck.layout', layout);
+				store.commit('deck.layout', layout);
 			}
 			return true;
 		}
@@ -218,7 +218,7 @@ export function stackLeftColumn(id: Column['id']) {
 	layout = layout.map(ids => ids.filter(_id => _id !== id));
 	layout[i - 1].push(id);
 	layout = layout.filter(ids => ids.length > 0);
-	store.set('deck.layout', layout);
+	store.commit('deck.layout', layout);
 	saveDeck();
 }
 
@@ -229,7 +229,7 @@ export function popRightColumn(id: Column['id']) {
 	layout = layout.map(ids => ids.filter(_id => _id !== id));
 	layout.splice(i + 1, 0, [id]);
 	layout = layout.filter(ids => ids.length > 0);
-	store.set('deck.layout', layout);
+	store.commit('deck.layout', layout);
 
 	const columns = deepClone(store.s['deck.columns']);
 	for (const column of columns) {
@@ -237,7 +237,7 @@ export function popRightColumn(id: Column['id']) {
 			column.active = true;
 		}
 	}
-	store.set('deck.columns', columns);
+	store.commit('deck.columns', columns);
 
 	saveDeck();
 }
@@ -250,7 +250,7 @@ export function addColumnWidget(id: Column['id'], widget: ColumnWidget) {
 	if (column.widgets == null) column.widgets = [];
 	column.widgets.unshift(widget);
 	columns[columnIndex] = column;
-	store.set('deck.columns', columns);
+	store.commit('deck.columns', columns);
 	saveDeck();
 }
 
@@ -262,7 +262,7 @@ export function removeColumnWidget(id: Column['id'], widget: ColumnWidget) {
 	if (column.widgets == null) column.widgets = [];
 	column.widgets = column.widgets.filter(w => w.id !== widget.id);
 	columns[columnIndex] = column;
-	store.set('deck.columns', columns);
+	store.commit('deck.columns', columns);
 	saveDeck();
 }
 
@@ -273,7 +273,7 @@ export function setColumnWidgets(id: Column['id'], widgets: ColumnWidget[]) {
 	if (column == null) return;
 	column.widgets = widgets;
 	columns[columnIndex] = column;
-	store.set('deck.columns', columns);
+	store.commit('deck.columns', columns);
 	saveDeck();
 }
 
@@ -288,7 +288,7 @@ export function updateColumnWidget(id: Column['id'], widgetId: string, widgetDat
 		data: widgetData,
 	} : w);
 	columns[columnIndex] = column;
-	store.set('deck.columns', columns);
+	store.commit('deck.columns', columns);
 	saveDeck();
 }
 
@@ -301,6 +301,6 @@ export function updateColumn(id: Column['id'], column: Partial<Column>) {
 		currentColumn[k] = v;
 	}
 	columns[columnIndex] = currentColumn;
-	store.set('deck.columns', columns);
+	store.commit('deck.columns', columns);
 	saveDeck();
 }

@@ -180,12 +180,12 @@ export async function common(createVue: () => App<Element>) {
 
 	//#region Sync dark mode
 	if (prefer.s.syncDeviceDarkMode) {
-		store.set('darkMode', isDeviceDarkmode());
+		store.commit('darkMode', isDeviceDarkmode());
 	}
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
 		if (prefer.s.syncDeviceDarkMode) {
-			store.set('darkMode', mql.matches);
+			store.commit('darkMode', mql.matches);
 		}
 	});
 	//#endregion

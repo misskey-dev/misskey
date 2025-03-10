@@ -34,9 +34,9 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 				return;
 			}
 
-			store.set('enablePreferencesAutoCloudBackup', true);
+			store.commit('enablePreferencesAutoCloudBackup', true);
 		} else {
-			store.set('enablePreferencesAutoCloudBackup', false);
+			store.commit('enablePreferencesAutoCloudBackup', false);
 		}
 	});
 
@@ -183,7 +183,7 @@ export async function restoreFromCloudBackup() {
 
 	miLocalStorage.setItem('preferences', JSON.stringify(profile));
 	miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');
-	store.set('enablePreferencesAutoCloudBackup', true);
+	store.commit('enablePreferencesAutoCloudBackup', true);
 	shouldSuggestRestoreBackup.value = false;
 	unisonReload();
 }
@@ -197,7 +197,7 @@ export async function enableAutoBackup() {
 		return;
 	}
 
-	store.set('enablePreferencesAutoCloudBackup', true);
+	store.commit('enablePreferencesAutoCloudBackup', true);
 }
 
 export const shouldSuggestRestoreBackup = ref(false);

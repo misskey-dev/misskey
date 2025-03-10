@@ -115,7 +115,7 @@ export async function authorizePlugin(plugin: Plugin) {
 		});
 	});
 
-	store.set('pluginTokens', {
+	store.commit('pluginTokens', {
 		...store.s.pluginTokens,
 		[plugin.installId]: token,
 	});
@@ -161,7 +161,7 @@ export async function uninstallPlugin(plugin: Plugin) {
 		});
 		const pluginTokens = { ...store.s.pluginTokens };
 		delete pluginTokens[plugin.installId];
-		store.set('pluginTokens', pluginTokens);
+		store.commit('pluginTokens', pluginTokens);
 	}
 }
 
