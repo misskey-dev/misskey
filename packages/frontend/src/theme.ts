@@ -114,7 +114,7 @@ export function applyTheme(theme: Theme, persist = true) {
 	globalEvents.emit('themeChanging');
 }
 
-function compile(theme: Theme): Record<string, string> {
+export function compile(theme: Theme): Record<string, string> {
 	function getColor(val: string): tinycolor.Instance {
 		if (val[0] === '@') { // ref (prop)
 			return getColor(theme.props[val.substring(1)]);

@@ -2031,6 +2031,7 @@ _theme:
   installed: "{name}をインストールしました"
   installedThemes: "インストールされたテーマ"
   builtinThemes: "標準のテーマ"
+  instanceTheme: "サーバーのテーマ"
   alreadyInstalled: "そのテーマは既にインストールされています"
   invalid: "テーマの形式が間違っています"
   make: "テーマを作る"
