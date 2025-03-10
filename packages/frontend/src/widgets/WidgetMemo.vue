@@ -48,7 +48,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const text = ref<string | null>(store.state.memo);
+const text = ref<string | null>(store.s.memo);
 const changed = ref(false);
 let timeoutId;
 
@@ -63,7 +63,7 @@ const onChange = () => {
 	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 
-watch(() => store.reactiveState.memo, newText => {
+watch(() => store.r.memo, newText => {
 	text.value = newText.value;
 });
 

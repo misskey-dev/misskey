@@ -59,12 +59,12 @@ export const loadDeck = async () => {
 	try {
 		deck = await misskeyApi('i/registry/get', {
 			scope: ['client', 'deck', 'profiles'],
-			key: store.state['deck.profile'],
+			key: store.s['deck.profile'],
 		});
 	} catch (err) {
 		if (typeof err === 'object' && err != null && 'code' in err && err.code === 'NO_SUCH_KEY') {
 			// 後方互換性のため
-			if (store.state['deck.profile'] === 'default') {
+			if (store.s['deck.profile'] === 'default') {
 				saveDeck();
 				return;
 			}
@@ -83,10 +83,10 @@ export const loadDeck = async () => {
 export async function forceSaveDeck() {
 	await misskeyApi('i/registry/set', {
 		scope: ['client', 'deck', 'profiles'],
-		key: store.state['deck.profile'],
+		key: store.s['deck.profile'],
 		value: {
-			columns: store.reactiveState['deck.columns'].value,
-			layout: store.reactiveState['deck.layout'].value,
+			columns: store.r['deck.columns'].value,
+			layout: store.r['deck.layout'].value,
 		},
 	});
 }
@@ -117,19 +117,19 @@ export function addColumn(column: Column) {
 }
 
 export function removeColumn(id: Column['id']) {
-	store.set('deck.columns', store.state['deck.columns'].filter(c => c.id !== id));
-	store.set('deck.layout', store.state['deck.layout']
+	store.set('deck.columns', store.s['deck.columns'].filter(c => c.id !== id));
+	store.set('deck.layout', store.s['deck.layout']
 		.map(ids => ids.filter(_id => _id !== id))
 		.filter(ids => ids.length > 0));
 	saveDeck();
 }
 
 export function swapColumn(a: Column['id'], b: Column['id']) {
-	const aX = store.state['deck.layout'].findIndex(ids => ids.indexOf(a) !== -1);
-	const aY = store.state['deck.layout'][aX].findIndex(id => id === a);
-	const bX = store.state['deck.layout'].findIndex(ids => ids.indexOf(b) !== -1);
-	const bY = store.state['deck.layout'][bX].findIndex(id => id === b);
-	const layout = deepClone(store.state['deck.layout']);
+	const aX = store.s['deck.layout'].findIndex(ids => ids.indexOf(a) !== -1);
+	const aY = store.s['deck.layout'][aX].findIndex(id => id === a);
+	const bX = store.s['deck.layout'].findIndex(ids => ids.indexOf(b) !== -1);
+	const bY = store.s['deck.layout'][bX].findIndex(id => id === b);
+	const layout = deepClone(store.s['deck.layout']);
 	layout[aX][aY] = b;
 	layout[bX][bY] = a;
 	store.set('deck.layout', layout);
@@ -137,12 +137,12 @@ export function swapColumn(a: Column['id'], b: Column['id']) {
 }
 
 export function swapLeftColumn(id: Column['id']) {
-	const layout = deepClone(store.state['deck.layout']);
-	store.state['deck.layout'].some((ids, i) => {
+	const layout = deepClone(store.s['deck.layout']);
+	store.s['deck.layout'].some((ids, i) => {
 		if (ids.includes(id)) {
-			const left = store.state['deck.layout'][i - 1];
+			const left = store.s['deck.layout'][i - 1];
 			if (left) {
-				layout[i - 1] = store.state['deck.layout'][i];
+				layout[i - 1] = store.s['deck.layout'][i];
 				layout[i] = left;
 				store.set('deck.layout', layout);
 			}
@@ -154,12 +154,12 @@ export function swapLeftColumn(id: Column['id']) {
 }
 
 export function swapRightColumn(id: Column['id']) {
-	const layout = deepClone(store.state['deck.layout']);
-	store.state['deck.layout'].some((ids, i) => {
+	const layout = deepClone(store.s['deck.layout']);
+	store.s['deck.layout'].some((ids, i) => {
 		if (ids.includes(id)) {
-			const right = store.state['deck.layout'][i + 1];
+			const right = store.s['deck.layout'][i + 1];
 			if (right) {
-				layout[i + 1] = store.state['deck.layout'][i];
+				layout[i + 1] = store.s['deck.layout'][i];
 				layout[i] = right;
 				store.set('deck.layout', layout);
 			}
@@ -171,9 +171,9 @@ export function swapRightColumn(id: Column['id']) {
 }
 
 export function swapUpColumn(id: Column['id']) {
-	const layout = deepClone(store.state['deck.layout']);
-	const idsIndex = store.state['deck.layout'].findIndex(ids => ids.includes(id));
-	const ids = deepClone(store.state['deck.layout'][idsIndex]);
+	const layout = deepClone(store.s['deck.layout']);
+	const idsIndex = store.s['deck.layout'].findIndex(ids => ids.includes(id));
+	const ids = deepClone(store.s['deck.layout'][idsIndex]);
 	ids.some((x, i) => {
 		if (x === id) {
 			const up = ids[i - 1];
@@ -192,9 +192,9 @@ export function swapUpColumn(id: Column['id']) {
 }
 
 export function swapDownColumn(id: Column['id']) {
-	const layout = deepClone(store.state['deck.layout']);
-	const idsIndex = store.state['deck.layout'].findIndex(ids => ids.includes(id));
-	const ids = deepClone(store.state['deck.layout'][idsIndex]);
+	const layout = deepClone(store.s['deck.layout']);
+	const idsIndex = store.s['deck.layout'].findIndex(ids => ids.includes(id));
+	const ids = deepClone(store.s['deck.layout'][idsIndex]);
 	ids.some((x, i) => {
 		if (x === id) {
 			const down = ids[i + 1];
@@ -213,8 +213,8 @@ export function swapDownColumn(id: Column['id']) {
 }
 
 export function stackLeftColumn(id: Column['id']) {
-	let layout = deepClone(store.state['deck.layout']);
-	const i = store.state['deck.layout'].findIndex(ids => ids.includes(id));
+	let layout = deepClone(store.s['deck.layout']);
+	const i = store.s['deck.layout'].findIndex(ids => ids.includes(id));
 	layout = layout.map(ids => ids.filter(_id => _id !== id));
 	layout[i - 1].push(id);
 	layout = layout.filter(ids => ids.length > 0);
@@ -223,15 +223,15 @@ export function stackLeftColumn(id: Column['id']) {
 }
 
 export function popRightColumn(id: Column['id']) {
-	let layout = deepClone(store.state['deck.layout']);
-	const i = store.state['deck.layout'].findIndex(ids => ids.includes(id));
+	let layout = deepClone(store.s['deck.layout']);
+	const i = store.s['deck.layout'].findIndex(ids => ids.includes(id));
 	const affected = layout[i];
 	layout = layout.map(ids => ids.filter(_id => _id !== id));
 	layout.splice(i + 1, 0, [id]);
 	layout = layout.filter(ids => ids.length > 0);
 	store.set('deck.layout', layout);
 
-	const columns = deepClone(store.state['deck.columns']);
+	const columns = deepClone(store.s['deck.columns']);
 	for (const column of columns) {
 		if (affected.includes(column.id)) {
 			column.active = true;
@@ -243,9 +243,9 @@ export function popRightColumn(id: Column['id']) {
 }
 
 export function addColumnWidget(id: Column['id'], widget: ColumnWidget) {
-	const columns = deepClone(store.state['deck.columns']);
-	const columnIndex = store.state['deck.columns'].findIndex(c => c.id === id);
-	const column = deepClone(store.state['deck.columns'][columnIndex]);
+	const columns = deepClone(store.s['deck.columns']);
+	const columnIndex = store.s['deck.columns'].findIndex(c => c.id === id);
+	const column = deepClone(store.s['deck.columns'][columnIndex]);
 	if (column == null) return;
 	if (column.widgets == null) column.widgets = [];
 	column.widgets.unshift(widget);
@@ -255,9 +255,9 @@ export function addColumnWidget(id: Column['id'], widget: ColumnWidget) {
 }
 
 export function removeColumnWidget(id: Column['id'], widget: ColumnWidget) {
-	const columns = deepClone(store.state['deck.columns']);
-	const columnIndex = store.state['deck.columns'].findIndex(c => c.id === id);
-	const column = deepClone(store.state['deck.columns'][columnIndex]);
+	const columns = deepClone(store.s['deck.columns']);
+	const columnIndex = store.s['deck.columns'].findIndex(c => c.id === id);
+	const column = deepClone(store.s['deck.columns'][columnIndex]);
 	if (column == null) return;
 	if (column.widgets == null) column.widgets = [];
 	column.widgets = column.widgets.filter(w => w.id !== widget.id);
@@ -267,9 +267,9 @@ export function removeColumnWidget(id: Column['id'], widget: ColumnWidget) {
 }
 
 export function setColumnWidgets(id: Column['id'], widgets: ColumnWidget[]) {
-	const columns = deepClone(store.state['deck.columns']);
-	const columnIndex = store.state['deck.columns'].findIndex(c => c.id === id);
-	const column = deepClone(store.state['deck.columns'][columnIndex]);
+	const columns = deepClone(store.s['deck.columns']);
+	const columnIndex = store.s['deck.columns'].findIndex(c => c.id === id);
+	const column = deepClone(store.s['deck.columns'][columnIndex]);
 	if (column == null) return;
 	column.widgets = widgets;
 	columns[columnIndex] = column;
@@ -278,9 +278,9 @@ export function setColumnWidgets(id: Column['id'], widgets: ColumnWidget[]) {
 }
 
 export function updateColumnWidget(id: Column['id'], widgetId: string, widgetData: any) {
-	const columns = deepClone(store.state['deck.columns']);
-	const columnIndex = store.state['deck.columns'].findIndex(c => c.id === id);
-	const column = deepClone(store.state['deck.columns'][columnIndex]);
+	const columns = deepClone(store.s['deck.columns']);
+	const columnIndex = store.s['deck.columns'].findIndex(c => c.id === id);
+	const column = deepClone(store.s['deck.columns'][columnIndex]);
 	if (column == null) return;
 	if (column.widgets == null) column.widgets = [];
 	column.widgets = column.widgets.map(w => w.id === widgetId ? {
@@ -293,9 +293,9 @@ export function updateColumnWidget(id: Column['id'], widgetId: string, widgetDat
 }
 
 export function updateColumn(id: Column['id'], column: Partial<Column>) {
-	const columns = deepClone(store.state['deck.columns']);
-	const columnIndex = store.state['deck.columns'].findIndex(c => c.id === id);
-	const currentColumn = deepClone(store.state['deck.columns'][columnIndex]);
+	const columns = deepClone(store.s['deck.columns']);
+	const columnIndex = store.s['deck.columns'].findIndex(c => c.id === id);
+	const currentColumn = deepClone(store.s['deck.columns'][columnIndex]);
 	if (currentColumn == null) return;
 	for (const [k, v] of Object.entries(column)) {
 		currentColumn[k] = v;

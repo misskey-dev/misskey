@@ -22,7 +22,7 @@ type StoreEvent<Data extends Record<string, any>> = {
 
 export class Store<Data extends Record<string, any>> extends EventEmitter<StoreEvent<Data>> {
 	/**
-	 * static の略 (static が予約語のため)
+	 * static / state の略 (static が予約語のため)
 	 */
 	public s = {} as {
 		[K in keyof Data]: Data[K];

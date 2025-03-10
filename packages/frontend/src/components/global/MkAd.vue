@@ -67,7 +67,7 @@ const choseAd = (): Ad | null => {
 		return props.specify;
 	}
 
-	const allAds = instance.ads.map(ad => store.state.mutedAds.includes(ad.id) ? {
+	const allAds = instance.ads.map(ad => store.s.mutedAds.includes(ad.id) ? {
 		...ad,
 		ratio: 0,
 	} : ad);
@@ -112,7 +112,7 @@ const shouldHide = ref(!prefer.s.forceShowAds && $i && $i.policies.canHideAds &&
 
 function reduceFrequency(): void {
 	if (chosen.value == null) return;
-	if (store.state.mutedAds.includes(chosen.value.id)) return;
+	if (store.s.mutedAds.includes(chosen.value.id)) return;
 	store.push('mutedAds', chosen.value.id);
 	os.success();
 	chosen.value = choseAd();

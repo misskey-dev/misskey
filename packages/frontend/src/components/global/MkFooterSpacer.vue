@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.spacer, store.reactiveState.darkMode.value ? $style.dark : $style.light]"></div>
+<div :class="[$style.spacer, store.r.darkMode.value ? $style.dark : $style.light]"></div>
 </template>
 
 <script lang="ts" setup>

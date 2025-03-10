@@ -200,7 +200,7 @@ async function saveAs() {
 	if (description.value) theme.value.desc = description.value;
 	await addTheme(theme.value);
 	applyTheme(theme.value);
-	if (store.state.darkMode) {
+	if (store.s.darkMode) {
 		prefer.set('darkTheme', theme.value);
 	} else {
 		prefer.set('lightTheme', theme.value);
