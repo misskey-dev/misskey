@@ -223,9 +223,9 @@ export async function mainBoot() {
 				prefer.commit('sound.on.noteMy', store.s.sound_noteMy as any);
 				prefer.commit('sound.on.notification', store.s.sound_notification as any);
 				prefer.commit('sound.on.reaction', store.s.sound_reaction as any);
-				store.commit('deck.profile', deckStore.state.profile);
-				store.commit('deck.columns', deckStore.state.columns);
-				store.commit('deck.layout', deckStore.state.layout);
+				store.commit('deck.profile', deckStore.s.profile);
+				store.commit('deck.columns', deckStore.s.columns);
+				store.commit('deck.layout', deckStore.s.layout);
 				store.commit('menu', []);
 			}
 
