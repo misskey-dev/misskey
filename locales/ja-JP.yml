@@ -1349,6 +1349,7 @@ _accountSettings:
   makeNotesHiddenBefore: "過去のノートを非公開化する"
   makeNotesHiddenBeforeDescription: "この機能が有効になっている間、設定された日時より過去、または設定された時間を経過しているノートが自分のみ表示可能(非公開化)になります。無効に戻すと、ノートの公開状態も元に戻ります。"
   mayNotEffectForFederatedNotes: "リモートサーバーに連合されたノートには効果が及ばない場合があります。"
+  mayNotEffectSomeSituations: "これらの制限は簡易的なものです。リモートサーバーでの閲覧やモデレーション時など、一部のシチュエーションでは適用されない場合があります。"
   notesHavePassedSpecifiedPeriod: "指定した時間を経過しているノート"
   notesOlderThanSpecifiedDateAndTime: "指定した日時より前のノート"
 

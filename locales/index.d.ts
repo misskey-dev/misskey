@@ -5396,6 +5396,10 @@ export interface Locale extends ILocale {
          */
         "mayNotEffectForFederatedNotes": string;
         /**
+         * これらの制限は簡易的なものです。リモートサーバーでの閲覧やモデレーション時など、一部のシチュエーションでは適用されない場合があります。
+         */
+        "mayNotEffectSomeSituations": string;
+        /**
          * 指定した時間を経過しているノート
          */
         "notesHavePassedSpecifiedPeriod": string;

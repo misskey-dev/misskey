@@ -123,7 +123,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<template #caption>
 								<div><SearchKeyword>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</SearchKeyword></div>
-								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 							</template>
 						</FormSlot>
 					</SearchMarker>
@@ -161,10 +160,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<template #caption>
 								<div><SearchKeyword>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</SearchKeyword></div>
-								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.mayNotEffectForFederatedNotes }}</div>
 							</template>
 						</FormSlot>
 					</SearchMarker>
+
+					<MkInfo warn>{{ i18n.ts._accountSettings.mayNotEffectSomeSituations }}</MkInfo>
 				</div>
 			</FormSection>
 		</SearchMarker>
@@ -188,6 +188,7 @@ import { formatDateTimeString } from '@/utility/format-time-string.js';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
 import MkDisableSection from '@/components/MkDisableSection.vue';
+import MkInfo from '@/components/MkInfo.vue';
 
 const $i = signinRequired();
 
