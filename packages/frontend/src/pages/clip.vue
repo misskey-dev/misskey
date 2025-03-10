@@ -39,13 +39,13 @@ import MkNotes from '@/components/MkNotes.vue';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache.js';
-import { isSupportShare } from '@/scripts/navigator.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { genEmbedCode } from '@/scripts/get-embed-code.js';
+import { isSupportShare } from '@/utility/navigator.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { assertServerContext, serverContext } from '@/server-context.js';
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
@@ -193,7 +193,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	},
 }] : null);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: clip.value ? clip.value.name : i18n.ts.clip,
 	icon: 'ti ti-paperclip',
 }));

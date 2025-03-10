@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700">
-		<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
+		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="flash" :key="flash.id">
-				<Transition :name="defaultStore.state.animation ? 'zoom' : ''" mode="out-in">
+				<Transition :name="prefer.s.animation ? 'zoom' : ''" mode="out-in">
 					<div v-if="started" :class="$style.started">
 						<div class="main _panel">
 							<MkAsUi v-if="root" :component="root" :components="components"/>
@@ -67,23 +67,23 @@ import * as Misskey from 'misskey-js';
 import { Interpreter, Parser, values } from '@syuilo/aiscript';
 import { url } from '@@/js/config.js';
 import type { Ref } from 'vue';
-import type { AsUiComponent, AsUiRoot } from '@/scripts/aiscript/ui.js';
+import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
 import type { MenuItem } from '@/types/menu.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkAsUi from '@/components/MkAsUi.vue';
-import { registerAsUiLib } from '@/scripts/aiscript/ui.js';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { registerAsUiLib } from '@/aiscript/ui.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { $i } from '@/account.js';
-import { isSupportShare } from '@/scripts/navigator.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
+import { isSupportShare } from '@/utility/navigator.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { pleaseLogin } from '@/utility/please-login.js';
 
 const props = defineProps<{
 	id: string;
@@ -304,7 +304,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: flash.value ? flash.value.title : 'Play',
 	...flash.value ? {
 		avatar: flash.value.user,

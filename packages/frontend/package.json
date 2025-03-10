@@ -75,7 +75,8 @@
 		"v-code-diff": "1.13.1",
 		"vite": "6.2.1",
 		"vue": "3.5.13",
-		"vuedraggable": "next"
+		"vuedraggable": "next",
+		"wanakana": "5.3.1"
 	},
 	"devDependencies": {
 		"@misskey-dev/summaly": "5.2.0",

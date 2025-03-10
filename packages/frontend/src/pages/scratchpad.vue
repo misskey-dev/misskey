@@ -64,18 +64,18 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { registerAsUiLib } from '@/scripts/aiscript/ui.js';
-import type { AsUiComponent } from '@/scripts/aiscript/ui.js';
+import { definePage } from '@/page.js';
+import { registerAsUiLib } from '@/aiscript/ui.js';
+import type { AsUiComponent } from '@/aiscript/ui.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { miLocalStorage } from '@/local-storage.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { claimAchievement } from '@/utility/achievements.js';
 
-import type { AsUiRoot } from '@/scripts/aiscript/ui.js';
+import type { AsUiRoot } from '@/aiscript/ui.js';
 
 const parser = new Parser();
 let aiscript: Interpreter;
@@ -202,7 +202,7 @@ const showns = computed(() => {
 	return result;
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.scratchpad,
 	icon: 'ti ti-terminal-2',
 }));

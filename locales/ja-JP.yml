@@ -1315,6 +1315,29 @@ markAsSensitiveConfirm: "このメディアをセンシティブとして設定�
 unmarkAsSensitiveConfirm: "このメディアのセンシティブ指定を解除しますか？"
 preferences: "環境設定"
 accessibility: "アクセシビリティ"
+preferencesProfile: "設定のプロファイル"
+copyPreferenceId: "設定IDをコピー"
+resetToDefaultValue: "初期値に戻す"
+overrideByAccount: "アカウントで上書き"
+untitled: "無題"
+noName: "名前はありません"
+skip: "スキップ"
+restore: "復元"
+
+_preferencesProfile:
+  profileName: "プロファイル名"
+  profileNameDescription: "このデバイスを識別する名前を設定してください。"
+  profileNameDescription2: "例: 「メインPC」、「スマホ」など"
+
+_preferencesBackup:
+  autoBackup: "自動バックアップ"
+  restoreFromBackup: "バックアップから復元"
+  noBackupsFoundTitle: "バックアップが見つかりませんでした"
+  noBackupsFoundDescription: "自動で作成されたバックアップは見つかりませんでしたが、バックアップファイルを手動で保存している場合、それをインポートして復元することはできます。"
+  selectBackupToRestore: "復元するバックアップを選択してください"
+  youNeedToNameYourProfileToEnableAutoBackup: "自動バックアップを有効にするにはプロファイル名の設定が必要です。"
+  autoPreferencesBackupIsNotEnabledForThisDevice: "このデバイスで設定の自動バックアップは有効になっていません。"
+  backupFound: "設定のバックアップが見つかりました"
 
 _accountSettings:
   requireSigninToViewContents: "コンテンツの表示にログインを必須にする"
@@ -1326,6 +1349,7 @@ _accountSettings:
   makeNotesHiddenBefore: "過去のノートを非公開化する"
   makeNotesHiddenBeforeDescription: "この機能が有効になっている間、設定された日時より過去、または設定された時間を経過しているノートが自分のみ表示可能(非公開化)になります。無効に戻すと、ノートの公開状態も元に戻ります。"
   mayNotEffectForFederatedNotes: "リモートサーバーに連合されたノートには効果が及ばない場合があります。"
+  mayNotEffectSomeSituations: "これらの制限は簡易的なものです。リモートサーバーでの閲覧やモデレーション時など、一部のシチュエーションでは適用されない場合があります。"
   notesHavePassedSpecifiedPeriod: "指定した時間を経過しているノート"
   notesOlderThanSpecifiedDateAndTime: "指定した日時より前のノート"
 
@@ -2007,6 +2031,7 @@ _theme:
   installed: "{name}をインストールしました"
   installedThemes: "インストールされたテーマ"
   builtinThemes: "標準のテーマ"
+  instanceTheme: "サーバーのテーマ"
   alreadyInstalled: "そのテーマは既にインストールされています"
   invalid: "テーマの形式が間違っています"
   make: "テーマを作る"

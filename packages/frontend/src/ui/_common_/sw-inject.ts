@@ -4,10 +4,10 @@
  */
 
 import { post } from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i, login } from '@/account.js';
-import { getAccountFromId } from '@/scripts/get-account-from-id.js';
-import { deepClone } from '@/scripts/clone.js';
+import { getAccountFromId } from '@/utility/get-account-from-id.js';
+import { deepClone } from '@/utility/clone.js';
 import { mainRouter } from '@/router/main.js';
 
 export function swInject() {

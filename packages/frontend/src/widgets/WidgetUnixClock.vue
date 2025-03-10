@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onUnmounted, ref, watch } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
+import type { GetFormResultType } from '@/utility/form.js';
 
 const name = 'unixClock';
 

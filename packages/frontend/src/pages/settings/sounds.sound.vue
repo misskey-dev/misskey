@@ -32,15 +32,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
-import type { SoundType } from '@/scripts/sound.js';
+import type { SoundType } from '@/utility/sound.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { playMisskeySfxFile, soundsTypes, getSoundDuration } from '@/scripts/sound.js';
-import { selectFile } from '@/scripts/select-file.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { playMisskeySfxFile, soundsTypes, getSoundDuration } from '@/utility/sound.js';
+import { selectFile } from '@/utility/select-file.js';
 
 const props = defineProps<{
 	type: SoundType;

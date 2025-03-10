@@ -4,7 +4,7 @@
  */
 
 import { miLocalStorage } from '@/local-storage.js';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
 import {
 	afterAll,
@@ -59,7 +59,7 @@ vi.mock('@/os.js', () => {
 
 const misskeyApiMock = vi.hoisted(() => vi.fn());
 
-vi.mock('@/scripts/misskey-api.js', () => {
+vi.mock('@/utility/misskey-api.js', () => {
 	return { misskeyApi: misskeyApiMock };
 });
 

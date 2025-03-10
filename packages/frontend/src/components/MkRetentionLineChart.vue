@@ -11,12 +11,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
 import tinycolor from 'tinycolor2';
-import { defaultStore } from '@/store.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { chartVLine } from '@/scripts/chart-vline.js';
-import { alpha } from '@/scripts/color.js';
-import { initChart } from '@/scripts/init-chart.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { store } from '@/store.js';
+import { useChartTooltip } from '@/utility/use-chart-tooltip.js';
+import { chartVLine } from '@/utility/chart-vline.js';
+import { alpha } from '@/utility/color.js';
+import { initChart } from '@/utility/init-chart.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 initChart();
 
@@ -42,7 +42,7 @@ const getDate = (ymd: string) => {
 onMounted(async () => {
 	let raw = await misskeyApi('retention', { });
 
-	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
 	const accent = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-accent'));
 	const color = accent.toHex();

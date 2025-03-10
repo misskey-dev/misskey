@@ -7,21 +7,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/sounds" :label="i18n.ts.sounds" :keywords="['sounds']" icon="ti ti-music">
 	<div class="_gaps_m">
 		<SearchMarker :keywords="['mute']">
-			<MkSwitch v-model="notUseSound">
-				<template #label><SearchLabel>{{ i18n.ts.notUseSound }}</SearchLabel></template>
-			</MkSwitch>
+			<MkPreferenceContainer k="sound.notUseSound">
+				<MkSwitch v-model="notUseSound">
+					<template #label><SearchLabel>{{ i18n.ts.notUseSound }}</SearchLabel></template>
+				</MkSwitch>
+			</MkPreferenceContainer>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['active', 'mute']">
-			<MkSwitch v-model="useSoundOnlyWhenActive">
-				<template #label><SearchLabel>{{ i18n.ts.useSoundOnlyWhenActive }}</SearchLabel></template>
-			</MkSwitch>
+			<MkPreferenceContainer k="sound.useSoundOnlyWhenActive">
+				<MkSwitch v-model="useSoundOnlyWhenActive">
+					<template #label><SearchLabel>{{ i18n.ts.useSoundOnlyWhenActive }}</SearchLabel></template>
+				</MkSwitch>
+			</MkPreferenceContainer>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['volume', 'master']">
-			<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
-				<template #label><SearchLabel>{{ i18n.ts.masterVolume }}</SearchLabel></template>
-			</MkRange>
+			<MkPreferenceContainer k="sound.masterVolume">
+				<MkRange v-model="masterVolume" :min="0" :max="1" :step="0.05" :textConverter="(v) => `${Math.floor(v * 100)}%`">
+					<template #label><SearchLabel>{{ i18n.ts.masterVolume }}</SearchLabel></template>
+				</MkRange>
+			</MkPreferenceContainer>
 		</SearchMarker>
 
 		<FormSection>
@@ -51,27 +57,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
 import type { Ref } from 'vue';
-import type { SoundType, OperationType } from '@/scripts/sound.js';
-import type { SoundStore } from '@/store.js';
+import type { SoundType, OperationType } from '@/utility/sound.js';
+import type { SoundStore } from '@/preferences/def.js';
+import { prefer } from '@/preferences.js';
 import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { operationTypes } from '@/scripts/sound.js';
-import { defaultStore } from '@/store.js';
+import { definePage } from '@/page.js';
+import { operationTypes } from '@/utility/sound.js';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import { PREF_DEF } from '@/preferences/def.js';
 
-const notUseSound = computed(defaultStore.makeGetterSetter('sound_notUseSound'));
-const useSoundOnlyWhenActive = computed(defaultStore.makeGetterSetter('sound_useSoundOnlyWhenActive'));
-const masterVolume = computed(defaultStore.makeGetterSetter('sound_masterVolume'));
+const notUseSound = prefer.model('sound.notUseSound');
+const useSoundOnlyWhenActive = prefer.model('sound.useSoundOnlyWhenActive');
+const masterVolume = prefer.model('sound.masterVolume');
 
 const sounds = ref<Record<OperationType, Ref<SoundStore>>>({
-	note: defaultStore.reactiveState.sound_note,
-	noteMy: defaultStore.reactiveState.sound_noteMy,
-	notification: defaultStore.reactiveState.sound_notification,
-	reaction: defaultStore.reactiveState.sound_reaction,
+	note: prefer.r['sound.on.note'],
+	noteMy: prefer.r['sound.on.noteMy'],
+	notification: prefer.r['sound.on.notification'],
+	reaction: prefer.r['sound.on.reaction'],
 });
 
 function getSoundTypeName(f: SoundType): string {
@@ -93,14 +101,14 @@ async function updated(type: keyof typeof sounds.value, sound) {
 		volume: sound.volume,
 	};
 
-	defaultStore.set(`sound_${type}`, v);
+	prefer.commit(`sound.on.${type}`, v);
 	sounds.value[type] = v;
 }
 
 function reset() {
 	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
-		const v = defaultStore.def[`sound_${sound}`].default;
-		defaultStore.set(`sound_${sound}`, v);
+		const v = PREF_DEF[`sound.on.${sound}`].default;
+		prefer.commit(`sound.on.${sound}`, v);
 		sounds.value[sound] = v;
 	}
 }
@@ -109,7 +117,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.sounds,
 	icon: 'ti ti-music',
 }));

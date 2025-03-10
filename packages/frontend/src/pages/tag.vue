@@ -23,12 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkButton from '@/components/MkButton.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import * as os from '@/os.js';
-import { genEmbedCode } from '@/scripts/get-embed-code.js';
+import { genEmbedCode } from '@/utility/get-embed-code.js';
 
 const props = defineProps<{
 	tag: string;
@@ -44,11 +44,11 @@ const pagination = {
 const notes = ref<InstanceType<typeof MkNotes>>();
 
 async function post() {
-	defaultStore.set('postFormHashtags', props.tag);
-	defaultStore.set('postFormWithHashtags', true);
+	store.set('postFormHashtags', props.tag);
+	store.set('postFormWithHashtags', true);
 	await os.post();
-	defaultStore.set('postFormHashtags', '');
-	defaultStore.set('postFormWithHashtags', false);
+	store.set('postFormHashtags', '');
+	store.set('postFormWithHashtags', false);
 	notes.value?.pagingComponent?.reload();
 }
 
@@ -68,7 +68,7 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: props.tag,
 	icon: 'ti ti-hash',
 }));

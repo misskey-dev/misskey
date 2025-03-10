@@ -86,7 +86,7 @@ export function getConfig(): UserConfig {
 		plugins: [
 			pluginCreateSearchIndex({
 				targetFilePaths: ['src/pages/settings/*.vue'],
-				exportFilePath: './src/scripts/autogen/settings-search-index.ts',
+				exportFilePath: './src/utility/autogen/settings-search-index.ts',
 				verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
 			}),
 			pluginVue(),
