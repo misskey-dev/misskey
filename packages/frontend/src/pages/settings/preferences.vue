@@ -461,7 +461,7 @@ function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 		}
 
 		currentIndexes[lang] = await download();
-		await store.set('additionalUnicodeEmojiIndexes', currentIndexes);
+		await store.commit('additionalUnicodeEmojiIndexes', currentIndexes);
 	}
 
 	os.promiseDialog(main());
@@ -471,7 +471,7 @@ function removeEmojiIndex(lang: string) {
 	async function main() {
 		const currentIndexes = store.s.additionalUnicodeEmojiIndexes;
 		delete currentIndexes[lang];
-		await store.set('additionalUnicodeEmojiIndexes', currentIndexes);
+		await store.commit('additionalUnicodeEmojiIndexes', currentIndexes);
 	}
 
 	os.promiseDialog(main());
@@ -488,11 +488,11 @@ async function setPinnedList() {
 	if (canceled) return;
 	if (list == null) return;
 
-	prefer.set('pinnedUserLists', [list]);
+	prefer.commit('pinnedUserLists', [list]);
 }
 
 function removePinnedList() {
-	prefer.set('pinnedUserLists', []);
+	prefer.commit('pinnedUserLists', []);
 }
 
 function enableAllDataSaver() {
@@ -512,7 +512,7 @@ function disableAllDataSaver() {
 }
 
 watch(dataSaver, (to) => {
-	prefer.set('dataSaver', to);
+	prefer.commit('dataSaver', to);
 }, {
 	deep: true,
 });

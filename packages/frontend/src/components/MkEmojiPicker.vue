@@ -432,7 +432,7 @@ function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, 
 		let recents = store.s.recentlyUsedEmojis;
 		recents = recents.filter((emoji) => emoji !== key);
 		recents.unshift(key);
-		store.set('recentlyUsedEmojis', recents.splice(0, 32));
+		store.commit('recentlyUsedEmojis', recents.splice(0, 32));
 	}
 }
 

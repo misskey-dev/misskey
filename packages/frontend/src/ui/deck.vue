@@ -222,7 +222,7 @@ function changeProfile(ev: MouseEvent) {
 		items.push(...(profiles.filter(k => k !== store.s['deck.profile']).map(k => ({
 			text: k,
 			action: () => {
-				store.set('deck.profile', k);
+				store.commit('deck.profile', k);
 				unisonReload();
 			},
 		}))), { type: 'divider' as const }, {
@@ -237,7 +237,7 @@ function changeProfile(ev: MouseEvent) {
 				if (canceled || name == null) return;
 
 				os.promiseDialog((async () => {
-					await store.set('deck.profile', name);
+					await store.commit('deck.profile', name);
 					await forceSaveDeck();
 				})(), () => {
 					unisonReload();
@@ -258,13 +258,13 @@ async function deleteProfile() {
 
 	os.promiseDialog((async () => {
 		if (store.s['deck.profile'] === 'default') {
-			await store.set('deck.columns', []);
-			await store.set('deck.layout', []);
+			await store.commit('deck.columns', []);
+			await store.commit('deck.layout', []);
 			await forceSaveDeck();
 		} else {
 			await deleteProfile_(store.s['deck.profile']);
 		}
-		await store.set('deck.profile', 'default');
+		await store.commit('deck.profile', 'default');
 	})(), () => {
 		unisonReload();
 	});

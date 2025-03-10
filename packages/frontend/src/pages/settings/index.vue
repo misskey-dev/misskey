@@ -72,7 +72,7 @@ const ro = new ResizeObserver((entries, observer) => {
 });
 
 function skipAutoBackup() {
-	store.set('showPreferencesAutoCloudBackupSuggestion', false);
+	store.commit('showPreferencesAutoCloudBackupSuggestion', false);
 }
 
 const menuDef = computed<SuperMenuDef[]>(() => [{

@@ -93,7 +93,7 @@ function resolved(reportId) {
 }
 
 function closeTutorial() {
-	store.set('abusesTutorial', false);
+	store.commit('abusesTutorial', false);
 }
 
 const headerActions = computed(() => []);

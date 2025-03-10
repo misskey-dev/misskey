@@ -222,7 +222,7 @@ export class ProfileManager extends EventEmitter<{
 			text: i18n.ts.resetToDefaultValue,
 			danger: true,
 			action: () => {
-				this.store.set(key, PREF_DEF[key].default);
+				this.store.commit(key, PREF_DEF[key].default);
 			},
 		}, {
 			type: 'divider',

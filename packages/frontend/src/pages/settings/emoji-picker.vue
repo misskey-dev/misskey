@@ -240,13 +240,13 @@ function getHTMLElement(ev: MouseEvent): HTMLElement {
 }
 
 watch(pinnedEmojisForReaction, () => {
-	store.set('reactions', pinnedEmojisForReaction.value);
+	store.commit('reactions', pinnedEmojisForReaction.value);
 }, {
 	deep: true,
 });
 
 watch(pinnedEmojis, () => {
-	store.set('pinnedEmojis', pinnedEmojis.value);
+	store.commit('pinnedEmojis', pinnedEmojis.value);
 }, {
 	deep: true,
 });

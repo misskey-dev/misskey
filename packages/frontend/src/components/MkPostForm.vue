@@ -177,9 +177,9 @@ const files = ref(props.initialFiles ?? []);
 const poll = ref<PollEditorModelValue | null>(null);
 const useCw = ref<boolean>(!!props.initialCw);
 const showPreview = ref(store.s.showPreview);
-watch(showPreview, () => store.set('showPreview', showPreview.value));
+watch(showPreview, () => store.commit('showPreview', showPreview.value));
 const showAddMfmFunction = ref(prefer.s.enableQuickAddMfmFunction);
-watch(showAddMfmFunction, () => prefer.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
+watch(showAddMfmFunction, () => prefer.commit('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
 const localOnly = ref(props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly));
 const visibility = ref(props.initialVisibility ?? (prefer.s.rememberNoteVisibility ? store.s.visibility : prefer.s.defaultNoteVisibility));
@@ -480,7 +480,7 @@ function setVisibility() {
 		changeVisibility: v => {
 			visibility.value = v;
 			if (prefer.s.rememberNoteVisibility) {
-				store.set('visibility', visibility.value);
+				store.commit('visibility', visibility.value);
 			}
 		},
 		closed: () => dispose(),
@@ -528,7 +528,7 @@ async function toggleLocalOnly() {
 
 	localOnly.value = !localOnly.value;
 	if (prefer.s.rememberNoteVisibility) {
-		store.set('localOnly', localOnly.value);
+		store.commit('localOnly', localOnly.value);
 	}
 }
 

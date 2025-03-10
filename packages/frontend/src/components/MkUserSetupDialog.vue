@@ -152,7 +152,7 @@ const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 const page = ref(store.s.accountSetupWizard);
 
 watch(page, () => {
-	store.set('accountSetupWizard', page.value);
+	store.commit('accountSetupWizard', page.value);
 });
 
 async function close(skip: boolean) {
@@ -165,11 +165,11 @@ async function close(skip: boolean) {
 	}
 
 	dialog.value?.close();
-	store.set('accountSetupWizard', -1);
+	store.commit('accountSetupWizard', -1);
 }
 
 function setupComplete() {
-	store.set('accountSetupWizard', -1);
+	store.commit('accountSetupWizard', -1);
 	dialog.value?.close();
 }
 
@@ -194,7 +194,7 @@ async function later(later: boolean) {
 	}
 
 	dialog.value?.close();
-	store.set('accountSetupWizard', 0);
+	store.commit('accountSetupWizard', 0);
 }
 </script>
 

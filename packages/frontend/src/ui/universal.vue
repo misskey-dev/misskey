@@ -178,7 +178,7 @@ if (window.innerWidth > 1024) {
 }
 
 if (prefer.s.widgets.length === 0) {
-	prefer.set('widgets', [{
+	prefer.commit('widgets', [{
 		name: 'calendar',
 		id: 'a', place: 'right', data: {},
 	}, {

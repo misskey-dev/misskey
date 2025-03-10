@@ -128,7 +128,7 @@ watch(store.r.menuDisplay, () => {
 });
 
 function toggleIconOnly() {
-	store.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
+	store.commit('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
 }
 
 function openAccountMenu(ev: MouseEvent) {

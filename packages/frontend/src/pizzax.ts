@@ -44,7 +44,7 @@ export class Pizzax<Data extends Record<string, any>> extends EventEmitter<Pizza
 		}
 	}
 
-	public set<K extends keyof Data>(key: K, value: Data[K]) {
+	public commit<K extends keyof Data>(key: K, value: Data[K]) {
 		this.r[key].value = this.s[key] = value;
 		this.emit('updated', { key, value });
 	}
@@ -84,7 +84,7 @@ export class Pizzax<Data extends Record<string, any>> extends EventEmitter<Pizza
 			},
 			set: (value) => {
 				const val = setter ? setter(value) : value;
-				this.set(key, val);
+				this.commit(key, val);
 				valueRef.value = val;
 			},
 		});

@@ -53,7 +53,7 @@ const changed = ref(false);
 let timeoutId;
 
 const saveMemo = () => {
-	store.set('memo', text.value);
+	store.commit('memo', text.value);
 	changed.value = false;
 };
 
