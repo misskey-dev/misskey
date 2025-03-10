@@ -116,6 +116,7 @@ import { useScrollPositionManager } from '@/nirax.js';
 import { mainRouter } from '@/router/main.js';
 import { prefer } from '@/preferences.js';
 import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
+import { DI } from '@/di.js';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
@@ -140,7 +141,7 @@ const widgetsShowing = ref(false);
 const navFooter = shallowRef<HTMLElement>();
 const contents = shallowRef<InstanceType<typeof MkStickyContainer>>();
 
-provide('router', mainRouter);
+provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();
 	pageMetadata.value = info;

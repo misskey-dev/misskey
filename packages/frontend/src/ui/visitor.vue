@@ -81,6 +81,7 @@ import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { mainRouter } from '@/router/main.js';
+import { DI } from '@/di.js';
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -88,7 +89,7 @@ const DESKTOP_THRESHOLD = 1100;
 
 const pageMetadata = ref<null | PageMetadata>(null);
 
-provide('router', mainRouter);
+provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();
 	pageMetadata.value = info;

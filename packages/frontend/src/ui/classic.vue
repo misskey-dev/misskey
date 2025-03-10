@@ -60,6 +60,7 @@ import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { mainRouter } from '@/router/main.js';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
@@ -80,7 +81,7 @@ const live2d = shallowRef<HTMLIFrameElement>();
 const widgetsLeft = ref<HTMLElement>();
 const widgetsRight = ref<HTMLElement>();
 
-provide('router', mainRouter);
+provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();
 	pageMetadata.value = info;
