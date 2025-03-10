@@ -8,17 +8,171 @@ import * as Misskey from 'misskey-js';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
 import { hemisphere } from '@@/js/intl-const.js';
+import { BroadcastChannel } from 'broadcast-channel';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { Plugin } from '@/plugin.js';
 import type { Column } from '@/deck.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { Storage } from '@/pizzax.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
+import { Pizzax } from '@/pizzax.js';
+import { $i } from '@/account.js';
+import * as idb from '@/utility/idb-proxy.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { useStream } from '@/stream.js';
+import { deepMerge } from '@/utility/merge.js';
 
-/**
- * 「状態」を管理するストア(not「設定」)
- */
-export const store = markRaw(new Storage('base', {
+type StateDef = Record<string, {
+	where: 'account' | 'device' | 'deviceAccount';
+	default: any;
+}>;
+
+type State<T extends StateDef> = { [K in keyof T]: T[K]['default']; };
+
+type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
+
+type PizzaxChannelMessage<T extends StateDef> = {
+	where: 'device' | 'deviceAccount';
+	key: keyof T;
+	value: T[keyof T]['default'];
+	userId?: string;
+};
+
+class Store<T extends StateDef> extends Pizzax<State<T>> {
+	public readonly def: T;
+
+	public readonly ready: Promise<void>;
+	public readonly loaded: Promise<void>;
+
+	public readonly key: string;
+	public readonly deviceStateKeyName: `pizzax::${this['key']}`;
+	public readonly deviceAccountStateKeyName: `pizzax::${this['key']}::${string}` | '';
+	public readonly registryCacheKeyName: `pizzax::${this['key']}::cache::${string}` | '';
+
+	private pizzaxChannel: BroadcastChannel<PizzaxChannelMessage<T>>;
+
+	// 簡易的にキューイングして占有ロックとする
+	private currentIdbJob: Promise<any> = Promise.resolve();
+	private addIdbSetJob<T>(job: () => Promise<T>) {
+		const promise = this.currentIdbJob.then(job, err => {
+			console.error('Pizzax failed to save data to idb!', err);
+			return job();
+		});
+		this.currentIdbJob = promise;
+		return promise;
+	}
+
+	constructor(def: T) {
+		const data = {} as State<T>;
+
+		for (const [k, v] of Object.entries(def) as [keyof T, T[keyof T]['default']][]) {
+			data[k] = v.default;
+		}
+
+		super(data);
+
+		const key = 'base';
+		this.key = key;
+		this.deviceStateKeyName = `pizzax::${key}`;
+		this.deviceAccountStateKeyName = $i ? `pizzax::${key}::${$i.id}` : '';
+		this.registryCacheKeyName = $i ? `pizzax::${key}::cache::${$i.id}` : '';
+		this.def = def;
+		this.pizzaxChannel = new BroadcastChannel(`pizzax::${key}`);
+		this.ready = this.init();
+		this.loaded = this.ready.then(() => this.load());
+	}
+
+	private async init(): Promise<void> {
+		const deviceState: State<T> = await idb.get(this.deviceStateKeyName) || {};
+		const deviceAccountState = $i ? await idb.get(this.deviceAccountStateKeyName) || {} : {};
+		const registryCache = $i ? await idb.get(this.registryCacheKeyName) || {} : {};
+
+		for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
+			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
+				this.rewrite(k, this.mergeState<T[keyof T]['default']>(deviceState[k], v.default));
+			} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call(registryCache, k)) {
+				this.rewrite(k, this.mergeState<T[keyof T]['default']>(registryCache[k], v.default));
+			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
+				this.rewrite(k, this.mergeState<T[keyof T]['default']>(deviceAccountState[k], v.default));
+			} else {
+				this.rewrite(k, v.default);
+			}
+		}
+
+		this.pizzaxChannel.addEventListener('message', ({ where, key, value, userId }) => {
+			// アカウント変更すればunisonReloadが効くため、このreturnが発火することは
+			// まずないと思うけど一応弾いておく
+			if (where === 'deviceAccount' && !($i && userId !== $i.id)) return;
+			this.r[key].value = this.s[key] = value;
+		});
+
+		if ($i) {
+			const connection = useStream().useChannel('main');
+
+			// streamingのuser storage updateイベントを監視して更新
+			connection.on('registryUpdated', ({ scope, key, value }: { scope?: string[], key: keyof T, value: T[typeof key]['default'] }) => {
+				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.s[key] === value) return;
+
+				this.rewrite(key, value);
+
+				this.addIdbSetJob(async () => {
+					const cache = await idb.get(this.registryCacheKeyName);
+					if (cache[key] !== value) {
+						cache[key] = value;
+						await idb.set(this.registryCacheKeyName, cache);
+					}
+				});
+			});
+		}
+	}
+
+	private load(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			if ($i) {
+				// api関数と循環参照なので一応setTimeoutしておく
+				window.setTimeout(async () => {
+					await store.ready;
+
+					misskeyApi('i/registry/get-all', { scope: ['client', this.key] })
+						.then(kvs => {
+							const cache: Partial<T> = {};
+							for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
+								if (v.where === 'account') {
+									if (Object.prototype.hasOwnProperty.call(kvs, k)) {
+										this.rewrite(k, (kvs as Partial<T>)[k]);
+										cache[k] = (kvs as Partial<T>)[k];
+									} else {
+										this.r[k].value = this.s[k] = v.default;
+									}
+								}
+							}
+
+							return idb.set(this.registryCacheKeyName, cache);
+						})
+						.then(() => resolve());
+				}, 1);
+			} else {
+				resolve();
+			}
+		});
+	}
+
+	private isPureObject(value: unknown): value is Record<string | number | symbol, unknown> {
+		return typeof value === 'object' && value !== null && !Array.isArray(value);
+	}
+
+	private mergeState<X>(value: X, def: X): X {
+		if (this.isPureObject(value) && this.isPureObject(def)) {
+			const merged = deepMerge(value, def);
+
+			if (_DEV_) console.log('Merging state. Incoming: ', value, ' Default: ', def, ' Result: ', merged);
+
+			return merged as X;
+		}
+		return value;
+	}
+}
+
+const STORE_DEF = {
 	accountSetupWizard: {
 		where: 'account',
 		default: 0,
@@ -465,9 +619,12 @@ export const store = markRaw(new Storage('base', {
 		},
 	},
 	//#endregion
-}));
+} satisfies StateDef;
 
-// TODO: 他のタブと永続化されたstateを同期
+/**
+ * 「状態」を管理するストア(not「設定」)
+ */
+export const store = markRaw(new Store(STORE_DEF));
 
 const PREFIX = 'miux:' as const;
 
