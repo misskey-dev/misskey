@@ -20,6 +20,7 @@ import * as idb from '@/utility/idb-proxy.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { deepMerge } from '@/utility/merge.js';
+import { deepClone } from '@/utility/clone.js';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -27,8 +28,6 @@ type StateDef = Record<string, {
 }>;
 
 type State<T extends StateDef> = { [K in keyof T]: T[K]['default']; };
-
-type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
 type PizzaxChannelMessage<T extends StateDef> = {
 	where: 'device' | 'deviceAccount';
@@ -79,6 +78,55 @@ class Store<T extends StateDef> extends Pizzax<State<T>> {
 		this.pizzaxChannel = new BroadcastChannel(`pizzax::${key}`);
 		this.ready = this.init();
 		this.loaded = this.ready.then(() => this.load());
+
+		this.addListener('updated', ({ key, value }) => {
+			// IndexedDBやBroadcastChannelで扱うために単純なオブジェクトにする
+			// (JSON.parse(JSON.stringify(value))の代わり)
+			const rawValue = deepClone(value);
+
+			this.r[key].value = this.s[key] = rawValue;
+
+			return this.addIdbSetJob(async () => {
+				switch (this.def[key].where) {
+					case 'device': {
+						this.pizzaxChannel.postMessage({
+							where: 'device',
+							key,
+							value: rawValue,
+						});
+						const deviceState = await idb.get(this.deviceStateKeyName) || {};
+						deviceState[key] = rawValue;
+						await idb.set(this.deviceStateKeyName, deviceState);
+						break;
+					}
+					case 'deviceAccount': {
+						if ($i == null) break;
+						this.pizzaxChannel.postMessage({
+							where: 'deviceAccount',
+							key,
+							value: rawValue,
+							userId: $i.id,
+						});
+						const deviceAccountState = await idb.get(this.deviceAccountStateKeyName) || {};
+						deviceAccountState[key] = rawValue;
+						await idb.set(this.deviceAccountStateKeyName, deviceAccountState);
+						break;
+					}
+					case 'account': {
+						if ($i == null) break;
+						const cache = await idb.get(this.registryCacheKeyName) || {};
+						cache[key] = rawValue;
+						await idb.set(this.registryCacheKeyName, cache);
+						await misskeyApi('i/registry/set', {
+							scope: ['client', this.key],
+							key: key.toString(),
+							value: rawValue,
+						});
+						break;
+					}
+				}
+			});
+		});
 	}
 
 	private async init(): Promise<void> {

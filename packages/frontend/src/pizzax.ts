@@ -22,7 +22,7 @@ type PizzaxEvent<Data extends Record<string, any>> = {
 
 export class Pizzax<Data extends Record<string, any>> extends EventEmitter<PizzaxEvent<Data>> {
 	/**
-	 * static の略 (static が予約語のため)
+	 * static / state の略 (static が予約語のため)
 	 */
 	public s = {} as {
 		[K in keyof Data]: Data[K];
