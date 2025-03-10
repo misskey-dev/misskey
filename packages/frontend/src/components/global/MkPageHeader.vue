@@ -43,14 +43,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, inject, shallowRef, computed } from 'vue';
 import tinycolor from 'tinycolor2';
+import { scrollToTop } from '@@/js/scroll.js';
 import XTabs from './MkPageHeader.tabs.vue';
 import type { Tab } from './MkPageHeader.tabs.vue';
-import { scrollToTop } from '@@/js/scroll.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
+import type { PageMetadata } from '@/utility/page-metadata.js';
 import { globalEvents } from '@/events.js';
 import { injectReactiveMetadata } from '@/utility/page-metadata.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
-import type { PageHeaderItem } from '@/types/page-header.js';
-import type { PageMetadata } from '@/utility/page-metadata.js';
 
 const props = withDefaults(defineProps<{
 	overridePageMetadata?: PageMetadata;
@@ -114,7 +114,7 @@ let ro: ResizeObserver | null;
 
 onMounted(() => {
 	calcBg();
-	globalEvents.on('themeChanged', calcBg);
+	globalEvents.on('themeChanging', calcBg);
 
 	if (el.value && el.value.parentElement) {
 		narrow.value = el.value.parentElement.offsetWidth < 500;
@@ -128,7 +128,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	globalEvents.off('themeChanged', calcBg);
+	globalEvents.off('themeChanging', calcBg);
 	if (ro) ro.disconnect();
 });
 </script>

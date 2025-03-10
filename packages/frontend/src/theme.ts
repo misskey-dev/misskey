@@ -72,6 +72,9 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	timeout = window.setTimeout(() => {
 		document.documentElement.classList.remove('_themeChanging_');
+
+		// 色計算など再度行えるようにクライアント全体に通知
+		globalEvents.emit('themeChanged');
 	}, 1000);
 
 	const colorScheme = theme.base === 'dark' ? 'dark' : 'light';
@@ -108,7 +111,7 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 
 	// 色計算など再度行えるようにクライアント全体に通知
-	globalEvents.emit('themeChanged');
+	globalEvents.emit('themeChanging');
 }
 
 function compile(theme: Theme): Record<string, string> {

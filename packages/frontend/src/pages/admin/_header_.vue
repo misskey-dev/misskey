@@ -35,8 +35,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref, shallowRef, watch, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
-import { popupMenu } from '@/os.js';
 import { scrollToTop } from '@@/js/scroll.js';
+import { popupMenu } from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import { globalEvents } from '@/events.js';
 import { injectReactiveMetadata } from '@/utility/page-metadata.js';
@@ -127,7 +127,7 @@ const calcBg = () => {
 
 onMounted(() => {
 	calcBg();
-	globalEvents.on('themeChanged', calcBg);
+	globalEvents.on('themeChanging', calcBg);
 
 	watch(() => [props.tab, props.tabs], () => {
 		nextTick(() => {
@@ -147,7 +147,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	globalEvents.off('themeChanged', calcBg);
+	globalEvents.off('themeChanging', calcBg);
 });
 </script>
 
