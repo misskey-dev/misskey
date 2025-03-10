@@ -113,7 +113,7 @@ const shouldHide = ref(!prefer.s.forceShowAds && $i && $i.policies.canHideAds &&
 function reduceFrequency(): void {
 	if (chosen.value == null) return;
 	if (store.s.mutedAds.includes(chosen.value.id)) return;
-	store.push('mutedAds', chosen.value.id);
+	store.commit('mutedAds', [...store.s.mutedAds, chosen.value.id]);
 	os.success();
 	chosen.value = choseAd();
 	showMenu.value = false;

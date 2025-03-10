@@ -111,8 +111,8 @@ export async function deleteProfile(key: string): Promise<void> {
 
 export function addColumn(column: Column) {
 	if (column.name === undefined) column.name = null;
-	store.push('deck.columns', column);
-	store.push('deck.layout', [column.id]);
+	store.commit('deck.columns', [...store.s['deck.columns'], column]);
+	store.commit('deck.layout', [...store.s['deck.layout'], [column.id]]);
 	saveDeck();
 }
 
