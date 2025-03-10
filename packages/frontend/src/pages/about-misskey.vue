@@ -145,7 +145,7 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 import { $i } from '@/account.js';
 
@@ -450,7 +450,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.aboutMisskey,
 	icon: null,
 }));

@@ -153,7 +153,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { selectFile } from '@/utility/select-file.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { $i } from '@/account.js';
 import { store } from '@/store.js';
 
@@ -250,7 +250,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.importAndExport,
 	icon: 'ti ti-package',
 }));

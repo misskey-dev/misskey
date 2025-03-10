@@ -218,7 +218,7 @@ import MkRadios from '@/components/MkRadios.vue';
 import { prefer } from '@/preferences.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
 import FormLink from '@/components/form/link.vue';
 import { globalEvents } from '@/events.js';
@@ -313,7 +313,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.appearance,
 	icon: 'ti ti-device-desktop',
 }));

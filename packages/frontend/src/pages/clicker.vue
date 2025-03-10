@@ -14,9 +14,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import MkClickerGame from '@/components/MkClickerGame.vue';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: '🍪👈',
 	icon: 'ti ti-cookie',
 }));

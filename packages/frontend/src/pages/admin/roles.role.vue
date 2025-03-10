@@ -69,7 +69,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -170,7 +170,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: `${i18n.ts.role}: ${role.name}`,
 	icon: 'ti ti-badge',
 }));

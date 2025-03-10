@@ -49,7 +49,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { deepMerge } from '@/utility/merge.js';
@@ -333,7 +333,7 @@ const headerTabsWhenNotLogin = computed(() => [...availableBasicTimelines().map(
 	iconOnly: true,
 }))] as Tab[]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.timeline,
 	icon: isBasicTimeline(src.value) ? basicTimelineIconClass(src.value) : 'ti ti-home',
 }));

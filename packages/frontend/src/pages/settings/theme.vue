@@ -91,7 +91,7 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/utility/array.js';
 import { getThemes } from '@/theme-store.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import { prefer } from '@/preferences.js';
@@ -230,7 +230,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.theme,
 	icon: 'ti ti-palette',
 }));

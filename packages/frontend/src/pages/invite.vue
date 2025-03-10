@@ -43,7 +43,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { serverErrorImageUrl, instance } from '@/instance.js';
 import { $i } from '@/account.js';
 
@@ -92,7 +92,7 @@ async function update() {
 
 update();
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.invite,
 	icon: 'ti ti-user-plus',
 }));

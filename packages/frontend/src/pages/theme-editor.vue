@@ -93,7 +93,7 @@ import { store } from '@/store.js';
 import { addTheme } from '@/theme-store.js';
 import { i18n } from '@/i18n.js';
 import { useLeaveGuard } from '@/utility/use-leave-guard.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 
 const bgColors = [
@@ -228,7 +228,7 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.themeEditor,
 	icon: 'ti ti-palette',
 }));

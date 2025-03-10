@@ -32,14 +32,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, onUnmounted, provide, ref, shallowRef } from 'vue';
 import { url } from '@@/js/config.js';
 import { getScrollContainer } from '@@/js/scroll.js';
-import type { PageMetadata } from '@/utility/page-metadata.js';
+import type { PageMetadata } from '@/page.js';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/utility/popout.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { i18n } from '@/i18n.js';
-import { provideMetadataReceiver, provideReactiveMetadata } from '@/utility/page-metadata.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { useRouterFactory } from '@/router/supplier.js';

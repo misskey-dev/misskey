@@ -65,7 +65,7 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { operationTypes } from '@/utility/sound.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
@@ -117,7 +117,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.sounds,
 	icon: 'ti ti-music',
 }));

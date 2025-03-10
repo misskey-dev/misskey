@@ -113,7 +113,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { deepClone } from '@/utility/clone.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/utility/navigator.js';
@@ -320,7 +320,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: page.value ? page.value.title || page.value.name : i18n.ts.pages,
 	...page.value ? {
 		avatar: page.value.user,
