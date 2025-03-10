@@ -49,12 +49,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div :class="$style.themeSelect">
 								<div :class="$style.themeItemOuter">
 									<input
-										type="radio"
 										:id="`themeRadio_${instanceLightTheme.id}`"
+										v-model="lightThemeId"
+										type="radio"
 										name="lightTheme"
 										:class="$style.themeRadio"
 										:value="instanceLightTheme.id"
-										v-model="lightThemeId"
 									/>
 									<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button">
 										<MkThemePreview :theme="instanceLightTheme" :class="$style.themeItemPreview" />
@@ -69,12 +69,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div :class="$style.themeSelect">
 								<div v-for="theme in installedLightThemes" :class="$style.themeItemOuter">
 									<input
-										type="radio"
 										:id="`themeRadio_${theme.id}`"
+										v-model="lightThemeId"
+										type="radio"
 										name="lightTheme"
 										:class="$style.themeRadio"
 										:value="theme.id"
-										v-model="lightThemeId"
 									/>
 									<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
 										<MkThemePreview :theme="theme" :class="$style.themeItemPreview" />
@@ -89,12 +89,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div :class="$style.themeSelect">
 								<div v-for="theme in builtinLightThemes" :class="$style.themeItemOuter">
 									<input
-										type="radio"
 										:id="`themeRadio_${theme.id}`"
+										v-model="lightThemeId"
+										type="radio"
 										name="lightTheme"
 										:class="$style.themeRadio"
 										:value="theme.id"
-										v-model="lightThemeId"
 									/>
 									<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
 										<MkThemePreview :theme="theme" :class="$style.themeItemPreview" />
@@ -119,12 +119,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div :class="$style.themeSelect">
 								<div :class="$style.themeItemOuter">
 									<input
-										type="radio"
 										:id="`themeRadio_${instanceDarkTheme.id}`"
+										v-model="darkThemeId"
+										type="radio"
 										name="darkTheme"
 										:class="$style.themeRadio"
 										:value="instanceDarkTheme.id"
-										v-model="darkThemeId"
 									/>
 									<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button">
 										<MkThemePreview :theme="instanceDarkTheme" :class="$style.themeItemPreview" />
@@ -139,12 +139,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div :class="$style.themeSelect">
 								<div v-for="theme in installedDarkThemes" :class="$style.themeItemOuter">
 									<input
-										type="radio"
 										:id="`themeRadio_${theme.id}`"
+										v-model="darkThemeId"
+										type="radio"
 										name="darkTheme"
 										:class="$style.themeRadio"
 										:value="theme.id"
-										v-model="darkThemeId"
 									/>
 									<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
 										<MkThemePreview :theme="theme" :class="$style.themeItemPreview" />
@@ -159,12 +159,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div :class="$style.themeSelect">
 								<div v-for="theme in builtinDarkThemes" :class="$style.themeItemOuter">
 									<input
-										type="radio"
 										:id="`themeRadio_${theme.id}`"
+										v-model="darkThemeId"
+										type="radio"
 										name="darkTheme"
 										:class="$style.themeRadio"
 										:value="theme.id"
-										v-model="darkThemeId"
 									/>
 									<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
 										<MkThemePreview :theme="theme" :class="$style.themeItemPreview" />
