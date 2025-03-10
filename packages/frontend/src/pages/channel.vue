@@ -84,7 +84,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i, iAmModerator } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import MkNotes from '@/components/MkNotes.vue';
 import { favoritedChannelsCache } from '@/cache.js';
@@ -265,7 +265,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-search',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: channel.value ? channel.value.name : i18n.ts.channel,
 	icon: 'ti ti-device-tv',
 }));

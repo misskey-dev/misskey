@@ -23,7 +23,7 @@ import MkButton from '@/components/MkButton.vue';
 import { parseThemeCode, previewTheme, installTheme } from '@/theme.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
@@ -63,7 +63,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._theme.install,
 	icon: 'ti ti-download',
 }));

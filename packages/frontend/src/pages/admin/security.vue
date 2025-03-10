@@ -134,7 +134,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { useForm } from '@/utility/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 
@@ -206,7 +206,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.security,
 	icon: 'ti ti-lock',
 }));

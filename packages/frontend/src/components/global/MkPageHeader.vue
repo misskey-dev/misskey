@@ -47,9 +47,9 @@ import { scrollToTop } from '@@/js/scroll.js';
 import XTabs from './MkPageHeader.tabs.vue';
 import type { Tab } from './MkPageHeader.tabs.vue';
 import type { PageHeaderItem } from '@/types/page-header.js';
-import type { PageMetadata } from '@/utility/page-metadata.js';
+import type { PageMetadata } from '@/page.js';
 import { globalEvents } from '@/events.js';
-import { injectReactiveMetadata } from '@/utility/page-metadata.js';
+import { injectReactiveMetadata } from '@/page.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 
 const props = withDefaults(defineProps<{

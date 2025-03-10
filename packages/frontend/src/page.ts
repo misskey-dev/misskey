@@ -35,7 +35,7 @@ const getMetadata = (): Ref<PageMetadata | null> | undefined => {
 	return inject<Ref<PageMetadata | null>>(METADATA_KEY);
 };
 
-export const definePageMetadata = (maybeRefOrGetterMetadata: MaybeRefOrGetter<PageMetadata>): void => {
+export const definePage = (maybeRefOrGetterMetadata: MaybeRefOrGetter<PageMetadata>): void => {
 	const metadataRef = ref(toValue(maybeRefOrGetterMetadata));
 	const metadataGetter = () => metadataRef.value;
 	const receiver = getReceiver();

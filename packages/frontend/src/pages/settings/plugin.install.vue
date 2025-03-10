@@ -24,7 +24,7 @@ import MkButton from '@/components/MkButton.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { installPlugin } from '@/plugin.js';
 import { useRouter } from '@/router/supplier.js';
 
@@ -53,7 +53,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._plugin.install,
 	icon: 'ti ti-download',
 }));

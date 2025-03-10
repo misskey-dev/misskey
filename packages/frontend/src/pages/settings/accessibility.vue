@@ -77,7 +77,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import { prefer } from '@/preferences.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
 const reduceAnimation = prefer.model('animation', v => !v, v => !v);
@@ -99,7 +99,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.accessibility,
 	icon: 'ti ti-accessible',
 }));

@@ -38,7 +38,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 
 const logs = shallowRef<InstanceType<typeof MkPagination>>();
@@ -59,7 +59,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.moderationLogs,
 	icon: 'ti ti-list-search',
 }));
