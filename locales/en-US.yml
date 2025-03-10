@@ -1346,6 +1346,7 @@ _accountSettings:
   makeNotesHiddenBefore: "Make past notes private"
   makeNotesHiddenBeforeDescription: "While this feature is enabled, notes that are past the set date and time or have been visible only to you. When it is deactivated, the note publication status will also be restored."
   mayNotEffectForFederatedNotes: "Notes federated to a remote server may not be affected."
+  mayNotEffectSomeSituations: "These restrictions are simplified. They may not apply in some situations, such as when viewing on a remote server or during moderation."
   notesHavePassedSpecifiedPeriod: "Note that the specified time has passed"
   notesOlderThanSpecifiedDateAndTime: "Notes before the specified date and time"
 _abuseUserReport:
@@ -1994,6 +1995,7 @@ _theme:
   installed: "{name} has been installed"
   installedThemes: "Installed themes"
   builtinThemes: "Built-in themes"
+  instanceTheme: "Server theme"
   alreadyInstalled: "This theme is already installed"
   invalid: "The format of this theme is invalid"
   make: "Make a theme"
