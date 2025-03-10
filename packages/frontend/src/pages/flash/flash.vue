@@ -73,7 +73,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { registerAsUiLib } from '@/aiscript/ui.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
@@ -304,7 +304,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: flash.value ? flash.value.title : 'Play',
 	...flash.value ? {
 		avatar: flash.value.user,

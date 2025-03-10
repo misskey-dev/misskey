@@ -55,7 +55,7 @@ import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { $i, updateAccountPartial } from '@/account.js';
 
 const paginationCurrent = {
@@ -111,7 +111,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-point',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
 }));

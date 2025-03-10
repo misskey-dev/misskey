@@ -65,7 +65,7 @@ let latestBackupAt = 0;
 
 window.setInterval(() => {
 	if ($i == null) return;
-	if (!store.state.enablePreferencesAutoCloudBackup) return;
+	if (!store.s.enablePreferencesAutoCloudBackup) return;
 	if (document.visibilityState !== 'visible') return; // 同期されていない古い値がバックアップされるのを防ぐ
 	if (profileManager.profile.modifiedAt <= latestBackupAt) return;
 

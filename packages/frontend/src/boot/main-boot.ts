@@ -138,98 +138,98 @@ export async function mainBoot() {
 		store.loaded.then(async () => {
 			// prefereces migration
 			// TODO: そのうち消す
-			if (store.state.menu.length > 0) {
+			if (store.s.menu.length > 0) {
 				const themes = await misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []);
 				if (themes.length > 0) {
-					prefer.set('themes', themes);
+					prefer.commit('themes', themes);
 				}
 				const plugins = ColdDeviceStorage.get('plugins');
-				prefer.set('plugins', plugins.map(p => ({
+				prefer.commit('plugins', plugins.map(p => ({
 					...p,
 					installId: (p as any).id,
 					id: undefined,
 				})));
-				prefer.set('lightTheme', ColdDeviceStorage.get('lightTheme'));
-				prefer.set('darkTheme', ColdDeviceStorage.get('darkTheme'));
-				prefer.set('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
-				prefer.set('overridedDeviceKind', store.state.overridedDeviceKind);
-				prefer.set('widgets', store.state.widgets);
-				prefer.set('keepCw', store.state.keepCw);
-				prefer.set('collapseRenotes', store.state.collapseRenotes);
-				prefer.set('rememberNoteVisibility', store.state.rememberNoteVisibility);
-				prefer.set('uploadFolder', store.state.uploadFolder);
-				prefer.set('keepOriginalUploading', store.state.keepOriginalUploading);
-				prefer.set('menu', store.state.menu);
-				prefer.set('statusbars', store.state.statusbars);
-				prefer.set('pinnedUserLists', store.state.pinnedUserLists);
-				prefer.set('serverDisconnectedBehavior', store.state.serverDisconnectedBehavior);
-				prefer.set('nsfw', store.state.nsfw);
-				prefer.set('highlightSensitiveMedia', store.state.highlightSensitiveMedia);
-				prefer.set('animation', store.state.animation);
-				prefer.set('animatedMfm', store.state.animatedMfm);
-				prefer.set('advancedMfm', store.state.advancedMfm);
-				prefer.set('showReactionsCount', store.state.showReactionsCount);
-				prefer.set('enableQuickAddMfmFunction', store.state.enableQuickAddMfmFunction);
-				prefer.set('loadRawImages', store.state.loadRawImages);
-				prefer.set('imageNewTab', store.state.imageNewTab);
-				prefer.set('disableShowingAnimatedImages', store.state.disableShowingAnimatedImages);
-				prefer.set('emojiStyle', store.state.emojiStyle);
-				prefer.set('menuStyle', store.state.menuStyle);
-				prefer.set('useBlurEffectForModal', store.state.useBlurEffectForModal);
-				prefer.set('useBlurEffect', store.state.useBlurEffect);
-				prefer.set('showFixedPostForm', store.state.showFixedPostForm);
-				prefer.set('showFixedPostFormInChannel', store.state.showFixedPostFormInChannel);
-				prefer.set('enableInfiniteScroll', store.state.enableInfiniteScroll);
-				prefer.set('useReactionPickerForContextMenu', store.state.useReactionPickerForContextMenu);
-				prefer.set('showGapBetweenNotesInTimeline', store.state.showGapBetweenNotesInTimeline);
-				prefer.set('instanceTicker', store.state.instanceTicker);
-				prefer.set('emojiPickerScale', store.state.emojiPickerScale);
-				prefer.set('emojiPickerWidth', store.state.emojiPickerWidth);
-				prefer.set('emojiPickerHeight', store.state.emojiPickerHeight);
-				prefer.set('emojiPickerStyle', store.state.emojiPickerStyle);
-				prefer.set('reportError', store.state.reportError);
-				prefer.set('squareAvatars', store.state.squareAvatars);
-				prefer.set('showAvatarDecorations', store.state.showAvatarDecorations);
-				prefer.set('numberOfPageCache', store.state.numberOfPageCache);
-				prefer.set('showNoteActionsOnlyHover', store.state.showNoteActionsOnlyHover);
-				prefer.set('showClipButtonInNoteFooter', store.state.showClipButtonInNoteFooter);
-				prefer.set('reactionsDisplaySize', store.state.reactionsDisplaySize);
-				prefer.set('limitWidthOfReaction', store.state.limitWidthOfReaction);
-				prefer.set('forceShowAds', store.state.forceShowAds);
-				prefer.set('aiChanMode', store.state.aiChanMode);
-				prefer.set('devMode', store.state.devMode);
-				prefer.set('mediaListWithOneImageAppearance', store.state.mediaListWithOneImageAppearance);
-				prefer.set('notificationPosition', store.state.notificationPosition);
-				prefer.set('notificationStackAxis', store.state.notificationStackAxis);
-				prefer.set('enableCondensedLine', store.state.enableCondensedLine);
-				prefer.set('keepScreenOn', store.state.keepScreenOn);
-				prefer.set('disableStreamingTimeline', store.state.disableStreamingTimeline);
-				prefer.set('useGroupedNotifications', store.state.useGroupedNotifications);
-				prefer.set('dataSaver', store.state.dataSaver);
-				prefer.set('enableSeasonalScreenEffect', store.state.enableSeasonalScreenEffect);
-				prefer.set('enableHorizontalSwipe', store.state.enableHorizontalSwipe);
-				prefer.set('useNativeUiForVideoAudioPlayer', store.state.useNativeUIForVideoAudioPlayer);
-				prefer.set('keepOriginalFilename', store.state.keepOriginalFilename);
-				prefer.set('alwaysConfirmFollow', store.state.alwaysConfirmFollow);
-				prefer.set('confirmWhenRevealingSensitiveMedia', store.state.confirmWhenRevealingSensitiveMedia);
-				prefer.set('contextMenu', store.state.contextMenu);
-				prefer.set('skipNoteRender', store.state.skipNoteRender);
-				prefer.set('showSoftWordMutedWord', store.state.showSoftWordMutedWord);
-				prefer.set('confirmOnReact', store.state.confirmOnReact);
-				prefer.set('sound.masterVolume', store.state.sound_masterVolume);
-				prefer.set('sound.notUseSound', store.state.sound_notUseSound);
-				prefer.set('sound.useSoundOnlyWhenActive', store.state.sound_useSoundOnlyWhenActive);
-				prefer.set('sound.on.note', store.state.sound_note as any);
-				prefer.set('sound.on.noteMy', store.state.sound_noteMy as any);
-				prefer.set('sound.on.notification', store.state.sound_notification as any);
-				prefer.set('sound.on.reaction', store.state.sound_reaction as any);
-				store.set('deck.profile', deckStore.state.profile);
-				store.set('deck.columns', deckStore.state.columns);
-				store.set('deck.layout', deckStore.state.layout);
+				prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
+				prefer.commit('darkTheme', ColdDeviceStorage.get('darkTheme'));
+				prefer.commit('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
+				prefer.commit('overridedDeviceKind', store.s.overridedDeviceKind);
+				prefer.commit('widgets', store.s.widgets);
+				prefer.commit('keepCw', store.s.keepCw);
+				prefer.commit('collapseRenotes', store.s.collapseRenotes);
+				prefer.commit('rememberNoteVisibility', store.s.rememberNoteVisibility);
+				prefer.commit('uploadFolder', store.s.uploadFolder);
+				prefer.commit('keepOriginalUploading', store.s.keepOriginalUploading);
+				prefer.commit('menu', store.s.menu);
+				prefer.commit('statusbars', store.s.statusbars);
+				prefer.commit('pinnedUserLists', store.s.pinnedUserLists);
+				prefer.commit('serverDisconnectedBehavior', store.s.serverDisconnectedBehavior);
+				prefer.commit('nsfw', store.s.nsfw);
+				prefer.commit('highlightSensitiveMedia', store.s.highlightSensitiveMedia);
+				prefer.commit('animation', store.s.animation);
+				prefer.commit('animatedMfm', store.s.animatedMfm);
+				prefer.commit('advancedMfm', store.s.advancedMfm);
+				prefer.commit('showReactionsCount', store.s.showReactionsCount);
+				prefer.commit('enableQuickAddMfmFunction', store.s.enableQuickAddMfmFunction);
+				prefer.commit('loadRawImages', store.s.loadRawImages);
+				prefer.commit('imageNewTab', store.s.imageNewTab);
+				prefer.commit('disableShowingAnimatedImages', store.s.disableShowingAnimatedImages);
+				prefer.commit('emojiStyle', store.s.emojiStyle);
+				prefer.commit('menuStyle', store.s.menuStyle);
+				prefer.commit('useBlurEffectForModal', store.s.useBlurEffectForModal);
+				prefer.commit('useBlurEffect', store.s.useBlurEffect);
+				prefer.commit('showFixedPostForm', store.s.showFixedPostForm);
+				prefer.commit('showFixedPostFormInChannel', store.s.showFixedPostFormInChannel);
+				prefer.commit('enableInfiniteScroll', store.s.enableInfiniteScroll);
+				prefer.commit('useReactionPickerForContextMenu', store.s.useReactionPickerForContextMenu);
+				prefer.commit('showGapBetweenNotesInTimeline', store.s.showGapBetweenNotesInTimeline);
+				prefer.commit('instanceTicker', store.s.instanceTicker);
+				prefer.commit('emojiPickerScale', store.s.emojiPickerScale);
+				prefer.commit('emojiPickerWidth', store.s.emojiPickerWidth);
+				prefer.commit('emojiPickerHeight', store.s.emojiPickerHeight);
+				prefer.commit('emojiPickerStyle', store.s.emojiPickerStyle);
+				prefer.commit('reportError', store.s.reportError);
+				prefer.commit('squareAvatars', store.s.squareAvatars);
+				prefer.commit('showAvatarDecorations', store.s.showAvatarDecorations);
+				prefer.commit('numberOfPageCache', store.s.numberOfPageCache);
+				prefer.commit('showNoteActionsOnlyHover', store.s.showNoteActionsOnlyHover);
+				prefer.commit('showClipButtonInNoteFooter', store.s.showClipButtonInNoteFooter);
+				prefer.commit('reactionsDisplaySize', store.s.reactionsDisplaySize);
+				prefer.commit('limitWidthOfReaction', store.s.limitWidthOfReaction);
+				prefer.commit('forceShowAds', store.s.forceShowAds);
+				prefer.commit('aiChanMode', store.s.aiChanMode);
+				prefer.commit('devMode', store.s.devMode);
+				prefer.commit('mediaListWithOneImageAppearance', store.s.mediaListWithOneImageAppearance);
+				prefer.commit('notificationPosition', store.s.notificationPosition);
+				prefer.commit('notificationStackAxis', store.s.notificationStackAxis);
+				prefer.commit('enableCondensedLine', store.s.enableCondensedLine);
+				prefer.commit('keepScreenOn', store.s.keepScreenOn);
+				prefer.commit('disableStreamingTimeline', store.s.disableStreamingTimeline);
+				prefer.commit('useGroupedNotifications', store.s.useGroupedNotifications);
+				prefer.commit('dataSaver', store.s.dataSaver);
+				prefer.commit('enableSeasonalScreenEffect', store.s.enableSeasonalScreenEffect);
+				prefer.commit('enableHorizontalSwipe', store.s.enableHorizontalSwipe);
+				prefer.commit('useNativeUiForVideoAudioPlayer', store.s.useNativeUIForVideoAudioPlayer);
+				prefer.commit('keepOriginalFilename', store.s.keepOriginalFilename);
+				prefer.commit('alwaysConfirmFollow', store.s.alwaysConfirmFollow);
+				prefer.commit('confirmWhenRevealingSensitiveMedia', store.s.confirmWhenRevealingSensitiveMedia);
+				prefer.commit('contextMenu', store.s.contextMenu);
+				prefer.commit('skipNoteRender', store.s.skipNoteRender);
+				prefer.commit('showSoftWordMutedWord', store.s.showSoftWordMutedWord);
+				prefer.commit('confirmOnReact', store.s.confirmOnReact);
+				prefer.commit('sound.masterVolume', store.s.sound_masterVolume);
+				prefer.commit('sound.notUseSound', store.s.sound_notUseSound);
+				prefer.commit('sound.useSoundOnlyWhenActive', store.s.sound_useSoundOnlyWhenActive);
+				prefer.commit('sound.on.note', store.s.sound_note as any);
+				prefer.commit('sound.on.noteMy', store.s.sound_noteMy as any);
+				prefer.commit('sound.on.notification', store.s.sound_notification as any);
+				prefer.commit('sound.on.reaction', store.s.sound_reaction as any);
+				store.set('deck.profile', deckStore.s.profile);
+				store.set('deck.columns', deckStore.s.columns);
+				store.set('deck.layout', deckStore.s.layout);
 				store.set('menu', []);
 			}
 
-			if (store.state.accountSetupWizard !== -1) {
+			if (store.s.accountSetupWizard !== -1) {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
 					closed: () => dispose(),
 				});
@@ -502,7 +502,7 @@ export async function mainBoot() {
 			post();
 		},
 		'd': () => {
-			store.set('darkMode', !store.state.darkMode);
+			store.set('darkMode', !store.s.darkMode);
 		},
 		's': () => {
 			mainRouter.push('/search');

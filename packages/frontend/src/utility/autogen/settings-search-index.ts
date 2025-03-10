@@ -33,12 +33,12 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['light', 'theme'],
 			},
 			{
-				id: 'eLOwK5Ia2',
+				id: 'CsSVILKpX',
 				label: i18n.ts.themeForDarkMode,
 				keywords: ['dark', 'theme'],
 			},
 			{
-				id: 'ujvMfyzUr',
+				id: '8wcoRp76b',
 				label: i18n.ts.setWallpaper,
 				keywords: ['wallpaper'],
 			},
@@ -253,7 +253,7 @@ export const searchIndexes: SearchIndexItem[] = [
 						keywords: ['follower', i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription],
 					},
 					{
-						id: '2prkeWRSd',
+						id: 'ebJ9IUbik',
 						label: i18n.ts._accountSettings.makeNotesHiddenBefore,
 						keywords: ['hidden', i18n.ts._accountSettings.makeNotesHiddenBeforeDescription],
 					},

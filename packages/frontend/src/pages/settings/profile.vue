@@ -166,7 +166,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { signinRequired } from '@/account.js';
 import { langmap } from '@/utility/langmap.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { store } from '@/store.js';
 import { globalEvents } from '@/events.js';
@@ -316,7 +316,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.profile,
 	icon: 'ti ti-user',
 }));

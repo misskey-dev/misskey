@@ -36,7 +36,7 @@ import { defineAsyncComponent, computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { acct as getAcct } from '@/filters/user.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
@@ -147,7 +147,7 @@ const headerTabs = computed(() => user.value ? [{
 	icon: 'ti ti-code',
 }] : []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.user,
 	icon: 'ti ti-user',
 	...user.value ? {

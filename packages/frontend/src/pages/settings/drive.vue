@@ -99,7 +99,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import bytes from '@/filters/bytes.js';
 import MkChart from '@/components/MkChart.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { signinRequired } from '@/account.js';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
@@ -144,7 +144,7 @@ if (prefer.s.uploadFolder) {
 
 function chooseUploadFolder() {
 	os.selectDriveFolder(false).then(async folder => {
-		prefer.set('uploadFolder', folder[0] ? folder[0].id : null);
+		prefer.commit('uploadFolder', folder[0] ? folder[0].id : null);
 		os.success();
 		if (prefer.s.uploadFolder) {
 			uploadFolder.value = await misskeyApi('drive/folders/show', {
@@ -174,7 +174,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.drive,
 	icon: 'ti ti-cloud',
 }));

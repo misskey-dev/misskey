@@ -93,7 +93,7 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 
 export async function authorizePlugin(plugin: Plugin) {
 	if (plugin.permissions == null || plugin.permissions.length === 0) return;
-	if (Object.hasOwn(store.state.pluginTokens, plugin.installId)) return;
+	if (Object.hasOwn(store.s.pluginTokens, plugin.installId)) return;
 
 	const token = await new Promise<string>((res, rej) => {
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {
@@ -116,7 +116,7 @@ export async function authorizePlugin(plugin: Plugin) {
 	});
 
 	store.set('pluginTokens', {
-		...store.state.pluginTokens,
+		...store.s.pluginTokens,
 		[plugin.installId]: token,
 	});
 }
@@ -131,6 +131,10 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 		realMeta = meta;
 	}
 
+	if (prefer.s.plugins.some(x => x.name === realMeta.name)) {
+		throw new Error('Plugin already installed');
+	}
+
 	const installId = uuid();
 
 	const plugin = {
@@ -141,7 +145,7 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 		src: code,
 	};
 
-	prefer.set('plugins', prefer.s.plugins.concat(plugin));
+	prefer.commit('plugins', prefer.s.plugins.concat(plugin));
 
 	await authorizePlugin(plugin);
 
@@ -150,19 +154,25 @@ export async function installPlugin(code: string, meta?: AiScriptPluginMeta) {
 
 export async function uninstallPlugin(plugin: Plugin) {
 	abortPlugin(plugin);
-	prefer.set('plugins', prefer.s.plugins.filter(x => x.installId !== plugin.installId));
-	if (Object.hasOwn(store.state.pluginTokens, plugin.installId)) {
+	prefer.commit('plugins', prefer.s.plugins.filter(x => x.installId !== plugin.installId));
+	if (Object.hasOwn(store.s.pluginTokens, plugin.installId)) {
 		await os.apiWithDialog('i/revoke-token', {
-			token: store.state.pluginTokens[plugin.installId],
+			token: store.s.pluginTokens[plugin.installId],
 		});
-		const pluginTokens = { ...store.state.pluginTokens };
+		const pluginTokens = { ...store.s.pluginTokens };
 		delete pluginTokens[plugin.installId];
 		store.set('pluginTokens', pluginTokens);
 	}
 }
 
-const pluginContexts = new Map<string, Interpreter>();
-export const pluginLogs = ref(new Map<string, string[]>());
+const pluginContexts = new Map<Plugin['installId'], Interpreter>();
+
+export const pluginLogs = ref(new Map<Plugin['installId'], {
+	at: number;
+	message: string;
+	isSystem?: boolean;
+	isError?: boolean;
+}[]>());
 
 type HandlerDef = {
 	post_form_action: {
@@ -197,6 +207,11 @@ type PluginHandler<K extends keyof HandlerDef> = {
 let pluginHandlers: PluginHandler<keyof HandlerDef>[] = [];
 
 function addPluginHandler<K extends keyof HandlerDef>(installId: Plugin['installId'], type: K, ctx: PluginHandler<K>['ctx']) {
+	pluginLogs.value.get(installId)!.push({
+		at: Date.now(),
+		isSystem: true,
+		message: `Handler registered: ${type}`,
+	});
 	pluginHandlers.push({ pluginInstallId: installId, type, ctx });
 }
 
@@ -215,6 +230,19 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 	// 後方互換性のため
 	if (plugin.src == null) return;
 
+	pluginLogs.value.set(plugin.installId, []);
+
+	function systemLog(message: string, isError = false): void {
+		pluginLogs.value.get(plugin.installId)?.push({
+			at: Date.now(),
+			isSystem: true,
+			message,
+			isError,
+		});
+	}
+
+	systemLog('Starting plugin...');
+
 	await authorizePlugin(plugin);
 
 	const aiscript = new Interpreter(createPluginEnv({
@@ -223,26 +251,33 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 	}), {
 		in: aiScriptReadline,
 		out: (value): void => {
-			console.log(value);
-			pluginLogs.value.get(plugin.installId).push(utils.reprValue(value));
+			pluginLogs.value.get(plugin.installId)!.push({
+				at: Date.now(),
+				message: utils.reprValue(value),
+			});
 		},
 		log: (): void => {
 		},
 		err: (err): void => {
-			pluginLogs.value.get(plugin.installId).push(`${err}`);
+			pluginLogs.value.get(plugin.installId)!.push({
+				at: Date.now(),
+				message: `${err}`,
+				isError: true,
+			});
 			throw err; // install時のtry-catchに反応させる
 		},
 	});
 
 	pluginContexts.set(plugin.installId, aiscript);
-	pluginLogs.value.set(plugin.installId, []);
 
 	aiscript.exec(parser.parse(plugin.src)).then(
 		() => {
 			console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
+			systemLog('Plugin started');
 		},
 		(err) => {
 			console.error('Plugin install failed:', plugin.name, 'v' + plugin.version);
+			systemLog(`${err}`, true);
 			throw err;
 		},
 	);
@@ -276,13 +311,13 @@ export async function configPlugin(plugin: Plugin) {
 	const { canceled, result } = await os.form(plugin.name, config);
 	if (canceled) return;
 
-	prefer.set('plugins', prefer.s.plugins.map(x => x.installId === plugin.installId ? { ...x, configData: result } : x));
+	prefer.commit('plugins', prefer.s.plugins.map(x => x.installId === plugin.installId ? { ...x, configData: result } : x));
 
 	reloadPlugin(plugin);
 }
 
 export function changePluginActive(plugin: Plugin, active: boolean) {
-	prefer.set('plugins', prefer.s.plugins.map(x => x.installId === plugin.installId ? { ...x, active } : x));
+	prefer.commit('plugins', prefer.s.plugins.map(x => x.installId === plugin.installId ? { ...x, active } : x));
 
 	if (active) {
 		launchPlugin(plugin.installId);
@@ -300,16 +335,15 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 	}
 
 	function withContext<T>(fn: (ctx: Interpreter) => T): T {
-		console.log('withContext', id);
 		const ctx = pluginContexts.get(id);
 		if (!ctx) throw new Error('Plugin context not found');
 		return fn(ctx);
 	}
 
-	return {
-		...createAiScriptEnv({ ...opts, token: store.state.pluginTokens[id] }),
+	const env: Record<string, values.Value> = {
+		...createAiScriptEnv({ ...opts, token: store.s.pluginTokens[id] }),
 
-		'Plugin:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
+		'Plugin:register:post_form_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'post_form_action', {
@@ -325,7 +359,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 			});
 		}),
 
-		'Plugin:register_user_action': values.FN_NATIVE(([title, handler]) => {
+		'Plugin:register:user_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'user_action', {
@@ -336,7 +370,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 			});
 		}),
 
-		'Plugin:register_note_action': values.FN_NATIVE(([title, handler]) => {
+		'Plugin:register:note_action': values.FN_NATIVE(([title, handler]) => {
 			utils.assertString(title);
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'note_action', {
@@ -347,7 +381,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 			});
 		}),
 
-		'Plugin:register_note_view_interruptor': values.FN_NATIVE(([handler]) => {
+		'Plugin:register:note_view_interruptor': values.FN_NATIVE(([handler]) => {
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'note_view_interruptor', {
 				handler: withContext(ctx => async (note) => {
@@ -356,7 +390,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 			});
 		}),
 
-		'Plugin:register_note_post_interruptor': values.FN_NATIVE(([handler]) => {
+		'Plugin:register:note_post_interruptor': values.FN_NATIVE(([handler]) => {
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'note_post_interruptor', {
 				handler: withContext(ctx => async (note) => {
@@ -365,7 +399,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 			});
 		}),
 
-		'Plugin:register_page_view_interruptor': values.FN_NATIVE(([handler]) => {
+		'Plugin:register:page_view_interruptor': values.FN_NATIVE(([handler]) => {
 			utils.assertFunction(handler);
 			addPluginHandler(id, 'page_view_interruptor', {
 				handler: withContext(ctx => async (page) => {
@@ -381,6 +415,16 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 
 		'Plugin:config': values.OBJ(config),
 	};
+
+	// 後方互換性のため
+	env['Plugin:register_post_form_action'] = env['Plugin:register:post_form_action'];
+	env['Plugin:register_user_action'] = env['Plugin:register:user_action'];
+	env['Plugin:register_note_action'] = env['Plugin:register:note_action'];
+	env['Plugin:register_note_view_interruptor'] = env['Plugin:register:note_view_interruptor'];
+	env['Plugin:register_note_post_interruptor'] = env['Plugin:register:note_post_interruptor'];
+	env['Plugin:register_page_view_interruptor'] = env['Plugin:register:page_view_interruptor'];
+
+	return env;
 }
 
 export function getPluginHandlers<K extends keyof HandlerDef>(type: K): HandlerDef[K][] {

@@ -37,18 +37,18 @@ const widgets = computed(() => {
 });
 
 function addWidget(widget) {
-	prefer.set('widgets', [{
+	prefer.commit('widgets', [{
 		...widget,
 		place: props.place,
 	}, ...prefer.s.widgets]);
 }
 
 function removeWidget(widget) {
-	prefer.set('widgets', prefer.s.widgets.filter(w => w.id !== widget.id));
+	prefer.commit('widgets', prefer.s.widgets.filter(w => w.id !== widget.id));
 }
 
 function updateWidget({ id, data }) {
-	prefer.set('widgets', prefer.s.widgets.map(w => w.id === id ? {
+	prefer.commit('widgets', prefer.s.widgets.map(w => w.id === id ? {
 		...w,
 		data,
 		place: props.place,
@@ -57,17 +57,17 @@ function updateWidget({ id, data }) {
 
 function updateWidgets(thisWidgets) {
 	if (props.place === null) {
-		prefer.set('widgets', thisWidgets);
+		prefer.commit('widgets', thisWidgets);
 		return;
 	}
 	if (props.place === 'left') {
-		prefer.set('widgets', [
+		prefer.commit('widgets', [
 			...thisWidgets.map(w => ({ ...w, place: 'left' })),
 			...prefer.s.widgets.filter(w => w.place !== 'left' && !thisWidgets.some(t => w.id === t.id)),
 		]);
 		return;
 	}
-	prefer.set('widgets', [
+	prefer.commit('widgets', [
 		...prefer.s.widgets.filter(w => w.place === 'left' && !thisWidgets.some(t => w.id === t.id)),
 		...thisWidgets.map(w => ({ ...w, place: 'right' })),
 	]);

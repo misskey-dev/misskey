@@ -79,8 +79,8 @@ const adminPermissions = Misskey.permissions.filter(p => p.startsWith('read:admi
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 const name = ref(props.initialName);
-const permissionSwitches = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
-const permissionSwitchesForAdmin = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
+const permissionSwitches = ref({} as Record<(typeof Misskey.permissions)[number], boolean>);
+const permissionSwitchesForAdmin = ref({} as Record<(typeof Misskey.permissions)[number], boolean>);
 
 if (props.initialPermissions) {
 	for (const kind of props.initialPermissions) {

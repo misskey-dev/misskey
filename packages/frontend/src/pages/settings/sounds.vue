@@ -65,7 +65,7 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { operationTypes } from '@/utility/sound.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
@@ -101,14 +101,14 @@ async function updated(type: keyof typeof sounds.value, sound) {
 		volume: sound.volume,
 	};
 
-	prefer.set(`sound.on.${type}`, v);
+	prefer.commit(`sound.on.${type}`, v);
 	sounds.value[type] = v;
 }
 
 function reset() {
 	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
 		const v = PREF_DEF[`sound.on.${sound}`].default;
-		prefer.set(`sound.on.${sound}`, v);
+		prefer.commit(`sound.on.${sound}`, v);
 		sounds.value[sound] = v;
 	}
 }
@@ -117,7 +117,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.sounds,
 	icon: 'ti ti-music',
 }));

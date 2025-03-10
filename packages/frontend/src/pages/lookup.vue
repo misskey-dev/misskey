@@ -24,7 +24,7 @@ import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { mainRouter } from '@/router/main.js';
 import MkButton from '@/components/MkButton.vue';
 
@@ -90,7 +90,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePage({
 	title: i18n.ts.lookup,
 	icon: 'ti ti-world-search',
 });
