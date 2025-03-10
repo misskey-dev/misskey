@@ -10,8 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkCodeEditor>
 
 	<div class="_buttons">
-		<MkButton :disabled="installThemeCode == null" inline @click="() => previewTheme(installThemeCode)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
-		<MkButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
+		<MkButton :disabled="installThemeCode == null || installThemeCode.trim() === ''" inline @click="() => previewTheme(installThemeCode)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+		<MkButton :disabled="installThemeCode == null || installThemeCode.trim() === ''" primary inline @click="() => install(installThemeCode)"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
 	</div>
 </div>
 </template>
@@ -24,7 +24,9 @@ import { parseThemeCode, previewTheme, installTheme } from '@/theme.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/utility/page-metadata.js';
+import { useRouter } from '@/router/supplier.js';
 
+const router = useRouter();
 const installThemeCode = ref<string | null>(null);
 
 async function install(code: string): Promise<void> {
@@ -35,6 +37,8 @@ async function install(code: string): Promise<void> {
 			type: 'success',
 			text: i18n.tsx._theme.installed({ name: theme.name }),
 		});
+		installThemeCode.value = null;
+		router.push('/settings/theme');
 	} catch (err) {
 		switch (err.message.toLowerCase()) {
 			case 'this theme is already installed':
