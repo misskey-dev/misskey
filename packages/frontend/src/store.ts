@@ -36,7 +36,8 @@ type PizzaxChannelMessage<T extends StateDef> = {
 	userId?: string;
 };
 
-class Store<T extends StateDef> extends Pizzax<State<T>> {
+// TODO: export消す
+export class Store<T extends StateDef> extends Pizzax<State<T>> {
 	public readonly def: T;
 
 	public readonly ready: Promise<void>;
@@ -60,7 +61,7 @@ class Store<T extends StateDef> extends Pizzax<State<T>> {
 		return promise;
 	}
 
-	constructor(def: T) {
+	constructor(def: T, key = 'base') {
 		const data = {} as State<T>;
 
 		for (const [k, v] of Object.entries(def) as [keyof T, T[keyof T]['default']][]) {
@@ -69,7 +70,6 @@ class Store<T extends StateDef> extends Pizzax<State<T>> {
 
 		super(data);
 
-		const key = 'base';
 		this.key = key;
 		this.deviceStateKeyName = `pizzax::${key}`;
 		this.deviceAccountStateKeyName = $i ? `pizzax::${key}::${$i.id}` : '';

@@ -5,10 +5,10 @@
 
 import { markRaw } from 'vue';
 import type { Column } from '@/deck.js';
-import { Storage } from '@/pizzax.js';
+import { Store } from '@/store.js';
 
 // TODO: 消す(移行済みのため)
-export const deckStore = markRaw(new Storage('deck', {
+export const deckStore = markRaw(new Store({
 	profile: {
 		where: 'deviceAccount',
 		default: 'default',
@@ -21,4 +21,4 @@ export const deckStore = markRaw(new Storage('deck', {
 		where: 'deviceAccount',
 		default: [] as Column['id'][][],
 	},
-}));
+}, 'deck'));
