@@ -9,4 +9,6 @@ import type { IRouter } from '@/nirax.js';
 export const DI = {
 	routerCurrentDepth: Symbol() as InjectionKey<number>,
 	router: Symbol() as InjectionKey<IRouter>,
+	viewId: Symbol() as InjectionKey<string>,
+	viewTransitionId: Symbol() as InjectionKey<Ref<string>>,
 };
