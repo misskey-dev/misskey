@@ -45,12 +45,14 @@ export class Store<Data extends Record<string, any>> extends EventEmitter<StoreE
 	}
 
 	public commit<K extends keyof Data>(key: K, value: Data[K]) {
-		this.r[key].value = this.s[key] = value;
-		this.emit('updated', { key, value });
+		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
+		this.r[key].value = this.s[key] = v;
+		this.emit('updated', { key, value: v });
 	}
 
 	public rewrite<K extends keyof Data>(key: K, value: Data[K]) {
-		this.r[key].value = this.s[key] = value;
+		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
+		this.r[key].value = this.s[key] = v;
 	}
 
 	/**
