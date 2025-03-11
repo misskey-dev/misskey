@@ -1323,6 +1323,8 @@ untitled: "無標題"
 noName: "沒有名稱"
 skip: "跳過"
 restore: "還原"
+_settings:
+  webhook: "Webhook"
 _preferencesProfile:
   profileName: "設定檔案名稱"
   profileNameDescription: "設定一個名稱來識別此裝置。"
