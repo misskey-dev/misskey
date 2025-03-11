@@ -6,6 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/accessibility" :label="i18n.ts.accessibility" :keywords="['accessibility']" icon="ti ti-accessible">
 	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/mens_room_3d.png" color="#0011ff">
+			<SearchKeyword>{{ i18n.ts._settings.accessibilityBanner }}</SearchKeyword>
+		</MkFeatureBanner>
+
 		<div class="_gaps_s">
 			<SearchMarker :keywords="['animation', 'motion', 'reduce']">
 				<MkPreferenceContainer k="animation">
@@ -79,6 +83,7 @@ import { reloadAsk } from '@/utility/reload-ask.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
 const reduceAnimation = prefer.model('animation', v => !v, v => !v);
 const animatedMfm = prefer.model('animatedMfm');

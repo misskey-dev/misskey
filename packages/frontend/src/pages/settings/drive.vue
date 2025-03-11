@@ -6,6 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/drive" :label="i18n.ts.drive" :keywords="['drive']" icon="ti ti-cloud">
 	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/cloud_3d.png" color="#0059ff">
+			<SearchKeyword>{{ i18n.ts._settings.driveBanner }}</SearchKeyword>
+		</MkFeatureBanner>
+
 		<SearchMarker :keywords="['capacity', 'usage']">
 			<FormSection first>
 				<template #label><SearchLabel>{{ i18n.ts.usageAmount }}</SearchLabel></template>
@@ -103,6 +107,7 @@ import { definePage } from '@/page.js';
 import { signinRequired } from '@/account.js';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
 const $i = signinRequired();
 

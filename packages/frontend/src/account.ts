@@ -17,6 +17,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { unisonReload, reloadChannel } from '@/utility/unison-reload.js';
 
 // TODO: 他のタブと永続化されたstateを同期
+// TODO: accountsはpreferences管理にする(tokenは別管理)
 
 type Account = Misskey.entities.MeDetailed & { token: string };
 

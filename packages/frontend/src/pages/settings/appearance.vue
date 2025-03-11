@@ -6,6 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/appearance" :label="i18n.ts.appearance" :keywords="['appearance']" icon="ti ti-device-desktop">
 	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/desktop_computer_3d.png" color="#eaff00">
+			<SearchKeyword>{{ i18n.ts._settings.appearanceBanner }}</SearchKeyword>
+		</MkFeatureBanner>
+
 		<FormSection first>
 			<div class="_gaps_m">
 				<div class="_gaps_s">
@@ -227,6 +231,7 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import { instance } from '@/instance.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
