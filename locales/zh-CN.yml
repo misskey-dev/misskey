@@ -1323,6 +1323,8 @@ untitled: "未命名"
 noName: "没有名字"
 skip: "跳过"
 restore: "恢复"
+_settings:
+  webhook: "Webhook"
 _preferencesProfile:
   profileName: "配置名"
   profileNameDescription: "请指定用于识别此设备的名称"
