@@ -1324,6 +1324,8 @@ noName: "沒有名稱"
 skip: "跳過"
 restore: "還原"
 _settings:
+  driveBanner: "您可以管理和設定雲端硬碟、確認使用量，以及調整上傳檔案時的設定。"
+  pluginBanner: "可使用外掛擴充用戶端的功能。您可以安裝外掛，進行個別的設定與管理。"
   webhook: "Webhook"
 _preferencesProfile:
   profileName: "設定檔案名稱"
