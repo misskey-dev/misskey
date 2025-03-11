@@ -1323,6 +1323,8 @@ untitled: "Senza titolo"
 noName: "Senza nome"
 skip: "Salta"
 restore: "Ripristina"
+_settings:
+  webhook: "Webhook"
 _preferencesProfile:
   profileName: "Nome del profilo"
   profileNameDescription: "Impostare il nome che indentifica questo dispositivo."
