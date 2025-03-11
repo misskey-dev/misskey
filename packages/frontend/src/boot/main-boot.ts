@@ -6,9 +6,11 @@
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { ui } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
+import { v4 as uuid } from 'uuid';
 import { common } from './common.js';
 import type { Component } from 'vue';
 import type { Keymap } from '@/utility/hotkey.js';
+import type { DeckProfile } from '@/deck.js';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
@@ -143,12 +145,34 @@ export async function mainBoot() {
 				if (themes.length > 0) {
 					prefer.commit('themes', themes);
 				}
+
 				const plugins = ColdDeviceStorage.get('plugins');
 				prefer.commit('plugins', plugins.map(p => ({
 					...p,
 					installId: (p as any).id,
 					id: undefined,
 				})));
+
+				prefer.commit('deck.profile', deckStore.s.profile);
+				misskeyApi('i/registry/keys', {
+					scope: ['client', 'deck', 'profiles'],
+				}).then(async keys => {
+					const profiles: DeckProfile[] = [];
+					for (const key of keys) {
+						const deck = await misskeyApi('i/registry/get', {
+							scope: ['client', 'deck', 'profiles'],
+							key: key,
+						});
+						profiles.push({
+							id: uuid(),
+							name: key,
+							columns: deck.columns,
+							layout: deck.layout,
+						});
+					}
+					prefer.commit('deck.profiles', profiles);
+				});
+
 				prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
 				prefer.commit('darkTheme', ColdDeviceStorage.get('darkTheme'));
 				prefer.commit('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
@@ -223,9 +247,6 @@ export async function mainBoot() {
 				prefer.commit('sound.on.noteMy', store.s.sound_noteMy as any);
 				prefer.commit('sound.on.notification', store.s.sound_notification as any);
 				prefer.commit('sound.on.reaction', store.s.sound_reaction as any);
-				store.set('deck.profile', deckStore.s.profile);
-				store.set('deck.columns', deckStore.s.columns);
-				store.set('deck.layout', deckStore.s.layout);
 				store.set('menu', []);
 			}
 

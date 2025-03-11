@@ -42,6 +42,8 @@ export type PreferencesProfile = {
 	syncByAccount: [Account, keyof PREF][],
 };
 
+// TODO: 任意のプロパティをデバイス間で同期できるようにする？
+
 export class ProfileManager extends EventEmitter<{
 	updated: (ctx: {
 		profile: PreferencesProfile
