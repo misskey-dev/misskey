@@ -4,13 +4,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<Suspense :timeout="0">
-	<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
+<KeepAlive
+	:max="prefer.s.numberOfPageCache"
+	:exclude="pageCacheController"
+>
+	<Suspense :timeout="0">
+		<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
 
-	<template #fallback>
-		<MkLoading/>
-	</template>
-</Suspense>
+		<template #fallback>
+			<MkLoading/>
+		</template>
+	</Suspense>
+</KeepAlive>
 </template>
 
 <script lang="ts" setup>
@@ -74,8 +79,8 @@ async function onChange({ resolved, key: newKey }) {
 			key.value = newKey + JSON.stringify(Object.fromEntries(current.props));
 
 			nextTick(async () => {
-				res();
-				//setTimeout(res, 1000);
+				//res();
+				setTimeout(res, 100);
 
 				// ページ遷移完了後に再びキャッシュを有効化
 				if (clearCacheRequested.value) {
