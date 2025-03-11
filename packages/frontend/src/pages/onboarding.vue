@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, shallowRef, computed, onMounted } from 'vue';
 import { create as createConfetti } from 'canvas-confetti';
 
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { reactionPicker } from '@/utility/reaction-picker.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -221,7 +221,7 @@ onMounted(() => {
 
 // #endregion
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.tsx._initialTutorial._onboardingLanding.welcomeToX({ name: instance.name ?? host }),
 }));
 </script>

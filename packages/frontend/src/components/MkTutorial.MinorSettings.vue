@@ -25,12 +25,12 @@ import MkInfo from '@/components/MkInfo.vue';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 // センシティブをミュートするほうがONなので、storeとは逆にする
-const tlMuteSensitive = ref(!store.state.tl.filter.withSensitive);
+const tlMuteSensitive = ref(!store.s.tl.filter.withSensitive);
 
 const confirmWhenRevealingSensitiveMedia = computed(store.makeGetterSetter('confirmWhenRevealingSensitiveMedia'));
 
 watch(tlMuteSensitive, (to) => {
-	const out = deepMerge({ filter: { withSensitive: !to } }, store.state.tl);
+	const out = deepMerge({ filter: { withSensitive: !to } }, store.s.tl);
 	store.set('tl', out);
 });
 

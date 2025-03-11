@@ -73,7 +73,7 @@ function onFrameLoad() {
 	frameEl.value?.contentWindow?.postMessage({
 		type: 'hanamisskey:meta',
 		payload: {
-			colorMode: store.state.darkMode ? 'dark' : 'light',
+			colorMode: store.s.darkMode ? 'dark' : 'light',
 			instance: JSON.parse(JSON.stringify(instance)),
 		},
 	}, 'https://frame-static-assets.misskey.flowers');
@@ -98,7 +98,7 @@ watch(iframeLoaded, (to) => {
 	}
 }, { immediate: true });
 
-watch(store.reactiveState.darkMode, (to) => {
+watch(store.r.darkMode, (to) => {
 	console.log('darkMode changed');
 	frameEl.value?.contentWindow?.postMessage({
 		type: 'hanamisskey:colorMode',
