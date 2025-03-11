@@ -1323,6 +1323,8 @@ untitled: "제목 없음"
 noName: "이름이 없습니다."
 skip: "건너뛰기"
 restore: "복원"
+_settings:
+  webhook: "Webhook"
 _preferencesProfile:
   profileName: "프로필 이름"
   profileNameDescription: "이 디바이스를 식별할 이름을 설정해 주세요."
