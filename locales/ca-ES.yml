@@ -1333,6 +1333,11 @@ _preferencesBackup:
   autoBackup: "Còpia de seguretat automàtica "
   restoreFromBackup: "Restaurar des d'una còpia de seguretat"
   noBackupsFoundTitle: "No s'ha trobat cap còpia de seguretat"
+  noBackupsFoundDescription: "No s'han trobat còpies de seguretat creades automàticament, però si has desat, manualment, un arxiu de còpia de seguretat, pots importar-lo i carregar-lo."
+  selectBackupToRestore: "Seleccionar la còpia de seguretat que vols restaurar"
+  youNeedToNameYourProfileToEnableAutoBackup: "Has de posar-li un nom al teu perfil per poder activar les còpies de seguretat automàtiques."
+  autoPreferencesBackupIsNotEnabledForThisDevice: "La còpia de seguretat automàtica no es troba activada en aquest dispositiu."
+  backupFound: "Còpia de seguretat de la configuració trobada"
 _accountSettings:
   requireSigninToViewContents: "És obligatori l'inici de sessió per poder veure el contingut"
   requireSigninToViewContentsDescription1: "Es requereix l'inici de sessió per poder veure totes les notes i el contingut que has creat. Amb això esperem evitar que els rastrejadors recopilin informació."
@@ -1343,6 +1348,7 @@ _accountSettings:
   makeNotesHiddenBefore: "Fes que les notes antigues siguin privades"
   makeNotesHiddenBeforeDescription: "Mentres aquesta funció estigui activada les notes que hagin superat una data i hora fixada o hagi passat el temps establert només seran visibles per a tu. Si la desactives es restablirà també l'estat públic de les notes."
   mayNotEffectForFederatedNotes: "Això pot ser que no afecti les notes federades."
+  mayNotEffectSomeSituations: "Aquestes restriccions són simplificades. Pot ser que no s'apliquin en determinades situacions, com quan es modera o visualitza un servidor remot."
   notesHavePassedSpecifiedPeriod: "Notes publicades durant un període de temps especificat."
   notesOlderThanSpecifiedDateAndTime: "Notes més antigues de la data i temps especificat "
 _abuseUserReport:
