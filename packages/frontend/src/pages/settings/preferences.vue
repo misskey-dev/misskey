@@ -6,6 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/preferences" :label="i18n.ts.preferences" :keywords="['general', 'preferences']" icon="ti ti-adjustments">
 	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/gear_3d.png" color="#00ff9d">
+			<SearchKeyword>{{ i18n.ts._settings.preferencesBanner }}</SearchKeyword>
+		</MkFeatureBanner>
+
 		<SearchMarker :keywords="['language']">
 			<MkSelect v-model="lang">
 				<template #label><SearchLabel>{{ i18n.ts.uiLanguage }}</SearchLabel></template>
@@ -381,6 +385,7 @@ import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);

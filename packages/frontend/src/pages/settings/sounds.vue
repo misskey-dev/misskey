@@ -6,6 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/sounds" :label="i18n.ts.sounds" :keywords="['sounds']" icon="ti ti-music">
 	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/speaker_high_volume_3d.png" color="#ff006f">
+			<SearchKeyword>{{ i18n.ts._settings.soundsBanner }}</SearchKeyword>
+		</MkFeatureBanner>
+
 		<SearchMarker :keywords="['mute']">
 			<MkPreferenceContainer k="sound.notUseSound">
 				<MkSwitch v-model="notUseSound">
@@ -70,6 +74,7 @@ import { operationTypes } from '@/utility/sound.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import { PREF_DEF } from '@/preferences/def.js';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
 const notUseSound = prefer.model('sound.notUseSound');
 const useSoundOnlyWhenActive = prefer.model('sound.useSoundOnlyWhenActive');
