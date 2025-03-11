@@ -4,8 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/plugin" :label="i18n.ts.plugins" :keywords="['plugin']" icon="ti ti-plug">
+<SearchMarker path="/settings/plugin" :label="i18n.ts.plugins" :keywords="['plugin', 'addon', 'extension']" icon="ti ti-plug">
 	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/electric_plug_3d.png" color="#ffbb00">
+			<SearchKeyword>{{ i18n.ts._settings.pluginBanner }}</SearchKeyword>
+		</MkFeatureBanner>
+
 		<FormLink to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
 
 		<FormSection>
@@ -14,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFolder v-for="plugin in plugins" :key="plugin.installId">
 					<template #icon><i class="ti ti-plug"></i></template>
 					<template #suffix>
-						<i v-if="plugin.active" class="ti ti-player-play" style="color: var(--MI_THEME-accent);"></i>
+						<i v-if="plugin.active" class="ti ti-player-play" style="color: var(--MI_THEME-success);"></i>
 						<i v-else class="ti ti-player-pause" style="opacity: 0.7;"></i>
 					</template>
 					<template #label>
@@ -59,23 +63,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkKeyValue>
 						</div>
 
-						<MkFolder>
-							<template #icon><i class="ti ti-terminal-2"></i></template>
-							<template #label>{{ i18n.ts._plugin.viewLog }}</template>
+						<div class="_gaps_s">
+							<MkFolder>
+								<template #icon><i class="ti ti-terminal-2"></i></template>
+								<template #label>{{ i18n.ts.logs }}</template>
 
-							<div class="_gaps_s">
-								<MkCode :code="pluginLogs.get(plugin.installId)?.join('\n') ?? ''"/>
-							</div>
-						</MkFolder>
+								<div>
+									<div v-for="log in pluginLogs.get(plugin.installId)" :class="[$style.log, { [$style.isSystemLog]: log.isSystem }]">
+										<div class="_monospace">{{ timeToHhMmSs(log.at) }} {{ log.message }}</div>
+									</div>
+								</div>
+							</MkFolder>
 
-						<MkFolder>
-							<template #icon><i class="ti ti-code"></i></template>
-							<template #label>{{ i18n.ts._plugin.viewSource }}</template>
+							<MkFolder :withSpacer="false">
+								<template #icon><i class="ti ti-code"></i></template>
+								<template #label>{{ i18n.ts._plugin.viewSource }}</template>
 
-							<div class="_gaps_s">
-								<MkCode :code="plugin.src ?? ''" lang="ais"/>
-							</div>
-						</MkFolder>
+								<div class="_gaps_s">
+									<MkCode :code="plugin.src ?? ''" lang="ais"/>
+								</div>
+							</MkFolder>
+						</div>
 					</div>
 				</MkFolder>
 			</div>
@@ -94,19 +102,25 @@ import MkButton from '@/components/MkButton.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import { unisonReload } from '@/utility/unison-reload.js';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin, reloadPlugin } from '@/plugin.js';
 import { prefer } from '@/preferences.js';
+import * as os from '@/os.js';
 
 const plugins = prefer.r.plugins;
 
 async function uninstall(plugin: Plugin) {
-	await uninstallPlugin(plugin);
-	nextTick(() => {
-		unisonReload();
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.tsx.removeAreYouSure({ x: plugin.name }),
 	});
+	if (canceled) return;
+
+	await uninstallPlugin(plugin);
+
+	os.success();
 }
 
 function reload(plugin: Plugin) {
@@ -119,17 +133,27 @@ async function config(plugin: Plugin) {
 
 function changeActive(plugin: Plugin, active: boolean) {
 	changePluginActive(plugin, active);
-	nextTick(() => {
-		location.reload();
-	});
+}
+
+function timeToHhMmSs(unixtime: number) {
+	return new Date(unixtime).toTimeString().split(' ')[0];
 }
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.plugins,
 	icon: 'ti ti-plug',
 }));
 </script>
+
+<style module>
+.log {
+}
+
+.isSystemLog {
+	opacity: 0.5;
+}
+</style>

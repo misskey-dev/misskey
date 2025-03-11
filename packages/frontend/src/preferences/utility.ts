@@ -21,7 +21,7 @@ function canAutoBackup() {
 }
 
 export function getPreferencesProfileMenu(): MenuItem[] {
-	const autoBackupEnabled = ref(store.state.enablePreferencesAutoCloudBackup);
+	const autoBackupEnabled = ref(store.s.enablePreferencesAutoCloudBackup);
 
 	watch(autoBackupEnabled, () => {
 		if (autoBackupEnabled.value) {

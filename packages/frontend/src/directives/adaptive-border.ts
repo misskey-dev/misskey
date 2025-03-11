@@ -5,17 +5,32 @@
 
 import type { Directive } from 'vue';
 import { getBgColor } from '@/utility/get-bg-color.js';
+import { globalEvents } from '@/events.js';
+
+const handlerMap = new WeakMap<any, any>();
 
 export default {
 	mounted(src, binding, vn) {
-		const parentBg = getBgColor(src.parentElement) ?? 'transparent';
+		function calc() {
+			const parentBg = getBgColor(src.parentElement) ?? 'transparent';
 
-		const myBg = window.getComputedStyle(src).backgroundColor;
+			const myBg = window.getComputedStyle(src).backgroundColor;
 
-		if (parentBg === myBg) {
-			src.style.borderColor = 'var(--MI_THEME-divider)';
-		} else {
-			src.style.borderColor = myBg;
+			if (parentBg === myBg) {
+				src.style.borderColor = 'var(--MI_THEME-divider)';
+			} else {
+				src.style.borderColor = myBg;
+			}
 		}
+
+		handlerMap.set(src, calc);
+
+		calc();
+
+		globalEvents.on('themeChanged', calc);
+	},
+
+	unmounted(src, binding, vn) {
+		globalEvents.off('themeChanged', handlerMap.get(src));
 	},
 } as Directive;

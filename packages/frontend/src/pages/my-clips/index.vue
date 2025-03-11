@@ -32,7 +32,7 @@ import MkClipPreview from '@/components/MkClipPreview.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { clipsCache } from '@/cache.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
@@ -100,7 +100,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-heart',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.clip,
 	icon: 'ti ti-paperclip',
 }));

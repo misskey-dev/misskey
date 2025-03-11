@@ -125,7 +125,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
 import { signout, signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
@@ -180,7 +180,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.other,
 	icon: 'ti ti-dots',
 }));

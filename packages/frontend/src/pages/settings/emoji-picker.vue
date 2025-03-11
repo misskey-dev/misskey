@@ -144,7 +144,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { deepClone } from '@/utility/clone.js';
 import { reactionPicker } from '@/utility/reaction-picker.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
@@ -154,8 +154,8 @@ import MkFolder from '@/components/MkFolder.vue';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
-const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(store.state.reactions));
-const pinnedEmojis: Ref<string[]> = ref(deepClone(store.state.pinnedEmojis));
+const pinnedEmojisForReaction: Ref<string[]> = ref(deepClone(store.s.reactions));
+const pinnedEmojis: Ref<string[]> = ref(deepClone(store.s.pinnedEmojis));
 
 const emojiPickerScale = prefer.model('emojiPickerScale');
 const emojiPickerWidth = prefer.model('emojiPickerWidth');
@@ -251,7 +251,7 @@ watch(pinnedEmojis, () => {
 	deep: true,
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.emojiPicker,
 	icon: 'ti ti-mood-happy',
 }));

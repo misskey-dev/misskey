@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const props = defineProps<{
@@ -48,7 +48,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-pencil',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._fileViewer.title,
 	icon: 'ti ti-file',
 }));

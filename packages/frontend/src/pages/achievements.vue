@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
 import MkAchievements from '@/components/MkAchievements.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { $i } from '@/account.js';
 import { claimAchievement } from '@/utility/achievements.js';
 
@@ -48,7 +48,7 @@ onDeactivated(() => {
 	}
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.achievements,
 	icon: 'ti ti-medal',
 }));

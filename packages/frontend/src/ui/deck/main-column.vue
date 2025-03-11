@@ -24,13 +24,14 @@ import { getScrollContainer } from '@@/js/scroll.js';
 import { isLink } from '@@/js/is-link.js';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
-import type { PageMetadata } from '@/utility/page-metadata.js';
+import type { PageMetadata } from '@/page.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { provideMetadataReceiver, provideReactiveMetadata } from '@/utility/page-metadata.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { mainRouter } from '@/router/main.js';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 defineProps<{
 	column: Column;
@@ -40,7 +41,7 @@ defineProps<{
 const contents = shallowRef<HTMLElement>();
 const pageMetadata = ref<null | PageMetadata>(null);
 
-provide('router', mainRouter);
+provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();
 	pageMetadata.value = info;

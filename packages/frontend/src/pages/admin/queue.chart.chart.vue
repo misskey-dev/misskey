@@ -67,7 +67,7 @@ const color =
 	'?' as never;
 
 onMounted(() => {
-	const vLineColor = store.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
 	chartInstance = new Chart(chartEl.value, {
 		type: 'line',

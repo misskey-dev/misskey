@@ -57,7 +57,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import { i18n } from '@/i18n.js';
 import bytes from '@/filters/bytes.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkSelect from '@/components/MkSelect.vue';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 
@@ -118,7 +118,7 @@ function onContextMenu(ev: MouseEvent, file): void {
 	os.contextMenu(getDriveFileMenu(file), ev);
 }
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.drivecleaner,
 	icon: 'ti ti-trash',
 }));

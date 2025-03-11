@@ -137,10 +137,10 @@ async function save() {
 	const i = prefer.s.statusbars.findIndex(x => x.id === props._id);
 	const statusbars = deepClone(prefer.s.statusbars);
 	statusbars[i] = deepClone(statusbar);
-	prefer.set('statusbars', statusbars);
+	prefer.commit('statusbars', statusbars);
 }
 
 function del() {
-	prefer.set('statusbars', prefer.s.statusbars.filter(x => x.id !== props._id));
+	prefer.commit('statusbars', prefer.s.statusbars.filter(x => x.id !== props._id));
 }
 </script>

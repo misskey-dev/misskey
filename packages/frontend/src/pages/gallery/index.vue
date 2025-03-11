@@ -52,7 +52,7 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router/supplier.js';
 
@@ -119,7 +119,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-edit',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.gallery,
 	icon: 'ti ti-icons',
 }));

@@ -6,6 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/preferences" :label="i18n.ts.preferences" :keywords="['general', 'preferences']" icon="ti ti-adjustments">
 	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/gear_3d.png" color="#00ff9d">
+			<SearchKeyword>{{ i18n.ts._settings.preferencesBanner }}</SearchKeyword>
+		</MkFeatureBanner>
+
 		<SearchMarker :keywords="['language']">
 			<MkSelect v-model="lang">
 				<template #label><SearchLabel>{{ i18n.ts.uiLanguage }}</SearchLabel></template>
@@ -337,8 +341,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label><SearchLabel>{{ i18n.ts.additionalEmojiDictionary }}</SearchLabel></template>
 							<div class="_buttons">
 								<template v-for="lang in emojiIndexLangs" :key="lang">
-									<MkButton v-if="store.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{ getEmojiIndexLangName(lang) }})</MkButton>
-									<MkButton v-else @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ getEmojiIndexLangName(lang) }}{{ store.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
+									<MkButton v-if="store.r.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }} ({{ getEmojiIndexLangName(lang) }})</MkButton>
+									<MkButton v-else @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ getEmojiIndexLangName(lang) }}{{ store.r.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
 								</template>
 							</div>
 						</MkFolder>
@@ -377,10 +381,11 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);
@@ -449,7 +454,7 @@ function getEmojiIndexLangName(targetLang: typeof emojiIndexLangs[number]) {
 
 function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 	async function main() {
-		const currentIndexes = store.state.additionalUnicodeEmojiIndexes;
+		const currentIndexes = store.s.additionalUnicodeEmojiIndexes;
 
 		function download() {
 			switch (lang) {
@@ -469,7 +474,7 @@ function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 
 function removeEmojiIndex(lang: string) {
 	async function main() {
-		const currentIndexes = store.state.additionalUnicodeEmojiIndexes;
+		const currentIndexes = store.s.additionalUnicodeEmojiIndexes;
 		delete currentIndexes[lang];
 		await store.set('additionalUnicodeEmojiIndexes', currentIndexes);
 	}
@@ -488,11 +493,11 @@ async function setPinnedList() {
 	if (canceled) return;
 	if (list == null) return;
 
-	prefer.set('pinnedUserLists', [list]);
+	prefer.commit('pinnedUserLists', [list]);
 }
 
 function removePinnedList() {
-	prefer.set('pinnedUserLists', []);
+	prefer.commit('pinnedUserLists', []);
 }
 
 function enableAllDataSaver() {
@@ -512,7 +517,7 @@ function disableAllDataSaver() {
 }
 
 watch(dataSaver, (to) => {
-	prefer.set('dataSaver', to);
+	prefer.commit('dataSaver', to);
 }, {
 	deep: true,
 });
@@ -521,7 +526,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.general,
 	icon: 'ti ti-adjustments',
 }));

@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import XGridLocalComponent from '@/pages/admin/custom-emojis-manager.local.vue';
 import XGridRemoteComponent from '@/pages/admin/custom-emojis-manager.remote.vue';
 import MkPageHeader from '@/components/global/MkPageHeader.vue';
@@ -36,7 +36,7 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.remote,
 }]);
 
-definePageMetadata(computed(() => ({
+definePage(computed(() => ({
 	title: i18n.ts.customEmojis,
 	icon: 'ti ti-icons',
 	needWideArea: true,

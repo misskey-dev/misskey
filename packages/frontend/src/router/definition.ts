@@ -134,33 +134,29 @@ const routes: RouteDef[] = [{
 		name: 'plugin',
 		component: page(() => import('@/pages/settings/plugin.vue')),
 	}, {
-		path: '/import-export',
-		name: 'import-export',
-		component: page(() => import('@/pages/settings/import-export.vue')),
+		path: '/account-data',
+		name: 'account-data',
+		component: page(() => import('@/pages/settings/account-data.vue')),
 	}, {
 		path: '/mute-block',
 		name: 'mute-block',
 		component: page(() => import('@/pages/settings/mute-block.vue')),
 	}, {
-		path: '/api',
-		name: 'api',
-		component: page(() => import('@/pages/settings/api.vue')),
+		path: '/connect',
+		name: 'connect',
+		component: page(() => import('@/pages/settings/connect.vue')),
 	}, {
 		path: '/apps',
-		name: 'api',
+		name: 'connect',
 		component: page(() => import('@/pages/settings/apps.vue')),
 	}, {
 		path: '/webhook/edit/:webhookId',
-		name: 'webhook',
+		name: 'connect',
 		component: page(() => import('@/pages/settings/webhook.edit.vue')),
 	}, {
 		path: '/webhook/new',
-		name: 'webhook',
+		name: 'connect',
 		component: page(() => import('@/pages/settings/webhook.new.vue')),
-	}, {
-		path: '/webhook',
-		name: 'webhook',
-		component: page(() => import('@/pages/settings/webhook.vue')),
 	}, {
 		path: '/deck',
 		name: 'deck',

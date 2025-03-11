@@ -45,8 +45,15 @@ export class Storage<T extends StateDef> {
 	public readonly def: T;
 
 	// TODO: これが実装されたらreadonlyにしたい: https://github.com/microsoft/TypeScript/issues/37487
-	public readonly state: State<T>;
-	public readonly reactiveState: ReactiveState<T>;
+	/**
+	 * static / state の略 (static が予約語のため)
+	 */
+	public readonly s: State<T>;
+
+	/**
+	 * reactive の略
+	 */
+	public readonly r: ReactiveState<T>;
 
 	private pizzaxChannel: BroadcastChannel<PizzaxChannelMessage<T>>;
 
@@ -70,12 +77,12 @@ export class Storage<T extends StateDef> {
 
 		this.pizzaxChannel = new BroadcastChannel(`pizzax::${key}`);
 
-		this.state = {} as State<T>;
-		this.reactiveState = {} as ReactiveState<T>;
+		this.s = {} as State<T>;
+		this.r = {} as ReactiveState<T>;
 
 		for (const [k, v] of Object.entries(def) as [keyof T, T[keyof T]['default']][]) {
-			this.state[k] = v.default;
-			this.reactiveState[k] = ref(v.default);
+			this.s[k] = v.default;
+			this.r[k] = ref(v.default);
 		}
 
 		this.ready = this.init();
@@ -106,13 +113,13 @@ export class Storage<T extends StateDef> {
 
 		for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
-				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceState[k], v.default);
+				this.r[k].value = this.s[k] = this.mergeState<T[keyof T]['default']>(deviceState[k], v.default);
 			} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call(registryCache, k)) {
-				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(registryCache[k], v.default);
+				this.r[k].value = this.s[k] = this.mergeState<T[keyof T]['default']>(registryCache[k], v.default);
 			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
-				this.reactiveState[k].value = this.state[k] = this.mergeState<T[keyof T]['default']>(deviceAccountState[k], v.default);
+				this.r[k].value = this.s[k] = this.mergeState<T[keyof T]['default']>(deviceAccountState[k], v.default);
 			} else {
-				this.reactiveState[k].value = this.state[k] = v.default;
+				this.r[k].value = this.s[k] = v.default;
 			}
 		}
 
@@ -120,7 +127,7 @@ export class Storage<T extends StateDef> {
 			// アカウント変更すればunisonReloadが効くため、このreturnが発火することは
 			// まずないと思うけど一応弾いておく
 			if (where === 'deviceAccount' && !($i && userId !== $i.id)) return;
-			this.reactiveState[key].value = this.state[key] = value;
+			this.r[key].value = this.s[key] = value;
 		});
 
 		if ($i) {
@@ -128,9 +135,9 @@ export class Storage<T extends StateDef> {
 
 			// streamingのuser storage updateイベントを監視して更新
 			connection.on('registryUpdated', ({ scope, key, value }: { scope?: string[], key: keyof T, value: T[typeof key]['default'] }) => {
-				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;
+				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.s[key] === value) return;
 
-				this.reactiveState[key].value = this.state[key] = value;
+				this.r[key].value = this.s[key] = value;
 
 				this.addIdbSetJob(async () => {
 					const cache = await get(this.registryCacheKeyName);
@@ -156,10 +163,10 @@ export class Storage<T extends StateDef> {
 							for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 								if (v.where === 'account') {
 									if (Object.prototype.hasOwnProperty.call(kvs, k)) {
-										this.reactiveState[k].value = this.state[k] = (kvs as Partial<T>)[k];
+										this.r[k].value = this.s[k] = (kvs as Partial<T>)[k];
 										cache[k] = (kvs as Partial<T>)[k];
 									} else {
-										this.reactiveState[k].value = this.state[k] = v.default;
+										this.r[k].value = this.s[k] = v.default;
 									}
 								}
 							}
@@ -179,7 +186,7 @@ export class Storage<T extends StateDef> {
 		// (JSON.parse(JSON.stringify(value))の代わり)
 		const rawValue = deepClone(value);
 
-		this.reactiveState[key].value = this.state[key] = rawValue;
+		this.r[key].value = this.s[key] = rawValue;
 
 		return this.addIdbSetJob(async () => {
 			switch (this.def[key].where) {
@@ -224,7 +231,7 @@ export class Storage<T extends StateDef> {
 	}
 
 	public push<K extends keyof T>(key: K, value: ArrayElement<T[K]['default']>): void {
-		const currentState = this.state[key];
+		const currentState = this.s[key];
 		this.set(key, [...currentState, value]);
 	}
 
@@ -246,9 +253,9 @@ export class Storage<T extends StateDef> {
 			get: () => R;
 			set: (value: R) => void;
 		} {
-		const valueRef = ref(this.state[key]);
+		const valueRef = ref(this.s[key]);
 
-		const stop = watch(this.reactiveState[key], val => {
+		const stop = watch(this.r[key], val => {
 			valueRef.value = val;
 		});
 

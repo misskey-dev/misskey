@@ -74,7 +74,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     let fetching = ref(true);
     let images = ref([]);
     function thumbnail(image) {
-      return store.state.disableShowingAnimatedImages ? getStaticImageUrl(image.url) : image.thumbnailUrl;
+      return store.s.disableShowingAnimatedImages ? getStaticImageUrl(image.url) : image.thumbnailUrl;
     }
     onMounted(() => {
       const image = [
@@ -190,7 +190,7 @@ const index_photos = defineComponent({
     let fetching = ref(true);
     let images = ref([]);
     function thumbnail(image) {
-      return store.state.disableShowingAnimatedImages ? getStaticImageUrl(image.url) : image.thumbnailUrl;
+      return store.s.disableShowingAnimatedImages ? getStaticImageUrl(image.url) : image.thumbnailUrl;
     }
     onMounted(() => {
       const image = ["image/jpeg", "image/webp", "image/avif", "image/png", "image/gif", "image/apng", "image/vnd.mozilla.apng"];

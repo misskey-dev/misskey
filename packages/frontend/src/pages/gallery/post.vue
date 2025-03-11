@@ -75,7 +75,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/utility/navigator.js';
@@ -208,7 +208,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: post.value ? post.value.title : i18n.ts.gallery,
 	...post.value ? {
 		avatar: post.value.user,

@@ -37,7 +37,7 @@ import MkAuthConfirm from '@/components/MkAuthConfirm.vue';
 
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const props = defineProps<{
 	session: string;
@@ -77,7 +77,7 @@ function onDeny() {
 	authRoot.value?.showUI('denied');
 }
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'MiAuth',
 	icon: 'ti ti-apps',
 }));

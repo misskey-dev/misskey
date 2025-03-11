@@ -72,15 +72,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted, provide, ref, computed } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import XCommon from './_common_/common.vue';
-import type { PageMetadata } from '@/utility/page-metadata.js';
+import type { PageMetadata } from '@/page.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
-import { provideMetadataReceiver, provideReactiveMetadata } from '@/utility/page-metadata.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { mainRouter } from '@/router/main.js';
+import { DI } from '@/di.js';
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -88,7 +89,7 @@ const DESKTOP_THRESHOLD = 1100;
 
 const pageMetadata = ref<null | PageMetadata>(null);
 
-provide('router', mainRouter);
+provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();
 	pageMetadata.value = info;

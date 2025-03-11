@@ -24,20 +24,21 @@ import type { IRouter, Resolved, RouteDef } from '@/nirax.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
 import MkLoadingPage from '@/pages/_loading_.vue';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	router?: IRouter;
 	nested?: boolean;
 }>();
 
-const router = props.router ?? inject('router');
+const router = props.router ?? inject(DI.router);
 
 if (router == null) {
 	throw new Error('no router provided');
 }
 
-const currentDepth = inject('routerCurrentDepth', 0);
-provide('routerCurrentDepth', currentDepth + 1);
+const currentDepth = inject(DI.routerCurrentDepth, 0);
+provide(DI.routerCurrentDepth, currentDepth + 1);
 
 function resolveNested(current: Resolved, d = 0): Resolved | null {
 	if (!props.nested) return current;

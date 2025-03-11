@@ -59,7 +59,7 @@ async function renderChart() {
 
 	await nextTick();
 
-	const vLineColor = store.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
 	const computedStyle = getComputedStyle(document.documentElement);
 	const accent = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();

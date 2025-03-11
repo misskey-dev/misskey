@@ -36,7 +36,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getAccounts, removeAccount as _removeAccount, login, $i, getAccountWithSigninDialog, getAccountWithSignupDialog } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import type { MenuItem } from '@/types/menu.js';
 
@@ -128,7 +128,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.accounts,
 	icon: 'ti ti-users',
 }));

@@ -17,7 +17,7 @@ import * as Misskey from 'misskey-js';
 import MkAntennaEditor from '@/components/MkAntennaEditor.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { antennasCache } from '@/cache.js';
 import { useRouter } from '@/router/supplier.js';
 
@@ -41,7 +41,7 @@ misskeyApi('antennas/show', { antennaId: props.antennaId }).then((antennaRespons
 const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.editAntenna,
 	icon: 'ti ti-antenna',
 }));

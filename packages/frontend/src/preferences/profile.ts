@@ -42,6 +42,8 @@ export type PreferencesProfile = {
 	syncByAccount: [Account, keyof PREF][],
 };
 
+// TODO: 任意のプロパティをデバイス間で同期できるようにする？
+
 export class ProfileManager extends EventEmitter<{
 	updated: (ctx: {
 		profile: PreferencesProfile
@@ -222,7 +224,7 @@ export class ProfileManager extends EventEmitter<{
 			text: i18n.ts.resetToDefaultValue,
 			danger: true,
 			action: () => {
-				this.store.set(key, PREF_DEF[key].default);
+				this.store.commit(key, PREF_DEF[key].default);
 			},
 		}, {
 			type: 'divider',

@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 					<div class="baaadecd">
 						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-						<MkInfo v-if="!store.reactiveState.enablePreferencesAutoCloudBackup.value && store.reactiveState.showPreferencesAutoCloudBackupSuggestion.value" class="info">
+						<MkInfo v-if="!store.r.enablePreferencesAutoCloudBackup.value && store.r.showPreferencesAutoCloudBackupSuggestion.value" class="info">
 							<div>{{ i18n.ts._preferencesBackup.autoPreferencesBackupIsNotEnabledForThisDevice }}</div>
 							<div><button class="_textButton" @click="enableAutoBackup">{{ i18n.ts.enable }}</button> | <button class="_textButton" @click="skipAutoBackup">{{ i18n.ts.skip }}</button></div>
 						</MkInfo>
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
-import type { PageMetadata } from '@/utility/page-metadata.js';
+import type { PageMetadata } from '@/page.js';
 import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
 import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
@@ -41,7 +41,7 @@ import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import { signout, $i } from '@/account.js';
 import { clearCache } from '@/utility/clear-cache.js';
 import { instance } from '@/instance.js';
-import { definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/utility/page-metadata.js';
+import { definePage, provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import * as os from '@/os.js';
 import { useRouter } from '@/router/supplier.js';
 import { searchIndexes } from '@/utility/autogen/settings-search-index.js';
@@ -164,20 +164,15 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/settings/mute-block',
 		active: currentPage.value?.route.name === 'mute-block',
 	}, {
-		icon: 'ti ti-api',
-		text: 'API',
-		to: '/settings/api',
-		active: currentPage.value?.route.name === 'api',
-	}, {
-		icon: 'ti ti-webhook',
-		text: 'Webhook',
-		to: '/settings/webhook',
-		active: currentPage.value?.route.name === 'webhook',
+		icon: 'ti ti-link',
+		text: i18n.ts._settings.serviceConnection,
+		to: '/settings/connect',
+		active: currentPage.value?.route.name === 'connect',
 	}, {
 		icon: 'ti ti-package',
-		text: i18n.ts.importAndExport,
-		to: '/settings/import-export',
-		active: currentPage.value?.route.name === 'import-export',
+		text: i18n.ts._settings.accountData,
+		to: '/settings/account-data',
+		active: currentPage.value?.route.name === 'account-data',
 	}, {
 		icon: 'ti ti-dots',
 		text: i18n.ts.other,
@@ -260,7 +255,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => INFO.value);
+definePage(() => INFO.value);
 // w 890
 // h 700
 </script>

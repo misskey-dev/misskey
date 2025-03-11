@@ -73,7 +73,7 @@ const emojiDb = computed(() => {
 		url: char2path(x.char),
 	}));
 
-	for (const index of Object.values(store.state.additionalUnicodeEmojiIndexes)) {
+	for (const index of Object.values(store.s.additionalUnicodeEmojiIndexes)) {
 		for (const [emoji, keywords] of Object.entries(index)) {
 			for (const k of keywords) {
 				unicodeEmojiDB.push({
@@ -155,7 +155,7 @@ function complete(type: string, value: any) {
 	emit('done', { type, value });
 	emit('closed');
 	if (type === 'emoji') {
-		let recents = store.state.recentlyUsedEmojis;
+		let recents = store.s.recentlyUsedEmojis;
 		recents = recents.filter((emoji: any) => emoji !== value);
 		recents.unshift(value);
 		store.set('recentlyUsedEmojis', recents.splice(0, 32));
@@ -238,7 +238,7 @@ function exec() {
 	} else if (props.type === 'emoji') {
 		if (!props.q || props.q === '') {
 			// 最近使った絵文字をサジェスト
-			emojis.value = store.state.recentlyUsedEmojis.map(emoji => emojiDb.value.find(dbEmoji => dbEmoji.emoji === emoji)).filter(x => x) as EmojiDef[];
+			emojis.value = store.s.recentlyUsedEmojis.map(emoji => emojiDb.value.find(dbEmoji => dbEmoji.emoji === emoji)).filter(x => x) as EmojiDef[];
 			return;
 		}
 

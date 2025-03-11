@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import XGame from './drop-and-fusion.game.vue';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
@@ -121,7 +121,7 @@ function onGameEnd() {
 	gameStarted.value = false;
 }
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.bubbleGame,
 	icon: 'ti ti-device-gamepad',
 }));

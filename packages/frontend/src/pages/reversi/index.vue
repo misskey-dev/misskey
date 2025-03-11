@@ -108,7 +108,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { useStream } from '@/stream.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -261,7 +261,7 @@ onUnmounted(() => {
 	cancelMatching();
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'Reversi',
 	icon: 'ti ti-device-gamepad',
 }));

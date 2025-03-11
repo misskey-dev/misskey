@@ -86,7 +86,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -326,7 +326,7 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.remote,
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.customEmojis,
 	icon: 'ti ti-icons',
 }));

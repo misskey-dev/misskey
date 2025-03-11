@@ -15,7 +15,7 @@ import * as Misskey from 'misskey-js';
 import GameSetting from './game.setting.vue';
 import GameBoard from './game.board.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { useStream } from '@/stream.js';
 import { signinRequired } from '@/account.js';
 import { useRouter } from '@/router/supplier.js';
@@ -114,7 +114,7 @@ onUnmounted(() => {
 	}
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'Reversi',
 	icon: 'ti ti-device-gamepad',
 }));

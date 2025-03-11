@@ -4,16 +4,17 @@
  */
 
 import { inject } from 'vue';
-import { Router } from '@/nirax.js';
 import type { IRouter } from '@/nirax.js';
+import { Router } from '@/nirax.js';
 import { mainRouter } from '@/router/main.js';
+import { DI } from '@/di.js';
 
 /**
  * メインの{@link Router}を取得する。
  * あらかじめ{@link setupRouter}を実行しておく必要がある（{@link provide}により{@link IRouter}のインスタンスを注入可能であるならばこの限りではない）
  */
 export function useRouter(): IRouter {
-	return inject<Router | null>('router', null) ?? mainRouter;
+	return inject<Router | null>(DI.router, null) ?? mainRouter;
 }
 
 /**

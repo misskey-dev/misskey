@@ -27,7 +27,7 @@ import XUsers from './explore.users.vue';
 import XRoles from './explore.roles.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
@@ -60,7 +60,7 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.roles,
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.explore,
 	icon: 'ti ti-hash',
 }));

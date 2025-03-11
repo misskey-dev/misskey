@@ -70,7 +70,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
 import { lookupUser } from '@/utility/admin-lookup.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { dateString } from '@/filters/date.js';
 
@@ -169,7 +169,7 @@ watchEffect(() => {
 	}));
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.users,
 	icon: 'ti ti-users',
 }));

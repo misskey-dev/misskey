@@ -68,7 +68,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -114,7 +114,7 @@ function deleted(id: string) {
 const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.invite,
 	icon: 'ti ti-user-plus',
 }));

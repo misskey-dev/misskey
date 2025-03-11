@@ -1213,22 +1213,37 @@ async function processVueFile(
 	transformedCodeCache: Record<string, string>
 }> {
 	const normalizedId = id.replace(/\\/g, '/'); // ファイルパスを正規化
-	// すでにキャッシュに存在する場合は、そのまま返す
-	if (transformedCodeCache[normalizedId] && transformedCodeCache[normalizedId].includes('markerId=')) {
+
+	// 開発モード時はコード内容に変更があれば常に再処理する
+	// コード内容が同じ場合のみキャッシュを使用
+	const isDevMode = process.env.NODE_ENV === 'development';
+
+	const s = new MagicString(code); // magic-string のインスタンスを作成
+
+	if (!isDevMode && transformedCodeCache[normalizedId] && transformedCodeCache[normalizedId].includes('markerId=')) {
 		logger.info(`Using cached version for ${id}`);
 		return {
 			code: transformedCodeCache[normalizedId],
-			map: null,
+			map: s.generateMap({ source: id, includeContent: true }),
 			transformedCodeCache
 		};
 	}
 
-	const s = new MagicString(code); // magic-string のインスタンスを作成
+	// すでに処理済みのファイルでコードに変更がない場合はキャッシュを返す
+	if (transformedCodeCache[normalizedId] === code) {
+		logger.info(`Code unchanged for ${id}, using cached version`);
+		return {
+			code: transformedCodeCache[normalizedId],
+			map: s.generateMap({ source: id, includeContent: true }),
+			transformedCodeCache
+		};
+	}
+
 	const parsed = vueSfcParse(code, { filename: id });
 	if (!parsed.descriptor.template) {
 		return {
 			code,
-			map: null,
+			map: s.generateMap({ source: id, includeContent: true }),
 			transformedCodeCache
 		};
 	}
@@ -1466,16 +1481,21 @@ export default function pluginCreateSearchIndex(options: Options): Plugin {
 				if (isMatch) break; // いずれかのパターンでマッチしたら、outer loop も抜ける
 			}
 
-
 			if (!isMatch) {
 				return;
 			}
 
+			// ファイルの内容が変更された場合は再処理を行う
+			const normalizedId = id.replace(/\\/g, '/');
+			const hasContentChanged = !transformedCodeCache[normalizedId] || transformedCodeCache[normalizedId] !== code;
+
 			const transformed = await processVueFile(code, id, options, transformedCodeCache);
 			transformedCodeCache = transformed.transformedCodeCache; // キャッシュを更新
-			if (isDevServer) {
-				await analyzeVueProps({ ...options, transformedCodeCache }); // analyzeVueProps を呼び出す
+
+			if (isDevServer && hasContentChanged) {
+				await analyzeVueProps({ ...options, transformedCodeCache }); // ファイルが変更されたときのみ分析を実行
 			}
+
 			return transformed;
 		},
 

@@ -51,15 +51,16 @@ import { instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import XSidebar from './classic.sidebar.vue';
 import XCommon from './_common_/common.vue';
-import type { PageMetadata } from '@/utility/page-metadata.js';
+import type { PageMetadata } from '@/page.js';
 import { StickySidebar } from '@/utility/sticky-sidebar.js';
 import * as os from '@/os.js';
-import { provideMetadataReceiver, provideReactiveMetadata } from '@/utility/page-metadata.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { mainRouter } from '@/router/main.js';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
@@ -75,12 +76,12 @@ const widgetsShowing = ref(false);
 const fullView = ref(false);
 const globalHeaderHeight = ref(0);
 const wallpaper = miLocalStorage.getItem('wallpaper') != null;
-const showMenuOnTop = computed(() => store.state.menuDisplay === 'top');
+const showMenuOnTop = computed(() => store.s.menuDisplay === 'top');
 const live2d = shallowRef<HTMLIFrameElement>();
 const widgetsLeft = ref<HTMLElement>();
 const widgetsRight = ref<HTMLElement>();
 
-provide('router', mainRouter);
+provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();
 	pageMetadata.value = info;
@@ -97,7 +98,7 @@ provide('shouldHeaderThin', showMenuOnTop.value);
 provide('forceSpacerMin', true);
 
 function attachSticky(el: HTMLElement) {
-	const sticky = new StickySidebar(el, 0, store.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
+	const sticky = new StickySidebar(el, 0, store.s.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 	window.addEventListener('scroll', () => {
 		sticky.calc(window.scrollY);
 	}, { passive: true });
@@ -144,7 +145,7 @@ if (window.innerWidth < 1024) {
 document.documentElement.style.overflowY = 'scroll';
 
 if (prefer.s.widgets.length === 0) {
-	prefer.set('widgets', [{
+	prefer.commit('widgets', [{
 		name: 'calendar',
 		id: 'a', place: null, data: {},
 	}, {

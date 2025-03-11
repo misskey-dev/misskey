@@ -56,7 +56,7 @@ import { navbarItemDef } from '@/navbar.js';
 import { store } from '@/store.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import { PREF_DEF } from '@/preferences/def.js';
 
@@ -91,7 +91,7 @@ function removeItem(index: number) {
 }
 
 async function save() {
-	prefer.set('menu', items.value.map(x => x.type));
+	prefer.commit('menu', items.value.map(x => x.type));
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 }
 
@@ -106,7 +106,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.navbar,
 	icon: 'ti ti-list',
 }));

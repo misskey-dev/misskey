@@ -30,7 +30,7 @@ import XEditor from './roles.editor.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import { rolesCache } from '@/cache.js';
 import { useRouter } from '@/router/supplier.js';
@@ -87,7 +87,7 @@ async function save() {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: role.value ? `${i18n.ts._role.edit}: ${role.value.name}` : i18n.ts._role.new,
 	icon: 'ti ti-badge',
 }));
