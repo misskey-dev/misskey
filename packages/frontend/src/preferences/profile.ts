@@ -79,6 +79,7 @@ export type PreferencesProfile = {
 
 export type StorageProvider = {
 	save: (ctx: { profile: PreferencesProfile; }) => void;
+	cloudGets: <K extends keyof PREF>(ctx: { needs: { key: K; cond: Cond; }[] }) => Promise<Partial<Record<K, ValueOf<K>>>>;
 	cloudGet: <K extends keyof PREF>(ctx: { key: K; cond: Cond; }) => Promise<{ value: ValueOf<K>; } | null>;
 	cloudSet: <K extends keyof PREF>(ctx: { key: K; cond: Cond; value: ValueOf<K>; }) => Promise<void>;
 };
@@ -193,31 +194,34 @@ export class ProfileManager {
 		return states;
 	}
 
-	private fetchCloudValues() {
-		// TODO: 値の取得を1つのリクエストで済ませたい(バックエンド側でAPIの新設が必要)
-
-		const promises: Promise<void>[] = [];
+	private async fetchCloudValues() {
+		const needs = [] as { key: keyof PREF; cond: Cond; }[];
 		for (const key in PREF_DEF) {
 			const record = this.getMatchedRecordOf(key);
 			if (record[2].sync) {
-				const getting = this.storageProvider.cloudGet({ key, cond: record[0] });
-				promises.push(getting.then((res) => {
-					if (res == null) return;
-					const value = res.value;
-					if (value !== this.s[key]) {
-						this.rewriteRawState(key, value);
-						record[1] = value;
-						console.log('cloud fetched', key, value);
-					}
-				}));
+				needs.push({
+					key,
+					cond: record[0],
+				});
 			}
 		}
-		Promise.all(promises).then(() => {
-			console.log('cloud fetched all');
-			this.save();
 
-			console.log(this.s.showFixedPostForm, this.r.showFixedPostForm.value);
-		});
+		const cloudValues = await this.storageProvider.cloudGets({ needs });
+
+		for (const key in PREF_DEF) {
+			const record = this.getMatchedRecordOf(key);
+			if (record[2].sync && Object.hasOwn(cloudValues, key) && cloudValues[key] !== undefined) {
+				const cloudValue = cloudValues[key];
+				if (cloudValue !== this.s[key]) {
+					this.rewriteRawState(key, cloudValue);
+					record[1] = cloudValue;
+					console.log('cloud fetched', key, cloudValue);
+				}
+			}
+		}
+
+		this.save();
+		console.log('cloud fetch completed');
 	}
 
 	public static newProfile(): PreferencesProfile {
