@@ -13,6 +13,7 @@ import { $i } from '@/account.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { deepEqual } from '@/utility/deep-equal.js';
 
 // NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
 
@@ -340,7 +341,7 @@ export class ProfileManager {
 		const record = this.getMatchedRecordOf(key);
 
 		const existing = await this.storageProvider.cloudGet({ key, cond: record[0] });
-		if (existing != null) {
+		if (existing != null && !deepEqual(existing.value, record[1])) {
 			const { canceled, result } = await os.select({
 				title: i18n.ts.preferenceSyncConflictTitle,
 				text: i18n.ts.preferenceSyncConflictText,
