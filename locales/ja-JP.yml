@@ -2603,6 +2603,7 @@ _deck:
   useSimpleUiForNonRootPages: "非ルートページは簡易UIで表示"
   usedAsMinWidthWhenFlexible: "「幅を自動調整」が有効の場合、これが幅の最小値となります"
   flexible: "幅を自動調整"
+  enableSyncBetweenDevicesForProfiles: "プロファイル情報のデバイス間同期を有効にする"
 
   _columns:
     main: "メイン"

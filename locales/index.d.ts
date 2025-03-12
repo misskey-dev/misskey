@@ -9848,6 +9848,10 @@ export interface Locale extends ILocale {
          * 幅を自動調整
          */
         "flexible": string;
+        /**
+         * プロファイル情報のデバイス間同期を有効にする
+         */
+        "enableSyncBetweenDevicesForProfiles": string;
         "_columns": {
             /**
              * メイン

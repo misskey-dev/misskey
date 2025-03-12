@@ -605,6 +605,13 @@ export const searchIndexes: SearchIndexItem[] = [
 		icon: 'ti ti-cloud',
 	},
 	{
+		id: 'FfZdOs8y',
+		label: i18n.ts.deck,
+		keywords: ['deck', 'ui'],
+		path: '/settings/deck',
+		icon: 'ti ti-columns',
+	},
+	{
 		id: 'BlJ2rsw9h',
 		children: [
 			{
