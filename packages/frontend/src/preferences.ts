@@ -4,10 +4,10 @@
  */
 
 import { v4 as uuid } from 'uuid';
-import type { PreferencesProfile, StorageProvider } from '@/preferences/profile.js';
+import type { PreferencesProfile, StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { isSameCond, ProfileManager } from '@/preferences/profile.js';
+import { isSameCond, ProfileManager } from '@/preferences/manager.js';
 import { store } from '@/store.js';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/utility/misskey-api.js';

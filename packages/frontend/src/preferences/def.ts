@@ -9,7 +9,8 @@ import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
-import type { Column, DeckProfile } from '@/deck.js';
+import type { DeckProfile } from '@/deck.js';
+import type { PreferencesDefinition } from './manager.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 
 /** サウンド設定 */
@@ -324,8 +325,4 @@ export const PREF_DEF = {
 			sfxVolume: 1,
 		},
 	},
-} satisfies Record<string, {
-	default: any;
-	accountDependent?: boolean;
-	serverDependent?: boolean;
-}>;
+} satisfies PreferencesDefinition;

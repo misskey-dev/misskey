@@ -4,7 +4,7 @@
  */
 
 import { ref, watch } from 'vue';
-import type { PreferencesProfile } from './profile.js';
+import type { PreferencesProfile } from './manager.js';
 import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
