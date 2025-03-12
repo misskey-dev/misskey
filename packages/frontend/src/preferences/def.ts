@@ -327,4 +327,5 @@ export const PREF_DEF = {
 } satisfies Record<string, {
 	default: any;
 	accountDependent?: boolean;
+	serverDependent?: boolean;
 }>;

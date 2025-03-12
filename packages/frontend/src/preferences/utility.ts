@@ -9,7 +9,7 @@ import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { prefer, profileManager } from '@/preferences.js';
+import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
 import { $i } from '@/account.js';
@@ -17,7 +17,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 
 function canAutoBackup() {
-	return profileManager.profile.name != null && profileManager.profile.name.trim() !== '';
+	return prefer.profile.name != null && prefer.profile.name.trim() !== '';
 }
 
 export function getPreferencesProfileMenu(): MenuItem[] {
@@ -42,7 +42,7 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 
 	const menu: MenuItem[] = [{
 		type: 'label',
-		text: profileManager.profile.name || `(${i18n.ts.noName})`,
+		text: prefer.profile.name || `(${i18n.ts.noName})`,
 	}, {
 		text: i18n.ts.rename,
 		icon: 'ti ti-pencil',
@@ -83,7 +83,7 @@ export function getPreferencesProfileMenu(): MenuItem[] {
 			text: 'Copy profile as text',
 			icon: 'ti ti-clipboard',
 			action: () => {
-				copyToClipboard(JSON.stringify(profileManager.profile, null, '\t'));
+				copyToClipboard(JSON.stringify(prefer.profile, null, '\t'));
 			},
 		});
 	}
@@ -95,16 +95,16 @@ async function renameProfile() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts._preferencesProfile.profileName,
 		text: i18n.ts._preferencesProfile.profileNameDescription + '\n' + i18n.ts._preferencesProfile.profileNameDescription2,
-		placeholder: profileManager.profile.name || null,
-		default: profileManager.profile.name || null,
+		placeholder: prefer.profile.name || null,
+		default: prefer.profile.name || null,
 	});
 	if (canceled || name == null || name.trim() === '') return;
 
-	profileManager.renameProfile(name);
+	prefer.renameProfile(name);
 }
 
 function exportCurrentProfile() {
-	const p = profileManager.profile;
+	const p = prefer.profile;
 	const txtBlob = new Blob([JSON.stringify(p)], { type: 'text/plain' });
 	const dummya = document.createElement('a');
 	dummya.href = URL.createObjectURL(txtBlob);
@@ -140,8 +140,8 @@ export async function cloudBackup() {
 
 	await misskeyApi('i/registry/set', {
 		scope: ['client', 'preferences', 'backups'],
-		key: profileManager.profile.name,
-		value: profileManager.profile,
+		key: prefer.profile.name,
+		value: prefer.profile,
 	});
 }
 
