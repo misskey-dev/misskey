@@ -39,7 +39,6 @@ const storageProvider: StorageProvider = {
 	cloudGet: async (ctx) => {
 		// TODO: この取得方法だとアカウントが変わると保存場所も変わってしまうので改修する
 		// 例えば複数アカウントある場合でも設定値を保存するための「プライマリアカウント」を設定できるようにするとか
-		// TODO: keyのcondに応じた取得
 		try {
 			const cloudData = await misskeyApi('i/registry/get', {
 				scope: ['client', 'preferences', 'sync'],
