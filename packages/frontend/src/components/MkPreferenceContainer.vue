@@ -35,6 +35,7 @@ const isSyncEnabled = ref(prefer.isSyncEnabled(props.k));
 function showMenu(ev: MouseEvent) {
 	const i = window.setInterval(() => {
 		isAccountOverrided.value = prefer.isAccountOverrided(props.k);
+		isSyncEnabled.value = prefer.isSyncEnabled(props.k);
 	}, 100);
 	os.popupMenu(prefer.getPerPrefMenu(props.k), ev.currentTarget ?? ev.target, {
 		onClosing: () => {

@@ -220,28 +220,28 @@ function onMousedown(evt: MouseEvent): void {
 		background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 
 		&:not(:disabled):hover {
-			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-buttonGradateA) h s calc(l + 5)), hsl(from var(--MI_THEME-buttonGradateB) h s calc(l + 5)));
 		}
 
 		&:not(:disabled):active {
-			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-buttonGradateA) h s calc(l + 5)), hsl(from var(--MI_THEME-buttonGradateB) h s calc(l + 5)));
 		}
 	}
 
 	&.danger {
 		font-weight: bold;
-		color: #ff2a2a;
+		color: var(--MI_THEME-error);
 
 		&.primary {
 			color: #fff;
-			background: #ff2a2a;
+			background: var(--MI_THEME-error);
 
 			&:not(:disabled):hover {
-				background: #ff4242;
+				background: hsl(from var(--MI_THEME-error) h s calc(l + 10));
 			}
 
 			&:not(:disabled):active {
-				background: #d42e2e;
+				background: hsl(from var(--MI_THEME-error) h s calc(l - 10));
 			}
 		}
 	}
