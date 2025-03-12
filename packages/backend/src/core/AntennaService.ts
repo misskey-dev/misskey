@@ -96,8 +96,12 @@ export function createAntennaFilter(antenna: MiAntenna): AntennaFilter {
 		if (antenna.useRegex) {
 			// 元々はAND検索を行うために2次元配列としてもっていた歴史的経緯がある.
 			// 正規表現の時は1行に付き1パターンとするため、[n][0]にパターンの内容すべてが格納されているものとして扱う.
-			const keywordsPatterns = keywords.map(line => new RE2(line[0]));
-			const excludeKeywordsPatterns = excludeKeywords.map(line => new RE2(line[0]));
+			const createRE2 = (pattern: string): RE2 => {
+				const regexp = pattern.match(/^\/(.+)\/(.*)$/) ?? [];
+				return new RE2(regexp[1], regexp[2]);
+			};
+			const keywordsPatterns = keywords.map(line => createRE2(line[0]));
+			const excludeKeywordsPatterns = excludeKeywords.map(line => createRE2(line[0]));
 
 			if (keywords.length > 0 && excludeKeywords.length > 0) {
 				return (target: string) => antennaFilters.regex.includeAndExclude(target, keywordsPatterns, excludeKeywordsPatterns);
@@ -262,6 +266,7 @@ export class AntennaService implements OnApplicationShutdown {
 			caseSensitive: ps.caseSensitive,
 			localOnly: ps.localOnly,
 			excludeBots: ps.excludeBots,
+			useRegex: ps.useRegex,
 			withReplies: ps.withReplies,
 			withFile: ps.withFile,
 		});
@@ -317,6 +322,7 @@ export class AntennaService implements OnApplicationShutdown {
 			caseSensitive: ps.caseSensitive,
 			localOnly: ps.localOnly,
 			excludeBots: ps.excludeBots,
+			useRegex: ps.useRegex,
 			withReplies: ps.withReplies,
 			withFile: ps.withFile,
 			isActive: true,
