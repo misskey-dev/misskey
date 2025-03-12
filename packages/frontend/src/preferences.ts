@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 import type { PreferencesProfile, StorageProvider } from '@/preferences/profile.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { ProfileManager } from '@/preferences/profile.js';
+import { isSameCond, ProfileManager } from '@/preferences/profile.js';
 import { store } from '@/store.js';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -28,22 +28,27 @@ function createProfileManager(storageProvider: StorageProvider) {
 	return new ProfileManager(profile, storageProvider);
 }
 
+const syncGroup = 'default';
+
 const storageProvider: StorageProvider = {
 	save: (ctx) => {
 		miLocalStorage.setItem('preferences', JSON.stringify(ctx.profile));
 		miLocalStorage.setItem('latestPreferencesUpdate', `${TAB_ID}/${Date.now()}`);
 	},
+
 	cloudGet: async (ctx) => {
 		// TODO: この取得方法だとアカウントが変わると保存場所も変わってしまうので改修する
 		// 例えば複数アカウントある場合でも設定値を保存するための「プライマリアカウント」を設定できるようにするとか
 		// TODO: keyのcondに応じた取得
 		try {
-			const value = await misskeyApi('i/registry/get', {
+			const cloudData = await misskeyApi('i/registry/get', {
 				scope: ['client', 'preferences', 'sync'],
-				key: ctx.key,
-			});
+				key: syncGroup + ':' + ctx.key,
+			}) as [any, any][];
+			const target = cloudData.find(([cond]) => isSameCond(cond, ctx.cond));
+			if (target == null) return null;
 			return {
-				value,
+				value: target[1],
 			};
 		} catch (err: any) {
 			if (err.code === 'NO_SUCH_KEY') {
@@ -53,11 +58,34 @@ const storageProvider: StorageProvider = {
 			}
 		}
 	},
+
 	cloudSet: async (ctx) => {
+		let cloudData: [any, any][] = [];
+		try {
+			cloudData = await misskeyApi('i/registry/get', {
+				scope: ['client', 'preferences', 'sync'],
+				key: syncGroup + ':' + ctx.key,
+			}) as [any, any][];
+		} catch (err: any) {
+			if (err.code === 'NO_SUCH_KEY') {
+				cloudData = [];
+			} else {
+				throw err;
+			}
+		}
+
+		const i = cloudData.findIndex(([cond]) => isSameCond(cond, ctx.cond));
+
+		if (i === -1) {
+			cloudData.push([ctx.cond, ctx.value]);
+		} else {
+			cloudData[i] = [ctx.cond, ctx.value];
+		}
+
 		await misskeyApi('i/registry/set', {
 			scope: ['client', 'preferences', 'sync'],
-			key: ctx.key,
-			value: ctx.value,
+			key: syncGroup + ':' + ctx.key,
+			value: cloudData,
 		});
 	},
 };

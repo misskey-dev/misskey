@@ -60,6 +60,12 @@ function makeCond(cond: Partial<{
 	return c;
 }
 
+export function isSameCond(a: Cond, b: Cond): boolean {
+	// null と undefined (キー無し) は区別したくないので == で比較
+	// eslint-disable-next-line eqeqeq
+	return a.server == b.server && a.account == b.account && a.device == b.device;
+}
+
 export type PreferencesProfile = {
 	id: string;
 	version: string;
@@ -73,8 +79,8 @@ export type PreferencesProfile = {
 
 export type StorageProvider = {
 	save: (ctx: { profile: PreferencesProfile; }) => void;
-	cloudGet: <K extends keyof PREF>(ctx: { key: K; }) => Promise<{ value: ValueOf<K>; } | null>;
-	cloudSet: <K extends keyof PREF>(ctx: { key: K; value: ValueOf<K>; }) => Promise<void>;
+	cloudGet: <K extends keyof PREF>(ctx: { key: K; cond: Cond; }) => Promise<{ value: ValueOf<K>; } | null>;
+	cloudSet: <K extends keyof PREF>(ctx: { key: K; cond: Cond; value: ValueOf<K>; }) => Promise<void>;
 };
 
 export class ProfileManager {
@@ -121,7 +127,7 @@ export class ProfileManager {
 
 		this.rewriteRawState(key, value);
 
-		const record = this.getMatchedRecord(key);
+		const record = this.getMatchedRecordOf(key);
 		if (parseCond(record[0]).account == null && PREF_DEF[key].accountDependent) {
 			this.profile.preferences[key].push([makeCond({
 				account: `${host}/${$i!.id}`,
@@ -130,14 +136,14 @@ export class ProfileManager {
 			return;
 		}
 
+		record[1] = value;
+		this.save();
+
 		if (record[2].sync) {
 			// awaitの必要なし
 			// TODO: リクエストを間引く
-			this.storageProvider.cloudSet({ key, value });
+			this.storageProvider.cloudSet({ key, cond: record[0], value: record[1] });
 		}
-
-		record[1] = value;
-		this.save();
 	}
 
 	/**
@@ -180,7 +186,7 @@ export class ProfileManager {
 	private genStates() {
 		const states = {} as { [K in keyof PREF]: ValueOf<K> };
 		for (const key in PREF_DEF) {
-			const record = this.getMatchedRecord(key);
+			const record = this.getMatchedRecordOf(key);
 			states[key] = record[1];
 		}
 
@@ -192,9 +198,9 @@ export class ProfileManager {
 
 		const promises: Promise<void>[] = [];
 		for (const key in PREF_DEF) {
-			const record = this.getMatchedRecord(key);
+			const record = this.getMatchedRecordOf(key);
 			if (record[2].sync) {
-				const getting = this.storageProvider.cloudGet({ key });
+				const getting = this.storageProvider.cloudGet({ key, cond: record[0] });
 				promises.push(getting.then((res) => {
 					if (res == null) return;
 					const value = res.value;
@@ -261,7 +267,7 @@ export class ProfileManager {
 		this.storageProvider.save({ profile: this.profile });
 	}
 
-	public getMatchedRecord<K extends keyof PREF>(key: K): PrefRecord<K> {
+	public getMatchedRecordOf<K extends keyof PREF>(key: K): PrefRecord<K> {
 		const records = this.profile.preferences[key];
 
 		if ($i == null) return records.find(([cond, v]) => parseCond(cond).account == null)!;
@@ -302,19 +308,21 @@ export class ProfileManager {
 
 		records.splice(index, 1);
 
-		this.rewriteRawState(key, this.getMatchedRecord(key)[1]);
+		this.rewriteRawState(key, this.getMatchedRecordOf(key)[1]);
 
 		this.save();
 	}
 
 	public isSyncEnabled<K extends keyof PREF>(key: K): boolean {
-		return this.getMatchedRecord(key)[2].sync ?? false;
+		return this.getMatchedRecordOf(key)[2].sync ?? false;
 	}
 
 	public async enableSync<K extends keyof PREF>(key: K): Promise<{ enabled: boolean; } | null> {
 		if (this.isSyncEnabled(key)) return Promise.resolve(null);
 
-		const existing = await this.storageProvider.cloudGet({ key });
+		const record = this.getMatchedRecordOf(key);
+
+		const existing = await this.storageProvider.cloudGet({ key, cond: record[0] });
 		if (existing != null) {
 			const { canceled, result } = await os.select({
 				title: i18n.ts.preferenceSyncConflictTitle,
@@ -340,12 +348,11 @@ export class ProfileManager {
 			}
 		}
 
-		const record = this.getMatchedRecord(key);
 		record[2].sync = true;
 		this.save();
 
 		// awaitの必要性は無い
-		this.storageProvider.cloudSet({ key, value: this.s[key] });
+		this.storageProvider.cloudSet({ key, cond: record[0], value: this.s[key] });
 
 		return { enabled: true };
 	}
@@ -353,7 +360,7 @@ export class ProfileManager {
 	public disableSync<K extends keyof PREF>(key: K) {
 		if (!this.isSyncEnabled(key)) return;
 
-		const record = this.getMatchedRecord(key);
+		const record = this.getMatchedRecordOf(key);
 		delete record[2].sync;
 		this.save();
 	}

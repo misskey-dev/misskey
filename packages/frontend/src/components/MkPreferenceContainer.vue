@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div :class="$style.root" @contextmenu.prevent.stop="showMenu($event, true)">
 	<div :class="$style.body">
 		<slot></slot>
 	</div>
@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i v-if="isSyncEnabled" class="ti ti-cloud-cog" style="color: var(--MI_THEME-accent); opacity: 0.7;"></i>
 		<i v-if="isAccountOverrided" class="ti ti-user-cog" style="color: var(--MI_THEME-accent); opacity: 0.7;"></i>
 		<div :class="$style.buttons">
-			<button class="_button" style="color: var(--MI_THEME-fg)" @click="showMenu"><i class="ti ti-dots"></i></button>
+			<button class="_button" style="color: var(--MI_THEME-fg)" @click="showMenu($event)"><i class="ti ti-dots"></i></button>
 		</div>
 	</div>
 </div>
@@ -32,16 +32,22 @@ const props = withDefaults(defineProps<{
 const isAccountOverrided = ref(prefer.isAccountOverrided(props.k));
 const isSyncEnabled = ref(prefer.isSyncEnabled(props.k));
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: MouseEvent, contextmenu?: boolean) {
 	const i = window.setInterval(() => {
 		isAccountOverrided.value = prefer.isAccountOverrided(props.k);
 		isSyncEnabled.value = prefer.isSyncEnabled(props.k);
 	}, 100);
-	os.popupMenu(prefer.getPerPrefMenu(props.k), ev.currentTarget ?? ev.target, {
-		onClosing: () => {
+	if (contextmenu) {
+		os.contextMenu(prefer.getPerPrefMenu(props.k), ev).then(() => {
 			window.clearInterval(i);
-		},
-	});
+		});
+	} else {
+		os.popupMenu(prefer.getPerPrefMenu(props.k), ev.currentTarget ?? ev.target, {
+			onClosing: () => {
+				window.clearInterval(i);
+			},
+		});
+	}
 }
 </script>
 
