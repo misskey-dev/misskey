@@ -50,7 +50,7 @@ const storageProvider: StorageProvider = {
 				value: target[1],
 			};
 		} catch (err: any) {
-			if (err.code === 'NO_SUCH_KEY') {
+			if (err.code === 'NO_SUCH_KEY') { // TODO: いちいちエラーキャッチするのは面倒なのでキーが無くてもエラーにならない maybe-get のようなエンドポイントをバックエンドに実装する
 				return null;
 			} else {
 				throw err;
@@ -66,7 +66,7 @@ const storageProvider: StorageProvider = {
 				key: syncGroup + ':' + ctx.key,
 			}) as [any, any][];
 		} catch (err: any) {
-			if (err.code === 'NO_SUCH_KEY') {
+			if (err.code === 'NO_SUCH_KEY') { // TODO: いちいちエラーキャッチするのは面倒なのでキーが無くてもエラーにならない maybe-get のようなエンドポイントをバックエンドに実装する
 				cloudData = [];
 			} else {
 				throw err;
