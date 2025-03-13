@@ -408,6 +408,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</SearchMarker>
 
 							<SearchMarker :keywords="['effect', 'show']">
+								<MkSwitch v-model="flowerEffect">
+									<template #label><SearchLabel>{{ i18n.ts._hana.flowerEffect }}</SearchLabel></template>
+								</MkSwitch>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['effect', 'show']">
 								<MkPreferenceContainer k="enableSeasonalScreenEffect">
 									<MkSwitch v-model="enableSeasonalScreenEffect">
 										<template #label><SearchLabel>{{ i18n.ts.seasonalScreenEffect }}</SearchLabel></template>
@@ -542,6 +548,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
+import { hanaStore } from '@/hana/store.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { globalEvents } from '@/events.js';
@@ -587,6 +594,7 @@ const reactionsDisplaySize = prefer.model('reactionsDisplaySize');
 const limitWidthOfReaction = prefer.model('limitWidthOfReaction');
 const squareAvatars = prefer.model('squareAvatars');
 const enableSeasonalScreenEffect = prefer.model('enableSeasonalScreenEffect');
+const flowerEffect = computed(hanaStore.makeGetterSetter('flowerEffect'));
 const showAvatarDecorations = prefer.model('showAvatarDecorations');
 const nsfw = prefer.model('nsfw');
 const emojiStyle = prefer.model('emojiStyle');

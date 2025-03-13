@@ -495,36 +495,41 @@ export const searchIndexes: SearchIndexItem[] = [
 					},
 					{
 						id: 'DCfJg0bva',
+						label: i18n.ts._hana.flowerEffect,
+						keywords: ['effect', 'show'],
+					},
+					{
+						id: 'tpgA1O6LC',
 						label: i18n.ts.seasonalScreenEffect,
 						keywords: ['effect', 'show'],
 					},
 					{
-						id: 'AV0iGW0vg',
+						id: 'hl4hQSkzN',
 						label: i18n.ts.openImageInNewTab,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab'],
 					},
 					{
-						id: '5h8vhCX1S',
+						id: 'bDv03znUy',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: 'zZxyXHk3A',
+						id: 'yygNLYGju',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: '7ix3kvMyU',
+						id: '1nCcKm51T',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: '6RxgjmMLN',
+						id: 'yobNUDEaV',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: '5iMpm5rES',
+						id: 'yzbghkAq0',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},
@@ -533,7 +538,7 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['other'],
 			},
 			{
-				id: 'fnR7PRww5',
+				id: '4p84ZkZvO',
 				label: i18n.ts.dataSaver,
 				keywords: ['datasaver'],
 			},
