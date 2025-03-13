@@ -509,27 +509,32 @@ export const searchIndexes: SearchIndexItem[] = [
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab'],
 					},
 					{
-						id: 'bDv03znUy',
+						id: 'vPQPvmntL',
+						label: i18n.ts.alwaysUseAbsoluteTime,
+						keywords: ['time'],
+					},
+					{
+						id: 'nkR2LWURW',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: 'yygNLYGju',
+						id: 'CEYxpc3Q4',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: '1nCcKm51T',
+						id: 'yobNUDEaV',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: 'yobNUDEaV',
+						id: 'zVRIlk3wT',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: 'yzbghkAq0',
+						id: 'aSbKFHbOy',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},
@@ -538,7 +543,7 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['other'],
 			},
 			{
-				id: '4p84ZkZvO',
+				id: '41Bh3hB5e',
 				label: i18n.ts.dataSaver,
 				keywords: ['datasaver'],
 			},

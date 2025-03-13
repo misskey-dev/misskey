@@ -428,6 +428,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
+
+							<SearchMarker :keywords="['time']">
+								<MkPreferenceContainer k="alwaysUseAbsoluteTime">
+									<MkSwitch v-model="alwaysUseAbsoluteTime">
+										<template #label><SearchLabel>{{ i18n.ts.alwaysUseAbsoluteTime }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
 						</div>
 
 						<SearchMarker :keywords="['server', 'disconnect', 'reconnect', 'reload', 'streaming']">
@@ -595,6 +603,7 @@ const limitWidthOfReaction = prefer.model('limitWidthOfReaction');
 const squareAvatars = prefer.model('squareAvatars');
 const enableSeasonalScreenEffect = prefer.model('enableSeasonalScreenEffect');
 const flowerEffect = computed(hanaStore.makeGetterSetter('flowerEffect'));
+const alwaysUseAbsoluteTime = prefer.model('alwaysUseAbsoluteTime');
 const showAvatarDecorations = prefer.model('showAvatarDecorations');
 const nsfw = prefer.model('nsfw');
 const emojiStyle = prefer.model('emojiStyle');
