@@ -29,7 +29,7 @@ import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode.js';
 import { url as local } from '@@/js/config.js';
 import * as os from '@/os.js';
-import { useTooltip } from '@/utility/use-tooltip.js';
+import { useTooltip } from '@/use/use-tooltip.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import type { MkABehavior } from '@/components/global/MkA.vue';
 

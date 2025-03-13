@@ -88,7 +88,7 @@ import { onMounted, ref, computed, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
-import { useChartTooltip } from '@/utility/use-chart-tooltip.js';
+import { useChartTooltip } from '@/use/use-chart-tooltip.js';
 import { $i } from '@/account.js';
 import * as os from '@/os.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
