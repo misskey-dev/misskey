@@ -1323,6 +1323,7 @@ untitled: "Untitled"
 noName: "No name"
 skip: "Skip"
 restore: "Restore"
+postForm: "Posting form"
 _settings:
   driveBanner: "You can manage and configure the drive, check usage, and configure file upload settings."
   pluginBanner: "You can extend client features with plugins. You can install plugins, configure and manage individually."
