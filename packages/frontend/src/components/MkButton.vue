@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <button
 	v-if="!link"
 	ref="el" class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike, [$style.iconOnly]: iconOnly }]"
 	:type="type"
 	:name="name"
 	:value="value"
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </button>
 <MkA
 	v-else class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike, [$style.iconOnly]: iconOnly }]"
 	:to="to ?? '#'"
 	:behavior="linkBehavior"
 	@mousedown="onMousedown"
@@ -57,6 +57,7 @@ const props = defineProps<{
 	name?: string;
 	value?: string;
 	disabled?: boolean;
+	iconOnly?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -145,6 +146,11 @@ function onMousedown(evt: MouseEvent): void {
 
 	&:not(:disabled):active {
 		background: var(--MI_THEME-buttonHoverBg);
+	}
+
+	&.iconOnly {
+		padding: 7px;
+		min-width: auto;
 	}
 
 	&.small {

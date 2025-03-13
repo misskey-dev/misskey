@@ -87,11 +87,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/settings/privacy',
 		active: currentPage.value?.route.name === 'privacy',
 	}, {
-		icon: 'ti ti-mood-happy',
-		text: i18n.ts.emojiPicker,
-		to: '/settings/emoji-picker',
-		active: currentPage.value?.route.name === 'emojiPicker',
-	}, {
 		icon: 'ti ti-bell',
 		text: i18n.ts.notifications,
 		to: '/settings/notifications',
@@ -118,6 +113,11 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts.theme,
 		to: '/settings/theme',
 		active: currentPage.value?.route.name === 'theme',
+	}, {
+		icon: 'ti ti-mood-happy',
+		text: i18n.ts.emojiPalette,
+		to: '/settings/emoji-palette',
+		active: currentPage.value?.route.name === 'emoji-palette',
 	}, {
 		icon: 'ti ti-device-desktop',
 		text: i18n.ts.appearance,

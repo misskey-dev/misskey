@@ -1329,6 +1329,14 @@ preferenceSyncConflictText: "同期が有効にされた設定項目は設定値
 preferenceSyncConflictChoiceServer: "サーバーの設定値"
 preferenceSyncConflictChoiceDevice: "デバイスの設定値"
 preferenceSyncConflictChoiceCancel: "同期の有効化をキャンセル"
+paste: "ペースト"
+emojiPalette: "絵文字パレット"
+
+_emojiPalette:
+  palettes: "パレット"
+  enableSyncBetweenDevicesForPalettes: "パレットのデバイス間同期を有効にする"
+  paletteForMain: "メインで使用するパレット"
+  paletteForReaction: "リアクションで使用するパレット"
 
 _settings:
   driveBanner: "ドライブの管理と設定、使用量の確認、ファイルをアップロードする際の設定を行えます。"

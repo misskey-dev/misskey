@@ -6,7 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/deck" :label="i18n.ts.deck" :keywords="['deck', 'ui']" icon="ti ti-columns">
 	<div class="_gaps_m">
-		<MkSwitch :modelValue="profilesSyncEnabled" @update:modelValue="changeProfilesSyncEnabled">{{ i18n.ts._deck.enableSyncBetweenDevicesForProfiles }}</MkSwitch>
+		<SearchMarker :keywords="['sync', 'profiles', 'devices']">
+			<MkSwitch :modelValue="profilesSyncEnabled" @update:modelValue="changeProfilesSyncEnabled">
+				<template #label><SearchLabel>{{ i18n.ts._deck.enableSyncBetweenDevicesForProfiles }}</SearchLabel></template>
+			</MkSwitch>
+		</SearchMarker>
 
 		<SearchMarker :keywords="['ui', 'root', 'page']">
 			<MkPreferenceContainer k="deck.useSimpleUiForNonRootPages">
@@ -35,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['column', 'align']">
 			<MkPreferenceContainer k="deck.columnAlign">
 				<MkRadios v-model="columnAlign">
-					<template #label>{{ i18n.ts._deck.columnAlign }}</template>
+					<template #label><SearchLabel>{{ i18n.ts._deck.columnAlign }}</SearchLabel></template>
 					<option value="left">{{ i18n.ts.left }}</option>
 					<option value="center">{{ i18n.ts.center }}</option>
 				</MkRadios>

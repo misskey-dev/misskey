@@ -537,6 +537,57 @@ export const searchIndexes: SearchIndexItem[] = [
 		icon: 'ti ti-ban',
 	},
 	{
+		id: 'yR1OSyLiT',
+		children: [
+			{
+				id: 'yMJzyzOUk',
+				label: i18n.ts._emojiPalette.enableSyncBetweenDevicesForPalettes,
+				keywords: ['sync', 'palettes', 'devices'],
+			},
+			{
+				id: 'wCE09vgZr',
+				label: i18n.ts._emojiPalette.paletteForMain,
+				keywords: ['main', 'palette'],
+			},
+			{
+				id: 'uCzRPrSNx',
+				label: i18n.ts._emojiPalette.paletteForReaction,
+				keywords: ['reaction', 'palette'],
+			},
+			{
+				id: 'hgQr28WUk',
+				children: [
+					{
+						id: 'fY04NIHSQ',
+						label: i18n.ts.size,
+						keywords: ['emoji', 'picker', 'scale', 'size'],
+					},
+					{
+						id: '3j7vlaL7t',
+						label: i18n.ts.numberOfColumn,
+						keywords: ['emoji', 'picker', 'width', 'column', 'size'],
+					},
+					{
+						id: 'zPX8z1Bcy',
+						label: i18n.ts.height,
+						keywords: ['emoji', 'picker', 'height', 'size'],
+					},
+					{
+						id: '2CSkZa4tl',
+						label: i18n.ts.style,
+						keywords: ['emoji', 'picker', 'style'],
+					},
+				],
+				label: i18n.ts.emojiPickerDisplay,
+				keywords: ['emoji', 'picker', 'display'],
+			},
+		],
+		label: i18n.ts.emojiPalette,
+		keywords: ['emoji', 'palette'],
+		path: '/settings/emoji-palette',
+		icon: 'ti ti-mood-happy',
+	},
+	{
 		id: '3Tcxw4Fwl',
 		children: [
 			{
@@ -608,23 +659,28 @@ export const searchIndexes: SearchIndexItem[] = [
 		id: 'FfZdOs8y',
 		children: [
 			{
-				id: 'lVlkdP4zN',
+				id: 'B1ZU6Ur54',
+				label: i18n.ts._deck.enableSyncBetweenDevicesForProfiles,
+				keywords: ['sync', 'profiles', 'devices'],
+			},
+			{
+				id: 'iEF0gqNAo',
 				label: i18n.ts._deck.useSimpleUiForNonRootPages,
 				keywords: ['ui', 'root', 'page'],
 			},
 			{
-				id: 'avgxEYgsi',
+				id: 'BNdSeWxZn',
 				label: i18n.ts.defaultNavigationBehaviour,
 				keywords: ['default', 'navigation', 'behaviour', 'window'],
 			},
 			{
-				id: 'ma7OSw5JK',
+				id: 'zT9pGm8DF',
 				label: i18n.ts._deck.alwaysShowMainColumn,
 				keywords: ['always', 'show', 'main', 'column'],
 			},
 			{
-				id: 'jjTlUDhJH',
-				label: 'Unnamed marker',
+				id: '5dk2xv1vc',
+				label: i18n.ts._deck.columnAlign,
 				keywords: ['column', 'align'],
 			},
 		],

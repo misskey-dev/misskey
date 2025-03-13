@@ -176,6 +176,17 @@ export async function mainBoot() {
 				prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
 				prefer.commit('darkTheme', ColdDeviceStorage.get('darkTheme'));
 				prefer.commit('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
+				prefer.commit('emojiPalettes', [{
+					id: 'reactions',
+					name: '',
+					emojis: store.s.reactions,
+				}, {
+					id: 'pinnedEmojis',
+					name: '',
+					emojis: store.s.pinnedEmojis,
+				}]);
+				prefer.commit('emojiPaletteForMain', 'pinnedEmojis');
+				prefer.commit('emojiPaletteForReaction', 'reactions');
 				prefer.commit('overridedDeviceKind', store.s.overridedDeviceKind);
 				prefer.commit('widgets', store.s.widgets);
 				prefer.commit('keepCw', store.s.keepCw);

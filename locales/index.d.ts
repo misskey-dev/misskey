@@ -5334,6 +5334,32 @@ export interface Locale extends ILocale {
      * 同期の有効化をキャンセル
      */
     "preferenceSyncConflictChoiceCancel": string;
+    /**
+     * ペースト
+     */
+    "paste": string;
+    /**
+     * 絵文字パレット
+     */
+    "emojiPalette": string;
+    "_emojiPalette": {
+        /**
+         * パレット
+         */
+        "palettes": string;
+        /**
+         * パレットのデバイス間同期を有効にする
+         */
+        "enableSyncBetweenDevicesForPalettes": string;
+        /**
+         * メインで使用するパレット
+         */
+        "paletteForMain": string;
+        /**
+         * リアクションで使用するパレット
+         */
+        "paletteForReaction": string;
+    };
     "_settings": {
         /**
          * ドライブの管理と設定、使用量の確認、ファイルをアップロードする際の設定を行えます。
