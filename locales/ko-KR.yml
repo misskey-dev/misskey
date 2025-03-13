@@ -1323,6 +1323,7 @@ untitled: "제목 없음"
 noName: "이름이 없습니다."
 skip: "건너뛰기"
 restore: "복원"
+postForm: "글 입력란"
 _settings:
   webhook: "Webhook"
 _preferencesProfile:
