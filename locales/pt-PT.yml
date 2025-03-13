@@ -1301,6 +1301,7 @@ lockdown: "Lockdown"
 pleaseSelectAccount: "Selecione uma conta"
 availableRoles: "Cargos disponíveis"
 acknowledgeNotesAndEnable: "Ative após compreender as precauções."
+postForm: "Campo de postagem"
 _settings:
   webhook: "Webhook"
 _accountSettings:
