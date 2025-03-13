@@ -1325,6 +1325,7 @@ skip: "Ometre "
 restore: "Restaurar "
 syncBetweenDevices: "Sincronització entre dispositius"
 preferenceSyncConflictTitle: "Els valors de la configuració ja existeixen al dispositiu"
+preferenceSyncConflictText: "Un element de la configuració amb sincronització activada desa els seus valors al servidor, però s'ha trobat un valor a la configuració desat al servidor per aquest element de la configuració. Quin valor us sobreescriure?"
 postForm: "Formulari de publicació"
 _settings:
   driveBanner: "Pots gestionar i configurar el Disc, comprovar el seu ús i establir una configuració per a la càrrega d'arxius."
