@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
-					<div class="baaadecd">
+					<div class="_gaps_s">
 						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 						<MkInfo v-if="!store.r.enablePreferencesAutoCloudBackup.value && store.r.showPreferencesAutoCloudBackupSuggestion.value" class="info">
 							<div>{{ i18n.ts._preferencesBackup.autoPreferencesBackupIsNotEnabledForThisDevice }}</div>
@@ -249,30 +249,6 @@ definePage(() => INFO.value);
 
 <style lang="scss" scoped>
 .vvcocwet {
-	> .body {
-		> .nav {
-			.baaadecd {
-				> .info {
-					margin: 16px 0;
-				}
-
-				> .accounts {
-					> .avatar {
-						display: block;
-						width: 50px;
-						height: 50px;
-						margin: 8px auto 16px auto;
-					}
-				}
-			}
-		}
-
-		> .main {
-			.bkzroven {
-			}
-		}
-	}
-
 	&.wide {
 		> .body {
 			display: flex;
