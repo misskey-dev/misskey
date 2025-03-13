@@ -37,6 +37,7 @@ import type {
 } from './QueueModule.js';
 import type httpSignature from '@peertube/http-signature';
 import type * as Bull from 'bullmq';
+import type { HttpSignatureContext } from '@/server/ActivityPubServerService.js';
 
 @Injectable()
 export class QueueService {
@@ -170,10 +171,10 @@ export class QueueService {
 	}
 
 	@bindThis
-	public inbox(activity: IActivity, signature: httpSignature.IParsedSignature) {
+	public inbox(activity: IActivity, context: HttpSignatureContext) {
 		const data = {
 			activity: activity,
-			signature,
+			signature: context
 		};
 
 		return this.inboxQueue.add('', data, {
