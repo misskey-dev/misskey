@@ -15,7 +15,7 @@ import components from '@/components/index.js';
 import { applyTheme } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { updateI18n, i18n } from '@/i18n.js';
-import { $i, refreshAccount, login } from '@/account.js';
+import { refreshCurrentAccount, login } from '@/accounts.js';
 import { store } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind, updateDeviceKind } from '@/utility/device-kind.js';
@@ -29,6 +29,7 @@ import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/main.js';
 import { createMainRouter } from '@/router/definition.js';
 import { prefer } from '@/preferences.js';
+import { $i } from '@/i.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -37,11 +38,6 @@ export async function common(createVue: () => App<Element>) {
 		console.warn('Development mode!!!');
 
 		console.info(`vue ${vueVersion}`);
-
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(window as any).$i = $i;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(window as any).$store = store;
 
 		window.addEventListener('error', event => {
 			console.error(event);
@@ -244,7 +240,7 @@ export async function common(createVue: () => App<Element>) {
 			console.log('account cache found. refreshing...');
 		}
 
-		refreshAccount();
+		refreshCurrentAccount();
 	}
 	//#endregion
 

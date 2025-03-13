@@ -16,7 +16,7 @@ import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/utility/sound.js';
-import { $i, signout, updateAccountPartial } from '@/account.js';
+import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { ColdDeviceStorage, store } from '@/store.js';
 import { reactionPicker } from '@/utility/reaction-picker.js';
@@ -32,6 +32,8 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { launchPlugins } from '@/plugin.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
+import { signout } from '@/signout.js';
 
 export async function mainBoot() {
 	const { isClientUpdated, lastVersion } = await common(() => {
@@ -480,11 +482,11 @@ export async function mainBoot() {
 
 		// 自分の情報が更新されたとき
 		main.on('meUpdated', i => {
-			updateAccountPartial(i);
+			updateCurrentAccountPartial(i);
 		});
 
 		main.on('readAllNotifications', () => {
-			updateAccountPartial({
+			updateCurrentAccountPartial({
 				hasUnreadNotification: false,
 				unreadNotificationsCount: 0,
 			});
@@ -492,39 +494,39 @@ export async function mainBoot() {
 
 		main.on('unreadNotification', () => {
 			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
-			updateAccountPartial({
+			updateCurrentAccountPartial({
 				hasUnreadNotification: true,
 				unreadNotificationsCount,
 			});
 		});
 
 		main.on('unreadMention', () => {
-			updateAccountPartial({ hasUnreadMentions: true });
+			updateCurrentAccountPartial({ hasUnreadMentions: true });
 		});
 
 		main.on('readAllUnreadMentions', () => {
-			updateAccountPartial({ hasUnreadMentions: false });
+			updateCurrentAccountPartial({ hasUnreadMentions: false });
 		});
 
 		main.on('unreadSpecifiedNote', () => {
-			updateAccountPartial({ hasUnreadSpecifiedNotes: true });
+			updateCurrentAccountPartial({ hasUnreadSpecifiedNotes: true });
 		});
 
 		main.on('readAllUnreadSpecifiedNotes', () => {
-			updateAccountPartial({ hasUnreadSpecifiedNotes: false });
+			updateCurrentAccountPartial({ hasUnreadSpecifiedNotes: false });
 		});
 
 		main.on('readAllAntennas', () => {
-			updateAccountPartial({ hasUnreadAntenna: false });
+			updateCurrentAccountPartial({ hasUnreadAntenna: false });
 		});
 
 		main.on('unreadAntenna', () => {
-			updateAccountPartial({ hasUnreadAntenna: true });
+			updateCurrentAccountPartial({ hasUnreadAntenna: true });
 			sound.playMisskeySfx('antenna');
 		});
 
 		main.on('readAllAnnouncements', () => {
-			updateAccountPartial({ hasUnreadAnnouncement: false });
+			updateCurrentAccountPartial({ hasUnreadAnnouncement: false });
 		});
 
 		// 個人宛てお知らせが発行されたとき

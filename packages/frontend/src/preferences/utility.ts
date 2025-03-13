@@ -12,7 +12,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 

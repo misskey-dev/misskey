@@ -815,6 +815,13 @@ export const searchIndexes: SearchIndexItem[] = [
 		icon: 'ti ti-sparkles',
 	},
 	{
+		id: 'zK6posor9',
+		label: i18n.ts.accounts,
+		keywords: ['accounts'],
+		path: '/settings/accounts',
+		icon: 'ti ti-users',
+	},
+	{
 		id: '330Q4mf8E',
 		children: [
 			{

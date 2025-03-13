@@ -38,7 +38,7 @@ import { acct as getAcct } from '@/filters/user.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { serverContext, assertServerContext } from '@/server-context.js';
 

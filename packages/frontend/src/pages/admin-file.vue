@@ -86,7 +86,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { iAmAdmin, iAmModerator } from '@/account.js';
+import { iAmAdmin, iAmModerator } from '@/i.js';
 
 const tab = ref('overview');
 const file = ref<Misskey.entities.DriveFile | null>(null);

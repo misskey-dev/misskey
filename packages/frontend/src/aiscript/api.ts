@@ -9,7 +9,7 @@ import { url, lang } from '@@/js/config.js';
 import { assertStringAndIsIn } from './common.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
 

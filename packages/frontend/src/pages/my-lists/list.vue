@@ -66,7 +66,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { mainRouter } from '@/router/main.js';
 import { prefer } from '@/preferences.js';

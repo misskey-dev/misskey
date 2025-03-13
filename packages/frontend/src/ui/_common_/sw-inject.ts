@@ -5,10 +5,11 @@
 
 import { post } from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { $i, login } from '@/account.js';
+import { $i } from '@/i.js';
 import { getAccountFromId } from '@/utility/get-account-from-id.js';
 import { deepClone } from '@/utility/clone.js';
 import { mainRouter } from '@/router/main.js';
+import { login } from '@/accounts.js';
 
 export function swInject() {
 	navigator.serviceWorker.addEventListener('message', async ev => {

@@ -39,7 +39,7 @@ import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { chooseFileFromPc } from '@/utility/select-file.js';
 import * as os from '@/os.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 
 const $i = signinRequired();
 

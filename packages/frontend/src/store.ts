@@ -104,6 +104,10 @@ export const store = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: {} as Record<string, string>, // plugin id, token
 	},
+	accountTokens: {
+		where: 'device',
+		default: {} as Record<string, string>, // host/userId, token
+	},
 
 	enablePreferencesAutoCloudBackup: {
 		where: 'device',

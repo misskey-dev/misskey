@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
 import { apiUrl } from '@@/js/config.js';
 import { getCompressionConfig } from './upload/compress-config.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { alert } from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';

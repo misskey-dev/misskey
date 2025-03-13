@@ -127,13 +127,14 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { signout, signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
+import { signout } from '@/signout.js';
 
 const $i = signinRequired();
 
