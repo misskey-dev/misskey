@@ -91,7 +91,7 @@ export type PreferencesDefinition = Record<string, {
 	serverDependent?: boolean;
 }>;
 
-export class ProfileManager {
+export class PreferencesManager {
 	private storageProvider: StorageProvider;
 	public profile: PreferencesProfile;
 	public cloudReady: Promise<void>;
