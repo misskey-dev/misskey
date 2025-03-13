@@ -57,7 +57,7 @@ function showMenu(ev: MouseEvent, contextmenu?: boolean) {
 	display: flex;
 
 	&:hover {
-		&::after {
+		&::before {
 			content: '';
 			position: absolute;
 			top: -8px;
