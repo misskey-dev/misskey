@@ -1299,6 +1299,7 @@ messageToFollower: "Mensaje a seguidores"
 target: "Para"
 federationSpecified: "Este servidor opera en una federación de listas blancas. No puede interactuar con otros servidores que no sean los especificados por el administrador."
 federationDisabled: "La federación está desactivada en este servidor. No puede interactuar con usuarios de otros servidores"
+postForm: "Formulario"
 _settings:
   webhook: "Webhook"
 _accountSettings:
