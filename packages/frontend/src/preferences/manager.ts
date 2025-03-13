@@ -94,6 +94,7 @@ export type PreferencesDefinition = Record<string, {
 export class ProfileManager {
 	private storageProvider: StorageProvider;
 	public profile: PreferencesProfile;
+	public cloudReady: Promise<void>;
 
 	/**
 	 * static / state の略 (static が予約語のため)
@@ -120,7 +121,7 @@ export class ProfileManager {
 			this.r[key] = ref(this.s[key]);
 		}
 
-		this.fetchCloudValues();
+		this.cloudReady = this.fetchCloudValues();
 
 		// TODO: 定期的にクラウドの値をフェッチ
 	}
@@ -226,7 +227,7 @@ export class ProfileManager {
 			const record = this.getMatchedRecordOf(key);
 			if (record[2].sync && Object.hasOwn(cloudValues, key) && cloudValues[key] !== undefined) {
 				const cloudValue = cloudValues[key];
-				if (cloudValue !== this.s[key]) {
+				if (!deepEqual(cloudValue, record[1])) {
 					this.rewriteRawState(key, cloudValue);
 					record[1] = cloudValue;
 					console.log('cloud fetched', key, cloudValue);
