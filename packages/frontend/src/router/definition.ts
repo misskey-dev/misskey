@@ -58,10 +58,6 @@ const routes: RouteDef[] = [{
 		name: 'avatarDecoration',
 		component: page(() => import('@/pages/settings/avatar-decoration.vue')),
 	}, {
-		path: '/roles',
-		name: 'roles',
-		component: page(() => import('@/pages/settings/roles.vue')),
-	}, {
 		path: '/privacy',
 		name: 'privacy',
 		component: page(() => import('@/pages/settings/privacy.vue')),
