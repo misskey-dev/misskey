@@ -1308,6 +1308,7 @@ pleaseSelectAccount: "Bitte Konto auswählen"
 availableRoles: "Verfügbare Rollen"
 federationSpecified: "Dieser Server arbeitet mit Whitelist-Föderation. Er kann nicht mit anderen als den vom Administrator angegebenen Servern interagieren."
 federationDisabled: "Föderation ist auf diesem Server deaktiviert. Es ist nicht möglich, mit Benutzern auf anderen Servern zu interagieren."
+postForm: "Notizfenster"
 _settings:
   webhook: "Webhook"
 _accountSettings:
