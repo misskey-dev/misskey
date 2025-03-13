@@ -60,7 +60,7 @@ import bytes from '@/filters/bytes.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { $i, iAmModerator } from '@/account.js';
+import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{

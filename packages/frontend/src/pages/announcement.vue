@@ -55,8 +55,9 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { $i, updateAccountPartial } from '@/account.js';
+import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const props = defineProps<{
 	announcementId: string;
@@ -90,7 +91,7 @@ async function read(target: Misskey.entities.Announcement): Promise<void> {
 	target.isRead = true;
 	await misskeyApi('i/read-announcement', { announcementId: target.id });
 	if ($i) {
-		updateAccountPartial({
+		updateCurrentAccountPartial({
 			unreadAnnouncements: $i.unreadAnnouncements.filter((a: { id: string; }) => a.id !== target.id),
 		});
 	}

@@ -44,7 +44,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 
 const $i = signinRequired();
 

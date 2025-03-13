@@ -4,7 +4,7 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 export function isFollowingVisibleForMe(user: Misskey.entities.UserDetailed): boolean {
 	if ($i && ($i.id === user.id || $i.isAdmin || $i.isModerator)) return true;

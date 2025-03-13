@@ -185,7 +185,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 import { definePage } from '@/page.js';
 import FormSlot from '@/components/form/slot.vue';
 import { formatDateTimeString } from '@/utility/format-time-string.js';

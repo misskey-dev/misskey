@@ -115,7 +115,7 @@ import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { deepClone } from '@/utility/clone.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { instance } from '@/instance.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';

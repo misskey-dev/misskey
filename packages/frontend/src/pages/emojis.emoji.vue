@@ -22,7 +22,7 @@ import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 const props = defineProps<{
   emoji: Misskey.entities.EmojiSimple;

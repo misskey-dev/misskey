@@ -188,7 +188,7 @@ import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { instance, infoImageUrl } from '@/instance.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';

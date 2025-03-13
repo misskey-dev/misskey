@@ -17,7 +17,7 @@ import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
 import MkAchievements from '@/components/MkAchievements.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { claimAchievement } from '@/utility/achievements.js';
 
 let timer: number | null;

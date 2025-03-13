@@ -44,7 +44,7 @@ import { i18n } from '@/i18n.js';
 import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 import * as sound from '@/utility/sound.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 
 const $i = signinRequired();
 

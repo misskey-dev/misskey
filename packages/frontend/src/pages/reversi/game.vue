@@ -17,7 +17,7 @@ import GameBoard from './game.board.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { useStream } from '@/stream.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
 import { url } from '@@/js/config.js';

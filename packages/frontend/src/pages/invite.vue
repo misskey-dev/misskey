@@ -45,7 +45,7 @@ import type { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePage } from '@/page.js';
 import { serverErrorImageUrl, instance } from '@/instance.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 const currentInviteLimit = ref<null | number>(null);

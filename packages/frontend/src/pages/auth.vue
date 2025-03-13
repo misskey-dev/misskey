@@ -47,9 +47,10 @@ import * as Misskey from 'misskey-js';
 import XForm from './auth.form.vue';
 import MkSignin from '@/components/MkSignin.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { $i, login } from '@/account.js';
+import { $i } from '@/i.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
+import { login } from '@/accounts.js';
 
 const props = defineProps<{
 	token: string;

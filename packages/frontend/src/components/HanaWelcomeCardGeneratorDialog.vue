@@ -71,7 +71,7 @@
 import { ref, shallowRef, onMounted, onDeactivated, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 import { apiUrl, host } from '@@/js/config.js';
 import { prefer } from '@/preferences.js';
 import { hanaStore } from '@/hana/store.js';

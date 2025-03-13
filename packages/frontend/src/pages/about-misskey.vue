@@ -146,7 +146,7 @@ import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
 
 const patronsWithIcon = [{

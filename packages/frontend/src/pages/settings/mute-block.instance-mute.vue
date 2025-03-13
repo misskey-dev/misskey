@@ -19,7 +19,7 @@ import { ref, watch } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 

@@ -233,7 +233,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { acct } from '@/filters/user.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { iAmAdmin, $i, iAmModerator } from '@/account.js';
+import { iAmAdmin, $i, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 

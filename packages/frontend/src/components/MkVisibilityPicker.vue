@@ -50,7 +50,7 @@ import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
 
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 
 const $i = signinRequired();
 

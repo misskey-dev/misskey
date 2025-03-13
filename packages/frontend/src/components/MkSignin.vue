@@ -67,20 +67,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onBeforeUnmount, ref, shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
-
 import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
+import type { PwResponse } from '@/components/MkSignin.password.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
-import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 import XInput from '@/components/MkSignin.input.vue';
 import XPassword from '@/components/MkSignin.password.vue';
-import type { PwResponse } from '@/components/MkSignin.password.vue';
 import XTotp from '@/components/MkSignin.totp.vue';
 import XPasskey from '@/components/MkSignin.passkey.vue';
+import { login } from '@/accounts.js';
 
 const emit = defineEmits<{
 	(ev: 'login', v: Misskey.entities.SigninFlowResponse & { finished: true }): void;

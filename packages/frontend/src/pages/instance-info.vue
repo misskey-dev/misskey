@@ -148,7 +148,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import number from '@/filters/number.js';
-import { iAmModerator, iAmAdmin } from '@/account.js';
+import { iAmModerator, iAmAdmin } from '@/i.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';

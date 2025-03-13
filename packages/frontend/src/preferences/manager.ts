@@ -9,7 +9,7 @@ import { host, version } from '@@/js/config.js';
 import { PREF_DEF } from './def.js';
 import type { Ref, WritableComputedRef } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';

@@ -4,7 +4,8 @@
  */
 
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { $i, refreshAccount } from '@/account.js';
+import { refreshCurrentAccount } from '@/accounts.js';
+import { $i } from '@/i.js';
 
 export const ACHIEVEMENT_TYPES = [
 	'notes1',
@@ -520,7 +521,7 @@ export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
 		claimingQueue.delete(type);
 
 		if (claimingQueue.size === 0) {
-			refreshAccount();
+			refreshCurrentAccount();
 		}
 	}, 500);
 	misskeyApi('i/claim-achievement', { name: type });

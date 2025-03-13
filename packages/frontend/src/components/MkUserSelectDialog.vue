@@ -70,7 +70,7 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 
 const emit = defineEmits<{

@@ -56,7 +56,8 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { $i, updateAccountPartial } from '@/account.js';
+import { $i } from '@/i.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const paginationCurrent = {
 	endpoint: 'announcements' as const,
@@ -94,7 +95,7 @@ async function read(target) {
 		return a;
 	});
 	misskeyApi('i/read-announcement', { announcementId: target.id });
-	updateAccountPartial({
+	updateCurrentAccountPartial({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== target.id),
 	});
 }

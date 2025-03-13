@@ -54,7 +54,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { infoImageUrl } from '@/instance.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();

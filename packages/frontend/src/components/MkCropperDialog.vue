@@ -38,7 +38,7 @@ import tinycolor from 'tinycolor2';
 import { apiUrl } from '@@/js/config.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { prefer } from '@/preferences.js';

@@ -36,7 +36,7 @@ import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
 import MkNotes from '@/components/MkNotes.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';

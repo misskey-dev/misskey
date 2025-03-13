@@ -50,7 +50,8 @@ import type { PageHeaderItem } from '@/types/page-header.js';
 import type { PageMetadata } from '@/page.js';
 import { globalEvents } from '@/events.js';
 import { injectReactiveMetadata } from '@/page.js';
-import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
+import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { $i } from '@/i.js';
 
 const props = withDefaults(defineProps<{
 	overridePageMetadata?: PageMetadata;

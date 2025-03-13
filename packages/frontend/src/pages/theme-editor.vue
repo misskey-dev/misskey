@@ -86,7 +86,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { applyTheme } from '@/theme.js';
 import * as os from '@/os.js';
 import { store } from '@/store.js';

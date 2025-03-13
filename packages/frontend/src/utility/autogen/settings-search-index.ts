@@ -487,65 +487,70 @@ export const searchIndexes: SearchIndexItem[] = [
 			},
 			{
 				id: '2E7vdIUQd',
+				label: i18n.ts.dataSaver,
+				keywords: ['datasaver'],
+			},
+			{
+				id: '6ZbRRIhA6',
 				children: [
 					{
-						id: 'C2iXtZKb3',
+						id: 'soNZaKfiW',
 						label: i18n.ts.squareAvatars,
 						keywords: ['avatar', 'icon', 'square'],
 					},
 					{
-						id: 'DCfJg0bva',
+						id: 'nhwHJJ2tl',
 						label: i18n.ts._hana.flowerEffect,
 						keywords: ['effect', 'show'],
 					},
 					{
-						id: 'tpgA1O6LC',
+						id: 'sCscGhMmH',
 						label: i18n.ts.seasonalScreenEffect,
 						keywords: ['effect', 'show'],
 					},
 					{
-						id: 'hl4hQSkzN',
+						id: '4yCgcFElF',
 						label: i18n.ts.openImageInNewTab,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab'],
 					},
 					{
-						id: 'vPQPvmntL',
+						id: 'hUQAXl1H4',
 						label: i18n.ts.alwaysUseAbsoluteTime,
 						keywords: ['time'],
 					},
 					{
-						id: 'nkR2LWURW',
+						id: 'BESQDrAS4',
+						label: i18n.ts.withRepliesByDefaultForNewlyFollowed,
+						keywords: ['follow', 'replies'],
+					},
+					{
+						id: 'wV2XvOEQw',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: 'CEYxpc3Q4',
+						id: 'wa5MxCr9Q',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: 'yobNUDEaV',
+						id: 'hdQa7W2H1',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: 'zVRIlk3wT',
+						id: '7OF10Tr6m',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: 'aSbKFHbOy',
+						id: 'tb5rML3Z0',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},
 				],
 				label: i18n.ts.other,
 				keywords: ['other'],
-			},
-			{
-				id: '41Bh3hB5e',
-				label: i18n.ts.dataSaver,
-				keywords: ['datasaver'],
 			},
 		],
 		label: i18n.ts.preferences,
@@ -564,32 +569,32 @@ export const searchIndexes: SearchIndexItem[] = [
 		id: 'F1uK9ssiY',
 		children: [
 			{
-				id: 'msAcN6u3S',
+				id: 'E0ndmaP6Q',
 				label: i18n.ts._role.policies,
 				keywords: ['account', 'info'],
 			},
 			{
-				id: 'pbTLsgRO7',
+				id: 'r5SjfwZJc',
 				label: i18n.ts.rolesAssignedToMe,
 				keywords: ['roles'],
 			},
 			{
-				id: 'fQpvZyfLK',
+				id: 'cm7LrjgaW',
 				label: i18n.ts.accountMigration,
 				keywords: ['account', 'move', 'migration'],
 			},
 			{
-				id: 'xhfur5m2z',
+				id: 'ozfqNviP3',
 				label: i18n.ts.closeAccount,
 				keywords: ['account', 'close', 'delete', i18n.ts._accountDelete.requestAccountDelete],
 			},
 			{
-				id: 'oAXB8zm2U',
+				id: 'tpywgkpxy',
 				label: i18n.ts.experimentalFeatures,
 				keywords: ['experimental', 'feature', 'flags'],
 			},
 			{
-				id: 'itnE474FF',
+				id: '4z4Jy6F0c',
 				label: i18n.ts.developer,
 				keywords: ['developer', 'mode', 'debug'],
 			},
@@ -830,6 +835,13 @@ export const searchIndexes: SearchIndexItem[] = [
 		keywords: ['avatar', 'icon', 'decoration'],
 		path: '/settings/avatar-decoration',
 		icon: 'ti ti-sparkles',
+	},
+	{
+		id: 'zK6posor9',
+		label: i18n.ts.accounts,
+		keywords: ['accounts'],
+		path: '/settings/accounts',
+		icon: 'ti ti-users',
 	},
 	{
 		id: '330Q4mf8E',
