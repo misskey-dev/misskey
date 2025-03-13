@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 import type { PreferencesProfile, StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { isSameCond, PreferencesManager } from '@/preferences/manager.js';
+import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
 import { store } from '@/store.js';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -44,7 +44,7 @@ const storageProvider: StorageProvider = {
 				scope: ['client', 'preferences', 'sync'],
 				key: syncGroup + ':' + ctx.key,
 			}) as [any, any][];
-			const target = cloudData.find(([cond]) => isSameCond(cond, ctx.cond));
+			const target = cloudData.find(([scope]) => isSameScope(scope, ctx.scope));
 			if (target == null) return null;
 			return {
 				value: target[1],
@@ -73,12 +73,12 @@ const storageProvider: StorageProvider = {
 			}
 		}
 
-		const i = cloudData.findIndex(([cond]) => isSameCond(cond, ctx.cond));
+		const i = cloudData.findIndex(([scope]) => isSameScope(scope, ctx.scope));
 
 		if (i === -1) {
-			cloudData.push([ctx.cond, ctx.value]);
+			cloudData.push([ctx.scope, ctx.value]);
 		} else {
-			cloudData[i] = [ctx.cond, ctx.value];
+			cloudData[i] = [ctx.scope, ctx.value];
 		}
 
 		await misskeyApi('i/registry/set', {
