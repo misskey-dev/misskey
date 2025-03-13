@@ -1329,7 +1329,14 @@ preferenceSyncConflictText: "已啟用同步的設定項目會將設定值儲存
 preferenceSyncConflictChoiceServer: "伺服器設定值"
 preferenceSyncConflictChoiceDevice: "裝置的設定值"
 preferenceSyncConflictChoiceCancel: "取消啟用同步"
+paste: "貼上"
+emojiPalette: "表情符號調色盤"
 postForm: "發文視窗"
+_emojiPalette:
+  palettes: "調色盤"
+  enableSyncBetweenDevicesForPalettes: "啟用裝置與裝置之間的調色盤同步化"
+  paletteForMain: "主要使用的調色盤"
+  paletteForReaction: "反應用的調色盤"
 _settings:
   driveBanner: "您可以管理和設定雲端硬碟、確認使用量，以及調整上傳檔案時的設定。"
   pluginBanner: "可使用外掛擴充用戶端的功能。您可以安裝外掛，實施個別的設定與管理。"
