@@ -1323,6 +1323,8 @@ untitled: "Sense títol "
 noName: "No hi ha un nom disponible "
 skip: "Ometre "
 restore: "Restaurar "
+syncBetweenDevices: "Sincronització entre dispositius"
+preferenceSyncConflictTitle: "Els valors de la configuració ja existeixen al dispositiu"
 postForm: "Formulari de publicació"
 _settings:
   driveBanner: "Pots gestionar i configurar el Disc, comprovar el seu ús i establir una configuració per a la càrrega d'arxius."
@@ -2532,6 +2534,7 @@ _deck:
   useSimpleUiForNonRootPages: "Usa una interfície senzilla per a les pàgines navegades"
   usedAsMinWidthWhenFlexible: "L'amplada mínima es farà servir quan \"Ajust automàtic de l'amplada\" estigui activat"
   flexible: "Ajust automàtic de l'amplada"
+  enableSyncBetweenDevicesForProfiles: "Activar la sincronització de la informació de perfils de dispositiu a dispositiu"
   _columns:
     main: "Principal"
     widgets: "Ginys"
