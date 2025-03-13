@@ -1119,6 +1119,7 @@ pullDownToRefresh: "Kéo xuống để làm mới"
 cwNotationRequired: "Nếu \"Ẩn nội dung\" được bật thì cần phải có chú thích."
 lastNDays: "{n} ngày trước"
 surrender: "Từ chối"
+postForm: "Mẫu đăng"
 _delivery:
   stop: "Đã vô hiệu hóa"
   _type:
