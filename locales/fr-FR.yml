@@ -1277,6 +1277,7 @@ prohibitedWordsForNameOfUser: "Mots interdits pour les noms d'utilisateur·rices
 lockdown: "Verrouiller"
 pleaseSelectAccount: "Sélectionner un compte"
 availableRoles: "Rôles disponibles"
+postForm: "Formulaire de publication"
 _abuseUserReport:
   forward: "Transférer"
   forwardDescription: "Transférer le signalement vers une instance distante en tant qu'anonyme."
