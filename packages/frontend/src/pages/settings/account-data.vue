@@ -168,12 +168,12 @@ import { selectFile } from '@/utility/select-file.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { $i } from '@/account.js';
-import { store } from '@/store.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import { prefer } from '@/preferences.js';
 
 const excludeMutingUsers = ref(false);
 const excludeInactiveUsers = ref(false);
-const withReplies = ref(store.s.defaultWithReplies);
+const withReplies = ref(prefer.s.defaultFollowWithReplies);
 
 const onExportSuccess = () => {
 	os.alert({

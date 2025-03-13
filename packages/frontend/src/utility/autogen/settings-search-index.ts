@@ -482,55 +482,60 @@ export const searchIndexes: SearchIndexItem[] = [
 			},
 			{
 				id: '2E7vdIUQd',
+				label: i18n.ts.dataSaver,
+				keywords: ['datasaver'],
+			},
+			{
+				id: '6ZbRRIhA6',
 				children: [
 					{
-						id: 'C2iXtZKb3',
+						id: 'soNZaKfiW',
 						label: i18n.ts.squareAvatars,
 						keywords: ['avatar', 'icon', 'square'],
 					},
 					{
-						id: 'DCfJg0bva',
+						id: 'nhwHJJ2tl',
 						label: i18n.ts.seasonalScreenEffect,
 						keywords: ['effect', 'show'],
 					},
 					{
-						id: 'AV0iGW0vg',
+						id: 'oMAVUuxTm',
 						label: i18n.ts.openImageInNewTab,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab'],
 					},
 					{
-						id: '5h8vhCX1S',
+						id: 'hSqX5JKM7',
+						label: i18n.ts.withRepliesByDefaultForNewlyFollowed,
+						keywords: ['follow', 'replies'],
+					},
+					{
+						id: 'fm98eqzke',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: 'zZxyXHk3A',
+						id: '1rWDVig8Y',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: '7ix3kvMyU',
+						id: 'vXLtihtCp',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: '6RxgjmMLN',
+						id: '77YljFpiH',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: '5iMpm5rES',
+						id: 'CZgDNPP1h',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},
 				],
 				label: i18n.ts.other,
 				keywords: ['other'],
-			},
-			{
-				id: 'fnR7PRww5',
-				label: i18n.ts.dataSaver,
-				keywords: ['datasaver'],
 			},
 		],
 		label: i18n.ts.preferences,
@@ -549,32 +554,32 @@ export const searchIndexes: SearchIndexItem[] = [
 		id: 'F1uK9ssiY',
 		children: [
 			{
-				id: 'msAcN6u3S',
+				id: 'E0ndmaP6Q',
 				label: i18n.ts._role.policies,
 				keywords: ['account', 'info'],
 			},
 			{
-				id: 'pbTLsgRO7',
+				id: 'r5SjfwZJc',
 				label: i18n.ts.rolesAssignedToMe,
 				keywords: ['roles'],
 			},
 			{
-				id: 'fQpvZyfLK',
+				id: 'cm7LrjgaW',
 				label: i18n.ts.accountMigration,
 				keywords: ['account', 'move', 'migration'],
 			},
 			{
-				id: 'xhfur5m2z',
+				id: 'ozfqNviP3',
 				label: i18n.ts.closeAccount,
 				keywords: ['account', 'close', 'delete', i18n.ts._accountDelete.requestAccountDelete],
 			},
 			{
-				id: 'oAXB8zm2U',
+				id: 'tpywgkpxy',
 				label: i18n.ts.experimentalFeatures,
 				keywords: ['experimental', 'feature', 'flags'],
 			},
 			{
-				id: '95OjjGSo7',
+				id: '54wETGawJ',
 				label: i18n.ts.developer,
 				keywords: ['developer', 'mode', 'debug'],
 			},

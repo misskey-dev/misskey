@@ -191,6 +191,7 @@ export async function mainBoot() {
 				prefer.commit('skipNoteRender', store.s.skipNoteRender);
 				prefer.commit('showSoftWordMutedWord', store.s.showSoftWordMutedWord);
 				prefer.commit('confirmOnReact', store.s.confirmOnReact);
+				prefer.commit('defaultFollowWithReplies', store.s.defaultWithReplies);
 				prefer.commit('sound.masterVolume', store.s.sound_masterVolume);
 				prefer.commit('sound.notUseSound', store.s.sound_notUseSound);
 				prefer.commit('sound.useSoundOnlyWhenActive', store.s.sound_useSoundOnlyWhenActive);

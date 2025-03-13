@@ -393,6 +393,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
+			<SearchMarker :keywords="['datasaver']">
+				<MkFolder>
+					<template #label><SearchLabel>{{ i18n.ts.dataSaver }}</SearchLabel></template>
+
+					<div class="_gaps_m">
+						<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
+
+						<div class="_buttons">
+							<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
+							<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
+						</div>
+						<div class="_gaps_m">
+							<MkSwitch v-model="dataSaver.media">
+								{{ i18n.ts._dataSaver._media.title }}
+								<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
+							</MkSwitch>
+							<MkSwitch v-model="dataSaver.avatar">
+								{{ i18n.ts._dataSaver._avatar.title }}
+								<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
+							</MkSwitch>
+							<MkSwitch v-model="dataSaver.urlPreview">
+								{{ i18n.ts._dataSaver._urlPreview.title }}
+								<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
+							</MkSwitch>
+							<MkSwitch v-model="dataSaver.code">
+								{{ i18n.ts._dataSaver._code.title }}
+								<template #caption>{{ i18n.ts._dataSaver._code.description }}</template>
+							</MkSwitch>
+						</div>
+					</div>
+				</MkFolder>
+			</SearchMarker>
+
 			<SearchMarker :keywords="['other']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.other }}</SearchLabel></template>
@@ -419,6 +452,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkPreferenceContainer k="imageNewTab">
 									<MkSwitch v-model="imageNewTab">
 										<template #label><SearchLabel>{{ i18n.ts.openImageInNewTab }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['follow', 'replies']">
+								<MkPreferenceContainer k="defaultFollowWithReplies">
+									<MkSwitch v-model="defaultFollowWithReplies">
+										<template #label><SearchLabel>{{ i18n.ts.withRepliesByDefaultForNewlyFollowed }}</SearchLabel></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
@@ -477,43 +518,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</MkFolder>
 			</SearchMarker>
+		</div>
 
-			<SearchMarker :keywords="['datasaver']">
-				<MkFolder>
-					<template #label><SearchLabel>{{ i18n.ts.dataSaver }}</SearchLabel></template>
+		<hr>
 
-					<div class="_gaps_m">
-						<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
-
-						<div class="_buttons">
-							<MkButton inline @click="enableAllDataSaver">{{ i18n.ts.enableAll }}</MkButton>
-							<MkButton inline @click="disableAllDataSaver">{{ i18n.ts.disableAll }}</MkButton>
-						</div>
-						<div class="_gaps_m">
-							<MkSwitch v-model="dataSaver.media">
-								{{ i18n.ts._dataSaver._media.title }}
-								<template #caption>{{ i18n.ts._dataSaver._media.description }}</template>
-							</MkSwitch>
-							<MkSwitch v-model="dataSaver.avatar">
-								{{ i18n.ts._dataSaver._avatar.title }}
-								<template #caption>{{ i18n.ts._dataSaver._avatar.description }}</template>
-							</MkSwitch>
-							<MkSwitch v-model="dataSaver.urlPreview">
-								{{ i18n.ts._dataSaver._urlPreview.title }}
-								<template #caption>{{ i18n.ts._dataSaver._urlPreview.description }}</template>
-							</MkSwitch>
-							<MkSwitch v-model="dataSaver.code">
-								{{ i18n.ts._dataSaver._code.title }}
-								<template #caption>{{ i18n.ts._dataSaver._code.description }}</template>
-							</MkSwitch>
-						</div>
-					</div>
-				</MkFolder>
-			</SearchMarker>
-
-			<FormLink to="/settings/navbar">{{ i18n.ts.navbar }}</FormLink>
-			<FormLink to="/settings/statusbar">{{ i18n.ts.statusbar }}</FormLink>
-			<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
+		<div class="_gaps_s">
+			<FormLink to="/settings/navbar"><template #icon><i class="ti ti-list"></i></template>{{ i18n.ts.navbar }}</FormLink>
+			<FormLink to="/settings/statusbar"><template #icon><i class="ti ti-list"></i></template>{{ i18n.ts.statusbar }}</FormLink>
+			<FormLink to="/settings/deck"><template #icon><i class="ti ti-columns"></i></template>{{ i18n.ts.deck }}</FormLink>
 			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 		</div>
 	</div>
@@ -592,6 +604,7 @@ const nsfw = prefer.model('nsfw');
 const emojiStyle = prefer.model('emojiStyle');
 const useBlurEffectForModal = prefer.model('useBlurEffectForModal');
 const useBlurEffect = prefer.model('useBlurEffect');
+const defaultFollowWithReplies = prefer.model('defaultFollowWithReplies');
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

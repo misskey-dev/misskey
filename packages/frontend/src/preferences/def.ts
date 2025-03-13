@@ -306,6 +306,9 @@ export const PREF_DEF = {
 	confirmOnReact: {
 		default: false,
 	},
+	defaultFollowWithReplies: {
+		default: false,
+	},
 	plugins: {
 		default: [] as Plugin[],
 	},
