@@ -1331,6 +1331,7 @@ preferenceSyncConflictChoiceDevice: "デバイスの設定値"
 preferenceSyncConflictChoiceCancel: "同期の有効化をキャンセル"
 paste: "ペースト"
 emojiPalette: "絵文字パレット"
+postForm: "投稿フォーム"
 
 _emojiPalette:
   palettes: "パレット"

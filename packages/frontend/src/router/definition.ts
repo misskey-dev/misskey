@@ -106,10 +106,6 @@ const routes: RouteDef[] = [{
 		name: 'theme',
 		component: page(() => import('@/pages/settings/theme.vue')),
 	}, {
-		path: '/appearance',
-		name: 'appearance',
-		component: page(() => import('@/pages/settings/appearance.vue')),
-	}, {
 		path: '/navbar',
 		name: 'navbar',
 		component: page(() => import('@/pages/settings/navbar.vue')),
