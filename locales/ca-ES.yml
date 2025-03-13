@@ -1323,6 +1323,7 @@ untitled: "Sense títol "
 noName: "No hi ha un nom disponible "
 skip: "Ometre "
 restore: "Restaurar "
+postForm: "Formulari de publicació"
 _settings:
   driveBanner: "Pots gestionar i configurar el Disc, comprovar el seu ús i establir una configuració per a la càrrega d'arxius."
   pluginBanner: "Els complements poden fer-se servir per ampliar les funcionalitats del client. Els complements poden instal·lar-se, configurar-se individualment i gestionar-se."
