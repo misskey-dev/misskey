@@ -1428,6 +1428,23 @@ async function processVueFile(
 	};
 }
 
+export async function generateSearchIndex(options: Options, transformedCodeCache: Record<string, string> = {}) {
+	const filePaths = options.targetFilePaths.reduce<string[]>((acc, filePathPattern) => {
+		const matchedFiles = glob.sync(filePathPattern);
+		return [...acc, ...matchedFiles];
+	}, []);
+
+	for (const filePath of filePaths) {
+		const id = path.resolve(filePath); // 絶対パスに変換
+		const code = fs.readFileSync(filePath, 'utf-8'); // ファイル内容を読み込む
+		const { transformedCodeCache: newCache } = await processVueFile(code, id, options, transformedCodeCache); // processVueFile 関数を呼び出す
+		transformedCodeCache = newCache; // キャッシュを更新
+	}
+
+	await analyzeVueProps({ ...options, transformedCodeCache }); // 開発サーバー起動時にも analyzeVueProps を実行
+
+	return transformedCodeCache; // キャッシュを返す
+}
 
 // Rollup プラグインとして export
 export default function pluginCreateSearchIndex(options: Options): Plugin {
@@ -1445,19 +1462,7 @@ export default function pluginCreateSearchIndex(options: Options): Plugin {
 				return;
 			}
 
-			const filePaths = options.targetFilePaths.reduce<string[]>((acc, filePathPattern) => {
-				const matchedFiles = glob.sync(filePathPattern);
-				return [...acc, ...matchedFiles];
-			}, []);
-
-			for (const filePath of filePaths) {
-				const id = path.resolve(filePath); // 絶対パスに変換
-				const code = fs.readFileSync(filePath, 'utf-8'); // ファイル内容を読み込む
-				const { transformedCodeCache: newCache } = await processVueFile(code, id, options, transformedCodeCache); // processVueFile 関数を呼び出す
-				transformedCodeCache = newCache; // キャッシュを更新
-			}
-
-			await analyzeVueProps({ ...options, transformedCodeCache }); // 開発サーバー起動時にも analyzeVueProps を実行
+			transformedCodeCache = await generateSearchIndex(options, transformedCodeCache);
 		},
 
 		async transform(code, id) {

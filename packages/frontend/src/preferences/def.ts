@@ -9,7 +9,8 @@ import type { Theme } from '@/theme.js';
 import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
-import type { Column, DeckProfile } from '@/deck.js';
+import type { DeckProfile } from '@/deck.js';
+import type { PreferencesDefinition } from './manager.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 
 /** サウンド設定 */
@@ -27,6 +28,8 @@ export type SoundStore = {
 
 	volume: number;
 };
+
+// NOTE: デフォルト値は他の設定の状態に依存してはならない(依存していた場合、ユーザーがその設定項目単体で「初期値にリセット」した場合不具合の原因になる)
 
 export const PREF_DEF = {
 	pinnedUserLists: {
@@ -53,6 +56,27 @@ export const PREF_DEF = {
 	'deck.profiles': {
 		accountDependent: true,
 		default: [] as DeckProfile[],
+	},
+
+	emojiPalettes: {
+		serverDependent: true,
+		default: [{
+			id: 'a',
+			name: '',
+			emojis: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+		}] as {
+			id: string;
+			name: string;
+			emojis: string[];
+		}[],
+	},
+	emojiPaletteForReaction: {
+		serverDependent: true,
+		default: null as string | null,
+	},
+	emojiPaletteForMain: {
+		serverDependent: true,
+		default: null as string | null,
 	},
 
 	overridedDeviceKind: {
@@ -176,13 +200,13 @@ export const PREF_DEF = {
 		default: 'remote' as 'none' | 'remote' | 'always',
 	},
 	emojiPickerScale: {
-		default: 1,
+		default: 2,
 	},
 	emojiPickerWidth: {
-		default: 1,
+		default: 2,
 	},
 	emojiPickerHeight: {
-		default: 2,
+		default: 3,
 	},
 	emojiPickerStyle: {
 		default: 'auto' as 'auto' | 'popup' | 'drawer',
@@ -324,8 +348,4 @@ export const PREF_DEF = {
 			sfxVolume: 1,
 		},
 	},
-} satisfies Record<string, {
-	default: any;
-	accountDependent?: boolean;
-	serverDependent?: boolean;
-}>;
+} satisfies PreferencesDefinition;

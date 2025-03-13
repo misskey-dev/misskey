@@ -4,65 +4,107 @@
  */
 
 import { v4 as uuid } from 'uuid';
-import type { PreferencesProfile, StorageProvider } from '@/preferences/profile.js';
+import type { PreferencesProfile, StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { ProfileManager } from '@/preferences/profile.js';
+import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
 import { store } from '@/store.js';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const TAB_ID = uuid();
 
-function createProfileManager(storageProvider: StorageProvider) {
+function createPrefManager(storageProvider: StorageProvider) {
 	let profile: PreferencesProfile;
 
 	const savedProfileRaw = miLocalStorage.getItem('preferences');
 	if (savedProfileRaw == null) {
-		profile = ProfileManager.newProfile();
+		profile = PreferencesManager.newProfile();
 		miLocalStorage.setItem('preferences', JSON.stringify(profile));
 	} else {
-		profile = ProfileManager.normalizeProfile(JSON.parse(savedProfileRaw));
+		profile = PreferencesManager.normalizeProfile(JSON.parse(savedProfileRaw));
 	}
 
-	return new ProfileManager(profile, storageProvider);
+	return new PreferencesManager(profile, storageProvider);
 }
+
+const syncGroup = 'default';
 
 const storageProvider: StorageProvider = {
 	save: (ctx) => {
 		miLocalStorage.setItem('preferences', JSON.stringify(ctx.profile));
 		miLocalStorage.setItem('latestPreferencesUpdate', `${TAB_ID}/${Date.now()}`);
 	},
+
 	cloudGet: async (ctx) => {
 		// TODO: この取得方法だとアカウントが変わると保存場所も変わってしまうので改修する
 		// 例えば複数アカウントある場合でも設定値を保存するための「プライマリアカウント」を設定できるようにするとか
-		// TODO: keyのcondに応じた取得
 		try {
-			const value = await misskeyApi('i/registry/get', {
+			const cloudData = await misskeyApi('i/registry/get', {
 				scope: ['client', 'preferences', 'sync'],
-				key: ctx.key,
-			});
+				key: syncGroup + ':' + ctx.key,
+			}) as [any, any][];
+			const target = cloudData.find(([scope]) => isSameScope(scope, ctx.scope));
+			if (target == null) return null;
 			return {
-				value,
+				value: target[1],
 			};
 		} catch (err: any) {
-			if (err.code === 'NO_SUCH_KEY') {
+			if (err.code === 'NO_SUCH_KEY') { // TODO: いちいちエラーキャッチするのは面倒なのでキーが無くてもエラーにならない maybe-get のようなエンドポイントをバックエンドに実装する
 				return null;
 			} else {
 				throw err;
 			}
 		}
 	},
+
 	cloudSet: async (ctx) => {
+		let cloudData: [any, any][] = [];
+		try {
+			cloudData = await misskeyApi('i/registry/get', {
+				scope: ['client', 'preferences', 'sync'],
+				key: syncGroup + ':' + ctx.key,
+			}) as [any, any][];
+		} catch (err: any) {
+			if (err.code === 'NO_SUCH_KEY') { // TODO: いちいちエラーキャッチするのは面倒なのでキーが無くてもエラーにならない maybe-get のようなエンドポイントをバックエンドに実装する
+				cloudData = [];
+			} else {
+				throw err;
+			}
+		}
+
+		const i = cloudData.findIndex(([scope]) => isSameScope(scope, ctx.scope));
+
+		if (i === -1) {
+			cloudData.push([ctx.scope, ctx.value]);
+		} else {
+			cloudData[i] = [ctx.scope, ctx.value];
+		}
+
 		await misskeyApi('i/registry/set', {
 			scope: ['client', 'preferences', 'sync'],
-			key: ctx.key,
-			value: ctx.value,
+			key: syncGroup + ':' + ctx.key,
+			value: cloudData,
 		});
+	},
+
+	cloudGets: async (ctx) => {
+		// TODO: 値の取得を1つのリクエストで済ませたい(バックエンド側でAPIの新設が必要)
+		const fetchings = ctx.needs.map(need => storageProvider.cloudGet(need).then(res => [need.key, res] as const));
+		const cloudDatas = await Promise.all(fetchings);
+
+		const res = {} as Partial<Record<string, any>>;
+		for (const cloudData of cloudDatas) {
+			if (cloudData[1] != null) {
+				res[cloudData[0]] = cloudData[1].value;
+			}
+		}
+
+		return res;
 	},
 };
 
-export const prefer = createProfileManager(storageProvider);
+export const prefer = createPrefManager(storageProvider);
 
 let latestSyncedAt = Date.now();
 
@@ -76,7 +118,7 @@ function syncBetweenTabs() {
 	if (latestTab === TAB_ID) return;
 	if (latestAt <= latestSyncedAt) return;
 
-	prefer.rewriteProfile(ProfileManager.normalizeProfile(JSON.parse(miLocalStorage.getItem('preferences')!)));
+	prefer.rewriteProfile(PreferencesManager.normalizeProfile(JSON.parse(miLocalStorage.getItem('preferences')!)));
 
 	latestSyncedAt = Date.now();
 

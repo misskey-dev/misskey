@@ -92,7 +92,7 @@ import * as os from '@/os.js';
 import { store } from '@/store.js';
 import { addTheme } from '@/theme-store.js';
 import { i18n } from '@/i18n.js';
-import { useLeaveGuard } from '@/utility/use-leave-guard.js';
+import { useLeaveGuard } from '@/use/use-leave-guard.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 

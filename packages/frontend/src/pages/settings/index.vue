@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
-					<div class="baaadecd">
+					<div class="_gaps_s">
 						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 						<MkInfo v-if="!store.r.enablePreferencesAutoCloudBackup.value && store.r.showPreferencesAutoCloudBackupSuggestion.value" class="info">
 							<div>{{ i18n.ts._preferencesBackup.autoPreferencesBackupIsNotEnabledForThisDevice }}</div>
@@ -87,11 +87,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/settings/privacy',
 		active: currentPage.value?.route.name === 'privacy',
 	}, {
-		icon: 'ti ti-mood-happy',
-		text: i18n.ts.emojiPicker,
-		to: '/settings/emoji-picker',
-		active: currentPage.value?.route.name === 'emojiPicker',
-	}, {
 		icon: 'ti ti-bell',
 		text: i18n.ts.notifications,
 		to: '/settings/notifications',
@@ -127,10 +122,10 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/settings/theme',
 		active: currentPage.value?.route.name === 'theme',
 	}, {
-		icon: 'ti ti-device-desktop',
-		text: i18n.ts.appearance,
-		to: '/settings/appearance',
-		active: currentPage.value?.route.name === 'appearance',
+		icon: 'ti ti-mood-happy',
+		text: i18n.ts.emojiPalette,
+		to: '/settings/emoji-palette',
+		active: currentPage.value?.route.name === 'emoji-palette',
 	}, {
 		icon: 'ti ti-music',
 		text: i18n.ts.sounds,
@@ -153,11 +148,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts.drive,
 		to: '/settings/drive',
 		active: currentPage.value?.route.name === 'drive',
-	}, {
-		icon: 'ti ti-badges',
-		text: i18n.ts.roles,
-		to: '/settings/roles',
-		active: currentPage.value?.route.name === 'roles',
 	}, {
 		icon: 'ti ti-ban',
 		text: i18n.ts.muteAndBlock,
@@ -262,30 +252,6 @@ definePage(() => INFO.value);
 
 <style lang="scss" scoped>
 .vvcocwet {
-	> .body {
-		> .nav {
-			.baaadecd {
-				> .info {
-					margin: 16px 0;
-				}
-
-				> .accounts {
-					> .avatar {
-						display: block;
-						width: 50px;
-						height: 50px;
-						margin: 8px auto 16px auto;
-					}
-				}
-			}
-		}
-
-		> .main {
-			.bkzroven {
-			}
-		}
-	}
-
 	&.wide {
 		> .body {
 			display: flex;
