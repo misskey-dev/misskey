@@ -37,7 +37,7 @@ let $iMock = vi.hoisted<Partial<typeof import('@/i.js').$i> | null >(
 	() => null
 );
 
-vi.mock('@/account.js', () => {
+vi.mock('@/i.js', () => {
 	return {
 		get $i() {
 			return $iMock;
