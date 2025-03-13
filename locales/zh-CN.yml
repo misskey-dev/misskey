@@ -1329,6 +1329,7 @@ preferenceSyncConflictText: "服务器上已有此设置的设定值。要覆盖
 preferenceSyncConflictChoiceServer: "服务器上的设定值"
 preferenceSyncConflictChoiceDevice: "设备上的设定值"
 preferenceSyncConflictChoiceCancel: "取消同步"
+postForm: "投稿窗口"
 _settings:
   driveBanner: "可在此管理和设置网盘、确认使用量及配置上传文件的设置。"
   api: "API"
