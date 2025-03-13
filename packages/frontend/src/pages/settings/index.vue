@@ -103,7 +103,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		active: currentPage.value?.route.name === 'security',
 	}],
 }, {
-	title: i18n.ts._hana.hanaSettings,
 	items: [{
 		icon: 'ti ti-hanamisskey-hanamode',
 		text: i18n.ts._hana.hanaMode,

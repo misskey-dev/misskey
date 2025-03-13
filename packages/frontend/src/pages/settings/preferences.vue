@@ -636,6 +636,8 @@ watch([
 	squareAvatars,
 	highlightSensitiveMedia,
 	enableSeasonalScreenEffect,
+	flowerEffect,
+	alwaysUseAbsoluteTime,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
