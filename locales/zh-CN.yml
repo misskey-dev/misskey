@@ -1329,7 +1329,14 @@ preferenceSyncConflictText: "服务器上已有此设置的设定值。要覆盖
 preferenceSyncConflictChoiceServer: "服务器上的设定值"
 preferenceSyncConflictChoiceDevice: "设备上的设定值"
 preferenceSyncConflictChoiceCancel: "取消同步"
+paste: "粘贴"
+emojiPalette: "表情符号调色板"
 postForm: "投稿窗口"
+_emojiPalette:
+  palettes: "调色板"
+  enableSyncBetweenDevicesForPalettes: "启用调色板的设备间同步"
+  paletteForMain: "主调色板"
+  paletteForReaction: "回应用调色板"
 _settings:
   driveBanner: "可在此管理和设置网盘、确认使用量及配置上传文件的设置。"
   api: "API"
