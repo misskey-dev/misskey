@@ -326,6 +326,7 @@ export async function common(createVue: () => App<Element>) {
 
 	return {
 		isClientUpdated,
+		lastVersion,
 		app,
 	};
 }

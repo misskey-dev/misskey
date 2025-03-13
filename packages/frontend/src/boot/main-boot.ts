@@ -7,6 +7,7 @@ import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { ui } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
+import { compareVersions } from 'compare-versions';
 import { common } from './common.js';
 import type { Component } from 'vue';
 import type { Keymap } from '@/utility/hotkey.js';
@@ -30,9 +31,10 @@ import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { launchPlugins } from '@/plugin.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 
 export async function mainBoot() {
-	const { isClientUpdated } = await common(() => {
+	const { isClientUpdated, lastVersion } = await common(() => {
 		let uiStyle = ui;
 		const searchParams = new URLSearchParams(window.location.search);
 
@@ -72,75 +74,13 @@ export async function mainBoot() {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {
 			closed: () => dispose(),
 		});
-	}
 
-	const stream = useStream();
+		// prefereces migration
+		// TODO: そのうち消す
+		if (lastVersion && (compareVersions('2025.3.2-alpha.0', lastVersion) === 1)) {
+			console.log('Preferences migration');
 
-	let reloadDialogShowing = false;
-	stream.on('_disconnected_', async () => {
-		if (prefer.s.serverDisconnectedBehavior === 'reload') {
-			location.reload();
-		} else if (prefer.s.serverDisconnectedBehavior === 'dialog') {
-			if (reloadDialogShowing) return;
-			reloadDialogShowing = true;
-			const { canceled } = await confirm({
-				type: 'warning',
-				title: i18n.ts.disconnectedFromServer,
-				text: i18n.ts.reloadConfirm,
-			});
-			reloadDialogShowing = false;
-			if (!canceled) {
-				location.reload();
-			}
-		}
-	});
-
-	stream.on('emojiAdded', emojiData => {
-		addCustomEmoji(emojiData.emoji);
-	});
-
-	stream.on('emojiUpdated', emojiData => {
-		updateCustomEmojis(emojiData.emojis);
-	});
-
-	stream.on('emojiDeleted', emojiData => {
-		removeCustomEmojis(emojiData.emojis);
-	});
-
-	launchPlugins();
-
-	try {
-		if (prefer.s.enableSeasonalScreenEffect) {
-			const month = new Date().getMonth() + 1;
-			if (prefer.s.hemisphere === 'S') {
-				// ▼南半球
-				if (month === 7 || month === 8) {
-					const SnowfallEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
-					new SnowfallEffect({}).render();
-				}
-			} else {
-				// ▼北半球
-				if (month === 12 || month === 1) {
-					const SnowfallEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
-					new SnowfallEffect({}).render();
-				} else if (month === 3 || month === 4) {
-					const SakuraEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
-					new SakuraEffect({
-						sakura: true,
-					}).render();
-				}
-			}
-		}
-	} catch (error) {
-		// console.error(error);
-		console.error('Failed to initialise the seasonal screen effect canvas context:', error);
-	}
-
-	if ($i) {
-		store.loaded.then(async () => {
-			// prefereces migration
-			// TODO: そのうち消す
-			if (store.s.menu.length > 0) {
+			store.loaded.then(async () => {
 				const themes = await misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []);
 				if (themes.length > 0) {
 					prefer.commit('themes', themes);
@@ -258,9 +198,78 @@ export async function mainBoot() {
 				prefer.commit('sound.on.noteMy', store.s.sound_noteMy as any);
 				prefer.commit('sound.on.notification', store.s.sound_notification as any);
 				prefer.commit('sound.on.reaction', store.s.sound_reaction as any);
-				store.set('menu', []);
-			}
 
+				window.setTimeout(() => {
+					unisonReload();
+				}, 5000);
+			});
+		}
+	}
+
+	const stream = useStream();
+
+	let reloadDialogShowing = false;
+	stream.on('_disconnected_', async () => {
+		if (prefer.s.serverDisconnectedBehavior === 'reload') {
+			location.reload();
+		} else if (prefer.s.serverDisconnectedBehavior === 'dialog') {
+			if (reloadDialogShowing) return;
+			reloadDialogShowing = true;
+			const { canceled } = await confirm({
+				type: 'warning',
+				title: i18n.ts.disconnectedFromServer,
+				text: i18n.ts.reloadConfirm,
+			});
+			reloadDialogShowing = false;
+			if (!canceled) {
+				location.reload();
+			}
+		}
+	});
+
+	stream.on('emojiAdded', emojiData => {
+		addCustomEmoji(emojiData.emoji);
+	});
+
+	stream.on('emojiUpdated', emojiData => {
+		updateCustomEmojis(emojiData.emojis);
+	});
+
+	stream.on('emojiDeleted', emojiData => {
+		removeCustomEmojis(emojiData.emojis);
+	});
+
+	launchPlugins();
+
+	try {
+		if (prefer.s.enableSeasonalScreenEffect) {
+			const month = new Date().getMonth() + 1;
+			if (prefer.s.hemisphere === 'S') {
+				// ▼南半球
+				if (month === 7 || month === 8) {
+					const SnowfallEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
+					new SnowfallEffect({}).render();
+				}
+			} else {
+				// ▼北半球
+				if (month === 12 || month === 1) {
+					const SnowfallEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
+					new SnowfallEffect({}).render();
+				} else if (month === 3 || month === 4) {
+					const SakuraEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
+					new SakuraEffect({
+						sakura: true,
+					}).render();
+				}
+			}
+		}
+	} catch (error) {
+		// console.error(error);
+		console.error('Failed to initialise the seasonal screen effect canvas context:', error);
+	}
+
+	if ($i) {
+		store.loaded.then(async () => {
 			if (store.s.accountSetupWizard !== -1) {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
 					closed: () => dispose(),
