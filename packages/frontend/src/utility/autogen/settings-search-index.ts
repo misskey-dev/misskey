@@ -606,6 +606,28 @@ export const searchIndexes: SearchIndexItem[] = [
 	},
 	{
 		id: 'FfZdOs8y',
+		children: [
+			{
+				id: 'lVlkdP4zN',
+				label: i18n.ts._deck.useSimpleUiForNonRootPages,
+				keywords: ['ui', 'root', 'page'],
+			},
+			{
+				id: 'avgxEYgsi',
+				label: i18n.ts.defaultNavigationBehaviour,
+				keywords: ['default', 'navigation', 'behaviour', 'window'],
+			},
+			{
+				id: 'ma7OSw5JK',
+				label: i18n.ts._deck.alwaysShowMainColumn,
+				keywords: ['always', 'show', 'main', 'column'],
+			},
+			{
+				id: 'jjTlUDhJH',
+				label: 'Unnamed marker',
+				keywords: ['column', 'align'],
+			},
+		],
 		label: i18n.ts.deck,
 		keywords: ['deck', 'ui'],
 		path: '/settings/deck',

@@ -8,17 +8,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps_m">
 		<MkSwitch :modelValue="profilesSyncEnabled" @update:modelValue="changeProfilesSyncEnabled">{{ i18n.ts._deck.enableSyncBetweenDevicesForProfiles }}</MkSwitch>
 
-		<MkSwitch v-model="useSimpleUiForNonRootPages">{{ i18n.ts._deck.useSimpleUiForNonRootPages }}</MkSwitch>
+		<SearchMarker :keywords="['ui', 'root', 'page']">
+			<MkPreferenceContainer k="deck.useSimpleUiForNonRootPages">
+				<MkSwitch v-model="useSimpleUiForNonRootPages">
+					<template #label><SearchLabel>{{ i18n.ts._deck.useSimpleUiForNonRootPages }}</SearchLabel></template>
+				</MkSwitch>
+			</MkPreferenceContainer>
+		</SearchMarker>
 
-		<MkSwitch v-model="navWindow">{{ i18n.ts.defaultNavigationBehaviour }}: {{ i18n.ts.openInWindow }}</MkSwitch>
+		<SearchMarker :keywords="['default', 'navigation', 'behaviour', 'window']">
+			<MkPreferenceContainer k="deck.navWindow">
+				<MkSwitch v-model="navWindow">
+					<template #label><SearchLabel>{{ i18n.ts.defaultNavigationBehaviour }}</SearchLabel>: {{ i18n.ts.openInWindow }}</template>
+				</MkSwitch>
+			</MkPreferenceContainer>
+		</SearchMarker>
 
-		<MkSwitch v-model="alwaysShowMainColumn">{{ i18n.ts._deck.alwaysShowMainColumn }}</MkSwitch>
+		<SearchMarker :keywords="['always', 'show', 'main', 'column']">
+			<MkPreferenceContainer k="deck.alwaysShowMainColumn">
+				<MkSwitch v-model="alwaysShowMainColumn">
+					<template #label><SearchLabel>{{ i18n.ts._deck.alwaysShowMainColumn }}</SearchLabel></template>
+				</MkSwitch>
+			</MkPreferenceContainer>
+		</SearchMarker>
 
-		<MkRadios v-model="columnAlign">
-			<template #label>{{ i18n.ts._deck.columnAlign }}</template>
-			<option value="left">{{ i18n.ts.left }}</option>
-			<option value="center">{{ i18n.ts.center }}</option>
-		</MkRadios>
+		<SearchMarker :keywords="['column', 'align']">
+			<MkPreferenceContainer k="deck.columnAlign">
+				<MkRadios v-model="columnAlign">
+					<template #label>{{ i18n.ts._deck.columnAlign }}</template>
+					<option value="left">{{ i18n.ts.left }}</option>
+					<option value="center">{{ i18n.ts.center }}</option>
+				</MkRadios>
+			</MkPreferenceContainer>
+		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
@@ -30,6 +52,7 @@ import MkRadios from '@/components/MkRadios.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 
 const navWindow = prefer.model('deck.navWindow');
 const useSimpleUiForNonRootPages = prefer.model('deck.useSimpleUiForNonRootPages');
