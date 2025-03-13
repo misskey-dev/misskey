@@ -817,7 +817,7 @@ export const searchIndexes: SearchIndexItem[] = [
 			},
 		],
 		label: i18n.ts._settings.accountData,
-		keywords: ['import', 'export', 'data', i18n.ts._settings.accountDataBanner],
+		keywords: ['import', 'export', 'data', 'archive', i18n.ts._settings.accountDataBanner],
 		path: '/settings/account-data',
 		icon: 'ti ti-package',
 	},

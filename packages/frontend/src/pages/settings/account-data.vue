@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/account-data" :label="i18n.ts._settings.accountData" :keywords="['import', 'export', 'data']" icon="ti ti-package">
+<SearchMarker path="/settings/account-data" :label="i18n.ts._settings.accountData" :keywords="['import', 'export', 'data', 'archive']" icon="ti ti-package">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/package_3d.png" color="#ff9100">
 			<SearchKeyword>{{ i18n.ts._settings.accountDataBanner }}</SearchKeyword>
