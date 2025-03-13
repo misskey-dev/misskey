@@ -1323,6 +1323,7 @@ untitled: "Senza titolo"
 noName: "Senza nome"
 skip: "Salta"
 restore: "Ripristina"
+postForm: "Finestra di pubblicazione"
 _settings:
   driveBanner: "Permette di gestire e configurare il Drive, controllare il consumo di spazio e configurare il caricamento dei file."
   pluginBanner: "Consentono di migliorare le funzionalità. Le estensioni si possono configurare e gestire singolarmente."
