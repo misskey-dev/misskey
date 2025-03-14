@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkLoading v-if="!loaded"/>
-<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" appear>
+<Transition :name="prefer.s.animation ? '_transition_zoom' : ''" appear>
 	<div v-show="loaded" :class="$style.root">
 		<img :src="serverErrorImageUrl" class="_ghost" :class="$style.img"/>
 		<div class="_gaps">
@@ -27,15 +27,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import { version } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkLink from '@/components/MkLink.vue';
-import { version } from '@@/js/config.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { serverErrorImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
@@ -67,7 +67,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.error,
 	icon: 'ti ti-alert-triangle',
 }));

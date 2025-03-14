@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 
 const $i = signinRequired();
 

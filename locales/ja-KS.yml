@@ -1311,6 +1311,9 @@ federationSpecified: "このサーバーはホワイトリスト連合で運用�
 federationDisabled: "このサーバーは連合が無効化されてるで。他のサーバーのユーザーとやり取りすることはできひんで。"
 confirmOnReact: "ツッコむときに確認とる"
 reactAreYouSure: "\" {emoji} \" でツッコむ？"
+postForm: "投稿フォーム"
+_settings:
+  webhook: "Webhook"
 _accountSettings:
   requireSigninToViewContents: "ログインしてもらってからコンテンツ見てもらう"
   requireSigninToViewContentsDescription1: "あなたが作成した全部のノートとかのコンテンツを見れるようにするのにログインがいるようにするで。クローラーにいろいろ収集されるんを防げるかもしれん。"

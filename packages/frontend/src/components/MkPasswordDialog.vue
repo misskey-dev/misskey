@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<div style="padding: 0 0 16px 0; text-align: center;">
-			<img src="/fluent-emoji/1f510.png" alt="🔐" style="display: block; margin: 0 auto; width: 48px;">
+			<img src="/client-assets/locked_with_key_3d.png" alt="🔐" style="display: block; margin: 0 auto; width: 48px;">
 			<div style="margin-top: 16px;">{{ i18n.ts.authenticationRequiredToContinue }}</div>
 		</div>
 
@@ -44,7 +44,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 
 const $i = signinRequired();
 

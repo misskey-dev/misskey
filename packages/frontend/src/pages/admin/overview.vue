@@ -79,10 +79,10 @@ import XModerators from './overview.moderators.vue';
 import XHeatmap from './overview.heatmap.vue';
 import type { InstanceForPie } from './overview.pie.vue';
 import * as os from '@/os.js';
-import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const rootEl = shallowRef<HTMLElement>();
@@ -184,7 +184,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.dashboard,
 	icon: 'ti ti-dashboard',
 }));

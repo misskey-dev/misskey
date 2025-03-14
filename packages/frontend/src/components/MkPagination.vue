@@ -5,10 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <Transition
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_fade_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_fade_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_fade_leaveTo : ''"
 	mode="out-in"
 >
 	<MkLoading v-if="fetching"/>
@@ -44,15 +44,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { computed, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
-import type { ComputedRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@@/js/scroll.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import type { ComputedRef } from 'vue';
 import type { MisskeyEntity } from '@/types/date-separated-list.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { prefer } from '@/preferences.js';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 16;
@@ -140,7 +139,7 @@ const empty = computed(() => items.value.size === 0);
 const error = ref(false);
 const {
 	enableInfiniteScroll,
-} = defaultStore.reactiveState;
+} = prefer.r;
 
 const contentEl = computed(() => props.pagination.pageEl ?? rootEl.value);
 const scrollableElement = computed(() => contentEl.value ? getScrollContainer(contentEl.value) : document.body);

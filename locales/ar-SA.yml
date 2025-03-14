@@ -1012,6 +1012,7 @@ sourceCode: "الشفرة المصدرية"
 flip: "اقلب"
 lastNDays: "آخر {n} أيام"
 surrender: "ألغِ"
+postForm: "أنشئ ملاحظة"
 _delivery:
   stop: "مُعلّق"
 _initialAccountSetting:

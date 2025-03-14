@@ -12,8 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch } from 'vue';
 import { bundledLanguagesInfo } from 'shiki/langs';
 import type { BundledLanguage } from 'shiki/langs';
-import { getHighlighter, getTheme } from '@/scripts/code-highlighter.js';
-import { defaultStore } from '@/store.js';
+import { getHighlighter, getTheme } from '@/utility/code-highlighter.js';
+import { store } from '@/store.js';
 
 const props = defineProps<{
 	code: string;
@@ -22,7 +22,7 @@ const props = defineProps<{
 }>();
 
 const highlighter = await getHighlighter();
-const darkMode = defaultStore.reactiveState.darkMode;
+const darkMode = store.r.darkMode;
 const codeLang = ref<BundledLanguage | 'aiscript'>('js');
 
 const [lightThemeName, darkThemeName] = await Promise.all([
@@ -74,10 +74,8 @@ watch(() => props.lang, (to) => {
 <style module lang="scss">
 .codeBlockRoot :global(.shiki) {
 	padding: 1em;
-	margin: .5em 0;
+	margin: 0;
 	overflow: auto;
-	border-radius: 8px;
-	border: 1px solid var(--MI_THEME-divider);
 	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
 
 	color: var(--shiki-fallback);

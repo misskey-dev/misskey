@@ -4,7 +4,7 @@
  */
 
 import { assert, describe, test } from 'vitest';
-import { searchEmoji } from '@/scripts/search-emoji.js';
+import { searchEmoji } from '@/utility/search-emoji.js';
 
 describe('emoji autocomplete', () => {
 	test('名前の完全一致は名前の前方一致より優先される', async () => {

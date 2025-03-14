@@ -71,7 +71,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import type { AsUiComponent, AsUiRoot, AsUiPostFormButton } from '@/scripts/aiscript/ui.js';
+import type { AsUiComponent, AsUiRoot, AsUiPostFormButton } from '@/aiscript/ui.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 

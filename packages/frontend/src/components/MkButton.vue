@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <button
 	v-if="!link"
 	ref="el" class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike, [$style.iconOnly]: iconOnly }]"
 	:type="type"
 	:name="name"
 	:value="value"
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </button>
 <MkA
 	v-else class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike, [$style.iconOnly]: iconOnly }]"
 	:to="to ?? '#'"
 	:behavior="linkBehavior"
 	@mousedown="onMousedown"
@@ -57,6 +57,7 @@ const props = defineProps<{
 	name?: string;
 	value?: string;
 	disabled?: boolean;
+	iconOnly?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -147,6 +148,11 @@ function onMousedown(evt: MouseEvent): void {
 		background: var(--MI_THEME-buttonHoverBg);
 	}
 
+	&.iconOnly {
+		padding: 7px;
+		min-width: auto;
+	}
+
 	&.small {
 		font-size: 90%;
 		padding: 6px 12px;
@@ -220,28 +226,28 @@ function onMousedown(evt: MouseEvent): void {
 		background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 
 		&:not(:disabled):hover {
-			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-buttonGradateA) h s calc(l + 5)), hsl(from var(--MI_THEME-buttonGradateB) h s calc(l + 5)));
 		}
 
 		&:not(:disabled):active {
-			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-buttonGradateA) h s calc(l + 5)), hsl(from var(--MI_THEME-buttonGradateB) h s calc(l + 5)));
 		}
 	}
 
 	&.danger {
 		font-weight: bold;
-		color: #ff2a2a;
+		color: var(--MI_THEME-error);
 
 		&.primary {
 			color: #fff;
-			background: #ff2a2a;
+			background: var(--MI_THEME-error);
 
 			&:not(:disabled):hover {
-				background: #ff4242;
+				background: hsl(from var(--MI_THEME-error) h s calc(l + 10));
 			}
 
 			&:not(:disabled):active {
-				background: #d42e2e;
+				background: hsl(from var(--MI_THEME-error) h s calc(l - 10));
 			}
 		}
 	}

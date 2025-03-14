@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="modal"
 	v-slot="{ type, maxHeight }"
 	:zPriority="'middle'"
-	:preferType="defaultStore.state.emojiPickerStyle"
+	:preferType="prefer.s.emojiPickerStyle"
 	:hasInteractionWithOtherFocusTrappedEls="true"
 	:transparentBg="true"
 	:manualShowing="manualShowing"
@@ -40,16 +40,16 @@ import * as Misskey from 'misskey-js';
 import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	src?: HTMLElement;
 	showPinned?: boolean;
-  pinnedEmojis?: string[],
+	pinnedEmojis?: string[],
 	asReactionPicker?: boolean;
 	targetNote?: Misskey.entities.Note;
-  choseAndClose?: boolean;
+	choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,
 	showPinned: true,

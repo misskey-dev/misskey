@@ -42,9 +42,9 @@ import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import misskeysvg from '/client-assets/misskey.svg';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
-import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
+import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { instance as meta } from '@/instance.js';
 
 const instances = ref<Misskey.entities.FederationInstance[]>();

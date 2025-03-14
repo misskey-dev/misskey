@@ -15,7 +15,7 @@ import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = defineProps<{
 	block: Misskey.entities.PageBlock,

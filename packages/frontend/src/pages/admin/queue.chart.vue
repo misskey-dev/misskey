@@ -53,7 +53,7 @@ import * as Misskey from 'misskey-js';
 import XChart from './queue.chart.chart.vue';
 import type { ApQueueDomain } from '@/pages/admin/queue.vue';
 import number from '@/filters/number.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';

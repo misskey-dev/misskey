@@ -1044,6 +1044,7 @@ flip: "Odwróć"
 lastNDays: "W ciągu ostatnich {n} dni"
 surrender: "Odrzuć"
 gameRetry: "Spróbuj ponownie"
+postForm: "Formularz tworzenia wpisu"
 _delivery:
   stop: "Zawieszono"
   _type:

@@ -75,7 +75,7 @@ function normalizeSynonymousSubdomain(url: URL | string): URL {
 	return new URL(urlParsed.toString().replace(host, normalizedHost));
 }
 
-export function assertActivityMatchesUrls(requestUrl: string | URL, activity: IObject, candidateUrls: (string | URL)[], allowSoftfail: FetchAllowSoftFailMask): FetchAllowSoftFailMask {
+export function assertActivityMatchesUrl(requestUrl: string | URL, activity: IObject, finalUrl: string | URL, allowSoftfail: FetchAllowSoftFailMask): FetchAllowSoftFailMask {
 	// must have a unique identifier to verify authority
 	if (!activity.id) {
 		throw new Error('bad Activity: missing id field');
@@ -95,26 +95,32 @@ export function assertActivityMatchesUrls(requestUrl: string | URL, activity: IO
 	const requestUrlParsed = normalizeSynonymousSubdomain(requestUrl);
 	const idParsed = normalizeSynonymousSubdomain(activity.id);
 
-	const candidateUrlsParsed = candidateUrls.map(it => normalizeSynonymousSubdomain(it));
+	const finalUrlParsed = normalizeSynonymousSubdomain(finalUrl);
+
+	// mastodon sends activities with hash in the URL
+	// currently it only happens with likes, deletes etc.
+	// but object ID never has hash
+	requestUrlParsed.hash = '';
+	finalUrlParsed.hash = '';
 
 	const requestUrlSecure = requestUrlParsed.protocol === 'https:';
-	const finalUrlSecure = candidateUrlsParsed.every(it => it.protocol === 'https:');
+	const finalUrlSecure = finalUrlParsed.protocol === 'https:';
 	if (requestUrlSecure && !finalUrlSecure) {
 		throw new Error(`bad Activity: id(${activity.id}) is not allowed to have http:// in the url`);
 	}
 
 	// Compare final URL to the ID
-	if (!candidateUrlsParsed.some(it => it.href === idParsed.href)) {
-		requireSoftfail(FetchAllowSoftFailMask.NonCanonicalId, `bad Activity: id(${activity.id}) does not match response url(${candidateUrlsParsed.map(it => it.toString())})`);
+	if (finalUrlParsed.href !== idParsed.href) {
+		requireSoftfail(FetchAllowSoftFailMask.NonCanonicalId, `bad Activity: id(${activity.id}) does not match response url(${finalUrlParsed.toString()})`);
 
 		// at lease host need to match exactly (ActivityPub requirement)
-		if (!candidateUrlsParsed.some(it => idParsed.host === it.host)) {
-			throw new Error(`bad Activity: id(${activity.id}) does not match response host(${candidateUrlsParsed.map(it => it.host)})`);
+		if (idParsed.host !== finalUrlParsed.host) {
+			throw new Error(`bad Activity: id(${activity.id}) does not match response host(${finalUrlParsed.host})`);
 		}
 	}
 
 	// Compare request URL to the ID
-	if (!requestUrlParsed.href.includes(idParsed.href)) {
+	if (requestUrlParsed.href !== idParsed.href) {
 		requireSoftfail(FetchAllowSoftFailMask.NonCanonicalId, `bad Activity: id(${activity.id}) does not match request url(${requestUrlParsed.toString()})`);
 
 		// if cross-origin lookup is allowed, we can accept some variation between the original request URL to the final object ID (but not between the final URL and the object ID)
