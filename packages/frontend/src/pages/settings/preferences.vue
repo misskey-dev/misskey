@@ -88,6 +88,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
+
+							<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced']">
+								<MkPreferenceContainer k="advancedMfm">
+									<MkSwitch v-model="advancedMfm">
+										<template #label><SearchLabel>{{ i18n.ts.enableAdvancedMfm }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['auto', 'load', 'auto', 'more', 'scroll']">
+								<MkPreferenceContainer k="enableInfiniteScroll">
+									<MkSwitch v-model="enableInfiniteScroll">
+										<template #label><SearchLabel>{{ i18n.ts.enableInfiniteScroll }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
 						</div>
 
 						<SearchMarker :keywords="['emoji', 'style', 'native', 'system', 'fluent', 'twemoji']">
@@ -116,178 +132,160 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['timeline']">
+			<SearchMarker :keywords="['timeline', 'note']">
 				<MkFolder>
-					<template #label><SearchLabel>{{ i18n.ts.timeline }}</SearchLabel></template>
-
-					<div class="_gaps_s">
-						<SearchMarker :keywords="['post', 'form', 'timeline']">
-							<MkPreferenceContainer k="showFixedPostForm">
-								<MkSwitch v-model="showFixedPostForm">
-									<template #label><SearchLabel>{{ i18n.ts.showFixedPostForm }}</SearchLabel></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['post', 'form', 'timeline', 'channel']">
-							<MkPreferenceContainer k="showFixedPostFormInChannel">
-								<MkSwitch v-model="showFixedPostFormInChannel">
-									<template #label><SearchLabel>{{ i18n.ts.showFixedPostFormInChannel }}</SearchLabel></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['renote']">
-							<MkPreferenceContainer k="collapseRenotes">
-								<MkSwitch v-model="collapseRenotes">
-									<template #label><SearchLabel>{{ i18n.ts.collapseRenotes }}</SearchLabel></template>
-									<template #caption><SearchKeyword>{{ i18n.ts.collapseRenotesDescription }}</SearchKeyword></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['note', 'timeline', 'gap']">
-							<MkPreferenceContainer k="showGapBetweenNotesInTimeline">
-								<MkSwitch v-model="showGapBetweenNotesInTimeline">
-									<template #label><SearchLabel>{{ i18n.ts.showGapBetweenNotesInTimeline }}</SearchLabel></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['load', 'auto', 'more']">
-							<MkPreferenceContainer k="enableInfiniteScroll">
-								<MkSwitch v-model="enableInfiniteScroll">
-									<template #label><SearchLabel>{{ i18n.ts.enableInfiniteScroll }}</SearchLabel></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
-
-						<SearchMarker :keywords="['disable', 'streaming', 'timeline']">
-							<MkPreferenceContainer k="disableStreamingTimeline">
-								<MkSwitch v-model="disableStreamingTimeline">
-									<template #label><SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
-					</div>
-				</MkFolder>
-			</SearchMarker>
-
-			<SearchMarker :keywords="['note']">
-				<MkFolder>
-					<template #label><SearchLabel>{{ i18n.ts.note }}</SearchLabel></template>
+					<template #label><SearchLabel>{{ i18n.ts._settings.timelineAndNote }}</SearchLabel></template>
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">
-							<SearchMarker :keywords="['hover', 'show', 'footer', 'action']">
-								<MkPreferenceContainer k="showNoteActionsOnlyHover">
-									<MkSwitch v-model="showNoteActionsOnlyHover">
-										<template #label><SearchLabel>{{ i18n.ts.showNoteActionsOnlyHover }}</SearchLabel></template>
+							<SearchMarker :keywords="['post', 'form', 'timeline']">
+								<MkPreferenceContainer k="showFixedPostForm">
+									<MkSwitch v-model="showFixedPostForm">
+										<template #label><SearchLabel>{{ i18n.ts.showFixedPostForm }}</SearchLabel></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
 
-							<SearchMarker :keywords="['footer', 'action', 'clip', 'show']">
-								<MkPreferenceContainer k="showClipButtonInNoteFooter">
-									<MkSwitch v-model="showClipButtonInNoteFooter">
-										<template #label><SearchLabel>{{ i18n.ts.showClipButtonInNoteFooter }}</SearchLabel></template>
+							<SearchMarker :keywords="['post', 'form', 'timeline', 'channel']">
+								<MkPreferenceContainer k="showFixedPostFormInChannel">
+									<MkSwitch v-model="showFixedPostFormInChannel">
+										<template #label><SearchLabel>{{ i18n.ts.showFixedPostFormInChannel }}</SearchLabel></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
 
-							<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced']">
-								<MkPreferenceContainer k="advancedMfm">
-									<MkSwitch v-model="advancedMfm">
-										<template #label><SearchLabel>{{ i18n.ts.enableAdvancedMfm }}</SearchLabel></template>
+							<SearchMarker :keywords="['renote']">
+								<MkPreferenceContainer k="collapseRenotes">
+									<MkSwitch v-model="collapseRenotes">
+										<template #label><SearchLabel>{{ i18n.ts.collapseRenotes }}</SearchLabel></template>
+										<template #caption><SearchKeyword>{{ i18n.ts.collapseRenotesDescription }}</SearchKeyword></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
 
-							<SearchMarker :keywords="['reaction', 'count', 'show']">
-								<MkPreferenceContainer k="showReactionsCount">
-									<MkSwitch v-model="showReactionsCount">
-										<template #label><SearchLabel>{{ i18n.ts.showReactionsCount }}</SearchLabel></template>
+							<SearchMarker :keywords="['note', 'timeline', 'gap']">
+								<MkPreferenceContainer k="showGapBetweenNotesInTimeline">
+									<MkSwitch v-model="showGapBetweenNotesInTimeline">
+										<template #label><SearchLabel>{{ i18n.ts.showGapBetweenNotesInTimeline }}</SearchLabel></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
 
-							<SearchMarker :keywords="['reaction', 'confirm']">
-								<MkPreferenceContainer k="confirmOnReact">
-									<MkSwitch v-model="confirmOnReact">
-										<template #label><SearchLabel>{{ i18n.ts.confirmOnReact }}</SearchLabel></template>
-									</MkSwitch>
-								</MkPreferenceContainer>
-							</SearchMarker>
-
-							<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment']">
-								<MkPreferenceContainer k="loadRawImages">
-									<MkSwitch v-model="loadRawImages">
-										<template #label><SearchLabel>{{ i18n.ts.loadRawImages }}</SearchLabel></template>
-									</MkSwitch>
-								</MkPreferenceContainer>
-							</SearchMarker>
-
-							<SearchMarker :keywords="['reaction', 'picker', 'contextmenu', 'open']">
-								<MkPreferenceContainer k="useReactionPickerForContextMenu">
-									<MkSwitch v-model="useReactionPickerForContextMenu">
-										<template #label><SearchLabel>{{ i18n.ts.useReactionPickerForContextMenu }}</SearchLabel></template>
+							<SearchMarker :keywords="['disable', 'streaming', 'timeline']">
+								<MkPreferenceContainer k="disableStreamingTimeline">
+									<MkSwitch v-model="disableStreamingTimeline">
+										<template #label><SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
 						</div>
 
-						<SearchMarker :keywords="['reaction', 'size', 'scale', 'display']">
-							<MkPreferenceContainer k="reactionsDisplaySize">
-								<MkRadios v-model="reactionsDisplaySize">
-									<template #label><SearchLabel>{{ i18n.ts.reactionsDisplaySize }}</SearchLabel></template>
-									<option value="small">{{ i18n.ts.small }}</option>
-									<option value="medium">{{ i18n.ts.medium }}</option>
-									<option value="large">{{ i18n.ts.large }}</option>
-								</MkRadios>
-							</MkPreferenceContainer>
-						</SearchMarker>
+						<hr>
 
-						<SearchMarker :keywords="['reaction', 'size', 'scale', 'display', 'width', 'limit']">
-							<MkPreferenceContainer k="limitWidthOfReaction">
-								<MkSwitch v-model="limitWidthOfReaction">
-									<template #label><SearchLabel>{{ i18n.ts.limitWidthOfReaction }}</SearchLabel></template>
-								</MkSwitch>
-							</MkPreferenceContainer>
-						</SearchMarker>
+						<div class="_gaps_m">
+							<div class="_gaps_s">
+								<SearchMarker :keywords="['hover', 'show', 'footer', 'action']">
+									<MkPreferenceContainer k="showNoteActionsOnlyHover">
+										<MkSwitch v-model="showNoteActionsOnlyHover">
+											<template #label><SearchLabel>{{ i18n.ts.showNoteActionsOnlyHover }}</SearchLabel></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
 
-						<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'list', 'size', 'height']">
-							<MkPreferenceContainer k="mediaListWithOneImageAppearance">
-								<MkRadios v-model="mediaListWithOneImageAppearance">
-									<template #label><SearchLabel>{{ i18n.ts.mediaListWithOneImageAppearance }}</SearchLabel></template>
-									<option value="expand">{{ i18n.ts.default }}</option>
-									<option value="16_9">{{ i18n.tsx.limitTo({ x: '16:9' }) }}</option>
-									<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
-									<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
-								</MkRadios>
-							</MkPreferenceContainer>
-						</SearchMarker>
+								<SearchMarker :keywords="['footer', 'action', 'clip', 'show']">
+									<MkPreferenceContainer k="showClipButtonInNoteFooter">
+										<MkSwitch v-model="showClipButtonInNoteFooter">
+											<template #label><SearchLabel>{{ i18n.ts.showClipButtonInNoteFooter }}</SearchLabel></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
 
-						<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
-							<MkPreferenceContainer k="instanceTicker">
-								<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
-									<template #label><SearchLabel>{{ i18n.ts.instanceTicker }}</SearchLabel></template>
-									<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
-									<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
-									<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
-								</MkSelect>
-							</MkPreferenceContainer>
-						</SearchMarker>
+								<SearchMarker :keywords="['reaction', 'count', 'show']">
+									<MkPreferenceContainer k="showReactionsCount">
+										<MkSwitch v-model="showReactionsCount">
+											<template #label><SearchLabel>{{ i18n.ts.showReactionsCount }}</SearchLabel></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
 
-						<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility']">
-							<MkPreferenceContainer k="nsfw">
-								<MkSelect v-model="nsfw">
-									<template #label><SearchLabel>{{ i18n.ts.displayOfSensitiveMedia }}</SearchLabel></template>
-									<option value="respect">{{ i18n.ts._displayOfSensitiveMedia.respect }}</option>
-									<option value="ignore">{{ i18n.ts._displayOfSensitiveMedia.ignore }}</option>
-									<option value="force">{{ i18n.ts._displayOfSensitiveMedia.force }}</option>
-								</MkSelect>
-							</MkPreferenceContainer>
-						</SearchMarker>
+								<SearchMarker :keywords="['reaction', 'confirm']">
+									<MkPreferenceContainer k="confirmOnReact">
+										<MkSwitch v-model="confirmOnReact">
+											<template #label><SearchLabel>{{ i18n.ts.confirmOnReact }}</SearchLabel></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+
+								<SearchMarker :keywords="['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment']">
+									<MkPreferenceContainer k="loadRawImages">
+										<MkSwitch v-model="loadRawImages">
+											<template #label><SearchLabel>{{ i18n.ts.loadRawImages }}</SearchLabel></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+
+								<SearchMarker :keywords="['reaction', 'picker', 'contextmenu', 'open']">
+									<MkPreferenceContainer k="useReactionPickerForContextMenu">
+										<MkSwitch v-model="useReactionPickerForContextMenu">
+											<template #label><SearchLabel>{{ i18n.ts.useReactionPickerForContextMenu }}</SearchLabel></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+							</div>
+
+							<SearchMarker :keywords="['reaction', 'size', 'scale', 'display']">
+								<MkPreferenceContainer k="reactionsDisplaySize">
+									<MkRadios v-model="reactionsDisplaySize">
+										<template #label><SearchLabel>{{ i18n.ts.reactionsDisplaySize }}</SearchLabel></template>
+										<option value="small">{{ i18n.ts.small }}</option>
+										<option value="medium">{{ i18n.ts.medium }}</option>
+										<option value="large">{{ i18n.ts.large }}</option>
+									</MkRadios>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['reaction', 'size', 'scale', 'display', 'width', 'limit']">
+								<MkPreferenceContainer k="limitWidthOfReaction">
+									<MkSwitch v-model="limitWidthOfReaction">
+										<template #label><SearchLabel>{{ i18n.ts.limitWidthOfReaction }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'list', 'size', 'height']">
+								<MkPreferenceContainer k="mediaListWithOneImageAppearance">
+									<MkRadios v-model="mediaListWithOneImageAppearance">
+										<template #label><SearchLabel>{{ i18n.ts.mediaListWithOneImageAppearance }}</SearchLabel></template>
+										<option value="expand">{{ i18n.ts.default }}</option>
+										<option value="16_9">{{ i18n.tsx.limitTo({ x: '16:9' }) }}</option>
+										<option value="1_1">{{ i18n.tsx.limitTo({ x: '1:1' }) }}</option>
+										<option value="2_3">{{ i18n.tsx.limitTo({ x: '2:3' }) }}</option>
+									</MkRadios>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
+								<MkPreferenceContainer k="instanceTicker">
+									<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
+										<template #label><SearchLabel>{{ i18n.ts.instanceTicker }}</SearchLabel></template>
+										<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
+										<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
+										<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
+									</MkSelect>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility']">
+								<MkPreferenceContainer k="nsfw">
+									<MkSelect v-model="nsfw">
+										<template #label><SearchLabel>{{ i18n.ts.displayOfSensitiveMedia }}</SearchLabel></template>
+										<option value="respect">{{ i18n.ts._displayOfSensitiveMedia.respect }}</option>
+										<option value="ignore">{{ i18n.ts._displayOfSensitiveMedia.ignore }}</option>
+										<option value="force">{{ i18n.ts._displayOfSensitiveMedia.force }}</option>
+									</MkSelect>
+								</MkPreferenceContainer>
+							</SearchMarker>
+						</div>
 					</div>
 				</MkFolder>
 			</SearchMarker>
