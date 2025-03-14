@@ -235,7 +235,7 @@ const props = withDefaults(defineProps<{
 	mock: false,
 });
 
-provide('mock', props.mock);
+provide(DI.mock, props.mock);
 
 const transitionName = prepareViewTransition('note-noteDetailed', props.note.id).avatar;
 
