@@ -37,7 +37,7 @@ interface RouteDefWithRedirect extends RouteDefBase {
 
 export type RouteDef = RouteDefWithComponent | RouteDefWithRedirect;
 
-export type RouterFlag = 'forcePage';
+export type RouterFlag = 'forcePage' | null;
 
 type ParsedPath = (string | {
 	name: string;

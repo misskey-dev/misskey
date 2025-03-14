@@ -177,7 +177,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, watch, provide } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, watch, provide, reactive, nextTick } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -235,9 +235,18 @@ const props = withDefaults(defineProps<{
 	mock: false,
 });
 
-provide(DI.mock, props.mock);
+const transitionNames = reactive({
+	avatar: '',
+});
 
-const transitionName = prepareViewTransition('note-noteDetailed', props.note.id).avatar;
+provide(DI.mock, props.mock);
+provide(DI.navHook, (path, flag) => {
+	const names = prepareViewTransition(path);
+	transitionNames.avatar = names.avatar;
+	nextTick(() => {
+		router.push(path, flag);
+	});
+});
 
 const emit = defineEmits<{
 	(ev: 'reaction', emoji: string): void;
