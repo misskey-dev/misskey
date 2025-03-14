@@ -35,7 +35,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as sound from '@/utility/sound.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{

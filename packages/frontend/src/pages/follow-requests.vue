@@ -46,15 +46,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import { shallowRef, computed, ref } from 'vue';
-import MkPagination from '@/components/MkPagination.vue';
 import type { Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import { userPage, acct } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { infoImageUrl } from '@/instance.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
@@ -146,12 +146,10 @@ definePage(() => ({
 				}
 
 				> .name {
-					font-size: 16px;
 					line-height: 24px;
 				}
 
 				> .acct {
-					font-size: 15px;
 					line-height: 16px;
 					opacity: 0.7;
 				}
@@ -164,7 +162,6 @@ definePage(() => ({
 				overflow: hidden;
 				text-overflow: ellipsis;
 				opacity: 0.7;
-				font-size: 14px;
 				padding-right: 40px;
 				padding-left: 8px;
 				box-sizing: border-box;

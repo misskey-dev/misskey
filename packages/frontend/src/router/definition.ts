@@ -7,7 +7,7 @@ import { defineAsyncComponent } from 'vue';
 import type { AsyncComponentLoader } from 'vue';
 import type { IRouter, RouteDef } from '@/nirax.js';
 import { Router } from '@/nirax.js';
-import { $i, iAmModerator } from '@/account.js';
+import { $i, iAmModerator } from '@/i.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
 
@@ -58,17 +58,13 @@ const routes: RouteDef[] = [{
 		name: 'avatarDecoration',
 		component: page(() => import('@/pages/settings/avatar-decoration.vue')),
 	}, {
-		path: '/roles',
-		name: 'roles',
-		component: page(() => import('@/pages/settings/roles.vue')),
-	}, {
 		path: '/privacy',
 		name: 'privacy',
 		component: page(() => import('@/pages/settings/privacy.vue')),
 	}, {
-		path: '/emoji-picker',
-		name: 'emojiPicker',
-		component: page(() => import('@/pages/settings/emoji-picker.vue')),
+		path: '/emoji-palette',
+		name: 'emoji-palette',
+		component: page(() => import('@/pages/settings/emoji-palette.vue')),
 	}, {
 		path: '/drive',
 		name: 'drive',
@@ -105,10 +101,6 @@ const routes: RouteDef[] = [{
 		path: '/theme',
 		name: 'theme',
 		component: page(() => import('@/pages/settings/theme.vue')),
-	}, {
-		path: '/appearance',
-		name: 'appearance',
-		component: page(() => import('@/pages/settings/appearance.vue')),
 	}, {
 		path: '/navbar',
 		name: 'navbar',

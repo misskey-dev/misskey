@@ -92,8 +92,9 @@ import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkLink from '@/components/MkLink.vue';
 import * as os from '@/os.js';
-import { signinRequired, updateAccountPartial } from '@/account.js';
+import { signinRequired } from '@/i.js';
 import { i18n } from '@/i18n.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const $i = signinRequired();
 
@@ -131,7 +132,7 @@ async function unregisterTOTP(): Promise<void> {
 		password: auth.result.password,
 		token: auth.result.token,
 	}).then(res => {
-		updateAccountPartial({
+		updateCurrentAccountPartial({
 			twoFactorEnabled: false,
 		});
 	}).catch(error => {

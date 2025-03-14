@@ -177,12 +177,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, unref, watch } from 'vue';
-import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
+import type { Keymap } from '@/utility/hotkey.js';
+import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/utility/touch.js';
-import type { Keymap } from '@/utility/hotkey.js';
 import { isFocusable } from '@/utility/focus.js';
 import { getNodeOrNull } from '@/utility/get-dom-node-or-null.js';
 
@@ -558,11 +558,11 @@ onBeforeUnmount(() => {
 	}
 
 	&.danger {
-		--menuFg: #ff2a2a;
+		--menuFg: var(--MI_THEME-error);
 		--menuHoverFg: #fff;
-		--menuHoverBg: #ff4242;
+		--menuHoverBg: var(--MI_THEME-error);
 		--menuActiveFg: #fff;
-		--menuActiveBg: #d42e2e;
+		--menuActiveBg: hsl(from var(--MI_THEME-error) h s calc(l - 10));
 	}
 
 	&.radio {

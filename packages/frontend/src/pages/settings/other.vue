@@ -16,92 +16,102 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSwitch v-model="reportError">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></MkSwitch>
 		-->
 
-		<FormSection first>
-			<div class="_gaps_s">
-				<SearchMarker :keywords="['account', 'info']">
-					<MkFolder>
-						<template #icon><i class="ti ti-info-circle"></i></template>
-						<template #label><SearchLabel>{{ i18n.ts.accountInfo }}</SearchLabel></template>
+		<div class="_gaps_s">
+			<SearchMarker :keywords="['account', 'info']">
+				<MkFolder>
+					<template #icon><i class="ti ti-info-circle"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts.accountInfo }}</SearchLabel></template>
 
-						<div class="_gaps_m">
-							<MkKeyValue>
-								<template #key>ID</template>
-								<template #value><span class="_monospace">{{ $i.id }}</span></template>
-							</MkKeyValue>
+					<div class="_gaps_m">
+						<MkKeyValue>
+							<template #key>ID</template>
+							<template #value><span class="_monospace">{{ $i.id }}</span></template>
+						</MkKeyValue>
 
-							<MkKeyValue>
-								<template #key>{{ i18n.ts.registeredDate }}</template>
-								<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
-							</MkKeyValue>
-						</div>
-					</MkFolder>
-				</SearchMarker>
+						<MkKeyValue>
+							<template #key>{{ i18n.ts.registeredDate }}</template>
+							<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
+						</MkKeyValue>
 
-				<SearchMarker :keywords="['account', 'move', 'migration']">
-					<MkFolder>
-						<template #icon><i class="ti ti-plane"></i></template>
-						<template #label><SearchLabel>{{ i18n.ts.accountMigration }}</SearchLabel></template>
+						<MkFolder>
+							<template #icon><i class="ti ti-badges"></i></template>
+							<template #label><SearchLabel>{{ i18n.ts._role.policies }}</SearchLabel></template>
 
-						<XMigration/>
-					</MkFolder>
-				</SearchMarker>
+							<div class="_gaps_s">
+								<div v-for="policy in Object.keys($i.policies)" :key="policy">
+									{{ policy }} ... {{ $i.policies[policy] }}
+								</div>
+							</div>
+						</MkFolder>
+					</div>
+				</MkFolder>
+			</SearchMarker>
 
-				<SearchMarker :keywords="['account', 'close', 'delete']">
-					<MkFolder>
-						<template #icon><i class="ti ti-alert-triangle"></i></template>
-						<template #label><SearchLabel>{{ i18n.ts.closeAccount }}</SearchLabel></template>
+			<SearchMarker :keywords="['roles']">
+				<MkFolder>
+					<template #icon><i class="ti ti-badges"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts.rolesAssignedToMe }}</SearchLabel></template>
 
-						<div class="_gaps_m">
-							<FormInfo warn>{{ i18n.ts._accountDelete.mayTakeTime }}</FormInfo>
-							<FormInfo>{{ i18n.ts._accountDelete.sendEmail }}</FormInfo>
-							<MkButton v-if="!$i.isDeleted" danger @click="deleteAccount"><SearchKeyword>{{ i18n.ts._accountDelete.requestAccountDelete }}</SearchKeyword></MkButton>
-							<MkButton v-else disabled>{{ i18n.ts._accountDelete.inProgress }}</MkButton>
-						</div>
-					</MkFolder>
-				</SearchMarker>
+					<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
+				</MkFolder>
+			</SearchMarker>
 
-				<SearchMarker :keywords="['experimental', 'feature', 'flags']">
-					<MkFolder>
-						<template #icon><i class="ti ti-flask"></i></template>
-						<template #label><SearchLabel>{{ i18n.ts.experimentalFeatures }}</SearchLabel></template>
+			<SearchMarker :keywords="['account', 'move', 'migration']">
+				<MkFolder>
+					<template #icon><i class="ti ti-plane"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts.accountMigration }}</SearchLabel></template>
 
-						<div class="_gaps_m">
-							<MkSwitch v-model="enableCondensedLine">
-								<template #label>Enable condensed line</template>
-							</MkSwitch>
-							<MkSwitch v-model="skipNoteRender">
-								<template #label>Enable note render skipping</template>
-							</MkSwitch>
-						</div>
-					</MkFolder>
-				</SearchMarker>
+					<XMigration/>
+				</MkFolder>
+			</SearchMarker>
 
-				<SearchMarker :keywords="['developer', 'mode', 'debug']">
-					<MkFolder>
-						<template #icon><i class="ti ti-code"></i></template>
-						<template #label><SearchLabel>{{ i18n.ts.developer }}</SearchLabel></template>
+			<SearchMarker :keywords="['account', 'close', 'delete']">
+				<MkFolder>
+					<template #icon><i class="ti ti-alert-triangle"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts.closeAccount }}</SearchLabel></template>
 
-						<div class="_gaps_m">
-							<MkSwitch v-model="devMode">
-								<template #label>{{ i18n.ts.devMode }}</template>
-							</MkSwitch>
-						</div>
-					</MkFolder>
-				</SearchMarker>
-			</div>
-		</FormSection>
+					<div class="_gaps_m">
+						<FormInfo warn>{{ i18n.ts._accountDelete.mayTakeTime }}</FormInfo>
+						<FormInfo>{{ i18n.ts._accountDelete.sendEmail }}</FormInfo>
+						<MkButton v-if="!$i.isDeleted" danger @click="deleteAccount"><SearchKeyword>{{ i18n.ts._accountDelete.requestAccountDelete }}</SearchKeyword></MkButton>
+						<MkButton v-else disabled>{{ i18n.ts._accountDelete.inProgress }}</MkButton>
+					</div>
+				</MkFolder>
+			</SearchMarker>
 
-		<FormSection>
-			<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
-		</FormSection>
+			<SearchMarker :keywords="['experimental', 'feature', 'flags']">
+				<MkFolder>
+					<template #icon><i class="ti ti-flask"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts.experimentalFeatures }}</SearchLabel></template>
 
-		<FormSection>
-			<div class="_gaps_s">
-				<MkSwitch v-model="defaultWithReplies">{{ i18n.ts.withRepliesByDefaultForNewlyFollowed }}</MkSwitch>
-				<MkButton danger @click="updateRepliesAll(true)"><i class="ti ti-messages"></i> {{ i18n.ts.showRepliesToOthersInTimelineAll }}</MkButton>
-				<MkButton danger @click="updateRepliesAll(false)"><i class="ti ti-messages-off"></i> {{ i18n.ts.hideRepliesToOthersInTimelineAll }}</MkButton>
-			</div>
-		</FormSection>
+					<div class="_gaps_m">
+						<MkSwitch v-model="enableCondensedLine">
+							<template #label>Enable condensed line</template>
+						</MkSwitch>
+						<MkSwitch v-model="skipNoteRender">
+							<template #label>Enable note render skipping</template>
+						</MkSwitch>
+					</div>
+				</MkFolder>
+			</SearchMarker>
+
+			<SearchMarker :keywords="['developer', 'mode', 'debug']">
+				<MkFolder>
+					<template #icon><i class="ti ti-code"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts.developer }}</SearchLabel></template>
+
+					<div class="_gaps_m">
+						<MkSwitch v-model="devMode">
+							<template #label>{{ i18n.ts.devMode }}</template>
+						</MkSwitch>
+					</div>
+				</MkFolder>
+			</SearchMarker>
+		</div>
+
+		<hr>
+
+		<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
 	</div>
 </SearchMarker>
 </template>
@@ -117,13 +127,14 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { store } from '@/store.js';
-import { signout, signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import FormSection from '@/components/form/section.vue';
 import { prefer } from '@/preferences.js';
+import MkRolePreview from '@/components/MkRolePreview.vue';
+import { signout } from '@/signout.js';
 
 const $i = signinRequired();
 
@@ -131,7 +142,6 @@ const reportError = prefer.model('reportError');
 const enableCondensedLine = prefer.model('enableCondensedLine');
 const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
-const defaultWithReplies = computed(store.makeGetterSetter('defaultWithReplies'));
 
 watch(skipNoteRender, async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
@@ -159,16 +169,6 @@ async function deleteAccount() {
 	});
 
 	await signout();
-}
-
-async function updateRepliesAll(withReplies: boolean) {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: withReplies ? i18n.ts.confirmShowRepliesAll : i18n.ts.confirmHideRepliesAll,
-	});
-	if (canceled) return;
-
-	misskeyApi('following/update-all', { withReplies });
 }
 
 const headerActions = computed(() => []);

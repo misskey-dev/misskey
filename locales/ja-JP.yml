@@ -1323,6 +1323,21 @@ untitled: "無題"
 noName: "名前はありません"
 skip: "スキップ"
 restore: "復元"
+syncBetweenDevices: "デバイス間で同期"
+preferenceSyncConflictTitle: "サーバーに設定値が存在します"
+preferenceSyncConflictText: "同期が有効にされた設定項目は設定値をサーバーに保存しますが、この設定項目のサーバーに保存された設定値が見つかりました。どちらの設定値で上書きしますか？"
+preferenceSyncConflictChoiceServer: "サーバーの設定値"
+preferenceSyncConflictChoiceDevice: "デバイスの設定値"
+preferenceSyncConflictChoiceCancel: "同期の有効化をキャンセル"
+paste: "ペースト"
+emojiPalette: "絵文字パレット"
+postForm: "投稿フォーム"
+
+_emojiPalette:
+  palettes: "パレット"
+  enableSyncBetweenDevicesForPalettes: "パレットのデバイス間同期を有効にする"
+  paletteForMain: "メインで使用するパレット"
+  paletteForReaction: "リアクションで使用するパレット"
 
 _settings:
   driveBanner: "ドライブの管理と設定、使用量の確認、ファイルをアップロードする際の設定を行えます。"
@@ -1333,7 +1348,7 @@ _settings:
   serviceConnection: "サービス連携"
   serviceConnectionBanner: "外部のアプリ・サービスと連携するためのアクセストークンやWebhookの管理と設定が行えます。"
   accountData: "アカウントのデータ"
-  accountDataBanner: "アカウントのデータをエクスポート/インポートして管理できます。"
+  accountDataBanner: "アカウントデータのアーカイブをエクスポート/インポートして管理できます。"
   muteAndBlockBanner: "非表示にするコンテンツの設定や、特定のユーザーからのアクションを制限する設定と管理を行えます。"
   accessibilityBanner: "クライアントの視覚や動作に関するパーソナライズを行い、より最適に使用できるように設定できます。"
   privacyBanner: "コンテンツの公開範囲、見つけやすさ、フォローの承認制などアカウントのプライバシーに関する設定を行えます。"
@@ -1341,6 +1356,7 @@ _settings:
   preferencesBanner: "好みに応じた、クライアントの全体的な動作の設定が行えます。"
   appearanceBanner: "好みに応じた、クライアントの見た目・表示方法に関する設定が行えます。"
   soundsBanner: "クライアントで再生するサウンドの設定が行えます。"
+  timelineAndNote: "タイムラインとノート"
 
 _preferencesProfile:
   profileName: "プロファイル名"
@@ -2597,6 +2613,7 @@ _deck:
   useSimpleUiForNonRootPages: "非ルートページは簡易UIで表示"
   usedAsMinWidthWhenFlexible: "「幅を自動調整」が有効の場合、これが幅の最小値となります"
   flexible: "幅を自動調整"
+  enableSyncBetweenDevicesForProfiles: "プロファイル情報のデバイス間同期を有効にする"
 
   _columns:
     main: "メイン"

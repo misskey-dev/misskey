@@ -5,7 +5,7 @@
 
 import type { Theme } from '@/theme.js';
 import { getBuiltinThemes } from '@/theme.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
 
 export function getThemes(): Theme[] {

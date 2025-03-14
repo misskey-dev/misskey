@@ -55,7 +55,7 @@ import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { iAmAdmin } from '@/account.js';
+import { iAmAdmin } from '@/i.js';
 
 const props = withDefaults(defineProps<{
 	title?: string | null;

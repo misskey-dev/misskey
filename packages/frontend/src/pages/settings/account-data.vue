@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<SearchMarker path="/settings/account-data" :label="i18n.ts._settings.accountData" :keywords="['import', 'export', 'data']" icon="ti ti-package">
+<SearchMarker path="/settings/account-data" :label="i18n.ts._settings.accountData" :keywords="['import', 'export', 'data', 'archive']" icon="ti ti-package">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/package_3d.png" color="#ff9100">
 			<SearchKeyword>{{ i18n.ts._settings.accountDataBanner }}</SearchKeyword>
@@ -167,13 +167,13 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { selectFile } from '@/utility/select-file.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { $i } from '@/account.js';
-import { store } from '@/store.js';
+import { $i } from '@/i.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import { prefer } from '@/preferences.js';
 
 const excludeMutingUsers = ref(false);
 const excludeInactiveUsers = ref(false);
-const withReplies = ref(store.s.defaultWithReplies);
+const withReplies = ref(prefer.s.defaultFollowWithReplies);
 
 const onExportSuccess = () => {
 	os.alert({

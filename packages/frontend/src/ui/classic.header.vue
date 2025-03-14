@@ -51,12 +51,12 @@ import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import { openInstanceMenu } from './_common_/common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { openAccountMenu as openAccountMenu_, $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
-import { store } from '@/store.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { $i } from '@/i.js';
 
 const WINDOW_THRESHOLD = 1400;
 

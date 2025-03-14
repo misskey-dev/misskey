@@ -90,7 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, toRefs, watch } from 'vue';
 import { GridEventEmitter } from '@/components/grid/grid.js';
-import { useTooltip } from '@/utility/use-tooltip.js';
+import { useTooltip } from '@/use/use-tooltip.js';
 import * as os from '@/os.js';
 import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
 import type { Size } from '@/components/grid/grid.js';
