@@ -195,12 +195,6 @@ export class MiUser {
 	})
 	public isInYamiMode: boolean;
 
-	@Column('boolean', {
-		default: false,
-		comment: 'Whether the User is the root.',
-	})
-	public isRoot: boolean;
-
 	@Index()
 	@Column('boolean', {
 		default: true,

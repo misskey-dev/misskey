@@ -379,7 +379,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && !user!.isRoot) {
+		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && (this.meta.rootUserId !== user!.id)) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
 				throw new ApiError({
@@ -399,7 +399,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if (ep.meta.requireRolePolicy != null && !user!.isRoot) {
+		if (ep.meta.requireRolePolicy != null && (this.meta.rootUserId !== user!.id)) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			const policies = await this.roleService.getUserPolicies(user!.id);
 			if (!policies[ep.meta.requireRolePolicy] && !myRoles.some(r => r.isAdministrator)) {

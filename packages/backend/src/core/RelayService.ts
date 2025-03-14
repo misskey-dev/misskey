@@ -4,51 +4,32 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull } from 'typeorm';
-import type { MiLocalUser, MiUser } from '@/models/User.js';
-import type { RelaysRepository, UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import type { RelaysRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { MemorySingleCache } from '@/misc/cache.js';
 import type { MiRelay } from '@/models/Relay.js';
 import { QueueService } from '@/core/QueueService.js';
-import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { DI } from '@/di-symbols.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
-
-const ACTOR_USERNAME = 'relay.actor' as const;
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 
 @Injectable()
 export class RelayService {
 	private relaysCache: MemorySingleCache<MiRelay[]>;
 
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.relaysRepository)
 		private relaysRepository: RelaysRepository,
 
 		private idService: IdService,
 		private queueService: QueueService,
-		private createSystemUserService: CreateSystemUserService,
+		private systemAccountService: SystemAccountService,
 		private apRendererService: ApRendererService,
 	) {
 		this.relaysCache = new MemorySingleCache<MiRelay[]>(1000 * 60 * 10); // 10m
-	}
-
-	@bindThis
-	private async getRelayActor(): Promise<MiLocalUser> {
-		const user = await this.usersRepository.findOneBy({
-			host: IsNull(),
-			username: ACTOR_USERNAME,
-		});
-
-		if (user) return user as MiLocalUser;
-
-		const created = await this.createSystemUserService.createSystemUser(ACTOR_USERNAME);
-		return created as MiLocalUser;
 	}
 
 	@bindThis
@@ -59,8 +40,8 @@ export class RelayService {
 			status: 'requesting',
 		});
 
-		const relayActor = await this.getRelayActor();
-		const follow = await this.apRendererService.renderFollowRelay(relay, relayActor);
+		const relayActor = await this.systemAccountService.fetch('relay');
+		const follow = this.apRendererService.renderFollowRelay(relay, relayActor);
 		const activity = this.apRendererService.addContext(follow);
 		this.queueService.deliver(relayActor, activity, relay.inbox, false);
 
@@ -77,7 +58,7 @@ export class RelayService {
 			throw new Error('relay not found');
 		}
 
-		const relayActor = await this.getRelayActor();
+		const relayActor = await this.systemAccountService.fetch('relay');
 		const follow = this.apRendererService.renderFollowRelay(relay, relayActor);
 		const undo = this.apRendererService.renderUndo(follow, relayActor);
 		const activity = this.apRendererService.addContext(undo);
