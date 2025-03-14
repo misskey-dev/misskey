@@ -1,82 +1,81 @@
 {
-  "name": "misskey",
-  "version": "2025.2.0-nayami-1.5.4",
-  "codename": "nasubi",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yamissskey/yamisskey.git"
-  },
-  "packageManager": "pnpm@9.6.0",
-  "workspaces": [
-    "packages/frontend-shared",
-    "packages/frontend",
-    "packages/frontend-embed",
-    "packages/backend",
-    "packages/sw",
-    "packages/misskey-js",
-    "packages/misskey-reversi",
-    "packages/misskey-bubble-game"
-  ],
-  "private": true,
-  "scripts": {
-    "build-pre": "node ./scripts/build-pre.js",
-    "build-assets": "node ./scripts/build-assets.mjs",
-    "build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
-    "build-storybook": "pnpm --filter frontend build-storybook",
-    "build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json --no-build && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
-    "start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
-    "start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
-    "init": "pnpm migrate",
-    "migrate": "cd packages/backend && pnpm migrate",
-    "revert": "cd packages/backend && pnpm revert",
-    "check:connect": "cd packages/backend && pnpm check:connect",
-    "migrateandstart": "pnpm migrate && pnpm start",
-    "watch": "pnpm dev",
-    "dev": "node scripts/dev.mjs",
-    "lint": "pnpm -r lint",
-    "cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
-    "cy:run": "pnpm cypress run",
-    "e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
-    "e2e-dev-container": "cp ./.config/cypress-devcontainer.yml ./.config/test.yml && pnpm start-server-and-test start:test http://localhost:61812 cy:run",
-    "jest": "cd packages/backend && pnpm jest",
-    "jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
-    "test": "pnpm -r test",
-    "test-and-coverage": "pnpm -r test-and-coverage",
-    "clean": "node ./scripts/clean.js",
-    "clean-all": "node ./scripts/clean-all.js",
-    "cleanall": "pnpm clean-all"
-  },
-  "resolutions": {
-    "chokidar": "3.5.3",
-    "lodash": "4.17.21",
-    "eslint": "8.57.1"
-  },
-  "dependencies": {
-    "cssnano": "6.1.2",
-    "execa": "8.0.1",
-    "fast-glob": "3.3.2",
-    "ignore-walk": "6.0.5",
-    "js-yaml": "4.1.0",
-    "postcss": "8.4.49",
-    "tar": "6.2.1",
-    "terser": "5.36.0",
-    "typescript": "5.6.3",
-    "esbuild": "0.24.0",
-    "glob": "11.0.0"
-  },
-  "devDependencies": {
-    "@misskey-dev/eslint-plugin": "2.0.3",
-    "@types/node": "22.9.0",
-    "eslint": "^8.57.1",
-    "@typescript-eslint/parser": "7.17.0",
-    "@typescript-eslint/eslint-plugin": "7.17.0",
-    "cross-env": "7.0.3",
-    "cypress": "13.15.2",
-    "globals": "15.12.0",
-    "ncp": "2.0.0",
-    "start-server-and-test": "2.0.8"
-  },
-  "optionalDependencies": {
-    "@tensorflow/tfjs-core": "4.4.0"
-  }
+	"name": "misskey",
+  "version": "2025.2.1-nayami-1.5.4",
+	"codename": "nasubi",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/yamisskey/yamisskey.git"
+	},
+	"packageManager": "pnpm@9.15.4",
+	"workspaces": [
+		"packages/frontend-shared",
+		"packages/frontend",
+		"packages/frontend-embed",
+		"packages/backend",
+		"packages/sw",
+		"packages/misskey-js",
+		"packages/misskey-reversi",
+		"packages/misskey-bubble-game"
+	],
+	"private": true,
+	"scripts": {
+		"build-pre": "node ./scripts/build-pre.js",
+		"build-assets": "node ./scripts/build-assets.mjs",
+		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
+		"build-storybook": "pnpm --filter frontend build-storybook",
+		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json --no-build && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
+		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
+		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
+		"init": "pnpm migrate",
+		"migrate": "cd packages/backend && pnpm migrate",
+		"revert": "cd packages/backend && pnpm revert",
+		"check:connect": "cd packages/backend && pnpm check:connect",
+		"migrateandstart": "pnpm migrate && pnpm start",
+		"watch": "pnpm dev",
+		"dev": "node scripts/dev.mjs",
+		"lint": "pnpm -r lint",
+		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
+		"cy:run": "pnpm cypress run",
+		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
+		"e2e-dev-container": "cp ./.config/cypress-devcontainer.yml ./.config/test.yml && pnpm start-server-and-test start:test http://localhost:61812 cy:run",
+		"jest": "cd packages/backend && pnpm jest",
+		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
+		"test": "pnpm -r test",
+		"test-and-coverage": "pnpm -r test-and-coverage",
+		"clean": "node ./scripts/clean.js",
+		"clean-all": "node ./scripts/clean-all.js",
+		"cleanall": "pnpm clean-all"
+	},
+	"resolutions": {
+		"chokidar": "3.6.0",
+		"lodash": "4.17.21"
+	},
+	"dependencies": {
+		"cssnano": "7.0.6",
+		"execa": "8.0.1",
+		"fast-glob": "3.3.3",
+		"ignore-walk": "6.0.5",
+		"js-yaml": "4.1.0",
+		"postcss": "8.5.2",
+		"tar": "6.2.1",
+		"terser": "5.39.0",
+		"typescript": "5.7.3",
+		"esbuild": "0.25.0",
+		"glob": "11.0.1"
+	},
+	"devDependencies": {
+		"@misskey-dev/eslint-plugin": "2.1.0",
+		"@types/node": "22.13.4",
+		"@typescript-eslint/eslint-plugin": "8.24.0",
+		"@typescript-eslint/parser": "8.24.0",
+		"cross-env": "7.0.3",
+		"cypress": "14.0.3",
+		"eslint": "9.20.1",
+		"globals": "15.15.0",
+		"ncp": "2.0.0",
+		"start-server-and-test": "2.0.10"
+	},
+	"optionalDependencies": {
+		"@tensorflow/tfjs-core": "4.22.0"
+	}
 }
