@@ -37,148 +37,145 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div class="_gaps">
-			<template v-if="!darkMode">
-				<SearchMarker :keywords="['light', 'theme']">
-					<MkFolder :defaultOpen="true" :max-height="500">
-						<template #icon><i class="ti ti-sun"></i></template>
-						<template #label><SearchLabel>{{ i18n.ts.themeForLightMode }}</SearchLabel></template>
-						<template #caption>{{ lightThemeName }}</template>
+			<SearchMarker :keywords="['light', 'theme']">
+				<MkFolder :defaultOpen="!darkModeOnPageLoad" :max-height="500">
+					<template #icon><i class="ti ti-sun"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts.themeForLightMode }}</SearchLabel></template>
+					<template #caption>{{ lightThemeName }}</template>
 
-						<div class="_gaps_m">
-							<FormSection v-if="instanceLightTheme != null" first>
-								<template #label>{{ i18n.ts._theme.instanceTheme }}</template>
-								<div :class="$style.themeSelect">
-									<div :class="$style.themeItemOuter">
-										<input
-											:id="`themeRadio_${instanceLightTheme.id}`"
-											v-model="lightThemeId"
-											type="radio"
-											name="lightTheme"
-											:class="$style.themeRadio"
-											:value="instanceLightTheme.id"
-										/>
-										<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button">
-											<MkThemePreview :theme="instanceLightTheme" :class="$style.themeItemPreview"/>
-											<div :class="$style.themeItemCaption">{{ instanceLightTheme.name }}</div>
-										</label>
-									</div>
+					<div class="_gaps_m">
+						<FormSection v-if="instanceLightTheme != null" first>
+							<template #label>{{ i18n.ts._theme.instanceTheme }}</template>
+							<div :class="$style.themeSelect">
+								<div :class="$style.themeItemOuter">
+									<input
+										:id="`themeRadio_${instanceLightTheme.id}`"
+										v-model="lightThemeId"
+										type="radio"
+										name="lightTheme"
+										:class="$style.themeRadio"
+										:value="instanceLightTheme.id"
+									/>
+									<label :for="`themeRadio_${instanceLightTheme.id}`" :class="$style.themeItemRoot" class="_button">
+										<MkThemePreview :theme="instanceLightTheme" :class="$style.themeItemPreview"/>
+										<div :class="$style.themeItemCaption">{{ instanceLightTheme.name }}</div>
+									</label>
 								</div>
-							</FormSection>
+							</div>
+						</FormSection>
 
-							<FormSection v-if="installedLightThemes.length > 0" :first="instanceLightTheme == null">
-								<template #label>{{ i18n.ts._theme.installedThemes }}</template>
-								<div :class="$style.themeSelect">
-									<div v-for="theme in installedLightThemes" :class="$style.themeItemOuter">
-										<input
-											:id="`themeRadio_${theme.id}`"
-											v-model="lightThemeId"
-											type="radio"
-											name="lightTheme"
-											:class="$style.themeRadio"
-											:value="theme.id"
-										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
-											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
-											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
-										</label>
-									</div>
+						<FormSection v-if="installedLightThemes.length > 0" :first="instanceLightTheme == null">
+							<template #label>{{ i18n.ts._theme.installedThemes }}</template>
+							<div :class="$style.themeSelect">
+								<div v-for="theme in installedLightThemes" :class="$style.themeItemOuter">
+									<input
+										:id="`themeRadio_${theme.id}`"
+										v-model="lightThemeId"
+										type="radio"
+										name="lightTheme"
+										:class="$style.themeRadio"
+										:value="theme.id"
+									/>
+									<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
+										<div :class="$style.themeItemCaption">{{ theme.name }}</div>
+									</label>
 								</div>
-							</FormSection>
+							</div>
+						</FormSection>
 
-							<FormSection :first="installedLightThemes.length === 0 && instanceLightTheme == null">
-								<template #label>{{ i18n.ts._theme.builtinThemes }}</template>
-								<div :class="$style.themeSelect">
-									<div v-for="theme in builtinLightThemes" :class="$style.themeItemOuter">
-										<input
-											:id="`themeRadio_${theme.id}`"
-											v-model="lightThemeId"
-											type="radio"
-											name="lightTheme"
-											:class="$style.themeRadio"
-											:value="theme.id"
-										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
-											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
-											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
-										</label>
-									</div>
+						<FormSection :first="installedLightThemes.length === 0 && instanceLightTheme == null">
+							<template #label>{{ i18n.ts._theme.builtinThemes }}</template>
+							<div :class="$style.themeSelect">
+								<div v-for="theme in builtinLightThemes" :class="$style.themeItemOuter">
+									<input
+										:id="`themeRadio_${theme.id}`"
+										v-model="lightThemeId"
+										type="radio"
+										name="lightTheme"
+										:class="$style.themeRadio"
+										:value="theme.id"
+									/>
+									<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
+										<div :class="$style.themeItemCaption">{{ theme.name }}</div>
+									</label>
 								</div>
-							</FormSection>
-						</div>
-					</MkFolder>
-				</SearchMarker>
-			</template>
-			<template v-else>
-				<SearchMarker :keywords="['dark', 'theme']">
-					<MkFolder :defaultOpen="true" :max-height="500">
-						<template #icon><i class="ti ti-moon"></i></template>
-						<template #label><SearchLabel>{{ i18n.ts.themeForDarkMode }}</SearchLabel></template>
-						<template #caption>{{ darkThemeName }}</template>
+							</div>
+						</FormSection>
+					</div>
+				</MkFolder>
+			</SearchMarker>
 
-						<div class="_gaps_m">
-							<FormSection v-if="instanceDarkTheme != null" first>
-								<template #label>{{ i18n.ts._theme.instanceTheme }}</template>
-								<div :class="$style.themeSelect">
-									<div :class="$style.themeItemOuter">
-										<input
-											:id="`themeRadio_${instanceDarkTheme.id}`"
-											v-model="darkThemeId"
-											type="radio"
-											name="darkTheme"
-											:class="$style.themeRadio"
-											:value="instanceDarkTheme.id"
-										/>
-										<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button">
-											<MkThemePreview :theme="instanceDarkTheme" :class="$style.themeItemPreview"/>
-											<div :class="$style.themeItemCaption">{{ instanceDarkTheme.name }}</div>
-										</label>
-									</div>
-								</div>
-							</FormSection>
+			<SearchMarker :keywords="['dark', 'theme']">
+				<MkFolder :defaultOpen="darkModeOnPageLoad" :max-height="500">
+					<template #icon><i class="ti ti-moon"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts.themeForDarkMode }}</SearchLabel></template>
+					<template #caption>{{ darkThemeName }}</template>
 
-							<FormSection v-if="installedDarkThemes.length > 0" :first="instanceDarkTheme == null">
-								<template #label>{{ i18n.ts._theme.installedThemes }}</template>
-								<div :class="$style.themeSelect">
-									<div v-for="theme in installedDarkThemes" :class="$style.themeItemOuter">
-										<input
-											:id="`themeRadio_${theme.id}`"
-											v-model="darkThemeId"
-											type="radio"
-											name="darkTheme"
-											:class="$style.themeRadio"
-											:value="theme.id"
-										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
-											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
-											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
-										</label>
-									</div>
+					<div class="_gaps_m">
+						<FormSection v-if="instanceDarkTheme != null" first>
+							<template #label>{{ i18n.ts._theme.instanceTheme }}</template>
+							<div :class="$style.themeSelect">
+								<div :class="$style.themeItemOuter">
+									<input
+										:id="`themeRadio_${instanceDarkTheme.id}`"
+										v-model="darkThemeId"
+										type="radio"
+										name="darkTheme"
+										:class="$style.themeRadio"
+										:value="instanceDarkTheme.id"
+									/>
+									<label :for="`themeRadio_${instanceDarkTheme.id}`" :class="$style.themeItemRoot" class="_button">
+										<MkThemePreview :theme="instanceDarkTheme" :class="$style.themeItemPreview"/>
+										<div :class="$style.themeItemCaption">{{ instanceDarkTheme.name }}</div>
+									</label>
 								</div>
-							</FormSection>
+							</div>
+						</FormSection>
 
-							<FormSection :first="installedDarkThemes.length === 0 && instanceDarkTheme == null">
-								<template #label>{{ i18n.ts._theme.builtinThemes }}</template>
-								<div :class="$style.themeSelect">
-									<div v-for="theme in builtinDarkThemes" :class="$style.themeItemOuter">
-										<input
-											:id="`themeRadio_${theme.id}`"
-											v-model="darkThemeId"
-											type="radio"
-											name="darkTheme"
-											:class="$style.themeRadio"
-											:value="theme.id"
-										/>
-										<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
-											<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
-											<div :class="$style.themeItemCaption">{{ theme.name }}</div>
-										</label>
-									</div>
+						<FormSection v-if="installedDarkThemes.length > 0" :first="instanceDarkTheme == null">
+							<template #label>{{ i18n.ts._theme.installedThemes }}</template>
+							<div :class="$style.themeSelect">
+								<div v-for="theme in installedDarkThemes" :class="$style.themeItemOuter">
+									<input
+										:id="`themeRadio_${theme.id}`"
+										v-model="darkThemeId"
+										type="radio"
+										name="darkTheme"
+										:class="$style.themeRadio"
+										:value="theme.id"
+									/>
+									<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
+										<div :class="$style.themeItemCaption">{{ theme.name }}</div>
+									</label>
 								</div>
-							</FormSection>
-						</div>
-					</MkFolder>
-				</SearchMarker>
-			</template>
+							</div>
+						</FormSection>
+
+						<FormSection :first="installedDarkThemes.length === 0 && instanceDarkTheme == null">
+							<template #label>{{ i18n.ts._theme.builtinThemes }}</template>
+							<div :class="$style.themeSelect">
+								<div v-for="theme in builtinDarkThemes" :class="$style.themeItemOuter">
+									<input
+										:id="`themeRadio_${theme.id}`"
+										v-model="darkThemeId"
+										type="radio"
+										name="darkTheme"
+										:class="$style.themeRadio"
+										:value="theme.id"
+									/>
+									<label :for="`themeRadio_${theme.id}`" :class="$style.themeItemRoot" class="_button">
+										<MkThemePreview :theme="theme" :class="$style.themeItemPreview"/>
+										<div :class="$style.themeItemCaption">{{ theme.name }}</div>
+									</label>
+								</div>
+							</div>
+						</FormSection>
+					</div>
+				</MkFolder>
+			</SearchMarker>
 		</div>
 
 		<FormSection>
@@ -262,6 +259,8 @@ const lightThemeId = computed({
 });
 
 const darkMode = computed(store.makeGetterSetter('darkMode'));
+// ページ読み込み時点でのダークモード設定（MkFolderの初期状態決定用）
+const darkModeOnPageLoad = darkMode.value;
 const syncDeviceDarkMode = prefer.model('syncDeviceDarkMode');
 const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
