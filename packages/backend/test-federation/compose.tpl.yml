@@ -17,7 +17,6 @@ services:
       - ./.config/docker.env
     environment:
       - NODE_ENV=production
-      - COREPACK_DEFAULT_TO_LATEST=0
     volumes:
       - type: bind
         source: ../../../built
@@ -76,13 +75,17 @@ services:
         target: /misskey/pnpm-workspace.yaml
         read_only: true
       - type: bind
+        source: ../../../scripts/dependency-patches
+        target: /misskey/scripts/dependency-patches
+        read_only: true
+      - type: bind
         source: ./certificates/rootCA.crt
         target: /usr/local/share/ca-certificates/rootCA.crt
         read_only: true
     working_dir: /misskey
     command: >
       bash -c "
-        corepack enable && corepack prepare
+        npm install -g pnpm
         pnpm -F backend migrate
         pnpm -F backend start
       "

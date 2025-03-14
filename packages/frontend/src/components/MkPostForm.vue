@@ -751,7 +751,7 @@ async function post(ev?: MouseEvent) {
 	if (ev) {
 		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
 
-		if (el) {
+		if (el && defaultStore.state.animation) {
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
@@ -1070,6 +1070,8 @@ defineExpose({
 	&.modal {
 		width: 100%;
 		max-width: 520px;
+		overflow-x: clip;
+		overflow-y: auto;
 	}
 }
 
