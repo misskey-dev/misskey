@@ -37,6 +37,14 @@ export function genAidx(t: number): string {
 	return getTime(t) + nodeId + getNoise();
 }
 
+export function floorAidx(t: number): string {
+	return getTime(t) + nodeId + '0000';
+}
+
+export function ceilAidx(t: number): string {
+	return getTime(t) + nodeId + 'zzzz';
+}
+
 export function parseAidx(id: string): { date: Date; } {
 	const time = parseInt(id.slice(0, TIME_LENGTH), 36) + TIME2000;
 	return { date: new Date(time) };

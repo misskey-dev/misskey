@@ -7,11 +7,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ulid } from 'ulid';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { genAid, isSafeAidT, parseAid } from '@/misc/id/aid.js';
-import { genAidx, isSafeAidxT, parseAidx } from '@/misc/id/aidx.js';
-import { genMeid, isSafeMeidT, parseMeid } from '@/misc/id/meid.js';
-import { genMeidg, isSafeMeidgT, parseMeidg } from '@/misc/id/meidg.js';
-import { genObjectId, isSafeObjectIdT, parseObjectId } from '@/misc/id/object-id.js';
+import { floorAid, ceilAid, genAid, isSafeAidT, parseAid } from '@/misc/id/aid.js';
+import { floorAidx, ceilAidx, genAidx, isSafeAidxT, parseAidx } from '@/misc/id/aidx.js';
+import { floorMeid, ceilMeid, genMeid, isSafeMeidT, parseMeid } from '@/misc/id/meid.js';
+import { floorMeidg, ceilMeidg, genMeidg, isSafeMeidgT, parseMeidg } from '@/misc/id/meidg.js';
+import { floorObjectId, ceilObjectId, genObjectId, isSafeObjectIdT, parseObjectId } from '@/misc/id/object-id.js';
 import { bindThis } from '@/decorators.js';
 import { parseUlid } from '@/misc/id/ulid.js';
 
@@ -54,6 +54,32 @@ export class IdService {
 			case 'meidg': return genMeidg(t);
 			case 'ulid': return ulid(t);
 			case 'objectid': return genObjectId(t);
+			default: throw new Error('unrecognized id generation method');
+		}
+	}
+
+	@bindThis
+	public floor(time: number): string {
+		switch (this.method) {
+			case 'aid': return floorAid(time);
+			case 'aidx': return floorAidx(time);
+			case 'meid': return floorMeid(time);
+			case 'meidg': return floorMeidg(time);
+			case 'ulid': return ulid(time);
+			case 'objectid': return floorObjectId(time);
+			default: throw new Error('unrecognized id generation method');
+		}
+	}
+
+	@bindThis
+	public ceil(time: number): string {
+		switch (this.method) {
+			case 'aid': return ceilAid(time);
+			case 'aidx': return ceilAidx(time);
+			case 'meid': return ceilMeid(time);
+			case 'meidg': return ceilMeidg(time);
+			case 'ulid': return ulid(time);
+			case 'objectid': return ceilObjectId(time);
 			default: throw new Error('unrecognized id generation method');
 		}
 	}

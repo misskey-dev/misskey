@@ -13,7 +13,7 @@ import accepts from 'accepts';
 import vary from 'vary';
 import secureJson from 'secure-json-parse';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository } from '@/models/_.js';
+import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository, MiUserPublickey } from '@/models/_.js';
 import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -32,9 +32,20 @@ import { isQuote, isRenote } from '@/misc/is-renote.js';
 import * as Acct from '@/misc/acct.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
+import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
+import { IdService } from '@/core/IdService.js';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
+
+export type HttpSignatureContext = {
+	continue: boolean;
+	signature: httpSignature.IParsedSignature | null;
+	authenticatedUser: {
+		user: MiRemoteUser;
+		key: MiUserPublickey;
+	} | null;
+};
 
 @Injectable()
 export class ActivityPubServerService {
@@ -66,6 +77,8 @@ export class ActivityPubServerService {
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
+		private idService: IdService,
+		private apDbResolverService: ApDbResolverService,
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
@@ -101,69 +114,20 @@ export class ActivityPubServerService {
 	}
 
 	@bindThis
-	private inbox(request: FastifyRequest, reply: FastifyReply) {
-		let signature;
+	private async inbox(request: FastifyRequest, reply: FastifyReply) {
+		const context = await this.authenticateRequester(request, reply);
 
-		try {
-			signature = httpSignature.parseRequest(request.raw, { 'headers': ['(request-target)', 'host', 'date'], authorizationHeaderName: 'signature' });
-		} catch (e) {
+		if (!context.continue) {
+			return;
+		}
+
+		// inbox は認証が必要
+		if (!context.signature) {
 			reply.code(401);
 			return;
 		}
 
-		if (signature.params.headers.indexOf('host') === -1
-			|| request.headers.host !== this.config.host) {
-			// Host not specified or not match.
-			reply.code(401);
-			return;
-		}
-
-		if (signature.params.headers.indexOf('digest') === -1) {
-			// Digest not found.
-			reply.code(401);
-		} else {
-			const digest = request.headers.digest;
-
-			if (typeof digest !== 'string') {
-				// Huh?
-				reply.code(401);
-				return;
-			}
-
-			const re = /^([a-zA-Z0-9\-]+)=(.+)$/;
-			const match = digest.match(re);
-
-			if (match == null) {
-				// Invalid digest
-				reply.code(401);
-				return;
-			}
-
-			const algo = match[1].toUpperCase();
-			const digestValue = match[2];
-
-			if (algo !== 'SHA-256') {
-				// Unsupported digest algorithm
-				reply.code(401);
-				return;
-			}
-
-			if (request.rawBody == null) {
-				// Bad request
-				reply.code(400);
-				return;
-			}
-
-			const hash = crypto.createHash('sha256').update(request.rawBody).digest('base64');
-
-			if (hash !== digestValue) {
-				// Invalid digest
-				reply.code(401);
-				return;
-			}
-		}
-
-		this.queueService.inbox(request.body as IActivity, signature);
+		this.queueService.inbox(request.body as IActivity, context);
 
 		reply.code(202);
 	}
@@ -400,6 +364,22 @@ export class ActivityPubServerService {
 	) {
 		const userId = request.params.user;
 
+		const auth = await this.authenticateRequester(request, reply);
+		if (!auth.continue) {
+			return;
+		}
+
+		let isFollower = false;
+
+		if (auth.signature) {
+			isFollower = await this.followingsRepository.exists({
+				where: {
+					followerId: auth.authenticatedUser!.user.id,
+					followeeId: userId,
+				},
+			});
+		}
+
 		const sinceId = request.query.since_id;
 		if (sinceId != null && typeof sinceId !== 'string') {
 			reply.code(400);
@@ -433,14 +413,22 @@ export class ActivityPubServerService {
 		const partOf = `${this.config.url}/users/${userId}/outbox`;
 
 		if (page) {
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
+			let query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
 				.andWhere('note.userId = :userId', { userId: user.id })
 				.andWhere(new Brackets(qb => {
 					qb
-						.where('note.visibility = \'public\'')
+						.where(`note.visibility IN ${isFollower ? '(\'public\', \'home\', \'followers\')' : '(\'public\', \'home\')'}`)
 						.orWhere('note.visibility = \'home\'');
 				}))
 				.andWhere('note.localOnly = FALSE');
+
+			if (user.makeNotesHiddenBefore != null) {
+				query = query.andWhere('note.id > :id', { id: this.idService.ceil(user.makeNotesHiddenBefore) });
+			}
+
+			if (user.makeNotesFollowersOnlyBefore && !isFollower) {
+				query = query.andWhere('note.id > :id', { id: this.idService.ceil(user.makeNotesFollowersOnlyBefore) });
+			}
 
 			const notes = await query.limit(limit).getMany();
 
@@ -502,27 +490,114 @@ export class ActivityPubServerService {
 		return (this.apRendererService.addContext(await this.apRendererService.renderPerson(user as MiLocalUser)));
 	}
 
+	private async authenticateRequester(request: FastifyRequest, reply: FastifyReply): Promise<HttpSignatureContext> {
+		let signature: httpSignature.IParsedSignature;
+
+		const rejectResponse = {
+			continue: false,
+			signature: null,
+			authenticatedUser: null,
+		};
+
+		const unAuthResponse = {
+			continue: true,
+			signature: null,
+			authenticatedUser: null,
+		};
+
+		if (!request.headers['signature']) {
+			return unAuthResponse;
+		}
+
+		try {
+			signature = httpSignature.parseRequest(request.raw, { 'headers': ['(request-target)', 'host', 'date'], authorizationHeaderName: 'signature' });
+		} catch (e) {
+			reply.code(401);
+			return rejectResponse;
+		}
+
+		if (signature.params.headers.indexOf('host') === -1
+			|| request.headers.host !== this.config.host) {
+			// Host not specified or not match.
+			reply.code(401);
+			return rejectResponse;
+		}
+
+
+		if (request.rawBody && signature.params.headers.indexOf('digest') === -1) {
+			// Digest not found.
+			reply.code(401);
+			return rejectResponse;
+		} else if (request.rawBody) {
+			const digest = request.headers.digest;
+
+			if (typeof digest !== 'string') {
+				// Huh?
+				reply.code(401);
+				return rejectResponse;
+			}
+
+			const re = /^([a-zA-Z0-9\-]+)=(.+)$/;
+			const match = digest.match(re);
+
+			if (match == null) {
+				// Invalid digest
+				reply.code(401);
+				return rejectResponse;
+			}
+
+			const algo = match[1].toUpperCase();
+			const digestValue = match[2];
+
+			if (algo !== 'SHA-256') {
+				// Unsupported digest algorithm
+				reply.code(401);
+				return rejectResponse;
+			}
+
+			if (request.rawBody == null) {
+				// Bad request
+				reply.code(400);
+				return rejectResponse;
+			}
+
+			const hash = crypto.createHash('sha256').update(request.rawBody).digest('base64');
+
+			if (hash !== digestValue) {
+				// Invalid digest
+				reply.code(401);
+				return rejectResponse;
+			}
+		}
+
+		const authUser = await this.apDbResolverService.getAuthUserFromKeyId(signature.keyId);
+
+		if (authUser == null) {
+			return {
+				continue: true,
+				signature: signature,
+				authenticatedUser: null,
+			};
+		}
+
+		const validated = httpSignature.verifySignature(signature, authUser.key.keyPem);
+		if (!validated) {
+			return {
+				continue: true,
+				signature: signature,
+				authenticatedUser: null,
+			};
+		}
+
+		return {
+			continue: true,
+			signature: signature,
+			authenticatedUser: authUser,
+		};
+	}
+
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.addConstraintStrategy({
-			name: 'apOrHtml',
-			storage() {
-				const store = {} as any;
-				return {
-					get(key: string) {
-						return store[key] ?? null;
-					},
-					set(key: string, value: any) {
-						store[key] = value;
-					},
-				};
-			},
-			deriveConstraint(request: IncomingMessage) {
-				const accepted = accepts(request).type(['html', ACTIVITY_JSON, LD_JSON]);
-				if (accepted === false) return null;
-				return accepted !== 'html' ? 'ap' : 'html';
-			},
-		});
 
 		const almostDefaultJsonParser: FastifyBodyParser<Buffer> = function (request, rawBody, done) {
 			if (rawBody.length === 0) {
@@ -564,13 +639,23 @@ export class ActivityPubServerService {
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
+			const auth = await this.authenticateRequester(request, reply);
+			if (!auth.continue) {
+				return;
+			}
+
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
-				visibility: In(['public', 'home']),
+				visibility: In(['public', 'home', 'followers']),
 				localOnly: false,
 			});
 
 			if (note == null) {
+				reply.code(404);
+				return;
+			}
+
+			if (note.visibility === 'followers' && !auth.authenticatedUser) {
 				reply.code(404);
 				return;
 			}
@@ -585,25 +670,97 @@ export class ActivityPubServerService {
 				return;
 			}
 
+			const user = await this.usersRepository.findOneBy({
+				id: note.userId,
+				isDeleted: false,
+				isSuspended: false,
+			});
+
+			if (user == null) {
+				reply.code(404);
+				return;
+			}
+			
+			if (user.makeNotesHiddenBefore && note.id <= this.idService.ceil(user.makeNotesHiddenBefore)) {
+				reply.code(404);
+				return;
+			}
+
+			if (user.makeNotesFollowersOnlyBefore && note.id <= this.idService.ceil(user.makeNotesFollowersOnlyBefore)) {
+				const isFollower = auth.authenticatedUser ? await this.followingsRepository.exists({
+					where: {
+						followerId: auth.authenticatedUser.user.id,
+						followeeId: user.id,
+					},
+				}) : false;
+
+				if (!isFollower) {
+					reply.code(404);
+					return;
+				} else {
+					note.visibility = 'followers';
+				}
+			}
+
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
-			return this.apRendererService.addContext(await this.apRendererService.renderNote(note, false));
+			return (this.apRendererService.addContext(await this.apRendererService.renderNote(note, false)));
 		});
 
 		// note activity
 		fastify.get<{ Params: { note: string; } }>('/notes/:note/activity', async (request, reply) => {
-			vary(reply.raw, 'Accept');
+			const auth = await this.authenticateRequester(request, reply);
+			if (!auth.continue) {
+				return;
+			}
 
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
 				userHost: IsNull(),
-				visibility: In(['public', 'home']),
+				visibility: In(['public', 'home', 'followers']),
 				localOnly: false,
 			});
 
 			if (note == null) {
 				reply.code(404);
 				return;
+			}
+
+			if (note.visibility === 'followers' && !auth.authenticatedUser) {
+				reply.code(404);
+				return;
+			}
+
+			const user = await this.usersRepository.findOneBy({
+				id: note.userId,
+				isDeleted: false,
+				isSuspended: false,
+			});
+
+			if (user == null) {
+				reply.code(404);
+				return;
+			}
+
+			if (user.makeNotesHiddenBefore && note.id <= this.idService.ceil(user.makeNotesHiddenBefore)) {
+				reply.code(404);
+				return;
+			}
+
+			if (user.makeNotesFollowersOnlyBefore && note.id <= this.idService.ceil(user.makeNotesFollowersOnlyBefore)) {	
+				const isFollower = auth.authenticatedUser ? await this.followingsRepository.exists({
+					where: {
+						followerId: auth.authenticatedUser.user.id,
+						followeeId: user.id,
+					},
+				}) : false;
+
+				if (!isFollower) {
+					reply.code(404);
+					return;
+				} else {
+					note.visibility = 'followers';
+				}
 			}
 
 			reply.header('Cache-Control', 'public, max-age=180');

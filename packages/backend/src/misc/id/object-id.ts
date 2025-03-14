@@ -33,6 +33,14 @@ export function genObjectId(t: number): string {
 	return getTime(t) + getRandom();
 }
 
+export function floorObjectId(t: number): string {
+	return getTime(t) + '0000000000000000';
+}
+
+export function ceilObjectId(t: number): string {
+	return getTime(t) + 'zzzzzzzzzzzzzzzz';
+}
+
 export function parseObjectId(id: string): { date: Date; } {
 	return {
 		date: new Date(parseInt(id.slice(0, 8), 16) * 1000),
