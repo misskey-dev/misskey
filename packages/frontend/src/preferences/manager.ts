@@ -23,11 +23,10 @@ import { deepEqual } from '@/utility/deep-equal.js';
 
 type PREF = typeof PREF_DEF;
 type ValueOf<K extends keyof PREF> = PREF[K]['default'];
-type Account = string; // <host>/<userId>
 
 type Scope = Partial<{
-	server: string | null; // 将来のため
-	account: Account | null;
+	server: string | null; // host
+	account: string | null; // userId
 	device: string | null; // 将来のため
 }>;
 
@@ -39,7 +38,7 @@ type PrefRecord<K extends keyof PREF> = [scope: Scope, value: ValueOf<K>, meta: 
 
 function parseScope(scope: Scope): {
 	server: string | null;
-	account: Account | null;
+	account: string | null;
 	device: string | null;
 } {
 	return {
@@ -51,7 +50,7 @@ function parseScope(scope: Scope): {
 
 function makeScope(scope: Partial<{
 	server: string | null;
-	account: Account | null;
+	account: string | null;
 	device: string | null;
 }>): Scope {
 	const c = {} as Scope;
@@ -130,6 +129,10 @@ export class PreferencesManager {
 		return (PREF_DEF as PreferencesDefinition)[key].accountDependent === true;
 	}
 
+	private isServerDependentKey<K extends keyof PREF>(key: K): boolean {
+		return (PREF_DEF as PreferencesDefinition)[key].serverDependent === true;
+	}
+
 	private rewriteRawState<K extends keyof PREF>(key: K, value: ValueOf<K>) {
 		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
 		this.r[key].value = this.s[key] = v;
@@ -141,9 +144,19 @@ export class PreferencesManager {
 		this.rewriteRawState(key, value);
 
 		const record = this.getMatchedRecordOf(key);
+
 		if (parseScope(record[0]).account == null && this.isAccountDependentKey(key)) {
 			this.profile.preferences[key].push([makeScope({
-				account: `${host}/${$i!.id}`,
+				server: host,
+				account: $i!.id,
+			}), value, {}]);
+			this.save();
+			return;
+		}
+
+		if (parseScope(record[0]).server == null && this.isServerDependentKey(key)) {
+			this.profile.preferences[key].push([makeScope({
+				server: host,
 			}), value, {}]);
 			this.save();
 			return;
@@ -291,8 +304,11 @@ export class PreferencesManager {
 
 		if ($i == null) return records.find(([scope, v]) => parseScope(scope).account == null)!;
 
-		const accountOverrideRecord = records.find(([scope, v]) => parseScope(scope).account === `${host}/${$i!.id}`);
+		const accountOverrideRecord = records.find(([scope, v]) => parseScope(scope).server === host && parseScope(scope).account === $i!.id);
 		if (accountOverrideRecord) return accountOverrideRecord;
+
+		const serverOverrideRecord = records.find(([scope, v]) => parseScope(scope).server === host && parseScope(scope).account == null);
+		if (serverOverrideRecord) return serverOverrideRecord;
 
 		const record = records.find(([scope, v]) => parseScope(scope).account == null);
 		return record!;
@@ -300,7 +316,7 @@ export class PreferencesManager {
 
 	public isAccountOverrided<K extends keyof PREF>(key: K): boolean {
 		if ($i == null) return false;
-		return this.profile.preferences[key].some(([scope, v]) => parseScope(scope).account === `${host}/${$i!.id}`) ?? false;
+		return this.profile.preferences[key].some(([scope, v]) => parseScope(scope).server === host && parseScope(scope).account === $i!.id) ?? false;
 	}
 
 	public setAccountOverride<K extends keyof PREF>(key: K) {
@@ -310,7 +326,8 @@ export class PreferencesManager {
 
 		const records = this.profile.preferences[key];
 		records.push([makeScope({
-			account: `${host}/${$i!.id}`,
+			server: host,
+			account: $i!.id,
 		}), this.s[key], {}]);
 
 		this.save();
@@ -322,7 +339,7 @@ export class PreferencesManager {
 
 		const records = this.profile.preferences[key];
 
-		const index = records.findIndex(([scope, v]) => parseScope(scope).account === `${host}/${$i!.id}`);
+		const index = records.findIndex(([scope, v]) => parseScope(scope).server === host && parseScope(scope).account === $i!.id);
 		if (index === -1) return;
 
 		records.splice(index, 1);
