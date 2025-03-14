@@ -3,26 +3,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, ref } from 'vue';
-import { apiUrl, host } from '@@/js/config.js';
+import { apiUrl } from '@@/js/config.js';
 import { defaultMemoryStorage } from '@/memory-storage';
-import { i18n } from '@/i18n.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { waiting, popup, popupMenu, success, alert } from '@/os.js';
+import { waiting } from '@/os.js';
 import { unisonReload, reloadChannel } from '@/utility/unison-reload.js';
-import { prefer } from '@/preferences.js';
-import { store } from '@/store.js';
 import { $i } from '@/i.js';
 
 export async function signout() {
 	if (!$i) return;
 
-	defaultMemoryStorage.clear();
+	// TODO: preferの自動バックアップがオンの場合、いろいろ消す前に強制バックアップ
 
 	waiting();
-	miLocalStorage.removeItem('account');
 
-	// TODO: preferencesも削除
+	localStorage.clear();
+	defaultMemoryStorage.clear();
+
+	const idbPromises = ['MisskeyClient', 'keyval-store'].map((name, i, arr) => new Promise((res, rej) => {
+		indexedDB.deleteDatabase(name);
+	}));
+
+	await Promise.all(idbPromises);
 
 	//#region Remove service worker registration
 	try {

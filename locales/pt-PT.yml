@@ -1301,6 +1301,9 @@ lockdown: "Lockdown"
 pleaseSelectAccount: "Selecione uma conta"
 availableRoles: "Cargos disponíveis"
 acknowledgeNotesAndEnable: "Ative após compreender as precauções."
+postForm: "Campo de postagem"
+_settings:
+  webhook: "Webhook"
 _accountSettings:
   requireSigninToViewContents: "Exigir cadastro para ver o conteúdo"
   requireSigninToViewContentsDescription1: "Exigir cadastro para ver todas as notas e outro conteúdo que você criou. Isso previne 'crawlers' de coletar os seus dados."

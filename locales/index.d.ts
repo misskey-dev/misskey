@@ -5461,6 +5461,10 @@ export interface Locale extends ILocale {
          * クライアントで再生するサウンドの設定が行えます。
          */
         "soundsBanner": string;
+        /**
+         * タイムラインとノート
+         */
+        "timelineAndNote": string;
     };
     "_preferencesProfile": {
         /**

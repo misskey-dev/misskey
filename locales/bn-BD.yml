@@ -852,6 +852,7 @@ replies: "জবাব"
 renotes: "রিনোট"
 sourceCode: "সোর্স কোড"
 flip: "উল্টান"
+postForm: "নোট লিখুন"
 _delivery:
   stop: "স্থগিত করা হয়েছে"
   _type:

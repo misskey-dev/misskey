@@ -17,8 +17,6 @@ import { store } from '@/store.js';
 import { $i } from '@/i.js';
 import { signout } from '@/signout.js';
 
-// TODO: 他のタブと永続化されたstateを同期
-
 type AccountWithToken = Misskey.entities.MeDetailed & { token: string };
 
 export async function getAccounts(): Promise<{

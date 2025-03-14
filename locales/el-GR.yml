@@ -288,6 +288,7 @@ cannotUploadBecauseNoFreeSpace: "Το ανέβασμα απέτυχε λόγω �
 icon: "Εικονίδιο"
 replies: "Απάντηση"
 renotes: "Κοινοποίηση σημειώματος"
+postForm: "Φόρμα δημοσίευσης"
 _email:
   _follow:
     title: "Έχετε ένα νέο ακόλουθο"
