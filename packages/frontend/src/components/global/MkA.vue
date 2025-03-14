@@ -20,6 +20,7 @@ import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router/supplier.js';
+import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
 	to: string;
@@ -37,6 +38,7 @@ const el = shallowRef<HTMLElement>();
 defineExpose({ $el: el });
 
 const router = useRouter();
+const navHook = inject(DI.navHook, null);
 
 const active = computed(() => {
 	if (props.activeClass == null) return false;
@@ -99,6 +101,10 @@ function nav(ev: MouseEvent) {
 		return openWindow();
 	}
 
-	router.push(props.to, ev.ctrlKey ? 'forcePage' : null);
+	if (navHook != null) {
+		navHook(props.to, ev.ctrlKey ? 'forcePage' : null);
+	} else {
+		router.push(props.to, ev.ctrlKey ? 'forcePage' : null);
+	}
 }
 </script>

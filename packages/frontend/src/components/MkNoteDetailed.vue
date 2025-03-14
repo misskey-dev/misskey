@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article :class="$style.note" @contextmenu.stop="onContextmenu">
 		<header :class="$style.noteHeader">
-			<MkAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link preview/>
+			<MkAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link preview :style="{ viewTransitionName: transitionName }"/>
 			<div :class="$style.noteHeaderBody">
 				<div>
 					<MkA v-user-preview="appearNote.user.id" :class="$style.noteHeaderName" :to="userPage(appearNote.user)">
@@ -255,6 +255,7 @@ import { isEnabledUrlPreview } from '@/instance.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { prepareViewTransition } from '@/page.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -262,6 +263,8 @@ const props = withDefaults(defineProps<{
 }>(), {
 	initialTab: 'replies',
 });
+
+const transitionName = prepareViewTransition('note-noteDetailed', props.note.id).avatar;
 
 const inChannel = inject('inChannel', null);
 
@@ -669,6 +672,8 @@ function loadConversation() {
 	flex-shrink: 0;
 	width: 58px;
 	height: 58px;
+
+	contain: paint;
 }
 
 .noteHeaderBody {

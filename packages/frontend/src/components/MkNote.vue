@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
-		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock"/>
+		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock" :style="{ viewTransitionName: transitionName }"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
@@ -177,7 +177,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, watch, provide } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, watch, provide, reactive, nextTick } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -223,6 +223,7 @@ import { focusPrev, focusNext } from '@/utility/focus.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { prepareViewTransition } from '@/page.js';
 import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
@@ -234,7 +235,18 @@ const props = withDefaults(defineProps<{
 	mock: false,
 });
 
+const transitionNames = reactive({
+	avatar: '',
+});
+
 provide(DI.mock, props.mock);
+provide(DI.navHook, (path, flag) => {
+	const names = prepareViewTransition(path);
+	transitionNames.avatar = names.avatar;
+	nextTick(() => {
+		router.push(path, flag);
+	});
+});
 
 const emit = defineEmits<{
 	(ev: 'reaction', emoji: string): void;
@@ -853,6 +865,8 @@ function emitUpdReaction(emoji: string, delta: number) {
 	position: sticky !important;
 	top: calc(22px + var(--MI-stickyTop, 0px));
 	left: 0;
+
+	contain: paint;
 }
 
 .main {

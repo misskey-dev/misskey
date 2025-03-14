@@ -8,40 +8,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div>
-			<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
-				<div v-if="note">
-					<div v-if="showNext" class="_margin">
-						<MkNotes class="" :pagination="showNext === 'channel' ? nextChannelPagination : nextUserPagination" :noGap="true" :disableAutoLoad="true"/>
-					</div>
+			<div v-if="note">
+				<div v-if="showNext" class="_margin">
+					<MkNotes class="" :pagination="showNext === 'channel' ? nextChannelPagination : nextUserPagination" :noGap="true" :disableAutoLoad="true"/>
+				</div>
 
-					<div class="_margin">
-						<div v-if="!showNext" class="_buttons" :class="$style.loadNext">
-							<MkButton v-if="note.channelId" rounded :class="$style.loadButton" @click="showNext = 'channel'"><i class="ti ti-chevron-up"></i> <i class="ti ti-device-tv"></i></MkButton>
-							<MkButton rounded :class="$style.loadButton" @click="showNext = 'user'"><i class="ti ti-chevron-up"></i> <i class="ti ti-user"></i></MkButton>
-						</div>
-						<div class="_margin _gaps_s">
-							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
-							<MkNoteDetailed :key="note.id" v-model:note="note" :initialTab="initialTab" :class="$style.note"/>
-						</div>
-						<div v-if="clips && clips.length > 0" class="_margin">
-							<div style="font-weight: bold; padding: 12px;">{{ i18n.ts.clip }}</div>
-							<div class="_gaps">
-								<MkClipPreview v-for="item in clips" :key="item.id" :clip="item"/>
-							</div>
-						</div>
-						<div v-if="!showPrev" class="_buttons" :class="$style.loadPrev">
-							<MkButton v-if="note.channelId" rounded :class="$style.loadButton" @click="showPrev = 'channel'"><i class="ti ti-chevron-down"></i> <i class="ti ti-device-tv"></i></MkButton>
-							<MkButton rounded :class="$style.loadButton" @click="showPrev = 'user'"><i class="ti ti-chevron-down"></i> <i class="ti ti-user"></i></MkButton>
+				<div class="_margin">
+					<div v-if="!showNext" class="_buttons" :class="$style.loadNext">
+						<MkButton v-if="note.channelId" rounded :class="$style.loadButton" @click="showNext = 'channel'"><i class="ti ti-chevron-up"></i> <i class="ti ti-device-tv"></i></MkButton>
+						<MkButton rounded :class="$style.loadButton" @click="showNext = 'user'"><i class="ti ti-chevron-up"></i> <i class="ti ti-user"></i></MkButton>
+					</div>
+					<div class="_margin _gaps_s">
+						<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
+						<MkNoteDetailed :key="note.id" v-model:note="note" :initialTab="initialTab" :class="$style.note"/>
+					</div>
+					<div v-if="clips && clips.length > 0" class="_margin">
+						<div style="font-weight: bold; padding: 12px;">{{ i18n.ts.clip }}</div>
+						<div class="_gaps">
+							<MkClipPreview v-for="item in clips" :key="item.id" :clip="item"/>
 						</div>
 					</div>
-
-					<div v-if="showPrev" class="_margin">
-						<MkNotes class="" :pagination="showPrev === 'channel' ? prevChannelPagination : prevUserPagination" :noGap="true"/>
+					<div v-if="!showPrev" class="_buttons" :class="$style.loadPrev">
+						<MkButton v-if="note.channelId" rounded :class="$style.loadButton" @click="showPrev = 'channel'"><i class="ti ti-chevron-down"></i> <i class="ti ti-device-tv"></i></MkButton>
+						<MkButton rounded :class="$style.loadButton" @click="showPrev = 'user'"><i class="ti ti-chevron-down"></i> <i class="ti ti-user"></i></MkButton>
 					</div>
 				</div>
-				<MkError v-else-if="error" @retry="fetchNote()"/>
-				<MkLoading v-else/>
-			</Transition>
+
+				<div v-if="showPrev" class="_margin">
+					<MkNotes class="" :pagination="showPrev === 'channel' ? prevChannelPagination : prevUserPagination" :noGap="true"/>
+				</div>
+			</div>
+			<MkError v-else-if="error" @retry="fetchNote()"/>
+			<MkLoading v-else/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
