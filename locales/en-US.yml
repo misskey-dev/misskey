@@ -1311,6 +1311,8 @@ federationSpecified: "This server is operated in a whitelist federation. Interac
 federationDisabled: "Federation is disabled on this server. You cannot interact with users on other servers."
 confirmOnReact: "Confirm when reacting"
 reactAreYouSure: "Would you like to add a \"{emoji}\" reaction?"
+markAsSensitiveConfirm: "Do you want to set this media as sensitive?"
+unmarkAsSensitiveConfirm: "Do you want to remove the sensitive designation for this media?"
 _accountSettings:
   requireSigninToViewContents: "Require sign-in to view contents"
   requireSigninToViewContentsDescription1: "Require login to view all notes and other content you have created. This will have the effect of preventing crawlers from collecting your information."
@@ -2594,6 +2596,7 @@ _moderationLogTypes:
   deletePage: "Page deleted"
   deleteFlash: "Play deleted"
   deleteGalleryPost: "Gallery post deleted"
+  updateProxyAccountDescription: "Update the description of the proxy account"
 _fileViewer:
   title: "File details"
   type: "File type"
@@ -2649,7 +2652,7 @@ _dataSaver:
     description: "Prevents images/videos from being loaded automatically. Hidden images/videos will be loaded when tapped."
   _avatar:
     title: "Avatar image"
-    description: "Stop avatar image animation. Animated images can be larger in file size than normal  images, potentially leading to further reductions in data traffic."
+    description: "Stop avatar image animation. Animated images can be larger in file size than normal images, potentially leading to further reductions in data traffic."
   _urlPreview:
     title: "URL preview thumbnails"
     description: "URL preview thumbnail images will no longer be loaded."
@@ -2857,4 +2860,8 @@ _bootErrors:
 _search:
   searchScopeAll: "All"
   searchScopeLocal: "Local"
+  searchScopeServer: "Specific server"
   searchScopeUser: "Specific user"
+  pleaseEnterServerHost: "Enter the server host"
+  pleaseSelectUser: "Select user"
+  serverHostPlaceholder: "Example: misskey.example.com"
