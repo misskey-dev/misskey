@@ -355,4 +355,8 @@ export const PREF_DEF = {
 			sfxVolume: 1,
 		},
 	},
+
+	'experimental.multiServer': {
+		default: false,
+	},
 } satisfies PreferencesDefinition;

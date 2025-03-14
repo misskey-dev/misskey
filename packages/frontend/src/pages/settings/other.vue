@@ -91,6 +91,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="skipNoteRender">
 							<template #label>Enable note render skipping</template>
 						</MkSwitch>
+						<MkSwitch v-model="multiServer">
+							<template #label>Enable multi server</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -142,6 +145,7 @@ const reportError = prefer.model('reportError');
 const enableCondensedLine = prefer.model('enableCondensedLine');
 const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
+const multiServer = prefer.model('experimental.multiServer');
 
 watch(skipNoteRender, async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
