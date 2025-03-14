@@ -44,9 +44,8 @@ function menu(host: string, account: Misskey.entities.UserDetailed, ev: MouseEve
 		icon: 'ti ti-switch-horizontal',
 		action: () => switchAccount(host, account.id),
 	}, {
-		text: i18n.ts.logout,
+		text: i18n.ts.remove,
 		icon: 'ti ti-trash',
-		danger: true,
 		action: () => removeAccount(host, account.id),
 	}];
 
