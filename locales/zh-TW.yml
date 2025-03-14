@@ -1354,6 +1354,7 @@ _settings:
   preferencesBanner: "您可以根據喜好設定用戶端的整體行為。"
   appearanceBanner: "您可以根據喜好設定與用戶端外觀和顯示方式相關的設定。"
   soundsBanner: "您可以調整用戶端播放的聲音設定。"
+  timelineAndNote: "時間軸及貼文"
 _preferencesProfile:
   profileName: "設定檔案名稱"
   profileNameDescription: "設定一個名稱來識別此裝置。"
