@@ -1346,6 +1346,7 @@ _settings:
   preferencesBanner: "可在此设置客户端的整体运作行为。"
   appearanceBanner: "可在此设置客户端的外观及显示方式。"
   soundsBanner: "可在此设置客户端播放的声音。"
+  timelineAndNote: "时间线和帖子"
 _preferencesProfile:
   profileName: "配置名"
   profileNameDescription: "请指定用于识别此设备的名称"
