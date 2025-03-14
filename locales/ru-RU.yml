@@ -1032,7 +1032,6 @@ thisPostMayBeAnnoyingHome: "Этот пост может быть отправл
 thisPostMayBeAnnoyingCancel: "Этот пост не может быть отменен."
 thisPostMayBeAnnoyingIgnore: "Этот пост может быть проигнорирован "
 collapseRenotes: "Сворачивать увиденные репосты"
-collapseRenotesDescription: "Сворачивать посты с которыми вы взаимодействовали."
 internalServerError: "Внутренняя ошибка сервера"
 internalServerErrorDescription: "Внутри сервера произошла непредвиденная ошибка."
 copyErrorInfo: "Скопировать код ошибки"

@@ -123,6 +123,18 @@ export interface Locale extends ILocale {
      */
     "basicSettings": string;
     /**
+     * リノート設定
+     */
+    "renoteSettings": string;
+    /**
+     * フォント設定
+     */
+    "fontSettings": string;
+    /**
+     * リアクション設定
+     */
+    "reactionSettings": string;
+    /**
      * その他の設定
      */
     "otherSettings": string;
@@ -5079,7 +5091,7 @@ export interface Locale extends ILocale {
      */
     "disableStreamingTimeline": string;
     /**
-     * 通知をグルーピングして表示する
+     * 通知をグルーピング
      */
     "useGroupedNotifications": string;
     /**
@@ -5390,6 +5402,14 @@ export interface Locale extends ILocale {
      * このメディアのセンシティブ指定を解除しますか？
      */
     "unmarkAsSensitiveConfirm": string;
+    /**
+     * 環境設定
+     */
+    "preferences": string;
+    /**
+     * アクセシビリティ
+     */
+    "accessibility": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -11236,7 +11256,11 @@ export interface Locale extends ILocale {
         /**
          * やみ設定
          */
-        "yamiSettings": string;
+        "yamiSet": string;
+        /**
+         * リンクやMFMの検索機能で使用する検索エンジンを選択します。
+         */
+        "searchEngineDescription": string;
         /**
          * やみモード
          */

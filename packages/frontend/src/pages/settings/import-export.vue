@@ -4,136 +4,159 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormSection first>
-		<template #label><i class="ti ti-pencil"></i> {{ i18n.ts._exportOrImport.allNotes }}</template>
-		<div class="_gaps_s">
-			<MkFolder>
-				<template #label>{{ i18n.ts.export }}</template>
-				<template #icon><i class="ti ti-download"></i></template>
-				<MkButton primary :class="$style.button" inline @click="exportNotes()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-			</MkFolder>
-			<MkFolder v-if="$i && $i.policies.canImportNotes">
-				<template #label>{{ i18n.ts.import }}</template>
-				<template #icon><i class="ti ti-upload"></i></template>
-				<FormInfo info style="margin-bottom: 1.5em;">{{ i18n.ts.importNoteInfo }}</FormInfo>
-				<MkRadios v-model="noteType" style="padding-bottom: 8px;" small>
-					<template #label>{{ i18n.ts.importOrigin }}</template>
-					<option value="Misskey">Misskey</option>
-					<option value="Mastodon">Mastodon</option>
-					<option value="Twitter">Twitter</option>
-				</MkRadios>
-				<MkButton primary :class="$style.button" inline @click="importNotes($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+<SearchMarker path="/settings/import-export" :label="i18n.ts.importAndExport" :keywords="['import', 'export', 'data']" icon="ti ti-package">
+	<div class="_gaps_m">
+		<SearchMarker :keywords="['notes']">
+			<FormSection first>
+				<template #label><i class="ti ti-pencil"></i> <SearchLabel>{{ i18n.ts._exportOrImport.allNotes }}</SearchLabel></template>
+				<MkFolder>
+					<template #label>{{ i18n.ts.export }}</template>
+					<template #icon><i class="ti ti-download"></i></template>
+					<MkButton primary :class="$style.button" inline @click="exportNotes()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+				</MkFolder>
+				<MkFolder v-if="$i && $i.policies.canImportNotes">
+					<template #label>{{ i18n.ts.import }}</template>
+					<template #icon><i class="ti ti-upload"></i></template>
+					<FormInfo info style="margin-bottom: 1.5em;"><SearchKeyword>{{ i18n.ts.importNoteInfo }}</SearchKeyword></FormInfo>
+					<MkRadios v-model="noteType" style="padding-bottom: 8px;" small>
+						<template #label><SearchLabel>{{ i18n.ts.importOrigin }}</SearchLabel></template>
+						<option value="Misskey">Misskey</option>
+						<option value="Mastodon">Mastodon</option>
+						<option value="Twitter">Twitter</option>
+					</MkRadios>
+					<MkButton primary :class="$style.button" inline @click="importNotes($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+					<div class="_gaps_s">
+						<FormInfo info style="margin-top: 1.5em;">{{ i18n.ts.importNoteDisclaimer }}</FormInfo>
+						<FormInfo warn>{{ i18n.ts.importNoteWarm }}</FormInfo>
+					</div>
+				</MkFolder>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['favorite', 'notes']">
+			<FormSection>
+				<template #label><i class="ti ti-star"></i> <SearchLabel>{{ i18n.ts._exportOrImport.favoritedNotes }}</SearchLabel></template>
+				<MkFolder>
+					<template #label>{{ i18n.ts.export }}</template>
+					<template #icon><i class="ti ti-download"></i></template>
+					<MkButton primary :class="$style.button" inline @click="exportFavorites()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+				</MkFolder>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['clip', 'notes']">
+			<FormSection>
+				<template #label><i class="ti ti-star"></i> <SearchLabel>{{ i18n.ts._exportOrImport.clips }}</SearchLabel></template>
+				<MkFolder>
+					<template #label>{{ i18n.ts.export }}</template>
+					<template #icon><i class="ti ti-download"></i></template>
+					<MkButton primary :class="$style.button" inline @click="exportClips()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+				</MkFolder>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['following', 'users']">
+			<FormSection>
+				<template #label><i class="ti ti-users"></i> <SearchLabel>{{ i18n.ts._exportOrImport.followingList }}</SearchLabel></template>
 				<div class="_gaps_s">
-					<FormInfo info style="margin-top: 1.5em;">{{ i18n.ts.importNoteDisclaimer }}</FormInfo>
-					<FormInfo warn>{{ i18n.ts.importNoteWarm }}</FormInfo>
+					<MkFolder>
+						<template #label>{{ i18n.ts.export }}</template>
+						<template #icon><i class="ti ti-download"></i></template>
+						<div class="_gaps_s">
+							<MkSwitch v-model="excludeMutingUsers">
+								{{ i18n.ts._exportOrImport.excludeMutingUsers }}
+							</MkSwitch>
+							<MkSwitch v-model="excludeInactiveUsers">
+								{{ i18n.ts._exportOrImport.excludeInactiveUsers }}
+							</MkSwitch>
+							<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+						</div>
+					</MkFolder>
+					<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportFollowing">
+						<template #label>{{ i18n.ts.import }}</template>
+						<template #icon><i class="ti ti-upload"></i></template>
+						<MkSwitch v-model="withReplies">
+							{{ i18n.ts._exportOrImport.withReplies }}
+						</MkSwitch>
+						<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+					</MkFolder>
 				</div>
-			</MkFolder>
-		</div>
-	</FormSection>
-	<FormSection>
-		<template #label><i class="ti ti-star"></i> {{ i18n.ts._exportOrImport.favoritedNotes }}</template>
-		<MkFolder>
-			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="ti ti-download"></i></template>
-			<MkButton primary :class="$style.button" inline @click="exportFavorites()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-		</MkFolder>
-	</FormSection>
-	<FormSection>
-		<template #label><i class="ti ti-star"></i> {{ i18n.ts._exportOrImport.clips }}</template>
-		<MkFolder>
-			<template #label>{{ i18n.ts.export }}</template>
-			<template #icon><i class="ti ti-download"></i></template>
-			<MkButton primary :class="$style.button" inline @click="exportClips()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-		</MkFolder>
-	</FormSection>
-	<FormSection>
-		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.followingList }}</template>
-		<div class="_gaps_s">
-			<MkFolder>
-				<template #label>{{ i18n.ts.export }}</template>
-				<template #icon><i class="ti ti-download"></i></template>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['user', 'lists']">
+			<FormSection>
+				<template #label><i class="ti ti-users"></i> <SearchLabel>{{ i18n.ts._exportOrImport.userLists }}</SearchLabel></template>
 				<div class="_gaps_s">
-					<MkSwitch v-model="excludeMutingUsers">
-						{{ i18n.ts._exportOrImport.excludeMutingUsers }}
-					</MkSwitch>
-					<MkSwitch v-model="excludeInactiveUsers">
-						{{ i18n.ts._exportOrImport.excludeInactiveUsers }}
-					</MkSwitch>
-					<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+					<MkFolder>
+						<template #label>{{ i18n.ts.export }}</template>
+						<template #icon><i class="ti ti-download"></i></template>
+						<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+					</MkFolder>
+					<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportUserLists">
+						<template #label>{{ i18n.ts.import }}</template>
+						<template #icon><i class="ti ti-upload"></i></template>
+						<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+					</MkFolder>
 				</div>
-			</MkFolder>
-			<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportFollowing">
-				<template #label>{{ i18n.ts.import }}</template>
-				<template #icon><i class="ti ti-upload"></i></template>
-				<MkSwitch v-model="withReplies">
-					{{ i18n.ts._exportOrImport.withReplies }}
-				</MkSwitch>
-				<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
-			</MkFolder>
-		</div>
-	</FormSection>
-	<FormSection>
-		<template #label><i class="ti ti-users"></i> {{ i18n.ts._exportOrImport.userLists }}</template>
-		<div class="_gaps_s">
-			<MkFolder>
-				<template #label>{{ i18n.ts.export }}</template>
-				<template #icon><i class="ti ti-download"></i></template>
-				<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-			</MkFolder>
-			<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportUserLists">
-				<template #label>{{ i18n.ts.import }}</template>
-				<template #icon><i class="ti ti-upload"></i></template>
-				<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
-			</MkFolder>
-		</div>
-	</FormSection>
-	<FormSection>
-		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.muteList }}</template>
-		<div class="_gaps_s">
-			<MkFolder>
-				<template #label>{{ i18n.ts.export }}</template>
-				<template #icon><i class="ti ti-download"></i></template>
-				<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-			</MkFolder>
-			<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportMuting">
-				<template #label>{{ i18n.ts.import }}</template>
-				<template #icon><i class="ti ti-upload"></i></template>
-				<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
-			</MkFolder>
-		</div>
-	</FormSection>
-	<FormSection>
-		<template #label><i class="ti ti-user-off"></i> {{ i18n.ts._exportOrImport.blockingList }}</template>
-		<div class="_gaps_s">
-			<MkFolder>
-				<template #label>{{ i18n.ts.export }}</template>
-				<template #icon><i class="ti ti-download"></i></template>
-				<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-			</MkFolder>
-			<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportBlocking">
-				<template #label>{{ i18n.ts.import }}</template>
-				<template #icon><i class="ti ti-upload"></i></template>
-				<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
-			</MkFolder>
-		</div>
-	</FormSection>
-	<FormSection>
-		<template #label><i class="ti ti-antenna"></i> {{ i18n.ts.antennas }}</template>
-		<div class="_gaps_s">
-			<MkFolder>
-				<template #label>{{ i18n.ts.export }}</template>
-				<template #icon><i class="ti ti-download"></i></template>
-				<MkButton primary :class="$style.button" inline @click="exportAntennas()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
-			</MkFolder>
-			<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportAntennas">
-				<template #label>{{ i18n.ts.import }}</template>
-				<template #icon><i class="ti ti-upload"></i></template>
-				<MkButton primary :class="$style.button" inline @click="importAntennas($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
-			</MkFolder>
-		</div>
-	</FormSection>
-</div>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['mute', 'users']">
+			<FormSection>
+				<template #label><i class="ti ti-user-off"></i> <SearchLabel>{{ i18n.ts._exportOrImport.muteList }}</SearchLabel></template>
+				<div class="_gaps_s">
+					<MkFolder>
+						<template #label>{{ i18n.ts.export }}</template>
+						<template #icon><i class="ti ti-download"></i></template>
+						<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+					</MkFolder>
+					<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportMuting">
+						<template #label>{{ i18n.ts.import }}</template>
+						<template #icon><i class="ti ti-upload"></i></template>
+						<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+					</MkFolder>
+				</div>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['block', 'users']">
+			<FormSection>
+				<template #label><i class="ti ti-user-off"></i> <SearchLabel>{{ i18n.ts._exportOrImport.blockingList }}</SearchLabel></template>
+				<div class="_gaps_s">
+					<MkFolder>
+						<template #label>{{ i18n.ts.export }}</template>
+						<template #icon><i class="ti ti-download"></i></template>
+						<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+					</MkFolder>
+					<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportBlocking">
+						<template #label>{{ i18n.ts.import }}</template>
+						<template #icon><i class="ti ti-upload"></i></template>
+						<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+					</MkFolder>
+				</div>
+			</FormSection>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['antennas']">
+			<FormSection>
+				<template #label><i class="ti ti-antenna"></i> <SearchLabel>{{ i18n.ts.antennas }}</SearchLabel></template>
+				<div class="_gaps_s">
+					<MkFolder>
+						<template #label>{{ i18n.ts.export }}</template>
+						<template #icon><i class="ti ti-download"></i></template>
+						<MkButton primary :class="$style.button" inline @click="exportAntennas()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+					</MkFolder>
+					<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportAntennas">
+						<template #label>{{ i18n.ts.import }}</template>
+						<template #icon><i class="ti ti-upload"></i></template>
+						<MkButton primary :class="$style.button" inline @click="importAntennas($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+					</MkFolder>
+				</div>
+			</FormSection>
+		</SearchMarker>
+	</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
