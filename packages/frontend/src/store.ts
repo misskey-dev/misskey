@@ -178,7 +178,18 @@ export const store = markRaw(new Storage('base', {
 	},
 	menu: {
 		where: 'deviceAccount',
-		default: [],
+		default: [
+			'notifications',
+			'clips',
+			'drive',
+			'followRequests',
+			'-',
+			'explore',
+			'announcements',
+			'search',
+			'-',
+			'ui',
+		],
 	},
 	statusbars: {
 		where: 'deviceAccount',
