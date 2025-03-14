@@ -11,18 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@touchmove.passive="touchMove"
 	@touchend.passive="touchEnd"
 >
-	<Transition
-		:class="[$style.transitionChildren, { [$style.swiping]: isSwipingForClass }]"
-		:enterActiveClass="$style.swipeAnimation_enterActive"
-		:leaveActiveClass="$style.swipeAnimation_leaveActive"
-		:enterFromClass="transitionName === 'swipeAnimationLeft' ? $style.swipeAnimationLeft_enterFrom : $style.swipeAnimationRight_enterFrom"
-		:leaveToClass="transitionName === 'swipeAnimationLeft' ? $style.swipeAnimationLeft_leaveTo : $style.swipeAnimationRight_leaveTo"
-		:style="`--swipe: ${pullDistance}px;`"
-	>
-		<!-- 【注意】slot内の最上位要素に動的にkeyを設定すること -->
-		<!-- 各最上位要素にユニークなkeyの指定がないとTransitionがうまく動きません -->
-		<slot></slot>
-	</Transition>
+	<!-- 【注意】slot内の最上位要素に動的にkeyを設定すること -->
+	<!-- 各最上位要素にユニークなkeyの指定がないとTransitionがうまく動きません -->
+	<slot></slot>
 </div>
 </template>
 <script lang="ts" setup>

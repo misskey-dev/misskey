@@ -11,4 +11,5 @@ export const DI = {
 	router: Symbol() as InjectionKey<IRouter>,
 	viewId: Symbol() as InjectionKey<string>,
 	viewTransitionId: Symbol() as InjectionKey<Ref<string>>,
+	mock: Symbol() as InjectionKey<boolean>,
 };
