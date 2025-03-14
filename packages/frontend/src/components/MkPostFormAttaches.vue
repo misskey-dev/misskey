@@ -42,6 +42,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -50,7 +51,7 @@ const props = defineProps<{
 	detachMediaFn?: (id: string) => void;
 }>();
 
-const mock = inject<boolean>('mock', false);
+const mock = inject(DI.mock, false);
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.DriveFile[]): void;

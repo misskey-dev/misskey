@@ -9,4 +9,5 @@ import type { IRouter } from '@/nirax.js';
 export const DI = {
 	routerCurrentDepth: Symbol() as InjectionKey<number>,
 	router: Symbol() as InjectionKey<IRouter>,
+	mock: Symbol() as InjectionKey<boolean>,
 };
