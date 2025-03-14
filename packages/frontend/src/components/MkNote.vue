@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
-		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock"/>
+		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock" :style="{ viewTransitionName: transitionName }"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
@@ -223,6 +223,7 @@ import { focusPrev, focusNext } from '@/utility/focus.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { prepareViewTransition } from '@/page.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -234,6 +235,8 @@ const props = withDefaults(defineProps<{
 });
 
 provide('mock', props.mock);
+
+const transitionName = prepareViewTransition('note-noteDetailed', props.note.id).avatar;
 
 const emit = defineEmits<{
 	(ev: 'reaction', emoji: string): void;
@@ -852,6 +855,8 @@ function emitUpdReaction(emoji: string, delta: number) {
 	position: sticky !important;
 	top: calc(22px + var(--MI-stickyTop, 0px));
 	left: 0;
+
+	contain: paint;
 }
 
 .main {

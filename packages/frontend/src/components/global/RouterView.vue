@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:exclude="pageCacheController"
 >
 	<Suspense :timeout="0">
-		<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
+		<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)" :style="{ viewTransitionName: viewId }"/>
 
 		<template #fallback>
 			<MkLoading/>
@@ -41,7 +41,8 @@ if (router == null) {
 const currentDepth = inject(DI.routerCurrentDepth, 0);
 provide(DI.routerCurrentDepth, currentDepth + 1);
 
-provide(DI.viewId, uuid());
+const viewId = uuid();
+provide(DI.viewId, viewId);
 
 const viewTransitionId = ref(uuid());
 provide(DI.viewTransitionId, viewTransitionId);
@@ -70,10 +71,11 @@ async function onChange({ resolved, key: newKey }) {
 	if (current == null || 'redirect' in current.route) return;
 
 	viewTransitionId.value = uuid();
-	await new Promise(resolve => setTimeout(resolve, 100));
+	await nextTick();
 	nextTick(() => {
 		console.log('onChange', viewTransitionId.value);
 		document.startViewTransition(() => new Promise((res) => {
+			console.log('startViewTransition', viewTransitionId.value);
 			currentPageComponent.value = current.route.component;
 			currentPageProps.value = current.props;
 			key.value = newKey + JSON.stringify(Object.fromEntries(current.props));
@@ -117,3 +119,31 @@ onBeforeUnmount(() => {
 	router.removeListener('change', onChange);
 });
 </script>
+
+<style lang="scss" scoped>
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes slide-from-right {
+  from { transform: translateX(300px); }
+}
+
+@keyframes slide-to-left {
+  to { transform: translateX(-300px); }
+}
+
+::view-transition-old(v-bind(viewId)) {
+  animation: 90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+}
+
+::view-transition-new(v-bind(viewId)) {
+  animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+}
+</style>

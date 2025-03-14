@@ -4,8 +4,9 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { inject, isRef, onActivated, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
+import { computed, inject, isRef, onActivated, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
+import { DI } from '@/di.js';
 
 export type PageMetadata = {
 	title: string;
@@ -69,3 +70,12 @@ export const injectReactiveMetadata = (): Ref<PageMetadata | null> => {
 	const metadataRef = getMetadata();
 	return isRef(metadataRef) ? metadataRef : ref(null);
 };
+
+export function prepareViewTransition(type: string, id: string) {
+	const viewId = inject(DI.viewId);
+	const viewTransitionId = inject(DI.viewTransitionId);
+	return {
+		avatar: computed(() => 'adsfsdfsfg' + viewId + viewTransitionId.value + id),
+		//avatar: computed(() => 'adsfsdfsfg' + id),
+	};
+}
