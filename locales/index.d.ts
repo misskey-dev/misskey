@@ -9778,6 +9778,10 @@ export interface Locale extends ILocale {
              */
             "login": string;
             /**
+             * アクセストークンの作成
+             */
+            "createToken": string;
+            /**
              * 通知のテスト
              */
             "test": string;
