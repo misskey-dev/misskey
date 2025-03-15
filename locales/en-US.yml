@@ -2524,6 +2524,7 @@ _notification:
     achievementEarned: "Achievement unlocked"
     exportCompleted: "The export has been completed"
     login: "Sign In"
+    createToken: "Create access token"
     test: "Notification test"
     app: "Notifications from linked apps"
   _actions:
