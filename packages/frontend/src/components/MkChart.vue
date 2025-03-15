@@ -45,11 +45,7 @@ export type ChartSrc =
 </script>
 
 <script lang="ts" setup>
-/* eslint-disable id-denylist --
-  Chart.js has a `data` attribute in most chart definitions, which triggers the
-  id-denylist violation when setting it. This is causing about 60+ lint issues.
-  As this is part of Chart.js's API it makes sense to disable the check here.
-*/
+
 import { onMounted, ref, shallowRef, watch } from 'vue';
 import { Chart } from 'chart.js';
 import * as Misskey from 'misskey-js';
@@ -63,6 +59,9 @@ import bytes from '@/filters/bytes.js';
 import { initChart } from '@/scripts/init-chart.js';
 import { chartLegend } from '@/scripts/chart-legend.js';
 import MkChartLegend from '@/components/MkChartLegend.vue';
+
+// スクリプトの先頭にインポートを追加
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 initChart();
 
@@ -788,7 +787,13 @@ const fetchPerUserFollowersChart = async (): Promise<typeof chartData> => {
 };
 
 const fetchPerUserDriveChart = async (): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/user/drive', { userId: props.args?.user?.id, limit: props.limit, span: props.span });
+	// misskeyApiGetの代わりにmisskeyApiを使用
+	const raw = await misskeyApi('charts/user/drive', {
+		userId: props.args?.user?.id,
+		limit: props.limit,
+		span: props.span,
+	});
+
 	return {
 		bytes: true,
 		series: [{
@@ -849,7 +854,7 @@ watch(() => [props.src, props.span], fetchAndRender);
 onMounted(() => {
 	fetchAndRender();
 });
-/* eslint-enable id-denylist */
+
 </script>
 
 <style lang="scss" module>
