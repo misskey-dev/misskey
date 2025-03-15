@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
+import { In, Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { type Config, FulltextSearchProvider } from '@/config.js';
 import { bindThis } from '@/decorators.js';
@@ -212,8 +212,21 @@ export class SearchService {
 			query.andWhere('note.channelId = :channelId', { channelId: opts.channelId });
 		}
 
+		// 修正: 自分自身の検索の場合は hideSearchResult を無視する
+		if (me?.id) {
+			query
+				.innerJoinAndSelect('note.user', 'user')
+				.andWhere(new Brackets(qb => {
+					// 自分のノートは常に表示
+					qb.where('note.userId = :meId', { meId: me.id });
+					// それ以外のユーザーのノートは hideSearchResult が false のもののみ
+					qb.orWhere('user.hideSearchResult = FALSE');
+				}));
+		} else {
+			query.innerJoinAndSelect('note.user', 'user', 'user.hideSearchResult = FALSE');
+		}
+
 		query
-			.innerJoinAndSelect('note.user', 'user', 'user.hideSearchResult = FALSE')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')
 			.leftJoinAndSelect('reply.user', 'replyUser')
@@ -289,17 +302,32 @@ export class SearchService {
 		const [
 			userIdsWhoMeMuting,
 			userIdsWhoBlockingMe,
+			userIdsWhoHideSearchResults,
 		] = me
 			? await Promise.all([
 				this.cacheService.userMutingsCache.fetch(me.id),
 				this.cacheService.userBlockedCache.fetch(me.id),
+				this.notesRepository.createQueryBuilder('note')
+					.select('user.id')
+					.innerJoin('note.user', 'user')
+					.where('user.hideSearchResult = TRUE')
+					.getRawMany()
+					.then(users => new Set(users.map(u => u.id))),
 			])
-			: [new Set<string>(), new Set<string>()];
+			: [new Set<string>(), new Set<string>(), new Set<string>()];
+
 		const notes = (await this.notesRepository.findBy({
 			id: In(res.hits.map(x => x.id)),
 		})).filter(note => {
 			if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
 			if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
+
+			// 修正：自分のノートの場合は hideSearchResult を無視する
+			if (me && note.userId === me.id) return true;
+
+			// hideSearchResult が true のユーザーのノートは除外
+			if (userIdsWhoHideSearchResults.has(note.userId)) return false;
+
 			return true;
 		});
 
