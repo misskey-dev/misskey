@@ -35,6 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
 			</span>
+			<div v-else-if="item.type === 'component'" role="menuitem" tabindex="-1" :class="[$style.componentItem]">
+				<component :is="item.component" v-bind="item.props"/>
+			</div>
 			<MkA
 				v-else-if="item.type === 'link'"
 				role="menuitem"
