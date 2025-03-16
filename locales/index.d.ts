@@ -3199,7 +3199,7 @@ export interface Locale extends ILocale {
      */
     "makeExplorable": string;
     /**
-     * オフにすると、「みつける」にアカウントが載らなくなります。
+     * オフにすると、「みつける」にアカウントが載らなくなり、オンライン時にユーザー名が検出されなくなり、RSSフィードに表示されなくなります。
      */
     "makeExplorableDescription": string;
     /**
