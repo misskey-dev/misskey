@@ -65,7 +65,6 @@ function toggleSensitive(file: Misskey.entities.DriveFile) {
 
 function copyUrl(file: Misskey.entities.DriveFile) {
 	copyToClipboard(file.url);
-	os.success();
 }
 
 /*

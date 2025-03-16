@@ -698,6 +698,7 @@ userSaysSomethingAbout: "{name}が「{word}」について何かを言いまし�
 makeActive: "アクティブにする"
 display: "表示"
 copy: "コピー"
+copiedToClipboard: "クリップボードにコピーされました"
 metrics: "メトリクス"
 overview: "概要"
 logs: "ログ"

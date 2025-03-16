@@ -190,7 +190,6 @@ function copyLink() {
 	if (!page.value) return;
 
 	copyToClipboard(`${url}/@${page.value.user.username}/pages/${page.value.name}`);
-	os.success();
 }
 
 function shareWithNote() {

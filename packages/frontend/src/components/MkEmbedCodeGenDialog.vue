@@ -194,7 +194,6 @@ function generate() {
 
 function doCopy() {
 	copyToClipboard(result.value);
-	os.success();
 }
 //#endregion
 
