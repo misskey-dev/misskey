@@ -698,6 +698,7 @@ userSaysSomethingAbout: "{name} està parlant sobre \"{word}\""
 makeActive: "Activar"
 display: "Veure"
 copy: "Copiar"
+copiedToClipboard: "Copiat al porta papers"
 metrics: "Mètriques"
 overview: "Visió General"
 logs: "Registres"
@@ -1332,6 +1333,7 @@ preferenceSyncConflictChoiceCancel: "Cancel·lar l'activació de la sincronitzac
 paste: "Pegar"
 emojiPalette: "Calaix d'emojis"
 postForm: "Formulari de publicació"
+textCount: "Nombre de caràcters "
 _emojiPalette:
   palettes: "Calaixos d'emojis"
   enableSyncBetweenDevicesForPalettes: "Activa la sincronització dels calaixos d'emojis entre dispositius"
@@ -1355,6 +1357,8 @@ _settings:
   appearanceBanner: "Pots configurar les preferències relacionades amb la visualització i l'aspecte del client segons el teu parer."
   soundsBanner: "Configuració dels sons que reproduirà el client."
   timelineAndNote: "Línia de temps i nota"
+  makeEveryTextElementsSelectable: "Fes que tots els elements del text siguin seleccionables"
+  makeEveryTextElementsSelectable_description: "L'activació pot reduir la usabilitat en determinades ocasions."
 _preferencesProfile:
   profileName: "Nom del perfil"
   profileNameDescription: "Estableix un nom que identifiqui aquest dispositiu."
@@ -2519,6 +2523,7 @@ _notification:
     achievementEarned: "Assoliment desbloquejat"
     exportCompleted: "Exportació completada"
     login: "Iniciar sessió"
+    createToken: "Creació de tokens d'accés "
     test: "Prova la notificació"
     app: "Notificacions d'aplicacions"
   _actions:
