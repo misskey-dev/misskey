@@ -248,12 +248,12 @@ export const searchIndexes: SearchIndexItem[] = [
 						keywords: ['login', 'signin'],
 					},
 					{
-						id: 'lUtOQbnwi',
+						id: '5RbESWefG',
 						label: i18n.ts._accountSettings.makeNotesFollowersOnlyBefore,
 						keywords: ['follower', i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription],
 					},
 					{
-						id: '83WWcjwS9',
+						id: 'hdzwDs3qd',
 						label: i18n.ts._accountSettings.makeNotesHiddenBefore,
 						keywords: ['hidden', i18n.ts._accountSettings.makeNotesHiddenBeforeDescription],
 					},
