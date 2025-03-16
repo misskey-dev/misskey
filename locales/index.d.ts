@@ -5346,6 +5346,10 @@ export interface Locale extends ILocale {
      * 投稿フォーム
      */
     "postForm": string;
+    /**
+     * 文字数
+     */
+    "textCount": string;
     "_emojiPalette": {
         /**
          * パレット

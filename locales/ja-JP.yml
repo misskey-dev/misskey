@@ -1332,6 +1332,7 @@ preferenceSyncConflictChoiceCancel: "同期の有効化をキャンセル"
 paste: "ペースト"
 emojiPalette: "絵文字パレット"
 postForm: "投稿フォーム"
+textCount: "文字数"
 
 _emojiPalette:
   palettes: "パレット"
