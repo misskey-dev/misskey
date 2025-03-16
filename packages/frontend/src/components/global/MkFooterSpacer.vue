@@ -4,11 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.spacer, defaultStore.reactiveState.darkMode.value ? $style.dark : $style.light]"></div>
+<div :class="[$style.spacer, store.r.darkMode.value ? $style.dark : $style.light]"></div>
 </template>
 
 <script lang="ts" setup>
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 </script>
 
 <style lang="scss" module>

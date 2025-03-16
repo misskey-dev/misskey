@@ -44,10 +44,10 @@ import { host, version } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { login } from '@/account.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
+import { login } from '@/accounts.js';
 
 const username = ref('');
 const password = ref('');

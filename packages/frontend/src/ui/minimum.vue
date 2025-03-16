@@ -15,17 +15,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, provide, ref } from 'vue';
-import XCommon from './_common_/common.vue';
-import { provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
-import type { PageMetadata } from '@/scripts/page-metadata.js';
 import { instanceName } from '@@/js/config.js';
+import XCommon from './_common_/common.vue';
+import type { PageMetadata } from '@/page.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { mainRouter } from '@/router/main.js';
+import { DI } from '@/di.js';
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
 const pageMetadata = ref<null | PageMetadata>(null);
 
-provide('router', mainRouter);
+provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();
 	pageMetadata.value = info;

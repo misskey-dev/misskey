@@ -30,7 +30,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { infoImageUrl } from '@/instance.js';
 
 const pagination = {
@@ -38,7 +38,7 @@ const pagination = {
 	limit: 10,
 };
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.favorites,
 	icon: 'ti ti-star',
 }));

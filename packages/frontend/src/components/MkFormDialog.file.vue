@@ -15,8 +15,8 @@ import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
-import { selectFile } from '@/scripts/select-file.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { selectFile } from '@/utility/select-file.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = defineProps<{
 	fileId?: string | null;

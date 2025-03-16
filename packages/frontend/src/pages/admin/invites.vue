@@ -59,7 +59,7 @@ import { computed, ref, shallowRef } from 'vue';
 import XHeader from './_header_.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -68,7 +68,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -114,7 +114,7 @@ function deleted(id: string) {
 const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.invite,
 	icon: 'ti ti-user-plus',
 }));

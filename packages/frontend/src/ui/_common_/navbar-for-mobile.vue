@@ -53,12 +53,13 @@ import { computed, defineAsyncComponent, toRef } from 'vue';
 import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
+import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { $i } from '@/i.js';
 
-const menu = toRef(defaultStore.state, 'menu');
+const menu = toRef(prefer.s, 'menu');
 const otherMenuItemIndicated = computed(() => {
 	for (const def in navbarItemDef) {
 		if (menu.value.includes(def)) continue;

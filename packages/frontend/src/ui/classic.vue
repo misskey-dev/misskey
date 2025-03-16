@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<Transition :name="defaultStore.state.animation ? 'tray-back' : ''">
+	<Transition :name="prefer.s.animation ? 'tray-back' : ''">
 		<div
 			v-if="widgetsShowing"
 			class="tray-back _modalBg"
@@ -35,11 +35,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></div>
 	</Transition>
 
-	<Transition :name="defaultStore.state.animation ? 'tray' : ''">
+	<Transition :name="prefer.s.animation ? 'tray' : ''">
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</Transition>
 
-	<iframe v-if="defaultStore.state.aiChanMode" ref="live2d" class="ivnzpscs" src="https://misskey-dev.github.io/mascot-web/?scale=2&y=1.4"></iframe>
+	<iframe v-if="prefer.s.aiChanMode" ref="live2d" class="ivnzpscs" src="https://misskey-dev.github.io/mascot-web/?scale=2&y=1.4"></iframe>
 
 	<XCommon/>
 </div>
@@ -47,18 +47,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted, provide, ref, computed, shallowRef } from 'vue';
+import { instanceName } from '@@/js/config.js';
+import { isLink } from '@@/js/is-link.js';
 import XSidebar from './classic.sidebar.vue';
 import XCommon from './_common_/common.vue';
-import { instanceName } from '@@/js/config.js';
-import { StickySidebar } from '@/scripts/sticky-sidebar.js';
+import type { PageMetadata } from '@/page.js';
+import { StickySidebar } from '@/utility/sticky-sidebar.js';
 import * as os from '@/os.js';
-import { provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
-import type { PageMetadata } from '@/scripts/page-metadata.js';
-import { defaultStore } from '@/store.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { mainRouter } from '@/router/main.js';
-import { isLink } from '@@/js/is-link.js';
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
@@ -74,12 +76,12 @@ const widgetsShowing = ref(false);
 const fullView = ref(false);
 const globalHeaderHeight = ref(0);
 const wallpaper = miLocalStorage.getItem('wallpaper') != null;
-const showMenuOnTop = computed(() => defaultStore.state.menuDisplay === 'top');
+const showMenuOnTop = computed(() => store.s.menuDisplay === 'top');
 const live2d = shallowRef<HTMLIFrameElement>();
 const widgetsLeft = ref<HTMLElement>();
 const widgetsRight = ref<HTMLElement>();
 
-provide('router', mainRouter);
+provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();
 	pageMetadata.value = info;
@@ -96,7 +98,7 @@ provide('shouldHeaderThin', showMenuOnTop.value);
 provide('forceSpacerMin', true);
 
 function attachSticky(el: HTMLElement) {
-	const sticky = new StickySidebar(el, 0, defaultStore.state.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
+	const sticky = new StickySidebar(el, 0, store.s.menuDisplay === 'top' ? 60 : 0); // TODO: ヘッダーの高さを60pxと決め打ちしているのを直す
 	window.addEventListener('scroll', () => {
 		sticky.calc(window.scrollY);
 	}, { passive: true });
@@ -142,27 +144,25 @@ if (window.innerWidth < 1024) {
 
 document.documentElement.style.overflowY = 'scroll';
 
-defaultStore.loaded.then(() => {
-	if (defaultStore.state.widgets.length === 0) {
-		defaultStore.set('widgets', [{
-			name: 'calendar',
-			id: 'a', place: null, data: {},
-		}, {
-			name: 'notifications',
-			id: 'b', place: null, data: {},
-		}, {
-			name: 'trends',
-			id: 'c', place: null, data: {},
-		}]);
-	}
-});
+if (prefer.s.widgets.length === 0) {
+	prefer.commit('widgets', [{
+		name: 'calendar',
+		id: 'a', place: null, data: {},
+	}, {
+		name: 'notifications',
+		id: 'b', place: null, data: {},
+	}, {
+		name: 'trends',
+		id: 'c', place: null, data: {},
+	}]);
+}
 
 onMounted(() => {
 	window.addEventListener('resize', () => {
 		isDesktop.value = (window.innerWidth >= DESKTOP_THRESHOLD);
 	}, { passive: true });
 
-	if (defaultStore.state.aiChanMode) {
+	if (prefer.s.aiChanMode) {
 		const iframeRect = live2d.value.getBoundingClientRect();
 		window.addEventListener('mousemove', ev => {
 			live2d.value.contentWindow.postMessage({

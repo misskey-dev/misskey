@@ -80,7 +80,7 @@ import MkRange from './MkRange.vue';
 import MkButton from './MkButton.vue';
 import MkRadios from './MkRadios.vue';
 import XFile from './MkFormDialog.file.vue';
-import type { Form } from '@/scripts/form.js';
+import type { Form } from '@/utility/form.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';

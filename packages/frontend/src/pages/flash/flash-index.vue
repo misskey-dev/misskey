@@ -46,7 +46,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
@@ -91,7 +91,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-heart',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'Play',
 	icon: 'ti ti-player-play',
 }));

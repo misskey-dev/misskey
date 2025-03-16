@@ -10,8 +10,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkCodeEditor>
 
 	<div class="_buttons">
-		<MkButton :disabled="installThemeCode == null" inline @click="() => previewTheme(installThemeCode)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
-		<MkButton :disabled="installThemeCode == null" primary inline @click="() => install(installThemeCode)"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
+		<MkButton :disabled="installThemeCode == null || installThemeCode.trim() === ''" inline @click="() => previewTheme(installThemeCode)"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
+		<MkButton :disabled="installThemeCode == null || installThemeCode.trim() === ''" primary inline @click="() => install(installThemeCode)"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
 	</div>
 </div>
 </template>
@@ -20,11 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed } from 'vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkButton from '@/components/MkButton.vue';
-import { parseThemeCode, previewTheme, installTheme } from '@/scripts/install-theme.js';
+import { parseThemeCode, previewTheme, installTheme } from '@/theme.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
+import { useRouter } from '@/router/supplier.js';
 
+const router = useRouter();
 const installThemeCode = ref<string | null>(null);
 
 async function install(code: string): Promise<void> {
@@ -35,6 +37,8 @@ async function install(code: string): Promise<void> {
 			type: 'success',
 			text: i18n.tsx._theme.installed({ name: theme.name }),
 		});
+		installThemeCode.value = null;
+		router.push('/settings/theme');
 	} catch (err) {
 		switch (err.message.toLowerCase()) {
 			case 'this theme is already installed':
@@ -59,7 +63,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._theme.install,
 	icon: 'ti ti-download',
 }));

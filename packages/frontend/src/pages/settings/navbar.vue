@@ -53,22 +53,24 @@ import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { defaultStore } from '@/store.js';
-import { reloadAsk } from '@/scripts/reload-ask.js';
+import { store } from '@/store.js';
+import { reloadAsk } from '@/utility/reload-ask.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
+import { PREF_DEF } from '@/preferences/def.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-const items = ref(defaultStore.state.menu.map(x => ({
+const items = ref(prefer.s.menu.map(x => ({
 	id: Math.random().toString(),
 	type: x,
 })));
 
-const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
+const menuDisplay = computed(store.makeGetterSetter('menuDisplay'));
 
 async function addItem() {
-	const menu = Object.keys(navbarItemDef).filter(k => !defaultStore.state.menu.includes(k));
+	const menu = Object.keys(navbarItemDef).filter(k => !prefer.s.menu.includes(k));
 	const { canceled, result: item } = await os.select({
 		title: i18n.ts.addItem,
 		items: [...menu.map(k => ({
@@ -89,12 +91,12 @@ function removeItem(index: number) {
 }
 
 async function save() {
-	defaultStore.set('menu', items.value.map(x => x.type));
+	prefer.commit('menu', items.value.map(x => x.type));
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 }
 
 function reset() {
-	items.value = defaultStore.def.menu.default.map(x => ({
+	items.value = PREF_DEF.menu.default.map(x => ({
 		id: Math.random().toString(),
 		type: x,
 	}));
@@ -104,7 +106,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.navbar,
 	icon: 'ti ti-list',
 }));
