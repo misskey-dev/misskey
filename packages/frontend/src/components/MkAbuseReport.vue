@@ -135,7 +135,7 @@ function forward() {
 
 function showMenu(ev: MouseEvent) {
 	os.popupMenu([{
-		icon: 'ti ti-id',
+		icon: 'ti ti-hash',
 		text: 'Copy ID',
 		action: () => {
 			copyToClipboard(props.report.id);
