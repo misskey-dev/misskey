@@ -897,22 +897,27 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['native', 'system', 'video', 'audio', 'player', 'media'],
 			},
 			{
-				id: '1fV9WINCQ',
+				id: 'b1GYEEJeh',
+				label: i18n.ts._settings.makeEveryTextElementsSelectable,
+				keywords: ['text', 'selectable'],
+			},
+			{
+				id: 'vVLxwINTJ',
 				label: i18n.ts.menuStyle,
 				keywords: ['menu', 'style', 'popup', 'drawer'],
 			},
 			{
-				id: 'mLQzlKUNu',
+				id: '14cMhMLHL',
 				label: i18n.ts._contextMenu.title,
 				keywords: ['contextmenu', 'system', 'native'],
 			},
 			{
-				id: 'yP96aA3j9',
+				id: 'oSo4LXMX9',
 				label: i18n.ts.fontSize,
 				keywords: ['font', 'size'],
 			},
 			{
-				id: 'jQeiMopFE',
+				id: '7LQSAThST',
 				label: i18n.ts.useSystemFont,
 				keywords: ['font', 'system', 'native'],
 			},

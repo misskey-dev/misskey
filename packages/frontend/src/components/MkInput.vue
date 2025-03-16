@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div class="_selectable">
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
 	<div :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]">
 		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
@@ -45,13 +45,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
-import type { InputHTMLAttributes } from 'vue';
 import { debounce } from 'throttle-debounce';
-import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@@/js/use-interval.js';
+import type { InputHTMLAttributes } from 'vue';
+import type { SuggestionType } from '@/utility/autocomplete.js';
+import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
-import type { SuggestionType } from '@/utility/autocomplete.js';
 
 const props = defineProps<{
 	modelValue: string | number | null;

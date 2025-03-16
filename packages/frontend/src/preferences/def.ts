@@ -313,6 +313,9 @@ export const PREF_DEF = {
 	defaultFollowWithReplies: {
 		default: false,
 	},
+	makeEveryTextElementsSelectable: {
+		default: DEFAULT_DEVICE_KIND === 'desktop',
+	},
 	plugins: {
 		default: [] as Plugin[],
 	},

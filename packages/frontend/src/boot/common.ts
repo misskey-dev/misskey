@@ -234,6 +234,10 @@ export async function common(createVue: () => App<Element>) {
 			});
 	}
 
+	if (prefer.s.makeEveryTextElementsSelectable) {
+		document.documentElement.classList.add('forceSelectableAll');
+	}
+
 	//#region Fetch user
 	if ($i && $i.token) {
 		if (_DEV_) {

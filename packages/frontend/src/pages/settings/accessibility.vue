@@ -58,6 +58,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 				</MkPreferenceContainer>
 			</SearchMarker>
+
+			<SearchMarker :keywords="['text', 'selectable']">
+				<MkPreferenceContainer k="makeEveryTextElementsSelectable">
+					<MkSwitch v-model="makeEveryTextElementsSelectable">
+						<template #label><SearchLabel>{{ i18n.ts._settings.makeEveryTextElementsSelectable }}</SearchLabel></template>
+						<template #caption>{{ i18n.ts._settings.makeEveryTextElementsSelectable_description }}</template>
+					</MkSwitch>
+				</MkPreferenceContainer>
+			</SearchMarker>
 		</div>
 
 		<SearchMarker :keywords="['menu', 'style', 'popup', 'drawer']">
@@ -122,6 +131,7 @@ const enableHorizontalSwipe = prefer.model('enableHorizontalSwipe');
 const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPlayer');
 const contextMenu = prefer.model('contextMenu');
 const menuStyle = prefer.model('menuStyle');
+const makeEveryTextElementsSelectable = prefer.model('makeEveryTextElementsSelectable');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
@@ -147,6 +157,7 @@ watch([
 	contextMenu,
 	fontSize,
 	useSystemFont,
+	makeEveryTextElementsSelectable,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });

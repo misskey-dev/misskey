@@ -1357,6 +1357,8 @@ _settings:
   appearanceBanner: "好みに応じた、クライアントの見た目・表示方法に関する設定が行えます。"
   soundsBanner: "クライアントで再生するサウンドの設定が行えます。"
   timelineAndNote: "タイムラインとノート"
+  makeEveryTextElementsSelectable: "全てのテキスト要素を選択可能にする"
+  makeEveryTextElementsSelectable_description: "有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。"
 
 _preferencesProfile:
   profileName: "プロファイル名"
