@@ -23,7 +23,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 
 const statusbars = prefer.r.statusbars;
@@ -37,7 +37,7 @@ onMounted(() => {
 });
 
 async function add() {
-	prefer.set('statusbars', [...statusbars.value, {
+	prefer.commit('statusbars', [...statusbars.value, {
 		id: uuid(),
 		type: null,
 		black: false,
@@ -50,7 +50,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.statusbar,
 	icon: 'ti ti-list',
 }));

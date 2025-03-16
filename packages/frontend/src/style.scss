@@ -128,8 +128,9 @@ optgroup, option {
 }
 
 hr {
-	margin: var(--MI-margin) 0 var(--MI-margin) 0;
+	margin: 0;
 	border: none;
+	border-radius: 999px;
 	height: 1px;
 	background: var(--MI_THEME-divider);
 }

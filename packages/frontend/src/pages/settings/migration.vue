@@ -68,7 +68,7 @@ import MkUserInfo from '@/components/MkUserInfo.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/account.js';
+import { signinRequired } from '@/i.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 
 const $i = signinRequired();

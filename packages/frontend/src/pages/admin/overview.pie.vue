@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
-import { useChartTooltip } from '@/utility/use-chart-tooltip.js';
+import { useChartTooltip } from '@/use/use-chart-tooltip.js';
 import { initChart } from '@/utility/init-chart.js';
 
 export type InstanceForPie = {

@@ -66,9 +66,9 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { registerAsUiLib } from '@/aiscript/ui.js';
 import type { AsUiComponent } from '@/aiscript/ui.js';
 import MkAsUi from '@/components/MkAsUi.vue';
@@ -202,7 +202,7 @@ const showns = computed(() => {
 	return result;
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.scratchpad,
 	icon: 'ti ti-terminal-2',
 }));

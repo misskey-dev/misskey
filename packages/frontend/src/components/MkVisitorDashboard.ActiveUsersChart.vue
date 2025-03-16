@@ -19,7 +19,7 @@ import gradient from 'chartjs-plugin-gradient';
 import tinycolor from 'tinycolor2';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
-import { useChartTooltip } from '@/utility/use-chart-tooltip.js';
+import { useChartTooltip } from '@/use/use-chart-tooltip.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { initChart } from '@/utility/init-chart.js';
 
@@ -59,7 +59,7 @@ async function renderChart() {
 
 	await nextTick();
 
-	const vLineColor = store.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
 	const computedStyle = getComputedStyle(document.documentElement);
 	const accent = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();

@@ -5,6 +5,7 @@
 	"scripts": {
 		"watch": "vite",
 		"build": "vite build",
+		"build-search-index": "vite-node --config \"./vite-node.config.ts\" \"./scripts/generate-search-index.ts\"",
 		"storybook-dev": "nodemon --verbose --watch src --ext \"mdx,ts,vue\" --ignore \"*.stories.ts\" --exec \"pnpm build-storybook-pre && pnpm exec storybook dev -p 6006 --ci\"",
 		"build-storybook-pre": "(tsc -p .storybook || echo done.) && node .storybook/generate.js && node .storybook/preload-locale.js && node .storybook/preload-theme.js",
 		"build-storybook": "pnpm build-storybook-pre && storybook build --webpack-stats-json storybook-static",
@@ -133,6 +134,7 @@
 		"start-server-and-test": "2.0.10",
 		"storybook": "8.6.4",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
+		"vite-node": "3.0.8",
 		"vite-plugin-turbosnap": "1.0.3",
 		"vitest": "3.0.8",
 		"vitest-fetch-mock": "0.4.5",

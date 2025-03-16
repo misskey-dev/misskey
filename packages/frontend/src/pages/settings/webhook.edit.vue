@@ -78,7 +78,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
@@ -155,7 +155,7 @@ const headerActions = computed(() => []);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'Edit webhook',
 	icon: 'ti ti-webhook',
 }));

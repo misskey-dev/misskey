@@ -100,7 +100,7 @@ function onOtherDragEnd() {
 function toggleActive() {
 	if (!props.isStacked) return;
 	updateColumn(props.column.id, {
-		active: !props.column.active,
+		active: props.column.active == null ? false : !props.column.active,
 	});
 }
 

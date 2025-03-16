@@ -113,16 +113,16 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
-import { pageViewInterruptors } from '@/store.js';
+import { definePage } from '@/page.js';
 import { deepClone } from '@/utility/clone.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { instance } from '@/instance.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { useRouter } from '@/router/supplier.js';
 import { prefer } from '@/preferences.js';
+import { getPluginHandlers } from '@/plugin.js';
 
 const router = useRouter();
 
@@ -151,6 +151,7 @@ function fetchPage() {
 		page.value = _page;
 
 		// plugin
+		const pageViewInterruptors = getPluginHandlers('page_view_interruptor');
 		if (pageViewInterruptors.length > 0) {
 			let result = deepClone(_page);
 			for (const interruptor of pageViewInterruptors) {
@@ -319,7 +320,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: page.value ? page.value.title || page.value.name : i18n.ts.pages,
 	...page.value ? {
 		avatar: page.value.user,

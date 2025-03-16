@@ -149,7 +149,7 @@ const emit = defineEmits<{
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const page = ref(store.state.accountSetupWizard);
+const page = ref(store.s.accountSetupWizard);
 
 watch(page, () => {
 	store.set('accountSetupWizard', page.value);

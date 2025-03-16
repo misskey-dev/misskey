@@ -6,6 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <SearchMarker path="/settings/sounds" :label="i18n.ts.sounds" :keywords="['sounds']" icon="ti ti-music">
 	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/speaker_high_volume_3d.png" color="#ff006f">
+			<SearchKeyword>{{ i18n.ts._settings.soundsBanner }}</SearchKeyword>
+		</MkFeatureBanner>
+
 		<SearchMarker :keywords="['mute']">
 			<MkPreferenceContainer k="sound.notUseSound">
 				<MkSwitch v-model="notUseSound">
@@ -65,11 +69,12 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { operationTypes } from '@/utility/sound.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import { PREF_DEF } from '@/preferences/def.js';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
 const notUseSound = prefer.model('sound.notUseSound');
 const useSoundOnlyWhenActive = prefer.model('sound.useSoundOnlyWhenActive');
@@ -101,14 +106,14 @@ async function updated(type: keyof typeof sounds.value, sound) {
 		volume: sound.volume,
 	};
 
-	prefer.set(`sound.on.${type}`, v);
+	prefer.commit(`sound.on.${type}`, v);
 	sounds.value[type] = v;
 }
 
 function reset() {
 	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
 		const v = PREF_DEF[`sound.on.${sound}`].default;
-		prefer.set(`sound.on.${sound}`, v);
+		prefer.commit(`sound.on.${sound}`, v);
 		sounds.value[sound] = v;
 	}
 }
@@ -117,7 +122,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.sounds,
 	icon: 'ti ti-music',
 }));

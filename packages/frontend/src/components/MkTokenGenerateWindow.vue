@@ -55,7 +55,7 @@ import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { iAmAdmin } from '@/account.js';
+import { iAmAdmin } from '@/i.js';
 
 const props = withDefaults(defineProps<{
 	title?: string | null;
@@ -79,8 +79,8 @@ const adminPermissions = Misskey.permissions.filter(p => p.startsWith('read:admi
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 const name = ref(props.initialName);
-const permissionSwitches = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
-const permissionSwitchesForAdmin = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
+const permissionSwitches = ref({} as Record<(typeof Misskey.permissions)[number], boolean>);
+const permissionSwitchesForAdmin = ref({} as Record<(typeof Misskey.permissions)[number], boolean>);
 
 if (props.initialPermissions) {
 	for (const kind of props.initialPermissions) {
