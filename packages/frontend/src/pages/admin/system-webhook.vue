@@ -30,11 +30,11 @@ import { computed, onMounted, ref } from 'vue';
 import { entities } from 'misskey-js';
 import XItem from './system-webhook.item.vue';
 import FormSection from '@/components/form/section.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import XHeader from '@/pages/admin/_header_.vue';
 import MkButton from '@/components/MkButton.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
 import * as os from '@/os.js';
 
@@ -82,7 +82,7 @@ onMounted(async () => {
 	await fetchWebhooks();
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'SystemWebhook',
 	icon: 'ti ti-webhook',
 }));

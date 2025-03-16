@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { App } from 'vue';
-
 import Mfm from './global/MkMfm.js';
 import MkA from './global/MkA.vue';
 import MkAcct from './global/MkAcct.vue';
@@ -23,9 +21,13 @@ import MkError from './global/MkError.vue';
 import MkAd from './global/MkAd.vue';
 import MkPageHeader from './global/MkPageHeader.vue';
 import MkSpacer from './global/MkSpacer.vue';
-import MkFooterSpacer from './global/MkFooterSpacer.vue';
 import MkStickyContainer from './global/MkStickyContainer.vue';
 import MkLazy from './global/MkLazy.vue';
+import SearchMarker from './global/SearchMarker.vue';
+import SearchLabel from './global/SearchLabel.vue';
+import SearchKeyword from './global/SearchKeyword.vue';
+
+import type { App } from 'vue';
 
 export default function(app: App) {
 	for (const [key, value] of Object.entries(components)) {
@@ -52,9 +54,11 @@ export const components = {
 	MkAd: MkAd,
 	MkPageHeader: MkPageHeader,
 	MkSpacer: MkSpacer,
-	MkFooterSpacer: MkFooterSpacer,
 	MkStickyContainer: MkStickyContainer,
 	MkLazy: MkLazy,
+	SearchMarker: SearchMarker,
+	SearchLabel: SearchLabel,
+	SearchKeyword: SearchKeyword,
 };
 
 declare module '@vue/runtime-core' {
@@ -77,8 +81,10 @@ declare module '@vue/runtime-core' {
 		MkAd: typeof MkAd;
 		MkPageHeader: typeof MkPageHeader;
 		MkSpacer: typeof MkSpacer;
-		MkFooterSpacer: typeof MkFooterSpacer;
 		MkStickyContainer: typeof MkStickyContainer;
 		MkLazy: typeof MkLazy;
+		SearchMarker: typeof SearchMarker;
+		SearchLabel: typeof SearchLabel;
+		SearchKeyword: typeof SearchKeyword;
 	}
 }

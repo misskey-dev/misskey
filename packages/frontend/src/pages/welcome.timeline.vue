@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { onUpdated, ref, shallowRef } from 'vue';
 import XNote from '@/pages/welcome.timeline.note.vue';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { getScrollContainer } from '@@/js/scroll.js';
 
 const notes = ref<Misskey.entities.Note[]>([]);

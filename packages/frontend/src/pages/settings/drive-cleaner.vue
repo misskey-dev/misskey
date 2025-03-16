@@ -52,14 +52,14 @@ import { computed, ref, watch } from 'vue';
 import type { StyleValue } from 'vue';
 import tinycolor from 'tinycolor2';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import { i18n } from '@/i18n.js';
 import bytes from '@/filters/bytes.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkSelect from '@/components/MkSelect.vue';
-import { getDriveFileMenu } from '@/scripts/get-drive-file-menu.js';
+import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 
 const sortMode = ref('+size');
 const pagination = {
@@ -118,7 +118,7 @@ function onContextMenu(ev: MouseEvent, file): void {
 	os.contextMenu(getDriveFileMenu(file), ev);
 }
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.drivecleaner,
 	icon: 'ti ti-trash',
 }));

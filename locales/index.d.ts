@@ -4975,7 +4975,7 @@ export interface Locale extends ILocale {
      */
     "disableStreamingTimeline": string;
     /**
-     * 通知をグルーピングして表示する
+     * 通知をグルーピング
      */
     "useGroupedNotifications": string;
     /**
@@ -5274,6 +5274,230 @@ export interface Locale extends ILocale {
      * このメディアのセンシティブ指定を解除しますか？
      */
     "unmarkAsSensitiveConfirm": string;
+    /**
+     * 環境設定
+     */
+    "preferences": string;
+    /**
+     * アクセシビリティ
+     */
+    "accessibility": string;
+    /**
+     * 設定のプロファイル
+     */
+    "preferencesProfile": string;
+    /**
+     * 設定IDをコピー
+     */
+    "copyPreferenceId": string;
+    /**
+     * 初期値に戻す
+     */
+    "resetToDefaultValue": string;
+    /**
+     * アカウントで上書き
+     */
+    "overrideByAccount": string;
+    /**
+     * 無題
+     */
+    "untitled": string;
+    /**
+     * 名前はありません
+     */
+    "noName": string;
+    /**
+     * スキップ
+     */
+    "skip": string;
+    /**
+     * 復元
+     */
+    "restore": string;
+    /**
+     * デバイス間で同期
+     */
+    "syncBetweenDevices": string;
+    /**
+     * サーバーに設定値が存在します
+     */
+    "preferenceSyncConflictTitle": string;
+    /**
+     * 同期が有効にされた設定項目は設定値をサーバーに保存しますが、この設定項目のサーバーに保存された設定値が見つかりました。どちらの設定値で上書きしますか？
+     */
+    "preferenceSyncConflictText": string;
+    /**
+     * サーバーの設定値
+     */
+    "preferenceSyncConflictChoiceServer": string;
+    /**
+     * デバイスの設定値
+     */
+    "preferenceSyncConflictChoiceDevice": string;
+    /**
+     * 同期の有効化をキャンセル
+     */
+    "preferenceSyncConflictChoiceCancel": string;
+    /**
+     * ペースト
+     */
+    "paste": string;
+    /**
+     * 絵文字パレット
+     */
+    "emojiPalette": string;
+    /**
+     * 投稿フォーム
+     */
+    "postForm": string;
+    /**
+     * 文字数
+     */
+    "textCount": string;
+    "_emojiPalette": {
+        /**
+         * パレット
+         */
+        "palettes": string;
+        /**
+         * パレットのデバイス間同期を有効にする
+         */
+        "enableSyncBetweenDevicesForPalettes": string;
+        /**
+         * メインで使用するパレット
+         */
+        "paletteForMain": string;
+        /**
+         * リアクションで使用するパレット
+         */
+        "paletteForReaction": string;
+    };
+    "_settings": {
+        /**
+         * ドライブの管理と設定、使用量の確認、ファイルをアップロードする際の設定を行えます。
+         */
+        "driveBanner": string;
+        /**
+         * プラグインを利用するとクライアントの機能を拡張することができます。プラグインのインストール、個別の設定と管理が行えます。
+         */
+        "pluginBanner": string;
+        /**
+         * サーバーからの受信する通知の種類と範囲や、プッシュ通知の設定が行えます。
+         */
+        "notificationsBanner": string;
+        /**
+         * API
+         */
+        "api": string;
+        /**
+         * Webhook
+         */
+        "webhook": string;
+        /**
+         * サービス連携
+         */
+        "serviceConnection": string;
+        /**
+         * 外部のアプリ・サービスと連携するためのアクセストークンやWebhookの管理と設定が行えます。
+         */
+        "serviceConnectionBanner": string;
+        /**
+         * アカウントのデータ
+         */
+        "accountData": string;
+        /**
+         * アカウントデータのアーカイブをエクスポート/インポートして管理できます。
+         */
+        "accountDataBanner": string;
+        /**
+         * 非表示にするコンテンツの設定や、特定のユーザーからのアクションを制限する設定と管理を行えます。
+         */
+        "muteAndBlockBanner": string;
+        /**
+         * クライアントの視覚や動作に関するパーソナライズを行い、より最適に使用できるように設定できます。
+         */
+        "accessibilityBanner": string;
+        /**
+         * コンテンツの公開範囲、見つけやすさ、フォローの承認制などアカウントのプライバシーに関する設定を行えます。
+         */
+        "privacyBanner": string;
+        /**
+         * パスワード、ログイン方法、認証アプリ、パスキーなどアカウントのセキュリティに関する設定を行えます。
+         */
+        "securityBanner": string;
+        /**
+         * 好みに応じた、クライアントの全体的な動作の設定が行えます。
+         */
+        "preferencesBanner": string;
+        /**
+         * 好みに応じた、クライアントの見た目・表示方法に関する設定が行えます。
+         */
+        "appearanceBanner": string;
+        /**
+         * クライアントで再生するサウンドの設定が行えます。
+         */
+        "soundsBanner": string;
+        /**
+         * タイムラインとノート
+         */
+        "timelineAndNote": string;
+        /**
+         * 全てのテキスト要素を選択可能にする
+         */
+        "makeEveryTextElementsSelectable": string;
+        /**
+         * 有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。
+         */
+        "makeEveryTextElementsSelectable_description": string;
+    };
+    "_preferencesProfile": {
+        /**
+         * プロファイル名
+         */
+        "profileName": string;
+        /**
+         * このデバイスを識別する名前を設定してください。
+         */
+        "profileNameDescription": string;
+        /**
+         * 例: 「メインPC」、「スマホ」など
+         */
+        "profileNameDescription2": string;
+    };
+    "_preferencesBackup": {
+        /**
+         * 自動バックアップ
+         */
+        "autoBackup": string;
+        /**
+         * バックアップから復元
+         */
+        "restoreFromBackup": string;
+        /**
+         * バックアップが見つかりませんでした
+         */
+        "noBackupsFoundTitle": string;
+        /**
+         * 自動で作成されたバックアップは見つかりませんでしたが、バックアップファイルを手動で保存している場合、それをインポートして復元することはできます。
+         */
+        "noBackupsFoundDescription": string;
+        /**
+         * 復元するバックアップを選択してください
+         */
+        "selectBackupToRestore": string;
+        /**
+         * 自動バックアップを有効にするにはプロファイル名の設定が必要です。
+         */
+        "youNeedToNameYourProfileToEnableAutoBackup": string;
+        /**
+         * このデバイスで設定の自動バックアップは有効になっていません。
+         */
+        "autoPreferencesBackupIsNotEnabledForThisDevice": string;
+        /**
+         * 設定のバックアップが見つかりました
+         */
+        "backupFound": string;
+    };
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -5311,6 +5535,10 @@ export interface Locale extends ILocale {
          * リモートサーバーに連合されたノートには効果が及ばない場合があります。
          */
         "mayNotEffectForFederatedNotes": string;
+        /**
+         * これらの制限は簡易的なものです。リモートサーバーでの閲覧やモデレーション時など、一部のシチュエーションでは適用されない場合があります。
+         */
+        "mayNotEffectSomeSituations": string;
         /**
          * 指定した時間を経過しているノート
          */
@@ -7659,6 +7887,10 @@ export interface Locale extends ILocale {
          */
         "builtinThemes": string;
         /**
+         * サーバーのテーマ
+         */
+        "instanceTheme": string;
+        /**
          * そのテーマは既にインストールされています
          */
         "alreadyInstalled": string;
@@ -9562,6 +9794,10 @@ export interface Locale extends ILocale {
              */
             "login": string;
             /**
+             * アクセストークンの作成
+             */
+            "createToken": string;
+            /**
              * 通知のテスト
              */
             "test": string;
@@ -9666,6 +9902,10 @@ export interface Locale extends ILocale {
          * 幅を自動調整
          */
         "flexible": string;
+        /**
+         * プロファイル情報のデバイス間同期を有効にする
+         */
+        "enableSyncBetweenDevicesForProfiles": string;
         "_columns": {
             /**
              * メイン

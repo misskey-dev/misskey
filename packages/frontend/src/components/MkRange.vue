@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
-import { isTouchUsing } from '@/scripts/touch.js';
+import { isTouchUsing } from '@/utility/touch.js';
 import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
