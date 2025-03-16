@@ -791,7 +791,7 @@ export const searchIndexes: SearchIndexItem[] = [
 			},
 			{
 				id: '5VSGOVYR0',
-				label: i18n.ts.manage,
+				label: i18n.ts._settings.webhook,
 				keywords: ['webhook'],
 			},
 		],
