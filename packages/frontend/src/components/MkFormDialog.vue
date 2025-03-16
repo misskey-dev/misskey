@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</div>
 		<div v-else class="_fullinfo">
-			<img :src="infoImageUrl" class="_ghost"/>
+			<img :src="infoImageUrl" draggable="false"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 	</MkSpacer>

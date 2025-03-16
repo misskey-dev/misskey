@@ -214,11 +214,6 @@ rt {
 	text-overflow: ellipsis;
 }
 
-._ghost {
-	@extend ._noSelect;
-	pointer-events: none;
-}
-
 ._modalBg {
 	position: fixed;
 	top: 0;

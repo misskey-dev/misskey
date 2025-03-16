@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="error != null" :contentMax="1200">
 		<div :class="$style.root">
-			<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
+			<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
 			<p :class="$style.text">
 				<i class="ti ti-alert-triangle"></i>
 				{{ i18n.ts.nothing }}
