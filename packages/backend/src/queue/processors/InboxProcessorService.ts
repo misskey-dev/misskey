@@ -64,8 +64,12 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 	@bindThis
 	public async process(job: Bull.Job<InboxJobData>): Promise<string> {
-		const signature = job.data.signature;	// HTTP-signature
+		const context = job.data.signature;	// HTTP-signature context
 		let activity = job.data.activity;
+
+		if (!context.continue || !context.signature) {
+			return 'skip: unsigned';
+		}
 
 		//#region Log
 		const info = Object.assign({}, activity);
@@ -73,27 +77,35 @@ export class InboxProcessorService implements OnApplicationShutdown {
 		this.logger.debug(JSON.stringify(info, null, 2));
 		//#endregion
 
-		const host = this.utilityService.toPuny(new URL(signature.keyId).hostname);
+		let authUser = context.authenticatedUser?.user;
 
-		if (!this.utilityService.isFederationAllowedHost(host)) {
-			return `Blocked request: ${host}`;
+		const activityActor = getApId(activity.actor);
+
+		if (!this.utilityService.isFederationAllowedHost(new URL(activityActor).host)) {
+			return `Blocked actor: ${activityActor}`;
 		}
 
-		const keyIdLower = signature.keyId.toLowerCase();
+		const keyIdLower = context.signature.keyId.toLowerCase();
 		if (keyIdLower.startsWith('acct:')) {
 			return `Old keyId is no longer supported. ${keyIdLower}`;
 		}
 
-		// HTTP-Signature keyIdを元にDBから取得
-		let authUser: {
-			user: MiRemoteUser;
-			key: MiUserPublickey | null;
-		} | null = await this.apDbResolverService.getAuthUserFromKeyId(signature.keyId);
+		let httpSignatureValidated = !!authUser;
 
 		// keyIdでわからなければ、activity.actorを元にDBから取得 || activity.actorを元にリモートから取得
 		if (authUser == null) {
 			try {
-				authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor));
+				const dbUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor));
+				if (dbUser == null) {
+					throw new Bull.UnrecoverableError(`skip: failed to resolve user ${getApId(activity.actor)}`);
+				}
+				// give it another chance after resolving the user again
+				if (dbUser.key && !httpSignatureValidated) {
+					if (httpSignature.verifySignature(context.signature, dbUser.key.keyPem)) {
+						authUser = dbUser.user;
+						httpSignatureValidated = true;
+					}
+				}
 			} catch (err) {
 				// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
@@ -105,21 +117,8 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			}
 		}
 
-		// それでもわからなければ終了
-		if (authUser == null) {
-			throw new Bull.UnrecoverableError(`skip: failed to resolve user ${getApId(activity.actor)}`);
-		}
-
-		// publicKey がなくても終了
-		if (authUser.key == null) {
-			throw new Bull.UnrecoverableError(`skip: failed to resolve user publicKey ${getApId(activity.actor)}`);
-		}
-
-		// HTTP-Signatureの検証
-		const httpSignatureValidated = httpSignature.verifySignature(signature, authUser.key.keyPem);
-
 		// また、signatureのsignerは、activity.actorと一致する必要がある
-		if (!httpSignatureValidated || authUser.user.uri !== activity.actor) {
+		if (!httpSignatureValidated || authUser?.uri !== activity.actor) {
 			// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
 			const ldSignature = activity.signature;
 			if (ldSignature) {
@@ -135,19 +134,20 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				}
 
 				// keyIdからLD-Signatureのユーザーを取得
-				authUser = await this.apDbResolverService.getAuthUserFromKeyId(ldSignature.creator);
-				if (authUser == null) {
+				const newAuthUser = await this.apDbResolverService.getAuthUserFromKeyId(ldSignature.creator);
+				if (newAuthUser == null) {
 					throw new Bull.UnrecoverableError('skip: LD-Signatureのユーザーが取得できませんでした');
 				}
+				authUser = newAuthUser.user;
 
-				if (authUser.key == null) {
+				if (newAuthUser.key == null) {
 					throw new Bull.UnrecoverableError('skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした');
 				}
 
 				const jsonLd = this.jsonLdService.use();
 
 				// LD-Signature検証
-				const verified = await jsonLd.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
+				const verified = await jsonLd.verifyRsaSignature2017(activity, newAuthUser.key.keyPem).catch(() => false);
 				if (!verified) {
 					throw new Bull.UnrecoverableError('skip: LD-Signatureの検証に失敗しました');
 				}
@@ -170,22 +170,22 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				//#endregion
 
 				// もう一度actorチェック
-				if (authUser.user.uri !== activity.actor) {
-					throw new Bull.UnrecoverableError(`skip: LD-Signature user(${authUser.user.uri}) !== activity.actor(${activity.actor})`);
+				if (authUser.uri !== activity.actor) {
+					throw new Bull.UnrecoverableError(`skip: LD-Signature user(${authUser.uri}) !== activity.actor(${activity.actor})`);
 				}
 
-				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
+				const ldHost = this.utilityService.extractDbHost(authUser.uri);
 				if (!this.utilityService.isFederationAllowedHost(ldHost)) {
 					throw new Bull.UnrecoverableError(`Blocked request: ${ldHost}`);
 				}
 			} else {
-				throw new Bull.UnrecoverableError(`skip: http-signature verification failed and no LD-Signature. keyId=${signature.keyId}`);
+				throw new Bull.UnrecoverableError(`skip: http-signature verification failed and no LD-Signature. keyId=${context.signature}`);
 			}
 		}
 
 		// activity.idがあればホストが署名者のホストであることを確認する
 		if (typeof activity.id === 'string') {
-			const signerHost = this.utilityService.extractDbHost(authUser.user.uri!);
+			const signerHost = this.utilityService.extractDbHost(authUser.uri!);
 			const activityIdHost = this.utilityService.extractDbHost(activity.id);
 			if (signerHost !== activityIdHost) {
 				throw new Bull.UnrecoverableError(`skip: signerHost(${signerHost}) !== activity.id host(${activityIdHost}`);
@@ -195,13 +195,13 @@ export class InboxProcessorService implements OnApplicationShutdown {
 		}
 
 		this.apRequestChart.inbox();
-		this.federationChart.inbox(authUser.user.host);
+		this.federationChart.inbox(authUser.host);
 
 		// Update instance stats
 		process.nextTick(async () => {
 			const i = await (this.meta.enableStatsForFederatedInstances
-				? this.federatedInstanceService.fetchOrRegister(authUser.user.host)
-				: this.federatedInstanceService.fetch(authUser.user.host));
+				? this.federatedInstanceService.fetchOrRegister(authUser.host)
+				: this.federatedInstanceService.fetch(authUser.host));
 
 			if (i == null) return;
 
@@ -219,7 +219,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 		// アクティビティを処理
 		try {
-			const result = await this.apInboxService.performActivity(authUser.user, activity);
+			const result = await this.apInboxService.performActivity(authUser, activity);
 			if (result && !result.startsWith('ok')) {
 				this.logger.warn(`inbox activity ignored (maybe): id=${activity.id} reason=${result}`);
 				return result;

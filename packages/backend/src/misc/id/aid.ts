@@ -30,6 +30,15 @@ export function genAid(t: number): string {
 	return getTime(t) + getNoise();
 }
 
+export function floorAid(t: number): string {
+	return getTime(t) + '00';
+}
+
+export function ceilAid(t: number): string {
+	return getTime(t) + 'zz';
+}
+
+
 export function parseAid(id: string): { date: Date; } {
 	const time = parseInt(id.slice(0, 8), 36) + TIME2000;
 	return { date: new Date(time) };

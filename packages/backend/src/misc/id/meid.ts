@@ -33,6 +33,14 @@ export function genMeid(t: number): string {
 	return getTime(t) + getRandom();
 }
 
+export function floorMeid(t: number): string {
+	return getTime(t) + '000000000000';
+}
+
+export function ceilMeid(t: number): string {
+	return getTime(t) + 'zzzzzzzzzzzz';
+}
+
 export function parseMeid(id: string): { date: Date; } {
 	return {
 		date: new Date(parseInt(id.slice(0, 12), 16) - 0x800000000000),
