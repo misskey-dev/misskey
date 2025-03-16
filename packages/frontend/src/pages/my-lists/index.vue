@@ -37,9 +37,9 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { userListsCache } from '@/cache.js';
 import { infoImageUrl } from '@/instance.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const items = computed(() => userListsCache.value.value ?? []);
 

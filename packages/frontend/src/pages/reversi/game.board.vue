@@ -150,7 +150,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { deepClone } from '@/utility/clone.js';
 import { useInterval } from '@@/js/use-interval.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { url } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -159,7 +159,7 @@ import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
 import { confetti } from '@/utility/confetti.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
