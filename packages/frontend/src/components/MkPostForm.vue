@@ -543,22 +543,6 @@ async function toggleLocalOnly() {
 	}
 }
 
-function showOtherSettings() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkPostFormOtherMenu.vue')), {
-		currentReactionAcceptance: reactionAcceptance.value,
-		textLength: textLength.value,
-		src: otherSettingsButton.value,
-	}, {
-		changeReactionAcceptance: (value: Misskey.entities.Note['reactionAcceptance']) => {
-			reactionAcceptance.value = value;
-		},
-		reset: () => {
-			clear();
-		},
-		closed: () => dispose(),
-	});
-}
-
 //#region その他の設定メニューpopup
 function showOtherSettings() {
 	let reactionAcceptanceIcon = 'ti ti-icons';
