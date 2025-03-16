@@ -5,8 +5,13 @@
 
 import Parser from 'rss-parser';
 import { Injectable } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { DI } from '@/di-symbols.js';
+import type { UsersRepository } from '@/models/_.js';
+import type { Config } from '@/config.js';
+import { ApiError } from '@/server/api/error.js';
 
 const rssParser = new Parser();
 
@@ -16,6 +21,19 @@ export const meta = {
 	requireCredential: false,
 	allowGet: true,
 	cacheSec: 60 * 3,
+
+	errors: {
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: '4362f8dc-731f-4ad8-a694-be5a88922a24',
+		},
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: 'fe8d7103-0ea8-4ec3-814d-f8b401dc69e9',
+		},
+	},
 
 	res: {
 		type: 'object',
@@ -217,8 +235,40 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private httpRequestService: HttpRequestService,
+		@Inject(DI.config)
+		private config: Config,
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			// URLから自分のサーバーのRSSかどうか判定
+			const myRssPattern = new RegExp(`^https?://${this.config.host}/@([^/]+)\\.(atom|rss|json)$`);
+			const match = ps.url.match(myRssPattern);
+
+			if (match) {
+				// 自分のサーバーのユーザーRSSの場合
+				const username = match[1];
+
+				// ユーザーが存在するか確認
+				const user = await this.usersRepository.findOneBy({ username, host: null });
+				if (!user) {
+					throw new ApiError(meta.errors.noSuchUser);
+				}
+
+				// プライバシー設定のチェック
+
+				// 1. コンテンツ表示にサインインが必要な場合
+				if (user.requireSigninToViewContents) {
+					throw new ApiError(meta.errors.accessDenied);
+				}
+
+				// 2. アカウントを見つけやすくする設定がオフの場合
+				if (!user.isExplorable) {
+					throw new ApiError(meta.errors.accessDenied);
+				}
+			}
+
+			// 通常のRSS取得処理
 			const res = await this.httpRequestService.send(ps.url, {
 				method: 'GET',
 				headers: {
@@ -228,7 +278,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			const text = await res.text();
-
 			return rssParser.parseString(text);
 		});
 	}

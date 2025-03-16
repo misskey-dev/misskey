@@ -516,6 +516,7 @@ export class ClientServerService {
 				host: host ?? IsNull(),
 				isSuspended: false,
 				requireSigninToViewContents: false,
+				isExplorable: true, // この条件を追加
 			});
 
 			return user && await this.feedService.packFeed(user);
