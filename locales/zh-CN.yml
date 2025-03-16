@@ -746,7 +746,7 @@ confirmToUnclipAlreadyClippedNote: "本帖已包含在便签 \"{name}\" 里。�
 public: "公开"
 private: "私密"
 i18nInfo: "Misskey 已经被志愿者们翻译成了各种语言。如果你也有兴趣，可以通过 {link} 帮助翻译。"
-manageAccessTokens: "管理 Access Tokens"
+manageAccessTokens: "管理访问令牌"
 accountInfo: "账户信息"
 notesCount: "帖子数量"
 repliesCount: "回复数量"
@@ -1355,6 +1355,8 @@ _settings:
   appearanceBanner: "可在此设置客户端的外观及显示方式。"
   soundsBanner: "可在此设置客户端播放的声音。"
   timelineAndNote: "时间线和帖子"
+  makeEveryTextElementsSelectable: "使所有的文字均可选择"
+  makeEveryTextElementsSelectable_description: "若开启，在某些情况下可能降低用户体验。"
 _preferencesProfile:
   profileName: "配置名"
   profileNameDescription: "请指定用于识别此设备的名称"
@@ -2519,6 +2521,7 @@ _notification:
     achievementEarned: "取得的成就"
     exportCompleted: "已完成导出"
     login: "登录"
+    createToken: "创建访问令牌"
     test: "测试通知"
     app: "关联应用的通知"
   _actions:
