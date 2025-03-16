@@ -2586,6 +2586,7 @@ _notification:
     achievementEarned: "実績の獲得"
     exportCompleted: "エクスポートが完了した"
     login: "ログイン"
+    createToken: "アクセストークンの作成"
     test: "通知のテスト"
     app: "連携アプリからの通知"
 
