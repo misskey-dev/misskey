@@ -50,7 +50,6 @@ function onClick(ev: MouseEvent) {
 			icon: 'ti ti-copy',
 			action: () => {
 				copyToClipboard(props.emoji);
-				os.success();
 			},
 		});
 

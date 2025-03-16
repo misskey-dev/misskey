@@ -48,7 +48,6 @@ const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'))
 
 function copy() {
 	copyToClipboard(props.code);
-	os.success();
 }
 </script>
 

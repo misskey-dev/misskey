@@ -2827,6 +2827,10 @@ export interface Locale extends ILocale {
      */
     "copy": string;
     /**
+     * クリップボードにコピーされました
+     */
+    "copiedToClipboard": string;
+    /**
      * メトリクス
      */
     "metrics": string;

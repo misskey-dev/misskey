@@ -33,12 +33,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
+import type { Theme } from '@/theme.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import { getBuiltinThemesRef } from '@/theme.js';
-import type { Theme } from '@/theme.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { getThemes, removeTheme } from '@/theme-store.js';
@@ -63,7 +63,6 @@ const selectedThemeCode = computed(() => {
 
 function copyThemeCode() {
 	copyToClipboard(selectedThemeCode.value);
-	os.success();
 }
 
 function uninstall() {

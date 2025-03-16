@@ -31,7 +31,6 @@ const props = withDefaults(defineProps<{
 
 const copy_ = () => {
 	copyToClipboard(props.copy);
-	os.success();
 };
 </script>
 

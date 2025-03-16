@@ -267,7 +267,7 @@ function showMenu(ev: MouseEvent) {
 
 	if (prefer.s.devMode) {
 		menu.push({ type: 'divider' }, {
-			icon: 'ti ti-id',
+			icon: 'ti ti-hash',
 			text: i18n.ts.copyFileId,
 			action: () => {
 				copyToClipboard(props.video.id);

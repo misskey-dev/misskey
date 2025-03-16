@@ -401,7 +401,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: IRouter
 
 	if (prefer.s.devMode) {
 		menuItems.push({ type: 'divider' }, {
-			icon: 'ti ti-id',
+			icon: 'ti ti-hash',
 			text: i18n.ts.copyUserId,
 			action: () => {
 				copyToClipboard(user.id);

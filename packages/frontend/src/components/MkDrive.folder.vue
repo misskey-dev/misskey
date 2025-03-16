@@ -297,7 +297,7 @@ function onContextmenu(ev: MouseEvent) {
 	}];
 	if (prefer.s.devMode) {
 		menu = menu.concat([{ type: 'divider' }, {
-			icon: 'ti ti-id',
+			icon: 'ti ti-hash',
 			text: i18n.ts.copyFolderId,
 			action: () => {
 				copyToClipboard(props.folder.id);
