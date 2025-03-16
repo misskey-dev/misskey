@@ -144,19 +144,6 @@ if (window.innerWidth < 1024) {
 
 document.documentElement.style.overflowY = 'scroll';
 
-if (prefer.s.widgets.length === 0) {
-	prefer.commit('widgets', [{
-		name: 'calendar',
-		id: 'a', place: null, data: {},
-	}, {
-		name: 'notifications',
-		id: 'b', place: null, data: {},
-	}, {
-		name: 'trends',
-		id: 'c', place: null, data: {},
-	}]);
-}
-
 onMounted(() => {
 	window.addEventListener('resize', () => {
 		isDesktop.value = (window.innerWidth >= DESKTOP_THRESHOLD);
