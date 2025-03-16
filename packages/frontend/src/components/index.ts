@@ -21,7 +21,6 @@ import MkError from './global/MkError.vue';
 import MkAd from './global/MkAd.vue';
 import MkPageHeader from './global/MkPageHeader.vue';
 import MkSpacer from './global/MkSpacer.vue';
-import MkFooterSpacer from './global/MkFooterSpacer.vue';
 import MkStickyContainer from './global/MkStickyContainer.vue';
 import MkLazy from './global/MkLazy.vue';
 import SearchMarker from './global/SearchMarker.vue';
@@ -55,7 +54,6 @@ export const components = {
 	MkAd: MkAd,
 	MkPageHeader: MkPageHeader,
 	MkSpacer: MkSpacer,
-	MkFooterSpacer: MkFooterSpacer,
 	MkStickyContainer: MkStickyContainer,
 	MkLazy: MkLazy,
 	SearchMarker: SearchMarker,
@@ -83,7 +81,6 @@ declare module '@vue/runtime-core' {
 		MkAd: typeof MkAd;
 		MkPageHeader: typeof MkPageHeader;
 		MkSpacer: typeof MkSpacer;
-		MkFooterSpacer: typeof MkFooterSpacer;
 		MkStickyContainer: typeof MkStickyContainer;
 		MkLazy: typeof MkLazy;
 		SearchMarker: typeof SearchMarker;
