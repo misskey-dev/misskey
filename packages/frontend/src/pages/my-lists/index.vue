@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps">
 			<div v-if="items.length === 0" class="empty">
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img :src="infoImageUrl" draggable="false"/>
 					<div>{{ i18n.ts.nothing }}</div>
 				</div>
 			</div>

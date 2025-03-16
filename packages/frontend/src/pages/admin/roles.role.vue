@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkPagination :pagination="usersPagination">
 							<template #empty>
 								<div class="_fullinfo">
-									<img :src="infoImageUrl" class="_ghost"/>
+									<img :src="infoImageUrl" draggable="false"/>
 									<div>{{ i18n.ts.noUsers }}</div>
 								</div>
 							</template>

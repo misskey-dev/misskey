@@ -46,7 +46,16 @@ export const PREF_DEF = {
 	},
 	widgets: {
 		accountDependent: true,
-		default: [] as {
+		default: [{
+			name: 'calendar',
+			id: 'a', place: 'right', data: {},
+		}, {
+			name: 'notifications',
+			id: 'b', place: 'right', data: {},
+		}, {
+			name: 'trends',
+			id: 'c', place: 'right', data: {},
+		}] as {
 			name: string;
 			id: string;
 			place: string | null;

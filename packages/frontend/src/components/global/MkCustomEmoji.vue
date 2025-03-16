@@ -9,6 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
 	src="/client-assets/dummy.png"
 	:title="alt"
+	draggable="false"
+	style="-webkit-user-drag: none;"
 />
 <span v-else-if="errored">:{{ customEmojiName }}:</span>
 <img
@@ -18,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:alt="alt"
 	:title="alt"
 	decoding="async"
+	draggable="false"
 	@error="errored = true"
 	@load="errored = false"
 	@click="onClick"
@@ -157,6 +160,7 @@ async function edit(name: string) {
 .root {
 	height: 2em;
 	vertical-align: middle;
+	-webkit-user-drag: none;
 	transition: transform 0.2s ease;
 
 	&:hover {

@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkLoading v-if="!loaded"/>
 <Transition :name="prefer.s.animation ? '_transition_zoom' : ''" appear>
 	<div v-show="loaded" :class="$style.root">
-		<img :src="serverErrorImageUrl" class="_ghost" :class="$style.img"/>
+		<img :src="serverErrorImageUrl" draggable="false" :class="$style.img"/>
 		<div class="_gaps">
 			<div><b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.pageLoadError }}</b></div>
 			<div v-if="meta && (version === meta.version)">{{ i18n.ts.pageLoadErrorDescription }}</div>

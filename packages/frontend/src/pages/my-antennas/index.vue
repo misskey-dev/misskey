@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div>
 			<div v-if="antennas.length === 0" class="empty">
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img :src="infoImageUrl" draggable="false"/>
 					<div>{{ i18n.ts.nothing }}</div>
 				</div>
 			</div>

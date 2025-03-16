@@ -178,19 +178,6 @@ if (window.innerWidth > 1024) {
 	}
 }
 
-if (prefer.s.widgets.length === 0) {
-	prefer.commit('widgets', [{
-		name: 'calendar',
-		id: 'a', place: 'right', data: {},
-	}, {
-		name: 'notifications',
-		id: 'b', place: 'right', data: {},
-	}, {
-		name: 'trends',
-		id: 'c', place: 'right', data: {},
-	}]);
-}
-
 onMounted(() => {
 	if (!isDesktop.value) {
 		window.addEventListener('resize', () => {

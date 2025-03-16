@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="divider"></div>
 	<div class="about">
 		<button v-click-anime class="item _button" @click="openInstanceMenu">
-			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
+			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" draggable="false"/>
 		</button>
 	</div>
 	<!--<MisskeyLogo class="misskey"/>-->
