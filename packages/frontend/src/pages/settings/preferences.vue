@@ -32,31 +32,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<FormSection>
 			<div class="_gaps_s">
-				<SearchMarker :keywords="['post', 'form', 'timeline']">
-					<MkSwitch v-model="showFixedPostForm">
-						<template #label><SearchLabel>{{ i18n.ts.showFixedPostForm }}</SearchLabel></template>
-					</MkSwitch>
-				</SearchMarker>
-
-				<SearchMarker :keywords="['post', 'form', 'timeline', 'channel']">
-					<MkSwitch v-model="showFixedPostFormInChannel">
-						<template #label><SearchLabel>{{ i18n.ts.showFixedPostFormInChannel }}</SearchLabel></template>
-					</MkSwitch>
-				</SearchMarker>
-
 				<SearchMarker :keywords="['pinned', 'list']">
 					<MkFolder>
 						<template #label><SearchLabel>{{ i18n.ts.pinnedList }}</SearchLabel></template>
 						<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
 						<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
 						<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
-					</MkFolder>
-				</SearchMarker>
-
-				<SearchMarker :keywords="['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn']">
-					<MkSwitch v-model="enableQuickAddMfmFunction">
-						<template #label><SearchLabel>{{ i18n.ts.enableQuickAddMfmFunction }}</SearchLabel></template>
-					</MkSwitch>
+						</MkFolder>
 				</SearchMarker>
 			</div>
 		</FormSection>
@@ -317,12 +299,9 @@ const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showC
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
 const advancedMfm = computed(defaultStore.makeGetterSetter('advancedMfm'));
 const showReactionsCount = computed(defaultStore.makeGetterSetter('showReactionsCount'));
-const enableQuickAddMfmFunction = computed(defaultStore.makeGetterSetter('enableQuickAddMfmFunction'));
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
-const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
-const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
 const numberOfPageCache = computed(defaultStore.makeGetterSetter('numberOfPageCache'));
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));

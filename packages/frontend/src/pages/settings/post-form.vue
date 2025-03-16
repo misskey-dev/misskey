@@ -1,5 +1,18 @@
 <template>
 <div class="_gaps_m">
+	<!-- Add the fixed post form related switches here -->
+	<SearchMarker :keywords="['post', 'form', 'timeline']">
+		<MkSwitch v-model="showFixedPostForm">
+			{{ i18n.ts.showFixedPostForm }}
+		</MkSwitch>
+	</SearchMarker>
+
+	<SearchMarker :keywords="['post', 'form', 'timeline', 'channel']">
+		<MkSwitch v-model="showFixedPostFormInChannel">
+			{{ i18n.ts.showFixedPostFormInChannel }}
+		</MkSwitch>
+	</SearchMarker>
+
 	<FormSlot>
 		<template #label>{{ i18n.ts.postForm }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
 		<MkContainer :showHeader="false">
@@ -25,6 +38,12 @@
 		<MkButton primary class="save" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 	<div :class="$style.label">{{ i18n.ts.postFormBottomSettingsDescription }}</div>
+
+	<!-- MFM function picker switch with corrected presentation -->
+	<MkSwitch v-model="enableQuickAddMfmFunction">
+		{{ i18n.ts.enableQuickAddMfmFunction }}
+	</MkSwitch>
+
 	<!-- <MkSwitch v-model="disableNoteDrafting">
 		<template #caption>{{ i18n.ts.disableNoteDraftingDescription }}</template>
 		{{ i18n.ts.disableNoteDrafting }}
@@ -59,6 +78,11 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 // const disableNoteDrafting = computed(defaultStore.makeGetterSetter('disableNoteDrafting'));
 const defaultScheduledNoteDelete = computed(defaultStore.makeGetterSetter('defaultScheduledNoteDelete'));
+// Add the enableQuickAddMfmFunction computed property
+const enableQuickAddMfmFunction = computed(defaultStore.makeGetterSetter('enableQuickAddMfmFunction'));
+// Add the fixed post form related computed properties
+const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
+const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
 
 const scheduledNoteDelete = ref({ deleteAt: null, deleteAfter: defaultStore.state.defaultScheduledNoteDeleteTime, isValid: true });
 

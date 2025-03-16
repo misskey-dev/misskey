@@ -4,27 +4,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
-		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
-			<div class="body">
-				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
-					<div class="baaadecd">
-						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-						<MkSuperMenu :def="menuDef" :grid="narrow" :searchIndex="SETTING_INDEX"></MkSuperMenu>
+	<MkStickyContainer>
+		<template #header>
+			<MkPageHeader :actions="headerActions" :tabs="headerTabs" />
+		</template>
+		<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
+			<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
+				<div class="body">
+					<div v-if="!narrow || currentPage?.route.name == null" class="nav">
+						<div class="baaadecd">
+							<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA
+									to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA>
+							</MkInfo>
+							<MkSuperMenu :def="menuDef" :grid="narrow" :searchIndex="SETTING_INDEX"></MkSuperMenu>
+						</div>
 					</div>
-				</div>
-				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
-					<div class="bkzroven" style="container-type: inline-size;">
-						<RouterView nested/>
+					<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
+						<div class="bkzroven" style="container-type: inline-size;">
+							<RouterView nested />
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</MkSpacer>
-	<MkFooterSpacer/>
-</mkstickycontainer>
+		</MkSpacer>
+		<MkFooterSpacer />
+	</mkstickycontainer>
 </template>
 
 <script setup lang="ts">
@@ -113,6 +117,11 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts._yami.yamiSet,
 		to: '/settings/yamiset',
 		active: currentPage.value?.route.name === 'yamiset',
+	}, {
+		icon: 'ti ti-pencil',
+		text: i18n.ts.postForm,
+		to: '/settings/post-form',
+		active: currentPage.value?.route.name === 'post-form',
 	}],
 }, {
 	items: [{
@@ -259,15 +268,15 @@ definePageMetadata(() => INFO.value);
 
 <style lang="scss" scoped>
 .vvcocwet {
-	> .body {
-		> .nav {
+	>.body {
+		>.nav {
 			.baaadecd {
-				> .info {
+				>.info {
 					margin: 16px 0;
 				}
 
-				> .accounts {
-					> .avatar {
+				>.accounts {
+					>.avatar {
 						display: block;
 						width: 50px;
 						height: 50px;
@@ -277,24 +286,23 @@ definePageMetadata(() => INFO.value);
 			}
 		}
 
-		> .main {
-			.bkzroven {
-			}
+		>.main {
+			.bkzroven {}
 		}
 	}
 
 	&.wide {
-		> .body {
+		>.body {
 			display: flex;
 			height: 100%;
 
-			> .nav {
+			>.nav {
 				width: 34%;
 				padding-right: 32px;
 				box-sizing: border-box;
 			}
 
-			> .main {
+			>.main {
 				flex: 1;
 				min-width: 0;
 			}
