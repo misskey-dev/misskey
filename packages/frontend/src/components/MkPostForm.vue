@@ -543,6 +543,22 @@ async function toggleLocalOnly() {
 	}
 }
 
+async function toggleReactionAcceptance() {
+	const select = await os.select({
+		title: i18n.ts.reactionAcceptance,
+		items: [
+			{ value: null, text: i18n.ts.all },
+			{ value: 'likeOnlyForRemote' as const, text: i18n.ts.likeOnlyForRemote },
+			{ value: 'nonSensitiveOnly' as const, text: i18n.ts.nonSensitiveOnly },
+			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, text: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
+			{ value: 'likeOnly' as const, text: i18n.ts.likeOnly },
+		],
+		default: reactionAcceptance.value,
+	});
+	if (select.canceled) return;
+	reactionAcceptance.value = select.result;
+}
+
 //#region その他の設定メニューpopup
 function showOtherSettings() {
 	let reactionAcceptanceIcon = 'ti ti-icons';
