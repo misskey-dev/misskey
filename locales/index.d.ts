@@ -5465,6 +5465,14 @@ export interface Locale extends ILocale {
          * タイムラインとノート
          */
         "timelineAndNote": string;
+        /**
+         * 全てのテキスト要素を選択可能にする
+         */
+        "makeEveryTextElementsSelectable": string;
+        /**
+         * 有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。
+         */
+        "makeEveryTextElementsSelectable_description": string;
     };
     "_preferencesProfile": {
         /**
@@ -9928,6 +9936,10 @@ export interface Locale extends ILocale {
              * ログイン
              */
             "login": string;
+            /**
+             * アクセストークンの作成
+             */
+            "createToken": string;
             /**
              * 通知のテスト
              */
