@@ -669,6 +669,11 @@ export const searchIndexes: SearchIndexItem[] = [
 						label: i18n.ts.style,
 						keywords: ['emoji', 'picker', 'style'],
 					},
+					{
+						id: '1AcH5eI7H',
+						label: i18n.ts.style,
+						keywords: ['reaction', 'emoji', 'picker', 'style'],
+					},
 				],
 				label: i18n.ts.emojiPickerDisplay,
 				keywords: ['emoji', 'picker', 'display'],
