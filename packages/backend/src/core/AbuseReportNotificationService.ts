@@ -154,28 +154,28 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 		const convertedReports = abuseReports.map(it => {
 			return {
 				...it,
-				reporter: usersMap.get(it.reporterId),
-				targetUser: usersMap.get(it.targetUserId),
-				assignee: it.assigneeId ? usersMap.get(it.assigneeId) : null,
+				reporter: usersMap.get(it.reporterId) ?? null,
+				targetUser: usersMap.get(it.targetUserId) ?? null,
+				assignee: it.assigneeId ? (usersMap.get(it.assigneeId) ?? null) : null,
 			};
 		});
 
-		const recipientWebhookIds = await this.fetchWebhookRecipients()
-			.then(it => it
-				.filter(it => it.isActive && it.systemWebhookId && it.method === 'webhook')
-				.map(it => it.systemWebhookId)
-				.filter(x => x != null));
-		for (const webhookId of recipientWebhookIds) {
-			await Promise.all(
-				convertedReports.map(it => {
-					return this.systemWebhookService.enqueueSystemWebhook(
-						webhookId,
-						type,
-						it,
-					);
-				}),
-			);
-		}
+		const inactiveRecipients = await this.fetchWebhookRecipients()
+			.then(it => it.filter(it => !it.isActive));
+		const withoutWebhookIds = inactiveRecipients
+			.map(it => it.systemWebhookId)
+			.filter(x => x != null);
+		return Promise.all(
+			convertedReports.map(it => {
+				return this.systemWebhookService.enqueueSystemWebhook(
+					type,
+					it,
+					{
+						excludes: withoutWebhookIds,
+					},
+				);
+			}),
+		);
 	}
 
 	/**

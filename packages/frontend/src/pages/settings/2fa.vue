@@ -4,74 +4,82 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<FormSection :first="first">
-	<template #label>{{ i18n.ts['2fa'] }}</template>
+<SearchMarker markerId="2fa" :keywords="['2fa']">
+	<FormSection :first="first">
+		<template #label><SearchLabel>{{ i18n.ts['2fa'] }}</SearchLabel></template>
 
-	<div v-if="$i" class="_gaps_s">
-		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'partial'" warn>
-			{{ i18n.ts._2fa.backupCodeUsedWarning }}
-		</MkInfo>
-		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'none'" warn>
-			{{ i18n.ts._2fa.backupCodesExhaustedWarning }}
-		</MkInfo>
+		<div v-if="$i" class="_gaps_s">
+			<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'partial'" warn>
+				{{ i18n.ts._2fa.backupCodeUsedWarning }}
+			</MkInfo>
+			<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'none'" warn>
+				{{ i18n.ts._2fa.backupCodesExhaustedWarning }}
+			</MkInfo>
 
-		<MkFolder :defaultOpen="true">
-			<template #icon><i class="ti ti-shield-lock"></i></template>
-			<template #label>{{ i18n.ts.totp }}</template>
-			<template #caption>{{ i18n.ts.totpDescription }}</template>
-			<template #suffix><i v-if="$i.twoFactorEnabled" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
+			<SearchMarker :keywords="['totp', 'app']">
+				<MkFolder :defaultOpen="true">
+					<template #icon><i class="ti ti-shield-lock"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts.totp }}</SearchLabel></template>
+					<template #caption><SearchKeyword>{{ i18n.ts.totpDescription }}</SearchKeyword></template>
+					<template #suffix><i v-if="$i.twoFactorEnabled" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 
-			<div v-if="$i.twoFactorEnabled" class="_gaps_s">
-				<div v-text="i18n.ts._2fa.alreadyRegistered"/>
-				<template v-if="$i.securityKeysList.length > 0">
-					<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
-					<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
-				</template>
-				<MkButton v-else danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
-			</div>
+					<div v-if="$i.twoFactorEnabled" class="_gaps_s">
+						<div v-text="i18n.ts._2fa.alreadyRegistered"/>
+						<template v-if="$i.securityKeysList.length > 0">
+							<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
+							<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
+						</template>
+						<MkButton v-else danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+					</div>
 
-			<div v-else-if="!$i.twoFactorEnabled" class="_gaps_s">
-				<MkButton primary gradate @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
-				<MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank"><i class="ti ti-help-circle"></i> {{ i18n.ts.learnMore }}</MkLink>
-			</div>
-		</MkFolder>
+					<div v-else-if="!$i.twoFactorEnabled" class="_gaps_s">
+						<MkButton primary gradate @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
+						<MkLink url="https://misskey-hub.net/docs/for-users/stepped-guides/how-to-enable-2fa/" target="_blank"><i class="ti ti-help-circle"></i> {{ i18n.ts.learnMore }}</MkLink>
+					</div>
+				</MkFolder>
+			</SearchMarker>
 
-		<MkFolder>
-			<template #icon><i class="ti ti-key"></i></template>
-			<template #label>{{ i18n.ts.securityKeyAndPasskey }}</template>
-			<div class="_gaps_s">
-				<MkInfo>
-					{{ i18n.ts._2fa.securityKeyInfo }}
-				</MkInfo>
+			<SearchMarker :keywords="['security', 'key', 'passkey']">
+				<MkFolder>
+					<template #icon><i class="ti ti-key"></i></template>
+					<template #label><SearchLabel>{{ i18n.ts.securityKeyAndPasskey }}</SearchLabel></template>
+					<div class="_gaps_s">
+						<MkInfo>
+							{{ i18n.ts._2fa.securityKeyInfo }}
+						</MkInfo>
 
-				<MkInfo v-if="!webAuthnSupported()" warn>
-					{{ i18n.ts._2fa.securityKeyNotSupported }}
-				</MkInfo>
+						<MkInfo v-if="!webAuthnSupported()" warn>
+							{{ i18n.ts._2fa.securityKeyNotSupported }}
+						</MkInfo>
 
-				<MkInfo v-else-if="webAuthnSupported() && !$i.twoFactorEnabled" warn>
-					{{ i18n.ts._2fa.registerTOTPBeforeKey }}
-				</MkInfo>
+						<MkInfo v-else-if="webAuthnSupported() && !$i.twoFactorEnabled" warn>
+							{{ i18n.ts._2fa.registerTOTPBeforeKey }}
+						</MkInfo>
 
-				<template v-else>
-					<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
-					<MkFolder v-for="key in $i.securityKeysList" :key="key.id">
-						<template #label>{{ key.name }}</template>
-						<template #suffix><I18n :src="i18n.ts.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
-						<div class="_buttons">
-							<MkButton @click="renameKey(key)"><i class="ti ti-forms"></i> {{ i18n.ts.rename }}</MkButton>
-							<MkButton danger @click="unregisterKey(key)"><i class="ti ti-trash"></i> {{ i18n.ts.unregister }}</MkButton>
-						</div>
-					</MkFolder>
-				</template>
-			</div>
-		</MkFolder>
+						<template v-else>
+							<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
+							<MkFolder v-for="key in $i.securityKeysList" :key="key.id">
+								<template #label>{{ key.name }}</template>
+								<template #suffix><I18n :src="i18n.ts.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
+								<div class="_buttons">
+									<MkButton @click="renameKey(key)"><i class="ti ti-forms"></i> {{ i18n.ts.rename }}</MkButton>
+									<MkButton danger @click="unregisterKey(key)"><i class="ti ti-trash"></i> {{ i18n.ts.unregister }}</MkButton>
+								</div>
+							</MkFolder>
+						</template>
+					</div>
+				</MkFolder>
+			</SearchMarker>
 
-		<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
-			<template #label>{{ i18n.ts.passwordLessLogin }}</template>
-			<template #caption>{{ i18n.ts.passwordLessLoginDescription }}</template>
-		</MkSwitch>
-	</div>
-</FormSection>
+			<SearchMarker :keywords="['password', 'less', 'key', 'passkey', 'login', 'signin']">
+				<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
+					<template #label><SearchLabel>{{ i18n.ts.passwordLessLogin }}</SearchLabel></template>
+					<template #caption><SearchKeyword>{{ i18n.ts.passwordLessLoginDescription }}</SearchKeyword></template>
+				</MkSwitch>
+			</SearchMarker>
+		</div>
+	</FormSection>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
@@ -84,10 +92,11 @@ import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkLink from '@/components/MkLink.vue';
 import * as os from '@/os.js';
-import { signinRequired, updateAccountPartial } from '@/account.js';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 // メモ: 各エンドポイントはmeUpdatedを発行するため、refreshAccountは不要
 
@@ -123,7 +132,7 @@ async function unregisterTOTP(): Promise<void> {
 		password: auth.result.password,
 		token: auth.result.token,
 	}).then(res => {
-		updateAccountPartial({
+		updateCurrentAccountPartial({
 			twoFactorEnabled: false,
 		});
 	}).catch(error => {

@@ -164,6 +164,13 @@ export class EmailService {
 		available: boolean;
 		reason: null | 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | 'banned' | 'network' | 'blacklist';
 	}> {
+		if (!this.utilityService.validateEmailFormat(emailAddress)) {
+			return {
+				available: false,
+				reason: 'format',
+			};
+		}
+
 		const exist = await this.userProfilesRepository.countBy({
 			emailVerified: true,
 			email: emailAddress,
@@ -312,6 +319,7 @@ export class EmailService {
 					Accept: 'application/json',
 					Authorization: truemailAuthKey,
 				},
+				isLocalAddressAllowed: true,
 			});
 
 			const json = (await res.json()) as {

@@ -43,10 +43,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, watch, shallowRef, ref, computed } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store.js';
+import type { Column } from '@/deck.js';
+import type { MenuItem } from '@/types/menu.js';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import type { MenuItem } from '@/types/menu.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
@@ -99,7 +100,7 @@ function onOtherDragEnd() {
 function toggleActive() {
 	if (!props.isStacked) return;
 	updateColumn(props.column.id, {
-		active: !props.column.active,
+		active: props.column.active == null ? false : !props.column.active,
 	});
 }
 
@@ -128,7 +129,8 @@ function getMenu() {
 		icon: 'ti ti-settings',
 		text: i18n.ts._deck.configureColumn,
 		action: async () => {
-			const { canceled, result } = await os.form(props.column.name, {
+			const name = props.column.name ?? i18n.ts._deck._columns[props.column.type];
+			const { canceled, result } = await os.form(name, {
 				name: {
 					type: 'string',
 					label: i18n.ts.name,
@@ -143,7 +145,7 @@ function getMenu() {
 				flexible: {
 					type: 'boolean',
 					label: i18n.ts._deck.flexible,
-					default: props.column.flexible,
+					default: props.column.flexible ?? null,
 				},
 			});
 			if (canceled) return;

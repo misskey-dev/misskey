@@ -28,12 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, shallowRef, computed, nextTick, watch } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
-import { defaultStore } from '@/store.js';
-import { isHorizontalSwipeSwiping as isSwiping } from '@/scripts/touch.js';
+import { isHorizontalSwipeSwiping as isSwiping } from '@/utility/touch.js';
+import { prefer } from '@/preferences.js';
 
 const rootEl = shallowRef<HTMLDivElement>();
 
-// eslint-disable-next-line no-undef
 const tabModel = defineModel<string>('tab');
 
 const props = defineProps<{
@@ -44,7 +43,7 @@ const emit = defineEmits<{
 	(ev: 'swiped', newKey: string, direction: 'left' | 'right'): void;
 }>();
 
-const shouldAnimate = computed(() => defaultStore.reactiveState.enableHorizontalSwipe.value || defaultStore.reactiveState.animation.value);
+const shouldAnimate = computed(() => prefer.r.enableHorizontalSwipe.value || prefer.r.animation.value);
 
 // ▼ しきい値 ▼ //
 
@@ -72,7 +71,7 @@ const isSwipingForClass = ref(false);
 let swipeAborted = false;
 
 function touchStart(event: TouchEvent) {
-	if (!defaultStore.reactiveState.enableHorizontalSwipe.value) return;
+	if (!prefer.r.enableHorizontalSwipe.value) return;
 
 	if (event.touches.length !== 1) return;
 
@@ -83,7 +82,7 @@ function touchStart(event: TouchEvent) {
 }
 
 function touchMove(event: TouchEvent) {
-	if (!defaultStore.reactiveState.enableHorizontalSwipe.value) return;
+	if (!prefer.r.enableHorizontalSwipe.value) return;
 
 	if (event.touches.length !== 1) return;
 
@@ -134,7 +133,7 @@ function touchEnd(event: TouchEvent) {
 		return;
 	}
 
-	if (!defaultStore.reactiveState.enableHorizontalSwipe.value) return;
+	if (!prefer.r.enableHorizontalSwipe.value) return;
 
 	if (event.touches.length !== 0) return;
 

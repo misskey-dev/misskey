@@ -4,12 +4,12 @@
  */
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { StoryObj } from '@storybook/vue3';
+import type { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import { userDetailed } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkAchievements from './MkAchievements.vue';
-import { ACHIEVEMENT_TYPES } from '@/scripts/achievements.js';
+import { ACHIEVEMENT_TYPES } from '@/utility/achievements.js';
 export const Empty = {
 	render(args) {
 		return {

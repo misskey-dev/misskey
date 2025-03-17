@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.key">
 		<slot name="key"></slot>
 	</div>
-	<div :class="$style.value">
+	<div :class="$style.value" class="_selectable">
 		<slot name="value"></slot>
 		<button v-if="copy" v-tooltip="i18n.ts.copy" class="_textButton" style="margin-left: 0.5em;" @click="copy_"><i class="ti ti-copy"></i></button>
 	</div>
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
@@ -31,7 +31,6 @@ const props = withDefaults(defineProps<{
 
 const copy_ = () => {
 	copyToClipboard(props.copy);
-	os.success();
 };
 </script>
 

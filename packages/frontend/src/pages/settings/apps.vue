@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormPagination ref="list" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
-				<img :src="infoImageUrl" class="_ghost"/>
+				<img :src="infoImageUrl" draggable="false"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</template>
@@ -55,10 +55,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import FormPagination from '@/components/MkPagination.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -77,7 +78,7 @@ const pagination = {
 
 function revoke(token) {
 	misskeyApi('i/revoke-token', { tokenId: token.id }).then(() => {
-		list.value.reload();
+		list.value?.reload();
 	});
 }
 
@@ -85,7 +86,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.installedApps,
 	icon: 'ti ti-plug',
 }));

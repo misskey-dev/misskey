@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Directive } from 'vue';
-import { makeHotkey } from '@/scripts/hotkey.js';
+import type { Directive } from 'vue';
+import { makeHotkey } from '@/utility/hotkey.js';
 
 export default {
 	mounted(el, binding) {

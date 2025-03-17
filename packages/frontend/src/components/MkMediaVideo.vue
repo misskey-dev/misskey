@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[
 		$style.videoContainer,
 		controlsShowing && $style.active,
-		(video.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive,
+		(video.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
 	@mouseover="onMouseOver"
 	@mouseleave="onMouseLeave"
@@ -20,13 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<button v-if="hide" :class="$style.hidden" @click="show">
 		<div :class="$style.hiddenTextWrapper">
-			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
-			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ defaultStore.state.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
+			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
+			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ prefer.s.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</button>
 
-	<div v-else-if="defaultStore.reactiveState.useNativeUIForVideoAudioPlayer.value" :class="$style.videoRoot">
+	<div v-else-if="prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.videoRoot">
 		<video
 			ref="videoEl"
 			:class="$style.video"
@@ -112,16 +112,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, shallowRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
-import { type Keymap } from '@/scripts/hotkey.js';
+import type { Keymap } from '@/utility/hotkey.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { isFullscreenNotSupported } from '@/scripts/device-kind.js';
-import hasAudio from '@/scripts/media-has-audio.js';
+import { exitFullscreen, requestFullscreen } from '@/utility/fullscreen.js';
+import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
-import { $i, iAmModerator } from '@/account.js';
+import { $i, iAmModerator } from '@/i.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;
@@ -174,10 +175,10 @@ function hasFocus() {
 }
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
+const hide = ref((prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.video.isSensitive && prefer.s.nsfw !== 'ignore'));
 
 async function show() {
-	if (props.video.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+	if (props.video.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
 		const { canceled } = await os.confirm({
 			type: 'question',
 			text: i18n.ts.sensitiveMediaRevealConfirm,
@@ -241,14 +242,36 @@ function showMenu(ev: MouseEvent) {
 		});
 	}
 
+	const details: MenuItem[] = [];
 	if ($i?.id === props.video.userId) {
-		menu.push({
-			type: 'divider',
-		}, {
+		details.push({
 			type: 'link',
 			text: i18n.ts._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.video.id}`,
+		});
+	}
+
+	if (iAmModerator) {
+		details.push({
+			type: 'link',
+			text: i18n.ts.moderation,
+			icon: 'ti ti-photo-exclamation',
+			to: `/admin/file/${props.video.id}`,
+		});
+	}
+
+	if (details.length > 0) {
+		menu.push({ type: 'divider' }, ...details);
+	}
+
+	if (prefer.s.devMode) {
+		menu.push({ type: 'divider' }, {
+			icon: 'ti ti-hash',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(props.video.id);
+			},
 		});
 	}
 
@@ -261,7 +284,14 @@ function showMenu(ev: MouseEvent) {
 	});
 }
 
-function toggleSensitive(file: Misskey.entities.DriveFile) {
+async function toggleSensitive(file: Misskey.entities.DriveFile) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: file.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+	});
+
+	if (canceled) return;
+
 	os.apiWithDialog('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
@@ -334,26 +364,21 @@ function togglePlayPause() {
 }
 
 function toggleFullscreen() {
-	if (isFullscreenNotSupported && videoEl.value) {
-		if (isFullscreen.value) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			//@ts-ignore
-			videoEl.value.webkitExitFullscreen();
-			isFullscreen.value = false;
-		} else {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			//@ts-ignore
-			videoEl.value.webkitEnterFullscreen();
-			isFullscreen.value = true;
-		}
-	} else if (playerEl.value) {
-		if (isFullscreen.value) {
-			document.exitFullscreen();
-			isFullscreen.value = false;
-		} else {
-			playerEl.value.requestFullscreen({ navigationUI: 'hide' });
-			isFullscreen.value = true;
-		}
+	if (playerEl.value == null || videoEl.value == null) return;
+	if (isFullscreen.value) {
+		exitFullscreen({
+			videoEl: videoEl.value,
+		});
+		isFullscreen.value = false;
+	} else {
+		requestFullscreen({
+			videoEl: videoEl.value,
+			playerEl: playerEl.value,
+			options: {
+				navigationUI: 'hide',
+			},
+		});
+		isFullscreen.value = true;
 	}
 }
 
@@ -454,8 +479,10 @@ watch(loop, (to) => {
 });
 
 watch(hide, (to) => {
-	if (to && isFullscreen.value) {
-		document.exitFullscreen();
+	if (videoEl.value && to && isFullscreen.value) {
+		exitFullscreen({
+			videoEl: videoEl.value,
+		});
 		isFullscreen.value = false;
 	}
 });
@@ -475,7 +502,7 @@ onDeactivated(() => {
 	elapsedTimeMs.value = 0;
 	durationMs.value = 0;
 	bufferedEnd.value = 0;
-	hide.value = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore');
+	hide.value = (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.video.isSensitive && prefer.s.nsfw !== 'ignore');
 	stopVideoElWatch();
 	onceInit = false;
 	if (mediaTickFrameId) {

@@ -104,12 +104,12 @@ import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
 import XFile from '@/components/MkDrive.file.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { uploadFile, uploads } from '@/scripts/upload.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { uploadFile, uploads } from '@/utility/upload.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -142,7 +142,7 @@ const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
 const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = uploads;
 const connection = useStream().useChannel('drive');
-const keepOriginal = ref<boolean>(defaultStore.state.keepOriginalUploading); // 外部渡しが多いので$refは使わないほうがよい
+const keepOriginal = ref<boolean>(prefer.s.keepOriginalUploading); // 外部渡しが多いので$refは使わないほうがよい
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -157,7 +157,7 @@ const ilFilesObserver = new IntersectionObserver(
 	(entries) => entries.some((entry) => entry.isIntersecting) && !fetching.value && moreFiles.value && fetchMoreFiles(),
 );
 
-const sortModeSelect = ref('+createdAt');
+const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort']>>('+createdAt');
 
 watch(folder, () => emit('cd', folder.value));
 watch(sortModeSelect, () => {
@@ -198,7 +198,7 @@ function onStreamDriveFolderDeleted(folderId: string) {
 	removeFolder(folderId);
 }
 
-function onDragover(ev: DragEvent): any {
+function onDragover(ev: DragEvent) {
 	if (!ev.dataTransfer) return;
 
 	// ドラッグ元が自分自身の所有するアイテムだったら
@@ -243,7 +243,7 @@ function onDragleave() {
 	draghover.value = false;
 }
 
-function onDrop(ev: DragEvent): any {
+function onDrop(ev: DragEvent) {
 	draghover.value = false;
 
 	if (!ev.dataTransfer) return;
@@ -332,7 +332,7 @@ function createFolder() {
 		title: i18n.ts.createFolder,
 		placeholder: i18n.ts.folderName,
 	}).then(({ canceled, result: name }) => {
-		if (canceled) return;
+		if (canceled || name == null) return;
 		misskeyApi('drive/folders/create', {
 			name: name,
 			parentId: folder.value ? folder.value.id : undefined,
@@ -716,7 +716,7 @@ function onContextmenu(ev: MouseEvent) {
 }
 
 onMounted(() => {
-	if (defaultStore.state.enableInfiniteScroll && loadMoreFiles.value) {
+	if (prefer.s.enableInfiniteScroll && loadMoreFiles.value) {
 		nextTick(() => {
 			ilFilesObserver.observe(loadMoreFiles.value?.$el);
 		});
@@ -737,7 +737,7 @@ onMounted(() => {
 });
 
 onActivated(() => {
-	if (defaultStore.state.enableInfiniteScroll) {
+	if (prefer.s.enableInfiniteScroll) {
 		nextTick(() => {
 			ilFilesObserver.observe(loadMoreFiles.value?.$el);
 		});

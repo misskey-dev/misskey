@@ -9,6 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
 	src="/client-assets/dummy.png"
 	:title="alt"
+	draggable="false"
+	style="-webkit-user-drag: none;"
 />
 <span v-else-if="errored">:{{ customEmojiName }}:</span>
 <img
@@ -18,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:alt="alt"
 	:title="alt"
 	decoding="async"
+	draggable="false"
 	@error="errored = true"
 	@load="errored = false"
 	@click="onClick"
@@ -25,17 +28,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref } from 'vue';
-import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { defaultStore } from '@/store.js';
+import { computed, defineAsyncComponent, inject, ref } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
+import { getProxiedImageUrl, getStaticImageUrl } from '@/utility/media-proxy.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import * as sound from '@/scripts/sound.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import * as sound from '@/utility/sound.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
-import type { MenuItem } from '@/types/menu.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	name: string;
@@ -76,7 +80,7 @@ const url = computed(() => {
 				false,
 				true,
 			);
-	return defaultStore.reactiveState.disableShowingAnimatedImages.value
+	return prefer.s.disableShowingAnimatedImages
 		? getStaticImageUrl(proxied)
 		: proxied;
 });
@@ -96,7 +100,6 @@ function onClick(ev: MouseEvent) {
 			icon: 'ti ti-copy',
 			action: () => {
 				copyToClipboard(`:${props.name}:`);
-				os.success();
 			},
 		});
 
@@ -125,15 +128,38 @@ function onClick(ev: MouseEvent) {
 			},
 		});
 
+		if ($i?.isModerator ?? $i?.isAdmin) {
+			menuItems.push({
+				text: i18n.ts.edit,
+				icon: 'ti ti-pencil',
+				action: async () => {
+					await edit(props.name);
+				},
+			});
+		}
+
 		os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 	}
 }
+
+async function edit(name: string) {
+	const emoji = await misskeyApi('emoji', {
+		name: name,
+	});
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/pages/emoji-edit-dialog.vue')), {
+		emoji: emoji,
+	}, {
+		closed: () => dispose(),
+	});
+}
+
 </script>
 
 <style lang="scss" module>
 .root {
 	height: 2em;
 	vertical-align: middle;
+	-webkit-user-drag: none;
 	transition: transform 0.2s ease;
 
 	&:hover {

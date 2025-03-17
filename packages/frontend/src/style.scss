@@ -81,6 +81,11 @@ html {
 	&.useSystemFont {
 		font-family: system-ui;
 	}
+
+	&:not(.forceSelectableAll) {
+		user-select: none;
+		-webkit-user-select: none;
+	}
 }
 
 html._themeChanging_ {
@@ -120,6 +125,8 @@ a {
 textarea, input {
 	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
+	user-select: text;
+	-webkit-user-select: text;
 }
 
 optgroup, option {
@@ -128,8 +135,9 @@ optgroup, option {
 }
 
 hr {
-	margin: var(--MI-margin) 0 var(--MI-margin) 0;
+	margin: 0;
 	border: none;
+	border-radius: 999px;
 	height: 1px;
 	background: var(--MI_THEME-divider);
 }
@@ -183,6 +191,16 @@ rt {
 	padding: 0.3em 0.5em;
 }
 
+._selectable {
+	user-select: text;
+	-webkit-user-select: text;
+}
+
+._selectableAtomic {
+	user-select: all;
+	-webkit-user-select: all;
+}
+
 ._noSelect {
 	user-select: none;
 	-webkit-user-select: none;
@@ -194,11 +212,6 @@ rt {
 	word-wrap: normal !important; // https://codeday.me/jp/qa/20190424/690106.html
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-
-._ghost {
-	@extend ._noSelect;
-	pointer-events: none;
 }
 
 ._modalBg {
@@ -423,6 +436,10 @@ rt {
 	color: var(--MI_THEME-link);
 }
 
+._love {
+	color: var(--MI_THEME-love);
+}
+
 ._caption {
 	font-size: 0.8em;
 	opacity: 0.7;
@@ -497,20 +514,17 @@ html[data-color-scheme=dark] ._woodenFrame {
 
 	10%,
 	20% {
-		transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+		transform: scale3d(0.91, 0.91, 0.91) rotate3d(0, 0, 1, -2deg);
 	}
 
 	30%,
-	50%,
-	70%,
-	90% {
-		transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+	70% {
+		transform: scale3d(1.09, 1.09, 1.09) rotate3d(0, 0, 1, 2deg);
 	}
 
-	40%,
-	60%,
-	80% {
-		transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+	50%,
+	90% {
+		transform: scale3d(1.09, 1.09, 1.09) rotate3d(0, 0, 1, -2deg);
 	}
 
 	to {

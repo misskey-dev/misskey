@@ -4,9 +4,10 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { Ref } from 'vue';
-import { SoundStore } from '@/store.js';
-import { getSoundDuration, playMisskeySfxFile, soundsTypes, SoundType } from '@/scripts/sound.js';
+import type { Ref } from 'vue';
+import type { SoundType } from '@/utility/sound.js';
+import type { SoundStore } from '@/preferences/def.js';
+import { getSoundDuration, playMisskeySfxFile, soundsTypes } from '@/utility/sound.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 

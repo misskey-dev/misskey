@@ -3,24 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AsyncComponentLoader, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent } from 'vue';
+import type { AsyncComponentLoader } from 'vue';
 import type { IRouter, RouteDef } from '@/nirax.js';
 import { Router } from '@/nirax.js';
-import { $i, iAmModerator } from '@/account.js';
+import { $i, iAmModerator } from '@/i.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
 
-export const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
+export const page = (loader: AsyncComponentLoader) => defineAsyncComponent({
 	loader: loader,
 	loadingComponent: MkLoading,
 	errorComponent: MkError,
 });
 
 const routes: RouteDef[] = [{
-	path: '/@:initUser/pages/:initPageName/view-source',
-	component: page(() => import('@/pages/page-editor/page-editor.vue')),
-}, {
-	path: '/@:username/pages/:pageName',
+	path: '/@:username/pages/:pageName(*)',
 	component: page(() => import('@/pages/page.vue')),
 }, {
 	path: '/@:acct/following',
@@ -60,17 +58,13 @@ const routes: RouteDef[] = [{
 		name: 'avatarDecoration',
 		component: page(() => import('@/pages/settings/avatar-decoration.vue')),
 	}, {
-		path: '/roles',
-		name: 'roles',
-		component: page(() => import('@/pages/settings/roles.vue')),
-	}, {
 		path: '/privacy',
 		name: 'privacy',
 		component: page(() => import('@/pages/settings/privacy.vue')),
 	}, {
-		path: '/emoji-picker',
-		name: 'emojiPicker',
-		component: page(() => import('@/pages/settings/emoji-picker.vue')),
+		path: '/emoji-palette',
+		name: 'emoji-palette',
+		component: page(() => import('@/pages/settings/emoji-palette.vue')),
 	}, {
 		path: '/drive',
 		name: 'drive',
@@ -92,9 +86,9 @@ const routes: RouteDef[] = [{
 		name: 'security',
 		component: page(() => import('@/pages/settings/security.vue')),
 	}, {
-		path: '/general',
-		name: 'general',
-		component: page(() => import('@/pages/settings/general.vue')),
+		path: '/preferences',
+		name: 'preferences',
+		component: page(() => import('@/pages/settings/preferences.vue')),
 	}, {
 		path: '/theme/install',
 		name: 'theme',
@@ -120,6 +114,10 @@ const routes: RouteDef[] = [{
 		name: 'sounds',
 		component: page(() => import('@/pages/settings/sounds.vue')),
 	}, {
+		path: '/accessibility',
+		name: 'accessibility',
+		component: page(() => import('@/pages/settings/accessibility.vue')),
+	}, {
 		path: '/plugin/install',
 		name: 'plugin',
 		component: page(() => import('@/pages/settings/plugin.install.vue')),
@@ -128,48 +126,36 @@ const routes: RouteDef[] = [{
 		name: 'plugin',
 		component: page(() => import('@/pages/settings/plugin.vue')),
 	}, {
-		path: '/import-export',
-		name: 'import-export',
-		component: page(() => import('@/pages/settings/import-export.vue')),
+		path: '/account-data',
+		name: 'account-data',
+		component: page(() => import('@/pages/settings/account-data.vue')),
 	}, {
 		path: '/mute-block',
 		name: 'mute-block',
 		component: page(() => import('@/pages/settings/mute-block.vue')),
 	}, {
-		path: '/api',
-		name: 'api',
-		component: page(() => import('@/pages/settings/api.vue')),
+		path: '/connect',
+		name: 'connect',
+		component: page(() => import('@/pages/settings/connect.vue')),
 	}, {
 		path: '/apps',
-		name: 'api',
+		name: 'connect',
 		component: page(() => import('@/pages/settings/apps.vue')),
 	}, {
 		path: '/webhook/edit/:webhookId',
-		name: 'webhook',
+		name: 'connect',
 		component: page(() => import('@/pages/settings/webhook.edit.vue')),
 	}, {
 		path: '/webhook/new',
-		name: 'webhook',
+		name: 'connect',
 		component: page(() => import('@/pages/settings/webhook.new.vue')),
-	}, {
-		path: '/webhook',
-		name: 'webhook',
-		component: page(() => import('@/pages/settings/webhook.vue')),
 	}, {
 		path: '/deck',
 		name: 'deck',
 		component: page(() => import('@/pages/settings/deck.vue')),
 	}, {
-		path: '/preferences-backups',
-		name: 'preferences-backups',
-		component: page(() => import('@/pages/settings/preferences-backups.vue')),
-	}, {
-		path: '/migration',
-		name: 'migration',
-		component: page(() => import('@/pages/settings/migration.vue')),
-	}, {
 		path: '/custom-css',
-		name: 'general',
+		name: 'preferences',
 		component: page(() => import('@/pages/settings/custom-css.vue')),
 	}, {
 		path: '/accounts',
@@ -382,6 +368,10 @@ const routes: RouteDef[] = [{
 		path: '/emojis',
 		name: 'emojis',
 		component: page(() => import('@/pages/custom-emojis-manager.vue')),
+	}, {
+		path: '/emojis2',
+		name: 'emojis2',
+		component: page(() => import('@/pages/admin/custom-emojis-manager2.vue')),
 	}, {
 		path: '/avatar-decorations',
 		name: 'avatarDecorations',

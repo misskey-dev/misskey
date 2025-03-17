@@ -3,27 +3,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, watch, version as vueVersion, App } from 'vue';
+import { computed, watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { version, lang, updateLocale, locale } from '@@/js/config.js';
+import defaultLightTheme from '@@/themes/l-light.json5';
+import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import type { App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { applyTheme } from '@/scripts/theme.js';
-import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
-import { updateI18n } from '@/i18n.js';
-import { $i, refreshAccount, login } from '@/account.js';
-import { defaultStore, ColdDeviceStorage } from '@/store.js';
+import { applyTheme } from '@/theme.js';
+import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
+import { updateI18n, i18n } from '@/i18n.js';
+import { refreshCurrentAccount, login } from '@/accounts.js';
+import { store } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
-import { deviceKind } from '@/scripts/device-kind.js';
-import { reloadChannel } from '@/scripts/unison-reload.js';
-import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
-import { getAccountFromId } from '@/scripts/get-account-from-id.js';
+import { deviceKind, updateDeviceKind } from '@/utility/device-kind.js';
+import { reloadChannel } from '@/utility/unison-reload.js';
+import { getUrlWithoutLoginId } from '@/utility/login-id.js';
+import { getAccountFromId } from '@/utility/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
+import { analytics, initAnalytics } from '@/analytics.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/main.js';
 import { createMainRouter } from '@/router/definition.js';
+import { prefer } from '@/preferences.js';
+import { $i } from '@/i.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -32,11 +38,6 @@ export async function common(createVue: () => App<Element>) {
 		console.warn('Development mode!!!');
 
 		console.info(`vue ${vueVersion}`);
-
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(window as any).$i = $i;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(window as any).$store = defaultStore;
 
 		window.addEventListener('error', event => {
 			console.error(event);
@@ -98,6 +99,11 @@ export async function common(createVue: () => App<Element>) {
 	// タッチデバイスでCSSの:hoverを機能させる
 	document.addEventListener('touchend', () => {}, { passive: true });
 
+	// URLに#pswpを含む場合は取り除く
+	if (location.hash === '#pswp') {
+		history.replaceState(null, '', location.href.replace('#pswp', ''));
+	}
+
 	// 一斉リロード
 	reloadChannel.addEventListener('message', path => {
 		if (path !== null) location.href = path;
@@ -116,7 +122,7 @@ export async function common(createVue: () => App<Element>) {
 	html.setAttribute('lang', lang);
 	//#endregion
 
-	await defaultStore.ready;
+	await store.ready;
 	await deckStore.ready;
 
 	const fetchInstanceMetaPromise = fetchInstance();
@@ -144,52 +150,63 @@ export async function common(createVue: () => App<Element>) {
 	//#endregion
 
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
-	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
-		applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
+	watch(store.r.darkMode, (darkMode) => {
+		applyTheme(darkMode
+			? (prefer.s.darkTheme ?? defaultDarkTheme)
+			: (prefer.s.lightTheme ?? defaultLightTheme),
+		);
 	}, { immediate: miLocalStorage.getItem('theme') == null });
 
-	document.documentElement.dataset.colorScheme = defaultStore.state.darkMode ? 'dark' : 'light';
+	document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
 
-	const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
-	const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
+	const darkTheme = prefer.model('darkTheme');
+	const lightTheme = prefer.model('lightTheme');
 
 	watch(darkTheme, (theme) => {
-		if (defaultStore.state.darkMode) {
-			applyTheme(theme);
+		if (store.s.darkMode) {
+			applyTheme(theme ?? defaultDarkTheme);
 		}
 	});
 
 	watch(lightTheme, (theme) => {
-		if (!defaultStore.state.darkMode) {
-			applyTheme(theme);
+		if (!store.s.darkMode) {
+			applyTheme(theme ?? defaultLightTheme);
 		}
 	});
 
 	//#region Sync dark mode
-	if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
-		defaultStore.set('darkMode', isDeviceDarkmode());
+	if (prefer.s.syncDeviceDarkMode) {
+		store.set('darkMode', isDeviceDarkmode());
 	}
 
 	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (mql) => {
-		if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
-			defaultStore.set('darkMode', mql.matches);
+		if (prefer.s.syncDeviceDarkMode) {
+			store.set('darkMode', mql.matches);
 		}
 	});
 	//#endregion
 
+	if (prefer.s.darkTheme && store.s.darkMode) {
+		if (miLocalStorage.getItem('themeId') !== prefer.s.darkTheme.id) applyTheme(prefer.s.darkTheme);
+	} else if (prefer.s.lightTheme && !store.s.darkMode) {
+		if (miLocalStorage.getItem('themeId') !== prefer.s.lightTheme.id) applyTheme(prefer.s.lightTheme);
+	}
+
 	fetchInstanceMetaPromise.then(() => {
-		if (defaultStore.state.themeInitial) {
-			if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(instance.defaultLightTheme));
-			if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
-			defaultStore.set('themeInitial', false);
-		}
+		// TODO: instance.defaultLightTheme/instance.defaultDarkThemeが不正な形式だった場合のケア
+		if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.commit('lightTheme', JSON.parse(instance.defaultLightTheme));
+		if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.commit('darkTheme', JSON.parse(instance.defaultDarkTheme));
 	});
 
-	watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
+	watch(prefer.r.overridedDeviceKind, (kind) => {
+		updateDeviceKind(kind);
+	}, { immediate: true });
+
+	watch(prefer.r.useBlurEffectForModal, v => {
 		document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');
 	}, { immediate: true });
 
-	watch(defaultStore.reactiveState.useBlurEffect, v => {
+	watch(prefer.r.useBlurEffect, v => {
 		if (v) {
 			document.documentElement.style.removeProperty('--MI-blur');
 		} else {
@@ -203,7 +220,7 @@ export async function common(createVue: () => App<Element>) {
 			navigator.wakeLock.request('screen');
 		}
 	});
-	if (defaultStore.state.keepScreenOn && 'wakeLock' in navigator) {
+	if (prefer.s.keepScreenOn && 'wakeLock' in navigator) {
 		navigator.wakeLock.request('screen')
 			.then(onVisibilityChange)
 			.catch(() => {
@@ -217,19 +234,36 @@ export async function common(createVue: () => App<Element>) {
 			});
 	}
 
+	if (prefer.s.makeEveryTextElementsSelectable) {
+		document.documentElement.classList.add('forceSelectableAll');
+	}
+
 	//#region Fetch user
 	if ($i && $i.token) {
 		if (_DEV_) {
 			console.log('account cache found. refreshing...');
 		}
 
-		refreshAccount();
+		refreshCurrentAccount();
 	}
 	//#endregion
 
 	try {
 		await fetchCustomEmojis();
 	} catch (err) { /* empty */ }
+
+	// analytics
+	fetchInstanceMetaPromise.then(async () => {
+		await initAnalytics(instance);
+
+		if ($i) {
+			analytics.identify($i.id);
+		}
+
+		analytics.page({
+			path: window.location.pathname,
+		});
+	});
 
 	const app = createVue();
 
@@ -269,8 +303,30 @@ export async function common(createVue: () => App<Element>) {
 
 	removeSplash();
 
+	//#region Self-XSS 対策メッセージ
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.warning}`,
+		'color: #f00; background-color: #ff0; font-size: 36px; padding: 4px;',
+	);
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.title}`,
+		'color: #f00; font-weight: 900; font-family: "Hiragino Sans W9", "Hiragino Kaku Gothic ProN", sans-serif; font-size: 24px;',
+	);
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.description1}`,
+		'font-size: 16px; font-weight: 700;',
+	);
+	console.log(
+		`%c${i18n.ts._selfXssPrevention.description2}`,
+		'font-size: 16px;',
+		'font-size: 20px; font-weight: 700; color: #f00;',
+	);
+	console.log(i18n.tsx._selfXssPrevention.description3({ link: 'https://misskey-hub.net/docs/for-users/resources/self-xss/' }));
+	//#endregion
+
 	return {
 		isClientUpdated,
+		lastVersion,
 		app,
 	};
 }

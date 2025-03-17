@@ -14,10 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</header>
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.folderToggleEnterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.folderToggleLeaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.folderToggleEnterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.folderToggleLeaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.folderToggleEnterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.folderToggleLeaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.folderToggleEnterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.folderToggleLeaveTo : ''"
 		@enter="enter"
 		@afterEnter="afterEnter"
 		@leave="leave"
@@ -33,8 +33,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef, watch } from 'vue';
 import { miLocalStorage } from '@/local-storage.js';
-import { defaultStore } from '@/store.js';
-import { getBgColor } from '@/scripts/get-bg-color.js';
+import { prefer } from '@/preferences.js';
+import { getBgColor } from '@/utility/get-bg-color.js';
 
 const miLocalStoragePrefix = 'ui:folder:' as const;
 

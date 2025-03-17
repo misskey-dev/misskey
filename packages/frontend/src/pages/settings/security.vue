@@ -4,39 +4,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormSection first>
-		<template #label>{{ i18n.ts.password }}</template>
-		<MkButton primary @click="change()">{{ i18n.ts.changePassword }}</MkButton>
-	</FormSection>
+<SearchMarker path="/settings/security" :label="i18n.ts.security" :keywords="['security']" icon="ti ti-lock" :inlining="['2fa']">
+	<div class="_gaps_m">
+		<MkFeatureBanner icon="/client-assets/locked_with_key_3d.png" color="#ffbf00">
+			<SearchKeyword>{{ i18n.ts._settings.securityBanner }}</SearchKeyword>
+		</MkFeatureBanner>
 
-	<X2fa/>
+		<SearchMarker :keywords="['password']">
+			<FormSection first>
+				<template #label><SearchLabel>{{ i18n.ts.password }}</SearchLabel></template>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.signinHistory }}</template>
-		<MkPagination :pagination="pagination" disableAutoLoad>
-			<template #default="{items}">
-				<div>
-					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
-						<header>
-							<i v-if="item.success" class="ti ti-check icon succ"></i>
-							<i v-else class="ti ti-circle-x icon fail"></i>
-							<code class="ip _monospace">{{ item.ip }}</code>
-							<MkTime :time="item.createdAt" class="time"/>
-						</header>
+				<SearchMarker>
+					<MkButton primary @click="change()">
+						<SearchLabel>{{ i18n.ts.changePassword }}</SearchLabel>
+					</MkButton>
+				</SearchMarker>
+			</FormSection>
+		</SearchMarker>
+
+		<X2fa/>
+
+		<FormSection>
+			<template #label>{{ i18n.ts.signinHistory }}</template>
+			<MkPagination :pagination="pagination" disableAutoLoad>
+				<template #default="{items}">
+					<div>
+						<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
+							<header>
+								<i v-if="item.success" class="ti ti-check icon succ"></i>
+								<i v-else class="ti ti-circle-x icon fail"></i>
+								<code class="ip _monospace">{{ item.ip }}</code>
+								<MkTime :time="item.createdAt" class="time"/>
+							</header>
+						</div>
 					</div>
-				</div>
-			</template>
-		</MkPagination>
-	</FormSection>
+				</template>
+			</MkPagination>
+		</FormSection>
 
-	<FormSection>
-		<FormSlot>
-			<MkButton danger @click="regenerateToken"><i class="ti ti-refresh"></i> {{ i18n.ts.regenerateLoginToken }}</MkButton>
-			<template #caption>{{ i18n.ts.regenerateLoginTokenDescription }}</template>
-		</FormSlot>
-	</FormSection>
-</div>
+		<FormSection>
+			<FormSlot>
+				<MkButton danger @click="regenerateToken"><i class="ti ti-refresh"></i> {{ i18n.ts.regenerateLoginToken }}</MkButton>
+				<template #caption>{{ i18n.ts.regenerateLoginTokenDescription }}</template>
+			</FormSlot>
+		</FormSection>
+	</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
@@ -47,9 +60,10 @@ import FormSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
 const pagination = {
 	endpoint: 'i/signin-history' as const,
@@ -103,7 +117,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.security,
 	icon: 'ti ti-lock',
 }));

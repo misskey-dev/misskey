@@ -57,26 +57,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, onUnmounted, Ref, ref, watch, computed } from 'vue';
+import { onDeactivated, onUnmounted, ref, watch, computed } from 'vue';
+import type { Ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui.js';
+import { definePage } from '@/page.js';
+import { registerAsUiLib } from '@/aiscript/ui.js';
+import type { AsUiComponent } from '@/aiscript/ui.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { miLocalStorage } from '@/local-storage.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { claimAchievement } from '@/utility/achievements.js';
+
+import type { AsUiRoot } from '@/aiscript/ui.js';
 
 const parser = new Parser();
 let aiscript: Interpreter;
 const code = ref('');
-const logs = ref<any[]>([]);
+const logs = ref<{
+	id: number;
+	text: string;
+	print: boolean;
+}[]>([]);
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
@@ -194,7 +202,7 @@ const showns = computed(() => {
 	return result;
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.scratchpad,
 	icon: 'ti ti-terminal-2',
 }));

@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:scroll="false"
 	:withOkButton="false"
 	@close="cancel()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header><i class="ti ti-code"></i> {{ i18n.ts._embedCodeGen.title }}</template>
 
@@ -105,8 +105,8 @@ import MkInfo from '@/components/MkInfo.vue';
 
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { normalizeEmbedParams, getEmbedCode } from '@/scripts/get-embed-code.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { normalizeEmbedParams, getEmbedCode } from '@/utility/get-embed-code.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;
@@ -194,7 +194,6 @@ function generate() {
 
 function doCopy() {
 	copyToClipboard(result.value);
-	os.success();
 }
 //#endregion
 

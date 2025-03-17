@@ -10,6 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="900">
 			<div class="_gaps">
 				<div :class="$style.inputs">
+					<MkButton style="margin-left: auto" @click="resetQuery">{{ i18n.ts.reset }}</MkButton>
+				</div>
+				<div :class="$style.inputs">
 					<MkSelect v-model="sort" style="flex: 1;">
 						<template #label>{{ i18n.ts.sort }}</template>
 						<option value="-createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.ascendingOrder }})</option>
@@ -57,25 +60,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, shallowRef, ref } from 'vue';
+import { computed, shallowRef, ref, watchEffect } from 'vue';
 import XHeader from './_header_.vue';
+import { defaultMemoryStorage } from '@/memory-storage';
+import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
-import { lookupUser } from '@/scripts/admin-lookup.js';
+import { lookupUser } from '@/utility/admin-lookup.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { dateString } from '@/filters/date.js';
 
-const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
+type SearchQuery = {
+	sort?: string;
+	state?: string;
+	origin?: string;
+	username?: string;
+	hostname?: string;
+};
 
-const sort = ref('+createdAt');
-const state = ref('all');
-const origin = ref('local');
-const searchUsername = ref('');
-const searchHost = ref('');
+const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const storedQuery = JSON.parse(defaultMemoryStorage.getItem('admin-users-query') ?? '{}') as SearchQuery;
+
+const sort = ref(storedQuery.sort ?? '+createdAt');
+const state = ref(storedQuery.state ?? 'all');
+const origin = ref(storedQuery.origin ?? 'local');
+const searchUsername = ref(storedQuery.username ?? '');
+const searchHost = ref(storedQuery.hostname ?? '');
 const pagination = {
 	endpoint: 'admin/show-users' as const,
 	limit: 10,
@@ -99,24 +113,32 @@ async function addUser() {
 	const { canceled: canceled1, result: username } = await os.inputText({
 		title: i18n.ts.username,
 	});
-	if (canceled1) return;
+	if (canceled1 || username == null) return;
 
 	const { canceled: canceled2, result: password } = await os.inputText({
 		title: i18n.ts.password,
 		type: 'password',
 	});
-	if (canceled2) return;
+	if (canceled2 || password == null) return;
 
 	os.apiWithDialog('admin/accounts/create', {
 		username: username,
 		password: password,
 	}).then(res => {
-		paginationComponent.value.reload();
+		paginationComponent.value?.reload();
 	});
 }
 
 function show(user) {
 	os.pageWindow(`/admin/user/${user.id}`);
+}
+
+function resetQuery() {
+	sort.value = '+createdAt';
+	state.value = 'all';
+	origin.value = 'local';
+	searchUsername.value = '';
+	searchHost.value = '';
 }
 
 const headerActions = computed(() => [{
@@ -137,7 +159,17 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+watchEffect(() => {
+	defaultMemoryStorage.setItem('admin-users-query', JSON.stringify({
+		sort: sort.value,
+		state: state.value,
+		origin: origin.value,
+		username: searchUsername.value,
+		hostname: searchHost.value,
+	}));
+});
+
+definePage(() => ({
 	title: i18n.ts.users,
 	icon: 'ti ti-users',
 }));

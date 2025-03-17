@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo v-if="channel.isArchived" warn>{{ i18n.ts.thisChannelArchived }}</MkInfo>
 
 				<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
-				<MkPostForm v-if="$i && defaultStore.reactiveState.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
+				<MkPostForm v-if="$i && prefer.r.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
 
 				<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after" @note="miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.id}`, Date.now())"/>
 			</div>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkNotes :pagination="featuredPagination"/>
 			</div>
 			<div v-else-if="tab === 'search'" key="search">
-				<div class="_gaps">
+				<div v-if="notesSearchAvailable" class="_gaps">
 					<div>
 						<MkInput v-model="searchQuery" @enter="search()">
 							<template #prefix><i class="ti ti-search"></i></template>
@@ -53,6 +53,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
 					</div>
 					<MkNotes v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
+				</div>
+				<div v-else>
+					<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
 				</div>
 			</div>
 		</MkHorizontalSwipe>
@@ -72,28 +75,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { $i, iAmModerator } from '@/account.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { $i, iAmModerator } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { definePage } from '@/page.js';
+import { deviceKind } from '@/utility/device-kind.js';
 import MkNotes from '@/components/MkNotes.vue';
-import { url } from '@@/js/config.js';
 import { favoritedChannelsCache } from '@/cache.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import MkNote from '@/components/MkNote.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { PageHeaderItem } from '@/types/page-header.js';
-import { isSupportShare } from '@/scripts/navigator.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { isSupportShare } from '@/utility/navigator.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router/supplier.js';
 
@@ -206,7 +210,6 @@ const headerActions = computed(() => {
 					return;
 				}
 				copyToClipboard(`${url}/channels/${channel.value.id}`);
-				os.success();
 			},
 		});
 
@@ -261,7 +264,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-search',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: channel.value ? channel.value.name : i18n.ts.channel,
 	icon: 'ti ti-device-tv',
 }));

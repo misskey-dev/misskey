@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer v-else-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
 			<XEmojis/>
 		</MkSpacer>
-		<MkSpacer v-else-if="tab === 'federation'" :contentMax="1000" :marginMin="20">
+		<MkSpacer v-else-if="instance.federation !== 'none' && tab === 'federation'" :contentMax="1000" :marginMin="20">
 			<XFederation/>
 		</MkSpacer>
 		<MkSpacer v-else-if="tab === 'charts'" :contentMax="1000" :marginMin="20">
@@ -25,9 +25,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { definePage } from '@/page.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const XOverview = defineAsyncComponent(() => import('@/pages/about.overview.vue'));
@@ -51,24 +52,36 @@ watch(tab, () => {
 
 const headerActions = computed(() => []);
 
-const headerTabs = computed(() => [{
-	key: 'overview',
-	title: i18n.ts.overview,
-}, {
-	key: 'emojis',
-	title: i18n.ts.customEmojis,
-	icon: 'ti ti-icons',
-}, {
-	key: 'federation',
-	title: i18n.ts.federation,
-	icon: 'ti ti-whirl',
-}, {
-	key: 'charts',
-	title: i18n.ts.charts,
-	icon: 'ti ti-chart-line',
-}]);
+const headerTabs = computed(() => {
+	const items = [];
 
-definePageMetadata(() => ({
+	items.push({
+		key: 'overview',
+		title: i18n.ts.overview,
+	}, {
+		key: 'emojis',
+		title: i18n.ts.customEmojis,
+		icon: 'ti ti-icons',
+	});
+
+	if (instance.federation !== 'none') {
+		items.push({
+			key: 'federation',
+			title: i18n.ts.federation,
+			icon: 'ti ti-whirl',
+		});
+	}
+
+	items.push({
+		key: 'charts',
+		title: i18n.ts.charts,
+		icon: 'ti ti-chart-line',
+	});
+
+	return items;
+});
+
+definePage(() => ({
 	title: i18n.ts.instanceInfo,
 	icon: 'ti ti-info-circle',
 }));

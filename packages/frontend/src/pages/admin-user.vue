@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 
-				<MkInfo v-if="['instance.actor', 'relay.actor'].includes(user.username)">{{ i18n.ts.isSystemAccount }}</MkInfo>
+				<MkInfo v-if="isSystem">{{ i18n.ts.isSystemAccount }}</MkInfo>
 
 				<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>
 
@@ -37,21 +37,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #value><span class="_monospace">{{ ips[0].ip }}</span></template>
 					</MkKeyValue>
 					-->
-					<MkKeyValue oneline>
-						<template #key>{{ i18n.ts.createdAt }}</template>
-						<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
-					</MkKeyValue>
-					<MkKeyValue v-if="info" oneline>
-						<template #key>{{ i18n.ts.lastActiveDate }}</template>
-						<template #value><span class="_monospace"><MkTime :time="info.lastActiveDate" :mode="'detail'"/></span></template>
-					</MkKeyValue>
-					<MkKeyValue v-if="info" oneline>
-						<template #key>{{ i18n.ts.email }}</template>
-						<template #value><span class="_monospace">{{ info.email }}</span></template>
-					</MkKeyValue>
+					<template v-if="!isSystem">
+						<MkKeyValue oneline>
+							<template #key>{{ i18n.ts.createdAt }}</template>
+							<template #value><span class="_monospace"><MkTime :time="user.createdAt" :mode="'detail'"/></span></template>
+						</MkKeyValue>
+						<MkKeyValue v-if="info" oneline>
+							<template #key>{{ i18n.ts.lastActiveDate }}</template>
+							<template #value><span class="_monospace"><MkTime :time="info.lastActiveDate" :mode="'detail'"/></span></template>
+						</MkKeyValue>
+						<MkKeyValue v-if="info" oneline>
+							<template #key>{{ i18n.ts.email }}</template>
+							<template #value><span class="_monospace">{{ info.email }}</span></template>
+						</MkKeyValue>
+					</template>
 				</div>
 
-				<MkTextarea v-model="moderationNote" manualSave>
+				<MkTextarea v-if="!isSystem" v-model="moderationNote" manualSave>
 					<template #label>{{ i18n.ts.moderationNote }}</template>
 					<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 				</MkTextarea>
@@ -92,7 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSection>
 			-->
 
-				<FormSection>
+				<FormSection v-if="!isSystem">
 					<div class="_gaps">
 						<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
 
@@ -227,11 +229,11 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { acct } from '@/filters/user.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { iAmAdmin, $i, iAmModerator } from '@/account.js';
+import { iAmAdmin, $i, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 
@@ -252,6 +254,7 @@ const ap = ref<any>(null);
 const moderator = ref(false);
 const silenced = ref(false);
 const suspended = ref(false);
+const isSystem = ref(false);
 const moderationNote = ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
@@ -288,6 +291,7 @@ function createFetcher() {
 		silenced.value = info.value.isSilenced;
 		suspended.value = info.value.isSuspended;
 		moderationNote.value = info.value.moderationNote;
+		isSystem.value = user.value.host == null && user.value.username.includes('.');
 
 		watch(moderationNote, async () => {
 			await misskeyApi('admin/update-user-note', { userId: user.value.id, text: moderationNote.value });
@@ -418,7 +422,7 @@ async function deleteAccount() {
 }
 
 async function assignRole() {
-	const roles = await misskeyApi('admin/roles/list');
+	const roles = await misskeyApi('admin/roles/list').then(it => it.filter(r => r.target === 'manual'));
 
 	const { canceled, result: roleId } = await os.select({
 		title: i18n.ts._role.chooseRoleToAssign,
@@ -507,7 +511,15 @@ watch(user, () => {
 
 const headerActions = computed(() => []);
 
-const headerTabs = computed(() => [{
+const headerTabs = computed(() => isSystem.value ? [{
+	key: 'overview',
+	title: i18n.ts.overview,
+	icon: 'ti ti-info-circle',
+}, {
+	key: 'raw',
+	title: 'Raw',
+	icon: 'ti ti-code',
+}] : [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',
@@ -533,7 +545,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-code',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: user.value ? acct(user.value) : i18n.ts.userInfo,
 	icon: 'ti ti-user-exclamation',
 }));
@@ -627,6 +639,7 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .ip {
 	display: flex;
+	word-break: break-all;
 
 	> :global(.date) {
 		opacity: 0.7;

@@ -116,10 +116,10 @@ import * as os from '@/os.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkLink from '@/components/MkLink.vue';
-import { confetti } from '@/scripts/confetti.js';
-import { signinRequired } from '@/account.js';
+import { confetti } from '@/utility/confetti.js';
+import { ensureSignin } from '@/i.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 defineProps<{
 	twoFactorData: {
@@ -138,12 +138,13 @@ const token = ref<string | number | null>(null);
 const backupCodes = ref<string[]>();
 
 function cancel() {
-	dialog.value.close();
+	dialog.value?.close();
 }
 
 async function tokenDone() {
+	if (token.value == null) return;
 	const res = await os.apiWithDialog('i/2fa/done', {
-		token: token.value.toString(),
+		token: typeof token.value === 'string' ? token.value : token.value.toString(),
 	});
 
 	backupCodes.value = res.backupCodes;
@@ -166,7 +167,7 @@ function downloadBackupCodes() {
 }
 
 function allDone() {
-	dialog.value.close();
+	dialog.value?.close();
 }
 </script>
 

@@ -19,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</header>
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_toggle_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_toggle_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_toggle_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_toggle_leaveTo : ''"
 		@enter="enter"
 		@afterEnter="afterEnter"
 		@leave="leave"
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<div v-show="showBody" ref="contentEl" :class="[$style.content, { [$style.omitted]: omitted }]">
 			<slot></slot>
-			<button v-if="omitted" :class="$style.fade" class="_button" @click="() => { ignoreOmit = true; omitted = false; }">
+			<button v-if="omitted" :class="$style.fade" class="_button" @click="showMore">
 				<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
 			</button>
 		</div>
@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
@@ -48,6 +48,7 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	naked?: boolean;
 	foldable?: boolean;
+	onUnfold?: () => boolean; // return false to prevent unfolding
 	scrollable?: boolean;
 	expanded?: boolean;
 	maxHeight?: number | null;
@@ -100,6 +101,13 @@ const calcOmit = () => {
 const omitObserver = new ResizeObserver((entries, observer) => {
 	calcOmit();
 });
+
+function showMore() {
+	if (props.onUnfold && !props.onUnfold()) return;
+
+	ignoreOmit.value = true;
+	omitted.value = false;
+}
 
 onMounted(() => {
 	watch(showBody, v => {

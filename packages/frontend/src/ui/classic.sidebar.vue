@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="divider"></div>
 	<div class="about">
 		<button v-click-anime class="item _button" @click="openInstanceMenu">
-			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
+			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" draggable="false"/>
 		</button>
 	</div>
 	<!--<MisskeyLogo class="misskey"/>-->
@@ -54,19 +54,21 @@ import { openInstanceMenu } from './_common_/common.js';
 // import { host } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { openAccountMenu as openAccountMenu_, $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
-// import { StickySidebar } from '@/scripts/sticky-sidebar.js';
+// import { StickySidebar } from '@/utility/sticky-sidebar.js';
 // import { mainRouter } from '@/router.js';
 //import MisskeyLogo from '@assets/client/misskey.svg';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
+import { prefer } from '@/preferences.js';
+import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { $i } from '@/i.js';
 
 const WINDOW_THRESHOLD = 1400;
 
-const menu = ref(defaultStore.state.menu);
-const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
+const menu = ref(prefer.s.menu);
+const menuDisplay = computed(store.makeGetterSetter('menuDisplay'));
 const otherNavItemIndicated = computed<boolean>(() => {
 	for (const def in navbarItemDef) {
 		if (menu.value.includes(def)) continue;
@@ -99,7 +101,7 @@ function openAccountMenu(ev: MouseEvent) {
 	}, ev);
 }
 
-watch(defaultStore.reactiveState.menuDisplay, () => {
+watch(store.r.menuDisplay, () => {
 	calcViewState();
 });
 

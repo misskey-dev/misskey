@@ -10,9 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<MkSwitch v-model="enableRegistration" @change="onChange_enableRegistration">
-						<template #label>{{ i18n.ts.enableRegistration }}</template>
-						<template #caption>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</template>
+					<MkSwitch :modelValue="enableRegistration" @update:modelValue="onChange_enableRegistration">
+						<template #label>{{ i18n.ts._serverSettings.openRegistration }}</template>
+						<template #caption>
+							<div>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</div>
+							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.openRegistrationWarning }}</div>
+						</template>
 					</MkSwitch>
 
 					<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">
@@ -131,10 +134,10 @@ import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -164,7 +167,17 @@ async function init() {
 	mediaSilencedHosts.value = meta.mediaSilencedHosts.join('\n');
 }
 
-function onChange_enableRegistration(value: boolean) {
+async function onChange_enableRegistration(value: boolean) {
+	if (value) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.acknowledgeNotesAndEnable,
+		});
+		if (canceled) return;
+	}
+
+	enableRegistration.value = value;
+
 	os.apiWithDialog('admin/update-meta', {
 		disableRegistration: !value,
 	}).then(() => {
@@ -246,7 +259,7 @@ function save_mediaSilencedHosts() {
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.moderation,
 	icon: 'ti ti-shield',
 }));
