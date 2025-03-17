@@ -45,15 +45,15 @@ export const meta = {
 			id: '11795c64-40ea-4198-b06e-3c873ed9039d',
 		},
 
-		noSuchGroup: {
-			message: 'No such group.',
-			code: 'NO_SUCH_GROUP',
+		noSuchRoom: {
+			message: 'No such room.',
+			code: 'NO_SUCH_ROOM',
 			id: 'c94e2a5d-06aa-4914-8fa6-6a42e73d6537',
 		},
 
-		groupAccessDenied: {
-			message: 'You can not send messages to groups that you have not joined.',
-			code: 'GROUP_ACCESS_DENIED',
+		roomAccessDenied: {
+			message: 'You can not send messages to rooms that you have not joined.',
+			code: 'ROOM_ACCESS_DENIED',
 			id: 'd96b3cca-5ad1-438b-ad8b-02f931308fbd',
 		},
 
@@ -130,22 +130,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					text: ps.text,
 					file: file,
 				});
-			}/* else if (ps.groupId != null) {
-				// Fetch recipient (group)
-				recipientGroup = await this.userGroupsRepository.findOneBy({ id: ps.groupId! });
+			}/* else if (ps.roomId != null) {
+				// Fetch recipient (room)
+				recipientRoom = await this.userRoomsRepository.findOneBy({ id: ps.roomId! });
 
-				if (recipientGroup == null) {
-					throw new ApiError(meta.errors.noSuchGroup);
+				if (recipientRoom == null) {
+					throw new ApiError(meta.errors.noSuchRoom);
 				}
 
 				// check joined
-				const joining = await this.userGroupJoiningsRepository.findOneBy({
+				const joining = await this.userRoomJoiningsRepository.findOneBy({
 					userId: me.id,
-					userGroupId: recipientGroup.id,
+					userRoomId: recipientRoom.id,
 				});
 
 				if (joining == null) {
-					throw new ApiError(meta.errors.groupAccessDenied);
+					throw new ApiError(meta.errors.roomAccessDenied);
 				}
 			}*/
 		});

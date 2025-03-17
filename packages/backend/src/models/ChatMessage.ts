@@ -7,6 +7,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiDriveFile } from './DriveFile.js';
+import { MiChatRoom } from './ChatRoom.js';
 
 @Entity('chat_message')
 export class MiChatMessage {
@@ -37,19 +38,17 @@ export class MiChatMessage {
 	@JoinColumn()
 	public toUser: MiUser | null;
 
-	/*
 	@Index()
 	@Column({
 		...id(), nullable: true,
 	})
-	public toGroupId: MiUserGroup['id'] | null;
+	public toRoomId: MiChatRoom['id'] | null;
 
-	@ManyToOne(type => MiUserGroup, {
+	@ManyToOne(type => MiChatRoom, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public toGroup: MiUserGroup | null;
-	*/
+	public toRoom: MiChatRoom | null;
 
 	@Column('varchar', {
 		length: 4096, nullable: true,

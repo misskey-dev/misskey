@@ -35,7 +35,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		group: { type: 'boolean', default: false },
+		room: { type: 'boolean', default: false },
 	},
 } as const;
 
@@ -46,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatService: ChatService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const history = ps.group ? await this.chatService.groupHistory(me.id, ps.limit) : await this.chatService.userHistory(me.id, ps.limit);
+			const history = ps.room ? await this.chatService.roomHistory(me.id, ps.limit) : await this.chatService.userHistory(me.id, ps.limit);
 
 			return await this.chatMessageEntityService.packMany(history, me);
 		});

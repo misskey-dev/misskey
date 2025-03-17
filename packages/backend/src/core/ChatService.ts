@@ -54,14 +54,14 @@ export class ChatService {
 	public async createMessage(params: {
 		fromUser: { id: MiUser['id']; host: MiUser['host']; };
 		toUser?: MiUser | null;
-		//toGroup?: MiUserGroup | null;
+		//toRoom?: MiUserRoom | null;
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
 	}) {
-		const { fromUser, toUser /*toGroup*/ } = params;
+		const { fromUser, toUser /*toRoom*/ } = params;
 
-		if (toUser == null /*&& toGroup == null*/) {
+		if (toUser == null /*&& toRoom == null*/) {
 			throw new Error('recipient is required');
 		}
 
@@ -76,7 +76,7 @@ export class ChatService {
 			id: this.idService.gen(),
 			fromUserId: fromUser.id,
 			toUserId: toUser ? toUser.id : null,
-			//toGroupId: recipientGroup ? recipientGroup.id : null,
+			//toRoomId: recipientRoom ? recipientRoom.id : null,
 			text: params.text ? params.text.trim() : null,
 			fileId: params.file ? params.file.id : null,
 			reads: [],
@@ -102,12 +102,12 @@ export class ChatService {
 				// 相手のストリーム
 				this.globalEventService.publishChatStream(toUser.id, fromUser.id, 'message', packedMessage);
 			}
-		}/* else if (toGroup) {
+		}/* else if (toRoom) {
 			// グループのストリーム
-			this.globalEventService.publishGroupChatStream(toGroup.id, 'message', messageObj);
+			this.globalEventService.publishRoomChatStream(toRoom.id, 'message', messageObj);
 
 			// メンバーのストリーム
-			const joinings = await this.userGroupJoiningsRepository.findBy({ userGroupId: toGroup.id });
+			const joinings = await this.userRoomJoiningsRepository.findBy({ userRoomId: toRoom.id });
 			for (const joining of joinings) {
 				this.globalEventService.publishChatIndexStream(joining.userId, 'message', messageObj);
 				this.globalEventService.publishMainStream(joining.userId, 'chatMessage', messageObj);
@@ -124,8 +124,8 @@ export class ChatService {
 				const packedMessageForTo = await this.chatMessageEntityService.pack(inserted, toUser);
 				this.globalEventService.publishMainStream(toUser.id, 'newChatMessage', packedMessageForTo);
 				this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
-			}/* else if (toGroup) {
-				const joinings = await this.userGroupJoiningsRepository.findBy({ userGroupId: toGroup.id, userId: Not(fromUser.id) });
+			}/* else if (toRoom) {
+				const joinings = await this.userRoomJoiningsRepository.findBy({ userRoomId: toRoom.id, userId: Not(fromUser.id) });
 				for (const joining of joinings) {
 					if (freshMessage.reads.includes(joining.userId)) return; // 既読
 					this.globalEventService.publishMainStream(joining.userId, 'newChatMessage', messageObj);
@@ -186,28 +186,28 @@ export class ChatService {
 				const activity = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${message.id}`), fromUser));
 				this.queueService.deliver(fromUser, activity, toUser.inbox);
 			}
-		}/* else if (message.groupId) {
-			this.globalEventService.publishGroupChatStream(message.groupId, 'deleted', message.id);
+		}/* else if (message.roomId) {
+			this.globalEventService.publishRoomChatStream(message.roomId, 'deleted', message.id);
 		}*/
 	}
 
 	/*
 	@bindThis
-	public async readGroupChatMessage(
+	public async readRoomChatMessage(
 		userId: MiUser['id'],
-		groupId: MiUserGroup['id'],
+		roomId: MiUserRoom['id'],
 		messageIds: MiChatMessage['id'][],
 	) {
 		if (messageIds.length === 0) return;
 
 		// check joined
-		const joining = await this.userGroupJoiningsRepository.findOneBy({
+		const joining = await this.userRoomJoiningsRepository.findOneBy({
 			userId: userId,
-			userGroupId: groupId,
+			userRoomId: roomId,
 		});
 
 		if (joining == null) {
-			throw new IdentifiableError('930a270c-714a-46b2-b776-ad27276dc569', 'Access denied (group).');
+			throw new IdentifiableError('930a270c-714a-46b2-b776-ad27276dc569', 'Access denied (room).');
 		}
 
 		const messages = await this.chatMessagesRepository.findBy({
@@ -232,7 +232,7 @@ export class ChatService {
 		}
 
 		// Publish event
-		this.globalEventService.publishGroupChatStream(groupId, 'read', {
+		this.globalEventService.publishRoomChatStream(roomId, 'read', {
 			ids: reads,
 			userId: userId,
 		});
@@ -245,14 +245,14 @@ export class ChatService {
 		} else {
 		// そのグループにおいて未読がなければイベント発行
 			const unreadExist = await this.chatMessagesRepository.createQueryBuilder('message')
-				.where('message.groupId = :groupId', { groupId: groupId })
+				.where('message.roomId = :roomId', { roomId: roomId })
 				.andWhere('message.userId != :userId', { userId: userId })
 				.andWhere('NOT (:userId = ANY(message.reads))', { userId: userId })
 				.andWhere('message.createdAt > :joinedAt', { joinedAt: joining.createdAt }) // 自分が加入する前の会話については、未読扱いしない
 				.getOne().then(x => x != null);
 
 			if (!unreadExist) {
-				this.pushNotificationService.pushNotification(userId, 'readAllChatMessagesOfARoom', { groupId });
+				this.pushNotificationService.pushNotification(userId, 'readAllChatMessagesOfARoom', { roomId });
 			}
 		}
 	}
@@ -300,7 +300,7 @@ export class ChatService {
 						.where('message.fromUserId = :meId', { meId: meId })
 						.orWhere('message.toUserId = :meId', { meId: meId });
 				}))
-				.andWhere('message.groupId IS NULL')
+				.andWhere('message.roomId IS NULL')
 				.andWhere(`message.fromUserId NOT IN (${ mutingQuery.getQuery() })`)
 				.andWhere(`message.toUserId NOT IN (${ mutingQuery.getQuery() })`);
 
@@ -324,27 +324,27 @@ export class ChatService {
 	}
 
 	@bindThis
-	public async groupHistory(meId: MiUser['id'], limit: number) {
+	public async roomHistory(meId: MiUser['id'], limit: number) {
 		/*
-		const groups = await this.userGroupJoiningsRepository.findBy({
+		const rooms = await this.userRoomJoiningsRepository.findBy({
 			userId: meId,
-		}).then(xs => xs.map(x => x.userGroupId));
+		}).then(xs => xs.map(x => x.userRoomId));
 
-		if (groups.length === 0) {
+		if (rooms.length === 0) {
 			return [];
 		}
 
 		const history: MiChatMessage[] = [];
 
 		for (let i = 0; i < limit; i++) {
-			const found = history.map(m => m.groupId!);
+			const found = history.map(m => m.roomId!);
 
 			const query = this.chatMessagesRepository.createQueryBuilder('message')
 				.orderBy('message.id', 'DESC')
-				.where('message.groupId IN (:...groups)', { groups: groups });
+				.where('message.roomId IN (:...rooms)', { rooms: rooms });
 
 			if (found.length > 0) {
-				query.andWhere('message.groupId NOT IN (:...found)', { found: found });
+				query.andWhere('message.roomId NOT IN (:...found)', { found: found });
 			}
 
 			const message = await query.getOne();
