@@ -51,6 +51,12 @@ export const meta = {
 			code: 'RESTRICTED_BY_ROLE',
 			id: '7f59dccb-f465-75ab-5cf4-3ce44e3282f7',
 		},
+
+		restrictedByModerator: {
+			message: 'The isSensitive specified by the administrator cannot be changed.',
+			code: 'RESTRICTED_BY_ADMINISTRATOR',
+			id: '20e6c501-e579-400d-97e4-1c7efc286f35',
+		},
 	},
 	res: {
 		type: 'object',
@@ -105,7 +111,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} else if (e instanceof DriveService.NoSuchFolderError) {
 					throw new ApiError(meta.errors.noSuchFolder);
 				} else if (e instanceof DriveService.CannotUnmarkSensitiveError) {
-					throw new ApiError(meta.errors.restrictedByRole);
+					if (file.isSensitiveByModerator) {
+						throw new ApiError(meta.errors.restrictedByModerator);
+					} else {
+						throw new ApiError(meta.errors.restrictedByRole);
+					}
 				} else {
 					throw e;
 				}

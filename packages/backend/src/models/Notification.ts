@@ -94,6 +94,11 @@ export type MiNotification = {
 	createdAt: string;
 	draftId: MiScheduledNote['id'];
 } | {
+	type: 'sensitiveFlagAssigned'
+	id: string;
+	fileId: string;
+	createdAt: string;
+} | {
 	type: 'app';
 	id: string;
 	createdAt: string;

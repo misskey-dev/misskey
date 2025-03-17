@@ -5362,6 +5362,15 @@ export interface Locale extends ILocale {
      * {x}に投稿されます
      */
     "willBePostedAt": ParameterizedString<"x">;
+    /**
+     * 管理者によって、ドライブのファイルがセンシティブとして設定されました。
+     * 詳細については、[NSFWガイドライン](https://go.misskey.io/media-guideline)を確認してください。
+     */
+    "sensitiveByModerator": string;
+    /**
+     * この情報は他のユーザーには公開されません。
+     */
+    "thisInfoIsNotVisibleOtherUser": string;
     "_bubbleGame": {
         /**
          * 遊び方
@@ -9747,6 +9756,10 @@ export interface Locale extends ILocale {
          * 通知の履歴をリセットする
          */
         "flushNotification": string;
+        /**
+         * ドライブのファイルがセンシティブとして設定されました
+         */
+        "sensitiveFlagAssigned": string;
         "_types": {
             /**
              * すべて

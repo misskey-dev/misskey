@@ -309,8 +309,8 @@ export const packedNotificationSchema = {
 				type: 'object',
 				ref: 'NoteDraft',
 				optional: false, nullable: false,
-			}
-		}
+			},
+		},
 	}, {
 		type: 'object',
 		properties: {
@@ -324,8 +324,8 @@ export const packedNotificationSchema = {
 				type: 'object',
 				ref: 'Note',
 				optional: false, nullable: false,
-			}
-		}
+			},
+		},
 	}, {
 		type: 'object',
 		properties: {
@@ -339,8 +339,21 @@ export const packedNotificationSchema = {
 				type: 'object',
 				ref: 'NoteDraft',
 				optional: false, nullable: false,
-			}
-		}
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['sensitiveFlagAssigned'],
+			},
+			fileId: {
+				optional: false, nullable: false,
+			},
+		},
 	}, {
 		type: 'object',
 		properties: {

@@ -21,6 +21,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 						<div class="_margin _gaps_s">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
+							<MkInfo v-if="hasSensitiveFiles" :warn="true">
+								<Mfm :text="i18n.ts.sensitiveByModerator"/>
+							</MkInfo>
 							<MkNoteDetailed :key="note.id" v-model:note="note" :initialTab="initialTab" :class="$style.note"/>
 						</div>
 						<div v-if="clips && clips.length > 0" class="_margin">
@@ -61,6 +64,8 @@ import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { defaultStore } from '@/store.js';
+import MkInfo from '@/components/MkInfo.vue';
+import { $i } from '@/account.js';
 
 const props = defineProps<{
 	noteId: string;
@@ -69,6 +74,7 @@ const props = defineProps<{
 
 const note = ref<null | Misskey.entities.Note>();
 const clips = ref<Misskey.entities.Clip[]>();
+const hasSensitiveFiles = ref(false);
 const showPrev = ref<'user' | 'channel' | false>(false);
 const showNext = ref<'user' | 'channel' | false>(false);
 const error = ref();
@@ -119,6 +125,15 @@ function fetchNote() {
 		noteId: props.noteId,
 	}).then(res => {
 		note.value = res;
+
+		if (note.value.userId === $i?.id && note.value.fileIds) {
+			Promise.all(note.value.fileIds.map(fileId =>
+				misskeyApi('drive/files/show', { fileId: fileId }),
+			)).then(files => {
+				hasSensitiveFiles.value = files.some(file => file.isSensitiveByModerator);
+			});
+		}
+
 		// 古いノートは被クリップ数をカウントしていないので、2023-10-01以前のものは強制的にnotes/clipsを叩く
 		if (note.value.clippedCount > 0 || new Date(note.value.createdAt).getTime() < new Date('2023-10-01').getTime()) {
 			misskeyApi('notes/clips', {

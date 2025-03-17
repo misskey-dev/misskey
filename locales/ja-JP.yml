@@ -1334,6 +1334,8 @@ scheduled: "予約済み"
 unschedule: "予約を解除"
 setScheduledTime: "予約日時を設定"
 willBePostedAt: "{x}に投稿されます"
+sensitiveByModerator: "管理者によって、ドライブのファイルがセンシティブとして設定されました。\n詳細については、[NSFWガイドライン](https://go.misskey.io/media-guideline)を確認してください。"
+thisInfoIsNotVisibleOtherUser: "この情報は他のユーザーには公開されません。"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2562,6 +2564,7 @@ _notification:
   renotedBySomeUsers: "{n}人がリノートしました"
   followedBySomeUsers: "{n}人にフォローされました"
   flushNotification: "通知の履歴をリセットする"
+  sensitiveFlagAssigned: "ドライブのファイルがセンシティブとして設定されました"
 
   _types:
     all: "すべて"

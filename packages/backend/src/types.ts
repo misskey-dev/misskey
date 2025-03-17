@@ -26,6 +26,7 @@ import type { MiNote } from '@/models/Note.js';
  * noteScheduled - 予約投稿が予約された
  * scheduledNotePosted - 予約投稿が投稿された
  * scheduledNoteError - 予約投稿がエラーになった
+ * sensitiveFlagAssigned - センシティブフラグが付与された
  * app - アプリ通知
  * test - テスト通知（サーバー側）
  */
@@ -45,6 +46,7 @@ export const notificationTypes = [
 	'noteScheduled',
 	'scheduledNotePosted',
 	'scheduledNoteError',
+	'sensitiveFlagAssigned',
 	'app',
 	'test',
 ] as const;

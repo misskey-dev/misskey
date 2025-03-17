@@ -8,6 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.head">
 		<MkAvatar v-if="['pollEnded', 'note'].includes(notification.type) && notification.note" :class="$style.icon" :user="notification.note.user" link preview/>
 		<MkAvatar v-else-if="['roleAssigned', 'achievementEarned', 'noteScheduled', 'scheduledNotePosted', 'scheduledNoteError'].includes(notification.type)" :class="$style.icon" :user="$i" link preview/>
+		<div
+			v-else-if="notification.type === 'sensitiveFlagAssigned'"
+			:class="$style.iconFrame"
+		>
+			<div :class="[$style.iconInner]">
+				<img :class="$style.iconImg" src="/fluent-emoji/1f6a9.png">
+			</div>
+		</div>
 		<div v-else-if="notification.type === 'reaction:grouped' && notification.note.reactionAcceptance === 'likeOnly'" :class="[$style.icon, $style.icon_reactionGroupHeart]"><i class="ti ti-heart" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'reaction:grouped'" :class="[$style.icon, $style.icon_reactionGroup]"><i class="ti ti-plus" style="line-height: 1;"></i></div>
 		<div v-else-if="notification.type === 'renote:grouped'" :class="[$style.icon, $style.icon_renoteGroup]"><i class="ti ti-repeat" style="line-height: 1;"></i></div>
@@ -71,6 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'reaction:grouped'" :class="$style.headerName">{{ i18n.tsx._notification.reactedBySomeUsers({ n: getActualReactedUsersCount(notification) }) }}</span>
 			<span v-else-if="notification.type === 'renote:grouped'" :class="$style.headerName">{{ i18n.tsx._notification.renotedBySomeUsers({ n: notification.users.length }) }}</span>
 			<span v-else-if="notification.type === 'app'" :class="$style.headerName">{{ notification.header }}</span>
+			<MkA v-else-if="notification.type === 'sensitiveFlagAssigned'" :to="'/my/drive/file/'+notification.fileId" :class="$style.headerName">{{ i18n.ts._notification.sensitiveFlagAssigned }}</MkA>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
 		</header>
 		<div>
@@ -159,6 +168,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkAvatar :class="$style.reactionsItemAvatar" :user="user" link preview/>
 				</div>
 			</div>
+			<Mfm v-else-if="notification.type === 'sensitiveFlagAssigned'" :text="i18n.ts.sensitiveByModerator"/>
+			<span v-if="['sensitiveFlagAssigned'].includes(notification.type)" :class="$style.text" style="opacity: 0.6;">
+				{{ i18n.ts.thisInfoIsNotVisibleOtherUser }}
+			</span>
 		</div>
 	</div>
 </div>
@@ -341,6 +354,12 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	pointer-events: none;
 }
 
+.t_sensitiveFlagAssigned {
+	padding: 3px;
+	background: var(--eventOther);
+	pointer-events: none;
+}
+
 .tail {
 	flex: 1;
 	min-width: 0;
@@ -428,6 +447,42 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	font-size: 11px;
 	text-align: center;
 	color: #fff;
+}
+
+.iconFrame {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	padding: 4px;
+	border-radius: 100%;
+	box-sizing: border-box;
+	pointer-events: none;
+	user-select: none;
+	filter: drop-shadow(0px 2px 2px #00000044);
+	box-shadow: 0 1px 0px #ffffff88 inset;
+	overflow: clip;
+	background: linear-gradient(0deg, #703827, #d37566);
+}
+
+.iconImg {
+	width: calc(100% - 12px);
+	height: calc(100% - 12px);
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+	filter: drop-shadow(0px 1px 2px #000000aa);
+}
+
+.iconInner {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	border-radius: 100%;
+	box-shadow: 0 1px 0px #ffffff88 inset;
+	background: linear-gradient(0deg, #d37566, #703827);
 }
 
 @container (max-width: 600px) {

@@ -183,6 +183,9 @@ export class NotificationEntityService implements OnModuleInit {
 				header: notification.customHeader,
 				icon: notification.customIcon,
 			} : {}),
+			...(notification.type === 'sensitiveFlagAssigned' ? {
+				fileId: notification.fileId,
+			} : {}),
 		});
 	}
 

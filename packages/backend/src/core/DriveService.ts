@@ -44,6 +44,7 @@ import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -129,6 +130,7 @@ export class DriveService {
 		private driveChart: DriveChart,
 		private perUserDriveChart: PerUserDriveChart,
 		private instanceChart: InstanceChart,
+		private notificationService: NotificationService,
 	) {
 		const logger = this.loggerService.getLogger('drive', 'blue');
 		this.registerLogger = logger.createSubLogger('register', 'yellow');
@@ -664,13 +666,15 @@ export class DriveService {
 	@bindThis
 	public async updateFile(file: MiDriveFile, values: Partial<MiDriveFile>, updater: MiUser) {
 		const alwaysMarkNsfw = (await this.roleService.getUserPolicies(file.userId)).alwaysMarkNsfw;
+		const isModerator = await this.roleService.isModerator(updater);
 
 		if (values.name != null && !this.driveFileEntityService.validateFileName(values.name)) {
 			throw new DriveService.InvalidFileNameError();
 		}
 
-		if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive && alwaysMarkNsfw && !values.isSensitive) {
-			throw new DriveService.CannotUnmarkSensitiveError();
+		if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive && !values.isSensitive) {
+			if (alwaysMarkNsfw) throw new DriveService.CannotUnmarkSensitiveError();
+			if (file.isSensitiveByModerator && (file.userId === updater.id)) throw new DriveService.CannotUnmarkSensitiveError();
 		}
 
 		if (values.folderId != null) {
@@ -684,6 +688,10 @@ export class DriveService {
 			}
 		}
 
+		if (isModerator && file.userId !== updater.id) {
+			values.isSensitiveByModerator = values.isSensitive;
+		}
+
 		await this.driveFilesRepository.update(file.id, values);
 
 		const fileObj = await this.driveFileEntityService.pack(file.id, updater, { self: true });
@@ -693,7 +701,7 @@ export class DriveService {
 			this.globalEventService.publishDriveStream(file.userId, 'fileUpdated', fileObj);
 		}
 
-		if (await this.roleService.isModerator(updater) && (file.userId !== updater.id)) {
+		if (isModerator && (file.userId !== updater.id)) {
 			if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive) {
 				const user = file.userId ? await this.usersRepository.findOneByOrFail({ id: file.userId }) : null;
 				if (values.isSensitive) {
@@ -703,6 +711,11 @@ export class DriveService {
 						fileUserUsername: user?.username ?? null,
 						fileUserHost: user?.host ?? null,
 					});
+					if (file.userId) {
+						this.notificationService.createNotification(file.userId, 'sensitiveFlagAssigned', {
+							fileId: file.id,
+						});
+					}
 				} else {
 					this.moderationLogService.log(updater, 'unmarkSensitiveDriveFile', {
 						fileId: file.id,

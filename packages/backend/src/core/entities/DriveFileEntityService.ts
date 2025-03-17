@@ -210,6 +210,9 @@ export class DriveFileEntityService {
 			md5: file.md5,
 			size: file.size,
 			isSensitive: file.isSensitive,
+			...(opts.detail ? {
+				isSensitiveByModerator: file.isSensitiveByModerator,
+			} : {}),
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
 			url: opts.self ? file.url : this.getPublicUrl(file),
@@ -246,6 +249,9 @@ export class DriveFileEntityService {
 			md5: file.md5,
 			size: file.size,
 			isSensitive: file.isSensitive,
+			...(opts.detail ? {
+				isSensitiveByModerator: file.isSensitiveByModerator,
+			} : {}),
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
 			url: opts.self ? file.url : this.getPublicUrl(file),
