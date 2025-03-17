@@ -1223,9 +1223,9 @@ export interface Locale extends ILocale {
      */
     "noMoreHistory": string;
     /**
-     * チャットを開始
+     * チャットを始める
      */
-    "startMessaging": string;
+    "startChat": string;
     /**
      * {n}人が読みました
      */
@@ -5350,6 +5350,10 @@ export interface Locale extends ILocale {
      * 文字数
      */
     "textCount": string;
+    /**
+     * チャット
+     */
+    "chat": string;
     "_emojiPalette": {
         /**
          * パレット

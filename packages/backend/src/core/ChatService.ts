@@ -16,7 +16,7 @@ import { ChatMessageEntityService } from '@/core/entities/ChatMessageEntityServi
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { bindThis } from '@/decorators.js';
-import type { ChatMessagesRepository, MiChatMessage, MiDriveFile, MiUser, UsersRepository } from '@/models/_.js';
+import type { ChatMessagesRepository, MiChatMessage, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { QueryService } from '@/core/QueryService.js';
 
@@ -34,6 +34,9 @@ export class ChatService {
 
 		@Inject(DI.chatMessagesRepository)
 		private chatMessagesRepository: ChatMessagesRepository,
+
+		@Inject(DI.mutingsRepository)
+		private mutingsRepository: MutingsRepository,
 
 		private userEntityService: UserEntityService,
 		private chatMessageEntityService: ChatMessageEntityService,
@@ -277,5 +280,83 @@ export class ChatService {
 		const messages = await query.take(limit).getMany();
 
 		return messages;
+	}
+
+	@bindThis
+	public async userHistory(meId: MiUser['id'], limit: number) {
+		const history: MiChatMessage[] = [];
+
+		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
+			.select('muting.muteeId')
+			.where('muting.muterId = :muterId', { muterId: meId });
+
+		for (let i = 0; i < limit; i++) {
+			const found = history.map(m => (m.fromUserId === meId) ? m.toUserId! : m.fromUserId!);
+
+			const query = this.chatMessagesRepository.createQueryBuilder('message')
+				.orderBy('message.id', 'DESC')
+				.where(new Brackets(qb => {
+					qb
+						.where('message.fromUserId = :meId', { meId: meId })
+						.orWhere('message.toUserId = :meId', { meId: meId });
+				}))
+				.andWhere('message.groupId IS NULL')
+				.andWhere(`message.fromUserId NOT IN (${ mutingQuery.getQuery() })`)
+				.andWhere(`message.toUserId NOT IN (${ mutingQuery.getQuery() })`);
+
+			if (found.length > 0) {
+				query.andWhere('message.fromUserId NOT IN (:...found)', { found: found });
+				query.andWhere('message.toUserId NOT IN (:...found)', { found: found });
+			}
+
+			query.setParameters(mutingQuery.getParameters());
+
+			const message = await query.getOne();
+
+			if (message) {
+				history.push(message);
+			} else {
+				break;
+			}
+		}
+
+		return history;
+	}
+
+	@bindThis
+	public async groupHistory(meId: MiUser['id'], limit: number) {
+		/*
+		const groups = await this.userGroupJoiningsRepository.findBy({
+			userId: meId,
+		}).then(xs => xs.map(x => x.userGroupId));
+
+		if (groups.length === 0) {
+			return [];
+		}
+
+		const history: MiChatMessage[] = [];
+
+		for (let i = 0; i < limit; i++) {
+			const found = history.map(m => m.groupId!);
+
+			const query = this.chatMessagesRepository.createQueryBuilder('message')
+				.orderBy('message.id', 'DESC')
+				.where('message.groupId IN (:...groups)', { groups: groups });
+
+			if (found.length > 0) {
+				query.andWhere('message.groupId NOT IN (:...found)', { found: found });
+			}
+
+			const message = await query.getOne();
+
+			if (message) {
+				history.push(message);
+			} else {
+				break;
+			}
+		}
+
+		return history;
+		*/
 	}
 }

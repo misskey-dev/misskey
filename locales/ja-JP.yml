@@ -301,7 +301,7 @@ uploadFromUrlMayTakeTime: "アップロードが完了するまで時間がか�
 explore: "みつける"
 messageRead: "既読"
 noMoreHistory: "これより過去の履歴はありません"
-startMessaging: "チャットを開始"
+startChat: "チャットを始める"
 nUsersRead: "{n}人が読みました"
 agreeTo: "{0}に同意"
 agree: "同意する"
@@ -1333,6 +1333,7 @@ paste: "ペースト"
 emojiPalette: "絵文字パレット"
 postForm: "投稿フォーム"
 textCount: "文字数"
+chat: "チャット"
 
 _emojiPalette:
   palettes: "パレット"
