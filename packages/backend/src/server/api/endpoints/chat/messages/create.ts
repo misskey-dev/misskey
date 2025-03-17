@@ -10,12 +10,14 @@ import { GetterService } from '@/server/api/GetterService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { ChatService } from '@/core/ChatService.js';
-import { DriveFilesRepository, MiUser } from '@/models/_.js';
+import type { DriveFilesRepository, MiUser } from '@/models/_.js';
 
 export const meta = {
 	tags: ['chat'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:chat',
 
@@ -80,21 +82,8 @@ export const paramDef = {
 	properties: {
 		text: { type: 'string', nullable: true, maxLength: 2000 },
 		fileId: { type: 'string', format: 'misskey:id' },
+		userId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
-	anyOf: [
-		{
-			properties: {
-				userId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['userId'],
-		},
-		{
-			properties: {
-				groupId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['groupId'],
-		},
-	],
 } as const;
 
 @Injectable()
@@ -107,8 +96,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatService: ChatService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let toUser: MiUser | null;
-			//let toGroup: UserGroup | null;
+			let file = null;
+			if (ps.fileId != null) {
+				file = await this.driveFilesRepository.findOneBy({
+					id: ps.fileId,
+					userId: me.id,
+				});
+
+				if (file == null) {
+					throw new ApiError(meta.errors.noSuchFile);
+				}
+			}
+
+			// テキストが無いかつ添付ファイルも無かったらエラー
+			if (ps.text == null && file == null) {
+				throw new ApiError(meta.errors.contentRequired);
+			}
 
 			if (ps.userId != null) {
 				// Myself
@@ -116,10 +119,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.recipientIsYourself);
 				}
 
-				// Fetch recipient (user)
-				toUser = await this.getterService.getUser(ps.userId).catch(err => {
+				const toUser = await this.getterService.getUser(ps.userId).catch(err => {
 					if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 					throw err;
+				});
+
+				return await this.chatService.createMessage({
+					fromUser: me,
+					toUser,
+					text: ps.text,
+					file: file,
 				});
 			}/* else if (ps.groupId != null) {
 				// Fetch recipient (group)
@@ -139,31 +148,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.groupAccessDenied);
 				}
 			}*/
-
-			let file = null;
-			if (ps.fileId != null) {
-				file = await this.driveFilesRepository.findOneBy({
-					id: ps.fileId,
-					userId: me.id,
-				});
-
-				if (file == null) {
-					throw new ApiError(meta.errors.noSuchFile);
-				}
-			}
-
-			// テキストが無いかつ添付ファイルも無かったらエラー
-			if (ps.text == null && file == null) {
-				throw new ApiError(meta.errors.contentRequired);
-			}
-
-			return await this.chatService.createMessage({
-				fromUser: me,
-				toUser,
-				toGroup,
-				text: ps.text,
-				file: file,
-			});
 		});
 	}
 }

@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -17,6 +18,7 @@ import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { bindThis } from '@/decorators.js';
 import type { ChatMessagesRepository, MiChatMessage, MiDriveFile, MiUser, UsersRepository } from '@/models/_.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
+import { QueryService } from '@/core/QueryService.js';
 
 @Injectable()
 export class ChatService {
@@ -41,6 +43,7 @@ export class ChatService {
 		private queueService: QueueService,
 		private pushNotificationService: PushNotificationService,
 		private userBlockingService: UserBlockingService,
+		private queryService: QueryService,
 	) {
 	}
 
@@ -251,4 +254,28 @@ export class ChatService {
 		}
 	}
 	*/
+
+	@bindThis
+	public async userTimeline(meId: MiUser['id'], otherId: MiUser['id'], sinceId: MiChatMessage['id'] | null, untilId: MiChatMessage['id'] | null, limit: number) {
+		const query = this.queryService.makePaginationQuery(this.chatMessagesRepository.createQueryBuilder('message'), sinceId, untilId)
+			.andWhere(new Brackets(qb => {
+				qb
+					.where(new Brackets(qb => {
+						qb
+							.where('message.fromUserId = :meId')
+							.andWhere('message.toUserId = :otherId');
+					}))
+					.orWhere(new Brackets(qb => {
+						qb
+							.where('message.fromUserId = :otherId')
+							.andWhere('message.toUserId = :meId');
+					}));
+			}))
+			.setParameter('meId', meId)
+			.setParameter('otherId', otherId);
+
+		const messages = await query.take(limit).getMany();
+
+		return messages;
+	}
 }
