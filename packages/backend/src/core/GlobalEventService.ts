@@ -163,6 +163,11 @@ export interface AdminEventTypes {
 	};
 }
 
+export interface ChatEventTypes {
+	message: Packed<'ChatMessage'>;
+	deleted: Packed<'ChatMessage'>['id'];
+}
+
 export interface ReversiEventTypes {
 	matched: {
 		game: Packed<'ReversiGameDetailed'>;
@@ -202,7 +207,7 @@ export interface ReversiGameEventTypes {
 type Events<T extends object> = { [K in keyof T]: { type: K; body: T[K]; } };
 type EventUnionFromDictionary<
 	T extends object,
-	U = Events<T>
+	U = Events<T>,
 > = U[keyof U];
 
 type SerializedAll<T> = {
@@ -294,6 +299,10 @@ export type GlobalEvents = {
 	notes: {
 		name: 'notesStream';
 		payload: Serialized<Packed<'Note'>>;
+	};
+	chat: {
+		name: `chatStream:${MiUser['id']}-${MiUser['id']}`;
+		payload: EventTypesToEventPayload<ChatEventTypes>;
 	};
 	reversi: {
 		name: `reversiStream:${MiUser['id']}`;
@@ -391,6 +400,11 @@ export class GlobalEventService {
 	@bindThis
 	public publishAdminStream<K extends keyof AdminEventTypes>(userId: MiUser['id'], type: K, value?: AdminEventTypes[K]): void {
 		this.publish(`adminStream:${userId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishChatStream<K extends keyof ChatEventTypes>(fromUserId: MiUser['id'], toUserId: MiUser['id'], type: K, value?: ChatEventTypes[K]): void {
+		this.publish(`chatStream:${fromUserId}-${toUserId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	@bindThis

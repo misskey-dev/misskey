@@ -397,4 +397,5 @@ export * as 'users/search' from './endpoints/users/search.js';
 export * as 'users/search-by-username-and-host' from './endpoints/users/search-by-username-and-host.js';
 export * as 'users/show' from './endpoints/users/show.js';
 export * as 'users/update-memo' from './endpoints/users/update-memo.js';
+export * as 'chat/messages/create' from './endpoints/chat/messages/create.js';
 export * as 'v2/admin/emoji/list' from './endpoints/v2/admin/emoji/list.js';
