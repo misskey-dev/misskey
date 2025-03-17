@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - add_gha_for_ecr_push
 
 jobs:
   build-and-push:
