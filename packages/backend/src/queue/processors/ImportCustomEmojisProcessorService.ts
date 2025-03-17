@@ -86,7 +86,7 @@ export class ImportCustomEmojisProcessorService {
 				}
 				const emojiPath = outputPath + '/' + record.fileName;
 				await this.emojisRepository.delete({
-					name: emojiInfo.name, 
+					name: emojiInfo.name,
 					host: IsNull(),
 				});
 
