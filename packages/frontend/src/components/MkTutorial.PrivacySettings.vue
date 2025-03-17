@@ -29,10 +29,10 @@ import { i18n } from '@/i18n.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const isLocked = ref($i.isLocked);
 const publicReactions = ref($i.publicReactions);

@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { updateCurrentAccountPartial } from '@/accounts.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
 import { claimAchievement } from '@/utility/achievements.js';
@@ -62,7 +62,7 @@ const emit = defineEmits<{
 
 const onceSet = ref(false);
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const originalMode = computed(() => {
 	if (props.specifyManually && !onceSet.value) {

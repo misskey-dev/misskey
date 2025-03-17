@@ -71,7 +71,7 @@
 import { ref, shallowRef, onMounted, onDeactivated, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { apiUrl, host } from '@@/js/config.js';
 import { prefer } from '@/preferences.js';
 import { hanaStore } from '@/hana/store.js';
@@ -87,7 +87,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 //#region modalの制御
 const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
