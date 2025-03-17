@@ -50,8 +50,8 @@ export class ChatMessageEntityService {
 			fromUser: message.fromUserId !== me.id ? (packedUsers?.get(message.fromUserId) ?? await this.userEntityService.pack(message.fromUser ?? message.fromUserId, me)) : undefined,
 			toUserId: message.toUserId,
 			toUser: (message.toUserId && message.toUserId !== me.id) ? (packedUsers?.get(message.toUserId) ?? await this.userEntityService.pack(message.toUser ?? message.toUserId, me)) : undefined,
-			//toGroupId: message.toGroupId,
-			//toGroup: message.toGroupId && opts.populateGroup ? await this.userGroupEntityService.pack(message.toGroup ?? message.toGroupId) : undefined,
+			//toRoomId: message.toRoomId,
+			//toRoom: message.toRoomId && opts.populateRoom ? await this.userRoomEntityService.pack(message.toRoom ?? message.toRoomId) : undefined,
 			fileId: message.fileId,
 			file: message.file ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file)) : null,
 		};
@@ -105,7 +105,7 @@ export class ChatMessageEntityService {
 			text: message.text,
 			fromUserId: message.fromUserId,
 			toUserId: message.toUserId,
-			//toGroupId: message.toGroupId,
+			//toRoomId: message.toRoomId,
 			fileId: message.fileId,
 			file: message.file ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file)) : null,
 		};

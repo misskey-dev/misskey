@@ -16,12 +16,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:key="message.id"
 					:class="[$style.message, { [$style.isMe]: message.isMe, [$style.isRead]: message.isRead }]"
 					class="_panel"
-					:to="message.groupId ? `/chat/group/${message.groupId}` : `/chat/user/${message.otherId}`"
+					:to="message.roomId ? `/chat/room/${message.roomId}` : `/chat/user/${message.otherId}`"
 				>
 					<div>
 						<MkAvatar :class="$style.avatar" :user="message.user" indicator link preview/>
-						<header v-if="message.groupId">
-							<span class="name">{{ message.group.name }}</span>
+						<header v-if="message.roomId">
+							<span class="name">{{ message.room.name }}</span>
 							<MkTime :time="message.createdAt" class="time"/>
 						</header>
 						<header v-else>
