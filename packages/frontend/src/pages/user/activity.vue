@@ -36,7 +36,7 @@ import XNotes from './activity.notes.vue';
 import XFollowing from './activity.following.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkHeatmap from '@/components/MkHeatmap.vue';
-import { isFollowersVisibleForMe, isFollowingVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { isFollowersVisibleForMe, isFollowingVisibleForMe } from '@/utility/isFfVisibleForMe.js';
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
