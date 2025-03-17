@@ -146,8 +146,10 @@ export class DriveService {
 	 */
 	@bindThis
 	private async save(file: MiDriveFile, path: string, name: string, type: string, hash: string, size: number): Promise<MiDriveFile> {
-	// thunbnail, webpublic を必要なら生成
-		const alts = await this.generateAlts(path, type, !file.uri);
+		const fileType = type.split(';')[0];
+
+		// thunbnail, webpublic を必要なら生成
+		const alts = await this.generateAlts(path, fileType, !file.uri);
 
 		const meta = await this.metaService.fetch();
 
@@ -156,17 +158,17 @@ export class DriveService {
 			let [ext] = (name.match(/\.([a-zA-Z0-9_-]+)$/) ?? ['']);
 
 			if (ext === '') {
-				if (type === 'image/jpeg') ext = '.jpg';
-				if (type === 'image/png') ext = '.png';
-				if (type === 'image/webp') ext = '.webp';
-				if (type === 'image/avif') ext = '.avif';
-				if (type === 'image/apng') ext = '.apng';
-				if (type === 'image/vnd.mozilla.apng') ext = '.apng';
+				if (fileType === 'image/jpeg') ext = '.jpg';
+				if (fileType === 'image/png') ext = '.png';
+				if (fileType === 'image/webp') ext = '.webp';
+				if (fileType === 'image/avif') ext = '.avif';
+				if (fileType === 'image/apng') ext = '.apng';
+				if (fileType === 'image/vnd.mozilla.apng') ext = '.apng';
 			}
 
 			// 拡張子からContent-Typeを設定してそうな挙動を示すオブジェクトストレージ (upcloud?) も存在するので、
 			// 許可されているファイル形式でしかURLに拡張子をつけない
-			if (!FILE_TYPE_BROWSERSAFE.includes(type)) {
+			if (!FILE_TYPE_BROWSERSAFE.includes(fileType)) {
 				ext = '';
 			}
 
@@ -373,8 +375,10 @@ export class DriveService {
 	 */
 	@bindThis
 	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, ext?: string | null, filename?: string) {
-		if (type === 'image/apng') type = 'image/png';
-		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
+		const fileType = type.split(';')[0];
+
+		if (fileType === 'image/apng') type = 'image/png';
+		if (!FILE_TYPE_BROWSERSAFE.includes(fileType)) type = 'application/octet-stream';
 
 		const meta = await this.metaService.fetch();
 
