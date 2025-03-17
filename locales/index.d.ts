@@ -1175,10 +1175,6 @@ export interface Locale extends ILocale {
      */
     "saved": string;
     /**
-     * チャット
-     */
-    "messaging": string;
-    /**
      * アップロード
      */
     "upload": string;
@@ -8722,6 +8718,14 @@ export interface Locale extends ILocale {
          * 違反を報告する
          */
         "write:report-abuse": string;
+        /**
+         * チャットを操作する
+         */
+        "write:chat": string;
+        /**
+         * チャットを閲覧する
+         */
+        "read:chat": string;
     };
     "_auth": {
         /**

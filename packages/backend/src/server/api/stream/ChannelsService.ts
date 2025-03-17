@@ -19,6 +19,7 @@ import { AntennaChannelService } from './channels/antenna.js';
 import { DriveChannelService } from './channels/drive.js';
 import { HashtagChannelService } from './channels/hashtag.js';
 import { RoleTimelineChannelService } from './channels/role-timeline.js';
+import { ChatChannelService } from './channels/chat.js';
 import { ReversiChannelService } from './channels/reversi.js';
 import { ReversiGameChannelService } from './channels/reversi-game.js';
 import { type MiChannelService } from './channel.js';
@@ -40,6 +41,7 @@ export class ChannelsService {
 		private serverStatsChannelService: ServerStatsChannelService,
 		private queueStatsChannelService: QueueStatsChannelService,
 		private adminChannelService: AdminChannelService,
+		private chatChannelService: ChatChannelService,
 		private reversiChannelService: ReversiChannelService,
 		private reversiGameChannelService: ReversiGameChannelService,
 	) {
@@ -62,6 +64,7 @@ export class ChannelsService {
 			case 'serverStats': return this.serverStatsChannelService;
 			case 'queueStats': return this.queueStatsChannelService;
 			case 'admin': return this.adminChannelService;
+			case 'chat': return this.chatChannelService;
 			case 'reversi': return this.reversiChannelService;
 			case 'reversiGame': return this.reversiGameChannelService;
 
