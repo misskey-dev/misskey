@@ -7,7 +7,7 @@
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { EventEmitter } from 'eventemitter3';
 import { Options } from 'reconnecting-websocket';
-import type { PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
+import type { PublicKeyCredentialRequestOptionsJSON as PublicKeyCredentialRequestOptionsJSON_2 } from '@simplewebauthn/types';
 import _ReconnectingWebSocket from 'reconnecting-websocket';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
@@ -397,6 +397,12 @@ type AdminUpdateAbuseUserReportRequest = operations['admin___update-abuse-user-r
 
 // @public (undocumented)
 type AdminUpdateMetaRequest = operations['admin___update-meta']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateProxyAccountRequest = operations['admin___update-proxy-account']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateProxyAccountResponse = operations['admin___update-proxy-account']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type AdminUpdateUserNoteRequest = operations['admin___update-user-note']['requestBody']['content']['application/json'];
@@ -1357,6 +1363,8 @@ declare namespace entities {
         AdminUnsuspendUserRequest,
         AdminUpdateAbuseUserReportRequest,
         AdminUpdateMetaRequest,
+        AdminUpdateProxyAccountRequest,
+        AdminUpdateProxyAccountResponse,
         AdminUpdateUserNoteRequest,
         AnnouncementsRequest,
         AnnouncementsResponse,
@@ -3106,12 +3114,12 @@ type SigninFlowResponse = {
 } | {
     finished: false;
     next: 'passkey';
-    authRequest: PublicKeyCredentialRequestOptionsJSON;
+    authRequest: PublicKeyCredentialRequestOptionsJSON_2;
 };
 
 // @public (undocumented)
 type SigninWithPasskeyInitResponse = {
-    option: PublicKeyCredentialRequestOptionsJSON;
+    option: PublicKeyCredentialRequestOptionsJSON_2;
     context: string;
 };
 

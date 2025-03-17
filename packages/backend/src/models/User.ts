@@ -184,12 +184,6 @@ export class MiUser {
 	})
 	public isCat: boolean;
 
-	@Column('boolean', {
-		default: false,
-		comment: 'Whether the User is the root.',
-	})
-	public isRoot: boolean;
-
 	@Index()
 	@Column('boolean', {
 		default: true,
@@ -288,24 +282,24 @@ export class MiUser {
 export type MiLocalUser = MiUser & {
 	host: null;
 	uri: null;
-}
+};
 
 export type MiPartialLocalUser = Partial<MiUser> & {
 	id: MiUser['id'];
 	host: null;
 	uri: null;
-}
+};
 
 export type MiRemoteUser = MiUser & {
 	host: string;
 	uri: string;
-}
+};
 
 export type MiPartialRemoteUser = Partial<MiUser> & {
 	id: MiUser['id'];
 	host: string;
 	uri: string;
-}
+};
 
 export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
 export const passwordSchema = { type: 'string', minLength: 1 } as const;

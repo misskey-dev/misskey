@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<img :class="$style.icon" :src="avatarUrl" alt="">
 	<span>
 		<span>@{{ username }}</span>
-		<span v-if="(host != localHost) || defaultStore.state.showFullAcct" :class="$style.host">@{{ toUnicode(host) }}</span>
+		<span v-if="(host != localHost)" :class="$style.host">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
 </template>
@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { toUnicode } from 'punycode.js';
 import { computed } from 'vue';
 import { host as localHost } from '@@/js/config.js';
+import type { MkABehavior } from '@/components/global/MkA.vue';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { MkABehavior } from '@/components/global/MkA.vue';
 
 const props = defineProps<{
 	username: string;

@@ -132,6 +132,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i v-else class="ti ti-plus"></i>
 					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
 				</button>
+				<!-- いいね機能 -->
 				<button ref="likeButton" :class="$style.footerButton" class="_button" @click="toggleLikeReact()">
 					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-star" style="color: var(--love);"></i>
 					<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
@@ -183,13 +184,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, Ref, watch, provide } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, watch, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
 import { shouldCollapsed } from '@@/js/collapsed.js';
 import { host } from '@@/js/config.js';
+import type { Ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
+import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
+import type { Keymap } from '@/scripts/hotkey.js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -201,7 +205,7 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
@@ -223,7 +227,6 @@ import { getNoteSummary } from '@/scripts/get-note-summary.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { isEnabledUrlPreview } from '@/instance.js';
-import { type Keymap } from '@/scripts/hotkey.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { getAppearNote } from '@/scripts/get-appear-note.js';
 
@@ -468,61 +471,78 @@ function reply(): void {
 	});
 }
 
-function reactLike(): void {
+// Note: 原則いいね機能実装では react() はいじらず、こちらに切り出して実装する
+// 本家を追従する際にconflictを減らすため
+function toggleLikeReact(): void {
 	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
-	showMovedDialog();
-	sound.playMisskeySfx('reaction');
-
-	if (props.mock) {
-		return;
+	if (appearNote.value.myReaction == null) {
+		reactLike();
+	} else {
+		undoReact(appearNote.value);
 	}
+}
 
+function reactLike(): void {
+	sound.playMisskeySfx('reaction');
 	misskeyApi('notes/reactions/create', {
 		noteId: appearNote.value.id,
 		reaction: '⭐️',
 	});
-	const el = reactButton.value;
-	if (el) {
-		const rect = el.getBoundingClientRect();
-		const x = rect.left + (el.offsetWidth / 2);
-		const y = rect.top + (el.offsetHeight / 2);
-		const { dispose } = os.popup(MkRippleEffect, { x, y }, {
-			end: () => dispose(),
-		});
-	}
 }
 
-function reactEmoji(): void {
-	pleaseLogin(undefined, pleaseLoginContext.value);
+function react(): void {
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	showMovedDialog();
-	blur();
-	reactionPicker.show(reactButton.value ?? null, note.value, reaction => {
+	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
 
 		if (props.mock) {
-			emit('reaction', reaction);
 			return;
 		}
 
 		misskeyApi('notes/reactions/create', {
 			noteId: appearNote.value.id,
-			reaction: reaction,
+			reaction: '❤️',
 		});
-		if (appearNote.value.text && appearNote.value.text.length > 100 && (Date.now() - new Date(appearNote.value.createdAt).getTime() < 1000 * 3)) {
-			claimAchievement('reactWithoutRead');
+		const el = reactButton.value;
+		if (el && defaultStore.state.animation) {
+			const rect = el.getBoundingClientRect();
+			const x = rect.left + (el.offsetWidth / 2);
+			const y = rect.top + (el.offsetHeight / 2);
+			const { dispose } = os.popup(MkRippleEffect, { x, y }, {
+				end: () => dispose(),
+			});
 		}
-	}, () => {
-		focus();
-	});
-}
+	} else {
+		blur();
+		reactionPicker.show(reactButton.value ?? null, note.value, async (reaction) => {
+			if (defaultStore.state.confirmOnReact) {
+				const confirm = await os.confirm({
+					type: 'question',
+					text: i18n.tsx.reactAreYouSure({ emoji: reaction.replace('@.', '') }),
+				});
 
-function react(): void {
-	if (appearNote.value.reactionAcceptance === 'likeOnly') {
-		reactLike();
-		return;
+				if (confirm.canceled) return;
+			}
+
+			sound.playMisskeySfx('reaction');
+
+			if (props.mock) {
+				emit('reaction', reaction);
+				return;
+			}
+
+			misskeyApi('notes/reactions/create', {
+				noteId: appearNote.value.id,
+				reaction: reaction,
+			});
+			if (appearNote.value.text && appearNote.value.text.length > 100 && (Date.now() - new Date(appearNote.value.createdAt).getTime() < 1000 * 3)) {
+				claimAchievement('reactWithoutRead');
+			}
+		}, () => {
+			focus();
+		});
 	}
-	reactEmoji();
-	return;
 }
 
 function undoReact(targetNote: Misskey.entities.Note): void {
@@ -539,15 +559,7 @@ function undoReact(targetNote: Misskey.entities.Note): void {
 	});
 }
 
-function toggleLikeReact(): void {
-	if (appearNote.value.myReaction == null) {
-		reactLike();
-	} else {
-		undoReact(appearNote.value);
-	}
-}
-
-function toggleReact(): void {
+function toggleReact() {
 	if (appearNote.value.myReaction == null) {
 		react();
 	} else {
