@@ -1,0 +1,30 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+      - add_gha_for_ecr_push
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_GHA_ROLE }}
+          aws-region: ap-northeast-1
+      
+      - name: Build and push Docker image
+        run: make push
+        env: 
+          ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+
