@@ -13794,7 +13794,7 @@ export type operations = {
           /** @default 10 */
           limit?: number;
           /** @default false */
-          group?: boolean;
+          room?: boolean;
         };
       };
     };
