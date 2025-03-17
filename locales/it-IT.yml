@@ -1331,9 +1331,14 @@ preferenceSyncConflictChoiceServer: "Valore del server"
 preferenceSyncConflictChoiceDevice: "Valore del dispositivo"
 preferenceSyncConflictChoiceCancel: "Annulla la sincronizzazione"
 paste: "Incolla"
-emojiPalette: "Selettore emoji"
+emojiPalette: "Tavolozza emoji"
 postForm: "Finestra di pubblicazione"
 textCount: "Il numero di caratteri"
+_emojiPalette:
+  palettes: "Tavolozza"
+  enableSyncBetweenDevicesForPalettes: "Attiva la sincronizzazione tra dispositivi"
+  paletteForMain: "Tavolozza principale"
+  paletteForReaction: "Tavolozza per reazioni"
 _settings:
   driveBanner: "Permette di gestire e configurare il Drive, controllare il consumo di spazio e configurare il caricamento dei file."
   pluginBanner: "Consentono di migliorare le funzionalità. Le estensioni si possono configurare e gestire singolarmente."
@@ -1351,6 +1356,9 @@ _settings:
   preferencesBanner: "Puoi personalizzare il comportamento del tuo dispositivo."
   appearanceBanner: "Puoi personalizzare l'aspetto nel dispositivo, in base alle tue preferenze."
   soundsBanner: "Puoi personalizzare i suoni emessi dagli eventi sul tuo dispositivo."
+  timelineAndNote: "Note e Timeline"
+  makeEveryTextElementsSelectable: "Imposta ogni elemento come selezionabile"
+  makeEveryTextElementsSelectable_description: "Potrebbe ridurre l'usabilità in alcune situazioni."
 _preferencesProfile:
   profileName: "Nome del profilo"
   profileNameDescription: "Impostare il nome che indentifica questo dispositivo."
@@ -2515,6 +2523,7 @@ _notification:
     achievementEarned: "Risultato raggiunto"
     exportCompleted: "Esportazione completata"
     login: "Accessi"
+    createToken: "Creare un token di accesso"
     test: "Notifiche di test"
     app: "Notifiche da applicazioni"
   _actions:
@@ -2542,6 +2551,7 @@ _deck:
   useSimpleUiForNonRootPages: "Visualizza sotto pagine con interfaccia web semplice"
   usedAsMinWidthWhenFlexible: "Se \"larghezza flessibile\" è abilitato, questa diventa la larghezza minima"
   flexible: "Larghezza flessibile"
+  enableSyncBetweenDevicesForProfiles: "Abilita la sincronizzazione delle informazioni profilo tra dispositivi"
   _columns:
     main: "Principale"
     widgets: "Riquadri"
