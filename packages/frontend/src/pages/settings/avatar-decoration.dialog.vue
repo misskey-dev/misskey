@@ -51,9 +51,9 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
 import MkRange from '@/components/MkRange.vue';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const props = defineProps<{
 	usingIndex: number | null;

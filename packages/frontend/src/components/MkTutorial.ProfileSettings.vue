@@ -41,9 +41,9 @@ import { selectFile } from '@/utility/select-file.js';
 import * as os from '@/os.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const name = ref($i.name ?? '');
 const description = ref($i.description ?? '');

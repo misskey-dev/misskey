@@ -114,7 +114,7 @@ import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -124,7 +124,7 @@ import * as os from '@/os.js';
 import type { MenuItem } from '@/types/menu.js';
 import { useRouter } from '@/router/supplier.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const router = useRouter();
 

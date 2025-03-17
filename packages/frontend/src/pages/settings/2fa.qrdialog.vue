@@ -117,9 +117,9 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkLink from '@/components/MkLink.vue';
 import { confetti } from '@/utility/confetti.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 defineProps<{
 	twoFactorData: {
