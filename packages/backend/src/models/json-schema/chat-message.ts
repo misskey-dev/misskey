@@ -46,6 +46,10 @@ export const packedChatMessageSchema = {
 			optional: true, nullable: true,
 			ref: 'DriveFile',
 		},
+		isRead: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
 	},
 } as const;
 

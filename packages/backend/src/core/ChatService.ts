@@ -283,7 +283,7 @@ export class ChatService {
 	}
 
 	@bindThis
-	public async userHistory(meId: MiUser['id'], limit: number) {
+	public async userHistory(meId: MiUser['id'], limit: number): Promise<MiChatMessage[]> {
 		const history: MiChatMessage[] = [];
 
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
@@ -324,7 +324,7 @@ export class ChatService {
 	}
 
 	@bindThis
-	public async roomHistory(meId: MiUser['id'], limit: number) {
+	public async roomHistory(meId: MiUser['id'], limit: number): Promise<MiChatMessage[]> {
 		/*
 		const rooms = await this.userRoomJoiningsRepository.findBy({
 			userId: meId,
@@ -358,5 +358,25 @@ export class ChatService {
 
 		return history;
 		*/
+	}
+
+	@bindThis
+	public async getUserReadStateMap(userId: MiUser['id'], otherIds: MiUser['id'][]) {
+		const readStateMap: Record<MiUser['id'], boolean> = {};
+
+		const redisPipeline = this.redisClient.pipeline();
+
+		for (const otherId of otherIds) {
+			redisPipeline.get(`newChatMessageExists:${userId}:${otherId}`);
+		}
+
+		const markers = await redisPipeline.exec();
+
+		for (let i = 0; i < otherIds.length; i++) {
+			const marker = markers[i][1];
+			readStateMap[otherIds[i]] = marker == null;
+		}
+
+		return readStateMap;
 	}
 }

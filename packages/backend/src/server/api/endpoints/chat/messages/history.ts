@@ -48,7 +48,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const history = ps.room ? await this.chatService.roomHistory(me.id, ps.limit) : await this.chatService.userHistory(me.id, ps.limit);
 
-			return await this.chatMessageEntityService.packMany(history, me);
+			const packedMessages = await this.chatMessageEntityService.packMany(history, me);
+
+			if (ps.room) {
+			} else {
+				const otherIds = history.map(m => m.fromUserId === me.id ? m.toUserId! : m.fromUserId!);
+				const readStateMap = await this.chatService.getUserReadStateMap(me.id, otherIds);
+
+				for (const message of packedMessages) {
+					const otherId = message.fromUserId === me.id ? message.toUserId! : message.fromUserId!;
+					message.isRead = readStateMap[otherId] ?? false;
+				}
+			}
+
+			return packedMessages;
 		});
 	}
 }
