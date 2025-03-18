@@ -7,36 +7,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root">
 	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
 
-	<MkStickyContainer ref="contents" :class="$style.contents" style="container-type: inline-size;" @contextmenu.stop="onContextmenu">
-		<template #header>
-			<div>
-				<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
-				<XAnnouncements v-if="$i"/>
-				<XStatusBars :class="$style.statusbars"/>
-			</div>
-		</template>
-		<RouterView/>
-		<div :class="$style.spacer"></div>
-	</MkStickyContainer>
+	<div :class="$style.contents" @contextmenu.stop="onContextmenu">
+		<div>
+			<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
+			<XAnnouncements v-if="$i"/>
+			<XStatusBars :class="$style.statusbars"/>
+		</div>
+		<div :class="$style.content" class="_pageContainer">
+			<RouterView/>
+		</div>
+		<div v-if="isMobile" ref="navFooter" :class="$style.nav">
+			<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
+			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
+			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
+				<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
+				<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator" class="_blink">
+					<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
+				</span>
+			</button>
+			<button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon" class="ti ti-apps"></i></button>
+			<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
+		</div>
+	</div>
 
 	<div v-if="isDesktop && !pageMetadata?.needWideArea" :class="$style.widgets">
 		<XWidgets/>
 	</div>
 
 	<button v-if="!isDesktop && !pageMetadata?.needWideArea && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
-
-	<div v-if="isMobile" ref="navFooter" :class="$style.nav">
-		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
-		<button :class="$style.navButton" class="_button" @click="isRoot ? top() : mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
-		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
-			<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
-			<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator" class="_blink">
-				<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
-			</span>
-		</button>
-		<button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon" class="ti ti-apps"></i></button>
-		<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
-	</div>
 
 	<Transition
 		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
@@ -102,7 +100,6 @@ import { CURRENT_STICKY_BOTTOM } from '@@/js/const.js';
 import { isLink } from '@@/js/is-link.js';
 import XCommon from './_common_/common.vue';
 import type { Ref } from 'vue';
-import type MkStickyContainer from '@/components/global/MkStickyContainer.vue';
 import type { PageMetadata } from '@/page.js';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os.js';
@@ -112,7 +109,6 @@ import { $i } from '@/i.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { useScrollPositionManager } from '@/nirax.js';
 import { mainRouter } from '@/router/main.js';
 import { prefer } from '@/preferences.js';
 import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
@@ -139,7 +135,6 @@ window.addEventListener('resize', () => {
 const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);
 const navFooter = shallowRef<HTMLElement>();
-const contents = shallowRef<InstanceType<typeof MkStickyContainer>>();
 
 provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
@@ -203,13 +198,6 @@ const onContextmenu = (ev) => {
 	}], ev);
 };
 
-function top() {
-	contents.value.rootEl.scrollTo({
-		top: 0,
-		behavior: 'smooth',
-	});
-}
-
 const navFooterHeight = ref(0);
 provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 
@@ -226,8 +214,6 @@ watch(navFooter, () => {
 }, {
 	immediate: true,
 });
-
-useScrollPositionManager(() => contents.value.rootEl, mainRouter);
 </script>
 
 <style>
@@ -313,15 +299,104 @@ $widgets-hide-threshold: 1090px;
 }
 
 .contents {
+	display: flex;
+	flex-direction: column;
 	flex: 1;
 	height: 100%;
 	min-width: 0;
-	overflow: auto;
-	overflow-y: scroll;
-	overscroll-behavior: contain;
 	background: var(--MI_THEME-bg);
-	scroll-padding-top: 60px; // TODO: ちゃんと計算する
-	scroll-padding-bottom: 60px; // TODO: ちゃんと計算する
+}
+
+.content {
+	flex: 1;
+	min-height: 0;
+}
+
+.nav {
+	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-gap: 8px;
+	width: 100%;
+	box-sizing: border-box;
+	background: var(--MI_THEME-bg);
+	border-top: solid 0.5px var(--MI_THEME-divider);
+}
+
+.navButton {
+	position: relative;
+	padding: 0;
+	aspect-ratio: 1;
+	width: 100%;
+	max-width: 60px;
+	margin: auto;
+	border-radius: 100%;
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
+
+	&:hover {
+		background: var(--MI_THEME-panelHighlight);
+	}
+
+	&:active {
+		background: hsl(from var(--MI_THEME-panel) h s calc(l - 2));
+	}
+}
+
+.postButton {
+	composes: navButton;
+	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
+	color: var(--MI_THEME-fgOnAccent);
+
+	&:hover {
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+	}
+
+	&:active {
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+	}
+}
+
+.navButtonIcon {
+	font-size: 16px;
+	vertical-align: middle;
+}
+
+.navButtonIndicator {
+	position: absolute;
+	top: 0;
+	left: 0;
+	color: var(--MI_THEME-indicator);
+	font-size: 16px;
+
+	&:has(.itemIndicateValueIcon) {
+		animation: none;
+		font-size: 12px;
+	}
+}
+
+.menuDrawerBg {
+	z-index: 1001;
+}
+
+.menuDrawer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1001;
+	height: 100dvh;
+	width: 240px;
+	box-sizing: border-box;
+	contain: strict;
+	overflow: auto;
+	overscroll-behavior: contain;
+	background: var(--MI_THEME-navBg);
+}
+
+.statusbars {
+	position: sticky;
+	top: 0;
+	left: 0;
 }
 
 .widgets {
@@ -380,102 +455,5 @@ $widgets-hide-threshold: 1090px;
 	.widgetsCloseButton {
 		display: none;
 	}
-}
-
-.nav {
-	position: fixed;
-	z-index: 1000;
-	bottom: 0;
-	left: 0;
-	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-	grid-gap: 8px;
-	width: 100%;
-	box-sizing: border-box;
-	-webkit-backdrop-filter: var(--MI-blur, blur(24px));
-	backdrop-filter: var(--MI-blur, blur(24px));
-	background-color: var(--MI_THEME-header);
-	border-top: solid 0.5px var(--MI_THEME-divider);
-}
-
-.navButton {
-	position: relative;
-	padding: 0;
-	aspect-ratio: 1;
-	width: 100%;
-	max-width: 60px;
-	margin: auto;
-	border-radius: 100%;
-	background: var(--MI_THEME-panel);
-	color: var(--MI_THEME-fg);
-
-	&:hover {
-		background: var(--MI_THEME-panelHighlight);
-	}
-
-	&:active {
-		background: hsl(from var(--MI_THEME-panel) h s calc(l - 2));
-	}
-}
-
-.postButton {
-	composes: navButton;
-	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
-	color: var(--MI_THEME-fgOnAccent);
-
-	&:hover {
-		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
-	}
-
-	&:active {
-		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
-	}
-}
-
-.navButtonIcon {
-	font-size: 18px;
-	vertical-align: middle;
-}
-
-.navButtonIndicator {
-	position: absolute;
-	top: 0;
-	left: 0;
-	color: var(--MI_THEME-indicator);
-	font-size: 16px;
-
-	&:has(.itemIndicateValueIcon) {
-		animation: none;
-		font-size: 12px;
-	}
-}
-
-.menuDrawerBg {
-	z-index: 1001;
-}
-
-.menuDrawer {
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 1001;
-	height: 100dvh;
-	width: 240px;
-	box-sizing: border-box;
-	contain: strict;
-	overflow: auto;
-	overscroll-behavior: contain;
-	background: var(--MI_THEME-navBg);
-}
-
-.statusbars {
-	position: sticky;
-	top: 0;
-	left: 0;
-}
-
-.spacer {
-	height: calc(var(--MI-minBottomSpacing));
 }
 </style>
