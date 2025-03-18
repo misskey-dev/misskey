@@ -11,11 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
 	:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
 	:duration="200"
-	tag="div" :class="$style.root"
+	tag="div" :class="$style.tabs"
 >
-	<div v-for="(tab, i) in tabs" :key="tab.key" :class="$style.tab" :style="{ '--i': i }">
+	<div v-for="(tab, i) in tabs" :key="tab.key" :class="$style.tab" :style="{ '--i': i - 1 }">
 		<div v-if="i > 0" :class="$style.tabBg" @click="back()"></div>
-		<div :class="$style.tabFg">
+		<div :class="$style.tabFg" @click.stop="back()">
+			<div v-if="i > 0" :class="$style.tabMenu">
+				<button :class="$style.tabMenuButton" class="_button" @click.stop="mount"><i class="ti ti-arrows-maximize"/></button>
+			</div>
 			<div :class="$style.tabContent" class="_pageContainer" @click.stop="">
 				<Suspense :timeout="0">
 					<component :is="tab.component" v-bind="Object.fromEntries(tab.props)"/>
@@ -52,28 +55,27 @@ if (router == null) {
 const currentDepth = inject(DI.routerCurrentDepth, 0);
 provide(DI.routerCurrentDepth, currentDepth + 1);
 
-const current = router.current!;
-const key = ref(router.getCurrentKey() + JSON.stringify(Object.fromEntries(current.props)));
-
 const tabs = shallowRef([{
-	key: key.value,
+	key: router.getCurrentPath(),
 	path: router.getCurrentPath(),
-	component: 'component' in current.route ? current.route.component : MkLoadingPage,
-	props: current.props,
+	route: router.current.route.path,
+	component: 'component' in router.current.route ? router.current.route.component : MkLoadingPage,
+	props: router.current.props,
 }]);
 
-function onChange({ resolved, key: newKey }) {
+function onChange({ resolved }) {
 	const currentTab = tabs.value[tabs.value.length - 1];
+	const route = resolved.route.path;
 	if (resolved == null || 'redirect' in resolved.route) return;
 	if (resolved.route.path === currentTab.path && deepEqual(resolved.props, currentTab.props)) return;
-	key.value = newKey + JSON.stringify(Object.fromEntries(resolved.props));
+	const fullPath = router.getCurrentPath();
 
-	if (tabs.value.some(tab => tab.key === key.value)) {
+	if (tabs.value.some(tab => tab.route === route && deepEqual(resolved.props, tab.props))) {
 		const newTabs = [];
 		for (const tab of tabs.value) {
 			newTabs.push(tab);
 
-			if (tab.key === key.value) {
+			if (tab.route === route && deepEqual(resolved.props, tab.props)) {
 				break;
 			}
 		}
@@ -84,28 +86,44 @@ function onChange({ resolved, key: newKey }) {
 	tabs.value = tabs.value.length >= prefer.s.numberOfPageCache ? [
 		...tabs.value.slice(1),
 		{
-			key: key.value,
-			path: router.getCurrentPath(),
+			key: fullPath,
+			path: fullPath,
+			route,
 			component: resolved.route.component,
 			props: resolved.props,
 		},
 	] : [...tabs.value, {
-		key: key.value,
-		path: router.getCurrentPath(),
+		key: fullPath,
+		path: fullPath,
+		route,
 		component: resolved.route.component,
 		props: resolved.props,
 	}];
 }
 
-function back() {
-	const last = tabs.value[tabs.value.length - 1];
-	router.replace(last.path, last.key);
-	tabs.value = [...tabs.value.slice(0, tabs.value.length - 1)];
+function onReplace({ path }) {
+	const currentTab = tabs.value[tabs.value.length - 1];
+	console.log('replace', currentTab.path, path);
+	currentTab.path = path;
+	tabs.value = [...tabs.value.slice(0, tabs.value.length - 1), currentTab];
 }
 
+function mount() {
+	const currentTab = tabs.value[tabs.value.length - 1];
+	tabs.value = [currentTab];
+}
+
+function back() {
+	const prev = tabs.value[tabs.value.length - 2];
+	tabs.value = [...tabs.value.slice(0, tabs.value.length - 1)];
+	router.replace(prev.path, prev.key);
+}
+
+router.addListener('replace', onReplace);
 router.addListener('change', onChange);
 
 onBeforeUnmount(() => {
+	router.removeListener('replace', onReplace);
 	router.removeListener('change', onChange);
 });
 </script>
@@ -139,53 +157,74 @@ onBeforeUnmount(() => {
 	}
 }
 
-.root {
+.tabs {
 	position: relative;
-	height: 100%;
-	overflow: clip;
-}
-
-.tabBg {
-	position: absolute;
-	z-index: 1;
-	top: 0;
-	left: 0;
 	width: 100%;
 	height: 100%;
-	background: #0003;
-	-webkit-backdrop-filter: var(--MI-blur, blur(3px));
-	backdrop-filter: var(--MI-blur, blur(3px));
 }
 
 .tab {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-	width: 100%;
-	box-sizing: border-box;
+	&:first-child {
+		position: relative;
+		width: 100%;
+		height: 100%;
 
-	&:not(:nth-child(1)) {
+		.tabFg {
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+
+		.tabContent {
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	&:not(:first-child) {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+
+		.tabBg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: #0003;
+			-webkit-backdrop-filter: var(--MI-blur, blur(3px));
+			backdrop-filter: var(--MI-blur, blur(3px));
+		}
+
 		.tabFg {
 			position: absolute;
-			z-index: 1;
 			bottom: 0;
 			left: 0;
 			width: 100%;
-			height: calc(100% - 20px * var(--i));
+			height: calc(100% - (10px + (20px * var(--i))));
+			display: flex;
+			flex-direction: column;
+		}
+
+		.tabContent {
+			flex: 1;
+			width: 100%;
+			height: 100%;
+			background: var(--MI_THEME-bg);
 		}
 	}
 }
 
-.tabFg {
-	position: relative;
-	height: 100%;
+.tabMenu {
+	margin-left: auto;
 	background: var(--MI_THEME-bg);
-	border-radius: 16px 16px 0 0;
-	overflow: clip;
 }
 
-.tabContent {
-	height: 100%;
+.tabMenuButton {
+	padding: 10px;
 }
 </style>
