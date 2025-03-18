@@ -23,7 +23,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div :class="$style.root">
-		<StackingRouterView :key="reloadCount" :router="windowRouter"/>
 		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :key="reloadCount" :router="windowRouter"/>
 		<RouterView v-else :key="reloadCount" :router="windowRouter"/>
 	</div>

@@ -17,7 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="i > 0" :class="$style.tabBg" @click="back()"></div>
 		<div :class="$style.tabFg" @click.stop="back()">
 			<div v-if="i > 0" :class="$style.tabMenu">
-				<button :class="$style.tabMenuButton" class="_button" @click.stop="mount"><i class="ti ti-arrows-maximize"/></button>
+				<button :class="$style.tabMenuButton" class="_button" @click.stop="mount"><i class="ti ti-rectangle"></i></button>
+				<button :class="$style.tabMenuButton" class="_button" @click.stop="back"><i class="ti ti-x"></i></button>
 			</div>
 			<div :class="$style.tabContent" class="_pageContainer" @click.stop="">
 				<Suspense :timeout="0">
@@ -164,6 +165,8 @@ onBeforeUnmount(() => {
 }
 
 .tab {
+	overflow: clip;
+
 	&:first-child {
 		position: relative;
 		width: 100%;
@@ -221,10 +224,12 @@ onBeforeUnmount(() => {
 
 .tabMenu {
 	margin-left: auto;
+	padding: 0 4px;
 	background: var(--MI_THEME-bg);
 }
 
 .tabMenuButton {
-	padding: 10px;
+	padding: 8px;
+	font-size: 13px;
 }
 </style>

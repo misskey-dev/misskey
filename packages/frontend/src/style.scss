@@ -177,8 +177,8 @@ rt {
 	overscroll-behavior: contain;
 }
 
-._page {
-	height: 100cqh;
+._pageScrollable {
+	height: 100%;
 	overflow: auto;
 	overflow-y: scroll;
 	overscroll-behavior: contain;
