@@ -222,9 +222,7 @@ type ObjectSchemaTypeDef<p extends Schema> =
 	p['additionalProperties'] extends Schema ?
 		p['additionalProperties'] extends infer AdditionalProperties ?
 			AdditionalProperties extends Schema ?
-				AdditionalProperties['type'] extends 'object' ?
-					Record<string, any> :
-					Record<string, SchemaType<AdditionalProperties>> :
+				Record<string, SchemaType<AdditionalProperties>> :
 				never :
 			never :
 	any;
