@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.contents">
-		<div class="_pageContainer" style="flex: 1; min-height: 0;">
+		<div style="flex: 1; min-height: 0;">
 			<RouterView/>
 		</div>
 

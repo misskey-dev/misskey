@@ -12,8 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</template>
 
-	<div class="_pageContainer" style="height: 100%;">
-		<RouterView @contextmenu.stop="onContextmenu"/>
+	<div style="height: 100%;">
+		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" @contextmenu.stop="onContextmenu"/>
+		<RouterView v-else @contextmenu.stop="onContextmenu"/>
 	</div>
 </XColumn>
 </template>

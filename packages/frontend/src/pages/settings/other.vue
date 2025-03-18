@@ -91,6 +91,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="skipNoteRender">
 							<template #label>Enable note render skipping</template>
 						</MkSwitch>
+						<MkSwitch v-model="stackingRouterView">
+							<template #label>Enable stacking router view</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -142,6 +145,7 @@ const reportError = prefer.model('reportError');
 const enableCondensedLine = prefer.model('enableCondensedLine');
 const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
+const stackingRouterView = prefer.model('experimental.stackingRouterView');
 
 watch(skipNoteRender, async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });

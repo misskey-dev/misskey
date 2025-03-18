@@ -22,8 +22,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</template>
 
-	<div :class="$style.root" class="_pageContainer">
-		<RouterView :key="reloadCount" :router="windowRouter"/>
+	<div :class="$style.root">
+		<StackingRouterView :key="reloadCount" :router="windowRouter"/>
+		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :key="reloadCount" :router="windowRouter"/>
+		<RouterView v-else :key="reloadCount" :router="windowRouter"/>
 	</div>
 </MkWindow>
 </template>
@@ -44,6 +46,7 @@ import { useRouterFactory } from '@/router/supplier.js';
 import { mainRouter } from '@/router/main.js';
 import { analytics } from '@/analytics.js';
 import { DI } from '@/di.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	initialPath: string;

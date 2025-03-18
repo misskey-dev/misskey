@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button v-if="!isRoot" :class="$style.homeButton" class="_button" @click="goHome">
 			<i class="ti ti-home"></i>
 		</button>
-		<div :class="$style.content" class="_pageContainer">
+		<div :class="$style.content">
 			<RouterView/>
 		</div>
 	</div>

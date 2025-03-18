@@ -49,9 +49,9 @@ import type { Tab } from './MkPageHeader.tabs.vue';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import type { PageMetadata } from '@/page.js';
 import { globalEvents } from '@/events.js';
-import { injectReactiveMetadata } from '@/page.js';
 import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
 import { $i } from '@/i.js';
+import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
 	overridePageMetadata?: PageMetadata;
@@ -69,7 +69,7 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
 }>();
 
-const injectedPageMetadata = injectReactiveMetadata();
+const injectedPageMetadata = inject(DI.pageMetadata);
 const pageMetadata = computed(() => props.overridePageMetadata ?? injectedPageMetadata.value);
 
 const hideTitle = computed(() => inject('shouldOmitHeaderTitle', false) || props.hideTitle);

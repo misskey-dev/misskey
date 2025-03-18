@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<div class="_pageContainer" style="height: 100%;">
+	<div style="height: 100%;">
 		<RouterView/>
 	</div>
 

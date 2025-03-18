@@ -20,8 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
-					<div class="bkzroven" style="container-type: inline-size;">
-						<RouterView nested/>
+					<div style="container-type: inline-size;">
+						<NestedRouterView/>
 					</div>
 				</div>
 			</div>
