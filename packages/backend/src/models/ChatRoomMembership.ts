@@ -9,6 +9,7 @@ import { MiUser } from './User.js';
 import { MiChatRoom } from './ChatRoom.js';
 
 @Entity('chat_room_membership')
+@Index(['userId', 'roomId'], { unique: true })
 export class MiChatRoomMembership {
 	@PrimaryColumn(id())
 	public id: string;

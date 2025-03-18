@@ -21,7 +21,7 @@ export const packedChatMessageSchema = {
 		},
 		fromUser: {
 			type: 'object',
-			optional: true, nullable: false,
+			optional: false, nullable: false,
 			ref: 'UserLite',
 		},
 		toUserId: {
@@ -32,6 +32,15 @@ export const packedChatMessageSchema = {
 			type: 'object',
 			optional: true, nullable: true,
 			ref: 'UserLite',
+		},
+		toRoomId: {
+			type: 'string',
+			optional: true, nullable: true,
+		},
+		toRoom: {
+			type: 'object',
+			optional: true, nullable: true,
+			ref: 'ChatRoom',
 		},
 		text: {
 			type: 'string',
@@ -70,6 +79,10 @@ export const packedChatMessageLiteSchema = {
 			optional: false, nullable: false,
 		},
 		toUserId: {
+			type: 'string',
+			optional: true, nullable: true,
+		},
+		toRoomId: {
 			type: 'string',
 			optional: true, nullable: true,
 		},

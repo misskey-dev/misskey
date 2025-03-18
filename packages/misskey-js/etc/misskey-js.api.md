@@ -952,6 +952,12 @@ type ChartsUsersRequest = operations['charts___users']['requestBody']['content']
 type ChartsUsersResponse = operations['charts___users']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChatHistoryRequest = operations['chat___history']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatHistoryResponse = operations['chat___history']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type ChatMessage = components['schemas']['ChatMessage'];
 
 // @public (undocumented)
@@ -964,16 +970,13 @@ type ChatMessagesCreateRequest = operations['chat___messages___create']['request
 type ChatMessagesCreateResponse = operations['chat___messages___create']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type ChatMessagesHistoryRequest = operations['chat___messages___history']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type ChatMessagesHistoryResponse = operations['chat___messages___history']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
 type ChatMessagesTimelineRequest = operations['chat___messages___timeline']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type ChatMessagesTimelineResponse = operations['chat___messages___timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoom = components['schemas']['ChatRoom'];
 
 // @public (undocumented)
 type Clip = components['schemas']['Clip'];
@@ -1472,10 +1475,10 @@ declare namespace entities {
         ChartsUserReactionsResponse,
         ChartsUsersRequest,
         ChartsUsersResponse,
+        ChatHistoryRequest,
+        ChatHistoryResponse,
         ChatMessagesCreateRequest,
         ChatMessagesCreateResponse,
-        ChatMessagesHistoryRequest,
-        ChatMessagesHistoryResponse,
         ChatMessagesTimelineRequest,
         ChatMessagesTimelineResponse,
         ClipsAddNoteRequest,
@@ -1912,7 +1915,8 @@ declare namespace entities {
         SystemWebhook,
         AbuseReportNotificationRecipient,
         ChatMessage,
-        ChatMessageLite
+        ChatMessageLite,
+        ChatRoom
     }
 }
 export { entities }

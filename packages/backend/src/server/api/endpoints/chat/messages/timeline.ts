@@ -94,17 +94,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw new ApiError(meta.errors.roomAccessDenied);
 				}
 
-				const query = this.queryService.makePaginationQuery(this.messagingMessagesRepository.createQueryBuilder('message'), ps.sinceId, ps.untilId)
+				const query = this.queryService.makePaginationQuery(this.chatMessagesRepository.createQueryBuilder('message'), ps.sinceId, ps.untilId)
 					.andWhere('message.roomId = :roomId', { roomId: recipientRoom.id });
 
 				const messages = await query.take(ps.limit).getMany();
 
 				// Mark all as read
 				if (ps.markAsRead) {
-					this.messagingService.readRoomMessagingMessage(me.id, recipientRoom.id, messages.map(x => x.id));
+					this.chatService.readRoomMessagingMessage(me.id, recipientRoom.id, messages.map(x => x.id));
 				}
 
-				return await Promise.all(messages.map(message => this.messagingMessageEntityService.pack(message, me, {
+				return await Promise.all(messages.map(message => this.chatMessageEntityService.pack(message, me, {
 					populateRoom: false,
 				})));
 			}*/

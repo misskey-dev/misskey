@@ -186,8 +186,8 @@ export class ChatService {
 				const activity = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${message.id}`), fromUser));
 				this.queueService.deliver(fromUser, activity, toUser.inbox);
 			}
-		}/* else if (message.roomId) {
-			this.globalEventService.publishRoomChatStream(message.roomId, 'deleted', message.id);
+		}/* else if (message.toRoomId) {
+			this.globalEventService.publishRoomChatStream(message.toRoomId, 'deleted', message.id);
 		}*/
 	}
 
@@ -245,7 +245,7 @@ export class ChatService {
 		} else {
 		// そのグループにおいて未読がなければイベント発行
 			const unreadExist = await this.chatMessagesRepository.createQueryBuilder('message')
-				.where('message.roomId = :roomId', { roomId: roomId })
+				.where('message.toRoomId = :roomId', { roomId: roomId })
 				.andWhere('message.userId != :userId', { userId: userId })
 				.andWhere('NOT (:userId = ANY(message.reads))', { userId: userId })
 				.andWhere('message.createdAt > :joinedAt', { joinedAt: joining.createdAt }) // 自分が加入する前の会話については、未読扱いしない
@@ -300,7 +300,7 @@ export class ChatService {
 						.where('message.fromUserId = :meId', { meId: meId })
 						.orWhere('message.toUserId = :meId', { meId: meId });
 				}))
-				.andWhere('message.roomId IS NULL')
+				.andWhere('message.toRoomId IS NULL')
 				.andWhere(`message.fromUserId NOT IN (${ mutingQuery.getQuery() })`)
 				.andWhere(`message.toUserId NOT IN (${ mutingQuery.getQuery() })`);
 
@@ -325,6 +325,7 @@ export class ChatService {
 
 	@bindThis
 	public async roomHistory(meId: MiUser['id'], limit: number): Promise<MiChatMessage[]> {
+		return [];
 		/*
 		const rooms = await this.userRoomJoiningsRepository.findBy({
 			userId: meId,
@@ -341,10 +342,10 @@ export class ChatService {
 
 			const query = this.chatMessagesRepository.createQueryBuilder('message')
 				.orderBy('message.id', 'DESC')
-				.where('message.roomId IN (:...rooms)', { rooms: rooms });
+				.where('message.toRoomId IN (:...rooms)', { rooms: rooms });
 
 			if (found.length > 0) {
-				query.andWhere('message.roomId NOT IN (:...found)', { found: found });
+				query.andWhere('message.toRoomId NOT IN (:...found)', { found: found });
 			}
 
 			const message = await query.getOne();

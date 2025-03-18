@@ -84,6 +84,8 @@ export const DI = {
 	flashLikesRepository: Symbol('flashLikesRepository'),
 	userMemosRepository: Symbol('userMemosRepository'),
 	chatMessagesRepository: Symbol('chatMessagesRepository'),
+	chatRoomsRepository: Symbol('chatRoomsRepository'),
+	chatRoomMembershipsRepository: Symbol('chatRoomMembershipsRepository'),
 	bubbleGameRecordsRepository: Symbol('bubbleGameRecordsRepository'),
 	reversiGamesRepository: Symbol('reversiGamesRepository'),
 	//#endregion

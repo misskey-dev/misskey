@@ -82,7 +82,7 @@ export const paramDef = {
 	properties: {
 		text: { type: 'string', nullable: true, maxLength: 2000 },
 		fileId: { type: 'string', format: 'misskey:id' },
-		userId: { type: 'string', format: 'misskey:id', nullable: true },
+		toUserId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 } as const;
 
@@ -113,13 +113,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.contentRequired);
 			}
 
-			if (ps.userId != null) {
+			if (ps.toUserId != null) {
 				// Myself
-				if (ps.userId === me.id) {
+				if (ps.toUserId === me.id) {
 					throw new ApiError(meta.errors.recipientIsYourself);
 				}
 
-				const toUser = await this.getterService.getUser(ps.userId).catch(err => {
+				const toUser = await this.getterService.getUser(ps.toUserId).catch(err => {
 					if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 					throw err;
 				});
@@ -130,9 +130,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					text: ps.text,
 					file: file,
 				});
-			}/* else if (ps.roomId != null) {
+			}/* else if (ps.toRoomId != null) {
 				// Fetch recipient (room)
-				recipientRoom = await this.userRoomsRepository.findOneBy({ id: ps.roomId! });
+				recipientRoom = await this.userRoomsRepository.findOneBy({ id: ps.toRoomId! });
 
 				if (recipientRoom == null) {
 					throw new ApiError(meta.errors.noSuchRoom);

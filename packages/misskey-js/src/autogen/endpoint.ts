@@ -207,10 +207,10 @@ import type {
 	ChartsUserReactionsResponse,
 	ChartsUsersRequest,
 	ChartsUsersResponse,
+	ChatHistoryRequest,
+	ChatHistoryResponse,
 	ChatMessagesCreateRequest,
 	ChatMessagesCreateResponse,
-	ChatMessagesHistoryRequest,
-	ChatMessagesHistoryResponse,
 	ChatMessagesTimelineRequest,
 	ChatMessagesTimelineResponse,
 	ClipsAddNoteRequest,
@@ -732,8 +732,8 @@ export type Endpoints = {
 	'charts/user/pv': { req: ChartsUserPvRequest; res: ChartsUserPvResponse };
 	'charts/user/reactions': { req: ChartsUserReactionsRequest; res: ChartsUserReactionsResponse };
 	'charts/users': { req: ChartsUsersRequest; res: ChartsUsersResponse };
+	'chat/history': { req: ChatHistoryRequest; res: ChatHistoryResponse };
 	'chat/messages/create': { req: ChatMessagesCreateRequest; res: ChatMessagesCreateResponse };
-	'chat/messages/history': { req: ChatMessagesHistoryRequest; res: ChatMessagesHistoryResponse };
 	'chat/messages/timeline': { req: ChatMessagesTimelineRequest; res: ChatMessagesTimelineResponse };
 	'clips/add-note': { req: ClipsAddNoteRequest; res: EmptyResponse };
 	'clips/create': { req: ClipsCreateRequest; res: ClipsCreateResponse };

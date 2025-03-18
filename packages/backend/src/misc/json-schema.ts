@@ -64,6 +64,7 @@ import {
 import { packedSystemWebhookSchema } from '@/models/json-schema/system-webhook.js';
 import { packedAbuseReportNotificationRecipientSchema } from '@/models/json-schema/abuse-report-notification-recipient.js';
 import { packedChatMessageSchema, packedChatMessageLiteSchema } from '@/models/json-schema/chat-message.js';
+import { packedChatRoomSchema } from '@/models/json-schema/chat-room.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -123,6 +124,7 @@ export const refs = {
 	AbuseReportNotificationRecipient: packedAbuseReportNotificationRecipientSchema,
 	ChatMessage: packedChatMessageSchema,
 	ChatMessageLite: packedChatMessageLiteSchema,
+	ChatRoom: packedChatRoomSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;

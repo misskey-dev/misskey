@@ -78,6 +78,9 @@ import {
 	MiUserPublickey,
 	MiUserSecurityKey,
 	MiWebhook,
+	MiChatMessage,
+	MiChatRoom,
+	MiChatRoomMembership,
 } from './_.js';
 import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
@@ -490,6 +493,24 @@ const $userMemosRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $chatMessagesRepository: Provider = {
+	provide: DI.chatMessagesRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiChatMessage).extend(miRepository as MiRepository<MiChatMessage>),
+	inject: [DI.db],
+};
+
+const $chatRoomsRepository: Provider = {
+	provide: DI.chatRoomsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiChatRoom).extend(miRepository as MiRepository<MiChatRoom>),
+	inject: [DI.db],
+};
+
+const $chatRoomMembershipsRepository: Provider = {
+	provide: DI.chatRoomMembershipsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiChatRoomMembership).extend(miRepository as MiRepository<MiChatRoomMembership>),
+	inject: [DI.db],
+};
+
 const $bubbleGameRecordsRepository: Provider = {
 	provide: DI.bubbleGameRecordsRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiBubbleGameRecord).extend(miRepository as MiRepository<MiBubbleGameRecord>),
@@ -573,6 +594,9 @@ const $reversiGamesRepository: Provider = {
 		$flashsRepository,
 		$flashLikesRepository,
 		$userMemosRepository,
+		$chatMessagesRepository,
+		$chatRoomsRepository,
+		$chatRoomMembershipsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
 	],
@@ -645,6 +669,9 @@ const $reversiGamesRepository: Provider = {
 		$flashsRepository,
 		$flashLikesRepository,
 		$userMemosRepository,
+		$chatMessagesRepository,
+		$chatRoomsRepository,
+		$chatRoomMembershipsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
 	],

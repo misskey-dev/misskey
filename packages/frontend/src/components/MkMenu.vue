@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		[$style.center]: align === 'center',
 		[$style.big]: big,
 		[$style.asDrawer]: asDrawer,
+		[$style.widthSpecified]: width != null,
 	}"
 	@focusin.passive.stop="() => {}"
 >
@@ -29,15 +30,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<template v-for="item in (items2 ?? [])">
 			<div v-if="item.type === 'divider'" role="separator" tabindex="-1" :class="$style.divider"></div>
+
 			<span v-else-if="item.type === 'label'" role="menuitem" tabindex="-1" :class="[$style.label, $style.item]">
 				<span style="opacity: 0.7;">{{ item.text }}</span>
 			</span>
+
 			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
 			</span>
+
 			<div v-else-if="item.type === 'component'" role="menuitem" tabindex="-1" :class="[$style.componentItem]">
 				<component :is="item.component" v-bind="item.props"/>
 			</div>
+
 			<MkA
 				v-else-if="item.type === 'link'"
 				role="menuitem"
@@ -51,10 +56,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
-					<span :class="$style.item_content_text">{{ item.text }}</span>
+					<div :class="$style.item_content_text">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
 					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</MkA>
+
 			<a
 				v-else-if="item.type === 'a'"
 				role="menuitem"
@@ -70,10 +79,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<div :class="$style.item_content">
-					<span :class="$style.item_content_text">{{ item.text }}</span>
+					<div :class="$style.item_content_text">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
 					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</a>
+
 			<button
 				v-else-if="item.type === 'user'"
 				role="menuitem"
@@ -88,6 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</button>
+
 			<button
 				v-else-if="item.type === 'switch'"
 				role="menuitemcheckbox"
@@ -101,10 +115,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkSwitchButton v-else :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				<div :class="$style.item_content">
-					<span :class="[$style.item_content_text, { [$style.switchText]: !item.icon }]">{{ item.text }}</span>
+					<div :class="[$style.item_content_text, { [$style.switchText]: !item.icon }]">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
 					<MkSwitchButton v-if="item.icon" :class="[$style.switchButton, $style.caret]" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				</div>
 			</button>
+
 			<button
 				v-else-if="item.type === 'radio'"
 				role="menuitem"
@@ -117,10 +135,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
 				<div :class="$style.item_content">
-					<span :class="$style.item_content_text" style="pointer-events: none;">{{ item.text }}</span>
+					<div :class="$style.item_content_text" style="pointer-events: none;">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
 					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
 				</div>
 			</button>
+
 			<button
 				v-else-if="item.type === 'radioOption'"
 				role="menuitemradio"
@@ -134,9 +156,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="[$style.radioIcon, { [$style.radioChecked]: unref(item.active) }]"></span>
 				</div>
 				<div :class="$style.item_content">
-					<span :class="$style.item_content_text">{{ item.text }}</span>
+					<div :class="$style.item_content_text">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
 				</div>
 			</button>
+
 			<button
 				v-else-if="item.type === 'parent'"
 				role="menuitem"
@@ -148,12 +174,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
 				<div :class="$style.item_content">
-					<span :class="$style.item_content_text" style="pointer-events: none;">{{ item.text }}</span>
+					<div :class="$style.item_content_text" style="pointer-events: none;">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
 					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
 				</div>
 			</button>
+
 			<button
-				v-else role="menuitem"
+				v-else
+				role="menuitem"
 				tabindex="0"
 				:class="['_button', $style.item, { [$style.danger]: item.danger, [$style.active]: unref(item.active) }]"
 				@click.prevent="unref(item.active) ? close(false) : clicked(item.action, $event)"
@@ -163,11 +194,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<div :class="$style.item_content">
-					<span :class="$style.item_content_text">{{ item.text }}</span>
+					<div :class="$style.item_content_text">
+						<div :class="$style.item_content_text_title">{{ item.text }}</div>
+						<div v-if="item.caption" :class="$style.item_content_text_caption">{{ item.caption }}</div>
+					</div>
 					<span v-if="item.indicate" :class="$style.indicator" class="_blink"><i class="_indicatorCircle"></i></span>
 				</div>
 			</button>
 		</template>
+
 		<span v-if="items2 == null || items2.length === 0" tabindex="-1" :class="[$style.none, $style.item]">
 			<span>{{ i18n.ts.none }}</span>
 		</span>
@@ -438,6 +473,12 @@ onBeforeUnmount(() => {
 		}
 	}
 
+	&:not(.widthSpecified) {
+		> .menu {
+			max-width: 400px;
+		}
+	}
+
 	&.big:not(.asDrawer) {
 		> .menu {
 			min-width: 230px;
@@ -607,8 +648,17 @@ onBeforeUnmount(() => {
 
 .item_content_text {
 	max-width: calc(100vw - 4rem);
+}
+
+.item_content_text_title {
 	text-overflow: ellipsis;
 	overflow: hidden;
+}
+
+.item_content_text_caption {
+	text-wrap: auto;
+	font-size: 85%;
+	opacity: 0.7;
 }
 
 .switchButton {

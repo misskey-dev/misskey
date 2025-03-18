@@ -42,6 +42,12 @@ const routes: RouteDef[] = [{
 	path: '/clips/:clipId',
 	component: page(() => import('@/pages/clip.vue')),
 }, {
+	path: '/chat',
+	component: page(() => import('@/pages/chat/home.vue')),
+}, {
+	path: '/chat/user/:userId',
+	component: page(() => import('@/pages/chat/room.vue')),
+}, {
 	path: '/instance-info/:host',
 	component: page(() => import('@/pages/instance-info.vue')),
 }, {

@@ -16,27 +16,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:key="item.id"
 					:class="[$style.message, { [$style.isMe]: item.isMe, [$style.isRead]: item.message.isRead }]"
 					class="_panel"
-					:to="item.message.roomId ? `/chat/room/${item.message.roomId}` : `/chat/user/${item.other.id}`"
+					:to="item.message.toRoomId ? `/chat/room/${item.message.toRoomId}` : `/chat/user/${item.other!.id}`"
 				>
-					<div>
-						<MkAvatar :class="$style.avatar" :user="item.other" indicator link preview/>
-						<header v-if="item.message.roomId">
-							<span class="name">{{ item.message.room.name }}</span>
-							<MkTime :time="item.message.createdAt" class="time"/>
-						</header>
-						<header v-else>
-							<span class="name"><MkUserName :user="item.other"/></span>
-							<span class="username">@{{ acct(item.other) }}</span>
-							<MkTime :time="item.message.createdAt" class="time"/>
-						</header>
-						<div class="body">
-							<p class="text"><span v-if="item.isMe" :class="$style.iSaid">{{ i18n.ts.you }}:</span>{{ item.message.text }}</p>
-						</div>
+					<MkAvatar v-if="item.other" :class="$style.avatar" :user="item.other" indicator link preview/>
+					<header v-if="item.message.room">
+						<span :class="$style.name">{{ item.message.room.name }}</span>
+						<MkTime :time="item.message.createdAt" :class="$style.time"/>
+					</header>
+					<header v-else>
+						<MkUserName :class="$style.name" :user="item.other!"/>
+						<MkAcct :class="$style.username" :user="item.other!"/>
+						<MkTime :time="item.message.createdAt" :class="$style.time"/>
+					</header>
+					<div :class="$style.body">
+						<p :class="$style.text"><span v-if="item.isMe" :class="$style.iSaid">{{ i18n.ts.you }}:</span>{{ item.message.text }}</p>
 					</div>
 				</MkA>
 			</div>
 			<div v-if="!fetching && history.length == 0" class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 				<div>{{ i18n.ts.noHistory }}</div>
 			</div>
 			<MkLoading v-if="fetching"/>
@@ -51,11 +48,14 @@ import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { infoImageUrl } from '@/instance.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
+import { useRouter } from '@/router/supplier.js';
+import * as os from '@/os.js';
 
 const $i = ensureSignin();
+
+const router = useRouter();
 
 const fetching = ref(true);
 const history = ref<{
@@ -65,15 +65,58 @@ const history = ref<{
 	isMe: boolean;
 }[]>([]);
 
+function start(ev: MouseEvent) {
+	os.popupMenu([{
+		text: i18n.ts.individualChat,
+		caption: i18n.ts.individualChat_description,
+		icon: 'ti ti-user',
+		action: () => { startUser(); },
+	}, {
+		text: i18n.ts.roomChat,
+		caption: i18n.ts.roomChat_description,
+		icon: 'ti ti-users',
+		action: () => { startRoom(); },
+	}], ev.currentTarget ?? ev.target);
+}
+
+async function startUser() {
+	os.selectUser().then(user => {
+		router.push(`/chat/user/${user.id}`);
+	});
+}
+
+async function startRoom() {
+	/*
+	const rooms1 = await os.api('users/rooms/owned');
+	const rooms2 = await os.api('users/rooms/joined');
+	if (rooms1.length === 0 && rooms2.length === 0) {
+		os.alert({
+			type: 'warning',
+			title: i18n.ts.youHaveNoGroups,
+			text: i18n.ts.joinOrCreateGroup,
+		});
+		return;
+	}
+	const { canceled, result: room } = await os.select({
+		title: i18n.ts.room,
+		items: rooms1.concat(rooms2).map(room => ({
+			value: room, text: room.name,
+		})),
+	});
+	if (canceled) return;
+	router.push(`/chat/room/${room.id}`);
+	*/
+}
+
 async function fetchHistory() {
 	fetching.value = true;
 
-	const [userMessages, groupMessages] = await Promise.all([
-		misskeyApi('messaging/history', { group: false }),
-		misskeyApi('messaging/history', { group: true }),
+	const [userMessages, roomMessages] = await Promise.all([
+		misskeyApi('chat/history', { room: false }),
+		misskeyApi('chat/history', { room: true }),
 	]);
 
-	history.value = [...userMessages, ...groupMessages]
+	history.value = [...userMessages, ...roomMessages]
 		.toSorted((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 		.map(m => ({
 			id: m.id,
@@ -100,23 +143,7 @@ definePage(() => ({
 </script>
 
 <style lang="scss" module>
-.add {
-	margin: 0 auto 16px auto;
-}
-
-.antenna {
-	display: block;
-	padding: 16px;
-	border: solid 1px var(--MI_THEME-divider);
-	border-radius: 6px;
-
-	&:hover {
-		border: solid 1px var(--MI_THEME-accent);
-		text-decoration: none;
-	}
-}
-
-.name {
-	font-weight: bold;
+.start {
+	margin: 0 auto;
 }
 </style>

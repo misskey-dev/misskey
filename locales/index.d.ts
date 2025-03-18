@@ -5354,6 +5354,23 @@ export interface Locale extends ILocale {
      * チャット
      */
     "chat": string;
+    /**
+     * 個人チャット
+     */
+    "individualChat": string;
+    /**
+     * 特定ユーザーとの一対一のチャットができます。
+     */
+    "individualChat_description": string;
+    /**
+     * ルームチャット
+     */
+    "roomChat": string;
+    /**
+     * 複数人でのチャットができます。
+     * また、個人チャットを許可していないユーザーとでも、相手が受け入れればチャットができます。
+     */
+    "roomChat_description": string;
     "_emojiPalette": {
         /**
          * パレット

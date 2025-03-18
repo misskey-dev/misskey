@@ -15,16 +15,16 @@ export type MenuAction = (ev: MouseEvent) => void;
 
 export type MenuDivider = { type: 'divider' };
 export type MenuNull = undefined;
-export type MenuLabel = { type: 'label', text: string };
-export type MenuLink = { type: 'link', to: string, text: string, icon?: string, indicate?: boolean, avatar?: Misskey.entities.User };
-export type MenuA = { type: 'a', href: string, target?: string, download?: string, text: string, icon?: string, indicate?: boolean };
+export type MenuLabel = { type: 'label', text: string, caption?: string };
+export type MenuLink = { type: 'link', to: string, text: string, caption?: string, icon?: string, indicate?: boolean, avatar?: Misskey.entities.User };
+export type MenuA = { type: 'a', href: string, target?: string, download?: string, text: string, caption?: string, icon?: string, indicate?: boolean };
 export type MenuUser = { type: 'user', user: Misskey.entities.User, active?: boolean, indicate?: boolean, action: MenuAction };
-export type MenuSwitch = { type: 'switch', ref: Ref<boolean>, text: string, icon?: string, disabled?: boolean | Ref<boolean> };
-export type MenuButton = { type?: 'button', text: string, icon?: string, indicate?: boolean, danger?: boolean, active?: boolean | ComputedRef<boolean>, avatar?: Misskey.entities.User; action: MenuAction };
-export type MenuRadio = { type: 'radio', text: string, icon?: string, ref: Ref<MenuRadioOptionsDef[keyof MenuRadioOptionsDef]>, options: MenuRadioOptionsDef, disabled?: boolean | Ref<boolean> };
-export type MenuRadioOption = { type: 'radioOption', text: string, action: MenuAction; active?: boolean | ComputedRef<boolean> };
+export type MenuSwitch = { type: 'switch', ref: Ref<boolean>, text: string, caption?: string, icon?: string, disabled?: boolean | Ref<boolean> };
+export type MenuButton = { type?: 'button', text: string, caption?: string, icon?: string, indicate?: boolean, danger?: boolean, active?: boolean | ComputedRef<boolean>, avatar?: Misskey.entities.User; action: MenuAction };
+export type MenuRadio = { type: 'radio', text: string, caption?: string, icon?: string, ref: Ref<MenuRadioOptionsDef[keyof MenuRadioOptionsDef]>, options: MenuRadioOptionsDef, disabled?: boolean | Ref<boolean> };
+export type MenuRadioOption = { type: 'radioOption', text: string, caption?: string, action: MenuAction; active?: boolean | ComputedRef<boolean> };
 export type MenuComponent<T extends Component = any> = { type: 'component', component: T, props?: ComponentProps<T> };
-export type MenuParent = { type: 'parent', text: string, icon?: string, children: MenuItem[] | (() => Promise<MenuItem[]> | MenuItem[]) };
+export type MenuParent = { type: 'parent', text: string, caption?: string, icon?: string, children: MenuItem[] | (() => Promise<MenuItem[]> | MenuItem[]) };
 
 export type MenuPending = { type: 'pending' };
 

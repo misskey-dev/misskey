@@ -1358,6 +1358,15 @@ export type paths = {
      */
     post: operations['charts___users'];
   };
+  '/chat/history': {
+    /**
+     * chat/history
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     */
+    post: operations['chat___history'];
+  };
   '/chat/messages/create': {
     /**
      * chat/messages/create
@@ -1366,15 +1375,6 @@ export type paths = {
      * **Credential required**: *Yes* / **Permission**: *write:chat*
      */
     post: operations['chat___messages___create'];
-  };
-  '/chat/messages/history': {
-    /**
-     * chat/messages/history
-     * @description No description provided.
-     *
-     * **Credential required**: *Yes* / **Permission**: *read:chat*
-     */
-    post: operations['chat___messages___history'];
   };
   '/chat/messages/timeline': {
     /**
@@ -5178,12 +5178,15 @@ export type components = {
       /** Format: date-time */
       createdAt: string;
       fromUserId: string;
-      fromUser?: components['schemas']['UserLite'];
+      fromUser: components['schemas']['UserLite'];
       toUserId?: string | null;
       toUser?: components['schemas']['UserLite'] | null;
+      toRoomId?: string | null;
+      toRoom?: components['schemas']['ChatRoom'] | null;
       text?: string | null;
       fileId?: string | null;
       file?: components['schemas']['DriveFile'] | null;
+      isRead?: boolean;
     };
     ChatMessageLite: {
       id: string;
@@ -5191,9 +5194,18 @@ export type components = {
       createdAt: string;
       fromUserId: string;
       toUserId?: string | null;
+      toRoomId?: string | null;
       text?: string | null;
       fileId?: string | null;
       file?: components['schemas']['DriveFile'] | null;
+    };
+    ChatRoom: {
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      ownerId: string;
+      owner: components['schemas']['UserLite'];
+      name: string;
     };
   };
   responses: never;
@@ -13719,6 +13731,62 @@ export type operations = {
     };
   };
   /**
+   * chat/history
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:chat*
+   */
+  chat___history: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** @default false */
+          room?: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['ChatMessage'][];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * chat/messages/create
    * @description No description provided.
    *
@@ -13769,62 +13837,6 @@ export type operations = {
       };
       /** @description Too many requests */
       429: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-    };
-  };
-  /**
-   * chat/messages/history
-   * @description No description provided.
-   *
-   * **Credential required**: *Yes* / **Permission**: *read:chat*
-   */
-  chat___messages___history: {
-    requestBody: {
-      content: {
-        'application/json': {
-          /** @default 10 */
-          limit?: number;
-          /** @default false */
-          room?: boolean;
-        };
-      };
-    };
-    responses: {
-      /** @description OK (with results) */
-      200: {
-        content: {
-          'application/json': components['schemas']['ChatMessage'][];
-        };
-      };
-      /** @description Client error */
-      400: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Authentication error */
-      401: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Forbidden error */
-      403: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description I'm Ai */
-      418: {
         content: {
           'application/json': components['schemas']['Error'];
         };
