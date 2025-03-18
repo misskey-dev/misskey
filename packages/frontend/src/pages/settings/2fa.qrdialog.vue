@@ -107,6 +107,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { shallowRef, ref } from 'vue';
+import { hostname, port } from '@@/js/config';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -161,7 +162,7 @@ function downloadBackupCodes() {
 		const txtBlob = new Blob([backupCodes.value.join('\n')], { type: 'text/plain' });
 		const dummya = document.createElement('a');
 		dummya.href = URL.createObjectURL(txtBlob);
-		dummya.download = `${$i.username}-2fa-backup-codes.txt`;
+		dummya.download = `${$i.username}-${hostname}` + (port !== '' ? `_${port}` : '') + '-2fa-backup-codes.txt';
 		dummya.click();
 	}
 }
