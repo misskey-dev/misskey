@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onActivated, onDeactivated, nextTick } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import type { Extension } from '@/components/MkExtensionInstaller.vue';
 import type { AiScriptPluginMeta } from '@/plugin.js';
 import MkLoading from '@/components/global/MkLoading.vue';
@@ -229,16 +229,10 @@ async function install() {
 	}
 }
 
-onActivated(() => {
-	const urlParams = new URLSearchParams(window.location.search);
-	url.value = urlParams.get('url');
-	hash.value = urlParams.get('hash');
-	fetch();
-});
-
-onDeactivated(() => {
-	uiPhase.value = 'fetching';
-});
+const urlParams = new URLSearchParams(window.location.search);
+url.value = urlParams.get('url');
+hash.value = urlParams.get('hash');
+fetch();
 
 const headerActions = computed(() => []);
 
