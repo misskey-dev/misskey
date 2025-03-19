@@ -71,7 +71,7 @@ function start(ev: MouseEvent) {
 		caption: i18n.ts.individualChat_description,
 		icon: 'ti ti-user',
 		action: () => { startUser(); },
-	}, {
+	}, { type: 'divider' }, {
 		text: i18n.ts.roomChat,
 		caption: i18n.ts.roomChat_description,
 		icon: 'ti ti-users',
