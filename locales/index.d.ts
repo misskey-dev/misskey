@@ -5371,6 +5371,14 @@ export interface Locale extends ILocale {
      * また、個人チャットを許可していないユーザーとでも、相手が受け入れればチャットができます。
      */
     "roomChat_description": string;
+    /**
+     * このユーザーとのチャットを開始できません
+     */
+    "cannotChatWithTheUser": string;
+    /**
+     * チャットが使えない状態になっているか、相手がチャットを開放していません。
+     */
+    "cannotChatWithTheUser_description": string;
     "_emojiPalette": {
         /**
          * パレット
