@@ -50,8 +50,8 @@ jobs:
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml
-    - name: Build misskey-js
-      run: pnpm --filter misskey-js build
+    - name: Build dependent packages
+      run: pnpm -F misskey-js -F misskey-bubble-game -F misskey-reversi build
     - name: Build storybook
       run: pnpm --filter frontend build-storybook
     - name: Publish to Chromatic
