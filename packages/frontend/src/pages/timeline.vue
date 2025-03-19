@@ -56,11 +56,17 @@ import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
+import { useRouter } from '@/router.js';
 
 provide('shouldOmitHeaderTitle', true);
 
 const tlComponent = useTemplateRef('tlComponent');
 const rootEl = useTemplateRef('rootEl');
+
+const router = useRouter();
+router.useListener('same', () => {
+	top();
+});
 
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 
@@ -128,7 +134,7 @@ function queueUpdated(q: number): void {
 }
 
 function top(): void {
-	if (rootEl.value) scroll(rootEl.value, { top: 0 });
+	if (rootEl.value) scroll(rootEl.value, { top: 0, behavior: 'smooth' });
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
