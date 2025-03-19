@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<div style="container-type: inline-size;">
+	<div style="height: 100%;">
 		<RouterView/>
 	</div>
 
@@ -46,6 +46,5 @@ document.documentElement.style.overflowY = 'scroll';
 <style lang="scss" module>
 .root {
 	min-height: 100dvh;
-	box-sizing: border-box;
 }
 </style>

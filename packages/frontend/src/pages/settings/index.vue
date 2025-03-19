@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
+<MkStickyContainer class="_pageScrollable">
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
@@ -20,8 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
-					<div class="bkzroven" style="container-type: inline-size;">
-						<RouterView nested/>
+					<div style="container-type: inline-size;">
+						<NestedRouterView/>
 					</div>
 				</div>
 			</div>

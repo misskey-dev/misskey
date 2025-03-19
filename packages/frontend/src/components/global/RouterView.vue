@@ -4,18 +4,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<KeepAlive
-	:max="prefer.s.numberOfPageCache"
-	:exclude="pageCacheController"
->
-	<Suspense :timeout="0">
-		<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
+<div class="_pageContainer" style="height: 100%;">
+	<KeepAlive
+		:max="prefer.s.numberOfPageCache"
+		:exclude="pageCacheController"
+	>
+		<Suspense :timeout="0">
+			<component :is="currentPageComponent" :key="key" v-bind="Object.fromEntries(currentPageProps)"/>
 
-		<template #fallback>
-			<MkLoading/>
-		</template>
-	</Suspense>
-</KeepAlive>
+			<template #fallback>
+				<MkLoading/>
+			</template>
+		</Suspense>
+	</KeepAlive>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -28,7 +30,6 @@ import { DI } from '@/di.js';
 
 const props = defineProps<{
 	router?: IRouter;
-	nested?: boolean;
 }>();
 
 const router = props.router ?? inject(DI.router);
@@ -40,31 +41,16 @@ if (router == null) {
 const currentDepth = inject(DI.routerCurrentDepth, 0);
 provide(DI.routerCurrentDepth, currentDepth + 1);
 
-function resolveNested(current: Resolved, d = 0): Resolved | null {
-	if (!props.nested) return current;
-
-	if (d === currentDepth) {
-		return current;
-	} else {
-		if (current.child) {
-			return resolveNested(current.child, d + 1);
-		} else {
-			return null;
-		}
-	}
-}
-
-const current = resolveNested(router.current)!;
+const current = router.current!;
 const currentPageComponent = shallowRef('component' in current.route ? current.route.component : MkLoadingPage);
 const currentPageProps = ref(current.props);
 const key = ref(router.getCurrentKey() + JSON.stringify(Object.fromEntries(current.props)));
 
 function onChange({ resolved, key: newKey }) {
-	const current = resolveNested(resolved);
-	if (current == null || 'redirect' in current.route) return;
-	currentPageComponent.value = current.route.component;
-	currentPageProps.value = current.props;
-	key.value = newKey + JSON.stringify(Object.fromEntries(current.props));
+	if (resolved == null || 'redirect' in resolved.route) return;
+	currentPageComponent.value = resolved.route.component;
+	currentPageProps.value = resolved.props;
+	key.value = newKey + JSON.stringify(Object.fromEntries(resolved.props));
 
 	nextTick(() => {
 		// ページ遷移完了後に再びキャッシュを有効化
@@ -79,11 +65,11 @@ router.addListener('change', onChange);
 // #region キャッシュ制御
 
 /**
- * キャッシュクリアが有効になったら、全キャッシュをクリアする
- *
- * keepAlive側にwatcherがあるのですぐ消えるとはおもうけど、念のためページ遷移完了まではキャッシュを無効化しておく。
- * キャッシュ有効時向けにexcludeを使いたい場合は、pageCacheControllerに並列に突っ込むのではなく、下に追記すること
- */
+	 * キャッシュクリアが有効になったら、全キャッシュをクリアする
+	 *
+	 * keepAlive側にwatcherがあるのですぐ消えるとはおもうけど、念のためページ遷移完了まではキャッシュを無効化しておく。
+	 * キャッシュ有効時向けにexcludeを使いたい場合は、pageCacheControllerに並列に突っ込むのではなく、下に追記すること
+	 */
 const pageCacheController = computed(() => clearCacheRequested.value ? /.*/ : undefined);
 const clearCacheRequested = ref(false);
 

@@ -367,4 +367,8 @@ export const PREF_DEF = {
 			sfxVolume: 1,
 		},
 	},
+
+	'experimental.stackingRouterView': {
+		default: false,
+	},
 } satisfies PreferencesDefinition;

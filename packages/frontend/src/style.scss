@@ -170,6 +170,20 @@ rt {
 	text-align: center;
 }
 
+._pageContainer {
+	container-type: size;
+	contain: strict;
+	overflow: auto;
+	overscroll-behavior: contain;
+}
+
+._pageScrollable {
+	height: 100%;
+	overflow: auto;
+	overflow-y: scroll;
+	overscroll-behavior: contain;
+}
+
 ._indicatorCircle {
 	display: inline-block;
 	width: 1em;

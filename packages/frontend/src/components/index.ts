@@ -16,6 +16,8 @@ import MkTime from './global/MkTime.vue';
 import MkUrl from './global/MkUrl.vue';
 import I18n from './global/I18n.vue';
 import RouterView from './global/RouterView.vue';
+import NestedRouterView from './global/NestedRouterView.vue';
+import StackingRouterView from './global/StackingRouterView.vue';
 import MkLoading from './global/MkLoading.vue';
 import MkError from './global/MkError.vue';
 import MkAd from './global/MkAd.vue';
@@ -38,6 +40,8 @@ export default function(app: App) {
 export const components = {
 	I18n: I18n,
 	RouterView: RouterView,
+	NestedRouterView: NestedRouterView,
+	StackingRouterView: StackingRouterView,
 	Mfm: Mfm,
 	MkA: MkA,
 	MkAcct: MkAcct,
@@ -65,6 +69,8 @@ declare module '@vue/runtime-core' {
 	export interface GlobalComponents {
 		I18n: typeof I18n;
 		RouterView: typeof RouterView;
+		NestedRouterView: typeof NestedRouterView;
+		StackingRouterView: typeof StackingRouterView;
 		Mfm: typeof Mfm;
 		MkA: typeof MkA;
 		MkAcct: typeof MkAcct;
