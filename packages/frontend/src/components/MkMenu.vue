@@ -179,7 +179,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef } from 'vue';
 import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
@@ -257,7 +257,7 @@ watch(() => props.items, () => {
 });
 
 const childMenu = ref<MenuItem[] | null>();
-const childTarget = useTemplateRef('childTarget');
+const childTarget = shallowRef<HTMLElement>();
 
 function closeChild() {
 	childMenu.value = null;
