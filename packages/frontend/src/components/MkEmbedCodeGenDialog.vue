@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { shallowRef, ref, computed, nextTick, onMounted, onDeactivated, onUnmounted } from 'vue';
+import { useTemplateRef, ref, computed, nextTick, onMounted, onDeactivated, onUnmounted } from 'vue';
 import { url } from '@@/js/config.js';
 import { embedRouteWithScrollbar } from '@@/js/embed-page.js';
 import type { EmbeddableEntity, EmbedParams } from '@@/js/embed-page.js';
@@ -121,7 +121,7 @@ const props = defineProps<{
 }>();
 
 //#region Modalの制御
-const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialogEl = useTemplateRef('dialogEl');
 
 function cancel() {
 	emit('cancel');
@@ -198,9 +198,9 @@ function doCopy() {
 //#endregion
 
 //#region プレビューのリサイズ
-const resizerRootEl = shallowRef<HTMLDivElement>();
+const resizerRootEl = useTemplateRef('resizerRootEl');
 const iframeLoading = ref(true);
-const iframeEl = shallowRef<HTMLIFrameElement>();
+const iframeEl = useTemplateRef('iframeEl');
 const iframeHeight = ref(0);
 const iframeScale = ref(1);
 const iframeStyle = computed(() => {

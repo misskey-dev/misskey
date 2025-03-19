@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
+import { computed, watch, provide, useTemplateRef, ref, onMounted, onActivated } from 'vue';
 import { scroll } from '@@/js/scroll.js';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -59,8 +59,8 @@ import { prefer } from '@/preferences.js';
 
 provide('shouldOmitHeaderTitle', true);
 
-const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
-const rootEl = shallowRef<HTMLElement>();
+const tlComponent = useTemplateRef('tlComponent');
+const rootEl = useTemplateRef('rootEl');
 
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 

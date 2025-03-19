@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDrive from '@/components/MkDrive.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -43,7 +43,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 
 const selected = ref<Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]>([]);
 

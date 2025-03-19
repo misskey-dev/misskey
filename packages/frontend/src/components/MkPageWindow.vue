@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, provide, ref, shallowRef } from 'vue';
+import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
 import { url } from '@@/js/config.js';
 import type { PageMetadata } from '@/page.js';
 import RouterView from '@/components/global/RouterView.vue';
@@ -57,7 +57,7 @@ const emit = defineEmits<{
 const windowRouter = createRouter(props.initialPath);
 
 const pageMetadata = ref<null | PageMetadata>(null);
-const windowEl = shallowRef<InstanceType<typeof MkWindow>>();
+const windowEl = useTemplateRef('windowEl');
 const history = ref<{ path: string; }[]>([{
 	path: windowRouter.getCurrentFullPath(),
 }]);

@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
+import { ref, useTemplateRef, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
 import { store } from '@/store.js';
 
 // APIs provided by Captcha services
@@ -69,7 +69,7 @@ const emit = defineEmits<{
 
 const available = ref(false);
 
-const captchaEl = shallowRef<HTMLDivElement | undefined>();
+const captchaEl = useTemplateRef('captchaEl');
 const captchaWidgetId = ref<string | undefined>(undefined);
 const testcaptchaInput = ref('');
 const testcaptchaPassed = ref(false);

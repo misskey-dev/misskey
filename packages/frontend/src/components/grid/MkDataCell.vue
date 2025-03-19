@@ -39,10 +39,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ cell.value }}
 				</div>
 				<div v-else-if="cellType === 'boolean'">
-					<div :class="[$style.bool, {
-						[$style.boolTrue]: cell.value === true,
-						'ti ti-check': cell.value === true,
-					}]"></div>
+					<div
+						:class="[$style.bool, {
+							[$style.boolTrue]: cell.value === true,
+							'ti ti-check': cell.value === true,
+						}]"
+					></div>
 				</div>
 				<div v-else-if="cellType === 'image'">
 					<img
@@ -88,14 +90,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, toRefs, watch } from 'vue';
+import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, useTemplateRef, toRefs, watch } from 'vue';
+import type { Size } from '@/components/grid/grid.js';
+import type { CellValue, GridCell } from '@/components/grid/cell.js';
+import type { GridRowSetting } from '@/components/grid/row.js';
 import { GridEventEmitter } from '@/components/grid/grid.js';
 import { useTooltip } from '@/use/use-tooltip.js';
 import * as os from '@/os.js';
 import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
-import type { Size } from '@/components/grid/grid.js';
-import type { CellValue, GridCell } from '@/components/grid/cell.js';
-import type { GridRowSetting } from '@/components/grid/row.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
@@ -111,9 +113,9 @@ const props = defineProps<{
 
 const { cell, bus } = toRefs(props);
 
-const rootEl = shallowRef<InstanceType<typeof HTMLTableCellElement>>();
-const contentAreaEl = shallowRef<InstanceType<typeof HTMLDivElement>>();
-const inputAreaEl = shallowRef<InstanceType<typeof HTMLDivElement>>();
+const rootEl = useTemplateRef('rootEl');
+const contentAreaEl = useTemplateRef('contentAreaEl');
+const inputAreaEl = useTemplateRef('inputAreaEl');
 
 /** 値が編集中かどうか */
 const editing = ref<boolean>(false);

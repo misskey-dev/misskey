@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed, shallowRef } from 'vue';
+import { onMounted, ref, computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host as currentHost, hostname } from '@@/js/config.js';
 import MkInput from '@/components/MkInput.vue';
@@ -94,7 +94,7 @@ const host = ref('');
 const users = ref<Misskey.entities.UserLite[]>([]);
 const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
 const selected = ref<Misskey.entities.UserLite | null>(null);
-const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialogEl = useTemplateRef('dialogEl');
 
 function search() {
 	if (username.value === '' && host.value === '') {

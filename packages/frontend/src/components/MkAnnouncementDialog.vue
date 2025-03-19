@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -37,8 +37,8 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
-const rootEl = shallowRef<HTMLDivElement>();
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const rootEl = useTemplateRef('rootEl');
+const modal = useTemplateRef('modal');
 
 async function ok() {
 	if (props.announcement.needConfirmationToRead) {

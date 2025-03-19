@@ -92,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch, shallowRef } from 'vue';
+import { computed, defineAsyncComponent, ref, useTemplateRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
 import XSidebar from '@/ui/_common_/navbar.vue';
@@ -169,7 +169,7 @@ function showSettings() {
 	os.pageWindow('/settings/deck');
 }
 
-const columnsEl = shallowRef<HTMLElement>();
+const columnsEl = useTemplateRef('columnsEl');
 
 const addColumn = async (ev) => {
 	const { canceled, result: column } = await os.select({

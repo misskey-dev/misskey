@@ -191,7 +191,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch, useTemplateRef } from 'vue';
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
 import { DropAndFusionGame } from 'misskey-bubble-game';
@@ -567,8 +567,8 @@ let game = new DropAndFusionGame({
 });
 attachGameEvents();
 
-const containerEl = shallowRef<HTMLElement>();
-const canvasEl = shallowRef<HTMLCanvasElement>();
+const containerEl = useTemplateRef('containerEl');
+const canvasEl = useTemplateRef('canvasEl');
 const dropperX = ref(0);
 const currentPick = shallowRef<{ id: string; mono: Mono } | null>(null);
 const stock = shallowRef<{ id: string; mono: Mono }[]>([]);

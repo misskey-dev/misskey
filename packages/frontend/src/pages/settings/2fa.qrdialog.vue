@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, ref } from 'vue';
+import { useTemplateRef, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -132,7 +132,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 const page = ref(0);
 const token = ref<string | number | null>(null);
 const backupCodes = ref<string[]>();

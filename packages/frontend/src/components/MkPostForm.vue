@@ -99,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -165,11 +165,11 @@ const emit = defineEmits<{
 	(ev: 'fileChangeSensitive', fileId: string, to: boolean): void;
 }>();
 
-const textareaEl = shallowRef<HTMLTextAreaElement | null>(null);
-const cwInputEl = shallowRef<HTMLInputElement | null>(null);
-const hashtagsInputEl = shallowRef<HTMLInputElement | null>(null);
-const visibilityButton = shallowRef<HTMLElement>();
-const otherSettingsButton = shallowRef<HTMLElement>();
+const textareaEl = useTemplateRef('textareaEl');
+const cwInputEl = useTemplateRef('cwInputEl');
+const hashtagsInputEl = useTemplateRef('hashtagsInputEl');
+const visibilityButton = useTemplateRef('visibilityButton');
+const otherSettingsButton = useTemplateRef('otherSettingsButton');
 
 const posting = ref(false);
 const posted = ref(false);

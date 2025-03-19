@@ -14,7 +14,7 @@ export type MkABehavior = 'window' | 'browser' | null;
 </script>
 
 <script lang="ts" setup>
-import { computed, inject, shallowRef } from 'vue';
+import { computed, inject, useTemplateRef } from 'vue';
 import { url } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<{
 
 const behavior = props.behavior ?? inject<MkABehavior>('linkNavigationBehavior', null);
 
-const el = shallowRef<HTMLElement>();
+const el = useTemplateRef('el');
 
 defineExpose({ $el: el });
 
