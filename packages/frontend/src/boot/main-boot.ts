@@ -24,7 +24,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 import { initializeSw } from '@/utility/initialize-sw.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
-import { mainRouter } from '@/router/main.js';
+import { mainRouter } from '@/router.js';
 import { makeHotkey } from '@/utility/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';

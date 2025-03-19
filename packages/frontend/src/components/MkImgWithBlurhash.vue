@@ -83,7 +83,7 @@ const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resol
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, useTemplateRef, watch, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
 import { prefer } from '@/preferences.js';
@@ -120,9 +120,9 @@ const props = withDefaults(defineProps<{
 });
 
 const viewId = uuid();
-const canvas = shallowRef<HTMLCanvasElement>();
-const root = shallowRef<HTMLDivElement>();
-const img = shallowRef<HTMLImageElement>();
+const canvas = useTemplateRef('canvas');
+const root = useTemplateRef('root');
+const img = useTemplateRef('img');
 const loaded = ref(false);
 const canvasWidth = ref(64);
 const canvasHeight = ref(64);

@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import MkModal from './MkModal.vue';
 import MkMenu from './MkMenu.vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -28,7 +28,7 @@ const emit = defineEmits<{
 	(ev: 'closing'): void;
 }>();
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const modal = useTemplateRef('modal');
 const manualShowing = ref(true);
 const hiding = ref(false);
 

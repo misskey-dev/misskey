@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, ref, shallowRef } from 'vue';
+import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
 import { prefer } from '@/preferences.js';
 import { getBgColor } from '@/utility/get-bg-color.js';
 
@@ -74,7 +74,7 @@ const props = withDefaults(defineProps<{
 	spacerMax: 22,
 });
 
-const rootEl = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
 const bgSame = ref(false);
 const opened = ref(props.defaultOpen);
 const openedAtLeastOnce = ref(props.defaultOpen);

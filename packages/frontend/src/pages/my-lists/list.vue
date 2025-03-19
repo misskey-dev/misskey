@@ -68,7 +68,7 @@ import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
 import { ensureSignin } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { mainRouter } from '@/router/main.js';
+import { mainRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 
 const $i = ensureSignin();

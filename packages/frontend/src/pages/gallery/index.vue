@@ -54,7 +54,7 @@ import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 

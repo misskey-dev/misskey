@@ -106,7 +106,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, ref } from 'vue';
+import { hostname, port } from '@@/js/config';
+import { useTemplateRef, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -132,7 +133,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 const page = ref(0);
 const token = ref<string | number | null>(null);
 const backupCodes = ref<string[]>();
@@ -161,7 +162,7 @@ function downloadBackupCodes() {
 		const txtBlob = new Blob([backupCodes.value.join('\n')], { type: 'text/plain' });
 		const dummya = document.createElement('a');
 		dummya.href = URL.createObjectURL(txtBlob);
-		dummya.download = `${$i.username}-2fa-backup-codes.txt`;
+		dummya.download = `${$i.username}@${hostname}` + (port !== '' ? `_${port}` : '') + '-2fa-backup-codes.txt';
 		dummya.click();
 	}
 }

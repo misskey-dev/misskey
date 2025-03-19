@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onUpdated, onMounted } from 'vue';
+import { ref, useTemplateRef, onUpdated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
@@ -45,7 +45,7 @@ defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const noteTextEl = shallowRef<HTMLDivElement>();
+const noteTextEl = useTemplateRef('noteTextEl');
 const shouldCollapse = ref(false);
 const showContent = ref(false);
 

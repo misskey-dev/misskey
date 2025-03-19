@@ -53,7 +53,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const PRESET_DEFAULT = `/// @ ${AISCRIPT_VERSION}
 

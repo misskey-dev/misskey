@@ -5,7 +5,7 @@
 
 // NIRAX --- A lightweight router
 
-import { onMounted, shallowRef } from 'vue';
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import type { Component, ShallowRef } from 'vue';
 
@@ -23,7 +23,6 @@ interface RouteDefBase {
 	loginRequired?: boolean;
 	name?: string;
 	hash?: string;
-	globalCacheKey?: string;
 	children?: RouteDef[];
 }
 
@@ -46,31 +45,28 @@ type ParsedPath = (string | {
 	optional?: boolean;
 })[];
 
-export type RouterEvent = {
+export type RouterEvents = {
 	change: (ctx: {
-		beforePath: string;
-		path: string;
-		resolved: Resolved;
-		key: string;
+		beforeFullPath: string;
+		fullPath: string;
+		resolved: PathResolvedResult;
 	}) => void;
 	replace: (ctx: {
-		path: string;
-		key: string;
+		fullPath: string;
 	}) => void;
 	push: (ctx: {
-		beforePath: string;
-		path: string;
+		beforeFullPath: string;
+		fullPath: string;
 		route: RouteDef | null;
 		props: Map<string, string> | null;
-		key: string;
 	}) => void;
 	same: () => void;
 };
 
-export type Resolved = {
+export type PathResolvedResult = {
 	route: RouteDef;
 	props: Map<string, string | boolean>;
-	child?: Resolved;
+	child?: PathResolvedResult;
 	redirected?: boolean;
 
 	/** @internal */
@@ -106,124 +102,39 @@ function parsePath(path: string): ParsedPath {
 	return res;
 }
 
-export interface IRouter extends EventEmitter<RouterEvent> {
-	current: Resolved;
-	currentRef: ShallowRef<Resolved>;
-	currentRoute: ShallowRef<RouteDef>;
-	navHook: ((path: string, flag?: RouterFlag) => boolean) | null;
-
-	/**
-	 * ルートの初期化（eventListenerの定義後に必ず呼び出すこと）
-	 */
-	init(): void;
-
-	resolve(path: string): Resolved | null;
-
-	getCurrentPath(): string;
-
-	getCurrentKey(): string;
-
-	push(path: string, flag?: RouterFlag): void;
-
-	replace(path: string, key?: string | null): void;
-
-	/** @see EventEmitter */
-	eventNames(): Array<EventEmitter.EventNames<RouterEvent>>;
-
-	/** @see EventEmitter */
-	listeners<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T
-	): Array<EventEmitter.EventListener<RouterEvent, T>>;
-
-	/** @see EventEmitter */
-	listenerCount(
-		event: EventEmitter.EventNames<RouterEvent>
-	): number;
-
-	/** @see EventEmitter */
-	emit<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		...args: EventEmitter.EventArgs<RouterEvent, T>
-	): boolean;
-
-	/** @see EventEmitter */
-	on<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any
-	): this;
-
-	/** @see EventEmitter */
-	addListener<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any
-	): this;
-
-	/** @see EventEmitter */
-	once<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any
-	): this;
-
-	/** @see EventEmitter */
-	removeListener<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		fn?: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
-		once?: boolean | undefined
-	): this;
-
-	/** @see EventEmitter */
-	off<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		fn?: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
-		once?: boolean | undefined
-	): this;
-
-	/** @see EventEmitter */
-	removeAllListeners(
-		event?: EventEmitter.EventNames<RouterEvent>
-	): this;
-}
-
-export class Router extends EventEmitter<RouterEvent> implements IRouter {
-	private routes: RouteDef[];
-	public current: Resolved;
-	public currentRef: ShallowRef<Resolved>;
+export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
+	private routes: DEF;
+	public current: PathResolvedResult;
+	public currentRef: ShallowRef<PathResolvedResult>;
 	public currentRoute: ShallowRef<RouteDef>;
-	private currentPath: string;
+	private currentFullPath: string; // /foo/bar?baz=qux#hash
 	private isLoggedIn: boolean;
 	private notFoundPageComponent: Component;
-	private currentKey = Date.now().toString();
 	private redirectCount = 0;
 
-	public navHook: ((path: string, flag?: RouterFlag) => boolean) | null = null;
+	public navHook: ((fullPath: string, flag?: RouterFlag) => boolean) | null = null;
 
-	constructor(routes: Router['routes'], currentPath: Router['currentPath'], isLoggedIn: boolean, notFoundPageComponent: Component) {
+	constructor(routes: DEF, currentFullPath: Nirax<DEF>['currentFullPath'], isLoggedIn: boolean, notFoundPageComponent: Component) {
 		super();
 
 		this.routes = routes;
-		this.current = this.resolve(currentPath)!;
+		this.current = this.resolve(currentFullPath)!;
 		this.currentRef = shallowRef(this.current);
 		this.currentRoute = shallowRef(this.current.route);
-		this.currentPath = currentPath;
+		this.currentFullPath = currentFullPath;
 		this.isLoggedIn = isLoggedIn;
 		this.notFoundPageComponent = notFoundPageComponent;
 	}
 
 	public init() {
-		const res = this.navigate(this.currentPath, null, false);
+		const res = this.navigate(this.currentFullPath, false);
 		this.emit('replace', {
-			path: res._parsedRoute.fullPath,
-			key: this.currentKey,
+			fullPath: res._parsedRoute.fullPath,
 		});
 	}
 
-	public resolve(path: string): Resolved | null {
-		const fullPath = path;
+	public resolve(fullPath: string): PathResolvedResult | null {
+		let path = fullPath;
 		let queryString: string | null = null;
 		let hash: string | null = null;
 		if (path[0] === '/') path = path.substring(1);
@@ -242,7 +153,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			hash,
 		};
 
-		function check(routes: RouteDef[], _parts: string[]): Resolved | null {
+		function check(routes: RouteDef[], _parts: string[]): PathResolvedResult | null {
 			forEachRouteLoop:
 			for (const route of routes) {
 				let parts = [..._parts];
@@ -345,14 +256,14 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		return check(this.routes, _parts);
 	}
 
-	private navigate(path: string, key: string | null | undefined, emitChange = true, _redirected = false): Resolved {
-		const beforePath = this.currentPath;
-		this.currentPath = path;
+	private navigate(fullPath: string, emitChange = true, _redirected = false): PathResolvedResult {
+		const beforeFullPath = this.currentFullPath;
+		this.currentFullPath = fullPath;
 
-		const res = this.resolve(this.currentPath);
+		const res = this.resolve(this.currentFullPath);
 
 		if (res == null) {
-			throw new Error('no route found for: ' + path);
+			throw new Error('no route found for: ' + fullPath);
 		}
 
 		if ('redirect' in res.route) {
@@ -366,7 +277,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			if (_redirected && this.redirectCount++ > 10) {
 				throw new Error('redirect loop detected');
 			}
-			return this.navigate(redirectPath, null, emitChange, true);
+			return this.navigate(redirectPath, emitChange, true);
 		}
 
 		if (res.route.loginRequired && !this.isLoggedIn) {
@@ -374,19 +285,15 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			res.props.set('showLoginPopup', true);
 		}
 
-		const isSamePath = beforePath === path;
-		if (isSamePath && key == null) key = this.currentKey;
 		this.current = res;
 		this.currentRef.value = res;
 		this.currentRoute.value = res.route;
-		this.currentKey = res.route.globalCacheKey ?? key ?? path;
 
 		if (emitChange && res.route.path !== '/:(*)') {
 			this.emit('change', {
-				beforePath,
-				path,
+				beforeFullPath,
+				fullPath,
 				resolved: res,
-				key: this.currentKey,
 			});
 		}
 
@@ -397,70 +304,45 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		};
 	}
 
-	public getCurrentPath() {
-		return this.currentPath;
+	public getCurrentFullPath() {
+		return this.currentFullPath;
 	}
 
-	public getCurrentKey() {
-		return this.currentKey;
-	}
-
-	public push(path: string, flag?: RouterFlag) {
-		const beforePath = this.currentPath;
-		if (path === beforePath) {
+	public push(fullPath: string, flag?: RouterFlag) {
+		const beforeFullPath = this.currentFullPath;
+		if (fullPath === beforeFullPath) {
 			this.emit('same');
 			return;
 		}
 		if (this.navHook) {
-			const cancel = this.navHook(path, flag);
+			const cancel = this.navHook(fullPath, flag);
 			if (cancel) return;
 		}
-		const res = this.navigate(path, null);
+		const res = this.navigate(fullPath);
 		if (res.route.path === '/:(*)') {
-			location.href = path;
+			location.href = fullPath;
 		} else {
 			this.emit('push', {
-				beforePath,
-				path: res._parsedRoute.fullPath,
+				beforeFullPath,
+				fullPath: res._parsedRoute.fullPath,
 				route: res.route,
 				props: res.props,
-				key: this.currentKey,
 			});
 		}
 	}
 
-	public replace(path: string, key?: string | null) {
-		const res = this.navigate(path, key);
+	public replace(fullPath: string) {
+		const res = this.navigate(fullPath);
 		this.emit('replace', {
-			path: res._parsedRoute.fullPath,
-			key: this.currentKey,
+			fullPath: res._parsedRoute.fullPath,
 		});
 	}
-}
 
-export function useScrollPositionManager(getScrollContainer: () => HTMLElement | null, router: IRouter) {
-	const scrollPosStore = new Map<string, number>();
+	public useListener<E extends keyof RouterEvents, L = RouterEvents[E]>(event: E, listener: L) {
+		this.addListener(event, listener);
 
-	onMounted(() => {
-		const scrollContainer = getScrollContainer();
-		if (scrollContainer == null) return;
-
-		scrollContainer.addEventListener('scroll', () => {
-			scrollPosStore.set(router.getCurrentKey(), scrollContainer.scrollTop);
-		}, { passive: true });
-
-		router.addListener('change', ctx => {
-			const scrollPos = scrollPosStore.get(ctx.key) ?? 0;
-			scrollContainer.scroll({ top: scrollPos, behavior: 'instant' });
-			if (scrollPos !== 0) {
-				window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
-					scrollContainer.scroll({ top: scrollPos, behavior: 'instant' });
-				}, 100);
-			}
+		onBeforeUnmount(() => {
+			this.removeListener(event, listener);
 		});
-
-		router.addListener('same', () => {
-			scrollContainer.scroll({ top: 0, behavior: 'smooth' });
-		});
-	});
+	}
 }

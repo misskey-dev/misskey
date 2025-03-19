@@ -99,7 +99,7 @@ import { isSupportShare } from '@/utility/navigator.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 

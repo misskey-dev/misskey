@@ -26,7 +26,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { installPlugin } from '@/plugin.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 const code = ref<string | null>(null);

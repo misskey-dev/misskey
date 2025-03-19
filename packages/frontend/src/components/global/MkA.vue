@@ -14,12 +14,12 @@ export type MkABehavior = 'window' | 'browser' | null;
 </script>
 
 <script lang="ts" setup>
-import { computed, inject, shallowRef } from 'vue';
+import { computed, inject, useTemplateRef } from 'vue';
 import { url } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const props = withDefaults(defineProps<{
 	to: string;
@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<{
 
 const behavior = props.behavior ?? inject<MkABehavior>('linkNavigationBehavior', null);
 
-const el = shallowRef<HTMLElement>();
+const el = useTemplateRef('el');
 
 defineExpose({ $el: el });
 

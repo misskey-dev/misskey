@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
 import { useChartTooltip } from '@/use/use-chart-tooltip.js';
 import { initChart } from '@/utility/init-chart.js';
@@ -26,7 +26,7 @@ const props = defineProps<{
 	data: InstanceForPie[];
 }>();
 
-const chartEl = shallowRef<HTMLCanvasElement>(null);
+const chartEl = useTemplateRef('chartEl');
 
 const { handler: externalTooltipHandler } = useChartTooltip({
 	position: 'middle',
