@@ -5,7 +5,7 @@
 
 // NIRAX --- A lightweight router
 
-import { onMounted, shallowRef } from 'vue';
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import type { Component, ShallowRef } from 'vue';
 
@@ -45,28 +45,28 @@ type ParsedPath = (string | {
 	optional?: boolean;
 })[];
 
-export type RouterEvent = {
+export type RouterEvents = {
 	change: (ctx: {
-		beforePath: string;
-		path: string;
-		resolved: Resolved;
+		beforeFullPath: string;
+		fullPath: string;
+		resolved: PathResolvedResult;
 	}) => void;
 	replace: (ctx: {
-		path: string;
+		fullPath: string;
 	}) => void;
 	push: (ctx: {
-		beforePath: string;
-		path: string;
+		beforeFullPath: string;
+		fullPath: string;
 		route: RouteDef | null;
 		props: Map<string, string> | null;
 	}) => void;
 	same: () => void;
 };
 
-export type Resolved = {
+export type PathResolvedResult = {
 	route: RouteDef;
 	props: Map<string, string | boolean>;
-	child?: Resolved;
+	child?: PathResolvedResult;
 	redirected?: boolean;
 
 	/** @internal */
@@ -102,39 +102,39 @@ function parsePath(path: string): ParsedPath {
 	return res;
 }
 
-export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvent> {
+export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 	private routes: DEF;
-	public current: Resolved;
-	public currentRef: ShallowRef<Resolved>;
+	public current: PathResolvedResult;
+	public currentRef: ShallowRef<PathResolvedResult>;
 	public currentRoute: ShallowRef<RouteDef>;
-	private currentPath: string;
+	private currentFullPath: string; // /foo/bar?baz=qux#hash
 	private isLoggedIn: boolean;
 	private notFoundPageComponent: Component;
 	private redirectCount = 0;
 
-	public navHook: ((path: string, flag?: RouterFlag) => boolean) | null = null;
+	public navHook: ((fullPath: string, flag?: RouterFlag) => boolean) | null = null;
 
-	constructor(routes: DEF, currentPath: Nirax<DEF>['currentPath'], isLoggedIn: boolean, notFoundPageComponent: Component) {
+	constructor(routes: DEF, currentFullPath: Nirax<DEF>['currentFullPath'], isLoggedIn: boolean, notFoundPageComponent: Component) {
 		super();
 
 		this.routes = routes;
-		this.current = this.resolve(currentPath)!;
+		this.current = this.resolve(currentFullPath)!;
 		this.currentRef = shallowRef(this.current);
 		this.currentRoute = shallowRef(this.current.route);
-		this.currentPath = currentPath;
+		this.currentFullPath = currentFullPath;
 		this.isLoggedIn = isLoggedIn;
 		this.notFoundPageComponent = notFoundPageComponent;
 	}
 
 	public init() {
-		const res = this.navigate(this.currentPath, false);
+		const res = this.navigate(this.currentFullPath, false);
 		this.emit('replace', {
-			path: res._parsedRoute.fullPath,
+			fullPath: res._parsedRoute.fullPath,
 		});
 	}
 
-	public resolve(path: string): Resolved | null {
-		const fullPath = path;
+	public resolve(fullPath: string): PathResolvedResult | null {
+		let path = fullPath;
 		let queryString: string | null = null;
 		let hash: string | null = null;
 		if (path[0] === '/') path = path.substring(1);
@@ -153,7 +153,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvent> {
 			hash,
 		};
 
-		function check(routes: RouteDef[], _parts: string[]): Resolved | null {
+		function check(routes: RouteDef[], _parts: string[]): PathResolvedResult | null {
 			forEachRouteLoop:
 			for (const route of routes) {
 				let parts = [..._parts];
@@ -256,14 +256,14 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvent> {
 		return check(this.routes, _parts);
 	}
 
-	private navigate(path: string, emitChange = true, _redirected = false): Resolved {
-		const beforePath = this.currentPath;
-		this.currentPath = path;
+	private navigate(fullPath: string, emitChange = true, _redirected = false): PathResolvedResult {
+		const beforeFullPath = this.currentFullPath;
+		this.currentFullPath = fullPath;
 
-		const res = this.resolve(this.currentPath);
+		const res = this.resolve(this.currentFullPath);
 
 		if (res == null) {
-			throw new Error('no route found for: ' + path);
+			throw new Error('no route found for: ' + fullPath);
 		}
 
 		if ('redirect' in res.route) {
@@ -291,8 +291,8 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvent> {
 
 		if (emitChange && res.route.path !== '/:(*)') {
 			this.emit('change', {
-				beforePath,
-				path,
+				beforeFullPath,
+				fullPath,
 				resolved: res,
 			});
 		}
@@ -304,37 +304,45 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvent> {
 		};
 	}
 
-	public getCurrentPath() {
-		return this.currentPath;
+	public getCurrentFullPath() {
+		return this.currentFullPath;
 	}
 
-	public push(path: string, flag?: RouterFlag) {
-		const beforePath = this.currentPath;
-		if (path === beforePath) {
+	public push(fullPath: string, flag?: RouterFlag) {
+		const beforeFullPath = this.currentFullPath;
+		if (fullPath === beforeFullPath) {
 			this.emit('same');
 			return;
 		}
 		if (this.navHook) {
-			const cancel = this.navHook(path, flag);
+			const cancel = this.navHook(fullPath, flag);
 			if (cancel) return;
 		}
-		const res = this.navigate(path);
+		const res = this.navigate(fullPath);
 		if (res.route.path === '/:(*)') {
-			location.href = path;
+			location.href = fullPath;
 		} else {
 			this.emit('push', {
-				beforePath,
-				path: res._parsedRoute.fullPath,
+				beforeFullPath,
+				fullPath: res._parsedRoute.fullPath,
 				route: res.route,
 				props: res.props,
 			});
 		}
 	}
 
-	public replace(path: string) {
-		const res = this.navigate(path);
+	public replace(fullPath: string) {
+		const res = this.navigate(fullPath);
 		this.emit('replace', {
-			path: res._parsedRoute.fullPath,
+			fullPath: res._parsedRoute.fullPath,
+		});
+	}
+
+	public useListener<E extends keyof RouterEvents, L = RouterEvents[E]>(event: E, listener: L) {
+		this.addListener(event, listener);
+
+		onBeforeUnmount(() => {
+			this.removeListener(event, listener);
 		});
 	}
 }
