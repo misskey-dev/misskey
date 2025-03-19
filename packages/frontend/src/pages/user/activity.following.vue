@@ -33,7 +33,7 @@ const props = defineProps<{
 	user: Misskey.entities.User;
 }>();
 
-const chartEl = shallowRef<HTMLCanvasElement>(null);
+const chartEl = shallowRef<HTMLCanvasElement>();
 const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
 const now = new Date();
 let chartInstance: Chart = null;
@@ -89,7 +89,7 @@ async function renderChart() {
 		}, extra);
 	}
 
-	chartInstance = new Chart(chartEl.value, {
+	chartInstance = new Chart(chartEl.value!, {
 		type: 'bar',
 		data: {
 			datasets: [

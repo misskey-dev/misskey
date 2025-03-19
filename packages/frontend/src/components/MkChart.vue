@@ -53,7 +53,8 @@ export type ChartSrc =
 import { onMounted, ref, shallowRef, watch } from 'vue';
 import { Chart } from 'chart.js';
 import * as Misskey from 'misskey-js';
-import { misskeyApiGet } from '@/utility/misskey-api.js';
+
+import { misskeyApiGet, misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
 import { useChartTooltip } from '@/use/use-chart-tooltip.js';
 import { chartVLine } from '@/utility/chart-vline.js';
@@ -758,7 +759,10 @@ const fetchPerUserPvChart = async (): Promise<typeof chartData> => {
 };
 
 const fetchPerUserFollowingChart = async (): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/user/following', { userId: props.args?.user?.id, limit: props.limit, span: props.span });
+	const raw = await misskeyApi('charts/user/following', { userId: props.args?.user?.id!, limit: props.limit, span: props.span }).catch(() => {
+		return null;
+	});
+	if (raw == null) return null;
 	return {
 		series: [{
 			name: 'Local',
@@ -773,7 +777,10 @@ const fetchPerUserFollowingChart = async (): Promise<typeof chartData> => {
 };
 
 const fetchPerUserFollowersChart = async (): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/user/following', { userId: props.args?.user?.id, limit: props.limit, span: props.span });
+	const raw = await misskeyApi('charts/user/following', { userId: props.args?.user?.id!, limit: props.limit, span: props.span }).catch(() => {
+		return null;
+	});
+	if (raw == null) return null;
 	return {
 		series: [{
 			name: 'Local',

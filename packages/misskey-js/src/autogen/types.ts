@@ -1285,13 +1285,6 @@ export type paths = {
      *
      * **Credential required**: *No*
      */
-    get: operations['charts___user___following'];
-    /**
-     * charts/user/following
-     * @description No description provided.
-     *
-     * **Credential required**: *No*
-     */
     post: operations['charts___user___following'];
   };
   '/charts/user/notes': {
