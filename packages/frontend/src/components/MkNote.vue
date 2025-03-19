@@ -178,7 +178,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, watch, provide } from 'vue';
+import { computed, inject, onMounted, ref, useTemplateRef, watch, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -271,14 +271,14 @@ if (noteViewInterruptors.length > 0) {
 
 const isRenote = Misskey.note.isPureRenote(note.value);
 
-const rootEl = shallowRef<HTMLElement>();
-const menuButton = shallowRef<HTMLElement>();
-const renoteButton = shallowRef<HTMLElement>();
-const renoteTime = shallowRef<HTMLElement>();
-const reactButton = shallowRef<HTMLElement>();
-const clipButton = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
+const menuButton = useTemplateRef('menuButton');
+const renoteButton = useTemplateRef('renoteButton');
+const renoteTime = useTemplateRef('renoteTime');
+const reactButton = useTemplateRef('reactButton');
+const clipButton = useTemplateRef('clipButton');
 const appearNote = computed(() => getAppearNote(note.value));
-const galleryEl = shallowRef<InstanceType<typeof MkMediaList>>();
+const galleryEl = useTemplateRef('galleryEl');
 const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);

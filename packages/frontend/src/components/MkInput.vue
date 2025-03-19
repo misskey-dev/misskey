@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
+import { onMounted, onUnmounted, nextTick, ref, useTemplateRef, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import { useInterval } from '@@/js/use-interval.js';
 import type { InputHTMLAttributes } from 'vue';
@@ -92,9 +92,9 @@ const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = shallowRef<HTMLInputElement>();
-const prefixEl = shallowRef<HTMLElement>();
-const suffixEl = shallowRef<HTMLElement>();
+const inputEl = useTemplateRef('inputEl');
+const prefixEl = useTemplateRef('prefixEl');
+const suffixEl = useTemplateRef('suffixEl');
 const height =
 	props.small ? 33 :
 	props.large ? 39 :

@@ -179,7 +179,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, unref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch } from 'vue';
 import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
@@ -212,11 +212,11 @@ const big = isTouchUsing;
 
 const isNestingMenu = inject<boolean>('isNestingMenu', false);
 
-const itemsEl = shallowRef<HTMLElement>();
+const itemsEl = useTemplateRef('itemsEl');
 
 const items2 = ref<InnerMenuItem[]>();
 
-const child = shallowRef<InstanceType<typeof XChild>>();
+const child = useTemplateRef('child');
 
 const keymap = {
 	'up|k|shift+tab': {
@@ -257,7 +257,7 @@ watch(() => props.items, () => {
 });
 
 const childMenu = ref<MenuItem[] | null>();
-const childTarget = shallowRef<HTMLElement | null>();
+const childTarget = useTemplateRef('childTarget');
 
 function closeChild() {
 	childMenu.value = null;

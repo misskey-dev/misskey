@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { shallowRef } from 'vue';
+import { useTemplateRef } from 'vue';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 import MkSignin from '@/components/MkSignin.vue';
 import MkModal from '@/components/MkModal.vue';
@@ -46,7 +46,7 @@ const emit = defineEmits<{
 	(ev: 'cancelled'): void;
 }>();
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const modal = useTemplateRef('modal');
 
 function onClose() {
 	emit('cancelled');

@@ -33,7 +33,7 @@ type PizzaxChannelMessage<T extends StateDef> = {
 	userId?: string;
 };
 
-export class Storage<T extends StateDef> {
+export class Pizzax<T extends StateDef> {
 	public readonly ready: Promise<void>;
 	public readonly loaded: Promise<void>;
 

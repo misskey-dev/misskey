@@ -13,12 +13,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:duration="200"
 	tag="div" :class="$style.tabs"
 >
-	<div v-for="(tab, i) in tabs" :key="tab.key" :class="$style.tab" :style="{ '--i': i - 1 }">
+	<div v-for="(tab, i) in tabs" :key="tab.fullPath" :class="$style.tab" :style="{ '--i': i - 1 }">
 		<div v-if="i > 0" :class="$style.tabBg" @click="back()"></div>
 		<div :class="$style.tabFg" @click.stop="back()">
 			<div v-if="i > 0" :class="$style.tabMenu">
-				<button :class="$style.tabMenuButton" class="_button" @click.stop="mount"><i class="ti ti-arrows-maximize"/></button>
+				<svg :class="$style.tabMenuShape" viewBox="0 0 24 16">
+					<g transform="matrix(2.04108e-17,-0.333333,0.222222,1.36072e-17,21.3333,15.9989)">
+						<path d="M23.997,-42C47.903,-23.457 47.997,12 47.997,12L-0.003,12L-0.003,-96C-0.003,-96 0.091,-60.543 23.997,-42Z" style="fill:var(--MI_THEME-panel);"/>
+					</g>
+				</svg>
+				<button :class="$style.tabMenuButton" class="_button" @click.stop="mount"><i class="ti ti-rectangle"></i></button>
+				<button :class="$style.tabMenuButton" class="_button" @click.stop="back"><i class="ti ti-x"></i></button>
 			</div>
+			<div v-if="i > 0" :class="$style.tabBorder"></div>
 			<div :class="$style.tabContent" class="_pageContainer" @click.stop="">
 				<Suspense :timeout="0">
 					<component :is="tab.component" v-bind="Object.fromEntries(tab.props)"/>
@@ -34,16 +41,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, onBeforeUnmount, provide, ref, shallowRef, computed, nextTick } from 'vue';
-import type { IRouter, Resolved, RouteDef } from '@/nirax.js';
+import { inject, provide, shallowRef } from 'vue';
+import type { Router } from '@/router.js';
 import { prefer } from '@/preferences.js';
-import { globalEvents } from '@/events.js';
 import MkLoadingPage from '@/pages/_loading_.vue';
 import { DI } from '@/di.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 
 const props = defineProps<{
-	router?: IRouter;
+	router?: Router;
 }>();
 
 const router = props.router ?? inject(DI.router);
@@ -56,26 +62,36 @@ const currentDepth = inject(DI.routerCurrentDepth, 0);
 provide(DI.routerCurrentDepth, currentDepth + 1);
 
 const tabs = shallowRef([{
-	key: router.getCurrentPath(),
-	path: router.getCurrentPath(),
-	route: router.current.route.path,
+	fullPath: router.getCurrentFullPath(),
+	routePath: router.current.route.path,
 	component: 'component' in router.current.route ? router.current.route.component : MkLoadingPage,
 	props: router.current.props,
 }]);
 
-function onChange({ resolved }) {
+function mount() {
 	const currentTab = tabs.value[tabs.value.length - 1];
-	const route = resolved.route.path;
-	if (resolved == null || 'redirect' in resolved.route) return;
-	if (resolved.route.path === currentTab.path && deepEqual(resolved.props, currentTab.props)) return;
-	const fullPath = router.getCurrentPath();
+	tabs.value = [currentTab];
+}
 
-	if (tabs.value.some(tab => tab.route === route && deepEqual(resolved.props, tab.props))) {
+function back() {
+	const prev = tabs.value[tabs.value.length - 2];
+	tabs.value = [...tabs.value.slice(0, tabs.value.length - 1)];
+	router.replace(prev.fullPath);
+}
+
+router.useListener('change', ({ resolved }) => {
+	const currentTab = tabs.value[tabs.value.length - 1];
+	const routePath = resolved.route.path;
+	if (resolved == null || 'redirect' in resolved.route) return;
+	if (resolved.route.path === currentTab.routePath && deepEqual(resolved.props, currentTab.props)) return;
+	const fullPath = router.getCurrentFullPath();
+
+	if (tabs.value.some(tab => tab.routePath === routePath && deepEqual(resolved.props, tab.props))) {
 		const newTabs = [];
 		for (const tab of tabs.value) {
 			newTabs.push(tab);
 
-			if (tab.route === route && deepEqual(resolved.props, tab.props)) {
+			if (tab.routePath === routePath && deepEqual(resolved.props, tab.props)) {
 				break;
 			}
 		}
@@ -86,45 +102,23 @@ function onChange({ resolved }) {
 	tabs.value = tabs.value.length >= prefer.s.numberOfPageCache ? [
 		...tabs.value.slice(1),
 		{
-			key: fullPath,
-			path: fullPath,
-			route,
+			fullPath: fullPath,
+			routePath,
 			component: resolved.route.component,
 			props: resolved.props,
 		},
 	] : [...tabs.value, {
-		key: fullPath,
-		path: fullPath,
-		route,
+		fullPath: fullPath,
+		routePath,
 		component: resolved.route.component,
 		props: resolved.props,
 	}];
-}
+});
 
-function onReplace({ path }) {
+router.useListener('replace', ({ fullPath }) => {
 	const currentTab = tabs.value[tabs.value.length - 1];
-	console.log('replace', currentTab.path, path);
-	currentTab.path = path;
+	currentTab.fullPath = fullPath;
 	tabs.value = [...tabs.value.slice(0, tabs.value.length - 1), currentTab];
-}
-
-function mount() {
-	const currentTab = tabs.value[tabs.value.length - 1];
-	tabs.value = [currentTab];
-}
-
-function back() {
-	const prev = tabs.value[tabs.value.length - 2];
-	tabs.value = [...tabs.value.slice(0, tabs.value.length - 1)];
-	router.replace(prev.path, prev.key);
-}
-
-router.addListener('replace', onReplace);
-router.addListener('change', onChange);
-
-onBeforeUnmount(() => {
-	router.removeListener('replace', onReplace);
-	router.removeListener('change', onChange);
 });
 </script>
 
@@ -164,6 +158,8 @@ onBeforeUnmount(() => {
 }
 
 .tab {
+	overflow: clip;
+
 	&:first-child {
 		position: relative;
 		width: 100%;
@@ -220,11 +216,28 @@ onBeforeUnmount(() => {
 }
 
 .tabMenu {
+	position: relative;
 	margin-left: auto;
-	background: var(--MI_THEME-bg);
+	padding: 0 4px;
+	background: var(--MI_THEME-panel);
+}
+
+.tabMenuShape {
+	position: absolute;
+	bottom: -1px;
+	left: -100%;
+	height: calc(100% + 1px);
+	width: 129%;
+	pointer-events: none;
+}
+
+.tabBorder {
+	height: 6px;
+	background: var(--MI_THEME-panel);
 }
 
 .tabMenuButton {
-	padding: 10px;
+	padding: 8px;
+	font-size: 13px;
 }
 </style>

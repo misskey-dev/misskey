@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef } from 'vue';
+import { computed, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -46,7 +46,7 @@ const props = defineProps<{
 	raw?: boolean;
 }>();
 
-const gallery = shallowRef<HTMLDivElement>();
+const gallery = useTemplateRef('gallery');
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = computed(() => props.mediaList.filter(media => previewable(media)).length);

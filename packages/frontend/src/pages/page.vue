@@ -120,7 +120,7 @@ import { isSupportShare } from '@/utility/navigator.js';
 import { instance } from '@/instance.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 
