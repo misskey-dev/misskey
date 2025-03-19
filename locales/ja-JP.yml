@@ -1338,6 +1338,8 @@ individualChat: "個人チャット"
 individualChat_description: "特定ユーザーとの一対一のチャットができます。"
 roomChat: "ルームチャット"
 roomChat_description: "複数人でのチャットができます。\nまた、個人チャットを許可していないユーザーとでも、相手が受け入れればチャットができます。"
+cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
+cannotChatWithTheUser_description: "チャットが使えない状態になっているか、相手がチャットを開放していません。"
 
 _emojiPalette:
   palettes: "パレット"
