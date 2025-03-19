@@ -50,7 +50,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
 
 const $i = ensureSignin();
