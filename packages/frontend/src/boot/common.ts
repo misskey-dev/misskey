@@ -26,8 +26,6 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { analytics, initAnalytics } from '@/analytics.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { setupRouter } from '@/router/main.js';
-import { createMainRouter } from '@/router/definition.js';
 import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
 
@@ -266,8 +264,6 @@ export async function common(createVue: () => App<Element>) {
 	});
 
 	const app = createVue();
-
-	setupRouter(app, createMainRouter);
 
 	if (_DEV_) {
 		app.config.performance = true;

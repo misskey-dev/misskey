@@ -110,7 +110,7 @@ import { $i } from '@/i.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { mainRouter } from '@/router/main.js';
+import { mainRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
 import { DI } from '@/di.js';

@@ -41,8 +41,7 @@ import { i18n } from '@/i18n.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/utility/achievements.js';
-import { useRouterFactory } from '@/router/supplier.js';
-import { mainRouter } from '@/router/main.js';
+import { createRouter, mainRouter } from '@/router.js';
 import { analytics } from '@/analytics.js';
 import { DI } from '@/di.js';
 import { prefer } from '@/preferences.js';
@@ -55,8 +54,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const routerFactory = useRouterFactory();
-const windowRouter = routerFactory(props.initialPath);
+const windowRouter = createRouter(props.initialPath);
 
 const pageMetadata = ref<null | PageMetadata>(null);
 const windowEl = shallowRef<InstanceType<typeof MkWindow>>();

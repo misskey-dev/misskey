@@ -19,7 +19,7 @@ import { url } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const props = withDefaults(defineProps<{
 	to: string;

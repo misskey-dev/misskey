@@ -122,7 +122,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import type { MenuItem } from '@/types/menu.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const $i = ensureSignin();
 

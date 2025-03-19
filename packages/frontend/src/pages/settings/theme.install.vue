@@ -24,7 +24,7 @@ import { parseThemeCode, previewTheme, installTheme } from '@/theme.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 const installThemeCode = ref<string | null>(null);

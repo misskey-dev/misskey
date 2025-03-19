@@ -58,7 +58,7 @@ import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { mainRouter } from '@/router/main.js';
+import { mainRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 
