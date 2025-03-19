@@ -79,7 +79,7 @@ export default abstract class Channel {
 	}
 
 	protected async removeMutedReactions(note: Packed<'Note'>): Promise<Packed<'Note'>> {
-		return await removeMutedUsersReactions(note, this.userIdsWhoMeMuting);
+		return await removeMutedUsersReactions(note, this.userIdsWhoMeMuting, false);
 	}
 
 	constructor(id: string, connection: Connection) {

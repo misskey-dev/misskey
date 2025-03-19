@@ -3,6 +3,7 @@ import { Packed } from '@/misc/json-schema.js';
 export async function removeMutedUsersReactions(
 	note: Packed<'Note'>,
 	userIdsWhoMeMuting: Set<string>,
+	removeReactionAndUserPairCache = true,
 ): Promise<Packed<'Note'>> {
 	// 指定されたオブジェクト（note または renote）に対して、
 	// ミュートされたユーザーのリアクションのカウントを差し引き、更新する
@@ -11,7 +12,7 @@ export async function removeMutedUsersReactions(
 		reactionAndUserPairCache?: string[];
 		reactionCount?: number;
 	}): void {
-		if (!target.reactions || !target.reactionAndUserPairCache) {
+		if (!target.reactions || !target.reactionAndUserPairCache && removeReactionAndUserPairCache) {
 			delete target.reactionAndUserPairCache;
 			return;
 		}
@@ -19,14 +20,16 @@ export async function removeMutedUsersReactions(
 		// ミュート対象ユーザーからの各リアクションの合計数を集計
 		const mutedCounts: Record<string, number> = Object.create(null);
 		const cache = target.reactionAndUserPairCache;
-		for (let i = 0, len = cache.length; i < len; i++) {
-			const entry = cache[i];
-			const sep = entry.indexOf('/');
-			if (sep === -1) continue;
-			const userId = entry.slice(0, sep);
-			const reaction = entry.slice(sep + 1);
-			if (userId && reaction && userIdsWhoMeMuting.has(userId)) {
-				mutedCounts[reaction] = (mutedCounts[reaction] || 0) + 1;
+		if (cache) {
+			for (let i = 0, len = cache.length; i < len; i++) {
+				const entry = cache[i];
+				const sep = entry.indexOf('/');
+				if (sep === -1) continue;
+				const userId = entry.slice(0, sep);
+				const reaction = entry.slice(sep + 1);
+				if (userId && reaction && userIdsWhoMeMuting.has(userId)) {
+					mutedCounts[reaction] = (mutedCounts[reaction] || 0) + 1;
+				}
 			}
 		}
 
@@ -48,7 +51,9 @@ export async function removeMutedUsersReactions(
 		}
 
 		// キャッシュは不要になったため削除
-		delete target.reactionAndUserPairCache;
+		if (removeReactionAndUserPairCache) {
+			delete target.reactionAndUserPairCache;
+		}
 	}
 
 	// note と renote（存在する場合）に対して処理を適用
