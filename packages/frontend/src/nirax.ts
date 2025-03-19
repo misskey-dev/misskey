@@ -51,18 +51,15 @@ export type RouterEvent = {
 		beforePath: string;
 		path: string;
 		resolved: Resolved;
-		key: string;
 	}) => void;
 	replace: (ctx: {
 		path: string;
-		key: string;
 	}) => void;
 	push: (ctx: {
 		beforePath: string;
 		path: string;
 		route: RouteDef | null;
 		props: Map<string, string> | null;
-		key: string;
 	}) => void;
 	same: () => void;
 };
@@ -121,11 +118,9 @@ export interface IRouter extends EventEmitter<RouterEvent> {
 
 	getCurrentPath(): string;
 
-	getCurrentKey(): string;
-
 	push(path: string, flag?: RouterFlag): void;
 
-	replace(path: string, key?: string | null): void;
+	replace(path: string): void;
 
 	/** @see EventEmitter */
 	eventNames(): Array<EventEmitter.EventNames<RouterEvent>>;
@@ -197,7 +192,6 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 	private currentPath: string;
 	private isLoggedIn: boolean;
 	private notFoundPageComponent: Component;
-	private currentKey = Date.now().toString();
 	private redirectCount = 0;
 
 	public navHook: ((path: string, flag?: RouterFlag) => boolean) | null = null;
@@ -215,10 +209,9 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 	}
 
 	public init() {
-		const res = this.navigate(this.currentPath, null, false);
+		const res = this.navigate(this.currentPath, false);
 		this.emit('replace', {
 			path: res._parsedRoute.fullPath,
-			key: this.currentKey,
 		});
 	}
 
@@ -345,7 +338,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		return check(this.routes, _parts);
 	}
 
-	private navigate(path: string, key: string | null | undefined, emitChange = true, _redirected = false): Resolved {
+	private navigate(path: string, emitChange = true, _redirected = false): Resolved {
 		const beforePath = this.currentPath;
 		this.currentPath = path;
 
@@ -366,7 +359,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			if (_redirected && this.redirectCount++ > 10) {
 				throw new Error('redirect loop detected');
 			}
-			return this.navigate(redirectPath, null, emitChange, true);
+			return this.navigate(redirectPath, emitChange, true);
 		}
 
 		if (res.route.loginRequired && !this.isLoggedIn) {
@@ -375,18 +368,15 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		}
 
 		const isSamePath = beforePath === path;
-		if (isSamePath && key == null) key = this.currentKey;
 		this.current = res;
 		this.currentRef.value = res;
 		this.currentRoute.value = res.route;
-		this.currentKey = res.route.globalCacheKey ?? key ?? path;
 
 		if (emitChange && res.route.path !== '/:(*)') {
 			this.emit('change', {
 				beforePath,
 				path,
 				resolved: res,
-				key: this.currentKey,
 			});
 		}
 
@@ -401,10 +391,6 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		return this.currentPath;
 	}
 
-	public getCurrentKey() {
-		return this.currentKey;
-	}
-
 	public push(path: string, flag?: RouterFlag) {
 		const beforePath = this.currentPath;
 		if (path === beforePath) {
@@ -415,7 +401,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			const cancel = this.navHook(path, flag);
 			if (cancel) return;
 		}
-		const res = this.navigate(path, null);
+		const res = this.navigate(path);
 		if (res.route.path === '/:(*)') {
 			location.href = path;
 		} else {
@@ -424,43 +410,14 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 				path: res._parsedRoute.fullPath,
 				route: res.route,
 				props: res.props,
-				key: this.currentKey,
 			});
 		}
 	}
 
-	public replace(path: string, key?: string | null) {
-		const res = this.navigate(path, key);
+	public replace(path: string) {
+		const res = this.navigate(path);
 		this.emit('replace', {
 			path: res._parsedRoute.fullPath,
-			key: this.currentKey,
 		});
 	}
-}
-
-export function useScrollPositionManager(getScrollContainer: () => HTMLElement | null, router: IRouter) {
-	const scrollPosStore = new Map<string, number>();
-
-	onMounted(() => {
-		const scrollContainer = getScrollContainer();
-		if (scrollContainer == null) return;
-
-		scrollContainer.addEventListener('scroll', () => {
-			scrollPosStore.set(router.getCurrentKey(), scrollContainer.scrollTop);
-		}, { passive: true });
-
-		router.addListener('change', ctx => {
-			const scrollPos = scrollPosStore.get(ctx.key) ?? 0;
-			scrollContainer.scroll({ top: scrollPos, behavior: 'instant' });
-			if (scrollPos !== 0) {
-				window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
-					scrollContainer.scroll({ top: scrollPos, behavior: 'instant' });
-				}, 100);
-			}
-		});
-
-		router.addListener('same', () => {
-			scrollContainer.scroll({ top: 0, behavior: 'smooth' });
-		});
-	});
 }

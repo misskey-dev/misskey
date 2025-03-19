@@ -19,15 +19,15 @@ export function setupRouter(app: App, routerFactory: ((path: string) => IRouter)
 	const mainRouter = routerFactory(location.pathname + location.search + location.hash);
 
 	window.addEventListener('popstate', (event) => {
-		mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key);
+		mainRouter.replace(location.pathname + location.search + location.hash);
 	});
 
 	mainRouter.addListener('push', ctx => {
-		window.history.pushState({ key: ctx.key }, '', ctx.path);
+		window.history.pushState({ }, '', ctx.path);
 	});
 
 	mainRouter.addListener('replace', ctx => {
-		window.history.replaceState({ key: ctx.key }, '', ctx.path);
+		window.history.replaceState({ }, '', ctx.path);
 	});
 
 	mainRouter.addListener('change', ctx => {
@@ -94,10 +94,6 @@ class MainRouterProxy implements IRouter {
 
 	set navHook(value) {
 		this.supplier().navHook = value;
-	}
-
-	getCurrentKey(): string {
-		return this.supplier().getCurrentKey();
 	}
 
 	getCurrentPath(): string {

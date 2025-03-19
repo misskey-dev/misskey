@@ -44,13 +44,13 @@ provide(DI.routerCurrentDepth, currentDepth + 1);
 const current = router.current!;
 const currentPageComponent = shallowRef('component' in current.route ? current.route.component : MkLoadingPage);
 const currentPageProps = ref(current.props);
-const key = ref(router.getCurrentKey() + JSON.stringify(Object.fromEntries(current.props)));
+const key = ref(router.getCurrentPath());
 
-function onChange({ resolved, key: newKey }) {
+function onChange({ resolved }) {
 	if (resolved == null || 'redirect' in resolved.route) return;
 	currentPageComponent.value = resolved.route.component;
 	currentPageProps.value = resolved.props;
-	key.value = newKey + JSON.stringify(Object.fromEntries(resolved.props));
+	key.value = router.getCurrentPath();
 
 	nextTick(() => {
 		// ページ遷移完了後に再びキャッシュを有効化
