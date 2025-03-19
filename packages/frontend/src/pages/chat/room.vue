@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div style="height: 100vh; overflow:auto; display:flex; flex-direction:column-reverse;">
+<div style="height: 100%; overflow:auto; display:flex; flex-direction:column-reverse;">
 	<MkStickyContainer>
 		<template #header>
 			<MkPageHeader/>
