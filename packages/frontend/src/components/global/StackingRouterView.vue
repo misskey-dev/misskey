@@ -17,9 +17,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="i > 0" :class="$style.tabBg" @click="back()"></div>
 		<div :class="$style.tabFg" @click.stop="back()">
 			<div v-if="i > 0" :class="$style.tabMenu">
+				<svg :class="$style.tabMenuShape" viewBox="0 0 24 16">
+					<g transform="matrix(2.04108e-17,-0.333333,0.222222,1.36072e-17,21.3333,15.9989)">
+						<path d="M23.997,-42C47.903,-23.457 47.997,12 47.997,12L-0.003,12L-0.003,-96C-0.003,-96 0.091,-60.543 23.997,-42Z" style="fill:var(--MI_THEME-panel);"/>
+					</g>
+				</svg>
 				<button :class="$style.tabMenuButton" class="_button" @click.stop="mount"><i class="ti ti-rectangle"></i></button>
 				<button :class="$style.tabMenuButton" class="_button" @click.stop="back"><i class="ti ti-x"></i></button>
 			</div>
+			<div v-if="i > 0" :class="$style.tabBorder"></div>
 			<div :class="$style.tabContent" class="_pageContainer" @click.stop="">
 				<Suspense :timeout="0">
 					<component :is="tab.component" v-bind="Object.fromEntries(tab.props)"/>
@@ -223,9 +229,24 @@ onBeforeUnmount(() => {
 }
 
 .tabMenu {
+	position: relative;
 	margin-left: auto;
 	padding: 0 4px;
-	background: var(--MI_THEME-bg);
+	background: var(--MI_THEME-panel);
+}
+
+.tabMenuShape {
+	position: absolute;
+	bottom: -1px;
+	left: -100%;
+	height: calc(100% + 1px);
+	width: 129%;
+	pointer-events: none;
+}
+
+.tabBorder {
+	height: 6px;
+	background: var(--MI_THEME-panel);
 }
 
 .tabMenuButton {
