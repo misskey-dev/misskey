@@ -2877,8 +2877,8 @@ _selfXssPrevention:
   description2: "If you do not understand exactly what you are trying to paste, %cstop working right now and close this window."
   description3: "For more information, please refer to this. {link}"
 _followRequest:
-  recieved: "Received application"
-  sent: "Sent application"
+  recieved: "Received request"
+  sent: "Sent request"
 _remoteLookupErrors:
   _federationNotAllowed:
     title: "Unable to communicate with this server"
