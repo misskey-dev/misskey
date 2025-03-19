@@ -5,8 +5,8 @@
 
 import { defineAsyncComponent } from 'vue';
 import type { AsyncComponentLoader } from 'vue';
-import type { IRouter, RouteDef } from '@/nirax.js';
-import { Router } from '@/nirax.js';
+import type { RouteDef } from '@/router.js';
+import { Router } from '@/router.js';
 import { $i, iAmModerator } from '@/i.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
@@ -578,6 +578,6 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/not-found.vue')),
 }];
 
-export function createMainRouter(path: string): IRouter {
+export function createMainRouter(path: string): Router {
 	return new Router(routes, path, !!$i, page(() => import('@/pages/not-found.vue')));
 }

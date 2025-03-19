@@ -103,88 +103,7 @@ function parsePath(path: string): ParsedPath {
 	return res;
 }
 
-export interface IRouter extends EventEmitter<RouterEvent> {
-	current: Resolved;
-	currentRef: ShallowRef<Resolved>;
-	currentRoute: ShallowRef<RouteDef>;
-	navHook: ((path: string, flag?: RouterFlag) => boolean) | null;
-
-	/**
-	 * ルートの初期化（eventListenerの定義後に必ず呼び出すこと）
-	 */
-	init(): void;
-
-	resolve(path: string): Resolved | null;
-
-	getCurrentPath(): string;
-
-	push(path: string, flag?: RouterFlag): void;
-
-	replace(path: string): void;
-
-	/** @see EventEmitter */
-	eventNames(): Array<EventEmitter.EventNames<RouterEvent>>;
-
-	/** @see EventEmitter */
-	listeners<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T
-	): Array<EventEmitter.EventListener<RouterEvent, T>>;
-
-	/** @see EventEmitter */
-	listenerCount(
-		event: EventEmitter.EventNames<RouterEvent>
-	): number;
-
-	/** @see EventEmitter */
-	emit<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		...args: EventEmitter.EventArgs<RouterEvent, T>
-	): boolean;
-
-	/** @see EventEmitter */
-	on<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any
-	): this;
-
-	/** @see EventEmitter */
-	addListener<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any
-	): this;
-
-	/** @see EventEmitter */
-	once<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any
-	): this;
-
-	/** @see EventEmitter */
-	removeListener<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		fn?: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
-		once?: boolean | undefined
-	): this;
-
-	/** @see EventEmitter */
-	off<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T,
-		fn?: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
-		once?: boolean | undefined
-	): this;
-
-	/** @see EventEmitter */
-	removeAllListeners(
-		event?: EventEmitter.EventNames<RouterEvent>
-	): this;
-}
-
-export class Router extends EventEmitter<RouterEvent> implements IRouter {
+export class Router extends EventEmitter<RouterEvent> {
 	private routes: RouteDef[];
 	public current: Resolved;
 	public currentRef: ShallowRef<Resolved>;
@@ -367,7 +286,6 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			res.props.set('showLoginPopup', true);
 		}
 
-		const isSamePath = beforePath === path;
 		this.current = res;
 		this.currentRef.value = res;
 		this.currentRoute.value = res.route;

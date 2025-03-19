@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import type { IRouter, Resolved, RouteDef, RouterEvent, RouterFlag } from '@/nirax.js';
+import type { Router, Resolved, RouteDef, RouterEvent, RouterFlag } from '@/router.js';
 
 import type { App, ShallowRef } from 'vue';
 import { analytics } from '@/analytics.js';
@@ -13,7 +13,7 @@ import { analytics } from '@/analytics.js';
  * {@link Router}による画面遷移を可能とするために{@link mainRouter}をセットアップする。
  * また、{@link Router}のインスタンスを作成するためのファクトリも{@link provide}経由で公開する（`routerFactory`というキーで取得可能）
  */
-export function setupRouter(app: App, routerFactory: ((path: string) => IRouter)): void {
+export function setupRouter(app: App, routerFactory: ((path: string) => Router)): void {
 	app.provide('routerFactory', routerFactory);
 
 	const mainRouter = routerFactory(location.pathname + location.search + location.hash);
@@ -43,7 +43,7 @@ export function setupRouter(app: App, routerFactory: ((path: string) => IRouter)
 	setMainRouter(mainRouter);
 }
 
-function getMainRouter(): IRouter {
+function getMainRouter(): Router {
 	const router = mainRouterHolder;
 	if (!router) {
 		throw new Error('mainRouter is not found.');
@@ -56,7 +56,7 @@ function getMainRouter(): IRouter {
  * メインルータを設定する。一度設定すると、それ以降は変更できない。
  * {@link setupRouter}から呼び出されることのみを想定している。
  */
-export function setMainRouter(router: IRouter) {
+export function setMainRouter(router: Router) {
 	if (mainRouterHolder) {
 		throw new Error('mainRouter is already exists.');
 	}
@@ -69,10 +69,10 @@ export function setMainRouter(router: IRouter) {
  * {@link mainRouter}は起動シーケンスの一部にて初期化されるため、僅かにundefinedになる期間がある。
  * その僅かな期間のためだけに型をundefined込みにしたくないのでこのクラスを緩衝材として使用する。
  */
-class MainRouterProxy implements IRouter {
-	private supplier: () => IRouter;
+class MainRouterProxy implements Router {
+	private supplier: () => Router;
 
-	constructor(supplier: () => IRouter) {
+	constructor(supplier: () => Router) {
 		this.supplier = supplier;
 	}
 
@@ -194,6 +194,6 @@ class MainRouterProxy implements IRouter {
 	}
 }
 
-let mainRouterHolder: IRouter | null = null;
+let mainRouterHolder: Router | null = null;
 
-export const mainRouter: IRouter = new MainRouterProxy(getMainRouter);
+export const mainRouter: Router = new MainRouterProxy(getMainRouter);

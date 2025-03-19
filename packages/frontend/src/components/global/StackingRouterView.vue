@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { inject, onBeforeUnmount, provide, ref, shallowRef, computed, nextTick } from 'vue';
-import type { IRouter, Resolved, RouteDef } from '@/nirax.js';
+import type { Router, Resolved, RouteDef } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
 import MkLoadingPage from '@/pages/_loading_.vue';
@@ -50,7 +50,7 @@ import { DI } from '@/di.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 
 const props = defineProps<{
-	router?: IRouter;
+	router?: Router;
 }>();
 
 const router = props.router ?? inject(DI.router);
