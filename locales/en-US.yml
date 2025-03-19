@@ -1317,7 +1317,7 @@ unmarkAsSensitiveConfirm: "Do you want to remove the sensitive designation for t
 preferences: "Preferences"
 accessibility: "Accessibility"
 preferencesProfile: "Preferences profile"
-copyPreferenceId: "Copy the proference ID"
+copyPreferenceId: "Copy the preference ID"
 resetToDefaultValue: "Revert to default"
 overrideByAccount: "Override by the account"
 untitled: "Untitled"
