@@ -548,7 +548,7 @@ export async function mainBoot() {
 		main.on('myTokenRegenerated', () => {
 			signout();
 		});
-	} else if (location.pathname !== '/' && !instance.disableRegistration) {
+	} else if (window.location.pathname !== '/' && !instance.disableRegistration) {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/HanaVisitorLoginPopup.vue')), {}, {
 			closed: () => dispose(),
 		});

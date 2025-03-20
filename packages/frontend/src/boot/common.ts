@@ -132,15 +132,15 @@ export async function common(createVue: () => App<Element>) {
 		$i &&
 		!iAmModerator &&
 		!claimedAchievements.includes('tutorialCompleted') &&
-		!location.pathname.startsWith('/onboarding') &&
-		!location.pathname.startsWith('/signup-complete')
+		!window.location.pathname.startsWith('/onboarding') &&
+		!window.location.pathname.startsWith('/signup-complete')
 	) {
 		await refreshCurrentAccount();
 
 		if ($i && !$i.achievements.map((v) => v.name).includes('tutorialCompleted')) {
 			const param = new URLSearchParams();
-			param.set('redirected_from', location.pathname + location.search + location.hash);
-			location.replace('/onboarding?' + param.toString());
+			param.set('redirected_from', window.location.pathname + window.location.search + window.location.hash);
+			window.location.replace('/onboarding?' + param.toString());
 			return { isClientUpdated, app: null };
 		}
 	}
