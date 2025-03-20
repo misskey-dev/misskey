@@ -1334,6 +1334,7 @@ paste: "貼上"
 emojiPalette: "表情符號調色盤"
 postForm: "發文視窗"
 textCount: "字數"
+information: "關於"
 _emojiPalette:
   palettes: "調色盤"
   enableSyncBetweenDevicesForPalettes: "啟用裝置與裝置之間的調色盤同步化"
@@ -2673,10 +2674,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "安裝前請確認提供者是可信賴的。"
   _plugin:
     title: "要安裝此外掛嘛？"
-    metaTitle: "外掛資訊"
   _theme:
     title: "要安裝此佈景主題嗎？"
-    metaTitle: "佈景主題資訊"
   _meta:
     base: "基本配色方案"
   _vendorInfo:
