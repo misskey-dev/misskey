@@ -5,41 +5,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkPageWithAnimBg>
-	<MkStickyContainer>
-		<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="550">
-			<MkLoading v-if="uiPhase === 'fetching'"/>
-			<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
-				<template #additionalInfo>
-					<FormSection>
-						<div class="_gaps_s">
-							<MkKeyValue>
-								<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
-								<template #value><MkUrl :url="url" :showUrlPreview="false"></MkUrl></template>
-							</MkKeyValue>
-							<MkKeyValue>
-								<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
-								<template #value>
-									<!-- この画面が出ている時点でハッシュの検証には成功している -->
-									<i class="ti ti-check" style="color: var(--MI_THEME-accent)"></i>
-								</template>
-							</MkKeyValue>
-						</div>
-					</FormSection>
-				</template>
-			</MkExtensionInstaller>
-			<div v-else-if="uiPhase === 'error'" class="_gaps_m" :class="[$style.extInstallerRoot, $style.error]">
-				<div :class="$style.extInstallerIconWrapper">
-					<i class="ti ti-circle-x"></i>
-				</div>
-				<h2 :class="$style.extInstallerTitle">{{ errorKV?.title }}</h2>
-				<div :class="$style.extInstallerNormDesc">{{ errorKV?.description }}</div>
-				<div class="_buttonsCenter">
-					<MkButton @click="close_()">{{ i18n.ts.close }}</MkButton>
-				</div>
+	<MkSpacer :contentMax="550" :marginMax="50">
+		<MkLoading v-if="uiPhase === 'fetching'"/>
+		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
+			<template #additionalInfo>
+				<FormSection>
+					<div class="_gaps_s">
+						<MkKeyValue>
+							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
+							<template #value><MkUrl :url="url" :showUrlPreview="false"></MkUrl></template>
+						</MkKeyValue>
+						<MkKeyValue>
+							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
+							<template #value>
+								<!-- この画面が出ている時点でハッシュの検証には成功している -->
+								<i class="ti ti-check" style="color: var(--MI_THEME-accent)"></i>
+							</template>
+						</MkKeyValue>
+					</div>
+				</FormSection>
+			</template>
+		</MkExtensionInstaller>
+		<div v-else-if="uiPhase === 'error'" class="_gaps_m" :class="[$style.extInstallerRoot, $style.error]">
+			<div :class="$style.extInstallerIconWrapper">
+				<i class="ti ti-circle-x"></i>
 			</div>
-		</MkSpacer>
-	</MkStickyContainer>
+			<h2 :class="$style.extInstallerTitle">{{ errorKV?.title }}</h2>
+			<div :class="$style.extInstallerNormDesc">{{ errorKV?.description }}</div>
+			<div class="_buttonsCenter">
+				<MkButton @click="close_()">{{ i18n.ts.close }}</MkButton>
+			</div>
+		</div>
+	</MkSpacer>
 </MkPageWithAnimBg>
 </template>
 
@@ -234,10 +231,6 @@ const urlParams = new URLSearchParams(window.location.search);
 url.value = urlParams.get('url');
 hash.value = urlParams.get('hash');
 fetch();
-
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
 
 definePage(() => ({
 	title: i18n.ts._externalResourceInstaller.title,
