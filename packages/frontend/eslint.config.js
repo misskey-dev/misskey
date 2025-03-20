@@ -79,6 +79,10 @@ export default [
 					'name': 'history',
 					'message': 'Use `window.history`.',
 				},
+				{
+					'name': 'name',
+					'message': 'Use `window.name`. もしくは name という変数名を定義し忘れている',
+				},
 			],
 			'no-shadow': ['warn'],
 			'vue/attributes-order': ['error', {

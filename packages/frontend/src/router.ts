@@ -17,10 +17,10 @@ export function createRouter(fullPath: string): Router {
 	return new Nirax(ROUTE_DEF, fullPath, !!$i, page(() => import('@/pages/not-found.vue')));
 }
 
-export const mainRouter = createRouter(location.pathname + location.search + location.hash);
+export const mainRouter = createRouter(window.location.pathname + window.location.search + window.location.hash);
 
 window.addEventListener('popstate', (event) => {
-	mainRouter.replace(location.pathname + location.search + location.hash);
+	mainRouter.replace(window.location.pathname + window.location.search + window.location.hash);
 });
 
 mainRouter.addListener('push', ctx => {

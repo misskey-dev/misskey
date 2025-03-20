@@ -61,7 +61,7 @@ async function onAccept(token: string) {
 			const cbUrl = new URL(props.callback);
 			if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:', 'vbscript:'].includes(cbUrl.protocol)) throw new Error('invalid url');
 			cbUrl.searchParams.set('session', props.session);
-			location.href = cbUrl.toString();
+			window.location.href = cbUrl.toString();
 		} else {
 			authRoot.value?.showUI('success');
 		}

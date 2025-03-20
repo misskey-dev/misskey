@@ -31,7 +31,7 @@ import MkButton from '@/components/MkButton.vue';
 const state = ref<'fetching' | 'done'>('fetching');
 
 function fetch() {
-	const params = new URL(location.href).searchParams;
+	const params = new URL(window.location.href).searchParams;
 
 	// acctのほうはdeprecated
 	let uri = params.get('uri') ?? params.get('acct');
@@ -76,12 +76,12 @@ function close(): void {
 
 	// 閉じなければ100ms後タイムラインに
 	window.setTimeout(() => {
-		location.href = '/';
+		window.location.href = '/';
 	}, 100);
 }
 
 function goToMisskey(): void {
-	location.href = '/';
+	window.location.href = '/';
 }
 
 fetch();

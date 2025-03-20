@@ -170,7 +170,7 @@ if (window.innerWidth > 1024) {
 	if (tempUI) {
 		miLocalStorage.setItem('ui', tempUI);
 		miLocalStorage.removeItem('ui_temp');
-		location.reload();
+		window.location.reload();
 	}
 }
 

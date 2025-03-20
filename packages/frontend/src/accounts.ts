@@ -191,7 +191,7 @@ export async function login(token: AccountWithToken['token'], redirect?: string)
 		// 他のタブは再読み込みするだけ
 		reloadChannel.postMessage(null);
 		// このページはredirectで指定された先に移動
-		location.href = redirect;
+		window.location.href = redirect;
 		return;
 	}
 
