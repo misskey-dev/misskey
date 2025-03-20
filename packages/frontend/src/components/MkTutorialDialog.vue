@@ -32,8 +32,6 @@ import { host } from '@@/js/config.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import XTutorial from '@/components/MkTutorial.vue';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import { claimAchievement } from '@/utility/achievements.js';
 import * as os from '@/os.js';
 
 defineProps<{
