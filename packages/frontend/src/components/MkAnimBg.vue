@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<canvas ref="canvasEl" style="width: 100%; height: 100%; pointer-events: none;"></canvas>
+<canvas ref="canvasEl" style="display: block; width: 100%; height: 100%; pointer-events: none;"></canvas>
 </template>
 
 <script lang="ts" setup>
