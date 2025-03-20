@@ -26,7 +26,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { mainRouter } from '@/router/main.js';
+import { mainRouter } from '@/router.js';
 
 const props = defineProps<{
 	token?: string;

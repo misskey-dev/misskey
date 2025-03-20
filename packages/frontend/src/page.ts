@@ -5,6 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import { inject, isRef, onActivated, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
+import { DI } from './di.js';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 export type PageMetadata = {
@@ -31,9 +32,6 @@ const METADATA_KEY = Symbol('MetadataKey');
 const setMetadata = (v: Ref<PageMetadata | null>): void => {
 	provide<Ref<PageMetadata | null>>(METADATA_KEY, v);
 };
-const getMetadata = (): Ref<PageMetadata | null> | undefined => {
-	return inject<Ref<PageMetadata | null>>(METADATA_KEY);
-};
 
 export const definePage = (maybeRefOrGetterMetadata: MaybeRefOrGetter<PageMetadata>): void => {
 	const metadataRef = ref(toValue(maybeRefOrGetterMetadata));
@@ -55,6 +53,8 @@ export const definePage = (maybeRefOrGetterMetadata: MaybeRefOrGetter<PageMetada
 	onActivated(() => {
 		receiver?.(metadataGetter);
 	});
+
+	provide(DI.pageMetadata, metadataRef);
 };
 
 export const provideMetadataReceiver = (receiver: PageMetadataReceiver): void => {
@@ -63,9 +63,4 @@ export const provideMetadataReceiver = (receiver: PageMetadataReceiver): void =>
 
 export const provideReactiveMetadata = (metadataRef: Ref<PageMetadata | null>): void => {
 	setMetadata(metadataRef);
-};
-
-export const injectReactiveMetadata = (): Ref<PageMetadata | null> => {
-	const metadataRef = getMetadata();
-	return isRef(metadataRef) ? metadataRef : ref(null);
 };

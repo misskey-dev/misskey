@@ -5371,6 +5371,10 @@ export interface Locale extends ILocale {
      */
     "textCount": string;
     /**
+     * 情報
+     */
+    "information": string;
+    /**
      * 常に絶対時刻で表示する
      */
     "alwaysUseAbsoluteTime": string;
@@ -10506,20 +10510,12 @@ export interface Locale extends ILocale {
              * このプラグインをインストールしますか？
              */
             "title": string;
-            /**
-             * プラグイン情報
-             */
-            "metaTitle": string;
         };
         "_theme": {
             /**
              * このテーマをインストールしますか？
              */
             "title": string;
-            /**
-             * テーマ情報
-             */
-            "metaTitle": string;
         };
         "_meta": {
             /**

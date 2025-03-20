@@ -75,7 +75,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { infoImageUrl } from '@/instance.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 

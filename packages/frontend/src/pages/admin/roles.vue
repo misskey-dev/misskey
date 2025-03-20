@@ -319,7 +319,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 const baseRoleQ = ref('');

@@ -562,6 +562,7 @@ inquiry: "Kontakt"
 tryAgain: "Försök igen senare"
 signinWithPasskey: "Logga in med nyckel"
 unknownWebAuthnKey: "Okänd nyckel"
+information: "Om"
 _delivery:
   stop: "Suspenderad"
   _type:

@@ -14,11 +14,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef, ref } from 'vue';
+import { onMounted, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
-import type { ChartDataset } from 'chart.js';
 import * as Misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
+import type { ChartDataset } from 'chart.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
 import { useChartTooltip } from '@/use/use-chart-tooltip.js';
@@ -33,8 +33,8 @@ const props = defineProps<{
 	user: Misskey.entities.User;
 }>();
 
-const chartEl = shallowRef<HTMLCanvasElement>(null);
-const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
+const chartEl = useTemplateRef('chartEl');
+const legendEl = useTemplateRef('legendEl');
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 30;

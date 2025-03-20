@@ -25,16 +25,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSpacer>
 	</div>
 	<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
-		<RouterView nested/>
+		<NestedRouterView/>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { onActivated, onMounted, onUnmounted, provide, watch, ref, computed } from 'vue';
+import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
+import type { PageMetadata } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
-import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { instance } from '@/instance.js';
 import { lookup } from '@/utility/lookup.js';
@@ -42,8 +43,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { lookupUser, lookupUserByEmail, lookupFile } from '@/utility/admin-lookup.js';
 import { definePage, provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
-import type { PageMetadata } from '@/page.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 

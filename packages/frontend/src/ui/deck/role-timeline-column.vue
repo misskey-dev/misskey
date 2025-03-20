@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, shallowRef, watch } from 'vue';
+import { onMounted, ref, useTemplateRef, watch } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -32,7 +32,7 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const timeline = useTemplateRef('timeline');
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 const roleName = ref<string | null>(null);
 

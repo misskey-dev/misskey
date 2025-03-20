@@ -64,12 +64,12 @@ initialize({
 initLocalStorage();
 queueMicrotask(() => {
 	Promise.all([
-		import('../src/components'),
-		import('../src/directives'),
-		import('../src/widgets'),
-		import('../src/theme'),
-		import('../src/preferences'),
-		import('../src/os'),
+		import('../src/components/index.js'),
+		import('../src/directives/index.js'),
+		import('../src/widgets/index.js'),
+		import('../src/theme.js'),
+		import('../src/preferences.js'),
+		import('../src/os.js'),
 	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { prefer }, os]) => {
 		setup((app) => {
 			moduleInitialized = true;

@@ -95,6 +95,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<option value="css">CSS</option>
 							<option value="js">JS (Unstable)</option>
 						</MkSelect>
+						<MkSwitch v-model="stackingRouterView">
+							<template #label>Enable stacking router view</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -147,6 +150,7 @@ const reportError = prefer.model('reportError');
 const enableCondensedLine = prefer.model('enableCondensedLine');
 const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
+const stackingRouterView = prefer.model('experimental.stackingRouterView');
 
 watch(skipNoteRender, async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });

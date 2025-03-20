@@ -35,6 +35,6 @@ export async function reloadAsk(opts: {
 	if (opts.unison) {
 		unisonReload();
 	} else {
-		location.reload();
+		window.location.reload();
 	}
 }

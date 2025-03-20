@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated } from 'vue';
+import { onUnmounted, onDeactivated, onMounted, computed, useTemplateRef, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { notificationTypes } from '@@/js/const.js';
 import MkPagination from '@/components/MkPagination.vue';
@@ -41,7 +41,7 @@ const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
 }>();
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = useTemplateRef('pagingComponent');
 
 const pagination = computed(() => prefer.r.useGroupedNotifications.value ? {
 	endpoint: 'i/notifications-grouped' as const,

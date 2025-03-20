@@ -11,13 +11,13 @@ import { hemisphere } from '@@/js/intl-const.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { Plugin } from '@/plugin.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { Storage } from '@/pizzax.js';
+import { Pizzax } from '@/lib/pizzax.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 
 /**
  * 「状態」を管理するストア(not「設定」)
  */
-export const store = markRaw(new Storage('base', {
+export const store = markRaw(new Pizzax('base', {
 	accountSetupWizard: {
 		where: 'account',
 		default: 0,

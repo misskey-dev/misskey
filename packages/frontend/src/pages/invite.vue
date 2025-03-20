@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, shallowRef } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
@@ -47,7 +47,7 @@ import { definePage } from '@/page.js';
 import { serverErrorImageUrl, instance } from '@/instance.js';
 import { $i } from '@/i.js';
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = useTemplateRef('pagingComponent');
 const currentInviteLimit = ref<null | number>(null);
 const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
 const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;

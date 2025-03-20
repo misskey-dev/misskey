@@ -1262,6 +1262,7 @@ modified: "Diubah"
 thereAreNChanges: "Ada {n} perubahan"
 prohibitedWordsForNameOfUser: "Kata yang dilarang untuk nama pengguna"
 postForm: "Buat catatan"
+information: "Informasi"
 _settings:
   webhook: "Webhook"
 _abuseUserReport:
@@ -2492,10 +2493,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Pastikan sumber dari sumber daya ini terpercaya sebelum melakukan pemasangan."
   _plugin:
     title: "Apakah kamu ingin memasang plugin ini?"
-    metaTitle: "Informasi plugin"
   _theme:
     title: "Apakah kamu ingin memasang tema ini?"
-    metaTitle: "Informasi tema"
   _meta:
     base: "Skema warna dasar"
   _vendorInfo:

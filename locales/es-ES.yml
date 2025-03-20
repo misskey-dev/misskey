@@ -1300,6 +1300,7 @@ target: "Para"
 federationSpecified: "Este servidor opera en una federación de listas blancas. No puede interactuar con otros servidores que no sean los especificados por el administrador."
 federationDisabled: "La federación está desactivada en este servidor. No puede interactuar con usuarios de otros servidores"
 postForm: "Formulario"
+information: "Información"
 _settings:
   webhook: "Webhook"
 _accountSettings:
@@ -2521,10 +2522,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Asegúrate de que el distribuidor de este recurso es de confianza antes de proceder a la instalación."
   _plugin:
     title: "¿Quieres instalar este plugin?"
-    metaTitle: "Información del plugin"
   _theme:
     title: "¿Quieres instalar este tema?"
-    metaTitle: "Información del tema"
   _meta:
     base: "Esquema de color base"
   _vendorInfo:

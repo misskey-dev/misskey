@@ -12,9 +12,9 @@ export const reloadChannel = new BroadcastChannel<string | null>('reload');
 export function unisonReload(path?: string) {
 	if (path !== undefined) {
 		reloadChannel.postMessage(path);
-		location.href = path;
+		window.location.href = path;
 	} else {
 		reloadChannel.postMessage(null);
-		location.reload();
+		window.location.reload();
 	}
 }

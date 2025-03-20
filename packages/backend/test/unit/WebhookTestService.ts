@@ -14,6 +14,7 @@ import { MiSystemWebhook, MiUser, MiWebhook, UserProfilesRepository, UsersReposi
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { QueueService } from '@/core/QueueService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 
 describe('WebhookTestService', () => {
 	let app: TestingModule;
@@ -56,6 +57,11 @@ describe('WebhookTestService', () => {
 			providers: [
 				WebhookTestService,
 				IdService,
+				{
+					provide: CustomEmojiService, useFactory: () => ({
+						populateEmojis: jest.fn(),
+					}),
+				},
 				{
 					provide: QueueService, useFactory: () => ({
 						systemWebhookDeliver: jest.fn(),

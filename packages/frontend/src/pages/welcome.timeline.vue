@@ -21,15 +21,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { onUpdated, ref, shallowRef } from 'vue';
+import { onUpdated, ref, useTemplateRef } from 'vue';
+import { getScrollContainer } from '@@/js/scroll.js';
 import XNote from '@/pages/welcome.timeline.note.vue';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
-import { getScrollContainer } from '@@/js/scroll.js';
 
 const notes = ref<Misskey.entities.Note[]>([]);
 const isScrolling = ref(false);
 const scrollState = ref<null | 'intro' | 'loop'>(null);
-const notesMainContainerEl = shallowRef<HTMLElement>();
+const notesMainContainerEl = useTemplateRef('notesMainContainerEl');
 
 misskeyApiGet('notes/featured').then(_notes => {
 	notes.value = _notes;

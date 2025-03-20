@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
+import { useTemplateRef, watch, computed, ref, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
@@ -151,8 +151,8 @@ function hasFocus() {
 	return playerEl.value === document.activeElement || playerEl.value.contains(document.activeElement);
 }
 
-const playerEl = shallowRef<HTMLDivElement>();
-const audioEl = shallowRef<HTMLAudioElement>();
+const playerEl = useTemplateRef('playerEl');
+const audioEl = useTemplateRef('audioEl');
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const hide = ref((prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.audio.isSensitive && prefer.s.nsfw !== 'ignore'));

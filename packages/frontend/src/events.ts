@@ -10,5 +10,4 @@ export const globalEvents = new EventEmitter<{
 	themeChanging: () => void;
 	themeChanged: () => void;
 	clientNotification: (notification: Misskey.entities.Notification) => void;
-	requestClearPageCache: () => void;
 }>();

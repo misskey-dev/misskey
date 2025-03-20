@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, shallowRef, ref } from 'vue';
+import { onBeforeUnmount, onMounted, provide, useTemplateRef, ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import contains from '@/utility/contains.js';
 import * as os from '@/os.js';
@@ -114,7 +114,7 @@ const emit = defineEmits<{
 
 provide('inWindow', true);
 
-const rootEl = shallowRef<HTMLElement | null>();
+const rootEl = useTemplateRef('rootEl');
 const showing = ref(true);
 let beforeClickedAt = 0;
 const maximized = ref(false);

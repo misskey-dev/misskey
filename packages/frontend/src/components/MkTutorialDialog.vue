@@ -27,10 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef } from 'vue';
+import { ref, useTemplateRef, watch } from 'vue';
+import { host } from '@@/js/config.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import XTutorial from '@/components/MkTutorial.vue';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { claimAchievement } from '@/utility/achievements.js';
 import * as os from '@/os.js';
 
 defineProps<{
@@ -41,9 +44,9 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 
-const tutorialEl = shallowRef<InstanceType<typeof XTutorial>>();
+const tutorialEl = useTemplateRef('tutorialEl');
 
 async function close(skip?: boolean) {
 	if (skip) {

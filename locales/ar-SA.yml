@@ -1013,6 +1013,7 @@ flip: "اقلب"
 lastNDays: "آخر {n} أيام"
 surrender: "ألغِ"
 postForm: "أنشئ ملاحظة"
+information: "عن"
 _delivery:
   stop: "مُعلّق"
 _initialAccountSetting:

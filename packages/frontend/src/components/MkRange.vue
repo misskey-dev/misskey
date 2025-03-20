@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { isTouchUsing } from '@/utility/touch.js';
 import * as os from '@/os.js';
 
@@ -58,8 +58,8 @@ const emit = defineEmits<{
 	(ev: 'dragEnded', value: number): void;
 }>();
 
-const containerEl = shallowRef<HTMLElement>();
-const thumbEl = shallowRef<HTMLElement>();
+const containerEl = useTemplateRef('containerEl');
+const thumbEl = useTemplateRef('thumbEl');
 
 const rawValue = ref((props.modelValue - props.min) / (props.max - props.min));
 const steppedRawValue = computed(() => {
