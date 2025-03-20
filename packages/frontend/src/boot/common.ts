@@ -99,7 +99,7 @@ export async function common(createVue: () => App<Element>) {
 
 	// URLに#pswpを含む場合は取り除く
 	if (window.location.hash === '#pswp') {
-		history.replaceState(null, '', window.location.href.replace('#pswp', ''));
+		window.history.replaceState(null, '', window.location.href.replace('#pswp', ''));
 	}
 
 	// 一斉リロード
@@ -143,7 +143,7 @@ export async function common(createVue: () => App<Element>) {
 			}
 		}
 
-		history.replaceState({ misskey: 'loginId' }, '', target);
+		window.history.replaceState({ misskey: 'loginId' }, '', target);
 	}
 	//#endregion
 

@@ -632,7 +632,7 @@ function loadMonoTextures() {
 			src = URL.createObjectURL(monoTextures[mono.img]);
 			monoTextureUrls[mono.img] = src;
 		} else {
-			const res = await fetch(mono.img);
+			const res = await window.fetch(mono.img);
 			const blob = await res.blob();
 			monoTextures[mono.img] = blob;
 			src = URL.createObjectURL(blob);
