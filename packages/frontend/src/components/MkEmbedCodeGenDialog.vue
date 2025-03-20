@@ -180,7 +180,7 @@ function applyToPreview() {
 	nextTick(() => {
 		if (currentPreviewUrl === embedPreviewUrl.value) {
 			// URLが変わらなくてもリロード
-			iframeEl.value?.contentWindow?.location.reload();
+			iframeEl.value?.contentWindow?.window.location.reload();
 		}
 	});
 }

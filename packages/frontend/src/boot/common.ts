@@ -98,14 +98,14 @@ export async function common(createVue: () => App<Element>) {
 	document.addEventListener('touchend', () => {}, { passive: true });
 
 	// URLに#pswpを含む場合は取り除く
-	if (location.hash === '#pswp') {
-		history.replaceState(null, '', location.href.replace('#pswp', ''));
+	if (window.location.hash === '#pswp') {
+		history.replaceState(null, '', window.location.href.replace('#pswp', ''));
 	}
 
 	// 一斉リロード
 	reloadChannel.addEventListener('message', path => {
-		if (path !== null) location.href = path;
-		else location.reload();
+		if (path !== null) window.location.href = path;
+		else window.location.reload();
 	});
 
 	// If mobile, insert the viewport meta tag
@@ -130,11 +130,11 @@ export async function common(createVue: () => App<Element>) {
 	});
 
 	//#region loginId
-	const params = new URLSearchParams(location.search);
+	const params = new URLSearchParams(window.location.search);
 	const loginId = params.get('loginId');
 
 	if (loginId) {
-		const target = getUrlWithoutLoginId(location.href);
+		const target = getUrlWithoutLoginId(window.location.href);
 
 		if (!$i || $i.id !== loginId) {
 			const account = await getAccountFromId(loginId);
