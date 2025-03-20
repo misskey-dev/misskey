@@ -622,6 +622,11 @@ export const searchIndexes: SearchIndexItem[] = [
 				label: i18n.ts.blockedUsers,
 				keywords: ['block', 'user'],
 			},
+			{
+				id: 'b92aHg3qp',
+				label: i18n.ts._noteMuting.noteMuting,
+				keywords: ['mute', 'note'],
+			},
 		],
 		label: i18n.ts.muteAndBlock,
 		keywords: ['mute', 'block', i18n.ts._settings.muteAndBlockBanner],

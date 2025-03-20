@@ -3023,6 +3023,7 @@ _search:
   serverHostPlaceholder: "例: misskey.example.com"
 
 _noteMuting:
+  noteMuting: "ミュートしたノート"
   muteNote: "ノートをミュート"
   unmuteNote: "ノートのミュートを解除"
   notMutedNote: "このノートはミュートされていません"

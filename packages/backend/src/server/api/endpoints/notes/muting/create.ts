@@ -7,7 +7,6 @@ import { Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { NoteMutingService } from '@/core/note/NoteMutingService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
