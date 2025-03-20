@@ -57,6 +57,29 @@ export default [
 			// fetch ... window.fetchと衝突 or 紛らわしい
 			// location ... window.locationと衝突 or 紛らわしい
 			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location'],
+			'no-restricted-globals': [
+				'error',
+				{
+					'name': 'open',
+					'message': 'Use `window.open`.',
+				},
+				{
+					'name': 'close',
+					'message': 'Use `window.close`.',
+				},
+				{
+					'name': 'fetch',
+					'message': 'Use `window.fetch`.',
+				},
+				{
+					'name': 'location',
+					'message': 'Use `window.location`.',
+				},
+				{
+					'name': 'history',
+					'message': 'Use `window.history`.',
+				},
+			],
 			'no-shadow': ['warn'],
 			'vue/attributes-order': ['error', {
 				alphabetical: false,
