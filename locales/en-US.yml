@@ -1334,6 +1334,7 @@ paste: "Paste"
 emojiPalette: "Emoji palette"
 postForm: "Posting form"
 textCount: "Character count"
+information: "About"
 _emojiPalette:
   palettes: "Palette"
   enableSyncBetweenDevicesForPalettes: "Enable palette sync between devices"
@@ -2673,10 +2674,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Make sure the distributor of this resource is trustworthy before installation."
   _plugin:
     title: "Do you want to install this plugin?"
-    metaTitle: "Plugin information"
   _theme:
     title: "Do you want to install this theme?"
-    metaTitle: "Theme information"
   _meta:
     base: "Base color scheme"
   _vendorInfo:
