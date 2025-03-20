@@ -142,7 +142,7 @@ const {
 } = prefer.r;
 
 const contentEl = computed(() => props.pagination.pageEl ?? rootEl.value);
-const scrollableElement = computed(() => contentEl.value ? getScrollContainer(contentEl.value) : document.body);
+const scrollableElement = computed(() => contentEl.value ? getScrollContainer(contentEl.value) : window.document.body);
 
 const visibility = useDocumentVisibility();
 

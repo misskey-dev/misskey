@@ -95,7 +95,7 @@ export async function common(createVue: () => App<Element>) {
 	//#endregion
 
 	// タッチデバイスでCSSの:hoverを機能させる
-	document.addEventListener('touchend', () => {}, { passive: true });
+	window.document.addEventListener('touchend', () => {}, { passive: true });
 
 	// URLに#pswpを含む場合は取り除く
 	if (window.location.hash === '#pswp') {
@@ -110,13 +110,13 @@ export async function common(createVue: () => App<Element>) {
 
 	// If mobile, insert the viewport meta tag
 	if (['smartphone', 'tablet'].includes(deviceKind)) {
-		const viewport = document.getElementsByName('viewport').item(0);
+		const viewport = window.document.getElementsByName('viewport').item(0);
 		viewport.setAttribute('content',
 			`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
 	}
 
 	//#region Set lang attr
-	const html = document.documentElement;
+	const html = window.document.documentElement;
 	html.setAttribute('lang', lang);
 	//#endregion
 
@@ -155,7 +155,7 @@ export async function common(createVue: () => App<Element>) {
 		);
 	}, { immediate: miLocalStorage.getItem('theme') == null });
 
-	document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
+	window.document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
 
 	const darkTheme = prefer.model('darkTheme');
 	const lightTheme = prefer.model('lightTheme');
@@ -201,20 +201,20 @@ export async function common(createVue: () => App<Element>) {
 	}, { immediate: true });
 
 	watch(prefer.r.useBlurEffectForModal, v => {
-		document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');
+		window.document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');
 	}, { immediate: true });
 
 	watch(prefer.r.useBlurEffect, v => {
 		if (v) {
-			document.documentElement.style.removeProperty('--MI-blur');
+			window.document.documentElement.style.removeProperty('--MI-blur');
 		} else {
-			document.documentElement.style.setProperty('--MI-blur', 'none');
+			window.document.documentElement.style.setProperty('--MI-blur', 'none');
 		}
 	}, { immediate: true });
 
 	// Keep screen on
-	const onVisibilityChange = () => document.addEventListener('visibilitychange', () => {
-		if (document.visibilityState === 'visible') {
+	const onVisibilityChange = () => window.document.addEventListener('visibilitychange', () => {
+		if (window.document.visibilityState === 'visible') {
 			navigator.wakeLock.request('screen');
 		}
 	});
@@ -224,7 +224,7 @@ export async function common(createVue: () => App<Element>) {
 			.catch(() => {
 				// On WebKit-based browsers, user activation is required to send wake lock request
 				// https://webkit.org/blog/13862/the-user-activation-api/
-				document.addEventListener(
+				window.document.addEventListener(
 					'click',
 					() => navigator.wakeLock.request('screen').then(onVisibilityChange),
 					{ once: true },
@@ -233,7 +233,7 @@ export async function common(createVue: () => App<Element>) {
 	}
 
 	if (prefer.s.makeEveryTextElementsSelectable) {
-		document.documentElement.classList.add('forceSelectableAll');
+		window.document.documentElement.classList.add('forceSelectableAll');
 	}
 
 	//#region Fetch user
@@ -278,16 +278,16 @@ export async function common(createVue: () => App<Element>) {
 	const rootEl = ((): HTMLElement => {
 		const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
 
-		const currentRoot = document.getElementById(MISSKEY_MOUNT_DIV_ID);
+		const currentRoot = window.document.getElementById(MISSKEY_MOUNT_DIV_ID);
 
 		if (currentRoot) {
 			console.warn('multiple import detected');
 			return currentRoot;
 		}
 
-		const root = document.createElement('div');
+		const root = window.document.createElement('div');
 		root.id = MISSKEY_MOUNT_DIV_ID;
-		document.body.appendChild(root);
+		window.document.body.appendChild(root);
 		return root;
 	})();
 
@@ -330,7 +330,7 @@ export async function common(createVue: () => App<Element>) {
 }
 
 function removeSplash() {
-	const splash = document.getElementById('splash');
+	const splash = window.document.getElementById('splash');
 	if (splash) {
 		splash.style.opacity = '0';
 		splash.style.pointerEvents = 'none';

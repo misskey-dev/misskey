@@ -125,8 +125,8 @@ function syncBetweenTabs() {
 
 window.setInterval(syncBetweenTabs, 5000);
 
-document.addEventListener('visibilitychange', () => {
-	if (document.visibilityState === 'visible') {
+window.document.addEventListener('visibilitychange', () => {
+	if (window.document.visibilityState === 'visible') {
 		syncBetweenTabs();
 	}
 });
@@ -136,7 +136,7 @@ let latestBackupAt = 0;
 window.setInterval(() => {
 	if ($i == null) return;
 	if (!store.s.enablePreferencesAutoCloudBackup) return;
-	if (document.visibilityState !== 'visible') return; // 同期されていない古い値がバックアップされるのを防ぐ
+	if (window.document.visibilityState !== 'visible') return; // 同期されていない古い値がバックアップされるのを防ぐ
 	if (prefer.profile.modifiedAt <= latestBackupAt) return;
 
 	cloudBackup().then(() => {

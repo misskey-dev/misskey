@@ -48,7 +48,7 @@ onMounted(() => {
 });
 
 // view-transition-newなどの<pt-name-selector>にはcss varが使えず、v-bindできないため直接スタイルを生成
-const viewTransitionStylesTag = document.createElement('style');
+const viewTransitionStylesTag = window.document.createElement('style');
 viewTransitionStylesTag.textContent = `
 @keyframes ${viewId}-old {
 	to { transform: scale(0.95); opacity: 0; }
@@ -89,8 +89,8 @@ router.useListener('change', ({ resolved }) => {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (prefer.s.animation && document.startViewTransition) {
-		document.startViewTransition(() => new Promise((res) => {
+	if (prefer.s.animation && window.document.startViewTransition) {
+		window.document.startViewTransition(() => new Promise((res) => {
 			_();
 			nextTick(() => {
 				res();
