@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="550">
 		<MkLoading v-if="uiPhase === 'fetching'"/>
-		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close">
+		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
 			<template #additionalInfo>
 				<FormSection>
 					<div class="_gaps_s">
@@ -34,8 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<h2 :class="$style.extInstallerTitle">{{ errorKV?.title }}</h2>
 			<div :class="$style.extInstallerNormDesc">{{ errorKV?.description }}</div>
 			<div class="_buttonsCenter">
-				<MkButton @click="close()">{{ i18n.ts.close }}</MkButton>
-				<MkButton @click="goToMisskey()">{{ i18n.ts.goToMisskey }}</MkButton>
+				<MkButton @click="close_()">{{ i18n.ts.close }}</MkButton>
 			</div>
 		</div>
 	</MkSpacer>
@@ -74,12 +73,12 @@ const hash = ref<string | null>(null);
 
 const data = ref<Extension | null>(null);
 
-function close(): void {
-	window.close();
-}
-
-function goToMisskey(): void {
-	location.href = '/';
+function close_(): void {
+	if (window.history.length === 1) {
+		window.close();
+	} else {
+		window.history.back();
+	}
 }
 
 async function fetch() {
@@ -207,7 +206,7 @@ async function install() {
 				await installPlugin(data.value.raw, data.value.meta as AiScriptPluginMeta);
 				os.success();
 				window.setTimeout(() => {
-					close();
+					close_();
 				}, 3000);
 			} catch (err) {
 				errorKV.value = {
@@ -223,7 +222,7 @@ async function install() {
 			await installTheme(data.value.raw);
 			os.success();
 			window.setTimeout(() => {
-				close();
+				close_();
 			}, 3000);
 	}
 }
