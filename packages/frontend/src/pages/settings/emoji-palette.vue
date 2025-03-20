@@ -144,7 +144,7 @@ import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { emojiPicker } from '@/utility/emoji-picker.js';
-import { reloadAsk } from '@/scripts/reload-ask.js';
+import { reloadAsk } from '@/utility/reload-ask.js';
 const emojiPaletteForReaction = prefer.model('emojiPaletteForReaction');
 const emojiPaletteForMain = prefer.model('emojiPaletteForMain');
 const emojiPickerScale = prefer.model('emojiPickerScale');
