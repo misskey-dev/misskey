@@ -5,10 +5,10 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
+import { markRaw, ref, shallowRef, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
-import type { Component, Ref } from 'vue';
+import type { Component, Ref, ShallowRef } from 'vue';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -141,6 +141,7 @@ let popupIdCount = 0;
 export const popups = ref<{
 	id: number;
 	component: Component;
+	componentRef: ShallowRef<Component | null>;
 	props: Record<string, any>;
 	events: Record<string, any>;
 }[]>([]);
@@ -178,12 +179,20 @@ type EmitsExtractor<T> = {
 	[K in keyof T as K extends `onVnode${string}` ? never : K extends `on${infer E}` ? Uncapitalize<E> : K extends string ? never : K]: T[K];
 };
 
-export function popup<T extends Component>(
+export function popup<
+	T extends Component,
+	TI extends T extends new (...args: unknown[]) => infer I ? I : T,
+>(
 	component: T,
 	props: ComponentProps<T>,
 	events: ComponentEmit<T> = {} as ComponentEmit<T>,
-): { dispose: () => void } {
+): {
+	dispose: () => void;
+	componentRef: ShallowRef<TI | null>;
+} {
 	markRaw(component);
+
+	const componentRef = shallowRef<TI | null>(null);
 
 	const id = ++popupIdCount;
 	const dispose = () => {
@@ -194,6 +203,7 @@ export function popup<T extends Component>(
 	};
 	const state = {
 		component,
+		componentRef,
 		props,
 		events,
 		id,
@@ -203,6 +213,7 @@ export function popup<T extends Component>(
 
 	return {
 		dispose,
+		componentRef,
 	};
 }
 
@@ -627,14 +638,17 @@ export async function selectRole(params: {
 	{ canceled: false; result: Misskey.entities.Role[] }
 	> {
 	return new Promise((resolve) => {
-		popup(defineAsyncComponent(() => import('@/components/MkRoleSelectDialog.vue')), params, {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkRoleSelectDialog.vue')), params, {
 			done: roles => {
 				resolve({ canceled: false, result: roles });
 			},
 			close: () => {
 				resolve({ canceled: true, result: undefined });
 			},
-		}, 'dispose');
+			closed: () => {
+				dispose();
+			},
+		});
 	});
 }
 

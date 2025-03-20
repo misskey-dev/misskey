@@ -52,16 +52,12 @@ function chosen(emoji: string) {
 
 const windowEl = useTemplateRef('window');
 
-function onCloseRequested() {
+function close() {
 	windowEl.value?.close();
 }
 
-onMounted(() => {
-	globalEvents.on('requestCloseEmojiPickerWindow', onCloseRequested);
-});
-
-onBeforeUnmount(() => {
-	globalEvents.off('requestCloseEmojiPickerWindow', onCloseRequested);
+defineExpose({
+	close,
 });
 </script>
 

@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, ref, watch } from 'vue';
-import type { Ref } from 'vue';
+import { defineAsyncComponent, ref, shallowRef, watch } from 'vue';
+import type { Ref, ShallowRef } from 'vue';
+import type MkEmojiPickerWindow_TypeOnly from '@/components/MkEmojiPickerWindow.vue';
 import { popup } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
@@ -18,6 +19,7 @@ class EmojiPicker {
 	private src: Ref<HTMLElement | null> = ref(null);
 
 	private isWindow: boolean = false;
+	private windowComponentEl: ShallowRef<InstanceType<typeof MkEmojiPickerWindow_TypeOnly> | null> = shallowRef(null);
 	private windowShowing: boolean = false;
 
 	private dialogShowing = ref(false);
@@ -73,7 +75,7 @@ class EmojiPicker {
 		if (this.isWindow) {
 			if (this.windowShowing) return;
 			this.windowShowing = true;
-			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerWindow.vue')), {
+			const { dispose, componentRef } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerWindow.vue')), {
 				src: opts.src,
 				pinnedEmojis: this.emojisRef,
 				asReactionPicker: false,
@@ -87,11 +89,18 @@ class EmojiPicker {
 					dispose();
 				},
 			});
+			this.windowComponentEl.value = componentRef.value;
 		} else {
 			this.src.value = opts.src;
 			this.dialogShowing.value = true;
 			this.onChosen = opts.onChosen;
 			this.onClosed = opts.onClosed;
+		}
+	}
+
+	public closeWindow() {
+		if (this.isWindow && this.windowComponentEl.value) {
+			this.windowComponentEl.value.close();
 		}
 	}
 }

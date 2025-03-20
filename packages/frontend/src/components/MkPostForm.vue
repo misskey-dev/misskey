@@ -1104,9 +1104,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	// MkPostFormDialogでも発火しているが、Dialogではない場合は呼ばれないためこちらでも呼ぶ必要がある
-	// なのでDialogの場合は2回発火されるが、ウィンドウを閉じる指示のため悪影響はない
-	globalEvents.emit('requestCloseEmojiPickerWindow');
+	emoijPicker.closeWindow();
 });
 
 defineExpose({
