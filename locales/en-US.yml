@@ -1317,7 +1317,7 @@ unmarkAsSensitiveConfirm: "Do you want to remove the sensitive designation for t
 preferences: "Preferences"
 accessibility: "Accessibility"
 preferencesProfile: "Preferences profile"
-copyPreferenceId: "Copy the proference ID"
+copyPreferenceId: "Copy the preference ID"
 resetToDefaultValue: "Revert to default"
 overrideByAccount: "Override by the account"
 untitled: "Untitled"
@@ -1334,6 +1334,7 @@ paste: "Paste"
 emojiPalette: "Emoji palette"
 postForm: "Posting form"
 textCount: "Character count"
+information: "About"
 _emojiPalette:
   palettes: "Palette"
   enableSyncBetweenDevicesForPalettes: "Enable palette sync between devices"
@@ -2673,10 +2674,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Make sure the distributor of this resource is trustworthy before installation."
   _plugin:
     title: "Do you want to install this plugin?"
-    metaTitle: "Plugin information"
   _theme:
     title: "Do you want to install this theme?"
-    metaTitle: "Theme information"
   _meta:
     base: "Base color scheme"
   _vendorInfo:
@@ -2877,8 +2876,8 @@ _selfXssPrevention:
   description2: "If you do not understand exactly what you are trying to paste, %cstop working right now and close this window."
   description3: "For more information, please refer to this. {link}"
 _followRequest:
-  recieved: "Received application"
-  sent: "Sent application"
+  recieved: "Received request"
+  sent: "Sent request"
 _remoteLookupErrors:
   _federationNotAllowed:
     title: "Unable to communicate with this server"

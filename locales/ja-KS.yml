@@ -1312,6 +1312,7 @@ federationDisabled: "このサーバーは連合が無効化されてるで。�
 confirmOnReact: "ツッコむときに確認とる"
 reactAreYouSure: "\" {emoji} \" でツッコむ？"
 postForm: "投稿フォーム"
+information: "情報"
 _settings:
   webhook: "Webhook"
 _accountSettings:
@@ -2610,10 +2611,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "配ってるとこが信頼できるか確認した上でインストールしてな。"
   _plugin:
     title: "このプラグイン、インストールする？"
-    metaTitle: "プラグイン情報"
   _theme:
     title: "このテーマインストールする？"
-    metaTitle: "テーマ情報"
   _meta:
     base: ""
   _vendorInfo:

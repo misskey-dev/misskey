@@ -1330,6 +1330,7 @@ preferenceSyncConflictChoiceDevice: "장치 설정값"
 paste: "붙여넣기"
 emojiPalette: "이모지 팔레트"
 postForm: "글 입력란"
+information: "정보"
 _emojiPalette:
   palettes: "팔레트"
   paletteForMain: "메인으로 사용할 팔레트"
@@ -2650,10 +2651,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "제공자를 신뢰할 수 있는 경우에만 설치하십시오."
   _plugin:
     title: "이 플러그인을 설치하시겠습니까?"
-    metaTitle: "플러그인 정보"
   _theme:
     title: "이 테마를 설치하시겠습니까?"
-    metaTitle: "테마 정보"
   _meta:
     base: "기본 컬러 스키마"
   _vendorInfo:

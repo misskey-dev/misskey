@@ -1120,6 +1120,7 @@ cwNotationRequired: "Nếu \"Ẩn nội dung\" được bật thì cần phải 
 lastNDays: "{n} ngày trước"
 surrender: "Từ chối"
 postForm: "Mẫu đăng"
+information: "Giới thiệu"
 _delivery:
   stop: "Đã vô hiệu hóa"
   _type:
