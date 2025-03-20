@@ -37,7 +37,7 @@ const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
 const pageMetadata = ref<null | PageMetadata>(null);
 
-const showBottom = !(new URLSearchParams(location.search)).has('zen') && ui === 'deck';
+const showBottom = !(new URLSearchParams(window.location.search)).has('zen') && ui === 'deck';
 
 provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {

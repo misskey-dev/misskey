@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkAnimBg style="position: fixed; top: 0;"/>
+<MkPageWithAnimBg>
 	<div :class="$style.formContainer">
 		<div :class="$style.form">
 			<MkAuthConfirm
@@ -25,16 +24,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkAuthConfirm>
 		</div>
 	</div>
-</div>
+</MkPageWithAnimBg>
 </template>
 
 <script lang="ts" setup>
 import { computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-
-import MkAnimBg from '@/components/MkAnimBg.vue';
+import MkPageWithAnimBg from '@/components/MkPageWithAnimBg.vue';
 import MkAuthConfirm from '@/components/MkAuthConfirm.vue';
-
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
@@ -64,7 +61,7 @@ async function onAccept(token: string) {
 			const cbUrl = new URL(props.callback);
 			if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:', 'vbscript:'].includes(cbUrl.protocol)) throw new Error('invalid url');
 			cbUrl.searchParams.set('session', props.session);
-			location.href = cbUrl.toString();
+			window.location.href = cbUrl.toString();
 		} else {
 			authRoot.value?.showUI('success');
 		}

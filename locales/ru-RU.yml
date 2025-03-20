@@ -1182,6 +1182,7 @@ alwaysConfirmFollow: "Всегда подтверждать подписку"
 inquiry: "Связаться"
 messageToFollower: "Сообщение подписчикам"
 postForm: "Форма отправки"
+information: "Описание"
 _settings:
   webhook: "Вебхук"
 _delivery:

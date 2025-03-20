@@ -918,6 +918,7 @@ sourceCode: "Zdrojový kód"
 flip: "Preklopiť"
 lastNDays: "Posledných {n} dní"
 postForm: "Napísať poznámku"
+information: "Informácie"
 _delivery:
   stop: "Zmrazené"
   _type:

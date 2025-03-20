@@ -1334,6 +1334,7 @@ paste: "Incolla"
 emojiPalette: "Tavolozza emoji"
 postForm: "Finestra di pubblicazione"
 textCount: "Il numero di caratteri"
+information: "Informazioni"
 _emojiPalette:
   palettes: "Tavolozza"
   enableSyncBetweenDevicesForPalettes: "Attiva la sincronizzazione tra dispositivi"
@@ -2673,10 +2674,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Prima di installare, assicurati che la fonte sia affidabile."
   _plugin:
     title: "Vuoi davvero installare questo componente aggiuntivo?"
-    metaTitle: "Informazioni sul componente aggiuntivo"
   _theme:
     title: "Vuoi davvero installare questa variazione grafica?"
-    metaTitle: "Informazioni sulla variazione grafica"
   _meta:
     base: "Combinazione base di colori"
   _vendorInfo:

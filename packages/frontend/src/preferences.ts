@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { v4 as uuid } from 'uuid';
 import type { PreferencesProfile, StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -11,8 +10,7 @@ import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
 import { store } from '@/store.js';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-
-const TAB_ID = uuid();
+import { TAB_ID } from '@/tab-id.js';
 
 function createPrefManager(storageProvider: StorageProvider) {
 	let profile: PreferencesProfile;

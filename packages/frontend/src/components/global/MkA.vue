@@ -87,7 +87,7 @@ function openWindow() {
 
 function nav(ev: MouseEvent) {
 	if (behavior === 'browser') {
-		location.href = props.to;
+		window.location.href = props.to;
 		return;
 	}
 

@@ -172,7 +172,7 @@ export const navbarItemDef = reactive({
 		title: i18n.ts.reload,
 		icon: 'ti ti-refresh',
 		action: (ev) => {
-			location.reload();
+			window.location.reload();
 		},
 	},
 	profile: {

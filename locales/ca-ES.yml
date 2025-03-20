@@ -1334,6 +1334,7 @@ paste: "Pegar"
 emojiPalette: "Calaix d'emojis"
 postForm: "Formulari de publicació"
 textCount: "Nombre de caràcters "
+information: "Informació"
 _emojiPalette:
   palettes: "Calaixos d'emojis"
   enableSyncBetweenDevicesForPalettes: "Activa la sincronització dels calaixos d'emojis entre dispositius"
@@ -2673,10 +2674,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Assegura't que qui distribueix aquest recurs és fiable abans d'instal·lar-ho."
   _plugin:
     title: "Vols instal·lar aquest afegit?"
-    metaTitle: "Informació de l'afegit "
   _theme:
     title: "Vols instal·lar aquest tema?"
-    metaTitle: "Informació del tema"
   _meta:
     base: "Paleta de colors base"
   _vendorInfo:

@@ -182,12 +182,12 @@ function close(): void {
 
 	// 閉じなければ100ms後タイムラインに
 	window.setTimeout(() => {
-		location.href = '/';
+		window.location.href = '/';
 	}, 100);
 }
 
 function goToMisskey(): void {
-	location.href = '/';
+	window.location.href = '/';
 }
 
 function onPosted(): void {

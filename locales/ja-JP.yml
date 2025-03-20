@@ -1333,6 +1333,7 @@ paste: "ペースト"
 emojiPalette: "絵文字パレット"
 postForm: "投稿フォーム"
 textCount: "文字数"
+information: "情報"
 chat: "チャット"
 individualChat: "個人チャット"
 individualChat_description: "特定ユーザーとの一対一のチャットができます。"
@@ -2757,10 +2758,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "配布元が信頼できるかを確認した上でインストールしてください。"
   _plugin:
     title: "このプラグインをインストールしますか？"
-    metaTitle: "プラグイン情報"
   _theme:
     title: "このテーマをインストールしますか？"
-    metaTitle: "テーマ情報"
   _meta:
     base: "基本のカラースキーム"
   _vendorInfo:

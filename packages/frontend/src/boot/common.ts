@@ -98,14 +98,14 @@ export async function common(createVue: () => App<Element>) {
 	document.addEventListener('touchend', () => {}, { passive: true });
 
 	// URLに#pswpを含む場合は取り除く
-	if (location.hash === '#pswp') {
-		history.replaceState(null, '', location.href.replace('#pswp', ''));
+	if (window.location.hash === '#pswp') {
+		window.history.replaceState(null, '', window.location.href.replace('#pswp', ''));
 	}
 
 	// 一斉リロード
 	reloadChannel.addEventListener('message', path => {
-		if (path !== null) location.href = path;
-		else location.reload();
+		if (path !== null) window.location.href = path;
+		else window.location.reload();
 	});
 
 	// If mobile, insert the viewport meta tag
@@ -130,11 +130,11 @@ export async function common(createVue: () => App<Element>) {
 	});
 
 	//#region loginId
-	const params = new URLSearchParams(location.search);
+	const params = new URLSearchParams(window.location.search);
 	const loginId = params.get('loginId');
 
 	if (loginId) {
-		const target = getUrlWithoutLoginId(location.href);
+		const target = getUrlWithoutLoginId(window.location.href);
 
 		if (!$i || $i.id !== loginId) {
 			const account = await getAccountFromId(loginId);
@@ -143,7 +143,7 @@ export async function common(createVue: () => App<Element>) {
 			}
 		}
 
-		history.replaceState({ misskey: 'loginId' }, '', target);
+		window.history.replaceState({ misskey: 'loginId' }, '', target);
 	}
 	//#endregion
 
@@ -300,24 +300,26 @@ export async function common(createVue: () => App<Element>) {
 	removeSplash();
 
 	//#region Self-XSS 対策メッセージ
-	console.log(
-		`%c${i18n.ts._selfXssPrevention.warning}`,
-		'color: #f00; background-color: #ff0; font-size: 36px; padding: 4px;',
-	);
-	console.log(
-		`%c${i18n.ts._selfXssPrevention.title}`,
-		'color: #f00; font-weight: 900; font-family: "Hiragino Sans W9", "Hiragino Kaku Gothic ProN", sans-serif; font-size: 24px;',
-	);
-	console.log(
-		`%c${i18n.ts._selfXssPrevention.description1}`,
-		'font-size: 16px; font-weight: 700;',
-	);
-	console.log(
-		`%c${i18n.ts._selfXssPrevention.description2}`,
-		'font-size: 16px;',
-		'font-size: 20px; font-weight: 700; color: #f00;',
-	);
-	console.log(i18n.tsx._selfXssPrevention.description3({ link: 'https://misskey-hub.net/docs/for-users/resources/self-xss/' }));
+	if (!_DEV_) {
+		console.log(
+			`%c${i18n.ts._selfXssPrevention.warning}`,
+			'color: #f00; background-color: #ff0; font-size: 36px; padding: 4px;',
+		);
+		console.log(
+			`%c${i18n.ts._selfXssPrevention.title}`,
+			'color: #f00; font-weight: 900; font-family: "Hiragino Sans W9", "Hiragino Kaku Gothic ProN", sans-serif; font-size: 24px;',
+		);
+		console.log(
+			`%c${i18n.ts._selfXssPrevention.description1}`,
+			'font-size: 16px; font-weight: 700;',
+		);
+		console.log(
+			`%c${i18n.ts._selfXssPrevention.description2}`,
+			'font-size: 16px;',
+			'font-size: 20px; font-weight: 700; color: #f00;',
+		);
+		console.log(i18n.tsx._selfXssPrevention.description3({ link: 'https://misskey-hub.net/docs/for-users/resources/self-xss/' }));
+	}
 	//#endregion
 
 	return {

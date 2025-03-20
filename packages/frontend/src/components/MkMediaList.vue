@@ -183,14 +183,14 @@ onMounted(() => {
 		lightbox?.pswp?.element?.focus({
 			preventScroll: true,
 		});
-		history.pushState(null, '', '#pswp');
+		window.history.pushState(null, '', '#pswp');
 	});
 
 	lightbox.on('destroy', () => {
 		focusParent(activeEl, true, false);
 		activeEl = null;
 		if (window.location.hash === '#pswp') {
-			history.back();
+			window.history.back();
 		}
 	});
 

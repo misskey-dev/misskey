@@ -462,6 +462,7 @@ loggedInAsBot: "Momenteel als bot ingelogd"
 icon: "Avatar"
 replies: "Antwoord"
 renotes: "Herdelen"
+information: "Over"
 _delivery:
   stop: "Opgeschort"
   _type:

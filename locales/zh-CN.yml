@@ -1334,6 +1334,7 @@ paste: "粘贴"
 emojiPalette: "表情符号调色板"
 postForm: "投稿窗口"
 textCount: "字数"
+information: "关于"
 _emojiPalette:
   palettes: "调色板"
   enableSyncBetweenDevicesForPalettes: "启用调色板的设备间同步"
@@ -2673,10 +2674,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "请在安装前确保来源可靠"
   _plugin:
     title: "要安装此插件吗？"
-    metaTitle: "插件信息"
   _theme:
     title: "要安装此主题吗？"
-    metaTitle: "主题信息"
   _meta:
     base: "基本配色方案"
   _vendorInfo:
