@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkPagination>
 			</div>
 
-			<div v-else-if="tab === 'my'" ">
+			<div v-else-if="tab === 'my'">
 				<div class="_gaps">
 					<MkButton gradate rounded style="margin: 0 auto;" @click="create()"><i class="ti ti-plus"></i></MkButton>
 					<MkPagination v-slot="{items}" :pagination="myFlashsPagination">
