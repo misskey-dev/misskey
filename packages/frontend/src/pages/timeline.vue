@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
+import { computed, watch, provide, useTemplateRef, ref, onMounted, onActivated } from 'vue';
 import { scroll } from '@@/js/scroll.js';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -56,11 +56,17 @@ import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
+import { useRouter } from '@/router.js';
 
 provide('shouldOmitHeaderTitle', true);
 
-const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
-const rootEl = shallowRef<HTMLElement>();
+const tlComponent = useTemplateRef('tlComponent');
+const rootEl = useTemplateRef('rootEl');
+
+const router = useRouter();
+router.useListener('same', () => {
+	top();
+});
 
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 
@@ -128,7 +134,7 @@ function queueUpdated(q: number): void {
 }
 
 function top(): void {
-	if (rootEl.value) scroll(rootEl.value, { top: 0 });
+	if (rootEl.value) scroll(rootEl.value, { top: 0, behavior: 'smooth' });
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {

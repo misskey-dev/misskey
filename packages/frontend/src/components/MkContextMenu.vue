@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, shallowRef, ref } from 'vue';
+import { onMounted, onBeforeUnmount, useTemplateRef, ref } from 'vue';
 import MkMenu from './MkMenu.vue';
 import type { MenuItem } from '@/types/menu.js';
 import contains from '@/utility/contains.js';
@@ -34,7 +34,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const rootEl = shallowRef<HTMLDivElement>();
+const rootEl = useTemplateRef('rootEl');
 
 const zIndex = ref<number>(os.claimZIndex('high'));
 

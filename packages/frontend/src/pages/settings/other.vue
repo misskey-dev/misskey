@@ -91,6 +91,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="skipNoteRender">
 							<template #label>Enable note render skipping</template>
 						</MkSwitch>
+						<MkSwitch v-model="stackingRouterView">
+							<template #label>Enable stacking router view</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -127,7 +130,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
@@ -136,12 +139,13 @@ import { prefer } from '@/preferences.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import { signout } from '@/signout.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const reportError = prefer.model('reportError');
 const enableCondensedLine = prefer.model('enableCondensedLine');
 const skipNoteRender = prefer.model('skipNoteRender');
 const devMode = prefer.model('devMode');
+const stackingRouterView = prefer.model('experimental.stackingRouterView');
 
 watch(skipNoteRender, async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });

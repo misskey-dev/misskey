@@ -4,14 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="500">
+<MkPageWithAnimBg>
+	<MkSpacer :contentMax="550" :marginMax="50">
 		<MkLoading v-if="uiPhase === 'fetching'"/>
-		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()">
+		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
 			<template #additionalInfo>
 				<FormSection>
-					<template #label>{{ i18n.ts._externalResourceInstaller._vendorInfo.title }}</template>
 					<div class="_gaps_s">
 						<MkKeyValue>
 							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
@@ -35,16 +33,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<h2 :class="$style.extInstallerTitle">{{ errorKV?.title }}</h2>
 			<div :class="$style.extInstallerNormDesc">{{ errorKV?.description }}</div>
 			<div class="_buttonsCenter">
-				<MkButton @click="goBack()">{{ i18n.ts.goBack }}</MkButton>
-				<MkButton @click="goToMisskey()">{{ i18n.ts.goToMisskey }}</MkButton>
+				<MkButton @click="close_()">{{ i18n.ts.close }}</MkButton>
 			</div>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</MkPageWithAnimBg>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onActivated, onDeactivated, nextTick } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import type { Extension } from '@/components/MkExtensionInstaller.vue';
 import type { AiScriptPluginMeta } from '@/plugin.js';
 import MkLoading from '@/components/global/MkLoading.vue';
@@ -60,6 +57,7 @@ import { parseThemeCode, installTheme } from '@/theme.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import MkPageWithAnimBg from '@/components/MkPageWithAnimBg.vue';
 
 const uiPhase = ref<'fetching' | 'confirm' | 'error'>('fetching');
 const errorKV = ref<{
@@ -75,12 +73,12 @@ const hash = ref<string | null>(null);
 
 const data = ref<Extension | null>(null);
 
-function goBack(): void {
-	history.back();
-}
-
-function goToMisskey(): void {
-	location.href = '/';
+function close_(): void {
+	if (window.history.length === 1) {
+		window.close();
+	} else {
+		window.history.back();
+	}
 }
 
 async function fetch() {
@@ -207,9 +205,9 @@ async function install() {
 			try {
 				await installPlugin(data.value.raw, data.value.meta as AiScriptPluginMeta);
 				os.success();
-				nextTick(() => {
-					unisonReload('/');
-				});
+				window.setTimeout(() => {
+					close_();
+				}, 3000);
 			} catch (err) {
 				errorKV.value = {
 					title: i18n.ts._externalResourceInstaller._errors._pluginInstallFailed.title,
@@ -223,26 +221,16 @@ async function install() {
 			if (!data.value.meta) return;
 			await installTheme(data.value.raw);
 			os.success();
-			nextTick(() => {
-				location.href = '/settings/theme';
-			});
+			window.setTimeout(() => {
+				close_();
+			}, 3000);
 	}
 }
 
-onActivated(() => {
-	const urlParams = new URLSearchParams(window.location.search);
-	url.value = urlParams.get('url');
-	hash.value = urlParams.get('hash');
-	fetch();
-});
-
-onDeactivated(() => {
-	uiPhase.value = 'fetching';
-});
-
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
+const urlParams = new URLSearchParams(window.location.search);
+url.value = urlParams.get('url');
+hash.value = urlParams.get('hash');
+fetch();
 
 definePage(() => ({
 	title: i18n.ts._externalResourceInstaller.title,

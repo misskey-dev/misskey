@@ -4,55 +4,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :zPriority="'high'" :src="src" :transparentBg="true" @click="modal?.close()" @closed="emit('closed')" @esc="modal?.close()">
-	<MkMenu
-		:items="items"
-		:align="align"
-		:width="width"
-		:maxHeight="maxHeight"
-		:asDrawer="type === 'drawer'"
-		@close="modal?.close()"
+<div :class="[$style.textCountRoot]">
+	<div :class="$style.textCountLabel">{{ i18n.ts.textCount }}</div>
+	<div
+		:class="[$style.textCount,
+			{ [$style.danger]: textCountPercentage > 100 },
+			{ [$style.warning]: textCountPercentage > 90 && textCountPercentage <= 100 },
+		]"
 	>
-		<template #header>
-			<div :class="[$style.textCountRoot, { [$style.asDrawer]: type === 'drawer' }]">
-				<div :class="$style.textCountLabel">{{ i18n.ts.textCount }}</div>
-				<div
-					:class="[$style.textCount,
-						{ [$style.danger]: textCountPercentage > 100 },
-						{ [$style.warning]: textCountPercentage > 90 && textCountPercentage <= 100 },
-					]"
-				>
-					<div :class="$style.textCountGraph"></div>
-					<div><span :class="$style.textCountCurrent">{{ number(textLength) }}</span> / {{ number(maxTextLength) }}</div>
-				</div>
-			</div>
-		</template>
-	</MkMenu>
-</MkModal>
+		<div :class="$style.textCountGraph"></div>
+		<div><span :class="$style.textCountCurrent">{{ number(textLength) }}</span> / {{ number(maxTextLength) }}</div>
+	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
 import { computed, useTemplateRef } from 'vue';
-import * as Misskey from 'misskey-js';
-import MkModal from '@/components/MkModal.vue';
-import MkMenu from '@/components/MkMenu.vue';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import number from '@/filters/number.js';
-import type { MenuItem } from '@/types/menu.js';
-
-const modal = useTemplateRef('modal');
 
 const props = defineProps<{
-	items: MenuItem[];
 	textLength: number;
-	align?: 'center' | string;
-	width?: number;
-	src?: HTMLElement;
-}>();
-
-const emit = defineEmits<{
-	(ev: 'closed'): void;
 }>();
 
 const maxTextLength = computed(() => {
@@ -66,13 +39,7 @@ const textCountPercentage = computed(() => {
 
 <style lang="scss" module>
 .textCountRoot {
-	--textCountBg: color-mix(in srgb, var(--MI_THEME-panel), var(--MI_THEME-fg) 15%);
-	background-color: var(--textCountBg);
-	padding: 10px 14px;
-
-	&.asDrawer {
-		padding: 12px 24px;
-	}
+	padding: 4px 14px;
 }
 
 .textCountLabel {
@@ -112,7 +79,7 @@ const textCountPercentage = computed(() => {
 			width: 16px;
 			height: 16px;
 			border-radius: 50%;
-			background-color: var(--textCountBg);
+			background-color: var(--MI_THEME-popup);
 			top: 50%;
 			left: 50%;
 			transform: translate(-50%, -50%);

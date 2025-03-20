@@ -157,7 +157,6 @@ export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): 
 		text,
 		action: (): void => {
 			copyToClipboard(`${url}/notes/${note.id}`);
-			os.success();
 		},
 	};
 }
@@ -237,7 +236,6 @@ export function getNoteMenu(props: {
 
 	function copyContent(): void {
 		copyToClipboard(appearNote.text);
-		os.success();
 	}
 
 	function togglePin(pin: boolean): void {
@@ -324,7 +322,6 @@ export function getNoteMenu(props: {
 				text: i18n.ts.copyRemoteLink,
 				action: () => {
 					copyToClipboard(appearNote.url ?? appearNote.uri);
-					os.success();
 				},
 			}, {
 				icon: 'ti ti-external-link',
@@ -483,7 +480,6 @@ export function getNoteMenu(props: {
 				text: i18n.ts.copyRemoteLink,
 				action: () => {
 					copyToClipboard(appearNote.url ?? appearNote.uri);
-					os.success();
 				},
 			}, {
 				icon: 'ti ti-external-link',
@@ -512,11 +508,10 @@ export function getNoteMenu(props: {
 
 	if (prefer.s.devMode) {
 		menuItems.push({ type: 'divider' }, {
-			icon: 'ti ti-id',
+			icon: 'ti ti-hash',
 			text: i18n.ts.copyNoteId,
 			action: () => {
 				copyToClipboard(appearNote.id);
-				os.success();
 			},
 		});
 	}

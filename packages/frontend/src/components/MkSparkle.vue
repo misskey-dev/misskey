@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 
 const particles = ref<{
 	id: string,
@@ -66,7 +66,7 @@ const particles = ref<{
 	dur: number,
 	color: string
 }[]>([]);
-const el = shallowRef<HTMLElement>();
+const el = useTemplateRef('el');
 const width = ref(0);
 const height = ref(0);
 const colors = ['#FF1493', '#00FFFF', '#FFE202', '#FFE202', '#FFE202'];

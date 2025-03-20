@@ -25,7 +25,7 @@ import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialo
 import { $i } from '@/i.js';
 
 const props = defineProps<{
-  emoji: Misskey.entities.EmojiSimple;
+	emoji: Misskey.entities.EmojiSimple;
 }>();
 
 function menu(ev) {
@@ -38,7 +38,6 @@ function menu(ev) {
 		icon: 'ti ti-copy',
 		action: () => {
 			copyToClipboard(`:${props.emoji.name}:`);
-			os.success();
 		},
 	}, {
 		text: i18n.ts.info,

@@ -80,7 +80,7 @@ import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
@@ -111,7 +111,6 @@ function fetchPost() {
 
 function copyLink() {
 	copyToClipboard(`${url}/gallery/${post.value.id}`);
-	os.success();
 }
 
 function share() {

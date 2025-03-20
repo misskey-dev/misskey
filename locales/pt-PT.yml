@@ -1302,6 +1302,7 @@ pleaseSelectAccount: "Selecione uma conta"
 availableRoles: "Cargos disponíveis"
 acknowledgeNotesAndEnable: "Ative após compreender as precauções."
 postForm: "Campo de postagem"
+information: "Informações"
 _settings:
   webhook: "Webhook"
 _accountSettings:
@@ -2598,10 +2599,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Tenha certeza de que o distribuidor desse recurso é confiável antes da instalação."
   _plugin:
     title: "Deseja instalar esse plugin?"
-    metaTitle: "Informações do plugin"
   _theme:
     title: "Deseja instalar esse tema?"
-    metaTitle: "Informações do tema"
   _meta:
     base: "Paleta de cores base"
   _vendorInfo:

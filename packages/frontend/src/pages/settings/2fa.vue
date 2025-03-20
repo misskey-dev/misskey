@@ -92,11 +92,11 @@ import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkLink from '@/components/MkLink.vue';
 import * as os from '@/os.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 // メモ: 各エンドポイントはmeUpdatedを発行するため、refreshAccountは不要
 

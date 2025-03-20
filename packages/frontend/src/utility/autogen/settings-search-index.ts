@@ -572,7 +572,7 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['experimental', 'feature', 'flags'],
 			},
 			{
-				id: '54wETGawJ',
+				id: 'zWbGKohZ2',
 				label: i18n.ts.developer,
 				keywords: ['developer', 'mode', 'debug'],
 			},

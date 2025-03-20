@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { shallowRef, computed, ref } from 'vue';
+import { useTemplateRef, computed, ref } from 'vue';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -57,7 +57,7 @@ import { infoImageUrl } from '@/instance.js';
 import { $i } from '@/i.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
-const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const paginationComponent = useTemplateRef('paginationComponent');
 
 const pagination = computed<Paging>(() => tab.value === 'list' ? {
 	endpoint: 'following/requests/list',

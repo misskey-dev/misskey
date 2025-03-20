@@ -52,7 +52,11 @@ export default [
 			'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
 			// window の禁止理由: グローバルスコープと衝突し、予期せぬ結果を招くため
 			// e の禁止理由: error や event など、複数のキーワードの頭文字であり分かりにくいため
-			'id-denylist': ['error', 'window', 'e'],
+			// close ... window.closeと衝突 or 紛らわしい
+			// open ... window.openと衝突 or 紛らわしい
+			// fetch ... window.fetchと衝突 or 紛らわしい
+			// location ... window.locationと衝突 or 紛らわしい
+			'id-denylist': ['error', 'window', 'e', 'close', 'open', 'fetch', 'location'],
 			'no-shadow': ['warn'],
 			'vue/attributes-order': ['error', {
 				alphabetical: false,

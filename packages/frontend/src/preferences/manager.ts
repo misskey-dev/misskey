@@ -139,9 +139,16 @@ export class PreferencesManager {
 	}
 
 	public commit<K extends keyof PREF>(key: K, value: ValueOf<K>) {
-		console.log('prefer:commit', key, value);
+		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
 
-		this.rewriteRawState(key, value);
+		if (deepEqual(this.s[key], v)) {
+			console.log('(skip) prefer:commit', key, v);
+			return;
+		}
+
+		console.log('prefer:commit', key, v);
+
+		this.rewriteRawState(key, v);
 
 		const record = this.getMatchedRecordOf(key);
 
@@ -149,7 +156,7 @@ export class PreferencesManager {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
 				account: $i!.id,
-			}), value, {}]);
+			}), v, {}]);
 			this.save();
 			return;
 		}
@@ -157,12 +164,12 @@ export class PreferencesManager {
 		if (parseScope(record[0]).server == null && this.isServerDependentKey(key)) {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
-			}), value, {}]);
+			}), v, {}]);
 			this.save();
 			return;
 		}
 
-		record[1] = value;
+		record[1] = v;
 		this.save();
 
 		if (record[2].sync) {

@@ -655,6 +655,7 @@ replies: "답하기"
 renotes: "리노트"
 attach: "옇기"
 surrender: "아이예"
+information: "정보"
 _delivery:
   stop: "고만 보내예"
   _type:

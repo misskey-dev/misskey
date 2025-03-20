@@ -33,13 +33,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, shallowRef, watch, nextTick } from 'vue';
+import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch, nextTick, inject } from 'vue';
 import tinycolor from 'tinycolor2';
 import { scrollToTop } from '@@/js/scroll.js';
 import { popupMenu } from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import { globalEvents } from '@/events.js';
-import { injectReactiveMetadata } from '@/page.js';
+import { DI } from '@/di.js';
 
 type Tab = {
 	key?: string | null;
@@ -66,11 +66,11 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
 }>();
 
-const pageMetadata = injectReactiveMetadata();
+const pageMetadata = inject(DI.pageMetadata);
 
-const el = shallowRef<HTMLElement>(null);
+const el = useTemplateRef('el');
+const tabHighlightEl = useTemplateRef('tabHighlightEl');
 const tabRefs = {};
-const tabHighlightEl = shallowRef<HTMLElement | null>(null);
 const bg = ref<string | null>(null);
 const height = ref(0);
 const hasTabs = computed(() => {
@@ -119,7 +119,7 @@ function onTabClick(tab: Tab, ev: MouseEvent): void {
 }
 
 const calcBg = () => {
-	const rawBg = pageMetadata.value?.bg ?? 'var(--MI_THEME-bg)';
+	const rawBg = pageMetadata.value.bg ?? 'var(--MI_THEME-bg)';
 	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
 	bg.value = tinyBg.toRgbString();
