@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPageWithAnimBg>
+<PageWithAnimBg>
 	<div :class="$style.formContainer">
 		<form :class="$style.form" class="_panel" @submit.prevent="submit()">
 			<div :class="$style.banner">
@@ -20,13 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</form>
 	</div>
-</MkPageWithAnimBg>
+</PageWithAnimBg>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import MkPageWithAnimBg from '@/components/MkPageWithAnimBg.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';

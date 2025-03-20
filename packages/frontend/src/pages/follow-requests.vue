@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<MkPagination ref="paginationComponent" :pagination="pagination">
@@ -38,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPagination>
 		</MkHorizontalSwipe>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

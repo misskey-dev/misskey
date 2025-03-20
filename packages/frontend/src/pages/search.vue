@@ -4,9 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'note'" :contentMax="800">
 			<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable">
@@ -21,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XUser v-bind="props"/>
 		</MkSpacer>
 	</MkHorizontalSwipe>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

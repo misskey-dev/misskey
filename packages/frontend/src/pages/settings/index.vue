@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer class="_pageScrollable">
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :tabs="headerTabs" :actions="headerActions">
 	<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
@@ -27,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</mkstickycontainer>
+</PageWithHeader>
 </template>
 
 <script setup lang="ts">

@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<MkNotes ref="notes" class="" :pagination="pagination"/>
 	</MkSpacer>
@@ -16,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSpacer>
 		</div>
 	</template>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -63,7 +62,7 @@ const headerActions = computed(() => [{
 				genEmbedCode('tags', props.tag);
 			},
 		}], ev.currentTarget ?? ev.target);
-	}
+	},
 }]);
 
 const headerTabs = computed(() => []);
