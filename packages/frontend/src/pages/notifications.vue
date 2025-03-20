@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'all'" key="all">
+			<div v-if="tab === 'all'">
 				<XNotifications :class="$style.notifications" :excludeTypes="excludeTypes"/>
 			</div>
-			<div v-else-if="tab === 'mentions'" key="mention">
+			<div v-else-if="tab === 'mentions'">
 				<MkNotes :pagination="mentionsPagination"/>
 			</div>
-			<div v-else-if="tab === 'directNotes'" key="directNotes">
+			<div v-else-if="tab === 'directNotes'">
 				<MkNotes :pagination="directNotesPagination"/>
 			</div>
 		</MkHorizontalSwipe>
@@ -24,13 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
+import { notificationTypes } from '@@/js/const.js';
 import XNotifications from '@/components/MkNotifications.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { notificationTypes } from '@@/js/const.js';
 
 const tab = ref('all');
 const includeTypes = ref<string[] | null>(null);

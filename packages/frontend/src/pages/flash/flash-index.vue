@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'featured'" key="featured">
+			<div v-if="tab === 'featured'">
 				<MkPagination v-slot="{items}" :pagination="featuredFlashsPagination">
 					<div class="_gaps_s">
 						<MkFlashPreview v-for="flash in items" :key="flash.id" :flash="flash"/>
@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkPagination>
 			</div>
 
-			<div v-else-if="tab === 'my'" key="my">
+			<div v-else-if="tab === 'my'" ">
 				<div class="_gaps">
 					<MkButton gradate rounded style="margin: 0 auto;" @click="create()"><i class="ti ti-plus"></i></MkButton>
 					<MkPagination v-slot="{items}" :pagination="myFlashsPagination">
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
-			<div v-else-if="tab === 'liked'" key="liked">
+			<div v-else-if="tab === 'liked'">
 				<MkPagination v-slot="{items}" :pagination="likedFlashsPagination">
 					<div class="_gaps_s">
 						<MkFlashPreview v-for="like in items" :key="like.flash.id" :flash="like.flash"/>
