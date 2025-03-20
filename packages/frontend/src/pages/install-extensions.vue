@@ -6,12 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="500">
+	<MkSpacer :contentMax="550">
 		<MkLoading v-if="uiPhase === 'fetching'"/>
-		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()">
+		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close">
 			<template #additionalInfo>
 				<FormSection>
-					<template #label>{{ i18n.ts._externalResourceInstaller._vendorInfo.title }}</template>
 					<div class="_gaps_s">
 						<MkKeyValue>
 							<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
@@ -35,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<h2 :class="$style.extInstallerTitle">{{ errorKV?.title }}</h2>
 			<div :class="$style.extInstallerNormDesc">{{ errorKV?.description }}</div>
 			<div class="_buttonsCenter">
-				<MkButton @click="goBack()">{{ i18n.ts.goBack }}</MkButton>
+				<MkButton @click="close()">{{ i18n.ts.close }}</MkButton>
 				<MkButton @click="goToMisskey()">{{ i18n.ts.goToMisskey }}</MkButton>
 			</div>
 		</div>
@@ -75,8 +74,8 @@ const hash = ref<string | null>(null);
 
 const data = ref<Extension | null>(null);
 
-function goBack(): void {
-	history.back();
+function close(): void {
+	window.close();
 }
 
 function goToMisskey(): void {
@@ -207,9 +206,9 @@ async function install() {
 			try {
 				await installPlugin(data.value.raw, data.value.meta as AiScriptPluginMeta);
 				os.success();
-				nextTick(() => {
-					unisonReload('/');
-				});
+				window.setTimeout(() => {
+					close();
+				}, 3000);
 			} catch (err) {
 				errorKV.value = {
 					title: i18n.ts._externalResourceInstaller._errors._pluginInstallFailed.title,
@@ -223,9 +222,9 @@ async function install() {
 			if (!data.value.meta) return;
 			await installTheme(data.value.raw);
 			os.success();
-			nextTick(() => {
-				location.href = '/settings/theme';
-			});
+			window.setTimeout(() => {
+				close();
+			}, 3000);
 	}
 }
 
