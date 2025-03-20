@@ -99,6 +99,30 @@ export function getConfig(): UserConfig {
 			pluginVue(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
+			{
+				name: 'misskey:locale',
+				load: {
+					async handler(id) {
+						if (id.startsWith('locale:')) {
+							const locale = id.slice('locale:'.length);
+							return `
+								import { updateLocale } from '@@/js/config.js';
+								updateLocale(JSON.parse(${JSON.stringify(JSON.stringify(locales[locale]))}));
+							`;
+						}
+					},
+				},
+				resolveId: {
+					async handler(source, importer, options) {
+						if (source.startsWith('locale:')) {
+							return source;
+						}
+						if (importer === path.resolve(__dirname, 'index.html') && source.startsWith('/locale:')) {
+							return source.slice(1);
+						}
+					},
+				},
+			},
 			...process.env.NODE_ENV === 'production'
 				? [
 					pluginReplace({
@@ -162,9 +186,7 @@ export function getConfig(): UserConfig {
 			],
 			manifest: 'manifest.json',
 			rollupOptions: {
-				input: {
-					app: './src/_boot_.ts',
-				},
+				input: ['@/_boot_.ts', '@@/js/config.ts', ...Object.keys(locales).map(locale => `locale:${locale}`)],
 				external: externalPackages.map(p => p.match),
 				output: {
 					manualChunks: {

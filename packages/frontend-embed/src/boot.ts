@@ -13,17 +13,16 @@ import { createApp, defineAsyncComponent } from 'vue';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-dark.json5';
 import { MediaProxy } from '@@/js/media-proxy.js';
+import { url, version, locale, lang, updateLocale } from '@@/js/config.js';
+import { parseEmbedParams } from '@@/js/embed-page.js';
+import type { Theme } from '@/theme.js';
 import { applyTheme, assertIsTheme } from '@/theme.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
 import { serverMetadata } from '@/server-metadata.js';
-import { url, version, locale, lang, updateLocale } from '@@/js/config.js';
-import { parseEmbedParams } from '@@/js/embed-page.js';
 import { postMessageToParentWindow, setIframeId } from '@/post-message.js';
 import { serverContext } from '@/server-context.js';
 import { i18n, updateI18n } from '@/i18n.js';
-
-import type { Theme } from '@/theme.js';
 
 console.log('Misskey Embed');
 
@@ -68,22 +67,6 @@ if (embedParams.colorMode === 'dark') {
 			applyTheme(lightTheme);
 		}
 	});
-}
-//#endregion
-
-//#region Detect language & fetch translations
-const localeVersion = localStorage.getItem('localeVersion');
-const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
-if (localeOutdated) {
-	const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
-	if (res.status === 200) {
-		const newLocale = await res.text();
-		const parsedNewLocale = JSON.parse(newLocale);
-		localStorage.setItem('locale', newLocale);
-		localStorage.setItem('localeVersion', version);
-		updateLocale(parsedNewLocale);
-		updateI18n(parsedNewLocale);
-	}
 }
 //#endregion
 

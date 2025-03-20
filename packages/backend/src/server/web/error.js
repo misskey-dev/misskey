@@ -6,23 +6,22 @@
 'use strict';
 
 (() => {
-	document.addEventListener('DOMContentLoaded', () => {
-		const locale = JSON.parse(localStorage.getItem('locale') || '{}');
+	document.addEventListener('DOMContentLoaded', async () => {
+		const supportedLangs = LANGS;
+		let lang = localStorage.getItem('lang');
+		if (!supportedLangs.includes(lang)) {
+			if (supportedLangs.includes(navigator.language)) {
+				lang = navigator.language;
+			} else {
+				lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
 
-		const messages = Object.assign({
-			title: 'Failed to initialize Misskey',
-			serverError: 'If reloading after a period of time does not resolve the problem, contact the server administrator with the following ERROR ID.',
-			solution: 'The following actions may solve the problem.',
-			solution1: 'Update your os and browser',
-			solution2: 'Disable an adblocker',
-			solution3: 'Clear the browser cache',
-			solution4: '(Tor Browser) Set dom.webaudio.enabled to true',
-			otherOption: 'Other options',
-			otherOption1: 'Clear preferences and cache',
-			otherOption2: 'Start the simple client',
-			otherOption3: 'Start the repair tool',
-		}, locale?._bootErrors || {});
-		const reload = locale?.reload || 'Reload';
+				// Fallback
+				if (lang == null) lang = 'en-US';
+			}
+		}
+		const locale = ERROR_MESSAGES[lang];
+		const messages = locale._bootErrors;
+		const reload = locale.reload;
 
 		const reloadEls = document.querySelectorAll('[data-i18n-reload]');
 		for (const el of reloadEls) {

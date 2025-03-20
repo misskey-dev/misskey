@@ -27,6 +27,9 @@ html
 		style
 			include ../error.css
 
+		script.
+			var ERROR_MESSAGES = JSON.parse(`!{JSON.stringify(config.errorLocaleMessages)}`);
+
 		script
 			include ../error.js
 

@@ -78,22 +78,6 @@ export async function common(createVue: () => App<Element>) {
 	}
 	//#endregion
 
-	//#region Detect language & fetch translations
-	const localeVersion = miLocalStorage.getItem('localeVersion');
-	const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
-	if (localeOutdated) {
-		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
-		if (res.status === 200) {
-			const newLocale = await res.text();
-			const parsedNewLocale = JSON.parse(newLocale);
-			miLocalStorage.setItem('locale', newLocale);
-			miLocalStorage.setItem('localeVersion', version);
-			updateLocale(parsedNewLocale);
-			updateI18n(parsedNewLocale);
-		}
-	}
-	//#endregion
-
 	// タッチデバイスでCSSの:hoverを機能させる
 	window.document.addEventListener('touchend', () => {}, { passive: true });
 

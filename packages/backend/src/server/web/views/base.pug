@@ -70,6 +70,8 @@ html
 		script.
 			var VERSION = "#{version}";
 			var CLIENT_ENTRY = "#{entry.file}";
+			var CONFIG_ENTRY = "#{config.configEntry.file}";
+			var LOCALES = JSON.parse(`!{JSON.stringify(config.localeEntries)}`);
 
 		script(type='application/json' id='misskey_meta' data-generated-at=now)
 			!= metaJson

@@ -5,10 +5,13 @@
 
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import * as yaml from 'js-yaml';
 import * as Sentry from '@sentry/node';
+import locale from '../../../locales/index.js';
 import type { RedisOptions } from 'ioredis';
+import type { Manifest, ManifestChunk } from 'vite';
+import type { ILocale } from '../../../locales/index.js';
 
 type RedisOptionsSource = Partial<RedisOptions> & {
 	host: string;
@@ -185,9 +188,12 @@ export type Config = {
 	authUrl: string;
 	driveUrl: string;
 	userAgent: string;
-	frontendEntry: string;
+	localeEntries: Record<string, string>;
+	errorLocaleMessages: Record<string, ILocale>;
+	configEntry: ManifestChunk;
+	frontendEntry: ManifestChunk;
 	frontendManifestExists: boolean;
-	frontendEmbedEntry: string;
+	frontendEmbedEntry: ManifestChunk;
 	frontendEmbedManifestExists: boolean;
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
@@ -229,12 +235,23 @@ export function loadConfig(): Config {
 
 	const frontendManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_vite_/manifest.json');
 	const frontendEmbedManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_embed_vite_/manifest.json');
-	const frontendManifest = frontendManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`, 'utf-8'))
-		: { 'src/_boot_.ts': { file: 'src/_boot_.ts' } };
-	const frontendEmbedManifest = frontendEmbedManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`, 'utf-8'))
-		: { 'src/boot.ts': { file: 'src/boot.ts' } };
+	const frontendManifest: Manifest = frontendManifestExists
+		? JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`, 'utf-8'))
+		: Object.entries(locale).reduce<Record<string, ManifestChunk>>((a, [k]) => {
+			a[`locale:${k}`] = { file: `locale:${k}` };
+			return a;
+		}, {
+			'src/_boot_.ts': { file: 'src/_boot_.ts' },
+			'../frontend-shared/js/config.ts': { file: join('@fs', _dirname.slice(1), '../../frontend-shared/js/config.ts') },
+		});
+	const frontendEmbedManifest: Manifest = frontendEmbedManifestExists
+		? JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`, 'utf-8'))
+		: Object.entries(locale).reduce<Record<string, ManifestChunk>>((a, [k]) => {
+			a[`locale:${k}`] = { file: `locale:${k}` };
+			return a;
+		}, {
+			'src/boot.ts': { file: 'src/boot.ts' },
+		});
 
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 
@@ -310,6 +327,20 @@ export function loadConfig(): Config {
 			config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
 			: null,
 		userAgent: `Misskey/${version} (${config.url})`,
+		localeEntries: Object.entries<ManifestChunk>(frontendManifest).reduce<Record<string, string>>((a, [k, v]) => {
+			if (k.startsWith('locale:')) {
+				a[k.slice('locale:'.length)] = v.file;
+			}
+			return a;
+		}, {}),
+		errorLocaleMessages: Object.entries(locale).reduce<Record<string, ILocale>>((a, [k, v]) => {
+			a[k] = {
+				_bootErrors: v._bootErrors,
+				reload: v.reload,
+			};
+			return a;
+		}, {}),
+		configEntry: frontendManifest['../frontend-shared/js/config.ts'],
 		frontendEntry: frontendManifest['src/_boot_.ts'],
 		frontendManifestExists: frontendManifestExists,
 		frontendEmbedEntry: frontendEmbedManifest['src/boot.ts'],

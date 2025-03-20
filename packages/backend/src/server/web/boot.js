@@ -23,56 +23,24 @@
 	}
 
 	//#region Detect language & fetch translations
-	if (!localStorage.hasOwnProperty('locale')) {
-		const supportedLangs = LANGS;
-		let lang = localStorage.getItem('lang');
-		if (lang == null || !supportedLangs.includes(lang)) {
-			if (supportedLangs.includes(navigator.language)) {
-				lang = navigator.language;
-			} else {
-				lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
-
-				// Fallback
-				if (lang == null) lang = 'en-US';
-			}
-		}
-
-		const metaRes = await window.fetch('/api/meta', {
-			method: 'POST',
-			body: JSON.stringify({}),
-			credentials: 'omit',
-			cache: 'no-cache',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		if (metaRes.status !== 200) {
-			renderError('META_FETCH');
-			return;
-		}
-		const meta = await metaRes.json();
-		const v = meta.version;
-		if (v == null) {
-			renderError('META_FETCH_V');
-			return;
-		}
-
-		// for https://github.com/misskey-dev/misskey/issues/10202
-		if (lang == null || lang.toString == null || lang.toString() === 'null') {
-			console.error('invalid lang value detected!!!', typeof lang, lang);
-			lang = 'en-US';
-		}
-
-		const localRes = await window.fetch(`/assets/locales/${lang}.${v}.json`);
-		if (localRes.status === 200) {
-			localStorage.setItem('lang', lang);
-			localStorage.setItem('locale', await localRes.text());
-			localStorage.setItem('localeVersion', v);
+	const supportedLangs = LANGS;
+	let lang = localStorage.getItem('lang');
+	if (!supportedLangs.includes(lang)) {
+		if (supportedLangs.includes(navigator.language)) {
+			lang = navigator.language;
 		} else {
-			renderError('LOCALE_FETCH');
-			return;
+			lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
+
+			// Fallback
+			if (lang == null) lang = 'en-US';
 		}
 	}
+
+	await import(`/vite/${LOCALES[lang]}`)
+		.catch(async e => {
+			console.error(e);
+			renderError('LOCALE_FETCH', e);
+		});
 	//#endregion
 
 	//#region Script
@@ -151,21 +119,25 @@
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
-		const locale = JSON.parse(localStorage.getItem('locale') || '{}');
+		const supportedLangs = LANGS;
+		let lang = localStorage.getItem('lang');
+		if (!supportedLangs.includes(lang)) {
+			if (supportedLangs.includes(navigator.language)) {
+				lang = navigator.language;
+			} else {
+				lang = supportedLangs.find(x => x.split('-')[0] === navigator.language);
 
-		const messages = Object.assign({
-			title: 'Failed to initialize Misskey',
-			solution: 'The following actions may solve the problem.',
-			solution1: 'Update your os and browser',
-			solution2: 'Disable an adblocker',
-			solution3: 'Clear the browser cache',
-			solution4: '(Tor Browser) Set dom.webaudio.enabled to true',
-			otherOption: 'Other options',
-			otherOption1: 'Clear preferences and cache',
-			otherOption2: 'Start the simple client',
-			otherOption3: 'Start the repair tool',
-		}, locale?._bootErrors || {});
-		const reload = locale?.reload || 'Reload';
+				// Fallback
+				if (lang == null) lang = 'en-US';
+			}
+		}
+		const { locale } = await import(`/vite/${CONFIG_ENTRY}`).catch(() => ({
+			locale: {
+				_bootErrors: {},
+			},
+		}));
+		const messages = locale._bootErrors;
+		const reload = locale.reload;
 
 		let errorsElement = document.getElementById('errors');
 

@@ -55,7 +55,6 @@ function initLocalStorage() {
 		...userDetailed(),
 		policies: {},
 	}));
-	localStorage.setItem('locale', JSON.stringify(locale));
 }
 
 initialize({
@@ -70,13 +69,17 @@ queueMicrotask(() => {
 		import('../src/theme.js'),
 		import('../src/preferences.js'),
 		import('../src/os.js'),
-	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { prefer }, os]) => {
+		import('../src/i18n.js'),
+		import('../../frontend-shared/js/config.js'),
+	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { prefer }, os, { updateI18n }, { updateLocale }]) => {
 		setup((app) => {
 			moduleInitialized = true;
 			if (app[appInitialized]) {
 				return;
 			}
 			app[appInitialized] = true;
+			updateLocale(locale);
+			updateI18n(locale);
 			loadTheme(applyTheme);
 			components(app);
 			directives(app);

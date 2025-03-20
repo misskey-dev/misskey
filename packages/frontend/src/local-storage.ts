@@ -23,8 +23,8 @@ export type Keys = (
 	'fontSize' |
 	'ui' |
 	'ui_temp' |
-	'locale' |
-	'localeVersion' |
+	'locale' | // DEPRECATED
+	'localeVersion' | // DEPRECATED
 	'theme' |
 	'themeId' |
 	'customCss' |
