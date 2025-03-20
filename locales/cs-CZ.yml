@@ -1103,6 +1103,7 @@ flip: "Otočit"
 lastNDays: "Posledních {n} dnů"
 surrender: "Zrušit"
 postForm: "Formulář pro odeslání"
+information: "Informace"
 _delivery:
   stop: "Suspendováno"
   _type:
