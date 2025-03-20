@@ -4,46 +4,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkAnimBg style="position: absolute;"/>
-	<div class="_pageScrollable" style="position: absolute; top: 0; width: 100%; height: 100%;">
-		<MkStickyContainer>
-			<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-			<MkSpacer :contentMax="550">
-				<MkLoading v-if="uiPhase === 'fetching'"/>
-				<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
-					<template #additionalInfo>
-						<FormSection>
-							<div class="_gaps_s">
-								<MkKeyValue>
-									<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
-									<template #value><MkUrl :url="url" :showUrlPreview="false"></MkUrl></template>
-								</MkKeyValue>
-								<MkKeyValue>
-									<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
-									<template #value>
-										<!-- この画面が出ている時点でハッシュの検証には成功している -->
-										<i class="ti ti-check" style="color: var(--MI_THEME-accent)"></i>
-									</template>
-								</MkKeyValue>
-							</div>
-						</FormSection>
-					</template>
-				</MkExtensionInstaller>
-				<div v-else-if="uiPhase === 'error'" class="_gaps_m" :class="[$style.extInstallerRoot, $style.error]">
-					<div :class="$style.extInstallerIconWrapper">
-						<i class="ti ti-circle-x"></i>
-					</div>
-					<h2 :class="$style.extInstallerTitle">{{ errorKV?.title }}</h2>
-					<div :class="$style.extInstallerNormDesc">{{ errorKV?.description }}</div>
-					<div class="_buttonsCenter">
-						<MkButton @click="close_()">{{ i18n.ts.close }}</MkButton>
-					</div>
+<MkPageWithAnimBg>
+	<MkStickyContainer>
+		<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<MkSpacer :contentMax="550">
+			<MkLoading v-if="uiPhase === 'fetching'"/>
+			<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
+				<template #additionalInfo>
+					<FormSection>
+						<div class="_gaps_s">
+							<MkKeyValue>
+								<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.endpoint }}</template>
+								<template #value><MkUrl :url="url" :showUrlPreview="false"></MkUrl></template>
+							</MkKeyValue>
+							<MkKeyValue>
+								<template #key>{{ i18n.ts._externalResourceInstaller._vendorInfo.hashVerify }}</template>
+								<template #value>
+									<!-- この画面が出ている時点でハッシュの検証には成功している -->
+									<i class="ti ti-check" style="color: var(--MI_THEME-accent)"></i>
+								</template>
+							</MkKeyValue>
+						</div>
+					</FormSection>
+				</template>
+			</MkExtensionInstaller>
+			<div v-else-if="uiPhase === 'error'" class="_gaps_m" :class="[$style.extInstallerRoot, $style.error]">
+				<div :class="$style.extInstallerIconWrapper">
+					<i class="ti ti-circle-x"></i>
 				</div>
-			</MkSpacer>
-		</MkStickyContainer>
-	</div>
-</div>
+				<h2 :class="$style.extInstallerTitle">{{ errorKV?.title }}</h2>
+				<div :class="$style.extInstallerNormDesc">{{ errorKV?.description }}</div>
+				<div class="_buttonsCenter">
+					<MkButton @click="close_()">{{ i18n.ts.close }}</MkButton>
+				</div>
+			</div>
+		</MkSpacer>
+	</MkStickyContainer>
+</MkPageWithAnimBg>
 </template>
 
 <script lang="ts" setup>
@@ -63,7 +60,7 @@ import { parseThemeCode, installTheme } from '@/theme.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import MkAnimBg from '@/components/MkAnimBg.vue';
+import MkPageWithAnimBg from '@/components/MkPageWithAnimBg.vue';
 
 const uiPhase = ref<'fetching' | 'confirm' | 'error'>('fetching');
 const errorKV = ref<{
