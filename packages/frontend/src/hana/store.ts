@@ -1,10 +1,10 @@
 import { markRaw } from 'vue';
-import { Storage } from '@/pizzax.js';
+import { Pizzax } from '@/lib/pizzax.js';
 
 /**
  * はなみすきー独自のデータ用
  */
-export const hanaStore = markRaw(new Storage('hanaMain', {
+export const hanaStore = markRaw(new Pizzax('hanaMain', {
 	neverShowWelcomeCardPopup: {
 		where: 'account',
 		default: false,
