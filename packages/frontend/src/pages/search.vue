@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-		<div v-if="tab === 'note'" key="note">
+		<div v-if="tab === 'note'">
 			<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable">
 				<XNote v-bind="props"/>
 			</div>
@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSpacer>
 		</div>
 
-		<MkSpacer v-else-if="tab === 'user'" key="user" :contentMax="800">
+		<MkSpacer v-else-if="tab === 'user'" :contentMax="800">
 			<XUser v-bind="props"/>
 		</MkSpacer>
 	</MkHorizontalSwipe>
