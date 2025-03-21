@@ -202,8 +202,8 @@ function onWheel(ev: WheelEvent) {
 	}
 }
 
-document.documentElement.style.overflowY = 'hidden';
-document.documentElement.style.scrollBehavior = 'auto';
+window.document.documentElement.style.overflowY = 'hidden';
+window.document.documentElement.style.scrollBehavior = 'auto';
 
 async function deleteProfile() {
 	if (prefer.s['deck.profile'] == null) return;

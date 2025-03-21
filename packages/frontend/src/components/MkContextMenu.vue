@@ -68,11 +68,11 @@ onMounted(() => {
 		rootEl.value.style.left = `${left}px`;
 	}
 
-	document.body.addEventListener('mousedown', onMousedown);
+	window.document.body.addEventListener('mousedown', onMousedown);
 });
 
 onBeforeUnmount(() => {
-	document.body.removeEventListener('mousedown', onMousedown);
+	window.document.body.removeEventListener('mousedown', onMousedown);
 });
 
 function onMousedown(evt: Event) {

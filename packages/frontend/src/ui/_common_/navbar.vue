@@ -129,8 +129,8 @@ watch(store.r.menuDisplay, () => {
 });
 
 function toggleIconOnly() {
-	if (document.startViewTransition && prefer.s.animation) {
-		document.startViewTransition(() => {
+	if (window.document.startViewTransition && prefer.s.animation) {
+		window.document.startViewTransition(() => {
 			store.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
 		});
 	} else {

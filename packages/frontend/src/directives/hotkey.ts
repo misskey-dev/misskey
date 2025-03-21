@@ -13,7 +13,7 @@ export default {
 		el._keyHandler = makeHotkey(binding.value);
 
 		if (el._hotkey_global) {
-			document.addEventListener('keydown', el._keyHandler, { passive: false });
+			window.document.addEventListener('keydown', el._keyHandler, { passive: false });
 		} else {
 			el.addEventListener('keydown', el._keyHandler, { passive: false });
 		}
@@ -21,7 +21,7 @@ export default {
 
 	unmounted(el) {
 		if (el._hotkey_global) {
-			document.removeEventListener('keydown', el._keyHandler);
+			window.document.removeEventListener('keydown', el._keyHandler);
 		} else {
 			el.removeEventListener('keydown', el._keyHandler);
 		}

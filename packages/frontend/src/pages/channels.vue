@@ -4,11 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="1200">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'search'" key="search" :class="$style.searchRoot">
+			<div v-if="tab === 'search'" :class="$style.searchRoot">
 				<div class="_gaps">
 					<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
 						<template #prefix><i class="ti ti-search"></i></template>
@@ -25,28 +24,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkChannelList :key="key" :pagination="channelPagination"/>
 				</MkFoldableSection>
 			</div>
-			<div v-if="tab === 'featured'" key="featured">
+			<div v-if="tab === 'featured'">
 				<MkPagination v-slot="{items}" :pagination="featuredPagination">
 					<div :class="$style.root">
 						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 					</div>
 				</MkPagination>
 			</div>
-			<div v-else-if="tab === 'favorites'" key="favorites">
+			<div v-else-if="tab === 'favorites'">
 				<MkPagination v-slot="{items}" :pagination="favoritesPagination">
 					<div :class="$style.root">
 						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 					</div>
 				</MkPagination>
 			</div>
-			<div v-else-if="tab === 'following'" key="following">
+			<div v-else-if="tab === 'following'">
 				<MkPagination v-slot="{items}" :pagination="followingPagination">
 					<div :class="$style.root">
 						<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 					</div>
 				</MkPagination>
 			</div>
-			<div v-else-if="tab === 'owned'" key="owned">
+			<div v-else-if="tab === 'owned'">
 				<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 				<MkPagination v-slot="{items}" :pagination="ownedPagination">
 					<div :class="$style.root">
@@ -56,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkHorizontalSwipe>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

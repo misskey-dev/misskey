@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPageWithAnimBg>
+<PageWithAnimBg>
 	<MkSpacer :contentMax="550" :marginMax="50">
 		<MkLoading v-if="uiPhase === 'fetching'"/>
 		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</MkPageWithAnimBg>
+</PageWithAnimBg>
 </template>
 
 <script lang="ts" setup>
@@ -57,7 +57,6 @@ import { parseThemeCode, installTheme } from '@/theme.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import MkPageWithAnimBg from '@/components/MkPageWithAnimBg.vue';
 
 const uiPhase = ref<'fetching' | 'confirm' | 'error'>('fetching');
 const errorKV = ref<{

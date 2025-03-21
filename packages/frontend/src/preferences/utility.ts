@@ -106,14 +106,14 @@ async function renameProfile() {
 function exportCurrentProfile() {
 	const p = prefer.profile;
 	const txtBlob = new Blob([JSON.stringify(p)], { type: 'text/plain' });
-	const dummya = document.createElement('a');
+	const dummya = window.document.createElement('a');
 	dummya.href = URL.createObjectURL(txtBlob);
 	dummya.download = `${p.name || p.id}.misskeypreferences`;
 	dummya.click();
 }
 
 function importProfile() {
-	const input = document.createElement('input');
+	const input = window.document.createElement('input');
 	input.type = 'file';
 	input.accept = '.misskeypreferences';
 	input.onchange = async () => {

@@ -28,7 +28,7 @@ export function physics(container: HTMLElement) {
 	// create renderer
 	const render = Matter.Render.create({
 		engine: engine,
-		//element: document.getElementById('debug'),
+		//element: window.document.getElementById('debug'),
 		options: {
 			width: containerWidth,
 			height: containerHeight,

@@ -4,15 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
-
+<PageWithHeader>
 	<MkSpacer :contentMax="500">
 		<div class="_gaps">
 			<MkAd v-for="ad in instance.ads" :key="ad.id" :specify="ad"/>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

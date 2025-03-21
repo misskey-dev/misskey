@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="700">
 		<div class="jqqmcavi">
 			<MkButton v-if="pageId" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ i18n.ts._pages.viewPage }}</MkButton>
@@ -57,19 +56,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, provide, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
+import { url } from '@@/js/config.js';
 import XBlocks from './page-editor.blocks.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
-import { url } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { selectFile } from '@/utility/select-file.js';
@@ -266,8 +265,8 @@ const headerTabs = computed(() => [{
 
 definePage(() => ({
 	title: props.initPageId ? i18n.ts._pages.editPage
-				: props.initPageName && props.initUser ? i18n.ts._pages.readPage
-				: i18n.ts._pages.newPage,
+	: props.initPageName && props.initUser ? i18n.ts._pages.readPage
+	: i18n.ts._pages.newPage,
 	icon: 'ti ti-pencil',
 }));
 </script>

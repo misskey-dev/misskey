@@ -192,7 +192,7 @@ function tick() {
 tick();
 
 function calcColors() {
-	const computedStyle = getComputedStyle(document.documentElement);
+	const computedStyle = getComputedStyle(window.document.documentElement);
 	const dark = tinycolor(computedStyle.getPropertyValue('--MI_THEME-bg')).isDark();
 	const accent = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();
 	majorGraduationColor.value = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';

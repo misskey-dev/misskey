@@ -23,9 +23,9 @@ let misskeyOS = null;
 
 function loadTheme(applyTheme: typeof import('../src/theme')['applyTheme']) {
 	unobserve();
-	const theme = themes[document.documentElement.dataset.misskeyTheme];
+	const theme = themes[window.document.documentElement.dataset.misskeyTheme];
 	if (theme) {
-		applyTheme(themes[document.documentElement.dataset.misskeyTheme]);
+		applyTheme(themes[window.document.documentElement.dataset.misskeyTheme]);
 	} else {
 		applyTheme(themes['l-light']);
 	}
@@ -42,7 +42,7 @@ function loadTheme(applyTheme: typeof import('../src/theme')['applyTheme']) {
 			}
 		}
 	});
-	observer.observe(document.documentElement, {
+	observer.observe(window.document.documentElement, {
 		attributes: true,
 		attributeFilter: ['data-misskey-theme'],
 	});

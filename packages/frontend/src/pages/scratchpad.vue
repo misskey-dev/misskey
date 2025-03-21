@@ -4,9 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
-
+<PageWithHeader>
 	<MkSpacer :contentMax="800">
 		<div :class="$style.root">
 			<div class="_gaps_s">
@@ -53,13 +51,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { onDeactivated, onUnmounted, ref, watch, computed } from 'vue';
-import type { Ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
+import type { Ref } from 'vue';
+import type { AsUiComponent } from '@/aiscript/ui.js';
+import type { AsUiRoot } from '@/aiscript/ui.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -70,12 +70,9 @@ import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { registerAsUiLib } from '@/aiscript/ui.js';
-import type { AsUiComponent } from '@/aiscript/ui.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/utility/achievements.js';
-
-import type { AsUiRoot } from '@/aiscript/ui.js';
 
 const parser = new Parser();
 let aiscript: Interpreter;
@@ -103,7 +100,7 @@ function stringifyUiProps(uiProps) {
 	return JSON.stringify(
 		{ ...uiProps, type: undefined, id: undefined },
 		(k, v) => typeof v === 'function' ? '<function>' : v,
-		2
+		2,
 	);
 }
 

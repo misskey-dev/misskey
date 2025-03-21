@@ -675,7 +675,7 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 		src = null;
 	}
 
-	let returnFocusTo = getHTMLElementOrNull(src) ?? getHTMLElementOrNull(document.activeElement);
+	let returnFocusTo = getHTMLElementOrNull(src) ?? getHTMLElementOrNull(window.document.activeElement);
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkPopupMenu, {
 			items,
@@ -704,7 +704,7 @@ export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 		return Promise.resolve();
 	}
 
-	let returnFocusTo = getHTMLElementOrNull(ev.currentTarget ?? ev.target) ?? getHTMLElementOrNull(document.activeElement);
+	let returnFocusTo = getHTMLElementOrNull(ev.currentTarget ?? ev.target) ?? getHTMLElementOrNull(window.document.activeElement);
 	ev.preventDefault();
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkContextMenu, {

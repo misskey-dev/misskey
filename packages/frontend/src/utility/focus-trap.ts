@@ -50,7 +50,7 @@ function releaseFocusTrap(el: HTMLElement): void {
 
 	const highestZIndexElement = getHighestZIndexElement();
 
-	if (el.parentElement != null && el !== document.body) {
+	if (el.parentElement != null && el !== window.document.body) {
 		el.parentElement.childNodes.forEach((siblingNode) => {
 			const siblingEl = getHTMLElementOrNull(siblingNode);
 			if (!siblingEl) return;
@@ -104,7 +104,7 @@ export function focusTrap(el: HTMLElement, hasInteractionWithOtherFocusTrappedEl
 		el.inert = false;
 	}
 
-	if (el.parentElement != null && el !== document.body) {
+	if (el.parentElement != null && el !== window.document.body) {
 		el.parentElement.childNodes.forEach((siblingNode) => {
 			const siblingEl = getHTMLElementOrNull(siblingNode);
 			if (!siblingEl) return;

@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPageWithAnimBg>
+<PageWithAnimBg>
 	<div :class="$style.formContainer">
 		<div :class="$style.form">
 			<MkAuthConfirm
@@ -18,51 +18,50 @@ SPDX-License-Identifier: AGPL-3.0-only
 			/>
 		</div>
 	</div>
-</MkPageWithAnimBg>
+</PageWithAnimBg>
 </template>
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import MkPageWithAnimBg from '@/components/MkPageWithAnimBg.vue';
 import { definePage } from '@/page.js';
 import MkAuthConfirm from '@/components/MkAuthConfirm.vue';
 
-const transactionIdMeta = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]');
+const transactionIdMeta = window.document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]');
 if (transactionIdMeta) {
 	transactionIdMeta.remove();
 }
 
-const name = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-name"]')?.content;
-const logo = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-logo"]')?.content;
-const permissions = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:scope"]')?.content.split(' ').filter((p): p is typeof Misskey.permissions[number] => (Misskey.permissions as readonly string[]).includes(p)) ?? [];
+const name = window.document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-name"]')?.content;
+const logo = window.document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-logo"]')?.content;
+const permissions = window.document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:scope"]')?.content.split(' ').filter((p): p is typeof Misskey.permissions[number] => (Misskey.permissions as readonly string[]).includes(p)) ?? [];
 
 function doPost(token: string, decision: 'accept' | 'deny') {
-	const form = document.createElement('form');
+	const form = window.document.createElement('form');
 	form.action = '/oauth/decision';
 	form.method = 'post';
 	form.acceptCharset = 'utf-8';
 
-	const loginToken = document.createElement('input');
+	const loginToken = window.document.createElement('input');
 	loginToken.type = 'hidden';
 	loginToken.name = 'login_token';
 	loginToken.value = token;
 	form.appendChild(loginToken);
 
-	const transactionId = document.createElement('input');
+	const transactionId = window.document.createElement('input');
 	transactionId.type = 'hidden';
 	transactionId.name = 'transaction_id';
 	transactionId.value = transactionIdMeta?.content ?? '';
 	form.appendChild(transactionId);
 
 	if (decision === 'deny') {
-		const cancel = document.createElement('input');
+		const cancel = window.document.createElement('input');
 		cancel.type = 'hidden';
 		cancel.name = 'cancel';
 		cancel.value = 'cancel';
 		form.appendChild(cancel);
 	}
 
-	document.body.appendChild(form);
+	window.document.body.appendChild(form);
 	form.submit();
 }
 

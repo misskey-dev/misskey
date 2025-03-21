@@ -151,9 +151,9 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		closed: () => dispose(),
 	});
 
-	const style = document.createElement('style');
-	style.appendChild(document.createTextNode('* { cursor: grabbing !important; } body * { pointer-events: none !important; }'));
-	document.head.appendChild(style);
+	const style = window.document.createElement('style');
+	style.appendChild(window.document.createTextNode('* { cursor: grabbing !important; } body * { pointer-events: none !important; }'));
+	window.document.head.appendChild(style);
 
 	const thumbWidth = getThumbWidth();
 
@@ -172,7 +172,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	let beforeValue = finalValue.value;
 
 	const onMouseup = () => {
-		document.head.removeChild(style);
+		window.document.head.removeChild(style);
 		tooltipForDragShowing.value = false;
 		window.removeEventListener('mousemove', onDrag);
 		window.removeEventListener('touchmove', onDrag);

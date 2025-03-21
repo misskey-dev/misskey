@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
 		<FormSuspense v-slot="{ result: database }" :p="databasePromiseFactory">
 			<MkKeyValue v-for="table in database" :key="table[0]" oneline style="margin: 1em 0;">
@@ -14,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkKeyValue>
 		</FormSuspense>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

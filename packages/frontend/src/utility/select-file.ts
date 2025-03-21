@@ -25,7 +25,7 @@ export function chooseFileFromPc(
 	const nameConverter = options?.nameConverter ?? (() => undefined);
 
 	return new Promise((res, rej) => {
-		const input = document.createElement('input');
+		const input = window.document.createElement('input');
 		input.type = 'file';
 		input.multiple = multiple;
 		input.onchange = () => {

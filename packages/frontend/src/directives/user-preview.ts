@@ -31,7 +31,7 @@ export class UserPreview {
 	}
 
 	private show() {
-		if (!document.body.contains(this.el)) return;
+		if (!window.document.body.contains(this.el)) return;
 		if (this.promise) return;
 
 		const showing = ref(true);
@@ -58,7 +58,7 @@ export class UserPreview {
 		};
 
 		this.checkTimer = window.setInterval(() => {
-			if (!document.body.contains(this.el)) {
+			if (!window.document.body.contains(this.el)) {
 				window.clearTimeout(this.showTimer);
 				window.clearTimeout(this.hideTimer);
 				this.close();

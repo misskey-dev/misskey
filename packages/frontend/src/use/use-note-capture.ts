@@ -86,7 +86,7 @@ export function useNoteCapture(props: {
 	function capture(withHandler = false): void {
 		if (connection) {
 			// TODO: このノートがストリーミング経由で流れてきた場合のみ sr する
-			connection.send(document.body.contains(props.rootEl.value ?? null as Node | null) ? 'sr' : 's', { id: note.value.id });
+			connection.send(window.document.body.contains(props.rootEl.value ?? null as Node | null) ? 'sr' : 's', { id: note.value.id });
 			if (pureNote.value.id !== note.value.id) connection.send('s', { id: pureNote.value.id });
 			if (withHandler) connection.on('noteUpdated', onStreamNoteUpdated);
 		}

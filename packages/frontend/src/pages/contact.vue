@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
+<PageWithHeader>
 	<MkSpacer :contentMax="600" :marginMin="20">
 		<div class="_gaps_m">
 			<MkKeyValue :copy="instance.maintainerName">
@@ -31,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkKeyValue>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
