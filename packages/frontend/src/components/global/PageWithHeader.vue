@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer class="_pageScrollable">
 	<template #header><MkPageHeader v-model:tab="tab" :actions="actions" :tabs="tabs"/></template>
 	<slot></slot>
+	<template #footer><slot name="footer"></slot></template>
 </MkStickyContainer>
 </template>
 
