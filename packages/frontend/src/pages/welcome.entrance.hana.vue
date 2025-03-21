@@ -41,7 +41,7 @@ import { instance } from '@/instance.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
 
 import MkButton from '@/components/MkButton.vue';
