@@ -12,30 +12,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div ref="rootEl" :class="$style.root">
 			<MkSpacer :contentMax="700">
-				<MkPagination v-if="pagination" ref="pagingComponent" :key="userId || roomId" :pagination="pagination" :disableAutoLoad="true">
+				<MkPagination v-if="pagination" ref="pagingComponent" :key="userId || roomId" :pagination="pagination" :disableAutoLoad="true" :scrollReversed="true">
 					<template #empty>
 						<div class="_fullinfo">
 							<div>{{ i18n.ts.noMessagesYet }}</div>
 						</div>
 					</template>
-					<template #default="{ items: messages, fetching: pFetching }">
-						<MkDateSeparatedList
-							v-if="messages.length > 0"
-							v-slot="{ item: message }"
-							:class="{ [$style['messages']]: true, 'deny-move-transition': pFetching }"
-							:items="messages"
-							direction="up"
-							reversed
+					<template #default="{ items: messages }">
+						<TransitionGroup
+							:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
+							:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
+							:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
+							:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
+							:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
+							tag="div" class="_gaps"
 						>
-							<XMessage :key="message.id" :message="message" :user="message.fromUserId === $i.id ? $i : user" :isRoom="room != null"/>
-						</MkDateSeparatedList>
+							<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message" :user="message.fromUserId === $i.id ? $i : user" :isRoom="room != null"/>
+						</TransitionGroup>
 					</template>
 				</MkPagination>
 			</MkSpacer>
 		</div>
 
 		<template #footer>
-			<MkSpacer :contentMax="700">
+			<div :class="$style.footer">
 				<div class="_gaps">
 					<Transition name="fade">
 						<div v-show="showIndicator" :class="$style.new">
@@ -46,16 +46,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</Transition>
 					<XForm v-if="!fetching" :user="user" :room="room" :class="$style.form"/>
 				</div>
-			</MkSpacer>
+			</div>
 		</template>
 	</MkStickyContainer>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { ref, useTemplateRef, computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
-import { isBottomVisible } from '@@/js/scroll.js';
+import { isTailVisible } from '@@/js/scroll.js';
 import XMessage from './room.message.vue';
 import XForm from './room.form.vue';
 import type { Paging } from '@/components/MkPagination.vue';
@@ -68,6 +68,7 @@ import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
 
 const $i = ensureSignin();
 
@@ -76,8 +77,8 @@ const props = defineProps<{
 	roomId?: string;
 }>();
 
-const rootEl = shallowRef<HTMLDivElement>();
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const rootEl = useTemplateRef('rootEl');
+const pagingComponent = useTemplateRef('pagingComponent');
 
 const fetching = ref(true);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
@@ -109,7 +110,7 @@ async function fetch() {
 			pageEl: rootEl.value,
 		};
 		connection.value = useStream().useChannel('chat', {
-			other: user.value.id,
+			otherId: user.value.id,
 		});
 	}/* else {
 		user = null;
@@ -140,15 +141,16 @@ async function fetch() {
 function onMessage(message) {
 	//sound.play('chat');
 
-	const _isBottom = isBottomVisible(rootEl, 64);
+	//const _isBottom = isBottomVisible(rootEl, 64);
 
 	pagingComponent.value.prepend(message);
-	if (message.userId !== $i.id && !document.hidden) {
+	if (message.userId !== $i.id && !window.document.hidden) {
 		connection.value?.send('read', {
 			id: message.id,
 		});
 	}
 
+	/*
 	if (_isBottom) {
 		// Scroll to bottom
 		nextTick(() => {
@@ -157,7 +159,7 @@ function onMessage(message) {
 	} else if (message.userId !== $i.id) {
 		// Notify
 		notifyNewMessage();
-	}
+	}*/
 }
 
 function onDeleted(id) {
@@ -215,8 +217,22 @@ definePage(computed(() => !fetching.value ? user.value ? {
 </script>
 
 <style lang="scss" module>
+.transition_x_move,
+.transition_x_enterActive,
+.transition_x_leaveActive {
+	transition: opacity 0.2s cubic-bezier(0,.5,.5,1), transform 0.2s cubic-bezier(0,.5,.5,1) !important;
+}
+.transition_x_enterFrom,
+.transition_x_leaveTo {
+	opacity: 0;
+	transform: translateY(80px);
+}
+.transition_x_leaveActive {
+	position: absolute;
+}
+
 .root {
-	display: content;
+	min-height: 100cqh;
 }
 
 .more {
@@ -239,10 +255,6 @@ definePage(computed(() => !fetching.value ? user.value ? {
 
 .fetching {
 	cursor: wait;
-}
-
-.messages {
-	padding: 16px 0 0;
 }
 
 .footer {
@@ -273,12 +285,14 @@ definePage(computed(() => !fetching.value ? user.value ? {
 	margin-right: 8px;
 }
 
+.footer {
+
+}
+
 .form {
-	max-height: 12em;
-	overflow-y: scroll;
-	border-top: solid 0.5px var(--divider);
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
+	margin: 0 auto;
+	width: 100%;
+	max-width: 700px;
 }
 
 .fade-enter-active, .fade-leave-active {

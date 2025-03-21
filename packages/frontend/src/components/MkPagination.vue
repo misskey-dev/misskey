@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
-import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@@/js/scroll.js';
+import { onScrollTop, isHeadVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isTailVisible } from '@@/js/scroll.js';
 import type { ComputedRef } from 'vue';
 import type { MisskeyEntity } from '@/types/date-separated-list.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -97,6 +97,7 @@ const props = withDefaults(defineProps<{
 	pagination: Paging;
 	disableAutoLoad?: boolean;
 	displayLimit?: number;
+	scrollReversed?: boolean;
 }>(), {
 	displayLimit: 20,
 });
@@ -349,7 +350,7 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 	fetchMoreAppearTimeout();
 };
 
-const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl.value!, TOLERANCE);
+const isHead = (): boolean => isBackTop.value || (props.pagination.reversed && !props.scrollReversed ? isTailVisible : isHeadVisible)(contentEl.value!, TOLERANCE);
 
 watch(visibility, () => {
 	if (visibility.value === 'hidden') {
@@ -364,7 +365,7 @@ watch(visibility, () => {
 			timerForSetPause = null;
 		} else {
 			isPausingUpdate = false;
-			if (isTop()) {
+			if (isHead()) {
 				executeQueue();
 			}
 		}
@@ -376,16 +377,18 @@ watch(visibility, () => {
  * ストリーミングから降ってきたアイテムはこれで追加する
  * @param item アイテム
  */
-const prepend = (item: MisskeyEntity): void => {
+function prepend(item: MisskeyEntity): void {
 	if (items.value.size === 0) {
 		items.value.set(item.id, item);
 		fetching.value = false;
 		return;
 	}
 
-	if (isTop() && !isPausingUpdate) unshiftItems([item]);
+	console.log(isHead(), isPausingUpdate);
+
+	if (isHead() && !isPausingUpdate) unshiftItems([item]);
 	else prependQueue(item);
-};
+}
 
 /**
  * 新着アイテムをitemsの先頭に追加し、displayLimitを適用する

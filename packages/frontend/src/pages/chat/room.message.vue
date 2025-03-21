@@ -1,6 +1,6 @@
 <template>
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
-	<MkAvatar :class="$style.avatar" :user="user" indicator link preview/>
+	<MkAvatar :class="$style.avatar" :user="user" link/>
 	<div :class="$style.body">
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
 			<div v-if="!message.isDeleted" :class="$style.content">
@@ -113,6 +113,6 @@ function del(): void {
 
 .time {
 	font-size: 75%;
-	opacity: 0.7;
+	opacity: 0.5;
 }
 </style>

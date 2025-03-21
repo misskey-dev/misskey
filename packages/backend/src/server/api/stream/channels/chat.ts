@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
+import { ChatService } from '@/core/ChatService.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class ChatChannel extends Channel {
@@ -17,6 +18,8 @@ class ChatChannel extends Channel {
 	private otherId: string;
 
 	constructor(
+		private chatService: ChatService,
+
 		id: string,
 		connection: Channel['connection'],
 	) {
@@ -37,6 +40,17 @@ class ChatChannel extends Channel {
 	}
 
 	@bindThis
+	public onMessage(type: string, body: any) {
+		switch (type) {
+			case 'read':
+				if (this.otherId) {
+					this.chatService.readUserChatMessage(this.user!.id, this.otherId);
+				}
+				break;
+		}
+	}
+
+	@bindThis
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off(`chatStream:${this.user!.id}-${this.otherId}`, this.onEvent);
@@ -50,12 +64,14 @@ export class ChatChannelService implements MiChannelService<true> {
 	public readonly kind = ChatChannel.kind;
 
 	constructor(
+		private chatService: ChatService,
 	) {
 	}
 
 	@bindThis
 	public create(id: string, connection: Channel['connection']): ChatChannel {
 		return new ChatChannel(
+			this.chatService,
 			id,
 			connection,
 		);

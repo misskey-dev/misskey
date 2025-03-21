@@ -136,6 +136,7 @@ export const PREF_DEF = {
 			'clips',
 			'drive',
 			'followRequests',
+			'chat',
 			'-',
 			'explore',
 			'announcements',

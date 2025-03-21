@@ -233,6 +233,10 @@ onMounted(() => {
 <style lang="scss" module>
 .root {
 	position: relative;
+	border: solid 1px var(--MI_THEME-divider);
+	border-bottom: none;
+	border-radius: 14px 14px 0 0;
+	overflow: clip;
 }
 
 .textarea {
@@ -252,13 +256,13 @@ onMounted(() => {
 	border-radius: 0;
 	box-shadow: none;
 	box-sizing: border-box;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 
 .footer {
 	position: sticky;
 	bottom: 0;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 }
 
 .file {
