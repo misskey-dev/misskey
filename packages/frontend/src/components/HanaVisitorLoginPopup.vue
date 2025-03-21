@@ -25,7 +25,7 @@ import { defineAsyncComponent } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
