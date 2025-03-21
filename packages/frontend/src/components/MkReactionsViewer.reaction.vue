@@ -12,13 +12,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+	<MkReactionIcon style="pointer-events: none;" :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
 	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, shallowRef, watch } from 'vue';
+import { computed, inject, onMounted, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getUnicodeEmoji } from '@@/js/emojilist.js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
@@ -50,7 +50,7 @@ const emit = defineEmits<{
 	(ev: 'reactionToggled', emoji: string, newCount: number): void;
 }>();
 
-const buttonEl = shallowRef<HTMLElement>();
+const buttonEl = useTemplateRef('buttonEl');
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
 const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
@@ -136,7 +136,7 @@ async function menu(ev) {
 }
 
 function anime() {
-	if (document.hidden || !prefer.s.animation || buttonEl.value == null) return;
+	if (window.document.hidden || !prefer.s.animation || buttonEl.value == null) return;
 
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;

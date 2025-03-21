@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, provide, ref, computed, shallowRef } from 'vue';
+import { defineAsyncComponent, onMounted, provide, ref, computed, useTemplateRef } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import XSidebar from './classic.sidebar.vue';
@@ -58,7 +58,7 @@ import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { mainRouter } from '@/router/main.js';
+import { mainRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 
@@ -77,7 +77,7 @@ const fullView = ref(false);
 const globalHeaderHeight = ref(0);
 const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 const showMenuOnTop = computed(() => store.s.menuDisplay === 'top');
-const live2d = shallowRef<HTMLIFrameElement>();
+const live2d = useTemplateRef('live2d');
 const widgetsLeft = ref<HTMLElement>();
 const widgetsRight = ref<HTMLElement>();
 
@@ -87,9 +87,9 @@ provideMetadataReceiver((metadataGetter) => {
 	pageMetadata.value = info;
 	if (pageMetadata.value) {
 		if (isRoot.value && pageMetadata.value.title === instanceName) {
-			document.title = pageMetadata.value.title;
+			window.document.title = pageMetadata.value.title;
 		} else {
-			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+			window.document.title = `${pageMetadata.value.title} | ${instanceName}`;
 		}
 	}
 });
@@ -112,7 +112,7 @@ function onContextmenu(ev: MouseEvent) {
 	if (isLink(ev.target)) return;
 	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
 	if (window.getSelection().toString() !== '') return;
-	const path = mainRouter.getCurrentPath();
+	const path = mainRouter.getCurrentFullPath();
 	os.contextMenu([{
 		type: 'label',
 		text: path,
@@ -139,23 +139,10 @@ if (window.innerWidth < 1024) {
 	const currentUI = miLocalStorage.getItem('ui');
 	miLocalStorage.setItem('ui_temp', currentUI ?? 'default');
 	miLocalStorage.setItem('ui', 'default');
-	location.reload();
+	window.location.reload();
 }
 
-document.documentElement.style.overflowY = 'scroll';
-
-if (prefer.s.widgets.length === 0) {
-	prefer.commit('widgets', [{
-		name: 'calendar',
-		id: 'a', place: null, data: {},
-	}, {
-		name: 'notifications',
-		id: 'b', place: null, data: {},
-	}, {
-		name: 'trends',
-		id: 'c', place: null, data: {},
-	}]);
-}
+window.document.documentElement.style.overflowY = 'scroll';
 
 onMounted(() => {
 	window.addEventListener('resize', () => {

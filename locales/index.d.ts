@@ -2815,6 +2815,10 @@ export interface Locale extends ILocale {
      */
     "copy": string;
     /**
+     * クリップボードにコピーされました
+     */
+    "copiedToClipboard": string;
+    /**
      * メトリクス
      */
     "metrics": string;
@@ -5350,6 +5354,14 @@ export interface Locale extends ILocale {
      * 投稿フォーム
      */
     "postForm": string;
+    /**
+     * 文字数
+     */
+    "textCount": string;
+    /**
+     * 情報
+     */
+    "information": string;
     "_emojiPalette": {
         /**
          * パレット
@@ -5437,6 +5449,14 @@ export interface Locale extends ILocale {
          * タイムラインとノート
          */
         "timelineAndNote": string;
+        /**
+         * 全てのテキスト要素を選択可能にする
+         */
+        "makeEveryTextElementsSelectable": string;
+        /**
+         * 有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。
+         */
+        "makeEveryTextElementsSelectable_description": string;
     };
     "_preferencesProfile": {
         /**
@@ -9782,6 +9802,10 @@ export interface Locale extends ILocale {
              */
             "login": string;
             /**
+             * アクセストークンの作成
+             */
+            "createToken": string;
+            /**
              * 通知のテスト
              */
             "test": string;
@@ -10343,20 +10367,12 @@ export interface Locale extends ILocale {
              * このプラグインをインストールしますか？
              */
             "title": string;
-            /**
-             * プラグイン情報
-             */
-            "metaTitle": string;
         };
         "_theme": {
             /**
              * このテーマをインストールしますか？
              */
             "title": string;
-            /**
-             * テーマ情報
-             */
-            "metaTitle": string;
         };
         "_meta": {
             /**

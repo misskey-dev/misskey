@@ -17,14 +17,14 @@ import GameBoard from './game.board.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { useStream } from '@/stream.js';
-import { signinRequired } from '@/i.js';
-import { useRouter } from '@/router/supplier.js';
+import { ensureSignin } from '@/i.js';
+import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
 import { url } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@@/js/use-interval.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const router = useRouter();
 

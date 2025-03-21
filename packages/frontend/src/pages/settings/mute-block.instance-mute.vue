@@ -19,11 +19,11 @@ import { ref, watch } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const instanceMutes = ref($i.mutedInstances.join('\n'));
 const changed = ref(false);

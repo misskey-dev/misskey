@@ -191,7 +191,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch, useTemplateRef } from 'vue';
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
 import { DropAndFusionGame } from 'misskey-bubble-game';
@@ -567,8 +567,8 @@ let game = new DropAndFusionGame({
 });
 attachGameEvents();
 
-const containerEl = shallowRef<HTMLElement>();
-const canvasEl = shallowRef<HTMLCanvasElement>();
+const containerEl = useTemplateRef('containerEl');
+const canvasEl = useTemplateRef('canvasEl');
 const dropperX = ref(0);
 const currentPick = shallowRef<{ id: string; mono: Mono } | null>(null);
 const stock = shallowRef<{ id: string; mono: Mono }[]>([]);
@@ -632,7 +632,7 @@ function loadMonoTextures() {
 			src = URL.createObjectURL(monoTextures[mono.img]);
 			monoTextureUrls[mono.img] = src;
 		} else {
-			const res = await fetch(mono.img);
+			const res = await window.fetch(mono.img);
 			const blob = await res.blob();
 			monoTextures[mono.img] = blob;
 			src = URL.createObjectURL(blob);
@@ -849,7 +849,6 @@ function exportLog() {
 		l: DropAndFusionGame.serializeLogs(logs),
 	});
 	copyToClipboard(data);
-	os.success();
 }
 
 function updateSettings<
@@ -876,7 +875,7 @@ function loadImage(url: string) {
 
 function getGameImageDriveFile() {
 	return new Promise<Misskey.entities.DriveFile | null>(res => {
-		const dcanvas = document.createElement('canvas');
+		const dcanvas = window.document.createElement('canvas');
 		dcanvas.width = game.GAME_WIDTH;
 		dcanvas.height = game.GAME_HEIGHT;
 		const ctx = dcanvas.getContext('2d');

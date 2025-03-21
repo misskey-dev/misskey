@@ -4,13 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="700">
 		<div>
 			<div v-if="antennas.length === 0" class="empty">
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img :src="infoImageUrl" draggable="false"/>
 					<div>{{ i18n.ts.nothing }}</div>
 				</div>
 			</div>
@@ -24,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

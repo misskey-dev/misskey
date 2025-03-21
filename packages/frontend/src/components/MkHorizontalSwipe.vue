@@ -19,19 +19,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:leaveToClass="transitionName === 'swipeAnimationLeft' ? $style.swipeAnimationLeft_leaveTo : $style.swipeAnimationRight_leaveTo"
 		:style="`--swipe: ${pullDistance}px;`"
 	>
-		<!-- 【注意】slot内の最上位要素に動的にkeyを設定すること -->
-		<!-- 各最上位要素にユニークなkeyの指定がないとTransitionがうまく動きません -->
-		<slot></slot>
+		<div :key="tabModel">
+			<slot></slot>
+		</div>
 	</Transition>
 </div>
 </template>
 <script lang="ts" setup>
-import { ref, shallowRef, computed, nextTick, watch } from 'vue';
+import { ref, useTemplateRef, computed, nextTick, watch } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import { isHorizontalSwipeSwiping as isSwiping } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
 
-const rootEl = shallowRef<HTMLDivElement>();
+const rootEl = useTemplateRef('rootEl');
 
 const tabModel = defineModel<string>('tab');
 

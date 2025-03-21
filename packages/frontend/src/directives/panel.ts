@@ -10,7 +10,7 @@ export default {
 	mounted(src, binding, vn) {
 		const parentBg = getBgColor(src.parentElement) ?? 'transparent';
 
-		const myBg = getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-panel');
+		const myBg = getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-panel');
 
 		if (parentBg === myBg) {
 			src.style.backgroundColor = 'var(--MI_THEME-bg)';

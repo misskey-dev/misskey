@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef, watch, defineAsyncComponent } from 'vue';
+import { onMounted, ref, useTemplateRef, watch, defineAsyncComponent } from 'vue';
 import XColumn from './column.vue';
 import type { entities as MisskeyEntities } from 'misskey-js';
 import type { Column } from '@/deck.js';
@@ -34,7 +34,7 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const timeline = useTemplateRef('timeline');
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 const antennaName = ref<string | null>(null);
 

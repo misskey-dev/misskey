@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="400"
 	:height="500"
 	@close="onCloseModalWindow"
-	@closed="console.log('MkRoleSelectDialog: closed') ; $emit('dispose')"
+	@closed="emit('closed')"
 >
 	<template #header>{{ title }}</template>
 	<MkSpacer :marginMin="20" :marginMax="28">
@@ -58,7 +58,7 @@ import MkLoading from '@/components/global/MkLoading.vue';
 const emit = defineEmits<{
 	(ev: 'done', value: Misskey.entities.Role[]),
 	(ev: 'close'),
-	(ev: 'dispose'),
+	(ev: 'closed'),
 }>();
 
 const props = withDefaults(defineProps<{

@@ -7,41 +7,15 @@ import { Injectable } from '@nestjs/common';
 import { MiAbuseUserReport, MiNote, MiUser, MiWebhook } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWebhook.js';
-import { AbuseReportPayload, SystemWebhookPayload, SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { Packed } from '@/misc/json-schema.js';
+import { type AbuseReportPayload, SystemWebhookPayload, SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { type Packed } from '@/misc/json-schema.js';
 import { type WebhookEventTypes } from '@/models/Webhook.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { type UserWebhookPayload, UserWebhookService } from '@/core/UserWebhookService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 
 const oneDayMillis = 24 * 60 * 60 * 1000;
-
-function generateAbuseReport(override?: Partial<MiAbuseUserReport>): AbuseReportPayload {
-	const result: MiAbuseUserReport = {
-		id: 'dummy-abuse-report1',
-		targetUserId: 'dummy-target-user',
-		targetUser: null,
-		reporterId: 'dummy-reporter-user',
-		reporter: null,
-		assigneeId: null,
-		assignee: null,
-		resolved: false,
-		forwarded: false,
-		comment: 'This is a dummy report for testing purposes.',
-		targetUserHost: null,
-		reporterHost: null,
-		resolvedAs: null,
-		moderationNote: 'foo',
-		...override,
-	};
-
-	return {
-		...result,
-		targetUser: result.targetUser ? toPackedUserLite(result.targetUser) : null,
-		reporter: result.reporter ? toPackedUserLite(result.reporter) : null,
-		assignee: result.assignee ? toPackedUserLite(result.assignee) : null,
-	};
-}
 
 function generateDummyUser(override?: Partial<MiUser>): MiUser {
 	return {
@@ -134,124 +108,6 @@ function generateDummyNote(override?: Partial<MiNote>): MiNote {
 	};
 }
 
-function toPackedNote(note: MiNote, detail = true, override?: Packed<'Note'>): Packed<'Note'> {
-	return {
-		id: note.id,
-		createdAt: new Date().toISOString(),
-		deletedAt: null,
-		text: note.text,
-		cw: note.cw,
-		userId: note.userId,
-		user: toPackedUserLite(note.user ?? generateDummyUser()),
-		replyId: note.replyId,
-		renoteId: note.renoteId,
-		isHidden: false,
-		visibility: note.visibility,
-		mentions: note.mentions,
-		visibleUserIds: note.visibleUserIds,
-		fileIds: note.fileIds,
-		files: [],
-		tags: note.tags,
-		poll: null,
-		emojis: note.emojis,
-		channelId: note.channelId,
-		channel: note.channel,
-		localOnly: note.localOnly,
-		reactionAcceptance: note.reactionAcceptance,
-		reactionEmojis: {},
-		reactions: {},
-		reactionCount: 0,
-		renoteCount: note.renoteCount,
-		repliesCount: note.repliesCount,
-		uri: note.uri ?? undefined,
-		url: note.url ?? undefined,
-		reactionAndUserPairCache: note.reactionAndUserPairCache,
-		...(detail ? {
-			clippedCount: note.clippedCount,
-			reply: note.reply ? toPackedNote(note.reply, false) : null,
-			renote: note.renote ? toPackedNote(note.renote, true) : null,
-			myReaction: null,
-		} : {}),
-		...override,
-	};
-}
-
-function toPackedUserLite(user: MiUser, override?: Packed<'UserLite'>): Packed<'UserLite'> {
-	return {
-		id: user.id,
-		name: user.name,
-		username: user.username,
-		host: user.host,
-		avatarUrl: user.avatarUrl,
-		avatarBlurhash: user.avatarBlurhash,
-		avatarDecorations: user.avatarDecorations.map(it => ({
-			id: it.id,
-			angle: it.angle,
-			flipH: it.flipH,
-			url: 'https://example.com/dummy-image001.png',
-			offsetX: it.offsetX,
-			offsetY: it.offsetY,
-		})),
-		isBot: user.isBot,
-		isCat: user.isCat,
-		emojis: user.emojis,
-		onlineStatus: 'active',
-		badgeRoles: [],
-		...override,
-	};
-}
-
-function toPackedUserDetailedNotMe(user: MiUser, override?: Packed<'UserDetailedNotMe'>): Packed<'UserDetailedNotMe'> {
-	return {
-		...toPackedUserLite(user),
-		url: null,
-		uri: null,
-		movedTo: null,
-		alsoKnownAs: [],
-		createdAt: new Date().toISOString(),
-		updatedAt: user.updatedAt?.toISOString() ?? null,
-		lastFetchedAt: user.lastFetchedAt?.toISOString() ?? null,
-		bannerUrl: user.bannerUrl,
-		bannerBlurhash: user.bannerBlurhash,
-		isLocked: user.isLocked,
-		isSilenced: false,
-		isSuspended: user.isSuspended,
-		description: null,
-		location: null,
-		birthday: null,
-		lang: null,
-		fields: [],
-		verifiedLinks: [],
-		followersCount: user.followersCount,
-		followingCount: user.followingCount,
-		notesCount: user.notesCount,
-		pinnedNoteIds: [],
-		pinnedNotes: [],
-		pinnedPageId: null,
-		pinnedPage: null,
-		publicReactions: true,
-		followersVisibility: 'public',
-		followingVisibility: 'public',
-		twoFactorEnabled: false,
-		usePasswordLessLogin: false,
-		securityKeys: false,
-		roles: [],
-		memo: null,
-		moderationNote: undefined,
-		isFollowing: false,
-		isFollowed: false,
-		hasPendingFollowRequestFromYou: false,
-		hasPendingFollowRequestToYou: false,
-		isBlocking: false,
-		isBlocked: false,
-		isMuted: false,
-		isRenoteMuted: false,
-		notify: 'none',
-		withReplies: true,
-		...override,
-	};
-}
-
 const dummyUser1 = generateDummyUser();
 const dummyUser2 = generateDummyUser({
 	id: 'dummy-user-2',
@@ -284,6 +140,7 @@ export class WebhookTestService {
 	};
 
 	constructor(
+		private customEmojiService: CustomEmojiService,
 		private userWebhookService: UserWebhookService,
 		private systemWebhookService: SystemWebhookService,
 		private queueService: QueueService,
@@ -354,31 +211,31 @@ export class WebhookTestService {
 
 		switch (params.type) {
 			case 'note': {
-				send('note', { note: toPackedNote(dummyNote1) });
+				send('note', { note: await this.toPackedNote(dummyNote1) });
 				break;
 			}
 			case 'reply': {
-				send('reply', { note: toPackedNote(dummyReply1) });
+				send('reply', { note: await this.toPackedNote(dummyReply1) });
 				break;
 			}
 			case 'renote': {
-				send('renote', { note: toPackedNote(dummyRenote1) });
+				send('renote', { note: await this.toPackedNote(dummyRenote1) });
 				break;
 			}
 			case 'mention': {
-				send('mention', { note: toPackedNote(dummyMention1) });
+				send('mention', { note: await this.toPackedNote(dummyMention1) });
 				break;
 			}
 			case 'follow': {
-				send('follow', { user: toPackedUserDetailedNotMe(dummyUser1) });
+				send('follow', { user: await this.toPackedUserDetailedNotMe(dummyUser1) });
 				break;
 			}
 			case 'followed': {
-				send('followed', { user: toPackedUserLite(dummyUser2) });
+				send('followed', { user: await this.toPackedUserLite(dummyUser2) });
 				break;
 			}
 			case 'unfollow': {
-				send('unfollow', { user: toPackedUserDetailedNotMe(dummyUser3) });
+				send('unfollow', { user: await this.toPackedUserDetailedNotMe(dummyUser3) });
 				break;
 			}
 			// まだ実装されていない (#9485)
@@ -427,7 +284,7 @@ export class WebhookTestService {
 
 		switch (params.type) {
 			case 'abuseReport': {
-				send('abuseReport', generateAbuseReport({
+				send('abuseReport', await this.generateAbuseReport({
 					targetUserId: dummyUser1.id,
 					targetUser: dummyUser1,
 					reporterId: dummyUser2.id,
@@ -436,7 +293,7 @@ export class WebhookTestService {
 				break;
 			}
 			case 'abuseReportResolved': {
-				send('abuseReportResolved', generateAbuseReport({
+				send('abuseReportResolved', await this.generateAbuseReport({
 					targetUserId: dummyUser1.id,
 					targetUser: dummyUser1,
 					reporterId: dummyUser2.id,
@@ -448,7 +305,7 @@ export class WebhookTestService {
 				break;
 			}
 			case 'userCreated': {
-				send('userCreated', toPackedUserLite(dummyUser1));
+				send('userCreated', await this.toPackedUserLite(dummyUser1));
 				break;
 			}
 			case 'inactiveModeratorsWarning': {
@@ -473,5 +330,154 @@ export class WebhookTestService {
 				return;
 			}
 		}
+	}
+
+	@bindThis
+	private async generateAbuseReport(override?: Partial<MiAbuseUserReport>): Promise<AbuseReportPayload> {
+		const result: MiAbuseUserReport = {
+			id: 'dummy-abuse-report1',
+			targetUserId: 'dummy-target-user',
+			targetUser: null,
+			reporterId: 'dummy-reporter-user',
+			reporter: null,
+			assigneeId: null,
+			assignee: null,
+			resolved: false,
+			forwarded: false,
+			comment: 'This is a dummy report for testing purposes.',
+			targetUserHost: null,
+			reporterHost: null,
+			resolvedAs: null,
+			moderationNote: 'foo',
+			...override,
+		};
+
+		return {
+			...result,
+			targetUser: result.targetUser ? await this.toPackedUserLite(result.targetUser) : null,
+			reporter: result.reporter ? await this.toPackedUserLite(result.reporter) : null,
+			assignee: result.assignee ? await this.toPackedUserLite(result.assignee) : null,
+		};
+	}
+
+	@bindThis
+	private async toPackedNote(note: MiNote, detail = true, override?: Packed<'Note'>): Promise<Packed<'Note'>> {
+		return {
+			id: note.id,
+			createdAt: new Date().toISOString(),
+			deletedAt: null,
+			text: note.text,
+			cw: note.cw,
+			userId: note.userId,
+			user: await this.toPackedUserLite(note.user ?? generateDummyUser()),
+			replyId: note.replyId,
+			renoteId: note.renoteId,
+			isHidden: false,
+			visibility: note.visibility,
+			mentions: note.mentions,
+			visibleUserIds: note.visibleUserIds,
+			fileIds: note.fileIds,
+			files: [],
+			tags: note.tags,
+			poll: null,
+			emojis: await this.customEmojiService.populateEmojis(note.emojis, note.userHost),
+			channelId: note.channelId,
+			channel: note.channel,
+			localOnly: note.localOnly,
+			reactionAcceptance: note.reactionAcceptance,
+			reactionEmojis: {},
+			reactions: {},
+			reactionCount: 0,
+			renoteCount: note.renoteCount,
+			repliesCount: note.repliesCount,
+			uri: note.uri ?? undefined,
+			url: note.url ?? undefined,
+			reactionAndUserPairCache: note.reactionAndUserPairCache,
+			...(detail ? {
+				clippedCount: note.clippedCount,
+				reply: note.reply ? await this.toPackedNote(note.reply, false) : null,
+				renote: note.renote ? await this.toPackedNote(note.renote, true) : null,
+				myReaction: null,
+			} : {}),
+			...override,
+		};
+	}
+
+	@bindThis
+	private async toPackedUserLite(user: MiUser, override?: Packed<'UserLite'>): Promise<Packed<'UserLite'>> {
+		return {
+			id: user.id,
+			name: user.name,
+			username: user.username,
+			host: user.host,
+			avatarUrl: user.avatarUrl,
+			avatarBlurhash: user.avatarBlurhash,
+			avatarDecorations: user.avatarDecorations.map(it => ({
+				id: it.id,
+				angle: it.angle,
+				flipH: it.flipH,
+				url: 'https://example.com/dummy-image001.png',
+				offsetX: it.offsetX,
+				offsetY: it.offsetY,
+			})),
+			isBot: user.isBot,
+			isCat: user.isCat,
+			emojis: await this.customEmojiService.populateEmojis(user.emojis, user.host),
+			onlineStatus: 'active',
+			badgeRoles: [],
+			...override,
+		};
+	}
+
+	@bindThis
+	private async toPackedUserDetailedNotMe(user: MiUser, override?: Packed<'UserDetailedNotMe'>): Promise<Packed<'UserDetailedNotMe'>> {
+		return {
+			...await this.toPackedUserLite(user),
+			url: null,
+			uri: null,
+			movedTo: null,
+			alsoKnownAs: [],
+			createdAt: new Date().toISOString(),
+			updatedAt: user.updatedAt?.toISOString() ?? null,
+			lastFetchedAt: user.lastFetchedAt?.toISOString() ?? null,
+			bannerUrl: user.bannerUrl,
+			bannerBlurhash: user.bannerBlurhash,
+			isLocked: user.isLocked,
+			isSilenced: false,
+			isSuspended: user.isSuspended,
+			description: null,
+			location: null,
+			birthday: null,
+			lang: null,
+			fields: [],
+			verifiedLinks: [],
+			followersCount: user.followersCount,
+			followingCount: user.followingCount,
+			notesCount: user.notesCount,
+			pinnedNoteIds: [],
+			pinnedNotes: [],
+			pinnedPageId: null,
+			pinnedPage: null,
+			publicReactions: true,
+			followersVisibility: 'public',
+			followingVisibility: 'public',
+			twoFactorEnabled: false,
+			usePasswordLessLogin: false,
+			securityKeys: false,
+			roles: [],
+			memo: null,
+			moderationNote: undefined,
+			isFollowing: false,
+			isFollowed: false,
+			hasPendingFollowRequestFromYou: false,
+			hasPendingFollowRequestToYou: false,
+			isBlocking: false,
+			isBlocked: false,
+			isMuted: false,
+			isRenoteMuted: false,
+			notify: 'none',
+			withReplies: true,
+			...override,
+		};
 	}
 }

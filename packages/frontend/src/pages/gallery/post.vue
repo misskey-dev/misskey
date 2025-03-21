@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="1000" :marginMin="16" :marginMax="32">
 		<div class="_root">
 			<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
@@ -59,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</Transition>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -80,7 +79,7 @@ import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
 import { isSupportShare } from '@/utility/navigator.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
@@ -111,7 +110,6 @@ function fetchPost() {
 
 function copyLink() {
 	copyToClipboard(`${url}/gallery/${post.value.id}`);
-	os.success();
 }
 
 function share() {

@@ -35,6 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
 			</span>
+			<div v-else-if="item.type === 'component'" role="menuitem" tabindex="-1" :class="[$style.componentItem]">
+				<component :is="item.component" v-bind="item.props"/>
+			</div>
 			<MkA
 				v-else-if="item.type === 'link'"
 				role="menuitem"
@@ -176,7 +179,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, unref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef } from 'vue';
 import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
@@ -209,11 +212,11 @@ const big = isTouchUsing;
 
 const isNestingMenu = inject<boolean>('isNestingMenu', false);
 
-const itemsEl = shallowRef<HTMLElement>();
+const itemsEl = useTemplateRef('itemsEl');
 
 const items2 = ref<InnerMenuItem[]>();
 
-const child = shallowRef<InstanceType<typeof XChild>>();
+const child = useTemplateRef('child');
 
 const keymap = {
 	'up|k|shift+tab': {
@@ -254,7 +257,7 @@ watch(() => props.items, () => {
 });
 
 const childMenu = ref<MenuItem[] | null>();
-const childTarget = shallowRef<HTMLElement | null>();
+const childTarget = shallowRef<HTMLElement>();
 
 function closeChild() {
 	childMenu.value = null;
@@ -355,10 +358,10 @@ function switchItem(item: MenuSwitch & { ref: any }) {
 
 function focusUp() {
 	if (disposed) return;
-	if (!itemsEl.value?.contains(document.activeElement)) return;
+	if (!itemsEl.value?.contains(window.document.activeElement)) return;
 
 	const focusableElements = Array.from(itemsEl.value.children).filter(isFocusable);
-	const activeIndex = focusableElements.findIndex(el => el === document.activeElement);
+	const activeIndex = focusableElements.findIndex(el => el === window.document.activeElement);
 	const targetIndex = (activeIndex !== -1 && activeIndex !== 0) ? (activeIndex - 1) : (focusableElements.length - 1);
 	const targetElement = focusableElements.at(targetIndex) ?? itemsEl.value;
 
@@ -367,10 +370,10 @@ function focusUp() {
 
 function focusDown() {
 	if (disposed) return;
-	if (!itemsEl.value?.contains(document.activeElement)) return;
+	if (!itemsEl.value?.contains(window.document.activeElement)) return;
 
 	const focusableElements = Array.from(itemsEl.value.children).filter(isFocusable);
-	const activeIndex = focusableElements.findIndex(el => el === document.activeElement);
+	const activeIndex = focusableElements.findIndex(el => el === window.document.activeElement);
 	const targetIndex = (activeIndex !== -1 && activeIndex !== (focusableElements.length - 1)) ? (activeIndex + 1) : 0;
 	const targetElement = focusableElements.at(targetIndex) ?? itemsEl.value;
 
@@ -397,9 +400,9 @@ const onGlobalMousedown = (ev: MouseEvent) => {
 
 const setupHandlers = () => {
 	if (!isNestingMenu) {
-		document.addEventListener('focusin', onGlobalFocusin, { passive: true });
+		window.document.addEventListener('focusin', onGlobalFocusin, { passive: true });
 	}
-	document.addEventListener('mousedown', onGlobalMousedown, { passive: true });
+	window.document.addEventListener('mousedown', onGlobalMousedown, { passive: true });
 };
 
 let disposed = false;
@@ -407,9 +410,9 @@ let disposed = false;
 const disposeHandlers = () => {
 	disposed = true;
 	if (!isNestingMenu) {
-		document.removeEventListener('focusin', onGlobalFocusin);
+		window.document.removeEventListener('focusin', onGlobalFocusin);
 	}
-	document.removeEventListener('mousedown', onGlobalMousedown);
+	window.document.removeEventListener('mousedown', onGlobalMousedown);
 };
 
 onMounted(() => {

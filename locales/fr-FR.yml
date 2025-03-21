@@ -1278,6 +1278,7 @@ lockdown: "Verrouiller"
 pleaseSelectAccount: "Sélectionner un compte"
 availableRoles: "Rôles disponibles"
 postForm: "Formulaire de publication"
+information: "Informations"
 _abuseUserReport:
   forward: "Transférer"
   forwardDescription: "Transférer le signalement vers une instance distante en tant qu'anonyme."
@@ -2295,10 +2296,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Veuillez confirmer que le distributeur est fiable avant l'installation."
   _plugin:
     title: "Voulez-vous installer cette extension ?"
-    metaTitle: "Informations sur l'extension"
   _theme:
     title: "Voulez-vous installer ce thème ?"
-    metaTitle: "Informations sur le thème"
   _meta:
     base: "Palette de couleurs de base"
   _vendorInfo:

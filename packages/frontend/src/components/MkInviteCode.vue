@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.items">
 			<div>
 				<div :class="$style.label">{{ i18n.ts.invitationCode }}</div>
-				<div>{{ invite.code }}</div>
+				<div class="_selectableAtomic">{{ invite.code }}</div>
 			</div>
 			<div v-if="moderator">
 				<div :class="$style.label">{{ i18n.ts.inviteCodeCreator }}</div>
@@ -90,7 +90,6 @@ function deleteCode() {
 
 function copyInviteCode() {
 	copyToClipboard(props.invite.code);
-	os.success();
 }
 </script>
 

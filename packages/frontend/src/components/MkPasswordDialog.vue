@@ -39,14 +39,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef, ref } from 'vue';
+import { onMounted, useTemplateRef, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const emit = defineEmits<{
 	(ev: 'done', v: { password: string; token: string | null; }): void;
@@ -54,8 +54,8 @@ const emit = defineEmits<{
 	(ev: 'cancelled'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
-const passwordInput = shallowRef<InstanceType<typeof MkInput>>();
+const dialog = useTemplateRef('dialog');
+const passwordInput = useTemplateRef('passwordInput');
 const password = ref('');
 const isBackupCode = ref(false);
 const token = ref<string | null>(null);

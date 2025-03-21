@@ -97,7 +97,7 @@ import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
 import { $i } from '@/i.js';
@@ -129,8 +129,8 @@ watch(store.r.menuDisplay, () => {
 });
 
 function toggleIconOnly() {
-	if (document.startViewTransition && prefer.s.animation) {
-		document.startViewTransition(() => {
+	if (window.document.startViewTransition && prefer.s.animation) {
+		window.document.startViewTransition(() => {
 			store.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
 		});
 	} else {

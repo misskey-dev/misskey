@@ -4,7 +4,10 @@
  */
 
 import * as Misskey from 'misskey-js';
-import type { ComputedRef, Ref } from 'vue';
+import type { Component, ComputedRef, Ref } from 'vue';
+import type { ComponentProps as CP } from 'vue-component-type-helpers';
+
+type ComponentProps<T extends Component> = { [K in keyof CP<T>]: CP<T>[K] | Ref<CP<T>[K]> };
 
 type MenuRadioOptionsDef = Record<string, any>;
 
@@ -20,11 +23,12 @@ export type MenuSwitch = { type: 'switch', ref: Ref<boolean>, text: string, icon
 export type MenuButton = { type?: 'button', text: string, icon?: string, indicate?: boolean, danger?: boolean, active?: boolean | ComputedRef<boolean>, avatar?: Misskey.entities.User; action: MenuAction };
 export type MenuRadio = { type: 'radio', text: string, icon?: string, ref: Ref<MenuRadioOptionsDef[keyof MenuRadioOptionsDef]>, options: MenuRadioOptionsDef, disabled?: boolean | Ref<boolean> };
 export type MenuRadioOption = { type: 'radioOption', text: string, action: MenuAction; active?: boolean | ComputedRef<boolean> };
+export type MenuComponent<T extends Component = any> = { type: 'component', component: T, props?: ComponentProps<T> };
 export type MenuParent = { type: 'parent', text: string, icon?: string, children: MenuItem[] | (() => Promise<MenuItem[]> | MenuItem[]) };
 
 export type MenuPending = { type: 'pending' };
 
-type OuterMenuItem = MenuDivider | MenuNull | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton | MenuRadio | MenuRadioOption | MenuParent;
-type OuterPromiseMenuItem = Promise<MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton | MenuParent>;
+type OuterMenuItem = MenuDivider | MenuNull | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton | MenuRadio | MenuRadioOption | MenuComponent | MenuParent;
+type OuterPromiseMenuItem = Promise<MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton | MenuComponent | MenuParent>;
 export type MenuItem = OuterMenuItem | OuterPromiseMenuItem;
-export type InnerMenuItem = MenuDivider | MenuPending | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton | MenuRadio | MenuRadioOption | MenuParent;
+export type InnerMenuItem = MenuDivider | MenuPending | MenuLabel | MenuLink | MenuA | MenuUser | MenuSwitch | MenuButton | MenuRadio | MenuRadioOption | MenuComponent | MenuParent;

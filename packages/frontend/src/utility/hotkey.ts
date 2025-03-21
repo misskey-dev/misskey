@@ -54,9 +54,9 @@ export const makeHotkey = (keymap: Keymap) => {
 	const actions = parseKeymap(keymap);
 	return (ev: KeyboardEvent) => {
 		if ('pswp' in window && window.pswp != null) return;
-		if (document.activeElement != null) {
-			if (IGNORE_ELEMENTS.includes(document.activeElement.tagName.toLowerCase())) return;
-			if (getHTMLElementOrNull(document.activeElement)?.isContentEditable) return;
+		if (window.document.activeElement != null) {
+			if (IGNORE_ELEMENTS.includes(window.document.activeElement.tagName.toLowerCase())) return;
+			if (getHTMLElementOrNull(window.document.activeElement)?.isContentEditable) return;
 		}
 		for (const action of actions) {
 			if (matchPatterns(ev, action)) {

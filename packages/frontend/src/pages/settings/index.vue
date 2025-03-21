@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :tabs="headerTabs" :actions="headerActions">
 	<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
@@ -20,19 +19,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
-					<div class="bkzroven" style="container-type: inline-size;">
-						<RouterView nested/>
+					<div style="container-type: inline-size;">
+						<NestedRouterView/>
 					</div>
 				</div>
 			</div>
 		</div>
 	</MkSpacer>
-	<MkFooterSpacer/>
-</mkstickycontainer>
+</PageWithHeader>
 </template>
 
 <script setup lang="ts">
-import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { computed, onActivated, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import type { PageMetadata } from '@/page.js';
 import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
 import { i18n } from '@/i18n.js';
@@ -43,7 +41,7 @@ import { clearCache } from '@/utility/clear-cache.js';
 import { instance } from '@/instance.js';
 import { definePage, provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 import { searchIndexes } from '@/utility/autogen/settings-search-index.js';
 import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utility.js';
 import { store } from '@/store.js';
@@ -57,7 +55,7 @@ const indexInfo = {
 	hideHeader: true,
 };
 const INFO = ref<PageMetadata>(indexInfo);
-const el = shallowRef<HTMLElement | null>(null);
+const el = useTemplateRef('el');
 const childInfo = ref<null | PageMetadata>(null);
 
 const router = useRouter();

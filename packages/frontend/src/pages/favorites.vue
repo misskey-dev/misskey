@@ -4,13 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
+<PageWithHeader>
 	<MkSpacer :contentMax="800">
 		<MkPagination :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img :src="infoImageUrl" draggable="false"/>
 					<div>{{ i18n.ts.noNotes }}</div>
 				</div>
 			</template>
@@ -22,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</MkPagination>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

@@ -24,7 +24,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 import { initializeSw } from '@/utility/initialize-sw.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
-import { mainRouter } from '@/router/main.js';
+import { mainRouter } from '@/router.js';
 import { makeHotkey } from '@/utility/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
@@ -43,7 +43,7 @@ export async function mainBoot() {
 		if (!$i) uiStyle = 'visitor';
 
 		if (searchParams.has('zen')) uiStyle = 'zen';
-		if (uiStyle === 'deck' && prefer.s['deck.useSimpleUiForNonRootPages'] && location.pathname !== '/') uiStyle = 'zen';
+		if (uiStyle === 'deck' && prefer.s['deck.useSimpleUiForNonRootPages'] && window.location.pathname !== '/') uiStyle = 'zen';
 
 		if (searchParams.has('ui')) uiStyle = searchParams.get('ui');
 
@@ -201,6 +201,8 @@ export async function mainBoot() {
 				prefer.commit('sound.on.noteMy', store.s.sound_noteMy as any);
 				prefer.commit('sound.on.notification', store.s.sound_notification as any);
 				prefer.commit('sound.on.reaction', store.s.sound_reaction as any);
+				prefer.commit('defaultNoteVisibility', store.s.defaultNoteVisibility);
+				prefer.commit('defaultNoteLocalOnly', store.s.defaultNoteLocalOnly);
 
 				window.setTimeout(() => {
 					unisonReload();
@@ -214,7 +216,7 @@ export async function mainBoot() {
 	let reloadDialogShowing = false;
 	stream.on('_disconnected_', async () => {
 		if (prefer.s.serverDisconnectedBehavior === 'reload') {
-			location.reload();
+			window.location.reload();
 		} else if (prefer.s.serverDisconnectedBehavior === 'dialog') {
 			if (reloadDialogShowing) return;
 			reloadDialogShowing = true;
@@ -225,7 +227,7 @@ export async function mainBoot() {
 			});
 			reloadDialogShowing = false;
 			if (!canceled) {
-				location.reload();
+				window.location.reload();
 			}
 		}
 	});
@@ -396,7 +398,7 @@ export async function mainBoot() {
 			let lastVisibilityChangedAt = Date.now();
 
 			function claimPlainLucky() {
-				if (document.visibilityState !== 'visible') {
+				if (window.document.visibilityState !== 'visible') {
 					if (justPlainLuckyTimer != null) window.clearTimeout(justPlainLuckyTimer);
 					return;
 				}
@@ -411,7 +413,7 @@ export async function mainBoot() {
 			window.addEventListener('visibilitychange', () => {
 				const now = Date.now();
 
-				if (document.visibilityState === 'visible') {
+				if (window.document.visibilityState === 'visible') {
 					// タブを高速で切り替えたら取得処理が何度も走るのを防ぐ
 					if ((now - lastVisibilityChangedAt) < 1000 * 10) {
 						justPlainLuckyTimer = window.setTimeout(claimPlainLucky, 1000 * 10);
@@ -456,7 +458,7 @@ export async function mainBoot() {
 
 		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
 		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
+		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !window.location.pathname.startsWith('/miauth')) {
 			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {
 					closed: () => dispose(),
@@ -552,7 +554,7 @@ export async function mainBoot() {
 			mainRouter.push('/search');
 		},
 	} as const satisfies Keymap;
-	document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
+	window.document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
 
 	initializeSw();
 }

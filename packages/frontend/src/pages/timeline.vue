@@ -4,11 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
+<PageWithHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true">
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
-			<div :key="src" ref="rootEl">
+			<div ref="rootEl">
 				<MkInfo v-if="isBasicTimeline(src) && !store.r.timelineTutorials.value[src]" style="margin-bottom: var(--MI-margin);" closable @close="closeTutorial()">
 					{{ i18n.ts._timelineDescription[src] }}
 				</MkInfo>
@@ -31,11 +30,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkHorizontalSwipe>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
+import { computed, watch, provide, useTemplateRef, ref, onMounted, onActivated } from 'vue';
 import { scroll } from '@@/js/scroll.js';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -56,11 +55,17 @@ import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
+import { useRouter } from '@/router.js';
 
 provide('shouldOmitHeaderTitle', true);
 
-const tlComponent = shallowRef<InstanceType<typeof MkTimeline>>();
-const rootEl = shallowRef<HTMLElement>();
+const tlComponent = useTemplateRef('tlComponent');
+const rootEl = useTemplateRef('rootEl');
+
+const router = useRouter();
+router.useListener('same', () => {
+	top();
+});
 
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 
@@ -128,7 +133,7 @@ function queueUpdated(q: number): void {
 }
 
 function top(): void {
-	if (rootEl.value) scroll(rootEl.value, { top: 0 });
+	if (rootEl.value) scroll(rootEl.value, { top: 0, behavior: 'smooth' });
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {

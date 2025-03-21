@@ -19,7 +19,7 @@ export const $i = accountData ? reactive(JSON.parse(accountData) as AccountWithT
 export const iAmModerator = $i != null && ($i.isAdmin === true || $i.isModerator === true);
 export const iAmAdmin = $i != null && $i.isAdmin;
 
-export function signinRequired() {
+export function ensureSignin() {
 	if ($i == null) throw new Error('signin required');
 	return $i;
 }

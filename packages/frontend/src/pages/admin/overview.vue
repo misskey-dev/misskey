@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { markRaw, onMounted, onBeforeUnmount, nextTick, shallowRef, ref, computed } from 'vue';
+import { markRaw, onMounted, onBeforeUnmount, nextTick, shallowRef, ref, computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XFederation from './overview.federation.vue';
 import XInstances from './overview.instances.vue';
@@ -85,7 +85,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
-const rootEl = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
 const serverInfo = ref<Misskey.entities.ServerInfoResponse | null>(null);
 const topSubInstancesForPie = ref<InstanceForPie[] | null>(null);
 const topPubInstancesForPie = ref<InstanceForPie[] | null>(null);

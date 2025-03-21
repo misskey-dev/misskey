@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { v4 as uuid } from 'uuid';
 import type { PreferencesProfile, StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -11,8 +10,7 @@ import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
 import { store } from '@/store.js';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-
-const TAB_ID = uuid();
+import { TAB_ID } from '@/tab-id.js';
 
 function createPrefManager(storageProvider: StorageProvider) {
 	let profile: PreferencesProfile;
@@ -127,8 +125,8 @@ function syncBetweenTabs() {
 
 window.setInterval(syncBetweenTabs, 5000);
 
-document.addEventListener('visibilitychange', () => {
-	if (document.visibilityState === 'visible') {
+window.document.addEventListener('visibilitychange', () => {
+	if (window.document.visibilityState === 'visible') {
 		syncBetweenTabs();
 	}
 });
@@ -138,7 +136,7 @@ let latestBackupAt = 0;
 window.setInterval(() => {
 	if ($i == null) return;
 	if (!store.s.enablePreferencesAutoCloudBackup) return;
-	if (document.visibilityState !== 'visible') return; // 同期されていない古い値がバックアップされるのを防ぐ
+	if (window.document.visibilityState !== 'visible') return; // 同期されていない古い値がバックアップされるのを防ぐ
 	if (prefer.profile.modifiedAt <= latestBackupAt) return;
 
 	cloudBackup().then(() => {

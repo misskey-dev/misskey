@@ -89,7 +89,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #caption>
 								<div>{{ i18n.ts._accountSettings.requireSigninToViewContentsDescription1 }}</div>
 								<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription2 }}</div>
-								<div v-if="instance.federation !== 'none'"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._accountSettings.requireSigninToViewContentsDescription3 }}</div>
 							</template>
 						</MkSwitch>
 					</SearchMarker>
@@ -185,7 +184,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { definePage } from '@/page.js';
 import FormSlot from '@/components/form/slot.vue';
 import { formatDateTimeString } from '@/utility/format-time-string.js';
@@ -195,7 +194,7 @@ import MkDisableSection from '@/components/MkDisableSection.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const isLocked = ref($i.isLocked);
 const autoAcceptFollowed = ref($i.autoAcceptFollowed);

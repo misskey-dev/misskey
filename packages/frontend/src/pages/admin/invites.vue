@@ -55,8 +55,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, shallowRef } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import XHeader from './_header_.vue';
+import type { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -66,11 +67,10 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import type { Paging } from '@/components/MkPagination.vue';
 import MkInviteCode from '@/components/MkInviteCode.vue';
 import { definePage } from '@/page.js';
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = useTemplateRef('pagingComponent');
 
 const type = ref('all');
 const sort = ref('+createdAt');

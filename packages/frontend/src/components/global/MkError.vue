@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <Transition :name="prefer.s.animation ? '_transition_zoom' : ''" appear>
 	<div :class="$style.root">
-		<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
+		<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
 		<p :class="$style.text"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>
 		<MkButton :class="$style.button" @click="() => emit('retry')">{{ i18n.ts.retry }}</MkButton>
 	</div>

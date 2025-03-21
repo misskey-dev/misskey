@@ -49,7 +49,7 @@ pin: "An dein Profil anheften"
 unpin: "Von deinem Profil lösen"
 copyContent: "Inhalt kopieren"
 copyLink: "Link kopieren"
-copyRemoteLink: "Renote-Link kopieren"
+copyRemoteLink: "Remote-Link kopieren"
 copyLinkRenote: "Renote-Link kopieren"
 delete: "Löschen"
 deleteAndEdit: "Löschen und Bearbeiten"
@@ -1309,6 +1309,7 @@ availableRoles: "Verfügbare Rollen"
 federationSpecified: "Dieser Server arbeitet mit Whitelist-Föderation. Er kann nicht mit anderen als den vom Administrator angegebenen Servern interagieren."
 federationDisabled: "Föderation ist auf diesem Server deaktiviert. Es ist nicht möglich, mit Benutzern auf anderen Servern zu interagieren."
 postForm: "Notizfenster"
+information: "Über"
 _settings:
   webhook: "Webhook"
 _accountSettings:
@@ -2524,10 +2525,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Überprüfe vor Installation die Vertrauenswürdigkeit des Vertreibers."
   _plugin:
     title: "Möchtest du dieses Plugin installieren?"
-    metaTitle: "Plugininformation"
   _theme:
     title: "Möchten du dieses Farbschema installieren?"
-    metaTitle: "Farbschemainfo"
   _meta:
     base: "Farbschemavorlage"
   _vendorInfo:

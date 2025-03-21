@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</FormLink>
 
 					<MkFolder :defaultOpen="true">
-						<template #label><SearchLabel>{{ i18n.ts.manage }}</SearchLabel></template>
+						<template #label>{{ i18n.ts.manage }}</template>
 
 						<MkPagination :pagination="pagination">
 							<template #default="{items}">

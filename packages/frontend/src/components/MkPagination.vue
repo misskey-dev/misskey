@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-else-if="empty" key="_empty_" class="empty">
 		<slot name="empty">
 			<div class="_fullinfo">
-				<img :src="infoImageUrl" class="_ghost"/>
+				<img :src="infoImageUrl" draggable="false"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</slot>
@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
+import { computed, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@@/js/scroll.js';
@@ -106,7 +106,7 @@ const emit = defineEmits<{
 	(ev: 'status', error: boolean): void;
 }>();
 
-const rootEl = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
 
 // 遡り中かどうか
 const backed = ref(false);
@@ -142,7 +142,7 @@ const {
 } = prefer.r;
 
 const contentEl = computed(() => props.pagination.pageEl ?? rootEl.value);
-const scrollableElement = computed(() => contentEl.value ? getScrollContainer(contentEl.value) : document.body);
+const scrollableElement = computed(() => contentEl.value ? getScrollContainer(contentEl.value) : window.document.body);
 
 const visibility = useDocumentVisibility();
 

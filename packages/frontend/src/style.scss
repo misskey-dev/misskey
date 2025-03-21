@@ -81,6 +81,11 @@ html {
 	&.useSystemFont {
 		font-family: system-ui;
 	}
+
+	&:not(.forceSelectableAll) {
+		user-select: none;
+		-webkit-user-select: none;
+	}
 }
 
 html._themeChanging_ {
@@ -120,6 +125,8 @@ a {
 textarea, input {
 	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
+	user-select: text;
+	-webkit-user-select: text;
 }
 
 optgroup, option {
@@ -163,6 +170,20 @@ rt {
 	text-align: center;
 }
 
+._pageContainer {
+	container-type: size;
+	contain: strict;
+	overflow: auto;
+	overscroll-behavior: contain;
+}
+
+._pageScrollable {
+	height: 100%;
+	overflow: auto;
+	overflow-y: scroll;
+	overscroll-behavior: contain;
+}
+
 ._indicatorCircle {
 	display: inline-block;
 	width: 1em;
@@ -184,6 +205,16 @@ rt {
 	padding: 0.3em 0.5em;
 }
 
+._selectable {
+	user-select: text;
+	-webkit-user-select: text;
+}
+
+._selectableAtomic {
+	user-select: all;
+	-webkit-user-select: all;
+}
+
 ._noSelect {
 	user-select: none;
 	-webkit-user-select: none;
@@ -195,11 +226,6 @@ rt {
 	word-wrap: normal !important; // https://codeday.me/jp/qa/20190424/690106.html
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-
-._ghost {
-	@extend ._noSelect;
-	pointer-events: none;
 }
 
 ._modalBg {
@@ -422,6 +448,10 @@ rt {
 
 ._link {
 	color: var(--MI_THEME-link);
+}
+
+._love {
+	color: var(--MI_THEME-love);
 }
 
 ._caption {

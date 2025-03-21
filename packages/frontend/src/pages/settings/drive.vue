@@ -104,12 +104,12 @@ import bytes from '@/filters/bytes.js';
 import MkChart from '@/components/MkChart.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { signinRequired } from '@/i.js';
+import { ensureSignin } from '@/i.js';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const fetching = ref(true);
 const usage = ref<number | null>(null);

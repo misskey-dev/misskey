@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, shallowRef } from 'vue';
+import { nextTick, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as os from '@/os.js';
 import { calcPopupPosition } from '@/utility/popup-position.js';
 import { prefer } from '@/preferences.js';
@@ -51,7 +51,7 @@ const emit = defineEmits<{
 // タイミングによっては最初から showing = false な場合があり、その場合に closed 扱いにしないと永久にDOMに残ることになる
 if (!props.showing) emit('closed');
 
-const el = shallowRef<HTMLElement>();
+const el = useTemplateRef('el');
 const zIndex = os.claimZIndex('high');
 
 function setPosition() {

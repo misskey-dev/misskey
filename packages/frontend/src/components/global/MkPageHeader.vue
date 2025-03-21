@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, inject, shallowRef, computed } from 'vue';
+import { onMounted, onUnmounted, ref, inject, useTemplateRef, computed } from 'vue';
 import tinycolor from 'tinycolor2';
 import { scrollToTop } from '@@/js/scroll.js';
 import XTabs from './MkPageHeader.tabs.vue';
@@ -49,9 +49,9 @@ import type { Tab } from './MkPageHeader.tabs.vue';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import type { PageMetadata } from '@/page.js';
 import { globalEvents } from '@/events.js';
-import { injectReactiveMetadata } from '@/page.js';
 import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
 import { $i } from '@/i.js';
+import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
 	overridePageMetadata?: PageMetadata;
@@ -69,13 +69,15 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
 }>();
 
-const injectedPageMetadata = injectReactiveMetadata();
+const viewId = inject(DI.viewId);
+const viewTransitionName = computed(() => `${viewId}---pageHeader`);
+const injectedPageMetadata = inject(DI.pageMetadata);
 const pageMetadata = computed(() => props.overridePageMetadata ?? injectedPageMetadata.value);
 
 const hideTitle = computed(() => inject('shouldOmitHeaderTitle', false) || props.hideTitle);
 const thin_ = props.thin || inject('shouldHeaderThin', false);
 
-const el = shallowRef<HTMLElement | undefined>(undefined);
+const el = useTemplateRef('el');
 const bg = ref<string | undefined>(undefined);
 const narrow = ref(false);
 const hasTabs = computed(() => props.tabs.length > 0);
@@ -106,7 +108,7 @@ function onTabClick(): void {
 
 const calcBg = () => {
 	const rawBg = 'var(--MI_THEME-bg)';
-	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
+	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(window.document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
 	bg.value = tinyBg.toRgbString();
 };
@@ -120,7 +122,7 @@ onMounted(() => {
 	if (el.value && el.value.parentElement) {
 		narrow.value = el.value.parentElement.offsetWidth < 500;
 		ro = new ResizeObserver((entries, observer) => {
-			if (el.value && el.value.parentElement && document.body.contains(el.value as HTMLElement)) {
+			if (el.value && el.value.parentElement && window.document.body.contains(el.value as HTMLElement)) {
 				narrow.value = el.value.parentElement.offsetWidth < 500;
 			}
 		});
@@ -140,6 +142,7 @@ onUnmounted(() => {
 	backdrop-filter: var(--MI-blur, blur(15px));
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
 	width: 100%;
+	view-transition-name: v-bind(viewTransitionName);
 }
 
 .upper,

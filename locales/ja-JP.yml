@@ -699,6 +699,7 @@ userSaysSomethingAbout: "{name}が「{word}」について何かを言いまし�
 makeActive: "アクティブにする"
 display: "表示"
 copy: "コピー"
+copiedToClipboard: "クリップボードにコピーされました"
 metrics: "メトリクス"
 overview: "概要"
 logs: "ログ"
@@ -1333,6 +1334,8 @@ preferenceSyncConflictChoiceCancel: "同期の有効化をキャンセル"
 paste: "ペースト"
 emojiPalette: "絵文字パレット"
 postForm: "投稿フォーム"
+textCount: "文字数"
+information: "情報"
 
 _emojiPalette:
   palettes: "パレット"
@@ -1358,6 +1361,8 @@ _settings:
   appearanceBanner: "好みに応じた、クライアントの見た目・表示方法に関する設定が行えます。"
   soundsBanner: "クライアントで再生するサウンドの設定が行えます。"
   timelineAndNote: "タイムラインとノート"
+  makeEveryTextElementsSelectable: "全てのテキスト要素を選択可能にする"
+  makeEveryTextElementsSelectable_description: "有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。"
 
 _preferencesProfile:
   profileName: "プロファイル名"
@@ -2585,6 +2590,7 @@ _notification:
     achievementEarned: "実績の獲得"
     exportCompleted: "エクスポートが完了した"
     login: "ログイン"
+    createToken: "アクセストークンの作成"
     test: "通知のテスト"
     app: "連携アプリからの通知"
 
@@ -2745,10 +2751,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "配布元が信頼できるかを確認した上でインストールしてください。"
   _plugin:
     title: "このプラグインをインストールしますか？"
-    metaTitle: "プラグイン情報"
   _theme:
     title: "このテーマをインストールしますか？"
-    metaTitle: "テーマ情報"
   _meta:
     base: "基本のカラースキーム"
   _vendorInfo:
