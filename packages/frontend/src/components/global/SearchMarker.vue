@@ -42,7 +42,7 @@ const highlighted = ref(props.markerId === searchMarkerId.value);
 
 function checkChildren() {
 	if (props.children?.includes(searchMarkerId.value)) {
-		const el = document.querySelector(`[data-in-app-search-marker-id="${searchMarkerId.value}"]`);
+		const el = window.document.querySelector(`[data-in-app-search-marker-id="${searchMarkerId.value}"]`);
 		highlighted.value = el == null;
 	}
 }

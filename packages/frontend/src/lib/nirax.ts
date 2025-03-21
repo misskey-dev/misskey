@@ -320,7 +320,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		}
 		const res = this.navigate(fullPath);
 		if (res.route.path === '/:(*)') {
-			location.href = fullPath;
+			window.location.href = fullPath;
 		} else {
 			this.emit('push', {
 				beforeFullPath,

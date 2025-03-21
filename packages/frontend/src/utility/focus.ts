@@ -58,7 +58,7 @@ export const focusParent = (input: MaybeHTMLElement | null | undefined, self = f
 
 const focusOrScroll = (element: HTMLElement, scroll: boolean) => {
 	if (scroll) {
-		const scrollContainer = getScrollContainer(element) ?? document.documentElement;
+		const scrollContainer = getScrollContainer(element) ?? window.document.documentElement;
 		const scrollContainerTop = getScrollPosition(scrollContainer);
 		const stickyTop = getStickyTop(element, scrollContainer);
 		const stickyBottom = getStickyBottom(element, scrollContainer);
@@ -74,7 +74,7 @@ const focusOrScroll = (element: HTMLElement, scroll: boolean) => {
 		scrollContainer.scrollTo({ top: scrollTo, behavior: 'instant' });
 	}
 
-	if (document.activeElement !== element) {
+	if (window.document.activeElement !== element) {
 		element.focus({ preventScroll: true });
 	}
 };

@@ -37,7 +37,7 @@ const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
 const pageMetadata = ref<null | PageMetadata>(null);
 
-const showBottom = !(new URLSearchParams(location.search)).has('zen') && ui === 'deck';
+const showBottom = !(new URLSearchParams(window.location.search)).has('zen') && ui === 'deck';
 
 provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
@@ -45,9 +45,9 @@ provideMetadataReceiver((metadataGetter) => {
 	pageMetadata.value = info;
 	if (pageMetadata.value) {
 		if (isRoot.value && pageMetadata.value.title === instanceName) {
-			document.title = pageMetadata.value.title;
+			window.document.title = pageMetadata.value.title;
 		} else {
-			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+			window.document.title = `${pageMetadata.value.title} | ${instanceName}`;
 		}
 	}
 });

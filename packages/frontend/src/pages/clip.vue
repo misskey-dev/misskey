@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions"/></template>
+<PageWithHeader :actions="headerActions">
 	<MkSpacer :contentMax="800">
 		<div v-if="clip" class="_gaps">
 			<div class="_panel">
@@ -27,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkNotes :pagination="pagination" :detail="true"/>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

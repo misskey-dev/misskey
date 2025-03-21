@@ -240,7 +240,7 @@ function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	if (!contains(main, document.activeElement)) main.focus();
+	if (!contains(main, window.document.activeElement)) main.focus();
 
 	const position = main.getBoundingClientRect();
 

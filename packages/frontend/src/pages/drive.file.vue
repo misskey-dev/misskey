@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-		<MkSpacer v-if="tab === 'info'" key="info" :contentMax="800">
+		<MkSpacer v-if="tab === 'info'" :contentMax="800">
 			<XFileInfo :fileId="fileId"/>
 		</MkSpacer>
 
-		<MkSpacer v-else-if="tab === 'notes'" key="notes" :contentMax="800">
+		<MkSpacer v-else-if="tab === 'notes'" :contentMax="800">
 			<XNotes :fileId="fileId"/>
 		</MkSpacer>
 	</MkHorizontalSwipe>

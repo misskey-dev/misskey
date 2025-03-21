@@ -143,9 +143,9 @@ provideMetadataReceiver((metadataGetter) => {
 	pageMetadata.value = info;
 	if (pageMetadata.value) {
 		if (isRoot.value && pageMetadata.value.title === instanceName) {
-			document.title = pageMetadata.value.title;
+			window.document.title = pageMetadata.value.title;
 		} else {
-			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+			window.document.title = `${pageMetadata.value.title} | ${instanceName}`;
 		}
 	}
 });
@@ -170,7 +170,7 @@ if (window.innerWidth > 1024) {
 	if (tempUI) {
 		miLocalStorage.setItem('ui', tempUI);
 		miLocalStorage.removeItem('ui_temp');
-		location.reload();
+		window.location.reload();
 	}
 }
 
@@ -205,12 +205,12 @@ provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 watch(navFooter, () => {
 	if (navFooter.value) {
 		navFooterHeight.value = navFooter.value.offsetHeight;
-		document.body.style.setProperty('--MI-stickyBottom', `${navFooterHeight.value}px`);
-		document.body.style.setProperty('--MI-minBottomSpacing', 'var(--MI-minBottomSpacingMobile)');
+		window.document.body.style.setProperty('--MI-stickyBottom', `${navFooterHeight.value}px`);
+		window.document.body.style.setProperty('--MI-minBottomSpacing', 'var(--MI-minBottomSpacingMobile)');
 	} else {
 		navFooterHeight.value = 0;
-		document.body.style.setProperty('--MI-stickyBottom', '0px');
-		document.body.style.setProperty('--MI-minBottomSpacing', '0px');
+		window.document.body.style.setProperty('--MI-stickyBottom', '0px');
+		window.document.body.style.setProperty('--MI-minBottomSpacing', '0px');
 	}
 }, {
 	immediate: true,

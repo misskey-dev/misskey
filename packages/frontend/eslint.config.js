@@ -56,7 +56,9 @@ export default [
 			// open ... window.openと衝突 or 紛らわしい
 			// fetch ... window.fetchと衝突 or 紛らわしい
 			// location ... window.locationと衝突 or 紛らわしい
-			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location'],
+			// document ... window.documentと衝突 or 紛らわしい
+			// history ... window.historyと衝突 or 紛らわしい
+			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location', 'document', 'history'],
 			'no-restricted-globals': [
 				'error',
 				{
@@ -76,8 +78,16 @@ export default [
 					'message': 'Use `window.location`.',
 				},
 				{
+					'name': 'document',
+					'message': 'Use `window.document`.',
+				},
+				{
 					'name': 'history',
 					'message': 'Use `window.history`.',
+				},
+				{
+					'name': 'name',
+					'message': 'Use `window.name`. もしくは name という変数名を定義し忘れている',
 				},
 			],
 			'no-shadow': ['warn'],

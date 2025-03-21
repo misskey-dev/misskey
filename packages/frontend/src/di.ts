@@ -11,4 +11,5 @@ export const DI = {
 	router: Symbol() as InjectionKey<Router>,
 	mock: Symbol() as InjectionKey<boolean>,
 	pageMetadata: Symbol() as InjectionKey<Ref<Record<string, any>>>,
+	viewId: Symbol() as InjectionKey<string>,
 };
