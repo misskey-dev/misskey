@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPageWithAnimBg>
+<PageWithAnimBg>
 	<div :class="$style.formContainer">
 		<div :class="$style.form">
 			<MkAuthConfirm
@@ -24,13 +24,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkAuthConfirm>
 		</div>
 	</div>
-</MkPageWithAnimBg>
+</PageWithAnimBg>
 </template>
 
 <script lang="ts" setup>
 import { computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkPageWithAnimBg from '@/components/MkPageWithAnimBg.vue';
 import MkAuthConfirm from '@/components/MkAuthConfirm.vue';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';

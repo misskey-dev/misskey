@@ -116,7 +116,7 @@ function toggle() {
 }
 
 onMounted(() => {
-	const computedStyle = getComputedStyle(document.documentElement);
+	const computedStyle = getComputedStyle(window.document.documentElement);
 	const parentBg = getBgColor(rootEl.value?.parentElement) ?? 'transparent';
 	const myBg = computedStyle.getPropertyValue('--MI_THEME-panel');
 	bgSame.value = parentBg === myBg;

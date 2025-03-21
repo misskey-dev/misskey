@@ -4,11 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="700" :class="$style.main">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="channel && tab === 'overview'" key="overview" class="_gaps">
+			<div v-if="channel && tab === 'overview'" class="_gaps">
 				<div class="_panel" :class="$style.bannerContainer">
 					<XChannelFollowButton :channel="channel" :full="true" :class="$style.subscribe"/>
 					<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike class="button" rounded primary :class="$style.favorite" @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
@@ -33,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</MkFoldableSection>
 			</div>
-			<div v-if="channel && tab === 'timeline'" key="timeline" class="_gaps">
+			<div v-if="channel && tab === 'timeline'" class="_gaps">
 				<MkInfo v-if="channel.isArchived" warn>{{ i18n.ts.thisChannelArchived }}</MkInfo>
 
 				<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
@@ -41,10 +40,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after" @note="miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.id}`, Date.now())"/>
 			</div>
-			<div v-else-if="tab === 'featured'" key="featured">
+			<div v-else-if="tab === 'featured'">
 				<MkNotes :pagination="featuredPagination"/>
 			</div>
-			<div v-else-if="tab === 'search'" key="search">
+			<div v-else-if="tab === 'search'">
 				<div v-if="notesSearchAvailable" class="_gaps">
 					<div>
 						<MkInput v-model="searchQuery" @enter="search()">
@@ -69,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSpacer>
 		</div>
 	</template>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

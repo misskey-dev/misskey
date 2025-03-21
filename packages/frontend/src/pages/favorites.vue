@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
+<PageWithHeader>
 	<MkSpacer :contentMax="800">
 		<MkPagination :pagination="pagination">
 			<template #empty>
@@ -22,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</MkPagination>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

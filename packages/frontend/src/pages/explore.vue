@@ -4,20 +4,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-		<div v-if="tab === 'featured'" key="featured">
+		<div v-if="tab === 'featured'">
 			<XFeatured/>
 		</div>
-		<div v-else-if="tab === 'users'" key="users">
+		<div v-else-if="tab === 'users'">
 			<XUsers/>
 		</div>
-		<div v-else-if="tab === 'roles'" key="roles">
+		<div v-else-if="tab === 'roles'">
 			<XRoles/>
 		</div>
 	</MkHorizontalSwipe>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

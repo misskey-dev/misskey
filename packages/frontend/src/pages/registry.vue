@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="600" :marginMin="16">
 		<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
 
@@ -18,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSection>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

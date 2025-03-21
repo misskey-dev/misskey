@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<MkPostForm
 			v-if="state === 'writing'"
@@ -26,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton @click="goToMisskey">{{ i18n.ts.goToMisskey }}</MkButton>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

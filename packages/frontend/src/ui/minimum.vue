@@ -30,9 +30,9 @@ provideMetadataReceiver((metadataGetter) => {
 	pageMetadata.value = info;
 	if (pageMetadata.value) {
 		if (isRoot.value && pageMetadata.value.title === instanceName) {
-			document.title = pageMetadata.value.title;
+			window.document.title = pageMetadata.value.title;
 		} else {
-			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+			window.document.title = `${pageMetadata.value.title} | ${instanceName}`;
 		}
 	}
 });

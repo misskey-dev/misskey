@@ -56,7 +56,9 @@ export default [
 			// open ... window.openと衝突 or 紛らわしい
 			// fetch ... window.fetchと衝突 or 紛らわしい
 			// location ... window.locationと衝突 or 紛らわしい
-			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location'],
+			// document ... window.documentと衝突 or 紛らわしい
+			// history ... window.historyと衝突 or 紛らわしい
+			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location', 'document', 'history'],
 			'no-restricted-globals': [
 				'error',
 				{
@@ -74,6 +76,10 @@ export default [
 				{
 					'name': 'location',
 					'message': 'Use `window.location`.',
+				},
+				{
+					'name': 'document',
+					'message': 'Use `window.document`.',
 				},
 				{
 					'name': 'history',
