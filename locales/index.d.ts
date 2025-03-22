@@ -7310,6 +7310,10 @@ export interface Locale extends ILocale {
              * リストのインポートを許可
              */
             "canImportUserLists": string;
+            /**
+             * チャットを許可
+             */
+            "canChat": string;
         };
         "_condition": {
             /**
