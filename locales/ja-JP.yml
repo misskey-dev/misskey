@@ -1335,12 +1335,23 @@ postForm: "投稿フォーム"
 textCount: "文字数"
 information: "情報"
 chat: "チャット"
-individualChat: "個人チャット"
-individualChat_description: "特定ユーザーとの一対一のチャットができます。"
-roomChat: "ルームチャット"
-roomChat_description: "複数人でのチャットができます。\nまた、個人チャットを許可していないユーザーとでも、相手が受け入れればチャットができます。"
-cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
-cannotChatWithTheUser_description: "チャットが使えない状態になっているか、相手がチャットを開放していません。"
+
+_chat:
+  individualChat: "個人チャット"
+  individualChat_description: "特定ユーザーとの一対一のチャットができます。"
+  roomChat: "ルームチャット"
+  roomChat_description: "複数人でのチャットができます。\nまた、個人チャットを許可していないユーザーとでも、相手が受け入れればチャットができます。"
+  cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
+  cannotChatWithTheUser_description: "チャットが使えない状態になっているか、相手がチャットを開放していません。"
+
+  chatAllowedUsers: "チャットを許可する相手"
+  chatAllowedUsers_note: "自分からチャットメッセージを送った相手とはこの設定に関わらずチャットが可能です。"
+  _chatAllowedUsers:
+    everyone: "誰でも"
+    followers: "自分のフォロワーのみ"
+    following: "自分がフォローしているユーザーのみ"
+    mutual: "相互フォローのユーザーのみ"
+    none: "誰も許可しない"
 
 _emojiPalette:
   palettes: "パレット"

@@ -16,7 +16,7 @@ import { ChatMessageEntityService } from '@/core/entities/ChatMessageEntityServi
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { bindThis } from '@/decorators.js';
-import type { ChatMessagesRepository, MiChatMessage, MiChatRoom, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
+import type { ChatApprovalsRepository, ChatMessagesRepository, ChatRoomMembershipsRepository, ChatRoomsRepository, MiChatMessage, MiChatRoom, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -36,6 +36,15 @@ export class ChatService {
 
 		@Inject(DI.chatMessagesRepository)
 		private chatMessagesRepository: ChatMessagesRepository,
+
+		@Inject(DI.chatApprovalsRepository)
+		private chatApprovalsRepository: ChatApprovalsRepository,
+
+		@Inject(DI.chatRoomsRepository)
+		private chatRoomsRepository: ChatRoomsRepository,
+
+		@Inject(DI.chatRoomMembershipsRepository)
+		private chatRoomMembershipsRepository: ChatRoomMembershipsRepository,
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
@@ -64,22 +73,39 @@ export class ChatService {
 			throw new Error('yourself');
 		}
 
-		if (toUser.chatScope === 'none') {
-			throw new Error('recipient is cannot chat');
-		} else if (toUser.chatScope === 'followers') {
-			const isFollower = await this.userFollowingService.isFollowing(fromUser.id, toUser.id);
-			if (!isFollower) {
+		const approvals = await this.chatApprovalsRepository.createQueryBuilder('approval')
+			.where(new Brackets(qb => { // 自分が相手を許可しているか
+				qb.where('approval.userId = :fromUserId', { fromUserId: fromUser.id })
+					.andWhere('approval.otherId = :toUserId', { toUserId: toUser.id });
+			}))
+			.orWhere(new Brackets(qb => { // 相手が自分を許可しているか
+				qb.where('approval.userId = :toUserId', { toUserId: toUser.id })
+					.andWhere('approval.otherId = :fromUserId', { fromUserId: fromUser.id });
+			}))
+			.take(2)
+			.getMany();
+
+		const otherApprovedMe = approvals.some(approval => approval.userId === toUser.id);
+		const iApprovedOther = approvals.some(approval => approval.userId === fromUser.id);
+
+		if (!otherApprovedMe) {
+			if (toUser.chatScope === 'none') {
 				throw new Error('recipient is cannot chat');
-			}
-		} else if (toUser.chatScope === 'following') {
-			const isFollowing = await this.userFollowingService.isFollowing(toUser.id, fromUser.id);
-			if (!isFollowing) {
-				throw new Error('recipient is cannot chat');
-			}
-		} else if (toUser.chatScope === 'mutual') {
-			const isMutual = await this.userFollowingService.isMutual(fromUser.id, toUser.id);
-			if (!isMutual) {
-				throw new Error('recipient is cannot chat');
+			} else if (toUser.chatScope === 'followers') {
+				const isFollower = await this.userFollowingService.isFollowing(fromUser.id, toUser.id);
+				if (!isFollower) {
+					throw new Error('recipient is cannot chat');
+				}
+			} else if (toUser.chatScope === 'following') {
+				const isFollowing = await this.userFollowingService.isFollowing(toUser.id, fromUser.id);
+				if (!isFollowing) {
+					throw new Error('recipient is cannot chat');
+				}
+			} else if (toUser.chatScope === 'mutual') {
+				const isMutual = await this.userFollowingService.isMutual(fromUser.id, toUser.id);
+				if (!isMutual) {
+					throw new Error('recipient is cannot chat');
+				}
 			}
 		}
 
@@ -103,6 +129,15 @@ export class ChatService {
 		} satisfies Partial<MiChatMessage>;
 
 		const inserted = await this.chatMessagesRepository.insertOne(message);
+
+		// 相手を許可しておく
+		if (!iApprovedOther) {
+			this.chatApprovalsRepository.insertOne({
+				id: this.idService.gen(),
+				userId: fromUser.id,
+				otherId: toUser.id,
+			});
+		}
 
 		const packedMessage = await this.chatMessageEntityService.packLite(inserted);
 

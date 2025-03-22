@@ -8,6 +8,9 @@ import pg from 'pg';
 import { DataSource, Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
+import { Config } from '@/config.js';
+import MisskeyLogger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
 
 import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAbuseReportNotificationRecipient } from '@/models/AbuseReportNotificationRecipient.js';
@@ -81,11 +84,8 @@ import { MiChatRoom } from '@/models/ChatRoom.js';
 import { MiChatRoomMembership } from '@/models/ChatRoomMembership.js';
 import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
-
-import { Config } from '@/config.js';
-import MisskeyLogger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
-import { MiSystemAccount } from './models/SystemAccount.js';
+import { MiChatApproval } from '@/models/ChatApproval.js';
+import { MiSystemAccount } from '@/models/SystemAccount.js';
 
 pg.types.setTypeParser(20, Number);
 
@@ -242,6 +242,7 @@ export const entities = [
 	MiChatMessage,
 	MiChatRoom,
 	MiChatRoomMembership,
+	MiChatApproval,
 	MiBubbleGameRecord,
 	MiReversiGame,
 	...charts,

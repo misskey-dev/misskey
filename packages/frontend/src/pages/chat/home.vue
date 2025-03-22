@@ -66,13 +66,13 @@ const history = ref<{
 
 function start(ev: MouseEvent) {
 	os.popupMenu([{
-		text: i18n.ts.individualChat,
-		caption: i18n.ts.individualChat_description,
+		text: i18n.ts._chat.individualChat,
+		caption: i18n.ts._chat.individualChat_description,
 		icon: 'ti ti-user',
 		action: () => { startUser(); },
 	}, { type: 'divider' }, {
-		text: i18n.ts.roomChat,
-		caption: i18n.ts.roomChat_description,
+		text: i18n.ts._chat.roomChat,
+		caption: i18n.ts._chat.roomChat_description,
 		icon: 'ti ti-users',
 		action: () => { startRoom(); },
 	}], ev.currentTarget ?? ev.target);

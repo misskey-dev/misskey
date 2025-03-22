@@ -81,6 +81,7 @@ import {
 	MiChatMessage,
 	MiChatRoom,
 	MiChatRoomMembership,
+	MiChatApproval,
 } from './_.js';
 import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
@@ -511,6 +512,12 @@ const $chatRoomMembershipsRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $chatApprovalsRepository: Provider = {
+	provide: DI.chatApprovalsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiChatApproval),
+	inject: [DI.db],
+};
+
 const $bubbleGameRecordsRepository: Provider = {
 	provide: DI.bubbleGameRecordsRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiBubbleGameRecord).extend(miRepository as MiRepository<MiBubbleGameRecord>),
@@ -597,6 +604,7 @@ const $reversiGamesRepository: Provider = {
 		$chatMessagesRepository,
 		$chatRoomsRepository,
 		$chatRoomMembershipsRepository,
+		$chatApprovalsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
 	],
@@ -672,6 +680,7 @@ const $reversiGamesRepository: Provider = {
 		$chatMessagesRepository,
 		$chatRoomsRepository,
 		$chatRoomMembershipsRepository,
+		$chatApprovalsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
 	],

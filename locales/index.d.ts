@@ -5358,31 +5358,63 @@ export interface Locale extends ILocale {
      * チャット
      */
     "chat": string;
-    /**
-     * 個人チャット
-     */
-    "individualChat": string;
-    /**
-     * 特定ユーザーとの一対一のチャットができます。
-     */
-    "individualChat_description": string;
-    /**
-     * ルームチャット
-     */
-    "roomChat": string;
-    /**
-     * 複数人でのチャットができます。
-     * また、個人チャットを許可していないユーザーとでも、相手が受け入れればチャットができます。
-     */
-    "roomChat_description": string;
-    /**
-     * このユーザーとのチャットを開始できません
-     */
-    "cannotChatWithTheUser": string;
-    /**
-     * チャットが使えない状態になっているか、相手がチャットを開放していません。
-     */
-    "cannotChatWithTheUser_description": string;
+    "_chat": {
+        /**
+         * 個人チャット
+         */
+        "individualChat": string;
+        /**
+         * 特定ユーザーとの一対一のチャットができます。
+         */
+        "individualChat_description": string;
+        /**
+         * ルームチャット
+         */
+        "roomChat": string;
+        /**
+         * 複数人でのチャットができます。
+         * また、個人チャットを許可していないユーザーとでも、相手が受け入れればチャットができます。
+         */
+        "roomChat_description": string;
+        /**
+         * このユーザーとのチャットを開始できません
+         */
+        "cannotChatWithTheUser": string;
+        /**
+         * チャットが使えない状態になっているか、相手がチャットを開放していません。
+         */
+        "cannotChatWithTheUser_description": string;
+        /**
+         * チャットを許可する相手
+         */
+        "chatAllowedUsers": string;
+        /**
+         * 自分からチャットメッセージを送った相手とはこの設定に関わらずチャットが可能です。
+         */
+        "chatAllowedUsers_note": string;
+        "_chatAllowedUsers": {
+            /**
+             * 誰でも
+             */
+            "everyone": string;
+            /**
+             * 自分のフォロワーのみ
+             */
+            "followers": string;
+            /**
+             * 自分がフォローしているユーザーのみ
+             */
+            "following": string;
+            /**
+             * 相互フォローのユーザーのみ
+             */
+            "mutual": string;
+            /**
+             * 誰も許可しない
+             */
+            "none": string;
+        };
+    };
     "_emojiPalette": {
         /**
          * パレット

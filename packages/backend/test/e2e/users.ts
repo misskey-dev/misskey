@@ -15,7 +15,7 @@ describe('ユーザー', () => {
 	// エンティティとしてのユーザーを主眼においたテストを記述する
 	// (Userを返すエンドポイントとUserエンティティを書き換えるエンドポイントをテストする)
 
-	const stripUndefined = <T extends { [key: string]: any }, >(orig: T): Partial<T> => {
+	const stripUndefined = <T extends { [key: string]: any } >(orig: T): Partial<T> => {
 		return Object.entries({ ...orig })
 			.filter(([, value]) => value !== undefined)
 			.reduce((obj: Partial<T>, [key, value]) => {
@@ -83,6 +83,7 @@ describe('ユーザー', () => {
 			publicReactions: user.publicReactions,
 			followingVisibility: user.followingVisibility,
 			followersVisibility: user.followersVisibility,
+			chatScope: user.chatScope,
 			roles: user.roles,
 			memo: user.memo,
 		});
@@ -343,6 +344,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.publicReactions, true);
 		assert.strictEqual(response.followingVisibility, 'public');
 		assert.strictEqual(response.followersVisibility, 'public');
+		assert.strictEqual(response.chatScope, 'mutual');
 		assert.deepStrictEqual(response.roles, []);
 		assert.strictEqual(response.memo, null);
 
