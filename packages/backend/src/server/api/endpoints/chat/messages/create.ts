@@ -16,6 +16,7 @@ export const meta = {
 	tags: ['chat'],
 
 	requireCredential: true,
+	requiredRolePolicy: 'canChat',
 
 	prohibitMoved: true,
 

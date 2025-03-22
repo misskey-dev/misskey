@@ -16,9 +16,11 @@ import { ChatMessageEntityService } from '@/core/entities/ChatMessageEntityServi
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { bindThis } from '@/decorators.js';
-import type { ChatMessagesRepository, MiChatMessage, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
+import type { ChatMessagesRepository, MiChatMessage, MiChatRoom, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { QueryService } from '@/core/QueryService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
 
 @Injectable()
 export class ChatService {
@@ -47,36 +49,46 @@ export class ChatService {
 		private pushNotificationService: PushNotificationService,
 		private userBlockingService: UserBlockingService,
 		private queryService: QueryService,
+		private roleService: RoleService,
+		private userFollowingService: UserFollowingService,
 	) {
 	}
 
 	@bindThis
-	public async createMessage(params: {
-		fromUser: { id: MiUser['id']; host: MiUser['host']; };
-		toUser?: MiUser | null;
-		//toRoom?: MiUserRoom | null;
+	public async createMessage(fromUser: { id: MiUser['id']; host: MiUser['host']; }, toUser: MiUser, params: {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
 	}) {
-		const { fromUser, toUser /*toRoom*/ } = params;
-
-		if (toUser == null /*&& toRoom == null*/) {
-			throw new Error('recipient is required');
+		if (fromUser.id === toUser.id) {
+			throw new Error('yourself');
 		}
 
-		if (toUser) {
-			const blocked = await this.userBlockingService.checkBlocked(toUser.id, fromUser.id);
-			if (blocked) {
-				throw new Error('blocked');
+		if (toUser.chatScope === 'none') {
+			throw new Error('recipient is cannot chat');
+		} else if (toUser.chatScope === 'followers') {
+
+		} else if (toUser.chatScope === 'following') {
+		} else if (toUser.chatScope === 'mutual') {
+			const isMutual = await this.userFollowingService.isMutual(fromUser.id, toUser.id);
+			if (!isMutual) {
+				throw new Error('recipient is cannot chat');
 			}
+		}
+
+		if ((await this.roleService.getUserPolicies(toUser.id)).canChat) {
+			throw new Error('recipient is cannot chat');
+		}
+
+		const blocked = await this.userBlockingService.checkBlocked(toUser.id, fromUser.id);
+		if (blocked) {
+			throw new Error('blocked');
 		}
 
 		const message = {
 			id: this.idService.gen(),
 			fromUserId: fromUser.id,
-			toUserId: toUser ? toUser.id : null,
-			//toRoomId: recipientRoom ? recipientRoom.id : null,
+			toUserId: toUser.id,
 			text: params.text ? params.text.trim() : null,
 			fileId: params.file ? params.file.id : null,
 			reads: [],
@@ -87,36 +99,26 @@ export class ChatService {
 
 		const packedMessage = await this.chatMessageEntityService.packLite(inserted);
 
-		if (toUser) {
+		if (this.userEntityService.isLocalUser(toUser)) {
 			const redisPipeline = this.redisClient.pipeline();
 			redisPipeline.set(`newChatMessageExists:${toUser.id}:${fromUser.id}`, message.id);
 			redisPipeline.sadd(`newChatMessagesExists:${toUser.id}`, `user:${fromUser.id}`);
 			redisPipeline.exec();
+		}
 
-			if (this.userEntityService.isLocalUser(fromUser)) {
-				// 自分のストリーム
-				this.globalEventService.publishChatStream(fromUser.id, toUser.id, 'message', packedMessage);
-			}
+		if (this.userEntityService.isLocalUser(fromUser)) {
+			// 自分のストリーム
+			this.globalEventService.publishChatStream(fromUser.id, toUser.id, 'message', packedMessage);
+		}
 
-			if (this.userEntityService.isLocalUser(toUser)) {
-				// 相手のストリーム
-				this.globalEventService.publishChatStream(toUser.id, fromUser.id, 'message', packedMessage);
-			}
-		}/* else if (toRoom) {
-			// グループのストリーム
-			this.globalEventService.publishRoomChatStream(toRoom.id, 'message', messageObj);
-
-			// メンバーのストリーム
-			const joinings = await this.userRoomJoiningsRepository.findBy({ userRoomId: toRoom.id });
-			for (const joining of joinings) {
-				this.globalEventService.publishChatIndexStream(joining.userId, 'message', messageObj);
-				this.globalEventService.publishMainStream(joining.userId, 'chatMessage', messageObj);
-			}
-		}*/
+		if (this.userEntityService.isLocalUser(toUser)) {
+			// 相手のストリーム
+			this.globalEventService.publishChatStream(toUser.id, fromUser.id, 'message', packedMessage);
+		}
 
 		// 3秒経っても既読にならなかったらイベント発行
-		setTimeout(async () => {
-			if (toUser && this.userEntityService.isLocalUser(toUser)) {
+		if (this.userEntityService.isLocalUser(toUser)) {
+			setTimeout(async () => {
 				const marker = await this.redisClient.get(`newChatMessageExists:${toUser.id}:${fromUser.id}`);
 
 				if (marker == null) return; // 既読
@@ -124,15 +126,8 @@ export class ChatService {
 				const packedMessageForTo = await this.chatMessageEntityService.pack(inserted, toUser);
 				this.globalEventService.publishMainStream(toUser.id, 'newChatMessage', packedMessageForTo);
 				this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
-			}/* else if (toRoom) {
-				const joinings = await this.userRoomJoiningsRepository.findBy({ userRoomId: toRoom.id, userId: Not(fromUser.id) });
-				for (const joining of joinings) {
-					if (freshMessage.reads.includes(joining.userId)) return; // 既読
-					this.globalEventService.publishMainStream(joining.userId, 'newChatMessage', messageObj);
-					this.pushNotificationService.pushNotification(joining.userId, 'newChatMessage', messageObj);
-				}
-			}*/
-		}, 3000);
+			}, 3000);
+		}
 
 		/* TODO: AP
 		if (toUser && this.userEntityService.isLocalUser(fromUser) && this.userEntityService.isRemoteUser(toUser)) {
@@ -156,6 +151,53 @@ export class ChatService {
 			this.queueService.deliver(fromUser, activity, toUser.inbox);
 		}
 			*/
+
+		return packedMessage;
+	}
+
+	@bindThis
+	public async createMessageToRoom(fromUser: { id: MiUser['id']; host: MiUser['host']; }, toRoom: MiChatRoom, params: {
+		text?: string | null;
+		file?: MiDriveFile | null;
+		uri?: string | null;
+	}) {
+		const message = {
+			id: this.idService.gen(),
+			fromUserId: fromUser.id,
+			toRoomId: toRoom.id,
+			text: params.text ? params.text.trim() : null,
+			fileId: params.file ? params.file.id : null,
+			reads: [],
+			uri: params.uri ?? null,
+		} satisfies Partial<MiChatMessage>;
+
+		const inserted = await this.chatMessagesRepository.insertOne(message);
+
+		const packedMessage = await this.chatMessageEntityService.packLite(inserted);
+
+		/*
+			// グループのストリーム
+			this.globalEventService.publishRoomChatStream(toRoom.id, 'message', messageObj);
+
+			// メンバーのストリーム
+			const joinings = await this.userRoomJoiningsRepository.findBy({ userRoomId: toRoom.id });
+			for (const joining of joinings) {
+				this.globalEventService.publishChatIndexStream(joining.userId, 'message', messageObj);
+				this.globalEventService.publishMainStream(joining.userId, 'chatMessage', messageObj);
+			}
+		*/
+
+		// 3秒経っても既読にならなかったらイベント発行
+		setTimeout(async () => {
+			/*
+				const joinings = await this.userRoomJoiningsRepository.findBy({ userRoomId: toRoom.id, userId: Not(fromUser.id) });
+				for (const joining of joinings) {
+					if (freshMessage.reads.includes(joining.userId)) return; // 既読
+					this.globalEventService.publishMainStream(joining.userId, 'newChatMessage', messageObj);
+					this.pushNotificationService.pushNotification(joining.userId, 'newChatMessage', messageObj);
+				}
+			*/
+		}, 3000);
 
 		return packedMessage;
 	}

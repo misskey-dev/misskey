@@ -4974,6 +4974,7 @@ export type components = {
       canImportFollowing: boolean;
       canImportMuting: boolean;
       canImportUserLists: boolean;
+      canChat: boolean;
     };
     ReversiGameLite: {
       /** Format: id */
@@ -13800,7 +13801,7 @@ export type operations = {
           /** Format: misskey:id */
           fileId?: string;
           /** Format: misskey:id */
-          userId?: string | null;
+          toUserId?: string | null;
         };
       };
     };
