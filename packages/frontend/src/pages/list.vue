@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</p>
 		</div>
 	</MkSpacer>
-	<MkSpacer v-else-if="list" :contentMax="700" :class="$style.main">
+	<MkSpacer v-else-if="list" :contentMax="700">
 		<div v-if="list" class="members _margin">
 			<div :class="$style.member_text">{{ i18n.ts.members }}</div>
 			<div class="_gaps_s">
@@ -106,10 +106,6 @@ definePage(() => ({
 }));
 </script>
 <style lang="scss" module>
-.main {
-	min-height: calc(100cqh - (var(--MI-stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
-}
-
 .userItem {
 	display: flex;
 }
