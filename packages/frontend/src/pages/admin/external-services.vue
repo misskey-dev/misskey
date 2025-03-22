@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkTextarea>
 						<MkTextarea v-model="llmTranslatorUserPrompt">
 							<template #label>User Prompt</template>
-							<template #caption>Translation instruction template (may include {text} for source text and {targetLang} for target language)<br>Example: "Translate this to {targetLang}: {text}"</template>
+							<template #caption>Translation instruction template (use {text} for source content and {targetLang} for target language)<br>Example: "Translate this to {targetLang}: {text}"</template>
 						</MkTextarea>
 						<MkSwitch v-model="llmTranslatorRedisCacheEnabled">
 							<template #label>Redis Cache Enable</template>
