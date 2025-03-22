@@ -121,7 +121,7 @@ export class MetaEntityService {
 			enableEmail: instance.enableEmail,
 			enableServiceWorker: instance.enableServiceWorker,
 
-			translatorAvailable: instance.deeplAuthKey != null,
+			translatorAvailable: instance.deeplAuthKey != null || instance.enableLlmTranslator,
 
 			serverRules: instance.serverRules,
 
