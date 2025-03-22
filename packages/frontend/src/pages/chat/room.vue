@@ -128,7 +128,7 @@ async function fetch() {
 	connection.value.on('message', onMessage);
 	connection.value.on('deleted', onDeleted);
 
-	document.addEventListener('visibilitychange', onVisibilitychange);
+	window.document.addEventListener('visibilitychange', onVisibilitychange);
 
 	fetching.value = false;
 }
@@ -164,7 +164,7 @@ function notifyNewMessage() {
 }
 
 function onVisibilitychange() {
-	if (document.hidden) return;
+	if (window.document.hidden) return;
 	for (const message of pagingComponent.value.items) {
 		if (message.userId !== $i.id && !message.isRead) {
 			connection.value?.send('read', {
@@ -180,7 +180,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
 	connection.value?.dispose();
-	document.removeEventListener('visibilitychange', onVisibilitychange);
+	window.document.removeEventListener('visibilitychange', onVisibilitychange);
 });
 
 definePage(computed(() => !fetching.value ? user.value ? {

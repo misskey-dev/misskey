@@ -2497,15 +2497,6 @@ export type paths = {
      */
     post: operations['i___pin'];
   };
-  '/i/read-all-unread-notes': {
-    /**
-     * i/read-all-unread-notes
-     * @description No description provided.
-     *
-     * **Credential required**: *Yes* / **Permission**: *write:account*
-     */
-    post: operations['i___read-all-unread-notes'];
-  };
   '/i/read-announcement': {
     /**
      * i/read-announcement
@@ -20489,50 +20480,6 @@ export type operations = {
         content: {
           'application/json': components['schemas']['MeDetailed'];
         };
-      };
-      /** @description Client error */
-      400: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Authentication error */
-      401: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Forbidden error */
-      403: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description I'm Ai */
-      418: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          'application/json': components['schemas']['Error'];
-        };
-      };
-    };
-  };
-  /**
-   * i/read-all-unread-notes
-   * @description No description provided.
-   *
-   * **Credential required**: *Yes* / **Permission**: *write:account*
-   */
-  'i___read-all-unread-notes': {
-    responses: {
-      /** @description OK (without any results) */
-      204: {
-        content: never;
       };
       /** @description Client error */
       400: {

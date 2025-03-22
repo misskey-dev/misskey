@@ -464,4 +464,9 @@ export class ChatService {
 
 		return readStateMap;
 	}
+
+	@bindThis
+	public async hasUnreadMessages(userId: MiUser['id']) {
+		// TODO
+	}
 }

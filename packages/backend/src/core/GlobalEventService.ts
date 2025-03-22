@@ -72,10 +72,6 @@ export interface MainEventTypes {
 	readAllNotifications: undefined;
 	notificationFlushed: undefined;
 	unreadNotification: Packed<'Notification'>;
-	unreadMention: MiNote['id'];
-	readAllUnreadMentions: undefined;
-	unreadSpecifiedNote: MiNote['id'];
-	readAllUnreadSpecifiedNotes: undefined;
 	readAllAntennas: undefined;
 	unreadAntenna: MiAntenna;
 	readAllAnnouncements: undefined;

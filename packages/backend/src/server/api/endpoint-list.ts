@@ -263,7 +263,6 @@ export * as 'i/notifications-grouped' from './endpoints/i/notifications-grouped.
 export * as 'i/page-likes' from './endpoints/i/page-likes.js';
 export * as 'i/pages' from './endpoints/i/pages.js';
 export * as 'i/pin' from './endpoints/i/pin.js';
-export * as 'i/read-all-unread-notes' from './endpoints/i/read-all-unread-notes.js';
 export * as 'i/read-announcement' from './endpoints/i/read-announcement.js';
 export * as 'i/regenerate-token' from './endpoints/i/regenerate-token.js';
 export * as 'i/registry/get' from './endpoints/i/registry/get.js';
