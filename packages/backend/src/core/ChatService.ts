@@ -90,27 +90,27 @@ export class ChatService {
 
 		if (!otherApprovedMe) {
 			if (toUser.chatScope === 'none') {
-				throw new Error('recipient is cannot chat');
+				throw new Error('recipient is cannot chat (none)');
 			} else if (toUser.chatScope === 'followers') {
 				const isFollower = await this.userFollowingService.isFollowing(fromUser.id, toUser.id);
 				if (!isFollower) {
-					throw new Error('recipient is cannot chat');
+					throw new Error('recipient is cannot chat (followers)');
 				}
 			} else if (toUser.chatScope === 'following') {
 				const isFollowing = await this.userFollowingService.isFollowing(toUser.id, fromUser.id);
 				if (!isFollowing) {
-					throw new Error('recipient is cannot chat');
+					throw new Error('recipient is cannot chat (following)');
 				}
 			} else if (toUser.chatScope === 'mutual') {
 				const isMutual = await this.userFollowingService.isMutual(fromUser.id, toUser.id);
 				if (!isMutual) {
-					throw new Error('recipient is cannot chat');
+					throw new Error('recipient is cannot chat (mutual)');
 				}
 			}
 		}
 
-		if ((await this.roleService.getUserPolicies(toUser.id)).canChat) {
-			throw new Error('recipient is cannot chat');
+		if (!(await this.roleService.getUserPolicies(toUser.id)).canChat) {
+			throw new Error('recipient is cannot chat (policy)');
 		}
 
 		const blocked = await this.userBlockingService.checkBlocked(toUser.id, fromUser.id);

@@ -125,9 +125,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					throw err;
 				});
 
-				return await this.chatService.createMessage({
-					fromUser: me,
-					toUser,
+				return await this.chatService.createMessage(me, toUser, {
 					text: ps.text,
 					file: file,
 				});

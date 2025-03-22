@@ -1979,14 +1979,6 @@ export interface Locale extends ILocale {
      */
     "attachAsFileQuestion": string;
     /**
-     * まだチャットはありません
-     */
-    "noMessagesYet": string;
-    /**
-     * 新しいメッセージがあります
-     */
-    "newMessageExists": string;
-    /**
      * メッセージに添付できるファイルはひとつです
      */
     "onlyOneFileCanBeAttached": string;
@@ -5359,6 +5351,14 @@ export interface Locale extends ILocale {
      */
     "chat": string;
     "_chat": {
+        /**
+         * まだメッセージはありません
+         */
+        "noMessagesYet": string;
+        /**
+         * 新しいメッセージ
+         */
+        "newMessage": string;
         /**
          * 個人チャット
          */

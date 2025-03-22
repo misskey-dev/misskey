@@ -9,8 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700">
 			<MkPagination v-if="pagination" ref="pagingComponent" :key="userId || roomId" :pagination="pagination" :disableAutoLoad="true" :scrollReversed="true">
 				<template #empty>
-					<div class="_fullinfo">
+					<div class="_gaps" style="text-align: center;">
 						<div>{{ i18n.ts.noMessagesYet }}</div>
+						<template v-if="user">
+							<div v-if="user.chatScope === 'followers'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
+							<div v-else-if="user.chatScope === 'following'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
+							<div v-else-if="user.chatScope === 'mutual'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
+							<div v-else>{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
+						</template>
 					</div>
 				</template>
 				<template #default="{ items: messages }">
