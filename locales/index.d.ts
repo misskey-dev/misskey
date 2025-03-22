@@ -5385,6 +5385,26 @@ export interface Locale extends ILocale {
          */
         "cannotChatWithTheUser_description": string;
         /**
+         * チャットする
+         */
+        "chatWithThisUser": string;
+        /**
+         * このユーザーはフォロワーからのみチャットを受け付けています。
+         */
+        "thisUserAllowsChatOnlyFromFollowers": string;
+        /**
+         * このユーザーはフォローしているユーザーからのみチャットを受け付けています。
+         */
+        "thisUserAllowsChatOnlyFromFollowing": string;
+        /**
+         * このユーザーは相互フォローのユーザーからのみチャットを受け付けています。
+         */
+        "thisUserAllowsChatOnlyFromMutualFollowing": string;
+        /**
+         * このユーザーは誰からもチャットを受け付けていません。
+         */
+        "thisUserNotAllowedChatAnyone": string;
+        /**
          * チャットを許可する相手
          */
         "chatAllowedUsers": string;

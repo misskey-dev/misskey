@@ -1343,7 +1343,11 @@ _chat:
   roomChat_description: "複数人でのチャットができます。\nまた、個人チャットを許可していないユーザーとでも、相手が受け入れればチャットができます。"
   cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
   cannotChatWithTheUser_description: "チャットが使えない状態になっているか、相手がチャットを開放していません。"
-
+  chatWithThisUser: "チャットする"
+  thisUserAllowsChatOnlyFromFollowers: "このユーザーはフォロワーからのみチャットを受け付けています。"
+  thisUserAllowsChatOnlyFromFollowing: "このユーザーはフォローしているユーザーからのみチャットを受け付けています。"
+  thisUserAllowsChatOnlyFromMutualFollowing: "このユーザーは相互フォローのユーザーからのみチャットを受け付けています。"
+  thisUserNotAllowedChatAnyone: "このユーザーは誰からもチャットを受け付けていません。"
   chatAllowedUsers: "チャットを許可する相手"
   chatAllowedUsers_note: "自分からチャットメッセージを送った相手とはこの設定に関わらずチャットが可能です。"
   _chatAllowedUsers:

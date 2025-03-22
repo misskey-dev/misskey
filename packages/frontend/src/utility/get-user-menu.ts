@@ -220,13 +220,18 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	});
 
 	if ($i) {
-		menuItems.push({
+		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-mail',
 			text: i18n.ts.sendMessage,
 			action: () => {
 				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
 				os.post({ specified: user, initialText: `${canonical} ` });
 			},
+		}, {
+			type: 'link',
+			icon: 'ti ti-messages',
+			text: i18n.ts._chat.chatWithThisUser,
+			to: `/chat/user/${user.id}`,
 		}, { type: 'divider' }, {
 			icon: 'ti ti-pencil',
 			text: i18n.ts.editMemo,

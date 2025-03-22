@@ -4,52 +4,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div style="height: 100%; overflow:auto; display:flex; flex-direction:column-reverse;">
-	<MkStickyContainer>
-		<template #header>
-			<MkPageHeader/>
-		</template>
+<PageWithHeader reversed>
+	<div ref="rootEl" :class="$style.root">
+		<MkSpacer :contentMax="700">
+			<MkPagination v-if="pagination" ref="pagingComponent" :key="userId || roomId" :pagination="pagination" :disableAutoLoad="true" :scrollReversed="true">
+				<template #empty>
+					<div class="_fullinfo">
+						<div>{{ i18n.ts.noMessagesYet }}</div>
+					</div>
+				</template>
+				<template #default="{ items: messages }">
+					<TransitionGroup
+						:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
+						:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
+						:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
+						:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
+						:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
+						tag="div" class="_gaps"
+					>
+						<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message" :user="message.fromUserId === $i.id ? $i : user" :isRoom="room != null"/>
+					</TransitionGroup>
+				</template>
+			</MkPagination>
+		</MkSpacer>
+	</div>
 
-		<div ref="rootEl" :class="$style.root">
-			<MkSpacer :contentMax="700">
-				<MkPagination v-if="pagination" ref="pagingComponent" :key="userId || roomId" :pagination="pagination" :disableAutoLoad="true" :scrollReversed="true">
-					<template #empty>
-						<div class="_fullinfo">
-							<div>{{ i18n.ts.noMessagesYet }}</div>
-						</div>
-					</template>
-					<template #default="{ items: messages }">
-						<TransitionGroup
-							:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
-							:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
-							:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
-							:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
-							:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
-							tag="div" class="_gaps"
-						>
-							<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message" :user="message.fromUserId === $i.id ? $i : user" :isRoom="room != null"/>
-						</TransitionGroup>
-					</template>
-				</MkPagination>
-			</MkSpacer>
-		</div>
-
-		<template #footer>
-			<div :class="$style.footer">
-				<div class="_gaps">
-					<Transition name="fade">
-						<div v-show="showIndicator" :class="$style.new">
-							<button class="_buttonPrimary" :class="$style.newButton" @click="onIndicatorClick">
-								<i class="fas ti-fw fa-arrow-circle-down" :class="$style.newIcon"></i>{{ i18n.ts.newMessageExists }}
-							</button>
-						</div>
-					</Transition>
-					<XForm v-if="!fetching" :user="user" :room="room" :class="$style.form"/>
-				</div>
+	<template #footer>
+		<div :class="$style.footer">
+			<div class="_gaps">
+				<Transition name="fade">
+					<div v-show="showIndicator" :class="$style.new">
+						<button class="_buttonPrimary" :class="$style.newButton" @click="onIndicatorClick">
+							<i class="fas ti-fw fa-arrow-circle-down" :class="$style.newIcon"></i>{{ i18n.ts.newMessageExists }}
+						</button>
+					</div>
+				</Transition>
+				<XForm v-if="!fetching" :user="user" :room="room" :class="$style.form"/>
 			</div>
-		</template>
-	</MkStickyContainer>
-</div>
+		</div>
+	</template>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -232,7 +226,6 @@ definePage(computed(() => !fetching.value ? user.value ? {
 }
 
 .root {
-	min-height: 100cqh;
 }
 
 .more {
