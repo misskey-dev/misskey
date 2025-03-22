@@ -83,7 +83,7 @@ function initNoteRenderSkipping() {
 				disposeNoteRenderSkipping();
 
 				const scrollEl = getScrollContainer(to);
-				const scrollElRect = (scrollEl ?? document.body).getBoundingClientRect();
+				const scrollElRect = (scrollEl ?? window.document.body).getBoundingClientRect();
 
 				// 画面内に入ったノートを記録
 				intersectionObserver = new IntersectionObserver((entries) => {

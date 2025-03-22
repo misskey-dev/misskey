@@ -194,7 +194,7 @@ async function initCanvas() {
 	}
 
 	await fontFace.load();
-	document.fonts.add(fontFace);
+	window.document.fonts.add(fontFace);
 
 	await loadBg();
 	await loadAvatar();
@@ -265,7 +265,7 @@ function postToX() {
 function download() {
 	if (!result.value) return;
 
-	const a = document.createElement('a');
+	const a = window.document.createElement('a');
 	a.href = URL.createObjectURL(result.value);
 	a.download = `hana-welcome-card-${Date.now()}.png`;
 	a.click();
