@@ -75,6 +75,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				const messages = await this.chatService.userTimeline(me.id, other.id, ps.sinceId, ps.untilId, ps.limit);
 
+				this.chatService.readUserChatMessage(me.id, other.id);
+
 				return await this.chatMessageEntityService.packLiteMany(messages);
 			}/* else if (ps.roomId != null) {
 				// Fetch recipient (room)

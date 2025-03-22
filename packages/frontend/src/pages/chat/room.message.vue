@@ -1,6 +1,6 @@
 <template>
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
-	<MkAvatar :class="$style.avatar" :user="user" link/>
+	<MkAvatar :class="$style.avatar" :user="user" link :preview="false"/>
 	<div :class="$style.body">
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
 			<div v-if="!message.isDeleted" :class="$style.content">

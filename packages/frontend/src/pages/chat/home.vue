@@ -5,9 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<MkSpacer :contentMax="700">
 		<div class="_gaps">
-			<MkButton primary :class="$style.start" @click="start"><i class="ti ti-plus"></i> {{ i18n.ts.startChat }}</MkButton>
+			<MkButton primary gradate :class="$style.start" @click="start"><i class="ti ti-plus"></i> {{ i18n.ts.startChat }}</MkButton>
 
 			<div v-if="history.length > 0" :class="$style.history">
 				<MkA
@@ -17,18 +17,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 					class="_panel"
 					:to="item.message.toRoomId ? `/chat/room/${item.message.toRoomId}` : `/chat/user/${item.other!.id}`"
 				>
-					<MkAvatar v-if="item.other" :class="$style.avatar" :user="item.other" indicator link preview/>
-					<header v-if="item.message.room">
-						<span :class="$style.name">{{ item.message.room.name }}</span>
-						<MkTime :time="item.message.createdAt" :class="$style.time"/>
-					</header>
-					<header v-else>
-						<MkUserName :class="$style.name" :user="item.other!"/>
-						<MkAcct :class="$style.username" :user="item.other!"/>
-						<MkTime :time="item.message.createdAt" :class="$style.time"/>
-					</header>
-					<div :class="$style.body">
-						<p :class="$style.text"><span v-if="item.isMe" :class="$style.iSaid">{{ i18n.ts.you }}:</span>{{ item.message.text }}</p>
+					<MkAvatar v-if="item.other" :class="$style.messageAvatar" :user="item.other" indicator :preview="false"/>
+					<div :class="$style.messageBody">
+						<header v-if="item.message.room" :class="$style.messageHeader">
+							<span :class="$style.messageHeaderName">{{ item.message.room.name }}</span>
+							<MkTime :time="item.message.createdAt" :class="$style.messageHeaderTime"/>
+						</header>
+						<header v-else :class="$style.messageHeader">
+							<MkUserName :class="$style.messageHeaderName" :user="item.other!"/>
+							<MkAcct :class="$style.messageHeaderUsername" :user="item.other!"/>
+							<MkTime :time="item.message.createdAt" :class="$style.messageHeaderTime"/>
+						</header>
+						<div :class="$style.messageBodyText"><span v-if="item.isMe" :class="$style.iSaid">{{ i18n.ts.you }}:</span>{{ item.message.text }}</div>
 					</div>
 				</MkA>
 			</div>
@@ -144,5 +144,76 @@ definePage(() => ({
 <style lang="scss" module>
 .start {
 	margin: 0 auto;
+}
+
+.message {
+	position: relative;
+	display: flex;
+	padding: 16px 24px;
+
+	&.isRead,
+	&.isMe {
+		opacity: 0.8;
+	}
+
+	&:not(.isMe):not(.isRead) {
+		&::before {
+			content: '';
+			position: absolute;
+			top: 8px;
+			right: 8px;
+			width: 8px;
+			height: 8px;
+			border-radius: 100%;
+			background-color: var(--MI_THEME-accent);
+		}
+	}
+}
+
+.messageAvatar {
+	width: 50px;
+	height: 50px;
+	margin: 0 16px 0 0;
+}
+
+.messageBody {
+	flex: 1;
+	min-width: 0;
+}
+
+.messageHeader {
+	display: flex;
+	align-items: center;
+	margin-bottom: 2px;
+	white-space: nowrap;
+	overflow: clip;
+}
+
+.messageHeaderName {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.messageHeaderUsername {
+	margin: 0 8px;
+}
+
+.messageHeaderTime {
+	margin-left: auto;
+}
+
+.messageBodyText {
+	overflow: hidden;
+	overflow-wrap: break-word;
+	font-size: 1.1em;
+}
+
+.iSaid {
+	font-weight: bold;
+	margin-right: 0.5em;
 }
 </style>
