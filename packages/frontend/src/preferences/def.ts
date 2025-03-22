@@ -138,6 +138,7 @@ export const PREF_DEF = {
 			'-',
 			'explore',
 			'announcements',
+			'channels',
 			'search',
 		],
 	},
