@@ -8370,6 +8370,17 @@ export type operations = {
             /** @enum {string} */
             federation: 'all' | 'specified' | 'none';
             federationHosts: string[];
+            enableLlmTranslator: boolean;
+            enableLlmTranslatorRedisCache: boolean;
+            llmTranslatorRedisCacheTtl: number;
+            llmTranslatorBaseUrl: string | null;
+            llmTranslatorApiKey: string | null;
+            llmTranslatorModel: string | null;
+            llmTranslatorTemperature: number | null;
+            llmTranslatorTopP: number | null;
+            llmTranslatorMaxTokens: number | null;
+            llmTranslatorSysPrompt: string | null;
+            llmTranslatorUserPrompt: string | null;
           };
         };
       };
@@ -10706,6 +10717,17 @@ export type operations = {
           /** @enum {string} */
           federation?: 'all' | 'none' | 'specified';
           federationHosts?: string[];
+          enableLlmTranslator?: boolean;
+          enableLlmTranslatorRedisCache?: boolean;
+          llmTranslatorRedisCacheTtl?: number;
+          llmTranslatorBaseUrl?: string | null;
+          llmTranslatorApiKey?: string | null;
+          llmTranslatorModel?: string | null;
+          llmTranslatorTemperature?: number | null;
+          llmTranslatorTopP?: number | null;
+          llmTranslatorMaxTokens?: number | null;
+          llmTranslatorSysPrompt?: string | null;
+          llmTranslatorUserPrompt?: string | null;
         };
       };
     };
