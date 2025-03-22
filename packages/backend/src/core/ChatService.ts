@@ -67,8 +67,15 @@ export class ChatService {
 		if (toUser.chatScope === 'none') {
 			throw new Error('recipient is cannot chat');
 		} else if (toUser.chatScope === 'followers') {
-
+			const isFollower = await this.userFollowingService.isFollowing(fromUser.id, toUser.id);
+			if (!isFollower) {
+				throw new Error('recipient is cannot chat');
+			}
 		} else if (toUser.chatScope === 'following') {
+			const isFollowing = await this.userFollowingService.isFollowing(toUser.id, fromUser.id);
+			if (!isFollowing) {
+				throw new Error('recipient is cannot chat');
+			}
 		} else if (toUser.chatScope === 'mutual') {
 			const isMutual = await this.userFollowingService.isMutual(fromUser.id, toUser.id);
 			if (!isMutual) {

@@ -738,6 +738,16 @@ export class UserFollowingService implements OnModuleInit {
 	}
 
 	@bindThis
+	public isFollowing(followerId: MiUser['id'], followeeId: MiUser['id']) {
+		return this.followingsRepository.exists({
+			where: {
+				followerId,
+				followeeId,
+			},
+		});
+	}
+
+	@bindThis
 	public async isMutual(aUserId: MiUser['id'], bUserId: MiUser['id']) {
 		const count = await this.followingsRepository.createQueryBuilder('following')
 			.where(new Brackets(qb => {
