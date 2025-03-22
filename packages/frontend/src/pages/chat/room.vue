@@ -5,35 +5,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader reversed>
-	<div ref="rootEl" :class="$style.root">
-		<MkSpacer :contentMax="700">
-			<MkPagination v-if="pagination" ref="pagingComponent" :key="userId || roomId" :pagination="pagination" :disableAutoLoad="true" :scrollReversed="true">
-				<template #empty>
-					<div class="_gaps" style="text-align: center;">
-						<div>{{ i18n.ts.noMessagesYet }}</div>
-						<template v-if="user">
-							<div v-if="user.chatScope === 'followers'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
-							<div v-else-if="user.chatScope === 'following'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
-							<div v-else-if="user.chatScope === 'mutual'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
-							<div v-else>{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
-						</template>
-					</div>
-				</template>
-				<template #default="{ items: messages }">
-					<TransitionGroup
-						:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
-						:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
-						:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
-						:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
-						:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
-						tag="div" class="_gaps"
-					>
-						<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message" :user="message.fromUserId === $i.id ? $i : user" :isRoom="room != null"/>
-					</TransitionGroup>
-				</template>
-			</MkPagination>
-		</MkSpacer>
-	</div>
+	<MkSpacer :contentMax="700">
+		<MkPagination v-if="pagination" ref="pagingComponent" :key="userId || roomId" :pagination="pagination" :disableAutoLoad="true" :scrollReversed="true">
+			<template #empty>
+				<div class="_gaps" style="text-align: center;">
+					<div>{{ i18n.ts.noMessagesYet }}</div>
+					<template v-if="user">
+						<div v-if="user.chatScope === 'followers'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
+						<div v-else-if="user.chatScope === 'following'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
+						<div v-else-if="user.chatScope === 'mutual'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
+						<div v-else>{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
+					</template>
+				</div>
+			</template>
+			<template #default="{ items: messages }">
+				<TransitionGroup
+					:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
+					:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
+					:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
+					:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
+					:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
+					tag="div" class="_gaps"
+				>
+					<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message" :user="message.fromUserId === $i.id ? $i : user" :isRoom="room != null"/>
+				</TransitionGroup>
+			</template>
+		</MkPagination>
+	</MkSpacer>
 
 	<template #footer>
 		<div :class="$style.footer">
@@ -77,7 +75,6 @@ const props = defineProps<{
 	roomId?: string;
 }>();
 
-const rootEl = useTemplateRef('rootEl');
 const pagingComponent = useTemplateRef('pagingComponent');
 
 const fetching = ref(true);
@@ -107,7 +104,6 @@ async function fetch() {
 				userId: user.value.id,
 			},
 			reversed: true,
-			pageEl: rootEl.value,
 		};
 		connection.value = useStream().useChannel('chat', {
 			otherId: user.value.id,
@@ -123,7 +119,6 @@ async function fetch() {
 				roomId: room?.id,
 			},
 			reversed: true,
-			pageEl: $$(rootEl).value,
 		};
 		connection = useStream().useChannel('chat', {
 			room: room?.id,
@@ -141,8 +136,6 @@ async function fetch() {
 function onMessage(message) {
 	//sound.play('chat');
 
-	//const _isBottom = isBottomVisible(rootEl, 64);
-
 	pagingComponent.value.prepend(message);
 	if (message.userId !== $i.id && !window.document.hidden) {
 		connection.value?.send('read', {
@@ -150,16 +143,9 @@ function onMessage(message) {
 		});
 	}
 
-	/*
-	if (_isBottom) {
-		// Scroll to bottom
-		nextTick(() => {
-			thisScrollToBottom();
-		});
-	} else if (message.userId !== $i.id) {
-		// Notify
+	if (message.userId !== $i.id) {
 		notifyNewMessage();
-	}*/
+	}
 }
 
 function onDeleted(id) {
@@ -169,22 +155,12 @@ function onDeleted(id) {
 	}
 }
 
-function thisScrollToBottom() {
-	scrollToBottom(rootEl.value, { behavior: 'smooth' });
-}
-
 function onIndicatorClick() {
 	showIndicator.value = false;
-	thisScrollToBottom();
 }
 
 function notifyNewMessage() {
 	showIndicator.value = true;
-
-	scrollRemove.value = onScrollBottom(rootEl, () => {
-		showIndicator.value = false;
-		scrollRemove.value = null;
-	});
 }
 
 function onVisibilitychange() {

@@ -74,8 +74,6 @@ export type Paging<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints> 
 	reversed?: boolean;
 
 	offsetMode?: boolean;
-
-	pageEl?: HTMLElement;
 };
 
 type MisskeyEntityMap = Map<string, MisskeyEntity>;
@@ -142,8 +140,7 @@ const {
 	enableInfiniteScroll,
 } = prefer.r;
 
-const contentEl = computed(() => props.pagination.pageEl ?? rootEl.value);
-const scrollableElement = computed(() => contentEl.value ? getScrollContainer(contentEl.value) : window.document.body);
+const scrollableElement = computed(() => rootEl.value ? getScrollContainer(rootEl.value) : window.document.body);
 
 const visibility = useDocumentVisibility();
 
@@ -174,13 +171,13 @@ watch(rootEl, () => {
 	});
 });
 
-watch([backed, contentEl], () => {
+watch([backed, rootEl], () => {
 	if (!backed.value) {
-		if (!contentEl.value) return;
+		if (!rootEl.value) return;
 
 		scrollRemove.value = props.pagination.reversed
-			? onScrollBottom(contentEl.value, executeQueue, TOLERANCE)
-			: onScrollTop(contentEl.value, (topVisible) => { if (topVisible) executeQueue(); }, TOLERANCE);
+			? onScrollBottom(rootEl.value, executeQueue, TOLERANCE)
+			: onScrollTop(rootEl.value, (topVisible) => { if (topVisible) executeQueue(); }, TOLERANCE);
 	} else {
 		if (scrollRemove.value) scrollRemove.value();
 		scrollRemove.value = null;
@@ -350,7 +347,7 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 	fetchMoreAppearTimeout();
 };
 
-const isHead = (): boolean => isBackTop.value || (props.pagination.reversed && !props.scrollReversed ? isTailVisible : isHeadVisible)(contentEl.value!, TOLERANCE);
+const isHead = (): boolean => isBackTop.value || (props.pagination.reversed && !props.scrollReversed ? isTailVisible : isHeadVisible)(rootEl.value!, TOLERANCE);
 
 watch(visibility, () => {
 	if (visibility.value === 'hidden') {
@@ -450,7 +447,7 @@ onDeactivated(() => {
 });
 
 function toBottom() {
-	scrollToBottom(contentEl.value!);
+	scrollToBottom(rootEl.value!);
 }
 
 onBeforeMount(() => {
