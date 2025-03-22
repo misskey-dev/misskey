@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkInput>
 						<MkInput v-model="llmTranslatorModel">
 							<template #label>Model Name</template>
-							<template #caption>Llm model to use (e.g., gpt-3.5-turbo, text-davinci-003, deepseek-chat)</template>
+							<template #caption>LLM model to use (e.g., gpt-3.5-turbo, text-davinci-003, deepseek-chat)</template>
 						</MkInput>
 						<MkInput v-model="llmTranslatorTemperature" type="number">
 							<template #label>Temperature</template>
