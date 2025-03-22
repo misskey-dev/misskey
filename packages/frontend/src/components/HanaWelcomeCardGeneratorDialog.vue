@@ -304,7 +304,7 @@ async function note() {
 	if (!file) return;
 
 	os.post({
-		text: i18n.tsx._hana._welcomeCardGen.shareText({ url: `https://${host}/@${$i.username}` }),
+		initialText: i18n.tsx._hana._welcomeCardGen.shareText({ url: `https://${host}/@${$i.username}` }),
 		initialFiles: [file],
 		instant: true,
 	});
