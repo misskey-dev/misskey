@@ -1392,7 +1392,7 @@ _abuseUserReport:
   resolve: "Resolve"
   accept: "Accept"
   reject: "Reject"
-  resolveTutorial: "If the report is legitimate in content, select \"Accept\" to mark the case as resolved in the affirmative.\nIf the content of the report is not legitimate, select \"Reject\" to mark the case as resolved in the negative."
+  resolveTutorial: "If the report's content is legitimate, select \"Accept\" to mark it as resolved.\nIf the report's content is illegitimate, select \"Reject\" to ignore it."
 _delivery:
   status: "Delivery status"
   stop: "Suspended"
@@ -2598,7 +2598,7 @@ _webhookSettings:
   testRemarks: "Click the button to the right of the switch to send a test Webhook with dummy data."
 _abuseReport:
   _notificationRecipient:
-    createRecipient: "Add a recipient for reports"
+    createRecipient: "Add recipient for reports"
     modifyRecipient: "Edit a recipient for reports"
     recipientType: "Notification type"
     _recipientType:
@@ -2828,7 +2828,7 @@ _customEmojisManager:
     confirmImportEmojisTitle: "Import Emojis"
     confirmImportEmojisDescription: "Import {count} Emoji(s) received from the remote server. Please pay close attention to the license of the Emoji. Are you sure to continue?"
   _local:
-    tabTitleList: "List of registered Emojis"
+    tabTitleList: "Registered emojis"
     tabTitleRegister: "Emoji registration"
     _list:
       emojisNothing: "There are no registered Emojis."
