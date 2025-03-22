@@ -4,11 +4,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer class="_pageScrollable">
-	<template #header><MkPageHeader v-model:tab="tab" :actions="actions" :tabs="tabs"/></template>
-	<slot></slot>
-	<template #footer><slot name="footer"></slot></template>
-</MkStickyContainer>
+<div :class="[$style.root, reversed ? '_pageScrollableReversed' : '_pageScrollable']">
+	<MkStickyContainer>
+		<template #header><MkPageHeader v-model:tab="tab" :actions="actions" :tabs="tabs"/></template>
+		<div :class="$style.body">
+			<slot></slot>
+		</div>
+		<template #footer><slot name="footer"></slot></template>
+	</MkStickyContainer>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -21,6 +25,7 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	hideTitle?: boolean;
 	displayMyAvatar?: boolean;
+	reversed?: boolean;
 }>(), {
 	tabs: () => ([] as Tab[]),
 });
@@ -29,5 +34,11 @@ const tab = defineModel<string>('tab');
 </script>
 
 <style lang="scss" module>
+.root {
 
+}
+
+.body {
+	min-height: calc(100cqh - (var(--MI-stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
+}
 </style>

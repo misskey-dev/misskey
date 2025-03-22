@@ -184,6 +184,15 @@ rt {
 	overscroll-behavior: contain;
 }
 
+._pageScrollableReversed {
+	height: 100%;
+	overflow: auto;
+	overflow-y: scroll;
+	overscroll-behavior: contain;
+	display: flex;
+	flex-direction: column-reverse;
+}
+
 ._indicatorCircle {
 	display: inline-block;
 	width: 1em;
