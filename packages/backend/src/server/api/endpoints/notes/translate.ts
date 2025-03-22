@@ -5,16 +5,16 @@
 
 import { URLSearchParams } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
+import { OpenAI } from 'openai';
+import * as Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
-import { ApiError } from '../../error.js';
 import { MiMeta } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
-import { OpenAI } from "openai";
-import * as Redis from 'ioredis';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -96,7 +96,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const res = await this.llmTranslate(note.text, ps.targetLang, note.id);
 				return {
 					text: res,
-				}
+				};
 			}
 
 			if (this.serverSettings.deeplAuthKey == null) {
@@ -136,26 +136,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		});
 	}
 
-	private async llmTranslate(text: string, targetLang: string, noteId: string): Promise<string | null> {
+	private async llmTranslate(text: string, targetLang: string, noteId: string): Promise<string> {
 		if (this.serverSettings.enableLlmTranslatorRedisCache) {
 			const key = `llmTranslate:${targetLang}:${noteId}`;
 			const cached = await this.redisClient.get(key);
 			if (cached != null) {
-				this.redisClient.expire(key, this.serverSettings.llmTranslatorRedisCacheTtl*60);
+				this.redisClient.expire(key, this.serverSettings.llmTranslatorRedisCacheTtl * 60);
 				return cached;
 			}
 			const res = await this.getLlmRes(text, targetLang);
-			await this.redisClient.set(key, res ?? '');
-			this.redisClient.expire(key, this.serverSettings.llmTranslatorRedisCacheTtl*60);
+			await this.redisClient.set(key, res);
+			this.redisClient.expire(key, this.serverSettings.llmTranslatorRedisCacheTtl * 60);
 			return res;
-		}
-		else {
+		} else {
 			return this.getLlmRes(text, targetLang);
 		}
 	}
 
-
-	private async getLlmRes(text: string, targetLang: string): Promise<string | null> {
+	private async getLlmRes(text: string, targetLang: string): Promise<string> {
 		const client = new OpenAI({
 			baseURL: this.serverSettings.llmTranslatorBaseUrl,
 			apiKey: this.serverSettings.llmTranslatorApiKey ?? '',
@@ -173,8 +171,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			temperature: this.serverSettings.llmTranslatorTemperature,
 			max_tokens: this.serverSettings.llmTranslatorMaxTokens,
 			top_p: this.serverSettings.llmTranslatorTopP,
-		})
+		});
 
-		return completion.choices[0].message.content
+		return completion.choices[0].message.content ?? '';
 	}
 }

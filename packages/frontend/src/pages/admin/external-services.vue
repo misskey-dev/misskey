@@ -125,7 +125,6 @@ const llmTranslatorUserPrompt = ref<string>('');
 const llmTranslatorRedisCacheEnabled = ref<boolean>(false);
 const llmTranslatorRedisCacheTtl = ref<number>(0);
 
-
 async function init() {
 	const meta = await misskeyApi('admin/meta');
 	deeplAuthKey.value = meta.deeplAuthKey ?? '';

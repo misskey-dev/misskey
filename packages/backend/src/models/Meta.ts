@@ -665,12 +665,12 @@ export class MiMeta {
 	})
 	public googleAnalyticsMeasurementId: string | null;
 
-	@Column('boolean',{
+	@Column('boolean', {
 		default: false,
 	})
 	public enableLlmTranslator: boolean;
 
-	@Column('boolean',{
+	@Column('boolean', {
 		default: false,
 	})
 	public enableLlmTranslatorRedisCache: boolean;
