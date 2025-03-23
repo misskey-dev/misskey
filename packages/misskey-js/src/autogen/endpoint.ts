@@ -211,6 +211,8 @@ import type {
 	ChatHistoryResponse,
 	ChatMessagesCreateRequest,
 	ChatMessagesCreateResponse,
+	ChatMessagesDeleteRequest,
+	ChatMessagesDeleteResponse,
 	ChatMessagesTimelineRequest,
 	ChatMessagesTimelineResponse,
 	ClipsAddNoteRequest,
@@ -734,6 +736,7 @@ export type Endpoints = {
 	'charts/users': { req: ChartsUsersRequest; res: ChartsUsersResponse };
 	'chat/history': { req: ChatHistoryRequest; res: ChatHistoryResponse };
 	'chat/messages/create': { req: ChatMessagesCreateRequest; res: ChatMessagesCreateResponse };
+	'chat/messages/delete': { req: ChatMessagesDeleteRequest; res: ChatMessagesDeleteResponse };
 	'chat/messages/timeline': { req: ChatMessagesTimelineRequest; res: ChatMessagesTimelineResponse };
 	'clips/add-note': { req: ClipsAddNoteRequest; res: EmptyResponse };
 	'clips/create': { req: ClipsCreateRequest; res: ClipsCreateResponse };

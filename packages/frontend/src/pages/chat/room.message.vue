@@ -26,15 +26,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
+import type { MenuItem } from '@/types/menu.js';
 import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkFukidashi from '@/components/MkFukidashi.vue';
+import * as os from '@/os.js';
 
 const $i = ensureSignin();
 
@@ -47,10 +50,36 @@ const props = defineProps<{
 const isMe = computed(() => props.message.fromUserId === $i.id);
 const urls = computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(props.message.text)) : []);
 
-function del(): void {
-	misskeyApi('chat/messages/delete', {
-		messageId: props.message.id,
-	});
+function showMenu(ev: MouseEvent) {
+	const menu: MenuItem[] = [];
+	if (isMe.value) {
+		menu.push({
+			text: i18n.ts.delete,
+			icon: 'ti ti-trash',
+			danger: true,
+			action: () => {
+				misskeyApi('chat/messages/delete', {
+					messageId: props.message.id,
+				});
+			},
+		});
+	} else {
+		menu.push({
+			text: i18n.ts.reportAbuse,
+			icon: 'ti ti-exclamation-circle',
+			action: () => {
+				const localUrl = `${url}/chat/messages/${props.message.id}`;
+				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+					user: props.user,
+					initialComment: `${localUrl}\n-----\n`,
+				}, {
+					closed: () => dispose(),
+				});
+			},
+		});
+	}
+
+	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }
 </script>
 

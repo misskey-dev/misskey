@@ -256,19 +256,26 @@ export class ChatService {
 	}
 
 	@bindThis
+	public findMyMessageById(userId: MiUser['id'], messageId: MiChatMessage['id']) {
+		return this.chatMessagesRepository.findOneBy({ id: messageId, fromUserId: userId });
+	}
+
+	@bindThis
 	public async deleteMessage(message: MiChatMessage) {
 		await this.chatMessagesRepository.delete(message.id);
 
 		if (message.toUserId) {
-			const fromUser = await this.usersRepository.findOneByOrFail({ id: message.fromUserId });
-			const toUser = await this.usersRepository.findOneByOrFail({ id: message.toUserId });
+			const [fromUser, toUser] = await Promise.all([
+				this.usersRepository.findOneByOrFail({ id: message.fromUserId }),
+				this.usersRepository.findOneByOrFail({ id: message.toUserId }),
+			]);
 
 			if (this.userEntityService.isLocalUser(fromUser)) this.globalEventService.publishChatStream(message.fromUserId, message.toUserId, 'deleted', message.id);
 			if (this.userEntityService.isLocalUser(toUser)) this.globalEventService.publishChatStream(message.toUserId, message.fromUserId, 'deleted', message.id);
 
 			if (this.userEntityService.isLocalUser(fromUser) && this.userEntityService.isRemoteUser(toUser)) {
-				const activity = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${message.id}`), fromUser));
-				this.queueService.deliver(fromUser, activity, toUser.inbox);
+				//const activity = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${message.id}`), fromUser));
+				//this.queueService.deliver(fromUser, activity, toUser.inbox);
 			}
 		}/* else if (message.toRoomId) {
 			this.globalEventService.publishRoomChatStream(message.toRoomId, 'deleted', message.id);
