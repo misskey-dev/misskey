@@ -7,48 +7,57 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ChatService } from '@/core/ChatService.js';
-import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 import { ApiError } from '@/server/api/error.js';
+import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 
 export const meta = {
 	tags: ['chat'],
 
 	requireCredential: true,
 
-	kind: 'read:chat',
+	kind: 'write:chat',
 
 	res: {
-		type: 'array',
+		type: 'object',
 		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'ChatRoomInvitation',
-		},
+		ref: 'ChatRoom',
 	},
 
 	errors: {
+		noSuchRoom: {
+			message: 'No such room.',
+			code: 'NO_SUCH_ROOM',
+			id: 'fcdb0f92-bda6-47f9-bd05-343e0e020932',
+		},
 	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
+		roomId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string', maxLength: 256 },
 	},
+	required: ['roomId'],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private chatEntityService: ChatEntityService,
 		private chatService: ChatService,
+		private chatEntityService: ChatEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const invitations = await this.chatService.getReceivedRoomInvitationsWithPagination(me.id, ps.limit, ps.sinceId, ps.untilId);
-			return this.chatEntityService.packRoomInvitations(invitations, me);
+			const room = await this.chatService.findMyRoomById(me.id, ps.roomId);
+			if (room == null) {
+				throw new ApiError(meta.errors.noSuchRoom);
+			}
+
+			const updated = await this.chatService.updateRoom(room, {
+				name: ps.name,
+			});
+
+			return this.chatEntityService.packRoom(updated, me);
 		});
 	}
 }

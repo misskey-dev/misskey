@@ -987,6 +987,78 @@ type ChatMessagesTimelineResponse = operations['chat___messages___timeline']['re
 type ChatRoom = components['schemas']['ChatRoom'];
 
 // @public (undocumented)
+type ChatRoomInvitation = components['schemas']['ChatRoomInvitation'];
+
+// @public (undocumented)
+type ChatRoomMembership = components['schemas']['ChatRoomMembership'];
+
+// @public (undocumented)
+type ChatRoomsCreateRequest = operations['chat___rooms___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsCreateResponse = operations['chat___rooms___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsDeleteRequest = operations['chat___rooms___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsDeleteResponse = operations['chat___rooms___delete']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsCreateRequest = operations['chat___rooms___invitations___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsCreateResponse = operations['chat___rooms___invitations___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsInboxRequest = operations['chat___rooms___invitations___inbox']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsInboxResponse = operations['chat___rooms___invitations___inbox']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsRejectRequest = operations['chat___rooms___invitations___reject']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsRejectResponse = operations['chat___rooms___invitations___reject']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsJoinRequest = operations['chat___rooms___join']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsJoinResponse = operations['chat___rooms___join']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsLeaveRequest = operations['chat___rooms___leave']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsLeaveResponse = operations['chat___rooms___leave']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMembersRequest = operations['chat___rooms___members']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMembersResponse = operations['chat___rooms___members']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsOwnedRequest = operations['chat___rooms___owned']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsOwnedResponse = operations['chat___rooms___owned']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsShowRequest = operations['chat___rooms___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsShowResponse = operations['chat___rooms___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsUpdateRequest = operations['chat___rooms___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsUpdateResponse = operations['chat___rooms___update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type Clip = components['schemas']['Clip'];
 
 // @public (undocumented)
@@ -1493,6 +1565,28 @@ declare namespace entities {
         ChatMessagesShowResponse,
         ChatMessagesTimelineRequest,
         ChatMessagesTimelineResponse,
+        ChatRoomsCreateRequest,
+        ChatRoomsCreateResponse,
+        ChatRoomsDeleteRequest,
+        ChatRoomsDeleteResponse,
+        ChatRoomsInvitationsCreateRequest,
+        ChatRoomsInvitationsCreateResponse,
+        ChatRoomsInvitationsInboxRequest,
+        ChatRoomsInvitationsInboxResponse,
+        ChatRoomsInvitationsRejectRequest,
+        ChatRoomsInvitationsRejectResponse,
+        ChatRoomsJoinRequest,
+        ChatRoomsJoinResponse,
+        ChatRoomsLeaveRequest,
+        ChatRoomsLeaveResponse,
+        ChatRoomsMembersRequest,
+        ChatRoomsMembersResponse,
+        ChatRoomsOwnedRequest,
+        ChatRoomsOwnedResponse,
+        ChatRoomsShowRequest,
+        ChatRoomsShowResponse,
+        ChatRoomsUpdateRequest,
+        ChatRoomsUpdateResponse,
         ClipsAddNoteRequest,
         ClipsCreateRequest,
         ClipsCreateResponse,
@@ -1928,7 +2022,9 @@ declare namespace entities {
         AbuseReportNotificationRecipient,
         ChatMessage,
         ChatMessageLite,
-        ChatRoom
+        ChatRoom,
+        ChatRoomInvitation,
+        ChatRoomMembership
     }
 }
 export { entities }

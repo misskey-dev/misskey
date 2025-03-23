@@ -217,6 +217,28 @@ import type {
 	ChatMessagesShowResponse,
 	ChatMessagesTimelineRequest,
 	ChatMessagesTimelineResponse,
+	ChatRoomsCreateRequest,
+	ChatRoomsCreateResponse,
+	ChatRoomsDeleteRequest,
+	ChatRoomsDeleteResponse,
+	ChatRoomsInvitationsCreateRequest,
+	ChatRoomsInvitationsCreateResponse,
+	ChatRoomsInvitationsInboxRequest,
+	ChatRoomsInvitationsInboxResponse,
+	ChatRoomsInvitationsRejectRequest,
+	ChatRoomsInvitationsRejectResponse,
+	ChatRoomsJoinRequest,
+	ChatRoomsJoinResponse,
+	ChatRoomsLeaveRequest,
+	ChatRoomsLeaveResponse,
+	ChatRoomsMembersRequest,
+	ChatRoomsMembersResponse,
+	ChatRoomsOwnedRequest,
+	ChatRoomsOwnedResponse,
+	ChatRoomsShowRequest,
+	ChatRoomsShowResponse,
+	ChatRoomsUpdateRequest,
+	ChatRoomsUpdateResponse,
 	ClipsAddNoteRequest,
 	ClipsCreateRequest,
 	ClipsCreateResponse,
@@ -741,6 +763,17 @@ export type Endpoints = {
 	'chat/messages/delete': { req: ChatMessagesDeleteRequest; res: ChatMessagesDeleteResponse };
 	'chat/messages/show': { req: ChatMessagesShowRequest; res: ChatMessagesShowResponse };
 	'chat/messages/timeline': { req: ChatMessagesTimelineRequest; res: ChatMessagesTimelineResponse };
+	'chat/rooms/create': { req: ChatRoomsCreateRequest; res: ChatRoomsCreateResponse };
+	'chat/rooms/delete': { req: ChatRoomsDeleteRequest; res: ChatRoomsDeleteResponse };
+	'chat/rooms/invitations/create': { req: ChatRoomsInvitationsCreateRequest; res: ChatRoomsInvitationsCreateResponse };
+	'chat/rooms/invitations/inbox': { req: ChatRoomsInvitationsInboxRequest; res: ChatRoomsInvitationsInboxResponse };
+	'chat/rooms/invitations/reject': { req: ChatRoomsInvitationsRejectRequest; res: ChatRoomsInvitationsRejectResponse };
+	'chat/rooms/join': { req: ChatRoomsJoinRequest; res: ChatRoomsJoinResponse };
+	'chat/rooms/leave': { req: ChatRoomsLeaveRequest; res: ChatRoomsLeaveResponse };
+	'chat/rooms/members': { req: ChatRoomsMembersRequest; res: ChatRoomsMembersResponse };
+	'chat/rooms/owned': { req: ChatRoomsOwnedRequest; res: ChatRoomsOwnedResponse };
+	'chat/rooms/show': { req: ChatRoomsShowRequest; res: ChatRoomsShowResponse };
+	'chat/rooms/update': { req: ChatRoomsUpdateRequest; res: ChatRoomsUpdateResponse };
 	'clips/add-note': { req: ClipsAddNoteRequest; res: EmptyResponse };
 	'clips/create': { req: ClipsCreateRequest; res: ClipsCreateResponse };
 	'clips/delete': { req: ClipsDeleteRequest; res: EmptyResponse };
