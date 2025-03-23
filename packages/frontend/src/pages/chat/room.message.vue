@@ -1,6 +1,6 @@
 <template>
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
-	<MkAvatar :class="$style.avatar" :user="user" link :preview="false"/>
+	<MkAvatar :class="$style.avatar" :user="user" :link="!isMe" :preview="false"/>
 	<div :class="$style.body">
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
 			<div v-if="!message.isDeleted" :class="$style.content">
@@ -17,13 +17,11 @@
 			</div>
 		</MkFukidashi>
 		<MkUrlPreview v-for="url in urls" :key="url" :url="url" style="margin: 8px 0;"/>
-		<div>
+		<div :class="$style.footer">
+			<button class="_textButton" style="color: currentColor;" @click="showMenu"><i class="ti ti-dots-circle-horizontal"></i></button>
 			<MkTime :class="$style.time" :time="message.createdAt"/>
 		</div>
 	</div>
-	<button v-if="isMe" :class="$style.delete" :title="i18n.ts.delete" @click="del">
-		<img src="/client-assets/remove.png" alt="Delete"/>
-	</button>
 </div>
 </template>
 
@@ -71,12 +69,16 @@ function del(): void {
 		.content {
 			color: var(--MI_THEME-fgOnAccent);
 		}
+
+		.footer {
+			flex-direction: row-reverse;
+		}
 	}
 }
 
 .avatar {
 	position: sticky;
-	top: calc(var(--stickyTop, 0px) + 16px);
+	top: calc(16px + var(--MI-stickyTop, 0px));
 	display: block;
 	width: 54px;
 	height: 54px;
@@ -93,26 +95,15 @@ function del(): void {
 	word-break: break-word;
 }
 
-.delete {
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 24px;
-	height: 24px;
-	padding: 0;
-	margin: 0;
-	border: none;
-	background: none;
-	cursor: pointer;
-	transition: all 0.1s ease;
-
-	&:hover {
-		transform: scale(1.1);
-	}
+.footer {
+	display: flex;
+	flex-direction: row;
+	gap: 0.5em;
+	margin-top: 4px;
+	font-size: 75%;
 }
 
 .time {
-	font-size: 75%;
 	opacity: 0.5;
 }
 </style>

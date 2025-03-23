@@ -95,7 +95,6 @@ const props = withDefaults(defineProps<{
 	pagination: Paging;
 	disableAutoLoad?: boolean;
 	displayLimit?: number;
-	scrollReversed?: boolean;
 }>(), {
 	displayLimit: 20,
 });
@@ -347,7 +346,7 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 	fetchMoreAppearTimeout();
 };
 
-const isHead = (): boolean => isBackTop.value || (props.pagination.reversed && !props.scrollReversed ? isTailVisible : isHeadVisible)(rootEl.value!, TOLERANCE);
+const isHead = (): boolean => isBackTop.value || (props.pagination.reversed ? isTailVisible : isHeadVisible)(rootEl.value!, TOLERANCE);
 
 watch(visibility, () => {
 	if (visibility.value === 'hidden') {

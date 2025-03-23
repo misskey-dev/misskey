@@ -87,11 +87,6 @@ const room = ref<Misskey.entities.ChatRoom | null>(null);
 const connection = ref<Misskey.ChannelConnection<Misskey.Channels['chat']> | null>(null);
 const showIndicator = ref(false);
 
-watch([() => props.userId, () => props.roomId], () => {
-	if (connection.value) connection.value.dispose();
-	initialize();
-});
-
 async function initialize() {
 	initializing.value = true;
 

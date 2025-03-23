@@ -233,7 +233,6 @@ onMounted(() => {
 <style lang="scss" module>
 .root {
 	position: relative;
-	border: solid 1px var(--MI_THEME-divider);
 	border-bottom: none;
 	border-radius: 14px 14px 0 0;
 	overflow: clip;
