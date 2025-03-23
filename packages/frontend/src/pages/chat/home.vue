@@ -51,6 +51,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { ensureSignin } from '@/i.js';
 import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const $i = ensureSignin();
 
@@ -125,6 +126,8 @@ async function fetchHistory() {
 		}));
 
 	fetching.value = false;
+
+	updateCurrentAccountPartial({ hasUnreadChatMessages: false });
 }
 
 onMounted(() => {
