@@ -10,8 +10,8 @@ import type { JsonObject } from '@/misc/json-value.js';
 import { ChatService } from '@/core/ChatService.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
-class ChatChannel extends Channel {
-	public readonly chName = 'chat';
+class ChatUserChannel extends Channel {
+	public readonly chName = 'chatUser';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
 	public static kind = 'read:chat';
@@ -31,7 +31,7 @@ class ChatChannel extends Channel {
 		if (typeof params.otherId !== 'string') return;
 		this.otherId = params.otherId;
 
-		this.subscriber.on(`chatStream:${this.user!.id}-${this.otherId}`, this.onEvent);
+		this.subscriber.on(`chatUserStream:${this.user!.id}-${this.otherId}`, this.onEvent);
 	}
 
 	@bindThis
@@ -52,16 +52,15 @@ class ChatChannel extends Channel {
 
 	@bindThis
 	public dispose() {
-		// Unsubscribe events
-		this.subscriber.off(`chatStream:${this.user!.id}-${this.otherId}`, this.onEvent);
+		this.subscriber.off(`chatUserStream:${this.user!.id}-${this.otherId}`, this.onEvent);
 	}
 }
 
 @Injectable()
-export class ChatChannelService implements MiChannelService<true> {
-	public readonly shouldShare = ChatChannel.shouldShare;
-	public readonly requireCredential = ChatChannel.requireCredential;
-	public readonly kind = ChatChannel.kind;
+export class ChatUserChannelService implements MiChannelService<true> {
+	public readonly shouldShare = ChatUserChannel.shouldShare;
+	public readonly requireCredential = ChatUserChannel.requireCredential;
+	public readonly kind = ChatUserChannel.kind;
 
 	constructor(
 		private chatService: ChatService,
@@ -69,8 +68,8 @@ export class ChatChannelService implements MiChannelService<true> {
 	}
 
 	@bindThis
-	public create(id: string, connection: Channel['connection']): ChatChannel {
-		return new ChatChannel(
+	public create(id: string, connection: Channel['connection']): ChatUserChannel {
+		return new ChatUserChannel(
 			this.chatService,
 			id,
 			connection,

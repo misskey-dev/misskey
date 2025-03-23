@@ -4,51 +4,55 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '@/server/api/error.js';
 import { ChatService } from '@/core/ChatService.js';
 import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
-import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	tags: ['chat'],
 
 	requireCredential: true,
+	requiredRolePolicy: 'canChat',
+
+	prohibitMoved: true,
 
 	kind: 'write:chat',
 
+	limit: {
+		duration: ms('1day'),
+		max: 10,
+	},
+
 	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		ref: 'ChatRoom',
 	},
 
 	errors: {
-		noSuchMessage: {
-			message: 'No such message.',
-			code: 'NO_SUCH_MESSAGE',
-			id: '36b67f0e-66a6-414b-83df-992a55294f17',
-		},
 	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
-		messageId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string', maxLength: 256 },
 	},
-	required: ['messageId'],
+	required: ['name'],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private chatService: ChatService,
+		private chatEntityService: ChatEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const message = await this.chatService.findMyMessageById(me.id, ps.messageId);
-			if (message == null) {
-				throw new ApiError(meta.errors.noSuchMessage);
-			}
-			await this.chatService.deleteMessage(message);
+			const room = await this.chatService.createRoom(me, ps.name);
+			return await this.chatEntityService.packRoom(room);
 		});
 	}
 }

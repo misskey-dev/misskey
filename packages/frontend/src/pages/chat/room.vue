@@ -88,11 +88,11 @@ const connection = ref<Misskey.ChannelConnection<Misskey.Channels['chat']> | nul
 const showIndicator = ref(false);
 
 async function initialize() {
+	const LIMIT = 20;
+
 	initializing.value = true;
 
 	if (props.userId) {
-		const LIMIT = 20;
-
 		const [u, m] = await Promise.all([
 			misskeyApi('users/show', { userId: props.userId }),
 			misskeyApi('chat/messages/timeline', { userId: props.userId, limit: LIMIT }),
@@ -105,28 +105,30 @@ async function initialize() {
 			canFetchMore.value = true;
 		}
 
-		connection.value = useStream().useChannel('chat', {
+		connection.value = useStream().useChannel('chatUser', {
 			otherId: user.value.id,
 		});
-	}/* else {
-		user = null;
-		room = await misskeyApi('users/rooms/show', { roomId: props.roomId });
+		connection.value.on('message', onMessage);
+		connection.value.on('deleted', onDeleted);
+	} else {
+		const [r, m] = await Promise.all([
+			misskeyApi('chat/rooms/show', { roomId: props.roomId }),
+			misskeyApi('chat/messages/timeline', { roomId: props.roomId, limit: LIMIT }),
+		]);
 
-		pagination = {
-			endpoint: 'chat/messages',
-			limit: 20,
-			params: {
-				roomId: room?.id,
-			},
-			reversed: true,
-		};
-		connection = useStream().useChannel('chat', {
-			room: room?.id,
+		room.value = r;
+		messages.value = m;
+
+		if (messages.value.length === LIMIT) {
+			canFetchMore.value = true;
+		}
+
+		connection.value = useStream().useChannel('chatRoom', {
+			otherId: user.value.id,
 		});
-	}*/
-
-	connection.value.on('message', onMessage);
-	connection.value.on('deleted', onDeleted);
+		connection.value.on('message', onMessage);
+		connection.value.on('deleted', onDeleted);
+	}
 
 	window.document.addEventListener('visibilitychange', onVisibilitychange);
 

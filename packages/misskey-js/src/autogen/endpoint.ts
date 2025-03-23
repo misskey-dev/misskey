@@ -213,6 +213,8 @@ import type {
 	ChatMessagesCreateResponse,
 	ChatMessagesDeleteRequest,
 	ChatMessagesDeleteResponse,
+	ChatMessagesShowRequest,
+	ChatMessagesShowResponse,
 	ChatMessagesTimelineRequest,
 	ChatMessagesTimelineResponse,
 	ClipsAddNoteRequest,
@@ -737,6 +739,7 @@ export type Endpoints = {
 	'chat/history': { req: ChatHistoryRequest; res: ChatHistoryResponse };
 	'chat/messages/create': { req: ChatMessagesCreateRequest; res: ChatMessagesCreateResponse };
 	'chat/messages/delete': { req: ChatMessagesDeleteRequest; res: ChatMessagesDeleteResponse };
+	'chat/messages/show': { req: ChatMessagesShowRequest; res: ChatMessagesShowResponse };
 	'chat/messages/timeline': { req: ChatMessagesTimelineRequest; res: ChatMessagesTimelineResponse };
 	'clips/add-note': { req: ClipsAddNoteRequest; res: EmptyResponse };
 	'clips/create': { req: ClipsCreateRequest; res: ClipsCreateResponse };

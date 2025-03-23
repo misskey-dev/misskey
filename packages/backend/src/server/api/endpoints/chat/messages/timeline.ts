@@ -8,7 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ChatService } from '@/core/ChatService.js';
-import { ChatMessageEntityService } from '@/core/entities/ChatMessageEntityService.js';
+import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
@@ -62,7 +62,7 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private chatMessageEntityService: ChatMessageEntityService,
+		private chatEntityService: ChatEntityService,
 		private chatService: ChatService,
 		private getterService: GetterService,
 	) {
@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				this.chatService.readUserChatMessage(me.id, other.id);
 
-				return await this.chatMessageEntityService.packLiteMany(messages);
+				return await this.chatEntityService.packMessagesLite(messages);
 			}/* else if (ps.roomId != null) {
 				// Fetch recipient (room)
 				const recipientRoom = await this.userRoomRepository.findOneBy({ id: ps.roomId });

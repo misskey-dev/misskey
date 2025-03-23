@@ -8,7 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ChatService } from '@/core/ChatService.js';
-import { ChatMessageEntityService } from '@/core/entities/ChatMessageEntityService.js';
+import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 import { ApiError } from '@/server/api/error.js';
 import { RoleService } from '@/core/RoleService.js';
 
@@ -47,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private chatService: ChatService,
 		private roleService: RoleService,
-		private chatMessageEntityService: ChatMessageEntityService,
+		private chatEntityService: ChatEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const message = await this.chatService.findMessageById(ps.messageId);
@@ -57,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (message.fromUserId !== me.id && message.toUserId !== me.id && !(await this.roleService.isModerator(me))) {
 				throw new ApiError(meta.errors.noSuchMessage);
 			}
-			return this.chatMessageEntityService.pack(message, me);
+			return this.chatEntityService.packMessageDetailed(message, me);
 		});
 	}
 }

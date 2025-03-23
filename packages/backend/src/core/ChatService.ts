@@ -12,15 +12,16 @@ import { QueueService } from '@/core/QueueService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ChatMessageEntityService } from '@/core/entities/ChatMessageEntityService.js';
+import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { bindThis } from '@/decorators.js';
-import type { ChatApprovalsRepository, ChatMessagesRepository, ChatRoomMembershipsRepository, ChatRoomsRepository, MiChatMessage, MiChatRoom, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
+import type { ChatApprovalsRepository, ChatMessagesRepository, ChatRoomInvitationsRepository, ChatRoomMembershipsRepository, ChatRoomsRepository, MiChatMessage, MiChatRoom, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
 
 @Injectable()
 export class ChatService {
@@ -43,6 +44,9 @@ export class ChatService {
 		@Inject(DI.chatRoomsRepository)
 		private chatRoomsRepository: ChatRoomsRepository,
 
+		@Inject(DI.chatRoomInvitationsRepository)
+		private chatRoomInvitationsRepository: ChatRoomInvitationsRepository,
+
 		@Inject(DI.chatRoomMembershipsRepository)
 		private chatRoomMembershipsRepository: ChatRoomMembershipsRepository,
 
@@ -50,7 +54,7 @@ export class ChatService {
 		private mutingsRepository: MutingsRepository,
 
 		private userEntityService: UserEntityService,
-		private chatMessageEntityService: ChatMessageEntityService,
+		private chatEntityService: ChatEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private apRendererService: ApRendererService,
@@ -64,7 +68,7 @@ export class ChatService {
 	}
 
 	@bindThis
-	public async createMessage(fromUser: { id: MiUser['id']; host: MiUser['host']; }, toUser: MiUser, params: {
+	public async createMessageToUser(fromUser: { id: MiUser['id']; host: MiUser['host']; }, toUser: MiUser, params: {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
@@ -139,60 +143,37 @@ export class ChatService {
 			});
 		}
 
-		const packedMessage = await this.chatMessageEntityService.packLite(inserted);
+		const packedMessage = await this.chatEntityService.packMessageLite(inserted);
 
 		if (this.userEntityService.isLocalUser(toUser)) {
 			const redisPipeline = this.redisClient.pipeline();
-			redisPipeline.set(`newChatMessageExists:${toUser.id}:${fromUser.id}`, message.id);
+			redisPipeline.set(`newUserChatMessageExists:${toUser.id}:${fromUser.id}`, message.id);
 			redisPipeline.sadd(`newChatMessagesExists:${toUser.id}`, `user:${fromUser.id}`);
 			redisPipeline.exec();
 		}
 
 		if (this.userEntityService.isLocalUser(fromUser)) {
 			// 自分のストリーム
-			this.globalEventService.publishChatStream(fromUser.id, toUser.id, 'message', packedMessage);
+			this.globalEventService.publishChatUserStream(fromUser.id, toUser.id, 'message', packedMessage);
 		}
 
 		if (this.userEntityService.isLocalUser(toUser)) {
 			// 相手のストリーム
-			this.globalEventService.publishChatStream(toUser.id, fromUser.id, 'message', packedMessage);
+			this.globalEventService.publishChatUserStream(toUser.id, fromUser.id, 'message', packedMessage);
 		}
 
 		// 3秒経っても既読にならなかったらイベント発行
 		if (this.userEntityService.isLocalUser(toUser)) {
 			setTimeout(async () => {
-				const marker = await this.redisClient.get(`newChatMessageExists:${toUser.id}:${fromUser.id}`);
+				const marker = await this.redisClient.get(`newUserChatMessageExists:${toUser.id}:${fromUser.id}`);
 
 				if (marker == null) return; // 既読
 
-				const packedMessageForTo = await this.chatMessageEntityService.pack(inserted, toUser);
+				const packedMessageForTo = await this.chatEntityService.packMessageDetailed(inserted, toUser);
 				this.globalEventService.publishMainStream(toUser.id, 'newChatMessage', packedMessageForTo);
 				this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
 			}, 3000);
 		}
-
-		/* TODO: AP
-		if (toUser && this.userEntityService.isLocalUser(fromUser) && this.userEntityService.isRemoteUser(toUser)) {
-			const note = {
-				id: message.id,
-				createdAt: message.createdAt,
-				fileIds: message.fileId ? [message.fileId] : [],
-				text: message.text,
-				userId: message.userId,
-				visibility: 'specified',
-				mentions: [toUser].map(u => u.id),
-				mentionedRemoteUsers: JSON.stringify([toUser].map(u => ({
-					uri: u.uri,
-					username: u.username,
-					host: u.host,
-				}))),
-			} as MiNote;
-
-			const activity = this.apRendererService.addContext(this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false, true), note));
-
-			this.queueService.deliver(fromUser, activity, toUser.inbox);
-		}
-			*/
 
 		return packedMessage;
 	}
@@ -203,6 +184,12 @@ export class ChatService {
 		file?: MiDriveFile | null;
 		uri?: string | null;
 	}) {
+		const memberships = await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id });
+
+		if (toRoom.ownerId !== fromUser.id && !memberships.some(member => member.userId === fromUser.id)) {
+			throw new Error('you are not a member of the room');
+		}
+
 		const message = {
 			id: this.idService.gen(),
 			fromUserId: fromUser.id,
@@ -215,30 +202,36 @@ export class ChatService {
 
 		const inserted = await this.chatMessagesRepository.insertOne(message);
 
-		const packedMessage = await this.chatMessageEntityService.packLite(inserted);
+		const packedMessage = await this.chatEntityService.packMessageLiteForRoom(inserted);
 
-		/*
-			// グループのストリーム
-			this.globalEventService.publishRoomChatStream(toRoom.id, 'message', messageObj);
+		this.globalEventService.publishChatRoomStream(toRoom.id, 'message', packedMessage);
 
-			// メンバーのストリーム
-			const joinings = await this.userRoomJoiningsRepository.findBy({ userRoomId: toRoom.id });
-			for (const joining of joinings) {
-				this.globalEventService.publishChatIndexStream(joining.userId, 'message', messageObj);
-				this.globalEventService.publishMainStream(joining.userId, 'chatMessage', messageObj);
-			}
-		*/
+		const redisPipeline = this.redisClient.pipeline();
+		for (const membership of memberships) {
+			redisPipeline.set(`newRoomChatMessageExists:${membership.userId}:${toRoom.id}`, message.id);
+			redisPipeline.sadd(`newChatMessagesExists:${membership.userId}`, `room:${toRoom.id}`);
+		}
+		redisPipeline.exec();
 
 		// 3秒経っても既読にならなかったらイベント発行
 		setTimeout(async () => {
-			/*
-				const joinings = await this.userRoomJoiningsRepository.findBy({ userRoomId: toRoom.id, userId: Not(fromUser.id) });
-				for (const joining of joinings) {
-					if (freshMessage.reads.includes(joining.userId)) return; // 既読
-					this.globalEventService.publishMainStream(joining.userId, 'newChatMessage', messageObj);
-					this.pushNotificationService.pushNotification(joining.userId, 'newChatMessage', messageObj);
-				}
-			*/
+			const redisPipeline = this.redisClient.pipeline();
+			for (const membership of memberships) {
+				redisPipeline.get(`newRoomChatMessageExists:${membership.userId}:${toRoom.id}`);
+			}
+			const markers = await redisPipeline.exec();
+
+			if (markers.every(marker => marker[1] == null)) return;
+
+			const packedMessageForTo = await this.chatEntityService.packMessageDetailed(inserted);
+
+			for (let i = 0; i < memberships.length; i++) {
+				const marker = markers[i][1];
+				if (marker == null) continue;
+
+				this.globalEventService.publishMainStream(memberships[i].userId, 'newChatMessage', packedMessageForTo);
+				this.pushNotificationService.pushNotification(memberships[i].userId, 'newChatMessage', packedMessageForTo);
+			}
 		}, 3000);
 
 		return packedMessage;
@@ -250,8 +243,19 @@ export class ChatService {
 		senderId: MiUser['id'],
 	): Promise<void> {
 		const redisPipeline = this.redisClient.pipeline();
-		redisPipeline.del(`newChatMessageExists:${readerId}:${senderId}`);
+		redisPipeline.del(`newUserChatMessageExists:${readerId}:${senderId}`);
 		redisPipeline.srem(`newChatMessagesExists:${readerId}`, `user:${senderId}`);
+		await redisPipeline.exec();
+	}
+
+	@bindThis
+	public async readRoomChatMessage(
+		readerId: MiUser['id'],
+		roomId: MiChatRoom['id'],
+	): Promise<void> {
+		const redisPipeline = this.redisClient.pipeline();
+		redisPipeline.del(`newRoomChatMessageExists:${readerId}:${roomId}`);
+		redisPipeline.srem(`newChatMessagesExists:${readerId}`, `room:${roomId}`);
 		await redisPipeline.exec();
 	}
 
@@ -275,84 +279,17 @@ export class ChatService {
 				this.usersRepository.findOneByOrFail({ id: message.toUserId }),
 			]);
 
-			if (this.userEntityService.isLocalUser(fromUser)) this.globalEventService.publishChatStream(message.fromUserId, message.toUserId, 'deleted', message.id);
-			if (this.userEntityService.isLocalUser(toUser)) this.globalEventService.publishChatStream(message.toUserId, message.fromUserId, 'deleted', message.id);
+			if (this.userEntityService.isLocalUser(fromUser)) this.globalEventService.publishChatUserStream(message.fromUserId, message.toUserId, 'deleted', message.id);
+			if (this.userEntityService.isLocalUser(toUser)) this.globalEventService.publishChatUserStream(message.toUserId, message.fromUserId, 'deleted', message.id);
 
 			if (this.userEntityService.isLocalUser(fromUser) && this.userEntityService.isRemoteUser(toUser)) {
 				//const activity = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${message.id}`), fromUser));
 				//this.queueService.deliver(fromUser, activity, toUser.inbox);
 			}
-		}/* else if (message.toRoomId) {
-			this.globalEventService.publishRoomChatStream(message.toRoomId, 'deleted', message.id);
-		}*/
-	}
-
-	/*
-	@bindThis
-	public async readRoomChatMessage(
-		userId: MiUser['id'],
-		roomId: MiUserRoom['id'],
-		messageIds: MiChatMessage['id'][],
-	) {
-		if (messageIds.length === 0) return;
-
-		// check joined
-		const joining = await this.userRoomJoiningsRepository.findOneBy({
-			userId: userId,
-			userRoomId: roomId,
-		});
-
-		if (joining == null) {
-			throw new IdentifiableError('930a270c-714a-46b2-b776-ad27276dc569', 'Access denied (room).');
-		}
-
-		const messages = await this.chatMessagesRepository.findBy({
-			id: In(messageIds),
-		});
-
-		const reads: ChatMessage['id'][] = [];
-
-		for (const message of messages) {
-			if (message.userId === userId) continue;
-			if (message.reads.includes(userId)) continue;
-
-			// Update document
-			await this.chatMessagesRepository.createQueryBuilder().update()
-				.set({
-					reads: (() => `array_append("reads", '${joining.userId}')`) as any,
-				})
-				.where('id = :id', { id: message.id })
-				.execute();
-
-			reads.push(message.id);
-		}
-
-		// Publish event
-		this.globalEventService.publishRoomChatStream(roomId, 'read', {
-			ids: reads,
-			userId: userId,
-		});
-		this.globalEventService.publishChatIndexStream(userId, 'read', reads);
-
-		if (!await this.userEntityService.getHasUnreadChatMessage(userId)) {
-		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
-			this.globalEventService.publishMainStream(userId, 'readAllChatMessages');
-			this.pushNotificationService.pushNotification(userId, 'readAllChatMessages', undefined);
-		} else {
-		// そのグループにおいて未読がなければイベント発行
-			const unreadExist = await this.chatMessagesRepository.createQueryBuilder('message')
-				.where('message.toRoomId = :roomId', { roomId: roomId })
-				.andWhere('message.userId != :userId', { userId: userId })
-				.andWhere('NOT (:userId = ANY(message.reads))', { userId: userId })
-				.andWhere('message.createdAt > :joinedAt', { joinedAt: joining.createdAt }) // 自分が加入する前の会話については、未読扱いしない
-				.getOne().then(x => x != null);
-
-			if (!unreadExist) {
-				this.pushNotificationService.pushNotification(userId, 'readAllChatMessagesOfARoom', { roomId });
-			}
+		} else if (message.toRoomId) {
+			this.globalEventService.publishChatRoomStream(message.toRoomId, 'deleted', message.id);
 		}
 	}
-	*/
 
 	@bindThis
 	public async userTimeline(meId: MiUser['id'], otherId: MiUser['id'], sinceId: MiChatMessage['id'] | null, untilId: MiChatMessage['id'] | null, limit: number) {
@@ -421,24 +358,30 @@ export class ChatService {
 
 	@bindThis
 	public async roomHistory(meId: MiUser['id'], limit: number): Promise<MiChatMessage[]> {
-		return [];
-		/*
-		const rooms = await this.userRoomJoiningsRepository.findBy({
-			userId: meId,
-		}).then(xs => xs.map(x => x.userRoomId));
+		// TODO: 一回のクエリにまとめられるかも
+		const [memberRoomIds, ownedRoomIds] = await Promise.all([
+			this.chatRoomMembershipsRepository.findBy({
+				userId: meId,
+			}).then(xs => xs.map(x => x.roomId)),
+			this.chatRoomsRepository.findBy({
+				ownerId: meId,
+			}).then(xs => xs.map(x => x.id)),
+		]);
 
-		if (rooms.length === 0) {
+		const roomIds = memberRoomIds.concat(ownedRoomIds);
+
+		if (memberRoomIds.length === 0 && ownedRoomIds.length === 0) {
 			return [];
 		}
 
 		const history: MiChatMessage[] = [];
 
 		for (let i = 0; i < limit; i++) {
-			const found = history.map(m => m.roomId!);
+			const found = history.map(m => m.toRoomId!);
 
 			const query = this.chatMessagesRepository.createQueryBuilder('message')
 				.orderBy('message.id', 'DESC')
-				.where('message.toRoomId IN (:...rooms)', { rooms: rooms });
+				.where('message.toRoomId IN (:...roomIds)', { roomIds });
 
 			if (found.length > 0) {
 				query.andWhere('message.toRoomId NOT IN (:...found)', { found: found });
@@ -454,7 +397,6 @@ export class ChatService {
 		}
 
 		return history;
-		*/
 	}
 
 	@bindThis
@@ -464,7 +406,7 @@ export class ChatService {
 		const redisPipeline = this.redisClient.pipeline();
 
 		for (const otherId of otherIds) {
-			redisPipeline.get(`newChatMessageExists:${userId}:${otherId}`);
+			redisPipeline.get(`newUserChatMessageExists:${userId}:${otherId}`);
 		}
 
 		const markers = await redisPipeline.exec();
@@ -478,8 +420,67 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async getRoomReadStateMap(userId: MiUser['id'], roomIds: MiChatRoom['id'][]) {
+		const readStateMap: Record<MiChatRoom['id'], boolean> = {};
+
+		const redisPipeline = this.redisClient.pipeline();
+
+		for (const roomId of roomIds) {
+			redisPipeline.get(`newRoomChatMessageExists:${userId}:${roomId}`);
+		}
+
+		const markers = await redisPipeline.exec();
+
+		for (let i = 0; i < roomIds.length; i++) {
+			const marker = markers[i][1];
+			readStateMap[roomIds[i]] = marker == null;
+		}
+
+		return readStateMap;
+	}
+
+	@bindThis
 	public async hasUnreadMessages(userId: MiUser['id']) {
 		const card = await this.redisClient.scard(`newChatMessagesExists:${userId}`);
 		return card > 0;
+	}
+
+	@bindThis
+	public async createRoom(owner: MiUser, name: string) {
+		const room = {
+			id: this.idService.gen(),
+			name: name,
+			ownerId: owner.id,
+		} satisfies Partial<MiChatRoom>;
+
+		const created = await this.chatRoomsRepository.insertOne(room);
+
+		return created;
+	}
+
+	@bindThis
+	public async deleteRoom(room: MiChatRoom) {
+		await this.chatRoomsRepository.delete(room.id);
+	}
+
+	@bindThis
+	public async createRoomInvitation(inviterId: MiUser['id'], roomId: MiChatRoom['id'], inviteeId: MiUser['id']) {
+		if (inviterId === inviteeId) {
+			throw new Error('yourself');
+		}
+
+		const room = await this.chatRoomsRepository.findOneByOrFail({ id: roomId, ownerId: inviterId });
+
+		// TODO: cehck block
+
+		const invitation = {
+			id: this.idService.gen(),
+			roomId: room.id,
+			userId: inviteeId,
+		} satisfies Partial<MiChatRoomInvitation>;
+
+		const created = await this.chatRoomInvitationsRepository.insertOne(invitation);
+
+		return created;
 	}
 }

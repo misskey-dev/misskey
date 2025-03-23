@@ -972,6 +972,12 @@ type ChatMessagesDeleteRequest = operations['chat___messages___delete']['request
 type ChatMessagesDeleteResponse = operations['chat___messages___delete']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChatMessagesShowRequest = operations['chat___messages___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesShowResponse = operations['chat___messages___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type ChatMessagesTimelineRequest = operations['chat___messages___timeline']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1483,6 +1489,8 @@ declare namespace entities {
         ChatMessagesCreateResponse,
         ChatMessagesDeleteRequest,
         ChatMessagesDeleteResponse,
+        ChatMessagesShowRequest,
+        ChatMessagesShowResponse,
         ChatMessagesTimelineRequest,
         ChatMessagesTimelineResponse,
         ClipsAddNoteRequest,
