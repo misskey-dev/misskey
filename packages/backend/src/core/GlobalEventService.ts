@@ -72,7 +72,6 @@ export interface MainEventTypes {
 	readAllNotifications: undefined;
 	notificationFlushed: undefined;
 	unreadNotification: Packed<'Notification'>;
-	readAllAntennas: undefined;
 	unreadAntenna: MiAntenna;
 	newChatMessage: Packed<'ChatMessage'>;
 	readAllAnnouncements: undefined;

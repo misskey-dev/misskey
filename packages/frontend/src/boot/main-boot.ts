@@ -502,10 +502,6 @@ export async function mainBoot() {
 			});
 		});
 
-		main.on('readAllAntennas', () => {
-			updateCurrentAccountPartial({ hasUnreadAntenna: false });
-		});
-
 		main.on('unreadAntenna', () => {
 			updateCurrentAccountPartial({ hasUnreadAntenna: true });
 			sound.playMisskeySfx('antenna');
