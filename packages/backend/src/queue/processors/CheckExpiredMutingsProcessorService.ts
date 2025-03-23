@@ -10,6 +10,7 @@ import type { MutingsRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
+import { NoteMutingService } from '@/core/note/NoteMutingService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 
@@ -22,6 +23,7 @@ export class CheckExpiredMutingsProcessorService {
 		private mutingsRepository: MutingsRepository,
 
 		private userMutingService: UserMutingService,
+		private noteMutingService: NoteMutingService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('check-expired-mutings');
@@ -40,6 +42,8 @@ export class CheckExpiredMutingsProcessorService {
 		if (expired.length > 0) {
 			await this.userMutingService.unmute(expired);
 		}
+
+		await this.noteMutingService.cleanupExpiredMutes();
 
 		this.logger.succ('All expired mutings checked.');
 	}

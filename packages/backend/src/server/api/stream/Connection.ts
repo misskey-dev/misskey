@@ -16,6 +16,7 @@ import type { StreamEventEmitter, GlobalEvents } from '@/core/GlobalEventService
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
+import { NoteMutingService } from '@/core/note/NoteMutingService.js';
 import type { ChannelsService } from './ChannelsService.js';
 import type { EventEmitter } from 'events';
 import type Channel from './channel.js';
@@ -41,6 +42,7 @@ export default class Connection {
 	public userIdsWhoBlockingMe: Set<string> = new Set();
 	public userIdsWhoMeMutingRenotes: Set<string> = new Set();
 	public userMutedInstances: Set<string> = new Set();
+	public noteMuting: Set<string> = new Set();
 	private fetchIntervalId: NodeJS.Timeout | null = null;
 
 	constructor(
@@ -49,6 +51,7 @@ export default class Connection {
 		private notificationService: NotificationService,
 		private cacheService: CacheService,
 		private channelFollowingService: ChannelFollowingService,
+		private noteMutingService: NoteMutingService,
 
 		user: MiUser | null | undefined,
 		token: MiAccessToken | null | undefined,
@@ -60,13 +63,14 @@ export default class Connection {
 	@bindThis
 	public async fetch() {
 		if (this.user == null) return;
-		const [userProfile, following, followingChannels, userIdsWhoMeMuting, userIdsWhoBlockingMe, userIdsWhoMeMutingRenotes] = await Promise.all([
+		const [userProfile, following, followingChannels, userIdsWhoMeMuting, userIdsWhoBlockingMe, userIdsWhoMeMutingRenotes, noteMuting] = await Promise.all([
 			this.cacheService.userProfileCache.fetch(this.user.id),
 			this.cacheService.userFollowingsCache.fetch(this.user.id),
 			this.channelFollowingService.userFollowingChannelsCache.fetch(this.user.id),
 			this.cacheService.userMutingsCache.fetch(this.user.id),
 			this.cacheService.userBlockedCache.fetch(this.user.id),
 			this.cacheService.renoteMutingsCache.fetch(this.user.id),
+			this.noteMutingService.getMutingNoteIdsSet(this.user.id),
 		]);
 		this.userProfile = userProfile;
 		this.following = following;
@@ -75,6 +79,7 @@ export default class Connection {
 		this.userIdsWhoBlockingMe = userIdsWhoBlockingMe;
 		this.userIdsWhoMeMutingRenotes = userIdsWhoMeMutingRenotes;
 		this.userMutedInstances = new Set(userProfile.mutedInstances);
+		this.noteMuting = noteMuting;
 	}
 
 	@bindThis
