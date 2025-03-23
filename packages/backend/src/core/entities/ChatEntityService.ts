@@ -154,8 +154,7 @@ export class ChatEntityService {
 			createdAt: this.idService.parse(message.id).date.toISOString(),
 			text: message.text,
 			fromUserId: message.fromUserId,
-			toUserId: message.toUserId,
-			toUser: packedUsers?.get(message.toUserId) ?? await this.userEntityService.pack(message.toUser ?? message.toUserId),
+			fromUser: packedUsers?.get(message.fromUserId) ?? await this.userEntityService.pack(message.fromUser ?? message.fromUserId),
 			toRoomId: message.toRoomId,
 			fileId: message.fileId,
 			file: message.file ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file)) : null,
@@ -169,7 +168,7 @@ export class ChatEntityService {
 		if (messages.length === 0) return [];
 
 		const [packedUsers, packedFiles] = await Promise.all([
-			this.userEntityService.packMany(messages.map(x => x.fromUser))
+			this.userEntityService.packMany(messages.map(x => x.fromUser ?? x.fromUserId))
 				.then(users => new Map(users.map(u => [u.id, u]))),
 			this.driveFileEntityService.packMany(messages.map(m => m.file).filter(x => x != null)),
 		]);

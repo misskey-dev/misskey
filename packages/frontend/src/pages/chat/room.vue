@@ -4,19 +4,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader reversed>
+<PageWithHeader reversed :actions="headerActions">
 	<MkSpacer :contentMax="700">
 		<div v-if="initializing">
 			<MkLoading/>
 		</div>
 		<div v-else-if="messages.length === 0">
 			<div class="_gaps" style="text-align: center;">
-				<div>{{ i18n.ts.noMessagesYet }}</div>
+				<div>{{ i18n.ts._chat.noMessagesYet }}</div>
 				<template v-if="user">
 					<div v-if="user.chatScope === 'followers'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
 					<div v-else-if="user.chatScope === 'following'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
 					<div v-else-if="user.chatScope === 'mutual'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
 					<div v-else>{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
+				</template>
+				<template v-else-if="room">
+					<div>{{ i18n.ts._chat.inviteUserToChat }}</div>
 				</template>
 			</div>
 		</div>
@@ -33,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
 				tag="div" class="_gaps"
 			>
-				<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message" :user="message.fromUserId === $i.id ? $i : user" :isRoom="room != null"/>
+				<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message" :user="room != null ? message.fromUser : (message.fromUserId === $i.id ? $i : user)" :isRoom="room != null"/>
 			</TransitionGroup>
 		</div>
 	</MkSpacer>
@@ -61,6 +64,7 @@ import * as Misskey from 'misskey-js';
 import { isTailVisible } from '@@/js/scroll.js';
 import XMessage from './room.message.vue';
 import XForm from './room.form.vue';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/utility/sound.js';
@@ -84,7 +88,7 @@ const messages = ref<Misskey.entities.ChatMessage[]>([]);
 const canFetchMore = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 const room = ref<Misskey.entities.ChatRoom | null>(null);
-const connection = ref<Misskey.ChannelConnection<Misskey.Channels['chat']> | null>(null);
+const connection = ref<Misskey.ChannelConnection<Misskey.Channels['chatUser'] | Misskey.Channels['chatRoom']> | null>(null);
 const showIndicator = ref(false);
 
 async function initialize() {
@@ -95,7 +99,7 @@ async function initialize() {
 	if (props.userId) {
 		const [u, m] = await Promise.all([
 			misskeyApi('users/show', { userId: props.userId }),
-			misskeyApi('chat/messages/timeline', { userId: props.userId, limit: LIMIT }),
+			misskeyApi('chat/messages/user-timeline', { userId: props.userId, limit: LIMIT }),
 		]);
 
 		user.value = u;
@@ -113,7 +117,7 @@ async function initialize() {
 	} else {
 		const [r, m] = await Promise.all([
 			misskeyApi('chat/rooms/show', { roomId: props.roomId }),
-			misskeyApi('chat/messages/timeline', { roomId: props.roomId, limit: LIMIT }),
+			misskeyApi('chat/messages/room-timeline', { roomId: props.roomId, limit: LIMIT }),
 		]);
 
 		room.value = r;
@@ -124,7 +128,7 @@ async function initialize() {
 		}
 
 		connection.value = useStream().useChannel('chatRoom', {
-			otherId: user.value.id,
+			roomId: room.value.id,
 		});
 		connection.value.on('message', onMessage);
 		connection.value.on('deleted', onDeleted);
@@ -145,21 +149,25 @@ onDeactivated(() => {
 	isActivated = false;
 });
 
-function fetchMore() {
+async function fetchMore() {
 	const LIMIT = 30;
 
 	moreFetching.value = true;
 
-	misskeyApi('chat/messages/timeline', {
+	const newMessages = props.userId ? await misskeyApi('chat/messages/user-timeline', {
 		userId: user.value.id,
 		limit: LIMIT,
 		untilId: messages.value[messages.value.length - 1].id,
-	}).then(newMessages => {
-		messages.value.push(...newMessages);
-
-		canFetchMore.value = newMessages.length === LIMIT;
-		moreFetching.value = false;
+	}) : await misskeyApi('chat/messages/room-timeline', {
+		roomId: room.value.id,
+		limit: LIMIT,
+		untilId: messages.value[messages.value.length - 1].id,
 	});
+
+	messages.value.push(...newMessages);
+
+	canFetchMore.value = newMessages.length === LIMIT;
+	moreFetching.value = false;
 }
 
 function onMessage(message: Misskey.entities.ChatMessage) {
@@ -207,6 +215,37 @@ onBeforeUnmount(() => {
 	connection.value?.dispose();
 	window.document.removeEventListener('visibilitychange', onVisibilitychange);
 });
+
+async function inviteUser() {
+	const invitee = await os.selectUser({ includeSelf: false, localOnly: true });
+	os.apiWithDialog('chat/rooms/invitations/create', {
+		roomId: room.value?.id,
+		userId: invitee.id,
+	});
+}
+
+function showMenu(ev: MouseEvent) {
+	const menuItems: MenuItem[] = [];
+
+	if (room.value) {
+		if (room.value.ownerId === $i.id) {
+			menuItems.push({
+				text: i18n.ts._chat.inviteUser,
+				icon: 'ti ti-user-plus',
+				action: () => {
+					inviteUser();
+				},
+			});
+		}
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+}
+
+const headerActions = computed(() => [{
+	icon: 'ti ti-dots',
+	handler: showMenu,
+}]);
 
 definePage(computed(() => !initializing.value ? user.value ? {
 	userName: user,

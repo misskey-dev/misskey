@@ -37,4 +37,9 @@ export class MiChatRoomInvitation {
 	})
 	@JoinColumn()
 	public room: MiChatRoom | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public ignored: boolean;
 }

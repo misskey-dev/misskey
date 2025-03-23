@@ -5377,6 +5377,54 @@ export interface Locale extends ILocale {
          */
         "roomChat_description": string;
         /**
+         * ルームを作成
+         */
+        "createRoom": string;
+        /**
+         * ユーザーを招待してチャットを始めましょう
+         */
+        "inviteUserToChat": string;
+        /**
+         * 作成したルーム
+         */
+        "yourRooms": string;
+        /**
+         * 参加中のルーム
+         */
+        "joiningRooms": string;
+        /**
+         * 招待
+         */
+        "invitations": string;
+        /**
+         * 招待はありません
+         */
+        "noInvitations": string;
+        /**
+         * 履歴
+         */
+        "history": string;
+        /**
+         * 履歴はありません
+         */
+        "noHistory": string;
+        /**
+         * ルームはありません
+         */
+        "noRooms": string;
+        /**
+         * ユーザーを招待
+         */
+        "inviteUser": string;
+        /**
+         * 参加
+         */
+        "join": string;
+        /**
+         * 無視
+         */
+        "ignore": string;
+        /**
          * このユーザーとのチャットを開始できません
          */
         "cannotChatWithTheUser": string;

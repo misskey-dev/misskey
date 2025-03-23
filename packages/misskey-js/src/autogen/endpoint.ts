@@ -209,24 +209,28 @@ import type {
 	ChartsUsersResponse,
 	ChatHistoryRequest,
 	ChatHistoryResponse,
-	ChatMessagesCreateRequest,
-	ChatMessagesCreateResponse,
+	ChatMessagesCreateToRoomRequest,
+	ChatMessagesCreateToRoomResponse,
+	ChatMessagesCreateToUserRequest,
+	ChatMessagesCreateToUserResponse,
 	ChatMessagesDeleteRequest,
 	ChatMessagesDeleteResponse,
+	ChatMessagesRoomTimelineRequest,
+	ChatMessagesRoomTimelineResponse,
 	ChatMessagesShowRequest,
 	ChatMessagesShowResponse,
-	ChatMessagesTimelineRequest,
-	ChatMessagesTimelineResponse,
+	ChatMessagesUserTimelineRequest,
+	ChatMessagesUserTimelineResponse,
 	ChatRoomsCreateRequest,
 	ChatRoomsCreateResponse,
 	ChatRoomsDeleteRequest,
 	ChatRoomsDeleteResponse,
 	ChatRoomsInvitationsCreateRequest,
 	ChatRoomsInvitationsCreateResponse,
+	ChatRoomsInvitationsIgnoreRequest,
+	ChatRoomsInvitationsIgnoreResponse,
 	ChatRoomsInvitationsInboxRequest,
 	ChatRoomsInvitationsInboxResponse,
-	ChatRoomsInvitationsRejectRequest,
-	ChatRoomsInvitationsRejectResponse,
 	ChatRoomsJoinRequest,
 	ChatRoomsJoinResponse,
 	ChatRoomsLeaveRequest,
@@ -759,15 +763,17 @@ export type Endpoints = {
 	'charts/user/reactions': { req: ChartsUserReactionsRequest; res: ChartsUserReactionsResponse };
 	'charts/users': { req: ChartsUsersRequest; res: ChartsUsersResponse };
 	'chat/history': { req: ChatHistoryRequest; res: ChatHistoryResponse };
-	'chat/messages/create': { req: ChatMessagesCreateRequest; res: ChatMessagesCreateResponse };
+	'chat/messages/create-to-room': { req: ChatMessagesCreateToRoomRequest; res: ChatMessagesCreateToRoomResponse };
+	'chat/messages/create-to-user': { req: ChatMessagesCreateToUserRequest; res: ChatMessagesCreateToUserResponse };
 	'chat/messages/delete': { req: ChatMessagesDeleteRequest; res: ChatMessagesDeleteResponse };
+	'chat/messages/room-timeline': { req: ChatMessagesRoomTimelineRequest; res: ChatMessagesRoomTimelineResponse };
 	'chat/messages/show': { req: ChatMessagesShowRequest; res: ChatMessagesShowResponse };
-	'chat/messages/timeline': { req: ChatMessagesTimelineRequest; res: ChatMessagesTimelineResponse };
+	'chat/messages/user-timeline': { req: ChatMessagesUserTimelineRequest; res: ChatMessagesUserTimelineResponse };
 	'chat/rooms/create': { req: ChatRoomsCreateRequest; res: ChatRoomsCreateResponse };
 	'chat/rooms/delete': { req: ChatRoomsDeleteRequest; res: ChatRoomsDeleteResponse };
 	'chat/rooms/invitations/create': { req: ChatRoomsInvitationsCreateRequest; res: ChatRoomsInvitationsCreateResponse };
+	'chat/rooms/invitations/ignore': { req: ChatRoomsInvitationsIgnoreRequest; res: ChatRoomsInvitationsIgnoreResponse };
 	'chat/rooms/invitations/inbox': { req: ChatRoomsInvitationsInboxRequest; res: ChatRoomsInvitationsInboxResponse };
-	'chat/rooms/invitations/reject': { req: ChatRoomsInvitationsRejectRequest; res: ChatRoomsInvitationsRejectResponse };
 	'chat/rooms/join': { req: ChatRoomsJoinRequest; res: ChatRoomsJoinResponse };
 	'chat/rooms/leave': { req: ChatRoomsLeaveRequest; res: ChatRoomsLeaveResponse };
 	'chat/rooms/members': { req: ChatRoomsMembersRequest; res: ChatRoomsMembersResponse };

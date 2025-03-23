@@ -1550,7 +1550,18 @@ declare module '../api.js' {
      * 
      * **Credential required**: *Yes* / **Permission**: *write:chat*
      */
-    request<E extends 'chat/messages/create', P extends Endpoints[E]['req']>(
+    request<E extends 'chat/messages/create-to-room', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     */
+    request<E extends 'chat/messages/create-to-user', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -1572,6 +1583,17 @@ declare module '../api.js' {
      * 
      * **Credential required**: *Yes* / **Permission**: *read:chat*
      */
+    request<E extends 'chat/messages/room-timeline', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     */
     request<E extends 'chat/messages/show', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
@@ -1583,7 +1605,7 @@ declare module '../api.js' {
      * 
      * **Credential required**: *Yes* / **Permission**: *read:chat*
      */
-    request<E extends 'chat/messages/timeline', P extends Endpoints[E]['req']>(
+    request<E extends 'chat/messages/user-timeline', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -1625,9 +1647,9 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
      */
-    request<E extends 'chat/rooms/invitations/inbox', P extends Endpoints[E]['req']>(
+    request<E extends 'chat/rooms/invitations/ignore', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -1636,9 +1658,9 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
      */
-    request<E extends 'chat/rooms/invitations/reject', P extends Endpoints[E]['req']>(
+    request<E extends 'chat/rooms/invitations/inbox', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

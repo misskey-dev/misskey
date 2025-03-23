@@ -4,139 +4,47 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="700">
-		<div class="_gaps">
-			<MkButton primary gradate :class="$style.start" @click="start"><i class="ti ti-plus"></i> {{ i18n.ts.startChat }}</MkButton>
-
-			<div v-if="history.length > 0" :class="$style.history">
-				<MkA
-					v-for="item in history"
-					:key="item.id"
-					:class="[$style.message, { [$style.isMe]: item.isMe, [$style.isRead]: item.message.isRead }]"
-					class="_panel"
-					:to="item.message.toRoomId ? `/chat/room/${item.message.toRoomId}` : `/chat/user/${item.other!.id}`"
-				>
-					<MkAvatar v-if="item.other" :class="$style.messageAvatar" :user="item.other" indicator :preview="false"/>
-					<div :class="$style.messageBody">
-						<header v-if="item.message.room" :class="$style.messageHeader">
-							<span :class="$style.messageHeaderName">{{ item.message.room.name }}</span>
-							<MkTime :time="item.message.createdAt" :class="$style.messageHeaderTime"/>
-						</header>
-						<header v-else :class="$style.messageHeader">
-							<MkUserName :class="$style.messageHeaderName" :user="item.other!"/>
-							<MkAcct :class="$style.messageHeaderUsername" :user="item.other!"/>
-							<MkTime :time="item.message.createdAt" :class="$style.messageHeaderTime"/>
-						</header>
-						<div :class="$style.messageBodyText"><span v-if="item.isMe" :class="$style.iSaid">{{ i18n.ts.you }}:</span>{{ item.message.text }}</div>
-					</div>
-				</MkA>
-			</div>
-			<div v-if="!fetching && history.length == 0" class="_fullinfo">
-				<div>{{ i18n.ts.noHistory }}</div>
-			</div>
-			<MkLoading v-if="fetching"/>
-		</div>
+		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+			<XHistory v-if="tab === 'home'"/>
+			<XInvitations v-else-if="tab === 'invitations'"/>
+			<XOwnedRooms v-else-if="tab === 'ownedRooms'"/>
+		</MkHorizontalSwipe>
 	</MkSpacer>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
-import * as Misskey from 'misskey-js';
-import MkButton from '@/components/MkButton.vue';
+import XHistory from './home.history.vue';
+import XInvitations from './home.invitations.vue';
+import XOwnedRooms from './home.ownedRooms.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { ensureSignin } from '@/i.js';
-import { useRouter } from '@/router.js';
-import * as os from '@/os.js';
-import { updateCurrentAccountPartial } from '@/accounts.js';
+import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
-const $i = ensureSignin();
-
-const router = useRouter();
-
-const fetching = ref(true);
-const history = ref<{
-	id: string;
-	message: Misskey.entities.ChatMessage;
-	other: Misskey.entities.ChatMessage['fromUser'] | Misskey.entities.ChatMessage['toUser'] | null;
-	isMe: boolean;
-}[]>([]);
-
-function start(ev: MouseEvent) {
-	os.popupMenu([{
-		text: i18n.ts._chat.individualChat,
-		caption: i18n.ts._chat.individualChat_description,
-		icon: 'ti ti-user',
-		action: () => { startUser(); },
-	}, { type: 'divider' }, {
-		text: i18n.ts._chat.roomChat,
-		caption: i18n.ts._chat.roomChat_description,
-		icon: 'ti ti-users',
-		action: () => { startRoom(); },
-	}], ev.currentTarget ?? ev.target);
-}
-
-async function startUser() {
-	os.selectUser().then(user => {
-		router.push(`/chat/user/${user.id}`);
-	});
-}
-
-async function startRoom() {
-	/*
-	const rooms1 = await os.api('users/rooms/owned');
-	const rooms2 = await os.api('users/rooms/joined');
-	if (rooms1.length === 0 && rooms2.length === 0) {
-		os.alert({
-			type: 'warning',
-			title: i18n.ts.youHaveNoGroups,
-			text: i18n.ts.joinOrCreateGroup,
-		});
-		return;
-	}
-	const { canceled, result: room } = await os.select({
-		title: i18n.ts.room,
-		items: rooms1.concat(rooms2).map(room => ({
-			value: room, text: room.name,
-		})),
-	});
-	if (canceled) return;
-	router.push(`/chat/room/${room.id}`);
-	*/
-}
-
-async function fetchHistory() {
-	fetching.value = true;
-
-	const [userMessages, roomMessages] = await Promise.all([
-		misskeyApi('chat/history', { room: false }),
-		misskeyApi('chat/history', { room: true }),
-	]);
-
-	history.value = [...userMessages, ...roomMessages]
-		.toSorted((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-		.map(m => ({
-			id: m.id,
-			message: m,
-			other: m.room == null ? (m.fromUserId === $i.id ? m.toUser : m.fromUser) : null,
-			isMe: m.fromUserId === $i.id,
-		}));
-
-	fetching.value = false;
-
-	updateCurrentAccountPartial({ hasUnreadChatMessages: false });
-}
-
-onMounted(() => {
-	fetchHistory();
-});
+const tab = ref('home');
 
 const headerActions = computed(() => []);
 
-const headerTabs = computed(() => []);
+const headerTabs = computed(() => [{
+	key: 'home',
+	title: i18n.ts._chat.history,
+	icon: 'ti ti-home',
+}, {
+	key: 'invitations',
+	title: i18n.ts._chat.invitations,
+	icon: 'ti ti-ticket',
+}, {
+	key: 'joiningRooms',
+	title: i18n.ts._chat.joiningRooms,
+	icon: 'ti ti-users-group',
+}, {
+	key: 'ownedRooms',
+	title: i18n.ts._chat.yourRooms,
+	icon: 'ti ti-settings',
+}]);
 
 definePage(() => ({
 	title: i18n.ts.chat,
@@ -145,78 +53,4 @@ definePage(() => ({
 </script>
 
 <style lang="scss" module>
-.start {
-	margin: 0 auto;
-}
-
-.message {
-	position: relative;
-	display: flex;
-	padding: 16px 24px;
-
-	&.isRead,
-	&.isMe {
-		opacity: 0.8;
-	}
-
-	&:not(.isMe):not(.isRead) {
-		&::before {
-			content: '';
-			position: absolute;
-			top: 8px;
-			right: 8px;
-			width: 8px;
-			height: 8px;
-			border-radius: 100%;
-			background-color: var(--MI_THEME-accent);
-		}
-	}
-}
-
-.messageAvatar {
-	width: 50px;
-	height: 50px;
-	margin: 0 16px 0 0;
-}
-
-.messageBody {
-	flex: 1;
-	min-width: 0;
-}
-
-.messageHeader {
-	display: flex;
-	align-items: center;
-	margin-bottom: 2px;
-	white-space: nowrap;
-	overflow: clip;
-}
-
-.messageHeaderName {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	font-size: 1em;
-	font-weight: bold;
-}
-
-.messageHeaderUsername {
-	margin: 0 8px;
-}
-
-.messageHeaderTime {
-	margin-left: auto;
-}
-
-.messageBodyText {
-	overflow: hidden;
-	overflow-wrap: break-word;
-	font-size: 1.1em;
-}
-
-.iSaid {
-	font-weight: bold;
-	margin-right: 0.5em;
-}
 </style>

@@ -22,6 +22,7 @@ import { QueryService } from '@/core/QueryService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
+import { Packed } from '@/misc/json-schema.js';
 
 const MAX_ROOM_MEMBERS = 30;
 
@@ -74,7 +75,7 @@ export class ChatService {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}) {
+	}): Promise<Packed<'ChatMessageLite'>> {
 		if (fromUser.id === toUser.id) {
 			throw new Error('yourself');
 		}
@@ -185,7 +186,7 @@ export class ChatService {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}) {
+	}): Promise<Packed<'ChatMessageLite'>> {
 		const memberships = await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id });
 
 		if (toRoom.ownerId !== fromUser.id && !memberships.some(member => member.userId === fromUser.id)) {
@@ -294,7 +295,7 @@ export class ChatService {
 	}
 
 	@bindThis
-	public async userTimeline(meId: MiUser['id'], otherId: MiUser['id'], sinceId: MiChatMessage['id'] | null, untilId: MiChatMessage['id'] | null, limit: number) {
+	public async userTimeline(meId: MiUser['id'], otherId: MiUser['id'], limit: number, sinceId?: MiChatMessage['id'] | null, untilId?: MiChatMessage['id'] | null) {
 		const query = this.queryService.makePaginationQuery(this.chatMessagesRepository.createQueryBuilder('message'), sinceId, untilId)
 			.andWhere(new Brackets(qb => {
 				qb
@@ -311,6 +312,16 @@ export class ChatService {
 			}))
 			.setParameter('meId', meId)
 			.setParameter('otherId', otherId);
+
+		const messages = await query.take(limit).getMany();
+
+		return messages;
+	}
+
+	@bindThis
+	public async roomTimeline(roomId: MiChatRoom['id'], limit: number, sinceId?: MiChatMessage['id'] | null, untilId?: MiChatMessage['id'] | null) {
+		const query = this.queryService.makePaginationQuery(this.chatMessagesRepository.createQueryBuilder('message'), sinceId, untilId)
+			.where('message.toRoomId = :roomId', { roomId });
 
 		const messages = await query.take(limit).getMany();
 
@@ -525,7 +536,8 @@ export class ChatService {
 	@bindThis
 	public async getReceivedRoomInvitationsWithPagination(userId: MiUser['id'], limit: number, sinceId?: MiChatRoomInvitation['id'] | null, untilId?: MiChatRoomInvitation['id'] | null) {
 		const query = this.queryService.makePaginationQuery(this.chatRoomInvitationsRepository.createQueryBuilder('invitation'), sinceId, untilId)
-			.where('invitation.userId = :userId', { userId });
+			.where('invitation.userId = :userId', { userId })
+			.andWhere('invitation.ignored = FALSE');
 
 		const invitations = await query.take(limit).getMany();
 
@@ -553,9 +565,9 @@ export class ChatService {
 	}
 
 	@bindThis
-	public async rejectRoomInvitation(userId: MiUser['id'], roomId: MiChatRoom['id']) {
+	public async ignoreRoomInvitation(userId: MiUser['id'], roomId: MiChatRoom['id']) {
 		const invitation = await this.chatRoomInvitationsRepository.findOneByOrFail({ roomId, userId });
-		await this.chatRoomInvitationsRepository.delete(invitation.id);
+		await this.chatRoomInvitationsRepository.update(invitation.id, { ignored: true });
 	}
 
 	@bindThis

@@ -1367,14 +1367,23 @@ export type paths = {
      */
     post: operations['chat___history'];
   };
-  '/chat/messages/create': {
+  '/chat/messages/create-to-room': {
     /**
-     * chat/messages/create
+     * chat/messages/create-to-room
      * @description No description provided.
      *
      * **Credential required**: *Yes* / **Permission**: *write:chat*
      */
-    post: operations['chat___messages___create'];
+    post: operations['chat___messages___create-to-room'];
+  };
+  '/chat/messages/create-to-user': {
+    /**
+     * chat/messages/create-to-user
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     */
+    post: operations['chat___messages___create-to-user'];
   };
   '/chat/messages/delete': {
     /**
@@ -1385,6 +1394,15 @@ export type paths = {
      */
     post: operations['chat___messages___delete'];
   };
+  '/chat/messages/room-timeline': {
+    /**
+     * chat/messages/room-timeline
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     */
+    post: operations['chat___messages___room-timeline'];
+  };
   '/chat/messages/show': {
     /**
      * chat/messages/show
@@ -1394,14 +1412,14 @@ export type paths = {
      */
     post: operations['chat___messages___show'];
   };
-  '/chat/messages/timeline': {
+  '/chat/messages/user-timeline': {
     /**
-     * chat/messages/timeline
+     * chat/messages/user-timeline
      * @description No description provided.
      *
      * **Credential required**: *Yes* / **Permission**: *read:chat*
      */
-    post: operations['chat___messages___timeline'];
+    post: operations['chat___messages___user-timeline'];
   };
   '/chat/rooms/create': {
     /**
@@ -1430,6 +1448,15 @@ export type paths = {
      */
     post: operations['chat___rooms___invitations___create'];
   };
+  '/chat/rooms/invitations/ignore': {
+    /**
+     * chat/rooms/invitations/ignore
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     */
+    post: operations['chat___rooms___invitations___ignore'];
+  };
   '/chat/rooms/invitations/inbox': {
     /**
      * chat/rooms/invitations/inbox
@@ -1438,15 +1465,6 @@ export type paths = {
      * **Credential required**: *Yes* / **Permission**: *read:chat*
      */
     post: operations['chat___rooms___invitations___inbox'];
-  };
-  '/chat/rooms/invitations/reject': {
-    /**
-     * chat/rooms/invitations/reject
-     * @description No description provided.
-     *
-     * **Credential required**: *Yes* / **Permission**: *write:chat*
-     */
-    post: operations['chat___rooms___invitations___reject'];
   };
   '/chat/rooms/join': {
     /**
@@ -13915,12 +13933,12 @@ export type operations = {
     };
   };
   /**
-   * chat/messages/create
+   * chat/messages/create-to-room
    * @description No description provided.
    *
    * **Credential required**: *Yes* / **Permission**: *write:chat*
    */
-  chat___messages___create: {
+  'chat___messages___create-to-room': {
     requestBody: {
       content: {
         'application/json': {
@@ -13928,7 +13946,70 @@ export type operations = {
           /** Format: misskey:id */
           fileId?: string;
           /** Format: misskey:id */
-          toUserId?: string | null;
+          toRoomId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['ChatMessageLite'];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Too many requests */
+      429: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * chat/messages/create-to-user
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:chat*
+   */
+  'chat___messages___create-to-user': {
+    requestBody: {
+      content: {
+        'application/json': {
+          text?: string | null;
+          /** Format: misskey:id */
+          fileId?: string;
+          /** Format: misskey:id */
+          toUserId: string;
         };
       };
     };
@@ -14032,6 +14113,66 @@ export type operations = {
     };
   };
   /**
+   * chat/messages/room-timeline
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:chat*
+   */
+  'chat___messages___room-timeline': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+          /** Format: misskey:id */
+          roomId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['ChatMessageLite'][];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * chat/messages/show
    * @description No description provided.
    *
@@ -14086,12 +14227,12 @@ export type operations = {
     };
   };
   /**
-   * chat/messages/timeline
+   * chat/messages/user-timeline
    * @description No description provided.
    *
    * **Credential required**: *Yes* / **Permission**: *read:chat*
    */
-  chat___messages___timeline: {
+  'chat___messages___user-timeline': {
     requestBody: {
       content: {
         'application/json': {
@@ -14102,7 +14243,7 @@ export type operations = {
           /** Format: misskey:id */
           untilId?: string;
           /** Format: misskey:id */
-          userId?: string | null;
+          userId: string;
         };
       };
     };
@@ -14321,21 +14462,17 @@ export type operations = {
     };
   };
   /**
-   * chat/rooms/invitations/inbox
+   * chat/rooms/invitations/ignore
    * @description No description provided.
    *
-   * **Credential required**: *Yes* / **Permission**: *read:chat*
+   * **Credential required**: *Yes* / **Permission**: *write:chat*
    */
-  chat___rooms___invitations___inbox: {
+  chat___rooms___invitations___ignore: {
     requestBody: {
       content: {
         'application/json': {
-          /** @default 30 */
-          limit?: number;
           /** Format: misskey:id */
-          sinceId?: string;
-          /** Format: misskey:id */
-          untilId?: string;
+          roomId: string;
         };
       };
     };
@@ -14343,7 +14480,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': components['schemas']['ChatRoomInvitation'][];
+          'application/json': unknown;
         };
       };
       /** @description Client error */
@@ -14379,17 +14516,21 @@ export type operations = {
     };
   };
   /**
-   * chat/rooms/invitations/reject
+   * chat/rooms/invitations/inbox
    * @description No description provided.
    *
-   * **Credential required**: *Yes* / **Permission**: *write:chat*
+   * **Credential required**: *Yes* / **Permission**: *read:chat*
    */
-  chat___rooms___invitations___reject: {
+  chat___rooms___invitations___inbox: {
     requestBody: {
       content: {
         'application/json': {
+          /** @default 30 */
+          limit?: number;
           /** Format: misskey:id */
-          roomId: string;
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
         };
       };
     };
@@ -14397,7 +14538,7 @@ export type operations = {
       /** @description OK (with results) */
       200: {
         content: {
-          'application/json': unknown;
+          'application/json': components['schemas']['ChatRoomInvitation'][];
         };
       };
       /** @description Client error */

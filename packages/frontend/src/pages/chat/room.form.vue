@@ -168,18 +168,32 @@ function send() {
 	if (!canSend.value) return;
 
 	sending.value = true;
-	misskeyApi('chat/messages/create', {
-		toUserId: props.user ? props.user.id : undefined,
-		toRoomId: props.room ? props.room.id : undefined,
-		text: text.value ? text.value : undefined,
-		fileId: file.value ? file.value.id : undefined,
-	}).then(message => {
-		clear();
-	}).catch(err => {
-		console.error(err);
-	}).then(() => {
-		sending.value = false;
-	});
+
+	if (props.user) {
+		misskeyApi('chat/messages/create-to-user', {
+			toUserId: props.user.id,
+			text: text.value ? text.value : undefined,
+			fileId: file.value ? file.value.id : undefined,
+		}).then(message => {
+			clear();
+		}).catch(err => {
+			console.error(err);
+		}).then(() => {
+			sending.value = false;
+		});
+	} else if (props.room) {
+		misskeyApi('chat/messages/create-to-room', {
+			toRoomId: props.room.id,
+			text: text.value ? text.value : undefined,
+			fileId: file.value ? file.value.id : undefined,
+		}).then(message => {
+			clear();
+		}).catch(err => {
+			console.error(err);
+		}).then(() => {
+			sending.value = false;
+		});
+	}
 }
 
 function clear() {
