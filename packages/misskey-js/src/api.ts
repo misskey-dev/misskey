@@ -44,7 +44,7 @@ export class APIClient {
 		credential?: APIClient['credential'];
 		fetch?: APIClient['fetch'] | null | undefined;
 	}) {
-		this.origin = opts.origin;
+		this.origin = opts.origin.replace(/\/$/, '');
 		this.credential = opts.credential;
 		// ネイティブ関数をそのまま変数に代入して使おうとするとChromiumではIllegal invocationエラーが発生するため、
 		// 環境で実装されているfetchを使う場合は無名関数でラップして使用する

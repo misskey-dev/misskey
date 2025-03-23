@@ -68,6 +68,8 @@ misskey-assets
 # Vite temporary files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+vite.config.local-dev.js.timestamp-*
+vite.config.local-dev.ts.timestamp-*
 
 # blender backups
 *.blend1

@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkAuthConfirm
 				ref="authRoot"
 				:name="name"
+				:icon="logo"
 				:permissions="permissions"
 				:waitOnDeny="true"
 				@accept="onAccept"
@@ -33,6 +34,7 @@ if (transactionIdMeta) {
 }
 
 const name = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-name"]')?.content;
+const logo = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-logo"]')?.content;
 const permissions = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:scope"]')?.content.split(' ').filter((p): p is typeof Misskey.permissions[number] => (Misskey.permissions as readonly string[]).includes(p)) ?? [];
 
 function doPost(token: string, decision: 'accept' | 'deny') {

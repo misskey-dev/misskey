@@ -22,7 +22,7 @@ export type LoginUser = SigninResponse & {
 	client: Misskey.api.APIClient;
 	username: string;
 	password: string;
-}
+};
 
 /** used for avoiding overload and some endpoints */
 export type Request = <
@@ -36,7 +36,7 @@ export type Request = <
 
 type Host = 'a.test' | 'b.test';
 
-export async function sleep(ms = 200): Promise<void> {
+export async function sleep(ms = 250): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -232,7 +232,6 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 	params?: Misskey.Channels[C]['params'],
 ): Promise<boolean> {
 	return new Promise<boolean>(async (resolve, reject) => {
-		// @ts-expect-error TODO: why?
 		const stream = new Misskey.Stream(`wss://${host}`, { token: user.i }, { WebSocket });
 		const connection = stream.useChannel(channel, params);
 		connection.on(type as any, ((msg: any) => {
@@ -266,7 +265,6 @@ export async function isNoteUpdatedEventFired(
 	cond: (msg: Parameters<Misskey.StreamEvents['noteUpdated']>[0]) => boolean,
 ): Promise<boolean> {
 	return new Promise<boolean>(async (resolve, reject) => {
-		// @ts-expect-error TODO: why?
 		const stream = new Misskey.Stream(`wss://${host}`, { token: user.i }, { WebSocket });
 		stream.send('s', { id: noteId });
 		stream.on('noteUpdated', msg => {

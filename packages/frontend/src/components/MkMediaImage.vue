@@ -54,6 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
+import { copyToClipboard } from '@/scripts/copy-to-clipboard';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import bytes from '@/filters/bytes.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
@@ -123,23 +124,55 @@ function showMenu(ev: MouseEvent) {
 
 	if (iAmModerator) {
 		menuItems.push({
-			text: i18n.ts.markAsSensitive,
+			text: props.image.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
 			icon: 'ti ti-eye-exclamation',
 			danger: true,
-			action: () => {
-				os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
+			action: async () => {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					text: props.image.isSensitive ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+				});
+
+				if (canceled) return;
+
+				os.apiWithDialog('drive/files/update', {
+					fileId: props.image.id,
+					isSensitive: !props.image.isSensitive,
+				});
 			},
 		});
 	}
 
+	const details: MenuItem[] = [];
 	if ($i?.id === props.image.userId) {
-		menuItems.push({
-			type: 'divider',
-		}, {
+		details.push({
 			type: 'link',
 			text: i18n.ts._fileViewer.title,
 			icon: 'ti ti-info-circle',
 			to: `/my/drive/file/${props.image.id}`,
+		});
+	}
+
+	if (iAmModerator) {
+		details.push({
+			type: 'link',
+			text: i18n.ts.moderation,
+			icon: 'ti ti-photo-exclamation',
+			to: `/admin/file/${props.image.id}`,
+		});
+	}
+
+	if (details.length > 0) {
+		menuItems.push({ type: 'divider' }, ...details);
+	}
+
+	if (defaultStore.state.devMode) {
+		menuItems.push({ type: 'divider' }, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(props.image.id);
+			},
 		});
 	}
 

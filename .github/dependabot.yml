@@ -9,7 +9,7 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 0
 
 # Add only the root, not each workspace item
 # https://github.com/dependabot/dependabot-core/issues/4993#issuecomment-1289133027
@@ -17,7 +17,7 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
+  open-pull-requests-limit: 0
   # List dependencies required to be updated together, sharing the same version numbers.
   # Those who simply have the common owner (e.g. @fastify) don't need to be listed.
   groups:

@@ -84,10 +84,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
                                 if ( sh_in >=8 && sh_in < 16 ){
                                 	const u_id = item.description.substr( 0,sh_in );
 
-					const owner = await this.usersRepository.findOneByOrFail({ id: u_id });
-					let byName = "";
-					if( owner != null ){
-						if ( owner.name != null ){
+//					const owner = await this.usersRepository.findOneByOrFail({ id: u_id });
+					const owner = await this.usersRepository.findOneBy({ id: u_id });
+					let byName = '';
+					if( owner ){
+						if ( owner.name ){
 							byName = owner.name;
 						}else{
 							byName = owner.username;

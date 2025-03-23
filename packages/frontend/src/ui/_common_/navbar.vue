@@ -56,21 +56,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 		</div>
 	</div>
-	<button v-if="!forceIconOnly" class="_button" :class="$style.toggleButton" @click="toggleIconOnly">
-		<!--
-		<svg viewBox="0 0 16 48" :class="$style.toggleButtonShape">
-			<g transform="matrix(0.333333,0,0,0.222222,0.000895785,13.3333)">
-				<path d="M23.935,-24C37.223,-24 47.995,-7.842 47.995,12.09C47.995,34.077 47.995,62.07 47.995,84.034C47.995,93.573 45.469,102.721 40.972,109.466C36.475,116.211 30.377,120 24.018,120L23.997,120C10.743,120 -0.003,136.118 -0.003,156C-0.003,156 -0.003,156 -0.003,156L-0.003,-60L-0.003,-59.901C-0.003,-50.379 2.519,-41.248 7.007,-34.515C11.496,-27.782 17.584,-24 23.931,-24C23.932,-24 23.934,-24 23.935,-24Z" style="fill:var(--MI_THEME-navBg);"/>
-			</g>
-		</svg>
-		-->
-		<svg viewBox="0 0 16 64" :class="$style.toggleButtonShape">
-			<g transform="matrix(0.333333,0,0,0.222222,0.000895785,21.3333)">
-				<path d="M47.488,7.995C47.79,10.11 47.943,12.266 47.943,14.429C47.997,26.989 47.997,84 47.997,84C47.997,84 44.018,118.246 23.997,133.5C-0.374,152.07 -0.003,192 -0.003,192L-0.003,-96C-0.003,-96 0.151,-56.216 23.997,-37.5C40.861,-24.265 46.043,-1.243 47.488,7.995Z" style="fill:var(--MI_THEME-navBg);"/>
-			</g>
-		</svg>
-		<i :class="'ti ' + `ti-chevron-${ iconOnly ? 'right' : 'left' }`" style="font-size: 12px; margin-left: -8px;"></i>
-	</button>
+
+	<!--
+	<svg viewBox="0 0 16 48" :class="$style.subButtonShape">
+		<g transform="matrix(0.333333,0,0,0.222222,0.000895785,13.3333)">
+			<path d="M23.935,-24C37.223,-24 47.995,-7.842 47.995,12.09C47.995,34.077 47.995,62.07 47.995,84.034C47.995,93.573 45.469,102.721 40.972,109.466C36.475,116.211 30.377,120 24.018,120L23.997,120C10.743,120 -0.003,136.118 -0.003,156C-0.003,156 -0.003,156 -0.003,156L-0.003,-60L-0.003,-59.901C-0.003,-50.379 2.519,-41.248 7.007,-34.515C11.496,-27.782 17.584,-24 23.931,-24C23.932,-24 23.934,-24 23.935,-24Z" style="fill:var(--MI_THEME-navBg);"/>
+		</g>
+	</svg>
+	-->
+
+	<div :class="$style.subButtons">
+		<div :class="[$style.subButton, $style.menuEditButton]">
+			<svg viewBox="0 0 16 64" :class="$style.subButtonShape">
+				<g transform="matrix(0.333333,0,0,0.222222,0.000895785,21.3333)">
+					<path d="M47.488,7.995C47.79,10.11 47.943,12.266 47.943,14.429C47.997,26.989 47.997,84 47.997,84C47.997,84 44.018,118.246 23.997,133.5C-0.374,152.07 -0.003,192 -0.003,192L-0.003,-96C-0.003,-96 0.151,-56.216 23.997,-37.5C40.861,-24.265 46.043,-1.243 47.488,7.995Z" style="fill:var(--MI_THEME-navBg);"/>
+				</g>
+			</svg>
+			<button class="_button" :class="$style.subButtonClickable" @click="menuEdit"><i :class="$style.subButtonIcon" class="ti ti-settings-2"></i></button>
+		</div>
+		<div v-if="!forceIconOnly" :class="$style.subButtonGapFill"></div>
+		<div v-if="!forceIconOnly" :class="$style.subButtonGapFillDivider"></div>
+		<div v-if="!forceIconOnly" :class="[$style.subButton, $style.toggleButton]">
+			<svg viewBox="0 0 16 64" :class="$style.subButtonShape">
+				<g transform="matrix(0.333333,0,0,0.222222,0.000895785,21.3333)">
+					<path d="M47.488,7.995C47.79,10.11 47.943,12.266 47.943,14.429C47.997,26.989 47.997,84 47.997,84C47.997,84 44.018,118.246 23.997,133.5C-0.374,152.07 -0.003,192 -0.003,192L-0.003,-96C-0.003,-96 0.151,-56.216 23.997,-37.5C40.861,-24.265 46.043,-1.243 47.488,7.995Z" style="fill:var(--MI_THEME-navBg);"/>
+				</g>
+			</svg>
+			<button class="_button" :class="$style.subButtonClickable" @click="toggleIconOnly"><i v-if="iconOnly" class="ti ti-chevron-right" :class="$style.subButtonIcon"></i><i v-else class="ti ti-chevron-left" :class="$style.subButtonIcon"></i></button>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -84,6 +98,9 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
+import { useRouter } from '@/router/supplier.js';
+
+const router = useRouter();
 
 const forceIconOnly = ref(window.innerWidth <= 1279);
 const iconOnly = computed(() => {
@@ -128,6 +145,10 @@ function more(ev: MouseEvent) {
 		closed: () => dispose(),
 	});
 }
+
+function menuEdit() {
+	router.push('/settings/navbar');
+}
 </script>
 
 <style lang="scss" module>
@@ -135,6 +156,8 @@ function more(ev: MouseEvent) {
 	--nav-width: 250px;
 	--nav-icon-only-width: 80px;
 	--nav-bg-transparent: color(from var(--MI_THEME-navBg) srgb r g b / 0.5);
+
+	--subButtonWidth: 20px;
 
 	flex: 0 0 var(--nav-width);
 	width: var(--nav-width);
@@ -171,23 +194,80 @@ function more(ev: MouseEvent) {
 	direction: ltr;
 }
 
-.toggleButton {
+.subButtons {
 	position: fixed;
-	bottom: 20px;
 	left: var(--nav-width);
+	bottom: 80px;
 	z-index: 1001;
-	width: 16px;
-	height: 64px;
 	box-sizing: border-box;
 }
 
-.toggleButtonShape {
+.subButton {
+	display: block;
+	position: relative;
+	z-index: 1002;
+	width: var(--subButtonWidth);
+	height: 50px;
+	box-sizing: border-box;
+	align-content: center;
+}
+
+.subButtonShape {
 	position: absolute;
 	z-index: -1;
 	top: 0;
+	bottom: 0;
 	left: 0;
-	width: 16px;
+	margin: auto;
+	width: var(--subButtonWidth);
+	height: calc(var(--subButtonWidth) * 4);
+}
+
+.subButtonClickable {
+	position: absolute;
+	display: block;
+	max-width: unset;
+	width: 24px;
+	height: 42px;
+	top: 0;
+	bottom: 0;
+	left: -4px;
+	margin: auto;
+	font-size: 10px;
+
+	&:hover {
+		color: var(--MI_THEME-fgHighlighted);
+
+		.subButtonIcon {
+			opacity: 1;
+		}
+	}
+}
+
+.subButtonIcon {
+	margin-left: -4px;
+	opacity: 0.7;
+}
+
+.subButtonGapFill {
+	position: relative;
+	z-index: 1001;
+	width: var(--subButtonWidth);
 	height: 64px;
+	margin-top: -32px;
+	margin-bottom: -32px;
+	pointer-events: none;
+	background: var(--MI_THEME-navBg);
+}
+
+.subButtonGapFillDivider {
+	position: relative;
+	z-index: 1010;
+	margin-left: -2px;
+	width: 14px;
+	height: 1px;
+	background: var(--MI_THEME-divider);
+	pointer-events: none;
 }
 
 .root:not(.iconOnly) {
@@ -419,7 +499,7 @@ function more(ev: MouseEvent) {
 		font-size: 0.9em;
 	}
 
-	.toggleButton {
+	.subButtons {
 		left: var(--nav-width);
 	}
 }
@@ -623,7 +703,7 @@ function more(ev: MouseEvent) {
 		}
 	}
 
-	.toggleButton {
+	.subButtons {
 		left: var(--nav-icon-only-width);
 	}
 }

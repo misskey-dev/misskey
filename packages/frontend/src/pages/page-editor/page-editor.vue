@@ -96,7 +96,7 @@ const summary = ref<string | null>(null);
 const name = ref(Date.now().toString());
 const eyeCatchingImage = ref<Misskey.entities.DriveFile | null>(null);
 const eyeCatchingImageId = ref<string | null>(null);
-const font = ref('sans-serif');
+const font = ref<'sans-serif' | 'serif'>('sans-serif');
 const content = ref<Misskey.entities.Page['content']>([]);
 const alignCenter = ref(false);
 const hideTitleWhenPinned = ref(false);
@@ -113,7 +113,7 @@ watch(eyeCatchingImageId, async () => {
 	}
 });
 
-function getSaveOptions() {
+function getSaveOptions(): Misskey.entities.PagesCreateRequest {
 	return {
 		title: title.value.trim(),
 		name: name.value.trim(),
@@ -128,80 +128,69 @@ function getSaveOptions() {
 	};
 }
 
-function save() {
+async function save() {
 	const options = getSaveOptions();
 
-	const onError = err => {
-		if (err.id === '3d81ceae-475f-4600-b2a8-2bc116157532') {
-			if (err.info.param === 'name') {
-				os.alert({
-					type: 'error',
-					title: i18n.ts._pages.invalidNameTitle,
-					text: i18n.ts._pages.invalidNameText,
-				});
-			}
-		} else if (err.code === 'NAME_ALREADY_EXISTS') {
-			os.alert({
-				type: 'error',
-				text: i18n.ts._pages.nameAlreadyExists,
-			});
-		}
-	};
-
 	if (pageId.value) {
-		options.pageId = pageId.value;
-		misskeyApi('pages/update', options)
-			.then(page => {
-				currentName.value = name.value.trim();
-				os.alert({
-					type: 'success',
-					text: i18n.ts._pages.updated,
-				});
-			}).catch(onError);
+		const updateOptions: Misskey.entities.PagesUpdateRequest = {
+			pageId: pageId.value,
+			...options,
+		};
+
+		await os.apiWithDialog('pages/update', updateOptions, undefined, {
+			'2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab': {
+				title: i18n.ts.somethingHappened,
+				text: i18n.ts._pages.nameAlreadyExists,
+			},
+		});
+
+		currentName.value = name.value.trim();
 	} else {
-		misskeyApi('pages/create', options)
-			.then(created => {
-				pageId.value = created.id;
-				currentName.value = name.value.trim();
-				os.alert({
-					type: 'success',
-					text: i18n.ts._pages.created,
-				});
-				mainRouter.push(`/pages/edit/${pageId.value}`);
-			}).catch(onError);
+		const created = await os.apiWithDialog('pages/create', options, undefined, {
+			'4650348e-301c-499a-83c9-6aa988c66bc1': {
+				title: i18n.ts.somethingHappened,
+				text: i18n.ts._pages.nameAlreadyExists,
+			},
+		});
+
+		pageId.value = created.id;
+		currentName.value = name.value.trim();
+		mainRouter.replace(`/pages/edit/${pageId.value}`);
 	}
 }
 
-function del() {
-	os.confirm({
+async function del() {
+	if (!pageId.value) return;
+
+	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.tsx.removeAreYouSure({ x: title.value.trim() }),
-	}).then(({ canceled }) => {
-		if (canceled) return;
-		misskeyApi('pages/delete', {
-			pageId: pageId.value,
-		}).then(() => {
-			os.alert({
-				type: 'success',
-				text: i18n.ts._pages.deleted,
-			});
-			mainRouter.push('/pages');
-		});
 	});
+
+	if (canceled) return;
+
+	await os.apiWithDialog('pages/delete', {
+		pageId: pageId.value,
+	});
+
+	mainRouter.replace('/pages');
 }
 
-function duplicate() {
+async function duplicate() {
 	title.value = title.value + ' - copy';
 	name.value = name.value + '-copy';
-	misskeyApi('pages/create', getSaveOptions()).then(created => {
-		pageId.value = created.id;
-		currentName.value = name.value.trim();
-		os.alert({
-			type: 'success',
-			text: i18n.ts._pages.created,
-		});
-		mainRouter.push(`/pages/edit/${pageId.value}`);
+
+	const created = await os.apiWithDialog('pages/create', getSaveOptions(), undefined, {
+		'4650348e-301c-499a-83c9-6aa988c66bc1': {
+			title: i18n.ts.somethingHappened,
+			text: i18n.ts._pages.nameAlreadyExists,
+		},
 	});
+
+	pageId.value = created.id;
+	currentName.value = name.value.trim();
+
+	mainRouter.push(`/pages/edit/${pageId.value}`);
 }
 
 async function add() {
@@ -216,7 +205,7 @@ async function add() {
 	content.value.push({ id, type });
 }
 
-function setEyeCatchingImage(img) {
+function setEyeCatchingImage(img: Event) {
 	selectFile(img.currentTarget ?? img.target, null).then(file => {
 		eyeCatchingImageId.value = file.id;
 	});
