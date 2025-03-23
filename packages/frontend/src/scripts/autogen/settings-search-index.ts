@@ -408,12 +408,12 @@ export const searchIndexes: SearchIndexItem[] = [
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: 'whKYKvaQB',
+						id: 'abEAdSpYY',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: 'lBbtAg0Hm',
+						id: 'nf4kcPeYw',
 						label: i18n.ts.dataSaver,
 						keywords: ['datasaver'],
 					},
@@ -422,20 +422,20 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['behavior'],
 			},
 			{
-				id: 'y2v7CV9zs',
+				id: 'fzPca1Gk9',
 				children: [
 					{
-						id: 'k1qTdyfzM',
+						id: 'oH0GTzdro',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: 'e9As4Us48',
+						id: 'uIMCIK7kG',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: 'zvM13vl26',
+						id: 'kYgorbLUy',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},
