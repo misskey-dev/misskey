@@ -511,6 +511,11 @@ export async function mainBoot() {
 			sound.playMisskeySfx('antenna');
 		});
 
+		main.on('newChatMessage', () => {
+			updateCurrentAccountPartial({ hasUnreadChatMessages: true });
+			sound.playMisskeySfx('chat');
+		});
+
 		main.on('readAllAnnouncements', () => {
 			updateCurrentAccountPartial({ hasUnreadAnnouncement: false });
 		});

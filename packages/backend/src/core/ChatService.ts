@@ -248,11 +248,11 @@ export class ChatService {
 	public async readUserChatMessage(
 		readerId: MiUser['id'],
 		senderId: MiUser['id'],
-	) {
+	): Promise<void> {
 		const redisPipeline = this.redisClient.pipeline();
 		redisPipeline.del(`newChatMessageExists:${readerId}:${senderId}`);
 		redisPipeline.srem(`newChatMessagesExists:${readerId}`, `user:${senderId}`);
-		redisPipeline.exec();
+		await redisPipeline.exec();
 	}
 
 	@bindThis
@@ -467,6 +467,7 @@ export class ChatService {
 
 	@bindThis
 	public async hasUnreadMessages(userId: MiUser['id']) {
-		// TODO
+		const card = await this.redisClient.scard(`newChatMessagesExists:${userId}`);
+		return card > 0;
 	}
 }
