@@ -84,7 +84,7 @@ withDefaults(defineProps<{
 
 .content {
 	position: relative;
-	padding: 8px 12px;
+	padding: 10px 14px;
 }
 
 .tail {

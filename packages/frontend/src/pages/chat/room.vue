@@ -280,10 +280,7 @@ definePage(computed(() => !initializing.value ? user.value ? {
 
 .footer {
 	width: 100%;
-	position: sticky;
-	z-index: 2;
 	padding-top: 8px;
-	bottom: var(--minBottomSpacing);
 }
 
 .new {

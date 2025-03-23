@@ -85,10 +85,7 @@ function showMenu(ev: MouseEvent) {
 
 <style lang="scss" module>
 .root {
-	$me-balloon-color: var(--accent);
-
 	position: relative;
-	background-color: transparent;
 	display: flex;
 
 	&.isMe {
@@ -109,9 +106,8 @@ function showMenu(ev: MouseEvent) {
 	position: sticky;
 	top: calc(16px + var(--MI-stickyTop, 0px));
 	display: block;
-	width: 54px;
-	height: 54px;
-	transition: all 0.1s ease;
+	width: 52px;
+	height: 52px;
 }
 
 .body {
