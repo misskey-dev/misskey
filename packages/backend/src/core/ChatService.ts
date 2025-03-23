@@ -256,6 +256,11 @@ export class ChatService {
 	}
 
 	@bindThis
+	public findMessageById(messageId: MiChatMessage['id']) {
+		return this.chatMessagesRepository.findOneBy({ id: messageId });
+	}
+
+	@bindThis
 	public findMyMessageById(userId: MiUser['id'], messageId: MiChatMessage['id']) {
 		return this.chatMessagesRepository.findOneBy({ id: messageId, fromUserId: userId });
 	}

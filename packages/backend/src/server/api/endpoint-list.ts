@@ -398,6 +398,7 @@ export * as 'users/show' from './endpoints/users/show.js';
 export * as 'users/update-memo' from './endpoints/users/update-memo.js';
 export * as 'chat/messages/create' from './endpoints/chat/messages/create.js';
 export * as 'chat/messages/delete' from './endpoints/chat/messages/delete.js';
+export * as 'chat/messages/show' from './endpoints/chat/messages/show.js';
 export * as 'chat/messages/timeline' from './endpoints/chat/messages/timeline.js';
 export * as 'chat/history' from './endpoints/chat/history.js';
 export * as 'v2/admin/emoji/list' from './endpoints/v2/admin/emoji/list.js';
