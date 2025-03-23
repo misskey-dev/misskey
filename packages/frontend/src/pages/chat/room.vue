@@ -6,31 +6,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader reversed>
 	<MkSpacer :contentMax="700">
-		<MkPagination v-if="pagination" ref="pagingComponent" :key="userId || roomId" :pagination="pagination" :disableAutoLoad="true" :scrollReversed="true">
-			<template #empty>
-				<div class="_gaps" style="text-align: center;">
-					<div>{{ i18n.ts.noMessagesYet }}</div>
-					<template v-if="user">
-						<div v-if="user.chatScope === 'followers'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
-						<div v-else-if="user.chatScope === 'following'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
-						<div v-else-if="user.chatScope === 'mutual'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
-						<div v-else>{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
-					</template>
-				</div>
-			</template>
-			<template #default="{ items: messages }">
-				<TransitionGroup
-					:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
-					:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
-					:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
-					:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
-					:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
-					tag="div" class="_gaps"
-				>
-					<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message" :user="message.fromUserId === $i.id ? $i : user" :isRoom="room != null"/>
-				</TransitionGroup>
-			</template>
-		</MkPagination>
+		<div v-if="initializing">
+			<MkLoading/>
+		</div>
+		<div v-else-if="messages.length === 0">
+			<div class="_gaps" style="text-align: center;">
+				<div>{{ i18n.ts.noMessagesYet }}</div>
+				<template v-if="user">
+					<div v-if="user.chatScope === 'followers'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
+					<div v-else-if="user.chatScope === 'following'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
+					<div v-else-if="user.chatScope === 'mutual'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
+					<div v-else>{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
+				</template>
+			</div>
+		</div>
+		<div v-else class="_gaps">
+			<div v-if="canFetchMore">
+				<MkButton :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
+			</div>
+
+			<TransitionGroup
+				:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
+				:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
+				:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
+				:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
+				:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
+				tag="div" class="_gaps"
+			>
+				<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message" :user="message.fromUserId === $i.id ? $i : user" :isRoom="room != null"/>
+			</TransitionGroup>
+		</div>
 	</MkSpacer>
 
 	<template #footer>
@@ -43,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</button>
 					</div>
 				</Transition>
-				<XForm v-if="!fetching" :user="user" :room="room" :class="$style.form"/>
+				<XForm v-if="!initializing" :user="user" :room="room" :class="$style.form"/>
 			</div>
 		</div>
 	</template>
@@ -51,14 +56,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { ref, useTemplateRef, computed, watch, onMounted, nextTick, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
 import { isTailVisible } from '@@/js/scroll.js';
 import XMessage from './room.message.vue';
 import XForm from './room.form.vue';
-import type { Paging } from '@/components/MkPagination.vue';
-import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/utility/sound.js';
@@ -67,6 +69,7 @@ import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
+import MkButton from '@/components/MkButton.vue';
 
 const $i = ensureSignin();
 
@@ -75,36 +78,38 @@ const props = defineProps<{
 	roomId?: string;
 }>();
 
-const pagingComponent = useTemplateRef('pagingComponent');
-
-const fetching = ref(true);
+const initializing = ref(true);
+const moreFetching = ref(false);
+const messages = ref<Misskey.entities.ChatMessage[]>([]);
+const canFetchMore = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 const room = ref<Misskey.entities.ChatRoom | null>(null);
 const connection = ref<Misskey.ChannelConnection<Misskey.Channels['chat']> | null>(null);
 const showIndicator = ref(false);
 
-const pagination = ref<Paging | null>(null);
-
 watch([() => props.userId, () => props.roomId], () => {
 	if (connection.value) connection.value.dispose();
-	fetch();
+	initialize();
 });
 
-async function fetch() {
-	fetching.value = true;
+async function initialize() {
+	initializing.value = true;
 
 	if (props.userId) {
-		user.value = await misskeyApi('users/show', { userId: props.userId });
-		room.value = null;
+		const LIMIT = 20;
 
-		pagination.value = {
-			endpoint: 'chat/messages/timeline',
-			limit: 20,
-			params: {
-				userId: user.value.id,
-			},
-			reversed: true,
-		};
+		const [u, m] = await Promise.all([
+			misskeyApi('users/show', { userId: props.userId }),
+			misskeyApi('chat/messages/timeline', { userId: props.userId, limit: LIMIT }),
+		]);
+
+		user.value = u;
+		messages.value = m;
+
+		if (messages.value.length === LIMIT) {
+			canFetchMore.value = true;
+		}
+
 		connection.value = useStream().useChannel('chat', {
 			otherId: user.value.id,
 		});
@@ -130,28 +135,57 @@ async function fetch() {
 
 	window.document.addEventListener('visibilitychange', onVisibilitychange);
 
-	fetching.value = false;
+	initializing.value = false;
 }
 
-function onMessage(message) {
+let isActivated = true;
+
+onActivated(() => {
+	isActivated = true;
+});
+
+onDeactivated(() => {
+	isActivated = false;
+});
+
+function fetchMore() {
+	const LIMIT = 30;
+
+	moreFetching.value = true;
+
+	misskeyApi('chat/messages/timeline', {
+		userId: user.value.id,
+		limit: LIMIT,
+		untilId: messages.value[messages.value.length - 1].id,
+	}).then(newMessages => {
+		messages.value.push(...newMessages);
+
+		canFetchMore.value = newMessages.length === LIMIT;
+		moreFetching.value = false;
+	});
+}
+
+function onMessage(message: Misskey.entities.ChatMessage) {
 	//sound.play('chat');
 
-	pagingComponent.value.prepend(message);
-	if (message.userId !== $i.id && !window.document.hidden) {
+	messages.value.unshift(message);
+
+	// TODO: DOM的にバックグラウンドになっていないかどうかも考慮する
+	if (message.fromUserId !== $i.id && !window.document.hidden && isActivated) {
 		connection.value?.send('read', {
 			id: message.id,
 		});
 	}
 
-	if (message.userId !== $i.id) {
-		notifyNewMessage();
+	if (message.fromUserId !== $i.id) {
+		//notifyNewMessage();
 	}
 }
 
 function onDeleted(id) {
-	const msg = pagingComponent.value.items.find(m => m.id === id);
-	if (msg) {
-		pagingComponent.value.items = pagingComponent.value.items.filter(m => m.id !== msg.id);
+	const index = messages.value.findIndex(m => m.id === id);
+	if (index !== -1) {
+		messages.value.splice(index, 1);
 	}
 }
 
@@ -165,17 +199,11 @@ function notifyNewMessage() {
 
 function onVisibilitychange() {
 	if (window.document.hidden) return;
-	for (const message of pagingComponent.value.items) {
-		if (message.userId !== $i.id && !message.isRead) {
-			connection.value?.send('read', {
-				id: message.id,
-			});
-		}
-	}
+	// TODO
 }
 
 onMounted(() => {
-	fetch();
+	initialize();
 });
 
 onBeforeUnmount(() => {
@@ -183,7 +211,7 @@ onBeforeUnmount(() => {
 	window.document.removeEventListener('visibilitychange', onVisibilitychange);
 });
 
-definePage(computed(() => !fetching.value ? user.value ? {
+definePage(computed(() => !initializing.value ? user.value ? {
 	userName: user,
 	avatar: user,
 } : {
@@ -211,25 +239,7 @@ definePage(computed(() => !fetching.value ? user.value ? {
 }
 
 .more {
-	display: block;
-	margin: 16px auto;
-	padding: 0 12px;
-	line-height: 24px;
-	color: #fff;
-	background: rgba(#000, 0.3);
-	border-radius: 12px;
-
-	&:hover {
-		background: rgba(#000, 0.4);
-	}
-
-	&:active {
-		background: rgba(#000, 0.5);
-	}
-}
-
-.fetching {
-	cursor: wait;
+	margin: 0 auto;
 }
 
 .footer {
