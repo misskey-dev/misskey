@@ -358,6 +358,11 @@ export const packedUserDetailedNotMeOnlySchema = {
 			nullable: false, optional: false,
 			enum: ['public', 'followers', 'private'],
 		},
+		chatScope: {
+			type: 'string',
+			nullable: false, optional: false,
+			enum: ['everyone', 'following', 'followers', 'mutual', 'none'],
+		},
 		roles: {
 			type: 'array',
 			nullable: false, optional: false,
@@ -537,6 +542,10 @@ export const packedMeDetailedOnlySchema = {
 			nullable: false, optional: false,
 		},
 		hasUnreadChannel: {
+			type: 'boolean',
+			nullable: false, optional: false,
+		},
+		hasUnreadChatMessages: {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},

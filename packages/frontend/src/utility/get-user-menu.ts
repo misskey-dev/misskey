@@ -151,6 +151,16 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 
 	const menuItems: MenuItem[] = [];
 
+	if (iAmModerator) {
+		menuItems.push({
+			icon: 'ti ti-user-exclamation',
+			text: i18n.ts.moderation,
+			action: () => {
+				router.push(`/admin/user/${user.id}`);
+			},
+		}, { type: 'divider' });
+	}
+
 	menuItems.push({
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
@@ -159,25 +169,14 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		},
 	});
 
-	if (notesSearchAvailable && (user.host == null || canSearchNonLocalNotes)) {
-		menuItems.push({
-			icon: 'ti ti-search',
-			text: i18n.ts.searchThisUsersNotes,
-			action: () => {
-				router.push(`/search?username=${encodeURIComponent(user.username)}${user.host != null ? '&host=' + encodeURIComponent(user.host) : ''}`);
-			},
-		});
-	}
-
-	if (iAmModerator) {
-		menuItems.push({
-			icon: 'ti ti-user-exclamation',
-			text: i18n.ts.moderation,
-			action: () => {
-				router.push(`/admin/user/${user.id}`);
-			},
-		});
-	}
+	menuItems.push({
+		icon: 'ti ti-share',
+		text: i18n.ts.copyProfileUrl,
+		action: () => {
+			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
+			copyToClipboard(`${url}/${canonical}`);
+		},
+	});
 
 	menuItems.push({
 		icon: 'ti ti-rss',
@@ -210,24 +209,18 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
-	menuItems.push({
-		icon: 'ti ti-share',
-		text: i18n.ts.copyProfileUrl,
-		action: () => {
-			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
-			copyToClipboard(`${url}/${canonical}`);
-		},
-	});
+	if (notesSearchAvailable && (user.host == null || canSearchNonLocalNotes)) {
+		menuItems.push({
+			icon: 'ti ti-search',
+			text: i18n.ts.searchThisUsersNotes,
+			action: () => {
+				router.push(`/search?username=${encodeURIComponent(user.username)}${user.host != null ? '&host=' + encodeURIComponent(user.host) : ''}`);
+			},
+		});
+	}
 
 	if ($i) {
-		menuItems.push({
-			icon: 'ti ti-mail',
-			text: i18n.ts.sendMessage,
-			action: () => {
-				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
-				os.post({ specified: user, initialText: `${canonical} ` });
-			},
-		}, { type: 'divider' }, {
+		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-pencil',
 			text: i18n.ts.editMemo,
 			action: editMemo,
@@ -363,6 +356,18 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		//}
 
 		menuItems.push({ type: 'divider' }, {
+			icon: 'ti ti-mail',
+			text: i18n.ts.sendMessage,
+			action: () => {
+				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
+				os.post({ specified: user, initialText: `${canonical} ` });
+			},
+		}, {
+			type: 'link',
+			icon: 'ti ti-messages',
+			text: i18n.ts._chat.chatWithThisUser,
+			to: `/chat/user/${user.id}`,
+		}, { type: 'divider' }, {
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute,

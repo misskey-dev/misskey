@@ -4,6 +4,7 @@
  */
 
 import { computed, reactive } from 'vue';
+import { ui } from '@@/js/config.js';
 import { clearCache } from './utility/clear-cache.js';
 import { $i } from '@/i.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -11,7 +12,6 @@ import { openInstanceMenu, openToolsMenu } from '@/ui/_common_/common.js';
 import { lookup } from '@/utility/lookup.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { ui } from '@@/js/config.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 
 export const navbarItemDef = reactive({
@@ -109,6 +109,12 @@ export const navbarItemDef = reactive({
 		title: i18n.ts.channel,
 		icon: 'ti ti-device-tv',
 		to: '/channels',
+	},
+	chat: {
+		title: i18n.ts.chat,
+		icon: 'ti ti-message',
+		to: '/chat',
+		indicated: computed(() => $i != null && $i.hasUnreadChatMessages),
 	},
 	achievements: {
 		title: i18n.ts.achievements,

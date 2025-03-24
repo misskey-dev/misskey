@@ -619,13 +619,9 @@ export type Channels = {
             }) => void;
             readAllNotifications: () => void;
             unreadNotification: (payload: Notification_2) => void;
-            unreadMention: (payload: Note['id']) => void;
-            readAllUnreadMentions: () => void;
             notificationFlushed: () => void;
-            unreadSpecifiedNote: (payload: Note['id']) => void;
-            readAllUnreadSpecifiedNotes: () => void;
-            readAllAntennas: () => void;
             unreadAntenna: (payload: Antenna) => void;
+            newChatMessage: (payload: ChatMessage) => void;
             readAllAnnouncements: () => void;
             myTokenRegenerated: () => void;
             signin: (payload: Signin) => void;
@@ -950,6 +946,153 @@ type ChartsUsersRequest = operations['charts___users']['requestBody']['content']
 
 // @public (undocumented)
 type ChartsUsersResponse = operations['charts___users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatHistoryRequest = operations['chat___history']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatHistoryResponse = operations['chat___history']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessage = components['schemas']['ChatMessage'];
+
+// @public (undocumented)
+type ChatMessageLite = components['schemas']['ChatMessageLite'];
+
+// @public (undocumented)
+type ChatMessagesCreateToRoomRequest = operations['chat___messages___create-to-room']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesCreateToRoomResponse = operations['chat___messages___create-to-room']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesCreateToUserRequest = operations['chat___messages___create-to-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesCreateToUserResponse = operations['chat___messages___create-to-user']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesDeleteRequest = operations['chat___messages___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesDeleteResponse = operations['chat___messages___delete']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesReactRequest = operations['chat___messages___react']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesReactResponse = operations['chat___messages___react']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesRoomTimelineRequest = operations['chat___messages___room-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesRoomTimelineResponse = operations['chat___messages___room-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesSearchRequest = operations['chat___messages___search']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesSearchResponse = operations['chat___messages___search']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesShowRequest = operations['chat___messages___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesShowResponse = operations['chat___messages___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesUserTimelineRequest = operations['chat___messages___user-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesUserTimelineResponse = operations['chat___messages___user-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoom = components['schemas']['ChatRoom'];
+
+// @public (undocumented)
+type ChatRoomInvitation = components['schemas']['ChatRoomInvitation'];
+
+// @public (undocumented)
+type ChatRoomMembership = components['schemas']['ChatRoomMembership'];
+
+// @public (undocumented)
+type ChatRoomsCreateRequest = operations['chat___rooms___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsCreateResponse = operations['chat___rooms___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsDeleteRequest = operations['chat___rooms___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsDeleteResponse = operations['chat___rooms___delete']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsCreateRequest = operations['chat___rooms___invitations___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsCreateResponse = operations['chat___rooms___invitations___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsIgnoreRequest = operations['chat___rooms___invitations___ignore']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsIgnoreResponse = operations['chat___rooms___invitations___ignore']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsInboxRequest = operations['chat___rooms___invitations___inbox']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsInboxResponse = operations['chat___rooms___invitations___inbox']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsJoiningRequest = operations['chat___rooms___joining']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsJoiningResponse = operations['chat___rooms___joining']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsJoinRequest = operations['chat___rooms___join']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsJoinResponse = operations['chat___rooms___join']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsLeaveRequest = operations['chat___rooms___leave']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsLeaveResponse = operations['chat___rooms___leave']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMembersRequest = operations['chat___rooms___members']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMembersResponse = operations['chat___rooms___members']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMuteRequest = operations['chat___rooms___mute']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMuteResponse = operations['chat___rooms___mute']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsOwnedRequest = operations['chat___rooms___owned']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsOwnedResponse = operations['chat___rooms___owned']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsShowRequest = operations['chat___rooms___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsShowResponse = operations['chat___rooms___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsUpdateRequest = operations['chat___rooms___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsUpdateResponse = operations['chat___rooms___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Clip = components['schemas']['Clip'];
@@ -1448,6 +1591,50 @@ declare namespace entities {
         ChartsUserReactionsResponse,
         ChartsUsersRequest,
         ChartsUsersResponse,
+        ChatHistoryRequest,
+        ChatHistoryResponse,
+        ChatMessagesCreateToRoomRequest,
+        ChatMessagesCreateToRoomResponse,
+        ChatMessagesCreateToUserRequest,
+        ChatMessagesCreateToUserResponse,
+        ChatMessagesDeleteRequest,
+        ChatMessagesDeleteResponse,
+        ChatMessagesReactRequest,
+        ChatMessagesReactResponse,
+        ChatMessagesRoomTimelineRequest,
+        ChatMessagesRoomTimelineResponse,
+        ChatMessagesSearchRequest,
+        ChatMessagesSearchResponse,
+        ChatMessagesShowRequest,
+        ChatMessagesShowResponse,
+        ChatMessagesUserTimelineRequest,
+        ChatMessagesUserTimelineResponse,
+        ChatRoomsCreateRequest,
+        ChatRoomsCreateResponse,
+        ChatRoomsDeleteRequest,
+        ChatRoomsDeleteResponse,
+        ChatRoomsInvitationsCreateRequest,
+        ChatRoomsInvitationsCreateResponse,
+        ChatRoomsInvitationsIgnoreRequest,
+        ChatRoomsInvitationsIgnoreResponse,
+        ChatRoomsInvitationsInboxRequest,
+        ChatRoomsInvitationsInboxResponse,
+        ChatRoomsJoinRequest,
+        ChatRoomsJoinResponse,
+        ChatRoomsJoiningRequest,
+        ChatRoomsJoiningResponse,
+        ChatRoomsLeaveRequest,
+        ChatRoomsLeaveResponse,
+        ChatRoomsMembersRequest,
+        ChatRoomsMembersResponse,
+        ChatRoomsMuteRequest,
+        ChatRoomsMuteResponse,
+        ChatRoomsOwnedRequest,
+        ChatRoomsOwnedResponse,
+        ChatRoomsShowRequest,
+        ChatRoomsShowResponse,
+        ChatRoomsUpdateRequest,
+        ChatRoomsUpdateResponse,
         ClipsAddNoteRequest,
         ClipsCreateRequest,
         ClipsCreateResponse,
@@ -1880,7 +2067,12 @@ declare namespace entities {
         MetaDetailedOnly,
         MetaDetailed,
         SystemWebhook,
-        AbuseReportNotificationRecipient
+        AbuseReportNotificationRecipient,
+        ChatMessage,
+        ChatMessageLite,
+        ChatRoom,
+        ChatRoomInvitation,
+        ChatRoomMembership
     }
 }
 export { entities }
@@ -2903,7 +3095,7 @@ type PartialRolePolicyOverride = Partial<{
 }>;
 
 // @public (undocumented)
-export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "read:federation", "write:report-abuse"];
+export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "read:federation", "write:report-abuse", "write:chat", "read:chat"];
 
 // @public (undocumented)
 type PingResponse = operations['ping']['responses']['200']['content']['application/json'];
@@ -3444,8 +3636,8 @@ type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['respons
 //
 // src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:217:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:227:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

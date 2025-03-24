@@ -502,29 +502,14 @@ export async function mainBoot() {
 			});
 		});
 
-		main.on('unreadMention', () => {
-			updateCurrentAccountPartial({ hasUnreadMentions: true });
-		});
-
-		main.on('readAllUnreadMentions', () => {
-			updateCurrentAccountPartial({ hasUnreadMentions: false });
-		});
-
-		main.on('unreadSpecifiedNote', () => {
-			updateCurrentAccountPartial({ hasUnreadSpecifiedNotes: true });
-		});
-
-		main.on('readAllUnreadSpecifiedNotes', () => {
-			updateCurrentAccountPartial({ hasUnreadSpecifiedNotes: false });
-		});
-
-		main.on('readAllAntennas', () => {
-			updateCurrentAccountPartial({ hasUnreadAntenna: false });
-		});
-
 		main.on('unreadAntenna', () => {
 			updateCurrentAccountPartial({ hasUnreadAntenna: true });
 			sound.playMisskeySfx('antenna');
+		});
+
+		main.on('newChatMessage', () => {
+			updateCurrentAccountPartial({ hasUnreadChatMessages: true });
+			sound.playMisskeySfx('chat');
 		});
 
 		main.on('readAllAnnouncements', () => {

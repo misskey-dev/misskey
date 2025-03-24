@@ -32,7 +32,7 @@ const mimeTypeMap = {
 
 export function uploadFile(
 	file: File,
-	folder?: string | Misskey.entities.DriveFolder,
+	folder?: string | Misskey.entities.DriveFolder | null,
 	name?: string,
 	keepOriginal: boolean = prefer.s.keepOriginalUploading,
 ): Promise<Misskey.entities.DriveFile> {
