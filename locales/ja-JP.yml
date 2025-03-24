@@ -1353,6 +1353,8 @@ _chat:
   inviteUser: "ユーザーを招待"
   join: "参加"
   ignore: "無視"
+  leave: "ルームから退出"
+  members: "メンバー"
   cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
   cannotChatWithTheUser_description: "チャットが使えない状態になっているか、相手がチャットを開放していません。"
   chatWithThisUser: "チャットする"
@@ -2173,6 +2175,7 @@ _sfx:
   noteMy: "ノート(自分)"
   notification: "通知"
   reaction: "リアクション選択時"
+  chatMessage: "チャットのメッセージ"
 
 _soundSettings:
   driveFile: "ドライブの音声を使用"

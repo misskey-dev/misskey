@@ -332,6 +332,7 @@ export const PREF_DEF = {
 	plugins: {
 		default: [] as Plugin[],
 	},
+
 	'sound.masterVolume': {
 		default: 0.3,
 	},
@@ -353,6 +354,10 @@ export const PREF_DEF = {
 	'sound.on.reaction': {
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
+	'sound.on.chatMessage': {
+		default: { type: 'syuilo/waon', volume: 1 } as SoundStore,
+	},
+
 	'deck.alwaysShowMainColumn': {
 		default: true,
 	},
@@ -365,6 +370,7 @@ export const PREF_DEF = {
 	'deck.columnAlign': {
 		default: 'left' as 'left' | 'right' | 'center',
 	},
+
 	'game.dropAndFusion': {
 		default: {
 			bgmVolume: 0.25,

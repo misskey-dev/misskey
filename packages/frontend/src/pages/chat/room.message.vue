@@ -5,12 +5,7 @@
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
 			<div v-if="!message.isDeleted" :class="$style.content">
 				<Mfm v-if="message.text" ref="text" class="_selectable" :text="message.text" :i="$i"/>
-				<div v-if="message.file" :class="$style.file">
-					<a :href="message.file.url" rel="noopener" target="_blank" :title="message.file.name">
-						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"/>
-						<p v-else>{{ message.file.name }}</p>
-					</a>
-				</div>
+				<MkMediaList v-if="message.file" :mediaList="[message.file]" :class="$style.file"/>
 			</div>
 			<div v-else :class="$style.content">
 				<p>{{ i18n.ts.deleted }}</p>
@@ -38,6 +33,8 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkFukidashi from '@/components/MkFukidashi.vue';
 import * as os from '@/os.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import MkMediaList from '@/components/MkMediaList.vue';
 
 const $i = ensureSignin();
 
@@ -52,6 +49,19 @@ const urls = computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(pro
 
 function showMenu(ev: MouseEvent) {
 	const menu: MenuItem[] = [];
+
+	menu.push({
+		text: i18n.ts.copyContent,
+		icon: 'ti ti-copy',
+		action: () => {
+			copyToClipboard(props.message.text);
+		},
+	});
+
+	menu.push({
+		type: 'divider',
+	});
+
 	if (isMe.value) {
 		menu.push({
 			text: i18n.ts.delete,
@@ -115,9 +125,12 @@ function showMenu(ev: MouseEvent) {
 }
 
 .content {
-	overflow: hidden;
+	overflow: clip;
 	overflow-wrap: break-word;
 	word-break: break-word;
+}
+
+.file {
 }
 
 .footer {

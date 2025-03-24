@@ -4,11 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader reversed :actions="headerActions">
+<PageWithHeader v-model:tab="tab" reversed :tabs="headerTabs" :actions="headerActions">
 	<MkSpacer :contentMax="700">
 		<div v-if="initializing">
 			<MkLoading/>
 		</div>
+
 		<div v-else-if="messages.length === 0">
 			<div class="_gaps" style="text-align: center;">
 				<div>{{ i18n.ts._chat.noMessagesYet }}</div>
@@ -23,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</div>
 		</div>
+
 		<div v-else class="_gaps">
 			<div v-if="canFetchMore">
 				<MkButton :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
@@ -74,8 +76,10 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import MkButton from '@/components/MkButton.vue';
+import { useRouter } from '@/router.js';
 
 const $i = ensureSignin();
+const router = useRouter();
 
 const props = defineProps<{
 	userId?: string;
@@ -171,7 +175,7 @@ async function fetchMore() {
 }
 
 function onMessage(message: Misskey.entities.ChatMessage) {
-	//sound.play('chat');
+	sound.playMisskeySfx('chatMessage');
 
 	messages.value.unshift(message);
 
@@ -224,6 +228,19 @@ async function inviteUser() {
 	});
 }
 
+async function leaveRoom() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.areYouSure,
+	});
+	if (canceled) return;
+
+	misskeyApi('chat/rooms/leave', {
+		roomId: room.value?.id,
+	});
+	router.push('/chat');
+}
+
 function showMenu(ev: MouseEvent) {
 	const menuItems: MenuItem[] = [];
 
@@ -236,11 +253,31 @@ function showMenu(ev: MouseEvent) {
 					inviteUser();
 				},
 			});
+		} else {
+			menuItems.push({
+				text: i18n.ts._chat.leave,
+				icon: 'ti ti-x',
+				action: () => {
+					leaveRoom();
+				},
+			});
 		}
 	}
 
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
+
+const tab = ref('chat');
+
+const headerTabs = computed(() => room.value ? [{
+	key: 'chat',
+	title: i18n.ts.chat,
+	icon: 'ti ti-messages',
+}, {
+	key: 'members',
+	title: i18n.ts._chat.members,
+	icon: 'ti ti-users',
+}] : []);
 
 const headerActions = computed(() => [{
 	icon: 'ti ti-dots',

@@ -7,6 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps">
 	<MkButton primary gradate :class="$style.start" @click="start"><i class="ti ti-plus"></i> {{ i18n.ts.startChat }}</MkButton>
 
+	<MkAd :prefer="['horizontal', 'horizontal-big']"/>
+
 	<div v-if="history.length > 0" class="_gaps_s">
 		<MkA
 			v-for="item in history"

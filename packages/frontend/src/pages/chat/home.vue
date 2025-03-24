@@ -47,7 +47,7 @@ const headerTabs = computed(() => [{
 }]);
 
 definePage(() => ({
-	title: i18n.ts.chat,
+	title: i18n.ts.chat + ' (beta)',
 	icon: 'ti ti-message',
 }));
 </script>

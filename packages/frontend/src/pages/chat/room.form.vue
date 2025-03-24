@@ -5,11 +5,12 @@
 	@drop.stop="onDrop"
 >
 	<textarea
-		ref="textEl"
+		ref="textareaEl"
 		v-model="text"
 		:class="$style.textarea"
 		class="_acrylic"
 		:placeholder="i18n.ts.inputMessageHere"
+		:readonly="textareaReadOnly"
 		@keydown="onKeydown"
 		@paste="onPaste"
 	></textarea>
@@ -28,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, ref, shallowRef, computed } from 'vue';
+import { onMounted, watch, ref, shallowRef, computed, nextTick, readonly } from 'vue';
 import * as Misskey from 'misskey-js';
 //import insertTextAtCursor from 'insert-text-at-cursor';
 import { throttle } from 'throttle-debounce';
@@ -37,23 +38,25 @@ import { selectFile } from '@/utility/select-file.js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-//import { Autocomplete } from '@/utility/autocomplete.js';
 import { uploadFile } from '@/utility/upload.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
+import { Autocomplete } from '@/utility/autocomplete.js';
+import { emojiPicker } from '@/utility/emoji-picker.js';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
 	room?: Misskey.entities.ChatRoom | null;
 }>();
 
-const textEl = shallowRef<HTMLTextAreaElement>();
+const textareaEl = shallowRef<HTMLTextAreaElement>();
 const fileEl = shallowRef<HTMLInputElement>();
 
 const text = ref<string>('');
 const file = ref<Misskey.entities.DriveFile | null>(null);
 const sending = ref(false);
+const textareaReadOnly = ref(false);
 
 const canSend = computed(() => (text.value != null && text.value !== '') || file.value != null);
 
@@ -225,15 +228,37 @@ function deleteDraft() {
 }
 
 async function insertEmoji(ev: MouseEvent) {
-	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, textEl);
+	textareaReadOnly.value = true;
+	const target = ev.currentTarget ?? ev.target;
+	if (target == null) return;
+
+	// emojiPickerはダイアログが閉じずにtextareaとやりとりするので、
+	// focustrapをかけているとinsertTextAtCursorが効かない
+	// そのため、投稿フォームのテキストに直接注入する
+	// See: https://github.com/misskey-dev/misskey/pull/14282
+	//      https://github.com/misskey-dev/misskey/issues/14274
+
+	let pos = textareaEl.value?.selectionStart ?? 0;
+	let posEnd = textareaEl.value?.selectionEnd ?? text.value.length;
+	emojiPicker.show(
+		target as HTMLElement,
+		emoji => {
+			const textBefore = text.value.substring(0, pos);
+			const textAfter = text.value.substring(posEnd);
+			text.value = textBefore + emoji + textAfter;
+			pos += emoji.length;
+			posEnd += emoji.length;
+		},
+		() => {
+			textareaReadOnly.value = false;
+			nextTick(() => focus());
+		},
+	);
 }
 
 onMounted(() => {
-	//autosize(textEl);
-
 	// TODO: detach when unmount
-	// TODO
-	//new Autocomplete(textEl, this, { model: 'text' });
+	new Autocomplete(textareaEl.value, text);
 
 	// 書きかけの投稿を復元
 	const draft = JSON.parse(miLocalStorage.getItem('chatMessageDrafts') || '{}')[getDraftKey()];
@@ -270,6 +295,7 @@ onMounted(() => {
 	box-shadow: none;
 	box-sizing: border-box;
 	color: var(--MI_THEME-fg);
+	field-sizing: content;
 }
 
 .footer {
@@ -280,92 +306,23 @@ onMounted(() => {
 
 .file {
 	padding: 8px;
-	color: var(--fg);
-	background: transparent;
 	cursor: pointer;
 }
-/*
-.files {
-	display: block;
-	margin: 0;
-	padding: 0 8px;
-	list-style: none;
-
-	&:after {
-		content: '';
-		display: block;
-		clear: both;
-	}
-
-	> li {
-		display: block;
-		float: left;
-		margin: 4px;
-		padding: 0;
-		width: 64px;
-		height: 64px;
-		background-color: #eee;
-		background-repeat: no-repeat;
-		background-position: center center;
-		background-size: cover;
-		cursor: move;
-
-		&:hover {
-			> .remove {
-				display: block;
-			}
-		}
-	}
-}
-
-.file-remove {
-	display: none;
-	position: absolute;
-	right: -6px;
-	top: -6px;
-	margin: 0;
-	padding: 0;
-	background: transparent;
-	outline: none;
-	border: none;
-	border-radius: 0;
-	box-shadow: none;
-	cursor: pointer;
-}
-*/
 
 .buttons {
 	display: flex;
 }
 
 .button {
-	margin: 0;
-	padding: 16px;
-	font-size: 1em;
-	font-weight: normal;
-	text-decoration: none;
-	transition: color 0.1s ease;
+	height: 50px;
+	aspect-ratio: 1;
 
 	&:hover {
-		color: var(--accent);
-	}
-
-	&:active {
-		color: var(--accentDarken);
-		transition: color 0s ease;
+		color: var(--MI_THEME-accent);
 	}
 }
 .send {
 	margin-left: auto;
-	color: var(--accent);
-
-	&:hover {
-		color: var(--accentLighten);
-	}
-
-	&:active {
-		color: var(--accentDarken);
-		transition: color 0s ease;
-	}
+	color: var(--MI_THEME-accent);
 }
 </style>
