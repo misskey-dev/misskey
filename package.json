@@ -77,7 +77,8 @@
 		"start-server-and-test": "2.0.10"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs-core": "4.22.0"
+		"@tensorflow/tfjs-core": "4.22.0",
+		"cypress": "14.1.0"
 	},
 	"pnpm": {
 		"overrides": {

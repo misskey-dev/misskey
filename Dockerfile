@@ -31,8 +31,9 @@ ARG NODE_ENV=production
 
 RUN node -e "console.log(JSON.parse(require('node:fs').readFileSync('./package.json')).packageManager)" | xargs npm install -g
 
+# ビルド時にCypressをスキップ
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm i --frozen-lockfile --aggregate-output
+    CYPRESS_INSTALL_BINARY=0 pnpm i --frozen-lockfile --aggregate-output
 
 COPY --link . ./
 
