@@ -1333,6 +1333,8 @@ postForm: "投稿フォーム"
 textCount: "文字数"
 information: "情報"
 chat: "チャット"
+migrateOldSettings: "旧設定情報を移行"
+migrateOldSettings_description: "通常これは自動で行われていますが、何らかの理由により上手く移行されなかった場合は手動で移行処理をトリガーできます。現在の設定情報は上書きされます。"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
