@@ -6,8 +6,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div v-if="rooms.length > 0" class="_gaps_s">
-		<MkA v-for="room in rooms" :key="room.id" :to="`/chat/room/${room.id}`" class="_panel" :class="$style.room">
-			<div>{{ room.name }}</div>
+		<MkA v-for="room in rooms" :key="room.id" :to="`/chat/room/${room.id}`" class="_panel _gaps_s" :class="$style.room">
+			<div style="font-weight: bold;">{{ room.name }}</div>
+			<hr>
+			<div>{{ room.description }}</div>
 		</MkA>
 	</div>
 	<div v-if="!fetching && rooms.length == 0" class="_fullinfo">
