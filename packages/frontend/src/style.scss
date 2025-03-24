@@ -212,14 +212,14 @@ rt {
 
 ._pageScrollable {
 	height: 100%;
-	overflow: auto;
+	overflow: clip;
 	overflow-y: scroll;
 	overscroll-behavior: contain;
 }
 
 ._pageScrollableReversed {
 	height: 100%;
-	overflow: auto;
+	overflow: clip;
 	overflow-y: scroll;
 	overscroll-behavior: contain;
 	display: flex;
