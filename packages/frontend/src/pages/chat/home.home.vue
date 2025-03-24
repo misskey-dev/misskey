@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div class="_gaps_s">
 			<div v-for="message in searchResults" :key="message.id" :class="$style.searchResultItem">
-				<XMessage :message="message" :user="message.fromUser" :isSearchResult="true"/>
+				<XMessage :message="message" :isSearchResult="true"/>
 			</div>
 		</div>
 	</MkFoldableSection>

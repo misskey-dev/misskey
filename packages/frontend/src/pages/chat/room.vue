@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
 				tag="div" class="_gaps"
 			>
-				<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message" :user="room != null ? message.fromUser : (message.fromUserId === $i.id ? $i : user)" :isRoom="room != null"/>
+				<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message"/>
 			</TransitionGroup>
 		</div>
 	</MkSpacer>
@@ -110,6 +110,21 @@ const room = ref<Misskey.entities.ChatRoom | null>(null);
 const connection = ref<Misskey.ChannelConnection<Misskey.Channels['chatUser'] | Misskey.Channels['chatRoom']> | null>(null);
 const showIndicator = ref(false);
 
+function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage) {
+	const reactions = [...message.reactions];
+	for (const record of reactions) {
+		if (room.value == null && record.user == null) { // 1on1の時はuserは省略される
+			record.user = message.fromUserId === $i.id ? user.value : $i;
+		}
+	}
+
+	return {
+		...message,
+		fromUser: message.fromUser ?? (message.fromUserId === $i.id ? $i : user),
+		reactions,
+	};
+}
+
 async function initialize() {
 	const LIMIT = 20;
 
@@ -122,7 +137,7 @@ async function initialize() {
 		]);
 
 		user.value = u;
-		messages.value = m;
+		messages.value = m.map(x => normalizeMessage(x));
 
 		if (messages.value.length === LIMIT) {
 			canFetchMore.value = true;
@@ -133,6 +148,7 @@ async function initialize() {
 		});
 		connection.value.on('message', onMessage);
 		connection.value.on('deleted', onDeleted);
+		connection.value.on('react', onReact);
 	} else {
 		const [r, m] = await Promise.all([
 			misskeyApi('chat/rooms/show', { roomId: props.roomId }),
@@ -140,7 +156,7 @@ async function initialize() {
 		]);
 
 		room.value = r;
-		messages.value = m;
+		messages.value = m.map(x => normalizeMessage(x));
 
 		if (messages.value.length === LIMIT) {
 			canFetchMore.value = true;
@@ -151,6 +167,7 @@ async function initialize() {
 		});
 		connection.value.on('message', onMessage);
 		connection.value.on('deleted', onDeleted);
+		connection.value.on('react', onReact);
 	}
 
 	window.document.addEventListener('visibilitychange', onVisibilitychange);
@@ -183,7 +200,7 @@ async function fetchMore() {
 		untilId: messages.value[messages.value.length - 1].id,
 	});
 
-	messages.value.push(...newMessages);
+	messages.value.push(...newMessages.map(x => normalizeMessage(x)));
 
 	canFetchMore.value = newMessages.length === LIMIT;
 	moreFetching.value = false;
@@ -192,7 +209,7 @@ async function fetchMore() {
 function onMessage(message: Misskey.entities.ChatMessage) {
 	sound.playMisskeySfx('chatMessage');
 
-	messages.value.unshift(message);
+	messages.value.unshift(normalizeMessage(message));
 
 	// TODO: DOM的にバックグラウンドになっていないかどうかも考慮する
 	if (message.fromUserId !== $i.id && !window.document.hidden && isActivated) {
@@ -210,6 +227,23 @@ function onDeleted(id) {
 	const index = messages.value.findIndex(m => m.id === id);
 	if (index !== -1) {
 		messages.value.splice(index, 1);
+	}
+}
+
+function onReact(ctx) {
+	const message = messages.value.find(m => m.id === ctx.messageId);
+	if (message) {
+		if (room.value == null) { // 1on1の時はuserは省略される
+			message.reactions.push({
+				reaction: ctx.reaction,
+				user: message.fromUserId === $i.id ? user : $i,
+			});
+		} else {
+			message.reactions.push({
+				reaction: ctx.reaction,
+				user: ctx.user,
+			});
+		}
 	}
 }
 

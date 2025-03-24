@@ -59,6 +59,25 @@ export const packedChatMessageSchema = {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
+		reactions: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'object',
+				optional: false, nullable: false,
+				properties: {
+					reaction: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+					user: {
+						type: 'object',
+						optional: true, nullable: true,
+						ref: 'UserLite',
+					},
+				},
+			},
+		},
 	},
 } as const;
 
@@ -103,6 +122,25 @@ export const packedChatMessageLiteSchema = {
 			type: 'object',
 			optional: true, nullable: true,
 			ref: 'DriveFile',
+		},
+		reactions: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'object',
+				optional: false, nullable: false,
+				properties: {
+					reaction: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+					user: {
+						type: 'object',
+						optional: true, nullable: true,
+						ref: 'UserLite',
+					},
+				},
+			},
 		},
 	},
 } as const;

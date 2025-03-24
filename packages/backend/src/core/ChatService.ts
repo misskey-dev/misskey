@@ -24,8 +24,12 @@ import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
 import { Packed } from '@/misc/json-schema.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { emojiRegex } from '@/misc/emoji-regex.js';
 
 const MAX_ROOM_MEMBERS = 30;
+const MAX_REACTIONS_PER_MESSAGE = 100;
+const isCustomEmojiRegexp = /^:([\w+-]+)(?:@\.)?:$/;
 
 @Injectable()
 export class ChatService {
@@ -68,6 +72,7 @@ export class ChatService {
 		private queryService: QueryService,
 		private roleService: RoleService,
 		private userFollowingService: UserFollowingService,
+		private customEmojiService: CustomEmojiService,
 	) {
 	}
 
@@ -147,7 +152,7 @@ export class ChatService {
 			});
 		}
 
-		const packedMessage = await this.chatEntityService.packMessageLite(inserted);
+		const packedMessage = await this.chatEntityService.packMessageLiteFor1on1(inserted);
 
 		if (this.userEntityService.isLocalUser(toUser)) {
 			const redisPipeline = this.redisClient.pipeline();
@@ -497,8 +502,9 @@ export class ChatService {
 	}
 
 	@bindThis
-	public async isRoomMember(roomId: MiChatRoom['id'], userId: MiUser['id']) {
-		const membership = await this.chatRoomMembershipsRepository.findOneBy({ roomId, userId });
+	public async isRoomMember(room: MiChatRoom, userId: MiUser['id']) {
+		if (room.ownerId === userId) return true;
+		const membership = await this.chatRoomMembershipsRepository.findOneBy({ roomId: room.id, userId });
 		return membership != null;
 	}
 
@@ -668,5 +674,85 @@ export class ChatService {
 		const messages = await q.orderBy('message.id', 'DESC').take(limit).getMany();
 
 		return messages;
+	}
+
+	@bindThis
+	public async react(messageId: MiChatMessage['id'], userId: MiUser['id'], reaction_: string) {
+		let reaction;
+
+		// TODO: ReactionServiceのやつと共通化
+		function normalize(x: string) {
+			const match = emojiRegex.exec(x);
+			if (match) {
+				// 合字を含む1つの絵文字
+				const unicode = match[0];
+
+				// 異体字セレクタ除去
+				return unicode.match('\u200d') ? unicode : unicode.replace(/\ufe0f/g, '');
+			} else {
+				throw new Error('invalid emoji');
+			}
+		}
+
+		const custom = reaction_.match(isCustomEmojiRegexp);
+
+		if (custom == null) {
+			reaction = normalize(reaction_);
+		} else {
+			const name = custom[1];
+			const emoji = (await this.customEmojiService.localEmojisCache.fetch()).get(name);
+
+			if (emoji == null) {
+				throw new Error('no such emoji');
+			} else {
+				reaction = `:${name}:`;
+			}
+		}
+
+		const message = await this.chatMessagesRepository.findOneByOrFail({ id: messageId });
+
+		if (message.fromUserId === userId) {
+			throw new Error('cannot react to own message');
+		}
+
+		if (message.toRoomId === null && message.toUserId !== userId) {
+			throw new Error('cannot react to others message');
+		}
+
+		if (message.reactions.length >= MAX_REACTIONS_PER_MESSAGE) {
+			throw new Error('too many reactions');
+		}
+
+		const room = message.toRoomId ? await this.chatRoomsRepository.findOneByOrFail({ id: message.toRoomId }) : null;
+
+		if (room) {
+			if (!await this.isRoomMember(room, userId)) {
+				throw new Error('cannot react to others message');
+			}
+		}
+
+		await this.chatMessagesRepository.createQueryBuilder().update()
+			.set({
+				reactions: () => `array_append("reactions", '${userId}/${reaction}')`,
+			})
+			.where('id = :id', { id: message.id })
+			.execute();
+
+		if (room) {
+			this.globalEventService.publishChatRoomStream(room.id, 'react', {
+				messageId: message.id,
+				user: await this.userEntityService.pack(userId),
+				reaction,
+			});
+		} else {
+			this.globalEventService.publishChatUserStream(message.fromUserId, message.toUserId!, 'react', {
+				messageId: message.id,
+				reaction,
+			});
+			this.globalEventService.publishChatUserStream(message.toUserId!, message.fromUserId, 'react', {
+				messageId: message.id,
+				reaction,
+			});
+		}
 	}
 }

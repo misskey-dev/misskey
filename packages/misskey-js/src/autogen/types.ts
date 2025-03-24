@@ -1394,6 +1394,15 @@ export type paths = {
      */
     post: operations['chat___messages___delete'];
   };
+  '/chat/messages/react': {
+    /**
+     * chat/messages/react
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     */
+    post: operations['chat___messages___react'];
+  };
   '/chat/messages/room-timeline': {
     /**
      * chat/messages/room-timeline
@@ -5335,6 +5344,10 @@ export type components = {
       fileId?: string | null;
       file?: components['schemas']['DriveFile'] | null;
       isRead?: boolean;
+      reactions: ({
+          reaction: string;
+          user?: components['schemas']['UserLite'] | null;
+        })[];
     };
     ChatMessageLite: {
       id: string;
@@ -5347,6 +5360,10 @@ export type components = {
       text?: string | null;
       fileId?: string | null;
       file?: components['schemas']['DriveFile'] | null;
+      reactions: ({
+          reaction: string;
+          user?: components['schemas']['UserLite'] | null;
+        })[];
     };
     ChatRoom: {
       id: string;
@@ -14091,6 +14108,61 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           messageId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * chat/messages/react
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:chat*
+   */
+  chat___messages___react: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          messageId: string;
+          reaction: string;
         };
       };
     };

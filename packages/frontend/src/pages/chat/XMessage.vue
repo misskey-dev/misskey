@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
-	<MkAvatar :class="$style.avatar" :user="user" :link="!isMe" :preview="false"/>
+	<MkAvatar :class="$style.avatar" :user="message.fromUser" :link="!isMe" :preview="false"/>
 	<div :class="$style.body">
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
 			<div v-if="!message.isDeleted" :class="$style.content">
@@ -23,6 +23,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA v-if="isSearchResult && message.toRoomId" :to="`/chat/room/${message.toRoomId}`">{{ message.toRoom.name }}</MkA>
 			<MkA v-if="isSearchResult && message.toUserId && isMe" :to="`/chat/user/${message.toUserId}`">@{{ message.toUser.username }}</MkA>
 		</div>
+		<TransitionGroup
+			:enterActiveClass="prefer.s.animation ? $style.transition_reaction_enterActive : ''"
+			:leaveActiveClass="prefer.s.animation ? $style.transition_reaction_leaveActive : ''"
+			:enterFromClass="prefer.s.animation ? $style.transition_reaction_enterFrom : ''"
+			:leaveToClass="prefer.s.animation ? $style.transition_reaction_leaveTo : ''"
+			:moveClass="prefer.s.animation ? $style.transition_reaction_move : ''"
+			tag="div" :class="$style.reactions"
+		>
+			<div v-for="record in message.reactions" :key="record.reaction + record.user.id" :class="$style.reaction">
+				<MkAvatar :user="record.user" :link="false" :class="$style.reactionAvatar"/>
+				<MkReactionIcon
+					:withTooltip="true"
+					:reaction="record.reaction.replace(/^:(\w+):$/, ':$1@.:')"
+					:noStyle="true"
+					:class="$style.reactionIcon"
+				/>
+			</div>
+		</TransitionGroup>
 	</div>
 </div>
 </template>
@@ -42,21 +60,48 @@ import MkFukidashi from '@/components/MkFukidashi.vue';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import MkMediaList from '@/components/MkMediaList.vue';
+import { reactionPicker } from '@/utility/reaction-picker.js';
+import * as sound from '@/utility/sound.js';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
+import { prefer } from '@/preferences.js';
 
 const $i = ensureSignin();
 
 const props = defineProps<{
 	message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage;
-	user: Misskey.entities.User;
-	isRoom?: boolean;
 	isSearchResult?: boolean;
 }>();
 
 const isMe = computed(() => props.message.fromUserId === $i.id);
 const urls = computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(props.message.text)) : []);
 
+function react(ev: MouseEvent) {
+	reactionPicker.show(ev.currentTarget ?? ev.target, null, async (reaction) => {
+		sound.playMisskeySfx('reaction');
+
+		misskeyApi('chat/messages/react', {
+			messageId: props.message.id,
+			reaction: reaction,
+		});
+	});
+}
+
 function showMenu(ev: MouseEvent) {
 	const menu: MenuItem[] = [];
+
+	if (!isMe.value) {
+		menu.push({
+			text: i18n.ts.reaction,
+			icon: 'ti ti-mood-plus',
+			action: (ev) => {
+				react(ev);
+			},
+		});
+
+		menu.push({
+			type: 'divider',
+		});
+	}
 
 	menu.push({
 		text: i18n.ts.copyContent,
@@ -88,7 +133,7 @@ function showMenu(ev: MouseEvent) {
 			action: () => {
 				const localUrl = `${url}/chat/messages/${props.message.id}`;
 				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
-					user: props.user,
+					user: props.message.fromUser,
 					initialComment: `${localUrl}\n-----\n`,
 				}, {
 					closed: () => dispose(),
@@ -102,6 +147,20 @@ function showMenu(ev: MouseEvent) {
 </script>
 
 <style lang="scss" module>
+.transition_reaction_move,
+.transition_reaction_enterActive,
+.transition_reaction_leaveActive {
+	transition: opacity 0.2s cubic-bezier(0,.5,.5,1), transform 0.2s cubic-bezier(0,.5,.5,1) !important;
+}
+.transition_reaction_enterFrom,
+.transition_reaction_leaveTo {
+	opacity: 0;
+	transform: scale(0.7);
+}
+.transition_reaction_leaveActive {
+	position: absolute;
+}
+
 .root {
 	position: relative;
 	display: flex;
@@ -151,5 +210,36 @@ function showMenu(ev: MouseEvent) {
 
 .time {
 	opacity: 0.5;
+}
+
+.reactions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-top: 8px;
+
+	&:empty {
+		display: none;
+	}
+}
+
+.reaction {
+	display: flex;
+	align-items: center;
+	border: solid 1px var(--MI_THEME-divider);
+	border-radius: 999px;
+	padding: 8px;
+}
+
+.reactionAvatar {
+	width: 24px;
+	height: 24px;
+	margin-right: 8px;
+}
+
+.reactionIcon {
+	width: 24px;
+	height: 24px;
 }
 </style>
