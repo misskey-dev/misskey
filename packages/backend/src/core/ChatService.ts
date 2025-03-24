@@ -518,6 +518,10 @@ export class ChatService {
 
 		const room = await this.chatRoomsRepository.findOneByOrFail({ id: roomId, ownerId: inviterId });
 
+		if (await this.isRoomMember(room, inviteeId)) {
+			throw new Error('already member');
+		}
+
 		const existingInvitation = await this.chatRoomInvitationsRepository.findOneBy({ roomId, userId: inviteeId });
 		if (existingInvitation) {
 			throw new Error('already invited');
