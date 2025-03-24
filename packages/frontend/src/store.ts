@@ -173,12 +173,12 @@ export const defaultStore = markRaw(new Storage('base', {
 	menu: {
 		where: 'deviceAccount',
 		default: [
-			'floater',
 			'notifications',
 			'clips',
 			'drive',
 			'followRequests',
 			'-',
+			'floater',
 			'explore',
 			'announcements',
 			'search',

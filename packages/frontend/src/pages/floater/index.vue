@@ -43,6 +43,7 @@ const anchorDate = computed(() => {
 
 definePageMetadata(() => ({
 	title: i18n.ts.floater,
+	icon: 'ti ti-lifebuoy',
 }));
 </script>
 
