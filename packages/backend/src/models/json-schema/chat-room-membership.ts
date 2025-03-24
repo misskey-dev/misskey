@@ -21,8 +21,17 @@ export const packedChatRoomMembershipSchema = {
 		},
 		user: {
 			type: 'object',
-			optional: false, nullable: false,
+			optional: true, nullable: false,
 			ref: 'UserLite',
+		},
+		roomId: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		room: {
+			type: 'object',
+			optional: true, nullable: false,
+			ref: 'ChatRoom',
 		},
 	},
 } as const;

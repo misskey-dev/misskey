@@ -5,10 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<div v-if="rooms.length > 0" class="_gaps_s">
-		<XRoom v-for="room in rooms" :key="room.id" :room="room"/>
+	<div v-if="memberships.length > 0" class="_gaps_s">
+		<XRoom v-for="membership in memberships" :key="membership.id" :room="membership.room"/>
 	</div>
-	<div v-if="!fetching && rooms.length == 0" class="_fullinfo">
+	<div v-if="!fetching && memberships.length == 0" class="_fullinfo">
 		<div>{{ i18n.ts._chat.noRooms }}</div>
 	</div>
 	<MkLoading v-if="fetching"/>
@@ -31,15 +31,15 @@ const $i = ensureSignin();
 const router = useRouter();
 
 const fetching = ref(true);
-const rooms = ref<Misskey.entities.ChatRoom[]>([]);
+const memberships = ref<Misskey.entities.ChatRoomMembership[]>([]);
 
 async function fetchRooms() {
 	fetching.value = true;
 
-	const res = await misskeyApi('chat/rooms/owned', {
+	const res = await misskeyApi('chat/rooms/joining', {
 	});
 
-	rooms.value = res;
+	memberships.value = res;
 
 	fetching.value = false;
 }

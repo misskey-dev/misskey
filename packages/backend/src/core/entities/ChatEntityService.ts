@@ -13,6 +13,7 @@ import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { In } from 'typeorm';
 
 @Injectable()
 export class ChatEntityService {
@@ -257,17 +258,29 @@ export class ChatEntityService {
 
 	@bindThis
 	public async packRooms(
-		rooms: MiChatRoom[],
+		rooms: (MiChatRoom | MiChatRoom['id'])[],
 		me: { id: MiUser['id'] },
 	) {
 		if (rooms.length === 0) return [];
 
-		const owners = rooms.map(x => x.owner ?? x.ownerId);
+		const _rooms = rooms.filter((room): room is MiChatRoom => typeof room !== 'string');
+		if (_rooms.length !== rooms.length) {
+			_rooms.push(
+				...await this.chatRoomsRepository.find({
+					where: {
+						id: In(rooms.filter((room): room is string => typeof room === 'string')),
+					},
+					relations: ['owner'],
+				}),
+			);
+		}
+
+		const owners = _rooms.map(x => x.owner ?? x.ownerId);
 
 		const packedOwners = await this.userEntityService.packMany(owners, me)
 			.then(users => new Map(users.map(u => [u.id, u])));
 
-		return Promise.all(rooms.map(room => this.packRoom(room, me, { _hint_: { packedOwners } })));
+		return Promise.all(_rooms.map(room => this.packRoom(room, me, { _hint_: { packedOwners } })));
 	}
 
 	@bindThis
@@ -308,7 +321,10 @@ export class ChatEntityService {
 		src: MiChatRoomMembership['id'] | MiChatRoomMembership,
 		me: { id: MiUser['id'] },
 		options?: {
+			populateUser?: boolean;
+			populateRoom?: boolean;
 			_hint_?: {
+				packedRooms: Map<MiChatRoomMembership['roomId'], Packed<'ChatRoom'>>;
 				packedUsers: Map<MiChatRoomMembership['id'], Packed<'UserLite'>>;
 			};
 		},
@@ -319,7 +335,9 @@ export class ChatEntityService {
 			id: membership.id,
 			createdAt: this.idService.parse(membership.id).date.toISOString(),
 			userId: membership.userId,
-			user: options?._hint_?.packedUsers.get(membership.userId) ?? await this.userEntityService.pack(membership.user ?? membership.userId, me),
+			user: options?.populateUser ? (options._hint_?.packedUsers.get(membership.userId) ?? await this.userEntityService.pack(membership.user ?? membership.userId, me)) : undefined,
+			roomId: membership.roomId,
+			room: options?.populateRoom ? (options._hint_?.packedRooms.get(membership.roomId) ?? await this.packRoom(membership.room ?? membership.roomId, me)) : undefined,
 		};
 	}
 
@@ -327,14 +345,23 @@ export class ChatEntityService {
 	public async packRoomMemberships(
 		memberships: MiChatRoomMembership[],
 		me: { id: MiUser['id'] },
+		options: {
+			populateUser?: boolean;
+			populateRoom?: boolean;
+		} = {},
 	) {
 		if (memberships.length === 0) return [];
 
 		const users = memberships.map(x => x.user ?? x.userId);
+		const rooms = memberships.map(x => x.room ?? x.roomId);
 
-		const packedUsers = await this.userEntityService.packMany(users, me)
-			.then(users => new Map(users.map(u => [u.id, u])));
+		const [packedUsers, packedRooms] = await Promise.all([
+			this.userEntityService.packMany(users, me)
+				.then(users => new Map(users.map(u => [u.id, u]))),
+			this.packRooms(rooms, me)
+				.then(rooms => new Map(rooms.map(r => [r.id, r]))),
+		]);
 
-		return Promise.all(memberships.map(membership => this.packRoomMembership(membership, me, { _hint_: { packedUsers } })));
+		return Promise.all(memberships.map(membership => this.packRoomMembership(membership, me, { ...options, _hint_: { packedUsers, packedRooms } })));
 	}
 }

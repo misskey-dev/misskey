@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 			<XHome v-if="tab === 'home'"/>
 			<XInvitations v-else-if="tab === 'invitations'"/>
+			<XJoiningRooms v-else-if="tab === 'joiningRooms'"/>
 			<XOwnedRooms v-else-if="tab === 'ownedRooms'"/>
 		</MkHorizontalSwipe>
 	</MkSpacer>
@@ -20,6 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, ref } from 'vue';
 import XHome from './home.home.vue';
 import XInvitations from './home.invitations.vue';
+import XJoiningRooms from './home.joiningRooms.vue';
 import XOwnedRooms from './home.ownedRooms.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';

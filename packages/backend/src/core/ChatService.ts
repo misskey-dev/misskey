@@ -755,4 +755,14 @@ export class ChatService {
 			});
 		}
 	}
+
+	@bindThis
+	public async getMyMemberships(userId: MiUser['id'], limit: number, sinceId?: MiChatRoomMembership['id'] | null, untilId?: MiChatRoomMembership['id'] | null) {
+		const query = this.queryService.makePaginationQuery(this.chatRoomMembershipsRepository.createQueryBuilder('membership'), sinceId, untilId)
+			.where('membership.userId = :userId', { userId });
+
+		const memberships = await query.take(limit).getMany();
+
+		return memberships;
+	}
 }

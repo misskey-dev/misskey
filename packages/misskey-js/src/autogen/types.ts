@@ -1493,6 +1493,15 @@ export type paths = {
      */
     post: operations['chat___rooms___join'];
   };
+  '/chat/rooms/joining': {
+    /**
+     * chat/rooms/joining
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     */
+    post: operations['chat___rooms___joining'];
+  };
   '/chat/rooms/leave': {
     /**
      * chat/rooms/leave
@@ -5389,7 +5398,9 @@ export type components = {
       /** Format: date-time */
       createdAt: string;
       userId: string;
-      user: components['schemas']['UserLite'];
+      user?: components['schemas']['UserLite'];
+      roomId: string;
+      room?: components['schemas']['ChatRoom'];
     };
   };
   responses: never;
@@ -14746,6 +14757,64 @@ export type operations = {
       200: {
         content: {
           'application/json': unknown;
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * chat/rooms/joining
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:chat*
+   */
+  chat___rooms___joining: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 30 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['ChatRoomMembership'][];
         };
       };
       /** @description Client error */
