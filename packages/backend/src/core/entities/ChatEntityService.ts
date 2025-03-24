@@ -41,9 +41,9 @@ export class ChatEntityService {
 		me?: { id: MiUser['id'] },
 		options?: {
 			_hint_?: {
-				packedFiles: Map<MiChatMessage['fileId'], Packed<'DriveFile'> | null>;
-				packedUsers: Map<MiChatMessage['id'], Packed<'UserLite'>>;
-				packedRooms: Map<MiChatMessage['toRoomId'], Packed<'ChatRoom'> | null>;
+				packedFiles?: Map<MiChatMessage['fileId'], Packed<'DriveFile'> | null>;
+				packedUsers?: Map<MiChatMessage['id'], Packed<'UserLite'>>;
+				packedRooms?: Map<MiChatMessage['toRoomId'], Packed<'ChatRoom'> | null>;
 			};
 		},
 	): Promise<Packed<'ChatMessage'>> {
@@ -129,7 +129,8 @@ export class ChatEntityService {
 		if (messages.length === 0) return [];
 
 		const [packedFiles] = await Promise.all([
-			this.driveFileEntityService.packMany(messages.map(m => m.file).filter(x => x != null)),
+			this.driveFileEntityService.packMany(messages.map(m => m.file).filter(x => x != null))
+				.then(files => new Map(files.map(f => [f.id, f]))),
 		]);
 
 		return Promise.all(messages.map(message => this.packMessageLite(message, { _hint_: { packedFiles } })));

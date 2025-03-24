@@ -160,8 +160,8 @@ export interface AdminEventTypes {
 }
 
 export interface ChatEventTypes {
-	message: Packed<'ChatMessage'>;
-	deleted: Packed<'ChatMessage'>['id'];
+	message: Packed<'ChatMessageLite'>;
+	deleted: Packed<'ChatMessageLite'>['id'];
 }
 
 export interface ReversiEventTypes {

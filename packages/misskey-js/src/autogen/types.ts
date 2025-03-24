@@ -5323,6 +5323,7 @@ export type components = {
       /** Format: date-time */
       createdAt: string;
       fromUserId: string;
+      fromUser?: components['schemas']['UserLite'];
       toUserId?: string | null;
       toRoomId?: string | null;
       text?: string | null;

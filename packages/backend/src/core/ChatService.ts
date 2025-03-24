@@ -174,7 +174,7 @@ export class ChatService {
 
 				const packedMessageForTo = await this.chatEntityService.packMessageDetailed(inserted, toUser);
 				this.globalEventService.publishMainStream(toUser.id, 'newChatMessage', packedMessageForTo);
-				this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
+				//this.pushNotificationService.pushNotification(toUser.id, 'newChatMessage', packedMessageForTo);
 			}, 3000);
 		}
 
@@ -223,6 +223,7 @@ export class ChatService {
 				redisPipeline.get(`newRoomChatMessageExists:${membership.userId}:${toRoom.id}`);
 			}
 			const markers = await redisPipeline.exec();
+			if (markers == null) throw new Error('redis error');
 
 			if (markers.every(marker => marker[1] == null)) return;
 
@@ -233,7 +234,7 @@ export class ChatService {
 				if (marker == null) continue;
 
 				this.globalEventService.publishMainStream(memberships[i].userId, 'newChatMessage', packedMessageForTo);
-				this.pushNotificationService.pushNotification(memberships[i].userId, 'newChatMessage', packedMessageForTo);
+				//this.pushNotificationService.pushNotification(memberships[i].userId, 'newChatMessage', packedMessageForTo);
 			}
 		}, 3000);
 
@@ -423,6 +424,7 @@ export class ChatService {
 		}
 
 		const markers = await redisPipeline.exec();
+		if (markers == null) throw new Error('redis error');
 
 		for (let i = 0; i < otherIds.length; i++) {
 			const marker = markers[i][1];
@@ -443,6 +445,7 @@ export class ChatService {
 		}
 
 		const markers = await redisPipeline.exec();
+		if (markers == null) throw new Error('redis error');
 
 		for (let i = 0; i < roomIds.length; i++) {
 			const marker = markers[i][1];

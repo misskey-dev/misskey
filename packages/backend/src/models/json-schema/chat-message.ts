@@ -78,6 +78,11 @@ export const packedChatMessageLiteSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		fromUser: {
+			type: 'object',
+			optional: true, nullable: false,
+			ref: 'UserLite',
+		},
 		toUserId: {
 			type: 'string',
 			optional: true, nullable: true,
