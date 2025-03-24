@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" reversed :tabs="headerTabs" :actions="headerActions">
-	<MkSpacer :contentMax="700">
+<PageWithHeader v-model:tab="tab" :reversed="tab === 'chat'" :tabs="headerTabs" :actions="headerActions">
+	<MkSpacer v-if="tab === 'chat'" :contentMax="700">
 		<div v-if="initializing">
 			<MkLoading/>
 		</div>
@@ -43,8 +43,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkSpacer>
 
+	<MkSpacer v-else-if="tab === 'search'" :contentMax="700">
+		<XSearch :userId="userId" :roomId="roomId"/>
+	</MkSpacer>
+
+	<MkSpacer v-else-if="tab === 'members'" :contentMax="700">
+		<XMembers :roomId="roomId"/>
+	</MkSpacer>
+
 	<template #footer>
-		<div :class="$style.footer">
+		<div v-if="tab === 'chat'" :class="$style.footer">
 			<div class="_gaps">
 				<Transition name="fade">
 					<div v-show="showIndicator" :class="$style.new">
@@ -66,6 +74,8 @@ import * as Misskey from 'misskey-js';
 import { isTailVisible } from '@@/js/scroll.js';
 import XMessage from './XMessage.vue';
 import XForm from './room.form.vue';
+import XSearch from './room.search.vue';
+import XMembers from './room.members.vue';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
@@ -277,7 +287,19 @@ const headerTabs = computed(() => room.value ? [{
 	key: 'members',
 	title: i18n.ts._chat.members,
 	icon: 'ti ti-users',
-}] : []);
+}, {
+	key: 'search',
+	title: i18n.ts.search,
+	icon: 'ti ti-search',
+}] : [{
+	key: 'chat',
+	title: i18n.ts.chat,
+	icon: 'ti ti-messages',
+}, {
+	key: 'search',
+	title: i18n.ts.search,
+	icon: 'ti ti-search',
+}]);
 
 const headerActions = computed(() => [{
 	icon: 'ti ti-dots',

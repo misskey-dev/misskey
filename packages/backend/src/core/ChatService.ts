@@ -614,14 +614,17 @@ export class ChatService {
 		if (params.userId) {
 			q.andWhere(new Brackets(qb => {
 				qb
-					.where('message.fromUserId = :meId')
-					.andWhere('message.toUserId = :otherId');
+					.where(new Brackets(qb => {
+						qb
+							.where('message.fromUserId = :meId')
+							.andWhere('message.toUserId = :otherId');
+					}))
+					.orWhere(new Brackets(qb => {
+						qb
+							.where('message.fromUserId = :otherId')
+							.andWhere('message.toUserId = :meId');
+					}));
 			}))
-				.orWhere(new Brackets(qb => {
-					qb
-						.where('message.fromUserId = :otherId')
-						.andWhere('message.toUserId = :meId');
-				}))
 				.setParameter('meId', meId)
 				.setParameter('otherId', params.userId);
 		} else if (params.roomId) {
