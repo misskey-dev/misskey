@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Serialized } from '@/types.js';
 import { MiUser } from './User.js';
 import { MiUserList } from './UserList.js';
+import { id } from './util/id.js';
 
 @Entity('antenna')
 export class MiAntenna {
@@ -100,4 +101,20 @@ export class MiAntenna {
 		default: false,
 	})
 	public localOnly: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public useRegex: boolean;
+
+	public static deserialize(data: Serialized<MiAntenna>): MiAntenna {
+		return {
+			...data,
+			lastUsedAt: new Date(data.lastUsedAt),
+			// クエリビルダで明示的にSELECT/JOINしないかぎり設定されない値なのでnullにしておく
+			user: null,
+			// クエリビルダで明示的にSELECT/JOINしないかぎり設定されない値なのでnullにしておく
+			userList: null,
+		};
+	}
 }
