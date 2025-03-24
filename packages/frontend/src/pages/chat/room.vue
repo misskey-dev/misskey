@@ -48,7 +48,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkSpacer>
 
 	<MkSpacer v-else-if="tab === 'members'" :contentMax="700">
-		<XMembers :roomId="roomId"/>
+		<XMembers v-if="room != null" :room="room" @inviteUser="inviteUser"/>
+	</MkSpacer>
+
+	<MkSpacer v-else-if="tab === 'info'" :contentMax="700">
+		<XInfo v-if="room != null" :room="room"/>
 	</MkSpacer>
 
 	<template #footer>
@@ -76,6 +80,7 @@ import XMessage from './XMessage.vue';
 import XForm from './room.form.vue';
 import XSearch from './room.search.vue';
 import XMembers from './room.members.vue';
+import XInfo from './room.info.vue';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
@@ -291,6 +296,10 @@ const headerTabs = computed(() => room.value ? [{
 	key: 'search',
 	title: i18n.ts.search,
 	icon: 'ti ti-search',
+}, {
+	key: 'info',
+	title: i18n.ts.info,
+	icon: 'ti ti-info-circle',
 }] : [{
 	key: 'chat',
 	title: i18n.ts.chat,

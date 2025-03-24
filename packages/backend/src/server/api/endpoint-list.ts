@@ -407,6 +407,7 @@ export * as 'chat/rooms/create' from './endpoints/chat/rooms/create.js';
 export * as 'chat/rooms/delete' from './endpoints/chat/rooms/delete.js';
 export * as 'chat/rooms/join' from './endpoints/chat/rooms/join.js';
 export * as 'chat/rooms/leave' from './endpoints/chat/rooms/leave.js';
+export * as 'chat/rooms/mute' from './endpoints/chat/rooms/mute.js';
 export * as 'chat/rooms/show' from './endpoints/chat/rooms/show.js';
 export * as 'chat/rooms/owned' from './endpoints/chat/rooms/owned.js';
 export * as 'chat/rooms/update' from './endpoints/chat/rooms/update.js';

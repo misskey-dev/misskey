@@ -5,6 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
+	<MkButton v-if="isOwner" primary rounded style="margin: 0 auto;" @click="emit('inviteUser')"><i class="ti ti-plus"></i> {{ i18n.ts._chat.inviteUser }}</MkButton>
+
+	<MkA :class="$style.membershipBody" :to="`${userPage(room.owner)}`">
+		<MkUserCardMini :user="room.owner"/>
+	</MkA>
+
+	<hr>
+
 	<div v-for="membership in memberships" :key="membership.id" :class="$style.membership">
 		<MkA :class="$style.membershipBody" :to="`${userPage(membership.user)}`">
 			<MkUserCardMini :user="membership.user"/>
@@ -22,16 +30,27 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import * as os from '@/os.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { userPage } from '@/filters/user.js';
+import { ensureSignin } from '@/i.js';
+
+const $i = ensureSignin();
 
 const props = defineProps<{
-	roomId?: string;
+	room: Misskey.entities.ChatRoom;
 }>();
+
+const emit = defineEmits<{
+	(ev: 'inviteUser'): void,
+}>();
+
+const isOwner = computed(() => {
+	return props.room.ownerId === $i.id;
+});
 
 const memberships = ref<Misskey.entities.ChatRoomMembership[]>([]);
 
 onMounted(async () => {
 	memberships.value = await misskeyApi('chat/rooms/members', {
-		roomId: props.roomId,
+		roomId: props.room.id,
 		limit: 50,
 	});
 });

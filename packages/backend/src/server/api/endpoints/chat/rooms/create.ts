@@ -40,6 +40,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		name: { type: 'string', maxLength: 256 },
+		description: { type: 'string', maxLength: 1024 },
 	},
 	required: ['name'],
 } as const;
@@ -51,7 +52,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatEntityService: ChatEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const room = await this.chatService.createRoom(me, ps.name);
+			const room = await this.chatService.createRoom(me, {
+				name: ps.name,
+				description: ps.description ?? '',
+			});
 			return await this.chatEntityService.packRoom(room);
 		});
 	}

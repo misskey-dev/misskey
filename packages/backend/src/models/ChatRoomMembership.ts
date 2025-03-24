@@ -37,4 +37,9 @@ export class MiChatRoomMembership {
 	})
 	@JoinColumn()
 	public room: MiChatRoom | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isMuted: boolean;
 }

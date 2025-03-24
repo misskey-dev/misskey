@@ -1059,6 +1059,12 @@ type ChatRoomsMembersRequest = operations['chat___rooms___members']['requestBody
 type ChatRoomsMembersResponse = operations['chat___rooms___members']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChatRoomsMuteRequest = operations['chat___rooms___mute']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMuteResponse = operations['chat___rooms___mute']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type ChatRoomsOwnedRequest = operations['chat___rooms___owned']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1605,6 +1611,8 @@ declare namespace entities {
         ChatRoomsLeaveResponse,
         ChatRoomsMembersRequest,
         ChatRoomsMembersResponse,
+        ChatRoomsMuteRequest,
+        ChatRoomsMuteResponse,
         ChatRoomsOwnedRequest,
         ChatRoomsOwnedResponse,
         ChatRoomsShowRequest,

@@ -212,6 +212,8 @@ export class ChatService {
 
 		const redisPipeline = this.redisClient.pipeline();
 		for (const membership of memberships) {
+			if (membership.isMuted) continue;
+
 			redisPipeline.set(`newRoomChatMessageExists:${membership.userId}:${toRoom.id}`, message.id);
 			redisPipeline.sadd(`newChatMessagesExists:${membership.userId}`, `room:${toRoom.id}`);
 		}
@@ -463,10 +465,14 @@ export class ChatService {
 	}
 
 	@bindThis
-	public async createRoom(owner: MiUser, name: string) {
+	public async createRoom(owner: MiUser, params: Partial<{
+		name: string;
+		description: string;
+	}>) {
 		const room = {
 			id: this.idService.gen(),
-			name: name,
+			name: params.name,
+			description: params.description,
 			ownerId: owner.id,
 		} satisfies Partial<MiChatRoom>;
 
@@ -581,8 +587,15 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async muteRoom(userId: MiUser['id'], roomId: MiChatRoom['id'], mute: boolean) {
+		const membership = await this.chatRoomMembershipsRepository.findOneByOrFail({ roomId, userId });
+		await this.chatRoomMembershipsRepository.update(membership.id, { isMuted: mute });
+	}
+
+	@bindThis
 	public async updateRoom(room: MiChatRoom, params: {
 		name?: string;
+		description?: string;
 	}): Promise<MiChatRoom> {
 		return this.chatRoomsRepository.createQueryBuilder().update()
 			.set(params)

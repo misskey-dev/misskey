@@ -8,7 +8,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ChatService } from '@/core/ChatService.js';
 import { ApiError } from '@/server/api/error.js';
-import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 
 export const meta = {
 	tags: ['chat'],
@@ -18,16 +17,13 @@ export const meta = {
 	kind: 'write:chat',
 
 	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'ChatRoom',
 	},
 
 	errors: {
 		noSuchRoom: {
 			message: 'No such room.',
 			code: 'NO_SUCH_ROOM',
-			id: 'fcdb0f92-bda6-47f9-bd05-343e0e020932',
+			id: 'c2cde4eb-8d0f-42f1-8f2f-c4d6bfc8e5df',
 		},
 	},
 } as const;
@@ -36,30 +32,18 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		roomId: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string', maxLength: 256 },
-		description: { type: 'string', maxLength: 1024 },
+		mute: { type: 'boolean' },
 	},
-	required: ['roomId'],
+	required: ['roomId', 'mute'],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private chatService: ChatService,
-		private chatEntityService: ChatEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const room = await this.chatService.findMyRoomById(me.id, ps.roomId);
-			if (room == null) {
-				throw new ApiError(meta.errors.noSuchRoom);
-			}
-
-			const updated = await this.chatService.updateRoom(room, {
-				name: ps.name,
-				description: ps.description,
-			});
-
-			return this.chatEntityService.packRoom(updated, me);
+			await this.chatService.muteRoom(me.id, ps.roomId, ps.mute);
 		});
 	}
 }

@@ -186,17 +186,23 @@ export class ChatEntityService {
 		options?: {
 			_hint_?: {
 				packedOwners: Map<MiChatRoom['id'], Packed<'UserLite'>>;
+				memberships?: Map<MiChatRoom['id'], MiChatRoomMembership | null>;
 			};
 		},
 	): Promise<Packed<'ChatRoom'>> {
 		const room = typeof src === 'object' ? src : await this.chatRoomsRepository.findOneByOrFail({ id: src });
 
+		// TODO: hint使う
+		const membership = me ? await this.chatRoomMembershipsRepository.findOneBy({ roomId: room.id, userId: me.id }) : null;
+
 		return {
 			id: room.id,
 			createdAt: this.idService.parse(room.id).date.toISOString(),
 			name: room.name,
+			description: room.description,
 			ownerId: room.ownerId,
 			owner: options?._hint_?.packedOwners.get(room.ownerId) ?? await this.userEntityService.pack(room.owner ?? room.ownerId, me),
+			isMuted: membership != null ? membership.isMuted : false,
 		};
 	}
 

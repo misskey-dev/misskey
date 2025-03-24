@@ -1502,6 +1502,15 @@ export type paths = {
      */
     post: operations['chat___rooms___members'];
   };
+  '/chat/rooms/mute': {
+    /**
+     * chat/rooms/mute
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:chat*
+     */
+    post: operations['chat___rooms___mute'];
+  };
   '/chat/rooms/owned': {
     /**
      * chat/rooms/owned
@@ -5346,6 +5355,8 @@ export type components = {
       ownerId: string;
       owner: components['schemas']['UserLite'];
       name: string;
+      description: string;
+      isMuted?: boolean;
     };
     ChatRoomInvitation: {
       id: string;
@@ -14366,6 +14377,7 @@ export type operations = {
       content: {
         'application/json': {
           name: string;
+          description?: string;
         };
       };
     };
@@ -14811,6 +14823,61 @@ export type operations = {
     };
   };
   /**
+   * chat/rooms/mute
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:chat*
+   */
+  chat___rooms___mute: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          roomId: string;
+          mute: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
    * chat/rooms/owned
    * @description No description provided.
    *
@@ -14935,6 +15002,7 @@ export type operations = {
           /** Format: misskey:id */
           roomId: string;
           name?: string;
+          description?: string;
         };
       };
     };

@@ -28,4 +28,14 @@ export class MiChatRoom {
 	})
 	@JoinColumn()
 	public owner: MiUser | null;
+
+	@Column('varchar', {
+		length: 2048, default: '',
+	})
+	public description: string;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isArchived: boolean;
 }

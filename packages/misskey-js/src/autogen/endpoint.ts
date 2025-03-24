@@ -239,6 +239,8 @@ import type {
 	ChatRoomsLeaveResponse,
 	ChatRoomsMembersRequest,
 	ChatRoomsMembersResponse,
+	ChatRoomsMuteRequest,
+	ChatRoomsMuteResponse,
 	ChatRoomsOwnedRequest,
 	ChatRoomsOwnedResponse,
 	ChatRoomsShowRequest,
@@ -780,6 +782,7 @@ export type Endpoints = {
 	'chat/rooms/join': { req: ChatRoomsJoinRequest; res: ChatRoomsJoinResponse };
 	'chat/rooms/leave': { req: ChatRoomsLeaveRequest; res: ChatRoomsLeaveResponse };
 	'chat/rooms/members': { req: ChatRoomsMembersRequest; res: ChatRoomsMembersResponse };
+	'chat/rooms/mute': { req: ChatRoomsMuteRequest; res: ChatRoomsMuteResponse };
 	'chat/rooms/owned': { req: ChatRoomsOwnedRequest; res: ChatRoomsOwnedResponse };
 	'chat/rooms/show': { req: ChatRoomsShowRequest; res: ChatRoomsShowResponse };
 	'chat/rooms/update': { req: ChatRoomsUpdateRequest; res: ChatRoomsUpdateResponse };

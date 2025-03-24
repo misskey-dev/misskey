@@ -28,5 +28,13 @@ export const packedChatRoomSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		description: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		isMuted: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
 	},
 } as const;

@@ -19,8 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div :class="$style.invitationBody">
 				<MkAvatar :user="invitation.room.owner" :class="$style.invitationBodyAvatar" link/>
-				<div>
+				<div style="flex: 1;" class="_gaps_s">
 					<MkUserName :user="invitation.room.owner"/>
+					<hr>
+					<div>{{ invitation.room.description === '' ? i18n.ts.noDescription : invitation.room.description }}</div>
 				</div>
 			</div>
 		</MkFolder>
@@ -90,7 +92,7 @@ onMounted(() => {
 
 .invitationBodyAvatar {
 	margin-right: 12px;
-	width: 50px;
-	height: 50px;
+	width: 45px;
+	height: 45px;
 }
 </style>
