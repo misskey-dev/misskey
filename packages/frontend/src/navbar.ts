@@ -4,6 +4,7 @@
  */
 
 import { computed, reactive } from 'vue';
+import { ui } from '@@/js/config.js';
 import { clearCache } from './scripts/clear-cache.js';
 import { $i } from '@/account.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -11,7 +12,6 @@ import { openInstanceMenu, openToolsMenu } from '@/ui/_common_/common.js';
 import { lookup } from '@/scripts/lookup.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { ui } from '@@/js/config.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 
 export const navbarItemDef = reactive({
@@ -65,6 +65,11 @@ export const navbarItemDef = reactive({
 		action: (ev) => {
 			lookup();
 		},
+	},
+	floater: {
+		title: i18n.ts.floater,
+		icon: 'ti ti-lifebuoy',
+		to: '/floater',
 	},
 	lists: {
 		title: i18n.ts.lists,

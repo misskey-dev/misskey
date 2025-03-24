@@ -2487,7 +2487,7 @@ _timelines:
   social: "ソーシャル"
   global: "グローバル"
 
-followingsUpdates: "フォロー中ユーザーの投稿"
+floater: "浮上した人"
 
 _play:
   new: "Playの作成"

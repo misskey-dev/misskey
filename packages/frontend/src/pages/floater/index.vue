@@ -5,12 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
-	<!-- recent変数をそのまま使い、メソッド呼び出しをやめる -->
 	<template #header><MkPageHeader v-model:tab="recent" :actions="headerActions" :tabs="headerTabs"/></template>
 	<div>
 		<MkSpacer :contentMax="1000">
 			<Transition name="fade" mode="out-in">
-				<XFollowingsUpdatesList :anchorDate="anchorDate"/>
+				<XFloater :anchorDate="anchorDate"/>
 			</Transition>
 		</MkSpacer>
 	</div>
@@ -19,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import XFollowingsUpdatesList from './followings-updates-list.vue';
+import XFloater from './floater.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -43,7 +42,7 @@ const anchorDate = computed(() => {
 });
 
 definePageMetadata(() => ({
-	title: i18n.ts.followingsUpdates,
+	title: i18n.ts.floater,
 }));
 </script>
 

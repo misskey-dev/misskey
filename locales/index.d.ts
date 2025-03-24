@@ -9432,9 +9432,9 @@ export interface Locale extends ILocale {
         "global": string;
     };
     /**
-     * フォロー中ユーザーの投稿
+     * 浮上した人
      */
-    "followingsUpdates": string;
+    "floater": string;
     "_play": {
         /**
          * Playの作成
