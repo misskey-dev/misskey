@@ -330,7 +330,9 @@ export class ChatService {
 	@bindThis
 	public async roomTimeline(roomId: MiChatRoom['id'], limit: number, sinceId?: MiChatMessage['id'] | null, untilId?: MiChatMessage['id'] | null) {
 		const query = this.queryService.makePaginationQuery(this.chatMessagesRepository.createQueryBuilder('message'), sinceId, untilId)
-			.where('message.toRoomId = :roomId', { roomId });
+			.where('message.toRoomId = :roomId', { roomId })
+			.leftJoinAndSelect('message.file', 'file')
+			.leftJoinAndSelect('message.fromUser', 'fromUser');
 
 		const messages = await query.take(limit).getMany();
 
@@ -670,6 +672,12 @@ export class ChatService {
 		}
 
 		q.andWhere('LOWER(message.text) LIKE :q', { q: `%${ sqlLikeEscape(query.toLowerCase()) }%` });
+
+		q.leftJoinAndSelect('message.file', 'file');
+		q.leftJoinAndSelect('message.fromUser', 'fromUser');
+		q.leftJoinAndSelect('message.toUser', 'toUser');
+		q.leftJoinAndSelect('message.toRoom', 'toRoom');
+		q.leftJoinAndSelect('toRoom.owner', 'toRoomOwner');
 
 		const messages = await q.orderBy('message.id', 'DESC').take(limit).getMany();
 
