@@ -1305,6 +1305,17 @@ pleaseSelectAccount: "Bitte Konto auswählen"
 availableRoles: "Verfügbare Rollen"
 federationSpecified: "Dieser Server arbeitet mit Whitelist-Föderation. Er kann nicht mit anderen als den vom Administrator angegebenen Servern interagieren."
 federationDisabled: "Föderation ist auf diesem Server deaktiviert. Es ist nicht möglich, mit Benutzern auf anderen Servern zu interagieren."
+confirmOnReact: "Reagieren bestätigen"
+reactAreYouSure: "Willst du eine \"{emoji}\"-Reaktion hinzufügen?"
+markAsSensitiveConfirm: "Möchtest du dieses Medium als sensibel kennzeichnen?"
+unmarkAsSensitiveConfirm: "Möchtest du die Kennzeichnung dieses Mediums als sensibel aufheben?"
+preferences: "Einstellungen"
+preferencesProfile: "Einstellungsprofil"
+copyPreferenceId: "Kopiere die Einstellungs-ID"
+resetToDefaultValue: "Auf Standard zurücksetzen"
+untitled: "Unbenannt"
+noName: "Kein Name"
+skip: "Überspringen"
 restore: "Wiederherstellen"
 syncBetweenDevices: "Zwischen Geräten synchronisieren"
 paste: "Einfügen"
@@ -1319,6 +1330,7 @@ _chat:
 _emojiPalette:
   palettes: "Palette"
   enableSyncBetweenDevicesForPalettes: "Synchronisierung der Paletten zwischen Geräten aktivieren"
+  paletteForMain: "Hauptpalette"
 _settings:
   api: "API"
   webhook: "Webhook"
@@ -1802,6 +1814,7 @@ _role:
     canUseTranslator: "Verwendung des Übersetzers"
     avatarDecorationLimit: "Maximale Anzahl an Profilbilddekorationen, die angebracht werden können"
     canImportAntennas: "Importieren von Antennen erlauben"
+    canImportUserLists: "Importieren von Listen erlauben"
   _condition:
     isLocal: "Lokaler Benutzer"
     isRemote: "Benutzer fremder Instanz"
@@ -2414,6 +2427,7 @@ _notification:
   flushNotification: "Benachrichtigungen löschen"
   exportOfXCompleted: "Der Export von {x} ist abgeschlossen"
   login: "Neue Anmeldung erfolgt"
+  createToken: "Ein Zugangstoken wurde erstellt"
   _types:
     all: "Alle"
     note: "Neue Notizen"
@@ -2611,13 +2625,30 @@ _externalResourceInstaller:
     _themeInstallFailed:
       title: "Das Farbschema konnte nicht installiert werden"
       description: "Während der Installation des Farbschemas ist ein Problem aufgetreten. Bitte versuche es erneut. Detaillierte Fehlerinformationen können über die Javascript-Konsole abgerufen werden."
+_dataSaver:
+  _media:
+    title: "Laden von Medien verhindern"
+    description: "Verhindert, dass Bilder/Videos automatisch geladen werden. Ausgeblendete Bilder/Videos werden geladen, wenn du auf sie tippst."
+  _avatar:
+    title: "Animierte Profilbilder deaktivieren"
+    description: "Die Animation von Profilbildern wird angehalten. Da animierte Bilder eine größere Dateigröße haben können als normale Bilder, kann dies den Datenverkehr weiter reduzieren."
+  _urlPreview:
+    title: "URL-Vorschaubilder ausblenden"
+    description: "URL-Vorschaubilder werden nicht mehr geladen."
+  _code:
+    title: "Code-Hervorhebungen ausblenden"
+    description: "Wenn Code-Hervorhebungen in MFM usw. verwendet werden, werden sie erst geladen, wenn sie angetippt werden. Die Syntaxhervorhebung erfordert das Herunterladen der Definitionsdateien für jede Programmiersprache. Es ist daher zu erwarten, dass die Deaktivierung des automatischen Ladens dieser Dateien die Menge des Datenverkehrs reduziert."
 _hemisphere:
   N: "Nördliche Erdhalbkugel"
   S: "Südliche Erdhalbkugel"
   caption: "Wird in einigen Client-Einstellungen zur Bestimmung der Jahreszeit verwendet."
 _reversi:
+  gameSettings: "Spieleinstellungen"
+  chooseBoard: "Spielbrett auswählen"
   blackOrWhite: "Schwarz/Weiß"
+  blackIs: "{name} spielt Schwarz"
   rules: "Regeln"
+  thisGameIsStartedSoon: "Das Spiel wird in Kürze beginnen"
   waitingForOther: "Warte auf den Zug des Gegenspielers"
   waitingForMe: "Warte auf deinen Zug"
   waitingBoth: "Mach dich bereit"
@@ -2635,6 +2666,16 @@ _reversi:
   white: "Weiß"
   total: "Gesamt"
   turnCount: " Zug {count}"
+  myGames: "Meine Runden"
+  allGames: "Alle Runden"
+  ended: "Beendet"
+  playing: "Partie läuft"
+  timeLimitForEachTurn: "Zeitlimit eines Zugs"
+  freeMatch: "Freies Spiel"
+  lookingForPlayer: "Gegner werden gesucht..."
+  gameCanceled: "Das Spiel wurde abgesagt."
+  iStartedAGame: "Das Spiel hat begonnen! #MisskeyReversi"
+  opponentHasSettingsChanged: "Der Gegner hat seine Einstellungen geändert."
   allowIrregularRules: "Irreguläre Regeln (völlig frei)"
   disallowIrregularRules: "Keine irregulären Regeln"
   showBoardLabels: "Anzeige der Zeilen- und Spaltennummern am Spielbrett"
@@ -2653,14 +2694,23 @@ _urlPreviewSetting:
   requireContentLengthDescription: "Wenn der Server keine Content-Length zurückgibt, wird keine Vorschau erzeugt."
   userAgent: "User-Agent"
   userAgentDescription: "Legt den User-Agent fest, der beim Abrufen der Vorschau verwendet werden soll. Bleibt er leer, wird der Standard-User-Agent verwendet."
+  summaryProxyDescription: "Generierung von Vorschaubildern mit Summaly Proxy anstelle von Misskey selbst."
 _mediaControls:
+  pip: "Bild-in-Bild"
   playbackRate: "Wiedergabegeschwindigkeit"
+  loop: "Endloswiedergabe"
 _contextMenu:
   title: "Kontextmenü"
   app: "Anwendung"
 _gridComponent:
   _error:
     requiredValue: "Dieser Wert ist ein Pflichtfeld"
+    notUnique: "Dieser Wert muss eindeutig sein"
+_customEmojisManager:
+  _logs:
+    logNothing: "Keine Protokoll-Einträge."
+  _remote:
+    confirmImportEmojisTitle: "Emojis importieren"
 _embedCodeGen:
   title: "Einbettungscode anpassen"
   header: "Kopfzeile anzeigen"
@@ -2676,7 +2726,11 @@ _selfXssPrevention:
   warning: "WARNUNG"
   title: "„Füge in diesen Bereich etwas ein“ ist eine Betrugsmasche."
   description1: "Wenn du hier etwas einfügst, könnte ein böswilliger Benutzer dein Konto übernehmen oder deine persönlichen Daten stehlen."
+  description2: "Wenn du das nicht genau verstehst, was du einfügst, %csolltest du die Eingabe abbrechen und das Fenster schließen."
   description3: "Weitere Informationen findest du hier. {link}"
+_followRequest:
+  recieved: "Anfrage erhalten"
+  sent: "Anfrage gesendet"
 _remoteLookupErrors:
   _federationNotAllowed:
     title: "Kommunikation mit diesem Server nicht möglich"
@@ -2684,10 +2738,36 @@ _remoteLookupErrors:
   _uriInvalid:
     title: "URI ist fehlerhaft"
     description: "Es gibt ein Problem mit der von dir eingegebenen URI. Bitte prüfe, ob du Zeichen eingegeben hast, die in der URI nicht verwendet werden können."
+  _requestFailed:
+    title: "Anfrage fehlgeschlagen"
+    description: "Die Kommunikation mit diesem Server ist fehlgeschlagen. Der Server ist möglicherweise nicht erreichbar. Bitte vergewissere dich auch, dass du keine ungültige oder nicht existierende URI eingegeben hast."
+  _responseInvalid:
+    title: "Die Antwort ist ungültig"
+    description: "Die Kommunikation mit dem Server war erfolgreich, aber die erhaltenen Daten waren nicht korrekt. Wenn du Remote-Inhalte über einen Server eines Dritten abfragst, verwende bitte erneut eine URI, die vom Ursprungsserver abgerufen werden kann."
   _noSuchObject:
     title: "Nicht gefunden"
     description: "Die angeforderte Ressource konnte nicht gefunden werden, bitte überprüfe die URI erneut."
+_captcha:
+  _error:
+    _unknown:
+      text: "Es ist ein unerwarteter Fehler aufgetreten."
+_bootErrors:
+  title: "Laden fehlgeschlagen"
+  serverError: "Wenn das Problem nach kurzem Warten und erneutem Laden immer noch nicht behoben ist, wende dich bitte an den Serveradministrator und gib die folgende Fehler-ID an."
+  solution: "Folgendes könnte das Problem lösen."
+  solution1: "Aktualisiere deinen Browser und dein Betriebssystem auf die neueste Version"
+  solution2: "Deaktiviere den Werbeblocker"
+  solution3: "Leere den Browser-Cache"
+  solution4: "(Tor Browser) Setze dom.webaudio.enabled auf true"
+  otherOption: "Weitere Optionen"
+  otherOption1: "Client-Einstellungen und Cache löschen"
+  otherOption2: "Einfachen Client starten"
+  otherOption3: "Starte das Reparaturwerkzeug"
 _search:
   searchScopeAll: "Alle"
   searchScopeLocal: "Lokal"
+  searchScopeServer: "Bestimmter Server"
   searchScopeUser: "Spezifischer Benutzer"
+  pleaseEnterServerHost: "Gib den Server-Host ein"
+  pleaseSelectUser: "Benutzer auswählen"
+  serverHostPlaceholder: "Beispiel: misskey.example.com"
