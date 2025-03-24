@@ -1355,6 +1355,8 @@ _chat:
   ignore: "無視"
   leave: "ルームから退出"
   members: "メンバー"
+  searchMessages: "メッセージを検索"
+  home: "ホーム"
   cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
   cannotChatWithTheUser_description: "チャットが使えない状態になっているか、相手がチャットを開放していません。"
   chatWithThisUser: "チャットする"

@@ -402,6 +402,7 @@ export * as 'chat/messages/delete' from './endpoints/chat/messages/delete.js';
 export * as 'chat/messages/show' from './endpoints/chat/messages/show.js';
 export * as 'chat/messages/user-timeline' from './endpoints/chat/messages/user-timeline.js';
 export * as 'chat/messages/room-timeline' from './endpoints/chat/messages/room-timeline.js';
+export * as 'chat/messages/search' from './endpoints/chat/messages/search.js';
 export * as 'chat/rooms/create' from './endpoints/chat/rooms/create.js';
 export * as 'chat/rooms/delete' from './endpoints/chat/rooms/delete.js';
 export * as 'chat/rooms/join' from './endpoints/chat/rooms/join.js';

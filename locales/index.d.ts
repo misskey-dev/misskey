@@ -5433,6 +5433,14 @@ export interface Locale extends ILocale {
          */
         "members": string;
         /**
+         * メッセージを検索
+         */
+        "searchMessages": string;
+        /**
+         * ホーム
+         */
+        "home": string;
+        /**
          * このユーザーとのチャットを開始できません
          */
         "cannotChatWithTheUser": string;

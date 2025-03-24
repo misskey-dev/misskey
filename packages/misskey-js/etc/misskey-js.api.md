@@ -984,6 +984,12 @@ type ChatMessagesRoomTimelineRequest = operations['chat___messages___room-timeli
 type ChatMessagesRoomTimelineResponse = operations['chat___messages___room-timeline']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type ChatMessagesSearchRequest = operations['chat___messages___search']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesSearchResponse = operations['chat___messages___search']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type ChatMessagesShowRequest = operations['chat___messages___show']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1577,6 +1583,8 @@ declare namespace entities {
         ChatMessagesDeleteResponse,
         ChatMessagesRoomTimelineRequest,
         ChatMessagesRoomTimelineResponse,
+        ChatMessagesSearchRequest,
+        ChatMessagesSearchResponse,
         ChatMessagesShowRequest,
         ChatMessagesShowResponse,
         ChatMessagesUserTimelineRequest,

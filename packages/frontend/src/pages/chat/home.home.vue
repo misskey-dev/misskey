@@ -5,43 +5,68 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkButton primary gradate :class="$style.start" @click="start"><i class="ti ti-plus"></i> {{ i18n.ts.startChat }}</MkButton>
+	<MkButton primary gradate rounded :class="$style.start" @click="start"><i class="ti ti-plus"></i> {{ i18n.ts.startChat }}</MkButton>
 
 	<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 
-	<div v-if="history.length > 0" class="_gaps_s">
-		<MkA
-			v-for="item in history"
-			:key="item.id"
-			:class="[$style.message, { [$style.isMe]: item.isMe, [$style.isRead]: item.message.isRead }]"
-			class="_panel"
-			:to="item.message.toRoomId ? `/chat/room/${item.message.toRoomId}` : `/chat/user/${item.other!.id}`"
-		>
-			<MkAvatar v-if="item.other" :class="$style.messageAvatar" :user="item.other" indicator :preview="false"/>
-			<div :class="$style.messageBody">
-				<header v-if="item.message.toRoom" :class="$style.messageHeader">
-					<span :class="$style.messageHeaderName">{{ item.message.toRoom.name }}</span>
-					<MkTime :time="item.message.createdAt" :class="$style.messageHeaderTime"/>
-				</header>
-				<header v-else :class="$style.messageHeader">
-					<MkUserName :class="$style.messageHeaderName" :user="item.other!"/>
-					<MkAcct :class="$style.messageHeaderUsername" :user="item.other!"/>
-					<MkTime :time="item.message.createdAt" :class="$style.messageHeaderTime"/>
-				</header>
-				<div :class="$style.messageBodyText"><span v-if="item.isMe" :class="$style.youSaid">{{ i18n.ts.you }}:</span>{{ item.message.text }}</div>
+	<MkInput
+		v-model="searchQuery"
+		:placeholder="i18n.ts._chat.searchMessages"
+		type="search"
+	>
+		<template #prefix><i class="ti ti-search"></i></template>
+	</MkInput>
+
+	<MkButton v-if="searchQuery.length > 0" primary rounded @click="search">{{ i18n.ts.search }}</MkButton>
+
+	<MkFoldableSection v-if="searched">
+		<template #header>{{ i18n.ts.searchResult }}</template>
+
+		<div class="_gaps_s">
+			<div v-for="message in searchResults" :key="message.id" :class="$style.searchResultItem">
+				<XMessage :message="message" :user="message.fromUser" :isSearchResult="true"/>
 			</div>
-		</MkA>
-	</div>
-	<div v-if="!fetching && history.length == 0" class="_fullinfo">
-		<div>{{ i18n.ts._chat.noHistory }}</div>
-	</div>
-	<MkLoading v-if="fetching"/>
+		</div>
+	</MkFoldableSection>
+
+	<MkFoldableSection>
+		<template #header>{{ i18n.ts._chat.history }}</template>
+
+		<div v-if="history.length > 0" class="_gaps_s">
+			<MkA
+				v-for="item in history"
+				:key="item.id"
+				:class="[$style.message, { [$style.isMe]: item.isMe, [$style.isRead]: item.message.isRead }]"
+				class="_panel"
+				:to="item.message.toRoomId ? `/chat/room/${item.message.toRoomId}` : `/chat/user/${item.other!.id}`"
+			>
+				<MkAvatar v-if="item.other" :class="$style.messageAvatar" :user="item.other" indicator :preview="false"/>
+				<div :class="$style.messageBody">
+					<header v-if="item.message.toRoom" :class="$style.messageHeader">
+						<span :class="$style.messageHeaderName">{{ item.message.toRoom.name }}</span>
+						<MkTime :time="item.message.createdAt" :class="$style.messageHeaderTime"/>
+					</header>
+					<header v-else :class="$style.messageHeader">
+						<MkUserName :class="$style.messageHeaderName" :user="item.other!"/>
+						<MkAcct :class="$style.messageHeaderUsername" :user="item.other!"/>
+						<MkTime :time="item.message.createdAt" :class="$style.messageHeaderTime"/>
+					</header>
+					<div :class="$style.messageBodyText"><span v-if="item.isMe" :class="$style.youSaid">{{ i18n.ts.you }}:</span>{{ item.message.text }}</div>
+				</div>
+			</MkA>
+		</div>
+		<div v-if="!fetching && history.length == 0" class="_fullinfo">
+			<div>{{ i18n.ts._chat.noHistory }}</div>
+		</div>
+		<MkLoading v-if="fetching"/>
+	</MkFoldableSection>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import XMessage from './XMessage.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -49,6 +74,8 @@ import { ensureSignin } from '@/i.js';
 import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
+import MkInput from '@/components/MkInput.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const $i = ensureSignin();
 
@@ -61,6 +88,10 @@ const history = ref<{
 	other: Misskey.entities.ChatMessage['fromUser'] | Misskey.entities.ChatMessage['toUser'] | null;
 	isMe: boolean;
 }[]>([]);
+
+const searchQuery = ref('');
+const searched = ref(false);
+const searchResults = ref<Misskey.entities.ChatMessage[]>([]);
 
 function start(ev: MouseEvent) {
 	os.popupMenu([{
@@ -99,6 +130,15 @@ async function createRoom() {
 	});
 
 	router.push(`/chat/room/${room.id}`);
+}
+
+async function search() {
+	const res = await misskeyApi('chat/messages/search', {
+		query: searchQuery.value,
+	});
+
+	searchResults.value = res;
+	searched.value = true;
 }
 
 async function fetchHistory() {
@@ -202,5 +242,11 @@ onMounted(() => {
 .youSaid {
 	font-weight: bold;
 	margin-right: 0.5em;
+}
+
+.searchResultItem {
+	padding: 12px;
+	border: solid 1px var(--MI_THEME-divider);
+	border-radius: 12px;
 }
 </style>

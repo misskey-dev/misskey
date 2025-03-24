@@ -20,6 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footer">
 			<button class="_textButton" style="color: currentColor;" @click="showMenu"><i class="ti ti-dots-circle-horizontal"></i></button>
 			<MkTime :class="$style.time" :time="message.createdAt"/>
+			<MkA v-if="isSearchResult && message.toRoomId" :to="`/chat/room/${message.toRoomId}`">{{ message.toRoom.name }}</MkA>
+			<MkA v-if="isSearchResult && message.toUserId && isMe" :to="`/chat/user/${message.toUserId}`">@{{ message.toUser.username }}</MkA>
 		</div>
 	</div>
 </div>
@@ -44,9 +46,10 @@ import MkMediaList from '@/components/MkMediaList.vue';
 const $i = ensureSignin();
 
 const props = defineProps<{
-	message: Misskey.entities.ChatMessageLite;
+	message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage;
 	user: Misskey.entities.User;
 	isRoom?: boolean;
+	isSearchResult?: boolean;
 }>();
 
 const isMe = computed(() => props.message.fromUserId === $i.id);

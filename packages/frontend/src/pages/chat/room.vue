@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, computed, watch, onMounted, nextTick, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
 import { isTailVisible } from '@@/js/scroll.js';
-import XMessage from './room.message.vue';
+import XMessage from './XMessage.vue';
 import XForm from './room.form.vue';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';

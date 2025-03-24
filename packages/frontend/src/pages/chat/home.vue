@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="700">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<XHistory v-if="tab === 'home'"/>
+			<XHome v-if="tab === 'home'"/>
 			<XInvitations v-else-if="tab === 'invitations'"/>
 			<XOwnedRooms v-else-if="tab === 'ownedRooms'"/>
 		</MkHorizontalSwipe>
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
-import XHistory from './home.history.vue';
+import XHome from './home.home.vue';
 import XInvitations from './home.invitations.vue';
 import XOwnedRooms from './home.ownedRooms.vue';
 import { i18n } from '@/i18n.js';
@@ -30,7 +30,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => [{
 	key: 'home',
-	title: i18n.ts._chat.history,
+	title: i18n.ts._chat.home,
 	icon: 'ti ti-home',
 }, {
 	key: 'invitations',

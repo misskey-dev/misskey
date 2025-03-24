@@ -23,6 +23,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
 import { Packed } from '@/misc/json-schema.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 const MAX_ROOM_MEMBERS = 30;
 
@@ -601,5 +602,55 @@ export class ChatService {
 		const memberships = await query.take(limit).getMany();
 
 		return memberships;
+	}
+
+	@bindThis
+	public async searchMessages(meId: MiUser['id'], query: string, limit: number, params: {
+		userId?: MiUser['id'] | null;
+		roomId?: MiChatRoom['id'] | null;
+	}) {
+		const q = this.chatMessagesRepository.createQueryBuilder('message');
+
+		if (params.userId) {
+			q.andWhere(new Brackets(qb => {
+				qb
+					.where('message.fromUserId = :meId')
+					.andWhere('message.toUserId = :otherId');
+			}))
+				.orWhere(new Brackets(qb => {
+					qb
+						.where('message.fromUserId = :otherId')
+						.andWhere('message.toUserId = :meId');
+				}))
+				.setParameter('meId', meId)
+				.setParameter('otherId', params.userId);
+		} else if (params.roomId) {
+			q.where('message.toRoomId = :roomId', { roomId: params.roomId });
+		} else {
+			const membershipsQuery = this.chatRoomMembershipsRepository.createQueryBuilder('membership')
+				.select('membership.roomId')
+				.where('membership.userId = :meId', { meId: meId });
+
+			const ownedRoomsQuery = this.chatRoomsRepository.createQueryBuilder('room')
+				.select('room.id')
+				.where('room.ownerId = :meId', { meId });
+
+			q.andWhere(new Brackets(qb => {
+				qb
+					.where('message.fromUserId = :meId')
+					.orWhere('message.toUserId = :meId')
+					.orWhere(`message.toRoomId IN (${membershipsQuery.getQuery()})`)
+					.orWhere(`message.toRoomId IN (${ownedRoomsQuery.getQuery()})`);
+			}));
+
+			q.setParameters(membershipsQuery.getParameters());
+			q.setParameters(ownedRoomsQuery.getParameters());
+		}
+
+		q.andWhere('LOWER(message.text) LIKE :q', { q: `%${ sqlLikeEscape(query.toLowerCase()) }%` });
+
+		const messages = await q.orderBy('message.id', 'DESC').take(limit).getMany();
+
+		return messages;
 	}
 }

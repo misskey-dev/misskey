@@ -217,6 +217,8 @@ import type {
 	ChatMessagesDeleteResponse,
 	ChatMessagesRoomTimelineRequest,
 	ChatMessagesRoomTimelineResponse,
+	ChatMessagesSearchRequest,
+	ChatMessagesSearchResponse,
 	ChatMessagesShowRequest,
 	ChatMessagesShowResponse,
 	ChatMessagesUserTimelineRequest,
@@ -767,6 +769,7 @@ export type Endpoints = {
 	'chat/messages/create-to-user': { req: ChatMessagesCreateToUserRequest; res: ChatMessagesCreateToUserResponse };
 	'chat/messages/delete': { req: ChatMessagesDeleteRequest; res: ChatMessagesDeleteResponse };
 	'chat/messages/room-timeline': { req: ChatMessagesRoomTimelineRequest; res: ChatMessagesRoomTimelineResponse };
+	'chat/messages/search': { req: ChatMessagesSearchRequest; res: ChatMessagesSearchResponse };
 	'chat/messages/show': { req: ChatMessagesShowRequest; res: ChatMessagesShowResponse };
 	'chat/messages/user-timeline': { req: ChatMessagesUserTimelineRequest; res: ChatMessagesUserTimelineResponse };
 	'chat/rooms/create': { req: ChatRoomsCreateRequest; res: ChatRoomsCreateResponse };
