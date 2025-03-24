@@ -168,21 +168,17 @@ export default defineComponent({
 	container-type: inline-size;
 
 	&:global {
-	> .list-move {
-		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-	}
+		> .list-move {
+			transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+		}
 
-	&.deny-move-transition > .list-move {
-		transition: none !important;
-	}
+		> .list-enter-active {
+			transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+		}
 
-	> .list-enter-active {
-		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-	}
-
-	> *:empty {
-		display: none;
-	}
+		> *:empty {
+			display: none;
+		}
 	}
 
 	&:not(.date-separated-list-nogap) > *:not(:last-child) {

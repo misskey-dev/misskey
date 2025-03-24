@@ -1,5 +1,6 @@
 import {
 	Antenna,
+	ChatMessage,
 	DriveFile,
 	DriveFolder,
 	Note,
@@ -46,13 +47,9 @@ export type Channels = {
 			urlUploadFinished: (payload: { marker: string; file: DriveFile; }) => void;
 			readAllNotifications: () => void;
 			unreadNotification: (payload: Notification) => void;
-			unreadMention: (payload: Note['id']) => void;
-			readAllUnreadMentions: () => void;
 			notificationFlushed: () => void;
-			unreadSpecifiedNote: (payload: Note['id']) => void;
-			readAllUnreadSpecifiedNotes: () => void;
-			readAllAntennas: () => void;
 			unreadAntenna: (payload: Antenna) => void;
+			newChatMessage: (payload: ChatMessage) => void;
 			readAllAnnouncements: () => void;
 			myTokenRegenerated: () => void;
 			signin: (payload: Signin) => void;

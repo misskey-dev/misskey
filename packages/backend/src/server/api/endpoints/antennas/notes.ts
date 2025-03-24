@@ -8,7 +8,6 @@ import * as Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NotesRepository, AntennasRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
-import { NoteReadService } from '@/core/NoteReadService.js';
 import { DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { IdService } from '@/core/IdService.js';
@@ -63,9 +62,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.redisForTimelines)
-		private redisForTimelines: Redis.Redis,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -76,7 +72,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private noteReadService: NoteReadService,
 		private fanoutTimelineService: FanoutTimelineService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -140,8 +135,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} else {
 				notes.sort((a, b) => a.id > b.id ? -1 : 1);
 			}
-
-			this.noteReadService.read(me.id, notes);
 
 			const packedNotes = (await this.noteEntityService.packMany(notes, me, { withReactionAndUserPairCache: true })).filter(note => !isMustRemove(note, 'home'));
 			await Promise.all(

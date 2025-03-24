@@ -66,6 +66,7 @@ export type RolePolicies = {
 	canImportMuting: boolean;
 	canImportNotes: boolean;
 	canImportUserLists: boolean;
+	canChat: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -103,6 +104,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportMuting: true,
 	canImportNotes: true,
 	canImportUserLists: true,
+	canChat: true,
 };
 
 @Injectable()
@@ -413,6 +415,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canImportMuting: calc('canImportMuting', vs => vs.some(v => v === true)),
 			canImportNotes: calc('canImportNotes', vs => vs.some(v => v === true)),
 			canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
+			canChat: calc('canChat', vs => vs.some(v => v === true)),
 		};
 	}
 
