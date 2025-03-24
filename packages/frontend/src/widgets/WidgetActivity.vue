@@ -25,10 +25,10 @@ import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from './widget.js';
 import XCalendar from './WidgetActivity.calendar.vue';
 import XChart from './WidgetActivity.chart.vue';
-import type { GetFormResultType } from '@/scripts/form.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import type { GetFormResultType } from '@/utility/form.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 
 const name = 'activity';

@@ -646,6 +646,7 @@ show: "Arată"
 icon: "Avatar"
 replies: "Răspunde"
 renotes: "Re-notează"
+information: "Despre"
 _delivery:
   stop: "Suspendat"
   _type:

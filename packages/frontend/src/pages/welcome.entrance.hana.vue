@@ -39,9 +39,9 @@
 import { onMounted, onUnmounted, useTemplateRef, ref, watch } from 'vue';
 import { instance } from '@/instance.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
 
 import MkButton from '@/components/MkButton.vue';
@@ -73,7 +73,7 @@ function onFrameLoad() {
 	frameEl.value?.contentWindow?.postMessage({
 		type: 'hanamisskey:meta',
 		payload: {
-			colorMode: defaultStore.state.darkMode ? 'dark' : 'light',
+			colorMode: store.s.darkMode ? 'dark' : 'light',
 			instance: JSON.parse(JSON.stringify(instance)),
 		},
 	}, 'https://frame-static-assets.misskey.flowers');
@@ -98,7 +98,7 @@ watch(iframeLoaded, (to) => {
 	}
 }, { immediate: true });
 
-watch(defaultStore.reactiveState.darkMode, (to) => {
+watch(store.r.darkMode, (to) => {
 	console.log('darkMode changed');
 	frameEl.value?.contentWindow?.postMessage({
 		type: 'hanamisskey:colorMode',

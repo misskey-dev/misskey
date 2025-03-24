@@ -131,11 +131,11 @@ import MkRange from '@/components/MkRange.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { useForm } from '@/scripts/use-form.js';
+import { definePage } from '@/page.js';
+import { useForm } from '@/use/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 
 const meta = await misskeyApi('admin/meta');
@@ -206,7 +206,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.security,
 	icon: 'ti ti-lock',
 }));

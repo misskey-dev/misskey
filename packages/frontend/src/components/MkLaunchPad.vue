@@ -27,11 +27,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef } from 'vue';
+import { useTemplateRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { navbarItemDef } from '@/navbar.js';
-import { defaultStore } from '@/store.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { deviceKind } from '@/utility/device-kind.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;
@@ -48,9 +48,9 @@ const preferedModalType = (deviceKind === 'desktop' && props.src != null) ? 'pop
 	deviceKind === 'smartphone' ? 'drawer' :
 	'dialog';
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const modal = useTemplateRef('modal');
 
-const menu = defaultStore.state.menu;
+const menu = prefer.s.menu;
 
 const items = Object.keys(navbarItemDef).filter(k => !menu.includes(k)).map(k => navbarItemDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
 	type: def.to ? 'link' : 'button',

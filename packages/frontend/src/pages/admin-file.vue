@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer v-if="file" :contentMax="600" :marginMin="16" :marginMax="32">
 		<div v-if="tab === 'overview'" class="cxqhhsmd _gaps_m">
 			<a class="thumbnail" :href="file.url" target="_blank">
@@ -67,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkObjectView>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -83,10 +82,10 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { iAmAdmin, iAmModerator } from '@/account.js';
+import { definePage } from '@/page.js';
+import { iAmAdmin, iAmModerator } from '@/i.js';
 
 const tab = ref('overview');
 const file = ref<Misskey.entities.DriveFile | null>(null);
@@ -161,7 +160,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-code',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: file.value ? `${i18n.ts.file}: ${file.value.name}` : i18n.ts.file,
 	icon: 'ti ti-file',
 }));

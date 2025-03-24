@@ -19,7 +19,7 @@ const editMode = ref(false);
 <script lang="ts" setup>
 import XWidgets from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	// null = 全てのウィジェットを表示
@@ -31,24 +31,24 @@ const props = withDefaults(defineProps<{
 });
 
 const widgets = computed(() => {
-	if (props.place === null) return defaultStore.reactiveState.widgets.value;
-	if (props.place === 'left') return defaultStore.reactiveState.widgets.value.filter(w => w.place === 'left');
-	return defaultStore.reactiveState.widgets.value.filter(w => w.place !== 'left');
+	if (props.place === null) return prefer.r.widgets.value;
+	if (props.place === 'left') return prefer.r.widgets.value.filter(w => w.place === 'left');
+	return prefer.r.widgets.value.filter(w => w.place !== 'left');
 });
 
 function addWidget(widget) {
-	defaultStore.set('widgets', [{
+	prefer.commit('widgets', [{
 		...widget,
 		place: props.place,
-	}, ...defaultStore.state.widgets]);
+	}, ...prefer.s.widgets]);
 }
 
 function removeWidget(widget) {
-	defaultStore.set('widgets', defaultStore.state.widgets.filter(w => w.id !== widget.id));
+	prefer.commit('widgets', prefer.s.widgets.filter(w => w.id !== widget.id));
 }
 
 function updateWidget({ id, data }) {
-	defaultStore.set('widgets', defaultStore.state.widgets.map(w => w.id === id ? {
+	prefer.commit('widgets', prefer.s.widgets.map(w => w.id === id ? {
 		...w,
 		data,
 		place: props.place,
@@ -57,18 +57,18 @@ function updateWidget({ id, data }) {
 
 function updateWidgets(thisWidgets) {
 	if (props.place === null) {
-		defaultStore.set('widgets', thisWidgets);
+		prefer.commit('widgets', thisWidgets);
 		return;
 	}
 	if (props.place === 'left') {
-		defaultStore.set('widgets', [
+		prefer.commit('widgets', [
 			...thisWidgets.map(w => ({ ...w, place: 'left' })),
-			...defaultStore.state.widgets.filter(w => w.place !== 'left' && !thisWidgets.some(t => w.id === t.id)),
+			...prefer.s.widgets.filter(w => w.place !== 'left' && !thisWidgets.some(t => w.id === t.id)),
 		]);
 		return;
 	}
-	defaultStore.set('widgets', [
-		...defaultStore.state.widgets.filter(w => w.place === 'left' && !thisWidgets.some(t => w.id === t.id)),
+	prefer.commit('widgets', [
+		...prefer.s.widgets.filter(w => w.place === 'left' && !thisWidgets.some(t => w.id === t.id)),
 		...thisWidgets.map(w => ({ ...w, place: 'right' })),
 	]);
 }

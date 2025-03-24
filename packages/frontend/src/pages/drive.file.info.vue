@@ -69,7 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<div v-else class="_fullinfo">
-		<img :src="infoImageUrl" class="_ghost"/>
+		<img :src="infoImageUrl" draggable="false"/>
 		<div>{{ i18n.ts.nothing }}</div>
 	</div>
 </div>
@@ -85,8 +85,8 @@ import bytes from '@/filters/bytes.js';
 import { infoImageUrl } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useRouter } from '@/router/supplier.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 

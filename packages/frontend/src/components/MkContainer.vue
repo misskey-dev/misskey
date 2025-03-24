@@ -19,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</header>
 	<Transition
-		:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
-		:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
-		:enterFromClass="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
-		:leaveToClass="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
+		:enterActiveClass="prefer.s.animation ? $style.transition_toggle_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_toggle_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_toggle_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_toggle_leaveTo : ''"
 		@enter="enter"
 		@afterEnter="afterEnter"
 		@leave="leave"
@@ -39,8 +39,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
-import { defaultStore } from '@/store.js';
+import { onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
@@ -58,9 +58,9 @@ const props = withDefaults(defineProps<{
 	maxHeight: null,
 });
 
-const rootEl = shallowRef<HTMLElement>();
-const contentEl = shallowRef<HTMLElement>();
-const headerEl = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
+const contentEl = useTemplateRef('contentEl');
+const headerEl = useTemplateRef('headerEl');
 const showBody = ref(props.expanded);
 const ignoreOmit = ref(false);
 const omitted = ref(false);

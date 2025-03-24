@@ -37,12 +37,13 @@ import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { selectFile } from '@/scripts/select-file.js';
+import { selectFile } from '@/utility/select-file.js';
 import * as os from '@/os.js';
-import { signinRequired, updateAccountPartial } from '@/account.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
+import { ensureSignin } from '@/i.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const name = ref($i.name ?? '');
 const description = ref($i.description ?? '');
@@ -58,7 +59,7 @@ watch(name, () => {
 			text: i18n.ts.yourNameContainsProhibitedWordsDescription,
 		},
 	});
-	updateAccountPartial({ name: name.value });
+	updateCurrentAccountPartial({ name: name.value });
 });
 
 watch(description, () => {
@@ -67,7 +68,7 @@ watch(description, () => {
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		description: description.value || null,
 	});
-	updateAccountPartial({ description: description.value });
+	updateCurrentAccountPartial({ description: description.value });
 });
 
 function setAvatar(ev: MouseEvent) {
@@ -90,7 +91,7 @@ function setAvatar(ev: MouseEvent) {
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: originalOrCropped.id,
 		});
-		updateAccountPartial({ avatarId: i.avatarId, avatarUrl: i.avatarUrl });
+		updateCurrentAccountPartial({ avatarId: i.avatarId, avatarUrl: i.avatarUrl });
 	});
 }
 

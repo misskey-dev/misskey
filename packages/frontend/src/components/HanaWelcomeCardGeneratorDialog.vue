@@ -71,9 +71,9 @@
 import { ref, shallowRef, onMounted, onDeactivated, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/account.js';
+import { ensureSignin } from '@/i.js';
 import { apiUrl, host } from '@@/js/config.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { hanaStore } from '@/hana/store.js';
 import * as os from '@/os.js';
 
@@ -87,7 +87,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 //#region modalの制御
 const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
@@ -194,7 +194,7 @@ async function initCanvas() {
 	}
 
 	await fontFace.load();
-	document.fonts.add(fontFace);
+	window.document.fonts.add(fontFace);
 
 	await loadBg();
 	await loadAvatar();
@@ -265,7 +265,7 @@ function postToX() {
 function download() {
 	if (!result.value) return;
 
-	const a = document.createElement('a');
+	const a = window.document.createElement('a');
 	a.href = URL.createObjectURL(result.value);
 	a.download = `hana-welcome-card-${Date.now()}.png`;
 	a.click();
@@ -281,8 +281,8 @@ async function note() {
 		formData.append('name', `hana-welcome-card-${Date.now()}.png`);
 		formData.append('isSensitive', 'false');
 		formData.append('i', $i.token);
-		if (defaultStore.state.uploadFolder) {
-			formData.append('folderId', defaultStore.state.uploadFolder);
+		if (prefer.s.uploadFolder) {
+			formData.append('folderId', prefer.s.uploadFolder);
 		}
 
 		const res = await window.fetch(apiUrl + '/drive/files/create', {
@@ -304,7 +304,7 @@ async function note() {
 	if (!file) return;
 
 	os.post({
-		text: i18n.tsx._hana._welcomeCardGen.shareText({ url: `https://${host}/@${$i.username}` }),
+		initialText: i18n.tsx._hana._welcomeCardGen.shareText({ url: `https://${host}/@${$i.username}` }),
 		initialFiles: [file],
 		instant: true,
 	});

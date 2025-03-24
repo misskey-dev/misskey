@@ -50,11 +50,11 @@ import { onMounted, ref } from 'vue';
 import XPie from './overview.pie.vue';
 import type { InstanceForPie } from './overview.pie.vue';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 import number from '@/filters/number.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import { i18n } from '@/i18n.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { useChartTooltip } from '@/use/use-chart-tooltip.js';
 
 const topSubInstancesForPie = ref<InstanceForPie[] | null>(null);
 const topPubInstancesForPie = ref<InstanceForPie[] | null>(null);

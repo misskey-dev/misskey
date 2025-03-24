@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</div>
 		<div v-else class="_fullinfo">
-			<img :src="infoImageUrl" class="_ghost"/>
+			<img :src="infoImageUrl" draggable="false"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 	</MkSpacer>
@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { reactive, shallowRef } from 'vue';
+import { reactive, useTemplateRef } from 'vue';
 import MkInput from './MkInput.vue';
 import MkTextarea from './MkTextarea.vue';
 import MkSwitch from './MkSwitch.vue';
@@ -80,7 +80,7 @@ import MkRange from './MkRange.vue';
 import MkButton from './MkButton.vue';
 import MkRadios from './MkRadios.vue';
 import XFile from './MkFormDialog.file.vue';
-import type { Form } from '@/scripts/form.js';
+import type { Form } from '@/utility/form.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
@@ -99,7 +99,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 const values = reactive({});
 
 for (const item in props.form) {

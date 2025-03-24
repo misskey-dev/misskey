@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="600" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<div v-if="tab === 'overview'" class="_gaps_m">
@@ -208,7 +207,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</FormSuspense>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -229,11 +228,11 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { acct } from '@/filters/user.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { iAmAdmin, $i, iAmModerator } from '@/account.js';
+import { iAmAdmin, $i, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 
@@ -545,7 +544,7 @@ const headerTabs = computed(() => isSystem.value ? [{
 	icon: 'ti ti-code',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: user.value ? acct(user.value) : i18n.ts.userInfo,
 	icon: 'ti ti-user-exclamation',
 }));

@@ -31,7 +31,7 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import { useInterval } from '@@/js/use-interval.js';
-import { shuffle } from '@/scripts/shuffle.js';
+import { shuffle } from '@/utility/shuffle.js';
 
 const props = defineProps<{
 	url?: string;

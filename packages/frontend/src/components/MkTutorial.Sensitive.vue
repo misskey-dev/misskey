@@ -32,7 +32,7 @@ import MkPostForm from '@/components/MkPostForm.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNote from '@/components/MkNote.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 const onceSucceeded = ref<boolean>(false);

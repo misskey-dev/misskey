@@ -14,17 +14,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef, ref } from 'vue';
+import { onMounted, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
-import type { ChartDataset } from 'chart.js';
 import * as Misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { chartVLine } from '@/scripts/chart-vline.js';
-import { initChart } from '@/scripts/init-chart.js';
-import { chartLegend } from '@/scripts/chart-legend.js';
+import type { ChartDataset } from 'chart.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { store } from '@/store.js';
+import { useChartTooltip } from '@/use/use-chart-tooltip.js';
+import { chartVLine } from '@/utility/chart-vline.js';
+import { initChart } from '@/utility/init-chart.js';
+import { chartLegend } from '@/utility/chart-legend.js';
 import MkChartLegend from '@/components/MkChartLegend.vue';
 
 initChart();
@@ -33,8 +33,8 @@ const props = defineProps<{
 	user: Misskey.entities.User;
 }>();
 
-const chartEl = shallowRef<HTMLCanvasElement>(null);
-const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
+const chartEl = useTemplateRef('chartEl');
+const legendEl = useTemplateRef('legendEl');
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 30;
@@ -64,7 +64,7 @@ async function renderChart() {
 
 	const raw = await misskeyApi('charts/user/pv', { userId: props.user.id, limit: chartLimit, span: 'day' });
 
-	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
 	const colorUser = '#3498db';
 	const colorVisitor = '#2ecc71';

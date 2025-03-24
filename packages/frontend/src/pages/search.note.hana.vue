@@ -150,13 +150,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, shallowRef, useTemplateRef, toRef } from 'vue';
 import type * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/MkPagination.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { host as localHost } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useRouter } from '@/router/supplier.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -169,7 +169,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkNoteMediaGrid from '@/components/MkNoteMediaGrid.vue';
-import { getBgColor } from '@/scripts/get-bg-color.js';
+import { getBgColor } from '@/utility/get-bg-color.js';
 import type { SearchMode } from '@/hana/types/search.js';
 
 const props = withDefaults(defineProps<{

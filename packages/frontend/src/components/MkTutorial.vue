@@ -171,7 +171,7 @@ import XMinorSettings from '@/components/MkTutorial.MinorSettings.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { instance } from '@/instance.js';
 import { host } from '@@/js/config.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { claimAchievement } from '@/utility/achievements.js';
 
 import type { Component } from 'vue';
 import type { Tuple } from '@/type.js';

@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import MkNote from '@/components/MkNote.vue';
 import XEmpty from '@/components/MkNotes.note.empty.vue';
 
@@ -40,11 +40,11 @@ const props = withDefaults(defineProps<{
 
 const height = ref<number>(150);
 const heightResolved = ref(false);
-const skipRendering = computed(() => defaultStore.state.skipNoteRender === 'js' && !props.visible && heightResolved.value);
+const skipRendering = computed(() => prefer.s.skipNoteRender === 'js' && !props.visible && heightResolved.value);
 let observer: ResizeObserver | null = null;
 
 function onNoteMounted(el: HTMLElement) {
-	if (defaultStore.state.skipNoteRender !== 'js') return;
+	if (prefer.s.skipNoteRender !== 'js') return;
 
 	height.value = el.getBoundingClientRect().height ?? 150;
 	heightResolved.value = true;

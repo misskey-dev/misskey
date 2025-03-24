@@ -5,9 +5,9 @@
 
 import { reactive, watch } from 'vue';
 import { throttle } from 'throttle-debounce';
-import type { Form, GetFormResultType } from '@/scripts/form.js';
+import type { Form, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
-import { deepClone } from '@/scripts/clone.js';
+import { deepClone } from '@/utility/clone.js';
 
 export type Widget<P extends Record<string, unknown>> = {
 	id: string;

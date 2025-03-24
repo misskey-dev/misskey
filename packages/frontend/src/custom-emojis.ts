@@ -5,8 +5,8 @@
 
 import { shallowRef, computed, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
-import { get, set } from '@/scripts/idb-proxy.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import { get, set } from '@/utility/idb-proxy.js';
 
 const storageCache = await get('emojis');
 export const customEmojis = shallowRef<Misskey.entities.EmojiSimple[]>(Array.isArray(storageCache) ? storageCache : []);

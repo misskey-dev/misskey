@@ -4,14 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<Transition
-			:enterActiveClass="defaultStore.state.animation ? $style.fadeEnterActive : ''"
-			:leaveActiveClass="defaultStore.state.animation ? $style.fadeLeaveActive : ''"
-			:enterFromClass="defaultStore.state.animation ? $style.fadeEnterFrom : ''"
-			:leaveToClass="defaultStore.state.animation ? $style.fadeLeaveTo : ''"
+			:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
+			:leaveActiveClass="prefer.s.animation ? $style.fadeLeaveActive : ''"
+			:enterFromClass="prefer.s.animation ? $style.fadeEnterFrom : ''"
+			:leaveToClass="prefer.s.animation ? $style.fadeLeaveTo : ''"
 			mode="out-in"
 		>
 			<div v-if="announcement" :key="announcement.id" class="_panel" :class="$style.announcement">
@@ -44,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkLoading v-else/>
 		</Transition>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -52,11 +51,12 @@ import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i, updateAccountPartial } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { definePage } from '@/page.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const props = defineProps<{
 	announcementId: string;
@@ -90,7 +90,7 @@ async function read(target: Misskey.entities.Announcement): Promise<void> {
 	target.isRead = true;
 	await misskeyApi('i/read-announcement', { announcementId: target.id });
 	if ($i) {
-		updateAccountPartial({
+		updateCurrentAccountPartial({
 			unreadAnnouncements: $i.unreadAnnouncements.filter((a: { id: string; }) => a.id !== target.id),
 		});
 	}
@@ -102,7 +102,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: announcement.value ? announcement.value.title : i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
 }));

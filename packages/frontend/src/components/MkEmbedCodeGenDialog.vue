@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { shallowRef, ref, computed, nextTick, onMounted, onDeactivated, onUnmounted } from 'vue';
+import { useTemplateRef, ref, computed, nextTick, onMounted, onDeactivated, onUnmounted } from 'vue';
 import { url } from '@@/js/config.js';
 import { embedRouteWithScrollbar } from '@@/js/embed-page.js';
 import type { EmbeddableEntity, EmbedParams } from '@@/js/embed-page.js';
@@ -105,8 +105,8 @@ import MkInfo from '@/components/MkInfo.vue';
 
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { normalizeEmbedParams, getEmbedCode } from '@/scripts/get-embed-code.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { normalizeEmbedParams, getEmbedCode } from '@/utility/get-embed-code.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;
@@ -121,7 +121,7 @@ const props = defineProps<{
 }>();
 
 //#region Modalの制御
-const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialogEl = useTemplateRef('dialogEl');
 
 function cancel() {
 	emit('cancel');
@@ -180,7 +180,7 @@ function applyToPreview() {
 	nextTick(() => {
 		if (currentPreviewUrl === embedPreviewUrl.value) {
 			// URLが変わらなくてもリロード
-			iframeEl.value?.contentWindow?.location.reload();
+			iframeEl.value?.contentWindow?.window.location.reload();
 		}
 	});
 }
@@ -194,14 +194,13 @@ function generate() {
 
 function doCopy() {
 	copyToClipboard(result.value);
-	os.success();
 }
 //#endregion
 
 //#region プレビューのリサイズ
-const resizerRootEl = shallowRef<HTMLDivElement>();
+const resizerRootEl = useTemplateRef('resizerRootEl');
 const iframeLoading = ref(true);
-const iframeEl = shallowRef<HTMLIFrameElement>();
+const iframeEl = useTemplateRef('iframeEl');
 const iframeHeight = ref(0);
 const iframeScale = ref(1);
 const iframeStyle = computed(() => {

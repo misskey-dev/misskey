@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkPagination ref="pagingComponent" :pagination="pagination" :disableAutoLoad="disableAutoLoad">
 	<template #empty>
 		<div class="_fullinfo">
-			<img :src="infoImageUrl" class="_ghost"/>
+			<img :src="infoImageUrl" draggable="false"/>
 			<div>{{ i18n.ts.noNotes }}</div>
 		</div>
 	</template>
@@ -41,14 +41,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { useTemplateRef, ref, watch, onActivated, onDeactivated, onBeforeUnmount } from 'vue';
 import type { WatchStopHandle } from 'vue';
+import type { Paging } from '@/components/MkPagination.vue';
 import XNote from '@/components/MkNotes.note.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import type { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
-import { defaultStore } from '@/store.js';
-import { getHTMLElementOrNull } from "@/scripts/get-dom-node-or-null.js";
+import { prefer } from '@/preferences.js';
+import { getHTMLElementOrNull } from "@/utility/get-dom-node-or-null.js";
 import { getScrollContainer } from '@@/js/scroll.js';
 
 const props = withDefaults(defineProps<{
@@ -75,7 +75,7 @@ function initNoteRenderSkipping() {
 
 	if (
 		!props.disableJsRenderSkip &&
-		defaultStore.state.skipNoteRender === 'js'
+		prefer.s.skipNoteRender === 'js'
 	) {
 		rootElWatcher = watch(rootEl, (to) => {
 			if (to != null) {
@@ -83,7 +83,7 @@ function initNoteRenderSkipping() {
 				disposeNoteRenderSkipping();
 
 				const scrollEl = getScrollContainer(to);
-				const scrollElRect = (scrollEl ?? document.body).getBoundingClientRect();
+				const scrollElRect = (scrollEl ?? window.document.body).getBoundingClientRect();
 
 				// 画面内に入ったノートを記録
 				intersectionObserver = new IntersectionObserver((entries) => {

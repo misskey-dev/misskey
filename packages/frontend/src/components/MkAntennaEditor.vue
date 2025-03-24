@@ -59,10 +59,10 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { deepMerge } from '@/scripts/merge.js';
-import type { DeepPartial } from '@/scripts/merge.js';
+import { deepMerge } from '@/utility/merge.js';
+import type { DeepPartial } from '@/utility/merge.js';
 
 type PartialAllowedAntenna = Omit<Misskey.entities.Antenna, 'id' | 'createdAt' | 'updatedAt'> & {
 	id?: string;

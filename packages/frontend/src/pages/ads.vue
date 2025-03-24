@@ -4,23 +4,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
-
+<PageWithHeader>
 	<MkSpacer :contentMax="500">
 		<div class="_gaps">
 			<MkAd v-for="ad in instance.ads" :key="ad.id" :specify="ad"/>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.ads,
 	icon: 'ti ti-ad',
 }));

@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<div v-show="useCw" :class="$style.cwOuter">
 		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
-		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>		
+		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>
 	</div>
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 		<div v-if="channel" :class="$style.colorBar" :style="{ background: channel.color }"></div>
@@ -102,40 +102,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
-import type { ShallowRef } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode.js';
 import { host, url } from '@@/js/config.js';
+import type { ShallowRef } from 'vue';
 import type { PostFormProps } from '@/types/post-form.js';
-import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import type { MenuItem } from '@/types/menu.js';
+import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
+import XTextCounter from '@/components/MkPostForm.TextCounter.vue';
 import MkPollEditor from '@/components/MkPollEditor.vue';
-import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
-import { erase, unique } from '@/scripts/array.js';
-import { extractMentions } from '@/scripts/extract-mentions.js';
-import { formatTimeString } from '@/scripts/format-time-string.js';
-import { Autocomplete } from '@/scripts/autocomplete.js';
+import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import { erase, unique } from '@/utility/array.js';
+import { extractMentions } from '@/utility/extract-mentions.js';
+import { formatTimeString } from '@/utility/format-time-string.js';
+import { Autocomplete } from '@/utility/autocomplete.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { selectFiles } from '@/scripts/select-file.js';
-import { defaultStore, notePostInterruptors, postFormActions } from '@/store.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { selectFiles } from '@/utility/select-file.js';
+import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { signinRequired, notesCount, incNotesCount, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account.js';
-import { uploadFile } from '@/scripts/upload.js';
-import { deepClone } from '@/scripts/clone.js';
+import { ensureSignin, notesCount, incNotesCount } from '@/i.js';
+import { getAccounts, openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { uploadFile } from '@/utility/upload.js';
+import { deepClone } from '@/utility/clone.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { emojiPicker } from '@/scripts/emoji-picker.js';
-import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { emojiPicker } from '@/utility/emoji-picker.js';
+import { mfmFunctionPicker } from '@/utility/mfm-function-picker.js';
+import { prefer } from '@/preferences.js';
+import { getPluginHandlers } from '@/plugin.js';
+import { DI } from '@/di.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const modal = inject('modal');
 
@@ -151,7 +157,7 @@ const props = withDefaults(defineProps<PostFormProps & {
 	initialLocalOnly: undefined,
 });
 
-provide('mock', props.mock);
+provide(DI.mock, props.mock);
 
 const emit = defineEmits<{
 	(ev: 'posting'): void;
@@ -164,11 +170,11 @@ const emit = defineEmits<{
 	(ev: 'fileChangeSensitive', fileId: string, to: boolean): void;
 }>();
 
-const textareaEl = shallowRef<HTMLTextAreaElement | null>(null);
-const cwInputEl = shallowRef<HTMLInputElement | null>(null);
-const hashtagsInputEl = shallowRef<HTMLInputElement | null>(null);
-const visibilityButton = shallowRef<HTMLElement>();
-const otherSettingsButton = shallowRef<HTMLElement>();
+const textareaEl = useTemplateRef('textareaEl');
+const cwInputEl = useTemplateRef('cwInputEl');
+const hashtagsInputEl = useTemplateRef('hashtagsInputEl');
+const visibilityButton = useTemplateRef('visibilityButton');
+const otherSettingsButton = useTemplateRef('otherSettingsButton');
 
 const posting = ref(false);
 const posted = ref(false);
@@ -176,19 +182,18 @@ const text = ref(props.initialText ?? '');
 const files = ref(props.initialFiles ?? []);
 const poll = ref<PollEditorModelValue | null>(null);
 const useCw = ref<boolean>(!!props.initialCw);
-const showPreview = ref(defaultStore.state.showPreview);
-watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
-const showAddMfmFunction = ref(defaultStore.state.enableQuickAddMfmFunction);
-watch(showAddMfmFunction, () => defaultStore.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
+const showPreview = ref(store.s.showPreview);
+watch(showPreview, () => store.set('showPreview', showPreview.value));
+const showAddMfmFunction = ref(prefer.s.enableQuickAddMfmFunction);
+watch(showAddMfmFunction, () => prefer.commit('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
-const localOnly = ref(props.initialLocalOnly ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly));
-const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility));
+const localOnly = ref(props.initialLocalOnly ?? (prefer.s.rememberNoteVisibility ? store.s.localOnly : prefer.s.defaultNoteLocalOnly));
+const visibility = ref(props.initialVisibility ?? (prefer.s.rememberNoteVisibility ? store.s.visibility : prefer.s.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
-const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
-const autocomplete = ref(null);
+const reactionAcceptance = ref(store.s.reactionAcceptance);
 const draghover = ref(false);
 const quoteId = ref<string | null>(null);
 const hasNotSpecifiedMentions = ref(false);
@@ -198,6 +203,7 @@ const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
 const justEndedComposition = ref(false);
 const renoteTargetNote: ShallowRef<PostFormProps['renote'] | null> = shallowRef(props.renote);
+const postFormActions = getPluginHandlers('post_form_action');
 
 const draftKey = computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
@@ -265,13 +271,19 @@ const canPost = computed((): boolean => {
 			quoteId.value != null
 		) &&
 		(textLength.value <= maxTextLength.value) &&
-		(cwTextLength.value <= maxCwTextLength) &&
+		(
+			useCw.value ?
+				(
+					cw.value != null && cw.value.trim() !== '' &&
+					cwTextLength.value <= maxCwTextLength
+				) : true
+		) &&
 		(files.value.length <= 16) &&
 		(!poll.value || poll.value.choices.length >= 2);
 });
 
-const withHashtags = computed(defaultStore.makeGetterSetter('postFormWithHashtags'));
-const hashtags = computed(defaultStore.makeGetterSetter('postFormHashtags'));
+const withHashtags = computed(store.makeGetterSetter('postFormWithHashtags'));
+const hashtags = computed(store.makeGetterSetter('postFormHashtags'));
 
 watch(text, () => {
 	checkMissingMention();
@@ -359,7 +371,7 @@ if (props.specified) {
 }
 
 // keep cw when reply
-if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
+if (prefer.s.keepCw && props.reply && props.reply.cw) {
 	useCw.value = true;
 	cw.value = props.reply.cw;
 }
@@ -458,7 +470,7 @@ function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities
 function upload(file: File, name?: string): void {
 	if (props.mock) return;
 
-	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
+	uploadFile(file, prefer.s.uploadFolder, name).then(res => {
 		files.value.push(res);
 	});
 }
@@ -479,8 +491,8 @@ function setVisibility() {
 	}, {
 		changeVisibility: v => {
 			visibility.value = v;
-			if (defaultStore.state.rememberNoteVisibility) {
-				defaultStore.set('visibility', visibility.value);
+			if (prefer.s.rememberNoteVisibility) {
+				store.set('visibility', visibility.value);
 			}
 		},
 		closed: () => dispose(),
@@ -527,26 +539,67 @@ async function toggleLocalOnly() {
 	}
 
 	localOnly.value = !localOnly.value;
-	if (defaultStore.state.rememberNoteVisibility) {
-		defaultStore.set('localOnly', localOnly.value);
+	if (prefer.s.rememberNoteVisibility) {
+		store.set('localOnly', localOnly.value);
 	}
 }
 
+async function toggleReactionAcceptance() {
+	const select = await os.select({
+		title: i18n.ts.reactionAcceptance,
+		items: [
+			{ value: null, text: i18n.ts.all },
+			{ value: 'likeOnlyForRemote' as const, text: i18n.ts.likeOnlyForRemote },
+			{ value: 'nonSensitiveOnly' as const, text: i18n.ts.nonSensitiveOnly },
+			{ value: 'nonSensitiveOnlyForLocalLikeOnlyForRemote' as const, text: i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote },
+			{ value: 'likeOnly' as const, text: i18n.ts.likeOnly },
+		],
+		default: reactionAcceptance.value,
+	});
+	if (select.canceled) return;
+	reactionAcceptance.value = select.result;
+}
+
+//#region その他の設定メニューpopup
 function showOtherSettings() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkPostFormOtherMenu.vue')), {
-		currentReactionAcceptance: reactionAcceptance.value,
-		textLength: textLength.value,
-		src: otherSettingsButton.value,
-	}, {
-		changeReactionAcceptance: (value: Misskey.entities.Note['reactionAcceptance']) => {
-			reactionAcceptance.value = value;
+	let reactionAcceptanceIcon = 'ti ti-icons';
+
+	if (reactionAcceptance.value === 'likeOnly') {
+		reactionAcceptanceIcon = 'ti ti-heart _love';
+	} else if (reactionAcceptance.value === 'likeOnlyForRemote') {
+		reactionAcceptanceIcon = 'ti ti-heart-plus';
+	}
+
+	const menuItems = [{
+		type: 'component',
+		component: XTextCounter,
+		props: {
+			textLength: textLength,
 		},
-		reset: () => {
+	}, { type: 'divider' }, {
+		icon: reactionAcceptanceIcon,
+		text: i18n.ts.reactionAcceptance,
+		action: () => {
+			toggleReactionAcceptance();
+		},
+	}, { type: 'divider' }, {
+		icon: 'ti ti-trash',
+		text: i18n.ts.reset,
+		danger: true,
+		action: async () => {
+			if (props.mock) return;
+			const { canceled } = await os.confirm({
+				type: 'question',
+				text: i18n.ts.resetAreYouSure,
+			});
+			if (canceled) return;
 			clear();
 		},
-		closed: () => dispose(),
-	});
+	}] satisfies MenuItem[];
+
+	os.popupMenu(menuItems, otherSettingsButton.value);
 }
+//#endregion
 
 function pushVisibleUser(user: Misskey.entities.UserDetailed) {
 	if (!visibleUsers.value.some(u => u.username === user.username && u.host === user.host)) {
@@ -598,6 +651,8 @@ function onCompositionEnd(ev: CompositionEvent) {
 	justEndedComposition.value = true;
 }
 
+const pastedFileName = 'yyyy-MM-dd HH-mm-ss [{{number}}]';
+
 async function onPaste(ev: ClipboardEvent) {
 	if (props.mock) return;
 	if (!ev.clipboardData) return;
@@ -608,7 +663,7 @@ async function onPaste(ev: ClipboardEvent) {
 			if (!file) continue;
 			const lio = file.name.lastIndexOf('.');
 			const ext = lio >= 0 ? file.name.slice(lio) : '';
-			const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+			const formatted = `${formatTimeString(new Date(file.lastModified), pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
 			upload(file, formatted);
 		}
 	}
@@ -642,7 +697,7 @@ async function onPaste(ev: ClipboardEvent) {
 				return;
 			}
 
-			const fileName = formatTimeString(new Date(), defaultStore.state.pastedFileName).replace(/{{number}}/g, '0');
+			const fileName = formatTimeString(new Date(), pastedFileName).replace(/{{number}}/g, '0');
 			const file = new File([paste], `${fileName}.txt`, { type: 'text/plain' });
 			upload(file, `${fileName}.txt`);
 		});
@@ -744,18 +799,10 @@ function isAnnoying(text: string): boolean {
 }
 
 async function post(ev?: MouseEvent) {
-	if (useCw.value && (cw.value == null || cw.value.trim() === '')) {
-		os.alert({
-			type: 'error',
-			text: i18n.ts.cwNotationRequired,
-		});
-		return;
-	}
-
 	if (ev) {
 		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
 
-		if (el && defaultStore.state.animation) {
+		if (el && prefer.s.animation) {
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
@@ -824,6 +871,7 @@ async function post(ev?: MouseEvent) {
 	}
 
 	// plugin
+	const notePostInterruptors = getPluginHandlers('note_post_interruptor');
 	if (notePostInterruptors.length > 0) {
 		for (const interruptor of notePostInterruptors) {
 			try {
@@ -838,7 +886,7 @@ async function post(ev?: MouseEvent) {
 
 	if (postAccount.value) {
 		const storedAccounts = await getAccounts();
-		token = storedAccounts.find(x => x.id === postAccount.value?.id)?.token;
+		token = storedAccounts.find(x => x.user.id === postAccount.value?.id)?.token;
 	}
 
 	posting.value = true;

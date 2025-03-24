@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div class="_fullinfo">
-		<img :src="notFoundImageUrl" class="_ghost"/>
+		<img :src="notFoundImageUrl" draggable="false"/>
 		<div>{{ i18n.ts.notFoundDescription }}</div>
 	</div>
 </div>
@@ -15,8 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
+import { definePage } from '@/page.js';
+import { pleaseLogin } from '@/utility/please-login.js';
 import { notFoundImageUrl } from '@/instance.js';
 
 const props = defineProps<{
@@ -31,7 +31,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.notFound,
 	icon: 'ti ti-alert-triangle',
 }));

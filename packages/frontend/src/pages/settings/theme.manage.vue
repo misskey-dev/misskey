@@ -33,17 +33,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import JSON5 from 'json5';
+import type { Theme } from '@/theme.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getBuiltinThemesRef } from '@/scripts/theme.js';
-import type { Theme } from '@/scripts/theme.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { getBuiltinThemesRef } from '@/theme.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { getThemes, removeTheme } from '@/theme-store.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();
@@ -63,7 +63,6 @@ const selectedThemeCode = computed(() => {
 
 function copyThemeCode() {
 	copyToClipboard(selectedThemeCode.value);
-	os.success();
 }
 
 function uninstall() {
@@ -77,7 +76,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._theme.manage,
 	icon: 'ti ti-tool',
 }));

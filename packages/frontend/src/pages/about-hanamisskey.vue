@@ -103,9 +103,9 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i } from '@/account.js';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
+import { definePage } from '@/page.js';
+import { $i } from '@/i.js';
+import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 
 const patronsWithIcon = [{
 	name: 'masnolia',
@@ -161,7 +161,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._hana.aboutHanaMisskey,
 	icon: 'ti ti-hanamisskey-hanamode',
 }));

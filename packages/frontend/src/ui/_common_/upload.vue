@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as os from '@/os.js';
-import { uploads } from '@/scripts/upload.js';
+import { uploads } from '@/utility/upload.js';
 import { i18n } from '@/i18n.js';
 
 const zIndex = os.claimZIndex('high');

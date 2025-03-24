@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.items">
 			<div>
 				<div :class="$style.label">{{ i18n.ts.invitationCode }}</div>
-				<div>{{ invite.code }}</div>
+				<div class="_selectableAtomic">{{ invite.code }}</div>
 			</div>
 			<div v-if="moderator">
 				<div :class="$style.label">{{ i18n.ts.inviteCodeCreator }}</div>
@@ -64,7 +64,7 @@ import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
@@ -90,7 +90,6 @@ function deleteCode() {
 
 function copyInviteCode() {
 	copyToClipboard(props.invite.code);
-	os.success();
 }
 </script>
 

@@ -36,8 +36,8 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useRouter } from '@/router/supplier.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { useRouter } from '@/router.js';
 
 const props = withDefaults(defineProps<{
   query?: string,

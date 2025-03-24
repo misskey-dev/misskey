@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import isChromatic from 'chromatic/isChromatic';
 import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { dateTimeFormat } from '@@/js/intl-const.js';
 
 const props = withDefaults(defineProps<{
@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<{
 const _mode = computed(() => {
 	if (props.mode === 'detail') return 'detail';
 
-	if (props.allowOverrideByUser && defaultStore.state.alwaysUseAbsoluteTime) {
+	if (props.allowOverrideByUser && prefer.s.alwaysUseAbsoluteTime) {
 		return 'absolute';
 	} else {
 		return props.mode;

@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<div v-if="state === 'done'" class="_buttonsCenter">
 			<MkButton @click="close">{{ i18n.ts.close }}</MkButton>
@@ -15,23 +14,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkLoading/>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { mainRouter } from '@/router/main.js';
+import { definePage } from '@/page.js';
+import { mainRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 
 const state = ref<'fetching' | 'done'>('fetching');
 
 function fetch() {
-	const params = new URL(location.href).searchParams;
+	const params = new URL(window.location.href).searchParams;
 
 	// acctのほうはdeprecated
 	let uri = params.get('uri') ?? params.get('acct');
@@ -76,12 +75,12 @@ function close(): void {
 
 	// 閉じなければ100ms後タイムラインに
 	window.setTimeout(() => {
-		location.href = '/';
+		window.location.href = '/';
 	}, 100);
 }
 
 function goToMisskey(): void {
-	location.href = '/';
+	window.location.href = '/';
 }
 
 fetch();
@@ -90,7 +89,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePage({
 	title: i18n.ts.lookup,
 	icon: 'ti ti-world-search',
 });

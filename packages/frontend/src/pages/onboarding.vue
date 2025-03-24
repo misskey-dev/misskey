@@ -113,8 +113,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, shallowRef, computed, onMounted } from 'vue';
 import { create as createConfetti } from 'canvas-confetti';
 
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { definePage } from '@/page.js';
+import { reactionPicker } from '@/utility/reaction-picker.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { host } from '@@/js/config.js';
@@ -130,7 +130,7 @@ import FormLink from '@/components/form/link.vue';
 const tutorialEl = shallowRef<InstanceType<typeof MkTutorial> | null>(null);
 
 // See: @/_boot_/common.ts L123 for details
-const query = new URLSearchParams(location.search);
+const query = new URLSearchParams(window.location.search);
 const originalPath = query.get('redirected_from');
 
 async function cancel() {
@@ -144,7 +144,7 @@ async function cancel() {
 
 	if (confirm.canceled) return;
 
-	location.href = '/';
+	window.location.href = '/';
 }
 
 // #region デフォルトオープニング画面のアニメーション
@@ -221,7 +221,7 @@ onMounted(() => {
 
 // #endregion
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.tsx._initialTutorial._onboardingLanding.welcomeToX({ name: instance.name ?? host }),
 }));
 </script>

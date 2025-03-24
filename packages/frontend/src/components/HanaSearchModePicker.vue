@@ -28,10 +28,10 @@
 import { nextTick, shallowRef, ref } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
-import { signinRequired } from '@/account.js';
+import { ensureSignin } from '@/i.js';
 import type { SearchMode } from '@/hana/types/search.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 

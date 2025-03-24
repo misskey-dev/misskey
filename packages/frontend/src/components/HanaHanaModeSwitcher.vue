@@ -43,10 +43,11 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { signinRequired, updateAccountPartial } from '@/account.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { claimAchievement } from '@/utility/achievements.js';
 import * as os from '@/os.js';
 
 import MkButton from '@/components/MkButton.vue';
@@ -61,7 +62,7 @@ const emit = defineEmits<{
 
 const onceSet = ref(false);
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const originalMode = computed(() => {
 	if (props.specifyManually && !onceSet.value) {
@@ -92,7 +93,7 @@ async function setMode() {
 		os.apiWithDialog('i/update', {
 			isInHanaMode,
 		});
-		updateAccountPartial({ isInHanaMode });
+		updateCurrentAccountPartial({ isInHanaMode });
 	}
 	emit('set');
 	onceSet.value = true;

@@ -6,7 +6,7 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: false,
-	requireRolePolicy: 'canSearchWithHanamiSearchV1',
+	requiredRolePolicy: 'canSearchWithHanamiSearchV1',
 
 	res: {
 		type: 'array',

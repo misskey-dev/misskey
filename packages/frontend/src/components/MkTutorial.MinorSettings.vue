@@ -18,20 +18,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
-import { deepMerge } from '@/scripts/merge.js';
+import { store } from '@/store.js';
+import { deepMerge } from '@/utility/merge.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import type { TutorialPageCommonExpose } from '@/components/MkTutorial.vue';
 
 // センシティブをミュートするほうがONなので、storeとは逆にする
-const tlMuteSensitive = ref(!defaultStore.state.tl.filter.withSensitive);
+const tlMuteSensitive = ref(!store.s.tl.filter.withSensitive);
 
-const confirmWhenRevealingSensitiveMedia = computed(defaultStore.makeGetterSetter('confirmWhenRevealingSensitiveMedia'));
+const confirmWhenRevealingSensitiveMedia = computed(store.makeGetterSetter('confirmWhenRevealingSensitiveMedia'));
 
 watch(tlMuteSensitive, (to) => {
-	const out = deepMerge({ filter: { withSensitive: !to } }, defaultStore.state.tl);
-	defaultStore.set('tl', out);
+	const out = deepMerge({ filter: { withSensitive: !to } }, store.s.tl);
+	store.set('tl', out);
 });
 
 defineExpose<TutorialPageCommonExpose>({

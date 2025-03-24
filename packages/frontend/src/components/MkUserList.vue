@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkPagination :pagination="pagination">
 	<template #empty>
 		<div class="_fullinfo">
-			<img :src="infoImageUrl" class="_ghost"/>
+			<img :src="infoImageUrl" draggable="false"/>
 			<div>{{ i18n.ts.noUsers }}</div>
 		</div>
 	</template>
@@ -21,9 +21,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import type { Paging } from '@/components/MkPagination.vue';
 import MkUserInfo from '@/components/MkUserInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import type { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 
