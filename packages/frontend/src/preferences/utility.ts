@@ -153,7 +153,7 @@ export async function restoreFromCloudBackup() {
 		scope: ['client', 'preferences', 'backups'],
 	});
 
-	console.log(keys);
+	if (_DEV_) console.log(keys);
 
 	if (keys.length === 0) {
 		os.alert({
@@ -179,7 +179,7 @@ export async function restoreFromCloudBackup() {
 		key: select.result,
 	});
 
-	console.log(profile);
+	if (_DEV_) console.log(profile);
 
 	miLocalStorage.setItem('preferences', JSON.stringify(profile));
 	miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');
