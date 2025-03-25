@@ -5358,18 +5358,6 @@ export interface Locale extends ILocale {
      * 通常これは自動で行われていますが、何らかの理由により上手く移行されなかった場合は手動で移行処理をトリガーできます。現在の設定情報は上書きされます。
      */
     "migrateOldSettings_description": string;
-    /**
-     * あなたはこのユーザーをブロックしています。
-     */
-    "youAreBlocking": string;
-    /**
-     * あなたはこのユーザーにブロックされています。
-     */
-    "youAreBlocked": string;
-    /**
-     * あなたはこのユーザーをミュートしています。
-     */
-    "youAreMuting": string;
     "_chat": {
         /**
          * まだメッセージはありません
