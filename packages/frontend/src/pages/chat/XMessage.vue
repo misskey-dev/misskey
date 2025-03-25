@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:moveClass="prefer.s.animation ? $style.transition_reaction_move : ''"
 			tag="div" :class="$style.reactions"
 		>
-			<div v-for="record in message.reactions" :key="record.reaction + record.user.id" :class="$style.reaction" @click="onReactionClick(record)">
+			<div v-for="record in message.reactions" :key="record.reaction + record.user.id" :class="[$style.reaction, record.user.id === $i.id ? $style.reactionMy : null]" @click="onReactionClick(record)">
 				<MkAvatar :user="record.user" :link="false" :class="$style.reactionAvatar"/>
 				<MkReactionIcon
 					:withTooltip="true"
@@ -244,6 +244,10 @@ function showMenu(ev: MouseEvent) {
 	border: solid 1px var(--MI_THEME-divider);
 	border-radius: 999px;
 	padding: 8px;
+
+	&.reactionMy {
+		border-color: var(--MI_THEME-accent);
+	}
 }
 
 .reactionAvatar {
