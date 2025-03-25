@@ -1314,6 +1314,7 @@ _chat:
   noHistory: "履歴はないわ。"
   members: "メンバーはん"
   home: "ホーム"
+  send: "送信"
 _settings:
   webhook: "Webhook"
 _accountSettings:
