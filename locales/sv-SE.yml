@@ -564,6 +564,7 @@ _chat:
   invitations: "Inbjudan"
   members: "Medlemmar"
   home: "Hem"
+  send: "Skicka"
 _delivery:
   stop: "Suspenderad"
   _type:
