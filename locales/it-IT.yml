@@ -1336,6 +1336,7 @@ _chat:
   noHistory: "Nessuna cronologia"
   members: "Membri"
   home: "Home"
+  send: "Inviare"
 _emojiPalette:
   palettes: "Tavolozza"
   enableSyncBetweenDevicesForPalettes: "Attiva la sincronizzazione tra dispositivi"
