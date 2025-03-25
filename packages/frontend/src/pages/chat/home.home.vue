@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar v-if="item.other" :class="$style.messageAvatar" :user="item.other" indicator :preview="false"/>
 				<div :class="$style.messageBody">
 					<header v-if="item.message.toRoom" :class="$style.messageHeader">
-						<span :class="$style.messageHeaderName">{{ item.message.toRoom.name }}</span>
+						<span :class="$style.messageHeaderName"><i class="ti ti-users"></i> {{ item.message.toRoom.name }}</span>
 						<MkTime :time="item.message.createdAt" :class="$style.messageHeaderTime"/>
 					</header>
 					<header v-else :class="$style.messageHeader">
