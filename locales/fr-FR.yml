@@ -1280,6 +1280,7 @@ _chat:
   noHistory: "Pas d'historique"
   members: "Membres"
   home: "Principal"
+  send: "Envoyer"
 _abuseUserReport:
   forward: "Transférer"
   forwardDescription: "Transférer le signalement vers une instance distante en tant qu'anonyme."
