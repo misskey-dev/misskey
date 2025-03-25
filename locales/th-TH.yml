@@ -1295,6 +1295,7 @@ _chat:
   noHistory: "ไม่มีประวัติ"
   members: "สมาชิก"
   home: "หน้าหลัก"
+  send: "ส่ง"
 _settings:
   webhook: "Webhook"
 _abuseUserReport:
