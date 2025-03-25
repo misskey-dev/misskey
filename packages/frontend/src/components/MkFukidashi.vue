@@ -19,8 +19,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<path d="m188.19 87.657c-1.469 2.3218-3.9315 3.8312-6.667 4.0865-2.2309-1.7379-4.9781-2.6816-7.8061-2.6815h-5.1e-4v12.702h12.702v-5.1e-4c2e-5 -1.9998-0.47213-3.9713-1.378-5.754 2.0709-1.6834 3.2732-4.2102 3.273-6.8791-6e-5 -0.49375-0.0413-0.98662-0.1235-1.4735z" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-width=".33225" style="paint-order:stroke fill markers"/>
 			</g>
 		</svg>
-		<div :class="$style.content">
-			<slot></slot>
+		<div
+			:class="[$style.content, {
+				[$style.contentBgPanel]: contentBgPanel,
+				[$style.small]: small,
+			}]"
+		>
+			<div :class="$style.contentInner">
+				<slot></slot>
+			</div>
 		</div>
 	</div>
 </div>
@@ -32,11 +39,15 @@ withDefaults(defineProps<{
 	negativeMargin?: boolean;
 	shadow?: boolean;
 	accented?: boolean;
+	contentBgPanel?: boolean;
+	small?: boolean;
 }>(), {
 	tail: 'right',
 	negativeMargin: false,
 	shadow: false,
 	accented: false,
+	contentBgPanel: false,
+	small: false,
 });
 </script>
 
@@ -85,6 +96,26 @@ withDefaults(defineProps<{
 .content {
 	position: relative;
 	padding: 10px 14px;
+
+	&.small {
+		padding: 6px 10px;
+	}
+
+	&.contentBgPanel::before {
+		content: '';
+		position: absolute;
+		top: 2px;
+		left: 2px;
+		width: calc(100% - 4px);
+		height: calc(100% - 4px);
+		background: var(--MI_THEME-panel);
+		border-radius: calc(var(--fukidashi-radius) - 2px);
+	}
+}
+
+.contentInner {
+	position: relative;
+	z-index: 1;
 }
 
 .tail {

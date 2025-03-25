@@ -5,10 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
-	<MkAvatar :class="$style.avatar" :user="message.fromUser" :link="!isMe" :preview="false"/>
+	<MkAvatar v-if="!isMe" :class="$style.avatar" :user="message.fromUser" :link="!isMe" :preview="false"/>
 	<div :class="$style.body">
 		<div v-if="!isMe && prefer.s['chat.showSenderName']" :class="$style.header"><MkUserName :user="message.fromUser"/></div>
-		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
+		<MkFukidashi :tail="isMe ? 'right' : 'left'" :accented="isMe" negativeMargin contentBgPanel small>
 			<div v-if="!message.isDeleted" :class="$style.content">
 				<Mfm
 					v-if="message.text"
@@ -204,10 +204,6 @@ function showMenu(ev: MouseEvent) {
 		flex-direction: row-reverse;
 		text-align: right;
 
-		.content {
-			color: var(--MI_THEME-fgOnAccent);
-		}
-
 		.footer {
 			flex-direction: row-reverse;
 		}
@@ -218,12 +214,14 @@ function showMenu(ev: MouseEvent) {
 	position: sticky;
 	top: calc(16px + var(--MI-stickyTop, 0px));
 	display: block;
-	width: 52px;
-	height: 52px;
+	width: 32px;
+	height: 32px;
 }
 
 .body {
+	padding-top: 4px;
 	margin: 0 12px;
+	box-sizing: border-box;
 }
 
 .header {
@@ -234,9 +232,6 @@ function showMenu(ev: MouseEvent) {
 	overflow: clip;
 	overflow-wrap: break-word;
 	word-break: break-word;
-}
-
-.file {
 }
 
 .footer {
