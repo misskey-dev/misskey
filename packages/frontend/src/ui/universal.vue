@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon" class="ti ti-apps"></i></button>
 			<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 		</div>
-		<div v-else-if="!isDesktop" ref="navFooter" :class="$style.navForTablet">
+		<div v-else-if="!isDesktop && deviceKind === 'tablet'" ref="navFooter" :class="$style.navForTablet">
 			<button :class="$style.navForTabletWidgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
 		</div>
 	</div>
