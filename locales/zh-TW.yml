@@ -1358,6 +1358,7 @@ _chat:
   members: "成員"
   searchMessages: "搜尋聊天訊息"
   home: "首頁"
+  send: "發送"
   muteThisRoom: "此聊天室已靜音"
   deleteRoom: "刪除聊天室"
   cannotChatWithTheUser: "無法與此使用者聊天"
