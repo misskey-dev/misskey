@@ -146,7 +146,7 @@ export class NotificationEntityService implements OnModuleInit {
 		}
 
 		const needsChatRoomInvitation = notification.type === 'chatRoomInvitationReceived';
-		const chatRoomInvitation = needsChatRoomInvitation ? await this.chatEntityService.packRoomInvitation(notification.invitationId, { id: meId }) : undefined;
+		const chatRoomInvitation = needsChatRoomInvitation ? await this.chatEntityService.packRoomInvitation(notification.invitationId, { id: meId }).catch(() => null) : undefined;
 		// if the invitation has been deleted, don't show this notification
 		if (needsChatRoomInvitation && !chatRoomInvitation) {
 			return null;
