@@ -4,26 +4,35 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import { ChatService } from '@/core/ChatService.js';
 import { ApiError } from '@/server/api/error.js';
+import { ChatService } from '@/core/ChatService.js';
+import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 
 export const meta = {
 	tags: ['chat'],
 
 	requireCredential: true,
 
-	kind: 'write:chat',
+	kind: 'read:chat',
 
 	res: {
+		type: 'array',
+		optional: false, nullable: false,
+		items: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'ChatRoomInvitation',
+		},
 	},
 
 	errors: {
 		noSuchRoom: {
 			message: 'No such room.',
 			code: 'NO_SUCH_ROOM',
-			id: 'd4e3753d-97bf-4a19-ab8e-21080fbc0f4b',
+			id: 'a3c6b309-9717-4316-ae94-a69b53437237',
 		},
 	},
 } as const;
@@ -32,6 +41,9 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		roomId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['roomId'],
 } as const;
@@ -40,18 +52,16 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private chatService: ChatService,
+		private chatEntityService: ChatEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const room = await this.chatService.findRoomById(ps.roomId);
+			const room = await this.chatService.findMyRoomById(me.id, ps.roomId);
 			if (room == null) {
 				throw new ApiError(meta.errors.noSuchRoom);
 			}
 
-			if (!await this.chatService.hasPermissionToDeleteRoom(me.id, room)) {
-				throw new ApiError(meta.errors.noSuchRoom);
-			}
-
-			await this.chatService.deleteRoom(room, me);
+			const invitations = await this.chatService.getSentRoomInvitationsWithPagination(ps.roomId, ps.limit, ps.sinceId, ps.untilId);
+			return this.chatEntityService.packRoomInvitations(invitations, me);
 		});
 	}
 }

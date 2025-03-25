@@ -401,6 +401,7 @@ export * as 'chat/messages/create-to-room' from './endpoints/chat/messages/creat
 export * as 'chat/messages/delete' from './endpoints/chat/messages/delete.js';
 export * as 'chat/messages/show' from './endpoints/chat/messages/show.js';
 export * as 'chat/messages/react' from './endpoints/chat/messages/react.js';
+export * as 'chat/messages/unreact' from './endpoints/chat/messages/unreact.js';
 export * as 'chat/messages/user-timeline' from './endpoints/chat/messages/user-timeline.js';
 export * as 'chat/messages/room-timeline' from './endpoints/chat/messages/room-timeline.js';
 export * as 'chat/messages/search' from './endpoints/chat/messages/search.js';
@@ -417,6 +418,7 @@ export * as 'chat/rooms/members' from './endpoints/chat/rooms/members.js';
 export * as 'chat/rooms/invitations/create' from './endpoints/chat/rooms/invitations/create.js';
 export * as 'chat/rooms/invitations/ignore' from './endpoints/chat/rooms/invitations/ignore.js';
 export * as 'chat/rooms/invitations/inbox' from './endpoints/chat/rooms/invitations/inbox.js';
+export * as 'chat/rooms/invitations/outbox' from './endpoints/chat/rooms/invitations/outbox.js';
 export * as 'chat/history' from './endpoints/chat/history.js';
 export * as 'v2/admin/emoji/list' from './endpoints/v2/admin/emoji/list.js';
 

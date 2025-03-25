@@ -374,6 +374,13 @@ export const PREF_DEF = {
 		default: 'left' as 'left' | 'right' | 'center',
 	},
 
+	'chat.showSenderName': {
+		default: false,
+	},
+	'chat.sendOnEnter': {
+		default: false,
+	},
+
 	'game.dropAndFusion': {
 		default: {
 			bgmVolume: 0.25,

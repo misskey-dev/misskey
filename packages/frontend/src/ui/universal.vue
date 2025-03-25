@@ -29,13 +29,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon" class="ti ti-apps"></i></button>
 			<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
 		</div>
+		<div v-else-if="!isDesktop" ref="navFooter" :class="$style.navForTablet">
+			<button :class="$style.navForTabletWidgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
+		</div>
 	</div>
 
 	<div v-if="isDesktop && !pageMetadata?.needWideArea" :class="$style.widgets">
 		<XWidgets/>
 	</div>
-
-	<button v-if="!isDesktop && !pageMetadata?.needWideArea && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
 
 	<Transition
 		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
@@ -309,6 +310,35 @@ $widgets-hide-threshold: 1090px;
 	min-height: 0;
 }
 
+.navForTablet {
+	display: flex;
+	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
+	width: 100%;
+	box-sizing: border-box;
+	background: var(--MI_THEME-bg);
+	border-top: solid 0.5px var(--MI_THEME-divider);
+}
+
+.navForTabletWidgetButton {
+	position: relative;
+	padding: 0;
+	aspect-ratio: 1;
+	width: 100%;
+	max-width: 60px;
+	margin-left: auto;
+	border-radius: 100%;
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
+
+	&:hover {
+		background: var(--MI_THEME-panelHighlight);
+	}
+
+	&:active {
+		background: hsl(from var(--MI_THEME-panel) h s calc(l - 2));
+	}
+}
+
 .nav {
 	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
 	display: grid;
@@ -408,20 +438,6 @@ $widgets-hide-threshold: 1090px;
 	@media (max-width: $widgets-hide-threshold) {
 		display: none;
 	}
-}
-
-.widgetButton {
-	display: block;
-	position: fixed;
-	z-index: 1000;
-	bottom: 32px;
-	right: 32px;
-	width: 64px;
-	height: 64px;
-	border-radius: 100%;
-	box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
-	font-size: 22px;
-	background: var(--MI_THEME-panel);
 }
 
 .widgetsDrawerBg {

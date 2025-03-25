@@ -1360,12 +1360,15 @@ _chat:
   noHistory: "履歴はありません"
   noRooms: "ルームはありません"
   inviteUser: "ユーザーを招待"
+  sentInvitations: "送信した招待"
   join: "参加"
   ignore: "無視"
   leave: "ルームから退出"
   members: "メンバー"
   searchMessages: "メッセージを検索"
   home: "ホーム"
+  send: "送信"
+  newline: "改行"
   muteThisRoom: "このルームをミュート"
   deleteRoom: "ルームを削除"
   cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
@@ -1411,6 +1414,12 @@ _settings:
   makeEveryTextElementsSelectable: "全てのテキスト要素を選択可能にする"
   makeEveryTextElementsSelectable_description: "有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。"
   showNavbarSubButtons: "ナビゲーションバーに副ボタンを表示"
+  ifOn: "オンのとき"
+  ifOff: "オフのとき"
+
+  _chat:
+    showSenderName: "送信者の名前を表示"
+    sendOnEnter: "Enterで送信"
 
 _preferencesProfile:
   profileName: "プロファイル名"
@@ -2642,6 +2651,7 @@ _notification:
   newNote: "新しい投稿"
   unreadAntennaNote: "アンテナ {name}"
   roleAssigned: "ロールが付与されました"
+  chatRoomInvitationReceived: "チャットルームへ招待されました"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
   testNotification: "通知テスト"
@@ -2671,6 +2681,7 @@ _notification:
     receiveFollowRequest: "フォロー申請を受け取った"
     followRequestAccepted: "フォローが受理された"
     roleAssigned: "ロールが付与された"
+    chatRoomInvitationReceived: "チャットルームへ招待された"
     achievementEarned: "実績の獲得"
     exportCompleted: "エクスポートが完了した"
     login: "ログイン"
@@ -2819,6 +2830,7 @@ _moderationLogTypes:
   deletePage: "ページを削除"
   deleteFlash: "Playを削除"
   deleteGalleryPost: "ギャラリーの投稿を削除"
+  deleteChatRoom: "チャットルームを削除"
   updateProxyAccountDescription: "プロキシアカウントの説明を更新"
 
 _fileViewer:

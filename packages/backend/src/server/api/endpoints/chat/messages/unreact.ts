@@ -20,10 +20,10 @@ export const meta = {
 	},
 
 	errors: {
-		noSuchRoom: {
-			message: 'No such room.',
-			code: 'NO_SUCH_ROOM',
-			id: 'd4e3753d-97bf-4a19-ab8e-21080fbc0f4b',
+		noSuchMessage: {
+			message: 'No such message.',
+			code: 'NO_SUCH_MESSAGE',
+			id: 'c39ea42f-e3ca-428a-ad57-390e0a711595',
 		},
 	},
 } as const;
@@ -31,9 +31,10 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		roomId: { type: 'string', format: 'misskey:id' },
+		messageId: { type: 'string', format: 'misskey:id' },
+		reaction: { type: 'string' },
 	},
-	required: ['roomId'],
+	required: ['messageId', 'reaction'],
 } as const;
 
 @Injectable()
@@ -42,16 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatService: ChatService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const room = await this.chatService.findRoomById(ps.roomId);
-			if (room == null) {
-				throw new ApiError(meta.errors.noSuchRoom);
-			}
-
-			if (!await this.chatService.hasPermissionToDeleteRoom(me.id, room)) {
-				throw new ApiError(meta.errors.noSuchRoom);
-			}
-
-			await this.chatService.deleteRoom(room, me);
+			await this.chatService.unreact(ps.messageId, me.id, ps.reaction);
 		});
 	}
 }

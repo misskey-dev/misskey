@@ -170,6 +170,7 @@ async function initialize() {
 		connection.value.on('message', onMessage);
 		connection.value.on('deleted', onDeleted);
 		connection.value.on('react', onReact);
+		connection.value.on('unreact', onUnreact);
 	} else {
 		const [r, m] = await Promise.all([
 			misskeyApi('chat/rooms/show', { roomId: props.roomId }),
@@ -189,6 +190,7 @@ async function initialize() {
 		connection.value.on('message', onMessage);
 		connection.value.on('deleted', onDeleted);
 		connection.value.on('react', onReact);
+		connection.value.on('unreact', onUnreact);
 	}
 
 	window.document.addEventListener('visibilitychange', onVisibilitychange);
@@ -264,6 +266,16 @@ function onReact(ctx) {
 				reaction: ctx.reaction,
 				user: ctx.user,
 			});
+		}
+	}
+}
+
+function onUnreact(ctx) {
+	const message = messages.value.find(m => m.id === ctx.messageId);
+	if (message) {
+		const index = message.reactions.findIndex(r => r.reaction === ctx.reaction && r.user.id === ctx.user.id);
+		if (index !== -1) {
+			message.reactions.splice(index, 1);
 		}
 	}
 }

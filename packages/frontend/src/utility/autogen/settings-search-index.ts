@@ -492,57 +492,74 @@ export const searchIndexes: SearchIndexItem[] = [
 				id: 'vPQPvmntL',
 				children: [
 					{
-						id: 'zoogNoJEO',
+						id: 'zZxyXHk3A',
+						label: i18n.ts._settings._chat.showSenderName,
+						keywords: ['show', 'sender', 'name'],
+					},
+					{
+						id: 'omEy5Q3Ev',
+						label: i18n.ts._settings._chat.sendOnEnter,
+						keywords: ['send', 'enter', 'newline'],
+					},
+				],
+				label: i18n.ts.chat,
+				keywords: ['chat', 'messaging'],
+			},
+			{
+				id: '5fy7VEy6i',
+				children: [
+					{
+						id: 'EosiWZvak',
 						label: i18n.ts.squareAvatars,
 						keywords: ['avatar', 'icon', 'square'],
 					},
 					{
-						id: '7ix3kvMyU',
+						id: 'qY5xTzl35',
 						label: i18n.ts._hana.flowerEffect,
 						keywords: ['effect', 'show'],
 					},
 					{
-						id: '1nCcKm51T',
+						id: 'BoNg4LwOq',
 						label: i18n.ts.seasonalScreenEffect,
 						keywords: ['effect', 'show'],
 					},
 					{
-						id: 'yobNUDEaV',
+						id: 'hgf3rgdA6',
 						label: i18n.ts.openImageInNewTab,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab'],
 					},
 					{
-						id: 'zVRIlk3wT',
+						id: 'n3OAGEEkP',
 						label: i18n.ts.alwaysUseAbsoluteTime,
 						keywords: ['time'],
 					},
 					{
-						id: 'dlQjnWBVU',
+						id: '7y1LH7eSe',
 						label: i18n.ts.withRepliesByDefaultForNewlyFollowed,
 						keywords: ['follow', 'replies'],
 					},
 					{
-						id: 'qY5xTzl35',
+						id: 'ARKCv3gPD',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: '8KLRFI0tv',
+						id: 'fJrFJnjVa',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: 'xNsLokqeA',
+						id: 'xXW8l8ScD',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: 'sZcalFBE8',
+						id: 'tTYS4rbNw',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: 'ARKCv3gPD',
+						id: '1Di5xt126',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},

@@ -112,7 +112,7 @@ export const navbarItemDef = reactive({
 	},
 	chat: {
 		title: i18n.ts.chat,
-		icon: 'ti ti-message',
+		icon: 'ti ti-messages',
 		to: '/chat',
 		indicated: computed(() => $i != null && $i.hasUnreadChatMessages),
 	},
