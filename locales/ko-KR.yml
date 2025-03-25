@@ -1336,6 +1336,7 @@ _chat:
   noHistory: "기록이 없습니다"
   members: "멤버"
   home: "홈"
+  send: "전송"
 _emojiPalette:
   palettes: "팔레트"
   enableSyncBetweenDevicesForPalettes: "팔레트의 디바이스 간 동기화를 활성화"
