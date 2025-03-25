@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div v-else class="_gaps">
+		<div v-else ref="timelineEl" class="_gaps">
 			<div v-if="canFetchMore">
 				<MkButton :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, useTemplateRef, computed, watch, onMounted, nextTick, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
-import { isTailVisible } from '@@/js/scroll.js';
+import { getScrollContainer, isTailVisible } from '@@/js/scroll.js';
 import XMessage from './XMessage.vue';
 import XForm from './room.form.vue';
 import XSearch from './room.search.vue';
@@ -92,6 +92,7 @@ import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router.js';
+import { useMutationObserver } from '@/use/use-mutation-observer.js';
 
 const $i = ensureSignin();
 const router = useRouter();
@@ -109,6 +110,26 @@ const user = ref<Misskey.entities.UserDetailed | null>(null);
 const room = ref<Misskey.entities.ChatRoom | null>(null);
 const connection = ref<Misskey.ChannelConnection<Misskey.Channels['chatUser'] | Misskey.Channels['chatRoom']> | null>(null);
 const showIndicator = ref(false);
+const timelineEl = useTemplateRef('timelineEl');
+
+const SCROLL_HEAD_THRESHOLD = 200;
+
+// column-reverseなので本来はスクロール位置の最下部への追従は不要なはずだが、おそらくブラウザのバグにより、最下部にスクロールした状態でも追従されない場合がある(スクロール位置が少数になることがあるのが関わっていそう)
+// そのため補助としてMutationObserverを使って追従を行う
+useMutationObserver(timelineEl, {
+	subtree: true,
+	childList: true,
+	attributes: false,
+}, () => {
+	const scrollContainer = getScrollContainer(timelineEl.value)!;
+	// column-reverseなのでscrollTopは負になる
+	if (-scrollContainer.scrollTop < SCROLL_HEAD_THRESHOLD) {
+		scrollContainer.scrollTo({
+			top: 0,
+			behavior: 'instant',
+		});
+	}
+});
 
 function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage) {
 	const reactions = [...message.reactions];
