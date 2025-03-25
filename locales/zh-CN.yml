@@ -1356,7 +1356,9 @@ _chat:
   members: "成员"
   searchMessages: "搜索消息"
   home: "首页"
+  send: "发送"
   muteThisRoom: "静音此房间"
+  deleteRoom: "删除房间"
   cannotChatWithTheUser: "无法与此用户聊天"
   cannotChatWithTheUser_description: "可能现在无法使用聊天，或者对方未开启聊天。"
   chatWithThisUser: "聊天"
@@ -1397,6 +1399,9 @@ _settings:
   timelineAndNote: "时间线和帖子"
   makeEveryTextElementsSelectable: "使所有的文字均可选择"
   makeEveryTextElementsSelectable_description: "若开启，在某些情况下可能降低用户体验。"
+  showNavbarSubButtons: "在导航栏中显示副按钮"
+  _chat:
+    showSenderName: "显示发送者的名字"
 _preferencesProfile:
   profileName: "配置名"
   profileNameDescription: "请指定用于识别此设备的名称"
