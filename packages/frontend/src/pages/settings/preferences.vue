@@ -434,11 +434,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label><SearchLabel>{{ i18n.ts.chat }}</SearchLabel></template>
 					<template #icon><i class="ti ti-messages"></i></template>
 
-					<div class="_gaps_m">
+					<div class="_gaps_s">
 						<SearchMarker :keywords="['show', 'sender', 'name']">
 							<MkPreferenceContainer k="chat.showSenderName">
 								<MkSwitch v-model="chatShowSenderName">
 									<template #label><SearchLabel>{{ i18n.ts._settings._chat.showSenderName }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['send', 'enter', 'newline']">
+							<MkPreferenceContainer k="chat.sendOnEnter">
+								<MkSwitch v-model="chatSendOnEnter">
+									<template #label><SearchLabel>{{ i18n.ts._settings._chat.sendOnEnter }}</SearchLabel></template>
+									<template #caption>
+										<div class="_gaps_s">
+											<div>
+												<b>{{ i18n.ts._settings.ifOn }}:</b>
+												<div>{{ i18n.ts._chat.send }}: Enter</div>
+												<div>{{ i18n.ts._chat.newline }}: Shift + Enter</div>
+											</div>
+											<div>
+												<b>{{ i18n.ts._settings.ifOff }}:</b>
+												<div>{{ i18n.ts._chat.send }}: Ctrl + Enter</div>
+												<div>{{ i18n.ts._chat.newline }}: Enter</div>
+											</div>
+										</div>
+									</template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -627,6 +649,7 @@ const useBlurEffectForModal = prefer.model('useBlurEffectForModal');
 const useBlurEffect = prefer.model('useBlurEffect');
 const defaultFollowWithReplies = prefer.model('defaultFollowWithReplies');
 const chatShowSenderName = prefer.model('chat.showSenderName');
+const chatSendOnEnter = prefer.model('chat.sendOnEnter');
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -654,6 +677,7 @@ watch([
 	squareAvatars,
 	highlightSensitiveMedia,
 	enableSeasonalScreenEffect,
+	chatShowSenderName,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });

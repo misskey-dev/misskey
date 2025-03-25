@@ -5449,6 +5449,14 @@ export interface Locale extends ILocale {
          */
         "home": string;
         /**
+         * 送信
+         */
+        "send": string;
+        /**
+         * 改行
+         */
+        "newline": string;
+        /**
          * このルームをミュート
          */
         "muteThisRoom": string;
@@ -5614,11 +5622,23 @@ export interface Locale extends ILocale {
          * ナビゲーションバーに副ボタンを表示
          */
         "showNavbarSubButtons": string;
+        /**
+         * オンのとき
+         */
+        "ifOn": string;
+        /**
+         * オフのとき
+         */
+        "ifOff": string;
         "_chat": {
             /**
              * 送信者の名前を表示
              */
             "showSenderName": string;
+            /**
+             * Enterで送信
+             */
+            "sendOnEnter": string;
         };
     };
     "_preferencesProfile": {

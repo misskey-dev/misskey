@@ -377,6 +377,9 @@ export const PREF_DEF = {
 	'chat.showSenderName': {
 		default: false,
 	},
+	'chat.sendOnEnter': {
+		default: false,
+	},
 
 	'game.dropAndFusion': {
 		default: {

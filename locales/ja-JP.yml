@@ -1359,6 +1359,8 @@ _chat:
   members: "メンバー"
   searchMessages: "メッセージを検索"
   home: "ホーム"
+  send: "送信"
+  newline: "改行"
   muteThisRoom: "このルームをミュート"
   deleteRoom: "ルームを削除"
   cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
@@ -1404,9 +1406,12 @@ _settings:
   makeEveryTextElementsSelectable: "全てのテキスト要素を選択可能にする"
   makeEveryTextElementsSelectable_description: "有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。"
   showNavbarSubButtons: "ナビゲーションバーに副ボタンを表示"
+  ifOn: "オンのとき"
+  ifOff: "オフのとき"
 
   _chat:
     showSenderName: "送信者の名前を表示"
+    sendOnEnter: "Enterで送信"
 
 _preferencesProfile:
   profileName: "プロファイル名"
