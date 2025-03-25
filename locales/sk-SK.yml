@@ -920,6 +920,7 @@ _chat:
   noHistory: "Žiadna história"
   members: "Členovia"
   home: "Domov"
+  send: "Poslať"
 _delivery:
   stop: "Zmrazené"
   _type:
