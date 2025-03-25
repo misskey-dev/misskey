@@ -855,6 +855,7 @@ _chat:
   noHistory: "কোনো ইতিহাস নেই"
   members: "সদস্যবৃন্দ"
   home: "মূল পাতা"
+  send: "পাঠান"
 _delivery:
   stop: "স্থগিত করা হয়েছে"
   _type:
