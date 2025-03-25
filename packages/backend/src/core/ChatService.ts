@@ -199,6 +199,8 @@ export class ChatService {
 			throw new Error('you are not a member of the room');
 		}
 
+		const membershipsOtherThanMe = memberships.filter(member => member.userId !== fromUser.id);
+
 		const message = {
 			id: this.idService.gen(),
 			fromUserId: fromUser.id,
@@ -216,7 +218,7 @@ export class ChatService {
 		this.globalEventService.publishChatRoomStream(toRoom.id, 'message', packedMessage);
 
 		const redisPipeline = this.redisClient.pipeline();
-		for (const membership of memberships) {
+		for (const membership of membershipsOtherThanMe) {
 			if (membership.isMuted) continue;
 
 			redisPipeline.set(`newRoomChatMessageExists:${membership.userId}:${toRoom.id}`, message.id);
@@ -227,7 +229,7 @@ export class ChatService {
 		// 3秒経っても既読にならなかったらイベント発行
 		setTimeout(async () => {
 			const redisPipeline = this.redisClient.pipeline();
-			for (const membership of memberships) {
+			for (const membership of membershipsOtherThanMe) {
 				redisPipeline.get(`newRoomChatMessageExists:${membership.userId}:${toRoom.id}`);
 			}
 			const markers = await redisPipeline.exec();
@@ -237,12 +239,12 @@ export class ChatService {
 
 			const packedMessageForTo = await this.chatEntityService.packMessageDetailed(inserted);
 
-			for (let i = 0; i < memberships.length; i++) {
+			for (let i = 0; i < membershipsOtherThanMe.length; i++) {
 				const marker = markers[i][1];
 				if (marker == null) continue;
 
-				this.globalEventService.publishMainStream(memberships[i].userId, 'newChatMessage', packedMessageForTo);
-				//this.pushNotificationService.pushNotification(memberships[i].userId, 'newChatMessage', packedMessageForTo);
+				this.globalEventService.publishMainStream(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
+				//this.pushNotificationService.pushNotification(membershipsOtherThanMe[i].userId, 'newChatMessage', packedMessageForTo);
 			}
 		}, 3000);
 
