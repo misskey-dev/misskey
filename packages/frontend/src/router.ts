@@ -32,7 +32,7 @@ mainRouter.addListener('replace', ctx => {
 });
 
 mainRouter.addListener('change', ctx => {
-	console.log('mainRouter: change', ctx.fullPath);
+	if (_DEV_) console.log('mainRouter: change', ctx.fullPath);
 	analytics.page({
 		path: ctx.fullPath,
 		title: ctx.fullPath,

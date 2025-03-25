@@ -5367,6 +5367,14 @@ export interface Locale extends ILocale {
      */
     "chat": string;
     /**
+     * 旧設定情報を移行
+     */
+    "migrateOldSettings": string;
+    /**
+     * 通常これは自動で行われていますが、何らかの理由により上手く移行されなかった場合は手動で移行処理をトリガーできます。現在の設定情報は上書きされます。
+     */
+    "migrateOldSettings_description": string;
+    /**
      * 常に絶対時刻で表示する
      */
     "alwaysUseAbsoluteTime": string;
@@ -5472,6 +5480,10 @@ export interface Locale extends ILocale {
          * このルームをミュート
          */
         "muteThisRoom": string;
+        /**
+         * ルームを削除
+         */
+        "deleteRoom": string;
         /**
          * このユーザーとのチャットを開始できません
          */
@@ -5626,6 +5638,10 @@ export interface Locale extends ILocale {
          * 有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。
          */
         "makeEveryTextElementsSelectable_description": string;
+        /**
+         * ナビゲーションバーに副ボタンを表示
+         */
+        "showNavbarSubButtons": string;
     };
     "_preferencesProfile": {
         /**
