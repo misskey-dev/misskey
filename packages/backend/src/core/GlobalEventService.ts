@@ -167,6 +167,11 @@ export interface ChatEventTypes {
 		user?: Packed<'UserLite'>;
 		messageId: MiChatMessage['id'];
 	};
+	unreact: {
+		reaction: string;
+		user?: Packed<'UserLite'>;
+		messageId: MiChatMessage['id'];
+	};
 }
 
 export interface ReversiEventTypes {

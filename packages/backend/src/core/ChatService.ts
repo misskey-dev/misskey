@@ -33,6 +33,20 @@ const MAX_ROOM_MEMBERS = 30;
 const MAX_REACTIONS_PER_MESSAGE = 100;
 const isCustomEmojiRegexp = /^:([\w+-]+)(?:@\.)?:$/;
 
+// TODO: ReactionServiceのやつと共通化
+function normalizeEmojiString(x: string) {
+	const match = emojiRegex.exec(x);
+	if (match) {
+		// 合字を含む1つの絵文字
+		const unicode = match[0];
+
+		// 異体字セレクタ除去
+		return unicode.match('\u200d') ? unicode : unicode.replace(/\ufe0f/g, '');
+	} else {
+		throw new Error('invalid emoji');
+	}
+}
+
 @Injectable()
 export class ChatService {
 	constructor(
@@ -751,24 +765,10 @@ export class ChatService {
 	public async react(messageId: MiChatMessage['id'], userId: MiUser['id'], reaction_: string) {
 		let reaction;
 
-		// TODO: ReactionServiceのやつと共通化
-		function normalize(x: string) {
-			const match = emojiRegex.exec(x);
-			if (match) {
-				// 合字を含む1つの絵文字
-				const unicode = match[0];
-
-				// 異体字セレクタ除去
-				return unicode.match('\u200d') ? unicode : unicode.replace(/\ufe0f/g, '');
-			} else {
-				throw new Error('invalid emoji');
-			}
-		}
-
 		const custom = reaction_.match(isCustomEmojiRegexp);
 
 		if (custom == null) {
-			reaction = normalize(reaction_);
+			reaction = normalizeEmojiString(reaction_);
 		} else {
 			const name = custom[1];
 			const emoji = (await this.customEmojiService.localEmojisCache.fetch()).get(name);
@@ -821,6 +821,52 @@ export class ChatService {
 				reaction,
 			});
 			this.globalEventService.publishChatUserStream(message.toUserId!, message.fromUserId, 'react', {
+				messageId: message.id,
+				reaction,
+			});
+		}
+	}
+
+	@bindThis
+	public async unreact(messageId: MiChatMessage['id'], userId: MiUser['id'], reaction_: string) {
+		let reaction;
+
+		const custom = reaction_.match(isCustomEmojiRegexp);
+
+		if (custom == null) {
+			reaction = normalizeEmojiString(reaction_);
+		} else { // 削除されたカスタム絵文字のリアクションを削除したいかもしれないので絵文字の存在チェックはする必要なし
+			const name = custom[1];
+			reaction = `:${name}:`;
+		}
+
+		// NOTE: 自分のリアクションを(あれば)削除するだけなので諸々の権限チェックは必要なし
+
+		const message = await this.chatMessagesRepository.findOneByOrFail({ id: messageId });
+
+		const room = message.toRoomId ? await this.chatRoomsRepository.findOneByOrFail({ id: message.toRoomId }) : null;
+
+		await this.chatMessagesRepository.createQueryBuilder().update()
+			.set({
+				reactions: () => `array_remove("reactions", '${userId}/${reaction}')`,
+			})
+			.where('id = :id', { id: message.id })
+			.execute();
+
+		// TODO: 実際に削除が行われたときのみイベントを発行する
+
+		if (room) {
+			this.globalEventService.publishChatRoomStream(room.id, 'unreact', {
+				messageId: message.id,
+				user: await this.userEntityService.pack(userId),
+				reaction,
+			});
+		} else {
+			this.globalEventService.publishChatUserStream(message.fromUserId, message.toUserId!, 'unreact', {
+				messageId: message.id,
+				reaction,
+			});
+			this.globalEventService.publishChatUserStream(message.toUserId!, message.fromUserId, 'unreact', {
 				messageId: message.id,
 				reaction,
 			});

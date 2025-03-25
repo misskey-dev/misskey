@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:moveClass="prefer.s.animation ? $style.transition_reaction_move : ''"
 			tag="div" :class="$style.reactions"
 		>
-			<div v-for="record in message.reactions" :key="record.reaction + record.user.id" :class="$style.reaction">
+			<div v-for="record in message.reactions" :key="record.reaction + record.user.id" :class="$style.reaction" @click="onReactionClick(record)">
 				<MkAvatar :user="record.user" :link="false" :class="$style.reactionAvatar"/>
 				<MkReactionIcon
 					:withTooltip="true"
@@ -85,6 +85,15 @@ function react(ev: MouseEvent) {
 			reaction: reaction,
 		});
 	});
+}
+
+function onReactionClick(record: Misskey.entities.ChatMessage['reactions'][0]) {
+	if (record.user.id === $i.id) {
+		misskeyApi('chat/messages/unreact', {
+			messageId: props.message.id,
+			reaction: record.reaction,
+		});
+	}
 }
 
 function showMenu(ev: MouseEvent) {
