@@ -1015,6 +1015,7 @@ _chat:
   noHistory: "السجل فارغ"
   members: "الأعضاء"
   home: "الرئيسي"
+  send: "أرسل"
 _delivery:
   stop: "مُعلّق"
 _initialAccountSetting:
