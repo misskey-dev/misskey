@@ -1327,6 +1327,7 @@ _chat:
   noHistory: "Kein Verlauf gefunden"
   members: "Mitglieder"
   home: "Startseite"
+  send: "Senden"
 _emojiPalette:
   palettes: "Palette"
   enableSyncBetweenDevicesForPalettes: "Synchronisierung der Paletten zwischen Geräten aktivieren"
