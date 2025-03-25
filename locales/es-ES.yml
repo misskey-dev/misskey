@@ -1302,6 +1302,7 @@ _chat:
   noHistory: "No hay datos en el historial"
   members: "Miembros"
   home: "Inicio"
+  send: "Enviar"
 _settings:
   webhook: "Webhook"
 _accountSettings:
