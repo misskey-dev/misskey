@@ -1264,6 +1264,7 @@ _chat:
   noHistory: "Tidak ada riwayat"
   members: "Anggota"
   home: "Beranda"
+  send: "Kirim"
 _settings:
   webhook: "Webhook"
 _abuseUserReport:
