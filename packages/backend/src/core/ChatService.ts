@@ -26,6 +26,7 @@ import { Packed } from '@/misc/json-schema.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { emojiRegex } from '@/misc/emoji-regex.js';
+import { NotificationService } from '@/core/NotificationService.js';
 
 const MAX_ROOM_MEMBERS = 30;
 const MAX_REACTIONS_PER_MESSAGE = 100;
@@ -68,6 +69,7 @@ export class ChatService {
 		private apRendererService: ApRendererService,
 		private queueService: QueueService,
 		private pushNotificationService: PushNotificationService,
+		private notificationService: NotificationService,
 		private userBlockingService: UserBlockingService,
 		private queryService: QueryService,
 		private roleService: RoleService,
@@ -543,6 +545,10 @@ export class ChatService {
 		} satisfies Partial<MiChatRoomInvitation>;
 
 		const created = await this.chatRoomInvitationsRepository.insertOne(invitation);
+
+		this.notificationService.createNotification(inviteeId, 'chatRoomInvitationReceived', {
+			invitationId: invitation.id,
+		}, inviterId);
 
 		return created;
 	}

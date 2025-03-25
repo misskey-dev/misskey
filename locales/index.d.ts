@@ -9884,6 +9884,10 @@ export interface Locale extends ILocale {
          */
         "roleAssigned": string;
         /**
+         * チャットルームへ招待されました
+         */
+        "chatRoomInvitationReceived": string;
+        /**
          * プッシュ通知の更新をしました
          */
         "emptyPushNotificationMessage": string;
@@ -9992,6 +9996,10 @@ export interface Locale extends ILocale {
              * ロールが付与された
              */
             "roleAssigned": string;
+            /**
+             * チャットルームへ招待された
+             */
+            "chatRoomInvitationReceived": string;
             /**
              * 実績の獲得
              */
