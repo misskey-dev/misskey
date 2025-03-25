@@ -1484,6 +1484,15 @@ export type paths = {
      */
     post: operations['chat___rooms___invitations___inbox'];
   };
+  '/chat/rooms/invitations/outbox': {
+    /**
+     * chat/rooms/invitations/outbox
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:chat*
+     */
+    post: operations['chat___rooms___invitations___outbox'];
+  };
   '/chat/rooms/join': {
     /**
      * chat/rooms/join
@@ -14689,6 +14698,66 @@ export type operations = {
     requestBody: {
       content: {
         'application/json': {
+          /** @default 30 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['ChatRoomInvitation'][];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * chat/rooms/invitations/outbox
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:chat*
+   */
+  chat___rooms___invitations___outbox: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          roomId: string;
           /** @default 30 */
           limit?: number;
           /** Format: misskey:id */

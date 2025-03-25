@@ -548,6 +548,16 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async getSentRoomInvitationsWithPagination(roomId: MiChatRoom['id'], limit: number, sinceId?: MiChatRoomInvitation['id'] | null, untilId?: MiChatRoomInvitation['id'] | null) {
+		const query = this.queryService.makePaginationQuery(this.chatRoomInvitationsRepository.createQueryBuilder('invitation'), sinceId, untilId)
+			.where('invitation.roomId = :roomId', { roomId });
+
+		const invitations = await query.take(limit).getMany();
+
+		return invitations;
+	}
+
+	@bindThis
 	public async getOwnedRoomsWithPagination(ownerId: MiUser['id'], limit: number, sinceId?: MiChatRoom['id'] | null, untilId?: MiChatRoom['id'] | null) {
 		const query = this.queryService.makePaginationQuery(this.chatRoomsRepository.createQueryBuilder('room'), sinceId, untilId)
 			.where('room.ownerId = :ownerId', { ownerId });

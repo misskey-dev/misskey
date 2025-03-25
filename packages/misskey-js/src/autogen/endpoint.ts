@@ -235,6 +235,8 @@ import type {
 	ChatRoomsInvitationsIgnoreResponse,
 	ChatRoomsInvitationsInboxRequest,
 	ChatRoomsInvitationsInboxResponse,
+	ChatRoomsInvitationsOutboxRequest,
+	ChatRoomsInvitationsOutboxResponse,
 	ChatRoomsJoinRequest,
 	ChatRoomsJoinResponse,
 	ChatRoomsJoiningRequest,
@@ -784,6 +786,7 @@ export type Endpoints = {
 	'chat/rooms/invitations/create': { req: ChatRoomsInvitationsCreateRequest; res: ChatRoomsInvitationsCreateResponse };
 	'chat/rooms/invitations/ignore': { req: ChatRoomsInvitationsIgnoreRequest; res: ChatRoomsInvitationsIgnoreResponse };
 	'chat/rooms/invitations/inbox': { req: ChatRoomsInvitationsInboxRequest; res: ChatRoomsInvitationsInboxResponse };
+	'chat/rooms/invitations/outbox': { req: ChatRoomsInvitationsOutboxRequest; res: ChatRoomsInvitationsOutboxResponse };
 	'chat/rooms/join': { req: ChatRoomsJoinRequest; res: ChatRoomsJoinResponse };
 	'chat/rooms/joining': { req: ChatRoomsJoiningRequest; res: ChatRoomsJoiningResponse };
 	'chat/rooms/leave': { req: ChatRoomsLeaveRequest; res: ChatRoomsLeaveResponse };
