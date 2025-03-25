@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<hr>
 
-	<MkButton v-if="isOwner" danger @click="del">{{ i18n.ts._chat.deleteRoom }}</MkButton>
+	<MkButton v-if="isOwner || ($i.isAdmin || $i.isModerator)" danger @click="del">{{ i18n.ts._chat.deleteRoom }}</MkButton>
 
 	<MkSwitch v-if="!isOwner" v-model="isMuted">
 		<template #label>{{ i18n.ts._chat.muteThisRoom }}</template>
