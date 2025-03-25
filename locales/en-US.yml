@@ -1336,6 +1336,7 @@ _chat:
   noHistory: "No history available"
   members: "Members"
   home: "Home"
+  send: "Send"
 _emojiPalette:
   palettes: "Palette"
   enableSyncBetweenDevicesForPalettes: "Enable palette sync between devices"
