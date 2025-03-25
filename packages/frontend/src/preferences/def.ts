@@ -329,6 +329,9 @@ export const PREF_DEF = {
 	makeEveryTextElementsSelectable: {
 		default: DEFAULT_DEVICE_KIND === 'desktop',
 	},
+	showNavbarSubButtons: {
+		default: true,
+	},
 	plugins: {
 		default: [] as Plugin[],
 	},

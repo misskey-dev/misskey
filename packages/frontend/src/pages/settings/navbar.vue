@@ -42,6 +42,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="top">{{ i18n.ts._menuDisplay.top }}</option>
 		<!-- <MkRadio v-model="menuDisplay" value="hide" disabled>{{ i18n.ts._menuDisplay.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</MkRadios>
+
+	<SearchMarker :keywords="['toggle', 'button', 'sub']">
+		<MkPreferenceContainer k="showNavbarSubButtons">
+			<MkSwitch v-model="showNavbarSubButtons">
+				<template #label><SearchLabel>{{ i18n.ts._settings.showNavbarSubButtons }}</SearchLabel></template>
+			</MkSwitch>
+		</MkPreferenceContainer>
+	</SearchMarker>
 </div>
 </template>
 
@@ -51,6 +59,8 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { store } from '@/store.js';
@@ -68,6 +78,7 @@ const items = ref(prefer.s.menu.map(x => ({
 })));
 
 const menuDisplay = computed(store.makeGetterSetter('menuDisplay'));
+const showNavbarSubButtons = prefer.model('showNavbarSubButtons');
 
 async function addItem() {
 	const menu = Object.keys(navbarItemDef).filter(k => !prefer.s.menu.includes(k));

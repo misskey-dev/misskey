@@ -1403,6 +1403,7 @@ _settings:
   timelineAndNote: "タイムラインとノート"
   makeEveryTextElementsSelectable: "全てのテキスト要素を選択可能にする"
   makeEveryTextElementsSelectable_description: "有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。"
+  showNavbarSubButtons: "ナビゲーションバーに副ボタンを表示"
 
 _preferencesProfile:
   profileName: "プロファイル名"

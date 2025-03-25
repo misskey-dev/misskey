@@ -5610,6 +5610,10 @@ export interface Locale extends ILocale {
          * 有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。
          */
         "makeEveryTextElementsSelectable_description": string;
+        /**
+         * ナビゲーションバーに副ボタンを表示
+         */
+        "showNavbarSubButtons": string;
     };
     "_preferencesProfile": {
         /**
