@@ -912,6 +912,7 @@ _chat:
   noHistory: "Історія порожня"
   members: "Учасники"
   home: "Домівка"
+  send: "Відправити"
 _delivery:
   stop: "Призупинено"
   _type:
