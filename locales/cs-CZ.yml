@@ -1109,6 +1109,7 @@ _chat:
   noHistory: "Žádná historie"
   members: "Členové"
   home: "Domů"
+  send: "Odeslat"
 _delivery:
   stop: "Suspendováno"
   _type:
