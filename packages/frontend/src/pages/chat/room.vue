@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="user.chatScope === 'followers'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowers }}</div>
 					<div v-else-if="user.chatScope === 'following'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromFollowing }}</div>
 					<div v-else-if="user.chatScope === 'mutual'">{{ i18n.ts._chat.thisUserAllowsChatOnlyFromMutualFollowing }}</div>
-					<div v-else>{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
+					<div v-else-if="user.chatScope === 'none'">{{ i18n.ts._chat.thisUserNotAllowedChatAnyone }}</div>
 				</template>
 				<template v-else-if="room">
 					<div>{{ i18n.ts._chat.inviteUserToChat }}</div>
