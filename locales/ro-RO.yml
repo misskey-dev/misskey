@@ -648,6 +648,7 @@ _chat:
   noHistory: "Nu există istoric"
   members: "Membri"
   home: "Acasă"
+  send: "Trimite"
 _delivery:
   stop: "Suspendat"
   _type:
