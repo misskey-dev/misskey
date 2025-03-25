@@ -1405,6 +1405,9 @@ _settings:
   makeEveryTextElementsSelectable_description: "有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。"
   showNavbarSubButtons: "ナビゲーションバーに副ボタンを表示"
 
+  _chat:
+    showSenderName: "送信者の名前を表示"
+
 _preferencesProfile:
   profileName: "プロファイル名"
   profileNameDescription: "このデバイスを識別する名前を設定してください。"

@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
 	<MkAvatar :class="$style.avatar" :user="message.fromUser" :link="!isMe" :preview="false"/>
 	<div :class="$style.body">
+		<div v-if="!isMe && prefer.s['chat.showSenderName']" :class="$style.header"><MkUserName :user="message.fromUser"/></div>
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
 			<div v-if="!message.isDeleted" :class="$style.content">
 				<Mfm v-if="message.text" ref="text" class="_selectable" :text="message.text" :i="$i"/>
@@ -189,6 +190,10 @@ function showMenu(ev: MouseEvent) {
 
 .body {
 	margin: 0 12px;
+}
+
+.header {
+	font-size: 80%;
 }
 
 .content {

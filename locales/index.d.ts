@@ -5614,6 +5614,12 @@ export interface Locale extends ILocale {
          * ナビゲーションバーに副ボタンを表示
          */
         "showNavbarSubButtons": string;
+        "_chat": {
+            /**
+             * 送信者の名前を表示
+             */
+            "showSenderName": string;
+        };
     };
     "_preferencesProfile": {
         /**

@@ -487,47 +487,59 @@ export const searchIndexes: SearchIndexItem[] = [
 				id: 'vPQPvmntL',
 				children: [
 					{
-						id: 'zoogNoJEO',
+						id: 'zZxyXHk3A',
+						label: i18n.ts._settings._chat.showSenderName,
+						keywords: ['show', 'sender', 'name'],
+					},
+				],
+				label: i18n.ts.chat,
+				keywords: ['chat', 'messaging'],
+			},
+			{
+				id: 'sCscGhMmH',
+				children: [
+					{
+						id: 'dLkRNHn3k',
 						label: i18n.ts.squareAvatars,
 						keywords: ['avatar', 'icon', 'square'],
 					},
 					{
-						id: '7ix3kvMyU',
+						id: 'BvooTWFW5',
 						label: i18n.ts.seasonalScreenEffect,
 						keywords: ['effect', 'show'],
 					},
 					{
-						id: '6RxgjmMLN',
+						id: 'yzbghkAq0',
 						label: i18n.ts.openImageInNewTab,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab'],
 					},
 					{
-						id: 'alM3BcFzs',
+						id: 'aSbKFHbOy',
 						label: i18n.ts.withRepliesByDefaultForNewlyFollowed,
 						keywords: ['follow', 'replies'],
 					},
 					{
-						id: 'yzbghkAq0',
+						id: '89bn97UgY',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: '4SPd8QhYx',
+						id: 'hgf3rgdA6',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: 'BoNg4LwOq',
+						id: '6FVdHPhhv',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: 'hgf3rgdA6',
+						id: '5Bx5DAST1',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: 'nnj4DkjhP',
+						id: 'wv7Cwiwb1',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},

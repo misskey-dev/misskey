@@ -429,6 +429,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
+			<SearchMarker :keywords="['chat', 'messaging']">
+				<MkFolder>
+					<template #label><SearchLabel>{{ i18n.ts.chat }}</SearchLabel></template>
+					<template #icon><i class="ti ti-messages"></i></template>
+
+					<div class="_gaps_m">
+						<SearchMarker :keywords="['show', 'sender', 'name']">
+							<MkPreferenceContainer k="chat.showSenderName">
+								<MkSwitch v-model="chatShowSenderName">
+									<template #label><SearchLabel>{{ i18n.ts._settings._chat.showSenderName }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+					</div>
+				</MkFolder>
+			</SearchMarker>
+
 			<SearchMarker :keywords="['other']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.other }}</SearchLabel></template>
@@ -609,6 +626,7 @@ const emojiStyle = prefer.model('emojiStyle');
 const useBlurEffectForModal = prefer.model('useBlurEffectForModal');
 const useBlurEffect = prefer.model('useBlurEffect');
 const defaultFollowWithReplies = prefer.model('defaultFollowWithReplies');
+const chatShowSenderName = prefer.model('chat.showSenderName');
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
