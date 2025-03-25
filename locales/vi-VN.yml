@@ -1122,6 +1122,7 @@ _chat:
   noHistory: "Không có dữ liệu"
   members: "Thành viên"
   home: "Trang chính"
+  send: "Gửi"
 _delivery:
   stop: "Đã vô hiệu hóa"
   _type:
