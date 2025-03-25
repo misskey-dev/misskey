@@ -1356,6 +1356,7 @@ _chat:
   members: "Membres"
   searchMessages: "Buscar missatges "
   home: "Inici"
+  send: "Envia"
   muteThisRoom: "Silenciar aquesta sala"
   cannotChatWithTheUser: "No pots xatejar amb aquest usuari"
   cannotChatWithTheUser_description: "El xat està desactivat o l'altra part encara no l'ha obert."
