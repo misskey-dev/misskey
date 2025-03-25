@@ -56,17 +56,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkA>
 		</div>
-		<div v-if="!fetching && history.length == 0" class="_fullinfo">
+		<div v-if="!initializing && history.length == 0" class="_fullinfo">
 			<div>{{ i18n.ts._chat.noHistory }}</div>
 		</div>
-		<MkLoading v-if="fetching"/>
+		<MkLoading v-if="initializing"/>
 	</MkFoldableSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onActivated, onDeactivated, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import XMessage from './XMessage.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
@@ -82,7 +83,8 @@ const $i = ensureSignin();
 
 const router = useRouter();
 
-const fetching = ref(true);
+const initializing = ref(true);
+const fetching = ref(false);
 const history = ref<{
 	id: string;
 	message: Misskey.entities.ChatMessage;
@@ -143,6 +145,8 @@ async function search() {
 }
 
 async function fetchHistory() {
+	if (fetching.value) return;
+
 	fetching.value = true;
 
 	const [userMessages, roomMessages] = await Promise.all([
@@ -160,9 +164,34 @@ async function fetchHistory() {
 		}));
 
 	fetching.value = false;
+	initializing.value = false;
 
 	updateCurrentAccountPartial({ hasUnreadChatMessages: false });
 }
+
+let isActivated = true;
+
+onActivated(() => {
+	isActivated = true;
+});
+
+onDeactivated(() => {
+	isActivated = false;
+});
+
+useInterval(() => {
+	// TODO: DOM的にバックグラウンドになっていないかどうかも考慮する
+	if (!window.document.hidden && isActivated) {
+		fetchHistory();
+	}
+}, 1000 * 10, {
+	immediate: false,
+	afterMounted: true,
+});
+
+onActivated(() => {
+	fetchHistory();
+});
 
 onMounted(() => {
 	fetchHistory();
