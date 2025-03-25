@@ -10,7 +10,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="!isMe && prefer.s['chat.showSenderName']" :class="$style.header"><MkUserName :user="message.fromUser"/></div>
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
 			<div v-if="!message.isDeleted" :class="$style.content">
-				<Mfm v-if="message.text" ref="text" class="_selectable" :text="message.text" :i="$i"/>
+				<Mfm
+					v-if="message.text"
+					ref="text"
+					class="_selectable"
+					:text="message.text"
+					:i="$i"
+					:nyaize="'respect'"
+					:enableEmojiMenu="true"
+					:enableEmojiMenuReaction="true"
+				/>
 				<MkMediaList v-if="message.file" :mediaList="[message.file]" :class="$style.file"/>
 			</div>
 			<div v-else :class="$style.content">
@@ -47,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent } from 'vue';
+import { computed, defineAsyncComponent, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
@@ -65,6 +74,7 @@ import { reactionPicker } from '@/utility/reaction-picker.js';
 import * as sound from '@/utility/sound.js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const $i = ensureSignin();
 
@@ -76,10 +86,17 @@ const props = defineProps<{
 const isMe = computed(() => props.message.fromUserId === $i.id);
 const urls = computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(props.message.text)) : []);
 
+provide(DI.mfmEmojiReactCallback, (reaction) => {
+	sound.playMisskeySfx('reaction');
+	misskeyApi('chat/messages/react', {
+		messageId: props.message.id,
+		reaction: reaction,
+	});
+});
+
 function react(ev: MouseEvent) {
 	reactionPicker.show(ev.currentTarget ?? ev.target, null, async (reaction) => {
 		sound.playMisskeySfx('reaction');
-
 		misskeyApi('chat/messages/react', {
 			messageId: props.message.id,
 			reaction: reaction,
@@ -93,6 +110,14 @@ function onReactionClick(record: Misskey.entities.ChatMessage['reactions'][0]) {
 			messageId: props.message.id,
 			reaction: record.reaction,
 		});
+	} else {
+		if (!props.message.reactions.some(r => r.user.id === $i.id && r.reaction === record.reaction)) {
+			sound.playMisskeySfx('reaction');
+			misskeyApi('chat/messages/react', {
+				messageId: props.message.id,
+				reaction: record.reaction,
+			});
+		}
 	}
 }
 
