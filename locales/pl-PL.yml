@@ -1047,6 +1047,7 @@ _chat:
   noHistory: "Brak historii"
   members: "Członkowie"
   home: "Strona główna"
+  send: "Wyślij"
 _delivery:
   stop: "Zawieszono"
   _type:
