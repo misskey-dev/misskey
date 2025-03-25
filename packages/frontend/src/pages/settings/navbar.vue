@@ -4,53 +4,55 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
-	<FormSlot>
-		<template #label>{{ i18n.ts.navbar }}</template>
-		<MkContainer :showHeader="false">
-			<Sortable
-				v-model="items"
-				itemKey="id"
-				:animation="150"
-				:handle="'.' + $style.itemHandle"
-				@start="e => e.item.classList.add('active')"
-				@end="e => e.item.classList.remove('active')"
-			>
-				<template #item="{element,index}">
-					<div
-						v-if="element.type === '-' || navbarItemDef[element.type]"
-						:class="$style.item"
-					>
-						<button class="_button" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>
-						<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[element.type]?.icon]"></i><span :class="$style.itemText">{{ navbarItemDef[element.type]?.title ?? i18n.ts.divider }}</span>
-						<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
-					</div>
-				</template>
-			</Sortable>
-		</MkContainer>
-	</FormSlot>
-	<div class="_buttons">
-		<MkButton @click="addItem"><i class="ti ti-plus"></i> {{ i18n.ts.addItem }}</MkButton>
-		<MkButton danger @click="reset"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-		<MkButton primary class="save" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-	</div>
+<SearchMarker path="/settings/navbar" :label="i18n.ts.navbar" icon="ti ti-list" :keywords="['navbar', 'menu', 'sidebar']">
+	<div class="_gaps_m">
+		<FormSlot>
+			<template #label>{{ i18n.ts.navbar }}</template>
+			<MkContainer :showHeader="false">
+				<Sortable
+					v-model="items"
+					itemKey="id"
+					:animation="150"
+					:handle="'.' + $style.itemHandle"
+					@start="e => e.item.classList.add('active')"
+					@end="e => e.item.classList.remove('active')"
+				>
+					<template #item="{element,index}">
+						<div
+							v-if="element.type === '-' || navbarItemDef[element.type]"
+							:class="$style.item"
+						>
+							<button class="_button" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>
+							<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[element.type]?.icon]"></i><span :class="$style.itemText">{{ navbarItemDef[element.type]?.title ?? i18n.ts.divider }}</span>
+							<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
+						</div>
+					</template>
+				</Sortable>
+			</MkContainer>
+		</FormSlot>
+		<div class="_buttons">
+			<MkButton @click="addItem"><i class="ti ti-plus"></i> {{ i18n.ts.addItem }}</MkButton>
+			<MkButton danger @click="reset"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+			<MkButton primary class="save" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+		</div>
 
-	<MkRadios v-model="menuDisplay">
-		<template #label>{{ i18n.ts.display }}</template>
-		<option value="sideFull">{{ i18n.ts._menuDisplay.sideFull }}</option>
-		<option value="sideIcon">{{ i18n.ts._menuDisplay.sideIcon }}</option>
-		<option value="top">{{ i18n.ts._menuDisplay.top }}</option>
+		<MkRadios v-model="menuDisplay">
+			<template #label>{{ i18n.ts.display }}</template>
+			<option value="sideFull">{{ i18n.ts._menuDisplay.sideFull }}</option>
+			<option value="sideIcon">{{ i18n.ts._menuDisplay.sideIcon }}</option>
+			<option value="top">{{ i18n.ts._menuDisplay.top }}</option>
 		<!-- <MkRadio v-model="menuDisplay" value="hide" disabled>{{ i18n.ts._menuDisplay.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
-	</MkRadios>
+		</MkRadios>
 
-	<SearchMarker :keywords="['toggle', 'button', 'sub']">
-		<MkPreferenceContainer k="showNavbarSubButtons">
-			<MkSwitch v-model="showNavbarSubButtons">
-				<template #label><SearchLabel>{{ i18n.ts._settings.showNavbarSubButtons }}</SearchLabel></template>
-			</MkSwitch>
-		</MkPreferenceContainer>
-	</SearchMarker>
-</div>
+		<SearchMarker :keywords="['navbar', 'sidebar', 'toggle', 'button', 'sub']">
+			<MkPreferenceContainer k="showNavbarSubButtons">
+				<MkSwitch v-model="showNavbarSubButtons">
+					<template #label><SearchLabel>{{ i18n.ts._settings.showNavbarSubButtons }}</SearchLabel></template>
+				</MkSwitch>
+			</MkPreferenceContainer>
+		</SearchMarker>
+	</div>
+</SearchMarker>
 </template>
 
 <script lang="ts" setup>
