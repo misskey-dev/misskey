@@ -843,6 +843,7 @@ _chat:
   noHistory: "Tarix yo'q"
   members: "A'zolar"
   home: "Bosh sahifa"
+  send: "Yuborish"
 _delivery:
   stop: "To'xtatilgan"
   _type:
