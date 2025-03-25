@@ -523,14 +523,18 @@ export class ChatService {
 	}
 
 	@bindThis
-	public async deleteRoom(room: MiChatRoom, moderator?: MiUser) {
+	public async deleteRoom(room: MiChatRoom, deleter?: MiUser) {
 		await this.chatRoomsRepository.delete(room.id);
 
-		if (moderator) {
-			this.moderationLogService.log(moderator, 'deleteChatRoom', {
-				roomId: room.id,
-				room: room,
-			});
+		if (deleter) {
+			const deleterIsModerator = await this.roleService.isModerator(deleter);
+
+			if (deleterIsModerator) {
+				this.moderationLogService.log(deleter, 'deleteChatRoom', {
+					roomId: room.id,
+					room: room,
+				});
+			}
 		}
 	}
 
