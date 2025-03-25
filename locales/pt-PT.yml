@@ -1304,6 +1304,7 @@ _chat:
   noHistory: "Ainda não há histórico"
   members: "Membros"
   home: "Início"
+  send: "Enviar"
 _settings:
   webhook: "Webhook"
 _accountSettings:
