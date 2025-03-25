@@ -1184,6 +1184,7 @@ _chat:
   noHistory: "История пока пуста"
   members: "Участники"
   home: "Главная"
+  send: "Отправить"
 _settings:
   webhook: "Вебхук"
 _delivery:
