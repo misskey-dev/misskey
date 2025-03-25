@@ -19,6 +19,7 @@ class GlobalTimelineChannel extends Channel {
 	public static requireCredential = false as const;
 	private withRenotes: boolean;
 	private withFiles: boolean;
+	private withHashtags: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -39,6 +40,7 @@ class GlobalTimelineChannel extends Channel {
 
 		this.withRenotes = !!(params.withRenotes ?? true);
 		this.withFiles = !!(params.withFiles ?? false);
+		this.withHashtags = !!(params.withHashtags ?? true);
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -46,6 +48,8 @@ class GlobalTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		if (note.tags && note.tags.length > 0 && !this.withHashtags) return;
+
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
 		if (note.visibility !== 'public') return;

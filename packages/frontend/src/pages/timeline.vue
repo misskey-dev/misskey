@@ -17,11 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.tl">
 					<MkTimeline
 						ref="tlComponent"
-						:key="src + withRenotes + withReplies + withFiles + localOnly + remoteOnly + withSensitive"
+						:key="src + withRenotes + withReplies + withHashtags + withFiles + localOnly + remoteOnly + withSensitive"
 						:src="src.split(':')[0]"
 						:list="src.split(':')[1]"
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
+						:withHashtags="withHashtags"
 						:withSensitive="withSensitive"
 						:withFiles="withFiles"
 						:localOnly="localOnly"
@@ -116,6 +117,11 @@ const withFiles = computed<boolean>({
 		}
 	},
 	set: (x) => saveTlFilter('withFiles', x),
+});
+
+const withHashtags = computed<boolean>({
+	get: () => defaultStore.reactiveState.tl.value.filter.withHashtags,
+	set: (x) => saveTlFilter('withHashtags', x),
 });
 
 watch([withReplies, withFiles], ([withRepliesTo, withFilesTo]) => {
@@ -315,24 +321,27 @@ const headerActions = computed(() => {
 });
 
 const filterItems = computed(() => {
-	const items: MenuItem[] = [];
+  const items: MenuItem[] = [];
 
-	// ホームとやみを除外し、ソーシャルTLのみにlocalOnlyを適用
-	if (src.value === 'social') {
-		items.push({
-			type: 'switch',
-			text: i18n.ts.localOnly,
-			ref: localOnly,
-		});
-	} else if (src.value === 'global') {
-		items.push({
-			type: 'switch',
-			text: i18n.ts.remoteOnly,
-			ref: remoteOnly,
-		});
-	}
+  if (src.value === 'social') {
+    items.push({
+      type: 'switch',
+      text: i18n.ts.localOnly,
+      ref: localOnly,
+    });
+  } else if (src.value === 'global') {
+    items.push({
+      type: 'switch',
+      text: i18n.ts.remoteOnly,
+      ref: remoteOnly,
+    }, {
+      type: 'switch',
+      text: i18n.ts.withHashtags,
+      ref: withHashtags,
+    });
+  }
 
-	return items;
+  return items;
 });
 
 const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
@@ -345,7 +354,7 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	title: i18n.ts._timelines[tl],
 	icon: basicTimelineIconClass(tl),
 	iconOnly: true,
-})),{
+})), {
 	icon: 'ti ti-list',
 	title: i18n.ts.lists,
 	iconOnly: true,

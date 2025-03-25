@@ -43,17 +43,19 @@ const props = withDefaults(defineProps<{
 	sound?: boolean;
 	withRenotes?: boolean;
 	withReplies?: boolean;
+	withHashtags?: boolean;
 	withSensitive?: boolean;
 	withFiles?: boolean;
-	localOnly?: boolean; // 追加
-	remoteOnly?: boolean; // 追加
+	localOnly?: boolean;
+	remoteOnly?: boolean;
 }>(), {
 	withRenotes: true,
 	withReplies: false,
+	withHashtags: true,
 	withSensitive: true,
 	withFiles: false,
-	localOnly: false, // 追加
-	remoteOnly: false, // 追加
+	localOnly: false,
+	remoteOnly: false,
 });
 
 const emit = defineEmits<{
@@ -76,6 +78,7 @@ type TimelineQueryType = {
 	roleId?: string,
 	localOnly?: boolean, // 追加
 	remoteOnly?: boolean // 追加
+	withHashtags?: boolean,
 };
 
 const prComponent = shallowRef<InstanceType<typeof MkPullToRefresh>>();
@@ -148,6 +151,7 @@ function connectChannel() {
 			withRenotes: props.withRenotes,
 			withFiles: props.withFiles ? true : undefined,
 			remoteOnly: props.remoteOnly, // これが正しく渡されているか確認
+			withHashtags: props.withHashtags,
 		});
 	} else if (props.src === 'mentions') {
 		connection = stream.useChannel('main');
@@ -226,6 +230,7 @@ function updatePaginationQuery() {
 			withRenotes: props.withRenotes,
 			withFiles: props.withFiles ? true : undefined,
 			remoteOnly: props.remoteOnly, // これが正しく渡されているか確認
+			withHashtags: props.withHashtags,
 		};
 	} else if (props.src === 'mentions') {
 		endpoint = 'notes/mentions';

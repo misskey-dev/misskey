@@ -41,6 +41,7 @@ export const paramDef = {
 	properties: {
 		withFiles: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
+		withHashtags: { type: 'boolean', default: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
@@ -103,7 +104,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}));
 				}));
 			}
-			//#endregion
+
+			if (!ps.withHashtags) {
+				query.andWhere('note.tags = \'{}\'');
+				// リノートしたノートがハッシュタグを持っている場合も対象にする
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('note.hasPoll');
+					qb.orWhere('(SELECT r.tags FROM "note" as r WHERE r.id = note.renoteId) = \'{}\'');
+				}));
+			}
 
 			const timeline = await query.limit(ps.limit).getMany();
 
