@@ -2546,6 +2546,7 @@ _notification:
   newNote: "新的帖子"
   unreadAntennaNote: "天线 {name}"
   roleAssigned: "授予的角色"
+  chatRoomInvitationReceived: "受邀加入聊天室"
   emptyPushNotificationMessage: "推送通知已更新"
   achievementEarned: "获得成就"
   testNotification: "测试通知"
@@ -2574,6 +2575,7 @@ _notification:
     receiveFollowRequest: "收到关注请求"
     followRequestAccepted: "关注请求已通过"
     roleAssigned: "授予的角色"
+    chatRoomInvitationReceived: "受邀加入聊天室"
     achievementEarned: "取得的成就"
     exportCompleted: "已完成导出"
     login: "登录"
@@ -2713,6 +2715,7 @@ _moderationLogTypes:
   deletePage: "删除了页面"
   deleteFlash: "删除了 Play"
   deleteGalleryPost: "删除了图库稿件"
+  deleteChatRoom: "删除聊天室"
   updateProxyAccountDescription: "更新代理账户的简介"
 _fileViewer:
   title: "文件信息"
