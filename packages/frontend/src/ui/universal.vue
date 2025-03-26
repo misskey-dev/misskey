@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
+	<XSidebar v-if="!isMobile" :class="$style.sidebar" :showWidgetButton="!isDesktop" @widgetButtonClick="widgetsShowing = true"/>
 
 	<div :class="$style.contents" @contextmenu.stop="onContextmenu">
 		<div>
@@ -28,9 +28,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 			<button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon" class="ti ti-apps"></i></button>
 			<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
-		</div>
-		<div v-else-if="!isDesktop" ref="navFooter" :class="$style.navForTablet">
-			<button :class="$style.navForTabletWidgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
 		</div>
 	</div>
 
@@ -281,7 +278,7 @@ $widgets-hide-threshold: 1090px;
 .transition_widgetsDrawer_enterFrom,
 .transition_widgetsDrawer_leaveTo {
 	opacity: 0;
-	transform: translateX(240px);
+	transform: translateX(-240px);
 }
 
 .root {
@@ -308,35 +305,6 @@ $widgets-hide-threshold: 1090px;
 .content {
 	flex: 1;
 	min-height: 0;
-}
-
-.navForTablet {
-	display: flex;
-	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
-	width: 100%;
-	box-sizing: border-box;
-	background: var(--MI_THEME-bg);
-	border-top: solid 0.5px var(--MI_THEME-divider);
-}
-
-.navForTabletWidgetButton {
-	position: relative;
-	padding: 0;
-	aspect-ratio: 1;
-	width: 100%;
-	max-width: 60px;
-	margin-left: auto;
-	border-radius: 100%;
-	background: var(--MI_THEME-panel);
-	color: var(--MI_THEME-fg);
-
-	&:hover {
-		background: var(--MI_THEME-panelHighlight);
-	}
-
-	&:active {
-		background: hsl(from var(--MI_THEME-panel) h s calc(l - 2));
-	}
 }
 
 .nav {
@@ -447,7 +415,7 @@ $widgets-hide-threshold: 1090px;
 .widgetsDrawer {
 	position: fixed;
 	top: 0;
-	right: 0;
+	left: 0;
 	z-index: 1001;
 	width: 310px;
 	height: 100dvh;
