@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
 	<MkAvatar :class="$style.avatar" :user="message.fromUser" :link="!isMe" :preview="false"/>
-	<div :class="$style.body">
+	<div :class="$style.body" @contextmenu.stop="onContextmenu">
 		<div v-if="!isMe && prefer.s['chat.showSenderName']" :class="$style.header"><MkUserName :user="message.fromUser"/></div>
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
 			<div v-if="!message.isDeleted" :class="$style.content">
@@ -60,6 +60,7 @@ import { computed, defineAsyncComponent, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
+import { isLink } from '@@/js/is-link.js';
 import type { MenuItem } from '@/types/menu.js';
 import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
@@ -121,7 +122,14 @@ function onReactionClick(record: Misskey.entities.ChatMessage['reactions'][0]) {
 	}
 }
 
-function showMenu(ev: MouseEvent) {
+function onContextmenu(ev: MouseEvent) {
+	if (ev.target && isLink(ev.target as HTMLElement)) return;
+	if (window.getSelection()?.toString() !== '') return;
+
+	showMenu(ev, true);
+}
+
+function showMenu(ev: MouseEvent, contextmenu = false) {
 	const menu: MenuItem[] = [];
 
 	if (!isMe.value) {
@@ -177,7 +185,11 @@ function showMenu(ev: MouseEvent) {
 		});
 	}
 
-	os.popupMenu(menu, ev.currentTarget ?? ev.target);
+	if (contextmenu) {
+		os.contextMenu(menu, ev);
+	} else {
+		os.popupMenu(menu, ev.currentTarget ?? ev.target);
+	}
 }
 </script>
 
