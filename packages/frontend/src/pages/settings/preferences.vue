@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['general']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.general }}</SearchLabel></template>
+					<template #icon><i class="ti ti-settings"></i></template>
 
 					<div class="_gaps_m">
 						<SearchMarker :keywords="['language']">
@@ -135,6 +136,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['timeline', 'note']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts._settings.timelineAndNote }}</SearchLabel></template>
+					<template #icon><i class="ti ti-notes"></i></template>
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">
@@ -293,6 +295,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['post', 'form']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.postForm }}</SearchLabel></template>
+					<template #icon><i class="ti ti-edit"></i></template>
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">
@@ -354,6 +357,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['notification']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.notifications }}</SearchLabel></template>
+					<template #icon><i class="ti ti-bell"></i></template>
 
 					<div class="_gaps_m">
 						<SearchMarker :keywords="['group']">
@@ -394,6 +398,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['datasaver']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.dataSaver }}</SearchLabel></template>
+					<template #icon><i class="ti ti-antenna-bars-3"></i></template>
 
 					<div class="_gaps_m">
 						<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
@@ -424,9 +429,49 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
+			<SearchMarker :keywords="['chat', 'messaging']">
+				<MkFolder>
+					<template #label><SearchLabel>{{ i18n.ts.chat }}</SearchLabel></template>
+					<template #icon><i class="ti ti-messages"></i></template>
+
+					<div class="_gaps_s">
+						<SearchMarker :keywords="['show', 'sender', 'name']">
+							<MkPreferenceContainer k="chat.showSenderName">
+								<MkSwitch v-model="chatShowSenderName">
+									<template #label><SearchLabel>{{ i18n.ts._settings._chat.showSenderName }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['send', 'enter', 'newline']">
+							<MkPreferenceContainer k="chat.sendOnEnter">
+								<MkSwitch v-model="chatSendOnEnter">
+									<template #label><SearchLabel>{{ i18n.ts._settings._chat.sendOnEnter }}</SearchLabel></template>
+									<template #caption>
+										<div class="_gaps_s">
+											<div>
+												<b>{{ i18n.ts._settings.ifOn }}:</b>
+												<div>{{ i18n.ts._chat.send }}: Enter</div>
+												<div>{{ i18n.ts._chat.newline }}: Shift + Enter</div>
+											</div>
+											<div>
+												<b>{{ i18n.ts._settings.ifOff }}:</b>
+												<div>{{ i18n.ts._chat.send }}: Ctrl + Enter</div>
+												<div>{{ i18n.ts._chat.newline }}: Enter</div>
+											</div>
+										</div>
+									</template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+					</div>
+				</MkFolder>
+			</SearchMarker>
+
 			<SearchMarker :keywords="['other']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.other }}</SearchLabel></template>
+					<template #icon><i class="ti ti-settings-cog"></i></template>
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">
@@ -603,6 +648,8 @@ const emojiStyle = prefer.model('emojiStyle');
 const useBlurEffectForModal = prefer.model('useBlurEffectForModal');
 const useBlurEffect = prefer.model('useBlurEffect');
 const defaultFollowWithReplies = prefer.model('defaultFollowWithReplies');
+const chatShowSenderName = prefer.model('chat.showSenderName');
+const chatSendOnEnter = prefer.model('chat.sendOnEnter');
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -630,6 +677,7 @@ watch([
 	squareAvatars,
 	highlightSensitiveMedia,
 	enableSeasonalScreenEffect,
+	chatShowSenderName,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });

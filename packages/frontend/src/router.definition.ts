@@ -41,6 +41,22 @@ export const ROUTE_DEF = [{
 	path: '/clips/:clipId',
 	component: page(() => import('@/pages/clip.vue')),
 }, {
+	path: '/chat',
+	component: page(() => import('@/pages/chat/home.vue')),
+	loginRequired: true,
+}, {
+	path: '/chat/user/:userId',
+	component: page(() => import('@/pages/chat/room.vue')),
+	loginRequired: true,
+}, {
+	path: '/chat/room/:roomId',
+	component: page(() => import('@/pages/chat/room.vue')),
+	loginRequired: true,
+}, {
+	path: '/chat/messages/:messageId',
+	component: page(() => import('@/pages/chat/message.vue')),
+	loginRequired: true,
+}, {
 	path: '/instance-info/:host',
 	component: page(() => import('@/pages/instance-info.vue')),
 }, {
