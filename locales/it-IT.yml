@@ -1366,7 +1366,18 @@ _chat:
   cannotChatWithTheUser: "Impossibile chattare con questa persona"
   cannotChatWithTheUser_description: "La chat potrebbe non essere disponibile, oppure l'altra persona potrebbe non esserlo."
   chatWithThisUser: "Chatta con questa persona"
-  thisUserAllowsChatOnlyFromFollowers: "Questo profilo accetta chat soltanto dai propri Follower."
+  thisUserAllowsChatOnlyFromFollowers: "Questa persona permette di chattare soltanto i propri Follower."
+  thisUserAllowsChatOnlyFromFollowing: "Questa persona permette di chattare soltanto ai suoi Follow."
+  thisUserAllowsChatOnlyFromMutualFollowing: "Questa persona permette di chattare solo a relazioni reciproche."
+  thisUserNotAllowedChatAnyone: "Questa persona non permette di chattare a nessuno."
+  chatAllowedUsers: "Persone ammesse alla chat"
+  chatAllowedUsers_note: "Puoi chattare con le persone a cui hai già inviato un messaggio, indipendentemente da questa impostazione."
+  _chatAllowedUsers:
+    everyone: "Chiunque"
+    followers: "Solo i tuoi Follower"
+    following: "Solo i tuoi Follow"
+    mutual: "Solo relazioni reciproche"
+    none: "Nessuno"
 _emojiPalette:
   palettes: "Tavolozza"
   enableSyncBetweenDevicesForPalettes: "Attiva la sincronizzazione tra dispositivi"
@@ -1392,6 +1403,12 @@ _settings:
   timelineAndNote: "Note e Timeline"
   makeEveryTextElementsSelectable: "Imposta ogni elemento come selezionabile"
   makeEveryTextElementsSelectable_description: "Potrebbe ridurre l'usabilità in alcune situazioni."
+  showNavbarSubButtons: "Mostra i pulsanti secondari nella barra di navigazione"
+  ifOn: "Quando attivato"
+  ifOff: "Quando disattivato"
+  _chat:
+    showSenderName: "Mostra il nome del mittente"
+    sendOnEnter: "Invio spedisce"
 _preferencesProfile:
   profileName: "Nome del profilo"
   profileNameDescription: "Impostare il nome che indentifica questo dispositivo."
@@ -1901,6 +1918,7 @@ _role:
     canImportFollowing: "Può importare Following"
     canImportMuting: "Può importare Silenziati"
     canImportUserLists: "Può importare liste di Profili"
+    canChat: "Chat consentita"
   _condition:
     roleAssignedTo: "Assegnato a ruoli manualmente"
     isLocal: "Profilo locale"
@@ -2131,6 +2149,7 @@ _sfx:
   noteMy: "Mia nota"
   notification: "Notifiche"
   reaction: "Quando seleziono una reazione"
+  chatMessage: "Messaggio di chat"
 _soundSettings:
   driveFile: "Suoni del Drive"
   driveFileWarn: "Seleziona file dal dispositivo"
@@ -2278,6 +2297,7 @@ _permissions:
   "read:federation": "Vedere la federazione"
   "write:report-abuse": "Inviare segnalazioni"
   "write:chat": "Gestire la chat"
+  "read:chat": "Visualizzare le chat"
 _auth:
   shareAccessTitle: "Permessi dell'applicazione"
   shareAccess: "Vuoi autorizzare {name} ad accedere al tuo profilo?"
@@ -2526,6 +2546,7 @@ _notification:
   newNote: "Nuove Note"
   unreadAntennaNote: "Antenna {name}"
   roleAssigned: "Ruolo assegnato"
+  chatRoomInvitationReceived: "Invito in una stanza di chat"
   emptyPushNotificationMessage: "Le notifiche push sono state aggiornate."
   achievementEarned: "Obiettivo raggiunto"
   testNotification: "Provare la notifica"
@@ -2554,6 +2575,7 @@ _notification:
     receiveFollowRequest: "Richieste di follow in arrivo"
     followRequestAccepted: "Richieste di follow accettate"
     roleAssigned: "Ruolo concesso"
+    chatRoomInvitationReceived: "Invito in una stanza di chat"
     achievementEarned: "Risultato raggiunto"
     exportCompleted: "Esportazione completata"
     login: "Accessi"
@@ -2693,6 +2715,7 @@ _moderationLogTypes:
   deletePage: "Pagina eliminata"
   deleteFlash: "Play eliminato"
   deleteGalleryPost: "Eliminazione pubblicazione nella Galleria"
+  deleteChatRoom: "Elimina chat"
   updateProxyAccountDescription: "Aggiornata la descrizione del profilo proxy"
 _fileViewer:
   title: "Dettagli del file"
