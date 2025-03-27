@@ -28,6 +28,7 @@ import * as sound from '@/utility/sound.js';
 import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -94,7 +95,7 @@ let connection: Misskey.ChannelConnection | null = null;
 let connection2: Misskey.ChannelConnection | null = null;
 let paginationQuery: Paging | null = null;
 
-const stream = useStream();
+const stream = store.s.realtimeMode ? useStream() : null;
 
 function connectChannel() {
 	if (props.src === 'antenna') {
@@ -239,7 +240,7 @@ function updatePaginationQuery() {
 }
 
 function refreshEndpointAndChannel() {
-	if (!prefer.s.disableStreamingTimeline) {
+	if (!prefer.s.disableStreamingTimeline && store.s.realtimeMode) {
 		disconnectChannel();
 		connectChannel();
 	}

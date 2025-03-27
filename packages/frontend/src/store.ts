@@ -76,6 +76,10 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'device',
 		default: false,
 	},
+	realtimeMode: {
+		where: 'device',
+		default: false,
+	},
 	recentlyUsedEmojis: {
 		where: 'device',
 		default: [] as string[],

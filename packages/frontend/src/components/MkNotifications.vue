@@ -36,6 +36,7 @@ import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
@@ -60,7 +61,9 @@ const pagination = computed(() => prefer.r.useGroupedNotifications.value ? {
 function onNotification(notification) {
 	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;
 	if (isMuted || window.document.visibilityState === 'visible') {
-		useStream().send('readNotification');
+		if (store.s.realtimeMode) {
+			useStream().send('readNotification');
+		}
 	}
 
 	if (!isMuted) {
@@ -76,19 +79,22 @@ function reload() {
 	});
 }
 
-let connection: Misskey.ChannelConnection<Misskey.Channels['main']>;
+let connection: Misskey.ChannelConnection<Misskey.Channels['main']> | null = null;
 
 onMounted(() => {
-	connection = useStream().useChannel('main');
-	connection.on('notification', onNotification);
-	connection.on('notificationFlushed', reload);
+	if (store.s.realtimeMode) {
+		connection = useStream().useChannel('main');
+		connection.on('notification', onNotification);
+		connection.on('notificationFlushed', reload);
+	}
 });
 
 onActivated(() => {
-	pagingComponent.value?.reload();
-	connection = useStream().useChannel('main');
-	connection.on('notification', onNotification);
-	connection.on('notificationFlushed', reload);
+	if (store.s.realtimeMode) {
+		connection = useStream().useChannel('main');
+		connection.on('notification', onNotification);
+		connection.on('notificationFlushed', reload);
+	}
 });
 
 onUnmounted(() => {

@@ -4,10 +4,11 @@
  */
 
 import { onUnmounted } from 'vue';
-import type { Ref, ShallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { Ref, ShallowRef } from 'vue';
 import { useStream } from '@/stream.js';
 import { $i } from '@/i.js';
+import { store } from '@/store.js';
 
 export function useNoteCapture(props: {
 	rootEl: ShallowRef<HTMLElement | undefined>;
@@ -17,7 +18,7 @@ export function useNoteCapture(props: {
 }) {
 	const note = props.note;
 	const pureNote = props.pureNote;
-	const connection = $i ? useStream() : null;
+	const connection = $i && store.s.realtimeMode ? useStream() : null;
 
 	function onStreamNoteUpdated(noteData): void {
 		const { type, id, body } = noteData;
