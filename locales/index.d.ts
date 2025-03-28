@@ -5477,6 +5477,10 @@ export interface Locale extends ILocale {
          */
         "chatNotAvailableForThisAccountOrServer": string;
         /**
+         * 相手のアカウントでチャット機能が使えない状態になっています。
+         */
+        "chatNotAvailableInOtherAccount": string;
+        /**
          * このユーザーとのチャットを開始できません
          */
         "cannotChatWithTheUser": string;

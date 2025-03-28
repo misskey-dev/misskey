@@ -364,7 +364,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			},
 		});
 
-		if ($i.policies.canChat) {
+		if ($i.policies.canChat && user.canChat) {
 			menuItems.push({
 				type: 'link',
 				icon: 'ti ti-messages',
