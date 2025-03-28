@@ -233,7 +233,7 @@ body {
 }
 
 body {
-	/* NOTE: htmlにも overflow: clip を設定したいところだが、設定すると何故か少なくともChromeでhtmlがmain thread scroll repaint扱いになりパフォーマンスが(多分)落ちる */
+	/* NOTE: htmlにも overflow: clip を設定したいところだが、設定すると何故か少なくともChromeで html が main thread scrolling になりパフォーマンスが(多分)落ちる */
 	overflow: clip;
 }
 
