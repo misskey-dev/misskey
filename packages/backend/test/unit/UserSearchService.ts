@@ -134,13 +134,13 @@ describe('UserSearchService', () => {
 		await app.close();
 	});
 
-	describe('search', () => {
+	describe('searchByUsernameAndHost', () => {
 		test('フォロー中のアクティブユーザのうち、"al"から始まる人が全員ヒットする', async () => {
 			await createFollowings(root, [alice, alyce, alycia, alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 			await setActive([alice, alyce, alyssa, bob, bobbi, bobbie, bobby]);
 			await setInactive([alycia, alysha, alyson]);
 
-			const result = await service.search(
+			const result = await service.searchByUsernameAndHost(
 				{ username: 'al' },
 				{ limit: 100 },
 				root,
@@ -154,7 +154,7 @@ describe('UserSearchService', () => {
 			await createFollowings(root, [alycia, alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 			await setInactive([alice, alyce, alycia, alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 
-			const result = await service.search(
+			const result = await service.searchByUsernameAndHost(
 				{ username: 'al' },
 				{ limit: 100 },
 				root,
@@ -168,7 +168,7 @@ describe('UserSearchService', () => {
 			await setActive([alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 			await setInactive([alice, alyce, alycia]);
 
-			const result = await service.search(
+			const result = await service.searchByUsernameAndHost(
 				{ username: 'al' },
 				{ limit: 100 },
 				root,
@@ -181,7 +181,7 @@ describe('UserSearchService', () => {
 		test('フォローしていない非アクティブユーザのうち、"al"から始まる人が全員ヒットする', async () => {
 			await setInactive([alice, alyce, alycia, alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 
-			const result = await service.search(
+			const result = await service.searchByUsernameAndHost(
 				{ username: 'al' },
 				{ limit: 100 },
 				root,
@@ -195,7 +195,7 @@ describe('UserSearchService', () => {
 			await setActive([root, alyssa, bob, bobbi, alyce, alycia]);
 			await setInactive([alyson, alice, alysha, bobbie, bobby]);
 
-			const result = await service.search(
+			const result = await service.searchByUsernameAndHost(
 				{ },
 				{ limit: 100 },
 				root,
@@ -216,7 +216,7 @@ describe('UserSearchService', () => {
 			await setActive([alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 			await setInactive([alice, alyce, alycia]);
 
-			const result = await service.search(
+			const result = await service.searchByUsernameAndHost(
 				{ username: 'al' },
 				{ limit: 100 },
 			);
@@ -228,7 +228,7 @@ describe('UserSearchService', () => {
 		test('[非ログイン] 非アクティブユーザのうち、"al"から始まる人が全員ヒットする', async () => {
 			await setInactive([alice, alyce, alycia, alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 
-			const result = await service.search(
+			const result = await service.searchByUsernameAndHost(
 				{ username: 'al' },
 				{ limit: 100 },
 			);
@@ -240,7 +240,7 @@ describe('UserSearchService', () => {
 			await createFollowings(root, [alice, alyce, alycia, alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 			await setActive([alice, alyce, alycia, alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 
-			const result = await service.search(
+			const result = await service.searchByUsernameAndHost(
 				{ username: 'al', host: 'exam' },
 				{ limit: 100 },
 				root,
@@ -253,7 +253,7 @@ describe('UserSearchService', () => {
 			await setActive([alice, alyce, alycia, alysha, alyson, alyssa, bob, bobbi, bobbie, bobby]);
 			await setSuspended([alice, alyce, alycia]);
 
-			const result = await service.search(
+			const result = await service.searchByUsernameAndHost(
 				{ username: 'al' },
 				{ limit: 100 },
 				root,

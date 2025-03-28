@@ -66,7 +66,6 @@ export function migrateOldSettings() {
 		prefer.commit('collapseRenotes', store.s.collapseRenotes);
 		prefer.commit('rememberNoteVisibility', store.s.rememberNoteVisibility);
 		prefer.commit('uploadFolder', store.s.uploadFolder);
-		prefer.commit('keepOriginalUploading', store.s.keepOriginalUploading);
 		prefer.commit('menu', store.s.menu);
 		prefer.commit('statusbars', store.s.statusbars);
 		prefer.commit('pinnedUserLists', store.s.pinnedUserLists);

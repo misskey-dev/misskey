@@ -1350,7 +1350,7 @@ _chat:
   noInvitations: "沒有邀請"
   history: "歷史紀錄"
   noHistory: "沒有歷史紀錄"
-  noRooms: "此聊天室不存在"
+  noRooms: "沒有可用的聊天室"
   inviteUser: "邀請使用者"
   sentInvitations: "已傳送的邀請"
   join: "加入"
