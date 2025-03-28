@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</TransitionGroup>
 		</div>
 
-		<div v-if="user && !user.canChat">
+		<div v-if="user && (!user.canChat || user.host !== null)">
 			<MkInfo warn>{{ i18n.ts._chat.chatNotAvailableInOtherAccount }}</MkInfo>
 		</div>
 
