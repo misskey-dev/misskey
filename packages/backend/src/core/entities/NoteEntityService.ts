@@ -593,4 +593,35 @@ export class NoteEntityService implements OnModuleInit {
 			relations: ['user'],
 		});
 	}
+
+	@bindThis
+	public async ogogogo(noteIds: MiNote['id'][]) {
+		if (noteIds.length === 0) return [];
+
+		const notes = await this.notesRepository.find({
+			where: {
+				id: In(noteIds),
+			},
+			select: {
+				reactions: true,
+				reactionAndUserPairCache: true,
+			},
+		});
+
+		console.log(notes);
+
+		const bufferedReactionsMap = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(noteIds) : null;
+
+		const results = [];
+
+		for (const note of notes) {
+			const bufferedReactions = bufferedReactionsMap?.get(note.id);
+			const reactionAndUserPairCache = note.reactionAndUserPairCache.concat(bufferedReactions.pairs.map(x => x.join('/')));
+
+			results.push({
+				id: note.id,
+				reactions: this.reactionService.convertLegacyReactions(this.reactionsBufferingService.mergeReactions(note.reactions, bufferedReactions.deltas ?? {})),
+			});
+		}
+	}
 }

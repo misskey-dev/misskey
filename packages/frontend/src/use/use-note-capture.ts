@@ -5,12 +5,32 @@
 
 import { onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
+import { EventEmitter } from 'eventemitter3';
 import type { Ref, ShallowRef } from 'vue';
 import { useStream } from '@/stream.js';
 import { $i } from '@/i.js';
 import { store } from '@/store.js';
 
-export function useNoteCapture(props: {
+const noteEvents = new EventEmitter<{
+	reacted: Misskey.entities.Note;
+	unreacted: Misskey.entities.Note;
+	pollVoted: Misskey.entities.Note;
+	deleted: Misskey.entities.Note;
+}>();
+
+const capturedNoteIdMapForPolling = new Map<string, number>();
+
+const POLLING_INTERVAL = 1000 * 10;
+
+window.setInterval(() => {
+	const ids = [...capturedNoteIdMapForPolling.keys()];
+	if (ids.length === 0) return;
+	if (window.document.hidden) return;
+
+	console.log('Polling notes', ids);
+}, POLLING_INTERVAL);
+
+function pseudoNoteCapture(props: {
 	rootEl: ShallowRef<HTMLElement | undefined>;
 	note: Ref<Misskey.entities.Note>;
 	pureNote: Ref<Misskey.entities.Note>;
@@ -18,7 +38,34 @@ export function useNoteCapture(props: {
 }) {
 	const note = props.note;
 	const pureNote = props.pureNote;
-	const connection = $i && store.s.realtimeMode ? useStream() : null;
+
+	function onReacted(): void {
+
+	}
+
+	if (capturedNoteIdMapForPolling.has(note.value.id)) {
+		capturedNoteIdMapForPolling.set(note.value.id, capturedNoteIdMapForPolling.get(note.value.id)! + 1);
+	} else {
+		capturedNoteIdMapForPolling.set(note.value.id, 1);
+	}
+
+	onUnmounted(() => {
+		capturedNoteIdMapForPolling.set(note.value.id, capturedNoteIdMapForPolling.get(note.value.id)! - 1);
+		if (capturedNoteIdMapForPolling.get(note.value.id) === 0) {
+			capturedNoteIdMapForPolling.delete(note.value.id);
+		}
+	});
+}
+
+function realtimeNoteCapture(props: {
+	rootEl: ShallowRef<HTMLElement | undefined>;
+	note: Ref<Misskey.entities.Note>;
+	pureNote: Ref<Misskey.entities.Note>;
+	isDeletedRef: Ref<boolean>;
+}): void {
+	const note = props.note;
+	const pureNote = props.pureNote;
+	const connection = useStream();
 
 	function onStreamNoteUpdated(noteData): void {
 		const { type, id, body } = noteData;
@@ -85,26 +132,22 @@ export function useNoteCapture(props: {
 	}
 
 	function capture(withHandler = false): void {
-		if (connection) {
-			// TODO: このノートがストリーミング経由で流れてきた場合のみ sr する
-			connection.send(window.document.body.contains(props.rootEl.value ?? null as Node | null) ? 'sr' : 's', { id: note.value.id });
-			if (pureNote.value.id !== note.value.id) connection.send('s', { id: pureNote.value.id });
-			if (withHandler) connection.on('noteUpdated', onStreamNoteUpdated);
-		}
+		// TODO: このノートがストリーミング経由で流れてきた場合のみ sr する
+		connection.send(window.document.body.contains(props.rootEl.value ?? null as Node | null) ? 'sr' : 's', { id: note.value.id });
+		if (pureNote.value.id !== note.value.id) connection.send('s', { id: pureNote.value.id });
+		if (withHandler) connection.on('noteUpdated', onStreamNoteUpdated);
 	}
 
 	function decapture(withHandler = false): void {
-		if (connection) {
+		connection.send('un', {
+			id: note.value.id,
+		});
+		if (pureNote.value.id !== note.value.id) {
 			connection.send('un', {
-				id: note.value.id,
+				id: pureNote.value.id,
 			});
-			if (pureNote.value.id !== note.value.id) {
-				connection.send('un', {
-					id: pureNote.value.id,
-				});
-			}
-			if (withHandler) connection.off('noteUpdated', onStreamNoteUpdated);
 		}
+		if (withHandler) connection.off('noteUpdated', onStreamNoteUpdated);
 	}
 
 	function onStreamConnected() {
@@ -112,14 +155,23 @@ export function useNoteCapture(props: {
 	}
 
 	capture(true);
-	if (connection) {
-		connection.on('_connected_', onStreamConnected);
-	}
+	connection.on('_connected_', onStreamConnected);
 
 	onUnmounted(() => {
 		decapture(true);
-		if (connection) {
-			connection.off('_connected_', onStreamConnected);
-		}
+		connection.off('_connected_', onStreamConnected);
 	});
+}
+
+export function useNoteCapture(props: {
+	rootEl: ShallowRef<HTMLElement | undefined>;
+	note: Ref<Misskey.entities.Note>;
+	pureNote: Ref<Misskey.entities.Note>;
+	isDeletedRef: Ref<boolean>;
+}) {
+	if ($i && store.s.realtimeMode) {
+		realtimeNoteCapture(props);
+	} else {
+		pseudoNoteCapture(props);
+	}
 }
