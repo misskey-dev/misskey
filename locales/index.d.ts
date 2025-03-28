@@ -5473,6 +5473,14 @@ export interface Locale extends ILocale {
          */
         "deleteRoom": string;
         /**
+         * このサーバー、またはこのアカウントでチャットは有効化されていません。
+         */
+        "chatNotAvailableForThisAccountOrServer": string;
+        /**
+         * 相手のアカウントでチャット機能が使えない状態になっています。
+         */
+        "chatNotAvailableInOtherAccount": string;
+        /**
          * このユーザーとのチャットを開始できません
          */
         "cannotChatWithTheUser": string;

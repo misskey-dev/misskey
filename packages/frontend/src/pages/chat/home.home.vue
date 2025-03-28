@@ -5,7 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkButton primary gradate rounded :class="$style.start" @click="start"><i class="ti ti-plus"></i> {{ i18n.ts.startChat }}</MkButton>
+	<MkButton v-if="$i.policies.canChat" primary gradate rounded :class="$style.start" @click="start"><i class="ti ti-plus"></i> {{ i18n.ts.startChat }}</MkButton>
+
+	<MkInfo v-else>{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 
 	<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 
@@ -78,6 +80,7 @@ import * as os from '@/os.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkInfo from '@/components/MkInfo.vue';
 
 const $i = ensureSignin();
 

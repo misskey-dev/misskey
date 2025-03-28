@@ -41,6 +41,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message"/>
 			</TransitionGroup>
 		</div>
+
+		<div v-if="user && (!user.canChat || user.host !== null)">
+			<MkInfo warn>{{ i18n.ts._chat.chatNotAvailableInOtherAccount }}</MkInfo>
+		</div>
+
+		<MkInfo v-if="!$i.policies.canChat" warn>{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 	</MkSpacer>
 
 	<MkSpacer v-else-if="tab === 'search'" :contentMax="700">
@@ -93,6 +99,7 @@ import { prefer } from '@/preferences.js';
 import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router.js';
 import { useMutationObserver } from '@/use/use-mutation-observer.js';
+import MkInfo from '@/components/MkInfo.vue';
 
 const $i = ensureSignin();
 const router = useRouter();
