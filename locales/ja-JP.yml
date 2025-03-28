@@ -1365,6 +1365,7 @@ _chat:
   newline: "改行"
   muteThisRoom: "このルームをミュート"
   deleteRoom: "ルームを削除"
+  chatNotAvailableForThisAccountOrServer: "このサーバー、またはこのアカウントでチャットは有効化されていません。"
   cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
   cannotChatWithTheUser_description: "チャットが使えない状態になっているか、相手がチャットを開放していません。"
   chatWithThisUser: "チャットする"
