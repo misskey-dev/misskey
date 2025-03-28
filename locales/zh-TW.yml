@@ -1364,6 +1364,8 @@ _chat:
   newline: "換行"
   muteThisRoom: "此聊天室已靜音"
   deleteRoom: "刪除聊天室"
+  chatNotAvailableForThisAccountOrServer: "這個伺服器或這個帳號的聊天功能尚未啟用。"
+  chatNotAvailableInOtherAccount: "對方的帳號無法使用聊天功能。"
   cannotChatWithTheUser: "無法與此使用者聊天"
   cannotChatWithTheUser_description: "聊天功能目前無法使用，或對方尚未開放聊天功能。"
   chatWithThisUser: "聊天"
