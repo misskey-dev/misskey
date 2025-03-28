@@ -1336,6 +1336,8 @@ setScheduledTime: "予約日時を設定"
 willBePostedAt: "{x}に投稿されます"
 sensitiveByModerator: "管理者によって、ドライブのファイルがセンシティブとして設定されました。\n詳細については、[NSFWガイドライン](https://go.misskey.io/media-guideline)を確認してください。"
 thisInfoIsNotVisibleOtherUser: "この情報は他のユーザーには公開されません。"
+flushItAway: "水に流す"
+deleteNotWash: "削除をしても全てが水に流れるわけではありませんが"
 
 _bubbleGame:
   howToPlay: "遊び方"

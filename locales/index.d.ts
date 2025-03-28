@@ -5371,6 +5371,14 @@ export interface Locale extends ILocale {
      * この情報は他のユーザーには公開されません。
      */
     "thisInfoIsNotVisibleOtherUser": string;
+    /**
+     * 水に流す
+     */
+    "flushItAway": string;
+    /**
+     * 削除をしても全てが水に流れるわけではありませんが
+     */
+    "deleteNotWash": string;
     "_bubbleGame": {
         /**
          * 遊び方
