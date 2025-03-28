@@ -1365,6 +1365,7 @@ _chat:
   muteThisRoom: "静音此房间"
   deleteRoom: "删除房间"
   chatNotAvailableForThisAccountOrServer: "此服务器或者账户还未开启聊天功能。"
+  chatNotAvailableInOtherAccount: "对方账户目前处于无法使用聊天的状态。"
   cannotChatWithTheUser: "无法与此用户聊天"
   cannotChatWithTheUser_description: "可能现在无法使用聊天，或者对方未开启聊天。"
   chatWithThisUser: "聊天"
