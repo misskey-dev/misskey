@@ -226,11 +226,15 @@ html,
 body {
 	width: 100%;
 	height: 100%;
-	overflow: clip;
 	position: fixed;
 	top: 0;
 	left: 0;
 	overscroll-behavior: none;
+}
+
+body {
+	/* NOTE: htmlにも overflow: clip を設定したいところだが、設定すると何故か少なくともChromeで html が main thread scrolling になりパフォーマンスが(多分)落ちる */
+	overflow: clip;
 }
 
 #misskey_app {
