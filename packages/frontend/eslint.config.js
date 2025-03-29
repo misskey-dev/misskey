@@ -58,7 +58,8 @@ export default [
 			// location ... window.locationと衝突 or 紛らわしい
 			// document ... window.documentと衝突 or 紛らわしい
 			// history ... window.historyと衝突 or 紛らわしい
-			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location', 'document', 'history'],
+			// scroll ... window.scrollと衝突 or 紛らわしい
+			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location', 'document', 'history', 'scroll'],
 			'no-restricted-globals': [
 				'error',
 				{
@@ -84,6 +85,10 @@ export default [
 				{
 					'name': 'history',
 					'message': 'Use `window.history`.',
+				},
+				{
+					'name': 'scroll',
+					'message': 'Use `window.scroll`.',
 				},
 				{
 					'name': 'name',

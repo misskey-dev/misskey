@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import { scroll } from '@@/js/scroll.js';
+import { scrollInContainer } from '@@/js/scroll.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -49,7 +49,7 @@ function queueUpdated(q) {
 }
 
 function top() {
-	scroll(rootEl.value, { top: 0 });
+	scrollInContainer(rootEl.value, { top: 0 });
 }
 
 async function timetravel() {
