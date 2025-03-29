@@ -1257,7 +1257,7 @@ replaying: "Aufzeichnung"
 endReplay: "Aufzeichnung verlassen"
 copyReplayData: "Aufzeichnung kopieren"
 ranking: "Rangliste"
-lastNDays: "Letzten {n} Tage"
+lastNDays: "Letzte {n} Tage"
 backToTitle: "Zurück zum Startbildschirm"
 hemisphere: "Hemisphäre"
 withSensitive: "Zeige \"sensitive Inhalte\" an"
@@ -1393,6 +1393,7 @@ _settings:
   accessibilityBanner: "Die Clients können personalisiert und für eine optimale Nutzung im Hinblick auf ihre Darstellung und ihr Verhalten eingerichtet werden."
   privacyBanner: "Du kannst Einstellungen für die Privatsphäre deines Kontos vornehmen, z. B. inwieweit Inhalte veröffentlicht werden, wie leicht sie zu finden sind und ob Follower genehmigt werden müssen."
   securityBanner: "Du kannst Einstellungen für die Kontosicherheit konfigurieren, z. B. Passwörter, Anmeldemethoden, Authentifizierungs-Apps und Passkeys."
+  makeEveryTextElementsSelectable: "Alle Textelemente auswählbar machen"
   ifOn: "Wenn eingeschaltet"
   ifOff: "Wenn ausgeschaltet"
   _chat:
@@ -1444,6 +1445,7 @@ _bubbleGame:
     highScore: "Höchstpunktzahl"
     maxChain: "Maximale Anzahl an Verkettungen"
     yen: "{yen} Yen"
+    estimatedQty: "{qty} Stück"
   _howToPlay:
     section1: "Passe die Position an und lasse das Objekt in das Spielfeld fallen."
     section2: "Wenn sich zwei Objekte der gleichen Art berühren, verwandeln sie sich in ein anderes Objekt und du bekommst Punkte."
@@ -1501,15 +1503,19 @@ _initialTutorial:
     reactDone: "Du kannst eine Reaktion zurücknehmen, indem du auf den '-' Button drückst."
   _timeline:
     title: "So funktionieren die Chroniken"
+    description1: "Misskey stellt mehrere Chroniken bereit (einige können je nach den Richtlinien des Servers nicht verfügbar sein)."
     home: "Du kannst Beiträge von den Konten sehen, denen du folgst."
     local: "Du kannst Beiträge aller Benutzer auf diesem Server sehen."
     social: "Notizen von der Startseite und der lokalen Chronik werden angezeigt."
     global: "Du kannst Notizen von allen föderierten Servern sehen."
     description2: "Du kannst jederzeit am oberen Rand des Bildschirms zwischen den jeweiligen Chroniken wechseln."
+    description3: "Darüber hinaus gibt es Listen-Chroniken und Kanal-Chroniken. Weitere Einzelheiten findest du unter {link}."
   _postNote:
+    description1: "Wenn du eine Notiz auf Misskey veröffentlichst, stehen dir verschiedene Optionen zur Verfügung. Die Oberfläche sieht folgendermaßen aus."
     _visibility:
       description: "Du kannst einschränken, wer deine Notiz sehen kann."
       public: "Deine Notiz wird für alle Nutzer sichtbar sein."
+      followers: "Nur für Follower sichtbar. Nur Follower können es sehen und niemand sonst, und es kann nicht von anderen gerenoted werden."
       direct: "Die Notiz wird nur für den angegebenen Benutzer veröffentlicht und der Empfänger wird benachrichtigt. Kann anstelle von Direktnachrichten verwendet werden."
       doNotSendConfidencialOnDirect1: "Sei vorsichtig, wenn du sensible Informationen verschickst!"
       doNotSendConfidencialOnDirect2: "Die Administratoren des Servers können den Inhalt der Notiz sehen. Sei vorsichtig mit sensiblen Informationen, wenn du Direktnachrichten an Benutzer auf nicht vertrauenswürdigen Servern sendest."
@@ -2142,6 +2148,10 @@ _timeIn:
   seconds: "In {n}s"
   minutes: "In {n} Min."
   hours: "In {n} Std."
+  days: "In {n} Tagen"
+  weeks: "In {n} Wochen"
+  months: "In {n} Monaten"
+  years: "In {n} Jahren"
 _time:
   second: "Sekunde(n)"
   minute: "Minute(n)"
@@ -2175,6 +2185,7 @@ _2fa:
   backupCodesDescription: "Verwende diese Codes, falls du nicht mehr auf deine App zur Zweifaktorauthentifizierung zugreifen kannst. Jeder Code kann nur einmal verwendet werden. Bewahre sie an einem sicheren Ort auf."
   backupCodeUsedWarning: "Ein Backup-Code wurde verwendet. Falls du den Zugriff zu deiner Zweifaktorauthentifizierungsapp verloren hast, konfiguriere diese bitte möglichst bald erneut."
   backupCodesExhaustedWarning: "Alle Backup-Codes wurden verwendet. Falls du den Zugang zu deiner Zweifaktorauthentifizierungsapp verlierst, wirst du dich nicht mehr in dieses Konto einloggen können. Bitte konfiguriere diese App erneut."
+  moreDetailedGuideHere: "Hier ist eine ausführliche Anleitung"
 _permissions:
   "read:account": "Deine Benutzerkontoinformationen lesen"
   "write:account": "Deine Benutzerkontoinformationen bearbeiten"
