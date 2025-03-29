@@ -1434,12 +1434,15 @@ _abuseUserReport:
   resolve: "lösen"
   accept: "Akzeptieren"
   reject: "Ablehnen"
+  resolveTutorial: "Wenn der Inhalt der Meldung rechtmäßig ist, wähle „Akzeptieren“, um sie als gelöst zu markieren.\nWenn der Inhalt der Meldung unzulässig ist, wähle „Ablehnen“, um sie zu ignorieren."
 _delivery:
   status: "Auslieferungsstatus"
   stop: "Gesperrt"
   _type:
     none: "Wird veröffentlicht"
     manuallySuspended: "Manuell gesperrt"
+    goneSuspended: "Gesperrt wegen Löschung des Servers"
+    autoSuspendedForNotResponding: "Gesperrt, weil der Server nicht antwortet"
 _bubbleGame:
   howToPlay: "Wie man spielt"
   hold: "Halten"
@@ -2277,6 +2280,7 @@ _permissions:
   "read:admin:ad": "Werbung ansehen"
   "write:invite-codes": "Einladungscodes erstellen"
   "read:invite-codes": "Einladungscodes anzeigen"
+  "read:federation": "Informationen zur Föderation einsehen"
   "write:report-abuse": "Verstöße melden"
   "write:chat": "Chats bedienen"
   "read:chat": "Chats durchsuchen"
@@ -2555,9 +2559,11 @@ _notification:
     receiveFollowRequest: "Erhaltene Follow-Anfragen"
     followRequestAccepted: "Akzeptierte Follow-Anfragen"
     roleAssigned: "Rolle zugewiesen"
+    chatRoomInvitationReceived: "Einladungen zum Chatraum"
     achievementEarned: "Errungenschaft freigeschaltet"
     exportCompleted: "Der Export ist abgeschlossen"
     login: "Anmeldung"
+    createToken: "Erstellung von Zugriffstokens"
     test: "Test-Benachrichtigungen"
     app: "Benachrichtigungen von Apps"
   _actions:
@@ -2673,6 +2679,7 @@ _moderationLogTypes:
   unmarkSensitiveDriveFile: "Datei als nicht sensitiv markiert"
   resolveAbuseReport: "Meldung bearbeitet"
   forwardAbuseReport: "Meldung weitergeleitet"
+  updateAbuseReportNote: "Moderationsnotiz einer Meldung aktualisiert"
   createInvitation: "Einladung erstellt"
   createAd: "Werbung erstellt"
   deleteAd: "Werbung gelöscht"
@@ -2692,6 +2699,8 @@ _moderationLogTypes:
   deletePage: "Seite gelöscht"
   deleteFlash: "Play gelöscht"
   deleteGalleryPost: "Galeriebeitrag gelöscht"
+  deleteChatRoom: "Chatraum gelöscht"
+  updateProxyAccountDescription: "Beschreibung des Proxy-Benutzerkontos aktualisiert"
 _fileViewer:
   title: "Dateiinformationen"
   type: "Dateityp"
@@ -2757,6 +2766,7 @@ _hemisphere:
   S: "Südliche Erdhalbkugel"
   caption: "Wird in einigen Client-Einstellungen zur Bestimmung der Jahreszeit verwendet."
 _reversi:
+  reversi: "Reversi"
   gameSettings: "Spieleinstellungen"
   chooseBoard: "Spielbrett auswählen"
   blackOrWhite: "Schwarz/Weiß"
@@ -2860,7 +2870,9 @@ _customEmojisManager:
       alertDeleteEmojisNothingDescription: "Es gibt keine zu löschenden Emojis."
       confirmUpdateEmojisDescription: "Aktualisiere {count} Emoji(s). Willst du fortfahren?"
       confirmDeleteEmojisDescription: "Lösche {count} ausgewählte Emoji(s). Willst du fortfahren?"
+      confirmMovePageDesciption: "An den Emojis auf dieser Seite wurden Änderungen vorgenommen.\nWenn du die Seite verlässt, ohne zu speichern, werden alle auf dieser Seite vorgenommenen Änderungen verworfen."
     _register:
+      uploadSettingDescription: "Hier kannst du das Verhalten beim Hochladen von Emojis konfigurieren."
       directoryToCategoryLabel: "Gib den Namen des Verzeichnisses in das Feld „Kategorie“ ein"
       directoryToCategoryCaption: "Wenn du ein Verzeichnis ziehst und ablegst, gib den Verzeichnisnamen in das Feld „Kategorie“ ein."
       emojiInputAreaList1: "Ziehe Bilddateien oder Verzeichnisse per Drag-and-drop in diesen Rahmen"
@@ -2910,6 +2922,7 @@ _remoteLookupErrors:
     description: "Die angeforderte Ressource konnte nicht gefunden werden, bitte überprüfe die URI erneut."
 _captcha:
   verify: "Bitte beantworte das CAPTCHA"
+  testSiteKeyMessage: "Du kannst die Vorschau prüfen, indem du die Testwerte für den Site- und Secret-Key eingibst. Weitere Informationen findest du auf der folgenden Seite."
   _error:
     _requestFailed:
       title: "CAPTCHA-Anfrage fehlgeschlagen."
