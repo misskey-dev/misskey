@@ -1406,6 +1406,7 @@ _settings:
   timelineAndNote: "Timeline and note"
   makeEveryTextElementsSelectable: "Make all text elements selectable"
   makeEveryTextElementsSelectable_description: "Enabling this may reduce usability in some situations."
+  useStickyIcons: "Make icons follow while scrolling"
   showNavbarSubButtons: "Show sub-buttons on the navigation bar"
   ifOn: "When turned on"
   ifOff: "When turned off"
