@@ -5,29 +5,116 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
+	<XSidebar v-if="!isMobile" :class="$style.sidebar" :showWidgetButton="!isDesktop" @widgetButtonClick="widgetsShowing = true"/>
+
 	<div :class="$style.contents" @contextmenu.stop="onContextmenu">
+		<div>
+			<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
+			<XAnnouncements v-if="$i"/>
+			<XStatusBars :class="$style.statusbars"/>
+		</div>
 		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :class="$style.content"/>
 		<RouterView v-else :class="$style.content"/>
+		<div v-if="isMobile" ref="navFooter" :class="$style.nav">
+			<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
+			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
+			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
+				<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
+				<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator" class="_blink">
+					<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
+				</span>
+			</button>
+			<button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon" class="ti ti-apps"></i></button>
+			<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
+		</div>
 	</div>
+
+	<div v-if="isDesktop && !pageMetadata?.needWideArea" :class="$style.widgets">
+		<XWidgets/>
+	</div>
+
+	<Transition
+		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+	>
+		<div
+			v-if="drawerMenuShowing"
+			:class="$style.menuDrawerBg"
+			class="_modalBg"
+			@click="drawerMenuShowing = false"
+			@touchstart.passive="drawerMenuShowing = false"
+		></div>
+	</Transition>
+
+	<Transition
+		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
+	>
+		<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
+			<XDrawerMenu/>
+		</div>
+	</Transition>
+
+	<Transition
+		:enterActiveClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
+	>
+		<div
+			v-if="widgetsShowing"
+			:class="$style.widgetsDrawerBg"
+			class="_modalBg"
+			@click="widgetsShowing = false"
+			@touchstart.passive="widgetsShowing = false"
+		></div>
+	</Transition>
+
+	<Transition
+		:enterActiveClass="prefer.s.animation ? $style.transition_widgetsDrawer_enterActive : ''"
+		:leaveActiveClass="prefer.s.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
+		:enterFromClass="prefer.s.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
+		:leaveToClass="prefer.s.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
+	>
+		<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
+			<button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false"><i class="ti ti-x"></i></button>
+			<XWidgets/>
+		</div>
+	</Transition>
 
 	<XCommon/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { provide, onMounted, computed, ref } from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref, watch, useTemplateRef } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import XCommon from './_common_/common.vue';
+import type { Ref } from 'vue';
 import type { PageMetadata } from '@/page.js';
+import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os.js';
+import { navbarItemDef } from '@/navbar.js';
 import { i18n } from '@/i18n.js';
+import { $i } from '@/i.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { mainRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
+import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
 import { DI } from '@/di.js';
+
+const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
+const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
+const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
+const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
+const XPreferenceRestore = defineAsyncComponent(() => import('@/ui/_common_/PreferenceRestore.vue'));
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -42,6 +129,8 @@ window.addEventListener('resize', () => {
 });
 
 const pageMetadata = ref<null | PageMetadata>(null);
+const widgetsShowing = ref(false);
+const navFooter = useTemplateRef('navFooter');
 
 provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
@@ -56,6 +145,14 @@ provideMetadataReceiver((metadataGetter) => {
 	}
 });
 provideReactiveMetadata(pageMetadata);
+
+const menuIndicated = computed(() => {
+	for (const def in navbarItemDef) {
+		if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
+		if (navbarItemDef[def].indicated) return true;
+	}
+	return false;
+});
 
 const drawerMenuShowing = ref(false);
 
@@ -96,6 +193,20 @@ const onContextmenu = (ev) => {
 		},
 	}], ev);
 };
+
+const navFooterHeight = ref(0);
+
+watch(navFooter, () => {
+	if (navFooter.value) {
+		navFooterHeight.value = navFooter.value.offsetHeight;
+		window.document.body.style.setProperty('--MI-minBottomSpacing', 'var(--MI-minBottomSpacingMobile)');
+	} else {
+		navFooterHeight.value = 0;
+		window.document.body.style.setProperty('--MI-minBottomSpacing', '0px');
+	}
+}, {
+	immediate: true,
+});
 </script>
 
 <style>
