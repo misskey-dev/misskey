@@ -32,7 +32,7 @@ import { signout } from '@/signout.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
 
 export async function mainBoot() {
-	const { isClientUpdated, lastVersion } = await common(() => {
+	const { isClientUpdated, lastVersion } = await common(async () => {
 		let uiStyle = ui;
 		const searchParams = new URLSearchParams(window.location.search);
 
@@ -46,19 +46,19 @@ export async function mainBoot() {
 		let rootComponent: Component;
 		switch (uiStyle) {
 			case 'zen':
-				rootComponent = defineAsyncComponent(() => import('@/ui/zen.vue'));
+				rootComponent = await import('@/ui/zen.vue').then(x => x.default);
 				break;
 			case 'deck':
-				rootComponent = defineAsyncComponent(() => import('@/ui/deck.vue'));
+				rootComponent = await import('@/ui/deck.vue').then(x => x.default);
 				break;
 			case 'visitor':
-				rootComponent = defineAsyncComponent(() => import('@/ui/visitor.vue'));
+				rootComponent = await import('@/ui/visitor.vue').then(x => x.default);
 				break;
 			case 'classic':
-				rootComponent = defineAsyncComponent(() => import('@/ui/classic.vue'));
+				rootComponent = await import('@/ui/classic.vue').then(x => x.default);
 				break;
 			default:
-				rootComponent = defineAsyncComponent(() => import('@/ui/universal.vue'));
+				rootComponent = await import('@/ui/universal.vue').then(x => x.default);
 				break;
 		}
 
