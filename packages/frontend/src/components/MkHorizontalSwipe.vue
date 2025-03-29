@@ -100,7 +100,7 @@ function touchMove(event: TouchEvent) {
 
 		pullDistance.value = 0;
 		isSwiping.value = false;
-		setTimeout(() => {
+		window.setTimeout(() => {
 			isSwipingForClass.value = false;
 		}, 400);
 
