@@ -103,7 +103,7 @@ export class MiUserProfile {
 
 	@Column('enum', {
 		enum: notesVisibilities,
-		default: 'public',
+		default: 'private', // 'public'から'private'に変更
 	})
 	public notesVisibility: typeof notesVisibilities[number];
 
