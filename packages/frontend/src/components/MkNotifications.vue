@@ -4,23 +4,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPullToRefresh :refresher="() => reload()">
-	<MkPagination ref="pagingComponent" :pagination="pagination">
-		<template #empty>
-			<div class="_fullinfo">
-				<img :src="infoImageUrl" draggable="false"/>
-				<div>{{ i18n.ts.noNotifications }}</div>
-			</div>
-		</template>
+<MkPagination ref="pagingComponent" :pagination="pagination">
+	<template #empty>
+		<div class="_fullinfo">
+			<img :src="infoImageUrl" draggable="false"/>
+			<div>{{ i18n.ts.noNotifications }}</div>
+		</div>
+	</template>
 
-		<template #default="{ items: notifications }">
-			<MkDateSeparatedList v-slot="{ item: notification }" :class="$style.list" :items="notifications" :noGap="true">
-				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id + ':note'" :note="notification.note" :withHardMute="true"/>
-				<XNotification v-else :key="notification.id" :notification="notification" :withTime="true" :full="true" class="_panel"/>
-			</MkDateSeparatedList>
-		</template>
-	</MkPagination>
-</MkPullToRefresh>
+	<template #default="{ items: notifications }">
+		<MkDateSeparatedList v-slot="{ item: notification }" :class="$style.list" :items="notifications" :noGap="true">
+			<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id + ':note'" :note="notification.note" :withHardMute="true"/>
+			<XNotification v-else :key="notification.id" :notification="notification" :withTime="true" :full="true" class="_panel"/>
+		</MkDateSeparatedList>
+	</template>
+</MkPagination>
 </template>
 
 <script lang="ts" setup>
