@@ -16,9 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<div :class="{ [$style.slotClip]: isPullStart }">
-		<slot/>
-	</div>
+
+	<slot/>
 </div>
 </template>
 
@@ -260,9 +259,5 @@ defineExpose({
 	> .text {
 		margin: 5px 0;
 	}
-}
-
-.slotClip {
-	overflow-y: clip;
 }
 </style>
