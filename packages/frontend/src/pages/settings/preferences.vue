@@ -786,7 +786,7 @@ function testNotification(): void {
 		smashCount = 0;
 	}
 	if (smashTimer) {
-		clearTimeout(smashTimer);
+		window.clearTimeout(smashTimer);
 	}
 	smashTimer = window.setTimeout(() => {
 		smashCount = 0;
