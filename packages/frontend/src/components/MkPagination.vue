@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkError v-else-if="error" @retry="init()"/>
 
-	<div v-else-if="empty" key="_empty_" class="empty">
+	<div v-else-if="empty" key="_empty_">
 		<slot name="empty">
 			<div class="_fullinfo">
 				<img :src="infoImageUrl" draggable="false"/>
@@ -29,14 +29,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMoreAhead : null" :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMoreAhead">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
-			<MkLoading v-else class="loading"/>
+			<MkLoading v-else/>
 		</div>
 		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :wait="moreFetching" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
-			<MkLoading v-else class="loading"/>
+			<MkLoading v-else/>
 		</div>
 	</div>
 </Transition>
