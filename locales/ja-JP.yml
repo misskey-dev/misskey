@@ -1409,6 +1409,7 @@ _settings:
   timelineAndNote: "タイムラインとノート"
   makeEveryTextElementsSelectable: "全てのテキスト要素を選択可能にする"
   makeEveryTextElementsSelectable_description: "有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。"
+  useStickyIcons: "アイコンをスクロールに追従させる"
   showNavbarSubButtons: "ナビゲーションバーに副ボタンを表示"
   ifOn: "オンのとき"
   ifOff: "オフのとき"
