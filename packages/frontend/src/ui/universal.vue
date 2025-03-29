@@ -91,10 +91,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, provide, onMounted, computed, ref, watch, shallowRef } from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref, watch, useTemplateRef } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import XCommon from './_common_/common.vue';
+import type { Ref } from 'vue';
 import type { PageMetadata } from '@/page.js';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os.js';
@@ -129,7 +130,7 @@ window.addEventListener('resize', () => {
 
 const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);
-const navFooter = shallowRef();
+const navFooter = useTemplateRef('navFooter');
 
 provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
