@@ -357,7 +357,7 @@ watch(visibility, () => {
 		BACKGROUND_PAUSE_WAIT_SEC * 1000);
 	} else { // 'visible'
 		if (timerForSetPause) {
-			clearTimeout(timerForSetPause);
+			window.clearTimeout(timerForSetPause);
 			timerForSetPause = null;
 		} else {
 			isPausingUpdate = false;
@@ -453,11 +453,11 @@ onBeforeMount(() => {
 	init().then(() => {
 		if (props.pagination.reversed) {
 			nextTick(() => {
-				setTimeout(toBottom, 800);
+				window.setTimeout(toBottom, 800);
 
 				// scrollToBottomでmoreFetchingボタンが画面外まで出るまで
 				// more = trueを遅らせる
-				setTimeout(() => {
+				window.setTimeout(() => {
 					moreFetching.value = false;
 				}, 2000);
 			});
@@ -467,11 +467,11 @@ onBeforeMount(() => {
 
 onBeforeUnmount(() => {
 	if (timerForSetPause) {
-		clearTimeout(timerForSetPause);
+		window.clearTimeout(timerForSetPause);
 		timerForSetPause = null;
 	}
 	if (preventAppearFetchMoreTimer.value) {
-		clearTimeout(preventAppearFetchMoreTimer.value);
+		window.clearTimeout(preventAppearFetchMoreTimer.value);
 		preventAppearFetchMoreTimer.value = null;
 	}
 	scrollObserver.value?.disconnect();

@@ -61,7 +61,9 @@ export default [
 			// scroll ... window.scrollと衝突 or 紛らわしい
 			// setTimeout ... window.setTimeoutと衝突 or 紛らわしい
 			// setInterval ... window.setIntervalと衝突 or 紛らわしい
-			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location', 'document', 'history', 'scroll', 'setTimeout', 'setInterval'],
+			// clearTimeout ... window.clearTimeoutと衝突 or 紛らわしい
+			// clearInterval ... window.clearIntervalと衝突 or 紛らわしい
+			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location', 'document', 'history', 'scroll', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval'],
 			'no-restricted-globals': [
 				'error',
 				{
@@ -99,6 +101,14 @@ export default [
 				{
 					'name': 'setInterval',
 					'message': 'Use `window.setInterval`.',
+				},
+				{
+					'name': 'clearTimeout',
+					'message': 'Use `window.clearTimeout`.',
+				},
+				{
+					'name': 'clearInterval',
+					'message': 'Use `window.clearInterval`.',
 				},
 				{
 					'name': 'name',
