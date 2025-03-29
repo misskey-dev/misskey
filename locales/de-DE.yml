@@ -1320,14 +1320,25 @@ skip: "Überspringen"
 restore: "Wiederherstellen"
 syncBetweenDevices: "Zwischen Geräten synchronisieren"
 preferenceSyncConflictTitle: "Der konfigurierte Wert ist auf dem Server bereits vorhanden."
+preferenceSyncConflictText: "Die Einstellungen mit aktivierter Synchronisierung werden ihre Werte auf dem Server speichern. Es gibt jedoch bereits Werte auf dem Server. Welche Einstellungswerte sollen überschrieben werden?"
+preferenceSyncConflictChoiceServer: "Konfigurierte Werte auf dem Server"
+preferenceSyncConflictChoiceDevice: "Konfigurierte Werte auf dem Gerät"
+preferenceSyncConflictChoiceCancel: "Einrichten der Synchronisierung abbrechen"
 paste: "Einfügen"
+emojiPalette: "Emoji-Palette"
 postForm: "Notizfenster"
 textCount: "Zeichenanzahl"
 information: "Über"
 chat: "Chat"
+migrateOldSettings: "Alte Client-Einstellungen migrieren"
+migrateOldSettings_description: "Dies sollte normalerweise automatisch geschehen, aber wenn die Migration aus irgendeinem Grund nicht erfolgreich war, kannst du den Migrationsprozess selbst manuell auslösen. Die aktuellen Konfigurationsinformationen werden dabei überschrieben."
 compress: "Komprimieren"
 _chat:
   noMessagesYet: "Noch keine Nachrichten"
+  newMessage: "Neue Nachricht"
+  individualChat: "Privater Chat"
+  individualChat_description: "Führe einen privaten Chat mit einer anderen Person."
+  roomChat_description: "Ein Chat-Raum, an dem mehrere Personen teilnehmen können.\nDu kannst auch Personen einladen, die keine privaten Chats zulassen, wenn sie die Einladung annehmen."
   createRoom: "Raum erstellen"
   inviteUserToChat: "Lade Benutzer ein, um mit dem Chatten zu beginnen"
   yourRooms: "Erstellte Räume"
@@ -1345,11 +1356,31 @@ _chat:
   searchMessages: "Nachrichten suchen"
   home: "Startseite"
   send: "Senden"
+  newline: "Neue Zeile"
   muteThisRoom: "Raum stummschalten"
+  deleteRoom: "Raum löschen"
+  chatNotAvailableForThisAccountOrServer: "Der Chat ist auf diesem Server oder für dieses Konto nicht aktiviert."
+  chatNotAvailableInOtherAccount: "Die Chatfunktion wurde vom anderen Benutzer deaktiviert."
+  cannotChatWithTheUser: "Starten eines Chats mit diesem Benutzer nicht möglich"
+  cannotChatWithTheUser_description: "Der Chat ist entweder nicht verfügbar oder die andere Seite hat den Chat nicht aktiviert."
+  chatWithThisUser: "Mit dem Benutzer chatten"
+  thisUserAllowsChatOnlyFromFollowers: "Dieser Benutzer nimmt nur Chats von Followern an."
+  thisUserAllowsChatOnlyFromFollowing: "Dieser Benutzer nimmt nur Chats von Benutzern an, denen er folgt."
+  thisUserAllowsChatOnlyFromMutualFollowing: "Dieser Benutzer akzeptiert nur Chats von Benutzern, die sich gegenseitig folgen."
+  thisUserNotAllowedChatAnyone: "Dieser Benutzer nimmt keine Chats von anderen Benutzern an."
+  chatAllowedUsers: "Wem das Chatten erlaubt werden soll"
+  chatAllowedUsers_note: "Du kannst unabhängig von dieser Einstellung mit allen Personen chatten, denen du eine Chat-Nachricht gesendet hast."
+  _chatAllowedUsers:
+    everyone: "Jeder"
+    followers: "Nur deine Follower"
+    following: "Nur Benutzer, denen du folgst"
+    mutual: "Nur Benutzer, die sich gegenseitig folgen"
+    none: "Niemand"
 _emojiPalette:
   palettes: "Palette"
   enableSyncBetweenDevicesForPalettes: "Synchronisierung der Paletten zwischen Geräten aktivieren"
   paletteForMain: "Hauptpalette"
+  paletteForReaction: "Reaktions-Palette"
 _settings:
   driveBanner: "Du kannst den Drive verwalten und konfigurieren, die Auslastung überprüfen und Einstellungen für das Hochladen von Dateien vornehmen."
   pluginBanner: "Du kannst die Funktionen des Clients mit Plugins erweitern. Plugins können installiert, individuell konfiguriert und verwaltet werden."
@@ -1362,6 +1393,8 @@ _settings:
   accessibilityBanner: "Die Clients können personalisiert und für eine optimale Nutzung im Hinblick auf ihre Darstellung und ihr Verhalten eingerichtet werden."
   privacyBanner: "Du kannst Einstellungen für die Privatsphäre deines Kontos vornehmen, z. B. inwieweit Inhalte veröffentlicht werden, wie leicht sie zu finden sind und ob Follower genehmigt werden müssen."
   securityBanner: "Du kannst Einstellungen für die Kontosicherheit konfigurieren, z. B. Passwörter, Anmeldemethoden, Authentifizierungs-Apps und Passkeys."
+  ifOn: "Wenn eingeschaltet"
+  ifOff: "Wenn ausgeschaltet"
   _chat:
     showSenderName: "Name des Absenders anzeigen"
     sendOnEnter: "Eingabetaste sendet Nachricht"
@@ -2728,6 +2761,7 @@ _reversi:
   freeMatch: "Freies Spiel"
   lookingForPlayer: "Gegner werden gesucht..."
   gameCanceled: "Das Spiel wurde abgesagt."
+  shareToTlTheGameWhenStart: "Spiel in der Chronik teilen, wenn es gestartet wurde"
   iStartedAGame: "Das Spiel hat begonnen! #MisskeyReversi"
   opponentHasSettingsChanged: "Der Gegner hat seine Einstellungen geändert."
   allowIrregularRules: "Irreguläre Regeln (völlig frei)"
@@ -2748,7 +2782,9 @@ _urlPreviewSetting:
   requireContentLengthDescription: "Wenn der Server keine Content-Length zurückgibt, wird keine Vorschau erzeugt."
   userAgent: "User-Agent"
   userAgentDescription: "Legt den User-Agent fest, der beim Abrufen der Vorschau verwendet werden soll. Bleibt er leer, wird der Standard-User-Agent verwendet."
+  summaryProxy: "Proxy-Endpunkte, die Vorschaubilder erzeugen"
   summaryProxyDescription: "Generierung von Vorschaubildern mit Summaly Proxy anstelle von Misskey selbst."
+  summaryProxyDescription2: "Die folgenden Parameter werden als Abfrage-Strings mit dem Proxy verknüpft. Wenn der Proxy sie nicht unterstützt, werden die Werte ignoriert."
 _mediaControls:
   pip: "Bild-in-Bild"
   playbackRate: "Wiedergabegeschwindigkeit"
@@ -2756,15 +2792,41 @@ _mediaControls:
 _contextMenu:
   title: "Kontextmenü"
   app: "Anwendung"
+  appWithShift: "Anwendung per Umschalttaste"
+  native: "Natives Browsermenü"
 _gridComponent:
   _error:
     requiredValue: "Dieser Wert ist ein Pflichtfeld"
+    columnTypeNotSupport: "Die Validierung regulärer Ausdrücke wird nur für Spalten vom Typ \"Text\" unterstützt."
+    patternNotMatch: "Dieser Wert stimmt nicht mit dem Schema in {pattern} überein"
     notUnique: "Dieser Wert muss eindeutig sein"
+_roleSelectDialog:
+  notSelected: "Nicht ausgewählt"
 _customEmojisManager:
+  _gridCommon:
+    copySelectionRows: "Ausgewählte Zeilen kopieren"
+    copySelectionRanges: "Auswahl kopieren"
+    deleteSelectionRows: "Ausgewählte Zeilen löschen"
   _logs:
     logNothing: "Keine Protokoll-Einträge."
   _remote:
+    importSelectionRangesRows: "Zeilen in der Auswahl importieren"
+    importEmojisButton: "Ausgewählte Emojis importieren"
     confirmImportEmojisTitle: "Emojis importieren"
+    confirmImportEmojisDescription: "Importiere {count} Emoji(s), die von entfernten Server empfangen wurden. Bitte achte genau auf die Lizenz der Emojis. Bist du sicher, dass du fortfahren möchtest?"
+  _local:
+    tabTitleList: "Hinzugefügte Emojis"
+    tabTitleRegister: "Emojis hinzufügen"
+    _list:
+      emojisNothing: "Es wurden keine Emojis hinzugefügt."
+      alertUpdateEmojisNothingDescription: "Es wurden keine Emojis geändert."
+      alertDeleteEmojisNothingDescription: "Es gibt keine zu löschenden Emojis."
+      confirmUpdateEmojisDescription: "Aktualisiere {count} Emoji(s). Willst du fortfahren?"
+      confirmDeleteEmojisDescription: "Lösche {count} ausgewählte Emoji(s). Willst du fortfahren?"
+    _register:
+      confirmRegisterEmojisDescription: "Füge die in der Liste aufgeführten Emojis als neue benutzerdefinierte Emojis hinzu. Bist du sicher? (Um eine Überlastung zu vermeiden, können nur {count} Emoji(s) in einem Vorgang hinzugefügt werden)"
+      confirmClearEmojisDescription: "Verwerfe die Bearbeitungen und lösche die Emojis aus der Liste. Bist du sicher, dass du fortfahren möchtest?"
+      confirmUploadEmojisDescription: "Lade die {count} abgelegte(n) Datei(en) in das Drive hoch. Bist du sicher, dass du fortfahren möchtest?"
 _embedCodeGen:
   title: "Einbettungscode anpassen"
   header: "Kopfzeile anzeigen"
@@ -2772,6 +2834,9 @@ _embedCodeGen:
   maxHeight: "Maximale Höhe"
   maxHeightDescription: "Der Wert 0 deaktiviert die Einstellung der maximalen Höhe. Gib einen Wert an, um zu verhindern, dass das Widget weiterhin vertikal vergrößert wird."
   maxHeightWarn: "Die Begrenzung der maximalen Höhe ist deaktiviert (0). Wenn dies nicht beabsichtigt war, setze die maximale Höhe auf einen Wert fest."
+  previewIsNotActual: "Die Anzeige weicht von der tatsächlichen Einbettung ab, da sie den auf dem Vorschaufenster angezeigten Bereich überschreitet."
+  rounded: "Ecken abrunden"
+  border: "Dem äußeren Rand einen Rahmen hinzufügen"
   applyToPreview: "Auf die Vorschau anwenden"
   generateCode: "Einbettungscode generieren"
   codeGenerated: "Der Code wurde generiert"
@@ -2802,8 +2867,16 @@ _remoteLookupErrors:
     title: "Nicht gefunden"
     description: "Die angeforderte Ressource konnte nicht gefunden werden, bitte überprüfe die URI erneut."
 _captcha:
+  verify: "Bitte beantworte das CAPTCHA"
   _error:
+    _requestFailed:
+      title: "CAPTCHA-Anfrage fehlgeschlagen."
+      text: "Bitte probiere es später noch einmal oder überprüfe die Einstellungen erneut."
+    _verificationFailed:
+      title: "CAPTCHA-Prüfung fehlgeschlagen"
+      text: "Bitte überprüfe nochmals, ob die Einstellungen korrekt sind."
     _unknown:
+      title: "CAPTCHA-Fehler"
       text: "Es ist ein unerwarteter Fehler aufgetreten."
 _bootErrors:
   title: "Laden fehlgeschlagen"
