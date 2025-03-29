@@ -13,10 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XAnnouncements v-if="$i"/>
 			<XStatusBars :class="$style.statusbars"/>
 		</div>
-		<div :class="$style.content">
-			<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']"/>
-			<RouterView v-else/>
-		</div>
+		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :class="$style.content"/>
+		<RouterView v-else :class="$style.content"/>
 		<div v-if="isMobile" ref="navFooter" :class="$style.nav">
 			<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
 			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
