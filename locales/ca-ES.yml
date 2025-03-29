@@ -1406,6 +1406,7 @@ _settings:
   timelineAndNote: "Línia de temps i nota"
   makeEveryTextElementsSelectable: "Fes que tots els elements del text siguin seleccionables"
   makeEveryTextElementsSelectable_description: "L'activació pot reduir la usabilitat en determinades ocasions."
+  useStickyIcons: "Utilitza icones fixes"
   showNavbarSubButtons: "Mostrar sub botons a la barra de navegació "
   ifOn: "Quan s'encén "
   ifOff: "Quan s'apaga "
