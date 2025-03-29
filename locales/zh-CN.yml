@@ -1406,6 +1406,7 @@ _settings:
   timelineAndNote: "时间线和帖子"
   makeEveryTextElementsSelectable: "使所有的文字均可选择"
   makeEveryTextElementsSelectable_description: "若开启，在某些情况下可能降低用户体验。"
+  useStickyIcons: "使图标跟随滚动"
   showNavbarSubButtons: "在导航栏中显示副按钮"
   ifOn: "启用时"
   ifOff: "关闭时"
