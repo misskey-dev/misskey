@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, watch, useTemplateRef, ref, computed } from 'vue';
+import { onBeforeUnmount, onMounted, provide, watch, ref, computed, shallowRef } from 'vue';
 import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
@@ -68,7 +68,7 @@ const emit = defineEmits<{
 	(ev: 'headerWheel', ctx: WheelEvent): void;
 }>();
 
-const body = useTemplateRef('body');
+const body = shallowRef();
 
 const dragging = ref(false);
 watch(dragging, v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
