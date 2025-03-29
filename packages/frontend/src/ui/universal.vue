@@ -95,7 +95,6 @@ import { defineAsyncComponent, provide, onMounted, computed, ref, watch, useTemp
 import { instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import XCommon from './_common_/common.vue';
-import type { Ref } from 'vue';
 import type { PageMetadata } from '@/page.js';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os.js';
@@ -208,29 +207,6 @@ watch(navFooter, () => {
 	immediate: true,
 });
 </script>
-
-<style>
-html,
-body {
-	width: 100%;
-	height: 100%;
-	overscroll-behavior: none;
-}
-
-body {
-	/* NOTE: htmlにも overflow: clip を設定したいところだが、設定すると何故か少なくともChromeで html が main thread scrolling になりパフォーマンスが(多分)落ちる */
-	overflow: clip;
-}
-
-#misskey_app {
-	width: 100%;
-	height: 100%;
-	overflow: clip;
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-</style>
 
 <style lang="scss" module>
 $ui-font-size: 1em; // TODO: どこかに集約したい
