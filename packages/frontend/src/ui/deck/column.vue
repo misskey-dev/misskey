@@ -108,9 +108,7 @@ function getMenu() {
 	const menuItems: MenuItem[] = [];
 
 	if (props.menu) {
-		menuItems.push(...props.menu, {
-			type: 'divider',
-		});
+		menuItems.push(...props.menu);
 	}
 
 	if (props.refresher) {
@@ -122,6 +120,12 @@ function getMenu() {
 					props.refresher();
 				}
 			},
+		});
+	}
+
+	if (menuItems.length > 0) {
+		menuItems.push({
+			type: 'divider',
 		});
 	}
 
@@ -151,6 +155,21 @@ function getMenu() {
 			if (canceled) return;
 			updateColumn(props.column.id, result);
 		},
+	});
+
+	const flexibleRef = ref(props.column.flexible ?? false);
+
+	watch(flexibleRef, flexible => {
+		updateColumn(props.column.id, {
+			flexible,
+		});
+	});
+
+	menuItems.push({
+		type: 'switch',
+		icon: 'ti ti-arrows-horizontal',
+		text: i18n.ts._deck.flexible,
+		ref: flexibleRef,
 	});
 
 	const moveToMenuItems: MenuItem[] = [];
