@@ -159,12 +159,13 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 
 	const onDrag = (ev: MouseEvent | TouchEvent) => {
 		ev.preventDefault();
+		let beforeValue = finalValue.value;
 		const containerRect = containerEl.value!.getBoundingClientRect();
 		const pointerX = 'touches' in ev && ev.touches.length > 0 ? ev.touches[0].clientX : 'clientX' in ev ? ev.clientX : 0;
 		const pointerPositionOnContainer = pointerX - (containerRect.left + (thumbWidth / 2));
 		rawValue.value = Math.min(1, Math.max(0, pointerPositionOnContainer / (containerEl.value!.offsetWidth - thumbWidth)));
 
-		if (props.continuousUpdate) {
+		if (props.continuousUpdate && beforeValue !== finalValue.value) {
 			emit('update:modelValue', finalValue.value);
 		}
 	};
