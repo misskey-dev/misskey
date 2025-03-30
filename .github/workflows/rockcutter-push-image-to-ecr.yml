@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main
+      - master
       - add_gha_for_ecr_push
 
 jobs:
