@@ -1,5 +1,7 @@
 url: 'http://misskey.local'
 
+setupPassword: example_password_please_change_this_or_you_will_get_hacked
+
 # ローカルでテストするときにポートを被らないようにするためデフォルトのものとは変える(以下同じ)
 port: 61812
 

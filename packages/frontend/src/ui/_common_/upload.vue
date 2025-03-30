@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as os from '@/os.js';
-import { uploads } from '@/scripts/upload.js';
+import { uploads } from '@/utility/upload.js';
 import { i18n } from '@/i18n.js';
 
 const zIndex = os.claimZIndex('high');
@@ -125,10 +125,10 @@ const zIndex = os.claimZIndex('high');
 	height: 8px;
 }
 .mk-uploader > ol > li > progress::-webkit-progress-value {
-  background: var(--accent);
+  background: var(--MI_THEME-accent);
 }
 .mk-uploader > ol > li > progress::-webkit-progress-bar {
-  //background: var(--accentAlpha01);
+  //background: var(--MI_THEME-accentAlpha01);
 	background: transparent;
 }
 </style>

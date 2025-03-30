@@ -1,5 +1,6 @@
 import {
 	Antenna,
+	ChatMessage,
 	DriveFile,
 	DriveFolder,
 	Note,
@@ -46,13 +47,9 @@ export type Channels = {
 			urlUploadFinished: (payload: { marker: string; file: DriveFile; }) => void;
 			readAllNotifications: () => void;
 			unreadNotification: (payload: Notification) => void;
-			unreadMention: (payload: Note['id']) => void;
-			readAllUnreadMentions: () => void;
 			notificationFlushed: () => void;
-			unreadSpecifiedNote: (payload: Note['id']) => void;
-			readAllUnreadSpecifiedNotes: () => void;
-			readAllAntennas: () => void;
 			unreadAntenna: (payload: Antenna) => void;
+			newChatMessage: (payload: ChatMessage) => void;
 			readAllAnnouncements: () => void;
 			myTokenRegenerated: () => void;
 			signin: (payload: Signin) => void;
@@ -124,7 +121,7 @@ export type Channels = {
 	};
 	hashtag: {
 		params: {
-			q?: string;
+			q: string[][];
 		};
 		events: {
 			note: (payload: Note) => void;
@@ -233,7 +230,7 @@ export type Channels = {
 	}
 };
 
-export type NoteUpdatedEvent = {
+export type NoteUpdatedEvent = { id: Note['id'] } & ({
 	type: 'reacted';
 	body: {
 		reaction: string;
@@ -257,7 +254,7 @@ export type NoteUpdatedEvent = {
 		choice: number;
 		userId: User['id'];
 	};
-};
+});
 
 export type BroadcastEvents = {
 	noteUpdated: (payload: NoteUpdatedEvent) => void;

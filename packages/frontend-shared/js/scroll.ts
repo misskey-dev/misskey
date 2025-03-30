@@ -36,19 +36,27 @@ export function getScrollPosition(el: HTMLElement | null): number {
 	return container == null ? window.scrollY : container.scrollTop;
 }
 
-export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance = 1, once = false) {
+export function onScrollTop(el: HTMLElement, cb: (topVisible: boolean) => unknown, tolerance = 1, once = false) {
 	// とりあえず評価してみる
-	if (el.isConnected && isTopVisible(el)) {
-		cb();
+	const firstTopVisible = isHeadVisible(el);
+	if (el.isConnected && firstTopVisible) {
+		cb(firstTopVisible);
 		if (once) return null;
 	}
 
 	const container = getScrollContainer(el) ?? window;
 
+	// 以下のケースにおいて、cbが何度も呼び出されてしまって具合が悪いので1回呼んだら以降は無視するようにする
+	// - スクロールイベントは1回のスクロールで複数回発生することがある
+	// - toleranceの範囲内に収まる程度の微量なスクロールが発生した
+	let prevTopVisible = firstTopVisible;
 	const onScroll = () => {
 		if (!document.body.contains(el)) return;
-		if (isTopVisible(el, tolerance)) {
-			cb();
+
+		const topVisible = isHeadVisible(el, tolerance);
+		if (topVisible !== prevTopVisible) {
+			prevTopVisible = topVisible;
+			cb(topVisible);
 			if (once) removeListener();
 		}
 	};
@@ -63,7 +71,7 @@ export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance = 1
 	const container = getScrollContainer(el);
 
 	// とりあえず評価してみる
-	if (el.isConnected && isBottomVisible(el, tolerance, container)) {
+	if (el.isConnected && isTailVisible(el, tolerance, container)) {
 		cb();
 		if (once) return null;
 	}
@@ -71,7 +79,7 @@ export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance = 1
 	const containerOrWindow = container ?? window;
 	const onScroll = () => {
 		if (!document.body.contains(el)) return;
-		if (isBottomVisible(el, 1, container)) {
+		if (isTailVisible(el, 1, container)) {
 			cb();
 			if (once) removeListener();
 		}
@@ -85,7 +93,7 @@ export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance = 1
 	return removeListener;
 }
 
-export function scroll(el: HTMLElement, options: ScrollToOptions | undefined) {
+export function scrollInContainer(el: HTMLElement, options: ScrollToOptions | undefined) {
 	const container = getScrollContainer(el);
 	if (container == null) {
 		window.scroll(options);
@@ -100,7 +108,7 @@ export function scroll(el: HTMLElement, options: ScrollToOptions | undefined) {
  * @param options Scroll options
  */
 export function scrollToTop(el: HTMLElement, options: { behavior?: ScrollBehavior; } = {}) {
-	scroll(el, { top: 0, ...options });
+	scrollInContainer(el, { top: 0, ...options });
 }
 
 /**
@@ -124,12 +132,12 @@ export function scrollToBottom(
 	}
 }
 
-export function isTopVisible(el: HTMLElement, tolerance = 1): boolean {
+export function isHeadVisible(el: HTMLElement, tolerance = 1): boolean {
 	const scrollTop = getScrollPosition(el);
 	return scrollTop <= tolerance;
 }
 
-export function isBottomVisible(el: HTMLElement, tolerance = 1, container = getScrollContainer(el)) {
+export function isTailVisible(el: HTMLElement, tolerance = 1, container = getScrollContainer(el)) {
 	if (container) return el.scrollHeight <= container.clientHeight + Math.abs(container.scrollTop) + tolerance;
 	return el.scrollHeight <= window.innerHeight + window.scrollY + tolerance;
 }

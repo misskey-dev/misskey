@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #header><XHeader :actions="headerActions"/></template>
 		<MkSpacer :contentMax="900">
 			<div class="_gaps">
-				<div class="inputs" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+				<div class="inputs" style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
 					<MkSelect v-model="origin" style="margin: 0; flex: 1;">
 						<template #label>{{ i18n.ts.instance }}</template>
 						<option value="combined">{{ i18n.ts.all }}</option>
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
 				</div>
-				<div class="inputs" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+				<div class="inputs" style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
 					<MkInput v-model="userId" :debounce="true" type="search" style="margin: 0; flex: 1;">
 						<template #label>User ID</template>
 					</MkInput>
@@ -42,9 +42,9 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import * as os from '@/os.js';
-import { lookupFile } from '@/scripts/admin-lookup.js';
+import { lookupFile } from '@/utility/admin-lookup.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const origin = ref('local');
 const type = ref<string | null>(null);
@@ -85,7 +85,7 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.files,
 	icon: 'ti ti-cloud',
 }));

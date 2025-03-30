@@ -14,49 +14,50 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <XUpload v-if="uploads.length > 0"/>
 
-<TransitionGroup
+<component
+	:is="prefer.s.animation ? TransitionGroup : 'div'"
 	tag="div"
 	:class="[$style.notifications, {
-		[$style.notificationsPosition_leftTop]: defaultStore.state.notificationPosition === 'leftTop',
-		[$style.notificationsPosition_leftBottom]: defaultStore.state.notificationPosition === 'leftBottom',
-		[$style.notificationsPosition_rightTop]: defaultStore.state.notificationPosition === 'rightTop',
-		[$style.notificationsPosition_rightBottom]: defaultStore.state.notificationPosition === 'rightBottom',
-		[$style.notificationsStackAxis_vertical]: defaultStore.state.notificationStackAxis === 'vertical',
-		[$style.notificationsStackAxis_horizontal]: defaultStore.state.notificationStackAxis === 'horizontal',
+		[$style.notificationsPosition_leftTop]: prefer.s.notificationPosition === 'leftTop',
+		[$style.notificationsPosition_leftBottom]: prefer.s.notificationPosition === 'leftBottom',
+		[$style.notificationsPosition_rightTop]: prefer.s.notificationPosition === 'rightTop',
+		[$style.notificationsPosition_rightBottom]: prefer.s.notificationPosition === 'rightBottom',
+		[$style.notificationsStackAxis_vertical]: prefer.s.notificationStackAxis === 'vertical',
+		[$style.notificationsStackAxis_horizontal]: prefer.s.notificationStackAxis === 'horizontal',
 	}]"
-	:moveClass="defaultStore.state.animation ? $style.transition_notification_move : ''"
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
+	:moveClass="$style.transition_notification_move"
+	:enterActiveClass="$style.transition_notification_enterActive"
+	:leaveActiveClass="$style.transition_notification_leaveActive"
+	:enterFromClass="$style.transition_notification_enterFrom"
+	:leaveToClass="$style.transition_notification_leaveTo"
 >
 	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
 		<XNotification :notification="notification"/>
 	</div>
-</TransitionGroup>
+</component>
 
 <XStreamIndicator/>
 
 <div v-if="pendingApiRequestsCount > 0" id="wait"></div>
 
-<div v-if="dev" id="devTicker"><span>DEV BUILD</span></div>
+<div v-if="dev" id="devTicker"><span style="animation: dev-ticker-blink 2s infinite;">DEV BUILD</span></div>
 
-<div v-if="$i && $i.isBot" id="botWarn"><span>{{ i18n.ts.loggedInAsBot }}</span></div>
+<div v-if="$i && $i.isBot" id="botWarn"><span style="animation: dev-ticker-blink 2s infinite;">{{ i18n.ts.loggedInAsBot }}</span></div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
 import { popups } from '@/os.js';
-import { pendingApiRequestsCount } from '@/scripts/misskey-api.js';
-import { uploads } from '@/scripts/upload.js';
-import * as sound from '@/scripts/sound.js';
-import { $i } from '@/account.js';
+import { pendingApiRequestsCount } from '@/utility/misskey-api.js';
+import { uploads } from '@/utility/upload.js';
+import * as sound from '@/utility/sound.js';
+import { $i } from '@/i.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
@@ -67,7 +68,7 @@ const dev = _DEV_;
 const notifications = ref<Misskey.entities.Notification[]>([]);
 
 function onNotification(notification: Misskey.entities.Notification, isClient = false) {
-	if (document.visibilityState === 'visible') {
+	if (window.document.visibilityState === 'visible') {
 		if (!isClient && notification.type !== 'test') {
 			// サーバーサイドのテスト通知の際は自動で既読をつけない（テストできないので）
 			useStream().send('readNotification');
@@ -116,27 +117,27 @@ if ($i) {
 .notifications {
 	position: fixed;
 	z-index: 3900000;
-	padding: 0 var(--margin);
+	padding: 0 var(--MI-margin);
 	pointer-events: none;
 	display: flex;
 
 	&.notificationsPosition_leftTop {
-		top: var(--margin);
+		top: var(--MI-margin);
 		left: 0;
 	}
 
 	&.notificationsPosition_rightTop {
-		top: var(--margin);
+		top: var(--MI-margin);
 		right: 0;
 	}
 
 	&.notificationsPosition_leftBottom {
-		bottom: calc(var(--minBottomSpacing) + var(--margin));
+		bottom: calc(var(--MI-minBottomSpacing) + var(--MI-margin));
 		left: 0;
 	}
 
 	&.notificationsPosition_rightBottom {
-		bottom: calc(var(--minBottomSpacing) + var(--margin));
+		bottom: calc(var(--MI-minBottomSpacing) + var(--MI-margin));
 		right: 0;
 	}
 
@@ -234,8 +235,8 @@ if ($i) {
 		height: 18px;
 		box-sizing: border-box;
 		border: solid 2px transparent;
-		border-top-color: var(--accent);
-		border-left-color: var(--accent);
+		border-top-color: var(--MI_THEME-accent);
+		border-left-color: var(--MI_THEME-accent);
 		border-radius: 50%;
 		animation: progress-spinner 400ms linear infinite;
 	}
@@ -258,10 +259,6 @@ if ($i) {
 	font-size: 14px;
 	pointer-events: none;
 	user-select: none;
-
-	> span {
-		animation: dev-ticker-blink 2s infinite;
-	}
 }
 
 #devTicker {
@@ -275,9 +272,5 @@ if ($i) {
 	font-size: 14px;
 	pointer-events: none;
 	user-select: none;
-
-	> span {
-		animation: dev-ticker-blink 2s infinite;
-	}
 }
 </style>

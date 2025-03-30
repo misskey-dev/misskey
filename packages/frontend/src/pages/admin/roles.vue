@@ -11,6 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps">
 				<MkFolder>
 					<template #label>{{ i18n.ts._role.baseRole }}</template>
+					<template #footer>
+						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
+					</template>
 					<div class="_gaps_s">
 						<MkInput v-model="baseRoleQ" type="search">
 							<template #prefix><i class="ti ti-search"></i></template>
@@ -44,6 +47,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>{{ i18n.ts._role._options.canPublicNote }}</template>
 							<template #suffix>{{ policies.canPublicNote ? i18n.ts.yes : i18n.ts.no }}</template>
 							<MkSwitch v-model="policies.canPublicNote">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChat, 'canChat'])">
+							<template #label>{{ i18n.ts._role._options.canChat }}</template>
+							<template #suffix>{{ policies.canChat ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canChat">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
@@ -210,7 +221,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.avatarDecorationLimit, 'avatarDecorationLimit'])">
 							<template #label>{{ i18n.ts._role._options.avatarDecorationLimit }}</template>
 							<template #suffix>{{ policies.avatarDecorationLimit }}</template>
-							<MkInput v-model="policies.avatarDecorationLimit" type="number" :min="0">
+							<MkInput v-model="avatarDecorationLimit" type="number" :min="0" :max="16" @update:modelValue="updateAvatarDecorationLimit">
 							</MkInput>
 						</MkFolder>
 
@@ -253,8 +264,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
-
-						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
 				<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>
@@ -280,6 +289,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
+import { ROLE_POLICIES } from '@@/js/const.js';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -288,13 +298,12 @@ import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { ROLE_POLICIES } from '@@/js/const.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 const baseRoleQ = ref('');
@@ -304,6 +313,17 @@ const roles = await misskeyApi('admin/roles/list');
 const policies = reactive<Record<typeof ROLE_POLICIES[number], any>>({});
 for (const ROLE_POLICY of ROLE_POLICIES) {
 	policies[ROLE_POLICY] = instance.policies[ROLE_POLICY];
+}
+
+const avatarDecorationLimit = computed({
+	get: () => Math.min(16, Math.max(0, policies.avatarDecorationLimit)),
+	set: (value) => {
+		policies.avatarDecorationLimit = Math.min(Number(value), 16);
+	},
+});
+
+function updateAvatarDecorationLimit(value: string | number) {
+	avatarDecorationLimit.value = Number(value);
 }
 
 function matchQuery(keywords: string[]): boolean {
@@ -326,7 +346,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.roles,
 	icon: 'ti ti-badges',
 }));

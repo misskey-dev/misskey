@@ -10,9 +10,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, provide, shallowRef, watch } from 'vue';
+import { nextTick, onMounted, onUnmounted, provide, useTemplateRef, watch } from 'vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 
 const props = defineProps<{
 	items: MenuItem[];
@@ -28,7 +28,7 @@ const emit = defineEmits<{
 
 provide('isNestingMenu', true);
 
-const el = shallowRef<HTMLElement>();
+const el = useTemplateRef('el');
 const align = 'left';
 
 const SCROLLBAR_THICKNESS = 16;

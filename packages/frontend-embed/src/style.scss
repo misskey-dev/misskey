@@ -7,18 +7,18 @@
  */
 
 :root {
-	--radius: 12px;
-	--marginFull: 14px;
-	--marginHalf: 10px;
+	--MI-radius: 12px;
+	--MI-marginFull: 14px;
+	--MI-marginHalf: 10px;
 
-	--margin: var(--marginFull);
+	--MI-margin: var(--MI-marginFull);
 }
 
 html {
 	background-color: transparent;
 	color-scheme: light dark;
-	color: var(--fg);
-	accent-color: var(--accent);
+	color: var(--MI_THEME-fg);
+	accent-color: var(--MI_THEME-accent);
 	overflow: clip;
 	overflow-wrap: break-word;
 	font-family: 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
@@ -29,7 +29,7 @@ html {
 	-webkit-text-size-adjust: 100%;
 
 	&, * {
-		scrollbar-color: var(--scrollbarHandle) transparent;
+		scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
 		scrollbar-width: thin;
 
 		&::-webkit-scrollbar {
@@ -42,14 +42,14 @@ html {
 		}
 
 		&::-webkit-scrollbar-thumb {
-			background: var(--scrollbarHandle);
+			background: var(--MI_THEME-scrollbarHandle);
 
 			&:hover {
-				background: var(--scrollbarHandleHover);
+				background: var(--MI_THEME-scrollbarHandleHover);
 			}
 
 			&:active {
-				background: var(--accent);
+				background: var(--MI_THEME-accent);
 			}
 		}
 	}
@@ -93,7 +93,7 @@ rt {
 }
 
 :focus-visible {
-	outline: var(--focus) solid 2px;
+	outline: var(--MI_THEME-focus) solid 2px;
 	outline-offset: -2px;
 
 	&:hover {
@@ -151,38 +151,38 @@ rt {
 
 ._buttonGray {
 	@extend ._button;
-	background: var(--buttonBg);
+	background: var(--MI_THEME-buttonBg);
 
 	&:not(:disabled):hover {
-		background: var(--buttonHoverBg);
+		background: var(--MI_THEME-buttonHoverBg);
 	}
 }
 
 ._buttonPrimary {
 	@extend ._button;
-	color: var(--fgOnAccent);
-	background: var(--accent);
+	color: var(--MI_THEME-fgOnAccent);
+	background: var(--MI_THEME-accent);
 
 	&:not(:disabled):hover {
-		background: hsl(from var(--accent) h s calc(l + 5));
+		background: hsl(from var(--MI_THEME-accent) h s calc(l + 5));
 	}
 
 	&:not(:disabled):active {
-		background: hsl(from var(--accent) h s calc(l - 5));
+		background: hsl(from var(--MI_THEME-accent) h s calc(l - 5));
 	}
 }
 
 ._buttonGradate {
 	@extend ._buttonPrimary;
-	color: var(--fgOnAccent);
-	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+	color: var(--MI_THEME-fgOnAccent);
+	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 
 	&:not(:disabled):hover {
-		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 	}
 
 	&:not(:disabled):active {
-		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 	}
 }
 
@@ -199,13 +199,13 @@ rt {
 }
 
 ._help {
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 	cursor: help;
 }
 
 ._textButton {
 	@extend ._button;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 
 	&:focus-visible {
 		outline-offset: 2px;
@@ -217,13 +217,13 @@ rt {
 }
 
 ._panel {
-	background: var(--panel);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-panel);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 }
 
 ._margin {
-	margin: var(--margin) 0;
+	margin: var(--MI-margin) 0;
 }
 
 ._gaps_m {
@@ -241,7 +241,7 @@ rt {
 ._gaps {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 
 ._buttons {
@@ -263,24 +263,24 @@ rt {
 	padding: 10px;
 	box-sizing: border-box;
 	text-align: center;
-	border: solid 0.5px var(--divider);
-	border-radius: var(--radius);
+	border: solid 0.5px var(--MI_THEME-divider);
+	border-radius: var(--MI-radius);
 
 	&:active {
-		border-color: var(--accent);
+		border-color: var(--MI_THEME-accent);
 	}
 }
 
 ._popup {
-	background: var(--popup);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-popup);
+	border-radius: var(--MI-radius);
 	contain: content;
 }
 
 ._acrylic {
-	background: var(--acrylicPanel);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	background: var(--MI_THEME-acrylicPanel);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 }
 
 ._fullinfo {
@@ -296,7 +296,7 @@ rt {
 }
 
 ._link {
-	color: var(--link);
+	color: var(--MI_THEME-link);
 }
 
 ._caption {

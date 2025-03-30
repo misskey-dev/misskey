@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-align-left"></i> {{ i18n.ts._pages.blocks.text }}</template>
 
 	<section>
@@ -15,24 +15,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-/* eslint-disable vue/no-mutating-props */
-import { watch, ref, shallowRef, onMounted, onUnmounted } from 'vue';
+import { watch, ref, useTemplateRef, onMounted, onUnmounted } from 'vue';
+import * as Misskey from 'misskey-js';
 import XContainer from '../page-editor.container.vue';
 import { i18n } from '@/i18n.js';
-import { Autocomplete } from '@/scripts/autocomplete.js';
+import { Autocomplete } from '@/utility/autocomplete.js';
 
 const props = defineProps<{
-	modelValue: any
+	modelValue: Misskey.entities.PageBlock & { type: 'text' }
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any): void;
+	(ev: 'update:modelValue', value: Misskey.entities.PageBlock & { type: 'text' }): void;
 }>();
 
 let autocomplete: Autocomplete;
 
 const text = ref(props.modelValue.text ?? '');
-const inputEl = shallowRef<HTMLTextAreaElement | null>(null);
+const inputEl = useTemplateRef('inputEl');
 
 watch(text, () => {
 	emit('update:modelValue', {
@@ -63,7 +63,7 @@ onUnmounted(() => {
 	box-shadow: none;
 	padding: 16px;
 	background: transparent;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	font-size: 14px;
 	box-sizing: border-box;
 }

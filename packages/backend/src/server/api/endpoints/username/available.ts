@@ -5,11 +5,10 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
+import type { MiMeta, UsedUsernamesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { localUsernameSchema } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
-import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
 	tags: ['users'],
@@ -39,13 +38,14 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
 		@Inject(DI.usedUsernamesRepository)
 		private usedUsernamesRepository: UsedUsernamesRepository,
-
-		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const exist = await this.usersRepository.countBy({
@@ -55,8 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const exist2 = await this.usedUsernamesRepository.countBy({ username: ps.username.toLowerCase() });
 
-			const meta = await this.metaService.fetch();
-			const isPreserved = meta.preservedUsernames.map(x => x.toLowerCase()).includes(ps.username.toLowerCase());
+			const isPreserved = this.serverSettings.preservedUsernames.map(x => x.toLowerCase()).includes(ps.username.toLowerCase());
 
 			return {
 				available: exist === 0 && exist2 === 0 && !isPreserved,

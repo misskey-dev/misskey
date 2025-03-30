@@ -24,11 +24,11 @@ const isZero = computed(() => props.value === 0);
 
 <style lang="scss" module>
 .isPlus {
-	color: var(--success);
+	color: var(--MI_THEME-success);
 }
 
 .isMinus {
-	color: var(--error);
+	color: var(--MI_THEME-error);
 }
 
 .isZero {

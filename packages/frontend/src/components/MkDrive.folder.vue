@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-if="!hover"><i :class="$style.icon" class="ti ti-folder ti-fw"></i></template>
 		{{ folder.name }}
 	</p>
-	<p v-if="defaultStore.state.uploadFolder == folder.id" :class="$style.upload">
+	<p v-if="prefer.s.uploadFolder == folder.id" :class="$style.upload">
 		{{ i18n.ts.uploadFolder }}
 	</p>
 	<button v-if="selectMode" class="_button" :class="$style.checkboxWrapper" @click.prevent.stop="checkboxClicked">
@@ -36,13 +36,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { MenuItem } from '@/types/menu.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -244,8 +244,8 @@ function deleteFolder() {
 	misskeyApi('drive/folders/delete', {
 		folderId: props.folder.id,
 	}).then(() => {
-		if (defaultStore.state.uploadFolder === props.folder.id) {
-			defaultStore.set('uploadFolder', null);
+		if (prefer.s.uploadFolder === props.folder.id) {
+			prefer.commit('uploadFolder', null);
 		}
 	}).catch(err => {
 		switch (err.id) {
@@ -266,7 +266,7 @@ function deleteFolder() {
 }
 
 function setAsUploadFolder() {
-	defaultStore.set('uploadFolder', props.folder.id);
+	prefer.commit('uploadFolder', props.folder.id);
 }
 
 function onContextmenu(ev: MouseEvent) {
@@ -295,9 +295,9 @@ function onContextmenu(ev: MouseEvent) {
 		danger: true,
 		action: deleteFolder,
 	}];
-	if (defaultStore.state.devMode) {
+	if (prefer.s.devMode) {
 		menu = menu.concat([{ type: 'divider' }, {
-			icon: 'ti ti-id',
+			icon: 'ti ti-hash',
 			text: i18n.ts.copyFolderId,
 			action: () => {
 				copyToClipboard(props.folder.id);
@@ -313,7 +313,7 @@ function onContextmenu(ev: MouseEvent) {
 	position: relative;
 	padding: 8px;
 	height: 64px;
-	background: var(--driveFolderBg);
+	background: var(--MI_THEME-driveFolderBg);
 	border-radius: 4px;
 	cursor: pointer;
 
@@ -326,7 +326,7 @@ function onContextmenu(ev: MouseEvent) {
 			right: -4px;
 			bottom: -4px;
 			left: -4px;
-			border: 2px dashed var(--focus);
+			border: 2px dashed var(--MI_THEME-focus);
 			border-radius: 4px;
 		}
 	}
@@ -345,13 +345,13 @@ function onContextmenu(ev: MouseEvent) {
 		width: 18px;
 		height: 18px;
 		background: #fff;
-		border: solid 2px var(--divider);
+		border: solid 2px var(--MI_THEME-divider);
 		border-radius: 4px;
 		box-sizing: border-box;
 
 		&.checked {
-			border-color: var(--accent);
-			background: var(--accent);
+			border-color: var(--MI_THEME-accent);
+			background: var(--MI_THEME-accent);
 
 			&::after {
 				content: "\ea5e";
@@ -368,14 +368,13 @@ function onContextmenu(ev: MouseEvent) {
 	}
 
 	&:hover {
-		background: var(--accentedBg);
+		background: var(--MI_THEME-accentedBg);
 	}
 }
 
 .name {
 	margin: 0;
 	font-size: 0.9em;
-	color: var(--desktopDriveFolderFg);
 }
 
 .icon {
@@ -388,6 +387,5 @@ function onContextmenu(ev: MouseEvent) {
 	margin: 4px 4px;
 	font-size: 0.8em;
 	text-align: right;
-	color: var(--desktopDriveFolderFg);
 }
 </style>

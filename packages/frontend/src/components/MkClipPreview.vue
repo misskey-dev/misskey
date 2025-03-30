@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { computed } from 'vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import number from '@/filters/number.js';
 
 const props = withDefaults(defineProps<{
@@ -49,13 +49,13 @@ const remaining = computed(() => {
 		outline: none;
 
 		.root {
-			box-shadow: inset 0 0 0 2px var(--focus);
+			box-shadow: inset 0 0 0 2px var(--MI_THEME-focus);
 		}
 	}
 
 	&:hover {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 
@@ -65,7 +65,7 @@ const remaining = computed(() => {
 
 .divider {
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .description {

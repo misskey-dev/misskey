@@ -5,14 +5,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<EmLoading v-if="loading"/>
-	<EmTimelineContainer v-else-if="user" :showHeader="embedParams.header">
+	<EmTimelineContainer v-if="user && !prohibited" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.userHeader">
 				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
 					<EmAvatar :class="$style.avatar" :user="user"/>
 				</a>
-				<div :class="$style.headerTitle">
+				<div :class="$style.headerTitle" @click="top">
 					<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
 						<template #user>
 							<a v-if="user != null" :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
@@ -46,21 +45,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, computed, shallowRef, inject } from 'vue';
+import { ref, computed, inject, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url, instanceName } from '@@/js/config.js';
+import { defaultEmbedParams } from '@@/js/embed-page.js';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
-import EmLoading from '@/components/EmLoading.vue';
 import EmUserName from '@/components/EmUserName.vue';
 import I18n from '@/components/I18n.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmTimelineContainer from '@/components/EmTimelineContainer.vue';
+import { scrollToTop } from '@@/js/scroll.js';
+import { isLink } from '@@/js/is-link.js';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { serverMetadata } from '@/server-metadata.js';
-import { url, instanceName } from '@@/js/config.js';
-import { defaultEmbedParams } from '@@/js/embed-page.js';
+import { assertServerContext } from '@/server-context.js';
 import { DI } from '@/di.js';
 
 const props = defineProps<{
@@ -69,26 +69,46 @@ const props = defineProps<{
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
-const user = ref<Misskey.entities.UserLite | null>(null);
+const serverMetadata = inject(DI.serverMetadata)!;
+
+const serverContext = inject(DI.serverContext)!;
+
+const user = ref<Misskey.entities.UserLite | null>();
+
+const prohibited = ref(false);
+
+if (assertServerContext(serverContext, 'user')) {
+	user.value = serverContext.user;
+} else {
+	user.value = await misskeyApi('users/show', {
+		userId: props.userId,
+	}).catch(() => {
+		return null;
+	});
+}
+
+if (user.value?.host != null) {
+	// リモートサーバーのユーザーは弾く
+	prohibited.value = true;
+}
+
 const pagination = computed(() => ({
 	endpoint: 'users/notes',
 	params: {
 		userId: user.value?.id,
 	},
 } as Paging));
-const loading = ref(true);
 
-const notesEl = shallowRef<InstanceType<typeof EmNotes> | null>(null);
+const notesEl = useTemplateRef('notesEl');
 
-misskeyApi('users/show', {
-	userId: props.userId,
-}).then(res => {
-	user.value = res;
-	loading.value = false;
-}).catch(err => {
-	console.error(err);
-	loading.value = false;
-});
+function top(ev: MouseEvent) {
+	const target = ev.target as HTMLElement | null;
+	if (target && isLink(target)) return;
+
+	if (notesEl.value) {
+		scrollToTop(notesEl.value.$el as HTMLElement, { behavior: 'smooth' });
+	}
+}
 </script>
 
 <style lang="scss" module>
@@ -97,7 +117,7 @@ misskeyApi('users/show', {
 	display: flex;
 	min-width: 0;
 	align-items: center;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 	overflow: hidden;
 
 	.avatarLink {

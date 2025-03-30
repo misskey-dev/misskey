@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<MkNotes ref="notes" class="" :pagination="pagination"/>
 	</MkSpacer>
@@ -16,19 +15,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSpacer>
 		</div>
 	</template>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkButton from '@/components/MkButton.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { $i } from '@/i.js';
+import { store } from '@/store.js';
 import * as os from '@/os.js';
-import { genEmbedCode } from '@/scripts/get-embed-code.js';
+import { genEmbedCode } from '@/utility/get-embed-code.js';
 
 const props = defineProps<{
 	tag: string;
@@ -44,11 +43,11 @@ const pagination = {
 const notes = ref<InstanceType<typeof MkNotes>>();
 
 async function post() {
-	defaultStore.set('postFormHashtags', props.tag);
-	defaultStore.set('postFormWithHashtags', true);
+	store.set('postFormHashtags', props.tag);
+	store.set('postFormWithHashtags', true);
 	await os.post();
-	defaultStore.set('postFormHashtags', '');
-	defaultStore.set('postFormWithHashtags', false);
+	store.set('postFormHashtags', '');
+	store.set('postFormWithHashtags', false);
 	notes.value?.pagingComponent?.reload();
 }
 
@@ -63,12 +62,12 @@ const headerActions = computed(() => [{
 				genEmbedCode('tags', props.tag);
 			},
 		}], ev.currentTarget ?? ev.target);
-	}
+	},
 }]);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: props.tag,
 	icon: 'ti ti-hash',
 }));
@@ -76,10 +75,10 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .footer {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	background: var(--acrylicBg);
-	border-top: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	background: var(--MI_THEME-acrylicBg);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 	display: flex;
 }
 

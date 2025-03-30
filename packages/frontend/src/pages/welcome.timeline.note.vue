@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onUpdated, onMounted } from 'vue';
+import { ref, useTemplateRef, onUpdated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
@@ -45,7 +45,7 @@ defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const noteTextEl = shallowRef<HTMLDivElement>();
+const noteTextEl = useTemplateRef('noteTextEl');
 const shouldCollapse = ref(false);
 const showContent = ref(false);
 
@@ -84,7 +84,7 @@ onUpdated(() => {
 		left: 0;
 		width: 100%;
 		height: 64px;
-		background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
+		background: linear-gradient(0deg, var(--MI_THEME-panel), color(from var(--MI_THEME-panel) srgb r g b / 0));
 	}
 }
 
@@ -100,7 +100,7 @@ onUpdated(() => {
 	margin: 8px -16px -8px;
 	padding: 8px 16px 0;
 	width: calc(100% + 32px);
-	border-top: 1px solid var(--divider);
+	border-top: 1px solid var(--MI_THEME-divider);
 }
 
 .richcontent {

@@ -3,27 +3,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Directive } from 'vue';
+import type { Directive } from 'vue';
+import { getBgColor } from '@/utility/get-bg-color.js';
+import { globalEvents } from '@/events.js';
+
+const handlerMap = new WeakMap<any, any>();
 
 export default {
 	mounted(src, binding, vn) {
-		const getBgColor = (el: HTMLElement) => {
-			const style = window.getComputedStyle(el);
-			if (style.backgroundColor && !['rgba(0, 0, 0, 0)', 'rgba(0,0,0,0)', 'transparent'].includes(style.backgroundColor)) {
-				return style.backgroundColor;
+		function calc() {
+			const parentBg = getBgColor(src.parentElement) ?? 'transparent';
+
+			const myBg = window.getComputedStyle(src).backgroundColor;
+
+			if (parentBg === myBg) {
+				src.style.borderColor = 'var(--MI_THEME-divider)';
 			} else {
-				return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
+				src.style.borderColor = myBg;
 			}
-		};
-
-		const parentBg = getBgColor(src.parentElement);
-
-		const myBg = window.getComputedStyle(src).backgroundColor;
-
-		if (parentBg === myBg) {
-			src.style.borderColor = 'var(--divider)';
-		} else {
-			src.style.borderColor = myBg;
 		}
+
+		handlerMap.set(src, calc);
+
+		calc();
+
+		globalEvents.on('themeChanged', calc);
+	},
+
+	unmounted(src, binding, vn) {
+		globalEvents.off('themeChanged', handlerMap.get(src));
 	},
 } as Directive;

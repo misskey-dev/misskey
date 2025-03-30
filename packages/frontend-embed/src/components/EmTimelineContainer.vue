@@ -20,7 +20,7 @@ withDefaults(defineProps<{
 
 <style module lang="scss">
 .timelineRoot {
-	background-color: var(--panel);
+	background-color: var(--MI_THEME-panel);
 	height: 100%;
 	max-height: var(--embedMaxHeight, none);
 	display: flex;
@@ -29,7 +29,7 @@ withDefaults(defineProps<{
 
 .header {
 	flex-shrink: 0;
-	border-bottom: 1px solid var(--divider);
+	border-bottom: 1px solid var(--MI_THEME-divider);
 }
 
 .body {

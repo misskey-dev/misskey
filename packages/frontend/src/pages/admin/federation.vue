@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
-					<FormSplit style="margin-top: var(--margin);">
+					<FormSplit style="margin-top: var(--MI-margin);">
 						<MkSelect v-model="state">
 							<template #label>{{ i18n.ts.state }}</template>
 							<option value="all">{{ i18n.ts.all }}</option>
@@ -67,7 +67,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const host = ref('');
 const state = ref('federating');
@@ -112,7 +112,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.federation,
 	icon: 'ti ti-whirl',
 }));

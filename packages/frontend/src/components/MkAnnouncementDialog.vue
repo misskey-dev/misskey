@@ -9,9 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.header">
 			<span :class="$style.icon">
 				<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
-				<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
-				<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
-				<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+				<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i>
+				<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
+				<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 			</span>
 			<span :class="$style.title">{{ announcement.title }}</span>
 		</div>
@@ -22,22 +22,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { $i, updateAccount } from '@/account.js';
+import { $i } from '@/i.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const props = withDefaults(defineProps<{
 	announcement: Misskey.entities.Announcement;
 }>(), {
 });
 
-const rootEl = shallowRef<HTMLDivElement>();
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const rootEl = useTemplateRef('rootEl');
+const modal = useTemplateRef('modal');
 
 async function ok() {
 	if (props.announcement.needConfirmationToRead) {
@@ -51,7 +52,7 @@ async function ok() {
 
 	modal.value?.close();
 	misskeyApi('i/read-announcement', { announcementId: props.announcement.id });
-	updateAccount({
+	updateCurrentAccountPartial({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
 	});
 }
@@ -83,8 +84,8 @@ onMounted(() => {
 	min-width: 320px;
 	max-width: 480px;
 	box-sizing: border-box;
-	background: var(--panel);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-panel);
+	border-radius: var(--MI-radius);
 }
 
 .header {

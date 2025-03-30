@@ -13,7 +13,7 @@ import fastifyRawBody from 'fastify-raw-body';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
-import type { EmojisRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { EmojisRepository, MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
@@ -21,7 +21,6 @@ import { genIdenticon } from '@/misc/gen-identicon.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
-import { MetaService } from '@/core/MetaService.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -44,6 +43,9 @@ export class ServerService implements OnApplicationShutdown {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -53,7 +55,6 @@ export class ServerService implements OnApplicationShutdown {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
-		private metaService: MetaService,
 		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,
 		private openApiServerService: OpenApiServerService,
@@ -101,6 +102,43 @@ export class ServerService implements OnApplicationShutdown {
 			root: _dirname,
 			serve: false,
 		});
+
+		// if the requester looks like to be performing an ActivityPub object lookup, reject all external redirects
+		//
+		// this will break lookup that involve copying a URL from a third-party server, like trying to lookup http://charlie.example.com/@alice@alice.com
+		//
+		// this is not required by standard but protect us from peers that did not validate final URL.
+		if (this.config.disallowExternalApRedirect) {
+			const maybeApLookupRegex = /application\/activity\+json|application\/ld\+json.+activitystreams/i;
+			fastify.addHook('onSend', (request, reply, _, done) => {
+				const location = reply.getHeader('location');
+				if (reply.statusCode < 300 || reply.statusCode >= 400 || typeof location !== 'string') {
+					done();
+					return;
+				}
+
+				if (!maybeApLookupRegex.test(request.headers.accept ?? '')) {
+					done();
+					return;
+				}
+
+				const effectiveLocation = process.env.NODE_ENV === 'production' ? location : location.replace(/^http:\/\//, 'https://');
+				if (effectiveLocation.startsWith(`https://${this.config.host}/`)) {
+					done();
+					return;
+				}
+
+				reply.status(406);
+				reply.removeHeader('location');
+				reply.header('content-type', 'text/plain; charset=utf-8');
+				reply.header('link', `<${encodeURI(location)}>; rel="canonical"`);
+				done(null, [
+					"Refusing to relay remote ActivityPub object lookup.",
+					"",
+					`Please remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at ${location}.`,
+				].join('\n'));
+			});
+		}
 
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
 		fastify.register(this.openApiServerService.createServer);
@@ -165,8 +203,8 @@ export class ServerService implements OnApplicationShutdown {
 			}
 
 			return await reply.redirect(
-				301,
 				url.toString(),
+				301,
 			);
 		});
 
@@ -193,7 +231,7 @@ export class ServerService implements OnApplicationShutdown {
 			reply.header('Content-Type', 'image/png');
 			reply.header('Cache-Control', 'public, max-age=86400');
 
-			if ((await this.metaService.fetch()).enableIdenticonGeneration) {
+			if (this.meta.enableIdenticonGeneration) {
 				return await genIdenticon(request.params.x);
 			} else {
 				return reply.redirect('/static-assets/avatar.png');

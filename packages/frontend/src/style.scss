@@ -7,39 +7,27 @@
  */
 
 :root {
-	--radius: 12px;
-	--marginFull: 16px;
-	--marginHalf: 10px;
+	--MI-radius: 12px;
+	--MI-marginFull: 16px;
+	--MI-marginHalf: 10px;
 
-	--margin: var(--marginFull);
+	--MI-margin: var(--MI-marginFull);
 
 	// switch dynamically
-	--minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
-	--minBottomSpacing: var(--minBottomSpacingMobile);
-
-	//--ad: rgb(255 169 0 / 10%);
-	--eventFollow: #36aed2;
-	--eventRenote: #36d298;
-	--eventReply: #007aff;
-	--eventReactionHeart: #dd2e44;
-	--eventReaction: #e99a0b;
-	--eventAchievement: #cb9a11;
-	--eventOther: #88a6b7;
+	--MI-minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
+	--MI-minBottomSpacing: var(--MI-minBottomSpacingMobile);
 
 	@media (max-width: 500px) {
-		--margin: var(--marginHalf);
+		--MI-margin: var(--MI-marginHalf);
 	}
 }
 
 ::selection {
-	color: var(--fgOnAccent);
-	background-color: var(--accent);
+	color: var(--MI_THEME-fgOnAccent);
+	background-color: var(--MI_THEME-accent);
 }
 
 html {
-	background-color: var(--bg);
-	color: var(--fg);
-	accent-color: var(--accent);
 	overflow: auto;
 	overflow-wrap: break-word;
 	font-family: 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
@@ -48,9 +36,14 @@ html {
 	text-size-adjust: 100%;
 	tab-size: 2;
 	-webkit-text-size-adjust: 100%;
+	touch-action: manipulation;
+	scroll-behavior: smooth;
+	background-color: var(--MI_THEME-bg);
+	color: var(--MI_THEME-fg);
+	accent-color: var(--MI_THEME-accent);
 
 	&, * {
-		scrollbar-color: var(--scrollbarHandle) transparent;
+		scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
 		scrollbar-width: thin;
 
 		&::-webkit-scrollbar {
@@ -63,14 +56,14 @@ html {
 		}
 
 		&::-webkit-scrollbar-thumb {
-			background: var(--scrollbarHandle);
+			background: var(--MI_THEME-scrollbarHandle);
 
 			&:hover {
-				background: var(--scrollbarHandleHover);
+				background: var(--MI_THEME-scrollbarHandleHover);
 			}
 
 			&:active {
-				background: var(--accent);
+				background: var(--MI_THEME-accent);
 			}
 		}
 	}
@@ -90,6 +83,11 @@ html {
 	&.useSystemFont {
 		font-family: system-ui;
 	}
+
+	&:not(.forceSelectableAll) {
+		user-select: none;
+		-webkit-user-select: none;
+	}
 }
 
 html._themeChanging_ {
@@ -98,11 +96,19 @@ html._themeChanging_ {
 	}
 }
 
-html, body {
-	touch-action: manipulation;
+html,
+body,
+#misskey_app {
 	margin: 0;
 	padding: 0;
-	scroll-behavior: smooth;
+	width: 100%;
+	height: 100%;
+	overscroll-behavior: none;
+}
+
+body {
+	/* NOTE: htmlにも overflow: clip を設定したいところだが、設定すると何故か少なくともChromeで html が main thread scrolling になりパフォーマンスが(多分)落ちる */
+	overflow: clip;
 }
 
 a {
@@ -117,10 +123,6 @@ a {
 		outline-offset: 2px;
 	}
 
-	&:hover {
-		text-decoration: underline;
-	}
-
 	&[target="_blank"] {
 		-webkit-touch-callout: default;
 	}
@@ -129,18 +131,21 @@ a {
 textarea, input {
 	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
+	user-select: text;
+	-webkit-user-select: text;
 }
 
 optgroup, option {
-	background: var(--panel);
-	color: var(--fg);
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
 }
 
 hr {
-	margin: var(--margin) 0 var(--margin) 0;
+	margin: 0;
 	border: none;
+	border-radius: 999px;
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 rt {
@@ -148,7 +153,7 @@ rt {
 }
 
 :focus-visible {
-	outline: var(--focus) solid 2px;
+	outline: var(--MI_THEME-focus) solid 2px;
 	outline-offset: -2px;
 
 	&:hover {
@@ -171,6 +176,37 @@ rt {
 	text-align: center;
 }
 
+._pageContainer {
+	container-type: size;
+	contain: strict;
+	overflow: auto;
+	overscroll-behavior: contain;
+}
+
+._pageScrollable {
+	height: 100%;
+	overflow: clip;
+	overflow-y: scroll;
+	overscroll-behavior: contain;
+
+	/*
+	理屈は知らないけど、ここでbackgroundを設定しておかないと
+	スクロールコンテナーが少なくともChromeにおいて
+	main thread scrolling になってしまい、パフォーマンスが(多分)落ちる。
+	backgroundが透明だと裏側を描画しないといけなくなるとかそういう理由かもしれない
+	*/
+	background: var(--MI_THEME-bg);
+}
+
+._pageScrollableReversed {
+	height: 100%;
+	overflow: clip;
+	overflow-y: scroll;
+	overscroll-behavior: contain;
+	display: flex;
+	flex-direction: column-reverse;
+}
+
 ._indicatorCircle {
 	display: inline-block;
 	width: 1em;
@@ -181,15 +217,25 @@ rt {
 
 ._indicateCounter {
 	display: inline-flex;
-	color: var(--fgOnAccent);
+	color: var(--MI_THEME-fgOnAccent);
 	font-weight: 700;
-	background: var(--indicator);
+	background: var(--MI_THEME-indicator);
 	height: 1.5em;
 	min-width: 1.5em;
 	align-items: center;
 	justify-content: center;
 	border-radius: 99rem;
 	padding: 0.3em 0.5em;
+}
+
+._selectable {
+	user-select: text;
+	-webkit-user-select: text;
+}
+
+._selectableAtomic {
+	user-select: all;
+	-webkit-user-select: all;
 }
 
 ._noSelect {
@@ -205,24 +251,19 @@ rt {
 	text-overflow: ellipsis;
 }
 
-._ghost {
-	@extend ._noSelect;
-	pointer-events: none;
-}
-
 ._modalBg {
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: var(--modalBg);
-	-webkit-backdrop-filter: var(--modalBgFilter);
-	backdrop-filter: var(--modalBgFilter);
+	background: var(--MI_THEME-modalBg);
+	-webkit-backdrop-filter: var(--MI-modalBgFilter);
+	backdrop-filter: var(--MI-modalBgFilter);
 }
 
 ._shadow {
-	box-shadow: 0px 4px 32px var(--shadow) !important;
+	box-shadow: 0px 4px 32px var(--MI_THEME-shadow) !important;
 }
 
 ._button {
@@ -251,40 +292,40 @@ rt {
 
 ._buttonPrimary {
 	@extend ._button;
-	color: var(--fgOnAccent);
-	background: var(--accent);
+	color: var(--MI_THEME-fgOnAccent);
+	background: var(--MI_THEME-accent);
 
 	&:not(:disabled):hover {
-		background: hsl(from var(--accent) h s calc(l + 5));
+		background: hsl(from var(--MI_THEME-accent) h s calc(l + 5));
 	}
 
 	&:not(:disabled):active {
-		background: hsl(from var(--accent) h s calc(l - 5));
+		background: hsl(from var(--MI_THEME-accent) h s calc(l - 5));
 	}
 }
 
 ._buttonGradate {
 	@extend ._buttonPrimary;
-	color: var(--fgOnAccent);
-	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+	color: var(--MI_THEME-fgOnAccent);
+	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 
 	&:not(:disabled):hover {
-		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 	}
 
 	&:not(:disabled):active {
-		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 	}
 }
 
 ._help {
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 	cursor: help;
 }
 
 ._textButton {
 	@extend ._button;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 
 	&:focus-visible {
 		outline-offset: 2px;
@@ -296,31 +337,31 @@ rt {
 }
 
 ._panel {
-	background: var(--panel);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-panel);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 }
 
 ._margin {
-	margin: var(--margin) 0;
+	margin: var(--MI-margin) 0;
 }
 
 ._gaps_m {
 	display: flex;
 	flex-direction: column;
-	gap: 1.5em;
+	gap: 21px;
 }
 
 ._gaps_s {
 	display: flex;
 	flex-direction: column;
-	gap: 0.75em;
+	gap: 10px;
 }
 
 ._gaps {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 
 ._buttons {
@@ -342,24 +383,24 @@ rt {
 	padding: 10px;
 	box-sizing: border-box;
 	text-align: center;
-	border: solid 0.5px var(--divider);
-	border-radius: var(--radius);
+	border: solid 0.5px var(--MI_THEME-divider);
+	border-radius: var(--MI-radius);
 
 	&:active {
-		border-color: var(--accent);
+		border-color: var(--MI_THEME-accent);
 	}
 }
 
 ._popup {
-	background: var(--popup);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-popup);
+	border-radius: var(--MI-radius);
 	contain: content;
 }
 
 ._acrylic {
-	background: var(--acrylicPanel);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	background: var(--MI_THEME-acrylicPanel);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 }
 
 ._formLinksGrid {
@@ -372,8 +413,18 @@ rt {
 	margin-left: 0.7em;
 	font-size: 65%;
 	padding: 2px 3px;
-	color: var(--accent);
-	border: solid 1px var(--accent);
+	color: var(--MI_THEME-accent);
+	border: solid 1px var(--MI_THEME-accent);
+	border-radius: 4px;
+	vertical-align: top;
+}
+
+._modified {
+	margin-left: 0.7em;
+	font-size: 65%;
+	padding: 2px 3px;
+	color: var(--MI_THEME-warn);
+	border: solid 1px var(--MI_THEME-warn);
 	border-radius: 4px;
 	vertical-align: top;
 }
@@ -419,7 +470,11 @@ rt {
 }
 
 ._link {
-	color: var(--link);
+	color: var(--MI_THEME-link);
+}
+
+._love {
+	color: var(--MI_THEME-love);
 }
 
 ._caption {
@@ -443,14 +498,14 @@ rt {
 	box-shadow: 0 6px 16px #0007, 0 0 1px 1px #693410, inset 0 0 2px 1px #ce8a5c;
 	border-radius: 10px;
 
-	--bg: #F1E8DC;
-	--fg: #693410;
+	--MI_THEME-bg: #F1E8DC;
+	--MI_THEME-fg: #693410;
 }
 
-html[data-color-mode=dark] ._woodenFrame {
-	--bg: #1d0c02;
-	--fg: #F1E8DC;
-	--panel: #192320;
+html[data-color-scheme=dark] ._woodenFrame {
+	--MI_THEME-bg: #1d0c02;
+	--MI_THEME-fg: #F1E8DC;
+	--MI_THEME-panel: #192320;
 }
 
 ._woodenFrameH {
@@ -461,10 +516,10 @@ html[data-color-mode=dark] ._woodenFrame {
 ._woodenFrameInner {
 	padding: 8px;
 	margin-top: 8px;
-	background: var(--bg);
+	background: var(--MI_THEME-bg);
 	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
 	border-radius: 6px;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 
 	&:first-child {
 		margin-top: 0;
@@ -479,7 +534,11 @@ html[data-color-mode=dark] ._woodenFrame {
 	transform: scale(0.9);
 }
 
-@keyframes global-blink {
+._blink {
+	animation: blink 1s infinite;
+}
+
+@keyframes blink {
 	0% { opacity: 1; transform: scale(1); }
 	30% { opacity: 1; transform: scale(1); }
 	90% { opacity: 0; transform: scale(0.5); }
@@ -492,20 +551,17 @@ html[data-color-mode=dark] ._woodenFrame {
 
 	10%,
 	20% {
-		transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+		transform: scale3d(0.91, 0.91, 0.91) rotate3d(0, 0, 1, -2deg);
 	}
 
 	30%,
-	50%,
-	70%,
-	90% {
-		transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+	70% {
+		transform: scale3d(1.09, 1.09, 1.09) rotate3d(0, 0, 1, 2deg);
 	}
 
-	40%,
-	60%,
-	80% {
-		transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+	50%,
+	90% {
+		transform: scale3d(1.09, 1.09, 1.09) rotate3d(0, 0, 1, -2deg);
 	}
 
 	to {

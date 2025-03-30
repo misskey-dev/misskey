@@ -4,13 +4,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <script lang="ts">
-import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
+import { defineComponent, h, TransitionGroup, useCssModule } from 'vue';
+import type { PropType } from 'vue';
+import type { MisskeyEntity } from '@/types/date-separated-list.js';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
-import { MisskeyEntity } from '@/types/date-separated-list.js';
+import { instance } from '@/instance.js';
+import { prefer } from '@/preferences.js';
 
 export default defineComponent({
 	props: {
@@ -99,11 +101,13 @@ export default defineComponent({
 
 				return [el, separator];
 			} else {
-				if (props.ad && item._shouldInsertAd_) {
-					return [h(MkAd, {
+				if (props.ad && instance.ads.length > 0 && item._shouldInsertAd_) {
+					return [h('div', {
 						key: item.id + ':ad',
+						class: $style['ad-wrapper'],
+					}, [h(MkAd, {
 						prefer: ['horizontal', 'horizontal-big'],
-					}), el];
+					})]), el];
 				} else {
 					return el;
 				}
@@ -125,14 +129,14 @@ export default defineComponent({
 			return children;
 		};
 
-		function onBeforeLeave(element: Element) {
-			const el = element as HTMLElement;
+		function onBeforeLeave(el: Element) {
+			if (!(el instanceof HTMLElement)) return;
 			el.style.top = `${el.offsetTop}px`;
 			el.style.left = `${el.offsetLeft}px`;
 		}
 
-		function onLeaveCancelled(element: Element) {
-			const el = element as HTMLElement;
+		function onLeaveCancelled(el: Element) {
+			if (!(el instanceof HTMLElement)) return;
 			el.style.top = '';
 			el.style.left = '';
 		}
@@ -146,7 +150,7 @@ export default defineComponent({
 			[$style['direction-up']]: props.direction === 'up',
 		};
 
-		return () => defaultStore.state.animation ? h(TransitionGroup, {
+		return () => prefer.s.animation ? h(TransitionGroup, {
 			class: classes,
 			name: 'list',
 			tag: 'div',
@@ -164,25 +168,21 @@ export default defineComponent({
 	container-type: inline-size;
 
 	&:global {
-	> .list-move {
-		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-	}
+		> .list-move {
+			transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+		}
 
-	&.deny-move-transition > .list-move {
-		transition: none !important;
-	}
+		> .list-enter-active {
+			transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+		}
 
-	> .list-enter-active {
-		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-	}
-
-	> *:empty {
-		display: none;
-	}
+		> *:empty {
+			display: none;
+		}
 	}
 
 	&:not(.date-separated-list-nogap) > *:not(:last-child) {
-		margin-bottom: var(--margin);
+		margin-bottom: var(--MI-margin);
 	}
 }
 
@@ -194,7 +194,7 @@ export default defineComponent({
 		box-shadow: none;
 
 		&:not(:last-child) {
-			border-bottom: solid 0.5px var(--divider);
+			border-bottom: solid 0.5px var(--MI_THEME-divider);
 		}
 	}
 }
@@ -235,7 +235,7 @@ export default defineComponent({
 	line-height: 32px;
 	text-align: center;
 	font-size: 12px;
-	color: var(--dateLabelFg);
+	color: var(--MI_THEME-dateLabelFg);
 }
 
 .date-1 {
@@ -252,6 +252,12 @@ export default defineComponent({
 
 .date-2-icon {
 	margin-left: 8px;
+}
+
+.ad-wrapper {
+	padding: 8px;
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px);
 }
 </style>
 
