@@ -682,7 +682,7 @@ export const searchIndexes: SearchIndexItem[] = [
 		id: '9bNikHWzQ',
 		children: [
 			{
-				id: 'appYJbpkK',
+				id: 't6XtfnRm9',
 				label: i18n.ts._settings.showNavbarSubButtons,
 				keywords: ['navbar', 'sidebar', 'toggle', 'button', 'sub'],
 			},
@@ -879,6 +879,21 @@ export const searchIndexes: SearchIndexItem[] = [
 				id: '5dk2xv1vc',
 				label: i18n.ts._deck.columnAlign,
 				keywords: ['column', 'align'],
+			},
+			{
+				id: 'gtdEA4FTa',
+				label: i18n.ts._deck.deckMenuPosition,
+				keywords: ['menu', 'position'],
+			},
+			{
+				id: 'DHVFdPBT6',
+				label: i18n.ts._deck.navbarPosition,
+				keywords: ['navbar', 'position'],
+			},
+			{
+				id: '3UQ8rUssZ',
+				label: i18n.ts._deck.columnGap,
+				keywords: ['column', 'gap', 'margin'],
 			},
 		],
 		label: i18n.ts.deck,
