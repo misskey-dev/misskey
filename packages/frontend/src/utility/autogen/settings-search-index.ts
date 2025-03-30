@@ -489,17 +489,79 @@ export const searchIndexes: SearchIndexItem[] = [
 				id: '96LnS1sxB',
 				children: [
 					{
-						id: '5h8vhCX1S',
+						id: 'vPQPvmntL',
+						label: i18n.ts.reduceUiAnimation,
+						keywords: ['animation', 'motion', 'reduce'],
+					},
+					{
+						id: 'wfJ91vwzq',
+						label: i18n.ts.disableShowingAnimatedImages,
+						keywords: ['disable', 'animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif'],
+					},
+					{
+						id: '42b1L4xdq',
+						label: i18n.ts.enableAnimatedMfm,
+						keywords: ['mfm', 'enable', 'show', 'animated'],
+					},
+					{
+						id: 'dLkRNHn3k',
+						label: i18n.ts.enableHorizontalSwipe,
+						keywords: ['swipe', 'horizontal', 'tab'],
+					},
+					{
+						id: 'BvooTWFW5',
+						label: i18n.ts.keepScreenOn,
+						keywords: ['keep', 'screen', 'display', 'on'],
+					},
+					{
+						id: 'yzbghkAq0',
+						label: i18n.ts.useNativeUIForVideoAudioPlayer,
+						keywords: ['native', 'system', 'video', 'audio', 'player', 'media'],
+					},
+					{
+						id: 'aSbKFHbOy',
+						label: i18n.ts._settings.makeEveryTextElementsSelectable,
+						keywords: ['text', 'selectable'],
+					},
+					{
+						id: 'bTcAsPvNz',
+						label: i18n.ts.menuStyle,
+						keywords: ['menu', 'style', 'popup', 'drawer'],
+					},
+					{
+						id: 'lSVBaLnyW',
+						label: i18n.ts._contextMenu.title,
+						keywords: ['contextmenu', 'system', 'native'],
+					},
+					{
+						id: 'pec0uMPq5',
+						label: i18n.ts.fontSize,
+						keywords: ['font', 'size'],
+					},
+					{
+						id: 'Eh7vTluDO',
+						label: i18n.ts.useSystemFont,
+						keywords: ['font', 'system', 'native'],
+					},
+				],
+				label: i18n.ts.accessibility,
+				keywords: ['accessibility', i18n.ts._settings.accessibilityBanner],
+			},
+			{
+				id: 'vTRSKf1JA',
+				children: [
+					{
+						id: '2VjlA02wB',
 						label: i18n.ts.turnOffToImprovePerformance,
 						keywords: ['blur'],
 					},
 					{
-						id: 'Cbjosj3TG',
+						id: 'f6J0lmg1g',
 						label: i18n.ts.turnOffToImprovePerformance,
 						keywords: ['blur', 'modal'],
 					},
 					{
-						id: 'BKndoHcCj',
+						id: 'hQqXhfNg8',
 						label: i18n.ts.turnOffToImprovePerformance,
 						keywords: ['sticky'],
 					},
@@ -508,55 +570,55 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['performance'],
 			},
 			{
-				id: '4yCgcFElF',
+				id: 'utM8dEobb',
 				label: i18n.ts.dataSaver,
 				keywords: ['datasaver'],
 			},
 			{
-				id: 'DILm2LlCn',
+				id: 'gOUvwkE9t',
 				children: [
 					{
-						id: 'Fd0rFTSry',
+						id: 'iUMUvFURf',
 						label: i18n.ts.squareAvatars,
 						keywords: ['avatar', 'icon', 'square'],
 					},
 					{
-						id: 'xNsLokqeA',
+						id: 'ceyPO9Ywi',
 						label: i18n.ts.seasonalScreenEffect,
 						keywords: ['effect', 'show'],
 					},
 					{
-						id: 'sZcalFBE8',
+						id: 'ztwIlsXhP',
 						label: i18n.ts.openImageInNewTab,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab'],
 					},
 					{
-						id: 'Eh7vTluDO',
+						id: 'vLSsQbZEo',
 						label: i18n.ts.withRepliesByDefaultForNewlyFollowed,
 						keywords: ['follow', 'replies'],
 					},
 					{
-						id: 'vTRSKf1JA',
+						id: 'hQt85bBIX',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: 'zlO5cBZFH',
+						id: 'C9SyK2m0',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: 'huQ8nc4iD',
+						id: '2U0iVUtfW',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: 'nJWfqwQ4R',
+						id: '1rA7ADEXY',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: 'kwEEgTlwR',
+						id: 'vRayx89Rt',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},
@@ -905,70 +967,6 @@ export const searchIndexes: SearchIndexItem[] = [
 		keywords: ['import', 'export', 'data', 'archive', i18n.ts._settings.accountDataBanner],
 		path: '/settings/account-data',
 		icon: 'ti ti-package',
-	},
-	{
-		id: 'f08Mi1Uwn',
-		children: [
-			{
-				id: 'C5dRH2Ypy',
-				label: i18n.ts.reduceUiAnimation,
-				keywords: ['animation', 'motion', 'reduce'],
-			},
-			{
-				id: '5mZxz2cru',
-				label: i18n.ts.disableShowingAnimatedImages,
-				keywords: ['disable', 'animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif'],
-			},
-			{
-				id: 'c0Iy5hL5o',
-				label: i18n.ts.enableAnimatedMfm,
-				keywords: ['mfm', 'enable', 'show', 'animated'],
-			},
-			{
-				id: '4HYFjs2Nv',
-				label: i18n.ts.enableHorizontalSwipe,
-				keywords: ['swipe', 'horizontal', 'tab'],
-			},
-			{
-				id: 'kYVJ3SVNq',
-				label: i18n.ts.keepScreenOn,
-				keywords: ['keep', 'screen', 'display', 'on'],
-			},
-			{
-				id: 'w4Bv0meAt',
-				label: i18n.ts.useNativeUIForVideoAudioPlayer,
-				keywords: ['native', 'system', 'video', 'audio', 'player', 'media'],
-			},
-			{
-				id: 'b1GYEEJeh',
-				label: i18n.ts._settings.makeEveryTextElementsSelectable,
-				keywords: ['text', 'selectable'],
-			},
-			{
-				id: 'vVLxwINTJ',
-				label: i18n.ts.menuStyle,
-				keywords: ['menu', 'style', 'popup', 'drawer'],
-			},
-			{
-				id: '14cMhMLHL',
-				label: i18n.ts._contextMenu.title,
-				keywords: ['contextmenu', 'system', 'native'],
-			},
-			{
-				id: 'oSo4LXMX9',
-				label: i18n.ts.fontSize,
-				keywords: ['font', 'size'],
-			},
-			{
-				id: '7LQSAThST',
-				label: i18n.ts.useSystemFont,
-				keywords: ['font', 'system', 'native'],
-			},
-		],
-		label: i18n.ts.accessibility,
-		keywords: ['accessibility', i18n.ts._settings.accessibilityBanner],
-		path: '/settings/accessibility',
-		icon: 'ti ti-accessible',
 	},
 ] as const;
 
