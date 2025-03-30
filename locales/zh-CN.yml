@@ -2597,6 +2597,8 @@ _deck:
   alwaysShowMainColumn: "总是显示主列"
   columnAlign: "列对齐"
   columnGap: "列间距"
+  deckMenuPosition: "Deck 菜单位置"
+  navbarPosition: "导航栏位置"
   addColumn: "添加列"
   newNoteNotificationSettings: "新帖子通知设定"
   configureColumn: "列设置"
