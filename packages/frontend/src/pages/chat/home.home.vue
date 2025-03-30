@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkInfo v-else>{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 
-	<MkAd :prefer="['horizontal', 'horizontal-big']"/>
+	<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 
 	<MkInput
 		v-model="searchQuery"

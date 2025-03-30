@@ -53,7 +53,7 @@ import { prefer } from '@/preferences.js';
 type Ad = (typeof instance)['ads'][number];
 
 const props = defineProps<{
-	prefer: string[];
+	preferForms: string[];
 	specify?: Ad;
 }>();
 
@@ -72,7 +72,7 @@ const choseAd = (): Ad | null => {
 		ratio: 0,
 	} : ad);
 
-	let ads = allAds.filter(ad => props.prefer.includes(ad.place));
+	let ads = allAds.filter(ad => props.preferForms.includes(ad.place));
 
 	if (ads.length === 0) {
 		ads = allAds.filter(ad => ad.place === 'square');
