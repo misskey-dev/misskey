@@ -123,11 +123,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/settings/sounds',
 		active: currentPage.value?.route.name === 'sounds',
 	}, {
-		icon: 'ti ti-accessible',
-		text: i18n.ts.accessibility,
-		to: '/settings/accessibility',
-		active: currentPage.value?.route.name === 'accessibility',
-	}, {
 		icon: 'ti ti-plug',
 		text: i18n.ts.plugins,
 		to: '/settings/plugin',

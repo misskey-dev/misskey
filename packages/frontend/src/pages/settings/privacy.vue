@@ -78,6 +78,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</SearchMarker>
 
+		<FormSection>
+			<SearchMarker :keywords="['chat']">
+				<MkSelect v-model="chatScope" @update:modelValue="save()">
+					<template #label><SearchLabel>{{ i18n.ts._chat.chatAllowedUsers }}</SearchLabel></template>
+					<option value="everyone">{{ i18n.ts._chat._chatAllowedUsers.everyone }}</option>
+					<option value="followers">{{ i18n.ts._chat._chatAllowedUsers.followers }}</option>
+					<option value="following">{{ i18n.ts._chat._chatAllowedUsers.following }}</option>
+					<option value="mutual">{{ i18n.ts._chat._chatAllowedUsers.mutual }}</option>
+					<option value="none">{{ i18n.ts._chat._chatAllowedUsers.none }}</option>
+					<template #caption>{{ i18n.ts._chat.chatAllowedUsers_note }}</template>
+				</MkSelect>
+			</SearchMarker>
+		</FormSection>
+
 		<SearchMarker :keywords="['lockdown']">
 			<FormSection>
 				<template #label><SearchLabel>{{ i18n.ts.lockdown }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
@@ -208,6 +222,7 @@ const hideOnlineStatus = ref($i.hideOnlineStatus);
 const publicReactions = ref($i.publicReactions);
 const followingVisibility = ref($i.followingVisibility);
 const followersVisibility = ref($i.followersVisibility);
+const chatScope = ref($i.chatScope);
 
 const makeNotesFollowersOnlyBefore_type = computed(() => {
 	if (makeNotesFollowersOnlyBefore.value == null) {
@@ -260,6 +275,7 @@ function save() {
 		publicReactions: !!publicReactions.value,
 		followingVisibility: followingVisibility.value,
 		followersVisibility: followersVisibility.value,
+		chatScope: chatScope.value,
 	});
 }
 
