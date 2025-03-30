@@ -658,7 +658,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 <style lang="scss" module>
 .root {
 	position: relative;
-	transition: box-shadow 0.1s ease;
 	font-size: 1.05em;
 	overflow: clip;
 	contain: content;
