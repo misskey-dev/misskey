@@ -36,7 +36,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_textButton" @click="toggleMenu">{{ i18n.ts._ad.back }}</button>
 	</div>
 </div>
-<div v-else></div>
 </template>
 
 <script lang="ts" setup>

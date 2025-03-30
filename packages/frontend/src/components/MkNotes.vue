@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-for="(note, i) in notes" :key="note.id">
 				<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
 				<div v-if="note._shouldInsertAd_" :class="$style.ad">
-					<MkAd :prefer="['horizontal', 'horizontal-big']"/>
+					<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 				</div>
 			</template>
 		</div>
@@ -74,5 +74,9 @@ defineExpose({
 			border-radius: var(--MI-radius);
 		}
 	}
+}
+
+.ad:empty {
+	display: none;
 }
 </style>
