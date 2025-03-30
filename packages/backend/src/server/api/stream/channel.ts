@@ -97,7 +97,7 @@ export default abstract class Channel {
 		});
 	}
 
-	public abstract init(params: any): void;
+	public abstract init(params: any): Promise<void> | void;
 
 	public dispose?(): void;
 
