@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['notes', 'visibility']">
 			<MkSelect v-model="notesVisibility" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.notesVisibility }}</SearchLabel></template>
+				<template #label><SearchLabel>{{ i18n.ts.notesVisibility }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
 				<option value="public">{{ i18n.ts._ffVisibility.public }}</option>
 				<option value="followers">{{ i18n.ts._ffVisibility.followers }}</option>
 				<option value="private">{{ i18n.ts._ffVisibility.private }}</option>
