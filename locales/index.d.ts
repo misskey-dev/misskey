@@ -5473,6 +5473,14 @@ export interface Locale extends ILocale {
          */
         "deleteRoom": string;
         /**
+         * このサーバー、またはこのアカウントでチャットは有効化されていません。
+         */
+        "chatNotAvailableForThisAccountOrServer": string;
+        /**
+         * 相手のアカウントでチャット機能が使えない状態になっています。
+         */
+        "chatNotAvailableInOtherAccount": string;
+        /**
          * このユーザーとのチャットを開始できません
          */
         "cannotChatWithTheUser": string;
@@ -5626,6 +5634,10 @@ export interface Locale extends ILocale {
          * 有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。
          */
         "makeEveryTextElementsSelectable_description": string;
+        /**
+         * アイコンをスクロールに追従させる
+         */
+        "useStickyIcons": string;
         /**
          * ナビゲーションバーに副ボタンを表示
          */

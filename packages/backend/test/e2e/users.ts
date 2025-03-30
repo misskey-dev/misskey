@@ -84,6 +84,7 @@ describe('ユーザー', () => {
 			followingVisibility: user.followingVisibility,
 			followersVisibility: user.followersVisibility,
 			chatScope: user.chatScope,
+			canChat: user.canChat,
 			roles: user.roles,
 			memo: user.memo,
 		});
@@ -346,6 +347,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.followingVisibility, 'public');
 		assert.strictEqual(response.followersVisibility, 'public');
 		assert.strictEqual(response.chatScope, 'mutual');
+		assert.strictEqual(response.canChat, true);
 		assert.deepStrictEqual(response.roles, []);
 		assert.strictEqual(response.memo, null);
 

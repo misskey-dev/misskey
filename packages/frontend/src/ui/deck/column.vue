@@ -377,7 +377,7 @@ function onDrop(ev) {
 	font-size: 0.9em;
 	color: var(--MI_THEME-panelHeaderFg);
 	background: var(--MI_THEME-panelHeaderBg);
-	box-shadow: 0 1px 0 0 var(--MI_THEME-panelHeaderDivider);
+	box-shadow: 0 0.5px 0 0 var(--MI_THEME-panelHeaderDivider);
 	cursor: pointer;
 	user-select: none;
 }

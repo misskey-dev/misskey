@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<MkA v-if="$i && $i.id === flash.userId" :to="`/play/${flash.id}/edit`" style="color: var(--MI_THEME-accent);">{{ i18n.ts._play.editThisPage }}</MkA>
-				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
+				<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 			</div>
 			<MkError v-else-if="error" @retry="fetchFlash()"/>
 			<MkLoading v-else/>

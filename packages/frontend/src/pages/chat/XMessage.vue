@@ -242,6 +242,10 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 	font-size: 80%;
 }
 
+.fukidashi {
+	text-align: left;
+}
+
 .content {
 	overflow: clip;
 	overflow-wrap: break-word;
