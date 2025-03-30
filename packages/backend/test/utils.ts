@@ -141,7 +141,10 @@ export const post = async (user: UserToken, params: misskey.Endpoints['notes/cre
 
 	const res = await api('notes/create', q, user);
 
-	return res.body ? res.body.createdNote : null;
+	assert.strictEqual(res.status, 200);
+	assert.notEqual(res.body, null);
+
+	return res.body.createdNote;
 };
 
 export const createAppToken = async (user: UserToken, permissions: (typeof misskey.permissions)[number][]) => {

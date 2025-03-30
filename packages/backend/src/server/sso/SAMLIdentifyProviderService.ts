@@ -239,7 +239,7 @@ export class SAMLIdentifyProviderService {
 				metadata: await this.createIdPMetadataXml(ssoServiceProvider),
 				privateKey: await jose
 					.importJWK(JSON.parse(ssoServiceProvider.privateKey ?? '{}'))
-					.then(k => jose.exportPKCS8(k as jose.KeyLike)),
+					.then(k => jose.exportPKCS8(k as jose.CryptoKey)),
 			});
 
 			const sp = saml.ServiceProvider({
@@ -393,7 +393,7 @@ export class SAMLIdentifyProviderService {
 					metadata: await this.createIdPMetadataXml(ssoServiceProvider),
 					privateKey: await jose
 						.importJWK(JSON.parse(ssoServiceProvider.privateKey ?? '{}'))
-						.then(k => jose.exportPKCS8(k as jose.KeyLike)),
+						.then(k => jose.exportPKCS8(k as jose.CryptoKey)),
 					loginResponseTemplate: { context: 'ignored' },
 				});
 

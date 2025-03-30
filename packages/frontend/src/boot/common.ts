@@ -24,7 +24,8 @@ import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/definition.js';
 import { mainRouter } from '@/router/main.js';
-import VueGtag, { bootstrap as gtagBootstrap, GtagConsent, GtagConsentParams } from 'vue-gtag';
+import { createGtag, addGtag, consent as gtagConsent } from 'vue-gtag';
+import type { GtagConsentParams } from '@/types/gtag.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -268,21 +269,21 @@ export async function common(createVue: () => App<Element>) {
 	components(app);
 
 	if (instance.googleAnalyticsId) {
-		app.use(VueGtag, {
-			bootstrap: false,
-			appName: `Misskey v${version}`,
-			pageTrackerEnabled: true,
-			pageTrackerScreenviewEnabled: true,
+		app.use(createGtag( {
+			tagId: instance.googleAnalyticsId,
 			config: {
-				id: instance.googleAnalyticsId,
-				params: {
-					anonymize_ip: false,
-					send_page_view: true,
-				},
+				anonymize_ip: false,
+				send_page_view: true,
 			},
-		}, mainRouter);
+			pageTracker: {
+				router: mainRouter,
+				useScreenview: true,
+			},
+			initMode: 'manual',
+			appName: `Misskey v${version}`,
+		}));
 
-		const gtagConsent = miLocalStorage.getItemAsJson('gtagConsent') as GtagConsentParams ?? {
+		const gtagConsentParams = miLocalStorage.getItemAsJson('gtagConsent') as GtagConsentParams ?? {
 			ad_storage: 'denied',
 			ad_user_data: 'denied',
 			ad_personalization: 'denied',
@@ -291,13 +292,12 @@ export async function common(createVue: () => App<Element>) {
 			personalization_storage: 'denied',
 			security_storage: 'granted',
 		};
-		miLocalStorage.setItemAsJson('gtagConsent', gtagConsent);
-
-		if (typeof window['gtag'] === 'function') (window['gtag'] as GtagConsent)('consent', 'default', gtagConsent);
+		miLocalStorage.setItemAsJson('gtagConsent', gtagConsentParams);
+		gtagConsent('default', gtagConsentParams);
 
 		if (miLocalStorage.getItem('gaConsent') === 'true') {
 			// noinspection ES6MissingAwait
-			gtagBootstrap();
+			addGtag();
 		}
 	}
 

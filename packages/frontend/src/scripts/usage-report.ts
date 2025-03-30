@@ -8,8 +8,8 @@
 
 import { generateClientTransactionId } from '@/scripts/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { GtagConsentParams } from 'vue-gtag';
 import { instance } from '@/instance.js';
+import type { GtagConsentParams } from '@/types/gtag.js';
 
 export interface UsageReport {
 	t: number;

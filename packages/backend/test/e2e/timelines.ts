@@ -119,6 +119,7 @@ describe('Timelines', () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
 			await api('following/create', { userId: bob.id }, alice);
+			await api('following/create', { userId: carol.id }, bob);
 			await api('following/update', { userId: bob.id, withReplies: true }, alice);
 			await sleep(1000);
 			const carolNote = await post(carol, { text: 'hi', visibility: 'followers' });

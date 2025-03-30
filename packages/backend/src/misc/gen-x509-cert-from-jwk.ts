@@ -18,13 +18,13 @@ export async function genX509CertFromJWK(
 	cert.setIssuer(attrs);
 	cert.publicKey = await jose
 		.importJWK(JSON.parse(publicKey))
-		.then((k) => jose.exportSPKI(k as jose.KeyLike))
+		.then((k) => jose.exportSPKI(k as jose.CryptoKey))
 		.then((k) => forge.pki.publicKeyFromPem(k));
 
 	cert.sign(
 		await jose
 			.importJWK(JSON.parse(privateKey))
-			.then((k) => jose.exportPKCS8(k as jose.KeyLike))
+			.then((k) => jose.exportPKCS8(k as jose.CryptoKey))
 			.then((k) => forge.pki.privateKeyFromPem(k)),
 		forge.md.sha256.create(),
 	);

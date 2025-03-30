@@ -215,7 +215,7 @@ class OAuth2Store {
 	}
 
 	async load(req: OAuth2DecisionRequest, cb: (err: Error | null, txn?: OAuth2) => void): Promise<void> {
-		const { transaction_id } = req.body;
+		const { transaction_id } = req.body ?? {};
 		if (!transaction_id) {
 			cb(new AuthorizationError('Missing transaction ID', 'invalid_request'));
 			return;

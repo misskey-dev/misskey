@@ -59,12 +59,8 @@ import { host } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import * as os from '@/os.js';
-import {
-	bootstrap as gtagBootstrap,
-	GtagConsent,
-	GtagConsentParams,
-	set as gtagSet
-} from 'vue-gtag';
+import { addGtag, consent as gtagConsent, set as gtagSet } from 'vue-gtag';
+import type { GtagConsentParams } from '@/types/gtag.js';
 
 const emit = defineEmits<(ev: 'closed') => void>();
 
@@ -76,7 +72,7 @@ const gtagConsentPersonalization = ref(false);
 
 function consentAll() {
 	miLocalStorage.setItem('gaConsent', 'true');
-	const gtagConsent = <GtagConsentParams>{
+	const params = <GtagConsentParams>{
 		ad_storage: 'granted',
 		ad_user_data: 'granted',
 		ad_personalization: 'granted',
@@ -85,9 +81,8 @@ function consentAll() {
 		personalization_storage: 'granted',
 		security_storage: 'granted',
 	};
-	miLocalStorage.setItemAsJson('gtagConsent', gtagConsent);
-
-	if (typeof window['gtag'] === 'function') (window['gtag'] as GtagConsent)('consent', 'update', gtagConsent);
+	miLocalStorage.setItemAsJson('gtagConsent', params);
+	gtagConsent('update', params);
 	bootstrap();
 
 	emit('closed');
@@ -95,7 +90,7 @@ function consentAll() {
 
 function consentEssential() {
 	miLocalStorage.setItem('gaConsent', 'true');
-	const gtagConsent = <GtagConsentParams>{
+	const params = <GtagConsentParams>{
 		ad_storage: 'denied',
 		ad_user_data: 'denied',
 		ad_personalization: 'denied',
@@ -104,9 +99,8 @@ function consentEssential() {
 		personalization_storage: 'denied',
 		security_storage: 'granted',
 	};
-	miLocalStorage.setItemAsJson('gtagConsent', gtagConsent);
-
-	if (typeof window['gtag'] === 'function') (window['gtag'] as GtagConsent)('consent', 'update', gtagConsent);
+	miLocalStorage.setItemAsJson('gtagConsent', params);
+	gtagConsent('update', params);
 	bootstrap();
 
 	emit('closed');
@@ -114,7 +108,7 @@ function consentEssential() {
 
 function consentSelected() {
 	miLocalStorage.setItem('gaConsent', 'true');
-	const gtagConsent = <GtagConsentParams>{
+	const params = <GtagConsentParams>{
 		ad_storage: gtagConsentAnalytics.value ? 'granted' : 'denied',
 		ad_user_data: gtagConsentFunctionality.value ? 'granted' : 'denied',
 		ad_personalization: gtagConsentPersonalization.value ? 'granted' : 'denied',
@@ -123,16 +117,15 @@ function consentSelected() {
 		personalization_storage: gtagConsentPersonalization.value ? 'granted' : 'denied',
 		security_storage: 'granted',
 	};
-	miLocalStorage.setItemAsJson('gtagConsent', gtagConsent);
-
-	if (typeof window['gtag'] === 'function') (window['gtag'] as GtagConsent)('consent', 'update', gtagConsent);
+	miLocalStorage.setItemAsJson('gtagConsent', params);
+	gtagConsent('update', params);
 	bootstrap();
 
 	emit('closed');
 }
 
 function bootstrap() {
-	gtagBootstrap();
+	addGtag();
 	gtagSet({
 		'client_id': miLocalStorage.getItem('id'),
 		'user_id': $i?.id,

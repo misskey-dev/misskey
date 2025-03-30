@@ -25,12 +25,12 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "1.0.0",
-		"@types/node": "22.13.0",
+		"@types/node": "22.13.14",
 		"@typescript-eslint/eslint-plugin": "7.10.0",
 		"@typescript-eslint/parser": "7.10.0",
 		"eslint": "8.57.1",
 		"nodemon": "3.1.9",
-		"typescript": "5.7.3"
+		"typescript": "5.8.2"
 	},
 	"dependencies": {
 		"crc-32": "1.2.2",

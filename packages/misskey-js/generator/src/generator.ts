@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'fs/promises';
 import { OpenAPIV3_1 } from 'openapi-types';
 import { toPascal } from 'ts-case-convert';
-import OpenAPIParser from '@readme/openapi-parser';
+import { parse as OpenAPIParser } from '@readme/openapi-parser';
 import openapiTS from 'openapi-typescript';
 
 async function generateBaseTypes(
@@ -319,7 +319,7 @@ async function main() {
 	await mkdir(generatePath, { recursive: true });
 
 	const openApiJsonPath = './api.json';
-	const openApiDocs = await OpenAPIParser.parse(openApiJsonPath) as OpenAPIV3_1.Document;
+	const openApiDocs = await OpenAPIParser(openApiJsonPath) as OpenAPIV3_1.Document;
 
 	const typeFileName = './built/autogen/types.ts';
 	await generateBaseTypes(openApiDocs, openApiJsonPath, typeFileName);
