@@ -1128,7 +1128,7 @@ pleaseAgreeAllToContinue: "Has d'acceptar tots els camps de dalt per poder conti
 continue: "Continuar"
 preservedUsernames: "Noms d'usuaris reservats"
 preservedUsernamesDescription: "Llistat de noms d'usuaris que no es poden fer servir separats per salts de linia. Aquests noms d'usuaris no estaran disponibles quan es creï un compte d'usuari normal, però els administradors els poden fer servir per crear comptes manualment. Per altre banda els comptes ja creats amb aquests noms d'usuari no es veure'n afectats."
-createNoteFromTheFile: "Compon una nota des d'aquest fitxer"
+createNoteFromTheFile: "Escriu una nota incloent aquest fitxer"
 archive: "Arxiu"
 archived: "Arxivat"
 unarchive: "Desarxivar"
