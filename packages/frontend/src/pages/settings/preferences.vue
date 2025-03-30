@@ -104,15 +104,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</div>
 							</MkPreferenceContainer>
 						</SearchMarker>
-
-						<SearchMarker :keywords="['pinned', 'list']">
-							<MkFolder>
-								<template #label><SearchLabel>{{ i18n.ts.pinnedList }}</SearchLabel></template>
-								<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
-								<MkButton v-if="prefer.r.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
-								<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
-							</MkFolder>
-						</SearchMarker>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -163,6 +154,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 										<template #label><SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['pinned', 'list']">
+								<MkFolder>
+									<template #label><SearchLabel>{{ i18n.ts.pinnedList }}</SearchLabel></template>
+									<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
+									<MkButton v-if="prefer.r.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
+									<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+								</MkFolder>
 							</SearchMarker>
 						</div>
 

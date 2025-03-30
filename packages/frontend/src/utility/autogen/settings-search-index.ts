@@ -323,42 +323,42 @@ export const searchIndexes: SearchIndexItem[] = [
 						label: i18n.ts.emojiStyle,
 						keywords: ['emoji', 'style', 'native', 'system', 'fluent', 'twemoji'],
 					},
-					{
-						id: 'wo0s0CaI1',
-						label: i18n.ts.pinnedList,
-						keywords: ['pinned', 'list'],
-					},
 				],
 				label: i18n.ts.general,
 				keywords: ['general'],
 			},
 			{
-				id: 'l78F2W9Ok',
+				id: '5G6O6qdis',
 				children: [
 					{
-						id: 'iOJ3Crlky',
+						id: 'khT3n6byY',
 						label: i18n.ts.showFixedPostForm,
 						keywords: ['post', 'form', 'timeline'],
 					},
 					{
-						id: 'CQldliCSi',
+						id: 'q5ElfNSou',
 						label: i18n.ts.showFixedPostFormInChannel,
 						keywords: ['post', 'form', 'timeline', 'channel'],
 					},
 					{
-						id: 'd2H4E5ys6',
+						id: '3GcWIaZf8',
 						label: i18n.ts.collapseRenotes,
 						keywords: ['renote', i18n.ts.collapseRenotesDescription],
 					},
 					{
-						id: 'yb11lSY1G',
+						id: 'd2H4E5ys6',
 						label: i18n.ts.showGapBetweenNotesInTimeline,
 						keywords: ['note', 'timeline', 'gap'],
 					},
 					{
-						id: 'fL49Zxe9i',
+						id: '1LHOhDKGW',
 						label: i18n.ts.disableStreamingTimeline,
 						keywords: ['disable', 'streaming', 'timeline'],
+					},
+					{
+						id: 'DSzwvTp7i',
+						label: i18n.ts.pinnedList,
+						keywords: ['pinned', 'list'],
 					},
 					{
 						id: 'ykifk3NHS',
