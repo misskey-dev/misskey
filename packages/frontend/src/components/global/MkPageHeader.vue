@@ -68,7 +68,7 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
 }>();
 
-const viewId = inject(DI.viewId);
+//const viewId = inject(DI.viewId);
 const injectedPageMetadata = inject(DI.pageMetadata);
 const pageMetadata = computed(() => props.overridePageMetadata ?? injectedPageMetadata.value);
 
