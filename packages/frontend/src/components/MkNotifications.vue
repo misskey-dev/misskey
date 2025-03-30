@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onMounted, computed, shallowRef, onActivated } from 'vue';
+import { onUnmounted, onMounted, computed, ref, shallowRef, onActivated } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
@@ -43,6 +43,7 @@ const props = defineProps<{
 }>();
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const hasNewNotificationWhileTabHidden = ref(false);
 
 const pagination = computed(() => defaultStore.reactiveState.useGroupedNotifications.value ? {
 	endpoint: 'i/notifications-grouped' as const,
@@ -64,8 +65,12 @@ function onNotification(notification) {
 		useStream().send('readNotification');
 	}
 
-	if (!isMuted && filterMutedNotification(notification)) {
+	if (!document.hidden && !isMuted && filterMutedNotification(notification)) {
 		pagingComponent.value?.prepend(notification);
+	}
+
+	if (document.hidden && !hasNewNotificationWhileTabHidden.value) {
+		hasNewNotificationWhileTabHidden.value = true;
 	}
 }
 
@@ -77,12 +82,22 @@ function reload() {
 	});
 }
 
+function onVisibilityChange() {
+	if (document.visibilityState === 'visible') {
+		if (hasNewNotificationWhileTabHidden.value) {
+			hasNewNotificationWhileTabHidden.value = false;
+			reload();
+		}
+	}
+}
+
 let connection: Misskey.ChannelConnection<Misskey.Channels['main']>;
 
 onMounted(() => {
 	connection = useStream().useChannel('main');
 	connection.on('notification', onNotification);
 	connection.on('notificationFlushed', reload);
+	document.addEventListener('visibilitychange', onVisibilityChange);
 });
 
 onActivated(() => {
@@ -91,6 +106,7 @@ onActivated(() => {
 
 onUnmounted(() => {
 	if (connection) connection.dispose();
+	document.removeEventListener('visibilitychange', onVisibilityChange);
 });
 
 defineExpose({
