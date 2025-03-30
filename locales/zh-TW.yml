@@ -1406,6 +1406,7 @@ _settings:
   timelineAndNote: "時間軸及貼文"
   makeEveryTextElementsSelectable: "允許選取所有文字"
   makeEveryTextElementsSelectable_description: "啟用此功能後，可能會在某些情境下降低可用性。"
+  useStickyIcons: "使大頭貼跟隨捲動"
   showNavbarSubButtons: "在導覽列顯示輔助按鈕"
   ifOn: "開啟時"
   ifOff: "關閉時"
