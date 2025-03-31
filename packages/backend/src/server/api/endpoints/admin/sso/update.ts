@@ -60,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const alg = ps.signatureAlgorithm ? ps.signatureAlgorithm : service.signatureAlgorithm;
 			const { publicKey, privateKey } = ps.regenerateCertificate
-				? await jose.generateKeyPair(alg).then(async keypair => ({
+				? await jose.generateKeyPair(alg, { extractable: true }).then(async keypair => ({
 					publicKey: JSON.stringify(await jose.exportJWK(keypair.publicKey)),
 					privateKey: JSON.stringify(await jose.exportJWK(keypair.privateKey)),
 				}))
@@ -76,6 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				tenYearsLaterTime,
 				publicKey ?? '',
 				privateKey ?? '',
+				alg,
 			) : undefined;
 
 			await this.singleSignOnServiceProviderRepository.update(service.id, {
