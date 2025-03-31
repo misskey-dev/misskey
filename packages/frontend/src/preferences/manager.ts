@@ -142,11 +142,11 @@ export class PreferencesManager {
 		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
 
 		if (deepEqual(this.s[key], v)) {
-			console.log('(skip) prefer:commit', key, v);
+			if (_DEV_) console.log('(skip) prefer:commit', key, v);
 			return;
 		}
 
-		console.log('prefer:commit', key, v);
+		if (_DEV_) console.log('prefer:commit', key, v);
 
 		this.rewriteRawState(key, v);
 
@@ -250,13 +250,13 @@ export class PreferencesManager {
 				if (!deepEqual(cloudValue, record[1])) {
 					this.rewriteRawState(key, cloudValue);
 					record[1] = cloudValue;
-					console.log('cloud fetched', key, cloudValue);
+					if (_DEV_) console.log('cloud fetched', key, cloudValue);
 				}
 			}
 		}
 
 		this.save();
-		console.log('cloud fetch completed');
+		if (_DEV_) console.log('cloud fetch completed');
 	}
 
 	public static newProfile(): PreferencesProfile {
