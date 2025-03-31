@@ -38,7 +38,7 @@
 		"built"
 	],
 	"dependencies": {
-		"esbuild": "0.24.2",
+		"esbuild": "0.25.2",
 		"eventemitter3": "5.0.1",
 		"glob": "11.0.1",
 		"matter-js": "0.20.0",
