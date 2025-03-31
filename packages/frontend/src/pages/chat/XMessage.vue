@@ -243,6 +243,10 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 		width: 42px;
 		height: 42px;
 	}
+
+	.fukidashi {
+		font-size: 90%;
+	}
 }
 
 .body {
