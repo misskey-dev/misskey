@@ -68,7 +68,8 @@ function compileQuery(q: Q): string {
 export class SearchService {
 	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private meilisearchNoteIndex: Index | null = null;
-	private elasticsearchNoteIndex: string | null = null;
+	private readonly elasticsearchNoteIndex: string;
+	private readonly elasticsearchIdField: string;
 	private logger: Logger;
 
 	constructor(
@@ -119,7 +120,9 @@ export class SearchService {
 				},
 			});*/
 		} else if (this.elasticsearch) {
-			this.elasticsearchNoteIndex = `${config.elasticsearch!.index}---notes`;
+			this.elasticsearchNoteIndex = `${config.elasticsearch!.index}`;
+			this.elasticsearchIdField = `${config.host}_id`;
+			/* 外部からindexさせるのでこの処理は不要
 			this.elasticsearch.indices.exists({
 				index: this.elasticsearchNoteIndex,
 			}).then((indexExists) => {
@@ -164,6 +167,7 @@ export class SearchService {
 			}).catch((error) => {
 				this.logger.error('Error while checking if index exists', error);
 			});
+			*/
 		}
 	}
 
@@ -202,6 +206,7 @@ export class SearchService {
 				primaryKey: 'id',
 			});
 		}	else if (this.elasticsearch) {
+			/* 外部からindexさせるのでこの処理は不要
 			const body = {
 				createdAt: createdAt.getTime(),
 				userId: note.userId,
@@ -218,6 +223,7 @@ export class SearchService {
 			}).catch((error) => {
 				this.logger.error(error);
 			});
+			*/
 		}
 	}
 
@@ -228,12 +234,14 @@ export class SearchService {
 		if (this.meilisearch) {
 			this.meilisearchNoteIndex!.deleteDocument(note.id);
 		} else if (this.elasticsearch) {
+			/* 外部からindexさせるのでこの処理は不要
 			await this.elasticsearch.delete({
 				index: `${this.elasticsearchNoteIndex}-${this.idService.parse(note.id).date.toISOString().slice(0, 7).replace(/-/g, '')}`,
 				id: note.id,
 			}).catch((error) => {
 				this.logger.error(error);
 			});
+			*/
 		}
 	}
 
@@ -299,7 +307,7 @@ export class SearchService {
 			if (opts.channelId) esFilter.bool.must.push({ term: { channelId: opts.channelId } });
 			if (opts.host) {
 				if (opts.host === '.') {
-					esFilter.bool.must.push({ bool: { must_not: [{ exists: { field: 'userHost' } }] } });
+					esFilter.bool.must.push({ term: { userHost: this.config.host } });
 				} else {
 					esFilter.bool.must.push({ term: { userHost: opts.host } });
 				}
@@ -311,8 +319,6 @@ export class SearchService {
 						should: [
 							{ wildcard: { 'text': { value: q } } },
 							{ simple_query_string: { fields: ['text'], 'query': q, default_operator: 'and' } },
-							{ wildcard: { 'cw': { value: q } } },
-							{ simple_query_string: { fields: ['cw'], 'query': q, default_operator: 'and' } },
 						],
 						minimum_should_match: 1,
 					},
@@ -321,15 +327,16 @@ export class SearchService {
 
 			const res = await (this.elasticsearch.search)({
 				index: this.elasticsearchNoteIndex + '*' as string,
-				body: {
-					query: esFilter,
-					sort: [{ createdAt: { order: 'desc' } }],
-				},
-				_source: ['id', 'createdAt'],
+				query: esFilter,
+				sort: [{ createdAt: { order: 'desc' } }],
+				_source: ['id', 'createdAt', this.elasticsearchIdField],
 				size: pagination.limit,
 			});
 
-			const noteIds = res.hits.hits.map((hit: any) => hit._id);
+			const noteIds = res.hits.hits.map((hit) => {
+				const source = hit._source as Record<string, unknown>;
+				return (source[this.elasticsearchIdField] as string) || null;
+			}).filter((id): id is string => id !== null);
 			if (noteIds.length === 0) return [];
 			const [
 				userIdsWhoMeMuting,
