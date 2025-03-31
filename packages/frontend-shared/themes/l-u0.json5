@@ -32,7 +32,6 @@
 		success: '#86b300',
 		buttonBg: '#0000000d',
 		switchBg: 'rgba(255, 255, 255, 0.15)',
-		acrylicBg: ':alpha<0.5<@bg',
 		indicator: '@accent',
 		mentionMe: '@mention',
 		messageBg: '@bg',

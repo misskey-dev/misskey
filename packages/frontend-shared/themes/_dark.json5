@@ -14,7 +14,6 @@
 		love: '#dd2e44',
 		focus: ':alpha<0.3<@accent',
 		bg: '#000',
-		acrylicBg: ':alpha<0.5<@bg',
 		fg: '#dadada',
 		fgTransparentWeak: ':alpha<0.75<@fg',
 		fgTransparent: ':alpha<0.5<@fg',

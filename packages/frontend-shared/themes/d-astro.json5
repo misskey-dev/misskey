@@ -25,7 +25,6 @@
 		mention: '#ffd152',
 		modalBg: 'rgba(0, 0, 0, 0.5)',
 		success: '#86b300',
-		acrylicBg: ':alpha<0.5<@bg',
 		indicator: '@accent',
 		mentionMe: '#fb5d38',
 		messageBg: '@bg',

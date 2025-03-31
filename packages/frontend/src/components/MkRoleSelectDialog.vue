@@ -144,7 +144,7 @@ fetchRoles();
 }
 
 .roleItemArea {
-	background-color: var(--MI_THEME-acrylicBg);
+	background-color: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	border-radius: var(--MI-radius);
 	padding: 12px;
 	overflow-y: auto;
