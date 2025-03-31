@@ -1374,7 +1374,7 @@ _chat:
   cannotChatWithTheUser_description: "チャットが使えない状態になっているか、相手がチャットを開放していません。"
   chatWithThisUser: "チャットする"
   thisUserAllowsChatOnlyFromFollowers: "このユーザーはフォロワーからのみチャットを受け付けています。"
-  thisUserAllowsChatOnlyFromFollowing: "このユーザーはフォローしているユーザーからのみチャットを受け付けています。"
+  thisUserAllowsChatOnlyFromFollowing: "このユーザーは、このユーザーがフォローしているユーザーからのみチャットを受け付けています。"
   thisUserAllowsChatOnlyFromMutualFollowing: "このユーザーは相互フォローのユーザーからのみチャットを受け付けています。"
   thisUserNotAllowedChatAnyone: "このユーザーは誰からもチャットを受け付けていません。"
   chatAllowedUsers: "チャットを許可する相手"
