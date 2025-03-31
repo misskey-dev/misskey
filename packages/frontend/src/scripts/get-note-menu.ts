@@ -186,8 +186,8 @@ export function getNoteMenu(props: {
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
-			if (isAprilFoolsDay()) {
-				if (!isMute()) playUrl('/client-assets/sounds/flush.mp3', {});
+			if (isAprilFoolsDay() && !isMute()) {
+				playUrl('/client-assets/sounds/flush.mp3', { volume: defaultStore.state.sound_masterVolume });
 			}
 
 			misskeyApi('notes/delete', {

@@ -120,16 +120,12 @@ export default defineComponent({
 		};
 
 		function onBeforeLeave(element: Element) {
-			if (isAprilFoolsDay()) return;
-
 			const el = element as HTMLElement;
 			el.style.top = `${el.offsetTop}px`;
 			el.style.left = `${el.offsetLeft}px`;
 		}
 
 		function onLeaveCancelled(element: Element) {
-			if (isAprilFoolsDay()) return;
-
 			const el = element as HTMLElement;
 			el.style.top = '';
 			el.style.left = '';
@@ -141,15 +137,15 @@ export default defineComponent({
 			[$style['date-separated-list-nogap']]: props.noGap,
 			[$style['direction-down']]: props.direction === 'down',
 			[$style['direction-up']]: props.direction === 'up',
-			[$style['april-fool']]: isAprilFoolsDay(),
+			[$style['april-fool']]: defaultStore.state.animation ? isAprilFoolsDay() : false,
 		};
 
 		return () => defaultStore.state.animation ? h(TransitionGroup, {
 			class: classes,
 			name: 'list',
 			tag: 'div',
-			onBeforeLeave,
-			onLeaveCancelled,
+			onBeforeLeave: !isAprilFoolsDay() ? onBeforeLeave : undefined,
+			onLeaveCancelled: !isAprilFoolsDay() ? onLeaveCancelled : undefined,
 		}, { default: renderChildren }) : h('div', {
 			class: classes,
 		}, { default: renderChildren });
@@ -216,8 +212,18 @@ export default defineComponent({
 	}
 }
 
-.direction-up.april-fool ,
-.direction-down.april-fool {
+@keyframes spin-shrink {
+	0% {
+		transform: rotate(0deg) scale(1);
+		opacity: 1;
+	}
+	100% {
+		transform: rotate(2160deg) scale(0);
+		opacity: 0;
+	}
+}
+
+.april-fool {
 	&:global > .list-enter-from,
 	&:global > .list-leave-to {
 		animation: components-MkDateSeparatedList-spin-shrink 3s ease-in forwards;
@@ -253,17 +259,6 @@ export default defineComponent({
 
 .date-2-icon {
 	margin-left: 8px;
-}
-
-@keyframes spin-shrink {
-	0% {
-		transform: rotate(0deg) scale(1);
-		opacity: 1;
-	}
-	100% {
-		transform: rotate(2160deg) scale(0);
-		opacity: 0;
-	}
 }
 </style>
 
