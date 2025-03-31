@@ -71,26 +71,33 @@ const tlComponent = shallowRef<InstanceType<typeof MkNotes>>();
 let tlNotesCount = 0;
 const notVisibleNoteData = new Array<object>();
 
+async function fulfillNoteData(data) {
+	// チェックするプロパティはなんでも良い
+	// minimizeが有効でid以外が存在しない場合は取得する
+	if (!data.visibility) {
+		const res = await window.fetch(`/notes/${data.id}.json`, {
+			method: 'GET',
+			credentials: 'omit',
+			headers: {
+				'Authorization': 'anonymous',
+				'X-Client-Transaction-Id': generateClientTransactionId('misskey'),
+			},
+		});
+		if (!res.ok) return null;
+		return deepMerge(data, await res.json());
+	}
+
+	return data;
+}
+
 async function prepend(data) {
 	if (tlComponent.value == null) return;
 
 	let note = data;
 
 	if (!document.hidden) {
-		// チェックするプロパティはなんでも良い
-		// minimizeが有効でid以外が存在しない場合は取得する
-		if (!data.visibility) {
-			const res = await window.fetch(`/notes/${data.id}.json`, {
-				method: 'GET',
-				credentials: 'omit',
-				headers: {
-					'Authorization': 'anonymous',
-					'X-Client-Transaction-Id': generateClientTransactionId('misskey'),
-				},
-			});
-			if (!res.ok) return;
-			note = deepMerge(data, await res.json());
-		}
+		note = await fulfillNoteData(data);
+		if (note == null) return;
 
 		tlNotesCount++;
 
@@ -119,16 +126,20 @@ async function loadUnloadedNotes() {
 	if (tlComponent.value == null) return;
 	if (notVisibleNoteData.length === 0) return;
 
-	if (notVisibleNoteData.length >= 10) {
-		tlComponent.value.pagingComponent?.deleteItem();
-		tlComponent.value.pagingComponent?.stopFetch();
-	}
+	tlComponent.value.pagingComponent?.stopFetch();
+	try {
+		const items = [...notVisibleNoteData];
+		notVisibleNoteData.length = 0;
 
-	while (notVisibleNoteData.length > 0) {
-		await prepend(notVisibleNoteData.shift());
-	}
+		const notes = await Promise.allSettled(items.map(fulfillNoteData));
+		if (items.length >= 10) tlComponent.value.pagingComponent?.deleteItem();
 
-	tlComponent.value.pagingComponent?.startFetch();
+		for (const note of notes.filter(i => i.status === 'fulfilled' && i.value != null)) {
+			await prepend((note as PromiseFulfilledResult<object>).value);
+		}
+	} finally {
+		tlComponent.value.pagingComponent?.startFetch();
+	}
 }
 
 let connection: Misskey.ChannelConnection | null = null;
