@@ -349,7 +349,7 @@ export class FileServerService {
 
 			return reply.redirect(
 				redirectUrl,
-				301,
+				302,
 			);
 		}
 
