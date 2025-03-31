@@ -44,7 +44,7 @@ provide(DI.routerCurrentDepth, currentDepth + 1);
 
 const rootEl = useTemplateRef('rootEl');
 onMounted(() => {
-	rootEl.value.style.viewTransitionName = viewId; // view-transition-nameにcss varが使えないっぽいため直接代入
+	if (rootEl.value) rootEl.value.style.viewTransitionName = viewId; // view-transition-nameにcss varが使えないっぽいため直接代入
 });
 
 // view-transition-newなどの<pt-name-selector>にはcss varが使えず、v-bindできないため直接スタイルを生成
@@ -89,8 +89,8 @@ router.useListener('change', ({ resolved }) => {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (prefer.s.animation && window.document.startViewTransition) {
-		window.document.startViewTransition(() => new Promise((res) => {
+	if (/*prefer.s.animation && window.document.startViewTransition*/false) {
+		window.document.startViewTransition(() => new Promise<void>((res) => {
 			_();
 			nextTick(() => {
 				res();
