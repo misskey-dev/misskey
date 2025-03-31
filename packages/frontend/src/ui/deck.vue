@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-tooltip.noDelay.left="i18n.ts._deck.addColumn" :class="$style.sideMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
 				</div>
 				<div :class="$style.sideMenuBottom">
-					<button v-tooltip.noDelay.left="i18n.ts.settings" :class="$style.sideMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings"></i></button>
+					<button v-tooltip.noDelay.left="i18n.ts.settings" :class="$style.sideMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings-2"></i></button>
 				</div>
 			</div>
 		</div>
@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-tooltip.noDelay.left="i18n.ts._deck.addColumn" :class="$style.bottomMenuButton" class="_button" @click="addColumn"><i class="ti ti-plus"></i></button>
 			</div>
 			<div :class="$style.bottomMenuRight">
-				<button v-tooltip.noDelay.left="i18n.ts.settings" :class="$style.bottomMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings"></i></button>
+				<button v-tooltip.noDelay.left="i18n.ts.settings" :class="$style.bottomMenuButton" class="_button" @click="showSettings"><i class="ti ti-settings-2"></i></button>
 			</div>
 		</div>
 
