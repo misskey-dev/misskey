@@ -28,17 +28,17 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['sync', 'device', 'dark', 'light', 'mode'],
 			},
 			{
-				id: 'fDbLtIKeo',
+				id: 'vgKn2mXKD',
 				label: i18n.ts.themeForLightMode,
 				keywords: ['light', 'theme'],
 			},
 			{
-				id: 'CsSVILKpX',
+				id: 'lekOXpJ4Z',
 				label: i18n.ts.themeForDarkMode,
 				keywords: ['dark', 'theme'],
 			},
 			{
-				id: '8wcoRp76b',
+				id: 'tkzrcKl43',
 				label: i18n.ts.setWallpaper,
 				keywords: ['wallpaper'],
 			},
