@@ -670,6 +670,11 @@ export class MiMeta {
 	})
 	public googleAnalyticsMeasurementId: string | null;
 
+	@Column('jsonb', {
+		default: [],
+	})
+	public deliverSuspendedSoftware: SoftwareSuspension[];
+
 	@Column('boolean', {
 		default: false,
 	})
@@ -682,3 +687,8 @@ export class MiMeta {
 	})
 	public nirilaAllowedUnfamiliarRemoteUserIds: string[];
 }
+
+export type SoftwareSuspension = {
+	software: string,
+	versionRange: string,
+};
