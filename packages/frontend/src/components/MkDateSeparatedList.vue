@@ -212,21 +212,10 @@ export default defineComponent({
 	}
 }
 
-@keyframes spin-shrink {
-	0% {
-		transform: rotate(0deg) scale(1);
-		opacity: 1;
-	}
-	100% {
-		transform: rotate(2160deg) scale(0);
-		opacity: 0;
-	}
-}
-
 .april-fool {
 	&:global > .list-enter-from,
 	&:global > .list-leave-to {
-		animation: components-MkDateSeparatedList-spin-shrink 3s ease-in forwards;
+		animation: global-spin-shrink 3s ease-in forwards;
 	}
 }
 
