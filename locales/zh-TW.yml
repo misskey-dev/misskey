@@ -2596,7 +2596,7 @@ _notification:
 _deck:
   alwaysShowMainColumn: "總是顯示主欄"
   columnAlign: "對齊欄位"
-  columnGap: "列之間的邊距"
+  columnGap: "欄與欄之間的邊距"
   deckMenuPosition: "多欄模式的選單位置"
   navbarPosition: "導覽列位置"
   addColumn: "新增欄位"
