@@ -195,17 +195,17 @@ onMounted(() => {
 		reactionPicker.init(),
 		instanceIconElImageLoaded(),
 	]).then(() => {
-		setTimeout(() => {
+		window.setTimeout(() => {
 			// 待たないとアニメーションが正しく動かない場合がある
 			animationPhase.value = 1;
 
-			setTimeout(() => {
+			window.setTimeout(() => {
 				animationPhase.value = 2;
 
-				setTimeout(() => {
+				window.setTimeout(() => {
 					animationPhase.value = 3;
 
-					setTimeout(() => {
+					window.setTimeout(() => {
 						animationPhase.value = 4;
 						confetti({
 							spread: 75,

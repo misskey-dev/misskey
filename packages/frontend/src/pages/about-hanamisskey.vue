@@ -138,7 +138,7 @@ function handleIconClick() {
 	clickCount.value++;
 	if (clickCount.value === 10 && !imageChanged.value) {
 		isFadingOut.value = true;
-		setTimeout(() => {
+		window.setTimeout(() => {
 			// イースターエッグの画像
 			imageSource.value = '/client-assets/about-bsk-logo.png';
 			isFadingOut.value = false;
