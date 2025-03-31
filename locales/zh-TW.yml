@@ -2596,6 +2596,8 @@ _notification:
 _deck:
   alwaysShowMainColumn: "總是顯示主欄"
   columnAlign: "對齊欄位"
+  columnGap: "列之間的邊距"
+  navbarPosition: "導覽列位置"
   addColumn: "新增欄位"
   newNoteNotificationSettings: "新貼文通知的設定"
   configureColumn: "欄位的設定"
