@@ -210,20 +210,19 @@ import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
-import { getBuiltinThemesRef } from '@/theme.js';
+import { getBuiltinThemesRef, getThemesRef } from '@/theme.js';
 import { selectFile } from '@/utility/select-file.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/utility/array.js';
-import { getThemes } from '@/theme-store.js';
 import { definePage } from '@/page.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { reloadAsk } from '@/utility/reload-ask.js';
 import { prefer } from '@/preferences.js';
 
-const installedThemes = ref(getThemes());
+const installedThemes = getThemesRef();
 const builtinThemes = getBuiltinThemesRef();
 
 const instanceDarkTheme = computed<Theme | null>(() => instance.defaultDarkTheme ? JSON5.parse(instance.defaultDarkTheme) : null);
@@ -279,10 +278,6 @@ watch(wallpaper, async () => {
 		miLocalStorage.setItem('wallpaper', wallpaper.value);
 	}
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
-});
-
-onActivated(() => {
-	installedThemes.value = getThemes();
 });
 
 function setWallpaper(event) {
