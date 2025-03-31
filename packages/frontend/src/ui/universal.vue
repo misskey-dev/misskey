@@ -13,10 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XAnnouncements v-if="$i"/>
 			<XStatusBars :class="$style.statusbars"/>
 		</div>
-		<div :class="$style.content">
-			<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']"/>
-			<RouterView v-else/>
-		</div>
+		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :class="$style.content"/>
+		<RouterView v-else :class="$style.content"/>
 		<div v-if="isMobile" ref="navFooter" :class="$style.nav">
 			<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
 			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
@@ -97,7 +95,6 @@ import { defineAsyncComponent, provide, onMounted, computed, ref, watch, useTemp
 import { instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import XCommon from './_common_/common.vue';
-import type { Ref } from 'vue';
 import type { PageMetadata } from '@/page.js';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os.js';
@@ -210,28 +207,6 @@ watch(navFooter, () => {
 	immediate: true,
 });
 </script>
-
-<style>
-html,
-body {
-	width: 100%;
-	height: 100%;
-	overflow: clip;
-	position: fixed;
-	top: 0;
-	left: 0;
-	overscroll-behavior: none;
-}
-
-#misskey_app {
-	width: 100%;
-	height: 100%;
-	overflow: clip;
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-</style>
 
 <style lang="scss" module>
 $ui-font-size: 1em; // TODO: どこかに集約したい

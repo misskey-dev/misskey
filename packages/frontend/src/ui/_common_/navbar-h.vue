@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
-import { openInstanceMenu } from './_common_/common.js';
+import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import MkButton from '@/components/MkButton.vue';
@@ -105,7 +105,9 @@ onMounted(() => {
 	z-index: 1000;
 	width: 100%;
 	height: $height;
-	background-color: var(--MI_THEME-bg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.75);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 
 	> .body {
 		max-width: 1380px;

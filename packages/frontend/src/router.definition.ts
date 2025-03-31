@@ -129,10 +129,6 @@ export const ROUTE_DEF = [{
 		name: 'sounds',
 		component: page(() => import('@/pages/settings/sounds.vue')),
 	}, {
-		path: '/accessibility',
-		name: 'accessibility',
-		component: page(() => import('@/pages/settings/accessibility.vue')),
-	}, {
 		path: '/plugin/install',
 		name: 'plugin',
 		component: page(() => import('@/pages/settings/plugin.install.vue')),
