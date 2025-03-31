@@ -5376,7 +5376,7 @@ export interface Locale extends ILocale {
      */
     "flushItAway": string;
     /**
-     * 削除をしても全てが水に流れるわけではありませんが
+     * 削除をしても全てが水に流れるわけではありませんが…
      */
     "deleteNotWash": string;
     "_bubbleGame": {
@@ -9765,7 +9765,7 @@ export interface Locale extends ILocale {
          */
         "flushNotification": string;
         /**
-         * ドライブのファイルがセンシティブとして設定されました
+         * ファイルがセンシティブとして設定されました
          */
         "sensitiveFlagAssigned": string;
         "_types": {

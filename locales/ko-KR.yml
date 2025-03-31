@@ -1322,6 +1322,10 @@ scheduled: "예약됨"
 unschedule: "예약 취소"
 setScheduledTime: "예약 시간 설정"
 willBePostedAt: "{x}에 게시됩니다"
+sensitiveByModerator: "관리자에 의해 드라이브의 파일이 열람주의로 설정되었습니다.\n자세한 내용은 [NSFW 가이드라인](https://go.misskey.io/media-guideline)을 확인해 주세요."
+thisInfoIsNotVisibleOtherUser: "이 정보는 다른 사용자에게 공개되지 않습니다."
+flushItAway: "묻어두기"
+deleteNotWash: "삭제해도 모든 것이 없었던 일이 되는 것은 아닙니다만..."
 
 _bubbleGame:
   howToPlay: "설명"
@@ -2484,6 +2488,7 @@ _notification:
   renotedBySomeUsers: "{n}명이 리노트했습니다"
   followedBySomeUsers: "{n}명에게 팔로우됨"
   flushNotification: "알림 이력을 초기화"
+  sensitiveFlagAssigned: "파일이 열람주의로 설정되었습니다"
   _types:
     all: "전부"
     note: "사용자의 새 글"

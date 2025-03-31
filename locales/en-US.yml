@@ -1325,6 +1325,10 @@ scheduled: "Scheduled"
 unschedule: "Unschedule"
 setScheduledTime: "Set scheduled time"
 willBePostedAt: "Note will be posted at {x}"
+sensitiveByModerator: "This file has been marked as sensitive by the administrator.\nFor more information, please check the [NSFW Guidelines](https://go.misskey.io/media-guideline)."
+thisInfoIsNotVisibleOtherUser: "This information is not visible to other users."
+flushItAway: "Let it go"
+deleteNotWash: "Deleting this won't make everything let bygones be bygones, but..."
 
 _bubbleGame:
   howToPlay: "How to play"
@@ -2499,6 +2503,7 @@ _notification:
   renotedBySomeUsers: "Renote from {n} users"
   followedBySomeUsers: "Followed by {n} users"
   flushNotification: "Clear notifications"
+  sensitiveFlagAssigned: "Your file has been marked as sensitive"
   _types:
     all: "All"
     note: "New notes"

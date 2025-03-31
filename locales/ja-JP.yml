@@ -1337,7 +1337,7 @@ willBePostedAt: "{x}に投稿されます"
 sensitiveByModerator: "管理者によって、ドライブのファイルがセンシティブとして設定されました。\n詳細については、[NSFWガイドライン](https://go.misskey.io/media-guideline)を確認してください。"
 thisInfoIsNotVisibleOtherUser: "この情報は他のユーザーには公開されません。"
 flushItAway: "水に流す"
-deleteNotWash: "削除をしても全てが水に流れるわけではありませんが"
+deleteNotWash: "削除をしても全てが水に流れるわけではありませんが…"
 
 _bubbleGame:
   howToPlay: "遊び方"
@@ -2566,7 +2566,7 @@ _notification:
   renotedBySomeUsers: "{n}人がリノートしました"
   followedBySomeUsers: "{n}人にフォローされました"
   flushNotification: "通知の履歴をリセットする"
-  sensitiveFlagAssigned: "ドライブのファイルがセンシティブとして設定されました"
+  sensitiveFlagAssigned: "ファイルがセンシティブとして設定されました"
 
   _types:
     all: "すべて"
