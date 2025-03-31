@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<div>{{ i18n.tsx._initialTutorial._onboardingLanding.welcomeToX({ name: instance.name ?? host }) }}</div>
 								</div>
 								<div>{{ i18n.tsx._initialTutorial._onboardingLanding.description({ name: instance.name ?? host }) }}</div>
-								<MkButton large primary rounded gradate style="margin: 16px auto 0;" data-cy-user-setup-start @click="next">{{ i18n.ts.start }} <i class="ti ti-arrow-right"></i></MkButton>
+								<MkButton large primary rounded gradate style="margin: 0 auto;" data-cy-user-setup-start @click="next">{{ i18n.ts.start }} <i class="ti ti-arrow-right"></i></MkButton>
 								<MkButton v-if="instance.canSkipInitialTutorial" transparent rounded style="margin: 0 auto;" data-cy-user-setup-close @click="cancel">{{ i18n.ts.later }}</MkButton>
 								<MkInfo v-else warn style="width: fit-content; margin: 0 auto; text-align: start; white-space: pre-wrap;">{{ i18n.ts._initialTutorial._onboardingLanding.adminForcesToTakeTutorial }}</MkInfo>
 								<MkInfo style="width: fit-content; margin: 0 auto; text-align: start; white-space: pre-wrap;">{{ i18n.tsx._initialTutorial._onboardingLanding.takesAbout({ min: 3 }) }}</MkInfo>
@@ -165,9 +165,9 @@ const instanceIconYPx = computed(() => `${instanceIconY.value - 30 + 40}px`);
 const animationPhase = ref(0);
 
 // 画面上部に表示されるアイコンの中心Y座標を取得
-function getIconY(instanceIconEl: HTMLImageElement, welcomePageRootEl: HTMLDivElement) {
+function getIconY(instanceIconEl: HTMLImageElement) {
 	const instanceIconElRect = instanceIconEl.getBoundingClientRect();
-	return instanceIconElRect.top - welcomePageRootEl.getBoundingClientRect().top;
+	return instanceIconElRect.top;
 }
 
 function instanceIconElImageLoaded() {
@@ -185,9 +185,9 @@ onMounted(() => {
 		resize: true,
 	});
 
-	instanceIconY.value = getIconY(instanceIconEl.value!, welcomePageRootEl.value!);
+	instanceIconY.value = getIconY(instanceIconEl.value!);
 	window.addEventListener('resize', () => {
-		instanceIconY.value = getIconY(instanceIconEl.value!, welcomePageRootEl.value!);
+		instanceIconY.value = getIconY(instanceIconEl.value!);
 	}, { passive: true });
 
 	// チュートリアル内で必須（subBootでは初期化されないので）
@@ -361,6 +361,7 @@ definePage(() => ({
 		left: 50%;
 		transform: translate(-50%, -50%);
 		opacity: 0;
+		will-change: transform, opacity;
 	}
 
 	&.appear {
@@ -374,7 +375,7 @@ definePage(() => ({
 	&.move {
 		.instanceIcon {
 			opacity: 1;
-			transform: translate(-50%, 0) scale(1);
+			transform: translate(-50%, -50%) scale(1);
 			top: v-bind(instanceIconYPx);
 			transition: transform 1s ease, top 1s ease;
 		}
