@@ -2681,7 +2681,7 @@ _deck:
   newProfile: "新規プロファイル"
   deleteProfile: "プロファイルを削除"
   introduction: "カラムを組み合わせて自分だけのインターフェイスを作りましょう！"
-  introduction2: "画面の右にある + を押して、いつでもカラムを追加できます。"
+  introduction2: "カラムを追加するには、画面の + をクリックします。"
   widgetsIntroduction: "カラムのメニューから、「ウィジェットの編集」を選択してウィジェットを追加してください"
   useSimpleUiForNonRootPages: "非ルートページは簡易UIで表示"
   usedAsMinWidthWhenFlexible: "「幅を自動調整」が有効の場合、これが幅の最小値となります"
