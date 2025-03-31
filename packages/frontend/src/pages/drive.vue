@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<XDrive ref="drive" @cd="x => folder = x"/>
+	<XDrive @cd="x => folder = x"/>
 </div>
 </template>
 

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
+	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready, [$style.withWallpaper]: withWallpaper }]"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
@@ -48,10 +48,13 @@ import type { MenuItem } from '@/types/menu.js';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
 provide('forceSpacerMin', true);
+
+const withWallpaper = miLocalStorage.getItem('wallpaper') != null;
 
 const props = withDefaults(defineProps<{
 	column: Column;
@@ -108,9 +111,7 @@ function getMenu() {
 	const menuItems: MenuItem[] = [];
 
 	if (props.menu) {
-		menuItems.push(...props.menu, {
-			type: 'divider',
-		});
+		menuItems.push(...props.menu);
 	}
 
 	if (props.refresher) {
@@ -122,6 +123,12 @@ function getMenu() {
 					props.refresher();
 				}
 			},
+		});
+	}
+
+	if (menuItems.length > 0) {
+		menuItems.push({
+			type: 'divider',
 		});
 	}
 
@@ -151,6 +158,21 @@ function getMenu() {
 			if (canceled) return;
 			updateColumn(props.column.id, result);
 		},
+	});
+
+	const flexibleRef = ref(props.column.flexible ?? false);
+
+	watch(flexibleRef, flexible => {
+		updateColumn(props.column.id, {
+			flexible,
+		});
+	});
+
+	menuItems.push({
+		type: 'switch',
+		icon: 'ti ti-arrows-horizontal',
+		text: i18n.ts._deck.flexible,
+		ref: flexibleRef,
 	});
 
 	const moveToMenuItems: MenuItem[] = [];
@@ -333,9 +355,7 @@ function onDrop(ev) {
 	}
 
 	&.naked {
-		background: var(--MI_THEME-acrylicBg) !important;
-		-webkit-backdrop-filter: var(--MI-blur, blur(10px));
-		backdrop-filter: var(--MI-blur, blur(10px));
+		background: color(from var(--MI_THEME-bg) srgb r g b / 0.5) !important;
 
 		> .header {
 			background: transparent;
@@ -350,6 +370,22 @@ function onDrop(ev) {
 			&::-webkit-scrollbar-track {
 				background: transparent;
 			}
+		}
+	}
+
+	&.withWallpaper {
+		&.naked {
+			background: color(from var(--MI_THEME-bg) srgb r g b / 0.75) !important;
+			-webkit-backdrop-filter: var(--MI-blur, blur(10px));
+			backdrop-filter: var(--MI-blur, blur(10px));
+
+			> .header {
+				color: light-dark(#000000bf, #ffffffbf);
+			}
+		}
+
+		.tabShape {
+			display: none;
 		}
 	}
 
@@ -377,7 +413,7 @@ function onDrop(ev) {
 	font-size: 0.9em;
 	color: var(--MI_THEME-panelHeaderFg);
 	background: var(--MI_THEME-panelHeaderBg);
-	box-shadow: 0 1px 0 0 var(--MI_THEME-panelHeaderDivider);
+	box-shadow: 0 0.5px 0 0 var(--MI_THEME-panelHeaderDivider);
 	cursor: pointer;
 	user-select: none;
 }

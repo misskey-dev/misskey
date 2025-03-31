@@ -158,7 +158,7 @@ export async function playMisskeySfxFile(soundStore: SoundStore): Promise<boolea
 	canPlay = false;
 	return await playMisskeySfxFileInternal(soundStore).finally(() => {
 		// ごく短時間に音が重複しないように
-		setTimeout(() => {
+		window.setTimeout(() => {
 			canPlay = true;
 		}, 25);
 	});
@@ -230,10 +230,10 @@ export async function getSoundDuration(file: string): Promise<number> {
 	const audioEl = window.document.createElement('audio');
 	audioEl.src = file;
 	return new Promise((resolve) => {
-		const si = setInterval(() => {
+		const si = window.setInterval(() => {
 			if (audioEl.readyState > 0) {
 				resolve(audioEl.duration * 1000);
-				clearInterval(si);
+				window.clearInterval(si);
 				audioEl.remove();
 			}
 		}, 100);

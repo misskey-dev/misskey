@@ -468,6 +468,7 @@ export class WebhookTestService {
 			followersVisibility: 'public',
 			followingVisibility: 'public',
 			chatScope: 'mutual',
+			canChat: true,
 			twoFactorEnabled: false,
 			usePasswordLessLogin: false,
 			securityKeys: false,

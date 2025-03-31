@@ -16,9 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<div :class="{ [$style.slotClip]: isPullStart }">
-		<slot/>
-	</div>
+
+	<slot/>
 </div>
 </template>
 
@@ -82,11 +81,11 @@ function moveBySystem(to: number): Promise<void> {
 			return;
 		}
 		const startTime = Date.now();
-		let intervalId = setInterval(() => {
+		let intervalId = window.setInterval(() => {
 			const time = Date.now() - startTime;
 			if (time > RELEASE_TRANSITION_DURATION) {
 				pullDistance.value = to;
-				clearInterval(intervalId);
+				window.clearInterval(intervalId);
 				r();
 				return;
 			}
@@ -260,9 +259,5 @@ defineExpose({
 	> .text {
 		margin: 5px 0;
 	}
-}
-
-.slotClip {
-	overflow-y: clip;
 }
 </style>

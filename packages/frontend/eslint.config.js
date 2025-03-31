@@ -58,7 +58,12 @@ export default [
 			// location ... window.locationと衝突 or 紛らわしい
 			// document ... window.documentと衝突 or 紛らわしい
 			// history ... window.historyと衝突 or 紛らわしい
-			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location', 'document', 'history'],
+			// scroll ... window.scrollと衝突 or 紛らわしい
+			// setTimeout ... window.setTimeoutと衝突 or 紛らわしい
+			// setInterval ... window.setIntervalと衝突 or 紛らわしい
+			// clearTimeout ... window.clearTimeoutと衝突 or 紛らわしい
+			// clearInterval ... window.clearIntervalと衝突 or 紛らわしい
+			'id-denylist': ['warn', 'window', 'e', 'close', 'open', 'fetch', 'location', 'document', 'history', 'scroll', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval'],
 			'no-restricted-globals': [
 				'error',
 				{
@@ -84,6 +89,26 @@ export default [
 				{
 					'name': 'history',
 					'message': 'Use `window.history`.',
+				},
+				{
+					'name': 'scroll',
+					'message': 'Use `window.scroll`.',
+				},
+				{
+					'name': 'setTimeout',
+					'message': 'Use `window.setTimeout`.',
+				},
+				{
+					'name': 'setInterval',
+					'message': 'Use `window.setInterval`.',
+				},
+				{
+					'name': 'clearTimeout',
+					'message': 'Use `window.clearTimeout`.',
+				},
+				{
+					'name': 'clearInterval',
+					'message': 'Use `window.clearInterval`.',
 				},
 				{
 					'name': 'name',

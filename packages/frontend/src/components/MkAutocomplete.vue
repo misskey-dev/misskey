@@ -420,7 +420,7 @@ onBeforeUnmount(() => {
 	}
 
 	&:active {
-		background: var(--MI_THEME-accentDarken);
+		background: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 		color: #fff !important;
 	}
 }

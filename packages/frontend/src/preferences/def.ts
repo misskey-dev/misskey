@@ -118,9 +118,6 @@ export const PREF_DEF = {
 	keepCw: {
 		default: true,
 	},
-	keepOriginalUploading: {
-		default: false,
-	},
 	rememberNoteVisibility: {
 		default: false,
 	},
@@ -197,6 +194,9 @@ export const PREF_DEF = {
 	},
 	useBlurEffect: {
 		default: false,
+	},
+	useStickyIcons: {
+		default: true,
 	},
 	showFixedPostForm: {
 		default: false,
@@ -371,7 +371,16 @@ export const PREF_DEF = {
 		default: true,
 	},
 	'deck.columnAlign': {
-		default: 'left' as 'left' | 'right' | 'center',
+		default: 'center' as 'left' | 'right' | 'center',
+	},
+	'deck.columnGap': {
+		default: 6,
+	},
+	'deck.menuPosition': {
+		default: 'bottom' as 'right' | 'bottom',
+	},
+	'deck.navbarPosition': {
+		default: 'left' as 'left' | 'top' | 'bottom',
 	},
 
 	'chat.showSenderName': {

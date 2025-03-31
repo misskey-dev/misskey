@@ -133,7 +133,7 @@ async function enter(el: Element) {
 		entering = false;
 	});
 
-	setTimeout(renderTab, 170);
+	window.setTimeout(renderTab, 170);
 }
 
 function afterEnter(el: Element) {

@@ -35,7 +35,7 @@ class ChatUserChannel extends Channel {
 	}
 
 	@bindThis
-	private async onEvent(data: GlobalEvents['chat']['payload']) {
+	private async onEvent(data: GlobalEvents['chatUser']['payload']) {
 		this.send(data.type, data.body);
 	}
 

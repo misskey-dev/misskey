@@ -239,7 +239,7 @@ onMounted(() => {
 	bottom: var(--MI-stickyBottom, 0px);
 	left: 0;
 	padding: 12px;
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 	background-size: auto auto;

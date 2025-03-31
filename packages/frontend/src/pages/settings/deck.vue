@@ -45,6 +45,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkRadios>
 			</MkPreferenceContainer>
 		</SearchMarker>
+
+		<SearchMarker :keywords="['menu', 'position']">
+			<MkPreferenceContainer k="deck.menuPosition">
+				<MkRadios v-model="menuPosition">
+					<template #label><SearchLabel>{{ i18n.ts._deck.deckMenuPosition }}</SearchLabel></template>
+					<option value="right">{{ i18n.ts.right }}</option>
+					<option value="bottom">{{ i18n.ts.bottom }}</option>
+				</MkRadios>
+			</MkPreferenceContainer>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['navbar', 'position']">
+			<MkPreferenceContainer k="deck.navbarPosition">
+				<MkRadios v-model="navbarPosition">
+					<template #label><SearchLabel>{{ i18n.ts._deck.navbarPosition }}</SearchLabel></template>
+					<option value="left">{{ i18n.ts.left }}</option>
+					<option value="top">{{ i18n.ts.top }}</option>
+					<option value="bottom">{{ i18n.ts.bottom }}</option>
+				</MkRadios>
+			</MkPreferenceContainer>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['column', 'gap', 'margin']">
+			<MkPreferenceContainer k="deck.columnGap">
+				<MkRange v-model="columnGap" :min="3" :max="100" :step="1" :continuousUpdate="true">
+					<template #label><SearchLabel>{{ i18n.ts._deck.columnGap }}</SearchLabel></template>
+				</MkRange>
+			</MkPreferenceContainer>
+		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
@@ -53,6 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
+import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
@@ -62,6 +92,9 @@ const navWindow = prefer.model('deck.navWindow');
 const useSimpleUiForNonRootPages = prefer.model('deck.useSimpleUiForNonRootPages');
 const alwaysShowMainColumn = prefer.model('deck.alwaysShowMainColumn');
 const columnAlign = prefer.model('deck.columnAlign');
+const columnGap = prefer.model('deck.columnGap');
+const menuPosition = prefer.model('deck.menuPosition');
+const navbarPosition = prefer.model('deck.navbarPosition');
 
 const profilesSyncEnabled = ref(prefer.isSyncEnabled('deck.profiles'));
 

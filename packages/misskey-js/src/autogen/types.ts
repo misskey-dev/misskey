@@ -4079,6 +4079,7 @@ export type components = {
       followersVisibility: 'public' | 'followers' | 'private';
       /** @enum {string} */
       chatScope: 'everyone' | 'following' | 'followers' | 'mutual' | 'none';
+      canChat: boolean;
       roles: components['schemas']['RoleLite'][];
       followedMessage?: string | null;
       memo: string | null;

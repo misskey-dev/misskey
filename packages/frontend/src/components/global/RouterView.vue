@@ -44,7 +44,9 @@ provide(DI.routerCurrentDepth, currentDepth + 1);
 
 const rootEl = useTemplateRef('rootEl');
 onMounted(() => {
-	rootEl.value.style.viewTransitionName = viewId; // view-transition-nameにcss varが使えないっぽいため直接代入
+	if (prefer.s.animation) {
+		rootEl.value.style.viewTransitionName = viewId; // view-transition-nameにcss varが使えないっぽいため直接代入
+	}
 });
 
 // view-transition-newなどの<pt-name-selector>にはcss varが使えず、v-bindできないため直接スタイルを生成

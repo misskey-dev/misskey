@@ -249,6 +249,8 @@ export class SearchService {
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
+		if (me) this.queryService.generateMutedUserQueryForNotes(query, me);
+		if (me) this.queryService.generateBlockedUserQueryForNotes(query, me);
 
 		const notes = (await query.getMany()).filter(note => {
 			if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;

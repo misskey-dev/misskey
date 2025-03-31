@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, reversed ? '_pageScrollableReversed' : '_pageScrollable']">
+<div ref="rootEl" :class="[$style.root, reversed ? '_pageScrollableReversed' : '_pageScrollable']">
 	<MkStickyContainer>
 		<template #header><MkPageHeader v-model:tab="tab" :actions="actions" :tabs="tabs"/></template>
 		<div :class="$style.body">
@@ -16,6 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { useTemplateRef } from 'vue';
+import { scrollInContainer } from '@@/js/scroll.js';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import type { Tab } from './MkPageHeader.tabs.vue';
 
@@ -31,6 +33,13 @@ const props = withDefaults(defineProps<{
 });
 
 const tab = defineModel<string>('tab');
+const rootEl = useTemplateRef('rootEl');
+
+defineExpose({
+	scrollToTop: () => {
+		if (rootEl.value) scrollInContainer(rootEl.value, { top: 0, behavior: 'smooth' });
+	},
+});
 </script>
 
 <style lang="scss" module>
