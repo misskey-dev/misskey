@@ -59,9 +59,6 @@ export async function mainBoot() {
 			case 'visitor':
 				rootComponent = defineAsyncComponent(() => import('@/ui/visitor.vue'));
 				break;
-			case 'classic':
-				rootComponent = defineAsyncComponent(() => import('@/ui/classic.vue'));
-				break;
 			default:
 				rootComponent = defineAsyncComponent(() => import('@/ui/universal.vue'));
 				break;
