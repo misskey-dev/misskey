@@ -51,7 +51,7 @@ withDefaults(defineProps<{
 	padding-top: calc(var(--fukidashi-radius) * .13);
 
 	&.accented {
-		--fukidashi-bg: var(--MI_THEME-accent);
+		--fukidashi-bg: color-mix(in srgb, var(--MI_THEME-accent), var(--MI_THEME-panel) 85%);
 	}
 
 	&.shadow {
@@ -85,6 +85,12 @@ withDefaults(defineProps<{
 .content {
 	position: relative;
 	padding: 10px 14px;
+}
+
+@container (max-width: 450px) {
+	.content {
+		padding: 8px 12px;
+	}
 }
 
 .tail {

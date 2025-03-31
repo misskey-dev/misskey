@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
 	<MkAvatar :class="$style.avatar" :user="message.fromUser" :link="!isMe" :preview="false"/>
 	<div :class="$style.body" @contextmenu.stop="onContextmenu">
-		<div v-if="!isMe && prefer.s['chat.showSenderName']" :class="$style.header"><MkUserName :user="message.fromUser"/></div>
+		<div :class="$style.header"><MkUserName v-if="!isMe && prefer.s['chat.showSenderName']" :user="message.fromUser"/></div>
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :accented="isMe">
 			<div v-if="!message.isDeleted" :class="$style.content">
 				<Mfm
@@ -216,10 +216,6 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 		flex-direction: row-reverse;
 		text-align: right;
 
-		.content {
-			color: var(--MI_THEME-fgOnAccent);
-		}
-
 		.footer {
 			flex-direction: row-reverse;
 		}
@@ -230,8 +226,27 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 	position: sticky;
 	top: calc(16px + var(--MI-stickyTop, 0px));
 	display: block;
-	width: 52px;
-	height: 52px;
+	width: 50px;
+	height: 50px;
+}
+
+@container (max-width: 450px) {
+	.root {
+		&.isMe {
+			.avatar {
+				display: none;
+			}
+		}
+	}
+
+	.avatar {
+		width: 42px;
+		height: 42px;
+	}
+
+	.fukidashi {
+		font-size: 90%;
+	}
 }
 
 .body {
@@ -239,6 +254,7 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 }
 
 .header {
+	min-height: 4px; // fukidashiの位置調整も兼ねるため
 	font-size: 80%;
 }
 
@@ -250,9 +266,6 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 	overflow: clip;
 	overflow-wrap: break-word;
 	word-break: break-word;
-}
-
-.file {
 }
 
 .footer {

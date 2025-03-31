@@ -63,11 +63,11 @@ function save() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.ts.areYouSure,
+		text: i18n.tsx.deleteAreYouSure({ x: name_.value }),
 	});
 	if (canceled) return;
 
-	misskeyApi('chat/rooms/delete', {
+	await os.apiWithDialog('chat/rooms/delete', {
 		roomId: props.room.id,
 	});
 	router.push('/chat');
@@ -80,10 +80,6 @@ watch(isMuted, async () => {
 		roomId: props.room.id,
 		mute: isMuted.value,
 	});
-});
-
-onMounted(async () => {
-
 });
 </script>
 

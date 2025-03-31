@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkUserCardMini :user="room.owner"/>
 	</MkA>
 
-	<hr>
+	<hr v-if="memberships.length > 0">
 
 	<div v-for="membership in memberships" :key="membership.id" :class="$style.membership">
 		<MkA :class="$style.membershipBody" :to="`${userPage(membership.user)}`">

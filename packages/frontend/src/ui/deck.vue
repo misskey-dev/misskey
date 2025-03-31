@@ -35,7 +35,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</section>
 				<div v-if="layout.length === 0" class="_panel" :class="$style.onboarding">
 					<div>{{ i18n.ts._deck.introduction }}</div>
-					<MkButton primary style="margin: 1em auto;" @click="addColumn">{{ i18n.ts._deck.addColumn }}</MkButton>
 					<div>{{ i18n.ts._deck.introduction2 }}</div>
 				</div>
 			</div>
