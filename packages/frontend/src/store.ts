@@ -414,7 +414,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	skipNoteRender: {
 		where: 'device',
-		default: 'none' as 'css' | 'js' | 'none',
+		default: false,
 	},
 	alwaysUseAbsoluteTime: {
 		where: 'device',

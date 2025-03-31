@@ -88,13 +88,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="enableCondensedLine">
 							<template #label>Enable condensed line</template>
 						</MkSwitch>
-						<MkSelect v-model="skipNoteRender">
-							<template #label>Skip note rendering</template>
-
-							<option value="none">None</option>
-							<option value="css">CSS</option>
-							<option value="js">JS (Unstable)</option>
-						</MkSelect>
+						<MkSwitch v-model="skipNoteRender">
+							<template #label>Enable note render skipping</template>
+						</MkSwitch>
 						<MkSwitch v-model="stackingRouterView">
 							<template #label>Enable stacking router view</template>
 						</MkSwitch>
@@ -134,7 +130,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch } from 'vue';
 import XMigration from './migration.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormInfo from '@/components/MkInfo.vue';

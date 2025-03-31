@@ -312,7 +312,7 @@ export const PREF_DEF = {
 		default: 'app' as 'app' | 'appWithShift' | 'native',
 	},
 	skipNoteRender: {
-		default: 'none' as 'css' | 'js' | 'none',
+		default: false,
 	},
 	alwaysUseAbsoluteTime: {
 		default: false,
