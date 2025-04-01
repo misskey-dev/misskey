@@ -91,8 +91,8 @@ router.useListener('change', ({ resolved }) => {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (prefer.s.animation && window.document.startViewTransition) {
-		window.document.startViewTransition(() => new Promise((res) => {
+	if (/*prefer.s.animation && window.document.startViewTransition*/false) {
+		window.document.startViewTransition(() => new Promise<void>((res) => {
 			_();
 			nextTick(() => {
 				res();
