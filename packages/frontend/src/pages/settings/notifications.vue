@@ -5,6 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
+	<MkFeatureBanner icon="/client-assets/bell_3d.png" color="#ffff00">
+		<SearchKeyword>{{ i18n.ts._settings.notificationsBanner }}</SearchKeyword>
+	</MkFeatureBanner>
+
 	<FormSection first>
 		<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
 		<div class="_gaps_s">
@@ -34,7 +38,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<div class="_gaps_m">
 			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
-			<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
 		</div>
 	</FormSection>
 	<FormSection>
@@ -62,7 +65,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, computed } from 'vue';
+import { useTemplateRef, computed } from 'vue';
+import { notificationTypes } from '@@/js/const.js';
 import XNotificationConfig from './notifications.notification-config.vue';
 import type { NotificationConfig } from './notifications.notification-config.vue';
 import FormLink from '@/components/form/link.vue';
@@ -70,27 +74,23 @@ import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { signinRequired } from '@/account.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { ensureSignin } from '@/i.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
-import { notificationTypes } from '@@/js/const.js';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'test', 'exportCompleted'] satisfies (typeof notificationTypes[number])[] as string[];
 
 const onlyOnOrOffNotificationTypes = ['app', 'achievementEarned', 'login', 'createToken'] satisfies (typeof notificationTypes[number])[] as string[];
 
-const allowButton = shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
+const allowButton = useTemplateRef('allowButton');
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
 const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
 const userLists = await misskeyApi('users/lists/list');
-
-async function readAllUnreadNotes() {
-	await os.apiWithDialog('i/read-all-unread-notes');
-}
 
 async function readAllNotifications() {
 	await os.apiWithDialog('notifications/mark-all-as-read');
@@ -138,7 +138,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.notifications,
 	icon: 'ti ti-bell',
 }));

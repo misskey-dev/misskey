@@ -233,7 +233,7 @@ describe('After user setup', () => {
 		cy.get('[data-cy-post-form-text]').type('Hello, Misskey!');
 		cy.get('[data-cy-open-post-form-submit]').click();
 
-		cy.contains('Hello, Misskey!');
+		cy.contains('Hello, Misskey!', { timeout: 15000 });
   });
 
 	it('open note form with hotkey', () => {

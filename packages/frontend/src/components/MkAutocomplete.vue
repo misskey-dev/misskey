@@ -44,22 +44,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { markRaw, ref, shallowRef, computed, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { markRaw, ref, useTemplateRef, computed, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import sanitizeHtml from 'sanitize-html';
 import { emojilist, getEmojiName } from '@@/js/emojilist.js';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@@/js/emoji-base.js';
 import { MFM_TAGS, MFM_PARAMS } from '@@/js/const.js';
-import contains from '@/scripts/contains.js';
+import type { EmojiDef } from '@/utility/search-emoji.js';
+import contains from '@/utility/contains.js';
 import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
-import { MFM_TAGS, MFM_PARAMS } from '@@/js/const.js';
-import { searchEmojisearchEmojiExact } from '@/scripts/search-emoji.js';
-import type { EmojiDef } from '@/scripts/search-emoji.js';
+import { searchEmoji, searchEmojiExact } from '@/utility/search-emoji.js';
+import { prefer } from '@/preferences.js';
 
 export type CompleteInfo = {
 	user: {
@@ -91,12 +91,13 @@ export type CompleteInfo = {
 			params: string[];
 		};
 	},
-}
+};
 
 const lib = emojilist.filter(x => x.category !== 'flags');
 
 const unicodeEmojiDB = computed(() => {
-	const char2path = defaultStore.reactiveState.emojiStyle.value === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
+	//#region Unicode Emoji
+	const char2path = prefer.r.emojiStyle.value === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
 	const unicodeEmojiDB: EmojiDef[] = lib.map(x => ({
 		emoji: x.char,
@@ -104,7 +105,7 @@ const unicodeEmojiDB = computed(() => {
 		url: char2path(x.char),
 	}));
 
-	for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
+	for (const index of Object.values(store.s.additionalUnicodeEmojiIndexes)) {
 		for (const [emoji, keywords] of Object.entries(index)) {
 			for (const k of keywords) {
 				unicodeEmojiDB.push({
@@ -169,7 +170,7 @@ type PropsType<T extends keyof CompleteInfo> = {
 	close: () => void;
 	x: number;
 	y: number;
-}
+};
 //const props = defineProps<PropsType<keyof CompleteInfo>>();
 // ↑と同じだけど↓にしないとdiscriminated unionにならない。
 // https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#discriminated-unions
@@ -181,7 +182,7 @@ const emit = defineEmits<{
 }>();
 
 const suggests = ref<Element>();
-const rootEl = shallowRef<HTMLDivElement>();
+const rootEl = useTemplateRef('rootEl');
 
 const fetching = ref(true);
 const users = ref<any[]>([]);
@@ -197,10 +198,10 @@ function complete<T extends keyof CompleteInfo>(type: T, value: CompleteInfo[T][
 	emit('done', { type, value });
 	emit('closed');
 	if (type === 'emoji' || type === 'emojiComplete') {
-		let recents = defaultStore.state.recentlyUsedEmojis;
+		let recents = store.s.recentlyUsedEmojis;
 		recents = recents.filter((emoji: any) => emoji !== value);
 		recents.unshift(value);
-		defaultStore.set('recentlyUsedEmojis', recents.splice(0, 32));
+		store.set('recentlyUsedEmojis', recents.splice(0, 32));
 	}
 }
 
@@ -241,8 +242,10 @@ function exec() {
 			users.value = JSON.parse(cache);
 			fetching.value = false;
 		} else {
+			const [username, host] = props.q.toString().split('@');
 			misskeyApi('users/search-by-username-and-host', {
-				username: props.q,
+				username: username,
+				host: host,
 				limit: 10,
 				detail: false,
 			}).then(searchedUsers => {
@@ -278,7 +281,7 @@ function exec() {
 	} else if (props.type === 'emoji') {
 		if (!props.q || props.q === '') {
 			// 最近使った絵文字をサジェスト
-			emojis.value = defaultStore.state.recentlyUsedEmojis.map(emoji => emojiDb.value.find(dbEmoji => dbEmoji.emoji === emoji)).filter(x => x) as EmojiDef[];
+			emojis.value = store.s.recentlyUsedEmojis.map(emoji => emojiDb.value.find(dbEmoji => dbEmoji.emoji === emoji)).filter(x => x) as EmojiDef[];
 			return;
 		}
 
@@ -401,7 +404,7 @@ onMounted(() => {
 
 	props.textarea.addEventListener('keydown', onKeydown);
 
-	document.body.addEventListener('mousedown', onMousedown);
+	window.document.body.addEventListener('mousedown', onMousedown);
 
 	nextTick(() => {
 		exec();
@@ -417,7 +420,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	props.textarea.removeEventListener('keydown', onKeydown);
 
-	document.body.removeEventListener('mousedown', onMousedown);
+	window.document.body.removeEventListener('mousedown', onMousedown);
 });
 </script>
 
@@ -462,7 +465,7 @@ onBeforeUnmount(() => {
 	}
 
 	&:active {
-		background: var(--MI_THEME-accentDarken);
+		background: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 		color: #fff !important;
 	}
 }
