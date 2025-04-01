@@ -32,9 +32,9 @@ const mimeTypeMap = {
 
 export function uploadFile(
 	file: File,
-	folder?: string | Misskey.entities.DriveFolder,
+	folder?: string | Misskey.entities.DriveFolder | null,
 	name?: string,
-	keepOriginal: boolean = prefer.s.keepOriginalUploading,
+	keepOriginal = false,
 ): Promise<Misskey.entities.DriveFile> {
 	if ($i == null) throw new Error('Not logged in');
 

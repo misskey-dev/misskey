@@ -53,15 +53,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ i18n.ts.drivecleaner }}
 				</FormLink>
 
-				<SearchMarker :keywords="['keep', 'original', 'raw', 'upload']">
-					<MkPreferenceContainer k="keepOriginalUploading">
-						<MkSwitch v-model="keepOriginalUploading">
-							<template #label><SearchLabel>{{ i18n.ts.keepOriginalUploading }}</SearchLabel></template>
-							<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalUploadingDescription }}</SearchKeyword></template>
-						</MkSwitch>
-					</MkPreferenceContainer>
-				</SearchMarker>
-
 				<SearchMarker :keywords="['keep', 'original', 'filename']">
 					<MkPreferenceContainer k="keepOriginalFilename">
 						<MkSwitch v-model="keepOriginalFilename">
@@ -130,7 +121,6 @@ const meterStyle = computed(() => {
 	};
 });
 
-const keepOriginalUploading = prefer.model('keepOriginalUploading');
 const keepOriginalFilename = prefer.model('keepOriginalFilename');
 
 misskeyApi('drive').then(info => {

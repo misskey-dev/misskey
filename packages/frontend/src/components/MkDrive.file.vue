@@ -151,11 +151,11 @@ function onDragend() {
 		background: var(--MI_THEME-accent);
 
 		&:hover {
-			background: var(--MI_THEME-accentLighten);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 		}
 
 		&:active {
-			background: var(--MI_THEME-accentDarken);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 		}
 
 		> .label {

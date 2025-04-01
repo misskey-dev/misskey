@@ -32,7 +32,7 @@ mainRouter.addListener('replace', ctx => {
 });
 
 mainRouter.addListener('change', ctx => {
-	console.log('mainRouter: change', ctx.fullPath);
+	if (_DEV_) console.log('mainRouter: change', ctx.fullPath);
 	analytics.page({
 		path: ctx.fullPath,
 		title: ctx.fullPath,
@@ -42,5 +42,5 @@ mainRouter.addListener('change', ctx => {
 mainRouter.init();
 
 export function useRouter(): Router {
-	return inject(DI.router) ?? mainRouter;
+	return inject(DI.router, null) ?? mainRouter;
 }
