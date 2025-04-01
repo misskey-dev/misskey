@@ -82,7 +82,7 @@ export function normalizeStringWithHiragana(str: string) {
 
 /** aとbが同じかどうか */
 export function compareStringEquals(a: string, b: string) {
-	if (a === b) return true;
+	if (a === b) return true; // まったく同じ場合はtrue。なお、ノーマライズ前後で文字数が変化することがあるため、文字数が違うからといってfalseにはできない
 	if (normalizeString(a) === normalizeString(b)) return true;
 	if (normalizeStringWithHiragana(a) === normalizeStringWithHiragana(b)) return true;
 	return false;
@@ -90,7 +90,7 @@ export function compareStringEquals(a: string, b: string) {
 
 /** baseにqueryが含まれているかどうか */
 export function compareStringIncludes(base: string, query: string) {
-	if (base === query) return true;
+	if (base === query) return true; // まったく同じ場合は含まれていると考えてよいのでtrue
 	if (base.includes(query)) return true;
 	if (normalizeString(base).includes(normalizeString(query))) return true;
 	if (normalizeStringWithHiragana(base).includes(normalizeStringWithHiragana(query))) return true;
