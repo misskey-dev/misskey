@@ -1104,7 +1104,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	emoijPicker.closeWindow();
+	emojiPicker.closeWindow();
 });
 
 defineExpose({
