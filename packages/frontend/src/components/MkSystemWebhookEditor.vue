@@ -92,18 +92,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, shallowRef, toRefs } from 'vue';
+import { computed, onMounted, ref, useTemplateRef, toRefs } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkInput from '@/components/MkInput.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import type {
 	MkSystemWebhookEditorProps,
 	MkSystemWebhookResult,
 	SystemWebhookEventType,
 } from '@/components/MkSystemWebhookEditor.impl.js';
+import MkInput from '@/components/MkInput.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
@@ -122,7 +122,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialogEl = useTemplateRef('dialogEl');
 
 const props = defineProps<MkSystemWebhookEditorProps>();
 
@@ -280,7 +280,7 @@ onMounted(async () => {
 	left: 0;
 	padding: 12px;
 	border-top: solid 0.5px var(--MI_THEME-divider);
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 }

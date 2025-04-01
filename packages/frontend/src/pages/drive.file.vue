@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-		<MkSpacer v-if="tab === 'info'" key="info" :contentMax="800">
+		<MkSpacer v-if="tab === 'info'" :contentMax="800">
 			<XFileInfo :fileId="fileId"/>
 		</MkSpacer>
 
-		<MkSpacer v-else-if="tab === 'notes'" key="notes" :contentMax="800">
+		<MkSpacer v-else-if="tab === 'notes'" :contentMax="800">
 			<XNotes :fileId="fileId"/>
 		</MkSpacer>
 	</MkHorizontalSwipe>
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref, defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const props = defineProps<{
@@ -48,7 +48,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-pencil',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._fileViewer.title,
 	icon: 'ti ti-file',
 }));

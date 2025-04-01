@@ -171,20 +171,20 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getUserMenu } from '@/scripts/get-user-menu.js';
+import { getUserMenu } from '@/utility/get-user-menu.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
-import { $i, iAmModerator } from '@/account.js';
+import { $i, iAmModerator } from '@/i.js';
 import { dateString } from '@/filters/date.js';
-import { confetti } from '@/scripts/confetti.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
-import { useRouter } from '@/router/supplier.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { confetti } from '@/utility/confetti.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/utility/isFfVisibleForMe.js';
+import { useRouter } from '@/router.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import MkSparkle from '@/components/MkSparkle.vue';
+import { prefer } from '@/preferences.js';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -236,7 +236,7 @@ watch(moderationNote, async () => {
 
 const style = computed(() => {
 	if (props.user.bannerUrl == null) return {};
-	if (defaultStore.state.disableShowingAnimatedImages) {
+	if (prefer.s.disableShowingAnimatedImages) {
 		return {
 			backgroundImage: `url(${ getStaticImageUrl(props.user.bannerUrl) })`,
 		};
