@@ -288,7 +288,7 @@ onBeforeUnmount(() => {
 		autocompleteInstance.detach();
 		autocompleteInstance = null;
 	}
-})
+});
 </script>
 
 <style lang="scss" module>
