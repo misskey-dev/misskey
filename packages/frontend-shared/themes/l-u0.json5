@@ -43,7 +43,6 @@
 		fgOnWhite: '@accent',
 		infoWarnBg: '#42321c',
 		infoWarnFg: '#ffbd3e',
-		navHoverFg: ':lighten<17<@fg',
 		codeBoolean: '#c59eff',
 		dateLabelFg: '@fg',
 		inputBorder: 'rgba(255, 255, 255, 0.1)',

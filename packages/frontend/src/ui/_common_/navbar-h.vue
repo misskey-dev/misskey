@@ -149,7 +149,7 @@ onMounted(() => {
 
 				&:hover {
 					text-decoration: none;
-					color: var(--MI_THEME-navHoverFg);
+					color: light-dark(hsl(from var(--MI_THEME-navFg) h s calc(l - 17)), hsl(from var(--MI_THEME-navFg) h s calc(l + 17)));
 				}
 
 				&.active {
