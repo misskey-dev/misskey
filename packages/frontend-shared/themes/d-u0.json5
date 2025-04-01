@@ -59,7 +59,6 @@
 		panelHighlight: ':lighten<3<@panel',
 		scrollbarHandle: 'rgba(255, 255, 255, 0.2)',
 		inputBorderHover: 'rgba(255, 255, 255, 0.2)',
-		wallpaperOverlay: 'rgba(0, 0, 0, 0.5)',
 		fgTransparentWeak: ':alpha<0.75<@fg',
 		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
 		scrollbarHandleHover: 'rgba(255, 255, 255, 0.4)',

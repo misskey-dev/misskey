@@ -189,17 +189,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormLink to="/theme-editor"><template #icon><i class="ti ti-paint"></i></template>{{ i18n.ts._theme.make }}</FormLink>
 			</div>
 		</FormSection>
-
-		<SearchMarker :keywords="['wallpaper']">
-			<MkButton v-if="wallpaper == null" @click="setWallpaper"><SearchLabel>{{ i18n.ts.setWallpaper }}</SearchLabel></MkButton>
-			<MkButton v-else @click="wallpaper = null">{{ i18n.ts.removeWallpaper }}</MkButton>
-		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
 
 <script lang="ts" setup>
-import { computed, onActivated, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import JSON5 from 'json5';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
@@ -207,7 +202,6 @@ import type { Theme } from '@/theme.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
-import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
 import { getBuiltinThemesRef, getThemesRef } from '@/theme.js';
@@ -262,7 +256,6 @@ const lightThemeId = computed({
 
 const darkMode = computed(store.makeGetterSetter('darkMode'));
 const syncDeviceDarkMode = prefer.model('syncDeviceDarkMode');
-const wallpaper = ref(miLocalStorage.getItem('wallpaper'));
 const themesCount = installedThemes.value.length;
 
 watch(syncDeviceDarkMode, () => {
@@ -270,21 +263,6 @@ watch(syncDeviceDarkMode, () => {
 		store.set('darkMode', isDeviceDarkmode());
 	}
 });
-
-watch(wallpaper, async () => {
-	if (wallpaper.value == null) {
-		miLocalStorage.removeItem('wallpaper');
-	} else {
-		miLocalStorage.setItem('wallpaper', wallpaper.value);
-	}
-	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
-});
-
-function setWallpaper(event) {
-	selectFile(event.currentTarget ?? event.target, null).then(file => {
-		wallpaper.value = file.url;
-	});
-}
 
 const headerActions = computed(() => []);
 
