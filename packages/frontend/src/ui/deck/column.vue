@@ -48,13 +48,13 @@ import type { MenuItem } from '@/types/menu.js';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { miLocalStorage } from '@/local-storage.js';
+import { prefer } from '@/preferences.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
 provide('forceSpacerMin', true);
 
-const withWallpaper = miLocalStorage.getItem('wallpaper') != null;
+const withWallpaper = prefer.s['deck.wallpaper'] != null;
 
 const props = withDefaults(defineProps<{
 	column: Column;

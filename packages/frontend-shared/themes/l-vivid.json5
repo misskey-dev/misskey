@@ -49,7 +49,6 @@
 		htmlThemeColor: '@bg',
 		panelHighlight: ':darken<3<@panel',
 		scrollbarHandle: 'rgba(0, 0, 0, 0.2)',
-		wallpaperOverlay: 'rgba(255, 255, 255, 0.5)',
 		fgTransparentWeak: ':alpha<0.75<@fg',
 		panelHeaderDivider: '@divider',
 		scrollbarHandleHover: 'rgba(0, 0, 0, 0.4)',

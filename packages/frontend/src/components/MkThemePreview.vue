@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<g fill-rule="evenodd">
 		<rect width="200" height="150" :fill="themeVariables.bg"/>
 		<rect width="64" height="150" :fill="themeVariables.navBg"/>
-		<rect x="64" width="136" height="41" fill="color(from var(--MI_THEME-bg) srgb r g b / 0.5)"/>
+		<rect x="64" width="136" height="41" :fill="themeVariables.bg"/>
 		<path transform="scale(.26458)" d="m439.77 247.19c-43.673 0-78.832 35.157-78.832 78.83v249.98h407.06v-328.81z" :fill="themeVariables.panel"/>
 	</g>
 	<circle cx="32" cy="83" r="21" :fill="themeVariables.accentedBg"/>
@@ -31,6 +31,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<path d="m9 17v1a3 3 0 0 0 6 0v-1"/>
 	</g>
 	<circle cx="32" cy="32" r="16" :fill="themeVariables.accent"/>
+	<circle cx="140" cy="20" r="6" :fill="themeVariables.success"/>
+	<circle cx="160" cy="20" r="6" :fill="themeVariables.warn"/>
+	<circle cx="180" cy="20" r="6" :fill="themeVariables.error"/>
 </svg>
 </template>
 
@@ -39,7 +42,6 @@ import { ref, watch } from 'vue';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
 import type { Theme } from '@/theme.js';
-import { instance } from '@/instance.js';
 import { compile } from '@/theme.js';
 import { deepClone } from '@/utility/clone.js';
 
@@ -63,6 +65,9 @@ const themeVariables = ref<{
 	accent: 'var(--MI_THEME-accent)',
 	accentedBg: 'var(--MI_THEME-accentedBg)',
 	navBg: 'var(--MI_THEME-navBg)',
+	success: 'var(--MI_THEME-success)',
+	warn: 'var(--MI_THEME-warn)',
+	error: 'var(--MI_THEME-error)',
 });
 
 watch(() => props.theme, (theme) => {
@@ -85,6 +90,9 @@ watch(() => props.theme, (theme) => {
 		accent: compiled.accent ?? 'var(--MI_THEME-accent)',
 		accentedBg: compiled.accentedBg ?? 'var(--MI_THEME-accentedBg)',
 		navBg: compiled.navBg ?? 'var(--MI_THEME-navBg)',
+		success: compiled.success ?? 'var(--MI_THEME-success)',
+		warn: compiled.warn ?? 'var(--MI_THEME-warn)',
+		error: compiled.error ?? 'var(--MI_THEME-error)',
 	};
 }, { immediate: true });
 </script>
