@@ -18,14 +18,14 @@ import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 const props = defineProps<{
-  emoji: Misskey.entities.EmojiSimple;
+	emoji: Misskey.entities.EmojiSimple;
 }>();
 
 function menu(ev) {
@@ -38,7 +38,6 @@ function menu(ev) {
 		icon: 'ti ti-copy',
 		action: () => {
 			copyToClipboard(`:${props.emoji.name}:`);
-			os.success();
 		},
 	}, {
 		text: i18n.ts.info,

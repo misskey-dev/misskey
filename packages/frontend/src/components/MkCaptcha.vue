@@ -26,8 +26,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
-import { defaultStore } from '@/store.js';
+import { ref, useTemplateRef, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
+import { store } from '@/store.js';
 
 // APIs provided by Captcha services
 // see: https://docs.hcaptcha.com/configuration/#javascript-api
@@ -69,7 +69,7 @@ const emit = defineEmits<{
 
 const available = ref(false);
 
-const captchaEl = shallowRef<HTMLDivElement | undefined>();
+const captchaEl = useTemplateRef('captchaEl');
 const captchaWidgetId = ref<string | undefined>(undefined);
 const testcaptchaInput = ref('');
 const testcaptchaPassed = ref(false);
@@ -112,7 +112,7 @@ watch(() => [props.instanceUrl, props.sitekey, props.secretKey], async () => {
 if (loaded || props.provider === 'mcaptcha' || props.provider === 'testcaptcha') {
 	available.value = true;
 } else if (src.value !== null) {
-	(document.getElementById(scriptId.value) ?? document.head.appendChild(Object.assign(document.createElement('script'), {
+	(window.document.getElementById(scriptId.value) ?? window.document.head.appendChild(Object.assign(window.document.createElement('script'), {
 		async: true,
 		id: scriptId.value,
 		src: src.value,
@@ -149,12 +149,12 @@ async function requestRender() {
 	if (captcha.value.render && captchaEl.value instanceof Element && props.sitekey) {
 		// reCAPTCHAのレンダリング重複判定を回避するため、captchaEl配下に仮のdivを用意する.
 		// （同じdivに対して複数回renderを呼び出すとreCAPTCHAはエラーを返すので）
-		const elem = document.createElement('div');
+		const elem = window.document.createElement('div');
 		captchaEl.value.appendChild(elem);
 
 		captchaWidgetId.value = captcha.value.render(elem, {
 			sitekey: props.sitekey,
-			theme: defaultStore.state.darkMode ? 'dark' : 'light',
+			theme: store.s.darkMode ? 'dark' : 'light',
 			callback: callback,
 			'expired-callback': () => callback(undefined),
 			'error-callback': () => callback(undefined),
@@ -174,7 +174,7 @@ async function requestRender() {
 
 function clearWidget() {
 	if (props.provider === 'mcaptcha') {
-		const container = document.getElementById('mcaptcha__widget-container');
+		const container = window.document.getElementById('mcaptcha__widget-container');
 		if (container) {
 			container.innerHTML = '';
 		}

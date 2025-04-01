@@ -43,6 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="notification.type === 'exportCompleted'" class="ti ti-archive"></i>
 			<i v-else-if="notification.type === 'login'" class="ti ti-login-2"></i>
 			<i v-else-if="notification.type === 'createToken'" class="ti ti-key"></i>
+			<i v-else-if="notification.type === 'chatRoomInvitationReceived'" class="ti ti-messages"></i>
 			<template v-else-if="notification.type === 'roleAssigned'">
 				<img v-if="notification.role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="notification.role.iconUrl" alt=""/>
 				<i v-else class="ti ti-badges"></i>
@@ -61,6 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
 			<span v-else-if="notification.type === 'note'">{{ i18n.ts._notification.newNote }}: <MkUserName :user="notification.note.user"/></span>
 			<span v-else-if="notification.type === 'roleAssigned'">{{ i18n.ts._notification.roleAssigned }}</span>
+			<span v-else-if="notification.type === 'chatRoomInvitationReceived'">{{ i18n.ts._notification.chatRoomInvitationReceived }}</span>
 			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
 			<span v-else-if="notification.type === 'login'">{{ i18n.ts._notification.login }}</span>
 			<span v-else-if="notification.type === 'createToken'">{{ i18n.ts._notification.createToken }}</span>
@@ -103,6 +105,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 			<div v-else-if="notification.type === 'roleAssigned'" :class="$style.text">
 				{{ notification.role.name }}
+			</div>
+			<div v-else-if="notification.type === 'chatRoomInvitationReceived'" :class="$style.text">
+				{{ notification.invitation.room.name }}
 			</div>
 			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
 				{{ i18n.ts._achievements._types['_' + notification.achievement].title }}
@@ -164,15 +169,15 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getNoteSummary } from '@/scripts/get-note-summary.js';
+import { getNoteSummary } from '@/utility/get-note-summary.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { signinRequired } from '@/account.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { ensureSignin } from '@/i.js';
 import { infoImageUrl } from '@/instance.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const props = withDefaults(defineProps<{
 	notification: Misskey.entities.Notification;

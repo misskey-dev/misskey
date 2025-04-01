@@ -8,42 +8,51 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkPagination ref="pagingComponent" :pagination="pagination">
 		<template #empty>
 			<div class="_fullinfo">
-				<img :src="infoImageUrl" class="_ghost"/>
+				<img :src="infoImageUrl" draggable="false"/>
 				<div>{{ i18n.ts.noNotifications }}</div>
 			</div>
 		</template>
 
 		<template #default="{ items: notifications }">
-			<MkDateSeparatedList v-slot="{ item: notification }" :class="$style.list" :items="notifications" :noGap="true">
-				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id + ':note'" :note="notification.note" :withHardMute="true"/>
-				<XNotification v-else :key="notification.id" :notification="notification" :withTime="true" :full="true" class="_panel"/>
-			</MkDateSeparatedList>
+			<component
+				:is="prefer.s.animation ? TransitionGroup : 'div'" :class="[$style.notifications]"
+				:enterActiveClass="$style.transition_x_enterActive"
+				:leaveActiveClass="$style.transition_x_leaveActive"
+				:enterFromClass="$style.transition_x_enterFrom"
+				:leaveToClass="$style.transition_x_leaveTo"
+				:moveClass=" $style.transition_x_move"
+				tag="div"
+			>
+				<template v-for="(notification, i) in notifications" :key="notification.id">
+					<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :class="$style.item" :note="notification.note" :withHardMute="true"/>
+					<XNotification v-else :class="$style.item" :notification="notification" :withTime="true" :full="true"/>
+				</template>
+			</component>
 		</template>
 	</MkPagination>
 </MkPullToRefresh>
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated } from 'vue';
+import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup } from 'vue';
+import * as Misskey from 'misskey-js';
+import type { notificationTypes } from '@@/js/const.js';
 import MkPagination from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
-import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import type { notificationTypes } from '@@/js/const.js';
 import { infoImageUrl } from '@/instance.js';
-import { defaultStore } from '@/store.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import * as Misskey from 'misskey-js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
 }>();
 
-const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const pagingComponent = useTemplateRef('pagingComponent');
 
-const pagination = computed(() => defaultStore.reactiveState.useGroupedNotifications.value ? {
+const pagination = computed(() => prefer.r.useGroupedNotifications.value ? {
 	endpoint: 'i/notifications-grouped' as const,
 	limit: 20,
 	params: computed(() => ({
@@ -59,7 +68,7 @@ const pagination = computed(() => defaultStore.reactiveState.useGroupedNotificat
 
 function onNotification(notification) {
 	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;
-	if (isMuted || document.visibilityState === 'visible') {
+	if (isMuted || window.document.visibilityState === 'visible') {
 		useStream().send('readNotification');
 	}
 
@@ -84,18 +93,7 @@ onMounted(() => {
 	connection.on('notificationFlushed', reload);
 });
 
-onActivated(() => {
-	pagingComponent.value?.reload();
-	connection = useStream().useChannel('main');
-	connection.on('notification', onNotification);
-	connection.on('notificationFlushed', reload);
-});
-
 onUnmounted(() => {
-	if (connection) connection.dispose();
-});
-
-onDeactivated(() => {
 	if (connection) connection.dispose();
 });
 
@@ -105,7 +103,26 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
-.list {
+.transition_x_move,
+.transition_x_enterActive,
+.transition_x_leaveActive {
+	transition: opacity 0.3s cubic-bezier(0,.5,.5,1), transform 0.3s cubic-bezier(0,.5,.5,1) !important;
+}
+.transition_x_enterFrom,
+.transition_x_leaveTo {
+	opacity: 0;
+	transform: translateY(-50%);
+}
+.transition_x_leaveActive {
+	position: absolute;
+}
+
+.notifications {
+	container-type: inline-size;
 	background: var(--MI_THEME-panel);
+}
+
+.item {
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 </style>
