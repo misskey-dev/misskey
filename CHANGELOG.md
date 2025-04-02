@@ -69,6 +69,7 @@
 - Fix: ActivityPubリクエストURLチェック実装は仕様に従っていないのを修正
 - Fix: 連合無しモードでも外部から照会可能だった問題を修正
 - Fix: テスト用WebHookのペイロードの`emojis`パラメータが実際のものと異なる問題を修正
+- Enhance: add LLM translation support with OpenAI compatible API
 
 ## 2025.3.1
 

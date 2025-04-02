@@ -185,6 +185,17 @@ export const paramDef = {
 				type: 'string',
 			},
 		},
+		enableLlmTranslator: { type: 'boolean' },
+		enableLlmTranslatorRedisCache: { type: 'boolean' },
+		llmTranslatorRedisCacheTtl: { type: 'integer' },
+		llmTranslatorBaseUrl: { type: 'string', nullable: true },
+		llmTranslatorApiKey: { type: 'string', nullable: true },
+		llmTranslatorModel: { type: 'string', nullable: true },
+		llmTranslatorTemperature: { type: 'number', nullable: true },
+		llmTranslatorTopP: { type: 'number', nullable: true },
+		llmTranslatorMaxTokens: { type: 'integer', nullable: true },
+		llmTranslatorSysPrompt: { type: 'string', nullable: true },
+		llmTranslatorUserPrompt: { type: 'string', nullable: true },
 	},
 	required: [],
 } as const;
@@ -673,6 +684,70 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (Array.isArray(ps.federationHosts)) {
 				set.federationHosts = ps.federationHosts.filter(Boolean).map(x => x.toLowerCase());
+			}
+
+			if (ps.enableLlmTranslator !== undefined) {
+				set.enableLlmTranslator = ps.enableLlmTranslator;
+			}
+
+			if (ps.enableLlmTranslatorRedisCache !== undefined) {
+				set.enableLlmTranslatorRedisCache = ps.enableLlmTranslatorRedisCache;
+			}
+
+			if (ps.llmTranslatorRedisCacheTtl !== undefined) {
+				set.llmTranslatorRedisCacheTtl = ps.llmTranslatorRedisCacheTtl;
+			}
+
+			if (ps.llmTranslatorBaseUrl !== undefined) {
+				if (ps.llmTranslatorBaseUrl === '') {
+					set.llmTranslatorBaseUrl = null;
+				} else {
+					set.llmTranslatorBaseUrl = ps.llmTranslatorBaseUrl;
+				}
+			}
+
+			if (ps.llmTranslatorApiKey !== undefined) {
+				if (ps.llmTranslatorApiKey === '') {
+					set.llmTranslatorApiKey = null;
+				} else {
+					set.llmTranslatorApiKey = ps.llmTranslatorApiKey;
+				}
+			}
+
+			if (ps.llmTranslatorModel !== undefined) {
+				if (ps.llmTranslatorModel === '') {
+					set.llmTranslatorModel = null;
+				} else {
+					set.llmTranslatorModel = ps.llmTranslatorModel;
+				}
+			}
+
+			if (ps.llmTranslatorTemperature !== undefined) {
+				set.llmTranslatorTemperature = ps.llmTranslatorTemperature;
+			}
+
+			if (ps.llmTranslatorTopP !== undefined) {
+				set.llmTranslatorTopP = ps.llmTranslatorTopP;
+			}
+
+			if (ps.llmTranslatorMaxTokens !== undefined) {
+				set.llmTranslatorMaxTokens = ps.llmTranslatorMaxTokens;
+			}
+
+			if (ps.llmTranslatorSysPrompt !== undefined) {
+				if (ps.llmTranslatorSysPrompt === '') {
+					set.llmTranslatorSysPrompt = null;
+				} else {
+					set.llmTranslatorSysPrompt = ps.llmTranslatorSysPrompt;
+				}
+			}
+
+			if (ps.llmTranslatorUserPrompt !== undefined) {
+				if (ps.llmTranslatorUserPrompt === '') {
+					set.llmTranslatorUserPrompt = null;
+				} else {
+					set.llmTranslatorUserPrompt = ps.llmTranslatorUserPrompt;
+				}
 			}
 
 			const before = await this.metaService.fetch(true);

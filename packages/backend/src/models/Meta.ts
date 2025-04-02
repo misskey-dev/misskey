@@ -664,4 +664,64 @@ export class MiMeta {
 		nullable: true,
 	})
 	public googleAnalyticsMeasurementId: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableLlmTranslator: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableLlmTranslatorRedisCache: boolean;
+
+	@Column('integer', {
+		default: 2880,
+	})
+	public llmTranslatorRedisCacheTtl: number;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public llmTranslatorBaseUrl: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public llmTranslatorApiKey: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public llmTranslatorModel: string | null;
+
+	@Column('real', {
+		nullable: true,
+	})
+	public llmTranslatorTemperature: number | null;
+
+	@Column('real', {
+		nullable: true,
+	})
+	public llmTranslatorTopP: number | null;
+
+	@Column('integer', {
+		nullable: true,
+	})
+	public llmTranslatorMaxTokens: number | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public llmTranslatorSysPrompt: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
+	public llmTranslatorUserPrompt: string | null;
 }
