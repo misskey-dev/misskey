@@ -1906,7 +1906,7 @@ _role:
   displayOrder: "表示順"
   descriptionOfDisplayOrder: "数値が大きいほどUI上で先頭に表示されます。"
   copyOnMoveAccount: "アカウント移行時にコピーする"
-  descriptionOfCopyOnMoveAccount: "オンにすると、アカウントの移行が行われた際にロールを下のユーザから新しいユーザにコピーするようになります。サイレンスなどを引き継ぎたい場合に使用できます。"
+  descriptionOfCopyOnMoveAccount: "オンにすると、アカウントの移行が行われた際にロールを元のユーザから新しいユーザに引き継ぐようになります。"
   canEditMembersByModerator: "モデレーターのメンバー編集を許可"
   descriptionOfCanEditMembersByModerator: "オンにすると、管理者に加えてモデレーターもこのロールへユーザーをアサイン/アサイン解除できるようになります。オフにすると管理者のみが行えます。"
   priority: "優先度"
