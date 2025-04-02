@@ -147,12 +147,10 @@ useMutationObserver(timelineEl, {
 });
 
 function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage): NormalizedChatMessage {
-	const reactions = [...message.reactions];
-
 	return {
 		...message,
 		fromUser: message.fromUser ?? (message.fromUserId === $i.id ? $i : user.value!),
-		reactions: reactions.map(record => ({
+		reactions: message.reactions.map(record => ({
 			...record,
 			user: record.user ?? (message.fromUserId === $i.id ? user.value! : $i),
 		})),
