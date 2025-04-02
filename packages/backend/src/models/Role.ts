@@ -250,6 +250,12 @@ export class MiRole {
 
 	@Column('boolean', {
 		default: false,
+		comment: 'If true, the role will be copied to moved to the new user on moving a user.',
+	})
+	public copyOnMoveAccount: boolean;
+
+	@Column('boolean', {
+		default: false,
 	})
 	public canEditMembersByModerator: boolean;
 
