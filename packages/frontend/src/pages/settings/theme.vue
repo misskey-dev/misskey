@@ -181,6 +181,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</div>
 
+		<SearchMarker :keywords="['sync', 'themes', 'devices']">
+			<MkSwitch :modelValue="themesSyncEnabled" @update:modelValue="changeThemesSyncEnabled">
+				<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts._settings.enableSyncThemesBetweenDevices }}</SearchLabel></template>
+			</MkSwitch>
+		</SearchMarker>
+
 		<FormSection>
 			<div class="_formLinksGrid">
 				<FormLink to="/settings/theme/manage"><template #icon><i class="ti ti-tool"></i></template>{{ i18n.ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
@@ -263,6 +269,20 @@ watch(syncDeviceDarkMode, () => {
 		store.set('darkMode', isDeviceDarkmode());
 	}
 });
+
+const themesSyncEnabled = ref(prefer.isSyncEnabled('themes'));
+
+function changeThemesSyncEnabled(value: boolean) {
+	if (value) {
+		prefer.enableSync('themes').then((res) => {
+			if (res == null) return;
+			if (res.enabled) themesSyncEnabled.value = true;
+		});
+	} else {
+		prefer.disableSync('themes');
+		themesSyncEnabled.value = false;
+	}
+}
 
 const headerActions = computed(() => []);
 

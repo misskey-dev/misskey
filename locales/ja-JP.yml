@@ -1417,6 +1417,7 @@ _settings:
   showNavbarSubButtons: "ナビゲーションバーに副ボタンを表示"
   ifOn: "オンのとき"
   ifOff: "オフのとき"
+  enableSyncThemesBetweenDevices: "デバイス間でインストールしたテーマを同期"
 
   _chat:
     showSenderName: "送信者の名前を表示"

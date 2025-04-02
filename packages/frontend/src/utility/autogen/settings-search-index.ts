@@ -37,6 +37,11 @@ export const searchIndexes: SearchIndexItem[] = [
 				label: i18n.ts.themeForDarkMode,
 				keywords: ['dark', 'theme'],
 			},
+			{
+				id: 'jwW5HULqA',
+				label: i18n.ts._settings.enableSyncThemesBetweenDevices,
+				keywords: ['sync', 'themes', 'devices'],
+			},
 		],
 		label: i18n.ts.theme,
 		keywords: ['theme'],
