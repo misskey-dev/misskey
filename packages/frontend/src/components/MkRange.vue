@@ -287,7 +287,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 				border-radius: 999px;
 
 				&:hover {
-					background: var(--MI_THEME-accentLighten);
+					background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 				}
 			}
 		}

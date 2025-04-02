@@ -119,7 +119,8 @@ function start(ev: MouseEvent) {
 }
 
 async function startUser() {
-	os.selectUser().then(user => {
+	// TODO: localOnly は連合に対応したら消す
+	os.selectUser({ localOnly: true }).then(user => {
 		router.push(`/chat/user/${user.id}`);
 	});
 }
