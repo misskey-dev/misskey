@@ -7,6 +7,7 @@ import { setTimeout } from 'node:timers/promises';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
+import { ReplyError } from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
@@ -145,22 +146,36 @@ export class NotificationService implements OnApplicationShutdown {
 			}
 		}
 
-		const notification = {
-			id: this.idService.gen(),
-			createdAt: new Date(),
-			type: type,
-			...(notifierId ? {
-				notifierId,
-			} : {}),
-			...data,
-		} as any as FilterUnionByProperty<MiNotification, 'type', T>;
+		const createdAt = new Date();
+		let notification: FilterUnionByProperty<MiNotification, 'type', T>;
+		let redisId: string;
 
-		// TODO: 同一ミリ秒に生成されたときにランダム部分が昇順じゃなくてXADDが失敗する可能性があるのでid再生成しながらリトライするべきかも。またはidをRedisの生成したものから生成するようにする。
-		const redisIdPromise = this.redisClient.xadd(
-			`notificationTimeline:${notifieeId}`,
-			'MAXLEN', '~', this.config.perUserNotificationsMaxCount.toString(),
-			this.toXListId(notification.id),
-			'data', JSON.stringify(notification));
+		do {
+			notification = {
+				id: this.idService.gen(),
+				createdAt,
+				type: type,
+				...(notifierId ? {
+					notifierId,
+				} : {}),
+				...data,
+			} as unknown as FilterUnionByProperty<MiNotification, 'type', T>;
+
+			try {
+				redisId = (await this.redisClient.xadd(
+					`notificationTimeline:${notifieeId}`,
+					'MAXLEN', '~', this.config.perUserNotificationsMaxCount.toString(),
+					this.toXListId(notification.id),
+					'data', JSON.stringify(notification)))!;
+			} catch (e) {
+				// The ID specified in XADD is equal or smaller than the target stream top item で失敗することがあるのでリトライ
+				if (e instanceof ReplyError) continue;
+				throw e;
+			}
+
+			break;
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		} while (true);
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
 
@@ -174,7 +189,7 @@ export class NotificationService implements OnApplicationShutdown {
 		const interval = notification.type === 'test' ? 0 : 2000;
 		setTimeout(interval, 'unread notification', { signal: this.#shutdownController.signal }).then(async () => {
 			const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${notifieeId}`);
-			if (latestReadNotificationId && (latestReadNotificationId >= (await redisIdPromise)!)) return;
+			if (latestReadNotificationId && (latestReadNotificationId >= redisId)) return;
 
 			this.globalEventService.publishMainStream(notifieeId, 'unreadNotification', packed);
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);
