@@ -5662,6 +5662,10 @@ export interface Locale extends ILocale {
          * オフのとき
          */
         "ifOff": string;
+        /**
+         * デバイス間でインストールしたテーマを同期
+         */
+        "enableSyncThemesBetweenDevices": string;
         "_chat": {
             /**
              * 送信者の名前を表示
