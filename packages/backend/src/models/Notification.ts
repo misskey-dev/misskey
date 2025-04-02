@@ -76,6 +76,12 @@ export type MiNotification = {
 	createdAt: string;
 	roleId: MiRole['id'];
 } | {
+	type: 'chatRoomInvitationReceived';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	invitationId: string;
+} | {
 	type: 'achievementEarned';
 	id: string;
 	createdAt: string;
@@ -88,6 +94,10 @@ export type MiNotification = {
 	fileId: MiDriveFile['id'];
 } | {
 	type: 'login';
+	id: string;
+	createdAt: string;
+} | {
+	type: 'createToken';
 	id: string;
 	createdAt: string;
 } | {

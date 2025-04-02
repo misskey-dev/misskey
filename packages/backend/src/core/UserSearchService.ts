@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import { type FollowingsRepository, MiUser, type UsersRepository } from '@/models/_.js';
+import { type FollowingsRepository, MiUser, type MutingsRepository, type UserProfilesRepository, type UsersRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import type { Config } from '@/config.js';
@@ -22,10 +22,19 @@ export class UserSearchService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
+
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
+
+		@Inject(DI.mutingsRepository)
+		private mutingsRepository: MutingsRepository,
+
 		private userEntityService: UserEntityService,
 	) {
 	}
@@ -58,7 +67,7 @@ export class UserSearchService {
 	 * @see {@link UserSearchService#buildSearchUserNoLoginQueries}
 	 */
 	@bindThis
-	public async search(
+	public async searchByUsernameAndHost(
 		params: {
 			username?: string | null,
 			host?: string | null,
@@ -201,5 +210,92 @@ export class UserSearchService {
 		userQuery.andWhere('user.isSuspended = FALSE');
 
 		return userQuery;
+	}
+
+	@bindThis
+	public async search(query: string, meId: MiUser['id'] | null, options: Partial<{
+		limit: number;
+		offset: number;
+		origin: 'local' | 'remote' | 'combined';
+	}> = {}) {
+		const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
+
+		const isUsername = query.startsWith('@') && !query.includes(' ') && query.indexOf('@', 1) === -1;
+
+		let users: MiUser[] = [];
+
+		const mutingQuery = meId == null ? null : this.mutingsRepository.createQueryBuilder('muting')
+			.select('muting.muteeId')
+			.where('muting.muterId = :muterId', { muterId: meId });
+
+		const nameQuery = this.usersRepository.createQueryBuilder('user')
+			.where(new Brackets(qb => {
+				qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(query) + '%' });
+
+				if (isUsername) {
+					qb.orWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(query.replace('@', '').toLowerCase()) + '%' });
+				} else if (this.userEntityService.validateLocalUsername(query)) { // Also search username if it qualifies as username
+					qb.orWhere('user.usernameLower LIKE :username', { username: '%' + sqlLikeEscape(query.toLowerCase()) + '%' });
+				}
+			}))
+			.andWhere(new Brackets(qb => {
+				qb
+					.where('user.updatedAt IS NULL')
+					.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
+			}))
+			.andWhere('user.isSuspended = FALSE');
+
+		if (mutingQuery) {
+			nameQuery.andWhere(`user.id NOT IN (${mutingQuery.getQuery()})`);
+			nameQuery.setParameters(mutingQuery.getParameters());
+		}
+
+		if (options.origin === 'local') {
+			nameQuery.andWhere('user.host IS NULL');
+		} else if (options.origin === 'remote') {
+			nameQuery.andWhere('user.host IS NOT NULL');
+		}
+
+		users = await nameQuery
+			.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
+			.limit(options.limit)
+			.offset(options.offset)
+			.getMany();
+
+		if (users.length < (options.limit ?? 30)) {
+			const profQuery = this.userProfilesRepository.createQueryBuilder('prof')
+				.select('prof.userId')
+				.where('prof.description ILIKE :query', { query: '%' + sqlLikeEscape(query) + '%' });
+
+			if (mutingQuery) {
+				profQuery.andWhere(`prof.userId NOT IN (${mutingQuery.getQuery()})`);
+				profQuery.setParameters(mutingQuery.getParameters());
+			}
+
+			if (options.origin === 'local') {
+				profQuery.andWhere('prof.userHost IS NULL');
+			} else if (options.origin === 'remote') {
+				profQuery.andWhere('prof.userHost IS NOT NULL');
+			}
+
+			const userQuery = this.usersRepository.createQueryBuilder('user')
+				.where(`user.id IN (${ profQuery.getQuery() })`)
+				.andWhere(new Brackets(qb => {
+					qb
+						.where('user.updatedAt IS NULL')
+						.orWhere('user.updatedAt > :activeThreshold', { activeThreshold: activeThreshold });
+				}))
+				.andWhere('user.isSuspended = FALSE')
+				.setParameters(profQuery.getParameters());
+
+			users = users.concat(await userQuery
+				.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
+				.limit(options.limit)
+				.offset(options.offset)
+				.getMany(),
+			);
+		}
+
+		return users;
 	}
 }

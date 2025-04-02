@@ -282,7 +282,6 @@ deleteAreYouSure: "Хотите удалить «{x}»?"
 resetAreYouSure: "На самом деле сбросить?"
 areYouSure: "Вы уверены?"
 saved: "Сохранено"
-messaging: "Сообщения"
 upload: "Загрузить"
 keepOriginalUploading: "Сохранить исходное изображение"
 keepOriginalUploadingDescription: "Сохраняет исходную версию при загрузке изображений. Если выключить, то при загрузке браузер генерирует изображение для публикации."
@@ -295,7 +294,6 @@ uploadFromUrlMayTakeTime: "Загрузка может занять некото
 explore: "Обзор"
 messageRead: "Прочитали"
 noMoreHistory: "История закончилась"
-startMessaging: "Начать общение"
 nUsersRead: "Прочитали {n}"
 agreeTo: "Я соглашаюсь с {0}"
 agree: "Согласен"
@@ -482,8 +480,6 @@ noteOf: "Что пишет {user}"
 quoteAttached: "Цитата"
 quoteQuestion: "Хотите добавить цитату?"
 attachAsFileQuestion: "Текста в буфере обмена слишком много. Прикрепить как текстовый файл?"
-noMessagesYet: "Пока ни одного сообщения"
-newMessageExists: "Новое сообщение"
 onlyOneFileCanBeAttached: "К сообщению можно прикрепить только один файл"
 signinRequired: "Пожалуйста, войдите"
 signinOrContinueOnRemote: "Чтобы продолжить, вам необходимо войти в аккаунт на своём сервере или зарегистрироваться / войти в аккаунт на этом."
@@ -1181,6 +1177,16 @@ keepOriginalFilenameDescription: "Если вы выключите данную 
 alwaysConfirmFollow: "Всегда подтверждать подписку"
 inquiry: "Связаться"
 messageToFollower: "Сообщение подписчикам"
+postForm: "Форма отправки"
+information: "Описание"
+_chat:
+  invitations: "Пригласить"
+  noHistory: "История пока пуста"
+  members: "Участники"
+  home: "Главная"
+  send: "Отправить"
+_settings:
+  webhook: "Вебхук"
 _delivery:
   stop: "Заморожено"
   _type:
@@ -1799,6 +1805,7 @@ _permissions:
   "read:gallery-likes": "Просмотр списка понравившегося в галерее"
   "write:gallery-likes": "Изменение списка понравившегося в галерее"
   "write:admin:reset-password": "Сбросить пароль пользователю"
+  "write:chat": "Писать и удалять сообщения"
 _auth:
   shareAccessTitle: "Разрешения для приложений"
   shareAccess: "Дать доступ для «{name}» к вашей учётной записи?"
@@ -1976,9 +1983,6 @@ _pages:
   newPage: "Создать страницу"
   editPage: "Править страницу"
   readPage: "Читать страницу"
-  created: "Страница успешно создана."
-  updated: "Страница успешно обновлена."
-  deleted: "Страница успешно удалена."
   pageSetting: "Настройки страницы"
   nameAlreadyExists: "Указанный адрес страницы уже существует."
   invalidNameTitle: "Указанный адрес страницы недопустим."
@@ -2150,3 +2154,7 @@ _reversi:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Не найдено"
+_search:
+  searchScopeAll: "Все"
+  searchScopeLocal: "Местная"
+  searchScopeUser: "Указанный пользователь"
