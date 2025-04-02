@@ -225,7 +225,7 @@ function pointerEvent(ev: PointerEvent) {
 	snapScroll.value = ev.pointerType === 'touch';
 }
 
-document.addEventListener('pointerdown', pointerEvent);
+window.document.addEventListener('pointerdown', pointerEvent);
 
 function onWheel(ev: WheelEvent) {
   // WheelEvent はマウスからしか発火しないのでスナップスクロールは無効化する
