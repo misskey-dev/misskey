@@ -304,7 +304,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	emojiPickerStyle: {
 		where: 'device',
-		default: 'auto' as 'auto' | 'popup' | 'drawer',
+		default: 'auto' as 'auto' | 'popup' | 'drawer' | 'window',
 	},
 	reportError: {
 		where: 'device',

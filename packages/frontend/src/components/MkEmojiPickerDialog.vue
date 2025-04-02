@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="modal"
 	v-slot="{ type, maxHeight }"
 	:zPriority="'middle'"
-	:preferType="prefer.s.emojiPickerStyle"
+	:preferType="asReactionPicker ? prefer.s.reactionPickerStyle : prefer.s.emojiPickerStyle === 'window' ? 'auto' : prefer.s.emojiPickerStyle"
 	:hasInteractionWithOtherFocusTrappedEls="true"
 	:transparentBg="true"
 	:manualShowing="manualShowing"
