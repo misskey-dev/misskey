@@ -7354,6 +7354,14 @@ export interface Locale extends ILocale {
          */
         "descriptionOfDisplayOrder": string;
         /**
+         * アカウント移行時にコピーする
+         */
+        "copyOnMoveAccount": string;
+        /**
+         * オンにすると、アカウントの移行が行われた際にロールを下のユーザから新しいユーザにコピーするようになります。サイレンスなどを引き継ぎたい場合に使用できます。
+         */
+        "descriptionOfCopyOnMoveAccount": string;
+        /**
          * モデレーターのメンバー編集を許可
          */
         "canEditMembersByModerator": string;
