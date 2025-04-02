@@ -22,5 +22,8 @@
 		mentionMe: 'rgb(212, 210, 76)',
 		hashtag: '#5bcbb0',
 		link: '@accent',
+		success: '@accent',
+		warn: 'rgb(255, 213, 82)',
+		error: 'rgb(255, 105, 82)',
 	},
 }
