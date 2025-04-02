@@ -9,7 +9,7 @@ services:
       service: misskey
     command: >
       bash -c "
-        corepack enable && corepack prepare
+        npm install -g pnpm
         pnpm -F backend i
         pnpm -F misskey-js i
         pnpm -F misskey-reversi i
@@ -20,7 +20,11 @@ services:
     depends_on:
       a.test:
         condition: service_healthy
+      misskey.a.test:
+        condition: service_healthy
       b.test:
+        condition: service_healthy
+      misskey.b.test:
         condition: service_healthy
     environment:
       - NODE_ENV=development
@@ -67,13 +71,17 @@ services:
         target: /misskey/pnpm-workspace.yaml
         read_only: true
       - type: bind
+        source: ../../../scripts/dependency-patches
+        target: /misskey/scripts/dependency-patches
+        read_only: true
+      - type: bind
         source: ./certificates/rootCA.crt
         target: /usr/local/share/ca-certificates/rootCA.crt
         read_only: true
     working_dir: /misskey
     entrypoint: >
       bash -c '
-        corepack enable && corepack prepare
+        npm install -g pnpm
         pnpm -F misskey-js i --frozen-lockfile
         pnpm -F backend i --frozen-lockfile
         exec "$0" "$@"
@@ -110,10 +118,14 @@ services:
         source: ../../../pnpm-workspace.yaml
         target: /misskey/pnpm-workspace.yaml
         read_only: true
+      - type: bind
+        source: ../../../scripts/dependency-patches
+        target: /misskey/scripts/dependency-patches
+        read_only: true
     working_dir: /misskey
     command: >
       bash -c "
-        corepack enable && corepack prepare
+        npm install -g pnpm
         pnpm -F backend i --frozen-lockfile
         pnpm exec tsc -p ./packages/backend/test-federation
         node ./packages/backend/test-federation/built/daemon.js
