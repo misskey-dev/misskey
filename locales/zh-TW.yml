@@ -1340,6 +1340,7 @@ compress: "壓縮"
 right: "右"
 bottom: "下"
 top: "上"
+embed: "嵌入"
 _chat:
   noMessagesYet: "尚無訊息"
   newMessage: "新訊息"
