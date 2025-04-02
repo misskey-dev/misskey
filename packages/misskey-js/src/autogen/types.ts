@@ -5132,6 +5132,11 @@ export type components = {
       isExplorable: boolean;
       /** @example false */
       asBadge: boolean;
+      /**
+       * @description True if the role is going to be copied to dest account on account move.
+       * @example false
+       */
+      copyOnMoveAccount: boolean;
       /** @example false */
       canEditMembersByModerator: boolean;
       policies: {
@@ -9347,6 +9352,7 @@ export type operations = {
           /** @default false */
           isExplorable?: boolean;
           asBadge: boolean;
+          copyOnMoveAccount?: boolean;
           canEditMembersByModerator: boolean;
           displayOrder: number;
           policies: Record<string, never>;
@@ -9622,6 +9628,7 @@ export type operations = {
           isAdministrator?: boolean;
           isExplorable?: boolean;
           asBadge?: boolean;
+          copyOnMoveAccount?: boolean;
           canEditMembersByModerator?: boolean;
           displayOrder?: number;
           policies?: Record<string, never>;
