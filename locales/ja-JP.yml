@@ -1340,6 +1340,7 @@ compress: "圧縮"
 right: "右"
 bottom: "下"
 top: "上"
+embed: "埋め込み"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
