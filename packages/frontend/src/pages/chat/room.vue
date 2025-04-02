@@ -148,11 +148,6 @@ useMutationObserver(timelineEl, {
 
 function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage): NormalizedChatMessage {
 	const reactions = [...message.reactions];
-	for (const record of reactions) {
-		if (room.value == null && record.user == null) { // 1on1の時はuserは省略される
-			record.user = message.fromUserId === $i.id ? user.value : $i;
-		}
-	}
 
 	return {
 		...message,
