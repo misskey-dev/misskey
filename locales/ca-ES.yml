@@ -1413,6 +1413,7 @@ _settings:
   showNavbarSubButtons: "Mostrar sub botons a la barra de navegació "
   ifOn: "Quan s'encén "
   ifOff: "Quan s'apaga "
+  enableSyncThemesBetweenDevices: "Sincronitzar els temes instal·lats entre dispositius"
   _chat:
     showSenderName: "Mostrar el nom del remitent"
     sendOnEnter: "Introdueix per enviar"
