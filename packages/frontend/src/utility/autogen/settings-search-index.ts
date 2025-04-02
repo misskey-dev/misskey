@@ -38,9 +38,9 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['dark', 'theme'],
 			},
 			{
-				id: '8wcoRp76b',
-				label: i18n.ts.setWallpaper,
-				keywords: ['wallpaper'],
+				id: 'jwW5HULqA',
+				label: i18n.ts._settings.enableSyncThemesBetweenDevices,
+				keywords: ['sync', 'themes', 'devices'],
 			},
 		],
 		label: i18n.ts.theme,
@@ -682,7 +682,7 @@ export const searchIndexes: SearchIndexItem[] = [
 		id: '9bNikHWzQ',
 		children: [
 			{
-				id: 'appYJbpkK',
+				id: 't6XtfnRm9',
 				label: i18n.ts._settings.showNavbarSubButtons,
 				keywords: ['navbar', 'sidebar', 'toggle', 'button', 'sub'],
 			},
@@ -861,24 +861,44 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['sync', 'profiles', 'devices'],
 			},
 			{
-				id: 'iEF0gqNAo',
+				id: 'wWH4pxMQN',
 				label: i18n.ts._deck.useSimpleUiForNonRootPages,
 				keywords: ['ui', 'root', 'page'],
 			},
 			{
-				id: 'BNdSeWxZn',
+				id: '3LR509BvD',
 				label: i18n.ts.defaultNavigationBehaviour,
 				keywords: ['default', 'navigation', 'behaviour', 'window'],
 			},
 			{
-				id: 'zT9pGm8DF',
+				id: 'ybU8RLXgm',
 				label: i18n.ts._deck.alwaysShowMainColumn,
 				keywords: ['always', 'show', 'main', 'column'],
 			},
 			{
-				id: '5dk2xv1vc',
+				id: 'xRasZyAVl',
 				label: i18n.ts._deck.columnAlign,
 				keywords: ['column', 'align'],
+			},
+			{
+				id: '6qcyPd0oJ',
+				label: i18n.ts._deck.deckMenuPosition,
+				keywords: ['menu', 'position'],
+			},
+			{
+				id: '4zk2Now4S',
+				label: i18n.ts._deck.navbarPosition,
+				keywords: ['navbar', 'position'],
+			},
+			{
+				id: 'CGNtJ2I3n',
+				label: i18n.ts._deck.columnGap,
+				keywords: ['column', 'gap', 'margin'],
+			},
+			{
+				id: 'rxPDMo7bE',
+				label: i18n.ts.setWallpaper,
+				keywords: ['wallpaper'],
 			},
 		],
 		label: i18n.ts.deck,

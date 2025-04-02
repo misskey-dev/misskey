@@ -371,7 +371,19 @@ export const PREF_DEF = {
 		default: true,
 	},
 	'deck.columnAlign': {
-		default: 'left' as 'left' | 'right' | 'center',
+		default: 'center' as 'left' | 'right' | 'center',
+	},
+	'deck.columnGap': {
+		default: 6,
+	},
+	'deck.menuPosition': {
+		default: 'bottom' as 'right' | 'bottom',
+	},
+	'deck.navbarPosition': {
+		default: 'left' as 'left' | 'top' | 'bottom',
+	},
+	'deck.wallpaper': {
+		default: null as string | null,
 	},
 
 	'chat.showSenderName': {

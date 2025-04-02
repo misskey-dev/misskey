@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<Transition name="fade">
 					<div v-show="showIndicator" :class="$style.new">
 						<button class="_buttonPrimary" :class="$style.newButton" @click="onIndicatorClick">
-							<i class="fas ti-fw fa-arrow-circle-down" :class="$style.newIcon"></i>{{ i18n.ts.newMessageExists }}
+							<i class="fas ti-fw fa-arrow-circle-down" :class="$style.newIcon"></i>{{ i18n.ts._chat.newMessage }}
 						</button>
 					</div>
 				</Transition>
@@ -391,6 +391,7 @@ const headerActions = computed(() => [{
 
 definePage(computed(() => !initializing.value ? user.value ? {
 	userName: user,
+	title: user.value.name ?? user.value.username,
 	avatar: user,
 } : {
 	title: room.value?.name,

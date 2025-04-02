@@ -5366,6 +5366,18 @@ export interface Locale extends ILocale {
      * 圧縮
      */
     "compress": string;
+    /**
+     * 右
+     */
+    "right": string;
+    /**
+     * 下
+     */
+    "bottom": string;
+    /**
+     * 上
+     */
+    "top": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -5501,7 +5513,7 @@ export interface Locale extends ILocale {
          */
         "thisUserAllowsChatOnlyFromFollowers": string;
         /**
-         * このユーザーはフォローしているユーザーからのみチャットを受け付けています。
+         * このユーザーは、このユーザーがフォローしているユーザーからのみチャットを受け付けています。
          */
         "thisUserAllowsChatOnlyFromFollowing": string;
         /**
@@ -5654,6 +5666,10 @@ export interface Locale extends ILocale {
          * オフのとき
          */
         "ifOff": string;
+        /**
+         * デバイス間でインストールしたテーマを同期
+         */
+        "enableSyncThemesBetweenDevices": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -8227,23 +8243,19 @@ export interface Locale extends ILocale {
              */
             "header": string;
             /**
-             * サイドバーの背景
+             * ナビゲーションバーの背景
              */
             "navBg": string;
             /**
-             * サイドバーの文字
+             * ナビゲーションバーの文字
              */
             "navFg": string;
             /**
-             * サイドバー文字(ホバー)
-             */
-            "navHoverFg": string;
-            /**
-             * サイドバー文字(アクティブ)
+             * ナビゲーションバー文字(アクティブ)
              */
             "navActive": string;
             /**
-             * サイドバーのインジケーター
+             * ナビゲーションバーのインジケーター
              */
             "navIndicator": string;
             /**
@@ -8263,7 +8275,7 @@ export interface Locale extends ILocale {
              */
             "mentionMe": string;
             /**
-             * Renote
+             * リノート
              */
             "renote": string;
             /**
@@ -8327,10 +8339,6 @@ export interface Locale extends ILocale {
              */
             "driveFolderBg": string;
             /**
-             * 壁紙のオーバーレイ
-             */
-            "wallpaperOverlay": string;
-            /**
              * バッジ
              */
             "badge": string;
@@ -8338,14 +8346,6 @@ export interface Locale extends ILocale {
              * チャットの背景
              */
             "messageBg": string;
-            /**
-             * アクセント (暗め)
-             */
-            "accentDarken": string;
-            /**
-             * アクセント (明るめ)
-             */
-            "accentLighten": string;
             /**
              * 強調された文字
              */
@@ -10070,6 +10070,18 @@ export interface Locale extends ILocale {
          */
         "columnAlign": string;
         /**
+         * カラム間のマージン
+         */
+        "columnGap": string;
+        /**
+         * デッキメニューの位置
+         */
+        "deckMenuPosition": string;
+        /**
+         * ナビゲーションバーの位置
+         */
+        "navbarPosition": string;
+        /**
          * カラムを追加
          */
         "addColumn": string;
@@ -10122,7 +10134,7 @@ export interface Locale extends ILocale {
          */
         "introduction": string;
         /**
-         * 画面の右にある + を押して、いつでもカラムを追加できます。
+         * カラムを追加するには、画面の + をクリックします。
          */
         "introduction2": string;
         /**
