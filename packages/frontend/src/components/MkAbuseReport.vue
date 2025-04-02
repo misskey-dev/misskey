@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts.target }}: <MkAcct :user="report.targetUser"/></template>
 			<template #suffix>#{{ report.targetUserId.toUpperCase() }}</template>
 
-			<div style="container-type: inline-size;">
+			<div style="height: 300px; --MI-stickyTop: 0; --MI-stickyBottom: 0;">
 				<RouterView :router="targetRouter"/>
 			</div>
 		</MkFolder>
@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts.reporter }}: <MkAcct :user="report.reporter"/></template>
 			<template #suffix>#{{ report.reporterId.toUpperCase() }}</template>
 
-			<div style="container-type: inline-size;">
+			<div style="height: 300px; --MI-stickyTop: 0; --MI-stickyBottom: 0;">
 				<RouterView :router="reporterRouter"/>
 			</div>
 		</MkFolder>

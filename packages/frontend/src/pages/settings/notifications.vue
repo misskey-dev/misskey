@@ -38,7 +38,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<div class="_gaps_m">
 			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
-			<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
 		</div>
 	</FormSection>
 	<FormSection>
@@ -92,10 +91,6 @@ const allowButton = useTemplateRef('allowButton');
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
 const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
 const userLists = await misskeyApi('users/lists/list');
-
-async function readAllUnreadNotes() {
-	await os.apiWithDialog('i/read-all-unread-notes');
-}
 
 async function readAllNotifications() {
 	await os.apiWithDialog('notifications/mark-all-as-read');

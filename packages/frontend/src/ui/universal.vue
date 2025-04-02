@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
+	<XSidebar v-if="!isMobile" :class="$style.sidebar" :showWidgetButton="!isDesktop" @widgetButtonClick="widgetsShowing = true"/>
 
 	<div :class="$style.contents" @contextmenu.stop="onContextmenu">
 		<div>
@@ -13,10 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XAnnouncements v-if="$i"/>
 			<XStatusBars :class="$style.statusbars"/>
 		</div>
-		<div :class="$style.content">
-			<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']"/>
-			<RouterView v-else/>
-		</div>
+		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :class="$style.content"/>
+		<RouterView v-else :class="$style.content"/>
 		<div v-if="isMobile" ref="navFooter" :class="$style.nav">
 			<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
 			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
@@ -34,8 +32,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="isDesktop && !pageMetadata?.needWideArea" :class="$style.widgets">
 		<XWidgets/>
 	</div>
-
-	<button v-if="!isDesktop && !pageMetadata?.needWideArea && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
 
 	<Transition
 		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
@@ -97,10 +93,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, provide, onMounted, computed, ref, watch, useTemplateRef } from 'vue';
 import { instanceName } from '@@/js/config.js';
-import { CURRENT_STICKY_BOTTOM } from '@@/js/const.js';
 import { isLink } from '@@/js/is-link.js';
 import XCommon from './_common_/common.vue';
-import type { Ref } from 'vue';
 import type { PageMetadata } from '@/page.js';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os.js';
@@ -200,44 +194,19 @@ const onContextmenu = (ev) => {
 };
 
 const navFooterHeight = ref(0);
-provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 
 watch(navFooter, () => {
 	if (navFooter.value) {
 		navFooterHeight.value = navFooter.value.offsetHeight;
-		window.document.body.style.setProperty('--MI-stickyBottom', `${navFooterHeight.value}px`);
 		window.document.body.style.setProperty('--MI-minBottomSpacing', 'var(--MI-minBottomSpacingMobile)');
 	} else {
 		navFooterHeight.value = 0;
-		window.document.body.style.setProperty('--MI-stickyBottom', '0px');
 		window.document.body.style.setProperty('--MI-minBottomSpacing', '0px');
 	}
 }, {
 	immediate: true,
 });
 </script>
-
-<style>
-html,
-body {
-	width: 100%;
-	height: 100%;
-	overflow: clip;
-	position: fixed;
-	top: 0;
-	left: 0;
-	overscroll-behavior: none;
-}
-
-#misskey_app {
-	width: 100%;
-	height: 100%;
-	overflow: clip;
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-</style>
 
 <style lang="scss" module>
 $ui-font-size: 1em; // TODO: どこかに集約したい
@@ -284,7 +253,7 @@ $widgets-hide-threshold: 1090px;
 .transition_widgetsDrawer_enterFrom,
 .transition_widgetsDrawer_leaveTo {
 	opacity: 0;
-	transform: translateX(240px);
+	transform: translateX(-240px);
 }
 
 .root {
@@ -414,20 +383,6 @@ $widgets-hide-threshold: 1090px;
 	}
 }
 
-.widgetButton {
-	display: block;
-	position: fixed;
-	z-index: 1000;
-	bottom: 32px;
-	right: 32px;
-	width: 64px;
-	height: 64px;
-	border-radius: 100%;
-	box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
-	font-size: 22px;
-	background: var(--MI_THEME-panel);
-}
-
 .widgetsDrawerBg {
 	z-index: 1001;
 }
@@ -435,7 +390,7 @@ $widgets-hide-threshold: 1090px;
 .widgetsDrawer {
 	position: fixed;
 	top: 0;
-	right: 0;
+	left: 0;
 	z-index: 1001;
 	width: 310px;
 	height: 100dvh;

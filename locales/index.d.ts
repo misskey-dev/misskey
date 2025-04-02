@@ -1175,10 +1175,6 @@ export interface Locale extends ILocale {
      */
     "saved": string;
     /**
-     * チャット
-     */
-    "messaging": string;
-    /**
      * アップロード
      */
     "upload": string;
@@ -1227,9 +1223,9 @@ export interface Locale extends ILocale {
      */
     "noMoreHistory": string;
     /**
-     * チャットを開始
+     * チャットを始める
      */
-    "startMessaging": string;
+    "startChat": string;
     /**
      * {n}人が読みました
      */
@@ -1982,14 +1978,6 @@ export interface Locale extends ILocale {
      * クリップボードのテキストが長いです。テキストファイルとして添付しますか？
      */
     "attachAsFileQuestion": string;
-    /**
-     * まだチャットはありません
-     */
-    "noMessagesYet": string;
-    /**
-     * 新しいメッセージがあります
-     */
-    "newMessageExists": string;
     /**
      * メッセージに添付できるファイルはひとつです
      */
@@ -5358,6 +5346,211 @@ export interface Locale extends ILocale {
      * 情報
      */
     "information": string;
+    /**
+     * チャット
+     */
+    "chat": string;
+    /**
+     * 旧設定情報を移行
+     */
+    "migrateOldSettings": string;
+    /**
+     * 通常これは自動で行われていますが、何らかの理由により上手く移行されなかった場合は手動で移行処理をトリガーできます。現在の設定情報は上書きされます。
+     */
+    "migrateOldSettings_description": string;
+    /**
+     * 圧縮
+     */
+    "compress": string;
+    /**
+     * 右
+     */
+    "right": string;
+    /**
+     * 下
+     */
+    "bottom": string;
+    /**
+     * 上
+     */
+    "top": string;
+    "_chat": {
+        /**
+         * まだメッセージはありません
+         */
+        "noMessagesYet": string;
+        /**
+         * 新しいメッセージ
+         */
+        "newMessage": string;
+        /**
+         * 個人チャット
+         */
+        "individualChat": string;
+        /**
+         * 特定ユーザーとの一対一のチャットができます。
+         */
+        "individualChat_description": string;
+        /**
+         * ルームチャット
+         */
+        "roomChat": string;
+        /**
+         * 複数人でのチャットができます。
+         * また、個人チャットを許可していないユーザーとでも、相手が受け入れればチャットができます。
+         */
+        "roomChat_description": string;
+        /**
+         * ルームを作成
+         */
+        "createRoom": string;
+        /**
+         * ユーザーを招待してチャットを始めましょう
+         */
+        "inviteUserToChat": string;
+        /**
+         * 作成したルーム
+         */
+        "yourRooms": string;
+        /**
+         * 参加中のルーム
+         */
+        "joiningRooms": string;
+        /**
+         * 招待
+         */
+        "invitations": string;
+        /**
+         * 招待はありません
+         */
+        "noInvitations": string;
+        /**
+         * 履歴
+         */
+        "history": string;
+        /**
+         * 履歴はありません
+         */
+        "noHistory": string;
+        /**
+         * ルームはありません
+         */
+        "noRooms": string;
+        /**
+         * ユーザーを招待
+         */
+        "inviteUser": string;
+        /**
+         * 送信した招待
+         */
+        "sentInvitations": string;
+        /**
+         * 参加
+         */
+        "join": string;
+        /**
+         * 無視
+         */
+        "ignore": string;
+        /**
+         * ルームから退出
+         */
+        "leave": string;
+        /**
+         * メンバー
+         */
+        "members": string;
+        /**
+         * メッセージを検索
+         */
+        "searchMessages": string;
+        /**
+         * ホーム
+         */
+        "home": string;
+        /**
+         * 送信
+         */
+        "send": string;
+        /**
+         * 改行
+         */
+        "newline": string;
+        /**
+         * このルームをミュート
+         */
+        "muteThisRoom": string;
+        /**
+         * ルームを削除
+         */
+        "deleteRoom": string;
+        /**
+         * このサーバー、またはこのアカウントでチャットは有効化されていません。
+         */
+        "chatNotAvailableForThisAccountOrServer": string;
+        /**
+         * 相手のアカウントでチャット機能が使えない状態になっています。
+         */
+        "chatNotAvailableInOtherAccount": string;
+        /**
+         * このユーザーとのチャットを開始できません
+         */
+        "cannotChatWithTheUser": string;
+        /**
+         * チャットが使えない状態になっているか、相手がチャットを開放していません。
+         */
+        "cannotChatWithTheUser_description": string;
+        /**
+         * チャットする
+         */
+        "chatWithThisUser": string;
+        /**
+         * このユーザーはフォロワーからのみチャットを受け付けています。
+         */
+        "thisUserAllowsChatOnlyFromFollowers": string;
+        /**
+         * このユーザーは、このユーザーがフォローしているユーザーからのみチャットを受け付けています。
+         */
+        "thisUserAllowsChatOnlyFromFollowing": string;
+        /**
+         * このユーザーは相互フォローのユーザーからのみチャットを受け付けています。
+         */
+        "thisUserAllowsChatOnlyFromMutualFollowing": string;
+        /**
+         * このユーザーは誰からもチャットを受け付けていません。
+         */
+        "thisUserNotAllowedChatAnyone": string;
+        /**
+         * チャットを許可する相手
+         */
+        "chatAllowedUsers": string;
+        /**
+         * 自分からチャットメッセージを送った相手とはこの設定に関わらずチャットが可能です。
+         */
+        "chatAllowedUsers_note": string;
+        "_chatAllowedUsers": {
+            /**
+             * 誰でも
+             */
+            "everyone": string;
+            /**
+             * 自分のフォロワーのみ
+             */
+            "followers": string;
+            /**
+             * 自分がフォローしているユーザーのみ
+             */
+            "following": string;
+            /**
+             * 相互フォローのユーザーのみ
+             */
+            "mutual": string;
+            /**
+             * 誰も許可しない
+             */
+            "none": string;
+        };
+    };
     "_emojiPalette": {
         /**
          * パレット
@@ -5453,6 +5646,36 @@ export interface Locale extends ILocale {
          * 有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。
          */
         "makeEveryTextElementsSelectable_description": string;
+        /**
+         * アイコンをスクロールに追従させる
+         */
+        "useStickyIcons": string;
+        /**
+         * ナビゲーションバーに副ボタンを表示
+         */
+        "showNavbarSubButtons": string;
+        /**
+         * オンのとき
+         */
+        "ifOn": string;
+        /**
+         * オフのとき
+         */
+        "ifOff": string;
+        /**
+         * デバイス間でインストールしたテーマを同期
+         */
+        "enableSyncThemesBetweenDevices": string;
+        "_chat": {
+            /**
+             * 送信者の名前を表示
+             */
+            "showSenderName": string;
+            /**
+             * Enterで送信
+             */
+            "sendOnEnter": string;
+        };
     };
     "_preferencesProfile": {
         /**
@@ -7285,6 +7508,10 @@ export interface Locale extends ILocale {
              * リストのインポートを許可
              */
             "canImportUserLists": string;
+            /**
+             * チャットを許可
+             */
+            "canChat": string;
         };
         "_condition": {
             /**
@@ -8012,23 +8239,19 @@ export interface Locale extends ILocale {
              */
             "header": string;
             /**
-             * サイドバーの背景
+             * ナビゲーションバーの背景
              */
             "navBg": string;
             /**
-             * サイドバーの文字
+             * ナビゲーションバーの文字
              */
             "navFg": string;
             /**
-             * サイドバー文字(ホバー)
-             */
-            "navHoverFg": string;
-            /**
-             * サイドバー文字(アクティブ)
+             * ナビゲーションバー文字(アクティブ)
              */
             "navActive": string;
             /**
-             * サイドバーのインジケーター
+             * ナビゲーションバーのインジケーター
              */
             "navIndicator": string;
             /**
@@ -8048,7 +8271,7 @@ export interface Locale extends ILocale {
              */
             "mentionMe": string;
             /**
-             * Renote
+             * リノート
              */
             "renote": string;
             /**
@@ -8112,10 +8335,6 @@ export interface Locale extends ILocale {
              */
             "driveFolderBg": string;
             /**
-             * 壁紙のオーバーレイ
-             */
-            "wallpaperOverlay": string;
-            /**
              * バッジ
              */
             "badge": string;
@@ -8123,14 +8342,6 @@ export interface Locale extends ILocale {
              * チャットの背景
              */
             "messageBg": string;
-            /**
-             * アクセント (暗め)
-             */
-            "accentDarken": string;
-            /**
-             * アクセント (明るめ)
-             */
-            "accentLighten": string;
             /**
              * 強調された文字
              */
@@ -8154,6 +8365,10 @@ export interface Locale extends ILocale {
          * リアクション選択時
          */
         "reaction": string;
+        /**
+         * チャットのメッセージ
+         */
+        "chatMessage": string;
     };
     "_soundSettings": {
         /**
@@ -8726,6 +8941,14 @@ export interface Locale extends ILocale {
          * 違反を報告する
          */
         "write:report-abuse": string;
+        /**
+         * チャットを操作する
+         */
+        "write:chat": string;
+        /**
+         * チャットを閲覧する
+         */
+        "read:chat": string;
     };
     "_auth": {
         /**
@@ -9677,6 +9900,10 @@ export interface Locale extends ILocale {
          */
         "roleAssigned": string;
         /**
+         * チャットルームへ招待されました
+         */
+        "chatRoomInvitationReceived": string;
+        /**
          * プッシュ通知の更新をしました
          */
         "emptyPushNotificationMessage": string;
@@ -9786,6 +10013,10 @@ export interface Locale extends ILocale {
              */
             "roleAssigned": string;
             /**
+             * チャットルームへ招待された
+             */
+            "chatRoomInvitationReceived": string;
+            /**
              * 実績の獲得
              */
             "achievementEarned": string;
@@ -9834,6 +10065,18 @@ export interface Locale extends ILocale {
          * カラムの寄せ
          */
         "columnAlign": string;
+        /**
+         * カラム間のマージン
+         */
+        "columnGap": string;
+        /**
+         * デッキメニューの位置
+         */
+        "deckMenuPosition": string;
+        /**
+         * ナビゲーションバーの位置
+         */
+        "navbarPosition": string;
         /**
          * カラムを追加
          */
@@ -9887,7 +10130,7 @@ export interface Locale extends ILocale {
          */
         "introduction": string;
         /**
-         * 画面の右にある + を押して、いつでもカラムを追加できます。
+         * カラムを追加するには、画面の + をクリックします。
          */
         "introduction2": string;
         /**
@@ -10314,6 +10557,10 @@ export interface Locale extends ILocale {
          * ギャラリーの投稿を削除
          */
         "deleteGalleryPost": string;
+        /**
+         * チャットルームを削除
+         */
+        "deleteChatRoom": string;
         /**
          * プロキシアカウントの説明を更新
          */
