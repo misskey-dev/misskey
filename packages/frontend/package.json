@@ -5,7 +5,6 @@
 	"scripts": {
 		"watch": "vite",
 		"build": "vite build",
-		"build-search-index": "vite-node --config \"./vite-node.config.ts\" \"./scripts/generate-search-index.ts\"",
 		"storybook-dev": "nodemon --verbose --watch src --ext \"mdx,ts,vue\" --ignore \"*.stories.ts\" --exec \"pnpm build-storybook-pre && pnpm exec storybook dev -p 6006 --ci\"",
 		"build-storybook-pre": "(tsc -p .storybook || echo done.) && node .storybook/generate.js && node .storybook/preload-locale.js && node .storybook/preload-theme.js",
 		"build-storybook": "pnpm build-storybook-pre && storybook build --webpack-stats-json storybook-static",
