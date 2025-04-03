@@ -4,7 +4,7 @@
  */
 
 import { parse as vueSfcParse } from 'vue/compiler-sfc';
-import type { LogOptions, Plugin } from 'vite';
+import { LogOptions, normalizePath, Plugin } from 'vite';
 import fs from 'node:fs';
 import { glob } from 'glob';
 import JSON5 from 'json5';
@@ -1138,12 +1138,8 @@ function parseArrayExpression(expr: string): any[] {
 	}
 }
 
-export async function analyzeVueProps(options: Options & {
-	transformedCodeCache: Record<string, string>,
-}): Promise<void> {
+export async function analyzeVueProps(options: Options, assigner: MarkerIdAssigner): Promise<void> {
 	initLogger(options);
-
-	const allMarkers: SearchIndexItem[] = [];
 
 	//  対象ファイルパスを glob で展開
 	const filePaths = options.targetFilePaths.reduce<string[]>((acc, filePathPattern) => {
@@ -1152,23 +1148,34 @@ export async function analyzeVueProps(options: Options & {
 	}, []);
 
 	logger.info(`Found ${filePaths.length} matching files to analyze`);
-
-	for (const filePath of filePaths) {
+	const files: [string, string][] = filePaths.map(filePath => {
 		const absolutePath = path.join(process.cwd(), filePath);
 		const id = absolutePath.replace(/\\/g, '/'); // 絶対パスに変換
-		const code = options.transformedCodeCache[id]; // options 経由でキャッシュ参照
+		const code = assigner.getCached(id); // options 経由でキャッシュ参照
 		if (!code) { // キャッシュミスの場合
 			logger.error(`Error: No cached code found for: ${id}.`); // エラーログ
 			throw new Error(`No cached code found for: ${id}.`); // エラーを投げる
 		}
+		return [id, code.code];
+	});
+	await analyzeVuePropsByFiles({
+		exportFilePath: options.exportFilePath,
+		files,
+	})
+}
 
+export async function analyzeVuePropsByFiles(options: Pick<Options, 'exportFilePath'> & {
+	files: [id: string, code: string][]
+}): Promise<void> {
+	const allMarkers: SearchIndexItem[] = [];
+	for (const [id, code] of options.files) {
 		try {
-			const { descriptor, errors } = vueSfcParse(options.transformedCodeCache[id], {
-				filename: filePath,
+			const { descriptor, errors } = vueSfcParse(code, {
+				filename: id,
 			});
 
 			if (errors.length > 0) {
-				logger.error(`Compile Error: ${filePath}, ${errors}`);
+				logger.error(`Compile Error: ${id}, ${errors}`);
 				continue; // エラーが発生したファイルはスキップ
 			}
 
@@ -1176,12 +1183,12 @@ export async function analyzeVueProps(options: Options & {
 
 			if (fileMarkers && fileMarkers.length > 0) {
 				allMarkers.push(...fileMarkers); // すべてのマーカーを収集
-				logger.info(`Successfully extracted ${fileMarkers.length} markers from ${filePath}`);
+				logger.info(`Successfully extracted ${fileMarkers.length} markers from ${id}`);
 			} else {
-				logger.info(`No markers found in ${filePath}`);
+				logger.info(`No markers found in ${id}`);
 			}
 		} catch (error) {
-			logger.error(`Error analyzing file ${filePath}:`, error);
+			logger.error(`Error analyzing file ${id}:`, error);
 		}
 	}
 
@@ -1202,55 +1209,53 @@ interface MarkerRelation {
 	node: VueAstNode;
 }
 
-async function processVueFile(
-	code: string,
-	id: string,
-	options: Options,
-	transformedCodeCache: Record<string, string>
-): Promise<{
+type TransformedCode = {
 	code: string,
 	map: any,
-	transformedCodeCache: Record<string, string>
-}> {
-	const normalizedId = id.replace(/\\/g, '/'); // ファイルパスを正規化
+};
 
-	// 開発モード時はコード内容に変更があれば常に再処理する
-	// コード内容が同じ場合のみキャッシュを使用
-	const isDevMode = process.env.NODE_ENV === 'development';
+export class MarkerIdAssigner {
+	// key: file id
+	private cache: Map<string, TransformedCode>;
 
-	const s = new MagicString(code); // magic-string のインスタンスを作成
-
-	if (!isDevMode && transformedCodeCache[normalizedId] && transformedCodeCache[normalizedId].includes('markerId=')) {
-		logger.info(`Using cached version for ${id}`);
-		return {
-			code: transformedCodeCache[normalizedId],
-			map: s.generateMap({ source: id, includeContent: true }),
-			transformedCodeCache
-		};
+	constructor() {
+		this.cache = new Map();
 	}
 
-	// すでに処理済みのファイルでコードに変更がない場合はキャッシュを返す
-	if (transformedCodeCache[normalizedId] === code) {
-		logger.info(`Code unchanged for ${id}, using cached version`);
-		return {
-			code: transformedCodeCache[normalizedId],
-			map: s.generateMap({ source: id, includeContent: true }),
-			transformedCodeCache
-		};
+	public onInvalidate(id: string) {
+		this.cache.delete(id);
 	}
 
-	const parsed = vueSfcParse(code, { filename: id });
-	if (!parsed.descriptor.template) {
-		return {
-			code,
-			map: s.generateMap({ source: id, includeContent: true }),
-			transformedCodeCache
-		};
+	public processFile(id: string, code: string): TransformedCode {
+		// try cache first
+		if (this.cache.has(id)) {
+			return this.cache.get(id);
+		}
+		const transformed = this.#processImpl(id, code);
+		this.cache.set(id, transformed);
+		return transformed;
 	}
-	const ast = parsed.descriptor.template.ast; // テンプレート AST を取得
-	const markerRelations: MarkerRelation[] = []; //  MarkerRelation 配列を初期化
 
-	if (ast) {
+	#processImpl(id: string, code: string): TransformedCode {
+		const s = new MagicString(code); // magic-string のインスタンスを作成
+
+		const parsed = vueSfcParse(code, { filename: id });
+		if (!parsed.descriptor.template) {
+			return {
+				code,
+				map: s.generateMap({ source: id, includeContent: true }),
+			};
+		}
+		const ast = parsed.descriptor.template.ast; // テンプレート AST を取得
+		const markerRelations: MarkerRelation[] = []; //  MarkerRelation 配列を初期化
+
+		if (!ast) {
+			return {
+				code: s.toString(), // 変更後のコードを返す
+				map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
+			};
+		}
+
 		function traverse(node: any, currentParent?: any) {
 			if (node.type === 1 && node.tag === 'SearchMarker') {
 				// 行番号はコード先頭からの改行数で取得
@@ -1416,39 +1421,42 @@ async function processVueFile(
 				}
 			}
 		}
+
+		return {
+			code: s.toString(), // 変更後のコードを返す
+			map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
+		};
 	}
 
-	const transformedCode = s.toString(); //  変換後のコードを取得
-	transformedCodeCache[normalizedId] = transformedCode; //  変換後のコードをキャッシュに保存
-
-	return {
-		code: transformedCode, // 変更後のコードを返す
-		map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
-		transformedCodeCache // キャッシュも返す
-	};
+	getCached(id: string) {
+		return this.cache.get(id);
+	}
 }
 
-export async function generateSearchIndex(options: Options, transformedCodeCache: Record<string, string> = {}) {
+export async function generateSearchIndex(options: Options, assigner: MarkerIdAssigner) {
 	const filePaths = options.targetFilePaths.reduce<string[]>((acc, filePathPattern) => {
 		const matchedFiles = glob.sync(filePathPattern);
 		return [...acc, ...matchedFiles];
 	}, []);
 
+	const files: [string, string][] = [];
+
 	for (const filePath of filePaths) {
 		const id = path.resolve(filePath); // 絶対パスに変換
 		const code = fs.readFileSync(filePath, 'utf-8'); // ファイル内容を読み込む
-		const { transformedCodeCache: newCache } = await processVueFile(code, id, options, transformedCodeCache); // processVueFile 関数を呼び出す
-		transformedCodeCache = newCache; // キャッシュを更新
+		const transformed = assigner.processFile(normalizePath(id), code);
+		files.push([id, transformed.code]);
 	}
 
-	await analyzeVueProps({ ...options, transformedCodeCache }); // 開発サーバー起動時にも analyzeVueProps を実行
-
-	return transformedCodeCache; // キャッシュを返す
+	await analyzeVuePropsByFiles({
+		exportFilePath: options.exportFilePath,
+		files,
+	})
 }
 
 // Rollup プラグインとして export
 export default function pluginCreateSearchIndex(options: Options): Plugin {
-	let transformedCodeCache: Record<string, string> = {}; //  キャッシュオブジェクトをプラグインスコープで定義
+	const assigner = new MarkerIdAssigner();
 	const isDevServer = process.env.NODE_ENV === 'development'; // 開発サーバーかどうか
 
 	initLogger(options); // ロガーを初期化
@@ -1462,7 +1470,11 @@ export default function pluginCreateSearchIndex(options: Options): Plugin {
 				return;
 			}
 
-			transformedCodeCache = await generateSearchIndex(options, transformedCodeCache);
+			await generateSearchIndex(options, assigner);
+		},
+
+		watchChange(id) {
+			assigner.onInvalidate(id);
 		},
 
 		async transform(code, id) {
@@ -1491,21 +1503,19 @@ export default function pluginCreateSearchIndex(options: Options): Plugin {
 			}
 
 			// ファイルの内容が変更された場合は再処理を行う
-			const normalizedId = id.replace(/\\/g, '/');
-			const hasContentChanged = !transformedCodeCache[normalizedId] || transformedCodeCache[normalizedId] !== code;
+			const hasContentChanged = true; // TODO
 
-			const transformed = await processVueFile(code, id, options, transformedCodeCache);
-			transformedCodeCache = transformed.transformedCodeCache; // キャッシュを更新
+			const transformed = assigner.processFile(id, code);
 
 			if (isDevServer && hasContentChanged) {
-				await analyzeVueProps({ ...options, transformedCodeCache }); // ファイルが変更されたときのみ分析を実行
+				await analyzeVueProps(options, assigner); // ファイルが変更されたときのみ分析を実行
 			}
 
 			return transformed;
 		},
 
 		async writeBundle() {
-			await analyzeVueProps({ ...options, transformedCodeCache }); // ビルド時にも analyzeVueProps を実行
+			await analyzeVueProps(options, assigner); // ビルド時にも analyzeVueProps を実行
 		},
 	};
 }

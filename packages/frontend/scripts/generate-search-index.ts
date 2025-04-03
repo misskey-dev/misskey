@@ -4,11 +4,12 @@
  */
 
 import { searchIndexes } from '../vite.config.js';
-import { generateSearchIndex } from '../lib/vite-plugin-create-search-index.js';
+import { generateSearchIndex, MarkerIdAssigner } from '../lib/vite-plugin-create-search-index.js';
 
 async function main() {
+	const assigner = new MarkerIdAssigner();
 	for (const searchIndex of searchIndexes) {
-		await generateSearchIndex(searchIndex);
+		await generateSearchIndex(searchIndex, assigner);
 	}
 }
 
