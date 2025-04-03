@@ -1455,7 +1455,7 @@ export async function generateSearchIndex(options: Options, assigner: MarkerIdAs
 }
 
 // Rollup プラグインとして export
-export default function pluginCreateSearchIndex(options: Options): Plugin<MarkerIdAssigner> {
+export default function pluginCreateSearchIndex(options: Options): Plugin {
 	const assigner = new MarkerIdAssigner();
 	const isDevServer = process.env.NODE_ENV === 'development'; // 開発サーバーかどうか
 
@@ -1464,7 +1464,6 @@ export default function pluginCreateSearchIndex(options: Options): Plugin<Marker
 	return {
 		name: 'createSearchIndex',
 		enforce: 'pre',
-		api: assigner,
 
 		async buildStart() {
 			if (!isDevServer) {
