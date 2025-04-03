@@ -38,7 +38,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
 				tag="div" class="_gaps"
 			>
-				<XMessage v-for="message in messages.toReversed()" :key="message.id" :message="message"/>
+				<template v-for="item in timeline.toReversed()" :key="item.id">
+					<XMessage v-if="item.type === 'item'" :message="item.data"/>
+					<div v-else-if="item.type === 'date'" :class="$style.dateDivider">
+						<span><i class="ti ti-chevron-up"></i> {{ item.nextText }}</span>
+						<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
+						<span>{{ item.prevText }} <i class="ti ti-chevron-down"></i></span>
+					</div>
+				</template>
 			</TransitionGroup>
 		</div>
 
@@ -101,6 +108,7 @@ import MkButton from '@/components/MkButton.vue';
 import { useRouter } from '@/router.js';
 import { useMutationObserver } from '@/use/use-mutation-observer.js';
 import MkInfo from '@/components/MkInfo.vue';
+import { makeDateSeparatedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 
 const $i = ensureSignin();
 const router = useRouter();
@@ -126,6 +134,7 @@ const room = ref<Misskey.entities.ChatRoom | null>(null);
 const connection = ref<Misskey.IChannelConnection<Misskey.Channels['chatUser']> | Misskey.IChannelConnection<Misskey.Channels['chatRoom']> | null>(null);
 const showIndicator = ref(false);
 const timelineEl = useTemplateRef('timelineEl');
+const timeline = makeDateSeparatedTimelineComputedRef(messages);
 
 const SCROLL_HEAD_THRESHOLD = 200;
 
@@ -488,5 +497,19 @@ definePage(computed(() => {
 .fade-enter-from, .fade-leave-to {
 	transition: opacity 0.5s;
 	opacity: 0;
+}
+
+.dateDivider {
+	display: flex;
+	font-size: 85%;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5em;
+	opacity: 0.75;
+	border: solid 0.5px var(--MI_THEME-divider);
+	border-radius: 999px;
+	width: fit-content;
+	padding: 0.5em 1em;
+	margin: 0 auto;
 }
 </style>
