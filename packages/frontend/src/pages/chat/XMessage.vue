@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footer">
 			<button class="_textButton" style="color: currentColor;" @click="showMenu"><i class="ti ti-dots-circle-horizontal"></i></button>
 			<MkTime :class="$style.time" :time="message.createdAt"/>
-			<MkA v-if="isSearchResult && 'toRoom' in message && message.toRoom != null" :to="`/chat/room/${message.toRoomId}`">{{ message.toRoom?.name }}</MkA>
-			<MkA v-if="isSearchResult && 'toUser' in message && message.toUser != null && isMe" :to="`/chat/user/${message.toUserId}`">@{{ message.toUser?.username }}</MkA>
+			<MkA v-if="isSearchResult && 'toRoom' in message && message.toRoom != null" :to="`/chat/room/${message.toRoomId}`">{{ message.toRoom.name }}</MkA>
+			<MkA v-if="isSearchResult && 'toUser' in message && message.toUser != null && isMe" :to="`/chat/user/${message.toUserId}`">@{{ message.toUser.username }}</MkA>
 		</div>
 		<TransitionGroup
 			:enterActiveClass="prefer.s.animation ? $style.transition_reaction_enterActive : ''"
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:moveClass="prefer.s.animation ? $style.transition_reaction_move : ''"
 			tag="div" :class="$style.reactions"
 		>
-			<div v-for="record in message.reactions" :key="record.reaction + record.user?.id" :class="[$style.reaction, record.user?.id === $i.id ? $style.reactionMy : null]" @click="onReactionClick(record)">
+			<div v-for="record in message.reactions" :key="record.reaction + record.user.id" :class="[$style.reaction, record.user.id === $i.id ? $style.reactionMy : null]" @click="onReactionClick(record)">
 				<MkAvatar :user="record.user!" :link="false" :class="$style.reactionAvatar"/>
 				<MkReactionIcon
 					:withTooltip="true"
@@ -111,13 +111,13 @@ function react(ev: MouseEvent) {
 function onReactionClick(record: Misskey.entities.ChatMessage['reactions'][0]) {
 	if (!$i.policies.canChat) return;
 
-	if (record.user?.id === $i.id) {
+	if (record.user.id === $i.id) {
 		misskeyApi('chat/messages/unreact', {
 			messageId: props.message.id,
 			reaction: record.reaction,
 		});
 	} else {
-		if (!props.message.reactions.some(r => r.user?.id === $i.id && r.reaction === record.reaction)) {
+		if (!props.message.reactions.some(r => r.user.id === $i.id && r.reaction === record.reaction)) {
 			sound.playMisskeySfx('reaction');
 			misskeyApi('chat/messages/react', {
 				messageId: props.message.id,

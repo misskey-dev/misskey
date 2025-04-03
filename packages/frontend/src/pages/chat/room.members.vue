@@ -14,8 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<hr v-if="memberships.length > 0">
 
 	<div v-for="membership in memberships" :key="membership.id" :class="$style.membership">
-		<MkA v-if="membership.user != null" :class="$style.membershipBody" :to="`${userPage(membership.user)}`">
-			<MkUserCardMini :user="membership.user"/>
+		<MkA :class="$style.membershipBody" :to="`${userPage(membership.user!)}`">
+			<MkUserCardMini :user="membership.user!"/>
 		</MkA>
 	</div>
 

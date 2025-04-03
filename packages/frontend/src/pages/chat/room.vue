@@ -178,10 +178,10 @@ async function initialize() {
 		connection.value = useStream().useChannel('chatUser', {
 			otherId: user.value.id,
 		});
-		connection.value?.on('message', onMessage);
-		connection.value?.on('deleted', onDeleted);
-		connection.value?.on('react', onReact);
-		connection.value?.on('unreact', onUnreact);
+		connection.value.on('message', onMessage);
+		connection.value.on('deleted', onDeleted);
+		connection.value.on('react', onReact);
+		connection.value.on('unreact', onUnreact);
 	} else {
 		const [r, m] = await Promise.all([
 			misskeyApi('chat/rooms/show', { roomId: props.roomId }),
@@ -272,10 +272,10 @@ function onReact(ctx: Parameters<Misskey.Channels['chatUser']['events']['react']
 				reaction: ctx.reaction,
 				user: message.fromUserId === $i.id ? user.value! : $i,
 			});
-		} else if (ctx.user != null) {
+		} else {
 			message.reactions.push({
 				reaction: ctx.reaction,
-				user: ctx.user,
+				user: ctx.user!,
 			});
 		}
 	}
@@ -283,7 +283,7 @@ function onReact(ctx: Parameters<Misskey.Channels['chatUser']['events']['react']
 
 function onUnreact(ctx: Parameters<Misskey.Channels['chatUser']['events']['unreact']>[0] | Parameters<Misskey.Channels['chatRoom']['events']['unreact']>[0]) {
 	const message = messages.value.find(m => m.id === ctx.messageId);
-	if (message && ctx.user != null) {
+	if (message) {
 		const index = message.reactions.findIndex(r => r.reaction === ctx.reaction && r.user.id === ctx.user!.id);
 		if (index !== -1) {
 			message.reactions.splice(index, 1);
@@ -318,12 +318,14 @@ async function inviteUser() {
 
 	const invitee = await os.selectUser({ includeSelf: false, localOnly: true });
 	os.apiWithDialog('chat/rooms/invitations/create', {
-		roomId: room.value?.id,
+		roomId: room.value.id,
 		userId: invitee.id,
 	});
 }
 
 async function leaveRoom() {
+	if (room.value == null) return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.areYouSure,
@@ -331,7 +333,7 @@ async function leaveRoom() {
 	if (canceled) return;
 
 	misskeyApi('chat/rooms/leave', {
-		roomId: room.value?.id,
+		roomId: room.value.id,
 	});
 	router.push('/chat');
 }
