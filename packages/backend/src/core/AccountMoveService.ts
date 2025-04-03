@@ -219,6 +219,7 @@ export class AccountMoveService {
 		for (const oldRoleAssignment of oldRoleAssignments) {
 			const role = roles.find(x => x.id === oldRoleAssignment.roleId);
 			if (role == null) continue; // Very unlikely however removing role may cause this case
+			if (!role.preserveAssignmentOnMoveAccount) continue;
 
 			try {
 				await this.roleService.assign(dst.id, role.id, oldRoleAssignment.expiresAt);
