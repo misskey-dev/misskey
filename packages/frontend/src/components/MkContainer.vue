@@ -215,6 +215,14 @@ onUnmounted(() => {
 .content {
 	--MI-stickyTop: 0px;
 
+	/*
+	理屈は知らないけど、ここでbackgroundを設定しておかないと
+	スクロールコンテナーが少なくともChromeにおいて
+	main thread scrolling になってしまい、パフォーマンスが(多分)落ちる。
+	backgroundが透明だと裏側を描画しないといけなくなるとかそういう理由かもしれない
+	*/
+	background: var(--MI_THEME-panel);
+
 	&.omitted {
 		position: relative;
 		max-height: var(--maxHeight);

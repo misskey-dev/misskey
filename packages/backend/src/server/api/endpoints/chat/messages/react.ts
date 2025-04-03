@@ -13,6 +13,7 @@ export const meta = {
 	tags: ['chat'],
 
 	requireCredential: true,
+	requiredRolePolicy: 'canChat',
 
 	kind: 'write:chat',
 
