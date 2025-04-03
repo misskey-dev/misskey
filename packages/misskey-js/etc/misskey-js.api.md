@@ -1008,6 +1008,12 @@ type ChatMessage = components['schemas']['ChatMessage'];
 type ChatMessageLite = components['schemas']['ChatMessageLite'];
 
 // @public (undocumented)
+type ChatMessageLiteFor1on1 = components['schemas']['ChatMessageLiteFor1on1'];
+
+// @public (undocumented)
+type ChatMessageLiteForRoom = components['schemas']['ChatMessageLiteForRoom'];
+
+// @public (undocumented)
 type ChatMessagesCreateToRoomRequest = operations['chat___messages___create-to-room']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2134,6 +2140,8 @@ declare namespace entities {
         AbuseReportNotificationRecipient,
         ChatMessage,
         ChatMessageLite,
+        ChatMessageLiteFor1on1,
+        ChatMessageLiteForRoom,
         ChatRoom,
         ChatRoomInvitation,
         ChatRoomMembership
