@@ -891,7 +891,23 @@ function extractUsageInfoFromTemplateAst(
 			if (bindings.label) markerInfo.label = bindings.label;
 			if (bindings.children) markerInfo.children = bindings.children;
 			if (bindings.inlining) {
-				markerInfo.inlining = bindings.inlining;
+				if (typeof bindings.inlining === 'string') {
+					try {
+						const inliningStr = bindings.inlining.trim();
+						if (inliningStr.startsWith('[') && inliningStr.endsWith(']')) {
+							markerInfo.inlining = JSON5.parse(inliningStr.replace(/'/g, '"'));
+							logger.info(`Parsed inlining string to array: ${inliningStr} -> ${JSON.stringify(markerInfo.inlining)}`);
+						} else {
+							markerInfo.inlining = [inliningStr];
+						}
+					} catch (e) {
+						logger.error(`Failed to parse inlining string: ${bindings.inlining}`, e);
+					}
+				}
+				// 既に配列の場合
+				else if (Array.isArray(bindings.inlining)) {
+					markerInfo.inlining = bindings.inlining;
+				}
 				logger.info(`Added inlining ${JSON.stringify(bindings.inlining)} to marker ${markerId}`);
 			}
 			if (bindings.keywords) {
