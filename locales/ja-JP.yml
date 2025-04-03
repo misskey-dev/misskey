@@ -1907,6 +1907,8 @@ _role:
   descriptionOfIsExplorable: "オンにすると、「みつける」でメンバー一覧が公開されるほか、ロールのタイムラインが利用可能になります。"
   displayOrder: "表示順"
   descriptionOfDisplayOrder: "数値が大きいほどUI上で先頭に表示されます。"
+  preserveAssignmentOnMoveAccount: "アサイン状態を移行先アカウントにも引き継ぐ"
+  preserveAssignmentOnMoveAccount_description: "オンにすると、このロールが付与されたアカウントが移行された際に、移行先アカウントにもこのロールが引き継がれるようになります。"
   canEditMembersByModerator: "モデレーターのメンバー編集を許可"
   descriptionOfCanEditMembersByModerator: "オンにすると、管理者に加えてモデレーターもこのロールへユーザーをアサイン/アサイン解除できるようになります。オフにすると管理者のみが行えます。"
   priority: "優先度"

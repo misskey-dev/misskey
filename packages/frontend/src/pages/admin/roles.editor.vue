@@ -52,6 +52,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFolder>
 
+	<MkSwitch v-model="role.preserveAssignmentOnMoveAccount" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.preserveAssignmentOnMoveAccount }}</template>
+		<template #caption>{{ i18n.ts._role.preserveAssignmentOnMoveAccount_description }}</template>
+	</MkSwitch>
+
 	<MkSwitch v-model="role.canEditMembersByModerator" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.canEditMembersByModerator }}</template>
 		<template #caption>{{ i18n.ts._role.descriptionOfCanEditMembersByModerator }}</template>
