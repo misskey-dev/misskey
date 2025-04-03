@@ -1888,6 +1888,8 @@ _role:
   descriptionOfIsExplorable: "若開啟則公開角色時間軸。若角色不是公開的，則無法公開時間軸。"
   displayOrder: "顯示順序"
   descriptionOfDisplayOrder: "數字越大，顯示在UI上的越上面。"
+  preserveAssignmentOnMoveAccount: "將指派狀態承接至轉移後的帳戶"
+  preserveAssignmentOnMoveAccount_description: "開啟此選項後，當具備此角色的帳戶被移轉時，該角色也會承接至轉移後的帳戶。"
   canEditMembersByModerator: "允許編輯審查員的成員"
   descriptionOfCanEditMembersByModerator: "如果開啟，管理員與審查員都可以為使用者指派/解除指派該角色。如果關閉，則只有管理員可以執行。"
   priority: "優先級"
