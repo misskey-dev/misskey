@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkDeleteScheduleEditor v-if="scheduledNoteDelete" v-model="scheduledNoteDelete" @destroyed="scheduledNoteDelete = null"/>
-	<MkScheduleEditor v-if="scheduleNote" v-model="scheduleNote" @destroyed="scheduleNote = null"/>
+	<MkScheduleEditor v-if="scheduleNote" v-model="scheduleNote" :scheduledDelete="scheduledNoteDelete" @destroyed="scheduleNote = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<!-- <div v-if="showingOptions" style="padding: 8px 16px;">
 	</div> -->
@@ -231,6 +231,7 @@ const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
 const scheduleNote = ref<{
 	scheduledAt: number | null;
+	isValid?: boolean;
 } | null>(null);
 const justEndedComposition = ref(false);
 
@@ -293,6 +294,10 @@ const maxCwTextLength = 100;
 const canPost = computed((): boolean => {
 	return !props.mock && !posting.value && !posted.value &&
 		(scheduledNoteDelete.value ? scheduledNoteDelete.value.isValid : true) &&
+		(scheduleNote.value ? scheduleNote.value.isValid : true) &&
+		(!scheduleNote.value || !scheduledNoteDelete.value ||
+			!scheduleNote.value.scheduledAt || !scheduledNoteDelete.value.deleteAt ||
+			scheduledNoteDelete.value.deleteAt > scheduleNote.value.scheduledAt) &&
 		(
 			1 <= textLength.value ||
 			1 <= files.value.length ||
@@ -1109,6 +1114,7 @@ function toggleScheduleNote() {
 	} else {
 		scheduleNote.value = {
 			scheduledAt: null,
+			isValid: true,
 		};
 	}
 }
@@ -1214,6 +1220,7 @@ onMounted(() => {
 			if (init.isSchedule) {
 				scheduleNote.value = {
 					scheduledAt: new Date(init.createdAt).getTime(),
+					isValid: true,
 				};
 			}
 		}

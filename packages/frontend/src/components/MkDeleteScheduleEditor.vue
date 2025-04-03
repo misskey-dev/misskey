@@ -4,52 +4,60 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div :class="[$style.root, { [$style.padding]: !afterOnly }]">
-		<div v-if="!afterOnly" :class="[$style.label, { [$style.withAccent]: !showDetail }]"
-			@click="showDetail = !showDetail"><i class="ti"
-				:class="showDetail ? 'ti-chevron-up' : 'ti-chevron-down'"></i> {{
-					summaryText }}</div>
-		<MkInfo v-if="!isValid" warn>
-			<template v-if="invalidInput">
-				{{ i18n.ts.invalidValue }}
-			</template>
-			<template v-else-if="isEmpty">
-				{{ i18n.ts.cannotScheduleInputIsRequired }}
-			</template>
-			<template v-else-if="isOverOneYear">
-				{{ i18n.ts.cannotScheduleLaterThanOneYear }}
-			</template>
-		</MkInfo>
-		<section v-if="afterOnly || showDetail">
-			<div>
-				<MkSelect v-if="!afterOnly" v-model="expiration" small>
-					<template #label>{{ i18n.ts._poll.expiration }}</template>
-					<option value="at">{{ i18n.ts._poll.at }}</option>
-					<option value="after">{{ i18n.ts._poll.after }}</option>
-				</MkSelect>
-				<section v-if="expiration === 'at'">
-					<MkInput v-model="atDate" small type="date" class="input">
-						<template #label>{{ i18n.ts._poll.deadlineDate }}</template>
-					</MkInput>
-					<MkInput v-model="atTime" small type="time" class="input">
-						<template #label>{{ i18n.ts._poll.deadlineTime }}</template>
-					</MkInput>
-				</section>
-				<section v-else-if="expiration === 'after'">
-					<MkInput v-model="after" small type="text" class="input" :pattern="'^[1-9][0-9]*$'"
-						inputmode="numeric" @input="handleInput" @blur="validateInput">
-						<template #label>{{ i18n.ts._poll.duration }}</template>
-					</MkInput>
-					<MkSelect v-model="unit" small>
-						<option value="second">{{ i18n.ts._time.second }}</option>
-						<option value="minute">{{ i18n.ts._time.minute }}</option>
-						<option value="hour">{{ i18n.ts._time.hour }}</option>
-						<option value="day">{{ i18n.ts._time.day }}</option>
-					</MkSelect>
-				</section>
-			</div>
-		</section>
+<div :class="[$style.root, { [$style.padding]: !afterOnly }]">
+	<div
+		v-if="!afterOnly" :class="[$style.label, { [$style.withAccent]: !showDetail }]"
+		@click="showDetail = !showDetail"
+	>
+		<i
+			class="ti"
+			:class="showDetail ? 'ti-chevron-up' : 'ti-chevron-down'"
+		></i> {{
+			summaryText }}
 	</div>
+	<MkInfo v-if="!isValid" warn>
+		<template v-if="invalidInput">
+			{{ i18n.ts.invalidValue }}
+		</template>
+		<template v-else-if="isEmpty">
+			{{ i18n.ts.cannotScheduleInputIsRequired }}
+		</template>
+		<template v-else-if="isOverOneYear">
+			{{ i18n.ts.cannotScheduleLaterThanOneYear }}
+		</template>
+	</MkInfo>
+	<section v-if="afterOnly || showDetail">
+		<div>
+			<MkSelect v-if="!afterOnly" v-model="expiration" small>
+				<template #label>{{ i18n.ts._poll.expiration }}</template>
+				<option value="at">{{ i18n.ts._poll.at }}</option>
+				<option value="after">{{ i18n.ts._poll.after }}</option>
+			</MkSelect>
+			<section v-if="expiration === 'at'">
+				<MkInput v-model="atDate" small type="date" class="input">
+					<template #label>{{ i18n.ts._poll.deadlineDate }}</template>
+				</MkInput>
+				<MkInput v-model="atTime" small type="time" class="input">
+					<template #label>{{ i18n.ts._poll.deadlineTime }}</template>
+				</MkInput>
+			</section>
+			<section v-else-if="expiration === 'after'">
+				<MkInput
+					v-model="after" small type="text" class="input" :pattern="'^[1-9][0-9]*$'"
+					inputmode="numeric" @input="handleInput" @blur="validateInput"
+				>
+					<template #label>{{ i18n.ts._poll.duration }}</template>
+				</MkInput>
+				<MkSelect v-model="unit" small>
+					<option value="second">{{ i18n.ts._time.second }}</option>
+					<option value="minute">{{ i18n.ts._time.minute }}</option>
+					<option value="hour">{{ i18n.ts._time.hour }}</option>
+					<option value="day">{{ i18n.ts._time.day }}</option>
+				</MkSelect>
+			</section>
+		</div>
+	</section>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -129,8 +137,8 @@ const summaryText = computed(() => {
 		const afterValue = after.value ? parseInt(after.value) : 0;
 		const time = unit.value === 'second' ? i18n.tsx._timeIn.seconds({ n: afterValue.toString() })
 			: unit.value === 'minute' ? i18n.tsx._timeIn.minutes({ n: afterValue.toString() })
-				: unit.value === 'hour' ? i18n.tsx._timeIn.hours({ n: afterValue.toString() })
-					: i18n.tsx._timeIn.days({ n: afterValue.toString() });
+			: unit.value === 'hour' ? i18n.tsx._timeIn.hours({ n: afterValue.toString() })
+			: i18n.tsx._timeIn.days({ n: afterValue.toString() });
 
 		return `${i18n.ts.scheduledNoteDeleteEnabled} (${time})`;
 	}
@@ -167,7 +175,7 @@ onMounted(() => {
 	// モデル値の確認
 	const hasModelValue = props.modelValue.deleteAt !== null || props.modelValue.deleteAfter !== null;
 
-	// デフォルトの自己消滅設定が有効な場合
+	// デフォルトの時限消滅設定が有効な場合
 	if (defaultStore.state.defaultScheduledNoteDelete && !hasModelValue) {
 		if (defaultStore.state.defaultScheduledNoteDeleteTime > 0) {
 			expiration.value = 'after';
