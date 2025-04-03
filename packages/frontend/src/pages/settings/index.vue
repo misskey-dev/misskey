@@ -42,7 +42,7 @@ import { instance } from '@/instance.js';
 import { definePage, provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import * as os from '@/os.js';
 import { useRouter } from '@/router.js';
-import { searchIndexes } from '@/utility/autogen/settings-search-index.js';
+import { searchIndexes } from '@/utility/settings-search-index.js';
 import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utility.js';
 import { store } from '@/store.js';
 import { signout } from '@/signout.js';
