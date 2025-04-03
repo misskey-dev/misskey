@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			tag="div" :class="$style.reactions"
 		>
 			<div v-for="record in message.reactions" :key="record.reaction + record.user.id" :class="[$style.reaction, record.user.id === $i.id ? $style.reactionMy : null]" @click="onReactionClick(record)">
-				<MkAvatar :user="record.user!" :link="false" :class="$style.reactionAvatar"/>
+				<MkAvatar :user="record.user" :link="false" :class="$style.reactionAvatar"/>
 				<MkReactionIcon
 					:withTooltip="true"
 					:reaction="record.reaction.replace(/^:(\w+):$/, ':$1@.:')"
