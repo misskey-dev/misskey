@@ -389,9 +389,8 @@ export const packedRoleSchema = {
 					optional: false, nullable: false,
 					example: false,
 				},
-				copyOnMoveAccount: {
+				preserveAssignmentOnMoveAccount: {
 					type: 'boolean',
-					description: 'True if the role is going to be copied to dest account on account move.',
 					optional: false, nullable: false,
 					example: false,
 				},

@@ -68,7 +68,7 @@ export class RoleEntityService {
 			isModerator: role.isModerator,
 			isExplorable: role.isExplorable,
 			asBadge: role.asBadge,
-			copyOnMoveAccount: role.copyOnMoveAccount,
+			preserveAssignmentOnMoveAccount: role.preserveAssignmentOnMoveAccount,
 			canEditMembersByModerator: role.canEditMembersByModerator,
 			displayOrder: role.displayOrder,
 			policies: policies,

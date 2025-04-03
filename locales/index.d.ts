@@ -7362,13 +7362,13 @@ export interface Locale extends ILocale {
          */
         "descriptionOfDisplayOrder": string;
         /**
-         * アカウント移行時にコピーする
+         * アサイン状態を移行先アカウントにも引き継ぐ
          */
-        "copyOnMoveAccount": string;
+        "preserveAssignmentOnMoveAccount": string;
         /**
-         * オンにすると、アカウントの移行が行われた際にロールを下のユーザから新しいユーザにコピーするようになります。サイレンスなどを引き継ぎたい場合に使用できます。
+         * オンにすると、このロールが付与されたアカウントが移行された際に、移行先アカウントにもこのロールが引き継がれるようになります。
          */
-        "descriptionOfCopyOnMoveAccount": string;
+        "preserveAssignmentOnMoveAccount_description": string;
         /**
          * モデレーターのメンバー編集を許可
          */
