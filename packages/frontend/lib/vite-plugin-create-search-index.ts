@@ -4,7 +4,7 @@
  */
 
 import { parse as vueSfcParse } from 'vue/compiler-sfc';
-import { LogOptions, normalizePath, Plugin } from 'vite';
+import { LogOptions, normalizePath, Plugin, PluginOption, EnvironmentModuleGraph } from 'vite';
 import fs from 'node:fs';
 import { glob } from 'glob';
 import JSON5 from 'json5';
@@ -12,6 +12,7 @@ import MagicString from 'magic-string';
 import path from 'node:path'
 import { hash, toBase62 } from '../vite.config';
 import { createLogger } from 'vite';
+import { minimatch } from 'minimatch';
 
 interface VueAstNode {
 	type: number;
@@ -52,6 +53,10 @@ export type SearchIndexItem = {
 export type Options = {
 	targetFilePaths: string[],
 	exportFilePath: string,
+	mainVirtualModule: string,
+	modulesToHmrOnUpdate: string[],
+	fileVirtualModulePrefix?: string,
+	fileVirtualModuleSuffix?: string,
 	verbose?: boolean,
 };
 
@@ -99,10 +104,7 @@ function initLogger(options: Options) {
 	}
 }
 
-/**
- * 解析結果をTypeScriptファイルとして出力する
- */
-function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisResult[]): void {
+function collectSearchItemIndexes(analysisResults: AnalysisResult[]): SearchIndexItem[] {
 	logger.info(`Processing ${analysisResults.length} files for output`);
 
 	// 新しいツリー構造を構築
@@ -143,8 +145,7 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
 	const { totalMarkers, totalChildren } = countMarkers(resolvedRootMarkers);
 	logger.info(`Total markers in tree: ${totalMarkers} (${resolvedRootMarkers.length} roots + ${totalChildren} nested children)`);
 
-	// 6. 結果をTS形式で出力
-	writeOutputFile(outputPath, resolvedRootMarkers);
+	return resolvedRootMarkers;
 }
 
 /**
@@ -354,12 +355,11 @@ function countMarkers(markers: SearchIndexItem[]): { totalMarkers: number, total
 /**
  * 最終的なTypeScriptファイルを出力
  */
-function writeOutputFile(outputPath: string, resolvedRootMarkers: SearchIndexItem[]): void {
+function writeOutputFile(outputPath: string, tsOutput: string): void {
 	try {
-		const tsOutput = generateTypeScriptCode(resolvedRootMarkers);
-		fs.writeFileSync(outputPath, tsOutput, 'utf-8');
+		//fs.writeFileSync(outputPath, tsOutput, 'utf-8');
 		// 強制的に出力させるためにViteロガーを使わない
-		console.log(`Successfully wrote search index to ${outputPath} with ${resolvedRootMarkers.length} root entries`);
+		console.log(`Successfully wrote search index to ${outputPath}`);
 	} catch (error) {
 		logger.error('[create-search-index]: error writing output: ', error);
 	}
@@ -393,6 +393,14 @@ export const searchIndexes: SearchIndexItem[] = ${customStringify(resolvedRootMa
 
 export type SearchIndex = typeof searchIndexes;
 `;
+}
+
+/**
+ * TypeScriptコード生成
+ */
+function generateJavaScriptCode(resolvedRootMarkers: SearchIndexItem[]): string {
+	return `import { i18n } from '@/i18n.js';\n`
+		+ `export const searchIndexes = ${customStringify(resolvedRootMarkers)};\n`;
 }
 
 /**
@@ -441,7 +449,6 @@ function customStringify(obj: any, depth = 0): string {
 		.filter(([key, value]) => {
 			if (value === undefined) return false;
 			if (key === 'children' && Array.isArray(value) && value.length === 0) return false;
-			if (key === 'inlining') return false;
 			return true;
 		})
 		// 各プロパティを変換
@@ -1158,17 +1165,15 @@ export async function analyzeVueProps(options: Options, assigner: MarkerIdAssign
 		}
 		return [id, code.code];
 	});
-	await analyzeVuePropsByFiles({
+	analyzeVuePropsByFiles({
 		exportFilePath: options.exportFilePath,
 		files,
 	})
 }
 
-export async function analyzeVuePropsByFiles(options: Pick<Options, 'exportFilePath'> & {
-	files: [id: string, code: string][]
-}): Promise<void> {
+export function collectFileMarkers(files: [id: string, code: string][]): AnalysisResult {
 	const allMarkers: SearchIndexItem[] = [];
-	for (const [id, code] of options.files) {
+	for (const [id, code] of files) {
 		try {
 			const { descriptor, errors } = vueSfcParse(code, {
 				filename: id,
@@ -1193,14 +1198,16 @@ export async function analyzeVuePropsByFiles(options: Pick<Options, 'exportFileP
 	}
 
 	// 収集したすべてのマーカー情報を使用
-	const analysisResult: AnalysisResult[] = [
-		{
-			filePath: "combined-markers", // すべてのファイルのマーカーを1つのエントリとして扱う
-			usage: allMarkers,
-		}
-	];
+	return {
+		filePath: "combined-markers", // すべてのファイルのマーカーを1つのエントリとして扱う
+		usage: allMarkers,
+	};
+}
 
-	outputAnalysisResultAsTS(options.exportFilePath, analysisResult); // すべてのマーカー情報を渡す
+export function analyzeVuePropsByFiles(options: Pick<Options, 'exportFilePath'> & {
+	files: [id: string, code: string][]
+}): void {
+	writeOutputFile(options.exportFilePath, generateTypeScriptCode(collectSearchItemIndexes([collectFileMarkers(options.files)])));
 }
 
 interface MarkerRelation {
@@ -1428,6 +1435,28 @@ export class MarkerIdAssigner {
 		};
 	}
 
+	async getOrLoad(id: string) {
+		// if there already exists a cache, return it
+		// note cahce will be invalidated on file change so the cache must be up to date
+		let code = this.getCached(id)?.code;
+		if (code != null) {
+			return code;
+		}
+
+		// if no cache found, read and parse the file
+		const originalCode = await fs.promises.readFile(id, 'utf-8');
+
+		// Other code may already parsed the file while we were waiting for the file to be read so re-check the cache
+		code = this.getCached(id)?.code;
+		if (code != null) {
+			return code;
+		}
+
+		// parse the file
+		code = this.processFile(id, originalCode)?.code;
+		return code;
+	}
+
 	getCached(id: string) {
 		return this.cache.get(id);
 	}
@@ -1448,15 +1477,22 @@ export async function generateSearchIndex(options: Options, assigner: MarkerIdAs
 		files.push([id, transformed.code]);
 	}
 
-	await analyzeVuePropsByFiles({
+	analyzeVuePropsByFiles({
 		exportFilePath: options.exportFilePath,
 		files,
 	})
 }
 
 // Rollup プラグインとして export
-export default function pluginCreateSearchIndex(options: Options): Plugin {
+export default function pluginCreateSearchIndex(options: Options): PluginOption {
 	const assigner = new MarkerIdAssigner();
+	return [
+		createSearchIndex(options, assigner),
+		pluginCreateSearchIndexVirtualModule(options, assigner),
+	]
+}
+
+function createSearchIndex(options: Options, assigner: MarkerIdAssigner): Plugin {
 	const isDevServer = process.env.NODE_ENV === 'development'; // 開発サーバーかどうか
 
 	initLogger(options); // ロガーを初期化
@@ -1517,6 +1553,79 @@ export default function pluginCreateSearchIndex(options: Options): Plugin {
 		async writeBundle() {
 			await analyzeVueProps(options, assigner); // ビルド時にも analyzeVueProps を実行
 		},
+	};
+}
+
+export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: MarkerIdAssigner): Plugin {
+	const searchIndexPrefix = options.fileVirtualModulePrefix ?? 'search-index-individual:';
+	const searchIndexSuffix = options.fileVirtualModulePrefix ?? '.ts';
+	const allSearchIndexFile = options.mainVirtualModule;
+	const root = normalizePath(process.cwd());
+
+	function isTargetFile(id: string): boolean {
+		const relativePath = path.posix.relative(root, id);
+		return options.targetFilePaths.some(pat => minimatch(relativePath, pat))
+	}
+
+	function parseSearchIndexFileId(id: string): string | null {
+		const noQuery = id.split('?')[0];
+		if (noQuery.startsWith(searchIndexPrefix) && noQuery.endsWith(searchIndexSuffix)) {
+			const filePath = id.slice(searchIndexPrefix.length).slice(0, -searchIndexSuffix.length);
+			if (isTargetFile(filePath)) {
+				return filePath;
+			}
+		}
+		return null;
+	}
+
+	return {
+		name: 'searchIndexVirtualModule',
+		enforce: 'post',
+
+		async resolveId(id) {
+			if (id == allSearchIndexFile) {
+				return '\0' + allSearchIndexFile;
+			}
+
+			const searchIndexFilePath = parseSearchIndexFileId(id);
+			if (searchIndexFilePath != null) {
+				return id;
+			}
+		},
+
+		async load(id) {
+			if (id == '\0' + allSearchIndexFile) {
+				const files = await Promise.all(options.targetFilePaths.map(async (filePathPattern) => await glob(filePathPattern))).then(paths => paths.flat());
+				let generatedFile = '';
+				let arrayElements = '';
+				for (let file of files) {
+					const normalizedRelative = normalizePath(file);
+					const absoluteId = normalizePath(path.join(process.cwd(), normalizedRelative)) + searchIndexSuffix;
+					const variableName = normalizedRelative.replace(/[\/.-]/g, '_');
+					generatedFile += `import { searchIndexes as ${variableName} } from '${searchIndexPrefix}${absoluteId}';\n`;
+					arrayElements += `  ...${variableName},\n`;
+				}
+				generatedFile += `export let searchIndexes = [\n${arrayElements}];\n`;
+				return generatedFile;
+			}
+
+			const searchIndexFilePath = parseSearchIndexFileId(id);
+			if (searchIndexFilePath != null) {
+				// call load to update the index file when the file is changed
+				this.addWatchFile(searchIndexFilePath);
+
+				const code = await asigner.getOrLoad(searchIndexFilePath);
+				return generateJavaScriptCode(collectSearchItemIndexes([collectFileMarkers([[id, code]])]));
+			}
+			return null;
+		},
+
+		hotUpdate(this: { environment: { moduleGraph: EnvironmentModuleGraph } }, { file, modules }) {
+			if (isTargetFile(file)) {
+				const updateMods = options.modulesToHmrOnUpdate.map(id => this.environment.moduleGraph.getModuleById(path.posix.join(root, id))).filter(x => x);
+				return [...modules, ...updateMods];
+			}
+		}
 	};
 }
 
