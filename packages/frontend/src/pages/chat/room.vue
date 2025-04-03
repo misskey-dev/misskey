@@ -79,15 +79,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch, onMounted, nextTick, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
+import { ref, useTemplateRef, computed, onMounted, onBeforeUnmount, onDeactivated, onActivated } from 'vue';
 import * as Misskey from 'misskey-js';
-import { getScrollContainer, isTailVisible } from '@@/js/scroll.js';
+import { getScrollContainer } from '@@/js/scroll.js';
 import XMessage from './XMessage.vue';
 import XForm from './room.form.vue';
 import XSearch from './room.search.vue';
 import XMembers from './room.members.vue';
 import XInfo from './room.info.vue';
 import type { MenuItem } from '@/types/menu.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/utility/sound.js';
@@ -109,13 +110,20 @@ const props = defineProps<{
 	roomId?: string;
 }>();
 
+export type NormalizedChatMessage = Omit<Misskey.entities.ChatMessageLite, 'fromUser' | 'reactions'> & {
+	fromUser: Misskey.entities.UserLite;
+	reactions: (Misskey.entities.ChatMessageLite['reactions'][number] & {
+		user: Misskey.entities.UserLite;
+	})[];
+};
+
 const initializing = ref(true);
 const moreFetching = ref(false);
-const messages = ref<Misskey.entities.ChatMessage[]>([]);
+const messages = ref<NormalizedChatMessage[]>([]);
 const canFetchMore = ref(false);
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 const room = ref<Misskey.entities.ChatRoom | null>(null);
-const connection = ref<Misskey.ChannelConnection<Misskey.Channels['chatUser'] | Misskey.Channels['chatRoom']> | null>(null);
+const connection = ref<Misskey.IChannelConnection<Misskey.Channels['chatUser']> | Misskey.IChannelConnection<Misskey.Channels['chatRoom']> | null>(null);
 const showIndicator = ref(false);
 const timelineEl = useTemplateRef('timelineEl');
 
@@ -138,18 +146,14 @@ useMutationObserver(timelineEl, {
 	}
 });
 
-function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage) {
-	const reactions = [...message.reactions];
-	for (const record of reactions) {
-		if (room.value == null && record.user == null) { // 1on1の時はuserは省略される
-			record.user = message.fromUserId === $i.id ? user.value : $i;
-		}
-	}
-
+function normalizeMessage(message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage): NormalizedChatMessage {
 	return {
 		...message,
-		fromUser: message.fromUser ?? (message.fromUserId === $i.id ? $i : user),
-		reactions,
+		fromUser: message.fromUser ?? (message.fromUserId === $i.id ? $i : user.value!),
+		reactions: message.reactions.map(record => ({
+			...record,
+			user: record.user ?? (message.fromUserId === $i.id ? user.value! : $i),
+		})),
 	};
 }
 
@@ -184,8 +188,8 @@ async function initialize() {
 			misskeyApi('chat/messages/room-timeline', { roomId: props.roomId, limit: LIMIT }),
 		]);
 
-		room.value = r;
-		messages.value = m.map(x => normalizeMessage(x));
+		room.value = r as Misskey.entities.ChatRoomsShowResponse;
+		messages.value = (m as Misskey.entities.ChatMessagesRoomTimelineResponse).map(x => normalizeMessage(x));
 
 		if (messages.value.length === LIMIT) {
 			canFetchMore.value = true;
@@ -221,11 +225,11 @@ async function fetchMore() {
 	moreFetching.value = true;
 
 	const newMessages = props.userId ? await misskeyApi('chat/messages/user-timeline', {
-		userId: user.value.id,
+		userId: user.value!.id,
 		limit: LIMIT,
 		untilId: messages.value[messages.value.length - 1].id,
 	}) : await misskeyApi('chat/messages/room-timeline', {
-		roomId: room.value.id,
+		roomId: room.value!.id,
 		limit: LIMIT,
 		untilId: messages.value[messages.value.length - 1].id,
 	});
@@ -236,7 +240,7 @@ async function fetchMore() {
 	moreFetching.value = false;
 }
 
-function onMessage(message: Misskey.entities.ChatMessage) {
+function onMessage(message: Misskey.entities.ChatMessageLite) {
 	sound.playMisskeySfx('chatMessage');
 
 	messages.value.unshift(normalizeMessage(message));
@@ -253,34 +257,34 @@ function onMessage(message: Misskey.entities.ChatMessage) {
 	}
 }
 
-function onDeleted(id) {
+function onDeleted(id: string) {
 	const index = messages.value.findIndex(m => m.id === id);
 	if (index !== -1) {
 		messages.value.splice(index, 1);
 	}
 }
 
-function onReact(ctx) {
+function onReact(ctx: Parameters<Misskey.Channels['chatUser']['events']['react']>[0] | Parameters<Misskey.Channels['chatRoom']['events']['react']>[0]) {
 	const message = messages.value.find(m => m.id === ctx.messageId);
 	if (message) {
 		if (room.value == null) { // 1on1の時はuserは省略される
 			message.reactions.push({
 				reaction: ctx.reaction,
-				user: message.fromUserId === $i.id ? user : $i,
+				user: message.fromUserId === $i.id ? user.value! : $i,
 			});
 		} else {
 			message.reactions.push({
 				reaction: ctx.reaction,
-				user: ctx.user,
+				user: ctx.user!,
 			});
 		}
 	}
 }
 
-function onUnreact(ctx) {
+function onUnreact(ctx: Parameters<Misskey.Channels['chatUser']['events']['unreact']>[0] | Parameters<Misskey.Channels['chatRoom']['events']['unreact']>[0]) {
 	const message = messages.value.find(m => m.id === ctx.messageId);
 	if (message) {
-		const index = message.reactions.findIndex(r => r.reaction === ctx.reaction && r.user.id === ctx.user.id);
+		const index = message.reactions.findIndex(r => r.reaction === ctx.reaction && r.user.id === ctx.user!.id);
 		if (index !== -1) {
 			message.reactions.splice(index, 1);
 		}
@@ -310,14 +314,18 @@ onBeforeUnmount(() => {
 });
 
 async function inviteUser() {
+	if (room.value == null) return;
+
 	const invitee = await os.selectUser({ includeSelf: false, localOnly: true });
 	os.apiWithDialog('chat/rooms/invitations/create', {
-		roomId: room.value?.id,
+		roomId: room.value.id,
 		userId: invitee.id,
 	});
 }
 
 async function leaveRoom() {
+	if (room.value == null) return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.areYouSure,
@@ -325,7 +333,7 @@ async function leaveRoom() {
 	if (canceled) return;
 
 	misskeyApi('chat/rooms/leave', {
-		roomId: room.value?.id,
+		roomId: room.value.id,
 	});
 	router.push('/chat');
 }
@@ -384,19 +392,36 @@ const headerTabs = computed(() => room.value ? [{
 	icon: 'ti ti-search',
 }]);
 
-const headerActions = computed(() => [{
+const headerActions = computed<PageHeaderItem[]>(() => [{
 	icon: 'ti ti-dots',
+	text: '',
 	handler: showMenu,
 }]);
 
-definePage(computed(() => !initializing.value ? user.value ? {
-	userName: user,
-	title: user.value.name ?? user.value.username,
-	avatar: user,
-} : {
-	title: room.value?.name,
-	icon: 'ti ti-users',
-} : null));
+definePage(computed(() => {
+	if (!initializing.value) {
+		if (user.value) {
+			return {
+				userName: user.value,
+				title: user.value.name ?? user.value.username,
+				avatar: user.value,
+			};
+		} else if (room.value) {
+			return {
+				title: room.value.name,
+				icon: 'ti ti-users',
+			};
+		} else {
+			return {
+				title: i18n.ts.chat,
+			};
+		}
+	} else {
+		return {
+			title: i18n.ts.chat,
+		};
+	}
+}));
 </script>
 
 <style lang="scss" module>

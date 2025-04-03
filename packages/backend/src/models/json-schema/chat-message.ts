@@ -72,7 +72,7 @@ export const packedChatMessageSchema = {
 					},
 					user: {
 						type: 'object',
-						optional: true, nullable: true,
+						optional: false, nullable: false,
 						ref: 'UserLite',
 					},
 				},
@@ -137,6 +137,116 @@ export const packedChatMessageLiteSchema = {
 					user: {
 						type: 'object',
 						optional: true, nullable: true,
+						ref: 'UserLite',
+					},
+				},
+			},
+		},
+	},
+} as const;
+
+export const packedChatMessageLiteFor1on1Schema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		createdAt: {
+			type: 'string',
+			format: 'date-time',
+			optional: false, nullable: false,
+		},
+		fromUserId: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		toUserId: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		text: {
+			type: 'string',
+			optional: true, nullable: true,
+		},
+		fileId: {
+			type: 'string',
+			optional: true, nullable: true,
+		},
+		file: {
+			type: 'object',
+			optional: true, nullable: true,
+			ref: 'DriveFile',
+		},
+		reactions: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'object',
+				optional: false, nullable: false,
+				properties: {
+					reaction: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+				},
+			},
+		},
+	},
+} as const;
+
+export const packedChatMessageLiteForRoomSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		createdAt: {
+			type: 'string',
+			format: 'date-time',
+			optional: false, nullable: false,
+		},
+		fromUserId: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		fromUser: {
+			type: 'object',
+			optional: false, nullable: false,
+			ref: 'UserLite',
+		},
+		toRoomId: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
+		text: {
+			type: 'string',
+			optional: true, nullable: true,
+		},
+		fileId: {
+			type: 'string',
+			optional: true, nullable: true,
+		},
+		file: {
+			type: 'object',
+			optional: true, nullable: true,
+			ref: 'DriveFile',
+		},
+		reactions: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'object',
+				optional: false, nullable: false,
+				properties: {
+					reaction: {
+						type: 'string',
+						optional: false, nullable: false,
+					},
+					user: {
+						type: 'object',
+						optional: false, nullable: false,
 						ref: 'UserLite',
 					},
 				},

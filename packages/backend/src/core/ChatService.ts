@@ -99,7 +99,7 @@ export class ChatService {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}): Promise<Packed<'ChatMessageLite'>> {
+	}): Promise<Packed<'ChatMessageLiteFor1on1'>> {
 		if (fromUser.id === toUser.id) {
 			throw new Error('yourself');
 		}
@@ -210,7 +210,7 @@ export class ChatService {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}): Promise<Packed<'ChatMessageLite'>> {
+	}): Promise<Packed<'ChatMessageLiteForRoom'>> {
 		const memberships = (await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id })).map(m => ({
 			userId: m.userId,
 			isMuted: m.isMuted,
