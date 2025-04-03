@@ -5389,10 +5389,10 @@ export type components = {
       fileId?: string | null;
       file?: components['schemas']['DriveFile'] | null;
       isRead?: boolean;
-      reactions: ({
+      reactions: {
           reaction: string;
-          user?: components['schemas']['UserLite'] | null;
-        })[];
+          user: components['schemas']['UserLite'];
+        }[];
     };
     ChatMessageLite: {
       id: string;

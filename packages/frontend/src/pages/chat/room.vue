@@ -110,7 +110,7 @@ const props = defineProps<{
 	roomId?: string;
 }>();
 
-type NormalizedChatMessage = Omit<Misskey.entities.ChatMessageLite, 'fromUser' | 'reactions'> & {
+export type NormalizedChatMessage = Omit<Misskey.entities.ChatMessageLite, 'fromUser' | 'reactions'> & {
 	fromUser: Misskey.entities.UserLite;
 	reactions: (Misskey.entities.ChatMessageLite['reactions'][number] & {
 		user: Misskey.entities.UserLite;

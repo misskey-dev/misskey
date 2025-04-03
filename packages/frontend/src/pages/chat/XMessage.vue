@@ -57,6 +57,7 @@ import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import type { MenuItem } from '@/types/menu.js';
+import type { NormalizedChatMessage } from './room.vue';
 import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import { ensureSignin } from '@/i.js';
@@ -76,7 +77,7 @@ import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
 const $i = ensureSignin();
 
 const props = defineProps<{
-	message: Misskey.entities.ChatMessageLite | Misskey.entities.ChatMessage;
+	message: NormalizedChatMessage | Misskey.entities.ChatMessage;
 	isSearchResult?: boolean;
 }>();
 

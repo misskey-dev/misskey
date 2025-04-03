@@ -72,7 +72,7 @@ export const packedChatMessageSchema = {
 					},
 					user: {
 						type: 'object',
-						optional: true, nullable: true,
+						optional: false, nullable: false,
 						ref: 'UserLite',
 					},
 				},
