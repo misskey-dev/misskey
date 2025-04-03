@@ -211,9 +211,15 @@ export class ChatService {
 		file?: MiDriveFile | null;
 		uri?: string | null;
 	}): Promise<Packed<'ChatMessageLite'>> {
-		const memberships = await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id });
+		const memberships = (await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id })).map(m => ({
+			userId: m.userId,
+			isMuted: m.isMuted,
+		})).concat({ // ownerはmembershipレコードを作らないため
+			userId: toRoom.ownerId,
+			isMuted: false,
+		});
 
-		if (toRoom.ownerId !== fromUser.id && !memberships.some(member => member.userId === fromUser.id)) {
+		if (!memberships.some(member => member.userId === fromUser.id)) {
 			throw new Error('you are not a member of the room');
 		}
 

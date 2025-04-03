@@ -4898,6 +4898,8 @@ export type components = {
       hasUnreadNote: boolean;
       /** @default false */
       notify: boolean;
+      /** @default false */
+      hideNotesInSensitiveChannel: boolean;
     };
     Clip: {
       /**
@@ -5314,6 +5316,21 @@ export type components = {
       enableEmail: boolean;
       enableServiceWorker: boolean;
       translatorAvailable: boolean;
+      sentryForFrontend: ({
+        options: {
+          dsn: string;
+          [key: string]: unknown;
+        };
+        vueIntegration?: {
+          [key: string]: unknown;
+        } | null;
+        browserTracingIntegration?: {
+          [key: string]: unknown;
+        } | null;
+        replayIntegration?: {
+          [key: string]: unknown;
+        } | null;
+      }) | null;
       mediaProxy: string;
       enableUrlPreview: boolean;
       backgroundImageUrl: string | null;
@@ -11297,6 +11314,7 @@ export type operations = {
           excludeBots?: boolean;
           withReplies: boolean;
           withFile: boolean;
+          hideNotesInSensitiveChannel?: boolean;
         };
       };
     };
@@ -11578,6 +11596,7 @@ export type operations = {
           excludeBots?: boolean;
           withReplies?: boolean;
           withFile?: boolean;
+          hideNotesInSensitiveChannel?: boolean;
         };
       };
     };
@@ -21739,8 +21758,8 @@ export type operations = {
           untilId?: string;
           /** @default true */
           markAsRead?: boolean;
-          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
-          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'reaction:grouped' | 'renote:grouped' | 'pollVote' | 'groupInvited')[];
+          includeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
+          excludeTypes?: ('note' | 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollEnded' | 'receiveFollowRequest' | 'followRequestAccepted' | 'roleAssigned' | 'chatRoomInvitationReceived' | 'achievementEarned' | 'exportCompleted' | 'login' | 'createToken' | 'app' | 'test' | 'pollVote' | 'groupInvited')[];
         };
       };
     };
