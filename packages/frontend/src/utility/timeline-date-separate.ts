@@ -6,7 +6,7 @@
 import { computed } from 'vue';
 import type { Ref } from 'vue';
 
-function getDateText(dateInstance: Date) {
+export function getDateText(dateInstance: Date) {
 	const date = dateInstance.getDate();
 	const month = dateInstance.getMonth() + 1;
 	return `${month.toString()}/${date.toString()}`;
