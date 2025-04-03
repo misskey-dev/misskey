@@ -4,24 +4,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-		<div v-if="tab === 'featured'" key="featured">
+		<div v-if="tab === 'featured'">
 			<XFeatured/>
 		</div>
-		<div v-else-if="tab === 'users'" key="users">
+		<div v-else-if="tab === 'users'">
 			<XUsers/>
 		</div>
-		<div v-else-if="tab === 'roles'" key="roles">
+		<div v-else-if="tab === 'roles'">
 			<XRoles/>
 		</div>
 	</MkHorizontalSwipe>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, shallowRef } from 'vue';
+import { computed, watch, ref, useTemplateRef } from 'vue';
 import XFeatured from './explore.featured.vue';
 import XUsers from './explore.users.vue';
 import XRoles from './explore.roles.vue';
@@ -38,7 +37,7 @@ const props = withDefaults(defineProps<{
 });
 
 const tab = ref(props.initialTab);
-const tagsEl = shallowRef<InstanceType<typeof MkFoldableSection>>();
+const tagsEl = useTemplateRef('tagsEl');
 
 watch(() => props.tag, () => {
 	if (tagsEl.value) tagsEl.value.toggleContent(props.tag == null);

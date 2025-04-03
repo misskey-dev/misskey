@@ -18,7 +18,7 @@ import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps 
 import type { GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import MkButton from '@/components/MkButton.vue';
 
 const name = 'button';

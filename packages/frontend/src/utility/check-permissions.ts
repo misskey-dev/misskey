@@ -4,7 +4,7 @@
  */
 
 import { instance } from '@/instance.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 export const notesSearchAvailable = (
 	// FIXME: instance.policies would be null in Vitest

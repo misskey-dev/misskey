@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkPagination :pagination="renoteMutingPagination">
 						<template #empty>
 							<div class="_fullinfo">
-								<img :src="infoImageUrl" class="_ghost"/>
+								<img :src="infoImageUrl" draggable="false"/>
 								<div>{{ i18n.ts.noUsers }}</div>
 							</div>
 						</template>
@@ -108,7 +108,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkPagination :pagination="mutingPagination">
 						<template #empty>
 							<div class="_fullinfo">
-								<img :src="infoImageUrl" class="_ghost"/>
+								<img :src="infoImageUrl" draggable="false"/>
 								<div>{{ i18n.ts.noUsers }}</div>
 							</div>
 						</template>
@@ -146,7 +146,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkPagination :pagination="blockingPagination">
 						<template #empty>
 							<div class="_fullinfo">
-								<img :src="infoImageUrl" class="_ghost"/>
+								<img :src="infoImageUrl" draggable="false"/>
 								<div>{{ i18n.ts.noUsers }}</div>
 							</div>
 						</template>
@@ -188,7 +188,7 @@ import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { instance, infoImageUrl } from '@/instance.js';
-import { signinRequired } from '@/account.js';
+import { ensureSignin } from '@/i.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -196,7 +196,7 @@ import { reloadAsk } from '@/utility/reload-ask.js';
 import { prefer } from '@/preferences.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const renoteMutingPagination = {
 	endpoint: 'renote-mute/list' as const,

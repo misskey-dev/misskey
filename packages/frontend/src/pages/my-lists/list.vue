@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700" :class="$style.main">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<MkSpacer :contentMax="700">
 		<div v-if="list" class="_gaps">
 			<MkFolder>
 				<template #label>{{ i18n.ts.settings }}</template>
@@ -49,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -66,12 +65,12 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
-import { signinRequired } from '@/account.js';
+import { ensureSignin } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { mainRouter } from '@/router/main.js';
+import { mainRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const {
 	enableInfiniteScroll,
@@ -198,10 +197,6 @@ definePage(() => ({
 </script>
 
 <style lang="scss" module>
-.main {
-	min-height: calc(100cqh - (var(--MI-stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
-}
-
 .userItem {
 	display: flex;
 }

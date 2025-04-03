@@ -9,7 +9,6 @@ export type Keys = (
 	'instance' |
 	'instanceCachedAt' |
 	'account' |
-	'accounts' |
 	'latestDonationInfoShownAt' |
 	'neverShowDonationInfo' |
 	'neverShowLocalOnlyInfo' |
@@ -18,7 +17,6 @@ export type Keys = (
 	'lang' |
 	'drafts' |
 	'hashtags' |
-	'wallpaper' |
 	'colorScheme' |
 	'useSystemFont' |
 	'fontSize' |
@@ -29,7 +27,7 @@ export type Keys = (
 	'theme' |
 	'themeId' |
 	'customCss' |
-	'message_drafts' |
+	'chatMessageDrafts' |
 	'scratchpad' |
 	'debug' |
 	'preferences' |

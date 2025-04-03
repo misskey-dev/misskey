@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="500">
 		<div v-if="state == 'fetch-session-error'">
 			<p>{{ i18n.ts.somethingHappened }}</p>
@@ -38,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSignin @login="onLogin"/>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -47,9 +46,10 @@ import * as Misskey from 'misskey-js';
 import XForm from './auth.form.vue';
 import MkSignin from '@/components/MkSignin.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { $i, login } from '@/account.js';
+import { $i } from '@/i.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
+import { login } from '@/accounts.js';
 
 const props = defineProps<{
 	token: string;
@@ -63,7 +63,7 @@ function accepted() {
 	if (session.value && session.value.app.callbackUrl) {
 		const url = new URL(session.value.app.callbackUrl);
 		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:', 'vbscript:'].includes(url.protocol)) throw new Error('invalid url');
-		location.href = `${session.value.app.callbackUrl}?token=${session.value.token}`;
+		window.location.href = `${session.value.app.callbackUrl}?token=${session.value.token}`;
 	}
 }
 

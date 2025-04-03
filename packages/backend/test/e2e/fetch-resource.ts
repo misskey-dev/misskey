@@ -6,7 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { channel, clip, cookie, galleryPost, page, play, post, signup, simpleGet, uploadFile } from '../utils.js';
+import { channel, clip, galleryPost, page, play, post, signup, simpleGet, uploadFile } from '../utils.js';
 import type { SimpleGetResponse } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
@@ -156,20 +156,20 @@ describe('Webリソース', () => {
 
 		describe(' has entry such ', () => {
 			beforeEach(() => {
-				post(alice, { text: "**a**" })
+				post(alice, { text: '**a**' });
 			});
 
 			test('MFMを含まない。', async () => {
-				const content = await simpleGet(path(alice.username), "*/*", undefined, res => res.text());
+				const content = await simpleGet(path(alice.username), '*/*', undefined, res => res.text());
 				const _body: unknown = content.body;
 				// JSONフィードのときは改めて文字列化する
-				const body: string = typeof (_body) === "object" ? JSON.stringify(_body) : _body as string;
+				const body: string = typeof (_body) === 'object' ? JSON.stringify(_body) : _body as string;
 
-				if (body.includes("**a**")) {
-					throw new Error("MFM shouldn't be included");
+				if (body.includes('**a**')) {
+					throw new Error('MFM shouldn\'t be included');
 				}
 			});
-		})
+		});
 	});
 
 	describe.each([{ path: '/api/foo' }])('$path', ({ path }) => {
@@ -177,24 +177,6 @@ describe('Webリソース', () => {
 			path,
 			status: 404,
 			code: 'UNKNOWN_API_ENDPOINT',
-		}));
-	});
-
-	describe.each([{ path: '/queue' }])('$path', ({ path }) => {
-		test('はログインしないとGETできない。', async () => await notOk({
-			path,
-			status: 401,
-		}));
-
-		test('はadminでなければGETできない。', async () => await notOk({
-			path,
-			cookie: cookie(bob),
-			status: 403,
-		}));
-
-		test('はadminならGETできる。', async () => await ok({
-			path,
-			cookie: cookie(alice),
 		}));
 	});
 

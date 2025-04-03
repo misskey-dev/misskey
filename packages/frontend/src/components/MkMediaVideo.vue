@@ -109,7 +109,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
+import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
@@ -121,7 +121,7 @@ import * as os from '@/os.js';
 import { exitFullscreen, requestFullscreen } from '@/utility/fullscreen.js';
 import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
-import { $i, iAmModerator } from '@/account.js';
+import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
@@ -171,7 +171,7 @@ const keymap = {
 // PlayerElもしくはその子要素にフォーカスがあるかどうか
 function hasFocus() {
 	if (!playerEl.value) return false;
-	return playerEl.value === document.activeElement || playerEl.value.contains(document.activeElement);
+	return playerEl.value === window.document.activeElement || playerEl.value.contains(window.document.activeElement);
 }
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
@@ -216,7 +216,7 @@ function showMenu(ev: MouseEvent) {
 				'2.0x': 2,
 			},
 		},
-		...(document.pictureInPictureEnabled ? [{
+		...(window.document.pictureInPictureEnabled ? [{
 			text: i18n.ts._mediaControls.pip,
 			icon: 'ti ti-picture-in-picture',
 			action: togglePictureInPicture,
@@ -267,7 +267,7 @@ function showMenu(ev: MouseEvent) {
 
 	if (prefer.s.devMode) {
 		menu.push({ type: 'divider' }, {
-			icon: 'ti ti-id',
+			icon: 'ti ti-hash',
 			text: i18n.ts.copyFileId,
 			action: () => {
 				copyToClipboard(props.video.id);
@@ -299,8 +299,8 @@ async function toggleSensitive(file: Misskey.entities.DriveFile) {
 }
 
 // MediaControl: Video State
-const videoEl = shallowRef<HTMLVideoElement>();
-const playerEl = shallowRef<HTMLDivElement>();
+const videoEl = useTemplateRef('videoEl');
+const playerEl = useTemplateRef('playerEl');
 const isHoverring = ref(false);
 const controlsShowing = computed(() => {
 	if (!oncePlayed.value) return true;
@@ -339,7 +339,7 @@ const bufferedDataRatio = computed(() => {
 // MediaControl Events
 function onMouseOver() {
 	if (controlStateTimer) {
-		clearTimeout(controlStateTimer);
+		window.clearTimeout(controlStateTimer);
 	}
 	isHoverring.value = true;
 }
@@ -384,8 +384,8 @@ function toggleFullscreen() {
 
 function togglePictureInPicture() {
 	if (videoEl.value) {
-		if (document.pictureInPictureElement) {
-			document.exitPictureInPicture();
+		if (window.document.pictureInPictureElement) {
+			window.document.exitPictureInPicture();
 		} else {
 			videoEl.value.requestPictureInPicture();
 		}
@@ -553,7 +553,7 @@ onDeactivated(() => {
 	/* Hardcode to black because either --MI_THEME-bg or --MI_THEME-fg makes it hard to read in dark/light mode */
 	background-color: black;
 	border-radius: 6px;
-	color: var(--MI_THEME-accentLighten);
+	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 	display: inline-block;
 	font-weight: bold;
 	font-size: 0.8em;
@@ -565,7 +565,7 @@ onDeactivated(() => {
 	position: absolute;
 	border-radius: 6px;
 	background-color: var(--MI_THEME-fg);
-	color: var(--MI_THEME-accentLighten);
+	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 	font-size: 12px;
 	opacity: .5;
 	padding: 5px 8px;

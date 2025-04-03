@@ -15,11 +15,11 @@ export function confetti(options: { duration?: number; } = {}) {
 		return Math.random() * (max - min) + min;
 	}
 
-	const interval = setInterval(() => {
+	const interval = window.setInterval(() => {
 		const timeLeft = animationEnd - Date.now();
 
 		if (timeLeft <= 0) {
-			return clearInterval(interval);
+			return window.clearInterval(interval);
 		}
 
 		const particleCount = 50 * (timeLeft / duration);

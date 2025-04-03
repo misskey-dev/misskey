@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(channel != null && fixed)">
-				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+				<button v-if="channel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
 					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
 					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
@@ -32,15 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
 				</button>
 			</template>
-			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
+			<button v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
-			<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" class="_button" :class="[$style.headerRightItem, { [$style.danger]: reactionAcceptance === 'likeOnly' }]" @click="toggleReactionAcceptance">
-				<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
-				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
-				<span v-else><i class="ti ti-icons"></i></span>
-			</button>
+			<button ref="otherSettingsButton" v-tooltip="i18n.ts.other" class="_button" :class="$style.headerRightItem" @click="showOtherSettings"><i class="ti ti-dots"></i></button>
 			<button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
@@ -103,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
+import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -111,9 +107,11 @@ import { toASCII } from 'punycode.js';
 import { host, url } from '@@/js/config.js';
 import type { ShallowRef } from 'vue';
 import type { PostFormProps } from '@/types/post-form.js';
+import type { MenuItem } from '@/types/menu.js';
 import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
+import XTextCounter from '@/components/MkPostForm.TextCounter.vue';
 import MkPollEditor from '@/components/MkPollEditor.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import { erase, unique } from '@/utility/array.js';
@@ -127,7 +125,8 @@ import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { signinRequired, notesCount, incNotesCount, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account.js';
+import { ensureSignin, notesCount, incNotesCount } from '@/i.js';
+import { getAccounts, openAccountMenu as openAccountMenu_ } from '@/accounts.js';
 import { uploadFile } from '@/utility/upload.js';
 import { deepClone } from '@/utility/clone.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -137,10 +136,11 @@ import { emojiPicker } from '@/utility/emoji-picker.js';
 import { mfmFunctionPicker } from '@/utility/mfm-function-picker.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { DI } from '@/di.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
-const modal = inject('modal');
+const modal = inject(DI.inModal, false);
 
 const props = withDefaults(defineProps<PostFormProps & {
 	fixed?: boolean;
@@ -154,7 +154,7 @@ const props = withDefaults(defineProps<PostFormProps & {
 	initialLocalOnly: undefined,
 });
 
-provide('mock', props.mock);
+provide(DI.mock, props.mock);
 
 const emit = defineEmits<{
 	(ev: 'posted'): void;
@@ -165,10 +165,11 @@ const emit = defineEmits<{
 	(ev: 'fileChangeSensitive', fileId: string, to: boolean): void;
 }>();
 
-const textareaEl = shallowRef<HTMLTextAreaElement | null>(null);
-const cwInputEl = shallowRef<HTMLInputElement | null>(null);
-const hashtagsInputEl = shallowRef<HTMLInputElement | null>(null);
-const visibilityButton = shallowRef<HTMLElement>();
+const textareaEl = useTemplateRef('textareaEl');
+const cwInputEl = useTemplateRef('cwInputEl');
+const hashtagsInputEl = useTemplateRef('hashtagsInputEl');
+const visibilityButton = useTemplateRef('visibilityButton');
+const otherSettingsButton = useTemplateRef('otherSettingsButton');
 
 const posting = ref(false);
 const posted = ref(false);
@@ -554,6 +555,47 @@ async function toggleReactionAcceptance() {
 	reactionAcceptance.value = select.result;
 }
 
+//#region その他の設定メニューpopup
+function showOtherSettings() {
+	let reactionAcceptanceIcon = 'ti ti-icons';
+
+	if (reactionAcceptance.value === 'likeOnly') {
+		reactionAcceptanceIcon = 'ti ti-heart _love';
+	} else if (reactionAcceptance.value === 'likeOnlyForRemote') {
+		reactionAcceptanceIcon = 'ti ti-heart-plus';
+	}
+
+	const menuItems = [{
+		type: 'component',
+		component: XTextCounter,
+		props: {
+			textLength: textLength,
+		},
+	}, { type: 'divider' }, {
+		icon: reactionAcceptanceIcon,
+		text: i18n.ts.reactionAcceptance,
+		action: () => {
+			toggleReactionAcceptance();
+		},
+	}, { type: 'divider' }, {
+		icon: 'ti ti-trash',
+		text: i18n.ts.reset,
+		danger: true,
+		action: async () => {
+			if (props.mock) return;
+			const { canceled } = await os.confirm({
+				type: 'question',
+				text: i18n.ts.resetAreYouSure,
+			});
+			if (canceled) return;
+			clear();
+		},
+	}] satisfies MenuItem[];
+
+	os.popupMenu(menuItems, otherSettingsButton.value);
+}
+//#endregion
+
 function pushVisibleUser(user: Misskey.entities.UserDetailed) {
 	if (!visibleUsers.value.some(u => u.username === user.username && u.host === user.host)) {
 		visibleUsers.value.push(user);
@@ -837,7 +879,7 @@ async function post(ev?: MouseEvent) {
 
 	if (postAccount.value) {
 		const storedAccounts = await getAccounts();
-		token = storedAccounts.find(x => x.id === postAccount.value?.id)?.token;
+		token = storedAccounts.find(x => x.user.id === postAccount.value?.id)?.token;
 	}
 
 	posting.value = true;
@@ -1272,7 +1314,7 @@ html[data-color-scheme=light] .preview {
 	padding: 0 24px;
 	margin: 0;
 	width: 100%;
-	font-size: 16px;
+	font-size: 110%;
 	border: none;
 	border-radius: 0;
 	background: transparent;

@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef, ref } from 'vue';
+import { onMounted, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -24,7 +24,7 @@ import { initChart } from '@/utility/init-chart.js';
 
 initChart();
 
-const chartEl = shallowRef<HTMLCanvasElement>(null);
+const chartEl = useTemplateRef('chartEl');
 const now = new Date();
 let chartInstance: Chart = null;
 const chartLimit = 7;

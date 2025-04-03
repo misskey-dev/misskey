@@ -115,7 +115,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed, watch, onMounted } from 'vue';
+import { ref, useTemplateRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import {
 	emojilist,
@@ -136,7 +136,7 @@ import { deviceKind } from '@/utility/device-kind.js';
 import { i18n } from '@/i18n.js';
 import { store } from '@/store.js';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { prefer } from '@/preferences.js';
 
@@ -157,8 +157,8 @@ const emit = defineEmits<{
 	(ev: 'esc'): void;
 }>();
 
-const searchEl = shallowRef<HTMLInputElement>();
-const emojisEl = shallowRef<HTMLDivElement>();
+const searchEl = useTemplateRef('searchEl');
+const emojisEl = useTemplateRef('emojisEl');
 
 const {
 	emojiPickerScale,

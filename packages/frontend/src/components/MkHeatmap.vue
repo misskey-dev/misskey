@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, watch, shallowRef, ref } from 'vue';
+import { onMounted, nextTick, watch, useTemplateRef, ref } from 'vue';
 import { Chart } from 'chart.js';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -35,8 +35,8 @@ const props = withDefaults(defineProps<{
 	label: '',
 });
 
-const rootEl = shallowRef<HTMLDivElement | null>(null);
-const chartEl = shallowRef<HTMLCanvasElement | null>(null);
+const rootEl = useTemplateRef('rootEl');
+const chartEl = useTemplateRef('chartEl');
 const now = new Date();
 let chartInstance: Chart | null = null;
 const fetching = ref(true);

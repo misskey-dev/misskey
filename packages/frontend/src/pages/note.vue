@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<div>
 			<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
@@ -44,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</Transition>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -65,7 +64,7 @@ import { prefer } from '@/preferences.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { serverContext, assertServerContext } from '@/server-context.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
 const CTX_NOTE = !$i && assertServerContext(serverContext, 'note') ? serverContext.note : null;

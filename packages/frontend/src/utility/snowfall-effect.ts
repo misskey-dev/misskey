@@ -156,7 +156,7 @@ export class SnowfallEffect {
 		easing: 0.0005,
 	};
 	/**
-	 * @throws {Error} - Thrown when it fails to get WebGL context for the canvas 
+	 * @throws {Error} - Thrown when it fails to get WebGL context for the canvas
 	 */
 	constructor(options: {
 		sakura?: boolean;
@@ -172,7 +172,7 @@ export class SnowfallEffect {
 		const gl = canvas.getContext('webgl2', { antialias: true });
 		if (gl == null) throw new Error('Failed to get WebGL context');
 
-		document.body.append(canvas);
+		window.document.body.append(canvas);
 
 		this.canvas = canvas;
 		this.gl = gl;
@@ -190,7 +190,7 @@ export class SnowfallEffect {
 	}
 
 	private initCanvas(): HTMLCanvasElement {
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 
 		Object.assign(canvas.style, {
 			position: 'fixed',

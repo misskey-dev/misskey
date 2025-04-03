@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, watch } from 'vue';
 import type { Ref } from 'vue';
 import { popup } from '@/os.js';
-import { store } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 /**
  * 絵文字ピッカーを表示する。
@@ -25,7 +25,14 @@ class EmojiPicker {
 	}
 
 	public async init() {
-		const emojisRef = store.r.pinnedEmojis;
+		const emojisRef = ref<string[]>([]);
+
+		watch([prefer.r.emojiPaletteForMain, prefer.r.emojiPalettes], () => {
+			emojisRef.value = prefer.s.emojiPaletteForMain == null ? prefer.s.emojiPalettes[0].emojis : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForMain)?.emojis ?? [];
+		}, {
+			immediate: true,
+		});
+
 		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src: this.src,
 			pinnedEmojis: emojisRef,

@@ -5,7 +5,7 @@
 
 import { computed, watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
-import { version, lang, updateLocale, locale } from '@@/js/config.js';
+import { version, lang, updateLocale, locale, apiUrl } from '@@/js/config.js';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import type { App } from 'vue';
@@ -15,7 +15,7 @@ import components from '@/components/index.js';
 import { applyTheme } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { updateI18n, i18n } from '@/i18n.js';
-import { $i, refreshAccount, login } from '@/account.js';
+import { refreshCurrentAccount, login } from '@/accounts.js';
 import { store } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind, updateDeviceKind } from '@/utility/device-kind.js';
@@ -26,22 +26,16 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { analytics, initAnalytics } from '@/analytics.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { setupRouter } from '@/router/main.js';
-import { createMainRouter } from '@/router/definition.js';
 import { prefer } from '@/preferences.js';
+import { $i } from '@/i.js';
 
-export async function common(createVue: () => App<Element>) {
+export async function common(createVue: () => Promise<App<Element>>) {
 	console.info(`Misskey v${version}`);
 
 	if (_DEV_) {
 		console.warn('Development mode!!!');
 
 		console.info(`vue ${vueVersion}`);
-
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(window as any).$i = $i;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(window as any).$store = store;
 
 		window.addEventListener('error', event => {
 			console.error(event);
@@ -101,28 +95,28 @@ export async function common(createVue: () => App<Element>) {
 	//#endregion
 
 	// タッチデバイスでCSSの:hoverを機能させる
-	document.addEventListener('touchend', () => {}, { passive: true });
+	window.document.addEventListener('touchend', () => {}, { passive: true });
 
 	// URLに#pswpを含む場合は取り除く
-	if (location.hash === '#pswp') {
-		history.replaceState(null, '', location.href.replace('#pswp', ''));
+	if (window.location.hash === '#pswp') {
+		window.history.replaceState(null, '', window.location.href.replace('#pswp', ''));
 	}
 
 	// 一斉リロード
 	reloadChannel.addEventListener('message', path => {
-		if (path !== null) location.href = path;
-		else location.reload();
+		if (path !== null) window.location.href = path;
+		else window.location.reload();
 	});
 
 	// If mobile, insert the viewport meta tag
 	if (['smartphone', 'tablet'].includes(deviceKind)) {
-		const viewport = document.getElementsByName('viewport').item(0);
+		const viewport = window.document.getElementsByName('viewport').item(0);
 		viewport.setAttribute('content',
 			`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
 	}
 
 	//#region Set lang attr
-	const html = document.documentElement;
+	const html = window.document.documentElement;
 	html.setAttribute('lang', lang);
 	//#endregion
 
@@ -136,11 +130,11 @@ export async function common(createVue: () => App<Element>) {
 	});
 
 	//#region loginId
-	const params = new URLSearchParams(location.search);
+	const params = new URLSearchParams(window.location.search);
 	const loginId = params.get('loginId');
 
 	if (loginId) {
-		const target = getUrlWithoutLoginId(location.href);
+		const target = getUrlWithoutLoginId(window.location.href);
 
 		if (!$i || $i.id !== loginId) {
 			const account = await getAccountFromId(loginId);
@@ -149,7 +143,7 @@ export async function common(createVue: () => App<Element>) {
 			}
 		}
 
-		history.replaceState({ misskey: 'loginId' }, '', target);
+		window.history.replaceState({ misskey: 'loginId' }, '', target);
 	}
 	//#endregion
 
@@ -161,7 +155,7 @@ export async function common(createVue: () => App<Element>) {
 		);
 	}, { immediate: miLocalStorage.getItem('theme') == null });
 
-	document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
+	window.document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
 
 	const darkTheme = prefer.model('darkTheme');
 	const lightTheme = prefer.model('lightTheme');
@@ -207,20 +201,20 @@ export async function common(createVue: () => App<Element>) {
 	}, { immediate: true });
 
 	watch(prefer.r.useBlurEffectForModal, v => {
-		document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');
+		window.document.documentElement.style.setProperty('--MI-modalBgFilter', v ? 'blur(4px)' : 'none');
 	}, { immediate: true });
 
 	watch(prefer.r.useBlurEffect, v => {
 		if (v) {
-			document.documentElement.style.removeProperty('--MI-blur');
+			window.document.documentElement.style.removeProperty('--MI-blur');
 		} else {
-			document.documentElement.style.setProperty('--MI-blur', 'none');
+			window.document.documentElement.style.setProperty('--MI-blur', 'none');
 		}
 	}, { immediate: true });
 
 	// Keep screen on
-	const onVisibilityChange = () => document.addEventListener('visibilitychange', () => {
-		if (document.visibilityState === 'visible') {
+	const onVisibilityChange = () => window.document.addEventListener('visibilitychange', () => {
+		if (window.document.visibilityState === 'visible') {
 			navigator.wakeLock.request('screen');
 		}
 	});
@@ -230,12 +224,16 @@ export async function common(createVue: () => App<Element>) {
 			.catch(() => {
 				// On WebKit-based browsers, user activation is required to send wake lock request
 				// https://webkit.org/blog/13862/the-user-activation-api/
-				document.addEventListener(
+				window.document.addEventListener(
 					'click',
 					() => navigator.wakeLock.request('screen').then(onVisibilityChange),
 					{ once: true },
 				);
 			});
+	}
+
+	if (prefer.s.makeEveryTextElementsSelectable) {
+		window.document.documentElement.classList.add('forceSelectableAll');
 	}
 
 	//#region Fetch user
@@ -244,7 +242,7 @@ export async function common(createVue: () => App<Element>) {
 			console.log('account cache found. refreshing...');
 		}
 
-		refreshAccount();
+		refreshCurrentAccount();
 	}
 	//#endregion
 
@@ -265,9 +263,7 @@ export async function common(createVue: () => App<Element>) {
 		});
 	});
 
-	const app = createVue();
-
-	setupRouter(app, createMainRouter);
+	const app = await createVue();
 
 	if (_DEV_) {
 		app.config.performance = true;
@@ -282,18 +278,53 @@ export async function common(createVue: () => App<Element>) {
 	const rootEl = ((): HTMLElement => {
 		const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
 
-		const currentRoot = document.getElementById(MISSKEY_MOUNT_DIV_ID);
+		const currentRoot = window.document.getElementById(MISSKEY_MOUNT_DIV_ID);
 
 		if (currentRoot) {
 			console.warn('multiple import detected');
 			return currentRoot;
 		}
 
-		const root = document.createElement('div');
+		const root = window.document.createElement('div');
 		root.id = MISSKEY_MOUNT_DIV_ID;
-		document.body.appendChild(root);
+		window.document.body.appendChild(root);
 		return root;
 	})();
+
+	if (instance.sentryForFrontend) {
+		const Sentry = await import('@sentry/vue');
+		Sentry.init({
+			app,
+			integrations: [
+				...(instance.sentryForFrontend.vueIntegration !== undefined ? [
+					Sentry.vueIntegration(instance.sentryForFrontend.vueIntegration ?? undefined),
+				] : []),
+				...(instance.sentryForFrontend.browserTracingIntegration !== undefined ? [
+					Sentry.browserTracingIntegration(instance.sentryForFrontend.browserTracingIntegration ?? undefined),
+				] : []),
+				...(instance.sentryForFrontend.replayIntegration !== undefined ? [
+					Sentry.replayIntegration(instance.sentryForFrontend.replayIntegration ?? undefined),
+				] : []),
+			],
+
+			// Set tracesSampleRate to 1.0 to capture 100%
+			tracesSampleRate: 1.0,
+
+			// Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+			...(instance.sentryForFrontend.browserTracingIntegration !== undefined ? {
+				tracePropagationTargets: [apiUrl],
+			} : {}),
+
+			// Capture Replay for 10% of all sessions,
+			// plus for 100% of sessions with an error
+			...(instance.sentryForFrontend.replayIntegration !== undefined ? {
+				replaysSessionSampleRate: 0.1,
+				replaysOnErrorSampleRate: 1.0,
+			} : {}),
+
+			...instance.sentryForFrontend.options,
+		});
+	}
 
 	app.mount(rootEl);
 
@@ -304,34 +335,37 @@ export async function common(createVue: () => App<Element>) {
 	removeSplash();
 
 	//#region Self-XSS 対策メッセージ
-	console.log(
-		`%c${i18n.ts._selfXssPrevention.warning}`,
-		'color: #f00; background-color: #ff0; font-size: 36px; padding: 4px;',
-	);
-	console.log(
-		`%c${i18n.ts._selfXssPrevention.title}`,
-		'color: #f00; font-weight: 900; font-family: "Hiragino Sans W9", "Hiragino Kaku Gothic ProN", sans-serif; font-size: 24px;',
-	);
-	console.log(
-		`%c${i18n.ts._selfXssPrevention.description1}`,
-		'font-size: 16px; font-weight: 700;',
-	);
-	console.log(
-		`%c${i18n.ts._selfXssPrevention.description2}`,
-		'font-size: 16px;',
-		'font-size: 20px; font-weight: 700; color: #f00;',
-	);
-	console.log(i18n.tsx._selfXssPrevention.description3({ link: 'https://misskey-hub.net/docs/for-users/resources/self-xss/' }));
+	if (!_DEV_) {
+		console.log(
+			`%c${i18n.ts._selfXssPrevention.warning}`,
+			'color: #f00; background-color: #ff0; font-size: 36px; padding: 4px;',
+		);
+		console.log(
+			`%c${i18n.ts._selfXssPrevention.title}`,
+			'color: #f00; font-weight: 900; font-family: "Hiragino Sans W9", "Hiragino Kaku Gothic ProN", sans-serif; font-size: 24px;',
+		);
+		console.log(
+			`%c${i18n.ts._selfXssPrevention.description1}`,
+			'font-size: 16px; font-weight: 700;',
+		);
+		console.log(
+			`%c${i18n.ts._selfXssPrevention.description2}`,
+			'font-size: 16px;',
+			'font-size: 20px; font-weight: 700; color: #f00;',
+		);
+		console.log(i18n.tsx._selfXssPrevention.description3({ link: 'https://misskey-hub.net/docs/for-users/resources/self-xss/' }));
+	}
 	//#endregion
 
 	return {
 		isClientUpdated,
+		lastVersion,
 		app,
 	};
 }
 
 function removeSplash() {
-	const splash = document.getElementById('splash');
+	const splash = window.document.getElementById('splash');
 	if (splash) {
 		splash.style.opacity = '0';
 		splash.style.pointerEvents = 'none';

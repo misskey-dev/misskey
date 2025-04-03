@@ -65,7 +65,7 @@ import { getUserMenu } from '@/utility/get-user-menu.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/utility/isFfVisibleForMe.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 

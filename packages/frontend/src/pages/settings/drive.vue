@@ -53,15 +53,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ i18n.ts.drivecleaner }}
 				</FormLink>
 
-				<SearchMarker :keywords="['keep', 'original', 'raw', 'upload']">
-					<MkPreferenceContainer k="keepOriginalUploading">
-						<MkSwitch v-model="keepOriginalUploading">
-							<template #label><SearchLabel>{{ i18n.ts.keepOriginalUploading }}</SearchLabel></template>
-							<template #caption><SearchKeyword>{{ i18n.ts.keepOriginalUploadingDescription }}</SearchKeyword></template>
-						</MkSwitch>
-					</MkPreferenceContainer>
-				</SearchMarker>
-
 				<SearchMarker :keywords="['keep', 'original', 'filename']">
 					<MkPreferenceContainer k="keepOriginalFilename">
 						<MkSwitch v-model="keepOriginalFilename">
@@ -104,12 +95,12 @@ import bytes from '@/filters/bytes.js';
 import MkChart from '@/components/MkChart.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { signinRequired } from '@/account.js';
+import { ensureSignin } from '@/i.js';
 import { prefer } from '@/preferences.js';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const fetching = ref(true);
 const usage = ref<number | null>(null);
@@ -130,7 +121,6 @@ const meterStyle = computed(() => {
 	};
 });
 
-const keepOriginalUploading = prefer.model('keepOriginalUploading');
 const keepOriginalFilename = prefer.model('keepOriginalFilename');
 
 misskeyApi('drive').then(info => {

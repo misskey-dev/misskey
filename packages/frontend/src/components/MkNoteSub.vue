@@ -48,7 +48,7 @@ import MkCwButton from '@/components/MkCwButton.vue';
 import { notePage } from '@/filters/note.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { userPage } from '@/filters/user.js';
 import { checkWordMute } from '@/utility/check-word-mute.js';
 

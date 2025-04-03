@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<Transition
 			:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
@@ -44,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkLoading v-else/>
 		</Transition>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -55,8 +54,9 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { $i, updateAccountPartial } from '@/account.js';
+import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const props = defineProps<{
 	announcementId: string;
@@ -90,7 +90,7 @@ async function read(target: Misskey.entities.Announcement): Promise<void> {
 	target.isRead = true;
 	await misskeyApi('i/read-announcement', { announcementId: target.id });
 	if ($i) {
-		updateAccountPartial({
+		updateCurrentAccountPartial({
 			unreadAnnouncements: $i.unreadAnnouncements.filter((a: { id: string; }) => a.id !== target.id),
 		});
 	}

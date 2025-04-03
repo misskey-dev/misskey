@@ -51,6 +51,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChat, 'canChat'])">
+							<template #label>{{ i18n.ts._role._options.canChat }}</template>
+							<template #suffix>{{ policies.canChat ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canChat">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionLimit'])">
 							<template #label>{{ i18n.ts._role._options.mentionMax }}</template>
 							<template #suffix>{{ policies.mentionLimit }}</template>
@@ -295,7 +303,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 const baseRoleQ = ref('');

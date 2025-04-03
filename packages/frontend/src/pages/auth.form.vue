@@ -38,7 +38,7 @@ const emit = defineEmits<{
 const app = computed(() => props.session.app);
 
 const name = computed(() => {
-	const el = document.createElement('div');
+	const el = window.document.createElement('div');
 	el.textContent = app.value.name;
 	return el.innerHTML;
 });

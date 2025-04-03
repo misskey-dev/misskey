@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<MkNotes ref="notes" class="" :pagination="pagination"/>
 	</MkSpacer>
@@ -16,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSpacer>
 		</div>
 	</template>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -25,7 +24,7 @@ import MkNotes from '@/components/MkNotes.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
@@ -57,13 +56,13 @@ const headerActions = computed(() => [{
 	label: i18n.ts.more,
 	handler: (ev: MouseEvent) => {
 		os.popupMenu([{
-			text: i18n.ts.genEmbedCode,
+			text: i18n.ts.embed,
 			icon: 'ti ti-code',
 			action: () => {
 				genEmbedCode('tags', props.tag);
 			},
 		}], ev.currentTarget ?? ev.target);
-	}
+	},
 }]);
 
 const headerTabs = computed(() => []);
@@ -78,7 +77,7 @@ definePage(() => ({
 .footer {
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	border-top: solid 0.5px var(--MI_THEME-divider);
 	display: flex;
 }

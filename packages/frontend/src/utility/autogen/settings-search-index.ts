@@ -38,9 +38,9 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['dark', 'theme'],
 			},
 			{
-				id: '8wcoRp76b',
-				label: i18n.ts.setWallpaper,
-				keywords: ['wallpaper'],
+				id: 'jwW5HULqA',
+				label: i18n.ts._settings.enableSyncThemesBetweenDevices,
+				keywords: ['sync', 'themes', 'devices'],
 			},
 		],
 		label: i18n.ts.theme,
@@ -240,20 +240,25 @@ export const searchIndexes: SearchIndexItem[] = [
 				keywords: ['explore', i18n.ts.makeExplorableDescription],
 			},
 			{
-				id: '7vr04wKol',
+				id: 'xEYlOghao',
+				label: i18n.ts._chat.chatAllowedUsers,
+				keywords: ['chat'],
+			},
+			{
+				id: 'BnOtlyaAh',
 				children: [
 					{
-						id: 'Av7fAaHv8',
+						id: 'BzMIVBpL0',
 						label: i18n.ts._accountSettings.requireSigninToViewContents,
 						keywords: ['login', 'signin'],
 					},
 					{
-						id: 'lUtOQbnwi',
+						id: 'jJUqPqBAv',
 						label: i18n.ts._accountSettings.makeNotesFollowersOnlyBefore,
 						keywords: ['follower', i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription],
 					},
 					{
-						id: '83WWcjwS9',
+						id: 'ra10txIFV',
 						label: i18n.ts._accountSettings.makeNotesHiddenBefore,
 						keywords: ['hidden', i18n.ts._accountSettings.makeNotesHiddenBeforeDescription],
 					},
@@ -271,177 +276,355 @@ export const searchIndexes: SearchIndexItem[] = [
 		id: '3yCAv0IsZ',
 		children: [
 			{
-				id: 'kMJ5laK3n',
-				label: i18n.ts.uiLanguage,
-				keywords: ['language'],
-			},
-			{
-				id: 'dlKebHH6k',
-				label: i18n.ts.overridedDeviceKind,
-				keywords: ['device', 'type', 'kind', 'smartphone', 'tablet', 'desktop'],
-			},
-			{
-				id: 'nxvMUir3T',
-				label: i18n.ts.showFixedPostForm,
-				keywords: ['post', 'form', 'timeline'],
-			},
-			{
-				id: '84MdeDWL1',
-				label: i18n.ts.showFixedPostFormInChannel,
-				keywords: ['post', 'form', 'timeline', 'channel'],
-			},
-			{
-				id: 'dOig3ye4Z',
-				label: i18n.ts.pinnedList,
-				keywords: ['pinned', 'list'],
-			},
-			{
-				id: '4huRldNp5',
-				label: i18n.ts.enableQuickAddMfmFunction,
-				keywords: ['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn'],
-			},
-			{
-				id: '1x3JNXj8N',
-				label: i18n.ts.rememberNoteVisibility,
-				keywords: ['remember', 'keep', 'note', 'visibility'],
-			},
-			{
-				id: 'CfAg0Qekq',
-				label: i18n.ts.defaultNoteVisibility,
-				keywords: ['default', 'note', 'visibility'],
-			},
-			{
-				id: 'tMm9kH9gy',
+				id: 'AKvDrxSj5',
 				children: [
 					{
-						id: 'hDdVkBFJP',
-						label: i18n.ts.collapseRenotes,
-						keywords: ['renote', i18n.ts.collapseRenotesDescription],
+						id: 'a5b9RjEvq',
+						label: i18n.ts.uiLanguage,
+						keywords: ['language'],
 					},
 					{
-						id: 'uJJyDABGu',
-						label: i18n.ts.showNoteActionsOnlyHover,
-						keywords: ['hover', 'show', 'footer', 'action'],
+						id: '9ragaff40',
+						label: i18n.ts.overridedDeviceKind,
+						keywords: ['device', 'type', 'kind', 'smartphone', 'tablet', 'desktop'],
 					},
 					{
-						id: 'ufc2X9voy',
-						label: i18n.ts.showClipButtonInNoteFooter,
-						keywords: ['footer', 'action', 'clip', 'show'],
+						id: 'lfI3yMX9g',
+						label: i18n.ts.showAvatarDecorations,
+						keywords: ['avatar', 'icon', 'decoration', 'show'],
 					},
 					{
-						id: '7Jwvu8bK6',
+						id: '31Y4IcGEf',
+						label: i18n.ts.alwaysConfirmFollow,
+						keywords: ['follow', 'confirm', 'always'],
+					},
+					{
+						id: '78q2asrLS',
+						label: i18n.ts.highlightSensitiveMedia,
+						keywords: ['highlight', 'sensitive', 'nsfw', 'image', 'photo', 'picture', 'media', 'thumbnail'],
+					},
+					{
+						id: 'zydOfGYip',
+						label: i18n.ts.confirmWhenRevealingSensitiveMedia,
+						keywords: ['sensitive', 'nsfw', 'media', 'image', 'photo', 'picture', 'attachment', 'confirm'],
+					},
+					{
+						id: 'wqpOC22Zm',
 						label: i18n.ts.enableAdvancedMfm,
 						keywords: ['mfm', 'enable', 'show', 'advanced'],
 					},
 					{
-						id: 'yb11lSY1G',
+						id: 'c98gbF9c6',
+						label: i18n.ts.enableInfiniteScroll,
+						keywords: ['auto', 'load', 'auto', 'more', 'scroll'],
+					},
+					{
+						id: '6ANRSOaNg',
+						label: i18n.ts.emojiStyle,
+						keywords: ['emoji', 'style', 'native', 'system', 'fluent', 'twemoji'],
+					},
+				],
+				label: i18n.ts.general,
+				keywords: ['general'],
+			},
+			{
+				id: '5G6O6qdis',
+				children: [
+					{
+						id: 'khT3n6byY',
+						label: i18n.ts.showFixedPostForm,
+						keywords: ['post', 'form', 'timeline'],
+					},
+					{
+						id: 'q5ElfNSou',
+						label: i18n.ts.showFixedPostFormInChannel,
+						keywords: ['post', 'form', 'timeline', 'channel'],
+					},
+					{
+						id: '3GcWIaZf8',
+						label: i18n.ts.collapseRenotes,
+						keywords: ['renote', i18n.ts.collapseRenotesDescription],
+					},
+					{
+						id: 'd2H4E5ys6',
+						label: i18n.ts.showGapBetweenNotesInTimeline,
+						keywords: ['note', 'timeline', 'gap'],
+					},
+					{
+						id: '1LHOhDKGW',
+						label: i18n.ts.disableStreamingTimeline,
+						keywords: ['disable', 'streaming', 'timeline'],
+					},
+					{
+						id: 'DSzwvTp7i',
+						label: i18n.ts.pinnedList,
+						keywords: ['pinned', 'list'],
+					},
+					{
+						id: 'ykifk3NHS',
+						label: i18n.ts.showNoteActionsOnlyHover,
+						keywords: ['hover', 'show', 'footer', 'action'],
+					},
+					{
+						id: 'tLGyaQagB',
+						label: i18n.ts.showClipButtonInNoteFooter,
+						keywords: ['footer', 'action', 'clip', 'show'],
+					},
+					{
+						id: '7W6g8Dcqz',
 						label: i18n.ts.showReactionsCount,
 						keywords: ['reaction', 'count', 'show'],
 					},
 					{
-						id: 'fL49Zxe9i',
+						id: 'uAOoH3LFF',
+						label: i18n.ts.confirmOnReact,
+						keywords: ['reaction', 'confirm'],
+					},
+					{
+						id: 'eCiyZLC8n',
 						label: i18n.ts.loadRawImages,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'quality', 'raw', 'attachment'],
 					},
+					{
+						id: '68u9uRmFP',
+						label: i18n.ts.useReactionPickerForContextMenu,
+						keywords: ['reaction', 'picker', 'contextmenu', 'open'],
+					},
+					{
+						id: 'yxehrHZ6x',
+						label: i18n.ts.reactionsDisplaySize,
+						keywords: ['reaction', 'size', 'scale', 'display'],
+					},
+					{
+						id: 'gi8ILaE2Z',
+						label: i18n.ts.limitWidthOfReaction,
+						keywords: ['reaction', 'size', 'scale', 'display', 'width', 'limit'],
+					},
+					{
+						id: 'cEQJZ7DQG',
+						label: i18n.ts.mediaListWithOneImageAppearance,
+						keywords: ['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'list', 'size', 'height'],
+					},
+					{
+						id: 'haX4QVulD',
+						label: i18n.ts.instanceTicker,
+						keywords: ['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation'],
+					},
+					{
+						id: 'pneYnQekL',
+						label: i18n.ts.displayOfSensitiveMedia,
+						keywords: ['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility'],
+					},
 				],
-				label: i18n.ts.note,
-				keywords: ['note'],
+				label: i18n.ts._settings.timelineAndNote,
+				keywords: ['timeline', 'note'],
 			},
 			{
-				id: 'bUOs2UKY4',
+				id: 'eJ2jme16W',
 				children: [
 					{
-						id: 'c8gA9Xj2a',
+						id: 'ErMQr6LQk',
+						label: i18n.ts.keepCw,
+						keywords: ['remember', 'keep', 'note', 'cw'],
+					},
+					{
+						id: 'zrJicawH9',
+						label: i18n.ts.rememberNoteVisibility,
+						keywords: ['remember', 'keep', 'note', 'visibility'],
+					},
+					{
+						id: 'BaQfrVO82',
+						label: i18n.ts.enableQuickAddMfmFunction,
+						keywords: ['mfm', 'enable', 'show', 'advanced', 'picker', 'form', 'function', 'fn'],
+					},
+					{
+						id: 'C2WYcVM1d',
+						label: i18n.ts.defaultNoteVisibility,
+						keywords: ['default', 'note', 'visibility'],
+					},
+				],
+				label: i18n.ts.postForm,
+				keywords: ['post', 'form'],
+			},
+			{
+				id: 'sQXSA6gik',
+				children: [
+					{
+						id: 'rICn8stqk',
 						label: i18n.ts.useGroupedNotifications,
 						keywords: ['group'],
+					},
+					{
+						id: 'xFmAg2tDe',
+						label: i18n.ts.position,
+						keywords: ['position'],
+					},
+					{
+						id: 'Ek4Cw3VPq',
+						label: i18n.ts.stackAxis,
+						keywords: ['stack', 'axis', 'direction'],
 					},
 				],
 				label: i18n.ts.notifications,
 				keywords: ['notification'],
 			},
 			{
-				id: 'tjGzqy3qa',
+				id: 'gDVCqZfxm',
 				children: [
 					{
-						id: '3OeHscv45',
+						id: 'ei8Ix3s4S',
+						label: i18n.ts._settings._chat.showSenderName,
+						keywords: ['show', 'sender', 'name'],
+					},
+					{
+						id: '2E7vdIUQd',
+						label: i18n.ts._settings._chat.sendOnEnter,
+						keywords: ['send', 'enter', 'newline'],
+					},
+				],
+				label: i18n.ts.chat,
+				keywords: ['chat', 'messaging'],
+			},
+			{
+				id: '96LnS1sxB',
+				children: [
+					{
+						id: 'vPQPvmntL',
+						label: i18n.ts.reduceUiAnimation,
+						keywords: ['animation', 'motion', 'reduce'],
+					},
+					{
+						id: 'wfJ91vwzq',
+						label: i18n.ts.disableShowingAnimatedImages,
+						keywords: ['disable', 'animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif'],
+					},
+					{
+						id: '42b1L4xdq',
+						label: i18n.ts.enableAnimatedMfm,
+						keywords: ['mfm', 'enable', 'show', 'animated'],
+					},
+					{
+						id: 'dLkRNHn3k',
+						label: i18n.ts.enableHorizontalSwipe,
+						keywords: ['swipe', 'horizontal', 'tab'],
+					},
+					{
+						id: 'BvooTWFW5',
+						label: i18n.ts.keepScreenOn,
+						keywords: ['keep', 'screen', 'display', 'on'],
+					},
+					{
+						id: 'yzbghkAq0',
+						label: i18n.ts.useNativeUIForVideoAudioPlayer,
+						keywords: ['native', 'system', 'video', 'audio', 'player', 'media'],
+					},
+					{
+						id: 'aSbKFHbOy',
+						label: i18n.ts._settings.makeEveryTextElementsSelectable,
+						keywords: ['text', 'selectable'],
+					},
+					{
+						id: 'bTcAsPvNz',
+						label: i18n.ts.menuStyle,
+						keywords: ['menu', 'style', 'popup', 'drawer'],
+					},
+					{
+						id: 'lSVBaLnyW',
+						label: i18n.ts._contextMenu.title,
+						keywords: ['contextmenu', 'system', 'native'],
+					},
+					{
+						id: 'pec0uMPq5',
+						label: i18n.ts.fontSize,
+						keywords: ['font', 'size'],
+					},
+					{
+						id: 'Eh7vTluDO',
+						label: i18n.ts.useSystemFont,
+						keywords: ['font', 'system', 'native'],
+					},
+				],
+				label: i18n.ts.accessibility,
+				keywords: ['accessibility', i18n.ts._settings.accessibilityBanner],
+			},
+			{
+				id: 'vTRSKf1JA',
+				children: [
+					{
+						id: '2VjlA02wB',
+						label: i18n.ts.turnOffToImprovePerformance,
+						keywords: ['blur'],
+					},
+					{
+						id: 'f6J0lmg1g',
+						label: i18n.ts.turnOffToImprovePerformance,
+						keywords: ['blur', 'modal'],
+					},
+					{
+						id: 'hQqXhfNg8',
+						label: i18n.ts.turnOffToImprovePerformance,
+						keywords: ['sticky'],
+					},
+				],
+				label: i18n.ts.performance,
+				keywords: ['performance'],
+			},
+			{
+				id: 'utM8dEobb',
+				label: i18n.ts.dataSaver,
+				keywords: ['datasaver'],
+			},
+			{
+				id: 'gOUvwkE9t',
+				children: [
+					{
+						id: 'iUMUvFURf',
+						label: i18n.ts.squareAvatars,
+						keywords: ['avatar', 'icon', 'square'],
+					},
+					{
+						id: 'ceyPO9Ywi',
+						label: i18n.ts.seasonalScreenEffect,
+						keywords: ['effect', 'show'],
+					},
+					{
+						id: 'ztwIlsXhP',
 						label: i18n.ts.openImageInNewTab,
 						keywords: ['image', 'photo', 'picture', 'media', 'thumbnail', 'new', 'tab'],
 					},
 					{
-						id: 'bFsNusspF',
-						label: i18n.ts.useReactionPickerForContextMenu,
-						keywords: ['reaction', 'picker', 'contextmenu', 'open'],
+						id: 'vLSsQbZEo',
+						label: i18n.ts.withRepliesByDefaultForNewlyFollowed,
+						keywords: ['follow', 'replies'],
 					},
 					{
-						id: '2h3rY1izt',
-						label: i18n.ts.enableInfiniteScroll,
-						keywords: ['load', 'auto', 'more'],
-					},
-					{
-						id: 'pkK3eeFKm',
-						label: i18n.ts.disableStreamingTimeline,
-						keywords: ['disable', 'streaming', 'timeline'],
-					},
-					{
-						id: 'y2v7CV9zs',
-						label: i18n.ts.alwaysConfirmFollow,
-						keywords: ['follow', 'confirm', 'always'],
-					},
-					{
-						id: 'A8a5hcLce',
-						label: i18n.ts.confirmWhenRevealingSensitiveMedia,
-						keywords: ['sensitive', 'nsfw', 'media', 'image', 'photo', 'picture', 'attachment', 'confirm'],
-					},
-					{
-						id: 'utFrfuW7X',
-						label: i18n.ts.confirmOnReact,
-						keywords: ['reaction', 'confirm'],
-					},
-					{
-						id: 'kmdsnVIQX',
-						label: i18n.ts.keepCw,
-						keywords: ['remember', 'keep', 'note', 'cw'],
-					},
-					{
-						id: 'mNRK0pt8L',
+						id: 'hQt85bBIX',
 						label: i18n.ts.whenServerDisconnected,
 						keywords: ['server', 'disconnect', 'reconnect', 'reload', 'streaming'],
 					},
 					{
-						id: 'vE7KeV4U4',
+						id: 'C9SyK2m0',
 						label: i18n.ts.numberOfPageCache,
 						keywords: ['cache', 'page'],
 					},
 					{
-						id: 'eJ2jme16W',
-						label: i18n.ts.dataSaver,
-						keywords: ['datasaver'],
-					},
-				],
-				label: i18n.ts.behavior,
-				keywords: ['behavior'],
-			},
-			{
-				id: 'F3kpUNvSQ',
-				children: [
-					{
-						id: '4bfFRM0UD',
+						id: '2U0iVUtfW',
 						label: i18n.ts.forceShowAds,
 						keywords: ['ad', 'show'],
 					},
 					{
-						id: '2pB0jWBHo',
+						id: '1rA7ADEXY',
 						label: i18n.ts.hemisphere,
 						keywords: [],
 					},
 					{
-						id: 'eIvnR6Xxo',
+						id: 'vRayx89Rt',
 						label: i18n.ts.additionalEmojiDictionary,
 						keywords: ['emoji', 'dictionary', 'additional', 'extra'],
 					},
 				],
 				label: i18n.ts.other,
-				keywords: [],
+				keywords: ['other'],
 			},
 		],
 		label: i18n.ts.preferences,
@@ -460,27 +643,32 @@ export const searchIndexes: SearchIndexItem[] = [
 		id: 'F1uK9ssiY',
 		children: [
 			{
-				id: 'msAcN6u3S',
-				label: i18n.ts.accountInfo,
+				id: 'E0ndmaP6Q',
+				label: i18n.ts._role.policies,
 				keywords: ['account', 'info'],
 			},
 			{
-				id: 'ts8DgdnZV',
+				id: 'r5SjfwZJc',
+				label: i18n.ts.rolesAssignedToMe,
+				keywords: ['roles'],
+			},
+			{
+				id: 'cm7LrjgaW',
 				label: i18n.ts.accountMigration,
 				keywords: ['account', 'move', 'migration'],
 			},
 			{
-				id: '4BG7nBECm',
+				id: 'ozfqNviP3',
 				label: i18n.ts.closeAccount,
 				keywords: ['account', 'close', 'delete', i18n.ts._accountDelete.requestAccountDelete],
 			},
 			{
-				id: '2qI6ruPgi',
+				id: 'tpywgkpxy',
 				label: i18n.ts.experimentalFeatures,
 				keywords: ['experimental', 'feature', 'flags'],
 			},
 			{
-				id: 'cIeaax47o',
+				id: 'zWbGKohZ2',
 				label: i18n.ts.developer,
 				keywords: ['developer', 'mode', 'debug'],
 			},
@@ -489,6 +677,20 @@ export const searchIndexes: SearchIndexItem[] = [
 		keywords: ['other'],
 		path: '/settings/other',
 		icon: 'ti ti-dots',
+	},
+	{
+		id: '9bNikHWzQ',
+		children: [
+			{
+				id: 't6XtfnRm9',
+				label: i18n.ts._settings.showNavbarSubButtons,
+				keywords: ['navbar', 'sidebar', 'toggle', 'button', 'sub'],
+			},
+		],
+		label: i18n.ts.navbar,
+		keywords: ['navbar', 'menu', 'sidebar'],
+		path: '/settings/navbar',
+		icon: 'ti ti-list',
 	},
 	{
 		id: '3icEvyv2D',
@@ -537,6 +739,57 @@ export const searchIndexes: SearchIndexItem[] = [
 		icon: 'ti ti-ban',
 	},
 	{
+		id: 'yR1OSyLiT',
+		children: [
+			{
+				id: 'yMJzyzOUk',
+				label: i18n.ts._emojiPalette.enableSyncBetweenDevicesForPalettes,
+				keywords: ['sync', 'palettes', 'devices'],
+			},
+			{
+				id: 'wCE09vgZr',
+				label: i18n.ts._emojiPalette.paletteForMain,
+				keywords: ['main', 'palette'],
+			},
+			{
+				id: 'uCzRPrSNx',
+				label: i18n.ts._emojiPalette.paletteForReaction,
+				keywords: ['reaction', 'palette'],
+			},
+			{
+				id: 'hgQr28WUk',
+				children: [
+					{
+						id: 'fY04NIHSQ',
+						label: i18n.ts.size,
+						keywords: ['emoji', 'picker', 'scale', 'size'],
+					},
+					{
+						id: '3j7vlaL7t',
+						label: i18n.ts.numberOfColumn,
+						keywords: ['emoji', 'picker', 'width', 'column', 'size'],
+					},
+					{
+						id: 'zPX8z1Bcy',
+						label: i18n.ts.height,
+						keywords: ['emoji', 'picker', 'height', 'size'],
+					},
+					{
+						id: '2CSkZa4tl',
+						label: i18n.ts.style,
+						keywords: ['emoji', 'picker', 'style'],
+					},
+				],
+				label: i18n.ts.emojiPickerDisplay,
+				keywords: ['emoji', 'picker', 'display'],
+			},
+		],
+		label: i18n.ts.emojiPalette,
+		keywords: ['emoji', 'palette'],
+		path: '/settings/emoji-palette',
+		icon: 'ti ti-mood-happy',
+	},
+	{
 		id: '3Tcxw4Fwl',
 		children: [
 			{
@@ -580,21 +833,16 @@ export const searchIndexes: SearchIndexItem[] = [
 			},
 			{
 				id: 'goQdtf3dD',
-				label: i18n.ts.keepOriginalUploading,
-				keywords: ['keep', 'original', 'raw', 'upload', i18n.ts.keepOriginalUploadingDescription],
-			},
-			{
-				id: '83xRo0XJl',
 				label: i18n.ts.keepOriginalFilename,
 				keywords: ['keep', 'original', 'filename', i18n.ts.keepOriginalFilenameDescription],
 			},
 			{
-				id: 'wf77yRQQq',
+				id: '83xRo0XJl',
 				label: i18n.ts.alwaysMarkSensitive,
 				keywords: ['always', 'default', 'mark', 'nsfw', 'sensitive', 'media', 'file'],
 			},
 			{
-				id: '3pxwNB8e4',
+				id: 'BrBqZL35E',
 				label: i18n.ts.enableAutoSensitive,
 				keywords: ['auto', 'nsfw', 'sensitive', 'media', 'file', i18n.ts.enableAutoSensitiveDescription],
 			},
@@ -608,24 +856,49 @@ export const searchIndexes: SearchIndexItem[] = [
 		id: 'FfZdOs8y',
 		children: [
 			{
-				id: 'lVlkdP4zN',
+				id: 'B1ZU6Ur54',
+				label: i18n.ts._deck.enableSyncBetweenDevicesForProfiles,
+				keywords: ['sync', 'profiles', 'devices'],
+			},
+			{
+				id: 'wWH4pxMQN',
 				label: i18n.ts._deck.useSimpleUiForNonRootPages,
 				keywords: ['ui', 'root', 'page'],
 			},
 			{
-				id: 'avgxEYgsi',
+				id: '3LR509BvD',
 				label: i18n.ts.defaultNavigationBehaviour,
 				keywords: ['default', 'navigation', 'behaviour', 'window'],
 			},
 			{
-				id: 'ma7OSw5JK',
+				id: 'ybU8RLXgm',
 				label: i18n.ts._deck.alwaysShowMainColumn,
 				keywords: ['always', 'show', 'main', 'column'],
 			},
 			{
-				id: 'jjTlUDhJH',
-				label: 'Unnamed marker',
+				id: 'xRasZyAVl',
+				label: i18n.ts._deck.columnAlign,
 				keywords: ['column', 'align'],
+			},
+			{
+				id: '6qcyPd0oJ',
+				label: i18n.ts._deck.deckMenuPosition,
+				keywords: ['menu', 'position'],
+			},
+			{
+				id: '4zk2Now4S',
+				label: i18n.ts._deck.navbarPosition,
+				keywords: ['navbar', 'position'],
+			},
+			{
+				id: 'CGNtJ2I3n',
+				label: i18n.ts._deck.columnGap,
+				keywords: ['column', 'gap', 'margin'],
+			},
+			{
+				id: 'rxPDMo7bE',
+				label: i18n.ts.setWallpaper,
+				keywords: ['wallpaper'],
 			},
 		],
 		label: i18n.ts.deck,
@@ -643,7 +916,7 @@ export const searchIndexes: SearchIndexItem[] = [
 			},
 			{
 				id: '5VSGOVYR0',
-				label: i18n.ts.manage,
+				label: i18n.ts._settings.webhook,
 				keywords: ['webhook'],
 			},
 		],
@@ -660,117 +933,11 @@ export const searchIndexes: SearchIndexItem[] = [
 		icon: 'ti ti-sparkles',
 	},
 	{
-		id: 'AqPvMgn3A',
-		children: [
-			{
-				id: '1wtOIwAdm',
-				label: i18n.ts.useBlurEffect,
-				keywords: ['blur'],
-			},
-			{
-				id: '6fLNMTwNt',
-				label: i18n.ts.useBlurEffectForModal,
-				keywords: ['blur', 'modal'],
-			},
-			{
-				id: 'E0WXhhRB1',
-				label: i18n.ts.highlightSensitiveMedia,
-				keywords: ['highlight', 'sensitive', 'nsfw', 'image', 'photo', 'picture', 'media', 'thumbnail'],
-			},
-			{
-				id: '7iZsGkplG',
-				label: i18n.ts.squareAvatars,
-				keywords: ['avatar', 'icon', 'square'],
-			},
-			{
-				id: 'AfRMcC6IM',
-				label: i18n.ts.showAvatarDecorations,
-				keywords: ['avatar', 'icon', 'decoration', 'show'],
-			},
-			{
-				id: 'i7aSaEWaT',
-				label: i18n.ts.showGapBetweenNotesInTimeline,
-				keywords: ['note', 'timeline', 'gap'],
-			},
-			{
-				id: 'knj98Mx84',
-				label: i18n.ts.seasonalScreenEffect,
-				keywords: ['effect', 'show'],
-			},
-			{
-				id: 'Bzg77rYNd',
-				label: i18n.ts.menuStyle,
-				keywords: ['menu', 'style', 'popup', 'drawer'],
-			},
-			{
-				id: '7AOZ1ZgDv',
-				label: i18n.ts.emojiStyle,
-				keywords: ['emoji', 'style', 'native', 'system', 'fluent', 'twemoji'],
-			},
-			{
-				id: 'fDelHUrBi',
-				label: i18n.ts.fontSize,
-				keywords: ['font', 'size'],
-			},
-			{
-				id: 'siOW5aSwp',
-				label: i18n.ts.useSystemFont,
-				keywords: ['font', 'system', 'native'],
-			},
-			{
-				id: 's05dHQ1dW',
-				children: [
-					{
-						id: 'zoMbYCvP0',
-						label: i18n.ts.reactionsDisplaySize,
-						keywords: ['reaction', 'size', 'scale', 'display'],
-					},
-					{
-						id: 'lGFzLnWfB',
-						label: i18n.ts.limitWidthOfReaction,
-						keywords: ['reaction', 'size', 'scale', 'display', 'width', 'limit'],
-					},
-					{
-						id: '9E0v8VKIY',
-						label: i18n.ts.mediaListWithOneImageAppearance,
-						keywords: ['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'list', 'size', 'height'],
-					},
-					{
-						id: 'xB7MPEF4Q',
-						label: i18n.ts.instanceTicker,
-						keywords: ['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation'],
-					},
-					{
-						id: '7siYCSodm',
-						label: i18n.ts.displayOfSensitiveMedia,
-						keywords: ['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility'],
-					},
-				],
-				label: i18n.ts.displayOfNote,
-				keywords: ['note', 'display'],
-			},
-			{
-				id: 'uQfyiHMSs',
-				children: [
-					{
-						id: 'y3uTXsSQ6',
-						label: i18n.ts.position,
-						keywords: ['position'],
-					},
-					{
-						id: 'PILAdkVM',
-						label: i18n.ts.stackAxis,
-						keywords: ['stack', 'axis', 'direction'],
-					},
-				],
-				label: i18n.ts.notificationDisplay,
-				keywords: ['notification', 'display'],
-			},
-		],
-		label: i18n.ts.appearance,
-		keywords: ['appearance', i18n.ts._settings.appearanceBanner],
-		path: '/settings/appearance',
-		icon: 'ti ti-device-desktop',
+		id: 'zK6posor9',
+		label: i18n.ts.accounts,
+		keywords: ['accounts'],
+		path: '/settings/accounts',
+		icon: 'ti ti-users',
 	},
 	{
 		id: '330Q4mf8E',
@@ -820,50 +987,6 @@ export const searchIndexes: SearchIndexItem[] = [
 		keywords: ['import', 'export', 'data', 'archive', i18n.ts._settings.accountDataBanner],
 		path: '/settings/account-data',
 		icon: 'ti ti-package',
-	},
-	{
-		id: 'f08Mi1Uwn',
-		children: [
-			{
-				id: 'C5dRH2Ypy',
-				label: i18n.ts.reduceUiAnimation,
-				keywords: ['animation', 'motion', 'reduce'],
-			},
-			{
-				id: '5mZxz2cru',
-				label: i18n.ts.disableShowingAnimatedImages,
-				keywords: ['disable', 'animation', 'image', 'photo', 'picture', 'media', 'thumbnail', 'gif'],
-			},
-			{
-				id: 'c0Iy5hL5o',
-				label: i18n.ts.enableAnimatedMfm,
-				keywords: ['mfm', 'enable', 'show', 'animated'],
-			},
-			{
-				id: '4HYFjs2Nv',
-				label: i18n.ts.enableHorizontalSwipe,
-				keywords: ['swipe', 'horizontal', 'tab'],
-			},
-			{
-				id: 'kYVJ3SVNq',
-				label: i18n.ts.keepScreenOn,
-				keywords: ['keep', 'screen', 'display', 'on'],
-			},
-			{
-				id: 'w4Bv0meAt',
-				label: i18n.ts.useNativeUIForVideoAudioPlayer,
-				keywords: ['native', 'system', 'video', 'audio', 'player', 'media'],
-			},
-			{
-				id: '1fV9WINCQ',
-				label: i18n.ts._contextMenu.title,
-				keywords: ['contextmenu', 'system', 'native'],
-			},
-		],
-		label: i18n.ts.accessibility,
-		keywords: ['accessibility', i18n.ts._settings.accessibilityBanner],
-		path: '/settings/accessibility',
-		icon: 'ti ti-accessible',
 	},
 ] as const;
 

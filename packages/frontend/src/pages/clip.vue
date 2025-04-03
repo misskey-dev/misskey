@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions"/></template>
+<PageWithHeader :actions="headerActions">
 	<MkSpacer :contentMax="800">
 		<div v-if="clip" class="_gaps">
 			<div class="_panel">
@@ -27,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkNotes :pagination="pagination" :detail="true"/>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -36,7 +35,7 @@ import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
 import MkNotes from '@/components/MkNotes.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -148,11 +147,10 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 			text: i18n.ts.copyUrl,
 			action: () => {
 				copyToClipboard(`${url}/clips/${clip.value!.id}`);
-				os.success();
 			},
 		}, {
 			icon: 'ti ti-code',
-			text: i18n.ts.genEmbedCode,
+			text: i18n.ts.embed,
 			action: () => {
 				genEmbedCode('clips', clip.value!.id);
 			},

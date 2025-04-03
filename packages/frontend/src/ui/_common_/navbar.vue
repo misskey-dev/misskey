@@ -48,6 +48,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</div>
 		<div :class="$style.bottom">
+			<button v-if="showWidgetButton" class="_button" :class="[$style.widget]" @click="() => emit('widgetButtonClick')">
+				<i class="ti ti-apps ti-fw"></i>
+			</button>
 			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="() => { os.post(); }">
 				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
 			</button>
@@ -65,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</svg>
 	-->
 
-	<div :class="$style.subButtons">
+	<div v-if="!forceIconOnly && prefer.r.showNavbarSubButtons.value" :class="$style.subButtons">
 		<div :class="[$style.subButton, $style.menuEditButton]">
 			<svg viewBox="0 0 16 64" :class="$style.subButtonShape">
 				<g transform="matrix(0.333333,0,0,0.222222,0.000895785,21.3333)">
@@ -74,9 +77,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</svg>
 			<button class="_button" :class="$style.subButtonClickable" @click="menuEdit"><i :class="$style.subButtonIcon" class="ti ti-settings-2"></i></button>
 		</div>
-		<div v-if="!forceIconOnly" :class="$style.subButtonGapFill"></div>
-		<div v-if="!forceIconOnly" :class="$style.subButtonGapFillDivider"></div>
-		<div v-if="!forceIconOnly" :class="[$style.subButton, $style.toggleButton]">
+		<div :class="$style.subButtonGapFill"></div>
+		<div :class="$style.subButtonGapFillDivider"></div>
+		<div :class="[$style.subButton, $style.toggleButton]">
 			<svg viewBox="0 0 16 64" :class="$style.subButtonShape">
 				<g transform="matrix(0.333333,0,0,0.222222,0.000895785,21.3333)">
 					<path d="M47.488,7.995C47.79,10.11 47.943,12.266 47.943,14.429C47.997,26.989 47.997,84 47.997,84C47.997,84 44.018,118.246 23.997,133.5C-0.374,152.07 -0.003,192 -0.003,192L-0.003,-96C-0.003,-96 0.151,-56.216 23.997,-37.5C40.861,-24.265 46.043,-1.243 47.488,7.995Z" style="fill:var(--MI_THEME-navBg);"/>
@@ -93,15 +96,24 @@ import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
+import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { $i } from '@/i.js';
 
 const router = useRouter();
+
+const props = defineProps<{
+	showWidgetButton?: boolean;
+}>();
+
+const emit = defineEmits<{
+	(ev: 'widgetButtonClick'): void;
+}>();
 
 const forceIconOnly = ref(window.innerWidth <= 1279);
 const iconOnly = computed(() => {
@@ -128,8 +140,8 @@ watch(store.r.menuDisplay, () => {
 });
 
 function toggleIconOnly() {
-	if (document.startViewTransition && prefer.s.animation) {
-		document.startViewTransition(() => {
+	if (window.document.startViewTransition && prefer.s.animation) {
+		window.document.startViewTransition(() => {
 			store.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
 		});
 	} else {
@@ -370,7 +382,7 @@ function menuEdit() {
 
 		&:hover, &.active {
 			&::before {
-				background: var(--MI_THEME-accentLighten);
+				background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 			}
 		}
 	}
@@ -444,7 +456,7 @@ function menuEdit() {
 
 		&:hover {
 			text-decoration: none;
-			color: var(--MI_THEME-navHoverFg);
+			color: light-dark(hsl(from var(--MI_THEME-navFg) h s calc(l - 17)), hsl(from var(--MI_THEME-navFg) h s calc(l + 17)));
 		}
 
 		&.active {
@@ -559,6 +571,14 @@ function menuEdit() {
 		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
+	.widget {
+		display: block;
+		position: relative;
+		width: 100%;
+		height: 52px;
+		text-align: center;
+	}
+
 	.post {
 		display: block;
 		position: relative;
@@ -592,7 +612,7 @@ function menuEdit() {
 
 		&:hover, &.active {
 			&::before {
-				background: var(--MI_THEME-accentLighten);
+				background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 			}
 		}
 	}

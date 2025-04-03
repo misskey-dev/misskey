@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="700">
 		<div class="_gaps">
 			<MkInput v-model="title">
@@ -37,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSpacer>
 		</div>
 	</template>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -53,7 +52,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const PRESET_DEFAULT = `/// @ ${AISCRIPT_VERSION}
 
@@ -468,7 +467,7 @@ definePage(() => ({
 <style lang="scss" module>
 .footer {
 	backdrop-filter: var(--MI-blur, blur(15px));
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	border-top: solid .5px var(--MI_THEME-divider);
 }
 </style>

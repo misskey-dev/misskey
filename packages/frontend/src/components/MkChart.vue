@@ -45,12 +45,8 @@ export type ChartSrc =
 </script>
 
 <script lang="ts" setup>
-/* eslint-disable id-denylist --
-  Chart.js has a `data` attribute in most chart definitions, which triggers the
-  id-denylist violation when setting it. This is causing about 60+ lint issues.
-  As this is part of Chart.js's API it makes sense to disable the check here.
-*/
-import { onMounted, ref, shallowRef, watch } from 'vue';
+
+import { onMounted, ref, useTemplateRef, watch } from 'vue';
 import { Chart } from 'chart.js';
 import * as Misskey from 'misskey-js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
@@ -96,7 +92,7 @@ const props = withDefaults(defineProps<{
 	nowForChromatic: undefined,
 });
 
-const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
+const legendEl = useTemplateRef('legendEl');
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -134,7 +130,7 @@ let chartData: {
 	bytes?: boolean;
 } | null = null;
 
-const chartEl = shallowRef<HTMLCanvasElement | null>(null);
+const chartEl = useTemplateRef('chartEl');
 const fetching = ref(true);
 
 const getDate = (ago: number) => {
@@ -849,7 +845,7 @@ watch(() => [props.src, props.span], fetchAndRender);
 onMounted(() => {
 	fetchAndRender();
 });
-/* eslint-enable id-denylist */
+
 </script>
 
 <style lang="scss" module>

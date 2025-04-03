@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkAvatar v-for="user in users" :key="user.id" :user="user.followee" link preview></MkAvatar>
 		</div>
 		<div v-else :class="$style.bdayFFallback">
-			<img :src="infoImageUrl" class="_ghost" :class="$style.bdayFFallbackImage"/>
+			<img :src="infoImageUrl" draggable="false" :class="$style.bdayFFallbackImage"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 	</div>
@@ -33,7 +33,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 const name = i18n.ts._widgets.birthdayFollowings;
 

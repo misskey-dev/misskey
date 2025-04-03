@@ -14,7 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <XUpload v-if="uploads.length > 0"/>
 
-<TransitionGroup
+<component
+	:is="prefer.s.animation ? TransitionGroup : 'div'"
 	tag="div"
 	:class="[$style.notifications, {
 		[$style.notificationsPosition_leftTop]: prefer.s.notificationPosition === 'leftTop',
@@ -24,16 +25,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		[$style.notificationsStackAxis_vertical]: prefer.s.notificationStackAxis === 'vertical',
 		[$style.notificationsStackAxis_horizontal]: prefer.s.notificationStackAxis === 'horizontal',
 	}]"
-	:moveClass="prefer.s.animation ? $style.transition_notification_move : ''"
-	:enterActiveClass="prefer.s.animation ? $style.transition_notification_enterActive : ''"
-	:leaveActiveClass="prefer.s.animation ? $style.transition_notification_leaveActive : ''"
-	:enterFromClass="prefer.s.animation ? $style.transition_notification_enterFrom : ''"
-	:leaveToClass="prefer.s.animation ? $style.transition_notification_leaveTo : ''"
+	:moveClass="$style.transition_notification_move"
+	:enterActiveClass="$style.transition_notification_enterActive"
+	:leaveActiveClass="$style.transition_notification_leaveActive"
+	:enterFromClass="$style.transition_notification_enterFrom"
+	:leaveToClass="$style.transition_notification_leaveTo"
 >
 	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
 		<XNotification :notification="notification"/>
 	</div>
-</TransitionGroup>
+</component>
 
 <XStreamIndicator/>
 
@@ -45,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
@@ -53,7 +54,7 @@ import { popups } from '@/os.js';
 import { pendingApiRequestsCount } from '@/utility/misskey-api.js';
 import { uploads } from '@/utility/upload.js';
 import * as sound from '@/utility/sound.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -67,7 +68,7 @@ const dev = _DEV_;
 const notifications = ref<Misskey.entities.Notification[]>([]);
 
 function onNotification(notification: Misskey.entities.Notification, isClient = false) {
-	if (document.visibilityState === 'visible') {
+	if (window.document.visibilityState === 'visible') {
 		if (!isClient && notification.type !== 'test') {
 			// サーバーサイドのテスト通知の際は自動で既読をつけない（テストできないので）
 			useStream().send('readNotification');
