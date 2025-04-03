@@ -34,7 +34,6 @@
 		header: ':alpha<0.7<@panel',
 		navBg: '@panel',
 		navFg: '@fg',
-		navHoverFg: ':darken<17<@fg',
 		navActive: '@accent',
 		navIndicator: '@indicator',
 		link: '#44a4c1',

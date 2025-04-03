@@ -198,7 +198,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 	} else {
 		menuItems.push({
 			icon: 'ti ti-code',
-			text: i18n.ts.genEmbedCode,
+			text: i18n.ts.embed,
 			type: 'parent',
 			children: [{
 				text: i18n.ts.noteOfThisUser,

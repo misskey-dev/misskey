@@ -12,11 +12,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<path transform="scale(.26458)" d="m439.77 247.19c-43.673 0-78.832 35.157-78.832 78.83v249.98h407.06v-328.81z" :fill="themeVariables.panel"/>
 	</g>
 	<circle cx="32" cy="83" r="21" :fill="themeVariables.accentedBg"/>
-	<circle cx="136" cy="106" r="23" :fill="themeVariables.fg" fill-opacity="0.5"/>
-	<g :fill="themeVariables.fg" fill-rule="evenodd">
-		<rect x="171" y="88" width="48" height="6" ry="3"/>
-		<rect x="171" y="108" width="48" height="6" ry="3"/>
-		<rect x="171" y="128" width="48" height="6" ry="3"/>
+	<g>
+		<rect x="120" y="88" width="40" height="6" ry="3" :fill="themeVariables.fg"/>
+		<rect x="170" y="88" width="20" height="6" ry="3" :fill="themeVariables.mention"/>
+		<rect x="120" y="108" width="20" height="6" ry="3" :fill="themeVariables.hashtag"/>
+		<rect x="150" y="108" width="40" height="6" ry="3" :fill="themeVariables.fg"/>
+		<rect x="120" y="128" width="40" height="6" ry="3" :fill="themeVariables.fg"/>
+		<rect x="170" y="128" width="20" height="6" ry="3" :fill="themeVariables.link"/>
 	</g>
 	<path d="m65.498 40.892h137.7" :stroke="themeVariables.divider" stroke-width="0.75"/>
 	<g transform="matrix(.60823 0 0 .60823 25.45 75.755)" fill="none" :stroke="themeVariables.accent" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
@@ -53,14 +55,23 @@ const themeVariables = ref<{
 	bg: string;
 	panel: string;
 	fg: string;
+	mention: string;
+	hashtag: string;
+	link: string;
 	divider: string;
 	accent: string;
 	accentedBg: string;
 	navBg: string;
+	success: string;
+	warn: string;
+	error: string;
 }>({
 	bg: 'var(--MI_THEME-bg)',
 	panel: 'var(--MI_THEME-panel)',
 	fg: 'var(--MI_THEME-fg)',
+	mention: 'var(--MI_THEME-mention)',
+	hashtag: 'var(--MI_THEME-hashtag)',
+	link: 'var(--MI_THEME-link)',
 	divider: 'var(--MI_THEME-divider)',
 	accent: 'var(--MI_THEME-accent)',
 	accentedBg: 'var(--MI_THEME-accentedBg)',
@@ -86,6 +97,9 @@ watch(() => props.theme, (theme) => {
 		bg: compiled.bg ?? 'var(--MI_THEME-bg)',
 		panel: compiled.panel ?? 'var(--MI_THEME-panel)',
 		fg: compiled.fg ?? 'var(--MI_THEME-fg)',
+		mention: compiled.mention ?? 'var(--MI_THEME-mention)',
+		hashtag: compiled.hashtag ?? 'var(--MI_THEME-hashtag)',
+		link: compiled.link ?? 'var(--MI_THEME-link)',
 		divider: compiled.divider ?? 'var(--MI_THEME-divider)',
 		accent: compiled.accent ?? 'var(--MI_THEME-accent)',
 		accentedBg: compiled.accentedBg ?? 'var(--MI_THEME-accentedBg)',
