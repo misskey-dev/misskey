@@ -1455,6 +1455,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 
 	return {
 		name: 'generateSearchIndexVirtualModule',
+		// hotUpdate hook を vite:vue よりもあとに実行したいため enforce: post
 		enforce: 'post',
 
 		async resolveId(id) {
