@@ -1410,7 +1410,7 @@ function createSearchIndex(options: Options, assigner: MarkerIdAssigner): Plugin
 	}
 
 	return {
-		name: 'createSearchIndex',
+		name: 'autoAssignMarkerId',
 		enforce: 'pre',
 
 		watchChange(id) {
@@ -1433,7 +1433,7 @@ function createSearchIndex(options: Options, assigner: MarkerIdAssigner): Plugin
 
 export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: MarkerIdAssigner): Plugin {
 	const searchIndexPrefix = options.fileVirtualModulePrefix ?? 'search-index-individual:';
-	const searchIndexSuffix = options.fileVirtualModulePrefix ?? '.ts';
+	const searchIndexSuffix = options.fileVirtualModuleSuffix ?? '.ts';
 	const allSearchIndexFile = options.mainVirtualModule;
 	const root = normalizePath(process.cwd());
 
@@ -1454,7 +1454,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 	}
 
 	return {
-		name: 'searchIndexVirtualModule',
+		name: 'generateSearchIndexVirtualModule',
 		enforce: 'post',
 
 		async resolveId(id) {
