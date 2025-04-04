@@ -1402,6 +1402,12 @@ export default function pluginCreateSearchIndex(options: Options): PluginOption 
 
 function createSearchIndex(options: Options, assigner: MarkerIdAssigner): Plugin {
 	initLogger(options); // ロガーを初期化
+	const root = normalizePath(process.cwd());
+
+	function isTargetFile(id: string): boolean {
+		const relativePath = path.posix.relative(root, id);
+		return options.targetFilePaths.some(pat => minimatch(relativePath, pat))
+	}
 
 	return {
 		name: 'createSearchIndex',
@@ -1416,23 +1422,7 @@ function createSearchIndex(options: Options, assigner: MarkerIdAssigner): Plugin
 				return;
 			}
 
-			// targetFilePaths にマッチするファイルのみ処理を行う
-			// glob パターンでマッチング
-			let isMatch = false; // isMatch の初期値を false に設定
-			for (const pattern of options.targetFilePaths) { // パターンごとにマッチング確認
-				const globbedFiles = glob.sync(pattern);
-				for (const globbedFile of globbedFiles) {
-					const normalizedGlobbedFile = path.resolve(globbedFile); // glob 結果を絶対パスに
-					const normalizedId = path.resolve(id); // id を絶対パスに
-					if (normalizedGlobbedFile === normalizedId) { // 絶対パス同士で比較
-						isMatch = true;
-						break; // マッチしたらループを抜ける
-					}
-				}
-				if (isMatch) break; // いずれかのパターンでマッチしたら、outer loop も抜ける
-			}
-
-			if (!isMatch) {
+			if (!isTargetFile(id)) {
 				return;
 			}
 
