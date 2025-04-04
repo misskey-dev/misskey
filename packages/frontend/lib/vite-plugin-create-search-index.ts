@@ -836,7 +836,6 @@ function extractUsageInfoFromTemplateAst(
 			if (bindings.icon) markerInfo.icon = bindings.icon;
 			if (bindings.label) markerInfo.label = bindings.label;
 			if (bindings.children) markerInfo.children = processMarkerProperty(bindings.children, 'children') as string[];
-			console.log(`markerInfo.children: ${JSON.stringify(markerInfo.children)}`)
 			if (bindings.inlining) {
 				markerInfo.inlining = bindings.inlining;
 				logger.info(`Added inlining ${JSON.stringify(bindings.inlining)} to marker ${markerId}`);
@@ -936,7 +935,6 @@ function extractNodeBindings(node: TemplateChildNode | RootNode): Bindings {
 
 	// バインド式を収集
 	for (const prop of node.props) {
-		console.log(`extractNodeBindings: ${JSON.stringify(prop)}`)
 		if (prop.type === NodeTypes.DIRECTIVE && prop.name === 'bind' && prop.arg && 'content' in prop.arg) {
 			const propName = prop.arg.content;
 			if (prop.exp?.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('unexpected COMPOUND_EXPRESSION');
