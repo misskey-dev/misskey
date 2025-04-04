@@ -84,7 +84,8 @@
 			"@aiscript-dev/aiscript-languageserver": "-"
 		},
 		"patchedDependencies": {
-			"re2": "scripts/dependency-patches/re2.patch"
+			"re2": "scripts/dependency-patches/re2.patch",
+			"vite": "scripts/dependency-patches/vite.patch"
 		}
 	}
 }
