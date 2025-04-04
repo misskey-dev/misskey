@@ -3,16 +3,18 @@ SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
+<!-- TODO: 親からスタイルを当てにくいことや実装がトリッキーなことを鑑み廃止または使用の縮小(timeline-date-separate.tsを使う) -->
+
 <script lang="ts">
 import { defineComponent, h, TransitionGroup, useCssModule } from 'vue';
 import type { PropType } from 'vue';
 import type { MisskeyEntity } from '@/types/date-separated-list.js';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
-import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
+import { getDateText } from '@/utility/timeline-date-separate.js';
 
 export default defineComponent({
 	props: {
@@ -44,15 +46,6 @@ export default defineComponent({
 
 	setup(props, { slots, expose }) {
 		const $style = useCssModule(); // カスタムレンダラなので使っても大丈夫
-
-		function getDateText(dateInstance: Date) {
-			const date = dateInstance.getDate();
-			const month = dateInstance.getMonth() + 1;
-			return i18n.tsx.monthAndDay({
-				month: month.toString(),
-				day: date.toString(),
-			});
-		}
 
 		if (props.items.length === 0) return;
 

@@ -26,11 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import MkInput from '@/components/MkInput.vue';
@@ -73,7 +72,7 @@ async function del() {
 	router.push('/chat');
 }
 
-const isMuted = ref(props.room.isMuted);
+const isMuted = ref(props.room.isMuted ?? false);
 
 watch(isMuted, async () => {
 	await os.apiWithDialog('chat/rooms/mute', {

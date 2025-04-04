@@ -30,7 +30,7 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		ref: 'ChatMessageLite',
+		ref: 'ChatMessageLiteFor1on1',
 	},
 
 	errors: {

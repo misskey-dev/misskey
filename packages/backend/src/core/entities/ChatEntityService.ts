@@ -128,7 +128,7 @@ export class ChatEntityService {
 				packedFiles: Map<MiChatMessage['fileId'], Packed<'DriveFile'> | null>;
 			};
 		},
-	): Promise<Packed<'ChatMessageLite'>> {
+	): Promise<Packed<'ChatMessageLiteFor1on1'>> {
 		const packedFiles = options?._hint_?.packedFiles;
 
 		const message = typeof src === 'object' ? src : await this.chatMessagesRepository.findOneByOrFail({ id: src });
@@ -147,7 +147,7 @@ export class ChatEntityService {
 			createdAt: this.idService.parse(message.id).date.toISOString(),
 			text: message.text,
 			fromUserId: message.fromUserId,
-			toUserId: message.toUserId,
+			toUserId: message.toUserId!,
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
 			reactions,
@@ -177,7 +177,7 @@ export class ChatEntityService {
 				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 			};
 		},
-	): Promise<Packed<'ChatMessageLite'>> {
+	): Promise<Packed<'ChatMessageLiteForRoom'>> {
 		const packedFiles = options?._hint_?.packedFiles;
 		const packedUsers = options?._hint_?.packedUsers;
 
@@ -199,7 +199,7 @@ export class ChatEntityService {
 			text: message.text,
 			fromUserId: message.fromUserId,
 			fromUser: packedUsers?.get(message.fromUserId) ?? await this.userEntityService.pack(message.fromUser ?? message.fromUserId),
-			toRoomId: message.toRoomId,
+			toRoomId: message.toRoomId!,
 			fileId: message.fileId,
 			file: message.fileId ? (packedFiles?.get(message.fileId) ?? await this.driveFileEntityService.pack(message.file ?? message.fileId)) : null,
 			reactions,

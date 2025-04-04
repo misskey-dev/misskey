@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onActivated, onDeactivated, onMounted, ref } from 'vue';
+import { onActivated, onDeactivated, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import XMessage from './XMessage.vue';
@@ -163,7 +163,7 @@ async function fetchHistory() {
 		.map(m => ({
 			id: m.id,
 			message: m,
-			other: m.room == null ? (m.fromUserId === $i.id ? m.toUser : m.fromUser) : null,
+			other: (!('room' in m) || m.room == null) ? (m.fromUserId === $i.id ? m.toUser : m.fromUser) : null,
 			isMe: m.fromUserId === $i.id,
 		}));
 

@@ -1,6 +1,7 @@
 import {
 	Antenna,
 	ChatMessage,
+	ChatMessageLite,
 	DriveFile,
 	DriveFolder,
 	Note,
@@ -227,7 +228,55 @@ export type Channels = {
 			updateSettings: ReversiUpdateSettings<ReversiUpdateKey>;
 			claimTimeIsUp: null | Record<string, never>;
 		}
-	}
+	};
+	chatUser: {
+		params: {
+			otherId: string;
+		};
+		events: {
+			message: (payload: ChatMessageLite) => void;
+			deleted: (payload: ChatMessageLite['id']) => void;
+			react: (payload: {
+				reaction: string;
+				user?: UserLite;
+				messageId: ChatMessageLite['id'];
+			}) => void;
+			unreact: (payload: {
+				reaction: string;
+				user?: UserLite;
+				messageId: ChatMessageLite['id'];
+			}) => void;
+		};
+		receives: {
+			read: {
+				id: ChatMessageLite['id'];
+			};
+		};
+	};
+	chatRoom: {
+		params: {
+			roomId: string;
+		};
+		events: {
+			message: (payload: ChatMessageLite) => void;
+			deleted: (payload: ChatMessageLite['id']) => void;
+			react: (payload: {
+				reaction: string;
+				user?: UserLite;
+				messageId: ChatMessageLite['id'];
+			}) => void;
+			unreact: (payload: {
+				reaction: string;
+				user?: UserLite;
+				messageId: ChatMessageLite['id'];
+			}) => void;
+		};
+		receives: {
+			read: {
+				id: ChatMessageLite['id'];
+			};
+		};
+	};
 };
 
 export type NoteUpdatedEvent = { id: Note['id'] } & ({

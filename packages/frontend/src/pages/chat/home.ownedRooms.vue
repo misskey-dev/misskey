@@ -16,19 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XRoom from './XRoom.vue';
-import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { ensureSignin } from '@/i.js';
-import { useRouter } from '@/router.js';
-import * as os from '@/os.js';
-
-const $i = ensureSignin();
-
-const router = useRouter();
 
 const fetching = ref(true);
 const rooms = ref<Misskey.entities.ChatRoom[]>([]);

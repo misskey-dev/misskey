@@ -34,7 +34,6 @@
 		navActive: '@accent',
 		infoWarnBg: '#fff0db',
 		infoWarnFg: '#8f6e31',
-		navHoverFg: ':darken<17<@fg',
 		dateLabelFg: '@fg',
 		inputBorder: 'rgba(0, 0, 0, 0.1)',
 		inputBorderHover: 'rgba(0, 0, 0, 0.2)',

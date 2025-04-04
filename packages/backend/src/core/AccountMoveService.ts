@@ -24,6 +24,7 @@ import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { RoleService } from '@/core/RoleService.js';
 
 @Injectable()
 export class AccountMoveService {
@@ -61,6 +62,7 @@ export class AccountMoveService {
 		private relayService: RelayService,
 		private queueService: QueueService,
 		private systemAccountService: SystemAccountService,
+		private roleService: RoleService,
 	) {
 	}
 
@@ -119,6 +121,7 @@ export class AccountMoveService {
 			await Promise.all([
 				this.copyBlocking(src, dst),
 				this.copyMutings(src, dst),
+				this.copyRoles(src, dst),
 				this.updateLists(src, dst),
 			]);
 		} catch {
@@ -199,6 +202,32 @@ export class AccountMoveService {
 
 		const arrayToInsert = Array.from(newMutings.entries()).map(entry => ({ ...entry[1], id: entry[0] }));
 		await this.mutingsRepository.insert(arrayToInsert);
+	}
+
+	@bindThis
+	public async copyRoles(src: ThinUser, dst: ThinUser): Promise<void> {
+		// Insert new roles with the same values except userId
+		// role service may have cache for roles so retrieve roles from service
+		const [oldRoleAssignments, roles] = await Promise.all([
+			this.roleService.getUserAssigns(src.id),
+			this.roleService.getRoles(),
+		]);
+
+		if (oldRoleAssignments.length === 0) return;
+
+		// No promise all since the only async operation is writing to the database
+		for (const oldRoleAssignment of oldRoleAssignments) {
+			const role = roles.find(x => x.id === oldRoleAssignment.roleId);
+			if (role == null) continue; // Very unlikely however removing role may cause this case
+			if (!role.preserveAssignmentOnMoveAccount) continue;
+
+			try {
+				await this.roleService.assign(dst.id, role.id, oldRoleAssignment.expiresAt);
+			} catch (e) {
+				if (e instanceof RoleService.AlreadyAssignedError) continue;
+				throw e;
+			}
+		}
 	}
 
 	/**

@@ -35,17 +35,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { ensureSignin } from '@/i.js';
 import { useRouter } from '@/router.js';
-import * as os from '@/os.js';
 import MkFolder from '@/components/MkFolder.vue';
-
-const $i = ensureSignin();
 
 const router = useRouter();
 
@@ -55,8 +51,7 @@ const invitations = ref<Misskey.entities.ChatRoomInvitation[]>([]);
 async function fetchInvitations() {
 	fetching.value = true;
 
-	const res = await misskeyApi('chat/rooms/invitations/inbox', {
-	});
+	const res = await misskeyApi('chat/rooms/invitations/inbox');
 
 	invitations.value = res;
 

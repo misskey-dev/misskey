@@ -56,7 +56,7 @@ const headerActions = computed(() => [{
 	label: i18n.ts.more,
 	handler: (ev: MouseEvent) => {
 		os.popupMenu([{
-			text: i18n.ts.genEmbedCode,
+			text: i18n.ts.embed,
 			icon: 'ti ti-code',
 			action: () => {
 				genEmbedCode('tags', props.tag);

@@ -747,6 +747,7 @@ _theme:
   description: "설멩"
   keys:
     mention: "멘션"
+    renote: "리노트"
 _sfx:
   note: "새 노트"
   notification: "알림"

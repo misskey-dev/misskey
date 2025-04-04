@@ -99,7 +99,7 @@ export class ChatService {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}): Promise<Packed<'ChatMessageLite'>> {
+	}): Promise<Packed<'ChatMessageLiteFor1on1'>> {
 		if (fromUser.id === toUser.id) {
 			throw new Error('yourself');
 		}
@@ -210,10 +210,16 @@ export class ChatService {
 		text?: string | null;
 		file?: MiDriveFile | null;
 		uri?: string | null;
-	}): Promise<Packed<'ChatMessageLite'>> {
-		const memberships = await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id });
+	}): Promise<Packed<'ChatMessageLiteForRoom'>> {
+		const memberships = (await this.chatRoomMembershipsRepository.findBy({ roomId: toRoom.id })).map(m => ({
+			userId: m.userId,
+			isMuted: m.isMuted,
+		})).concat({ // ownerはmembershipレコードを作らないため
+			userId: toRoom.ownerId,
+			isMuted: false,
+		});
 
-		if (toRoom.ownerId !== fromUser.id && !memberships.some(member => member.userId === fromUser.id)) {
+		if (!memberships.some(member => member.userId === fromUser.id)) {
 			throw new Error('you are not a member of the room');
 		}
 

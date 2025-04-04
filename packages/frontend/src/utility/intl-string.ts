@@ -9,9 +9,9 @@ import type { toHiragana as toHiraganaType } from 'wanakana';
 let toHiragana: typeof toHiraganaType = (str?: string) => str ?? '';
 let isWanakanaLoaded = false;
 
-/** 
+/**
  * ローマ字変換のセットアップ（日本語以外の環境で読み込まないのでlazy-loading）
- * 
+ *
  * ここの比較系関数を使う際は事前に呼び出す必要がある
  */
 export async function initIntlString(forceWanakana = false) {
@@ -82,16 +82,17 @@ export function normalizeStringWithHiragana(str: string) {
 
 /** aとbが同じかどうか */
 export function compareStringEquals(a: string, b: string) {
-	return (
-		normalizeString(a) === normalizeString(b) ||
-		normalizeStringWithHiragana(a) === normalizeStringWithHiragana(b)
-	);
+	if (a === b) return true; // まったく同じ場合はtrue。なお、ノーマライズ前後で文字数が変化することがあるため、文字数が違うからといってfalseにはできない
+	if (normalizeString(a) === normalizeString(b)) return true;
+	if (normalizeStringWithHiragana(a) === normalizeStringWithHiragana(b)) return true;
+	return false;
 }
 
 /** baseにqueryが含まれているかどうか */
 export function compareStringIncludes(base: string, query: string) {
-	return (
-		normalizeString(base).includes(normalizeString(query)) ||
-		normalizeStringWithHiragana(base).includes(normalizeStringWithHiragana(query))
-	);
+	if (base === query) return true; // まったく同じ場合は含まれていると考えてよいのでtrue
+	if (base.includes(query)) return true;
+	if (normalizeString(base).includes(normalizeString(query))) return true;
+	if (normalizeStringWithHiragana(base).includes(normalizeStringWithHiragana(query))) return true;
+	return false;
 }
