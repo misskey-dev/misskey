@@ -4,77 +4,68 @@
  */
 
 import { parse as vueSfcParse } from 'vue/compiler-sfc';
-import type { LogOptions, Plugin } from 'vite';
+import {
+	createLogger,
+	EnvironmentModuleGraph,
+	normalizePath,
+	type LogErrorOptions,
+	type LogOptions,
+	type Plugin,
+	type PluginOption
+} from 'vite';
 import fs from 'node:fs';
 import { glob } from 'glob';
 import JSON5 from 'json5';
-import MagicString from 'magic-string';
+import MagicString, { SourceMap } from 'magic-string';
 import path from 'node:path'
 import { hash, toBase62 } from '../vite.config';
-import { createLogger } from 'vite';
+import { minimatch } from 'minimatch';
+import type {
+	AttributeNode, CompoundExpressionNode, DirectiveNode,
+	ElementNode,
+	RootNode, SimpleExpressionNode,
+	TemplateChildNode,
+} from '@vue/compiler-core';
+import { NodeTypes } from '@vue/compiler-core';
 
-interface VueAstNode {
-	type: number;
-	tag?: string;
-	loc?: {
-		start: { offset: number, line: number, column: number },
-		end: { offset: number, line: number, column: number },
-		source?: string
-	};
-	props?: Array<{
-		name: string;
-		type: number;
-		value?: { content?: string };
-		arg?: { content?: string };
-		exp?: { content?: string; loc?: any };
-	}>;
-	children?: VueAstNode[];
-	content?: any;
-	__markerId?: string;
-	__children?: string[];
-}
-
-export type AnalysisResult = {
+export type AnalysisResult<T = SearchIndexItem> = {
 	filePath: string;
-	usage: SearchIndexItem[];
+	usage: T[];
 }
 
-export type SearchIndexItem = {
+export type SearchIndexItem = SearchIndexItemLink<SearchIndexItem>;
+export type SearchIndexStringItem = SearchIndexItemLink<string>;
+export interface SearchIndexItemLink<T> {
 	id: string;
 	path?: string;
 	label: string;
 	keywords: string | string[];
 	icon?: string;
 	inlining?: string[];
-	children?: SearchIndexItem[];
-};
+	children?: T[];
+}
 
 export type Options = {
 	targetFilePaths: string[],
-	exportFilePath: string,
+	mainVirtualModule: string,
+	modulesToHmrOnUpdate: string[],
+	fileVirtualModulePrefix?: string,
+	fileVirtualModuleSuffix?: string,
 	verbose?: boolean,
-};
-
-// 関連するノードタイプの定数化
-const NODE_TYPES = {
-	ELEMENT: 1,
-	EXPRESSION: 2,
-	TEXT: 3,
-	INTERPOLATION: 5, // Mustache
 };
 
 // マーカー関係を表す型
 interface MarkerRelation {
 	parentId?: string;
 	markerId: string;
-	node: VueAstNode;
+	node: ElementNode;
 }
 
 // ロガー
 let logger = {
 	info: (msg: string, options?: LogOptions) => { },
 	warn: (msg: string, options?: LogOptions) => { },
-	error: (msg: string, options?: LogOptions) => { },
+	error: (msg: string, options?: LogErrorOptions) => { },
 };
 let loggerInitialized = false;
 
@@ -99,14 +90,11 @@ function initLogger(options: Options) {
 	}
 }
 
-/**
- * 解析結果をTypeScriptファイルとして出力する
- */
-function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisResult[]): void {
+function collectSearchItemIndexes(analysisResults: AnalysisResult<SearchIndexStringItem>[]): SearchIndexItem[] {
 	logger.info(`Processing ${analysisResults.length} files for output`);
 
 	// 新しいツリー構造を構築
-	const allMarkers = new Map<string, SearchIndexItem>();
+	const allMarkers = new Map<string, SearchIndexStringItem>();
 
 	// 1. すべてのマーカーを一旦フラットに収集
 	for (const file of analysisResults) {
@@ -115,10 +103,9 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
 		for (const marker of file.usage) {
 			if (marker.id) {
 				// キーワードとchildren処理を共通化
-				const processedMarker = {
+				const processedMarker: SearchIndexStringItem = {
 					...marker,
 					keywords: processMarkerProperty(marker.keywords, 'keywords'),
-					children: processMarkerProperty(marker.children || [], 'children')
 				};
 
 				allMarkers.set(marker.id, processedMarker);
@@ -143,14 +130,13 @@ function outputAnalysisResultAsTS(outputPath: string, analysisResults: AnalysisR
 	const { totalMarkers, totalChildren } = countMarkers(resolvedRootMarkers);
 	logger.info(`Total markers in tree: ${totalMarkers} (${resolvedRootMarkers.length} roots + ${totalChildren} nested children)`);
 
-	// 6. 結果をTS形式で出力
-	writeOutputFile(outputPath, resolvedRootMarkers);
+	return resolvedRootMarkers;
 }
 
 /**
  * マーカーのプロパティ（keywordsやchildren）を処理する
  */
-function processMarkerProperty(propValue: any, propType: 'keywords' | 'children'): any {
+function processMarkerProperty(propValue: string | string[], propType: 'keywords' | 'children'): string | string[] {
 	// 文字列の配列表現を解析
 	if (typeof propValue === 'string' && propValue.startsWith('[') && propValue.endsWith(']')) {
 		try {
@@ -169,7 +155,7 @@ function processMarkerProperty(propValue: any, propType: 'keywords' | 'children'
 /**
  * 全マーカーから子IDを収集する
  */
-function collectChildIds(allMarkers: Map<string, SearchIndexItem>): Set<string> {
+function collectChildIds(allMarkers: Map<string, SearchIndexStringItem>): Set<string> {
 	const childIds = new Set<string>();
 
 	allMarkers.forEach((marker, id) => {
@@ -232,10 +218,10 @@ function collectChildIds(allMarkers: Map<string, SearchIndexItem>): Set<string> 
  * ルートマーカー（他の子でないマーカー）を特定する
  */
 function identifyRootMarkers(
-	allMarkers: Map<string, SearchIndexItem>,
+	allMarkers: Map<string, SearchIndexStringItem>,
 	childIds: Set<string>
-): SearchIndexItem[] {
-	const rootMarkers: SearchIndexItem[] = [];
+): SearchIndexStringItem[] {
+	const rootMarkers: SearchIndexStringItem[] = [];
 
 	allMarkers.forEach((marker, id) => {
 		if (!childIds.has(id)) {
@@ -251,12 +237,12 @@ function identifyRootMarkers(
  * 子マーカーの参照をIDから実際のオブジェクトに解決する
  */
 function resolveChildReferences(
-	rootMarkers: SearchIndexItem[],
-	allMarkers: Map<string, SearchIndexItem>
+	rootMarkers: SearchIndexStringItem[],
+	allMarkers: Map<string, SearchIndexStringItem>
 ): SearchIndexItem[] {
-	function resolveChildrenForMarker(marker: SearchIndexItem): SearchIndexItem {
+	function resolveChildrenForMarker(marker: SearchIndexStringItem): SearchIndexItem {
 		// マーカーのディープコピーを作成
-		const resolvedMarker = { ...marker };
+		const resolvedMarker: SearchIndexItem = { ...marker, children: [] };
 		// 明示的に子マーカー配列を作成
 		const resolvedChildren: SearchIndexItem[] = [];
 
@@ -352,54 +338,18 @@ function countMarkers(markers: SearchIndexItem[]): { totalMarkers: number, total
 }
 
 /**
- * 最終的なTypeScriptファイルを出力
- */
-function writeOutputFile(outputPath: string, resolvedRootMarkers: SearchIndexItem[]): void {
-	try {
-		const tsOutput = generateTypeScriptCode(resolvedRootMarkers);
-		fs.writeFileSync(outputPath, tsOutput, 'utf-8');
-		// 強制的に出力させるためにViteロガーを使わない
-		console.log(`Successfully wrote search index to ${outputPath} with ${resolvedRootMarkers.length} root entries`);
-	} catch (error) {
-		logger.error('[create-search-index]: error writing output: ', error);
-	}
-}
-
-/**
  * TypeScriptコード生成
  */
-function generateTypeScriptCode(resolvedRootMarkers: SearchIndexItem[]): string {
-	return `
-/*
- * SPDX-FileCopyrightText: syuilo and misskey-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-// This file was automatically generated by create-search-index.
-// Do not edit this file.
-
-import { i18n } from '@/i18n.js';
-
-export type SearchIndexItem = {
-	id: string;
-	path?: string;
-	label: string;
-	keywords: string[];
-	icon?: string;
-	children?: SearchIndexItem[];
-};
-
-export const searchIndexes: SearchIndexItem[] = ${customStringify(resolvedRootMarkers)} as const;
-
-export type SearchIndex = typeof searchIndexes;
-`;
+function generateJavaScriptCode(resolvedRootMarkers: SearchIndexItem[]): string {
+	return `import { i18n } from '@/i18n.js';\n`
+		+ `export const searchIndexes = ${customStringify(resolvedRootMarkers)};\n`;
 }
 
 /**
  * オブジェクトを特殊な形式の文字列に変換する
  * i18n参照を保持しつつ適切な形式に変換
  */
-function customStringify(obj: any, depth = 0): string {
+function customStringify(obj: unknown, depth = 0): string {
 	const INDENT_STR = '\t';
 
 	// 配列の処理
@@ -441,7 +391,6 @@ function customStringify(obj: any, depth = 0): string {
 		.filter(([key, value]) => {
 			if (value === undefined) return false;
 			if (key === 'children' && Array.isArray(value) && value.length === 0) return false;
-			if (key === 'inlining') return false;
 			return true;
 		})
 		// 各プロパティを変換
@@ -462,7 +411,7 @@ function customStringify(obj: any, depth = 0): string {
 /**
  * 特殊プロパティの書式設定
  */
-function formatSpecialProperty(key: string, value: any): string {
+function formatSpecialProperty(key: string, value: unknown): string {
 	// 値がundefinedの場合は空文字列を返す
 	if (value === undefined) {
 		return '""';
@@ -499,7 +448,7 @@ function formatSpecialProperty(key: string, value: any): string {
 /**
  * 配列式の文字列表現を生成
  */
-function formatArrayForOutput(items: any[]): string {
+function formatArrayForOutput(items: unknown[]): string {
 	return items.map(item => {
 		// i18n.ts. 参照の文字列はそのままJavaScript式として出力
 		if (typeof item === 'string' && isI18nReference(item)) {
@@ -516,17 +465,18 @@ function formatArrayForOutput(items: any[]): string {
  * 要素ノードからテキスト内容を抽出する
  * 各抽出方法を分離して可読性を向上
  */
-function extractElementText(node: VueAstNode): string | null {
+function extractElementText(node: TemplateChildNode): string | null {
 	if (!node) return null;
+	if (node.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
 
-	logger.info(`Extracting text from node type=${node.type}, tag=${node.tag || 'unknown'}`);
+	logger.info(`Extracting text from node type=${node.type}, tag=${'tag' in node ? node.tag : 'unknown'}`);
 
 	// 1. 直接コンテンツの抽出を試行
 	const directContent = extractDirectContent(node);
 	if (directContent) return directContent;
 
 	// 子要素がない場合は終了
-	if (!node.children || !Array.isArray(node.children)) {
+	if (!('children' in node) || !Array.isArray(node.children)) {
 		return null;
 	}
 
@@ -548,12 +498,13 @@ function extractElementText(node: VueAstNode): string | null {
 /**
  * ノードから直接コンテンツを抽出
  */
-function extractDirectContent(node: VueAstNode): string | null {
-	if (!node.content) return null;
+function extractDirectContent(node: TemplateChildNode): string | null {
+	if (!('content' in node)) return null;
+	if (typeof node.content == 'object' && node.content.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
 
-	const content = typeof node.content === 'string'
-		? node.content.trim()
-		: (node.content.content ? node.content.content.trim() : null);
+	const content = typeof node.content === 'string' ? node.content.trim()
+		: node.content.type !== NodeTypes.INTERPOLATION ? node.content.content.trim()
+		: null;
 
 	if (!content) return null;
 
@@ -582,9 +533,9 @@ function extractDirectContent(node: VueAstNode): string | null {
 /**
  * インターポレーションノード（Mustache）からコンテンツを抽出
  */
-function extractInterpolationContent(children: VueAstNode[]): string | null {
+function extractInterpolationContent(children: TemplateChildNode[]): string | null {
 	for (const child of children) {
-		if (child.type === NODE_TYPES.INTERPOLATION) {
+		if (child.type === NodeTypes.INTERPOLATION) {
 			logger.info(`Found interpolation node (Mustache): ${JSON.stringify(child.content).substring(0, 100)}...`);
 
 			if (child.content && child.content.type === 4 && child.content.content) {
@@ -595,6 +546,7 @@ function extractInterpolationContent(children: VueAstNode[]): string | null {
 					return content;
 				}
 			} else if (child.content && typeof child.content === 'object') {
+				if (child.content.type == NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
 				// オブジェクト形式のcontentを探索
 				logger.info(`Complex interpolation node: ${JSON.stringify(child.content).substring(0, 100)}...`);
 
@@ -616,10 +568,10 @@ function extractInterpolationContent(children: VueAstNode[]): string | null {
 /**
  * 式ノードからコンテンツを抽出
  */
-function extractExpressionContent(children: VueAstNode[]): string | null {
+function extractExpressionContent(children: TemplateChildNode[]): string | null {
 	// i18n.ts. 参照パターンを持つものを優先
 	for (const child of children) {
-		if (child.type === NODE_TYPES.EXPRESSION && child.content) {
+		if (child.type === NodeTypes.TEXT && child.content) {
 			const expr = child.content.trim();
 
 			if (isI18nReference(expr)) {
@@ -631,7 +583,7 @@ function extractExpressionContent(children: VueAstNode[]): string | null {
 
 	// その他の式
 	for (const child of children) {
-		if (child.type === NODE_TYPES.EXPRESSION && child.content) {
+		if (child.type === NodeTypes.TEXT && child.content) {
 			const expr = child.content.trim();
 			logger.info(`Found expression: ${expr}`);
 			return expr;
@@ -644,9 +596,9 @@ function extractExpressionContent(children: VueAstNode[]): string | null {
 /**
  * テキストノードからコンテンツを抽出
  */
-function extractTextContent(children: VueAstNode[]): string | null {
+function extractTextContent(children: TemplateChildNode[]): string | null {
 	for (const child of children) {
-		if (child.type === NODE_TYPES.TEXT && child.content) {
+		if (child.type === NodeTypes.COMMENT && child.content) {
 			const text = child.content.trim();
 
 			if (text) {
@@ -672,16 +624,16 @@ function extractTextContent(children: VueAstNode[]): string | null {
 /**
  * 子ノードを再帰的に探索してコンテンツを抽出
  */
-function extractNestedContent(children: VueAstNode[]): string | null {
+function extractNestedContent(children: TemplateChildNode[]): string | null {
 	for (const child of children) {
-		if (child.children && Array.isArray(child.children) && child.children.length > 0) {
+		if ('children' in child && Array.isArray(child.children) && child.children.length > 0) {
 			const nestedContent = extractElementText(child);
 
 			if (nestedContent) {
 				logger.info(`Found nested content: ${nestedContent}`);
 				return nestedContent;
 			}
-		} else if (child.type === NODE_TYPES.ELEMENT) {
+		} else if (child.type === NodeTypes.ELEMENT) {
 			// childrenがなくても内部を調査
 			const nestedContent = extractElementText(child);
 
@@ -699,16 +651,16 @@ function extractNestedContent(children: VueAstNode[]): string | null {
 /**
  * SearchLabelとSearchKeywordを探して抽出する関数
  */
-function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, keywords: any[] } {
+function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string | null, keywords: string[] } {
 	let label: string | null = null;
-	const keywords: any[] = [];
+	const keywords: string[] = [];
 
 	logger.info(`Extracting labels and keywords from ${nodes.length} nodes`);
 
 	// 再帰的にSearchLabelとSearchKeywordを探索（ネストされたSearchMarkerは処理しない）
-	function findComponents(nodes: VueAstNode[]) {
+	function findComponents(nodes: TemplateChildNode[]) {
 		for (const node of nodes) {
-			if (node.type === NODE_TYPES.ELEMENT) {
+			if (node.type === NodeTypes.ELEMENT) {
 				logger.info(`Checking element: ${node.tag}`);
 
 				// SearchMarkerの場合は、その子要素は別スコープなのでスキップ
@@ -730,11 +682,12 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 						logger.info(`SearchLabel found but extraction failed, trying direct children inspection`);
 
 						// バックアップ: 子直接確認 - type=5のMustacheインターポレーションを重点的に確認
-						if (node.children && Array.isArray(node.children)) {
+						{
 							for (const child of node.children) {
 								// Mustacheインターポレーション
-								if (child.type === NODE_TYPES.INTERPOLATION && child.content) {
+								if (child.type === NodeTypes.INTERPOLATION && child.content) {
 									// content内の式を取り出す
+									if (child.content.type == NodeTypes.COMPOUND_EXPRESSION) throw new Error("unexpected COMPOUND_EXPRESSION");
 									const expression = child.content.content ||
 										(child.content.type === 4 ? child.content.content : null) ||
 										JSON.stringify(child.content);
@@ -747,13 +700,13 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 									}
 								}
 								// 式ノード
-								else if (child.type === NODE_TYPES.EXPRESSION && child.content && isI18nReference(child.content)) {
+								else if (child.type === NodeTypes.TEXT && child.content && isI18nReference(child.content)) {
 									label = child.content.trim();
 									logger.info(`Found i18n in expression: ${label}`);
 									break;
 								}
 								// テキストノードでもMustache構文を探す
-								else if (child.type === NODE_TYPES.TEXT && child.content) {
+								else if (child.type === NodeTypes.COMMENT && child.content) {
 									const mustacheMatch = child.content.trim().match(/^\s*{{\s*(.*?)\s*}}\s*$/);
 									if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
 										label = mustacheMatch[1].trim();
@@ -778,11 +731,12 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 						logger.info(`SearchKeyword found but extraction failed, trying direct children inspection`);
 
 						// バックアップ: 子直接確認 - type=5のMustacheインターポレーションを重点的に確認
-						if (node.children && Array.isArray(node.children)) {
+						{
 							for (const child of node.children) {
 								// Mustacheインターポレーション
-								if (child.type === NODE_TYPES.INTERPOLATION && child.content) {
+								if (child.type === NodeTypes.INTERPOLATION && child.content) {
 									// content内の式を取り出す
+									if (child.content.type == NodeTypes.COMPOUND_EXPRESSION) throw new Error("unexpected COMPOUND_EXPRESSION");
 									const expression = child.content.content ||
 										(child.content.type === 4 ? child.content.content : null) ||
 										JSON.stringify(child.content);
@@ -796,14 +750,14 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 									}
 								}
 								// 式ノード
-								else if (child.type === NODE_TYPES.EXPRESSION && child.content && isI18nReference(child.content)) {
+								else if (child.type === NodeTypes.TEXT && child.content && isI18nReference(child.content)) {
 									const keyword = child.content.trim();
 									keywords.push(keyword);
 									logger.info(`Found i18n keyword in expression: ${keyword}`);
 									break;
 								}
 								// テキストノードでもMustache構文を探す
-								else if (child.type === NODE_TYPES.TEXT && child.content) {
+								else if (child.type === NodeTypes.COMMENT && child.content) {
 									const mustacheMatch = child.content.trim().match(/^\s*{{\s*(.*?)\s*}}\s*$/);
 									if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
 										const keyword = mustacheMatch[1].trim();
@@ -834,23 +788,22 @@ function extractLabelsAndKeywords(nodes: VueAstNode[]): { label: string | null, 
 
 
 function extractUsageInfoFromTemplateAst(
-	templateAst: any,
+	templateAst: RootNode | undefined,
 	id: string,
-): SearchIndexItem[] {
-	const allMarkers: SearchIndexItem[] = [];
-	const markerMap = new Map<string, SearchIndexItem>();
+): SearchIndexStringItem[] {
+	const allMarkers: SearchIndexStringItem[] = [];
+	const markerMap = new Map<string, SearchIndexItemLink<string>>();
 	const childrenIds = new Set<string>();
 	const normalizedId = id.replace(/\\/g, '/');
 
 	if (!templateAst) return allMarkers;
 
 	// マーカーの基本情報を収集
-	function collectMarkers(node: VueAstNode, parentId: string | null = null) {
-		if (node.type === 1 && node.tag === 'SearchMarker') {
+	function collectMarkers(node: TemplateChildNode | RootNode, parentId: string | null = null) {
+		if (node.type === NodeTypes.ELEMENT && node.tag === 'SearchMarker') {
 			// マーカーID取得
-			const markerIdProp = node.props?.find((p: any) => p.name === 'markerId');
-			const markerId = markerIdProp?.value?.content ||
-				node.__markerId;
+			const markerIdProp = node.props?.find(p => p.name === 'markerId');
+			const markerId = markerIdProp?.type == NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
 
 			// SearchMarkerにマーカーIDがない場合はエラー
 			if (markerId == null) {
@@ -859,7 +812,7 @@ function extractUsageInfoFromTemplateAst(
 			}
 
 			// マーカー基本情報
-			const markerInfo: SearchIndexItem = {
+			const markerInfo: SearchIndexStringItem = {
 				id: markerId,
 				children: [],
 				label: '', // デフォルト値
@@ -882,7 +835,7 @@ function extractUsageInfoFromTemplateAst(
 			if (bindings.path) markerInfo.path = bindings.path;
 			if (bindings.icon) markerInfo.icon = bindings.icon;
 			if (bindings.label) markerInfo.label = bindings.label;
-			if (bindings.children) markerInfo.children = bindings.children;
+			if (bindings.children) markerInfo.children = processMarkerProperty(bindings.children, 'children') as string[];
 			if (bindings.inlining) {
 				markerInfo.inlining = bindings.inlining;
 				logger.info(`Added inlining ${JSON.stringify(bindings.inlining)} to marker ${markerId}`);
@@ -946,19 +899,19 @@ function extractUsageInfoFromTemplateAst(
 			}
 
 			// 子ノードを処理
-			if (node.children && Array.isArray(node.children)) {
-				node.children.forEach((child: VueAstNode) => {
-					collectMarkers(child, markerId);
-				});
+			for (const child of node.children) {
+				collectMarkers(child, markerId);
 			}
 
 			return markerId;
 		}
 		// SearchMarkerでない場合は再帰的に子ノードを処理
-		else if (node.children && Array.isArray(node.children)) {
-			node.children.forEach((child: VueAstNode) => {
-				collectMarkers(child, parentId);
-			});
+		else if ('children' in node && Array.isArray(node.children)) {
+			for (const child of node.children) {
+				if (typeof child == 'object' && child.type !== NodeTypes.SIMPLE_EXPRESSION) {
+					collectMarkers(child, parentId);
+				}
+			}
 		}
 
 		return null;
@@ -969,16 +922,22 @@ function extractUsageInfoFromTemplateAst(
 	return allMarkers;
 }
 
+type SpecialBindings = {
+	inlining: string[];
+	keywords: string[] | string;
+};
+type Bindings = Partial<Omit<Record<keyof SearchIndexItem, string>, keyof SpecialBindings> & SpecialBindings>;
 // バインドプロパティの処理を修正する関数
-function extractNodeBindings(node: VueAstNode): Record<keyof SearchIndexItem, any> {
-	const bindings: Record<string, any> = {};
+function extractNodeBindings(node: TemplateChildNode | RootNode): Bindings {
+	const bindings: Bindings = {};
 
-	if (!node.props || !Array.isArray(node.props)) return bindings;
+	if (node.type !== NodeTypes.ELEMENT) return bindings;
 
 	// バインド式を収集
 	for (const prop of node.props) {
-		if (prop.type === 7 && prop.name === 'bind' && prop.arg?.content) {
+		if (prop.type === NodeTypes.DIRECTIVE && prop.name === 'bind' && prop.arg && 'content' in prop.arg) {
 			const propName = prop.arg.content;
+			if (prop.exp?.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('unexpected COMPOUND_EXPRESSION');
 			const propContent = prop.exp?.content || '';
 
 			logger.info(`Processing bind prop ${propName}: ${propContent}`);
@@ -1055,7 +1014,7 @@ function extractNodeBindings(node: VueAstNode): Record<keyof SearchIndexItem, an
 }
 
 // 配列式をパースする補助関数（文字列リテラル処理を改善）
-function parseArrayExpression(expr: string): any[] {
+function parseArrayExpression(expr: string): string[] {
 	try {
 		// 単純なケースはJSON5でパースを試みる
 		return JSON5.parse(expr.replace(/'/g, '"'));
@@ -1067,7 +1026,7 @@ function parseArrayExpression(expr: string): any[] {
 		const content = expr.substring(1, expr.length - 1).trim();
 		if (!content) return [];
 
-		const result: any[] = [];
+		const result: string[] = [];
 		let currentItem = '';
 		let depth = 0;
 		let inString = false;
@@ -1138,37 +1097,16 @@ function parseArrayExpression(expr: string): any[] {
 	}
 }
 
-export async function analyzeVueProps(options: Options & {
-	transformedCodeCache: Record<string, string>,
-}): Promise<void> {
-	initLogger(options);
-
-	const allMarkers: SearchIndexItem[] = [];
-
-	//  対象ファイルパスを glob で展開
-	const filePaths = options.targetFilePaths.reduce<string[]>((acc, filePathPattern) => {
-		const matchedFiles = glob.sync(filePathPattern);
-		return [...acc, ...matchedFiles];
-	}, []);
-
-	logger.info(`Found ${filePaths.length} matching files to analyze`);
-
-	for (const filePath of filePaths) {
-		const absolutePath = path.join(process.cwd(), filePath);
-		const id = absolutePath.replace(/\\/g, '/'); // 絶対パスに変換
-		const code = options.transformedCodeCache[id]; // options 経由でキャッシュ参照
-		if (!code) { // キャッシュミスの場合
-			logger.error(`Error: No cached code found for: ${id}.`); // エラーログ
-			throw new Error(`No cached code found for: ${id}.`); // エラーを投げる
-		}
-
+export function collectFileMarkers(files: [id: string, code: string][]): AnalysisResult<SearchIndexStringItem> {
+	const allMarkers: SearchIndexStringItem[] = [];
+	for (const [id, code] of files) {
 		try {
-			const { descriptor, errors } = vueSfcParse(options.transformedCodeCache[id], {
-				filename: filePath,
+			const { descriptor, errors } = vueSfcParse(code, {
+				filename: id,
 			});
 
 			if (errors.length > 0) {
-				logger.error(`Compile Error: ${filePath}, ${errors}`);
+				logger.error(`Compile Error: ${id}, ${errors}`);
 				continue; // エラーが発生したファイルはスキップ
 			}
 
@@ -1176,83 +1114,76 @@ export async function analyzeVueProps(options: Options & {
 
 			if (fileMarkers && fileMarkers.length > 0) {
 				allMarkers.push(...fileMarkers); // すべてのマーカーを収集
-				logger.info(`Successfully extracted ${fileMarkers.length} markers from ${filePath}`);
+				logger.info(`Successfully extracted ${fileMarkers.length} markers from ${id}`);
 			} else {
-				logger.info(`No markers found in ${filePath}`);
+				logger.info(`No markers found in ${id}`);
 			}
 		} catch (error) {
-			logger.error(`Error analyzing file ${filePath}:`, error);
+			logger.error(`Error analyzing file ${id}:`, error);
 		}
 	}
 
 	// 収集したすべてのマーカー情報を使用
-	const analysisResult: AnalysisResult[] = [
-		{
-			filePath: "combined-markers", // すべてのファイルのマーカーを1つのエントリとして扱う
-			usage: allMarkers,
+	return {
+		filePath: "combined-markers", // すべてのファイルのマーカーを1つのエントリとして扱う
+		usage: allMarkers,
+	};
+}
+
+type TransformedCode = {
+	code: string,
+	map: SourceMap,
+};
+
+export class MarkerIdAssigner {
+	// key: file id
+	private cache: Map<string, TransformedCode>;
+
+	constructor() {
+		this.cache = new Map();
+	}
+
+	public onInvalidate(id: string) {
+		this.cache.delete(id);
+	}
+
+	public processFile(id: string, code: string): TransformedCode {
+		// try cache first
+		if (this.cache.has(id)) {
+			return this.cache.get(id)!;
 		}
-	];
-
-	outputAnalysisResultAsTS(options.exportFilePath, analysisResult); // すべてのマーカー情報を渡す
-}
-
-interface MarkerRelation {
-	parentId?: string;
-	markerId: string;
-	node: VueAstNode;
-}
-
-async function processVueFile(
-	code: string,
-	id: string,
-	options: Options,
-	transformedCodeCache: Record<string, string>
-): Promise<{
-	code: string,
-	map: any,
-	transformedCodeCache: Record<string, string>
-}> {
-	const normalizedId = id.replace(/\\/g, '/'); // ファイルパスを正規化
-
-	// 開発モード時はコード内容に変更があれば常に再処理する
-	// コード内容が同じ場合のみキャッシュを使用
-	const isDevMode = process.env.NODE_ENV === 'development';
-
-	const s = new MagicString(code); // magic-string のインスタンスを作成
-
-	if (!isDevMode && transformedCodeCache[normalizedId] && transformedCodeCache[normalizedId].includes('markerId=')) {
-		logger.info(`Using cached version for ${id}`);
-		return {
-			code: transformedCodeCache[normalizedId],
-			map: s.generateMap({ source: id, includeContent: true }),
-			transformedCodeCache
-		};
+		const transformed = this.#processImpl(id, code);
+		this.cache.set(id, transformed);
+		return transformed;
 	}
 
-	// すでに処理済みのファイルでコードに変更がない場合はキャッシュを返す
-	if (transformedCodeCache[normalizedId] === code) {
-		logger.info(`Code unchanged for ${id}, using cached version`);
-		return {
-			code: transformedCodeCache[normalizedId],
-			map: s.generateMap({ source: id, includeContent: true }),
-			transformedCodeCache
-		};
-	}
+	#processImpl(id: string, code: string): TransformedCode {
+		const s = new MagicString(code); // magic-string のインスタンスを作成
 
-	const parsed = vueSfcParse(code, { filename: id });
-	if (!parsed.descriptor.template) {
-		return {
-			code,
-			map: s.generateMap({ source: id, includeContent: true }),
-			transformedCodeCache
-		};
-	}
-	const ast = parsed.descriptor.template.ast; // テンプレート AST を取得
-	const markerRelations: MarkerRelation[] = []; //  MarkerRelation 配列を初期化
+		const parsed = vueSfcParse(code, { filename: id });
+		if (!parsed.descriptor.template) {
+			return {
+				code,
+				map: s.generateMap({ source: id, includeContent: true }),
+			};
+		}
+		const ast = parsed.descriptor.template.ast; // テンプレート AST を取得
+		const markerRelations: MarkerRelation[] = []; //  MarkerRelation 配列を初期化
 
-	if (ast) {
-		function traverse(node: any, currentParent?: any) {
-			if (node.type === 1 && node.tag === 'SearchMarker') {
+		if (!ast) {
+			return {
+				code: s.toString(), // 変更後のコードを返す
+				map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
+			};
+		}
+
+		type SearchMarkerElementNode = ElementNode & {
+			__markerId?: string,
+			__children?: string[],
+		};
+
+		function traverse(node: RootNode | TemplateChildNode | SimpleExpressionNode | CompoundExpressionNode, currentParent?: SearchMarkerElementNode) {
+			if (node.type === NodeTypes.ELEMENT && node.tag === 'SearchMarker') {
 				// 行番号はコード先頭からの改行数で取得
 				const lineNumber = code.slice(0, node.loc.start.offset).split('\n').length;
 				// ファイルパスと行番号からハッシュ値を生成
@@ -1261,14 +1192,14 @@ async function processVueFile(
 				const generatedMarkerId = toBase62(hash(`${idKey}:${lineNumber}`));
 
 				const props = node.props || [];
-				const hasMarkerIdProp = props.some((prop: any) => prop.type === 6 && prop.name === 'markerId');
+				const hasMarkerIdProp = props.some((prop) => prop.type === NodeTypes.ATTRIBUTE && prop.name === 'markerId');
 				const nodeMarkerId = hasMarkerIdProp
-					? props.find((prop: any) => prop.type === 6 && prop.name === 'markerId')?.value?.content as string
+					? props.find((prop): prop is AttributeNode => prop.type === NodeTypes.ATTRIBUTE && prop.name === 'markerId')?.value?.content as string
 					: generatedMarkerId;
-				node.__markerId = nodeMarkerId;
+				(node as SearchMarkerElementNode).__markerId = nodeMarkerId;
 
 				// 子マーカーの場合、親ノードに __children を設定しておく
-				if (currentParent && currentParent.type === 1 && currentParent.tag === 'SearchMarker') {
+				if (currentParent) {
 					currentParent.__children = currentParent.__children || [];
 					currentParent.__children.push(nodeMarkerId);
 				}
@@ -1313,9 +1244,13 @@ async function processVueFile(
 				}
 			}
 
-			const newParent = node.type === 1 && node.tag === 'SearchMarker' ? node : currentParent;
-			if (node.children && Array.isArray(node.children)) {
-				node.children.forEach(child => traverse(child, newParent));
+			const newParent: SearchMarkerElementNode | undefined = node.type === NodeTypes.ELEMENT && node.tag === 'SearchMarker' ? node : currentParent;
+			if ('children' in node) {
+				for (const child of node.children) {
+					if (typeof child == 'object') {
+						traverse(child, newParent);
+					}
+				}
 			}
 		}
 
@@ -1341,7 +1276,11 @@ async function processVueFile(
 			if (!parentRelation || !parentRelation.node) continue;
 
 			const parentNode = parentRelation.node;
-			const childrenProp = parentNode.props?.find((prop: any) => prop.type === 7 && prop.name === 'bind' && prop.arg?.content === 'children');
+			const childrenProp = parentNode.props?.find((prop): prop is DirectiveNode =>
+				prop.type === NodeTypes.DIRECTIVE &&
+				prop.name === 'bind' &&
+				prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
+				prop.arg.content === 'children');
 
 			// 親ノードの開始位置を特定
 			const parentNodeStart = parentNode.loc!.start.offset;
@@ -1416,53 +1355,64 @@ async function processVueFile(
 				}
 			}
 		}
+
+		return {
+			code: s.toString(), // 変更後のコードを返す
+			map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
+		};
 	}
 
-	const transformedCode = s.toString(); //  変換後のコードを取得
-	transformedCodeCache[normalizedId] = transformedCode; //  変換後のコードをキャッシュに保存
+	async getOrLoad(id: string) {
+		// if there already exists a cache, return it
+		// note cahce will be invalidated on file change so the cache must be up to date
+		let code = this.getCached(id)?.code;
+		if (code != null) {
+			return code;
+		}
 
-	return {
-		code: transformedCode, // 変更後のコードを返す
-		map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
-		transformedCodeCache // キャッシュも返す
-	};
-}
+		// if no cache found, read and parse the file
+		const originalCode = await fs.promises.readFile(id, 'utf-8');
 
-export async function generateSearchIndex(options: Options, transformedCodeCache: Record<string, string> = {}) {
-	const filePaths = options.targetFilePaths.reduce<string[]>((acc, filePathPattern) => {
-		const matchedFiles = glob.sync(filePathPattern);
-		return [...acc, ...matchedFiles];
-	}, []);
+		// Other code may already parsed the file while we were waiting for the file to be read so re-check the cache
+		code = this.getCached(id)?.code;
+		if (code != null) {
+			return code;
+		}
 
-	for (const filePath of filePaths) {
-		const id = path.resolve(filePath); // 絶対パスに変換
-		const code = fs.readFileSync(filePath, 'utf-8'); // ファイル内容を読み込む
-		const { transformedCodeCache: newCache } = await processVueFile(code, id, options, transformedCodeCache); // processVueFile 関数を呼び出す
-		transformedCodeCache = newCache; // キャッシュを更新
+		// parse the file
+		code = this.processFile(id, originalCode)?.code;
+		return code;
 	}
 
-	await analyzeVueProps({ ...options, transformedCodeCache }); // 開発サーバー起動時にも analyzeVueProps を実行
-
-	return transformedCodeCache; // キャッシュを返す
+	getCached(id: string) {
+		return this.cache.get(id);
+	}
 }
 
 // Rollup プラグインとして export
-export default function pluginCreateSearchIndex(options: Options): Plugin {
-	let transformedCodeCache: Record<string, string> = {}; //  キャッシュオブジェクトをプラグインスコープで定義
-	const isDevServer = process.env.NODE_ENV === 'development'; // 開発サーバーかどうか
+export default function pluginCreateSearchIndex(options: Options): PluginOption {
+	const assigner = new MarkerIdAssigner();
+	return [
+		createSearchIndex(options, assigner),
+		pluginCreateSearchIndexVirtualModule(options, assigner),
+	]
+}
 
+function createSearchIndex(options: Options, assigner: MarkerIdAssigner): Plugin {
 	initLogger(options); // ロガーを初期化
+	const root = normalizePath(process.cwd());
+
+	function isTargetFile(id: string): boolean {
+		const relativePath = path.posix.relative(root, id);
+		return options.targetFilePaths.some(pat => minimatch(relativePath, pat))
+	}
 
 	return {
-		name: 'createSearchIndex',
+		name: 'autoAssignMarkerId',
 		enforce: 'pre',
 
-		async buildStart() {
-			if (!isDevServer) {
-				return;
-			}
-
-			transformedCodeCache = await generateSearchIndex(options, transformedCodeCache);
+		watchChange(id) {
+			assigner.onInvalidate(id);
 		},
 
 		async transform(code, id) {
@@ -1470,43 +1420,88 @@ export default function pluginCreateSearchIndex(options: Options): Plugin {
 				return;
 			}
 
-			// targetFilePaths にマッチするファイルのみ処理を行う
-			// glob パターンでマッチング
-			let isMatch = false; // isMatch の初期値を false に設定
-			for (const pattern of options.targetFilePaths) { // パターンごとにマッチング確認
-				const globbedFiles = glob.sync(pattern);
-				for (const globbedFile of globbedFiles) {
-					const normalizedGlobbedFile = path.resolve(globbedFile); // glob 結果を絶対パスに
-					const normalizedId = path.resolve(id); // id を絶対パスに
-					if (normalizedGlobbedFile === normalizedId) { // 絶対パス同士で比較
-						isMatch = true;
-						break; // マッチしたらループを抜ける
-					}
-				}
-				if (isMatch) break; // いずれかのパターンでマッチしたら、outer loop も抜ける
-			}
-
-			if (!isMatch) {
+			if (!isTargetFile(id)) {
 				return;
 			}
 
-			// ファイルの内容が変更された場合は再処理を行う
-			const normalizedId = id.replace(/\\/g, '/');
-			const hasContentChanged = !transformedCodeCache[normalizedId] || transformedCodeCache[normalizedId] !== code;
+			return assigner.processFile(id, code);
+		},
+	};
+}
 
-			const transformed = await processVueFile(code, id, options, transformedCodeCache);
-			transformedCodeCache = transformed.transformedCodeCache; // キャッシュを更新
+export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: MarkerIdAssigner): Plugin {
+	const searchIndexPrefix = options.fileVirtualModulePrefix ?? 'search-index-individual:';
+	const searchIndexSuffix = options.fileVirtualModuleSuffix ?? '.ts';
+	const allSearchIndexFile = options.mainVirtualModule;
+	const root = normalizePath(process.cwd());
 
-			if (isDevServer && hasContentChanged) {
-				await analyzeVueProps({ ...options, transformedCodeCache }); // ファイルが変更されたときのみ分析を実行
+	function isTargetFile(id: string): boolean {
+		const relativePath = path.posix.relative(root, id);
+		return options.targetFilePaths.some(pat => minimatch(relativePath, pat))
+	}
+
+	function parseSearchIndexFileId(id: string): string | null {
+		const noQuery = id.split('?')[0];
+		if (noQuery.startsWith(searchIndexPrefix) && noQuery.endsWith(searchIndexSuffix)) {
+			const filePath = id.slice(searchIndexPrefix.length).slice(0, -searchIndexSuffix.length);
+			if (isTargetFile(filePath)) {
+				return filePath;
+			}
+		}
+		return null;
+	}
+
+	return {
+		name: 'generateSearchIndexVirtualModule',
+		// hotUpdate hook を vite:vue よりもあとに実行したいため enforce: post
+		enforce: 'post',
+
+		async resolveId(id) {
+			if (id == allSearchIndexFile) {
+				return '\0' + allSearchIndexFile;
 			}
 
-			return transformed;
+			const searchIndexFilePath = parseSearchIndexFileId(id);
+			if (searchIndexFilePath != null) {
+				return id;
+			}
+			return undefined;
 		},
 
-		async writeBundle() {
-			await analyzeVueProps({ ...options, transformedCodeCache }); // ビルド時にも analyzeVueProps を実行
+		async load(id) {
+			if (id == '\0' + allSearchIndexFile) {
+				const files = await Promise.all(options.targetFilePaths.map(async (filePathPattern) => await glob(filePathPattern))).then(paths => paths.flat());
+				let generatedFile = '';
+				let arrayElements = '';
+				for (let file of files) {
+					const normalizedRelative = normalizePath(file);
+					const absoluteId = normalizePath(path.join(process.cwd(), normalizedRelative)) + searchIndexSuffix;
+					const variableName = normalizedRelative.replace(/[\/.-]/g, '_');
+					generatedFile += `import { searchIndexes as ${variableName} } from '${searchIndexPrefix}${absoluteId}';\n`;
+					arrayElements += `  ...${variableName},\n`;
+				}
+				generatedFile += `export let searchIndexes = [\n${arrayElements}];\n`;
+				return generatedFile;
+			}
+
+			const searchIndexFilePath = parseSearchIndexFileId(id);
+			if (searchIndexFilePath != null) {
+				// call load to update the index file when the file is changed
+				this.addWatchFile(searchIndexFilePath);
+
+				const code = await asigner.getOrLoad(searchIndexFilePath);
+				return generateJavaScriptCode(collectSearchItemIndexes([collectFileMarkers([[id, code]])]));
+			}
+			return null;
 		},
+
+		hotUpdate(this: { environment: { moduleGraph: EnvironmentModuleGraph } }, { file, modules }) {
+			if (isTargetFile(file)) {
+				const updateMods = options.modulesToHmrOnUpdate.map(id => this.environment.moduleGraph.getModuleById(path.posix.join(root, id))).filter(x => x != null);
+				return [...modules, ...updateMods];
+			}
+			return modules;
+		}
 	};
 }
 
