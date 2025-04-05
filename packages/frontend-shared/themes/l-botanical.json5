@@ -15,7 +15,6 @@
 		divider: '#cfcfcf',
 		panel: '#ebe7e5',
 		panelHeaderBg: '@panel',
-		panelHeaderDivider: '@divider',
 		header: ':alpha<0.7<@panel',
 		navBg: '#ebe7e5',
 		renote: '#229e92',

@@ -49,7 +49,6 @@
 		panelHighlight: ':darken<3<@panel',
 		scrollbarHandle: 'rgba(0, 0, 0, 0.2)',
 		fgTransparentWeak: ':alpha<0.75<@fg',
-		panelHeaderDivider: '@divider',
 		scrollbarHandleHover: 'rgba(0, 0, 0, 0.4)',
 	},
 }

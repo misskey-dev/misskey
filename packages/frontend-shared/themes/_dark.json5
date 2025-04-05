@@ -26,7 +26,6 @@
 		panelHighlight: ':lighten<3<@panel',
 		panelHeaderBg: ':lighten<3<@panel',
 		panelHeaderFg: '@fg',
-		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
 		panelBorder: '" solid 1px var(--MI_THEME-divider)',
 		windowHeader: ':alpha<0.85<@panel',
 		popup: ':lighten<3<@panel',
