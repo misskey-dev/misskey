@@ -27,3 +27,4 @@ onlyBuiltDependencies:
   - utf-8-validate
   - v-code-diff
   - vue-demi
+ignorePatchFailures: false
