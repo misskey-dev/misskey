@@ -322,7 +322,7 @@ proxyBypassHosts:
 # Movie Thumbnail Generation URL
 # There is no reference implementation.
 # For example, Misskey will point to the following URL:
-#   https://example.com/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Fstorage.example.com%2Fpath%2Fto%2Fvideo.mp4
+#   https://example.com/thumbnail.jxl?thumbnail=1&url=https%3A%2F%2Fstorage.example.com%2Fpath%2Fto%2Fvideo.mp4
 #videoThumbnailGenerator: https://example.com
 
 # For security reasons, uploading attachments from the intranet is prohibited,

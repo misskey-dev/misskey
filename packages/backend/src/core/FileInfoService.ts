@@ -109,6 +109,7 @@ export class FileInfoService {
 			'image/jpeg',
 			'image/webp',
 			'image/avif',
+			'image/jxl',
 			'image/apng',
 			'image/bmp',
 			'image/tiff',
@@ -148,6 +149,7 @@ export class FileInfoService {
 			'image/apng',
 			'image/webp',
 			'image/avif',
+			'image/jxl',
 			'image/svg+xml',
 		].includes(type.mime)) {
 			blurhash = await this.getBlurhash(path, type.mime).catch(e => {
@@ -205,7 +207,17 @@ export class FileInfoService {
 			return [sensitive, porn];
 		}
 
-		if (analyzeVideo && (mime === 'image/apng' || mime.startsWith('video/'))) {
+		if ([
+			'image/jpeg',
+			'image/png',
+			'image/webp',
+			'image/jxl',
+		].includes(mime)) {
+			const result = await this.aiService.detectSensitive(source);
+			if (result) {
+				[sensitive, porn] = judgePrediction(result);
+			}
+		} else if (analyzeVideo && (mime === 'image/apng' || mime.startsWith('video/'))) {
 			const [outDir, disposeOutDir] = await createTempDir();
 			try {
 				const command = FFmpeg()

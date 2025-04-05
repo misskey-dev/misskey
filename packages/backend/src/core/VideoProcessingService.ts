@@ -42,7 +42,7 @@ export class VideoProcessingService {
 					});
 			});
 
-			return await this.imageProcessingService.convertToWebp(`${dir}/out.png`, 498, 422);
+			return await this.imageProcessingService.convertToJxl(`${dir}/out.png`, 498, 422);
 		} finally {
 			cleanup();
 		}
@@ -53,7 +53,7 @@ export class VideoProcessingService {
 		if (this.config.videoThumbnailGenerator == null) return null;
 
 		return appendQuery(
-			`${this.config.videoThumbnailGenerator}/thumbnail.webp`,
+			`${this.config.videoThumbnailGenerator}/thumbnail.jxl`,
 			query({
 				thumbnail: '1',
 				url,

@@ -18,7 +18,7 @@ import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
 import type Logger from '@/logger.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
+import { IImageStreamable, ImageProcessingService, jxlDefault } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
@@ -142,7 +142,7 @@ export class FileServerService {
 					if (isMimeImage(file.mime, 'sharp-convertible-image-with-bmp')) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-						const url = new URL(`${this.config.mediaProxy}/static.webp`);
+						const url = new URL(`${this.config.mediaProxy}/static.jxl`);
 						url.searchParams.set('url', file.url);
 						url.searchParams.set('static', '1');
 
@@ -163,7 +163,7 @@ export class FileServerService {
 					if (['image/svg+xml'].includes(file.mime)) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-						const url = new URL(`${this.config.mediaProxy}/svg.webp`);
+						const url = new URL(`${this.config.mediaProxy}/svg.jxl`);
 						url.searchParams.set('url', file.url);
 
 						file.cleanup();
@@ -367,21 +367,21 @@ export class FileServerService {
 				} else {
 					const data = (await sharpBmp(file.path, file.mime, { animated: !('static' in request.query) }))
 						.resize({
-							height: 'emoji' in request.query ? 128 : 320,
+							height: 'emoji' in request.query ? 256 : 640,
 							withoutEnlargement: true,
 						})
-						.webp(webpDefault);
+						.jxl(jxlDefault);
 
 					image = {
 						data,
-						ext: 'webp',
-						type: 'image/webp',
+						ext: 'jxl',
+						type: 'image/jxl',
 					};
 				}
 			} else if ('static' in request.query) {
-				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 498, 422);
+				image = this.imageProcessingService.convertSharpToJxlStream(await sharpBmp(file.path, file.mime), 498, 422);
 			} else if ('preview' in request.query) {
-				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 200, 200);
+				image = this.imageProcessingService.convertSharpToJxlStream(await sharpBmp(file.path, file.mime), 200, 200);
 			} else if ('badge' in request.query) {
 				const mask = (await sharpBmp(file.path, file.mime))
 					.resize(96, 96, {

@@ -79,7 +79,7 @@ const rawUrl = computed(() => {
 	if (isLocal.value) {
 		return customEmojisMap.get(customEmojiName.value)?.url ?? null;
 	}
-	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
+	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.jxl` : `/emoji/${customEmojiName.value}.jxl`;
 });
 
 const url = computed(() => {

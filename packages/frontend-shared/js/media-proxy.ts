@@ -25,8 +25,8 @@ export class MediaProxy {
 		}
 
 		return `${mustOrigin ? localProxy : this.serverMetadata.mediaProxy}/${
-			type === 'preview' ? 'preview.webp'
-			: 'image.webp'
+			type === 'preview' ? 'preview.jxl'
+			: 'image.jxl'
 		}?${query({
 			url: _imageUrl,
 			...(!noFallback ? { 'fallback': '1' } : {}),
@@ -55,7 +55,7 @@ export class MediaProxy {
 			return u.href;
 		}
 
-		return `${this.serverMetadata.mediaProxy}/static.webp?${query({
+		return `${this.serverMetadata.mediaProxy}/static.jxl?${query({
 			url: u.href,
 			static: '1',
 		})}`;

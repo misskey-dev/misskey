@@ -85,7 +85,7 @@ function createRender(params: {
 							reader.onload = () => {
 								resolve(reader.result as string);
 							};
-							reader.readAsDataURL(new Blob([file], { type: 'image/webp' }));
+							reader.readAsDataURL(new Blob([file], { type: 'image/jxl' }));
 						});
 
 						const driveFile: entities.DriveFile = {

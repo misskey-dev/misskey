@@ -43,6 +43,12 @@ export const avifDefault: sharp.AvifOptions = {
 	effort: 2,
 };
 
+export const jxlDefault: sharp.JxlOptions = {
+	quality: 100,
+	lossless: true,
+	effort: 9,
+};
+
 import { bindThis } from '@/decorators.js';
 import { Readable } from 'node:stream';
 
@@ -133,6 +139,48 @@ export class ImageProcessingService {
 			data,
 			ext: 'avif',
 			type: 'image/avif',
+		};
+	}
+
+	/**
+	 * Convert to JPEG XL
+	 *   with resize, remove metadata, resolve orientation, stop animation
+	 */
+	@bindThis
+	public async convertToJxl(path: string, width: number, height: number, options: sharp.JxlOptions = jxlDefault): Promise<IImage> {
+		return this.convertSharpToJxl(sharp(path), width, height, options);
+	}
+
+	@bindThis
+	public async convertSharpToJxl(sharp: sharp.Sharp, width: number, height: number, options: sharp.jxlOptions = jxlDefault): Promise<IImage> {
+		const result = this.convertSharpToJxlStream(sharp, width, height, options);
+
+		return {
+			data: await result.data.toBuffer(),
+			ext: result.ext,
+			type: result.type,
+		};
+	}
+
+	@bindThis
+	public convertToJxlStream(path: string, width: number, height: number, options: sharp.JxlOptions = jxlDefault): IImageSharp {
+		return this.convertSharpToJxlStream(sharp(path), width, height, options);
+	}
+
+	@bindThis
+	public convertSharpToJxlStream(sharp: sharp.Sharp, width: number, height: number, options: sharp.JxlOptions = jxlDefault): IImageSharp {
+		const data = sharp
+			.resize(width, height, {
+				fit: 'inside',
+				withoutEnlargement: true,
+			})
+			.rotate()
+			.jxl(options);
+
+		return {
+			data,
+			ext: 'jxl',
+			type: 'image/jxl',
 		};
 	}
 

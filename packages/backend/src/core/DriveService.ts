@@ -159,6 +159,7 @@ export class DriveService {
 				if (type === 'image/png') ext = '.png';
 				if (type === 'image/webp') ext = '.webp';
 				if (type === 'image/avif') ext = '.avif';
+				if (type === 'image/jxl') ext = '.jxl';
 				if (type === 'image/apng') ext = '.apng';
 				if (type === 'image/vnd.mozilla.apng') ext = '.apng';
 			}
@@ -311,10 +312,9 @@ export class DriveService {
 
 			satisfyWebpublic = !!(
 				type !== 'image/svg+xml' && // security reason
-				type !== 'image/avif' && // not supported by Mastodon and MS Edge
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
-			metadata.width && metadata.width <= 2048 &&
-			metadata.height && metadata.height <= 2048
+				metadata.width && metadata.width <= 11648 &&
+				metadata.height && metadata.height <= 11648
 			);
 		} catch (err) {
 			this.registerLogger.warn(`sharp failed: ${err}`);
@@ -331,10 +331,10 @@ export class DriveService {
 			this.registerLogger.info('creating web image');
 
 			try {
-				if (['image/jpeg', 'image/webp', 'image/avif'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToWebp(img, 2048, 2048);
+				if (['image/jpeg', 'image/webp', 'image/avif', 'image/jxl'].includes(type)) {
+					webpublic = await this.imageProcessingService.convertSharpToJxl(img, 11648, 11648);
 				} else if (['image/png', 'image/bmp', 'image/svg+xml'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
+					webpublic = await this.imageProcessingService.convertSharpToPng(img, 11648, 11648);
 				} else {
 					this.registerLogger.debug('web image not created (not an required image)');
 				}
@@ -353,9 +353,9 @@ export class DriveService {
 
 		try {
 			if (isAnimated) {
-				thumbnail = await this.imageProcessingService.convertSharpToWebp(sharp(path, { animated: true }), 374, 317, { alphaQuality: 70 });
+				thumbnail = await this.imageProcessingService.convertSharpToJxl(sharp(path, { animated: true }), 374, 317, { alphaQuality: 70 });
 			} else {
-				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 422);
+				thumbnail = await this.imageProcessingService.convertSharpToJxl(img, 498, 422);
 			}
 		} catch (err) {
 			this.registerLogger.warn('thumbnail not created (an error occurred)', err as Error);
