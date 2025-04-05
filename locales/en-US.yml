@@ -1888,6 +1888,8 @@ _role:
   descriptionOfIsExplorable: "This role's timeline and the list of users with this will be made public if enabled."
   displayOrder: "Position"
   descriptionOfDisplayOrder: "The higher the number, the higher its UI position."
+  preserveAssignmentOnMoveAccount: "Preserve role assignment during migration"
+  preserveAssignmentOnMoveAccount_description: "When turned on, this role will be carried over to the destination account when an account with this role is migrated."
   canEditMembersByModerator: "Allow moderators to edit the list of members for this role"
   descriptionOfCanEditMembersByModerator: "When turned on, moderators as well as administrators will be able to assign and unassign users to this role. When turned off, only administrators will be able to assign users."
   priority: "Priority"
