@@ -15,8 +15,6 @@
 		focus: ':alpha<0.3<@accent',
 		bg: '#fff',
 		fg: '#5f5f5f',
-		fgTransparentWeak: ':alpha<0.75<@fg',
-		fgTransparent: ':alpha<0.5<@fg',
 		fgHighlighted: ':darken<3<@fg',
 		fgOnAccent: '#fff',
 		fgOnWhite: '#333',
