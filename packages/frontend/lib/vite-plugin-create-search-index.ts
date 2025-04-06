@@ -24,7 +24,6 @@ import { hash, toBase62 } from '../vite.config';
 import { minimatch } from 'minimatch';
 import {
 	type AttributeNode,
-	type CompoundExpressionNode,
 	type DirectiveNode,
 	type ElementNode,
 	ElementTypes,
@@ -89,6 +88,64 @@ function initLogger(options: Options) {
 	}
 }
 
+//region AST Utility
+
+type WalkVueNode = RootNode | TemplateChildNode | SimpleExpressionNode;
+
+/**
+ * Walks the Vue AST.
+ * @param nodes
+ * @param context The context value passed to callback. you can update context for children by returning value in callback
+ * @param callback Returns false if you don't want to walk inner tree
+ */
+function walkVueElements<C extends {} | null>(nodes: WalkVueNode[], context: C, callback: (node: ElementNode, context: C) => C | undefined | void | false): void {
+	for (const node of nodes) {
+		if (node.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
+		if (node.type === NodeTypes.ELEMENT) {
+			const result = callback(node, context);
+			if (result === false) return;
+			if (result !== undefined) context = result;
+		}
+		if ('children' in node) {
+			walkVueElements(node.children, context, callback);
+		}
+	}
+}
+
+function findAttribute(props: Array<AttributeNode | DirectiveNode>, name: string): AttributeNode | DirectiveNode | null {
+	for (const prop of props) {
+		switch (prop.type) {
+			case NodeTypes.ATTRIBUTE:
+				if (prop.name === name) {
+					return prop;
+				}
+				break;
+			case NodeTypes.DIRECTIVE:
+				if (prop.name === 'bind' && prop.arg && 'content' in prop.arg && prop.arg.content === name) {
+					return prop;
+				}
+				break;
+		}
+	}
+	return null;
+}
+
+function findEndOfStartTagAttributes(node: ElementNode): number {
+	if (node.children.length > 0) {
+		// 子要素がある場合、最初の子要素の開始位置を基準にする
+		const nodeStart = node.loc.start.offset;
+		const firstChildStart = node.children[0].loc.start.offset;
+		const endOfStartTag = node.loc.source.lastIndexOf('>', firstChildStart - nodeStart);
+		if (endOfStartTag === -1) throw new Error("Bug: Failed to find end of start tag");
+		return nodeStart + endOfStartTag;
+	} else {
+		// 子要素がない場合、自身の終了位置から逆算
+		return node.isSelfClosing ? node.loc.end.offset - 1 : node.loc.end.offset;
+	}
+}
+
+//endregion
+
 /**
  * TypeScriptコード生成
  */
@@ -109,6 +166,8 @@ function customStringify(obj: unknown): string {
 		return group.includes('${') ? '`' + group + '`' : all;
 	});
 }
+
+// region extractElementText
 
 /**
  * 要素のノードの中身のテキストを抽出する
@@ -162,6 +221,9 @@ function extractElementText2Inner(node: TemplateChildNode, processingNodeName: s
 	}
 }
 
+// endregion
+
+// region extractUsageInfoFromTemplateAst
 
 /**
  * SearchLabelとSearchKeywordを探して抽出する関数
@@ -172,48 +234,72 @@ function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string |
 
 	logger.info(`Extracting labels and keywords from ${nodes.length} nodes`);
 
-	// 再帰的にSearchLabelとSearchKeywordを探索（ネストされたSearchMarkerは処理しない）
-	function findComponents(nodes: TemplateChildNode[]) {
-		for (const node of nodes) {
-			if (node.type === NodeTypes.ELEMENT) {
-				logger.info(`Checking element: ${node.tag}`);
-
-				// SearchMarkerの場合は、その子要素は別スコープなのでスキップ
-				if (node.tag === 'SearchMarker') {
-					logger.info(`Found nested SearchMarker at ${node.loc.start.line} - skipping its content to maintain scope isolation`);
-					continue; // このSearchMarkerの中身は処理しない (スコープ分離)
+	walkVueElements(nodes, null, (node) => {
+		switch (node.tag) {
+			case 'SearchMarker':
+				return false; // SearchMarkerはスキップ
+			case 'SearchLabel':
+				if (label !== undefined) {
+					logger.warn(`Duplicate SearchLabel found, ignoring the second one at ${node.loc.start.line}`);
+					break; // 2つ目のSearchLabelは無視
 				}
 
-				switch (node.tag) {
-					case 'SearchLabel':
-						if (label !== undefined) {
-							logger.warn(`Duplicate SearchLabel found, ignoring the second one at ${node.loc.start.line}`);
-							break; // 2つ目のSearchLabelは無視
-						}
-
-						label = extractElementText(node);
-						break;
-					case 'SearchKeyword':
-						const content = extractElementText(node);
-						if (content) {
-							keywords.push(content);
-						}
-						break;
+				label = extractElementText(node);
+				return;
+			case 'SearchKeyword':
+				const content = extractElementText(node);
+				if (content) {
+					keywords.push(content);
 				}
-
-				// 子要素を再帰的に調査（ただしSearchMarkerは除外）
-				findComponents(node.children);
-			}
+				return;
 		}
-	}
 
-	findComponents(nodes);
+		return;
+	});
 
 	// デバッグ情報
 	logger.info(`Extraction completed: label=${label}, keywords=[${keywords.join(', ')}]`);
 	return { label: label ?? null, keywords };
 }
 
+function getStringProp(attr: AttributeNode | DirectiveNode | null): string | null {
+	switch (attr?.type) {
+		case null:
+		case undefined:
+			return null;
+		case NodeTypes.ATTRIBUTE:
+			return attr.value?.content ?? null;
+		case NodeTypes.DIRECTIVE:
+			if (attr.exp == null) return null;
+			if (attr.exp.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
+			const value = evalExpression(attr.exp.content ?? '');
+			if (typeof value !== 'string') {
+				logger.error(`Expected string value, got ${typeof value} at line ${attr.loc.start.line}`);
+				return null;
+			}
+			return value;
+	}
+}
+
+function getStringArrayProp(attr: AttributeNode | DirectiveNode | null): string[] | null {
+	switch (attr?.type) {
+		case null:
+		case undefined:
+			return null;
+		case NodeTypes.ATTRIBUTE:
+			logger.error(`Expected directive, got attribute at line ${attr.loc.start.line}`);
+			return null;
+		case NodeTypes.DIRECTIVE:
+			if (attr.exp == null) return null;
+			if (attr.exp.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
+			const value = evalExpression(attr.exp.content ?? '');
+			if (!Array.isArray(value) || !value.every(x => typeof x === 'string')) {
+				logger.error(`Expected string array value, got ${typeof value} at line ${attr.loc.start.line}`);
+				return null;
+			}
+			return value;
+	}
+}
 
 function extractUsageInfoFromTemplateAst(
 	templateAst: RootNode | undefined,
@@ -222,124 +308,73 @@ function extractUsageInfoFromTemplateAst(
 	const allMarkers: SearchIndexItem[] = [];
 	const markerMap = new Map<string, SearchIndexItem>();
 
-
 	if (!templateAst) return allMarkers;
 
-	// マーカーの基本情報を収集
-	function collectMarkers(node: TemplateChildNode | RootNode, parentId: string | null = null) {
-		if (node.type === NodeTypes.ELEMENT && node.tag === 'SearchMarker') {
-			// マーカーID取得
-			const markerIdProp = node.props?.find(p => p.name === 'markerId');
-			const markerId = markerIdProp?.type == NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
-
-			// SearchMarkerにマーカーIDがない場合はエラー
-			if (markerId == null) {
-				logger.error(`Marker ID not found for node: ${JSON.stringify(node)}`);
-				throw new Error(`Marker ID not found in file ${id}`);
-			}
-
-			// マーカー基本情報
-			const markerInfo: SearchIndexItem = {
-				id: markerId,
-				parentId: parentId ?? undefined,
-				label: '', // デフォルト値
-				keywords: [],
-			};
-
-			// 静的プロパティを取得
-			if (node.props && Array.isArray(node.props)) {
-				for (const prop of node.props) {
-					if (prop.type === NodeTypes.ATTRIBUTE && prop.name && prop.name !== 'markerId') {
-						if (prop.name === 'path') markerInfo.path = prop.value?.content || '';
-						else if (prop.name === 'icon') markerInfo.icon = prop.value?.content || '';
-						else if (prop.name === 'label') markerInfo.label = prop.value?.content || '';
-					}
-				}
-			}
-
-			// バインドプロパティを取得
-			const bindings = extractNodeBindings(node);
-
-			const assertString = (value: unknown, key: string): string => {
-				if (typeof value !== 'string') throw new Error(`Invalid type for ${key} in marker ${markerId}: expected string, got ${typeof value}`);
-				return value;
-			}
-
-			const assertStringArray = (value: unknown, key: string): string[] => {
-				if (!Array.isArray(value) || !value.every(x => typeof x === 'string')) throw new Error(`Invalid type for ${key} in marker ${markerId}: expected string array`);
-				return value;
-			}
-
-			if (bindings.path) markerInfo.path = assertString(bindings.path, 'path');
-			if (bindings.icon) markerInfo.icon = assertString(bindings.icon, 'icon');
-			if (bindings.label) markerInfo.label = assertString(bindings.label, 'label');
-			if (bindings.inlining) {
-				markerInfo.inlining = assertStringArray(bindings.inlining, 'inlining');
-				logger.info(`Added inlining ${JSON.stringify(bindings.inlining)} to marker ${markerId}`);
-			}
-			if (bindings.keywords) {
-				markerInfo.keywords = assertStringArray(bindings.keywords, 'keywords');
-			}
-
-			//pathがない場合はファイルパスを設定
-			if (markerInfo.path == null && parentId == null) {
-				markerInfo.path = id.match(/.*(\/(admin|settings)\/[^\/]+)\.vue$/)?.[1];
-			}
-
-			// SearchLabelとSearchKeywordを抽出 (AST全体を探索)
-			{
-				const extracted = extractLabelsAndKeywords(node.children);
-				if (extracted.label && markerInfo.label) logger.warn(`Duplicate label found for ${markerId} at ${id}:${node.loc.start.line}`);
-				markerInfo.label = extracted.label ?? markerInfo.label ?? '';
-				markerInfo.keywords = [...extracted.keywords, ...markerInfo.keywords];
-			}
-
-			if (!markerInfo.label) {
-				logger.warn(`No label found for ${markerId} at ${id}:${node.loc.start.line}`);
-			}
-
-			// マーカーを登録
-			markerMap.set(markerId, markerInfo);
-			allMarkers.push(markerInfo);
+	walkVueElements<string | null>([templateAst], null, (node, parentId) => {
+		if (node.tag !== 'SearchMarker') {
+			return;
 		}
 
-		// 再帰的に子ノードを処理
-		if ('children' in node && Array.isArray(node.children)) {
-			for (const child of node.children) {
-				if (typeof child == 'object' && child.type !== NodeTypes.SIMPLE_EXPRESSION) {
-					collectMarkers(child, parentId);
-				}
-			}
-		}
-	}
+		// マーカーID取得
+		const markerIdProp = node.props?.find(p => p.name === 'markerId');
+		const markerId = markerIdProp?.type == NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
 
-	// AST解析開始
-	collectMarkers(templateAst);
+		// SearchMarkerにマーカーIDがない場合はエラー
+		if (markerId == null) {
+			logger.error(`Marker ID not found for node: ${JSON.stringify(node)}`);
+			throw new Error(`Marker ID not found in file ${id}`);
+		}
+
+		// マーカー基本情報
+		const markerInfo: SearchIndexItem = {
+			id: markerId,
+			parentId: parentId ?? undefined,
+			label: '', // デフォルト値
+			keywords: [],
+		};
+
+		// バインドプロパティを取得
+		const path = getStringProp(findAttribute(node.props, 'path'))
+		const icon = getStringProp(findAttribute(node.props, 'icon'))
+		const label = getStringProp(findAttribute(node.props, 'label'))
+		const inlining = getStringArrayProp(findAttribute(node.props, 'inlining'))
+		const keywords = getStringArrayProp(findAttribute(node.props, 'keywords'))
+
+		if (path) markerInfo.path = path;
+		if (icon) markerInfo.icon = icon;
+		if (label) markerInfo.label = label;
+		if (inlining) markerInfo.inlining = inlining;
+		if (keywords) markerInfo.keywords = keywords;
+
+		//pathがない場合はファイルパスを設定
+		if (markerInfo.path == null && parentId == null) {
+			markerInfo.path = id.match(/.*(\/(admin|settings)\/[^\/]+)\.vue$/)?.[1];
+		}
+
+		// SearchLabelとSearchKeywordを抽出 (AST全体を探索)
+		{
+			const extracted = extractLabelsAndKeywords(node.children);
+			if (extracted.label && markerInfo.label) logger.warn(`Duplicate label found for ${markerId} at ${id}:${node.loc.start.line}`);
+			markerInfo.label = extracted.label ?? markerInfo.label ?? '';
+			markerInfo.keywords = [...extracted.keywords, ...markerInfo.keywords];
+		}
+
+		if (!markerInfo.label) {
+			logger.warn(`No label found for ${markerId} at ${id}:${node.loc.start.line}`);
+		}
+
+		// マーカーを登録
+		markerMap.set(markerId, markerInfo);
+		allMarkers.push(markerInfo);
+		return markerId;
+	});
+
 	return allMarkers;
 }
 
-type Bindings = Partial<Record<keyof SearchIndexItem, unknown>>;
-// バインドプロパティの処理を修正する関数
-function extractNodeBindings(node: TemplateChildNode | RootNode): Bindings {
-	const bindings: Bindings = {};
+//endregion
 
-	if (node.type !== NodeTypes.ELEMENT) return bindings;
-
-	// バインド式を収集
-	for (const prop of node.props) {
-		if (prop.type === NodeTypes.DIRECTIVE && prop.name === 'bind' && prop.arg && 'content' in prop.arg) {
-			const propName = prop.arg.content;
-			if (prop.exp?.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('unexpected COMPOUND_EXPRESSION');
-			const propContent = prop.exp?.content || '';
-
-			logger.info(`Processing bind prop ${propName}: ${propContent}`);
-
-			bindings[propName] = evalExpression(propContent);
-		}
-	}
-
-	return bindings;
-}
+//region evalExpression
 
 /**
  * expr を実行します。
@@ -411,20 +446,15 @@ export function collectFileMarkers(id: string, code: string): SearchIndexItem[] 
 			return []; // エラーが発生したファイルはスキップ
 		}
 
-		const fileMarkers = extractUsageInfoFromTemplateAst(descriptor.template?.ast, id);
-
-		if (fileMarkers && fileMarkers.length > 0) {
-			logger.info(`Successfully extracted ${fileMarkers.length} markers from ${id}`);
-		} else {
-			logger.info(`No markers found in ${id}`);
-		}
-		return fileMarkers;
+		return extractUsageInfoFromTemplateAst(descriptor.template?.ast, id);
 	} catch (error) {
 		logger.error(`Error analyzing file ${id}:`, error);
 	}
 
 	return [];
 }
+
+// endregion
 
 type TransformedCode = {
 	code: string,
@@ -473,84 +503,37 @@ export class MarkerIdAssigner {
 			};
 		}
 
-		type SearchMarkerElementNode = ElementNode & {
-			__markerId?: string,
-			__children?: string[],
-		};
+		walkVueElements<string | null>([ast], null, (node, parentId) => {
+			if (node.tag !== 'SearchMarker') return;
 
-		function traverse(node: RootNode | TemplateChildNode | SimpleExpressionNode | CompoundExpressionNode, currentParent?: SearchMarkerElementNode) {
-			if (node.type === NodeTypes.ELEMENT && node.tag === 'SearchMarker') {
-				// 行番号はコード先頭からの改行数で取得
-				const lineNumber = code.slice(0, node.loc.start.offset).split('\n').length;
+			const markerIdProp = findAttribute(node.props, 'markerId');
+
+			let nodeMarkerId: string;
+			if (markerIdProp != null) {
+				if (markerIdProp.type !== NodeTypes.ATTRIBUTE) return logger.error(`markerId must be a attribute at ${id}:${markerIdProp.loc.start.line}`);
+				if (markerIdProp.value == null) return logger.error(`markerId must have a value at ${id}:${markerIdProp.loc.start.line}`);
+				nodeMarkerId = markerIdProp.value.content;
+			} else {
 				// ファイルパスと行番号からハッシュ値を生成
 				// この際実行環境で差が出ないようにファイルパスを正規化
 				const idKey = id.replace(/\\/g, '/').split('packages/frontend/')[1]
-				const generatedMarkerId = toBase62(hash(`${idKey}:${lineNumber}`));
+				const generatedMarkerId = toBase62(hash(`${idKey}:${node.loc.start.line}`));
 
-				const props = node.props || [];
-				const hasMarkerIdProp = props.some((prop) => prop.type === NodeTypes.ATTRIBUTE && prop.name === 'markerId');
-				const nodeMarkerId = hasMarkerIdProp
-					? props.find((prop): prop is AttributeNode => prop.type === NodeTypes.ATTRIBUTE && prop.name === 'markerId')?.value?.content as string
-					: generatedMarkerId;
-				(node as SearchMarkerElementNode).__markerId = nodeMarkerId;
+				// markerId attribute を追加
+				const endOfStartTag = findEndOfStartTagAttributes(node);
+				s.appendRight(endOfStartTag, ` markerId="${generatedMarkerId}" data-in-app-search-marker-id="${generatedMarkerId}"`);
 
-				// 子マーカーの場合、親ノードに __children を設定しておく
-				if (currentParent) {
-					currentParent.__children = currentParent.__children || [];
-					currentParent.__children.push(nodeMarkerId);
-				}
-
-				const parentMarkerId = currentParent && currentParent.__markerId;
-				markerRelations.push({
-					parentId: parentMarkerId,
-					markerId: nodeMarkerId,
-					node: node,
-				});
-
-				if (!hasMarkerIdProp) {
-					const nodeStart = node.loc.start.offset;
-					let endOfStartTag;
-
-					if (node.children && node.children.length > 0) {
-						// 子要素がある場合、最初の子要素の開始位置を基準にする
-						endOfStartTag = code.lastIndexOf('>', node.children[0].loc.start.offset);
-					} else if (node.loc.end.offset > nodeStart) {
-						// 子要素がない場合、自身の終了位置から逆算
-						const nodeSource = code.substring(nodeStart, node.loc.end.offset);
-						// 自己終了タグか通常の終了タグかを判断
-						if (nodeSource.includes('/>')) {
-							endOfStartTag = code.indexOf('/>', nodeStart) - 1;
-						} else {
-							endOfStartTag = code.indexOf('>', nodeStart);
-						}
-					}
-
-					if (endOfStartTag !== undefined && endOfStartTag !== -1) {
-						// markerId が既に存在しないことを確認
-						const tagText = code.substring(nodeStart, endOfStartTag + 1);
-						const markerIdRegex = /\s+markerId\s*=\s*["'][^"']*["']/;
-
-						if (!markerIdRegex.test(tagText)) {
-							s.appendRight(endOfStartTag, ` markerId="${generatedMarkerId}" data-in-app-search-marker-id="${generatedMarkerId}"`);
-							logger.info(`Adding markerId="${generatedMarkerId}" to ${id}:${lineNumber}`);
-						} else {
-							logger.info(`markerId already exists in ${id}:${lineNumber}`);
-						}
-					}
-				}
+				nodeMarkerId = generatedMarkerId;
 			}
 
-			const newParent: SearchMarkerElementNode | undefined = node.type === NodeTypes.ELEMENT && node.tag === 'SearchMarker' ? node : currentParent;
-			if ('children' in node) {
-				for (const child of node.children) {
-					if (typeof child == 'object') {
-						traverse(child, newParent);
-					}
-				}
-			}
-		}
+			markerRelations.push({
+				parentId: parentId ?? undefined,
+				markerId: nodeMarkerId,
+				node: node,
+			});
 
-		traverse(ast); // AST を traverse (1段階目: ID 生成と親子関係記録)
+			return nodeMarkerId;
+		})
 
 		// 2段階目: :children 属性の追加
 		// 最初に親マーカーごとに子マーカーIDを集約する処理を追加
@@ -562,93 +545,42 @@ export class MarkerIdAssigner {
 				if (!parentChildrenMap.has(relation.parentId)) {
 					parentChildrenMap.set(relation.parentId, []);
 				}
-				parentChildrenMap.get(relation.parentId)?.push(relation.markerId);
+				parentChildrenMap.get(relation.parentId)!.push(relation.markerId);
 			}
 		});
 
 		// 2. 親ごとにまとめて :children 属性を処理
 		for (const [parentId, childIds] of parentChildrenMap.entries()) {
 			const parentRelation = markerRelations.find(r => r.markerId === parentId);
-			if (!parentRelation || !parentRelation.node) continue;
+			if (!parentRelation) continue;
 
 			const parentNode = parentRelation.node;
-			const childrenProp = parentNode.props?.find((prop): prop is DirectiveNode =>
-				prop.type === NodeTypes.DIRECTIVE &&
-				prop.name === 'bind' &&
-				prop.arg?.type === NodeTypes.SIMPLE_EXPRESSION &&
-				prop.arg.content === 'children');
+			const childrenProp = findAttribute(parentNode.props, 'children');
+			if (childrenProp != null) {
+				if (childrenProp.type !== NodeTypes.DIRECTIVE) {
+					console.error(`children prop should be directive (:children) at ${id}:${childrenProp.loc.start.line}`);
+					continue;
+				}
 
-			// 親ノードの開始位置を特定
-			const parentNodeStart = parentNode.loc!.start.offset;
-			const endOfParentStartTag = parentNode.children && parentNode.children.length > 0
-				? code.lastIndexOf('>', parentNode.children[0].loc!.start.offset)
-				: code.indexOf('>', parentNodeStart);
-
-			if (endOfParentStartTag === -1) continue;
-
-			// 親タグのテキストを取得
-			const parentTagText = code.substring(parentNodeStart, endOfParentStartTag + 1);
-
-			if (childrenProp) {
 				// AST で :children 属性が検出された場合、それを更新
-				try {
-					const childrenStart = code.indexOf('[', childrenProp.exp!.loc.start.offset);
-					const childrenEnd = code.indexOf(']', childrenProp.exp!.loc.start.offset);
-					if (childrenStart !== -1 && childrenEnd !== -1) {
-						const childrenArrayStr = code.slice(childrenStart, childrenEnd + 1);
-						let childrenArray = JSON5.parse(childrenArrayStr.replace(/'/g, '"'));
+				const childrenValue = getStringArrayProp(childrenProp);
+				if (childrenValue == null) continue;
 
-						// 新しいIDを追加（重複は除外）
-						const newIds = childIds.filter(id => !childrenArray.includes(id));
-						if (newIds.length > 0) {
-							childrenArray = [...childrenArray, ...newIds];
-							const updatedChildrenArrayStr = JSON5.stringify(childrenArray).replace(/"/g, "'");
-							s.overwrite(childrenStart, childrenEnd + 1, updatedChildrenArrayStr);
-							logger.info(`Added ${newIds.length} child markerIds to existing :children in ${id}`);
-						}
+				const newValue: string[] = [...childrenValue];
+				for (const childId of [...childIds]) {
+					if (!newValue.includes(childId)) {
+						newValue.push(childId);
 					}
-				} catch (e) {
-					logger.error('Error updating :children attribute:', e);
 				}
+
+				const expression = JSON.stringify(newValue).replaceAll(/"/g, "'");
+				s.overwrite(childrenProp.exp!.loc.start.offset, childrenProp.exp!.loc.end.offset, expression);
+				logger.info(`Added ${childIds.length} child markerIds to existing :children in ${id}`);
 			} else {
-				// AST では検出されなかった場合、タグテキストを調べる
-				const childrenRegex = /:children\s*=\s*["']\[(.*?)\]["']/;
-				const childrenMatch = parentTagText.match(childrenRegex);
-
-				if (childrenMatch) {
-					// テキストから :children 属性値を解析して更新
-					try {
-						const childrenContent = childrenMatch[1];
-						const childrenArrayStr = `[${childrenContent}]`;
-						const childrenArray = JSON5.parse(childrenArrayStr.replace(/'/g, '"'));
-
-						// 新しいIDを追加（重複は除外）
-						const newIds = childIds.filter(id => !childrenArray.includes(id));
-						if (newIds.length > 0) {
-							childrenArray.push(...newIds);
-
-							// :children="[...]" の位置を特定して上書き
-							const attrStart = parentTagText.indexOf(':children=');
-							if (attrStart > -1) {
-								const attrValueStart = parentTagText.indexOf('[', attrStart);
-								const attrValueEnd = parentTagText.indexOf(']', attrValueStart) + 1;
-								if (attrValueStart > -1 && attrValueEnd > -1) {
-									const absoluteStart = parentNodeStart + attrValueStart;
-									const absoluteEnd = parentNodeStart + attrValueEnd;
-									const updatedArrayStr = JSON5.stringify(childrenArray).replace(/"/g, "'");
-									s.overwrite(absoluteStart, absoluteEnd, updatedArrayStr);
-									logger.info(`Updated existing :children in tag text for ${id}`);
-								}
-							}
-						}
-					} catch (e) {
-						logger.error('Error updating :children in tag text:', e);
-					}
-				} else {
-					// :children 属性がまだない場合、新規作成
-					s.appendRight(endOfParentStartTag, ` :children="${JSON5.stringify(childIds).replace(/"/g, "'")}"`);
-					logger.info(`Created new :children attribute with ${childIds.length} markerIds in ${id}`);
-				}
+				// :children 属性がまだない場合、新規作成
+				const endOfParentStartTag = findEndOfStartTagAttributes(parentNode);
+				s.appendRight(endOfParentStartTag, ` :children="${JSON5.stringify(childIds).replace(/"/g, "'")}"`);
+				logger.info(`Created new :children attribute with ${childIds.length} markerIds in ${id}`);
 			}
 		}
 
@@ -799,14 +731,4 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 			return modules;
 		}
 	};
-}
-
-// i18n参照を検出するためのヘルパー関数を追加
-function isI18nReference(text: string | null | undefined): boolean {
-	if (!text) return false;
-	// ドット記法（i18n.ts.something）
-	const dotPattern = /i18n\.ts\.\w+/;
-	// ブラケット記法（i18n.ts['something']）
-	const bracketPattern = /i18n\.ts\[['"][^'"]+['"]\]/;
-	return dotPattern.test(text) || bracketPattern.test(text);
 }
