@@ -169,7 +169,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts._role._options.chatAvailability }}</template>
 				<template #suffix>
 					<span v-if="role.policies.chatAvailability.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
-					<span v-else>{{ policies.chatAvailability === 'available' ? i18n.ts.yes : policies.chatAvailability === 'readonly' ? i18n.ts.readonly : i18n.ts.no }}</span>
+					<span v-else>{{ role.policies.chatAvailability.value === 'available' ? i18n.ts.yes : role.policies.chatAvailability.value === 'readonly' ? i18n.ts.readonly : i18n.ts.no }}</span>
 					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.chatAvailability)"></i></span>
 				</template>
 				<div class="_gaps">
