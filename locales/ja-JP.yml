@@ -1341,6 +1341,7 @@ right: "右"
 bottom: "下"
 top: "上"
 embed: "埋め込み"
+readonly: "読み取り専用"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -1949,7 +1950,7 @@ _role:
     canImportFollowing: "フォローのインポートを許可"
     canImportMuting: "ミュートのインポートを許可"
     canImportUserLists: "リストのインポートを許可"
-    canChat: "チャットを許可"
+    chatAvailability: "チャットを許可"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"

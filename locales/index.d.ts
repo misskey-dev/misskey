@@ -5382,6 +5382,10 @@ export interface Locale extends ILocale {
      * 埋め込み
      */
     "embed": string;
+    /**
+     * 読み取り専用
+     */
+    "readonly": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -7527,7 +7531,7 @@ export interface Locale extends ILocale {
             /**
              * チャットを許可
              */
-            "canChat": string;
+            "chatAvailability": string;
         };
         "_condition": {
             /**

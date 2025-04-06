@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkInfo warn>{{ i18n.ts._chat.chatNotAvailableInOtherAccount }}</MkInfo>
 		</div>
 
-		<MkInfo v-if="!$i.policies.canChat" warn>{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
+		<MkInfo v-if="!$i.policies.chatAvailability !== 'available'" warn>{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 	</MkSpacer>
 
 	<MkSpacer v-else-if="tab === 'search'" :contentMax="700">

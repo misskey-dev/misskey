@@ -28,6 +28,7 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { emojiRegex } from '@/misc/emoji-regex.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { ApiError } from '@/server/api/error.js';
 
 const MAX_ROOM_MEMBERS = 30;
 const MAX_REACTIONS_PER_MESSAGE = 100;
@@ -95,6 +96,45 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async getChatAvailability(userId: MiUser['id']): Promise<{ read: boolean; write: boolean; }> {
+		const policies = await this.roleService.getUserPolicies(userId);
+
+		switch (policies.chatAvailability) {
+			case 'available':
+				return {
+					read: true,
+					write: true,
+				};
+			case 'readonly':
+				return {
+					read: true,
+					write: false,
+				};
+			case 'unavailable':
+				return {
+					read: false,
+					write: false,
+				};
+			default:
+				throw new Error('invalid chat availability (unreachable)');
+		}
+	}
+
+	/** getChatAvailabilityの糖衣。API呼び出し時に走らせて、権限的に問題ない場合はそのまま続行する */
+	@bindThis
+	public async checkChatAvailabilityForApi(userId: MiUser['id'], permission: 'read' | 'write') {
+		const policy = await this.getChatAvailability(userId);
+		if (policy[permission] === false) {
+			throw new ApiError({
+				message: 'You are not assigned to a required role.',
+				code: 'ROLE_PERMISSION_DENIED',
+				kind: 'permission',
+				id: '7f86f06f-7e15-4057-8561-f4b6d4ac755a',
+			});
+		}
+	}
+
+	@bindThis
 	public async createMessageToUser(fromUser: { id: MiUser['id']; host: MiUser['host']; }, toUser: MiUser, params: {
 		text?: string | null;
 		file?: MiDriveFile | null;
@@ -140,7 +180,7 @@ export class ChatService {
 			}
 		}
 
-		if (!(await this.roleService.getUserPolicies(toUser.id)).canChat) {
+		if (!(await this.getChatAvailability(toUser.id)).write) {
 			throw new Error('recipient is cannot chat (policy)');
 		}
 
