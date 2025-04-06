@@ -21,9 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
 				<EmA :class="$style.renoteUserName" :to="userPage(note.user)">
-					<span style="unicode-bidi: plaintext; display: inline-block;">
-						<EmUserName :user="note.user"/>
-					</span>
+					<EmUserName :user="note.user"/>
 				</EmA>
 			</template>
 		</I18n>
