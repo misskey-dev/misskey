@@ -379,7 +379,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['chat', 'messaging']">
+			<SearchMarker v-if="$i.policies.chatAvailability !== 'unavailable'" :keywords="['chat', 'messaging']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.chat }}</SearchLabel></template>
 					<template #icon><i class="ti ti-messages"></i></template>
@@ -732,6 +732,9 @@ import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { globalEvents } from '@/events.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { instance } from '@/instance.js';
+import { ensureSignin } from '@/i.js';
+
+const $i = ensureSignin();
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);
