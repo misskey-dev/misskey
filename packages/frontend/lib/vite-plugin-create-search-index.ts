@@ -39,7 +39,7 @@ export interface SearchIndexItem {
 	parentId?: string;
 	path?: string;
 	label: string;
-	keywords: string | string[];
+	keywords: string[];
 	icon?: string;
 	inlining?: string[];
 }
@@ -167,7 +167,7 @@ function extractElementText2Inner(node: TemplateChildNode, processingNodeName: s
  * SearchLabelとSearchKeywordを探して抽出する関数
  */
 function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string | null, keywords: string[] } {
-	let label: string | null = null;
+	let label: string | null | undefined = undefined;
 	const keywords: string[] = [];
 
 	logger.info(`Extracting labels and keywords from ${nodes.length} nodes`);
@@ -180,29 +180,25 @@ function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string |
 
 				// SearchMarkerの場合は、その子要素は別スコープなのでスキップ
 				if (node.tag === 'SearchMarker') {
-					logger.info(`Found nested SearchMarker - skipping its content to maintain scope isolation`);
+					logger.info(`Found nested SearchMarker at ${node.loc.start.line} - skipping its content to maintain scope isolation`);
 					continue; // このSearchMarkerの中身は処理しない (スコープ分離)
 				}
 
-				// SearchLabelの処理
-				if (node.tag === 'SearchLabel') {
-					logger.info(`Found SearchLabel node, structure: ${JSON.stringify(node).substring(0, 200)}...`);
+				switch (node.tag) {
+					case 'SearchLabel':
+						if (label !== undefined) {
+							logger.warn(`Duplicate SearchLabel found, ignoring the second one at ${node.loc.start.line}`);
+							break; // 2つ目のSearchLabelは無視
+						}
 
-					const content = extractElementText(node);
-					if (content) {
-						label = content;
-						logger.info(`SearchLabel content extracted: ${content}`);
-					}
-				}
-				// SearchKeywordの処理
-				else if (node.tag === 'SearchKeyword') {
-					logger.info(`Found SearchKeyword node`);
-
-					const content = extractElementText(node);
-					if (content) {
-						keywords.push(content);
-						logger.info(`SearchKeyword content extracted: ${content}`);
-					}
+						label = extractElementText(node);
+						break;
+					case 'SearchKeyword':
+						const content = extractElementText(node);
+						if (content) {
+							keywords.push(content);
+						}
+						break;
 				}
 
 				// 子要素を再帰的に調査（ただしSearchMarkerは除外）
@@ -215,7 +211,7 @@ function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string |
 
 	// デバッグ情報
 	logger.info(`Extraction completed: label=${label}, keywords=[${keywords.join(', ')}]`);
-	return { label, keywords };
+	return { label: label ?? null, keywords };
 }
 
 
@@ -225,8 +221,7 @@ function extractUsageInfoFromTemplateAst(
 ): SearchIndexItem[] {
 	const allMarkers: SearchIndexItem[] = [];
 	const markerMap = new Map<string, SearchIndexItem>();
-	const childrenIds = new Set<string>();
-	const normalizedId = id.replace(/\\/g, '/');
+
 
 	if (!templateAst) return allMarkers;
 
@@ -254,7 +249,7 @@ function extractUsageInfoFromTemplateAst(
 			// 静的プロパティを取得
 			if (node.props && Array.isArray(node.props)) {
 				for (const prop of node.props) {
-					if (prop.type === 6 && prop.name && prop.name !== 'markerId') {
+					if (prop.type === NodeTypes.ATTRIBUTE && prop.name && prop.name !== 'markerId') {
 						if (prop.name === 'path') markerInfo.path = prop.value?.content || '';
 						else if (prop.name === 'icon') markerInfo.icon = prop.value?.content || '';
 						else if (prop.name === 'label') markerInfo.label = prop.value?.content || '';
@@ -288,71 +283,34 @@ function extractUsageInfoFromTemplateAst(
 
 			//pathがない場合はファイルパスを設定
 			if (markerInfo.path == null && parentId == null) {
-				markerInfo.path = normalizedId.match(/.*(\/(admin|settings)\/[^\/]+)\.vue$/)?.[1];
+				markerInfo.path = id.match(/.*(\/(admin|settings)\/[^\/]+)\.vue$/)?.[1];
 			}
 
 			// SearchLabelとSearchKeywordを抽出 (AST全体を探索)
-			if (node.children && Array.isArray(node.children)) {
-				logger.info(`Processing marker ${markerId} for labels and keywords`);
+			{
 				const extracted = extractLabelsAndKeywords(node.children);
+				if (extracted.label && markerInfo.label) logger.warn(`Duplicate label found for ${markerId} at ${id}:${node.loc.start.line}`);
+				markerInfo.label = extracted.label ?? markerInfo.label ?? '';
+				markerInfo.keywords = [...extracted.keywords, ...markerInfo.keywords];
+			}
 
-				// SearchLabelからのラベル取得は最優先で適用
-				if (extracted.label) {
-					markerInfo.label = extracted.label;
-					logger.info(`Using extracted label for ${markerId}: ${extracted.label}`);
-				} else if (markerInfo.label) {
-					logger.info(`Using existing label for ${markerId}: ${markerInfo.label}`);
-				} else {
-					markerInfo.label = 'Unnamed marker';
-					logger.info(`No label found for ${markerId}, using default`);
-				}
-
-				// SearchKeywordからのキーワード取得を追加
-				if (extracted.keywords.length > 0) {
-					const existingKeywords = Array.isArray(markerInfo.keywords) ?
-						[...markerInfo.keywords] :
-						(markerInfo.keywords ? [markerInfo.keywords] : []);
-
-					// i18n参照のキーワードは最優先で追加
-					const combinedKeywords = [...existingKeywords];
-					for (const kw of extracted.keywords) {
-						combinedKeywords.push(kw);
-						logger.info(`Added extracted keyword to ${markerId}: ${kw}`);
-					}
-
-					markerInfo.keywords = combinedKeywords;
-				}
+			if (!markerInfo.label) {
+				logger.warn(`No label found for ${markerId} at ${id}:${node.loc.start.line}`);
 			}
 
 			// マーカーを登録
 			markerMap.set(markerId, markerInfo);
 			allMarkers.push(markerInfo);
-
-			// 親子関係を記録
-			if (parentId) {
-				const parent = markerMap.get(parentId);
-				if (parent) {
-					childrenIds.add(markerId);
-				}
-			}
-
-			// 子ノードを処理
-			for (const child of node.children) {
-				collectMarkers(child, markerId);
-			}
-
-			return markerId;
 		}
-		// SearchMarkerでない場合は再帰的に子ノードを処理
-		else if ('children' in node && Array.isArray(node.children)) {
+
+		// 再帰的に子ノードを処理
+		if ('children' in node && Array.isArray(node.children)) {
 			for (const child of node.children) {
 				if (typeof child == 'object' && child.type !== NodeTypes.SIMPLE_EXPRESSION) {
 					collectMarkers(child, parentId);
 				}
 			}
 		}
-
-		return null;
 	}
 
 	// AST解析開始
