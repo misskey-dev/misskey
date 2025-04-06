@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/// <reference lib="esnext" />
+
 import { parse as vueSfcParse } from 'vue/compiler-sfc';
 import {
 	createLogger,
@@ -95,116 +97,13 @@ function generateJavaScriptCode(resolvedRootMarkers: SearchIndexItem[]): string 
  * オブジェクトを特殊な形式の文字列に変換する
  * i18n参照を保持しつつ適切な形式に変換
  */
-function customStringify(obj: unknown, depth = 0): string {
-	const INDENT_STR = '\t';
-
-	// 配列の処理
-	if (Array.isArray(obj)) {
-		if (obj.length === 0) return '[]';
-		const indent = INDENT_STR.repeat(depth);
-		const childIndent = INDENT_STR.repeat(depth + 1);
-
-		// 配列要素の処理
-		const items = obj.map(item => {
-			// オブジェクト要素
-			if (typeof item === 'object' && item !== null) {
-				return `${childIndent}${customStringify(item, depth + 1)}`;
-			}
-
-			// i18n参照を含む文字列要素
-			if (typeof item === 'string' && item.includes('i18n.ts.')) {
-				return `${childIndent}${item}`; // クォートなしでそのまま出力
-			}
-
-			// その他の要素
-			return `${childIndent}${JSON5.stringify(item)}`;
-		}).join(',\n');
-
-		return `[\n${items},\n${indent}]`;
-	}
-
-	// null または非オブジェクト
-	if (obj === null || typeof obj !== 'object') {
-		return JSON5.stringify(obj);
-	}
-
-	// オブジェクトの処理
-	const indent = INDENT_STR.repeat(depth);
-	const childIndent = INDENT_STR.repeat(depth + 1);
-
-	const entries = Object.entries(obj)
-		// 不要なプロパティを除去
-		.filter(([key, value]) => {
-			if (value === undefined) return false;
-			if (key === 'children' && Array.isArray(value) && value.length === 0) return false;
-			return true;
-		})
-		// 各プロパティを変換
-		.map(([key, value]) => {
-			// 子要素配列の特殊処理
-			if (key === 'children' && Array.isArray(value) && value.length > 0) {
-				return `${childIndent}${key}: ${customStringify(value, depth + 1)}`;
-			}
-
-			// ラベルやその他プロパティを処理
-			return `${childIndent}${key}: ${formatSpecialProperty(key, value)}`;
-		});
-
-	if (entries.length === 0) return '{}';
-	return `{\n${entries.join(',\n')},\n${indent}}`;
-}
-
-/**
- * 特殊プロパティの書式設定
- */
-function formatSpecialProperty(key: string, value: unknown): string {
-	// 値がundefinedの場合は空文字列を返す
-	if (value === undefined) {
-		return '""';
-	}
-
-	// childrenが配列の場合は特別に処理
-	if (key === 'children' && Array.isArray(value)) {
-		return customStringify(value);
-	}
-
-	// keywordsが配列の場合、特別に処理
-	if (key === 'keywords' && Array.isArray(value)) {
-		return `[${formatArrayForOutput(value)}]`;
-	}
-
-	// 文字列値の場合の特別処理
-	if (typeof value === 'string') {
-		// i18n.ts 参照を含む場合 - クォートなしでそのまま出力
-		if (isI18nReference(value)) {
-			logger.info(`Preserving i18n reference in output: ${value}`);
-			return value;
-		}
-
-		// keywords が配列リテラルの形式の場合
-		if (key === 'keywords' && value.startsWith('[') && value.endsWith(']')) {
-			return value;
-		}
-	}
-
-	// 上記以外は通常の JSON5 文字列として返す
-	return JSON5.stringify(value);
-}
-
-/**
- * 配列式の文字列表現を生成
- */
-function formatArrayForOutput(items: unknown[]): string {
-	return items.map(item => {
-		// i18n.ts. 参照の文字列はそのままJavaScript式として出力
-		if (typeof item === 'string' && isI18nReference(item)) {
-			logger.info(`Preserving i18n reference in array: ${item}`);
-			return item; // クォートなしでそのまま
-		}
-
-		// その他の値はJSON5形式で文字列化
-		return JSON5.stringify(item);
-	}).join(', ');
+function customStringify(obj: unknown): string {
+	return JSON.stringify(obj).replaceAll(/"(.*?)"/g, (all, group) => {
+		// propertyAccessProxy が i18n 参照を "${i18n.xxx}"のような形に変換してるので、これをそのまま`${i18n.xxx}`
+		// のような形にすると、実行時にi18nのプロパティにアクセスするようになる。
+		// objectのkeyでは``が使えないので、${ が使われている場合にのみ``に置き換えるようにする
+		return group.includes('${') ? '`' + group + '`' : all;
+	});
 }
 
 /**
@@ -269,7 +168,7 @@ function extractDirectContent(node: TemplateChildNode): string | null {
 	// 直接i18n参照を含む場合
 	if (isI18nReference(content)) {
 		logger.info(`Direct i18n reference found: ${content}`);
-		return content;
+		return '$\{' + content + '}';
 	}
 
 	// その他のコンテンツ
@@ -289,7 +188,7 @@ function extractInterpolationContent(children: TemplateChildNode[]): string | nu
 				logger.info(`Interpolation content: ${content}`);
 
 				if (isI18nReference(content)) {
-					return content;
+					return '$\{' + content + '}';
 				}
 			} else if (child.content && typeof child.content === 'object') {
 				if (child.content.type == NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
@@ -301,7 +200,7 @@ function extractInterpolationContent(children: TemplateChildNode[]): string | nu
 
 					if (isI18nReference(content)) {
 						logger.info(`Found i18n reference in complex interpolation: ${content}`);
-						return content;
+						return '$\{' + content + '}';
 					}
 				}
 			}
@@ -322,7 +221,7 @@ function extractExpressionContent(children: TemplateChildNode[]): string | null 
 
 			if (isI18nReference(expr)) {
 				logger.info(`Found i18n reference in expression node: ${expr}`);
-				return expr;
+				return '$\{' + expr + '}';
 			}
 		}
 	}
@@ -356,7 +255,7 @@ function extractTextContent(children: TemplateChildNode[]): string | null {
 
 				if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
 					logger.info(`Extracted i18n ref from text mustache: ${mustacheMatch[1]}`);
-					return mustacheMatch[1].trim();
+					return '$\{' + mustacheMatch[1] + '}';
 				}
 
 				return text;
@@ -578,19 +477,26 @@ function extractUsageInfoFromTemplateAst(
 
 			// バインドプロパティを取得
 			const bindings = extractNodeBindings(node);
-			if (bindings.path) markerInfo.path = bindings.path;
-			if (bindings.icon) markerInfo.icon = bindings.icon;
-			if (bindings.label) markerInfo.label = bindings.label;
+
+			const assertString = (value: unknown, key: string): string => {
+				if (typeof value !== 'string') throw new Error(`Invalid type for ${key} in marker ${markerId}: expected string, got ${typeof value}`);
+				return value;
+			}
+
+			const assertStringArray = (value: unknown, key: string): string[] => {
+				if (!Array.isArray(value) || !value.every(x => typeof x === 'string')) throw new Error(`Invalid type for ${key} in marker ${markerId}: expected string array`);
+				return value;
+			}
+
+			if (bindings.path) markerInfo.path = assertString(bindings.path, 'path');
+			if (bindings.icon) markerInfo.icon = assertString(bindings.icon, 'icon');
+			if (bindings.label) markerInfo.label = assertString(bindings.label, 'label');
 			if (bindings.inlining) {
-				markerInfo.inlining = bindings.inlining;
+				markerInfo.inlining = assertStringArray(bindings.inlining, 'inlining');
 				logger.info(`Added inlining ${JSON.stringify(bindings.inlining)} to marker ${markerId}`);
 			}
 			if (bindings.keywords) {
-				if (Array.isArray(bindings.keywords)) {
-					markerInfo.keywords = bindings.keywords;
-				} else {
-					markerInfo.keywords = bindings.keywords || [];
-				}
+				markerInfo.keywords = assertStringArray(bindings.keywords, 'keywords');
 			}
 
 			//pathがない場合はファイルパスを設定
@@ -667,11 +573,7 @@ function extractUsageInfoFromTemplateAst(
 	return allMarkers;
 }
 
-type SpecialBindings = {
-	inlining: string[];
-	keywords: string[] | string;
-};
-type Bindings = Partial<Omit<Record<keyof SearchIndexItem, string>, keyof SpecialBindings> & SpecialBindings>;
+type Bindings = Partial<Record<keyof SearchIndexItem, unknown>>;
 // バインドプロパティの処理を修正する関数
 function extractNodeBindings(node: TemplateChildNode | RootNode): Bindings {
 	const bindings: Bindings = {};
@@ -687,160 +589,71 @@ function extractNodeBindings(node: TemplateChildNode | RootNode): Bindings {
 
 			logger.info(`Processing bind prop ${propName}: ${propContent}`);
 
-			// inliningプロパティの処理を追加
-			if (propName === 'inlining') {
-				try {
-					const content = propContent.trim();
-
-					// 配列式の場合
-					if (content.startsWith('[') && content.endsWith(']')) {
-						// 配列要素を解析
-						const elements = parseArrayExpression(content);
-						if (elements.length > 0) {
-							bindings.inlining = elements;
-							logger.info(`Parsed inlining array: ${JSON5.stringify(elements)}`);
-						} else {
-							bindings.inlining = [];
-						}
-					}
-					// 文字列の場合は配列に変換
-					else if (content) {
-						bindings.inlining = [content]; // 単一の値を配列に
-						logger.info(`Converting inlining to array: [${content}]`);
-					}
-				} catch (e) {
-					logger.error(`Failed to parse inlining binding: ${propContent}`, e);
-				}
-			}
-			// keywordsの特殊処理
-			else if (propName === 'keywords') {
-				try {
-					const content = propContent.trim();
-
-					// 配列式の場合
-					if (content.startsWith('[') && content.endsWith(']')) {
-						// i18n参照や特殊な式を保持するため、各要素を個別に解析
-						const elements = parseArrayExpression(content);
-						if (elements.length > 0) {
-							bindings.keywords = elements;
-							logger.info(`Parsed keywords array: ${JSON5.stringify(elements)}`);
-						} else {
-							bindings.keywords = [];
-							logger.info('Empty keywords array');
-						}
-					}
-					// その他の式（非配列）
-					else if (content) {
-						bindings.keywords = content; // 式をそのまま保持
-						logger.info(`Keeping keywords as expression: ${content}`);
-					} else {
-						bindings.keywords = [];
-						logger.info('No keywords provided');
-					}
-				} catch (e) {
-					logger.error(`Failed to parse keywords binding: ${propContent}`, e);
-					// エラーが起きても何らかの値を設定
-					bindings.keywords = propContent || [];
-				}
-			}
-			// その他のプロパティ
-			else if (propName === 'label') {
-				// ラベルの場合も式として保持
-				bindings[propName] = propContent;
-				logger.info(`Set label from bind expression: ${propContent}`);
-			}
-			else {
-				bindings[propName] = propContent;
-			}
+			bindings[propName] = evalExpression(propContent);
 		}
 	}
 
 	return bindings;
 }
 
-// 配列式をパースする補助関数（文字列リテラル処理を改善）
-function parseArrayExpression(expr: string): string[] {
-	try {
-		// 単純なケースはJSON5でパースを試みる
-		return JSON5.parse(expr.replace(/'/g, '"'));
-	} catch (e) {
-		// 複雑なケース（i18n.ts.xxx などの式を含む場合）は手動パース
-		logger.info(`Complex array expression, trying manual parsing: ${expr}`);
+/**
+ * expr を実行します。
+ * i18n はそのアクセスを保持するために propertyAccessProxy を使用しています。
+ */
+function evalExpression(expr: string): unknown {
+	const rarResult = Function('i18n', `return ${expr}`)(i18nProxy);
+	// JSON.stringify を一回通すことで、 AccessProxy を文字列に変換する
+	// Walk してもいいんだけど横着してJSON.stringifyしてる。ビルド時にしか通らないのであんまりパフォーマンス気にする必要ないんで
+	return JSON.parse(JSON.stringify(rarResult));
+}
 
-		// "["と"]"を取り除く
-		const content = expr.substring(1, expr.length - 1).trim();
-		if (!content) return [];
+const propertyAccessProxySymbol = Symbol('propertyAccessProxySymbol');
 
-		const result: string[] = [];
-		let currentItem = '';
-		let depth = 0;
-		let inString = false;
-		let stringChar = '';
+type AccessProxy = {
+	[propertyAccessProxySymbol]: string[],
+	[k: string]: AccessProxy,
+}
 
-		// カンマで区切る（ただし文字列内や入れ子の配列内のカンマは無視）
-		for (let i = 0; i < content.length; i++) {
-			const char = content[i];
-
-			if (inString) {
-				if (char === stringChar && content[i - 1] !== '\\') {
-					inString = false;
-				}
-				currentItem += char;
-			} else if (char === '"' || char === "'") {
-				inString = true;
-				stringChar = char;
-				currentItem += char;
-			} else if (char === '[') {
-				depth++;
-				currentItem += char;
-			} else if (char === ']') {
-				depth--;
-				currentItem += char;
-			} else if (char === ',' && depth === 0) {
-				// 項目の区切りを検出
-				const trimmed = currentItem.trim();
-
-				// 純粋な文字列リテラルの場合、実際の値に変換
-				if ((trimmed.startsWith("'") && trimmed.endsWith("'")) ||
-					(trimmed.startsWith('"') && trimmed.endsWith('"'))) {
-					try {
-						result.push(JSON5.parse(trimmed));
-					} catch (err) {
-						result.push(trimmed);
-					}
-				} else {
-					// それ以外の式はそのまま（i18n.ts.xxx など）
-					result.push(trimmed);
-				}
-
-				currentItem = '';
-			} else {
-				currentItem += char;
-			}
+const propertyAccessProxyHandler: ProxyHandler<AccessProxy> = {
+	get(target: AccessProxy, p: string | symbol): any {
+		if (p in target) {
+			return (target as any)[p];
 		}
-
-		// 最後の項目を処理
-		if (currentItem.trim()) {
-			const trimmed = currentItem.trim();
-
-			// 純粋な文字列リテラルの場合、実際の値に変換
-			if ((trimmed.startsWith("'") && trimmed.endsWith("'")) ||
-				(trimmed.startsWith('"') && trimmed.endsWith('"'))) {
-				try {
-					result.push(JSON5.parse(trimmed));
-				} catch (err) {
-					result.push(trimmed);
-				}
-			} else {
-				// それ以外の式はそのまま（i18n.ts.xxx など）
-				result.push(trimmed);
-			}
+		if (p == "toJSON" || p == Symbol.toPrimitive) {
+			return propertyAccessProxyToJSON;
 		}
-
-		logger.info(`Parsed complex array expression: ${expr} -> ${JSON.stringify(result)}`);
-		return result;
+		if (typeof p == 'string') {
+			return target[p] = propertyAccessProxy([...target[propertyAccessProxySymbol], p]);
+		}
+		return undefined;
 	}
 }
+
+function propertyAccessProxyToJSON(this: AccessProxy, hint: string) {
+	const expression = this[propertyAccessProxySymbol].reduce((prev, current) => {
+		if (current.match(/^[a-z][0-9a-z]*$/i)) {
+			return `${prev}.${current}`;
+		} else {
+			return `${prev}['${current}']`;
+		}
+	});
+	return '$\{' + expression + '}';
+}
+
+/**
+ * プロパティのアクセスを保持するための Proxy オブジェクトを作成します。
+ *
+ * この関数で生成した proxy は JSON でシリアライズするか、`${}`のように string にすると、 ${property.path} のような形になる。
+ * @param path
+ */
+function propertyAccessProxy(path: string[]): AccessProxy {
+	const target: AccessProxy = {
+		[propertyAccessProxySymbol]: path,
+	};
+	return new Proxy(target, propertyAccessProxyHandler);
+}
+
+const i18nProxy = propertyAccessProxy(['i18n']);
 
 export function collectFileMarkers(id: string, code: string): SearchIndexItem[] {
 	try {
