@@ -8,11 +8,11 @@ import type { GeneratedSearchIndexItem } from 'search-index:settings';
 
 export type SearchIndexItem = {
 	id: string;
+	parentId?: string;
 	path?: string;
 	label: string;
 	keywords: string[];
 	icon?: string;
-	children?: SearchIndexItem[];
 };
 
 const rootMods = new Map(generated.map(item => [item.id, item]));
@@ -22,16 +22,12 @@ function walk(item: GeneratedSearchIndexItem) {
 		for (const id of item.inlining) {
 			const inline = rootMods.get(id);
 			if (inline) {
-				(item.children ??= []).push(inline);
+				inline.parentId = item.id;
 				rootMods.delete(id);
 			} else {
 				console.log('[Settings Search Index] Failed to inline', id);
 			}
 		}
-	}
-
-	for (const child of item.children ?? []) {
-		walk(child);
 	}
 }
 

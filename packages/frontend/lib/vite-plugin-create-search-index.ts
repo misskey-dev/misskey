@@ -28,21 +28,14 @@ import type {
 } from '@vue/compiler-core';
 import { NodeTypes } from '@vue/compiler-core';
 
-export type AnalysisResult<T = SearchIndexItem> = {
-	filePath: string;
-	usage: T[];
-}
-
-export type SearchIndexItem = SearchIndexItemLink<SearchIndexItem>;
-export type SearchIndexStringItem = SearchIndexItemLink<string>;
-export interface SearchIndexItemLink<T> {
+export interface SearchIndexItem {
 	id: string;
+	parentId?: string;
 	path?: string;
 	label: string;
 	keywords: string | string[];
 	icon?: string;
 	inlining?: string[];
-	children?: T[];
 }
 
 export type Options = {
@@ -88,253 +81,6 @@ function initLogger(options: Options) {
 		msg = `[create-search-index] ${msg}`;
 		viteLogger.error(msg, options);
 	}
-}
-
-function collectSearchItemIndexes(analysisResults: AnalysisResult<SearchIndexStringItem>[]): SearchIndexItem[] {
-	logger.info(`Processing ${analysisResults.length} files for output`);
-
-	// 新しいツリー構造を構築
-	const allMarkers = new Map<string, SearchIndexStringItem>();
-
-	// 1. すべてのマーカーを一旦フラットに収集
-	for (const file of analysisResults) {
-		logger.info(`Processing file: ${file.filePath} with ${file.usage.length} markers`);
-
-		for (const marker of file.usage) {
-			if (marker.id) {
-				// キーワードとchildren処理を共通化
-				const processedMarker: SearchIndexStringItem = {
-					...marker,
-					keywords: processMarkerProperty(marker.keywords, 'keywords'),
-				};
-
-				allMarkers.set(marker.id, processedMarker);
-			}
-		}
-	}
-
-	logger.info(`Collected total ${allMarkers.size} unique markers`);
-
-	// 2. 子マーカーIDの収集
-	const childIds = collectChildIds(allMarkers);
-	logger.info(`Found ${childIds.size} child markers`);
-
-	// 3. ルートマーカーの特定（他の誰かの子でないマーカー）
-	const rootMarkers = identifyRootMarkers(allMarkers, childIds);
-	logger.info(`Found ${rootMarkers.length} root markers`);
-
-	// 4. 子マーカーの参照を解決
-	const resolvedRootMarkers = resolveChildReferences(rootMarkers, allMarkers);
-
-	// 5. デバッグ情報を生成
-	const { totalMarkers, totalChildren } = countMarkers(resolvedRootMarkers);
-	logger.info(`Total markers in tree: ${totalMarkers} (${resolvedRootMarkers.length} roots + ${totalChildren} nested children)`);
-
-	return resolvedRootMarkers;
-}
-
-/**
- * マーカーのプロパティ（keywordsやchildren）を処理する
- */
-function processMarkerProperty(propValue: string | string[], propType: 'keywords' | 'children'): string | string[] {
-	// 文字列の配列表現を解析
-	if (typeof propValue === 'string' && propValue.startsWith('[') && propValue.endsWith(']')) {
-		try {
-			// JSON5解析を試みる
-			return JSON5.parse(propValue.replace(/'/g, '"'));
-		} catch (e) {
-			// 解析に失敗した場合
-			logger.warn(`Could not parse ${propType}: ${propValue}, using ${propType === 'children' ? 'empty array' : 'as is'}`);
-			return propType === 'children' ? [] : propValue;
-		}
-	}
-
-	return propValue;
-}
-
-/**
- * 全マーカーから子IDを収集する
- */
-function collectChildIds(allMarkers: Map<string, SearchIndexStringItem>): Set<string> {
-	const childIds = new Set<string>();
-
-	allMarkers.forEach((marker, id) => {
-		// 通常のchildren処理
-		const children = marker.children;
-		if (Array.isArray(children)) {
-			children.forEach(childId => {
-				if (typeof childId === 'string') {
-					if (!allMarkers.has(childId)) {
-						logger.warn(`Warning: Child marker ID ${childId} referenced but not found`);
-					} else {
-						childIds.add(childId);
-					}
-				}
-			});
-		}
-
-		// inlining処理を追加
-		if (marker.inlining) {
-			let inliningIds: string[] = [];
-
-			// 文字列の場合は配列に変換
-			if (typeof marker.inlining === 'string') {
-				try {
-					const inliningStr = (marker.inlining as string).trim();
-					if (inliningStr.startsWith('[') && inliningStr.endsWith(']')) {
-						inliningIds = JSON5.parse(inliningStr.replace(/'/g, '"'));
-						logger.info(`Parsed inlining string to array: ${inliningStr} -> ${JSON.stringify(inliningIds)}`);
-					} else {
-						inliningIds = [inliningStr];
-					}
-				} catch (e) {
-					logger.error(`Failed to parse inlining string: ${marker.inlining}`, e);
-				}
-			}
-			// 既に配列の場合
-			else if (Array.isArray(marker.inlining)) {
-				inliningIds = marker.inlining;
-			}
-
-			// inliningで指定されたIDを子セットに追加
-			for (const inlineId of inliningIds) {
-				if (typeof inlineId === 'string') {
-					if (!allMarkers.has(inlineId)) {
-						logger.warn(`Warning: Inlining marker ID ${inlineId} referenced but not found`);
-					} else {
-						// inliningで参照されているマーカーも子として扱う
-						childIds.add(inlineId);
-						logger.info(`Added inlined marker ${inlineId} as child in collectChildIds`);
-					}
-				}
-			}
-		}
-	});
-
-	return childIds;
-}
-
-/**
- * ルートマーカー（他の子でないマーカー）を特定する
- */
-function identifyRootMarkers(
-	allMarkers: Map<string, SearchIndexStringItem>,
-	childIds: Set<string>
-): SearchIndexStringItem[] {
-	const rootMarkers: SearchIndexStringItem[] = [];
-
-	allMarkers.forEach((marker, id) => {
-		if (!childIds.has(id)) {
-			rootMarkers.push(marker);
-			logger.info(`Added root marker to output: ${id} with label ${marker.label}`);
-		}
-	});
-
-	return rootMarkers;
-}
-
-/**
- * 子マーカーの参照をIDから実際のオブジェクトに解決する
- */
-function resolveChildReferences(
-	rootMarkers: SearchIndexStringItem[],
-	allMarkers: Map<string, SearchIndexStringItem>
-): SearchIndexItem[] {
-	function resolveChildrenForMarker(marker: SearchIndexStringItem): SearchIndexItem {
-		// マーカーのディープコピーを作成
-		const resolvedMarker: SearchIndexItem = { ...marker, children: [] };
-		// 明示的に子マーカー配列を作成
-		const resolvedChildren: SearchIndexItem[] = [];
-
-		// 通常のchildren処理
-		if (Array.isArray(marker.children)) {
-			for (const childId of marker.children) {
-				if (typeof childId === 'string') {
-					const childMarker = allMarkers.get(childId);
-					if (childMarker) {
-						// 子マーカーの子も再帰的に解決
-						const resolvedChild = resolveChildrenForMarker(childMarker);
-						resolvedChildren.push(resolvedChild);
-						logger.info(`Resolved regular child ${childId} for parent ${marker.id}`);
-					}
-				}
-			}
-		}
-
-		// inlining属性の処理
-		let inliningIds: string[] = [];
-
-		// 文字列の場合は配列に変換。例: "['2fa']" -> ['2fa']
-		if (typeof marker.inlining === 'string') {
-			try {
-				// 文字列形式の配列を実際の配列に変換
-				const inliningStr = (marker.inlining as string).trim();
-				if (inliningStr.startsWith('[') && inliningStr.endsWith(']')) {
-					inliningIds = JSON5.parse(inliningStr.replace(/'/g, '"'));
-					logger.info(`Converted string inlining to array: ${inliningStr} -> ${JSON.stringify(inliningIds)}`);
-				} else {
-					// 単一値の場合は配列に
-					inliningIds = [inliningStr];
-					logger.info(`Converted single string inlining to array: ${inliningStr}`);
-				}
-			} catch (e) {
-				logger.error(`Failed to parse inlining string: ${marker.inlining}`, e);
-			}
-		}
-		// 既に配列の場合はそのまま使用
-		else if (Array.isArray(marker.inlining)) {
-			inliningIds = marker.inlining;
-		}
-
-		// インライン指定されたマーカーを子として追加
-		for (const inlineId of inliningIds) {
-			if (typeof inlineId === 'string') {
-				const inlineMarker = allMarkers.get(inlineId);
-				if (inlineMarker) {
-					// インライン指定されたマーカーを再帰的に解決
-					const resolvedInline = resolveChildrenForMarker(inlineMarker);
-					delete resolvedInline.path
-					resolvedChildren.push(resolvedInline);
-					logger.info(`Added inlined marker ${inlineId} as child to ${marker.id}`);
-				} else {
-					logger.warn(`Inlining target not found: ${inlineId} referenced by ${marker.id}`);
-				}
-			}
-		}
-
-		// 解決した子が存在する場合のみchildrenプロパティを設定
-		if (resolvedChildren.length > 0) {
-			resolvedMarker.children = resolvedChildren;
-		} else {
-			delete resolvedMarker.children;
-		}
-
-		return resolvedMarker;
-	}
-
-	// すべてのルートマーカーの子を解決
-	return rootMarkers.map(marker => resolveChildrenForMarker(marker));
-}
-
-/**
- * マーカー数を数える（デバッグ用）
- */
-function countMarkers(markers: SearchIndexItem[]): { totalMarkers: number, totalChildren: number } {
-	let totalMarkers = markers.length;
-	let totalChildren = 0;
-
-	function countNested(items: SearchIndexItem[]): void {
-		for (const marker of items) {
-			if (marker.children && Array.isArray(marker.children)) {
-				totalChildren += marker.children.length;
-				totalMarkers += marker.children.length;
-				countNested(marker.children as SearchIndexItem[]);
-			}
-		}
-	}
-
-	countNested(markers);
-	return { totalMarkers, totalChildren };
 }
 
 /**
@@ -790,9 +536,9 @@ function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string |
 function extractUsageInfoFromTemplateAst(
 	templateAst: RootNode | undefined,
 	id: string,
-): SearchIndexStringItem[] {
-	const allMarkers: SearchIndexStringItem[] = [];
-	const markerMap = new Map<string, SearchIndexItemLink<string>>();
+): SearchIndexItem[] {
+	const allMarkers: SearchIndexItem[] = [];
+	const markerMap = new Map<string, SearchIndexItem>();
 	const childrenIds = new Set<string>();
 	const normalizedId = id.replace(/\\/g, '/');
 
@@ -812,9 +558,9 @@ function extractUsageInfoFromTemplateAst(
 			}
 
 			// マーカー基本情報
-			const markerInfo: SearchIndexStringItem = {
+			const markerInfo: SearchIndexItem = {
 				id: markerId,
-				children: [],
+				parentId: parentId ?? undefined,
 				label: '', // デフォルト値
 				keywords: [],
 			};
@@ -835,7 +581,6 @@ function extractUsageInfoFromTemplateAst(
 			if (bindings.path) markerInfo.path = bindings.path;
 			if (bindings.icon) markerInfo.icon = bindings.icon;
 			if (bindings.label) markerInfo.label = bindings.label;
-			if (bindings.children) markerInfo.children = processMarkerProperty(bindings.children, 'children') as string[];
 			if (bindings.inlining) {
 				markerInfo.inlining = bindings.inlining;
 				logger.info(`Added inlining ${JSON.stringify(bindings.inlining)} to marker ${markerId}`);
@@ -968,7 +713,7 @@ function extractNodeBindings(node: TemplateChildNode | RootNode): Bindings {
 				}
 			}
 			// keywordsの特殊処理
-			if (propName === 'keywords') {
+			else if (propName === 'keywords') {
 				try {
 					const content = propContent.trim();
 
@@ -1097,37 +842,30 @@ function parseArrayExpression(expr: string): string[] {
 	}
 }
 
-export function collectFileMarkers(files: [id: string, code: string][]): AnalysisResult<SearchIndexStringItem> {
-	const allMarkers: SearchIndexStringItem[] = [];
-	for (const [id, code] of files) {
-		try {
-			const { descriptor, errors } = vueSfcParse(code, {
-				filename: id,
-			});
+export function collectFileMarkers(id: string, code: string): SearchIndexItem[] {
+	try {
+		const { descriptor, errors } = vueSfcParse(code, {
+			filename: id,
+		});
 
-			if (errors.length > 0) {
-				logger.error(`Compile Error: ${id}, ${errors}`);
-				continue; // エラーが発生したファイルはスキップ
-			}
-
-			const fileMarkers = extractUsageInfoFromTemplateAst(descriptor.template?.ast, id);
-
-			if (fileMarkers && fileMarkers.length > 0) {
-				allMarkers.push(...fileMarkers); // すべてのマーカーを収集
-				logger.info(`Successfully extracted ${fileMarkers.length} markers from ${id}`);
-			} else {
-				logger.info(`No markers found in ${id}`);
-			}
-		} catch (error) {
-			logger.error(`Error analyzing file ${id}:`, error);
+		if (errors.length > 0) {
+			logger.error(`Compile Error: ${id}, ${errors}`);
+			return []; // エラーが発生したファイルはスキップ
 		}
+
+		const fileMarkers = extractUsageInfoFromTemplateAst(descriptor.template?.ast, id);
+
+		if (fileMarkers && fileMarkers.length > 0) {
+			logger.info(`Successfully extracted ${fileMarkers.length} markers from ${id}`);
+		} else {
+			logger.info(`No markers found in ${id}`);
+		}
+		return fileMarkers;
+	} catch (error) {
+		logger.error(`Error analyzing file ${id}:`, error);
 	}
 
-	// 収集したすべてのマーカー情報を使用
-	return {
-		filePath: "combined-markers", // すべてのファイルのマーカーを1つのエントリとして扱う
-		usage: allMarkers,
-	};
+	return [];
 }
 
 type TransformedCode = {
@@ -1490,7 +1228,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 				this.addWatchFile(searchIndexFilePath);
 
 				const code = await asigner.getOrLoad(searchIndexFilePath);
-				return generateJavaScriptCode(collectSearchItemIndexes([collectFileMarkers([[id, code]])]));
+				return generateJavaScriptCode(collectFileMarkers(id, code));
 			}
 			return null;
 		},
