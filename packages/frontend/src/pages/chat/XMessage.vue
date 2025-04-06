@@ -85,7 +85,7 @@ const isMe = computed(() => props.message.fromUserId === $i.id);
 const urls = computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(props.message.text)) : []);
 
 provide(DI.mfmEmojiReactCallback, (reaction) => {
-	if (!$i.policies.chatAvailability === 'available') return;
+	if ($i.policies.chatAvailability !== 'available') return;
 
 	sound.playMisskeySfx('reaction');
 	misskeyApi('chat/messages/react', {
@@ -95,7 +95,7 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 });
 
 function react(ev: MouseEvent) {
-	if (!$i.policies.chatAvailability === 'available') return;
+	if ($i.policies.chatAvailability !== 'available') return;
 
 	const targetEl = getHTMLElementOrNull(ev.currentTarget ?? ev.target);
 	if (!targetEl) return;
@@ -110,7 +110,7 @@ function react(ev: MouseEvent) {
 }
 
 function onReactionClick(record: Misskey.entities.ChatMessage['reactions'][0]) {
-	if (!$i.policies.chatAvailability === 'available') return;
+	if ($i.policies.chatAvailability !== 'available') return;
 
 	if (record.user.id === $i.id) {
 		misskeyApi('chat/messages/unreact', {
