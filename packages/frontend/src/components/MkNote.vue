@@ -21,7 +21,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
 				<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
-					<MkUserName :user="note.user"/>
+					<span style="unicode-bidi: plaintext; display: inline-block;">
+						<MkUserName :user="note.user"/>
+					</span>
 				</MkA>
 			</template>
 		</I18n>
