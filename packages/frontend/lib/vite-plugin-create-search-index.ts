@@ -133,10 +133,6 @@ function extractElementText(node: TemplateChildNode): string | null {
 	const expressionContent = extractExpressionContent(node.children);
 	if (expressionContent) return expressionContent;
 
-	// 4. テキストノードを検索
-	const textContent = extractTextContent(node.children);
-	if (textContent) return textContent;
-
 	// 5. 再帰的に子ノードを探索
 	return extractNestedContent(node.children);
 }
@@ -239,34 +235,6 @@ function extractExpressionContent(children: TemplateChildNode[]): string | null 
 }
 
 /**
- * テキストノードからコンテンツを抽出
- */
-function extractTextContent(children: TemplateChildNode[]): string | null {
-	for (const child of children) {
-		if (child.type === NodeTypes.COMMENT && child.content) {
-			const text = child.content.trim();
-
-			if (text) {
-				logger.info(`Found text node: ${text}`);
-
-				// Mustache構文のチェック
-				const mustachePattern = /^\s*{{\s*(.*?)\s*}}\s*$/;
-				const mustacheMatch = text.match(mustachePattern);
-
-				if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
-					logger.info(`Extracted i18n ref from text mustache: ${mustacheMatch[1]}`);
-					return '$\{' + mustacheMatch[1] + '}';
-				}
-
-				return text;
-			}
-		}
-	}
-
-	return null;
-}
-
-/**
  * 子ノードを再帰的に探索してコンテンツを抽出
  */
 function extractNestedContent(children: TemplateChildNode[]): string | null {
@@ -350,15 +318,6 @@ function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string |
 									logger.info(`Found i18n in expression: ${label}`);
 									break;
 								}
-								// テキストノードでもMustache構文を探す
-								else if (child.type === NodeTypes.COMMENT && child.content) {
-									const mustacheMatch = child.content.trim().match(/^\s*{{\s*(.*?)\s*}}\s*$/);
-									if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
-										label = mustacheMatch[1].trim();
-										logger.info(`Found i18n in text mustache: ${label}`);
-										break;
-									}
-								}
 							}
 						}
 					}
@@ -400,16 +359,6 @@ function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string |
 									keywords.push(keyword);
 									logger.info(`Found i18n keyword in expression: ${keyword}`);
 									break;
-								}
-								// テキストノードでもMustache構文を探す
-								else if (child.type === NodeTypes.COMMENT && child.content) {
-									const mustacheMatch = child.content.trim().match(/^\s*{{\s*(.*?)\s*}}\s*$/);
-									if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
-										const keyword = mustacheMatch[1].trim();
-										keywords.push(keyword);
-										logger.info(`Found i18n keyword in text mustache: ${keyword}`);
-										break;
-									}
 								}
 							}
 						}
