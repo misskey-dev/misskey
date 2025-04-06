@@ -400,6 +400,6 @@ definePage(() => ({
 <style lang="scss" module>
 .subCaption {
 	font-size: 0.85em;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 </style>

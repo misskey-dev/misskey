@@ -1888,6 +1888,8 @@ _role:
   descriptionOfIsExplorable: "La línia de temps d'aquest rol i la llista d'usuaris seran públics si s'activa."
   displayOrder: "Posició "
   descriptionOfDisplayOrder: "Com més gran és el número, més dalt la seva posició a la interfície."
+  preserveAssignmentOnMoveAccount: "L'estat de l'assignació també es trasllada amb el compte migrat"
+  preserveAssignmentOnMoveAccount_description: "Si s'activa quan es migra un compte amb aquest rol, el compte migrat també heretarà aquest rol."
   canEditMembersByModerator: "Permetre que els moderadors editin la llista d'usuaris en aquest rol"
   descriptionOfCanEditMembersByModerator: "Quan s'activa, els moderadors, així com els administradors, podran afegir i treure usuaris d'aquest rol. Si es troba desactivat, només els administradors poden assignar usuaris."
   priority: "Prioritat"

@@ -333,7 +333,7 @@ async function search() {
 	width: 100%;
 	height: 100%;
 	padding: 12px;
-	border: 2px dashed var(--MI_THEME-fgTransparent);
+	border: 2px dashed color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 }
 
 .userSelectButtonInner {

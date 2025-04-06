@@ -1888,6 +1888,8 @@ _role:
   descriptionOfIsExplorable: "Selezionandolo, la timeline del ruolo diventerà accessibile pubblicamente. Tranne se il ruolo non è pubblico."
   displayOrder: "Ordine di visualizzazione"
   descriptionOfDisplayOrder: "I valori più alti vengono visualizzati per primi"
+  preserveAssignmentOnMoveAccount: "Mantenere l'assegnazione alla migrazione del profilo"
+  preserveAssignmentOnMoveAccount_description: "Attivando, il ruolo verrà portato sul profilo destinatario, durante la migrazione."
   canEditMembersByModerator: "Anche i Moderatori assegnano profili a questo ruolo"
   descriptionOfCanEditMembersByModerator: "Se disattivo, potranno farlo solamente gli Amministratori."
   priority: "Priorità"

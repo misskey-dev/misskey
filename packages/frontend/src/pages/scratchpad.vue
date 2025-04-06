@@ -247,7 +247,7 @@ definePage(() => ({
 }
 
 .uiInspectorUnShown {
-	color: var(--MI_THEME-fgTransparent);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 }
 
 .uiInspectorType {

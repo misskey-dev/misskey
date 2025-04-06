@@ -1887,6 +1887,8 @@ _role:
   descriptionOfIsExplorable: "打开后将公开角色时间线。如果角色不是公开的，就无法公开时间线。"
   displayOrder: "显示顺序"
   descriptionOfDisplayOrder: "数字越大，显示位置越靠前。"
+  preserveAssignmentOnMoveAccount: "将分配状态继承到目标账户"
+  preserveAssignmentOnMoveAccount_description: "启用后，当迁移具有该角色的账户时，目标账户也会继承该角色。"
   canEditMembersByModerator: "允许监察员编辑成员"
   descriptionOfCanEditMembersByModerator: "如果选中，监察员和管理员都能够为用户分配/取消分配角色。如果未选中，则只有管理员可以执行此操作。"
   priority: "优先级"
