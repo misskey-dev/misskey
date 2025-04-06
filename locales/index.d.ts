@@ -5501,6 +5501,10 @@ export interface Locale extends ILocale {
          */
         "chatNotAvailableForThisAccountOrServer": string;
         /**
+         * このサーバー、またはこのアカウントでチャットは読み取り専用となっています。新たに書き込んだり、チャットルームを作成・参加したりすることはできません。
+         */
+        "chatIsReadOnlyForThisAccountOrServer": string;
+        /**
          * 相手のアカウントでチャット機能が使えない状態になっています。
          */
         "chatNotAvailableInOtherAccount": string;

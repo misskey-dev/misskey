@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo warn>{{ i18n.ts._chat.chatNotAvailableInOtherAccount }}</MkInfo>
 			</div>
 
-			<MkInfo v-if="$i.policies.chatAvailability !== 'available'" warn>{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
+			<MkInfo v-if="$i.policies.chatAvailability !== 'available'" warn>{{ $i.policies.chatAvailability === 'readonly' ? i18n.ts._chat.chatIsReadOnlyForThisAccountOrServer : i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 		</div>
 	</MkSpacer>
 
