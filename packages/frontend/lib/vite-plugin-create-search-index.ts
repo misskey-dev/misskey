@@ -9,9 +9,9 @@ import { parse as vueSfcParse } from 'vue/compiler-sfc';
 import {
 	createLogger,
 	EnvironmentModuleGraph,
-	normalizePath,
 	type LogErrorOptions,
 	type LogOptions,
+	normalizePath,
 	type Plugin,
 	type PluginOption
 } from 'vite';
@@ -22,13 +22,17 @@ import MagicString, { SourceMap } from 'magic-string';
 import path from 'node:path'
 import { hash, toBase62 } from '../vite.config';
 import { minimatch } from 'minimatch';
-import type {
-	AttributeNode, CompoundExpressionNode, DirectiveNode,
-	ElementNode,
-	RootNode, SimpleExpressionNode,
-	TemplateChildNode,
+import {
+	type AttributeNode,
+	type CompoundExpressionNode,
+	type DirectiveNode,
+	type ElementNode,
+	ElementTypes,
+	NodeTypes,
+	type RootNode,
+	type SimpleExpressionNode,
+	type TemplateChildNode,
 } from '@vue/compiler-core';
-import { NodeTypes } from '@vue/compiler-core';
 
 export interface SearchIndexItem {
 	id: string;
@@ -60,7 +64,7 @@ interface MarkerRelation {
 let logger = {
 	info: (msg: string, options?: LogOptions) => { },
 	warn: (msg: string, options?: LogOptions) => { },
-	error: (msg: string, options?: LogErrorOptions) => { },
+	error: (msg: string, options?: LogErrorOptions | unknown) => { },
 };
 let loggerInitialized = false;
 
@@ -107,157 +111,55 @@ function customStringify(obj: unknown): string {
 }
 
 /**
- * 要素ノードからテキスト内容を抽出する
- * 各抽出方法を分離して可読性を向上
+ * 要素のノードの中身のテキストを抽出する
  */
-function extractElementText(node: TemplateChildNode): string | null {
-	if (!node) return null;
+function extractElementText(node: ElementNode): string | null {
+	return extractElementTextChecked(node, node.tag);
+}
+
+function extractElementTextChecked(node: ElementNode, processingNodeName: string): string | null {
+	const result: string[] = [];
+	for (const child of node.children) {
+		const text = extractElementText2Inner(child, processingNodeName);
+		if (text == null) return null;
+		result.push(text);
+	}
+	return result.join('');
+}
+
+function extractElementText2Inner(node: TemplateChildNode, processingNodeName: string): string | null {
 	if (node.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
 
-	logger.info(`Extracting text from node type=${node.type}, tag=${'tag' in node ? node.tag : 'unknown'}`);
-
-	// 1. 直接コンテンツの抽出を試行
-	const directContent = extractDirectContent(node);
-	if (directContent) return directContent;
-
-	// 子要素がない場合は終了
-	if (!('children' in node) || !Array.isArray(node.children)) {
-		return null;
-	}
-
-	// 2. インターポレーションノードを検索
-	const interpolationContent = extractInterpolationContent(node.children);
-	if (interpolationContent) return interpolationContent;
-
-	// 3. 式ノードを検索
-	const expressionContent = extractExpressionContent(node.children);
-	if (expressionContent) return expressionContent;
-
-	// 5. 再帰的に子ノードを探索
-	return extractNestedContent(node.children);
-}
-/**
- * ノードから直接コンテンツを抽出
- */
-function extractDirectContent(node: TemplateChildNode): string | null {
-	if (!('content' in node)) return null;
-	if (typeof node.content == 'object' && node.content.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
-
-	const content = typeof node.content === 'string' ? node.content.trim()
-		: node.content.type !== NodeTypes.INTERPOLATION ? node.content.content.trim()
-		: null;
-
-	if (!content) return null;
-
-	logger.info(`Direct node content found: ${content}`);
-
-	// Mustache構文のチェック
-	const mustachePattern = /^\s*{{\s*(.*?)\s*}}\s*$/;
-	const mustacheMatch = content.match(mustachePattern);
-
-	if (mustacheMatch && mustacheMatch[1] && isI18nReference(mustacheMatch[1])) {
-		const extractedContent = mustacheMatch[1].trim();
-		logger.info(`Extracted i18n reference from mustache: ${extractedContent}`);
-		return extractedContent;
-	}
-
-	// 直接i18n参照を含む場合
-	if (isI18nReference(content)) {
-		logger.info(`Direct i18n reference found: ${content}`);
-		return '$\{' + content + '}';
-	}
-
-	// その他のコンテンツ
-	return content;
-}
-
-/**
- * インターポレーションノード（Mustache）からコンテンツを抽出
- */
-function extractInterpolationContent(children: TemplateChildNode[]): string | null {
-	for (const child of children) {
-		if (child.type === NodeTypes.INTERPOLATION) {
-			logger.info(`Found interpolation node (Mustache): ${JSON.stringify(child.content).substring(0, 100)}...`);
-
-			if (child.content && child.content.type === 4 && child.content.content) {
-				const content = child.content.content.trim();
-				logger.info(`Interpolation content: ${content}`);
-
-				if (isI18nReference(content)) {
-					return '$\{' + content + '}';
-				}
-			} else if (child.content && typeof child.content === 'object') {
-				if (child.content.type == NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
-				// オブジェクト形式のcontentを探索
-				logger.info(`Complex interpolation node: ${JSON.stringify(child.content).substring(0, 100)}...`);
-
-				if (child.content.content) {
-					const content = child.content.content.trim();
-
-					if (isI18nReference(content)) {
-						logger.info(`Found i18n reference in complex interpolation: ${content}`);
-						return '$\{' + content + '}';
-					}
-				}
+	switch (node.type) {
+		case NodeTypes.INTERPOLATION: {
+			const expr = node.content;
+			if (expr.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error(`Unexpected COMPOUND_EXPRESSION`);
+			const exprResult = evalExpression(expr.content);
+			if (typeof exprResult !== 'string') {
+				logger.error(`Result of interpolation node is not string at line ${node.loc.start.line}`);
+				return null;
 			}
+			return exprResult;
 		}
-	}
-
-	return null;
-}
-
-/**
- * 式ノードからコンテンツを抽出
- */
-function extractExpressionContent(children: TemplateChildNode[]): string | null {
-	// i18n.ts. 参照パターンを持つものを優先
-	for (const child of children) {
-		if (child.type === NodeTypes.TEXT && child.content) {
-			const expr = child.content.trim();
-
-			if (isI18nReference(expr)) {
-				logger.info(`Found i18n reference in expression node: ${expr}`);
-				return '$\{' + expr + '}';
+		case NodeTypes.ELEMENT:
+			if (node.tagType === ElementTypes.ELEMENT) {
+				return extractElementTextChecked(node, processingNodeName);
+			} else {
+				logger.error(`Unexpected ${node.tag} extracting text of ${processingNodeName} ${node.loc.start.line}`);
+				return null;
 			}
-		}
+		case NodeTypes.TEXT:
+			return node.content;
+		case NodeTypes.COMMENT:
+			// We skip comments
+			return '';
+		case NodeTypes.IF:
+		case NodeTypes.IF_BRANCH:
+		case NodeTypes.FOR:
+		case NodeTypes.TEXT_CALL:
+			logger.error(`Unexpected controlflow element extracting text of ${processingNodeName} ${node.loc.start.line}`);
+			return null;
 	}
-
-	// その他の式
-	for (const child of children) {
-		if (child.type === NodeTypes.TEXT && child.content) {
-			const expr = child.content.trim();
-			logger.info(`Found expression: ${expr}`);
-			return expr;
-		}
-	}
-
-	return null;
-}
-
-/**
- * 子ノードを再帰的に探索してコンテンツを抽出
- */
-function extractNestedContent(children: TemplateChildNode[]): string | null {
-	for (const child of children) {
-		if ('children' in child && Array.isArray(child.children) && child.children.length > 0) {
-			const nestedContent = extractElementText(child);
-
-			if (nestedContent) {
-				logger.info(`Found nested content: ${nestedContent}`);
-				return nestedContent;
-			}
-		} else if (child.type === NodeTypes.ELEMENT) {
-			// childrenがなくても内部を調査
-			const nestedContent = extractElementText(child);
-
-			if (nestedContent) {
-				logger.info(`Found content in childless element: ${nestedContent}`);
-				return nestedContent;
-			}
-		}
-	}
-
-	return null;
 }
 
 
@@ -286,89 +188,25 @@ function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string |
 				if (node.tag === 'SearchLabel') {
 					logger.info(`Found SearchLabel node, structure: ${JSON.stringify(node).substring(0, 200)}...`);
 
-					// まず完全なノード内容の抽出を試みる
 					const content = extractElementText(node);
 					if (content) {
 						label = content;
 						logger.info(`SearchLabel content extracted: ${content}`);
-					} else {
-						logger.info(`SearchLabel found but extraction failed, trying direct children inspection`);
-
-						// バックアップ: 子直接確認 - type=5のMustacheインターポレーションを重点的に確認
-						{
-							for (const child of node.children) {
-								// Mustacheインターポレーション
-								if (child.type === NodeTypes.INTERPOLATION && child.content) {
-									// content内の式を取り出す
-									if (child.content.type == NodeTypes.COMPOUND_EXPRESSION) throw new Error("unexpected COMPOUND_EXPRESSION");
-									const expression = child.content.content ||
-										(child.content.type === 4 ? child.content.content : null) ||
-										JSON.stringify(child.content);
-
-									logger.info(`Interpolation expression: ${expression}`);
-									if (typeof expression === 'string' && isI18nReference(expression)) {
-										label = expression.trim();
-										logger.info(`Found i18n in interpolation: ${label}`);
-										break;
-									}
-								}
-								// 式ノード
-								else if (child.type === NodeTypes.TEXT && child.content && isI18nReference(child.content)) {
-									label = child.content.trim();
-									logger.info(`Found i18n in expression: ${label}`);
-									break;
-								}
-							}
-						}
 					}
 				}
 				// SearchKeywordの処理
 				else if (node.tag === 'SearchKeyword') {
 					logger.info(`Found SearchKeyword node`);
 
-					// まず完全なノード内容の抽出を試みる
 					const content = extractElementText(node);
 					if (content) {
 						keywords.push(content);
 						logger.info(`SearchKeyword content extracted: ${content}`);
-					} else {
-						logger.info(`SearchKeyword found but extraction failed, trying direct children inspection`);
-
-						// バックアップ: 子直接確認 - type=5のMustacheインターポレーションを重点的に確認
-						{
-							for (const child of node.children) {
-								// Mustacheインターポレーション
-								if (child.type === NodeTypes.INTERPOLATION && child.content) {
-									// content内の式を取り出す
-									if (child.content.type == NodeTypes.COMPOUND_EXPRESSION) throw new Error("unexpected COMPOUND_EXPRESSION");
-									const expression = child.content.content ||
-										(child.content.type === 4 ? child.content.content : null) ||
-										JSON.stringify(child.content);
-
-									logger.info(`Keyword interpolation: ${expression}`);
-									if (typeof expression === 'string' && isI18nReference(expression)) {
-										const keyword = expression.trim();
-										keywords.push(keyword);
-										logger.info(`Found i18n keyword in interpolation: ${keyword}`);
-										break;
-									}
-								}
-								// 式ノード
-								else if (child.type === NodeTypes.TEXT && child.content && isI18nReference(child.content)) {
-									const keyword = child.content.trim();
-									keywords.push(keyword);
-									logger.info(`Found i18n keyword in expression: ${keyword}`);
-									break;
-								}
-							}
-						}
 					}
 				}
 
 				// 子要素を再帰的に調査（ただしSearchMarkerは除外）
-				if (node.children && Array.isArray(node.children)) {
-					findComponents(node.children);
-				}
+				findComponents(node.children);
 			}
 		}
 	}
