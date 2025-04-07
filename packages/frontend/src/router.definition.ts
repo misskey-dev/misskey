@@ -16,6 +16,10 @@ export const page = (loader: AsyncComponentLoader) => defineAsyncComponent({
 	errorComponent: MkError,
 });
 
+function chatPage(...args: Parameters<typeof page>) {
+	return $i?.policies.chatAvailability !== 'unavailable' ? page(...args) : page(() => import('@/pages/not-found.vue'));
+}
+
 export const ROUTE_DEF = [{
 	path: '/@:username/pages/:pageName(*)',
 	component: page(() => import('@/pages/page.vue')),
@@ -42,19 +46,19 @@ export const ROUTE_DEF = [{
 	component: page(() => import('@/pages/clip.vue')),
 }, {
 	path: '/chat',
-	component: page(() => import('@/pages/chat/home.vue')),
+	component: chatPage(() => import('@/pages/chat/home.vue')),
 	loginRequired: true,
 }, {
 	path: '/chat/user/:userId',
-	component: page(() => import('@/pages/chat/room.vue')),
+	component: chatPage(() => import('@/pages/chat/room.vue')),
 	loginRequired: true,
 }, {
 	path: '/chat/room/:roomId',
-	component: page(() => import('@/pages/chat/room.vue')),
+	component: chatPage(() => import('@/pages/chat/room.vue')),
 	loginRequired: true,
 }, {
 	path: '/chat/messages/:messageId',
-	component: page(() => import('@/pages/chat/message.vue')),
+	component: chatPage(() => import('@/pages/chat/message.vue')),
 	loginRequired: true,
 }, {
 	path: '/instance-info/:host',
