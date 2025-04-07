@@ -1930,7 +1930,6 @@ _role:
     canImportFollowing: "Allow importing following"
     canImportMuting: "Allow importing muting"
     canImportUserLists: "Allow importing lists"
-    canChat: "Allow Chat"
   _condition:
     roleAssignedTo: "Assigned to manual roles"
     isLocal: "Local user"
