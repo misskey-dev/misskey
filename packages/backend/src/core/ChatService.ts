@@ -28,7 +28,6 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { emojiRegex } from '@/misc/emoji-regex.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { ApiError } from '@/server/api/error.js';
 
 const MAX_ROOM_MEMBERS = 30;
 const MAX_REACTIONS_PER_MESSAGE = 100;
@@ -120,17 +119,12 @@ export class ChatService {
 		}
 	}
 
-	/** getChatAvailabilityの糖衣。API呼び出し時に走らせて、権限的に問題ない場合はそのまま続行する */
+	/** getChatAvailabilityの糖衣。主にAPI呼び出し時に走らせて、権限的に問題ない場合はそのまま続行する */
 	@bindThis
-	public async checkChatAvailabilityForApi(userId: MiUser['id'], permission: 'read' | 'write') {
+	public async checkChatAvailability(userId: MiUser['id'], permission: 'read' | 'write') {
 		const policy = await this.getChatAvailability(userId);
 		if (policy[permission] === false) {
-			throw new ApiError({
-				message: 'You are not assigned to a required role.',
-				code: 'ROLE_PERMISSION_DENIED',
-				kind: 'permission',
-				id: '7f86f06f-7e15-4057-8561-f4b6d4ac755a',
-			});
+			throw new Error('ROLE_PERMISSION_DENIED');
 		}
 	}
 

@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatEntityService: ChatEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			await this.chatService.checkChatAvailabilityForApi(me.id, 'write');
+			await this.chatService.checkChatAvailability(me.id, 'write');
 
 			const room = await this.chatService.findMyRoomById(me.id, ps.roomId);
 			if (room == null) {
