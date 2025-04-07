@@ -33,6 +33,7 @@ type TimelineOptions = {
 	excludeNoFiles?: boolean;
 	excludeReplies?: boolean;
 	excludePureRenotes: boolean;
+	ignoreAuthorFromUserSuspension?: boolean;
 	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
 };
 
@@ -114,6 +115,19 @@ export class FanoutTimelineEndpointService {
 					if (isUserRelated(note, userIdsWhoMeMuting, ps.ignoreAuthorFromMute)) return false;
 					if (!ps.ignoreAuthorFromMute && isRenote(note) && !isQuote(note) && userIdsWhoMeMutingRenotes.has(note.userId)) return false;
 					if (isInstanceMuted(note, userMutedInstances)) return false;
+
+					return parentFilter(note);
+				};
+			}
+
+			{
+				const parentFilter = filter;
+				filter = (note) => {
+					if (!ps.ignoreAuthorFromUserSuspension) {
+						if (note.user!.isSuspended) return false;
+					}
+					if (note.userId !== note.renoteUserId && note.renoteUser?.isSuspended) return false;
+					if (note.userId !== note.replyUserId && note.replyUser?.isSuspended) return false;
 
 					return parentFilter(note);
 				};

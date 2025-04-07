@@ -229,6 +229,10 @@ export class MiNote {
 		comment: '[Denormalized]',
 	})
 	public renoteUserHost: string | null;
+
+	// some query includes the following fields
+	public renoteUser?: MiUser | null;
+	public replyUser?: MiUser | null;
 	//#endregion
 
 	constructor(data: Partial<MiNote>) {
