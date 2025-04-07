@@ -5382,6 +5382,10 @@ export interface Locale extends ILocale {
      * 埋め込み
      */
     "embed": string;
+    /**
+     * 設定を移行しています。しばらくお待ちください... (後ほど、設定→その他→旧設定情報を移行 で手動で移行することもできます)
+     */
+    "settingsMigrating": string;
     "_chat": {
         /**
          * まだメッセージはありません
