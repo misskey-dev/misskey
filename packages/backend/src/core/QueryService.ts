@@ -251,4 +251,22 @@ export class QueryService {
 
 		q.setParameters(mutingQuery.getParameters());
 	}
+
+	// Requirements: user replyUser renoteUser must be joined
+	@bindThis
+	public generateSuspendedUserQueryForNote(q: SelectQueryBuilder<any>, excludeAuthor?: boolean): void {
+		if (excludeAuthor) {
+			const brakets = (user: string) => new Brackets(qb => qb
+				.where(`user.id = ${user}.id`)
+				.orWhere(`${user}.isSuspended = FALSE`));
+			q
+				.andWhere(brakets('replyUser'))
+				.andWhere(brakets('renoteUser'));
+		} else {
+			q
+				.andWhere('user.isSuspended = FALSE')
+				.andWhere('replyUser.isSuspended = FALSE')
+				.andWhere('renoteUser.isSuspended = FALSE');
+		}
+	}
 }
