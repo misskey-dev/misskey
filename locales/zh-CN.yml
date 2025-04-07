@@ -1929,7 +1929,6 @@ _role:
     canImportFollowing: "允许导入关注列表"
     canImportMuting: "允许导入隐藏列表"
     canImportUserLists: "允许导入用户列表"
-    canChat: "允许聊天"
   _condition:
     roleAssignedTo: "已分配给手动角色"
     isLocal: "是本地用户"
