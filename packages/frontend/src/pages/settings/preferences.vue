@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['general']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.general }}</SearchLabel></template>
-					<template #icon><i class="ti ti-settings"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-settings"></i></SearchIcon></template>
 
 					<div class="_gaps_m">
 						<SearchMarker :keywords="['language']">
@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['timeline', 'note']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts._settings.timelineAndNote }}</SearchLabel></template>
-					<template #icon><i class="ti ti-notes"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-notes"></i></SearchIcon></template>
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">
@@ -279,7 +279,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['post', 'form']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.postForm }}</SearchLabel></template>
-					<template #icon><i class="ti ti-edit"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-edit"></i></SearchIcon></template>
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">
@@ -341,7 +341,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['notification']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.notifications }}</SearchLabel></template>
-					<template #icon><i class="ti ti-bell"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-bell"></i></SearchIcon></template>
 
 					<div class="_gaps_m">
 						<SearchMarker :keywords="['group']">
@@ -382,7 +382,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['chat', 'messaging']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.chat }}</SearchLabel></template>
-					<template #icon><i class="ti ti-messages"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-messages"></i></SearchIcon></template>
 
 					<div class="_gaps_s">
 						<SearchMarker :keywords="['show', 'sender', 'name']">
@@ -421,7 +421,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['accessibility']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.accessibility }}</SearchLabel></template>
-					<template #icon><i class="ti ti-accessible"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-accessible"></i></SearchIcon></template>
 
 					<div class="_gaps_m">
 						<MkFeatureBanner icon="/client-assets/mens_room_3d.png" color="#0011ff">
@@ -531,7 +531,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['performance']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.performance }}</SearchLabel></template>
-					<template #icon><i class="ti ti-battery-vertical-eco"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-battery-vertical-eco"></i></SearchIcon></template>
 
 					<div class="_gaps_s">
 						<SearchMarker :keywords="['blur']">
@@ -567,7 +567,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['datasaver']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.dataSaver }}</SearchLabel></template>
-					<template #icon><i class="ti ti-antenna-bars-3"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-antenna-bars-3"></i></SearchIcon></template>
 
 					<div class="_gaps_m">
 						<MkInfo>{{ i18n.ts.reloadRequiredToApplySettings }}</MkInfo>
@@ -601,7 +601,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<SearchMarker :keywords="['other']">
 				<MkFolder>
 					<template #label><SearchLabel>{{ i18n.ts.other }}</SearchLabel></template>
-					<template #icon><i class="ti ti-settings-cog"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-settings-cog"></i></SearchIcon></template>
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">

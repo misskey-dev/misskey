@@ -227,10 +227,11 @@ function extractElementText2Inner(node: TemplateChildNode, processingNodeName: s
 // region extractUsageInfoFromTemplateAst
 
 /**
- * SearchLabelとSearchKeywordを探して抽出する関数
+ * SearchLabel/SearchKeyword/SearchIconを探して抽出する関数
  */
-function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string | null, keywords: string[] } {
+function extractSugarTags(nodes: TemplateChildNode[]): { label: string | null, keywords: string[], icon: string | null } {
 	let label: string | null | undefined = undefined;
+	let icon: string | null | undefined = undefined;
 	const keywords: string[] = [];
 
 	logger.info(`Extracting labels and keywords from ${nodes.length} nodes`);
@@ -253,14 +254,32 @@ function extractLabelsAndKeywords(nodes: TemplateChildNode[]): { label: string |
 					keywords.push(content);
 				}
 				return;
+			case 'SearchIcon':
+				if (icon !== undefined) {
+					logger.warn(`Duplicate SearchIcon found, ignoring the second one at ${node.loc.start.line}`);
+					break; // 2つ目のSearchIconは無視
+				}
+
+				if (node.children.length !== 1) {
+					logger.error(`SearchIcon must have exactly one child at ${node.loc.start.line}`);
+					return;
+				}
+
+				const iconNode = node.children[0];
+				if (iconNode.type !== NodeTypes.ELEMENT) {
+					logger.error(`SearchIcon must have a child element at ${node.loc.start.line}`);
+					return;
+				}
+				icon = getStringProp(findAttribute(iconNode.props, 'class'));
+				return;
 		}
 
 		return;
 	});
 
 	// デバッグ情報
-	logger.info(`Extraction completed: label=${label}, keywords=[${keywords.join(', ')}]`);
-	return { label: label ?? null, keywords };
+	logger.info(`Extraction completed: label=${label}, keywords=[${keywords.join(', ')}, icon=${icon}]`);
+	return { label: label ?? null, keywords, icon: icon ?? null };
 }
 
 function getStringProp(attr: AttributeNode | DirectiveNode | null): string | null {
@@ -354,10 +373,12 @@ function extractUsageInfoFromTemplateAst(
 
 		// SearchLabelとSearchKeywordを抽出 (AST全体を探索)
 		{
-			const extracted = extractLabelsAndKeywords(node.children);
+			const extracted = extractSugarTags(node.children);
 			if (extracted.label && markerInfo.label) logger.warn(`Duplicate label found for ${markerId} at ${id}:${node.loc.start.line}`);
+			if (extracted.icon && markerInfo.icon) logger.warn(`Duplicate icon found for ${markerId} at ${id}:${node.loc.start.line}`);
 			markerInfo.label = extracted.label ?? markerInfo.label ?? '';
 			markerInfo.keywords = [...extracted.keywords, ...markerInfo.keywords];
+			markerInfo.icon = extracted.icon ?? markerInfo.icon ?? undefined;
 		}
 
 		if (!markerInfo.label) {
