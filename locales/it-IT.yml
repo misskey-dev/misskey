@@ -1930,7 +1930,6 @@ _role:
     canImportFollowing: "Può importare Following"
     canImportMuting: "Può importare Silenziati"
     canImportUserLists: "Può importare liste di Profili"
-    canChat: "Chat consentita"
   _condition:
     roleAssignedTo: "Assegnato a ruoli manualmente"
     isLocal: "Profilo locale"
