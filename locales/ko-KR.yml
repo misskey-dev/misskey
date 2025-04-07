@@ -1342,6 +1342,7 @@ bottom: "아래"
 top: "위"
 embed: "임베드"
 settingsMigrating: "설정을 이전하는 중입니다. 잠시 기다려주십시오... (나중에 '환경설정 → 기타 → 기존 설정 정보를 이전'에서 수동으로 이전할 수도 있습니다)"
+readonly: "읽기 전용"
 _chat:
   noMessagesYet: "아직 메시지가 없습니다"
   newMessage: "새로운 메시지"
@@ -1371,6 +1372,7 @@ _chat:
   muteThisRoom: "이 룸을 뮤트"
   deleteRoom: "룸을 삭제"
   chatNotAvailableForThisAccountOrServer: "이 서버 또는 이 계정에서 채팅이 활성화되어 있지 않습니다."
+  chatIsReadOnlyForThisAccountOrServer: "이 서버 또는 이 계정에서 채팅은 읽기 전용입니다. 새로 쓰거나 채팅방을 만들거나 참가할 수 없습니다."
   chatNotAvailableInOtherAccount: "상대방 계정에서 채팅 기능을 사용할 수 없는 상태입니다."
   cannotChatWithTheUser: "이 유저와 채팅을 시작할 수 없습니다"
   cannotChatWithTheUser_description: "채팅을 사용할 수 없는 상태이거나 상대방이 채팅을 열지 않은 상태입니다."
@@ -1931,6 +1933,7 @@ _role:
     canImportFollowing: "팔로우 가져오기 허용"
     canImportMuting: "뮤트 목록 가져오기 허용"
     canImportUserLists: "리스트 목록 가져오기 허용"
+    chatAvailability: "채팅을 허락"
   _condition:
     roleAssignedTo: "수동 역할에 이미 할당됨"
     isLocal: "로컬 유저"
