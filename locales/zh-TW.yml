@@ -1341,6 +1341,7 @@ right: "右"
 bottom: "下"
 top: "上"
 embed: "嵌入"
+settingsMigrating: "正在移轉設定。請稍候……（之後也可以到「設定 → 其他 → 舊設定資訊移轉」中手動進行移轉）"
 _chat:
   noMessagesYet: "尚無訊息"
   newMessage: "新訊息"

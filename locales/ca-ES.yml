@@ -1341,6 +1341,7 @@ right: "Dreta"
 bottom: "A baix "
 top: "A dalt "
 embed: "Incrustar"
+settingsMigrating: "Estem fent la migració de la teva configuració. Si us plau espera un moment... (També pots fer la migració més tard i manualment anant a Preferències → Altres configuracions → Migrar configuració antiga)"
 _chat:
   noMessagesYet: "Encara no tens missatges "
   newMessage: "Missatge nou"
