@@ -21,7 +21,7 @@ import {
 	useTemplateRef,
 	inject,
 } from 'vue';
-import type { Ref } from 'vue';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	markerId?: string;
@@ -36,7 +36,7 @@ const rootEl = useTemplateRef('root');
 const rootElMutationObserver = new MutationObserver(() => {
 	checkChildren();
 });
-const injectedSearchMarkerId = inject<Ref<string | null> | null>('inAppSearchMarkerId', null);
+const injectedSearchMarkerId = inject(DI.inAppSearchMarkerId, null);
 const searchMarkerId = computed(() => injectedSearchMarkerId?.value ?? window.location.hash.slice(1));
 const highlighted = ref(props.markerId === searchMarkerId.value);
 
