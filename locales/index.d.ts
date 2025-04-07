@@ -5386,6 +5386,10 @@ export interface Locale extends ILocale {
      * 設定を移行しています。しばらくお待ちください... (後ほど、設定→その他→旧設定情報を移行 で手動で移行することもできます)
      */
     "settingsMigrating": string;
+    /**
+     * 読み取り専用
+     */
+    "readonly": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -5500,6 +5504,10 @@ export interface Locale extends ILocale {
          * このサーバー、またはこのアカウントでチャットは有効化されていません。
          */
         "chatNotAvailableForThisAccountOrServer": string;
+        /**
+         * このサーバー、またはこのアカウントでチャットは読み取り専用となっています。新たに書き込んだり、チャットルームを作成・参加したりすることはできません。
+         */
+        "chatIsReadOnlyForThisAccountOrServer": string;
         /**
          * 相手のアカウントでチャット機能が使えない状態になっています。
          */
@@ -7531,7 +7539,7 @@ export interface Locale extends ILocale {
             /**
              * チャットを許可
              */
-            "canChat": string;
+            "chatAvailability": string;
         };
         "_condition": {
             /**
