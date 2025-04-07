@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XAnnouncements v-if="$i"/>
 		<XStatusBars/>
 		<div :class="$style.columnsWrapper">
-		  <!-- passive: https://bugs.webkit.org/show_bug.cgi?id=281300 -->
+			<!-- passive: https://bugs.webkit.org/show_bug.cgi?id=281300 -->
 			<div ref="columnsEl" :class="[$style.columns, { [$style.center]: prefer.r['deck.columnAlign'].value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.passive.self="onWheel">
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
@@ -228,8 +228,8 @@ function pointerEvent(ev: PointerEvent) {
 window.document.addEventListener('pointerdown', pointerEvent, { passive: true });
 
 function onWheel(ev: WheelEvent) {
-  // WheelEvent はマウスからしか発火しないのでスナップスクロールは無効化する
-  snapScroll.value = false;
+	// WheelEvent はマウスからしか発火しないのでスナップスクロールは無効化する
+	snapScroll.value = false;
 	if (ev.deltaX === 0 && columnsEl.value != null) {
 		columnsEl.value.scrollLeft += ev.deltaY;
 	}
@@ -445,7 +445,7 @@ if (prefer.s['deck.wallpaper'] != null) {
 	padding: 0;
 	aspect-ratio: 1;
 	width: 100%;
-	max-width: 60px;
+	max-width: 50px;
 	margin: auto;
 	border-radius: 100%;
 	background: var(--MI_THEME-panel);
