@@ -123,6 +123,10 @@ export class FanoutTimelineEndpointService {
 			{
 				const parentFilter = filter;
 				filter = (note) => {
+					const noteJoined = note as MiNote & {
+						renoteUser: MiUser | null;
+						replyUser: MiUser | null;
+					};
 					if (!ps.ignoreAuthorFromUserSuspension) {
 						if (note.user!.isSuspended) return false;
 					}
