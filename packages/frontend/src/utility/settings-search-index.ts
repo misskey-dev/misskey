@@ -17,22 +17,18 @@ export type SearchIndexItem = {
 
 const rootMods = new Map(generated.map(item => [item.id, item]));
 
-function walk(item: GeneratedSearchIndexItem) {
+// link inlining here
+for (const item of generated) {
 	if (item.inlining) {
 		for (const id of item.inlining) {
 			const inline = rootMods.get(id);
 			if (inline) {
 				inline.parentId = item.id;
-				rootMods.delete(id);
 			} else {
 				console.log('[Settings Search Index] Failed to inline', id);
 			}
 		}
 	}
-}
-
-for (const item of generated) {
-	walk(item);
 }
 
 export const searchIndexes: SearchIndexItem[] = generated;
