@@ -130,8 +130,8 @@ export class FanoutTimelineEndpointService {
 					if (!ps.ignoreAuthorFromUserSuspension) {
 						if (note.user!.isSuspended) return false;
 					}
-					if (note.userId !== note.renoteUserId && note.renoteUser?.isSuspended) return false;
-					if (note.userId !== note.replyUserId && note.replyUser?.isSuspended) return false;
+					if (note.userId !== note.renoteUserId && noteJoined.renoteUser?.isSuspended) return false;
+					if (note.userId !== note.replyUserId && noteJoined.replyUser?.isSuspended) return false;
 
 					return parentFilter(note);
 				};
