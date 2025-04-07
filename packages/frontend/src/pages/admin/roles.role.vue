@@ -184,7 +184,7 @@ definePage(() => ({
 .userItemSub {
 	padding: 6px 12px;
 	font-size: 85%;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 
 .userItemMainBody {

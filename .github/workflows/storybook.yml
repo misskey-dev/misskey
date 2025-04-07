@@ -11,14 +11,15 @@ on:
       # Storybook CI is checked on the "push" event of "develop" branch so it would cause a duplicate build.
       # This is a waste of chromatic build quota, so we don't run storybook CI on pull requests targets master.
       - master
-      # Neither Dependabot nor Renovate will change the actual behavior for components.
-      - dependabot/**
-      - renovate/**
 
 jobs:
   build:
-    # chromatic is not likely to be available for fork repositories, so we disable for fork repositories.
-    if: github.repository == 'misskey-dev/misskey'
+    # Chromatic is not likely to be available for fork repositories, so we disable for fork repositories.
+    # Neither Dependabot nor Renovate will change the actual behavior for components.
+    if: >-
+      github.repository == 'misskey-dev/misskey' &&
+      startsWith(github.ref, 'refs/heads/dependabot/') != true &&
+      startsWith(github.ref, 'refs/heads/renovate/') != true
     runs-on: ubuntu-latest
 
     env:

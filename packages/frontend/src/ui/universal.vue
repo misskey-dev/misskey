@@ -15,18 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :class="$style.content"/>
 		<RouterView v-else :class="$style.content"/>
-		<div v-if="isMobile" ref="navFooter" :class="$style.nav">
-			<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
-			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
-			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
-				<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
-				<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator" class="_blink">
-					<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
-				</span>
-			</button>
-			<button :class="$style.navButton" class="_button" @click="widgetsShowing = true"><i :class="$style.navButtonIcon" class="ti ti-apps"></i></button>
-			<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
-		</div>
+		<XMobileFooterMenu v-if="isMobile" ref="navFooter" v-model:drawerMenuShowing="drawerMenuShowing" v-model:widgetsShowing="widgetsShowing"/>
 	</div>
 
 	<div v-if="isDesktop && !pageMetadata?.needWideArea" :class="$style.widgets">
@@ -91,14 +80,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, provide, onMounted, computed, ref, watch, useTemplateRef } from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import XCommon from './_common_/common.vue';
 import type { PageMetadata } from '@/page.js';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
+import XMobileFooterMenu from '@/ui/_common_/mobile-footer-menu.vue';
+import XPreferenceRestore from '@/ui/_common_/PreferenceRestore.vue';
 import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
@@ -109,11 +99,10 @@ import { prefer } from '@/preferences.js';
 import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
 import { DI } from '@/di.js';
 
-const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
+const XWidgets = defineAsyncComponent(() => import('./_common_/widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
-const XPreferenceRestore = defineAsyncComponent(() => import('@/ui/_common_/PreferenceRestore.vue'));
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -129,7 +118,6 @@ window.addEventListener('resize', () => {
 
 const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);
-const navFooter = useTemplateRef('navFooter');
 
 provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
@@ -144,14 +132,6 @@ provideMetadataReceiver((metadataGetter) => {
 	}
 });
 provideReactiveMetadata(pageMetadata);
-
-const menuIndicated = computed(() => {
-	for (const def in navbarItemDef) {
-		if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
-		if (navbarItemDef[def].indicated) return true;
-	}
-	return false;
-});
 
 const drawerMenuShowing = ref(false);
 
@@ -192,20 +172,6 @@ const onContextmenu = (ev) => {
 		},
 	}], ev);
 };
-
-const navFooterHeight = ref(0);
-
-watch(navFooter, () => {
-	if (navFooter.value) {
-		navFooterHeight.value = navFooter.value.offsetHeight;
-		window.document.body.style.setProperty('--MI-minBottomSpacing', 'var(--MI-minBottomSpacingMobile)');
-	} else {
-		navFooterHeight.value = 0;
-		window.document.body.style.setProperty('--MI-minBottomSpacing', '0px');
-	}
-}, {
-	immediate: true,
-});
 </script>
 
 <style lang="scss" module>
@@ -280,69 +246,6 @@ $widgets-hide-threshold: 1090px;
 .content {
 	flex: 1;
 	min-height: 0;
-}
-
-.nav {
-	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-	grid-gap: 8px;
-	width: 100%;
-	box-sizing: border-box;
-	background: var(--MI_THEME-bg);
-	border-top: solid 0.5px var(--MI_THEME-divider);
-}
-
-.navButton {
-	position: relative;
-	padding: 0;
-	aspect-ratio: 1;
-	width: 100%;
-	max-width: 60px;
-	margin: auto;
-	border-radius: 100%;
-	background: var(--MI_THEME-panel);
-	color: var(--MI_THEME-fg);
-
-	&:hover {
-		background: var(--MI_THEME-panelHighlight);
-	}
-
-	&:active {
-		background: hsl(from var(--MI_THEME-panel) h s calc(l - 2));
-	}
-}
-
-.postButton {
-	composes: navButton;
-	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
-	color: var(--MI_THEME-fgOnAccent);
-
-	&:hover {
-		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
-	}
-
-	&:active {
-		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
-	}
-}
-
-.navButtonIcon {
-	font-size: 16px;
-	vertical-align: middle;
-}
-
-.navButtonIndicator {
-	position: absolute;
-	top: 0;
-	left: 0;
-	color: var(--MI_THEME-indicator);
-	font-size: 16px;
-
-	&:has(.itemIndicateValueIcon) {
-		animation: none;
-		font-size: 12px;
-	}
 }
 
 .menuDrawerBg {

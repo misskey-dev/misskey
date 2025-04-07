@@ -43,6 +43,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatService: ChatService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			await this.chatService.checkChatAvailability(me.id, 'write');
+
 			await this.chatService.muteRoom(me.id, ps.roomId, ps.mute);
 		});
 	}

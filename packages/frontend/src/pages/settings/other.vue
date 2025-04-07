@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<SearchMarker :keywords="['account', 'info']">
 				<MkFolder>
-					<template #icon><i class="ti ti-info-circle"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-info-circle"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.accountInfo }}</SearchLabel></template>
 
 					<div class="_gaps_m">
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<SearchMarker :keywords="['roles']">
 				<MkFolder>
-					<template #icon><i class="ti ti-badges"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-badges"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.rolesAssignedToMe }}</SearchLabel></template>
 
 					<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<SearchMarker :keywords="['account', 'move', 'migration']">
 				<MkFolder>
-					<template #icon><i class="ti ti-plane"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-plane"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.accountMigration }}</SearchLabel></template>
 
 					<XMigration/>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<SearchMarker :keywords="['account', 'close', 'delete']">
 				<MkFolder>
-					<template #icon><i class="ti ti-alert-triangle"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-alert-triangle"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.closeAccount }}</SearchLabel></template>
 
 					<div class="_gaps_m">
@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<SearchMarker :keywords="['experimental', 'feature', 'flags']">
 				<MkFolder>
-					<template #icon><i class="ti ti-flask"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-flask"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.experimentalFeatures }}</SearchLabel></template>
 
 					<div class="_gaps_m">
@@ -100,7 +100,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<SearchMarker :keywords="['developer', 'mode', 'debug']">
 				<MkFolder>
-					<template #icon><i class="ti ti-code"></i></template>
+					<template #icon><SearchIcon><i class="ti ti-code"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.developer }}</SearchLabel></template>
 
 					<div class="_gaps_m">
@@ -185,7 +185,6 @@ async function deleteAccount() {
 }
 
 function migrate() {
-	os.waiting();
 	migrateOldSettings();
 }
 
