@@ -105,8 +105,8 @@ onBeforeUnmount(dispose);
 
 @keyframes blink {
 	0%, 100% {
-		background: color(from var(--MI_THEME-accent) srgb r g b / 0.05);
-		border: 1px solid color(from var(--MI_THEME-accent) srgb r g b / 0.7);
+		background: color(from var(--MI_THEME-accent) srgb r g b / 0.1);
+		border: 1px solid color(from var(--MI_THEME-accent) srgb r g b / 0.75);
 	}
 	50% {
 		background: transparent;
