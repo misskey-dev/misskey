@@ -298,7 +298,7 @@ $widgets-hide-threshold: 1090px;
 	padding: 0;
 	aspect-ratio: 1;
 	width: 100%;
-	max-width: 60px;
+	max-width: 50px;
 	margin: auto;
 	border-radius: 100%;
 	background: var(--MI_THEME-panel);

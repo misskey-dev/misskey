@@ -62,12 +62,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker
-				:label="`${i18n.ts.mutedUsers} (${ i18n.ts.renote })`"
 				:keywords="['renote', 'mute', 'hide', 'user']"
 			>
 				<MkFolder>
 					<template #icon><i class="ti ti-repeat-off"></i></template>
-					<template #label>{{ i18n.ts.mutedUsers }} ({{ i18n.ts.renote }})</template>
+					<template #label><SearchLabel>{{ i18n.ts.mutedUsers }} ({{ i18n.ts.renote }})</SearchLabel></template>
 
 					<MkPagination :pagination="renoteMutingPagination">
 						<template #empty>
