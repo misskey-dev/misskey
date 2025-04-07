@@ -185,7 +185,6 @@ async function deleteAccount() {
 }
 
 function migrate() {
-	os.waiting();
 	migrateOldSettings();
 }
 

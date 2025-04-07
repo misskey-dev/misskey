@@ -10,14 +10,19 @@ import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 // TODO: そのうち消す
 export function migrateOldSettings() {
+	os.waiting(i18n.ts.settingsMigrating);
+
 	store.loaded.then(async () => {
-		const themes = await misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []);
-		if (themes.length > 0) {
-			prefer.commit('themes', themes);
-		}
+		misskeyApi('i/registry/get', { scope: ['client'], key: 'themes' }).catch(() => []).then((themes: any) => {
+			if (themes.length > 0) {
+				prefer.commit('themes', themes);
+			}
+		});
 
 		const plugins = ColdDeviceStorage.get('plugins');
 		prefer.commit('plugins', plugins.map(p => ({
@@ -136,6 +141,6 @@ export function migrateOldSettings() {
 
 		window.setTimeout(() => {
 			unisonReload();
-		}, 5000);
+		}, 10000);
 	});
 }
