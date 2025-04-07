@@ -1933,6 +1933,7 @@ _role:
     canImportFollowing: "允許匯入追隨名單"
     canImportMuting: "允許匯入靜音名單"
     canImportUserLists: "允許匯入清單"
+    chatAvailability: "允許聊天"
   _condition:
     roleAssignedTo: "手動指派角色完成"
     isLocal: "本地使用者"
