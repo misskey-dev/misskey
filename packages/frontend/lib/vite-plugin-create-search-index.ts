@@ -100,14 +100,15 @@ type WalkVueNode = RootNode | TemplateChildNode | SimpleExpressionNode;
  */
 function walkVueElements<C extends {} | null>(nodes: WalkVueNode[], context: C, callback: (node: ElementNode, context: C) => C | undefined | void | false): void {
 	for (const node of nodes) {
+		let currentContext = context;
 		if (node.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
 		if (node.type === NodeTypes.ELEMENT) {
 			const result = callback(node, context);
 			if (result === false) return;
-			if (result !== undefined) context = result;
+			if (result !== undefined) currentContext = result;
 		}
 		if ('children' in node) {
-			walkVueElements(node.children, context, callback);
+			walkVueElements(node.children, currentContext, callback);
 		}
 	}
 }
