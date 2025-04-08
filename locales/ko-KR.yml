@@ -1861,7 +1861,7 @@ _achievements:
       description: "버블 게임에서 가장 큰 물건을 내놓았다"
     _bubbleGameDoubleExplodingHead:
       title: "더블 🤯"
-      description: "버블게임에서 가장 큰 물건 2개를 동시에 내놓았다."
+      description: "버블게임에서 가장 큰 물건 2개를 동시에 내놓았다"
       flavor: "이 정도만　도시락통에　🤯　🤯　조금만 더"
 _role:
   new: "새 역할 생성"
