@@ -5390,6 +5390,10 @@ export interface Locale extends ILocale {
      * 読み取り専用
      */
     "readonly": string;
+    /**
+     * デッキへ戻る
+     */
+    "goToDeck": string;
     "_chat": {
         /**
          * まだメッセージはありません
