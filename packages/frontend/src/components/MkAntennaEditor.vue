@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 			<MkSwitch v-model="caseSensitive">{{ i18n.ts.caseSensitive }}</MkSwitch>
 			<MkSwitch v-model="withFile">{{ i18n.ts.withFileAntenna }}</MkSwitch>
-			<MkSwitch v-model="excludeNotesInSensitiveChannel">{{ i18n.ts.hideNotesInSensitiveChannel }}</MkSwitch>
+			<MkSwitch v-model="excludeNotesInSensitiveChannel">{{ i18n.ts.excludeNotesInSensitiveChannel }}</MkSwitch>
 		</div>
 		<div :class="$style.actions">
 			<div class="_buttons">
