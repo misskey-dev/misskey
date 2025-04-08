@@ -173,21 +173,21 @@ function customStringify(obj: unknown): string {
 /**
  * 要素のノードの中身のテキストを抽出する
  */
-function extractElementText(node: ElementNode): string | null {
-	return extractElementTextChecked(node, node.tag);
+function extractElementText(node: ElementNode, id: string): string | null {
+	return extractElementTextChecked(node, node.tag, id);
 }
 
-function extractElementTextChecked(node: ElementNode, processingNodeName: string): string | null {
+function extractElementTextChecked(node: ElementNode, processingNodeName: string, id: string): string | null {
 	const result: string[] = [];
 	for (const child of node.children) {
-		const text = extractElementText2Inner(child, processingNodeName);
+		const text = extractElementText2Inner(child, processingNodeName, id);
 		if (text == null) return null;
 		result.push(text);
 	}
 	return result.join('');
 }
 
-function extractElementText2Inner(node: TemplateChildNode, processingNodeName: string): string | null {
+function extractElementText2Inner(node: TemplateChildNode, processingNodeName: string, id: string): string | null {
 	if (node.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error("Unexpected COMPOUND_EXPRESSION");
 
 	switch (node.type) {
@@ -196,16 +196,16 @@ function extractElementText2Inner(node: TemplateChildNode, processingNodeName: s
 			if (expr.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error(`Unexpected COMPOUND_EXPRESSION`);
 			const exprResult = evalExpression(expr.content);
 			if (typeof exprResult !== 'string') {
-				logger.error(`Result of interpolation node is not string at line ${node.loc.start.line}`);
+				logger.error(`Result of interpolation node is not string at line ${id}:${node.loc.start.line}`);
 				return null;
 			}
 			return exprResult;
 		}
 		case NodeTypes.ELEMENT:
 			if (node.tagType === ElementTypes.ELEMENT) {
-				return extractElementTextChecked(node, processingNodeName);
+				return extractElementTextChecked(node, processingNodeName, id);
 			} else {
-				logger.error(`Unexpected ${node.tag} extracting text of ${processingNodeName} ${node.loc.start.line}`);
+				logger.error(`Unexpected ${node.tag} extracting text of ${processingNodeName} ${id}:${node.loc.start.line}`);
 				return null;
 			}
 		case NodeTypes.TEXT:
@@ -217,7 +217,7 @@ function extractElementText2Inner(node: TemplateChildNode, processingNodeName: s
 		case NodeTypes.IF_BRANCH:
 		case NodeTypes.FOR:
 		case NodeTypes.TEXT_CALL:
-			logger.error(`Unexpected controlflow element extracting text of ${processingNodeName} ${node.loc.start.line}`);
+			logger.error(`Unexpected controlflow element extracting text of ${processingNodeName} ${id}:${node.loc.start.line}`);
 			return null;
 	}
 }
@@ -229,7 +229,7 @@ function extractElementText2Inner(node: TemplateChildNode, processingNodeName: s
 /**
  * SearchLabel/SearchKeyword/SearchIconを探して抽出する関数
  */
-function extractSugarTags(nodes: TemplateChildNode[]): { label: string | null, keywords: string[], icon: string | null } {
+function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: string | null, keywords: string[], icon: string | null } {
 	let label: string | null | undefined = undefined;
 	let icon: string | null | undefined = undefined;
 	const keywords: string[] = [];
@@ -242,35 +242,35 @@ function extractSugarTags(nodes: TemplateChildNode[]): { label: string | null, k
 				return false; // SearchMarkerはスキップ
 			case 'SearchLabel':
 				if (label !== undefined) {
-					logger.warn(`Duplicate SearchLabel found, ignoring the second one at ${node.loc.start.line}`);
+					logger.warn(`Duplicate SearchLabel found, ignoring the second one at ${id}:${node.loc.start.line}`);
 					break; // 2つ目のSearchLabelは無視
 				}
 
-				label = extractElementText(node);
+				label = extractElementText(node, id);
 				return;
 			case 'SearchKeyword':
-				const content = extractElementText(node);
+				const content = extractElementText(node, id);
 				if (content) {
 					keywords.push(content);
 				}
 				return;
 			case 'SearchIcon':
 				if (icon !== undefined) {
-					logger.warn(`Duplicate SearchIcon found, ignoring the second one at ${node.loc.start.line}`);
+					logger.warn(`Duplicate SearchIcon found, ignoring the second one at ${id}:${node.loc.start.line}`);
 					break; // 2つ目のSearchIconは無視
 				}
 
 				if (node.children.length !== 1) {
-					logger.error(`SearchIcon must have exactly one child at ${node.loc.start.line}`);
+					logger.error(`SearchIcon must have exactly one child at ${id}:${node.loc.start.line}`);
 					return;
 				}
 
 				const iconNode = node.children[0];
 				if (iconNode.type !== NodeTypes.ELEMENT) {
-					logger.error(`SearchIcon must have a child element at ${node.loc.start.line}`);
+					logger.error(`SearchIcon must have a child element at ${id}:${node.loc.start.line}`);
 					return;
 				}
-				icon = getStringProp(findAttribute(iconNode.props, 'class'));
+				icon = getStringProp(findAttribute(iconNode.props, 'class'), id);
 				return;
 		}
 
@@ -282,7 +282,7 @@ function extractSugarTags(nodes: TemplateChildNode[]): { label: string | null, k
 	return { label: label ?? null, keywords, icon: icon ?? null };
 }
 
-function getStringProp(attr: AttributeNode | DirectiveNode | null): string | null {
+function getStringProp(attr: AttributeNode | DirectiveNode | null, id: string): string | null {
 	switch (attr?.type) {
 		case null:
 		case undefined:
@@ -294,27 +294,27 @@ function getStringProp(attr: AttributeNode | DirectiveNode | null): string | nul
 			if (attr.exp.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
 			const value = evalExpression(attr.exp.content ?? '');
 			if (typeof value !== 'string') {
-				logger.error(`Expected string value, got ${typeof value} at line ${attr.loc.start.line}`);
+				logger.error(`Expected string value, got ${typeof value} at ${id}:${attr.loc.start.line}`);
 				return null;
 			}
 			return value;
 	}
 }
 
-function getStringArrayProp(attr: AttributeNode | DirectiveNode | null): string[] | null {
+function getStringArrayProp(attr: AttributeNode | DirectiveNode | null, id: string): string[] | null {
 	switch (attr?.type) {
 		case null:
 		case undefined:
 			return null;
 		case NodeTypes.ATTRIBUTE:
-			logger.error(`Expected directive, got attribute at line ${attr.loc.start.line}`);
+			logger.error(`Expected directive, got attribute at ${id}:${attr.loc.start.line}`);
 			return null;
 		case NodeTypes.DIRECTIVE:
 			if (attr.exp == null) return null;
 			if (attr.exp.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
 			const value = evalExpression(attr.exp.content ?? '');
 			if (!Array.isArray(value) || !value.every(x => typeof x === 'string')) {
-				logger.error(`Expected string array value, got ${typeof value} at line ${attr.loc.start.line}`);
+				logger.error(`Expected string array value, got ${typeof value} at ${id}:${attr.loc.start.line}`);
 				return null;
 			}
 			return value;
@@ -354,11 +354,11 @@ function extractUsageInfoFromTemplateAst(
 		};
 
 		// バインドプロパティを取得
-		const path = getStringProp(findAttribute(node.props, 'path'))
-		const icon = getStringProp(findAttribute(node.props, 'icon'))
-		const label = getStringProp(findAttribute(node.props, 'label'))
-		const inlining = getStringArrayProp(findAttribute(node.props, 'inlining'))
-		const keywords = getStringArrayProp(findAttribute(node.props, 'keywords'))
+		const path = getStringProp(findAttribute(node.props, 'path'), id)
+		const icon = getStringProp(findAttribute(node.props, 'icon'), id)
+		const label = getStringProp(findAttribute(node.props, 'label'), id)
+		const inlining = getStringArrayProp(findAttribute(node.props, 'inlining'), id)
+		const keywords = getStringArrayProp(findAttribute(node.props, 'keywords'), id)
 
 		if (path) markerInfo.path = path;
 		if (icon) markerInfo.icon = icon;
@@ -373,7 +373,7 @@ function extractUsageInfoFromTemplateAst(
 
 		// SearchLabelとSearchKeywordを抽出 (AST全体を探索)
 		{
-			const extracted = extractSugarTags(node.children);
+			const extracted = extractSugarTags(node.children, id);
 			if (extracted.label && markerInfo.label) logger.warn(`Duplicate label found for ${markerId} at ${id}:${node.loc.start.line}`);
 			if (extracted.icon && markerInfo.icon) logger.warn(`Duplicate icon found for ${markerId} at ${id}:${node.loc.start.line}`);
 			markerInfo.label = extracted.label ?? markerInfo.label ?? '';
@@ -585,7 +585,7 @@ export class MarkerIdAssigner {
 				}
 
 				// AST で :children 属性が検出された場合、それを更新
-				const childrenValue = getStringArrayProp(childrenProp);
+				const childrenValue = getStringArrayProp(childrenProp, id);
 				if (childrenValue == null) continue;
 
 				const newValue: string[] = [...childrenValue];
@@ -740,7 +740,7 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 				this.addWatchFile(searchIndexFilePath);
 
 				const code = await asigner.getOrLoad(searchIndexFilePath);
-				return generateJavaScriptCode(collectFileMarkers(id, code));
+				return generateJavaScriptCode(collectFileMarkers(searchIndexFilePath, code));
 			}
 			return null;
 		},
