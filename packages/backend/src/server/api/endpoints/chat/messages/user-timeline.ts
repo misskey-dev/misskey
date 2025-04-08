@@ -56,6 +56,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			await this.chatService.checkChatAvailability(me.id, 'read');
+
 			const other = await this.getterService.getUser(ps.userId).catch(err => {
 				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 				throw err;

@@ -4,6 +4,59 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
+<Transition
+	:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+>
+	<div
+		v-if="drawerMenuShowing"
+		:class="$style.menuDrawerBg"
+		class="_modalBg"
+		@click="drawerMenuShowing = false"
+		@touchstart.passive="drawerMenuShowing = false"
+	></div>
+</Transition>
+
+<Transition
+	:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawer_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawer_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_menuDrawer_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
+>
+	<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
+		<XDrawerMenu/>
+	</div>
+</Transition>
+
+<Transition
+	:enterActiveClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
+>
+	<div
+		v-if="widgetsShowing"
+		:class="$style.widgetsDrawerBg"
+		class="_modalBg"
+		@click="widgetsShowing = false"
+		@touchstart.passive="widgetsShowing = false"
+	></div>
+</Transition>
+
+<Transition
+	:enterActiveClass="prefer.s.animation ? $style.transition_widgetsDrawer_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
+>
+	<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
+		<button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false"><i class="ti ti-x"></i></button>
+		<XWidgets/>
+	</div>
+</Transition>
+
 <component
 	:is="popup.component"
 	v-for="popup in popups"
@@ -59,9 +112,14 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
+import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
+const XWidgets = defineAsyncComponent(() => import('./widgets.vue'));
+
+const drawerMenuShowing = defineModel<boolean>('drawerMenuShowing');
+const widgetsShowing = defineModel<boolean>('widgetsShowing');
 
 const dev = _DEV_;
 
@@ -100,6 +158,50 @@ if ($i) {
 </script>
 
 <style lang="scss" module>
+.transition_menuDrawerBg_enterActive,
+.transition_menuDrawerBg_leaveActive {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_menuDrawerBg_enterFrom,
+.transition_menuDrawerBg_leaveTo {
+	opacity: 0;
+}
+
+.transition_menuDrawer_enterActive,
+.transition_menuDrawer_leaveActive {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_menuDrawer_enterFrom,
+.transition_menuDrawer_leaveTo {
+	opacity: 0;
+	transform: translateX(-240px);
+}
+
+.transition_widgetsDrawerBg_enterActive,
+.transition_widgetsDrawerBg_leaveActive {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_widgetsDrawerBg_enterFrom,
+.transition_widgetsDrawerBg_leaveTo {
+	opacity: 0;
+}
+
+.transition_widgetsDrawer_enterActive,
+.transition_widgetsDrawer_leaveActive {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_widgetsDrawer_enterFrom,
+.transition_widgetsDrawer_leaveTo {
+	opacity: 0;
+	transform: translateX(-240px);
+}
+
 .transition_notification_move,
 .transition_notification_enterActive,
 .transition_notification_leaveActive {
@@ -112,6 +214,54 @@ if ($i) {
 .transition_notification_leaveTo {
 	opacity: 0;
 	transform: translateX(-250px);
+}
+
+.menuDrawerBg {
+	z-index: 1001;
+}
+
+.menuDrawer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1001;
+	height: 100dvh;
+	width: 240px;
+	box-sizing: border-box;
+	contain: strict;
+	overflow: auto;
+	overscroll-behavior: contain;
+	background: var(--MI_THEME-navBg);
+}
+
+.widgetsDrawerBg {
+	z-index: 1001;
+}
+
+.widgetsDrawer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1001;
+	width: 310px;
+	height: 100dvh;
+	padding: var(--MI-margin) var(--MI-margin) calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px)) !important;
+	box-sizing: border-box;
+	overflow: auto;
+	overscroll-behavior: contain;
+	background: var(--MI_THEME-bg);
+}
+
+.widgetsCloseButton {
+	padding: 8px;
+	display: block;
+	margin: 0 auto;
+}
+
+@media (min-width: 370px) {
+	.widgetsCloseButton {
+		display: none;
+	}
 }
 
 .notifications {

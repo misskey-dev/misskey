@@ -16,7 +16,6 @@ export const meta = {
 	tags: ['chat'],
 
 	requireCredential: true,
-	requiredRolePolicy: 'canChat',
 
 	prohibitMoved: true,
 
@@ -74,6 +73,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatService: ChatService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			await this.chatService.checkChatAvailability(me.id, 'write');
+
 			const room = await this.chatService.findRoomById(ps.toRoomId);
 			if (room == null) {
 				throw new ApiError(meta.errors.noSuchRoom);

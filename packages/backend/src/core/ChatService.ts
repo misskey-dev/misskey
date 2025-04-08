@@ -95,6 +95,40 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async getChatAvailability(userId: MiUser['id']): Promise<{ read: boolean; write: boolean; }> {
+		const policies = await this.roleService.getUserPolicies(userId);
+
+		switch (policies.chatAvailability) {
+			case 'available':
+				return {
+					read: true,
+					write: true,
+				};
+			case 'readonly':
+				return {
+					read: true,
+					write: false,
+				};
+			case 'unavailable':
+				return {
+					read: false,
+					write: false,
+				};
+			default:
+				throw new Error('invalid chat availability (unreachable)');
+		}
+	}
+
+	/** getChatAvailabilityの糖衣。主にAPI呼び出し時に走らせて、権限的に問題ない場合はそのまま続行する */
+	@bindThis
+	public async checkChatAvailability(userId: MiUser['id'], permission: 'read' | 'write') {
+		const policy = await this.getChatAvailability(userId);
+		if (policy[permission] === false) {
+			throw new Error('ROLE_PERMISSION_DENIED');
+		}
+	}
+
+	@bindThis
 	public async createMessageToUser(fromUser: { id: MiUser['id']; host: MiUser['host']; }, toUser: MiUser, params: {
 		text?: string | null;
 		file?: MiDriveFile | null;
@@ -140,7 +174,7 @@ export class ChatService {
 			}
 		}
 
-		if (!(await this.roleService.getUserPolicies(toUser.id)).canChat) {
+		if (!(await this.getChatAvailability(toUser.id)).write) {
 			throw new Error('recipient is cannot chat (policy)');
 		}
 

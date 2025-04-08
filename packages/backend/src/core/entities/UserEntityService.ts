@@ -560,7 +560,7 @@ export class UserEntityService implements OnModuleInit {
 				followersVisibility: profile!.followersVisibility,
 				followingVisibility: profile!.followingVisibility,
 				chatScope: user.chatScope,
-				canChat: this.roleService.getUserPolicies(user.id).then(r => r.canChat),
+				canChat: this.roleService.getUserPolicies(user.id).then(r => r.chatAvailability === 'available'),
 				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
 					id: role.id,
 					name: role.name,

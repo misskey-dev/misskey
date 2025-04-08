@@ -211,15 +211,12 @@ import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
 import { getBuiltinThemesRef, getThemesRef } from '@/theme.js';
-import { selectFile } from '@/utility/select-file.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/utility/array.js';
 import { definePage } from '@/page.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { reloadAsk } from '@/utility/reload-ask.js';
 import { prefer } from '@/preferences.js';
 
 const installedThemes = getThemesRef();

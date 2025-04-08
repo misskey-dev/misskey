@@ -46,6 +46,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatService: ChatService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			await this.chatService.checkChatAvailability(me.id, 'read');
+
 			const history = ps.room ? await this.chatService.roomHistory(me.id, ps.limit) : await this.chatService.userHistory(me.id, ps.limit);
 
 			const packedMessages = await this.chatEntityService.packMessagesDetailed(history, me);

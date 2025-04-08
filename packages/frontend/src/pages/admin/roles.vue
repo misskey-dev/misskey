@@ -66,13 +66,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
-						
-						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChat, 'canChat'])">
-							<template #label>{{ i18n.ts._role._options.canChat }}</template>
-							<template #suffix>{{ policies.canChat ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="policies.canChat">
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.chatAvailability, 'chatAvailability'])">
+							<template #label>{{ i18n.ts._role._options.chatAvailability }}</template>
+							<template #suffix>{{ policies.chatAvailability === 'available' ? i18n.ts.yes : policies.chatAvailability === 'readonly' ? i18n.ts.readonly : i18n.ts.no }}</template>
+							<MkSelect v-model="policies.chatAvailability">
 								<template #label>{{ i18n.ts.enable }}</template>
-							</MkSwitch>
+								<option value="available">{{ i18n.ts.enabled }}</option>
+								<option value="readonly">{{ i18n.ts.readonly }}</option>
+								<option value="unavailable">{{ i18n.ts.disabled }}</option>
+							</MkSelect>
 						</MkFolder>
 
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionLimit'])">
@@ -319,6 +322,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import * as os from '@/os.js';

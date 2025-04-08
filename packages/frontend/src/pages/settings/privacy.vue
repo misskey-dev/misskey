@@ -78,19 +78,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</SearchMarker>
 
-		<FormSection>
-			<SearchMarker :keywords="['chat']">
-				<MkSelect v-model="chatScope" @update:modelValue="save()">
-					<template #label><SearchLabel>{{ i18n.ts._chat.chatAllowedUsers }}</SearchLabel></template>
-					<option value="everyone">{{ i18n.ts._chat._chatAllowedUsers.everyone }}</option>
-					<option value="followers">{{ i18n.ts._chat._chatAllowedUsers.followers }}</option>
-					<option value="following">{{ i18n.ts._chat._chatAllowedUsers.following }}</option>
-					<option value="mutual">{{ i18n.ts._chat._chatAllowedUsers.mutual }}</option>
-					<option value="none">{{ i18n.ts._chat._chatAllowedUsers.none }}</option>
-					<template #caption>{{ i18n.ts._chat.chatAllowedUsers_note }}</template>
-				</MkSelect>
-			</SearchMarker>
-		</FormSection>
+		<SearchMarker :keywords="['chat']">
+			<FormSection>
+				<template #label><SearchLabel>{{ i18n.ts.chat }}</SearchLabel></template>
+
+				<div class="_gaps_m">
+					<MkInfo v-if="$i.policies.chatAvailability === 'unavailable'">{{ i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
+					<SearchMarker :keywords="['chat']">
+						<MkSelect v-model="chatScope" @update:modelValue="save()">
+							<template #label><SearchLabel>{{ i18n.ts._chat.chatAllowedUsers }}</SearchLabel></template>
+							<option value="everyone">{{ i18n.ts._chat._chatAllowedUsers.everyone }}</option>
+							<option value="followers">{{ i18n.ts._chat._chatAllowedUsers.followers }}</option>
+							<option value="following">{{ i18n.ts._chat._chatAllowedUsers.following }}</option>
+							<option value="mutual">{{ i18n.ts._chat._chatAllowedUsers.mutual }}</option>
+							<option value="none">{{ i18n.ts._chat._chatAllowedUsers.none }}</option>
+							<template #caption>{{ i18n.ts._chat.chatAllowedUsers_note }}</template>
+						</MkSelect>
+					</SearchMarker>
+				</div>
+			</FormSection>
+		</SearchMarker>
 
 		<SearchMarker :keywords="['lockdown']">
 			<FormSection>
