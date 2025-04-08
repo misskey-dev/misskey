@@ -1343,6 +1343,7 @@ top: "위"
 embed: "임베드"
 settingsMigrating: "설정을 이전하는 중입니다. 잠시 기다려주십시오... (나중에 '환경설정 → 기타 → 기존 설정 정보를 이전'에서 수동으로 이전할 수도 있습니다)"
 readonly: "읽기 전용"
+goToDeck: "덱으로 돌아가기"
 _chat:
   noMessagesYet: "아직 메시지가 없습니다"
   newMessage: "새로운 메시지"
@@ -1860,7 +1861,7 @@ _achievements:
       description: "버블 게임에서 가장 큰 물건을 내놓았다"
     _bubbleGameDoubleExplodingHead:
       title: "더블 🤯"
-      description: "버블게임에서 가장 큰 물건 2개를 동시에 내놓았다."
+      description: "버블게임에서 가장 큰 물건 2개를 동시에 내놓았다"
       flavor: "이 정도만　도시락통에　🤯　🤯　조금만 더"
 _role:
   new: "새 역할 생성"
