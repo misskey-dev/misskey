@@ -1717,7 +1717,7 @@ export interface Locale extends ILocale {
     /**
      * センシティブなチャンネルのノートを非表示
      */
-    "hideNotesInSensitiveChannel": string;
+    "excludeNotesInSensitiveChannel": string;
     /**
      * ブラウザへのプッシュ通知を有効にする
      */
