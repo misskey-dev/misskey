@@ -42,14 +42,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch, ref, shallowRef, computed } from 'vue';
+import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch, ref, useTemplateRef, computed } from 'vue';
+import type { Keymap } from '@/utility/hotkey.js';
 import * as os from '@/os.js';
-import { isTouchUsing } from '@/scripts/touch.js';
-import { defaultStore } from '@/store.js';
-import { deviceKind } from '@/scripts/device-kind.js';
-import type { Keymap } from '@/scripts/hotkey.js';
-import { focusTrap } from '@/scripts/focus-trap.js';
-import { focusParent } from '@/scripts/focus.js';
+import { isTouchUsing } from '@/utility/touch.js';
+import { deviceKind } from '@/utility/device-kind.js';
+import { focusTrap } from '@/utility/focus-trap.js';
+import { focusParent } from '@/utility/focus.js';
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -94,19 +95,19 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-provide('modal', true);
+provide(DI.inModal, true);
 
 const maxHeight = ref<number>();
 const fixed = ref(false);
 const transformOrigin = ref('center');
 const showing = ref(true);
-const modalRootEl = shallowRef<HTMLElement>();
-const content = shallowRef<HTMLElement>();
+const modalRootEl = useTemplateRef('modalRootEl');
+const content = useTemplateRef('content');
 const zIndex = os.claimZIndex(props.zPriority);
 const useSendAnime = ref(false);
 const type = computed<ModalTypes>(() => {
 	if (props.preferType === 'auto') {
-		if ((defaultStore.state.menuStyle === 'drawer') || (defaultStore.state.menuStyle === 'auto' && isTouchUsing && deviceKind === 'smartphone')) {
+		if ((prefer.s.menuStyle === 'drawer') || (prefer.s.menuStyle === 'auto' && isTouchUsing && deviceKind === 'smartphone')) {
 			return 'drawer';
 		} else {
 			return props.src != null ? 'popup' : 'dialog';
@@ -117,7 +118,7 @@ const type = computed<ModalTypes>(() => {
 });
 const isEnableBgTransparent = computed(() => props.transparentBg && (type.value === 'popup'));
 const transitionName = computed((() =>
-	defaultStore.state.animation
+	prefer.s.animation
 		? useSendAnime.value
 			? 'send'
 			: type.value === 'drawer'

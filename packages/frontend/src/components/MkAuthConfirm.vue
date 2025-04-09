@@ -117,14 +117,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-
 import MkButton from '@/components/MkButton.vue';
-
-import { $i, getAccounts, getAccountWithSigninDialog, getAccountWithSignupDialog } from '@/account.js';
+import { $i } from '@/i.js';
+import { getAccounts, getAccountWithSigninDialog, getAccountWithSignupDialog } from '@/accounts.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { getProxiedImageUrl } from '@/utility/media-proxy.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = defineProps<{
 	name?: string;
@@ -158,7 +157,7 @@ async function init() {
 
 	const accounts = await getAccounts();
 
-	const accountIdsToFetch = accounts.map(a => a.id).filter(id => !users.value.has(id));
+	const accountIdsToFetch = accounts.map(a => a.user.id).filter(id => !users.value.has(id));
 
 	if (accountIdsToFetch.length > 0) {
 		const usersRes = await misskeyApi('users/show', {
@@ -170,7 +169,7 @@ async function init() {
 
 			users.value.set(user.id, {
 				...user,
-				token: accounts.find(a => a.id === user.id)!.token,
+				token: accounts.find(a => a.user.id === user.id)!.token,
 			});
 		}
 	}

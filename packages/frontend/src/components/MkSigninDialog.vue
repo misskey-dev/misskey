@@ -24,8 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
-import { shallowRef } from 'vue';
-import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
+import { useTemplateRef } from 'vue';
+import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 import MkSignin from '@/components/MkSignin.vue';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
@@ -46,7 +46,7 @@ const emit = defineEmits<{
 	(ev: 'cancelled'): void;
 }>();
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const modal = useTemplateRef('modal');
 
 function onClose() {
 	emit('cancelled');
@@ -84,7 +84,7 @@ function onLogin(res: Misskey.entities.SigninFlowResponse & { finished: true }) 
 	align-items: center;
 	font-weight: bold;
 	backdrop-filter: var(--MI-blur, blur(15px));
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	z-index: 1;
 }
 

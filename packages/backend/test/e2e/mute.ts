@@ -51,30 +51,8 @@ describe('Mute', () => {
 		assert.strictEqual(res.body.some(note => note.id === carolNote.id), false);
 	});
 
-	test('ミュートしているユーザーからメンションされても、hasUnreadMentions が true にならない', async () => {
-		// 状態リセット
-		await api('i/read-all-unread-notes', {}, alice);
-
-		await post(carol, { text: '@alice hi' });
-
-		const res = await api('i', {}, alice);
-
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(res.body.hasUnreadMentions, false);
-	});
-
-	test('ミュートしているユーザーからメンションされても、ストリームに unreadMention イベントが流れてこない', async () => {
-		// 状態リセット
-		await api('i/read-all-unread-notes', {}, alice);
-
-		const fired = await waitFire(alice, 'main', () => post(carol, { text: '@alice hi' }), msg => msg.type === 'unreadMention');
-
-		assert.strictEqual(fired, false);
-	});
-
 	test('ミュートしているユーザーからメンションされても、ストリームに unreadNotification イベントが流れてこない', async () => {
 		// 状態リセット
-		await api('i/read-all-unread-notes', {}, alice);
 		await api('notifications/mark-all-as-read', {}, alice);
 
 		const fired = await waitFire(alice, 'main', () => post(carol, { text: '@alice hi' }), msg => msg.type === 'unreadNotification');
