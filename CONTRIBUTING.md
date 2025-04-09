@@ -273,7 +273,6 @@ niraxは、Misskeyで使用しているオリジナルのフロントエンド�
 	query?: Record<string, string>;
 	loginRequired?: boolean;
 	hash?: string;
-	globalCacheKey?: string;
 	children?: RouteDef[];
 }
 ```

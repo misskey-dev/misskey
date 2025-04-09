@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - develop
-      - dev/storybook8 # for testing
   pull_request_target:
     branches-ignore:
       # Since pull requests targets master mostly is the "develop" branch.
@@ -13,13 +12,14 @@ on:
       # This is a waste of chromatic build quota, so we don't run storybook CI on pull requests targets master.
       - master
 
-env:
-  COREPACK_DEFAULT_TO_LATEST: 0
-
 jobs:
   build:
-    # chromatic is not likely to be available for fork repositories, so we disable for fork repositories.
-    if: github.repository == 'misskey-dev/misskey'
+    # Chromatic is not likely to be available for fork repositories, so we disable for fork repositories.
+    # Neither Dependabot nor Renovate will change the actual behavior for components.
+    if: >-
+      github.repository == 'misskey-dev/misskey' &&
+      startsWith(github.head_ref, 'refs/heads/dependabot/') != true &&
+      startsWith(github.head_ref, 'refs/heads/renovate/') != true
     runs-on: ubuntu-latest
 
     env:
@@ -43,19 +43,18 @@ jobs:
       run: |
         echo "base=$(git rev-list --parents -n1 HEAD | cut -d" " -f2)" >> $GITHUB_OUTPUT
         git checkout $(git rev-list --parents -n1 HEAD | cut -d" " -f3)
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.1.0
     - name: Use Node.js 20.x
-      uses: actions/setup-node@v4.2.0
+      uses: actions/setup-node@v4.3.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml
-    - name: Build misskey-js
-      run: pnpm --filter misskey-js build
+    - name: Build dependent packages
+      run: pnpm -F misskey-js -F misskey-bubble-game -F misskey-reversi build
     - name: Build storybook
       run: pnpm --filter frontend build-storybook
     - name: Publish to Chromatic

@@ -19,28 +19,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef, watch } from 'vue';
+import { onMounted, ref, shallowRef, watch, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import XColumn from './column.vue';
-import { updateColumn } from './deck-store.js';
-import type { Column } from './deck-store.js';
+import type { Column } from '@/deck.js';
+import type { MenuItem } from '@/types/menu.js';
+import type { SoundStore } from '@/preferences/def.js';
+import { updateColumn } from '@/deck.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { favoritedChannelsCache } from '@/cache.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import type { MenuItem } from '@/types/menu.js';
-import type { SoundStore } from '@/store.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
-import * as sound from '@/scripts/sound.js';
+import * as sound from '@/utility/sound.js';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const timeline = useTemplateRef('timeline');
 const channel = shallowRef<Misskey.entities.Channel>();
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 
