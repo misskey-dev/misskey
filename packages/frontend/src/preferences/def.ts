@@ -330,7 +330,7 @@ export const PREF_DEF = {
 		default: false,
 	},
 	defaultFollowWithReplies: {
-		default: false,
+		default: true,
 	},
 	makeEveryTextElementsSelectable: {
 		default: DEFAULT_DEVICE_KIND === 'desktop',
