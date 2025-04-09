@@ -33,6 +33,8 @@ coverage
 # config
 /.config/*
 !/.config/example.yml
+!/.config/dev_default.yml
+!/.config/dev_docker.env
 !/.config/docker_example.yml
 !/.config/docker_example.env
 !/.config/tunnel_example.env
