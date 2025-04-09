@@ -257,7 +257,6 @@ removeAreYouSure: "“{x}”ni olib tashlamoqchi ekanligingizga ishonchingiz kom
 deleteAreYouSure: "“{x}”ni chindan ham yo'q qilmoqchimisiz?"
 resetAreYouSure: "Haqiqatan ham qayta tiklansinmi?"
 saved: "Saqlandi"
-messaging: "Suhbat"
 upload: "Yuklash"
 keepOriginalUploading: "Asl rasmni saqlang"
 keepOriginalUploadingDescription: "Rasmlarni yuklashda asl nusxasini saqlaydi. Agar o'chirilgan bo'lsa, brauzer yuklangandan keyin nashr qilish uchun rasm yaratadi."
@@ -270,7 +269,6 @@ uploadFromUrlMayTakeTime: "Yuklash tugallanishi uchun biroz vaqt ketishi mumkin.
 explore: "Ko'rib chiqish"
 messageRead: "O‘qildi"
 noMoreHistory: "Buning ortida hech qanday hikoya yo'q"
-startMessaging: "Yangi suhbatni boshlash"
 nUsersRead: "{n} tomonidan o'qildi"
 agreeTo: "Men {0} ga roziman"
 agree: "Rozi bo'lish"
@@ -445,8 +443,6 @@ retype: "Qayta kiriting"
 noteOf: "{user} tomonidan  joylandi\n"
 quoteAttached: "Iqtibos"
 quoteQuestion: "Iqtibos sifatida qo'shilsinmi?"
-noMessagesYet: "Bu yerda xabarlar yo'q"
-newMessageExists: "Yangi xabarlar bor"
 onlyOneFileCanBeAttached: "Faqat bitta faylni biriktirish mumkin"
 signinRequired: "Davom etishdan oldin ro'yhatdan o'tishingiz yoki tizimga kirishingiz kerak"
 invitations: "Taklif qilish"
@@ -841,6 +837,13 @@ icon: "Avatar"
 replies: "Javob berish"
 renotes: "Qayta qayd etish"
 flip: "Teskari"
+information: "Haqida"
+_chat:
+  invitations: "Taklif qilish"
+  noHistory: "Tarix yo'q"
+  members: "A'zolar"
+  home: "Bosh sahifa"
+  send: "Yuborish"
 _delivery:
   stop: "To'xtatilgan"
   _type:
@@ -904,8 +907,6 @@ _theme:
     mention: "Murojat"
     renote: "Qayta qayd etish"
     divider: "Ajratrmoq"
-    accentDarken: "Urg'u (Qoraytirilgan)"
-    accentLighten: "Urg'u (Yoritilgan)"
     fgHighlighted: "Belgilangan matn"
 _sfx:
   note: "Qaydlar"
@@ -1094,3 +1095,6 @@ _reversi:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Topilmadi"
+_search:
+  searchScopeAll: "Barcha"
+  searchScopeLocal: "Mahalliy"

@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkA :class="$style.item" :activeClass="$style.active" to="/" exact>
 			<i :class="$style.itemIcon" class="ti ti-home ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.timeline }}</span>
 		</MkA>
-		<template v-for="item in menu">
+		<template v-for="item in prefer.r.menu.value">
 			<div v-if="item === '-'" :class="$style.divider"></div>
 			<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" class="_button" :class="[$style.item, { [$style.active]: navbarItemDef[item].active }]" :activeClass="$style.active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 				<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
@@ -49,19 +49,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, toRef } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
+import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { $i } from '@/i.js';
 
-const menu = toRef(defaultStore.state, 'menu');
 const otherMenuItemIndicated = computed(() => {
 	for (const def in navbarItemDef) {
-		if (menu.value.includes(def)) continue;
+		if (prefer.r.menu.value.includes(def)) continue;
 		if (navbarItemDef[def].indicated) return true;
 	}
 	return false;
@@ -158,7 +158,7 @@ function more() {
 
 	&:hover, &.active {
 		&::before {
-			background: var(--MI_THEME-accentLighten);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 		}
 	}
 }
@@ -220,7 +220,7 @@ function more() {
 
 	&:hover {
 		text-decoration: none;
-		color: var(--MI_THEME-navHoverFg);
+		color: light-dark(hsl(from var(--MI_THEME-navFg) h s calc(l - 17)), hsl(from var(--MI_THEME-navFg) h s calc(l + 17)));
 	}
 
 	&.active {

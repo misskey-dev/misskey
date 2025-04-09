@@ -280,7 +280,6 @@ deleteAreYouSure: "Apakah kamu yakin ingin menghapus \"{x}\"?"
 resetAreYouSure: "Yakin mau atur ulang?"
 areYouSure: "Apakah kamu yakin?"
 saved: "Telah disimpan"
-messaging: "Pesan"
 upload: "Unggah"
 keepOriginalUploading: "Simpan gambar asli"
 keepOriginalUploadingDescription: "Simpan gambar yang diunggah sebagaimana gambar aslinya. Bila dimatikan, versi tampilan web akan dihasilkan pada saat diunggah."
@@ -293,7 +292,6 @@ uploadFromUrlMayTakeTime: "Membutuhkan beberapa waktu hingga pengunggahan selesa
 explore: "Jelajahi"
 messageRead: "Telah dibaca"
 noMoreHistory: "Tidak ada sejarah lagi"
-startMessaging: "Mulai mengirim pesan"
 nUsersRead: "Dibaca oleh {n}"
 agreeTo: "Saya setuju kepada {0}"
 agree: "Setuju"
@@ -481,8 +479,6 @@ noteOf: "Catatan milik {user}"
 quoteAttached: "Dikutip"
 quoteQuestion: "Apakah kamu ingin menambahkan kutipan?"
 attachAsFileQuestion: "Teks dalam papan klip terlalu panjang. Apakah kamu ingin melampirkannya sebagai berkas teks?"
-noMessagesYet: "Tidak ada pesan"
-newMessageExists: "Kamu mendapatkan pesan baru"
 onlyOneFileCanBeAttached: "Kamu hanya dapat melampirkan satu berkas ke dalam pesan"
 signinRequired: "Silahkan login"
 invitations: "Undangan"
@@ -1261,6 +1257,16 @@ performance: "Kinerja"
 modified: "Diubah"
 thereAreNChanges: "Ada {n} perubahan"
 prohibitedWordsForNameOfUser: "Kata yang dilarang untuk nama pengguna"
+postForm: "Buat catatan"
+information: "Informasi"
+_chat:
+  invitations: "Undang"
+  noHistory: "Tidak ada riwayat"
+  members: "Anggota"
+  home: "Beranda"
+  send: "Kirim"
+_settings:
+  webhook: "Webhook"
 _abuseUserReport:
   accept: "Setuju"
   reject: "Tolak"
@@ -1925,7 +1931,6 @@ _theme:
     header: "Header"
     navBg: "Latar belakang bilah samping"
     navFg: "Teks bilah samping"
-    navHoverFg: "Teks bilah samping (Mengambang)"
     navActive: "Teks bilah samping (Aktif)"
     navIndicator: "Indikator bilah samping"
     link: "Tautan"
@@ -1948,11 +1953,8 @@ _theme:
     buttonHoverBg: "Latar belakang tombol (Mengambang)"
     inputBorder: "Batas bidang masukan"
     driveFolderBg: "Latar belakang folder drive"
-    wallpaperOverlay: "Lapisan wallpaper"
     badge: "Lencana"
     messageBg: "Latar belakang obrolan"
-    accentDarken: "Aksen (Gelap)"
-    accentLighten: "Aksen (Terang)"
     fgHighlighted: "Teks yang disorot"
 _sfx:
   note: "Catatan"
@@ -2105,6 +2107,7 @@ _permissions:
   "read:clip-favorite": "Lihat klip yang difavoritkan"
   "read:federation": "Mendapatkan data federasi"
   "write:report-abuse": "Melaporkan pelanggaran"
+  "write:chat": "Buat atau hapus obrolan"
 _auth:
   shareAccessTitle: "Mendapatkan ijin akses aplikasi"
   shareAccess: "Apakah kamu ingin mengijinkan \"{name}\" untuk mengakses akun ini?"
@@ -2489,10 +2492,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Pastikan sumber dari sumber daya ini terpercaya sebelum melakukan pemasangan."
   _plugin:
     title: "Apakah kamu ingin memasang plugin ini?"
-    metaTitle: "Informasi plugin"
   _theme:
     title: "Apakah kamu ingin memasang tema ini?"
-    metaTitle: "Informasi tema"
   _meta:
     base: "Skema warna dasar"
   _vendorInfo:
@@ -2610,3 +2611,7 @@ _mediaControls:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Tidak dapat ditemukan"
+_search:
+  searchScopeAll: "Semua"
+  searchScopeLocal: "Lokal"
+  searchScopeUser: "Pengguna spesifik"
