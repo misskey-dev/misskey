@@ -1,26 +1,27 @@
 <template>
 <MkContainer :scrollable="false">
-  <template #icon><i class="ti ti-hash"></i></template>
-  <template #header>{{ i18n.ts._widgets.koteitag }}</template>
-  <div :class="$style.container">
-    <div>
-      <MkSelect :class="$style.select" v-model="program_selected">
-        <option v-for="option in options" :value="option['key']">{{option['label']}}</option>
-      </MkSelect>
-    </div>
-    <div>
-      <MkButton :class="$style.button" class="get" @click="getPrograms">
-        <i :class="$style.iconInner" class="ti ti-reload"></i>
-      </MkButton>
-    </div>
-  </div>
+	<template #icon><i class="ti ti-hash"></i></template>
+	<template #header>{{ i18n.ts._widgets.koteitag }}</template>
+	<div :class="$style.container">
+		<div>
+			<MkSelect v-model="program_selected" :class="$style.select">
+				<option v-for="option in options" :value="option['key']">{{ option['label'] }}</option>
+			</MkSelect>
+		</div>
+		<div>
+			<MkButton :class="$style.button" class="get" @click="getPrograms">
+				<i :class="$style.iconInner" class="ti ti-reload"></i>
+			</MkButton>
+		</div>
+	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, watch } from 'vue';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -40,83 +41,84 @@ const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const { configure } = useWidgetPropsManager(name, widgetPropsDef, props, emit);
 
 defineExpose<WidgetComponentExpose>({
-  name,
-  configure,
-  id: props.widget ? props.widget.id : null,
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
 });
 
 const getPrograms = async () => {
-  options = {clear_tags: {key:'clear_tags', label: dic.clearTags}};
-  fetch('/mulukhiya/api/program/update', {method: 'POST'})
-    .then(() => fetch('/mulukhiya/api/program'))
-    .then(e => e.json())
-    .then(e => {
-      programs = e;
-      Object.keys(programs).filter(k => programs[k]?.enable).map(k => {
-        const v = programs[k];
-        if (!v) return;
-        const label: string[] = [];
-        if (v.series) label.push(v.series);
-        if (v.episode) {
-          label.push(`${dic.episodePrefix}${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
-        }
-        if (v.subtitle) label.push(`「${v.subtitle}」`);
-        if (v.livecure) {
-          if (v.air) label.push(dic.air);
-          label.push(dic.livecure);
-        }
-        if (v.minutes) label.push(`${v.minutes}分`);
-        (v.extra_tags || []).map((tag: string) => label.push(tag));
-        options[k] = {key: k, label: label.join(' ')};
-      });
-      options['episode_browser'] = {key:'episode_browser', label: dic.episodeBrowser};
-    }).catch(e => os.alert({type: 'error', title: dic.fetch, text: e.message}));
-}
+	options = { clear_tags: { key: 'clear_tags', label: dic.clearTags } };
+	window.fetch('/mulukhiya/api/program/update', { method: 'POST' })
+		.then(() => window.fetch('/mulukhiya/api/program'))
+		.then(e => e.json())
+		.then(e => {
+			programs = e;
+			Object.keys(programs).filter(k => programs[k]?.enable).map(k => {
+				const v = programs[k];
+				if (!v) return;
+				const label: string[] = [];
+				if (v.series) label.push(v.series);
+				if (v.episode) {
+					label.push(`${dic.episodePrefix}${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
+				}
+				if (v.subtitle) label.push(`「${v.subtitle}」`);
+				if (v.livecure) {
+					if (v.air) label.push(dic.air);
+					label.push(dic.livecure);
+				}
+				if (v.minutes) label.push(`${v.minutes}分`);
+				(v.extra_tags || []).map((tag: string) => label.push(tag));
+				options[k] = { key: k, label: label.join(' ') };
+			});
+			options['episode_browser'] = { key: 'episode_browser', label: dic.episodeBrowser };
+		}).catch(e => os.alert({ type: 'error', title: dic.fetch, text: e.message }));
+};
 
 const setPrograms = async () => {
-  const commandToot = {command: 'user_config', tagging: {}}
-  switch (program_selected.value) {
-    case 'episode_browser':
-      program_selected.value = '';
-      window.open('/mulukhiya/app/episode');
-      return;
+	const commandToot = { command: 'user_config', tagging: {} };
+	switch (program_selected.value) {
+		case 'episode_browser':
+			program_selected.value = '';
+			window.open('/mulukhiya/app/episode');
+			return;
 
-    case 'clear_tags':
-      commandToot.tagging['user_tags'] = null;
-      break;
+		case 'clear_tags':
+			commandToot.tagging['user_tags'] = null;
+			break;
 
-    default:
-      const v = programs[program_selected.value];
-      if (!v) return;
-      commandToot.tagging['user_tags'] = []
-      if (v.series) commandToot.tagging['user_tags'].push(v.series);
-      if (v.episode) {
-        commandToot.tagging['user_tags'].push(`${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
-      }
-      if (v.subtitle) commandToot.tagging['user_tags'].push(v.subtitle);
-      if (v.air) commandToot.tagging['user_tags'].push(dic.air);
-      if (v.livecure) commandToot.tagging['user_tags'].push(dic.livecure);
-      (v.extra_tags || []).map((tag: string) => commandToot.tagging['user_tags'].push(tag));
-      if (v.minutes) commandToot.tagging['minutes'] = v.minutes;
-      break;
-  }
+		default: {
+			const v = programs[program_selected.value];
+			if (!v) return;
+			commandToot.tagging['user_tags'] = [];
+			if (v.series) commandToot.tagging['user_tags'].push(v.series);
+			if (v.episode) {
+				commandToot.tagging['user_tags'].push(`${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
+			}
+			if (v.subtitle) commandToot.tagging['user_tags'].push(v.subtitle);
+			if (v.air) commandToot.tagging['user_tags'].push(dic.air);
+			if (v.livecure) commandToot.tagging['user_tags'].push(dic.livecure);
+			(v.extra_tags || []).map((tag: string) => commandToot.tagging['user_tags'].push(tag));
+			if (v.minutes) commandToot.tagging['minutes'] = v.minutes;
+			break;
+		}
+	}
 
-  os.confirm({
-    type: 'info',
-    title: dic.confirmMessage,
-    text: options[program_selected.value].label,
-  }).then(({ canceled }) => {
-    program_selected.value = '';
-    if (canceled) return;
-    os.apiWithDialog('notes/create', {
-      localOnly: true, // コマンドトゥートは連合に流す必要なし
-      poll: null,
-      text: JSON.stringify(commandToot),
-      visibility: 'specified',
-      visibleUserIds: [],
-    }).then(() => os.toast(dic.successMessage));
-  });
-}
+	os.confirm({
+		type: 'info',
+		title: dic.confirmMessage,
+		text: options[program_selected.value].label,
+	}).then(({ canceled }) => {
+		program_selected.value = '';
+		if (canceled) return;
+		os.apiWithDialog('notes/create', {
+			localOnly: true, // コマンドトゥートは連合に流す必要なし
+			poll: null,
+			text: JSON.stringify(commandToot),
+			visibility: 'specified',
+			visibleUserIds: [],
+		}).then(() => os.toast(dic.successMessage));
+	});
+};
 
 watch(program_selected, (next, prev) => setPrograms());
 getPrograms();
