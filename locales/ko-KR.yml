@@ -1562,7 +1562,7 @@ _initialTutorial:
   _howToMakeAttachmentsSensitive:
     title: "첨부 파일을 열람주의로 설정하려면?"
     description: "서버의 가이드라인에 따라 필요한 이미지, 또는 그대로 노출되기에 부적절한 미디어는 '열람 주의'를 설정해 주세요."
-    tryThisFile: "이 양식에 첨부된 이미지를 열람 주의로 설정해 보세요!"
+    tryThisFile: "이 입력란에 첨부된 이미지를 열람 주의로 설정해 보세요!"
     _exampleNote:
       note: "낫또 뚜껑 뜯다가 실수했다…"
     method: "첨부 파일을 열람 주의로 설정하려면, 해당 파일을 클릭하여 메뉴를 열고, '열람주의로 설정'을 클릭합니다."
