@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events.js';
-import { defaultIdlingRenderScheduler } from '@/scripts/idle-render.js';
+import { defaultIdlingRenderScheduler } from '@/utility/idle-render.js';
 
 // https://stackoverflow.com/questions/1878907/how-can-i-find-the-difference-between-two-angles
 const angleDiff = (a: number, b: number) => {
@@ -192,7 +192,7 @@ function tick() {
 tick();
 
 function calcColors() {
-	const computedStyle = getComputedStyle(document.documentElement);
+	const computedStyle = getComputedStyle(window.document.documentElement);
 	const dark = tinycolor(computedStyle.getPropertyValue('--MI_THEME-bg')).isDark();
 	const accent = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();
 	majorGraduationColor.value = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';

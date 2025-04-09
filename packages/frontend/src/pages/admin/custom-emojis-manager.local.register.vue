@@ -18,11 +18,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</option>
 			</MkSelect>
 
-			<MkSwitch v-model="keepOriginalUploading">
-				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
-				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
-			</MkSwitch>
-
 			<MkSwitch v-model="directoryToCategory">
 				<template #label>{{ i18n.ts._customEmojisManager._local._register.directoryToCategoryLabel }}</template>
 				<template #caption>{{ i18n.ts._customEmojisManager._local._register.directoryToCategoryCaption }}</template>
@@ -78,7 +73,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as Misskey from 'misskey-js';
 import { onMounted, ref, useCssModule } from 'vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
+import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
+import type { DroppedFile } from '@/utility/file-drop.js';
+import type { GridSetting } from '@/components/grid/grid.js';
+import type { GridRow } from '@/components/grid/row.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import {
 	emptyStrToEmptyArray,
 	emptyStrToNull,
@@ -88,22 +88,17 @@ import MkGrid from '@/components/grid/MkGrid.vue';
 import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { defaultStore } from '@/store.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { validators } from '@/components/grid/cell-validators.js';
-import { chooseFileFromDrive, chooseFileFromPc } from '@/scripts/select-file.js';
-import { uploadFile } from '@/scripts/upload.js';
-import { extractDroppedItems, flattenDroppedFiles } from '@/scripts/file-drop.js';
+import { chooseFileFromDrive, chooseFileFromPc } from '@/utility/select-file.js';
+import { uploadFile } from '@/utility/upload.js';
+import { extractDroppedItems, flattenDroppedFiles } from '@/utility/file-drop.js';
 import XRegisterLogs from '@/pages/admin/custom-emojis-manager.logs.vue';
 import { copyGridDataToClipboard } from '@/components/grid/grid-utils.js';
 
-import type { RequestLogItem } from '@/pages/admin/custom-emojis-manager.impl.js';
-import type { GridCellValidationEvent, GridCellValueChangeEvent, GridEvent } from '@/components/grid/grid-event.js';
-import type { DroppedFile } from '@/scripts/file-drop.js';
-import type { GridSetting } from '@/components/grid/grid.js';
-import type { GridRow } from '@/components/grid/row.js';
+import { prefer } from '@/preferences.js';
 
 const MAXIMUM_EMOJI_REGISTER_COUNT = 100;
 
@@ -244,8 +239,7 @@ function setupGrid(): GridSetting {
 
 const uploadFolders = ref<FolderItem[]>([]);
 const gridItems = ref<GridItem[]>([]);
-const selectedFolderId = ref(defaultStore.state.uploadFolder);
-const keepOriginalUploading = ref(defaultStore.state.keepOriginalUploading);
+const selectedFolderId = ref(prefer.s.uploadFolder);
 const directoryToCategory = ref<boolean>(false);
 const registerButtonDisabled = ref<boolean>(false);
 const requestLogs = ref<RequestLogItem[]>([]);
@@ -338,7 +332,7 @@ async function onDrop(ev: DragEvent) {
 							it.file,
 							selectedFolderId.value,
 							it.file.name.replace(/\.[^.]+$/, ''),
-							keepOriginalUploading.value,
+							true,
 						),
 					}),
 					),
@@ -373,7 +367,7 @@ async function onFileSelectClicked() {
 		true,
 		{
 			uploadFolder: selectedFolderId.value,
-			keepOriginal: keepOriginalUploading.value,
+			keepOriginal: true,
 			// 拡張子は消す
 			nameConverter: (file) => file.name.replace(/\.[a-zA-Z0-9]+$/, ''),
 		},
