@@ -14,6 +14,7 @@ import { MiSystemWebhook, MiUser, MiWebhook, UserProfilesRepository, UsersReposi
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { QueueService } from '@/core/QueueService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 
 describe('WebhookTestService', () => {
 	let app: TestingModule;
@@ -57,6 +58,11 @@ describe('WebhookTestService', () => {
 				WebhookTestService,
 				IdService,
 				{
+					provide: CustomEmojiService, useFactory: () => ({
+						populateEmojis: jest.fn(),
+					}),
+				},
+				{
 					provide: QueueService, useFactory: () => ({
 						systemWebhookDeliver: jest.fn(),
 						userWebhookDeliver: jest.fn(),
@@ -88,8 +94,8 @@ describe('WebhookTestService', () => {
 	});
 
 	beforeEach(async () => {
-		root = await createUser({ username: 'root', usernameLower: 'root', isRoot: true });
-		alice = await createUser({ username: 'alice', usernameLower: 'alice', isRoot: false });
+		root = await createUser({ username: 'root', usernameLower: 'root' });
+		alice = await createUser({ username: 'alice', usernameLower: 'alice' });
 
 		userWebhookService.fetchWebhooks.mockReturnValue(Promise.resolve([
 			{ id: 'dummy-webhook', active: true, userId: alice.id } as MiWebhook,

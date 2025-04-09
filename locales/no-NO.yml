@@ -299,8 +299,6 @@ text: "Tekst"
 next: "Neste"
 retype: "Gjenta"
 quoteAttached: "Sitat"
-noMessagesYet: "Ingen meldinger ennå"
-newMessageExists: "Det er nye meldinger"
 onlyOneFileCanBeAttached: "Du kan bare legge ved én fil i en melding"
 invitations: "Inviter"
 available: "Tilgjengelig"
@@ -463,6 +461,12 @@ icon: "Avatar"
 replies: "Svar"
 renotes: "Renote"
 surrender: "Avbryt"
+information: "Informasjon"
+_chat:
+  invitations: "Inviter"
+  members: "Medlemmer"
+  home: "Hjem"
+  send: "Send"
 _delivery:
   stop: "Suspendert"
 _initialAccountSetting:
@@ -730,3 +734,5 @@ _moderationLogTypes:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Ikke funnet"
+_search:
+  searchScopeAll: "Alle"

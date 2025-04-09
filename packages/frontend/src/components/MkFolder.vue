@@ -27,10 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : undefined, overflow: maxHeight ? `auto` : undefined }" :aria-hidden="!opened">
 			<Transition
-				:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
-				:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
-				:enterFromClass="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
-				:leaveToClass="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
+				:enterActiveClass="prefer.s.animation ? $style.transition_toggle_enterActive : ''"
+				:leaveActiveClass="prefer.s.animation ? $style.transition_toggle_leaveActive : ''"
+				:enterFromClass="prefer.s.animation ? $style.transition_toggle_enterFrom : ''"
+				:leaveToClass="prefer.s.animation ? $style.transition_toggle_leaveTo : ''"
 				@enter="enter"
 				@afterEnter="afterEnter"
 				@leave="leave"
@@ -56,9 +56,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, ref, shallowRef } from 'vue';
-import { defaultStore } from '@/store.js';
-import { getBgColor } from '@/scripts/get-bg-color.js';
+import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
+import { prefer } from '@/preferences.js';
+import { getBgColor } from '@/utility/get-bg-color.js';
 
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
@@ -74,7 +74,7 @@ const props = withDefaults(defineProps<{
 	spacerMax: 22,
 });
 
-const rootEl = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
 const bgSame = ref(false);
 const opened = ref(props.defaultOpen);
 const openedAtLeastOnce = ref(props.defaultOpen);
@@ -116,7 +116,7 @@ function toggle() {
 }
 
 onMounted(() => {
-	const computedStyle = getComputedStyle(document.documentElement);
+	const computedStyle = getComputedStyle(window.document.documentElement);
 	const parentBg = getBgColor(rootEl.value?.parentElement) ?? 'transparent';
 	const myBg = computedStyle.getPropertyValue('--MI_THEME-panel');
 	bgSame.value = parentBg === myBg;
@@ -175,7 +175,7 @@ onMounted(() => {
 }
 
 .headerLower {
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: .85em;
 	padding-left: 4px;
 }
@@ -209,13 +209,13 @@ onMounted(() => {
 }
 
 .headerTextSub {
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: .85em;
 }
 
 .headerRight {
 	margin-left: auto;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	white-space: nowrap;
 }
 
@@ -239,7 +239,7 @@ onMounted(() => {
 	bottom: var(--MI-stickyBottom, 0px);
 	left: 0;
 	padding: 12px;
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 	background-size: auto auto;
