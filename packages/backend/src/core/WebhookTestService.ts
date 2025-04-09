@@ -248,7 +248,7 @@ export class WebhookTestService {
 				}
 
 				if (isNoteType(params.type)) {
-					send<`note@${string}`>(params.type, { note: toPackedNote(dummyNote1) });
+					send<`note@${string}`>(params.type, { note: await this.toPackedNote(dummyNote1) });
 					return;
 				}
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
