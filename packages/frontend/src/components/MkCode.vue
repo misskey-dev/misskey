@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</button>
 	<Suspense>
 		<template #fallback>
-			<MkLoading />
+			<MkLoading/>
 		</template>
 		<XCode v-if="show && lang" :code="code" :lang="lang"/>
 		<pre v-else-if="show" :class="$style.codeBlockFallbackRoot"><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
@@ -28,9 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, ref } from 'vue';
 import * as os from '@/os.js';
 import MkLoading from '@/components/global/MkLoading.vue';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	code: string;
@@ -42,13 +42,12 @@ const props = withDefaults(defineProps<{
 	forceShow: false,
 });
 
-const show = ref(props.forceShow === true ? true : !defaultStore.state.dataSaver.code);
+const show = ref(props.forceShow === true ? true : !prefer.s.dataSaver.code);
 
 const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'));
 
 function copy() {
 	copyToClipboard(props.code);
-	os.success();
 }
 </script>
 

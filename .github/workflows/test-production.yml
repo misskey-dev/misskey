@@ -9,7 +9,6 @@ on:
 
 env:
   NODE_ENV: production
-  COREPACK_DEFAULT_TO_LATEST: 0
 
 jobs:
   production:
@@ -24,14 +23,13 @@ jobs:
     - uses: actions/checkout@v4.2.2
       with:
         submodules: true
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.1.0
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.2.0
+      uses: actions/setup-node@v4.3.0
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml

@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
 		<div class="cwepdizn _gaps_m">
 			<MkFolder :defaultOpen="true">
@@ -69,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -78,24 +77,22 @@ import { toUnicode } from 'punycode.js';
 import tinycolor from 'tinycolor2';
 import { v4 as uuid } from 'uuid';
 import JSON5 from 'json5';
-
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
+import { host } from '@@/js/config.js';
+import type { Theme } from '@/theme.js';
 import MkButton from '@/components/MkButton.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
-
-import { $i } from '@/account.js';
-import { applyTheme } from '@/scripts/theme.js';
-import type { Theme } from '@/scripts/theme.js';
-import { host } from '@@/js/config.js';
+import { $i } from '@/i.js';
+import { addTheme, applyTheme } from '@/theme.js';
 import * as os from '@/os.js';
-import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { addTheme } from '@/theme-store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { useLeaveGuard } from '@/scripts/use-leave-guard.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useLeaveGuard } from '@/use/use-leave-guard.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
 
 const bgColors = [
 	{ color: '#f5f5f5', kind: 'light', forPreview: '#f5f5f5' },
@@ -201,10 +198,10 @@ async function saveAs() {
 	if (description.value) theme.value.desc = description.value;
 	await addTheme(theme.value);
 	applyTheme(theme.value);
-	if (defaultStore.state.darkMode) {
-		ColdDeviceStorage.set('darkTheme', theme.value);
+	if (store.s.darkMode) {
+		prefer.commit('darkTheme', theme.value);
 	} else {
-		ColdDeviceStorage.set('lightTheme', theme.value);
+		prefer.commit('lightTheme', theme.value);
 	}
 	changed.value = false;
 	os.alert({
@@ -229,7 +226,7 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.themeEditor,
 	icon: 'ti ti-palette',
 }));

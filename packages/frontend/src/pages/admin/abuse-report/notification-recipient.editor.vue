@@ -71,16 +71,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, shallowRef, toRefs } from 'vue';
+import { computed, onMounted, ref, useTemplateRef, toRefs } from 'vue';
 import { entities } from 'misskey-js';
+import type { MkSystemWebhookResult } from '@/components/MkSystemWebhookEditor.impl.js';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 import MkInput from '@/components/MkInput.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkSelect from '@/components/MkSelect.vue';
 import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
-import type { MkSystemWebhookResult } from '@/components/MkSystemWebhookEditor.impl.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkDivider from '@/components/MkDivider.vue';
 import * as os from '@/os.js';
@@ -100,7 +100,7 @@ const props = defineProps<{
 
 const { mode, id } = toRefs(props);
 
-const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialogEl = useTemplateRef('dialogEl');
 
 const loading = ref<number>(0);
 
@@ -296,7 +296,7 @@ onMounted(async () => {
 	left: 0;
 	padding: 12px;
 	border-top: solid 0.5px var(--MI_THEME-divider);
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 }

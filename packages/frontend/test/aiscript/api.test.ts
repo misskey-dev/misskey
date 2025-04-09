@@ -4,7 +4,7 @@
  */
 
 import { miLocalStorage } from '@/local-storage.js';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { errors, Interpreter, Parser, values } from '@syuilo/aiscript';
 import {
 	afterAll,
@@ -33,11 +33,11 @@ async function exe(script: string): Promise<values.Value[]> {
 	return outputs;
 }
 
-let $iMock = vi.hoisted<Partial<typeof import('@/account.js').$i> | null >(
+let $iMock = vi.hoisted<Partial<typeof import('@/i.js').$i> | null >(
 	() => null
 );
 
-vi.mock('@/account.js', () => {
+vi.mock('@/i.js', () => {
 	return {
 		get $i() {
 			return $iMock;
@@ -59,7 +59,7 @@ vi.mock('@/os.js', () => {
 
 const misskeyApiMock = vi.hoisted(() => vi.fn());
 
-vi.mock('@/scripts/misskey-api.js', () => {
+vi.mock('@/utility/misskey-api.js', () => {
 	return { misskeyApi: misskeyApiMock };
 });
 

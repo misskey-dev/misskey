@@ -266,14 +266,14 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import { useForm } from '@/scripts/use-form.js';
+import { useForm } from '@/use/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 import MkRadios from '@/components/MkRadios.vue';
 
@@ -391,7 +391,7 @@ const proxyAccountForm = useForm({
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.general,
 	icon: 'ti ti-settings',
 }));
@@ -400,6 +400,6 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .subCaption {
 	font-size: 0.85em;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 </style>
