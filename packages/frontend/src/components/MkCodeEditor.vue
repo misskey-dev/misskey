@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, toRefs, shallowRef, nextTick } from 'vue';
+import { ref, watch, toRefs, useTemplateRef, nextTick } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
@@ -61,7 +61,7 @@ const { modelValue } = toRefs(props);
 const v = ref<string>(modelValue.value ?? '');
 const focused = ref(false);
 const changed = ref(false);
-const inputEl = shallowRef<HTMLTextAreaElement>();
+const inputEl = useTemplateRef('inputEl');
 
 const focus = () => inputEl.value?.focus();
 
@@ -140,7 +140,7 @@ watch(v, newValue => {
 .caption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 	&:empty {
 		display: none;

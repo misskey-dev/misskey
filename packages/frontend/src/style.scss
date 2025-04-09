@@ -28,9 +28,6 @@
 }
 
 html {
-	background-color: var(--MI_THEME-bg);
-	color: var(--MI_THEME-fg);
-	accent-color: var(--MI_THEME-accent);
 	overflow: auto;
 	overflow-wrap: break-word;
 	font-family: 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
@@ -39,6 +36,11 @@ html {
 	text-size-adjust: 100%;
 	tab-size: 2;
 	-webkit-text-size-adjust: 100%;
+	touch-action: manipulation;
+	scroll-behavior: smooth;
+	background-color: var(--MI_THEME-bg);
+	color: var(--MI_THEME-fg);
+	accent-color: var(--MI_THEME-accent);
 
 	&, * {
 		scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
@@ -81,6 +83,11 @@ html {
 	&.useSystemFont {
 		font-family: system-ui;
 	}
+
+	&:not(.forceSelectableAll) {
+		user-select: none;
+		-webkit-user-select: none;
+	}
 }
 
 html._themeChanging_ {
@@ -89,11 +96,19 @@ html._themeChanging_ {
 	}
 }
 
-html, body {
-	touch-action: manipulation;
+html,
+body,
+#misskey_app {
 	margin: 0;
 	padding: 0;
-	scroll-behavior: smooth;
+	width: 100%;
+	height: 100%;
+	overscroll-behavior: none;
+}
+
+body {
+	/* NOTE: htmlにも overflow: clip を設定したいところだが、設定すると何故か少なくともChromeで html が main thread scrolling になりパフォーマンスが(多分)落ちる */
+	overflow: clip;
 }
 
 a {
@@ -108,10 +123,6 @@ a {
 		outline-offset: 2px;
 	}
 
-	&:hover {
-		text-decoration: underline;
-	}
-
 	&[target="_blank"] {
 		-webkit-touch-callout: default;
 	}
@@ -120,6 +131,8 @@ a {
 textarea, input {
 	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
+	user-select: text;
+	-webkit-user-select: text;
 }
 
 optgroup, option {
@@ -128,8 +141,9 @@ optgroup, option {
 }
 
 hr {
-	margin: var(--MI-margin) 0 var(--MI-margin) 0;
+	margin: 0;
 	border: none;
+	border-radius: 999px;
 	height: 1px;
 	background: var(--MI_THEME-divider);
 }
@@ -162,6 +176,37 @@ rt {
 	text-align: center;
 }
 
+._pageContainer {
+	container-type: size;
+	contain: strict;
+	overflow: auto;
+	overscroll-behavior: contain;
+}
+
+._pageScrollable {
+	height: 100%;
+	overflow: clip;
+	overflow-y: scroll;
+	overscroll-behavior: contain;
+
+	/*
+	理屈は知らないけど、ここでbackgroundを設定しておかないと
+	スクロールコンテナーが少なくともChromeにおいて
+	main thread scrolling になってしまい、パフォーマンスが(多分)落ちる。
+	backgroundが透明だと裏側を描画しないといけなくなるとかそういう理由かもしれない
+	*/
+	background: var(--MI_THEME-bg);
+}
+
+._pageScrollableReversed {
+	height: 100%;
+	overflow: clip;
+	overflow-y: scroll;
+	overscroll-behavior: contain;
+	display: flex;
+	flex-direction: column-reverse;
+}
+
 ._indicatorCircle {
 	display: inline-block;
 	width: 1em;
@@ -183,6 +228,16 @@ rt {
 	padding: 0.3em 0.5em;
 }
 
+._selectable {
+	user-select: text;
+	-webkit-user-select: text;
+}
+
+._selectableAtomic {
+	user-select: all;
+	-webkit-user-select: all;
+}
+
 ._noSelect {
 	user-select: none;
 	-webkit-user-select: none;
@@ -194,11 +249,6 @@ rt {
 	word-wrap: normal !important; // https://codeday.me/jp/qa/20190424/690106.html
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-
-._ghost {
-	@extend ._noSelect;
-	pointer-events: none;
 }
 
 ._modalBg {
@@ -299,13 +349,13 @@ rt {
 ._gaps_m {
 	display: flex;
 	flex-direction: column;
-	gap: 1.5em;
+	gap: 21px;
 }
 
 ._gaps_s {
 	display: flex;
 	flex-direction: column;
-	gap: 0.75em;
+	gap: 10px;
 }
 
 ._gaps {
@@ -348,7 +398,7 @@ rt {
 }
 
 ._acrylic {
-	background: var(--MI_THEME-acrylicPanel);
+	background: color(from var(--MI_THEME-panel) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 }
@@ -421,6 +471,10 @@ rt {
 
 ._link {
 	color: var(--MI_THEME-link);
+}
+
+._love {
+	color: var(--MI_THEME-love);
 }
 
 ._caption {
