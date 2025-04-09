@@ -63,12 +63,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, shallowRef, computed } from 'vue';
+import { watch, ref, useTemplateRef, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkUserList from '@/components/MkUserList.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 
@@ -77,7 +77,7 @@ const props = defineProps<{
 }>();
 
 const origin = ref('local');
-const tagsEl = shallowRef<InstanceType<typeof MkFoldableSection>>();
+const tagsEl = useTemplateRef('tagsEl');
 const tagsLocal = ref<Misskey.entities.Hashtag[]>([]);
 const tagsRemote = ref<Misskey.entities.Hashtag[]>([]);
 

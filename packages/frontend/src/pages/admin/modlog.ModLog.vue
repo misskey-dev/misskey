@@ -41,6 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					'deletePage',
 					'deleteFlash',
 					'deleteGalleryPost',
+					'deleteChatRoom',
 				].includes(log.type)
 			}"
 		>{{ i18n.ts._moderationLogTypes[log.type] }}</b>
@@ -81,6 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="log.type === 'deletePage'">: @{{ log.info.pageUserUsername }}</span>
 		<span v-else-if="log.type === 'deleteFlash'">: @{{ log.info.flashUserUsername }}</span>
 		<span v-else-if="log.type === 'deleteGalleryPost'">: @{{ log.info.postUserUsername }}</span>
+		<span v-else-if="log.type === 'deleteChatRoom'">: @{{ log.info.room.name }}</span>
 		<span v-else-if="log.type === 'makeNoteHome'">: @{{ log.info.noteUserUsername }}{{ log.info.noteUserHost ? '@' + log.info.noteUserHost : '' }}</span>
 	</template>
 	<template #icon>
@@ -168,6 +170,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 		<template v-else-if="log.type === 'updateAbuseReportNote'">
+			<div :class="$style.diff">
+				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
+			</div>
+		</template>
+		<template v-else-if="log.type === 'updateProxyAccountDescription'">
 			<div :class="$style.diff">
 				<CodeDiff :context="5" :hideHeader="true" :oldString="log.info.before ?? ''" :newString="log.info.after ?? ''" maxHeight="300px"/>
 			</div>

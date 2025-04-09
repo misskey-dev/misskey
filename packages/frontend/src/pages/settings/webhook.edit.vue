@@ -81,11 +81,11 @@ import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { useRouter } from '@/router/supplier.js';
-import { $i } from '@/account.js';
+import { definePage } from '@/page.js';
+import { useRouter } from '@/router.js';
+import { $i } from '@/i.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 
 const router = useRouter();
@@ -164,7 +164,7 @@ const headerActions = computed(() => []);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'Edit webhook',
 	icon: 'ti ti-webhook',
 }));
@@ -193,6 +193,6 @@ definePageMetadata(() => ({
 .description {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 </style>

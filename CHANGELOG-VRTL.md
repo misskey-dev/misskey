@@ -4,6 +4,11 @@ VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
 
+--- 2025.2.1-kinel.1 released at this time ---
+--- 2025.2.0-kinel.1 released at this time ---
+--- 2025.1.0-kinel.2 released at this time ---
+--- 2025.1.0-kinel.1 released at this time ---
+
 - fix(frontend): Unable to see VRTL when logged in
 
 -- 2024.11.0-kinel.2 --

@@ -196,8 +196,8 @@ export type ModerationLog = {
 	type: 'deleteGalleryPost';
 	info: ModerationLogPayloads['deleteGalleryPost'];
 } | {
-	type: 'unsetUserBanner';
-	info: ModerationLogPayloads['unsetUserBanner'];
+	type: 'deleteChatRoom';
+	info: ModerationLogPayloads['deleteChatRoom'];
 } | {
 	type: 'makeNoteHome';
 	info: ModerationLogPayloads['makeNoteHome'];
