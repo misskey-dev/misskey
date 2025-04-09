@@ -63,6 +63,10 @@ import {
 } from '@/models/json-schema/meta.js';
 import { packedSystemWebhookSchema } from '@/models/json-schema/system-webhook.js';
 import { packedAbuseReportNotificationRecipientSchema } from '@/models/json-schema/abuse-report-notification-recipient.js';
+import { packedChatMessageSchema, packedChatMessageLiteSchema, packedChatMessageLiteForRoomSchema, packedChatMessageLiteFor1on1Schema } from '@/models/json-schema/chat-message.js';
+import { packedChatRoomSchema } from '@/models/json-schema/chat-room.js';
+import { packedChatRoomInvitationSchema } from '@/models/json-schema/chat-room-invitation.js';
+import { packedChatRoomMembershipSchema } from '@/models/json-schema/chat-room-membership.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -120,6 +124,13 @@ export const refs = {
 	MetaDetailed: packedMetaDetailedSchema,
 	SystemWebhook: packedSystemWebhookSchema,
 	AbuseReportNotificationRecipient: packedAbuseReportNotificationRecipientSchema,
+	ChatMessage: packedChatMessageSchema,
+	ChatMessageLite: packedChatMessageLiteSchema,
+	ChatMessageLiteFor1on1: packedChatMessageLiteFor1on1Schema,
+	ChatMessageLiteForRoom: packedChatMessageLiteForRoomSchema,
+	ChatRoom: packedChatRoomSchema,
+	ChatRoomInvitation: packedChatRoomInvitationSchema,
+	ChatRoomMembership: packedChatRoomMembershipSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;
@@ -166,15 +177,16 @@ export interface Schema extends OfSchema {
 	readonly maximum?: number;
 	readonly minimum?: number;
 	readonly pattern?: string;
+	readonly additionalProperties?: Schema | boolean;
 }
 
 type RequiredPropertyNames<s extends Obj> = {
 	[K in keyof s]:
-		// K is not optional
-		s[K]['optional'] extends false ? K :
-		// K has default value
-		s[K]['default'] extends null | string | number | boolean | Record<string, unknown> ? K :
-		never
+	// K is not optional
+	s[K]['optional'] extends false ? K :
+	// K has default value
+	s[K]['default'] extends null | string | number | boolean | Record<string, unknown> ? K :
+	never
 }[keyof s];
 
 export type Obj = Record<string, Schema>;
@@ -213,11 +225,18 @@ type ObjectSchemaTypeDef<p extends Schema> =
 		p['anyOf'] extends ReadonlyArray<Schema> ? p['anyOf'][number]['required'] extends ReadonlyArray<keyof p['properties']> ?
 			UnionObjType<p['properties'], NonNullable<p['anyOf'][number]['required']>> & ObjType<p['properties'], NonNullable<p['required']>>
 			: never
-			: ObjType<p['properties'], NonNullable<p['required']>>
-	:
-	p['anyOf'] extends ReadonlyArray<Schema> ? never : // see CONTRIBUTING.md
-	p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
-	any;
+		: ObjType<p['properties'], NonNullable<p['required']>>
+		:
+		p['anyOf'] extends ReadonlyArray<Schema> ? never : // see CONTRIBUTING.md
+		p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
+		p['additionalProperties'] extends true ? Record<string, any> :
+		p['additionalProperties'] extends Schema ?
+			p['additionalProperties'] extends infer AdditionalProperties ?
+				AdditionalProperties extends Schema ?
+					Record<string, SchemaType<AdditionalProperties>> :
+					never :
+				never :
+			any;
 
 type ObjectSchemaType<p extends Schema> = NullOrUndefined<p, ObjectSchemaTypeDef<p>>;
 
@@ -227,30 +246,30 @@ export type SchemaTypeDef<p extends Schema> =
 	p['type'] extends 'number' ? number :
 	p['type'] extends 'string' ? (
 		p['enum'] extends readonly (string | null)[] ?
-		p['enum'][number] :
-		p['format'] extends 'date-time' ? string : // Dateにする？？
-		string
+			p['enum'][number] :
+			p['format'] extends 'date-time' ? string : // Dateにする？？
+			string
 	) :
-	p['type'] extends 'boolean' ? boolean :
-	p['type'] extends 'object' ? ObjectSchemaTypeDef<p> :
-	p['type'] extends 'array' ? (
-		p['items'] extends OfSchema ? (
-			p['items']['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<NonNullable<p['items']['anyOf']>>[] :
-			p['items']['oneOf'] extends ReadonlyArray<Schema> ? ArrayUnion<UnionSchemaType<NonNullable<p['items']['oneOf']>>> :
-			p['items']['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<NonNullable<p['items']['allOf']>>>[] :
-			never
+		p['type'] extends 'boolean' ? boolean :
+		p['type'] extends 'object' ? ObjectSchemaTypeDef<p> :
+		p['type'] extends 'array' ? (
+			p['items'] extends OfSchema ? (
+				p['items']['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<NonNullable<p['items']['anyOf']>>[] :
+				p['items']['oneOf'] extends ReadonlyArray<Schema> ? ArrayUnion<UnionSchemaType<NonNullable<p['items']['oneOf']>>> :
+				p['items']['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<NonNullable<p['items']['allOf']>>>[] :
+				never
+			) :
+				p['prefixItems'] extends ReadonlyArray<Schema> ? (
+					p['items'] extends NonNullable<Schema> ? [...ArrayToTuple<p['prefixItems']>, ...SchemaType<p['items']>[]] :
+					p['items'] extends false ? ArrayToTuple<p['prefixItems']> :
+					p['unevaluatedItems'] extends false ? ArrayToTuple<p['prefixItems']> :
+					[...ArrayToTuple<p['prefixItems']>, ...unknown[]]
+				) :
+					p['items'] extends NonNullable<Schema> ? SchemaType<p['items']>[] :
+					any[]
 		) :
-		p['prefixItems'] extends ReadonlyArray<Schema> ? (
-			p['items'] extends NonNullable<Schema> ? [...ArrayToTuple<p['prefixItems']>, ...SchemaType<p['items']>[]] :
-			p['items'] extends false ? ArrayToTuple<p['prefixItems']> :
-			p['unevaluatedItems'] extends false ? ArrayToTuple<p['prefixItems']> :
-			[...ArrayToTuple<p['prefixItems']>, ...unknown[]]
-		) :
-		p['items'] extends NonNullable<Schema> ? SchemaType<p['items']>[] :
-		any[]
-	) :
-	p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & PartialIntersection<UnionSchemaType<p['anyOf']>> :
-	p['oneOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['oneOf']> :
-	any;
+			p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & PartialIntersection<UnionSchemaType<p['anyOf']>> :
+			p['oneOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['oneOf']> :
+			any;
 
 export type SchemaType<p extends Schema> = NullOrUndefined<p, SchemaTypeDef<p>>;

@@ -4,11 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div :key="tab" class="_gaps">
+			<div class="_gaps">
 				<MkInfo v-if="$i && $i.hasUnreadAnnouncement && tab === 'current'" warn>{{ i18n.ts.youHaveUnreadAnnouncements }}</MkInfo>
 				<MkPagination ref="paginationEl" :key="tab" v-slot="{items}" :pagination="tab === 'current' ? paginationCurrent : paginationPast" class="_gaps">
 					<section v-for="announcement in items" :key="announcement.id" class="_panel" :class="$style.announcement">
@@ -43,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkHorizontalSwipe>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -53,10 +52,11 @@ import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i, updateAccountPartial } from '@/account.js';
+import { definePage } from '@/page.js';
+import { $i } from '@/i.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const paginationCurrent = {
 	endpoint: 'announcements' as const,
@@ -94,7 +94,7 @@ async function read(target) {
 		return a;
 	});
 	misskeyApi('i/read-announcement', { announcementId: target.id });
-	updateAccountPartial({
+	updateCurrentAccountPartial({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== target.id),
 	});
 }
@@ -111,7 +111,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-point',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
 }));
