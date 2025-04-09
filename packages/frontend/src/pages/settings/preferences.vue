@@ -210,6 +210,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkPreferenceContainer>
 								</SearchMarker>
 
+								<SearchMarker :keywords="['collapse', 'sensitive', 'channel', 'fold']">
+									<MkPreferenceContainer k="collapseSensitiveChannel">
+										<MkSwitch v-model="collapseSensitiveChannel">
+											<template #label><SearchLabel>{{ i18n.ts.collapseSensitiveChannel }}</SearchLabel></template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+
 								<SearchMarker :keywords="['reaction', 'picker', 'contextmenu', 'open']">
 									<MkPreferenceContainer k="useReactionPickerForContextMenu">
 										<MkSwitch v-model="useReactionPickerForContextMenu">
@@ -753,6 +761,7 @@ const showReactionsCount = prefer.model('showReactionsCount');
 const enableQuickAddMfmFunction = prefer.model('enableQuickAddMfmFunction');
 const forceShowAds = prefer.model('forceShowAds');
 const loadRawImages = prefer.model('loadRawImages');
+const collapseSensitiveChannel = prefer.model('collapseSensitiveChannel');
 const imageNewTab = prefer.model('imageNewTab');
 const showFixedPostForm = prefer.model('showFixedPostForm');
 const showFixedPostFormInChannel = prefer.model('showFixedPostFormInChannel');

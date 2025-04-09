@@ -159,6 +159,9 @@ export const PREF_DEF = {
 	nsfw: {
 		default: 'respect' as 'respect' | 'force' | 'ignore',
 	},
+	collapseSensitiveChannel: {
+		default: true,
+	},
 	highlightSensitiveMedia: {
 		default: false,
 	},

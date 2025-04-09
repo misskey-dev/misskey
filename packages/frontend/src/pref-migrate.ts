@@ -140,6 +140,7 @@ export function migrateOldSettings() {
 		prefer.commit('defaultNoteLocalOnly', store.s.defaultNoteLocalOnly);
 		prefer.commit('imageCompressionMode', store.s.imageCompressionMode);
 		prefer.commit('imageResizeSize', parseInt(store.s.imageResizeSize));
+		prefer.commit('collapseSensitiveChannel', store.s.collapseSensitiveChannel);
 
 		window.setTimeout(() => {
 			unisonReload();

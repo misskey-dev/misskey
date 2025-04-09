@@ -23,8 +23,8 @@ import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
-import { defaultStore } from '@/store.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
@@ -32,7 +32,7 @@ const props = defineProps<{
 
 const tab = ref<string | null>('all');
 const include = ref<string | null>('all');
-provide<boolean>('collapseSensitiveChannel', defaultStore.state.collapseSensitiveChannel);
+provide<boolean>('collapseSensitiveChannel', prefer.s.collapseSensitiveChannel);
 
 const pagination = computed(() => tab.value === 'featured' ? {
 	endpoint: 'users/featured-notes' as const,
