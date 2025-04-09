@@ -302,6 +302,12 @@ export const PREF_DEF = {
 	useNativeUiForVideoAudioPlayer: {
 		default: false,
 	},
+	imageCompressionMode: {
+		default: 'noResizeCompress' as 'resizeCompress' | 'noResizeCompress' | 'resizeCompressLossy' | 'noResizeCompressLossy',
+	},
+	imageResizeSize: {
+		default: 2560,
+	},
 	keepOriginalFilename: {
 		default: true,
 	},

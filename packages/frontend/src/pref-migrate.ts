@@ -138,6 +138,8 @@ export function migrateOldSettings() {
 		prefer.commit('sound.on.reaction', store.s.sound_reaction as any);
 		prefer.commit('defaultNoteVisibility', store.s.defaultNoteVisibility);
 		prefer.commit('defaultNoteLocalOnly', store.s.defaultNoteLocalOnly);
+		prefer.commit('imageCompressionMode', store.s.imageCompressionMode);
+		prefer.commit('imageResizeSize', parseInt(store.s.imageResizeSize));
 
 		window.setTimeout(() => {
 			unisonReload();

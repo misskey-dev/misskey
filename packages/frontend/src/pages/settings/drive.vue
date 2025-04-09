@@ -62,6 +62,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkPreferenceContainer>
 				</SearchMarker>
 
+				<SearchMarker :keywords="['image', 'compress', 'resize', 'lossly']">
+					<MkFolder :defaultOpen="true">
+						<template #icon><i class="ti ti-photo"></i></template>
+						<template #label><SearchLabel>{{ i18n.ts._imageCompressionMode.title }}</SearchLabel></template>
+						<template #caption><SearchKeyword>{{ i18n.ts._imageCompressionMode.description }}</SearchKeyword></template>
+
+						<div class="_gaps">
+							<MkSwitch v-model="imageResize">
+								<template #label><SearchKeyword>{{ i18n.ts._imageCompressionMode.imageResize }}</SearchKeyword></template>
+								<template #caption>{{ i18n.ts._imageCompressionMode.imageResizeDescription }}</template>
+							</MkSwitch>
+							<MkSelect
+								v-model="imageResizeSize"
+								:items="[
+									{value: 2048, label: i18n.ts._imageCompressionMode._imageResizeSize.max2048},
+									{value: 2560, label: i18n.ts._imageCompressionMode._imageResizeSize.max2560},
+									{value: 4096, label: i18n.ts._imageCompressionMode._imageResizeSize.max4096},
+									{value: 8192, label: i18n.ts._imageCompressionMode._imageResizeSize.max8192},
+								]"
+							>
+								<template #label><SearchKeyword>{{ i18n.ts._imageCompressionMode._imageResizeSize.title }}</SearchKeyword></template>
+							</MkSelect>
+							<MkSwitch v-model="imageCompressionLossy">
+								<template #label><SearchKeyword>{{ i18n.ts._imageCompressionMode.imageCompressionLossy }}</SearchKeyword></template>
+								<template #caption>{{ i18n.ts._imageCompressionMode.imageCompressionLossyDescription }}</template>
+							</MkSwitch>
+						</div>
+					</MkFolder>
+				</SearchMarker>
+
 				<SearchMarker :keywords="['always', 'default', 'mark', 'nsfw', 'sensitive', 'media', 'file']">
 					<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
 						<template #label><SearchLabel>{{ i18n.ts.alwaysMarkSensitive }}</SearchLabel></template>
@@ -81,11 +111,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
 import FormLink from '@/components/form/link.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -122,6 +154,16 @@ const meterStyle = computed(() => {
 });
 
 const keepOriginalFilename = prefer.model('keepOriginalFilename');
+const imageCompressionMode = prefer.model('imageCompressionMode');
+const imageResize = ref(imageCompressionMode.value.startsWith('resize'));
+const imageCompressionLossy = ref(imageCompressionMode.value.endsWith('CompressLossy'));
+const imageResizeSize = prefer.model('imageResizeSize');
+
+watch([imageResize, imageCompressionLossy], ([imageResizeValue, imageCompressionLossyValue]) => {
+	const resizeMode: 'resize' | 'noResize' = imageResizeValue ? 'resize' : 'noResize';
+	const compressionMode: 'CompressLossy' | 'Compress' = imageCompressionLossyValue ? 'CompressLossy' : 'Compress';
+	imageCompressionMode.value = resizeMode + compressionMode;
+});
 
 misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;
