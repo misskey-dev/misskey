@@ -5,6 +5,7 @@
 
 import { computed, reactive, watch } from 'vue';
 import type { Reactive } from 'vue';
+import { deepEqual } from '@/utility/deep-equal';
 
 function copy<T>(v: T): T {
 	return JSON.parse(JSON.stringify(v));
@@ -27,7 +28,7 @@ export function useForm<T extends Record<string, any>>(initialState: T, save: (n
 
 	watch([currentState, previousState], () => {
 		for (const key in modifiedStates) {
-			modifiedStates[key] = currentState[key] !== previousState[key];
+			modifiedStates[key] = !deepEqual(currentState[key], previousState[key]);
 		}
 	}, { deep: true });
 
