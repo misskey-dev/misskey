@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :naked="widgetProps.transparent" :showHeader="false" class="mkw-instance-cloud">
 	<div class="">
-		<MkTagCloud v-if="activeInstances">
+		<MkTagCloud v-if="activeInstances" ref="cloud">
 			<li v-for="instance in activeInstances" :key="instance.id">
 				<a @click.prevent="onInstanceClick(instance)">
 					<img style="width: 32px;" :src="getInstanceIcon(instance)">
@@ -18,17 +18,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef } from 'vue';
+import { shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
+import type { GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkTagCloud from '@/components/MkTagCloud.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useInterval } from '@@/js/use-interval.js';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 
 const name = 'instanceCloud';
 
@@ -50,7 +50,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const cloud = shallowRef<InstanceType<typeof MkTagCloud> | null>();
+const cloud = useTemplateRef('cloud');
 const activeInstances = shallowRef<Misskey.entities.FederationInstance[] | null>(null);
 
 function onInstanceClick(i) {

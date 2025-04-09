@@ -51,8 +51,8 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i } from '@/account.js';
+import { definePage } from '@/page.js';
+import { $i } from '@/i.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 
 const name = ref('');
@@ -91,7 +91,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'Create new webhook',
 	icon: 'ti ti-webhook',
 }));

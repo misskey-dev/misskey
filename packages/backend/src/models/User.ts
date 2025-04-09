@@ -184,12 +184,6 @@ export class MiUser {
 	})
 	public isCat: boolean;
 
-	@Column('boolean', {
-		default: false,
-		comment: 'Whether the User is the root.',
-	})
-	public isRoot: boolean;
-
 	@Index()
 	@Column('boolean', {
 		default: true,
@@ -230,6 +224,17 @@ export class MiUser {
 		length: 128, array: true, default: '{}',
 	})
 	public emojis: string[];
+
+	// チャットを許可する相手
+	// everyone: 誰からでも
+	// followers: フォロワーのみ
+	// following: フォローしているユーザーのみ
+	// mutual: 相互フォローのみ
+	// none: 誰からも受け付けない
+	@Column('varchar', {
+		length: 128, default: 'mutual',
+	})
+	public chatScope: 'everyone' | 'followers' | 'following' | 'mutual' | 'none';
 
 	@Index()
 	@Column('varchar', {

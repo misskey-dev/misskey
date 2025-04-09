@@ -234,8 +234,8 @@ export class SearchService {
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
-		if (me) this.queryService.generateMutedUserQuery(query, me);
-		if (me) this.queryService.generateBlockedUserQuery(query, me);
+		if (me) this.queryService.generateMutedUserQueryForNotes(query, me);
+		if (me) this.queryService.generateBlockedUserQueryForNotes(query, me);
 
 		return query.limit(pagination.limit).getMany();
 	}

@@ -56,19 +56,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, toRef, watch } from 'vue';
 import type { UserDetailed } from 'misskey-js/entities.js';
 import type { Paging } from '@/components/MkPagination.vue';
+import { $i } from '@/i.js';
+import { host as localHost } from '@@/js/config.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { apLookup } from '@/utility/lookup.js';
+import { useRouter } from '@/router.js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { useRouter } from '@/router/supplier.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import { $i } from '@/account.js';
-import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	query?: string;
@@ -151,13 +153,7 @@ async function search() {
 			text: i18n.ts.lookupConfirm,
 		});
 		if (!confirm.canceled) {
-			const promise = misskeyApi('ap/show', {
-				uri: query,
-			});
-
-			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
-
-			const res = await promise;
+			const res = await apLookup(query);
 
 			if (res.type === 'User') {
 				router.push(`/@${res.object.username}@${res.object.host}`);
@@ -213,12 +209,12 @@ async function search() {
 	justify-content: center;
 }
 .addMeButton {
-  border: 2px dashed var(--MI_THEME-fgTransparent);
+  border: 2px dashed color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 	padding: 12px;
 	margin-right: 16px;
 }
 .addUserButton {
-  border: 2px dashed var(--MI_THEME-fgTransparent);
+  border: 2px dashed color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 	padding: 12px;
 	flex-grow: 1;
 }

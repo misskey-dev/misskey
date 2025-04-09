@@ -4,34 +4,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
-	<nav :class="$style.nav">
-		<div :class="$style.navPath" @contextmenu.prevent.stop="() => {}">
-			<XNavFolder
-				:class="[$style.navPathItem, { [$style.navCurrent]: folder == null }]"
-				:parentFolder="folder"
-				@move="move"
-				@upload="upload"
-				@removeFile="removeFile"
-				@removeFolder="removeFolder"
-			/>
-			<template v-for="f in hierarchyFolders">
-				<span :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
+<MkStickyContainer>
+	<template #header>
+		<nav :class="$style.nav">
+			<div :class="$style.navPath" @contextmenu.prevent.stop="() => {}">
 				<XNavFolder
-					:folder="f"
+					:class="[$style.navPathItem, { [$style.navCurrent]: folder == null }]"
 					:parentFolder="folder"
-					:class="[$style.navPathItem]"
 					@move="move"
 					@upload="upload"
 					@removeFile="removeFile"
 					@removeFolder="removeFolder"
 				/>
-			</template>
-			<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
-			<span v-if="folder != null" :class="[$style.navPathItem, $style.navCurrent]">{{ folder.name }}</span>
-		</div>
-		<button class="_button" :class="$style.navMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
-	</nav>
+				<template v-for="f in hierarchyFolders">
+					<span :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
+					<XNavFolder
+						:folder="f"
+						:parentFolder="folder"
+						:class="[$style.navPathItem]"
+						@move="move"
+						@upload="upload"
+						@removeFile="removeFile"
+						@removeFolder="removeFolder"
+					/>
+				</template>
+				<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
+				<span v-if="folder != null" :class="[$style.navPathItem, $style.navCurrent]">{{ folder.name }}</span>
+			</div>
+			<button class="_button" :class="$style.navMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
+		</nav>
+	</template>
+
 	<div
 		ref="main"
 		:class="[$style.main, { [$style.uploading]: uploadings.length > 0, [$style.fetching]: fetching }]"
@@ -91,12 +94,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkLoading v-if="fetching"/>
 	</div>
 	<div v-if="draghover" :class="$style.dropzone"></div>
-	<input ref="fileInput" style="display: none;" type="file" accept="*/*" multiple tabindex="-1" @change="onChangeFileInput"/>
-</div>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -104,12 +106,13 @@ import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
 import XFile from '@/components/MkDrive.file.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { uploadFile, uploads } from '@/scripts/upload.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { uploadFile, uploads } from '@/utility/upload.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { prefer } from '@/preferences.js';
+import { chooseFileFromPc } from '@/utility/select-file.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -129,8 +132,7 @@ const emit = defineEmits<{
 	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
 }>();
 
-const loadMoreFiles = shallowRef<InstanceType<typeof MkButton>>();
-const fileInput = shallowRef<HTMLInputElement>();
+const loadMoreFiles = useTemplateRef('loadMoreFiles');
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
 const files = ref<Misskey.entities.DriveFile[]>([]);
@@ -142,7 +144,6 @@ const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
 const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = uploads;
 const connection = useStream().useChannel('drive');
-const keepOriginal = ref<boolean>(defaultStore.state.keepOriginalUploading); // 外部渡しが多いので$refは使わないほうがよい
 
 // ドロップされようとしているか
 const draghover = ref(false);
@@ -304,10 +305,6 @@ function onDrop(ev: DragEvent) {
 	//#endregion
 }
 
-function selectLocalFile() {
-	fileInput.value?.click();
-}
-
 function urlUpload() {
 	os.inputText({
 		title: i18n.ts.uploadFromUrl,
@@ -383,15 +380,8 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 	});
 }
 
-function onChangeFileInput() {
-	if (!fileInput.value?.files) return;
-	for (const file of Array.from(fileInput.value.files)) {
-		upload(file, folder.value);
-	}
-}
-
-function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null) {
-	uploadFile(file, (folderToUpload && typeof folderToUpload === 'object') ? folderToUpload.id : null, undefined, keepOriginal.value).then(res => {
+function upload(file: File, folderToUpload?: Misskey.entities.DriveFolder | null, keepOriginal?: boolean) {
+	uploadFile(file, (folderToUpload && typeof folderToUpload === 'object') ? folderToUpload.id : null, undefined, keepOriginal).then(res => {
 		addFile(res, true);
 	});
 }
@@ -630,16 +620,20 @@ function getMenu() {
 	const menu: MenuItem[] = [];
 
 	menu.push({
-		type: 'switch',
-		text: i18n.ts.keepOriginalUploading,
-		ref: keepOriginal,
-	}, { type: 'divider' }, {
 		text: i18n.ts.addFile,
 		type: 'label',
 	}, {
+		text: i18n.ts.upload + ' (' + i18n.ts.compress + ')',
+		icon: 'ti ti-upload',
+		action: () => {
+			chooseFileFromPc(true, { keepOriginal: false });
+		},
+	}, {
 		text: i18n.ts.upload,
 		icon: 'ti ti-upload',
-		action: () => { selectLocalFile(); },
+		action: () => {
+			chooseFileFromPc(true, { keepOriginal: true });
+		},
 	}, {
 		text: i18n.ts.fromUrl,
 		icon: 'ti ti-link',
@@ -716,7 +710,7 @@ function onContextmenu(ev: MouseEvent) {
 }
 
 onMounted(() => {
-	if (defaultStore.state.enableInfiniteScroll && loadMoreFiles.value) {
+	if (prefer.s.enableInfiniteScroll && loadMoreFiles.value) {
 		nextTick(() => {
 			ilFilesObserver.observe(loadMoreFiles.value?.$el);
 		});
@@ -737,7 +731,7 @@ onMounted(() => {
 });
 
 onActivated(() => {
-	if (defaultStore.state.enableInfiniteScroll) {
+	if (prefer.s.enableInfiniteScroll) {
 		nextTick(() => {
 			ilFilesObserver.observe(loadMoreFiles.value?.$el);
 		});
@@ -751,22 +745,17 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" module>
-.root {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-}
-
 .nav {
 	display: flex;
-	z-index: 2;
 	width: 100%;
 	padding: 0 8px;
 	box-sizing: border-box;
 	overflow: auto;
 	font-size: 0.9em;
-	box-shadow: 0 1px 0 var(--MI_THEME-divider);
-	user-select: none;
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.75);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 
 .navPath {

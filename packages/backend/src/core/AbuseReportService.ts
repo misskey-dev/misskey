@@ -10,9 +10,9 @@ import { bindThis } from '@/decorators.js';
 import type { AbuseUserReportsRepository, MiAbuseUserReport, MiUser, UsersRepository } from '@/models/_.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import { QueueService } from '@/core/QueueService.js';
-import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { IdService } from './IdService.js';
 import { AbuseDiscordHookService } from '@/core/AbuseDiscordHookService.js';
 
@@ -29,7 +29,7 @@ export class AbuseReportService {
 		private abuseReportNotificationService: AbuseReportNotificationService,
 		private abuseDiscordHookService: AbuseDiscordHookService,
 		private queueService: QueueService,
-		private instanceActorService: InstanceActorService,
+		private systemAccountService: SystemAccountService,
 		private apRendererService: ApRendererService,
 		private moderationLogService: ModerationLogService,
 	) {
@@ -139,7 +139,7 @@ export class AbuseReportService {
 			forwarded: true,
 		});
 
-		const actor = await this.instanceActorService.getInstanceActor();
+		const actor = await this.systemAccountService.fetch('actor');
 		const targetUser = await this.usersRepository.findOneByOrFail({ id: report.targetUserId });
 
 		const flag = this.apRendererService.renderFlag(actor, targetUser.uri!, report.comment);
