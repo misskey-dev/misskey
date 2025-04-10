@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer v-if="file" :contentMax="600" :marginMin="16" :marginMax="32">
 		<div v-if="tab === 'overview'" class="cxqhhsmd _gaps_m">
 			<a class="thumbnail" :href="file.url" target="_blank">
@@ -36,8 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA v-if="file.user" class="user" :to="`/admin/user/${file.user.id}`">
 				<MkUserCardMini :user="file.user"/>
 			</MkA>
+
 			<div>
-				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
+				<MkSwitch :modelValue="isSensitive" @update:modelValue="toggleSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
 			</div>
 
 			<div>
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkObjectView>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -82,10 +82,10 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { iAmAdmin, iAmModerator } from '@/account.js';
+import { definePage } from '@/page.js';
+import { iAmAdmin, iAmModerator } from '@/i.js';
 
 const tab = ref('overview');
 const file = ref<Misskey.entities.DriveFile | null>(null);
@@ -117,9 +117,21 @@ async function del() {
 	});
 }
 
-async function toggleIsSensitive(v) {
-	await misskeyApi('drive/files/update', { fileId: props.fileId, isSensitive: v });
-	isSensitive.value = v;
+async function toggleSensitive() {
+	if (!file.value) return;
+
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: isSensitive.value ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+	});
+
+	if (canceled) return;
+	isSensitive.value = !isSensitive.value;
+
+	os.apiWithDialog('drive/files/update', {
+		fileId: file.value.id,
+		isSensitive: !file.value.isSensitive,
+	});
 }
 
 const headerActions = computed(() => [{
@@ -148,7 +160,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-code',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: file.value ? `${i18n.ts.file}: ${file.value.name}` : i18n.ts.file,
 	icon: 'ti ti-file',
 }));

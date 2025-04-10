@@ -7,16 +7,12 @@ import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter.js';
-import { FastifyAdapter as BullBoardFastifyAdapter } from '@bull-board/fastify';
 import ms from 'ms';
 import sharp from 'sharp';
 import pug from 'pug';
 import { In, IsNull } from 'typeorm';
 import fastifyStatic from '@fastify/static';
 import fastifyView from '@fastify/view';
-import fastifyCookie from '@fastify/cookie';
 import fastifyProxy from '@fastify/http-proxy';
 import vary from 'vary';
 import htmlSafeJsonStringify from 'htmlescape';
@@ -221,64 +217,6 @@ export class ClientServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.register(fastifyCookie, {});
-
-		//#region Bull Dashboard
-		const bullBoardPath = '/queue';
-
-		// Authenticate
-		fastify.addHook('onRequest', async (request, reply) => {
-			if (request.routeOptions.url == null) {
-				reply.code(404).send('Not found');
-				return;
-			}
-
-			// %71ueueとかでリクエストされたら困るため
-			const url = decodeURI(request.routeOptions.url);
-			if (url === bullBoardPath || url.startsWith(bullBoardPath + '/')) {
-				if (!url.startsWith(bullBoardPath + '/static/')) {
-					reply.header('Cache-Control', 'private, max-age=0, must-revalidate');
-				}
-
-				const token = request.cookies.token;
-				if (token == null) {
-					reply.code(401).send('Login required');
-					return;
-				}
-				const user = await this.usersRepository.findOneBy({ token });
-				if (user == null) {
-					reply.code(403).send('No such user');
-					return;
-				}
-				const isAdministrator = await this.roleService.isAdministrator(user);
-				if (!isAdministrator) {
-					reply.code(403).send('Access denied');
-					return;
-				}
-			}
-		});
-
-		const bullBoardServerAdapter = new BullBoardFastifyAdapter();
-
-		createBullBoard({
-			queues: [
-				this.systemQueue,
-				this.endedPollNotificationQueue,
-				this.deliverQueue,
-				this.inboxQueue,
-				this.dbQueue,
-				this.relationshipQueue,
-				this.objectStorageQueue,
-				this.userWebhookDeliverQueue,
-				this.systemWebhookDeliverQueue,
-			].map(q => new BullMQAdapter(q)),
-			serverAdapter: bullBoardServerAdapter,
-		});
-
-		bullBoardServerAdapter.setBasePath(bullBoardPath);
-		(fastify.register as any)(bullBoardServerAdapter.registerPlugin(), { prefix: bullBoardPath });
-		//#endregion
-
 		fastify.register(fastifyView, {
 			root: _dirname + '/views',
 			engine: {

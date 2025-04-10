@@ -4,6 +4,59 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
+<Transition
+	:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+>
+	<div
+		v-if="drawerMenuShowing"
+		:class="$style.menuDrawerBg"
+		class="_modalBg"
+		@click="drawerMenuShowing = false"
+		@touchstart.passive="drawerMenuShowing = false"
+	></div>
+</Transition>
+
+<Transition
+	:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawer_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawer_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_menuDrawer_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
+>
+	<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
+		<XDrawerMenu/>
+	</div>
+</Transition>
+
+<Transition
+	:enterActiveClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
+>
+	<div
+		v-if="widgetsShowing"
+		:class="$style.widgetsDrawerBg"
+		class="_modalBg"
+		@click="widgetsShowing = false"
+		@touchstart.passive="widgetsShowing = false"
+	></div>
+</Transition>
+
+<Transition
+	:enterActiveClass="prefer.s.animation ? $style.transition_widgetsDrawer_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
+>
+	<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
+		<button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false"><i class="ti ti-x"></i></button>
+		<XWidgets/>
+	</div>
+</Transition>
+
 <component
 	:is="popup.component"
 	v-for="popup in popups"
@@ -14,26 +67,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <XUpload v-if="uploads.length > 0"/>
 
-<TransitionGroup
+<component
+	:is="prefer.s.animation ? TransitionGroup : 'div'"
 	tag="div"
 	:class="[$style.notifications, {
-		[$style.notificationsPosition_leftTop]: defaultStore.state.notificationPosition === 'leftTop',
-		[$style.notificationsPosition_leftBottom]: defaultStore.state.notificationPosition === 'leftBottom',
-		[$style.notificationsPosition_rightTop]: defaultStore.state.notificationPosition === 'rightTop',
-		[$style.notificationsPosition_rightBottom]: defaultStore.state.notificationPosition === 'rightBottom',
-		[$style.notificationsStackAxis_vertical]: defaultStore.state.notificationStackAxis === 'vertical',
-		[$style.notificationsStackAxis_horizontal]: defaultStore.state.notificationStackAxis === 'horizontal',
+		[$style.notificationsPosition_leftTop]: prefer.s.notificationPosition === 'leftTop',
+		[$style.notificationsPosition_leftBottom]: prefer.s.notificationPosition === 'leftBottom',
+		[$style.notificationsPosition_rightTop]: prefer.s.notificationPosition === 'rightTop',
+		[$style.notificationsPosition_rightBottom]: prefer.s.notificationPosition === 'rightBottom',
+		[$style.notificationsStackAxis_vertical]: prefer.s.notificationStackAxis === 'vertical',
+		[$style.notificationsStackAxis_horizontal]: prefer.s.notificationStackAxis === 'horizontal',
 	}]"
-	:moveClass="defaultStore.state.animation ? $style.transition_notification_move : ''"
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
+	:moveClass="$style.transition_notification_move"
+	:enterActiveClass="$style.transition_notification_enterActive"
+	:leaveActiveClass="$style.transition_notification_leaveActive"
+	:enterFromClass="$style.transition_notification_enterFrom"
+	:leaveToClass="$style.transition_notification_leaveTo"
 >
 	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
 		<XNotification :notification="notification"/>
 	</div>
-</TransitionGroup>
+</component>
 
 <XStreamIndicator/>
 
@@ -45,29 +99,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject.js';
 import XNotification from './notification.vue';
 import { popups } from '@/os.js';
-import { pendingApiRequestsCount } from '@/scripts/misskey-api.js';
-import { uploads } from '@/scripts/upload.js';
-import * as sound from '@/scripts/sound.js';
-import { $i } from '@/account.js';
+import { pendingApiRequestsCount } from '@/utility/misskey-api.js';
+import { uploads } from '@/utility/upload.js';
+import * as sound from '@/utility/sound.js';
+import { $i } from '@/i.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
+import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
+const XWidgets = defineAsyncComponent(() => import('./widgets.vue'));
+
+const drawerMenuShowing = defineModel<boolean>('drawerMenuShowing');
+const widgetsShowing = defineModel<boolean>('widgetsShowing');
 
 const dev = _DEV_;
 
 const notifications = ref<Misskey.entities.Notification[]>([]);
 
 function onNotification(notification: Misskey.entities.Notification, isClient = false) {
-	if (document.visibilityState === 'visible') {
+	if (window.document.visibilityState === 'visible') {
 		if (!isClient && notification.type !== 'test') {
 			// サーバーサイドのテスト通知の際は自動で既読をつけない（テストできないので）
 			useStream().send('readNotification');
@@ -99,6 +158,50 @@ if ($i) {
 </script>
 
 <style lang="scss" module>
+.transition_menuDrawerBg_enterActive,
+.transition_menuDrawerBg_leaveActive {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_menuDrawerBg_enterFrom,
+.transition_menuDrawerBg_leaveTo {
+	opacity: 0;
+}
+
+.transition_menuDrawer_enterActive,
+.transition_menuDrawer_leaveActive {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_menuDrawer_enterFrom,
+.transition_menuDrawer_leaveTo {
+	opacity: 0;
+	transform: translateX(-240px);
+}
+
+.transition_widgetsDrawerBg_enterActive,
+.transition_widgetsDrawerBg_leaveActive {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_widgetsDrawerBg_enterFrom,
+.transition_widgetsDrawerBg_leaveTo {
+	opacity: 0;
+}
+
+.transition_widgetsDrawer_enterActive,
+.transition_widgetsDrawer_leaveActive {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_widgetsDrawer_enterFrom,
+.transition_widgetsDrawer_leaveTo {
+	opacity: 0;
+	transform: translateX(-240px);
+}
+
 .transition_notification_move,
 .transition_notification_enterActive,
 .transition_notification_leaveActive {
@@ -111,6 +214,54 @@ if ($i) {
 .transition_notification_leaveTo {
 	opacity: 0;
 	transform: translateX(-250px);
+}
+
+.menuDrawerBg {
+	z-index: 1001;
+}
+
+.menuDrawer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1001;
+	height: 100dvh;
+	width: 240px;
+	box-sizing: border-box;
+	contain: strict;
+	overflow: auto;
+	overscroll-behavior: contain;
+	background: var(--MI_THEME-navBg);
+}
+
+.widgetsDrawerBg {
+	z-index: 1001;
+}
+
+.widgetsDrawer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1001;
+	width: 310px;
+	height: 100dvh;
+	padding: var(--MI-margin) var(--MI-margin) calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px)) !important;
+	box-sizing: border-box;
+	overflow: auto;
+	overscroll-behavior: contain;
+	background: var(--MI_THEME-bg);
+}
+
+.widgetsCloseButton {
+	padding: 8px;
+	display: block;
+	margin: 0 auto;
+}
+
+@media (min-width: 370px) {
+	.widgetsCloseButton {
+		display: none;
+	}
 }
 
 .notifications {

@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<div ref="rootEl">
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
@@ -20,18 +19,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, shallowRef } from 'vue';
+import { computed, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { scrollInContainer } from '@@/js/scroll.js';
 import MkTimeline from '@/components/MkTimeline.vue';
-import { scroll } from '@@/js/scroll.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
@@ -41,8 +40,8 @@ const props = defineProps<{
 
 const list = ref<Misskey.entities.UserList | null>(null);
 const queue = ref(0);
-const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
-const rootEl = shallowRef<HTMLElement>();
+const tlEl = useTemplateRef('tlEl');
+const rootEl = useTemplateRef('rootEl');
 
 watch(() => props.listId, async () => {
 	list.value = await misskeyApi('users/lists/show', {
@@ -55,7 +54,7 @@ function queueUpdated(q) {
 }
 
 function top() {
-	scroll(rootEl.value, { top: 0 });
+	scrollInContainer(rootEl.value, { top: 0 });
 }
 
 function settings() {
@@ -70,7 +69,7 @@ const headerActions = computed(() => list.value ? [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: list.value ? list.value.name : i18n.ts.lists,
 	icon: 'ti ti-list',
 }));
