@@ -1359,7 +1359,7 @@ _chat:
   noInvitations: "No tens cap invitació "
   history: "Historial de converses "
   noHistory: "No hi ha un registre previ"
-  noRooms: "No hi ha habitacions"
+  noRooms: "No hi ha cap sala"
   inviteUser: "Invitar usuaris"
   sentInvitations: "Enviar invitacions"
   join: "Afegir-se "
