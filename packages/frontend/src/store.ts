@@ -266,6 +266,10 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'device',
 		default: DEFAULT_DEVICE_KIND === 'desktop',
 	},
+	widgetsPosition: {
+		where: 'device',
+		default: 'left' as 'left' | 'right',
+	},
 	showFixedPostForm: {
 		where: 'device',
 		default: false,
