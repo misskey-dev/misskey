@@ -675,6 +675,18 @@ export interface Locale extends ILocale {
      */
     "editWidgetsExit": string;
     /**
+     * ウィジェットの位置(モバイル環境)
+     */
+    "widgetsPosition": string;
+    /**
+     * 右ウィジェット
+     */
+    "widgetsright": string;
+    /**
+     * 左ウィジェット
+     */
+    "widgetsleft": string;
+    /**
      * カスタム絵文字
      */
     "customEmojis": string;
