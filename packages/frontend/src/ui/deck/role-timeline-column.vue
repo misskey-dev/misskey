@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn :menu="menu" :column="column" :isStacked="isStacked" :refresher="async () => { await timeline?.reloadTimeline() }">
 	<template #header>
-		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name }}</span>
+		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name || roleName || i18n.ts._deck._columns.roleTimeline }}</span>
 	</template>
 
 	<MkTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId" @note="onNote"/>
@@ -14,29 +14,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef, watch } from 'vue';
+import { onMounted, ref, useTemplateRef, watch } from 'vue';
 import XColumn from './column.vue';
-import { updateColumn, Column } from './deck-store.js';
+import type { Column } from '@/deck.js';
+import type { MenuItem } from '@/types/menu.js';
+import type { SoundStore } from '@/preferences/def.js';
+import { updateColumn } from '@/deck.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import type { MenuItem } from '@/types/menu.js';
-import { SoundStore } from '@/store.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
-import * as sound from '@/scripts/sound.js';
+import * as sound from '@/utility/sound.js';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-const timeline = shallowRef<InstanceType<typeof MkTimeline>>();
+const timeline = useTemplateRef('timeline');
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
+const roleName = ref<string | null>(null);
 
 onMounted(() => {
 	if (props.column.roleId == null) {
 		setRole();
+	}
+});
+
+watch([() => props.column.name, () => props.column.roleId], () => {
+	if (!props.column.name && props.column.roleId) {
+		misskeyApi('roles/show', { roleId: props.column.roleId })
+			.then(value => roleName.value = value.name);
 	}
 });
 

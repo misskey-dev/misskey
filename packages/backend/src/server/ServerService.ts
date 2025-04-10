@@ -103,6 +103,43 @@ export class ServerService implements OnApplicationShutdown {
 			serve: false,
 		});
 
+		// if the requester looks like to be performing an ActivityPub object lookup, reject all external redirects
+		//
+		// this will break lookup that involve copying a URL from a third-party server, like trying to lookup http://charlie.example.com/@alice@alice.com
+		//
+		// this is not required by standard but protect us from peers that did not validate final URL.
+		if (this.config.disallowExternalApRedirect) {
+			const maybeApLookupRegex = /application\/activity\+json|application\/ld\+json.+activitystreams/i;
+			fastify.addHook('onSend', (request, reply, _, done) => {
+				const location = reply.getHeader('location');
+				if (reply.statusCode < 300 || reply.statusCode >= 400 || typeof location !== 'string') {
+					done();
+					return;
+				}
+
+				if (!maybeApLookupRegex.test(request.headers.accept ?? '')) {
+					done();
+					return;
+				}
+
+				const effectiveLocation = process.env.NODE_ENV === 'production' ? location : location.replace(/^http:\/\//, 'https://');
+				if (effectiveLocation.startsWith(`https://${this.config.host}/`)) {
+					done();
+					return;
+				}
+
+				reply.status(406);
+				reply.removeHeader('location');
+				reply.header('content-type', 'text/plain; charset=utf-8');
+				reply.header('link', `<${encodeURI(location)}>; rel="canonical"`);
+				done(null, [
+					"Refusing to relay remote ActivityPub object lookup.",
+					"",
+					`Please remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at ${location}.`,
+				].join('\n'));
+			});
+		}
+
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
 		fastify.register(this.openApiServerService.createServer);
 		fastify.register(this.fileServerService.createServer);

@@ -22,7 +22,7 @@ export type LoginUser = SigninResponse & {
 	client: Misskey.api.APIClient;
 	username: string;
 	password: string;
-}
+};
 
 /** used for avoiding overload and some endpoints */
 export type Request = <
@@ -36,7 +36,7 @@ export type Request = <
 
 type Host = 'a.test' | 'b.test';
 
-export async function sleep(ms = 200): Promise<void> {
+export async function sleep(ms = 250): Promise<void> {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
