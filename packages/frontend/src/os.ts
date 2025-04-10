@@ -547,12 +547,13 @@ export function success(): Promise<void> {
 	});
 }
 
-export function waiting(): Promise<void> {
+export function waiting(text?: string | null): Promise<void> {
 	return new Promise(resolve => {
 		const showing = ref(true);
 		const { dispose } = popup(MkWaitingDialog, {
 			success: false,
 			showing: showing,
+			text,
 		}, {
 			done: () => resolve(),
 			closed: () => dispose(),

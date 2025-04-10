@@ -520,7 +520,7 @@ onUnmounted(() => {
 
 					> .heading {
 						text-align: left;
-						color: var(--MI_THEME-fgTransparent);
+						color: color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 						line-height: 1.5;
 						font-size: 85%;
 					}

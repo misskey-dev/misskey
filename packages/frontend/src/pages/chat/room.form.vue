@@ -34,14 +34,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, ref, shallowRef, computed, nextTick, readonly } from 'vue';
+import { onMounted, watch, ref, shallowRef, computed, nextTick, readonly, onBeforeUnmount } from 'vue';
 import * as Misskey from 'misskey-js';
 //import insertTextAtCursor from 'insert-text-at-cursor';
-import { throttle } from 'throttle-debounce';
 import { formatTimeString } from '@/utility/format-time-string.js';
 import { selectFile } from '@/utility/select-file.js';
 import * as os from '@/os.js';
-import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { uploadFile } from '@/utility/upload.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -62,6 +60,7 @@ const text = ref<string>('');
 const file = ref<Misskey.entities.DriveFile | null>(null);
 const sending = ref(false);
 const textareaReadOnly = ref(false);
+let autocompleteInstance: Autocomplete | null = null;
 
 const canSend = computed(() => (text.value != null && text.value !== '') || file.value != null);
 
@@ -171,7 +170,9 @@ function chooseFile(ev: MouseEvent) {
 }
 
 function onChangeFile() {
-	if (fileEl.value.files![0]) upload(fileEl.value.files[0]);
+	if (fileEl.value == null || fileEl.value.files == null) return;
+
+	if (fileEl.value.files[0]) upload(fileEl.value.files[0]);
 }
 
 function upload(fileToUpload: File, name?: string) {
@@ -270,14 +271,22 @@ async function insertEmoji(ev: MouseEvent) {
 }
 
 onMounted(() => {
-	// TODO: detach when unmount
-	new Autocomplete(textareaEl.value, text);
+	if (textareaEl.value != null) {
+		autocompleteInstance = new Autocomplete(textareaEl.value, text);
+	}
 
 	// 書きかけの投稿を復元
 	const draft = JSON.parse(miLocalStorage.getItem('chatMessageDrafts') || '{}')[getDraftKey()];
 	if (draft) {
 		text.value = draft.data.text;
 		file.value = draft.data.file;
+	}
+});
+
+onBeforeUnmount(() => {
+	if (autocompleteInstance) {
+		autocompleteInstance.detach();
+		autocompleteInstance = null;
 	}
 });
 </script>

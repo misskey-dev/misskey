@@ -47,6 +47,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private chatService: ChatService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			await this.chatService.checkChatAvailability(me.id, 'read');
+
 			const invitations = await this.chatService.getReceivedRoomInvitationsWithPagination(me.id, ps.limit, ps.sinceId, ps.untilId);
 			return this.chatEntityService.packRoomInvitations(invitations, me);
 		});

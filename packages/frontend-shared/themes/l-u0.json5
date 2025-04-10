@@ -51,7 +51,6 @@
 		buttonHoverBg: '#0000001a',
 		driveFolderBg: ':alpha<0.3<@accent',
 		fgHighlighted: ':lighten<3<@fg',
-		fgTransparent: ':alpha<0.5<@fg',
 		panelHeaderBg: ':lighten<3<@panel',
 		panelHeaderFg: '@fg',
 		buttonGradateA: '@accent',
@@ -60,8 +59,6 @@
 		panelHighlight: ':lighten<3<@panel',
 		scrollbarHandle: '#74747433',
 		inputBorderHover: 'rgba(255, 255, 255, 0.2)',
-		fgTransparentWeak: ':alpha<0.75<@fg',
-		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
 		scrollbarHandleHover: 'rgba(255, 255, 255, 0.4)',
 	},
 }
