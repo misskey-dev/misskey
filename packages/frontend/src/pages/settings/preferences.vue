@@ -11,8 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFeatureBanner>
 
 		<div class="_gaps_s">
-			<SearchMarker :keywords="['general']">
-				<MkFolder>
+			<SearchMarker v-slot="slotProps" :keywords="['general']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.general }}</SearchLabel></template>
 					<template #icon><SearchIcon><i class="ti ti-settings"></i></SearchIcon></template>
 
@@ -108,8 +108,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['timeline', 'note']">
-				<MkFolder>
+			<SearchMarker v-slot="slotProps" :keywords="['timeline', 'note']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts._settings.timelineAndNote }}</SearchLabel></template>
 					<template #icon><SearchIcon><i class="ti ti-notes"></i></SearchIcon></template>
 
@@ -276,8 +276,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['post', 'form']">
-				<MkFolder>
+			<SearchMarker v-slot="slotProps" :keywords="['post', 'form']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.postForm }}</SearchLabel></template>
 					<template #icon><SearchIcon><i class="ti ti-edit"></i></SearchIcon></template>
 
@@ -338,8 +338,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['notification']">
-				<MkFolder>
+			<SearchMarker v-slot="slotProps" :keywords="['notification']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.notifications }}</SearchLabel></template>
 					<template #icon><SearchIcon><i class="ti ti-bell"></i></SearchIcon></template>
 
@@ -380,8 +380,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<template v-if="$i.policies.chatAvailability !== 'unavailable'">
-				<SearchMarker :keywords="['chat', 'messaging']">
-					<MkFolder>
+				<SearchMarker v-slot="slotProps" :keywords="['chat', 'messaging']">
+					<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 						<template #label><SearchLabel>{{ i18n.ts.chat }}</SearchLabel></template>
 						<template #icon><SearchIcon><i class="ti ti-messages"></i></SearchIcon></template>
 
@@ -420,8 +420,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 			</template>
 
-			<SearchMarker :keywords="['accessibility']">
-				<MkFolder>
+			<SearchMarker v-slot="slotProps" :keywords="['accessibility']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.accessibility }}</SearchLabel></template>
 					<template #icon><SearchIcon><i class="ti ti-accessible"></i></SearchIcon></template>
 
@@ -530,8 +530,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['performance']">
-				<MkFolder>
+			<SearchMarker v-slot="slotProps" :keywords="['performance']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.performance }}</SearchLabel></template>
 					<template #icon><SearchIcon><i class="ti ti-battery-vertical-eco"></i></SearchIcon></template>
 
@@ -540,7 +540,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="useBlurEffect">
 								<MkSwitch v-model="useBlurEffect">
 									<template #label><SearchLabel>{{ i18n.ts.useBlurEffect }}</SearchLabel></template>
-									<template #caption><SearchLabel>{{ i18n.ts.turnOffToImprovePerformance }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -549,7 +549,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="useBlurEffectForModal">
 								<MkSwitch v-model="useBlurEffectForModal">
 									<template #label><SearchLabel>{{ i18n.ts.useBlurEffectForModal }}</SearchLabel></template>
-									<template #caption><SearchLabel>{{ i18n.ts.turnOffToImprovePerformance }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -558,7 +558,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="useStickyIcons">
 								<MkSwitch v-model="useStickyIcons">
 									<template #label><SearchLabel>{{ i18n.ts._settings.useStickyIcons }}</SearchLabel></template>
-									<template #caption><SearchLabel>{{ i18n.ts.turnOffToImprovePerformance }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -566,8 +566,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['datasaver']">
-				<MkFolder>
+			<SearchMarker v-slot="slotProps" :keywords="['datasaver']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.dataSaver }}</SearchLabel></template>
 					<template #icon><SearchIcon><i class="ti ti-antenna-bars-3"></i></SearchIcon></template>
 
@@ -600,8 +600,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker :keywords="['other']">
-				<MkFolder>
+			<SearchMarker v-slot="slotProps" :keywords="['other']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.other }}</SearchLabel></template>
 					<template #icon><SearchIcon><i class="ti ti-settings-cog"></i></SearchIcon></template>
 
