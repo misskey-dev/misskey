@@ -7,6 +7,7 @@ import { nextTick, ref, defineAsyncComponent } from 'vue';
 import getCaretCoordinates from 'textarea-caret';
 import { toASCII } from 'punycode.js';
 import type { Ref } from 'vue';
+import type { CompleteInfo } from '@/components/MkAutocomplete.vue';
 import { popup } from '@/os.js';
 
 export type SuggestionType = 'user' | 'hashtag' | 'emoji' | 'mfmTag' | 'mfmParam';
@@ -19,7 +20,7 @@ export class Autocomplete {
 		close: () => void;
 	} | null;
 	private textarea: HTMLInputElement | HTMLTextAreaElement;
-	private currentType: string;
+	private currentType: keyof CompleteInfo | undefined;
 	private textRef: Ref<string | number | null>;
 	private opening: boolean;
 	private onlyType: SuggestionType[];
@@ -74,7 +75,7 @@ export class Autocomplete {
 	 * テキスト入力時
 	 */
 	private onInput() {
-		const caretPos = this.textarea.selectionStart;
+		const caretPos = Number(this.textarea.selectionStart);
 		const text = this.text.substring(0, caretPos).split('\n').pop()!;
 
 		const mentionIndex = text.lastIndexOf('@');
@@ -101,6 +102,8 @@ export class Autocomplete {
 		const isMfmParam = mfmParamIndex !== -1 && afterLastMfmParam?.includes('.') && !afterLastMfmParam.includes(' ');
 		const isMfmTag = mfmTagIndex !== -1 && !isMfmParam;
 		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
+		// :ok:などを🆗にするたいおぷ
+		const isEmojiCompleteToUnicode = !isEmoji && emojiIndex === text.length - 1;
 
 		let opened = false;
 
@@ -137,6 +140,14 @@ export class Autocomplete {
 			}
 		}
 
+		if (isEmojiCompleteToUnicode && !opened && this.onlyType.includes('emoji')) {
+			const emoji = text.substring(text.lastIndexOf(':', text.length - 2) + 1, text.length - 1);
+			if (!emoji.includes(' ')) {
+				this.open('emojiComplete', emoji);
+				opened = true;
+			}
+		}
+
 		if (isMfmTag && !opened && this.onlyType.includes('mfmTag')) {
 			const mfmTag = text.substring(mfmTagIndex + 1);
 			if (!mfmTag.includes(' ')) {
@@ -164,7 +175,7 @@ export class Autocomplete {
 	/**
 	 * サジェストを提示します。
 	 */
-	private async open(type: string, q: any) {
+	private async open<T extends keyof CompleteInfo>(type: T, q: CompleteInfo[T]['query']) {
 		if (type !== this.currentType) {
 			this.close();
 		}
@@ -231,10 +242,10 @@ export class Autocomplete {
 	/**
 	 * オートコンプリートする
 	 */
-	private complete({ type, value }) {
+	private complete<T extends keyof CompleteInfo>({ type, value }: { type: T; value: CompleteInfo[T]['payload'] }) {
 		this.close();
 
-		const caret = this.textarea.selectionStart;
+		const caret = Number(this.textarea.selectionStart);
 
 		if (type === 'user') {
 			const source = this.text;
@@ -275,6 +286,22 @@ export class Autocomplete {
 
 			const before = source.substring(0, caret);
 			const trimmedBefore = before.substring(0, before.lastIndexOf(':'));
+			const after = source.substring(caret);
+
+			// 挿入
+			this.text = trimmedBefore + value + after;
+
+			// キャレットを戻す
+			nextTick(() => {
+				this.textarea.focus();
+				const pos = trimmedBefore.length + value.length;
+				this.textarea.setSelectionRange(pos, pos);
+			});
+		} else if (type === 'emojiComplete') {
+			const source = this.text;
+
+			const before = source.substring(0, caret);
+			const trimmedBefore = before.substring(0, before.lastIndexOf(':', before.length - 2));
 			const after = source.substring(caret);
 
 			// 挿入

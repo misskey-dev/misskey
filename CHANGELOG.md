@@ -4,7 +4,7 @@
 -
 
 ### Client
--
+- Enhance: Unicode絵文字をslugから入力する際に`:ok:`のように最後の`:`を入力したあとにUnicode絵文字に変換できるように
 
 ### Server
 -
