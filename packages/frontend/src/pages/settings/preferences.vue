@@ -540,7 +540,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="useBlurEffect">
 								<MkSwitch v-model="useBlurEffect">
 									<template #label><SearchLabel>{{ i18n.ts.useBlurEffect }}</SearchLabel></template>
-									<template #caption><SearchLabel>{{ i18n.ts.turnOffToImprovePerformance }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -549,7 +549,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="useBlurEffectForModal">
 								<MkSwitch v-model="useBlurEffectForModal">
 									<template #label><SearchLabel>{{ i18n.ts.useBlurEffectForModal }}</SearchLabel></template>
-									<template #caption><SearchLabel>{{ i18n.ts.turnOffToImprovePerformance }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -558,7 +558,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="useStickyIcons">
 								<MkSwitch v-model="useStickyIcons">
 									<template #label><SearchLabel>{{ i18n.ts._settings.useStickyIcons }}</SearchLabel></template>
-									<template #caption><SearchLabel>{{ i18n.ts.turnOffToImprovePerformance }}</SearchLabel></template>
+									<template #caption><SearchKeyword>{{ i18n.ts.turnOffToImprovePerformance }}</SearchKeyword></template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>

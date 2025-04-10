@@ -65,10 +65,11 @@ const hyphens = [
 ];
 
 const hyphensCodePoints = hyphens.map(code => `\\u{${code.toString(16).padStart(4, '0')}}`);
+const hyphensRegex = new RegExp(`[${hyphensCodePoints.join('')}]`, 'ug');
 
 /** ハイフンを統一（ローマ字半角入力時に`ー`と`-`が判定できない問題の調整） */
 export function normalizeHyphens(str: string) {
-	return str.replace(new RegExp(`[${hyphensCodePoints.join('')}]`, 'ug'), '\u002d');
+	return str.replace(hyphensRegex, '\u002d');
 }
 
 /**

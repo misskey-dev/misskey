@@ -1731,9 +1731,9 @@ export interface Locale extends ILocale {
      */
     "withFileAntenna": string;
     /**
-     * センシティブなチャンネルのノートを非表示
+     * センシティブなチャンネルのノートを除外
      */
-    "hideNotesInSensitiveChannel": string;
+    "excludeNotesInSensitiveChannel": string;
     /**
      * ブラウザへのプッシュ通知を有効にする
      */

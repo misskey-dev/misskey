@@ -146,7 +146,7 @@ describe('アンテナ', () => {
 			caseSensitive: false,
 			createdAt: new Date(response.createdAt).toISOString(),
 			excludeKeywords: [['']],
-			hideNotesInSensitiveChannel: false,
+			excludeNotesInSensitiveChannel: false,
 			hasUnreadNote: false,
 			isActive: true,
 			keywords: [['keyword']],
@@ -218,8 +218,8 @@ describe('アンテナ', () => {
 		{ parameters: () => ({ withReplies: true }) },
 		{ parameters: () => ({ withFile: false }) },
 		{ parameters: () => ({ withFile: true }) },
-		{ parameters: () => ({ hideNotesInSensitiveChannel: false }) },
-		{ parameters: () => ({ hideNotesInSensitiveChannel: true }) },
+		{ parameters: () => ({ excludeNotesInSensitiveChannel: false }) },
+		{ parameters: () => ({ excludeNotesInSensitiveChannel: true }) },
 	];
 	test.each(antennaParamPattern)('を作成できること($#)', async ({ parameters }) => {
 		const response = await successfulApiCall({
@@ -633,7 +633,7 @@ describe('アンテナ', () => {
 			const keyword = 'キーワード';
 			const antenna = await successfulApiCall({
 				endpoint: 'antennas/create',
-				parameters: { ...defaultParam, keywords: [[keyword]], hideNotesInSensitiveChannel: true },
+				parameters: { ...defaultParam, keywords: [[keyword]], excludeNotesInSensitiveChannel: true },
 				user: alice,
 			});
 			const nonSensitiveChannel = await successfulApiCall({
