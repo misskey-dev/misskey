@@ -49,10 +49,11 @@ import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownCo
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
-provide('forceSpacerMin', true);
+provide(DI.forceSpacerMin, true);
 
 const withWallpaper = prefer.s['deck.wallpaper'] != null;
 

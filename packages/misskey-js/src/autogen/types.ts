@@ -4899,7 +4899,7 @@ export type components = {
       /** @default false */
       notify: boolean;
       /** @default false */
-      hideNotesInSensitiveChannel: boolean;
+      excludeNotesInSensitiveChannel: boolean;
     };
     Clip: {
       /**
@@ -11348,7 +11348,7 @@ export type operations = {
           excludeBots?: boolean;
           withReplies: boolean;
           withFile: boolean;
-          hideNotesInSensitiveChannel?: boolean;
+          excludeNotesInSensitiveChannel?: boolean;
         };
       };
     };
@@ -11630,7 +11630,7 @@ export type operations = {
           excludeBots?: boolean;
           withReplies?: boolean;
           withFile?: boolean;
-          hideNotesInSensitiveChannel?: boolean;
+          excludeNotesInSensitiveChannel?: boolean;
         };
       };
     };
