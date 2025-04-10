@@ -5,7 +5,7 @@
 
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
-import { DataSource, Logger } from 'typeorm';
+import { DataSource, EntityManager, Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 import { Config } from '@/config.js';
@@ -250,6 +250,33 @@ export const entities = [
 
 const log = process.env.NODE_ENV !== 'production';
 
+/**
+ * Execute query with extended timeout.
+ * This can be used to execute long-running queries like deleting many rows CASCADE-ly.
+ *
+ * TODO: consider remove this function when we removed CASCADE delete.
+ */
+export async function extendTimeoutQuery(dataSource: DataSource, query: (manager: EntityManager) => Promise<void>): Promise<void> {
+	const queryRunner = dataSource.createQueryRunner('master');
+	const manager = dataSource.createEntityManager(queryRunner);
+	const extendedTimeout = 1000 * 100; // 100 sec for now. How long should it be?
+	try {
+		await queryRunner.connect();
+		try {
+			// it looks postgres doesn't support statement_timeout with placeholder
+			// await manager.query(`set statement_timeout to $1`, [extendedTimeout]);
+			await manager.query(`set statement_timeout to ${extendedTimeout}`);
+			await query(manager);
+		} finally {
+			await manager.query(`set statement_timeout to ${default_statement_timeout}`);
+		}
+	} finally {
+		await queryRunner.release();
+	}
+}
+
+export const default_statement_timeout = 1000 * 10;
+
 export function createPostgresDataSource(config: Config) {
 	return new DataSource({
 		type: 'postgres',
@@ -259,7 +286,7 @@ export function createPostgresDataSource(config: Config) {
 		password: config.db.pass,
 		database: config.db.db,
 		extra: {
-			statement_timeout: 1000 * 10,
+			statement_timeout: default_statement_timeout,
 			...config.db.extra,
 		},
 		...(config.dbReplications ? {
