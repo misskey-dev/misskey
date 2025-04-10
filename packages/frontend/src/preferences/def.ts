@@ -118,6 +118,9 @@ export const PREF_DEF = {
 	keepCw: {
 		default: true,
 	},
+	keepOriginalUploading: {
+		default: false,
+	},
 	rememberNoteVisibility: {
 		default: false,
 	},

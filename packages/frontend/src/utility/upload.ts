@@ -60,7 +60,7 @@ export function uploadFile(
 	file: File,
 	folder?: string | Misskey.entities.DriveFolder | null,
 	name?: string,
-	keepOriginal = false,
+	keepOriginal: boolean = prefer.s.keepOriginalUploading,
 ): Promise<Misskey.entities.DriveFile> {
 	if ($i == null) throw new Error('Not logged in');
 

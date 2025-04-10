@@ -21,7 +21,7 @@ export function chooseFileFromPc(
 	},
 ): Promise<Misskey.entities.DriveFile[]> {
 	const uploadFolder = options?.uploadFolder ?? prefer.s.uploadFolder;
-	const keepOriginal = options?.keepOriginal ?? false;
+	const keepOriginal = options?.keepOriginal ?? prefer.s.keepOriginalUploading;
 	const nameConverter = options?.nameConverter ?? (() => undefined);
 
 	return new Promise((res, rej) => {
@@ -96,17 +96,19 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 
 function select(src: HTMLElement | EventTarget | null, label: string | null, multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
 	return new Promise((res, rej) => {
+		const keepOriginal = ref(prefer.s.keepOriginalUploading);
+
 		os.popupMenu([label ? {
 			text: label,
 			type: 'label',
 		} : undefined, {
-			text: i18n.ts.upload + ' (' + i18n.ts.compress + ')',
-			icon: 'ti ti-upload',
-			action: () => chooseFileFromPc(multiple, { keepOriginal: false }).then(files => res(files)),
+			type: 'switch',
+			text: i18n.ts.keepOriginalUploading,
+			ref: keepOriginal,
 		}, {
 			text: i18n.ts.upload,
 			icon: 'ti ti-upload',
-			action: () => chooseFileFromPc(multiple, { keepOriginal: true }).then(files => res(files)),
+			action: () => chooseFileFromPc(multiple, { keepOriginal: keepOriginal.value }).then(files => res(files)),
 		}, {
 			text: i18n.ts.fromDrive,
 			icon: 'ti ti-cloud',
