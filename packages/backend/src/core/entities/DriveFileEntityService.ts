@@ -12,6 +12,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiMeta } from '@/models/Meta.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
@@ -36,6 +37,9 @@ export class DriveFileEntityService {
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		// 循環参照のため / for circular dependency
 		@Inject(forwardRef(() => UserEntityService))
@@ -85,11 +89,31 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
+	private getObjectStorageBaseUrl(): string {
+		return this.meta.objectStorageBaseUrl
+			?? `${ this.meta.objectStorageUseSSL ? 'https' : 'http' }://${ this.meta.objectStorageEndpoint }${ this.meta.objectStoragePort ? `:${this.meta.objectStoragePort}` : '' }/${ this.meta.objectStorageBucket }`;
+	}
+
+	@bindThis
+	private getFullObjectStorageUrl(path: string | null): string | null {
+		if (path == null) return null;
+		
+		// If the path is already a full URL (for backward compatibility), return it as is
+		if (path.startsWith('http://') || path.startsWith('https://')) {
+			return path;
+		}
+		
+		// Otherwise, construct the full URL from the base URL and the relative path
+		return `${this.getObjectStorageBaseUrl()}/${path}`;
+	}
+
+	@bindThis
 	public getThumbnailUrl(file: MiDriveFile): string | null {
 		if (file.type.startsWith('video')) {
-			if (file.thumbnailUrl) return file.thumbnailUrl;
+			if (file.thumbnailUrl) return this.getFullObjectStorageUrl(file.thumbnailUrl);
 
-			return this.videoProcessingService.getExternalVideoThumbnailUrl(file.webpublicUrl ?? file.url);
+			const videoUrl = this.getFullObjectStorageUrl(file.webpublicUrl) ?? this.getFullObjectStorageUrl(file.url);
+			return videoUrl ? this.videoProcessingService.getExternalVideoThumbnailUrl(videoUrl) : null;
 		} else if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
 			// 動画ではなくリモートかつメディアプロキシ
 			return this.getProxiedUrl(file.uri, 'static');
@@ -102,9 +126,9 @@ export class DriveFileEntityService {
 			return this.getProxiedUrl(file.uri, 'static');
 		}
 
-		const url = file.webpublicUrl ?? file.url;
+		const url = this.getFullObjectStorageUrl(file.webpublicUrl) ?? this.getFullObjectStorageUrl(file.url);
 
-		return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? url : null);
+		return this.getFullObjectStorageUrl(file.thumbnailUrl) ?? (isMimeImage(file.type, 'sharp-convertible-image') && url ? url : null);
 	}
 
 	@bindThis
@@ -125,7 +149,13 @@ export class DriveFileEntityService {
 			}
 		}
 
-		const url = file.webpublicUrl ?? file.url;
+		const url = this.getFullObjectStorageUrl(file.webpublicUrl) ?? this.getFullObjectStorageUrl(file.url);
+
+		// Ensure we have a valid URL
+		if (!url) {
+			// Fallback to a default URL or handle the error
+			return file.url || ''; // Return the original URL as a fallback
+		}
 
 		if (mode === 'avatar') {
 			return this.getProxiedUrl(url, 'avatar');

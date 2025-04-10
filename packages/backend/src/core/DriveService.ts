@@ -169,19 +169,12 @@ export class DriveService {
 				ext = '';
 			}
 
-			const baseUrl = this.meta.objectStorageBaseUrl
-				?? `${ this.meta.objectStorageUseSSL ? 'https' : 'http' }://${ this.meta.objectStorageEndpoint }${ this.meta.objectStoragePort ? `:${this.meta.objectStoragePort}` : '' }/${ this.meta.objectStorageBucket }`;
-
-			// for original
 			const prefix = this.meta.objectStoragePrefix ? `${this.meta.objectStoragePrefix}/` : '';
 			const key = `${prefix}${randomUUID()}${ext}`;
-			const url = `${ baseUrl }/${ key }`;
 
 			// for alts
 			let webpublicKey: string | null = null;
-			let webpublicUrl: string | null = null;
 			let thumbnailKey: string | null = null;
-			let thumbnailUrl: string | null = null;
 			//#endregion
 
 			//#region Uploads
@@ -192,16 +185,12 @@ export class DriveService {
 
 			if (alts.webpublic) {
 				webpublicKey = `${prefix}webpublic-${randomUUID()}.${alts.webpublic.ext}`;
-				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
-
 				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
 				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, alts.webpublic.ext, name));
 			}
 
 			if (alts.thumbnail) {
 				thumbnailKey = `${prefix}thumbnail-${randomUUID()}.${alts.thumbnail.ext}`;
-				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
-
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
 				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type, alts.thumbnail.ext, `${name}.thumbnail`));
 			}
@@ -209,9 +198,6 @@ export class DriveService {
 			await Promise.all(uploads);
 			//#endregion
 
-			file.url = url;
-			file.thumbnailUrl = thumbnailUrl;
-			file.webpublicUrl = webpublicUrl;
 			file.accessKey = key;
 			file.thumbnailAccessKey = thumbnailKey;
 			file.webpublicAccessKey = webpublicKey;
@@ -221,6 +207,11 @@ export class DriveService {
 			file.md5 = hash;
 			file.size = size;
 			file.storedInternal = false;
+
+			// Store relative paths instead of full URLs
+			file.url = key;
+			file.thumbnailUrl = thumbnailKey;
+			file.webpublicUrl = webpublicKey;
 
 			return await this.driveFilesRepository.insertOne(file);
 		} else { // use internal storage
