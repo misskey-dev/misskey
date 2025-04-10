@@ -2144,7 +2144,8 @@ declare namespace entities {
         ChatMessageLiteForRoom,
         ChatRoom,
         ChatRoomInvitation,
-        ChatRoomMembership
+        ChatRoomMembership,
+        MahjongRoomDetailed
     }
 }
 export { entities }
@@ -2712,6 +2713,9 @@ type IWebhooksTestRequest = operations['i___webhooks___test']['requestBody']['co
 
 // @public (undocumented)
 type IWebhooksUpdateRequest = operations['i___webhooks___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MahjongRoomDetailed = components['schemas']['MahjongRoomDetailed'];
 
 // @public (undocumented)
 type MeDetailed = components['schemas']['MeDetailed'];

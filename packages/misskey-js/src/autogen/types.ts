@@ -5486,6 +5486,39 @@ export type components = {
       roomId: string;
       room?: components['schemas']['ChatRoom'];
     };
+    MahjongRoomDetailed: {
+      /** Format: id */
+      id: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      startedAt: string | null;
+      /** Format: date-time */
+      endedAt: string | null;
+      isStarted: boolean;
+      isEnded: boolean;
+      /** Format: id */
+      user1Id: string;
+      /** Format: id */
+      user2Id: string;
+      /** Format: id */
+      user3Id: string;
+      /** Format: id */
+      user4Id: string;
+      user1: components['schemas']['User'];
+      user2: components['schemas']['User'];
+      user3: components['schemas']['User'];
+      user4: components['schemas']['User'];
+      user1Ai: boolean;
+      user2Ai: boolean;
+      user3Ai: boolean;
+      user4Ai: boolean;
+      user1Ready: boolean;
+      user2Ready: boolean;
+      user3Ready: boolean;
+      user4Ready: boolean;
+      timeLimitForEachTurn: number;
+    };
   };
   responses: never;
   parameters: never;

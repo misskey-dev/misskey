@@ -77,6 +77,7 @@ import { ChannelFollowingService } from './ChannelFollowingService.js';
 import { ChatService } from './ChatService.js';
 import { RegistryApiService } from './RegistryApiService.js';
 import { ReversiService } from './ReversiService.js';
+import { MahjongService } from './MahjongService.js';
 
 import { ChartLoggerService } from './chart/ChartLoggerService.js';
 import FederationChart from './chart/charts/federation.js';
@@ -224,6 +225,7 @@ const $ChannelFollowingService: Provider = { provide: 'ChannelFollowingService',
 const $ChatService: Provider = { provide: 'ChatService', useExisting: ChatService };
 const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisting: RegistryApiService };
 const $ReversiService: Provider = { provide: 'ReversiService', useExisting: ReversiService };
+const $MahjongService: Provider = { provide: 'MahjongService', useExisting: MahjongService };
 
 const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
 const $FederationChart: Provider = { provide: 'FederationChart', useExisting: FederationChart };
@@ -374,6 +376,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ChatService,
 		RegistryApiService,
 		ReversiService,
+		MahjongService,
 
 		ChartLoggerService,
 		FederationChart,
@@ -520,6 +523,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ChatService,
 		$RegistryApiService,
 		$ReversiService,
+		$MahjongService,
 
 		$ChartLoggerService,
 		$FederationChart,
@@ -667,6 +671,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ChatService,
 		RegistryApiService,
 		ReversiService,
+		MahjongService,
 
 		FederationChart,
 		NotesChart,
@@ -811,6 +816,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ChatService,
 		$RegistryApiService,
 		$ReversiService,
+		$MahjongService,
 
 		$FederationChart,
 		$NotesChart,
