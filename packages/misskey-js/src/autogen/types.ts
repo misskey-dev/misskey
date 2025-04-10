@@ -8710,6 +8710,7 @@ export type operations = {
             /** @enum {string} */
             federation: 'all' | 'specified' | 'none';
             federationHosts: string[];
+            featuredUpdateRatio: number;
           };
         };
       };
@@ -11057,6 +11058,7 @@ export type operations = {
           /** @enum {string} */
           federation?: 'all' | 'none' | 'specified';
           federationHosts?: string[];
+          featuredUpdateRatio?: number;
         };
       };
     };

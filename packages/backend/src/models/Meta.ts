@@ -664,4 +664,9 @@ export class MiMeta {
 		nullable: true,
 	})
 	public googleAnalyticsMeasurementId: string | null;
+
+	@Column('float', {
+		default: 0.3,
+	})
+	public featuredUpdateRatio: number;
 }
