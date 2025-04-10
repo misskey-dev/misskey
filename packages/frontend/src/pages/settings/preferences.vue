@@ -859,6 +859,7 @@ watch([
 	fontSize,
 	useSystemFont,
 	makeEveryTextElementsSelectable,
+	widgetsPosition,
 ], async () => {
 	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
 });
