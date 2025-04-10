@@ -43,22 +43,24 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { signinRequired } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { globalEvents } from '@/events.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { claimAchievement } from '@/utility/achievements.js';
 import * as os from '@/os.js';
 
 import MkButton from '@/components/MkButton.vue';
 
-const $i = signinRequired();
-
-const originalMode = $i.isInYamiMode ? 'yami' : 'normal';
+// nullチェックを追加
+const originalMode = $i?.isInYamiMode ? 'yami' : 'normal';
 const mode = ref<'normal' | 'yami'>(originalMode);
 
 const hasChanged = computed(() => mode.value !== originalMode);
 
 async function setMode() {
+	// ユーザーがログインしていない場合は処理しない
+	if (!$i) return;
+
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		title: i18n.ts.saveConfirm,
@@ -67,9 +69,14 @@ async function setMode() {
 
 	if (canceled) return;
 
+	// APIを呼び出して設定を保存
 	os.apiWithDialog('i/update', {
 		isInYamiMode: mode.value === 'yami',
+	}).then(() => {
+		// 成功したら現在のユーザー情報も更新
+		if ($i) $i.isInYamiMode = mode.value === 'yami';
 	});
+
 	globalEvents.emit('requestClearPageCache');
 	if (mode.value === 'yami') {
 		claimAchievement('markedAsYamiModeUser');

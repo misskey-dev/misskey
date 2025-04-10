@@ -108,6 +108,7 @@ export const meta = {
 					receiveFollowRequest: { optional: true, ...notificationRecieveConfig },
 					followRequestAccepted: { optional: true, ...notificationRecieveConfig },
 					roleAssigned: { optional: true, ...notificationRecieveConfig },
+					chatRoomInvitationReceived: { optional: true, ...notificationRecieveConfig },
 					achievementEarned: { optional: true, ...notificationRecieveConfig },
 					app: { optional: true, ...notificationRecieveConfig },
 					test: { optional: true, ...notificationRecieveConfig },

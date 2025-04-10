@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref, watch, onUnmounted, computed } from 'vue';
 import MkInput from '@/components/MkInput.vue';
-import { formatDateTimeString } from '@/scripts/format-time-string.js';
-import { addTime } from '@/scripts/time.js';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
+import { addTime } from '@/utility/time.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{

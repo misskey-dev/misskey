@@ -25,23 +25,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import SearchMarker from '@/components/global/SearchMarker.vue';
 import SearchLabel from '@/components/global/SearchLabel.vue';
 import SearchKeyword from '@/components/global/SearchKeyword.vue';
+import { prefer } from '@/preferences.js';
 
-const searchEngine = computed(defaultStore.makeGetterSetter('searchEngine'));
+// ローカルの状態を管理するための ref
+const currentEngine = ref(prefer.s.searchEngine);
 
+// preferの値が変更されたらローカルの状態も更新
+watch(() => prefer.s.searchEngine, (newValue) => {
+	currentEngine.value = newValue;
+}, { immediate: true });
+
+// v-modelにバインドするcomputedプロパティ
+const searchEngine = computed({
+	get: () => currentEngine.value,
+	set: (value) => {
+		if (value) {
+			// ローカルの状態をすぐに更新
+			currentEngine.value = value;
+			// preferに保存
+			prefer.commit('searchEngine', value);
+		}
+	},
+});
+
+// MkSelectの選択が変更されたときのハンドラ（必要であれば）
 function save() {
-	// 設定変更時のリロードは不要になった
+	// 既に computed setter で処理されているため空でも問題ない
 }
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._yami.yamiSet,
 	icon: 'ti ti-key',
 }));

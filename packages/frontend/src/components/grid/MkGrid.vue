@@ -50,6 +50,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import type { DataSource, GridSetting, GridState, Size } from '@/components/grid/grid.js';
+import type { CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
+import type { GridContext, GridEvent } from '@/components/grid/grid-event.js';
+import type { GridColumn } from '@/components/grid/column.js';
+import type { GridRow, GridRowSetting } from '@/components/grid/row.js';
+import type { MenuItem } from '@/types/menu.js';
 import { GridEventEmitter } from '@/components/grid/grid.js';
 import MkDataRow from '@/components/grid/MkDataRow.vue';
 import MkHeaderRow from '@/components/grid/MkHeaderRow.vue';
@@ -66,14 +72,7 @@ import {
 import * as os from '@/os.js';
 import { createColumn } from '@/components/grid/column.js';
 import { createRow, defaultGridRowSetting, resetRow } from '@/components/grid/row.js';
-import { handleKeyEvent } from '@/scripts/key-event.js';
-
-import type { DataSource, GridSetting, GridState, Size } from '@/components/grid/grid.js';
-import type { CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
-import type { GridContext, GridEvent } from '@/components/grid/grid-event.js';
-import type { GridColumn } from '@/components/grid/column.js';
-import type { GridRow, GridRowSetting } from '@/components/grid/row.js';
-import type { MenuItem } from '@/types/menu.js';
+import { handleKeyEvent } from '@/utility/key-event.js';
 
 type RowHolder = {
 	row: GridRow,
@@ -130,7 +129,7 @@ const bus = new GridEventEmitter();
  *
  * @see {@link onResize}
  */
-const resizeObserver = new ResizeObserver((entries) => setTimeout(() => onResize(entries)));
+const resizeObserver = new ResizeObserver((entries) => window.setTimeout(() => onResize(entries)));
 
 const rootEl = ref<InstanceType<typeof HTMLTableElement>>();
 /**

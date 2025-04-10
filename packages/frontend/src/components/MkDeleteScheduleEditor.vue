@@ -65,9 +65,9 @@ import { computed, ref, watch, onMounted } from 'vue';
 import MkInput from './MkInput.vue';
 import MkSelect from './MkSelect.vue';
 import MkInfo from './MkInfo.vue';
-import { formatDateTimeString } from '@/scripts/format-time-string.js';
-import { addTime } from '@/scripts/time.js';
-import { defaultStore } from '@/store.js';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
+import { addTime } from '@/utility/time.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 
 export type DeleteScheduleEditorModelValue = {
@@ -168,16 +168,16 @@ const beautifyAfter = (base: number) => {
 // 初期値の設定
 onMounted(() => {
 	// デフォルト時間を先にセット
-	if (defaultStore.state.defaultScheduledNoteDeleteTime > 0) {
-		beautifyAfter(defaultStore.state.defaultScheduledNoteDeleteTime / 1000);
+	if (prefer.s.defaultScheduledNoteDeleteTime > 0) {
+		beautifyAfter(prefer.s.defaultScheduledNoteDeleteTime / 1000);
 	}
 
 	// モデル値の確認
 	const hasModelValue = props.modelValue.deleteAt !== null || props.modelValue.deleteAfter !== null;
 
 	// デフォルトの時限消滅設定が有効な場合
-	if (defaultStore.state.defaultScheduledNoteDelete && !hasModelValue) {
-		if (defaultStore.state.defaultScheduledNoteDeleteTime > 0) {
+	if (prefer.s.defaultScheduledNoteDelete && !hasModelValue) {
+		if (prefer.s.defaultScheduledNoteDeleteTime > 0) {
 			expiration.value = 'after';
 			// 初期状態として有効な状態をemit
 			emit('update:modelValue', {
@@ -204,7 +204,7 @@ watch(showDetail, (newValue) => {
 	if (newValue) { // トグルを開いたとき
 		if (!after.value || !calcAfter()) {
 			// 値が未設定または無効な場合のみデフォルト時間をセット
-			beautifyAfter(defaultStore.state.defaultScheduledNoteDeleteTime / 1000);
+			beautifyAfter(prefer.s.defaultScheduledNoteDeleteTime / 1000);
 			emit('update:modelValue', {
 				deleteAt: null,
 				deleteAfter: calcAfter(),

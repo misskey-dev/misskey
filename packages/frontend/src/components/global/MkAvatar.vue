@@ -34,6 +34,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				translate: getDecorationOffset(decoration),
 			}"
 			alt=""
+			draggable="false"
+			style="-webkit-user-drag: none;"
 		>
 		<MkInstanceIcon v-if="showInstance" :class="$style.instanceicon" :instance="user.instance"/>
 	</template>
@@ -46,15 +48,14 @@ import * as Misskey from 'misskey-js';
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import MkA from './MkA.vue';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { acct, userPage } from '@/filters/user.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import MkInstanceIcon from '@/components/MkInstanceIcon.vue';
 
-const animation = ref(defaultStore.state.animation);
-const squareAvatars = ref(defaultStore.state.squareAvatars);
-const useBlurEffect = ref(defaultStore.state.useBlurEffect);
+const animation = ref(prefer.s.animation);
+const squareAvatars = ref(prefer.s.squareAvatars);
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
@@ -79,7 +80,7 @@ const emit = defineEmits<{
 	(ev: 'click', v: MouseEvent): void;
 }>();
 
-const showDecoration = props.forceShowDecoration || defaultStore.state.showAvatarDecorations;
+const showDecoration = props.forceShowDecoration || prefer.s.showAvatarDecorations;
 
 const bound = computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
@@ -87,7 +88,7 @@ const bound = computed(() => props.link
 
 const url = computed(() => {
 	if (props.user.avatarUrl == null) return null;
-	if (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar) return getStaticImageUrl(props.user.avatarUrl);
+	if (prefer.s.disableShowingAnimatedImages || prefer.s.dataSaver.avatar) return getStaticImageUrl(props.user.avatarUrl);
 	return props.user.avatarUrl;
 });
 
@@ -97,7 +98,7 @@ function onClick(ev: MouseEvent): void {
 }
 
 function getDecorationUrl(decoration: Omit<Misskey.entities.UserDetailed['avatarDecorations'][number], 'id'>) {
-	if (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar) return getStaticImageUrl(decoration.url);
+	if (prefer.s.disableShowingAnimatedImages || prefer.s.dataSaver.avatar) return getStaticImageUrl(decoration.url);
 	return decoration.url;
 }
 

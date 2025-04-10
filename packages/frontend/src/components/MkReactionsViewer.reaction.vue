@@ -8,35 +8,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
+	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: prefer.s.reactionsDisplaySize === 'small', [$style.large]: prefer.s.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon :class="defaultStore.state.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+	<MkReactionIcon style="pointer-events: none;" :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
 	<span v-if="!hideReactionCount" :class="$style.count">{{ count }}</span>
 </button>
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, shallowRef, watch } from 'vue';
+import { computed, inject, onMounted, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getUnicodeEmoji } from '@@/js/emojilist.js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import * as os from '@/os.js';
-import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
-import { useTooltip } from '@/scripts/use-tooltip.js';
-import { $i } from '@/account.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import { useTooltip } from '@/use/use-tooltip.js';
+import { $i } from '@/i.js';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
-import { claimAchievement } from '@/scripts/achievements.js';
-import { defaultStore } from '@/store.js';
+import { claimAchievement } from '@/utility/achievements.js';
 import { i18n } from '@/i18n.js';
-import * as sound from '@/scripts/sound.js';
-import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
+import * as sound from '@/utility/sound.js';
+import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
-
-const reactionChecksMuting = computed(defaultStore.makeGetterSetter('reactionChecksMuting'));
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -45,13 +44,13 @@ const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const mock = inject<boolean>('mock', false);
+const mock = inject(DI.mock, false);
 
 const emit = defineEmits<{
 	(ev: 'reactionToggled', emoji: string, newCount: number): void;
 }>();
 
-const buttonEl = shallowRef<HTMLElement>();
+const buttonEl = useTemplateRef('buttonEl');
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
 const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
@@ -69,14 +68,21 @@ const canToggle = computed(() => {
 });
 const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 
+// defaultStoreをpreferに変更 - リアクションカウント表示設定
 const hideReactionCount = computed(() => {
-	switch (defaultStore.state.hideReactionCount) {
+	switch (prefer.s.hideReactionCount) {
 		case 'none': return false;
 		case 'all': return true;
 		case 'self': return props.note.userId === $i?.id;
 		case 'others': return props.note.userId !== $i?.id;
 		default: return false;
 	}
+});
+
+// defaultStoreをpreferに変更 - ミュートをチェックするかどうか
+const reactionChecksMuting = computed({
+	get: () => prefer.s.reactionChecksMuting,
+	set: (value) => prefer.commit('reactionChecksMuting', value),
 });
 
 async function toggleReaction() {
@@ -110,7 +116,7 @@ async function toggleReaction() {
 			}
 		});
 	} else {
-		if (defaultStore.state.confirmOnReact) {
+		if (prefer.s.confirmOnReact) {
 			const confirm = await os.confirm({
 				type: 'question',
 				text: i18n.tsx.reactAreYouSure({ emoji: props.reaction.replace('@.', '') }),
@@ -155,7 +161,7 @@ async function menu(ev) {
 }
 
 function anime() {
-	if (document.hidden || !defaultStore.state.animation || buttonEl.value == null) return;
+	if (window.document.hidden || !prefer.s.animation || buttonEl.value == null) return;
 
 	const rect = buttonEl.value.getBoundingClientRect();
 	const x = rect.left + 16;
@@ -177,7 +183,7 @@ if (!mock) {
 	useTooltip(buttonEl, async (showing) => {
 		const useGet = !reactionChecksMuting.value;
 		const apiCall = useGet ? misskeyApiGet : misskeyApi;
-		const reactions = !defaultStore.state.hideReactionUsers ? await apiCall('notes/reactions', {
+		const reactions = !prefer.s.hideReactionUsers ? await apiCall('notes/reactions', {
 			noteId: props.note.id,
 			type: props.reaction,
 			limit: 10,

@@ -46,22 +46,22 @@ export type ChartSrc =
 
 <script lang="ts" setup>
 
-import { onMounted, ref, shallowRef, watch } from 'vue';
+import { onMounted, ref, useTemplateRef, watch } from 'vue';
 import { Chart } from 'chart.js';
 import * as Misskey from 'misskey-js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { chartVLine } from '@/scripts/chart-vline.js';
-import { alpha } from '@/scripts/color.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import { store } from '@/store.js';
+import { useChartTooltip } from '@/use/use-chart-tooltip.js';
+import { chartVLine } from '@/utility/chart-vline.js';
+import { alpha } from '@/utility/color.js';
 import date from '@/filters/date.js';
 import bytes from '@/filters/bytes.js';
-import { initChart } from '@/scripts/init-chart.js';
-import { chartLegend } from '@/scripts/chart-legend.js';
+import { initChart } from '@/utility/init-chart.js';
+import { chartLegend } from '@/utility/chart-legend.js';
 import MkChartLegend from '@/components/MkChartLegend.vue';
 
 // スクリプトの先頭にインポートを追加
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 initChart();
 
@@ -95,7 +95,7 @@ const props = withDefaults(defineProps<{
 	nowForChromatic: undefined,
 });
 
-const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
+const legendEl = useTemplateRef('legendEl');
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -133,7 +133,7 @@ let chartData: {
 	bytes?: boolean;
 } | null = null;
 
-const chartEl = shallowRef<HTMLCanvasElement | null>(null);
+const chartEl = useTemplateRef('chartEl');
 const fetching = ref(true);
 
 const getDate = (ago: number) => {
@@ -160,7 +160,7 @@ const render = () => {
 		chartInstance.destroy();
 	}
 
-	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
 	const maxes = chartData.series.map((x, i) => Math.max(...x.data.map(d => d.y)));
 

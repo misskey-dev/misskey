@@ -9,7 +9,7 @@ import * as os from '@/os.js';
 import { instance } from '@/instance.js';
 import { host } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 function toolsMenuItems(): MenuItem[] {
 	return [{

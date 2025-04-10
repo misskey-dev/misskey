@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import XFloater from './floater.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 
 // 最初から文字列として初期化
@@ -41,7 +41,7 @@ const anchorDate = computed(() => {
 	return new Date() - Number(recent.value);
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.floater,
 	icon: 'ti ti-lifebuoy',
 }));

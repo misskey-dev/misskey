@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, shallowRef, ref, watchEffect } from 'vue';
+import { computed, useTemplateRef, ref, watchEffect } from 'vue';
 import XHeader from './_header_.vue';
 import { defaultMemoryStorage } from '@/memory-storage';
 import MkButton from '@/components/MkButton.vue';
@@ -69,9 +69,9 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
-import { lookupUser } from '@/scripts/admin-lookup.js';
+import { lookupUser } from '@/utility/admin-lookup.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { dateString } from '@/filters/date.js';
 
@@ -83,7 +83,7 @@ type SearchQuery = {
 	hostname?: string;
 };
 
-const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const paginationComponent = useTemplateRef('paginationComponent');
 const storedQuery = JSON.parse(defaultMemoryStorage.getItem('admin-users-query') ?? '{}') as SearchQuery;
 
 const sort = ref(storedQuery.sort ?? '+createdAt');
@@ -170,7 +170,7 @@ watchEffect(() => {
 	}));
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.users,
 	icon: 'ti ti-users',
 }));

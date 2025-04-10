@@ -28,7 +28,7 @@ import XHeader from './_header_.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkApprovalUser from '@/components/MkApprovalUser.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
 let paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -53,7 +53,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePage(computed(() => ({
 	title: i18n.ts.signupPendingApprovals,
 	icon: 'ti ti-user-check',
 })));

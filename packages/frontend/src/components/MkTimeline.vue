@@ -4,35 +4,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="mk-timeline">
-	<MkPullToRefresh
-		ref="prComponent"
-		:refresher="() => reloadTimeline()"
-	>
-		<MkNotes
-			v-if="paginationQuery"
-			ref="tlComponent"
-			:pagination="paginationQuery"
-			:noGap="!defaultStore.state.showGapBetweenNotesInTimeline"
-			@queue="emit('queue', $event)"
-			@status="prComponent?.setDisabled($event)"
-		/>
-	</MkPullToRefresh>
-</div>
+<MkPullToRefresh ref="prComponent" :refresher="() => reloadTimeline()">
+	<MkNotes
+		v-if="paginationQuery"
+		ref="tlComponent"
+		:pagination="paginationQuery"
+		:noGap="!prefer.s.showGapBetweenNotesInTimeline"
+		@queue="emit('queue', $event)"
+		@status="prComponent?.setDisabled($event)"
+	/>
+</MkPullToRefresh>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, ref, shallowRef } from 'vue';
+import { computed, watch, provide, onUnmounted, ref, markRaw, Ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { BasicTimelineType } from '@/timelines.js';
-import type { Paging } from '@/components/MkPagination.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
-import * as sound from '@/scripts/sound.js';
-import { $i } from '@/account.js';
+import * as sound from '@/utility/sound.js';
+import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -76,19 +70,28 @@ type TimelineQueryType = {
 	listId?: string,
 	channelId?: string,
 	roleId?: string,
-	localOnly?: boolean, // 追加
-	remoteOnly?: boolean // 追加
+	localOnly?: boolean,
+	remoteOnly?: boolean,
 	withHashtags?: boolean,
 };
 
-const prComponent = shallowRef<InstanceType<typeof MkPullToRefresh>>();
-const tlComponent = shallowRef<InstanceType<typeof MkNotes>>();
-let connection: Misskey.ChannelConnection | null = null;
-let connection2: Misskey.ChannelConnection | null = null;
-let paginationQuery: Paging | null = null;
-let tlNotesCount = 0;
+const prComponent = useTemplateRef('prComponent');
+const tlComponent = useTemplateRef('tlComponent');
 
+// ページネーションクエリを保持する参照
+const paginationQuery = ref<{
+	endpoint: string;
+	limit: number;
+	params: TimelineQueryType;
+} | null>(null);
+
+let tlNotesCount = 0;
 const stream = useStream();
+
+// 現在のチャネル接続を保持する参照
+const channelConnection = markRaw({
+	dispose: null,
+});
 
 function prepend(note) {
 	if (tlComponent.value == null) return;
@@ -109,50 +112,84 @@ function prepend(note) {
 }
 
 function disconnectChannel() {
-	if (connection) connection.dispose();
-	if (connection2) connection2.dispose();
+	if (channelConnection.dispose) {
+		channelConnection.dispose();
+		channelConnection.dispose = null;
+	}
 }
 
 function connectChannel() {
 	disconnectChannel();
+
+	let connection;
 
 	if (props.src === 'antenna') {
 		if (props.antenna == null) return;
 		connection = stream.useChannel('antenna', {
 			antennaId: props.antenna,
 		});
+
+		connection.on('note', prepend);
 	} else if (props.src === 'home') {
 		connection = stream.useChannel('homeTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.withFiles ? true : undefined,
 		});
-		connection2 = stream.useChannel('main');
+
+		connection.on('note', prepend);
+
+		// メインチャンネルも監視
+		const mainConnection = stream.useChannel('main');
+
+		// 複数のconnectionを管理できるように修正
+		const originalDispose = connection.dispose;
+		connection.dispose = () => {
+			originalDispose();
+			mainConnection.dispose();
+		};
 	} else if (props.src === 'yami') {
 		connection = stream.useChannel('yamiTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.withFiles ? true : undefined,
 		});
-		connection2 = stream.useChannel('main');
+
+		connection.on('note', prepend);
+
+		// メインチャンネルも監視
+		const mainConnection = stream.useChannel('main');
+
+		// 複数のconnectionを管理できるように修正
+		const originalDispose = connection.dispose;
+		connection.dispose = () => {
+			originalDispose();
+			mainConnection.dispose();
+		};
 	} else if (props.src === 'local') {
 		connection = stream.useChannel('localTimeline', {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.withFiles ? true : undefined,
 		});
+
+		connection.on('note', prepend);
 	} else if (props.src === 'social') {
 		connection = stream.useChannel('hybridTimeline', {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.withFiles ? true : undefined,
-			localOnly: props.localOnly, // 追加
+			localOnly: props.localOnly,
 		});
+
+		connection.on('note', prepend);
 	} else if (props.src === 'global') {
 		connection = stream.useChannel('globalTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.withFiles ? true : undefined,
-			remoteOnly: props.remoteOnly, // これが正しく渡されているか確認
+			remoteOnly: props.remoteOnly,
 			withHashtags: props.withHashtags,
 		});
+
+		connection.on('note', prepend);
 	} else if (props.src === 'mentions') {
 		connection = stream.useChannel('main');
 		connection.on('mention', prepend);
@@ -162,6 +199,7 @@ function connectChannel() {
 				prepend(note);
 			}
 		};
+
 		connection = stream.useChannel('main');
 		connection.on('mention', onNote);
 	} else if (props.src === 'list') {
@@ -171,20 +209,26 @@ function connectChannel() {
 			withFiles: props.withFiles ? true : undefined,
 			listId: props.list,
 		});
+
+		connection.on('note', prepend);
 	} else if (props.src === 'channel') {
 		if (props.channel == null) return;
 		connection = stream.useChannel('channel', {
 			channelId: props.channel,
 		});
+
+		connection.on('note', prepend);
 	} else if (props.src === 'role') {
 		if (props.role == null) return;
 		connection = stream.useChannel('roleTimeline', {
 			roleId: props.role,
 		});
+
+		connection.on('note', prepend);
 	}
 
-	if (props.src !== 'directs' && props.src !== 'mentions') {
-		connection?.on('note', prepend);
+	if (connection) {
+		channelConnection.dispose = () => connection.dispose();
 	}
 }
 
@@ -222,14 +266,14 @@ function updatePaginationQuery() {
 			withRenotes: props.withRenotes,
 			withReplies: props.withReplies,
 			withFiles: props.withFiles ? true : undefined,
-			localOnly: props.localOnly, // 追加
+			localOnly: props.localOnly,
 		};
 	} else if (props.src === 'global') {
 		endpoint = 'notes/global-timeline';
 		query = {
 			withRenotes: props.withRenotes,
 			withFiles: props.withFiles ? true : undefined,
-			remoteOnly: props.remoteOnly, // これが正しく渡されているか確認
+			remoteOnly: props.remoteOnly,
 			withHashtags: props.withHashtags,
 		};
 	} else if (props.src === 'mentions') {
@@ -263,18 +307,18 @@ function updatePaginationQuery() {
 	}
 
 	if (endpoint && query) {
-		paginationQuery = {
+		paginationQuery.value = {
 			endpoint: endpoint,
 			limit: 10,
 			params: query,
 		};
 	} else {
-		paginationQuery = null;
+		paginationQuery.value = null;
 	}
 }
 
 function refreshEndpointAndChannel() {
-	if (!defaultStore.state.disableStreamingTimeline) {
+	if (!prefer.s.disableStreamingTimeline) {
 		disconnectChannel();
 		connectChannel();
 	}

@@ -70,30 +70,59 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkDeleteScheduleEditor from '@/components/MkDeleteScheduleEditor.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import { bottomItemDef } from '@/scripts/post-form.js';
+import { bottomItemDef } from '@/utility/post-form.js';
 import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
-// const disableNoteDrafting = computed(defaultStore.makeGetterSetter('disableNoteDrafting'));
-const defaultScheduledNoteDelete = computed(defaultStore.makeGetterSetter('defaultScheduledNoteDelete'));
-// Add the enableQuickAddMfmFunction computed property
-const enableQuickAddMfmFunction = computed(defaultStore.makeGetterSetter('enableQuickAddMfmFunction'));
-// Add the fixed post form related computed properties
-const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
-const showFixedPostFormInChannel = computed(defaultStore.makeGetterSetter('showFixedPostFormInChannel'));
+const defaultScheduledNoteDelete = computed({
+	get: () => prefer.s.defaultScheduledNoteDelete,
+	set: (value) => prefer.commit('defaultScheduledNoteDelete', value),
+});
+const enableQuickAddMfmFunction = computed({
+	get: () => prefer.s.enableQuickAddMfmFunction,
+	set: (value) => prefer.commit('enableQuickAddMfmFunction', value),
+});
+const showFixedPostForm = computed({
+	get: () => prefer.s.showFixedPostForm,
+	set: (value) => prefer.commit('showFixedPostForm', value),
+});
+const showFixedPostFormInChannel = computed({
+	get: () => prefer.s.showFixedPostFormInChannel,
+	set: (value) => prefer.commit('showFixedPostFormInChannel', value),
+});
 
-const scheduledNoteDelete = ref({ deleteAt: null, deleteAfter: defaultStore.state.defaultScheduledNoteDeleteTime, isValid: true });
+const scheduledNoteDelete = ref({
+	deleteAt: null,
+	deleteAfter: prefer.s.defaultScheduledNoteDeleteTime,
+	isValid: true,
+});
 
 watch(scheduledNoteDelete, () => {
 	if (!scheduledNoteDelete.value.isValid) return;
-	defaultStore.set('defaultScheduledNoteDeleteTime', scheduledNoteDelete.value.deleteAfter);
+	prefer.commit('defaultScheduledNoteDeleteTime', scheduledNoteDelete.value.deleteAfter);
 });
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-const items = ref(defaultStore.state.postFormActions.map(x => ({
+// デフォルト値を設定
+const defaultActions = [
+	'mention',
+	'attachFile',
+	'emoji',
+	'addMfmFunction',
+	'scheduledNoteDelete',
+	'scheduleNote',
+	'schedulePostList',
+	'useCw',
+	'poll',
+	'hashtags',
+	'plugins',
+];
+
+// prefer.s.postFormActions が存在しない場合はデフォルト値を使用
+const items = ref((prefer.s.postFormActions || defaultActions).map(x => ({
 	id: Math.random().toString(),
 	type: x,
 })));
@@ -133,7 +162,7 @@ function removeItem(type: keyof typeof bottomItemDef, ev: MouseEvent) {
 }
 
 async function save() {
-	defaultStore.set('postFormActions', items.value.map(x => x.type));
+	prefer.commit('postFormActions', items.value.map(x => x.type));
 }
 
 async function reset() {
@@ -143,7 +172,8 @@ async function reset() {
 	});
 	if (result.canceled) return;
 
-	items.value = defaultStore.def.postFormActions.default.map(x => ({
+	// デフォルト値を直接指定する
+	items.value = defaultActions.map(x => ({
 		id: Math.random().toString(),
 		type: x,
 	}));
@@ -153,7 +183,7 @@ async function reset() {
 
 // const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.postForm,
 	icon: 'ti ti-pencil',
 }));
