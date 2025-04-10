@@ -6,13 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<MkSelect v-model="type">
-		<option value="all">{{ i18n.ts.all }}</option>
-		<option value="following">{{ i18n.ts.following }}</option>
-		<option value="follower">{{ i18n.ts.followers }}</option>
-		<option value="mutualFollow">{{ i18n.ts.mutualFollow }}</option>
-		<option value="followingOrFollower">{{ i18n.ts.followingOrFollower }}</option>
-		<option value="list">{{ i18n.ts.userList }}</option>
-		<option value="never">{{ i18n.ts.none }}</option>
+		<option v-for="type in props.configurableTypes ?? notificationConfigTypes" :key="type" :value="type">{{ notificationConfigTypesI18nMap[type] }}</option>
 	</MkSelect>
 
 	<MkSelect v-if="type === 'list'" v-model="userListId">
@@ -21,31 +15,61 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkSelect>
 
 	<div class="_buttons">
-		<MkButton inline primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+		<MkButton inline primary :disabled="type === 'list' && userListId === null" @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 </div>
 </template>
 
+<script lang="ts">
+const notificationConfigTypes = [
+	'all',
+	'following',
+	'follower',
+	'mutualFollow',
+	'followingOrFollower',
+	'list',
+	'never'
+] as const;
+
+export type NotificationConfig = {
+	type: Exclude<typeof notificationConfigTypes[number], 'list'>;
+} | {
+	type: 'list';
+	userListId: string;
+};
+</script>
+
 <script lang="ts" setup>
-import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { ref } from 'vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	value: any;
+	value: NotificationConfig;
 	userLists: Misskey.entities.UserList[];
+	configurableTypes?: NotificationConfig['type'][]; // If not specified, all types are configurable
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update', result: any): void;
+	(ev: 'update', result: NotificationConfig): void;
 }>();
 
+const notificationConfigTypesI18nMap: Record<typeof notificationConfigTypes[number], string> = {
+	all: i18n.ts.all,
+	following: i18n.ts.following,
+	follower: i18n.ts.followers,
+	mutualFollow: i18n.ts.mutualFollow,
+	followingOrFollower: i18n.ts.followingOrFollower,
+	list: i18n.ts.userList,
+	never: i18n.ts.none,
+};
+
 const type = ref(props.value.type);
-const userListId = ref(props.value.userListId);
+const userListId = ref(props.value.type === 'list' ? props.value.userListId : null);
 
 function save() {
-	emit('update', { type: type.value, userListId: userListId.value });
+	emit('update', type.value === 'list' ? { type: type.value, userListId: userListId.value! } : { type: type.value });
 }
 </script>

@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkAvatar v-for="user in users" :key="user.id" :user="user.followee" link preview></MkAvatar>
 		</div>
 		<div v-else :class="$style.bdayFFallback">
-			<img :src="infoImageUrl" class="_ghost" :class="$style.bdayFFallbackImage"/>
+			<img :src="infoImageUrl" draggable="false" :class="$style.bdayFFallbackImage"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 	</div>
@@ -25,14 +25,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 const name = i18n.ts._widgets.birthdayFollowings;
 
@@ -115,7 +116,7 @@ defineExpose<WidgetComponentExpose>({
 <style lang="scss" module>
 .bdayFRoot {
 	overflow: hidden;
-	min-height: calc(calc(calc(50px * 3) - 8px) + calc(var(--margin) * 2));
+	min-height: calc(calc(calc(50px * 3) - 8px) + calc(var(--MI-margin) * 2));
 }
 .bdayFGrid {
 	display: grid;
@@ -123,7 +124,7 @@ defineExpose<WidgetComponentExpose>({
 	grid-template-rows: repeat(3, 42px);
 	place-content: center;
 	gap: 8px;
-	margin: var(--margin) auto;
+	margin: var(--MI-margin) auto;
 }
 
 .bdayFFallback {
@@ -139,6 +140,6 @@ defineExpose<WidgetComponentExpose>({
 	width: auto;
 	max-width: 90%;
 	margin-bottom: 8px;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 </style>

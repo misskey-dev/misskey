@@ -11,8 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkSpacer :contentMax="900">
 		<div class="_gaps_m">
-			<MkButton :class="$style.linkButton" full @click="onCreateWebhookClicked">
-				{{ i18n.ts._webhookSettings.createWebhook }}
+			<MkButton primary @click="onCreateWebhookClicked">
+				<i class="ti ti-plus"></i> {{ i18n.ts._webhookSettings.createWebhook }}
 			</MkButton>
 
 			<FormSection>
@@ -30,11 +30,11 @@ import { computed, onMounted, ref } from 'vue';
 import { entities } from 'misskey-js';
 import XItem from './system-webhook.item.vue';
 import FormSection from '@/components/form/section.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import XHeader from '@/pages/admin/_header_.vue';
 import MkButton from '@/components/MkButton.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
 import * as os from '@/os.js';
 
@@ -82,15 +82,12 @@ onMounted(async () => {
 	await fetchWebhooks();
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'SystemWebhook',
 	icon: 'ti ti-webhook',
 }));
 </script>
 
 <style module lang="scss">
-.linkButton {
-	text-align: left;
-	padding: 10px 18px;
-}
+
 </style>

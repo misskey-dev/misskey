@@ -4,11 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer v-if="instance" :contentMax="600" :marginMin="16" :marginMax="32">
 		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'overview'" key="overview" class="_gaps_m">
+			<div v-if="tab === 'overview'" class="_gaps_m">
 				<div class="fnfelxur">
 					<img :src="faviconUrl" alt="" class="icon"/>
 					<span class="name">{{ instance.name || `(${i18n.ts.unknown})` }}</span>
@@ -47,9 +46,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton v-if="suspensionState !== 'none'" :disabled="!instance" @click="resumeDelivery">{{ i18n.ts._delivery.resume }}</MkButton>
 						<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 						<MkSwitch v-model="isSilenced" :disabled="!meta || !instance" @update:modelValue="toggleSilenced">{{ i18n.ts.silenceThisInstance }}</MkSwitch>
+						<MkSwitch v-model="isMediaSilenced" :disabled="!meta || !instance" @update:modelValue="toggleMediaSilenced">{{ i18n.ts.mediaSilenceThisInstance }}</MkSwitch>
 						<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 						<MkTextarea v-model="moderationNote" manualSave>
 							<template #label>{{ i18n.ts.moderationNote }}</template>
+							<template #caption>{{ i18n.ts.moderationNoteDescription }}</template>
 						</MkTextarea>
 					</div>
 				</FormSection>
@@ -89,7 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<FormLink :to="`https://${host}/manifest.json`" external style="margin-bottom: 8px;">manifest.json</FormLink>
 				</FormSection>
 			</div>
-			<div v-else-if="tab === 'chart'" key="chart" class="_gaps_m">
+			<div v-else-if="tab === 'chart'" class="_gaps_m">
 				<div class="cmhjzshl">
 					<div class="selects">
 						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
@@ -114,25 +115,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
-			<div v-else-if="tab === 'users'" key="users" class="_gaps_m">
+			<div v-else-if="tab === 'users'" class="_gaps_m">
 				<MkPagination v-slot="{items}" :pagination="usersPagination" style="display: grid; grid-template-columns: repeat(auto-fill,minmax(270px,1fr)); grid-gap: 12px;">
 					<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/admin/user/${user.id}`">
 						<MkUserCardMini :user="user"/>
 					</MkA>
 				</MkPagination>
 			</div>
-			<div v-else-if="tab === 'raw'" key="raw" class="_gaps_m">
+			<div v-else-if="tab === 'raw'" class="_gaps_m">
 				<MkObjectView tall :value="instance">
 				</MkObjectView>
 			</div>
 		</MkHorizontalSwipe>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { ChartSrc } from '@/components/MkChart.vue';
+import type { Paging } from '@/components/MkPagination.vue';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormLink from '@/components/form/link.vue';
@@ -143,15 +146,15 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import number from '@/filters/number.js';
-import { iAmModerator, iAmAdmin } from '@/account.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { iAmModerator, iAmAdmin } from '@/i.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
+import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 import { dateString } from '@/filters/date.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 
@@ -161,17 +164,18 @@ const props = defineProps<{
 
 const tab = ref('overview');
 
-const chartSrc = ref('instance-requests');
+const chartSrc = ref<ChartSrc>('instance-requests');
 const meta = ref<Misskey.entities.AdminMetaResponse | null>(null);
 const instance = ref<Misskey.entities.FederationInstance | null>(null);
 const suspensionState = ref<'none' | 'manuallySuspended' | 'goneSuspended' | 'autoSuspendedForNotResponding'>('none');
 const isBlocked = ref(false);
 const isSilenced = ref(false);
+const isMediaSilenced = ref(false);
 const faviconUrl = ref<string | null>(null);
 const moderationNote = ref('');
 
 const usersPagination = {
-	endpoint: iAmModerator ? 'admin/show-users' : 'users' as const,
+	endpoint: iAmModerator ? 'admin/show-users' : 'users',
 	limit: 10,
 	params: {
 		sort: '+updatedAt',
@@ -179,11 +183,14 @@ const usersPagination = {
 		hostname: props.host,
 	},
 	offsetMode: true,
-};
+} satisfies Paging;
 
-watch(moderationNote, async () => {
-	await misskeyApi('admin/federation/update-instance', { host: instance.value.host, moderationNote: moderationNote.value });
-});
+if (iAmModerator) {
+	watch(moderationNote, async () => {
+		if (instance.value == null) return;
+		await misskeyApi('admin/federation/update-instance', { host: instance.value.host, moderationNote: moderationNote.value });
+	});
+}
 
 async function fetch(): Promise<void> {
 	if (iAmAdmin) {
@@ -195,11 +202,13 @@ async function fetch(): Promise<void> {
 	suspensionState.value = instance.value?.suspensionState ?? 'none';
 	isBlocked.value = instance.value?.isBlocked ?? false;
 	isSilenced.value = instance.value?.isSilenced ?? false;
+	isMediaSilenced.value = instance.value?.isMediaSilenced ?? false;
 	faviconUrl.value = getProxiedImageUrlNullable(instance.value?.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.value?.iconUrl, 'preview');
-	moderationNote.value = instance.value?.moderationNote;
+	moderationNote.value = instance.value?.moderationNote ?? '';
 }
 
 async function toggleBlock(): Promise<void> {
+	if (!iAmAdmin) return;
 	if (!meta.value) throw new Error('No meta?');
 	if (!instance.value) throw new Error('No instance?');
 	const { host } = instance.value;
@@ -209,6 +218,7 @@ async function toggleBlock(): Promise<void> {
 }
 
 async function toggleSilenced(): Promise<void> {
+	if (!iAmAdmin) return;
 	if (!meta.value) throw new Error('No meta?');
 	if (!instance.value) throw new Error('No instance?');
 	const { host } = instance.value;
@@ -218,7 +228,19 @@ async function toggleSilenced(): Promise<void> {
 	});
 }
 
+async function toggleMediaSilenced(): Promise<void> {
+	if (!iAmAdmin) return;
+	if (!meta.value) throw new Error('No meta?');
+	if (!instance.value) throw new Error('No instance?');
+	const { host } = instance.value;
+	const mediaSilencedHosts = meta.value.mediaSilencedHosts ?? [];
+	await misskeyApi('admin/update-meta', {
+		mediaSilencedHosts: isMediaSilenced.value ? mediaSilencedHosts.concat([host]) : mediaSilencedHosts.filter(x => x !== host),
+	});
+}
+
 async function stopDelivery(): Promise<void> {
+	if (!iAmModerator) return;
 	if (!instance.value) throw new Error('No instance?');
 	suspensionState.value = 'manuallySuspended';
 	await misskeyApi('admin/federation/update-instance', {
@@ -228,6 +250,7 @@ async function stopDelivery(): Promise<void> {
 }
 
 async function resumeDelivery(): Promise<void> {
+	if (!iAmModerator) return;
 	if (!instance.value) throw new Error('No instance?');
 	suspensionState.value = 'none';
 	await misskeyApi('admin/federation/update-instance', {
@@ -237,6 +260,7 @@ async function resumeDelivery(): Promise<void> {
 }
 
 function refreshMetadata(): void {
+	if (!iAmModerator) return;
 	if (!instance.value) throw new Error('No instance?');
 	misskeyApi('admin/federation/refresh-remote-instance-metadata', {
 		host: instance.value.host,
@@ -274,7 +298,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-code',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: props.host,
 	icon: 'ti ti-server',
 }));

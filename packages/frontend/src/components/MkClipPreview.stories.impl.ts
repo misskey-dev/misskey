@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable import/no-default-export */
-import { StoryObj } from '@storybook/vue3';
+import type { StoryObj } from '@storybook/vue3';
 import { clip } from '../../.storybook/fakes.js';
 import MkClipPreview from './MkClipPreview.vue';
 export const Default = {
@@ -31,6 +31,7 @@ export const Default = {
 	},
 	args: {
 		clip: clip(),
+		noUserInfo: false,
 	},
 	parameters: {
 		layout: 'fullscreen',

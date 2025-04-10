@@ -71,7 +71,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { deepClone } from '@/scripts/clone.js';
+import { deepClone } from '@/utility/clone.js';
 import { rolesCache } from '@/cache.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
@@ -155,12 +155,12 @@ function removeSelf() {
 }
 
 .item {
-	border: solid 2px var(--divider);
-	border-radius: var(--radius);
+	border: solid 2px var(--MI_THEME-divider);
+	border-radius: var(--MI-radius);
 	padding: 12px;
 
 	&:hover {
-		border-color: var(--accent);
+		border-color: var(--MI_THEME-accent);
 	}
 }
 </style>

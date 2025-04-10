@@ -10,16 +10,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import MkModal from './MkModal.vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 
 defineProps<{
 	items: MenuItem[];
 	align?: 'center' | string;
 	width?: number;
-	src?: any;
+	src?: HTMLElement | null;
 	returnFocusTo?: HTMLElement | null;
 }>();
 
@@ -28,7 +28,7 @@ const emit = defineEmits<{
 	(ev: 'closing'): void;
 }>();
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const modal = useTemplateRef('modal');
 const manualShowing = ref(true);
 const hiding = ref(false);
 

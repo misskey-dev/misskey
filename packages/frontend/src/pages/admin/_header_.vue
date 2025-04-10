@@ -24,8 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="buttons right">
 		<template v-if="actions">
 			<template v-for="action in actions">
-				<MkButton v-if="action.asFullButton" class="fullButton" primary @click.stop="action.handler"><i :class="action.icon" style="margin-right: 6px;"></i>{{ action.text }}</MkButton>
-				<button v-else v-tooltip.noDelay="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
+				<MkButton v-if="action.asFullButton" class="fullButton" primary :disabled="action.disabled" @click.stop="action.handler"><i :class="action.icon" style="margin-right: 6px;"></i>{{ action.text }}</MkButton>
+				<button v-else v-tooltip.noDelay="action.text" class="_button button" :class="{ highlighted: action.highlighted }" :disabled="action.disabled" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
 		</template>
 	</div>
@@ -33,13 +33,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, shallowRef, watch, nextTick } from 'vue';
+import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch, nextTick, inject } from 'vue';
 import tinycolor from 'tinycolor2';
+import { scrollToTop } from '@@/js/scroll.js';
 import { popupMenu } from '@/os.js';
-import { scrollToTop } from '@/scripts/scroll.js';
 import MkButton from '@/components/MkButton.vue';
 import { globalEvents } from '@/events.js';
-import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
+import { DI } from '@/di.js';
 
 type Tab = {
 	key?: string | null;
@@ -56,6 +56,7 @@ const props = defineProps<{
 		text: string;
 		icon: string;
 		asFullButton?: boolean;
+		disabled?: boolean;
 		handler: (ev: MouseEvent) => void;
 	}[];
 	thin?: boolean;
@@ -65,11 +66,11 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string);
 }>();
 
-const pageMetadata = injectReactiveMetadata();
+const pageMetadata = inject(DI.pageMetadata, ref(null));
 
-const el = shallowRef<HTMLElement>(null);
+const el = useTemplateRef('el');
+const tabHighlightEl = useTemplateRef('tabHighlightEl');
 const tabRefs = {};
-const tabHighlightEl = shallowRef<HTMLElement | null>(null);
 const bg = ref<string | null>(null);
 const height = ref(0);
 const hasTabs = computed(() => {
@@ -118,15 +119,15 @@ function onTabClick(tab: Tab, ev: MouseEvent): void {
 }
 
 const calcBg = () => {
-	const rawBg = pageMetadata.value?.bg ?? 'var(--bg)';
-	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
+	const rawBg = pageMetadata.value.bg ?? 'var(--MI_THEME-bg)';
+	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(window.document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
 	bg.value = tinyBg.toRgbString();
 };
 
 onMounted(() => {
 	calcBg();
-	globalEvents.on('themeChanged', calcBg);
+	globalEvents.on('themeChanging', calcBg);
 
 	watch(() => [props.tab, props.tabs], () => {
 		nextTick(() => {
@@ -146,7 +147,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	globalEvents.off('themeChanged', calcBg);
+	globalEvents.off('themeChanging', calcBg);
 });
 </script>
 
@@ -155,8 +156,8 @@ onUnmounted(() => {
 	--height: 60px;
 	display: flex;
 	width: 100%;
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 
 	> .buttons {
 		--margin: 8px;
@@ -188,7 +189,7 @@ onUnmounted(() => {
 			}
 
 			&.highlighted {
-				color: var(--accent);
+				color: var(--MI_THEME-accent);
 			}
 		}
 
@@ -285,7 +286,7 @@ onUnmounted(() => {
 			position: absolute;
 			bottom: 0;
 			height: 3px;
-			background: var(--accent);
+			background: var(--MI_THEME-accent);
 			border-radius: 999px;
 			transition: all 0.2s ease;
 			pointer-events: none;

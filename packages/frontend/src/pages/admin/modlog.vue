@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
 		<div>
-			<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+			<div style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
 				<MkSelect v-model="type" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.type }}</template>
 					<option :value="null">{{ i18n.ts.all }}</option>
@@ -19,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkInput>
 			</div>
 
-			<MkPagination v-slot="{items}" ref="logs" :pagination="pagination" style="margin-top: var(--margin);">
-				<div class="_gaps_s">
-					<XModLog v-for="item in items" :key="item.id" :log="item"/>
-				</div>
+			<MkPagination v-slot="{items}" ref="logs" :pagination="pagination" style="margin-top: var(--MI-margin);">
+				<MkDateSeparatedList v-slot="{ item }" :items="items" :noGap="false" style="--MI-margin: 8px;">
+					<XModLog :key="item.id" :log="item"/>
+				</MkDateSeparatedList>
 			</MkPagination>
 		</div>
 	</MkSpacer>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, shallowRef, ref } from 'vue';
+import { computed, useTemplateRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XHeader from './_header_.vue';
 import XModLog from './modlog.ModLog.vue';
@@ -38,9 +38,10 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
+import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 
-const logs = shallowRef<InstanceType<typeof MkPagination>>();
+const logs = useTemplateRef('logs');
 
 const type = ref<string | null>(null);
 const moderatorId = ref('');
@@ -58,7 +59,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.moderationLogs,
 	icon: 'ti ti-list-search',
 }));

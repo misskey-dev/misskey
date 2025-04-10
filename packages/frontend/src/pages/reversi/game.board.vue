@@ -145,21 +145,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
+import { useInterval } from '@@/js/use-interval.js';
+import { url } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { deepClone } from '@/scripts/clone.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { signinRequired } from '@/account.js';
-import { url } from '@/config.js';
+import { deepClone } from '@/utility/clone.js';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { userPage } from '@/filters/user.js';
-import * as sound from '@/scripts/sound.js';
+import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
-import { confetti } from '@/scripts/confetti.js';
+import { confetti } from '@/utility/confetti.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const props = defineProps<{
 	game: Misskey.entities.ReversiGameDetailed;
@@ -301,7 +301,7 @@ if (!props.game.isEnded) {
 
 		if (iAmPlayer.value) {
 			if ((isMyTurn.value && myTurnTimerRmain.value === 0) || (!isMyTurn.value && opTurnTimerRmain.value === 0)) {
-			props.connection!.send('claimTimeIsUp', {});
+				props.connection!.send('claimTimeIsUp', {});
 			}
 		}
 	}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
@@ -424,7 +424,7 @@ function autoplay() {
 		const tick = () => {
 			const log = logs[i];
 			const time = log.time - previousLog.time;
-			setTimeout(() => {
+			window.setTimeout(() => {
 				i++;
 				logPos.value++;
 				previousLog = log;
@@ -504,7 +504,7 @@ $gap: 4px;
 .boardInner {
 	padding: 32px;
 
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	box-shadow: 0 0 2px 1px #ce8a5c, inset 0 0 1px 1px #693410;
 	border-radius: 8px;
 }
@@ -574,34 +574,34 @@ $gap: 4px;
 	transition: border 0.25s ease, opacity 0.25s ease;
 
 	&.boardCell_empty {
-		border: solid 2px var(--divider);
+		border: solid 2px var(--MI_THEME-divider);
 	}
 
 	&.boardCell_empty.boardCell_can {
-		border-color: var(--accent);
+		border-color: var(--MI_THEME-accent);
 		opacity: 0.5;
 	}
 
 	&.boardCell_empty.boardCell_myTurn {
-		border-color: var(--divider);
+		border-color: var(--MI_THEME-divider);
 		opacity: 1;
 
 		&.boardCell_can {
-			border-color: var(--accent);
+			border-color: var(--MI_THEME-accent);
 			cursor: pointer;
 
 			&:hover {
-				background: var(--accent);
+				background: var(--MI_THEME-accent);
 			}
 		}
 	}
 
 	&.boardCell_prev {
-		box-shadow: 0 0 0 4px var(--accent);
+		box-shadow: 0 0 0 4px var(--MI_THEME-accent);
 	}
 
 	&.boardCell_isEnded {
-		border-color: var(--divider);
+		border-color: var(--MI_THEME-divider);
 	}
 
 	&.boardCell_none {

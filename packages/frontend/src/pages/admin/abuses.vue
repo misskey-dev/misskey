@@ -9,8 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="900">
 		<div :class="$style.root" class="_gaps">
 			<div :class="$style.subMenus" class="_gaps">
-				<MkButton link to="/admin/abuse-report-notification-recipient" primary>{{ "通知設定" }}</MkButton>
+				<MkButton link to="/admin/abuse-report-notification-recipient" primary>{{ i18n.ts.notificationSetting }}</MkButton>
 			</div>
+
+			<MkInfo v-if="!store.r.abusesTutorial.value" closable @close="closeTutorial()">
+				{{ i18n.ts._abuseUserReport.resolveTutorial }}
+			</MkInfo>
 
 			<div :class="$style.inputs" class="_gaps">
 				<MkSelect v-model="state" style="margin: 0; flex: 1;">
@@ -44,8 +48,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			-->
 
-			<MkPagination v-slot="{items}" ref="reports" :pagination="pagination" style="margin-top: var(--margin);">
-				<XAbuseReport v-for="report in items" :key="report.id" :report="report" @resolved="resolved"/>
+			<MkPagination v-slot="{items}" ref="reports" :pagination="pagination">
+				<div class="_gaps">
+					<XAbuseReport v-for="report in items" :key="report.id" :report="report" @resolved="resolved"/>
+				</div>
 			</MkPagination>
 		</div>
 	</MkSpacer>
@@ -53,17 +59,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, shallowRef, ref } from 'vue';
-
+import { computed, useTemplateRef, ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import XAbuseReport from '@/components/MkAbuseReport.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import { store } from '@/store.js';
 
-const reports = shallowRef<InstanceType<typeof MkPagination>>();
+const reports = useTemplateRef('reports');
 
 const state = ref('unresolved');
 const reporterOrigin = ref('combined');
@@ -85,11 +92,15 @@ function resolved(reportId) {
 	reports.value?.removeItem(reportId);
 }
 
+function closeTutorial() {
+	store.set('abusesTutorial', false);
+}
+
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.abuseReports,
 	icon: 'ti ti-exclamation-circle',
 }));

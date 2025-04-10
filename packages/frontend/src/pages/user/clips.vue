@@ -43,6 +43,6 @@ const pagination = {
 .description {
 	margin-top: 8px;
 	padding-top: 8px;
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 </style>

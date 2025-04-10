@@ -104,3 +104,7 @@ _deck:
   _columns:
     notifications: "Ilɣuyen"
     list: "Tibdarin"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Imayl"

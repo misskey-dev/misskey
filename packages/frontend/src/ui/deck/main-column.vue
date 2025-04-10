@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<XColumn v-if="deckStore.state.alwaysShowMainColumn || mainRouter.currentRoute.value.name !== 'index'" :column="column" :isStacked="isStacked">
+<XColumn v-if="prefer.s['deck.alwaysShowMainColumn'] || mainRouter.currentRoute.value.name !== 'index'" :column="column" :isStacked="isStacked">
 	<template #header>
 		<template v-if="pageMetadata">
 			<i :class="pageMetadata.icon"></i>
@@ -12,32 +12,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</template>
 
-	<div ref="contents">
-		<RouterView @contextmenu.stop="onContextmenu"/>
+	<div style="height: 100%;">
+		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" @contextmenu.stop="onContextmenu"/>
+		<RouterView v-else @contextmenu.stop="onContextmenu"/>
 	</div>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
 import { provide, shallowRef, ref } from 'vue';
+import { isLink } from '@@/js/is-link.js';
 import XColumn from './column.vue';
-import { deckStore, Column } from '@/ui/deck/deck-store.js';
+import type { Column } from '@/deck.js';
+import type { PageMetadata } from '@/page.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
-import { useScrollPositionManager } from '@/nirax.js';
-import { getScrollContainer } from '@/scripts/scroll.js';
-import { mainRouter } from '@/router/main.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
+import { mainRouter } from '@/router.js';
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-const contents = shallowRef<HTMLElement>();
 const pageMetadata = ref<null | PageMetadata>(null);
 
-provide('router', mainRouter);
+provide(DI.router, mainRouter);
 provideMetadataReceiver((metadataGetter) => {
 	const info = metadataGetter();
 	pageMetadata.value = info;
@@ -52,12 +54,6 @@ function back() {
 function onContextmenu(ev: MouseEvent) {
 	if (!ev.target) return;
 
-	const isLink = (el: HTMLElement) => {
-		if (el.tagName === 'A') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
-		}
-	};
 	if (isLink(ev.target as HTMLElement)) return;
 	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes((ev.target as HTMLElement).tagName) || (ev.target as HTMLElement).attributes['contenteditable']) return;
 	if (window.getSelection()?.toString() !== '') return;
@@ -73,6 +69,4 @@ function onContextmenu(ev: MouseEvent) {
 		},
 	}], ev);
 }
-
-useScrollPositionManager(() => getScrollContainer(contents.value), mainRouter);
 </script>

@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
+<PageWithHeader>
 	<MkSpacer :contentMax="800">
 		<div class="_gaps">
 			<div class="_panel" :class="$style.link">
@@ -25,14 +24,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: 'Misskey Games',
 	icon: 'ti ti-device-gamepad',
 }));
@@ -40,7 +39,7 @@ definePageMetadata(() => ({
 
 <style module>
 .link:focus-within {
-	outline: 2px solid var(--focus);
+	outline: 2px solid var(--MI_THEME-focus);
 	outline-offset: -2px;
 }
 </style>

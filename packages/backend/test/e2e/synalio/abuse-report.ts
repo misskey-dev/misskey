@@ -5,64 +5,23 @@
 
 import { entities } from 'misskey-js';
 import { beforeEach, describe, test } from '@jest/globals';
-import Fastify from 'fastify';
-import { api, randomString, role, signup, startJobQueue, UserToken } from '../../utils.js';
+import {
+	api,
+	captureWebhook,
+	randomString,
+	role,
+	signup,
+	startJobQueue,
+	UserToken,
+	WEBHOOK_HOST,
+} from '../../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
-
-const WEBHOOK_HOST = 'http://localhost:15080';
-const WEBHOOK_PORT = 15080;
-process.env.NODE_ENV = 'test';
 
 describe('[シナリオ] ユーザ通報', () => {
 	let queue: INestApplicationContext;
 	let admin: entities.SignupResponse;
 	let alice: entities.SignupResponse;
 	let bob: entities.SignupResponse;
-
-	type SystemWebhookPayload = {
-		server: string;
-		hookId: string;
-		eventId: string;
-		createdAt: string;
-		type: string;
-		body: any;
-	}
-
-	// -------------------------------------------------------------------------------------------
-
-	async function captureWebhook<T = SystemWebhookPayload>(postAction: () => Promise<void>): Promise<T> {
-		const fastify = Fastify();
-
-		let timeoutHandle: NodeJS.Timeout | null = null;
-		const result = await new Promise<string>(async (resolve, reject) => {
-			fastify.all('/', async (req, res) => {
-				timeoutHandle && clearTimeout(timeoutHandle);
-
-				const body = JSON.stringify(req.body);
-				res.status(200).send('ok');
-				await fastify.close();
-				resolve(body);
-			});
-
-			await fastify.listen({ port: WEBHOOK_PORT });
-
-			timeoutHandle = setTimeout(async () => {
-				await fastify.close();
-				reject(new Error('timeout'));
-			}, 3000);
-
-			try {
-				await postAction();
-			} catch (e) {
-				await fastify.close();
-				reject(e);
-			}
-		});
-
-		await fastify.close();
-
-		return JSON.parse(result) as T;
-	}
 
 	async function createSystemWebhook(args?: Partial<entities.AdminSystemWebhookCreateRequest>, credential?: UserToken): Promise<entities.AdminSystemWebhookCreateResponse> {
 		const res = await api(
@@ -198,7 +157,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: webhookBody1.body.id,
-					forward: false,
 				}, admin);
 			});
 
@@ -255,7 +213,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: abuseReportId,
-					forward: false,
 				}, admin);
 			});
 
@@ -298,7 +255,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: webhookBody1.body.id,
-					forward: false,
 				}, admin);
 			}).catch(e => e.message);
 
@@ -329,7 +285,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: abuseReportId,
-					forward: false,
 				}, admin);
 			}).catch(e => e.message);
 
@@ -360,7 +315,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: abuseReportId,
-					forward: false,
 				}, admin);
 			}).catch(e => e.message);
 
@@ -391,7 +345,6 @@ describe('[シナリオ] ユーザ通報', () => {
 			const webhookBody2 = await captureWebhook(async () => {
 				await resolveAbuseReport({
 					reportId: abuseReportId,
-					forward: false,
 				}, admin);
 			}).catch(e => e.message);
 

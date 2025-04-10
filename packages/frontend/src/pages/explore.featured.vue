@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkSpacer :contentMax="800">
-	<MkTab v-model="tab" style="margin-bottom: var(--margin);">
+	<MkTab v-model="tab" style="margin-bottom: var(--MI-margin);">
 		<option value="notes">{{ i18n.ts.notes }}</option>
 		<option value="polls">{{ i18n.ts.poll }}</option>
 	</MkTab>

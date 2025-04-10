@@ -6,6 +6,7 @@
 import Xev from 'xev';
 import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
+import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
@@ -36,7 +37,7 @@ class QueueStatsChannel extends Channel {
 	public onMessage(type: string, body: JsonValue) {
 		switch (type) {
 			case 'requestLog':
-				if (typeof body !== 'object' || body === null || Array.isArray(body)) return;
+				if (!isJsonObject(body)) return;
 				if (typeof body.id !== 'string') return;
 				if (typeof body.length !== 'number') return;
 				ev.once(`queueStatsLog:${body.id}`, statsLog => {

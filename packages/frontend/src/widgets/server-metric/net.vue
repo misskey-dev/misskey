@@ -111,7 +111,7 @@ function onStats(connStats: Misskey.entities.ServerStats) {
 }
 
 function onStatsLog(statsLog: Misskey.entities.ServerStatsLog) {
-	for (const revStats of statsLog.reverse()) {
+	for (const revStats of statsLog.toReversed()) {
 		onStats(revStats);
 	}
 }

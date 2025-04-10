@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.preview">
-	<div :class="$style.preview__content1">
+	<div>
 		<MkInput v-model="text">
 			<template #label>Text</template>
 		</MkInput>
@@ -42,8 +42,8 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkRadio from '@/components/MkRadio.vue';
 import * as os from '@/os.js';
-import * as config from '@/config.js';
-import { $i } from '@/account.js';
+import * as config from '@@/js/config.js';
+import { $i } from '@/i.js';
 
 const text = ref('');
 const flag = ref(true);

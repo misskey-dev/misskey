@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer v-if="file" :contentMax="600" :marginMin="16" :marginMax="32">
 		<div v-if="tab === 'overview'" class="cxqhhsmd _gaps_m">
 			<a class="thumbnail" :href="file.url" target="_blank">
@@ -36,13 +35,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA v-if="file.user" class="user" :to="`/admin/user/${file.user.id}`">
 				<MkUserCardMini :user="file.user"/>
 			</MkA>
+
 			<div>
-				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
+				<MkSwitch :modelValue="isSensitive" @update:modelValue="toggleSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
 			</div>
 
 			<div>
 				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
+		</div>
+		<div v-else-if="tab === 'notes' && info" class="_gaps_m">
+			<XNotes :fileId="fileId"/>
 		</div>
 		<div v-else-if="tab === 'ip' && info" class="_gaps_m">
 			<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
@@ -63,11 +66,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkObjectView>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -79,15 +82,16 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { iAmAdmin, iAmModerator } from '@/account.js';
+import { definePage } from '@/page.js';
+import { iAmAdmin, iAmModerator } from '@/i.js';
 
 const tab = ref('overview');
 const file = ref<Misskey.entities.DriveFile | null>(null);
 const info = ref<Misskey.entities.AdminDriveShowFileResponse | null>(null);
 const isSensitive = ref<boolean>(false);
+const XNotes = defineAsyncComponent(() => import('./drive.file.notes.vue'));
 
 const props = defineProps<{
 	fileId: string,
@@ -113,9 +117,21 @@ async function del() {
 	});
 }
 
-async function toggleIsSensitive(v) {
-	await misskeyApi('drive/files/update', { fileId: props.fileId, isSensitive: v });
-	isSensitive.value = v;
+async function toggleSensitive() {
+	if (!file.value) return;
+
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: isSensitive.value ? i18n.ts.unmarkAsSensitiveConfirm : i18n.ts.markAsSensitiveConfirm,
+	});
+
+	if (canceled) return;
+	isSensitive.value = !isSensitive.value;
+
+	os.apiWithDialog('drive/files/update', {
+		fileId: file.value.id,
+		isSensitive: !file.value.isSensitive,
+	});
 }
 
 const headerActions = computed(() => [{
@@ -131,6 +147,10 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',
 }, iAmModerator ? {
+	key: 'notes',
+	title: i18n.ts._fileViewer.attachedNotes,
+	icon: 'ti ti-pencil',
+} : null, iAmModerator ? {
 	key: 'ip',
 	title: 'IP',
 	icon: 'ti ti-password',
@@ -140,7 +160,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-code',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: file.value ? `${i18n.ts.file}: ${file.value.name}` : i18n.ts.file,
 	icon: 'ti ti-file',
 }));

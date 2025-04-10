@@ -27,6 +27,9 @@ export class HealthServerService {
 		@Inject(DI.redisForTimelines)
 		private redisForTimelines: Redis.Redis,
 
+		@Inject(DI.redisForReactions)
+		private redisForReactions: Redis.Redis,
+
 		@Inject(DI.db)
 		private db: DataSource,
 
@@ -43,6 +46,7 @@ export class HealthServerService {
 				this.redisForPub.ping(),
 				this.redisForSub.ping(),
 				this.redisForTimelines.ping(),
+				this.redisForReactions.ping(),
 				this.db.query('SELECT 1'),
 				...(this.meilisearch ? [this.meilisearch.health()] : []),
 			]).then(() => 200, () => 503));

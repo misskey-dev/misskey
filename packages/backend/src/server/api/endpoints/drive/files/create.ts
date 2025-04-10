@@ -4,14 +4,15 @@
  */
 
 import ms from 'ms';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { MetaService } from '@/core/MetaService.js';
 import { DriveService } from '@/core/DriveService.js';
 import { ApiError } from '../../../error.js';
+import { MiMeta } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -73,8 +74,10 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
+		@Inject(DI.meta)
+		private serverSettings: MiMeta,
+
 		private driveFileEntityService: DriveFileEntityService,
-		private metaService: MetaService,
 		private driveService: DriveService,
 	) {
 		super(meta, paramDef, async (ps, me, _, file, cleanup, ip, headers) => {
@@ -91,8 +94,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			const instance = await this.metaService.fetch();
-
 			try {
 				// Create file
 				const driveFile = await this.driveService.addFile({
@@ -103,8 +104,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					folderId: ps.folderId,
 					force: ps.force,
 					sensitive: ps.isSensitive,
-					requestIp: instance.enableIpLogging ? ip : null,
-					requestHeaders: instance.enableIpLogging ? headers : null,
+					requestIp: this.serverSettings.enableIpLogging ? ip : null,
+					requestHeaders: this.serverSettings.enableIpLogging ? headers : null,
 				});
 				return await this.driveFileEntityService.pack(driveFile, { self: true });
 			} catch (err) {

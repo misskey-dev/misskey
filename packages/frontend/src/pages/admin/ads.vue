@@ -65,18 +65,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkTextarea v-model="ad.memo">
 					<template #label>{{ i18n.ts.memo }}</template>
 				</MkTextarea>
-				<div class="buttons">
-					<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)">
+				<div class="_buttons">
+					<MkButton inline primary style="margin-right: 12px;" @click="save(ad)">
 						<i
 							class="ti ti-device-floppy"
 						></i> {{ i18n.ts.save }}
 					</MkButton>
-					<MkButton class="button" inline danger @click="remove(ad)">
+					<MkButton inline danger @click="remove(ad)">
 						<i class="ti ti-trash"></i> {{ i18n.ts.remove }}
 					</MkButton>
 				</div>
 			</div>
-			<MkButton class="button" @click="more()">
+			<MkButton @click="more()">
 				<i class="ti ti-reload"></i>{{ i18n.ts.more }}
 			</MkButton>
 		</div>
@@ -96,9 +96,9 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const ads = ref<Misskey.entities.Ad[]>([]);
 
@@ -255,7 +255,7 @@ const headerActions = computed(() => [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.ads,
 	icon: 'ti ti-ad',
 }));
@@ -266,7 +266,7 @@ definePageMetadata(() => ({
 	padding: 32px;
 
 	&:not(:last-child) {
-		margin-bottom: var(--margin);
+		margin-bottom: var(--MI-margin);
 	}
 }
 .input {
