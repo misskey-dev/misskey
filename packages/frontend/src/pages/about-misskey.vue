@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div style="overflow: clip;">
 		<MkSpacer :contentMax="600" :marginMin="20">
 			<div class="_gaps_m znqjceqz">
@@ -89,15 +88,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>@AlienFamilyHub/misskey {{ i18n.ts._aboutMisskey.projectMembers }}</template>
 					<div :class="$style.contributors">
 						<a href="https://github.com/TNXG" target="_blank" :class="$style.contributor">
-							<img src="https://avatars-githubusercontent.webp.se/TNXG" :class="$style.contributorAvatar">
+							<img src="https://tnxg-proxy.deno.dev/https://avatars.githubusercontent.com/u/69001561" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@TNXG</span>
 						</a>
 						<a href="https://github.com/Kindle-deep" target="_blank" :class="$style.contributor">
-							<img src="https://avatars-githubusercontent.webp.se/Kindle-deep" :class="$style.contributorAvatar">
+							<img src="https://tnxg-proxy.deno.dev/https://avatars.githubusercontent.com/u/89437845" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@Kindle-deep</span>
 						</a>
 						<a href="https://github.com/Hoshino-Yumetsuki" target="_blank" :class="$style.contributor">
-							<img src="https://avatars-githubusercontent.webp.se/Hoshino-Yumetsuki" :class="$style.contributorAvatar">
+							<img src="https://tnxg-proxy.deno.dev/https://avatars.githubusercontent.com/u/147403913" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@Hoshino-Yumetsuki</span>
 						</a>
 					</div>
@@ -105,24 +104,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkSpacer>
 	</div>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount, ref, shallowRef, computed } from 'vue';
+import { nextTick, onBeforeUnmount, ref, useTemplateRef, computed } from 'vue';
 import { version } from '@@/js/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { physics } from '@/scripts/physics.js';
+import { physics } from '@/utility/physics.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
-import { $i } from '@/account.js';
+import { definePage } from '@/page.js';
+import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
 
 const patronsWithIcon = [{
 	name: 'カイヤン',
@@ -378,10 +377,10 @@ const easterEggEmojis = ref<{
 	emoji: string
 }[]>([]);
 const easterEggEngine = ref<{ stop: () => void } | null>(null);
-const containerEl = shallowRef<HTMLElement>();
+const containerEl = useTemplateRef('containerEl');
 
 function iconLoaded() {
-	const emojis = defaultStore.state.reactions;
+	const emojis = prefer.s.emojiPalettes[0].emojis;
 	const containerWidth = containerEl.value.offsetWidth;
 	for (let i = 0; i < 32; i++) {
 		easterEggEmojis.value.push({
@@ -425,7 +424,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.aboutMisskey,
 	icon: null,
 }));

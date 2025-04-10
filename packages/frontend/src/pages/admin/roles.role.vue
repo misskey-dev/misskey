@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkPagination :pagination="usersPagination">
 							<template #empty>
 								<div class="_fullinfo">
-									<img :src="infoImageUrl" class="_ghost"/>
+									<img :src="infoImageUrl" draggable="false"/>
 									<div>{{ i18n.ts.noUsers }}</div>
 								</div>
 							</template>
@@ -67,15 +67,15 @@ import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { infoImageUrl } from '@/instance.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
@@ -170,7 +170,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: `${i18n.ts.role}: ${role.name}`,
 	icon: 'ti ti-badge',
 }));
@@ -184,7 +184,7 @@ definePageMetadata(() => ({
 .userItemSub {
 	padding: 6px 12px;
 	font-size: 85%;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 
 .userItemMainBody {
