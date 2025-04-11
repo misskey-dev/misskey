@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { DI } from '@/di-symbols.js';
 import { UserSearchService } from '@/core/UserSearchService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users'],
@@ -23,6 +24,14 @@ export const meta = {
 			type: 'object',
 			optional: false, nullable: false,
 			ref: 'User',
+		},
+	},
+
+	errors: {
+		unavailable: {
+			message: 'Search of users unavailable.',
+			code: 'UNAVAILABLE',
+			id: '4cc6e834-b4da-4478-9da9-1d832ceab51e',
 		},
 	},
 } as const;
@@ -44,8 +53,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private userEntityService: UserEntityService,
 		private userSearchService: UserSearchService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
+			if (!policies.canSearchUsers) {
+				throw new ApiError(meta.errors.unavailable);
+			}
+
 			const users = await this.userSearchService.search(ps.query.trim(), me?.id ?? null, {
 				offset: ps.offset,
 				limit: ps.limit,

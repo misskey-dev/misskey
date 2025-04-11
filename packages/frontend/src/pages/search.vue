@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref, toRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { notesSearchAvailable } from '@/utility/check-permissions.js';
+import { notesSearchAvailable, usersSearchAvailable } from '@/utility/check-permissions.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
