@@ -1,4 +1,4 @@
-name: Build and Push Misskey Docker Image (ARMv8)
+name: Build and Push Misskey Docker Image
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
       - name: 设置 QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: arm64
+          platforms: arm64, amd64
 
       - name: 设置 Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -37,7 +37,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/arm64
+          platforms: linux/arm64, linux/amd64
           push: true
           tags: ${{ env.IMAGE_NAME }}
-
