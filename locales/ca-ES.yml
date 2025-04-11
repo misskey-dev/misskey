@@ -1417,8 +1417,8 @@ _settings:
   makeEveryTextElementsSelectable_description: "L'activació pot reduir la usabilitat en determinades ocasions."
   useStickyIcons: "Utilitza icones fixes"
   showNavbarSubButtons: "Mostrar sub botons a la barra de navegació "
-  ifOn: "Quan s'encén "
-  ifOff: "Quan s'apaga "
+  ifOn: "Quan s'activa"
+  ifOff: "Quan es desactiva"
   enableSyncThemesBetweenDevices: "Sincronitzar els temes instal·lats entre dispositius"
   _chat:
     showSenderName: "Mostrar el nom del remitent"
