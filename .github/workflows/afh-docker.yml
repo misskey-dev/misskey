@@ -6,6 +6,9 @@ on:
       - develop
   workflow_dispatch:  # 允许手动触发
 
+env:
+  REGISTRY_IMAGE: ghcr.io/alienfamilyhub/misskey
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -30,13 +33,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 获取 GHCR 镜像标签
-        run: echo "IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}:latest" >> $GITHUB_ENV
-
       - name: 构建并推送 Docker 镜像
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: linux/arm64, linux/amd64
           push: true
-          tags: ${{ env.IMAGE_NAME }}
+          tags: ${{ env.REGISTRY_IMAGE }}:latest
