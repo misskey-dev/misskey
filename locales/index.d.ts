@@ -315,6 +315,14 @@ export interface Locale extends ILocale {
      */
     "showLess": string;
     /**
+     * 予約投稿に失敗しました。
+     */
+    "scheduleNoteFailed": string;
+    /**
+     * 予約投稿に成功しました。
+     */
+    "scheduleNotePosted": string;
+    /**
      * フォローされました
      */
     "youGotNewFollower": string;
