@@ -3,9 +3,6 @@
 	"main": "./index.js",
 	"private": true,
 	"type": "module",
-	"engines": {
-		"node": "^20.10.0 || ^22.0.0"
-	},
 	"scripts": {
 		"start": "node ./built/boot/entry.js",
 		"start:test": "cross-env NODE_ENV=test node ./built/boot/entry.js",
