@@ -259,34 +259,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkInput>
 						</MkFolder>
 
-						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeQuoteNotificationSetting, 'canChangeQuoteNotificationSetting'])">
-							<template #label>{{ i18n.ts._role._options.canChangeQuoteNotificationSetting }}</template>
-							<template #suffix>{{ policies.canChangeQuoteNotificationSetting ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="policies.canChangeQuoteNotificationSetting">
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseQuoteNotification, 'canUseQuoteNotification'])">
+							<template #label>{{ i18n.ts._role._options.canUseQuoteNotification }}</template>
+							<template #suffix>{{ policies.canUseQuoteNotification ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canUseQuoteNotification">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
 
-						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeUnfollowNotificationSetting, 'canChangeUnfollowNotificationSetting'])">
-							<template #label>{{ i18n.ts._role._options.canChangeUnfollowNotificationSetting }}</template>
-							<template #suffix>{{ policies.canChangeUnfollowNotificationSetting ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="policies.canChangeUnfollowNotificationSetting">
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseUnFollowNotification, 'canUseUnFollowNotification'])">
+							<template #label>{{ i18n.ts._role._options.canUseUnFollowNotification }}</template>
+							<template #suffix>{{ policies.canUseUnFollowNotification ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canUseUnFollowNotification">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
 
-						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeBlockedNotificationSetting, 'canChangeBlockedNotificationSetting'])">
-							<template #label>{{ i18n.ts._role._options.canChangeBlockedNotificationSetting }}</template>
-							<template #suffix>{{ policies.canChangeBlockedNotificationSetting ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="policies.canChangeBlockedNotificationSetting">
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseBlockedNotification, 'canUseBlockedNotification'])">
+							<template #label>{{ i18n.ts._role._options.canUseBlockedNotification }}</template>
+							<template #suffix>{{ policies.canUseBlockedNotification ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canUseBlockedNotification">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>
 
-						<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeUnblockedNotificationSetting, 'canChangeUnblockedNotificationSetting'])">
-							<template #label>{{ i18n.ts._role._options.canChangeUnblockedNotificationSetting }}</template>
-							<template #suffix>{{ policies.canChangeUnblockedNotificationSetting ? i18n.ts.yes : i18n.ts.no }}</template>
-							<MkSwitch v-model="policies.canChangeUnblockedNotificationSetting">
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseUnBlockedNotification, 'canUseUnBlockedNotification'])">
+							<template #label>{{ i18n.ts._role._options.canUseUnBlockedNotification }}</template>
+							<template #suffix>{{ policies.canUseUnBlockedNotification ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canUseUnBlockedNotification">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
 						</MkFolder>

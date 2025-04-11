@@ -7775,21 +7775,21 @@ export interface Locale extends ILocale {
              */
             "avatarDecorationLimit": string;
             /**
-             * 引用通知の変更を許可
+             * 引用通知を許可
              */
-            "canChangeQuoteNotificationSetting": string;
+            "canUseQuoteNotification": string;
             /**
-             * フォロー解除通知の変更を許可
+             * フォロー解除通知を許可
              */
-            "canChangeUnfollowNotificationSetting": string;
+            "canUseUnFollowNotification": string;
             /**
-             * ブロック通知の変更を許可
+             * ブロック通知を許可
              */
-            "canChangeBlockedNotificationSetting": string;
+            "canUseBlockedNotification": string;
             /**
-             * ブロック解除通知の変更を許可
+             * ブロック解除通知を許可
              */
-            "canChangeUnblockedNotificationSetting": string;
+            "canUseUnBlockedNotification": string;
             /**
              * フォローを許可
              */

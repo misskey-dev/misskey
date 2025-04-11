@@ -287,22 +287,6 @@ export const packedRolePoliciesSchema = {
 			type: 'integer',
 			optional: false, nullable: false,
 		},
-		canChangeQuoteNotificationSetting: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
-		canChangeUnfollowNotificationSetting: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
-		canChangeBlockedNotificationSetting: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
-		canChangeUnblockedNotificationSetting: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
 		canFollow: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -339,6 +323,22 @@ export const packedRolePoliciesSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 			enum: ['available', 'readonly', 'unavailable'],
+		},
+		canUseQuoteNotification: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canUseUnFollowNotification: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canUseBlockedNotification: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		canUseUnBlockedNotification: {
+			type: 'boolean',
+			optional: false, nullable: false,
 		},
 	},
 } as const;

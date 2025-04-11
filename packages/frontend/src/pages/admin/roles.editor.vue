@@ -698,81 +698,81 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 
-			<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeQuoteNotificationSetting, 'canChangeQuoteNotificationSetting'])">
-				<template #label>{{ i18n.ts._role._options.canChangeQuoteNotificationSetting }}</template>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseQuoteNotification, 'canUseQuoteNotification'])">
+				<template #label>{{ i18n.ts._role._options.canUseQuoteNotification }}</template>
 				<template #suffix>
-					<span v-if="role.policies.canChangeQuoteNotificationSetting.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
-					<span v-else>{{ role.policies.canChangeQuoteNotificationSetting.value ? i18n.ts.yes : i18n.ts.no }}</span>
-					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canChangeQuoteNotificationSetting)"></i></span>
+					<span v-if="role.policies.canUseQuoteNotification.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.canUseQuoteNotification.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canUseQuoteNotification)"></i></span>
 				</template>
 				<div class="_gaps">
-					<MkSwitch v-model="role.policies.canChangeQuoteNotificationSetting.useDefault" :readonly="readonly">
+					<MkSwitch v-model="role.policies.canUseQuoteNotification.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSwitch v-model="role.policies.canChangeQuoteNotificationSetting.value" :disabled="role.policies.canChangeQuoteNotificationSetting.useDefault" :readonly="readonly">
+					<MkSwitch v-model="role.policies.canUseQuoteNotification.value" :disabled="role.policies.canUseQuoteNotification.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
-					<MkRange v-model="role.policies.canChangeQuoteNotificationSetting.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+					<MkRange v-model="role.policies.canUseQuoteNotification.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>
 			</MkFolder>
 
-			<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeUnfollowNotificationSetting, 'canChangeUnfollowNotificationSetting'])">
-				<template #label>{{ i18n.ts._role._options.canChangeUnfollowNotificationSetting }}</template>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseUnFollowNotification, 'canUseUnFollowNotification'])">
+				<template #label>{{ i18n.ts._role._options.canUseUnFollowNotification }}</template>
 				<template #suffix>
-					<span v-if="role.policies.canChangeUnfollowNotificationSetting.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
-					<span v-else>{{ role.policies.canChangeUnfollowNotificationSetting.value ? i18n.ts.yes : i18n.ts.no }}</span>
-					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canChangeUnfollowNotificationSetting)"></i></span>
+					<span v-if="role.policies.canUseUnFollowNotification.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.canUseUnFollowNotification.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canUseUnFollowNotification)"></i></span>
 				</template>
 				<div class="_gaps">
-					<MkSwitch v-model="role.policies.canChangeUnfollowNotificationSetting.useDefault" :readonly="readonly">
+					<MkSwitch v-model="role.policies.canUseUnFollowNotification.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSwitch v-model="role.policies.canChangeUnfollowNotificationSetting.value" :disabled="role.policies.canChangeUnfollowNotificationSetting.useDefault" :readonly="readonly">
+					<MkSwitch v-model="role.policies.canUseUnFollowNotification.value" :disabled="role.policies.canUseUnFollowNotification.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
-					<MkRange v-model="role.policies.canChangeUnfollowNotificationSetting.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+					<MkRange v-model="role.policies.canUseUnFollowNotification.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>
 			</MkFolder>
 
-			<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeBlockedNotificationSetting, 'canChangeBlockedNotificationSetting'])">
-				<template #label>{{ i18n.ts._role._options.canChangeBlockedNotificationSetting }}</template>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseBlockedNotification, 'canUseBlockedNotification'])">
+				<template #label>{{ i18n.ts._role._options.canUseBlockedNotification }}</template>
 				<template #suffix>
-					<span v-if="role.policies.canChangeBlockedNotificationSetting.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
-					<span v-else>{{ role.policies.canChangeBlockedNotificationSetting.value ? i18n.ts.yes : i18n.ts.no }}</span>
-					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canChangeBlockedNotificationSetting)"></i></span>
+					<span v-if="role.policies.canUseBlockedNotification.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.canUseBlockedNotification.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canUseBlockedNotification)"></i></span>
 				</template>
 				<div class="_gaps">
-					<MkSwitch v-model="role.policies.canChangeBlockedNotificationSetting.useDefault" :readonly="readonly">
+					<MkSwitch v-model="role.policies.canUseBlockedNotification.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSwitch v-model="role.policies.canChangeBlockedNotificationSetting.value" :disabled="role.policies.canChangeBlockedNotificationSetting.useDefault" :readonly="readonly">
+					<MkSwitch v-model="role.policies.canUseBlockedNotification.value" :disabled="role.policies.canUseBlockedNotification.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
-					<MkRange v-model="role.policies.canChangeBlockedNotificationSetting.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+					<MkRange v-model="role.policies.canUseBlockedNotification.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>
 			</MkFolder>
 
-			<MkFolder v-if="matchQuery([i18n.ts._role._options.canChangeUnblockedNotificationSetting, 'canChangeUnblockedNotificationSetting'])">
-				<template #label>{{ i18n.ts._role._options.canChangeUnblockedNotificationSetting }}</template>
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canUseUnBlockedNotification, 'canUseUnBlockedNotification'])">
+				<template #label>{{ i18n.ts._role._options.canUseUnBlockedNotification }}</template>
 				<template #suffix>
-					<span v-if="role.policies.canChangeUnblockedNotificationSetting.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
-					<span v-else>{{ role.policies.canChangeUnblockedNotificationSetting.value ? i18n.ts.yes : i18n.ts.no }}</span>
-					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canChangeUnblockedNotificationSetting)"></i></span>
+					<span v-if="role.policies.canUseUnBlockedNotification.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.canUseUnBlockedNotification.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canUseUnBlockedNotification)"></i></span>
 				</template>
 				<div class="_gaps">
-					<MkSwitch v-model="role.policies.canChangeUnblockedNotificationSetting.useDefault" :readonly="readonly">
+					<MkSwitch v-model="role.policies.canUseUnBlockedNotification.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSwitch v-model="role.policies.canChangeUnblockedNotificationSetting.value" :disabled="role.policies.canChangeUnblockedNotificationSetting.useDefault" :readonly="readonly">
+					<MkSwitch v-model="role.policies.canUseUnBlockedNotification.value" :disabled="role.policies.canUseUnBlockedNotification.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts.enable }}</template>
 					</MkSwitch>
-					<MkRange v-model="role.policies.canChangeUnblockedNotificationSetting.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+					<MkRange v-model="role.policies.canUseUnBlockedNotification.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>

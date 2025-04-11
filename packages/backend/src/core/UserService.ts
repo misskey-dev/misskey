@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { FollowingsRepository, UsersRepository } from '@/models/_.js';
+import type { FollowingsRepository, UsersRepository, UserProfilesRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -18,6 +18,8 @@ export class UserService {
 		private usersRepository: UsersRepository,
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 		private systemWebhookService: SystemWebhookService,
 		private userEntityService: UserEntityService,
 	) {
@@ -64,5 +66,26 @@ export class UserService {
 	public async notifySystemWebhook(user: MiUser, type: 'userCreated') {
 		const packedUser = await this.userEntityService.pack(user, null, { schema: 'UserLite' });
 		return this.systemWebhookService.enqueueSystemWebhook(type, packedUser);
+	}
+
+	@bindThis
+	public async createUser(params): Promise<void> {
+		await this.userProfilesRepository.insert({
+			userId: params.userId,
+			notificationRecieveConfig: {
+				note: { type: 'all' },
+				follow: { type: 'all' },
+				mention: { type: 'all' },
+				reply: { type: 'all' },
+				renote: { type: 'all' },
+				quote: { type: 'all' },
+				reaction: { type: 'all' },
+				// デフォルトで「なし」にする特殊な通知
+				unfollow: { type: 'never' },
+				blocked: { type: 'never' },
+				unblocked: { type: 'never' },
+			},
+			// 他のプロパティ...
+		});
 	}
 }

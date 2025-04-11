@@ -425,7 +425,9 @@ export class UserFollowingService implements OnModuleInit {
 
 		this.decrementFollowing(following.follower, following.followee);
 
-		if (!silent && this.userEntityService.isLocalUser(follower)) {
+		const policies = await this.roleService.getUserPolicies(followee.id);
+
+		if (!silent && this.userEntityService.isLocalUser(follower) && policies.canUseUnFollowNotification) {
 			// Publish unfollow event
 			this.userEntityService.pack(followee.id, follower, {
 				schema: 'UserDetailedNotMe',

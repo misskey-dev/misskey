@@ -5,6 +5,7 @@
 
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiBlocking } from '@/models/Blocking.js';
@@ -51,6 +52,7 @@ export class UserBlockingService implements OnModuleInit {
 		private apRendererService: ApRendererService,
 		private loggerService: LoggerService,
 		private notificationService: NotificationService,
+		private roleService: RoleService,
 	) {
 		this.logger = this.loggerService.getLogger('user-block');
 	}
@@ -92,8 +94,10 @@ export class UserBlockingService implements OnModuleInit {
 			this.queueService.deliver(blocker, content, blockee.inbox, false);
 		}
 
+		const policies = await this.roleService.getUserPolicies(blockee.id);
+
 		// 通知を作成（ブロックされた側に通知）
-		if (this.userEntityService.isLocalUser(blockee)) {
+		if (this.userEntityService.isLocalUser(blockee) && policies.canUseBlockedNotification) {
 			this.notificationService.createNotification(blockee.id, 'blocked', {}, blocker.id);
 		}
 	}
@@ -189,8 +193,10 @@ export class UserBlockingService implements OnModuleInit {
 			this.queueService.deliver(blocker, content, blockee.inbox, false);
 		}
 
+		const policies = await this.roleService.getUserPolicies(blockee.id);
+
 		// 通知を作成（ブロック解除された側に通知）
-		if (this.userEntityService.isLocalUser(blockee)) {
+		if (this.userEntityService.isLocalUser(blockee) && policies.canUseUnBlockedNotification) {
 			this.notificationService.createNotification(blockee.id, 'unblocked', {}, blocker.id);
 		}
 	}

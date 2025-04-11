@@ -13,23 +13,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormSection first>
 			<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
 			<div class="_gaps_s">
-				<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
+				<MkFolder v-for="type in filteredNotificationTypes" :key="type">
 					<template #label>{{ i18n.ts._notification._types[type] }}</template>
 					<template #suffix>
 						{{
-							$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
-							$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
-							$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
-							$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
-							$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
-							$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
+							getNotificationConfigValue(type).type === 'never' ? i18n.ts.none :
+							getNotificationConfigValue(type).type === 'following' ? i18n.ts.following :
+							getNotificationConfigValue(type).type === 'follower' ? i18n.ts.followers :
+							getNotificationConfigValue(type).type === 'mutualFollow' ? i18n.ts.mutualFollow :
+							getNotificationConfigValue(type).type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
+							getNotificationConfigValue(type).type === 'list' ? i18n.ts.userList :
 							i18n.ts.all
 						}}
 					</template>
 
 					<XNotificationConfig
 						:userLists="userLists"
-						:value="$i.notificationRecieveConfig[type] ?? { type: 'all' }"
+						:value="getNotificationConfigValue(type)"
 						:configurableTypes="onlyOnOrOffNotificationTypes.includes(type) ? ['all', 'never'] : undefined"
 						@update="(res) => updateReceiveConfig(type, res)"
 					/>
@@ -94,8 +94,6 @@ const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrat
 const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadMessage || false);
 const userLists = await misskeyApi('users/lists/list');
 
-const canQuote = $i.policies.canChangeQuoteNotificationSetting;
-
 const filteredNotificationTypes = computed(() => {
 	return notificationTypes.filter(type => {
 		// 設定不可能な通知タイプを除外
@@ -104,19 +102,19 @@ const filteredNotificationTypes = computed(() => {
 		}
 
 		// 各通知タイプに対応するポリシーに基づいたフィルタリング
-		if (type === 'quote' && !$i.policies.canChangeQuoteNotificationSetting) {
+		if (type === 'quote' && !$i.policies.canUseQuoteNotification) {
 			return false;
 		}
 
-		if (type === 'unfollow' && !$i.policies.canChangeUnfollowNotificationSetting) {
+		if (type === 'unfollow' && !$i.policies.canUseUnFollowNotification) {
 			return false;
 		}
 
-		if (type === 'blocked' && !$i.policies.canChangeBlockedNotificationSetting) {
+		if (type === 'blocked' && !$i.policies.canUseBlockedNotification) {
 			return false;
 		}
 
-		if (type === 'unblocked' && !$i.policies.canChangeUnblockedNotificationSetting) {
+		if (type === 'unblocked' && !$i.policies.canUseUnBlockedNotification) {
 			return false;
 		}
 

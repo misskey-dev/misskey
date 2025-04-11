@@ -61,10 +61,6 @@ export type RolePolicies = {
 	userEachUserListsLimit: number;
 	rateLimitFactor: number;
 	avatarDecorationLimit: number;
-	canChangeQuoteNotificationSetting: boolean;
-	canChangeUnfollowNotificationSetting: boolean;
-	canChangeBlockedNotificationSetting: boolean;
-	canChangeUnblockedNotificationSetting: boolean;
 	canFollow: boolean;
 	canFollowed: boolean;
 	canImportAntennas: boolean;
@@ -74,6 +70,10 @@ export type RolePolicies = {
 	canImportUserLists: boolean;
 	canImportNotes: boolean;
 	chatAvailability: 'available' | 'readonly' | 'unavailable';
+	canUseQuoteNotification: boolean;
+	canUseUnFollowNotification: boolean;
+	canUseBlockedNotification: boolean;
+	canUseUnBlockedNotification: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -106,10 +106,6 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	userEachUserListsLimit: 50,
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
-	canChangeQuoteNotificationSetting: false,
-	canChangeUnfollowNotificationSetting: false,
-	canChangeBlockedNotificationSetting: false,
-	canChangeUnblockedNotificationSetting: false,
 	canFollow: true,
 	canFollowed: true,
 	canImportAntennas: true,
@@ -119,6 +115,10 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportUserLists: true,
 	canImportNotes: true,
 	chatAvailability: 'available',
+	canUseQuoteNotification: true,
+	canUseUnFollowNotification: true,
+	canUseBlockedNotification: true,
+	canUseUnBlockedNotification: true,
 };
 
 @Injectable()
@@ -438,10 +438,6 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			userEachUserListsLimit: calc('userEachUserListsLimit', vs => Math.max(...vs)),
 			rateLimitFactor: calc('rateLimitFactor', vs => Math.max(...vs)),
 			avatarDecorationLimit: calc('avatarDecorationLimit', vs => Math.max(...vs)),
-			canChangeQuoteNotificationSetting: calc('canChangeQuoteNotificationSetting', vs => vs.some(v => v === true)),
-			canChangeUnfollowNotificationSetting: calc('canChangeUnfollowNotificationSetting', vs => vs.some(v => v === true)),
-			canChangeBlockedNotificationSetting: calc('canChangeBlockedNotificationSetting', vs => vs.some(v => v === true)),
-			canChangeUnblockedNotificationSetting: calc('canChangeUnblockedNotificationSetting', vs => vs.some(v => v === true)),
 			canFollow: calc('canFollow', vs => vs.some(v => v === true)),
 			canFollowed: calc('canFollowed', vs => vs.some(v => v === true)),
 			canImportAntennas: calc('canImportAntennas', vs => vs.some(v => v === true)),
@@ -451,6 +447,10 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
 			canImportNotes: calc('canImportNotes', vs => vs.some(v => v === true)),
 			chatAvailability: calc('chatAvailability', aggregateChatAvailability),
+			canUseQuoteNotification: calc('canUseQuoteNotification', vs => vs.some(v => v === true)),
+			canUseUnFollowNotification: calc('canUseUnFollowNotification', vs => vs.some(v => v === true)),
+			canUseBlockedNotification: calc('canUseBlockedNotification', vs => vs.some(v => v === true)),
+			canUseUnBlockedNotification: calc('canUseUnBlockedNotification', vs => vs.some(v => v === true)),
 		};
 	}
 
