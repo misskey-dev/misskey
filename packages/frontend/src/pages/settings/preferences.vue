@@ -294,25 +294,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
-							<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
-								<MkPreferenceContainer k="instanceTicker">
-									<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
-										<template #label><SearchLabel>{{ i18n.ts.instanceTicker }}</SearchLabel></template>
-										<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
-										<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
-										<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
-									</MkSelect>
-								</MkPreferenceContainer>
-							</SearchMarker>
+							<div class="_gaps_s">
+								<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
+									<MkPreferenceContainer k="instanceTicker">
+										<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
+											<template #label><SearchLabel>{{ i18n.ts.instanceTicker }}</SearchLabel></template>
+											<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
+											<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
+											<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
+										</MkSelect>
+									</MkPreferenceContainer>
+								</SearchMarker>
 
-							<!-- サーバー情報をアイコンのみにする（独自機能） -->
-							<SearchMarker :keywords="['instance', 'icon', 'server', 'information']">
-								<MkPreferenceContainer k="instanceIcon">
-									<MkSwitch v-model="instanceIcon">
-										<template #label><SearchLabel>{{ i18n.ts.instanceIcon }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-									</MkSwitch>
-								</MkPreferenceContainer>
-							</SearchMarker>
+								<!-- サーバー情報をアイコンのみにする（独自機能） -->
+								<SearchMarker :keywords="['instance', 'icon', 'server', 'information']">
+									<MkPreferenceContainer k="instanceIcon">
+										<MkSwitch v-if="instance.federation !== 'none' && instanceTicker !== 'none'" v-model="instanceIcon">
+											<template #label><SearchLabel>{{ i18n.ts.instanceIcon }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+											<template #caption>{{ i18n.ts.instanceIconDescription }}</template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+							</div>
 
 							<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility']">
 								<MkPreferenceContainer k="nsfw">

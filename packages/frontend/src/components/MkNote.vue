@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="appearNote.user" :link="!mock" :preview="!mock" :showInstance="!!showInstanceIcon && !!showTicker"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker && !showInstanceIcon" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
+			<MkInstanceTicker v-if="!showInstanceIcon" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm
@@ -283,8 +283,7 @@ const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hard
 const showSoftWordMutedWord = computed(() => prefer.s.showSoftWordMutedWord);
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
-const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.value.user.instance);
-const showInstanceIcon = ref(prefer.s.instanceIcon);
+const showInstanceIcon = computed(() => prefer.s.instanceIcon);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
 const renoteCollapsed = ref(
 	prefer.s.collapseRenotes && isRenote && (

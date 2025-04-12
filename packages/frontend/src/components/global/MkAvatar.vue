@@ -23,6 +23,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
+	<div v-if="showInstance">
+		<img v-if="faviconUrl" :class="$style.instanceIcon" :src="faviconUrl" :title="instanceName"/>
+	</div>
 	<template v-if="showDecoration">
 		<img
 			v-for="decoration in decorations ?? user.avatarDecorations"
@@ -37,7 +40,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			draggable="false"
 			style="-webkit-user-drag: none;"
 		>
-		<MkInstanceIcon v-if="showInstance" :class="$style.instanceicon" :instance="user.instance"/>
 	</template>
 </component>
 </template>
@@ -45,14 +47,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import { instanceName as localInstanceName } from '@@/js/config.js';
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import MkA from './MkA.vue';
-import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { instance as localInstance } from '@/instance.js';
+import { getStaticImageUrl, getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 import { acct, userPage } from '@/filters/user.js';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import { prefer } from '@/preferences.js';
-import MkInstanceIcon from '@/components/MkInstanceIcon.vue';
 
 const animation = ref(prefer.s.animation);
 const squareAvatars = ref(prefer.s.squareAvatars);
@@ -81,6 +84,22 @@ const emit = defineEmits<{
 }>();
 
 const showDecoration = props.forceShowDecoration || prefer.s.showAvatarDecorations;
+
+const instanceName = computed(() => props.user.host == null ? localInstanceName : props.user.instance?.name ?? props.user.host);
+
+const faviconUrl = computed(() => {
+	let imageSrc: string | null = null;
+	if (props.user.host == null) {
+		if (localInstance.iconUrl == null) {
+			return '/favicon.ico';
+		} else {
+			imageSrc = localInstance.iconUrl;
+		}
+	} else {
+		imageSrc = props.user.instance?.faviconUrl ?? null;
+	}
+	return getProxiedImageUrlNullable(imageSrc);
+});
 
 const bound = computed(() => props.link
 	? { to: userPage(props.user), target: props.target }
@@ -349,28 +368,30 @@ watch(() => props.user.avatarBlurhash, () => {
 	}
 }
 
-.instanceicon {
+.instanceIcon {
+	width: 25px;
 	height: 25px;
+	border-radius: 50%;
+	opacity: 0.65;
 	z-index: 2;
 	position: absolute;
 	left: 0;
 	bottom: 0;
-}
+	background: var(--MI_THEME-panel);
+	box-shadow: 0 0 0 2px var(--MI_THEME-panel);
 
-@container (max-width: 580px) {
-	.instanceicon {
+	@container (max-width: 580px) {
+		width: 21px;
 		height: 21px;
 	}
-}
 
-@container (max-width: 450px) {
-	.instanceicon {
+	@container (max-width: 450px) {
+		width: 19px;
 		height: 19px;
 	}
-}
 
-@container (max-width: 300px) {
-	.instanceicon {
+	@container (max-width: 300px) {
+		width: 17px;
 		height: 17px;
 	}
 }

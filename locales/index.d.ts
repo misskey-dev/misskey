@@ -2995,6 +2995,10 @@ export interface Locale extends ILocale {
      */
     "instanceIcon": string;
     /**
+     * タイムライン上のサーバー情報をアイコン表示に変更します。ただし、ノートの詳細表示では変更前と同様に表示されます。
+     */
+    "instanceIconDescription": string;
+    /**
      * {x}を待っています
      */
     "waitingFor": ParameterizedString<"x">;
