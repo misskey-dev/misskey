@@ -4,28 +4,30 @@
  */
 
 import { apiUrl } from '@@/js/config.js';
-import { defaultMemoryStorage } from '@/memory-storage';
+import { cloudBackup } from '@/preferences/utility.js';
+import { store } from '@/store.js';
 import { waiting } from '@/os.js';
-import { unisonReload, reloadChannel } from '@/utility/unison-reload.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 import { $i } from '@/i.js';
 
 export async function signout() {
 	if (!$i) return;
 
-	// TODO: preferの自動バックアップがオンの場合、いろいろ消す前に強制バックアップ
-
 	waiting();
 
-	localStorage.clear();
-	defaultMemoryStorage.clear();
+	if (store.s.enablePreferencesAutoCloudBackup) {
+		await cloudBackup();
 
-	const idbPromises = ['MisskeyClient', 'keyval-store'].map((name, i, arr) => new Promise<void>((res, rej) => {
-		const delidb = indexedDB.deleteDatabase(name);
-		delidb.onsuccess = () => res();
-		delidb.onerror = e => rej(e);
-	}));
+		localStorage.clear();
 
-	await Promise.all(idbPromises);
+		const idbPromises = ['MisskeyClient', 'keyval-store'].map((name, i, arr) => new Promise<void>((res, rej) => {
+			const delidb = indexedDB.deleteDatabase(name);
+			delidb.onsuccess = () => res();
+			delidb.onerror = e => rej(e);
+		}));
+
+		await Promise.all(idbPromises);
+	}
 
 	//#region Remove service worker registration
 	try {
