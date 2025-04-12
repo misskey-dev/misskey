@@ -35,7 +35,9 @@ export async function getAccounts(): Promise<{
 
 async function addAccount(host: string, user: Misskey.entities.User, token: AccountWithToken['token']) {
 	if (!prefer.s.accounts.some(x => x[0] === host && x[1].id === user.id)) {
+		// 両方のストレージにトークンを保存
 		store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + user.id]: token });
+		prefer.commit('accountTokens', { ...prefer.s.accountTokens, [host + '/' + user.id]: token });
 		prefer.commit('accounts', [...prefer.s.accounts, [host, user]]);
 	}
 }
@@ -199,13 +201,18 @@ export async function login(token: AccountWithToken['token'], redirect?: string)
 }
 
 export async function switchAccount(host: string, id: string) {
-	const token = store.s.accountTokens[host + '/' + id];
+	// 古い実装ではstoreから、新しい実装ではpreferからトークンを取得する
+	const token = prefer.s.accountTokens[host + '/' + id] || store.s.accountTokens[host + '/' + id];
+
 	if (token) {
 		login(token);
 	} else {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
 			done: async (res: Misskey.entities.SigninFlowResponse & { finished: true }) => {
-				store.set('accountTokens', { ...store.s.accountTokens, [host + '/' + res.id]: res.i });
+				// 新しいトークンを両方のストレージに保存して互換性を確保
+				const newTokens = { ...store.s.accountTokens, [host + '/' + res.id]: res.i };
+				store.set('accountTokens', newTokens);
+				prefer.commit('accountTokens', { ...prefer.s.accountTokens, [host + '/' + res.id]: res.i });
 				login(res.i);
 			},
 			closed: () => {
