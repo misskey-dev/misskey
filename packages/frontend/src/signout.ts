@@ -6,7 +6,8 @@
 import { apiUrl } from '@@/js/config.js';
 import { defaultMemoryStorage } from '@/memory-storage';
 import { waiting } from '@/os.js';
-import { unisonReload, reloadChannel } from '@/utility/unison-reload.js';
+import { unisonReload } from '@/utility/unison-reload.js';
+import { clear } from '@/utility/idb-proxy.js';
 import { $i } from '@/i.js';
 
 export async function signout() {
@@ -19,13 +20,17 @@ export async function signout() {
 	localStorage.clear();
 	defaultMemoryStorage.clear();
 
-	const idbPromises = ['MisskeyClient', 'keyval-store'].map((name, i, arr) => new Promise<void>((res, rej) => {
+	const idbPromises = ['MisskeyClient'].map((name, i, arr) => new Promise<void>((res, rej) => {
 		const delidb = indexedDB.deleteDatabase(name);
 		delidb.onsuccess = () => res();
 		delidb.onerror = e => rej(e);
 	}));
 
-	await Promise.all(idbPromises);
+	await Promise.all([
+		...idbPromises,
+		// idb keyval-storeはidb-keyvalライブラリによる別管理
+		clear(),
+	]);
 
 	//#region Remove service worker registration
 	try {
