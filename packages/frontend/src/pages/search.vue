@@ -4,11 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-		<MkSpacer v-if="tab === 'note'" key="note" :contentMax="800">
+		<MkSpacer v-if="tab === 'note'" :contentMax="800">
 			<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable">
 				<XNote v-bind="props"/>
 			</div>
@@ -17,18 +15,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkSpacer>
 
-		<MkSpacer v-else-if="tab === 'user'" key="user" :contentMax="800">
+		<MkSpacer v-else-if="tab === 'user'" :contentMax="800">
 			<XUser v-bind="props"/>
 		</MkSpacer>
 	</MkHorizontalSwipe>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, toRef } from 'vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { notesSearchAvailable } from '@/scripts/check-permissions.js';
+import { definePage } from '@/page.js';
+import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
@@ -68,7 +66,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-users',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.search,
 	icon: 'ti ti-search',
 }));

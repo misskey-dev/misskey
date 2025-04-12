@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -38,7 +38,7 @@ const emit = defineEmits<{
 const app = computed(() => props.session.app);
 
 const name = computed(() => {
-	const el = document.createElement('div');
+	const el = window.document.createElement('div');
 	el.textContent = app.value.name;
 	return el.innerHTML;
 });

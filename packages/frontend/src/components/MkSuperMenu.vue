@@ -6,16 +6,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div ref="rootEl" class="rrevdjwu" :class="{ grid }">
 	<MkInput
-		v-model="search"
+		v-if="searchIndex && searchIndex.length > 0"
+		v-model="searchQuery"
 		:placeholder="i18n.ts.search"
 		type="search"
 		style="margin-bottom: 16px;"
+		@input.passive="searchOnInput"
 		@keydown="searchOnKeyDown"
 	>
 		<template #prefix><i class="ti ti-search"></i></template>
 	</MkInput>
 
-	<template v-if="search == ''">
+	<template v-if="rawSearchQuery == ''">
 		<div v-for="group in def" class="group">
 			<div v-if="group.title" class="title">{{ group.title }}</div>
 
@@ -91,23 +93,28 @@ export type SuperMenuDef = {
 </script>
 
 <script lang="ts" setup>
-import { useTemplateRef, ref, watch, nextTick } from 'vue';
-import type { SearchIndexItem } from '@/scripts/autogen/settings-search-index.js';
+import { useTemplateRef, ref, watch, nextTick, computed } from 'vue';
+import { getScrollContainer } from '@@/js/scroll.js';
+import type { SearchIndexItem } from '@/utility/settings-search-index.js';
 import MkInput from '@/components/MkInput.vue';
 import { i18n } from '@/i18n.js';
-import { getScrollContainer } from '@@/js/scroll.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
+import { initIntlString, compareStringIncludes } from '@/utility/intl-string.js';
 
 const props = defineProps<{
 	def: SuperMenuDef[];
 	grid?: boolean;
-	searchIndex: SearchIndexItem[];
+	searchIndex?: SearchIndexItem[];
 }>();
+
+initIntlString();
 
 const router = useRouter();
 const rootEl = useTemplateRef('rootEl');
 
-const search = ref('');
+const searchQuery = ref('');
+const rawSearchQuery = ref('');
+
 const searchSelectedIndex = ref<null | number>(null);
 const searchResult = ref<{
 	id: string;
@@ -117,8 +124,13 @@ const searchResult = ref<{
 	isRoot: boolean;
 	parentLabels: string[];
 }[]>([]);
+const searchIndexItemByIdComputed = computed(() => props.searchIndex && new Map<string, SearchIndexItem>(props.searchIndex.map(i => [i.id, i])));
 
-watch(search, (value) => {
+watch(searchQuery, (value) => {
+	rawSearchQuery.value = value;
+});
+
+watch(rawSearchQuery, (value) => {
 	searchResult.value = [];
 	searchSelectedIndex.value = null;
 
@@ -126,31 +138,48 @@ watch(search, (value) => {
 		return;
 	}
 
-	const dive = (items: SearchIndexItem[], parents: SearchIndexItem[] = []) => {
-		for (const item of items) {
-			const matched =
-				item.label.includes(value.toLowerCase()) ||
-				item.keywords.some((x) => x.toLowerCase().includes(value.toLowerCase()));
+	const searchIndexItemById = searchIndexItemByIdComputed.value;
+	if (searchIndexItemById != null) {
+		const addSearchResult = (item: SearchIndexItem) => {
+			let path: string | undefined = item.path;
+			let icon: string | undefined = item.icon;
+			const parentLabels: string[] = [];
 
-			if (matched) {
-				searchResult.value.push({
-					id: item.id,
-					path: item.path ?? parents.find((x) => x.path != null)?.path,
-					label: item.label,
-					parentLabels: parents.map((x) => x.label).toReversed(),
-					icon: item.icon ?? parents.find((x) => x.icon != null)?.icon,
-					isRoot: parents.length === 0,
-				});
+			for (let current = searchIndexItemById.get(item.parentId ?? '');
+				current != null;
+				current = searchIndexItemById.get(current.parentId ?? '')) {
+				path ??= current.path;
+				icon ??= current.icon;
+				parentLabels.push(current.label);
 			}
 
-			if (item.children) {
-				dive(item.children, [item, ...parents]);
+			if (_DEV_ && path == null) throw new Error('path is null for ' + item.id);
+
+			searchResult.value.push({
+				id: item.id,
+				path: path ?? '/', // never gets `/`
+				label: item.label,
+				parentLabels: parentLabels.toReversed(),
+				icon,
+				isRoot: item.parentId == null,
+			});
+		};
+
+		for (const item of searchIndexItemById.values()) {
+			if (
+				compareStringIncludes(item.label, value) ||
+				item.keywords.some((x) => compareStringIncludes(x, value))
+			) {
+				addSearchResult(item);
 			}
 		}
-	};
-
-	dive(props.searchIndex);
+	}
 });
+
+function searchOnInput(ev: InputEvent) {
+	searchSelectedIndex.value = null;
+	rawSearchQuery.value = (ev.target as HTMLInputElement).value;
+}
 
 function searchOnKeyDown(ev: KeyboardEvent) {
 	if (ev.isComposing) return;

@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[
 		$style.videoContainer,
 		controlsShowing && $style.active,
-		(video.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive,
+		(video.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
 	@mouseover="onMouseOver"
 	@mouseleave="onMouseLeave"
@@ -20,13 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<button v-if="hide" :class="$style.hidden" @click="show">
 		<div :class="$style.hiddenTextWrapper">
-			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
-			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ defaultStore.state.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
+			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
+			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ prefer.s.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</button>
 
-	<div v-else-if="defaultStore.reactiveState.useNativeUIForVideoAudioPlayer.value" :class="$style.videoRoot">
+	<div v-else-if="prefer.s.useNativeUiForVideoAudioPlayer" :class="$style.videoRoot">
 		<video
 			ref="videoEl"
 			:class="$style.video"
@@ -109,20 +109,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
+import { ref, useTemplateRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
-import type { Keymap } from '@/scripts/hotkey.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard';
+import type { Keymap } from '@/utility/hotkey.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { exitFullscreen, requestFullscreen } from '@/scripts/fullscreen.js';
-import hasAudio from '@/scripts/media-has-audio.js';
+import { exitFullscreen, requestFullscreen } from '@/utility/fullscreen.js';
+import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
-import { $i, iAmModerator } from '@/account.js';
+import { $i, iAmModerator } from '@/i.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;
@@ -171,14 +171,14 @@ const keymap = {
 // PlayerElもしくはその子要素にフォーカスがあるかどうか
 function hasFocus() {
 	if (!playerEl.value) return false;
-	return playerEl.value === document.activeElement || playerEl.value.contains(document.activeElement);
+	return playerEl.value === window.document.activeElement || playerEl.value.contains(window.document.activeElement);
 }
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
+const hide = ref((prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.video.isSensitive && prefer.s.nsfw !== 'ignore'));
 
 async function show() {
-	if (props.video.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+	if (props.video.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
 		const { canceled } = await os.confirm({
 			type: 'question',
 			text: i18n.ts.sensitiveMediaRevealConfirm,
@@ -216,7 +216,7 @@ function showMenu(ev: MouseEvent) {
 				'2.0x': 2,
 			},
 		},
-		...(document.pictureInPictureEnabled ? [{
+		...(window.document.pictureInPictureEnabled ? [{
 			text: i18n.ts._mediaControls.pip,
 			icon: 'ti ti-picture-in-picture',
 			action: togglePictureInPicture,
@@ -265,9 +265,9 @@ function showMenu(ev: MouseEvent) {
 		menu.push({ type: 'divider' }, ...details);
 	}
 
-	if (defaultStore.state.devMode) {
+	if (prefer.s.devMode) {
 		menu.push({ type: 'divider' }, {
-			icon: 'ti ti-id',
+			icon: 'ti ti-hash',
 			text: i18n.ts.copyFileId,
 			action: () => {
 				copyToClipboard(props.video.id);
@@ -299,8 +299,8 @@ async function toggleSensitive(file: Misskey.entities.DriveFile) {
 }
 
 // MediaControl: Video State
-const videoEl = shallowRef<HTMLVideoElement>();
-const playerEl = shallowRef<HTMLDivElement>();
+const videoEl = useTemplateRef('videoEl');
+const playerEl = useTemplateRef('playerEl');
 const isHoverring = ref(false);
 const controlsShowing = computed(() => {
 	if (!oncePlayed.value) return true;
@@ -339,7 +339,7 @@ const bufferedDataRatio = computed(() => {
 // MediaControl Events
 function onMouseOver() {
 	if (controlStateTimer) {
-		clearTimeout(controlStateTimer);
+		window.clearTimeout(controlStateTimer);
 	}
 	isHoverring.value = true;
 }
@@ -384,8 +384,8 @@ function toggleFullscreen() {
 
 function togglePictureInPicture() {
 	if (videoEl.value) {
-		if (document.pictureInPictureElement) {
-			document.exitPictureInPicture();
+		if (window.document.pictureInPictureElement) {
+			window.document.exitPictureInPicture();
 		} else {
 			videoEl.value.requestPictureInPicture();
 		}
@@ -502,7 +502,7 @@ onDeactivated(() => {
 	elapsedTimeMs.value = 0;
 	durationMs.value = 0;
 	bufferedEnd.value = 0;
-	hide.value = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore');
+	hide.value = (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.video.isSensitive && prefer.s.nsfw !== 'ignore');
 	stopVideoElWatch();
 	onceInit = false;
 	if (mediaTickFrameId) {
@@ -553,7 +553,7 @@ onDeactivated(() => {
 	/* Hardcode to black because either --MI_THEME-bg or --MI_THEME-fg makes it hard to read in dark/light mode */
 	background-color: black;
 	border-radius: 6px;
-	color: var(--MI_THEME-accentLighten);
+	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 	display: inline-block;
 	font-weight: bold;
 	font-size: 0.8em;
@@ -565,7 +565,7 @@ onDeactivated(() => {
 	position: absolute;
 	border-radius: 6px;
 	background-color: var(--MI_THEME-fg);
-	color: var(--MI_THEME-accentLighten);
+	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 	font-size: 12px;
 	opacity: .5;
 	padding: 5px 8px;
