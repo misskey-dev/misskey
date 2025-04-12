@@ -450,4 +450,19 @@ export const PREF_DEF = {
 	searchEngine: {
 		default: 'https://search.yami.ski/search?',
 	},
+	// アカウントトークン（複数アカウント管理に必要）
+	accountTokens: {
+		default: {} as Record<string, string>, // host/userId, token
+	},
+	// プラグイントークン
+	pluginTokens: {
+		default: {} as Record<string, string>, // plugin id, token
+	},
+	// 自動バックアップ設定
+	enablePreferencesAutoCloudBackup: {
+		default: false,
+	},
+	showPreferencesAutoCloudBackupSuggestion: {
+		default: true,
+	},
 } satisfies PreferencesDefinition;

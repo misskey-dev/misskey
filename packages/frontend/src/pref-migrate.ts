@@ -144,6 +144,16 @@ export function migrateOldSettings() {
 		prefer.commit('defaultScheduledNoteDeleteTime', store.s.defaultScheduledNoteDeleteTime);
 		prefer.commit('customFont', store.s.customFont);
 		prefer.commit('reactionChecksMuting', store.s.reactionChecksMuting);
+		prefer.commit('hideReactionUsers', store.s.hideReactionUsers);
+		prefer.commit('hideReactionCount', store.s.hideReactionCount);
+		prefer.commit('instanceIcon', store.s.instanceIcon);
+		prefer.commit('searchEngine', store.s.searchEngine);
+		prefer.commit('game.dropAndFusion', store.s.dropAndFusion);
+		prefer.commit('postFormActions', store.s.postFormActions);
+		prefer.commit('accountTokens', store.s.accountTokens);
+		prefer.commit('pluginTokens', store.s.pluginTokens);
+		prefer.commit('enablePreferencesAutoCloudBackup', store.s.enablePreferencesAutoCloudBackup);
+		prefer.commit('showPreferencesAutoCloudBackupSuggestion', store.s.showPreferencesAutoCloudBackupSuggestion);
 
 		window.setTimeout(() => {
 			unisonReload();
