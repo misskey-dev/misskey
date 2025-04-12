@@ -14,7 +14,6 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { IdService } from './IdService.js';
-import { AbuseDiscordHookService } from '@/core/AbuseDiscordHookService.js';
 
 @Injectable()
 export class AbuseReportService {
@@ -27,7 +26,6 @@ export class AbuseReportService {
 
 		private idService: IdService,
 		private abuseReportNotificationService: AbuseReportNotificationService,
-		private abuseDiscordHookService: AbuseDiscordHookService,
 		private queueService: QueueService,
 		private systemAccountService: SystemAccountService,
 		private apRendererService: ApRendererService,
@@ -73,7 +71,6 @@ export class AbuseReportService {
 			this.abuseReportNotificationService.notifyAdminStream(reports),
 			this.abuseReportNotificationService.notifySystemWebhook(reports, 'abuseReport'),
 			this.abuseReportNotificationService.notifyMail(reports),
-			this.abuseDiscordHookService.sendAll(reports),
 		]);
 	}
 
