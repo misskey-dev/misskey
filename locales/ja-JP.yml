@@ -74,8 +74,6 @@ reply: "返信"
 loadMore: "もっと見る"
 showMore: "もっと見る"
 showLess: "閉じる"
-scheduleNoteFailed: "予約投稿に失敗しました。"
-scheduleNotePosted: "予約投稿に成功しました。"
 youGotNewFollower: "フォローされました"
 youGotUnFollower: "フォロー解除されました"
 youGotBlocked: "ブロックされました"
@@ -2762,6 +2760,8 @@ _notification:
     createToken: "アクセストークンの作成"
     test: "通知のテスト"
     app: "連携アプリからの通知"
+    scheduledNoteFailed: "予約投稿の失敗"
+    scheduledNotePosted: "予約投稿の成功"
 
   _actions:
     followBack: "フォローバック"

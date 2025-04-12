@@ -315,14 +315,6 @@ export interface Locale extends ILocale {
      */
     "showLess": string;
     /**
-     * 予約投稿に失敗しました。
-     */
-    "scheduleNoteFailed": string;
-    /**
-     * 予約投稿に成功しました。
-     */
-    "scheduleNotePosted": string;
-    /**
      * フォローされました
      */
     "youGotNewFollower": string;
@@ -10454,6 +10446,14 @@ export interface Locale extends ILocale {
              * 連携アプリからの通知
              */
             "app": string;
+            /**
+             * 予約投稿の失敗
+             */
+            "scheduledNoteFailed": string;
+            /**
+             * 予約投稿の成功
+             */
+            "scheduledNotePosted": string;
         };
         "_actions": {
             /**
