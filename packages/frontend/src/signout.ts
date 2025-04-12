@@ -21,7 +21,7 @@ export async function signout() {
 	defaultMemoryStorage.clear();
 
 	const idbAbortController = new AbortController();
-	const timeout = setTimeout(() => idbAbortController.abort(), 5000);
+	const timeout = window.setTimeout(() => idbAbortController.abort(), 5000);
 
 	const idbPromises = ['MisskeyClient'].map((name, i, arr) => new Promise<void>((res, rej) => {
 		const delidb = indexedDB.deleteDatabase(name);
@@ -42,7 +42,7 @@ export async function signout() {
 	} catch {
 		// nothing
 	} finally {
-		clearTimeout(timeout);
+		window.clearTimeout(timeout);
 	}
 
 	//#region Remove service worker registration
