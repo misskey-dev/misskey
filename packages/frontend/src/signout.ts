@@ -20,17 +20,30 @@ export async function signout() {
 	localStorage.clear();
 	defaultMemoryStorage.clear();
 
+	const idbAbortController = new AbortController();
+	const timeout = setTimeout(() => idbAbortController.abort(), 5000);
+
 	const idbPromises = ['MisskeyClient'].map((name, i, arr) => new Promise<void>((res, rej) => {
 		const delidb = indexedDB.deleteDatabase(name);
 		delidb.onsuccess = () => res();
 		delidb.onerror = e => rej(e);
+		delidb.onblocked = () => idbAbortController.signal.aborted && rej(new Error('Operation aborted'));
 	}));
 
-	await Promise.all([
-		...idbPromises,
-		// idb keyval-storeはidb-keyvalライブラリによる別管理
-		clear(),
-	]);
+	try {
+		await Promise.race([
+			Promise.all([
+				...idbPromises,
+				// idb keyval-storeはidb-keyvalライブラリによる別管理
+				clear(),
+			]),
+			new Promise((_, rej) => idbAbortController.signal.addEventListener('abort', () => rej(new Error('Operation timed out')))),
+		]);
+	} catch {
+		// nothing
+	} finally {
+		clearTimeout(timeout);
+	}
 
 	//#region Remove service worker registration
 	try {
@@ -55,7 +68,9 @@ export async function signout() {
 			.then(registrations => {
 				return Promise.all(registrations.map(registration => registration.unregister()));
 			});
-	} catch (err) {}
+	} catch {
+		// nothing
+	}
 	//#endregion
 
 	unisonReload('/');
