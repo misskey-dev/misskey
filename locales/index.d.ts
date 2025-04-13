@@ -3935,10 +3935,9 @@ export interface Locale extends ILocale {
      */
     "logoutConfirm": string;
     /**
-     * この端末では設定の自動バックアップが有効になっていないため、ログアウトするとすべてのクライアント設定が消去されます。
-     * これを防ぐには、設定の自動バックアップを有効にしてください。
+     * ログアウトするとクライアントの設定情報がブラウザから消去されます。再ログイン時に設定情報を復元できるようにするためには、設定の自動バックアップを有効にしてください。
      */
-    "logoutDataLostConfirm": string;
+    "logoutWillClearClientData": string;
     /**
      * 最終利用日時
      */
