@@ -997,19 +997,19 @@ export class MasterGameEngine {
 	}
 
 	public calcCrc32ForUser1(): number {
-		// TODO
+		throw new Error('TODO');
 	}
 
 	public calcCrc32ForUser2(): number {
-		// TODO
+		throw new Error('TODO');
 	}
 
 	public calcCrc32ForUser3(): number {
-		// TODO
+		throw new Error('TODO');
 	}
 
 	public calcCrc32ForUser4(): number {
-		// TODO
+		throw new Error('TODO');
 	}
 
 	public getState(): MasterState {
@@ -1018,5 +1018,5 @@ export class MasterGameEngine {
 }
 
 function commit_dahai(state: MasterState): MasterState {
-
+	throw new Error('Not implemented');
 }

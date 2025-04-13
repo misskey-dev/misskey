@@ -277,21 +277,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onActivated, onDeactivated, onMounted, onUnmounted, reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Mmj from 'misskey-mahjong';
+import { useInterval } from '@@/js/use-interval.js';
 import XTile from './tile.vue';
 import XHuro from './huro.vue';
 import XHandTiles from './hand-tiles.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { deepClone } from '@/scripts/clone.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { signinRequired } from '@/account.js';
+import { deepClone } from '@/utility/clone.js';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { userPage } from '@/filters/user.js';
-import * as sound from '@/scripts/sound.js';
+import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
-import { confetti } from '@/scripts/confetti.js';
+import { confetti } from '@/utility/confetti.js';
 
 //#region syntax suger
 function mj$(tid: Mmj.TileId): Mmj.TileInstance {
@@ -303,7 +303,7 @@ function mj$type(tid: Mmj.TileId): Mmj.TileType {
 }
 //#endregion
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const props = defineProps<{
 	room: Misskey.entities.MahjongRoomDetailed;

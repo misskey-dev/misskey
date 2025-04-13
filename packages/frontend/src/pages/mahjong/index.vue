@@ -24,18 +24,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 import { useStream } from '@/stream.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import MkPagination from '@/components/MkPagination.vue';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import * as sound from '@/scripts/sound.js';
+import * as sound from '@/utility/sound.js';
 
 const myGamesPagination = {
 	endpoint: 'mahjong/games' as const,
@@ -74,7 +74,7 @@ async function createRoom(ev: MouseEvent) {
 	router.push(`/mahjong/g/${room.id}`);
 }
 
-definePageMetadata(computed(() => ({
+definePage(computed(() => ({
 	title: i18n.ts._mahjong.mahjong,
 	icon: 'ti ti-device-gamepad',
 })));
