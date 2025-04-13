@@ -11,7 +11,7 @@ import { MiUser } from '@/models/User.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiNote } from '@/models/Note.js';
+import { MiNote } from '@/models/Note.js';
 import { EmailService } from '@/core/EmailService.js';
 import { bindThis } from '@/decorators.js';
 import { SearchService } from '@/core/SearchService.js';
@@ -78,7 +78,9 @@ export class DeleteAccountProcessorService {
 
 				cursor = notes.at(-1)?.id ?? null;
 
-				await this.notesRepository.delete(notes.map(note => note.id));
+				await extendTimeoutQuery(this.db, async (manager) => {
+					await manager.delete(MiNote, notes.map(note => note.id));
+				});
 
 				for (const note of notes) {
 					await this.searchService.unindexNote(note);
