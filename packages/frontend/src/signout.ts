@@ -8,6 +8,7 @@ import { cloudBackup } from '@/preferences/utility.js';
 import { store } from '@/store.js';
 import { waiting } from '@/os.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import { clear } from '@/utility/idb-proxy.js';
 import { $i } from '@/i.js';
 
 export async function signout() {
@@ -20,13 +21,30 @@ export async function signout() {
 
 		localStorage.clear();
 
-		const idbPromises = ['MisskeyClient', 'keyval-store'].map((name, i, arr) => new Promise<void>((res, rej) => {
+		const idbAbortController = new AbortController();
+		const timeout = window.setTimeout(() => idbAbortController.abort(), 5000);
+
+		const idbPromises = ['MisskeyClient'].map((name, i, arr) => new Promise<void>((res, rej) => {
 			const delidb = indexedDB.deleteDatabase(name);
 			delidb.onsuccess = () => res();
 			delidb.onerror = e => rej(e);
+			delidb.onblocked = () => idbAbortController.signal.aborted && rej(new Error('Operation aborted'));
 		}));
 
-		await Promise.all(idbPromises);
+		try {
+			await Promise.race([
+				Promise.all([
+					...idbPromises,
+					// idb keyval-storeはidb-keyvalライブラリによる別管理
+					clear(),
+				]),
+				new Promise((_, rej) => idbAbortController.signal.addEventListener('abort', () => rej(new Error('Operation timed out')))),
+			]);
+		} catch {
+			// nothing
+		} finally {
+			window.clearTimeout(timeout);
+    }
 	}
 
 	//#region Remove service worker registration
@@ -52,7 +70,9 @@ export async function signout() {
 			.then(registrations => {
 				return Promise.all(registrations.map(registration => registration.unregister()));
 			});
-	} catch (err) {}
+	} catch {
+		// nothing
+	}
 	//#endregion
 
 	unisonReload('/');
