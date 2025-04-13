@@ -29,7 +29,6 @@ import { prefer } from '@/preferences.js';
 import { launchPlugins } from '@/plugin.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import { signout } from '@/signout.js';
-import { migrateOldSettings } from '@/pref-migrate.js';
 
 export async function mainBoot() {
 	const { isClientUpdated, lastVersion } = await common(async () => {
@@ -74,6 +73,8 @@ export async function mainBoot() {
 		// TODO: そのうち消す
 		if (lastVersion && (compareVersions('2025.3.2-alpha.0', lastVersion) === 1)) {
 			console.log('Preferences migration');
+
+			const { migrateOldSettings } = await import('@/pref-migrate.js');
 
 			migrateOldSettings();
 		}
