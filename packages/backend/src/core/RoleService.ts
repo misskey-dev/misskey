@@ -709,7 +709,6 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	 */
 	@bindThis
 	public flushCaches(): void {
-		this.rootUserIdCache.delete();
 		this.rolesCache.delete();
 		this.roleAssignmentByUserIdCache.deleteAll();
 	}

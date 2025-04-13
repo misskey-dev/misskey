@@ -7,8 +7,10 @@ import { jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
 import { addHours, addSeconds, subDays, subHours, subSeconds } from 'date-fns';
+import { FeaturedService } from '@/core/FeaturedService.js';
 import { CheckModeratorsActivityProcessorService } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 import {
+	MetasRepository,
 	MiRole,
 	MiRoleAssignment,
 	MiSystemWebhook,
@@ -415,6 +417,7 @@ describe('CheckModeratorsActivityProcessorService with RoleService', () => {
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
 	let idService: IdService;
 	let roleService: RoleService;
+	let metaService: MetaService;
 
 	let root: MiUser;
 
@@ -473,6 +476,7 @@ describe('CheckModeratorsActivityProcessorService with RoleService', () => {
 					CheckModeratorsActivityProcessorService,
 					IdService,
 					RoleService,
+					MetaService,
 					GlobalEventService,
 					CacheService,
 					{
@@ -485,7 +489,7 @@ describe('CheckModeratorsActivityProcessorService with RoleService', () => {
 						provide: UserEntityService, useFactory: () => ({ pack: jest.fn() }),
 					},
 					{
-						provide: MetaService, useFactory: () => ({ fetch: jest.fn() }),
+						provide: FeaturedService, useFactory: () => ({ removeHashtagsFromRanking: jest.fn() }),
 					},
 					{
 						provide: AnnouncementService, useFactory: () => ({ create: jest.fn() }),
@@ -522,6 +526,7 @@ describe('CheckModeratorsActivityProcessorService with RoleService', () => {
 		service = app.get(CheckModeratorsActivityProcessorService);
 		idService = app.get(IdService);
 		roleService = app.get(RoleService);
+		metaService = app.get(MetaService);
 
 		app.enableShutdownHooks();
 	});
@@ -532,7 +537,10 @@ describe('CheckModeratorsActivityProcessorService with RoleService', () => {
 			shouldClearNativeTimers: true,
 		});
 
-		root = await createUser({ isRoot: true, lastActiveDate: new Date() });
+		root = await createUser({ lastActiveDate: new Date() });
+		await metaService.update({
+			rootUserId: root.id,
+		});
 	});
 
 	afterEach(async () => {
