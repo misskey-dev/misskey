@@ -74,19 +74,27 @@ type YakumanName = typeof YAKUMAN_NAMES[number];
 
 export type YakuName = NormalYakuName | YakumanName;
 
-export type HuroForCalcYaku = {
+type Pon = {
 	type: 'pon';
 	tile: TileType;
-} | {
+};
+
+type Cii = {
 	type: 'cii';
 	tiles: [TileType, TileType, TileType];
-} | {
+};
+
+type Ankan = {
 	type: 'ankan';
 	tile: TileType;
-} | {
+};
+
+type Minkan = {
 	type: 'minkan';
 	tile: TileType;
 };
+
+export type HuroForCalcYaku = Pon | Cii | Ankan | Minkan;
 
 export type EnvForCalcYaku = {
 	/**
@@ -604,7 +612,7 @@ new SeatWind('seat-wind-n', 'n'),
 		if (fourMentsuOneJyantou == null) return false;
 
 		const shuntsus = fourMentsuOneJyantou.mentsus.filter(tiles => isShuntu(tiles));
-		shuntsus.push(...state.huros.filter(huro => huro.type == 'cii').map(huro => huro.tiles));
+		shuntsus.push(...state.huros.filter((huro): huro is Cii => huro.type == 'cii').map(huro => huro.tiles));
 
 		if (shuntsus.some(tiles => tiles[0] === 'm1' && tiles[1] === 'm2' && tiles[2] === 'm3')) {
 			if (shuntsus.some(tiles => tiles[0] === 'm4' && tiles[1] === 'm5' && tiles[2] === 'm6')) {

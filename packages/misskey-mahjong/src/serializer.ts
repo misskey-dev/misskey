@@ -5,16 +5,22 @@
 
 import { TileType } from './common.js';
 
+export type Player = 1 | 2 | 3 | 4;
+
+export type Operation = 'dahai';
+
+export type OperationCode = 1;
+
 export type Log = {
 	time: number;
-	player: 1 | 2 | 3 | 4;
-	operation: 'dahai';
-	tile: string;
+	player: Player;
+	operation: Operation;
+	tile: TileType;
 };
 
-export type SerializedLog = number[];
+export type SerializedLog = [number, Player, OperationCode, TileCode];
 
-export const TILE_MAP: Record<TileType, number> = {
+export const TILE_MAP = {
 	'm1': 1,
 	'm2': 2,
 	'm3': 3,
@@ -49,9 +55,11 @@ export const TILE_MAP: Record<TileType, number> = {
 	'haku': 32,
 	'hatsu': 33,
 	'chun': 34,
-};
+} as const;
 
-export function serializeTile(tile: TileType): number {
+export type TileCode = typeof TILE_MAP extends Record<string, infer T> ? T : never;
+
+export function serializeTile(tile: TileType): TileCode {
 	return TILE_MAP[tile];
 }
 
@@ -59,8 +67,8 @@ export function deserializeTile(tile: number): TileType {
 	return Object.keys(TILE_MAP).find(key => TILE_MAP[key as TileType] === tile) as TileType;
 }
 
-export function serializeLogs(logs: Log[]) {
-	const _logs: number[][] = [];
+export function serializeLogs(logs: Log[]): SerializedLog[] {
+	const _logs: SerializedLog[] = [];
 
 	for (let i = 0; i < logs.length; i++) {
 		const log = logs[i];
@@ -79,7 +87,7 @@ export function serializeLogs(logs: Log[]) {
 	return _logs;
 }
 
-export function deserializeLogs(logs: SerializedLog[]) {
+export function deserializeLogs(logs: SerializedLog[]): Log[] {
 	const _logs: Log[] = [];
 
 	let time = 0;
@@ -97,7 +105,7 @@ export function deserializeLogs(logs: SerializedLog[]) {
 					time,
 					player: player,
 					operation: 'dahai',
-					tile: log[3],
+					tile: deserializeTile(log[3]),
 				});
 				break;
 			//case 1:

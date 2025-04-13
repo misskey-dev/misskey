@@ -12,18 +12,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import RoomSetting from './room.setting.vue';
 import RoomGame from './room.game.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 import { useStream } from '@/stream.js';
-import { signinRequired } from '@/account.js';
-import { useRouter } from '@/router/supplier.js';
+import { ensureSignin } from '@/i.js';
+import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
 
-const $i = signinRequired();
+const $i = ensureSignin();
 
 const router = useRouter();
 
@@ -106,7 +106,7 @@ onUnmounted(() => {
 	}
 });
 
-definePageMetadata(computed(() => ({
+definePage(computed(() => ({
 	title: i18n.ts._mahjong.mahjong,
 	icon: 'ti ti-device-roompad',
 })));
