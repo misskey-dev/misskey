@@ -44,7 +44,7 @@ export async function signout() {
 			// nothing
 		} finally {
 			window.clearTimeout(timeout);
-    }
+		}
 	}
 
 	//#region Remove service worker registration
