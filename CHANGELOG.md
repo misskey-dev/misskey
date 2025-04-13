@@ -8,6 +8,8 @@
 - Fix: 自動バックアップが設定されている環境でログアウト直前に設定をバックアップするように
 
 ### Server
+- Enhance: フォローしているユーザーならフォロワー限定投稿のノートでもアンテナで検知できるように  
+	(Cherry-picked from https://github.com/yojo-art/cherrypick/pull/568 and https://github.com/team-shahu/misskey/pull/38)
 - Fix: システムアカウントの名前がサーバー名と同期されない問題を修正
 - Fix: 大文字を含むユーザの URL で紹介された場合に 404 エラーを返す問題 #15813
 - Fix: リードレプリカ設定時にレコードの追加・更新・削除を伴うクエリを発行した際はmasterノードで実行されるように調整( #10897 )
