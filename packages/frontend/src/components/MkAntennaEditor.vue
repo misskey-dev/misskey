@@ -39,6 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 			<MkSwitch v-model="caseSensitive">{{ i18n.ts.caseSensitive }}</MkSwitch>
 			<MkSwitch v-model="withFile">{{ i18n.ts.withFileAntenna }}</MkSwitch>
+			<MkSwitch v-model="excludeNotesInSensitiveChannel">{{ i18n.ts.excludeNotesInSensitiveChannel }}</MkSwitch>
 		</div>
 		<div :class="$style.actions">
 			<div class="_buttons">
@@ -53,16 +54,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { DeepPartial } from '@/utility/merge.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { deepMerge } from '@/scripts/merge.js';
-import type { DeepPartial } from '@/scripts/merge.js';
+import { deepMerge } from '@/utility/merge.js';
 
 type PartialAllowedAntenna = Omit<Misskey.entities.Antenna, 'id' | 'createdAt' | 'updatedAt'> & {
 	id?: string;
@@ -86,6 +87,7 @@ const initialAntenna = deepMerge<PartialAllowedAntenna>(props.antenna ?? {}, {
 	caseSensitive: false,
 	localOnly: false,
 	withFile: false,
+	excludeNotesInSensitiveChannel: false,
 	isActive: true,
 	hasUnreadNote: false,
 	notify: false,
@@ -108,6 +110,7 @@ const localOnly = ref<boolean>(initialAntenna.localOnly);
 const excludeBots = ref<boolean>(initialAntenna.excludeBots);
 const withReplies = ref<boolean>(initialAntenna.withReplies);
 const withFile = ref<boolean>(initialAntenna.withFile);
+const excludeNotesInSensitiveChannel = ref<boolean>(initialAntenna.excludeNotesInSensitiveChannel);
 const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
 watch(() => src.value, async () => {
@@ -124,6 +127,7 @@ async function saveAntenna() {
 		excludeBots: excludeBots.value,
 		withReplies: withReplies.value,
 		withFile: withFile.value,
+		excludeNotesInSensitiveChannel: excludeNotesInSensitiveChannel.value,
 		caseSensitive: caseSensitive.value,
 		localOnly: localOnly.value,
 		users: users.value.trim().split('\n').map(x => x.trim()),

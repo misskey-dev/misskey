@@ -51,6 +51,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.chatAvailability, 'chatAvailability'])">
+							<template #label>{{ i18n.ts._role._options.chatAvailability }}</template>
+							<template #suffix>{{ policies.chatAvailability === 'available' ? i18n.ts.yes : policies.chatAvailability === 'readonly' ? i18n.ts.readonly : i18n.ts.no }}</template>
+							<MkSelect v-model="policies.chatAvailability">
+								<template #label>{{ i18n.ts.enable }}</template>
+								<option value="available">{{ i18n.ts.enabled }}</option>
+								<option value="readonly">{{ i18n.ts.readonly }}</option>
+								<option value="unavailable">{{ i18n.ts.disabled }}</option>
+							</MkSelect>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionLimit'])">
 							<template #label>{{ i18n.ts._role._options.mentionMax }}</template>
 							<template #suffix>{{ policies.mentionLimit }}</template>
@@ -213,7 +224,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.avatarDecorationLimit, 'avatarDecorationLimit'])">
 							<template #label>{{ i18n.ts._role._options.avatarDecorationLimit }}</template>
 							<template #suffix>{{ policies.avatarDecorationLimit }}</template>
-							<MkInput v-model="policies.avatarDecorationLimit" type="number" :min="0">
+							<MkInput v-model="avatarDecorationLimit" type="number" :min="0" :max="16" @update:modelValue="updateAvatarDecorationLimit">
 							</MkInput>
 						</MkFolder>
 
@@ -287,15 +298,16 @@ import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { instance, fetchInstance } from '@/instance.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 const baseRoleQ = ref('');
@@ -305,6 +317,17 @@ const roles = await misskeyApi('admin/roles/list');
 const policies = reactive<Record<typeof ROLE_POLICIES[number], any>>({});
 for (const ROLE_POLICY of ROLE_POLICIES) {
 	policies[ROLE_POLICY] = instance.policies[ROLE_POLICY];
+}
+
+const avatarDecorationLimit = computed({
+	get: () => Math.min(16, Math.max(0, policies.avatarDecorationLimit)),
+	set: (value) => {
+		policies.avatarDecorationLimit = Math.min(Number(value), 16);
+	},
+});
+
+function updateAvatarDecorationLimit(value: string | number) {
+	avatarDecorationLimit.value = Number(value);
 }
 
 function matchQuery(keywords: string[]): boolean {
@@ -327,7 +350,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.roles,
 	icon: 'ti ti-badges',
 }));

@@ -6,7 +6,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import { InstanceActorService } from '@/core/InstanceActorService.js';
 import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -15,12 +14,14 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { isCollectionOrOrderedCollection } from './type.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
+import { FetchAllowSoftFailMask } from './misc/check-against-url.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
-import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export class Resolver {
 	private history: Set<string>;
@@ -36,7 +37,7 @@ export class Resolver {
 		private noteReactionsRepository: NoteReactionsRepository,
 		private followRequestsRepository: FollowRequestsRepository,
 		private utilityService: UtilityService,
-		private instanceActorService: InstanceActorService,
+		private systemAccountService: SystemAccountService,
 		private apRequestService: ApRequestService,
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
@@ -72,7 +73,7 @@ export class Resolver {
 	}
 
 	@bindThis
-	public async resolve(value: string | IObject): Promise<IObject> {
+	public async resolve(value: string | IObject, allowSoftfail: FetchAllowSoftFailMask = FetchAllowSoftFailMask.Strict): Promise<IObject> {
 		if (typeof value !== 'string') {
 			return value;
 		}
@@ -104,12 +105,12 @@ export class Resolver {
 		}
 
 		if (this.config.signToActivityPubGet && !this.user) {
-			this.user = await this.instanceActorService.getInstanceActor();
+			this.user = await this.systemAccountService.fetch('actor');
 		}
 
 		const object = (this.user
-			? await this.apRequestService.signedGet(value, this.user) as IObject
-			: await this.httpRequestService.getActivityJson(value)) as IObject;
+			? await this.apRequestService.signedGet(value, this.user, allowSoftfail) as IObject
+			: await this.httpRequestService.getActivityJson(value, undefined, allowSoftfail)) as IObject;
 
 		if (
 			Array.isArray(object['@context']) ?
@@ -117,18 +118,6 @@ export class Resolver {
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		) {
 			throw new IdentifiableError('72180409-793c-4973-868e-5a118eb5519b', 'invalid response');
-		}
-
-		// HttpRequestService / ApRequestService have already checked that
-		// `object.id` or `object.url` matches the URL used to fetch the
-		// object after redirects; here we double-check that no redirects
-		// bounced between hosts
-		if (object.id == null) {
-			throw new IdentifiableError('ad2dc287-75c1-44c4-839d-3d2e64576675', 'invalid AP object: missing id');
-		}
-
-		if (this.utilityService.punyHost(object.id) !== this.utilityService.punyHost(value)) {
-			throw new IdentifiableError('fd93c2fa-69a8-440f-880b-bf178e0ec877', `invalid AP object ${value}: id ${object.id} has different host`);
 		}
 
 		return object;
@@ -213,7 +202,7 @@ export class ApResolverService {
 		private followRequestsRepository: FollowRequestsRepository,
 
 		private utilityService: UtilityService,
-		private instanceActorService: InstanceActorService,
+		private systemAccountService: SystemAccountService,
 		private apRequestService: ApRequestService,
 		private httpRequestService: HttpRequestService,
 		private apRendererService: ApRendererService,
@@ -233,7 +222,7 @@ export class ApResolverService {
 			this.noteReactionsRepository,
 			this.followRequestsRepository,
 			this.utilityService,
-			this.instanceActorService,
+			this.systemAccountService,
 			this.apRequestService,
 			this.httpRequestService,
 			this.apRendererService,
