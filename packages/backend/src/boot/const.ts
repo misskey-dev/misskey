@@ -9,4 +9,5 @@ export type WorkerArguments = {
 	__workerName?: string;
 	__moduleServer: boolean;
 	__moduleJobQueue: boolean;
-}
+};
+

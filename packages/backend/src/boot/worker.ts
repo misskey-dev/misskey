@@ -35,7 +35,7 @@ export async function workerMain(args: WorkerArguments) {
 type WorkerSetting = {
 	name?: string;
 	type: ClusterWorkerType[];
-}
+};
 
 export function computeWorkerArguments(config: Partial<Config>, envs: Partial<typeof envOption>): WorkerArguments[] {
 	const clusterCount = actualClusterLimit(config);
