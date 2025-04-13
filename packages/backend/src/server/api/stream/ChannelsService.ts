@@ -60,11 +60,13 @@ export class ChannelsService {
 		@Inject(forwardRef(() => AdminChannelService))
 		private adminChannelService: AdminChannelService,
 		@Inject(forwardRef(() => ReversiChannelService))
-		private chatUserChannelService: ChatUserChannelService,
-		private chatRoomChannelService: ChatRoomChannelService,
 		private reversiChannelService: ReversiChannelService,
 		@Inject(forwardRef(() => ReversiGameChannelService))
 		private reversiGameChannelService: ReversiGameChannelService,
+		@Inject(forwardRef(() => ChatRoomChannelService))
+		private chatRoomChannelService: ChatRoomChannelService,
+		@Inject(forwardRef(() => ChatUserChannelService))
+		private chatUserChannelService: ChatUserChannelService,
 	) {
 	}
 
