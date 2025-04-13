@@ -503,7 +503,7 @@ describe('RoleService', () => {
 			]);
 
 			const result = await roleService.getUsersByRoleIds([role1.id]);
-			expect(result.map(u => u.id)).toEqual([user1.id, user2.id]);
+			expect(result.map(u => u.id).sort()).toEqual([user1.id, user2.id].sort());
 		});
 	});
 
