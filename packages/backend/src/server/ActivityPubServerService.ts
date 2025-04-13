@@ -735,7 +735,7 @@ export class ActivityPubServerService {
 			const acct = Acct.parse(request.params.acct);
 
 			const user = await this.usersRepository.findOneBy({
-				usernameLower: acct.username,
+				usernameLower: acct.username.toLowerCase(),
 				host: acct.host ?? IsNull(),
 				isSuspended: false,
 			});
