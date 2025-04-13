@@ -20,23 +20,23 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 
 // TimelineOptionsの型定義を修正
 type TimelineOptions = {
-  untilId: string | null;
-  sinceId: string | null;
-  limit: number;
-  allowPartial: boolean;
-  me?: { id: MiUser['id'] } | undefined | null;
-  useDbFallback: boolean;
-  redisTimelines: FanoutTimelineName[];
-  noteFilter?: (note: MiNote) => boolean;
-  alwaysIncludeMyNotes?: boolean;
-  ignoreAuthorFromBlock?: boolean;
-  ignoreAuthorFromMute?: boolean;
-  excludeNoFiles?: boolean;
-  excludeReplies?: boolean;
-  excludePureRenotes: boolean;
-  dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>;
-  localOnly?: boolean;
-  remoteOnly?: boolean;
+	untilId: string | null;
+	sinceId: string | null;
+	limit: number;
+	allowPartial: boolean;
+	me?: { id: MiUser['id'] } | undefined | null;
+	useDbFallback: boolean;
+	redisTimelines: FanoutTimelineName[];
+	noteFilter?: (note: MiNote) => boolean;
+	alwaysIncludeMyNotes?: boolean;
+	ignoreAuthorFromBlock?: boolean;
+	ignoreAuthorFromMute?: boolean;
+	excludeNoFiles?: boolean;
+	excludeReplies?: boolean;
+	excludePureRenotes: boolean;
+	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>;
+	localOnly?: boolean;
+	remoteOnly?: boolean;
 };
 
 @Injectable()
@@ -53,6 +53,33 @@ export class FanoutTimelineEndpointService {
 
 	@bindThis
 	async timeline(ps: TimelineOptions): Promise<Packed<'Note'>[]> {
+		// noteFilter に条件を追加
+		const parentFilter = ps.noteFilter ?? (_note => true);
+		ps.noteFilter = note => {
+			// やみモードノートの振り分け条件を明確に
+			if (note.isNoteInYamiMode) {
+				// やみタイムラインではすべてのやみモードノートを表示
+				if (ps.redisTimelines.some(t => t.startsWith('yamiTimeline'))) {
+					return true;
+				}
+
+				// 自分自身のユーザータイムラインでは表示
+				if (ps.redisTimelines.some(t => t.startsWith('userTimeline:')) && ps.me?.id === note.userId) {
+					return true;
+				}
+
+				// LTL/HTL/STLではやみモードノートを表示しない
+				if (ps.redisTimelines.some(t => t.startsWith('localTimeline') ||
+											 t.startsWith('homeTimeline') ||
+											 t.startsWith('hybridTimeline'))) {
+					return false;
+				}
+			}
+
+			// 既存の条件を適用
+			return parentFilter(note);
+		};
+
 		return await this.noteEntityService.packMany(await this.getMiNotes(ps), ps.me);
 	}
 

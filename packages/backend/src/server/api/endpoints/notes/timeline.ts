@@ -154,15 +154,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('reply.user', 'replyUser')
 			.leftJoinAndSelect('renote.user', 'renoteUser');
 
+		query.andWhere('note.isNoteInYamiMode = FALSE'); // 既存の条件の前に明示的に追加
+
+		// フォロー中のチャンネルの処理 (timeline.ts)
 		if (followees.length > 0 && followingChannels.length > 0) {
 			// ユーザー・チャンネルともにフォローあり
 			const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
 			const followingChannelIds = followingChannels.map(x => x.followeeId);
 			query.andWhere(new Brackets(qb => {
-				qb
+				qb // やみモードでないもののみ
 					.where(new Brackets(qb2 => {
 						qb2
-							.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds })
+							.where('note.userId IN (:...meOrFolloweeIds) AND note.isNoteInYamiMode = FALSE', { meOrFolloweeIds: meOrFolloweeIds })
 							.andWhere('note.channelId IS NULL');
 					}))
 					.orWhere('note.channelId IN (:...followingChannelIds)', { followingChannelIds });

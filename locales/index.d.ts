@@ -11858,7 +11858,7 @@ export interface Locale extends ILocale {
              */
             "normal1": string;
             /**
-             * 公開範囲「パブリック」で投稿した内容はLTLに表示されます
+             * 公開範囲「パブリック」で投稿した内容はLTL・HTL・STLに表示されます
              */
             "normal2": string;
             /**
@@ -11866,23 +11866,23 @@ export interface Locale extends ILocale {
              */
             "normalRecommend": string;
             /**
-             * フォロワーのやみTLに自分の非パブリック投稿を流します（フォロワーが非表示にできるオプションを開発予定）
+             * やみTLが使えます
              */
             "yami1": string;
             /**
-             * パブリック投稿をフォロワーのやみTLとグローバルTLにのみ流します（フォロワーが非表示にできるオプションを開発予定）
+             * 公開範囲「パブリック」で投稿した内容はLTL・HTL・STLに表示されません
              */
             "yami2": string;
             /**
-             * パブリック投稿のうち人気のものだけ、フォロワー外のやみTLに流します（フォロワー外が非表示できるオプションを開発予定）
+             * 公開範囲「パブリック」以外で投稿した内容はHTL・STLに表示されません
              */
             "yami3": string;
             /**
-             * 同調圧力から解放されたい方（開発中のため、パブリック投稿がまだホームTLとソーシャルTLにも流れます）
+             * SNSに疲れてカームダウンしたい方
              */
             "yamiRecommend": string;
             /**
-             * モード切替できる回数には時間制限があります。
+             * モードを切り替えると、公開範囲が変わります
              */
             "saveConfirmDescription": string;
         };

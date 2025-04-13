@@ -44,6 +44,11 @@ class YamiTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		// やみモードノートでないなら表示しない
+		if (!note.isNoteInYamiMode) {
+			return;
+		}
+
 		const isMe = this.user!.id === note.userId;
 
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;

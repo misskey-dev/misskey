@@ -205,13 +205,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		});
 
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			.andWhere('note.isNoteInYamiMode = FALSE')
 			.andWhere(new Brackets(qb => {
 				if (followees.length > 0) {
 					const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
-					qb.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+					// 自分とフォロー中のユーザーの投稿（やみモードでないもののみ）
+					qb.where('note.userId IN (:...meOrFolloweeIds) AND note.isNoteInYamiMode = FALSE', { meOrFolloweeIds: meOrFolloweeIds });
 					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.isNoteInYamiMode IS FALSE)');
 				} else {
-					qb.where('note.userId = :meId', { meId: me.id });
+					// 自分の投稿（やみモードでないもののみ）
+					qb.where('note.userId = :meId AND note.isNoteInYamiMode = FALSE', { meId: me.id });
 					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL) AND (note.isNoteInYamiMode IS FALSE)');
 				}
 			}))

@@ -48,6 +48,7 @@ class GlobalTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		// 以下、通常のフィルタリング条件
 		if (note.tags && note.tags.length > 0 && !this.withHashtags) return;
 
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;

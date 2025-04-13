@@ -726,7 +726,15 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// やみモードが有効なユーザーであることと、やみモード内でのノートであることは等価であることが保証されているので
 		// チャンネルに関してもこれでOK
 		if (note.isNoteInYamiMode) {
-			this.pushToTl(note, user, ['localTimeline']);
+			// 通常のタイムラインには流さない（ローカル、ホーム、ソーシャル）
+			this.pushToTl(note, user, ['localTimeline', 'homeTimeline', 'hybridTimeline']);
+
+			const r = this.redisForTimelines.pipeline();
+
+			// やみモードノートはやみTLにも追加（visibility関係なく）
+			this.fanoutTimelineService.push('yamiTimeline', note.id, 300, r);
+
+			r.exec().catch(err => this.logger.error(err));
 		} else {
 			this.pushToTl(note, user);
 		}
