@@ -33,13 +33,11 @@ const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resol
 				Math.min(navigator.hardwareConcurrency - 1, 4),
 			);
 			resolve(workers);
-			if (_DEV_) console.log('WebGL2 in worker is supported!');
 		} else {
 			const canvas = document.createElement('canvas');
 			canvas.width = 64;
 			canvas.height = 64;
 			resolve(canvas);
-			if (_DEV_) console.log('WebGL2 in worker is not supported...');
 		}
 		testWorker.terminate();
 	});

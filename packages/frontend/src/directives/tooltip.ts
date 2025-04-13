@@ -47,7 +47,7 @@ export default {
 		}
 
 		self.show = () => {
-			if (!document.body.contains(el)) return;
+			if (!window.document.body.contains(el)) return;
 			if (self._close) return;
 			if (self.text == null) return;
 

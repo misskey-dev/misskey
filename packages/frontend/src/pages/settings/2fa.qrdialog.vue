@@ -160,7 +160,7 @@ async function tokenDone() {
 function downloadBackupCodes() {
 	if (backupCodes.value !== undefined) {
 		const txtBlob = new Blob([backupCodes.value.join('\n')], { type: 'text/plain' });
-		const dummya = document.createElement('a');
+		const dummya = window.document.createElement('a');
 		dummya.href = URL.createObjectURL(txtBlob);
 		dummya.download = `${$i.username}@${hostname}` + (port !== '' ? `_${port}` : '') + '-2fa-backup-codes.txt';
 		dummya.click();

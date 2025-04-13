@@ -35,8 +35,8 @@ export const requestFullscreen = ({ videoEl, playerEl, options }: RequestFullscr
 
 export const exitFullscreen = ({ videoEl }: ExitFullscreenProps) => {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (document.exitFullscreen != null) {
-		document.exitFullscreen();
+	if (window.document.exitFullscreen != null) {
+		window.document.exitFullscreen();
 		return;
 	}
 	if (videoEl.webkitExitFullscreen != null) {

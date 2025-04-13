@@ -497,7 +497,7 @@ export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
 	if (claimedAchievements.includes(type)) return;
 	claimingQueue.add(type);
 	claimedAchievements.push(type);
-	await new Promise(resolve => setTimeout(resolve, (claimingQueue.size - 1) * 500));
+	await new Promise(resolve => window.setTimeout(resolve, (claimingQueue.size - 1) * 500));
 	window.setTimeout(() => {
 		claimingQueue.delete(type);
 	}, 500);

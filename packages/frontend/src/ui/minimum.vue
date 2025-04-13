@@ -5,9 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<div style="height: 100%;">
-		<RouterView/>
-	</div>
+	<RouterView/>
 
 	<XCommon/>
 </div>
@@ -32,19 +30,18 @@ provideMetadataReceiver((metadataGetter) => {
 	pageMetadata.value = info;
 	if (pageMetadata.value) {
 		if (isRoot.value && pageMetadata.value.title === instanceName) {
-			document.title = pageMetadata.value.title;
+			window.document.title = pageMetadata.value.title;
 		} else {
-			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+			window.document.title = `${pageMetadata.value.title} | ${instanceName}`;
 		}
 	}
 });
 provideReactiveMetadata(pageMetadata);
-
-document.documentElement.style.overflowY = 'scroll';
 </script>
 
 <style lang="scss" module>
 .root {
-	min-height: 100dvh;
+	position: relative;
+	height: 100dvh;
 }
 </style>

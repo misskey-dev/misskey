@@ -25,9 +25,12 @@ import MkPageHeader from './global/MkPageHeader.vue';
 import MkSpacer from './global/MkSpacer.vue';
 import MkStickyContainer from './global/MkStickyContainer.vue';
 import MkLazy from './global/MkLazy.vue';
+import PageWithHeader from './global/PageWithHeader.vue';
+import PageWithAnimBg from './global/PageWithAnimBg.vue';
 import SearchMarker from './global/SearchMarker.vue';
 import SearchLabel from './global/SearchLabel.vue';
 import SearchKeyword from './global/SearchKeyword.vue';
+import SearchIcon from './global/SearchIcon.vue';
 
 import type { App } from 'vue';
 
@@ -60,9 +63,12 @@ export const components = {
 	MkSpacer: MkSpacer,
 	MkStickyContainer: MkStickyContainer,
 	MkLazy: MkLazy,
+	PageWithHeader: PageWithHeader,
+	PageWithAnimBg: PageWithAnimBg,
 	SearchMarker: SearchMarker,
 	SearchLabel: SearchLabel,
 	SearchKeyword: SearchKeyword,
+	SearchIcon: SearchIcon,
 };
 
 declare module '@vue/runtime-core' {
@@ -89,8 +95,11 @@ declare module '@vue/runtime-core' {
 		MkSpacer: typeof MkSpacer;
 		MkStickyContainer: typeof MkStickyContainer;
 		MkLazy: typeof MkLazy;
+		PageWithHeader: typeof PageWithHeader;
+		PageWithAnimBg: typeof PageWithAnimBg;
 		SearchMarker: typeof SearchMarker;
 		SearchLabel: typeof SearchLabel;
 		SearchKeyword: typeof SearchKeyword;
+		SearchIcon: typeof SearchIcon;
 	}
 }

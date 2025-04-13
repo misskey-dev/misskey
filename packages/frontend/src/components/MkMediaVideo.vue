@@ -171,7 +171,7 @@ const keymap = {
 // PlayerElもしくはその子要素にフォーカスがあるかどうか
 function hasFocus() {
 	if (!playerEl.value) return false;
-	return playerEl.value === document.activeElement || playerEl.value.contains(document.activeElement);
+	return playerEl.value === window.document.activeElement || playerEl.value.contains(window.document.activeElement);
 }
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
@@ -216,7 +216,7 @@ function showMenu(ev: MouseEvent) {
 				'2.0x': 2,
 			},
 		},
-		...(document.pictureInPictureEnabled ? [{
+		...(window.document.pictureInPictureEnabled ? [{
 			text: i18n.ts._mediaControls.pip,
 			icon: 'ti ti-picture-in-picture',
 			action: togglePictureInPicture,
@@ -339,7 +339,7 @@ const bufferedDataRatio = computed(() => {
 // MediaControl Events
 function onMouseOver() {
 	if (controlStateTimer) {
-		clearTimeout(controlStateTimer);
+		window.clearTimeout(controlStateTimer);
 	}
 	isHoverring.value = true;
 }
@@ -384,8 +384,8 @@ function toggleFullscreen() {
 
 function togglePictureInPicture() {
 	if (videoEl.value) {
-		if (document.pictureInPictureElement) {
-			document.exitPictureInPicture();
+		if (window.document.pictureInPictureElement) {
+			window.document.exitPictureInPicture();
 		} else {
 			videoEl.value.requestPictureInPicture();
 		}
@@ -553,7 +553,7 @@ onDeactivated(() => {
 	/* Hardcode to black because either --MI_THEME-bg or --MI_THEME-fg makes it hard to read in dark/light mode */
 	background-color: black;
 	border-radius: 6px;
-	color: var(--MI_THEME-accentLighten);
+	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 	display: inline-block;
 	font-weight: bold;
 	font-size: 0.8em;
@@ -565,7 +565,7 @@ onDeactivated(() => {
 	position: absolute;
 	border-radius: 6px;
 	background-color: var(--MI_THEME-fg);
-	color: var(--MI_THEME-accentLighten);
+	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 	font-size: 12px;
 	opacity: .5;
 	padding: 5px 8px;

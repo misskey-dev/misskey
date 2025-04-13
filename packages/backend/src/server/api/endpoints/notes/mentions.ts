@@ -9,7 +9,6 @@ import type { NotesRepository, FollowingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { NoteReadService } from '@/core/NoteReadService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -52,7 +51,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private noteReadService: NoteReadService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const followingQuery = this.followingsRepository.createQueryBuilder('following')
@@ -74,9 +72,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateVisibilityQuery(query, me);
-			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateMutedUserQueryForNotes(query, me);
 			this.queryService.generateMutedNoteThreadQuery(query, me);
-			this.queryService.generateBlockedUserQuery(query, me);
+			this.queryService.generateBlockedUserQueryForNotes(query, me);
 
 			if (ps.visibility) {
 				query.andWhere('note.visibility = :visibility', { visibility: ps.visibility });
@@ -88,8 +86,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const mentions = await query.limit(ps.limit).getMany();
-
-			this.noteReadService.read(me.id, mentions);
 
 			return await this.noteEntityService.packMany(mentions, me);
 		});

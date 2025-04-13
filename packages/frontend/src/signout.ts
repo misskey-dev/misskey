@@ -19,8 +19,10 @@ export async function signout() {
 	localStorage.clear();
 	defaultMemoryStorage.clear();
 
-	const idbPromises = ['MisskeyClient', 'keyval-store'].map((name, i, arr) => new Promise((res, rej) => {
-		indexedDB.deleteDatabase(name);
+	const idbPromises = ['MisskeyClient', 'keyval-store'].map((name, i, arr) => new Promise<void>((res, rej) => {
+		const delidb = indexedDB.deleteDatabase(name);
+		delidb.onsuccess = () => res();
+		delidb.onerror = e => rej(e);
 	}));
 
 	await Promise.all(idbPromises);

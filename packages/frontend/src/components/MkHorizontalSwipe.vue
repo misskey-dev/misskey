@@ -19,9 +19,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:leaveToClass="transitionName === 'swipeAnimationLeft' ? $style.swipeAnimationLeft_leaveTo : $style.swipeAnimationRight_leaveTo"
 		:style="`--swipe: ${pullDistance}px;`"
 	>
-		<!-- 【注意】slot内の最上位要素に動的にkeyを設定すること -->
-		<!-- 各最上位要素にユニークなkeyの指定がないとTransitionがうまく動きません -->
-		<slot></slot>
+		<div :key="tabModel">
+			<slot></slot>
+		</div>
 	</Transition>
 </div>
 </template>
@@ -100,7 +100,7 @@ function touchMove(event: TouchEvent) {
 
 		pullDistance.value = 0;
 		isSwiping.value = false;
-		setTimeout(() => {
+		window.setTimeout(() => {
 			isSwipingForClass.value = false;
 		}, 400);
 

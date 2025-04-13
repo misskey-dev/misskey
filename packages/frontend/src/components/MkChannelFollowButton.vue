@@ -103,13 +103,13 @@ async function onClick() {
 		background: var(--MI_THEME-accent);
 
 		&:hover {
-			background: var(--MI_THEME-accentLighten);
-			border-color: var(--MI_THEME-accentLighten);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+			border-color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 		}
 
 		&:active {
-			background: var(--MI_THEME-accentDarken);
-			border-color: var(--MI_THEME-accentDarken);
+			background: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
+			border-color: hsl(from var(--MI_THEME-accent) h s calc(l - 10));
 		}
 	}
 

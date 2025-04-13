@@ -249,6 +249,7 @@ async function close(skip: boolean) {
 
 .pageFooter {
 	position: sticky;
+	z-index: 1;
 	bottom: 0;
 	left: 0;
 	flex-shrink: 0;

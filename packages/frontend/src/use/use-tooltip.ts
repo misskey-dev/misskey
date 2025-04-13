@@ -29,7 +29,7 @@ export function useTooltip(
 		if (!isHovering) return;
 		if (elRef.value == null) return;
 		const el = elRef.value instanceof Element ? elRef.value : elRef.value.$el;
-		if (!document.body.contains(el)) return; // openしようとしたときに既に元要素がDOMから消えている場合があるため
+		if (!window.document.body.contains(el)) return; // openしようとしたときに既に元要素がDOMから消えている場合があるため
 
 		const showing = ref(true);
 		onShow(showing);
@@ -38,7 +38,7 @@ export function useTooltip(
 		};
 
 		autoHidingTimer = window.setInterval(() => {
-			if (elRef.value == null || !document.body.contains(elRef.value instanceof Element ? elRef.value : elRef.value.$el)) {
+			if (elRef.value == null || !window.document.body.contains(elRef.value instanceof Element ? elRef.value : elRef.value.$el)) {
 				if (!isHovering) return;
 				isHovering = false;
 				window.clearTimeout(timeoutId);
