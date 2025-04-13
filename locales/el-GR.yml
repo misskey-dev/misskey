@@ -162,14 +162,12 @@ imageUrl: "URL εικόνας"
 remove: "Διαγραφή"
 removed: "Η διαγραφή ολοκληρώθηκε επιτυχώς"
 saved: "Αποθηκεύτηκε"
-messaging: "Συνομιλία"
 upload: "Ανεβάστε"
 fromDrive: "Από τον Αποθηκευτικό Χώρο"
 fromUrl: "Από URL"
 uploadFromUrl: "Ανεβάστε από URL"
 explore: "Εξερευνήστε"
 messageRead: "Διαβάστηκε"
-startMessaging: "Ξεκινήστε μία συνομιλία"
 nUsersRead: "διαβάστηκε από {n}"
 start: "Ας αρχίσουμε"
 home: "Κεντρικό"
@@ -288,6 +286,11 @@ cannotUploadBecauseNoFreeSpace: "Το ανέβασμα απέτυχε λόγω �
 icon: "Εικονίδιο"
 replies: "Απάντηση"
 renotes: "Κοινοποίηση σημειώματος"
+postForm: "Φόρμα δημοσίευσης"
+information: "Πληροφορίες"
+_chat:
+  members: "Μέλη"
+  home: "Κεντρικό"
 _email:
   _follow:
     title: "Έχετε ένα νέο ακόλουθο"
@@ -321,6 +324,7 @@ _permissions:
   "write:notifications": "Διαχειριστείτε τις ειδοποιήσεις σας"
   "read:pages": "Δείτε τις Σελίδες σας"
   "write:pages": "Επεξεργαστείτε ή διαγράψτε τις σελίδες σας"
+  "write:chat": "Γράψτε ή διαγράψτε μηνύματα συνομιλίας"
 _antennaSources:
   all: "Όλα τα σημειώματα"
   homeTimeline: "Σημειώματα από μέλη που ακολουθείτε"
@@ -397,3 +401,5 @@ _moderationLogTypes:
   suspend: "Αποβολή"
 _reversi:
   total: "Σύνολο"
+_search:
+  searchScopeLocal: "Τοπικό"

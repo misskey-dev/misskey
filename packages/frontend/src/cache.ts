@@ -4,8 +4,8 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { Cache } from '@/scripts/cache.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { Cache } from '@/utility/cache.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 export const clipsCache = new Cache<Misskey.entities.Clip[]>(1000 * 60 * 30, () => misskeyApi('clips/list'));
 export const rolesCache = new Cache(1000 * 60 * 30, () => misskeyApi('admin/roles/list'));
