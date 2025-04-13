@@ -813,6 +813,54 @@ export type Channels = {
             claimTimeIsUp: null | Record<string, never>;
         };
     };
+    chatUser: {
+        params: {
+            otherId: string;
+        };
+        events: {
+            message: (payload: ChatMessageLite) => void;
+            deleted: (payload: ChatMessageLite['id']) => void;
+            react: (payload: {
+                reaction: string;
+                user?: UserLite;
+                messageId: ChatMessageLite['id'];
+            }) => void;
+            unreact: (payload: {
+                reaction: string;
+                user?: UserLite;
+                messageId: ChatMessageLite['id'];
+            }) => void;
+        };
+        receives: {
+            read: {
+                id: ChatMessageLite['id'];
+            };
+        };
+    };
+    chatRoom: {
+        params: {
+            roomId: string;
+        };
+        events: {
+            message: (payload: ChatMessageLite) => void;
+            deleted: (payload: ChatMessageLite['id']) => void;
+            react: (payload: {
+                reaction: string;
+                user?: UserLite;
+                messageId: ChatMessageLite['id'];
+            }) => void;
+            unreact: (payload: {
+                reaction: string;
+                user?: UserLite;
+                messageId: ChatMessageLite['id'];
+            }) => void;
+        };
+        receives: {
+            read: {
+                id: ChatMessageLite['id'];
+            };
+        };
+    };
 };
 
 // @public (undocumented)
@@ -958,6 +1006,12 @@ type ChatMessage = components['schemas']['ChatMessage'];
 
 // @public (undocumented)
 type ChatMessageLite = components['schemas']['ChatMessageLite'];
+
+// @public (undocumented)
+type ChatMessageLiteFor1on1 = components['schemas']['ChatMessageLiteFor1on1'];
+
+// @public (undocumented)
+type ChatMessageLiteForRoom = components['schemas']['ChatMessageLiteForRoom'];
 
 // @public (undocumented)
 type ChatMessagesCreateToRoomRequest = operations['chat___messages___create-to-room']['requestBody']['content']['application/json'];
@@ -2086,6 +2140,8 @@ declare namespace entities {
         AbuseReportNotificationRecipient,
         ChatMessage,
         ChatMessageLite,
+        ChatMessageLiteFor1on1,
+        ChatMessageLiteForRoom,
         ChatRoom,
         ChatRoomInvitation,
         ChatRoomMembership
@@ -3655,8 +3711,8 @@ type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['respons
 //
 // src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:217:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:227:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:218:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:228:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

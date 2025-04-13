@@ -12,15 +12,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<XAnnouncements v-if="$i"/>
 		<XStatusBars/>
-
 		<div :class="$style.columnsWrapper">
-			<div ref="columnsEl" :class="[$style.columns, { [$style.center]: prefer.r['deck.columnAlign'].value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
+			<!-- passive: https://bugs.webkit.org/show_bug.cgi?id=281300 -->
+			<div ref="columnsEl" :class="[$style.columns, { [$style.center]: prefer.r['deck.columnAlign'].value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.passive.self="onWheel">
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
 					v-for="ids in layout"
 					:class="$style.section"
 					:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
-					@wheel.self="onWheel"
+					@wheel.passive.self="onWheel"
 				>
 					<component
 						:is="columnComponents[columns.find(c => c.id === id)!.type] ?? XTlColumn"
@@ -68,58 +68,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<XNavbarH v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'bottom'"/>
 
-		<div v-if="isMobile" :class="$style.nav">
-			<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
-			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
-			<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
-				<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
-				<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator" class="_blink">
-					<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
-				</span>
-			</button>
-			<button :class="$style.postButton" class="_button" @click="os.post()"><i :class="$style.navButtonIcon" class="ti ti-pencil"></i></button>
-		</div>
+		<XMobileFooterMenu v-if="isMobile" v-model:drawerMenuShowing="drawerMenuShowing" v-model:widgetsShowing="widgetsShowing"/>
 	</div>
 
-	<Transition
-		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
-	>
-		<div
-			v-if="drawerMenuShowing"
-			:class="$style.menuBg"
-			class="_modalBg"
-			@click="drawerMenuShowing = false"
-			@touchstart.passive="drawerMenuShowing = false"
-		></div>
-	</Transition>
-
-	<Transition
-		:enterActiveClass="prefer.s.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leaveActiveClass="prefer.s.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enterFromClass="prefer.s.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leaveToClass="prefer.s.animation ? $style.transition_menuDrawer_leaveTo : ''"
-	>
-		<div v-if="drawerMenuShowing" :class="$style.menu">
-			<XDrawerMenu/>
-		</div>
-	</Transition>
-
-	<XCommon/>
+	<XCommon v-model:drawerMenuShowing="drawerMenuShowing" v-model:widgetsShowing="widgetsShowing"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, useTemplateRef } from 'vue';
+import { defineAsyncComponent, ref, useTemplateRef } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XNavbarH from '@/ui/_common_/navbar-h.vue';
-import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
+import XMobileFooterMenu from '@/ui/_common_/mobile-footer-menu.vue';
 import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { deviceKind } from '@/utility/device-kind.js';
@@ -168,9 +131,11 @@ window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= 500;
 });
 
-const snapScroll = deviceKind === 'smartphone' || deviceKind === 'tablet';
+// ポインターイベント非対応用に初期値はUAから出す
+const snapScroll = ref(deviceKind === 'smartphone' || deviceKind === 'tablet');
 const withWallpaper = prefer.s['deck.wallpaper'] != null;
 const drawerMenuShowing = ref(false);
+const widgetsShowing = ref(false);
 const gap = prefer.r['deck.columnGap'];
 
 /*
@@ -179,14 +144,6 @@ watch(route, () => {
 	drawerMenuShowing.value = false;
 });
 */
-
-const menuIndicated = computed(() => {
-	if ($i == null) return false;
-	for (const def in navbarItemDef) {
-		if (navbarItemDef[def].indicated) return true;
-	}
-	return false;
-});
 
 function showSettings() {
 	os.pageWindow('/settings/deck');
@@ -219,7 +176,16 @@ const onContextmenu = (ev) => {
 	}], ev);
 };
 
+// タッチでスクロールしてるときはスナップスクロールを有効にする
+function pointerEvent(ev: PointerEvent) {
+	snapScroll.value = ev.pointerType === 'touch';
+}
+
+window.document.addEventListener('pointerdown', pointerEvent, { passive: true });
+
 function onWheel(ev: WheelEvent) {
+	// WheelEvent はマウスからしか発火しないのでスナップスクロールは無効化する
+	snapScroll.value = false;
 	if (ev.deltaX === 0 && columnsEl.value != null) {
 		columnsEl.value.scrollLeft += ev.deltaY;
 	}
@@ -248,28 +214,6 @@ if (prefer.s['deck.wallpaper'] != null) {
 </script>
 
 <style lang="scss" module>
-.transition_menuDrawerBg_enterActive,
-.transition_menuDrawerBg_leaveActive {
-	opacity: 1;
-	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.transition_menuDrawerBg_enterFrom,
-.transition_menuDrawerBg_leaveTo {
-	opacity: 0;
-}
-
-.transition_menuDrawer_enterActive,
-.transition_menuDrawer_leaveActive {
-	opacity: 1;
-	transform: translateX(0);
-	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.transition_menuDrawer_enterFrom,
-.transition_menuDrawer_leaveTo {
-	opacity: 0;
-	transform: translateX(-240px);
-}
-
 .root {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
@@ -301,6 +245,9 @@ if (prefer.s['deck.wallpaper'] != null) {
 	flex: 1;
 	display: flex;
 	flex-direction: row;
+
+	// これがないと狭い画面でマージンが広いデッキを表示したときにナビゲーションフッターが画面の外に追いやられて操作不能になる場合がある
+	min-height: 0;
 }
 
 .columns {
@@ -397,88 +344,5 @@ if (prefer.s['deck.wallpaper'] != null) {
 
 .bottomMenuRight {
 	margin-left: auto;
-}
-
-.menuBg {
-	z-index: 1001;
-}
-
-.menu {
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 1001;
-	height: 100dvh;
-	width: 240px;
-	box-sizing: border-box;
-	contain: strict;
-	overflow: auto;
-	overscroll-behavior: contain;
-	background: var(--MI_THEME-navBg);
-}
-
-.nav {
-	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr;
-	grid-gap: 8px;
-	width: 100%;
-	box-sizing: border-box;
-	-webkit-backdrop-filter: var(--MI-blur, blur(32px));
-	backdrop-filter: var(--MI-blur, blur(32px));
-	background-color: var(--MI_THEME-header);
-	border-top: solid 0.5px var(--MI_THEME-divider);
-}
-
-.navButton {
-	position: relative;
-	padding: 0;
-	aspect-ratio: 1;
-	width: 100%;
-	max-width: 60px;
-	margin: auto;
-	border-radius: 100%;
-	background: var(--MI_THEME-panel);
-	color: var(--MI_THEME-fg);
-
-	&:hover {
-		background: var(--MI_THEME-panelHighlight);
-	}
-
-	&:active {
-		background: hsl(from var(--MI_THEME-panel) h s calc(l - 2));
-	}
-}
-
-.postButton {
-	composes: navButton;
-	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
-	color: var(--MI_THEME-fgOnAccent);
-
-	&:hover {
-		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
-	}
-
-	&:active {
-		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
-	}
-}
-
-.navButtonIcon {
-	font-size: 18px;
-	vertical-align: middle;
-}
-
-.navButtonIndicator {
-	position: absolute;
-	top: 0;
-	left: 0;
-	color: var(--MI_THEME-indicator);
-	font-size: 16px;
-
-	&:has(.itemIndicateValueIcon) {
-		animation: none;
-		font-size: 12px;
-	}
 }
 </style>
