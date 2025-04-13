@@ -32,7 +32,7 @@ type TimelineOptions = {
 	alwaysIncludeMyNotes?: boolean;
 	ignoreAuthorFromBlock?: boolean;
 	ignoreAuthorFromMute?: boolean;
-	ignoreAuthorFromInstanceBlock: boolean;
+	ignoreAuthorFromInstanceBlock?: boolean;
 	excludeNoFiles?: boolean;
 	excludeReplies?: boolean;
 	excludePureRenotes: boolean;
