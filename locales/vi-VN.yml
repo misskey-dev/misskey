@@ -1119,6 +1119,7 @@ pullDownToRefresh: "Kéo xuống để làm mới"
 cwNotationRequired: "Nếu \"Ẩn nội dung\" được bật thì cần phải có chú thích."
 lastNDays: "{n} ngày trước"
 surrender: "Từ chối"
+postForm: "Mẫu đăng"
 _delivery:
   stop: "Đã vô hiệu hóa"
   _type:
@@ -1802,9 +1803,6 @@ _pages:
   newPage: "Tạo Trang mới"
   editPage: "Sửa Trang này"
   readPage: "Xem mã nguồn Trang này"
-  created: "Trang đã được tạo thành công"
-  updated: "Trang đã được cập nhật thành công"
-  deleted: "Trang đã được xóa thành công"
   pageSetting: "Cài đặt trang"
   nameAlreadyExists: "URL Trang đã tồn tại"
   invalidNameTitle: "URL Trang không hợp lệ"
@@ -1933,3 +1931,7 @@ _reversi:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Không tìm thấy"
+_search:
+  searchScopeAll: "Tất cả"
+  searchScopeLocal: "Máy chủ này"
+  searchScopeUser: "Người dùng chỉ định"

@@ -12,12 +12,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:iconClass="order.direction === '+' ? 'ti ti-arrow-up' : 'ti ti-arrow-down'"
 			:exButtonIconClass="'ti ti-x'"
 			:content="order.key"
+			:class="$style.sortOrderTag"
 			@click="onToggleSortOrderButtonClicked(order)"
 			@exButtonClick="onRemoveSortOrderButtonClicked(order)"
 		/>
 	</div>
 	<MkButton :class="$style.sortOrderAddButton" @click="onAddSortOrderButtonClicked">
-		<span class="ti ti-plus"/>
+		<span class="ti ti-plus"></span>
 	</MkButton>
 </div>
 </template>
@@ -26,9 +27,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { toRefs } from 'vue';
 import MkTagItem from '@/components/MkTagItem.vue';
 import MkButton from '@/components/MkButton.vue';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
-import { SortOrder } from '@/components/MkSortOrderEditor.define.js';
+import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 
 const emit = defineEmits<{
 	(ev: 'update', sortOrders: SortOrder<T>[]): void;
@@ -108,5 +109,10 @@ function emitOrder(sortOrders: SortOrder<T>[]) {
 	margin-left: auto;
 	border-radius: 9999px;
 	background-color: var(--MI_THEME-buttonBg);
+}
+
+.sortOrderTag {
+	user-select: none;
+	cursor: pointer;
 }
 </style>

@@ -30,15 +30,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, Ref, shallowRef } from 'vue';
+import { ref, useTemplateRef } from 'vue';
+import { notificationTypes } from '@@/js/const.js';
 import MkSwitch from './MkSwitch.vue';
 import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
+import type { Ref } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { notificationTypes } from '@@/js/const.js';
 import { i18n } from '@/i18n.js';
 
-type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>
+type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>;
 
 const emit = defineEmits<{
 	(ev: 'done', v: { excludeTypes: string[] }): void,
@@ -51,7 +52,7 @@ const props = withDefaults(defineProps<{
 	excludeTypes: () => [],
 });
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 
 const typesMap = notificationTypes.reduce((p, t) => ({ ...p, [t]: ref<boolean>(!props.excludeTypes.includes(t)) }), {} as TypesMap);
 

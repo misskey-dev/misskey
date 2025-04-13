@@ -5,7 +5,7 @@
 
 import { createApp, defineAsyncComponent } from 'vue';
 import { common } from './common.js';
-import { emojiPicker } from '@/scripts/emoji-picker.js';
+import { emojiPicker } from '@/utility/emoji-picker.js';
 
 export async function subBoot() {
 	const { isClientUpdated } = await common(() => createApp(

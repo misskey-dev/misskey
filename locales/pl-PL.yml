@@ -1044,6 +1044,7 @@ flip: "Odwróć"
 lastNDays: "W ciągu ostatnich {n} dni"
 surrender: "Odrzuć"
 gameRetry: "Spróbuj ponownie"
+postForm: "Formularz tworzenia wpisu"
 _delivery:
   stop: "Zawieszono"
   _type:
@@ -1459,9 +1460,6 @@ _pages:
   newPage: "Utwórz stronę"
   editPage: "Edytuj tę stronę"
   readPage: "Aktywowano widok źródła"
-  created: "Pomyślnie utworzono stronę!"
-  updated: "Pomyślnie zaktualizowano stronę!"
-  deleted: "Strona została usunięta"
   pageSetting: "Ustawienia strony"
   nameAlreadyExists: "Określony adres URL strony już istnieje"
   invalidNameTitle: "Podany adres URL strony jest nieprawidłowy"
@@ -1586,3 +1584,6 @@ _reversi:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Nie znaleziono"
+_search:
+  searchScopeAll: "Wszystkie"
+  searchScopeLocal: "Lokalne"

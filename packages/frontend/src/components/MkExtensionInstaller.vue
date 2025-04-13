@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</FormSection>
 	<slot name="additionalInfo"/>
 	<div class="_buttonsCenter">
-		<MkButton primary @click="emits('confirm')"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
+		<MkButton gradate rounded @click="emits('confirm')"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
 	</div>
 </div>
 </template>

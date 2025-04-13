@@ -6,16 +6,42 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div ref="root" :class="['chromatic-ignore', $style.root, { [$style.cover]: cover }]" :title="title ?? ''">
 	<TransitionGroup
-		:duration="defaultStore.state.animation && props.transition?.duration || undefined"
-		:enterActiveClass="defaultStore.state.animation && props.transition?.enterActiveClass || undefined"
-		:leaveActiveClass="defaultStore.state.animation && (props.transition?.leaveActiveClass ?? $style.transition_leaveActive) || undefined"
-		:enterFromClass="defaultStore.state.animation && props.transition?.enterFromClass || undefined"
-		:leaveToClass="defaultStore.state.animation && props.transition?.leaveToClass || undefined"
-		:enterToClass="defaultStore.state.animation && props.transition?.enterToClass || undefined"
-		:leaveFromClass="defaultStore.state.animation && props.transition?.leaveFromClass || undefined"
+		:duration="prefer.s.animation && props.transition?.duration || undefined"
+		:enterActiveClass="prefer.s.animation && props.transition?.enterActiveClass || undefined"
+		:leaveActiveClass="prefer.s.animation && (props.transition?.leaveActiveClass ?? $style.transition_leaveActive) || undefined"
+		:enterFromClass="prefer.s.animation && props.transition?.enterFromClass || undefined"
+		:leaveToClass="prefer.s.animation && props.transition?.leaveToClass || undefined"
+		:enterToClass="prefer.s.animation && props.transition?.enterToClass || undefined"
+		:leaveFromClass="prefer.s.animation && props.transition?.leaveFromClass || undefined"
 	>
-		<canvas v-show="hide" key="canvas" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined" tabindex="-1"/>
-		<img v-show="!hide" key="img" ref="img" :height="imgHeight ?? undefined" :width="imgWidth ?? undefined" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" decoding="async" tabindex="-1"/>
+		<canvas
+			v-show="hide"
+			key="canvas"
+			ref="canvas"
+			:class="$style.canvas"
+			:width="canvasWidth"
+			:height="canvasHeight"
+			:title="title ?? undefined"
+			draggable="false"
+			tabindex="-1"
+			style="-webkit-user-drag: none;"
+		/>
+		<img
+			v-show="!hide"
+			key="img"
+			ref="img"
+			:height="imgHeight ?? undefined"
+			:width="imgWidth ?? undefined"
+			:class="$style.img"
+			:src="src ?? undefined"
+			:title="title ?? undefined"
+			:alt="alt ?? undefined"
+			loading="eager"
+			decoding="async"
+			draggable="false"
+			tabindex="-1"
+			style="-webkit-user-drag: none;"
+		/>
 	</TransitionGroup>
 </div>
 </template>
@@ -57,10 +83,10 @@ const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resol
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, useTemplateRef, watch, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	transition?: {
@@ -94,9 +120,9 @@ const props = withDefaults(defineProps<{
 });
 
 const viewId = uuid();
-const canvas = shallowRef<HTMLCanvasElement>();
-const root = shallowRef<HTMLDivElement>();
-const img = shallowRef<HTMLImageElement>();
+const canvas = useTemplateRef('canvas');
+const root = useTemplateRef('root');
+const img = useTemplateRef('img');
 const loaded = ref(false);
 const canvasWidth = ref(64);
 const canvasHeight = ref(64);

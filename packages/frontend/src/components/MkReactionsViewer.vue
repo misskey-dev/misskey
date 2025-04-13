@@ -5,11 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <TransitionGroup
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_x_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_x_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_x_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_x_leaveTo : ''"
-	:moveClass="defaultStore.state.animation ? $style.transition_x_move : ''"
+	:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
+	:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
+	:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
+	:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
+	:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
 	tag="div" :class="$style.root"
 >
 	<XReaction v-for="[reaction, count] in reactions" :key="reaction" :reaction="reaction" :count="count" :isInitial="initialReactions.has(reaction)" :note="note" @reactionToggled="onMockToggleReaction"/>
@@ -21,7 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { inject, watch, ref } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -30,7 +31,7 @@ const props = withDefaults(defineProps<{
 	maxNumber: Infinity,
 });
 
-const mock = inject<boolean>('mock', false);
+const mock = inject(DI.mock, false);
 
 const emit = defineEmits<{
 	(ev: 'mockUpdateMyReaction', emoji: string, delta: number): void;

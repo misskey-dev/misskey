@@ -44,20 +44,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onActivated, onDeactivated, nextTick } from 'vue';
+import { ref, computed, nextTick } from 'vue';
+import type { Extension } from '@/components/MkExtensionInstaller.vue';
+import type { AiScriptPluginMeta } from '@/plugin.js';
 import MkLoading from '@/components/global/MkLoading.vue';
-import MkExtensionInstaller, { type Extension } from '@/components/MkExtensionInstaller.vue';
+import MkExtensionInstaller from '@/components/MkExtensionInstaller.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkUrl from '@/components/global/MkUrl.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { AiScriptPluginMeta, parsePluginMeta, installPlugin } from '@/scripts/install-plugin.js';
-import { parseThemeCode, installTheme } from '@/scripts/install-theme.js';
-import { unisonReload } from '@/scripts/unison-reload.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { parsePluginMeta, installPlugin } from '@/plugin.js';
+import { parseThemeCode, installTheme } from '@/theme.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const uiPhase = ref<'fetching' | 'confirm' | 'error'>('fetching');
 const errorKV = ref<{
@@ -227,22 +229,16 @@ async function install() {
 	}
 }
 
-onActivated(() => {
-	const urlParams = new URLSearchParams(window.location.search);
-	url.value = urlParams.get('url');
-	hash.value = urlParams.get('hash');
-	fetch();
-});
-
-onDeactivated(() => {
-	uiPhase.value = 'fetching';
-});
+const urlParams = new URLSearchParams(window.location.search);
+url.value = urlParams.get('url');
+hash.value = urlParams.get('hash');
+fetch();
 
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts._externalResourceInstaller.title,
 	icon: 'ti ti-download',
 }));

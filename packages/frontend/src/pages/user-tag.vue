@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed } from 'vue';
 import MkUserList from '@/components/MkUserList.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 
 const props = defineProps<{
 	tag: string;
@@ -34,7 +34,7 @@ const tagUsers = computed(() => ({
 	},
 }));
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: props.tag,
 	icon: 'ti ti-user-search',
 }));

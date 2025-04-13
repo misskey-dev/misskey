@@ -21,12 +21,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import { $i } from '@/account.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 
 const name = 'aiscript';

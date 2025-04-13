@@ -5,15 +5,16 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { Component, markRaw, Ref, ref, defineAsyncComponent, nextTick } from 'vue';
+import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
+import type { Component, Ref } from 'vue';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
-import type { Form, GetFormResultType } from '@/scripts/form.js';
+import type { Form, GetFormResultType } from '@/utility/form.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { PostFormProps } from '@/types/post-form.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
@@ -24,11 +25,11 @@ import MkPasswordDialog from '@/components/MkPasswordDialog.vue';
 import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
-import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
-import { focusParent } from '@/scripts/focus.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { pleaseLogin } from '@/utility/please-login.js';
+import { showMovedDialog } from '@/utility/show-moved-dialog.js';
+import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
+import { focusParent } from '@/utility/focus.js';
 
 export const openingWindowsCount = ref(0);
 
@@ -62,7 +63,6 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints, P extends Miss
 			});
 			if (result === 'copy') {
 				copyToClipboard(`Endpoint: ${endpoint}\nInfo: ${JSON.stringify(err.info)}\nDate: ${date}`);
-				success();
 			}
 			return;
 		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
@@ -303,6 +303,21 @@ export function inputText(props: {
 	autocomplete?: string;
 	default: string;
 	minLength?: number;
+	maxLength?: number;
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
+	canceled: false; result: string;
+}>;
+// min lengthが指定されてたら result は null になり得ないことを保証する overload function
+export function inputText(props: {
+	type?: 'text' | 'email' | 'password' | 'url';
+	title?: string;
+	text?: string;
+	placeholder?: string | null;
+	autocomplete?: string;
+	default?: string;
+	minLength: number;
 	maxLength?: number;
 }): Promise<{
 	canceled: true; result: undefined;
@@ -610,7 +625,7 @@ export async function selectRole(params: {
 }): Promise<
 	{ canceled: true; result: undefined; } |
 	{ canceled: false; result: Misskey.entities.Role[] }
-> {
+	> {
 	return new Promise((resolve) => {
 		popup(defineAsyncComponent(() => import('@/components/MkRoleSelectDialog.vue')), params, {
 			done: roles => {
@@ -683,8 +698,8 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 
 export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 	if (
-		defaultStore.state.contextMenu === 'native' ||
-		(defaultStore.state.contextMenu === 'appWithShift' && !ev.shiftKey)
+		prefer.s.contextMenu === 'native' ||
+		(prefer.s.contextMenu === 'appWithShift' && !ev.shiftKey)
 	) {
 		return Promise.resolve();
 	}

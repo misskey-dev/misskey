@@ -53,10 +53,11 @@ import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { $i, updateAccountPartial } from '@/account.js';
+import { definePage } from '@/page.js';
+import { $i } from '@/i.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const paginationCurrent = {
 	endpoint: 'announcements' as const,
@@ -94,7 +95,7 @@ async function read(target) {
 		return a;
 	});
 	misskeyApi('i/read-announcement', { announcementId: target.id });
-	updateAccountPartial({
+	updateCurrentAccountPartial({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== target.id),
 	});
 }
@@ -111,7 +112,7 @@ const headerTabs = computed(() => [{
 	icon: 'ti ti-point',
 }]);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
 }));

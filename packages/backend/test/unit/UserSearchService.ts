@@ -113,7 +113,7 @@ describe('UserSearchService', () => {
 	});
 
 	beforeEach(async () => {
-		root = await createUser({ username: 'root', usernameLower: 'root', isRoot: true });
+		root = await createUser({ username: 'root', usernameLower: 'root' });
 		alice = await createUser({ username: 'Alice', usernameLower: 'alice' });
 		alyce = await createUser({ username: 'Alyce', usernameLower: 'alyce' });
 		alycia = await createUser({ username: 'Alycia', usernameLower: 'alycia' });

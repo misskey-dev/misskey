@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="error != null" :contentMax="1200">
 		<div :class="$style.root">
-			<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
+			<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
 			<p :class="$style.text">
 				<i class="ti ti-alert-triangle"></i>
 				{{ i18n.ts.nothing }}
@@ -37,12 +37,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkButton from '@/components/MkButton.vue';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { serverErrorImageUrl } from '@/instance.js';
 
 const props = defineProps<{
@@ -101,7 +101,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: list.value ? list.value.name : i18n.ts.lists,
 	icon: 'ti ti-list',
 }));

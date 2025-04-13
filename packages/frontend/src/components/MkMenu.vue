@@ -35,6 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
 			</span>
+			<div v-else-if="item.type === 'component'" role="menuitem" tabindex="-1" :class="[$style.componentItem]">
+				<component :is="item.component" v-bind="item.props"/>
+			</div>
 			<MkA
 				v-else-if="item.type === 'link'"
 				role="menuitem"
@@ -176,15 +179,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, unref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch } from 'vue';
+import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
+import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
-import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { isTouchUsing } from '@/scripts/touch.js';
-import { type Keymap } from '@/scripts/hotkey.js';
-import { isFocusable } from '@/scripts/focus.js';
-import { getNodeOrNull } from '@/scripts/get-dom-node-or-null.js';
+import { isTouchUsing } from '@/utility/touch.js';
+import { isFocusable } from '@/utility/focus.js';
+import { getNodeOrNull } from '@/utility/get-dom-node-or-null.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>
@@ -209,11 +212,11 @@ const big = isTouchUsing;
 
 const isNestingMenu = inject<boolean>('isNestingMenu', false);
 
-const itemsEl = shallowRef<HTMLElement>();
+const itemsEl = useTemplateRef('itemsEl');
 
 const items2 = ref<InnerMenuItem[]>();
 
-const child = shallowRef<InstanceType<typeof XChild>>();
+const child = useTemplateRef('child');
 
 const keymap = {
 	'up|k|shift+tab': {
@@ -254,7 +257,7 @@ watch(() => props.items, () => {
 });
 
 const childMenu = ref<MenuItem[] | null>();
-const childTarget = shallowRef<HTMLElement | null>();
+const childTarget = useTemplateRef('childTarget');
 
 function closeChild() {
 	childMenu.value = null;
@@ -558,11 +561,11 @@ onBeforeUnmount(() => {
 	}
 
 	&.danger {
-		--menuFg: #ff2a2a;
+		--menuFg: var(--MI_THEME-error);
 		--menuHoverFg: #fff;
-		--menuHoverBg: #ff4242;
+		--menuHoverBg: var(--MI_THEME-error);
 		--menuActiveFg: #fff;
-		--menuActiveBg: #d42e2e;
+		--menuActiveBg: hsl(from var(--MI_THEME-error) h s calc(l - 10));
 	}
 
 	&.radio {

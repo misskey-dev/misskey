@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, onBeforeUnmount, ref, shallowRef } from 'vue';
+import { onMounted, watch, onBeforeUnmount, ref, useTemplateRef } from 'vue';
 import tinycolor from 'tinycolor2';
 
 const loaded = !!window.TagCanvas;
@@ -24,9 +24,9 @@ const computedStyle = getComputedStyle(document.documentElement);
 const idForCanvas = Array.from({ length: 16 }, () => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
 const idForTags = Array.from({ length: 16 }, () => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
 const available = ref(false);
-const rootEl = shallowRef<HTMLElement | null>(null);
-const canvasEl = shallowRef<HTMLCanvasElement | null>(null);
-const tagsEl = shallowRef<HTMLElement | null>(null);
+const rootEl = useTemplateRef('rootEl');
+const canvasEl = useTemplateRef('canvasEl');
+const tagsEl = useTemplateRef('tagsEl');
 const width = ref(300);
 
 watch(available, () => {

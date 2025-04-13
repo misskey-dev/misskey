@@ -39,13 +39,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ cell.value }}
 				</div>
 				<div v-else-if="cellType === 'boolean'">
-					<span v-if="cell.value === true" class="ti ti-check"/>
-					<span v-else class="ti"/>
+					<div
+						:class="[$style.bool, {
+							[$style.boolTrue]: cell.value === true,
+							'ti ti-check': cell.value === true,
+						}]"
+					></div>
 				</div>
 				<div v-else-if="cellType === 'image'">
 					<img
-						:src="cell.value as string"
-						:alt="cell.value as string"
+						:src="cell.value"
+						:alt="cell.value"
 						:class="$style.viewImage"
 						@load="emitContentSizeChanged"
 					/>
@@ -86,13 +90,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, toRefs, watch } from 'vue';
-import { GridEventEmitter, Size } from '@/components/grid/grid.js';
-import { useTooltip } from '@/scripts/use-tooltip.js';
+import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, useTemplateRef, toRefs, watch } from 'vue';
+import type { Size } from '@/components/grid/grid.js';
+import type { CellValue, GridCell } from '@/components/grid/cell.js';
+import type { GridRowSetting } from '@/components/grid/row.js';
+import { GridEventEmitter } from '@/components/grid/grid.js';
+import { useTooltip } from '@/use/use-tooltip.js';
 import * as os from '@/os.js';
-import { CellValue, GridCell } from '@/components/grid/cell.js';
 import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
-import { GridRowSetting } from '@/components/grid/row.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;
@@ -108,9 +113,9 @@ const props = defineProps<{
 
 const { cell, bus } = toRefs(props);
 
-const rootEl = shallowRef<InstanceType<typeof HTMLTableCellElement>>();
-const contentAreaEl = shallowRef<InstanceType<typeof HTMLDivElement>>();
-const inputAreaEl = shallowRef<InstanceType<typeof HTMLDivElement>>();
+const rootEl = useTemplateRef('rootEl');
+const contentAreaEl = useTemplateRef('contentAreaEl');
+const inputAreaEl = useTemplateRef('inputAreaEl');
 
 /** 値が編集中かどうか */
 const editing = ref<boolean>(false);
@@ -373,6 +378,31 @@ $cellHeight: 28px;
 	max-height: $cellHeight;
 	height: $cellHeight;
 	object-fit: cover;
+}
+
+.bool {
+	position: relative;
+	width: 18px;
+	height: 18px;
+	background: var(--MI_THEME-panel);
+	border: solid 2px var(--MI_THEME-divider);
+	border-radius: 4px;
+	box-sizing: border-box;
+
+	&.boolTrue {
+		border-color: var(--MI_THEME-accent);
+		background: var(--MI_THEME-accent);
+
+		&::before {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			color: var(--MI_THEME-fgOnAccent);
+			font-size: 12px;
+			line-height: 18px;
+		}
+	}
 }
 
 .editingInput {

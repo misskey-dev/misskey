@@ -14,10 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:data-grid-cell-col="column.index"
 >
 	<div :class="$style.root">
-		<div :class="$style.left"/>
+		<div :class="$style.left"></div>
 		<div :class="$style.wrapper">
 			<div ref="contentEl" :class="$style.contentArea">
-				<span v-if="column.setting.icon" class="ti" :class="column.setting.icon" style="line-height: normal"/>
+				<span v-if="column.setting.icon" class="ti" :class="column.setting.icon" style="line-height: normal"></span>
 				<span v-else>{{ text }}</span>
 			</div>
 		</div>
@@ -25,15 +25,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="$style.right"
 			@mousedown="onHandleMouseDown"
 			@dblclick="onHandleDoubleClick"
-		/>
+		></div>
 	</div>
 </div>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
-import { GridEventEmitter, Size } from '@/components/grid/grid.js';
-import { GridColumn } from '@/components/grid/column.js';
+import { GridEventEmitter } from '@/components/grid/grid.js';
+import type { Size } from '@/components/grid/grid.js';
+import type { GridColumn } from '@/components/grid/column.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginWidthChange', sender: GridColumn): void;
