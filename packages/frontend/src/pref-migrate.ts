@@ -54,16 +54,19 @@ export function migrateOldSettings() {
 			prefer.commit('deck.profiles', profiles);
 		});
 
-		const accountTokens: { id: string, token: string }[] = (await iget('accounts')) ?? [];
-		store.set('accountTokens', accountTokens.reduce((acc, { id, token }) => {
-			acc[id] = token;
-			return acc;
-		}, {}));
+		iget('accounts').then(async (accountTokens: { id: string, token: string }[] | null) => {
+			if (accountTokens != null) {
+				store.set('accountTokens', accountTokens.reduce((acc, { id, token }) => {
+					acc[id] = token;
+					return acc;
+				}, {}));
 
-		const accounts = await misskeyApi('users/show', {
-			userIds: accountTokens.map(x => x.id),
+				const accounts = await misskeyApi('users/show', {
+					userIds: accountTokens.map(x => x.id),
+				});
+				prefer.commit('accounts', accounts.map(x => [host, x] as [string, Misskey.entities.User]));
+			}
 		});
-		prefer.commit('accounts', accounts.map(x => [host, x] as [string, Misskey.entities.User]));
 
 		prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
 		prefer.commit('darkTheme', ColdDeviceStorage.get('darkTheme'));
