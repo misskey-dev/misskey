@@ -63,6 +63,7 @@ export type RolePolicies = {
 	canImportFollowing: boolean;
 	canImportMuting: boolean;
 	canImportUserLists: boolean;
+	isModeratorInactivityCheckTarget: boolean;
 	chatAvailability: 'available' | 'readonly' | 'unavailable';
 };
 
@@ -98,6 +99,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportFollowing: true,
 	canImportMuting: true,
 	canImportUserLists: true,
+	isModeratorInactivityCheckTarget: false,
 	chatAvailability: 'available',
 };
 
@@ -408,8 +410,22 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canImportFollowing: calc('canImportFollowing', vs => vs.some(v => v === true)),
 			canImportMuting: calc('canImportMuting', vs => vs.some(v => v === true)),
 			canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
+			isModeratorInactivityCheckTarget: calc('isModeratorInactivityCheckTarget', vs => vs.some(v => v === true)),
 			chatAvailability: calc('chatAvailability', aggregateChatAvailability),
 		};
+	}
+
+	@bindThis
+	public async getUsersByRoleIds(roleIds: MiRole['id'][]): Promise<MiUser[]> {
+		// 今のところこの関数の使用頻度は低めなのでキャッシュは作らない.
+		// 使用頻度が増えた場合はroleAssignmentByUserIdCacheのようなキャッシュを作るべきか否かを検討する必要がある.
+		const users = await this.roleAssignmentsRepository.createQueryBuilder('roleAssignment')
+			.innerJoinAndSelect('roleAssignment.user', 'user')
+			.where('roleAssignment.roleId IN (:...roleIds)', { roleIds })
+			.getMany()
+			.then(it => it.map(it => it.user).filter(it => it != null));
+
+		return [...new Map(users.map(it => [it.id, it])).values()];
 	}
 
 	@bindThis
@@ -685,6 +701,16 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				role: role,
 			});
 		}
+	}
+
+	/**
+	 * Service内部で保持しているキャッシュをすべて削除する.
+	 * 主にテスト向けの機能で、通常はこのメソッドを呼ぶ必要はない.
+	 */
+	@bindThis
+	public flushCaches(): void {
+		this.rolesCache.delete();
+		this.roleAssignmentByUserIdCache.deleteAll();
 	}
 
 	@bindThis

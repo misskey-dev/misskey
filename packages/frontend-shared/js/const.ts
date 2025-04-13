@@ -108,6 +108,7 @@ export const ROLE_POLICIES = [
 	'canImportFollowing',
 	'canImportMuting',
 	'canImportUserLists',
+	'isModeratorInactivityCheckTarget',
 	'chatAvailability',
 ] as const;
 

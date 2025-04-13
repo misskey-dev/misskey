@@ -7545,6 +7545,10 @@ export interface Locale extends ILocale {
              */
             "canImportUserLists": string;
             /**
+             * モデレーターの活動状況チェックの対象に含める
+             */
+            "isModeratorInactivityCheckTarget": string;
+            /**
              * チャットを許可
              */
             "chatAvailability": string;

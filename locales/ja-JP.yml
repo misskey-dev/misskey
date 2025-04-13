@@ -1954,6 +1954,7 @@ _role:
     canImportFollowing: "フォローのインポートを許可"
     canImportMuting: "ミュートのインポートを許可"
     canImportUserLists: "リストのインポートを許可"
+    isModeratorInactivityCheckTarget: "モデレーターの活動状況チェックの対象に含める"
     chatAvailability: "チャットを許可"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"

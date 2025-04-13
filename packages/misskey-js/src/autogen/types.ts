@@ -5179,6 +5179,7 @@ export type components = {
       canImportFollowing: boolean;
       canImportMuting: boolean;
       canImportUserLists: boolean;
+      isModeratorInactivityCheckTarget: boolean;
       /** @enum {string} */
       chatAvailability: 'available' | 'readonly' | 'unavailable';
     };
