@@ -4,8 +4,11 @@
  */
 
 import { v4 as uuid } from 'uuid';
+import * as Misskey from 'misskey-js';
 import type { DeckProfile } from '@/deck.js';
 import { ColdDeviceStorage, store } from '@/store.js';
+import { get as iget } from '@/utility/idb-proxy.js';
+import { host } from '@@/js/config.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
@@ -49,6 +52,20 @@ export function migrateOldSettings() {
 				});
 			}
 			prefer.commit('deck.profiles', profiles);
+		});
+
+		iget('accounts').then(async (accountTokens: { id: string, token: string }[] | null) => {
+			if (accountTokens != null) {
+				store.set('accountTokens', accountTokens.reduce((acc, { id, token }) => {
+					acc[id] = token;
+					return acc;
+				}, {}));
+
+				const accounts = await misskeyApi('users/show', {
+					userIds: accountTokens.map(x => x.id),
+				});
+				prefer.commit('accounts', accounts.map(x => [host, x] as [string, Misskey.entities.User]));
+			}
 		});
 
 		prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
