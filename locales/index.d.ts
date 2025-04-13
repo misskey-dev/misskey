@@ -3935,6 +3935,11 @@ export interface Locale extends ILocale {
      */
     "logoutConfirm": string;
     /**
+     * このアカウントでは設定の自動バックアップが有効になっていないため、ログアウトするとすべてのクライアント設定が消去されます。
+     * これを防ぐには、設定の自動バックアップを有効にしてください。
+     */
+    "logoutDataLostConfirm": string;
+    /**
      * 最終利用日時
      */
     "lastActiveDate": string;

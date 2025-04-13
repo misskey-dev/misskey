@@ -177,7 +177,8 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		action: async () => {
 			const { canceled } = await os.confirm({
 				type: 'warning',
-				text: i18n.ts.logoutConfirm,
+				title: store.s.enablePreferencesAutoCloudBackup ? undefined : i18n.ts.logoutConfirm,
+				text: store.s.enablePreferencesAutoCloudBackup ? i18n.ts.logoutConfirm : i18n.ts.logoutDataLostConfirm,
 			});
 			if (canceled) return;
 			signout();
