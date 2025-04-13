@@ -277,7 +277,6 @@ deleteAreYouSure: "Êtes-vous sûr·e de vouloir supprimer « {x} » ?"
 resetAreYouSure: "Voulez-vous réinitialiser ?"
 areYouSure: "Êtes-vous sûr·e ?"
 saved: "Enregistré"
-messaging: "Discuter"
 upload: "Téléverser"
 keepOriginalUploading: "Garder l’image d’origine"
 keepOriginalUploadingDescription: "Conserve la version originale lors du téléchargement d'images. S'il est désactivé, le navigateur génère l'image pour la publication web lors du téléchargement."
@@ -290,7 +289,6 @@ uploadFromUrlMayTakeTime: "Le téléversement de votre fichier peut prendre un c
 explore: "Découvrir"
 messageRead: "Lu"
 noMoreHistory: "Il n’y a plus d’historique"
-startMessaging: "Commencer à discuter"
 nUsersRead: "Lu par {n} personnes"
 agreeTo: "J’accepte {0}"
 agree: "Accepter"
@@ -477,8 +475,6 @@ retype: "Confirmation"
 noteOf: "Notes de {user}"
 quoteAttached: "Avec citation"
 quoteQuestion: "Souhaitez-vous ajouter une citation ?"
-noMessagesYet: "Pas encore de discussion"
-newMessageExists: "Vous avez un nouveau message"
 onlyOneFileCanBeAttached: "Vous ne pouvez joindre qu’un seul fichier au message"
 signinRequired: "Veuillez vous connecter"
 invitations: "Invitations"
@@ -1277,6 +1273,14 @@ prohibitedWordsForNameOfUser: "Mots interdits pour les noms d'utilisateur·rices
 lockdown: "Verrouiller"
 pleaseSelectAccount: "Sélectionner un compte"
 availableRoles: "Rôles disponibles"
+postForm: "Formulaire de publication"
+information: "Informations"
+_chat:
+  invitations: "Inviter"
+  noHistory: "Pas d'historique"
+  members: "Membres"
+  home: "Principal"
+  send: "Envoyer"
 _abuseUserReport:
   forward: "Transférer"
   forwardDescription: "Transférer le signalement vers une instance distante en tant qu'anonyme."
@@ -1812,7 +1816,6 @@ _theme:
     header: "Entête"
     navBg: "Fond de la barre latérale"
     navFg: "Texte de la barre latérale"
-    navHoverFg: "Texte de la barre latérale (survolé)"
     navActive: "Texte de la barre latérale (actif)"
     navIndicator: "Indicateur de barre latérale"
     link: "Lien"
@@ -1835,11 +1838,8 @@ _theme:
     buttonHoverBg: "Arrière-plan du bouton (survolé)"
     inputBorder: "Cadre de la zone de texte"
     driveFolderBg: "Arrière-plan du dossier de disque"
-    wallpaperOverlay: "Superposition de fond d'écran"
     badge: "Badge"
     messageBg: "Arrière plan de la discussion"
-    accentDarken: "Plus sombre"
-    accentLighten: "Plus clair"
     fgHighlighted: "Texte mis en évidence"
 _sfx:
   note: "Nouvelle note"
@@ -1949,6 +1949,7 @@ _permissions:
   "write:admin:unsuspend-user": "Lever la suspension d'un utilisateur"
   "write:admin:meta": "Gérer les métadonnées de l'instance"
   "write:admin:roles": "Gérer les rôles"
+  "write:chat": "Gérer les discussions"
 _auth:
   shareAccess: "Autoriser \"{name}\" à accéder à votre compte ?"
   shareAccessAsk: "Voulez-vous vraiment autoriser cette application à accéder à votre compte?"
@@ -2294,10 +2295,8 @@ _externalResourceInstaller:
   checkVendorBeforeInstall: "Veuillez confirmer que le distributeur est fiable avant l'installation."
   _plugin:
     title: "Voulez-vous installer cette extension ?"
-    metaTitle: "Informations sur l'extension"
   _theme:
     title: "Voulez-vous installer ce thème ?"
-    metaTitle: "Informations sur le thème"
   _meta:
     base: "Palette de couleurs de base"
   _vendorInfo:
@@ -2364,3 +2363,7 @@ _embedCodeGen:
 _remoteLookupErrors:
   _noSuchObject:
     title: "Non trouvé"
+_search:
+  searchScopeAll: "Tous"
+  searchScopeLocal: "Local"
+  searchScopeUser: "Spécifier l'utilisateur·rice"

@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="400"
 	:height="500"
 	@close="onCloseModalWindow"
-	@closed="console.log('MkRoleSelectDialog: closed') ; $emit('dispose')"
+	@closed="emit('closed')"
 >
 	<template #header>{{ title }}</template>
 	<MkSpacer :marginMin="20" :marginMax="28">
@@ -49,7 +49,7 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import * as os from '@/os.js';
 import MkSpacer from '@/components/global/MkSpacer.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -58,7 +58,7 @@ import MkLoading from '@/components/global/MkLoading.vue';
 const emit = defineEmits<{
 	(ev: 'done', value: Misskey.entities.Role[]),
 	(ev: 'close'),
-	(ev: 'dispose'),
+	(ev: 'closed'),
 }>();
 
 const props = withDefaults(defineProps<{
@@ -144,7 +144,7 @@ fetchRoles();
 }
 
 .roleItemArea {
-	background-color: var(--MI_THEME-acrylicBg);
+	background-color: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	border-radius: var(--MI-radius);
 	padding: 12px;
 	overflow-y: auto;

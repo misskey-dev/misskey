@@ -32,11 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
+import type { GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkAnalogClock from '@/components/MkAnalogClock.vue';
 import MkDigitalClock from '@/components/MkDigitalClock.vue';
-import { timezones } from '@/scripts/timezones.js';
+import { timezones } from '@/utility/timezones.js';
 import { i18n } from '@/i18n.js';
 
 const name = 'clock';

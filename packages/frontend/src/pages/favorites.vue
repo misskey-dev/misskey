@@ -4,13 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
+<PageWithHeader>
 	<MkSpacer :contentMax="800">
 		<MkPagination :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
+					<img :src="infoImageUrl" draggable="false"/>
 					<div>{{ i18n.ts.noNotes }}</div>
 				</div>
 			</template>
@@ -22,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</MkPagination>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -30,7 +29,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import { infoImageUrl } from '@/instance.js';
 
 const pagination = {
@@ -38,7 +37,7 @@ const pagination = {
 	limit: 10,
 };
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.favorites,
 	icon: 'ti ti-star',
 }));

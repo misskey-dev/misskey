@@ -263,7 +263,6 @@ deleteAreYouSure: "‘{x}’(얼)럴 뭉캡니꺼?"
 resetAreYouSure: "아시로 데돌립니꺼?"
 areYouSure: "갠찮십니꺼?"
 saved: "저장햇십니다"
-messaging: "대화"
 upload: "올리기"
 keepOriginalUploading: "온본 두기"
 keepOriginalUploadingDescription: "이미지럴 올릴 때 온본얼 고대로 둡니다. 꺼모 올릴 때 브라우저서 웹 공개 이미지럴 맨겁니다."
@@ -276,7 +275,6 @@ uploadFromUrlMayTakeTime: "올리기가 껕날라먼 시간이 쪼매 걸릴 깁
 explore: "살펴보기"
 messageRead: "이럿어예"
 noMoreHistory: "요카마 옛날 기록이 어ᇝ십니다"
-startMessaging: "대화하기"
 nUsersRead: "{n}멩이 이럿십니다"
 agreeTo: "{0}에 동이하기"
 agree: "동이합니다"
@@ -457,8 +455,6 @@ retype: "다시 서기"
 noteOf: "{user}님으 노트"
 quoteAttached: "따옴"
 quoteQuestion: "따와가 작성하겠십니까?"
-noMessagesYet: "아직 대화가 없십니다"
-newMessageExists: "새 메시지가 있십니다"
 onlyOneFileCanBeAttached: "메시지엔 파일 하나까제밖에 몬 넣십니다"
 invitations: "초대하기"
 invitationCode: "초대장"
@@ -655,6 +651,12 @@ replies: "답하기"
 renotes: "리노트"
 attach: "옇기"
 surrender: "아이예"
+information: "정보"
+_chat:
+  invitations: "초대하기"
+  noHistory: "기록이 없십니다"
+  members: "구성원"
+  home: "덜머리"
 _delivery:
   stop: "고만 보내예"
   _type:
@@ -745,6 +747,7 @@ _theme:
   description: "설멩"
   keys:
     mention: "멘션"
+    renote: "리노트"
 _sfx:
   note: "새 노트"
   notification: "알림"
@@ -843,3 +846,6 @@ _reversi:
 _remoteLookupErrors:
   _noSuchObject:
     title: "몬 찾앗십니다"
+_search:
+  searchScopeAll: "말캉"
+  searchScopeUser: "사용자 지정"
