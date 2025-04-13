@@ -5,55 +5,57 @@
 
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { ui } from '@@/js/config.js';
-import { common } from './common.js';
 import * as Misskey from 'misskey-js';
+import { compareVersions } from 'compare-versions';
+import { common } from './common.js';
 import type { Component } from 'vue';
+import type { Keymap } from '@/utility/hotkey.js';
 import { i18n } from '@/i18n.js';
-import { alert, confirm, popup, post, toast } from '@/os.js';
+import { alert, confirm, popup, post } from '@/os.js';
 import { useStream } from '@/stream.js';
-import * as sound from '@/scripts/sound.js';
-import { $i, signout, updateAccountPartial } from '@/account.js';
+import * as sound from '@/utility/sound.js';
+import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
-import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { store } from '@/store.js';
+import { reactionPicker } from '@/utility/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
-import { initializeSw } from '@/scripts/initialize-sw.js';
-import { deckStore } from '@/ui/deck/deck-store.js';
-import { emojiPicker } from '@/scripts/emoji-picker.js';
-import { mainRouter } from '@/router/main.js';
-import { makeHotkey } from '@/scripts/hotkey.js';
-import type { Keymap } from '@/scripts/hotkey.js';
+import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
+import { initializeSw } from '@/utility/initialize-sw.js';
+import { emojiPicker } from '@/utility/emoji-picker.js';
+import { mainRouter } from '@/router.js';
+import { makeHotkey } from '@/utility/hotkey.js';
 import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
+import { prefer } from '@/preferences.js';
+import { launchPlugins } from '@/plugin.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
+import { signout } from '@/signout.js';
+import { migrateOldSettings } from '@/pref-migrate.js';
 
 export async function mainBoot() {
-	const { isClientUpdated } = await common(() => {
+	const { isClientUpdated, lastVersion } = await common(async () => {
 		let uiStyle = ui;
 		const searchParams = new URLSearchParams(window.location.search);
 
 		if (!$i) uiStyle = 'visitor';
 
 		if (searchParams.has('zen')) uiStyle = 'zen';
-		if (uiStyle === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') uiStyle = 'zen';
+		if (uiStyle === 'deck' && prefer.s['deck.useSimpleUiForNonRootPages'] && window.location.pathname !== '/') uiStyle = 'zen';
 
 		if (searchParams.has('ui')) uiStyle = searchParams.get('ui');
 
 		let rootComponent: Component;
 		switch (uiStyle) {
 			case 'zen':
-				rootComponent = defineAsyncComponent(() => import('@/ui/zen.vue'));
+				rootComponent = await import('@/ui/zen.vue').then(x => x.default);
 				break;
 			case 'deck':
-				rootComponent = defineAsyncComponent(() => import('@/ui/deck.vue'));
+				rootComponent = await import('@/ui/deck.vue').then(x => x.default);
 				break;
 			case 'visitor':
-				rootComponent = defineAsyncComponent(() => import('@/ui/visitor.vue'));
-				break;
-			case 'classic':
-				rootComponent = defineAsyncComponent(() => import('@/ui/classic.vue'));
+				rootComponent = await import('@/ui/visitor.vue').then(x => x.default);
 				break;
 			default:
-				rootComponent = defineAsyncComponent(() => import('@/ui/universal.vue'));
+				rootComponent = await import('@/ui/universal.vue').then(x => x.default);
 				break;
 		}
 
@@ -67,15 +69,23 @@ export async function mainBoot() {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {
 			closed: () => dispose(),
 		});
+
+		// prefereces migration
+		// TODO: そのうち消す
+		if (lastVersion && (compareVersions('2025.3.2-alpha.0', lastVersion) === 1)) {
+			console.log('Preferences migration');
+
+			migrateOldSettings();
+		}
 	}
 
 	const stream = useStream();
 
 	let reloadDialogShowing = false;
 	stream.on('_disconnected_', async () => {
-		if (defaultStore.state.serverDisconnectedBehavior === 'reload') {
-			location.reload();
-		} else if (defaultStore.state.serverDisconnectedBehavior === 'dialog') {
+		if (prefer.s.serverDisconnectedBehavior === 'reload') {
+			window.location.reload();
+		} else if (prefer.s.serverDisconnectedBehavior === 'dialog') {
 			if (reloadDialogShowing) return;
 			reloadDialogShowing = true;
 			const { canceled } = await confirm({
@@ -85,7 +95,7 @@ export async function mainBoot() {
 			});
 			reloadDialogShowing = false;
 			if (!canceled) {
-				location.reload();
+				window.location.reload();
 			}
 		}
 	});
@@ -102,30 +112,24 @@ export async function mainBoot() {
 		removeCustomEmojis(emojiData.emojis);
 	});
 
-	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
-		import('@/plugin.js').then(async ({ install }) => {
-			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
-			await new Promise(r => setTimeout(r, 0));
-			install(plugin);
-		});
-	}
+	launchPlugins();
 
 	try {
-		if (defaultStore.state.enableSeasonalScreenEffect) {
+		if (prefer.s.enableSeasonalScreenEffect) {
 			const month = new Date().getMonth() + 1;
-			if (defaultStore.state.hemisphere === 'S') {
+			if (prefer.s.hemisphere === 'S') {
 				// ▼南半球
 				if (month === 7 || month === 8) {
-					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					const SnowfallEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
 					new SnowfallEffect({}).render();
 				}
 			} else {
 				// ▼北半球
 				if (month === 12 || month === 1) {
-					const SnowfallEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					const SnowfallEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
 					new SnowfallEffect({}).render();
 				} else if (month === 3 || month === 4) {
-					const SakuraEffect = (await import('@/scripts/snowfall-effect.js')).SnowfallEffect;
+					const SakuraEffect = (await import('@/utility/snowfall-effect.js')).SnowfallEffect;
 					new SakuraEffect({
 						sakura: true,
 					}).render();
@@ -138,8 +142,8 @@ export async function mainBoot() {
 	}
 
 	if ($i) {
-		defaultStore.loaded.then(() => {
-			if (defaultStore.state.accountSetupWizard !== -1) {
+		store.loaded.then(async () => {
+			if (store.s.accountSetupWizard !== -1) {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
 					closed: () => dispose(),
 				});
@@ -154,7 +158,7 @@ export async function mainBoot() {
 			});
 		}
 
-		function onAnnouncementCreated (ev: { announcement: Misskey.entities.Announcement }) {
+		function onAnnouncementCreated(ev: { announcement: Misskey.entities.Announcement }) {
 			const announcement = ev.announcement;
 			if (announcement.display === 'dialog') {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
@@ -262,7 +266,7 @@ export async function mainBoot() {
 			let lastVisibilityChangedAt = Date.now();
 
 			function claimPlainLucky() {
-				if (document.visibilityState !== 'visible') {
+				if (window.document.visibilityState !== 'visible') {
 					if (justPlainLuckyTimer != null) window.clearTimeout(justPlainLuckyTimer);
 					return;
 				}
@@ -277,7 +281,7 @@ export async function mainBoot() {
 			window.addEventListener('visibilitychange', () => {
 				const now = Date.now();
 
-				if (document.visibilityState === 'visible') {
+				if (window.document.visibilityState === 'visible') {
 					// タブを高速で切り替えたら取得処理が何度も走るのを防ぐ
 					if ((now - lastVisibilityChangedAt) < 1000 * 10) {
 						justPlainLuckyTimer = window.setTimeout(claimPlainLucky, 1000 * 10);
@@ -322,7 +326,7 @@ export async function mainBoot() {
 
 		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
 		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
+		if (neverShowDonationInfo !== 'true' && (createdAt.getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !window.location.pathname.startsWith('/miauth')) {
 			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {
 					closed: () => dispose(),
@@ -348,11 +352,11 @@ export async function mainBoot() {
 
 		// 自分の情報が更新されたとき
 		main.on('meUpdated', i => {
-			updateAccountPartial(i);
+			updateCurrentAccountPartial(i);
 		});
 
 		main.on('readAllNotifications', () => {
-			updateAccountPartial({
+			updateCurrentAccountPartial({
 				hasUnreadNotification: false,
 				unreadNotificationsCount: 0,
 			});
@@ -360,39 +364,24 @@ export async function mainBoot() {
 
 		main.on('unreadNotification', () => {
 			const unreadNotificationsCount = ($i?.unreadNotificationsCount ?? 0) + 1;
-			updateAccountPartial({
+			updateCurrentAccountPartial({
 				hasUnreadNotification: true,
 				unreadNotificationsCount,
 			});
 		});
 
-		main.on('unreadMention', () => {
-			updateAccountPartial({ hasUnreadMentions: true });
-		});
-
-		main.on('readAllUnreadMentions', () => {
-			updateAccountPartial({ hasUnreadMentions: false });
-		});
-
-		main.on('unreadSpecifiedNote', () => {
-			updateAccountPartial({ hasUnreadSpecifiedNotes: true });
-		});
-
-		main.on('readAllUnreadSpecifiedNotes', () => {
-			updateAccountPartial({ hasUnreadSpecifiedNotes: false });
-		});
-
-		main.on('readAllAntennas', () => {
-			updateAccountPartial({ hasUnreadAntenna: false });
-		});
-
 		main.on('unreadAntenna', () => {
-			updateAccountPartial({ hasUnreadAntenna: true });
+			updateCurrentAccountPartial({ hasUnreadAntenna: true });
 			sound.playMisskeySfx('antenna');
 		});
 
+		main.on('newChatMessage', () => {
+			updateCurrentAccountPartial({ hasUnreadChatMessages: true });
+			sound.playMisskeySfx('chatMessage');
+		});
+
 		main.on('readAllAnnouncements', () => {
-			updateAccountPartial({ hasUnreadAnnouncement: false });
+			updateCurrentAccountPartial({ hasUnreadAnnouncement: false });
 		});
 
 		// 個人宛てお知らせが発行されたとき
@@ -412,13 +401,13 @@ export async function mainBoot() {
 			post();
 		},
 		'd': () => {
-			defaultStore.set('darkMode', !defaultStore.state.darkMode);
+			store.set('darkMode', !store.s.darkMode);
 		},
 		's': () => {
 			mainRouter.push('/search');
 		},
 	} as const satisfies Keymap;
-	document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
+	window.document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
 
 	initializeSw();
 }

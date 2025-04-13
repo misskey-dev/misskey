@@ -44,7 +44,7 @@ describe('AnnouncementService', () => {
 		return usersRepository.insert({
 			id: genAidx(Date.now()),
 			username: un,
-			usernameLower: un,
+			usernameLower: un.toLowerCase(),
 			...data,
 		})
 			.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
