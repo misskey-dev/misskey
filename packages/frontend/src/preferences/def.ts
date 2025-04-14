@@ -198,6 +198,9 @@ export const PREF_DEF = {
 	useBlurEffect: {
 		default: DEFAULT_DEVICE_KIND === 'desktop',
 	},
+	widgetsPosition: {
+		default: 'left' as 'left' | 'right',
+	},
 	useStickyIcons: {
 		default: true,
 	},
