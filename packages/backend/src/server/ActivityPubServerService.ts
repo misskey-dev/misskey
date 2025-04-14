@@ -463,7 +463,7 @@ export class ActivityPubServerService {
 		const partOf = `${this.config.url}/users/${userId}/outbox`;
 
 		if (page) {
-			const notes = await this.fanoutTimelineEndpointService.getMiNotes({
+			const notes = this.meta.enableFanoutTimeline ? await this.fanoutTimelineEndpointService.getMiNotes({
 				sinceId: sinceId ?? null,
 				untilId: untilId ?? null,
 				limit: limit,
@@ -482,18 +482,9 @@ export class ActivityPubServerService {
 					return true;
 				},
 				dbFallback: async (untilId, sinceId, limit) => {
-					return await this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
-						.andWhere('note.userId = :userId', { userId: user.id })
-						.andWhere(new Brackets(qb => {
-							qb
-								.where('note.visibility = \'public\'')
-								.orWhere('note.visibility = \'home\'');
-						}))
-						.andWhere('note.localOnly = FALSE')
-						.limit(limit)
-						.getMany();
+					return await this.getUserNotesFromDb(sinceId, untilId, limit, user.id);
 				},
-			});
+			}) : await this.getUserNotesFromDb(sinceId ?? null, untilId ?? null, limit, user.id);
 
 			if (sinceId) notes.reverse();
 
@@ -529,6 +520,20 @@ export class ActivityPubServerService {
 			this.setResponseType(request, reply);
 			return (this.apRendererService.addContext(rendered));
 		}
+	}
+
+	@bindThis
+	private async getUserNotesFromDb(untilId: string | null, sinceId: string | null, limit: number, userId: MiUser['id']) {
+		return await this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
+			.andWhere('note.userId = :userId', { userId })
+			.andWhere(new Brackets(qb => {
+				qb
+					.where('note.visibility = \'public\'')
+					.orWhere('note.visibility = \'home\'');
+			}))
+			.andWhere('note.localOnly = FALSE')
+			.limit(limit)
+			.getMany()
 	}
 
 	@bindThis
