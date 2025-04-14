@@ -8,6 +8,7 @@
 - Fix: 自動バックアップが設定されている環境でログアウト直前に設定をバックアップするように
 
 ### Server
+- Enhance: 1つのMisskeyで複数のHTTPサーバプロセスを起動できるように ( #13662 )
 - Enhance: フォローしているユーザーならフォロワー限定投稿のノートでもアンテナで検知できるように  
 	(Cherry-picked from https://github.com/yojo-art/cherrypick/pull/568 and https://github.com/team-shahu/misskey/pull/38)
 - Fix: システムアカウントの名前がサーバー名と同期されない問題を修正

@@ -3,21 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
-import * as os from 'node:os';
 import cluster from 'node:cluster';
+import { fileURLToPath } from 'node:url';
+import * as os from 'node:os';
+import { dirname } from 'node:path';
+import * as fs from 'node:fs';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
-import * as Sentry from '@sentry/node';
-import { nodeProfilingIntegration } from '@sentry/profiling-node';
-import Logger from '@/logger.js';
-import { loadConfig } from '@/config.js';
+import { WorkerArguments } from '@/boot/const.js';
+import { sentryInit } from '@/boot/sentry.js';
+import { computeWorkerArguments } from '@/boot/worker.js';
 import type { Config } from '@/config.js';
-import { showMachineInfo } from '@/misc/show-machine-info.js';
+import { loadConfig } from '@/config.js';
 import { envOption } from '@/env.js';
-import { jobQueue, server } from './common.js';
+import Logger from '@/logger.js';
+import { showMachineInfo } from '@/misc/show-machine-info.js';
+import { isHttpServerOnPrimary, jobQueue, server } from './common.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -73,23 +74,7 @@ export async function masterMain() {
 
 	bootLogger.succ('Misskey initialized');
 
-	if (config.sentryForBackend) {
-		Sentry.init({
-			integrations: [
-				...(config.sentryForBackend.enableNodeProfiling ? [nodeProfilingIntegration()] : []),
-			],
-
-			// Performance Monitoring
-			tracesSampleRate: 1.0, //  Capture 100% of the transactions
-
-			// Set sampling rate for profiling - this is relative to tracesSampleRate
-			profilesSampleRate: 1.0,
-
-			maxBreadcrumbs: 0,
-
-			...config.sentryForBackend.options,
-		});
-	}
+	sentryInit(config);
 
 	bootLogger.info(
 		`mode: [disableClustering: ${envOption.disableClustering}, onlyServer: ${envOption.onlyServer}, onlyQueue: ${envOption.onlyQueue}]`,
@@ -98,8 +83,8 @@ export async function masterMain() {
 	if (!envOption.disableClustering) {
 		// clusterモジュール有効時
 
-		if (envOption.onlyServer) {
-			// onlyServer かつ enableCluster な場合、メインプロセスはforkのみに制限する(listenしない)。
+		if (envOption.onlyServer || !isHttpServerOnPrimary(config)) {
+			// このブロックに入る場合はワーカープロセス側でのlistenが必要になると判断されているため、メインプロセスはforkのみに制限する(listenしない)。
 			// ワーカープロセス側でlistenすると、メインプロセスでポートへの着信を受け入れてワーカープロセスへの分配を行う動作をする。
 			// そのため、メインプロセスでも直接listenするとポートの競合が発生して起動に失敗してしまう。
 			// see: https://nodejs.org/api/cluster.html#cluster
@@ -109,7 +94,7 @@ export async function masterMain() {
 			await server();
 		}
 
-		await spawnWorkers(config.clusterLimit);
+		await spawnWorkers(config);
 	} else {
 		// clusterモジュール無効時
 
@@ -187,16 +172,20 @@ async function connectDb(): Promise<void> {
 }
 */
 
-async function spawnWorkers(limit = 1) {
-	const workers = Math.min(limit, os.cpus().length);
-	bootLogger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
-	await Promise.all([...Array(workers)].map(spawnWorker));
+async function spawnWorkers(config: Config) {
+	const workerArgs = computeWorkerArguments(config, envOption);
+	bootLogger.info(`Starting ${workerArgs.length} worker${workerArgs.length === 1 ? '' : 's'}...`);
+
+	await Promise.all(
+		workerArgs.map(it => spawnWorker(it)),
+	);
+
 	bootLogger.succ('All workers started');
 }
 
-function spawnWorker(): Promise<void> {
+function spawnWorker(env: WorkerArguments): Promise<void> {
 	return new Promise(res => {
-		const worker = cluster.fork();
+		const worker = cluster.fork(env);
 		worker.on('message', message => {
 			if (message === 'listenFailed') {
 				bootLogger.error('The server Listen failed due to the previous error.');
