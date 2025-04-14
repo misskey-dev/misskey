@@ -533,7 +533,7 @@ export class ActivityPubServerService {
 			}))
 			.andWhere('note.localOnly = FALSE')
 			.limit(limit)
-			.getMany()
+			.getMany();
 	}
 
 	@bindThis
