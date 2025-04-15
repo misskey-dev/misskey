@@ -2368,6 +2368,7 @@ _widgets:
     chooseList: "Select a list"
   clicker: "Clicker"
   birthdayFollowings: "Today's Birthdays"
+  chat: "Chat"
 _cw:
   hide: "Hide"
   show: "Show content"
@@ -2634,6 +2635,7 @@ _deck:
     mentions: "Mentions"
     direct: "Direct notes"
     roleTimeline: "Role Timeline"
+    chat: "Chat"
 _dialog:
   charactersExceeded: "You've exceeded the maximum character limit! Currently at {current} of {max}."
   charactersBelow: "You're below the minimum character limit! Currently at {current} of {min}."
