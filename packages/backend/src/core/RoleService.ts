@@ -104,7 +104,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportMuting: true,
 	canImportNotes: true,
 	canImportUserLists: true,
-	chatAvailability: 'available',
+	chatAvailability: 'unavailable',
 };
 
 @Injectable()
