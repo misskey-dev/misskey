@@ -2368,6 +2368,7 @@ _widgets:
     chooseList: "选择列表"
   clicker: "点击器"
   birthdayFollowings: "今天是他们的生日"
+  chat: "聊天"
 _cw:
   hide: "隐藏"
   show: "查看更多"
@@ -2634,6 +2635,7 @@ _deck:
     mentions: "提及"
     direct: "指定用户"
     roleTimeline: "角色时间线"
+    chat: "聊天"
 _dialog:
   charactersExceeded: "已经超过了最大字符数! 当前字符数 {current} / 限制字符数 {max}"
   charactersBelow: "低于最小字符数！当前字符数 {current} / 限制字符数 {min}"
