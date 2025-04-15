@@ -363,6 +363,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['default', 'note', 'visibility']">
+								<MkDisableSection :disabled="rememberNoteVisibility">
+									<MkFolder>
+										<template #label><SearchLabel>{{ i18n.ts.defaultNoteVisibility }}</SearchLabel></template>
+										<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
+										<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
+										<template v-else-if="defaultNoteVisibility === 'followers'" #suffix>{{ i18n.ts._visibility.followers }}</template>
+										<template v-else-if="defaultNoteVisibility === 'specified'" #suffix>{{ i18n.ts._visibility.specified }}</template>
+
+										<div class="_gaps_m">
+											<MkPreferenceContainer k="defaultNoteVisibility">
+												<MkSelect v-model="defaultNoteVisibility">
+													<option value="public">{{ i18n.ts._visibility.public }}</option>
+													<option value="home">{{ i18n.ts._visibility.home }}</option>
+													<option value="followers">{{ i18n.ts._visibility.followers }}</option>
+													<option value="specified">{{ i18n.ts._visibility.specified }}</option>
+												</MkSelect>
+											</MkPreferenceContainer>
+
+											<MkPreferenceContainer k="defaultNoteLocalOnly">
+												<MkSwitch v-model="defaultNoteLocalOnly">{{ i18n.ts._visibility.disableFederation }}</MkSwitch>
+											</MkPreferenceContainer>
+										</div>
+									</MkFolder>
+								</MkDisableSection>
+							</SearchMarker>
+
 							<!-- 自動削除設定 -->
 							<SearchMarker :keywords="['auto', 'delete', 'scheduled', 'note']">
 								<MkPreferenceContainer k="defaultScheduledNoteDelete">
