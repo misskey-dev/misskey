@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: チャットの新規メッセージをプッシュ通知するように
 
 ### Client
 - Feat: チャットウィジェットを追加
