@@ -1370,6 +1370,17 @@ _settings:
   showNavbarSubButtons: "Mostrar los sub-botones en la barra de navegación."
   ifOn: "Si está activado"
   enableSyncThemesBetweenDevices: "Sincronizar los temas instalados entre dispositivos."
+  _chat:
+    showSenderName: "Mostrar el nombre del remitente"
+    sendOnEnter: "Intro para enviar"
+_preferencesProfile:
+  profileName: "Nombre de perfil"
+  profileNameDescription: "Establece un nombre que identifique al dispositivo"
+  profileNameDescription2: "Por ejemplo: \"PC Principal\",\"Teléfono\""
+_preferencesBackup:
+  autoBackup: "Respaldo automático"
+  restoreFromBackup: "Restaurar desde copia de seguridad"
+  noBackupsFoundTitle: "No se encontró una copia de seguridad"
 _accountSettings:
   requireSigninToViewContents: "Se requiere iniciar sesión para ver el contenido"
   requireSigninToViewContentsDescription1: "Requiere iniciar sesión para ver todas las notas y otros contenidos que hayas creado. Se espera que esto evite que los rastreadores recopilen información."
