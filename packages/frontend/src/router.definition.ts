@@ -129,10 +129,6 @@ export const ROUTE_DEF = [{
 		name: 'navbar',
 		component: page(() => import('@/pages/settings/navbar.vue')),
 	}, {
-		path: '/post-form',
-		name: 'post-form',
-		component: page(() => import('@/pages/settings/post-form.vue')),
-	}, {
 		path: '/statusbar',
 		name: 'statusbar',
 		component: page(() => import('@/pages/settings/statusbar.vue')),
