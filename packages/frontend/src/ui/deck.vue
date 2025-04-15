@@ -97,6 +97,7 @@ import XWidgetsColumn from '@/ui/deck/widgets-column.vue';
 import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
+import XChatColumn from '@/ui/deck/chat-column.vue';
 import { mainRouter } from '@/router.js';
 import { columns, layout, columnTypes, switchProfileMenu, addColumn as addColumnToStore, deleteProfile as deleteProfile_ } from '@/deck.js';
 
@@ -114,6 +115,7 @@ const columnComponents = {
 	mentions: XMentionsColumn,
 	direct: XDirectColumn,
 	roleTimeline: XRoleTimelineColumn,
+	chat: XChatColumn,
 };
 
 mainRouter.navHook = (path, flag): boolean => {
