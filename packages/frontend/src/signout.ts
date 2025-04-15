@@ -4,7 +4,8 @@
  */
 
 import { apiUrl } from '@@/js/config.js';
-import { defaultMemoryStorage } from '@/memory-storage';
+import { cloudBackup } from '@/preferences/utility.js';
+import { store } from '@/store.js';
 import { waiting } from '@/os.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { clear } from '@/utility/idb-proxy.js';
@@ -13,12 +14,13 @@ import { $i } from '@/i.js';
 export async function signout() {
 	if (!$i) return;
 
-	// TODO: preferの自動バックアップがオンの場合、いろいろ消す前に強制バックアップ
-
 	waiting();
 
+	if (store.s.enablePreferencesAutoCloudBackup) {
+		await cloudBackup();
+	}
+
 	localStorage.clear();
-	defaultMemoryStorage.clear();
 
 	const idbAbortController = new AbortController();
 	const timeout = window.setTimeout(() => idbAbortController.abort(), 5000);

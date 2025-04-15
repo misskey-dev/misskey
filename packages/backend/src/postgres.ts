@@ -96,7 +96,7 @@ const sqlLogger = dbLogger.createSubLogger('sql', 'gray');
 export type LoggerProps = {
 	disableQueryTruncation?: boolean;
 	enableQueryParamLogging?: boolean;
-	printReplicationMode?: boolean;
+	printReplicationMode?: boolean,
 };
 
 function highlightSql(sql: string) {
@@ -144,24 +144,24 @@ class MyCustomLogger implements Logger {
 
 	@bindThis
 	public logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		const prefix = this.props.printReplicationMode
-			? `[${queryRunner?.getReplicationMode()}] `
+		const prefix = (this.props.printReplicationMode && queryRunner)
+			? `[${queryRunner.getReplicationMode()}] `
 			: undefined;
 		sqlLogger.info(this.transformQueryLog(query, { prefix }), this.transformParameters(parameters));
 	}
 
 	@bindThis
 	public logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		const prefix = this.props.printReplicationMode
-			? `[${queryRunner?.getReplicationMode()}] `
+		const prefix = (this.props.printReplicationMode && queryRunner)
+			? `[${queryRunner.getReplicationMode()}] `
 			: undefined;
 		sqlLogger.error(this.transformQueryLog(query, { prefix }), this.transformParameters(parameters));
 	}
 
 	@bindThis
 	public logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		const prefix = this.props.printReplicationMode
-			? `[${queryRunner?.getReplicationMode()}] `
+		const prefix = (this.props.printReplicationMode && queryRunner)
+			? `[${queryRunner.getReplicationMode()}] `
 			: undefined;
 		sqlLogger.warn(this.transformQueryLog(query, { prefix }), this.transformParameters(parameters));
 	}
