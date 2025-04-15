@@ -2368,6 +2368,7 @@ _widgets:
     chooseList: "리스트 선택"
   clicker: "클리커"
   birthdayFollowings: "오늘이 생일인 유저"
+  chat: "채팅"
 _cw:
   hide: "숨기기"
   show: "더 보기"
@@ -2634,6 +2635,7 @@ _deck:
     mentions: "받은 멘션"
     direct: "다이렉트"
     roleTimeline: "역할 타임라인"
+    chat: "채팅"
 _dialog:
   charactersExceeded: "최대 글자수를 초과하였습니다! 현재 {current} / 최대 {max}"
   charactersBelow: "최소 글자수 미만입니다! 현재 {current} / 최소 {min}"
