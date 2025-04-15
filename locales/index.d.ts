@@ -9660,6 +9660,14 @@ export interface Locale extends ILocale {
          */
         "homeDescription": string;
         /**
+         * やみ
+         */
+        "yami": string;
+        /**
+         * やみタイムラインに公開
+         */
+        "yamiDescription": string;
+        /**
          * フォロワー
          */
         "followers": string;

@@ -10,34 +10,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 			{{ i18n.ts.visibility }}
 		</div>
 		<button key="public" :disabled="isSilenced || isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
-			<div :class="$style.icon">
-				<i v-if="$i.isInYamiMode" class="ti ti-moon"></i>
-				<i v-else class="ti ti-world"></i>
-			</div>
+			<div :class="$style.icon"><i class="ti ti-world"></i></div>
 			<div :class="$style.body">
 				<span :class="$style.itemTitle">{{ i18n.ts._visibility.public }}{{ $i.isInYamiMode ? ` (${i18n.ts._yami.yamiModeShort})` : '' }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.publicDescription }}</span>
+				<span :class="$style.itemDescription">{{ $i.isInYamiMode ? i18n.ts._visibility.yamiDescription : i18n.ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
 		<button key="home" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'home' }]" data-index="2" @click="choose('home')">
 			<div :class="$style.icon"><i class="ti ti-home"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.home }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.homeDescription }}</span>
+				<span :class="$style.itemTitle">{{ i18n.ts._visibility.home }}{{ $i.isInYamiMode ? ` (${i18n.ts._yami.yamiModeShort})` : '' }}</span>
+				<span :class="$style.itemDescription">{{ $i.isInYamiMode ? i18n.ts._visibility.yamiDescription : i18n.ts._visibility.homeDescription }}</span>
 			</div>
 		</button>
 		<button key="followers" :disabled="isReplyVisibilitySpecified" class="_button" :class="[$style.item, { [$style.active]: v === 'followers' }]" data-index="3" @click="choose('followers')">
 			<div :class="$style.icon"><i class="ti ti-lock"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.followers }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.followersDescription }}</span>
+				<span :class="$style.itemTitle">{{ i18n.ts._visibility.followers }}{{ $i.isInYamiMode ? ` (${i18n.ts._yami.yamiModeShort})` : '' }}</span>
+				<span :class="$style.itemDescription">{{ $i.isInYamiMode ? i18n.ts._visibility.yamiDescription : i18n.ts._visibility.followersDescription }}</span>
 			</div>
 		</button>
 		<button key="specified" :disabled="localOnly" class="_button" :class="[$style.item, { [$style.active]: v === 'specified' }]" data-index="4" @click="choose('specified')">
 			<div :class="$style.icon"><i class="ti ti-mail"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.specified }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.specifiedDescription }}</span>
+				<span :class="$style.itemTitle">{{ i18n.ts._visibility.specified }}{{ $i.isInYamiMode ? ` (${i18n.ts._yami.yamiModeShort})` : '' }}</span>
+				<span :class="$style.itemDescription">{{ $i.isInYamiMode ? i18n.ts._visibility.yamiDescription : i18n.ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
 	</div>

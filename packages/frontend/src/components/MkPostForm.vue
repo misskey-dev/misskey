@@ -20,14 +20,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(channel != null && fixed)">
+				<!-- やみモードがオンの場合のみ月アイコンを表示 -->
+				<span v-if="$i.isInYamiMode" v-tooltip="i18n.ts._yami.yamiMode" class="_button" :class="$style.headerRightItem">
+					<i class="ti ti-moon"></i>
+				</span>
+				<!-- 既存の公開範囲ボタン -->
 				<button v-if="channel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
-					<span v-if="visibility === 'public' && $i.isInYamiMode"><i class="ti ti-moon"></i></span>
-					<span v-else-if="visibility === 'public'"><i class="ti ti-world"></i></span>
+					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
 					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
 					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
 					<span :class="$style.headerRightButtonText">
-						{{ i18n.ts._visibility[visibility] }}{{ visibility === 'public' && $i.isInYamiMode ? ` (${i18n.ts._yami.yamiModeShort})` : '' }}
+						{{ i18n.ts._visibility[visibility] }}
 					</span>
 				</button>
 				<button v-else class="_button" :class="[$style.headerRightItem, $style.visibility]" disabled>
