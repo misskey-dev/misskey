@@ -2369,6 +2369,7 @@ _widgets:
     chooseList: "Seleziona una lista"
   clicker: "Cliccheria"
   birthdayFollowings: "Compleanni del giorno"
+  chat: "Chat"
 _cw:
   hide: "Nascondere"
   show: "Continua la lettura..."
@@ -2635,6 +2636,7 @@ _deck:
     mentions: "Menzioni"
     direct: "Note Dirette"
     roleTimeline: "Timeline Ruolo"
+    chat: "Chat"
 _dialog:
   charactersExceeded: "Hai superato il limite di {max} caratteri! ({current})"
   charactersBelow: "Sei al di sotto del minimo di {min} caratteri!  ({current})"
