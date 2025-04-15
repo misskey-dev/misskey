@@ -2369,6 +2369,7 @@ _widgets:
     chooseList: "Tria una llista"
   clicker: "Clicker"
   birthdayFollowings: "Usuaris que fan l'aniversari avui"
+  chat: "Xat"
 _cw:
   hide: "Amagar"
   show: "Carregar més"
@@ -2635,6 +2636,7 @@ _deck:
     mentions: "Mencions"
     direct: "Publicacions directes"
     roleTimeline: "Línia de temps dels rols"
+    chat: "Xat"
 _dialog:
   charactersExceeded: "Has arribat al màxim de caràcters! Actualment és {current} de {max}"
   charactersBelow: "Ets per sota del mínim de caràcters! Actualment és {current} de {min}"
