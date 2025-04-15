@@ -2421,6 +2421,7 @@ _widgets:
     chooseList: "リストを選択"
   clicker: "クリッカー"
   birthdayFollowings: "今日誕生日のユーザー"
+  chat: "チャット"
 
 _cw:
   hide: "隠す"
