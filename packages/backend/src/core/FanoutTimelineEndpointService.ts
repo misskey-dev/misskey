@@ -54,7 +54,7 @@ export class FanoutTimelineEndpointService {
 	}
 
 	@bindThis
-	private async getMiNotes(ps: TimelineOptions): Promise<MiNote[]> {
+	async getMiNotes(ps: TimelineOptions): Promise<MiNote[]> {
 		// 呼び出し元と以下の処理をシンプルにするためにdbFallbackを置き換える
 		if (!ps.useDbFallback) ps.dbFallback = () => Promise.resolve([]);
 
