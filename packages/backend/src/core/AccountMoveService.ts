@@ -9,7 +9,16 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MiMeta, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
+import type {
+	AntennasRepository,
+	BlockingsRepository,
+	FollowingsRepository,
+	InstancesRepository,
+	MiMeta,
+	MutingsRepository,
+	UserListMembershipsRepository,
+	UsersRepository,
+} from '@/models/_.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';
@@ -25,6 +34,9 @@ import InstanceChart from '@/core/chart/charts/instance.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { AntennaService } from '@/core/AntennaService.js';
+import * as Acct from '@/misc/acct.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 @Injectable()
 export class AccountMoveService {
@@ -50,6 +62,9 @@ export class AccountMoveService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		@Inject(DI.antennasRepository)
+		private antennasRepository: AntennasRepository,
+
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private apPersonService: ApPersonService,
@@ -63,6 +78,8 @@ export class AccountMoveService {
 		private queueService: QueueService,
 		private systemAccountService: SystemAccountService,
 		private roleService: RoleService,
+		private antennaService: AntennaService,
+		private utilityService: UtilityService,
 	) {
 	}
 
@@ -123,6 +140,7 @@ export class AccountMoveService {
 				this.copyMutings(src, dst),
 				this.copyRoles(src, dst),
 				this.updateLists(src, dst),
+				this.updateAntennas(src, dst),
 			]);
 		} catch {
 			/* skip if any error happens */
@@ -281,6 +299,40 @@ export class AccountMoveService {
 		if (this.userEntityService.isRemoteUser(dst)) {
 			const proxy = await this.systemAccountService.fetch('proxy');
 			this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
+		}
+	}
+
+	public async updateAntennas(src: MiUser, dst: MiUser): Promise<void> {
+		// There is a possibility for users to add the srcUser to their antennas, but it's low, so we don't check it.
+
+		// Get MiAntenna[] from cache and filter to select antennas with the src user is in the users list
+		const srcUserAcct = this.utilityService.getFullApAccount(src.username, src.host).toLowerCase();
+		const antennasToMigrate = (await this.antennaService.getAntennas()).filter(antenna => {
+			return antenna.users.some(user => {
+				const { username, host } = Acct.parse(user);
+				return this.utilityService.getFullApAccount(username, host).toLowerCase() === srcUserAcct;
+			});
+		});
+
+		if (antennasToMigrate.length === 0) return;
+
+		const antennaIds = antennasToMigrate.map(x => x.id);
+
+		// Update the antennas by appending dst users acct to the users list
+		const dstUserAcct = '@' + Acct.toString({ username: dst.username, host: dst.host });
+
+		await this.antennasRepository.createQueryBuilder('antenna')
+			.update()
+			.set({
+				users: () => 'array_append(antenna.users, :dstUserAcct)',
+			})
+			.where('antenna.id IN (:...antennaIds)', { antennaIds })
+			.setParameters({ dstUserAcct })
+			.execute();
+
+		// announce update to event
+		for (const newAntenna of await this.antennasRepository.findBy({ id: In(antennaIds) })) {
+			this.globalEventService.publishInternalEvent('antennaUpdated', newAntenna);
 		}
 	}
 
