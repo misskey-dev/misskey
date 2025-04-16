@@ -88,6 +88,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const query = this.notesRepository.createQueryBuilder('note').innerJoinAndSelect('note.user', 'user');
 
 			this.queryService.generateVisibilityQuery(query, me);
+
+			// やみモード投稿のフィルタリング
+			if (!(me.isInYamiMode)) {
+				query.andWhere('note.isNoteInYamiMode = FALSE');
+			}
+
 			this.queryService.generateMutedUserQueryForNotes(query, me);
 			this.queryService.generateBlockedUserQueryForNotes(query, me);
 			this.queryService.generateMutedUserRenotesQueryForNotes(query, me);

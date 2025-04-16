@@ -38,6 +38,8 @@ export type SearchOpts = {
 	userId?: MiNote['userId'] | null;
 	channelId?: MiNote['channelId'] | null;
 	host?: string | null;
+	excludeYamiMode?: boolean;
+	meId?: string;
 };
 
 export type SearchPagination = {
@@ -244,6 +246,17 @@ export class SearchService {
 			} else {
 				query.andWhere('user.host = :host', { host: opts.host });
 			}
+		}
+
+		// やみモードフィルタリング
+		if (opts.excludeYamiMode) {
+			query.andWhere(new Brackets(qb => {
+				qb.where('note.isNoteInYamiMode = FALSE');
+				// 自分の投稿のみは表示
+				if (opts.meId) {
+					qb.orWhere('note.userId = :meId', { meId: opts.meId });
+				}
+			}));
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);

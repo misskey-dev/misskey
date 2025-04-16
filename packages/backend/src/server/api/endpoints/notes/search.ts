@@ -67,11 +67,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.unavailable);
 			}
 
-			const notes = await this.searchService.searchNote(ps.query, me, {
+			// 検索オプションに、やみモードフィルタリングの条件を追加
+			const searchOpts = {
 				userId: ps.userId,
 				channelId: ps.channelId,
 				host: ps.host,
-			}, {
+				// やみモードフィルタリングを追加
+				excludeYamiMode: me?.isInYamiMode !== true,
+				meId: me?.id,
+			};
+
+			const notes = await this.searchService.searchNote(ps.query, me, searchOpts, {
 				untilId: ps.untilId,
 				sinceId: ps.sinceId,
 				limit: ps.limit,

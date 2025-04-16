@@ -139,6 +139,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					if (note.visibility === 'specified' && (!me || (me.id !== note.userId && !note.visibleUserIds.some(v => v === me.id)))) return false;
 					if (note.visibility === 'followers' && !isFollowing && !isSelf) return false;
 
+					// やみモード投稿のフィルタリングを追加
+					if (note.isNoteInYamiMode && !isSelf && !(me?.isInYamiMode)) return false;
+
 					return true;
 				},
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
@@ -189,6 +192,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		if (me) {
 			this.queryService.generateMutedUserQueryForNotes(query, me, { id: ps.userId });
 			this.queryService.generateBlockedUserQueryForNotes(query, me);
+		}
+
+		if (!isSelf && !(me?.isInYamiMode)) {
+			query.andWhere('note.isNoteInYamiMode = FALSE');
 		}
 
 		if (ps.withFiles) {
