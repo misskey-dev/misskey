@@ -9,6 +9,8 @@ import type { Ref } from 'vue';
 
 // note render skippingがオンだとズレるため、遷移直前にスクロール範囲に表示されているdata-scroll-anchor要素を特定して、復元時に当該要素までスクロールするようにする
 
+// TODO: data-scroll-anchor がひとつも存在しない場合、または手動で useAnchor みたいなフラグをfalseで呼ばれた場合、単純にスクロール位置を使用する処理にフォールバックするようにする
+
 export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | null | undefined>): void {
 	let anchorId: string | null = null;
 	let ready = true;
