@@ -209,7 +209,7 @@ export class QueueService {
 			signature,
 		};
 
-		return this.inboxQueue.add('', data, {
+		return this.inboxQueue.add((activity.id ?? '').replace('https://', ''), data, {
 			attempts: this.config.inboxJobMaxAttempts ?? 8,
 			backoff: {
 				type: 'custom',
