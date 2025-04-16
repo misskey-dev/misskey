@@ -756,9 +756,9 @@ export class QueueService {
 	}
 
 	@bindThis
-	public async queueGetJobs(queueType: typeof QUEUE_TYPES[number], jobType: JobType) {
+	public async queueGetJobs(queueType: typeof QUEUE_TYPES[number], jobTypes: JobType[]) {
 		const queue = this.getQueue(queueType);
-		const jobs: Bull.Job[] = await queue.getJobs(jobType, 0, 100);
+		const jobs: Bull.Job[] = await queue.getJobs(jobTypes, 0, 100);
 
 		return jobs.map(job => {
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

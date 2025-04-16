@@ -16,9 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkTab v-model="jobState">
 				<option value="completed"><i class="ti ti-check"></i> Completed</option>
 				<option value="failed"><i class="ti ti-circle-x"></i> Failed</option>
+				<option value="latest"><i class="ti ti-logs"></i> Latest</option>
 				<option value="active"><i class="ti ti-player-play"></i> Active</option>
 				<option value="delayed"><i class="ti ti-clock"></i> Delayed</option>
 				<option value="wait"><i class="ti ti-hourglass-high"></i> Waiting</option>
+				<option value="paused"><i class="ti ti-player-pause"></i> Paused</option>
 			</MkTab>
 
 			<div class="_gaps_s">
@@ -29,8 +31,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span>{{ job.name }}</span>
 					</template>
 					<template #suffix>
-						<MkTime :time="job.timestamp" mode="detail"/>
-						<span v-if="job.isFailed" style="color: var(--MI_THEME-error)"><i class="ti ti-alert-triangle"></i></span>
+						<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="detail"/>
+						<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
+						<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
+						<span v-else-if="job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-check"></i></span>
+						<span v-else-if="job.delay != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-clock"></i></span>
 					</template>
 					<template #footer>
 						<div class="_buttons">
@@ -45,9 +50,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #key>timestamp</template>
 								<template #value><MkTime :time="job.timestamp" mode="detail"/></template>
 							</MkKeyValue>
-							<MkKeyValue>
+							<MkKeyValue v-if="job.processedOn != null">
 								<template #key>processedOn</template>
 								<template #value><MkTime :time="job.processedOn" mode="detail"/></template>
+							</MkKeyValue>
+							<MkKeyValue v-if="job.finishedOn != null">
+								<template #key>finishedOn</template>
+								<template #value><MkTime :time="job.finishedOn" mode="detail"/></template>
 							</MkKeyValue>
 							<MkKeyValue v-if="job.failedReason != null">
 								<template #key>failedReason</template>
@@ -111,13 +120,13 @@ const QUEUE_TYPES = [
 ] as const;
 
 const tab: Ref<typeof QUEUE_TYPES[number]> = ref('system');
-const jobState = ref('active');
+const jobState = ref('latest');
 const jobs = ref([]);
 
 watch([tab, jobState], async () => {
 	jobs.value = await misskeyApi('admin/queue/jobs', {
 		queue: tab.value,
-		state: jobState.value,
+		state: jobState.value === 'latest' ? ['completed', 'failed'] : [jobState.value],
 	});
 }, { immediate: true });
 
