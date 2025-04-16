@@ -143,7 +143,9 @@ export class QueueService {
 			isSharedInbox,
 		};
 
-		return this.deliverQueue.add(to.replace('https://', ''), data, {
+		const label = to.replace('https://', '').replace('/inbox', '');
+
+		return this.deliverQueue.add(label, data, {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
 			backoff: {
 				type: 'custom',
@@ -188,7 +190,7 @@ export class QueueService {
 		};
 
 		await this.deliverQueue.addBulk(Array.from(inboxes.entries(), d => ({
-			name: d[0].replace('https://', ''),
+			name: d[0].replace('https://', '').replace('/inbox', ''),
 			data: {
 				user,
 				content: contentBody,
