@@ -223,18 +223,19 @@ const headerTabs = computed(() =>
 definePage(() => ({
 	title: i18n.ts.jobQueue,
 	icon: 'ti ti-clock-play',
+	needWideArea: true,
 }));
 </script>
 
 <style lang="scss" module>
 .queues {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-	gap: 12px;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	gap: 14px;
 }
 
 .queue {
-	padding: 12px;
+	padding: 14px 18px;
 	background-color: var(--MI_THEME-panel);
 	border-radius: 8px;
 	cursor: pointer;
