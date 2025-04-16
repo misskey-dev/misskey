@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span>{{ job.name }}</span>
 					</template>
 					<template #suffix>
-						<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="detail"/>
+						<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="relative"/>
 						<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
 						<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
 						<span v-else-if="job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-check"></i></span>
