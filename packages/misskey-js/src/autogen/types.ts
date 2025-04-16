@@ -531,14 +531,23 @@ export type paths = {
      */
     post: operations['admin___queue___inbox-delayed'];
   };
-  '/admin/queue/promote': {
+  '/admin/queue/promote-job': {
     /**
-     * admin/queue/promote
+     * admin/queue/promote-job
      * @description No description provided.
      *
      * **Credential required**: *Yes* / **Permission**: *write:admin:queue*
      */
-    post: operations['admin___queue___promote'];
+    post: operations['admin___queue___promote-job'];
+  };
+  '/admin/queue/promote-jobs': {
+    /**
+     * admin/queue/promote-jobs
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:admin:queue*
+     */
+    post: operations['admin___queue___promote-jobs'];
   };
   '/admin/queue/stats': {
     /**
@@ -8809,7 +8818,7 @@ export type operations = {
       content: {
         'application/json': {
           /** @enum {string} */
-          type: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+          queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
           /** @enum {string} */
           state: '*' | 'wait' | 'delayed';
         };
@@ -8945,17 +8954,70 @@ export type operations = {
     };
   };
   /**
-   * admin/queue/promote
+   * admin/queue/promote-job
    * @description No description provided.
    *
    * **Credential required**: *Yes* / **Permission**: *write:admin:queue*
    */
-  admin___queue___promote: {
+  'admin___queue___promote-job': {
     requestBody: {
       content: {
         'application/json': {
           /** @enum {string} */
-          type: 'deliver' | 'inbox';
+          queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+          jobId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/queue/promote-jobs
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:admin:queue*
+   */
+  'admin___queue___promote-jobs': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @enum {string} */
+          queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
         };
       };
     };

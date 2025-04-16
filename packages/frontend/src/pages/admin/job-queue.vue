@@ -7,8 +7,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><XHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
-		<XQueue v-if="tab === 'deliver'" domain="deliver"/>
-		<XQueue v-else-if="tab === 'inbox'" domain="inbox"/>
 		<br>
 		<div class="_buttons">
 			<MkButton @click="promoteAllQueues"><i class="ti ti-reload"></i> {{ i18n.ts.retryAllQueuesNow }}</MkButton>
@@ -19,28 +17,45 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import XQueue from './queue.chart.vue';
+import { ref, computed, watch } from 'vue';
 import XHeader from './_header_.vue';
 import type { Ref } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
-export type ApQueueDomain = 'deliver' | 'inbox';
+const QUEUE_TYPES = [
+	'system',
+	'endedPollNotification',
+	'deliver',
+	'inbox',
+	'db',
+	'relationship',
+	'objectStorage',
+	'userWebhookDeliver',
+	'systemWebhookDeliver',
+] as const;
 
-const tab: Ref<ApQueueDomain> = ref('deliver');
+const tab: Ref<typeof QUEUE_TYPES[number]> = ref('system');
+const jobs = ref<{ [key: string]: number }[]>([]);
+
+watch(tab, async () => {
+	jobs.value = await misskeyApi('admin/queue/jobs', {
+		queue: tab.value,
+		state: 'active',
+	});
+}, { immediate: true });
 
 function clear() {
 	os.confirm({
 		type: 'warning',
-		title: i18n.ts.clearQueueConfirmTitle,
-		text: i18n.ts.clearQueueConfirmText,
+		title: i18n.ts.areYouSure,
 	}).then(({ canceled }) => {
 		if (canceled) return;
 
-		os.apiWithDialog('admin/queue/clear', { type: tab.value, state: '*' });
+		os.apiWithDialog('admin/queue/clear', { queue: tab.value, state: '*' });
 	});
 }
 
@@ -52,19 +67,18 @@ function promoteAllQueues() {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 
-		os.apiWithDialog('admin/queue/promote', { type: tab.value });
+		os.apiWithDialog('admin/queue/promote-jobs', { queue: tab.value });
 	});
 }
 
 const headerActions = computed(() => []);
 
-const headerTabs = computed(() => [{
-	key: 'deliver',
-	title: 'Deliver',
-}, {
-	key: 'inbox',
-	title: 'Inbox',
-}]);
+const headerTabs = computed(() =>
+	QUEUE_TYPES.map((t) => ({
+		key: t,
+		title: t,
+	})),
+);
 
 definePage(() => ({
 	title: i18n.ts.jobQueue,

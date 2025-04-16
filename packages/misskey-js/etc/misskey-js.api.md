@@ -267,7 +267,10 @@ type AdminQueueDeliverDelayedResponse = operations['admin___queue___deliver-dela
 type AdminQueueInboxDelayedResponse = operations['admin___queue___inbox-delayed']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type AdminQueuePromoteRequest = operations['admin___queue___promote']['requestBody']['content']['application/json'];
+type AdminQueuePromoteJobRequest = operations['admin___queue___promote-job']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueuePromoteJobsRequest = operations['admin___queue___promote-jobs']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminQueueStatsResponse = operations['admin___queue___stats']['responses']['200']['content']['application/json'];
@@ -1531,7 +1534,8 @@ declare namespace entities {
         AdminQueueClearRequest,
         AdminQueueDeliverDelayedResponse,
         AdminQueueInboxDelayedResponse,
-        AdminQueuePromoteRequest,
+        AdminQueuePromoteJobRequest,
+        AdminQueuePromoteJobsRequest,
         AdminQueueStatsResponse,
         AdminRelaysAddRequest,
         AdminRelaysAddResponse,

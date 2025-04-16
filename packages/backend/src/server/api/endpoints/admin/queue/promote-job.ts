@@ -20,9 +20,9 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		queue: { type: 'string', enum: QUEUE_TYPES },
-		state: { type: 'string', enum: ['*', 'wait', 'delayed'] },
+		jobId: { type: 'string' },
 	},
-	required: ['queue', 'state'],
+	required: ['queue', 'jobId'],
 } as const;
 
 @Injectable()
@@ -32,9 +32,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			this.queueService.queueClear(ps.queue, ps.state);
+			this.queueService.queuePromoteJob(ps.queue, ps.jobId);
 
-			this.moderationLogService.log(me, 'clearQueue');
+			this.moderationLogService.log(me, 'promoteQueue');
 		});
 	}
 }

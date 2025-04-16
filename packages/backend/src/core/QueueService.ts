@@ -16,6 +16,7 @@ import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { type SystemWebhookPayload } from '@/core/SystemWebhookService.js';
 import { type UserWebhookPayload } from './UserWebhookService.js';
+import type { JobType } from 'bullmq';
 import type {
 	DbJobData,
 	DeliverJobData,
@@ -557,19 +558,55 @@ export class QueueService {
 	}
 
 	@bindThis
-	public clearQueue(queueType: typeof QUEUE_TYPES[number], state: '*' | 'completed' | 'wait' | 'active' | 'paused' | 'prioritized' | 'delayed' | 'failed') {
+	public async queueClear(queueType: typeof QUEUE_TYPES[number], state: '*' | 'completed' | 'wait' | 'active' | 'paused' | 'prioritized' | 'delayed' | 'failed') {
 		const queue = this.getQueue(queueType);
 
 		if (state === '*') {
-			queue.clean(0, 0, 'completed');
-			queue.clean(0, 0, 'wait');
-			queue.clean(0, 0, 'active');
-			queue.clean(0, 0, 'paused');
-			queue.clean(0, 0, 'prioritized');
-			queue.clean(0, 0, 'delayed');
-			queue.clean(0, 0, 'failed');
+			await Promise.all([
+				queue.clean(0, 0, 'completed'),
+				queue.clean(0, 0, 'wait'),
+				queue.clean(0, 0, 'active'),
+				queue.clean(0, 0, 'paused'),
+				queue.clean(0, 0, 'prioritized'),
+				queue.clean(0, 0, 'delayed'),
+				queue.clean(0, 0, 'failed'),
+			]);
 		} else {
-			queue.clean(0, 0, state);
+			await queue.clean(0, 0, state);
 		}
+	}
+
+	@bindThis
+	public async queuePromoteJobs(queueType: typeof QUEUE_TYPES[number]) {
+		const queue = this.getQueue(queueType);
+		await queue.promoteJobs();
+	}
+
+	@bindThis
+	public async queuePromoteJob(queueType: typeof QUEUE_TYPES[number], jobId: string) {
+		const queue = this.getQueue(queueType);
+		const job = await queue.getJob(jobId);
+		if (job) {
+			await job.promote();
+		}
+	}
+
+	@bindThis
+	public async queueGetJobs(queueType: typeof QUEUE_TYPES[number], jobType: JobType) {
+		const queue = this.getQueue(queueType);
+		const jobs = await queue.getJobs(jobType, 0, 100);
+
+		return jobs.map(job => ({
+			id: job.id,
+			name: job.name,
+			data: job.data,
+			opts: job.opts,
+			processedOn: job.processedOn,
+			finishedOn: job.finishedOn,
+			timestamp: job.timestamp,
+			attemptsMade: job.attemptsMade,
+			priority: job.opts.priority,
+			...job.customData,
+		}));
 	}
 }
