@@ -7,12 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkPolkadots v-if="tab === 'home'" accented/>
 	<MkSpacer :contentMax="700">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+		<MkSwiper v-model:tab="tab" :tabs="headerTabs">
 			<XHome v-if="tab === 'home'"/>
 			<XInvitations v-else-if="tab === 'invitations'"/>
 			<XJoiningRooms v-else-if="tab === 'joiningRooms'"/>
 			<XOwnedRooms v-else-if="tab === 'ownedRooms'"/>
-		</MkHorizontalSwipe>
+		</MkSwiper>
 	</MkSpacer>
 </PageWithHeader>
 </template>
@@ -25,7 +25,7 @@ import XJoiningRooms from './home.joiningRooms.vue';
 import XOwnedRooms from './home.ownedRooms.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import MkSwiper from '@/components/MkSwiper.vue';
 import MkPolkadots from '@/components/MkPolkadots.vue';
 
 const tab = ref('home');
