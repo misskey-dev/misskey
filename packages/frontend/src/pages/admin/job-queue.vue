@@ -7,7 +7,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><XHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer>
-		<div class="_gaps">
+		<div v-if="tab === '-'" class="_gaps">
+			<div :class="$style.queues">
+				<div v-for="q in queueInfos" :key="q.name" :class="$style.queue" @click="tab = q.name">
+					<div><i class="ti ti-http-que"></i> {{ q.name }}</div>
+					<div :class="$style.queueCounts">
+						<MkKeyValue>
+							<template #key>Active</template>
+							<template #value>{{ kmg(q.counts.active, 2) }}</template>
+						</MkKeyValue>
+						<MkKeyValue>
+							<template #key>Delayed</template>
+							<template #value>{{ kmg(q.counts.delayed, 2) }}</template>
+						</MkKeyValue>
+						<MkKeyValue>
+							<template #key>Waiting</template>
+							<template #value>{{ kmg(q.counts.waiting, 2) }}</template>
+						</MkKeyValue>
+					</div>
+					<XChart :dataSet="{ completed: q.metrics.completed.data, failed: q.metrics.failed.data }"/>
+				</div>
+			</div>
+		</div>
+		<div v-else class="_gaps">
 			<MkFolder :defaultOpen="true">
 				<template #label>Overview: {{ tab }}</template>
 				<div class="_buttons">
@@ -103,6 +125,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, watch } from 'vue';
 import JSON5 from 'json5';
 import XHeader from './_header_.vue';
+import XChart from './job-queue.chart.vue';
 import type { Ref } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -113,6 +136,7 @@ import MkTab from '@/components/MkTab.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
+import kmg from '@/filters/kmg.js';
 
 const QUEUE_TYPES = [
 	'system',
@@ -126,11 +150,17 @@ const QUEUE_TYPES = [
 	'systemWebhookDeliver',
 ] as const;
 
-const tab: Ref<typeof QUEUE_TYPES[number]> = ref('system');
+const tab: Ref<typeof QUEUE_TYPES[number] | '-'> = ref('-');
 const jobState = ref('latest');
 const jobs = ref([]);
+const queueInfos = ref([]);
 
 watch([tab, jobState], async () => {
+	if (tab.value === '-') {
+		queueInfos.value = await misskeyApi('admin/queue/queues');
+		return;
+	}
+
 	const state = jobState.value;
 	jobs.value = await misskeyApi('admin/queue/jobs', {
 		queue: tab.value,
@@ -171,10 +201,14 @@ function promoteAllQueues() {
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() =>
-	QUEUE_TYPES.map((t) => ({
+	[{
+		key: '-',
+		title: i18n.ts.overview,
+		icon: 'ti ti-dashboard',
+	}].concat(QUEUE_TYPES.map((t) => ({
 		key: t,
 		title: t,
-	})),
+	}))),
 );
 
 definePage(() => ({
@@ -182,3 +216,26 @@ definePage(() => ({
 	icon: 'ti ti-clock-play',
 }));
 </script>
+
+<style lang="scss" module>
+.queues {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 12px;
+}
+
+.queue {
+	padding: 12px;
+	background-color: var(--MI_THEME-panel);
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.queueCounts {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+	gap: 8px;
+	font-size: 85%;
+	margin: 6px 0;
+}
+</style>

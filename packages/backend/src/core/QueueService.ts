@@ -5,6 +5,7 @@
 
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
+import { MetricsTime, type JobType } from 'bullmq';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
@@ -16,7 +17,6 @@ import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { type SystemWebhookPayload } from '@/core/SystemWebhookService.js';
 import { type UserWebhookPayload } from './UserWebhookService.js';
-import type { JobType } from 'bullmq';
 import type {
 	DbJobData,
 	DeliverJobData,
@@ -710,7 +710,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	private getQueue(type: typeof QUEUE_TYPES[number]) {
+	private getQueue(type: typeof QUEUE_TYPES[number]): Bull.Queue {
 		switch (type) {
 			case 'system': return this.systemQueue;
 			case 'endedPollNotification': return this.endedPollNotificationQueue;
@@ -787,5 +787,29 @@ export class QueueService {
 				isFailed: !!job.failedReason || (Array.isArray(stacktrace) && stacktrace.length > 0),
 			};
 		});
+	}
+
+	@bindThis
+	public async queueGetQueues() {
+		const fetchings = QUEUE_TYPES.map(async type => {
+			const queue = this.getQueue(type);
+
+			const counts = await queue.getJobCounts();
+			const isPaused = await queue.isPaused();
+			const metrics_completed = await queue.getMetrics('completed', 0, MetricsTime.ONE_WEEK);
+			const metrics_failed = await queue.getMetrics('failed', 0, MetricsTime.ONE_WEEK);
+
+			return {
+				name: type,
+				counts: counts,
+				isPaused,
+				metrics: {
+					completed: metrics_completed,
+					failed: metrics_failed,
+				},
+			};
+		});
+
+		return await Promise.all(fetchings);
 	}
 }
