@@ -4,19 +4,22 @@
  */
 
 import { throttle } from 'throttle-debounce';
-import { nextTick, onActivated, onUnmounted, watch } from 'vue';
+import { nextTick, onActivated, onDeactivated, onUnmounted, watch } from 'vue';
 import type { Ref } from 'vue';
 
 // note render skippingがオンだとズレるため、遷移直前にスクロール範囲に表示されているdata-scroll-anchor要素を特定して、復元時に当該要素までスクロールするようにする
 
 export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | null | undefined>): void {
 	let anchorId: string | null = null;
+	let ready = true;
 
 	watch(scrollContainerRef, (el) => {
 		if (!el) return;
 
 		const onScroll = () => {
 			if (!el) return;
+			if (!ready) return;
+
 			const scrollContainerRect = el.getBoundingClientRect();
 			const viewPosition = scrollContainerRect.height / 2;
 
@@ -41,18 +44,32 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 		immediate: true,
 	});
 
+	const restore = () => {
+		if (!anchorId) return;
+		const scrollContainer = scrollContainerRef.value;
+		if (!scrollContainer) return;
+		const scrollAnchorEl = scrollContainer.querySelector(`[data-scroll-anchor="${anchorId}"]`);
+		if (!scrollAnchorEl) return;
+		scrollAnchorEl.scrollIntoView({
+			behavior: 'instant',
+			block: 'center',
+			inline: 'center',
+		});
+	};
+
+	onDeactivated(() => {
+		ready = false;
+	});
+
 	onActivated(() => {
+		restore();
 		nextTick(() => {
-			if (!anchorId) return;
-			const scrollContainer = scrollContainerRef.value;
-			if (!scrollContainer) return;
-			const scrollAnchorEl = scrollContainer.querySelector(`[data-scroll-anchor="${anchorId}"]`);
-			if (!scrollAnchorEl) return;
-			scrollAnchorEl.scrollIntoView({
-				behavior: 'instant',
-				block: 'center',
-				inline: 'center',
-			});
+			restore();
+			window.setTimeout(() => {
+				restore();
+
+				ready = true;
+			}, 100);
 		});
 	});
 }
