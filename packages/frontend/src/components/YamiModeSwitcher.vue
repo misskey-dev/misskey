@@ -12,7 +12,6 @@
 			<ul>
 				<li>{{ i18n.ts._yami._yamiModeSwitcher.yami1 }}</li>
 				<li>{{ i18n.ts._yami._yamiModeSwitcher.yami2 }}</li>
-				<li>{{ i18n.ts._yami._yamiModeSwitcher.yami3 }}</li>
 			</ul>
 			<div :class="$style.radioRecommendedFor">
 				<div :class="$style.title">{{ i18n.ts._yami._yamiModeSwitcher.recommendedFor }}</div>

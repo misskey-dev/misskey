@@ -3033,12 +3033,11 @@ _yami:
   _yamiModeSwitcher:
     recommendedFor: "Recommended for"
     normal: "Normal"
-    normal1: "Local TL is available."
+    normal1: "All posts will not be displayed on the Yami Timeline."
     normal2: "Content posted in the “Public” range will be displayed in LTL, HTL, and STL."
     normalRecommend: "Those who want to enjoy regular interaction on social networking sites."
     yami1: "Yami TL is available."
-    yami2: "Content posted in the “Public” range will not be displayed in LTL, HTL, and STL."
-    yami3: "Content posted in ranges other than “public” will not be visible in HTL or STL."
+    yami2: "All posted content will only appear on the Yami Timeline"
     yamiRecommend: "Those who are tired of social networking and want to calm down."
     saveConfirmDescription: "Switching modes changes the scope of publication."
 _followRequest:

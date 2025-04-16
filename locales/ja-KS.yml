@@ -2287,7 +2287,7 @@ _visibility:
   home: "ホーム"
   homeDescription: "ホームタイムラインのみに公開するで"
   yami: "やみ"
-  yamiDescription: "やみタイムラインに公開するで"
+  yamiDescription: "やみタイムラインのみに公開するで"
   followers: "フォロワー"
   followersDescription: "自分のフォロワーのみに公開するで"
   specified: "ダイレクト"

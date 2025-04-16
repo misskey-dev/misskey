@@ -20,10 +20,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(channel != null && fixed)">
-				<!-- やみモードがオンの場合のみ月アイコンを表示 -->
-				<span v-if="$i.isInYamiMode" v-tooltip="i18n.ts._yami.yamiMode" class="_button" :class="$style.headerRightItem">
+				<!-- やみノート切り替えボタン -->
+				<button
+					v-tooltip="i18n.ts._yami.yamiMode"
+					:class="['_button', $style.headerRightItem, { [$style.danger]: !isNoteInYamiMode }]"
+					@click="toggleYamiMode"
+				>
 					<i class="ti ti-moon"></i>
-				</span>
+				</button>
+
 				<!-- 既存の公開範囲ボタン -->
 				<button v-if="channel == null" ref="visibilityButton" v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
 					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
@@ -206,6 +211,8 @@ const getInitialScheduledDelete = () => {
 };
 // 初期化
 const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(getInitialScheduledDelete());
+// やみノート状態を管理する変数（ユーザーのやみモード状態をデフォルト値とする）
+const isNoteInYamiMode = ref($i.isInYamiMode);
 // デフォルト設定の変更を監視
 watch(() => prefer.s.defaultScheduledNoteDelete, (newValue) => {
 	scheduledNoteDelete.value = getInitialScheduledDelete();
@@ -490,6 +497,7 @@ function watchForDraft() {
 	watch(localOnly, () => saveDraft());
 	watch(quoteId, () => saveDraft());
 	watch(reactionAcceptance, () => saveDraft());
+	watch(isNoteInYamiMode, () => saveDraft()); // やみノート状態も監視
 }
 
 function checkMissingMention() {
@@ -603,6 +611,7 @@ function setVisibility() {
 		isSilenced: $i.isSilenced,
 		localOnly: localOnly.value,
 		src: visibilityButton.value,
+		isNoteInYamiMode: isNoteInYamiMode.value, // Add this prop to pass the note-specific YamiMode flag
 		...(props.reply ? { isReplyVisibilitySpecified: props.reply.visibility === 'specified' } : {}),
 	}, {
 		changeVisibility: v => {
@@ -894,6 +903,7 @@ function saveDraft() {
 			reactionAcceptance: reactionAcceptance.value,
 			scheduledNoteDelete: scheduledNoteDelete.value,
 			scheduleNote: scheduleNote.value,
+			isNoteInYamiMode: isNoteInYamiMode.value, // やみノート状態を保存
 		},
 	};
 
@@ -973,6 +983,7 @@ async function post(ev?: MouseEvent) {
 		visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(u => u.id) : undefined,
 		reactionAcceptance: reactionAcceptance.value,
 		scheduleNote: scheduleNote.value ?? undefined,
+		isNoteInYamiMode: isNoteInYamiMode.value, // やみノート状態を保存
 	};
 
 	if (withHashtags.value && hashtags.value && hashtags.value.trim() !== '') {
@@ -1174,6 +1185,10 @@ function toggleScheduleNote() {
 	}
 }
 
+function toggleYamiMode() {
+	isNoteInYamiMode.value = !isNoteInYamiMode.value;
+}
+
 // function showOtherMenu(ev: MouseEvent) {
 // 	const menuItems: MenuItem[] = [];
 
@@ -1238,6 +1253,8 @@ onMounted(() => {
 				if (draft.data.scheduledNoteDelete) {
 					scheduledNoteDelete.value = draft.data.scheduledNoteDelete;
 				}
+				// やみノート状態を復元
+				isNoteInYamiMode.value = draft.data.isNoteInYamiMode ?? $i.isInYamiMode;
 			}
 		}
 
