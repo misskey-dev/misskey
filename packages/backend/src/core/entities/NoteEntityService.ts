@@ -595,7 +595,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async ogogogo(noteIds: MiNote['id'][]) {
+	public async fetchDiffs(noteIds: MiNote['id'][]) {
 		if (noteIds.length === 0) return [];
 
 		const notes = await this.notesRepository.find({
@@ -603,25 +603,32 @@ export class NoteEntityService implements OnModuleInit {
 				id: In(noteIds),
 			},
 			select: {
+				id: true,
+				userHost: true,
 				reactions: true,
 				reactionAndUserPairCache: true,
 			},
 		});
 
-		console.log(notes);
-
 		const bufferedReactionsMap = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(noteIds) : null;
 
-		const results = [];
-
-		for (const note of notes) {
+		const packings = notes.map(note => {
 			const bufferedReactions = bufferedReactionsMap?.get(note.id);
-			const reactionAndUserPairCache = note.reactionAndUserPairCache.concat(bufferedReactions.pairs.map(x => x.join('/')));
+			//const reactionAndUserPairCache = note.reactionAndUserPairCache.concat(bufferedReactions.pairs.map(x => x.join('/')));
 
-			results.push({
+			const reactions = this.reactionService.convertLegacyReactions(this.reactionsBufferingService.mergeReactions(note.reactions, bufferedReactions?.deltas ?? {}));
+
+			const reactionEmojiNames = Object.keys(reactions)
+				.filter(x => x.startsWith(':') && x.includes('@') && !x.includes('@.')) // リモートカスタム絵文字のみ
+				.map(x => this.reactionService.decodeReaction(x).reaction.replaceAll(':', ''));
+
+			return this.customEmojiService.populateEmojis(reactionEmojiNames, note.userHost).then(reactionEmojis => ({
 				id: note.id,
-				reactions: this.reactionService.convertLegacyReactions(this.reactionsBufferingService.mergeReactions(note.reactions, bufferedReactions.deltas ?? {})),
-			});
-		}
+				reactions,
+				reactionEmojis,
+			}));
+		});
+
+		return await Promise.all(packings);
 	}
 }

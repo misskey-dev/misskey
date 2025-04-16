@@ -10,6 +10,7 @@ import type { Ref, ShallowRef } from 'vue';
 import { useStream } from '@/stream.js';
 import { $i } from '@/i.js';
 import { store } from '@/store.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const noteEvents = new EventEmitter<{
 	reacted: Misskey.entities.Note;
@@ -18,16 +19,31 @@ const noteEvents = new EventEmitter<{
 	deleted: Misskey.entities.Note;
 }>();
 
+const fetchEvent = new EventEmitter<{
+	[id: string]: Pick<Misskey.entities.Note, 'reactions' | 'reactionEmojis'>;
+}>();
+
 const capturedNoteIdMapForPolling = new Map<string, number>();
 
+const CAPTURE_MAX = 30;
 const POLLING_INTERVAL = 1000 * 10;
 
 window.setInterval(() => {
-	const ids = [...capturedNoteIdMapForPolling.keys()];
+	const ids = [...capturedNoteIdMapForPolling.keys()].sort((a, b) => (a > b ? -1 : 1)).slice(0, CAPTURE_MAX); // 新しいものを優先するためにIDで降順ソート
 	if (ids.length === 0) return;
 	if (window.document.hidden) return;
 
-	console.log('Polling notes', ids);
+	// まとめてリクエストするのではなく、個別にHTTPリクエスト投げてCDNにキャッシュさせた方がサーバーの負荷低減には良いかもしれない
+	misskeyApi('notes/show-partial-bulk', {
+		noteIds: ids,
+	}).then((items) => {
+		for (const item of items) {
+			fetchEvent.emit(item.id, {
+				reactions: item.reactions,
+				reactionEmojis: item.reactionEmojis,
+			});
+		}
+	});
 }, POLLING_INTERVAL);
 
 function pseudoNoteCapture(props: {
@@ -43,17 +59,27 @@ function pseudoNoteCapture(props: {
 
 	}
 
+	function onFetched(data: Pick<Misskey.entities.Note, 'reactions' | 'reactionEmojis'>): void {
+		note.value.reactions = data.reactions;
+		note.value.reactionCount = Object.values(data.reactions).reduce((a, b) => a + b, 0);
+		note.value.reactionEmojis = data.reactionEmojis;
+	}
+
 	if (capturedNoteIdMapForPolling.has(note.value.id)) {
 		capturedNoteIdMapForPolling.set(note.value.id, capturedNoteIdMapForPolling.get(note.value.id)! + 1);
 	} else {
 		capturedNoteIdMapForPolling.set(note.value.id, 1);
 	}
 
+	fetchEvent.on(note.value.id, onFetched);
+
 	onUnmounted(() => {
 		capturedNoteIdMapForPolling.set(note.value.id, capturedNoteIdMapForPolling.get(note.value.id)! - 1);
 		if (capturedNoteIdMapForPolling.get(note.value.id) === 0) {
 			capturedNoteIdMapForPolling.delete(note.value.id);
 		}
+
+		fetchEvent.off(note.value.id, onFetched);
 	});
 }
 
