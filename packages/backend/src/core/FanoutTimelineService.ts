@@ -25,8 +25,10 @@ export type FanoutTimelineName = (
 	| 'hybridTimelineWithReplies' // only replies are included
 	| `hybridTimelineWithReplyTo:${string}` // Only replies to specific local user are included. Parameter is reply user id.
 	// yami timeline
-	| 'yamiTimeline' // replies are not included
-	| 'yamiTimelineWithFiles' // only non-reply notes with files are included
+	| 'yamiTimeline' // グローバルやみタイムライン
+	| `yamiTimeline:${string}` // ユーザー個別のやみタイムライン
+	| 'yamiTimelineWithFiles'
+	| `yamiTimelineWithFiles:${string}`
 	| 'yamiTimelineWithReplies' // only replies are included
 	| `yamiTimelineWithReplyTo:${string}` // Only replies to specific local user are included. Parameter is reply user id.
 	// global timeline

@@ -44,15 +44,15 @@ class YamiTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
-		// やみモードノートでないなら表示しない
-		if (!note.isNoteInYamiMode) {
-			return;
-		}
+		// やみモードの投稿のみ表示する
+		if (!note.isNoteInYamiMode) return;
 
 		const isMe = this.user!.id === note.userId;
 
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
+		// 以下、通常のフィルタリングロジック
+		// チャンネル投稿の場合
 		if (note.channelId) {
 			if (!this.followingChannels.has(note.channelId)) return;
 		} else {

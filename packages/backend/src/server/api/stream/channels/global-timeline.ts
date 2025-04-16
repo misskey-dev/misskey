@@ -48,6 +48,9 @@ class GlobalTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		// やみモードの投稿はグローバルタイムラインに表示しない
+		if (note.isNoteInYamiMode) return;
+
 		// 以下、通常のフィルタリング条件
 		if (note.tags && note.tags.length > 0 && !this.withHashtags) return;
 

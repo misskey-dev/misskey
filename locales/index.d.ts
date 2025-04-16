@@ -6474,7 +6474,7 @@ export interface Locale extends ILocale {
     };
     "_timelineDescription": {
         /**
-         * やみタイムラインでは、病んでいる人のみが閲覧・投稿できます。
+         * やみタイムラインでは、やみモードが有効の人のみが閲覧・投稿できます。
          */
         "yami": string;
         /**
