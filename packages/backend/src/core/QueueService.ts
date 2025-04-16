@@ -596,16 +596,28 @@ export class QueueService {
 		const queue = this.getQueue(queueType);
 		const jobs: Bull.Job[] = await queue.getJobs(jobType, 0, 100);
 
-		return jobs.map(job => ({
-			id: job.id,
-			name: job.name,
-			data: job.data,
-			opts: job.opts,
-			processedOn: job.processedOn,
-			finishedOn: job.finishedOn,
-			timestamp: job.timestamp,
-			attemptsMade: job.attemptsMade,
-			priority: job.opts.priority,
-		}));
+		return jobs.map(job => {
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			const stacktrace = job.stacktrace ? job.stacktrace.filter(Boolean) : [];
+			stacktrace.reverse();
+
+			return {
+				id: job.id,
+				name: job.name,
+				data: job.data,
+				opts: job.opts,
+				timestamp: job.timestamp,
+				processedOn: job.processedOn,
+				processedBy: job.processedBy,
+				finishedOn: job.finishedOn,
+				progress: job.progress,
+				attempts: job.attemptsMade,
+				delay: job.delay,
+				failedReason: job.failedReason,
+				stacktrace: stacktrace,
+				returnValue: job.returnvalue,
+				isFailed: !!job.failedReason || (Array.isArray(stacktrace) && stacktrace.length > 0),
+			};
+		});
 	}
 }

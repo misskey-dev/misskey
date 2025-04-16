@@ -39,6 +39,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #key>processedOn</template>
 							<template #value><MkTime :time="job.processedOn" mode="detail"/></template>
 						</MkKeyValue>
+						<MkKeyValue>
+							<template #key>failedReason</template>
+							<template #value>{{ job.failedReason }}</template>
+						</MkKeyValue>
+						<MkKeyValue>
+							<template #key>returnValue</template>
+							<template #value>{{ job.returnValue }}</template>
+						</MkKeyValue>
 					</div>
 
 					<MkFolder :withSpacer="false" :defaultOpen="true">
@@ -46,6 +54,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>Data</template>
 
 						<MkCode :code="JSON5.stringify(job.data, null, '  ')"/>
+					</MkFolder>
+
+					<MkFolder :withSpacer="false" :defaultOpen="true">
+						<template #icon><i class="ti ti-code"></i></template>
+						<template #label>Error</template>
+
+						<MkCode :code="job.stacktrace"/>
 					</MkFolder>
 				</div>
 			</MkFolder>
@@ -88,7 +103,7 @@ const QUEUE_TYPES = [
 
 const tab: Ref<typeof QUEUE_TYPES[number]> = ref('system');
 const jobState = ref('active');
-const jobs = ref<{ [key: string]: number }[]>([]);
+const jobs = ref([]);
 
 watch([tab, jobState], async () => {
 	jobs.value = await misskeyApi('admin/queue/jobs', {
