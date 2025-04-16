@@ -49,72 +49,80 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkTab>
 
 			<div class="_gaps_s">
-				<MkFolder v-for="job in jobs" :key="job.id">
-					<template #label>
-						<span v-if="job.opts.repeat != null" style="margin-right: 1em;">&lt;repeat&gt;</span>
-						<span v-else style="margin-right: 1em;">#{{ job.id }}</span>
-						<span>{{ job.name }}</span>
-					</template>
-					<template #suffix>
-						<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="relative"/>
-						<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
-						<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
-						<span v-else-if="job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-check"></i></span>
-						<span v-else-if="job.delay != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-clock"></i></span>
-					</template>
-					<template #footer>
-						<div class="_buttons">
-							<MkButton rounded @click=""><i class="ti ti-reload"></i> promote</MkButton>
-							<MkButton danger rounded @click=""><i class="ti ti-trash"></i> delete</MkButton>
+				<MkTl
+					v-slot="{ event: job }" :events="jobs.map((job) => ({
+						id: job.id,
+						createdAt: job.finishedOn ?? job.processedOn ?? job.timestamp,
+						data: job,
+					}))"
+				>
+					<MkFolder>
+						<template #label>
+							<span v-if="job.opts.repeat != null" style="margin-right: 1em;">&lt;repeat&gt;</span>
+							<span v-else style="margin-right: 1em;">#{{ job.id }}</span>
+							<span>{{ job.name }}</span>
+						</template>
+						<template #suffix>
+							<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="relative"/>
+							<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
+							<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
+							<span v-else-if="job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-check"></i></span>
+							<span v-else-if="job.delay != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-clock"></i></span>
+						</template>
+						<template #footer>
+							<div class="_buttons">
+								<MkButton rounded @click=""><i class="ti ti-reload"></i> promote</MkButton>
+								<MkButton danger rounded @click=""><i class="ti ti-trash"></i> delete</MkButton>
+							</div>
+						</template>
+
+						<div class="_gaps_s">
+							<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
+								<MkKeyValue>
+									<template #key>Created at</template>
+									<template #value><MkTime :time="job.timestamp" mode="detail"/></template>
+								</MkKeyValue>
+								<MkKeyValue v-if="job.processedOn != null">
+									<template #key>Processed at</template>
+									<template #value><MkTime :time="job.processedOn" mode="detail"/></template>
+								</MkKeyValue>
+								<MkKeyValue v-if="job.finishedOn != null">
+									<template #key>Finished at</template>
+									<template #value><MkTime :time="job.finishedOn" mode="detail"/></template>
+								</MkKeyValue>
+								<MkKeyValue v-if="job.processedOn != null && job.finishedOn != null">
+									<template #key>Spent</template>
+									<template #value>{{ job.finishedOn - job.processedOn }}ms</template>
+								</MkKeyValue>
+								<MkKeyValue v-if="job.failedReason != null">
+									<template #key>Failed reason</template>
+									<template #value><i style="color: var(--MI_THEME-error)" class="ti ti-alert-triangle"></i> {{ job.failedReason }}</template>
+								</MkKeyValue>
+							</div>
+
+							<MkFolder :withSpacer="false" :defaultOpen="false">
+								<template #icon><i class="ti ti-package"></i></template>
+								<template #label>Data</template>
+
+								<MkCode :code="JSON5.stringify(job.data, null, '  ')"/>
+							</MkFolder>
+
+							<MkFolder v-if="job.returnValue != null" :withSpacer="false" :defaultOpen="false">
+								<template #icon><i class="ti ti-check"></i></template>
+								<template #label>Result</template>
+
+								<MkCode :code="job.returnValue"/>
+							</MkFolder>
+
+							<MkFolder v-if="job.stacktrace.length > 0" :withSpacer="false" :defaultOpen="false">
+								<template #icon><i class="ti ti-alert-triangle"></i></template>
+								<template #label>Error</template>
+
+								<MkCode v-for="log in job.stacktrace" :code="log"/>
+							</MkFolder>
 						</div>
-					</template>
-
-					<div class="_gaps_s">
-						<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
-							<MkKeyValue>
-								<template #key>Created at</template>
-								<template #value><MkTime :time="job.timestamp" mode="detail"/></template>
-							</MkKeyValue>
-							<MkKeyValue v-if="job.processedOn != null">
-								<template #key>Processed at</template>
-								<template #value><MkTime :time="job.processedOn" mode="detail"/></template>
-							</MkKeyValue>
-							<MkKeyValue v-if="job.finishedOn != null">
-								<template #key>Finished at</template>
-								<template #value><MkTime :time="job.finishedOn" mode="detail"/></template>
-							</MkKeyValue>
-							<MkKeyValue v-if="job.processedOn != null && job.finishedOn != null">
-								<template #key>Spent</template>
-								<template #value>{{ job.finishedOn - job.processedOn }}ms</template>
-							</MkKeyValue>
-							<MkKeyValue v-if="job.failedReason != null">
-								<template #key>Failed reason</template>
-								<template #value><i style="color: var(--MI_THEME-error)" class="ti ti-alert-triangle"></i> {{ job.failedReason }}</template>
-							</MkKeyValue>
-						</div>
-
-						<MkFolder :withSpacer="false" :defaultOpen="false">
-							<template #icon><i class="ti ti-package"></i></template>
-							<template #label>Data</template>
-
-							<MkCode :code="JSON5.stringify(job.data, null, '  ')"/>
-						</MkFolder>
-
-						<MkFolder v-if="job.returnValue != null" :withSpacer="false" :defaultOpen="false">
-							<template #icon><i class="ti ti-check"></i></template>
-							<template #label>Result</template>
-
-							<MkCode :code="job.returnValue"/>
-						</MkFolder>
-
-						<MkFolder v-if="job.stacktrace.length > 0" :withSpacer="false" :defaultOpen="false">
-							<template #icon><i class="ti ti-alert-triangle"></i></template>
-							<template #label>Error</template>
-
-							<MkCode v-for="log in job.stacktrace" :code="log"/>
-						</MkFolder>
-					</div>
-				</MkFolder>
+					</MkFolder>
+				</MkTl>
 			</div>
 		</div>
 	</MkSpacer>
@@ -136,6 +144,7 @@ import MkTab from '@/components/MkTab.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkTl from '@/components/MkTl.vue';
 import kmg from '@/filters/kmg.js';
 
 const QUEUE_TYPES = [
