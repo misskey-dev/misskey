@@ -594,7 +594,7 @@ export class QueueService {
 	@bindThis
 	public async queueGetJobs(queueType: typeof QUEUE_TYPES[number], jobType: JobType) {
 		const queue = this.getQueue(queueType);
-		const jobs = await queue.getJobs(jobType, 0, 100);
+		const jobs: Bull.Job[] = await queue.getJobs(jobType, 0, 100);
 
 		return jobs.map(job => ({
 			id: job.id,
@@ -606,7 +606,6 @@ export class QueueService {
 			timestamp: job.timestamp,
 			attemptsMade: job.attemptsMade,
 			priority: job.opts.priority,
-			...job.customData,
 		}));
 	}
 }
