@@ -14,7 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #default="{ items: notes }">
 		<component
-			:is="prefer.s.animation ? TransitionGroup : 'div'" :class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap }]"
+			:is="prefer.s.animation ? TransitionGroup : 'div'"
+			:class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap, [$style.reverse]: pagination.reversed }]"
 			:enterActiveClass="$style.transition_x_enterActive"
 			:leaveActiveClass="$style.transition_x_leaveActive"
 			:enterFromClass="$style.transition_x_enterFrom"
@@ -71,6 +72,11 @@ defineExpose({
 }
 .transition_x_leaveActive {
 	position: absolute;
+}
+
+.reverse {
+	display: flex;
+	flex-direction: column-reverse;
 }
 
 .root {
