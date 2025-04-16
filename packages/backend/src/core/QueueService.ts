@@ -70,50 +70,58 @@ export class QueueService {
 		this.systemQueue.add('tickCharts', {
 		}, {
 			repeat: { pattern: '55 * * * *' },
-			removeOnComplete: true,
+			removeOnComplete: 10,
+			removeOnFail: 30,
 		});
 
 		this.systemQueue.add('resyncCharts', {
 		}, {
 			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: true,
+			removeOnComplete: 10,
+			removeOnFail: 30,
 		});
 
 		this.systemQueue.add('cleanCharts', {
 		}, {
 			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: true,
+			removeOnComplete: 10,
+			removeOnFail: 30,
 		});
 
 		this.systemQueue.add('aggregateRetention', {
 		}, {
 			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: true,
+			removeOnComplete: 10,
+			removeOnFail: 30,
 		});
 
 		this.systemQueue.add('clean', {
 		}, {
 			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: true,
+			removeOnComplete: 10,
+			removeOnFail: 30,
 		});
 
 		this.systemQueue.add('checkExpiredMutings', {
 		}, {
 			repeat: { pattern: '*/5 * * * *' },
-			removeOnComplete: true,
+			removeOnComplete: 10,
+			removeOnFail: 30,
 		});
 
 		this.systemQueue.add('bakeBufferedReactions', {
 		}, {
 			repeat: { pattern: '0 0 * * *' },
-			removeOnComplete: true,
+			removeOnComplete: 10,
+			removeOnFail: 30,
 		});
 
 		this.systemQueue.add('checkModeratorsActivity', {
 		}, {
 			// 毎時30分に起動
 			repeat: { pattern: '30 * * * *' },
-			removeOnComplete: true,
+			removeOnComplete: 10,
+			removeOnFail: 30,
 		});
 	}
 
@@ -140,8 +148,14 @@ export class QueueService {
 			backoff: {
 				type: 'custom',
 			},
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -163,8 +177,14 @@ export class QueueService {
 			backoff: {
 				type: 'custom',
 			},
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		};
 
 		await this.deliverQueue.addBulk(Array.from(inboxes.entries(), d => ({
@@ -194,8 +214,14 @@ export class QueueService {
 			backoff: {
 				type: 'custom',
 			},
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -204,8 +230,14 @@ export class QueueService {
 		return this.dbQueue.add('deleteDriveFiles', {
 			user: { id: user.id },
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -214,8 +246,14 @@ export class QueueService {
 		return this.dbQueue.add('exportCustomEmojis', {
 			user: { id: user.id },
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -224,8 +262,14 @@ export class QueueService {
 		return this.dbQueue.add('exportNotes', {
 			user: { id: user.id },
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -234,8 +278,14 @@ export class QueueService {
 		return this.dbQueue.add('exportClips', {
 			user: { id: user.id },
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -244,8 +294,14 @@ export class QueueService {
 		return this.dbQueue.add('exportFavorites', {
 			user: { id: user.id },
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -256,8 +312,14 @@ export class QueueService {
 			excludeMuting,
 			excludeInactive,
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -266,8 +328,14 @@ export class QueueService {
 		return this.dbQueue.add('exportMuting', {
 			user: { id: user.id },
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -276,8 +344,14 @@ export class QueueService {
 		return this.dbQueue.add('exportBlocking', {
 			user: { id: user.id },
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -286,8 +360,14 @@ export class QueueService {
 		return this.dbQueue.add('exportUserLists', {
 			user: { id: user.id },
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -296,8 +376,14 @@ export class QueueService {
 		return this.dbQueue.add('exportAntennas', {
 			user: { id: user.id },
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -308,8 +394,14 @@ export class QueueService {
 			fileId: fileId,
 			withReplies,
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -325,8 +417,14 @@ export class QueueService {
 			user: { id: user.id },
 			fileId: fileId,
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -336,8 +434,14 @@ export class QueueService {
 			user: { id: user.id },
 			fileId: fileId,
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -357,8 +461,14 @@ export class QueueService {
 			name,
 			data,
 			opts: {
-				removeOnComplete: true,
-				removeOnFail: true,
+				removeOnComplete: {
+					age: 3600 * 24 * 7, // keep up to 7 days
+					count: 30,
+				},
+				removeOnFail: {
+					age: 3600 * 24 * 7, // keep up to 7 days
+					count: 100,
+				},
 			},
 		};
 	}
@@ -369,8 +479,14 @@ export class QueueService {
 			user: { id: user.id },
 			fileId: fileId,
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -380,8 +496,14 @@ export class QueueService {
 			user: { id: user.id },
 			fileId: fileId,
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -391,8 +513,14 @@ export class QueueService {
 			user: { id: user.id },
 			antenna,
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -402,8 +530,14 @@ export class QueueService {
 			user: { id: user.id },
 			soft: opts.soft,
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -453,8 +587,14 @@ export class QueueService {
 				withReplies: data.withReplies,
 			},
 			opts: {
-				removeOnComplete: true,
-				removeOnFail: true,
+				removeOnComplete: {
+					age: 3600 * 24 * 7, // keep up to 7 days
+					count: 30,
+				},
+				removeOnFail: {
+					age: 3600 * 24 * 7, // keep up to 7 days
+					count: 100,
+				},
 				...opts,
 			},
 		};
@@ -465,16 +605,28 @@ export class QueueService {
 		return this.objectStorageQueue.add('deleteFile', {
 			key: key,
 		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
 	@bindThis
 	public createCleanRemoteFilesJob() {
 		return this.objectStorageQueue.add('cleanRemoteFiles', {}, {
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -505,8 +657,14 @@ export class QueueService {
 			backoff: {
 				type: 'custom',
 			},
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 
@@ -536,8 +694,14 @@ export class QueueService {
 			backoff: {
 				type: 'custom',
 			},
-			removeOnComplete: true,
-			removeOnFail: true,
+			removeOnComplete: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 30,
+			},
+			removeOnFail: {
+				age: 3600 * 24 * 7, // keep up to 7 days
+				count: 100,
+			},
 		});
 	}
 

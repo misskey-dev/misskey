@@ -8,6 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><XHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer>
 		<MkTab v-model="jobState">
+			<option value="completed">completed</option>
+			<option value="failed">failed</option>
 			<option value="active">active</option>
 			<option value="delayed">delayed</option>
 			<option value="wait">wait</option>
@@ -21,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 				<template #suffix>
 					<MkTime :time="job.timestamp" mode="detail"/>
+					<span v-if="job.isFailed" style="color: var(--MI_THEME-error)"><i class="ti ti-alert-triangle"></i></span>
 				</template>
 				<template #footer>
 					<div class="_buttons">
@@ -49,18 +52,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkKeyValue>
 					</div>
 
-					<MkFolder :withSpacer="false" :defaultOpen="true">
-						<template #icon><i class="ti ti-code"></i></template>
+					<MkFolder :withSpacer="false" :defaultOpen="false">
+						<template #icon><i class="ti ti-package"></i></template>
 						<template #label>Data</template>
 
 						<MkCode :code="JSON5.stringify(job.data, null, '  ')"/>
 					</MkFolder>
 
-					<MkFolder :withSpacer="false" :defaultOpen="true">
-						<template #icon><i class="ti ti-code"></i></template>
+					<MkFolder v-if="job.stacktrace.length > 0" :withSpacer="false" :defaultOpen="false">
+						<template #icon><i class="ti ti-alert-triangle"></i></template>
 						<template #label>Error</template>
 
-						<MkCode :code="job.stacktrace"/>
+						<MkCode v-for="log in job.stacktrace" :code="log"/>
 					</MkFolder>
 				</div>
 			</MkFolder>
