@@ -47,19 +47,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps_s">
 						<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
 							<MkKeyValue>
-								<template #key>timestamp</template>
+								<template #key>Created at</template>
 								<template #value><MkTime :time="job.timestamp" mode="detail"/></template>
 							</MkKeyValue>
 							<MkKeyValue v-if="job.processedOn != null">
-								<template #key>processedOn</template>
+								<template #key>Processed at</template>
 								<template #value><MkTime :time="job.processedOn" mode="detail"/></template>
 							</MkKeyValue>
 							<MkKeyValue v-if="job.finishedOn != null">
-								<template #key>finishedOn</template>
+								<template #key>Finished at</template>
 								<template #value><MkTime :time="job.finishedOn" mode="detail"/></template>
 							</MkKeyValue>
+							<MkKeyValue v-if="job.processedOn != null && job.finishedOn != null">
+								<template #key>Spent</template>
+								<template #value>{{ job.finishedOn - job.processedOn }}ms</template>
+							</MkKeyValue>
 							<MkKeyValue v-if="job.failedReason != null">
-								<template #key>failedReason</template>
+								<template #key>Failed reason</template>
 								<template #value><i style="color: var(--MI_THEME-error)" class="ti ti-alert-triangle"></i> {{ job.failedReason }}</template>
 							</MkKeyValue>
 						</div>
@@ -124,9 +128,17 @@ const jobState = ref('latest');
 const jobs = ref([]);
 
 watch([tab, jobState], async () => {
+	const state = jobState.value;
 	jobs.value = await misskeyApi('admin/queue/jobs', {
 		queue: tab.value,
-		state: jobState.value === 'latest' ? ['completed', 'failed'] : [jobState.value],
+		state: state === 'latest' ? ['completed', 'failed'] : [state],
+	}).then(res => {
+		if (state === 'latest') {
+			res.sort((a, b) => a.processedOn > b.processedOn ? -1 : 1);
+		} else if (state === 'delayed') {
+			res.sort((a, b) => (a.processedOn ?? a.timestamp) > (b.processedOn ?? b.timestamp) ? -1 : 1);
+		}
+		return res;
 	});
 }, { immediate: true });
 
