@@ -24,7 +24,7 @@ import { computed, ref } from 'vue';
 import { notificationTypes } from '@@/js/const.js';
 import XNotifications from '@/components/MkNotifications.vue';
 import MkNotes from '@/components/MkNotes.vue';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import MkSwiper from '@/components/MkSwiper.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
