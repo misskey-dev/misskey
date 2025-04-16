@@ -132,14 +132,16 @@ watch(rootEl, () => {
 
 .itemIndicator {
 	position: absolute;
-	top: 0;
+	bottom: -4px;
 	left: 0;
+	right: 0;
 	color: var(--MI_THEME-indicator);
-	font-size: 16px;
+	font-size: 10px;
+	pointer-events: none;
 
 	&:has(.itemIndicateValueIcon) {
 		animation: none;
-		font-size: 12px;
+		font-size: 8px;
 	}
 }
 </style>
