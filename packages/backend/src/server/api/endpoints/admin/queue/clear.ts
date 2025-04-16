@@ -6,7 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { QueueService } from '@/core/QueueService.js';
+import { QUEUE_TYPES, QueueService } from '@/core/QueueService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -18,8 +18,11 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {},
-	required: [],
+	properties: {
+		type: { type: 'string', enum: QUEUE_TYPES },
+		state: { type: 'string', enum: ['*', 'wait', 'delayed'] },
+	},
+	required: ['type', 'state'],
 } as const;
 
 @Injectable()
@@ -29,7 +32,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			this.queueService.destroy();
+			this.queueService.clearQueue(ps.type, ps.state);
 
 			this.moderationLogService.log(me, 'clearQueue');
 		});

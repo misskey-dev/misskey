@@ -38,6 +38,18 @@ import type {
 import type httpSignature from '@peertube/http-signature';
 import type * as Bull from 'bullmq';
 
+export const QUEUE_TYPES = [
+	'system',
+	'endedPollNotification',
+	'deliver',
+	'inbox',
+	'db',
+	'relationship',
+	'objectStorage',
+	'userWebhookDeliver',
+	'systemWebhookDeliver',
+] as const;
+
 @Injectable()
 export class QueueService {
 	constructor(
@@ -529,15 +541,35 @@ export class QueueService {
 	}
 
 	@bindThis
-	public destroy() {
-		this.deliverQueue.once('cleaned', (jobs, status) => {
-			//deliverLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
-		});
-		this.deliverQueue.clean(0, 0, 'delayed');
+	private getQueue(type: typeof QUEUE_TYPES[number]) {
+		switch (type) {
+			case 'system': return this.systemQueue;
+			case 'endedPollNotification': return this.endedPollNotificationQueue;
+			case 'deliver': return this.deliverQueue;
+			case 'inbox': return this.inboxQueue;
+			case 'db': return this.dbQueue;
+			case 'relationship': return this.relationshipQueue;
+			case 'objectStorage': return this.objectStorageQueue;
+			case 'userWebhookDeliver': return this.userWebhookDeliverQueue;
+			case 'systemWebhookDeliver': return this.systemWebhookDeliverQueue;
+			default: throw new Error(`Unrecognized queue type: ${type}`);
+		}
+	}
 
-		this.inboxQueue.once('cleaned', (jobs, status) => {
-			//inboxLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
-		});
-		this.inboxQueue.clean(0, 0, 'delayed');
+	@bindThis
+	public clearQueue(queueType: typeof QUEUE_TYPES[number], state: '*' | 'completed' | 'wait' | 'active' | 'paused' | 'prioritized' | 'delayed' | 'failed') {
+		const queue = this.getQueue(queueType);
+
+		if (state === '*') {
+			queue.clean(0, 0, 'completed');
+			queue.clean(0, 0, 'wait');
+			queue.clean(0, 0, 'active');
+			queue.clean(0, 0, 'paused');
+			queue.clean(0, 0, 'prioritized');
+			queue.clean(0, 0, 'delayed');
+			queue.clean(0, 0, 'failed');
+		} else {
+			queue.clean(0, 0, state);
+		}
 	}
 }
