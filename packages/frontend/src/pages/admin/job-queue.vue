@@ -8,10 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><XHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer>
 		<div class="_gaps">
-			<div class="_buttons">
-				<MkButton @click="promoteAllQueues"><i class="ti ti-reload"></i> {{ i18n.ts.retryAllQueuesNow }}</MkButton>
-				<MkButton danger @click="clear"><i class="ti ti-trash"></i> {{ i18n.ts.clearQueue }}</MkButton>
-			</div>
+			<MkFolder :defaultOpen="true">
+				<template #label>Overview: {{ tab }}</template>
+				<div class="_buttons">
+					<MkButton @click="promoteAllQueues"><i class="ti ti-reload"></i> {{ i18n.ts.retryAllQueuesNow }}</MkButton>
+					<MkButton danger @click="clear"><i class="ti ti-trash"></i> {{ i18n.ts.clearQueue }}</MkButton>
+				</div>
+			</MkFolder>
 
 			<MkTab v-model="jobState">
 				<option value="completed"><i class="ti ti-check"></i> Completed</option>
