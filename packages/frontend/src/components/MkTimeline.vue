@@ -49,7 +49,6 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'note'): void;
 	(ev: 'queue', count: number): void;
 }>();
 
@@ -83,8 +82,6 @@ function prepend(note) {
 	}
 
 	tlComponent.value.pagingComponent?.prepend(note);
-
-	emit('note');
 
 	if (props.sound) {
 		sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
