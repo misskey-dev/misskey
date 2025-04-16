@@ -14,9 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkTab>
 		<div class="_gaps_s">
 			<MkFolder v-for="job in jobs" :key="job.id">
-				<template #label>{{ job.name }}</template>
-				<template #prefix>
-					{{ job.id }}
+				<template #label>
+					<span v-if="job.opts.repeat != null" style="margin-right: 1em;">&lt;repeat&gt;</span>
+					<span v-else style="margin-right: 1em;">#{{ job.id }}</span>
+					<span>{{ job.name }}</span>
 				</template>
 				<template #suffix>
 					<MkTime :time="job.timestamp" mode="detail"/>
@@ -27,6 +28,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton danger rounded @click=""><i class="ti ti-trash"></i> delete</MkButton>
 					</div>
 				</template>
+
+				<div class="_gaps_s">
+					<div style="display: flex; flex-direction: column; gap: 1em;">
+						<MkKeyValue>
+							<template #key>timestamp</template>
+							<template #value><MkTime :time="job.timestamp" mode="detail"/></template>
+						</MkKeyValue>
+						<MkKeyValue>
+							<template #key>processedOn</template>
+							<template #value><MkTime :time="job.processedOn" mode="detail"/></template>
+						</MkKeyValue>
+					</div>
+
+					<MkFolder :withSpacer="false" :defaultOpen="true">
+						<template #icon><i class="ti ti-code"></i></template>
+						<template #label>Data</template>
+
+						<MkCode :code="JSON5.stringify(job.data, null, '  ')"/>
+					</MkFolder>
+				</div>
 			</MkFolder>
 		</div>
 		<br>
@@ -40,6 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
+import JSON5 from 'json5';
 import XHeader from './_header_.vue';
 import type { Ref } from 'vue';
 import * as os from '@/os.js';
@@ -49,6 +71,8 @@ import MkButton from '@/components/MkButton.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkTab from '@/components/MkTab.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkCode from '@/components/MkCode.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 
 const QUEUE_TYPES = [
 	'system',
