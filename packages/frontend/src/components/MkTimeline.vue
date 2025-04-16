@@ -19,6 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, onUnmounted, provide, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkNotes from '@/components/MkNotes.vue';
@@ -71,6 +72,15 @@ const prComponent = useTemplateRef('prComponent');
 const tlComponent = useTemplateRef('tlComponent');
 
 let tlNotesCount = 0;
+
+const POLLING_INTERVAL = 1000 * 10;
+
+useInterval(() => {
+	// TODO
+}, POLLING_INTERVAL, {
+	immediate: false,
+	afterMounted: true,
+});
 
 function prepend(note) {
 	if (tlComponent.value == null) return;
