@@ -159,12 +159,13 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 
 	const onDrag = (ev: MouseEvent | TouchEvent) => {
 		ev.preventDefault();
+		let beforeValue = finalValue.value;
 		const containerRect = containerEl.value!.getBoundingClientRect();
 		const pointerX = 'touches' in ev && ev.touches.length > 0 ? ev.touches[0].clientX : 'clientX' in ev ? ev.clientX : 0;
 		const pointerPositionOnContainer = pointerX - (containerRect.left + (thumbWidth / 2));
 		rawValue.value = Math.min(1, Math.max(0, pointerPositionOnContainer / (containerEl.value!.offsetWidth - thumbWidth)));
 
-		if (props.continuousUpdate) {
+		if (props.continuousUpdate && beforeValue !== finalValue.value) {
 			emit('update:modelValue', finalValue.value);
 		}
 	};
@@ -212,7 +213,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 	> .caption {
 		font-size: 0.85em;
 		padding: 8px 0 0 0;
-		color: var(--MI_THEME-fgTransparentWeak);
+		color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 
 		&:empty {
 			display: none;
@@ -286,7 +287,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 				border-radius: 999px;
 
 				&:hover {
-					background: var(--MI_THEME-accentLighten);
+					background: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
 				}
 			}
 		}

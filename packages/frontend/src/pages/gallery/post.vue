@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkFollowButton v-if="!$i || $i.id != post.user.id" v-model:user="post.user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 						</div>
 					</div>
-					<MkAd :prefer="['horizontal', 'horizontal-big']"/>
+					<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 					<MkContainer :max-height="300" :foldable="true" class="other">
 						<template #icon><i class="ti ti-clock"></i></template>
 						<template #header>{{ i18n.ts.recentPosts }}</template>

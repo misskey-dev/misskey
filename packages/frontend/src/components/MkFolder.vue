@@ -175,7 +175,7 @@ onMounted(() => {
 }
 
 .headerLower {
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: .85em;
 	padding-left: 4px;
 }
@@ -209,13 +209,13 @@ onMounted(() => {
 }
 
 .headerTextSub {
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: .85em;
 }
 
 .headerRight {
 	margin-left: auto;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	white-space: nowrap;
 }
 
@@ -239,7 +239,7 @@ onMounted(() => {
 	bottom: var(--MI-stickyBottom, 0px);
 	left: 0;
 	padding: 12px;
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 	background-size: auto auto;

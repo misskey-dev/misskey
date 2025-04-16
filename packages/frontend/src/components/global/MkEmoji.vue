@@ -25,7 +25,7 @@ const props = defineProps<{
 	menuReaction?: boolean;
 }>();
 
-const react = inject(DI.mfmEmojiReactCallback);
+const react = inject(DI.mfmEmojiReactCallback, null);
 
 const char2path = prefer.s.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 

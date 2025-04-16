@@ -341,7 +341,7 @@ defineExpose({
 			box-sizing: border-box;
 			border-right: solid 0.5px var(--MI_THEME-divider);
 			overflow: auto;
-			height: 100dvh;
+			height: 100cqh;
 		}
 
 		> .main {

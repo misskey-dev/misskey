@@ -9,32 +9,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 		v-model="searchQuery"
 		:placeholder="i18n.ts._chat.searchMessages"
 		type="search"
+		@enter="search()"
 	>
 		<template #prefix><i class="ti ti-search"></i></template>
 	</MkInput>
 
-	<MkButton v-if="searchQuery.length > 0" primary rounded @click="search">{{ i18n.ts.search }}</MkButton>
+	<MkButton primary rounded @click="search">{{ i18n.ts.search }}</MkButton>
 
 	<MkFoldableSection v-if="searched">
 		<template #header>{{ i18n.ts.searchResult }}</template>
 
-		<div class="_gaps_s">
+		<div v-if="searchResults.length > 0" class="_gaps_s">
 			<div v-for="message in searchResults" :key="message.id" :class="$style.searchResultItem">
 				<XMessage :message="message" :user="message.fromUser" :isSearchResult="true"/>
 			</div>
+		</div>
+		<div v-else class="_fullinfo">
+			<img :src="infoImageUrl" draggable="false"/>
+			<div>{{ i18n.ts.notFound }}</div>
 		</div>
 	</MkFoldableSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XMessage from './XMessage.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
+import { infoImageUrl } from '@/instance.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import * as os from '@/os.js';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
