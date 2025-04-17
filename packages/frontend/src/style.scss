@@ -178,8 +178,11 @@ rt {
 }
 
 // one-line text
-._1t {
+._t {
 	line-height: 1;
+	overflow: clip;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 // multi-line text

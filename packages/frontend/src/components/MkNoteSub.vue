@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
 		<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 		<div :class="$style.body">
-			<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
+			<MkNoteHeader :class="$style.header" :note="note" :mini="true" style="margin: 4px 0;"/>
 			<div>
 				<p v-if="note.cw != null" :class="$style.cw">
 					<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'"/>

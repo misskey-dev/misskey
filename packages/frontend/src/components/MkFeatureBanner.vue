@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div v-panel :class="$style.root">
 	<img :class="$style.img" :src="icon"/>
-	<div :class="$style.text">
+	<div :class="$style.text" class="_mt">
 		<slot></slot>
 	</div>
 </div>

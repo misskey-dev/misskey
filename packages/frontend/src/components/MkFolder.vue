@@ -143,7 +143,7 @@ onMounted(() => {
 	align-items: center;
 	width: 100%;
 	box-sizing: border-box;
-	padding: 10px 12px 10px 12px;
+	padding: 11px 12px 11px 12px;
 	background: var(--MI_THEME-folderHeaderBg);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));

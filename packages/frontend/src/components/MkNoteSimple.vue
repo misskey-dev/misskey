@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root">
 	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 	<div :class="$style.main">
-		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
+		<MkNoteHeader :class="$style.header" :note="note" :mini="true" style="margin: 4px 0;"/>
 		<div>
 			<p v-if="note.cw != null" :class="$style.cw">
 				<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>

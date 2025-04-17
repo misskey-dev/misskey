@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<Mfm
 				v-if="message.text"
 				ref="text"
-				class="_selectable"
+				class="_selectable _mt"
 				:text="message.text"
 				:i="$i"
 				:nyaize="'respect'"

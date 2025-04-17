@@ -50,10 +50,10 @@ const props = defineProps<{
 	align-items: center;
 	width: 100%;
 	box-sizing: border-box;
-	padding: 10px 14px;
+	padding: 12px 14px;
 	background: var(--MI_THEME-folderHeaderBg);
 	border-radius: 6px;
-	font-size: 0.9em;
+	font-size: 90%;
 
 	&:hover {
 		text-decoration: none;

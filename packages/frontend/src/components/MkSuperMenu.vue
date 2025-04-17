@@ -49,12 +49,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
 				<span class="text">
 					<template v-if="item.isRoot">
-						{{ item.label }}
+						<span class="_mt">{{ item.label }}</span>
 					</template>
 					<template v-else>
-						<span style="opacity: 0.7; font-size: 90%;">{{ item.parentLabels.join(' > ') }}</span>
+						<span style="opacity: 0.7; font-size: 90%;" class="_mt">{{ item.parentLabels.join(' > ') }}</span>
 						<br>
-						<span>{{ item.label }}</span>
+						<span class="_mt">{{ item.label }}</span>
 					</template>
 				</span>
 			</MkA>
@@ -235,7 +235,7 @@ function searchOnKeyDown(ev: KeyboardEvent) {
 				align-items: center;
 				width: 100%;
 				box-sizing: border-box;
-				padding: 10px 16px 10px 8px;
+				padding: 11px 16px 11px 8px;
 				border-radius: 9px;
 				font-size: 0.9em;
 

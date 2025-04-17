@@ -191,6 +191,7 @@ function onInputKeydown(evt: KeyboardEvent) {
 
 .icon {
 	font-size: 24px;
+	padding: 4px 0;
 
 	& + .title {
 		margin-top: 8px;
