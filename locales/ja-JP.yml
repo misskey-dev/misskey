@@ -3173,11 +3173,11 @@ _yami:
   _yamiModeSwitcher:
     recommendedFor: "こんな方におすすめ"
     normal: "通常"
-    normal1: "LTLが使えます"
-    normal2: "全ての投稿した内容はやみタイムラインに表示されません"
+    normal1: やみTLが使えません"
+    normal2: "デフォルトで全投稿が通常ノートになり、やみタイムラインに表示されません"
     normalRecommend: "SNSでの通常の交流を楽しみたい方"
     yami1: "やみTLが使えます"
-    yami2: "全ての投稿した内容はやみタイムラインのみに表示されます"
+    yami2: "デフォルトで全投稿がやみノートになり、やみタイムラインのみに表示されます"
     yamiRecommend: "SNSに疲れてカームダウンしたい方"
     saveConfirmDescription: "モードを切り替えると、公開範囲が変わります"
 

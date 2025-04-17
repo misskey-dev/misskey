@@ -11874,11 +11874,11 @@ export interface Locale extends ILocale {
              */
             "normal": string;
             /**
-             * LTLが使えます
+             * やみTLが使えません"
              */
             "normal1": string;
             /**
-             * 全ての投稿した内容はやみタイムラインに表示されません
+             * デフォルトで全投稿が通常ノートになり、やみタイムラインに表示されません
              */
             "normal2": string;
             /**
@@ -11890,7 +11890,7 @@ export interface Locale extends ILocale {
              */
             "yami1": string;
             /**
-             * 全ての投稿した内容はやみタイムラインのみに表示されます
+             * デフォルトで全投稿がやみノートになり、やみタイムラインのみに表示されます
              */
             "yami2": string;
             /**
