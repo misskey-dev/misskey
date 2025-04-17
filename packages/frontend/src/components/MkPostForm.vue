@@ -220,8 +220,6 @@ watch(() => prefer.s.defaultScheduledNoteDelete, (newValue) => {
 // フォームがリセットされたときに初期化（新規投稿時）
 watch(() => props.initialNote, () => {
 	scheduledNoteDelete.value = getInitialScheduledDelete();
-	// ユーザーのやみモード状態を反映するように追加
-	isNoteInYamiMode.value = $i.isInYamiMode;
 });
 const useCw = ref<boolean>(!!props.initialCw);
 const showPreview = ref(store.s.showPreview);
