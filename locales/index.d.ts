@@ -6474,13 +6474,13 @@ export interface Locale extends ILocale {
     };
     "_timelineDescription": {
         /**
-         * やみタイムラインでは、やみモードが有効の人のみが閲覧・投稿できます。
-         */
-        "yami": string;
-        /**
          * ホームタイムラインでは、あなたがフォローしているアカウントの投稿を見られます。
          */
         "home": string;
+        /**
+         * やみタイムラインでは、あなたがフォローしているアカウントのやみノートとパブリックやみノートを見られます。
+         */
+        "yami": string;
         /**
          * ローカルタイムラインでは、このサーバーにいるユーザー全員の投稿を見られます。
          */
@@ -11878,11 +11878,7 @@ export interface Locale extends ILocale {
              */
             "normal1": string;
             /**
-             * デフォルトで全投稿が通常ノートになり、やみタイムラインに表示されません
-             */
-            "normal2": string;
-            /**
-             * SNSでの通常の交流を楽しみたい方
+             * SNSでふかいやみを見ず通常の交流を楽しみたい方
              */
             "normalRecommend": string;
             /**
@@ -11890,15 +11886,11 @@ export interface Locale extends ILocale {
              */
             "yami1": string;
             /**
-             * デフォルトで全投稿がやみノートになり、やみタイムラインのみに表示されます
-             */
-            "yami2": string;
-            /**
-             * SNSに疲れてカームダウンしたい方
+             * SNSでの通常の交流を離れてカームダウンしたい方
              */
             "yamiRecommend": string;
             /**
-             * モードを切り替えると、公開範囲が変わります
+             * モードを切り替えると、やみノートを閲覧できるかどうかが変わります
              */
             "saveConfirmDescription": string;
         };

@@ -1610,7 +1610,7 @@ _initialTutorial:
     description: "The functions introduced here are just a small part. For a more detailed understanding of using Misskey, please refer to {link}."
 _timelineDescription:
   home: "In the Home timeline, you can see notes from accounts you follow."
-  yami: "In the Yami timeline, you can see notes from accounts you follow, but with the visibility of the notes set to 'followers only.'"
+  yami: "In the Yami timeline, you can see the Yami notes of the accounts you follow and the Public Yami notes."
   local: "In the Local timeline, you can see notes from all users on this server."
   social: "The Social timeline displays notes from both the Home and Local timelines."
   global: "In the Global timeline, you can see notes from all connected servers."
@@ -3037,11 +3037,9 @@ _yami:
     recommendedFor: "Recommended for"
     normal: "Normal"
     normal1: "You cannot see other people's Yami notes."
-    normal2: "By default, all posts will be in the normal notes and will not appear in the Yami Timeline."
     normalRecommend: "Those who want to enjoy regular interaction on social networking sites."
     yami1: "You can see other people's Yami notes"
-    yami2: "By default, all posts become YamiNotes and are displayed only in the YamiTimeline."
-    yamiRecommend: "Those who are tired of social networking and want to calm down."
+    yamiRecommend: "Those who want to calm down and get away from the interaction."
     saveConfirmDescription: "Switching modes changes the scope of publication."
 _followRequest:
   recieved: "Received request"
