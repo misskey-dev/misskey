@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkSpacer>
 	</div>
-	<div v-if="!(narrow && currentPage?.route.name == null)" class="main _pageContainer">
+	<div v-if="!(narrow && currentPage?.route.name == null)" class="main _pageContainer" style="height: 100%;">
 		<NestedRouterView/>
 	</div>
 </div>
@@ -334,6 +334,8 @@ defineExpose({
 
 <style lang="scss" scoped>
 .hiyeyicy {
+	height: 100%;
+
 	&.wide {
 		display: flex;
 		margin: 0 auto;
