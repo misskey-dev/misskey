@@ -1134,6 +1134,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 				this.fanoutTimelineService.push(`yamiTimelineWithFiles:${user.id}`, note.id, 300, r);
 			}
 
+			// パブリックなやみノートは共通キーにも追加
+			if (note.visibility === 'public' && note.userHost == null) {
+				this.fanoutTimelineService.push('yamiPublicNotes', note.id, 1000, r);
+				if (note.fileIds.length > 0) {
+					this.fanoutTimelineService.push('yamiPublicNotesWithFiles', note.id, 500, r);
+				}
+			}
+
 			// 自分自身のプロフィールタイムラインにも追加
 			this.fanoutTimelineService.push(`userTimeline:${user.id}`, note.id, user.host == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
 			if (note.fileIds.length > 0) {

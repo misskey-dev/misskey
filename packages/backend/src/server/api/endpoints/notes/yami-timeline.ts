@@ -2,12 +2,6 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-// ホームタイムラインとfeaturedから持ってくる
-// UntilIDが3日より前だった場合はもうfeauturedから取得しない（feauturedがそれより前のデータを持っていないため）
-// ホームライムラインからの結果が最小のID（最古のノートになるように返す）ページネーションが壊れる+ホームタイムラインの結果に抜け漏れが発生するため
-// feauturedに抜け漏れが出るのはTODO
-// featuredのミュートとブロックを確認→2つの結果を比べる→feauturedをホームタイムラインの結果より新しくなるようにトリム→2つの結果を一意にしつつlimitでトリム→id順にソートしてreturn
-
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { NotesRepository, ChannelFollowingsRepository, FollowingsRepository } from '@/models/_.js';
@@ -104,48 +98,98 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.YamiTlDisabled);
 			}
 
-			// 最もシンプルな実装 - DBから直接フィルタして取得
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
-				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('note.reply', 'reply')
-				.leftJoinAndSelect('note.renote', 'renote')
-				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.andWhere('note.isNoteInYamiMode = TRUE'); // やみモード投稿のみ
+			// Redis Timelinesを使用した実装
+			const baseTimeline = `yamiTimeline:${me.id}`;
+			const baseTimelineWithFiles = `yamiTimelineWithFiles:${me.id}`;
+			const publicTimelines = me.isInYamiMode ? ['yamiPublicNotes'] : [];
+			const publicTimelinesWithFiles = me.isInYamiMode ? ['yamiPublicNotesWithFiles'] : [];
 
-			// 自分がやみモードでない場合は自分の投稿だけ表示
-			if (!me.isInYamiMode) {
-				query.andWhere('note.userId = :meId', { meId: me.id });
-			} else {
-				// やみモードONの場合は通常のフィルタリング
-				// フォロー中のユーザーに限定
-				const followings = await this.followingsRepository.find({
-					where: { followerId: me.id },
-					select: ['followeeId'],
-				});
+			const redisTimelines = ps.withFiles
+				? [baseTimeline, ...publicTimelines, baseTimelineWithFiles, ...publicTimelinesWithFiles]
+				: [baseTimeline, ...publicTimelines];
 
-				const followingIds = followings.map(x => x.followeeId);
-				query.andWhere(new Brackets(qb => {
-					qb.where('note.userId = :meId', { meId: me.id });
-					if (followingIds.length > 0) {
-						qb.orWhere('note.userId IN (:...followingIds)', { followingIds });
+			return await this.fanoutTimelineEndpointService.timeline({
+				untilId: ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null),
+				sinceId: ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null),
+				limit: ps.limit,
+				allowPartial: false, // 確実にDBフォールバックも使うようにfalse
+				me,
+				useDbFallback: true,
+				redisTimelines: redisTimelines,
+				noteFilter: note => note.isNoteInYamiMode,
+				excludePureRenotes: !ps.withRenotes,
+				localOnly: ps.localOnly,
+				dbFallback: async (untilId, sinceId, limit) => {
+					const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
+						sinceId, untilId)
+						.innerJoinAndSelect('note.user', 'user')
+						.leftJoinAndSelect('note.reply', 'reply')
+						.leftJoinAndSelect('note.renote', 'renote')
+						.leftJoinAndSelect('reply.user', 'replyUser')
+						.leftJoinAndSelect('renote.user', 'renoteUser')
+						.andWhere('note.isNoteInYamiMode = TRUE');
+
+					// 自分がやみモードでない場合は自分の投稿だけ表示
+					if (!me.isInYamiMode) {
+						query.andWhere('note.userId = :meId', { meId: me.id });
+					} else {
+						// やみモードONの場合は通常のフィルタリング
+						const followings = await this.followingsRepository.find({
+							where: { followerId: me.id },
+							select: ['followeeId'],
+						});
+
+						const followingIds = followings.map(x => x.followeeId);
+						query.andWhere(new Brackets(qb => {
+							// 条件1: 自分の投稿
+							qb.where('note.userId = :meId', { meId: me.id });
+
+							if (followingIds.length > 0) {
+								// 条件2: フォロー中のユーザーの投稿
+								qb.orWhere(new Brackets(qb2 => {
+									// パブリック投稿のみ対応
+									qb2.where('note.userId IN (:...followingIds) AND note.visibility = :public',
+										{ followingIds, public: 'public' });
+
+									// 追加すべき条件
+									// フォロワー限定投稿
+									qb2.orWhere('note.userId IN (:...followingIds) AND note.visibility = :followers',
+										{ followingIds, followers: 'followers' });
+
+									// ホーム投稿
+									qb2.orWhere('note.userId IN (:...followingIds) AND note.visibility = :home',
+										{ followingIds, home: 'home' });
+								}));
+
+								// ダイレクト投稿
+								qb.orWhere(new Brackets(qb2 => {
+									qb2.where('note.visibility = :specified', { specified: 'specified' })
+										.andWhere(':meId = ANY(note."visibleUserIds")', { meId: me.id });
+								}));
+							}
+
+							// 条件3: パブリックやみノート（ローカルのみ）- ハイブリッドTLと同様
+							qb.orWhere('note.visibility = :public AND note.userHost IS NULL',
+								{ public: 'public' });
+						}));
 					}
-				}));
-			}
 
-			// 他のフィルター条件を追加
-			if (ps.withFiles) {
-				query.andWhere('note.fileIds != \'{}\'');
-			}
+					// 他のフィルター条件を追加
+					if (ps.withFiles) {
+						query.andWhere('note.fileIds != \'{}\'');
+					}
 
-			if (ps.withRenotes === false) {
-				query.andWhere('note.renoteId IS NULL');
-			}
+					if (ps.withRenotes === false) {
+						query.andWhere('note.renoteId IS NULL');
+					}
 
-			const notes = await query.limit(ps.limit).getMany();
+					// ソート順を明示的に指定
+					query.orderBy('note.id', 'DESC');
 
-			return await this.noteEntityService.packMany(notes, me);
+					const notes = await query.limit(limit).getMany();
+					return notes;
+				},
+			});
 		});
 	}
 }

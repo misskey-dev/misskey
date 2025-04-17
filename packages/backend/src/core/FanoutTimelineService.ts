@@ -29,6 +29,8 @@ export type FanoutTimelineName = (
 	| `yamiTimeline:${string}` // ユーザー個別のやみタイムライン
 	| 'yamiTimelineWithFiles'
 	| `yamiTimelineWithFiles:${string}`
+	| 'yamiPublicNotes' // パブリックやみノートのタイムライン (追加)
+	| 'yamiPublicNotesWithFiles' // ファイル付きパブリックやみノートのタイムライン (追加)
 	| 'yamiTimelineWithReplies' // only replies are included
 	| `yamiTimelineWithReplyTo:${string}` // Only replies to specific local user are included. Parameter is reply user id.
 	// global timeline
