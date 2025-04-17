@@ -114,19 +114,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.andWhere('note.isNoteInYamiMode = TRUE'); // やみモード投稿のみ
 
-			// フォロー中のユーザーに限定
-			const followings = await this.followingsRepository.find({
-				where: { followerId: me.id },
-				select: ['followeeId'],
-			});
+			// 自分がやみモードでない場合は自分の投稿だけ表示
+			if (!me.isInYamiMode) {
+				query.andWhere('note.userId = :meId', { meId: me.id });
+			} else {
+				// やみモードONの場合は通常のフィルタリング
+				// フォロー中のユーザーに限定
+				const followings = await this.followingsRepository.find({
+					where: { followerId: me.id },
+					select: ['followeeId'],
+				});
 
-			const followingIds = followings.map(x => x.followeeId);
-			query.andWhere(new Brackets(qb => {
-				qb.where('note.userId = :meId', { meId: me.id });
-				if (followingIds.length > 0) {
-					qb.orWhere('note.userId IN (:...followingIds)', { followingIds });
-				}
-			}));
+				const followingIds = followings.map(x => x.followeeId);
+				query.andWhere(new Brackets(qb => {
+					qb.where('note.userId = :meId', { meId: me.id });
+					if (followingIds.length > 0) {
+						qb.orWhere('note.userId IN (:...followingIds)', { followingIds });
+					}
+				}));
+			}
 
 			// 他のフィルター条件を追加
 			if (ps.withFiles) {

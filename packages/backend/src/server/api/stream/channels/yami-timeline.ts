@@ -49,6 +49,9 @@ class YamiTimelineChannel extends Channel {
 
 		const isMe = this.user!.id === note.userId;
 
+		// 【追加】自分がやみモードでない場合は自分の投稿だけ表示
+		if (!isMe && !this.user!.isInYamiMode) return;
+
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
 		// 以下、通常のフィルタリングロジック

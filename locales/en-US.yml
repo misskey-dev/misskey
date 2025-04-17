@@ -3036,10 +3036,10 @@ _yami:
   _yamiModeSwitcher:
     recommendedFor: "Recommended for"
     normal: "Normal"
-    normal1: "Yami TL is not available."
+    normal1: "You cannot see other people's Yami notes."
     normal2: "By default, all posts will be in the normal notes and will not appear in the Yami Timeline."
     normalRecommend: "Those who want to enjoy regular interaction on social networking sites."
-    yami1: "Yami TL is available."
+    yami1: "You can see other people's Yami notes"
     yami2: "By default, all posts become YamiNotes and are displayed only in the YamiTimeline."
     yamiRecommend: "Those who are tired of social networking and want to calm down."
     saveConfirmDescription: "Switching modes changes the scope of publication."
