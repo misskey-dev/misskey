@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</datalist>
 		<div ref="suffixEl" :class="$style.suffix"><slot name="suffix"></slot></div>
 	</div>
-	<div :class="$style.caption"><slot name="caption"></slot></div>
+	<div :class="$style.caption" class="_mt"><slot name="caption"></slot></div>
 
 	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 </div>

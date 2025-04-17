@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@input="onInput"
 		>
 	</div>
-	<div :class="$style.caption"><slot name="caption"></slot></div>
+	<div :class="$style.caption" class="_mt"><slot name="caption"></slot></div>
 </div>
 </template>
 

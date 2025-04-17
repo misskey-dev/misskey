@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else-if="notification.type === 'app'">{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
 		</header>
-		<div>
+		<div class="_mt">
 			<MkA v-if="notification.type === 'reaction' || notification.type === 'reaction:grouped'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
@@ -296,6 +296,7 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	right: -2px;
 	width: 20px;
 	height: 20px;
+	line-height: 20px;
 	box-sizing: border-box;
 	border-radius: 100%;
 	background: var(--MI_THEME-panel);
@@ -310,73 +311,61 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 }
 
 .t_follow, .t_followRequestAccepted, .t_receiveFollowRequest {
-	padding: 3px;
 	background: var(--eventFollow);
 	pointer-events: none;
 }
 
 .t_renote {
-	padding: 3px;
 	background: var(--eventRenote);
 	pointer-events: none;
 }
 
 .t_quote {
-	padding: 3px;
 	background: var(--eventRenote);
 	pointer-events: none;
 }
 
 .t_reply {
-	padding: 3px;
 	background: var(--eventReply);
 	pointer-events: none;
 }
 
 .t_mention {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_pollEnded {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_achievementEarned {
-	padding: 3px;
 	background: var(--eventAchievement);
 	pointer-events: none;
 }
 
 .t_exportCompleted {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_roleAssigned {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_login {
-	padding: 3px;
 	background: var(--eventLogin);
 	pointer-events: none;
 }
 
 .t_createToken {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_chatRoomInvitationReceived {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
@@ -390,6 +379,7 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	display: flex;
 	align-items: baseline;
 	white-space: nowrap;
+	margin: 4px 0;
 }
 
 .headerName {

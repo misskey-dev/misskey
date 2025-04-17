@@ -31,9 +31,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-for="item in (items2 ?? [])">
 			<div v-if="item.type === 'divider'" role="separator" tabindex="-1" :class="$style.divider"></div>
 
-			<span v-else-if="item.type === 'label'" role="menuitem" tabindex="-1" :class="[$style.label, $style.item]">
-				<span style="opacity: 0.7;">{{ item.text }}</span>
-			</span>
+			<div v-else-if="item.type === 'label'" role="menuitem" tabindex="-1" :class="[$style.label]">
+				<span>{{ item.text }}</span>
+			</div>
 
 			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
@@ -484,9 +484,9 @@ onBeforeUnmount(() => {
 			min-width: 230px;
 
 			> .item {
-				padding: 6px 20px;
+				padding: 0 20px;
+				min-height: 35px;
 				font-size: 0.95em;
-				line-height: 24px;
 			}
 		}
 	}
@@ -541,12 +541,12 @@ onBeforeUnmount(() => {
 	display: flex;
 	align-items: center;
 	position: relative;
-	padding: 5px 16px;
+	padding: 0 16px;
+	min-height: 30px;
 	width: 100%;
 	box-sizing: border-box;
 	white-space: nowrap;
 	font-size: 0.9em;
-	line-height: 20px;
 	text-align: left;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -619,12 +619,6 @@ onBeforeUnmount(() => {
 		--menuActiveBg: var(--MI_THEME-accentedBg);
 	}
 
-	&.label {
-		pointer-events: none;
-		font-size: 0.7em;
-		padding-bottom: 4px;
-	}
-
 	&.pending {
 		pointer-events: none;
 		opacity: 0.7;
@@ -674,7 +668,6 @@ onBeforeUnmount(() => {
 
 .icon {
 	margin-right: 8px;
-	line-height: 1;
 }
 
 .caret {
@@ -697,6 +690,19 @@ onBeforeUnmount(() => {
 .divider {
 	margin: 8px 0;
 	border-top: solid 0.5px var(--MI_THEME-divider);
+}
+
+.label {
+	position: relative;
+	padding: 6px 16px;
+	box-sizing: border-box;
+	white-space: nowrap;
+	font-size: 0.7em;
+	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	opacity: 0.7;
+	pointer-events: none;
 }
 
 .radioIcon {

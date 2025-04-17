@@ -97,14 +97,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:emojiUrls="appearNote.emojis"
 					:enableEmojiMenu="true"
 					:enableEmojiMenuReaction="true"
-					class="_selectable"
+					class="_selectable _mt"
 				/>
 				<a v-if="appearNote.renote != null" :class="$style.rn">RN:</a>
 				<div v-if="translating || translation" :class="$style.translation">
 					<MkLoading v-if="translating" mini/>
 					<div v-else-if="translation">
 						<b>{{ i18n.tsx.translatedFrom({ x: translation.sourceLang }) }}: </b>
-						<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis" class="_selectable"/>
+						<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis" class="_selectable _mt"/>
 					</div>
 				</div>
 				<div v-if="appearNote.files && appearNote.files.length > 0">

@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XCode :class="$style.codeEditorHighlighter" :codeEditor="true" :code="v" :lang="lang"/>
 		</div>
 	</div>
-	<div :class="$style.caption"><slot name="caption"></slot></div>
+	<div :class="$style.caption" class="_mt"><slot name="caption"></slot></div>
 	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>

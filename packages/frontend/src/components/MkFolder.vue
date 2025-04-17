@@ -10,10 +10,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button :class="[$style.header, { [$style.opened]: opened }]" class="_button" role="button" data-cy-folder-header @click="toggle">
 				<div :class="$style.headerIcon"><slot name="icon"></slot></div>
 				<div :class="$style.headerText">
-					<div :class="$style.headerTextMain">
+					<div :class="$style.headerTextMain" class="_1t">
 						<MkCondensedLine :minScale="2 / 3"><slot name="label"></slot></MkCondensedLine>
 					</div>
-					<div :class="$style.headerTextSub">
+					<div v-if="$slots.caption" :class="$style.headerTextSub" class="_1t">
 						<slot name="caption"></slot>
 					</div>
 				</div>
@@ -143,7 +143,7 @@ onMounted(() => {
 	align-items: center;
 	width: 100%;
 	box-sizing: border-box;
-	padding: 9px 12px 9px 12px;
+	padding: 11px 12px 11px 12px;
 	background: var(--MI_THEME-folderHeaderBg);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
@@ -209,6 +209,7 @@ onMounted(() => {
 }
 
 .headerTextSub {
+	margin-top: 4px;
 	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: .85em;
 }

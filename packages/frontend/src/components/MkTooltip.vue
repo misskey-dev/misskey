@@ -106,8 +106,8 @@ onUnmounted(() => {
 
 .root {
 	position: absolute;
-	font-size: 0.8em;
-	padding: 8px 12px;
+	font-size: 80%;
+	padding: 10px 12px;
 	box-sizing: border-box;
 	text-align: center;
 	border-radius: 4px;

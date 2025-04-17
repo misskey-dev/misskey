@@ -124,7 +124,7 @@ function onMousedown(evt: MouseEvent): void {
 	display: block;
 	min-width: 100px;
 	width: max-content;
-	padding: 7px 14px;
+	padding: 9px 14px;
 	text-align: center;
 	font-weight: normal;
 	font-size: 95%;
@@ -155,12 +155,12 @@ function onMousedown(evt: MouseEvent): void {
 
 	&.small {
 		font-size: 90%;
-		padding: 6px 12px;
+		padding: 8px 12px;
 	}
 
 	&.large {
 		font-size: 100%;
-		padding: 8px 16px;
+		padding: 10px 16px;
 	}
 
 	&.full {

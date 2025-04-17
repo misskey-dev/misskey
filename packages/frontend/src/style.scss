@@ -32,7 +32,7 @@ html {
 	overflow-wrap: break-word;
 	font-family: 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
 	font-size: 14px;
-	line-height: 1.35;
+	line-height: 1;
 	text-size-adjust: 100%;
 	tab-size: 2;
 	-webkit-text-size-adjust: 100%;
@@ -163,17 +163,31 @@ rt {
 
 .ti {
 	width: 1.28em;
-	vertical-align: -12%;
-	line-height: 1em;
+	vertical-align: -20%;
+	line-height: 0.5;
 
 	&::before {
 		font-size: 128%;
+		line-height: 0.5;
 	}
 }
 
 .ti-fw {
 	display: inline-block;
 	text-align: center;
+}
+
+// one-line text
+._t {
+	line-height: 1;
+	overflow: clip;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+// multi-line text
+._mt {
+	line-height: 1.35;
 }
 
 ._pageContainer {
