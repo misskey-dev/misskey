@@ -103,13 +103,15 @@ const items = computed(() => {
 }
 .itemHeadPoint {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
 	width: 13px;
 	height: 13px;
 	background: color-mix(in srgb, var(--MI_THEME-accent), var(--MI_THEME-bg) 75%);
 	border-radius: 50%;
-	transform: translate(-50%, -50%);
 }
 
 .itemBody {
