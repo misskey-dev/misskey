@@ -157,8 +157,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</template>
 								<template #footer>
 									<div class="_buttons">
-										<MkButton rounded @click=""><i class="ti ti-reload"></i> promote</MkButton>
-										<MkButton danger rounded @click=""><i class="ti ti-trash"></i> delete</MkButton>
+										<MkButton rounded @click=""><i class="ti ti-reload"></i> Promote</MkButton>
+										<MkButton danger rounded @click=""><i class="ti ti-player-stop"></i> Pause</MkButton>
+										<MkButton danger rounded @click=""><i class="ti ti-trash"></i> Delete</MkButton>
+										<MkButton style="margin-left: auto;" rounded @click=""><i class="ti ti-copy"></i> Copy raw data</MkButton>
 									</div>
 								</template>
 
@@ -190,7 +192,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 										<template #icon><i class="ti ti-package"></i></template>
 										<template #label>Data</template>
 
-										<MkCode :code="JSON5.stringify(job.data, null, '  ')"/>
+										<MkCode :code="JSON5.stringify(job.data, null, '  ')" lang="js"/>
 									</MkFolder>
 
 									<MkFolder v-if="job.returnValue != null" :withSpacer="false" :defaultOpen="false">

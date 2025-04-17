@@ -70,11 +70,9 @@ function copy() {
 .codeBlockFallbackRoot {
 	display: block;
 	overflow-wrap: anywhere;
-	background: var(--MI_THEME-bg);
 	padding: 1em;
-	margin: .5em 0;
+	margin: 0;
 	overflow: auto;
-	border-radius: 8px;
 }
 
 .codeBlockFallbackCode {
