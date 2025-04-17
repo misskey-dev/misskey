@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkSpacer>
 	</div>
-	<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
+	<div v-if="!(narrow && currentPage?.route.name == null)" class="main _pageContainer">
 		<NestedRouterView/>
 	</div>
 </div>
