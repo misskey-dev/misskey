@@ -626,13 +626,13 @@ function getMenu() {
 		text: i18n.ts.upload + ' (' + i18n.ts.compress + ')',
 		icon: 'ti ti-upload',
 		action: () => {
-			chooseFileFromPc(true, { keepOriginal: false });
+			chooseFileFromPc(true, { uploadFolder: folder.value?.id, keepOriginal: false });
 		},
 	}, {
 		text: i18n.ts.upload,
 		icon: 'ti ti-upload',
 		action: () => {
-			chooseFileFromPc(true, { keepOriginal: true });
+			chooseFileFromPc(true, { uploadFolder: folder.value?.id, keepOriginal: true });
 		},
 	}, {
 		text: i18n.ts.fromUrl,

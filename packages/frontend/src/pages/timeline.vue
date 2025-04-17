@@ -52,11 +52,14 @@ import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
 import { useRouter } from '@/router.js';
+import { useScrollPositionKeeper } from '@/use/use-scroll-position-keeper.js';
 
 provide('shouldOmitHeaderTitle', true);
 
 const tlComponent = useTemplateRef('tlComponent');
 const rootEl = useTemplateRef('rootEl');
+
+useScrollPositionKeeper(rootEl);
 
 const router = useRouter();
 router.useListener('same', () => {

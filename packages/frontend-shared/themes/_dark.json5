@@ -33,6 +33,8 @@
 		navFg: '@fg',
 		navActive: '@accent',
 		navIndicator: '@indicator',
+		pageHeaderBg: '@bg',
+		pageHeaderFg: '@fg',
 		link: '#44a4c1',
 		hashtag: '#ff9156',
 		mention: '@accent',

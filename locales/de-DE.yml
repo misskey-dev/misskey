@@ -2368,6 +2368,7 @@ _widgets:
     chooseList: "Liste auswählen"
   clicker: "Klickzähler"
   birthdayFollowings: "Nutzer, die heute Geburtstag haben"
+  chat: "Chat"
 _cw:
   hide: "Inhalt verbergen"
   show: "Inhalt anzeigen"
@@ -2634,6 +2635,7 @@ _deck:
     mentions: "Erwähnungen"
     direct: "Direktnachrichten"
     roleTimeline: "Rollenchronik"
+    chat: "Chat"
 _dialog:
   charactersExceeded: "Maximallänge überschritten! Momentan {current} von {max}"
   charactersBelow: "Minimallänge unterschritten! Momentan {current} von {min}"

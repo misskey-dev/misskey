@@ -78,6 +78,7 @@ export type AdminInviteListRequest = operations['admin___invite___list']['reques
 export type AdminInviteListResponse = operations['admin___invite___list']['responses']['200']['content']['application/json'];
 export type AdminMetaResponse = operations['admin___meta']['responses']['200']['content']['application/json'];
 export type AdminPromoCreateRequest = operations['admin___promo___create']['requestBody']['content']['application/json'];
+export type AdminQueueClearRequest = operations['admin___queue___clear']['requestBody']['content']['application/json'];
 export type AdminQueueDeliverDelayedResponse = operations['admin___queue___deliver-delayed']['responses']['200']['content']['application/json'];
 export type AdminQueueInboxDelayedResponse = operations['admin___queue___inbox-delayed']['responses']['200']['content']['application/json'];
 export type AdminQueuePromoteRequest = operations['admin___queue___promote']['requestBody']['content']['application/json'];
