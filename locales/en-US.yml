@@ -3034,13 +3034,10 @@ _yami:
   yamiNotes: "Yami notes"
   yamiTimeline: "Yami timeline"
   _yamiModeSwitcher:
-    recommendedFor: "Recommended for"
-    normal: "Normal"
-    normal1: "You cannot see other people's Yami notes."
-    normalRecommend: "Those who want to enjoy regular interaction on social networking sites."
-    yami1: "You can see other people's Yami notes"
-    yamiRecommend: "Those who want to calm down and get away from the interaction."
-    saveConfirmDescription: "Switching modes changes the scope of publication."
+    normal: "Normal mode"
+    normal1: "Do not display other people's Yamig notes"
+    yami1: "Displays other people's Yami notes."
+    saveConfirmDescription: "Switching the mode changes whether the Yami notes is displayed or not."
 _followRequest:
   recieved: "Received request"
   sent: "Sent request"

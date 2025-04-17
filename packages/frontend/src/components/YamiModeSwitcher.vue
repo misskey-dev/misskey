@@ -12,10 +12,6 @@
 			<ul>
 				<li>{{ i18n.ts._yami._yamiModeSwitcher.yami1 }}</li>
 			</ul>
-			<div :class="$style.radioRecommendedFor">
-				<div :class="$style.title">{{ i18n.ts._yami._yamiModeSwitcher.recommendedFor }}</div>
-				<div>{{ i18n.ts._yami._yamiModeSwitcher.yamiRecommend }}</div>
-			</div>
 		</label>
 		<input id="normal" v-model="mode" :class="$style.radio" type="radio" name="yamimodeSwitcher" value="normal">
 		<label :class="$style.radioRoot" class="_gaps_s" for="normal">
@@ -28,10 +24,6 @@
 			<ul>
 				<li>{{ i18n.ts._yami._yamiModeSwitcher.normal1 }}</li>
 			</ul>
-			<div :class="$style.radioRecommendedFor">
-				<div :class="$style.title">{{ i18n.ts._yami._yamiModeSwitcher.recommendedFor }}</div>
-				<div>{{ i18n.ts._yami._yamiModeSwitcher.normalRecommend }}</div>
-			</div>
 		</label>
 	</div>
 	<MkButton v-if="hasChanged" :disabled="!hasChanged" primary @click="setMode"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
@@ -152,20 +144,6 @@ async function setMode() {
 		flex-grow: 1;
 		font-size: 1.25rem;
 		font-weight: 700;
-	}
-}
-
-.radioRecommendedFor {
-	margin: 8px 0 0;
-	padding: 24px 12px 12px;
-	border: 1px dashed var(--MI_THEME-fgTransparent);
-	border-radius: var(--MI-radius);
-
-	.title {
-		margin: -34px 0 6px 12px;
-    padding: 0 4px;
-    width: fit-content;
-		background-color: var(--MI_THEME-panel);
 	}
 }
 </style>

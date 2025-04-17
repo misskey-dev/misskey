@@ -11866,31 +11866,19 @@ export interface Locale extends ILocale {
         "yamiTimeline": string;
         "_yamiModeSwitcher": {
             /**
-             * こんな方におすすめ
-             */
-            "recommendedFor": string;
-            /**
-             * 通常
+             * 通常モード
              */
             "normal": string;
             /**
-             * 他人のやみノートを見ることはできません
+             * 他人のやみノートを表示しません
              */
             "normal1": string;
             /**
-             * SNSでふかいやみを見ず通常の交流を楽しみたい方
-             */
-            "normalRecommend": string;
-            /**
-             * 他人のやみノートを見ることができます
+             * 他人のやみノートを表示します
              */
             "yami1": string;
             /**
-             * SNSでの通常の交流を離れてカームダウンしたい方
-             */
-            "yamiRecommend": string;
-            /**
-             * モードを切り替えると、やみノートを閲覧できるかどうかが変わります
+             * モードを切り替えると、やみノートを表示するか変わります
              */
             "saveConfirmDescription": string;
         };

@@ -3171,13 +3171,10 @@ _yami:
   yamiNote: "やみノート"
   yamiTimeline: "やみタイムライン"
   _yamiModeSwitcher:
-    recommendedFor: "こんな方におすすめ"
-    normal: "通常"
-    normal1: "他人のやみノートを見ることはできません"
-    normalRecommend: "SNSでふかいやみを見ず通常の交流を楽しみたい方"
-    yami1: "他人のやみノートを見ることができます"
-    yamiRecommend: "SNSでの通常の交流を離れてカームダウンしたい方"
-    saveConfirmDescription: "モードを切り替えると、やみノートを閲覧できるかどうかが変わります"
+    normal: "通常モード"
+    normal1: "他人のやみノートを表示しません"
+    yami1: "他人のやみノートを表示します"
+    saveConfirmDescription: "モードを切り替えると、やみノートを表示するか変わります"
 
 _remoteLookupErrors:
   _federationNotAllowed:
