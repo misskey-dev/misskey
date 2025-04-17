@@ -124,7 +124,7 @@ function onMousedown(evt: MouseEvent): void {
 	display: block;
 	min-width: 100px;
 	width: max-content;
-	padding: 7px 14px;
+	padding: 9px 14px;
 	text-align: center;
 	font-weight: normal;
 	font-size: 95%;

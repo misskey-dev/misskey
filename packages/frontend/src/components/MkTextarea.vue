@@ -19,13 +19,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:pattern="pattern"
 			:autocomplete="autocomplete"
 			:spellcheck="spellcheck"
+			class="_mt"
 			@focus="focused = true"
 			@blur="focused = false"
 			@keydown="onKeydown($event)"
 			@input="onInput"
 		></textarea>
 	</div>
-	<div :class="$style.caption"><slot name="caption"></slot></div>
+	<div :class="$style.caption" class="_mt"><slot name="caption"></slot></div>
 	<button v-if="mfmPreview" style="font-size: 0.85em;" class="_textButton" type="button" @click="preview = !preview">{{ i18n.ts.preview }}</button>
 	<div v-if="mfmPreview" v-show="preview" v-panel :class="$style.mfmPreview">
 		<Mfm :text="v"/>
@@ -177,7 +178,7 @@ onUnmounted(() => {
 	min-height: 130px;
 	margin: 0;
 	padding: 12px;
-	font: inherit;
+	font-family: inherit;
 	font-weight: normal;
 	font-size: 1em;
 	color: var(--MI_THEME-fg);
