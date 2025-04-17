@@ -11852,6 +11852,18 @@ export interface Locale extends ILocale {
          * やみ
          */
         "yamiModeShort": string;
+        /**
+         * 通常ノート
+         */
+        "normalNote": string;
+        /**
+         * やみノート
+         */
+        "yamiNote": string;
+        /**
+         * やみタイムライン
+         */
+        "yamiTimeline": string;
         "_yamiModeSwitcher": {
             /**
              * こんな方におすすめ

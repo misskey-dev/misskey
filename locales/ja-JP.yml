@@ -3167,6 +3167,9 @@ _yami:
   searchEngineDescription: "リンクやMFMの検索機能で使用する検索エンジンを選択します。"
   yamiMode: "やみモード"
   yamiModeShort: "やみ"
+  normalNote: "通常ノート"
+  yamiNote: "やみノート"
+  yamiTimeline: "やみタイムライン"
   _yamiModeSwitcher:
     recommendedFor: "こんな方におすすめ"
     normal: "通常"

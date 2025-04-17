@@ -3030,6 +3030,9 @@ _yami:
   searchEngineDescription: "Choose the search engine used for links and MFM search functionality."
   yamiMode: "Yami mode"
   yamiModeShort: "Yami"
+  normalNote: "Normal note"
+  yamiNotes: "Yami notes"
+  yamiTimeline: "Yami timeline"
   _yamiModeSwitcher:
     recommendedFor: "Recommended for"
     normal: "Normal"
