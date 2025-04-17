@@ -6,6 +6,7 @@
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { MetricsTime, type JobType } from 'bullmq';
+import { parse as parseRedisInfo } from 'redis-info';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
@@ -811,5 +812,42 @@ export class QueueService {
 		});
 
 		return await Promise.all(fetchings);
+	}
+
+	@bindThis
+	public async queueGetQueue(queueType: typeof QUEUE_TYPES[number]) {
+		const queue = this.getQueue(queueType);
+		const counts = await queue.getJobCounts();
+		const isPaused = await queue.isPaused();
+		const metrics_completed = await queue.getMetrics('completed', 0, MetricsTime.ONE_WEEK);
+		const metrics_failed = await queue.getMetrics('failed', 0, MetricsTime.ONE_WEEK);
+		const db = parseRedisInfo(await (await queue.client).info());
+
+		return {
+			name: queueType,
+			counts: counts,
+			isPaused,
+			metrics: {
+				completed: metrics_completed,
+				failed: metrics_failed,
+			},
+			db: {
+				version: db.redis_version,
+				mode: db.redis_mode,
+				port: parseInt(db.tcp_port),
+				os: db.os,
+				uptime: parseInt(db.uptime_in_seconds),
+				memory: {
+					total: parseInt(db.total_system_memory) || parseInt(db.maxmemory),
+					used: parseInt(db.used_memory),
+					fragmentationRatio: parseInt(db.mem_fragmentation_ratio),
+					peak: parseInt(db.used_memory_peak),
+				},
+				clients: {
+					connected: parseInt(db.connected_clients),
+					blocked: parseInt(db.blocked_clients),
+				},
+			},
+		};
 	}
 }

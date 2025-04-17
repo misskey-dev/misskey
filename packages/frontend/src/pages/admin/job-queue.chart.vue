@@ -23,6 +23,7 @@ const props = defineProps<{
 		completed: number[];
 		failed: number[];
 	};
+	aspectRatio?: number;
 }>();
 
 const chartEl = useTemplateRef('chartEl');
@@ -76,7 +77,7 @@ onMounted(() => {
 			}],
 		},
 		options: {
-			aspectRatio: 2.5,
+			aspectRatio: props.aspectRatio ?? 2.5,
 			layout: {
 				padding: {
 					left: 0,

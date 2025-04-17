@@ -72,6 +72,7 @@ export * as 'admin/queue/promote-jobs' from './endpoints/admin/queue/promote-job
 export * as 'admin/queue/jobs' from './endpoints/admin/queue/jobs.js';
 export * as 'admin/queue/stats' from './endpoints/admin/queue/stats.js';
 export * as 'admin/queue/queues' from './endpoints/admin/queue/queues.js';
+export * as 'admin/queue/queue-stats' from './endpoints/admin/queue/queue-stats.js';
 export * as 'admin/relays/add' from './endpoints/admin/relays/add.js';
 export * as 'admin/relays/list' from './endpoints/admin/relays/list.js';
 export * as 'admin/relays/remove' from './endpoints/admin/relays/remove.js';
