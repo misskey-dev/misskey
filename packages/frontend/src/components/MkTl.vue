@@ -114,6 +114,7 @@ const items = computed(() => {
 
 .itemBody {
 	flex: 1;
+	min-width: 0;
 	padding: 4px 0;
 }
 
