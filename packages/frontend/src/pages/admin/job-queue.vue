@@ -4,12 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" class="_monospace">
 	<MkSpacer>
 		<div v-if="tab === '-'" class="_gaps">
 			<div :class="$style.queues">
 				<div v-for="q in queueInfos" :key="q.name" :class="$style.queue" @click="tab = q.name">
-					<div><i class="ti ti-http-que"></i> {{ q.name }}</div>
+					<div style="display: flex; align-items: center; font-weight: bold;"><i class="ti ti-http-que" style="margin-right: 0.5em;"></i>{{ q.name }}<i v-if="!q.isPaused" style="color: var(--MI_THEME-success); margin-left: auto;" class="ti ti-player-play"></i></div>
 					<div :class="$style.queueCounts">
 						<MkKeyValue>
 							<template #key>Active</template>
@@ -34,8 +34,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #icon><i class="ti ti-http-que"></i></template>
 				<template #footer>
 					<div class="_buttons">
-						<MkButton @click="promoteAllQueues"><i class="ti ti-reload"></i> {{ i18n.ts.retryAllQueuesNow }}</MkButton>
-						<MkButton danger @click="clear"><i class="ti ti-trash"></i> {{ i18n.ts.clearQueue }}</MkButton>
+						<MkButton @click="promoteAllJobs"><i class="ti ti-reload"></i> Promote all jobs</MkButton>
+						<MkButton danger @click="clearQueue"><i class="ti ti-trash"></i> {{ i18n.ts.clearQueue }}</MkButton>
 					</div>
 				</template>
 
@@ -157,10 +157,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</template>
 								<template #footer>
 									<div class="_buttons">
-										<MkButton rounded @click=""><i class="ti ti-reload"></i> Promote</MkButton>
-										<MkButton danger rounded @click=""><i class="ti ti-player-stop"></i> Pause</MkButton>
-										<MkButton danger rounded @click=""><i class="ti ti-trash"></i> Delete</MkButton>
-										<MkButton style="margin-left: auto;" rounded @click=""><i class="ti ti-copy"></i> Copy raw data</MkButton>
+										<MkButton rounded @click="copyRaw(job)"><i class="ti ti-copy"></i> Copy raw</MkButton>
+										<MkButton rounded @click="promoteJob(job)"><i class="ti ti-reload"></i> Promote</MkButton>
+										<MkButton danger rounded @click="removeJob(job)"><i class="ti ti-trash"></i> Remove</MkButton>
 									</div>
 								</template>
 
@@ -222,7 +221,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import JSON5 from 'json5';
-import XHeader from './_header_.vue';
 import XChart from './job-queue.chart.vue';
 import type { Ref } from 'vue';
 import * as os from '@/os.js';
@@ -238,6 +236,7 @@ import MkTl from '@/components/MkTl.vue';
 import kmg from '@/filters/kmg.js';
 import MkInput from '@/components/MkInput.vue';
 import bytes from '@/filters/bytes.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 const QUEUE_TYPES = [
 	'system',
@@ -280,27 +279,49 @@ watch([tab, jobState], async () => {
 	});
 }, { immediate: true });
 
-function clear() {
-	os.confirm({
+async function clearQueue() {
+	const { canceled } = await os.confirm({
 		type: 'warning',
 		title: i18n.ts.areYouSure,
-	}).then(({ canceled }) => {
-		if (canceled) return;
-
-		os.apiWithDialog('admin/queue/clear', { queue: tab.value, state: '*' });
 	});
+	if (canceled) return;
+
+	os.apiWithDialog('admin/queue/clear', { queue: tab.value, state: '*' });
 }
 
-function promoteAllQueues() {
-	os.confirm({
+async function promoteAllJobs() {
+	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.ts.retryAllQueuesConfirmTitle,
-		text: i18n.ts.retryAllQueuesConfirmText,
-	}).then(({ canceled }) => {
-		if (canceled) return;
-
-		os.apiWithDialog('admin/queue/promote-jobs', { queue: tab.value });
+		title: i18n.ts.areYouSure,
 	});
+	if (canceled) return;
+
+	os.apiWithDialog('admin/queue/promote-jobs', { queue: tab.value });
+}
+
+async function promoteJob(job) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: i18n.ts.areYouSure,
+	});
+	if (canceled) return;
+
+	os.apiWithDialog('admin/queue/retry-job', { queue: tab.value, jobId: job.id });
+}
+
+async function removeJob(job) {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: i18n.ts.areYouSure,
+	});
+	if (canceled) return;
+
+	os.apiWithDialog('admin/queue/remove-job', { queue: tab.value, jobId: job.id });
+}
+
+function copyRaw(job) {
+	const raw = JSON.stringify(job, null, '\t');
+	copyToClipboard(raw);
 }
 
 const headerActions = computed(() => []);

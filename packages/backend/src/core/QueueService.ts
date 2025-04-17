@@ -752,11 +752,24 @@ export class QueueService {
 	}
 
 	@bindThis
-	public async queuePromoteJob(queueType: typeof QUEUE_TYPES[number], jobId: string) {
+	public async queueRetryJob(queueType: typeof QUEUE_TYPES[number], jobId: string) {
 		const queue = this.getQueue(queueType);
-		const job = await queue.getJob(jobId);
+		const job: Bull.Job | null = await queue.getJob(jobId);
 		if (job) {
-			await job.promote();
+			if (job.finishedOn != null) {
+				await job.retry();
+			} else {
+				await job.promote();
+			}
+		}
+	}
+
+	@bindThis
+	public async queueRemoveJob(queueType: typeof QUEUE_TYPES[number], jobId: string) {
+		const queue = this.getQueue(queueType);
+		const job: Bull.Job | null = await queue.getJob(jobId);
+		if (job) {
+			await job.remove();
 		}
 	}
 
