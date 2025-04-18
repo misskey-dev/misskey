@@ -12,8 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #fallback>
 			<MkLoading/>
 		</template>
-		<XCode v-if="show && lang" :code="code" :lang="lang"/>
-		<pre v-else-if="show" :class="$style.codeBlockFallbackRoot"><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
+		<XCode v-if="show && lang" class="_selectable" :code="code" :lang="lang"/>
+		<pre v-else-if="show" class="_selectable" :class="$style.codeBlockFallbackRoot"><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
 		<button v-else :class="$style.codePlaceholderRoot" @click="show = true">
 			<div :class="$style.codePlaceholderContainer">
 				<div><i class="ti ti-code"></i> {{ i18n.ts.code }}</div>
