@@ -33,6 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>Overview: {{ tab }}</template>
 				<template #icon><i class="ti ti-http-que"></i></template>
 				<template #suffix>#{{ queueInfo.db.processId }}:{{ queueInfo.db.port }} / {{ queueInfo.db.runId }}</template>
+				<template #caption>{{ queueInfo.qualifiedName }}</template>
 				<template #footer>
 					<div class="_buttons">
 						<MkButton rounded @click="promoteAllJobs"><i class="ti ti-player-track-next"></i> Promote all jobs</MkButton>

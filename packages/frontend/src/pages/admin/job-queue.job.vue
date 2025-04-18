@@ -49,7 +49,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					key: 'error',
 					title: 'Error',
 					icon: 'ti ti-alert-triangle',
-				}] : [])]"
+				}] : []), {
+					key: 'logs',
+					title: 'Logs',
+					icon: 'ti ti-logs',
+				}]"
 		/>
 	</template>
 	<template #footer>
@@ -95,6 +99,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #value>{{ Math.floor(job.progress * 100) }}%</template>
 			</MkKeyValue>
 		</div>
+		<MkFolder :withSpacer="false">
+			<template #label>Options</template>
+			<MkCode :code="JSON5.stringify(job.opts, null, '\t')" lang="js"/>
+		</MkFolder>
 	</div>
 	<div v-else-if="tab === 'timeline'">
 		<MkTl :events="timeline">

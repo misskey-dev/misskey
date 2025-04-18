@@ -854,6 +854,7 @@ export class QueueService {
 
 		return {
 			name: queueType,
+			qualifiedName: queue.qualifiedName,
 			counts: counts,
 			isPaused,
 			metrics: {
