@@ -247,7 +247,7 @@ export class PlayerGameEngine {
 			const canCii = !this.isMeRiichi && house === Common.prevHouse(this.myHouse) &&
 				Common.SHUNTU_PATTERNS.some(pattern =>
 					pattern.includes($type(tid)) &&
-					pattern.filter(t => this.myHandTileTypes.includes(t)).length >= 2);
+					pattern.filter(t => this.myHandTileTypes.includes(t) && t !== $type(tid)).length >= 2);
 
 			this.state.canRon = canRon ? { callee: house } : null;
 			this.state.canPon = canPon ? { callee: house } : null;

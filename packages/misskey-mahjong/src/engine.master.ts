@@ -133,7 +133,7 @@ class StateManager {
 		const hand = this.handTileTypes[caller];
 		return Common.SHUNTU_PATTERNS.some(pattern =>
 			pattern.includes($type(tid)) &&
-			pattern.filter(t => hand.includes(t)).length >= 2);
+			pattern.filter(t => hand.includes(t) && t !== $type(tid)).length >= 2);
 	}
 
 	private withTsumoTile(tile: TileId | undefined, isRinshan: boolean): TileId {
