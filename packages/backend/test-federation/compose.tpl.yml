@@ -51,6 +51,14 @@ services:
         target: /misskey/packages/misskey-js/package.json
         read_only: true
       - type: bind
+        source: ../../misskey-mahjong/built
+        target: /misskey/packages/misskey-mahjong/built
+        read_only: true
+      - type: bind
+        source: ../../misskey-mahjong/package.json
+        target: /misskey/packages/misskey-mahjong/package.json
+        read_only: true
+      - type: bind
         source: ../../misskey-reversi/built
         target: /misskey/packages/misskey-reversi/built
         read_only: true
