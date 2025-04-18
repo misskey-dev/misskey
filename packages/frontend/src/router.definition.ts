@@ -185,10 +185,6 @@ export const ROUTE_DEF = [{
 		name: 'other',
 		component: page(() => import('@/pages/settings/other.vue')),
 	}, {
-		path: '/yamiset',
-		name: 'yamiset',
-		component: page(() => import('@/pages/settings/yamiset.vue')),
-	}, {
 		path: '/',
 		component: page(() => import('@/pages/_empty_.vue')),
 	}],

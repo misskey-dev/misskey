@@ -819,6 +819,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</div>
 							</MkFolder>
 						</SearchMarker>
+
+						<SearchMarker :keywords="['search', 'engine', 'searx', 'yami']">
+							<MkPreferenceContainer k="searchEngine">
+								<MkSelect v-model="searchEngine">
+									<template #label><SearchLabel>{{ i18n.ts.searchEngine }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+									<template #caption><SearchKeyword>{{ i18n.ts._yami.searchEngineDescription }}</SearchKeyword></template>
+									<option value="https://google.com/search?">Google Search (google.com)</option>
+									<option value="https://duckduckgo.com/?">DuckDuckGo (duckduckgo.com)</option>
+									<option value="https://search.yahoo.com/search?">Yahoo! Search (search.yahoo.com)</option>
+									<option value="https://www.ecosia.org/search?">Ecosia (ecosia.org)</option>
+									<option value="https://www.startpage.com/do/search?">Startpage (startpage.com)</option>
+									<option value="https://search.yami.ski/search?">SearX (search.yami.ski)</option>
+								</MkSelect>
+							</MkPreferenceContainer>
+						</SearchMarker>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -967,6 +982,7 @@ const hideReactionCount = prefer.model('hideReactionCount');
 const reactionChecksMuting = prefer.model('reactionChecksMuting');
 const isNoteInYamiMode = prefer.model('isNoteInYamiMode');
 const defaultIsNoteInYamiMode = prefer.model('defaultIsNoteInYamiMode');
+const searchEngine = prefer.model('searchEngine');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
