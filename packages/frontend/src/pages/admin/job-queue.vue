@@ -167,7 +167,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
 								<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
 								<span v-else-if="job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-check"></i></span>
-								<span v-else-if="job.delay != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-clock"></i></span>
+								<span v-else-if="job.delay != null && job.delay != 0" style="margin-left: 1em;"><i class="ti ti-clock"></i></span>
+								<span v-else-if="job.processedOn != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-player-play"></i></span>
 							</template>
 							<template #footer>
 								<div class="_buttons">
