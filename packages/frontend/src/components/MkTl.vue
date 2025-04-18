@@ -4,17 +4,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<div v-for="(item, i) in items" :key="item.id" :class="$style.item">
-		<div :class="$style.itemHead">
-			<div :class="$style.itemHeadLine"></div>
-			<div :class="$style.itemHeadPoint"></div>
+<div :class="$style.items">
+	<template v-for="(item, i) in items" :key="item.id">
+		<div :class="$style.left">
+			<slot v-if="item.type === 'event'" name="left" :event="item.data" :timestamp="item.timestamp" :delta="item.delta"></slot>
 		</div>
-		<div :class="$style.itemBody">
-			<slot v-if="item.type === 'event'" :event="item.data"></slot>
+		<div :class="$style.center">
+			<div :class="$style.centerLine"></div>
+			<div :class="$style.centerPoint"></div>
+		</div>
+		<div :class="$style.right">
+			<slot v-if="item.type === 'event'" name="right" :event="item.data" :timestamp="item.timestamp" :delta="item.delta"></slot>
 			<div v-else :class="$style.date"><i class="ti ti-chevron-up"></i> {{ item.prevText }}</div>
 		</div>
-	</div>
+	</template>
 </div>
 </template>
 
@@ -24,10 +27,14 @@ import { computed } from 'vue';
 const props = defineProps<{
 	events: {
 		id: string;
-		createdAt: number;
+		timestamp: number;
 		data: any;
 	}[];
 }>();
+
+const events = computed(() => {
+	return props.events.toSorted((a, b) => b.timestamp - a.timestamp);
+});
 
 function getDateText(dateInstance: Date) {
 	const year = dateInstance.getFullYear();
@@ -37,42 +44,56 @@ function getDateText(dateInstance: Date) {
 	return `${year.toString()}/${month.toString()}/${date.toString()} ${hour.toString().padStart(2, '0')}:00:00`;
 }
 
-const items = computed(() => {
-	const results = [];
-	for (let i = 0; i < props.events.length; i++) {
-		const item = props.events[i];
+const items = computed<({
+	id: string;
+	type: 'event';
+	timestamp: number;
+	delta: number;
+	data: any;
+} | {
+	id: string;
+	type: 'date';
+	prev: Date;
+	prevText: string;
+	next: Date | null;
+	nextText: string;
+})[]>(() => {
+		const results = [];
+		for (let i = 0; i < events.value.length; i++) {
+			const item = events.value[i];
 
-		const date = new Date(item.createdAt);
-		const nextDate = props.events[i + 1] ? new Date(props.events[i + 1].createdAt) : null;
+			const date = new Date(item.timestamp);
+			const nextDate = events.value[i + 1] ? new Date(events.value[i + 1].timestamp) : null;
 
-		results.push({
-			id: item.id,
-			type: 'event',
-			createdAt: item.createdAt,
-			data: item.data,
-		});
+			results.push({
+				id: item.id,
+				type: 'event',
+				timestamp: item.timestamp,
+				delta: i === events.value.length - 1 ? 0 : item.timestamp - events.value[i + 1].timestamp,
+				data: item.data,
+			});
 
-		if (
-			i !== props.events.length - 1 &&
+			if (
+				i !== events.value.length - 1 &&
 				nextDate != null && (
-				date.getFullYear() !== nextDate.getFullYear() ||
+					date.getFullYear() !== nextDate.getFullYear() ||
 					date.getMonth() !== nextDate.getMonth() ||
 					date.getDate() !== nextDate.getDate() ||
 					date.getHours() !== nextDate.getHours()
-			)
-		) {
-			results.push({
-				id: `date-${item.id}`,
-				type: 'date',
-				prev: date,
-				prevText: getDateText(date),
-				next: nextDate,
-				nextText: getDateText(nextDate),
-			});
+				)
+			) {
+				results.push({
+					id: `date-${item.id}`,
+					type: 'date',
+					prev: date,
+					prevText: getDateText(date),
+					next: nextDate,
+					nextText: getDateText(nextDate),
+				});
+			}
 		}
-	}
-	return results;
-});
+		return results;
+	});
 </script>
 
 <style lang="scss" module>
@@ -80,18 +101,20 @@ const items = computed(() => {
 
 }
 
+.items {
+	display: grid;
+	grid-template-columns: max-content 18px 1fr;
+	gap: 0 8px;
+}
+
 .item {
-	display: flex;
-	align-items: stretch;
 }
 
-.itemHead {
+.center {
 	position: relative;
-	width: 18px;
-	margin-right: 8px;
 }
 
-.itemHeadLine {
+.centerLine {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -101,7 +124,7 @@ const items = computed(() => {
 	height: 100%;
 	background: color-mix(in srgb, var(--MI_THEME-accent), var(--MI_THEME-bg) 75%);
 }
-.itemHeadPoint {
+.centerPoint {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -114,10 +137,17 @@ const items = computed(() => {
 	border-radius: 50%;
 }
 
-.itemBody {
-	flex: 1;
+.left {
 	min-width: 0;
 	padding: 4px 0;
+	align-self: center;
+	justify-self: right;
+}
+
+.right {
+	min-width: 0;
+	padding: 4px 0;
+	align-self: center;
 }
 
 .date {

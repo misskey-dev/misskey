@@ -28,6 +28,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					title: 'Info',
 					icon: 'ti ti-info-circle',
 				}, {
+					key: 'timeline',
+					title: 'Timeline',
+					icon: 'ti ti-timeline-event',
+				}, {
 					key: 'data',
 					title: 'Data',
 					icon: 'ti ti-package',
@@ -92,8 +96,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkKeyValue>
 		</div>
 	</div>
+	<div v-else-if="tab === 'timeline'">
+		<MkTl :events="timeline">
+			<template #left="{ event }">
+				<div>
+					<template v-if="event.type === 'finished'">
+						<template v-if="job.isFailed">
+							<b>Finished</b> <i class="ti ti-alert-triangle"></i>
+						</template>
+						<template v-else>
+							<b>Finished</b> <i class="ti ti-check"></i>
+						</template>
+					</template>
+					<template v-else-if="event.type === 'processed'">
+						<b>Processed</b> <i class="ti ti-player-play"></i>
+					</template>
+					<template v-else-if="event.type === 'created'">
+						<b>Created</b> <i class="ti ti-plus"></i>
+					</template>
+				</div>
+			</template>
+			<template #right="{ timestamp, delta }">
+				<div>at <MkTime :time="timestamp" mode="detail"/></div>
+				<div style="font-size: 90%; opacity: 0.7;">{{ timestamp }} (+{{ msSMH(delta) }})</div>
+			</template>
+		</MkTl>
+	</div>
 	<div v-else-if="tab === 'data'">
-		<MkCode :code="JSON5.stringify(job.data, null, '  ')" lang="json5"/>
+		<MkCode :code="JSON5.stringify(job.data, null, '\t')" lang="js"/>
 	</div>
 	<div v-else-if="tab === 'dataEdit'" class="_gaps_s">
 		<MkCodeEditor v-model="editData" lang="json5"></MkCodeEditor>
@@ -126,6 +156,18 @@ import kmg from '@/filters/kmg.js';
 import bytes from '@/filters/bytes.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
+function msSMH(v: number | null) {
+	if (v == null) return 'N/A';
+	if (v === 0) return '0';
+	const suffixes = ['ms', 's', 'm', 'h'];
+	const isMinus = v < 0;
+	if (isMinus) v = -v;
+	const i = Math.floor(Math.log(v) / Math.log(1000));
+	const value = v / Math.pow(1000, i);
+	const suffix = suffixes[i];
+	return `${isMinus ? '-' : ''}${value.toFixed(1)}${suffix}`;
+}
+
 const props = defineProps<{
 	job: any;
 	queueType: string;
@@ -134,6 +176,34 @@ const props = defineProps<{
 const tab = ref('info');
 const editData = ref(JSON5.stringify(props.job.data, null, '\t'));
 const canEdit = true;
+const timeline = computed(() => {
+	const events = [{
+		id: 'created',
+		timestamp: props.job.timestamp,
+		data: {
+			type: 'created',
+		},
+	}];
+	if (props.job.processedOn != null) {
+		events.push({
+			id: 'processed',
+			timestamp: props.job.processedOn,
+			data: {
+				type: 'processed',
+			},
+		});
+	}
+	if (props.job.finishedOn != null) {
+		events.push({
+			id: 'finished',
+			timestamp: props.job.finishedOn,
+			data: {
+				type: 'finished',
+			},
+		});
+	}
+	return events;
+});
 
 async function promoteJob() {
 	const { canceled } = await os.confirm({

@@ -815,6 +815,7 @@ export class QueueService {
 				stacktrace: stacktrace,
 				returnValue: job.returnvalue,
 				isFailed: !!job.failedReason || (Array.isArray(stacktrace) && stacktrace.length > 0),
+				_raw: JSON.parse(JSON.stringify(job)),
 			};
 		});
 	}

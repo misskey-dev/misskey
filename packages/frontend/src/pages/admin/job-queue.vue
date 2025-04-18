@@ -151,14 +151,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkLoading v-if="jobsFetching"/>
 					<MkTl
 						v-else
-						v-slot="{ event: job }" :events="jobs.map((job) => ({
+						:events="jobs.map((job) => ({
 							id: job.id,
-							createdAt: job.finishedOn ?? job.processedOn ?? job.timestamp,
+							timestamp: job.finishedOn ?? job.processedOn ?? job.timestamp,
 							data: job,
 						}))"
 						class="_monospace"
 					>
-						<XJob :job="job" :queueType="tab"/>
+						<template #right="{ event: job }">
+							<XJob :job="job" :queueType="tab"/>
+						</template>
 					</MkTl>
 				</MkSpacer>
 			</MkFolder>
