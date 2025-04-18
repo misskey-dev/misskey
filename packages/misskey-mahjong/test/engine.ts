@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as assert from 'node:assert';
 import * as Common from '../src/common.js';
 import { TileType, TileId } from '../src/common.js';
 import { MasterGameEngine, MasterState, INITIAL_POINT } from '../src/engine.master.js';
@@ -15,12 +14,7 @@ const INITIAL_TILES_LENGTH = 69;
 class TileSetBuilder {
 	private restTiles = [...TILES];
 
-	private handTiles: {
-		e: TileId[] | null,
-		s: TileId[] | null,
-		w: TileId[] | null,
-		n: TileId[] | null,
-	} = {
+	private handTiles: Record<Common.House, TileId[] | null> = {
 		e: null,
 		s: null,
 		w: null,
@@ -35,8 +29,8 @@ class TileSetBuilder {
 		}
 
 		const tiles = tileTypes.map(tile => {
-			const index = this.restTiles.findIndex(tileId => Common.TILE_ID_MAP.get(tileId)!.t == tile);
-			if (index == -1) {
+			const index = this.restTiles.findIndex(tileId => Common.TILE_ID_MAP.get(tileId)!.t === tile);
+			if (index === -1) {
 				throw new TypeError(`Tile '${tile}' is not left`);
 			}
 			return this.restTiles.splice(index, 1)[0];
@@ -65,8 +59,8 @@ class TileSetBuilder {
 			throw new TypeError(`${n}th tile is already set`);
 		}
 
-		const indexInRestTiles = this.restTiles.findIndex(tileId => Common.TILE_ID_MAP.get(tileId)!.t == tileType);
-		if (indexInRestTiles == -1) {
+		const indexInRestTiles = this.restTiles.findIndex(tileId => Common.TILE_ID_MAP.get(tileId)!.t === tileType);
+		if (indexInRestTiles === -1) {
 			throw new TypeError(`Tile '${tileType}' is not left`);
 		}
 		this.tiles.set(indexInTiles, this.restTiles.splice(indexInRestTiles, 1)[0]);
@@ -151,9 +145,9 @@ describe('Master game engine', () => {
 	it('rinshan', () => {
 		const engine = new MasterGameEngine(MasterGameEngine.createInitialState(
 			new TileSetBuilder()
-			.setHandTiles('e', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'n'])
-			.setTile(-1, 'm3')
-			.build(),
+				.setHandTiles('e', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 'n'])
+				.setTile(-1, 'm3')
+				.build(),
 		));
 		engine.commit_ankan('e', engine.$state.handTiles.e.at(-1)!);
 		expect(engine.commit_tsumoHora('e', false).yakus.yakuNames).toEqual(['tsumo', 'rinshan']);
@@ -168,9 +162,9 @@ describe('Master game engine', () => {
 	it('double-riichi ippatsu tsumo', () => {
 		const engine = new MasterGameEngine(MasterGameEngine.createInitialState(
 			new TileSetBuilder()
-			.setHandTiles('e', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 's'])
-			.setTile(3, 'm3')
-			.build(),
+				.setHandTiles('e', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 's'])
+				.setTile(3, 'm3')
+				.build(),
 		));
 		tsumogiriAndIgnore(engine, true);
 		tsumogiriAndIgnore(engine);
@@ -210,7 +204,7 @@ describe('Master game engine', () => {
 		const engine = new MasterGameEngine(MasterGameEngine.createInitialState(
 			new TileSetBuilder()
 				.setHandTiles('e', ['m1', 'm2', 'm3', 'p6', 'p6', 'p6', 's6', 's7', 's8', 'n', 'n', 'n', 'm3', 's'])
-				.setHandTiles('s', ['m3', 'm6', 'p2', 'p5', 'p8', 's4',  'e', 's', 'w', 'haku', 'hatsu', 'chun', 'chun'])
+				.setHandTiles('s', ['m3', 'm6', 'p2', 'p5', 'p8', 's4', 'e', 's', 'w', 'haku', 'hatsu', 'chun', 'chun'])
 				.setTile(-1, 'm3')
 				.build(),
 		));

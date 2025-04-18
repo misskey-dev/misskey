@@ -12,11 +12,22 @@ export default [
 		],
 	},
 	{
-		files: ['**/*.ts', '**/*.tsx'],
+		files: ['src/**/*.ts', 'src/**/*.tsx'],
 		languageOptions: {
 			parserOptions: {
 				parser: tsParser,
 				project: ['./tsconfig.json'],
+				sourceType: 'module',
+				tsconfigRootDir: import.meta.dirname,
+			},
+		},
+	},
+	{
+		files: ['test/**/*.ts', 'test/**/*.tsx'],
+		languageOptions: {
+			parserOptions: {
+				parser: tsParser,
+				project: ['./tsconfig.test.json'],
 				sourceType: 'module',
 				tsconfigRootDir: import.meta.dirname,
 			},
