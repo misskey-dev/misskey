@@ -36,9 +36,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-if="isMyRenote" class="ti ti-dots" style="margin-right: 4px;"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
-			<span v-if="note.isNoteInYamiMode === true" style="margin-left: 0.5em;" :title="i18n.ts._yami.yamiMode"><i class="ti ti-moon"></i></span>
+			<span v-if="note.isNoteInYamiMode === true" style="margin-left: 0.5em;" :title="note.visibility === 'public' ? `${i18n.ts._visibility['public']} (${i18n.ts._yami.yamiModeShort})` : i18n.ts._yami.yamiNote"><i class="ti ti-moon"></i></span>
 			<!-- パブリックの場合はアイコンを非表示 -->
-			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
+			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="note.isNoteInYamiMode ? `${i18n.ts._visibility[note.visibility]} (${i18n.ts._yami.yamiModeShort})` : i18n.ts._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
@@ -56,9 +56,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkA>
 					<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
 					<div :class="$style.noteHeaderInfo">
-						<span v-if="note.isNoteInYamiMode === true" style="margin-left: 0.5em;" :title="i18n.ts._yami.yamiMode"><i class="ti ti-moon"></i></span>
+						<span v-if="note.isNoteInYamiMode === true" style="margin-left: 0.5em;" :title="note.visibility === 'public' ? `${i18n.ts._visibility['public']} (${i18n.ts._yami.yamiModeShort})` : i18n.ts._yami.yamiNote"><i class="ti ti-moon"></i></span>
 						<!-- パブリックの場合はアイコンを非表示 -->
-						<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
+						<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="note.isNoteInYamiMode ? `${i18n.ts._visibility[appearNote.visibility]} (${i18n.ts._yami.yamiModeShort})` : i18n.ts._visibility[appearNote.visibility]">
 							<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
 							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
 							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
