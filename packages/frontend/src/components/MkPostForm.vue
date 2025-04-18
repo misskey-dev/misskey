@@ -213,9 +213,9 @@ const getInitialScheduledDelete = () => {
 // 初期化
 const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(getInitialScheduledDelete());
 // やみノート状態を管理する変数
-// 通常モードユーザーの場合は常にfalseとなる
+// デフォルト設定から初期値を取得
 const isNoteInYamiMode = ref($i.isInYamiMode ?
-	(prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : $i.isInYamiMode) :
+	(prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode) :
 	false);
 // デフォルト設定の変更を監視
 watch(() => prefer.s.defaultScheduledNoteDelete, (newValue) => {

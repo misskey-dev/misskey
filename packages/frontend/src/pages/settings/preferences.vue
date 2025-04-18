@@ -366,6 +366,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker :keywords="['default', 'note', 'visibility']">
 								<MkDisableSection :disabled="rememberNoteVisibility">
 									<MkFolder>
+										<div class="_gaps_m">
+											<template v-if="$i.isInYamiMode">
+												<MkPreferenceContainer k="defaultIsNoteInYamiMode">
+													<MkSwitch v-model="defaultIsNoteInYamiMode">
+														<template #label>{{ i18n.ts._yami.defaultUseYamiNote }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+														<template #caption>{{ i18n.ts._yami.defaultUseYamiNoteDescription }}</template>
+													</MkSwitch>
+												</MkPreferenceContainer>
+											</template>
+										</div>
+
 										<template #label><SearchLabel>{{ i18n.ts.defaultNoteVisibility }}</SearchLabel></template>
 										<template v-if="defaultNoteVisibility === 'public'" #suffix>{{ i18n.ts._visibility.public }}</template>
 										<template v-else-if="defaultNoteVisibility === 'home'" #suffix>{{ i18n.ts._visibility.home }}</template>
@@ -954,6 +965,8 @@ const makeEveryTextElementsSelectable = prefer.model('makeEveryTextElementsSelec
 const hideReactionUsers = prefer.model('hideReactionUsers');
 const hideReactionCount = prefer.model('hideReactionCount');
 const reactionChecksMuting = prefer.model('reactionChecksMuting');
+const isNoteInYamiMode = prefer.model('isNoteInYamiMode');
+const defaultIsNoteInYamiMode = prefer.model('defaultIsNoteInYamiMode');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);

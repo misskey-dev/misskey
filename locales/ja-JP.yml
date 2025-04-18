@@ -3172,6 +3172,8 @@ _yami:
   enableYamiNoteConfirm: "やみノートに切り替えますか？"
   enableYamiNoteConfirmWarn: "やみノートはやみモードユーザーのみが閲覧できる特殊な投稿です。閲覧対象が限られるため、より自由な表現が可能です。"
   enableYamiNoteOk: "やみノートを使用する"
+  defaultUseYamiNote: "やみモード時にデフォルトでやみノートで投稿する"
+  defaultUseYamiNoteDescription: "オフにすると、やみモードでも通常の投稿が初期状態になります。"
   yamiTimeline: "やみタイムライン"
   _yamiModeSwitcher:
     normal: "通常モード"
