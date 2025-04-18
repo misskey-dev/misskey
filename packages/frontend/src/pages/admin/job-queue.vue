@@ -35,7 +35,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #suffix>#{{ queueInfo.db.processId }}:{{ queueInfo.db.port }} / {{ queueInfo.db.runId }}</template>
 				<template #footer>
 					<div class="_buttons">
-						<MkButton rounded @click="promoteAllJobs"><i class="ti ti-reload"></i> Promote all jobs</MkButton>
+						<MkButton rounded @click="promoteAllJobs"><i class="ti ti-player-track-next"></i> Promote all jobs</MkButton>
+						<MkButton rounded @click="createJob"><i class="ti ti-plus"></i> Add job</MkButton>
 						<MkButton v-if="queueInfo.isPaused" rounded @click="resumeQueue"><i class="ti ti-player-play"></i> Resume queue</MkButton>
 						<MkButton v-else rounded danger @click="pauseQueue"><i class="ti ti-player-pause"></i> Pause queue</MkButton>
 						<MkButton rounded danger @click="clearQueue"><i class="ti ti-trash"></i> Empty queue</MkButton>
@@ -157,84 +158,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						}))"
 						class="_monospace"
 					>
-						<MkFolder>
-							<template #label>
-								<span v-if="job.opts.repeat != null" style="margin-right: 1em;">&lt;repeat&gt;</span>
-								<span v-else style="margin-right: 1em;">#{{ job.id }}</span>
-								<span>{{ job.name }}</span>
-							</template>
-							<template #suffix>
-								<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="relative"/>
-								<span v-if="job.progress != null && job.progress > 0" style="margin-left: 1em;">{{ Math.floor(job.progress * 100) }}%</span>
-								<span v-if="job.opts.attempts != null && job.opts.attempts > 0 && job.attempts > 1" style="margin-left: 1em; color: var(--MI_THEME-warn); font-variant-numeric: diagonal-fractions;">{{ job.attempts }}/{{ job.opts.attempts }}</span>
-								<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
-								<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
-								<span v-else-if="job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-check"></i></span>
-								<span v-else-if="job.delay != null && job.delay != 0" style="margin-left: 1em;"><i class="ti ti-clock"></i></span>
-								<span v-else-if="job.processedOn != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-player-play"></i></span>
-							</template>
-							<template #footer>
-								<div class="_buttons">
-									<MkButton rounded @click="copyRaw(job)"><i class="ti ti-copy"></i> Copy raw</MkButton>
-									<MkButton rounded @click="promoteJob(job)"><i class="ti ti-reload"></i> Promote</MkButton>
-									<MkButton danger rounded @click="removeJob(job)"><i class="ti ti-trash"></i> Remove</MkButton>
-								</div>
-							</template>
-
-							<div class="_gaps_s">
-								<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
-									<MkKeyValue>
-										<template #key>Created at</template>
-										<template #value><MkTime :time="job.timestamp" mode="detail"/></template>
-									</MkKeyValue>
-									<MkKeyValue v-if="job.processedOn != null">
-										<template #key>Processed at</template>
-										<template #value><MkTime :time="job.processedOn" mode="detail"/></template>
-									</MkKeyValue>
-									<MkKeyValue v-if="job.finishedOn != null">
-										<template #key>Finished at</template>
-										<template #value><MkTime :time="job.finishedOn" mode="detail"/></template>
-									</MkKeyValue>
-									<MkKeyValue v-if="job.processedOn != null && job.finishedOn != null">
-										<template #key>Spent</template>
-										<template #value>{{ job.finishedOn - job.processedOn }}ms</template>
-									</MkKeyValue>
-									<MkKeyValue v-if="job.failedReason != null">
-										<template #key>Failed reason</template>
-										<template #value><i style="color: var(--MI_THEME-error)" class="ti ti-alert-triangle"></i> {{ job.failedReason }}</template>
-									</MkKeyValue>
-									<MkKeyValue v-if="job.opts.attempts != null && job.opts.attempts > 0">
-										<template #key>Attempts</template>
-										<template #value>{{ job.attempts }} of {{ job.opts.attempts }}</template>
-									</MkKeyValue>
-									<MkKeyValue v-if="job.progress != null && job.progress > 0">
-										<template #key>Progress</template>
-										<template #value>{{ Math.floor(job.progress * 100) }}%</template>
-									</MkKeyValue>
-								</div>
-
-								<MkFolder :withSpacer="false" :defaultOpen="false">
-									<template #icon><i class="ti ti-package"></i></template>
-									<template #label>Data</template>
-
-									<MkCode :code="JSON5.stringify(job.data, null, '  ')" lang="js"/>
-								</MkFolder>
-
-								<MkFolder v-if="job.returnValue != null" :withSpacer="false" :defaultOpen="false">
-									<template #icon><i class="ti ti-check"></i></template>
-									<template #label>Result</template>
-
-									<MkCode :code="job.returnValue"/>
-								</MkFolder>
-
-								<MkFolder v-if="job.stacktrace.length > 0" :withSpacer="false" :defaultOpen="false">
-									<template #icon><i class="ti ti-alert-triangle"></i></template>
-									<template #label>Error</template>
-
-									<MkCode v-for="log in job.stacktrace" :code="log"/>
-								</MkFolder>
-							</div>
-						</MkFolder>
+						<XJob :job="job" :queueType="tab"/>
 					</MkTl>
 				</MkSpacer>
 			</MkFolder>
@@ -249,6 +173,7 @@ import JSON5 from 'json5';
 import { debounce } from 'throttle-debounce';
 import { useInterval } from '@@/js/use-interval.js';
 import XChart from './job-queue.chart.vue';
+import XJob from './job-queue.job.vue';
 import type { Ref } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
