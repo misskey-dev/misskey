@@ -152,7 +152,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-else-if="tab === 'result'">
 		<MkCode :code="job.returnValue"/>
 	</div>
-	<div v-else-if="tab === 'error'">
+	<div v-else-if="tab === 'error'" class="_gaps_s">
 		<MkCode v-for="log in job.stacktrace" :code="log" lang="stacktrace"/>
 	</div>
 </MkFolder>
