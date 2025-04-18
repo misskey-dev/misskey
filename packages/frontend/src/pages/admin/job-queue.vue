@@ -35,8 +35,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #suffix>#{{ queueInfo.db.processId }}:{{ queueInfo.db.port }} / {{ queueInfo.db.runId }}</template>
 				<template #footer>
 					<div class="_buttons">
-						<MkButton @click="promoteAllJobs"><i class="ti ti-reload"></i> Promote all jobs</MkButton>
-						<MkButton danger @click="clearQueue"><i class="ti ti-trash"></i> {{ i18n.ts.clearQueue }}</MkButton>
+						<MkButton rounded @click="promoteAllJobs"><i class="ti ti-reload"></i> Promote all jobs</MkButton>
+						<MkButton v-if="queueInfo.isPaused" rounded @click="resumeQueue"><i class="ti ti-player-play"></i> Resume queue</MkButton>
+						<MkButton v-else rounded danger @click="pauseQueue"><i class="ti ti-player-pause"></i> Pause queue</MkButton>
+						<MkButton rounded danger @click="clearQueue"><i class="ti ti-trash"></i> Empty queue</MkButton>
 					</div>
 				</template>
 
