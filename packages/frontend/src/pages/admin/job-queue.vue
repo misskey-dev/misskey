@@ -88,130 +88,127 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkFolder :defaultOpen="true" :withSpacer="false">
 				<template #label>Jobs: {{ tab }}</template>
 				<template #icon><i class="ti ti-list-check"></i></template>
+				<template #header>
+					<MkTabs
+						v-model:tab="jobState"
+						:class="$style.jobsTabs" :tabs="[{
+							key: 'completed',
+							title: 'Completed',
+							icon: 'ti ti-check',
+						}, {
+							key: 'failed',
+							title: 'Failed',
+							icon: 'ti ti-circle-x',
+						}, {
+							key: 'latest',
+							title: 'Latest',
+							icon: 'ti ti-logs',
+						}, {
+							key: 'active',
+							title: 'Active',
+							icon: 'ti ti-player-play',
+						}, {
+							key: 'delayed',
+							title: 'Delayed',
+							icon: 'ti ti-clock',
+						}, {
+							key: 'wait',
+							title: 'Waiting',
+							icon: 'ti ti-hourglass-high',
+						}, {
+							key: 'paused',
+							title: 'Paused',
+							icon: 'ti ti-player-pause',
+						}]"
+					/>
+				</template>
 
-				<MkStickyContainer>
-					<template #header>
-						<MkTabs
-							v-model:tab="jobState"
-							:class="$style.jobsTabs" :tabs="[{
-								key: 'completed',
-								title: 'Completed',
-								icon: 'ti ti-check',
-							}, {
-								key: 'failed',
-								title: 'Failed',
-								icon: 'ti ti-circle-x',
-							}, {
-								key: 'latest',
-								title: 'Latest',
-								icon: 'ti ti-logs',
-							}, {
-								key: 'active',
-								title: 'Active',
-								icon: 'ti ti-player-play',
-							}, {
-								key: 'delayed',
-								title: 'Delayed',
-								icon: 'ti ti-clock',
-							}, {
-								key: 'wait',
-								title: 'Waiting',
-								icon: 'ti ti-hourglass-high',
-							}, {
-								key: 'paused',
-								title: 'Paused',
-								icon: 'ti ti-player-pause',
-							}]"
-						/>
-					</template>
+				<MkSpacer>
+					<MkInput
+						v-model="searchQuery"
+						:placeholder="i18n.ts.search"
+						type="search"
+						style="margin-bottom: 16px;"
+					>
+						<template #prefix><i class="ti ti-search"></i></template>
+					</MkInput>
 
-					<MkSpacer>
-						<MkInput
-							v-model="searchQuery"
-							:placeholder="i18n.ts.search"
-							type="search"
-							style="margin-bottom: 16px;"
-						>
-							<template #prefix><i class="ti ti-search"></i></template>
-						</MkInput>
-
-						<MkTl
-							v-slot="{ event: job }" :events="jobs.map((job) => ({
-								id: job.id,
-								createdAt: job.finishedOn ?? job.processedOn ?? job.timestamp,
-								data: job,
-							}))"
-						>
-							<MkFolder>
-								<template #label>
-									<span v-if="job.opts.repeat != null" style="margin-right: 1em;">&lt;repeat&gt;</span>
-									<span v-else style="margin-right: 1em;">#{{ job.id }}</span>
-									<span>{{ job.name }}</span>
-								</template>
-								<template #suffix>
-									<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="relative"/>
-									<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
-									<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
-									<span v-else-if="job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-check"></i></span>
-									<span v-else-if="job.delay != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-clock"></i></span>
-								</template>
-								<template #footer>
-									<div class="_buttons">
-										<MkButton rounded @click="copyRaw(job)"><i class="ti ti-copy"></i> Copy raw</MkButton>
-										<MkButton rounded @click="promoteJob(job)"><i class="ti ti-reload"></i> Promote</MkButton>
-										<MkButton danger rounded @click="removeJob(job)"><i class="ti ti-trash"></i> Remove</MkButton>
-									</div>
-								</template>
-
-								<div class="_gaps_s">
-									<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
-										<MkKeyValue>
-											<template #key>Created at</template>
-											<template #value><MkTime :time="job.timestamp" mode="detail"/></template>
-										</MkKeyValue>
-										<MkKeyValue v-if="job.processedOn != null">
-											<template #key>Processed at</template>
-											<template #value><MkTime :time="job.processedOn" mode="detail"/></template>
-										</MkKeyValue>
-										<MkKeyValue v-if="job.finishedOn != null">
-											<template #key>Finished at</template>
-											<template #value><MkTime :time="job.finishedOn" mode="detail"/></template>
-										</MkKeyValue>
-										<MkKeyValue v-if="job.processedOn != null && job.finishedOn != null">
-											<template #key>Spent</template>
-											<template #value>{{ job.finishedOn - job.processedOn }}ms</template>
-										</MkKeyValue>
-										<MkKeyValue v-if="job.failedReason != null">
-											<template #key>Failed reason</template>
-											<template #value><i style="color: var(--MI_THEME-error)" class="ti ti-alert-triangle"></i> {{ job.failedReason }}</template>
-										</MkKeyValue>
-									</div>
-
-									<MkFolder :withSpacer="false" :defaultOpen="false">
-										<template #icon><i class="ti ti-package"></i></template>
-										<template #label>Data</template>
-
-										<MkCode :code="JSON5.stringify(job.data, null, '  ')" lang="js"/>
-									</MkFolder>
-
-									<MkFolder v-if="job.returnValue != null" :withSpacer="false" :defaultOpen="false">
-										<template #icon><i class="ti ti-check"></i></template>
-										<template #label>Result</template>
-
-										<MkCode :code="job.returnValue"/>
-									</MkFolder>
-
-									<MkFolder v-if="job.stacktrace.length > 0" :withSpacer="false" :defaultOpen="false">
-										<template #icon><i class="ti ti-alert-triangle"></i></template>
-										<template #label>Error</template>
-
-										<MkCode v-for="log in job.stacktrace" :code="log"/>
-									</MkFolder>
+					<MkTl
+						v-slot="{ event: job }" :events="jobs.map((job) => ({
+							id: job.id,
+							createdAt: job.finishedOn ?? job.processedOn ?? job.timestamp,
+							data: job,
+						}))"
+					>
+						<MkFolder>
+							<template #label>
+								<span v-if="job.opts.repeat != null" style="margin-right: 1em;">&lt;repeat&gt;</span>
+								<span v-else style="margin-right: 1em;">#{{ job.id }}</span>
+								<span>{{ job.name }}</span>
+							</template>
+							<template #suffix>
+								<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="relative"/>
+								<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
+								<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
+								<span v-else-if="job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-check"></i></span>
+								<span v-else-if="job.delay != null" style="margin-left: 1em; color: var(--MI_THEME-success)"><i class="ti ti-clock"></i></span>
+							</template>
+							<template #footer>
+								<div class="_buttons">
+									<MkButton rounded @click="copyRaw(job)"><i class="ti ti-copy"></i> Copy raw</MkButton>
+									<MkButton rounded @click="promoteJob(job)"><i class="ti ti-reload"></i> Promote</MkButton>
+									<MkButton danger rounded @click="removeJob(job)"><i class="ti ti-trash"></i> Remove</MkButton>
 								</div>
-							</MkFolder>
-						</MkTl>
-					</MkSpacer>
-				</MkStickyContainer>
+							</template>
+
+							<div class="_gaps_s">
+								<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
+									<MkKeyValue>
+										<template #key>Created at</template>
+										<template #value><MkTime :time="job.timestamp" mode="detail"/></template>
+									</MkKeyValue>
+									<MkKeyValue v-if="job.processedOn != null">
+										<template #key>Processed at</template>
+										<template #value><MkTime :time="job.processedOn" mode="detail"/></template>
+									</MkKeyValue>
+									<MkKeyValue v-if="job.finishedOn != null">
+										<template #key>Finished at</template>
+										<template #value><MkTime :time="job.finishedOn" mode="detail"/></template>
+									</MkKeyValue>
+									<MkKeyValue v-if="job.processedOn != null && job.finishedOn != null">
+										<template #key>Spent</template>
+										<template #value>{{ job.finishedOn - job.processedOn }}ms</template>
+									</MkKeyValue>
+									<MkKeyValue v-if="job.failedReason != null">
+										<template #key>Failed reason</template>
+										<template #value><i style="color: var(--MI_THEME-error)" class="ti ti-alert-triangle"></i> {{ job.failedReason }}</template>
+									</MkKeyValue>
+								</div>
+
+								<MkFolder :withSpacer="false" :defaultOpen="false">
+									<template #icon><i class="ti ti-package"></i></template>
+									<template #label>Data</template>
+
+									<MkCode :code="JSON5.stringify(job.data, null, '  ')" lang="js"/>
+								</MkFolder>
+
+								<MkFolder v-if="job.returnValue != null" :withSpacer="false" :defaultOpen="false">
+									<template #icon><i class="ti ti-check"></i></template>
+									<template #label>Result</template>
+
+									<MkCode :code="job.returnValue"/>
+								</MkFolder>
+
+								<MkFolder v-if="job.stacktrace.length > 0" :withSpacer="false" :defaultOpen="false">
+									<template #icon><i class="ti ti-alert-triangle"></i></template>
+									<template #label>Error</template>
+
+									<MkCode v-for="log in job.stacktrace" :code="log"/>
+								</MkFolder>
+							</div>
+						</MkFolder>
+					</MkTl>
+				</MkSpacer>
 			</MkFolder>
 		</div>
 	</MkSpacer>
@@ -367,9 +364,6 @@ definePage(() => ({
 }
 
 .jobsTabs {
-	background: color(from var(--MI_THEME-panel) srgb r g b / 0.75);
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
-	backdrop-filter: var(--MI-blur, blur(15px));
-	border-bottom: solid 0.5px var(--MI_THEME-divider);
+
 }
 </style>
