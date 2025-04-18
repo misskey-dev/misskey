@@ -29,7 +29,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22.11.0]
+        node-version: [22.14.0]
 
     steps:
     - uses: actions/checkout@v4.2.2
@@ -64,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22.11.0]
+        node-version: [22.14.0]
         browser: [chrome]
 
     services:
