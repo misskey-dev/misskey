@@ -163,6 +163,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</template>
 							<template #suffix>
 								<MkTime :time="job.finishedOn ?? job.processedOn ?? job.timestamp" mode="relative"/>
+								<span v-if="job.progress != null && job.progress > 0" style="margin-left: 1em;">{{ Math.floor(job.progress * 100) }}%</span>
 								<span v-if="job.opts.attempts != null && job.opts.attempts > 0 && job.attempts > 1" style="margin-left: 1em; color: var(--MI_THEME-warn); font-variant-numeric: diagonal-fractions;">{{ job.attempts }}/{{ job.opts.attempts }}</span>
 								<span v-if="job.isFailed && job.finishedOn != null" style="margin-left: 1em; color: var(--MI_THEME-error)"><i class="ti ti-circle-x"></i></span>
 								<span v-else-if="job.isFailed" style="margin-left: 1em; color: var(--MI_THEME-warn)"><i class="ti ti-alert-triangle"></i></span>
@@ -203,6 +204,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<MkKeyValue v-if="job.opts.attempts != null && job.opts.attempts > 0">
 										<template #key>Attempts</template>
 										<template #value>{{ job.attempts }} of {{ job.opts.attempts }}</template>
+									</MkKeyValue>
+									<MkKeyValue v-if="job.progress != null && job.progress > 0">
+										<template #key>Progress</template>
+										<template #value>{{ Math.floor(job.progress * 100) }}%</template>
 									</MkKeyValue>
 								</div>
 
