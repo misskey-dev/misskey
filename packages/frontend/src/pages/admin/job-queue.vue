@@ -218,6 +218,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import JSON5 from 'json5';
+import { debounce } from 'throttle-debounce';
 import XChart from './job-queue.chart.vue';
 import type { Ref } from 'vue';
 import * as os from '@/os.js';
@@ -254,18 +255,16 @@ const queueInfos = ref([]);
 const queueInfo = ref();
 const searchQuery = ref('');
 
-watch([tab, jobState], async () => {
-	if (tab.value === '-') {
-		queueInfos.value = await misskeyApi('admin/queue/queues');
-		return;
-	}
-
+async function fetchCurrentQueue() {
 	queueInfo.value = await misskeyApi('admin/queue/queue-stats', { queue: tab.value });
+}
 
+async function fetchJobs() {
 	const state = jobState.value;
 	jobs.value = await misskeyApi('admin/queue/jobs', {
 		queue: tab.value,
 		state: state === 'latest' ? ['completed', 'failed'] : [state],
+		search: searchQuery.value.trim() === '' ? undefined : searchQuery.value,
 	}).then(res => {
 		if (state === 'latest') {
 			res.sort((a, b) => a.processedOn > b.processedOn ? -1 : 1);
@@ -274,7 +273,30 @@ watch([tab, jobState], async () => {
 		}
 		return res;
 	});
+}
+
+watch([tab], async () => {
+	if (tab.value === '-') {
+		queueInfos.value = await misskeyApi('admin/queue/queues');
+		return;
+	}
+
+	fetchCurrentQueue();
+
+	fetchJobs();
 }, { immediate: true });
+
+watch([jobState], () => {
+	fetchJobs();
+});
+
+const search = debounce(1000, () => {
+	fetchJobs();
+});
+
+watch([searchQuery], () => {
+	search();
+});
 
 async function clearQueue() {
 	const { canceled } = await os.confirm({

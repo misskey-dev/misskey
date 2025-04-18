@@ -21,6 +21,7 @@ export const paramDef = {
 	properties: {
 		queue: { type: 'string', enum: QUEUE_TYPES },
 		state: { type: 'array', items: { type: 'string', enum: ['active', 'wait', 'delayed', 'completed', 'failed'] } },
+		search: { type: 'string' },
 	},
 	required: ['queue', 'state'],
 } as const;
@@ -31,7 +32,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			return this.queueService.queueGetJobs(ps.queue, ps.state);
+			return this.queueService.queueGetJobs(ps.queue, ps.state, ps.search);
 		});
 	}
 }

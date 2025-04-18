@@ -774,9 +774,25 @@ export class QueueService {
 	}
 
 	@bindThis
-	public async queueGetJobs(queueType: typeof QUEUE_TYPES[number], jobTypes: JobType[]) {
+	public async queueGetJobs(queueType: typeof QUEUE_TYPES[number], jobTypes: JobType[], search?: string) {
+		const RETURN_LIMIT = 100;
 		const queue = this.getQueue(queueType);
-		const jobs: Bull.Job[] = await queue.getJobs(jobTypes, 0, 100);
+		let jobs: Bull.Job[];
+
+		if (search) {
+			jobs = await queue.getJobs(jobTypes, 0, 1000);
+
+			jobs = jobs.filter(job => {
+				const jobString = JSON.stringify(job).toLowerCase();
+				return search.toLowerCase().split(' ').every(term => {
+					return jobString.includes(term);
+				});
+			});
+
+			jobs = jobs.slice(0, RETURN_LIMIT);
+		} else {
+			jobs = await queue.getJobs(jobTypes, 0, RETURN_LIMIT);
+		}
 
 		return jobs.map(job => {
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
