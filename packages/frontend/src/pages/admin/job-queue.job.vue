@@ -102,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>
 					<template v-if="event.type === 'finished'">
 						<template v-if="job.isFailed">
-							<b>Finished</b> <i class="ti ti-alert-triangle"></i>
+							<b>Finished</b> <i class="ti ti-circle-x"></i>
 						</template>
 						<template v-else>
 							<b>Finished</b> <i class="ti ti-check"></i>
@@ -111,14 +111,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-else-if="event.type === 'processed'">
 						<b>Processed</b> <i class="ti ti-player-play"></i>
 					</template>
+					<template v-else-if="event.type === 'attempt'">
+						<b>Attempt #{{ event.attempt }}</b> <i class="ti ti-alert-triangle"></i>
+					</template>
 					<template v-else-if="event.type === 'created'">
 						<b>Created</b> <i class="ti ti-plus"></i>
 					</template>
 				</div>
 			</template>
-			<template #right="{ timestamp, delta }">
-				<div>at <MkTime :time="timestamp" mode="detail"/></div>
-				<div style="font-size: 90%; opacity: 0.7;">{{ timestamp }} (+{{ msSMH(delta) }})</div>
+			<template #right="{ event, timestamp, delta }">
+				<template v-if="event.type === 'attempt'">
+					<div>at ?</div>
+				</template>
+				<template v-else>
+					<div>at <MkTime :time="timestamp" mode="detail"/></div>
+					<div style="font-size: 90%; opacity: 0.7;">{{ timestamp }} (+{{ msSMH(delta) }})</div>
+				</template>
 			</template>
 		</MkTl>
 	</div>
@@ -184,6 +192,18 @@ const timeline = computed(() => {
 			type: 'created',
 		},
 	}];
+	if (props.job.attempts > 1) {
+		for (let i = 1; i < props.job.attempts; i++) {
+			events.push({
+				id: `attempt-${i}`,
+				timestamp: props.job.timestamp + i,
+				data: {
+					type: 'attempt',
+					attempt: i,
+				},
+			});
+		}
+	}
 	if (props.job.processedOn != null) {
 		events.push({
 			id: 'processed',
