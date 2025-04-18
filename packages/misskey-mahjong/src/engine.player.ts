@@ -270,7 +270,7 @@ export class PlayerGameEngine {
 			doubleRiichi: this.state.doubleRiichis[house],
 			ippatsu: this.state.ippatsus[house],
 			rinshan: this.state.rinshanFlags[house],
-			haitei: this.state.tilesCount == 0,
+			haitei: this.state.tilesCount === 0,
 		});
 		const doraCount =
 			Common.calcOwnedDoraCount(handTiles.map(id => $type(id)), this.state.huros[house], this.doras) +
@@ -322,7 +322,7 @@ export class PlayerGameEngine {
 				riichi: this.state.riichis[house],
 				doubleRiichi: this.state.doubleRiichis[house],
 				ippatsu: this.state.ippatsus[house],
-				hotei: this.state.tilesCount == 0,
+				hotei: this.state.tilesCount === 0,
 			});
 			const doraCount =
 				Common.calcOwnedDoraCount(handTiles[house].map(id => $type(id)), this.state.huros[house], this.doras) +

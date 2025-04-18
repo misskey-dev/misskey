@@ -613,7 +613,7 @@ export class MasterGameEngine {
 	public commit_kakan(house: House, tid: TileId) {
 		const tx = this.startTransaction();
 
-		const pon = tx.$state.huros[house].find(h => h.type === 'pon' && $type(h.tiles[0]) === $type(tid)) as Huro & {type: 'pon'};
+		const pon = tx.$state.huros[house].find(h => h.type === 'pon' && $type(h.tiles[0]) === $type(tid)) as Huro & { type: 'pon' };
 		if (pon == null) throw new Error('No such pon');
 		tx.$state.handTiles[house].splice(tx.$state.handTiles[house].indexOf(tid), 1);
 		const tiles = [tid, ...pon.tiles] as const;
@@ -686,7 +686,7 @@ export class MasterGameEngine {
 			doubleRiichi: tx.$state.doubleRiichis[house],
 			ippatsu: tx.$state.ippatsus[house],
 			rinshan: tx.$state.rinshanFlags[house],
-			haitei: tx.$state.tiles.length == 0,
+			haitei: tx.$state.tiles.length === 0,
 		});
 		const doraCount =
 			Common.calcOwnedDoraCount(tx.handTileTypes[house], tx.$state.huros[house], tx.doras) +
@@ -743,7 +743,7 @@ export class MasterGameEngine {
 					riichi: tx.$state.riichis[house],
 					doubleRiichi: tx.$state.doubleRiichis[house],
 					ippatsu: tx.$state.ippatsus[house],
-					hotei: tx.$state.tiles.length == 0,
+					hotei: tx.$state.tiles.length === 0,
 				});
 				const doraCount =
 					Common.calcOwnedDoraCount(tx.handTileTypes[house], tx.$state.huros[house], tx.doras) +

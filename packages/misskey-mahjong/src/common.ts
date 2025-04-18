@@ -54,7 +54,7 @@ export type TileId = number;
 
 // NOTE: 0 は"不明"(他プレイヤーの手牌など)を表すものとして予約されている
 export const TILE_ID_MAP = new Map<TileId, TileInstance>([
-	/* eslint-disable no-multi-spaces */
+	/* eslint-disable @stylistic/no-multi-spaces */
 	[1,   { t: 'm1' }],    [2,   { t: 'm1' }],    [3,   { t: 'm1' }],    [4,   { t: 'm1' }],
 	[5,   { t: 'm2' }],    [6,   { t: 'm2' }],    [7,   { t: 'm2' }],    [8,   { t: 'm2' }],
 	[9,   { t: 'm3' }],    [10,  { t: 'm3' }],    [11,  { t: 'm3' }],    [12,  { t: 'm3' }],
@@ -89,7 +89,7 @@ export const TILE_ID_MAP = new Map<TileId, TileInstance>([
 	[125, { t: 'haku' }],  [126, { t: 'haku' }],  [127, { t: 'haku' }],  [128, { t: 'haku' }],
 	[129, { t: 'hatsu' }], [130, { t: 'hatsu' }], [131, { t: 'hatsu' }], [132, { t: 'hatsu' }],
 	[133, { t: 'chun' }],  [134, { t: 'chun' }],  [135, { t: 'chun' }],  [136, { t: 'chun' }],
-	/* eslint-enable no-multi-spaces */
+	/* eslint-enable @stylistic/no-multi-spaces */
 ]);
 
 export function findTileByIdOrFail(tid: TileId): TileInstance {
@@ -130,7 +130,7 @@ export type PointFactor = {
 } | {
 	isYakuman: true;
 	value: number;
-}
+};
 
 export const CALL_HURO_TYPES = ['pon', 'cii', 'minkan'] as const;
 
@@ -386,7 +386,7 @@ export function calcTsumoHoraPointDeltas(house: House, fansOrFactor: number | Po
 		n: 0,
 	};
 
-	const point = typeof fansOrFactor == 'number' ? fanToPoint(fansOrFactor, isParent) : calcPoint(fansOrFactor, isParent);
+	const point = typeof fansOrFactor === 'number' ? fanToPoint(fansOrFactor, isParent) : calcPoint(fansOrFactor, isParent);
 	deltas[house] = point;
 	if (isParent) {
 		const childPoint = Math.ceil(point / 3);
@@ -464,7 +464,7 @@ export function isKotsu(tiles: [TileType, TileType, TileType]): boolean {
 }
 
 export function mentsuEquals(tiles1: [TileType, TileType, TileType], tiles2: [TileType, TileType, TileType]): boolean {
-	return tiles1[0] == tiles2[0] && tiles1[1] == tiles2[1] && tiles1[2] == tiles2[2];
+	return tiles1[0] === tiles2[0] && tiles1[1] === tiles2[1] && tiles1[2] === tiles2[2];
 }
 
 export const SHUNTU_PATTERNS: [TileType, TileType, TileType][] = [
