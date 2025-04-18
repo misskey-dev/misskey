@@ -2917,6 +2917,60 @@ export type paths = {
      */
     post: operations['invite___list'];
   };
+  '/mahjong/cancel-match': {
+    /**
+     * mahjong/cancel-match
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:account*
+     */
+    post: operations['mahjong___cancel-match'];
+  };
+  '/mahjong/create-room': {
+    /**
+     * mahjong/create-room
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:account*
+     */
+    post: operations['mahjong___create-room'];
+  };
+  '/mahjong/games': {
+    /**
+     * mahjong/games
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['mahjong___games'];
+  };
+  '/mahjong/join-room': {
+    /**
+     * mahjong/join-room
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:account*
+     */
+    post: operations['mahjong___join-room'];
+  };
+  '/mahjong/show-room': {
+    /**
+     * mahjong/show-room
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:account*
+     */
+    post: operations['mahjong___show-room'];
+  };
+  '/mahjong/verify': {
+    /**
+     * mahjong/verify
+     * @description No description provided.
+     *
+     * **Credential required**: *No*
+     */
+    post: operations['mahjong___verify'];
+  };
   '/meta': {
     /**
      * meta
@@ -23613,6 +23667,332 @@ export type operations = {
       200: {
         content: {
           'application/json': components['schemas']['InviteCode'][];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * mahjong/cancel-match
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:account*
+   */
+  'mahjong___cancel-match': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          userId?: string | null;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': unknown;
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * mahjong/create-room
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:account*
+   */
+  'mahjong___create-room': {
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['MahjongRoomDetailed'];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * mahjong/games
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  mahjong___games: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @default 10 */
+          limit?: number;
+          /** Format: misskey:id */
+          sinceId?: string;
+          /** Format: misskey:id */
+          untilId?: string;
+          /** @default false */
+          my?: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['ReversiGameLite'][];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * mahjong/join-room
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:account*
+   */
+  'mahjong___join-room': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          roomId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['MahjongRoomDetailed'];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * mahjong/show-room
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:account*
+   */
+  'mahjong___show-room': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          roomId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': components['schemas']['MahjongRoomDetailed'];
+        };
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * mahjong/verify
+   * @description No description provided.
+   *
+   * **Credential required**: *No*
+   */
+  mahjong___verify: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          gameId: string;
+          crc32: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (with results) */
+      200: {
+        content: {
+          'application/json': {
+            desynced: boolean;
+            game?: components['schemas']['ReversiGameDetailed'] | null;
+          };
         };
       };
       /** @description Client error */
