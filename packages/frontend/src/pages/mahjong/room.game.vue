@@ -307,7 +307,7 @@ const $i = ensureSignin();
 
 const props = defineProps<{
 	room: Misskey.entities.MahjongRoomDetailed;
-	connection?: Misskey.ChannelConnection | null;
+	connection?: Misskey.ChannelConnection<Misskey.Channels['mahjongRoom']> | null;
 }>();
 
 const room = ref<Misskey.entities.MahjongRoomDetailed>(deepClone(props.room));

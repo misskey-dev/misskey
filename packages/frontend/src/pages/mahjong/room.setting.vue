@@ -69,7 +69,7 @@ const router = useRouter();
 
 const props = defineProps<{
 	room: Misskey.entities.MahjongRoomDetailed;
-	connection: Misskey.ChannelConnection;
+	connection: Misskey.ChannelConnection<Misskey.Channels['mahjongRoom']>;
 }>();
 
 const room = ref<Misskey.entities.MahjongRoomDetailed>(deepClone(props.room));

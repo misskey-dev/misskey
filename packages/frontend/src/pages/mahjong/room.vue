@@ -32,7 +32,7 @@ const props = defineProps<{
 }>();
 
 const room = shallowRef<Misskey.entities.MahjongRoomDetailed | null>(null);
-const connection = shallowRef<Misskey.ChannelConnection | null>(null);
+const connection = shallowRef<Misskey.ChannelConnection<Misskey.Channels['mahjongRoom']> | null>(null);
 const shareWhenStart = ref(false);
 
 watch(() => props.roomId, () => {
