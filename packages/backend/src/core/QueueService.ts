@@ -863,6 +863,8 @@ export class QueueService {
 			db: {
 				version: db.redis_version,
 				mode: db.redis_mode,
+				runId: db.run_id,
+				processId: db.process_id,
 				port: parseInt(db.tcp_port),
 				os: db.os,
 				uptime: parseInt(db.uptime_in_seconds),

@@ -28,10 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-		<div v-else class="_gaps">
+		<div v-else-if="queueInfo" class="_gaps">
 			<MkFolder :defaultOpen="true">
 				<template #label>Overview: {{ tab }}</template>
 				<template #icon><i class="ti ti-http-que"></i></template>
+				<template #suffix>#{{ queueInfo.db.processId }}:{{ queueInfo.db.port }} / {{ queueInfo.db.runId }}</template>
 				<template #footer>
 					<div class="_buttons">
 						<MkButton @click="promoteAllJobs"><i class="ti ti-reload"></i> Promote all jobs</MkButton>
@@ -40,8 +41,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 
 				<div class="_gaps">
-					<XChart v-if="queueInfo" :dataSet="{ completed: queueInfo.metrics.completed.data, failed: queueInfo.metrics.failed.data }" :aspectRatio="5"/>
-					<div v-if="queueInfo" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+					<XChart :dataSet="{ completed: queueInfo.metrics.completed.data, failed: queueInfo.metrics.failed.data }" :aspectRatio="5"/>
+					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
 						<MkKeyValue>
 							<template #key>Active</template>
 							<template #value>{{ kmg(queueInfo.counts.active, 2) }}</template>
@@ -56,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkKeyValue>
 					</div>
 					<hr>
-					<div v-if="queueInfo" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
 						<MkKeyValue>
 							<template #key>Clients: Connected</template>
 							<template #value>{{ queueInfo.db.clients.connected }}</template>
@@ -88,6 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkFolder :defaultOpen="true" :withSpacer="false">
 				<template #label>Jobs: {{ tab }}</template>
 				<template #icon><i class="ti ti-list-check"></i></template>
+				<template #suffix>&lt;A:{{ kmg(queueInfo.counts.active, 2) }}&gt; &lt;D:{{ kmg(queueInfo.counts.delayed, 2) }}&gt; &lt;W:{{ kmg(queueInfo.counts.waiting, 2) }}&gt;</template>
 				<template #header>
 					<MkTabs
 						v-model:tab="jobState"
@@ -125,6 +127,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							icon: 'ti ti-player-pause',
 						}]"
 					/>
+				</template>
+				<template #footer>
+					<div class="_buttons">
+						<MkButton rounded @click="fetchJobs()"><i class="ti ti-reload"></i> Refresh view</MkButton>
+						<MkButton rounded danger style="margin-left: auto;" @click="removeJobs"><i class="ti ti-trash"></i> Remove jobs</MkButton>
+					</div>
 				</template>
 
 				<MkSpacer>
@@ -226,6 +234,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, watch } from 'vue';
 import JSON5 from 'json5';
 import { debounce } from 'throttle-debounce';
+import { useInterval } from '@@/js/use-interval.js';
 import XChart from './job-queue.chart.vue';
 import type { Ref } from 'vue';
 import * as os from '@/os.js';
@@ -263,7 +272,13 @@ const queueInfos = ref([]);
 const queueInfo = ref();
 const searchQuery = ref('');
 
+async function fetchQueues() {
+	if (tab.value !== '-') return;
+	queueInfos.value = await misskeyApi('admin/queue/queues');
+}
+
 async function fetchCurrentQueue() {
+	if (tab.value === '-') return;
 	queueInfo.value = await misskeyApi('admin/queue/queue-stats', { queue: tab.value });
 }
 
@@ -289,13 +304,11 @@ async function fetchJobs() {
 
 watch([tab], async () => {
 	if (tab.value === '-') {
-		queueInfos.value = await misskeyApi('admin/queue/queues');
-		return;
+		fetchQueues();
+	} else {
+		fetchCurrentQueue();
+		fetchJobs();
 	}
-
-	fetchCurrentQueue();
-
-	fetchJobs();
 }, { immediate: true });
 
 watch([jobState], () => {
@@ -310,6 +323,17 @@ watch([searchQuery], () => {
 	search();
 });
 
+useInterval(() => {
+	if (tab.value === '-') {
+		fetchQueues();
+	} else {
+		fetchCurrentQueue();
+	}
+}, 1000 * 10, {
+	immediate: false,
+	afterMounted: true,
+});
+
 async function clearQueue() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
@@ -318,6 +342,9 @@ async function clearQueue() {
 	if (canceled) return;
 
 	os.apiWithDialog('admin/queue/clear', { queue: tab.value, state: '*' });
+
+	fetchCurrentQueue();
+	fetchJobs();
 }
 
 async function promoteAllJobs() {
@@ -328,6 +355,9 @@ async function promoteAllJobs() {
 	if (canceled) return;
 
 	os.apiWithDialog('admin/queue/promote-jobs', { queue: tab.value });
+
+	fetchCurrentQueue();
+	fetchJobs();
 }
 
 async function promoteJob(job) {
@@ -348,6 +378,19 @@ async function removeJob(job) {
 	if (canceled) return;
 
 	os.apiWithDialog('admin/queue/remove-job', { queue: tab.value, jobId: job.id });
+}
+
+async function removeJobs() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: i18n.ts.areYouSure,
+	});
+	if (canceled) return;
+
+	os.apiWithDialog('admin/queue/clear', { queue: tab.value, state: jobState.value });
+
+	fetchCurrentQueue();
+	fetchJobs();
 }
 
 function copyRaw(job) {

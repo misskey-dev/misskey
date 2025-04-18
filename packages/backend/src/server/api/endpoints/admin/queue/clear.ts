@@ -20,7 +20,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		queue: { type: 'string', enum: QUEUE_TYPES },
-		state: { type: 'string', enum: ['*', 'wait', 'delayed'] },
+		state: { type: 'string', enum: ['*', 'completed', 'wait', 'active', 'paused', 'prioritized', 'delayed', 'failed'] },
 	},
 	required: ['queue', 'state'],
 } as const;
