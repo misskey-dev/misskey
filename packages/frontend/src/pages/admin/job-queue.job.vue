@@ -31,7 +31,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					key: 'data',
 					title: 'Data',
 					icon: 'ti ti-package',
-				}, ...(job.returnValue != null ? [{
+				}, ...(canEdit ? [{
+					key: 'dataEdit',
+					title: 'Data (edit)',
+					icon: 'ti ti-package',
+				}] : []),
+				...(job.returnValue != null ? [{
 					key: 'result',
 					title: 'Result',
 					icon: 'ti ti-check',
@@ -53,6 +58,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div v-if="tab === 'info'" class="_gaps_s">
 		<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
+			<MkKeyValue>
+				<template #key>ID</template>
+				<template #value>{{ job.id }}</template>
+			</MkKeyValue>
 			<MkKeyValue>
 				<template #key>Created at</template>
 				<template #value><MkTime :time="job.timestamp" mode="detail"/></template>
@@ -83,8 +92,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkKeyValue>
 		</div>
 	</div>
-	<div v-else-if="tab === 'data'" class="_gaps_s">
-		<MkCode :code="JSON5.stringify(job.data, null, '  ')" lang="js"/>
+	<div v-else-if="tab === 'data'">
+		<MkCode :code="JSON5.stringify(job.data, null, '  ')" lang="json5"/>
+	</div>
+	<div v-else-if="tab === 'dataEdit'" class="_gaps_s">
+		<MkCodeEditor v-model="editData" lang="json5"></MkCodeEditor>
 		<MkButton><i class="ti ti-device-floppy"></i> Update</MkButton>
 	</div>
 	<div v-else-if="tab === 'result'">
@@ -108,6 +120,7 @@ import MkTabs from '@/components/MkTabs.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import MkTl from '@/components/MkTl.vue';
 import kmg from '@/filters/kmg.js';
 import bytes from '@/filters/bytes.js';
@@ -119,6 +132,8 @@ const props = defineProps<{
 }>();
 
 const tab = ref('info');
+const editData = ref(JSON5.stringify(props.job.data, null, '\t'));
+const canEdit = true;
 
 async function promoteJob() {
 	const { canceled } = await os.confirm({
