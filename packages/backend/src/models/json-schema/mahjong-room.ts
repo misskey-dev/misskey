@@ -36,42 +36,42 @@ export const packedMahjongRoomDetailedSchema = {
 		},
 		user1Id: {
 			type: 'string',
-			optional: false, nullable: null,
+			optional: false, nullable: false,
 			format: 'id',
 		},
 		user2Id: {
 			type: 'string',
-			optional: false, nullable: null,
+			optional: false, nullable: true,
 			format: 'id',
 		},
 		user3Id: {
 			type: 'string',
-			optional: false, nullable: null,
+			optional: false, nullable: true,
 			format: 'id',
 		},
 		user4Id: {
 			type: 'string',
-			optional: false, nullable: null,
+			optional: false, nullable: true,
 			format: 'id',
 		},
 		user1: {
 			type: 'object',
-			optional: false, nullable: null,
+			optional: false, nullable: true,
 			ref: 'User',
 		},
 		user2: {
 			type: 'object',
-			optional: false, nullable: null,
+			optional: false, nullable: true,
 			ref: 'User',
 		},
 		user3: {
 			type: 'object',
-			optional: false, nullable: null,
+			optional: false, nullable: true,
 			ref: 'User',
 		},
 		user4: {
 			type: 'object',
-			optional: false, nullable: null,
+			optional: false, nullable: true,
 			ref: 'User',
 		},
 		user1Ai: {
