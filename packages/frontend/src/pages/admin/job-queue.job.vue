@@ -110,17 +110,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>
 					<template v-if="event.type === 'finished'">
 						<template v-if="job.isFailed">
-							<b>Finished</b> <i class="ti ti-circle-x"></i>
+							<b>Finished</b> <i class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
 						</template>
 						<template v-else>
-							<b>Finished</b> <i class="ti ti-check"></i>
+							<b>Finished</b> <i class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 						</template>
 					</template>
 					<template v-else-if="event.type === 'processed'">
 						<b>Processed</b> <i class="ti ti-player-play"></i>
 					</template>
 					<template v-else-if="event.type === 'attempt'">
-						<b>Attempt #{{ event.attempt }}</b> <i class="ti ti-alert-triangle"></i>
+						<b>Attempt #{{ event.attempt }}</b> <i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i>
 					</template>
 					<template v-else-if="event.type === 'created'">
 						<b>Created</b> <i class="ti ti-plus"></i>
