@@ -447,6 +447,9 @@ export const PREF_DEF = {
 	reactionChecksMuting: {
 		default: true,
 	},
+	isNoteInYamiMode: {
+		default: true, // やみモードユーザーはデフォルトでやみノート
+	},
 	searchEngine: {
 		default: 'https://search.yami.ski/search?',
 	},

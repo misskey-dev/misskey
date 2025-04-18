@@ -214,7 +214,9 @@ const getInitialScheduledDelete = () => {
 const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(getInitialScheduledDelete());
 // やみノート状態を管理する変数
 // 通常モードユーザーの場合は常にfalseとなる
-const isNoteInYamiMode = ref($i.isInYamiMode ? $i.isInYamiMode : false);
+const isNoteInYamiMode = ref($i.isInYamiMode ?
+	(prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : $i.isInYamiMode) :
+	false);
 // デフォルト設定の変更を監視
 watch(() => prefer.s.defaultScheduledNoteDelete, (newValue) => {
 	scheduledNoteDelete.value = getInitialScheduledDelete();
@@ -1193,6 +1195,11 @@ function toggleYamiMode() {
 	if (!$i.isInYamiMode) return;
 
 	isNoteInYamiMode.value = !isNoteInYamiMode.value;
+
+	// 設定を記憶する場合のみ保存
+	if (prefer.s.rememberNoteVisibility) {
+		prefer.commit('isNoteInYamiMode', isNoteInYamiMode.value);
+	}
 }
 
 // function showOtherMenu(ev: MouseEvent) {
@@ -1260,7 +1267,10 @@ onMounted(() => {
 					scheduledNoteDelete.value = draft.data.scheduledNoteDelete;
 				}
 				// やみノート状態を復元 - 通常モードユーザーは常にfalseに
-				isNoteInYamiMode.value = $i.isInYamiMode ? (draft.data.isNoteInYamiMode ?? $i.isInYamiMode) : false;
+				isNoteInYamiMode.value = $i.isInYamiMode ?
+					(draft.data.isNoteInYamiMode ??
+					 (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : $i.isInYamiMode)) :
+					false;
 			}
 		}
 
