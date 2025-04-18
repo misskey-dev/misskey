@@ -56,6 +56,7 @@ class MahjongRoomChannel extends Channel {
 			case 'ready': this.ready(body); break;
 			case 'updateSettings': this.updateSettings(body.key, body.value); break;
 			case 'addAi': this.addAi(); break;
+			case 'leave': this.leaveRoom(); break;
 			case 'confirmNextKyoku': this.confirmNextKyoku(); break;
 			case 'dahai': this.dahai(body.tile, body.riichi); break;
 			case 'tsumoHora': this.tsumoHora(); break;
@@ -96,6 +97,13 @@ class MahjongRoomChannel extends Channel {
 		if (this.user == null) return;
 
 		this.mahjongService.addAi(this.roomId!, this.user);
+	}
+
+	@bindThis
+	private async leaveRoom() {
+		if (this.user == null) return;
+
+		this.mahjongService.leaveRoom(this.roomId!, this.user);
 	}
 
 	@bindThis

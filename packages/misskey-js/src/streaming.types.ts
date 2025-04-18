@@ -358,6 +358,7 @@ export type Channels = {
 				body: unknown;
 			};
 			addAi: Record<string, never>;
+			leave: Record<string, never>;
 			confirmNextKyoku: Record<string, never>;
 			dahai: {
 				tile: number;
