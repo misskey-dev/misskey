@@ -133,7 +133,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #prefix><i class="ti ti-search"></i></template>
 					</MkInput>
 
+					<MkLoading v-if="jobsFetching"/>
 					<MkTl
+						v-else
 						v-slot="{ event: job }" :events="jobs.map((job) => ({
 							id: job.id,
 							createdAt: job.finishedOn ?? job.processedOn ?? job.timestamp,
@@ -251,6 +253,7 @@ const QUEUE_TYPES = [
 const tab: Ref<typeof QUEUE_TYPES[number] | '-'> = ref('-');
 const jobState = ref('latest');
 const jobs = ref([]);
+const jobsFetching = ref(true);
 const queueInfos = ref([]);
 const queueInfo = ref();
 const searchQuery = ref('');
@@ -260,6 +263,7 @@ async function fetchCurrentQueue() {
 }
 
 async function fetchJobs() {
+	jobsFetching.value = true;
 	const state = jobState.value;
 	jobs.value = await misskeyApi('admin/queue/jobs', {
 		queue: tab.value,
@@ -273,6 +277,7 @@ async function fetchJobs() {
 		}
 		return res;
 	});
+	jobsFetching.value = false;
 }
 
 watch([tab], async () => {

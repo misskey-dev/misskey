@@ -9002,6 +9002,7 @@ export type operations = {
           /** @enum {string} */
           queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
           state: ('active' | 'wait' | 'delayed' | 'completed' | 'failed')[];
+          search?: string;
         };
       };
     };
