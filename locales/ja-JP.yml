@@ -979,6 +979,7 @@ document: "ドキュメント"
 numberOfPageCache: "ページキャッシュ数"
 numberOfPageCacheDescription: "多くすると利便性が向上しますが、負荷とメモリ使用量が増えます。"
 logoutConfirm: "ログアウトしますか？"
+logoutWillClearClientData: "ログアウトするとクライアントの設定情報がブラウザから消去されます。再ログイン時に設定情報を復元できるようにするためには、設定の自動バックアップを有効にしてください。"
 lastActiveDate: "最終利用日時"
 statusbar: "ステータスバー"
 pleaseSelect: "選択してください"
@@ -2420,6 +2421,7 @@ _widgets:
     chooseList: "リストを選択"
   clicker: "クリッカー"
   birthdayFollowings: "今日誕生日のユーザー"
+  chat: "チャット"
 
 _cw:
   hide: "隠す"
@@ -2704,6 +2706,7 @@ _deck:
     mentions: "あなた宛て"
     direct: "ダイレクト"
     roleTimeline: "ロールタイムライン"
+    chat: "チャット"
 
 _dialog:
   charactersExceeded: "最大文字数を超えています！ 現在 {current} / 制限 {max}"

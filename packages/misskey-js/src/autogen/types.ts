@@ -8838,6 +8838,16 @@ export type operations = {
    * **Credential required**: *Yes* / **Permission**: *write:admin:queue*
    */
   admin___queue___clear: {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @enum {string} */
+          type: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+          /** @enum {string} */
+          state: '*' | 'wait' | 'delayed';
+        };
+      };
+    };
     responses: {
       /** @description OK (without any results) */
       204: {
