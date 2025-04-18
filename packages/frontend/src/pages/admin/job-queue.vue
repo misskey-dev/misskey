@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" class="_monospace">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer>
 		<div v-if="tab === '-'" class="_gaps">
 			<div :class="$style.queues">
@@ -92,6 +92,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkTabs
 						v-model:tab="jobState"
 						:class="$style.jobsTabs" :tabs="[{
+							key: 'all',
+							title: 'All',
+							icon: 'ti ti-code-asterisk',
+						}, {
+							key: 'latest',
+							title: 'Latest',
+							icon: 'ti ti-logs',
+						}, {
 							key: 'completed',
 							title: 'Completed',
 							icon: 'ti ti-check',
@@ -99,10 +107,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							key: 'failed',
 							title: 'Failed',
 							icon: 'ti ti-circle-x',
-						}, {
-							key: 'latest',
-							title: 'Latest',
-							icon: 'ti ti-logs',
 						}, {
 							key: 'active',
 							title: 'Active',
@@ -141,6 +145,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							createdAt: job.finishedOn ?? job.processedOn ?? job.timestamp,
 							data: job,
 						}))"
+						class="_monospace"
 					>
 						<MkFolder>
 							<template #label>
@@ -251,7 +256,7 @@ const QUEUE_TYPES = [
 ] as const;
 
 const tab: Ref<typeof QUEUE_TYPES[number] | '-'> = ref('-');
-const jobState = ref('latest');
+const jobState = ref('all');
 const jobs = ref([]);
 const jobsFetching = ref(true);
 const queueInfos = ref([]);
@@ -267,10 +272,12 @@ async function fetchJobs() {
 	const state = jobState.value;
 	jobs.value = await misskeyApi('admin/queue/jobs', {
 		queue: tab.value,
-		state: state === 'latest' ? ['completed', 'failed'] : [state],
+		state: state === 'all' ? ['completed', 'failed', 'active', 'delayed', 'wait'] : state === 'latest' ? ['completed', 'failed'] : [state],
 		search: searchQuery.value.trim() === '' ? undefined : searchQuery.value,
 	}).then(res => {
-		if (state === 'latest') {
+		if (state === 'all') {
+			res.sort((a, b) => (a.processedOn ?? a.timestamp) > (b.processedOn ?? b.timestamp) ? -1 : 1);
+		} else if (state === 'latest') {
 			res.sort((a, b) => a.processedOn > b.processedOn ? -1 : 1);
 		} else if (state === 'delayed') {
 			res.sort((a, b) => (a.processedOn ?? a.timestamp) > (b.processedOn ?? b.timestamp) ? -1 : 1);
