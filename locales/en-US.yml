@@ -3036,7 +3036,9 @@ _yami:
   _yamiModeSwitcher:
     normal: "Normal mode"
     normal1: "Do not display other people's Yamig notes"
+    normal2: "You can not submit a Yami notes."
     yami1: "Displays other people's Yami notes."
+    yami2: "You can submit a Yami notes."
     saveConfirmDescription: "Switching the mode changes whether the Yami notes is displayed or not."
 _followRequest:
   recieved: "Received request"

@@ -20,8 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(channel != null && fixed)">
-				<!-- やみノート切り替えボタン -->
+				<!-- やみノート切り替えボタン - やみモードユーザーにのみ表示 -->
 				<button
+					v-if="$i.isInYamiMode"
 					v-tooltip="isNoteInYamiMode ? i18n.ts._yami.yamiNote : i18n.ts._yami.normalNote"
 					:class="['_button', $style.headerRightItem]"
 					@click="toggleYamiMode"
@@ -211,8 +212,9 @@ const getInitialScheduledDelete = () => {
 };
 // 初期化
 const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(getInitialScheduledDelete());
-// やみノート状態を管理する変数（ユーザーのやみモード状態をデフォルト値とする）
-const isNoteInYamiMode = ref($i.isInYamiMode);
+// やみノート状態を管理する変数
+// 通常モードユーザーの場合は常にfalseとなる
+const isNoteInYamiMode = ref($i.isInYamiMode ? $i.isInYamiMode : false);
 // デフォルト設定の変更を監視
 watch(() => prefer.s.defaultScheduledNoteDelete, (newValue) => {
 	scheduledNoteDelete.value = getInitialScheduledDelete();
@@ -1185,7 +1187,11 @@ function toggleScheduleNote() {
 	}
 }
 
+// やみノートモードの切り替え関数
 function toggleYamiMode() {
+	// 通常モードユーザーの場合は切り替え不可
+	if (!$i.isInYamiMode) return;
+
 	isNoteInYamiMode.value = !isNoteInYamiMode.value;
 }
 
@@ -1253,8 +1259,8 @@ onMounted(() => {
 				if (draft.data.scheduledNoteDelete) {
 					scheduledNoteDelete.value = draft.data.scheduledNoteDelete;
 				}
-				// やみノート状態を復元
-				isNoteInYamiMode.value = draft.data.isNoteInYamiMode ?? $i.isInYamiMode;
+				// やみノート状態を復元 - 通常モードユーザーは常にfalseに
+				isNoteInYamiMode.value = $i.isInYamiMode ? (draft.data.isNoteInYamiMode ?? $i.isInYamiMode) : false;
 			}
 		}
 

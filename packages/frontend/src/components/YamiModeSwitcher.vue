@@ -11,6 +11,7 @@
 			</div>
 			<ul>
 				<li>{{ i18n.ts._yami._yamiModeSwitcher.yami1 }}</li>
+				<li>{{ i18n.ts._yami._yamiModeSwitcher.yami2 }}</li>
 			</ul>
 		</label>
 		<input id="normal" v-model="mode" :class="$style.radio" type="radio" name="yamimodeSwitcher" value="normal">
@@ -23,6 +24,7 @@
 			</div>
 			<ul>
 				<li>{{ i18n.ts._yami._yamiModeSwitcher.normal1 }}</li>
+				<li>{{ i18n.ts._yami._yamiModeSwitcher.normal2 }}</li>
 			</ul>
 		</label>
 	</div>

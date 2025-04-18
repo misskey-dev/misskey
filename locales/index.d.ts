@@ -11874,9 +11874,17 @@ export interface Locale extends ILocale {
              */
             "normal1": string;
             /**
+             * やみノートを投稿できません
+             */
+            "normal2": string;
+            /**
              * 他人のやみノートを表示します
              */
             "yami1": string;
+            /**
+             * やみノートを投稿できます
+             */
+            "yami2": string;
             /**
              * モードを切り替えると、やみノートを表示するか変わります
              */
