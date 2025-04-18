@@ -3026,6 +3026,7 @@ _hideReactionCount:
   others: "Only notes of others"
   all: "All notes"
 _yami:
+  swicthMode: "Switch to Yami Mode"
   yamiSet: "Yami set"
   searchEngineDescription: "Choose the search engine used for links and MFM search functionality."
   yamiMode: "Yami mode"
@@ -3039,9 +3040,12 @@ _yami:
   defaultUseYamiNoteDescription: "When disabled, posts will be normal by default even in Yami Mode."
   yamiTimeline: "Yami timeline"
   _yamiModeSwitcher:
+    enterYamiModeConfirm: "Do you want to switch to Yami mode? If you switch to Yami mode, you will be able to view and post Yami notes"
+    exitYamiModeConfirm: "Do you want to go back to Normal mode? Once in Normal mode, you will no longer be able to view or post Yami notes."
     normal: "Normal mode"
     normal1: "Do not display other people's Yamig notes"
     normal2: "You can not submit a Yami notes."
+    yami: "Yami mode"
     yami1: "Displays other people's Yami notes."
     yami2: "You can submit a Yami notes."
     saveConfirmDescription: "Switching the mode changes whether the Yami notes is displayed or not."

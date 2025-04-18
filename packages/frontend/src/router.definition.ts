@@ -185,10 +185,6 @@ export const ROUTE_DEF = [{
 		name: 'other',
 		component: page(() => import('@/pages/settings/other.vue')),
 	}, {
-		path: '/yamimode',
-		name: 'yamimode',
-		component: page(() => import('@/pages/settings/yamimode.vue')),
-	}, {
 		path: '/yamiset',
 		name: 'yamiset',
 		component: page(() => import('@/pages/settings/yamiset.vue')),

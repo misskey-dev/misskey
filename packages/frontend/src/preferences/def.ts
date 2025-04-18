@@ -141,6 +141,7 @@ export const PREF_DEF = {
 			'search',
 			'-',
 			'ui',
+			'mode',
 		],
 	},
 	statusbars: {

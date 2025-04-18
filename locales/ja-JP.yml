@@ -3163,6 +3163,7 @@ _hideReactionCount:
   all: "全てのノート"
 
 _yami:
+  switchMode: "モード切り替え"
   yamiSet: "やみ設定"
   searchEngineDescription: "リンクやMFMの検索機能で使用する検索エンジンを選択します。"
   yamiMode: "やみモード"
@@ -3176,9 +3177,12 @@ _yami:
   defaultUseYamiNoteDescription: "オフにすると、やみモードでも通常の投稿が初期状態になります。"
   yamiTimeline: "やみタイムライン"
   _yamiModeSwitcher:
+    enterYamiModeConfirm: "やみモードに切り替えますか？やみモードにすると、やみノートを閲覧・投稿できるようになります"
+    exitYamiModeConfirm: "通常モードに戻りますか？通常モードにすると、やみノートを閲覧・投稿できなくなります"
     normal: "通常モード"
     normal1: "他人のやみノートを表示しません"
     normal2: "やみノートを投稿できません"
+    yami: "やみモード"
     yami1: "他人のやみノートを表示します"
     yami2: "やみノートを投稿できます"
     saveConfirmDescription: "モードを切り替えると、やみノートを表示するか変わります"

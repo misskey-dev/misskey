@@ -13,6 +13,7 @@ import { lookup } from '@/utility/lookup.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import { claimAchievement } from '@/utility/achievements.js';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -150,6 +151,107 @@ export const navbarItemDef = reactive({
 				action: () => {
 					miLocalStorage.setItem('ui', 'deck');
 					unisonReload();
+				},
+			}], ev.currentTarget ?? ev.target);
+		},
+	},
+	mode: {
+		title: i18n.ts._yami.switchMode,
+		icon: computed(() => $i?.isInYamiMode ? 'ti ti-moon' : 'ti ti-users-group'),
+		action: (ev: MouseEvent) => {
+			os.popupMenu([{
+				text: i18n.ts._yami._yamiModeSwitcher.normal,
+				active: $i && !$i.isInYamiMode,
+				action: async () => {
+					if ($i && $i.isInYamiMode) {
+						// 「今後表示しない」の設定を確認
+						const neverShowExitYamiModeInfo = miLocalStorage.getItem('neverShowExitYamiModeInfo');
+
+						// 表示しないが設定されていない場合はダイアログを表示
+						if (neverShowExitYamiModeInfo !== 'true') {
+							const confirm = await os.actions({
+								type: 'warning',
+								title: i18n.ts._yami.switchMode,
+								text: i18n.ts._yami._yamiModeSwitcher.exitYamiModeConfirm,
+								actions: [
+									{
+										value: 'yes' as const,
+										text: i18n.ts.ok,
+										primary: true,
+									},
+									{
+										value: 'neverShow' as const,
+										text: `${i18n.ts.ok} (${i18n.ts.neverShow})`,
+										danger: true,
+									},
+									{
+										value: 'cancel' as const,
+										text: i18n.ts.cancel,
+									},
+								],
+							});
+
+							if (confirm.canceled || confirm.result === 'cancel') return;
+
+							if (confirm.result === 'neverShow') {
+								miLocalStorage.setItem('neverShowExitYamiModeInfo', 'true');
+							}
+						}
+
+						os.apiWithDialog('i/update', {
+							isInYamiMode: false,
+						}).then(() => {
+							unisonReload();
+						});
+					}
+				},
+			}, {
+				text: i18n.ts._yami._yamiModeSwitcher.yami,
+				active: $i && $i.isInYamiMode,
+				action: async () => {
+					if ($i && !$i.isInYamiMode) {
+						// 「今後表示しない」の設定を確認
+						const neverShowEnterYamiModeInfo = miLocalStorage.getItem('neverShowEnterYamiModeInfo');
+
+						// 表示しないが設定されていない場合はダイアログを表示
+						if (neverShowEnterYamiModeInfo !== 'true') {
+							const confirm = await os.actions({
+								type: 'warning',
+								title: i18n.ts._yami.switchMode,
+								text: i18n.ts._yami._yamiModeSwitcher.enterYamiModeConfirm,
+								actions: [
+									{
+										value: 'yes' as const,
+										text: i18n.ts.ok,
+										primary: true,
+									},
+									{
+										value: 'neverShow' as const,
+										text: `${i18n.ts.ok} (${i18n.ts.neverShow})`,
+										danger: true,
+									},
+									{
+										value: 'cancel' as const,
+										text: i18n.ts.cancel,
+									},
+								],
+							});
+
+							if (confirm.canceled || confirm.result === 'cancel') return;
+
+							if (confirm.result === 'neverShow') {
+								miLocalStorage.setItem('neverShowEnterYamiModeInfo', 'true');
+							}
+						}
+
+						os.apiWithDialog('i/update', {
+							isInYamiMode: true,
+						}).then(() => {
+							unisonReload();
+							// やみモードに入った実績を解除
+							claimAchievement('markedAsYamiModeUser');
+						});
+					}
 				},
 			}], ev.currentTarget ?? ev.target);
 		},
