@@ -7,8 +7,7 @@ import { appendQuery } from '@@/js/url.js';
 import * as config from '@@/js/config.js';
 
 export function popout(path: string, w?: HTMLElement) {
-	let url = path.startsWith('http://') || path.startsWith('https://') ? path : config.url + path;
-	url = appendQuery(url, 'zen');
+	const url = path.startsWith('http://') || path.startsWith('https://') ? path : config.url + path;
 	if (w) {
 		const position = w.getBoundingClientRect();
 		const width = parseInt(getComputedStyle(w, '').width, 10);
