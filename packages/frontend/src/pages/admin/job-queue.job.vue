@@ -59,8 +59,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #footer>
 		<div class="_buttons">
 			<MkButton rounded @click="copyRaw()"><i class="ti ti-copy"></i> Copy raw</MkButton>
+			<MkButton rounded @click="refresh()"><i class="ti ti-reload"></i> Refresh view</MkButton>
 			<MkButton rounded @click="promoteJob()"><i class="ti ti-player-track-next"></i> Promote</MkButton>
-			<MkButton danger rounded @click="removeJob()"><i class="ti ti-trash"></i> Remove</MkButton>
+			<MkButton rounded @click=""><i class="ti ti-arrow-right"></i> Move to</MkButton>
+			<MkButton danger rounded style="margin-left: auto;" @click="removeJob()"><i class="ti ti-trash"></i> Remove</MkButton>
 		</div>
 	</template>
 
@@ -191,6 +193,10 @@ const props = defineProps<{
 	queueType: string;
 }>();
 
+const emit = defineEmits<{
+	(ev: 'needRefresh'): void,
+}>();
+
 const tab = ref('info');
 const editData = ref(JSON5.stringify(props.job.data, null, '\t'));
 const canEdit = true;
@@ -253,6 +259,10 @@ async function removeJob() {
 	if (canceled) return;
 
 	os.apiWithDialog('admin/queue/remove-job', { queue: props.queueType, jobId: props.job.id });
+}
+
+function refresh() {
+	emit('needRefresh');
 }
 
 function copyRaw() {

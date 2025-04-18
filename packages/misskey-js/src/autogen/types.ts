@@ -585,6 +585,15 @@ export type paths = {
      */
     post: operations['admin___queue___retry-job'];
   };
+  '/admin/queue/show-job': {
+    /**
+     * admin/queue/show-job
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *read:admin:queue*
+     */
+    post: operations['admin___queue___show-job'];
+  };
   '/admin/queue/stats': {
     /**
      * admin/queue/stats
@@ -8856,7 +8865,7 @@ export type operations = {
           /** @enum {string} */
           queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
           /** @enum {string} */
-          state: '*' | 'wait' | 'delayed';
+          state: '*' | 'completed' | 'wait' | 'active' | 'paused' | 'prioritized' | 'delayed' | 'failed';
         };
       };
     };
@@ -9251,6 +9260,59 @@ export type operations = {
    * **Credential required**: *Yes* / **Permission**: *write:admin:queue*
    */
   'admin___queue___retry-job': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @enum {string} */
+          queue: 'system' | 'endedPollNotification' | 'deliver' | 'inbox' | 'db' | 'relationship' | 'objectStorage' | 'userWebhookDeliver' | 'systemWebhookDeliver';
+          jobId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * admin/queue/show-job
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *read:admin:queue*
+   */
+  'admin___queue___show-job': {
     requestBody: {
       content: {
         'application/json': {

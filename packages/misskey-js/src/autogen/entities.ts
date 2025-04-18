@@ -86,6 +86,7 @@ export type AdminQueuePromoteJobsRequest = operations['admin___queue___promote-j
 export type AdminQueueQueueStatsRequest = operations['admin___queue___queue-stats']['requestBody']['content']['application/json'];
 export type AdminQueueRemoveJobRequest = operations['admin___queue___remove-job']['requestBody']['content']['application/json'];
 export type AdminQueueRetryJobRequest = operations['admin___queue___retry-job']['requestBody']['content']['application/json'];
+export type AdminQueueShowJobRequest = operations['admin___queue___show-job']['requestBody']['content']['application/json'];
 export type AdminQueueStatsResponse = operations['admin___queue___stats']['responses']['200']['content']['application/json'];
 export type AdminRelaysAddRequest = operations['admin___relays___add']['requestBody']['content']['application/json'];
 export type AdminRelaysAddResponse = operations['admin___relays___add']['responses']['200']['content']['application/json'];

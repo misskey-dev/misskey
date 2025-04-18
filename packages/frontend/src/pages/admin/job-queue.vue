@@ -160,7 +160,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						class="_monospace"
 					>
 						<template #right="{ event: job }">
-							<XJob :job="job" :queueType="tab" style="margin: 4px 0;"/>
+							<XJob :job="job" :queueType="tab" style="margin: 4px 0;" @needRefresh="refreshJob(job.id)"/>
 						</template>
 					</MkTl>
 				</MkSpacer>
@@ -301,26 +301,6 @@ async function promoteAllJobs() {
 	fetchJobs();
 }
 
-async function promoteJob(job) {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		title: i18n.ts.areYouSure,
-	});
-	if (canceled) return;
-
-	os.apiWithDialog('admin/queue/retry-job', { queue: tab.value, jobId: job.id });
-}
-
-async function removeJob(job) {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		title: i18n.ts.areYouSure,
-	});
-	if (canceled) return;
-
-	os.apiWithDialog('admin/queue/remove-job', { queue: tab.value, jobId: job.id });
-}
-
 async function removeJobs() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
@@ -334,9 +314,12 @@ async function removeJobs() {
 	fetchJobs();
 }
 
-function copyRaw(job) {
-	const raw = JSON.stringify(job, null, '\t');
-	copyToClipboard(raw);
+async function refreshJob(jobId: string) {
+	const newJob = await misskeyApi('admin/queue/show-job', { queue: tab.value, jobId });
+	const index = jobs.value.findIndex((job) => job.id === jobId);
+	if (index !== -1) {
+		jobs.value[index] = newJob;
+	}
 }
 
 const headerActions = computed(() => []);
