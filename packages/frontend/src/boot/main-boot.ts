@@ -83,19 +83,21 @@ export async function mainBoot() {
 
 	let reloadDialogShowing = false;
 	stream.on('_disconnected_', async () => {
-		if (prefer.s.serverDisconnectedBehavior === 'reload') {
-			window.location.reload();
-		} else if (prefer.s.serverDisconnectedBehavior === 'dialog') {
-			if (reloadDialogShowing) return;
-			reloadDialogShowing = true;
-			const { canceled } = await confirm({
-				type: 'warning',
-				title: i18n.ts.disconnectedFromServer,
-				text: i18n.ts.reloadConfirm,
-			});
-			reloadDialogShowing = false;
-			if (!canceled) {
+		if (prefer.s.serverDisconnectedBehavior !== 'disabled') {
+			if (prefer.s.serverDisconnectedBehavior === 'reload') {
 				window.location.reload();
+			} else if (prefer.s.serverDisconnectedBehavior === 'dialog') {
+				if (reloadDialogShowing) return;
+				reloadDialogShowing = true;
+				const { canceled } = await confirm({
+					type: 'warning',
+					title: i18n.ts.disconnectedFromServer,
+					text: i18n.ts.reloadConfirm,
+				});
+				reloadDialogShowing = false;
+				if (!canceled) {
+					window.location.reload();
+				}
 			}
 		}
 	});
