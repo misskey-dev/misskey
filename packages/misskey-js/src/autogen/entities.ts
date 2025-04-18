@@ -469,7 +469,6 @@ export type InviteLimitResponse = operations['invite___limit']['responses']['200
 export type InviteListRequest = operations['invite___list']['requestBody']['content']['application/json'];
 export type InviteListResponse = operations['invite___list']['responses']['200']['content']['application/json'];
 export type MahjongCancelMatchRequest = operations['mahjong___cancel-match']['requestBody']['content']['application/json'];
-export type MahjongCancelMatchResponse = operations['mahjong___cancel-match']['responses']['200']['content']['application/json'];
 export type MahjongCreateRoomResponse = operations['mahjong___create-room']['responses']['200']['content']['application/json'];
 export type MahjongGamesRequest = operations['mahjong___games']['requestBody']['content']['application/json'];
 export type MahjongGamesResponse = operations['mahjong___games']['responses']['200']['content']['application/json'];
