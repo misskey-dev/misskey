@@ -5554,15 +5554,15 @@ export type components = {
       /** Format: id */
       user1Id: string;
       /** Format: id */
-      user2Id: string;
+      user2Id: string | null;
       /** Format: id */
-      user3Id: string;
+      user3Id: string | null;
       /** Format: id */
-      user4Id: string;
-      user1: components['schemas']['User'];
-      user2: components['schemas']['User'];
-      user3: components['schemas']['User'];
-      user4: components['schemas']['User'];
+      user4Id: string | null;
+      user1: components['schemas']['User'] | null;
+      user2: components['schemas']['User'] | null;
+      user3: components['schemas']['User'] | null;
+      user4: components['schemas']['User'] | null;
       user1Ai: boolean;
       user2Ai: boolean;
       user3Ai: boolean;

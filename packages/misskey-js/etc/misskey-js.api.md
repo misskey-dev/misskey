@@ -864,6 +864,111 @@ export type Channels = {
             };
         };
     };
+    mahjongRoom: {
+        params: {
+            roomId: string;
+        };
+        events: {
+            joined: (payload: {
+                index: number;
+                user: UserLite | null;
+            }) => void;
+            changeReadyStates: (payload: {
+                user1: boolean;
+                user2: boolean;
+                user3: boolean;
+                user4: boolean;
+            }) => void;
+            started: (payload: {
+                room: MahjongRoomDetailed;
+            }) => void;
+            nextKyoku: (payload: {
+                room: MahjongRoomDetailed;
+            }) => void;
+            tsumo: (payload: {
+                house: MmjHouse;
+                tile: number;
+            }) => void;
+            dahai: (payload: {
+                house: MmjHouse;
+                tile: number;
+                riichi: boolean;
+            }) => void;
+            dahaiAndTsumo: (payload: {
+                dahaiHouse: MmjHouse;
+                dahaiTile: number;
+                tsumoTile: number;
+                riichi: boolean;
+            }) => void;
+            ponned: (payload: {
+                caller: MmjHouse;
+                callee: MmjHouse;
+                tiles: readonly [number, number, number];
+            }) => void;
+            kanned: (payload: {
+                caller: MmjHouse;
+                callee: MmjHouse;
+                tiles: readonly [number, number, number, number];
+                rinsyan: number;
+            }) => void;
+            ciied: (payload: {
+                caller: MmjHouse;
+                callee: MmjHouse;
+                tiles: readonly [number, number, number];
+            }) => void;
+            ronned: (payload: {
+                callers: MmjHouse[];
+                callee: MmjHouse;
+                handTiles: Record<MmjHouse, number[]>;
+            }) => void;
+            ryuukyoku: (payload: unknown) => void;
+            ankanned: (payload: {
+                house: MmjHouse;
+                tiles: readonly [number, number, number, number];
+                rinsyan: number;
+            }) => void;
+            kakanned: (payload: {
+                house: MmjHouse;
+                tiles: readonly [number, number, number, number];
+                rinsyan: number;
+                from: MmjHouse;
+            }) => void;
+            tsumoHora: (payload: {
+                house: MmjHouse;
+                handTiles: number[];
+                tsumoTile: number;
+            }) => void;
+        };
+        receives: {
+            ready: boolean;
+            updateSettings: {
+                key: string;
+                body: unknown;
+            };
+            addAi: Record<string, never>;
+            leave: Record<string, never>;
+            confirmNextKyoku: Record<string, never>;
+            dahai: {
+                tile: number;
+                riichi?: boolean;
+            };
+            tsumoHora: Record<string, never>;
+            ronHora: Record<string, never>;
+            pon: Record<string, never>;
+            cii: {
+                pattern: string;
+            };
+            kan: Record<string, never>;
+            ankan: {
+                tile: number;
+            };
+            kakan: {
+                tile: number;
+            };
+            nop: Record<string, never>;
+            claimTimeIsUp: Record<string, never>;
+        };
+    };
 };
 
 // @public (undocumented)
@@ -3763,8 +3868,9 @@ type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['respons
 //
 // src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:218:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:228:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:221:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:231:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:301:5 - (ae-forgotten-export) The symbol "MmjHouse" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
