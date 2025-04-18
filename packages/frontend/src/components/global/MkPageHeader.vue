@@ -40,19 +40,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { onMounted, onUnmounted, ref, inject, useTemplateRef, computed } from 'vue';
-import { scrollToTop } from '@@/js/scroll.js';
-import XTabs from './MkPageHeader.tabs.vue';
-import type { Tab } from './MkPageHeader.tabs.vue';
+<script lang="ts">
 import type { PageHeaderItem } from '@/types/page-header.js';
 import type { PageMetadata } from '@/page.js';
-import { globalEvents } from '@/events.js';
-import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
-import { $i } from '@/i.js';
-import { DI } from '@/di.js';
+import type { Tab } from './MkPageHeader.tabs.vue';
 
-const props = withDefaults(defineProps<{
+export type PageHeaderProps = {
 	overridePageMetadata?: PageMetadata;
 	tabs?: Tab[];
 	tab?: string;
@@ -60,7 +53,19 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	hideTitle?: boolean;
 	displayMyAvatar?: boolean;
-}>(), {
+};
+</script>
+
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref, inject, useTemplateRef, computed } from 'vue';
+import { scrollToTop } from '@@/js/scroll.js';
+import XTabs from './MkPageHeader.tabs.vue';
+import { globalEvents } from '@/events.js';
+import { openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { $i } from '@/i.js';
+import { DI } from '@/di.js';
+
+const props = withDefaults(defineProps<PageHeaderProps>(), {
 	tabs: () => ([] as Tab[]),
 });
 
