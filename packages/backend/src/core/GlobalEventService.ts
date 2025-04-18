@@ -210,7 +210,7 @@ export interface ReversiGameEventTypes {
 export interface MahjongRoomEventTypes {
 	joined: {
 		index: number;
-		user: Packed<'UserLite'>;
+		user: Packed<'UserLite'> | null;
 	};
 	changeReadyStates: {
 		user1: boolean;
@@ -221,35 +221,61 @@ export interface MahjongRoomEventTypes {
 	started: {
 		room: Packed<'MahjongRoomDetailed'>;
 	};
+	nextKyoku: {
+		room: Packed<'MahjongRoomDetailed'>;
+	};
 	tsumo: {
 		house: Mmj.House;
-		tile: Mmj.Tile;
+		tile: number;
 	};
 	dahai: {
 		house: Mmj.House;
-		tile: Mmj.Tile;
+		tile: number;
 		riichi: boolean;
 	};
 	dahaiAndTsumo: {
 		dahaiHouse: Mmj.House;
-		dahaiTile: Mmj.Tile;
-		tsumoTile: Mmj.Tile;
+		dahaiTile: number;
+		tsumoTile: number;
 		riichi: boolean;
 	};
 	ponned: {
 		caller: Mmj.House;
 		callee: Mmj.House;
-		tile: Mmj.Tile;
+		tiles: readonly [number, number, number];
 	};
 	kanned: {
 		caller: Mmj.House;
 		callee: Mmj.House;
-		tile: Mmj.Tile;
-		rinsyan: Mmj.Tile;
+		tiles: readonly [number, number, number, number];
+		rinsyan: number;
+	};
+	ciied: {
+		caller: Mmj.House;
+		callee: Mmj.House;
+		tiles: readonly [number, number, number];
 	};
 	ronned: {
+		callers: Mmj.House[];
+		callee: Mmj.House;
+		handTiles: Record<Mmj.House, number[]>;
+	};
+	ryuukyoku: object;
+	ankanned: {
+		house: Mmj.House;
+		tiles: readonly [number, number, number, number];
+		rinsyan: number;
+	};
+	kakanned: {
+		house: Mmj.House;
+		tiles: readonly [number, number, number, number];
+		rinsyan: number;
+		from: Mmj.House;
 	};
 	tsumoHora: {
+		house: Mmj.House;
+		handTiles: number[];
+		tsumoTile: number;
 	};
 }
 //#endregion
