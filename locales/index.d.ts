@@ -11861,6 +11861,18 @@ export interface Locale extends ILocale {
          */
         "yamiNote": string;
         /**
+         * やみノートに切り替えますか？
+         */
+        "enableYamiNoteConfirm": string;
+        /**
+         * やみノートはやみモードユーザーのみが閲覧できる特殊な投稿です。閲覧対象が限られるため、より自由な表現が可能です。
+         */
+        "enableYamiNoteConfirmWarn": string;
+        /**
+         * やみノートを使用する
+         */
+        "enableYamiNoteOk": string;
+        /**
          * やみタイムライン
          */
         "yamiTimeline": string;

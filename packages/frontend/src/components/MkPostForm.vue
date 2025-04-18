@@ -1190,9 +1190,45 @@ function toggleScheduleNote() {
 }
 
 // やみノートモードの切り替え関数
-function toggleYamiMode() {
+async function toggleYamiMode() {
 	// 通常モードユーザーの場合は切り替え不可
 	if (!$i.isInYamiMode) return;
+
+	// 現在がやみノートでない状態から切り替える場合にダイアログを表示
+	if (!isNoteInYamiMode.value) {
+		const neverShowYamiModeInfo = miLocalStorage.getItem('neverShowYamiModeInfo');
+
+		if (neverShowYamiModeInfo !== 'true') {
+			const confirm = await os.actions({
+				type: 'question',
+				title: i18n.ts._yami.enableYamiNoteConfirm,
+				text: i18n.ts._yami.enableYamiNoteConfirmWarn,
+				actions: [
+					{
+						value: 'yes' as const,
+						text: i18n.ts._yami.enableYamiNoteOk,
+						primary: true,
+					},
+					{
+						value: 'neverShow' as const,
+						text: `${i18n.ts._yami.enableYamiNoteOk} (${i18n.ts.neverShow})`,
+						danger: true,
+					},
+					{
+						value: 'no' as const,
+						text: i18n.ts.cancel,
+					},
+				],
+			});
+
+			if (confirm.canceled) return;
+			if (confirm.result === 'no') return;
+
+			if (confirm.result === 'neverShow') {
+				miLocalStorage.setItem('neverShowYamiModeInfo', 'true');
+			}
+		}
+	}
 
 	isNoteInYamiMode.value = !isNoteInYamiMode.value;
 

@@ -3169,6 +3169,9 @@ _yami:
   yamiModeShort: "やみ"
   normalNote: "通常ノート"
   yamiNote: "やみノート"
+  enableYamiNoteConfirm: "やみノートに切り替えますか？"
+  enableYamiNoteConfirmWarn: "やみノートはやみモードユーザーのみが閲覧できる特殊な投稿です。閲覧対象が限られるため、より自由な表現が可能です。"
+  enableYamiNoteOk: "やみノートを使用する"
   yamiTimeline: "やみタイムライン"
   _yamiModeSwitcher:
     normal: "通常モード"

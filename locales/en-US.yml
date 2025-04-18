@@ -3032,6 +3032,9 @@ _yami:
   yamiModeShort: "Yami"
   normalNote: "Normal note"
   yamiNotes: "Yami notes"
+  enableYamiNoteConfirm: "Switch to Yami Note mode?"
+  enableYamiNoteConfirmWarn: "Yami Notes are special posts that can only be viewed by users in Yami Mode. As the audience is limited, it allows for more freedom of expression."
+  enableYamiNoteOk: "Use Yami Note"
   yamiTimeline: "Yami timeline"
   _yamiModeSwitcher:
     normal: "Normal mode"
