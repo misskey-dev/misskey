@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.tabs" @wheel="onTabWheel">
+<div :class="$style.tabs">
 	<div :class="$style.tabsInner">
 		<button
 			v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title"
@@ -102,18 +102,6 @@ function renderTab() {
 		tabHighlightEl.value.style.width = rect.width + 'px';
 		tabHighlightEl.value.style.left = (rect.left - parentRect.left + tabHighlightEl.value.parentElement.scrollLeft) + 'px';
 	}
-}
-
-function onTabWheel(ev: WheelEvent) {
-	if (ev.deltaY !== 0 && ev.deltaX === 0) {
-		ev.preventDefault();
-		ev.stopPropagation();
-		(ev.currentTarget as HTMLElement).scrollBy({
-			left: ev.deltaY,
-			behavior: 'instant',
-		});
-	}
-	return false;
 }
 
 let entering = false;

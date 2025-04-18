@@ -160,7 +160,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						class="_monospace"
 					>
 						<template #right="{ event: job }">
-							<XJob :job="job" :queueType="tab"/>
+							<XJob :job="job" :queueType="tab" style="margin: 4px 0;"/>
 						</template>
 					</MkTl>
 				</MkSpacer>

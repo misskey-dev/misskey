@@ -128,13 +128,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template #right="{ event, timestamp, delta }">
-				<template v-if="event.type === 'attempt'">
-					<div>at ?</div>
-				</template>
-				<template v-else>
-					<div>at <MkTime :time="timestamp" mode="detail"/></div>
-					<div style="font-size: 90%; opacity: 0.7;">{{ timestamp }} (+{{ msSMH(delta) }})</div>
-				</template>
+				<div style="margin: 8px 0;">
+					<template v-if="event.type === 'attempt'">
+						<div>at ?</div>
+					</template>
+					<template v-else>
+						<div>at <MkTime :time="timestamp" mode="detail"/></div>
+						<div style="font-size: 90%; opacity: 0.7;">{{ timestamp }} (+{{ msSMH(delta) }})</div>
+					</template>
+				</div>
 			</template>
 		</MkTl>
 	</div>

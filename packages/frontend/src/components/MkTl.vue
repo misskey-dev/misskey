@@ -9,13 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.left">
 			<slot v-if="item.type === 'event'" name="left" :event="item.data" :timestamp="item.timestamp" :delta="item.delta"></slot>
 		</div>
-		<div :class="$style.center">
+		<div :class="[$style.center, item.type === 'date' ? $style.date : '']">
 			<div :class="$style.centerLine"></div>
 			<div :class="$style.centerPoint"></div>
 		</div>
 		<div :class="$style.right">
 			<slot v-if="item.type === 'event'" name="right" :event="item.data" :timestamp="item.timestamp" :delta="item.delta"></slot>
-			<div v-else :class="$style.date"><i class="ti ti-chevron-up"></i> {{ item.prevText }}</div>
+			<div v-else :class="$style.dateLabel"><i class="ti ti-chevron-up"></i> {{ item.prevText }}</div>
 		</div>
 	</template>
 </div>
@@ -112,6 +112,22 @@ const items = computed<({
 
 .center {
 	position: relative;
+
+	&.date {
+		.centerPoint::before {
+			position: absolute;
+			content: "";
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+			width: 7px;
+			height: 7px;
+			background: var(--MI_THEME-bg);
+			border-radius: 50%;
+		}
+	}
 }
 
 .centerLine {
@@ -139,20 +155,19 @@ const items = computed<({
 
 .left {
 	min-width: 0;
-	padding: 4px 0;
 	align-self: center;
 	justify-self: right;
 }
 
 .right {
 	min-width: 0;
-	padding: 4px 0;
 	align-self: center;
 }
 
-.date {
+.dateLabel {
 	opacity: 0.7;
 	font-size: 90%;
 	padding: 4px;
+	margin: 8px 0;
 }
 </style>
