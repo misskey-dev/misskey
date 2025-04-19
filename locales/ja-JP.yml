@@ -1345,6 +1345,7 @@ embed: "埋め込み"
 settingsMigrating: "設定を移行しています。しばらくお待ちください... (後ほど、設定→その他→旧設定情報を移行 で手動で移行することもできます)"
 readonly: "読み取り専用"
 goToDeck: "デッキへ戻る"
+federationJobs: "連合ジョブ"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
