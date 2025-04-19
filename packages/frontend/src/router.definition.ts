@@ -392,9 +392,13 @@ export const ROUTE_DEF = [{
 		name: 'avatarDecorations',
 		component: page(() => import('@/pages/avatar-decorations.vue')),
 	}, {
-		path: '/queue',
-		name: 'queue',
-		component: page(() => import('@/pages/admin/queue.vue')),
+		path: '/federation-job-queue',
+		name: 'federationJobQueue',
+		component: page(() => import('@/pages/admin/federation-job-queue.vue')),
+	}, {
+		path: '/job-queue',
+		name: 'jobQueue',
+		component: page(() => import('@/pages/admin/job-queue.vue')),
 	}, {
 		path: '/files',
 		name: 'files',

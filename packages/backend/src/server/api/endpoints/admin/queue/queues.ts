@@ -13,28 +13,23 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
-	kind: 'write:admin:queue',
+	kind: 'read:admin:queue',
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
-		queue: { type: 'string', enum: QUEUE_TYPES },
-		state: { type: 'string', enum: ['*', 'completed', 'wait', 'active', 'paused', 'prioritized', 'delayed', 'failed'] },
 	},
-	required: ['queue', 'state'],
+	required: [],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private moderationLogService: ModerationLogService,
 		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			this.queueService.queueClear(ps.queue, ps.state);
-
-			this.moderationLogService.log(me, 'clearQueue');
+			return this.queueService.queueGetQueues();
 		});
 	}
 }
