@@ -43,6 +43,41 @@ export function channel(id = 'somechannelid', name = 'Some Channel', bannerUrl: 
 	};
 }
 
+export function chatMessage(room = false, id = 'somechatmessageid', text = 'Hello!'): entities.ChatMessage {
+	const fromUser = userLite();
+	const toRoom = chatRoom();
+	const toUser = userLite('touserid');
+	return {
+		id,
+		createdAt: '2016-12-28T22:49:51.000Z',
+		fromUserId: fromUser.id,
+		fromUser,
+		text,
+		isRead: false,
+		reactions: [],
+		...room ? {
+			toRoomId: toRoom.id,
+			toRoom,
+		} : {
+			toUserId: toUser.id,
+			toUser,
+		},
+	};
+}
+
+export function chatRoom(id = 'somechatroomid', name = 'Some Chat Room'): entities.ChatRoom {
+	const owner = userLite('someownerid');
+	return {
+		id,
+		createdAt: '2016-12-28T22:49:51.000Z',
+		ownerId: owner.id,
+		owner,
+		name,
+		description: 'A chat room for testing',
+		isMuted: false,
+	};
+}
+
 export function clip(id = 'someclipid', name = 'Some Clip'): entities.Clip {
 	return {
 		id,

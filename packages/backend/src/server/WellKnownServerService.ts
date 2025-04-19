@@ -138,7 +138,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 
 			const fromAcct = (acct: Acct.Acct): FindOptionsWhere<MiUser> | number =>
 				!acct.host || acct.host === this.config.host.toLowerCase() ? {
-					usernameLower: acct.username,
+					usernameLower: acct.username.toLowerCase(),
 					host: IsNull(),
 					isSuspended: false,
 				} : 422;

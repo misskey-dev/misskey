@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer v-if="instance" :contentMax="600" :marginMin="16" :marginMax="32">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+		<MkSwiper v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'overview'" class="_gaps_m">
 				<div class="fnfelxur">
 					<img :src="faviconUrl" alt="" class="icon"/>
@@ -126,7 +126,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkObjectView tall :value="instance">
 				</MkObjectView>
 			</div>
-		</MkHorizontalSwipe>
+		</MkSwiper>
 	</MkSpacer>
 </PageWithHeader>
 </template>
@@ -153,7 +153,7 @@ import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import MkSwiper from '@/components/MkSwiper.vue';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 import { dateString } from '@/filters/date.js';
 import MkTextarea from '@/components/MkTextarea.vue';

@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/>
 	</template>
 
-	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+	<MkSwiper v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'info'" :contentMax="800">
 			<XFileInfo :fileId="fileId"/>
 		</MkSpacer>
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer v-else-if="tab === 'notes'" :contentMax="800">
 			<XNotes :fileId="fileId"/>
 		</MkSpacer>
-	</MkHorizontalSwipe>
+	</MkSwiper>
 </MkStickyContainer>
 </template>
 
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import MkSwiper from '@/components/MkSwiper.vue';
 
 const props = defineProps<{
 	fileId: string;

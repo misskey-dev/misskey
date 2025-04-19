@@ -979,6 +979,7 @@ document: "文档"
 numberOfPageCache: "缓存页数"
 numberOfPageCacheDescription: "设置较高的值会更方便用户，但设备的负载和内存使用量会增加。"
 logoutConfirm: "是否确认登出？"
+logoutWillClearClientData: "登出时将会从浏览器中删除客户端的设置信息。如果想要在再次登入时恢复设置信息，请在设置里打开自动备份。"
 lastActiveDate: "最后活跃时间"
 statusbar: "状态栏"
 pleaseSelect: "请选择"
@@ -2367,6 +2368,7 @@ _widgets:
     chooseList: "选择列表"
   clicker: "点击器"
   birthdayFollowings: "今天是他们的生日"
+  chat: "聊天"
 _cw:
   hide: "隐藏"
   show: "查看更多"
@@ -2633,6 +2635,7 @@ _deck:
     mentions: "提及"
     direct: "指定用户"
     roleTimeline: "角色时间线"
+    chat: "聊天"
 _dialog:
   charactersExceeded: "已经超过了最大字符数! 当前字符数 {current} / 限制字符数 {max}"
   charactersBelow: "低于最小字符数！当前字符数 {current} / 限制字符数 {min}"

@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="700">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+		<MkSwiper v-model:tab="tab" :tabs="headerTabs">
 			<div v-if="tab === 'my'" class="_gaps">
 				<MkButton primary rounded class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="tab === 'favorites'" class="_gaps">
 				<MkClipPreview v-for="item in favorites" :key="item.id" :clip="item"/>
 			</div>
-		</MkHorizontalSwipe>
+		</MkSwiper>
 	</MkSpacer>
 </PageWithHeader>
 </template>
@@ -33,7 +33,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { clipsCache } from '@/cache.js';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import MkSwiper from '@/components/MkSwiper.vue';
 
 const pagination = {
 	endpoint: 'clips/list' as const,

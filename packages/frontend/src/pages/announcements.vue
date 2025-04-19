@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+		<MkSwiper v-model:tab="tab" :tabs="headerTabs">
 			<div class="_gaps">
 				<MkInfo v-if="$i && $i.hasUnreadAnnouncement && tab === 'current'" warn>{{ i18n.ts.youHaveUnreadAnnouncements }}</MkInfo>
 				<MkPagination ref="paginationEl" :key="tab" v-slot="{items}" :pagination="tab === 'current' ? paginationCurrent : paginationPast" class="_gaps">
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkA :to="`/announcements/${announcement.id}`"><span>{{ announcement.title }}</span></MkA>
 						</div>
 						<div :class="$style.content">
-							<Mfm :text="announcement.text"/>
+							<Mfm :text="announcement.text" class="_selectable"/>
 							<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 							<MkA :to="`/announcements/${announcement.id}`">
 								<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</section>
 				</MkPagination>
 			</div>
-		</MkHorizontalSwipe>
+		</MkSwiper>
 	</MkSpacer>
 </PageWithHeader>
 </template>
@@ -50,7 +50,7 @@ import { ref, computed } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import MkSwiper from '@/components/MkSwiper.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';

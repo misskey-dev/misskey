@@ -74,7 +74,7 @@ describe('UserEntityService', () => {
 					...userData,
 					id: genAidx(Date.now()),
 					username: un,
-					usernameLower: un,
+					usernameLower: un.toLowerCase(),
 				})
 				.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 

@@ -3,29 +3,48 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { FindOneOptions, InsertQueryBuilder, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+	FindOneOptions,
+	InsertQueryBuilder,
+	ObjectLiteral,
+	QueryRunner,
+	Repository,
+	SelectQueryBuilder,
+} from 'typeorm';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import { RelationCountLoader } from 'typeorm/query-builder/relation-count/RelationCountLoader.js';
 import { RelationIdLoader } from 'typeorm/query-builder/relation-id/RelationIdLoader.js';
-import { RawSqlResultsToEntityTransformer } from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
-import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
+import {
+	RawSqlResultsToEntityTransformer,
+} from 'typeorm/query-builder/transformer/RawSqlResultsToEntityTransformer.js';
 import { MiAbuseReportNotificationRecipient } from '@/models/AbuseReportNotificationRecipient.js';
+import { MiAbuseUserReport } from '@/models/AbuseUserReport.js';
 import { MiAccessToken } from '@/models/AccessToken.js';
 import { MiAd } from '@/models/Ad.js';
 import { MiAnnouncement } from '@/models/Announcement.js';
 import { MiAnnouncementRead } from '@/models/AnnouncementRead.js';
 import { MiAntenna } from '@/models/Antenna.js';
 import { MiApp } from '@/models/App.js';
-import { MiAvatarDecoration } from '@/models/AvatarDecoration.js';
 import { MiAuthSession } from '@/models/AuthSession.js';
+import { MiAvatarDecoration } from '@/models/AvatarDecoration.js';
 import { MiBlocking } from '@/models/Blocking.js';
-import { MiChannelFollowing } from '@/models/ChannelFollowing.js';
+import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
+import { MiChannel } from '@/models/Channel.js';
 import { MiChannelFavorite } from '@/models/ChannelFavorite.js';
+import { MiChannelFollowing } from '@/models/ChannelFollowing.js';
+import { MiChatApproval } from '@/models/ChatApproval.js';
+import { MiChatMessage } from '@/models/ChatMessage.js';
+import { MiChatRoom } from '@/models/ChatRoom.js';
+import { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
+import { MiChatRoomMembership } from '@/models/ChatRoomMembership.js';
 import { MiClip } from '@/models/Clip.js';
-import { MiClipNote } from '@/models/ClipNote.js';
 import { MiClipFavorite } from '@/models/ClipFavorite.js';
+import { MiClipNote } from '@/models/ClipNote.js';
 import { MiDriveFile } from '@/models/DriveFile.js';
 import { MiDriveFolder } from '@/models/DriveFolder.js';
 import { MiEmoji } from '@/models/Emoji.js';
+import { MiFlash } from '@/models/Flash.js';
+import { MiFlashLike } from '@/models/FlashLike.js';
 import { MiFollowing } from '@/models/Following.js';
 import { MiFollowRequest } from '@/models/FollowRequest.js';
 import { MiGalleryLike } from '@/models/GalleryLike.js';
@@ -35,7 +54,6 @@ import { MiInstance } from '@/models/Instance.js';
 import { MiMeta } from '@/models/Meta.js';
 import { MiModerationLog } from '@/models/ModerationLog.js';
 import { MiMuting } from '@/models/Muting.js';
-import { MiRenoteMuting } from '@/models/RenoteMuting.js';
 import { MiNote } from '@/models/Note.js';
 import { MiNoteFavorite } from '@/models/NoteFavorite.js';
 import { MiNoteReaction } from '@/models/NoteReaction.js';
@@ -50,42 +68,38 @@ import { MiPromoRead } from '@/models/PromoRead.js';
 import { MiRegistrationTicket } from '@/models/RegistrationTicket.js';
 import { MiRegistryItem } from '@/models/RegistryItem.js';
 import { MiRelay } from '@/models/Relay.js';
+import { MiRenoteMuting } from '@/models/RenoteMuting.js';
+import { MiRetentionAggregation } from '@/models/RetentionAggregation.js';
+import { MiReversiGame } from '@/models/ReversiGame.js';
+import { MiRole } from '@/models/Role.js';
+import { MiRoleAssignment } from '@/models/RoleAssignment.js';
 import { MiSignin } from '@/models/Signin.js';
 import { MiSwSubscription } from '@/models/SwSubscription.js';
 import { MiSystemAccount } from '@/models/SystemAccount.js';
+import { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import { MiUsedUsername } from '@/models/UsedUsername.js';
 import { MiUser } from '@/models/User.js';
 import { MiUserIp } from '@/models/UserIp.js';
 import { MiUserKeypair } from '@/models/UserKeypair.js';
 import { MiUserList } from '@/models/UserList.js';
+import { MiUserListFavorite } from '@/models/UserListFavorite.js';
 import { MiUserListMembership } from '@/models/UserListMembership.js';
+import { MiUserMemo } from '@/models/UserMemo.js';
 import { MiUserNotePining } from '@/models/UserNotePining.js';
 import { MiUserPending } from '@/models/UserPending.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
 import { MiUserPublickey } from '@/models/UserPublickey.js';
 import { MiUserSecurityKey } from '@/models/UserSecurityKey.js';
-import { MiUserMemo } from '@/models/UserMemo.js';
 import { MiWebhook } from '@/models/Webhook.js';
-import { MiSystemWebhook } from '@/models/SystemWebhook.js';
-import { MiChannel } from '@/models/Channel.js';
-import { MiRetentionAggregation } from '@/models/RetentionAggregation.js';
-import { MiRole } from '@/models/Role.js';
-import { MiRoleAssignment } from '@/models/RoleAssignment.js';
-import { MiFlash } from '@/models/Flash.js';
-import { MiFlashLike } from '@/models/FlashLike.js';
-import { MiUserListFavorite } from '@/models/UserListFavorite.js';
-import { MiChatMessage } from '@/models/ChatMessage.js';
-import { MiChatRoom } from '@/models/ChatRoom.js';
-import { MiChatRoomMembership } from '@/models/ChatRoomMembership.js';
-import { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
-import { MiChatApproval } from '@/models/ChatApproval.js';
-import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
-import { MiReversiGame } from '@/models/ReversiGame.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
 	createTableColumnNames(this: Repository<T> & MiRepository<T>): string[];
+
 	insertOne(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>): Promise<T>;
+
+	insertOneImpl(this: Repository<T> & MiRepository<T>, entity: QueryDeepPartialEntity<T>, findOptions?: Pick<FindOneOptions<T>, 'relations'>, queryRunner?: QueryRunner): Promise<T>;
+
 	selectAliasColumnNames(this: Repository<T> & MiRepository<T>, queryBuilder: InsertQueryBuilder<T>, builder: SelectQueryBuilder<T>): void;
 }
 
@@ -94,6 +108,21 @@ export const miRepository = {
 		return this.metadata.columns.filter(column => column.isSelect && !column.isVirtual).map(column => column.databaseName);
 	},
 	async insertOne(entity, findOptions?) {
+		const opt = this.manager.connection.options as PostgresConnectionOptions;
+		if (opt.replication) {
+			const queryRunner = this.manager.connection.createQueryRunner('master');
+			try {
+				return this.insertOneImpl(entity, findOptions, queryRunner);
+			} finally {
+				await queryRunner.release();
+			}
+		} else {
+			return this.insertOneImpl(entity, findOptions);
+		}
+	},
+	async insertOneImpl(entity, findOptions?, queryRunner?) {
+		// ---- insert + returningの結果を共通テーブル式(CTE)に保持するクエリを生成 ----
+
 		const queryBuilder = this.createQueryBuilder().insert().values(entity);
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const mainAlias = queryBuilder.expressionMap.mainAlias!;
@@ -101,7 +130,9 @@ export const miRepository = {
 		mainAlias.name = 't';
 		const columnNames = this.createTableColumnNames();
 		queryBuilder.returning(columnNames.reduce((a, c) => `${a}, ${queryBuilder.escape(c)}`, '').slice(2));
-		const builder = this.createQueryBuilder().addCommonTableExpression(queryBuilder, 'cte', { columnNames });
+
+		// ---- 共通テーブル式(CTE)から結果を取得 ----
+		const builder = this.createQueryBuilder(undefined, queryRunner).addCommonTableExpression(queryBuilder, 'cte', { columnNames });
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		builder.expressionMap.mainAlias!.tablePath = 'cte';
 		this.selectAliasColumnNames(queryBuilder, builder);
@@ -204,7 +235,9 @@ export {
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
-export type AbuseReportNotificationRecipientRepository = Repository<MiAbuseReportNotificationRecipient> & MiRepository<MiAbuseReportNotificationRecipient>;
+export type AbuseReportNotificationRecipientRepository =
+	Repository<MiAbuseReportNotificationRecipient>
+	& MiRepository<MiAbuseReportNotificationRecipient>;
 export type AccessTokensRepository = Repository<MiAccessToken> & MiRepository<MiAccessToken>;
 export type AdsRepository = Repository<MiAd> & MiRepository<MiAd>;
 export type AnnouncementsRepository = Repository<MiAnnouncement> & MiRepository<MiAnnouncement>;

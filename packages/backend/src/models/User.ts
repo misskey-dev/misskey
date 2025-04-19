@@ -118,21 +118,25 @@ export class MiUser {
 	@JoinColumn()
 	public banner: MiDriveFile | null;
 
+	// avatarId が null になったとしてもこれが null でない可能性があるため、このフィールドを使うときは avatarId の non-null チェックをすること
 	@Column('varchar', {
 		length: 512, nullable: true,
 	})
 	public avatarUrl: string | null;
 
+	// bannerId が null になったとしてもこれが null でない可能性があるため、このフィールドを使うときは bannerId の non-null チェックをすること
 	@Column('varchar', {
 		length: 512, nullable: true,
 	})
 	public bannerUrl: string | null;
 
+	// avatarId が null になったとしてもこれが null でない可能性があるため、このフィールドを使うときは avatarId の non-null チェックをすること
 	@Column('varchar', {
 		length: 128, nullable: true,
 	})
 	public avatarBlurhash: string | null;
 
+	// bannerId が null になったとしてもこれが null でない可能性があるため、このフィールドを使うときは bannerId の non-null チェックをすること
 	@Column('varchar', {
 		length: 128, nullable: true,
 	})

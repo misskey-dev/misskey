@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<g fill-rule="evenodd">
 		<rect width="200" height="150" :fill="themeVariables.bg"/>
 		<rect width="64" height="150" :fill="themeVariables.navBg"/>
-		<rect x="64" width="136" height="41" :fill="themeVariables.bg"/>
+		<rect x="64" width="136" height="41" :fill="themeVariables.pageHeaderBg"/>
 		<path transform="scale(.26458)" d="m439.77 247.19c-43.673 0-78.832 35.157-78.832 78.83v249.98h407.06v-328.81z" :fill="themeVariables.panel"/>
 	</g>
 	<circle cx="32" cy="83" r="21" :fill="themeVariables.accentedBg"/>
@@ -62,6 +62,7 @@ const themeVariables = ref<{
 	accent: string;
 	accentedBg: string;
 	navBg: string;
+	pageHeaderBg: string;
 	success: string;
 	warn: string;
 	error: string;
@@ -76,6 +77,7 @@ const themeVariables = ref<{
 	accent: 'var(--MI_THEME-accent)',
 	accentedBg: 'var(--MI_THEME-accentedBg)',
 	navBg: 'var(--MI_THEME-navBg)',
+	pageHeaderBg: 'var(--MI_THEME-pageHeaderBg)',
 	success: 'var(--MI_THEME-success)',
 	warn: 'var(--MI_THEME-warn)',
 	error: 'var(--MI_THEME-error)',
@@ -104,6 +106,7 @@ watch(() => props.theme, (theme) => {
 		accent: compiled.accent ?? 'var(--MI_THEME-accent)',
 		accentedBg: compiled.accentedBg ?? 'var(--MI_THEME-accentedBg)',
 		navBg: compiled.navBg ?? 'var(--MI_THEME-navBg)',
+		pageHeaderBg: compiled.pageHeaderBg ?? 'var(--MI_THEME-pageHeaderBg)',
 		success: compiled.success ?? 'var(--MI_THEME-success)',
 		warn: compiled.warn ?? 'var(--MI_THEME-warn)',
 		error: compiled.error ?? 'var(--MI_THEME-error)',

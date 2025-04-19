@@ -157,7 +157,7 @@ async function init() {
 
 	const accounts = await getAccounts();
 
-	const accountIdsToFetch = accounts.map(a => a.user.id).filter(id => !users.value.has(id));
+	const accountIdsToFetch = accounts.map(a => a.id).filter(id => !users.value.has(id));
 
 	if (accountIdsToFetch.length > 0) {
 		const usersRes = await misskeyApi('users/show', {
@@ -169,7 +169,7 @@ async function init() {
 
 			users.value.set(user.id, {
 				...user,
-				token: accounts.find(a => a.user.id === user.id)!.token,
+				token: accounts.find(a => a.id === user.id)!.token,
 			});
 		}
 	}

@@ -38,15 +38,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<KeepAlive>
 					<div v-show="opened">
-						<MkSpacer v-if="withSpacer" :marginMin="spacerMin" :marginMax="spacerMax">
-							<slot></slot>
-						</MkSpacer>
-						<div v-else>
-							<slot></slot>
-						</div>
-						<div v-if="$slots.footer" :class="$style.footer">
-							<slot name="footer"></slot>
-						</div>
+						<MkStickyContainer>
+							<template #header>
+								<div v-if="$slots.header" :class="$style.inBodyHeader">
+									<slot name="header"></slot>
+								</div>
+							</template>
+
+							<MkSpacer v-if="withSpacer" :marginMin="spacerMin" :marginMax="spacerMax">
+								<slot></slot>
+							</MkSpacer>
+							<div v-else>
+								<slot></slot>
+							</div>
+
+							<template #footer>
+								<div v-if="$slots.footer" :class="$style.inBodyFooter">
+									<slot name="footer"></slot>
+								</div>
+							</template>
+						</MkStickyContainer>
 					</div>
 				</KeepAlive>
 			</Transition>
@@ -230,14 +241,21 @@ onMounted(() => {
 
 	&.bgSame {
 		background: var(--MI_THEME-bg);
+
+		.inBodyHeader {
+			background: color(from var(--MI_THEME-bg) srgb r g b / 0.75);
+		}
 	}
 }
 
-.footer {
-	position: sticky !important;
-	z-index: 1;
-	bottom: var(--MI-stickyBottom, 0px);
-	left: 0;
+.inBodyHeader {
+	background: color(from var(--MI_THEME-panel) srgb r g b / 0.75);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
+}
+
+.inBodyFooter {
 	padding: 12px;
 	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));

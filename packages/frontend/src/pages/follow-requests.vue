@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+		<MkSwiper v-model:tab="tab" :tabs="headerTabs">
 			<MkPagination ref="paginationComponent" :pagination="pagination">
 				<template #empty>
 					<div class="_fullinfo">
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</template>
 			</MkPagination>
-		</MkHorizontalSwipe>
+		</MkSwiper>
 	</MkSpacer>
 </PageWithHeader>
 </template>
@@ -52,7 +52,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { infoImageUrl } from '@/instance.js';
 import { $i } from '@/i.js';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import MkSwiper from '@/components/MkSwiper.vue';
 
 const paginationComponent = useTemplateRef('paginationComponent');
 
