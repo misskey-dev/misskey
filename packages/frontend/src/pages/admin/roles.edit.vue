@@ -15,7 +15,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSpacer>
 		</div>
 	</template>
-	</MkStickyContainer>
 </PageWithHeader>
 </template>
 
