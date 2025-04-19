@@ -389,6 +389,9 @@ importers:
       secure-json-parse:
         specifier: 3.0.2
         version: 3.0.2
+      semver:
+        specifier: 7.7.1
+        version: 7.7.1
       sharp:
         specifier: 0.34.1
         version: 0.34.1
@@ -9659,11 +9662,6 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  semver@7.6.3:
-    resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   semver@7.7.1:
     resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
     engines: {node: '>=10'}
@@ -14450,7 +14448,7 @@ snapshots:
       fast-glob: 3.3.3
       minimatch: 9.0.4
       piscina: 4.4.0
-      semver: 7.6.3
+      semver: 7.7.1
       slash: 3.0.0
       source-map: 0.7.4
     optionalDependencies:
@@ -15175,7 +15173,7 @@ snapshots:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.4
-      semver: 7.6.3
+      semver: 7.7.1
       ts-api-utils: 2.0.1(typescript@5.8.2)
       typescript: 5.8.2
     transitivePeerDependencies:
@@ -15189,7 +15187,7 @@ snapshots:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.4
-      semver: 7.6.3
+      semver: 7.7.1
       ts-api-utils: 2.0.1(typescript@5.8.2)
       typescript: 5.8.2
     transitivePeerDependencies:
@@ -16726,7 +16724,7 @@ snapshots:
       process: 0.11.10
       proxy-from-env: 1.0.0
       request-progress: 3.0.0
-      semver: 7.6.3
+      semver: 7.7.1
       supports-color: 8.1.1
       tmp: 0.2.3
       tree-kill: 1.2.2
@@ -17446,7 +17444,7 @@ snapshots:
       natural-compare: 1.4.0
       nth-check: 2.1.1
       postcss-selector-parser: 6.1.2
-      semver: 7.6.3
+      semver: 7.7.1
       vue-eslint-parser: 10.1.3(eslint@9.22.0)
       xml-name-validator: 4.0.0
 
@@ -20093,7 +20091,7 @@ snapshots:
 
   node-abi@3.62.0:
     dependencies:
-      semver: 7.6.3
+      semver: 7.7.1
 
   node-abi@3.74.0:
     dependencies:
@@ -20162,7 +20160,7 @@ snapshots:
       ignore-by-default: 1.0.1
       minimatch: 3.1.2
       pstree.remy: 1.1.8
-      semver: 7.6.3
+      semver: 7.7.1
       simple-update-notifier: 2.0.0
       supports-color: 5.5.0
       touch: 3.1.0
@@ -21428,8 +21426,6 @@ snapshots:
     dependencies:
       lru-cache: 6.0.0
 
-  semver@7.6.3: {}
-
   semver@7.7.1: {}
 
   send@0.19.0:
@@ -21600,7 +21596,7 @@ snapshots:
 
   simple-update-notifier@2.0.0:
     dependencies:
-      semver: 7.6.3
+      semver: 7.7.1
 
   sinon@18.0.1:
     dependencies:
