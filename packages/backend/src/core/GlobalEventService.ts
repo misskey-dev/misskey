@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as Reversi from 'misskey-reversi';
+import * as Mmj from 'misskey-mahjong';
 import type { MiChannel } from '@/models/Channel.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
@@ -205,6 +206,78 @@ export interface ReversiGameEventTypes {
 		userId: MiUser['id'];
 	};
 }
+
+export interface MahjongRoomEventTypes {
+	joined: {
+		index: number;
+		user: Packed<'UserLite'> | null;
+	};
+	changeReadyStates: {
+		user1: boolean;
+		user2: boolean;
+		user3: boolean;
+		user4: boolean;
+	};
+	started: {
+		room: Packed<'MahjongRoomDetailed'>;
+	};
+	nextKyoku: {
+		room: Packed<'MahjongRoomDetailed'>;
+	};
+	tsumo: {
+		house: Mmj.House;
+		tile: number;
+	};
+	dahai: {
+		house: Mmj.House;
+		tile: number;
+		riichi: boolean;
+	};
+	dahaiAndTsumo: {
+		dahaiHouse: Mmj.House;
+		dahaiTile: number;
+		tsumoTile: number;
+		riichi: boolean;
+	};
+	ponned: {
+		caller: Mmj.House;
+		callee: Mmj.House;
+		tiles: readonly [number, number, number];
+	};
+	kanned: {
+		caller: Mmj.House;
+		callee: Mmj.House;
+		tiles: readonly [number, number, number, number];
+		rinsyan: number;
+	};
+	ciied: {
+		caller: Mmj.House;
+		callee: Mmj.House;
+		tiles: readonly [number, number, number];
+	};
+	ronned: {
+		callers: Mmj.House[];
+		callee: Mmj.House;
+		handTiles: Record<Mmj.House, number[]>;
+	};
+	ryuukyoku: object;
+	ankanned: {
+		house: Mmj.House;
+		tiles: readonly [number, number, number, number];
+		rinsyan: number;
+	};
+	kakanned: {
+		house: Mmj.House;
+		tiles: readonly [number, number, number, number];
+		rinsyan: number;
+		from: Mmj.House;
+	};
+	tsumoHora: {
+		house: Mmj.House;
+		handTiles: number[];
+		tsumoTile: number;
+	};
+}
 //#endregion
 
 // 辞書(interface or type)から{ type, body }ユニオンを定義
@@ -322,6 +395,10 @@ export type GlobalEvents = {
 		name: `reversiGameStream:${MiReversiGame['id']}`;
 		payload: EventTypesToEventPayload<ReversiGameEventTypes>;
 	};
+	mahjongRoom: {
+		name: `mahjongRoomStream:${string}`;
+		payload: EventUnionFromDictionary<SerializedAll<MahjongRoomEventTypes>>;
+	};
 };
 
 // API event definitions
@@ -430,5 +507,10 @@ export class GlobalEventService {
 	@bindThis
 	public publishReversiGameStream<K extends keyof ReversiGameEventTypes>(gameId: MiReversiGame['id'], type: K, value?: ReversiGameEventTypes[K]): void {
 		this.publish(`reversiGameStream:${gameId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishMahjongRoomStream<K extends keyof MahjongRoomEventTypes>(roomId: string, type: K, value?: MahjongRoomEventTypes[K]): void {
+		this.publish(`mahjongRoomStream:${roomId}`, type, typeof value === 'undefined' ? null : value);
 	}
 }

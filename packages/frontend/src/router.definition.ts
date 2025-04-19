@@ -580,6 +580,14 @@ export const ROUTE_DEF = [{
 	component: page(() => import('@/pages/reversi/game.vue')),
 	loginRequired: false,
 }, {
+	path: '/mahjong',
+	component: page(() => import('@/pages/mahjong/index.vue')),
+	loginRequired: false,
+}, {
+	path: '/mahjong/g/:roomId',
+	component: page(() => import('@/pages/mahjong/room.vue')),
+	loginRequired: true,
+}, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),
 }, {

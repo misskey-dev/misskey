@@ -13,6 +13,7 @@ on:
       - packages/sw/**
       - packages/misskey-js/**
       - packages/misskey-bubble-game/**
+      - packages/misskey-mahjong/**
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - .github/workflows/lint.yml
@@ -25,6 +26,7 @@ on:
       - packages/sw/**
       - packages/misskey-js/**
       - packages/misskey-bubble-game/**
+      - packages/misskey-mahjong/**
       - packages/misskey-reversi/**
       - packages/shared/eslint.config.js
       - .github/workflows/lint.yml
@@ -58,6 +60,7 @@ jobs:
         - sw
         - misskey-js
         - misskey-bubble-game
+        - misskey-mahjong
         - misskey-reversi
     env:
       eslint-cache-version: v1
@@ -106,6 +109,6 @@ jobs:
     - run: pnpm i --frozen-lockfile
     - run: pnpm --filter misskey-js run build
       if: ${{ matrix.workspace == 'backend' || matrix.workspace == 'sw' }}
-    - run: pnpm --filter misskey-reversi run build
+    - run: pnpm --filter misskey-mahjong --filter misskey-reversi run build
       if: ${{ matrix.workspace == 'backend' }}
     - run: pnpm --filter ${{ matrix.workspace }} run typecheck
