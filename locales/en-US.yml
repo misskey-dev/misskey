@@ -1345,6 +1345,7 @@ embed: "Embed"
 settingsMigrating: "Settings are being migrated, please wait a moment... (You can also migrate manually later by going to Settings→Others→Migrate old settings)"
 readonly: "Read only"
 goToDeck: "Return to Deck"
+federationJobs: "Federation Jobs"
 _chat:
   noMessagesYet: "No messages yet"
   newMessage: "New message"
