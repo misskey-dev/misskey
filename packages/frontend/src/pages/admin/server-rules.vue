@@ -34,7 +34,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-	</MkStickyContainer>
 </PageWithHeader>
 </template>
 
