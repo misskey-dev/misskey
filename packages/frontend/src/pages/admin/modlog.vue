@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="900">
 		<div class="_gaps">
 			<div style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
@@ -35,13 +34,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton primary rounded style="margin: 0 auto;" @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, useTemplateRef, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import XHeader from './_header_.vue';
 import XModLog from './modlog.ModLog.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
