@@ -170,6 +170,9 @@ importers:
       '@twemoji/parser':
         specifier: 15.1.1
         version: 15.1.1
+      '@types/redis-info':
+        specifier: 3.0.3
+        version: 3.0.3
       accepts:
         specifier: 1.3.8
         version: 1.3.8
@@ -368,6 +371,9 @@ importers:
       re2:
         specifier: 1.21.4
         version: 1.21.4(patch_hash=018babd22b7ce951bcd10d6246f1e541a7ac7ba212f7fa8985e774ece67d08e1)
+      redis-info:
+        specifier: 3.1.0
+        version: 3.1.0
       redis-lock:
         specifier: 0.1.4
         version: 0.1.4
@@ -4461,6 +4467,9 @@ packages:
 
   '@types/readdir-glob@1.1.1':
     resolution: {integrity: sha512-ImM6TmoF8bgOwvehGviEj3tRdRBbQujr1N+0ypaln/GWjaerOB26jb93vsRHmdMtvVQZQebOlqt2HROark87mQ==}
+
+  '@types/redis-info@3.0.3':
+    resolution: {integrity: sha512-VIkNy6JbYI/RLdbPHdm9JQvv6RVld2uE2/6Hdid38Qdq+zvDli2FTpImI8pC5zwp8xS8qVqfzlfyAub8xZEd5g==}
 
   '@types/rename@1.0.7':
     resolution: {integrity: sha512-E9qapfghUGfBMi3jNhsmCKPIp3f2zvNKpaX1BDGLGJNjzpgsZ/RTx7NaNksFjGoJ+r9NvWF1NSM5vVecnNjVmw==}
@@ -9428,6 +9437,9 @@ packages:
   redis-errors@1.2.0:
     resolution: {integrity: sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w==}
     engines: {node: '>=4'}
+
+  redis-info@3.1.0:
+    resolution: {integrity: sha512-ER4L9Sh/vm63DkIE0bkSjxluQlioBiBgf5w1UuldaW/3vPcecdljVDisZhmnCMvsxHNiARTTDDHGg9cGwTfrKg==}
 
   redis-lock@0.1.4:
     resolution: {integrity: sha512-7/+zu86XVQfJVx1nHTzux5reglDiyUCDwmW7TSlvVezfhH2YLc/Rc8NE0ejQG+8/0lwKzm29/u/4+ogKeLosiA==}
@@ -14936,6 +14948,8 @@ snapshots:
   '@types/readdir-glob@1.1.1':
     dependencies:
       '@types/node': 22.14.0
+
+  '@types/redis-info@3.0.3': {}
 
   '@types/rename@1.0.7': {}
 
@@ -21161,6 +21175,10 @@ snapshots:
       strip-indent: 3.0.0
 
   redis-errors@1.2.0: {}
+
+  redis-info@3.1.0:
+    dependencies:
+      lodash: 4.17.21
 
   redis-lock@0.1.4: {}
 

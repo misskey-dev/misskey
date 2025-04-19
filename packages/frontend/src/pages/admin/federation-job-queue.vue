@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import XQueue from './queue.chart.vue';
+import XQueue from './federation-job-queue.chart.vue';
 import XHeader from './_header_.vue';
 import type { Ref } from 'vue';
 import * as os from '@/os.js';
@@ -40,7 +40,7 @@ function clear() {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 
-		os.apiWithDialog('admin/queue/clear', { type: tab.value, state: '*' });
+		os.apiWithDialog('admin/queue/clear', { queue: tab.value, state: '*' });
 	});
 }
 
@@ -52,7 +52,7 @@ function promoteAllQueues() {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 
-		os.apiWithDialog('admin/queue/promote', { type: tab.value });
+		os.apiWithDialog('admin/queue/promote-jobs', { queue: tab.value });
 	});
 }
 
@@ -67,7 +67,7 @@ const headerTabs = computed(() => [{
 }]);
 
 definePage(() => ({
-	title: i18n.ts.jobQueue,
+	title: i18n.ts.federationJobs,
 	icon: 'ti ti-clock-play',
 }));
 </script>
