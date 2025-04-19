@@ -19,6 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, onUnmounted, provide, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { Paging } from '@/components/MkPagination.vue';
 import MkNotes from '@/components/MkNotes.vue';
@@ -28,6 +29,7 @@ import * as sound from '@/utility/sound.js';
 import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -48,7 +50,6 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'note'): void;
 	(ev: 'queue', count: number): void;
 }>();
 
@@ -72,6 +73,15 @@ const tlComponent = useTemplateRef('tlComponent');
 
 let tlNotesCount = 0;
 
+const POLLING_INTERVAL = 1000 * 10;
+
+useInterval(() => {
+	// TODO
+}, POLLING_INTERVAL, {
+	immediate: false,
+	afterMounted: true,
+});
+
 function prepend(note) {
 	if (tlComponent.value == null) return;
 
@@ -83,8 +93,6 @@ function prepend(note) {
 
 	tlComponent.value.pagingComponent?.prepend(note);
 
-	emit('note');
-
 	if (props.sound) {
 		sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
 	}
@@ -94,7 +102,7 @@ let connection: Misskey.ChannelConnection | null = null;
 let connection2: Misskey.ChannelConnection | null = null;
 let paginationQuery: Paging | null = null;
 
-const stream = useStream();
+const stream = store.s.realtimeMode ? useStream() : null;
 
 function connectChannel() {
 	if (props.src === 'antenna') {
@@ -239,7 +247,7 @@ function updatePaginationQuery() {
 }
 
 function refreshEndpointAndChannel() {
-	if (!prefer.s.disableStreamingTimeline) {
+	if (!prefer.s.disableStreamingTimeline && store.s.realtimeMode) {
 		disconnectChannel();
 		connectChannel();
 	}

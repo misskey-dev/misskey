@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ (column.name || listName) ?? i18n.ts._deck._columns.list }}</span>
 	</template>
 
-	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" :withRenotes="withRenotes" @note="onNote"/>
+	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" :withRenotes="withRenotes"/>
 </XColumn>
 </template>
 
@@ -27,7 +27,6 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { userListsCache } from '@/cache.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
-import * as sound from '@/utility/sound.js';
 
 const props = defineProps<{
 	column: Column;
@@ -100,10 +99,6 @@ async function setList() {
 
 function editList() {
 	os.pageWindow('my/lists/' + props.column.listId);
-}
-
-function onNote() {
-	sound.playMisskeySfxFile(soundSetting.value);
 }
 
 const menu: MenuItem[] = [

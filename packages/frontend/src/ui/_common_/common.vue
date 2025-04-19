@@ -112,6 +112,7 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { globalEvents } from '@/events.js';
+import { store } from '@/store.js';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
@@ -129,7 +130,9 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 	if (window.document.visibilityState === 'visible') {
 		if (!isClient && notification.type !== 'test') {
 			// サーバーサイドのテスト通知の際は自動で既読をつけない（テストできないので）
-			useStream().send('readNotification');
+			if (store.s.realtimeMode) {
+				useStream().send('readNotification');
+			}
 		}
 
 		notifications.value.unshift(notification);
@@ -146,8 +149,10 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 }
 
 if ($i) {
-	const connection = useStream().useChannel('main', null, 'UI');
-	connection.on('notification', onNotification);
+	if (store.s.realtimeMode) {
+		const connection = useStream().useChannel('main', null, 'UI');
+		connection.on('notification', onNotification);
+	}
 	globalEvents.on('clientNotification', notification => onNotification(notification, true));
 
 	//#region Listen message from SW
