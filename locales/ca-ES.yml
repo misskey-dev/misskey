@@ -1345,6 +1345,7 @@ embed: "Incrustar"
 settingsMigrating: "Estem migrant la teva configuració. Si us plau espera un moment... (També pots fer la migració més tard, manualment, anant a Preferències → Altres → Migrar configuració antiga)"
 readonly: "Només lectura"
 goToDeck: "Tornar al tauler"
+federationJobs: "Treballs sindicats "
 _chat:
   noMessagesYet: "Encara no tens missatges "
   newMessage: "Missatge nou"
