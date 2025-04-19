@@ -49,7 +49,7 @@ export class SigninService {
 			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
 
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
-			if (profile.email && profile.emailVerified) {
+			if (profile.email && profile.emailVerified && profile.emailNotificationTypes.includes('login')) {
 				this.emailService.sendEmail(profile.email, 'New login / ログインがありました',
 					'There is a new login. If you do not recognize this login, update the security status of your account, including changing your password. / 新しいログインがありました。このログインに心当たりがない場合は、パスワードを変更するなど、アカウントのセキュリティ状態を更新してください。',
 					'There is a new login. If you do not recognize this login, update the security status of your account, including changing your password. / 新しいログインがありました。このログインに心当たりがない場合は、パスワードを変更するなど、アカウントのセキュリティ状態を更新してください。');

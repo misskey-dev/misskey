@@ -34,6 +34,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label><SearchLabel>{{ i18n.ts.emailNotification }}</SearchLabel></template>
 
 						<div class="_gaps_s">
+							<MkSwitch v-model="emailNotification_login">
+								{{ i18n.ts._notification._types.login }}
+							</MkSwitch>
 							<MkSwitch v-model="emailNotification_mention">
 								{{ i18n.ts._notification._types.mention }}
 							</MkSwitch>
@@ -93,6 +96,7 @@ async function saveEmailAddress() {
 	});
 }
 
+const emailNotification_login = ref($i.emailNotificationTypes.includes('login'));
 const emailNotification_mention = ref($i.emailNotificationTypes.includes('mention'));
 const emailNotification_reply = ref($i.emailNotificationTypes.includes('reply'));
 const emailNotification_quote = ref($i.emailNotificationTypes.includes('quote'));
@@ -102,6 +106,7 @@ const emailNotification_receiveFollowRequest = ref($i.emailNotificationTypes.inc
 const saveNotificationSettings = () => {
 	misskeyApi('i/update', {
 		emailNotificationTypes: [
+			...[emailNotification_login.value ? 'login' : null],
 			...[emailNotification_mention.value ? 'mention' : null],
 			...[emailNotification_reply.value ? 'reply' : null],
 			...[emailNotification_quote.value ? 'quote' : null],
@@ -111,7 +116,7 @@ const saveNotificationSettings = () => {
 	});
 };
 
-watch([emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_receiveFollowRequest], () => {
+watch([emailNotification_login, emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_receiveFollowRequest], () => {
 	saveNotificationSettings();
 });
 
