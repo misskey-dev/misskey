@@ -384,7 +384,7 @@ describe('ユーザー', () => {
 		// @ts-expect-error 後方互換のため
 		assert.deepStrictEqual(response.mutingNotificationTypes, []);
 		assert.deepStrictEqual(response.notificationRecieveConfig, {});
-		assert.deepStrictEqual(response.emailNotificationTypes, ['follow', 'receiveFollowRequest']);
+		assert.deepStrictEqual(response.emailNotificationTypes, ['login', 'follow', 'receiveFollowRequest']);
 		assert.deepStrictEqual(response.achievements, []);
 		assert.deepStrictEqual(response.loggedInDays, 0);
 		assert.deepStrictEqual(response.policies, DEFAULT_POLICIES);
@@ -474,7 +474,7 @@ describe('ユーザー', () => {
 		{ parameters: () => ({ mutedInstances: [] }) },
 		{ parameters: () => ({ notificationRecieveConfig: { mention: { type: 'following' } } }) },
 		{ parameters: () => ({ notificationRecieveConfig: {} }) },
-		{ parameters: () => ({ emailNotificationTypes: ['mention', 'reply', 'quote', 'follow', 'receiveFollowRequest'] }) },
+		{ parameters: () => ({ emailNotificationTypes: ['login', 'mention', 'reply', 'quote', 'follow', 'receiveFollowRequest'] }) },
 		{ parameters: () => ({ emailNotificationTypes: [] }) },
 	] as const)('を書き換えることができる($#)', async ({ parameters }) => {
 		const response = await successfulApiCall({ endpoint: 'i/update', parameters: parameters(), user: alice });
