@@ -3039,6 +3039,8 @@ _yami:
   defaultUseYamiNote: "Use Yami Note by default when in Yami Mode"
   defaultUseYamiNoteDescription: "When disabled, posts will be normal by default even in Yami Mode."
   yamiTimeline: "Yami timeline"
+  showYamiNonFollowingPublicNotes: "Show public yami notes from unfollowed users"
+  showYamiFollowingNotes: "Show yami notes from following users"
   _yamiModeSwitcher:
     enterYamiModeConfirm: "Do you want to switch to Yami mode? If you switch to Yami mode, you will be able to view and post Yami notes"
     exitYamiModeConfirm: "Do you want to go back to Normal mode? Once in Normal mode, you will no longer be able to view or post Yami notes."

@@ -3176,6 +3176,8 @@ _yami:
   defaultUseYamiNote: "やみモード時にデフォルトでやみノートで投稿する"
   defaultUseYamiNoteDescription: "オフにすると、やみモードでも通常の投稿が初期状態になります。"
   yamiTimeline: "やみタイムライン"
+  showYamiNonFollowingPublicNotes: "フォローしていないユーザーのパブリックやみノートを表示"
+  showYamiFollowingNotes: "フォローしているユーザーのやみノートを表示"
   _yamiModeSwitcher:
     enterYamiModeConfirm: "やみモードに切り替えますか？やみモードにすると、やみノートを閲覧・投稿できるようになります"
     exitYamiModeConfirm: "通常モードに戻りますか？通常モードにすると、やみノートを閲覧・投稿できなくなります"

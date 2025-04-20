@@ -17,9 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, onUnmounted, ref, markRaw, Ref, useTemplateRef } from 'vue';
+import { computed, watch, provide, onUnmounted, onMounted, ref, markRaw, Ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { BasicTimelineType } from '@/timelines.js';
+import * as os from '@/os.js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
@@ -42,6 +43,8 @@ const props = withDefaults(defineProps<{
 	withFiles?: boolean;
 	localOnly?: boolean;
 	remoteOnly?: boolean;
+	showYamiNonFollowingPublicNotes?: boolean;
+	showYamiFollowingNotes?: boolean;
 }>(), {
 	withRenotes: true,
 	withReplies: false,
@@ -50,6 +53,8 @@ const props = withDefaults(defineProps<{
 	withFiles: false,
 	localOnly: false,
 	remoteOnly: false,
+	showYamiNonFollowingPublicNotes: false,
+	showYamiFollowingNotes: true,
 });
 
 const emit = defineEmits<{
@@ -151,6 +156,8 @@ function connectChannel() {
 		connection = stream.useChannel('yamiTimeline', {
 			withRenotes: props.withRenotes,
 			withFiles: props.withFiles ? true : undefined,
+			showYamiNonFollowingPublicNotes: props.showYamiNonFollowingPublicNotes,
+			showYamiFollowingNotes: props.showYamiFollowingNotes,
 		});
 
 		connection.on('note', prepend);
@@ -252,6 +259,8 @@ function updatePaginationQuery() {
 		query = {
 			withRenotes: props.withRenotes,
 			withFiles: props.withFiles ? true : undefined,
+			showYamiNonFollowingPublicNotes: props.showYamiNonFollowingPublicNotes,
+			showYamiFollowingNotes: props.showYamiFollowingNotes,
 		};
 	} else if (props.src === 'local') {
 		endpoint = 'notes/local-timeline';
@@ -326,6 +335,11 @@ function refreshEndpointAndChannel() {
 	updatePaginationQuery();
 }
 
+// コンポーネント破棄時にイベントリスナーを解除
+onUnmounted(() => {
+	disconnectChannel();
+});
+
 // デッキのリストカラムでwithRenotesを変更した場合に自動的に更新されるようにさせる
 // IDが切り替わったら切り替え先のTLを表示させたい
 watch(() => [props.list, props.antenna, props.channel, props.role, props.withRenotes], refreshEndpointAndChannel);
@@ -333,9 +347,9 @@ watch(() => [props.list, props.antenna, props.channel, props.role, props.withRen
 // withSensitiveはクライアントで完結する処理のため、単にリロードするだけでOK
 watch(() => props.withSensitive, reloadTimeline);
 
-// ローカル/リモートフィルターの変更を監視
+// ローカル/リモート/やみフィルターの変更を監視
 watch(
-	() => [props.localOnly, props.remoteOnly],
+	() => [props.localOnly, props.remoteOnly, props.showYamiNonFollowingPublicNotes, props.showYamiFollowingNotes],
 	async () => {
 		await refreshEndpointAndChannel();
 	},

@@ -1134,25 +1134,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 				this.fanoutTimelineService.push(`yamiTimelineWithFiles:${user.id}`, note.id, 300, r);
 			}
 
-			// パブリックなやみノートは共通キーにも追加
-			if (note.visibility === 'public' && note.userHost == null) {
-				this.fanoutTimelineService.push('yamiPublicNotes', note.id, 1000, r);
-				if (note.fileIds.length > 0) {
-					this.fanoutTimelineService.push('yamiPublicNotesWithFiles', note.id, 500, r);
-				}
-			}
-
-			// 自分自身のプロフィールタイムラインにも追加
-			this.fanoutTimelineService.push(`userTimeline:${user.id}`, note.id, user.host == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
-			if (note.fileIds.length > 0) {
-				this.fanoutTimelineService.push(`userTimelineWithFiles:${user.id}`, note.id, user.host == null ? this.meta.perLocalUserUserTimelineCacheMax / 2 : this.meta.perRemoteUserUserTimelineCacheMax / 2, r);
-			}
-
-			// 返信の場合は返信タイムラインにも追加
-			if (isReply(note)) {
-				this.fanoutTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id, user.host == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
-			}
-
 			// フォロワーのやみタイムラインに追加
 			this.followingsRepository.find({
 				where: {
@@ -1174,6 +1155,27 @@ export class NoteCreateService implements OnApplicationShutdown {
 				followingsPipeline.exec().catch(err => this.logger.error(err));
 			});
 
+			// パブリックなやみノートの場合の処理を修正
+			if (note.visibility === 'public' && note.userHost == null) {
+				// フォロー状態に基づいて適切なストリームに配信
+				this.fanoutTimelineService.push('yamiNonFollowingPublicNotes', note.id, 1000, r);
+				if (note.fileIds.length > 0) {
+					this.fanoutTimelineService.push('yamiNonFollowingPublicNotesWithFiles', note.id, 500, r);
+				}
+			}
+
+			// 自分自身のプロフィールタイムラインにも追加
+			this.fanoutTimelineService.push(`userTimeline:${user.id}`, note.id, user.host == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
+			if (note.fileIds.length > 0) {
+				this.fanoutTimelineService.push(`userTimelineWithFiles:${user.id}`, note.id, user.host == null ? this.meta.perLocalUserUserTimelineCacheMax / 2 : this.meta.perRemoteUserUserTimelineCacheMax / 2, r);
+			}
+
+			// 返信の場合は返信タイムラインにも追加
+			if (isReply(note)) {
+				this.fanoutTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id, user.host == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
+			}
+
+			// パイプライン実行
 			r.exec().catch(err => this.logger.error(err));
 			return;
 		}
@@ -1255,7 +1257,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.followingsRepository.find({
 				where: {
 					followeeId: user.id,
-					followerHost: IsNull(),
+					followerHost: IsNull(), // リモートユーザーのフォローは除外
 					isFollowerHibernated: false,
 				},
 				select: ['followerId', 'withReplies'],

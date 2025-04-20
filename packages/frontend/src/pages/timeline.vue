@@ -26,6 +26,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:withFiles="withFiles"
 				:localOnly="localOnly"
 				:remoteOnly="remoteOnly"
+				:showYamiNonFollowingPublicNotes="showYamiNonFollowingPublicNotes"
+				:showYamiFollowingNotes="showYamiFollowingNotes"
 				:sound="true"
 				@queue="queueUpdated"
 			/>
@@ -137,8 +139,28 @@ const withSensitive = computed<boolean>({
 	set: (x) => saveTlFilter('withSensitive', x),
 });
 
+const showYamiNonFollowingPublicNotes = computed<boolean>({
+	get: () => store.r.tl.value.filter.showYamiNonFollowingPublicNotes ?? true,
+	set: (x) => saveTlFilter('showYamiNonFollowingPublicNotes', x),
+});
+
+const showYamiFollowingNotes = computed<boolean>({
+	get: () => store.r.tl.value.filter.showYamiFollowingNotes ?? true,
+	set: (x) => saveTlFilter('showYamiFollowingNotes', x),
+});
+
 watch(src, () => {
 	queue.value = 0;
+});
+
+onMounted(() => {
+	// 初期値がない場合は設定
+	if (store.r.tl.value.filter.showYamiNonFollowingPublicNotes === undefined) {
+		saveTlFilter('showYamiNonFollowingPublicNotes', prefer.s.showYamiNonFollowingPublicNotes ?? true);
+	}
+	if (store.r.tl.value.filter.showYamiFollowingNotes === undefined) {
+		saveTlFilter('showYamiFollowingNotes', prefer.s.showYamiFollowingNotes ?? true);
+	}
 });
 
 function queueUpdated(q: number): void {
@@ -336,6 +358,16 @@ const filterItems = computed(() => {
 			type: 'switch',
 			text: i18n.ts.withHashtags,
 			ref: withHashtags,
+		});
+	} else if (src.value === 'yami') {
+		items.push({
+			type: 'switch',
+			text: i18n.ts._yami.showYamiNonFollowingPublicNotes,
+			ref: showYamiNonFollowingPublicNotes,
+		}, {
+			type: 'switch',
+			text: i18n.ts._yami.showYamiFollowingNotes,
+			ref: showYamiFollowingNotes,
 		});
 	}
 

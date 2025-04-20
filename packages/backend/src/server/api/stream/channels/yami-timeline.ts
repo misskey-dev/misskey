@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
+import type { ChannelFollowingsRepository } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
 class YamiTimelineChannel extends Channel {
@@ -19,16 +22,20 @@ class YamiTimelineChannel extends Channel {
 	public static kind = 'read:account';
 	private withRenotes: boolean;
 	private withFiles: boolean;
+	private showYamiNonFollowingPublicNotes: boolean;
+	private showYamiFollowingNotes: boolean;
+	private following: Record<string, { id: string; withReplies: boolean }> = {};
+	private followingChannels: Set<string> = new Set();
 
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private roleService: RoleService,
-
+		private userFollowingService: UserFollowingService,
+		private channelFollowingRepository: ChannelFollowingsRepository,
 		id: string,
 		connection: Channel['connection'],
 	) {
 		super(id, connection);
-		//this.onNote = this.onNote.bind(this);
 	}
 
 	@bindThis
@@ -38,8 +45,36 @@ class YamiTimelineChannel extends Channel {
 
 		this.withRenotes = !!(params.withRenotes ?? true);
 		this.withFiles = !!(params.withFiles ?? false);
+		this.showYamiNonFollowingPublicNotes = !!(params.showYamiNonFollowingPublicNotes ?? true);
+		this.showYamiFollowingNotes = !!(params.showYamiFollowingNotes ?? true);
 
+		await this.refreshFollowingStatus();
+
+		// フォロー状態変化のイベント購読
+		this.subscriber.on('follow', this.onFollow);
+		this.subscriber.on('unfollow', this.onUnfollow);
+
+		// ノートストリームの購読
 		this.subscriber.on('notesStream', this.onNote);
+	}
+
+	@bindThis
+	private async refreshFollowingStatus(): Promise<void> {
+		// フォロー情報の初期化
+		const followings = await this.userFollowingService.findFollowingsByFollowerId(this.user!.id);
+		this.following = {};
+		for (const following of followings) {
+			this.following[following.followeeId] = { id: following.followeeId, withReplies: true };
+		}
+
+		// チャンネルフォロー情報の初期化
+		const channelFollowings = await this.channelFollowingRepository.findBy({
+			followerId: this.user!.id,
+		});
+		this.followingChannels.clear();
+		for (const following of channelFollowings) {
+			this.followingChannels.add(following.followeeId);
+		}
 	}
 
 	@bindThis
@@ -49,49 +84,74 @@ class YamiTimelineChannel extends Channel {
 
 		const isMe = this.user!.id === note.userId;
 
-		// 【追加】自分がやみモードでない場合は自分の投稿だけ表示
+		// 【基本フィルタリング】
+		// 1. 自分がやみモードでない場合は自分の投稿だけ表示
 		if (!isMe && !this.user!.isInYamiMode) return;
 
+		// 2. 添付ファイル条件
 		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
-		// 以下、通常のフィルタリングロジック
-		// チャンネル投稿の場合
+		// 3. リノート条件 (純粋なリノート)
+		if (!this.withRenotes && isRenotePacked(note) && !isQuotePacked(note) && !note.text && !note.fileIds?.length) return;
+
+		// 【表示条件判定】- 明確に分離
+		let shouldDisplay = false;
+
+		// 自分の投稿は常に表示
+		if (isMe) {
+			shouldDisplay = true;
+		}
+		// 自分宛てのダイレクト投稿は常に表示
+		else if (note.visibility === 'specified' && note.visibleUserIds?.includes(this.user!.id)) {
+			shouldDisplay = true;
+		}
+		// フォロー中のユーザーの投稿 - showYamiFollowingNotesで制御
+		else if (Object.hasOwn(this.following, note.userId)) {
+			shouldDisplay = this.showYamiFollowingNotes;
+		}
+		// フォローしていないユーザーのパブリック投稿 - showYamiNonFollowingPublicNotesで制御
+		else if (note.visibility === 'public' && note.userHost === null) {
+			shouldDisplay = this.showYamiNonFollowingPublicNotes;
+		}
+
+		// どの条件にも当てはまらなければ表示しない
+		if (!shouldDisplay) return;
+
+		// 【チャンネル投稿の追加チェック】
 		if (note.channelId) {
 			if (!this.followingChannels.has(note.channelId)) return;
-		} else {
-			// その投稿のユーザーをフォローしていなかったら弾く
-			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
+
+			// propagateToTimelinesがfalseで、自分の投稿でもない場合は表示しない
+			if (note.channel && !note.channel.propagateToTimelines && !isMe) return;
 		}
 
-		if (note.visibility === 'followers') {
-			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
-		} else if (note.visibility === 'specified') {
-			if (!isMe && !note.visibleUserIds!.includes(this.user!.id)) return;
-		}
-
+		// 【リプライの特別処理】
 		if (note.reply) {
 			const reply = note.reply;
-			if (this.following[note.userId]?.withReplies) {
-				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信は弾く
+			// フォロー中ユーザーの返信で、withRepliesがtrueの場合
+			if (Object.hasOwn(this.following, note.userId) && this.following[note.userId].withReplies) {
+				// フォローしていないユーザーのフォロワー限定投稿への返信は表示しない
 				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId) && reply.userId !== this.user!.id) return;
 			} else {
-				// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
+				// それ以外のユーザーからの返信は、以下の場合のみ表示:
+				// 1. 自分への返信、2. 自分の返信、3. 投稿者自身への返信
 				if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;
 			}
 		}
 
-		// 純粋なリノート（引用リノートでないリノート）の場合
+		// 【リノート先の確認】
 		if (isRenotePacked(note) && !isQuotePacked(note) && note.renote) {
-			if (!this.withRenotes) return;
 			if (note.renote.reply) {
 				const reply = note.renote.reply;
-				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信のリノートは弾く
+				// フォローしていないユーザーのフォロワー限定投稿への返信のリノートは表示しない
 				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId) && reply.userId !== this.user!.id) return;
 			}
 		}
 
+		// ミュート・ブロックのチェック
 		if (this.isNoteMutedOrBlocked(note)) return;
 
+		// リアクション情報の設定
 		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
 			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
 				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
@@ -100,14 +160,29 @@ class YamiTimelineChannel extends Channel {
 		}
 
 		this.connection.cacheNote(note);
-
 		this.send('note', note);
+	}
+
+	@bindThis
+	private onFollow(payload) {
+		if (payload.followerId === this.user!.id) {
+			this.following[payload.followeeId] = { id: payload.followeeId, withReplies: true };
+		}
+	}
+
+	@bindThis
+	private onUnfollow(payload) {
+		if (payload.followerId === this.user!.id) {
+			delete this.following[payload.followeeId];
+		}
 	}
 
 	@bindThis
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
+		this.subscriber.off('follow', this.onFollow);
+		this.subscriber.off('unfollow', this.onUnfollow);
 	}
 }
 
@@ -120,6 +195,9 @@ export class YamiTimelineChannelService implements MiChannelService<true> {
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private roleService: RoleService,
+		private userFollowingService: UserFollowingService,
+		@Inject(DI.channelFollowingsRepository)
+		private channelFollowingRepository: ChannelFollowingsRepository,
 	) {
 	}
 
@@ -128,6 +206,8 @@ export class YamiTimelineChannelService implements MiChannelService<true> {
 		return new YamiTimelineChannel(
 			this.noteEntityService,
 			this.roleService,
+			this.userFollowingService,
+			this.channelFollowingRepository,
 			id,
 			connection,
 		);
