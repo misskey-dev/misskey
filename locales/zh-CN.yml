@@ -1345,6 +1345,7 @@ embed: "嵌入"
 settingsMigrating: "正在迁移设置，请稍候。（之后也可以在设置 → 其它 → 迁移旧设置来手动迁移）"
 readonly: "只读"
 goToDeck: "返回至 Deck"
+federationJobs: "联合作业"
 _chat:
   noMessagesYet: "还没有消息"
   newMessage: "新消息"
