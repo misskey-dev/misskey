@@ -235,7 +235,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}, data: Option, silent = false): Promise<MiNote> {
 		// ノートのisNoteInYamiMode属性は投稿時のユーザーの属性に基本的に依存する
 		if (data.isNoteInYamiMode == null) {
-			data.isNoteInYamiMode = user.isInYamiMode;
+			// リプライ先またはリノート元がやみノートの場合は強制的にやみノート
+			if ((data.reply && data.reply.isNoteInYamiMode) ||
+				(data.renote && data.renote.isNoteInYamiMode)) {
+				data.isNoteInYamiMode = true;
+			} else {
+				// それ以外の場合は従来通りユーザーのやみモードに合わせる
+				data.isNoteInYamiMode = user.isInYamiMode;
+			}
 		}
 
 		// チャンネル外にリプライしたら対象のスコープに合わせる

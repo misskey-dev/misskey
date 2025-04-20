@@ -546,6 +546,10 @@ export function getRenoteMenu(props: {
 }) {
 	const appearNote = getAppearNote(props.note);
 
+	// 親ノートがやみノートかどうか確認
+	const isParentYamiNote = appearNote.isNoteInYamiMode === true;
+
+	// 既存の処理
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];
 	const normalExternalChannelRenoteItems: MenuItem[] = [];
@@ -569,6 +573,7 @@ export function getRenoteMenu(props: {
 					misskeyApi('notes/create', {
 						renoteId: appearNote.id,
 						channelId: appearNote.channelId,
+						isNoteInYamiMode: isParentYamiNote ? true : undefined,
 					}).then(() => {
 						os.toast(i18n.ts.renoted);
 					});
@@ -582,6 +587,7 @@ export function getRenoteMenu(props: {
 					os.post({
 						renote: appearNote,
 						channel: appearNote.channel,
+						isNoteInYamiMode: isParentYamiNote ? true : undefined,
 					});
 				}
 			},
@@ -617,6 +623,7 @@ export function getRenoteMenu(props: {
 						localOnly,
 						visibility,
 						renoteId: appearNote.id,
+						isNoteInYamiMode: isParentYamiNote ? true : undefined,
 					}).then(() => {
 						os.toast(i18n.ts.renoted);
 					});
@@ -628,6 +635,7 @@ export function getRenoteMenu(props: {
 			action: () => {
 				os.post({
 					renote: appearNote,
+					isNoteInYamiMode: isParentYamiNote ? true : undefined,
 				});
 			},
 		}]);
@@ -658,6 +666,7 @@ export function getRenoteMenu(props: {
 							misskeyApi('notes/create', {
 								renoteId: appearNote.id,
 								channelId: channel.id,
+								isNoteInYamiMode: isParentYamiNote ? true : undefined,
 							}).then(() => {
 								os.toast(i18n.tsx.renotedToX({ name: channel.name }));
 							});

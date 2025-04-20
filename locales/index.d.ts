@@ -11865,6 +11865,10 @@ export interface Locale extends ILocale {
          */
         "yamiNote": string;
         /**
+         * 親やみノートを継承
+         */
+        "parentIsYamiNote": string;
+        /**
          * やみノートに切り替えますか？
          */
         "enableYamiNoteConfirm": string;

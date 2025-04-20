@@ -23,11 +23,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<!-- やみノート切り替えボタン - やみモードユーザーにのみ表示 -->
 				<button
 					v-if="$i.isInYamiMode"
-					v-tooltip="isNoteInYamiMode ? i18n.ts._yami.yamiNote : i18n.ts._yami.normalNote"
-					:class="['_button', $style.headerRightItem]"
+					v-tooltip="parentIsYamiNote
+						? i18n.ts._yami.parentIsYamiNote
+						: (isNoteInYamiMode ? i18n.ts._yami.yamiNote : i18n.ts._yami.normalNote)"
+					:class="['_button', $style.headerRightItem, { [$style.headerRightItemActive]: isNoteInYamiMode || parentIsYamiNote }]"
+					:disabled="parentIsYamiNote"
 					@click="toggleYamiMode"
 				>
-					<i :class="isNoteInYamiMode ? 'ti ti-moon' : 'ti ti-users-group'"></i>
+					<i class="ti" :class="isNoteInYamiMode || parentIsYamiNote ? 'ti-moon' : 'ti-users-group'"></i>
 				</button>
 
 				<!-- 既存の公開範囲ボタン -->
@@ -213,10 +216,21 @@ const getInitialScheduledDelete = () => {
 // 初期化
 const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(getInitialScheduledDelete());
 // やみノート状態を管理する変数
-// デフォルト設定から初期値を取得
-const isNoteInYamiMode = ref($i.isInYamiMode ?
-	(prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode) :
-	false);
+// 親投稿がやみノートの場合は強制的にやみノートにする
+const isNoteInYamiMode = ref(
+	// 親投稿がやみノートの場合は必ずtrue
+	(props.reply?.isNoteInYamiMode || props.renote?.isNoteInYamiMode)
+		? true
+	// それ以外は既存のロジック
+		: ($i.isInYamiMode
+			? (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode)
+			: false),
+);
+
+// 親投稿がやみノートかどうかの判定を計算プロパティに
+const parentIsYamiNote = computed(() => {
+	return (props.reply?.isNoteInYamiMode || props.renote?.isNoteInYamiMode) ?? false;
+});
 // デフォルト設定の変更を監視
 watch(() => prefer.s.defaultScheduledNoteDelete, (newValue) => {
 	scheduledNoteDelete.value = getInitialScheduledDelete();
@@ -1193,6 +1207,9 @@ function toggleScheduleNote() {
 async function toggleYamiMode() {
 	// 通常モードユーザーの場合は切り替え不可
 	if (!$i.isInYamiMode) return;
+
+	// 親がやみノートの場合は切り替え不可
+	if (parentIsYamiNote.value) return;
 
 	// 現在がやみノートでない状態から切り替える場合にダイアログを表示
 	if (!isNoteInYamiMode.value) {
