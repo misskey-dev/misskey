@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkA :to="`/announcements/${announcement.id}`"><span>{{ announcement.title }}</span></MkA>
 						</div>
 						<div :class="$style.content">
-							<Mfm :text="announcement.text"/>
+							<Mfm :text="announcement.text" class="_selectable"/>
 							<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 							<MkA :to="`/announcements/${announcement.id}`">
 								<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">

@@ -1,6 +1,7 @@
 ## 2025.4.1
 
 ### General
+- Feat: bull-boardに代わるジョブキューの管理ツールが実装されました
 - Enhance: チャットの新規メッセージをプッシュ通知するように
 
 ### Client
@@ -18,6 +19,7 @@
 - Fix: アカウントの移行時にアンテナのフィルターのユーザが更新されない問題を修正 #15843
 
 ### Server
+- Enhance: ジョブキューの成功/失敗したジョブも一定数・一定期間保存するようにし、後から問題を調査することを容易に
 - Enhance: フォローしているユーザーならフォロワー限定投稿のノートでもアンテナで検知できるように  
 	(Cherry-picked from https://github.com/yojo-art/cherrypick/pull/568 and https://github.com/team-shahu/misskey/pull/38)
 - Fix: システムアカウントの名前がサーバー名と同期されない問題を修正

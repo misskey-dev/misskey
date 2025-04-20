@@ -4,10 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header>
-		<XHeader :actions="headerActions" :tabs="headerTabs"/>
-	</template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="900">
 		<MkSelect v-model="filterType" :class="$style.input" @update:modelValue="filterItems">
 			<template #label>{{ i18n.ts.state }}</template>
@@ -81,13 +78,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkButton>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';

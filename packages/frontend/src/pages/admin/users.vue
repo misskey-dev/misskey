@@ -4,64 +4,60 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkStickyContainer>
-		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="900">
-			<div class="_gaps">
-				<div :class="$style.inputs">
-					<MkButton style="margin-left: auto" @click="resetQuery">{{ i18n.ts.reset }}</MkButton>
-				</div>
-				<div :class="$style.inputs">
-					<MkSelect v-model="sort" style="flex: 1;">
-						<template #label>{{ i18n.ts.sort }}</template>
-						<option value="-createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.ascendingOrder }})</option>
-						<option value="+createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.descendingOrder }})</option>
-						<option value="-updatedAt">{{ i18n.ts.lastUsed }} ({{ i18n.ts.ascendingOrder }})</option>
-						<option value="+updatedAt">{{ i18n.ts.lastUsed }} ({{ i18n.ts.descendingOrder }})</option>
-					</MkSelect>
-					<MkSelect v-model="state" style="flex: 1;">
-						<template #label>{{ i18n.ts.state }}</template>
-						<option value="all">{{ i18n.ts.all }}</option>
-						<option value="available">{{ i18n.ts.normal }}</option>
-						<option value="admin">{{ i18n.ts.administrator }}</option>
-						<option value="moderator">{{ i18n.ts.moderator }}</option>
-						<option value="suspended">{{ i18n.ts.suspend }}</option>
-					</MkSelect>
-					<MkSelect v-model="origin" style="flex: 1;">
-						<template #label>{{ i18n.ts.instance }}</template>
-						<option value="combined">{{ i18n.ts.all }}</option>
-						<option value="local">{{ i18n.ts.local }}</option>
-						<option value="remote">{{ i18n.ts.remote }}</option>
-					</MkSelect>
-				</div>
-				<div :class="$style.inputs">
-					<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false">
-						<template #prefix>@</template>
-						<template #label>{{ i18n.ts.username }}</template>
-					</MkInput>
-					<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'">
-						<template #prefix>@</template>
-						<template #label>{{ i18n.ts.host }}</template>
-					</MkInput>
-				</div>
-
-				<MkPagination v-slot="{items}" ref="paginationComponent" :pagination="pagination">
-					<div :class="$style.users">
-						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" :class="$style.user" :to="`/admin/user/${user.id}`">
-							<MkUserCardMini :user="user"/>
-						</MkA>
-					</div>
-				</MkPagination>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<MkSpacer :contentMax="900">
+		<div class="_gaps">
+			<div :class="$style.inputs">
+				<MkButton style="margin-left: auto" @click="resetQuery">{{ i18n.ts.reset }}</MkButton>
 			</div>
-		</MkSpacer>
-	</MkStickyContainer>
-</div>
+			<div :class="$style.inputs">
+				<MkSelect v-model="sort" style="flex: 1;">
+					<template #label>{{ i18n.ts.sort }}</template>
+					<option value="-createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.ascendingOrder }})</option>
+					<option value="+createdAt">{{ i18n.ts.registeredDate }} ({{ i18n.ts.descendingOrder }})</option>
+					<option value="-updatedAt">{{ i18n.ts.lastUsed }} ({{ i18n.ts.ascendingOrder }})</option>
+					<option value="+updatedAt">{{ i18n.ts.lastUsed }} ({{ i18n.ts.descendingOrder }})</option>
+				</MkSelect>
+				<MkSelect v-model="state" style="flex: 1;">
+					<template #label>{{ i18n.ts.state }}</template>
+					<option value="all">{{ i18n.ts.all }}</option>
+					<option value="available">{{ i18n.ts.normal }}</option>
+					<option value="admin">{{ i18n.ts.administrator }}</option>
+					<option value="moderator">{{ i18n.ts.moderator }}</option>
+					<option value="suspended">{{ i18n.ts.suspend }}</option>
+				</MkSelect>
+				<MkSelect v-model="origin" style="flex: 1;">
+					<template #label>{{ i18n.ts.instance }}</template>
+					<option value="combined">{{ i18n.ts.all }}</option>
+					<option value="local">{{ i18n.ts.local }}</option>
+					<option value="remote">{{ i18n.ts.remote }}</option>
+				</MkSelect>
+			</div>
+			<div :class="$style.inputs">
+				<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false">
+					<template #prefix>@</template>
+					<template #label>{{ i18n.ts.username }}</template>
+				</MkInput>
+				<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'">
+					<template #prefix>@</template>
+					<template #label>{{ i18n.ts.host }}</template>
+				</MkInput>
+			</div>
+
+			<MkPagination v-slot="{items}" ref="paginationComponent" :pagination="pagination">
+				<div :class="$style.users">
+					<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" :class="$style.user" :to="`/admin/user/${user.id}`">
+						<MkUserCardMini :user="user"/>
+					</MkA>
+				</div>
+			</MkPagination>
+		</div>
+	</MkSpacer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, useTemplateRef, ref, watchEffect } from 'vue';
-import XHeader from './_header_.vue';
 import { defaultMemoryStorage } from '@/memory-storage';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';

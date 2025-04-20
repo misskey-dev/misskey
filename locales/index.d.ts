@@ -5415,6 +5415,10 @@ export interface Locale extends ILocale {
      */
     "goToDeck": string;
     /**
+     * 連合ジョブ
+     */
+    "federationJobs": string;
+    /**
      * 常に絶対時刻で表示する
      */
     "alwaysUseAbsoluteTime": string;
