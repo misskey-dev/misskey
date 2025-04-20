@@ -156,8 +156,8 @@ export const navbarItemDef = reactive({
 		},
 	},
 	mode: {
-		title: computed(() => $i?.isInYamiMode ? i18n.ts._yami._yamiModeSwitcher.normal : i18n.ts._yami._yamiModeSwitcher.yami),
-		icon: computed(() => $i?.isInYamiMode ? 'ti ti-users-group' : 'ti ti-moon'),
+		title: computed(() => $i?.isInYamiMode ? i18n.ts._yami._yamiModeSwitcher.yami : i18n.ts._yami._yamiModeSwitcher.normal),
+		icon: computed(() => $i?.isInYamiMode ? 'ti ti-moon' : 'ti ti-users-group'),
 		action: (ev) => {
 			if ($i?.isInYamiMode) {
 				changeNormalMode(ev);
