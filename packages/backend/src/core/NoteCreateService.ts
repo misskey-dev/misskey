@@ -1135,6 +1135,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 			// やみモード投稿はやみタイムラインのみに流す
 			const r = this.redisForTimelines.pipeline();
 
+			// グローバルやみタイムラインにも追加
+			this.fanoutTimelineService.push('yamiTimeline', note.id, 1000, r);
+			if (note.fileIds.length > 0) {
+				this.fanoutTimelineService.push('yamiTimelineWithFiles', note.id, 500, r);
+			}
+
 			// 自分自身のやみタイムラインに追加
 			this.fanoutTimelineService.push(`yamiTimeline:${user.id}`, note.id, 300, r);
 			if (note.fileIds.length > 0) {
