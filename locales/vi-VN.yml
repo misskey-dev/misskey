@@ -1052,6 +1052,8 @@ options: "Tùy chọn"
 specifyUser: "Người dùng chỉ định"
 failedToPreviewUrl: "Không thể xem trước"
 update: "Cập nhật"
+cancelReactionConfirm: "Bạn có muốn hủy phản ứng của mình không?"
+changeReactionConfirm: "Bạn có muốn thay đổi phản ứng của mình không?"
 later: "Để sau"
 goToMisskey: "Tới Misskey"
 installed: "Đã tải xuống"
@@ -1129,6 +1131,9 @@ _chat:
   members: "Thành viên"
   home: "Trang chính"
   send: "Gửi"
+_accountSettings:
+  requireSigninToViewContents: "Yêu cầu đăng nhập để xem nội dung"
+  requireSigninToViewContentsDescription1: "Yêu cầu đăng nhập để xem tất cả ghi chú và nội dung khác mà bạn tạo. Điều này được kỳ vọng sẽ có hiệu quả trong việc ngăn chặn thông tin bị thu thập bởi các trình thu thập thông tin."
 _delivery:
   stop: "Đã vô hiệu hóa"
   _type:
