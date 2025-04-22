@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="[$style.root, reversed ? '_pageScrollableReversed' : '_pageScrollable']">
 	<MkStickyContainer>
-		<template #header><MkPageHeader v-model:tab="tab" :actions="actions" :tabs="tabs"/></template>
+		<template #header><MkPageHeader v-model:tab="tab" v-bind="pageHeaderProps"/></template>
 		<div :class="$style.body">
 			<slot></slot>
 		</div>
@@ -16,18 +16,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import type { PageHeaderItem } from '@/types/page-header.js';
-import type { Tab } from './MkPageHeader.tabs.vue';
+import { computed } from 'vue';
+import type { PageHeaderProps } from './MkPageHeader.vue';
 
-const props = withDefaults(defineProps<{
-	tabs?: Tab[];
-	actions?: PageHeaderItem[] | null;
-	thin?: boolean;
-	hideTitle?: boolean;
-	displayMyAvatar?: boolean;
+const props = defineProps<PageHeaderProps & {
 	reversed?: boolean;
-}>(), {
-	tabs: () => ([] as Tab[]),
+}>();
+
+const pageHeaderProps = computed(() => {
+	const { reversed, ...rest } = props;
+	return rest;
 });
 
 const tab = defineModel<string>('tab');
