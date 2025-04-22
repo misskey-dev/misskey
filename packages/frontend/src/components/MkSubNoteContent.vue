@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
-import { shouldCollapseLegacy, shouldCollapse } from '@@/js/collapsed.js';
+import { shouldCollapsedLegacy, shouldCollapsed } from '@@/js/collapsed.js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n.js';
@@ -63,7 +63,7 @@ const isLong = ref(true);
 switch (collapsingNoteCondition) {
 	case 'detailedCalculation':
 		// eslint-disable-next-line vue/no-setup-props-destructure
-		isLong.value = shouldCollapse(props.note, collapseSize, ast.value);
+		isLong.value = shouldCollapsed(props.note, collapseSize, ast.value);
 		break;
 	case 'seeRenderedSize':
 		break;
@@ -71,7 +71,7 @@ switch (collapsingNoteCondition) {
 	case 'legacyCalculation':
 	default:
 		// eslint-disable-next-line vue/no-setup-props-destructure
-		isLong.value = shouldCollapseLegacy(props.note, []);
+		isLong.value = shouldCollapsedLegacy(props.note, []);
 		break;
 }
 const collapsed = ref(isLong.value);

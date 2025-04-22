@@ -125,7 +125,7 @@ import EmUserName from '@/components/EmUserName.vue';
 import EmTime from '@/components/EmTime.vue';
 import { userPage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
-import { shouldCollapse } from '@@/js/collapsed.js';
+import { shouldCollapsed } from '@@/js/collapsed.js';
 
 function getAppearNote(note: Misskey.entities.Note) {
 	return Misskey.note.isPureRenote(note) ? note.renote : note;
@@ -153,7 +153,7 @@ const renoteTime = shallowRef<HTMLElement>();
 const appearNote = computed(() => getAppearNote(note.value));
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
-const isLong = shouldCollapse(appearNote.value, 13.5, parsed.value);
+const isLong = shouldCollapsed(appearNote.value, 13.5, parsed.value);
 const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
 </script>

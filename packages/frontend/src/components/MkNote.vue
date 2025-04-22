@@ -218,7 +218,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { getNoteSummary } from '@/utility/get-note-summary.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/utility/show-moved-dialog.js';
-import { shouldCollapseLegacy, shouldCollapse } from '@@/js/collapsed.js';
+import { shouldCollapsedLegacy, shouldCollapsed } from '@@/js/collapsed.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { focusPrev, focusNext } from '@/utility/focus.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
@@ -315,14 +315,14 @@ const collapseSize = defaultStore.state.collapsingNoteSize;
 const isLong = ref(true);
 switch (collapsingNoteCondition) {
 	case 'detailedCalculation':
-		isLong.value = shouldCollapse(appearNote.value, collapseSize, parsed.value, urls.value ?? []);
+		isLong.value = shouldCollapsed(appearNote.value, collapseSize, parsed.value, urls.value ?? []);
 		break;
 	case 'seeRenderedSize':
 		break;
 	// fail safe
 	case 'legacyCalculation':
 	default:
-		isLong.value = shouldCollapseLegacy(appearNote.value, urls.value ?? []);
+		isLong.value = shouldCollapsedLegacy(appearNote.value, urls.value ?? []);
 		break;
 }
 const collapsed = ref(appearNote.value.cw == null && isLong.value);

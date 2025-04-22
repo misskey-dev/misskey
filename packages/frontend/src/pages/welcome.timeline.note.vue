@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 			</div>
 		</div>
-		<div v-else ref="noteTextEl" :class="[$style.text, { [$style.collapsed]: shouldCollapse }]">
+		<div v-else ref="noteTextEl" :class="[$style.text, { [$style.collapsed]: shouldCollapsed }]">
 			<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 			<Mfm v-if="note.text" :text="note.text" :author="note.user"/>
 			<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
@@ -46,14 +46,14 @@ defineProps<{
 }>();
 
 const noteTextEl = useTemplateRef('noteTextEl');
-const shouldCollapse = ref(false);
+const shouldCollapsed = ref(false);
 const showContent = ref(false);
 
 function calcCollapse() {
 	if (noteTextEl.value) {
 		const height = noteTextEl.value.scrollHeight;
 		if (height > 200) {
-			shouldCollapse.value = true;
+			shouldCollapsed.value = true;
 		}
 	}
 }
