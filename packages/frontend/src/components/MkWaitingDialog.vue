@@ -14,15 +14,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, shallowRef } from 'vue';
+import { watch, useTemplateRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const modal = useTemplateRef('modal');
 
 const props = defineProps<{
 	success: boolean;
 	showing: boolean;
-	text?: string;
+	text?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -48,7 +48,7 @@ watch(() => props.showing, () => {
 	box-sizing: border-box;
 	text-align: center;
 	background: var(--MI_THEME-panel);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	width: 250px;
 
 	&.iconOnly {

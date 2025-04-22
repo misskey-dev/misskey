@@ -17,7 +17,7 @@ import * as Misskey from 'misskey-js';
 import MkMention from './MkMention.vue';
 import { i18n } from '@/i18n.js';
 import { host as localHost } from '@@/js/config.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const user = ref<Misskey.entities.UserLite>();
 
@@ -34,7 +34,7 @@ misskeyApi('users/show', { userId: props.movedTo }).then(u => user.value = u);
 	font-size: 90%;
 	background: var(--MI_THEME-infoWarnBg);
 	color: var(--MI_THEME-error);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .link {

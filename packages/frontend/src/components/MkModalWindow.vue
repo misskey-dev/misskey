@@ -22,15 +22,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, shallowRef, ref } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef, ref } from 'vue';
 import MkModal from './MkModal.vue';
 
 const props = withDefaults(defineProps<{
-	withOkButton: boolean;
-	withCloseButton: boolean;
-	okButtonDisabled: boolean;
-	width: number;
-	height: number;
+	withOkButton?: boolean;
+	withCloseButton?: boolean;
+	okButtonDisabled?: boolean;
+	width?: number;
+	height?: number;
 }>(), {
 	withOkButton: false,
 	withCloseButton: true,
@@ -47,9 +47,9 @@ const emit = defineEmits<{
 	(event: 'esc'): void;
 }>();
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
-const rootEl = shallowRef<HTMLElement>();
-const headerEl = shallowRef<HTMLElement>();
+const modal = useTemplateRef('modal');
+const rootEl = useTemplateRef('rootEl');
+const headerEl = useTemplateRef('headerEl');
 const bodyWidth = ref(0);
 const bodyHeight = ref(0);
 
@@ -90,7 +90,7 @@ defineExpose({
 	display: flex;
 	flex-direction: column;
 	contain: content;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 
 	--root-margin: 24px;
 
@@ -106,8 +106,8 @@ defineExpose({
 	display: flex;
 	flex-shrink: 0;
 	background: var(--MI_THEME-windowHeader);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
 }
 
 .headerButton {

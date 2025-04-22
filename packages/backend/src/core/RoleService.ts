@@ -63,6 +63,7 @@ export type RolePolicies = {
 	canImportFollowing: boolean;
 	canImportMuting: boolean;
 	canImportUserLists: boolean;
+	chatAvailability: 'available' | 'readonly' | 'unavailable';
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -97,6 +98,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportFollowing: true,
 	canImportMuting: true,
 	canImportUserLists: true,
+	chatAvailability: 'available',
 };
 
 @Injectable()
@@ -368,6 +370,12 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			return aggregate(policies.map(policy => policy.useDefault ? basePolicies[name] : policy.value));
 		}
 
+		function aggregateChatAvailability(vs: RolePolicies['chatAvailability'][]) {
+			if (vs.some(v => v === 'available')) return 'available';
+			if (vs.some(v => v === 'readonly')) return 'readonly';
+			return 'unavailable';
+		}
+
 		return {
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
@@ -400,65 +408,87 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canImportFollowing: calc('canImportFollowing', vs => vs.some(v => v === true)),
 			canImportMuting: calc('canImportMuting', vs => vs.some(v => v === true)),
 			canImportUserLists: calc('canImportUserLists', vs => vs.some(v => v === true)),
+			chatAvailability: calc('chatAvailability', aggregateChatAvailability),
 		};
 	}
 
 	@bindThis
-	public async isModerator(user: { id: MiUser['id']; isRoot: MiUser['isRoot'] } | null): Promise<boolean> {
+	public async isModerator(user: { id: MiUser['id'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
+		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
 	}
 
 	@bindThis
-	public async isAdministrator(user: { id: MiUser['id']; isRoot: MiUser['isRoot'] } | null): Promise<boolean> {
+	public async isAdministrator(user: { id: MiUser['id'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
+		return (this.meta.rootUserId === user.id) || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
 	}
 
 	@bindThis
-	public async isExplorable(role: { id: MiRole['id']} | null): Promise<boolean> {
+	public async isExplorable(role: { id: MiRole['id'] } | null): Promise<boolean> {
 		if (role == null) return false;
 		const check = await this.rolesRepository.findOneBy({ id: role.id });
 		if (check == null) return false;
 		return check.isExplorable;
 	}
 
+	/**
+	 * モデレーター権限のロールが割り当てられているユーザID一覧を取得する.
+	 *
+	 * @param opts.includeAdmins 管理者権限も含めるか(デフォルト: true)
+	 * @param opts.includeRoot rootユーザも含めるか(デフォルト: false)
+	 * @param opts.excludeExpire 期限切れのロールを除外するか(デフォルト: false)
+	 */
 	@bindThis
-	public async getModeratorIds(includeAdmins = true, excludeExpire = false): Promise<MiUser['id'][]> {
+	public async getModeratorIds(opts?: {
+		includeAdmins?: boolean,
+		includeRoot?: boolean,
+		excludeExpire?: boolean,
+	}): Promise<MiUser['id'][]> {
+		const includeAdmins = opts?.includeAdmins ?? true;
+		const includeRoot = opts?.includeRoot ?? false;
+		const excludeExpire = opts?.excludeExpire ?? false;
+
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
 		const moderatorRoles = includeAdmins
 			? roles.filter(r => r.isModerator || r.isAdministrator)
 			: roles.filter(r => r.isModerator);
 
-		// TODO: isRootなアカウントも含める
 		const assigns = moderatorRoles.length > 0
 			? await this.roleAssignmentsRepository.findBy({ roleId: In(moderatorRoles.map(r => r.id)) })
 			: [];
 
+		// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
 		const now = Date.now();
-		const result = [
-			// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
-			...new Set(
-				assigns
-					.filter(it =>
-						(excludeExpire)
-							? (it.expiresAt == null || it.expiresAt.getTime() > now)
-							: true,
-					)
-					.map(a => a.userId),
-			),
-		];
+		const resultSet = new Set(
+			assigns
+				.filter(it =>
+					(excludeExpire)
+						? (it.expiresAt == null || it.expiresAt.getTime() > now)
+						: true,
+				)
+				.map(a => a.userId),
+		);
 
-		return result.sort((x, y) => x.localeCompare(y));
+		if (includeRoot && this.meta.rootUserId) {
+			resultSet.add(this.meta.rootUserId);
+		}
+
+		return [...resultSet].sort((x, y) => x.localeCompare(y));
 	}
 
 	@bindThis
-	public async getModerators(includeAdmins = true): Promise<MiUser[]> {
-		const ids = await this.getModeratorIds(includeAdmins);
-		const users = ids.length > 0 ? await this.usersRepository.findBy({
-			id: In(ids),
-		}) : [];
-		return users;
+	public async getModerators(opts?: {
+		includeAdmins?: boolean,
+		includeRoot?: boolean,
+		excludeExpire?: boolean,
+	}): Promise<MiUser[]> {
+		const ids = await this.getModeratorIds(opts);
+		return ids.length > 0
+			? await this.usersRepository.findBy({
+				id: In(ids),
+			})
+			: [];
 	}
 
 	@bindThis
@@ -606,6 +636,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			isModerator: values.isModerator,
 			isExplorable: values.isExplorable,
 			asBadge: values.asBadge,
+			preserveAssignmentOnMoveAccount: values.preserveAssignmentOnMoveAccount,
 			canEditMembersByModerator: values.canEditMembersByModerator,
 			displayOrder: values.displayOrder,
 			policies: values.policies,

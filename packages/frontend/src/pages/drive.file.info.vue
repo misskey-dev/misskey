@@ -69,7 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<div v-else class="_fullinfo">
-		<img :src="infoImageUrl" class="_ghost"/>
+		<img :src="infoImageUrl" draggable="false"/>
 		<div>{{ i18n.ts.nothing }}</div>
 	</div>
 </div>
@@ -85,8 +85,8 @@ import bytes from '@/filters/bytes.js';
 import { infoImageUrl } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useRouter } from '@/router/supplier.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
@@ -232,7 +232,7 @@ onMounted(async () => {
 
 .filePreviewRoot {
 	background: var(--MI_THEME-panel);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	// MkMediaList 内の上部マージン 4px
 	padding: calc(1rem - 4px) 1rem 1rem;
 }
@@ -285,7 +285,7 @@ onMounted(async () => {
 	align-items: center;
 	min-width: 0;
 	font-weight: 700;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	font-size: .8rem;
 
 	>.fileNameEditIcon {
@@ -322,7 +322,7 @@ onMounted(async () => {
 	display: block;
 	width: 100%;
 	padding: .5rem 1rem;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 
 	.kvEditIcon {
 		display: inline-block;

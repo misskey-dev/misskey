@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<div ref="rootEl">
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
@@ -20,19 +19,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, shallowRef } from 'vue';
+import { computed, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { scrollInContainer } from '@@/js/scroll.js';
 import MkTimeline from '@/components/MkTimeline.vue';
-import { scroll } from '@@/js/scroll.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 
 const router = useRouter();
 
@@ -42,15 +41,15 @@ const props = defineProps<{
 
 const antenna = ref<Misskey.entities.Antenna | null>(null);
 const queue = ref(0);
-const rootEl = shallowRef<HTMLElement>();
-const tlEl = shallowRef<InstanceType<typeof MkTimeline>>();
+const rootEl = useTemplateRef('rootEl');
+const tlEl = useTemplateRef('tlEl');
 
 function queueUpdated(q) {
 	queue.value = q;
 }
 
 function top() {
-	scroll(rootEl.value, { top: 0 });
+	scrollInContainer(rootEl.value, { top: 0 });
 }
 
 async function timetravel() {
@@ -88,7 +87,7 @@ const headerActions = computed(() => antenna.value ? [{
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: antenna.value ? antenna.value.name : i18n.ts.antennas,
 	icon: 'ti ti-antenna',
 }));
@@ -97,26 +96,26 @@ definePageMetadata(() => ({
 <style lang="scss" module>
 .new {
 	position: sticky;
-	top: calc(var(--stickyTop, 0px) + 16px);
+	top: calc(var(--MI-stickyTop, 0px) + 16px);
 	z-index: 1000;
 	width: 100%;
 	margin: calc(-0.675em - 8px) 0;
 
 	&:first-child {
-		margin-top: calc(-0.675em - 8px - var(--margin));
+		margin-top: calc(-0.675em - 8px - var(--MI-margin));
 	}
 }
 
 .newButton {
 	display: block;
-	margin: var(--margin) auto 0 auto;
+	margin: var(--MI-margin) auto 0 auto;
 	padding: 8px 16px;
 	border-radius: 32px;
 }
 
 .tl {
 	background: var(--MI_THEME-bg);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	overflow: clip;
 }
 </style>

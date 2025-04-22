@@ -31,7 +31,7 @@ import MkPostForm from '@/components/MkPostForm.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNote from '@/components/MkNote.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 
 const emit = defineEmits<{
 	(ev: 'succeeded'): void;
@@ -91,7 +91,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 
 <style lang="scss" module>
 .exampleRoot {
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	border: var(--MI_THEME-panelBorder);
 	background: var(--MI_THEME-panel);
 }

@@ -5,23 +5,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, { [$style.collapsed]: collapsed }]" :style="{ 'max-height': collapsed ? `${collapseSize}em` : undefined }">
-	<div ref="collapsibleArea">
-		<div>
-			<span v-if="note.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-			<span v-if="note.deletedAt" style="opacity: 0.5">({{ i18n.ts.deletedNote }})</span>
-			<MkA v-if="note.replyId" :class="$style.reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-			<Mfm v-if="note.text" :text="note.text" :parsedNodes="ast" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>
-			<MkA v-if="note.renoteId" :class="$style.rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
-		</div>
-		<details v-if="note.files && note.files.length > 0">
-			<summary>({{ i18n.tsx.withNFiles({ n: note.files.length }) }})</summary>
-			<MkMediaList :mediaList="note.files"/>
-		</details>
-		<details v-if="note.poll">
-			<summary>{{ i18n.ts.poll }}</summary>
-			<MkPoll :noteId="note.id" :poll="note.poll"/>
-		</details>
+	<div ref="collapsibleArea"><!-- Diffが見づらくなるのでインデントは後で修正 -->
+	<div>
+		<span v-if="note.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
+		<span v-if="note.deletedAt" style="opacity: 0.5">({{ i18n.ts.deletedNote }})</span>
+		<MkA v-if="note.replyId" :class="$style.reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
+		<Mfm v-if="note.text" :text="note.text" :parsedNodes="ast" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>
+		<MkA v-if="note.renoteId" :class="$style.rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 	</div>
+	<details v-if="note.files && note.files.length > 0">
+		<summary>({{ i18n.tsx.withNFiles({ n: note.files.length }) }})</summary>
+		<MkMediaList :mediaList="note.files"/>
+	</details>
+	<details v-if="note.poll">
+		<summary>{{ i18n.ts.poll }}</summary>
+		<MkPoll :noteId="note.id" :poll="note.poll" :author="note.user" :emojiUrls="note.emojis"/>
+	</details>
+	</div><!-- Diffが見づらくなるのでインデントは後で修正 -->
 	<button v-if="isLong && collapsed" :class="$style.fade" class="_button" @click="collapsed = false">
 		<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
 	</button>
@@ -35,11 +35,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
+import { shouldCollapseLegacy, shouldCollapse } from '@@/js/collapsed.js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
-import { shouldCollapseLegacy, shouldCollapse } from '@@/js/collapsed.js';
+import { defaultStore } from '@/store.js'; // 後でpreferに置き換える
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
@@ -127,7 +127,7 @@ const collapsed = ref(isLong.value);
 	width: 100%;
 	margin-top: 14px;
 	position: sticky;
-	bottom: calc(var(--stickyBottom, 0px) + 14px);
+	bottom: calc(var(--MI-stickyBottom, 0px) + 14px);
 }
 
 .showLessLabel {

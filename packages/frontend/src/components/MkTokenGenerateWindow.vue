@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:okButtonDisabled="false"
 	:canClose="false"
 	@close="dialog?.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 	@ok="ok()"
 >
 	<template #header>{{ title || i18n.ts.generateAccessToken }}</template>
@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, ref } from 'vue';
+import { useTemplateRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkInput from './MkInput.vue';
 import MkSwitch from './MkSwitch.vue';
@@ -55,7 +55,7 @@ import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
-import { iAmAdmin } from '@/account.js';
+import { iAmAdmin } from '@/i.js';
 
 const props = withDefaults(defineProps<{
 	title?: string | null;
@@ -77,10 +77,10 @@ const emit = defineEmits<{
 const defaultPermissions = Misskey.permissions.filter(p => !p.startsWith('read:admin') && !p.startsWith('write:admin'));
 const adminPermissions = Misskey.permissions.filter(p => p.startsWith('read:admin') || p.startsWith('write:admin'));
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 const name = ref(props.initialName);
-const permissionSwitches = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
-const permissionSwitchesForAdmin = ref(<Record<(typeof Misskey.permissions)[number], boolean>>{});
+const permissionSwitches = ref({} as Record<(typeof Misskey.permissions)[number], boolean>);
+const permissionSwitchesForAdmin = ref({} as Record<(typeof Misskey.permissions)[number], boolean>);
 
 if (props.initialPermissions) {
 	for (const kind of props.initialPermissions) {
@@ -137,7 +137,7 @@ function enableAll(): void {
 	margin: 8px -6px 0;
 	padding: 24px 6px 6px;
 	border: 2px solid var(--MI_THEME-error);
-	border-radius: calc(var(--radius) / 2);
+	border-radius: calc(var(--MI-radius) / 2);
 }
 
 .adminPermissionsHeader {

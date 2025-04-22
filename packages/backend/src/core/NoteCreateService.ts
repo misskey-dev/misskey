@@ -42,7 +42,6 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
-import { NoteReadService } from '@/core/NoteReadService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
@@ -56,6 +55,7 @@ import { isReply } from '@/misc/is-reply.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
+import { CacheService } from '@/core/CacheService.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -198,7 +198,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private queueService: QueueService,
 		private fanoutTimelineService: FanoutTimelineService,
-		private noteReadService: NoteReadService,
 		private notificationService: NotificationService,
 		private relayService: RelayService,
 		private federatedInstanceService: FederatedInstanceService,
@@ -217,6 +216,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private instanceChart: InstanceChart,
 		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,
+		private cacheService: CacheService,
 	) {
 		this.updateNotesCountQueue = new CollapsedQueue(process.env.NODE_ENV !== 'test' ? 60 * 1000 * 5 : 0, this.collapseNotesCount, this.performUpdateNotesCount);
 	}
@@ -511,13 +511,15 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// Register host
-		if (this.userEntityService.isRemoteUser(user)) {
-			this.federatedInstanceService.fetch(user.host).then(async i => {
-				this.updateNotesCountQueue.enqueue(i.id, 1);
-				if (this.meta.enableChartsForFederatedInstances) {
-					this.instanceChart.updateNote(i.host, note, true);
-				}
-			});
+		if (this.meta.enableStatsForFederatedInstances) {
+			if (this.userEntityService.isRemoteUser(user)) {
+				this.federatedInstanceService.fetchOrRegister(user.host).then(async i => {
+					this.updateNotesCountQueue.enqueue(i.id, 1);
+					if (this.meta.enableChartsForFederatedInstances) {
+						this.instanceChart.updateNote(i.host, note, true);
+					}
+				});
+			}
 		}
 
 		// ハッシュタグ更新
@@ -530,7 +532,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		this.pushToTl(note, user);
 
-		this.antennaService.addNoteToAntennas(note, user);
+		this.antennaService.addNoteToAntennas({
+			...note,
+			channel: data.channel ?? null,
+		}, user);
 
 		if (data.reply) {
 			this.saveReply(data.reply, note);
@@ -541,13 +546,21 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.followingsRepository.findBy({
 				followeeId: user.id,
 				notify: 'normal',
-			}).then(followings => {
+			}).then(async followings => {
 				if (note.visibility !== 'specified') {
+					const isPureRenote = this.isRenote(data) && !this.isQuote(data) ? true : false;
 					for (const following of followings) {
 						// TODO: ワードミュート考慮
-						this.notificationService.createNotification(following.followerId, 'note', {
-							noteId: note.id,
-						}, user.id);
+						let isRenoteMuted = false;
+						if (isPureRenote) {
+							const userIdsWhoMeMutingRenotes = await this.cacheService.renoteMutingsCache.fetch(following.followerId);
+							isRenoteMuted = userIdsWhoMeMutingRenotes.has(user.id);
+						}
+						if (!isRenoteMuted) {
+							this.notificationService.createNotification(following.followerId, 'note', {
+								noteId: note.id,
+							}, user.id);
+						}
 					}
 				}
 			});
@@ -563,37 +576,19 @@ export class NoteCreateService implements OnApplicationShutdown {
 				noteId: note.id,
 			}, {
 				delay,
-				removeOnComplete: true,
+				removeOnComplete: {
+					age: 3600 * 24 * 7, // keep up to 7 days
+					count: 30,
+				},
+				removeOnFail: {
+					age: 3600 * 24 * 7, // keep up to 7 days
+					count: 100,
+				},
 			});
 		}
 
 		if (!silent) {
 			if (this.userEntityService.isLocalUser(user)) this.activeUsersChart.write(user);
-
-			// 未読通知を作成
-			if (data.visibility === 'specified') {
-				if (data.visibleUsers == null) throw new Error('invalid param');
-
-				for (const u of data.visibleUsers) {
-					// ローカルユーザーのみ
-					if (!this.userEntityService.isLocalUser(u)) continue;
-
-					this.noteReadService.insertNoteUnread(u.id, note, {
-						isSpecified: true,
-						isMentioned: false,
-					});
-				}
-			} else {
-				for (const u of mentionedUsers) {
-					// ローカルユーザーのみ
-					if (!this.userEntityService.isLocalUser(u)) continue;
-
-					this.noteReadService.insertNoteUnread(u.id, note, {
-						isSpecified: false,
-						isMentioned: true,
-					});
-				}
-			}
 
 			// Pack the note
 			const noteObj = await this.noteEntityService.pack(note, null, { skipHide: true, withReactionAndUserPairCache: true });
@@ -602,14 +597,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			this.roleService.addNoteToRoleTimeline(noteObj);
 
-			this.webhookService.getActiveWebhooks().then(webhooks => {
-				webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
-				for (const webhook of webhooks) {
-					this.queueService.userWebhookDeliver(webhook, 'note', {
-						note: noteObj,
-					});
-				}
-			});
+			this.webhookService.enqueueUserWebhook(user.id, 'note', { note: noteObj });
 
 			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
 
@@ -629,13 +617,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					if (!isThreadMuted) {
 						nm.push(data.reply.userId, 'reply');
 						this.globalEventService.publishMainStream(data.reply.userId, 'reply', noteObj);
-
-						const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === data.reply!.userId && x.on.includes('reply'));
-						for (const webhook of webhooks) {
-							this.queueService.userWebhookDeliver(webhook, 'reply', {
-								note: noteObj,
-							});
-						}
+						this.webhookService.enqueueUserWebhook(data.reply.userId, 'reply', { note: noteObj });
 					}
 				}
 			}
@@ -652,20 +634,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 				// Publish event
 				if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
 					this.globalEventService.publishMainStream(data.renote.userId, 'renote', noteObj);
-
-					const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
-					for (const webhook of webhooks) {
-						this.queueService.userWebhookDeliver(webhook, 'renote', {
-							note: noteObj,
-						});
-					}
+					this.webhookService.enqueueUserWebhook(data.renote.userId, 'renote', { note: noteObj });
 				}
 			}
 
 			nm.notify();
 
 			//#region AP deliver
-			if (this.userEntityService.isLocalUser(user)) {
+			if (!data.localOnly && this.userEntityService.isLocalUser(user)) {
 				(async () => {
 					const noteActivity = await this.renderNoteOrRenoteActivity(data, note);
 					const dm = this.apDeliverManagerService.createDeliverManager(user, noteActivity);
@@ -784,13 +760,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			});
 
 			this.globalEventService.publishMainStream(u.id, 'mention', detailPackedNote);
-
-			const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === u.id && x.on.includes('mention'));
-			for (const webhook of webhooks) {
-				this.queueService.userWebhookDeliver(webhook, 'mention', {
-					note: detailPackedNote,
-				});
-			}
+			this.webhookService.enqueueUserWebhook(u.id, 'mention', { note: detailPackedNote });
 
 			// Create notification
 			nm.push(u.id, 'mention');

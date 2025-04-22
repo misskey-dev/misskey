@@ -319,6 +319,12 @@ export class FileServerService {
 			);
 		}
 
+		if (!request.headers['user-agent']) {
+			throw new StatusError('User-Agent is required', 400, 'User-Agent is required');
+		} else if (request.headers['user-agent'].toLowerCase().indexOf('misskey/') !== -1) {
+			throw new StatusError('Refusing to proxy a request from another proxy', 403, 'Proxy is recursive');
+		}
+
 		// Create temp file
 		const file = await this.getStreamAndTypeFromUrl(url);
 		if (file === '404') {
@@ -491,7 +497,7 @@ export class FileServerService {
 
 	@bindThis
 	private async downloadAndDetectTypeFromUrl(url: string): Promise<
-		{ state: 'remote' ; mime: string; ext: string | null; path: string; cleanup: () => void; filename: string; }
+		{ state: 'remote'; mime: string; ext: string | null; path: string; cleanup: () => void; filename: string; }
 	> {
 		const [path, cleanup] = await createTemp();
 		try {

@@ -18,12 +18,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { onMounted, ref } from 'vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { acct } from '@/filters/user.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
-	withChart: boolean;
+	withChart?: boolean;
 }>(), {
 	withChart: true,
 });

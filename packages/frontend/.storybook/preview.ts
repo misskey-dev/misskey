@@ -21,11 +21,11 @@ let moduleInitialized = false;
 let unobserve = () => {};
 let misskeyOS = null;
 
-function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme']) {
+function loadTheme(applyTheme: typeof import('../src/theme')['applyTheme']) {
 	unobserve();
-	const theme = themes[document.documentElement.dataset.misskeyTheme];
+	const theme = themes[window.document.documentElement.dataset.misskeyTheme];
 	if (theme) {
-		applyTheme(themes[document.documentElement.dataset.misskeyTheme]);
+		applyTheme(themes[window.document.documentElement.dataset.misskeyTheme]);
 	} else {
 		applyTheme(themes['l-light']);
 	}
@@ -42,7 +42,7 @@ function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme
 			}
 		}
 	});
-	observer.observe(document.documentElement, {
+	observer.observe(window.document.documentElement, {
 		attributes: true,
 		attributeFilter: ['data-misskey-theme'],
 	});
@@ -64,13 +64,13 @@ initialize({
 initLocalStorage();
 queueMicrotask(() => {
 	Promise.all([
-		import('../src/components'),
-		import('../src/directives'),
-		import('../src/widgets'),
-		import('../src/scripts/theme'),
-		import('../src/store'),
-		import('../src/os'),
-	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { defaultStore }, os]) => {
+		import('../src/components/index.js'),
+		import('../src/directives/index.js'),
+		import('../src/widgets/index.js'),
+		import('../src/theme.js'),
+		import('../src/preferences.js'),
+		import('../src/os.js'),
+	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { prefer }, os]) => {
 		setup((app) => {
 			moduleInitialized = true;
 			if (app[appInitialized]) {
@@ -83,7 +83,7 @@ queueMicrotask(() => {
 			widgets(app);
 			misskeyOS = os;
 			if (isChromatic()) {
-				defaultStore.set('animation', false);
+				prefer.commit('animation', false);
 			}
 		});
 	});
@@ -104,9 +104,9 @@ const preview = {
 							}
 						}).catch(() => {})
 					: Promise.resolve();
-				const resetDefaultStorePromise = import('../src/store').then(({ defaultStore }) => {
+				const resetDefaultStorePromise = import('../src/store').then(({ store }) => {
 					// @ts-expect-error
-					defaultStore.init();
+					store.init();
 				}).catch(() => {});
 				Promise.all([resetIndexedDBPromise, resetDefaultStorePromise]).then(() => {
 					initLocalStorage();

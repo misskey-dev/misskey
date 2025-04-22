@@ -107,12 +107,12 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 		// それでもわからなければ終了
 		if (authUser == null) {
-			throw new Bull.UnrecoverableError('skip: failed to resolve user');
+			throw new Bull.UnrecoverableError(`skip: failed to resolve user ${getApId(activity.actor)}`);
 		}
 
 		// publicKey がなくても終了
 		if (authUser.key == null) {
-			throw new Bull.UnrecoverableError('skip: failed to resolve user publicKey');
+			throw new Bull.UnrecoverableError(`skip: failed to resolve user publicKey ${getApId(activity.actor)}`);
 		}
 
 		// HTTP-Signatureの検証
@@ -190,23 +190,31 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			if (signerHost !== activityIdHost) {
 				throw new Bull.UnrecoverableError(`skip: signerHost(${signerHost}) !== activity.id host(${activityIdHost}`);
 			}
+		} else {
+			throw new Bull.UnrecoverableError('skip: activity id is not a string');
 		}
 
-		// Update stats
-		this.federatedInstanceService.fetch(authUser.user.host).then(i => {
+		this.apRequestChart.inbox();
+		this.federationChart.inbox(authUser.user.host);
+
+		// Update instance stats
+		process.nextTick(async () => {
+			const i = await (this.meta.enableStatsForFederatedInstances
+				? this.federatedInstanceService.fetchOrRegister(authUser.user.host)
+				: this.federatedInstanceService.fetch(authUser.user.host));
+
+			if (i == null) return;
+
 			this.updateInstanceQueue.enqueue(i.id, {
 				latestRequestReceivedAt: new Date(),
 				shouldUnsuspend: i.suspensionState === 'autoSuspendedForNotResponding',
 			});
 
-			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-
-			this.apRequestChart.inbox();
-			this.federationChart.inbox(i.host);
-
 			if (this.meta.enableChartsForFederatedInstances) {
 				this.instanceChart.requestReceived(i.host);
 			}
+
+			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
 		});
 
 		// アクティビティを処理

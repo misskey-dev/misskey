@@ -6,7 +6,9 @@
 
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { EventEmitter } from 'eventemitter3';
-import type { PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
+import { Options } from 'reconnecting-websocket';
+import type { PublicKeyCredentialRequestOptionsJSON as PublicKeyCredentialRequestOptionsJSON_2 } from '@simplewebauthn/types';
+import _ReconnectingWebSocket from 'reconnecting-websocket';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
 //
@@ -121,6 +123,9 @@ type AdminAnnouncementsUpdateRequest = operations['admin___announcements___updat
 type AdminAvatarDecorationsCreateRequest = operations['admin___avatar-decorations___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminAvatarDecorationsCreateResponse = operations['admin___avatar-decorations___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminAvatarDecorationsDeleteRequest = operations['admin___avatar-decorations___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -131,6 +136,12 @@ type AdminAvatarDecorationsListResponse = operations['admin___avatar-decorations
 
 // @public (undocumented)
 type AdminAvatarDecorationsUpdateRequest = operations['admin___avatar-decorations___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminCaptchaCurrentResponse = operations['admin___captcha___current']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminCaptchaSaveRequest = operations['admin___captcha___save']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminDeleteAccountRequest = operations['admin___delete-account']['requestBody']['content']['application/json'];
@@ -247,13 +258,31 @@ type AdminMetaResponse = operations['admin___meta']['responses']['200']['content
 type AdminPromoCreateRequest = operations['admin___promo___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminQueueClearRequest = operations['admin___queue___clear']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AdminQueueDeliverDelayedResponse = operations['admin___queue___deliver-delayed']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type AdminQueueInboxDelayedResponse = operations['admin___queue___inbox-delayed']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type AdminQueuePromoteRequest = operations['admin___queue___promote']['requestBody']['content']['application/json'];
+type AdminQueueJobsRequest = operations['admin___queue___jobs']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueuePromoteJobsRequest = operations['admin___queue___promote-jobs']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueQueueStatsRequest = operations['admin___queue___queue-stats']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueRemoveJobRequest = operations['admin___queue___remove-job']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueRetryJobRequest = operations['admin___queue___retry-job']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminQueueShowJobRequest = operations['admin___queue___show-job']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminQueueStatsResponse = operations['admin___queue___stats']['responses']['200']['content']['application/json'];
@@ -386,6 +415,12 @@ type AdminUpdateAbuseUserReportRequest = operations['admin___update-abuse-user-r
 
 // @public (undocumented)
 type AdminUpdateMetaRequest = operations['admin___update-meta']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateProxyAccountRequest = operations['admin___update-proxy-account']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUpdateProxyAccountResponse = operations['admin___update-proxy-account']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type AdminUpdateUserNoteRequest = operations['admin___update-user-note']['requestBody']['content']['application/json'];
@@ -602,13 +637,9 @@ export type Channels = {
             }) => void;
             readAllNotifications: () => void;
             unreadNotification: (payload: Notification_2) => void;
-            unreadMention: (payload: Note['id']) => void;
-            readAllUnreadMentions: () => void;
             notificationFlushed: () => void;
-            unreadSpecifiedNote: (payload: Note['id']) => void;
-            readAllUnreadSpecifiedNotes: () => void;
-            readAllAntennas: () => void;
             unreadAntenna: (payload: Antenna) => void;
+            newChatMessage: (payload: ChatMessage) => void;
             readAllAnnouncements: () => void;
             myTokenRegenerated: () => void;
             signin: (payload: Signin) => void;
@@ -800,6 +831,54 @@ export type Channels = {
             claimTimeIsUp: null | Record<string, never>;
         };
     };
+    chatUser: {
+        params: {
+            otherId: string;
+        };
+        events: {
+            message: (payload: ChatMessageLite) => void;
+            deleted: (payload: ChatMessageLite['id']) => void;
+            react: (payload: {
+                reaction: string;
+                user?: UserLite;
+                messageId: ChatMessageLite['id'];
+            }) => void;
+            unreact: (payload: {
+                reaction: string;
+                user?: UserLite;
+                messageId: ChatMessageLite['id'];
+            }) => void;
+        };
+        receives: {
+            read: {
+                id: ChatMessageLite['id'];
+            };
+        };
+    };
+    chatRoom: {
+        params: {
+            roomId: string;
+        };
+        events: {
+            message: (payload: ChatMessageLite) => void;
+            deleted: (payload: ChatMessageLite['id']) => void;
+            react: (payload: {
+                reaction: string;
+                user?: UserLite;
+                messageId: ChatMessageLite['id'];
+            }) => void;
+            unreact: (payload: {
+                reaction: string;
+                user?: UserLite;
+                messageId: ChatMessageLite['id'];
+            }) => void;
+        };
+        receives: {
+            read: {
+                id: ChatMessageLite['id'];
+            };
+        };
+    };
 };
 
 // @public (undocumented)
@@ -933,6 +1012,171 @@ type ChartsUsersRequest = operations['charts___users']['requestBody']['content']
 
 // @public (undocumented)
 type ChartsUsersResponse = operations['charts___users']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatHistoryRequest = operations['chat___history']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatHistoryResponse = operations['chat___history']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessage = components['schemas']['ChatMessage'];
+
+// @public (undocumented)
+type ChatMessageLite = components['schemas']['ChatMessageLite'];
+
+// @public (undocumented)
+type ChatMessageLiteFor1on1 = components['schemas']['ChatMessageLiteFor1on1'];
+
+// @public (undocumented)
+type ChatMessageLiteForRoom = components['schemas']['ChatMessageLiteForRoom'];
+
+// @public (undocumented)
+type ChatMessagesCreateToRoomRequest = operations['chat___messages___create-to-room']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesCreateToRoomResponse = operations['chat___messages___create-to-room']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesCreateToUserRequest = operations['chat___messages___create-to-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesCreateToUserResponse = operations['chat___messages___create-to-user']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesDeleteRequest = operations['chat___messages___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesDeleteResponse = operations['chat___messages___delete']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesReactRequest = operations['chat___messages___react']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesReactResponse = operations['chat___messages___react']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesRoomTimelineRequest = operations['chat___messages___room-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesRoomTimelineResponse = operations['chat___messages___room-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesSearchRequest = operations['chat___messages___search']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesSearchResponse = operations['chat___messages___search']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesShowRequest = operations['chat___messages___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesShowResponse = operations['chat___messages___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesUnreactRequest = operations['chat___messages___unreact']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesUnreactResponse = operations['chat___messages___unreact']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesUserTimelineRequest = operations['chat___messages___user-timeline']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatMessagesUserTimelineResponse = operations['chat___messages___user-timeline']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoom = components['schemas']['ChatRoom'];
+
+// @public (undocumented)
+type ChatRoomInvitation = components['schemas']['ChatRoomInvitation'];
+
+// @public (undocumented)
+type ChatRoomMembership = components['schemas']['ChatRoomMembership'];
+
+// @public (undocumented)
+type ChatRoomsCreateRequest = operations['chat___rooms___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsCreateResponse = operations['chat___rooms___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsDeleteRequest = operations['chat___rooms___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsDeleteResponse = operations['chat___rooms___delete']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsCreateRequest = operations['chat___rooms___invitations___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsCreateResponse = operations['chat___rooms___invitations___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsIgnoreRequest = operations['chat___rooms___invitations___ignore']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsIgnoreResponse = operations['chat___rooms___invitations___ignore']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsInboxRequest = operations['chat___rooms___invitations___inbox']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsInboxResponse = operations['chat___rooms___invitations___inbox']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsOutboxRequest = operations['chat___rooms___invitations___outbox']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsInvitationsOutboxResponse = operations['chat___rooms___invitations___outbox']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsJoiningRequest = operations['chat___rooms___joining']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsJoiningResponse = operations['chat___rooms___joining']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsJoinRequest = operations['chat___rooms___join']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsJoinResponse = operations['chat___rooms___join']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsLeaveRequest = operations['chat___rooms___leave']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsLeaveResponse = operations['chat___rooms___leave']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMembersRequest = operations['chat___rooms___members']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMembersResponse = operations['chat___rooms___members']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMuteRequest = operations['chat___rooms___mute']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsMuteResponse = operations['chat___rooms___mute']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsOwnedRequest = operations['chat___rooms___owned']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsOwnedResponse = operations['chat___rooms___owned']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsShowRequest = operations['chat___rooms___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsShowResponse = operations['chat___rooms___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsUpdateRequest = operations['chat___rooms___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChatRoomsUpdateResponse = operations['chat___rooms___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Clip = components['schemas']['Clip'];
@@ -1107,6 +1351,9 @@ type EmojiDeleted = {
 type EmojiDetailed = components['schemas']['EmojiDetailed'];
 
 // @public (undocumented)
+type EmojiDetailedAdmin = components['schemas']['EmojiDetailedAdmin'];
+
+// @public (undocumented)
 type EmojiRequest = operations['emoji']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -1222,18 +1469,17 @@ declare namespace entities {
         PartialRolePolicyOverride,
         EmptyRequest,
         EmptyResponse,
-        AdminMetaResponse,
-        AdminAbuseUserReportsRequest,
-        AdminAbuseUserReportsResponse,
+        AdminAbuseReportNotificationRecipientCreateRequest,
+        AdminAbuseReportNotificationRecipientCreateResponse,
+        AdminAbuseReportNotificationRecipientDeleteRequest,
         AdminAbuseReportNotificationRecipientListRequest,
         AdminAbuseReportNotificationRecipientListResponse,
         AdminAbuseReportNotificationRecipientShowRequest,
         AdminAbuseReportNotificationRecipientShowResponse,
-        AdminAbuseReportNotificationRecipientCreateRequest,
-        AdminAbuseReportNotificationRecipientCreateResponse,
         AdminAbuseReportNotificationRecipientUpdateRequest,
         AdminAbuseReportNotificationRecipientUpdateResponse,
-        AdminAbuseReportNotificationRecipientDeleteRequest,
+        AdminAbuseUserReportsRequest,
+        AdminAbuseUserReportsResponse,
         AdminAccountsCreateRequest,
         AdminAccountsCreateResponse,
         AdminAccountsDeleteRequest,
@@ -1252,29 +1498,31 @@ declare namespace entities {
         AdminAnnouncementsListResponse,
         AdminAnnouncementsUpdateRequest,
         AdminAvatarDecorationsCreateRequest,
+        AdminAvatarDecorationsCreateResponse,
         AdminAvatarDecorationsDeleteRequest,
         AdminAvatarDecorationsListRequest,
         AdminAvatarDecorationsListResponse,
         AdminAvatarDecorationsUpdateRequest,
+        AdminCaptchaCurrentResponse,
+        AdminCaptchaSaveRequest,
+        AdminDeleteAccountRequest,
         AdminDeleteAllFilesOfAUserRequest,
-        AdminUnsetUserAvatarRequest,
-        AdminUnsetUserBannerRequest,
         AdminDriveFilesRequest,
         AdminDriveFilesResponse,
         AdminDriveShowFileRequest,
         AdminDriveShowFileResponse,
-        AdminEmojiAddAliasesBulkRequest,
         AdminEmojiAddRequest,
         AdminEmojiAddResponse,
+        AdminEmojiAddAliasesBulkRequest,
         AdminEmojiCopyRequest,
         AdminEmojiCopyResponse,
-        AdminEmojiDeleteBulkRequest,
         AdminEmojiDeleteRequest,
+        AdminEmojiDeleteBulkRequest,
         AdminEmojiImportZipRequest,
-        AdminEmojiListRemoteRequest,
-        AdminEmojiListRemoteResponse,
         AdminEmojiListRequest,
         AdminEmojiListResponse,
+        AdminEmojiListRemoteRequest,
+        AdminEmojiListRemoteResponse,
         AdminEmojiRemoveAliasesBulkRequest,
         AdminEmojiSetAliasesBulkRequest,
         AdminEmojiSetCategoryBulkRequest,
@@ -1284,6 +1532,7 @@ declare namespace entities {
         AdminFederationRefreshRemoteInstanceMetadataRequest,
         AdminFederationRemoveAllFollowingRequest,
         AdminFederationUpdateInstanceRequest,
+        AdminForwardAbuseUserReportRequest,
         AdminGetIndexStatsResponse,
         AdminGetTableStatsResponse,
         AdminGetUserIpsRequest,
@@ -1292,10 +1541,17 @@ declare namespace entities {
         AdminInviteCreateResponse,
         AdminInviteListRequest,
         AdminInviteListResponse,
+        AdminMetaResponse,
         AdminPromoCreateRequest,
+        AdminQueueClearRequest,
         AdminQueueDeliverDelayedResponse,
         AdminQueueInboxDelayedResponse,
-        AdminQueuePromoteRequest,
+        AdminQueueJobsRequest,
+        AdminQueuePromoteJobsRequest,
+        AdminQueueQueueStatsRequest,
+        AdminQueueRemoveJobRequest,
+        AdminQueueRetryJobRequest,
+        AdminQueueShowJobRequest,
         AdminQueueStatsResponse,
         AdminRelaysAddRequest,
         AdminRelaysAddResponse,
@@ -1304,8 +1560,18 @@ declare namespace entities {
         AdminResetPasswordRequest,
         AdminResetPasswordResponse,
         AdminResolveAbuseUserReportRequest,
-        AdminForwardAbuseUserReportRequest,
-        AdminUpdateAbuseUserReportRequest,
+        AdminRolesAssignRequest,
+        AdminRolesCreateRequest,
+        AdminRolesCreateResponse,
+        AdminRolesDeleteRequest,
+        AdminRolesListResponse,
+        AdminRolesShowRequest,
+        AdminRolesShowResponse,
+        AdminRolesUnassignRequest,
+        AdminRolesUpdateRequest,
+        AdminRolesUpdateDefaultPoliciesRequest,
+        AdminRolesUsersRequest,
+        AdminRolesUsersResponse,
         AdminSendEmailRequest,
         AdminServerInfoResponse,
         AdminShowModerationLogsRequest,
@@ -1315,22 +1581,6 @@ declare namespace entities {
         AdminShowUsersRequest,
         AdminShowUsersResponse,
         AdminSuspendUserRequest,
-        AdminUnsuspendUserRequest,
-        AdminUpdateMetaRequest,
-        AdminDeleteAccountRequest,
-        AdminUpdateUserNoteRequest,
-        AdminRolesCreateRequest,
-        AdminRolesCreateResponse,
-        AdminRolesDeleteRequest,
-        AdminRolesListResponse,
-        AdminRolesShowRequest,
-        AdminRolesShowResponse,
-        AdminRolesUpdateRequest,
-        AdminRolesAssignRequest,
-        AdminRolesUnassignRequest,
-        AdminRolesUpdateDefaultPoliciesRequest,
-        AdminRolesUsersRequest,
-        AdminRolesUsersResponse,
         AdminSystemWebhookCreateRequest,
         AdminSystemWebhookCreateResponse,
         AdminSystemWebhookDeleteRequest,
@@ -1338,9 +1588,17 @@ declare namespace entities {
         AdminSystemWebhookListResponse,
         AdminSystemWebhookShowRequest,
         AdminSystemWebhookShowResponse,
+        AdminSystemWebhookTestRequest,
         AdminSystemWebhookUpdateRequest,
         AdminSystemWebhookUpdateResponse,
-        AdminSystemWebhookTestRequest,
+        AdminUnsetUserAvatarRequest,
+        AdminUnsetUserBannerRequest,
+        AdminUnsuspendUserRequest,
+        AdminUpdateAbuseUserReportRequest,
+        AdminUpdateMetaRequest,
+        AdminUpdateProxyAccountRequest,
+        AdminUpdateProxyAccountResponse,
+        AdminUpdateUserNoteRequest,
         AnnouncementsRequest,
         AnnouncementsResponse,
         AnnouncementsShowRequest,
@@ -1376,26 +1634,29 @@ declare namespace entities {
         BlockingDeleteResponse,
         BlockingListRequest,
         BlockingListResponse,
+        BubbleGameRankingRequest,
+        BubbleGameRankingResponse,
+        BubbleGameRegisterRequest,
         ChannelsCreateRequest,
         ChannelsCreateResponse,
+        ChannelsFavoriteRequest,
         ChannelsFeaturedResponse,
         ChannelsFollowRequest,
         ChannelsFollowedRequest,
         ChannelsFollowedResponse,
+        ChannelsMyFavoritesResponse,
         ChannelsOwnedRequest,
         ChannelsOwnedResponse,
+        ChannelsSearchRequest,
+        ChannelsSearchResponse,
         ChannelsShowRequest,
         ChannelsShowResponse,
         ChannelsTimelineRequest,
         ChannelsTimelineResponse,
+        ChannelsUnfavoriteRequest,
         ChannelsUnfollowRequest,
         ChannelsUpdateRequest,
         ChannelsUpdateResponse,
-        ChannelsFavoriteRequest,
-        ChannelsUnfavoriteRequest,
-        ChannelsMyFavoritesResponse,
-        ChannelsSearchRequest,
-        ChannelsSearchResponse,
         ChartsActiveUsersRequest,
         ChartsActiveUsersResponse,
         ChartsApRequestRequest,
@@ -1420,21 +1681,69 @@ declare namespace entities {
         ChartsUserReactionsResponse,
         ChartsUsersRequest,
         ChartsUsersResponse,
+        ChatHistoryRequest,
+        ChatHistoryResponse,
+        ChatMessagesCreateToRoomRequest,
+        ChatMessagesCreateToRoomResponse,
+        ChatMessagesCreateToUserRequest,
+        ChatMessagesCreateToUserResponse,
+        ChatMessagesDeleteRequest,
+        ChatMessagesDeleteResponse,
+        ChatMessagesReactRequest,
+        ChatMessagesReactResponse,
+        ChatMessagesRoomTimelineRequest,
+        ChatMessagesRoomTimelineResponse,
+        ChatMessagesSearchRequest,
+        ChatMessagesSearchResponse,
+        ChatMessagesShowRequest,
+        ChatMessagesShowResponse,
+        ChatMessagesUnreactRequest,
+        ChatMessagesUnreactResponse,
+        ChatMessagesUserTimelineRequest,
+        ChatMessagesUserTimelineResponse,
+        ChatRoomsCreateRequest,
+        ChatRoomsCreateResponse,
+        ChatRoomsDeleteRequest,
+        ChatRoomsDeleteResponse,
+        ChatRoomsInvitationsCreateRequest,
+        ChatRoomsInvitationsCreateResponse,
+        ChatRoomsInvitationsIgnoreRequest,
+        ChatRoomsInvitationsIgnoreResponse,
+        ChatRoomsInvitationsInboxRequest,
+        ChatRoomsInvitationsInboxResponse,
+        ChatRoomsInvitationsOutboxRequest,
+        ChatRoomsInvitationsOutboxResponse,
+        ChatRoomsJoinRequest,
+        ChatRoomsJoinResponse,
+        ChatRoomsJoiningRequest,
+        ChatRoomsJoiningResponse,
+        ChatRoomsLeaveRequest,
+        ChatRoomsLeaveResponse,
+        ChatRoomsMembersRequest,
+        ChatRoomsMembersResponse,
+        ChatRoomsMuteRequest,
+        ChatRoomsMuteResponse,
+        ChatRoomsOwnedRequest,
+        ChatRoomsOwnedResponse,
+        ChatRoomsShowRequest,
+        ChatRoomsShowResponse,
+        ChatRoomsUpdateRequest,
+        ChatRoomsUpdateResponse,
         ClipsAddNoteRequest,
-        ClipsRemoveNoteRequest,
         ClipsCreateRequest,
         ClipsCreateResponse,
         ClipsDeleteRequest,
+        ClipsFavoriteRequest,
         ClipsListResponse,
+        ClipsMyFavoritesResponse,
         ClipsNotesRequest,
         ClipsNotesResponse,
+        ClipsRemoveNoteRequest,
         ClipsShowRequest,
         ClipsShowResponse,
+        ClipsUnfavoriteRequest,
         ClipsUpdateRequest,
         ClipsUpdateResponse,
-        ClipsFavoriteRequest,
-        ClipsUnfavoriteRequest,
-        ClipsMyFavoritesResponse,
         DriveResponse,
         DriveFilesRequest,
         DriveFilesResponse,
@@ -1445,10 +1754,10 @@ declare namespace entities {
         DriveFilesCreateRequest,
         DriveFilesCreateResponse,
         DriveFilesDeleteRequest,
-        DriveFilesFindByHashRequest,
-        DriveFilesFindByHashResponse,
         DriveFilesFindRequest,
         DriveFilesFindResponse,
+        DriveFilesFindByHashRequest,
+        DriveFilesFindByHashResponse,
         DriveFilesShowRequest,
         DriveFilesShowResponse,
         DriveFilesUpdateRequest,
@@ -1469,6 +1778,9 @@ declare namespace entities {
         DriveStreamResponse,
         EmailAddressAvailableRequest,
         EmailAddressAvailableResponse,
+        EmojiRequest,
+        EmojiResponse,
+        EmojisResponse,
         EndpointRequest,
         EndpointResponse,
         EndpointsResponse,
@@ -1480,18 +1792,33 @@ declare namespace entities {
         FederationInstancesResponse,
         FederationShowInstanceRequest,
         FederationShowInstanceResponse,
+        FederationStatsRequest,
+        FederationStatsResponse,
         FederationUpdateRemoteUserRequest,
         FederationUsersRequest,
         FederationUsersResponse,
-        FederationStatsRequest,
-        FederationStatsResponse,
+        FetchExternalResourcesRequest,
+        FetchExternalResourcesResponse,
+        FetchRssRequest,
+        FetchRssResponse,
+        FlashCreateRequest,
+        FlashCreateResponse,
+        FlashDeleteRequest,
+        FlashFeaturedRequest,
+        FlashFeaturedResponse,
+        FlashLikeRequest,
+        FlashMyRequest,
+        FlashMyResponse,
+        FlashMyLikesRequest,
+        FlashMyLikesResponse,
+        FlashShowRequest,
+        FlashShowResponse,
+        FlashUnlikeRequest,
+        FlashUpdateRequest,
         FollowingCreateRequest,
         FollowingCreateResponse,
         FollowingDeleteRequest,
         FollowingDeleteResponse,
-        FollowingUpdateRequest,
-        FollowingUpdateResponse,
-        FollowingUpdateAllRequest,
         FollowingInvalidateRequest,
         FollowingInvalidateResponse,
         FollowingRequestsAcceptRequest,
@@ -1500,6 +1827,11 @@ declare namespace entities {
         FollowingRequestsListRequest,
         FollowingRequestsListResponse,
         FollowingRequestsRejectRequest,
+        FollowingRequestsSentRequest,
+        FollowingRequestsSentResponse,
+        FollowingUpdateRequest,
+        FollowingUpdateResponse,
+        FollowingUpdateAllRequest,
         GalleryFeaturedRequest,
         GalleryFeaturedResponse,
         GalleryPopularResponse,
@@ -1514,8 +1846,8 @@ declare namespace entities {
         GalleryPostsUnlikeRequest,
         GalleryPostsUpdateRequest,
         GalleryPostsUpdateResponse,
-        GetOnlineUsersCountResponse,
         GetAvatarDecorationsResponse,
+        GetOnlineUsersCountResponse,
         HashtagsListRequest,
         HashtagsListResponse,
         HashtagsSearchRequest,
@@ -1531,19 +1863,19 @@ declare namespace entities {
         I2faKeyDoneRequest,
         I2faKeyDoneResponse,
         I2faPasswordLessRequest,
-        I2faRegisterKeyRequest,
-        I2faRegisterKeyResponse,
         I2faRegisterRequest,
         I2faRegisterResponse,
-        I2faUpdateKeyRequest,
+        I2faRegisterKeyRequest,
+        I2faRegisterKeyResponse,
         I2faRemoveKeyRequest,
         I2faUnregisterRequest,
+        I2faUpdateKeyRequest,
         IAppsRequest,
         IAppsResponse,
         IAuthorizedAppsRequest,
         IAuthorizedAppsResponse,
-        IClaimAchievementRequest,
         IChangePasswordRequest,
+        IClaimAchievementRequest,
         IDeleteAccountRequest,
         IExportFollowingRequest,
         IFavoritesRequest,
@@ -1552,11 +1884,13 @@ declare namespace entities {
         IGalleryLikesResponse,
         IGalleryPostsRequest,
         IGalleryPostsResponse,
+        IImportAntennasRequest,
         IImportBlockingRequest,
         IImportFollowingRequest,
         IImportMutingRequest,
         IImportUserListsRequest,
-        IImportAntennasRequest,
+        IMoveRequest,
+        IMoveResponse,
         INotificationsRequest,
         INotificationsResponse,
         INotificationsGroupedRequest,
@@ -1569,16 +1903,16 @@ declare namespace entities {
         IPinResponse,
         IReadAnnouncementRequest,
         IRegenerateTokenRequest,
+        IRegistryGetRequest,
+        IRegistryGetResponse,
         IRegistryGetAllRequest,
         IRegistryGetAllResponse,
         IRegistryGetDetailRequest,
         IRegistryGetDetailResponse,
-        IRegistryGetRequest,
-        IRegistryGetResponse,
-        IRegistryKeysWithTypeRequest,
-        IRegistryKeysWithTypeResponse,
         IRegistryKeysRequest,
         IRegistryKeysResponse,
+        IRegistryKeysWithTypeRequest,
+        IRegistryKeysWithTypeResponse,
         IRegistryRemoveRequest,
         IRegistryScopesWithDomainResponse,
         IRegistrySetRequest,
@@ -1587,40 +1921,31 @@ declare namespace entities {
         ISigninHistoryResponse,
         IUnpinRequest,
         IUnpinResponse,
-        IUpdateEmailRequest,
-        IUpdateEmailResponse,
         IUpdateRequest,
         IUpdateResponse,
-        IMoveRequest,
-        IMoveResponse,
+        IUpdateEmailRequest,
+        IUpdateEmailResponse,
         IWebhooksCreateRequest,
         IWebhooksCreateResponse,
+        IWebhooksDeleteRequest,
         IWebhooksListResponse,
         IWebhooksShowRequest,
         IWebhooksShowResponse,
-        IWebhooksUpdateRequest,
-        IWebhooksDeleteRequest,
         IWebhooksTestRequest,
+        IWebhooksUpdateRequest,
         InviteCreateResponse,
         InviteDeleteRequest,
+        InviteLimitResponse,
         InviteListRequest,
         InviteListResponse,
-        InviteLimitResponse,
         MetaRequest,
         MetaResponse,
-        EmojisResponse,
-        EmojiRequest,
-        EmojiResponse,
         MiauthGenTokenRequest,
         MiauthGenTokenResponse,
         MuteCreateRequest,
         MuteDeleteRequest,
         MuteListRequest,
         MuteListResponse,
-        RenoteMuteCreateRequest,
-        RenoteMuteDeleteRequest,
-        RenoteMuteListRequest,
-        RenoteMuteListResponse,
         MyAppsRequest,
         MyAppsResponse,
         NotesRequest,
@@ -1657,10 +1982,10 @@ declare namespace entities {
         NotesRenotesResponse,
         NotesRepliesRequest,
         NotesRepliesResponse,
-        NotesSearchByTagRequest,
-        NotesSearchByTagResponse,
         NotesSearchRequest,
         NotesSearchResponse,
+        NotesSearchByTagRequest,
+        NotesSearchByTagResponse,
         NotesShowRequest,
         NotesShowResponse,
         NotesStateRequest,
@@ -1685,49 +2010,57 @@ declare namespace entities {
         PagesShowResponse,
         PagesUnlikeRequest,
         PagesUpdateRequest,
-        FlashCreateRequest,
-        FlashCreateResponse,
-        FlashDeleteRequest,
-        FlashFeaturedRequest,
-        FlashFeaturedResponse,
-        FlashLikeRequest,
-        FlashShowRequest,
-        FlashShowResponse,
-        FlashUnlikeRequest,
-        FlashUpdateRequest,
-        FlashMyRequest,
-        FlashMyResponse,
-        FlashMyLikesRequest,
-        FlashMyLikesResponse,
         PingResponse,
         PinnedUsersResponse,
         PromoReadRequest,
+        RenoteMuteCreateRequest,
+        RenoteMuteDeleteRequest,
+        RenoteMuteListRequest,
+        RenoteMuteListResponse,
+        RequestResetPasswordRequest,
+        ResetPasswordRequest,
+        RetentionResponse,
+        ReversiCancelMatchRequest,
+        ReversiGamesRequest,
+        ReversiGamesResponse,
+        ReversiInvitationsResponse,
+        ReversiMatchRequest,
+        ReversiMatchResponse,
+        ReversiShowGameRequest,
+        ReversiShowGameResponse,
+        ReversiSurrenderRequest,
+        ReversiVerifyRequest,
+        ReversiVerifyResponse,
         RolesListResponse,
+        RolesNotesRequest,
+        RolesNotesResponse,
         RolesShowRequest,
         RolesShowResponse,
         RolesUsersRequest,
         RolesUsersResponse,
-        RolesNotesRequest,
-        RolesNotesResponse,
-        RequestResetPasswordRequest,
-        ResetPasswordRequest,
         ServerInfoResponse,
         StatsResponse,
-        SwShowRegistrationRequest,
-        SwShowRegistrationResponse,
-        SwUpdateRegistrationRequest,
-        SwUpdateRegistrationResponse,
         SwRegisterRequest,
         SwRegisterResponse,
+        SwShowRegistrationRequest,
+        SwShowRegistrationResponse,
         SwUnregisterRequest,
+        SwUpdateRegistrationRequest,
+        SwUpdateRegistrationResponse,
         TestRequest,
         TestResponse,
         UsernameAvailableRequest,
         UsernameAvailableResponse,
         UsersRequest,
         UsersResponse,
+        UsersAchievementsRequest,
+        UsersAchievementsResponse,
         UsersClipsRequest,
         UsersClipsResponse,
+        UsersFeaturedNotesRequest,
+        UsersFeaturedNotesResponse,
+        UsersFlashsRequest,
+        UsersFlashsResponse,
         UsersFollowersRequest,
         UsersFollowersResponse,
         UsersFollowingRequest,
@@ -1736,32 +2069,28 @@ declare namespace entities {
         UsersGalleryPostsResponse,
         UsersGetFrequentlyRepliedUsersRequest,
         UsersGetFrequentlyRepliedUsersResponse,
-        UsersFeaturedNotesRequest,
-        UsersFeaturedNotesResponse,
         UsersListsCreateRequest,
         UsersListsCreateResponse,
+        UsersListsCreateFromPublicRequest,
+        UsersListsCreateFromPublicResponse,
         UsersListsDeleteRequest,
+        UsersListsFavoriteRequest,
+        UsersListsGetMembershipsRequest,
+        UsersListsGetMembershipsResponse,
         UsersListsListRequest,
         UsersListsListResponse,
         UsersListsPullRequest,
         UsersListsPushRequest,
         UsersListsShowRequest,
         UsersListsShowResponse,
-        UsersListsFavoriteRequest,
         UsersListsUnfavoriteRequest,
         UsersListsUpdateRequest,
         UsersListsUpdateResponse,
-        UsersListsCreateFromPublicRequest,
-        UsersListsCreateFromPublicResponse,
         UsersListsUpdateMembershipRequest,
-        UsersListsGetMembershipsRequest,
-        UsersListsGetMembershipsResponse,
         UsersNotesRequest,
         UsersNotesResponse,
         UsersPagesRequest,
         UsersPagesResponse,
-        UsersFlashsRequest,
-        UsersFlashsResponse,
         UsersReactionsRequest,
         UsersReactionsResponse,
         UsersRecommendationRequest,
@@ -1769,34 +2098,15 @@ declare namespace entities {
         UsersRelationRequest,
         UsersRelationResponse,
         UsersReportAbuseRequest,
-        UsersSearchByUsernameAndHostRequest,
-        UsersSearchByUsernameAndHostResponse,
         UsersSearchRequest,
         UsersSearchResponse,
+        UsersSearchByUsernameAndHostRequest,
+        UsersSearchByUsernameAndHostResponse,
         UsersShowRequest,
         UsersShowResponse,
-        UsersAchievementsRequest,
-        UsersAchievementsResponse,
         UsersUpdateMemoRequest,
-        FetchRssRequest,
-        FetchRssResponse,
-        FetchExternalResourcesRequest,
-        FetchExternalResourcesResponse,
-        RetentionResponse,
-        BubbleGameRegisterRequest,
-        BubbleGameRankingRequest,
-        BubbleGameRankingResponse,
-        ReversiCancelMatchRequest,
-        ReversiGamesRequest,
-        ReversiGamesResponse,
-        ReversiMatchRequest,
-        ReversiMatchResponse,
-        ReversiInvitationsResponse,
-        ReversiShowGameRequest,
-        ReversiShowGameResponse,
-        ReversiSurrenderRequest,
-        ReversiVerifyRequest,
-        ReversiVerifyResponse,
+        V2AdminEmojiListRequest,
+        V2AdminEmojiListResponse,
         Error_2 as Error,
         UserLite,
         UserDetailedNotMeOnly,
@@ -1831,6 +2141,7 @@ declare namespace entities {
         GalleryPost,
         EmojiSimple,
         EmojiDetailed,
+        EmojiDetailedAdmin,
         Flash,
         Signin,
         RoleCondFormulaLogics,
@@ -1850,7 +2161,14 @@ declare namespace entities {
         MetaDetailedOnly,
         MetaDetailed,
         SystemWebhook,
-        AbuseReportNotificationRecipient
+        AbuseReportNotificationRecipient,
+        ChatMessage,
+        ChatMessageLite,
+        ChatMessageLiteFor1on1,
+        ChatMessageLiteForRoom,
+        ChatRoom,
+        ChatRoomInvitation,
+        ChatRoomMembership
     }
 }
 export { entities }
@@ -2012,6 +2330,12 @@ type FollowingRequestsListResponse = operations['following___requests___list']['
 
 // @public (undocumented)
 type FollowingRequestsRejectRequest = operations['following___requests___reject']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsSentRequest = operations['following___requests___sent']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type FollowingRequestsSentResponse = operations['following___requests___sent']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type FollowingUpdateAllRequest = operations['following___update-all']['requestBody']['content']['application/json'];
@@ -2596,10 +2920,13 @@ type ModerationLog = {
 } | {
     type: 'deleteGalleryPost';
     info: ModerationLogPayloads['deleteGalleryPost'];
+} | {
+    type: 'deleteChatRoom';
+    info: ModerationLogPayloads['deleteChatRoom'];
 });
 
 // @public (undocumented)
-export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "updateRemoteInstanceNote", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "forwardAbuseReport", "updateAbuseReportNote", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner", "createSystemWebhook", "updateSystemWebhook", "deleteSystemWebhook", "createAbuseReportNotificationRecipient", "updateAbuseReportNotificationRecipient", "deleteAbuseReportNotificationRecipient", "deleteAccount", "deletePage", "deleteFlash", "deleteGalleryPost"];
+export const moderationLogTypes: readonly ["updateServerSettings", "suspend", "unsuspend", "updateUserNote", "addCustomEmoji", "updateCustomEmoji", "deleteCustomEmoji", "assignRole", "unassignRole", "createRole", "updateRole", "deleteRole", "clearQueue", "promoteQueue", "deleteDriveFile", "deleteNote", "createGlobalAnnouncement", "createUserAnnouncement", "updateGlobalAnnouncement", "updateUserAnnouncement", "deleteGlobalAnnouncement", "deleteUserAnnouncement", "resetPassword", "suspendRemoteInstance", "unsuspendRemoteInstance", "updateRemoteInstanceNote", "markSensitiveDriveFile", "unmarkSensitiveDriveFile", "resolveAbuseReport", "forwardAbuseReport", "updateAbuseReportNote", "createInvitation", "createAd", "updateAd", "deleteAd", "createAvatarDecoration", "updateAvatarDecoration", "deleteAvatarDecoration", "unsetUserAvatar", "unsetUserBanner", "createSystemWebhook", "updateSystemWebhook", "deleteSystemWebhook", "createAbuseReportNotificationRecipient", "updateAbuseReportNotificationRecipient", "deleteAbuseReportNotificationRecipient", "deleteAccount", "deletePage", "deleteFlash", "deleteGalleryPost", "deleteChatRoom"];
 
 // @public (undocumented)
 type MuteCreateRequest = operations['mute___create']['requestBody']['content']['application/json'];
@@ -2804,7 +3131,7 @@ type Notification_2 = components['schemas']['Notification'];
 type NotificationsCreateRequest = operations['notifications___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "achievementEarned"];
+export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "chatRoomInvitationReceived", "achievementEarned"];
 
 // @public (undocumented)
 export function nyaize(text: string): string;
@@ -2867,7 +3194,7 @@ type PartialRolePolicyOverride = Partial<{
 }>;
 
 // @public (undocumented)
-export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "read:federation", "write:report-abuse"];
+export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "read:federation", "write:report-abuse", "write:chat", "read:chat"];
 
 // @public (undocumented)
 type PingResponse = operations['ping']['responses']['200']['content']['application/json'];
@@ -3078,12 +3405,12 @@ type SigninFlowResponse = {
 } | {
     finished: false;
     next: 'passkey';
-    authRequest: PublicKeyCredentialRequestOptionsJSON;
+    authRequest: PublicKeyCredentialRequestOptionsJSON_2;
 };
 
 // @public (undocumented)
 type SigninWithPasskeyInitResponse = {
-    option: PublicKeyCredentialRequestOptionsJSON;
+    option: PublicKeyCredentialRequestOptionsJSON_2;
     context: string;
 };
 
@@ -3095,7 +3422,9 @@ type SigninWithPasskeyRequest = {
 
 // @public (undocumented)
 type SigninWithPasskeyResponse = {
-    signinResponse: SigninFlowResponse;
+    signinResponse: SigninFlowResponse & {
+        finished: true;
+    };
 };
 
 // @public (undocumented)
@@ -3135,7 +3464,8 @@ export class Stream extends EventEmitter<StreamEvents> implements IStream {
     constructor(origin: string, user: {
         token: string;
     } | null, options?: {
-        WebSocket?: WebSocket;
+        WebSocket?: Options['WebSocket'];
+        binaryType?: ReconnectingWebSocket['binaryType'];
     });
     // (undocumented)
     close(): void;
@@ -3395,11 +3725,18 @@ type UsersShowResponse = operations['users___show']['responses']['200']['content
 // @public (undocumented)
 type UsersUpdateMemoRequest = operations['users___update-memo']['requestBody']['content']['application/json'];
 
+// @public (undocumented)
+type V2AdminEmojiListRequest = operations['v2___admin___emoji___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['responses']['200']['content']['application/json'];
+
 // Warnings were encountered during analysis:
 //
 // src/entities.ts:50:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:220:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:230:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:218:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:228:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

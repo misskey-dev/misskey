@@ -15,15 +15,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
+import { version } from '@@/js/config.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
-import { version } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
-import { confetti } from '@/scripts/confetti.js';
+import { confetti } from '@/utility/confetti.js';
 
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const modal = useTemplateRef('modal');
 
 function whatIsNew() {
 	modal.value?.close();
@@ -47,7 +47,7 @@ onMounted(() => {
 	box-sizing: border-box;
 	text-align: center;
 	background: var(--MI_THEME-panel);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .title {

@@ -22,22 +22,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
-import { $i, updateAccount } from '@/account.js';
+import { $i } from '@/i.js';
+import { updateCurrentAccountPartial } from '@/accounts.js';
 
 const props = withDefaults(defineProps<{
 	announcement: Misskey.entities.Announcement;
 }>(), {
 });
 
-const rootEl = shallowRef<HTMLDivElement>();
-const modal = shallowRef<InstanceType<typeof MkModal>>();
+const rootEl = useTemplateRef('rootEl');
+const modal = useTemplateRef('modal');
 
 async function ok() {
 	if (props.announcement.needConfirmationToRead) {
@@ -51,7 +52,7 @@ async function ok() {
 
 	modal.value?.close();
 	misskeyApi('i/read-announcement', { announcementId: props.announcement.id });
-	updateAccount({
+	updateCurrentAccountPartial({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
 	});
 }
@@ -84,7 +85,7 @@ onMounted(() => {
 	max-width: 480px;
 	box-sizing: border-box;
 	background: var(--MI_THEME-panel);
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 }
 
 .header {

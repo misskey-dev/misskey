@@ -6,7 +6,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
-import fastifyCookie from '@fastify/cookie';
 import { ModuleRef } from '@nestjs/core';
 import { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { Config } from '@/config.js';
@@ -56,8 +55,6 @@ export class ApiServerService {
 				files: 1,
 			},
 		});
-
-		fastify.register(fastifyCookie, {});
 
 		// Prevent cache
 		fastify.addHook('onRequest', (request, reply, done) => {
@@ -119,6 +116,7 @@ export class ApiServerService {
 				'g-recaptcha-response'?: string;
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
+				'testcaptcha-response'?: string;
 			}
 		}>('/signup', (request, reply) => this.signupApiService.signup(request, reply));
 
@@ -132,6 +130,7 @@ export class ApiServerService {
 				'g-recaptcha-response'?: string;
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
+				'testcaptcha-response'?: string;
 			};
 		}>('/signin-flow', (request, reply) => this.signinApiService.signin(request, reply));
 

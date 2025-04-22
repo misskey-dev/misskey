@@ -4,9 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader/></template>
-
+<PageWithHeader>
 	<MkSpacer :contentMax="800">
 		<div :class="$style.root">
 			<div class="_gaps_s">
@@ -53,30 +51,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { onDeactivated, onUnmounted, Ref, ref, watch, computed } from 'vue';
+import { onDeactivated, onUnmounted, ref, watch, computed } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
+import type { Ref } from 'vue';
+import type { AsUiComponent } from '@/aiscript/ui.js';
+import type { AsUiRoot } from '@/aiscript/ui.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkCodeEditor from '@/components/MkCodeEditor.vue';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import * as os from '@/os.js';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui.js';
+import { definePage } from '@/page.js';
+import { registerAsUiLib } from '@/aiscript/ui.js';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { miLocalStorage } from '@/local-storage.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { claimAchievement } from '@/utility/achievements.js';
 
 const parser = new Parser();
 let aiscript: Interpreter;
 const code = ref('');
-const logs = ref<any[]>([]);
+const logs = ref<{
+	id: number;
+	text: string;
+	print: boolean;
+}[]>([]);
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
@@ -95,7 +100,7 @@ function stringifyUiProps(uiProps) {
 	return JSON.stringify(
 		{ ...uiProps, type: undefined, id: undefined },
 		(k, v) => typeof v === 'function' ? '<function>' : v,
-		2
+		2,
 	);
 }
 
@@ -194,7 +199,7 @@ const showns = computed(() => {
 	return result;
 });
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.scratchpad,
 	icon: 'ti ti-terminal-2',
 }));
@@ -204,7 +209,7 @@ definePageMetadata(() => ({
 .root {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 
 .editor {
@@ -242,7 +247,7 @@ definePageMetadata(() => ({
 }
 
 .uiInspectorUnShown {
-	color: var(--MI_THEME-fgTransparent);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.5);
 }
 
 .uiInspectorType {

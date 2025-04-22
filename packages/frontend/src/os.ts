@@ -5,36 +5,40 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { Component, markRaw, Ref, ref, defineAsyncComponent, nextTick } from 'vue';
+import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
+import type { Component, Ref } from 'vue';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
-import type { Form, GetFormResultType } from '@/scripts/form.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import type { Form, GetFormResultType } from '@/utility/form.js';
+import type { MenuItem } from '@/types/menu.js';
+import type { PostFormProps } from '@/types/post-form.js';
+import type MkRoleSelectDialog_TypeReferenceOnly from '@/components/MkRoleSelectDialog.vue';
+import type MkEmojiPickerDialog_TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue';
 import MkToast from '@/components/MkToast.vue';
 import MkDialog from '@/components/MkDialog.vue';
-import MkPasswordDialog from '@/components/MkPasswordDialog.vue';
-import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
-import type { MenuItem } from '@/types/menu.js';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
-import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
-import { focusParent } from '@/scripts/focus.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { pleaseLogin } from '@/utility/please-login.js';
+import { showMovedDialog } from '@/utility/show-moved-dialog.js';
+import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
+import { focusParent } from '@/utility/focus.js';
 
 export const openingWindowsCount = ref(0);
 
-export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req']>(
+export type ApiWithDialogCustomErrors = Record<string, { title?: string; text: string; }>;
+export const apiWithDialog = (<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req']>(
 	endpoint: E,
-	data: P = {} as any,
+	data: P,
 	token?: string | null | undefined,
+	customErrors?: ApiWithDialogCustomErrors,
 ) => {
 	const promise = misskeyApi(endpoint, data, token);
 	promiseDialog(promise, null, async (err) => {
@@ -59,7 +63,6 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 			});
 			if (result === 'copy') {
 				copyToClipboard(`Endpoint: ${endpoint}\nInfo: ${JSON.stringify(err.info)}\nDate: ${date}`);
-				success();
 			}
 			return;
 		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
@@ -77,6 +80,9 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 		} else if (err.message.startsWith('Unexpected token')) {
 			title = i18n.ts.gotInvalidResponseError;
 			text = i18n.ts.gotInvalidResponseErrorDescription;
+		} else if (customErrors && customErrors[err.id] != null) {
+			title = customErrors[err.id].title;
+			text = customErrors[err.id].text;
 		}
 		alert({
 			type: 'error',
@@ -86,11 +92,11 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 	});
 
 	return promise;
-}) as typeof misskeyApi;
+});
 
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
-	onSuccess?: ((res: any) => void) | null,
+	onSuccess?: ((res: Awaited<T>) => void) | null,
 	onFailure?: ((err: Misskey.api.APIError) => void) | null,
 	text?: string,
 ): T {
@@ -132,12 +138,12 @@ export function promiseDialog<T extends Promise<any>>(
 }
 
 let popupIdCount = 0;
-export const popups = ref([]) as Ref<{
+export const popups = ref<{
 	id: number;
 	component: Component;
 	props: Record<string, any>;
 	events: Record<string, any>;
-}[]>;
+}[]>([]);
 
 const zIndexes = {
 	veryLow: 500000,
@@ -175,7 +181,7 @@ type EmitsExtractor<T> = {
 export function popup<T extends Component>(
 	component: T,
 	props: ComponentProps<T>,
-	events: ComponentEmit<T> = {} as ComponentEmit<T>,
+	events: Partial<ComponentEmit<T>> = {},
 ): { dispose: () => void } {
 	markRaw(component);
 
@@ -297,6 +303,21 @@ export function inputText(props: {
 	autocomplete?: string;
 	default: string;
 	minLength?: number;
+	maxLength?: number;
+}): Promise<{
+	canceled: true; result: undefined;
+} | {
+	canceled: false; result: string;
+}>;
+// min lengthが指定されてたら result は null になり得ないことを保証する overload function
+export function inputText(props: {
+	type?: 'text' | 'email' | 'password' | 'url';
+	title?: string;
+	text?: string;
+	placeholder?: string | null;
+	autocomplete?: string;
+	default?: string;
+	minLength: number;
 	maxLength?: number;
 }): Promise<{
 	canceled: true; result: undefined;
@@ -439,7 +460,7 @@ export function authenticateDialog(): Promise<{
 	canceled: false; result: { password: string; token: string | null; };
 }> {
 	return new Promise(resolve => {
-		const { dispose } = popup(MkPasswordDialog, {}, {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkPasswordDialog.vue')), {}, {
 			done: result => {
 				resolve(result ? { canceled: false, result } : { canceled: true, result: undefined });
 			},
@@ -454,7 +475,7 @@ type SelectItem<C> = {
 };
 
 // default が指定されていたら result は null になり得ないことを保証する overload function
-export function select<C = any>(props: {
+export function select<C = unknown>(props: {
 	title?: string;
 	text?: string;
 	default: string;
@@ -467,7 +488,7 @@ export function select<C = any>(props: {
 } | {
 	canceled: false; result: C;
 }>;
-export function select<C = any>(props: {
+export function select<C = unknown>(props: {
 	title?: string;
 	text?: string;
 	default?: string | null;
@@ -480,7 +501,7 @@ export function select<C = any>(props: {
 } | {
 	canceled: false; result: C | null;
 }>;
-export function select<C = any>(props: {
+export function select<C = unknown>(props: {
 	title?: string;
 	text?: string;
 	default?: string | null;
@@ -526,12 +547,13 @@ export function success(): Promise<void> {
 	});
 }
 
-export function waiting(): Promise<void> {
+export function waiting(text?: string | null): Promise<void> {
 	return new Promise(resolve => {
 		const showing = ref(true);
 		const { dispose } = popup(MkWaitingDialog, {
 			success: false,
 			showing: showing,
+			text,
 		}, {
 			done: () => resolve(),
 			closed: () => dispose(),
@@ -596,9 +618,26 @@ export async function selectDriveFolder(multiple: boolean): Promise<Misskey.enti
 	});
 }
 
-export async function pickEmoji(src: HTMLElement, opts: ComponentProps<typeof MkEmojiPickerDialog>): Promise<string> {
+export async function selectRole(params: ComponentProps<typeof MkRoleSelectDialog_TypeReferenceOnly>): Promise<
+	{ canceled: true; result: undefined; } |
+	{ canceled: false; result: Misskey.entities.Role[] }
+> {
+	return new Promise((resolve) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkRoleSelectDialog.vue')), params, {
+			done: roles => {
+				resolve({ canceled: false, result: roles });
+			},
+			close: () => {
+				resolve({ canceled: true, result: undefined });
+			},
+			closed: () => dispose(),
+		});
+	});
+}
+
+export async function pickEmoji(src: HTMLElement, opts: ComponentProps<typeof MkEmojiPickerDialog_TypeReferenceOnly>): Promise<string> {
 	return new Promise(resolve => {
-		const { dispose } = popup(MkEmojiPickerDialog, {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src,
 			...opts,
 		}, {
@@ -633,7 +672,11 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 	width?: number;
 	onClosing?: () => void;
 }): Promise<void> {
-	let returnFocusTo = getHTMLElementOrNull(src) ?? getHTMLElementOrNull(document.activeElement);
+	if (!(src instanceof HTMLElement)) {
+		src = null;
+	}
+
+	let returnFocusTo = getHTMLElementOrNull(src) ?? getHTMLElementOrNull(window.document.activeElement);
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkPopupMenu, {
 			items,
@@ -656,13 +699,13 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 
 export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 	if (
-		defaultStore.state.contextMenu === 'native' ||
-		(defaultStore.state.contextMenu === 'appWithShift' && !ev.shiftKey)
+		prefer.s.contextMenu === 'native' ||
+		(prefer.s.contextMenu === 'appWithShift' && !ev.shiftKey)
 	) {
 		return Promise.resolve();
 	}
 
-	let returnFocusTo = getHTMLElementOrNull(ev.currentTarget ?? ev.target) ?? getHTMLElementOrNull(document.activeElement);
+	let returnFocusTo = getHTMLElementOrNull(ev.currentTarget ?? ev.target) ?? getHTMLElementOrNull(window.document.activeElement);
 	ev.preventDefault();
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkContextMenu, {
@@ -683,15 +726,17 @@ export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 	}));
 }
 
-export function post(props: Record<string, any> = {}): Promise<void> {
-	pleaseLogin(undefined, (props.initialText || props.initialNote ? {
-		type: 'share',
-		params: {
-			text: props.initialText ?? props.initialNote.text,
-			visibility: props.initialVisibility ?? props.initialNote?.visibility,
-			localOnly: (props.initialLocalOnly || props.initialNote?.localOnly) ? '1' : '0',
-		},
-	} : undefined));
+export function post(props: PostFormProps = {}): Promise<void> {
+	pleaseLogin({
+		openOnRemote: (props.initialText || props.initialNote ? {
+			type: 'share',
+			params: {
+				text: props.initialText ?? props.initialNote?.text ?? '',
+				visibility: props.initialVisibility ?? props.initialNote?.visibility ?? 'public',
+				localOnly: (props.initialLocalOnly || props.initialNote?.localOnly) ? '1' : '0',
+			},
+		} : undefined),
+	});
 
 	showMovedDialog();
 	return new Promise(resolve => {

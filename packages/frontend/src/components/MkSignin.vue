@@ -67,23 +67,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onBeforeUnmount, ref, shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
-
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
-import { login } from '@/account.js';
+import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
+import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
+import type { PwResponse } from '@/components/MkSignin.password.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 import XInput from '@/components/MkSignin.input.vue';
-import XPassword, { type PwResponse } from '@/components/MkSignin.password.vue';
+import XPassword from '@/components/MkSignin.password.vue';
 import XTotp from '@/components/MkSignin.totp.vue';
 import XPasskey from '@/components/MkSignin.passkey.vue';
-
-import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
-import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
+import { login } from '@/accounts.js';
 
 const emit = defineEmits<{
-	(ev: 'login', v: Misskey.entities.SigninFlowResponse): void;
+	(ev: 'login', v: Misskey.entities.SigninFlowResponse & { finished: true }): void;
 }>();
 
 const props = withDefaults(defineProps<{
@@ -141,6 +140,7 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 				return;
 			}
 			emit('login', res.signinResponse);
+			onLoginSucceeded(res.signinResponse);
 		}).catch(onSigninApiError);
 	} else if (userInfo.value != null) {
 		tryLogin({
@@ -188,6 +188,7 @@ async function onPasswordSubmitted(pw: PwResponse) {
 			'm-captcha-response': pw.captcha.mCaptchaResponse,
 			'g-recaptcha-response': pw.captcha.reCaptchaResponse,
 			'turnstile-response': pw.captcha.turnstileResponse,
+			'testcaptcha-response': pw.captcha.testcaptchaResponse,
 		});
 	}
 }
@@ -276,7 +277,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 	});
 }
 
-async function onLoginSucceeded(res: Misskey.entities.SigninFlowResponse & { finished: true; }) {
+async function onLoginSucceeded(res: Misskey.entities.SigninFlowResponse & { finished: true }) {
 	if (props.autoSet) {
 		await login(res.i);
 	}
