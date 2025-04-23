@@ -113,7 +113,9 @@ onMounted(() => {
 	position: sticky;
 	bottom: 0;
 	left: -32px;
-	background-color: color(from var(--MI_THEME-bg) srgb r g b / 0.8);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	margin: 0 -32px;
 	padding: 24px 32px;
 }
