@@ -22,6 +22,7 @@
 - Enhance: ジョブキューの成功/失敗したジョブも一定数・一定期間保存するようにし、後から問題を調査することを容易に
 - Enhance: フォローしているユーザーならフォロワー限定投稿のノートでもアンテナで検知できるように  
 	(Cherry-picked from https://github.com/yojo-art/cherrypick/pull/568 and https://github.com/team-shahu/misskey/pull/38)
+- Enhance: ユーザーごとにノートの表示が高速化するように
 - Fix: システムアカウントの名前がサーバー名と同期されない問題を修正
 - Fix: 大文字を含むユーザの URL で紹介された場合に 404 エラーを返す問題 #15813
 - Fix: リードレプリカ設定時にレコードの追加・更新・削除を伴うクエリを発行した際はmasterノードで実行されるように調整( #10897 )
