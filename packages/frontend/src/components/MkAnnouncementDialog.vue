@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :zPriority="'middle'" @closed="$emit('closed')" @click="onBgClick">
+<MkModal ref="modal" :zPriority="'middle'" :preferType="'dialog'" @closed="$emit('closed')" @click="onBgClick">
 	<div ref="rootEl" :class="$style.root">
 		<div :class="$style.header">
 			<span :class="$style.icon">
@@ -16,7 +16,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span :class="$style.title">{{ announcement.title }}</span>
 		</div>
 		<div :class="$style.text"><Mfm :text="announcement.text"/></div>
-		<MkButton primary full @click="ok">{{ i18n.ts.ok }}</MkButton>
+		<div :class="$style.footer">
+			<MkButton primary full @click="ok">{{ i18n.ts.ok }}</MkButton>
+		</div>
 	</div>
 </MkModal>
 </template>
@@ -80,9 +82,12 @@ onMounted(() => {
 .root {
 	margin: auto;
 	position: relative;
-	padding: 32px;
+	padding: 32px 32px 0;
 	min-width: 320px;
 	max-width: 480px;
+	max-height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
 	box-sizing: border-box;
 	background: var(--MI_THEME-panel);
 	border-radius: var(--MI-radius);
@@ -102,5 +107,14 @@ onMounted(() => {
 
 .text {
 	margin: 1em 0;
+}
+
+.footer {
+	position: sticky;
+	bottom: 0;
+	left: -32px;
+	background-color: color(from var(--MI_THEME-bg) srgb r g b / 0.8);
+	margin: 0 -32px;
+	padding: 24px 32px;
 }
 </style>
