@@ -425,7 +425,7 @@ export class NoteEntityService implements OnModuleInit {
 						createdAt: this.idService.parse(note.id).date.toISOString(),
 						userId: note.userId,
 						user: opts._hint_?.packedUsers.get(note.userId) ?? this.userEntityService.pack(note.user ?? note.userId, me),
-						visibility: 'specified',
+						visibility: note.visibility, // やみノートでも元の可視性を維持
 						text: null,
 						isHidden: true,
 						isNoteInYamiMode: true,
@@ -470,7 +470,7 @@ export class NoteEntityService implements OnModuleInit {
 			user: packedUsers?.get(note.userId) ?? this.userEntityService.pack(note.user ?? note.userId, me),
 			text: text,
 			cw: note.cw,
-			visibility: note.visibility,
+			visibility: note.visibility, // やみノートでも元の可視性を維持
 			localOnly: note.localOnly,
 			reactionAcceptance: note.reactionAcceptance,
 			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
