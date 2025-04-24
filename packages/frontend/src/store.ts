@@ -358,14 +358,6 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'device',
 		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
 	},
-	collapsingNoteSize: {
-		where: 'device',
-		default: 13.5,
-	},
-	collapsingNoteCondition: {
-		where: 'device',
-		default: 'detailedCalculation' as 'detailedCalculation' | 'legacyCalculation' | 'seeRenderedSize',
-	},
 	notificationPosition: {
 		where: 'device',
 		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',

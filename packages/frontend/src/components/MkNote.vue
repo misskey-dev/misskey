@@ -84,6 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis" class="_selectable"/>
 							</div>
 						</div>
+					</div>
 					<div v-if="appearNote.files && appearNote.files.length > 0">
 						<MkMediaList ref="galleryEl" :mediaList="appearNote.files"/>
 					</div>
@@ -181,7 +182,7 @@ import { computed, inject, onMounted, ref, useTemplateRef, watch, provide } from
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
-import { shouldCollapsed } from '@@/js/collapsed.js';
+import { shouldCollapsedLegacy, shouldCollapsed } from '@@/js/collapsed.js';
 import { host } from '@@/js/config.js';
 import type { Ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -218,7 +219,6 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { getNoteSummary } from '@/utility/get-note-summary.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/utility/show-moved-dialog.js';
-import { shouldCollapsedLegacy, shouldCollapsed } from '@@/js/collapsed.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { focusPrev, focusNext } from '@/utility/focus.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
@@ -248,17 +248,6 @@ const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
 const note = ref(deepClone(props.note));
-
-// used later
-const collapsingNoteCondition = defaultStore.state.collapsingNoteCondition;
-if (collapsingNoteCondition === 'seeRenderedSize') {
-	onMounted(() => {
-		const current = collapsibleArea.value.clientHeight;
-		const limit = collapseSize * parseFloat(getComputedStyle(collapsibleArea.value).fontSize);
-		isLong.value = current > limit;
-		collapsed.value &&= isLong.value;
-	});
-}
 
 // plugin
 const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
@@ -310,8 +299,9 @@ const renoteCollapsed = ref(
 );
 
 // oversized note collapsing
-const collapsibleArea = ref(null);
-const collapseSize = defaultStore.state.collapsingNoteSize;
+const collapsibleArea = useTemplateRef('collapsibleArea');
+const collapsingNoteCondition = prefer.s.collapsingNoteCondition;
+const collapseSize = prefer.s.collapsingNoteSize;
 const isLong = ref(true);
 switch (collapsingNoteCondition) {
 	case 'detailedCalculation':
@@ -326,6 +316,15 @@ switch (collapsingNoteCondition) {
 		break;
 }
 const collapsed = ref(appearNote.value.cw == null && isLong.value);
+// v-sizeディレクティブを使ったほうがよい？
+if (collapsingNoteCondition === 'seeRenderedSize') {
+	onMounted(() => {
+		const current = collapsibleArea.value.clientHeight;
+		const limit = collapseSize * parseFloat(getComputedStyle(collapsibleArea.value).fontSize);
+		isLong.value = current > limit;
+		collapsed.value &&= isLong.value;
+	});
+}
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',

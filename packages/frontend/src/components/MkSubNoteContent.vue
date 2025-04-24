@@ -32,14 +32,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
 import { shouldCollapsedLegacy, shouldCollapsed } from '@@/js/collapsed.js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js'; // 後でpreferに置き換える
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
@@ -48,9 +48,24 @@ const props = defineProps<{
 const ast = computed(() => props.note.text ? mfm.parse(props.note.text) : []);
 
 // oversized note collapsing
-const collapsingNoteCondition = defaultStore.state.collapsingNoteCondition;
-const collapseSize = defaultStore.state.collapsingNoteSize;
-const collapsibleArea = ref(null);
+const collapsibleArea = useTemplateRef('collapsibleArea');
+const collapsingNoteCondition = prefer.s.collapsingNoteCondition;
+const collapseSize = prefer.s.collapsingNoteSize;
+const isLong = ref(true);
+switch (collapsingNoteCondition) {
+	case 'detailedCalculation':
+		isLong.value = shouldCollapsed(props.note, collapseSize, ast.value);
+		break;
+	case 'seeRenderedSize':
+		break;
+	// fail safe
+	case 'legacyCalculation':
+	default:
+		isLong.value = shouldCollapsedLegacy(props.note, []);
+		break;
+}
+const collapsed = ref(isLong.value);
+// v-sizeディレクティブを使ったほうがよい？
 if (collapsingNoteCondition === 'seeRenderedSize') {
 	onMounted(() => {
 		const current = collapsibleArea.value.clientHeight;
@@ -59,22 +74,6 @@ if (collapsingNoteCondition === 'seeRenderedSize') {
 		collapsed.value &&= isLong.value;
 	});
 }
-const isLong = ref(true);
-switch (collapsingNoteCondition) {
-	case 'detailedCalculation':
-		// eslint-disable-next-line vue/no-setup-props-destructure
-		isLong.value = shouldCollapsed(props.note, collapseSize, ast.value);
-		break;
-	case 'seeRenderedSize':
-		break;
-	// fail safe
-	case 'legacyCalculation':
-	default:
-		// eslint-disable-next-line vue/no-setup-props-destructure
-		isLong.value = shouldCollapsedLegacy(props.note, []);
-		break;
-}
-const collapsed = ref(isLong.value);
 </script>
 
 <style lang="scss" module>

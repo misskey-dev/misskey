@@ -265,6 +265,12 @@ export const PREF_DEF = {
 	mediaListWithOneImageAppearance: {
 		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
 	},
+	collapsingNoteCondition: {
+		default: 'detailedCalculation' as 'detailedCalculation' | 'legacyCalculation' | 'seeRenderedSize',
+	},
+	collapsingNoteSize: {
+		default: 13.5,
+	},
 	notificationPosition: {
 		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
 	},

@@ -250,6 +250,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['size', 'height']">
+								<MkPreferenceContainer k="collapsingNoteCondition">
+									<MkRadios v-model="collapsingNoteCondition">
+										<template #label><SearchLabel>{{ i18n.ts.collapsingNoteCondition }}</SearchLabel></template>
+										<option value="detailedCalculation">{{ i18n.ts.detailedCalculation }}</option>
+										<option value="legacyCalculation">{{ i18n.ts.legacyCalculation }}</option>
+										<option value="seeRenderedSize">{{ i18n.ts.seeRenderedSize }}</option>
+									</MkRadios>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<!-- collapsingNoteConditionの付属条件として扱い、これ自体は検索で出ないようにする -->
+							<MkPreferenceContainer v-if="collapsingNoteCondition !== 'legacyCalculation'" k="collapsingNoteSize">
+								<MkRadios v-model="collapsingNoteSize">
+									<template #label>{{ i18n.ts.collapsingNoteSize }}</template>
+									<option value="9">{{ i18n.ts.small }}</option>
+									<option value="13.5">{{ i18n.ts.medium }}</option>
+									<option value="18">{{ i18n.ts.large }}</option>
+								</MkRadios>
+							</MkPreferenceContainer>
+
 							<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
 								<MkPreferenceContainer k="instanceTicker">
 									<MkSelect v-if="instance.federation !== 'none'" v-model="instanceTicker">
@@ -773,6 +794,8 @@ const notificationStackAxis = prefer.model('notificationStackAxis');
 const instanceTicker = prefer.model('instanceTicker');
 const highlightSensitiveMedia = prefer.model('highlightSensitiveMedia');
 const mediaListWithOneImageAppearance = prefer.model('mediaListWithOneImageAppearance');
+const collapsingNoteCondition = prefer.model('collapsingNoteCondition');
+const collapsingNoteSize = prefer.model('collapsingNoteSize');
 const reactionsDisplaySize = prefer.model('reactionsDisplaySize');
 const limitWidthOfReaction = prefer.model('limitWidthOfReaction');
 const squareAvatars = prefer.model('squareAvatars');
