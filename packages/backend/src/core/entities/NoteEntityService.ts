@@ -281,6 +281,37 @@ export class NoteEntityService implements OnModuleInit {
 
 	@bindThis
 	public async isVisibleForMe(note: MiNote, meId: MiUser['id'] | null): Promise<boolean> {
+		// やみノートの場合の特別な処理
+		if (note.isNoteInYamiMode) {
+			if (meId == null) return false;
+
+			// 自分の投稿は常に見える
+			if (meId === note.userId) return true;
+
+			// 自分がやみモードでない場合は見えない
+			const viewer = await this.usersRepository.findOneBy({ id: meId });
+			if (!viewer || !viewer.isInYamiMode) return false;
+
+			// ダイレクトメッセージは対象者のみ
+			if (note.visibility === 'specified') {
+				return note.visibleUserIds.includes(meId);
+			}
+
+			// それ以外の場合はフォロー状態などに基づいて判断
+			// フォロワーだけに表示の場合
+			if (note.visibility === 'followers') {
+				const following = await this.followingsRepository.count({
+					where: {
+						followeeId: note.userId,
+						followerId: meId,
+					},
+					take: 1,
+				});
+				return following > 0;
+			}
+		}
+
+		// 通常の可視性チェック (既存のコード)
 		// This code must always be synchronized with the checks in generateVisibilityQuery.
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (note.visibility === 'specified') {
@@ -377,6 +408,32 @@ export class NoteEntityService implements OnModuleInit {
 
 		const meId = me ? me.id : null;
 		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
+
+		// Add early check for Yami note visibility
+		if (note.isNoteInYamiMode && me) {
+			// 自分の投稿でなければ、自分がやみモードがONかチェック
+			if (note.userId !== me.id) {
+				// meオブジェクトにisInYamiModeが含まれていない場合、取得
+				const hasYamiMode = 'isInYamiMode' in me
+					? me.isInYamiMode
+					: (await this.usersRepository.findOneBy({ id: me.id }))?.isInYamiMode;
+
+				if (!hasYamiMode) {
+					// やみモードでない場合は早期リターンでノート内容を隠す
+					return {
+						id: note.id,
+						createdAt: this.idService.parse(note.id).date.toISOString(),
+						userId: note.userId,
+						user: opts._hint_?.packedUsers.get(note.userId) ?? this.userEntityService.pack(note.user ?? note.userId, me),
+						visibility: 'specified',
+						text: null,
+						isHidden: true,
+						isNoteInYamiMode: true,
+					} as Packed<'Note'>;
+				}
+			}
+		}
+
 		const host = note.userHost;
 
 		const bufferedReactions = opts._hint_?.bufferedReactions != null

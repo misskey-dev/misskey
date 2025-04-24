@@ -100,10 +100,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.YamiTlDisabled);
 			}
 
-			// Redis Timelinesを使用した実装 - シンプルに
-			const redisTimelines = ps.withFiles
-				? ['yamiTimeline', 'yamiTimelineWithFiles']
-				: ['yamiTimeline'];
+			// Redis Timelinesを使用した実装 - 新しい命名規則に合わせる
+			const redisTimelines = [];
+
+			// ユーザー個別タイムライン (自分のフォローの投稿など)
+			if (ps.showYamiFollowingNotes) {
+				redisTimelines.push(`yamiTimeline:${me.id}`);
+				if (ps.withFiles) {
+					redisTimelines.push(`yamiTimelineWithFiles:${me.id}`);
+				}
+			}
+
+			// 非フォローユーザーのパブリックノート (showYamiNonFollowingPublicNotesが有効な場合)
+			if (ps.showYamiNonFollowingPublicNotes) {
+				redisTimelines.push('yamiPublicNotes');
+				if (ps.withFiles) {
+					redisTimelines.push('yamiPublicNotesWithFiles');
+				}
+			}
 
 			return await this.fanoutTimelineEndpointService.timeline({
 				untilId: ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null),
@@ -117,11 +131,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					// クライアントサイドでの追加フィルタリング (Redis結果用)
 					if (!note.isNoteInYamiMode) return false;
 
+					// 自分がやみモードでない場合は自分の投稿だけ表示（重要な修正点）
+					if (!me.isInYamiMode) {
+						return note.userId === me.id;
+					}
+
 					// フォロー状態に基づくフィルタリング
 					const isFollowing = this.userFollowingService.isFollowing(me.id, note.userId);
+
+					// 自分の投稿は常に表示
+					if (note.userId === me.id) return true;
+
+					// ダイレクト投稿で自分が含まれていれば表示
+					if (note.visibility === 'specified' && note.visibleUserIds.includes(me.id)) return true;
+
+					// フォローしているユーザーの投稿
 					if (isFollowing) {
-						return ps.showYamiFollowingNotes;
-					} else if (note.visibility === 'public') {
+						if (!ps.showYamiFollowingNotes) return false;
+					} else if (note.visibility === 'public') { // フォローしていないユーザーのパブリック投稿
 						return ps.showYamiNonFollowingPublicNotes;
 					}
 					return false;

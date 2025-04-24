@@ -1130,16 +1130,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }, notToPush?: FanoutTimelineNamePrefix[]) {
 		if (!this.meta.enableFanoutTimeline) return;
 
-		// やみモード投稿とそれ以外で分岐
+		// やみモード投稿はやみタイムラインのみに流す
 		if (note.isNoteInYamiMode) {
-			// やみモード投稿はやみタイムラインのみに流す
 			const r = this.redisForTimelines.pipeline();
-
-			// グローバルやみタイムラインにも追加
-			this.fanoutTimelineService.push('yamiTimeline', note.id, 1000, r);
-			if (note.fileIds.length > 0) {
-				this.fanoutTimelineService.push('yamiTimelineWithFiles', note.id, 500, r);
-			}
 
 			// 自分自身のやみタイムラインに追加
 			this.fanoutTimelineService.push(`yamiTimeline:${user.id}`, note.id, 300, r);
@@ -1170,22 +1163,30 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			// パブリックなやみノートの場合の処理を修正
 			if (note.visibility === 'public' && note.userHost == null) {
-				// フォロー状態に基づいて適切なストリームに配信
-				this.fanoutTimelineService.push('yamiNonFollowingPublicNotes', note.id, 1000, r);
+				this.fanoutTimelineService.push('yamiPublicNotes', note.id, 1000, r);
 				if (note.fileIds.length > 0) {
-					this.fanoutTimelineService.push('yamiNonFollowingPublicNotesWithFiles', note.id, 500, r);
+					this.fanoutTimelineService.push('yamiPublicNotesWithFiles', note.id, 500, r);
 				}
 			}
 
 			// 自分自身のプロフィールタイムラインにも追加
-			this.fanoutTimelineService.push(`userTimeline:${user.id}`, note.id, user.host == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
+			// (これは他のタイムラインとは別の表示用なので残す)
+			this.fanoutTimelineService.push(`userTimeline:${user.id}`, note.id,
+				user.host == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
 			if (note.fileIds.length > 0) {
-				this.fanoutTimelineService.push(`userTimelineWithFiles:${user.id}`, note.id, user.host == null ? this.meta.perLocalUserUserTimelineCacheMax / 2 : this.meta.perRemoteUserUserTimelineCacheMax / 2, r);
+				this.fanoutTimelineService.push(`userTimelineWithFiles:${user.id}`, note.id,
+					user.host == null ? this.meta.perLocalUserUserTimelineCacheMax / 2 : this.meta.perRemoteUserUserTimelineCacheMax / 2, r);
 			}
 
 			// 返信の場合は返信タイムラインにも追加
 			if (isReply(note)) {
-				this.fanoutTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id, user.host == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
+				this.fanoutTimelineService.push(`userTimelineWithReplies:${user.id}`, note.id,
+					user.host == null ? this.meta.perLocalUserUserTimelineCacheMax : this.meta.perRemoteUserUserTimelineCacheMax, r);
+
+				// 特定ユーザーへの返信の場合
+				if (note.replyUserId) {
+					this.fanoutTimelineService.push(`yamiTimelineWithReplyTo:${note.replyUserId}`, note.id, 300, r);
+				}
 			}
 
 			// パイプライン実行

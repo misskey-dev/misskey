@@ -17,22 +17,18 @@ export type FanoutTimelineName = (
 	| 'localTimeline' // replies are not included
 	| 'localTimelineWithFiles' // only non-reply notes with files are included
 	| 'localTimelineWithReplies' // only replies are included
-	| `localTimelineWithReplyTo:${string}` // Only replies to specific local user are included. Parameter is reply user id.
-
+	| `localTimelineWithReplyTo:${string}` // Only replies to specific local user are included. Parameter is reply user id.ad
 	// hybrid timeline
 	| 'hybridTimeline' // replies are not included
 	| 'hybridTimelineWithFiles' // only non-reply notes with files are included
 	| 'hybridTimelineWithReplies' // only replies are included
 	| `hybridTimelineWithReplyTo:${string}` // Only replies to specific local user are included. Parameter is reply user id.
 	// yami timeline
-	| 'yamiTimeline' // グローバルやみタイムライン
 	| `yamiTimeline:${string}` // ユーザー個別のやみタイムライン
-	| 'yamiTimelineWithFiles'
-	| `yamiTimelineWithFiles:${string}`
-	| 'yamiNonFollowingPublicNotes' // フォローしていないユーザーのパブリックやみノート
-	| 'yamiNonFollowingPublicNotesWithFiles' // フォローしていないユーザーのファイル付きパブリックやみノート
-	| 'yamiTimelineWithReplies' // only replies are included
-	| `yamiTimelineWithReplyTo:${string}` // Only replies to specific local user are included. Parameter is reply user id.
+	| `yamiTimelineWithFiles:${string}` // ユーザー個別のファイル付きやみタイムライン
+	| `yamiTimelineWithReplyTo:${string}` // 特定ユーザーへのリプライ
+	| 'yamiPublicNotes' // ユーザーのパブリックやみノート
+	| 'yamiPublicNotesWithFiles' // ユーザーのファイル付きパブリックやみノート
 	// global timeline
 	| 'globalTimeline' // replies are not included
 	| 'globalTimelineWithFiles' // only non-reply notes with files are included
