@@ -122,9 +122,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
+			// DBフォールバック強制フラグを設定
+			const forceDbFallback = ps.showYamiNonFollowingPublicNotes && !ps.showYamiFollowingNotes;
+			// 特殊なsinceIdを生成（約1週間前）
+			const forcedSinceId = forceDbFallback ? this.idService.gen(Date.now() - 7 * 24 * 60 * 60 * 1000) : null;
+
 			return await this.fanoutTimelineEndpointService.timeline({
 				untilId: ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null),
-				sinceId: ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null),
+				sinceId: ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : forcedSinceId),
 				limit: ps.limit,
 				allowPartial: false, // 必ず完全な結果を使用
 				me,
