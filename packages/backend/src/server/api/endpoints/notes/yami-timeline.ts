@@ -216,13 +216,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 									.andWhere(':meId = ANY(note."visibleUserIds")', { meId: me.id });
 							}));
 
-							// 条件3: パブリックやみノート（ローカルのみ） - showYamiNonFollowingPublicNotes が true の場合のみ
+							// 条件3: パブリックやみノート - showYamiNonFollowingPublicNotes が true の場合のみ
 							if (ps.showYamiNonFollowingPublicNotes) {
 								qb.orWhere(new Brackets(qb3 => {
-									qb3.where('note.visibility = :public AND note.userHost IS NULL', { public: 'public' })
-										// フォローしているユーザーのノートは条件2で既に処理されているため除外
-										.andWhere('note.userId NOT IN (:...followingIds)',
-											{ followingIds: followingIds.length > 0 ? followingIds : [me.id] });
+									// パブリック投稿の基本条件
+									qb3.where('note.visibility = :public', { public: 'public' });
+
+									// localOnlyパラメータがtrueの場合のみローカルに限定
+									if (ps.localOnly) {
+										qb3.andWhere('note.userHost IS NULL');
+									}
+
+									// フォローしているユーザーのノートは条件2で既に処理されているため除外
+									if (followingIds.length > 0) {
+										qb3.andWhere('note.userId NOT IN (:...followingIds)', { followingIds });
+									} else {
+										// フォローがない場合は自分自身のIDのみ除外
+										qb3.andWhere('note.userId != :meId', { meId: me.id });
+									}
 								}));
 							}
 						}));
