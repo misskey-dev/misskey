@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(channel != null && fixed)">
-				<!-- やみノート切り替えボタン - やみモードユーザーにのみ表示 -->
+				<!-- やみノート切り替えボタン - canYamiNote権限がある場合に表示 -->
 				<button
-					v-if="$i.isInYamiMode"
+					v-if="$i.policies?.canYamiNote"
 					v-tooltip="parentIsYamiNote
 						? i18n.ts._yami.parentIsYamiNote
 						: (isNoteInYamiMode ? i18n.ts._yami.yamiNote : i18n.ts._yami.normalNote)"
@@ -218,13 +218,13 @@ const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(getInitia
 // やみノート状態を管理する変数
 // 親投稿がやみノートの場合は強制的にやみノートにする
 const isNoteInYamiMode = ref(
-	// 親投稿がやみノートの場合は必ずtrue
-	(props.reply?.isNoteInYamiMode || props.renote?.isNoteInYamiMode)
-		? true
-	// それ以外は既存のロジック
-		: ($i.isInYamiMode
-			? (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode)
-			: false),
+  // 親投稿がやみノートの場合は必ずtrue
+  (props.reply?.isNoteInYamiMode || props.renote?.isNoteInYamiMode)
+    ? true
+  // それ以外は権限に基づいて設定
+    : ($i.policies?.canYamiNote
+      ? (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode)
+      : false),
 );
 
 // 親投稿がやみノートかどうかの判定を計算プロパティに
@@ -1205,8 +1205,8 @@ function toggleScheduleNote() {
 
 // やみノートモードの切り替え関数
 async function toggleYamiMode() {
-	// 通常モードユーザーの場合は切り替え不可
-	if (!$i.isInYamiMode) return;
+  // canYamiNote権限がない場合は切り替え不可
+  if (!$i.policies?.canYamiNote) return;
 
 	// 親がやみノートの場合は切り替え不可
 	if (parentIsYamiNote.value) return;

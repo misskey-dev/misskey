@@ -245,6 +245,16 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		}
 
+		// やみノート投稿時のチェック
+		if (data.isNoteInYamiMode) {
+			const policies = await this.roleService.getUserPolicies(user.id);
+
+			// やみモードがON、または canYamiNote 権限を持っている場合のみ許可
+			if (!user.isInYamiMode && !policies.canYamiNote) {
+				throw new Error('You do not have permission to post yami notes.');
+			}
+		}
+
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 		if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {

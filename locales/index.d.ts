@@ -7663,6 +7663,10 @@ export interface Locale extends ILocale {
              */
             "yamiTlAvailable": string;
             /**
+             * やみ投稿の許可
+             */
+            "canYamiNote": string;
+            /**
              * パブリック投稿の許可
              */
             "canPublicNote": string;
@@ -11902,11 +11906,11 @@ export interface Locale extends ILocale {
         "showYamiFollowingNotes": string;
         "_yamiModeSwitcher": {
             /**
-             * やみモードに切り替えますか？やみモードにすると、やみノートを閲覧・投稿できるようになります
+             * やみモードに切り替えますか？やみモードにすると、他人のやみノートを閲覧できるようになります
              */
             "enterYamiModeConfirm": string;
             /**
-             * 通常モードに戻りますか？通常モードにすると、やみノートを閲覧・投稿できなくなります
+             * 通常モードに戻りますか？通常モードにすると、他人のやみノートを閲覧できなくなります
              */
             "exitYamiModeConfirm": string;
             /**
@@ -11914,29 +11918,9 @@ export interface Locale extends ILocale {
              */
             "normal": string;
             /**
-             * 他人のやみノートを表示しません
-             */
-            "normal1": string;
-            /**
-             * やみノートを投稿できません
-             */
-            "normal2": string;
-            /**
              * やみモード
              */
             "yami": string;
-            /**
-             * 他人のやみノートを表示します
-             */
-            "yami1": string;
-            /**
-             * やみノートを投稿できます
-             */
-            "yami2": string;
-            /**
-             * モードを切り替えると、やみノートを表示するか変わります
-             */
-            "saveConfirmDescription": string;
         };
     };
     "_remoteLookupErrors": {

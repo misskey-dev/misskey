@@ -1986,6 +1986,7 @@ _role:
     gtlAvailable: "グローバルタイムラインの閲覧"
     ltlAvailable: "ローカルタイムラインの閲覧"
     yamiTlAvailable: "やみタイムラインの閲覧"
+    canYamiNote: "やみ投稿の許可"
     canPublicNote: "パブリック投稿の許可"
     mentionMax: "ノート内の最大メンション数"
     canImportNotes: "ノートのインポート"
@@ -3180,15 +3181,10 @@ _yami:
   showYamiNonFollowingPublicNotes: "フォローしていないユーザーのパブリックやみノートを表示"
   showYamiFollowingNotes: "フォローしているユーザーのやみノートを表示"
   _yamiModeSwitcher:
-    enterYamiModeConfirm: "やみモードに切り替えますか？やみモードにすると、やみノートを閲覧・投稿できるようになります"
-    exitYamiModeConfirm: "通常モードに戻りますか？通常モードにすると、やみノートを閲覧・投稿できなくなります"
+    enterYamiModeConfirm: "やみモードに切り替えますか？やみモードにすると、他人のやみノートを閲覧できるようになります"
+    exitYamiModeConfirm: "通常モードに戻りますか？通常モードにすると、他人のやみノートを閲覧できなくなります"
     normal: "通常モード"
-    normal1: "他人のやみノートを表示しません"
-    normal2: "やみノートを投稿できません"
     yami: "やみモード"
-    yami1: "他人のやみノートを表示します"
-    yami2: "やみノートを投稿できます"
-    saveConfirmDescription: "モードを切り替えると、やみノートを表示するか変わります"
 
 _remoteLookupErrors:
   _federationNotAllowed:

@@ -35,6 +35,7 @@ export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
 	yamiTlAvailable: boolean;
+	canYamiNote: boolean;
 	canPublicNote: boolean;
 	scheduleNoteMax: number;
 	mentionLimit: number;
@@ -80,6 +81,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	gtlAvailable: true,
 	ltlAvailable: true,
 	yamiTlAvailable: true,
+	canYamiNote: true,
 	canPublicNote: true,
 	scheduleNoteMax: 15,
 	mentionLimit: 20,
@@ -412,6 +414,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
 			yamiTlAvailable: calc('yamiTlAvailable', vs => vs.some(v => v === true)),
+			canYamiNote: calc('canYamiNote', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
 			scheduleNoteMax: calc('scheduleNoteMax', vs => Math.max(...vs)),
 			mentionLimit: calc('mentionLimit', vs => Math.max(...vs)),

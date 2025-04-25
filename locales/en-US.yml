@@ -1945,6 +1945,8 @@ _role:
   _options:
     gtlAvailable: "Can view the global timeline"
     ltlAvailable: "Can view the local timeline"
+    yamiTlAvailable: "Can view the yami timeline"
+    canYamiNote: "Can post yami notes"
     canPublicNote: "Can send public notes"
     mentionMax: "Maximum number of mentions in a note"
     canImportNotes: "Can import notes"
@@ -3046,12 +3048,7 @@ _yami:
     enterYamiModeConfirm: "Do you want to switch to Yami mode? If you switch to Yami mode, you will be able to view and post Yami notes"
     exitYamiModeConfirm: "Do you want to go back to Normal mode? Once in Normal mode, you will no longer be able to view or post Yami notes."
     normal: "Normal mode"
-    normal1: "Do not display other people's Yamig notes"
-    normal2: "You can not submit a Yami notes."
     yami: "Yami mode"
-    yami1: "Displays other people's Yami notes."
-    yami2: "You can submit a Yami notes."
-    saveConfirmDescription: "Switching the mode changes whether the Yami notes is displayed or not."
 _followRequest:
   recieved: "Received request"
   sent: "Sent request"
