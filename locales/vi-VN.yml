@@ -5,6 +5,7 @@ introMisskey: "Xin chào! Misskey là một nền tảng tiểu blog phi tập t
 poweredByMisskeyDescription: "{name} là một trong những chủ máy của <b>Misskey</b> là nền tảng mã nguồn mở"
 monthAndDay: "{day} tháng {month}"
 search: "Tìm kiếm"
+reset: "cài lại"
 notifications: "Thông báo"
 username: "Tên người dùng"
 password: "Mật khẩu"
@@ -1159,6 +1160,16 @@ _initialAccountSetting:
   haveFun: "Hãy tận hưởng {name} nhé!"
   skipAreYouSure: "Bạn thực sự muốn bỏ qua mục thiết lập tài khoản?"
   laterAreYouSure: "Bạn thực sự muốn thiết lập tài khoản vào lúc khác?"
+_initialTutorial:
+  _timeline:
+    home: "Trong dòng thời gian Trang chính, bạn có thể xem ghi chú từ các tài khoản bạn theo dõi."
+    local: "Bạn có thể xem ghi chú từ tất cả người dùng trên máy chủ này."
+    social: "Ghi chú từ dòng thời gian Trang chủ và Địa phương sẽ được hiển thị."
+    global: "Bạn có thể xem ghi chú từ tất cả các máy chủ được kết nối."
+_timelineDescription:
+  home: "Trong dòng thời gian Trang chính, bạn có thể xem ghi chú từ các tài khoản bạn theo dõi."
+  local: "Trong dòng thời gian cục bộ, bạn có thể xem ghi chú từ tất cả người dùng trên máy chủ này."
+  social: "Dòng thời gian Xã hội hiển thị các ghi chú từ cả dòng thời gian Trang chủ và Địa phương."
 _serverSettings:
   iconUrl: "Biểu tượng URL"
   appIconResolutionMustBe: "Độ phân giải tối thiểu là {resolution}."
