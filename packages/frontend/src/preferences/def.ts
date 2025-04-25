@@ -78,7 +78,7 @@ export const PREF_DEF = {
 		default: [{
 			id: 'a',
 			name: '',
-			emojis: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+			emojis: ['👍', '💙', '💜', '🥺', '😇', '😢', '😭', '🤔', '😮', '🍮'],
 		}] as {
 			id: string;
 			name: string;
@@ -113,7 +113,7 @@ export const PREF_DEF = {
 		default: 'public' as (typeof Misskey.noteVisibilities)[number],
 	},
 	defaultNoteLocalOnly: {
-		default: false,
+		default: true,
 	},
 	keepCw: {
 		default: true,
@@ -129,19 +129,18 @@ export const PREF_DEF = {
 	},
 	menu: {
 		default: [
+			'mode',
 			'notifications',
-			'clips',
 			'drive',
 			'followRequests',
+			'-',
 			'chat',
-			'-',
-			'explore',
-			'announcements',
 			'channels',
-			'search',
 			'-',
-			'ui',
-			'mode',
+			'floater',
+			'explore',
+			'search',
+			'announcements',
 		],
 	},
 	statusbars: {
@@ -155,13 +154,13 @@ export const PREF_DEF = {
 		}[],
 	},
 	serverDisconnectedBehavior: {
-		default: 'quiet' as 'quiet' | 'reload' | 'dialog',
+		default: 'dialog' as 'quiet' | 'reload' | 'dialog',
 	},
 	nsfw: {
 		default: 'respect' as 'respect' | 'force' | 'ignore',
 	},
 	highlightSensitiveMedia: {
-		default: false,
+		default: true,
 	},
 	animation: {
 		default: !window.matchMedia('(prefers-reduced-motion)').matches,
@@ -221,13 +220,13 @@ export const PREF_DEF = {
 		default: 'remote' as 'none' | 'remote' | 'always',
 	},
 	emojiPickerScale: {
-		default: 2,
+		default: 3,
 	},
 	emojiPickerWidth: {
-		default: 2,
+		default: 5,
 	},
 	emojiPickerHeight: {
-		default: 3,
+		default: 4,
 	},
 	emojiPickerStyle: {
 		default: 'auto' as 'auto' | 'popup' | 'drawer',
@@ -310,7 +309,7 @@ export const PREF_DEF = {
 		default: true,
 	},
 	confirmWhenRevealingSensitiveMedia: {
-		default: false,
+		default: true,
 	},
 	contextMenu: {
 		default: 'app' as 'app' | 'appWithShift' | 'native',
@@ -437,7 +436,7 @@ export const PREF_DEF = {
 		default: false,
 	},
 	hideReactionCount: {
-		default: 'none' as 'none' | 'self' | 'others' | 'all',
+		default: 'self' as 'none' | 'self' | 'others' | 'all',
 	},
 	customFont: {
 		default: null as null | string,
@@ -448,17 +447,29 @@ export const PREF_DEF = {
 	reactionChecksMuting: {
 		default: true,
 	},
+	publicReactions: {
+		default: false,
+	},
+	hideActivity: {
+		default: true,
+	},
+	hideProfileFiles: {
+		default: true,
+	},
+	autoRejectFollowRequest: {
+		default: false,
+	},
 	isNoteInYamiMode: {
-		default: false, // 記憶用の変数
+		default: false,
 	},
 	defaultIsNoteInYamiMode: {
-		default: false, // やみモードユーザー向けのデフォルト設定（初期値は無効）
+		default: false,
 	},
 	showYamiNonFollowingPublicNotes: {
-		default: true, // パブリックやみノートを表示にするかどうか
+		default: false,
 	},
 	showYamiFollowingNotes: {
-		default: true, // フォロー中のやみノートを表示にするかどうか
+		default: true,
 	},
 	searchEngine: {
 		default: 'https://search.yami.ski/search?',

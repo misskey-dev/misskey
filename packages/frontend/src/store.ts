@@ -154,7 +154,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	defaultNoteLocalOnly: {
 		where: 'account',
-		default: false,
+		default: true,
 	},
 	keepCw: {
 		where: 'account',
@@ -212,20 +212,18 @@ export const store = markRaw(new Pizzax('base', {
 	menu: {
 		where: 'deviceAccount',
 		default: [
+			'mode',
 			'notifications',
-			'clips',
 			'drive',
 			'followRequests',
 			'-',
+			'chat',
+			'channels',
+			'-',
 			'floater',
 			'explore',
-			'announcements',
 			'search',
-			'-',
-			'ui',
-			'-',
-			'play',
-			'games',
+			'announcements',
 		],
 	},
 	postFormActions: {
@@ -285,7 +283,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	showReactionsCount: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	enableQuickAddMfmFunction: {
 		where: 'device',
