@@ -78,11 +78,11 @@ export type RolePolicies = {
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
-	gtlAvailable: true,
-	ltlAvailable: true,
-	yamiTlAvailable: true,
-	canYamiNote: true,
-	canPublicNote: true,
+	gtlAvailable: false,
+	ltlAvailable: false,
+	yamiTlAvailable: false,
+	canYamiNote: false,
+	canPublicNote: false,
 	scheduleNoteMax: 15,
 	mentionLimit: 20,
 	canInvite: false,
@@ -118,9 +118,9 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportNotes: true,
 	chatAvailability: 'available',
 	canUseQuoteNotification: true,
-	canUseUnFollowNotification: true,
-	canUseBlockedNotification: true,
-	canUseUnBlockedNotification: true,
+	canUseUnFollowNotification: false,
+	canUseBlockedNotification: false,
+	canUseUnBlockedNotification: false,
 };
 
 @Injectable()
