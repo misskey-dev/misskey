@@ -100,22 +100,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.YamiTlDisabled);
 			}
 
-			// Redis Timelinesを使用した実装 - 新しい命名規則に合わせる
+			// Redis Timelinesを使用した実装
 			const redisTimelines = [];
 
-			// ユーザー個別タイムライン (自分のフォローの投稿など)
-			if (ps.showYamiFollowingNotes) {
-				redisTimelines.push(`yamiTimeline:${me.id}`);
-				if (ps.withFiles) {
-					redisTimelines.push(`yamiTimelineWithFiles:${me.id}`);
+			// やみモードONの場合のみRedisタイムラインを設定
+			if (me.isInYamiMode) {
+				// フォローしているユーザーのやみノート
+				if (ps.showYamiFollowingNotes) {
+					redisTimelines.push(`yamiTimeline:${me.id}`);
+					if (ps.withFiles) {
+						redisTimelines.push(`yamiTimelineWithFiles:${me.id}`);
+					}
 				}
-			}
 
-			// 非フォローユーザーのパブリックノート (showYamiNonFollowingPublicNotesが有効な場合)
-			if (ps.showYamiNonFollowingPublicNotes) {
-				redisTimelines.push('yamiPublicNotes');
-				if (ps.withFiles) {
-					redisTimelines.push('yamiPublicNotesWithFiles');
+				// 非フォローユーザーのパブリックノート
+				if (ps.showYamiNonFollowingPublicNotes) {
+					redisTimelines.push('yamiPublicNotes');
+					if (ps.withFiles) {
+						redisTimelines.push('yamiPublicNotesWithFiles');
+					}
 				}
 			}
 
@@ -125,32 +128,39 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				limit: ps.limit,
 				allowPartial: false, // 必ず完全な結果を使用
 				me,
-				useDbFallback: true,
+				useDbFallback: true, // DBフォールバックを常に有効化
 				redisTimelines: redisTimelines,
 				noteFilter: note => {
 					// クライアントサイドでの追加フィルタリング (Redis結果用)
 					if (!note.isNoteInYamiMode) return false;
 
-					// 自分がやみモードでない場合は自分の投稿だけ表示（重要な修正点）
+					// 投稿が自分のものかどうか判定
+					const isMyNote = note.userId === me.id;
+
+					// 自分がやみモードでない場合は自分の投稿だけ表示
 					if (!me.isInYamiMode) {
-						return note.userId === me.id;
+						return isMyNote;
 					}
 
-					// フォロー状態に基づくフィルタリング
-					const isFollowing = this.userFollowingService.isFollowing(me.id, note.userId);
-
 					// 自分の投稿は常に表示
-					if (note.userId === me.id) return true;
+					if (isMyNote) return true;
 
 					// ダイレクト投稿で自分が含まれていれば表示
 					if (note.visibility === 'specified' && note.visibleUserIds.includes(me.id)) return true;
 
-					// フォローしているユーザーの投稿
-					if (isFollowing) {
-						if (!ps.showYamiFollowingNotes) return false;
-					} else if (note.visibility === 'public') { // フォローしていないユーザーのパブリック投稿
+					// フォロー状態を確認 - この行を追加
+					const isFollowing = this.userFollowingService.isFollowing(me.id, note.userId);
+
+					// フォローしていないユーザーのパブリック投稿
+					if (!isFollowing && note.visibility === 'public') {
 						return ps.showYamiNonFollowingPublicNotes;
 					}
+
+					// フォローしているユーザーの投稿
+					if (isFollowing) {
+						return ps.showYamiFollowingNotes;
+					}
+
 					return false;
 				},
 				excludePureRenotes: !ps.withRenotes,

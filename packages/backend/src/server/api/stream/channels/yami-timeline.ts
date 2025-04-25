@@ -11,7 +11,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
-import type { ChannelFollowingsRepository } from '@/models/_.js';
+import type { ChannelFollowingsRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
@@ -32,6 +32,7 @@ class YamiTimelineChannel extends Channel {
 		private roleService: RoleService,
 		private userFollowingService: UserFollowingService,
 		private channelFollowingRepository: ChannelFollowingsRepository,
+		private usersRepository: UsersRepository,
 		id: string,
 		connection: Channel['connection'],
 	) {
@@ -40,6 +41,14 @@ class YamiTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: JsonObject): Promise<void> {
+		// 最新のユーザー情報を再取得して、やみモード状態を確認
+		if (this.user) {
+			const freshUserInfo = await this.usersRepository.findOneBy({ id: this.user.id });
+			if (freshUserInfo) {
+				this.user.isInYamiMode = freshUserInfo.isInYamiMode;
+			}
+		}
+
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
 		if (!policies.yamiTlAvailable) return;
 
@@ -57,6 +66,9 @@ class YamiTimelineChannel extends Channel {
 		// ノートストリームの購読
 		this.subscriber.off('notesStream', this.onNote); // 念のため登録解除
 		this.subscriber.on('notesStream', this.onNote);
+
+		// やみモード切替イベントの追加
+		this.subscriber.on('userStateChanged', this.onUserStateChanged);
 
 		// デバッグ用リスナーを削除
 	}
@@ -85,11 +97,12 @@ class YamiTimelineChannel extends Channel {
 			// やみモードの投稿のみ表示する
 			if (!note.isNoteInYamiMode) return;
 
-			const isMe = this.user!.id === note.userId;
+			// 投稿が自分のものかどうか判定
+			const isMyNote = this.user!.id === note.userId;
 
 			// 【基本フィルタリング】
 			// 1. 自分がやみモードでない場合は自分の投稿だけ表示
-			if (!isMe && !this.user!.isInYamiMode) return;
+			if (!isMyNote && !this.user!.isInYamiMode) return;
 
 			// 2. 添付ファイル条件
 			if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
@@ -101,7 +114,7 @@ class YamiTimelineChannel extends Channel {
 			let shouldDisplay = false;
 
 			// 自分の投稿は常に表示
-			if (isMe) {
+			if (isMyNote) {
 				shouldDisplay = true;
 			}
 			// 自分宛てのダイレクト投稿は常に表示
@@ -126,7 +139,7 @@ class YamiTimelineChannel extends Channel {
 				if (!this.followingChannels.has(note.channelId)) return;
 
 				// propagateToTimelinesがfalseで、自分の投稿でもない場合は表示しない
-				if (note.channel && !note.channel.propagateToTimelines && !isMe) return;
+				if (note.channel && !note.channel.propagateToTimelines && !isMyNote) return;
 			}
 
 			// 【リプライの特別処理】
@@ -139,7 +152,7 @@ class YamiTimelineChannel extends Channel {
 				} else {
 					// それ以外のユーザーからの返信は、以下の場合のみ表示:
 					// 1. 自分への返信、2. 自分の返信、3. 投稿者自身への返信
-					if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;
+					if (reply.userId !== this.user!.id && !isMyNote && reply.userId !== note.userId) return;
 				}
 			}
 
@@ -185,6 +198,13 @@ class YamiTimelineChannel extends Channel {
 	}
 
 	@bindThis
+	private onUserStateChanged(payload) {
+		if (payload.userId === this.user!.id && payload.key === 'isInYamiMode') {
+			this.user!.isInYamiMode = payload.value;
+		}
+	}
+
+	@bindThis
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
@@ -205,6 +225,8 @@ export class YamiTimelineChannelService implements MiChannelService<true> {
 		private userFollowingService: UserFollowingService,
 		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingRepository: ChannelFollowingsRepository,
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 	) {
 	}
 
@@ -215,6 +237,7 @@ export class YamiTimelineChannelService implements MiChannelService<true> {
 			this.roleService,
 			this.userFollowingService,
 			this.channelFollowingRepository,
+			this.usersRepository,
 			id,
 			connection,
 		);
