@@ -395,7 +395,7 @@ export function getNoteMenu(props: {
 				},
 			});
 		} else {
-			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode));
+			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.embed));
 		}
 
 		if (isSupportShare()) {
@@ -563,7 +563,7 @@ export function getNoteMenu(props: {
 				},
 			});
 		} else {
-			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode));
+			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.embed));
 		}
 	}
 

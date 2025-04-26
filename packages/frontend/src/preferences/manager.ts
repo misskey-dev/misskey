@@ -139,9 +139,16 @@ export class PreferencesManager {
 	}
 
 	public commit<K extends keyof PREF>(key: K, value: ValueOf<K>) {
-		console.log('prefer:commit', key, value);
+		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
 
-		this.rewriteRawState(key, value);
+		if (deepEqual(this.s[key], v)) {
+			if (_DEV_) console.log('(skip) prefer:commit', key, v);
+			return;
+		}
+
+		if (_DEV_) console.log('prefer:commit', key, v);
+
+		this.rewriteRawState(key, v);
 
 		const record = this.getMatchedRecordOf(key);
 
@@ -149,7 +156,7 @@ export class PreferencesManager {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
 				account: $i!.id,
-			}), value, {}]);
+			}), v, {}]);
 			this.save();
 			return;
 		}
@@ -157,12 +164,12 @@ export class PreferencesManager {
 		if (parseScope(record[0]).server == null && this.isServerDependentKey(key)) {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
-			}), value, {}]);
+			}), v, {}]);
 			this.save();
 			return;
 		}
 
-		record[1] = value;
+		record[1] = v;
 		this.save();
 
 		if (record[2].sync) {
@@ -243,13 +250,13 @@ export class PreferencesManager {
 				if (!deepEqual(cloudValue, record[1])) {
 					this.rewriteRawState(key, cloudValue);
 					record[1] = cloudValue;
-					console.log('cloud fetched', key, cloudValue);
+					if (_DEV_) console.log('cloud fetched', key, cloudValue);
 				}
 			}
 		}
 
 		this.save();
-		console.log('cloud fetch completed');
+		if (_DEV_) console.log('cloud fetch completed');
 	}
 
 	public static newProfile(): PreferencesProfile {

@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - develop
-      - dev/storybook8 # for testing
   pull_request_target:
     branches-ignore:
       # Since pull requests targets master mostly is the "develop" branch.
@@ -15,8 +14,12 @@ on:
 
 jobs:
   build:
-    # chromatic is not likely to be available for fork repositories, so we disable for fork repositories.
-    if: github.repository == 'misskey-dev/misskey'
+    # Chromatic is not likely to be available for fork repositories, so we disable for fork repositories.
+    # Neither Dependabot nor Renovate will change the actual behavior for components.
+    if: >-
+      github.repository == 'misskey-dev/misskey' &&
+      startsWith(github.head_ref, 'refs/heads/dependabot/') != true &&
+      startsWith(github.head_ref, 'refs/heads/renovate/') != true
     runs-on: ubuntu-latest
 
     env:
@@ -43,7 +46,7 @@ jobs:
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.1.0
     - name: Use Node.js 20.x
-      uses: actions/setup-node@v4.2.0
+      uses: actions/setup-node@v4.3.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

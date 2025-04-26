@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
+	<MkSwiper v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
 			<XOverview/>
 		</MkSpacer>
@@ -19,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer v-else-if="tab === 'charts'" :contentMax="1000" :marginMin="20">
 			<MkInstanceStats/>
 		</MkSpacer>
-	</MkHorizontalSwipe>
-</MkStickyContainer>
+	</MkSwiper>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -29,7 +28,7 @@ import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { definePage } from '@/page.js';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import MkSwiper from '@/components/MkSwiper.vue';
 
 const XOverview = defineAsyncComponent(() => import('@/pages/about.overview.vue'));
 const XEmojis = defineAsyncComponent(() => import('@/pages/about.emojis.vue'));

@@ -140,7 +140,7 @@ import { DI } from '@/di.js';
 
 const $i = ensureSignin();
 
-const modal = inject('modal');
+const modal = inject(DI.inModal, false);
 
 const props = withDefaults(defineProps<PostFormProps & {
 	fixed?: boolean;
@@ -879,7 +879,7 @@ async function post(ev?: MouseEvent) {
 
 	if (postAccount.value) {
 		const storedAccounts = await getAccounts();
-		token = storedAccounts.find(x => x.user.id === postAccount.value?.id)?.token;
+		token = storedAccounts.find(x => x.id === postAccount.value?.id)?.token;
 	}
 
 	posting.value = true;
@@ -1314,7 +1314,7 @@ html[data-color-scheme=light] .preview {
 	padding: 0 24px;
 	margin: 0;
 	width: 100%;
-	font-size: 16px;
+	font-size: 110%;
 	border: none;
 	border-radius: 0;
 	background: transparent;

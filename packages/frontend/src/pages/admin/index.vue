@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkSpacer>
 	</div>
-	<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
+	<div v-if="!(narrow && currentPage?.route.name == null)" class="main _pageContainer" style="height: 100%;">
 		<NestedRouterView/>
 	</div>
 </div>
@@ -140,9 +140,14 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		active: currentPage.value?.route.name === 'federation',
 	}, {
 		icon: 'ti ti-clock-play',
+		text: i18n.ts.federationJobs,
+		to: '/admin/federation-job-queue',
+		active: currentPage.value?.route.name === 'federationJobQueue',
+	}, {
+		icon: 'ti ti-clock-play',
 		text: i18n.ts.jobQueue,
-		to: '/admin/queue',
-		active: currentPage.value?.route.name === 'queue',
+		to: '/admin/job-queue',
+		active: currentPage.value?.route.name === 'jobQueue',
 	}, {
 		icon: 'ti ti-cloud',
 		text: i18n.ts.files,
@@ -329,10 +334,11 @@ defineExpose({
 
 <style lang="scss" scoped>
 .hiyeyicy {
+	height: 100%;
+
 	&.wide {
 		display: flex;
 		margin: 0 auto;
-		height: 100%;
 
 		> .nav {
 			position: sticky;
@@ -342,7 +348,7 @@ defineExpose({
 			box-sizing: border-box;
 			border-right: solid 0.5px var(--MI_THEME-divider);
 			overflow: auto;
-			height: 100dvh;
+			height: 100cqh;
 		}
 
 		> .main {

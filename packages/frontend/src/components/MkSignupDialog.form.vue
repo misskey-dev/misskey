@@ -267,7 +267,7 @@ async function onSubmit(): Promise<void> {
 		'testcaptcha-response': testcaptchaResponse.value,
 	};
 
-	const res = await fetch(`${config.apiUrl}/signup`, {
+	const res = await window.fetch(`${config.apiUrl}/signup`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

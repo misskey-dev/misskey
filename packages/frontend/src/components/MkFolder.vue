@@ -38,15 +38,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<KeepAlive>
 					<div v-show="opened">
-						<MkSpacer v-if="withSpacer" :marginMin="spacerMin" :marginMax="spacerMax">
-							<slot></slot>
-						</MkSpacer>
-						<div v-else>
-							<slot></slot>
-						</div>
-						<div v-if="$slots.footer" :class="$style.footer">
-							<slot name="footer"></slot>
-						</div>
+						<MkStickyContainer>
+							<template #header>
+								<div v-if="$slots.header" :class="$style.inBodyHeader">
+									<slot name="header"></slot>
+								</div>
+							</template>
+
+							<MkSpacer v-if="withSpacer" :marginMin="spacerMin" :marginMax="spacerMax">
+								<slot></slot>
+							</MkSpacer>
+							<div v-else>
+								<slot></slot>
+							</div>
+
+							<template #footer>
+								<div v-if="$slots.footer" :class="$style.inBodyFooter">
+									<slot name="footer"></slot>
+								</div>
+							</template>
+						</MkStickyContainer>
 					</div>
 				</KeepAlive>
 			</Transition>
@@ -116,7 +127,7 @@ function toggle() {
 }
 
 onMounted(() => {
-	const computedStyle = getComputedStyle(document.documentElement);
+	const computedStyle = getComputedStyle(window.document.documentElement);
 	const parentBg = getBgColor(rootEl.value?.parentElement) ?? 'transparent';
 	const myBg = computedStyle.getPropertyValue('--MI_THEME-panel');
 	bgSame.value = parentBg === myBg;
@@ -175,7 +186,7 @@ onMounted(() => {
 }
 
 .headerLower {
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: .85em;
 	padding-left: 4px;
 }
@@ -209,13 +220,13 @@ onMounted(() => {
 }
 
 .headerTextSub {
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	font-size: .85em;
 }
 
 .headerRight {
 	margin-left: auto;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 	white-space: nowrap;
 }
 
@@ -230,16 +241,23 @@ onMounted(() => {
 
 	&.bgSame {
 		background: var(--MI_THEME-bg);
+
+		.inBodyHeader {
+			background: color(from var(--MI_THEME-bg) srgb r g b / 0.75);
+		}
 	}
 }
 
-.footer {
-	position: sticky !important;
-	z-index: 1;
-	bottom: var(--MI-stickyBottom, 0px);
-	left: 0;
+.inBodyHeader {
+	background: color(from var(--MI_THEME-panel) srgb r g b / 0.75);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
+}
+
+.inBodyFooter {
 	padding: 12px;
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 	background-size: auto auto;

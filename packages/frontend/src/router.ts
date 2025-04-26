@@ -17,10 +17,10 @@ export function createRouter(fullPath: string): Router {
 	return new Nirax(ROUTE_DEF, fullPath, !!$i, page(() => import('@/pages/not-found.vue')));
 }
 
-export const mainRouter = createRouter(location.pathname + location.search + location.hash);
+export const mainRouter = createRouter(window.location.pathname + window.location.search + window.location.hash);
 
 window.addEventListener('popstate', (event) => {
-	mainRouter.replace(location.pathname + location.search + location.hash);
+	mainRouter.replace(window.location.pathname + window.location.search + window.location.hash);
 });
 
 mainRouter.addListener('push', ctx => {
@@ -32,7 +32,7 @@ mainRouter.addListener('replace', ctx => {
 });
 
 mainRouter.addListener('change', ctx => {
-	console.log('mainRouter: change', ctx.fullPath);
+	if (_DEV_) console.log('mainRouter: change', ctx.fullPath);
 	analytics.page({
 		path: ctx.fullPath,
 		title: ctx.fullPath,
@@ -42,5 +42,5 @@ mainRouter.addListener('change', ctx => {
 mainRouter.init();
 
 export function useRouter(): Router {
-	return inject(DI.router) ?? mainRouter;
+	return inject(DI.router, null) ?? mainRouter;
 }

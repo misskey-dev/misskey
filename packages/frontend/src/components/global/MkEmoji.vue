@@ -15,9 +15,9 @@ import { char2fluentEmojiFilePath, char2twemojiFilePath } from '@@/js/emoji-base
 import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import * as sound from '@/utility/sound.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	emoji: string;
@@ -25,7 +25,7 @@ const props = defineProps<{
 	menuReaction?: boolean;
 }>();
 
-const react = inject<((name: string) => void) | null>('react', null);
+const react = inject(DI.mfmEmojiReactCallback, null);
 
 const char2path = prefer.s.emojiStyle === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
@@ -59,7 +59,6 @@ function onClick(ev: MouseEvent) {
 				icon: 'ti ti-plus',
 				action: () => {
 					react(props.emoji);
-					sound.playMisskeySfx('reaction');
 				},
 			});
 		}

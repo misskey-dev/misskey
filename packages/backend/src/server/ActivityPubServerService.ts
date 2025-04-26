@@ -32,6 +32,7 @@ import { isQuote, isRenote } from '@/misc/is-renote.js';
 import * as Acct from '@/misc/acct.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -75,6 +76,7 @@ export class ActivityPubServerService {
 		private queueService: QueueService,
 		private userKeypairService: UserKeypairService,
 		private queryService: QueryService,
+		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -461,16 +463,28 @@ export class ActivityPubServerService {
 		const partOf = `${this.config.url}/users/${userId}/outbox`;
 
 		if (page) {
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
-				.andWhere('note.userId = :userId', { userId: user.id })
-				.andWhere(new Brackets(qb => {
-					qb
-						.where('note.visibility = \'public\'')
-						.orWhere('note.visibility = \'home\'');
-				}))
-				.andWhere('note.localOnly = FALSE');
-
-			const notes = await query.limit(limit).getMany();
+			const notes = this.meta.enableFanoutTimeline ? await this.fanoutTimelineEndpointService.getMiNotes({
+				sinceId: sinceId ?? null,
+				untilId: untilId ?? null,
+				limit: limit,
+				allowPartial: false, // Possibly true? IDK it's OK for ordered collection.
+				me: null,
+				redisTimelines: [
+					`userTimeline:${user.id}`,
+					`userTimelineWithReplies:${user.id}`,
+				],
+				useDbFallback: true,
+				ignoreAuthorFromMute: true,
+				excludePureRenotes: false,
+				noteFilter: (note) => {
+					if (note.visibility !== 'home' && note.visibility !== 'public') return false;
+					if (note.localOnly) return false;
+					return true;
+				},
+				dbFallback: async (untilId, sinceId, limit) => {
+					return await this.getUserNotesFromDb(sinceId, untilId, limit, user.id);
+				},
+			}) : await this.getUserNotesFromDb(sinceId ?? null, untilId ?? null, limit, user.id);
 
 			if (sinceId) notes.reverse();
 
@@ -506,6 +520,20 @@ export class ActivityPubServerService {
 			this.setResponseType(request, reply);
 			return (this.apRendererService.addContext(rendered));
 		}
+	}
+
+	@bindThis
+	private async getUserNotesFromDb(untilId: string | null, sinceId: string | null, limit: number, userId: MiUser['id']) {
+		return await this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
+			.andWhere('note.userId = :userId', { userId })
+			.andWhere(new Brackets(qb => {
+				qb
+					.where('note.visibility = \'public\'')
+					.orWhere('note.visibility = \'home\'');
+			}))
+			.andWhere('note.localOnly = FALSE')
+			.limit(limit)
+			.getMany();
 	}
 
 	@bindThis
@@ -735,7 +763,7 @@ export class ActivityPubServerService {
 			const acct = Acct.parse(request.params.acct);
 
 			const user = await this.usersRepository.findOneBy({
-				usernameLower: acct.username,
+				usernameLower: acct.username.toLowerCase(),
 				host: acct.host ?? IsNull(),
 				isSuspended: false,
 			});

@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="800">
 		<div v-if="state === 'done'" class="_buttonsCenter">
 			<MkButton @click="close">{{ i18n.ts.close }}</MkButton>
@@ -15,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkLoading/>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -31,7 +30,7 @@ import MkButton from '@/components/MkButton.vue';
 const state = ref<'fetching' | 'done'>('fetching');
 
 function fetch() {
-	const params = new URL(location.href).searchParams;
+	const params = new URL(window.location.href).searchParams;
 
 	// acctのほうはdeprecated
 	let uri = params.get('uri') ?? params.get('acct');
@@ -76,12 +75,12 @@ function close(): void {
 
 	// 閉じなければ100ms後タイムラインに
 	window.setTimeout(() => {
-		location.href = '/';
+		window.location.href = '/';
 	}, 100);
 }
 
 function goToMisskey(): void {
-	location.href = '/';
+	window.location.href = '/';
 }
 
 fetch();

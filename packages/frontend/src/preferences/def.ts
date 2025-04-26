@@ -33,7 +33,10 @@ export type SoundStore = {
 
 export const PREF_DEF = {
 	accounts: {
-		default: [] as [host: string, user: Misskey.entities.User][],
+		default: [] as [host: string, user: {
+			id: string;
+			username: string;
+		}][],
 	},
 
 	pinnedUserLists: {
@@ -116,9 +119,6 @@ export const PREF_DEF = {
 	keepCw: {
 		default: true,
 	},
-	keepOriginalUploading: {
-		default: false,
-	},
 	rememberNoteVisibility: {
 		default: false,
 	},
@@ -134,9 +134,11 @@ export const PREF_DEF = {
 			'clips',
 			'drive',
 			'followRequests',
+			'chat',
 			'-',
 			'explore',
 			'announcements',
+			'channels',
 			'search',
 			'-',
 			'ui',
@@ -196,6 +198,9 @@ export const PREF_DEF = {
 	},
 	useBlurEffect: {
 		default: DEFAULT_DEVICE_KIND === 'desktop',
+	},
+	useStickyIcons: {
+		default: true,
 	},
 	showFixedPostForm: {
 		default: false,
@@ -325,9 +330,13 @@ export const PREF_DEF = {
 	makeEveryTextElementsSelectable: {
 		default: DEFAULT_DEVICE_KIND === 'desktop',
 	},
+	showNavbarSubButtons: {
+		default: true,
+	},
 	plugins: {
 		default: [] as Plugin[],
 	},
+
 	'sound.masterVolume': {
 		default: 0.3,
 	},
@@ -349,6 +358,10 @@ export const PREF_DEF = {
 	'sound.on.reaction': {
 		default: { type: 'syuilo/bubble2', volume: 1 } as SoundStore,
 	},
+	'sound.on.chatMessage': {
+		default: { type: 'syuilo/waon', volume: 1 } as SoundStore,
+	},
+
 	'deck.alwaysShowMainColumn': {
 		default: true,
 	},
@@ -359,8 +372,28 @@ export const PREF_DEF = {
 		default: true,
 	},
 	'deck.columnAlign': {
-		default: 'left' as 'left' | 'right' | 'center',
+		default: 'center' as 'left' | 'right' | 'center',
 	},
+	'deck.columnGap': {
+		default: 6,
+	},
+	'deck.menuPosition': {
+		default: 'bottom' as 'right' | 'bottom',
+	},
+	'deck.navbarPosition': {
+		default: 'left' as 'left' | 'top' | 'bottom',
+	},
+	'deck.wallpaper': {
+		default: null as string | null,
+	},
+
+	'chat.showSenderName': {
+		default: false,
+	},
+	'chat.sendOnEnter': {
+		default: false,
+	},
+
 	'game.dropAndFusion': {
 		default: {
 			bgmVolume: 0.25,

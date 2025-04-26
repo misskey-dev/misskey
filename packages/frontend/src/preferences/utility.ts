@@ -106,14 +106,14 @@ async function renameProfile() {
 function exportCurrentProfile() {
 	const p = prefer.profile;
 	const txtBlob = new Blob([JSON.stringify(p)], { type: 'text/plain' });
-	const dummya = document.createElement('a');
+	const dummya = window.document.createElement('a');
 	dummya.href = URL.createObjectURL(txtBlob);
 	dummya.download = `${p.name || p.id}.misskeypreferences`;
 	dummya.click();
 }
 
 function importProfile() {
-	const input = document.createElement('input');
+	const input = window.document.createElement('input');
 	input.type = 'file';
 	input.accept = '.misskeypreferences';
 	input.onchange = async () => {
@@ -153,7 +153,7 @@ export async function restoreFromCloudBackup() {
 		scope: ['client', 'preferences', 'backups'],
 	});
 
-	console.log(keys);
+	if (_DEV_) console.log(keys);
 
 	if (keys.length === 0) {
 		os.alert({
@@ -179,7 +179,7 @@ export async function restoreFromCloudBackup() {
 		key: select.result,
 	});
 
-	console.log(profile);
+	if (_DEV_) console.log(profile);
 
 	miLocalStorage.setItem('preferences', JSON.stringify(profile));
 	miLocalStorage.setItem('hidePreferencesRestoreSuggestion', 'true');

@@ -4,66 +4,62 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkStickyContainer>
-		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="700">
-			<div class="_gaps">
-				<div class="_buttons">
-					<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
-					<MkButton danger rounded @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-				</div>
-				<MkFolder>
-					<template #icon><i class="ti ti-info-circle"></i></template>
-					<template #label>{{ i18n.ts.info }}</template>
-					<XEditor :modelValue="role" readonly/>
-				</MkFolder>
-				<MkFolder v-if="role.target === 'manual'" defaultOpen>
-					<template #icon><i class="ti ti-users"></i></template>
-					<template #label>{{ i18n.ts.users }}</template>
-					<template #suffix>{{ role.usersCount }}</template>
-					<div class="_gaps">
-						<MkButton primary rounded @click="assign"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<MkSpacer :contentMax="700">
+		<div class="_gaps">
+			<div class="_buttons">
+				<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
+				<MkButton danger rounded @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			</div>
+			<MkFolder>
+				<template #icon><i class="ti ti-info-circle"></i></template>
+				<template #label>{{ i18n.ts.info }}</template>
+				<XEditor :modelValue="role" readonly/>
+			</MkFolder>
+			<MkFolder v-if="role.target === 'manual'" defaultOpen>
+				<template #icon><i class="ti ti-users"></i></template>
+				<template #label>{{ i18n.ts.users }}</template>
+				<template #suffix>{{ role.usersCount }}</template>
+				<div class="_gaps">
+					<MkButton primary rounded @click="assign"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
-						<MkPagination :pagination="usersPagination">
-							<template #empty>
-								<div class="_fullinfo">
-									<img :src="infoImageUrl" draggable="false"/>
-									<div>{{ i18n.ts.noUsers }}</div>
-								</div>
-							</template>
+					<MkPagination :pagination="usersPagination">
+						<template #empty>
+							<div class="_fullinfo">
+								<img :src="infoImageUrl" draggable="false"/>
+								<div>{{ i18n.ts.noUsers }}</div>
+							</div>
+						</template>
 
-							<template #default="{ items }">
-								<div class="_gaps_s">
-									<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedItems.includes(item.id) }]">
-										<div :class="$style.userItemMain">
-											<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
-												<MkUserCardMini :user="item.user"/>
-											</MkA>
-											<button class="_button" :class="$style.userToggle" @click="toggleItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
-											<button class="_button" :class="$style.unassign" @click="unassign(item.user, $event)"><i class="ti ti-x"></i></button>
-										</div>
-										<div v-if="expandedItems.includes(item.id)" :class="$style.userItemSub">
-											<div>Assigned: <MkTime :time="item.createdAt" mode="detail"/></div>
-											<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
-											<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
-										</div>
+						<template #default="{ items }">
+							<div class="_gaps_s">
+								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedItems.includes(item.id) }]">
+									<div :class="$style.userItemMain">
+										<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
+											<MkUserCardMini :user="item.user"/>
+										</MkA>
+										<button class="_button" :class="$style.userToggle" @click="toggleItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
+										<button class="_button" :class="$style.unassign" @click="unassign(item.user, $event)"><i class="ti ti-x"></i></button>
+									</div>
+									<div v-if="expandedItems.includes(item.id)" :class="$style.userItemSub">
+										<div>Assigned: <MkTime :time="item.createdAt" mode="detail"/></div>
+										<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
+										<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
 									</div>
 								</div>
-							</template>
-						</MkPagination>
-					</div>
-				</MkFolder>
-				<MkInfo v-else>{{ i18n.ts._role.isConditionalRole }}</MkInfo>
-			</div>
-		</MkSpacer>
-	</MkStickyContainer>
-</div>
+							</div>
+						</template>
+					</MkPagination>
+				</div>
+			</MkFolder>
+			<MkInfo v-else>{{ i18n.ts._role.isConditionalRole }}</MkInfo>
+		</div>
+	</MkSpacer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
-import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
@@ -184,7 +180,7 @@ definePage(() => ({
 .userItemSub {
 	padding: 6px 12px;
 	font-size: 85%;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 
 .userItemMainBody {

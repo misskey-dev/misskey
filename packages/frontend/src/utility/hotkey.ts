@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { getHTMLElementOrNull } from "@/utility/get-dom-node-or-null.js";
+import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
 
 //#region types
 export type Keymap = Record<string, CallbackFunction | CallbackObject>;
@@ -54,9 +54,9 @@ export const makeHotkey = (keymap: Keymap) => {
 	const actions = parseKeymap(keymap);
 	return (ev: KeyboardEvent) => {
 		if ('pswp' in window && window.pswp != null) return;
-		if (document.activeElement != null) {
-			if (IGNORE_ELEMENTS.includes(document.activeElement.tagName.toLowerCase())) return;
-			if (getHTMLElementOrNull(document.activeElement)?.isContentEditable) return;
+		if (window.document.activeElement != null) {
+			if (IGNORE_ELEMENTS.includes(window.document.activeElement.tagName.toLowerCase())) return;
+			if (getHTMLElementOrNull(window.document.activeElement)?.isContentEditable) return;
 		}
 		for (const action of actions) {
 			if (matchPatterns(ev, action)) {
@@ -136,7 +136,7 @@ let lastHotKeyStoreTimer: number | null = null;
 
 const storePattern = (ev: KeyboardEvent, callback: CallbackFunction) => {
 	if (lastHotKeyStoreTimer != null) {
-		clearTimeout(lastHotKeyStoreTimer);
+		window.clearTimeout(lastHotKeyStoreTimer);
 	}
 
 	latestHotkey = {

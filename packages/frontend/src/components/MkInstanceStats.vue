@@ -126,7 +126,7 @@ function createDoughnut(chartEl, tooltip, data) {
 			labels: data.map(x => x.name),
 			datasets: [{
 				backgroundColor: data.map(x => x.color),
-				borderColor: getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-panel'),
+				borderColor: getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-panel'),
 				borderWidth: 2,
 				hoverOffset: 0,
 				data: data.map(x => x.value),

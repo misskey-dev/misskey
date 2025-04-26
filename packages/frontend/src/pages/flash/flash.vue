@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<MkSpacer :contentMax="700">
 		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="flash" :key="flash.id">
@@ -52,13 +51,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<MkA v-if="$i && $i.id === flash.userId" :to="`/play/${flash.id}/edit`" style="color: var(--MI_THEME-accent);">{{ i18n.ts._play.editThisPage }}</MkA>
-				<MkAd :prefer="['horizontal', 'horizontal-big']"/>
+				<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 			</div>
 			<MkError v-else-if="error" @retry="fetchFlash()"/>
 			<MkLoading v-else/>
 		</Transition>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>

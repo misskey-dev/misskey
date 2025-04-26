@@ -8,11 +8,13 @@ import tinycolor from 'tinycolor2';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
 import JSON5 from 'json5';
+import type { Ref } from 'vue';
 import type { BundledTheme } from 'shiki/themes';
 import { deepClone } from '@/utility/clone.js';
 import { globalEvents } from '@/events.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { addTheme, getThemes } from '@/theme-store.js';
+import { $i } from '@/i.js';
+import { prefer } from '@/preferences.js';
 
 export type Theme = {
 	id: string;
@@ -57,21 +59,44 @@ export const getBuiltinThemes = () => Promise.all(
 	].map(name => import(`@@/themes/${name}.json5`).then(({ default: _default }): Theme => _default)),
 );
 
-export const getBuiltinThemesRef = () => {
+export function getBuiltinThemesRef() {
 	const builtinThemes = ref<Theme[]>([]);
 	getBuiltinThemes().then(themes => builtinThemes.value = themes);
 	return builtinThemes;
-};
+}
+
+export function getThemesRef(): Ref<Theme[]> {
+	return prefer.r.themes;
+}
+
+export async function addTheme(theme: Theme): Promise<void> {
+	if ($i == null) return;
+	const builtinThemes = await getBuiltinThemes();
+	if (builtinThemes.some(t => t.id === theme.id)) {
+		throw new Error('builtin theme');
+	}
+	const themes = prefer.s.themes;
+	if (themes.some(t => t.id === theme.id)) {
+		throw new Error('already exists');
+	}
+	prefer.commit('themes', [...themes, theme]);
+}
+
+export async function removeTheme(theme: Theme): Promise<void> {
+	if ($i == null) return;
+	const themes = prefer.s.themes.filter(t => t.id !== theme.id);
+	prefer.commit('themes', themes);
+}
 
 let timeout: number | null = null;
 
 export function applyTheme(theme: Theme, persist = true) {
 	if (timeout) window.clearTimeout(timeout);
 
-	document.documentElement.classList.add('_themeChanging_');
+	window.document.documentElement.classList.add('_themeChanging_');
 
 	timeout = window.setTimeout(() => {
-		document.documentElement.classList.remove('_themeChanging_');
+		window.document.documentElement.classList.remove('_themeChanging_');
 
 		// 色計算など再度行えるようにクライアント全体に通知
 		globalEvents.emit('themeChanged');
@@ -79,7 +104,7 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	const colorScheme = theme.base === 'dark' ? 'dark' : 'light';
 
-	document.documentElement.dataset.colorScheme = colorScheme;
+	window.document.documentElement.dataset.colorScheme = colorScheme;
 
 	// Deep copy
 	const _theme = deepClone(theme);
@@ -91,7 +116,7 @@ export function applyTheme(theme: Theme, persist = true) {
 
 	const props = compile(_theme);
 
-	for (const tag of document.head.children) {
+	for (const tag of window.document.head.children) {
 		if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
 			tag.setAttribute('content', props['htmlThemeColor']);
 			break;
@@ -99,10 +124,10 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 
 	for (const [k, v] of Object.entries(props)) {
-		document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
+		window.document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
 	}
 
-	document.documentElement.style.setProperty('color-scheme', colorScheme);
+	window.document.documentElement.style.setProperty('color-scheme', colorScheme);
 
 	if (persist) {
 		miLocalStorage.setItem('theme', JSON.stringify(props));
@@ -173,7 +198,7 @@ export function parseThemeCode(code: string): Theme {
 	if (!validateTheme(theme)) {
 		throw new Error('This theme is invaild');
 	}
-	if (getThemes().some(t => t.id === theme.id)) {
+	if (prefer.s.themes.some(t => t.id === theme.id)) {
 		throw new Error('This theme is already installed');
 	}
 

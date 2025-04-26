@@ -4,11 +4,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700" :class="$style.main">
-		<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="channel && tab === 'overview'" key="overview" class="_gaps">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
+	<MkSpacer :contentMax="700">
+		<MkSwiper v-model:tab="tab" :tabs="headerTabs">
+			<div v-if="channel && tab === 'overview'" class="_gaps">
 				<div class="_panel" :class="$style.bannerContainer">
 					<XChannelFollowButton :channel="channel" :full="true" :class="$style.subscribe"/>
 					<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike class="button" rounded primary :class="$style.favorite" @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
@@ -33,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</MkFoldableSection>
 			</div>
-			<div v-if="channel && tab === 'timeline'" key="timeline" class="_gaps">
+			<div v-if="channel && tab === 'timeline'" class="_gaps">
 				<MkInfo v-if="channel.isArchived" warn>{{ i18n.ts.thisChannelArchived }}</MkInfo>
 
 				<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
@@ -41,10 +40,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after" @note="miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.id}`, Date.now())"/>
 			</div>
-			<div v-else-if="tab === 'featured'" key="featured">
+			<div v-else-if="tab === 'featured'">
 				<MkNotes :pagination="featuredPagination"/>
 			</div>
-			<div v-else-if="tab === 'search'" key="search">
+			<div v-else-if="tab === 'search'">
 				<div v-if="notesSearchAvailable" class="_gaps">
 					<div>
 						<MkInput v-model="searchQuery" @enter="search()">
@@ -58,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
 				</div>
 			</div>
-		</MkHorizontalSwipe>
+		</MkSwiper>
 	</MkSpacer>
 	<template #footer>
 		<div :class="$style.footer">
@@ -69,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSpacer>
 		</div>
 	</template>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -94,7 +93,7 @@ import { prefer } from '@/preferences.js';
 import MkNote from '@/components/MkNote.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import MkSwiper from '@/components/MkSwiper.vue';
 import { isSupportShare } from '@/utility/navigator.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { notesSearchAvailable } from '@/utility/check-permissions.js';
@@ -271,14 +270,10 @@ definePage(() => ({
 </script>
 
 <style lang="scss" module>
-.main {
-	min-height: calc(100cqh - (var(--MI-stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
-}
-
 .footer {
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
-	background: var(--MI_THEME-acrylicBg);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 

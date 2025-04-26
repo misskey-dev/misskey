@@ -16,6 +16,10 @@ export const page = (loader: AsyncComponentLoader) => defineAsyncComponent({
 	errorComponent: MkError,
 });
 
+function chatPage(...args: Parameters<typeof page>) {
+	return $i?.policies.chatAvailability !== 'unavailable' ? page(...args) : page(() => import('@/pages/not-found.vue'));
+}
+
 export const ROUTE_DEF = [{
 	path: '/@:username/pages/:pageName(*)',
 	component: page(() => import('@/pages/page.vue')),
@@ -40,6 +44,22 @@ export const ROUTE_DEF = [{
 }, {
 	path: '/clips/:clipId',
 	component: page(() => import('@/pages/clip.vue')),
+}, {
+	path: '/chat',
+	component: chatPage(() => import('@/pages/chat/home.vue')),
+	loginRequired: true,
+}, {
+	path: '/chat/user/:userId',
+	component: chatPage(() => import('@/pages/chat/room.vue')),
+	loginRequired: true,
+}, {
+	path: '/chat/room/:roomId',
+	component: chatPage(() => import('@/pages/chat/room.vue')),
+	loginRequired: true,
+}, {
+	path: '/chat/messages/:messageId',
+	component: chatPage(() => import('@/pages/chat/message.vue')),
+	loginRequired: true,
 }, {
 	path: '/instance-info/:host',
 	component: page(() => import('@/pages/instance-info.vue')),
@@ -112,10 +132,6 @@ export const ROUTE_DEF = [{
 		path: '/sounds',
 		name: 'sounds',
 		component: page(() => import('@/pages/settings/sounds.vue')),
-	}, {
-		path: '/accessibility',
-		name: 'accessibility',
-		component: page(() => import('@/pages/settings/accessibility.vue')),
 	}, {
 		path: '/plugin/install',
 		name: 'plugin',
@@ -376,9 +392,13 @@ export const ROUTE_DEF = [{
 		name: 'avatarDecorations',
 		component: page(() => import('@/pages/avatar-decorations.vue')),
 	}, {
-		path: '/queue',
-		name: 'queue',
-		component: page(() => import('@/pages/admin/queue.vue')),
+		path: '/federation-job-queue',
+		name: 'federationJobQueue',
+		component: page(() => import('@/pages/admin/federation-job-queue.vue')),
+	}, {
+		path: '/job-queue',
+		name: 'jobQueue',
+		component: page(() => import('@/pages/admin/job-queue.vue')),
 	}, {
 		path: '/files',
 		name: 'files',

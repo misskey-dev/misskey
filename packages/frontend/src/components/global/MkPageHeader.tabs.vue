@@ -133,7 +133,7 @@ async function enter(el: Element) {
 		entering = false;
 	});
 
-	setTimeout(renderTab, 170);
+	window.setTimeout(renderTab, 170);
 }
 
 function afterEnter(el: Element) {
@@ -170,7 +170,7 @@ onMounted(() => {
 
 	if (props.rootEl) {
 		ro2 = new ResizeObserver((entries, observer) => {
-			if (document.body.contains(el.value as HTMLElement)) {
+			if (window.document.body.contains(el.value as HTMLElement)) {
 				nextTick(() => renderTab());
 			}
 		});

@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				[$style.t_exportCompleted]: notification.type === 'exportCompleted',
 				[$style.t_login]: notification.type === 'login',
 				[$style.t_createToken]: notification.type === 'createToken',
+				[$style.t_chatRoomInvitationReceived]: notification.type === 'chatRoomInvitationReceived',
 				[$style.t_roleAssigned]: notification.type === 'roleAssigned' && notification.role.iconUrl == null,
 			}]"
 		>
@@ -43,6 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="notification.type === 'exportCompleted'" class="ti ti-archive"></i>
 			<i v-else-if="notification.type === 'login'" class="ti ti-login-2"></i>
 			<i v-else-if="notification.type === 'createToken'" class="ti ti-key"></i>
+			<i v-else-if="notification.type === 'chatRoomInvitationReceived'" class="ti ti-messages"></i>
 			<template v-else-if="notification.type === 'roleAssigned'">
 				<img v-if="notification.role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="notification.role.iconUrl" alt=""/>
 				<i v-else class="ti ti-badges"></i>
@@ -61,6 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
 			<span v-else-if="notification.type === 'note'">{{ i18n.ts._notification.newNote }}: <MkUserName :user="notification.note.user"/></span>
 			<span v-else-if="notification.type === 'roleAssigned'">{{ i18n.ts._notification.roleAssigned }}</span>
+			<span v-else-if="notification.type === 'chatRoomInvitationReceived'">{{ i18n.ts._notification.chatRoomInvitationReceived }}</span>
 			<span v-else-if="notification.type === 'achievementEarned'">{{ i18n.ts._notification.achievementEarned }}</span>
 			<span v-else-if="notification.type === 'login'">{{ i18n.ts._notification.login }}</span>
 			<span v-else-if="notification.type === 'createToken'">{{ i18n.ts._notification.createToken }}</span>
@@ -103,6 +106,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 			<div v-else-if="notification.type === 'roleAssigned'" :class="$style.text">
 				{{ notification.role.name }}
+			</div>
+			<div v-else-if="notification.type === 'chatRoomInvitationReceived'" :class="$style.text">
+				{{ notification.invitation.room.name }}
 			</div>
 			<MkA v-else-if="notification.type === 'achievementEarned'" :class="$style.text" to="/my/achievements">
 				{{ i18n.ts._achievements._types['_' + notification.achievement].title }}
@@ -290,6 +296,7 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	right: -2px;
 	width: 20px;
 	height: 20px;
+	line-height: 20px;
 	box-sizing: border-box;
 	border-radius: 100%;
 	background: var(--MI_THEME-panel);
@@ -304,67 +311,61 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 }
 
 .t_follow, .t_followRequestAccepted, .t_receiveFollowRequest {
-	padding: 3px;
 	background: var(--eventFollow);
 	pointer-events: none;
 }
 
 .t_renote {
-	padding: 3px;
 	background: var(--eventRenote);
 	pointer-events: none;
 }
 
 .t_quote {
-	padding: 3px;
 	background: var(--eventRenote);
 	pointer-events: none;
 }
 
 .t_reply {
-	padding: 3px;
 	background: var(--eventReply);
 	pointer-events: none;
 }
 
 .t_mention {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_pollEnded {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_achievementEarned {
-	padding: 3px;
 	background: var(--eventAchievement);
 	pointer-events: none;
 }
 
 .t_exportCompleted {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_roleAssigned {
-	padding: 3px;
 	background: var(--eventOther);
 	pointer-events: none;
 }
 
 .t_login {
-	padding: 3px;
 	background: var(--eventLogin);
 	pointer-events: none;
 }
 
 .t_createToken {
-	padding: 3px;
+	background: var(--eventOther);
+	pointer-events: none;
+}
+
+.t_chatRoomInvitationReceived {
 	background: var(--eventOther);
 	pointer-events: none;
 }

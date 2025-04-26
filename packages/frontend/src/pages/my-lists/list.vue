@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700" :class="$style.main">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<MkSpacer :contentMax="700">
 		<div v-if="list" class="_gaps">
 			<MkFolder>
 				<template #label>{{ i18n.ts.settings }}</template>
@@ -49,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -198,10 +197,6 @@ definePage(() => ({
 </script>
 
 <style lang="scss" module>
-.main {
-	min-height: calc(100cqh - (var(--MI-stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
-}
-
 .userItem {
 	display: flex;
 }

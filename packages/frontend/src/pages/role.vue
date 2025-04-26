@@ -4,8 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :tabs="headerTabs"/></template>
+<PageWithHeader v-model:tab="tab" :tabs="headerTabs">
 	<MkSpacer v-if="error != null" :contentMax="1200">
 		<div :class="$style.root">
 			<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
@@ -32,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
