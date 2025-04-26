@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { RedisKVCache } from '@/misc/cache.js';
