@@ -367,7 +367,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkDisableSection :disabled="rememberNoteVisibility">
 									<MkFolder>
 										<div class="_gaps_m">
-											<template v-if="$i.isInYamiMode">
+											<template v-if="$i.policies.canYamiNote">
 												<MkPreferenceContainer k="defaultIsNoteInYamiMode">
 													<MkSwitch v-model="defaultIsNoteInYamiMode">
 														<template #label>{{ i18n.ts._yami.defaultUseYamiNote }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>

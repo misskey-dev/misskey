@@ -11885,11 +11885,11 @@ export interface Locale extends ILocale {
          */
         "enableYamiNoteOk": string;
         /**
-         * やみモード時にデフォルトでやみノートで投稿する
+         * やみノートが投稿できる時にデフォルトでやみノートで投稿する
          */
         "defaultUseYamiNote": string;
         /**
-         * オフにすると、やみモードでも通常の投稿が初期状態になります。
+         * オフにすると、やみノートが投稿できる時でも通常の投稿が初期状態になります。
          */
         "defaultUseYamiNoteDescription": string;
         /**
