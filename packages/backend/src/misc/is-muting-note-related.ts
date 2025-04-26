@@ -7,7 +7,7 @@ type NoteCompat = {
 	id: string;
 	reply?: NoteCompat | null;
 	renote?: NoteCompat | null;
-}
+};
 
 export function isMutingNoteRelated(note: NoteCompat, noteIds: Set<string>) {
 	if (noteIds.has(note.id)) {
