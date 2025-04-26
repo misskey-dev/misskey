@@ -67,7 +67,7 @@ export async function mainBoot() {
 	emojiPicker.init();
 
 	if (isClientUpdated && $i) {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/HanaUpdated.vue')), {}, {
 			closed: () => dispose(),
 		});
 
