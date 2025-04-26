@@ -139,14 +139,35 @@ const withSensitive = computed<boolean>({
 	set: (x) => saveTlFilter('withSensitive', x),
 });
 
+// 闇モード関連の設定用の状態変数
 const showYamiNonFollowingPublicNotes = computed<boolean>({
-	get: () => store.r.tl.value.filter.showYamiNonFollowingPublicNotes ?? true,
-	set: (x) => saveTlFilter('showYamiNonFollowingPublicNotes', x),
+	get: () => {
+		// 闇モードでなければ常にfalse
+		if (!$i?.isInYamiMode) {
+			return false;
+		}
+		return store.r.tl.value.filter.showYamiNonFollowingPublicNotes;
+	},
+	set: (x) => {
+		// 闇モードでなければ設定変更を無視
+		if (!$i?.isInYamiMode) return;
+		saveTlFilter('showYamiNonFollowingPublicNotes', x);
+	},
 });
 
 const showYamiFollowingNotes = computed<boolean>({
-	get: () => store.r.tl.value.filter.showYamiFollowingNotes ?? true,
-	set: (x) => saveTlFilter('showYamiFollowingNotes', x),
+	get: () => {
+		// 闇モードでなければ常にfalse
+		if (!$i?.isInYamiMode) {
+			return false;
+		}
+		return store.r.tl.value.filter.showYamiFollowingNotes;
+	},
+	set: (x) => {
+		// 闇モードでなければ設定変更を無視
+		if (!$i?.isInYamiMode) return;
+		saveTlFilter('showYamiFollowingNotes', x);
+	},
 });
 
 watch(src, () => {
@@ -364,10 +385,14 @@ const filterItems = computed(() => {
 			type: 'switch',
 			text: i18n.ts._yami.showYamiNonFollowingPublicNotes,
 			ref: showYamiNonFollowingPublicNotes,
+			// 闇モードでない場合は視覚的に無効化
+			disabled: !$i?.isInYamiMode,
 		}, {
 			type: 'switch',
 			text: i18n.ts._yami.showYamiFollowingNotes,
 			ref: showYamiFollowingNotes,
+			// 闇モードでない場合は視覚的に無効化
+			disabled: !$i?.isInYamiMode,
 		});
 	}
 
