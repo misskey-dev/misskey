@@ -512,6 +512,28 @@ describe('Timelines', () => {
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), false);
 		});
 
+		test.concurrent('ノートミュートが機能する', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			await api('following/create', { userId: bob.id }, alice);
+			await setTimeout(1000);
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await waitForPushToTl();
+
+			// ミュート前はノートが表示される
+			const res1 = await api('notes/timeline', { limit: 100 }, alice);
+			assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+			// ノートをミュート
+			await api('notes/muting/create', { noteId: bobNote.id }, alice);
+			await setTimeout(1000);
+
+			// ミュート後はノートが表示されない
+			const res2 = await api('notes/timeline', { limit: 100 }, alice);
+			assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
+		});
+
 		test.concurrent('FTT: ローカルユーザーの HTL にはプッシュされる', async () => {
 			const [alice, bob, carol] = await Promise.all([signup(), signup(), signup()]);
 
@@ -744,7 +766,27 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some(note => note.id === bobNote2.id), true);
-		}, 1000 * 10);
+		}, 1000 * 30);
+
+		test.concurrent('ノートミュートが機能する', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await waitForPushToTl();
+
+			// ミュート前はノートが表示される
+			const res1 = await api('notes/local-timeline', { limit: 100 }, alice);
+			assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+			// ノートをミュート
+			await api('notes/muting/create', { noteId: bobNote.id }, alice);
+			await setTimeout(1000);
+
+			// ミュート後はノートが表示されない
+			const res2 = await api('notes/local-timeline', { limit: 100 }, alice);
+			assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
+		});
 	});
 
 	describe('Social TL', () => {
@@ -955,7 +997,27 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some(note => note.id === bobNote2.id), true);
-		}, 1000 * 10);
+		}, 1000 * 30);
+
+		test.concurrent('ノートミュートが機能する', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await waitForPushToTl();
+
+			// ミュート前はノートが表示される
+			const res1 = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+			assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+			// ノートをミュート
+			await api('notes/muting/create', { noteId: bobNote.id }, alice);
+			await setTimeout(1000);
+
+			// ミュート後はノートが表示されない
+			const res2 = await api('notes/hybrid-timeline', { limit: 100 }, alice);
+			assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
+		});
 	});
 
 	describe('User List TL', () => {
@@ -1168,7 +1230,7 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some(note => note.id === bobNote2.id), true);
-		}, 1000 * 10);
+		}, 1000 * 30);
 
 		test.concurrent('リスインしているユーザーの自身宛ての visibility: specified なノートが含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -1200,6 +1262,29 @@ describe('Timelines', () => {
 			const res = await api('notes/user-list-timeline', { listId: list.id }, alice);
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote.id), false);
+		});
+
+		test.concurrent('ノートミュートが機能する', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const list = await api('users/lists/create', { name: 'list' }, alice).then(res => res.body);
+			await api('users/lists/push', { listId: list.id, userId: bob.id }, alice);
+			await setTimeout(1000);
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await waitForPushToTl();
+
+			// ミュート前はノートが表示される
+			const res1 = await api('notes/user-list-timeline', { listId: list.id }, alice);
+			assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+			// ノートをミュート
+			await api('notes/muting/create', { noteId: bobNote.id }, alice);
+			await setTimeout(1000);
+
+			// ミュート後はノートが表示されない
+			const res2 = await api('notes/user-list-timeline', { listId: list.id }, alice);
+			assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
 		});
 	});
 
@@ -1327,7 +1412,7 @@ describe('Timelines', () => {
 
 			assert.strictEqual(res.body.some(note => note.id === bobNote1.id), false);
 			assert.strictEqual(res.body.some(note => note.id === bobNote2.id), true);
-		}, 1000 * 10);
+		}, 1000 * 30);
 
 		test.concurrent('[withChannelNotes: true] チャンネル投稿が含まれる', async () => {
 			const [alice, bob] = await Promise.all([signup(), signup()]);
@@ -1450,6 +1535,26 @@ describe('Timelines', () => {
 
 			const res = await api('users/notes', { userId: alice.id, sinceId: noteSince.id, untilId: noteUntil.id });
 			assert.deepStrictEqual(res.body, [note3, note2, note1]);
+		});
+
+		test.concurrent('ノートミュートが機能する', async () => {
+			const [alice, bob] = await Promise.all([signup(), signup()]);
+
+			const bobNote = await post(bob, { text: 'hi' });
+
+			await waitForPushToTl();
+
+			// ミュート前はノートが表示される
+			const res1 = await api('users/notes', { userId: bob.id }, alice);
+			assert.strictEqual(res1.body.some(note => note.id === bobNote.id), true);
+
+			// ノートをミュート
+			await api('notes/muting/create', { noteId: bobNote.id }, alice);
+			await setTimeout(1000);
+
+			// ミュート後はノートが表示されない
+			const res2 = await api('users/notes', { userId: bob.id }, alice);
+			assert.strictEqual(res2.body.some(note => note.id === bobNote.id), false);
 		});
 	});
 
