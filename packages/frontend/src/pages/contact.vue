@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader>
-	<MkSpacer :contentMax="600" :marginMin="20">
+	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 20px;">
 		<div class="_gaps_m">
 			<MkKeyValue :copy="instance.maintainerName">
 				<template #key>{{ i18n.ts.administrator }}</template>
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkKeyValue>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

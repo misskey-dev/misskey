@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer>
+	<div class="_spacer">
 		<div v-if="tab === '-'" class="_gaps">
 			<div :class="$style.queues">
 				<div v-for="q in queueInfos" :key="q.name" :class="$style.queue" @click="tab = q.name">
@@ -139,7 +139,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</template>
 
-				<MkSpacer>
+				<div class="_spacer">
 					<MkInput
 						v-model="searchQuery"
 						:placeholder="i18n.ts.search"
@@ -163,10 +163,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<XJob :job="job" :queueType="tab" style="margin: 4px 0;" @needRefresh="refreshJob(job.id)"/>
 						</template>
 					</MkTl>
-				</MkSpacer>
+				</div>
 			</MkFolder>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

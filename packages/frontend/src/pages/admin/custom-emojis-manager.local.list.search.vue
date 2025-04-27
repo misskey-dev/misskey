@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-search" style="margin-right: 0.5em;"></i> {{ i18n.ts.search }}
 	</template>
 	<div :class="$style.root">
-		<MkSpacer>
+		<div class="_spacer">
 			<div class="_gaps">
 				<div class="_gaps_s">
 					<MkInput
@@ -107,7 +107,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					/>
 				</MkFolder>
 			</div>
-		</MkSpacer>
+		</div>
 		<div :class="$style.footerActions">
 			<MkButton primary @click="onSearchRequest">
 				{{ i18n.ts.search }}

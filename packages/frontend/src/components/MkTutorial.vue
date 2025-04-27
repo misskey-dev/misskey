@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<slot v-if="page === 0" key="tutorialPage_0" name="welcome" :close="() => emit('close', true)" :next="next">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer"  style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--MI_THEME-accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialTutorial._landing.title }}</div>
@@ -31,13 +31,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-start @click="next">{{ i18n.ts._initialTutorial.launchTutorial }} <i class="ti ti-arrow-right"></i></MkButton>
 							<MkButton v-if="skippable" style="margin: 0 auto;" transparent rounded data-cy-user-setup-close @click="emit('close', true)">{{ i18n.ts.close }}</MkButton>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</slot>
 			<slot v-else-if="page === MAX_PAGE" :key="`tutorialPage_${MAX_PAGE}`" name="finish" :close="() => emit('close')" :prev="prev">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer"  style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--MI_THEME-accent);"></i>
 							<div style="text-align: center; font-size: 120%;">{{ i18n.ts._initialTutorial._done.title }}</div>
@@ -53,18 +53,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkButton rounded primary gradate @click="emit('close')">{{ i18n.ts.close }}</MkButton>
 							</div>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</slot>
 			<div v-else :key="`tutorialPage_${page}`" :class="$style.pageContainer">
 				<div :class="$style.pageRoot">
-					<MkSpacer :marginMin="20" :marginMax="28" :class="$style.pageMain">
+					<div class="_spacer" :class="$style.pageMain" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<component
 							:is="componentsDef[page - 1].component"
 							ref="tutorialPageEl"
 							v-bind="componentsDef[page - 1].props"
 						/>
-					</MkSpacer>
+					</div>
 				</div>
 			</div>
 		</Transition>

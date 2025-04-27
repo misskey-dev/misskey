@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							}
 						]"
 					>
-						<MkSpacer :marginMin="20" :marginMax="28">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 							<div class="_gaps" style="word-break: auto-phrase; text-align: center;">
 								<img ref="instanceIconEl" :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
 								<div>
@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkInfo v-else warn style="width: fit-content; margin: 0 auto; text-align: start; white-space: pre-wrap;">{{ i18n.ts._initialTutorial._onboardingLanding.adminForcesToTakeTutorial }}</MkInfo>
 								<MkInfo style="width: fit-content; margin: 0 auto; text-align: start; white-space: pre-wrap;">{{ i18n.tsx._initialTutorial._onboardingLanding.takesAbout({ min: 3 }) }}</MkInfo>
 							</div>
-						</MkSpacer>
+						</div>
 					</div>
 					<div
 						:class="[
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 			<template #finish="{ prev }">
 				<div :class="$style.centerPage">
-					<MkSpacer :marginMin="20" :marginMax="28">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
 							<div style="text-align: center; font-size: 120%;">{{ i18n.ts._initialTutorial._done.title }}</div>
@@ -101,7 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkInfo style="border-radius: 6px;">{{ i18n.ts._initialTutorial._done.youCanReferTutorialBy }}</MkInfo>
 							<div style="text-align: center;">{{ i18n.tsx._initialTutorial._done.haveFun({ name: instance.name ?? host }) }}</div>
 						</div>
-					</MkSpacer>
+					</div>
 				</div>
 			</template>
 		</MkTutorial>

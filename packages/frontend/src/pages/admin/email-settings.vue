@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :tabs="headerTabs">
-	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
 				<MkSwitch v-model="enableEmail">
@@ -48,15 +48,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</div>
 		</FormSuspense>
-	</MkSpacer>
+	</div>
 	<template #footer>
 		<div :class="$style.footer">
-			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
+			<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 16px;">
 				<div class="_buttons">
 					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 					<MkButton rounded @click="testEmail"><i class="ti ti-send"></i> {{ i18n.ts.testEmail }}</MkButton>
 				</div>
-			</MkSpacer>
+			</div>
 		</div>
 	</template>
 </PageWithHeader>

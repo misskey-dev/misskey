@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="600" :marginMin="16">
+	<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px;">
 		<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
 
 		<div v-if="scopesWithDomain" class="_gaps_m">
@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</FormSection>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

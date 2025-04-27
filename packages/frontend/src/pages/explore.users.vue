@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="1200">
+<div class="_spacer" style="--MI_SPACER-w: 1200px;">
 	<MkTab v-if="instance.federation !== 'none'" v-model="origin" style="margin-bottom: var(--MI-margin);">
 		<option value="local">{{ i18n.ts.local }}</option>
 		<option value="remote">{{ i18n.ts.remote }}</option>
@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFoldableSection>
 		</template>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>

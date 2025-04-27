@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<Transition
 			:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
 			:leaveActiveClass="prefer.s.animation ? $style.fadeLeaveActive : ''"
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkError v-else-if="error" @retry="fetch()"/>
 			<MkLoading v-else/>
 		</Transition>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

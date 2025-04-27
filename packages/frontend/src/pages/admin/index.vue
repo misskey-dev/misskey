@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
 	<div v-if="!narrow || currentPage?.route.name == null" class="nav">
-		<MkSpacer :contentMax="700" :marginMin="16">
+		<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px;">
 			<div class="lxpfedzu _gaps">
 				<div class="banner">
 					<img :src="instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkSuperMenu :def="menuDef" :grid="narrow"></MkSuperMenu>
 			</div>
-		</MkSpacer>
+		</div>
 	</div>
 	<div v-if="!(narrow && currentPage?.route.name == null)" class="main _pageContainer" style="height: 100%;">
 		<NestedRouterView/>

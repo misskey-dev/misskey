@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps_m">
 			<MkFolder :expanded="false">
 				<template #icon><i class="ti ti-plus"></i></template>
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkPagination>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

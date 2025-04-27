@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="900">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps">
 			<div style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
 				<MkSelect v-model="type" style="margin: 0; flex: 1;">
@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkButton primary rounded style="margin: 0 auto;" @click="fetchMore">{{ i18n.ts.loadMore }}</MkButton>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

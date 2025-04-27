@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.banner">
 		<i class="ti ti-checklist"></i>
 	</div>
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps_m">
 			<div v-if="instance.disableRegistration || instance.federation !== 'all'" class="_gaps_s">
 				<MkInfo v-if="instance.disableRegistration" warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton inline primary rounded gradate :disabled="!agreed" data-cy-signup-rules-continue @click="emit('done')">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </div>
 </template>
 

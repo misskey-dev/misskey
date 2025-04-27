@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<FormSuspense :p="init" class="_gaps">
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts.title }}</template>
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="postId" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</FormSuspense>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

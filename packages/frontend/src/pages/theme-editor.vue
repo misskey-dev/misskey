@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div class="cwepdizn _gaps_m">
 			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.backgroundColor }}</template>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

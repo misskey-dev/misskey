@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else #header>New announcement</template>
 
 	<div>
-		<MkSpacer :marginMin="20" :marginMax="28">
+		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 			<div class="_gaps_m">
 				<MkInput v-model="title">
 					<template #label>{{ i18n.ts.title }}</template>
@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 				<MkButton v-if="announcement" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
-		</MkSpacer>
+		</div>
 		<div :class="$style.footer">
 			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.announcement ? i18n.ts.update : i18n.ts.create }}</MkButton>
 		</div>

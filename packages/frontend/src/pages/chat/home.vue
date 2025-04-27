@@ -6,12 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
 	<MkPolkadots v-if="tab === 'home'" accented/>
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XHome v-if="tab === 'home'"/>
 		<XInvitations v-else-if="tab === 'invitations'"/>
 		<XJoiningRooms v-else-if="tab === 'joiningRooms'"/>
 		<XOwnedRooms v-else-if="tab === 'ownedRooms'"/>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

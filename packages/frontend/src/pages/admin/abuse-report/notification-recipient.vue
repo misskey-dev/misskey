@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="900">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div :class="$style.root" class="_gaps_m">
 			<div :class="$style.addButton">
 				<MkButton primary @click="onAddButtonClicked">
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				/>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

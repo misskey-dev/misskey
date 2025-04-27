@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :reversed="tab === 'chat'" :tabs="headerTabs" :actions="headerActions">
-	<MkSpacer v-if="tab === 'chat'" :contentMax="700">
+	<div class="_spacer" v-if="tab === 'chat'" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<div v-if="initializing">
 				<MkLoading/>
@@ -56,19 +56,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkInfo v-if="$i.policies.chatAvailability !== 'available'" warn>{{ $i.policies.chatAvailability === 'readonly' ? i18n.ts._chat.chatIsReadOnlyForThisAccountOrServer : i18n.ts._chat.chatNotAvailableForThisAccountOrServer }}</MkInfo>
 		</div>
-	</MkSpacer>
+	</div>
 
-	<MkSpacer v-else-if="tab === 'search'" :contentMax="700">
+	<div class="_spacer" v-else-if="tab === 'search'" style="--MI_SPACER-w: 700px;">
 		<XSearch :userId="userId" :roomId="roomId"/>
-	</MkSpacer>
+	</div>
 
-	<MkSpacer v-else-if="tab === 'members'" :contentMax="700">
+	<div class="_spacer" v-else-if="tab === 'members'" style="--MI_SPACER-w: 700px;">
 		<XMembers v-if="room != null" :room="room" @inviteUser="inviteUser"/>
-	</MkSpacer>
+	</div>
 
-	<MkSpacer v-else-if="tab === 'info'" :contentMax="700">
+	<div class="_spacer" v-else-if="tab === 'info'" style="--MI_SPACER-w: 700px;">
 		<XInfo v-if="room != null" :room="room"/>
-	</MkSpacer>
+	</div>
 
 	<template #footer>
 		<div v-if="tab === 'chat'" :class="$style.footer">

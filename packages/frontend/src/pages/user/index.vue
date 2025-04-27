@@ -7,9 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="tab" :tabs="headerTabs" :actions="headerActions" :swipable="true">
 	<div v-if="user">
 		<XHome v-if="tab === 'home'" :user="user" @unfoldFiles="() => { tab = 'files'; }"/>
-		<MkSpacer v-else-if="tab === 'notes'" :contentMax="800" style="padding-top: 0">
+		<div v-else-if="tab === 'notes'" class="_spacer" style="--MI_SPACER-w: 800px;">
 			<XTimeline :user="user"/>
-		</MkSpacer>
+		</div>
 		<XFiles v-else-if="tab === 'files'" :user="user"/>
 		<XActivity v-else-if="tab === 'activity'" :user="user"/>
 		<XAchievements v-else-if="tab === 'achievements'" :user="user"/>

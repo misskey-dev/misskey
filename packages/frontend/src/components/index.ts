@@ -22,7 +22,6 @@ import MkLoading from './global/MkLoading.vue';
 import MkError from './global/MkError.vue';
 import MkAd from './global/MkAd.vue';
 import MkPageHeader from './global/MkPageHeader.vue';
-import MkSpacer from './global/MkSpacer.vue';
 import MkStickyContainer from './global/MkStickyContainer.vue';
 import MkLazy from './global/MkLazy.vue';
 import PageWithHeader from './global/PageWithHeader.vue';
@@ -60,7 +59,6 @@ export const components = {
 	MkError: MkError,
 	MkAd: MkAd,
 	MkPageHeader: MkPageHeader,
-	MkSpacer: MkSpacer,
 	MkStickyContainer: MkStickyContainer,
 	MkLazy: MkLazy,
 	PageWithHeader: PageWithHeader,
@@ -92,7 +90,6 @@ declare module '@vue/runtime-core' {
 		MkError: typeof MkError;
 		MkAd: typeof MkAd;
 		MkPageHeader: typeof MkPageHeader;
-		MkSpacer: typeof MkSpacer;
 		MkStickyContainer: typeof MkStickyContainer;
 		MkLazy: typeof MkLazy;
 		PageWithHeader: typeof PageWithHeader;

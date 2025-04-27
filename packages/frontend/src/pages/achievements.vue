@@ -5,9 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader>
-	<MkSpacer :contentMax="1200">
+	<div class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<MkAchievements :user="$i"/>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

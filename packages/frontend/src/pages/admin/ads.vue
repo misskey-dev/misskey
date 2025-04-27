@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="900">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<MkSelect v-model="filterType" :class="$style.input" @update:modelValue="filterItems">
 			<template #label>{{ i18n.ts.state }}</template>
 			<option value="all">{{ i18n.ts.all }}</option>
@@ -77,7 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-reload"></i>{{ i18n.ts.more }}
 			</MkButton>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

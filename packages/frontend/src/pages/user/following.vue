@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="1000">
+	<div class="_spacer" style="--MI_SPACER-w: 1000px;">
 		<Transition name="fade" mode="out-in">
 			<div v-if="user">
 				<XFollowList :user="user" type="following"/>
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkError v-else-if="error" @retry="fetchUser()"/>
 			<MkLoading v-else/>
 		</Transition>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
