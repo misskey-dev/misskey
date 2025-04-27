@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkStickyContainer>
 		<template #header><MkPageHeader v-model:tab="tab" v-bind="pageHeaderProps"/></template>
 		<div :class="$style.body">
-			<MkSwiper v-if="swipable" v-model:tab="tab" :tabs="props.tabs">
+			<MkSwiper v-if="swipable" v-model:tab="tab" :class="$style.swiper" :tabs="props.tabs">
 				<slot></slot>
 			</MkSwiper>
 			<slot v-else></slot>
@@ -24,6 +24,7 @@ import { scrollInContainer } from '@@/js/scroll.js';
 import type { PageHeaderProps } from './MkPageHeader.vue';
 import { useScrollPositionKeeper } from '@/use/use-scroll-position-keeper.js';
 import MkSwiper from '@/components/MkSwiper.vue';
+import { useRouter } from '@/router.js';
 
 const props = defineProps<PageHeaderProps & {
 	reversed?: boolean;
@@ -40,10 +41,18 @@ const rootEl = useTemplateRef('rootEl');
 
 useScrollPositionKeeper(rootEl);
 
+const router = useRouter();
+
+router.useListener('same', () => {
+	scrollToTop();
+});
+
+function scrollToTop() {
+	if (rootEl.value) scrollInContainer(rootEl.value, { top: 0, behavior: 'smooth' });
+}
+
 defineExpose({
-	scrollToTop: () => {
-		if (rootEl.value) scrollInContainer(rootEl.value, { top: 0, behavior: 'smooth' });
-	},
+	scrollToTop,
 });
 </script>
 
@@ -52,7 +61,7 @@ defineExpose({
 
 }
 
-.body {
+.body, .swiper {
 	min-height: calc(100cqh - (var(--MI-stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
 }
 </style>
