@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { S3Client } from '@aws-sdk/client-s3';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockClient } from 'aws-sdk-client-mock';
