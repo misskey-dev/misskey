@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<div class="_spacer" v-if="error != null" style="--MI_SPACER-w: 1200px;">
+	<div v-if="error != null" class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<div :class="$style.root">
 			<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
 			<p :class="$style.text">
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</p>
 		</div>
 	</div>
-	<div class="_spacer" v-else-if="list" style="--MI_SPACER-w: 700px;">
+	<div v-else-if="list" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="list" class="members _margin">
 			<div :class="$style.member_text">{{ i18n.ts.members }}</div>
 			<div class="_gaps_s">
