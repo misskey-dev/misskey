@@ -4,60 +4,58 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
 	<MkSpacer :contentMax="700">
-		<MkSwiper v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="channel && tab === 'overview'" class="_gaps">
-				<div class="_panel" :class="$style.bannerContainer">
-					<XChannelFollowButton :channel="channel" :full="true" :class="$style.subscribe"/>
-					<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike class="button" rounded primary :class="$style.favorite" @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
-					<MkButton v-else v-tooltip="i18n.ts.favorite" asLike class="button" rounded :class="$style.favorite" @click="favorite()"><i class="ti ti-star"></i></MkButton>
-					<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : undefined }" :class="$style.banner">
-						<div :class="$style.bannerStatus">
-							<div><i class="ti ti-users ti-fw"></i><I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
-							<div><i class="ti ti-pencil ti-fw"></i><I18n :src="i18n.ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
-						</div>
-						<div v-if="channel.isSensitive" :class="$style.sensitiveIndicator">{{ i18n.ts.sensitive }}</div>
-						<div :class="$style.bannerFade"></div>
+		<div v-if="channel && tab === 'overview'" class="_gaps">
+			<div class="_panel" :class="$style.bannerContainer">
+				<XChannelFollowButton :channel="channel" :full="true" :class="$style.subscribe"/>
+				<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike class="button" rounded primary :class="$style.favorite" @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
+				<MkButton v-else v-tooltip="i18n.ts.favorite" asLike class="button" rounded :class="$style.favorite" @click="favorite()"><i class="ti ti-star"></i></MkButton>
+				<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : undefined }" :class="$style.banner">
+					<div :class="$style.bannerStatus">
+						<div><i class="ti ti-users ti-fw"></i><I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
+						<div><i class="ti ti-pencil ti-fw"></i><I18n :src="i18n.ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
 					</div>
-					<div v-if="channel.description" :class="$style.description">
-						<Mfm :text="channel.description" :isNote="false"/>
-					</div>
+					<div v-if="channel.isSensitive" :class="$style.sensitiveIndicator">{{ i18n.ts.sensitive }}</div>
+					<div :class="$style.bannerFade"></div>
 				</div>
-
-				<MkFoldableSection>
-					<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedNotes }}</template>
-					<div v-if="channel.pinnedNotes && channel.pinnedNotes.length > 0" class="_gaps">
-						<MkNote v-for="note in channel.pinnedNotes" :key="note.id" class="_panel" :note="note"/>
-					</div>
-				</MkFoldableSection>
-			</div>
-			<div v-if="channel && tab === 'timeline'" class="_gaps">
-				<MkInfo v-if="channel.isArchived" warn>{{ i18n.ts.thisChannelArchived }}</MkInfo>
-
-				<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
-				<MkPostForm v-if="$i && prefer.r.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
-
-				<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after" @note="miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.id}`, Date.now())"/>
-			</div>
-			<div v-else-if="tab === 'featured'">
-				<MkNotes :pagination="featuredPagination"/>
-			</div>
-			<div v-else-if="tab === 'search'">
-				<div v-if="notesSearchAvailable" class="_gaps">
-					<div>
-						<MkInput v-model="searchQuery" @enter="search()">
-							<template #prefix><i class="ti ti-search"></i></template>
-						</MkInput>
-						<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
-					</div>
-					<MkNotes v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
-				</div>
-				<div v-else>
-					<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
+				<div v-if="channel.description" :class="$style.description">
+					<Mfm :text="channel.description" :isNote="false"/>
 				</div>
 			</div>
-		</MkSwiper>
+
+			<MkFoldableSection>
+				<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedNotes }}</template>
+				<div v-if="channel.pinnedNotes && channel.pinnedNotes.length > 0" class="_gaps">
+					<MkNote v-for="note in channel.pinnedNotes" :key="note.id" class="_panel" :note="note"/>
+				</div>
+			</MkFoldableSection>
+		</div>
+		<div v-if="channel && tab === 'timeline'" class="_gaps">
+			<MkInfo v-if="channel.isArchived" warn>{{ i18n.ts.thisChannelArchived }}</MkInfo>
+
+			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
+			<MkPostForm v-if="$i && prefer.r.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
+
+			<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after" @note="miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.id}`, Date.now())"/>
+		</div>
+		<div v-else-if="tab === 'featured'">
+			<MkNotes :pagination="featuredPagination"/>
+		</div>
+		<div v-else-if="tab === 'search'">
+			<div v-if="notesSearchAvailable" class="_gaps">
+				<div>
+					<MkInput v-model="searchQuery" @enter="search()">
+						<template #prefix><i class="ti ti-search"></i></template>
+					</MkInput>
+					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
+				</div>
+				<MkNotes v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
+			</div>
+			<div v-else>
+				<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
+			</div>
+		</div>
 	</MkSpacer>
 	<template #footer>
 		<div :class="$style.footer">
@@ -93,7 +91,6 @@ import { prefer } from '@/preferences.js';
 import MkNote from '@/components/MkNote.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkSwiper from '@/components/MkSwiper.vue';
 import { isSupportShare } from '@/utility/navigator.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { notesSearchAvailable } from '@/utility/check-permissions.js';
