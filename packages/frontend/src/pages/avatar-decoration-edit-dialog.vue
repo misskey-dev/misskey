@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else #header>New decoration</template>
 
 	<div style="display: flex; flex-direction: column; min-height: 100%;">
-		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28" style="flex-grow: 1px;;">
+		<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px; flex-grow: 1;">
 			<div class="_gaps_m">
 				<div :class="$style.preview">
 					<div :class="[$style.previewItem, $style.light]">

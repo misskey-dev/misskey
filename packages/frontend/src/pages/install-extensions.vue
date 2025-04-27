@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithAnimBg>
-	<div class="_spacer" style="--MI_SPACER-w: 550" :marginMax="50px;">
+	<div class="_spacer" style="--MI_SPACER-w: 550px; --MI_SPACER-max: 50px;">
 		<MkLoading v-if="uiPhase === 'fetching'"/>
 		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
 			<template #additionalInfo>

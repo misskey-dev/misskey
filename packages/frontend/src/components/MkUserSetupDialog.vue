@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 1">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28" :class="$style.pageMainpx;">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<XProfile/>
 						</div>
 						<div :class="$style.pageFooter">
@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 2">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28" :class="$style.pageMainpx;">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<XPrivacy/>
 						</div>
 						<div :class="$style.pageFooter">

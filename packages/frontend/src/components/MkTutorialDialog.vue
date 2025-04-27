@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 1">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28" :class="$style.pageMainpx;">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<XNote phase="aboutNote"/>
 						</div>
 						<div :class="$style.pageFooter">
@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 2">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28" :class="$style.pageMainpx;">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<div class="_gaps">
 								<XNote phase="howToReact" @reacted="isReactionTutorialPushed = true"/>
 								<div v-if="!isReactionTutorialPushed">{{ i18n.ts._initialTutorial._reaction.reactToContinue }}</div>
@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 3">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28" :class="$style.pageMainpx;">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<XTimeline/>
 						</div>
 						<div :class="$style.pageFooter">
@@ -91,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 4">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28" :class="$style.pageMainpx;">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<XPostNote/>
 						</div>
 						<div :class="$style.pageFooter">
@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-else-if="page === 5">
 				<div style="height: 100cqh; overflow: auto;">
 					<div :class="$style.pageRoot">
-						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28" :class="$style.pageMainpx;">
+						<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;" :class="$style.pageMain">
 							<div class="_gaps">
 								<XSensitive @succeeded="isSensitiveTutorialSucceeded = true"/>
 								<div v-if="!isSensitiveTutorialSucceeded">{{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.doItToContinue }}</div>
