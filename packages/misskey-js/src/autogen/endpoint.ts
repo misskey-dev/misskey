@@ -503,6 +503,10 @@ import type {
 	NotesLocalTimelineResponse,
 	NotesMentionsRequest,
 	NotesMentionsResponse,
+	NotesMutingCreateRequest,
+	NotesMutingDeleteRequest,
+	NotesMutingListRequest,
+	NotesMutingListResponse,
 	NotesPollsRecommendationRequest,
 	NotesPollsRecommendationResponse,
 	NotesPollsVoteRequest,
@@ -969,6 +973,9 @@ export type Endpoints = {
 	'notes/hybrid-timeline': { req: NotesHybridTimelineRequest; res: NotesHybridTimelineResponse };
 	'notes/local-timeline': { req: NotesLocalTimelineRequest; res: NotesLocalTimelineResponse };
 	'notes/mentions': { req: NotesMentionsRequest; res: NotesMentionsResponse };
+	'notes/muting/create': { req: NotesMutingCreateRequest; res: EmptyResponse };
+	'notes/muting/delete': { req: NotesMutingDeleteRequest; res: EmptyResponse };
+	'notes/muting/list': { req: NotesMutingListRequest; res: NotesMutingListResponse };
 	'notes/polls/recommendation': { req: NotesPollsRecommendationRequest; res: NotesPollsRecommendationResponse };
 	'notes/polls/vote': { req: NotesPollsVoteRequest; res: EmptyResponse };
 	'notes/reactions': { req: NotesReactionsRequest; res: NotesReactionsResponse };

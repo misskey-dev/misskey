@@ -40,6 +40,7 @@ import {
 	MiMuting,
 	MiNote,
 	MiNoteFavorite,
+	MiNoteMuting,
 	MiNoteReaction,
 	MiNoteThreadMuting,
 	MiPage,
@@ -125,6 +126,12 @@ const $avatarDecorationsRepository: Provider = {
 const $noteFavoritesRepository: Provider = {
 	provide: DI.noteFavoritesRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiNoteFavorite).extend(miRepository as MiRepository<MiNoteFavorite>),
+	inject: [DI.db],
+};
+
+const $noteMutingsRepository: Provider = {
+	provide: DI.noteMutingsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiNoteMuting).extend(miRepository as MiRepository<MiNoteMuting>),
 	inject: [DI.db],
 };
 
@@ -540,6 +547,7 @@ const $reversiGamesRepository: Provider = {
 		$appsRepository,
 		$avatarDecorationsRepository,
 		$noteFavoritesRepository,
+		$noteMutingsRepository,
 		$noteThreadMutingsRepository,
 		$noteReactionsRepository,
 		$pollsRepository,
@@ -616,6 +624,7 @@ const $reversiGamesRepository: Provider = {
 		$appsRepository,
 		$avatarDecorationsRepository,
 		$noteFavoritesRepository,
+		$noteMutingsRepository,
 		$noteThreadMutingsRepository,
 		$noteReactionsRepository,
 		$pollsRepository,

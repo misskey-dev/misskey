@@ -7,6 +7,7 @@
 import pg from 'pg';
 import { DataSource, Logger, type QueryRunner } from 'typeorm';
 import * as highlight from 'cli-highlight';
+import { MiNoteMuting } from '@/models/NoteMuting.js';
 import { entities as charts } from '@/core/chart/entities.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
@@ -210,6 +211,7 @@ export const entities = [
 	MiNoteFavorite,
 	MiNoteReaction,
 	MiNoteThreadMuting,
+	MiNoteMuting,
 	MiPage,
 	MiPageLike,
 	MiGalleryPost,

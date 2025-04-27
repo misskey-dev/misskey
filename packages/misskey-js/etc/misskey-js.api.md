@@ -1971,6 +1971,10 @@ declare namespace entities {
         NotesLocalTimelineResponse,
         NotesMentionsRequest,
         NotesMentionsResponse,
+        NotesMutingCreateRequest,
+        NotesMutingDeleteRequest,
+        NotesMutingListRequest,
+        NotesMutingListResponse,
         NotesPollsRecommendationRequest,
         NotesPollsRecommendationResponse,
         NotesPollsVoteRequest,
@@ -3030,6 +3034,18 @@ type NotesMentionsRequest = operations['notes___mentions']['requestBody']['conte
 
 // @public (undocumented)
 type NotesMentionsResponse = operations['notes___mentions']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NotesMutingCreateRequest = operations['notes___muting___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesMutingDeleteRequest = operations['notes___muting___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesMutingListRequest = operations['notes___muting___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NotesMutingListResponse = operations['notes___muting___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NotesPollsRecommendationRequest = operations['notes___polls___recommendation']['requestBody']['content']['application/json'];

@@ -234,6 +234,70 @@ export function getNoteMenu(props: {
 		});
 	}
 
+	async function toggleNoteMute(mute: boolean) {
+		if (!mute) {
+			await os.apiWithDialog(
+				'notes/muting/delete',
+				{
+					noteId: appearNote.id,
+				},
+				undefined,
+				{
+					'6ad3b6c9-f173-60f7-b558-5eea13896254': {
+						title: i18n.ts.error,
+						text: i18n.ts._noteMuting.notMutedNote,
+					},
+				},
+			);
+		} else {
+			const { canceled, result: period } = await os.select({
+				title: i18n.ts.mutePeriod,
+				items: [{
+					value: 'indefinitely', text: i18n.ts.indefinitely,
+				}, {
+					value: 'tenMinutes', text: i18n.ts.tenMinutes,
+				}, {
+					value: 'oneHour', text: i18n.ts.oneHour,
+				}, {
+					value: 'oneDay', text: i18n.ts.oneDay,
+				}, {
+					value: 'oneWeek', text: i18n.ts.oneWeek,
+				}],
+				default: 'indefinitely',
+			});
+			if (canceled) return;
+
+			const expiresAt = period === 'indefinitely'
+				? null
+				: period === 'tenMinutes'
+					? Date.now() + (1000 * 60 * 10)
+					: period === 'oneHour'
+						? Date.now() + (1000 * 60 * 60)
+						: period === 'oneDay'
+							? Date.now() + (1000 * 60 * 60 * 24)
+							: period === 'oneWeek'
+								? Date.now() + (1000 * 60 * 60 * 24 * 7)
+								: null;
+
+			await os.apiWithDialog(
+				'notes/muting/create',
+				{
+					noteId: appearNote.id,
+					expiresAt,
+				},
+				undefined,
+				{
+					'a58e7999-f6d3-1780-a688-f43661719662': {
+						title: i18n.ts.error,
+						text: i18n.ts._noteMuting.noNotes,
+					},
+				},
+			).then(() => {
+				props.isDeleted.value = true;
+			});
+		}
+	}
+
 	function copyContent(): void {
 		copyToClipboard(appearNote.text);
 	}
@@ -377,6 +441,16 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-message-off',
 			text: i18n.ts.muteThread,
 			action: () => toggleThreadMute(true),
+		}));
+
+		menuItems.push(statePromise.then(state => state.isMutedNote ? {
+			icon: 'ti ti-message',
+			text: i18n.ts._noteMuting.unmuteNote,
+			action: () => toggleNoteMute(false),
+		} : {
+			icon: 'ti ti-message-off',
+			text: i18n.ts._noteMuting.muteNote,
+			action: () => toggleNoteMute(true),
 		}));
 
 		if (appearNote.userId === $i.id) {

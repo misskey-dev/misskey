@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, ObjectLiteral } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
-import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/_.js';
+import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository, NoteMutingsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import type { SelectQueryBuilder } from 'typeorm';
@@ -21,11 +21,11 @@ export class QueryService {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
-
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
+
+		@Inject(DI.noteMutingsRepository)
+		private noteMutingsRepository: NoteMutingsRepository,
 
 		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
@@ -108,6 +108,16 @@ export class QueryService {
 
 		q.andWhere(`user.id NOT IN (${ blockedQuery.getQuery() })`);
 		q.setParameters(blockedQuery.getParameters());
+	}
+
+	@bindThis
+	public generateMutedNoteQuery(q: SelectQueryBuilder<any>, me: { id: MiUser['id'] }): void {
+		const query = this.noteMutingsRepository.createQueryBuilder('noteMuting')
+			.select('noteMuting.noteId')
+			.where('noteMuting.userId = :userId', { userId: me.id });
+
+		q.andWhere(`note.id NOT IN (${ query.getQuery() })`);
+		q.setParameters(query.getParameters());
 	}
 
 	@bindThis

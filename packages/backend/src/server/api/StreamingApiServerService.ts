@@ -7,6 +7,7 @@ import { EventEmitter } from 'events';
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
+import { NoteMutingService } from '@/core/note/NoteMutingService.js';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository, MiAccessToken } from '@/models/_.js';
 import { NotificationService } from '@/core/NotificationService.js';
@@ -39,6 +40,7 @@ export class StreamingApiServerService {
 		private notificationService: NotificationService,
 		private usersService: UserService,
 		private channelFollowingService: ChannelFollowingService,
+		private noteMutingService: NoteMutingService,
 	) {
 	}
 
@@ -97,7 +99,9 @@ export class StreamingApiServerService {
 				this.notificationService,
 				this.cacheService,
 				this.channelFollowingService,
-				user, app,
+				this.noteMutingService,
+				user,
+				app,
 			);
 
 			await stream.init();
