@@ -1914,6 +1914,7 @@ _role:
     canManageCustomEmojis: "管理自定义表情符号"
     canManageAvatarDecorations: "管理头像挂件"
     driveCapacity: "网盘容量"
+    maxFileSize: "可上传的最大文件大小"
     alwaysMarkNsfw: "总是将文件标记为 NSFW"
     canUpdateBioMedia: "可以更新头像和横幅"
     pinMax: "帖子置顶数量限制"
