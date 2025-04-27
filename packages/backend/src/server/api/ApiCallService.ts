@@ -426,7 +426,6 @@ export class ApiCallService implements OnApplicationShutdown {
 			const policies = await this.roleService.getUserPolicies(user!.id);
 			const result = await this.handleAttachmentFile(
 				Math.min((policies.maxFileSizeMb * 1024 * 1024), this.config.maxFileSize),
-				request,
 				multipartFile,
 			);
 			attachmentFile = result.attachmentFile;
@@ -452,7 +451,6 @@ export class ApiCallService implements OnApplicationShutdown {
 	@bindThis
 	private async handleAttachmentFile(
 		fileSizeLimit: number,
-		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 		multipartFile: MultipartFile,
 	) {
 		function createTooLongError() {
@@ -480,18 +478,21 @@ export class ApiCallService implements OnApplicationShutdown {
 			});
 		}
 
-		if (request.headers['content-length'] && Number(request.headers['content-length']) > fileSizeLimit) {
-			throw createTooLongError();
-		}
-
 		const [path, cleanup] = await createTemp();
-		await stream.pipeline(multipartFile.file, createLimitStream(fileSizeLimit), fs.createWriteStream(path));
+		try {
+			await stream.pipeline(
+				multipartFile.file,
+				createLimitStream(fileSizeLimit),
+				fs.createWriteStream(path),
+			);
 
-		// ファイルサイズが制限を超えていた場合
-		// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
-		if (multipartFile.file.truncated) {
+			// ファイルサイズが制限を超えていた場合
+			// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
+			if (multipartFile.file.truncated) {
+				throw createTooLongError();
+			}
+		} finally {
 			cleanup();
-			throw createTooLongError();
 		}
 
 		const attachmentFile = {
