@@ -19,7 +19,7 @@ import type Logger from '@/logger.js';
 import type { MiMeta, UserIpsRepository } from '@/models/_.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
+import { type RolePolicies, RoleService } from '@/core/RoleService.js';
 import type { Config } from '@/config.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
@@ -356,6 +356,37 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
+		// Cast non JSON input
+		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
+			for (const k of Object.keys(ep.params.properties)) {
+				const param = ep.params.properties![k];
+				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
+					try {
+						data[k] = JSON.parse(data[k]);
+					} catch (e) {
+						throw new ApiError({
+							message: 'Invalid param.',
+							code: 'INVALID_PARAM',
+							id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
+						}, {
+							param: k,
+							reason: `cannot cast to ${param.type}`,
+						});
+					}
+				}
+			}
+		}
+
+		if (token && ((ep.meta.kind && !token.permission.some(p => p === ep.meta.kind))
+			|| (!ep.meta.kind && (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin)))) {
+			throw new ApiError({
+				message: 'Your app does not have the necessary permissions to use this endpoint.',
+				code: 'PERMISSION_DENIED',
+				kind: 'permission',
+				id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
+			});
+		}
+
 		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && (this.meta.rootUserId !== user!.id)) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
@@ -389,41 +420,15 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if (token && ((ep.meta.kind && !token.permission.some(p => p === ep.meta.kind))
-			|| (!ep.meta.kind && (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin)))) {
-			throw new ApiError({
-				message: 'Your app does not have the necessary permissions to use this endpoint.',
-				code: 'PERMISSION_DENIED',
-				kind: 'permission',
-				id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
-			});
-		}
-
-		// Cast non JSON input
-		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
-			for (const k of Object.keys(ep.params.properties)) {
-				const param = ep.params.properties![k];
-				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
-					try {
-						data[k] = JSON.parse(data[k]);
-					} catch (e) {
-						throw new ApiError({
-							message: 'Invalid param.',
-							code: 'INVALID_PARAM',
-							id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
-						}, {
-							param: k,
-							reason: `cannot cast to ${param.type}`,
-						});
-					}
-				}
-			}
-		}
-
 		let attachmentFile: AttachmentFile | null = null;
 		let cleanup = () => {};
 		if (ep.meta.requireFile && request.method === 'POST' && multipartFile) {
-			const result = await this.handleAttachmentFile(request, multipartFile);
+			const policies = await this.roleService.getUserPolicies(user!.id);
+			const result = await this.handleAttachmentFile(
+				Math.min((policies.maxFileSizeMb * 1024 * 1024), this.config.maxFileSize),
+				request,
+				multipartFile,
+			);
 			attachmentFile = result.attachmentFile;
 			cleanup = result.cleanup;
 		}
@@ -446,6 +451,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	private async handleAttachmentFile(
+		fileSizeLimit: number,
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 		multipartFile: MultipartFile,
 	) {
@@ -463,7 +469,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			let total = 0;
 
 			return new Transform({
-				transform(chunk, encoding, callback) {
+				transform(chunk, _, callback) {
 					total += chunk.length;
 					if (total > limit) {
 						callback(createTooLongError());
@@ -474,7 +480,6 @@ export class ApiCallService implements OnApplicationShutdown {
 			});
 		}
 
-		const fileSizeLimit = this.config.maxFileSize;
 		if (request.headers['content-length'] && Number(request.headers['content-length']) > fileSizeLimit) {
 			throw createTooLongError();
 		}
