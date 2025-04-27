@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer>
+<div class="_spacer">
 	<div class="_gaps">
 		<MkFolder>
 			<template #icon><i class="ti ti-settings"></i></template>
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkButton>
 		</div>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script setup lang="ts">

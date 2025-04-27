@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
-	<MkSpacer v-if="instance" :contentMax="600" :marginMin="16" :marginMax="32">
+	<div v-if="instance" class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div v-if="tab === 'overview'" class="_gaps_m">
 			<div class="fnfelxur">
 				<img :src="faviconUrl" alt="" class="icon"/>
@@ -125,7 +125,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkObjectView tall :value="instance">
 			</MkObjectView>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

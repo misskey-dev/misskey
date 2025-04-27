@@ -175,6 +175,30 @@ rt {
 	text-align: center;
 }
 
+._spacer {
+	width: 100%;
+	max-width: calc(min(var(--MI_SPACER-w, 100%), 100%) - (var(--MI_SPACER-max, 24px) * 2));
+	margin: var(--MI_SPACER-max, 24px) auto;
+	container-type: inline-size;
+
+	/* 子に継承させない */
+	--MI_SPACER-w: initial;
+	--MI_SPACER-min: initial;
+	--MI_SPACER-max: initial;
+}
+
+._forceShrinkSpacer ._spacer {
+	max-width: calc(min(var(--MI_SPACER-w, 100%), 100%) - (var(--MI_SPACER-min, 12px) * 2));
+	margin: var(--MI_SPACER-min, 12px) auto;
+}
+
+@container (max-width: 450px) {
+	._spacer {
+		max-width: calc(min(var(--MI_SPACER-w, 100%), 100%) - (var(--MI_SPACER-min, 12px) * 2));
+		margin: var(--MI_SPACER-min, 12px) auto;
+	}
+}
+
 ._pageContainer {
 	container-type: size;
 	contain: strict;

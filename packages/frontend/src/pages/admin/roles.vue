@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<MkFolder>
 				<template #label>{{ i18n.ts._role.baseRole }}</template>
@@ -291,7 +291,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFoldableSection>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

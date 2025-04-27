@@ -5,14 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader>
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="initializing || message == null">
 			<MkLoading/>
 		</div>
 		<div v-else>
 			<XMessage :message="message" :isSearchResult="true"/>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

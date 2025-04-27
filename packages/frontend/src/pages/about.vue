@@ -5,18 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
-	<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
+	<div v-if="tab === 'overview'" class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 20px;">
 		<XOverview/>
-	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
+	</div>
+	<div v-else-if="tab === 'emojis'" class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 20px;">
 		<XEmojis/>
-	</MkSpacer>
-	<MkSpacer v-else-if="instance.federation !== 'none' && tab === 'federation'" :contentMax="1000" :marginMin="20">
+	</div>
+	<div v-else-if="instance.federation !== 'none' && tab === 'federation'" class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 20px;">
 		<XFederation/>
-	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'charts'" :contentMax="1000" :marginMin="20">
+	</div>
+	<div v-else-if="tab === 'charts'" class="_spacer" style="--MI_SPACER-w: 1000px; --MI_SPACER-min: 20px;">
 		<MkInstanceStats/>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

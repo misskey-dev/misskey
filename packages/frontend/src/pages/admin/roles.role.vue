@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<div class="_buttons">
 				<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 			<MkInfo v-else>{{ i18n.ts._role.isConditionalRole }}</MkInfo>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

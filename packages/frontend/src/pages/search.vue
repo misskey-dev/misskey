@@ -5,18 +5,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
-	<MkSpacer v-if="tab === 'note'" :contentMax="800">
+	<div class="_spacer" v-if="tab === 'note'" style="--MI_SPACER-w: 800px;">
 		<div v-if="notesSearchAvailable || ignoreNotesSearchAvailable">
 			<XNote v-bind="props"/>
 		</div>
 		<div v-else>
 			<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
 		</div>
-	</MkSpacer>
+	</div>
 
-	<MkSpacer v-else-if="tab === 'user'" :contentMax="800">
+	<div class="_spacer" v-else-if="tab === 'user'" style="--MI_SPACER-w: 800px;">
 		<XUser v-bind="props"/>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

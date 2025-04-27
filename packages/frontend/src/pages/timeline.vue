@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader ref="pageComponent" v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :swipable="true" :displayMyAvatar="true">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<MkInfo v-if="isBasicTimeline(src) && !store.r.timelineTutorials.value[src]" style="margin-bottom: var(--MI-margin);" closable @close="closeTutorial()">
 			{{ i18n.ts._timelineDescription[src] }}
 		</MkInfo>
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:sound="true"
 			@queue="queueUpdated"
 		/>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
-	<MkSpacer :contentMax="700">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="tab === 'my'" class="_gaps">
 			<MkButton primary rounded class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="tab === 'favorites'" class="_gaps">
 			<MkClipPreview v-for="item in favorites" :key="item.id" :clip="item"/>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
