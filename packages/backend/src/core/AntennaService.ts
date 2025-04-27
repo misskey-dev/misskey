@@ -16,11 +16,10 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { AntennasRepository, UserListMembershipsRepository } from '@/models/_.js';
+import type { AntennasRepository } from '@/models/_.js';
 import { AntennaSource, MiAntenna } from '@/models/Antenna.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
-import { CacheService } from './CacheService.js';
 import { RoleService } from './RoleService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
