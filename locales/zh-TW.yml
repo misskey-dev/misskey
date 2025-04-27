@@ -1915,6 +1915,7 @@ _role:
     canManageCustomEmojis: "管理自訂表情符號"
     canManageAvatarDecorations: "管理頭像裝飾"
     driveCapacity: "雲端硬碟容量"
+    maxFileSize: "可上傳的最大檔案大小"
     alwaysMarkNsfw: "總是將檔案標記為NSFW"
     canUpdateBioMedia: "允許更新大頭貼和橫幅"
     pinMax: "置頂貼文的最大數量"
