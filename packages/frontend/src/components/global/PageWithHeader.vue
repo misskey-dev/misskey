@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkStickyContainer>
 		<template #header><MkPageHeader v-model:tab="tab" v-bind="pageHeaderProps"/></template>
 		<div :class="$style.body">
-			<MkSwiper v-if="swipable" v-model:tab="tab" :class="$style.swiper" :tabs="props.tabs">
+			<MkSwiper v-if="swipable && (props.tabs?.length ?? 1) > 1" v-model:tab="tab" :class="$style.swiper" :tabs="props.tabs">
 				<slot></slot>
 			</MkSwiper>
 			<slot v-else></slot>
@@ -26,10 +26,13 @@ import { useScrollPositionKeeper } from '@/use/use-scroll-position-keeper.js';
 import MkSwiper from '@/components/MkSwiper.vue';
 import { useRouter } from '@/router.js';
 
-const props = defineProps<PageHeaderProps & {
+const props = withDefaults(defineProps<PageHeaderProps & {
 	reversed?: boolean;
 	swipable?: boolean;
-}>();
+}>(), {
+	reversed: false,
+	swipable: true,
+});
 
 const pageHeaderProps = computed(() => {
 	const { reversed, ...rest } = props;
