@@ -1915,6 +1915,7 @@ _role:
     canManageCustomEmojis: "Gestiona els emojis personalitzats"
     canManageAvatarDecorations: "Gestiona les decoracions dels avatars "
     driveCapacity: "Capacitat del disc"
+    maxFileSize: "Mida màxima de l'arxiu que es pot carregar"
     alwaysMarkNsfw: "Marca sempre els fitxers com a sensibles"
     canUpdateBioMedia: "Permet l'edició d'una icona o un bàner"
     pinMax: "Nombre màxim de notes fixades"
