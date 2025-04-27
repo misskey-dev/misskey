@@ -1018,10 +1018,14 @@ copyErrorInfo: "Sao chép thông tin lỗi"
 joinThisServer: "Đăng ký trên chủ máy này"
 exploreOtherServers: "Tìm chủ máy khác"
 letsLookAtTimeline: "Thử xem Timeline"
+disableFederationConfirm: "Bạn có muốn làm điều đó mà không cần liên minh không?"
+disableFederationConfirmWarn: "Ngay cả khi bị trì hoãn, bài đăng vẫn sẽ tiếp tục là công khai trừ khi được thiết lập khác. Bạn thường không cần phải làm điều này."
 disableFederationOk: "Vô hiệu hoá"
+invitationRequiredToRegister: "Phiên bản này chỉ dành cho người được mời. Bạn phải nhập mã mời hợp lệ để đăng ký."
 emailNotSupported: "Máy chủ này không hỗ trợ gửi email"
 postToTheChannel: "Đăng lên kênh"
 cannotBeChangedLater: "Không thể thay đổi sau này."
+reactionAcceptance: "Phản ứng chấp nhận"
 likeOnly: "Chỉ lượt thích"
 rolesAssignedToMe: "Vai trò được giao cho tôi"
 resetPasswordConfirm: "Bạn thực sự muốn đặt lại mật khẩu?"
@@ -1193,10 +1197,13 @@ _initialTutorial:
     title: "Bài Viết là gì?"
     description: "Các bài đăng trên Misskey được gọi là 'Bài Viết'. Ghi chú được sắp xếp theo thứ tự thời gian trên dòng thời gian và được cập nhật theo thời gian thực."
   _timeline:
-    home: "Trong dòng thời gian Trang chính, bạn có thể xem ghi chú từ các tài khoản bạn theo dõi."
+    home: "Bạn có thể xem ghi chú từ những tài khoản bạn theo dõi."
     local: "Bạn có thể xem ghi chú từ tất cả người dùng trên máy chủ này."
     social: "Ghi chú từ dòng thời gian Trang chủ và Địa phương sẽ được hiển thị."
     global: "Bạn có thể xem ghi chú từ tất cả các máy chủ được kết nối."
+  _postNote:
+    _visibility:
+      home: "Chỉ công khai trên dòng thời gian Trang chủ. Những người truy cập trang cá nhân của bạn, thông qua người theo dõi và thông qua ghi chú lại có thể thấy thông tin đó."
 _timelineDescription:
   home: "Trong dòng thời gian Trang chính, bạn có thể xem ghi chú từ các tài khoản bạn theo dõi."
   local: "Trong dòng thời gian cục bộ, bạn có thể xem ghi chú từ tất cả người dùng trên máy chủ này."
@@ -1976,7 +1983,13 @@ _abuseReport:
     _recipientType:
       mail: "Email"
 _moderationLogTypes:
+  createRole: "Tạo một vai trò"
+  deleteRole: "Xóa vai trò"
+  updateRole: "Cập nhật vai trò"
+  assignRole: "Chỉ định cho vai trò"
+  unassignRole: "Bỏ gán vai trò"
   suspend: "Vô hiệu hóa"
+  unsuspend: "Rã đông"
   resetPassword: "Đặt lại mật khẩu"
   createInvitation: "Tạo lời mời"
 _reversi:
