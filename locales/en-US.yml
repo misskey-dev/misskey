@@ -1915,6 +1915,7 @@ _role:
     canManageCustomEmojis: "Can manage custom emojis"
     canManageAvatarDecorations: "Manage avatar decorations"
     driveCapacity: "Drive capacity"
+    maxFileSize: "Upload-able max file size"
     alwaysMarkNsfw: "Always mark files as NSFW"
     canUpdateBioMedia: "Can edit an icon or a banner image"
     pinMax: "Maximum number of pinned notes"
