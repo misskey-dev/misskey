@@ -4,37 +4,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="700">
-		<MkSwiper v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'featured'">
-				<MkPagination v-slot="{items}" :pagination="featuredFlashsPagination">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
+		<div v-if="tab === 'featured'">
+			<MkPagination v-slot="{items}" :pagination="featuredFlashsPagination">
+				<div class="_gaps_s">
+					<MkFlashPreview v-for="flash in items" :key="flash.id" :flash="flash"/>
+				</div>
+			</MkPagination>
+		</div>
+
+		<div v-else-if="tab === 'my'">
+			<div class="_gaps">
+				<MkButton gradate rounded style="margin: 0 auto;" @click="create()"><i class="ti ti-plus"></i></MkButton>
+				<MkPagination v-slot="{items}" :pagination="myFlashsPagination">
 					<div class="_gaps_s">
 						<MkFlashPreview v-for="flash in items" :key="flash.id" :flash="flash"/>
 					</div>
 				</MkPagination>
 			</div>
+		</div>
 
-			<div v-else-if="tab === 'my'">
-				<div class="_gaps">
-					<MkButton gradate rounded style="margin: 0 auto;" @click="create()"><i class="ti ti-plus"></i></MkButton>
-					<MkPagination v-slot="{items}" :pagination="myFlashsPagination">
-						<div class="_gaps_s">
-							<MkFlashPreview v-for="flash in items" :key="flash.id" :flash="flash"/>
-						</div>
-					</MkPagination>
+		<div v-else-if="tab === 'liked'">
+			<MkPagination v-slot="{items}" :pagination="likedFlashsPagination">
+				<div class="_gaps_s">
+					<MkFlashPreview v-for="like in items" :key="like.flash.id" :flash="like.flash"/>
 				</div>
-			</div>
-
-			<div v-else-if="tab === 'liked'">
-				<MkPagination v-slot="{items}" :pagination="likedFlashsPagination">
-					<div class="_gaps_s">
-						<MkFlashPreview v-for="like in items" :key="like.flash.id" :flash="like.flash"/>
-					</div>
-				</MkPagination>
-			</div>
-		</MkSwiper>
-	</MkSpacer>
+			</MkPagination>
+		</div>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -43,7 +41,6 @@ import { computed, ref } from 'vue';
 import MkFlashPreview from '@/components/MkFlashPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkSwiper from '@/components/MkSwiper.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';

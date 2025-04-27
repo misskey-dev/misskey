@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="900">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="_gaps_m">
 			<MkButton primary @click="onCreateWebhookClicked">
 				<i class="ti ti-plus"></i> {{ i18n.ts._webhookSettings.createWebhook }}
@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</FormSection>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
