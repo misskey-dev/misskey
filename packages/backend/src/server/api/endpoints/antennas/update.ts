@@ -86,6 +86,7 @@ export const paramDef = {
 		useRegex: { type: 'boolean' },
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
+		excludeNotesInSensitiveChannel: { type: 'boolean' },
 	},
 	required: ['antennaId'],
 } as const;

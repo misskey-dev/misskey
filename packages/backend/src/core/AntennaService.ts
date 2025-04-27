@@ -6,19 +6,21 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import RE2 from 're2';
+import { In } from 'typeorm';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import * as Acct from '@/misc/acct.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { AntennasRepository, UserListMembershipsRepository } from '@/models/_.js';
 import { AntennaSource, MiAntenna } from '@/models/Antenna.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import * as Acct from '@/misc/acct.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { DI } from '@/di-symbols.js';
-import type { AntennasRepository } from '@/models/_.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { bindThis } from '@/decorators.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { CacheService } from './CacheService.js';
 import { RoleService } from './RoleService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
@@ -170,6 +172,10 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
+
+		private cacheService: CacheService,
 		private roleService: RoleService,
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
@@ -396,15 +402,13 @@ export class AntennaService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private checkHitAntenna(
+	public async checkHitAntenna(
 		filter: AntennaFilter,
 		note: (MiNote | Packed<'Note'>),
 		noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; },
-	): boolean {
-		if (note.visibility === 'specified') return false;
-		if (note.visibility === 'followers') return false;
-
+	): Promise<boolean> {
 		const antenna = filter.src;
+		if (antenna.excludeNotesInSensitiveChannel && note.channel?.isSensitive) return false;
 		if (antenna.excludeBots && noteUser.isBot) return false;
 		if (antenna.localOnly && noteUser.host != null) return false;
 		if (!antenna.withReplies && note.replyId != null) return false;
@@ -431,6 +435,41 @@ export class AntennaService implements OnApplicationShutdown {
 		}
 
 		return this.filters;
+	}
+
+	@bindThis
+	public async onMoveAccount(src: MiUser, dst: MiUser): Promise<void> {
+		// There is a possibility for users to add the srcUser to their antennas, but it's low, so we don't check it.
+
+		// Get MiAntenna[] from cache and filter to select antennas with the src user is in the users list
+		const srcUserAcct = this.utilityService.getFullApAccount(src.username, src.host).toLowerCase();
+		const antennasToMigrate = (await this.getFilters()).map(it => it.src).filter(antenna => {
+			return antenna.users.some(user => {
+				const { username, host } = Acct.parse(user);
+				return this.utilityService.getFullApAccount(username, host).toLowerCase() === srcUserAcct;
+			});
+		});
+
+		if (antennasToMigrate.length === 0) return;
+
+		const antennaIds = antennasToMigrate.map(x => x.id);
+
+		// Update the antennas by appending dst users acct to the users list
+		const dstUserAcct = '@' + Acct.toString({ username: dst.username, host: dst.host });
+
+		await this.antennasRepository.createQueryBuilder('antenna')
+			.update()
+			.set({
+				users: () => 'array_append(antenna.users, :dstUserAcct)',
+			})
+			.where('antenna.id IN (:...antennaIds)', { antennaIds })
+			.setParameters({ dstUserAcct })
+			.execute();
+
+		// announce update to event
+		for (const newAntenna of await this.antennasRepository.findBy({ id: In(antennaIds) })) {
+			this.globalEventService.publishInternalEvent('antennaUpdated', newAntenna);
+		}
 	}
 
 	@bindThis

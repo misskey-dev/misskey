@@ -15,17 +15,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.describeFile }}</template>
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<MkDriveFileThumbnail :file="file" fit="contain" style="height: 100px; margin-bottom: 16px;"/>
 		<MkTextarea v-model="caption" autofocus :placeholder="i18n.ts.inputNewDescription">
 			<template #label>{{ i18n.ts.caption }}</template>
 		</MkTextarea>
-	</MkSpacer>
+	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, ref } from 'vue';
+import { useTemplateRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -42,7 +42,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialog = useTemplateRef('dialog');
 
 const caption = ref(props.default);
 

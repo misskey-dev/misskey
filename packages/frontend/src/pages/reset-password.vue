@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer v-if="token" :contentMax="700" :marginMin="16" :marginMax="32">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div v-if="token" class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div class="_gaps_m">
 			<MkInput v-model="password" type="password">
 				<template #prefix><i class="ti ti-lock"></i></template>
@@ -15,8 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkButton primary @click="save">{{ i18n.ts.save }}</MkButton>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
@@ -25,8 +24,8 @@ import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { mainRouter } from '@/router/main.js';
+import { definePage } from '@/page.js';
+import { mainRouter } from '@/router.js';
 
 const props = defineProps<{
 	token?: string;
@@ -55,7 +54,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.resetPassword,
 	icon: 'ti ti-lock',
 }));

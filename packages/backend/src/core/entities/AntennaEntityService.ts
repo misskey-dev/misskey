@@ -42,6 +42,7 @@ export class AntennaEntityService {
 			useRegex: antenna.useRegex,
 			withReplies: antenna.withReplies,
 			withFile: antenna.withFile,
+			excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
 			isActive: antenna.isActive,
 			hasUnreadNote: false, // TODO
 			notify: false, // 後方互換性のため

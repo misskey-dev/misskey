@@ -114,6 +114,11 @@ export class MiAntenna {
 	@Column('boolean', {
 		default: false,
 	})
+	public excludeNotesInSensitiveChannel: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
 	public useRegex: boolean;
 
 	public static deserialize(data: Serialized<MiAntenna>): MiAntenna {

@@ -13,7 +13,7 @@ import accepts from 'accepts';
 import vary from 'vary';
 import secureJson from 'secure-json-parse';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository } from '@/models/_.js';
+import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
 import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -32,6 +32,7 @@ import { isQuote, isRenote } from '@/misc/is-renote.js';
 import * as Acct from '@/misc/acct.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -41,6 +42,9 @@ export class ActivityPubServerService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -72,6 +76,7 @@ export class ActivityPubServerService {
 		private queueService: QueueService,
 		private userKeypairService: UserKeypairService,
 		private queryService: QueryService,
+		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -102,6 +107,11 @@ export class ActivityPubServerService {
 
 	@bindThis
 	private inbox(request: FastifyRequest, reply: FastifyReply) {
+		if (this.meta.federation === 'none') {
+			reply.code(403);
+			return;
+		}
+
 		let signature;
 
 		try {
@@ -173,6 +183,11 @@ export class ActivityPubServerService {
 		request: FastifyRequest<{ Params: { user: string; }; Querystring: { cursor?: string; page?: string; }; }>,
 		reply: FastifyReply,
 	) {
+		if (this.meta.federation === 'none') {
+			reply.code(403);
+			return;
+		}
+
 		const userId = request.params.user;
 
 		const cursor = request.query.cursor;
@@ -265,6 +280,11 @@ export class ActivityPubServerService {
 		request: FastifyRequest<{ Params: { user: string; }; Querystring: { cursor?: string; page?: string; }; }>,
 		reply: FastifyReply,
 	) {
+		if (this.meta.federation === 'none') {
+			reply.code(403);
+			return;
+		}
+
 		const userId = request.params.user;
 
 		const cursor = request.query.cursor;
@@ -354,6 +374,11 @@ export class ActivityPubServerService {
 
 	@bindThis
 	private async featured(request: FastifyRequest<{ Params: { user: string; }; }>, reply: FastifyReply) {
+		if (this.meta.federation === 'none') {
+			reply.code(403);
+			return;
+		}
+
 		const userId = request.params.user;
 
 		const user = await this.usersRepository.findOneBy({
@@ -398,6 +423,11 @@ export class ActivityPubServerService {
 		}>,
 		reply: FastifyReply,
 	) {
+		if (this.meta.federation === 'none') {
+			reply.code(403);
+			return;
+		}
+
 		const userId = request.params.user;
 
 		const sinceId = request.query.since_id;
@@ -433,16 +463,28 @@ export class ActivityPubServerService {
 		const partOf = `${this.config.url}/users/${userId}/outbox`;
 
 		if (page) {
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
-				.andWhere('note.userId = :userId', { userId: user.id })
-				.andWhere(new Brackets(qb => {
-					qb
-						.where('note.visibility = \'public\'')
-						.orWhere('note.visibility = \'home\'');
-				}))
-				.andWhere('note.localOnly = FALSE');
-
-			const notes = await query.limit(limit).getMany();
+			const notes = this.meta.enableFanoutTimeline ? await this.fanoutTimelineEndpointService.getMiNotes({
+				sinceId: sinceId ?? null,
+				untilId: untilId ?? null,
+				limit: limit,
+				allowPartial: false, // Possibly true? IDK it's OK for ordered collection.
+				me: null,
+				redisTimelines: [
+					`userTimeline:${user.id}`,
+					`userTimelineWithReplies:${user.id}`,
+				],
+				useDbFallback: true,
+				ignoreAuthorFromMute: true,
+				excludePureRenotes: false,
+				noteFilter: (note) => {
+					if (note.visibility !== 'home' && note.visibility !== 'public') return false;
+					if (note.localOnly) return false;
+					return true;
+				},
+				dbFallback: async (untilId, sinceId, limit) => {
+					return await this.getUserNotesFromDb(sinceId, untilId, limit, user.id);
+				},
+			}) : await this.getUserNotesFromDb(sinceId ?? null, untilId ?? null, limit, user.id);
 
 			if (sinceId) notes.reverse();
 
@@ -481,7 +523,26 @@ export class ActivityPubServerService {
 	}
 
 	@bindThis
+	private async getUserNotesFromDb(untilId: string | null, sinceId: string | null, limit: number, userId: MiUser['id']) {
+		return await this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
+			.andWhere('note.userId = :userId', { userId })
+			.andWhere(new Brackets(qb => {
+				qb
+					.where('note.visibility = \'public\'')
+					.orWhere('note.visibility = \'home\'');
+			}))
+			.andWhere('note.localOnly = FALSE')
+			.limit(limit)
+			.getMany();
+	}
+
+	@bindThis
 	private async userInfo(request: FastifyRequest, reply: FastifyReply, user: MiUser | null) {
+		if (this.meta.federation === 'none') {
+			reply.code(403);
+			return;
+		}
+
 		if (user == null) {
 			reply.code(404);
 			return;
@@ -564,6 +625,11 @@ export class ActivityPubServerService {
 		fastify.get<{ Params: { note: string; } }>('/notes/:note', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
+
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
 				visibility: In(['public', 'home']),
@@ -593,6 +659,11 @@ export class ActivityPubServerService {
 		// note activity
 		fastify.get<{ Params: { note: string; } }>('/notes/:note/activity', async (request, reply) => {
 			vary(reply.raw, 'Accept');
+
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
 
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,
@@ -634,6 +705,11 @@ export class ActivityPubServerService {
 
 		// publickey
 		fastify.get<{ Params: { user: string; } }>('/users/:user/publickey', async (request, reply) => {
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
+
 			const userId = request.params.user;
 
 			const user = await this.usersRepository.findOneBy({
@@ -661,6 +737,11 @@ export class ActivityPubServerService {
 		fastify.get<{ Params: { user: string; } }>('/users/:user', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
+
 			const userId = request.params.user;
 
 			const user = await this.usersRepository.findOneBy({
@@ -674,10 +755,15 @@ export class ActivityPubServerService {
 		fastify.get<{ Params: { acct: string; } }>('/@:acct', { constraints: { apOrHtml: 'ap' } }, async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
+
 			const acct = Acct.parse(request.params.acct);
 
 			const user = await this.usersRepository.findOneBy({
-				usernameLower: acct.username,
+				usernameLower: acct.username.toLowerCase(),
 				host: acct.host ?? IsNull(),
 				isSuspended: false,
 			});
@@ -688,6 +774,11 @@ export class ActivityPubServerService {
 
 		// emoji
 		fastify.get<{ Params: { emoji: string; } }>('/emojis/:emoji', async (request, reply) => {
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
+
 			const emoji = await this.emojisRepository.findOneBy({
 				host: IsNull(),
 				name: request.params.emoji,
@@ -705,6 +796,11 @@ export class ActivityPubServerService {
 
 		// like
 		fastify.get<{ Params: { like: string; } }>('/likes/:like', async (request, reply) => {
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
+
 			const reaction = await this.noteReactionsRepository.findOneBy({ id: request.params.like });
 
 			if (reaction == null) {
@@ -726,6 +822,11 @@ export class ActivityPubServerService {
 
 		// follow
 		fastify.get<{ Params: { follower: string; followee: string; } }>('/follows/:follower/:followee', async (request, reply) => {
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
+
 			// This may be used before the follow is completed, so we do not
 			// check if the following exists.
 
@@ -751,7 +852,12 @@ export class ActivityPubServerService {
 		});
 
 		// follow
-		fastify.get<{ Params: { followRequestId: string ; } }>('/follows/:followRequestId', async (request, reply) => {
+		fastify.get<{ Params: { followRequestId: string; } }>('/follows/:followRequestId', async (request, reply) => {
+			if (this.meta.federation === 'none') {
+				reply.code(403);
+				return;
+			}
+
 			// This may be used before the follow is completed, so we do not
 			// check if the following exists and only check if the follow request exists.
 
