@@ -224,6 +224,10 @@ export const packedRolePoliciesSchema = {
 			type: 'integer',
 			optional: false, nullable: false,
 		},
+		maxFileSizeMb: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
 		alwaysMarkNsfw: {
 			type: 'boolean',
 			optional: false, nullable: false,

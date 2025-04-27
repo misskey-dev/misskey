@@ -164,7 +164,6 @@ rt {
 .ti {
 	width: 1.28em;
 	vertical-align: -12%;
-	line-height: 1em;
 
 	&::before {
 		font-size: 128%;
@@ -174,6 +173,31 @@ rt {
 .ti-fw {
 	display: inline-block;
 	text-align: center;
+}
+
+/* TODO: 引数は現在CSS変数経由で受け取っているが、将来的にはattr()を使った方が綺麗そう */
+._spacer {
+	width: 100%;
+	max-width: min(var(--MI_SPACER-w, 100%), calc(100% - (var(--MI_SPACER-max, 24px) * 2)));
+	margin: var(--MI_SPACER-max, 24px) auto;
+	container-type: inline-size;
+
+	/* 子に継承させない */
+	--MI_SPACER-w: initial;
+	--MI_SPACER-min: initial;
+	--MI_SPACER-max: initial;
+}
+
+._forceShrinkSpacer ._spacer {
+	max-width: min(var(--MI_SPACER-w, 100%), calc(100% - (var(--MI_SPACER-min, 12px) * 2)));
+	margin: var(--MI_SPACER-min, 12px) auto;
+}
+
+@container (max-width: 450px) {
+	._spacer {
+		max-width: min(var(--MI_SPACER-w, 100%), calc(100% - (var(--MI_SPACER-min, 12px) * 2)));
+		margin: var(--MI_SPACER-min, 12px) auto;
+	}
 }
 
 ._pageContainer {

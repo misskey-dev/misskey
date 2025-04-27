@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<Transition
 			:enterActiveClass="prefer.s.animation ? $style.fadeEnterActive : ''"
 			:leaveActiveClass="prefer.s.animation ? $style.fadeLeaveActive : ''"
@@ -23,10 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i>
 						<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--MI_THEME-success);"></i>
 					</span>
-					<Mfm :text="announcement.title"/>
+					<Mfm :text="announcement.title" class="_selectable"/>
 				</div>
 				<div :class="$style.content">
-					<Mfm :text="announcement.text"/>
+					<Mfm :text="announcement.text" class="_selectable"/>
 					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 					<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
 						{{ i18n.ts.createdAt }}: <MkTime :time="announcement.createdAt" mode="detail"/>
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkError v-else-if="error" @retry="fetch()"/>
 			<MkLoading v-else/>
 		</Transition>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2025.4.0",
+	"version": "2025.4.1-beta.5",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -84,8 +84,7 @@
 			"@aiscript-dev/aiscript-languageserver": "-"
 		},
 		"patchedDependencies": {
-			"re2": "scripts/dependency-patches/re2.patch",
-			"vite": "scripts/dependency-patches/vite.patch"
+			"re2": "scripts/dependency-patches/re2.patch"
 		}
 	}
 }
