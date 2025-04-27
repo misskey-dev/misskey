@@ -1915,6 +1915,7 @@ _role:
     canManageCustomEmojis: "Benutzerdefinierte Emojis verwalten"
     canManageAvatarDecorations: "Profilbilddekorationen verwalten"
     driveCapacity: "Drive-Kapazität"
+    maxFileSize: "Maximale Dateigröße, die hochgeladen werden kann"
     alwaysMarkNsfw: "Dateien immer als NSFW markieren"
     canUpdateBioMedia: "Kann ein Profil- oder ein Bannerbild bearbeiten"
     pinMax: "Maximale Anzahl an angehefteten Notizen"
