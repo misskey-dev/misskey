@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 					</div>
 				</div>
-				<MkNote :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
+				<MkNote v-else :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
 			</template>
 		</component>
 	</template>

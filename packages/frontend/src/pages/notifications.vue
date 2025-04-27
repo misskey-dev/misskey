@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
 	<MkSpacer :contentMax="800">
 		<div v-if="tab === 'all'">
 			<XNotifications :class="$style.notifications" :excludeTypes="excludeTypes"/>
@@ -24,7 +24,6 @@ import { computed, ref } from 'vue';
 import { notificationTypes } from '@@/js/const.js';
 import XNotifications from '@/components/MkNotifications.vue';
 import MkNotes from '@/components/MkNotes.vue';
-import MkSwiper from '@/components/MkSwiper.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';

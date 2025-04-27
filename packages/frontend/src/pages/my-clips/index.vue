@@ -4,20 +4,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
 	<MkSpacer :contentMax="700">
-		<MkSwiper v-model:tab="tab" :tabs="headerTabs">
-			<div v-if="tab === 'my'" class="_gaps">
-				<MkButton primary rounded class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+		<div v-if="tab === 'my'" class="_gaps">
+			<MkButton primary rounded class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
-				<MkPagination v-slot="{ items }" ref="pagingComponent" :pagination="pagination" class="_gaps">
-					<MkClipPreview v-for="item in items" :key="item.id" :clip="item" :noUserInfo="true"/>
-				</MkPagination>
-			</div>
-			<div v-else-if="tab === 'favorites'" class="_gaps">
-				<MkClipPreview v-for="item in favorites" :key="item.id" :clip="item"/>
-			</div>
-		</MkSwiper>
+			<MkPagination v-slot="{ items }" ref="pagingComponent" :pagination="pagination" class="_gaps">
+				<MkClipPreview v-for="item in items" :key="item.id" :clip="item" :noUserInfo="true"/>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'favorites'" class="_gaps">
+			<MkClipPreview v-for="item in favorites" :key="item.id" :clip="item"/>
+		</div>
 	</MkSpacer>
 </PageWithHeader>
 </template>
@@ -33,7 +31,6 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { clipsCache } from '@/cache.js';
-import MkSwiper from '@/components/MkSwiper.vue';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
