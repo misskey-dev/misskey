@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<slot v-if="page === 0" key="tutorialPage_0" name="welcome" :close="() => emit('close', true)" :next="next">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
-					<div class="_spacer"  style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--MI_THEME-accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialTutorial._landing.title }}</div>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<slot v-else-if="page === MAX_PAGE" :key="`tutorialPage_${MAX_PAGE}`" name="finish" :close="() => emit('close')" :prev="prev">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
-					<div class="_spacer"  style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
+					<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 						<div class="_gaps">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--MI_THEME-accent);"></i>
 							<div style="text-align: center; font-size: 120%;">{{ i18n.ts._initialTutorial._done.title }}</div>
