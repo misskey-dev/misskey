@@ -115,7 +115,6 @@ export function migrateOldSettings() {
 		prefer.commit('notificationStackAxis', store.s.notificationStackAxis);
 		prefer.commit('enableCondensedLine', store.s.enableCondensedLine);
 		prefer.commit('keepScreenOn', store.s.keepScreenOn);
-		prefer.commit('disableStreamingTimeline', store.s.disableStreamingTimeline);
 		prefer.commit('useGroupedNotifications', store.s.useGroupedNotifications);
 		prefer.commit('dataSaver', store.s.dataSaver);
 		prefer.commit('enableSeasonalScreenEffect', store.s.enableSeasonalScreenEffect);

@@ -148,14 +148,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
-							<SearchMarker :keywords="['disable', 'streaming', 'timeline']">
-								<MkPreferenceContainer k="disableStreamingTimeline">
-									<MkSwitch v-model="disableStreamingTimeline">
-										<template #label><SearchLabel>{{ i18n.ts.disableStreamingTimeline }}</SearchLabel></template>
-									</MkSwitch>
-								</MkPreferenceContainer>
-							</SearchMarker>
-
 							<SearchMarker :keywords="['pinned', 'list']">
 								<MkFolder>
 									<template #label><SearchLabel>{{ i18n.ts.pinnedList }}</SearchLabel></template>
@@ -759,7 +751,6 @@ const showFixedPostFormInChannel = prefer.model('showFixedPostFormInChannel');
 const numberOfPageCache = prefer.model('numberOfPageCache');
 const enableInfiniteScroll = prefer.model('enableInfiniteScroll');
 const useReactionPickerForContextMenu = prefer.model('useReactionPickerForContextMenu');
-const disableStreamingTimeline = prefer.model('disableStreamingTimeline');
 const useGroupedNotifications = prefer.model('useGroupedNotifications');
 const alwaysConfirmFollow = prefer.model('alwaysConfirmFollow');
 const confirmWhenRevealingSensitiveMedia = prefer.model('confirmWhenRevealingSensitiveMedia');
@@ -827,7 +818,6 @@ watch([
 	enableInfiniteScroll,
 	showNoteActionsOnlyHover,
 	overridedDeviceKind,
-	disableStreamingTimeline,
 	alwaysConfirmFollow,
 	confirmWhenRevealingSensitiveMedia,
 	showGapBetweenNotesInTimeline,

@@ -109,17 +109,19 @@ let tlNotesCount = 0;
 
 const POLLING_INTERVAL = 1000 * 10;
 
-useInterval(async () => {
-	const notes = await misskeyApi(paginationQuery.endpoint, {
-		...paginationQuery.params,
-		limit: 10,
-		sinceId: Array.from(paginator.items.value.keys()).at(-1),
+if (!store.s.realtimeMode) {
+	useInterval(async () => {
+		const notes = await misskeyApi(paginationQuery.endpoint, {
+			...paginationQuery.params,
+			limit: 10,
+			sinceId: Array.from(paginator.items.value.keys()).at(-1),
+		});
+		console.log(notes);
+	}, POLLING_INTERVAL, {
+		immediate: false,
+		afterMounted: true,
 	});
-	console.log(notes);
-}, POLLING_INTERVAL, {
-	immediate: false,
-	afterMounted: true,
-});
+}
 
 function prepend(note) {
 	tlNotesCount++;
@@ -280,7 +282,7 @@ function updatePaginationQuery() {
 }
 
 function refreshEndpointAndChannel() {
-	if (!prefer.s.disableStreamingTimeline && store.s.realtimeMode) {
+	if (store.s.realtimeMode) {
 		disconnectChannel();
 		connectChannel();
 	}

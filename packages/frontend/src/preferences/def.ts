@@ -277,9 +277,6 @@ export const PREF_DEF = {
 	keepScreenOn: {
 		default: false,
 	},
-	disableStreamingTimeline: {
-		default: false,
-	},
 	useGroupedNotifications: {
 		default: true,
 	},

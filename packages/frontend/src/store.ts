@@ -382,10 +382,6 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'device',
 		default: false,
 	},
-	disableStreamingTimeline: {
-		where: 'device',
-		default: false,
-	},
 	useGroupedNotifications: {
 		where: 'device',
 		default: true,

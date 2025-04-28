@@ -4967,10 +4967,6 @@ export interface Locale extends ILocale {
      */
     "pullDownToRefresh": string;
     /**
-     * タイムラインのリアルタイム更新を無効にする
-     */
-    "disableStreamingTimeline": string;
-    /**
      * 通知をグルーピング
      */
     "useGroupedNotifications": string;
