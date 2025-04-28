@@ -15,11 +15,7 @@ on:
 jobs:
   build:
     # Chromatic is not likely to be available for fork repositories, so we disable for fork repositories.
-    # Neither Dependabot nor Renovate will change the actual behavior for components.
-    if: >-
-      github.repository == 'misskey-dev/misskey' &&
-      startsWith(github.head_ref, 'refs/heads/dependabot/') != true &&
-      startsWith(github.head_ref, 'refs/heads/renovate/') != true
+    if: github.repository == 'misskey-dev/misskey'
     runs-on: ubuntu-latest
 
     env:
