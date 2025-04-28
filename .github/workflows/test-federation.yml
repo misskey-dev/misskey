@@ -41,7 +41,7 @@ jobs:
             fi
           done
       - name: Use Node.js
-        uses: actions/setup-node@v4.3.0
+        uses: actions/setup-node@v4.4.0
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'

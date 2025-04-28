@@ -1715,9 +1715,9 @@ export interface Locale extends ILocale {
      */
     "withFileAntenna": string;
     /**
-     * センシティブなチャンネルのノートを非表示
+     * センシティブなチャンネルのノートを除外
      */
-    "hideNotesInSensitiveChannel": string;
+    "excludeNotesInSensitiveChannel": string;
     /**
      * ブラウザへのプッシュ通知を有効にする
      */
@@ -3935,6 +3935,10 @@ export interface Locale extends ILocale {
      */
     "logoutConfirm": string;
     /**
+     * ログアウトするとクライアントの設定情報がブラウザから消去されます。再ログイン時に設定情報を復元できるようにするためには、設定の自動バックアップを有効にしてください。
+     */
+    "logoutWillClearClientData": string;
+    /**
      * 最終利用日時
      */
     "lastActiveDate": string;
@@ -5382,6 +5386,29 @@ export interface Locale extends ILocale {
      * 埋め込み
      */
     "embed": string;
+    /**
+     * 設定を移行しています。しばらくお待ちください... (後ほど、設定→その他→旧設定情報を移行 で手動で移行することもできます)
+     */
+    "settingsMigrating": string;
+    /**
+     * 読み取り専用
+     */
+    "readonly": string;
+    /**
+     * デッキへ戻る
+     */
+    "goToDeck": string;
+    /**
+     * 連合ジョブ
+     */
+    "federationJobs": string;
+    /**
+     * ドライブでは、過去にアップロードしたファイルの一覧が表示されます。<br>
+     * ノートに添付する際に再利用したり、あとで投稿するファイルを予めアップロードしておくこともできます。<br>
+     * <b>ファイルを削除すると、今までそのファイルを使用した全ての場所(ノート、ページ、アバター、バナー等)からも見えなくなるので注意してください。</b><br>
+     * フォルダを作って整理することもできます。
+     */
+    "driveAboutTip": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -5496,6 +5523,10 @@ export interface Locale extends ILocale {
          * このサーバー、またはこのアカウントでチャットは有効化されていません。
          */
         "chatNotAvailableForThisAccountOrServer": string;
+        /**
+         * このサーバー、またはこのアカウントでチャットは読み取り専用となっています。新たに書き込んだり、チャットルームを作成・参加したりすることはできません。
+         */
+        "chatIsReadOnlyForThisAccountOrServer": string;
         /**
          * 相手のアカウントでチャット機能が使えない状態になっています。
          */
@@ -7362,6 +7393,14 @@ export interface Locale extends ILocale {
          */
         "descriptionOfDisplayOrder": string;
         /**
+         * アサイン状態を移行先アカウントにも引き継ぐ
+         */
+        "preserveAssignmentOnMoveAccount": string;
+        /**
+         * オンにすると、このロールが付与されたアカウントが移行された際に、移行先アカウントにもこのロールが引き継がれるようになります。
+         */
+        "preserveAssignmentOnMoveAccount_description": string;
+        /**
          * モデレーターのメンバー編集を許可
          */
         "canEditMembersByModerator": string;
@@ -7432,6 +7471,10 @@ export interface Locale extends ILocale {
              * ドライブ容量
              */
             "driveCapacity": string;
+            /**
+             * アップロード可能な最大ファイルサイズ
+             */
+            "maxFileSize": string;
             /**
              * ファイルにNSFWを常に付与
              */
@@ -7519,7 +7562,7 @@ export interface Locale extends ILocale {
             /**
              * チャットを許可
              */
-            "canChat": string;
+            "chatAvailability": string;
         };
         "_condition": {
             /**
@@ -9179,6 +9222,10 @@ export interface Locale extends ILocale {
          * 今日誕生日のユーザー
          */
         "birthdayFollowings": string;
+        /**
+         * チャット
+         */
+        "chat": string;
     };
     "_cw": {
         /**
@@ -10202,6 +10249,10 @@ export interface Locale extends ILocale {
              * ロールタイムライン
              */
             "roleTimeline": string;
+            /**
+             * チャット
+             */
+            "chat": string;
         };
     };
     "_dialog": {

@@ -4,67 +4,69 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps">
-	<MkFolder>
-		<template #icon><i class="ti ti-settings"></i></template>
-		<template #label>{{ i18n.ts._customEmojisManager._local._register.uploadSettingTitle }}</template>
-		<template #caption>{{ i18n.ts._customEmojisManager._local._register.uploadSettingDescription }}</template>
+<div class="_spacer">
+	<div class="_gaps">
+		<MkFolder>
+			<template #icon><i class="ti ti-settings"></i></template>
+			<template #label>{{ i18n.ts._customEmojisManager._local._register.uploadSettingTitle }}</template>
+			<template #caption>{{ i18n.ts._customEmojisManager._local._register.uploadSettingDescription }}</template>
 
-		<div class="_gaps">
-			<MkSelect v-model="selectedFolderId">
-				<template #label>{{ i18n.ts.uploadFolder }}</template>
-				<option v-for="folder in uploadFolders" :key="folder.id" :value="folder.id">
-					{{ folder.name }}
-				</option>
-			</MkSelect>
+			<div class="_gaps">
+				<MkSelect v-model="selectedFolderId">
+					<template #label>{{ i18n.ts.uploadFolder }}</template>
+					<option v-for="folder in uploadFolders" :key="folder.id" :value="folder.id">
+						{{ folder.name }}
+					</option>
+				</MkSelect>
 
-			<MkSwitch v-model="directoryToCategory">
-				<template #label>{{ i18n.ts._customEmojisManager._local._register.directoryToCategoryLabel }}</template>
-				<template #caption>{{ i18n.ts._customEmojisManager._local._register.directoryToCategoryCaption }}</template>
-			</MkSwitch>
+				<MkSwitch v-model="directoryToCategory">
+					<template #label>{{ i18n.ts._customEmojisManager._local._register.directoryToCategoryLabel }}</template>
+					<template #caption>{{ i18n.ts._customEmojisManager._local._register.directoryToCategoryCaption }}</template>
+				</MkSwitch>
+			</div>
+		</MkFolder>
+
+		<MkFolder>
+			<template #icon><i class="ti ti-notes"></i></template>
+			<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
+			<template #caption>
+				{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
+			</template>
+			<XRegisterLogs :logs="requestLogs"/>
+		</MkFolder>
+
+		<div
+			:class="[$style.uploadBox, [isDragOver ? $style.dragOver : {}]]"
+			@dragover.prevent="isDragOver = true"
+			@dragleave.prevent="isDragOver = false"
+			@drop.prevent.stop="onDrop"
+		>
+			<div style="margin-top: 1em">
+				{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaCaption }}
+			</div>
+			<ul>
+				<li>{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList1 }}</li>
+				<li><a @click.prevent="onFileSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList2 }}</a></li>
+				<li><a @click.prevent="onDriveSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList3 }}</a></li>
+			</ul>
 		</div>
-	</MkFolder>
 
-	<MkFolder>
-		<template #icon><i class="ti ti-notes"></i></template>
-		<template #label>{{ i18n.ts._customEmojisManager._gridCommon.registrationLogs }}</template>
-		<template #caption>
-			{{ i18n.ts._customEmojisManager._gridCommon.registrationLogsCaption }}
-		</template>
-		<XRegisterLogs :logs="requestLogs"/>
-	</MkFolder>
-
-	<div
-		:class="[$style.uploadBox, [isDragOver ? $style.dragOver : {}]]"
-		@dragover.prevent="isDragOver = true"
-		@dragleave.prevent="isDragOver = false"
-		@drop.prevent.stop="onDrop"
-	>
-		<div style="margin-top: 1em">
-			{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaCaption }}
+		<div v-if="gridItems.length > 0" :class="$style.gridArea">
+			<MkGrid
+				:data="gridItems"
+				:settings="setupGrid()"
+				@event="onGridEvent"
+			/>
 		</div>
-		<ul>
-			<li>{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList1 }}</li>
-			<li><a @click.prevent="onFileSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList2 }}</a></li>
-			<li><a @click.prevent="onDriveSelectClicked">{{ i18n.ts._customEmojisManager._local._register.emojiInputAreaList3 }}</a></li>
-		</ul>
-	</div>
 
-	<div v-if="gridItems.length > 0" :class="$style.gridArea">
-		<MkGrid
-			:data="gridItems"
-			:settings="setupGrid()"
-			@event="onGridEvent"
-		/>
-	</div>
-
-	<div v-if="gridItems.length > 0" :class="$style.footer">
-		<MkButton primary :disabled="registerButtonDisabled" @click="onRegistryClicked">
-			{{ i18n.ts.registration }}
-		</MkButton>
-		<MkButton @click="onClearClicked">
-			{{ i18n.ts.clear }}
-		</MkButton>
+		<div v-if="gridItems.length > 0" :class="$style.footer">
+			<MkButton primary :disabled="registerButtonDisabled" @click="onRegistryClicked">
+				{{ i18n.ts.registration }}
+			</MkButton>
+			<MkButton @click="onClearClicked">
+				{{ i18n.ts.clear }}
+			</MkButton>
+		</div>
 	</div>
 </div>
 </template>
@@ -407,7 +409,7 @@ function fromDriveFile(it: Misskey.entities.DriveFile): GridItem {
 	return {
 		fileId: it.id,
 		url: it.url,
-		name: it.name.replace(/(\.[a-zA-Z0-9]+)+$/, ''),
+		name: it.name.replace(/(\.[a-zA-Z0-9]+)+$/, '').replaceAll('-', '_').replaceAll(' ', '_'),
 		host: '',
 		category: '',
 		aliases: '',

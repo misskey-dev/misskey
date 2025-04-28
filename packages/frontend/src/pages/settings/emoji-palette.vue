@@ -221,12 +221,6 @@ definePage(() => ({
 </script>
 
 <style lang="scss" module>
-.tab {
-	margin: calc(var(--MI-margin) / 2) 0;
-	padding: calc(var(--MI-margin) / 2) 0;
-	background: var(--MI_THEME-bg);
-}
-
 .emojis {
   padding: 12px;
   font-size: 1.1em;
@@ -246,6 +240,6 @@ definePage(() => ({
 .editorCaption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 </style>

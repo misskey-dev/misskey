@@ -4,9 +4,9 @@
  */
 
 import { onUnmounted, watch } from 'vue';
-import type { Ref, ShallowRef } from 'vue';
+import type { Ref } from 'vue';
 
-export function useMutationObserver(targetNodeRef: Ref<HTMLElement | undefined>, options: MutationObserverInit, callback: MutationCallback): void {
+export function useMutationObserver(targetNodeRef: Ref<HTMLElement | null | undefined>, options: MutationObserverInit, callback: MutationCallback): void {
 	const observer = new MutationObserver(callback);
 
 	watch(targetNodeRef, (targetNode) => {
