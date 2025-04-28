@@ -129,6 +129,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				redisTimelines,
 				useDbFallback: true,
 				ignoreAuthorFromMute: true,
+				ignoreAuthorFromInstanceBlock: true,
 				ignoreAuthorFromUserSuspension: true,
 				excludeReplies: ps.withChannelNotes && !ps.withReplies, // userTimelineWithChannel may include replies
 				excludeNoFiles: ps.withChannelNotes && ps.withFiles, // userTimelineWithChannel may include notes without files
@@ -185,6 +186,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
+		this.queryService.generateBlockedHostQueryForNote(query, true);
 		this.queryService.generateSuspendedUserQueryForNote(query, true);
 		if (me) {
 			this.queryService.generateMutedUserQueryForNotes(query, me, { id: ps.userId });

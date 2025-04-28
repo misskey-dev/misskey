@@ -234,6 +234,7 @@ export class SearchService {
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
+		this.queryService.generateBlockedHostQueryForNote(query);
 		this.queryService.generateSuspendedUserQueryForNote(query);
 		if (me) this.queryService.generateMutedUserQueryForNotes(query, me);
 		if (me) this.queryService.generateBlockedUserQueryForNotes(query, me);
@@ -306,6 +307,7 @@ export class SearchService {
 
 		query.where('note.id IN (:...noteIds)', { noteIds: res.hits.map(x => x.id) });
 
+		this.queryService.generateBlockedHostQueryForNote(query);
 		this.queryService.generateSuspendedUserQueryForNote(query);
 
 		const notes = (await query.getMany()).filter(note => {
