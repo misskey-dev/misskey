@@ -196,7 +196,11 @@ export async function uploadFile(
 	body.append('name', filename);
 
 	return await fetch(`https://${host}/api/drive/files/create`, { method: 'POST', body })
-		.then(async res => await res.json());
+		.then(async res => await res.json())
+		.catch(err => {
+			console.error('-- error :', JSON.stringify(err));
+			throw err;
+		});
 }
 
 export async function addCustomEmoji(

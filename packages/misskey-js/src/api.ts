@@ -122,7 +122,10 @@ export class APIClient {
 						...body.error,
 					});
 				}
-			}).catch(reject);
+			}).catch(err => {
+				console.error('-- error :', JSON.stringify(err));
+				reject(err);
+			});
 		});
 	}
 }
