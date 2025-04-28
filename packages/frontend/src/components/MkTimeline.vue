@@ -114,9 +114,10 @@ if (!store.s.realtimeMode) {
 		const notes = await misskeyApi(paginationQuery.endpoint, {
 			...paginationQuery.params,
 			limit: 10,
-			sinceId: Array.from(paginator.items.value.keys()).at(-1),
+			sinceId: Array.from(paginator.items.value.keys()).at(0),
 		});
 		console.log(notes);
+		paginator.unshiftItems(notes.toReversed());
 	}, POLLING_INTERVAL, {
 		immediate: false,
 		afterMounted: true,
