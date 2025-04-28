@@ -107,7 +107,7 @@ type TimelineQueryType = {
 
 let tlNotesCount = 0;
 
-const POLLING_INTERVAL = 1000 * 10;
+const POLLING_INTERVAL = 1000 * 15;
 
 if (!store.s.realtimeMode) {
 	useInterval(async () => {

@@ -26,7 +26,7 @@ const fetchEvent = new EventEmitter<{
 const capturedNoteIdMapForPolling = new Map<string, number>();
 
 const CAPTURE_MAX = 30;
-const POLLING_INTERVAL = 1000 * 10;
+const POLLING_INTERVAL = 1000 * 15;
 
 window.setInterval(() => {
 	const ids = [...capturedNoteIdMapForPolling.keys()].sort((a, b) => (a > b ? -1 : 1)).slice(0, CAPTURE_MAX); // 新しいものを優先するためにIDで降順ソート
