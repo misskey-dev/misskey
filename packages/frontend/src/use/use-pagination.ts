@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, onUnmounted, ref, watch } from 'vue';
+import { computed, isRef, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ComputedRef, Ref, ShallowRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -162,35 +162,23 @@ export function usePagination<T>(props: {
 		});
 	};
 
-	/**
- * 新着アイテムをitemsの先頭に追加し、MAX_ITEMSを適用する
- * @param newItems 新しいアイテムの配列
- */
-	function unshiftItems(newItems: MisskeyEntity[]) {
-		const length = newItems.length + items.value.size;
-		items.value = new Map([...arrayToEntries(newItems), ...items.value].slice(0, MAX_ITEMS));
-
-		if (length >= MAX_ITEMS) canFetchMore.value = true;
+	function trim() {
+		if (items.value.size >= MAX_ITEMS) canFetchMore.value = true;
+		items.value = new Map([...items.value].slice(0, MAX_ITEMS));
 	}
 
-	/**
- * 古いアイテムをitemsの末尾に追加し、MAX_ITEMSを適用する
- * @param oldItems 古いアイテムの配列
- */
-	function concatItems(oldItems: MisskeyEntity[]) {
-		const length = oldItems.length + items.value.size;
-		items.value = new Map([...items.value, ...arrayToEntries(oldItems)].slice(0, MAX_ITEMS));
+	function unshiftItems(newItems: MisskeyEntity[]) {
+		items.value = new Map([...arrayToEntries(newItems), ...items.value]);
+	}
 
-		if (length >= MAX_ITEMS) canFetchMore.value = true;
+	function concatItems(oldItems: MisskeyEntity[]) {
+		items.value = new Map([...items.value, ...arrayToEntries(oldItems)]);
 	}
 
 	function prepend(item: MisskeyEntity) {
 		unshiftItems([item]);
 	}
 
-	/*
- * アイテムを末尾に追加する（使うの？）
- */
 	const appendItem = (item: MisskeyEntity): void => {
 		items.value.set(item.id, item);
 	};
@@ -215,6 +203,7 @@ export function usePagination<T>(props: {
 		fetchMoreAhead,
 		unshiftItems,
 		prepend,
+		trim,
 		error,
 	};
 }
