@@ -184,6 +184,10 @@ export function usePagination<T>(props: {
 		if (length >= MAX_ITEMS) canFetchMore.value = true;
 	}
 
+	function prepend(item: MisskeyEntity) {
+		unshiftItems([item]);
+	}
+
 	/*
  * アイテムを末尾に追加する（使うの？）
  */
@@ -209,6 +213,8 @@ export function usePagination<T>(props: {
 		reload,
 		fetchMore,
 		fetchMoreAhead,
+		unshiftItems,
+		prepend,
 		error,
 	};
 }

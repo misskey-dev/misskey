@@ -43,6 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { onMounted } from 'vue';
 import type { PagingCtx } from '@/use/use-pagination.js';
 import { infoImageUrl } from '@/instance.js';
 import MkButton from '@/components/MkButton.vue';
@@ -69,6 +70,10 @@ function appearFetchMoreAhead() {
 function appearFetchMore() {
 	paginator.fetchMore();
 }
+
+onMounted(() => {
+	paginator.init();
+});
 
 defineExpose({
 	paginator: paginator,

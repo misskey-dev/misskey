@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:moveClass=" $style.transition_x_move"
 			tag="div"
 		>
-			<template v-for="(note, i) in paginator.items.value" :key="note.id">
+			<template v-for="(note, i) in Array.from(paginator.items.value.values())" :key="note.id">
 				<div v-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]" :data-scroll-anchor="note.id">
 					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
 					<div :class="$style.ad">
@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</component>
 		<div v-show="paginator.canFetchMore.value" key="_more_">
-			<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchMore">
+			<MkButton v-if="!paginator.moreFetching.value" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchMore : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else/>
@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup } from 'vue';
+import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import type { BasicTimelineType } from '@/timelines.js';
@@ -122,15 +122,13 @@ useInterval(async () => {
 });
 
 function prepend(note) {
-	if (pagingComponent.value == null) return;
-
 	tlNotesCount++;
 
 	if (instance.notesPerOneAd > 0 && tlNotesCount % instance.notesPerOneAd === 0) {
 		note._shouldInsertAd_ = true;
 	}
 
-	pagingComponent.value.prepend(note);
+	paginator.prepend(note);
 
 	if (props.sound) {
 		sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
@@ -302,6 +300,10 @@ refreshEndpointAndChannel();
 
 const paginator = usePagination({
 	ctx: paginationQuery,
+});
+
+onMounted(() => {
+	paginator.init();
 });
 
 onUnmounted(() => {
