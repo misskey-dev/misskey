@@ -493,17 +493,16 @@ export class ApiCallService implements OnApplicationShutdown {
 			if (multipartFile.file.truncated) {
 				throw createTooLongError();
 			}
-		} finally {
+		} catch (err) {
 			cleanup();
+			throw err;
 		}
 
-		const attachmentFile = {
-			name: multipartFile.filename,
-			path,
-		};
-
 		return {
-			attachmentFile,
+			attachmentFile: {
+				name: multipartFile.filename,
+				path,
+			},
 			cleanup,
 		};
 	}
