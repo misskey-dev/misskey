@@ -62,6 +62,15 @@ export class ApiServerService {
 			done();
 		});
 
+		fastify.addHook('onSend', (request, reply, payload, next) => {
+			console.log('---- Request:', request.method, request.url);
+			console.log('---- body:', request.body);
+
+			console.log('---- Response:', reply.statusCode);
+			console.log('---- Response:', payload);
+			next();
+		});
+
 		for (const endpoint of endpoints) {
 			const ep = {
 				name: endpoint.name,

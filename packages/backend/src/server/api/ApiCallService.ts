@@ -65,6 +65,8 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	#sendApiError(reply: FastifyReply, err: ApiError): void {
+		this.logger.error(err);
+
 		let statusCode = err.httpStatusCode;
 		if (err.httpStatusCode === 401) {
 			reply.header('WWW-Authenticate', 'Bearer realm="Misskey"');
