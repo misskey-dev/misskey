@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :reversed="tab === 'chat'" :tabs="headerTabs" :actions="headerActions">
-	<div class="_spacer" v-if="tab === 'chat'" style="--MI_SPACER-w: 700px;">
+	<div v-if="tab === 'chat'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<div v-if="initializing">
 				<MkLoading/>
@@ -58,15 +58,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<div class="_spacer" v-else-if="tab === 'search'" style="--MI_SPACER-w: 700px;">
+	<div v-else-if="tab === 'search'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XSearch :userId="userId" :roomId="roomId"/>
 	</div>
 
-	<div class="_spacer" v-else-if="tab === 'members'" style="--MI_SPACER-w: 700px;">
+	<div v-else-if="tab === 'members'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XMembers v-if="room != null" :room="room" @inviteUser="inviteUser"/>
 	</div>
 
-	<div class="_spacer" v-else-if="tab === 'info'" style="--MI_SPACER-w: 700px;">
+	<div v-else-if="tab === 'info'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XInfo v-if="room != null" :room="room"/>
 	</div>
 

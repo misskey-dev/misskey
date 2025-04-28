@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:moveClass="$style.transition_zoom_move"
 	mode="out-in"
 >
-	<div class="_spacer" v-if="!gameStarted" style="--MI_SPACER-w: 800px;">
+	<div v-if="!gameStarted" class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div :class="$style.root">
 			<div class="_gaps">
 				<div class="_woodenFrame" style="text-align: center;">

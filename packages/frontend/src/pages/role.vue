@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :tabs="headerTabs">
-	<div class="_spacer" v-if="error != null" style="--MI_SPACER-w: 1200px;">
+	<div v-if="error != null" class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<div :class="$style.root">
 			<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
 			<p :class="$style.text">
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</p>
 		</div>
 	</div>
-	<div class="_spacer" v-else-if="tab === 'users'" style="--MI_SPACER-w: 1200px;">
+	<div v-else-if="tab === 'users'" class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<div class="_gaps_s">
 			<div v-if="role">{{ role.description }}</div>
 			<MkUserList v-if="visible" :pagination="users" :extractor="(item) => item.user"/>
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-	<div class="_spacer" v-else-if="tab === 'timeline'" style="--MI_SPACER-w: 700px;">
+	<div v-else-if="tab === 'timeline'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<MkTimeline v-if="visible" ref="timeline" src="role" :role="props.roleId"/>
 		<div v-else-if="!visible" class="_fullinfo">
 			<img :src="infoImageUrl" draggable="false"/>
