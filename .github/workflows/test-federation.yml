@@ -80,6 +80,7 @@ jobs:
           cd packages/backend/test-federation
           docker compose logs
       - name: Stop servers
+        if: always()
         run: |
           cd packages/backend/test-federation
           docker compose down
