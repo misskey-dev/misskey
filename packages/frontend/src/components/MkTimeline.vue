@@ -4,38 +4,48 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkPullToRefresh ref="prComponent" :refresher="() => reloadTimeline()">
-	<MkPagination v-if="paginationQuery" ref="pagingComponent" :pagination="paginationQuery" @queue="emit('queue', $event)" @status="prComponent?.setDisabled($event)">
-		<template #empty>
+<MkPullToRefresh :refresher="() => reloadTimeline()">
+	<MkLoading v-if="paginator.fetching.value"/>
+
+	<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
+
+	<div v-else-if="paginator.items.value.size === 0" key="_empty_">
+		<slot name="empty">
 			<div class="_fullinfo">
 				<img :src="infoImageUrl" draggable="false"/>
 				<div>{{ i18n.ts.noNotes }}</div>
 			</div>
-		</template>
+		</slot>
+	</div>
 
-		<template #default="{ items: notes }">
-			<component
-				:is="prefer.s.animation ? TransitionGroup : 'div'"
-				:class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap, [$style.reverse]: paginationQuery.reversed }]"
-				:enterActiveClass="$style.transition_x_enterActive"
-				:leaveActiveClass="$style.transition_x_leaveActive"
-				:enterFromClass="$style.transition_x_enterFrom"
-				:leaveToClass="$style.transition_x_leaveTo"
-				:moveClass=" $style.transition_x_move"
-				tag="div"
-			>
-				<template v-for="(note, i) in notes" :key="note.id">
-					<div v-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]" :data-scroll-anchor="note.id">
-						<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
-						<div :class="$style.ad">
-							<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
-						</div>
+	<div v-else ref="rootEl">
+		<component
+			:is="prefer.s.animation ? TransitionGroup : 'div'"
+			:class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap, [$style.reverse]: paginationQuery.reversed }]"
+			:enterActiveClass="$style.transition_x_enterActive"
+			:leaveActiveClass="$style.transition_x_leaveActive"
+			:enterFromClass="$style.transition_x_enterFrom"
+			:leaveToClass="$style.transition_x_leaveTo"
+			:moveClass=" $style.transition_x_move"
+			tag="div"
+		>
+			<template v-for="(note, i) in paginator.items.value" :key="note.id">
+				<div v-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]" :data-scroll-anchor="note.id">
+					<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
+					<div :class="$style.ad">
+						<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
 					</div>
-					<MkNote v-else :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
-				</template>
-			</component>
-		</template>
-	</MkPagination>
+				</div>
+				<MkNote v-else :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
+			</template>
+		</component>
+		<div v-show="paginator.canFetchMore.value" key="_more_">
+			<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchMore">
+				{{ i18n.ts.loadMore }}
+			</MkButton>
+			<MkLoading v-else/>
+		</div>
+	</div>
 </MkPullToRefresh>
 </template>
 
@@ -44,7 +54,8 @@ import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup 
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
 import type { BasicTimelineType } from '@/timelines.js';
-import type { Paging } from '@/components/MkPagination.vue';
+import type { PagingCtx } from '@/use/use-pagination.js';
+import { usePagination } from '@/use/use-pagination.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
 import * as sound from '@/utility/sound.js';
@@ -53,9 +64,9 @@ import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -94,15 +105,17 @@ type TimelineQueryType = {
 	roleId?: string
 };
 
-const prComponent = useTemplateRef('prComponent');
-const pagingComponent = useTemplateRef('pagingComponent');
-
 let tlNotesCount = 0;
 
 const POLLING_INTERVAL = 1000 * 10;
 
-useInterval(() => {
-	// TODO
+useInterval(async () => {
+	const notes = await misskeyApi(paginationQuery.endpoint, {
+		...paginationQuery.params,
+		limit: 10,
+		sinceId: Array.from(paginator.items.value.keys()).at(-1),
+	});
+	console.log(notes);
 }, POLLING_INTERVAL, {
 	immediate: false,
 	afterMounted: true,
@@ -126,7 +139,7 @@ function prepend(note) {
 
 let connection: Misskey.ChannelConnection | null = null;
 let connection2: Misskey.ChannelConnection | null = null;
-let paginationQuery: Paging | null = null;
+let paginationQuery: PagingCtx;
 const noGap = !prefer.s.showGapBetweenNotesInTimeline;
 
 const stream = store.s.realtimeMode ? useStream() : null;
@@ -258,19 +271,14 @@ function updatePaginationQuery() {
 			roleId: props.role,
 		};
 	} else {
-		endpoint = null;
-		query = null;
+		throw new Error('Unrecognized timeline type: ' + props.src);
 	}
 
-	if (endpoint && query) {
-		paginationQuery = {
-			endpoint: endpoint,
-			limit: 10,
-			params: query,
-		};
-	} else {
-		paginationQuery = null;
-	}
+	paginationQuery = {
+		endpoint: endpoint,
+		limit: 10,
+		params: query,
+	};
 }
 
 function refreshEndpointAndChannel() {
@@ -292,17 +300,19 @@ watch(() => props.withSensitive, reloadTimeline);
 // 初回表示用
 refreshEndpointAndChannel();
 
+const paginator = usePagination({
+	ctx: paginationQuery,
+});
+
 onUnmounted(() => {
 	disconnectChannel();
 });
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
-		if (pagingComponent.value == null) return;
-
 		tlNotesCount = 0;
 
-		pagingComponent.value.reload().then(() => {
+		paginator.reload().then(() => {
 			res();
 		});
 	});
