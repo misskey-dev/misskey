@@ -12,11 +12,11 @@ import { $i } from '@/i.js';
 import { store } from '@/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
-const noteEvents = new EventEmitter<{
-	reacted: Misskey.entities.Note;
-	unreacted: Misskey.entities.Note;
-	pollVoted: Misskey.entities.Note;
-	deleted: Misskey.entities.Note;
+export const noteEvents = new EventEmitter<{
+	[`reacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
+	[`unreacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
+	[`pollVoted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; choice: string; }) => void;
+	[`deleted:${string}`]: () => void;
 }>();
 
 const fetchEvent = new EventEmitter<{
@@ -54,10 +54,6 @@ function pseudoNoteCapture(props: {
 }) {
 	const note = props.note;
 	const pureNote = props.pureNote;
-
-	function onReacted(): void {
-
-	}
 
 	function onFetched(data: Pick<Misskey.entities.Note, 'reactions' | 'reactionEmojis'>): void {
 		note.value.reactions = data.reactions;
@@ -100,58 +96,33 @@ function realtimeNoteCapture(props: {
 
 		switch (type) {
 			case 'reacted': {
-				const reaction = body.reaction;
-
-				if (body.emoji && !(body.emoji.name in note.value.reactionEmojis)) {
-					note.value.reactionEmojis[body.emoji.name] = body.emoji.url;
-				}
-
-				// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
-				const currentCount = (note.value.reactions || {})[reaction] || 0;
-
-				note.value.reactions[reaction] = currentCount + 1;
-				note.value.reactionCount += 1;
-
-				if ($i && (body.userId === $i.id)) {
-					note.value.myReaction = reaction;
-				}
+				noteEvents.emit(`reacted:${id}`, {
+					userId: body.userId,
+					reaction: body.reaction,
+					emoji: body.emoji,
+				});
 				break;
 			}
 
 			case 'unreacted': {
-				const reaction = body.reaction;
-
-				// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
-				const currentCount = (note.value.reactions || {})[reaction] || 0;
-
-				note.value.reactions[reaction] = Math.max(0, currentCount - 1);
-				note.value.reactionCount = Math.max(0, note.value.reactionCount - 1);
-				if (note.value.reactions[reaction] === 0) delete note.value.reactions[reaction];
-
-				if ($i && (body.userId === $i.id)) {
-					note.value.myReaction = null;
-				}
+				noteEvents.emit(`unreacted:${id}`, {
+					userId: body.userId,
+					reaction: body.reaction,
+					emoji: body.emoji,
+				});
 				break;
 			}
 
 			case 'pollVoted': {
-				const choice = body.choice;
-
-				const choices = [...note.value.poll.choices];
-				choices[choice] = {
-					...choices[choice],
-					votes: choices[choice].votes + 1,
-					...($i && (body.userId === $i.id) ? {
-						isVoted: true,
-					} : {}),
-				};
-
-				note.value.poll.choices = choices;
+				noteEvents.emit(`pollVoted:${id}`, {
+					userId: body.userId,
+					choice: body.choice,
+				});
 				break;
 			}
 
 			case 'deleted': {
-				props.isDeletedRef.value = true;
+				noteEvents.emit(`deleted:${id}`);
 				break;
 			}
 		}
@@ -195,6 +166,80 @@ export function useNoteCapture(props: {
 	pureNote: Ref<Misskey.entities.Note>;
 	isDeletedRef: Ref<boolean>;
 }) {
+	const note = props.note;
+	noteEvents.on(`reacted:${note.value.id}`, onReacted);
+	noteEvents.on(`unreacted:${note.value.id}`, onUnreacted);
+	noteEvents.on(`pollVoted:${note.value.id}`, onPollVoted);
+	noteEvents.on(`deleted:${note.value.id}`, onDeleted);
+
+	let latestReactedKey: string | null = null;
+	let latestUnreactedKey: string | null = null;
+	let latestPollVotedKey: string | null = null;
+
+	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
+		console.log('reacted', ctx);
+		const newReactedKey = `${ctx.userId}:${ctx.reaction}`;
+		if (newReactedKey === latestReactedKey) return;
+		latestReactedKey = newReactedKey;
+
+		if (ctx.emoji && !(ctx.emoji.name in note.value.reactionEmojis)) {
+			note.value.reactionEmojis[ctx.emoji.name] = ctx.emoji.url;
+		}
+
+		const currentCount = note.value.reactions[ctx.reaction] || 0;
+
+		note.value.reactions[ctx.reaction] = currentCount + 1;
+		note.value.reactionCount += 1;
+
+		if ($i && (ctx.userId === $i.id)) {
+			note.value.myReaction = ctx.reaction;
+		}
+	}
+
+	function onUnreacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
+		const newUnreactedKey = `${ctx.userId}:${ctx.reaction}`;
+		if (newUnreactedKey === latestUnreactedKey) return;
+		latestUnreactedKey = newUnreactedKey;
+
+		const currentCount = note.value.reactions[ctx.reaction] || 0;
+
+		note.value.reactions[ctx.reaction] = Math.max(0, currentCount - 1);
+		note.value.reactionCount = Math.max(0, note.value.reactionCount - 1);
+		if (note.value.reactions[ctx.reaction] === 0) delete note.value.reactions[ctx.reaction];
+
+		if ($i && (ctx.userId === $i.id)) {
+			note.value.myReaction = null;
+		}
+	}
+
+	function onPollVoted(ctx: { userId: Misskey.entities.User['id']; choice: string; }): void {
+		const newPollVotedKey = `${ctx.userId}:${ctx.choice}`;
+		if (newPollVotedKey === latestPollVotedKey) return;
+		latestPollVotedKey = newPollVotedKey;
+
+		const choices = [...note.value.poll.choices];
+		choices[ctx.choice] = {
+			...choices[ctx.choice],
+			votes: choices[ctx.choice].votes + 1,
+			...($i && (ctx.userId === $i.id) ? {
+				isVoted: true,
+			} : {}),
+		};
+
+		note.value.poll.choices = choices;
+	}
+
+	function onDeleted(): void {
+		props.isDeletedRef.value = true;
+	}
+
+	onUnmounted(() => {
+		noteEvents.off(`reacted:${note.value.id}`, onReacted);
+		noteEvents.off(`unreacted:${note.value.id}`, onUnreacted);
+		noteEvents.off(`pollVoted:${note.value.id}`, onPollVoted);
+		noteEvents.off(`deleted:${note.value.id}`, onDeleted);
+	});
+
 	if ($i && store.s.realtimeMode) {
 		realtimeNoteCapture(props);
 	} else {

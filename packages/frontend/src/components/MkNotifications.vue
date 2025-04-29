@@ -105,11 +105,7 @@ function onNotification(notification) {
 }
 
 function reload() {
-	return new Promise<void>((res) => {
-		paginator.reload().then(() => {
-			res();
-		});
-	});
+	return paginator.reload();
 }
 
 let connection: Misskey.ChannelConnection<Misskey.Channels['main']> | null = null;

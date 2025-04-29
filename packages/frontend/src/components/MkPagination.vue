@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveActiveClass="prefer.s.animation ? $style.transition_fade_leaveActive : ''"
 	:enterFromClass="prefer.s.animation ? $style.transition_fade_enterFrom : ''"
 	:leaveToClass="prefer.s.animation ? $style.transition_fade_leaveTo : ''"
+	:css="prefer.s.animation"
 	mode="out-in"
 >
 	<MkLoading v-if="paginator.fetching.value"/>

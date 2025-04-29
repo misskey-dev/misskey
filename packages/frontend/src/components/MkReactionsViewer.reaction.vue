@@ -36,6 +36,7 @@ import { checkReactionPermissions } from '@/utility/check-reaction-permissions.j
 import { customEmojisMap } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
+import { noteEvents } from '@/use/use-note-capture.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -83,10 +84,21 @@ async function toggleReaction() {
 		misskeyApi('notes/reactions/delete', {
 			noteId: props.note.id,
 		}).then(() => {
+			noteEvents.emit(`unreacted:${props.note.id}`, {
+				userId: $i!.id,
+				reaction: props.reaction,
+				emoji: emoji.value,
+			});
 			if (oldReaction !== props.reaction) {
 				misskeyApi('notes/reactions/create', {
 					noteId: props.note.id,
 					reaction: props.reaction,
+				}).then(() => {
+					noteEvents.emit(`reacted:${props.note.id}`, {
+						userId: $i!.id,
+						reaction: props.reaction,
+						emoji: emoji.value,
+					});
 				});
 			}
 		});
@@ -110,6 +122,12 @@ async function toggleReaction() {
 		misskeyApi('notes/reactions/create', {
 			noteId: props.note.id,
 			reaction: props.reaction,
+		}).then(() => {
+			noteEvents.emit(`reacted:${props.note.id}`, {
+				userId: $i!.id,
+				reaction: props.reaction,
+				emoji: emoji.value,
+			});
 		});
 		if (props.note.text && props.note.text.length > 100 && (Date.now() - new Date(props.note.createdAt).getTime() < 1000 * 3)) {
 			claimAchievement('reactWithoutRead');

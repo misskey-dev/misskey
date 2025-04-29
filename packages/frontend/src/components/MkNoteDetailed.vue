@@ -242,7 +242,7 @@ import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/utility/get-note-menu.js';
-import { useNoteCapture } from '@/use/use-note-capture.js';
+import { noteEvents, useNoteCapture } from '@/use/use-note-capture.js';
 import { deepClone } from '@/utility/clone.js';
 import { useTooltip } from '@/use/use-tooltip.js';
 import { claimAchievement } from '@/utility/achievements.js';
@@ -343,6 +343,11 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 	misskeyApi('notes/reactions/create', {
 		noteId: appearNote.value.id,
 		reaction: reaction,
+	}).then(() => {
+		noteEvents.emit(`reacted:${appearNote.value.id}`, {
+			userId: $i!.id,
+			reaction: reaction,
+		});
 	});
 });
 
@@ -445,6 +450,11 @@ function react(): void {
 		misskeyApi('notes/reactions/create', {
 			noteId: appearNote.value.id,
 			reaction: '❤️',
+		}).then(() => {
+			noteEvents.emit(`reacted:${appearNote.value.id}`, {
+				userId: $i!.id,
+				reaction: '❤️',
+			});
 		});
 		const el = reactButton.value;
 		if (el && prefer.s.animation) {
@@ -472,6 +482,11 @@ function react(): void {
 			misskeyApi('notes/reactions/create', {
 				noteId: appearNote.value.id,
 				reaction: reaction,
+			}).then(() => {
+				noteEvents.emit(`reacted:${appearNote.value.id}`, {
+					userId: $i!.id,
+					reaction: reaction,
+				});
 			});
 			if (appearNote.value.text && appearNote.value.text.length > 100 && (Date.now() - new Date(appearNote.value.createdAt).getTime() < 1000 * 3)) {
 				claimAchievement('reactWithoutRead');
