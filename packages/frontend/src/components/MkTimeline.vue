@@ -19,6 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-else ref="rootEl">
+		<div v-if="notesQueue.length > 0" :class="$style.new" @click="releaseQueue()"><button class="_button" :class="$style.newButton">{{ i18n.ts.newNoteRecived }}</button></div>
 		<component
 			:is="prefer.s.animation ? TransitionGroup : 'div'"
 			:class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap, [$style.reverse]: paginationQuery.reversed }]"
@@ -50,9 +51,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted } from 'vue';
+import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
+import { scrollToTop } from '@@/js/scroll.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { PagingCtx } from '@/use/use-pagination.js';
 import { usePagination } from '@/use/use-pagination.js';
@@ -64,6 +66,7 @@ import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
+import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -87,12 +90,13 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'queue', count: number): void;
 }>();
 
 provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
 provide('inChannel', computed(() => props.src === 'channel'));
+
+const rootEl = useTemplateRef('rootEl');
 
 type TimelineQueryType = {
 	antennaId?: string,
@@ -105,7 +109,7 @@ type TimelineQueryType = {
 	roleId?: string
 };
 
-let tlNotesCount = 0;
+let noteCounterForAd = 0;
 
 const POLLING_INTERVAL = 1000 * 15;
 
@@ -124,14 +128,28 @@ if (!store.s.realtimeMode) {
 	});
 }
 
-function prepend(note) {
-	tlNotesCount++;
+const notesQueue = ref<Misskey.entities.Note[]>([]);
 
-	if (instance.notesPerOneAd > 0 && tlNotesCount % instance.notesPerOneAd === 0) {
+function releaseQueue() {
+	paginator.unshiftItems(notesQueue.value);
+	notesQueue.value = [];
+
+	scrollToTop(rootEl.value);
+}
+
+function prepend(note: Misskey.entities.Note) {
+	noteCounterForAd++;
+
+	if (instance.notesPerOneAd > 0 && noteCounterForAd % instance.notesPerOneAd === 0) {
 		note._shouldInsertAd_ = true;
 	}
 
-	paginator.prepend(note);
+	const isTop = false;
+	if (isTop) {
+		paginator.prepend(note);
+	} else {
+		notesQueue.value.unshift(note);
+	}
 
 	if (props.sound) {
 		sound.playMisskeySfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
@@ -315,7 +333,7 @@ onUnmounted(() => {
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
-		tlNotesCount = 0;
+		noteCounterForAd = 0;
 
 		paginator.reload().then(() => {
 			res();
@@ -376,7 +394,33 @@ defineExpose({
 	}
 }
 
+.new {
+	position: sticky;
+	top: var(--MI-stickyTop, 0px);
+	z-index: 1000;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 8px 0;
+	-webkit-backdrop-filter: var(--MI-blur, blur(4px));
+	backdrop-filter: var(--MI-blur, blur(4px));
+}
+
+.newButton {
+	display: block;
+	padding: 8px 16px;
+	border-radius: 999px;
+	width: max-content;
+	margin: auto;
+	background: var(--MI_THEME-accent);
+	color: var(--MI_THEME-fgOnAccent);
+	font-size: 90%;
+}
+
 .ad:empty {
 	display: none;
+}
+
+.more {
+	margin: 16px auto;
 }
 </style>
