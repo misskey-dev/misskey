@@ -172,7 +172,7 @@ const appearNote = computed(() => isRenote ? note.value.renote as Misskey.entiti
 const showContent = ref(false);
 const isDeleted = ref(false);
 const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
-const isLong = shouldCollapsed(appearNote.value, []);
+const isLong = shouldCollapsed(appearNote.value, 13.5, parsed.value);
 const collapsed = ref(appearNote.value.cw == null && isLong);
 </script>
 

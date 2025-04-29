@@ -2159,6 +2159,26 @@ export interface Locale extends ILocale {
      */
     "limitTo": ParameterizedString<"x">;
     /**
+     * ノートを畳む大きさ
+     */
+    "collapsingNoteSize": string;
+    /**
+     * ノートを畳む条件
+     */
+    "collapsingNoteCondition": string;
+    /**
+     * 高精度の算出方法
+     */
+    "detailedCalculation": string;
+    /**
+     * 旧式の算出方法
+     */
+    "legacyCalculation": string;
+    /**
+     * 実際の表示サイズに基づく
+     */
+    "seeRenderedSize": string;
+    /**
      * フォロー申請はありません
      */
     "noFollowRequests": string;

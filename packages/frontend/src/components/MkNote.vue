@@ -61,7 +61,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					/>
 					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
 				</p>
-				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
+				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]" :style="{ 'max-height': collapsed ? `${collapseSize}em` : undefined }">
+					<div ref="collapsibleArea"><!-- Diffが見づらくなるのでインデントは後で修正 -->
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
@@ -98,6 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-else-if="isLong && !collapsed" :class="$style.showLess" class="_button" @click="collapsed = true">
 						<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
 					</button>
+					</div><!-- Diffが見づらくなるのでインデントは後で修正 -->
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
@@ -180,7 +182,7 @@ import { computed, inject, onMounted, ref, useTemplateRef, watch, provide } from
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
-import { shouldCollapsed } from '@@/js/collapsed.js';
+import { shouldCollapsedLegacy, shouldCollapsed } from '@@/js/collapsed.js';
 import { host } from '@@/js/config.js';
 import type { Ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -281,8 +283,6 @@ const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null);
-const isLong = shouldCollapsed(appearNote.value, urls.value ?? []);
-const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
 const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords, true));
@@ -297,6 +297,34 @@ const renoteCollapsed = ref(
 		(appearNote.value.myReaction != null)
 	),
 );
+
+// oversized note collapsing
+const collapsibleArea = useTemplateRef('collapsibleArea');
+const collapsingNoteCondition = prefer.s.collapsingNoteCondition;
+const collapseSize = prefer.s.collapsingNoteSize;
+const isLong = ref(true);
+switch (collapsingNoteCondition) {
+	case 'detailedCalculation':
+		isLong.value = shouldCollapsed(appearNote.value, collapseSize, parsed.value, urls.value ?? []);
+		break;
+	case 'seeRenderedSize':
+		break;
+	// fail safe
+	case 'legacyCalculation':
+	default:
+		isLong.value = shouldCollapsedLegacy(appearNote.value, urls.value ?? []);
+		break;
+}
+const collapsed = ref(appearNote.value.cw == null && isLong.value);
+// v-sizeディレクティブを使ったほうがよい？
+if (collapsingNoteCondition === 'seeRenderedSize') {
+	onMounted(() => {
+		const current = collapsibleArea.value.clientHeight;
+		const limit = collapseSize * parseFloat(getComputedStyle(collapsibleArea.value).fontSize);
+		isLong.value = current > limit;
+		collapsed.value &&= isLong.value;
+	});
+}
 
 const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 	type: 'lookup',
@@ -359,7 +387,7 @@ const keymap = {
 			renoteCollapsed.value = false;
 		} else if (appearNote.value.cw != null) {
 			showContent.value = !showContent.value;
-		} else if (isLong) {
+		} else if (isLong.value) {
 			collapsed.value = !collapsed.value;
 		}
 	},
@@ -890,7 +918,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .contentCollapsed {
 	position: relative;
-	max-height: 9em;
 	overflow: clip;
 }
 

@@ -1237,6 +1237,9 @@ importers:
 
   packages/frontend-shared:
     dependencies:
+      mfm-js:
+        specifier: 0.24.0
+        version: 0.24.0
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
