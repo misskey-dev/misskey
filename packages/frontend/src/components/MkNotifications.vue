@@ -41,7 +41,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import { isHeadVisible } from '@@/js/scroll.js';
 import type { notificationTypes } from '@@/js/const.js';
 import XNotification from '@/components/MkNotification.vue';
 import MkNote from '@/components/MkNote.vue';
@@ -79,9 +78,8 @@ const POLLING_INTERVAL = 1000 * 15;
 
 if (!store.s.realtimeMode) {
 	useInterval(async () => {
-		const isTop = rootEl.value == null ? false : isHeadVisible(rootEl.value, 16);
 		paginator.fetchNewer({
-			toQueue: !isTop,
+			toQueue: false,
 		});
 	}, POLLING_INTERVAL, {
 		immediate: false,
