@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['sync', 'palettes', 'devices']">
 					<MkSwitch :modelValue="palettesSyncEnabled" @update:modelValue="changePalettesSyncEnabled">
-						<template #label><SearchLabel>{{ i18n.ts._emojiPalette.enableSyncBetweenDevicesForPalettes }}</SearchLabel></template>
+						<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts._emojiPalette.enableSyncBetweenDevicesForPalettes }}</SearchLabel></template>
 					</MkSwitch>
 				</SearchMarker>
 			</div>
@@ -240,12 +240,6 @@ definePage(() => ({
 </script>
 
 <style lang="scss" module>
-.tab {
-	margin: calc(var(--MI-margin) / 2) 0;
-	padding: calc(var(--MI-margin) / 2) 0;
-	background: var(--MI_THEME-bg);
-}
-
 .emojis {
   padding: 12px;
   font-size: 1.1em;
@@ -265,6 +259,6 @@ definePage(() => ({
 .editorCaption {
 	font-size: 0.85em;
 	padding: 8px 0 0 0;
-	color: var(--MI_THEME-fgTransparentWeak);
+	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
 }
 </style>

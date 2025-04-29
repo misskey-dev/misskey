@@ -31,9 +31,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-for="item in (items2 ?? [])">
 			<div v-if="item.type === 'divider'" role="separator" tabindex="-1" :class="$style.divider"></div>
 
-			<span v-else-if="item.type === 'label'" role="menuitem" tabindex="-1" :class="[$style.label, $style.item]">
-				<span style="opacity: 0.7;">{{ item.text }}</span>
-			</span>
+			<div v-else-if="item.type === 'label'" role="menuitem" tabindex="-1" :class="[$style.label]">
+				<span>{{ item.text }}</span>
+			</div>
 
 			<span v-else-if="item.type === 'pending'" role="menuitem" tabindex="0" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
@@ -473,7 +473,7 @@ onBeforeUnmount(() => {
 		}
 	}
 
-	&:not(.widthSpecified) {
+	&:not(.asDrawer):not(.widthSpecified) {
 		> .menu {
 			max-width: 400px;
 		}
@@ -619,12 +619,6 @@ onBeforeUnmount(() => {
 		--menuActiveBg: var(--MI_THEME-accentedBg);
 	}
 
-	&.label {
-		pointer-events: none;
-		font-size: 0.7em;
-		padding-bottom: 4px;
-	}
-
 	&.pending {
 		pointer-events: none;
 		opacity: 0.7;
@@ -692,6 +686,19 @@ onBeforeUnmount(() => {
 	align-items: center;
 	color: var(--MI_THEME-indicator);
 	font-size: 12px;
+}
+
+.label {
+	position: relative;
+	padding: 6px 16px;
+	box-sizing: border-box;
+	white-space: nowrap;
+	font-size: 0.7em;
+	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	opacity: 0.7;
+	pointer-events: none;
 }
 
 .divider {

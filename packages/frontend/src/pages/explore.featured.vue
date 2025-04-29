@@ -4,14 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="800">
+<div class="_spacer" style="--MI_SPACER-w: 800px;">
 	<MkTab v-model="tab" style="margin-bottom: var(--MI-margin);">
 		<option value="notes">{{ i18n.ts.notes }}</option>
 		<option value="polls">{{ i18n.ts.poll }}</option>
 	</MkTab>
 	<MkNotes v-if="tab === 'notes'" :pagination="paginationForNotes"/>
 	<MkNotes v-else-if="tab === 'polls'" :pagination="paginationForPolls"/>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>

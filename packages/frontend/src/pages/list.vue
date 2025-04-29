@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer v-if="error != null" :contentMax="1200">
+	<div v-if="error != null" class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<div :class="$style.root">
 			<img :class="$style.img" :src="serverErrorImageUrl" draggable="false"/>
 			<p :class="$style.text">
@@ -13,8 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts.nothing }}
 			</p>
 		</div>
-	</MkSpacer>
-	<MkSpacer v-else-if="list" :contentMax="700">
+	</div>
+	<div v-else-if="list" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div v-if="list" class="members _margin">
 			<div :class="$style.member_text">{{ i18n.ts.members }}</div>
 			<div class="_gaps_s">
@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton v-if="list.isLiked" v-tooltip="i18n.ts.unlike" inline :class="$style.button" asLike primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="list.likedCount > 0" class="count">{{ list.likedCount }}</span></MkButton>
 		<MkButton v-if="!list.isLiked" v-tooltip="i18n.ts.like" inline :class="$style.button" asLike @click="like()"><i class="ti ti-heart"></i><span v-if="1 > 0" class="count">{{ list.likedCount }}</span></MkButton>
 		<MkButton inline @click="create()"><i class="ti ti-download" :class="$style.import"></i>{{ i18n.ts.import }}</MkButton>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

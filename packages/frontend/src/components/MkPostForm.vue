@@ -880,7 +880,7 @@ async function post(ev?: MouseEvent) {
 
 	if (postAccount.value) {
 		const storedAccounts = await getAccounts();
-		token = storedAccounts.find(x => x.user.id === postAccount.value?.id)?.token;
+		token = storedAccounts.find(x => x.id === postAccount.value?.id)?.token;
 	}
 
 	posting.value = true;
