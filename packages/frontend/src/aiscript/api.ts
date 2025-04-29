@@ -68,7 +68,7 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
 			utils.assertString(ep);
-			if (ep.value.includes('://')) {
+			if (ep.value.includes('://') || ep.value.includes('..')) {
 				throw new errors.AiScriptRuntimeError('invalid endpoint');
 			}
 			if (token) {
