@@ -1346,6 +1346,7 @@ settingsMigrating: "正在移轉設定。請稍候……（之後也可以到「
 readonly: "唯讀"
 goToDeck: "回去甲板"
 federationJobs: "聯邦通訊作業"
+driveAboutTip: "在「雲端硬碟」中，會顯示過去上傳的檔案列表。<br>\n可以在附加到貼文時重新利用，或者事先上傳之後再用於發布。<br>\n<b>請注意，刪除檔案後，之前使用過該檔案的所有地方（貼文、頁面、大頭貼、橫幅等）也會一併無法顯示。</b><br>\n也可以建立資料夾來整理檔案。"
 _chat:
   noMessagesYet: "尚無訊息"
   newMessage: "新訊息"

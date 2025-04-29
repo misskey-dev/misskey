@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<rect
 			x="-2" y="-2"
 			:width="viewBoxX + 4" :height="viewBoxY + 4"
-			:style="`stroke: none; fill: url(#${ cpuGradientId }); mask: url(#${ cpuMaskId })`"
+			:style="{ stroke: 'none', fill: `url(#${ cpuGradientId })`, mask: `url(#${ cpuMaskId })` }"
 		/>
 		<text x="1" y="5">CPU <tspan>{{ cpuP }}%</tspan></text>
 	</svg>
@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<rect
 			x="-2" y="-2"
 			:width="viewBoxX + 4" :height="viewBoxY + 4"
-			:style="`stroke: none; fill: url(#${ memGradientId }); mask: url(#${ memMaskId })`"
+			:style="{ stroke: 'none', fill: `url(#${ memGradientId })`, mask: `url(#${ memMaskId })` }"
 		/>
 		<text x="1" y="5">MEM <tspan>{{ memP }}%</tspan></text>
 	</svg>

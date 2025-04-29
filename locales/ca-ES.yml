@@ -1346,6 +1346,7 @@ settingsMigrating: "Estem migrant la teva configuració. Si us plau espera un mo
 readonly: "Només lectura"
 goToDeck: "Tornar al tauler"
 federationJobs: "Treballs sindicats "
+driveAboutTip: "Al Disc veure's una llista de tots els arxius que has anat pujant.<br>\nPots tornar-los a fer servir adjuntant-los a notes noves o pots adelantar-te i pujar arxius per publicar-los més tard!<br>\n<b>Tingués en compte que si esborres un arxiu també desapareixerà de tots els llocs on l'has fet servir (notes, pàgines, avatars, imatges de capçalera, etc.)</b><br>\nTambé pots crear carpetes per organitzar les."
 _chat:
   noMessagesYet: "Encara no tens missatges "
   newMessage: "Missatge nou"

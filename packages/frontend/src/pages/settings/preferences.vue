@@ -42,6 +42,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</SearchMarker>
 
 						<div class="_gaps_s">
+							<SearchMarker :keywords="['titlebar', 'show']">
+								<MkPreferenceContainer k="showTitlebar">
+									<MkSwitch v-model="showTitlebar">
+										<template #label><SearchLabel>{{ i18n.ts.showTitlebar }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
 							<SearchMarker :keywords="['avatar', 'icon', 'decoration', 'show']">
 								<MkPreferenceContainer k="showAvatarDecorations">
 									<MkSwitch v-model="showAvatarDecorations">
@@ -742,6 +750,7 @@ const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);
 
 const overridedDeviceKind = prefer.model('overridedDeviceKind');
+const showTitlebar = prefer.model('showTitlebar');
 const keepCw = prefer.model('keepCw');
 const serverDisconnectedBehavior = prefer.model('serverDisconnectedBehavior');
 const hemisphere = prefer.model('hemisphere');
