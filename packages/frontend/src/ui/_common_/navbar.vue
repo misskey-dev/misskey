@@ -150,8 +150,18 @@ function toggleIconOnly() {
 	}
 }
 
-function toggleRealtimeMode() {
-	store.set('realtimeMode', !store.s.realtimeMode);
+function toggleRealtimeMode(ev: MouseEvent) {
+	os.popupMenu([{
+		type: 'label',
+		text: i18n.ts.realtimeMode,
+	}, {
+		text: store.s.realtimeMode ? i18n.ts.turnItOff : i18n.ts.turnItOn,
+		icon: store.s.realtimeMode ? 'ti ti-bolt-off' : 'ti ti-bolt',
+		action: () => {
+			store.set('realtimeMode', !store.s.realtimeMode);
+			window.location.reload();
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 
 function openAccountMenu(ev: MouseEvent) {

@@ -5409,6 +5409,14 @@ export interface Locale extends ILocale {
      * リアルタイムモード
      */
     "realtimeMode": string;
+    /**
+     * オンにする
+     */
+    "turnItOn": string;
+    /**
+     * オフにする
+     */
+    "turnItOff": string;
     "_chat": {
         /**
          * まだメッセージはありません

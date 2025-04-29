@@ -150,12 +150,11 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 
 if ($i) {
 	if (store.s.realtimeMode) {
-		const connection = useStream().useChannel('main', null, 'UI');
+		const connection = useStream().useChannel('main');
 		connection.on('notification', onNotification);
 	}
 	globalEvents.on('clientNotification', notification => onNotification(notification, true));
 
-	//#region Listen message from SW
 	if ('serviceWorker' in navigator) {
 		swInject();
 	}
