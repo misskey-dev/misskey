@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer v-if="file" :contentMax="600" :marginMin="16" :marginMax="32">
+	<div v-if="file" class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<div v-if="tab === 'overview'" class="cxqhhsmd _gaps_m">
 			<a class="thumbnail" :href="file.url" target="_blank">
 				<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkObjectView v-if="info" tall :value="info">
 			</MkObjectView>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

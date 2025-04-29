@@ -31,10 +31,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:leaveActiveClass="prefer.s.animation ? $style.transition_toggle_leaveActive : ''"
 				:enterFromClass="prefer.s.animation ? $style.transition_toggle_enterFrom : ''"
 				:leaveToClass="prefer.s.animation ? $style.transition_toggle_leaveTo : ''"
-				@enter="enter"
-				@afterEnter="afterEnter"
-				@leave="leave"
-				@afterLeave="afterLeave"
 			>
 				<KeepAlive>
 					<div v-show="opened">
@@ -45,9 +41,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</div>
 							</template>
 
-							<MkSpacer v-if="withSpacer" :marginMin="spacerMin" :marginMax="spacerMax">
+							<div v-if="withSpacer" class="_spacer" :style="{ '--MI_SPACER-min': props.spacerMin + 'px', '--MI_SPACER-max': props.spacerMax + 'px' }">
 								<slot></slot>
-							</MkSpacer>
+							</div>
 							<div v-else>
 								<slot></slot>
 							</div>
@@ -90,32 +86,6 @@ const bgSame = ref(false);
 const opened = ref(props.defaultOpen);
 const openedAtLeastOnce = ref(props.defaultOpen);
 
-function enter(el: Element) {
-	if (!(el instanceof HTMLElement)) return;
-	const elementHeight = el.getBoundingClientRect().height;
-	el.style.height = '0';
-	el.offsetHeight; // reflow
-	el.style.height = `${Math.min(elementHeight, props.maxHeight ?? Infinity)}px`;
-}
-
-function afterEnter(el: Element) {
-	if (!(el instanceof HTMLElement)) return;
-	el.style.height = '';
-}
-
-function leave(el: Element) {
-	if (!(el instanceof HTMLElement)) return;
-	const elementHeight = el.getBoundingClientRect().height;
-	el.style.height = `${elementHeight}px`;
-	el.offsetHeight; // reflow
-	el.style.height = '0';
-}
-
-function afterLeave(el: Element) {
-	if (!(el instanceof HTMLElement)) return;
-	el.style.height = '';
-}
-
 function toggle() {
 	if (!opened.value) {
 		openedAtLeastOnce.value = true;
@@ -137,16 +107,18 @@ onMounted(() => {
 <style lang="scss" module>
 .transition_toggle_enterActive,
 .transition_toggle_leaveActive {
-	overflow-y: clip;
-	transition: opacity 0.3s, height 0.3s, transform 0.3s !important;
+	overflow-y: hidden; // 子要素のmarginが突き出るため clip を使ってはいけない
+	transition: opacity 0.3s, height 0.3s !important;
 }
 .transition_toggle_enterFrom,
 .transition_toggle_leaveTo {
 	opacity: 0;
+	height: 0;
 }
 
 .root {
 	display: block;
+	interpolate-size: allow-keywords; // heightのtransitionを動作させるために必要
 }
 
 .header {
