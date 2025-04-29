@@ -121,7 +121,13 @@ if (!store.s.realtimeMode) {
 			sinceId: Array.from(paginator.items.value.keys()).at(0),
 		});
 		console.log(notes);
-		paginator.unshiftItems(notes.toReversed());
+
+		const isTop = false;
+		if (isTop) {
+			paginator.unshiftItems(notes.toReversed());
+		} else {
+			notesQueue.value.unshift(...notes.toReversed());
+		}
 	}, POLLING_INTERVAL, {
 		immediate: false,
 		afterMounted: true,
