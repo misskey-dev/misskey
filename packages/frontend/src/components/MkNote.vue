@@ -396,9 +396,8 @@ if (props.mock) {
 	}, { deep: true });
 } else {
 	useNoteCapture({
-		rootEl: rootEl,
 		note: appearNote,
-		pureNote: note,
+		parentNote: note,
 		isDeletedRef: isDeleted,
 	});
 }

@@ -372,9 +372,8 @@ const reactionsPagination = computed<Paging>(() => ({
 }));
 
 useNoteCapture({
-	rootEl: rootEl,
 	note: appearNote,
-	pureNote: note,
+	parentNote: note,
 	isDeletedRef: isDeleted,
 });
 

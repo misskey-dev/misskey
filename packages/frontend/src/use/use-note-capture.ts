@@ -29,11 +29,13 @@ const CAPTURE_MAX = 30;
 const POLLING_INTERVAL = 1000 * 15;
 
 window.setInterval(() => {
+	// TODO: IDごとにpriorityを付け、CAPTURE_MAXを超えた場合は優先度の低いものから削除する
+	// priorityは 自分のノート > リノートされているノート > その他のノート > 投稿から3分以上経過しているノート の順で高くするとよさそう
 	const ids = [...capturedNoteIdMapForPolling.keys()].sort((a, b) => (a > b ? -1 : 1)).slice(0, CAPTURE_MAX); // 新しいものを優先するためにIDで降順ソート
 	if (ids.length === 0) return;
 	if (window.document.hidden) return;
 
-	// まとめてリクエストするのではなく、個別にHTTPリクエスト投げてCDNにキャッシュさせた方がサーバーの負荷低減には良いかもしれない
+	// まとめてリクエストするのではなく、個別にHTTPリクエスト投げてCDNにキャッシュさせた方がサーバーの負荷低減には良いかもしれない？
 	misskeyApi('notes/show-partial-bulk', {
 		noteIds: ids,
 	}).then((items) => {
@@ -46,14 +48,11 @@ window.setInterval(() => {
 	});
 }, POLLING_INTERVAL);
 
-function pseudoNoteCapture(props: {
-	rootEl: ShallowRef<HTMLElement | undefined>;
+function pollingSubscribe(props: {
 	note: Ref<Misskey.entities.Note>;
-	pureNote: Ref<Misskey.entities.Note>;
 	isDeletedRef: Ref<boolean>;
 }) {
 	const note = props.note;
-	const pureNote = props.pureNote;
 
 	function onFetched(data: Pick<Misskey.entities.Note, 'reactions' | 'reactionEmojis'>): void {
 		note.value.reactions = data.reactions;
@@ -79,20 +78,17 @@ function pseudoNoteCapture(props: {
 	});
 }
 
-function realtimeNoteCapture(props: {
-	rootEl: ShallowRef<HTMLElement | undefined>;
+function realtimeSubscribe(props: {
 	note: Ref<Misskey.entities.Note>;
-	pureNote: Ref<Misskey.entities.Note>;
 	isDeletedRef: Ref<boolean>;
 }): void {
 	const note = props.note;
-	const pureNote = props.pureNote;
 	const connection = useStream();
 
 	function onStreamNoteUpdated(noteData): void {
 		const { type, id, body } = noteData;
 
-		if ((id !== note.value.id) && (id !== pureNote.value.id)) return;
+		if (id !== note.value.id) return;
 
 		switch (type) {
 			case 'reacted': {
@@ -129,21 +125,12 @@ function realtimeNoteCapture(props: {
 	}
 
 	function capture(withHandler = false): void {
-		// TODO: このノートがストリーミング経由で流れてきた場合のみ sr する
-		connection.send(window.document.body.contains(props.rootEl.value ?? null as Node | null) ? 'sr' : 's', { id: note.value.id });
-		if (pureNote.value.id !== note.value.id) connection.send('s', { id: pureNote.value.id });
+		connection.send('sr', { id: note.value.id });
 		if (withHandler) connection.on('noteUpdated', onStreamNoteUpdated);
 	}
 
 	function decapture(withHandler = false): void {
-		connection.send('un', {
-			id: note.value.id,
-		});
-		if (pureNote.value.id !== note.value.id) {
-			connection.send('un', {
-				id: pureNote.value.id,
-			});
-		}
+		connection.send('un', { id: note.value.id });
 		if (withHandler) connection.off('noteUpdated', onStreamNoteUpdated);
 	}
 
@@ -161,12 +148,13 @@ function realtimeNoteCapture(props: {
 }
 
 export function useNoteCapture(props: {
-	rootEl: ShallowRef<HTMLElement | undefined>;
 	note: Ref<Misskey.entities.Note>;
-	pureNote: Ref<Misskey.entities.Note>;
+	parentNote: Ref<Misskey.entities.Note> | null;
 	isDeletedRef: Ref<boolean>;
 }) {
 	const note = props.note;
+	const parentNote = props.parentNote;
+
 	noteEvents.on(`reacted:${note.value.id}`, onReacted);
 	noteEvents.on(`unreacted:${note.value.id}`, onUnreacted);
 	noteEvents.on(`pollVoted:${note.value.id}`, onPollVoted);
@@ -240,9 +228,24 @@ export function useNoteCapture(props: {
 		noteEvents.off(`deleted:${note.value.id}`, onDeleted);
 	});
 
-	if ($i && store.s.realtimeMode) {
-		realtimeNoteCapture(props);
+	// 投稿からある程度経過している(=タイムラインを遡って表示した)ノートは、イベントが発生する可能性が低いためそもそも購読しない
+	// ただし「リノートされたばかりの過去のノート」(= parentNoteが存在し、かつparentNoteの投稿日時が最近)はイベント発生が考えられるため購読する
+	// TODO: デバイスとサーバーの時計がズレていると不具合の元になるため、ズレを検知して警告を表示するなどのケアが必要かもしれない
+	if (parentNote == null) {
+		if ((Date.now() - new Date(note.value.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
+			// リノートで表示されているノートでもないし、投稿からある程度経過しているので購読しない
+			return;
+		}
 	} else {
-		pseudoNoteCapture(props);
+		if ((Date.now() - new Date(parentNote.value.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
+			// リノートで表示されているノートだが、リノートされてからある程度経過しているので購読しない
+			return;
+		}
+	}
+
+	if ($i && store.s.realtimeMode) {
+		realtimeSubscribe(props);
+	} else {
+		pollingSubscribe(props);
 	}
 }
