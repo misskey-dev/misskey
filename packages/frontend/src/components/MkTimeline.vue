@@ -40,12 +40,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkNote v-else :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
 			</template>
 		</component>
-		<div v-show="paginator.canFetchMore.value" key="_more_">
-			<MkButton v-if="!paginator.moreFetching.value" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchMore : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchMore">
-				{{ i18n.ts.loadMore }}
-			</MkButton>
+		<button v-show="paginator.canFetchMore.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchMore : null" :disabled="paginator.moreFetching.value" class="_button" :class="$style.more" @click="paginator.fetchMore">
+			<div v-if="!paginator.moreFetching.value">{{ i18n.ts.loadMore }}</div>
 			<MkLoading v-else/>
-		</div>
+		</button>
 	</div>
 </MkPullToRefresh>
 </template>
@@ -373,7 +371,7 @@ defineExpose({
 	&.noGap {
 		background: var(--MI_THEME-panel);
 
-		.note {
+		.note:not(:last-child) {
 			border-bottom: solid 0.5px var(--MI_THEME-divider);
 		}
 
@@ -422,6 +420,11 @@ defineExpose({
 }
 
 .more {
-	margin: 16px auto;
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 16px;
+	background: var(--MI_THEME-panel);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 </style>
