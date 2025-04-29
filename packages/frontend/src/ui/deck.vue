@@ -233,6 +233,7 @@ window.document.documentElement.style.scrollBehavior = 'auto';
 .nonTitlebarArea {
 	display: flex;
 	flex: 1;
+	min-height: 0;
 }
 
 .main {
