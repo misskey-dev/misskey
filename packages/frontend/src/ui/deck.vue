@@ -130,10 +130,10 @@ let routerNavTimer: number | null = null;
 mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;
 	if (routerNavTimer != null) return true;
-	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
+	const noMainColumn = !columns.some(x => x.type === 'main');
 	if (prefer.s['deck.navWindow'] || noMainColumn) {
 		os.pageWindow(path);
-		routerNavTimer = setTimeout(() => {
+		routerNavTimer = window.setTimeout(() => {
 			routerNavTimer = null;
 		}, 300);
 		return true;
