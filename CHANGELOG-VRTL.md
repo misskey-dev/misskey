@@ -4,6 +4,8 @@ VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
 
+- feat(backend): VRTLのサーバーリストを Redis にキャッシュし、取得に失敗した場合はキャッシュを使用するよにしました - 2025/04/30 #223
+
 --- 2025.4.0-vrtl.1 released at this time ---
 
 --- 2025.3.1-vrtl.1 released at this time ---
