@@ -1346,6 +1346,7 @@ settingsMigrating: "Ihre Einstellungen werden gerade migriert, Bitte warten Sie 
 readonly: "Nur Lesezugriff"
 goToDeck: "Zurück zum Deck"
 federationJobs: "Föderation Jobs"
+driveAboutTip: "In Drive sehen Sie eine Liste der Dateien, die Sie in der Vergangenheit hochgeladen haben. <br>\nSie können diese Dateien wiederverwenden um sie zu beispiel an Notizen anzuhängen, oder sie können Dateien vorab hochzuladen, um sie später zu versenden! <br>\n<b>Wenn Sie eine Datei löschen, verschwindet sie auch von allen Stellen, an denen Sie sie verwendet haben (Notizen, Seiten, Avatare, Banner usw.).</b><br>\nSie können auch Ordner erstellen, um sie zu organisieren."
 _chat:
   noMessagesYet: "Noch keine Nachrichten"
   newMessage: "Neue Nachricht"
