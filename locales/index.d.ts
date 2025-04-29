@@ -5405,6 +5405,10 @@ export interface Locale extends ILocale {
      * フォルダを作って整理することもできます。
      */
     "driveAboutTip": string;
+    /**
+     * リアルタイムモード
+     */
+    "realtimeMode": string;
     "_chat": {
         /**
          * まだメッセージはありません

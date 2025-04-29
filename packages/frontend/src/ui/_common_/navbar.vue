@@ -50,6 +50,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-if="showWidgetButton" class="_button" :class="[$style.widget]" @click="() => emit('widgetButtonClick')">
 				<i class="ti ti-apps ti-fw"></i>
 			</button>
+			<button v-tooltip.noDelay.right="i18n.ts.realtimeMode" class="_button" :class="[$style.realtimeMode, store.r.realtimeMode.value ? $style.on : null]" @click="toggleRealtimeMode">
+				<i class="ti ti-bolt ti-fw"></i>
+			</button>
 			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="() => { os.post(); }">
 				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
 			</button>
@@ -145,6 +148,10 @@ function toggleIconOnly() {
 	} else {
 		store.set('menuDisplay', iconOnly.value ? 'sideFull' : 'sideIcon');
 	}
+}
+
+function toggleRealtimeMode() {
+	store.set('realtimeMode', !store.s.realtimeMode);
 }
 
 function openAccountMenu(ev: MouseEvent) {
@@ -329,6 +336,18 @@ function menuEdit() {
 		background: var(--nav-bg-transparent);
 		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
 		backdrop-filter: var(--MI-blur, blur(8px));
+	}
+
+	.realtimeMode {
+		display: block;
+		position: relative;
+		width: 100%;
+		height: 52px;
+		text-align: center;
+
+		&.on {
+			color: var(--MI_THEME-accent);
+		}
 	}
 
 	.post {
@@ -562,6 +581,18 @@ function menuEdit() {
 		width: 100%;
 		height: 52px;
 		text-align: center;
+	}
+
+	.realtimeMode {
+		display: block;
+		position: relative;
+		width: 100%;
+		height: 52px;
+		text-align: center;
+
+		&.on {
+			color: var(--MI_THEME-accent);
+		}
 	}
 
 	.post {
