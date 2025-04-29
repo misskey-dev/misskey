@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup, onMounted, shallowRef, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useInterval } from '@@/js/use-interval.js';
-import { scrollToTop } from '@@/js/scroll.js';
+import { isHeadVisible, scrollToTop } from '@@/js/scroll.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { PagingCtx } from '@/use/use-pagination.js';
 import { usePagination } from '@/use/use-pagination.js';
@@ -122,7 +122,7 @@ if (!store.s.realtimeMode) {
 		});
 		console.log(notes);
 
-		const isTop = false;
+		const isTop = isHeadVisible(rootEl.value, 16);
 		if (isTop) {
 			paginator.unshiftItems(notes.toReversed());
 		} else {
@@ -150,7 +150,7 @@ function prepend(note: Misskey.entities.Note) {
 		note._shouldInsertAd_ = true;
 	}
 
-	const isTop = false;
+	const isTop = isHeadVisible(rootEl.value, 16);
 	if (isTop) {
 		paginator.prepend(note);
 	} else {
