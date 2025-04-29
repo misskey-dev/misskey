@@ -73,6 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
+import { useInterval } from '@@/js/use-interval.js';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
@@ -117,6 +118,14 @@ const featuredPagination = computed(() => ({
 		channelId: props.channelId,
 	},
 }));
+
+useInterval(() => {
+	if (channel.value == null) return;
+	miLocalStorage.setItemAsJson(`channelLastReadedAt:${channel.value.id}`, Date.now());
+}, 3000, {
+	immediate: true,
+	afterMounted: true,
+});
 
 watch(() => props.channelId, async () => {
 	channel.value = await misskeyApi('channels/show', {

@@ -106,7 +106,7 @@ type TimelineQueryType = {
 	roleId?: string
 };
 
-let noteCounterForAd = 0;
+let adInsertionCounter = 0;
 
 const POLLING_INTERVAL = 1000 * 15;
 
@@ -128,9 +128,9 @@ function releaseQueue() {
 }
 
 function prepend(note: Misskey.entities.Note) {
-	noteCounterForAd++;
+	adInsertionCounter++;
 
-	if (instance.notesPerOneAd > 0 && noteCounterForAd % instance.notesPerOneAd === 0) {
+	if (instance.notesPerOneAd > 0 && adInsertionCounter % instance.notesPerOneAd === 0) {
 		note._shouldInsertAd_ = true;
 	}
 
@@ -319,7 +319,7 @@ onUnmounted(() => {
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
-		noteCounterForAd = 0;
+		adInsertionCounter = 0;
 
 		paginator.reload().then(() => {
 			res();
