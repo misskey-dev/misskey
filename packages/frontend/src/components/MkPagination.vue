@@ -26,14 +26,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div v-else ref="rootEl" class="_gaps">
 		<div v-show="pagination.reversed && paginator.canFetchMore.value" key="_more_">
-			<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMoreAhead : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchMoreAhead">
+			<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMoreAhead : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchNewer">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else/>
 		</div>
 		<slot :items="Array.from(paginator.items.value.values())" :fetching="paginator.fetching.value || paginator.moreFetching.value"></slot>
 		<div v-show="!pagination.reversed && paginator.canFetchMore.value" key="_more_">
-			<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchMore">
+			<MkButton v-if="!paginator.moreFetching.value" v-appear="(prefer.s.enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :wait="paginator.moreFetching.value" primary rounded @click="paginator.fetchOlder">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else/>
@@ -64,11 +64,11 @@ const paginator = usePagination({
 });
 
 function appearFetchMoreAhead() {
-	paginator.fetchMoreAhead();
+	paginator.fetchNewer();
 }
 
 function appearFetchMore() {
-	paginator.fetchMore();
+	paginator.fetchOlder();
 }
 
 onMounted(() => {

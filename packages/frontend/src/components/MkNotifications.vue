@@ -5,39 +5,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkPullToRefresh :refresher="() => reload()">
-	<MkPagination ref="pagingComponent" :pagination="pagination">
-		<template #empty>
+	<MkLoading v-if="paginator.fetching.value"/>
+
+	<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
+
+	<div v-else-if="paginator.items.value.size === 0" key="_empty_">
+		<slot name="empty">
 			<div class="_fullinfo">
 				<img :src="infoImageUrl" draggable="false"/>
 				<div>{{ i18n.ts.noNotifications }}</div>
 			</div>
-		</template>
+		</slot>
+	</div>
 
-		<template #default="{ items: notifications }">
-			<component
-				:is="prefer.s.animation ? TransitionGroup : 'div'" :class="[$style.notifications]"
-				:enterActiveClass="$style.transition_x_enterActive"
-				:leaveActiveClass="$style.transition_x_leaveActive"
-				:enterFromClass="$style.transition_x_enterFrom"
-				:leaveToClass="$style.transition_x_leaveTo"
-				:moveClass=" $style.transition_x_move"
-				tag="div"
-			>
-				<template v-for="(notification, i) in notifications" :key="notification.id">
-					<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :class="$style.item" :note="notification.note" :withHardMute="true" :data-scroll-anchor="notification.id"/>
-					<XNotification v-else :class="$style.item" :notification="notification" :withTime="true" :full="true" :data-scroll-anchor="notification.id"/>
-				</template>
-			</component>
-		</template>
-	</MkPagination>
+	<div v-else ref="rootEl">
+		<component
+			:is="prefer.s.animation ? TransitionGroup : 'div'" :class="[$style.notifications]"
+			:enterActiveClass="$style.transition_x_enterActive"
+			:leaveActiveClass="$style.transition_x_leaveActive"
+			:enterFromClass="$style.transition_x_enterFrom"
+			:leaveToClass="$style.transition_x_leaveTo"
+			:moveClass=" $style.transition_x_move"
+			tag="div"
+		>
+			<template v-for="(notification, i) in Array.from(paginator.items.value.values())" :key="notification.id">
+				<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :class="$style.item" :note="notification.note" :withHardMute="true" :data-scroll-anchor="notification.id"/>
+				<XNotification v-else :class="$style.item" :notification="notification" :withTime="true" :full="true" :data-scroll-anchor="notification.id"/>
+			</template>
+		</component>
+	</div>
 </MkPullToRefresh>
 </template>
 
 <script lang="ts" setup>
 import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
+import { isHeadVisible } from '@@/js/scroll.js';
 import type { notificationTypes } from '@@/js/const.js';
-import MkPagination from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
@@ -46,26 +51,43 @@ import { infoImageUrl } from '@/instance.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
+import { usePagination } from '@/use/use-pagination.js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];
 }>();
 
-const pagingComponent = useTemplateRef('pagingComponent');
+const rootEl = useTemplateRef('rootEl');
 
-const pagination = computed(() => prefer.r.useGroupedNotifications.value ? {
-	endpoint: 'i/notifications-grouped' as const,
-	limit: 20,
-	params: computed(() => ({
-		excludeTypes: props.excludeTypes ?? undefined,
-	})),
-} : {
-	endpoint: 'i/notifications' as const,
-	limit: 20,
-	params: computed(() => ({
-		excludeTypes: props.excludeTypes ?? undefined,
-	})),
+const paginator = usePagination({
+	ctx: prefer.s.useGroupedNotifications ? {
+		endpoint: 'i/notifications-grouped' as const,
+		limit: 20,
+		params: computed(() => ({
+			excludeTypes: props.excludeTypes ?? undefined,
+		})),
+	} : {
+		endpoint: 'i/notifications' as const,
+		limit: 20,
+		params: computed(() => ({
+			excludeTypes: props.excludeTypes ?? undefined,
+		})),
+	},
 });
+
+const POLLING_INTERVAL = 1000 * 15;
+
+if (!store.s.realtimeMode) {
+	useInterval(async () => {
+		const isTop = isHeadVisible(rootEl.value, 16);
+		paginator.fetchNewer({
+			toQueue: !isTop,
+		});
+	}, POLLING_INTERVAL, {
+		immediate: false,
+		afterMounted: true,
+	});
+}
 
 function onNotification(notification) {
 	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;
@@ -76,13 +98,13 @@ function onNotification(notification) {
 	}
 
 	if (!isMuted) {
-		pagingComponent.value?.prepend(notification);
+		paginator.prepend(notification);
 	}
 }
 
 function reload() {
 	return new Promise<void>((res) => {
-		pagingComponent.value?.reload().then(() => {
+		paginator.reload().then(() => {
 			res();
 		});
 	});

@@ -38,24 +38,20 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 	offsetMode?: boolean;
 };
 
-type MisskeyEntityMap = Map<string, MisskeyEntity>;
-
 function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
 	return entities.map(en => [en.id, en]);
 }
 
-function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
-	return new Map([...map, ...arrayToEntries(entities)]);
-}
-
-export function usePagination<T>(props: {
+export function usePagination<T = MisskeyEntity>(props: {
 	ctx: PagingCtx;
 }) {
 	/**
 	 * 表示するアイテムのソース
 	 * 最新が0番目
 	 */
-	const items = ref<MisskeyEntityMap>(new Map());
+	const items = ref<Map<string, T>>(new Map());
+
+	const queue = ref<T[]>([]);
 
 	/**
 	 * 初期化中かどうか（trueならMkLoadingで全て隠す）
@@ -100,11 +96,11 @@ export function usePagination<T>(props: {
 		});
 	}
 
-	const reload = (): Promise<void> => {
+	function reload(): Promise<void> {
 		return init();
-	};
+	}
 
-	const fetchMore = async (): Promise<void> => {
+	async function fetchOlder(): Promise<void> {
 		if (!canFetchMore.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 		moreFetching.value = true;
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
@@ -123,22 +119,21 @@ export function usePagination<T>(props: {
 			}
 
 			if (res.length === 0) {
-				items.value = concatMapWithArray(items.value, res);
 				canFetchMore.value = false;
 				moreFetching.value = false;
 			} else {
-				items.value = concatMapWithArray(items.value, res);
+				items.value = new Map([...items.value, ...arrayToEntries(res)]);
 				canFetchMore.value = true;
 				moreFetching.value = false;
 			}
 		}, err => {
 			moreFetching.value = false;
 		});
-	};
+	}
 
-	const fetchMoreAhead = async (): Promise<void> => {
-		if (!canFetchMore.value || fetching.value || moreFetching.value || items.value.size === 0) return;
-		moreFetching.value = true;
+	async function fetchNewer(options: {
+		toQueue?: boolean;
+	} = {}): Promise<void> {
 		const params = props.ctx.params ? isRef(props.ctx.params) ? props.ctx.params.value : props.ctx.params : {};
 		await misskeyApi<MisskeyEntity[]>(props.ctx.endpoint, {
 			...params,
@@ -146,64 +141,58 @@ export function usePagination<T>(props: {
 			...(props.ctx.offsetMode ? {
 				offset: items.value.size,
 			} : {
-				sinceId: Array.from(items.value.keys()).at(-1),
+				sinceId: Array.from(items.value.keys()).at(0),
 			}),
 		}).then(res => {
-			if (res.length === 0) {
-				items.value = concatMapWithArray(items.value, res);
-				canFetchMore.value = false;
+			if (options.toQueue) {
+				queue.value.unshift(...res.toReversed());
 			} else {
-				items.value = concatMapWithArray(items.value, res);
-				canFetchMore.value = true;
+				items.value = new Map([...arrayToEntries(res), ...items.value]);
 			}
-			moreFetching.value = false;
-		}, err => {
-			moreFetching.value = false;
 		});
-	};
+	}
 
 	function trim() {
 		if (items.value.size >= MAX_ITEMS) canFetchMore.value = true;
 		items.value = new Map([...items.value].slice(0, MAX_ITEMS));
 	}
 
-	function unshiftItems(newItems: MisskeyEntity[]) {
+	function unshiftItems(newItems: T[]) {
 		items.value = new Map([...arrayToEntries(newItems), ...items.value]);
 	}
 
-	function concatItems(oldItems: MisskeyEntity[]) {
+	function concatItems(oldItems: T[]) {
 		items.value = new Map([...items.value, ...arrayToEntries(oldItems)]);
 	}
 
-	function prepend(item: MisskeyEntity) {
+	function prepend(item: T) {
 		unshiftItems([item]);
 	}
 
-	const appendItem = (item: MisskeyEntity): void => {
-		items.value.set(item.id, item);
-	};
+	function enqueue(item: T) {
+		queue.value.unshift(item);
+	}
 
-	const removeItem = (id: string) => {
-		items.value.delete(id);
-	};
-
-	const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity): void => {
-		const item = items.value.get(id);
-		if (item) items.value.set(id, replacer(item));
-	};
+	function releaseQueue() {
+		unshiftItems(queue.value);
+		queue.value = [];
+	}
 
 	return {
 		items,
+		queue,
 		fetching,
 		moreFetching,
 		canFetchMore,
 		init,
 		reload,
-		fetchMore,
-		fetchMoreAhead,
+		fetchOlder,
+		fetchNewer,
 		unshiftItems,
 		prepend,
 		trim,
+		enqueue,
+		releaseQueue,
 		error,
 	};
 }

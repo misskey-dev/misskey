@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-else ref="rootEl">
-		<div v-if="notesQueue.length > 0" :class="$style.new" @click="releaseQueue()"><button class="_button" :class="$style.newButton">{{ i18n.ts.newNoteRecived }}</button></div>
+		<div v-if="paginator.queue.value.length > 0" :class="$style.new" @click="releaseQueue()"><button class="_button" :class="$style.newButton">{{ i18n.ts.newNoteRecived }}</button></div>
 		<component
 			:is="prefer.s.animation ? TransitionGroup : 'div'"
 			:class="[$style.notes, { [$style.noGap]: noGap, '_gaps': !noGap }]"
@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkNote v-else :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
 			</template>
 		</component>
-		<button v-show="paginator.canFetchMore.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchMore : null" :disabled="paginator.moreFetching.value" class="_button" :class="$style.more" @click="paginator.fetchMore">
+		<button v-show="paginator.canFetchMore.value" key="_more_" v-appear="prefer.s.enableInfiniteScroll ? paginator.fetchOlder : null" :disabled="paginator.moreFetching.value" class="_button" :class="$style.more" @click="paginator.fetchOlder">
 			<div v-if="!paginator.moreFetching.value">{{ i18n.ts.loadMore }}</div>
 			<MkLoading v-else/>
 		</button>
@@ -67,7 +67,6 @@ import MkNote from '@/components/MkNote.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { infoImageUrl } from '@/instance.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -113,31 +112,18 @@ const POLLING_INTERVAL = 1000 * 15;
 
 if (!store.s.realtimeMode) {
 	useInterval(async () => {
-		const notes = await misskeyApi(paginationQuery.endpoint, {
-			...paginationQuery.params,
-			limit: 10,
-			sinceId: Array.from(paginator.items.value.keys()).at(0),
-		});
-		console.log(notes);
-
 		const isTop = isHeadVisible(rootEl.value, 16);
-		if (isTop) {
-			paginator.unshiftItems(notes.toReversed());
-		} else {
-			notesQueue.value.unshift(...notes.toReversed());
-		}
+		paginator.fetchNewer({
+			toQueue: !isTop,
+		});
 	}, POLLING_INTERVAL, {
 		immediate: false,
 		afterMounted: true,
 	});
 }
 
-const notesQueue = ref<Misskey.entities.Note[]>([]);
-
 function releaseQueue() {
-	paginator.unshiftItems(notesQueue.value);
-	notesQueue.value = [];
-
+	paginator.releaseQueue();
 	scrollToTop(rootEl.value);
 }
 
@@ -152,7 +138,7 @@ function prepend(note: Misskey.entities.Note) {
 	if (isTop) {
 		paginator.prepend(note);
 	} else {
-		notesQueue.value.unshift(note);
+		paginator.enqueue(note);
 	}
 
 	if (props.sound) {
