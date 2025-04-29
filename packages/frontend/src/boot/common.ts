@@ -5,7 +5,7 @@
 
 import { computed, watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
-import { version, lang, updateLocale, locale } from '@@/js/config.js';
+import { version, lang, updateLocale, locale, apiUrl } from '@@/js/config.js';
 import defaultLightTheme from '@@/themes/l-light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
 import type { App } from 'vue';
@@ -290,6 +290,41 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		window.document.body.appendChild(root);
 		return root;
 	})();
+
+	if (instance.sentryForFrontend) {
+		const Sentry = await import('@sentry/vue');
+		Sentry.init({
+			app,
+			integrations: [
+				...(instance.sentryForFrontend.vueIntegration !== undefined ? [
+					Sentry.vueIntegration(instance.sentryForFrontend.vueIntegration ?? undefined),
+				] : []),
+				...(instance.sentryForFrontend.browserTracingIntegration !== undefined ? [
+					Sentry.browserTracingIntegration(instance.sentryForFrontend.browserTracingIntegration ?? undefined),
+				] : []),
+				...(instance.sentryForFrontend.replayIntegration !== undefined ? [
+					Sentry.replayIntegration(instance.sentryForFrontend.replayIntegration ?? undefined),
+				] : []),
+			],
+
+			// Set tracesSampleRate to 1.0 to capture 100%
+			tracesSampleRate: 1.0,
+
+			// Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+			...(instance.sentryForFrontend.browserTracingIntegration !== undefined ? {
+				tracePropagationTargets: [apiUrl],
+			} : {}),
+
+			// Capture Replay for 10% of all sessions,
+			// plus for 100% of sessions with an error
+			...(instance.sentryForFrontend.replayIntegration !== undefined ? {
+				replaysSessionSampleRate: 0.1,
+				replaysOnErrorSampleRate: 1.0,
+			} : {}),
+
+			...instance.sentryForFrontend.options,
+		});
+	}
 
 	app.mount(rootEl);
 

@@ -5,29 +5,55 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkPullToRefresh ref="prComponent" :refresher="() => reloadTimeline()">
-	<MkNotes
-		v-if="paginationQuery"
-		ref="tlComponent"
-		:pagination="paginationQuery"
-		:noGap="!prefer.s.showGapBetweenNotesInTimeline"
-		@queue="emit('queue', $event)"
-		@status="prComponent?.setDisabled($event)"
-	/>
+	<MkPagination v-if="paginationQuery" ref="pagingComponent" :pagination="paginationQuery" @queue="emit('queue', $event)" @status="prComponent?.setDisabled($event)">
+		<template #empty>
+			<div class="_fullinfo">
+				<img :src="infoImageUrl" draggable="false"/>
+				<div>{{ i18n.ts.noNotes }}</div>
+			</div>
+		</template>
+
+		<template #default="{ items: notes }">
+			<component
+				:is="prefer.s.animation ? TransitionGroup : 'div'"
+				:class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap, [$style.reverse]: paginationQuery.reversed }]"
+				:enterActiveClass="$style.transition_x_enterActive"
+				:leaveActiveClass="$style.transition_x_leaveActive"
+				:enterFromClass="$style.transition_x_enterFrom"
+				:leaveToClass="$style.transition_x_leaveTo"
+				:moveClass=" $style.transition_x_move"
+				tag="div"
+			>
+				<template v-for="(note, i) in notes" :key="note.id">
+					<div v-if="note._shouldInsertAd_" :class="[$style.noteWithAd, { '_gaps': !noGap }]" :data-scroll-anchor="note.id">
+						<MkNote :class="$style.note" :note="note" :withHardMute="true"/>
+						<div :class="$style.ad">
+							<MkAd :preferForms="['horizontal', 'horizontal-big']"/>
+						</div>
+					</div>
+					<MkNote v-else :class="$style.note" :note="note" :withHardMute="true" :data-scroll-anchor="note.id"/>
+				</template>
+			</component>
+		</template>
+	</MkPagination>
 </MkPullToRefresh>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, onUnmounted, provide, useTemplateRef } from 'vue';
+import { computed, watch, onUnmounted, provide, useTemplateRef, TransitionGroup } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { Paging } from '@/components/MkPagination.vue';
-import MkNotes from '@/components/MkNotes.vue';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
 import * as sound from '@/utility/sound.js';
 import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
+import MkNote from '@/components/MkNote.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import { i18n } from '@/i18n.js';
+import { infoImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	src: BasicTimelineType | 'mentions' | 'directs' | 'list' | 'antenna' | 'channel' | 'role';
@@ -68,12 +94,12 @@ type TimelineQueryType = {
 };
 
 const prComponent = useTemplateRef('prComponent');
-const tlComponent = useTemplateRef('tlComponent');
+const pagingComponent = useTemplateRef('pagingComponent');
 
 let tlNotesCount = 0;
 
 function prepend(note) {
-	if (tlComponent.value == null) return;
+	if (pagingComponent.value == null) return;
 
 	tlNotesCount++;
 
@@ -81,7 +107,7 @@ function prepend(note) {
 		note._shouldInsertAd_ = true;
 	}
 
-	tlComponent.value.pagingComponent?.prepend(note);
+	pagingComponent.value.prepend(note);
 
 	emit('note');
 
@@ -93,6 +119,7 @@ function prepend(note) {
 let connection: Misskey.ChannelConnection | null = null;
 let connection2: Misskey.ChannelConnection | null = null;
 let paginationQuery: Paging | null = null;
+const noGap = !prefer.s.showGapBetweenNotesInTimeline;
 
 const stream = useStream();
 
@@ -263,11 +290,11 @@ onUnmounted(() => {
 
 function reloadTimeline() {
 	return new Promise<void>((res) => {
-		if (tlComponent.value == null) return;
+		if (pagingComponent.value == null) return;
 
 		tlNotesCount = 0;
 
-		tlComponent.value.pagingComponent?.reload().then(() => {
+		pagingComponent.value.reload().then(() => {
 			res();
 		});
 	});
@@ -277,3 +304,56 @@ defineExpose({
 	reloadTimeline,
 });
 </script>
+
+<style lang="scss" module>
+.transition_x_move,
+.transition_x_enterActive,
+.transition_x_leaveActive {
+	transition: opacity 0.3s cubic-bezier(0,.5,.5,1), transform 0.3s cubic-bezier(0,.5,.5,1) !important;
+}
+.transition_x_enterFrom,
+.transition_x_leaveTo {
+	opacity: 0;
+	transform: translateY(-50%);
+}
+.transition_x_leaveActive {
+	position: absolute;
+}
+
+.reverse {
+	display: flex;
+	flex-direction: column-reverse;
+}
+
+.root {
+	container-type: inline-size;
+
+	&.noGap {
+		background: var(--MI_THEME-panel);
+
+		.note {
+			border-bottom: solid 0.5px var(--MI_THEME-divider);
+		}
+
+		.ad {
+			padding: 8px;
+			background-size: auto auto;
+			background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--MI_THEME-bg) 8px, var(--MI_THEME-bg) 14px);
+			border-bottom: solid 0.5px var(--MI_THEME-divider);
+		}
+	}
+
+	&:not(.noGap) {
+		background: var(--MI_THEME-bg);
+
+		.note {
+			background: var(--MI_THEME-panel);
+			border-radius: var(--MI-radius);
+		}
+	}
+}
+
+.ad:empty {
+	display: none;
+}
+</style>

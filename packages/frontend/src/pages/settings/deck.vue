@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps_m">
 		<SearchMarker :keywords="['sync', 'profiles', 'devices']">
 			<MkSwitch :modelValue="profilesSyncEnabled" @update:modelValue="changeProfilesSyncEnabled">
-				<template #label><SearchLabel>{{ i18n.ts._deck.enableSyncBetweenDevicesForProfiles }}</SearchLabel></template>
+				<template #label><i class="ti ti-cloud-cog"></i> <SearchLabel>{{ i18n.ts._deck.enableSyncBetweenDevicesForProfiles }}</SearchLabel></template>
 			</MkSwitch>
 		</SearchMarker>
 

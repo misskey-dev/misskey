@@ -224,6 +224,10 @@ export const packedRolePoliciesSchema = {
 			type: 'integer',
 			optional: false, nullable: false,
 		},
+		maxFileSizeMb: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
 		alwaysMarkNsfw: {
 			type: 'boolean',
 			optional: false, nullable: false,
@@ -292,9 +296,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		canChat: {
-			type: 'boolean',
+		chatAvailability: {
+			type: 'string',
 			optional: false, nullable: false,
+			enum: ['available', 'readonly', 'unavailable'],
 		},
 	},
 } as const;
@@ -385,6 +390,11 @@ export const packedRoleSchema = {
 					example: false,
 				},
 				asBadge: {
+					type: 'boolean',
+					optional: false, nullable: false,
+					example: false,
+				},
+				preserveAssignmentOnMoveAccount: {
 					type: 'boolean',
 					optional: false, nullable: false,
 					example: false,

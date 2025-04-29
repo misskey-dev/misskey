@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div v-if="clip" class="_gaps">
 			<div class="_panel">
 				<div class="_gaps_s" :class="$style.description">
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkNotes :pagination="pagination" :detail="true"/>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -150,7 +150,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 			},
 		}, {
 			icon: 'ti ti-code',
-			text: i18n.ts.genEmbedCode,
+			text: i18n.ts.embed,
 			action: () => {
 				genEmbedCode('clips', clip.value!.id);
 			},
