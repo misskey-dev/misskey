@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="notesQueue.length > 0" :class="$style.new" @click="releaseQueue()"><button class="_button" :class="$style.newButton">{{ i18n.ts.newNoteRecived }}</button></div>
 		<component
 			:is="prefer.s.animation ? TransitionGroup : 'div'"
-			:class="[$style.root, { [$style.noGap]: noGap, '_gaps': !noGap }]"
+			:class="[$style.notes, { [$style.noGap]: noGap, '_gaps': !noGap }]"
 			:enterActiveClass="$style.transition_x_enterActive"
 			:leaveActiveClass="$style.transition_x_leaveActive"
 			:enterFromClass="$style.transition_x_enterFrom"
@@ -365,7 +365,7 @@ defineExpose({
 	position: absolute;
 }
 
-.root {
+.notes {
 	container-type: inline-size;
 
 	&.noGap {
