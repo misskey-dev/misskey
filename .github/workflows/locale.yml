@@ -20,7 +20,7 @@ jobs:
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.1.0
-    - uses: actions/setup-node@v4.3.0
+    - uses: actions/setup-node@v4.4.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

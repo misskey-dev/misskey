@@ -16,9 +16,6 @@ export const meta = {
 
 	kind: 'write:chat',
 
-	res: {
-	},
-
 	errors: {
 		noSuchMessage: {
 			message: 'No such message.',

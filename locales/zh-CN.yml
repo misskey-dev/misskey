@@ -1346,6 +1346,7 @@ settingsMigrating: "正在迁移设置，请稍候。（之后也可以在设置
 readonly: "只读"
 goToDeck: "返回至 Deck"
 federationJobs: "联合作业"
+driveAboutTip: "网盘可以显示以前上传的文件。<br>\n也可以在发布帖子时重复使用文件，或在发布帖子前预先上传文件。<br>\n<b>删除文件时，其将从至今为止所有用到该文件的地方（如帖子、页面、头像、横幅）消失。</b><br>\n也可以新建文件夹来整理文件。"
 _chat:
   noMessagesYet: "还没有消息"
   newMessage: "新消息"
