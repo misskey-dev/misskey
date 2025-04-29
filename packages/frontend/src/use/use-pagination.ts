@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, isRef, ref, watch } from 'vue';
+import { computed, isRef, onMounted, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ComputedRef, Ref, ShallowRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -177,6 +177,10 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 		unshiftItems(queue.value);
 		queue.value = [];
 	}
+
+	onMounted(() => {
+		init();
+	});
 
 	return {
 		items,

@@ -79,7 +79,7 @@ const POLLING_INTERVAL = 1000 * 15;
 
 if (!store.s.realtimeMode) {
 	useInterval(async () => {
-		const isTop = isHeadVisible(rootEl.value, 16);
+		const isTop = rootEl.value == null ? false : isHeadVisible(rootEl.value, 16);
 		paginator.fetchNewer({
 			toQueue: !isTop,
 		});

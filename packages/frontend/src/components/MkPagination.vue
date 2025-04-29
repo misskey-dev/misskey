@@ -71,10 +71,6 @@ function appearFetchMore() {
 	paginator.fetchOlder();
 }
 
-onMounted(() => {
-	paginator.init();
-});
-
 defineExpose({
 	paginator: paginator,
 });
