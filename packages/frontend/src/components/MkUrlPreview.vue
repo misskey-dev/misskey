@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
 			scrolling="no"
 			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px`, border: 0 }"
-			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
+			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${store.s.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
 		></iframe>
 	</div>
 	<div :class="$style.action">
@@ -44,8 +44,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </template>
 <div v-else>
-	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
-		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="defaultStore.state.dataSaver.urlPreview ? '' : `background-image: url('${thumbnail}')`">
+	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="maybeRelativeUrl" rel="nofollow noopener" :target="target" :title="url">
+		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="prefer.s.dataSaver.urlPreview ? '' : { backgroundImage: `url('${thumbnail}')` }">
 		</div>
 		<article :class="$style.body">
 			<header :class="$style.header">
@@ -89,10 +89,12 @@ import { versatileLang } from '@@/js/intl-const.js';
 import type { summaly } from '@misskey-dev/summaly';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { deviceKind } from '@/utility/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
-import { transformPlayerUrl } from '@/scripts/player-url-transform.js';
-import { defaultStore } from '@/store.js';
+import { transformPlayerUrl } from '@/utility/player-url-transform.js';
+import { store } from '@/store.js';
+import { prefer } from '@/preferences.js';
+import { maybeMakeRelative } from '@@/js/url.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
@@ -110,7 +112,8 @@ const props = withDefaults(defineProps<{
 const MOBILE_THRESHOLD = 500;
 const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 
-const self = props.url.startsWith(local);
+const maybeRelativeUrl = maybeMakeRelative(props.url, local);
+const self = maybeRelativeUrl !== props.url;
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 const fetching = ref(true);
@@ -245,6 +248,7 @@ onUnmounted(() => {
 	box-shadow: 0 0 0 1px var(--MI_THEME-divider);
 	border-radius: 8px;
 	overflow: clip;
+	text-align: left;
 
 	&:hover {
 		text-decoration: none;

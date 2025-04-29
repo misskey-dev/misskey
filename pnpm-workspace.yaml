@@ -1,10 +1,30 @@
 packages:
- - 'packages/backend'
- - 'packages/frontend-shared'
- - 'packages/frontend'
- - 'packages/frontend-embed'
- - 'packages/sw'
- - 'packages/misskey-js'
- - 'packages/misskey-js/generator'
- - 'packages/misskey-reversi'
- - 'packages/misskey-bubble-game'
+  - packages/backend
+  - packages/frontend-shared
+  - packages/frontend
+  - packages/frontend-embed
+  - packages/sw
+  - packages/misskey-js
+  - packages/misskey-js/generator
+  - packages/misskey-reversi
+  - packages/misskey-bubble-game
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - '@parcel/watcher'
+  - '@sentry/profiling-node'
+  - '@swc/core'
+  - '@tensorflow/tfjs-node'
+  - bufferutil
+  - canvas
+  - core-js
+  - cypress
+  - esbuild
+  - msgpackr-extract
+  - msw
+  - nice-napi
+  - re2
+  - sharp
+  - utf-8-validate
+  - v-code-diff
+  - vue-demi
+ignorePatchFailures: false

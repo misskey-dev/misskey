@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
 				<MkFolder>
@@ -37,22 +36,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</div>
 		</FormSuspense>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { fetchInstance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { definePage } from '@/page.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const deeplAuthKey = ref<string>('');
@@ -88,7 +86,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.externalServices,
 	icon: 'ti ti-link',
 }));

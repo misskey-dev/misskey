@@ -7,11 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <button
 	v-if="!link"
 	ref="el" class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike, [$style.iconOnly]: iconOnly, [$style.wait]: wait }]"
 	:type="type"
 	:name="name"
 	:value="value"
-	:disabled="disabled"
+	:disabled="disabled || wait"
 	@click="emit('click', $event)"
 	@mousedown="onMousedown"
 >
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </button>
 <MkA
 	v-else class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike, [$style.iconOnly]: iconOnly, [$style.wait]: wait }]"
 	:to="to ?? '#'"
 	:behavior="linkBehavior"
 	@mousedown="onMousedown"
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, shallowRef } from 'vue';
+import { nextTick, onMounted, useTemplateRef } from 'vue';
 
 const props = defineProps<{
 	type?: 'button' | 'submit' | 'reset';
@@ -57,14 +57,15 @@ const props = defineProps<{
 	name?: string;
 	value?: string;
 	disabled?: boolean;
+	iconOnly?: boolean;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'click', payload: MouseEvent): void;
 }>();
 
-const el = shallowRef<HTMLElement | null>(null);
-const ripples = shallowRef<HTMLElement | null>(null);
+const el = useTemplateRef('el');
+const ripples = useTemplateRef('ripples');
 
 onMounted(() => {
 	if (props.autofocus) {
@@ -91,7 +92,7 @@ function onMousedown(evt: MouseEvent): void {
 	const target = evt.target! as HTMLElement;
 	const rect = target.getBoundingClientRect();
 
-	const ripple = document.createElement('div');
+	const ripple = window.document.createElement('div');
 	ripple.classList.add(ripples.value!.dataset.childrenClass!);
 	ripple.style.top = (evt.clientY - rect.top - 1).toString() + 'px';
 	ripple.style.left = (evt.clientX - rect.left - 1).toString() + 'px';
@@ -145,6 +146,11 @@ function onMousedown(evt: MouseEvent): void {
 
 	&:not(:disabled):active {
 		background: var(--MI_THEME-buttonHoverBg);
+	}
+
+	&.iconOnly {
+		padding: 7px;
+		min-width: auto;
 	}
 
 	&.small {
@@ -220,34 +226,38 @@ function onMousedown(evt: MouseEvent): void {
 		background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 
 		&:not(:disabled):hover {
-			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-buttonGradateA) h s calc(l + 5)), hsl(from var(--MI_THEME-buttonGradateB) h s calc(l + 5)));
 		}
 
 		&:not(:disabled):active {
-			background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+			background: linear-gradient(90deg, hsl(from var(--MI_THEME-buttonGradateA) h s calc(l + 5)), hsl(from var(--MI_THEME-buttonGradateB) h s calc(l + 5)));
 		}
 	}
 
 	&.danger {
 		font-weight: bold;
-		color: #ff2a2a;
+		color: var(--MI_THEME-error);
 
 		&.primary {
 			color: #fff;
-			background: #ff2a2a;
+			background: var(--MI_THEME-error);
 
 			&:not(:disabled):hover {
-				background: #ff4242;
+				background: hsl(from var(--MI_THEME-error) h s calc(l + 10));
 			}
 
 			&:not(:disabled):active {
-				background: #d42e2e;
+				background: hsl(from var(--MI_THEME-error) h s calc(l - 10));
 			}
 		}
 	}
 
 	&:disabled {
 		opacity: 0.5;
+	}
+
+	&.wait {
+		cursor: wait !important;
 	}
 
 	&:focus-visible {

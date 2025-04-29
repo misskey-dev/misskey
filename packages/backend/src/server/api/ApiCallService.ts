@@ -6,8 +6,11 @@
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as stream from 'node:stream/promises';
+import { Transform } from 'node:stream';
+import { type MultipartFile } from '@fastify/multipart';
 import { Inject, Injectable } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
+import { AttachmentFile } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
@@ -16,7 +19,7 @@ import type Logger from '@/logger.js';
 import type { MiMeta, UserIpsRepository } from '@/models/_.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
+import { type RolePolicies, RoleService } from '@/core/RoleService.js';
 import type { Config } from '@/config.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
@@ -200,18 +203,6 @@ export class ApiCallService implements OnApplicationShutdown {
 			return;
 		}
 
-		const [path, cleanup] = await createTemp();
-		await stream.pipeline(multipartData.file, fs.createWriteStream(path));
-
-		// ファイルサイズが制限を超えていた場合
-		// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
-		if (multipartData.file.truncated) {
-			cleanup();
-			reply.code(413);
-			reply.send();
-			return;
-		}
-
 		const fields = {} as Record<string, unknown>;
 		for (const [k, v] of Object.entries(multipartData.fields)) {
 			fields[k] = typeof v === 'object' && 'value' in v ? v.value : undefined;
@@ -226,10 +217,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			return;
 		}
 		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, fields, {
-				name: multipartData.filename,
-				path: path,
-			}, request).then((res) => {
+			this.call(endpoint, user, app, fields, multipartData, request).then((res) => {
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
 				this.#sendApiError(reply, err);
@@ -294,10 +282,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		user: MiLocalUser | null | undefined,
 		token: MiAccessToken | null | undefined,
 		data: any,
-		file: {
-			name: string;
-			path: string;
-		} | null,
+		multipartFile: MultipartFile | null,
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 	) {
 		const isSecure = user != null && token == null;
@@ -371,49 +356,6 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && !user!.isRoot) {
-			const myRoles = await this.roleService.getUserRoles(user!.id);
-			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
-				throw new ApiError({
-					message: 'You are not assigned to a moderator role.',
-					code: 'ROLE_PERMISSION_DENIED',
-					kind: 'permission',
-					id: 'd33d5333-db36-423d-a8f9-1a2b9549da41',
-				});
-			}
-			if (ep.meta.requireAdmin && !myRoles.some(r => r.isAdministrator)) {
-				throw new ApiError({
-					message: 'You are not assigned to an administrator role.',
-					code: 'ROLE_PERMISSION_DENIED',
-					kind: 'permission',
-					id: 'c3d38592-54c0-429d-be96-5636b0431a61',
-				});
-			}
-		}
-
-		if (ep.meta.requireRolePolicy != null && !user!.isRoot) {
-			const myRoles = await this.roleService.getUserRoles(user!.id);
-			const policies = await this.roleService.getUserPolicies(user!.id);
-			if (!policies[ep.meta.requireRolePolicy] && !myRoles.some(r => r.isAdministrator)) {
-				throw new ApiError({
-					message: 'You are not assigned to a required role.',
-					code: 'ROLE_PERMISSION_DENIED',
-					kind: 'permission',
-					id: '7f86f06f-7e15-4057-8561-f4b6d4ac755a',
-				});
-			}
-		}
-
-		if (token && ((ep.meta.kind && !token.permission.some(p => p === ep.meta.kind))
-			|| (!ep.meta.kind && (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin)))) {
-			throw new ApiError({
-				message: 'Your app does not have the necessary permissions to use this endpoint.',
-				code: 'PERMISSION_DENIED',
-				kind: 'permission',
-				id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
-			});
-		}
-
 		// Cast non JSON input
 		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
 			for (const k of Object.keys(ep.params.properties)) {
@@ -435,16 +377,132 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
+		if (token && ((ep.meta.kind && !token.permission.some(p => p === ep.meta.kind))
+			|| (!ep.meta.kind && (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin)))) {
+			throw new ApiError({
+				message: 'Your app does not have the necessary permissions to use this endpoint.',
+				code: 'PERMISSION_DENIED',
+				kind: 'permission',
+				id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
+			});
+		}
+
+		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && (this.meta.rootUserId !== user!.id)) {
+			const myRoles = await this.roleService.getUserRoles(user!.id);
+			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
+				throw new ApiError({
+					message: 'You are not assigned to a moderator role.',
+					code: 'ROLE_PERMISSION_DENIED',
+					kind: 'permission',
+					id: 'd33d5333-db36-423d-a8f9-1a2b9549da41',
+				});
+			}
+			if (ep.meta.requireAdmin && !myRoles.some(r => r.isAdministrator)) {
+				throw new ApiError({
+					message: 'You are not assigned to an administrator role.',
+					code: 'ROLE_PERMISSION_DENIED',
+					kind: 'permission',
+					id: 'c3d38592-54c0-429d-be96-5636b0431a61',
+				});
+			}
+		}
+
+		if (ep.meta.requiredRolePolicy != null && (this.meta.rootUserId !== user!.id)) {
+			const myRoles = await this.roleService.getUserRoles(user!.id);
+			const policies = await this.roleService.getUserPolicies(user!.id);
+			if (!policies[ep.meta.requiredRolePolicy] && !myRoles.some(r => r.isAdministrator)) {
+				throw new ApiError({
+					message: 'You are not assigned to a required role.',
+					code: 'ROLE_PERMISSION_DENIED',
+					kind: 'permission',
+					id: '7f86f06f-7e15-4057-8561-f4b6d4ac755a',
+				});
+			}
+		}
+
+		let attachmentFile: AttachmentFile | null = null;
+		let cleanup = () => {};
+		if (ep.meta.requireFile && request.method === 'POST' && multipartFile) {
+			const policies = await this.roleService.getUserPolicies(user!.id);
+			const result = await this.handleAttachmentFile(
+				Math.min((policies.maxFileSizeMb * 1024 * 1024), this.config.maxFileSize),
+				multipartFile,
+			);
+			attachmentFile = result.attachmentFile;
+			cleanup = result.cleanup;
+		}
+
 		// API invoking
 		if (this.config.sentryForBackend) {
 			return await Sentry.startSpan({
 				name: 'API: ' + ep.name,
-			}, () => ep.exec(data, user, token, file, request.ip, request.headers)
-				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id)));
+			}, () => {
+				return ep.exec(data, user, token, attachmentFile, request.ip, request.headers)
+					.catch((err: Error) => this.#onExecError(ep, data, err, user?.id))
+					.finally(() => cleanup());
+			});
 		} else {
-			return await ep.exec(data, user, token, file, request.ip, request.headers)
-				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id));
+			return await ep.exec(data, user, token, attachmentFile, request.ip, request.headers)
+				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id))
+				.finally(() => cleanup());
 		}
+	}
+
+	@bindThis
+	private async handleAttachmentFile(
+		fileSizeLimit: number,
+		multipartFile: MultipartFile,
+	) {
+		function createTooLongError() {
+			return new ApiError({
+				httpStatusCode: 413,
+				kind: 'client',
+				message: 'File size is too large.',
+				code: 'FILE_SIZE_TOO_LARGE',
+				id: 'ff827ce8-9b4b-4808-8511-422222a3362f',
+			});
+		}
+
+		function createLimitStream(limit: number) {
+			let total = 0;
+
+			return new Transform({
+				transform(chunk, _, callback) {
+					total += chunk.length;
+					if (total > limit) {
+						callback(createTooLongError());
+					} else {
+						callback(null, chunk);
+					}
+				},
+			});
+		}
+
+		const [path, cleanup] = await createTemp();
+		try {
+			await stream.pipeline(
+				multipartFile.file,
+				createLimitStream(fileSizeLimit),
+				fs.createWriteStream(path),
+			);
+
+			// ファイルサイズが制限を超えていた場合
+			// なお truncated はストリームを読み切ってからでないと機能しないため、stream.pipeline より後にある必要がある
+			if (multipartFile.file.truncated) {
+				throw createTooLongError();
+			}
+		} catch (err) {
+			cleanup();
+			throw err;
+		}
+
+		return {
+			attachmentFile: {
+				name: multipartFile.filename,
+				path,
+			},
+			cleanup,
+		};
 	}
 
 	@bindThis
