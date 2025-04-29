@@ -42,8 +42,8 @@ function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
 	return entities.map(en => [en.id, en]);
 }
 
-export function usePagination<T = MisskeyEntity>(props: {
-	ctx: PagingCtx;
+export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['endpoint']]['res']>(props: {
+	ctx: Ctx;
 }) {
 	/**
 	 * 表示するアイテムのソース
