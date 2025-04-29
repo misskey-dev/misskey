@@ -141,6 +141,7 @@ $widgets-hide-threshold: 1090px;
 .nonTitlebarArea {
 	display: flex;
 	flex: 1;
+	min-height: 0;
 }
 
 .sidebar {
