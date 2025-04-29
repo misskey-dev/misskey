@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div
 				v-for="(image, i) in images" :key="i"
 				:class="$style.img"
-				:style="`background-image: url(${thumbnail(image)})`"
+				:style="{ backgroundImage: `url(${thumbnail(image)})` }"
 			></div>
 		</div>
 	</div>

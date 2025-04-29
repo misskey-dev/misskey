@@ -80,7 +80,7 @@
 		"wanakana": "5.3.1"
 	},
 	"devDependencies": {
-		"@misskey-dev/summaly": "5.2.0",
+		"@misskey-dev/summaly": "5.2.1",
 		"@storybook/addon-actions": "8.6.7",
 		"@storybook/addon-essentials": "8.6.7",
 		"@storybook/addon-interactions": "8.6.7",
