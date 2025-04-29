@@ -16,15 +16,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span :class="$style.title">{{ announcement.title }}</span>
 		</div>
 		<div :class="$style.text"><Mfm :text="announcement.text"/></div>
+		<div ref="bottomEl"></div>
 		<div :class="$style.footer">
-			<MkButton primary full @click="ok">{{ i18n.ts.ok }}</MkButton>
+			<MkButton
+				primary
+				full
+				:disabled="!hasReachedBottom"
+				@click="ok"
+			>{{ hasReachedBottom ? i18n.ts.close : i18n.ts.scrollToClose }}</MkButton>
 		</div>
 	</div>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef } from 'vue';
+import { onMounted, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -34,12 +40,12 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
 	announcement: Misskey.entities.Announcement;
-}>(), {
-});
+}>();
 
 const rootEl = useTemplateRef('rootEl');
+const bottomEl = useTemplateRef('bottomEl');
 const modal = useTemplateRef('modal');
 
 async function ok() {
@@ -74,7 +80,34 @@ function onBgClick() {
 	});
 }
 
+const hasReachedBottom = ref(false);
+
 onMounted(() => {
+	if (bottomEl.value && rootEl.value) {
+		const bottomElRect = bottomEl.value.getBoundingClientRect();
+		const rootElRect = rootEl.value.getBoundingClientRect();
+		if (
+			bottomElRect.top >= rootElRect.top &&
+			bottomElRect.top <= (rootElRect.bottom - 66) // 66 ≒ 75 * 0.9 (modalのアニメーション分)
+		) {
+			hasReachedBottom.value = true;
+			return;
+		}
+
+		const observer = new IntersectionObserver(entries => {
+			for (const entry of entries) {
+				if (entry.isIntersecting) {
+					hasReachedBottom.value = true;
+					observer.disconnect();
+				}
+			}
+		}, {
+			root: rootEl.value,
+			rootMargin: '0px 0px -75px 0px',
+		});
+
+		observer.observe(bottomEl.value);
+	}
 });
 </script>
 
