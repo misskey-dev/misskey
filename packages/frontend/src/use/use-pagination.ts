@@ -147,7 +147,7 @@ export function usePagination<Ctx extends PagingCtx, T = Misskey.Endpoints[Ctx['
 			if (options.toQueue) {
 				queue.value.unshift(...res.toReversed());
 			} else {
-				items.value = new Map([...arrayToEntries(res), ...items.value]);
+				items.value = new Map([...arrayToEntries(res.toReversed()), ...items.value]);
 			}
 		});
 	}
