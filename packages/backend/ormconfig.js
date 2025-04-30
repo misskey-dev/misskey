@@ -14,4 +14,5 @@ export default new DataSource({
 	extra: config.db.extra,
 	entities: entities,
 	migrations: ['migration/*.js'],
+	migrationsTransactionMode: 'each',
 });
