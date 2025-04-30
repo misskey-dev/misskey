@@ -3171,6 +3171,8 @@ _yami:
   yamiModeShort: "やみ"
   normalNote: "通常ノート"
   yamiNote: "やみノート"
+  fixedYamiNote: "やみタイムライン内の投稿（変更不可）"
+  fixedNormalNote: "通常タイムライン内の投稿（変更不可）"
   parentIsYamiNote: "親やみノートを継承"
   enableYamiNoteConfirm: "やみノートに切り替えますか？"
   enableYamiNoteConfirmWarn: "やみノートはやみモードユーザーのみが閲覧できる特殊な投稿です。閲覧対象が限られるため、より自由な表現が可能です。"

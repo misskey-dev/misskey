@@ -25,9 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-if="$i.policies?.canYamiNote"
 					v-tooltip="parentIsYamiNote
 						? i18n.ts._yami.parentIsYamiNote
-						: (isNoteInYamiMode ? i18n.ts._yami.yamiNote : i18n.ts._yami.normalNote)"
+						: props.fixed
+							? (isNoteInYamiMode ? i18n.ts._yami.fixedYamiNote : i18n.ts._yami.fixedNormalNote)
+							: (isNoteInYamiMode ? i18n.ts._yami.yamiNote : i18n.ts._yami.normalNote)"
 					:class="['_button', $style.headerRightItem, { [$style.headerRightItemActive]: isNoteInYamiMode || parentIsYamiNote }]"
-					:disabled="parentIsYamiNote"
+					:disabled="parentIsYamiNote || props.fixed"
 					@click="toggleYamiMode"
 				>
 					<i class="ti" :class="isNoteInYamiMode || parentIsYamiNote ? 'ti-moon' : 'ti-users-group'"></i>
@@ -174,11 +176,13 @@ const props = withDefaults(defineProps<PostFormProps & {
 	autofocus?: boolean;
 	freezeAfterPosted?: boolean;
 	mock?: boolean;
+	isInYamiTimeline?: boolean;
 }>(), {
 	initialVisibleUsers: () => [],
 	autofocus: true,
 	mock: false,
 	initialLocalOnly: undefined,
+	isInYamiTimeline: false,
 });
 
 provide(DI.mock, props.mock);
@@ -218,13 +222,28 @@ const scheduledNoteDelete = ref<DeleteScheduleEditorModelValue | null>(getInitia
 // やみノート状態を管理する変数
 // 親投稿がやみノートの場合は強制的にやみノートにする
 const isNoteInYamiMode = ref(
-  // 親投稿がやみノートの場合は必ずtrue
-  (props.reply?.isNoteInYamiMode || props.renote?.isNoteInYamiMode)
-    ? true
-  // それ以外は権限に基づいて設定
-    : ($i.policies?.canYamiNote
-      ? (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode)
-      : false),
+	// 親投稿がやみノートの場合は必ずtrue
+	(props.reply?.isNoteInYamiMode || props.renote?.isNoteInYamiMode)
+		? true
+	// それ以外は権限に基づいて設定
+		: ($i.policies.canYamiNote
+			? (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode)
+			: false),
+);
+
+// 固定フォーム（埋め込み）の場合のみ、isInYamiTimelineプロップに基づいてやみノートモードを設定
+watch(
+	() => props.isInYamiTimeline,
+	(isInYamiTimeline) => {
+		// 固定フォーム（埋め込み）の場合のみ処理
+		if (props.fixed) {
+			// 親投稿がやみノートでない場合のみ変更
+			if (!(props.reply?.isNoteInYamiMode || props.renote?.isNoteInYamiMode)) {
+				isNoteInYamiMode.value = !!isInYamiTimeline;
+			}
+		}
+	},
+	{ immediate: true },
 );
 
 // 親投稿がやみノートかどうかの判定を計算プロパティに
@@ -1205,8 +1224,8 @@ function toggleScheduleNote() {
 
 // やみノートモードの切り替え関数
 async function toggleYamiMode() {
-  // canYamiNote権限がない場合は切り替え不可
-  if (!$i.policies?.canYamiNote) return;
+	// canYamiNote権限がない場合は切り替え不可
+	if (!$i.policies.canYamiNote) return;
 
 	// 親がやみノートの場合は切り替え不可
 	if (parentIsYamiNote.value) return;
@@ -1255,32 +1274,6 @@ async function toggleYamiMode() {
 	}
 }
 
-// function showOtherMenu(ev: MouseEvent) {
-// 	const menuItems: MenuItem[] = [];
-
-// 	if ($i.policies.scheduleNoteMax > 0) {
-// 		menuItems.push({
-// 			type: 'button',
-// 			text: i18n.ts.schedulePost,
-// 			icon: 'ti ti-calendar-time',
-// 			action: toggleScheduleNote,
-// 		}, {
-// 			type: 'button',
-// 			text: i18n.ts.schedulePostList,
-// 			icon: 'ti ti-calendar-event',
-// 			action: () => {
-// 				const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkSchedulePostListDialog.vue')), {}, {
-// 					closed: () => {
-// 						dispose();
-// 					},
-// 				});
-// 			},
-// 		});
-// 	}
-
-// 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
-// }
-
 onMounted(() => {
 	if (props.autofocus) {
 		focus();
@@ -1319,10 +1312,9 @@ onMounted(() => {
 				if (draft.data.scheduledNoteDelete) {
 					scheduledNoteDelete.value = draft.data.scheduledNoteDelete;
 				}
-				// やみノート状態を復元 - 通常モードユーザーは常にfalseに
-				isNoteInYamiMode.value = $i.isInYamiMode ?
+				isNoteInYamiMode.value = $i.policies.canYamiNote ?
 					(draft.data.isNoteInYamiMode ??
-					 (prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : $i.isInYamiMode)) :
+					(prefer.s.rememberNoteVisibility ? prefer.s.isNoteInYamiMode : prefer.s.defaultIsNoteInYamiMode)) :
 					false;
 			}
 		}

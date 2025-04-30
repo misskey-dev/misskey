@@ -11,7 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkInfo v-if="isBasicTimeline(src) && !store.r.timelineTutorials.value[src]" style="margin-bottom: var(--MI-margin);" closable @close="closeTutorial()">
 				{{ i18n.ts._timelineDescription[src] }}
 			</MkInfo>
-			<MkPostForm v-if="prefer.r.showFixedPostForm.value" :class="$style.postForm" class="_panel" fixed style="margin-bottom: var(--MI-margin);"/>
+			<MkPostForm
+				v-if="prefer.r.showFixedPostForm.value"
+				:class="$style.postForm"
+				class="_panel"
+				fixed
+				style="margin-bottom: var(--MI-margin);"
+				:isInYamiTimeline="src === 'yami'"
+			/>
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 			<MkTimeline
 				ref="tlComponent"

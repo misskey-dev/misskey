@@ -11869,6 +11869,14 @@ export interface Locale extends ILocale {
          */
         "yamiNote": string;
         /**
+         * やみタイムライン内の投稿（変更不可）
+         */
+        "fixedYamiNote": string;
+        /**
+         * 通常タイムライン内の投稿（変更不可）
+         */
+        "fixedNormalNote": string;
+        /**
          * 親やみノートを継承
          */
         "parentIsYamiNote": string;

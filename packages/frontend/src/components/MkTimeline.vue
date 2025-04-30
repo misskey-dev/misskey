@@ -5,6 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkPullToRefresh ref="prComponent" :refresher="() => reloadTimeline()">
+	<MkPostForm
+		v-if="postForm"
+		class="post-form"
+		:isInYamiTimeline="src === 'yami'"
+		@posted="emit('posted')"
+	/>
 	<MkNotes
 		v-if="paginationQuery"
 		ref="tlComponent"
