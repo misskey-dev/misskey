@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
 	<div v-if="!narrow || currentPage?.route.name == null" class="nav">
-		<MkSpacer :contentMax="700" :marginMin="16">
+		<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px;">
 			<div class="lxpfedzu _gaps">
 				<div class="banner">
 					<img :src="instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
@@ -22,9 +22,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkSuperMenu :def="menuDef" :grid="narrow"></MkSuperMenu>
 			</div>
-		</MkSpacer>
+		</div>
 	</div>
-	<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
+	<div v-if="!(narrow && currentPage?.route.name == null)" class="main _pageContainer" style="height: 100%;">
 		<NestedRouterView/>
 	</div>
 </div>
@@ -140,9 +140,14 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		active: currentPage.value?.route.name === 'federation',
 	}, {
 		icon: 'ti ti-clock-play',
+		text: i18n.ts.federationJobs,
+		to: '/admin/federation-job-queue',
+		active: currentPage.value?.route.name === 'federationJobQueue',
+	}, {
+		icon: 'ti ti-clock-play',
 		text: i18n.ts.jobQueue,
-		to: '/admin/queue',
-		active: currentPage.value?.route.name === 'queue',
+		to: '/admin/job-queue',
+		active: currentPage.value?.route.name === 'jobQueue',
 	}, {
 		icon: 'ti ti-cloud',
 		text: i18n.ts.files,
@@ -329,6 +334,8 @@ defineExpose({
 
 <style lang="scss" scoped>
 .hiyeyicy {
+	height: 100%;
+
 	&.wide {
 		display: flex;
 		margin: 0 auto;
