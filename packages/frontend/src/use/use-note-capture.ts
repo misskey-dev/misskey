@@ -13,10 +13,10 @@ import { store } from '@/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 export const noteEvents = new EventEmitter<{
-	[`reacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
-	[`unreacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
-	[`pollVoted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; choice: string; }) => void;
-	[`deleted:${string}`]: () => void;
+	[ev: `reacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
+	[ev: `unreacted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }) => void;
+	[ev: `pollVoted:${string}`]: (ctx: { userId: Misskey.entities.User['id']; choice: string; }) => void;
+	[ev: `deleted:${string}`]: () => void;
 }>();
 
 const fetchEvent = new EventEmitter<{
