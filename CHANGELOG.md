@@ -1,3 +1,12 @@
+## Unreleased
+
+### General
+
+### Client
+- Fix: ダイアログのお知らせが画面からはみ出ることがある問題を修正
+
+### Server
+
 ## 2025.4.1
 
 ### General
