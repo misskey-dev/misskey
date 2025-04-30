@@ -287,4 +287,26 @@ export class QueryService {
 				.andWhere(instanceSuspension('renoteUser'));
 		}
 	}
+
+	// Requirements: user replyUser renoteUser must be joined
+	@bindThis
+	public generateSuspendedUserQueryForNote(q: SelectQueryBuilder<any>, excludeAuthor?: boolean): void {
+		if (excludeAuthor) {
+			const brakets = (user: string) => new Brackets(qb => qb
+				.where(`note.${user}Id IS NULL`)
+				.orWhere(`user.id = ${user}.id`)
+				.orWhere(`${user}.isSuspended = FALSE`));
+			q
+				.andWhere(brakets('replyUser'))
+				.andWhere(brakets('renoteUser'));
+		} else {
+			const brakets = (user: string) => new Brackets(qb => qb
+				.where(`note.${user}Id IS NULL`)
+				.orWhere(`${user}.isSuspended = FALSE`));
+			q
+				.andWhere('user.isSuspended = FALSE')
+				.andWhere(brakets('replyUser'))
+				.andWhere(brakets('renoteUser'));
+		}
+	}
 }
