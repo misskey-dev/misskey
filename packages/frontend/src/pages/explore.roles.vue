@@ -4,11 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="700">
+<div class="_spacer" style="--MI_SPACER-w: 700px;">
 	<div class="_gaps_s">
 		<MkRolePreview v-for="role in roles" :key="role.id" :role="role" :forModeration="false"/>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>

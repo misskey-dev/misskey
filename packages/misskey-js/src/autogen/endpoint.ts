@@ -75,9 +75,15 @@ import type {
 	AdminInviteListResponse,
 	AdminMetaResponse,
 	AdminPromoCreateRequest,
+	AdminQueueClearRequest,
 	AdminQueueDeliverDelayedResponse,
 	AdminQueueInboxDelayedResponse,
-	AdminQueuePromoteRequest,
+	AdminQueueJobsRequest,
+	AdminQueuePromoteJobsRequest,
+	AdminQueueQueueStatsRequest,
+	AdminQueueRemoveJobRequest,
+	AdminQueueRetryJobRequest,
+	AdminQueueShowJobRequest,
 	AdminQueueStatsResponse,
 	AdminRelaysAddRequest,
 	AdminRelaysAddResponse,
@@ -214,9 +220,7 @@ import type {
 	ChatMessagesCreateToUserRequest,
 	ChatMessagesCreateToUserResponse,
 	ChatMessagesDeleteRequest,
-	ChatMessagesDeleteResponse,
 	ChatMessagesReactRequest,
-	ChatMessagesReactResponse,
 	ChatMessagesRoomTimelineRequest,
 	ChatMessagesRoomTimelineResponse,
 	ChatMessagesSearchRequest,
@@ -224,31 +228,25 @@ import type {
 	ChatMessagesShowRequest,
 	ChatMessagesShowResponse,
 	ChatMessagesUnreactRequest,
-	ChatMessagesUnreactResponse,
 	ChatMessagesUserTimelineRequest,
 	ChatMessagesUserTimelineResponse,
 	ChatRoomsCreateRequest,
 	ChatRoomsCreateResponse,
 	ChatRoomsDeleteRequest,
-	ChatRoomsDeleteResponse,
 	ChatRoomsInvitationsCreateRequest,
 	ChatRoomsInvitationsCreateResponse,
 	ChatRoomsInvitationsIgnoreRequest,
-	ChatRoomsInvitationsIgnoreResponse,
 	ChatRoomsInvitationsInboxRequest,
 	ChatRoomsInvitationsInboxResponse,
 	ChatRoomsInvitationsOutboxRequest,
 	ChatRoomsInvitationsOutboxResponse,
 	ChatRoomsJoinRequest,
-	ChatRoomsJoinResponse,
 	ChatRoomsJoiningRequest,
 	ChatRoomsJoiningResponse,
 	ChatRoomsLeaveRequest,
-	ChatRoomsLeaveResponse,
 	ChatRoomsMembersRequest,
 	ChatRoomsMembersResponse,
 	ChatRoomsMuteRequest,
-	ChatRoomsMuteResponse,
 	ChatRoomsOwnedRequest,
 	ChatRoomsOwnedResponse,
 	ChatRoomsShowRequest,
@@ -690,10 +688,16 @@ export type Endpoints = {
 	'admin/invite/list': { req: AdminInviteListRequest; res: AdminInviteListResponse };
 	'admin/meta': { req: EmptyRequest; res: AdminMetaResponse };
 	'admin/promo/create': { req: AdminPromoCreateRequest; res: EmptyResponse };
-	'admin/queue/clear': { req: EmptyRequest; res: EmptyResponse };
+	'admin/queue/clear': { req: AdminQueueClearRequest; res: EmptyResponse };
 	'admin/queue/deliver-delayed': { req: EmptyRequest; res: AdminQueueDeliverDelayedResponse };
 	'admin/queue/inbox-delayed': { req: EmptyRequest; res: AdminQueueInboxDelayedResponse };
-	'admin/queue/promote': { req: AdminQueuePromoteRequest; res: EmptyResponse };
+	'admin/queue/jobs': { req: AdminQueueJobsRequest; res: EmptyResponse };
+	'admin/queue/promote-jobs': { req: AdminQueuePromoteJobsRequest; res: EmptyResponse };
+	'admin/queue/queue-stats': { req: AdminQueueQueueStatsRequest; res: EmptyResponse };
+	'admin/queue/queues': { req: EmptyRequest; res: EmptyResponse };
+	'admin/queue/remove-job': { req: AdminQueueRemoveJobRequest; res: EmptyResponse };
+	'admin/queue/retry-job': { req: AdminQueueRetryJobRequest; res: EmptyResponse };
+	'admin/queue/show-job': { req: AdminQueueShowJobRequest; res: EmptyResponse };
 	'admin/queue/stats': { req: EmptyRequest; res: AdminQueueStatsResponse };
 	'admin/relays/add': { req: AdminRelaysAddRequest; res: AdminRelaysAddResponse };
 	'admin/relays/list': { req: EmptyRequest; res: AdminRelaysListResponse };
@@ -777,24 +781,24 @@ export type Endpoints = {
 	'chat/history': { req: ChatHistoryRequest; res: ChatHistoryResponse };
 	'chat/messages/create-to-room': { req: ChatMessagesCreateToRoomRequest; res: ChatMessagesCreateToRoomResponse };
 	'chat/messages/create-to-user': { req: ChatMessagesCreateToUserRequest; res: ChatMessagesCreateToUserResponse };
-	'chat/messages/delete': { req: ChatMessagesDeleteRequest; res: ChatMessagesDeleteResponse };
-	'chat/messages/react': { req: ChatMessagesReactRequest; res: ChatMessagesReactResponse };
+	'chat/messages/delete': { req: ChatMessagesDeleteRequest; res: EmptyResponse };
+	'chat/messages/react': { req: ChatMessagesReactRequest; res: EmptyResponse };
 	'chat/messages/room-timeline': { req: ChatMessagesRoomTimelineRequest; res: ChatMessagesRoomTimelineResponse };
 	'chat/messages/search': { req: ChatMessagesSearchRequest; res: ChatMessagesSearchResponse };
 	'chat/messages/show': { req: ChatMessagesShowRequest; res: ChatMessagesShowResponse };
-	'chat/messages/unreact': { req: ChatMessagesUnreactRequest; res: ChatMessagesUnreactResponse };
+	'chat/messages/unreact': { req: ChatMessagesUnreactRequest; res: EmptyResponse };
 	'chat/messages/user-timeline': { req: ChatMessagesUserTimelineRequest; res: ChatMessagesUserTimelineResponse };
 	'chat/rooms/create': { req: ChatRoomsCreateRequest; res: ChatRoomsCreateResponse };
-	'chat/rooms/delete': { req: ChatRoomsDeleteRequest; res: ChatRoomsDeleteResponse };
+	'chat/rooms/delete': { req: ChatRoomsDeleteRequest; res: EmptyResponse };
 	'chat/rooms/invitations/create': { req: ChatRoomsInvitationsCreateRequest; res: ChatRoomsInvitationsCreateResponse };
-	'chat/rooms/invitations/ignore': { req: ChatRoomsInvitationsIgnoreRequest; res: ChatRoomsInvitationsIgnoreResponse };
+	'chat/rooms/invitations/ignore': { req: ChatRoomsInvitationsIgnoreRequest; res: EmptyResponse };
 	'chat/rooms/invitations/inbox': { req: ChatRoomsInvitationsInboxRequest; res: ChatRoomsInvitationsInboxResponse };
 	'chat/rooms/invitations/outbox': { req: ChatRoomsInvitationsOutboxRequest; res: ChatRoomsInvitationsOutboxResponse };
-	'chat/rooms/join': { req: ChatRoomsJoinRequest; res: ChatRoomsJoinResponse };
+	'chat/rooms/join': { req: ChatRoomsJoinRequest; res: EmptyResponse };
 	'chat/rooms/joining': { req: ChatRoomsJoiningRequest; res: ChatRoomsJoiningResponse };
-	'chat/rooms/leave': { req: ChatRoomsLeaveRequest; res: ChatRoomsLeaveResponse };
+	'chat/rooms/leave': { req: ChatRoomsLeaveRequest; res: EmptyResponse };
 	'chat/rooms/members': { req: ChatRoomsMembersRequest; res: ChatRoomsMembersResponse };
-	'chat/rooms/mute': { req: ChatRoomsMuteRequest; res: ChatRoomsMuteResponse };
+	'chat/rooms/mute': { req: ChatRoomsMuteRequest; res: EmptyResponse };
 	'chat/rooms/owned': { req: ChatRoomsOwnedRequest; res: ChatRoomsOwnedResponse };
 	'chat/rooms/show': { req: ChatRoomsShowRequest; res: ChatRoomsShowResponse };
 	'chat/rooms/update': { req: ChatRoomsUpdateRequest; res: ChatRoomsUpdateResponse };

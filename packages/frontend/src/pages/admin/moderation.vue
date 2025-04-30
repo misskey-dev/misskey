@@ -4,131 +4,127 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkStickyContainer>
-		<template #header><XHeader :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
-			<FormSuspense :p="init">
-				<div class="_gaps_m">
-					<MkSwitch :modelValue="enableRegistration" @update:modelValue="onChange_enableRegistration">
-						<template #label>{{ i18n.ts._serverSettings.openRegistration }}</template>
-						<template #caption>
-							<div>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</div>
-							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.openRegistrationWarning }}</div>
-						</template>
-					</MkSwitch>
+<PageWithHeader :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
+		<FormSuspense :p="init">
+			<div class="_gaps_m">
+				<MkSwitch :modelValue="enableRegistration" @update:modelValue="onChange_enableRegistration">
+					<template #label>{{ i18n.ts._serverSettings.openRegistration }}</template>
+					<template #caption>
+						<div>{{ i18n.ts._serverSettings.thisSettingWillAutomaticallyOffWhenModeratorsInactive }}</div>
+						<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._serverSettings.openRegistrationWarning }}</div>
+					</template>
+				</MkSwitch>
 
-					<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">
-						<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
-					</MkSwitch>
+				<MkSwitch v-model="emailRequiredForSignup" @change="onChange_emailRequiredForSignup">
+					<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
+				</MkSwitch>
 
-					<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
+				<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-lock-star"></i></template>
-						<template #label>{{ i18n.ts.preservedUsernames }}</template>
+				<MkFolder>
+					<template #icon><i class="ti ti-lock-star"></i></template>
+					<template #label>{{ i18n.ts.preservedUsernames }}</template>
 
-						<div class="_gaps">
-							<MkTextarea v-model="preservedUsernames">
-								<template #caption>{{ i18n.ts.preservedUsernamesDescription }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_preservedUsernames">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+					<div class="_gaps">
+						<MkTextarea v-model="preservedUsernames">
+							<template #caption>{{ i18n.ts.preservedUsernamesDescription }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_preservedUsernames">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-message-exclamation"></i></template>
-						<template #label>{{ i18n.ts.sensitiveWords }}</template>
+				<MkFolder>
+					<template #icon><i class="ti ti-message-exclamation"></i></template>
+					<template #label>{{ i18n.ts.sensitiveWords }}</template>
 
-						<div class="_gaps">
-							<MkTextarea v-model="sensitiveWords">
-								<template #caption>{{ i18n.ts.sensitiveWordsDescription }}<br>{{ i18n.ts.sensitiveWordsDescription2 }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_sensitiveWords">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+					<div class="_gaps">
+						<MkTextarea v-model="sensitiveWords">
+							<template #caption>{{ i18n.ts.sensitiveWordsDescription }}<br>{{ i18n.ts.sensitiveWordsDescription2 }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_sensitiveWords">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-message-x"></i></template>
-						<template #label>{{ i18n.ts.prohibitedWords }}</template>
+				<MkFolder>
+					<template #icon><i class="ti ti-message-x"></i></template>
+					<template #label>{{ i18n.ts.prohibitedWords }}</template>
 
-						<div class="_gaps">
-							<MkTextarea v-model="prohibitedWords">
-								<template #caption>{{ i18n.ts.prohibitedWordsDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_prohibitedWords">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+					<div class="_gaps">
+						<MkTextarea v-model="prohibitedWords">
+							<template #caption>{{ i18n.ts.prohibitedWordsDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_prohibitedWords">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-user-x"></i></template>
-						<template #label>{{ i18n.ts.prohibitedWordsForNameOfUser }}</template>
+				<MkFolder>
+					<template #icon><i class="ti ti-user-x"></i></template>
+					<template #label>{{ i18n.ts.prohibitedWordsForNameOfUser }}</template>
 
-						<div class="_gaps">
-							<MkTextarea v-model="prohibitedWordsForNameOfUser">
-								<template #caption>{{ i18n.ts.prohibitedWordsForNameOfUserDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_prohibitedWordsForNameOfUser">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+					<div class="_gaps">
+						<MkTextarea v-model="prohibitedWordsForNameOfUser">
+							<template #caption>{{ i18n.ts.prohibitedWordsForNameOfUserDescription }}<br>{{ i18n.ts.prohibitedWordsDescription2 }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_prohibitedWordsForNameOfUser">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-eye-off"></i></template>
-						<template #label>{{ i18n.ts.hiddenTags }}</template>
+				<MkFolder>
+					<template #icon><i class="ti ti-eye-off"></i></template>
+					<template #label>{{ i18n.ts.hiddenTags }}</template>
 
-						<div class="_gaps">
-							<MkTextarea v-model="hiddenTags">
-								<template #caption>{{ i18n.ts.hiddenTagsDescription }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_hiddenTags">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+					<div class="_gaps">
+						<MkTextarea v-model="hiddenTags">
+							<template #caption>{{ i18n.ts.hiddenTagsDescription }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_hiddenTags">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-eye-off"></i></template>
-						<template #label>{{ i18n.ts.silencedInstances }}</template>
+				<MkFolder>
+					<template #icon><i class="ti ti-eye-off"></i></template>
+					<template #label>{{ i18n.ts.silencedInstances }}</template>
 
-						<div class="_gaps">
-							<MkTextarea v-model="silencedHosts">
-								<template #caption>{{ i18n.ts.silencedInstancesDescription }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_silencedHosts">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+					<div class="_gaps">
+						<MkTextarea v-model="silencedHosts">
+							<template #caption>{{ i18n.ts.silencedInstancesDescription }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_silencedHosts">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-eye-off"></i></template>
-						<template #label>{{ i18n.ts.mediaSilencedInstances }}</template>
+				<MkFolder>
+					<template #icon><i class="ti ti-eye-off"></i></template>
+					<template #label>{{ i18n.ts.mediaSilencedInstances }}</template>
 
-						<div class="_gaps">
-							<MkTextarea v-model="mediaSilencedHosts">
-								<template #caption>{{ i18n.ts.mediaSilencedInstancesDescription }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_mediaSilencedHosts">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
+					<div class="_gaps">
+						<MkTextarea v-model="mediaSilencedHosts">
+							<template #caption>{{ i18n.ts.mediaSilencedInstancesDescription }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_mediaSilencedHosts">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
 
-					<MkFolder>
-						<template #icon><i class="ti ti-ban"></i></template>
-						<template #label>{{ i18n.ts.blockedInstances }}</template>
+				<MkFolder>
+					<template #icon><i class="ti ti-ban"></i></template>
+					<template #label>{{ i18n.ts.blockedInstances }}</template>
 
-						<div class="_gaps">
-							<MkTextarea v-model="blockedHosts">
-								<template #caption>{{ i18n.ts.blockedInstancesDescription }}</template>
-							</MkTextarea>
-							<MkButton primary @click="save_blockedHosts">{{ i18n.ts.save }}</MkButton>
-						</div>
-					</MkFolder>
-				</div>
-			</FormSuspense>
-		</MkSpacer>
-	</MkStickyContainer>
-</div>
+					<div class="_gaps">
+						<MkTextarea v-model="blockedHosts">
+							<template #caption>{{ i18n.ts.blockedInstancesDescription }}</template>
+						</MkTextarea>
+						<MkButton primary @click="save_blockedHosts">{{ i18n.ts.save }}</MkButton>
+					</div>
+				</MkFolder>
+			</div>
+		</FormSuspense>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
