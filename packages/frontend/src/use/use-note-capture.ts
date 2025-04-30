@@ -23,7 +23,42 @@ const fetchEvent = new EventEmitter<{
 	[id: string]: Pick<Misskey.entities.Note, 'reactions' | 'reactionEmojis'>;
 }>();
 
-const capturedNoteIdMapForPolling = new Map<string, number>();
+const pollingQueue = new Map<string, {
+	priority: number;
+	referenceCount: number;
+	lastAddedAt: number;
+}>();
+
+function pollingEnqueue(note: Misskey.entities.Note) {
+	if (pollingQueue.has(note.id)) {
+		const data = pollingQueue.get(note.id)!;
+		pollingQueue.set(note.id, {
+			...data,
+			referenceCount: data.referenceCount + 1,
+			lastAddedAt: Date.now(),
+		});
+	} else {
+		pollingQueue.set(note.id, {
+			priority: 0,
+			referenceCount: 1,
+			lastAddedAt: Date.now(),
+		});
+	}
+}
+
+function pollingDequeue(note: Misskey.entities.Note) {
+	const data = pollingQueue.get(note.id);
+	if (data == null) return;
+
+	if (data.referenceCount === 1) {
+		pollingQueue.delete(note.id);
+	} else {
+		pollingQueue.set(note.id, {
+			...data,
+			referenceCount: data.referenceCount - 1,
+		});
+	}
+}
 
 const CAPTURE_MAX = 30;
 const POLLING_INTERVAL = 1000 * 15;
@@ -31,7 +66,12 @@ const POLLING_INTERVAL = 1000 * 15;
 window.setInterval(() => {
 	// TODO: IDごとにpriorityを付け、CAPTURE_MAXを超えた場合は優先度の低いものから削除する
 	// priorityは 自分のノート > リノートされているノート > その他のノート > 投稿から3分以上経過しているノート の順で高くするとよさそう
-	const ids = [...capturedNoteIdMapForPolling.keys()].sort((a, b) => (a > b ? -1 : 1)).slice(0, CAPTURE_MAX); // 新しいものを優先するためにIDで降順ソート
+	const ids = [...pollingQueue.entries()]
+		.filter(([k, v]) => Date.now() - v.lastAddedAt < 1000 * 60 * 5) // 追加されてから一定時間経過したものは省く
+		.map(([k, v]) => k)
+		.sort((a, b) => (a > b ? -1 : 1)) // 新しいものを優先するためにIDで降順ソート
+		.slice(0, CAPTURE_MAX);
+
 	if (ids.length === 0) return;
 	if (window.document.hidden) return;
 
@@ -60,20 +100,11 @@ function pollingSubscribe(props: {
 		note.value.reactionEmojis = data.reactionEmojis;
 	}
 
-	if (capturedNoteIdMapForPolling.has(note.value.id)) {
-		capturedNoteIdMapForPolling.set(note.value.id, capturedNoteIdMapForPolling.get(note.value.id)! + 1);
-	} else {
-		capturedNoteIdMapForPolling.set(note.value.id, 1);
-	}
-
+	pollingEnqueue(note.value);
 	fetchEvent.on(note.value.id, onFetched);
 
 	onUnmounted(() => {
-		capturedNoteIdMapForPolling.set(note.value.id, capturedNoteIdMapForPolling.get(note.value.id)! - 1);
-		if (capturedNoteIdMapForPolling.get(note.value.id) === 0) {
-			capturedNoteIdMapForPolling.delete(note.value.id);
-		}
-
+		pollingDequeue(note.value);
 		fetchEvent.off(note.value.id, onFetched);
 	});
 }
