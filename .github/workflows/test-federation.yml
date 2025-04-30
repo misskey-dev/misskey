@@ -44,7 +44,7 @@ jobs:
             fi
           done
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.3.0
+        uses: actions/setup-node@v4.4.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
@@ -71,18 +71,16 @@ jobs:
           docker compose logs | tail -n 300
           exit 1
       - name: Test
-        id: test
-        continue-on-error: true
         run: |
           cd packages/backend/test-federation
           docker compose run --no-deps tester
       - name: Log
-        if: ${{ steps.test.outcome == 'failure' }}
+        if: always()
         run: |
           cd packages/backend/test-federation
           docker compose logs
-          exit 1
       - name: Stop servers
+        if: always()
         run: |
           cd packages/backend/test-federation
           docker compose down

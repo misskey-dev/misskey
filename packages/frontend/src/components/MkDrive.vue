@@ -45,6 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@contextmenu.stop="onContextmenu"
 	>
 		<div ref="contents">
+			<MkInfo v-if="!store.r.readDriveTip.value" closable @close="closeTip()"><div v-html="i18n.ts.driveAboutTip"></div></MkInfo>
 			<div v-show="folders.length > 0" ref="foldersContainer" :class="$style.folders">
 				<XFolder
 					v-for="(f, i) in folders"
@@ -101,6 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
+import MkInfo from './MkInfo.vue';
 import type { MenuItem } from '@/types/menu.js';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
@@ -113,6 +115,7 @@ import { uploadFile, uploads } from '@/utility/upload.js';
 import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
 import { chooseFileFromPc } from '@/utility/select-file.js';
+import { store } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -630,7 +633,7 @@ function getMenu() {
 	}, {
 		text: i18n.ts.upload,
 		icon: 'ti ti-upload',
-		action: () => { chooseFileFromPc(true, { keepOriginal: keepOriginal.value }); },
+		action: () => { chooseFileFromPc(true, { uploadFolder: folder.value?.id, keepOriginal: keepOriginal.value }); },
 	}, {
 		text: i18n.ts.fromUrl,
 		icon: 'ti ti-link',
@@ -704,6 +707,10 @@ function showMenu(ev: MouseEvent) {
 
 function onContextmenu(ev: MouseEvent) {
 	os.contextMenu(getMenu(), ev);
+}
+
+function closeTip() {
+	store.set('readDriveTip', true);
 }
 
 onMounted(() => {

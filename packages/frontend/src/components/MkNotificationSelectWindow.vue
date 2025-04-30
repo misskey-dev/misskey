@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header>{{ i18n.ts.notificationSetting }}</template>
 
-	<MkSpacer :marginMin="20" :marginMax="28">
+	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 28px;">
 		<div class="_gaps_m">
 			<MkInfo>{{ i18n.ts.notificationSettingDesc }}</MkInfo>
 			<div class="_buttons">
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype].value">{{ i18n.ts._notification._types[ntype] }}</MkSwitch>
 		</div>
-	</MkSpacer>
+	</div>
 </MkModalWindow>
 </template>
 
