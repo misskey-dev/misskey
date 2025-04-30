@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="1000">
+<div class="_spacer" style="--MI_SPACER-w: 1000px;">
 	<div ref="rootEl" :class="$style.root">
 		<MkFoldableSection class="item">
 			<template #header>Stats</template>
@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XQueue domain="inbox"/>
 		</MkFoldableSection>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>

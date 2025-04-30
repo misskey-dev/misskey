@@ -4,63 +4,59 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkStickyContainer>
-		<template #header><XHeader :actions="headerActions"/></template>
-		<MkSpacer :contentMax="900">
-			<div class="_gaps">
-				<div>
-					<MkInput v-model="host" :debounce="true" class="">
-						<template #prefix><i class="ti ti-search"></i></template>
-						<template #label>{{ i18n.ts.host }}</template>
-					</MkInput>
-					<FormSplit style="margin-top: var(--MI-margin);">
-						<MkSelect v-model="state">
-							<template #label>{{ i18n.ts.state }}</template>
-							<option value="all">{{ i18n.ts.all }}</option>
-							<option value="federating">{{ i18n.ts.federating }}</option>
-							<option value="subscribing">{{ i18n.ts.subscribing }}</option>
-							<option value="publishing">{{ i18n.ts.publishing }}</option>
-							<option value="suspended">{{ i18n.ts.suspended }}</option>
-							<option value="blocked">{{ i18n.ts.blocked }}</option>
-							<option value="silenced">{{ i18n.ts.silence }}</option>
-							<option value="notResponding">{{ i18n.ts.notResponding }}</option>
-						</MkSelect>
-						<MkSelect v-model="sort">
-							<template #label>{{ i18n.ts.sort }}</template>
-							<option value="+pubSub">{{ i18n.ts.pubSub }} ({{ i18n.ts.descendingOrder }})</option>
-							<option value="-pubSub">{{ i18n.ts.pubSub }} ({{ i18n.ts.ascendingOrder }})</option>
-							<option value="+notes">{{ i18n.ts.notes }} ({{ i18n.ts.descendingOrder }})</option>
-							<option value="-notes">{{ i18n.ts.notes }} ({{ i18n.ts.ascendingOrder }})</option>
-							<option value="+users">{{ i18n.ts.users }} ({{ i18n.ts.descendingOrder }})</option>
-							<option value="-users">{{ i18n.ts.users }} ({{ i18n.ts.ascendingOrder }})</option>
-							<option value="+following">{{ i18n.ts.following }} ({{ i18n.ts.descendingOrder }})</option>
-							<option value="-following">{{ i18n.ts.following }} ({{ i18n.ts.ascendingOrder }})</option>
-							<option value="+followers">{{ i18n.ts.followers }} ({{ i18n.ts.descendingOrder }})</option>
-							<option value="-followers">{{ i18n.ts.followers }} ({{ i18n.ts.ascendingOrder }})</option>
-							<option value="+firstRetrievedAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.descendingOrder }})</option>
-							<option value="-firstRetrievedAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.ascendingOrder }})</option>
-						</MkSelect>
-					</FormSplit>
-				</div>
-
-				<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
-					<div :class="$style.instances">
-						<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" :class="$style.instance" :to="`/instance-info/${instance.host}`">
-							<MkInstanceCardMini :instance="instance"/>
-						</MkA>
-					</div>
-				</MkPagination>
+<PageWithHeader :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
+		<div class="_gaps">
+			<div>
+				<MkInput v-model="host" :debounce="true" class="">
+					<template #prefix><i class="ti ti-search"></i></template>
+					<template #label>{{ i18n.ts.host }}</template>
+				</MkInput>
+				<FormSplit style="margin-top: var(--MI-margin);">
+					<MkSelect v-model="state">
+						<template #label>{{ i18n.ts.state }}</template>
+						<option value="all">{{ i18n.ts.all }}</option>
+						<option value="federating">{{ i18n.ts.federating }}</option>
+						<option value="subscribing">{{ i18n.ts.subscribing }}</option>
+						<option value="publishing">{{ i18n.ts.publishing }}</option>
+						<option value="suspended">{{ i18n.ts.suspended }}</option>
+						<option value="blocked">{{ i18n.ts.blocked }}</option>
+						<option value="silenced">{{ i18n.ts.silence }}</option>
+						<option value="notResponding">{{ i18n.ts.notResponding }}</option>
+					</MkSelect>
+					<MkSelect v-model="sort">
+						<template #label>{{ i18n.ts.sort }}</template>
+						<option value="+pubSub">{{ i18n.ts.pubSub }} ({{ i18n.ts.descendingOrder }})</option>
+						<option value="-pubSub">{{ i18n.ts.pubSub }} ({{ i18n.ts.ascendingOrder }})</option>
+						<option value="+notes">{{ i18n.ts.notes }} ({{ i18n.ts.descendingOrder }})</option>
+						<option value="-notes">{{ i18n.ts.notes }} ({{ i18n.ts.ascendingOrder }})</option>
+						<option value="+users">{{ i18n.ts.users }} ({{ i18n.ts.descendingOrder }})</option>
+						<option value="-users">{{ i18n.ts.users }} ({{ i18n.ts.ascendingOrder }})</option>
+						<option value="+following">{{ i18n.ts.following }} ({{ i18n.ts.descendingOrder }})</option>
+						<option value="-following">{{ i18n.ts.following }} ({{ i18n.ts.ascendingOrder }})</option>
+						<option value="+followers">{{ i18n.ts.followers }} ({{ i18n.ts.descendingOrder }})</option>
+						<option value="-followers">{{ i18n.ts.followers }} ({{ i18n.ts.ascendingOrder }})</option>
+						<option value="+firstRetrievedAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.descendingOrder }})</option>
+						<option value="-firstRetrievedAt">{{ i18n.ts.registeredAt }} ({{ i18n.ts.ascendingOrder }})</option>
+					</MkSelect>
+				</FormSplit>
 			</div>
-		</MkSpacer>
-	</MkStickyContainer>
-</div>
+
+			<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
+				<div :class="$style.instances">
+					<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" :class="$style.instance" :to="`/instance-info/${instance.host}`">
+						<MkInstanceCardMini :instance="instance"/>
+					</MkA>
+				</div>
+			</MkPagination>
+		</div>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
-import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
