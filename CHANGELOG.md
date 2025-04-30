@@ -1,4 +1,4 @@
-## Unreleased
+## 2025.4.1-kinel.1
 
 ### General
 - Enhance: 凍結されたユーザのノートが各種タイムラインで表示されないように
@@ -9,7 +9,7 @@
 ### Server
 - Enhance: NSFW Policyをサーバーの設定で変更できるように
 
-## 2025.4.1
+## 2025.4.1 (merged to 2025.4.1-kinel.1)
 
 ### General
 - Feat: bull-boardに代わるジョブキューの管理ツールが実装されました
