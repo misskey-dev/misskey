@@ -149,6 +149,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-else class="ti ti-plus"></i>
 				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
 			</button>
+			<!-- いいね機能 -->
+			<button ref="likeButton" :class="$style.noteFooterButton" class="_button" @click="toggleLikeReact()">
+				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-star" style="color: var(--love);"></i>
+				<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
+				<i v-else class="ti ti-star"></i>
+				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
+			</button>
 			<button v-if="prefer.s.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown.prevent="clip()">
 				<i class="ti ti-paperclip"></i>
 			</button>
@@ -496,6 +503,25 @@ function toggleReact() {
 	} else {
 		undoReact(appearNote.value);
 	}
+}
+
+// Note: 原則いいね機能実装では react() はいじらず、こちらに切り出して実装する
+// 本家を追従する際にconflictを減らすため
+function toggleLikeReact(): void {
+	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (appearNote.value.myReaction == null) {
+		reactLike();
+	} else {
+		undoReact(appearNote.value);
+	}
+}
+
+function reactLike(): void {
+	sound.playMisskeySfx('reaction');
+	misskeyApi('notes/reactions/create', {
+		noteId: appearNote.value.id,
+		reaction: '⭐️',
+	});
 }
 
 function onContextmenu(ev: MouseEvent): void {
