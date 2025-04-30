@@ -24,7 +24,6 @@ const fetchEvent = new EventEmitter<{
 }>();
 
 const pollingQueue = new Map<string, {
-	priority: number;
 	referenceCount: number;
 	lastAddedAt: number;
 }>();
@@ -39,7 +38,6 @@ function pollingEnqueue(note: Misskey.entities.Note) {
 		});
 	} else {
 		pollingQueue.set(note.id, {
-			priority: 0,
 			referenceCount: 1,
 			lastAddedAt: Date.now(),
 		});
@@ -64,8 +62,6 @@ const CAPTURE_MAX = 30;
 const POLLING_INTERVAL = 1000 * 15;
 
 window.setInterval(() => {
-	// TODO: IDごとにpriorityを付け、CAPTURE_MAXを超えた場合は優先度の低いものから削除する
-	// priorityは 自分のノート > リノートされているノート > その他のノート > 投稿から3分以上経過しているノート の順で高くするとよさそう
 	const ids = [...pollingQueue.entries()]
 		.filter(([k, v]) => Date.now() - v.lastAddedAt < 1000 * 60 * 5) // 追加されてから一定時間経過したものは省く
 		.map(([k, v]) => k)
