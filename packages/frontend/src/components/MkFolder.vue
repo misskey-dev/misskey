@@ -31,22 +31,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:leaveActiveClass="prefer.s.animation ? $style.transition_toggle_leaveActive : ''"
 				:enterFromClass="prefer.s.animation ? $style.transition_toggle_enterFrom : ''"
 				:leaveToClass="prefer.s.animation ? $style.transition_toggle_leaveTo : ''"
-				@enter="enter"
-				@afterEnter="afterEnter"
-				@leave="leave"
-				@afterLeave="afterLeave"
 			>
 				<KeepAlive>
 					<div v-show="opened">
-						<MkSpacer v-if="withSpacer" :marginMin="spacerMin" :marginMax="spacerMax">
-							<slot></slot>
-						</MkSpacer>
-						<div v-else>
-							<slot></slot>
-						</div>
-						<div v-if="$slots.footer" :class="$style.footer">
-							<slot name="footer"></slot>
-						</div>
+						<MkStickyContainer>
+							<template #header>
+								<div v-if="$slots.header" :class="$style.inBodyHeader">
+									<slot name="header"></slot>
+								</div>
+							</template>
+
+							<div v-if="withSpacer" class="_spacer" :style="{ '--MI_SPACER-min': props.spacerMin + 'px', '--MI_SPACER-max': props.spacerMax + 'px' }">
+								<slot></slot>
+							</div>
+							<div v-else>
+								<slot></slot>
+							</div>
+
+							<template #footer>
+								<div v-if="$slots.footer" :class="$style.inBodyFooter">
+									<slot name="footer"></slot>
+								</div>
+							</template>
+						</MkStickyContainer>
 					</div>
 				</KeepAlive>
 			</Transition>
@@ -79,32 +86,6 @@ const bgSame = ref(false);
 const opened = ref(props.defaultOpen);
 const openedAtLeastOnce = ref(props.defaultOpen);
 
-function enter(el: Element) {
-	if (!(el instanceof HTMLElement)) return;
-	const elementHeight = el.getBoundingClientRect().height;
-	el.style.height = '0';
-	el.offsetHeight; // reflow
-	el.style.height = `${Math.min(elementHeight, props.maxHeight ?? Infinity)}px`;
-}
-
-function afterEnter(el: Element) {
-	if (!(el instanceof HTMLElement)) return;
-	el.style.height = '';
-}
-
-function leave(el: Element) {
-	if (!(el instanceof HTMLElement)) return;
-	const elementHeight = el.getBoundingClientRect().height;
-	el.style.height = `${elementHeight}px`;
-	el.offsetHeight; // reflow
-	el.style.height = '0';
-}
-
-function afterLeave(el: Element) {
-	if (!(el instanceof HTMLElement)) return;
-	el.style.height = '';
-}
-
 function toggle() {
 	if (!opened.value) {
 		openedAtLeastOnce.value = true;
@@ -126,16 +107,18 @@ onMounted(() => {
 <style lang="scss" module>
 .transition_toggle_enterActive,
 .transition_toggle_leaveActive {
-	overflow-y: clip;
-	transition: opacity 0.3s, height 0.3s, transform 0.3s !important;
+	overflow-y: hidden; // 子要素のmarginが突き出るため clip を使ってはいけない
+	transition: opacity 0.3s, height 0.3s !important;
 }
 .transition_toggle_enterFrom,
 .transition_toggle_leaveTo {
 	opacity: 0;
+	height: 0;
 }
 
 .root {
 	display: block;
+	interpolate-size: allow-keywords; // heightのtransitionを動作させるために必要
 }
 
 .header {
@@ -230,14 +213,21 @@ onMounted(() => {
 
 	&.bgSame {
 		background: var(--MI_THEME-bg);
+
+		.inBodyHeader {
+			background: color(from var(--MI_THEME-bg) srgb r g b / 0.75);
+		}
 	}
 }
 
-.footer {
-	position: sticky !important;
-	z-index: 1;
-	bottom: var(--MI-stickyBottom, 0px);
-	left: 0;
+.inBodyHeader {
+	background: color(from var(--MI_THEME-panel) srgb r g b / 0.75);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
+}
+
+.inBodyFooter {
 	padding: 12px;
 	background: color(from var(--MI_THEME-bg) srgb r g b / 0.5);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
