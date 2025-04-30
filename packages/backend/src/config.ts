@@ -121,6 +121,7 @@ type Source = {
 		maxWebImageSize?: number;
 		withRepliesInHomeTL?: boolean;
 		withRepliesInUserList?: boolean;
+		nsfwPolicyUrl?: string | null,
 	}
 };
 
@@ -225,6 +226,7 @@ export type Config = {
 		maxWebImageSize?: number;
 		withRepliesInHomeTL?: boolean,
 		withRepliesInUserList: boolean,
+		nsfwPolicyUrl?: string | null,
 	}
 };
 

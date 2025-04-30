@@ -82,6 +82,7 @@ export class MetaEntityService {
 			feedbackUrl: instance.feedbackUrl,
 			impressumUrl: instance.impressumUrl,
 			privacyPolicyUrl: instance.privacyPolicyUrl,
+			nsfwPolicyUrl: this.config.nirila.nsfwPolicyUrl ?? null,
 			inquiryUrl: instance.inquiryUrl,
 			disableRegistration: instance.disableRegistration,
 			emailRequiredForSignup: instance.emailRequiredForSignup,

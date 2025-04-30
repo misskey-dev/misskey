@@ -5429,6 +5429,7 @@ export type components = {
       impressumUrl: string | null;
       logoImageUrl: string | null;
       privacyPolicyUrl: string | null;
+      nsfwPolicyUrl: string | null;
       inquiryUrl: string | null;
       serverRules: string[];
       themeColor: string | null;

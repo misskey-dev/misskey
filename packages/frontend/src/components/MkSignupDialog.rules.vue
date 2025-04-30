@@ -32,12 +32,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch :modelValue="agreeServerRules" style="margin-top: 16px;" @update:modelValue="updateAgreeServerRules">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
-			<MkFolder v-if="availableTos || availablePrivacyPolicy" :defaultOpen="true">
+			<MkFolder v-if="availableTos || availablePrivacyPolicy || availableNsfwPolicy" :defaultOpen="true">
 				<template #label>{{ tosPrivacyPolicyLabel }}</template>
 				<template #suffix><i v-if="agreeTosAndPrivacyPolicy" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 				<div class="_gaps_s">
 					<div v-if="availableTos"><a :href="instance.tosUrl ?? undefined" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a></div>
 					<div v-if="availablePrivacyPolicy"><a :href="instance.privacyPolicyUrl ?? undefined" class="_link" target="_blank">{{ i18n.ts.privacyPolicy }} <i class="ti ti-external-link"></i></a></div>
+					<div v-if="availableNsfwPolicy"><a :href="instance.nsfwPolicyUrl ?? undefined" class="_link" target="_blank">NSFWガイドライン <i class="ti ti-external-link"></i></a></div>
 				</div>
 
 				<MkSwitch :modelValue="agreeTosAndPrivacyPolicy" style="margin-top: 16px;" @update:modelValue="updateAgreeTosAndPrivacyPolicy">{{ i18n.ts.agree }}</MkSwitch>
@@ -76,6 +77,7 @@ import * as os from '@/os.js';
 const availableServerRules = instance.serverRules.length > 0;
 const availableTos = instance.tosUrl != null && instance.tosUrl !== '';
 const availablePrivacyPolicy = instance.privacyPolicyUrl != null && instance.privacyPolicyUrl !== '';
+const availableNsfwPolicy = instance.nsfwPolicyUrl != null && instance.nsfwPolicyUrl !== '';
 
 const agreeServerRules = ref(false);
 const agreeTosAndPrivacyPolicy = ref(false);
