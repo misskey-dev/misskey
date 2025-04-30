@@ -17,7 +17,7 @@ type MinimumUser = {
 	uri: MiUser['uri'];
 };
 
-export type MiScheduleNoteType={
+export type MiScheduleNoteType = {
 	visibility: 'public' | 'home' | 'followers' | 'specified';
 	visibleUsers: MinimumUser[];
 	channel?: MiChannel['id'];
@@ -29,6 +29,7 @@ export type MiScheduleNoteType={
 	} | undefined;
 	renote?: MiNote['id'];
 	localOnly: boolean;
+	isNoteInYamiMode?: boolean;
 	cw?: string | null;
 	reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
 	files: MiDriveFile['id'][];
@@ -38,7 +39,7 @@ export type MiScheduleNoteType={
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
 	deleteAt?: string | null;
-}
+};
 
 @Entity('note_schedule')
 export class MiNoteSchedule {

@@ -57,6 +57,7 @@ import { trackPromise } from '@/misc/promise-tracker.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 import { CacheService } from '@/core/CacheService.js';
+import { prefer } from '@/preferences.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -231,17 +232,15 @@ export class NoteCreateService implements OnApplicationShutdown {
 		host: MiUser['host'];
 		isBot: MiUser['isBot'];
 		isCat: MiUser['isCat'];
-		isInYamiMode: MiUser['isInYamiMode'];
 	}, data: Option, silent = false): Promise<MiNote> {
-		// ノートのisNoteInYamiMode属性は投稿時のユーザーの属性に基本的に依存する
 		if (data.isNoteInYamiMode == null) {
 			// リプライ先またはリノート元がやみノートの場合は強制的にやみノート
 			if ((data.reply && data.reply.isNoteInYamiMode) ||
 				(data.renote && data.renote.isNoteInYamiMode)) {
 				data.isNoteInYamiMode = true;
 			} else {
-				// それ以外の場合は従来通りユーザーのやみモードに合わせる
-				data.isNoteInYamiMode = user.isInYamiMode;
+				// publicityと同様に扱う - 明示的に指定がなければデフォルトは非やみノート
+				data.isNoteInYamiMode = false;
 			}
 		}
 
@@ -249,8 +248,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.isNoteInYamiMode) {
 			const policies = await this.roleService.getUserPolicies(user.id);
 
-			// やみモードがON、または canYamiNote 権限を持っている場合のみ許可
-			if (!user.isInYamiMode && !policies.canYamiNote) {
+			// canYamiNote 権限のみでチェックする
+			if (!policies.canYamiNote) {
 				throw new Error('You do not have permission to post yami notes.');
 			}
 		}

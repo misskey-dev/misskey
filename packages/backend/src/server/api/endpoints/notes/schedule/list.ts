@@ -35,7 +35,9 @@ export const meta = {
 						text: { type: 'string', optional: true, nullable: false },
 						cw: { type: 'string', optional: true, nullable: true },
 						fileIds: { type: 'array', optional: false, nullable: false, items: { type: 'string', format: 'misskey:id', optional: false, nullable: false } },
+						isNoteInYamiMode: { type: 'boolean', optional: true, nullable: true },
 						visibility: { type: 'string', enum: ['public', 'home', 'followers', 'specified'], optional: false, nullable: false },
+						localOnly: { type: 'boolean', optional: true, nullable: true },
 						visibleUsers: {
 							type: 'array', optional: false, nullable: false, items: {
 								type: 'object',
@@ -94,7 +96,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				id: string;
 				note: {
 					text?: string;
-					cw?: string|null;
+					cw?: string | null;
 					fileIds: string[];
 					visibility: typeof noteVisibilities[number];
 					visibleUsers: Packed<'UserLite'>[];
@@ -121,6 +123,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						createdAt: item.scheduledAt.toISOString(),
 						isSchedule: true,
 						id: item.id,
+						isNoteInYamiMode: item.note.isNoteInYamiMode !== undefined ? item.note.isNoteInYamiMode : false,
+						localOnly: item.note.localOnly !== undefined ? item.note.localOnly : false,
 					},
 				};
 			}));

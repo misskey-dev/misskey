@@ -38,7 +38,7 @@ export class ScheduleNotePostProcessorService {
 		this.logger = this.queueLoggerService.logger.createSubLogger('schedule-note-post');
 	}
 
-    @bindThis
+	@bindThis
 	public async process(job: Bull.Job<ScheduleNotePostJobData>): Promise<void> {
 		this.noteScheduleRepository.findOneBy({ id: job.data.scheduleNoteId }).then(async (data) => {
 			if (!data) {
@@ -120,6 +120,8 @@ export class ScheduleNotePostProcessorService {
 					renote,
 					channel,
 					deleteAt: note.deleteAt ? new Date(note.deleteAt) : null,
+					isNoteInYamiMode: note.isNoteInYamiMode,
+					localOnly: note.localOnly,
 				});
 				await this.noteScheduleRepository.remove(data);
 				this.notificationService.createNotification(me.id, 'scheduledNotePosted', {

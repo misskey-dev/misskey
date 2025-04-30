@@ -236,7 +236,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private queueService: QueueService,
 		private roleService: RoleService,
-    private idService: IdService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const scheduleNoteCount = await this.noteScheduleRepository.countBy({ userId: me.id });
@@ -372,7 +372,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				reply: reply?.id,
 				renote: renote?.id,
 				cw: ps.cw,
-				localOnly: false,
+				localOnly: ps.localOnly,
+				isNoteInYamiMode: ps.isNoteInYamiMode,
 				reactionAcceptance: ps.reactionAcceptance,
 				visibility: ps.visibility,
 				visibleUsers,
