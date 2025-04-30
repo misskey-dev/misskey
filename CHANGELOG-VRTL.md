@@ -4,6 +4,7 @@ VRTLのブランチで行われた変更点をまとめています
 
 <!-- VV Please add changelog here VV -->
 
+- fix(backend): 自分のフォロワー限定投稿に対するリプライがぶいみみソーシャルタイムラインで見えないことが有る問題を修正 - 2025/04/30 #224
 - feat(backend): VRTLのサーバーリストを Redis にキャッシュし、取得に失敗した場合はキャッシュを使用するよにしました - 2025/04/30 #223
 
 --- 2025.4.0-vrtl.1 released at this time ---
