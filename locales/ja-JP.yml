@@ -979,6 +979,7 @@ document: "ドキュメント"
 numberOfPageCache: "ページキャッシュ数"
 numberOfPageCacheDescription: "多くすると利便性が向上しますが、負荷とメモリ使用量が増えます。"
 logoutConfirm: "ログアウトしますか？"
+logoutWillClearClientData: "ログアウトするとクライアントの設定情報がブラウザから消去されます。再ログイン時に設定情報を復元できるようにするためには、設定の自動バックアップを有効にしてください。"
 lastActiveDate: "最終利用日時"
 statusbar: "ステータスバー"
 pleaseSelect: "選択してください"
@@ -1344,6 +1345,8 @@ embed: "埋め込み"
 settingsMigrating: "設定を移行しています。しばらくお待ちください... (後ほど、設定→その他→旧設定情報を移行 で手動で移行することもできます)"
 readonly: "読み取り専用"
 goToDeck: "デッキへ戻る"
+federationJobs: "連合ジョブ"
+driveAboutTip: "ドライブでは、過去にアップロードしたファイルの一覧が表示されます。<br>\nノートに添付する際に再利用したり、あとで投稿するファイルを予めアップロードしておくこともできます。<br>\n<b>ファイルを削除すると、今までそのファイルを使用した全ての場所(ノート、ページ、アバター、バナー等)からも見えなくなるので注意してください。</b><br>\nフォルダを作って整理することもできます。"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -1932,6 +1935,7 @@ _role:
     canManageCustomEmojis: "カスタム絵文字の管理"
     canManageAvatarDecorations: "アバターデコレーションの管理"
     driveCapacity: "ドライブ容量"
+    maxFileSize: "アップロード可能な最大ファイルサイズ"
     alwaysMarkNsfw: "ファイルにNSFWを常に付与"
     canUpdateBioMedia: "アイコンとバナーの更新を許可"
     pinMax: "ノートのピン留めの最大数"
@@ -2420,6 +2424,7 @@ _widgets:
     chooseList: "リストを選択"
   clicker: "クリッカー"
   birthdayFollowings: "今日誕生日のユーザー"
+  chat: "チャット"
 
 _cw:
   hide: "隠す"
@@ -2704,6 +2709,7 @@ _deck:
     mentions: "あなた宛て"
     direct: "ダイレクト"
     roleTimeline: "ロールタイムライン"
+    chat: "チャット"
 
 _dialog:
   charactersExceeded: "最大文字数を超えています！ 現在 {current} / 制限 {max}"

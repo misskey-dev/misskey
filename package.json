@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "2025.4.0",
+	"version": "2025.4.1",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@10.6.1",
+	"packageManager": "pnpm@10.10.0",
 	"workspaces": [
 		"packages/frontend-shared",
 		"packages/frontend",
@@ -52,29 +52,29 @@
 	},
 	"dependencies": {
 		"cssnano": "7.0.6",
+		"esbuild": "0.25.3",
 		"execa": "9.5.2",
 		"fast-glob": "3.3.3",
+		"glob": "11.0.2",
 		"ignore-walk": "7.0.0",
 		"js-yaml": "4.1.0",
 		"postcss": "8.5.3",
 		"tar": "7.4.3",
 		"terser": "5.39.0",
-		"typescript": "5.8.2",
-		"esbuild": "0.25.0",
-		"glob": "11.0.1"
+		"typescript": "5.8.3"
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "2.1.0",
-		"@types/node": "22.13.10",
-		"@typescript-eslint/eslint-plugin": "8.26.0",
-		"@typescript-eslint/parser": "8.26.0",
+		"@types/node": "22.15.2",
+		"@typescript-eslint/eslint-plugin": "8.31.0",
+		"@typescript-eslint/parser": "8.31.0",
 		"cross-env": "7.0.3",
-		"cypress": "14.1.0",
-		"eslint": "9.22.0",
+		"cypress": "14.3.2",
+		"eslint": "9.25.1",
 		"globals": "16.0.0",
 		"ncp": "2.0.0",
-		"pnpm": "10.6.1",
-		"start-server-and-test": "2.0.10"
+		"pnpm": "10.10.0",
+		"start-server-and-test": "2.0.11"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.22.0"
@@ -82,10 +82,6 @@
 	"pnpm": {
 		"overrides": {
 			"@aiscript-dev/aiscript-languageserver": "-"
-		},
-		"patchedDependencies": {
-			"re2": "scripts/dependency-patches/re2.patch",
-			"vite": "scripts/dependency-patches/vite.patch"
 		}
 	}
 }
