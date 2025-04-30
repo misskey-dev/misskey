@@ -15,11 +15,7 @@ on:
 jobs:
   build:
     # Chromatic is not likely to be available for fork repositories, so we disable for fork repositories.
-    # Neither Dependabot nor Renovate will change the actual behavior for components.
-    if: >-
-      github.repository == 'misskey-dev/misskey' &&
-      startsWith(github.head_ref, 'refs/heads/dependabot/') != true &&
-      startsWith(github.head_ref, 'refs/heads/renovate/') != true
+    if: github.repository == 'misskey-dev/misskey'
     runs-on: ubuntu-latest
 
     env:
@@ -39,14 +35,11 @@ jobs:
         ref: "refs/pull/${{ github.event.number }}/merge"
     - name: Checkout actual HEAD
       if: github.event_name == 'pull_request_target'
-      id: rev
-      run: |
-        echo "base=$(git rev-list --parents -n1 HEAD | cut -d" " -f2)" >> $GITHUB_OUTPUT
-        git checkout $(git rev-list --parents -n1 HEAD | cut -d" " -f3)
+      run: git checkout "$(git rev-list --parents -n1 HEAD | cut -d" " -f3)"
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.1.0
     - name: Use Node.js 20.x
-      uses: actions/setup-node@v4.3.0
+      uses: actions/setup-node@v4.4.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -85,21 +78,16 @@ jobs:
       if: github.event_name == 'pull_request_target'
       id: chromatic_pull_request
       run: |
-        DIFF="${{ steps.rev.outputs.base }} HEAD"
-        if [ "$DIFF" = "0000000000000000000000000000000000000000 HEAD" ]; then
-          DIFF="HEAD"
-        fi
-        CHROMATIC_PARAMETER="$(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r $(echo "$DIFF") | xargs))"
+        CHROMATIC_PARAMETER="$(node packages/frontend/.storybook/changes.js $(git diff --name-only origin/${GITHUB_BASE_REF}...origin/${GITHUB_HEAD_REF} | xargs))"
         if [ "$CHROMATIC_PARAMETER" = " --skip" ]; then
           echo "skip=true" >> $GITHUB_OUTPUT
         fi
-        BRANCH="${{ github.event.pull_request.head.user.login }}:$HEAD_REF"
-        if [ "$BRANCH" = "misskey-dev:$HEAD_REF" ]; then
-          BRANCH="$HEAD_REF"
+        BRANCH="${{ github.event.pull_request.head.user.login }}:$GITHUB_HEAD_REF"
+        if [ "$BRANCH" = "misskey-dev:$GITHUB_HEAD_REF" ]; then
+          BRANCH="$GITHUB_HEAD_REF"
         fi
         pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static --branch-name "$BRANCH" $(echo "$CHROMATIC_PARAMETER")
       env:
-        HEAD_REF: ${{ github.event.pull_request.head.ref }}
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Notify that Chromatic detects changes
       uses: actions/github-script@v7.0.1

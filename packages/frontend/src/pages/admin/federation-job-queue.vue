@@ -4,22 +4,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><XHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="800">
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<XQueue v-if="tab === 'deliver'" domain="deliver"/>
 		<XQueue v-else-if="tab === 'inbox'" domain="inbox"/>
 		<br>
-		<MkButton @click="promoteAllQueues"><i class="ti ti-reload"></i> {{ i18n.ts.retryAllQueuesNow }}</MkButton>
-	</MkSpacer>
-</MkStickyContainer>
+		<div class="_buttons">
+			<MkButton @click="promoteAllQueues"><i class="ti ti-reload"></i> {{ i18n.ts.retryAllQueuesNow }}</MkButton>
+			<MkButton danger @click="clear"><i class="ti ti-trash"></i> {{ i18n.ts.clearQueue }}</MkButton>
+		</div>
+	</div>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import * as config from '@@/js/config.js';
-import XQueue from './queue.chart.vue';
-import XHeader from './_header_.vue';
+import XQueue from './federation-job-queue.chart.vue';
 import type { Ref } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -38,7 +38,7 @@ function clear() {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 
-		os.apiWithDialog('admin/queue/clear');
+		os.apiWithDialog('admin/queue/clear', { queue: tab.value, state: '*' });
 	});
 }
 
@@ -50,7 +50,7 @@ function promoteAllQueues() {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 
-		os.apiWithDialog('admin/queue/promote', { type: tab.value });
+		os.apiWithDialog('admin/queue/promote-jobs', { queue: tab.value });
 	});
 }
 
@@ -65,7 +65,7 @@ const headerTabs = computed(() => [{
 }]);
 
 definePage(() => ({
-	title: i18n.ts.jobQueue,
+	title: i18n.ts.federationJobs,
 	icon: 'ti ti-clock-play',
 }));
 </script>

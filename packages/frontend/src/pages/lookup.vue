@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="800">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div v-if="state === 'done'" class="_buttonsCenter">
 			<MkButton @click="close">{{ i18n.ts.close }}</MkButton>
 			<MkButton @click="goToMisskey">{{ i18n.ts.goToMisskey }}</MkButton>
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else class="_fullInfo">
 			<MkLoading/>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 

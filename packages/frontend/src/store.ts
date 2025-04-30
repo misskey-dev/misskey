@@ -37,6 +37,10 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'account',
 		default: false,
 	},
+	readDriveTip: {
+		where: 'account',
+		default: false,
+	},
 	memo: {
 		where: 'account',
 		default: null,
@@ -110,6 +114,10 @@ export const store = markRaw(new Pizzax('base', {
 	accountTokens: {
 		where: 'device',
 		default: {} as Record<string, string>, // host/userId, token
+	},
+	accountInfos: {
+		where: 'device',
+		default: {} as Record<string, Misskey.entities.User>, // host/userId, user
 	},
 
 	enablePreferencesAutoCloudBackup: {

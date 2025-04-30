@@ -96,6 +96,7 @@ export type CompleteInfo = {
 const lib = emojilist.filter(x => x.category !== 'flags');
 
 const unicodeEmojiDB = computed(() => {
+	//#region Unicode Emoji
 	const char2path = prefer.r.emojiStyle.value === 'twemoji' ? char2twemojiFilePath : char2fluentEmojiFilePath;
 
 	const unicodeEmojiDB: EmojiDef[] = lib.map(x => ({

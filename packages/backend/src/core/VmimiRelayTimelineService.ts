@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
+import { DI } from '@/di-symbols.js';
+import * as Redis from 'ioredis';
 
 type VmimiInstanceList = { Url: string; }[];
 
@@ -16,6 +18,8 @@ type VmimiInstanceList = { Url: string; }[];
 const UpdateInterval = 1000 * 60 * 60 * 24; // 24 hours = 1 day
 const MinRetryInterval = 1000 * 60; // one minutes
 const MaxRetryInterval = 1000 * 60 * 60 * 6; // 6 hours
+
+const redisKey = 'vmimiRelayTimelineServerListCacheV1';
 
 @Injectable()
 export class VmimiRelayTimelineService {
@@ -27,6 +31,9 @@ export class VmimiRelayTimelineService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 	) {
@@ -59,11 +66,26 @@ export class VmimiRelayTimelineService {
 			this.nextUpdate = Date.now() + UpdateInterval;
 			this.logger.info(`Got instance list: ${this.instanceHostsArray}`);
 			this.nextRetryInterval = MinRetryInterval;
+
+			// Update the cache
+			await this.redisClient.set(redisKey, this.instanceHostsArray.join(','));
 		} catch (e) {
 			this.logger.error('Failed to update instance list', e as any);
 			this.nextUpdate = Date.now() + this.nextRetryInterval;
 			setTimeout(() => this.checkForUpdateInstanceList(), this.nextRetryInterval + 5);
 			this.nextRetryInterval = Math.min(this.nextRetryInterval * 2, MaxRetryInterval);
+
+			// when failed, we try to get the cache
+			try {
+				const cache = await this.redisClient.get(redisKey);
+				if (cache != null && cache.length !== 0) {
+					this.instanceHostsArray = cache.split(',');
+					this.instanceHosts = new Set<string>(this.instanceHostsArray);
+					this.logger.info(`Got instance list from cache (we still try to get from origin later): ${this.instanceHostsArray}`);
+				}
+			} catch {
+				// ignored
+			}
 		}
 	}
 
