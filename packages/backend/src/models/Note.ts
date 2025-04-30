@@ -11,12 +11,14 @@ import { MiChannel } from './Channel.js';
 import type { MiDriveFile } from './DriveFile.js';
 
 // Note: When you create a new index for existing column of this table,
-// it might be better to index concurrently by setting `{ concurrent: true }`.
+// it might be better to index concurrently by editing generated migration file
 // Since this table is very large, and it takes a long time to create index in most cases.
 // Please note that `CREATE INDEX CONCURRENTLY` is not supported in transaction,
 // so you need to set `transaction = false` in migration.
 // Please refer 1745378064470-composite-note-index.js for example.
-@Index(['userId', 'id'], { concurrent: true })
+// You should not use `@Index({ concurrent: true })` decorator because
+// it will break database initialization on test, because it will always run CREATE INDEX in transaction.
+@Index(['userId', 'id'])
 @Entity('note')
 export class MiNote {
 	@PrimaryColumn(id())
