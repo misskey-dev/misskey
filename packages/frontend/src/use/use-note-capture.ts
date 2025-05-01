@@ -6,7 +6,7 @@
 import { onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import { EventEmitter } from 'eventemitter3';
-import type { Ref, ShallowRef } from 'vue';
+import type { Ref } from 'vue';
 import { useStream } from '@/stream.js';
 import { $i } from '@/i.js';
 import { store } from '@/store.js';
@@ -28,7 +28,7 @@ const pollingQueue = new Map<string, {
 	lastAddedAt: number;
 }>();
 
-function pollingEnqueue(note: Misskey.entities.Note) {
+function pollingEnqueue(note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>) {
 	if (pollingQueue.has(note.id)) {
 		const data = pollingQueue.get(note.id)!;
 		pollingQueue.set(note.id, {
@@ -44,7 +44,7 @@ function pollingEnqueue(note: Misskey.entities.Note) {
 	}
 }
 
-function pollingDequeue(note: Misskey.entities.Note) {
+function pollingDequeue(note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>) {
 	const data = pollingQueue.get(note.id);
 	if (data == null) return;
 
@@ -85,28 +85,31 @@ window.setInterval(() => {
 }, POLLING_INTERVAL);
 
 function pollingSubscribe(props: {
-	note: Ref<Misskey.entities.Note>;
+	note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>;
+	reactionsRef: Ref<Misskey.entities.Note['reactions']>;
+	reactionCountRef: Ref<Misskey.entities.Note['reactionCount']>;
+	reactionEmojisRef: Ref<Misskey.entities.Note['reactionEmojis']>;
 	isDeletedRef: Ref<boolean>;
 }) {
-	const note = props.note;
+	const { note, reactionsRef, reactionCountRef, reactionEmojisRef } = props;
 
 	function onFetched(data: Pick<Misskey.entities.Note, 'reactions' | 'reactionEmojis'>): void {
-		note.value.reactions = data.reactions;
-		note.value.reactionCount = Object.values(data.reactions).reduce((a, b) => a + b, 0);
-		note.value.reactionEmojis = data.reactionEmojis;
+		reactionsRef.value = data.reactions;
+		reactionCountRef.value = Object.values(data.reactions).reduce((a, b) => a + b, 0);
+		reactionEmojisRef.value = data.reactionEmojis;
 	}
 
-	pollingEnqueue(note.value);
-	fetchEvent.on(note.value.id, onFetched);
+	pollingEnqueue(note);
+	fetchEvent.on(note.id, onFetched);
 
 	onUnmounted(() => {
-		pollingDequeue(note.value);
-		fetchEvent.off(note.value.id, onFetched);
+		pollingDequeue(note);
+		fetchEvent.off(note.id, onFetched);
 	});
 }
 
 function realtimeSubscribe(props: {
-	note: Ref<Misskey.entities.Note>;
+	note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>;
 	isDeletedRef: Ref<boolean>;
 }): void {
 	const note = props.note;
@@ -115,7 +118,7 @@ function realtimeSubscribe(props: {
 	function onStreamNoteUpdated(noteData): void {
 		const { type, id, body } = noteData;
 
-		if (id !== note.value.id) return;
+		if (id !== note.id) return;
 
 		switch (type) {
 			case 'reacted': {
@@ -152,12 +155,12 @@ function realtimeSubscribe(props: {
 	}
 
 	function capture(withHandler = false): void {
-		connection.send('sr', { id: note.value.id });
+		connection.send('sr', { id: note.id });
 		if (withHandler) connection.on('noteUpdated', onStreamNoteUpdated);
 	}
 
 	function decapture(withHandler = false): void {
-		connection.send('un', { id: note.value.id });
+		connection.send('un', { id: note.id });
 		if (withHandler) connection.off('noteUpdated', onStreamNoteUpdated);
 	}
 
@@ -175,39 +178,42 @@ function realtimeSubscribe(props: {
 }
 
 export function useNoteCapture(props: {
-	note: Ref<Misskey.entities.Note>;
-	parentNote: Ref<Misskey.entities.Note> | null;
+	note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>;
+	parentNote: Misskey.entities.Note | null;
+	reactionsRef: Ref<Misskey.entities.Note['reactions']>;
+	reactionCountRef: Ref<Misskey.entities.Note['reactionCount']>;
+	reactionEmojisRef: Ref<Misskey.entities.Note['reactionEmojis']>;
+	myReactionRef: Ref<Misskey.entities.Note['myReaction']>;
+	pollChoicesRef: Ref<NonNullable<Misskey.entities.Note['poll']>['choices'] | null>;
 	isDeletedRef: Ref<boolean>;
 }) {
-	const note = props.note;
-	const parentNote = props.parentNote;
+	const { note, parentNote, reactionsRef, reactionCountRef, reactionEmojisRef, myReactionRef, pollChoicesRef } = props;
 
-	noteEvents.on(`reacted:${note.value.id}`, onReacted);
-	noteEvents.on(`unreacted:${note.value.id}`, onUnreacted);
-	noteEvents.on(`pollVoted:${note.value.id}`, onPollVoted);
-	noteEvents.on(`deleted:${note.value.id}`, onDeleted);
+	noteEvents.on(`reacted:${note.id}`, onReacted);
+	noteEvents.on(`unreacted:${note.id}`, onUnreacted);
+	noteEvents.on(`pollVoted:${note.id}`, onPollVoted);
+	noteEvents.on(`deleted:${note.id}`, onDeleted);
 
 	let latestReactedKey: string | null = null;
 	let latestUnreactedKey: string | null = null;
 	let latestPollVotedKey: string | null = null;
 
 	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
-		console.log('reacted', ctx);
 		const newReactedKey = `${ctx.userId}:${ctx.reaction}`;
 		if (newReactedKey === latestReactedKey) return;
 		latestReactedKey = newReactedKey;
 
-		if (ctx.emoji && !(ctx.emoji.name in note.value.reactionEmojis)) {
-			note.value.reactionEmojis[ctx.emoji.name] = ctx.emoji.url;
+		if (ctx.emoji && !(ctx.emoji.name in reactionEmojisRef.value)) {
+			reactionEmojisRef.value[ctx.emoji.name] = ctx.emoji.url;
 		}
 
-		const currentCount = note.value.reactions[ctx.reaction] || 0;
+		const currentCount = reactionsRef.value[ctx.reaction] || 0;
 
-		note.value.reactions[ctx.reaction] = currentCount + 1;
-		note.value.reactionCount += 1;
+		reactionsRef.value[ctx.reaction] = currentCount + 1;
+		reactionCountRef.value += 1;
 
 		if ($i && (ctx.userId === $i.id)) {
-			note.value.myReaction = ctx.reaction;
+			myReactionRef.value = ctx.reaction;
 		}
 	}
 
@@ -216,14 +222,14 @@ export function useNoteCapture(props: {
 		if (newUnreactedKey === latestUnreactedKey) return;
 		latestUnreactedKey = newUnreactedKey;
 
-		const currentCount = note.value.reactions[ctx.reaction] || 0;
+		const currentCount = reactionsRef.value[ctx.reaction] || 0;
 
-		note.value.reactions[ctx.reaction] = Math.max(0, currentCount - 1);
-		note.value.reactionCount = Math.max(0, note.value.reactionCount - 1);
-		if (note.value.reactions[ctx.reaction] === 0) delete note.value.reactions[ctx.reaction];
+		reactionsRef.value[ctx.reaction] = Math.max(0, currentCount - 1);
+		reactionCountRef.value = Math.max(0, reactionCountRef.value - 1);
+		if (reactionsRef.value[ctx.reaction] === 0) delete reactionsRef.value[ctx.reaction];
 
 		if ($i && (ctx.userId === $i.id)) {
-			note.value.myReaction = null;
+			myReactionRef.value = null;
 		}
 	}
 
@@ -232,7 +238,7 @@ export function useNoteCapture(props: {
 		if (newPollVotedKey === latestPollVotedKey) return;
 		latestPollVotedKey = newPollVotedKey;
 
-		const choices = [...note.value.poll.choices];
+		const choices = [...pollChoicesRef.value];
 		choices[ctx.choice] = {
 			...choices[ctx.choice],
 			votes: choices[ctx.choice].votes + 1,
@@ -241,7 +247,7 @@ export function useNoteCapture(props: {
 			} : {}),
 		};
 
-		note.value.poll.choices = choices;
+		pollChoicesRef.value = choices;
 	}
 
 	function onDeleted(): void {
@@ -249,22 +255,22 @@ export function useNoteCapture(props: {
 	}
 
 	onUnmounted(() => {
-		noteEvents.off(`reacted:${note.value.id}`, onReacted);
-		noteEvents.off(`unreacted:${note.value.id}`, onUnreacted);
-		noteEvents.off(`pollVoted:${note.value.id}`, onPollVoted);
-		noteEvents.off(`deleted:${note.value.id}`, onDeleted);
+		noteEvents.off(`reacted:${note.id}`, onReacted);
+		noteEvents.off(`unreacted:${note.id}`, onUnreacted);
+		noteEvents.off(`pollVoted:${note.id}`, onPollVoted);
+		noteEvents.off(`deleted:${note.id}`, onDeleted);
 	});
 
 	// 投稿からある程度経過している(=タイムラインを遡って表示した)ノートは、イベントが発生する可能性が低いためそもそも購読しない
 	// ただし「リノートされたばかりの過去のノート」(= parentNoteが存在し、かつparentNoteの投稿日時が最近)はイベント発生が考えられるため購読する
 	// TODO: デバイスとサーバーの時計がズレていると不具合の元になるため、ズレを検知して警告を表示するなどのケアが必要かもしれない
 	if (parentNote == null) {
-		if ((Date.now() - new Date(note.value.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
+		if ((Date.now() - new Date(note.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
 			// リノートで表示されているノートでもないし、投稿からある程度経過しているので購読しない
 			return;
 		}
 	} else {
-		if ((Date.now() - new Date(parentNote.value.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
+		if ((Date.now() - new Date(parentNote.createdAt).getTime()) > 1000 * 60 * 5) { // 5min
 			// リノートで表示されているノートだが、リノートされてからある程度経過しているので購読しない
 			return;
 		}

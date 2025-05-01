@@ -321,6 +321,7 @@ refreshEndpointAndChannel();
 
 const paginator = usePagination({
 	ctx: paginationQuery,
+	useShallowRef: true,
 });
 
 onUnmounted(() => {

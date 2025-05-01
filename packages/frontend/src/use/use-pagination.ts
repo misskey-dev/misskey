@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, isRef, onMounted, ref, watch } from 'vue';
+import { computed, isRef, onMounted, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { ComputedRef, Ref, ShallowRef } from 'vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -40,9 +40,10 @@ export type PagingCtx<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoint
 
 export function usePagination<T extends MisskeyEntity>(props: {
 	ctx: PagingCtx;
+	useShallowRef?: boolean;
 }) {
-	const items = ref<T[]>([]);
-	const queue = ref<T[]>([]);
+	const items = props.useShallowRef ? shallowRef<T[]>([]) : ref<T[]>([]);
+	const queue = props.useShallowRef ? shallowRef<T[]>([]) : ref<T[]>([]);
 	const fetching = ref(true);
 	const moreFetching = ref(false);
 	const canFetchMore = ref(false);
@@ -142,8 +143,10 @@ export function usePagination<T extends MisskeyEntity>(props: {
 		}).then(res => {
 			if (options.toQueue) {
 				queue.value.unshift(...res.toReversed());
+				if (props.useShallowRef) triggerRef(queue);
 			} else {
 				items.value.unshift(...res.toReversed());
+				if (props.useShallowRef) triggerRef(items);
 			}
 		});
 	}
@@ -155,18 +158,22 @@ export function usePagination<T extends MisskeyEntity>(props: {
 
 	function unshiftItems(newItems: T[]) {
 		items.value.unshift(...newItems);
+		if (props.useShallowRef) triggerRef(items);
 	}
 
 	function pushItems(oldItems: T[]) {
 		items.value.push(...oldItems);
+		if (props.useShallowRef) triggerRef(items);
 	}
 
 	function prepend(item: T) {
 		items.value.unshift(item);
+		if (props.useShallowRef) triggerRef(items);
 	}
 
 	function enqueue(item: T) {
 		queue.value.unshift(item);
+		if (props.useShallowRef) triggerRef(queue);
 	}
 
 	function releaseQueue() {
