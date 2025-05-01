@@ -78,7 +78,7 @@ jobs:
       if: github.event_name == 'pull_request_target'
       id: chromatic_pull_request
       run: |
-        CHROMATIC_PARAMETER="$(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r origin/${GITHUB_BASE_REF}...origin/${GITHUB_HEAD_REF} | xargs))"
+        CHROMATIC_PARAMETER="$(node packages/frontend/.storybook/changes.js $(git diff --name-only origin/${GITHUB_BASE_REF}...origin/${GITHUB_HEAD_REF} | xargs))"
         if [ "$CHROMATIC_PARAMETER" = " --skip" ]; then
           echo "skip=true" >> $GITHUB_OUTPUT
         fi

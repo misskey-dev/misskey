@@ -37,12 +37,10 @@ export class UrlPreviewService {
 	@bindThis
 	private wrap(url?: string | null): string | null {
 		return url != null
-			? url.match(/^https?:\/\//)
-				? `${this.config.mediaProxy}/preview.webp?${query({
-					url,
-					preview: '1',
-				})}`
-				: url
+			? `${this.config.mediaProxy}/preview.webp?${query({
+				url,
+				preview: '1',
+			})}`
 			: null;
 	}
 
