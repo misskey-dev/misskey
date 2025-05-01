@@ -136,9 +136,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkReactionsViewer
 				v-if="appearNote.reactionAcceptance !== 'likeOnly'"
 				style="margin-top: 6px;"
-				:reactions="reactions"
-				:reactionEmojis="reactionEmojis"
-				:myReaction="myReaction"
+				:reactions="$appearNote.reactions"
+				:reactionEmojis="$appearNote.reactionEmojis"
+				:myReaction="$appearNote.myReaction"
 				:noteId="appearNote.id"
 				:maxNumber="16"
 				@mockUpdateMyReaction="emitUpdReaction"
@@ -161,11 +161,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-ban"></i>
 			</button>
 			<button ref="reactButton" :class="$style.noteFooterButton" class="_button" @click="toggleReact()">
-				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && myReaction != null" class="ti ti-heart-filled" style="color: var(--MI_THEME-love);"></i>
-				<i v-else-if="myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
+				<i v-if="appearNote.reactionAcceptance === 'likeOnly' && $appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--MI_THEME-love);"></i>
+				<i v-else-if="$appearNote.myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
 				<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 				<i v-else class="ti ti-plus"></i>
-				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(reactionCount) }}</p>
+				<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && $appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number($appearNote.reactionCount) }}</p>
 			</button>
 			<button v-if="prefer.s.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown.prevent="clip()">
 				<i class="ti ti-paperclip"></i>
@@ -229,7 +229,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, provide, ref, useTemplateRef } from 'vue';
+import { computed, inject, onMounted, provide, reactive, ref, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -308,11 +308,13 @@ if (noteViewInterruptors.length > 0) {
 
 const isRenote = Misskey.note.isPureRenote(note);
 const appearNote = getAppearNote(note);
-const reactions = ref(appearNote.reactions);
-const reactionCount = ref(appearNote.reactionCount);
-const reactionEmojis = ref(appearNote.reactionEmojis);
-const myReaction = ref(appearNote.myReaction);
-const pollChoices = ref(appearNote.poll?.choices);
+const $appearNote = reactive({
+	reactions: appearNote.reactions,
+	reactionCount: appearNote.reactionCount,
+	reactionEmojis: appearNote.reactionEmojis,
+	myReaction: appearNote.myReaction,
+	pollChoices: appearNote.poll?.choices,
+});
 
 const rootEl = useTemplateRef('rootEl');
 const menuButton = useTemplateRef('menuButton');
@@ -376,7 +378,7 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 const tab = ref(props.initialTab);
 const reactionTabType = ref<string | null>(null);
 
-const renotesPagination = computed<Paging>(() => ({
+const renotesPagination = computed(() => ({
 	endpoint: 'notes/renotes',
 	limit: 10,
 	params: {
@@ -384,7 +386,7 @@ const renotesPagination = computed<Paging>(() => ({
 	},
 }));
 
-const reactionsPagination = computed<Paging>(() => ({
+const reactionsPagination = computed(() => ({
 	endpoint: 'notes/reactions',
 	limit: 10,
 	params: {
@@ -396,12 +398,7 @@ const reactionsPagination = computed<Paging>(() => ({
 useNoteCapture({
 	note: appearNote,
 	parentNote: note,
-	reactionsRef: reactions,
-	reactionCountRef: reactionCount,
-	reactionEmojisRef: reactionEmojis,
-	myReactionRef: myReaction,
-	pollChoicesRef: pollChoices,
-	isDeletedRef: isDeleted,
+	$note: $appearNote,
 });
 
 useTooltip(renoteButton, async (showing) => {
@@ -429,7 +426,7 @@ if (appearNote.reactionAcceptance === 'likeOnly') {
 		const reactions = await misskeyApiGet('notes/reactions', {
 			noteId: appearNote.id,
 			limit: 10,
-			_cacheKey_: reactionCount.value,
+			_cacheKey_: $appearNote.reactionCount,
 		});
 
 		const users = reactions.map(x => x.user);
@@ -440,7 +437,7 @@ if (appearNote.reactionAcceptance === 'likeOnly') {
 			showing,
 			reaction: '❤️',
 			users,
-			count: reactionCount.value,
+			count: $appearNote.reactionCount,
 			targetElement: reactButton.value!,
 		}, {
 			closed: () => dispose(),

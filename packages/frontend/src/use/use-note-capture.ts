@@ -6,7 +6,7 @@
 import { onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import { EventEmitter } from 'eventemitter3';
-import type { Ref } from 'vue';
+import type { Reactive, Ref } from 'vue';
 import { useStream } from '@/stream.js';
 import { $i } from '@/i.js';
 import { store } from '@/store.js';
@@ -86,17 +86,14 @@ window.setInterval(() => {
 
 function pollingSubscribe(props: {
 	note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>;
-	reactionsRef: Ref<Misskey.entities.Note['reactions']>;
-	reactionCountRef: Ref<Misskey.entities.Note['reactionCount']>;
-	reactionEmojisRef: Ref<Misskey.entities.Note['reactionEmojis']>;
-	isDeletedRef: Ref<boolean>;
+	$note: ReactiveNoteData;
 }) {
-	const { note, reactionsRef, reactionCountRef, reactionEmojisRef } = props;
+	const { note, $note } = props;
 
 	function onFetched(data: Pick<Misskey.entities.Note, 'reactions' | 'reactionEmojis'>): void {
-		reactionsRef.value = data.reactions;
-		reactionCountRef.value = Object.values(data.reactions).reduce((a, b) => a + b, 0);
-		reactionEmojisRef.value = data.reactionEmojis;
+		$note.reactions = data.reactions;
+		$note.reactionCount = Object.values(data.reactions).reduce((a, b) => a + b, 0);
+		$note.reactionEmojis = data.reactionEmojis;
 	}
 
 	pollingEnqueue(note);
@@ -177,17 +174,20 @@ function realtimeSubscribe(props: {
 	});
 }
 
+type ReactiveNoteData = Reactive<{
+	reactions: Misskey.entities.Note['reactions'];
+	reactionCount: Misskey.entities.Note['reactionCount'];
+	reactionEmojis: Misskey.entities.Note['reactionEmojis'];
+	myReaction: Misskey.entities.Note['myReaction'];
+	pollChoices: NonNullable<Misskey.entities.Note['poll']>['choices'];
+}>;
+
 export function useNoteCapture(props: {
 	note: Pick<Misskey.entities.Note, 'id' | 'createdAt'>;
 	parentNote: Misskey.entities.Note | null;
-	reactionsRef: Ref<Misskey.entities.Note['reactions']>;
-	reactionCountRef: Ref<Misskey.entities.Note['reactionCount']>;
-	reactionEmojisRef: Ref<Misskey.entities.Note['reactionEmojis']>;
-	myReactionRef: Ref<Misskey.entities.Note['myReaction']>;
-	pollChoicesRef: Ref<NonNullable<Misskey.entities.Note['poll']>['choices'] | null>;
-	isDeletedRef: Ref<boolean>;
+	$note: ReactiveNoteData;
 }) {
-	const { note, parentNote, reactionsRef, reactionCountRef, reactionEmojisRef, myReactionRef, pollChoicesRef } = props;
+	const { note, parentNote, $note } = props;
 
 	noteEvents.on(`reacted:${note.id}`, onReacted);
 	noteEvents.on(`unreacted:${note.id}`, onUnreacted);
@@ -203,17 +203,17 @@ export function useNoteCapture(props: {
 		if (newReactedKey === latestReactedKey) return;
 		latestReactedKey = newReactedKey;
 
-		if (ctx.emoji && !(ctx.emoji.name in reactionEmojisRef.value)) {
-			reactionEmojisRef.value[ctx.emoji.name] = ctx.emoji.url;
+		if (ctx.emoji && !(ctx.emoji.name in $note.reactionEmojis)) {
+			$note.reactionEmojis[ctx.emoji.name] = ctx.emoji.url;
 		}
 
-		const currentCount = reactionsRef.value[ctx.reaction] || 0;
+		const currentCount = $note.reactions[ctx.reaction] || 0;
 
-		reactionsRef.value[ctx.reaction] = currentCount + 1;
-		reactionCountRef.value += 1;
+		$note.reactions[ctx.reaction] = currentCount + 1;
+		$note.reactionCount += 1;
 
 		if ($i && (ctx.userId === $i.id)) {
-			myReactionRef.value = ctx.reaction;
+			$note.myReaction = ctx.reaction;
 		}
 	}
 
@@ -222,14 +222,14 @@ export function useNoteCapture(props: {
 		if (newUnreactedKey === latestUnreactedKey) return;
 		latestUnreactedKey = newUnreactedKey;
 
-		const currentCount = reactionsRef.value[ctx.reaction] || 0;
+		const currentCount = $note.reactions[ctx.reaction] || 0;
 
-		reactionsRef.value[ctx.reaction] = Math.max(0, currentCount - 1);
-		reactionCountRef.value = Math.max(0, reactionCountRef.value - 1);
-		if (reactionsRef.value[ctx.reaction] === 0) delete reactionsRef.value[ctx.reaction];
+		$note.reactions[ctx.reaction] = Math.max(0, currentCount - 1);
+		$note.reactionCount = Math.max(0, $note.reactionCount - 1);
+		if ($note.reactions[ctx.reaction] === 0) delete $note.reactions[ctx.reaction];
 
 		if ($i && (ctx.userId === $i.id)) {
-			myReactionRef.value = null;
+			$note.myReaction = null;
 		}
 	}
 
@@ -238,7 +238,7 @@ export function useNoteCapture(props: {
 		if (newPollVotedKey === latestPollVotedKey) return;
 		latestPollVotedKey = newPollVotedKey;
 
-		const choices = [...pollChoicesRef.value];
+		const choices = [...$note.pollChoices];
 		choices[ctx.choice] = {
 			...choices[ctx.choice],
 			votes: choices[ctx.choice].votes + 1,
@@ -247,11 +247,11 @@ export function useNoteCapture(props: {
 			} : {}),
 		};
 
-		pollChoicesRef.value = choices;
+		$note.pollChoices = choices;
 	}
 
 	function onDeleted(): void {
-		props.isDeletedRef.value = true;
+		$note.isDeleted = true;
 	}
 
 	onUnmounted(() => {

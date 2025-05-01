@@ -92,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:noteId="appearNote.id"
 						:multiple="appearNote.poll.multiple"
 						:expiresAt="appearNote.poll.expiresAt"
-						:choices="pollChoices"
+						:choices="$appearNote.pollChoices"
 						:author="appearNote.user"
 						:emojiUrls="appearNote.emojis"
 						:class="$style.poll"
@@ -113,9 +113,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkReactionsViewer
 				v-if="appearNote.reactionAcceptance !== 'likeOnly'"
 				style="margin-top: 6px;"
-				:reactions="reactions"
-				:reactionEmojis="reactionEmojis"
-				:myReaction="myReaction"
+				:reactions="$appearNote.reactions"
+				:reactionEmojis="$appearNote.reactionEmojis"
+				:myReaction="$appearNote.myReaction"
 				:noteId="appearNote.id"
 				:maxNumber="16"
 				@mockUpdateMyReaction="emitUpdReaction"
@@ -143,11 +143,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i class="ti ti-ban"></i>
 				</button>
 				<button ref="reactButton" :class="$style.footerButton" class="_button" @click="toggleReact()">
-					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && myReaction != null" class="ti ti-heart-filled" style="color: var(--MI_THEME-love);"></i>
-					<i v-else-if="myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && $appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--MI_THEME-love);"></i>
+					<i v-else-if="$appearNote.myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
 					<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 					<i v-else class="ti ti-plus"></i>
-					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && reactionCount > 0" :class="$style.footerButtonCount">{{ number(reactionCount) }}</p>
+					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || prefer.s.showReactionsCount) && $appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number($appearNote.reactionCount) }}</p>
 				</button>
 				<button v-if="prefer.s.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
 					<i class="ti ti-paperclip"></i>
@@ -194,7 +194,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, useTemplateRef, watch, provide, shallowRef } from 'vue';
+import { computed, inject, onMounted, ref, useTemplateRef, watch, provide, shallowRef, reactive } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -287,11 +287,13 @@ if (noteViewInterruptors.length > 0) {
 
 const isRenote = Misskey.note.isPureRenote(note);
 const appearNote = getAppearNote(note);
-const reactions = ref(appearNote.reactions);
-const reactionCount = ref(appearNote.reactionCount);
-const reactionEmojis = ref(appearNote.reactionEmojis);
-const myReaction = ref(appearNote.myReaction);
-const pollChoices = ref(appearNote.poll?.choices);
+const $appearNote = reactive({
+	reactions: appearNote.reactions,
+	reactionCount: appearNote.reactionCount,
+	reactionEmojis: appearNote.reactionEmojis,
+	myReaction: appearNote.myReaction,
+	pollChoices: appearNote.poll?.choices,
+});
 
 const rootEl = useTemplateRef('rootEl');
 const menuButton = useTemplateRef('menuButton');
@@ -317,7 +319,7 @@ const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibili
 const renoteCollapsed = ref(
 	prefer.s.collapseRenotes && isRenote && (
 		($i && ($i.id === note.userId || $i.id === appearNote.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
-		(myReaction.value != null)
+		($appearNote.myReaction != null)
 	),
 );
 
@@ -421,12 +423,7 @@ if (props.mock) {
 	useNoteCapture({
 		note: appearNote,
 		parentNote: note,
-		reactionsRef: reactions,
-		reactionCountRef: reactionCount,
-		reactionEmojisRef: reactionEmojis,
-		myReactionRef: myReaction,
-		pollChoicesRef: pollChoices,
-		isDeletedRef: isDeleted,
+		$note: $appearNote,
 	});
 }
 
@@ -456,7 +453,7 @@ if (!props.mock) {
 			const reactions = await misskeyApiGet('notes/reactions', {
 				noteId: appearNote.id,
 				limit: 10,
-				_cacheKey_: reactionCount.value,
+				_cacheKey_: $appearNote.reactionCount,
 			});
 
 			const users = reactions.map(x => x.user);
@@ -467,7 +464,7 @@ if (!props.mock) {
 				showing,
 				reaction: '❤️',
 				users,
-				count: reactionCount.value,
+				count: $appearNote.reactionCount,
 				targetElement: reactButton.value!,
 			}, {
 				closed: () => dispose(),
@@ -566,7 +563,7 @@ function react(): void {
 }
 
 function undoReact(): void {
-	const oldReaction = myReaction.value;
+	const oldReaction = $appearNote.myReaction;
 	if (!oldReaction) return;
 
 	if (props.mock) {
@@ -580,7 +577,7 @@ function undoReact(): void {
 }
 
 function toggleReact() {
-	if (myReaction.value == null) {
+	if ($appearNote.myReaction == null) {
 		react();
 	} else {
 		undoReact();
